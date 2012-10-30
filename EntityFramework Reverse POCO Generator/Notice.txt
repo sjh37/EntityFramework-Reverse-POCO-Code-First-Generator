@@ -1,0 +1,2 @@
+﻿This is a derivitive work based on the PetaPoco template.
+It has been heavily changed to generate EntityFramework code instead.

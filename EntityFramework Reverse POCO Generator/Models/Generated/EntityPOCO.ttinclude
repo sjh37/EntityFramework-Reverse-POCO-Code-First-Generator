@@ -1,0 +1,68 @@
+using System;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Entity.ModelConfiguration;
+
+namespace <#=Namespace #>.Model
+{
+<#
+foreach(Table tbl in from t in tables select t)
+{
+#>
+    public class <#=tbl.NameHumanCase#>
+    {
+<#
+foreach(Column col in tbl.Columns)
+{
+#>
+        <#=col.Entity #>
+<# } #>
+<# if(tbl.HasForeignKey) { #>
+
+        // Foreign keys
+<#
+foreach(Column col in from c in tbl.Columns where c.EntityFk != null select c)
+{
+#>
+        <#=col.EntityFk #>
+<# } } #>
+    }
+
+<# } #>
+}
+
+namespace <#=Namespace #>.ModelConfiguration
+{
+    using Model;
+
+<#
+foreach(Table tbl in tables)
+{
+#>
+    public class <#=tbl.NameHumanCase#>Configuration : EntityTypeConfiguration<<#=tbl.NameHumanCase#>>
+    {
+        public <#=tbl.NameHumanCase#>Configuration()
+        {
+            ToTable("dbo.<#=tbl.Name#>");
+<# if (!string.IsNullOrEmpty(tbl.PrimaryKeyNameHumanCase())) { #>
+            HasKey(x => x.<#=tbl.PrimaryKeyNameHumanCase()#>);
+<# } #>
+
+<#
+foreach(Column col in tbl.Columns)
+{
+#>
+            <#=col.Config #>
+<# } #>
+<# if(tbl.HasForeignKey) { #>
+
+            // Foreign keys
+<#
+foreach(Column col in from c in tbl.Columns where c.ConfigFk != null select c)
+{
+#>
+            <#=col.ConfigFk #>
+<# } } #>
+        }
+    }
+<# } #>
+}
