@@ -41,7 +41,7 @@ foreach(Table tbl in tables)
     {
         public <#=tbl.NameHumanCase#>Configuration()
         {
-            ToTable("dbo.<#=tbl.Name#>");
+            ToTable("<#=tbl.Schema#>.<#=tbl.Name#>");
 <# if (!string.IsNullOrEmpty(tbl.PrimaryKeyNameHumanCase())) { #>
             HasKey(x => x.<#=tbl.PrimaryKeyNameHumanCase()#>);
 <# } #>
@@ -63,5 +63,6 @@ foreach(Column col in from c in tbl.Columns where c.ConfigFk != null select c)
 <# } } #>
         }
     }
+
 <# } #>
 }

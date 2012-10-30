@@ -18,10 +18,15 @@
 <#@ import namespace="System.Configuration" #>
 <#@ import namespace="System.Windows.Forms" #>
 <#+
+        // If there are multiple schema, then the table name is prefixed with the schema, except for dbo.
+        // Ie. dbo.hello will be Hello.
+        //     abc.hello will be AbcHello.
         string SchemaName = null;
-        string ConnectionStringName = "";
-        bool IncludeViews = false;
+
+	    // Settings
+        string ConnectionStringName = "";   // Uses last connection string in config if not specified
         string Namespace = "";
+        bool IncludeViews = true;
 
         // Use the following table/view name regex filters to include or exclude tables/views
         // Exclude filters are checked first and tables matching filters are removed.
@@ -949,14 +954,16 @@ WHERE   NOT ([Extent1].[Name] IN ('EdmMetadata', '__MigrationHistory'))";
             private const string ForeignKeySQL = @"
 SELECT  FK_Table = FK.TABLE_NAME,
         FK_Column = CU.COLUMN_NAME,
-        PK_Table = PrimaryKey.TABLE_NAME,
+        PK_Table = PK.TABLE_NAME,
         PK_Column = PT.COLUMN_NAME,
-        Constraint_Name = C.CONSTRAINT_NAME
+        Constraint_Name = C.CONSTRAINT_NAME,
+        FK.TABLE_SCHEMA AS fkSchema,
+        PK.TABLE_SCHEMA AS pkSchema
 FROM    INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS C
         INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS FK
             ON C.CONSTRAINT_NAME = FK.CONSTRAINT_NAME
-        INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS PrimaryKey
-            ON C.UNIQUE_CONSTRAINT_NAME = PrimaryKey.CONSTRAINT_NAME
+        INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS PK
+            ON C.UNIQUE_CONSTRAINT_NAME = PK.CONSTRAINT_NAME
         INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE CU
             ON C.CONSTRAINT_NAME = CU.CONSTRAINT_NAME
         INNER JOIN (
@@ -967,10 +974,11 @@ FROM    INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS C
                                 ON i1.CONSTRAINT_NAME = i2.CONSTRAINT_NAME
                     WHERE   i1.CONSTRAINT_TYPE = 'PRIMARY KEY'
                    ) PT
-            ON PT.TABLE_NAME = PrimaryKey.TABLE_NAME
+            ON PT.TABLE_NAME = PK.TABLE_NAME
 ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
 
-            public SqlServerSchemaReader(DbConnection connection, DbProviderFactory factory) : base(connection, factory)
+            public SqlServerSchemaReader(DbConnection connection, DbProviderFactory factory) 
+                : base(connection, factory)
             {
             }
 
@@ -986,9 +994,7 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                 {
                     using(DbDataReader rdr = Cmd.ExecuteReader())
                     {
-                        var rxClean =
-                            new Regex(
-                                "^(event|Equals|GetHashCode|GetType|ToString|repo|Save|IsNew|Insert|Update|Delete|Exists|SingleOrDefault|Single|First|FirstOrDefault|Fetch|Page|Query)$");
+                        var rxClean = new Regex("^(event|Equals|GetHashCode|GetType|ToString|repo|Save|IsNew|Insert|Update|Delete|Exists|SingleOrDefault|Single|First|FirstOrDefault|Fetch|Page|Query)$");
                         var lastTable = string.Empty;
                         Table table = null;
                         while(rdr.Read())
@@ -997,13 +1003,14 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                             if(lastTable != tableName || table == null)
                             {
                                 // The data from the database is not sorted
-                                table = result.Find(x => x.Name == tableName);
+                                string schema = rdr["SchemaName"].ToString();
+                                table = result.Find(x => x.Name == tableName && x.Schema == schema);
                                 if(table == null)
                                 {
                                     table = new Table
                                     {
                                         Name = tableName,
-                                        Schema = rdr["SchemaName"].ToString(),
+                                        Schema = schema,
                                         IsView = String.Compare(rdr["TableType"].ToString(), "View", StringComparison.OrdinalIgnoreCase) == 0,
 
                                         // Will be set later
@@ -1013,6 +1020,8 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                                     table.CleanName = CleanUp(table.Name);
                                     table.ClassName = Inflector.MakeSingular(table.CleanName);
                                     table.NameHumanCase = Inflector.ToTitleCase(table.Name).Replace(" ", "").Replace("$", "");
+                                    if(table.Schema.ToLower() != "dbo")
+                                        table.NameHumanCase = Inflector.ToTitleCase(table.Schema) + table.NameHumanCase;
 
                                     result.Add(table);
                                 }
@@ -1051,12 +1060,15 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                     {
                         while(rdr.Read())
                         {
-                            Table tbl = result.GetTable(rdr["FK_Table"].ToString());
+                            string fkTable = rdr["FK_Table"].ToString();
+                            string fkSchema = rdr["fkSchema"].ToString();
+                            Table tbl = result.GetTable(fkTable, fkSchema);
                             if (tbl == null)
                                 continue;
 
                             string pkTable = rdr["PK_Table"].ToString();
-                            if(result.GetTable(pkTable) == null)
+                            string pkSchema = rdr["pkSchema"].ToString();
+                            if(result.GetTable(pkTable, pkSchema) == null)
                                 continue;
                                 
                             string fkColumn = rdr["FK_Column"].ToString();
@@ -1240,14 +1252,11 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
 
         public class Tables : List<Table>
         {
-            public Table this[string tableName]
+            public Table GetTable(string tableName, string schema)
             {
-                get { return GetTable(tableName); }
-            }
-
-            public Table GetTable(string tableName)
-            {
-                return this.SingleOrDefault(x => String.Compare(x.Name, tableName, StringComparison.OrdinalIgnoreCase) == 0);
+                return this.SingleOrDefault(x => 
+                    String.Compare(x.Name, tableName, StringComparison.OrdinalIgnoreCase) == 0 && 
+                    String.Compare(x.Schema, schema, StringComparison.OrdinalIgnoreCase) == 0);
             }
         }
 
