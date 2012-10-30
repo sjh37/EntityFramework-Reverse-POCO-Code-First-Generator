@@ -1097,30 +1097,33 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                         while(rdr.Read())
                         {
                             Table tbl = result.GetTable(rdr["FK_Table"].ToString());
-                            if(tbl != null)
+                            if (tbl == null)
+                                continue;
+
+                            string pkTable = rdr["PK_Table"].ToString();
+                            if(result.GetTable(pkTable) == null)
+                                continue;
+                                
+                            string fkColumn = rdr["FK_Column"].ToString();
+                            Column col = tbl.Columns.Find(n => n.PropertyName == fkColumn);
+                            if(col != null)
                             {
-                                string fkColumn = rdr["FK_Column"].ToString();
-                                Column col = tbl.Columns.Find(n => n.PropertyName == fkColumn);
-                                if(col != null)
-                                {
-                                    tbl.HasForeignKey = true;
-                                    string constraintName = rdr["Constraint_Name"].ToString();
+                                tbl.HasForeignKey = true;
+                                string constraintName = rdr["Constraint_Name"].ToString();
 
-                                    string pkTable = rdr["PK_Table"].ToString();
-                                    string pkTableHumanCase = Inflector.ToTitleCase(pkTable).Replace(" ", "").Replace("$", "");
-                                    string constraintNameHumanCase = Inflector.ToTitleCase(constraintName).Replace(" ", "").Replace("$", "");
-                                    string fkName;
-                                    if(col.PropertyNameHumanCase.EndsWith("Id"))
-                                        fkName = col.PropertyNameHumanCase.Substring(0, col.PropertyNameHumanCase.Length - 2) + "Fk";
-                                    else
-                                        fkName = col.PropertyNameHumanCase + "Fk";
+                                string pkTableHumanCase = Inflector.ToTitleCase(pkTable).Replace(" ", "").Replace("$", "");
+                                string constraintNameHumanCase = Inflector.ToTitleCase(constraintName).Replace(" ", "").Replace("$", "");
+                                string fkName;
+                                if(col.PropertyNameHumanCase.EndsWith("Id"))
+                                    fkName = col.PropertyNameHumanCase.Substring(0, col.PropertyNameHumanCase.Length - 2) + "Fk";
+                                else
+                                    fkName = col.PropertyNameHumanCase + "Fk";
 
-                                    col.EntityFk = string.Format("public virtual {0} {1} {2} {3}", pkTableHumanCase, fkName, "{ get; set; } // ",
-                                                                 col.PropertyNameHumanCase + " - " + constraintNameHumanCase);
+                                col.EntityFk = string.Format("public virtual {0} {1} {2} {3}", pkTableHumanCase, fkName, "{ get; set; } // ",
+                                                             col.PropertyNameHumanCase + " - " + constraintNameHumanCase);
 
-                                    col.ConfigFk = string.Format("Has{0}(a => a.{1}).WithMany().HasForeignKey(b => b.{2}); // {3}",
-                                                                 col.IsNullable ? "Optional" : "Required", fkName, col.PropertyNameHumanCase, constraintNameHumanCase);
-                                }
+                                col.ConfigFk = string.Format("Has{0}(a => a.{1}).WithMany().HasForeignKey(b => b.{2}); // {3}",
+                                                             col.IsNullable ? "Optional" : "Required", fkName, col.PropertyNameHumanCase, constraintNameHumanCase);
                             }
                         }
                     }
