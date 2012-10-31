@@ -8,6 +8,7 @@ namespace <#=Namespace #>.Model
 foreach(Table tbl in from t in tables.OrderBy(x => x.NameHumanCase) select t)
 {
 #>
+    // <#=tbl.Name#>
     public class <#=tbl.NameHumanCase#>
     {
 <#

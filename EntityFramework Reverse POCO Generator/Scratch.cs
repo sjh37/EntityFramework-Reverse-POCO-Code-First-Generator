@@ -349,7 +349,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
             private void SetupEntity()
             {
-                Entity = string.Format("public virtual {0}{1} {2} {3}", PropertyType, CheckNullable(this), PropertyNameHumanCase, "{ get; set; }");
+                Entity = string.Format("public virtual {0}{1} {2} {3} // {4}", PropertyType, CheckNullable(this), PropertyNameHumanCase, "{ get; set; }", Name);
             }
 
             private void SetupConfig()
