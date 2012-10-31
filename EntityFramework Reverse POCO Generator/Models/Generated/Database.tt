@@ -7,7 +7,7 @@
     // If there are multiple schema, then the table name is prefixed with the schema, except for dbo.
     // Ie. dbo.hello will be Hello.
     //     abc.hello will be AbcHello.
-    //SchemaName = "EventProcessing";
+    SchemaName = null;
     
     // Use the following table/view name regex filters to include or exclude tables/views
     // Exclude filters are checked first and tables matching filters are removed.

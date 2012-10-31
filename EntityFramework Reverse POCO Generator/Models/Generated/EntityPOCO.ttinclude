@@ -39,6 +39,7 @@ namespace <#=Namespace #>.ModelConfiguration
 foreach(Table tbl in tables.OrderBy(x => x.NameHumanCase))
 {
 #>
+    // <#=tbl.Name#>
     public class <#=tbl.NameHumanCase#>Configuration : EntityTypeConfiguration<<#=tbl.NameHumanCase#>>
     {
         public <#=tbl.NameHumanCase#>Configuration()

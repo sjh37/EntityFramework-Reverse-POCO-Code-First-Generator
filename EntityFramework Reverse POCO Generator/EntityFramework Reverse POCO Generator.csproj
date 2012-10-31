@@ -59,7 +59,7 @@
       <DependentUpon>Database.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Scratch.cs" />
+    <None Include="Scratch.cs" />
     <None Include="App.config" />
     <None Include="Models\Generated\Database.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
