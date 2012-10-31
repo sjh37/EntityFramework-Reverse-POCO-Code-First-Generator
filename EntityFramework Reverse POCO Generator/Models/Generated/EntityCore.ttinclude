@@ -23,7 +23,7 @@
         //     abc.hello will be AbcHello.
         string SchemaName = null;
 
-	    // Settings
+        // Settings
         string ConnectionStringName = "";   // Uses last connection string in config if not specified
         string Namespace = "";
         bool IncludeViews = true;
@@ -999,11 +999,11 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                         Table table = null;
                         while(rdr.Read())
                         {
-                            string tableName = rdr["TableName"].ToString();
+                            string tableName = rdr["TableName"].ToString().Trim();
                             if(lastTable != tableName || table == null)
                             {
                                 // The data from the database is not sorted
-                                string schema = rdr["SchemaName"].ToString();
+                                string schema = rdr["SchemaName"].ToString().Trim();
                                 table = result.Find(x => x.Name == tableName && x.Schema == schema);
                                 if(table == null)
                                 {
@@ -1011,7 +1011,7 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                                     {
                                         Name = tableName,
                                         Schema = schema,
-                                        IsView = String.Compare(rdr["TableType"].ToString(), "View", StringComparison.OrdinalIgnoreCase) == 0,
+                                        IsView = String.Compare(rdr["TableType"].ToString().Trim(), "View", StringComparison.OrdinalIgnoreCase) == 0,
 
                                         // Will be set later
                                         HasForeignKey = false,
@@ -1019,9 +1019,9 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                                     };
                                     table.CleanName = CleanUp(table.Name);
                                     table.ClassName = Inflector.MakeSingular(table.CleanName);
-                                    table.NameHumanCase = Inflector.ToTitleCase(table.Name).Replace(" ", "").Replace("$", "");
-                                    if(table.Schema.ToLower() != "dbo")
-                                        table.NameHumanCase = Inflector.ToTitleCase(table.Schema) + table.NameHumanCase;
+                                    table.NameHumanCase = Inflector.ToTitleCase(table.Name).Replace(" ", "").Replace("$", "").Trim();
+                                    if(string.Compare(table.Schema, "dbo", StringComparison.OrdinalIgnoreCase) != 0)
+                                        table.NameHumanCase = table.Schema + "_" + table.NameHumanCase;
 
                                     result.Add(table);
                                 }
@@ -1079,6 +1079,9 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                                 string constraintName = rdr["Constraint_Name"].ToString();
 
                                 string pkTableHumanCase = Inflector.ToTitleCase(pkTable).Replace(" ", "").Replace("$", "");
+                                if(string.Compare(pkSchema, "dbo", StringComparison.OrdinalIgnoreCase) != 0)
+                                    pkTableHumanCase = pkSchema + "_" + pkTableHumanCase;
+
                                 string constraintNameHumanCase = Inflector.ToTitleCase(constraintName).Replace(" ", "").Replace("$", "");
                                 string fkName;
                                 if(col.PropertyNameHumanCase.EndsWith("Id"))
@@ -1106,17 +1109,17 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
 
                 var col = new Column
                 {
-                    Name = rdr["ColumnName"].ToString(),
-                    PropertyType = GetPropertyType(rdr["TypeName"].ToString()),
+                    Name = rdr["ColumnName"].ToString().Trim(),
+                    PropertyType = GetPropertyType(rdr["TypeName"].ToString().Trim()),
                     MaxLength = (int)rdr["MaxLength"],
                     Precision = (int)rdr["Precision"],
-                    Default = rdr["Default"].ToString(),
+                    Default = rdr["Default"].ToString().Trim(),
                     DateTimePrecision = (int)rdr["DateTimePrecision"],
                     Scale = (int)rdr["Scale"],
-                    IsIdentity = rdr["IsIdentity"].ToString() == "1",
-                    IsNullable = rdr["IsNullable"].ToString() == "1",
-                    IsStoreGenerated = rdr["IsStoreGenerated"].ToString() == "1",
-                    IsPrimaryKey = rdr["PrimaryKey"].ToString() == "1"
+                    IsIdentity = rdr["IsIdentity"].ToString().Trim() == "1",
+                    IsNullable = rdr["IsNullable"].ToString().Trim() == "1",
+                    IsStoreGenerated = rdr["IsStoreGenerated"].ToString().Trim() == "1",
+                    IsPrimaryKey = rdr["PrimaryKey"].ToString().Trim() == "1"
                 };
 
                 col.PropertyName = CleanUp(col.Name);

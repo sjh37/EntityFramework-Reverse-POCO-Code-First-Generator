@@ -7,7 +7,7 @@
     // If there are multiple schema, then the table name is prefixed with the schema, except for dbo.
     // Ie. dbo.hello will be Hello.
     //     abc.hello will be AbcHello.
-    SchemaName = null;
+    SchemaName = "EventProcessing";
     
     // Use the following table/view name regex filters to include or exclude tables/views
     // Exclude filters are checked first and tables matching filters are removed.
@@ -17,7 +17,7 @@
     //  * If left null, all are included.
     //  * If not null, only the tables matching the regex are included.
     //  Example:    TableFilterExclude = new Regex(".*auto.*");
-    //              TableFilterInclude = new Regex("(.*_fr_.*)|(data_.*)");
+    //              TableFilterInclude = new Regex("(.*_FR_.*)|(data_.*)");
     TableFilterExclude = null;
     TableFilterInclude = null;
 
