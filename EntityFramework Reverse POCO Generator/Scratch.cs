@@ -70,7 +70,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         // Settings
         string ConnectionStringName = "";   // Uses last connection string in config if not specified
-        string Namespace = "";
+        string Namespace = "todo";  // Namespace to place Model into
         bool IncludeViews = true;
 
         // Use the following table/view name regex filters to include or exclude tables/views
@@ -82,6 +82,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         //  * If not null, only the tables matching the regex are included.
         //  Example:    TableFilterExclude = new Regex(".*auto.*");
         //              TableFilterInclude = new Regex("(.*_fr_.*)|(data_.*)");
+        //              TableFilterInclude = new Regex("table_name1|table_name2|etc");
         Regex TableFilterExclude = null;
         Regex TableFilterInclude = null;
 
@@ -1167,12 +1168,11 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                     DateTimePrecision = (int)rdr["DateTimePrecision"],
                     Scale = (int)rdr["Scale"],
                     Ordinal = (int)rdr["Ordinal"],
-                    IsIdentity = rdr["IsIdentity"].ToString().Trim() == "1",
-                    IsNullable = rdr["IsNullable"].ToString().Trim() == "1",
-                    IsStoreGenerated = rdr["IsStoreGenerated"].ToString().Trim() == "1",
-                    IsPrimaryKey = rdr["PrimaryKey"].ToString().Trim() == "1"
+                    IsIdentity = rdr["IsIdentity"].ToString().Trim().ToLower() == "true",
+                    IsNullable = rdr["IsNullable"].ToString().Trim().ToLower() == "true",
+                    IsStoreGenerated = rdr["IsStoreGenerated"].ToString().Trim().ToLower() == "true",
+                    IsPrimaryKey = rdr["PrimaryKey"].ToString().Trim().ToLower() == "true"
                 };
-
                 col.PropertyName = CleanUp(col.Name);
                 col.PropertyName = rxClean.Replace(col.PropertyName, "_$1");
 
@@ -1285,8 +1285,14 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
 
             public string PrimaryKeyNameHumanCase()
             {
-                var data = PrimaryKeys.Select(x => x.PropertyNameHumanCase);
-                return string.Join(", ", data);
+                var data = PrimaryKeys.Select(x => "x." + x.PropertyNameHumanCase).ToList();
+                int n = data.Count();
+                if(n == 0)
+                    return string.Empty;
+                if(n == 1)
+                    return "x => " + data.First();
+                // More than one primary key
+                return string.Format("x => new {{ {0} }}", string.Join(", ", data));
             }
 
             public Column this[string columnName]
