@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("EntityFramework Reverse POCO code first Generator")]
-[assembly: AssemblyDescription("Reverse engineers an existing database and generates EntityFramework Code First POCO classes, Configuration mappings, DbContext")]
+[assembly: AssemblyDescription("Reverse engineers an existing database and generates EntityFramework Code First POCO classes, Configuration mappings and DbContext")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Simon Hughes (www.hicrest.net), ByBox (www.bybox.com)")]
 [assembly: AssemblyProduct("EntityFramework Reverse POCO code first Generator")]
