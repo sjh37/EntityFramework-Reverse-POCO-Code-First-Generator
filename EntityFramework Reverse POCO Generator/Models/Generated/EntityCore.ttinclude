@@ -1024,6 +1024,10 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                                     if(string.Compare(table.Schema, "dbo", StringComparison.OrdinalIgnoreCase) != 0)
                                         table.NameHumanCase = table.Schema + "_" + table.NameHumanCase;
 
+                                    // Check for table name clashes
+                                    if(result.Find(x => x.NameHumanCase == table.NameHumanCase) != null)
+                                        table.NameHumanCase += "1";
+
                                     result.Add(table);
                                 }
                             }

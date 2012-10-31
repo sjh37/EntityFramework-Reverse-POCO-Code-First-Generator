@@ -1068,6 +1068,10 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                                     table.NameHumanCase = Inflector.ToTitleCase(table.Name).Replace(" ", "").Replace("$", "");
                                     if(string.Compare(table.Schema, "dbo", StringComparison.OrdinalIgnoreCase) != 0)
                                         table.NameHumanCase = table.Schema + "_" + table.NameHumanCase;
+                                    
+                                    // Check for table name clashes
+                                    if(result.Find(x => x.NameHumanCase == table.NameHumanCase) != null)
+                                        table.NameHumanCase += "1";
 
                                     result.Add(table);
                                 }
@@ -1080,7 +1084,7 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
 
                 foreach(Table tbl in result)
                 {
-                    // Check for property name clashes
+                    // Check for property name clashes in columns
                     foreach(Column c in tbl.Columns)
                     {
                         if(tbl.Columns.FindAll(x => x.PropertyNameHumanCase == c.PropertyNameHumanCase).Count > 1)
