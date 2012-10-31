@@ -4,13 +4,13 @@ using System.Data.Entity.ModelConfiguration;
 namespace <#=Namespace #>.Model
 {
 <#
-foreach(Table tbl in from t in tables select t)
+foreach(Table tbl in from t in tables.OrderBy(x => x.NameHumanCase) select t)
 {
 #>
     public class <#=tbl.NameHumanCase#>
     {
 <#
-foreach(Column col in tbl.Columns)
+foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal))
 {
 #>
         <#=col.Entity #>
@@ -19,7 +19,7 @@ foreach(Column col in tbl.Columns)
 
         // Foreign keys
 <#
-foreach(Column col in from c in tbl.Columns where c.EntityFk != null select c)
+foreach(Column col in from c in tbl.Columns.OrderBy(x => x.Ordinal) where c.EntityFk != null select c)
 {
 #>
         <#=col.EntityFk #>
@@ -34,7 +34,7 @@ namespace <#=Namespace #>.ModelConfiguration
     using Model;
 
 <#
-foreach(Table tbl in tables)
+foreach(Table tbl in tables.OrderBy(x => x.NameHumanCase))
 {
 #>
     public class <#=tbl.NameHumanCase#>Configuration : EntityTypeConfiguration<<#=tbl.NameHumanCase#>>
@@ -47,7 +47,7 @@ foreach(Table tbl in tables)
 <# } #>
 
 <#
-foreach(Column col in tbl.Columns)
+foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal))
 {
 #>
             <#=col.Config #>
@@ -56,7 +56,7 @@ foreach(Column col in tbl.Columns)
 
             // Foreign keys
 <#
-foreach(Column col in from c in tbl.Columns where c.ConfigFk != null select c)
+foreach(Column col in from c in tbl.Columns.OrderBy(x => x.Ordinal) where c.ConfigFk != null select c)
 {
 #>
             <#=col.ConfigFk #>

@@ -289,6 +289,7 @@
             public string PropertyNameHumanCase;
             public string PropertyType;
             public int Scale;
+            public int Ordinal;
 
             public bool IsIdentity;
             public bool IsNullable;
@@ -1019,7 +1020,7 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                                     };
                                     table.CleanName = CleanUp(table.Name);
                                     table.ClassName = Inflector.MakeSingular(table.CleanName);
-                                    table.NameHumanCase = Inflector.ToTitleCase(table.Name).Replace(" ", "").Replace("$", "").Trim();
+                                    table.NameHumanCase = Inflector.ToTitleCase(table.Name).Replace(" ", "").Replace("$", "");
                                     if(string.Compare(table.Schema, "dbo", StringComparison.OrdinalIgnoreCase) != 0)
                                         table.NameHumanCase = table.Schema + "_" + table.NameHumanCase;
 
@@ -1116,6 +1117,7 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                     Default = rdr["Default"].ToString().Trim(),
                     DateTimePrecision = (int)rdr["DateTimePrecision"],
                     Scale = (int)rdr["Scale"],
+                    Ordinal = (int)rdr["Ordinal"],
                     IsIdentity = rdr["IsIdentity"].ToString().Trim() == "1",
                     IsNullable = rdr["IsNullable"].ToString().Trim() == "1",
                     IsStoreGenerated = rdr["IsStoreGenerated"].ToString().Trim() == "1",

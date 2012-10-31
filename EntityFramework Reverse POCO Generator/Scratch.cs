@@ -334,6 +334,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             public string PropertyNameHumanCase;
             public string PropertyType;
             public int Scale;
+            public int Ordinal;
 
             public bool IsIdentity;
             public bool IsNullable;
@@ -1022,7 +1023,7 @@ FROM    INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS C
             ON PT.TABLE_NAME = PK.TABLE_NAME
 ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
 
-            public SqlServerSchemaReader(DbConnection connection, DbProviderFactory factory) 
+            public SqlServerSchemaReader(DbConnection connection, DbProviderFactory factory)
                 : base(connection, factory)
             {
             }
@@ -1032,7 +1033,7 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                 var result = new Tables();
                 if(Cmd == null)
                     return result;
-                
+
                 Cmd.CommandText = TableSQL;
 
                 using(Cmd)
@@ -1108,14 +1109,14 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                             string fkTable = rdr["FK_Table"].ToString();
                             string fkSchema = rdr["fkSchema"].ToString();
                             Table tbl = result.GetTable(fkTable, fkSchema);
-                            if (tbl == null)
+                            if(tbl == null)
                                 continue;
 
                             string pkTable = rdr["PK_Table"].ToString();
                             string pkSchema = rdr["pkSchema"].ToString();
                             if(result.GetTable(pkTable, pkSchema) == null)
                                 continue;
-                                
+
                             string fkColumn = rdr["FK_Column"].ToString();
                             Column col = tbl.Columns.Find(n => n.PropertyName == fkColumn);
                             if(col != null)
@@ -1161,6 +1162,7 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                     Default = rdr["Default"].ToString().Trim(),
                     DateTimePrecision = (int)rdr["DateTimePrecision"],
                     Scale = (int)rdr["Scale"],
+                    Ordinal = (int)rdr["Ordinal"],
                     IsIdentity = rdr["IsIdentity"].ToString().Trim() == "1",
                     IsNullable = rdr["IsNullable"].ToString().Trim() == "1",
                     IsStoreGenerated = rdr["IsStoreGenerated"].ToString().Trim() == "1",
@@ -1302,8 +1304,8 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
         {
             public Table GetTable(string tableName, string schema)
             {
-                return this.SingleOrDefault(x => 
-                    String.Compare(x.Name, tableName, StringComparison.OrdinalIgnoreCase) == 0 && 
+                return this.SingleOrDefault(x =>
+                    String.Compare(x.Name, tableName, StringComparison.OrdinalIgnoreCase) == 0 &&
                     String.Compare(x.Schema, schema, StringComparison.OrdinalIgnoreCase) == 0);
             }
         }
