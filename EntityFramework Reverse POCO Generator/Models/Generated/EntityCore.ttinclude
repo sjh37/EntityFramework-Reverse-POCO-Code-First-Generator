@@ -27,6 +27,8 @@
         string ConnectionStringName = "";   // Uses last connection string in config if not specified
         string Namespace = "todo";  // Namespace to place Model into
         bool IncludeViews = true;
+        string DbContextName = "MyDbContext";
+        bool MakeClassesPartial = true;
 
         // Use the following table/view name regex filters to include or exclude tables/views
         // Exclude filters are checked first and tables matching filters are removed.

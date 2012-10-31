@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <authors>Simon Hughes</authors>
+    <owners>Simon Hughes (www.hicrest.net), ByBox (www.bybox.com)</owners>
+    <projectUrl>https://efreversepoco.codeplex.com/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <language>en-GB</language>
+    <tags>entityframework reverse poco generation generator database codefirst code first</tags>
+  </metadata>
+</package>
