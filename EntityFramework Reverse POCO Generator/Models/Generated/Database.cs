@@ -98,7 +98,7 @@ namespace todo.Model
             base.OnModelCreating(modelBuilder);
 
             var typesToLoad = GetTypes();
-            LoadAllEntityConfigurationsFromAllAssemblies(modelBuilder, typesToLoad, "*.dll", new[] { "Data", "Domain", "Poco", "Model" });
+            LoadAllEntityConfigurationsFromAllAssemblies(modelBuilder, typesToLoad, "*.dll", new[] { "Data", "Domain", "Poco", "Model", "Models" });
         }
     }
 
