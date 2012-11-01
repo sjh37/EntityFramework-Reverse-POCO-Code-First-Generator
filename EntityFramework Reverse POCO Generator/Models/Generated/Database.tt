@@ -4,7 +4,7 @@
     ConnectionStringName = "";  // Uses last connection string in config if not specified
     Namespace = "todo"; // Namespace to place Model into
     DbContextName = "MyDbContext";
-    MakeClassesPartial = true;
+    MakeClassesPartial = false;
     
     // If there are multiple schema, then the table name is prefixed with the schema, except for dbo.
     // Ie. dbo.hello will be Hello.
