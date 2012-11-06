@@ -1,0 +1,10 @@
+﻿This is a derivitive work based on the PetaPoco template.
+It has been changed to generate EntityFramework code, and only supports SQL Server.
+
+Thanks to ByBox (http://www.bybox.com) for allowing me to open-source this code.
+
+Regards,
+Simon Hughes
+E: simon@hicrest.net
+W: http://www.hicrest.net
+B: http://simon-hughes.blogspot.co.uk
