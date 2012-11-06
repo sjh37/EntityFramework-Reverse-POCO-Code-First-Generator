@@ -1,4 +1,4 @@
-﻿<#@ include file="Database.ttinclude" #>
+﻿<#@ include file="EF.Reverse.POCO.Core.ttinclude" #>
 <#
 	// Settings
     ConnectionStringName = "";  // Uses last connection string in config if not specified
