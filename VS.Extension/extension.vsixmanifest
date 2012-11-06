@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Vsix xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="1.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2010">
-    <Identifier Id="04ecda2b-7b46-41e1-8f87-ba03ea87aa71">
+    <Identifier Id="EntityFrameworkReversePOCOCodeFirstGenerator..04ecda2b-7b46-41e1-8f87-ba03ea87aa71">
         <Name>EntityFramework Reverse POCO CodeFirst Generator</Name>
         <Author>Simon Hughes</Author>
         <Version>1.0.0.0</Version>
@@ -13,6 +13,11 @@
         <PreviewImage>Preview.png</PreviewImage>
         <SupportedProducts>
             <VisualStudio Version="10.0">
+                <Edition>Ultimate</Edition>
+                <Edition>Premium</Edition>
+                <Edition>Pro</Edition>
+            </VisualStudio>
+            <VisualStudio Version="11.0">
                 <Edition>Ultimate</Edition>
                 <Edition>Premium</Edition>
                 <Edition>Pro</Edition>

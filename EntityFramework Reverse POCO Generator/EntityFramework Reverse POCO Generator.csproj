@@ -69,8 +69,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Database.cs</LastGenOutput>
     </None>
-    <None Include="EF.Reverse.POCO.Core.ttinclude" />
-    <None Include="EF.Reverse.POCO.ttinclude" />
+    <None Include="Database.ttinclude" />
     <None Include="packages.config" />
     <None Include="Properties\VersionInfo.base.cs" />
     <Compile Include="Properties\VersionInfo.cs" />
