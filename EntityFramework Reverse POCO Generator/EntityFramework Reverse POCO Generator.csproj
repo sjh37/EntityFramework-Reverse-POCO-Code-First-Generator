@@ -61,13 +61,15 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Scratch.cs" />
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Models\Generated\Database.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Database.cs</LastGenOutput>
     </None>
-    <None Include="Models\Generated\EntityCore.ttinclude" />
-    <None Include="Models\Generated\EntityPOCO.ttinclude" />
+    <None Include="Models\Generated\EF.Reverse.POCO.Core.ttinclude" />
+    <None Include="Models\Generated\EF.Reverse.POCO.ttinclude" />
     <None Include="packages.config" />
     <None Include="Properties\VersionInfo.base.cs" />
     <Compile Include="Properties\VersionInfo.cs" />

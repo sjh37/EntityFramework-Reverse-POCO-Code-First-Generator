@@ -1,8 +1,8 @@
-﻿<#@ include file="EntityCore.ttinclude" #>
+﻿<#@ include file="EF.Reverse.POCO.Core.ttinclude" #>
 <#
 	// Settings
     ConnectionStringName = "";  // Uses last connection string in config if not specified
-    Namespace = "todo"; // Namespace to place Model into
+    // Namespace = ""; // Override the namespace if you want to
     DbContextName = "MyDbContext";
     MakeClassesPartial = false;
     
@@ -31,5 +31,5 @@
 	if (tables.Count>0)
 	{
 #>
-<#@ include file="EntityPOCO.ttinclude" #>
+<#@ include file="EF.Reverse.POCO.ttinclude" #>
 <# } #>

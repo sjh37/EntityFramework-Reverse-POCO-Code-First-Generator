@@ -1,10 +1,11 @@
 <#@ template debug="true" hostspecific="true" language="C#" #>
 <#@ assembly name="EnvDTE" #>
-<#@ assembly name="System.Core.dll" #>
+<#@ assembly name="System.Core" #>
 <#@ assembly name="System.Data" #>
 <#@ assembly name="System.Xml" #>
 <#@ assembly name="System.Configuration" #>
 <#@ assembly name="System.Windows.Forms" #>
+<#@ include file="EF.Utility.CS.ttinclude"#>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="System.Data" #>
 <#@ import namespace="System.Data.SqlClient" #>
@@ -17,6 +18,13 @@
 <#@ import namespace="System.Text.RegularExpressions" #>
 <#@ import namespace="System.Configuration" #>
 <#@ import namespace="System.Windows.Forms" #>
+<#@ output extension=".cs"#>
+<#
+        CodeGenerationTools code = new CodeGenerationTools(this);
+        EntityFrameworkTemplateFileManager fileManager = EntityFrameworkTemplateFileManager.Create(this);
+        string Namespace = code.VsNamespaceSuggestion();
+        fileManager.StartHeader();
+#>
 <#+
         // If there are multiple schema, then the table name is prefixed with the schema, except for dbo.
         // Ie. dbo.hello will be Hello.
@@ -25,7 +33,6 @@
 
         // Settings
         string ConnectionStringName = "";   // Uses last connection string in config if not specified
-        string Namespace = "todo";  // Namespace to place Model into
         bool IncludeViews = true;
         string DbContextName = "MyDbContext";
         bool MakeClassesPartial = true;

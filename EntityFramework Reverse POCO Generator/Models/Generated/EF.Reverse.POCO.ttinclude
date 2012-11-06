@@ -8,8 +8,10 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace <#=Namespace #>.Model
+namespace <#= Namespace #>
 {
+    // ************************************************************************
+    // Database context
     public <# if(MakeClassesPartial) { #>partial <# } #>class <#=DbContextName#> : DbContext
     {
 <#
@@ -79,6 +81,9 @@ foreach(Table tbl in from t in tables.OrderBy(x => x.NameHumanCase) select t)
         }
     }
 
+    // ************************************************************************
+    // POCO classes
+
 <#
 foreach(Table tbl in from t in tables.OrderBy(x => x.NameHumanCase) select t)
 {
@@ -104,11 +109,9 @@ foreach(Column col in from c in tbl.Columns.OrderBy(x => x.Ordinal) where c.Enti
     }
 
 <# } #>
-}
 
-namespace <#=Namespace #>.ModelConfiguration
-{
-    using Model;
+    // ************************************************************************
+    // POCO Configuration
 
 <#
 foreach(Table tbl in tables.OrderBy(x => x.NameHumanCase))

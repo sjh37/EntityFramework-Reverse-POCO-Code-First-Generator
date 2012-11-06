@@ -1,4 +1,5 @@
 ﻿
+
 // This file was automatically generated.
 // Do not make changes directly to this file - edit the template instead.
 // 
@@ -17,8 +18,11 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace todo.Model
+namespace EntityFramework_Reverse_POCO_Generator.Models.Generated
 {
+    // ************************************************************************
+    // Database context
+
     public class MyDbContext : DbContext
     {
         public IDbSet<AspnetApplications> AspnetApplications { get; set; } // aspnet_Applications
@@ -101,6 +105,9 @@ namespace todo.Model
             LoadAllEntityConfigurationsFromAllAssemblies(modelBuilder, typesToLoad, "*.dll", new[] { "Data", "Domain", "Poco", "Model", "Models" });
         }
     }
+
+    // ************************************************************************
+    // POCO classes
 
     // aspnet_Applications
     public class AspnetApplications
@@ -358,11 +365,9 @@ namespace todo.Model
         public virtual DateTime LastUpdatedDate { get; set; } // LastUpdatedDate
     }
 
-}
 
-namespace todo.ModelConfiguration
-{
-    using Model;
+    // ************************************************************************
+    // POCO Configuration
 
     // aspnet_Applications
     public class AspnetApplicationsConfiguration : EntityTypeConfiguration<AspnetApplications>
