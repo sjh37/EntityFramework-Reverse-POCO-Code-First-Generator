@@ -736,3 +736,4 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
 }
+
