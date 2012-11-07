@@ -303,6 +303,11 @@ namespace EntityFramework_Reverse_POCO_Generator
                         if(TableFilterInclude != null && !TableFilterInclude.IsMatch(result[i].Name))
                         {
                             result.RemoveAt(i);
+                            continue;
+                        }
+                        if(string.IsNullOrEmpty(result[i].PrimaryKeyNameHumanCase()))
+                        {
+                            result.RemoveAt(i);
                         }
                     }
 
@@ -1293,7 +1298,8 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                 if(n == 0)
                 {
                     // This table is not allowed in EntityFramework. Generate a composite key from all non-null fields
-                    return string.Format("x => new {{ {0} }}", string.Join(", ", Columns.Where(x => !x.IsNullable).Select(x => "x." + x.PropertyNameHumanCase).ToList()));
+                    var cols = Columns.Where(x => !x.IsNullable).Select(x => "x." + x.PropertyNameHumanCase).ToList();
+                    return (cols.Count == 0) ? string.Empty : string.Format("x => new {{ {0} }}", string.Join(", ", cols));
                 }
                 if(n == 1)
                     return "x => " + data.First();
