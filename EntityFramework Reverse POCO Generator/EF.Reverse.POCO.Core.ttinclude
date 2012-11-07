@@ -1250,7 +1250,10 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                 var data = PrimaryKeys.Select(x => "x." + x.PropertyNameHumanCase).ToList();
                 int n = data.Count();
                 if(n == 0)
-                    return string.Empty;
+                {
+                    // This table is not allowed in EntityFramework. Generate a composite key from all non-null fields
+                    return string.Format("x => new {{ {0} }}", string.Join(", ", Columns.Where(x => !x.IsNullable).Select(x => "x." + x.PropertyNameHumanCase).ToList()));
+                }
                 if(n == 1)
                     return "x => " + data.First();
                 // More than one primary key

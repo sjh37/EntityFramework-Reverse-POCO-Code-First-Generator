@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -106,9 +104,7 @@ foreach(Table tbl in tables.OrderBy(x => x.NameHumanCase))
         public <#=tbl.NameHumanCase#>Configuration()
         {
             ToTable("<#=tbl.Schema#>.<#=tbl.Name#>");
-<# if (!string.IsNullOrEmpty(tbl.PrimaryKeyNameHumanCase())) { #>
             HasKey(<#=tbl.PrimaryKeyNameHumanCase()#>);
-<# } #>
 
 <#
 foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal))
