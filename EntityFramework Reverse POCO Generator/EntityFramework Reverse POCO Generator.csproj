@@ -61,7 +61,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="EF.Reverse.POCO.Generator.pfx" />
-    <None Include="Scratch.cs" />
+    <Compile Include="Scratch.cs" />
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>

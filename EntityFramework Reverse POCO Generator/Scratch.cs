@@ -158,6 +158,7 @@ namespace EntityFramework_Reverse_POCO_Generator
                 {
                     result = "There is no connection string name called '" + connectionStringName + "'";
                 }
+                return result;
             }
 
             // No named connection string, therefore retrieve the last one from config

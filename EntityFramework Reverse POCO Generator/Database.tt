@@ -1,9 +1,9 @@
 ﻿<#@ include file="EF.Reverse.POCO.Core.ttinclude" #>
 <#
 	// Settings
-    ConnectionStringName = "";  // Uses last connection string in config if not specified
+    ConnectionStringName = "aspnetdb";  // Uses last connection string in config if not specified
     // Namespace = ""; // Override the namespace if you want to
-    DbContextName = "fred";
+    DbContextName = "MyDbContext";
     MakeClassesPartial = false;
     
     // If there are multiple schema, then the table name is prefixed with the schema, except for dbo.
