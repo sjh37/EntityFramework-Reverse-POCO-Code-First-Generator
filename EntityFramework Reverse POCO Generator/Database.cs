@@ -69,31 +69,14 @@ namespace EntityFramework_Reverse_POCO_Generator
                 .ToArray();
         }
 
-        private static void LoadAllEntityConfigurationsFromAllAssemblies(DbModelBuilder modelBuilder, IEnumerable<Type> types, string assemblyFilter, IEnumerable<string> namePartFilters)
+        private static void LoadAllEntityConfigurationsFromAllAssemblies(DbModelBuilder modelBuilder, IEnumerable<Type> types)
         {
-            var path = Path.GetDirectoryName(Path.GetFullPath(new Uri(Assembly.GetExecutingAssembly().EscapedCodeBase).LocalPath));
-            if(string.IsNullOrEmpty(path))
-                return;
-
-            new DirectoryCatalog(path, assemblyFilter)
-                .LoadedFiles
-                .Where(x =>
-                {
-                    var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(x.ToLower());
-                    if(fileNameWithoutExtension != null)
-                    {
-                        var parts = fileNameWithoutExtension.Split(".".ToCharArray());
-                        return parts.Any(part => namePartFilters.Any(namePartFilter => part == namePartFilter.ToLower()));
-                    }
-                    return false;
-                })
-                .Select(Assembly.LoadFrom)
-                .ToList()
-                .ForEach(assembly => assembly.GetTypes()
-                                         .Where(t => types.Contains(t.BaseType))
-                                         .Select(Activator.CreateInstance)
-                                         .ToList<dynamic>()
-                                         .ForEach(instance => modelBuilder.Configurations.Add(instance)));
+            Assembly.GetExecutingAssembly()
+                .GetTypes()
+                .Where(t => types.Contains(t.BaseType))
+                .Select(Activator.CreateInstance)
+                .ToList<dynamic>()
+                .ForEach(instance => modelBuilder.Configurations.Add(instance));
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -101,7 +84,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             base.OnModelCreating(modelBuilder);
 
             var typesToLoad = GetTypes();
-            LoadAllEntityConfigurationsFromAllAssemblies(modelBuilder, typesToLoad, "*.dll", new[] { "Data", "Domain", "Poco", "Model", "Models" });
+            LoadAllEntityConfigurationsFromAllAssemblies(modelBuilder, typesToLoad);
         }
     }
 
