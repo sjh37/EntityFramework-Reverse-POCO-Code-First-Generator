@@ -97,7 +97,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         {
             str = RxCleanUp.Replace(str, "_");
             if(char.IsDigit(str[0]))
-                str = "_" + str;
+                str = "C" + str;
 
             return str;
         };
