@@ -3,7 +3,7 @@
 	// Settings
     ConnectionStringName = "";  // Uses last connection string in config if not specified
     // Namespace = ""; // Override the namespace if you want to
-    DbContextName = "MyDbContext";
+    DbContextName = "fred";
     MakeClassesPartial = false;
     
     // If there are multiple schema, then the table name is prefixed with the schema, except for dbo.
@@ -20,7 +20,7 @@
     //  * If not null, only the tables matching the regex are included.
     //  Example:    TableFilterExclude = new Regex(".*auto.*");
     //              TableFilterInclude = new Regex("(.*_FR_.*)|(data_.*)");
-    //              TableFilterInclude = new Regex("table_name1|table_name2|etc");
+    //              TableFilterInclude = new Regex("^table_name1$|^table_name2$|etc");
     TableFilterExclude = null;
     TableFilterInclude = null;
 

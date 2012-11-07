@@ -44,7 +44,7 @@
         //  * If not null, only the tables matching the regex are included.
         //  Example:    TableFilterExclude = new Regex(".*auto.*");
         //              TableFilterInclude = new Regex("(.*_fr_.*)|(data_.*)");
-        //              TableFilterInclude = new Regex("table_name1|table_name2|etc");
+        //              TableFilterInclude = new Regex("^table_name1$|^table_name2$|etc");
         Regex TableFilterExclude = null;
         Regex TableFilterInclude = null;
 
@@ -210,8 +210,8 @@
             WriteLine("// ");
             WriteLine("// The following connection settings were used to generate this file");
             WriteLine("// ");
-            WriteLine("//     Connection String Name: `{0}`", ConnectionStringName);
-            WriteLine("//     Connection String:      `{0}`", ZapPassword(ConnectionString));
+            WriteLine("//     Connection String Name: \"{0}\"", ConnectionStringName);
+            WriteLine("//     Connection String:      \"{0}\"", ZapPassword(ConnectionString));
             WriteLine("");
 
             DbProviderFactory factory;
@@ -222,10 +222,10 @@
             catch(Exception x)
             {
                 string error = x.Message.Replace("\r\n", "\n").Replace("\n", " ");
-                Warning(string.Format("Failed to load provider `{0}` - {1}", ProviderName, error));
+                Warning(string.Format("Failed to load provider \"{0}\" - {1}", ProviderName, error));
                 WriteLine("");
                 WriteLine("// -----------------------------------------------------------------------------------------");
-                WriteLine("// Failed to load provider `{0}` - {1}", ProviderName, error);
+                WriteLine("// Failed to load provider \"{0}\" - {1}", ProviderName, error);
                 WriteLine("// -----------------------------------------------------------------------------------------");
                 WriteLine("");
                 return new Tables();

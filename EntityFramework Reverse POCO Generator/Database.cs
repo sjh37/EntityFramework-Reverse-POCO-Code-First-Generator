@@ -5,723 +5,651 @@
 // 
 // The following connection settings were used to generate this file
 // 
-//     Connection String Name: `MyDbContext`
-//     Connection String:      `Data Source=(local);Initial Catalog=aspnetdb;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator`
+//     Connection String Name: "postcode"
+//     Connection String:      "Data Source=localhost;Initial Catalog=Postcode;Integrated Security=True"
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration;
-using System.Linq;
-using System.Reflection;
 
 namespace EntityFramework_Reverse_POCO_Generator
 {
     // ************************************************************************
     // Database context
-    public class MyDbContext : DbContext
+    public class fred : DbContext
     {
-        public IDbSet<AspnetApplications> AspnetApplications { get; set; } // aspnet_Applications
-        public IDbSet<AspnetMembership> AspnetMembership { get; set; } // aspnet_Membership
-        public IDbSet<AspnetPaths> AspnetPaths { get; set; } // aspnet_Paths
-        public IDbSet<AspnetPersonalizationAllUsers> AspnetPersonalizationAllUsers { get; set; } // aspnet_PersonalizationAllUsers
-        public IDbSet<AspnetPersonalizationPerUser> AspnetPersonalizationPerUser { get; set; } // aspnet_PersonalizationPerUser
-        public IDbSet<AspnetProfile> AspnetProfile { get; set; } // aspnet_Profile
-        public IDbSet<AspnetRoles> AspnetRoles { get; set; } // aspnet_Roles
-        public IDbSet<AspnetSchemaVersions> AspnetSchemaVersions { get; set; } // aspnet_SchemaVersions
-        public IDbSet<AspnetUsers> AspnetUsers { get; set; } // aspnet_Users
-        public IDbSet<AspnetUsersInRoles> AspnetUsersInRoles { get; set; } // aspnet_UsersInRoles
-        public IDbSet<AspnetWebEventEvents> AspnetWebEventEvents { get; set; } // aspnet_WebEvent_Events
-        public IDbSet<VwAspnetApplications> VwAspnetApplications { get; set; } // vw_aspnet_Applications
-        public IDbSet<VwAspnetMembershipUsers> VwAspnetMembershipUsers { get; set; } // vw_aspnet_MembershipUsers
-        public IDbSet<VwAspnetProfiles> VwAspnetProfiles { get; set; } // vw_aspnet_Profiles
-        public IDbSet<VwAspnetRoles> VwAspnetRoles { get; set; } // vw_aspnet_Roles
-        public IDbSet<VwAspnetUsers> VwAspnetUsers { get; set; } // vw_aspnet_Users
-        public IDbSet<VwAspnetUsersInRoles> VwAspnetUsersInRoles { get; set; } // vw_aspnet_UsersInRoles
-        public IDbSet<VwAspnetWebPartStatePaths> VwAspnetWebPartStatePaths { get; set; } // vw_aspnet_WebPartState_Paths
-        public IDbSet<VwAspnetWebPartStateShared> VwAspnetWebPartStateShared { get; set; } // vw_aspnet_WebPartState_Shared
-        public IDbSet<VwAspnetWebPartStateUser> VwAspnetWebPartStateUser { get; set; } // vw_aspnet_WebPartState_User
+        public IDbSet<DatabasePatchHistory> DatabasePatchHistory { get; set; } // database_patch_history
+        public IDbSet<GisBaseData> GisBaseData { get; set; } // GISBaseData
+        public IDbSet<GisBaseDataMidpoints> GisBaseDataMidpoints { get; set; } // GISBaseData_Midpoints
+        public IDbSet<ImportTmpGisBaseData> ImportTmpGisBaseData { get; set; } // ImportTmp_GISBaseData
+        public IDbSet<Locality> Locality { get; set; } // Locality
+        public IDbSet<LocalityOrig> LocalityOrig { get; set; } // Locality_orig
+        public IDbSet<Master> Master { get; set; } // Master
+        public IDbSet<MasterOrig> MasterOrig { get; set; } // Master_orig
+        public IDbSet<PostcodeLocation> PostcodeLocation { get; set; } // PostcodeLocation
+        public IDbSet<PostcodeLocationImport> PostcodeLocationImport { get; set; } // PostcodeLocation_import
+        public IDbSet<Sysdiagrams> Sysdiagrams { get; set; } // sysdiagrams
+        public IDbSet<TblLocality> TblLocality { get; set; } // tblLocality
+        public IDbSet<TblMaster> TblMaster { get; set; } // tblMaster
+        public IDbSet<TblThoroughfare> TblThoroughfare { get; set; } // tblThoroughfare
+        public IDbSet<TblTown> TblTown { get; set; } // tblTown
+        public IDbSet<Thoroughfare> Thoroughfare { get; set; } // Thoroughfare
+        public IDbSet<ThoroughfareOrig> ThoroughfareOrig { get; set; } // Thoroughfare_orig
+        public IDbSet<Town> Town { get; set; } // Town
+        public IDbSet<TownOrig> TownOrig { get; set; } // Town_orig
+        public IDbSet<VwPostcode> VwPostcode { get; set; } // vw_Postcode
+        public IDbSet<Zone> Zone { get; set; } // Zone
 
-        static MyDbContext()
+        static fred()
         {
-            Database.SetInitializer<MyDbContext>(null);
+            Database.SetInitializer<fred>(null);
         }
 
-        public MyDbContext()
-        {
-        }
-
-        public MyDbContext(string connectionString) : base(connectionString)
+        public fred()
         {
         }
 
-        private IEnumerable<Type> GetTypes()
+        public fred(string connectionString) : base(connectionString)
         {
-            var type = typeof(EntityTypeConfiguration<>);
-            return GetType()
-                .GetProperties(BindingFlags.Instance | BindingFlags.Public)
-                .Where(p => p.PropertyType.IsGenericType &&
-                            p.PropertyType.GetGenericTypeDefinition() == typeof(IDbSet<>))
-                .Select(p => type.MakeGenericType(p.PropertyType.GetGenericArguments().First()))
-                .ToArray();
-        }
-
-        private static void LoadAllEntityConfigurationsFromAllAssemblies(DbModelBuilder modelBuilder, IEnumerable<Type> types)
-        {
-            Assembly.GetExecutingAssembly()
-                .GetTypes()
-                .Where(t => types.Contains(t.BaseType))
-                .Select(Activator.CreateInstance)
-                .ToList<dynamic>()
-                .ForEach(instance => modelBuilder.Configurations.Add(instance));
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            var typesToLoad = GetTypes();
-            LoadAllEntityConfigurationsFromAllAssemblies(modelBuilder, typesToLoad);
+            modelBuilder.Configurations.Add(new DatabasePatchHistoryConfiguration());
+            modelBuilder.Configurations.Add(new GisBaseDataConfiguration());
+            modelBuilder.Configurations.Add(new GisBaseDataMidpointsConfiguration());
+            modelBuilder.Configurations.Add(new ImportTmpGisBaseDataConfiguration());
+            modelBuilder.Configurations.Add(new LocalityConfiguration());
+            modelBuilder.Configurations.Add(new LocalityOrigConfiguration());
+            modelBuilder.Configurations.Add(new MasterConfiguration());
+            modelBuilder.Configurations.Add(new MasterOrigConfiguration());
+            modelBuilder.Configurations.Add(new PostcodeLocationConfiguration());
+            modelBuilder.Configurations.Add(new PostcodeLocationImportConfiguration());
+            modelBuilder.Configurations.Add(new SysdiagramsConfiguration());
+            modelBuilder.Configurations.Add(new TblLocalityConfiguration());
+            modelBuilder.Configurations.Add(new TblMasterConfiguration());
+            modelBuilder.Configurations.Add(new TblThoroughfareConfiguration());
+            modelBuilder.Configurations.Add(new TblTownConfiguration());
+            modelBuilder.Configurations.Add(new ThoroughfareConfiguration());
+            modelBuilder.Configurations.Add(new ThoroughfareOrigConfiguration());
+            modelBuilder.Configurations.Add(new TownConfiguration());
+            modelBuilder.Configurations.Add(new TownOrigConfiguration());
+            modelBuilder.Configurations.Add(new VwPostcodeConfiguration());
+            modelBuilder.Configurations.Add(new ZoneConfiguration());
         }
     }
 
     // ************************************************************************
     // POCO classes
 
-    // aspnet_Applications
-    public class AspnetApplications
+    // database_patch_history
+    public class DatabasePatchHistory
     {
-        public virtual string ApplicationName { get; set; } // ApplicationName
-        public virtual string LoweredApplicationName { get; set; } // LoweredApplicationName
-        public virtual Guid ApplicationId { get; set; } // ApplicationId
-        public virtual string Description { get; set; } // Description
+        public virtual int DatabasePatchId { get; set; } // database_patch_id
+        public virtual DateTime Applied { get; set; } // applied
+        public virtual string CreatedBy { get; set; } // created_by
+        public virtual string Description { get; set; } // description
     }
 
-    // aspnet_Membership
-    public class AspnetMembership
+    // GISBaseData
+    public class GisBaseData
     {
-        public virtual Guid ApplicationId { get; set; } // ApplicationId
-        public virtual Guid UserId { get; set; } // UserId
-        public virtual string Password { get; set; } // Password
-        public virtual int PasswordFormat { get; set; } // PasswordFormat
-        public virtual string PasswordSalt { get; set; } // PasswordSalt
-        public virtual string MobilePin { get; set; } // MobilePIN
-        public virtual string Email { get; set; } // Email
-        public virtual string LoweredEmail { get; set; } // LoweredEmail
-        public virtual string PasswordQuestion { get; set; } // PasswordQuestion
-        public virtual string PasswordAnswer { get; set; } // PasswordAnswer
-        public virtual bool IsApproved { get; set; } // IsApproved
-        public virtual bool IsLockedOut { get; set; } // IsLockedOut
-        public virtual DateTime CreateDate { get; set; } // CreateDate
-        public virtual DateTime LastLoginDate { get; set; } // LastLoginDate
-        public virtual DateTime LastPasswordChangedDate { get; set; } // LastPasswordChangedDate
-        public virtual DateTime LastLockoutDate { get; set; } // LastLockoutDate
-        public virtual int FailedPasswordAttemptCount { get; set; } // FailedPasswordAttemptCount
-        public virtual DateTime FailedPasswordAttemptWindowStart { get; set; } // FailedPasswordAttemptWindowStart
-        public virtual int FailedPasswordAnswerAttemptCount { get; set; } // FailedPasswordAnswerAttemptCount
-        public virtual DateTime FailedPasswordAnswerAttemptWindowStart { get; set; } // FailedPasswordAnswerAttemptWindowStart
-        public virtual string Comment { get; set; } // Comment
+        public virtual string Postcode { get; set; } // Postcode
+        public virtual int RecordNumber { get; set; } // RecordNumber
+        public virtual string Outcode { get; set; } // Outcode
+        public virtual string Incode { get; set; } // Incode
+        public virtual string Type { get; set; } // Type
+        public virtual int? Easting { get; set; } // Easting
+        public virtual int? Northing { get; set; } // Northing
+        public virtual double? Latitude { get; set; } // Latitude
+        public virtual double? Longitude { get; set; } // Longitude
+        public virtual short? DeliveryPointCount { get; set; } // DeliveryPointCount
+    }
+
+    // GISBaseData_Midpoints
+    public class GisBaseDataMidpoints
+    {
+        public virtual string Outcode { get; set; } // Outcode
+        public virtual int? Easting { get; set; } // Easting
+        public virtual int? Northing { get; set; } // Northing
+    }
+
+    // ImportTmp_GISBaseData
+    public class ImportTmpGisBaseData
+    {
+        public virtual string Outcode { get; set; } // Outcode
+        public virtual string Incode { get; set; } // Incode
+        public virtual string Type { get; set; } // Type
+        public virtual int? Easting { get; set; } // Easting
+        public virtual int? Northing { get; set; } // Northing
+        public virtual double? Latitude { get; set; } // Latitude
+        public virtual double? Longitude { get; set; } // Longitude
+        public virtual short? DeliveryPointCount { get; set; } // DeliveryPointCount
+    }
+
+    // Locality
+    public class Locality
+    {
+        public virtual int LocalityId { get; set; } // LocalityID
+        public virtual string Locality_ { get; set; } // Locality
+    }
+
+    // Locality_orig
+    public class LocalityOrig
+    {
+        public virtual int LocalityId { get; set; } // LocalityID
+        public virtual string Locality { get; set; } // Locality
+    }
+
+    // Master
+    public class Master
+    {
+        public virtual string Outcode { get; set; } // Outcode
+        public virtual string Incode { get; set; } // Incode
+        public virtual int RecordId { get; set; } // RecordID
+        public virtual string Type { get; set; } // Type
+        public virtual int? TownId { get; set; } // TownID
+        public virtual int? LocalityId { get; set; } // LocalityID
+        public virtual int? ThoroughfareId { get; set; } // ThoroughfareID
+        public virtual int? DependantThoroughfareId { get; set; } // DependantThoroughfareID
+        public virtual int? DeliveryPointCount { get; set; } // DeliveryPointCount
 
         // Foreign keys
-        public virtual AspnetApplications ApplicationFk { get; set; } //  ApplicationId - FkAspnetMeAppli21B6055D
-        public virtual AspnetUsers UserFk { get; set; } //  UserId - FkAspnetMeUserI22Aa2996
+        public virtual Town TownFk { get; set; } //  TownId - FkMasterTown
     }
 
-    // aspnet_Paths
-    public class AspnetPaths
+    // Master_orig
+    public class MasterOrig
     {
-        public virtual Guid ApplicationId { get; set; } // ApplicationId
-        public virtual Guid PathId { get; set; } // PathId
-        public virtual string Path { get; set; } // Path
-        public virtual string LoweredPath { get; set; } // LoweredPath
-
-        // Foreign keys
-        public virtual AspnetApplications ApplicationFk { get; set; } //  ApplicationId - FkAspnetPaAppli5Aee82B9
+        public virtual string Outcode { get; set; } // Outcode
+        public virtual string Incode { get; set; } // Incode
+        public virtual int RecordId { get; set; } // RecordID
+        public virtual string Type { get; set; } // Type
+        public virtual int? TownId { get; set; } // TownID
+        public virtual int? LocalityId { get; set; } // LocalityID
+        public virtual int? ThoroughfareId { get; set; } // ThoroughfareID
+        public virtual int? DependantThoroughfareId { get; set; } // DependantThoroughfareID
+        public virtual int? DeliveryPointCount { get; set; } // DeliveryPointCount
     }
 
-    // aspnet_PersonalizationAllUsers
-    public class AspnetPersonalizationAllUsers
+    // PostcodeLocation
+    public class PostcodeLocation
     {
-        public virtual Guid PathId { get; set; } // PathId
-        public virtual byte[] PageSettings { get; set; } // PageSettings
-        public virtual DateTime LastUpdatedDate { get; set; } // LastUpdatedDate
-
-        // Foreign keys
-        public virtual AspnetPaths PathFk { get; set; } //  PathId - FkAspnetPePathI628Fa481
+        public virtual string Postcode { get; set; } // Postcode
+        public virtual int CountryId { get; set; } // CountryID
+        public virtual double Latitude { get; set; } // Latitude
+        public virtual double Longitude { get; set; } // Longitude
+        public virtual double? Area { get; set; } // Area
+        public virtual double? Radius { get; set; } // Radius
     }
 
-    // aspnet_PersonalizationPerUser
-    public class AspnetPersonalizationPerUser
+    // PostcodeLocation_import
+    public class PostcodeLocationImport
     {
-        public virtual Guid Id { get; set; } // Id
-        public virtual Guid? PathId { get; set; } // PathId
-        public virtual Guid? UserId { get; set; } // UserId
-        public virtual byte[] PageSettings { get; set; } // PageSettings
-        public virtual DateTime LastUpdatedDate { get; set; } // LastUpdatedDate
-
-        // Foreign keys
-        public virtual AspnetPaths PathFk { get; set; } //  PathId - FkAspnetPePathI68487Dd7
-        public virtual AspnetUsers UserFk { get; set; } //  UserId - FkAspnetPeUserI693Ca210
+        public virtual string Postcode { get; set; } // Postcode
+        public virtual int CountryId { get; set; } // CountryID
+        public virtual double Latitude { get; set; } // Latitude
+        public virtual double Longitude { get; set; } // Longitude
+        public virtual double? Area { get; set; } // Area
+        public virtual double? Radius { get; set; } // Radius
     }
 
-    // aspnet_Profile
-    public class AspnetProfile
+    // sysdiagrams
+    public class Sysdiagrams
     {
-        public virtual Guid UserId { get; set; } // UserId
-        public virtual string PropertyNames { get; set; } // PropertyNames
-        public virtual string PropertyValuesString { get; set; } // PropertyValuesString
-        public virtual byte[] PropertyValuesBinary { get; set; } // PropertyValuesBinary
-        public virtual DateTime LastUpdatedDate { get; set; } // LastUpdatedDate
-
-        // Foreign keys
-        public virtual AspnetUsers UserFk { get; set; } //  UserId - FkAspnetPrUserI38996Ab5
+        public virtual string Name { get; set; } // name
+        public virtual int PrincipalId { get; set; } // principal_id
+        public virtual int DiagramId { get; set; } // diagram_id
+        public virtual int? Version { get; set; } // version
+        public virtual string Definition { get; set; } // definition
     }
 
-    // aspnet_Roles
-    public class AspnetRoles
+    // tblLocality
+    public class TblLocality
     {
-        public virtual Guid ApplicationId { get; set; } // ApplicationId
-        public virtual Guid RoleId { get; set; } // RoleId
-        public virtual string RoleName { get; set; } // RoleName
-        public virtual string LoweredRoleName { get; set; } // LoweredRoleName
-        public virtual string Description { get; set; } // Description
-
-        // Foreign keys
-        public virtual AspnetApplications ApplicationFk { get; set; } //  ApplicationId - FkAspnetRoAppli440B1D61
+        public virtual int NbrLocality { get; set; } // nbrLocality
+        public virtual string TxtLocality { get; set; } // txtLocality
     }
 
-    // aspnet_SchemaVersions
-    public class AspnetSchemaVersions
+    // tblMaster
+    public class TblMaster
     {
-        public virtual string Feature { get; set; } // Feature
-        public virtual string CompatibleSchemaVersion { get; set; } // CompatibleSchemaVersion
-        public virtual bool IsCurrentVersion { get; set; } // IsCurrentVersion
+        public virtual string TxtOutcode { get; set; } // txtOutcode
+        public virtual string TxtIncode { get; set; } // txtIncode
+        public virtual int NbrRecord { get; set; } // nbrRecord
+        public virtual string TxtType { get; set; } // txtType
+        public virtual int? NbrTown { get; set; } // nbrTown
+        public virtual int? NbrLocality { get; set; } // nbrLocality
+        public virtual int? NbrThoroughfare { get; set; } // nbrThoroughfare
+        public virtual int? NbrDependantThoroughfare { get; set; } // nbrDependantThoroughfare
+        public virtual int? NbrDeliveryPointCount { get; set; } // nbrDeliveryPointCount
     }
 
-    // aspnet_Users
-    public class AspnetUsers
+    // tblThoroughfare
+    public class TblThoroughfare
     {
-        public virtual Guid ApplicationId { get; set; } // ApplicationId
-        public virtual Guid UserId { get; set; } // UserId
-        public virtual string UserName { get; set; } // UserName
-        public virtual string LoweredUserName { get; set; } // LoweredUserName
-        public virtual string MobileAlias { get; set; } // MobileAlias
-        public virtual bool IsAnonymous { get; set; } // IsAnonymous
-        public virtual DateTime LastActivityDate { get; set; } // LastActivityDate
-
-        // Foreign keys
-        public virtual AspnetApplications ApplicationFk { get; set; } //  ApplicationId - FkAspnetUsAppli0Daf0Cb0
+        public virtual int NbrThoroughfare { get; set; } // nbrThoroughfare
+        public virtual string TxtThoroughfare { get; set; } // txtThoroughfare
     }
 
-    // aspnet_UsersInRoles
-    public class AspnetUsersInRoles
+    // tblTown
+    public class TblTown
     {
-        public virtual Guid UserId { get; set; } // UserId
-        public virtual Guid RoleId { get; set; } // RoleId
-
-        // Foreign keys
-        public virtual AspnetUsers UserFk { get; set; } //  UserId - FkAspnetUsUserI49C3F6B7
-        public virtual AspnetRoles RoleFk { get; set; } //  RoleId - FkAspnetUsRoleI4Ab81Af0
+        public virtual int NbrTown { get; set; } // nbrTown
+        public virtual string TxtArea { get; set; } // txtArea
+        public virtual string TxtTown { get; set; } // txtTown
+        public virtual string TxtCounty { get; set; } // txtCounty
+        public virtual string TxtCountyFlag { get; set; } // txtCountyFlag
+        public virtual string TxtCountryCode { get; set; } // txtCountryCode
     }
 
-    // aspnet_WebEvent_Events
-    public class AspnetWebEventEvents
+    // Thoroughfare
+    public class Thoroughfare
     {
-        public virtual string EventId { get; set; } // EventId
-        public virtual DateTime EventTimeUtc { get; set; } // EventTimeUtc
-        public virtual DateTime EventTime { get; set; } // EventTime
-        public virtual string EventType { get; set; } // EventType
-        public virtual decimal EventSequence { get; set; } // EventSequence
-        public virtual decimal EventOccurrence { get; set; } // EventOccurrence
-        public virtual int EventCode { get; set; } // EventCode
-        public virtual int EventDetailCode { get; set; } // EventDetailCode
-        public virtual string Message { get; set; } // Message
-        public virtual string ApplicationPath { get; set; } // ApplicationPath
-        public virtual string ApplicationVirtualPath { get; set; } // ApplicationVirtualPath
-        public virtual string MachineName { get; set; } // MachineName
-        public virtual string RequestUrl { get; set; } // RequestUrl
-        public virtual string ExceptionType { get; set; } // ExceptionType
-        public virtual string Details { get; set; } // Details
+        public virtual int ThoroughfareId { get; set; } // ThoroughfareID
+        public virtual string Thoroughfare_ { get; set; } // Thoroughfare
     }
 
-    // vw_aspnet_Applications
-    public class VwAspnetApplications
+    // Thoroughfare_orig
+    public class ThoroughfareOrig
     {
-        public virtual string ApplicationName { get; set; } // ApplicationName
-        public virtual string LoweredApplicationName { get; set; } // LoweredApplicationName
-        public virtual Guid ApplicationId { get; set; } // ApplicationId
-        public virtual string Description { get; set; } // Description
+        public virtual int ThoroughfareId { get; set; } // ThoroughfareID
+        public virtual string Thoroughfare { get; set; } // Thoroughfare
     }
 
-    // vw_aspnet_MembershipUsers
-    public class VwAspnetMembershipUsers
+    // Town
+    public class Town
     {
-        public virtual Guid UserId { get; set; } // UserId
-        public virtual int PasswordFormat { get; set; } // PasswordFormat
-        public virtual string MobilePin { get; set; } // MobilePIN
-        public virtual string Email { get; set; } // Email
-        public virtual string LoweredEmail { get; set; } // LoweredEmail
-        public virtual string PasswordQuestion { get; set; } // PasswordQuestion
-        public virtual string PasswordAnswer { get; set; } // PasswordAnswer
-        public virtual bool IsApproved { get; set; } // IsApproved
-        public virtual bool IsLockedOut { get; set; } // IsLockedOut
-        public virtual DateTime CreateDate { get; set; } // CreateDate
-        public virtual DateTime LastLoginDate { get; set; } // LastLoginDate
-        public virtual DateTime LastPasswordChangedDate { get; set; } // LastPasswordChangedDate
-        public virtual DateTime LastLockoutDate { get; set; } // LastLockoutDate
-        public virtual int FailedPasswordAttemptCount { get; set; } // FailedPasswordAttemptCount
-        public virtual DateTime FailedPasswordAttemptWindowStart { get; set; } // FailedPasswordAttemptWindowStart
-        public virtual int FailedPasswordAnswerAttemptCount { get; set; } // FailedPasswordAnswerAttemptCount
-        public virtual DateTime FailedPasswordAnswerAttemptWindowStart { get; set; } // FailedPasswordAnswerAttemptWindowStart
-        public virtual string Comment { get; set; } // Comment
-        public virtual Guid ApplicationId { get; set; } // ApplicationId
-        public virtual string UserName { get; set; } // UserName
-        public virtual string MobileAlias { get; set; } // MobileAlias
-        public virtual bool IsAnonymous { get; set; } // IsAnonymous
-        public virtual DateTime LastActivityDate { get; set; } // LastActivityDate
+        public virtual int TownId { get; set; } // TownID
+        public virtual string Area { get; set; } // Area
+        public virtual string Town_ { get; set; } // Town
+        public virtual string County { get; set; } // County
+        public virtual string CountyFlag { get; set; } // CountyFlag
+        public virtual string CountryCode { get; set; } // CountryCode
     }
 
-    // vw_aspnet_Profiles
-    public class VwAspnetProfiles
+    // Town_orig
+    public class TownOrig
     {
-        public virtual Guid UserId { get; set; } // UserId
-        public virtual DateTime LastUpdatedDate { get; set; } // LastUpdatedDate
-        public virtual int? DataSize { get; set; } // DataSize
+        public virtual int TownId { get; set; } // TownID
+        public virtual string Area { get; set; } // Area
+        public virtual string Town { get; set; } // Town
+        public virtual string County { get; set; } // County
+        public virtual string CountyFlag { get; set; } // CountyFlag
+        public virtual string CountryCode { get; set; } // CountryCode
     }
 
-    // vw_aspnet_Roles
-    public class VwAspnetRoles
+    // vw_Postcode
+    public class VwPostcode
     {
-        public virtual Guid ApplicationId { get; set; } // ApplicationId
-        public virtual Guid RoleId { get; set; } // RoleId
-        public virtual string RoleName { get; set; } // RoleName
-        public virtual string LoweredRoleName { get; set; } // LoweredRoleName
-        public virtual string Description { get; set; } // Description
+        public virtual string Postcode { get; set; } // Postcode
+        public virtual string Locality { get; set; } // Locality
+        public virtual string Thoroughfare { get; set; } // Thoroughfare
+        public virtual string Area { get; set; } // Area
+        public virtual string Town { get; set; } // Town
+        public virtual string County { get; set; } // County
+        public virtual string CountryCode { get; set; } // CountryCode
+        public virtual string CountyFlag { get; set; } // CountyFlag
     }
 
-    // vw_aspnet_Users
-    public class VwAspnetUsers
+    // Zone
+    public class Zone
     {
-        public virtual Guid ApplicationId { get; set; } // ApplicationId
-        public virtual Guid UserId { get; set; } // UserId
-        public virtual string UserName { get; set; } // UserName
-        public virtual string LoweredUserName { get; set; } // LoweredUserName
-        public virtual string MobileAlias { get; set; } // MobileAlias
-        public virtual bool IsAnonymous { get; set; } // IsAnonymous
-        public virtual DateTime LastActivityDate { get; set; } // LastActivityDate
-    }
-
-    // vw_aspnet_UsersInRoles
-    public class VwAspnetUsersInRoles
-    {
-        public virtual Guid UserId { get; set; } // UserId
-        public virtual Guid RoleId { get; set; } // RoleId
-    }
-
-    // vw_aspnet_WebPartState_Paths
-    public class VwAspnetWebPartStatePaths
-    {
-        public virtual Guid ApplicationId { get; set; } // ApplicationId
-        public virtual Guid PathId { get; set; } // PathId
-        public virtual string Path { get; set; } // Path
-        public virtual string LoweredPath { get; set; } // LoweredPath
-    }
-
-    // vw_aspnet_WebPartState_Shared
-    public class VwAspnetWebPartStateShared
-    {
-        public virtual Guid PathId { get; set; } // PathId
-        public virtual int? DataSize { get; set; } // DataSize
-        public virtual DateTime LastUpdatedDate { get; set; } // LastUpdatedDate
-    }
-
-    // vw_aspnet_WebPartState_User
-    public class VwAspnetWebPartStateUser
-    {
-        public virtual Guid? PathId { get; set; } // PathId
-        public virtual Guid? UserId { get; set; } // UserId
-        public virtual int? DataSize { get; set; } // DataSize
-        public virtual DateTime LastUpdatedDate { get; set; } // LastUpdatedDate
+        public virtual string ZoneReference { get; set; } // ZoneReference
+        public virtual int CountryId { get; set; } // CountryID
+        public virtual double Latitude { get; set; } // Latitude
+        public virtual double Longitude { get; set; } // Longitude
     }
 
 
     // ************************************************************************
     // POCO Configuration
 
-    // aspnet_Applications
-    public class AspnetApplicationsConfiguration : EntityTypeConfiguration<AspnetApplications>
+    // database_patch_history
+    public class DatabasePatchHistoryConfiguration : EntityTypeConfiguration<DatabasePatchHistory>
     {
-        public AspnetApplicationsConfiguration()
+        public DatabasePatchHistoryConfiguration()
         {
-            ToTable("dbo.aspnet_Applications");
-            HasKey(x => x.ApplicationId);
+            ToTable("dbo.database_patch_history");
+            HasKey(x => x.DatabasePatchId);
 
-            Property(x => x.ApplicationName).HasColumnName("ApplicationName").IsRequired().HasMaxLength(256);
-            Property(x => x.LoweredApplicationName).HasColumnName("LoweredApplicationName").IsRequired().HasMaxLength(256);
-            Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
-            Property(x => x.Description).HasColumnName("Description").IsOptional().HasMaxLength(256);
+            Property(x => x.DatabasePatchId).HasColumnName("database_patch_id").IsRequired();
+            Property(x => x.Applied).HasColumnName("applied").IsRequired();
+            Property(x => x.CreatedBy).HasColumnName("created_by").IsRequired().HasMaxLength(50);
+            Property(x => x.Description).HasColumnName("description").IsRequired().HasMaxLength(1000);
         }
     }
 
-    // aspnet_Membership
-    public class AspnetMembershipConfiguration : EntityTypeConfiguration<AspnetMembership>
+    // GISBaseData
+    public class GisBaseDataConfiguration : EntityTypeConfiguration<GisBaseData>
     {
-        public AspnetMembershipConfiguration()
+        public GisBaseDataConfiguration()
         {
-            ToTable("dbo.aspnet_Membership");
-            HasKey(x => x.UserId);
+            ToTable("dbo.GISBaseData");
+            HasKey(x => x.Postcode);
 
-            Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
-            Property(x => x.UserId).HasColumnName("UserId").IsRequired();
-            Property(x => x.Password).HasColumnName("Password").IsRequired().HasMaxLength(128);
-            Property(x => x.PasswordFormat).HasColumnName("PasswordFormat").IsRequired();
-            Property(x => x.PasswordSalt).HasColumnName("PasswordSalt").IsRequired().HasMaxLength(128);
-            Property(x => x.MobilePin).HasColumnName("MobilePIN").IsOptional().HasMaxLength(16);
-            Property(x => x.Email).HasColumnName("Email").IsOptional().HasMaxLength(256);
-            Property(x => x.LoweredEmail).HasColumnName("LoweredEmail").IsOptional().HasMaxLength(256);
-            Property(x => x.PasswordQuestion).HasColumnName("PasswordQuestion").IsOptional().HasMaxLength(256);
-            Property(x => x.PasswordAnswer).HasColumnName("PasswordAnswer").IsOptional().HasMaxLength(128);
-            Property(x => x.IsApproved).HasColumnName("IsApproved").IsRequired();
-            Property(x => x.IsLockedOut).HasColumnName("IsLockedOut").IsRequired();
-            Property(x => x.CreateDate).HasColumnName("CreateDate").IsRequired();
-            Property(x => x.LastLoginDate).HasColumnName("LastLoginDate").IsRequired();
-            Property(x => x.LastPasswordChangedDate).HasColumnName("LastPasswordChangedDate").IsRequired();
-            Property(x => x.LastLockoutDate).HasColumnName("LastLockoutDate").IsRequired();
-            Property(x => x.FailedPasswordAttemptCount).HasColumnName("FailedPasswordAttemptCount").IsRequired();
-            Property(x => x.FailedPasswordAttemptWindowStart).HasColumnName("FailedPasswordAttemptWindowStart").IsRequired();
-            Property(x => x.FailedPasswordAnswerAttemptCount).HasColumnName("FailedPasswordAnswerAttemptCount").IsRequired();
-            Property(x => x.FailedPasswordAnswerAttemptWindowStart).HasColumnName("FailedPasswordAnswerAttemptWindowStart").IsRequired();
-            Property(x => x.Comment).HasColumnName("Comment").IsOptional().HasMaxLength(1073741823);
+            Property(x => x.Postcode).HasColumnName("Postcode").IsRequired().HasMaxLength(7);
+            Property(x => x.RecordNumber).HasColumnName("RecordNumber").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.Outcode).HasColumnName("Outcode").IsOptional().HasMaxLength(4);
+            Property(x => x.Incode).HasColumnName("Incode").IsOptional().HasMaxLength(3);
+            Property(x => x.Type).HasColumnName("Type").IsOptional().HasMaxLength(1);
+            Property(x => x.Easting).HasColumnName("Easting").IsOptional();
+            Property(x => x.Northing).HasColumnName("Northing").IsOptional();
+            Property(x => x.Latitude).HasColumnName("Latitude").IsOptional();
+            Property(x => x.Longitude).HasColumnName("Longitude").IsOptional();
+            Property(x => x.DeliveryPointCount).HasColumnName("DeliveryPointCount").IsOptional();
+        }
+    }
+
+    // GISBaseData_Midpoints
+    public class GisBaseDataMidpointsConfiguration : EntityTypeConfiguration<GisBaseDataMidpoints>
+    {
+        public GisBaseDataMidpointsConfiguration()
+        {
+            ToTable("dbo.GISBaseData_Midpoints");
+            HasKey(x => x.Outcode);
+
+            Property(x => x.Outcode).HasColumnName("Outcode").IsRequired().HasMaxLength(4);
+            Property(x => x.Easting).HasColumnName("Easting").IsOptional();
+            Property(x => x.Northing).HasColumnName("Northing").IsOptional();
+        }
+    }
+
+    // ImportTmp_GISBaseData
+    public class ImportTmpGisBaseDataConfiguration : EntityTypeConfiguration<ImportTmpGisBaseData>
+    {
+        public ImportTmpGisBaseDataConfiguration()
+        {
+            ToTable("dbo.ImportTmp_GISBaseData");
+            HasKey(x => new {  });
+
+            Property(x => x.Outcode).HasColumnName("Outcode").IsOptional().HasMaxLength(40);
+            Property(x => x.Incode).HasColumnName("Incode").IsOptional().HasMaxLength(30);
+            Property(x => x.Type).HasColumnName("Type").IsOptional().HasMaxLength(1);
+            Property(x => x.Easting).HasColumnName("Easting").IsOptional();
+            Property(x => x.Northing).HasColumnName("Northing").IsOptional();
+            Property(x => x.Latitude).HasColumnName("Latitude").IsOptional();
+            Property(x => x.Longitude).HasColumnName("Longitude").IsOptional();
+            Property(x => x.DeliveryPointCount).HasColumnName("DeliveryPointCount").IsOptional();
+        }
+    }
+
+    // Locality
+    public class LocalityConfiguration : EntityTypeConfiguration<Locality>
+    {
+        public LocalityConfiguration()
+        {
+            ToTable("dbo.Locality");
+            HasKey(x => x.LocalityId);
+
+            Property(x => x.LocalityId).HasColumnName("LocalityID").IsRequired();
+            Property(x => x.Locality_).HasColumnName("_Locality").IsOptional().HasMaxLength(50);
+        }
+    }
+
+    // Locality_orig
+    public class LocalityOrigConfiguration : EntityTypeConfiguration<LocalityOrig>
+    {
+        public LocalityOrigConfiguration()
+        {
+            ToTable("dbo.Locality_orig");
+            HasKey(x => x.LocalityId);
+
+            Property(x => x.LocalityId).HasColumnName("LocalityID").IsRequired();
+            Property(x => x.Locality).HasColumnName("Locality").IsOptional().HasMaxLength(50);
+        }
+    }
+
+    // Master
+    public class MasterConfiguration : EntityTypeConfiguration<Master>
+    {
+        public MasterConfiguration()
+        {
+            ToTable("dbo.Master");
+            HasKey(x => new { x.Outcode, x.Incode, x.RecordId });
+
+            Property(x => x.Outcode).HasColumnName("Outcode").IsRequired().HasMaxLength(4);
+            Property(x => x.Incode).HasColumnName("Incode").IsRequired().HasMaxLength(3);
+            Property(x => x.RecordId).HasColumnName("RecordID").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.Type).HasColumnName("Type").IsOptional().HasMaxLength(1);
+            Property(x => x.TownId).HasColumnName("TownID").IsOptional();
+            Property(x => x.LocalityId).HasColumnName("LocalityID").IsOptional();
+            Property(x => x.ThoroughfareId).HasColumnName("ThoroughfareID").IsOptional();
+            Property(x => x.DependantThoroughfareId).HasColumnName("DependantThoroughfareID").IsOptional();
+            Property(x => x.DeliveryPointCount).HasColumnName("DeliveryPointCount").IsOptional();
 
             // Foreign keys
-            HasRequired(a => a.ApplicationFk).WithMany().HasForeignKey(b => b.ApplicationId); // FkAspnetMeAppli21B6055D
-            HasRequired(a => a.UserFk).WithMany().HasForeignKey(b => b.UserId); // FkAspnetMeUserI22Aa2996
+            HasOptional(a => a.TownFk).WithMany().HasForeignKey(b => b.TownId); // FkMasterTown
         }
     }
 
-    // aspnet_Paths
-    public class AspnetPathsConfiguration : EntityTypeConfiguration<AspnetPaths>
+    // Master_orig
+    public class MasterOrigConfiguration : EntityTypeConfiguration<MasterOrig>
     {
-        public AspnetPathsConfiguration()
+        public MasterOrigConfiguration()
         {
-            ToTable("dbo.aspnet_Paths");
-            HasKey(x => x.PathId);
+            ToTable("dbo.Master_orig");
+            HasKey(x => new { x.Outcode, x.Incode, x.RecordId });
 
-            Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
-            Property(x => x.PathId).HasColumnName("PathId").IsRequired();
-            Property(x => x.Path).HasColumnName("Path").IsRequired().HasMaxLength(256);
-            Property(x => x.LoweredPath).HasColumnName("LoweredPath").IsRequired().HasMaxLength(256);
-
-            // Foreign keys
-            HasRequired(a => a.ApplicationFk).WithMany().HasForeignKey(b => b.ApplicationId); // FkAspnetPaAppli5Aee82B9
+            Property(x => x.Outcode).HasColumnName("Outcode").IsRequired().HasMaxLength(4);
+            Property(x => x.Incode).HasColumnName("Incode").IsRequired().HasMaxLength(3);
+            Property(x => x.RecordId).HasColumnName("RecordID").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.Type).HasColumnName("Type").IsOptional().HasMaxLength(1);
+            Property(x => x.TownId).HasColumnName("TownID").IsOptional();
+            Property(x => x.LocalityId).HasColumnName("LocalityID").IsOptional();
+            Property(x => x.ThoroughfareId).HasColumnName("ThoroughfareID").IsOptional();
+            Property(x => x.DependantThoroughfareId).HasColumnName("DependantThoroughfareID").IsOptional();
+            Property(x => x.DeliveryPointCount).HasColumnName("DeliveryPointCount").IsOptional();
         }
     }
 
-    // aspnet_PersonalizationAllUsers
-    public class AspnetPersonalizationAllUsersConfiguration : EntityTypeConfiguration<AspnetPersonalizationAllUsers>
+    // PostcodeLocation
+    public class PostcodeLocationConfiguration : EntityTypeConfiguration<PostcodeLocation>
     {
-        public AspnetPersonalizationAllUsersConfiguration()
+        public PostcodeLocationConfiguration()
         {
-            ToTable("dbo.aspnet_PersonalizationAllUsers");
-            HasKey(x => x.PathId);
+            ToTable("dbo.PostcodeLocation");
+            HasKey(x => x.Postcode);
 
-            Property(x => x.PathId).HasColumnName("PathId").IsRequired();
-            Property(x => x.PageSettings).HasColumnName("PageSettings").IsRequired().HasMaxLength(2147483647);
-            Property(x => x.LastUpdatedDate).HasColumnName("LastUpdatedDate").IsRequired();
-
-            // Foreign keys
-            HasRequired(a => a.PathFk).WithMany().HasForeignKey(b => b.PathId); // FkAspnetPePathI628Fa481
+            Property(x => x.Postcode).HasColumnName("Postcode").IsRequired().HasMaxLength(20);
+            Property(x => x.CountryId).HasColumnName("CountryID").IsRequired();
+            Property(x => x.Latitude).HasColumnName("Latitude").IsRequired();
+            Property(x => x.Longitude).HasColumnName("Longitude").IsRequired();
+            Property(x => x.Area).HasColumnName("Area").IsOptional();
+            Property(x => x.Radius).HasColumnName("Radius").IsOptional();
         }
     }
 
-    // aspnet_PersonalizationPerUser
-    public class AspnetPersonalizationPerUserConfiguration : EntityTypeConfiguration<AspnetPersonalizationPerUser>
+    // PostcodeLocation_import
+    public class PostcodeLocationImportConfiguration : EntityTypeConfiguration<PostcodeLocationImport>
     {
-        public AspnetPersonalizationPerUserConfiguration()
+        public PostcodeLocationImportConfiguration()
         {
-            ToTable("dbo.aspnet_PersonalizationPerUser");
-            HasKey(x => x.Id);
+            ToTable("dbo.PostcodeLocation_import");
+            HasKey(x => new { x.Postcode, x.CountryId, x.Latitude, x.Longitude });
 
-            Property(x => x.Id).HasColumnName("Id").IsRequired();
-            Property(x => x.PathId).HasColumnName("PathId").IsOptional();
-            Property(x => x.UserId).HasColumnName("UserId").IsOptional();
-            Property(x => x.PageSettings).HasColumnName("PageSettings").IsRequired().HasMaxLength(2147483647);
-            Property(x => x.LastUpdatedDate).HasColumnName("LastUpdatedDate").IsRequired();
-
-            // Foreign keys
-            HasOptional(a => a.PathFk).WithMany().HasForeignKey(b => b.PathId); // FkAspnetPePathI68487Dd7
-            HasOptional(a => a.UserFk).WithMany().HasForeignKey(b => b.UserId); // FkAspnetPeUserI693Ca210
+            Property(x => x.Postcode).HasColumnName("Postcode").IsRequired().HasMaxLength(20);
+            Property(x => x.CountryId).HasColumnName("CountryID").IsRequired();
+            Property(x => x.Latitude).HasColumnName("Latitude").IsRequired();
+            Property(x => x.Longitude).HasColumnName("Longitude").IsRequired();
+            Property(x => x.Area).HasColumnName("Area").IsOptional();
+            Property(x => x.Radius).HasColumnName("Radius").IsOptional();
         }
     }
 
-    // aspnet_Profile
-    public class AspnetProfileConfiguration : EntityTypeConfiguration<AspnetProfile>
+    // sysdiagrams
+    public class SysdiagramsConfiguration : EntityTypeConfiguration<Sysdiagrams>
     {
-        public AspnetProfileConfiguration()
+        public SysdiagramsConfiguration()
         {
-            ToTable("dbo.aspnet_Profile");
-            HasKey(x => x.UserId);
+            ToTable("dbo.sysdiagrams");
+            HasKey(x => x.DiagramId);
 
-            Property(x => x.UserId).HasColumnName("UserId").IsRequired();
-            Property(x => x.PropertyNames).HasColumnName("PropertyNames").IsRequired().HasMaxLength(1073741823);
-            Property(x => x.PropertyValuesString).HasColumnName("PropertyValuesString").IsRequired().HasMaxLength(1073741823);
-            Property(x => x.PropertyValuesBinary).HasColumnName("PropertyValuesBinary").IsRequired().HasMaxLength(2147483647);
-            Property(x => x.LastUpdatedDate).HasColumnName("LastUpdatedDate").IsRequired();
-
-            // Foreign keys
-            HasRequired(a => a.UserFk).WithMany().HasForeignKey(b => b.UserId); // FkAspnetPrUserI38996Ab5
+            Property(x => x.Name).HasColumnName("name").IsRequired().HasMaxLength(128);
+            Property(x => x.PrincipalId).HasColumnName("principal_id").IsRequired();
+            Property(x => x.DiagramId).HasColumnName("diagram_id").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.Version).HasColumnName("version").IsOptional();
+            Property(x => x.Definition).HasColumnName("definition").IsOptional();
         }
     }
 
-    // aspnet_Roles
-    public class AspnetRolesConfiguration : EntityTypeConfiguration<AspnetRoles>
+    // tblLocality
+    public class TblLocalityConfiguration : EntityTypeConfiguration<TblLocality>
     {
-        public AspnetRolesConfiguration()
+        public TblLocalityConfiguration()
         {
-            ToTable("dbo.aspnet_Roles");
-            HasKey(x => x.RoleId);
+            ToTable("dbo.tblLocality");
+            HasKey(x => new { x.NbrLocality });
 
-            Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
-            Property(x => x.RoleId).HasColumnName("RoleId").IsRequired();
-            Property(x => x.RoleName).HasColumnName("RoleName").IsRequired().HasMaxLength(256);
-            Property(x => x.LoweredRoleName).HasColumnName("LoweredRoleName").IsRequired().HasMaxLength(256);
-            Property(x => x.Description).HasColumnName("Description").IsOptional().HasMaxLength(256);
-
-            // Foreign keys
-            HasRequired(a => a.ApplicationFk).WithMany().HasForeignKey(b => b.ApplicationId); // FkAspnetRoAppli440B1D61
+            Property(x => x.NbrLocality).HasColumnName("nbrLocality").IsRequired();
+            Property(x => x.TxtLocality).HasColumnName("txtLocality").IsOptional().HasMaxLength(50);
         }
     }
 
-    // aspnet_SchemaVersions
-    public class AspnetSchemaVersionsConfiguration : EntityTypeConfiguration<AspnetSchemaVersions>
+    // tblMaster
+    public class TblMasterConfiguration : EntityTypeConfiguration<TblMaster>
     {
-        public AspnetSchemaVersionsConfiguration()
+        public TblMasterConfiguration()
         {
-            ToTable("dbo.aspnet_SchemaVersions");
-            HasKey(x => new { x.Feature, x.CompatibleSchemaVersion });
+            ToTable("dbo.tblMaster");
+            HasKey(x => new { x.TxtOutcode, x.TxtIncode, x.NbrRecord });
 
-            Property(x => x.Feature).HasColumnName("Feature").IsRequired().HasMaxLength(128);
-            Property(x => x.CompatibleSchemaVersion).HasColumnName("CompatibleSchemaVersion").IsRequired().HasMaxLength(128);
-            Property(x => x.IsCurrentVersion).HasColumnName("IsCurrentVersion").IsRequired();
+            Property(x => x.TxtOutcode).HasColumnName("txtOutcode").IsRequired().HasMaxLength(4);
+            Property(x => x.TxtIncode).HasColumnName("txtIncode").IsRequired().HasMaxLength(3);
+            Property(x => x.NbrRecord).HasColumnName("nbrRecord").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.TxtType).HasColumnName("txtType").IsOptional().HasMaxLength(1);
+            Property(x => x.NbrTown).HasColumnName("nbrTown").IsOptional();
+            Property(x => x.NbrLocality).HasColumnName("nbrLocality").IsOptional();
+            Property(x => x.NbrThoroughfare).HasColumnName("nbrThoroughfare").IsOptional();
+            Property(x => x.NbrDependantThoroughfare).HasColumnName("nbrDependantThoroughfare").IsOptional();
+            Property(x => x.NbrDeliveryPointCount).HasColumnName("nbrDeliveryPointCount").IsOptional();
         }
     }
 
-    // aspnet_Users
-    public class AspnetUsersConfiguration : EntityTypeConfiguration<AspnetUsers>
+    // tblThoroughfare
+    public class TblThoroughfareConfiguration : EntityTypeConfiguration<TblThoroughfare>
     {
-        public AspnetUsersConfiguration()
+        public TblThoroughfareConfiguration()
         {
-            ToTable("dbo.aspnet_Users");
-            HasKey(x => x.UserId);
+            ToTable("dbo.tblThoroughfare");
+            HasKey(x => new { x.NbrThoroughfare });
 
-            Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
-            Property(x => x.UserId).HasColumnName("UserId").IsRequired();
-            Property(x => x.UserName).HasColumnName("UserName").IsRequired().HasMaxLength(256);
-            Property(x => x.LoweredUserName).HasColumnName("LoweredUserName").IsRequired().HasMaxLength(256);
-            Property(x => x.MobileAlias).HasColumnName("MobileAlias").IsOptional().HasMaxLength(16);
-            Property(x => x.IsAnonymous).HasColumnName("IsAnonymous").IsRequired();
-            Property(x => x.LastActivityDate).HasColumnName("LastActivityDate").IsRequired();
-
-            // Foreign keys
-            HasRequired(a => a.ApplicationFk).WithMany().HasForeignKey(b => b.ApplicationId); // FkAspnetUsAppli0Daf0Cb0
+            Property(x => x.NbrThoroughfare).HasColumnName("nbrThoroughfare").IsRequired();
+            Property(x => x.TxtThoroughfare).HasColumnName("txtThoroughfare").IsOptional().HasMaxLength(50);
         }
     }
 
-    // aspnet_UsersInRoles
-    public class AspnetUsersInRolesConfiguration : EntityTypeConfiguration<AspnetUsersInRoles>
+    // tblTown
+    public class TblTownConfiguration : EntityTypeConfiguration<TblTown>
     {
-        public AspnetUsersInRolesConfiguration()
+        public TblTownConfiguration()
         {
-            ToTable("dbo.aspnet_UsersInRoles");
-            HasKey(x => new { x.UserId, x.RoleId });
+            ToTable("dbo.tblTown");
+            HasKey(x => new { x.NbrTown });
 
-            Property(x => x.UserId).HasColumnName("UserId").IsRequired();
-            Property(x => x.RoleId).HasColumnName("RoleId").IsRequired();
-
-            // Foreign keys
-            HasRequired(a => a.UserFk).WithMany().HasForeignKey(b => b.UserId); // FkAspnetUsUserI49C3F6B7
-            HasRequired(a => a.RoleFk).WithMany().HasForeignKey(b => b.RoleId); // FkAspnetUsRoleI4Ab81Af0
+            Property(x => x.NbrTown).HasColumnName("nbrTown").IsRequired();
+            Property(x => x.TxtArea).HasColumnName("txtArea").IsOptional().HasMaxLength(2);
+            Property(x => x.TxtTown).HasColumnName("txtTown").IsOptional().HasMaxLength(22);
+            Property(x => x.TxtCounty).HasColumnName("txtCounty").IsOptional().HasMaxLength(18);
+            Property(x => x.TxtCountyFlag).HasColumnName("txtCountyFlag").IsOptional().HasMaxLength(1);
+            Property(x => x.TxtCountryCode).HasColumnName("txtCountryCode").IsOptional().HasMaxLength(1);
         }
     }
 
-    // aspnet_WebEvent_Events
-    public class AspnetWebEventEventsConfiguration : EntityTypeConfiguration<AspnetWebEventEvents>
+    // Thoroughfare
+    public class ThoroughfareConfiguration : EntityTypeConfiguration<Thoroughfare>
     {
-        public AspnetWebEventEventsConfiguration()
+        public ThoroughfareConfiguration()
         {
-            ToTable("dbo.aspnet_WebEvent_Events");
-            HasKey(x => x.EventId);
+            ToTable("dbo.Thoroughfare");
+            HasKey(x => x.ThoroughfareId);
 
-            Property(x => x.EventId).HasColumnName("EventId").IsRequired().HasMaxLength(32);
-            Property(x => x.EventTimeUtc).HasColumnName("EventTimeUtc").IsRequired();
-            Property(x => x.EventTime).HasColumnName("EventTime").IsRequired();
-            Property(x => x.EventType).HasColumnName("EventType").IsRequired().HasMaxLength(256);
-            Property(x => x.EventSequence).HasColumnName("EventSequence").IsRequired();
-            Property(x => x.EventOccurrence).HasColumnName("EventOccurrence").IsRequired();
-            Property(x => x.EventCode).HasColumnName("EventCode").IsRequired();
-            Property(x => x.EventDetailCode).HasColumnName("EventDetailCode").IsRequired();
-            Property(x => x.Message).HasColumnName("Message").IsOptional().HasMaxLength(1024);
-            Property(x => x.ApplicationPath).HasColumnName("ApplicationPath").IsOptional().HasMaxLength(256);
-            Property(x => x.ApplicationVirtualPath).HasColumnName("ApplicationVirtualPath").IsOptional().HasMaxLength(256);
-            Property(x => x.MachineName).HasColumnName("MachineName").IsRequired().HasMaxLength(256);
-            Property(x => x.RequestUrl).HasColumnName("RequestUrl").IsOptional().HasMaxLength(1024);
-            Property(x => x.ExceptionType).HasColumnName("ExceptionType").IsOptional().HasMaxLength(256);
-            Property(x => x.Details).HasColumnName("Details").IsOptional().HasMaxLength(1073741823);
+            Property(x => x.ThoroughfareId).HasColumnName("ThoroughfareID").IsRequired();
+            Property(x => x.Thoroughfare_).HasColumnName("_Thoroughfare").IsOptional().HasMaxLength(50);
         }
     }
 
-    // vw_aspnet_Applications
-    public class VwAspnetApplicationsConfiguration : EntityTypeConfiguration<VwAspnetApplications>
+    // Thoroughfare_orig
+    public class ThoroughfareOrigConfiguration : EntityTypeConfiguration<ThoroughfareOrig>
     {
-        public VwAspnetApplicationsConfiguration()
+        public ThoroughfareOrigConfiguration()
         {
-            ToTable("dbo.vw_aspnet_Applications");
-            HasKey(x => new { x.ApplicationName, x.LoweredApplicationName, x.ApplicationId });
+            ToTable("dbo.Thoroughfare_orig");
+            HasKey(x => x.ThoroughfareId);
 
-            Property(x => x.ApplicationName).HasColumnName("ApplicationName").IsRequired().HasMaxLength(256);
-            Property(x => x.LoweredApplicationName).HasColumnName("LoweredApplicationName").IsRequired().HasMaxLength(256);
-            Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
-            Property(x => x.Description).HasColumnName("Description").IsOptional().HasMaxLength(256);
+            Property(x => x.ThoroughfareId).HasColumnName("ThoroughfareID").IsRequired();
+            Property(x => x.Thoroughfare).HasColumnName("Thoroughfare").IsOptional().HasMaxLength(50);
         }
     }
 
-    // vw_aspnet_MembershipUsers
-    public class VwAspnetMembershipUsersConfiguration : EntityTypeConfiguration<VwAspnetMembershipUsers>
+    // Town
+    public class TownConfiguration : EntityTypeConfiguration<Town>
     {
-        public VwAspnetMembershipUsersConfiguration()
+        public TownConfiguration()
         {
-            ToTable("dbo.vw_aspnet_MembershipUsers");
-            HasKey(x => new { x.UserId, x.PasswordFormat, x.IsApproved, x.IsLockedOut, x.CreateDate, x.LastLoginDate, x.LastPasswordChangedDate, x.LastLockoutDate, x.FailedPasswordAttemptCount, x.FailedPasswordAttemptWindowStart, x.FailedPasswordAnswerAttemptCount, x.FailedPasswordAnswerAttemptWindowStart, x.ApplicationId, x.UserName, x.IsAnonymous, x.LastActivityDate });
+            ToTable("dbo.Town");
+            HasKey(x => x.TownId);
 
-            Property(x => x.UserId).HasColumnName("UserId").IsRequired();
-            Property(x => x.PasswordFormat).HasColumnName("PasswordFormat").IsRequired();
-            Property(x => x.MobilePin).HasColumnName("MobilePIN").IsOptional().HasMaxLength(16);
-            Property(x => x.Email).HasColumnName("Email").IsOptional().HasMaxLength(256);
-            Property(x => x.LoweredEmail).HasColumnName("LoweredEmail").IsOptional().HasMaxLength(256);
-            Property(x => x.PasswordQuestion).HasColumnName("PasswordQuestion").IsOptional().HasMaxLength(256);
-            Property(x => x.PasswordAnswer).HasColumnName("PasswordAnswer").IsOptional().HasMaxLength(128);
-            Property(x => x.IsApproved).HasColumnName("IsApproved").IsRequired();
-            Property(x => x.IsLockedOut).HasColumnName("IsLockedOut").IsRequired();
-            Property(x => x.CreateDate).HasColumnName("CreateDate").IsRequired();
-            Property(x => x.LastLoginDate).HasColumnName("LastLoginDate").IsRequired();
-            Property(x => x.LastPasswordChangedDate).HasColumnName("LastPasswordChangedDate").IsRequired();
-            Property(x => x.LastLockoutDate).HasColumnName("LastLockoutDate").IsRequired();
-            Property(x => x.FailedPasswordAttemptCount).HasColumnName("FailedPasswordAttemptCount").IsRequired();
-            Property(x => x.FailedPasswordAttemptWindowStart).HasColumnName("FailedPasswordAttemptWindowStart").IsRequired();
-            Property(x => x.FailedPasswordAnswerAttemptCount).HasColumnName("FailedPasswordAnswerAttemptCount").IsRequired();
-            Property(x => x.FailedPasswordAnswerAttemptWindowStart).HasColumnName("FailedPasswordAnswerAttemptWindowStart").IsRequired();
-            Property(x => x.Comment).HasColumnName("Comment").IsOptional().HasMaxLength(1073741823);
-            Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
-            Property(x => x.UserName).HasColumnName("UserName").IsRequired().HasMaxLength(256);
-            Property(x => x.MobileAlias).HasColumnName("MobileAlias").IsOptional().HasMaxLength(16);
-            Property(x => x.IsAnonymous).HasColumnName("IsAnonymous").IsRequired();
-            Property(x => x.LastActivityDate).HasColumnName("LastActivityDate").IsRequired();
+            Property(x => x.TownId).HasColumnName("TownID").IsRequired();
+            Property(x => x.Area).HasColumnName("Area").IsOptional().HasMaxLength(2);
+            Property(x => x.Town_).HasColumnName("_Town").IsOptional().HasMaxLength(22);
+            Property(x => x.County).HasColumnName("County").IsOptional().HasMaxLength(18);
+            Property(x => x.CountyFlag).HasColumnName("CountyFlag").IsOptional().HasMaxLength(1);
+            Property(x => x.CountryCode).HasColumnName("CountryCode").IsOptional().HasMaxLength(1);
         }
     }
 
-    // vw_aspnet_Profiles
-    public class VwAspnetProfilesConfiguration : EntityTypeConfiguration<VwAspnetProfiles>
+    // Town_orig
+    public class TownOrigConfiguration : EntityTypeConfiguration<TownOrig>
     {
-        public VwAspnetProfilesConfiguration()
+        public TownOrigConfiguration()
         {
-            ToTable("dbo.vw_aspnet_Profiles");
-            HasKey(x => new { x.UserId, x.LastUpdatedDate });
+            ToTable("dbo.Town_orig");
+            HasKey(x => x.TownId);
 
-            Property(x => x.UserId).HasColumnName("UserId").IsRequired();
-            Property(x => x.LastUpdatedDate).HasColumnName("LastUpdatedDate").IsRequired();
-            Property(x => x.DataSize).HasColumnName("DataSize").IsOptional();
+            Property(x => x.TownId).HasColumnName("TownID").IsRequired();
+            Property(x => x.Area).HasColumnName("Area").IsOptional().HasMaxLength(2);
+            Property(x => x.Town).HasColumnName("Town").IsOptional().HasMaxLength(22);
+            Property(x => x.County).HasColumnName("County").IsOptional().HasMaxLength(18);
+            Property(x => x.CountyFlag).HasColumnName("CountyFlag").IsOptional().HasMaxLength(1);
+            Property(x => x.CountryCode).HasColumnName("CountryCode").IsOptional().HasMaxLength(1);
         }
     }
 
-    // vw_aspnet_Roles
-    public class VwAspnetRolesConfiguration : EntityTypeConfiguration<VwAspnetRoles>
+    // vw_Postcode
+    public class VwPostcodeConfiguration : EntityTypeConfiguration<VwPostcode>
     {
-        public VwAspnetRolesConfiguration()
+        public VwPostcodeConfiguration()
         {
-            ToTable("dbo.vw_aspnet_Roles");
-            HasKey(x => new { x.ApplicationId, x.RoleId, x.RoleName, x.LoweredRoleName });
+            ToTable("dbo.vw_Postcode");
+            HasKey(x => new { x.Postcode });
 
-            Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
-            Property(x => x.RoleId).HasColumnName("RoleId").IsRequired();
-            Property(x => x.RoleName).HasColumnName("RoleName").IsRequired().HasMaxLength(256);
-            Property(x => x.LoweredRoleName).HasColumnName("LoweredRoleName").IsRequired().HasMaxLength(256);
-            Property(x => x.Description).HasColumnName("Description").IsOptional().HasMaxLength(256);
+            Property(x => x.Postcode).HasColumnName("Postcode").IsRequired().HasMaxLength(8);
+            Property(x => x.Locality).HasColumnName("Locality").IsOptional().HasMaxLength(50);
+            Property(x => x.Thoroughfare).HasColumnName("Thoroughfare").IsOptional().HasMaxLength(50);
+            Property(x => x.Area).HasColumnName("Area").IsOptional().HasMaxLength(2);
+            Property(x => x.Town).HasColumnName("Town").IsOptional().HasMaxLength(22);
+            Property(x => x.County).HasColumnName("County").IsOptional().HasMaxLength(18);
+            Property(x => x.CountryCode).HasColumnName("CountryCode").IsOptional().HasMaxLength(1);
+            Property(x => x.CountyFlag).HasColumnName("CountyFlag").IsOptional().HasMaxLength(1);
         }
     }
 
-    // vw_aspnet_Users
-    public class VwAspnetUsersConfiguration : EntityTypeConfiguration<VwAspnetUsers>
+    // Zone
+    public class ZoneConfiguration : EntityTypeConfiguration<Zone>
     {
-        public VwAspnetUsersConfiguration()
+        public ZoneConfiguration()
         {
-            ToTable("dbo.vw_aspnet_Users");
-            HasKey(x => new { x.ApplicationId, x.UserId, x.UserName, x.LoweredUserName, x.IsAnonymous, x.LastActivityDate });
+            ToTable("dbo.Zone");
+            HasKey(x => new { x.ZoneReference, x.CountryId });
 
-            Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
-            Property(x => x.UserId).HasColumnName("UserId").IsRequired();
-            Property(x => x.UserName).HasColumnName("UserName").IsRequired().HasMaxLength(256);
-            Property(x => x.LoweredUserName).HasColumnName("LoweredUserName").IsRequired().HasMaxLength(256);
-            Property(x => x.MobileAlias).HasColumnName("MobileAlias").IsOptional().HasMaxLength(16);
-            Property(x => x.IsAnonymous).HasColumnName("IsAnonymous").IsRequired();
-            Property(x => x.LastActivityDate).HasColumnName("LastActivityDate").IsRequired();
-        }
-    }
-
-    // vw_aspnet_UsersInRoles
-    public class VwAspnetUsersInRolesConfiguration : EntityTypeConfiguration<VwAspnetUsersInRoles>
-    {
-        public VwAspnetUsersInRolesConfiguration()
-        {
-            ToTable("dbo.vw_aspnet_UsersInRoles");
-            HasKey(x => new { x.UserId, x.RoleId });
-
-            Property(x => x.UserId).HasColumnName("UserId").IsRequired();
-            Property(x => x.RoleId).HasColumnName("RoleId").IsRequired();
-        }
-    }
-
-    // vw_aspnet_WebPartState_Paths
-    public class VwAspnetWebPartStatePathsConfiguration : EntityTypeConfiguration<VwAspnetWebPartStatePaths>
-    {
-        public VwAspnetWebPartStatePathsConfiguration()
-        {
-            ToTable("dbo.vw_aspnet_WebPartState_Paths");
-            HasKey(x => new { x.ApplicationId, x.PathId, x.Path, x.LoweredPath });
-
-            Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
-            Property(x => x.PathId).HasColumnName("PathId").IsRequired();
-            Property(x => x.Path).HasColumnName("Path").IsRequired().HasMaxLength(256);
-            Property(x => x.LoweredPath).HasColumnName("LoweredPath").IsRequired().HasMaxLength(256);
-        }
-    }
-
-    // vw_aspnet_WebPartState_Shared
-    public class VwAspnetWebPartStateSharedConfiguration : EntityTypeConfiguration<VwAspnetWebPartStateShared>
-    {
-        public VwAspnetWebPartStateSharedConfiguration()
-        {
-            ToTable("dbo.vw_aspnet_WebPartState_Shared");
-            HasKey(x => new { x.PathId, x.LastUpdatedDate });
-
-            Property(x => x.PathId).HasColumnName("PathId").IsRequired();
-            Property(x => x.DataSize).HasColumnName("DataSize").IsOptional();
-            Property(x => x.LastUpdatedDate).HasColumnName("LastUpdatedDate").IsRequired();
-        }
-    }
-
-    // vw_aspnet_WebPartState_User
-    public class VwAspnetWebPartStateUserConfiguration : EntityTypeConfiguration<VwAspnetWebPartStateUser>
-    {
-        public VwAspnetWebPartStateUserConfiguration()
-        {
-            ToTable("dbo.vw_aspnet_WebPartState_User");
-            HasKey(x => new { x.LastUpdatedDate });
-
-            Property(x => x.PathId).HasColumnName("PathId").IsOptional();
-            Property(x => x.UserId).HasColumnName("UserId").IsOptional();
-            Property(x => x.DataSize).HasColumnName("DataSize").IsOptional();
-            Property(x => x.LastUpdatedDate).HasColumnName("LastUpdatedDate").IsRequired();
+            Property(x => x.ZoneReference).HasColumnName("ZoneReference").IsRequired().HasMaxLength(50);
+            Property(x => x.CountryId).HasColumnName("CountryID").IsRequired();
+            Property(x => x.Latitude).HasColumnName("Latitude").IsRequired();
+            Property(x => x.Longitude).HasColumnName("Longitude").IsRequired();
         }
     }
 

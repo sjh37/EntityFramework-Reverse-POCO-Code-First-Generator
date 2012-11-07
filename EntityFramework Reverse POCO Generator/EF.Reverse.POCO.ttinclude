@@ -1,10 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration;
-using System.Linq;
-using System.Reflection;
 
 namespace <#= Namespace #>
 {
@@ -19,46 +16,29 @@ foreach(Table tbl in from t in tables.OrderBy(x => x.NameHumanCase) select t)
         public IDbSet<<#=tbl.NameHumanCase#>> <#=tbl.NameHumanCase#> { get; set; } // <#=tbl.Name#>
 <# } #>
 
-        static MyDbContext()
+        static <#=DbContextName#>()
         {
-            Database.SetInitializer<MyDbContext>(null);
+            Database.SetInitializer<<#=DbContextName#>>(null);
         }
 
-        public MyDbContext()
-        {
-        }
-
-        public MyDbContext(string connectionString) : base(connectionString)
+        public <#=DbContextName#>()
         {
         }
 
-        private IEnumerable<Type> GetTypes()
+        public <#=DbContextName#>(string connectionString) : base(connectionString)
         {
-            var type = typeof(EntityTypeConfiguration<>);
-            return GetType()
-                .GetProperties(BindingFlags.Instance | BindingFlags.Public)
-                .Where(p => p.PropertyType.IsGenericType &&
-                            p.PropertyType.GetGenericTypeDefinition() == typeof(IDbSet<>))
-                .Select(p => type.MakeGenericType(p.PropertyType.GetGenericArguments().First()))
-                .ToArray();
-        }
-
-        private static void LoadAllEntityConfigurationsFromAllAssemblies(DbModelBuilder modelBuilder, IEnumerable<Type> types)
-        {
-            Assembly.GetExecutingAssembly()
-                .GetTypes()
-                .Where(t => types.Contains(t.BaseType))
-                .Select(Activator.CreateInstance)
-                .ToList<dynamic>()
-                .ForEach(instance => modelBuilder.Configurations.Add(instance));
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            var typesToLoad = GetTypes();
-            LoadAllEntityConfigurationsFromAllAssemblies(modelBuilder, typesToLoad);
+<#
+foreach(Table tbl in from t in tables.OrderBy(x => x.NameHumanCase) select t)
+{
+#>
+            modelBuilder.Configurations.Add(new <#=tbl.NameHumanCase#>Configuration());
+<# } #>
         }
     }
 

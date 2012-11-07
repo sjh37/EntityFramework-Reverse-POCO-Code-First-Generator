@@ -250,8 +250,8 @@ namespace EntityFramework_Reverse_POCO_Generator
             WriteLine("// ");
             WriteLine("// The following connection settings were used to generate this file");
             WriteLine("// ");
-            WriteLine("//     Connection String Name: `{0}`", ConnectionStringName);
-            WriteLine("//     Connection String:      `{0}`", ZapPassword(ConnectionString));
+            WriteLine("//     Connection String Name: \"{0}\"", ConnectionStringName);
+            WriteLine("//     Connection String:      \"{0}\"", ZapPassword(ConnectionString));
             WriteLine("");
 
             DbProviderFactory factory;
@@ -262,10 +262,10 @@ namespace EntityFramework_Reverse_POCO_Generator
             catch(Exception x)
             {
                 string error = x.Message.Replace("\r\n", "\n").Replace("\n", " ");
-                Warning(string.Format("Failed to load provider `{0}` - {1}", ProviderName, error));
+                Warning(string.Format("Failed to load provider \"{0}\" - {1}", ProviderName, error));
                 WriteLine("");
                 WriteLine("// -----------------------------------------------------------------------------------------");
-                WriteLine("// Failed to load provider `{0}` - {1}", ProviderName, error);
+                WriteLine("// Failed to load provider \"{0}\" - {1}", ProviderName, error);
                 WriteLine("// -----------------------------------------------------------------------------------------");
                 WriteLine("");
                 return new Tables();
