@@ -10,11 +10,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -579,6 +577,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public VwAspnetApplicationsConfiguration()
         {
             ToTable("dbo.vw_aspnet_Applications");
+            HasKey(x => new { x.ApplicationName, x.LoweredApplicationName, x.ApplicationId });
 
             Property(x => x.ApplicationName).HasColumnName("ApplicationName").IsRequired().HasMaxLength(256);
             Property(x => x.LoweredApplicationName).HasColumnName("LoweredApplicationName").IsRequired().HasMaxLength(256);
@@ -593,6 +592,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public VwAspnetMembershipUsersConfiguration()
         {
             ToTable("dbo.vw_aspnet_MembershipUsers");
+            HasKey(x => new { x.UserId, x.PasswordFormat, x.IsApproved, x.IsLockedOut, x.CreateDate, x.LastLoginDate, x.LastPasswordChangedDate, x.LastLockoutDate, x.FailedPasswordAttemptCount, x.FailedPasswordAttemptWindowStart, x.FailedPasswordAnswerAttemptCount, x.FailedPasswordAnswerAttemptWindowStart, x.ApplicationId, x.UserName, x.IsAnonymous, x.LastActivityDate });
 
             Property(x => x.UserId).HasColumnName("UserId").IsRequired();
             Property(x => x.PasswordFormat).HasColumnName("PasswordFormat").IsRequired();
@@ -626,6 +626,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public VwAspnetProfilesConfiguration()
         {
             ToTable("dbo.vw_aspnet_Profiles");
+            HasKey(x => new { x.UserId, x.LastUpdatedDate });
 
             Property(x => x.UserId).HasColumnName("UserId").IsRequired();
             Property(x => x.LastUpdatedDate).HasColumnName("LastUpdatedDate").IsRequired();
@@ -639,6 +640,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public VwAspnetRolesConfiguration()
         {
             ToTable("dbo.vw_aspnet_Roles");
+            HasKey(x => new { x.ApplicationId, x.RoleId, x.RoleName, x.LoweredRoleName });
 
             Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
             Property(x => x.RoleId).HasColumnName("RoleId").IsRequired();
@@ -654,6 +656,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public VwAspnetUsersConfiguration()
         {
             ToTable("dbo.vw_aspnet_Users");
+            HasKey(x => new { x.ApplicationId, x.UserId, x.UserName, x.LoweredUserName, x.IsAnonymous, x.LastActivityDate });
 
             Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
             Property(x => x.UserId).HasColumnName("UserId").IsRequired();
@@ -671,6 +674,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public VwAspnetUsersInRolesConfiguration()
         {
             ToTable("dbo.vw_aspnet_UsersInRoles");
+            HasKey(x => new { x.UserId, x.RoleId });
 
             Property(x => x.UserId).HasColumnName("UserId").IsRequired();
             Property(x => x.RoleId).HasColumnName("RoleId").IsRequired();
@@ -683,6 +687,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public VwAspnetWebPartStatePathsConfiguration()
         {
             ToTable("dbo.vw_aspnet_WebPartState_Paths");
+            HasKey(x => new { x.ApplicationId, x.PathId, x.Path, x.LoweredPath });
 
             Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
             Property(x => x.PathId).HasColumnName("PathId").IsRequired();
@@ -697,6 +702,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public VwAspnetWebPartStateSharedConfiguration()
         {
             ToTable("dbo.vw_aspnet_WebPartState_Shared");
+            HasKey(x => new { x.PathId, x.LastUpdatedDate });
 
             Property(x => x.PathId).HasColumnName("PathId").IsRequired();
             Property(x => x.DataSize).HasColumnName("DataSize").IsOptional();
@@ -710,6 +716,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public VwAspnetWebPartStateUserConfiguration()
         {
             ToTable("dbo.vw_aspnet_WebPartState_User");
+            HasKey(x => new { x.LastUpdatedDate });
 
             Property(x => x.PathId).HasColumnName("PathId").IsOptional();
             Property(x => x.UserId).HasColumnName("UserId").IsOptional();
