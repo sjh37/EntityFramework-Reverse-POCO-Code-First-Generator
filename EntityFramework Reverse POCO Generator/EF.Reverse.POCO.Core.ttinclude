@@ -1071,15 +1071,14 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                     }
                 }
 
+                // Check for property name clashes in columns
+                foreach(Column c in result.SelectMany(tbl => tbl.Columns.Where(c => tbl.Columns.FindAll(x => x.PropertyNameHumanCase == c.PropertyNameHumanCase).Count > 1)))
+                {
+                    c.PropertyNameHumanCase = c.PropertyName;
+                } 
+                
                 foreach(Table tbl in result)
                 {
-                    // Check for property name clashes in columns
-                    foreach(Column c in tbl.Columns)
-                    {
-                        if(tbl.Columns.FindAll(x => x.PropertyNameHumanCase == c.PropertyNameHumanCase).Count > 1)
-                            c.PropertyNameHumanCase = c.PropertyName;
-                    }
-
                     tbl.Columns.ForEach(x => x.SetupEntityAndConfig());
                 }
 
@@ -1117,7 +1116,7 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                                 continue;
 
                             string pkColumn = rdr["PK_Column"].ToString();
-                            Column pkCol = fkTable.Columns.Find(n => n.PropertyName == pkColumn);
+                            Column pkCol = pkTable.Columns.Find(n => n.PropertyName == pkColumn);
                             if (pkCol == null)
                                 continue;
 
@@ -1139,7 +1138,7 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                                                            fkCol.PropertyNameHumanCase + " - " + constraintNameHumanCase);
 
                             fkCol.ConfigFk = string.Format("{0}; // {1}", GetRelationship(fkCol, pkCol, fkName), constraintName);
-                            //fkCol.ConfigFk = string.Format("Has{0}(a => a.{1}).With{2}.HasForeignKey(b => b.{3}); // {4}", GetHasMethod(fkCol, pkCol), fkName, GetWithMethod(fkCol, pkCol), fkCol.PropertyNameHumanCase, constraintName);
+                            fkCol.ConfigFk += string.Format(" pkCol.IsPrimaryKey={0} fkCol.IsNullable={1} {2}.{3}", pkCol.IsPrimaryKey, fkCol.IsNullable, pkTable.Name, pkCol.Name);
                         }
                     }
                 }
@@ -1184,15 +1183,10 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
             private static string GetWithMethod(Column fkCol, Column pkCol)
             {
                 // Check multiplicity
-                if (pkCol.IsPrimaryKey)
-                {
-                    // 1:1
-                    if (!fkCol.IsNullable)
+                if(pkCol.IsPrimaryKey && !fkCol.IsNullable)
                         return ".WithRequiredDependent()";
-                }
 
-                // 1:n
-                return string.Format(".Many().HasForeignKey(b => b.{0})", fkCol.PropertyNameHumanCase);
+                return string.Format(".WithMany().HasForeignKey(b => b.{0})", fkCol.PropertyNameHumanCase);
             }
 
             private static Column CreateColumn(IDataRecord rdr, Regex rxClean, Table table)
