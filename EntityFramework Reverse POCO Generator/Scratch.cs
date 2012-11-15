@@ -357,16 +357,17 @@ namespace EntityFramework_Reverse_POCO_Generator
 
             private void SetupEntity()
             {
-                Entity = string.Format("public virtual {0}{1} {2} {3} // {4}", PropertyType, CheckNullable(this), PropertyNameHumanCase, "{ get; set; }", Name);
+                Entity = string.Format("public {0}{1} {2} {3} // {4}", PropertyType, CheckNullable(this), PropertyNameHumanCase, "{ get; set; }", Name);
             }
 
             private void SetupConfig()
             {
-                Config = string.Format("Property(x => x.{0}).HasColumnName(\"{1}\"){2}{3}{4}{5};", PropertyNameHumanCase, PropertyName,
+                Config = string.Format("Property(x => x.{0}).HasColumnName(\"{1}\"){2}{3}{4}{5}{6};", PropertyNameHumanCase, PropertyName,
                                             (IsNullable) ? ".IsOptional()" : ".IsRequired()",
                                             (MaxLength > 0) ? ".HasMaxLength(" + MaxLength + ")" : string.Empty,
                                             (IsIdentity) ? ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity)" : string.Empty,
-                                            (IsStoreGenerated) ? ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.Computed)" : string.Empty);
+                                            (IsStoreGenerated) ? ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.Computed)" : string.Empty,
+                                            (IsPrimaryKey && !IsIdentity && !IsStoreGenerated) ? ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.None)" : string.Empty);
             }
 
             public void SetupEntityAndConfig()
