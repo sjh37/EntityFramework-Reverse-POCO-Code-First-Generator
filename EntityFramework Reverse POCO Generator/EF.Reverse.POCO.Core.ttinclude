@@ -322,12 +322,31 @@
 
             private void SetupConfig()
             {
-                Config = string.Format("Property(x => x.{0}).HasColumnName(\"{1}\"){2}{3}{4}{5}{6};", PropertyNameHumanCase, PropertyName,
+                /*bool hasDatabaseGeneratedOption = false;
+                switch(PropertyType.ToLower())
+                {
+                    case "bigint":
+                    case "decimal":
+                    case "float":
+                    case "int":
+                    case "numeric":
+                    case "real":
+                    case "smallint":
+                    case "tinyint":
+                        hasDatabaseGeneratedOption = true;
+                        break;
+                }*/
+                string databaseGeneratedOption = string.Empty;
+                if (IsIdentity)
+                    databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity)";
+                if(IsStoreGenerated)
+                    databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.Computed)";
+                if(IsPrimaryKey && !IsIdentity && !IsStoreGenerated)
+                    databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.None)";
+                Config = string.Format("Property(x => x.{0}).HasColumnName(\"{1}\"){2}{3}{4};", PropertyNameHumanCase, PropertyName,
                                             (IsNullable) ? ".IsOptional()" : ".IsRequired()",
                                             (MaxLength > 0) ? ".HasMaxLength(" + MaxLength + ")" : string.Empty,
-                                            (IsIdentity) ? ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity)" : string.Empty,
-                                            (IsStoreGenerated) ? ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.Computed)" : string.Empty,
-                                            (IsPrimaryKey && !IsIdentity && !IsStoreGenerated) ? ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.None)" : string.Empty);
+                                            databaseGeneratedOption);
             }
 
             public void SetupEntityAndConfig()
@@ -1054,7 +1073,7 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
 
                 foreach(Table tbl in result)
                 {
-                    // Check for property name clashes
+                    // Check for property name clashes in columns
                     foreach(Column c in tbl.Columns)
                     {
                         if(tbl.Columns.FindAll(x => x.PropertyNameHumanCase == c.PropertyNameHumanCase).Count > 1)
@@ -1080,46 +1099,100 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                     {
                         while(rdr.Read())
                         {
-                            string fkTable = rdr["FK_Table"].ToString();
+                            string fkTableName = rdr["FK_Table"].ToString();
                             string fkSchema = rdr["fkSchema"].ToString();
-                            Table tbl = result.GetTable(fkTable, fkSchema);
-                            if (tbl == null)
+                            Table fkTable = result.GetTable(fkTableName, fkSchema);
+                            if(fkTable == null)
                                 continue;
 
-                            string pkTable = rdr["PK_Table"].ToString();
+                            string pkTableName = rdr["PK_Table"].ToString();
                             string pkSchema = rdr["pkSchema"].ToString();
-                            if(result.GetTable(pkTable, pkSchema) == null)
+                            Table pkTable = result.GetTable(pkTableName, pkSchema);
+                            if(pkTable == null)
                                 continue;
-                                
+
                             string fkColumn = rdr["FK_Column"].ToString();
-                            Column col = tbl.Columns.Find(n => n.PropertyName == fkColumn);
-                            if(col != null)
-                            {
-                                tbl.HasForeignKey = true;
-                                string constraintName = rdr["Constraint_Name"].ToString();
+                            Column fkCol = fkTable.Columns.Find(n => n.PropertyName == fkColumn);
+                            if(fkCol == null)
+                                continue;
 
-                                string pkTableHumanCase = Inflector.ToTitleCase(pkTable).Replace(" ", "").Replace("$", "");
-                                if(string.Compare(pkSchema, "dbo", StringComparison.OrdinalIgnoreCase) != 0)
-                                    pkTableHumanCase = pkSchema + "_" + pkTableHumanCase;
+                            string pkColumn = rdr["PK_Column"].ToString();
+                            Column pkCol = fkTable.Columns.Find(n => n.PropertyName == pkColumn);
+                            if (pkCol == null)
+                                continue;
 
-                                string constraintNameHumanCase = Inflector.ToTitleCase(constraintName).Replace(" ", "").Replace("$", "");
-                                string fkName;
-                                if(col.PropertyNameHumanCase.EndsWith("Id"))
-                                    fkName = col.PropertyNameHumanCase.Substring(0, col.PropertyNameHumanCase.Length - 2) + "Fk";
-                                else
-                                    fkName = col.PropertyNameHumanCase + "Fk";
+                            fkTable.HasForeignKey = true;
+                            string constraintName = rdr["Constraint_Name"].ToString();
 
-                                col.EntityFk = string.Format("public virtual {0} {1} {2} {3}", pkTableHumanCase, fkName, "{ get; set; } // ",
-                                                             col.PropertyNameHumanCase + " - " + constraintNameHumanCase);
+                            string pkTableHumanCase = Inflector.ToTitleCase(pkTableName).Replace(" ", "").Replace("$", "");
+                            if(string.Compare(pkSchema, "dbo", StringComparison.OrdinalIgnoreCase) != 0)
+                                pkTableHumanCase = pkSchema + "_" + pkTableHumanCase;
 
-                                col.ConfigFk = string.Format("Has{0}(a => a.{1}).WithMany().HasForeignKey(b => b.{2}); // {3}",
-                                                             col.IsNullable ? "Optional" : "Required", fkName, col.PropertyNameHumanCase, constraintNameHumanCase);
-                            }
+                            string constraintNameHumanCase = Inflector.ToTitleCase(constraintName).Replace(" ", "").Replace("$", "");
+                            string fkName;
+                            if(fkCol.PropertyNameHumanCase.EndsWith("Id"))
+                                fkName = fkCol.PropertyNameHumanCase.Substring(0, fkCol.PropertyNameHumanCase.Length - 2) + "Fk";
+                            else
+                                fkName = fkCol.PropertyNameHumanCase + "Fk";
+
+                            fkCol.EntityFk = string.Format("public virtual {0} {1} {2} {3}", pkTableHumanCase, fkName, "{ get; set; } // ",
+                                                           fkCol.PropertyNameHumanCase + " - " + constraintNameHumanCase);
+
+                            fkCol.ConfigFk = string.Format("{0}; // {1}", GetRelationship(fkCol, pkCol, fkName), constraintName);
+                            //fkCol.ConfigFk = string.Format("Has{0}(a => a.{1}).With{2}.HasForeignKey(b => b.{3}); // {4}", GetHasMethod(fkCol, pkCol), fkName, GetWithMethod(fkCol, pkCol), fkCol.PropertyNameHumanCase, constraintName);
                         }
                     }
                 }
 
                 return result;
+            }
+
+            private static string GetRelationship(Column fkCol, Column pkCol, string fkName)
+            {
+                string has = string.Format("Has{0}(a => a.{1})", GetHasMethod(fkCol, pkCol), fkName);
+                string with = GetWithMethod(fkCol, pkCol);
+                return has + with;
+            }
+
+            // The multiplicity can be 
+            // Optional (a property that can have a single instance or be null),
+            // Required (a property that must have a single instance), or
+            // Many (a property with a collection of a single type).
+            // The Has methods are as follows:
+            // • HasOptional
+            // • HasRequired
+            // • HasMany
+            private static string GetHasMethod(Column fkCol, Column pkCol)
+            {
+                // Check multiplicity
+                if (pkCol.IsPrimaryKey)
+                {
+                    // 1:1
+                    return fkCol.IsNullable ? "Optional" : "Required";
+                }
+
+                // 1:n
+                return "Many";
+            }
+
+            // In most cases you will follow the Has method with one of the following With methods:
+            // • WithOptional
+            // • WithRequired
+            // • WithMany
+            // • WithRequiredPrincipal
+            // • WithRequiredDependent
+            private static string GetWithMethod(Column fkCol, Column pkCol)
+            {
+                // Check multiplicity
+                if (pkCol.IsPrimaryKey)
+                {
+                    // 1:1
+                    if (!fkCol.IsNullable)
+                        return ".WithRequiredDependent()";
+                }
+
+                // 1:n
+                return string.Format(".Many().HasForeignKey(b => b.{0})", fkCol.PropertyNameHumanCase);
             }
 
             private static Column CreateColumn(IDataRecord rdr, Regex rxClean, Table table)
