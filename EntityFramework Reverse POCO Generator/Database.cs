@@ -135,8 +135,8 @@ namespace EntityFramework_Reverse_POCO_Generator
         public string Comment { get; set; } // Comment
 
         // Foreign keys
-        public virtual AspnetApplications ApplicationFk { get; set; } //  ApplicationId - FK__aspnet_Me__Appli__21B6055D
-        public virtual AspnetUsers UserFk { get; set; } //  UserId - FK__aspnet_Me__UserI__22AA2996
+        public virtual AspnetApplications AspnetApplications { get; set; } //  ApplicationId - FK__aspnet_Me__Appli__21B6055D
+        public virtual AspnetUsers AspnetUsers { get; set; } //  UserId - FK__aspnet_Me__UserI__22AA2996
 
         public AspnetMembership()
         {
@@ -157,7 +157,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public virtual ICollection<AspnetPersonalizationPerUser> AspnetPersonalizationPerUser { get; set; } // aspnet_PersonalizationPerUser.FK__aspnet_Pe__PathI__68487DD7;
 
         // Foreign keys
-        public virtual AspnetApplications ApplicationFk { get; set; } //  ApplicationId - FK__aspnet_Pa__Appli__5AEE82B9
+        public virtual AspnetApplications AspnetApplications { get; set; } //  ApplicationId - FK__aspnet_Pa__Appli__5AEE82B9
 
         public AspnetPaths()
         {
@@ -174,7 +174,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public DateTime LastUpdatedDate { get; set; } // LastUpdatedDate
 
         // Foreign keys
-        public virtual AspnetPaths PathFk { get; set; } //  PathId - FK__aspnet_Pe__PathI__628FA481
+        public virtual AspnetPaths AspnetPaths { get; set; } //  PathId - FK__aspnet_Pe__PathI__628FA481
     }
 
     // aspnet_PersonalizationPerUser
@@ -187,8 +187,8 @@ namespace EntityFramework_Reverse_POCO_Generator
         public DateTime LastUpdatedDate { get; set; } // LastUpdatedDate
 
         // Foreign keys
-        public virtual AspnetPaths PathFk { get; set; } //  PathId - FK__aspnet_Pe__PathI__68487DD7
-        public virtual AspnetUsers UserFk { get; set; } //  UserId - FK__aspnet_Pe__UserI__693CA210
+        public virtual AspnetPaths AspnetPaths { get; set; } //  PathId - FK__aspnet_Pe__PathI__68487DD7
+        public virtual AspnetUsers AspnetUsers { get; set; } //  UserId - FK__aspnet_Pe__UserI__693CA210
 
         public AspnetPersonalizationPerUser()
         {
@@ -206,7 +206,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public DateTime LastUpdatedDate { get; set; } // LastUpdatedDate
 
         // Foreign keys
-        public virtual AspnetUsers UserFk { get; set; } //  UserId - FK__aspnet_Pr__UserI__38996AB5
+        public virtual AspnetUsers AspnetUsers { get; set; } //  UserId - FK__aspnet_Pr__UserI__38996AB5
     }
 
     // aspnet_Roles
@@ -222,7 +222,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public virtual AspnetUsersInRoles AspnetUsersInRoles { get; set; } // aspnet_UsersInRoles.FK__aspnet_Us__RoleI__4AB81AF0;
 
         // Foreign keys
-        public virtual AspnetApplications ApplicationFk { get; set; } //  ApplicationId - FK__aspnet_Ro__Appli__440B1D61
+        public virtual AspnetApplications AspnetApplications { get; set; } //  ApplicationId - FK__aspnet_Ro__Appli__440B1D61
 
         public AspnetRoles()
         {
@@ -256,7 +256,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public virtual AspnetUsersInRoles AspnetUsersInRoles { get; set; } // aspnet_UsersInRoles.FK__aspnet_Us__UserI__49C3F6B7;
 
         // Foreign keys
-        public virtual AspnetApplications ApplicationFk { get; set; } //  ApplicationId - FK__aspnet_Us__Appli__0DAF0CB0
+        public virtual AspnetApplications AspnetApplications { get; set; } //  ApplicationId - FK__aspnet_Us__Appli__0DAF0CB0
 
         public AspnetUsers()
         {
@@ -274,8 +274,8 @@ namespace EntityFramework_Reverse_POCO_Generator
         public Guid RoleId { get; set; } // RoleId
 
         // Foreign keys
-        public virtual AspnetUsers UserFk { get; set; } //  UserId - FK__aspnet_Us__UserI__49C3F6B7
-        public virtual AspnetRoles RoleFk { get; set; } //  RoleId - FK__aspnet_Us__RoleI__4AB81AF0
+        public virtual AspnetUsers AspnetUsers { get; set; } //  UserId - FK__aspnet_Us__UserI__49C3F6B7
+        public virtual AspnetRoles AspnetRoles { get; set; } //  RoleId - FK__aspnet_Us__RoleI__4AB81AF0
     }
 
     // aspnet_WebEvent_Events
@@ -448,8 +448,8 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.Comment).HasColumnName("Comment").IsOptional().HasMaxLength(1073741823);
 
             // Foreign keys
-            HasRequired(a => a.ApplicationFk).WithRequiredDependent(); // FK__aspnet_Me__Appli__21B6055D
-            HasRequired(a => a.UserFk).WithRequiredDependent(); // FK__aspnet_Me__UserI__22AA2996
+            HasRequired(a => a.AspnetApplications).WithRequiredDependent(); // FK__aspnet_Me__Appli__21B6055D
+            HasRequired(a => a.AspnetUsers).WithRequiredDependent(); // FK__aspnet_Me__UserI__22AA2996
         }
     }
 
@@ -467,7 +467,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.LoweredPath).HasColumnName("LoweredPath").IsRequired().HasMaxLength(256);
 
             // Foreign keys
-            HasRequired(a => a.ApplicationFk).WithRequiredDependent(); // FK__aspnet_Pa__Appli__5AEE82B9
+            HasRequired(a => a.AspnetApplications).WithRequiredDependent(); // FK__aspnet_Pa__Appli__5AEE82B9
         }
     }
 
@@ -484,7 +484,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.LastUpdatedDate).HasColumnName("LastUpdatedDate").IsRequired();
 
             // Foreign keys
-            HasRequired(a => a.PathFk).WithRequiredDependent(); // FK__aspnet_Pe__PathI__628FA481
+            HasRequired(a => a.AspnetPaths).WithRequiredDependent(); // FK__aspnet_Pe__PathI__628FA481
         }
     }
 
@@ -503,8 +503,8 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.LastUpdatedDate).HasColumnName("LastUpdatedDate").IsRequired();
 
             // Foreign keys
-            HasOptional(a => a.PathFk); // FK__aspnet_Pe__PathI__68487DD7
-            HasOptional(a => a.UserFk); // FK__aspnet_Pe__UserI__693CA210
+            HasOptional(a => a.AspnetPaths); // FK__aspnet_Pe__PathI__68487DD7
+            HasOptional(a => a.AspnetUsers); // FK__aspnet_Pe__UserI__693CA210
         }
     }
 
@@ -523,7 +523,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.LastUpdatedDate).HasColumnName("LastUpdatedDate").IsRequired();
 
             // Foreign keys
-            HasRequired(a => a.UserFk).WithRequiredDependent(); // FK__aspnet_Pr__UserI__38996AB5
+            HasRequired(a => a.AspnetUsers).WithRequiredDependent(); // FK__aspnet_Pr__UserI__38996AB5
         }
     }
 
@@ -542,7 +542,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.Description).HasColumnName("Description").IsOptional().HasMaxLength(256);
 
             // Foreign keys
-            HasRequired(a => a.ApplicationFk).WithRequiredDependent(); // FK__aspnet_Ro__Appli__440B1D61
+            HasRequired(a => a.AspnetApplications).WithRequiredDependent(); // FK__aspnet_Ro__Appli__440B1D61
         }
     }
 
@@ -577,7 +577,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.LastActivityDate).HasColumnName("LastActivityDate").IsRequired();
 
             // Foreign keys
-            HasRequired(a => a.ApplicationFk).WithRequiredDependent(); // FK__aspnet_Us__Appli__0DAF0CB0
+            HasRequired(a => a.AspnetApplications).WithRequiredDependent(); // FK__aspnet_Us__Appli__0DAF0CB0
         }
     }
 
@@ -593,8 +593,8 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.RoleId).HasColumnName("RoleId").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
 
             // Foreign keys
-            HasRequired(a => a.UserFk).WithRequiredDependent(); // FK__aspnet_Us__UserI__49C3F6B7
-            HasRequired(a => a.RoleFk).WithRequiredDependent(); // FK__aspnet_Us__RoleI__4AB81AF0
+            HasRequired(a => a.AspnetUsers).WithRequiredDependent(); // FK__aspnet_Us__UserI__49C3F6B7
+            HasRequired(a => a.AspnetRoles).WithRequiredDependent(); // FK__aspnet_Us__RoleI__4AB81AF0
         }
     }
 
