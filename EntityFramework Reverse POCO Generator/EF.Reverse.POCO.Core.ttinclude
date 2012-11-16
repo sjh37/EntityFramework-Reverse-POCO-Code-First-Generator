@@ -1463,10 +1463,14 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
             public bool HasNullableColumns;
 
             public List<Column> Columns;
+            public List<string> ReverseNavigationProperty;
+            public List<string> ReverseNavigationConfiguration;
 
             public Table()
             {
                 Columns = new List<Column>();
+                ReverseNavigationProperty = new List<string>();
+                ReverseNavigationConfiguration = new List<string>();
             }
 
             public IEnumerable<Column> PrimaryKeys

@@ -59,6 +59,18 @@ foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal))
 #>
         <#=col.Entity #>
 <# } #>
+<#
+if(tbl.ReverseNavigationProperty.Count() > 0)
+{
+#>
+
+        // Reverse navigation
+<#
+foreach(string s in tbl.ReverseNavigationProperty)
+{
+#>
+            <#=s #>;
+<# } } #>
 <# if(tbl.HasForeignKey) { #>
 
         // Foreign keys
@@ -108,6 +120,18 @@ foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal))
 #>
             <#=col.Config #>
 <# } #>
+<#
+if(tbl.ReverseNavigationConfiguration.Count() > 0)
+{
+#>
+
+        // Reverse navigation
+<#
+foreach(string s in tbl.ReverseNavigationConfiguration)
+{
+#>
+            <#=s #>;
+<# } } #>
 <# if(tbl.HasForeignKey) { #>
 
             // Foreign keys
