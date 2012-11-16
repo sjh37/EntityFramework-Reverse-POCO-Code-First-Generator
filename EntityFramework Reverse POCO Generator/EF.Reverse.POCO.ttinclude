@@ -68,6 +68,21 @@ foreach(Column col in from c in tbl.Columns.OrderBy(x => x.Ordinal) where c.Enti
 #>
         <#=col.EntityFk #>
 <# } } #>
+<# 
+if(tbl.Columns.Where(c => c.Default != string.Empty).Count() > 0) 
+{ 
+#>
+
+        public <#=tbl.NameHumanCase#>()
+        {
+<#
+foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal).Where(c => c.Default != string.Empty))
+{
+#>
+            <#=col.PropertyNameHumanCase #> = <#=col.Default #>;
+<# } #>
+        }
+<# } #>
     }
 
 <# } #>

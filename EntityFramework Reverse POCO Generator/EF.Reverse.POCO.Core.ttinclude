@@ -354,6 +354,138 @@
                 SetupEntity();
                 SetupConfig();
             }
+
+            public void CleanUpDefault()
+            {
+                if (string.IsNullOrEmpty(Default))
+                    return;
+
+                while (Default.First() == '(' && Default.Last() == ')')
+                {
+                    Default = Default.Substring(1, Default.Length - 2);
+                }
+
+                if (Default.First() == '\'' && Default.Last() == '\'' && Default.Length > 1)
+                    Default = string.Format("\"{0}\"", Default.Substring(1, Default.Length - 2));
+
+                switch (PropertyType.ToLower())
+                {
+                    case "bool":
+                        Default = (Default == "0") ? "false" : "true";
+                        break;
+
+                    case "string":
+                    case "datetime":
+                    case "timespan":
+                        if(Default.First() != '"')
+                            Default = string.Format("\"{0}\"", Default);
+                        if(Default.Contains('\\'))
+                            Default = "@" + Default;
+                        break;
+
+                    case "long":
+                    case "short":
+                    case "int":
+                    case "double":
+                    case "float":
+                    case "decimal":
+                    case "byte":
+                    case "guid":
+                        if(Default.First() == '\"' && Default.Last() == '\"' && Default.Length > 1)
+                            Default = Default.Substring(1, Default.Length - 2);
+                        break;
+
+                    case "byte[]":
+                    case "microsoft.sqlserver.types.sqlgeography":
+                    case "microsoft.sqlserver.types.sqlgeometry":
+                        Default = string.Empty;
+                        break;
+                }
+
+                if (string.IsNullOrWhiteSpace(Default))
+                    return;
+
+                // Validate default
+                switch(PropertyType.ToLower())
+                {
+                    case "long":
+                        long l;
+                        if (!long.TryParse(Default, out l))
+                            Default = string.Empty;
+                        break;
+                    
+                    case "short":
+                        short s;
+                        if (!short.TryParse(Default, out s))
+                            Default = string.Empty;
+                        break;
+
+                  case "int":
+                        int i;
+                        if(!int.TryParse(Default, out i))
+                            Default = string.Empty;
+                        break;
+
+                  case "datetime":
+                        DateTime dt;
+                        if(!DateTime.TryParse(Default, out dt))
+                            Default = string.Empty;
+                        else
+                            Default = string.Format("DateTime.Parse({0})", Default);
+                        break;
+
+                  case "timespan":
+                        TimeSpan ts;
+                        if(!TimeSpan.TryParse(Default, out ts))
+                            Default = string.Empty;
+                        else
+                            Default = string.Format("TimeSpan.Parse({0})", Default);
+                        break;
+
+                  case "double":
+                        double d;
+                        if(!double.TryParse(Default, out d))
+                            Default = string.Empty;
+                        break;
+
+                  case "float":
+                        float f;
+                        if(!float.TryParse(Default, out f))
+                            Default = string.Empty;
+                        break;
+
+                  case "decimal":
+                        decimal dec;
+                        if(!decimal.TryParse(Default, out dec))
+                            Default = string.Empty;
+                        break;
+
+                  case "byte":
+                        byte b;
+                        if(!byte.TryParse(Default, out b))
+                            Default = string.Empty;
+                        break;
+
+                  case "bool":
+                        bool x;
+                        if(!bool.TryParse(Default, out x))
+                            Default = string.Empty;
+                        break;
+
+                    case "guid":
+                        if(Default.ToLower() == "newid()" || Default.ToLower() == "newsequentialid()")
+                            Default = "Guid.NewGuid()";
+                        break;
+                }
+
+                // Append type letters
+                switch(PropertyType.ToLower())
+                {
+                    case "decimal":
+                        Default = Default + "m";
+                        break;
+                }
+            }
         }
 
         #endregion
@@ -1135,10 +1267,9 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                                 fkName = fkCol.PropertyNameHumanCase + "Fk";
 
                             fkCol.EntityFk = string.Format("public virtual {0} {1} {2} {3}", pkTableHumanCase, fkName, "{ get; set; } // ",
-                                                           fkCol.PropertyNameHumanCase + " - " + constraintNameHumanCase);
+                                                           fkCol.PropertyNameHumanCase + " - " + constraintName);
 
                             fkCol.ConfigFk = string.Format("{0}; // {1}", GetRelationship(fkCol, pkCol, fkName), constraintName);
-                            fkCol.ConfigFk += string.Format(" pkCol.IsPrimaryKey={0} fkCol.IsNullable={1} {2}.{3}", pkCol.IsPrimaryKey, fkCol.IsNullable, pkTable.Name, pkCol.Name);
                         }
                     }
                 }
@@ -1183,8 +1314,10 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
             private static string GetWithMethod(Column fkCol, Column pkCol)
             {
                 // Check multiplicity
-                if(pkCol.IsPrimaryKey && !fkCol.IsNullable)
-                        return ".WithRequiredDependent()";
+                if (pkCol.IsPrimaryKey)
+                {
+                    return !fkCol.IsNullable ? ".WithRequiredDependent()" : string.Empty;
+                }
 
                 return string.Format(".WithMany().HasForeignKey(b => b.{0})", fkCol.PropertyNameHumanCase);
             }
@@ -1209,6 +1342,7 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                     IsStoreGenerated = rdr["IsStoreGenerated"].ToString().Trim().ToLower() == "true",
                     IsPrimaryKey = rdr["PrimaryKey"].ToString().Trim().ToLower() == "true"
                 };
+                col.CleanUpDefault();
                 col.PropertyName = CleanUp(col.Name);
                 col.PropertyName = rxClean.Replace(col.PropertyName, "_$1");
 
