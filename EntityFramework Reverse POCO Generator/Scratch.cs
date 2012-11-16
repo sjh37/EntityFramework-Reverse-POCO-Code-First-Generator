@@ -885,8 +885,6 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         #endregion
 
-        #region Nested type: SqlServerSchemaReader
-
         private class SqlServerSchemaReader : SchemaReader
         {
             private const string TableSQL = @"
@@ -1263,53 +1261,59 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
 
                 Cmd.CommandText = ForeignKeySQL;
 
-                using(Cmd)
+                var fkList = new List<ForeignKey>();
+                using (Cmd)
                 {
-                    using(DbDataReader rdr = Cmd.ExecuteReader())
+                    using (DbDataReader rdr = Cmd.ExecuteReader())
                     {
-                        while(rdr.Read())
+                        while (rdr.Read())
                         {
                             string fkTableName = rdr["FK_Table"].ToString();
                             string fkSchema = rdr["fkSchema"].ToString();
-                            Table fkTable = result.GetTable(fkTableName, fkSchema);
-                            if(fkTable == null)
-                                continue;
-
                             string pkTableName = rdr["PK_Table"].ToString();
                             string pkSchema = rdr["pkSchema"].ToString();
-                            Table pkTable = result.GetTable(pkTableName, pkSchema);
-                            if(pkTable == null)
-                                continue;
-
                             string fkColumn = rdr["FK_Column"].ToString();
-                            Column fkCol = fkTable.Columns.Find(n => n.PropertyName == fkColumn);
-                            if(fkCol == null)
-                                continue;
-
                             string pkColumn = rdr["PK_Column"].ToString();
-                            Column pkCol = pkTable.Columns.Find(n => n.PropertyName == pkColumn);
-                            if(pkCol == null)
-                                continue;
-
-                            fkTable.HasForeignKey = true;
                             string constraintName = rdr["Constraint_Name"].ToString();
-
-                            string pkTableHumanCase = Inflector.ToTitleCase(pkTableName).Replace(" ", "").Replace("$", "");
-                            if(string.Compare(pkSchema, "dbo", StringComparison.OrdinalIgnoreCase) != 0)
-                                pkTableHumanCase = pkSchema + "_" + pkTableHumanCase;
-
-                            string fkName;
-                            if(fkCol.PropertyNameHumanCase.EndsWith("Id"))
-                                fkName = fkCol.PropertyNameHumanCase.Substring(0, fkCol.PropertyNameHumanCase.Length - 2) + "Fk";
-                            else
-                                fkName = fkCol.PropertyNameHumanCase + "Fk";
-
-                            fkCol.EntityFk = string.Format("public virtual {0} {1} {2} {3}", pkTableHumanCase, fkName, "{ get; set; } // ",
-                                                           fkCol.PropertyNameHumanCase + " - " + constraintName);
-
-                            fkCol.ConfigFk = string.Format("{0}; // {1}", GetRelationship(fkCol, pkCol, fkName), constraintName);
+                            fkList.Add(new ForeignKey(fkTableName, fkSchema, pkTableName, pkSchema, fkColumn, pkColumn, constraintName));
                         }
                     }
+                }
+
+                foreach (var foreignKey in fkList)
+                {
+                    Table fkTable = result.GetTable(foreignKey.FkTableName, foreignKey.FkSchema);
+                    if(fkTable == null)
+                        continue;
+
+                    Table pkTable = result.GetTable(foreignKey.PkTableName, foreignKey.PkSchema);
+                    if(pkTable == null)
+                        continue;
+
+                    Column fkCol = fkTable.Columns.Find(n => n.PropertyName == foreignKey.FkColumn);
+                    if(fkCol == null)
+                        continue;
+
+                    Column pkCol = pkTable.Columns.Find(n => n.PropertyName == foreignKey.PkColumn);
+                    if(pkCol == null)
+                        continue;
+
+                    fkTable.HasForeignKey = true;
+
+                    string pkTableHumanCase = Inflector.ToTitleCase(foreignKey.PkTableName).Replace(" ", "").Replace("$", "");
+                    if(string.Compare(foreignKey.PkSchema, "dbo", StringComparison.OrdinalIgnoreCase) != 0)
+                        pkTableHumanCase = foreignKey.PkSchema + "_" + pkTableHumanCase;
+
+                    string fkName;
+                    if(fkCol.PropertyNameHumanCase.EndsWith("Id"))
+                        fkName = fkCol.PropertyNameHumanCase.Substring(0, fkCol.PropertyNameHumanCase.Length - 2) + "Fk";
+                    else
+                        fkName = fkCol.PropertyNameHumanCase + "Fk";
+
+                    fkCol.EntityFk = string.Format("public virtual {0} {1} {2} {3}", pkTableHumanCase, fkName, "{ get; set; } // ",
+                                                    fkCol.PropertyNameHumanCase + " - " + foreignKey.ConstraintName);
+
+                    fkCol.ConfigFk = string.Format("{0}; // {1}", GetRelationship(fkCol, pkCol, fkName), foreignKey.ConstraintName);
                 }
 
                 return result;
@@ -1463,9 +1467,27 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
             }
         }
 
-        #endregion
+        public class ForeignKey
+        {
+            public string FkTableName { get; private set; }
+            public string FkSchema { get; private set; }
+            public string PkTableName { get; private set; }
+            public string PkSchema { get; private set; }
+            public string FkColumn { get; private set; }
+            public string PkColumn { get; private set; }
+            public string ConstraintName { get; private set; }
 
-        #region Nested type: Table
+            public ForeignKey(string fkTableName, string fkSchema, string pkTableName, string pkSchema, string fkColumn, string pkColumn, string constraintName)
+            {
+                ConstraintName = constraintName;
+                PkColumn = pkColumn;
+                FkColumn = fkColumn;
+                PkSchema = pkSchema;
+                PkTableName = pkTableName;
+                FkSchema = fkSchema;
+                FkTableName = fkTableName;
+            }
+        }
 
         public class Table
         {
@@ -1517,11 +1539,7 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                 return Columns.SingleOrDefault(x => String.Compare(x.Name, columnName, StringComparison.OrdinalIgnoreCase) == 0);
             }
         }
-
-        #endregion
-
-        #region Nested type: Tables
-
+        
         public class Tables : List<Table>
         {
             public Table GetTable(string tableName, string schema)
@@ -1531,7 +1549,5 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                     String.Compare(x.Schema, schema, StringComparison.OrdinalIgnoreCase) == 0);
             }
         }
-
-        #endregion
     }
 }
