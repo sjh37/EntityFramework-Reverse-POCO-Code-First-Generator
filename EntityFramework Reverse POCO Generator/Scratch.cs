@@ -1284,11 +1284,11 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                 {
                     Table fkTable = result.GetTable(foreignKey.FkTableName, foreignKey.FkSchema);
                     if(fkTable == null)
-                        continue;
+                        continue;   // Could be filtered out
 
                     Table pkTable = result.GetTable(foreignKey.PkTableName, foreignKey.PkSchema);
                     if(pkTable == null)
-                        continue;
+                        continue;   // Could be filtered out
 
                     Column fkCol = fkTable.Columns.Find(n => n.PropertyName == foreignKey.FkColumn);
                     if(fkCol == null)
@@ -1305,15 +1305,16 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                         pkTableHumanCase = foreignKey.PkSchema + "_" + pkTableHumanCase;
 
                     string fkName;
-                    if(fkCol.PropertyNameHumanCase.EndsWith("Id"))
+                    if (fkCol.PropertyNameHumanCase.EndsWith("Id"))
                         fkName = fkCol.PropertyNameHumanCase.Substring(0, fkCol.PropertyNameHumanCase.Length - 2) + "Fk";
                     else
-                        fkName = fkCol.PropertyNameHumanCase + "Fk";
+                        fkName = fkCol.PropertyNameHumanCase;// +"Fk";
 
                     fkCol.EntityFk = string.Format("public virtual {0} {1} {2} {3}", pkTableHumanCase, fkName, "{ get; set; } // ",
                                                     fkCol.PropertyNameHumanCase + " - " + foreignKey.ConstraintName);
 
                     fkCol.ConfigFk = string.Format("{0}; // {1}", GetRelationship(fkCol, pkCol, fkName), foreignKey.ConstraintName);
+                    pkTable.AddReverseNavigation(fkCol, pkCol, fkName, fkTable, string.Format("{0}.{1}", fkTable.Name, foreignKey.ConstraintName));
                 }
 
                 return result;
@@ -1504,12 +1505,14 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
             public List<Column> Columns;
             public List<string> ReverseNavigationProperty;
             public List<string> ReverseNavigationConfiguration;
+            public List<string> ReverseNavigationCtor;
 
             public Table()
             {
                 Columns = new List<Column>();
                 ReverseNavigationProperty = new List<string>();
                 ReverseNavigationConfiguration = new List<string>();
+                ReverseNavigationCtor = new List<string>();
             }
 
             public IEnumerable<Column> PrimaryKeys
@@ -1541,6 +1544,27 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
             public Column GetColumn(string columnName)
             {
                 return Columns.SingleOrDefault(x => String.Compare(x.Name, columnName, StringComparison.OrdinalIgnoreCase) == 0);
+            }
+
+            public void AddReverseNavigation(Column fkCol, Column pkCol, string fkName, Table fkTable, string constraint)
+            {
+                if (pkCol.IsPrimaryKey && fkCol.IsPrimaryKey)
+                {
+                    // 1:1
+                    ReverseNavigationProperty.Add(string.Format("public virtual {0} {0} {{ get; set; }} // {1}", fkTable.NameHumanCase, constraint));
+                    return;
+                }
+
+                if (pkCol.IsPrimaryKey)
+                {
+                    // 1:n
+                    ReverseNavigationProperty.Add(string.Format("public virtual ICollection<{0}> {0} {{ get; set; }} // {1}", fkTable.NameHumanCase, constraint));
+                    ReverseNavigationCtor.Add(string.Format("{0} = new List<{0}>();", fkTable.NameHumanCase));
+                    return;
+                }
+
+                // n:1
+                ReverseNavigationProperty.Add("// todo - " + constraint);
             }
         }
         

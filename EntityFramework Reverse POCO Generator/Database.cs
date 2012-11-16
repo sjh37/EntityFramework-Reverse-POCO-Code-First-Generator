@@ -9,6 +9,7 @@
 //     Connection String:      "Data Source=(local);Initial Catalog=aspnetdb;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator"
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration;
@@ -87,257 +88,314 @@ namespace EntityFramework_Reverse_POCO_Generator
     // aspnet_Applications
     public class AspnetApplications
     {
-        public virtual string ApplicationName { get; set; } // ApplicationName
-        public virtual string LoweredApplicationName { get; set; } // LoweredApplicationName
-        public virtual Guid ApplicationId { get; set; } // ApplicationId
-        public virtual string Description { get; set; } // Description
+        public string ApplicationName { get; set; } // ApplicationName
+        public string LoweredApplicationName { get; set; } // LoweredApplicationName
+        public Guid ApplicationId { get; set; } // ApplicationId
+        public string Description { get; set; } // Description
+
+        // Reverse navigation
+        public virtual ICollection<AspnetMembership> AspnetMembership { get; set; } // aspnet_Membership.FK__aspnet_Me__Appli__21B6055D;
+        public virtual ICollection<AspnetPaths> AspnetPaths { get; set; } // aspnet_Paths.FK__aspnet_Pa__Appli__5AEE82B9;
+        public virtual ICollection<AspnetRoles> AspnetRoles { get; set; } // aspnet_Roles.FK__aspnet_Ro__Appli__440B1D61;
+        public virtual ICollection<AspnetUsers> AspnetUsers { get; set; } // aspnet_Users.FK__aspnet_Us__Appli__0DAF0CB0;
+
+        public AspnetApplications()
+        {
+            ApplicationId = Guid.NewGuid();
+            AspnetMembership = new List<AspnetMembership>();
+            AspnetPaths = new List<AspnetPaths>();
+            AspnetRoles = new List<AspnetRoles>();
+            AspnetUsers = new List<AspnetUsers>();
+        }
     }
 
     // aspnet_Membership
     public class AspnetMembership
     {
-        public virtual Guid ApplicationId { get; set; } // ApplicationId
-        public virtual Guid UserId { get; set; } // UserId
-        public virtual string Password { get; set; } // Password
-        public virtual int PasswordFormat { get; set; } // PasswordFormat
-        public virtual string PasswordSalt { get; set; } // PasswordSalt
-        public virtual string MobilePin { get; set; } // MobilePIN
-        public virtual string Email { get; set; } // Email
-        public virtual string LoweredEmail { get; set; } // LoweredEmail
-        public virtual string PasswordQuestion { get; set; } // PasswordQuestion
-        public virtual string PasswordAnswer { get; set; } // PasswordAnswer
-        public virtual bool IsApproved { get; set; } // IsApproved
-        public virtual bool IsLockedOut { get; set; } // IsLockedOut
-        public virtual DateTime CreateDate { get; set; } // CreateDate
-        public virtual DateTime LastLoginDate { get; set; } // LastLoginDate
-        public virtual DateTime LastPasswordChangedDate { get; set; } // LastPasswordChangedDate
-        public virtual DateTime LastLockoutDate { get; set; } // LastLockoutDate
-        public virtual int FailedPasswordAttemptCount { get; set; } // FailedPasswordAttemptCount
-        public virtual DateTime FailedPasswordAttemptWindowStart { get; set; } // FailedPasswordAttemptWindowStart
-        public virtual int FailedPasswordAnswerAttemptCount { get; set; } // FailedPasswordAnswerAttemptCount
-        public virtual DateTime FailedPasswordAnswerAttemptWindowStart { get; set; } // FailedPasswordAnswerAttemptWindowStart
-        public virtual string Comment { get; set; } // Comment
+        public Guid ApplicationId { get; set; } // ApplicationId
+        public Guid UserId { get; set; } // UserId
+        public string Password { get; set; } // Password
+        public int PasswordFormat { get; set; } // PasswordFormat
+        public string PasswordSalt { get; set; } // PasswordSalt
+        public string MobilePin { get; set; } // MobilePIN
+        public string Email { get; set; } // Email
+        public string LoweredEmail { get; set; } // LoweredEmail
+        public string PasswordQuestion { get; set; } // PasswordQuestion
+        public string PasswordAnswer { get; set; } // PasswordAnswer
+        public bool IsApproved { get; set; } // IsApproved
+        public bool IsLockedOut { get; set; } // IsLockedOut
+        public DateTime CreateDate { get; set; } // CreateDate
+        public DateTime LastLoginDate { get; set; } // LastLoginDate
+        public DateTime LastPasswordChangedDate { get; set; } // LastPasswordChangedDate
+        public DateTime LastLockoutDate { get; set; } // LastLockoutDate
+        public int FailedPasswordAttemptCount { get; set; } // FailedPasswordAttemptCount
+        public DateTime FailedPasswordAttemptWindowStart { get; set; } // FailedPasswordAttemptWindowStart
+        public int FailedPasswordAnswerAttemptCount { get; set; } // FailedPasswordAnswerAttemptCount
+        public DateTime FailedPasswordAnswerAttemptWindowStart { get; set; } // FailedPasswordAnswerAttemptWindowStart
+        public string Comment { get; set; } // Comment
 
         // Foreign keys
-        public virtual AspnetApplications ApplicationFk { get; set; } //  ApplicationId - FkAspnetMeAppli21B6055D
-        public virtual AspnetUsers UserFk { get; set; } //  UserId - FkAspnetMeUserI22Aa2996
+        public virtual AspnetApplications ApplicationFk { get; set; } //  ApplicationId - FK__aspnet_Me__Appli__21B6055D
+        public virtual AspnetUsers UserFk { get; set; } //  UserId - FK__aspnet_Me__UserI__22AA2996
+
+        public AspnetMembership()
+        {
+            PasswordFormat = 0;
+        }
     }
 
     // aspnet_Paths
     public class AspnetPaths
     {
-        public virtual Guid ApplicationId { get; set; } // ApplicationId
-        public virtual Guid PathId { get; set; } // PathId
-        public virtual string Path { get; set; } // Path
-        public virtual string LoweredPath { get; set; } // LoweredPath
+        public Guid ApplicationId { get; set; } // ApplicationId
+        public Guid PathId { get; set; } // PathId
+        public string Path { get; set; } // Path
+        public string LoweredPath { get; set; } // LoweredPath
+
+        // Reverse navigation
+        public virtual AspnetPersonalizationAllUsers AspnetPersonalizationAllUsers { get; set; } // aspnet_PersonalizationAllUsers.FK__aspnet_Pe__PathI__628FA481;
+        public virtual ICollection<AspnetPersonalizationPerUser> AspnetPersonalizationPerUser { get; set; } // aspnet_PersonalizationPerUser.FK__aspnet_Pe__PathI__68487DD7;
 
         // Foreign keys
-        public virtual AspnetApplications ApplicationFk { get; set; } //  ApplicationId - FkAspnetPaAppli5Aee82B9
+        public virtual AspnetApplications ApplicationFk { get; set; } //  ApplicationId - FK__aspnet_Pa__Appli__5AEE82B9
+
+        public AspnetPaths()
+        {
+            PathId = Guid.NewGuid();
+            AspnetPersonalizationPerUser = new List<AspnetPersonalizationPerUser>();
+        }
     }
 
     // aspnet_PersonalizationAllUsers
     public class AspnetPersonalizationAllUsers
     {
-        public virtual Guid PathId { get; set; } // PathId
-        public virtual byte[] PageSettings { get; set; } // PageSettings
-        public virtual DateTime LastUpdatedDate { get; set; } // LastUpdatedDate
+        public Guid PathId { get; set; } // PathId
+        public byte[] PageSettings { get; set; } // PageSettings
+        public DateTime LastUpdatedDate { get; set; } // LastUpdatedDate
 
         // Foreign keys
-        public virtual AspnetPaths PathFk { get; set; } //  PathId - FkAspnetPePathI628Fa481
+        public virtual AspnetPaths PathFk { get; set; } //  PathId - FK__aspnet_Pe__PathI__628FA481
     }
 
     // aspnet_PersonalizationPerUser
     public class AspnetPersonalizationPerUser
     {
-        public virtual Guid Id { get; set; } // Id
-        public virtual Guid? PathId { get; set; } // PathId
-        public virtual Guid? UserId { get; set; } // UserId
-        public virtual byte[] PageSettings { get; set; } // PageSettings
-        public virtual DateTime LastUpdatedDate { get; set; } // LastUpdatedDate
+        public Guid Id { get; set; } // Id
+        public Guid? PathId { get; set; } // PathId
+        public Guid? UserId { get; set; } // UserId
+        public byte[] PageSettings { get; set; } // PageSettings
+        public DateTime LastUpdatedDate { get; set; } // LastUpdatedDate
 
         // Foreign keys
-        public virtual AspnetPaths PathFk { get; set; } //  PathId - FkAspnetPePathI68487Dd7
-        public virtual AspnetUsers UserFk { get; set; } //  UserId - FkAspnetPeUserI693Ca210
+        public virtual AspnetPaths PathFk { get; set; } //  PathId - FK__aspnet_Pe__PathI__68487DD7
+        public virtual AspnetUsers UserFk { get; set; } //  UserId - FK__aspnet_Pe__UserI__693CA210
+
+        public AspnetPersonalizationPerUser()
+        {
+            Id = Guid.NewGuid();
+        }
     }
 
     // aspnet_Profile
     public class AspnetProfile
     {
-        public virtual Guid UserId { get; set; } // UserId
-        public virtual string PropertyNames { get; set; } // PropertyNames
-        public virtual string PropertyValuesString { get; set; } // PropertyValuesString
-        public virtual byte[] PropertyValuesBinary { get; set; } // PropertyValuesBinary
-        public virtual DateTime LastUpdatedDate { get; set; } // LastUpdatedDate
+        public Guid UserId { get; set; } // UserId
+        public string PropertyNames { get; set; } // PropertyNames
+        public string PropertyValuesString { get; set; } // PropertyValuesString
+        public byte[] PropertyValuesBinary { get; set; } // PropertyValuesBinary
+        public DateTime LastUpdatedDate { get; set; } // LastUpdatedDate
 
         // Foreign keys
-        public virtual AspnetUsers UserFk { get; set; } //  UserId - FkAspnetPrUserI38996Ab5
+        public virtual AspnetUsers UserFk { get; set; } //  UserId - FK__aspnet_Pr__UserI__38996AB5
     }
 
     // aspnet_Roles
     public class AspnetRoles
     {
-        public virtual Guid ApplicationId { get; set; } // ApplicationId
-        public virtual Guid RoleId { get; set; } // RoleId
-        public virtual string RoleName { get; set; } // RoleName
-        public virtual string LoweredRoleName { get; set; } // LoweredRoleName
-        public virtual string Description { get; set; } // Description
+        public Guid ApplicationId { get; set; } // ApplicationId
+        public Guid RoleId { get; set; } // RoleId
+        public string RoleName { get; set; } // RoleName
+        public string LoweredRoleName { get; set; } // LoweredRoleName
+        public string Description { get; set; } // Description
+
+        // Reverse navigation
+        public virtual AspnetUsersInRoles AspnetUsersInRoles { get; set; } // aspnet_UsersInRoles.FK__aspnet_Us__RoleI__4AB81AF0;
 
         // Foreign keys
-        public virtual AspnetApplications ApplicationFk { get; set; } //  ApplicationId - FkAspnetRoAppli440B1D61
+        public virtual AspnetApplications ApplicationFk { get; set; } //  ApplicationId - FK__aspnet_Ro__Appli__440B1D61
+
+        public AspnetRoles()
+        {
+            RoleId = Guid.NewGuid();
+        }
     }
 
     // aspnet_SchemaVersions
     public class AspnetSchemaVersions
     {
-        public virtual string Feature { get; set; } // Feature
-        public virtual string CompatibleSchemaVersion { get; set; } // CompatibleSchemaVersion
-        public virtual bool IsCurrentVersion { get; set; } // IsCurrentVersion
+        public string Feature { get; set; } // Feature
+        public string CompatibleSchemaVersion { get; set; } // CompatibleSchemaVersion
+        public bool IsCurrentVersion { get; set; } // IsCurrentVersion
     }
 
     // aspnet_Users
     public class AspnetUsers
     {
-        public virtual Guid ApplicationId { get; set; } // ApplicationId
-        public virtual Guid UserId { get; set; } // UserId
-        public virtual string UserName { get; set; } // UserName
-        public virtual string LoweredUserName { get; set; } // LoweredUserName
-        public virtual string MobileAlias { get; set; } // MobileAlias
-        public virtual bool IsAnonymous { get; set; } // IsAnonymous
-        public virtual DateTime LastActivityDate { get; set; } // LastActivityDate
+        public Guid ApplicationId { get; set; } // ApplicationId
+        public Guid UserId { get; set; } // UserId
+        public string UserName { get; set; } // UserName
+        public string LoweredUserName { get; set; } // LoweredUserName
+        public string MobileAlias { get; set; } // MobileAlias
+        public bool IsAnonymous { get; set; } // IsAnonymous
+        public DateTime LastActivityDate { get; set; } // LastActivityDate
+
+        // Reverse navigation
+        public virtual AspnetMembership AspnetMembership { get; set; } // aspnet_Membership.FK__aspnet_Me__UserI__22AA2996;
+        public virtual ICollection<AspnetPersonalizationPerUser> AspnetPersonalizationPerUser { get; set; } // aspnet_PersonalizationPerUser.FK__aspnet_Pe__UserI__693CA210;
+        public virtual AspnetProfile AspnetProfile { get; set; } // aspnet_Profile.FK__aspnet_Pr__UserI__38996AB5;
+        public virtual AspnetUsersInRoles AspnetUsersInRoles { get; set; } // aspnet_UsersInRoles.FK__aspnet_Us__UserI__49C3F6B7;
 
         // Foreign keys
-        public virtual AspnetApplications ApplicationFk { get; set; } //  ApplicationId - FkAspnetUsAppli0Daf0Cb0
+        public virtual AspnetApplications ApplicationFk { get; set; } //  ApplicationId - FK__aspnet_Us__Appli__0DAF0CB0
+
+        public AspnetUsers()
+        {
+            UserId = Guid.NewGuid();
+            MobileAlias = "NULL";
+            IsAnonymous = false;
+            AspnetPersonalizationPerUser = new List<AspnetPersonalizationPerUser>();
+        }
     }
 
     // aspnet_UsersInRoles
     public class AspnetUsersInRoles
     {
-        public virtual Guid UserId { get; set; } // UserId
-        public virtual Guid RoleId { get; set; } // RoleId
+        public Guid UserId { get; set; } // UserId
+        public Guid RoleId { get; set; } // RoleId
 
         // Foreign keys
-        public virtual AspnetUsers UserFk { get; set; } //  UserId - FkAspnetUsUserI49C3F6B7
-        public virtual AspnetRoles RoleFk { get; set; } //  RoleId - FkAspnetUsRoleI4Ab81Af0
+        public virtual AspnetUsers UserFk { get; set; } //  UserId - FK__aspnet_Us__UserI__49C3F6B7
+        public virtual AspnetRoles RoleFk { get; set; } //  RoleId - FK__aspnet_Us__RoleI__4AB81AF0
     }
 
     // aspnet_WebEvent_Events
     public class AspnetWebEventEvents
     {
-        public virtual string EventId { get; set; } // EventId
-        public virtual DateTime EventTimeUtc { get; set; } // EventTimeUtc
-        public virtual DateTime EventTime { get; set; } // EventTime
-        public virtual string EventType { get; set; } // EventType
-        public virtual decimal EventSequence { get; set; } // EventSequence
-        public virtual decimal EventOccurrence { get; set; } // EventOccurrence
-        public virtual int EventCode { get; set; } // EventCode
-        public virtual int EventDetailCode { get; set; } // EventDetailCode
-        public virtual string Message { get; set; } // Message
-        public virtual string ApplicationPath { get; set; } // ApplicationPath
-        public virtual string ApplicationVirtualPath { get; set; } // ApplicationVirtualPath
-        public virtual string MachineName { get; set; } // MachineName
-        public virtual string RequestUrl { get; set; } // RequestUrl
-        public virtual string ExceptionType { get; set; } // ExceptionType
-        public virtual string Details { get; set; } // Details
+        public string EventId { get; set; } // EventId
+        public DateTime EventTimeUtc { get; set; } // EventTimeUtc
+        public DateTime EventTime { get; set; } // EventTime
+        public string EventType { get; set; } // EventType
+        public decimal EventSequence { get; set; } // EventSequence
+        public decimal EventOccurrence { get; set; } // EventOccurrence
+        public int EventCode { get; set; } // EventCode
+        public int EventDetailCode { get; set; } // EventDetailCode
+        public string Message { get; set; } // Message
+        public string ApplicationPath { get; set; } // ApplicationPath
+        public string ApplicationVirtualPath { get; set; } // ApplicationVirtualPath
+        public string MachineName { get; set; } // MachineName
+        public string RequestUrl { get; set; } // RequestUrl
+        public string ExceptionType { get; set; } // ExceptionType
+        public string Details { get; set; } // Details
     }
 
     // vw_aspnet_Applications
     public class VwAspnetApplications
     {
-        public virtual string ApplicationName { get; set; } // ApplicationName
-        public virtual string LoweredApplicationName { get; set; } // LoweredApplicationName
-        public virtual Guid ApplicationId { get; set; } // ApplicationId
-        public virtual string Description { get; set; } // Description
+        public string ApplicationName { get; set; } // ApplicationName
+        public string LoweredApplicationName { get; set; } // LoweredApplicationName
+        public Guid ApplicationId { get; set; } // ApplicationId
+        public string Description { get; set; } // Description
     }
 
     // vw_aspnet_MembershipUsers
     public class VwAspnetMembershipUsers
     {
-        public virtual Guid UserId { get; set; } // UserId
-        public virtual int PasswordFormat { get; set; } // PasswordFormat
-        public virtual string MobilePin { get; set; } // MobilePIN
-        public virtual string Email { get; set; } // Email
-        public virtual string LoweredEmail { get; set; } // LoweredEmail
-        public virtual string PasswordQuestion { get; set; } // PasswordQuestion
-        public virtual string PasswordAnswer { get; set; } // PasswordAnswer
-        public virtual bool IsApproved { get; set; } // IsApproved
-        public virtual bool IsLockedOut { get; set; } // IsLockedOut
-        public virtual DateTime CreateDate { get; set; } // CreateDate
-        public virtual DateTime LastLoginDate { get; set; } // LastLoginDate
-        public virtual DateTime LastPasswordChangedDate { get; set; } // LastPasswordChangedDate
-        public virtual DateTime LastLockoutDate { get; set; } // LastLockoutDate
-        public virtual int FailedPasswordAttemptCount { get; set; } // FailedPasswordAttemptCount
-        public virtual DateTime FailedPasswordAttemptWindowStart { get; set; } // FailedPasswordAttemptWindowStart
-        public virtual int FailedPasswordAnswerAttemptCount { get; set; } // FailedPasswordAnswerAttemptCount
-        public virtual DateTime FailedPasswordAnswerAttemptWindowStart { get; set; } // FailedPasswordAnswerAttemptWindowStart
-        public virtual string Comment { get; set; } // Comment
-        public virtual Guid ApplicationId { get; set; } // ApplicationId
-        public virtual string UserName { get; set; } // UserName
-        public virtual string MobileAlias { get; set; } // MobileAlias
-        public virtual bool IsAnonymous { get; set; } // IsAnonymous
-        public virtual DateTime LastActivityDate { get; set; } // LastActivityDate
+        public Guid UserId { get; set; } // UserId
+        public int PasswordFormat { get; set; } // PasswordFormat
+        public string MobilePin { get; set; } // MobilePIN
+        public string Email { get; set; } // Email
+        public string LoweredEmail { get; set; } // LoweredEmail
+        public string PasswordQuestion { get; set; } // PasswordQuestion
+        public string PasswordAnswer { get; set; } // PasswordAnswer
+        public bool IsApproved { get; set; } // IsApproved
+        public bool IsLockedOut { get; set; } // IsLockedOut
+        public DateTime CreateDate { get; set; } // CreateDate
+        public DateTime LastLoginDate { get; set; } // LastLoginDate
+        public DateTime LastPasswordChangedDate { get; set; } // LastPasswordChangedDate
+        public DateTime LastLockoutDate { get; set; } // LastLockoutDate
+        public int FailedPasswordAttemptCount { get; set; } // FailedPasswordAttemptCount
+        public DateTime FailedPasswordAttemptWindowStart { get; set; } // FailedPasswordAttemptWindowStart
+        public int FailedPasswordAnswerAttemptCount { get; set; } // FailedPasswordAnswerAttemptCount
+        public DateTime FailedPasswordAnswerAttemptWindowStart { get; set; } // FailedPasswordAnswerAttemptWindowStart
+        public string Comment { get; set; } // Comment
+        public Guid ApplicationId { get; set; } // ApplicationId
+        public string UserName { get; set; } // UserName
+        public string MobileAlias { get; set; } // MobileAlias
+        public bool IsAnonymous { get; set; } // IsAnonymous
+        public DateTime LastActivityDate { get; set; } // LastActivityDate
     }
 
     // vw_aspnet_Profiles
     public class VwAspnetProfiles
     {
-        public virtual Guid UserId { get; set; } // UserId
-        public virtual DateTime LastUpdatedDate { get; set; } // LastUpdatedDate
-        public virtual int? DataSize { get; set; } // DataSize
+        public Guid UserId { get; set; } // UserId
+        public DateTime LastUpdatedDate { get; set; } // LastUpdatedDate
+        public int? DataSize { get; set; } // DataSize
     }
 
     // vw_aspnet_Roles
     public class VwAspnetRoles
     {
-        public virtual Guid ApplicationId { get; set; } // ApplicationId
-        public virtual Guid RoleId { get; set; } // RoleId
-        public virtual string RoleName { get; set; } // RoleName
-        public virtual string LoweredRoleName { get; set; } // LoweredRoleName
-        public virtual string Description { get; set; } // Description
+        public Guid ApplicationId { get; set; } // ApplicationId
+        public Guid RoleId { get; set; } // RoleId
+        public string RoleName { get; set; } // RoleName
+        public string LoweredRoleName { get; set; } // LoweredRoleName
+        public string Description { get; set; } // Description
     }
 
     // vw_aspnet_Users
     public class VwAspnetUsers
     {
-        public virtual Guid ApplicationId { get; set; } // ApplicationId
-        public virtual Guid UserId { get; set; } // UserId
-        public virtual string UserName { get; set; } // UserName
-        public virtual string LoweredUserName { get; set; } // LoweredUserName
-        public virtual string MobileAlias { get; set; } // MobileAlias
-        public virtual bool IsAnonymous { get; set; } // IsAnonymous
-        public virtual DateTime LastActivityDate { get; set; } // LastActivityDate
+        public Guid ApplicationId { get; set; } // ApplicationId
+        public Guid UserId { get; set; } // UserId
+        public string UserName { get; set; } // UserName
+        public string LoweredUserName { get; set; } // LoweredUserName
+        public string MobileAlias { get; set; } // MobileAlias
+        public bool IsAnonymous { get; set; } // IsAnonymous
+        public DateTime LastActivityDate { get; set; } // LastActivityDate
     }
 
     // vw_aspnet_UsersInRoles
     public class VwAspnetUsersInRoles
     {
-        public virtual Guid UserId { get; set; } // UserId
-        public virtual Guid RoleId { get; set; } // RoleId
+        public Guid UserId { get; set; } // UserId
+        public Guid RoleId { get; set; } // RoleId
     }
 
     // vw_aspnet_WebPartState_Paths
     public class VwAspnetWebPartStatePaths
     {
-        public virtual Guid ApplicationId { get; set; } // ApplicationId
-        public virtual Guid PathId { get; set; } // PathId
-        public virtual string Path { get; set; } // Path
-        public virtual string LoweredPath { get; set; } // LoweredPath
+        public Guid ApplicationId { get; set; } // ApplicationId
+        public Guid PathId { get; set; } // PathId
+        public string Path { get; set; } // Path
+        public string LoweredPath { get; set; } // LoweredPath
     }
 
     // vw_aspnet_WebPartState_Shared
     public class VwAspnetWebPartStateShared
     {
-        public virtual Guid PathId { get; set; } // PathId
-        public virtual int? DataSize { get; set; } // DataSize
-        public virtual DateTime LastUpdatedDate { get; set; } // LastUpdatedDate
+        public Guid PathId { get; set; } // PathId
+        public int? DataSize { get; set; } // DataSize
+        public DateTime LastUpdatedDate { get; set; } // LastUpdatedDate
     }
 
     // vw_aspnet_WebPartState_User
     public class VwAspnetWebPartStateUser
     {
-        public virtual Guid? PathId { get; set; } // PathId
-        public virtual Guid? UserId { get; set; } // UserId
-        public virtual int? DataSize { get; set; } // DataSize
-        public virtual DateTime LastUpdatedDate { get; set; } // LastUpdatedDate
+        public Guid? PathId { get; set; } // PathId
+        public Guid? UserId { get; set; } // UserId
+        public int? DataSize { get; set; } // DataSize
+        public DateTime LastUpdatedDate { get; set; } // LastUpdatedDate
     }
 
 
@@ -354,7 +412,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
             Property(x => x.ApplicationName).HasColumnName("ApplicationName").IsRequired().HasMaxLength(256);
             Property(x => x.LoweredApplicationName).HasColumnName("LoweredApplicationName").IsRequired().HasMaxLength(256);
-            Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
+            Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(x => x.Description).HasColumnName("Description").IsOptional().HasMaxLength(256);
         }
     }
@@ -368,7 +426,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             HasKey(x => x.UserId);
 
             Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
-            Property(x => x.UserId).HasColumnName("UserId").IsRequired();
+            Property(x => x.UserId).HasColumnName("UserId").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(x => x.Password).HasColumnName("Password").IsRequired().HasMaxLength(128);
             Property(x => x.PasswordFormat).HasColumnName("PasswordFormat").IsRequired();
             Property(x => x.PasswordSalt).HasColumnName("PasswordSalt").IsRequired().HasMaxLength(128);
@@ -390,8 +448,8 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.Comment).HasColumnName("Comment").IsOptional().HasMaxLength(1073741823);
 
             // Foreign keys
-            HasRequired(a => a.ApplicationFk).WithMany().HasForeignKey(b => b.ApplicationId); // FkAspnetMeAppli21B6055D
-            HasRequired(a => a.UserFk).WithMany().HasForeignKey(b => b.UserId); // FkAspnetMeUserI22Aa2996
+            HasRequired(a => a.ApplicationFk).WithRequiredDependent(); // FK__aspnet_Me__Appli__21B6055D
+            HasRequired(a => a.UserFk).WithRequiredDependent(); // FK__aspnet_Me__UserI__22AA2996
         }
     }
 
@@ -404,12 +462,12 @@ namespace EntityFramework_Reverse_POCO_Generator
             HasKey(x => x.PathId);
 
             Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
-            Property(x => x.PathId).HasColumnName("PathId").IsRequired();
+            Property(x => x.PathId).HasColumnName("PathId").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(x => x.Path).HasColumnName("Path").IsRequired().HasMaxLength(256);
             Property(x => x.LoweredPath).HasColumnName("LoweredPath").IsRequired().HasMaxLength(256);
 
             // Foreign keys
-            HasRequired(a => a.ApplicationFk).WithMany().HasForeignKey(b => b.ApplicationId); // FkAspnetPaAppli5Aee82B9
+            HasRequired(a => a.ApplicationFk).WithRequiredDependent(); // FK__aspnet_Pa__Appli__5AEE82B9
         }
     }
 
@@ -421,12 +479,12 @@ namespace EntityFramework_Reverse_POCO_Generator
             ToTable("dbo.aspnet_PersonalizationAllUsers");
             HasKey(x => x.PathId);
 
-            Property(x => x.PathId).HasColumnName("PathId").IsRequired();
+            Property(x => x.PathId).HasColumnName("PathId").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(x => x.PageSettings).HasColumnName("PageSettings").IsRequired().HasMaxLength(2147483647);
             Property(x => x.LastUpdatedDate).HasColumnName("LastUpdatedDate").IsRequired();
 
             // Foreign keys
-            HasRequired(a => a.PathFk).WithMany().HasForeignKey(b => b.PathId); // FkAspnetPePathI628Fa481
+            HasRequired(a => a.PathFk).WithRequiredDependent(); // FK__aspnet_Pe__PathI__628FA481
         }
     }
 
@@ -438,15 +496,15 @@ namespace EntityFramework_Reverse_POCO_Generator
             ToTable("dbo.aspnet_PersonalizationPerUser");
             HasKey(x => x.Id);
 
-            Property(x => x.Id).HasColumnName("Id").IsRequired();
+            Property(x => x.Id).HasColumnName("Id").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(x => x.PathId).HasColumnName("PathId").IsOptional();
             Property(x => x.UserId).HasColumnName("UserId").IsOptional();
             Property(x => x.PageSettings).HasColumnName("PageSettings").IsRequired().HasMaxLength(2147483647);
             Property(x => x.LastUpdatedDate).HasColumnName("LastUpdatedDate").IsRequired();
 
             // Foreign keys
-            HasOptional(a => a.PathFk).WithMany().HasForeignKey(b => b.PathId); // FkAspnetPePathI68487Dd7
-            HasOptional(a => a.UserFk).WithMany().HasForeignKey(b => b.UserId); // FkAspnetPeUserI693Ca210
+            HasOptional(a => a.PathFk); // FK__aspnet_Pe__PathI__68487DD7
+            HasOptional(a => a.UserFk); // FK__aspnet_Pe__UserI__693CA210
         }
     }
 
@@ -458,14 +516,14 @@ namespace EntityFramework_Reverse_POCO_Generator
             ToTable("dbo.aspnet_Profile");
             HasKey(x => x.UserId);
 
-            Property(x => x.UserId).HasColumnName("UserId").IsRequired();
+            Property(x => x.UserId).HasColumnName("UserId").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(x => x.PropertyNames).HasColumnName("PropertyNames").IsRequired().HasMaxLength(1073741823);
             Property(x => x.PropertyValuesString).HasColumnName("PropertyValuesString").IsRequired().HasMaxLength(1073741823);
             Property(x => x.PropertyValuesBinary).HasColumnName("PropertyValuesBinary").IsRequired().HasMaxLength(2147483647);
             Property(x => x.LastUpdatedDate).HasColumnName("LastUpdatedDate").IsRequired();
 
             // Foreign keys
-            HasRequired(a => a.UserFk).WithMany().HasForeignKey(b => b.UserId); // FkAspnetPrUserI38996Ab5
+            HasRequired(a => a.UserFk).WithRequiredDependent(); // FK__aspnet_Pr__UserI__38996AB5
         }
     }
 
@@ -478,13 +536,13 @@ namespace EntityFramework_Reverse_POCO_Generator
             HasKey(x => x.RoleId);
 
             Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
-            Property(x => x.RoleId).HasColumnName("RoleId").IsRequired();
+            Property(x => x.RoleId).HasColumnName("RoleId").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(x => x.RoleName).HasColumnName("RoleName").IsRequired().HasMaxLength(256);
             Property(x => x.LoweredRoleName).HasColumnName("LoweredRoleName").IsRequired().HasMaxLength(256);
             Property(x => x.Description).HasColumnName("Description").IsOptional().HasMaxLength(256);
 
             // Foreign keys
-            HasRequired(a => a.ApplicationFk).WithMany().HasForeignKey(b => b.ApplicationId); // FkAspnetRoAppli440B1D61
+            HasRequired(a => a.ApplicationFk).WithRequiredDependent(); // FK__aspnet_Ro__Appli__440B1D61
         }
     }
 
@@ -496,8 +554,8 @@ namespace EntityFramework_Reverse_POCO_Generator
             ToTable("dbo.aspnet_SchemaVersions");
             HasKey(x => new { x.Feature, x.CompatibleSchemaVersion });
 
-            Property(x => x.Feature).HasColumnName("Feature").IsRequired().HasMaxLength(128);
-            Property(x => x.CompatibleSchemaVersion).HasColumnName("CompatibleSchemaVersion").IsRequired().HasMaxLength(128);
+            Property(x => x.Feature).HasColumnName("Feature").IsRequired().HasMaxLength(128).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.CompatibleSchemaVersion).HasColumnName("CompatibleSchemaVersion").IsRequired().HasMaxLength(128).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(x => x.IsCurrentVersion).HasColumnName("IsCurrentVersion").IsRequired();
         }
     }
@@ -511,7 +569,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             HasKey(x => x.UserId);
 
             Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
-            Property(x => x.UserId).HasColumnName("UserId").IsRequired();
+            Property(x => x.UserId).HasColumnName("UserId").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(x => x.UserName).HasColumnName("UserName").IsRequired().HasMaxLength(256);
             Property(x => x.LoweredUserName).HasColumnName("LoweredUserName").IsRequired().HasMaxLength(256);
             Property(x => x.MobileAlias).HasColumnName("MobileAlias").IsOptional().HasMaxLength(16);
@@ -519,7 +577,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.LastActivityDate).HasColumnName("LastActivityDate").IsRequired();
 
             // Foreign keys
-            HasRequired(a => a.ApplicationFk).WithMany().HasForeignKey(b => b.ApplicationId); // FkAspnetUsAppli0Daf0Cb0
+            HasRequired(a => a.ApplicationFk).WithRequiredDependent(); // FK__aspnet_Us__Appli__0DAF0CB0
         }
     }
 
@@ -531,12 +589,12 @@ namespace EntityFramework_Reverse_POCO_Generator
             ToTable("dbo.aspnet_UsersInRoles");
             HasKey(x => new { x.UserId, x.RoleId });
 
-            Property(x => x.UserId).HasColumnName("UserId").IsRequired();
-            Property(x => x.RoleId).HasColumnName("RoleId").IsRequired();
+            Property(x => x.UserId).HasColumnName("UserId").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.RoleId).HasColumnName("RoleId").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
 
             // Foreign keys
-            HasRequired(a => a.UserFk).WithMany().HasForeignKey(b => b.UserId); // FkAspnetUsUserI49C3F6B7
-            HasRequired(a => a.RoleFk).WithMany().HasForeignKey(b => b.RoleId); // FkAspnetUsRoleI4Ab81Af0
+            HasRequired(a => a.UserFk).WithRequiredDependent(); // FK__aspnet_Us__UserI__49C3F6B7
+            HasRequired(a => a.RoleFk).WithRequiredDependent(); // FK__aspnet_Us__RoleI__4AB81AF0
         }
     }
 
@@ -548,7 +606,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             ToTable("dbo.aspnet_WebEvent_Events");
             HasKey(x => x.EventId);
 
-            Property(x => x.EventId).HasColumnName("EventId").IsRequired().HasMaxLength(32);
+            Property(x => x.EventId).HasColumnName("EventId").IsRequired().HasMaxLength(32).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(x => x.EventTimeUtc).HasColumnName("EventTimeUtc").IsRequired();
             Property(x => x.EventTime).HasColumnName("EventTime").IsRequired();
             Property(x => x.EventType).HasColumnName("EventType").IsRequired().HasMaxLength(256);
