@@ -15,10 +15,10 @@ namespace Tester
             {
                 using(var db = new MyDbContext())
                 {
-                    var data = db.BpostUser.ToList();
+                    var data = db.FieldPersonOrder.Take(5);
                     foreach(var row in data)
                     {
-                        Console.WriteLine(row.UserId);
+                        Console.WriteLine(row.FieldPersonOrderId);
                     }
                 }
             }

@@ -1298,7 +1298,6 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                             if(string.Compare(pkSchema, "dbo", StringComparison.OrdinalIgnoreCase) != 0)
                                 pkTableHumanCase = pkSchema + "_" + pkTableHumanCase;
 
-                            string constraintNameHumanCase = Inflector.ToTitleCase(constraintName).Replace(" ", "").Replace("$", "");
                             string fkName;
                             if(fkCol.PropertyNameHumanCase.EndsWith("Id"))
                                 fkName = fkCol.PropertyNameHumanCase.Substring(0, fkCol.PropertyNameHumanCase.Length - 2) + "Fk";
