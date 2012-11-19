@@ -1418,6 +1418,12 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
 
             public string GetUniqueColumnPropertyName(string columnName)
             {
+                if (ReverseNavigationUniquePropName.Count == 0)
+                {
+                    ReverseNavigationUniquePropName.Add(NameHumanCase);
+                    ReverseNavigationUniquePropName.AddRange(Columns.Select(c => c.PropertyNameHumanCase));
+                }
+
                 if (!ReverseNavigationUniquePropName.Contains(columnName))
                 {
                     ReverseNavigationUniquePropName.Add(columnName);
