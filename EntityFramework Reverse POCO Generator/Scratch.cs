@@ -354,12 +354,12 @@ namespace EntityFramework_Reverse_POCO_Generator
             public string Entity;
             public string EntityFk;
 
-            private void SetupEntity()
+            private void SetupEntity(Table tbl)
             {
-                Entity = string.Format("public {0}{1} {2} {3} // {4}", PropertyType, CheckNullable(this), PropertyNameHumanCase, "{ get; set; }", Name);
+                Entity = string.Format("public {0}{1} {2} {3} // {4} {5}", PropertyType, CheckNullable(this), PropertyNameHumanCase, "{ get; set; }", Name, tbl.IsPrimaryKey(this) ? " (Primary key)" : string.Empty);
             }
 
-            private void SetupConfig()
+            private void SetupConfig(Table tbl)
             {
                 /*bool hasDatabaseGeneratedOption = false;
                 switch(PropertyType.ToLower())
@@ -388,10 +388,10 @@ namespace EntityFramework_Reverse_POCO_Generator
                                             databaseGeneratedOption);
             }
 
-            public void SetupEntityAndConfig()
+            public void SetupEntityAndConfig(Table tbl)
             {
-                SetupEntity();
-                SetupConfig();
+                SetupEntity(tbl);
+                SetupConfig(tbl);
             }
 
             public void CleanUpDefault()
@@ -1248,7 +1248,7 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
 
                 foreach(Table tbl in result)
                 {
-                    tbl.Columns.ForEach(x => x.SetupEntityAndConfig());
+                    tbl.Columns.ForEach(x => x.SetupEntityAndConfig(tbl));
                 }
 
                 return result;
@@ -1518,20 +1518,29 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
 
             public IEnumerable<Column> PrimaryKeys
             {
-                get { return Columns.Where(x => x.IsPrimaryKey); }
+                get
+                {
+                    var cols = Columns.Where(x => x.IsPrimaryKey).ToList();
+                    if (cols.Any())
+                        return cols;
+
+                    // This table is not allowed in EntityFramework. Generate a composite key from all non-null fields
+                    return Columns.Where(x => !x.IsNullable).ToList();
+                }
+            }
+
+            public bool IsPrimaryKey(Column col)
+            {
+                return col.IsPrimaryKey || PrimaryKeys.Contains(col);
             }
 
             public string PrimaryKeyNameHumanCase()
             {
                 var data = PrimaryKeys.Select(x => "x." + x.PropertyNameHumanCase).ToList();
                 int n = data.Count();
-                if(n == 0)
-                {
-                    // This table is not allowed in EntityFramework. Generate a composite key from all non-null fields
-                    var cols = Columns.Where(x => !x.IsNullable).Select(x => "x." + x.PropertyNameHumanCase).ToList();
-                    return (cols.Count == 0) ? string.Empty : string.Format("x => new {{ {0} }}", string.Join(", ", cols));
-                }
-                if(n == 1)
+                if (n == 0)
+                    return string.Empty;
+                if (n == 1)
                     return "x => " + data.First();
                 // More than one primary key
                 return string.Format("x => new {{ {0} }}", string.Join(", ", data));
