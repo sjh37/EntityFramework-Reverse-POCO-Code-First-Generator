@@ -311,6 +311,7 @@ namespace EntityFramework_Reverse_POCO_Generator
                     }
 
                     result = reader.ReadForeignKeys(result);
+                    result.SetPrimaryKeys();
 
                     conn.Close();
                     return result;
@@ -354,12 +355,12 @@ namespace EntityFramework_Reverse_POCO_Generator
             public string Entity;
             public string EntityFk;
 
-            private void SetupEntity(Table tbl)
+            private void SetupEntity()
             {
-                Entity = string.Format("public {0}{1} {2} {3} // {4} {5}", PropertyType, CheckNullable(this), PropertyNameHumanCase, "{ get; set; }", Name, tbl.IsPrimaryKey(this) ? " (Primary key)" : string.Empty);
+                Entity = string.Format("public {0}{1} {2} {3} // {4}{5}", PropertyType, CheckNullable(this), PropertyNameHumanCase, "{ get; set; }", Name, IsPrimaryKey ? " (Primary key)" : string.Empty);
             }
 
-            private void SetupConfig(Table tbl)
+            private void SetupConfig()
             {
                 /*bool hasDatabaseGeneratedOption = false;
                 switch(PropertyType.ToLower())
@@ -388,10 +389,10 @@ namespace EntityFramework_Reverse_POCO_Generator
                                             databaseGeneratedOption);
             }
 
-            public void SetupEntityAndConfig(Table tbl)
+            public void SetupEntityAndConfig()
             {
-                SetupEntity(tbl);
-                SetupConfig(tbl);
+                SetupEntity();
+                SetupConfig();
             }
 
             public void CleanUpDefault()
@@ -1248,7 +1249,7 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
 
                 foreach(Table tbl in result)
                 {
-                    tbl.Columns.ForEach(x => x.SetupEntityAndConfig(tbl));
+                    tbl.Columns.ForEach(x => x.SetupEntityAndConfig());
                 }
 
                 return result;
@@ -1304,18 +1305,11 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                     if(string.Compare(foreignKey.PkSchema, "dbo", StringComparison.OrdinalIgnoreCase) != 0)
                         pkTableHumanCase = foreignKey.PkSchema + "_" + pkTableHumanCase;
 
-                    string fkName;
-                    //if (fkCol.PropertyNameHumanCase.EndsWith("Id"))
-                    //    fkName = fkCol.PropertyNameHumanCase.Substring(0, fkCol.PropertyNameHumanCase.Length - 2) + "Fk";
-                    //else
-                    //    fkName = fkCol.PropertyNameHumanCase;// +"Fk";
-                    fkName = pkTableHumanCase;
-
-                    fkCol.EntityFk = string.Format("public virtual {0} {1} {2} {3}", pkTableHumanCase, fkName, "{ get; set; } // ",
+                    fkCol.EntityFk = string.Format("public virtual {0} {1} {2} {3}", pkTableHumanCase, pkTableHumanCase, "{ get; set; } // ",
                                                     fkCol.PropertyNameHumanCase + " - " + foreignKey.ConstraintName);
 
-                    fkCol.ConfigFk = string.Format("{0}; // {1}", GetRelationship(fkCol, pkCol, fkName), foreignKey.ConstraintName);
-                    pkTable.AddReverseNavigation(fkCol, pkCol, fkName, fkTable, string.Format("{0}.{1}", fkTable.Name, foreignKey.ConstraintName));
+                    fkCol.ConfigFk = string.Format("{0}; // {1}", GetRelationship(fkCol, pkCol, pkTableHumanCase), foreignKey.ConstraintName);
+                    pkTable.AddReverseNavigation(fkCol, pkCol, pkTableHumanCase, fkTable, string.Format("{0}.{1}", fkTable.Name, foreignKey.ConstraintName));
                 }
 
                 return result;
@@ -1323,19 +1317,12 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
 
             private static string GetRelationship(Column fkCol, Column pkCol, string fkName)
             {
-                string has = string.Format("Has{0}(a => a.{1})", GetHasMethod(fkCol, pkCol), fkName);
-                string with = GetWithMethod(fkCol, pkCol);
-                return has + with;
+                return string.Format("Has{0}(a => a.{1}){2}", GetHasMethod(fkCol, pkCol), fkName, GetWithMethod(fkCol, pkCol));
             }
 
-            // The multiplicity can be 
-            // Optional (a property that can have a single instance or be null),
-            // Required (a property that must have a single instance), or
-            // Many (a property with a collection of a single type).
-            // The Has methods are as follows:
-            // • HasOptional
-            // • HasRequired
-            // • HasMany
+            // HasOptional
+            // HasRequired
+            // HasMany
             private static string GetHasMethod(Column fkCol, Column pkCol)
             {
                 // Check multiplicity
@@ -1349,12 +1336,11 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                 return "Many";
             }
 
-            // In most cases you will follow the Has method with one of the following With methods:
-            // • WithOptional
-            // • WithRequired
-            // • WithMany
-            // • WithRequiredPrincipal
-            // • WithRequiredDependent
+            // WithOptional
+            // WithRequired
+            // WithMany
+            // WithRequiredPrincipal
+            // WithRequiredDependent
             private static string GetWithMethod(Column fkCol, Column pkCol)
             {
                 // Check multiplicity
@@ -1518,20 +1504,7 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
 
             public IEnumerable<Column> PrimaryKeys
             {
-                get
-                {
-                    var cols = Columns.Where(x => x.IsPrimaryKey).ToList();
-                    if (cols.Any())
-                        return cols;
-
-                    // This table is not allowed in EntityFramework. Generate a composite key from all non-null fields
-                    return Columns.Where(x => !x.IsNullable).ToList();
-                }
-            }
-
-            public bool IsPrimaryKey(Column col)
-            {
-                return col.IsPrimaryKey || PrimaryKeys.Contains(col);
+                get { return Columns.Where(x => x.IsPrimaryKey).ToList(); }
             }
 
             public string PrimaryKeyNameHumanCase()
@@ -1576,6 +1549,19 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                 // n:1
                 ReverseNavigationProperty.Add("// todo - " + constraint);
             }
+
+            public void SetPrimaryKeys()
+            {
+                var cols = Columns.Where(x => x.IsPrimaryKey).ToList();
+                if (cols.Any())
+                    return;
+
+                // This table is not allowed in EntityFramework. Generate a composite key from all non-null fields
+                foreach(var col in Columns.Where(x => !x.IsNullable))
+                {
+                    col.IsPrimaryKey = true;
+                }
+            }
         }
         
         public class Tables : List<Table>
@@ -1585,6 +1571,14 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                 return this.SingleOrDefault(x =>
                     String.Compare(x.Name, tableName, StringComparison.OrdinalIgnoreCase) == 0 &&
                     String.Compare(x.Schema, schema, StringComparison.OrdinalIgnoreCase) == 0);
+            }
+
+            public void SetPrimaryKeys()
+            {
+                foreach (var tbl in this)
+                {
+                    tbl.SetPrimaryKeys();
+                }
             }
         }
     }
