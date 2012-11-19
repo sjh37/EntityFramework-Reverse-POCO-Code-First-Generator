@@ -323,27 +323,28 @@
 
             private void SetupConfig()
             {
-                /*bool hasDatabaseGeneratedOption = false;
+                bool hasDatabaseGeneratedOption = false;
                 switch(PropertyType.ToLower())
                 {
-                    case "bigint":
-                    case "decimal":
-                    case "float":
+                    case "long":
+                    case "short":
                     case "int":
-                    case "numeric":
-                    case "real":
-                    case "smallint":
-                    case "tinyint":
+                    case "double":
+                    case "float":
+                    case "decimal":
                         hasDatabaseGeneratedOption = true;
                         break;
-                }*/
+                }
                 string databaseGeneratedOption = string.Empty;
+                if (hasDatabaseGeneratedOption)
+                {
                 if (IsIdentity)
                     databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity)";
                 if(IsStoreGenerated)
                     databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.Computed)";
                 if(IsPrimaryKey && !IsIdentity && !IsStoreGenerated)
                     databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.None)";
+                }
                 Config = string.Format("Property(x => x.{0}).HasColumnName(\"{1}\"){2}{3}{4};", PropertyNameHumanCase, PropertyName,
                                             (IsNullable) ? ".IsOptional()" : ".IsRequired()",
                                             (MaxLength > 0) ? ".HasMaxLength(" + MaxLength + ")" : string.Empty,
@@ -1269,16 +1270,16 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                     fkCol.EntityFk = string.Format("public virtual {0} {1} {2} {3}", pkTableHumanCase, pkTableHumanCase, "{ get; set; } // ",
                                                     fkCol.PropertyNameHumanCase + " - " + foreignKey.ConstraintName);
 
-                    fkCol.ConfigFk = string.Format("{0}; // {1}", GetRelationship(fkCol, pkCol, pkTableHumanCase), foreignKey.ConstraintName);
+                    fkCol.ConfigFk = string.Format("{0}; // {1}", GetRelationship(fkCol, pkCol, pkTableHumanCase, fkTable.NameHumanCase), foreignKey.ConstraintName);
                     pkTable.AddReverseNavigation(fkCol, pkCol, pkTableHumanCase, fkTable, string.Format("{0}.{1}", fkTable.Name, foreignKey.ConstraintName));
                 }
 
                 return result;
             }
 
-            private static string GetRelationship(Column fkCol, Column pkCol, string fkName)
+            private static string GetRelationship(Column fkCol, Column pkCol, string fkName, string fkTableNameHumanCase)
             {
-                return string.Format("Has{0}(a => a.{1}){2}", GetHasMethod(fkCol, pkCol), fkName, GetWithMethod(fkCol, pkCol));
+                return string.Format("Has{0}(a => a.{1}){2}", GetHasMethod(fkCol, pkCol), fkName, GetWithMethod(fkCol, pkCol, fkTableNameHumanCase));
             }
 
             // HasOptional
@@ -1286,14 +1287,9 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
             // HasMany
             private static string GetHasMethod(Column fkCol, Column pkCol)
             {
-                // Check multiplicity
                 if (pkCol.IsPrimaryKey)
-                {
-                    // 1:1
                     return fkCol.IsNullable ? "Optional" : "Required";
-                }
 
-                // 1:n
                 return "Many";
             }
 
@@ -1302,15 +1298,22 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
             // WithMany
             // WithRequiredPrincipal
             // WithRequiredDependent
-            private static string GetWithMethod(Column fkCol, Column pkCol)
+            private static string GetWithMethod(Column fkCol, Column pkCol, string fkTableNameHumanCase)
             {
-                // Check multiplicity
-                if (pkCol.IsPrimaryKey)
-                {
-                    return !fkCol.IsNullable ? ".WithRequiredDependent()" : string.Empty;
-                }
+                // 1:1
+                if (fkCol.IsPrimaryKey && pkCol.IsPrimaryKey)
+                    return string.Format(".WithOptional(b => b.{0})", fkTableNameHumanCase);
 
-                return string.Format(".WithMany().HasForeignKey(b => b.{0})", fkCol.PropertyNameHumanCase);
+                // 1:n
+                if(fkCol.IsPrimaryKey && !pkCol.IsPrimaryKey)
+                return string.Format(".WithRequiredDependent(b => b.{0})", pkCol.PropertyNameHumanCase);
+                
+                // n:1
+                if(!fkCol.IsPrimaryKey && pkCol.IsPrimaryKey)
+                    return string.Format(".WithMany(b => b.{0}).HasForeignKey(c => c.{1})", fkTableNameHumanCase, fkCol.PropertyNameHumanCase);
+
+                // n:n
+                return string.Format(".WithMany(b => b.{0}).HasForeignKey(c => c.{1})", fkTableNameHumanCase, fkCol.PropertyNameHumanCase);
             }
 
             private static Column CreateColumn(IDataRecord rdr, Regex rxClean, Table table)
@@ -1492,23 +1495,31 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
 
             public void AddReverseNavigation(Column fkCol, Column pkCol, string fkName, Table fkTable, string constraint)
             {
-                if (pkCol.IsPrimaryKey && fkCol.IsPrimaryKey)
+                // 1:1
+                if(fkCol.IsPrimaryKey && pkCol.IsPrimaryKey)
                 {
-                    // 1:1
                     ReverseNavigationProperty.Add(string.Format("public virtual {0} {0} {{ get; set; }} // {1}", fkTable.NameHumanCase, constraint));
                     return;
                 }
 
-                if (pkCol.IsPrimaryKey)
+                // 1:n
+                if (fkCol.IsPrimaryKey && !pkCol.IsPrimaryKey)
                 {
-                    // 1:n
+                    ReverseNavigationProperty.Add(string.Format("public virtual {0} {0} {{ get; set; }} // {1}", fkTable.NameHumanCase, constraint));
+                    return;
+                }
+
+                // n:1
+                if(!fkCol.IsPrimaryKey && pkCol.IsPrimaryKey)
+                {
                     ReverseNavigationProperty.Add(string.Format("public virtual ICollection<{0}> {0} {{ get; set; }} // {1}", fkTable.NameHumanCase, constraint));
                     ReverseNavigationCtor.Add(string.Format("{0} = new List<{0}>();", fkTable.NameHumanCase));
                     return;
                 }
 
-                // n:1
-                ReverseNavigationProperty.Add("// todo - " + constraint);
+                // n:n
+                ReverseNavigationProperty.Add(string.Format("public virtual ICollection<{0}> {0} {{ get; set; }} // {1}", fkTable.NameHumanCase, constraint));
+                ReverseNavigationCtor.Add(string.Format("{0} = new List<{0}>();", fkTable.NameHumanCase));
             }
 
             public void SetPrimaryKeys()

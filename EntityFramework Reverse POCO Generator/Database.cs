@@ -31,15 +31,6 @@ namespace EntityFramework_Reverse_POCO_Generator
         public IDbSet<AspnetUsers> AspnetUsers { get; set; } // aspnet_Users
         public IDbSet<AspnetUsersInRoles> AspnetUsersInRoles { get; set; } // aspnet_UsersInRoles
         public IDbSet<AspnetWebEventEvents> AspnetWebEventEvents { get; set; } // aspnet_WebEvent_Events
-        public IDbSet<VwAspnetApplications> VwAspnetApplications { get; set; } // vw_aspnet_Applications
-        public IDbSet<VwAspnetMembershipUsers> VwAspnetMembershipUsers { get; set; } // vw_aspnet_MembershipUsers
-        public IDbSet<VwAspnetProfiles> VwAspnetProfiles { get; set; } // vw_aspnet_Profiles
-        public IDbSet<VwAspnetRoles> VwAspnetRoles { get; set; } // vw_aspnet_Roles
-        public IDbSet<VwAspnetUsers> VwAspnetUsers { get; set; } // vw_aspnet_Users
-        public IDbSet<VwAspnetUsersInRoles> VwAspnetUsersInRoles { get; set; } // vw_aspnet_UsersInRoles
-        public IDbSet<VwAspnetWebPartStatePaths> VwAspnetWebPartStatePaths { get; set; } // vw_aspnet_WebPartState_Paths
-        public IDbSet<VwAspnetWebPartStateShared> VwAspnetWebPartStateShared { get; set; } // vw_aspnet_WebPartState_Shared
-        public IDbSet<VwAspnetWebPartStateUser> VwAspnetWebPartStateUser { get; set; } // vw_aspnet_WebPartState_User
 
         static MyDbContext()
         {
@@ -70,15 +61,6 @@ namespace EntityFramework_Reverse_POCO_Generator
             modelBuilder.Configurations.Add(new AspnetUsersConfiguration());
             modelBuilder.Configurations.Add(new AspnetUsersInRolesConfiguration());
             modelBuilder.Configurations.Add(new AspnetWebEventEventsConfiguration());
-            modelBuilder.Configurations.Add(new VwAspnetApplicationsConfiguration());
-            modelBuilder.Configurations.Add(new VwAspnetMembershipUsersConfiguration());
-            modelBuilder.Configurations.Add(new VwAspnetProfilesConfiguration());
-            modelBuilder.Configurations.Add(new VwAspnetRolesConfiguration());
-            modelBuilder.Configurations.Add(new VwAspnetUsersConfiguration());
-            modelBuilder.Configurations.Add(new VwAspnetUsersInRolesConfiguration());
-            modelBuilder.Configurations.Add(new VwAspnetWebPartStatePathsConfiguration());
-            modelBuilder.Configurations.Add(new VwAspnetWebPartStateSharedConfiguration());
-            modelBuilder.Configurations.Add(new VwAspnetWebPartStateUserConfiguration());
         }
     }
 
@@ -90,7 +72,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     {
         public string ApplicationName { get; set; } // ApplicationName
         public string LoweredApplicationName { get; set; } // LoweredApplicationName
-        public Guid ApplicationId { get; set; } // ApplicationId
+        public Guid ApplicationId { get; set; } // ApplicationId (Primary key)
         public string Description { get; set; } // Description
 
         // Reverse navigation
@@ -113,7 +95,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     public class AspnetMembership
     {
         public Guid ApplicationId { get; set; } // ApplicationId
-        public Guid UserId { get; set; } // UserId
+        public Guid UserId { get; set; } // UserId (Primary key)
         public string Password { get; set; } // Password
         public int PasswordFormat { get; set; } // PasswordFormat
         public string PasswordSalt { get; set; } // PasswordSalt
@@ -148,7 +130,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     public class AspnetPaths
     {
         public Guid ApplicationId { get; set; } // ApplicationId
-        public Guid PathId { get; set; } // PathId
+        public Guid PathId { get; set; } // PathId (Primary key)
         public string Path { get; set; } // Path
         public string LoweredPath { get; set; } // LoweredPath
 
@@ -169,7 +151,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     // aspnet_PersonalizationAllUsers
     public class AspnetPersonalizationAllUsers
     {
-        public Guid PathId { get; set; } // PathId
+        public Guid PathId { get; set; } // PathId (Primary key)
         public byte[] PageSettings { get; set; } // PageSettings
         public DateTime LastUpdatedDate { get; set; } // LastUpdatedDate
 
@@ -180,7 +162,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     // aspnet_PersonalizationPerUser
     public class AspnetPersonalizationPerUser
     {
-        public Guid Id { get; set; } // Id
+        public Guid Id { get; set; } // Id (Primary key)
         public Guid? PathId { get; set; } // PathId
         public Guid? UserId { get; set; } // UserId
         public byte[] PageSettings { get; set; } // PageSettings
@@ -199,7 +181,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     // aspnet_Profile
     public class AspnetProfile
     {
-        public Guid UserId { get; set; } // UserId
+        public Guid UserId { get; set; } // UserId (Primary key)
         public string PropertyNames { get; set; } // PropertyNames
         public string PropertyValuesString { get; set; } // PropertyValuesString
         public byte[] PropertyValuesBinary { get; set; } // PropertyValuesBinary
@@ -213,7 +195,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     public class AspnetRoles
     {
         public Guid ApplicationId { get; set; } // ApplicationId
-        public Guid RoleId { get; set; } // RoleId
+        public Guid RoleId { get; set; } // RoleId (Primary key)
         public string RoleName { get; set; } // RoleName
         public string LoweredRoleName { get; set; } // LoweredRoleName
         public string Description { get; set; } // Description
@@ -233,8 +215,8 @@ namespace EntityFramework_Reverse_POCO_Generator
     // aspnet_SchemaVersions
     public class AspnetSchemaVersions
     {
-        public string Feature { get; set; } // Feature
-        public string CompatibleSchemaVersion { get; set; } // CompatibleSchemaVersion
+        public string Feature { get; set; } // Feature (Primary key)
+        public string CompatibleSchemaVersion { get; set; } // CompatibleSchemaVersion (Primary key)
         public bool IsCurrentVersion { get; set; } // IsCurrentVersion
     }
 
@@ -242,7 +224,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     public class AspnetUsers
     {
         public Guid ApplicationId { get; set; } // ApplicationId
-        public Guid UserId { get; set; } // UserId
+        public Guid UserId { get; set; } // UserId (Primary key)
         public string UserName { get; set; } // UserName
         public string LoweredUserName { get; set; } // LoweredUserName
         public string MobileAlias { get; set; } // MobileAlias
@@ -270,8 +252,8 @@ namespace EntityFramework_Reverse_POCO_Generator
     // aspnet_UsersInRoles
     public class AspnetUsersInRoles
     {
-        public Guid UserId { get; set; } // UserId
-        public Guid RoleId { get; set; } // RoleId
+        public Guid UserId { get; set; } // UserId (Primary key)
+        public Guid RoleId { get; set; } // RoleId (Primary key)
 
         // Foreign keys
         public virtual AspnetUsers AspnetUsers { get; set; } //  UserId - FK__aspnet_Us__UserI__49C3F6B7
@@ -281,7 +263,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     // aspnet_WebEvent_Events
     public class AspnetWebEventEvents
     {
-        public string EventId { get; set; } // EventId
+        public string EventId { get; set; } // EventId (Primary key)
         public DateTime EventTimeUtc { get; set; } // EventTimeUtc
         public DateTime EventTime { get; set; } // EventTime
         public string EventType { get; set; } // EventType
@@ -298,106 +280,6 @@ namespace EntityFramework_Reverse_POCO_Generator
         public string Details { get; set; } // Details
     }
 
-    // vw_aspnet_Applications
-    public class VwAspnetApplications
-    {
-        public string ApplicationName { get; set; } // ApplicationName
-        public string LoweredApplicationName { get; set; } // LoweredApplicationName
-        public Guid ApplicationId { get; set; } // ApplicationId
-        public string Description { get; set; } // Description
-    }
-
-    // vw_aspnet_MembershipUsers
-    public class VwAspnetMembershipUsers
-    {
-        public Guid UserId { get; set; } // UserId
-        public int PasswordFormat { get; set; } // PasswordFormat
-        public string MobilePin { get; set; } // MobilePIN
-        public string Email { get; set; } // Email
-        public string LoweredEmail { get; set; } // LoweredEmail
-        public string PasswordQuestion { get; set; } // PasswordQuestion
-        public string PasswordAnswer { get; set; } // PasswordAnswer
-        public bool IsApproved { get; set; } // IsApproved
-        public bool IsLockedOut { get; set; } // IsLockedOut
-        public DateTime CreateDate { get; set; } // CreateDate
-        public DateTime LastLoginDate { get; set; } // LastLoginDate
-        public DateTime LastPasswordChangedDate { get; set; } // LastPasswordChangedDate
-        public DateTime LastLockoutDate { get; set; } // LastLockoutDate
-        public int FailedPasswordAttemptCount { get; set; } // FailedPasswordAttemptCount
-        public DateTime FailedPasswordAttemptWindowStart { get; set; } // FailedPasswordAttemptWindowStart
-        public int FailedPasswordAnswerAttemptCount { get; set; } // FailedPasswordAnswerAttemptCount
-        public DateTime FailedPasswordAnswerAttemptWindowStart { get; set; } // FailedPasswordAnswerAttemptWindowStart
-        public string Comment { get; set; } // Comment
-        public Guid ApplicationId { get; set; } // ApplicationId
-        public string UserName { get; set; } // UserName
-        public string MobileAlias { get; set; } // MobileAlias
-        public bool IsAnonymous { get; set; } // IsAnonymous
-        public DateTime LastActivityDate { get; set; } // LastActivityDate
-    }
-
-    // vw_aspnet_Profiles
-    public class VwAspnetProfiles
-    {
-        public Guid UserId { get; set; } // UserId
-        public DateTime LastUpdatedDate { get; set; } // LastUpdatedDate
-        public int? DataSize { get; set; } // DataSize
-    }
-
-    // vw_aspnet_Roles
-    public class VwAspnetRoles
-    {
-        public Guid ApplicationId { get; set; } // ApplicationId
-        public Guid RoleId { get; set; } // RoleId
-        public string RoleName { get; set; } // RoleName
-        public string LoweredRoleName { get; set; } // LoweredRoleName
-        public string Description { get; set; } // Description
-    }
-
-    // vw_aspnet_Users
-    public class VwAspnetUsers
-    {
-        public Guid ApplicationId { get; set; } // ApplicationId
-        public Guid UserId { get; set; } // UserId
-        public string UserName { get; set; } // UserName
-        public string LoweredUserName { get; set; } // LoweredUserName
-        public string MobileAlias { get; set; } // MobileAlias
-        public bool IsAnonymous { get; set; } // IsAnonymous
-        public DateTime LastActivityDate { get; set; } // LastActivityDate
-    }
-
-    // vw_aspnet_UsersInRoles
-    public class VwAspnetUsersInRoles
-    {
-        public Guid UserId { get; set; } // UserId
-        public Guid RoleId { get; set; } // RoleId
-    }
-
-    // vw_aspnet_WebPartState_Paths
-    public class VwAspnetWebPartStatePaths
-    {
-        public Guid ApplicationId { get; set; } // ApplicationId
-        public Guid PathId { get; set; } // PathId
-        public string Path { get; set; } // Path
-        public string LoweredPath { get; set; } // LoweredPath
-    }
-
-    // vw_aspnet_WebPartState_Shared
-    public class VwAspnetWebPartStateShared
-    {
-        public Guid PathId { get; set; } // PathId
-        public int? DataSize { get; set; } // DataSize
-        public DateTime LastUpdatedDate { get; set; } // LastUpdatedDate
-    }
-
-    // vw_aspnet_WebPartState_User
-    public class VwAspnetWebPartStateUser
-    {
-        public Guid? PathId { get; set; } // PathId
-        public Guid? UserId { get; set; } // UserId
-        public int? DataSize { get; set; } // DataSize
-        public DateTime LastUpdatedDate { get; set; } // LastUpdatedDate
-    }
-
 
     // ************************************************************************
     // POCO Configuration
@@ -412,7 +294,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
             Property(x => x.ApplicationName).HasColumnName("ApplicationName").IsRequired().HasMaxLength(256);
             Property(x => x.LoweredApplicationName).HasColumnName("LoweredApplicationName").IsRequired().HasMaxLength(256);
-            Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
             Property(x => x.Description).HasColumnName("Description").IsOptional().HasMaxLength(256);
         }
     }
@@ -426,7 +308,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             HasKey(x => x.UserId);
 
             Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
-            Property(x => x.UserId).HasColumnName("UserId").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.UserId).HasColumnName("UserId").IsRequired();
             Property(x => x.Password).HasColumnName("Password").IsRequired().HasMaxLength(128);
             Property(x => x.PasswordFormat).HasColumnName("PasswordFormat").IsRequired();
             Property(x => x.PasswordSalt).HasColumnName("PasswordSalt").IsRequired().HasMaxLength(128);
@@ -448,8 +330,8 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.Comment).HasColumnName("Comment").IsOptional().HasMaxLength(1073741823);
 
             // Foreign keys
-            HasRequired(a => a.AspnetApplications).WithRequiredDependent(); // FK__aspnet_Me__Appli__21B6055D
-            HasRequired(a => a.AspnetUsers).WithRequiredDependent(); // FK__aspnet_Me__UserI__22AA2996
+            HasRequired(a => a.AspnetApplications).WithMany(b => b.AspnetMembership).HasForeignKey(c => c.ApplicationId); // FK__aspnet_Me__Appli__21B6055D
+            HasRequired(a => a.AspnetUsers).WithOptional(b => b.AspnetMembership); // FK__aspnet_Me__UserI__22AA2996
         }
     }
 
@@ -462,12 +344,12 @@ namespace EntityFramework_Reverse_POCO_Generator
             HasKey(x => x.PathId);
 
             Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
-            Property(x => x.PathId).HasColumnName("PathId").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.PathId).HasColumnName("PathId").IsRequired();
             Property(x => x.Path).HasColumnName("Path").IsRequired().HasMaxLength(256);
             Property(x => x.LoweredPath).HasColumnName("LoweredPath").IsRequired().HasMaxLength(256);
 
             // Foreign keys
-            HasRequired(a => a.AspnetApplications).WithRequiredDependent(); // FK__aspnet_Pa__Appli__5AEE82B9
+            HasRequired(a => a.AspnetApplications).WithMany(b => b.AspnetPaths).HasForeignKey(c => c.ApplicationId); // FK__aspnet_Pa__Appli__5AEE82B9
         }
     }
 
@@ -479,12 +361,12 @@ namespace EntityFramework_Reverse_POCO_Generator
             ToTable("dbo.aspnet_PersonalizationAllUsers");
             HasKey(x => x.PathId);
 
-            Property(x => x.PathId).HasColumnName("PathId").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.PathId).HasColumnName("PathId").IsRequired();
             Property(x => x.PageSettings).HasColumnName("PageSettings").IsRequired().HasMaxLength(2147483647);
             Property(x => x.LastUpdatedDate).HasColumnName("LastUpdatedDate").IsRequired();
 
             // Foreign keys
-            HasRequired(a => a.AspnetPaths).WithRequiredDependent(); // FK__aspnet_Pe__PathI__628FA481
+            HasRequired(a => a.AspnetPaths).WithOptional(b => b.AspnetPersonalizationAllUsers); // FK__aspnet_Pe__PathI__628FA481
         }
     }
 
@@ -496,15 +378,15 @@ namespace EntityFramework_Reverse_POCO_Generator
             ToTable("dbo.aspnet_PersonalizationPerUser");
             HasKey(x => x.Id);
 
-            Property(x => x.Id).HasColumnName("Id").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.Id).HasColumnName("Id").IsRequired();
             Property(x => x.PathId).HasColumnName("PathId").IsOptional();
             Property(x => x.UserId).HasColumnName("UserId").IsOptional();
             Property(x => x.PageSettings).HasColumnName("PageSettings").IsRequired().HasMaxLength(2147483647);
             Property(x => x.LastUpdatedDate).HasColumnName("LastUpdatedDate").IsRequired();
 
             // Foreign keys
-            HasOptional(a => a.AspnetPaths); // FK__aspnet_Pe__PathI__68487DD7
-            HasOptional(a => a.AspnetUsers); // FK__aspnet_Pe__UserI__693CA210
+            HasOptional(a => a.AspnetPaths).WithMany(b => b.AspnetPersonalizationPerUser).HasForeignKey(c => c.PathId); // FK__aspnet_Pe__PathI__68487DD7
+            HasOptional(a => a.AspnetUsers).WithMany(b => b.AspnetPersonalizationPerUser).HasForeignKey(c => c.UserId); // FK__aspnet_Pe__UserI__693CA210
         }
     }
 
@@ -516,14 +398,14 @@ namespace EntityFramework_Reverse_POCO_Generator
             ToTable("dbo.aspnet_Profile");
             HasKey(x => x.UserId);
 
-            Property(x => x.UserId).HasColumnName("UserId").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.UserId).HasColumnName("UserId").IsRequired();
             Property(x => x.PropertyNames).HasColumnName("PropertyNames").IsRequired().HasMaxLength(1073741823);
             Property(x => x.PropertyValuesString).HasColumnName("PropertyValuesString").IsRequired().HasMaxLength(1073741823);
             Property(x => x.PropertyValuesBinary).HasColumnName("PropertyValuesBinary").IsRequired().HasMaxLength(2147483647);
             Property(x => x.LastUpdatedDate).HasColumnName("LastUpdatedDate").IsRequired();
 
             // Foreign keys
-            HasRequired(a => a.AspnetUsers).WithRequiredDependent(); // FK__aspnet_Pr__UserI__38996AB5
+            HasRequired(a => a.AspnetUsers).WithOptional(b => b.AspnetProfile); // FK__aspnet_Pr__UserI__38996AB5
         }
     }
 
@@ -536,13 +418,13 @@ namespace EntityFramework_Reverse_POCO_Generator
             HasKey(x => x.RoleId);
 
             Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
-            Property(x => x.RoleId).HasColumnName("RoleId").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.RoleId).HasColumnName("RoleId").IsRequired();
             Property(x => x.RoleName).HasColumnName("RoleName").IsRequired().HasMaxLength(256);
             Property(x => x.LoweredRoleName).HasColumnName("LoweredRoleName").IsRequired().HasMaxLength(256);
             Property(x => x.Description).HasColumnName("Description").IsOptional().HasMaxLength(256);
 
             // Foreign keys
-            HasRequired(a => a.AspnetApplications).WithRequiredDependent(); // FK__aspnet_Ro__Appli__440B1D61
+            HasRequired(a => a.AspnetApplications).WithMany(b => b.AspnetRoles).HasForeignKey(c => c.ApplicationId); // FK__aspnet_Ro__Appli__440B1D61
         }
     }
 
@@ -554,8 +436,8 @@ namespace EntityFramework_Reverse_POCO_Generator
             ToTable("dbo.aspnet_SchemaVersions");
             HasKey(x => new { x.Feature, x.CompatibleSchemaVersion });
 
-            Property(x => x.Feature).HasColumnName("Feature").IsRequired().HasMaxLength(128).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
-            Property(x => x.CompatibleSchemaVersion).HasColumnName("CompatibleSchemaVersion").IsRequired().HasMaxLength(128).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.Feature).HasColumnName("Feature").IsRequired().HasMaxLength(128);
+            Property(x => x.CompatibleSchemaVersion).HasColumnName("CompatibleSchemaVersion").IsRequired().HasMaxLength(128);
             Property(x => x.IsCurrentVersion).HasColumnName("IsCurrentVersion").IsRequired();
         }
     }
@@ -569,7 +451,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             HasKey(x => x.UserId);
 
             Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
-            Property(x => x.UserId).HasColumnName("UserId").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.UserId).HasColumnName("UserId").IsRequired();
             Property(x => x.UserName).HasColumnName("UserName").IsRequired().HasMaxLength(256);
             Property(x => x.LoweredUserName).HasColumnName("LoweredUserName").IsRequired().HasMaxLength(256);
             Property(x => x.MobileAlias).HasColumnName("MobileAlias").IsOptional().HasMaxLength(16);
@@ -577,7 +459,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.LastActivityDate).HasColumnName("LastActivityDate").IsRequired();
 
             // Foreign keys
-            HasRequired(a => a.AspnetApplications).WithRequiredDependent(); // FK__aspnet_Us__Appli__0DAF0CB0
+            HasRequired(a => a.AspnetApplications).WithMany(b => b.AspnetUsers).HasForeignKey(c => c.ApplicationId); // FK__aspnet_Us__Appli__0DAF0CB0
         }
     }
 
@@ -589,12 +471,12 @@ namespace EntityFramework_Reverse_POCO_Generator
             ToTable("dbo.aspnet_UsersInRoles");
             HasKey(x => new { x.UserId, x.RoleId });
 
-            Property(x => x.UserId).HasColumnName("UserId").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
-            Property(x => x.RoleId).HasColumnName("RoleId").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.UserId).HasColumnName("UserId").IsRequired();
+            Property(x => x.RoleId).HasColumnName("RoleId").IsRequired();
 
             // Foreign keys
-            HasRequired(a => a.AspnetUsers).WithRequiredDependent(); // FK__aspnet_Us__UserI__49C3F6B7
-            HasRequired(a => a.AspnetRoles).WithRequiredDependent(); // FK__aspnet_Us__RoleI__4AB81AF0
+            HasRequired(a => a.AspnetUsers).WithOptional(b => b.AspnetUsersInRoles); // FK__aspnet_Us__UserI__49C3F6B7
+            HasRequired(a => a.AspnetRoles).WithOptional(b => b.AspnetUsersInRoles); // FK__aspnet_Us__RoleI__4AB81AF0
         }
     }
 
@@ -606,7 +488,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             ToTable("dbo.aspnet_WebEvent_Events");
             HasKey(x => x.EventId);
 
-            Property(x => x.EventId).HasColumnName("EventId").IsRequired().HasMaxLength(32).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.EventId).HasColumnName("EventId").IsRequired().HasMaxLength(32);
             Property(x => x.EventTimeUtc).HasColumnName("EventTimeUtc").IsRequired();
             Property(x => x.EventTime).HasColumnName("EventTime").IsRequired();
             Property(x => x.EventType).HasColumnName("EventType").IsRequired().HasMaxLength(256);
@@ -621,160 +503,6 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.RequestUrl).HasColumnName("RequestUrl").IsOptional().HasMaxLength(1024);
             Property(x => x.ExceptionType).HasColumnName("ExceptionType").IsOptional().HasMaxLength(256);
             Property(x => x.Details).HasColumnName("Details").IsOptional().HasMaxLength(1073741823);
-        }
-    }
-
-    // vw_aspnet_Applications
-    public class VwAspnetApplicationsConfiguration : EntityTypeConfiguration<VwAspnetApplications>
-    {
-        public VwAspnetApplicationsConfiguration()
-        {
-            ToTable("dbo.vw_aspnet_Applications");
-            HasKey(x => new { x.ApplicationName, x.LoweredApplicationName, x.ApplicationId });
-
-            Property(x => x.ApplicationName).HasColumnName("ApplicationName").IsRequired().HasMaxLength(256);
-            Property(x => x.LoweredApplicationName).HasColumnName("LoweredApplicationName").IsRequired().HasMaxLength(256);
-            Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
-            Property(x => x.Description).HasColumnName("Description").IsOptional().HasMaxLength(256);
-        }
-    }
-
-    // vw_aspnet_MembershipUsers
-    public class VwAspnetMembershipUsersConfiguration : EntityTypeConfiguration<VwAspnetMembershipUsers>
-    {
-        public VwAspnetMembershipUsersConfiguration()
-        {
-            ToTable("dbo.vw_aspnet_MembershipUsers");
-            HasKey(x => new { x.UserId, x.PasswordFormat, x.IsApproved, x.IsLockedOut, x.CreateDate, x.LastLoginDate, x.LastPasswordChangedDate, x.LastLockoutDate, x.FailedPasswordAttemptCount, x.FailedPasswordAttemptWindowStart, x.FailedPasswordAnswerAttemptCount, x.FailedPasswordAnswerAttemptWindowStart, x.ApplicationId, x.UserName, x.IsAnonymous, x.LastActivityDate });
-
-            Property(x => x.UserId).HasColumnName("UserId").IsRequired();
-            Property(x => x.PasswordFormat).HasColumnName("PasswordFormat").IsRequired();
-            Property(x => x.MobilePin).HasColumnName("MobilePIN").IsOptional().HasMaxLength(16);
-            Property(x => x.Email).HasColumnName("Email").IsOptional().HasMaxLength(256);
-            Property(x => x.LoweredEmail).HasColumnName("LoweredEmail").IsOptional().HasMaxLength(256);
-            Property(x => x.PasswordQuestion).HasColumnName("PasswordQuestion").IsOptional().HasMaxLength(256);
-            Property(x => x.PasswordAnswer).HasColumnName("PasswordAnswer").IsOptional().HasMaxLength(128);
-            Property(x => x.IsApproved).HasColumnName("IsApproved").IsRequired();
-            Property(x => x.IsLockedOut).HasColumnName("IsLockedOut").IsRequired();
-            Property(x => x.CreateDate).HasColumnName("CreateDate").IsRequired();
-            Property(x => x.LastLoginDate).HasColumnName("LastLoginDate").IsRequired();
-            Property(x => x.LastPasswordChangedDate).HasColumnName("LastPasswordChangedDate").IsRequired();
-            Property(x => x.LastLockoutDate).HasColumnName("LastLockoutDate").IsRequired();
-            Property(x => x.FailedPasswordAttemptCount).HasColumnName("FailedPasswordAttemptCount").IsRequired();
-            Property(x => x.FailedPasswordAttemptWindowStart).HasColumnName("FailedPasswordAttemptWindowStart").IsRequired();
-            Property(x => x.FailedPasswordAnswerAttemptCount).HasColumnName("FailedPasswordAnswerAttemptCount").IsRequired();
-            Property(x => x.FailedPasswordAnswerAttemptWindowStart).HasColumnName("FailedPasswordAnswerAttemptWindowStart").IsRequired();
-            Property(x => x.Comment).HasColumnName("Comment").IsOptional().HasMaxLength(1073741823);
-            Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
-            Property(x => x.UserName).HasColumnName("UserName").IsRequired().HasMaxLength(256);
-            Property(x => x.MobileAlias).HasColumnName("MobileAlias").IsOptional().HasMaxLength(16);
-            Property(x => x.IsAnonymous).HasColumnName("IsAnonymous").IsRequired();
-            Property(x => x.LastActivityDate).HasColumnName("LastActivityDate").IsRequired();
-        }
-    }
-
-    // vw_aspnet_Profiles
-    public class VwAspnetProfilesConfiguration : EntityTypeConfiguration<VwAspnetProfiles>
-    {
-        public VwAspnetProfilesConfiguration()
-        {
-            ToTable("dbo.vw_aspnet_Profiles");
-            HasKey(x => new { x.UserId, x.LastUpdatedDate });
-
-            Property(x => x.UserId).HasColumnName("UserId").IsRequired();
-            Property(x => x.LastUpdatedDate).HasColumnName("LastUpdatedDate").IsRequired();
-            Property(x => x.DataSize).HasColumnName("DataSize").IsOptional();
-        }
-    }
-
-    // vw_aspnet_Roles
-    public class VwAspnetRolesConfiguration : EntityTypeConfiguration<VwAspnetRoles>
-    {
-        public VwAspnetRolesConfiguration()
-        {
-            ToTable("dbo.vw_aspnet_Roles");
-            HasKey(x => new { x.ApplicationId, x.RoleId, x.RoleName, x.LoweredRoleName });
-
-            Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
-            Property(x => x.RoleId).HasColumnName("RoleId").IsRequired();
-            Property(x => x.RoleName).HasColumnName("RoleName").IsRequired().HasMaxLength(256);
-            Property(x => x.LoweredRoleName).HasColumnName("LoweredRoleName").IsRequired().HasMaxLength(256);
-            Property(x => x.Description).HasColumnName("Description").IsOptional().HasMaxLength(256);
-        }
-    }
-
-    // vw_aspnet_Users
-    public class VwAspnetUsersConfiguration : EntityTypeConfiguration<VwAspnetUsers>
-    {
-        public VwAspnetUsersConfiguration()
-        {
-            ToTable("dbo.vw_aspnet_Users");
-            HasKey(x => new { x.ApplicationId, x.UserId, x.UserName, x.LoweredUserName, x.IsAnonymous, x.LastActivityDate });
-
-            Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
-            Property(x => x.UserId).HasColumnName("UserId").IsRequired();
-            Property(x => x.UserName).HasColumnName("UserName").IsRequired().HasMaxLength(256);
-            Property(x => x.LoweredUserName).HasColumnName("LoweredUserName").IsRequired().HasMaxLength(256);
-            Property(x => x.MobileAlias).HasColumnName("MobileAlias").IsOptional().HasMaxLength(16);
-            Property(x => x.IsAnonymous).HasColumnName("IsAnonymous").IsRequired();
-            Property(x => x.LastActivityDate).HasColumnName("LastActivityDate").IsRequired();
-        }
-    }
-
-    // vw_aspnet_UsersInRoles
-    public class VwAspnetUsersInRolesConfiguration : EntityTypeConfiguration<VwAspnetUsersInRoles>
-    {
-        public VwAspnetUsersInRolesConfiguration()
-        {
-            ToTable("dbo.vw_aspnet_UsersInRoles");
-            HasKey(x => new { x.UserId, x.RoleId });
-
-            Property(x => x.UserId).HasColumnName("UserId").IsRequired();
-            Property(x => x.RoleId).HasColumnName("RoleId").IsRequired();
-        }
-    }
-
-    // vw_aspnet_WebPartState_Paths
-    public class VwAspnetWebPartStatePathsConfiguration : EntityTypeConfiguration<VwAspnetWebPartStatePaths>
-    {
-        public VwAspnetWebPartStatePathsConfiguration()
-        {
-            ToTable("dbo.vw_aspnet_WebPartState_Paths");
-            HasKey(x => new { x.ApplicationId, x.PathId, x.Path, x.LoweredPath });
-
-            Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
-            Property(x => x.PathId).HasColumnName("PathId").IsRequired();
-            Property(x => x.Path).HasColumnName("Path").IsRequired().HasMaxLength(256);
-            Property(x => x.LoweredPath).HasColumnName("LoweredPath").IsRequired().HasMaxLength(256);
-        }
-    }
-
-    // vw_aspnet_WebPartState_Shared
-    public class VwAspnetWebPartStateSharedConfiguration : EntityTypeConfiguration<VwAspnetWebPartStateShared>
-    {
-        public VwAspnetWebPartStateSharedConfiguration()
-        {
-            ToTable("dbo.vw_aspnet_WebPartState_Shared");
-            HasKey(x => new { x.PathId, x.LastUpdatedDate });
-
-            Property(x => x.PathId).HasColumnName("PathId").IsRequired();
-            Property(x => x.DataSize).HasColumnName("DataSize").IsOptional();
-            Property(x => x.LastUpdatedDate).HasColumnName("LastUpdatedDate").IsRequired();
-        }
-    }
-
-    // vw_aspnet_WebPartState_User
-    public class VwAspnetWebPartStateUserConfiguration : EntityTypeConfiguration<VwAspnetWebPartStateUser>
-    {
-        public VwAspnetWebPartStateUserConfiguration()
-        {
-            ToTable("dbo.vw_aspnet_WebPartState_User");
-            HasKey(x => new { x.LastUpdatedDate });
-
-            Property(x => x.PathId).HasColumnName("PathId").IsOptional();
-            Property(x => x.UserId).HasColumnName("UserId").IsOptional();
-            Property(x => x.DataSize).HasColumnName("DataSize").IsOptional();
-            Property(x => x.LastUpdatedDate).HasColumnName("LastUpdatedDate").IsRequired();
         }
     }
 

@@ -1,67 +1,53 @@
-﻿// This file is solely use as a helper for editing the T4 template EntityCore.ttinclude
-// Edits are made here, and copy+pasted into the T4 template
-
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
 using System.Data.Common;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace EntityFramework_Reverse_POCO_Generator
+namespace Scratch
 {
-    internal class GeneratedTextTransformation
+    public class Program
     {
-        #region do not include
-
-        public object Host;
-
-        private void Warning(string format)
+        static void Main()
         {
-            Console.WriteLine(format);
+            var x = new GeneratedTextTransformation();
+            var tables = x.LoadTables();
+            foreach (var table in tables)
+            {
+                Console.WriteLine(table.NameHumanCase);
+                foreach (var rp in table.ReverseNavigationProperty)
+                {
+                    Console.WriteLine("  " + rp);
+                }
+                foreach(var col in table.Columns)
+                {
+                    //if(!string.IsNullOrWhiteSpace(col.Entity)) Console.WriteLine("  " + col.Entity);
+                    if(!string.IsNullOrWhiteSpace(col.EntityFk)) Console.WriteLine("  " + col.EntityFk);
+                }
+                foreach(var rc in table.ReverseNavigationConfiguration)
+                {
+                    Console.WriteLine("  " + rc);
+                }
+                foreach(var col in table.Columns)
+                {
+                    //if(!string.IsNullOrWhiteSpace(col.Config)) Console.WriteLine("  " + col.Config);
+                    if(!string.IsNullOrWhiteSpace(col.ConfigFk)) Console.WriteLine("  " + col.ConfigFk);
+                }
+                Console.WriteLine();
+            }
         }
+    }
 
-        private void WriteLine(string s, string p = "", string e = "")
-        {
-            Console.WriteLine(s + p + e);
-        }
-
-        public class EnvDTE
-        {
-            #region Nested type: DTE
-
-            public class DTE
-            {
-                public Array ActiveSolutionProjects;
-            }
-
-            #endregion
-
-            #region Nested type: Project
-
-            public class Project
-            {
-                public string FileName;
-                public string FullName;
-                public IEnumerable<ProjectItem> ProjectItems;
-            }
-
-            #endregion
-
-            #region Nested type: ProjectItem
-
-            public class ProjectItem
-            {
-                public string Name;
-            }
-
-            #endregion
-        };
-
-        #endregion
+    public class GeneratedTextTransformation
+    {
+        private static void WriteLine(string s) {  }
+        private static void WriteLine(string s, object b) {  }
+        private static void WriteLine(string s, object b, object c) { }
+        private static void Warning(string s) { }
+        private static string ZapPassword(string s) { return s; }
+        private const string ProviderName = "System.Data.SqlClient";
 
         // If there are multiple schema, then the table name is prefixed with the schema, except for dbo.
         // Ie. dbo.hello will be Hello.
@@ -69,7 +55,8 @@ namespace EntityFramework_Reverse_POCO_Generator
         string SchemaName = null;
 
         // Settings
-        string ConnectionStringName = "";   // Uses last connection string in config if not specified
+        string ConnectionStringName = "aspnetdb";   // Uses last connection string in config if not specified
+        string ConnectionString = "Data Source=(local);Initial Catalog=aspnetdb;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";   // Uses last connection string in config if not specified
         bool IncludeViews = true;
         string DbContextName = "MyDbContext";
         bool MakeClassesPartial = true;
@@ -87,9 +74,6 @@ namespace EntityFramework_Reverse_POCO_Generator
         Regex TableFilterExclude = null;
         Regex TableFilterInclude = null;
 
-        private string _connectionString = "";
-        private string _providerName = "";
-
         private static readonly Regex RxCleanUp = new Regex(@"[^\w\d_]", RegexOptions.Compiled);
 
         private static readonly Func<string, string> CleanUp = (str) =>
@@ -101,23 +85,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             return str;
         };
 
-        public string ConnectionString
-        {
-            get
-            {
-                InitConnectionString();
-                return _connectionString;
-            }
-        }
-
-        public string ProviderName
-        {
-            get
-            {
-                InitConnectionString();
-                return _providerName;
-            }
-        }
+        
 
         private static string CheckNullable(Column col)
         {
@@ -131,120 +99,16 @@ namespace EntityFramework_Reverse_POCO_Generator
             return result;
         }
 
-        private string GetConnectionString(ref string connectionStringName, out string providerName)
+
+
+
+
+
+
+
+
+        public Tables LoadTables()
         {
-            var currentProject = GetCurrentProject();
-
-            providerName = null;
-            string result = "";
-            var configFile = new ExeConfigurationFileMap { ExeConfigFilename = GetConfigPath() };
-
-            if(string.IsNullOrEmpty(configFile.ExeConfigFilename))
-                throw new ApplicationException("The project does not contain App.config or Web.config file.");
-
-            var config = ConfigurationManager.OpenMappedExeConfiguration(configFile, ConfigurationUserLevel.None);
-            var connSection = config.ConnectionStrings;
-
-            if(!string.IsNullOrEmpty(connectionStringName))
-            {
-                // Get the named connection string
-                try
-                {
-                    result = connSection.ConnectionStrings[connectionStringName].ConnectionString;
-                    providerName = connSection.ConnectionStrings[connectionStringName].ProviderName;
-                }
-                catch
-                {
-                    result = "There is no connection string name called '" + connectionStringName + "'";
-                }
-                return result;
-            }
-
-            // No named connection string, therefore retrieve the last one from config
-            if(connSection.ConnectionStrings.Count > 0)
-            {
-                var connectionString = connSection.ConnectionStrings[connSection.ConnectionStrings.Count - 1];
-                connectionStringName = connectionString.Name;
-                result = connectionString.ConnectionString;
-                providerName = connectionString.ProviderName;
-            }
-
-            return result;
-        }
-
-        private void InitConnectionString()
-        {
-            if(!String.IsNullOrEmpty(_connectionString))
-                return;
-
-            _connectionString = GetConnectionString(ref ConnectionStringName, out _providerName);
-
-            if(!_connectionString.Contains("|DataDirectory|"))
-                return;
-
-            // Replace data directory path
-            string dataFilePath = GetDataDirectory();
-            _connectionString = _connectionString.Replace("|DataDirectory|", dataFilePath);
-        }
-
-
-        public EnvDTE.Project GetCurrentProject()
-        {
-            IServiceProvider _ServiceProvider = (IServiceProvider)Host;
-            if(_ServiceProvider == null)
-                throw new Exception("Host property returned unexpected value (null)");
-
-            EnvDTE.DTE dte = (EnvDTE.DTE)_ServiceProvider.GetService(typeof(EnvDTE.DTE));
-            if(dte == null)
-                throw new Exception("Unable to retrieve EnvDTE.DTE");
-
-            Array activeSolutionProjects = (Array)dte.ActiveSolutionProjects;
-            if(activeSolutionProjects == null)
-                throw new Exception("DTE.ActiveSolutionProjects returned null");
-
-            EnvDTE.Project dteProject = (EnvDTE.Project)activeSolutionProjects.GetValue(0);
-            if(dteProject == null)
-                throw new Exception("DTE.ActiveSolutionProjects[0] returned null");
-
-            return dteProject;
-        }
-
-        private string GetProjectPath()
-        {
-            EnvDTE.Project project = GetCurrentProject();
-            var info = new FileInfo(project.FullName);
-            return info.Directory == null ? string.Empty : info.Directory.FullName;
-        }
-
-        private string GetConfigPath()
-        {
-            EnvDTE.Project project = GetCurrentProject();
-            foreach(EnvDTE.ProjectItem item in project.ProjectItems)
-            {
-                // if it is the app.config file, then open it up
-                if(item.Name.Equals("App.config", StringComparison.InvariantCultureIgnoreCase) || item.Name.Equals("Web.config", StringComparison.InvariantCultureIgnoreCase))
-                    return GetProjectPath() + "\\" + item.Name;
-            }
-            return String.Empty;
-        }
-
-        public string GetDataDirectory()
-        {
-            var project = GetCurrentProject();
-            return Path.GetDirectoryName(project.FileName) + "\\App_Data\\";
-        }
-
-        private static string ZapPassword(string connectionString)
-        {
-            var rx = new Regex("password=.*;", RegexOptions.Singleline | RegexOptions.Multiline | RegexOptions.IgnoreCase);
-            return rx.Replace(connectionString, "password=**zapped**;");
-        }
-
-
-        private Tables LoadTables()
-        {
-            InitConnectionString();
-
             WriteLine("// This file was automatically generated.");
             WriteLine("// Do not make changes directly to this file - edit the template instead.");
             WriteLine("// ");
@@ -362,27 +226,28 @@ namespace EntityFramework_Reverse_POCO_Generator
 
             private void SetupConfig()
             {
-                /*bool hasDatabaseGeneratedOption = false;
+                bool hasDatabaseGeneratedOption = false;
                 switch(PropertyType.ToLower())
                 {
-                    case "bigint":
-                    case "decimal":
-                    case "float":
+                    case "long":
+                    case "short":
                     case "int":
-                    case "numeric":
-                    case "real":
-                    case "smallint":
-                    case "tinyint":
+                    case "double":
+                    case "float":
+                    case "decimal":
                         hasDatabaseGeneratedOption = true;
                         break;
-                }*/
+                }
                 string databaseGeneratedOption = string.Empty;
-                if(IsIdentity)
-                    databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity)";
-                if(IsStoreGenerated)
-                    databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.Computed)";
-                if(IsPrimaryKey && !IsIdentity && !IsStoreGenerated)
-                    databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.None)";
+                if (hasDatabaseGeneratedOption)
+                {
+                    if (IsIdentity)
+                        databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity)";
+                    if (IsStoreGenerated)
+                        databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.Computed)";
+                    if (IsPrimaryKey && !IsIdentity && !IsStoreGenerated)
+                        databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.None)";
+                }
                 Config = string.Format("Property(x => x.{0}).HasColumnName(\"{1}\"){2}{3}{4};", PropertyNameHumanCase, PropertyName,
                                             (IsNullable) ? ".IsOptional()" : ".IsRequired()",
                                             (MaxLength > 0) ? ".HasMaxLength(" + MaxLength + ")" : string.Empty,
@@ -1308,16 +1173,16 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                     fkCol.EntityFk = string.Format("public virtual {0} {1} {2} {3}", pkTableHumanCase, pkTableHumanCase, "{ get; set; } // ",
                                                     fkCol.PropertyNameHumanCase + " - " + foreignKey.ConstraintName);
 
-                    fkCol.ConfigFk = string.Format("{0}; // {1}", GetRelationship(fkCol, pkCol, pkTableHumanCase), foreignKey.ConstraintName);
+                    fkCol.ConfigFk = string.Format("{0}; // {1}", GetRelationship(fkCol, pkCol, pkTableHumanCase, fkTable.NameHumanCase), foreignKey.ConstraintName);
                     pkTable.AddReverseNavigation(fkCol, pkCol, pkTableHumanCase, fkTable, string.Format("{0}.{1}", fkTable.Name, foreignKey.ConstraintName));
                 }
 
                 return result;
             }
 
-            private static string GetRelationship(Column fkCol, Column pkCol, string fkName)
+            private static string GetRelationship(Column fkCol, Column pkCol, string fkName, string fkTableNameHumanCase)
             {
-                return string.Format("Has{0}(a => a.{1}){2}", GetHasMethod(fkCol, pkCol), fkName, GetWithMethod(fkCol, pkCol));
+                return string.Format("Has{0}(a => a.{1}){2}", GetHasMethod(fkCol, pkCol), fkName, GetWithMethod(fkCol, pkCol, fkTableNameHumanCase));
             }
 
             // HasOptional
@@ -1325,14 +1190,9 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
             // HasMany
             private static string GetHasMethod(Column fkCol, Column pkCol)
             {
-                // Check multiplicity
                 if(pkCol.IsPrimaryKey)
-                {
-                    // 1:1
                     return fkCol.IsNullable ? "Optional" : "Required";
-                }
 
-                // 1:n
                 return "Many";
             }
 
@@ -1341,15 +1201,22 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
             // WithMany
             // WithRequiredPrincipal
             // WithRequiredDependent
-            private static string GetWithMethod(Column fkCol, Column pkCol)
+            private static string GetWithMethod(Column fkCol, Column pkCol, string fkTableNameHumanCase)
             {
-                // Check multiplicity
-                if (pkCol.IsPrimaryKey)
-                {
-                    return !fkCol.IsNullable ? ".WithRequiredDependent()" : string.Empty;
-                }
+                // 1:1
+                if(fkCol.IsPrimaryKey && pkCol.IsPrimaryKey)
+                    return string.Format(".WithOptional(b => b.{0})", fkTableNameHumanCase);
 
-                return string.Format(".WithMany().HasForeignKey(b => b.{0})", fkCol.PropertyNameHumanCase);
+                // 1:n
+                if(fkCol.IsPrimaryKey && !pkCol.IsPrimaryKey)
+                    return string.Format(".WithRequiredDependent(b => b.{0})", pkCol.PropertyNameHumanCase);
+                
+                // n:1
+                if(!fkCol.IsPrimaryKey && pkCol.IsPrimaryKey)
+                    return string.Format(".WithMany(b => b.{0}).HasForeignKey(c => c.{1})", fkTableNameHumanCase, fkCol.PropertyNameHumanCase);
+
+                // n:n
+                return string.Format(".WithMany(b => b.{0}).HasForeignKey(c => c.{1})", fkTableNameHumanCase, fkCol.PropertyNameHumanCase);
             }
 
             private static Column CreateColumn(IDataRecord rdr, Regex rxClean, Table table)
@@ -1531,23 +1398,31 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
 
             public void AddReverseNavigation(Column fkCol, Column pkCol, string fkName, Table fkTable, string constraint)
             {
-                if (pkCol.IsPrimaryKey && fkCol.IsPrimaryKey)
+                // 1:1
+                if(fkCol.IsPrimaryKey && pkCol.IsPrimaryKey)
                 {
-                    // 1:1
                     ReverseNavigationProperty.Add(string.Format("public virtual {0} {0} {{ get; set; }} // {1}", fkTable.NameHumanCase, constraint));
                     return;
                 }
 
-                if (pkCol.IsPrimaryKey)
+                // 1:n
+                if (fkCol.IsPrimaryKey && !pkCol.IsPrimaryKey)
                 {
-                    // 1:n
+                    ReverseNavigationProperty.Add(string.Format("public virtual {0} {0} {{ get; set; }} // {1}", fkTable.NameHumanCase, constraint));
+                    return;
+                }
+                
+                // n:1
+                if(!fkCol.IsPrimaryKey && pkCol.IsPrimaryKey)
+                {
                     ReverseNavigationProperty.Add(string.Format("public virtual ICollection<{0}> {0} {{ get; set; }} // {1}", fkTable.NameHumanCase, constraint));
                     ReverseNavigationCtor.Add(string.Format("{0} = new List<{0}>();", fkTable.NameHumanCase));
                     return;
                 }
 
-                // n:1
-                ReverseNavigationProperty.Add("// todo - " + constraint);
+                // n:n
+                ReverseNavigationProperty.Add(string.Format("public virtual ICollection<{0}> {0} {{ get; set; }} // {1}", fkTable.NameHumanCase, constraint));
+                ReverseNavigationCtor.Add(string.Format("{0} = new List<{0}>();", fkTable.NameHumanCase));
             }
 
             public void SetPrimaryKeys()

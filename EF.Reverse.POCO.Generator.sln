@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFramework Reverse POC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tester", "Tester\Tester.csproj", "{D21BA1F2-7796-4263-B4CA-5C1BB33729CA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scratch", "Scratch\Scratch.csproj", "{80B4FBAC-AF39-4470-B21E-794422DFC183}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,16 @@ Global
 		{D21BA1F2-7796-4263-B4CA-5C1BB33729CA}.Release|Mixed Platforms.Build.0 = Release|x86
 		{D21BA1F2-7796-4263-B4CA-5C1BB33729CA}.Release|x86.ActiveCfg = Release|x86
 		{D21BA1F2-7796-4263-B4CA-5C1BB33729CA}.Release|x86.Build.0 = Release|x86
+		{80B4FBAC-AF39-4470-B21E-794422DFC183}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{80B4FBAC-AF39-4470-B21E-794422DFC183}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{80B4FBAC-AF39-4470-B21E-794422DFC183}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{80B4FBAC-AF39-4470-B21E-794422DFC183}.Debug|x86.ActiveCfg = Debug|x86
+		{80B4FBAC-AF39-4470-B21E-794422DFC183}.Debug|x86.Build.0 = Debug|x86
+		{80B4FBAC-AF39-4470-B21E-794422DFC183}.Release|Any CPU.ActiveCfg = Release|x86
+		{80B4FBAC-AF39-4470-B21E-794422DFC183}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{80B4FBAC-AF39-4470-B21E-794422DFC183}.Release|Mixed Platforms.Build.0 = Release|x86
+		{80B4FBAC-AF39-4470-B21E-794422DFC183}.Release|x86.ActiveCfg = Release|x86
+		{80B4FBAC-AF39-4470-B21E-794422DFC183}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
