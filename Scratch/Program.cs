@@ -1,8 +1,10 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -12,41 +14,57 @@ namespace Scratch
     {
         static void Main()
         {
-            var x = new GeneratedTextTransformation();
-            var tables = x.LoadTables();
-            foreach (var table in tables)
+            using (var sw = new StreamWriter(@"c:\fred.txt"))
             {
-                Console.WriteLine(table.NameHumanCase);
-                foreach (var rp in table.ReverseNavigationProperty)
+                var x = new GeneratedTextTransformation();
+                var tables = x.LoadTables();
+                foreach (var table in tables)
                 {
-                    Console.WriteLine("  " + rp);
+                    Console.WriteLine(table.NameHumanCase);
+                    sw.WriteLine(table.NameHumanCase);
+
+                    foreach (var rp in table.ReverseNavigationProperty)
+                    {
+                        Console.WriteLine("  " + rp);
+                        sw.WriteLine("  " + rp);
+                    }
+                    foreach (var col in table.Columns)
+                    {
+                        //if(!string.IsNullOrWhiteSpace(col.Entity)) Console.WriteLine("  " + col.Entity);
+                        if (!string.IsNullOrWhiteSpace(col.EntityFk))
+                        {
+                            Console.WriteLine("  " + col.EntityFk);
+                            sw.WriteLine("  " + col.EntityFk);
+                        }
+                    }
+                    foreach (var rc in table.ReverseNavigationConfiguration)
+                    {
+                        Console.WriteLine("  " + rc);
+                        sw.WriteLine("  " + rc);
+                    }
+                    foreach (var col in table.Columns)
+                    {
+                        //if(!string.IsNullOrWhiteSpace(col.Config)) Console.WriteLine("  " + col.Config);
+                        if (!string.IsNullOrWhiteSpace(col.ConfigFk))
+                        {
+                            Console.WriteLine("  " + col.ConfigFk);
+                            sw.WriteLine("  " + col.ConfigFk);
+                        }
+                    }
+                    Console.WriteLine();
+                    sw.WriteLine();
                 }
-                foreach(var col in table.Columns)
-                {
-                    //if(!string.IsNullOrWhiteSpace(col.Entity)) Console.WriteLine("  " + col.Entity);
-                    if(!string.IsNullOrWhiteSpace(col.EntityFk)) Console.WriteLine("  " + col.EntityFk);
-                }
-                foreach(var rc in table.ReverseNavigationConfiguration)
-                {
-                    Console.WriteLine("  " + rc);
-                }
-                foreach(var col in table.Columns)
-                {
-                    //if(!string.IsNullOrWhiteSpace(col.Config)) Console.WriteLine("  " + col.Config);
-                    if(!string.IsNullOrWhiteSpace(col.ConfigFk)) Console.WriteLine("  " + col.ConfigFk);
-                }
-                Console.WriteLine();
             }
         }
     }
 
     public class GeneratedTextTransformation
     {
-        private static void WriteLine(string s) {  }
-        private static void WriteLine(string s, object b) {  }
-        private static void WriteLine(string s, object b, object c) { }
-        private static void Warning(string s) { }
-        private static string ZapPassword(string s) { return s; }
+        private void WriteLine(string s) {  }
+        private void WriteLine(string s, object b) {  }
+        private void WriteLine(string s, object b, object c) { }
+        private void Warning(string s) { }
+        private string ZapPassword(string s) { return s; }
         private const string ProviderName = "System.Data.SqlClient";
 
         // If there are multiple schema, then the table name is prefixed with the schema, except for dbo.
@@ -55,11 +73,9 @@ namespace Scratch
         string SchemaName = null;
 
         // Settings
-        string ConnectionStringName = "aspnetdb";   // Uses last connection string in config if not specified
-        string ConnectionString = "Data Source=(local);Initial Catalog=aspnetdb;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";   // Uses last connection string in config if not specified
+        string ConnectionStringName = "bybox";   // Uses last connection string in config if not specified
+        string ConnectionString = "Data Source=(local);Initial Catalog=bybox;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";   // Uses last connection string in config if not specified
         bool IncludeViews = true;
-        string DbContextName = "MyDbContext";
-        bool MakeClassesPartial = true;
 
         // Use the following table/view name regex filters to include or exclude tables/views
         // Exclude filters are checked first and tables matching filters are removed.
@@ -1170,19 +1186,21 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                     if(string.Compare(foreignKey.PkSchema, "dbo", StringComparison.OrdinalIgnoreCase) != 0)
                         pkTableHumanCase = foreignKey.PkSchema + "_" + pkTableHumanCase;
 
-                    fkCol.EntityFk = string.Format("public virtual {0} {1} {2} {3}", pkTableHumanCase, pkTableHumanCase, "{ get; set; } // ",
+                    string pkPropName = fkTable.GetUniqueColumnPropertyName(pkTableHumanCase);
+                    string fkPropName = pkTable.GetUniqueColumnPropertyName(fkTable.NameHumanCase);
+                    fkCol.EntityFk = string.Format("public virtual {0} {1} {2} {3}", pkTableHumanCase, pkPropName, "{ get; set; } // ",
                                                     fkCol.PropertyNameHumanCase + " - " + foreignKey.ConstraintName);
 
-                    fkCol.ConfigFk = string.Format("{0}; // {1}", GetRelationship(fkCol, pkCol, pkTableHumanCase, fkTable.NameHumanCase), foreignKey.ConstraintName);
-                    pkTable.AddReverseNavigation(fkCol, pkCol, pkTableHumanCase, fkTable, string.Format("{0}.{1}", fkTable.Name, foreignKey.ConstraintName));
+                    fkCol.ConfigFk = string.Format("{0}; // {1}", GetRelationship(fkCol, pkCol, pkPropName, fkPropName), foreignKey.ConstraintName);
+                    pkTable.AddReverseNavigation(fkCol, pkCol, pkTableHumanCase, fkTable, fkPropName, string.Format("{0}.{1}", fkTable.Name, foreignKey.ConstraintName));
                 }
 
                 return result;
             }
 
-            private static string GetRelationship(Column fkCol, Column pkCol, string fkName, string fkTableNameHumanCase)
+            private static string GetRelationship(Column fkCol, Column pkCol, string pkPropName, string fkPropName)
             {
-                return string.Format("Has{0}(a => a.{1}){2}", GetHasMethod(fkCol, pkCol), fkName, GetWithMethod(fkCol, pkCol, fkTableNameHumanCase));
+                return string.Format("Has{0}(a => a.{1}){2}", GetHasMethod(fkCol, pkCol), pkPropName, GetWithMethod(fkCol, pkCol, fkPropName));
             }
 
             // HasOptional
@@ -1201,11 +1219,11 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
             // WithMany
             // WithRequiredPrincipal
             // WithRequiredDependent
-            private static string GetWithMethod(Column fkCol, Column pkCol, string fkTableNameHumanCase)
+            private static string GetWithMethod(Column fkCol, Column pkCol, string fkPropName)
             {
                 // 1:1
                 if(fkCol.IsPrimaryKey && pkCol.IsPrimaryKey)
-                    return string.Format(".WithOptional(b => b.{0})", fkTableNameHumanCase);
+                    return string.Format(".WithOptional(b => b.{0})", fkPropName);
 
                 // 1:n
                 if(fkCol.IsPrimaryKey && !pkCol.IsPrimaryKey)
@@ -1213,10 +1231,10 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                 
                 // n:1
                 if(!fkCol.IsPrimaryKey && pkCol.IsPrimaryKey)
-                    return string.Format(".WithMany(b => b.{0}).HasForeignKey(c => c.{1})", fkTableNameHumanCase, fkCol.PropertyNameHumanCase);
+                    return string.Format(".WithMany(b => b.{0}).HasForeignKey(c => c.{1})", fkPropName, fkCol.PropertyNameHumanCase);
 
                 // n:n
-                return string.Format(".WithMany(b => b.{0}).HasForeignKey(c => c.{1})", fkTableNameHumanCase, fkCol.PropertyNameHumanCase);
+                return string.Format(".WithMany(b => b.{0}).HasForeignKey(c => c.{1})", fkPropName, fkCol.PropertyNameHumanCase);
             }
 
             private static Column CreateColumn(IDataRecord rdr, Regex rxClean, Table table)
@@ -1360,6 +1378,7 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
             public List<string> ReverseNavigationProperty;
             public List<string> ReverseNavigationConfiguration;
             public List<string> ReverseNavigationCtor;
+            public List<string> ReverseNavigationUniquePropName;
 
             public Table()
             {
@@ -1367,6 +1386,7 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                 ReverseNavigationProperty = new List<string>();
                 ReverseNavigationConfiguration = new List<string>();
                 ReverseNavigationCtor = new List<string>();
+                ReverseNavigationUniquePropName = new List<string>();
             }
 
             public IEnumerable<Column> PrimaryKeys
@@ -1396,33 +1416,58 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                 return Columns.SingleOrDefault(x => String.Compare(x.Name, columnName, StringComparison.OrdinalIgnoreCase) == 0);
             }
 
-            public void AddReverseNavigation(Column fkCol, Column pkCol, string fkName, Table fkTable, string constraint)
+            public string GetUniqueColumnPropertyName(string columnName)
+            {
+                if (!ReverseNavigationUniquePropName.Contains(columnName))
+                {
+                    ReverseNavigationUniquePropName.Add(columnName);
+                    return columnName;
+                }
+
+                for (int n = 1; n < 100; ++n)
+                {
+                    string col = columnName + n;
+                    if (ReverseNavigationUniquePropName.Contains(col))
+                        continue;
+                    ReverseNavigationUniquePropName.Add(col);
+                    return col;
+                }
+
+                // Give up
+                return columnName;
+            }
+
+            public void AddReverseNavigation(Column fkCol, Column pkCol, string fkName, Table fkTable, string propName, string constraint)
             {
                 // 1:1
                 if(fkCol.IsPrimaryKey && pkCol.IsPrimaryKey)
                 {
-                    ReverseNavigationProperty.Add(string.Format("public virtual {0} {0} {{ get; set; }} // {1}", fkTable.NameHumanCase, constraint));
+                    string s = string.Format("public virtual {0} {1} {{ get; set; }} // {2}", fkTable.NameHumanCase, propName, constraint);
+                    ReverseNavigationProperty.Add(s);
                     return;
                 }
 
                 // 1:n
                 if (fkCol.IsPrimaryKey && !pkCol.IsPrimaryKey)
                 {
-                    ReverseNavigationProperty.Add(string.Format("public virtual {0} {0} {{ get; set; }} // {1}", fkTable.NameHumanCase, constraint));
+                    string s = string.Format("public virtual {0} {1} {{ get; set; }} // {2}", fkTable.NameHumanCase, propName, constraint);
+                    ReverseNavigationProperty.Add(s);
                     return;
                 }
                 
                 // n:1
                 if(!fkCol.IsPrimaryKey && pkCol.IsPrimaryKey)
                 {
-                    ReverseNavigationProperty.Add(string.Format("public virtual ICollection<{0}> {0} {{ get; set; }} // {1}", fkTable.NameHumanCase, constraint));
-                    ReverseNavigationCtor.Add(string.Format("{0} = new List<{0}>();", fkTable.NameHumanCase));
+                    string s = string.Format("public virtual ICollection<{0}> {1} {{ get; set; }} // {2}", fkTable.NameHumanCase, propName, constraint);
+                    ReverseNavigationProperty.Add(s);
+                    ReverseNavigationCtor.Add(string.Format("{0} = new List<{1}>();", propName, fkTable.NameHumanCase));
                     return;
                 }
 
                 // n:n
-                ReverseNavigationProperty.Add(string.Format("public virtual ICollection<{0}> {0} {{ get; set; }} // {1}", fkTable.NameHumanCase, constraint));
-                ReverseNavigationCtor.Add(string.Format("{0} = new List<{0}>();", fkTable.NameHumanCase));
+                string n = string.Format("public virtual ICollection<{0}> {1} {{ get; set; }} // {2}", fkTable.NameHumanCase, propName, constraint);
+                ReverseNavigationProperty.Add(n);
+                ReverseNavigationCtor.Add(string.Format("{0} = new List<{1}>();", propName, fkTable.NameHumanCase));
             }
 
             public void SetPrimaryKeys()

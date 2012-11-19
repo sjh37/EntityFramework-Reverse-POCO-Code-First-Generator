@@ -1267,19 +1267,21 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                     if(string.Compare(foreignKey.PkSchema, "dbo", StringComparison.OrdinalIgnoreCase) != 0)
                         pkTableHumanCase = foreignKey.PkSchema + "_" + pkTableHumanCase;
 
-                    fkCol.EntityFk = string.Format("public virtual {0} {1} {2} {3}", pkTableHumanCase, pkTableHumanCase, "{ get; set; } // ",
+                    string pkPropName = fkTable.GetUniqueColumnPropertyName(pkTableHumanCase);
+                    string fkPropName = pkTable.GetUniqueColumnPropertyName(fkTable.NameHumanCase);
+                    fkCol.EntityFk = string.Format("public virtual {0} {1} {2} {3}", pkTableHumanCase, pkPropName, "{ get; set; } // ",
                                                     fkCol.PropertyNameHumanCase + " - " + foreignKey.ConstraintName);
 
-                    fkCol.ConfigFk = string.Format("{0}; // {1}", GetRelationship(fkCol, pkCol, pkTableHumanCase, fkTable.NameHumanCase), foreignKey.ConstraintName);
-                    pkTable.AddReverseNavigation(fkCol, pkCol, pkTableHumanCase, fkTable, string.Format("{0}.{1}", fkTable.Name, foreignKey.ConstraintName));
+                    fkCol.ConfigFk = string.Format("{0}; // {1}", GetRelationship(fkCol, pkCol, pkPropName, fkPropName), foreignKey.ConstraintName);
+                    pkTable.AddReverseNavigation(fkCol, pkCol, pkTableHumanCase, fkTable, fkPropName, string.Format("{0}.{1}", fkTable.Name, foreignKey.ConstraintName));
                 }
 
                 return result;
             }
 
-            private static string GetRelationship(Column fkCol, Column pkCol, string fkName, string fkTableNameHumanCase)
+            private static string GetRelationship(Column fkCol, Column pkCol, string pkPropName, string fkPropName)
             {
-                return string.Format("Has{0}(a => a.{1}){2}", GetHasMethod(fkCol, pkCol), fkName, GetWithMethod(fkCol, pkCol, fkTableNameHumanCase));
+                return string.Format("Has{0}(a => a.{1}){2}", GetHasMethod(fkCol, pkCol), pkPropName, GetWithMethod(fkCol, pkCol, fkPropName));
             }
 
             // HasOptional
@@ -1298,11 +1300,11 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
             // WithMany
             // WithRequiredPrincipal
             // WithRequiredDependent
-            private static string GetWithMethod(Column fkCol, Column pkCol, string fkTableNameHumanCase)
+            private static string GetWithMethod(Column fkCol, Column pkCol, string fkPropName)
             {
                 // 1:1
                 if (fkCol.IsPrimaryKey && pkCol.IsPrimaryKey)
-                    return string.Format(".WithOptional(b => b.{0})", fkTableNameHumanCase);
+                    return string.Format(".WithOptional(b => b.{0})", fkPropName);
 
                 // 1:n
                 if(fkCol.IsPrimaryKey && !pkCol.IsPrimaryKey)
@@ -1310,10 +1312,10 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                 
                 // n:1
                 if(!fkCol.IsPrimaryKey && pkCol.IsPrimaryKey)
-                    return string.Format(".WithMany(b => b.{0}).HasForeignKey(c => c.{1})", fkTableNameHumanCase, fkCol.PropertyNameHumanCase);
+                    return string.Format(".WithMany(b => b.{0}).HasForeignKey(c => c.{1})", fkPropName, fkCol.PropertyNameHumanCase);
 
                 // n:n
-                return string.Format(".WithMany(b => b.{0}).HasForeignKey(c => c.{1})", fkTableNameHumanCase, fkCol.PropertyNameHumanCase);
+                return string.Format(".WithMany(b => b.{0}).HasForeignKey(c => c.{1})", fkPropName, fkCol.PropertyNameHumanCase);
             }
 
             private static Column CreateColumn(IDataRecord rdr, Regex rxClean, Table table)
@@ -1457,6 +1459,7 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
             public List<string> ReverseNavigationProperty;
             public List<string> ReverseNavigationConfiguration;
             public List<string> ReverseNavigationCtor;
+            public List<string> ReverseNavigationUniquePropName;
 
             public Table()
             {
@@ -1464,6 +1467,7 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                 ReverseNavigationProperty = new List<string>();
                 ReverseNavigationConfiguration = new List<string>();
                 ReverseNavigationCtor = new List<string>();
+                ReverseNavigationUniquePropName = new List<string>();
             }
 
             public IEnumerable<Column> PrimaryKeys
@@ -1493,33 +1497,58 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                 return Columns.SingleOrDefault(x => String.Compare(x.Name, columnName, StringComparison.OrdinalIgnoreCase) == 0);
             }
 
-            public void AddReverseNavigation(Column fkCol, Column pkCol, string fkName, Table fkTable, string constraint)
+            public string GetUniqueColumnPropertyName(string columnName)
+            {
+                if (!ReverseNavigationUniquePropName.Contains(columnName))
+                {
+                    ReverseNavigationUniquePropName.Add(columnName);
+                    return columnName;
+                }
+
+                for (int n = 1; n < 100; ++n)
+                {
+                    string col = columnName + n;
+                    if (ReverseNavigationUniquePropName.Contains(col))
+                        continue;
+                    ReverseNavigationUniquePropName.Add(col);
+                        return col;
+                }
+
+                // Give up
+                return columnName;
+            }
+
+            public void AddReverseNavigation(Column fkCol, Column pkCol, string fkName, Table fkTable, string propName, string constraint)
             {
                 // 1:1
                 if(fkCol.IsPrimaryKey && pkCol.IsPrimaryKey)
                 {
-                    ReverseNavigationProperty.Add(string.Format("public virtual {0} {0} {{ get; set; }} // {1}", fkTable.NameHumanCase, constraint));
+                    string s = string.Format("public virtual {0} {1} {{ get; set; }} // {2}", fkTable.NameHumanCase, propName, constraint);
+                    ReverseNavigationProperty.Add(s);
                     return;
                 }
 
                 // 1:n
                 if (fkCol.IsPrimaryKey && !pkCol.IsPrimaryKey)
                 {
-                    ReverseNavigationProperty.Add(string.Format("public virtual {0} {0} {{ get; set; }} // {1}", fkTable.NameHumanCase, constraint));
+                    string s = string.Format("public virtual {0} {1} {{ get; set; }} // {2}", fkTable.NameHumanCase, propName, constraint);
+                    ReverseNavigationProperty.Add(s);
                     return;
                 }
 
                 // n:1
                 if(!fkCol.IsPrimaryKey && pkCol.IsPrimaryKey)
                 {
-                    ReverseNavigationProperty.Add(string.Format("public virtual ICollection<{0}> {0} {{ get; set; }} // {1}", fkTable.NameHumanCase, constraint));
-                    ReverseNavigationCtor.Add(string.Format("{0} = new List<{0}>();", fkTable.NameHumanCase));
+                    string s = string.Format("public virtual ICollection<{0}> {1} {{ get; set; }} // {2}", fkTable.NameHumanCase, propName, constraint);
+                    ReverseNavigationProperty.Add(s);
+                    ReverseNavigationCtor.Add(string.Format("{0} = new List<{1}>();", propName, fkTable.NameHumanCase));
                     return;
                 }
 
                 // n:n
-                ReverseNavigationProperty.Add(string.Format("public virtual ICollection<{0}> {0} {{ get; set; }} // {1}", fkTable.NameHumanCase, constraint));
-                ReverseNavigationCtor.Add(string.Format("{0} = new List<{0}>();", fkTable.NameHumanCase));
+                string n = string.Format("public virtual ICollection<{0}> {1} {{ get; set; }} // {2}", fkTable.NameHumanCase, propName, constraint);
+                ReverseNavigationProperty.Add(n);
+                ReverseNavigationCtor.Add(string.Format("{0} = new List<{1}>();", propName, fkTable.NameHumanCase));
             }
 
             public void SetPrimaryKeys()
