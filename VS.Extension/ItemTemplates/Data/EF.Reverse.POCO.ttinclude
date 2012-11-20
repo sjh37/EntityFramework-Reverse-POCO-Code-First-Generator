@@ -1,12 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration;
-using System.IO;
-using System.Linq;
-using System.Reflection;
 
 namespace <#= Namespace #>
 {
@@ -21,63 +17,30 @@ foreach(Table tbl in from t in tables.OrderBy(x => x.NameHumanCase) select t)
         public IDbSet<<#=tbl.NameHumanCase#>> <#=tbl.NameHumanCase#> { get; set; } // <#=tbl.Name#>
 <# } #>
 
-        static MyDbContext()
+        static <#=DbContextName#>()
         {
-            Database.SetInitializer<MyDbContext>(null);
+            Database.SetInitializer<<#=DbContextName#>>(null);
         }
 
-        public MyDbContext()
-        {
-        }
-
-        public MyDbContext(string connectionString) : base(connectionString)
+        public <#=DbContextName#>()
+            : base("Name=<#=ConnectionStringName#>")
         {
         }
 
-        private IEnumerable<Type> GetTypes()
+        public <#=DbContextName#>(string connectionString) : base(connectionString)
         {
-            var type = typeof(EntityTypeConfiguration<>);
-            return GetType()
-                .GetProperties(BindingFlags.Instance | BindingFlags.Public)
-                .Where(p => p.PropertyType.IsGenericType &&
-                            p.PropertyType.GetGenericTypeDefinition() == typeof(IDbSet<>))
-                .Select(p => type.MakeGenericType(p.PropertyType.GetGenericArguments().First()))
-                .ToArray();
-        }
-
-        private static void LoadAllEntityConfigurationsFromAllAssemblies(DbModelBuilder modelBuilder, IEnumerable<Type> types, string assemblyFilter, IEnumerable<string> namePartFilters)
-        {
-            var path = Path.GetDirectoryName(Path.GetFullPath(new Uri(Assembly.GetExecutingAssembly().EscapedCodeBase).LocalPath));
-            if(string.IsNullOrEmpty(path))
-                return;
-
-            new DirectoryCatalog(path, assemblyFilter)
-                .LoadedFiles
-                .Where(x =>
-                {
-                    var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(x.ToLower());
-                    if(fileNameWithoutExtension != null)
-                    {
-                        var parts = fileNameWithoutExtension.Split(".".ToCharArray());
-                        return parts.Any(part => namePartFilters.Any(namePartFilter => part == namePartFilter.ToLower()));
-                    }
-                    return false;
-                })
-                .Select(Assembly.LoadFrom)
-                .ToList()
-                .ForEach(assembly => assembly.GetTypes()
-                                         .Where(t => types.Contains(t.BaseType))
-                                         .Select(Activator.CreateInstance)
-                                         .ToList<dynamic>()
-                                         .ForEach(instance => modelBuilder.Configurations.Add(instance)));
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            var typesToLoad = GetTypes();
-            LoadAllEntityConfigurationsFromAllAssemblies(modelBuilder, typesToLoad, "*.dll", new[] { "Data", "Domain", "Poco", "Model", "Models" });
+<#
+foreach(Table tbl in from t in tables.OrderBy(x => x.NameHumanCase) select t)
+{
+#>
+            modelBuilder.Configurations.Add(new <#=tbl.NameHumanCase#>Configuration());
+<# } #>
         }
     }
 
@@ -97,6 +60,18 @@ foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal))
 #>
         <#=col.Entity #>
 <# } #>
+<#
+if(tbl.ReverseNavigationProperty.Count() > 0)
+{
+#>
+
+        // Reverse navigation
+<#
+foreach(string s in tbl.ReverseNavigationProperty)
+{
+#>
+        <#=s #>;
+<# } } #>
 <# if(tbl.HasForeignKey) { #>
 
         // Foreign keys
@@ -106,6 +81,27 @@ foreach(Column col in from c in tbl.Columns.OrderBy(x => x.Ordinal) where c.Enti
 #>
         <#=col.EntityFk #>
 <# } } #>
+<# 
+if(tbl.Columns.Where(c => c.Default != string.Empty).Count() > 0 || tbl.ReverseNavigationCtor.Count() > 0) 
+{ 
+#>
+
+        public <#=tbl.NameHumanCase#>()
+        {
+<#
+foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal).Where(c => c.Default != string.Empty))
+{
+#>
+            <#=col.PropertyNameHumanCase #> = <#=col.Default #>;
+<# } #>
+<#
+foreach(string s in tbl.ReverseNavigationCtor)
+{
+#>
+            <#=s #>
+<# } #>
+        }
+<# } #>
     }
 
 <# } #>
@@ -123,9 +119,7 @@ foreach(Table tbl in tables.OrderBy(x => x.NameHumanCase))
         public <#=tbl.NameHumanCase#>Configuration()
         {
             ToTable("<#=tbl.Schema#>.<#=tbl.Name#>");
-<# if (!string.IsNullOrEmpty(tbl.PrimaryKeyNameHumanCase())) { #>
             HasKey(<#=tbl.PrimaryKeyNameHumanCase()#>);
-<# } #>
 
 <#
 foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal))
@@ -133,6 +127,18 @@ foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal))
 #>
             <#=col.Config #>
 <# } #>
+<#
+if(tbl.ReverseNavigationConfiguration.Count() > 0)
+{
+#>
+
+            // Reverse navigation
+<#
+foreach(string s in tbl.ReverseNavigationConfiguration)
+{
+#>
+            <#=s #>;
+<# } } #>
 <# if(tbl.HasForeignKey) { #>
 
             // Foreign keys

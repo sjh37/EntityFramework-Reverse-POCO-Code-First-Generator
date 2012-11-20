@@ -44,7 +44,7 @@
         //  * If not null, only the tables matching the regex are included.
         //  Example:    TableFilterExclude = new Regex(".*auto.*");
         //              TableFilterInclude = new Regex("(.*_fr_.*)|(data_.*)");
-        //              TableFilterInclude = new Regex("table_name1|table_name2|etc");
+        //              TableFilterInclude = new Regex("^table_name1$|^table_name2$|etc");
         Regex TableFilterExclude = null;
         Regex TableFilterInclude = null;
 
@@ -57,7 +57,7 @@
         {
             str = RxCleanUp.Replace(str, "_");
             if(char.IsDigit(str[0]))
-                str = "_" + str;
+                str = "C" + str;
 
             return str;
         };
@@ -118,6 +118,7 @@
                 {
                     result = "There is no connection string name called '" + connectionStringName + "'";
                 }
+                return result;
             }
 
             // No named connection string, therefore retrieve the last one from config
@@ -210,8 +211,8 @@
             WriteLine("// ");
             WriteLine("// The following connection settings were used to generate this file");
             WriteLine("// ");
-            WriteLine("//     Connection String Name: `{0}`", ConnectionStringName);
-            WriteLine("//     Connection String:      `{0}`", ZapPassword(ConnectionString));
+            WriteLine("//     Connection String Name: \"{0}\"", ConnectionStringName);
+            WriteLine("//     Connection String:      \"{0}\"", ZapPassword(ConnectionString));
             WriteLine("");
 
             DbProviderFactory factory;
@@ -222,10 +223,10 @@
             catch(Exception x)
             {
                 string error = x.Message.Replace("\r\n", "\n").Replace("\n", " ");
-                Warning(string.Format("Failed to load provider `{0}` - {1}", ProviderName, error));
+                Warning(string.Format("Failed to load provider \"{0}\" - {1}", ProviderName, error));
                 WriteLine("");
                 WriteLine("// -----------------------------------------------------------------------------------------");
-                WriteLine("// Failed to load provider `{0}` - {1}", ProviderName, error);
+                WriteLine("// Failed to load provider \"{0}\" - {1}", ProviderName, error);
                 WriteLine("// -----------------------------------------------------------------------------------------");
                 WriteLine("");
                 return new Tables();
@@ -262,10 +263,16 @@
                         if(TableFilterInclude != null && !TableFilterInclude.IsMatch(result[i].Name))
                         {
                             result.RemoveAt(i);
+                            continue;
+                        }
+                        if(string.IsNullOrEmpty(result[i].PrimaryKeyNameHumanCase()))
+                        {
+                            result.RemoveAt(i);
                         }
                     }
 
                     result = reader.ReadForeignKeys(result);
+                    result.SetPrimaryKeys();
 
                     conn.Close();
                     return result;
@@ -311,22 +318,175 @@
 
             private void SetupEntity()
             {
-                Entity = string.Format("public virtual {0}{1} {2} {3} // {4}", PropertyType, CheckNullable(this), PropertyNameHumanCase, "{ get; set; }", Name);
+                Entity = string.Format("public {0}{1} {2} {3} // {4}{5}", PropertyType, CheckNullable(this), PropertyNameHumanCase, "{ get; set; }", Name, IsPrimaryKey ? " (Primary key)" : string.Empty);
             }
 
             private void SetupConfig()
             {
-                Config = string.Format("Property(x => x.{0}).HasColumnName(\"{1}\"){2}{3}{4}{5};", PropertyNameHumanCase, PropertyName,
+                bool hasDatabaseGeneratedOption = false;
+                switch(PropertyType.ToLower())
+                {
+                    case "long":
+                    case "short":
+                    case "int":
+                    case "double":
+                    case "float":
+                    case "decimal":
+                        hasDatabaseGeneratedOption = true;
+                        break;
+                }
+                string databaseGeneratedOption = string.Empty;
+                if (hasDatabaseGeneratedOption)
+                {
+                if (IsIdentity)
+                    databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity)";
+                if(IsStoreGenerated)
+                    databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.Computed)";
+                if(IsPrimaryKey && !IsIdentity && !IsStoreGenerated)
+                    databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.None)";
+                }
+                Config = string.Format("Property(x => x.{0}).HasColumnName(\"{1}\"){2}{3}{4};", PropertyNameHumanCase, PropertyName,
                                             (IsNullable) ? ".IsOptional()" : ".IsRequired()",
                                             (MaxLength > 0) ? ".HasMaxLength(" + MaxLength + ")" : string.Empty,
-                                            (IsIdentity) ? ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity)" : string.Empty,
-                                            (IsStoreGenerated) ? ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.Computed)" : string.Empty);
+                                            databaseGeneratedOption);
             }
 
             public void SetupEntityAndConfig()
             {
                 SetupEntity();
                 SetupConfig();
+            }
+
+            public void CleanUpDefault()
+            {
+                if (string.IsNullOrEmpty(Default))
+                    return;
+
+                while (Default.First() == '(' && Default.Last() == ')')
+                {
+                    Default = Default.Substring(1, Default.Length - 2);
+                }
+
+                if (Default.First() == '\'' && Default.Last() == '\'' && Default.Length > 1)
+                    Default = string.Format("\"{0}\"", Default.Substring(1, Default.Length - 2));
+
+                switch (PropertyType.ToLower())
+                {
+                    case "bool":
+                        Default = (Default == "0") ? "false" : "true";
+                        break;
+
+                    case "string":
+                    case "datetime":
+                    case "timespan":
+                        if(Default.First() != '"')
+                            Default = string.Format("\"{0}\"", Default);
+                        if(Default.Contains('\\'))
+                            Default = "@" + Default;
+                        break;
+
+                    case "long":
+                    case "short":
+                    case "int":
+                    case "double":
+                    case "float":
+                    case "decimal":
+                    case "byte":
+                    case "guid":
+                        if(Default.First() == '\"' && Default.Last() == '\"' && Default.Length > 1)
+                            Default = Default.Substring(1, Default.Length - 2);
+                        break;
+
+                    case "byte[]":
+                    case "System.Data.Spatial.DbGeography":
+                    case "System.Data.Spatial.DbGeometry":
+                        Default = string.Empty;
+                        break;
+                }
+
+                if (string.IsNullOrWhiteSpace(Default))
+                    return;
+
+                // Validate default
+                switch(PropertyType.ToLower())
+                {
+                    case "long":
+                        long l;
+                        if (!long.TryParse(Default, out l))
+                            Default = string.Empty;
+                        break;
+                    
+                    case "short":
+                        short s;
+                        if (!short.TryParse(Default, out s))
+                            Default = string.Empty;
+                        break;
+
+                  case "int":
+                        int i;
+                        if(!int.TryParse(Default, out i))
+                            Default = string.Empty;
+                        break;
+
+                  case "datetime":
+                        DateTime dt;
+                         if(!DateTime.TryParse(Default, out dt))
+                            Default = string.Empty;
+                        else
+                            Default = string.Format("DateTime.Parse({0})", Default);
+                        break;
+
+                  case "timespan":
+                        TimeSpan ts;
+                         if(!TimeSpan.TryParse(Default, out ts))
+                            Default = string.Empty;
+                        else
+                            Default = string.Format("TimeSpan.Parse({0})", Default);
+                        break;
+
+                  case "double":
+                        double d;
+                        if(!double.TryParse(Default, out d))
+                            Default = string.Empty;
+                        break;
+
+                  case "float":
+                        float f;
+                        if(!float.TryParse(Default, out f))
+                            Default = string.Empty;
+                        break;
+
+                  case "decimal":
+                        decimal dec;
+                        if(!decimal.TryParse(Default, out dec))
+                            Default = string.Empty;
+                        break;
+
+                  case "byte":
+                        byte b;
+                        if(!byte.TryParse(Default, out b))
+                            Default = string.Empty;
+                        break;
+
+                  case "bool":
+                        bool x;
+                        if(!bool.TryParse(Default, out x))
+                            Default = string.Empty;
+                        break;
+
+                    case "guid":
+                        if(Default.ToLower() == "newid()" || Default.ToLower() == "newsequentialid()")
+                            Default = "Guid.NewGuid()";
+                        break;
+                }
+
+                // Append type letters
+                switch(PropertyType.ToLower())
+                {
+                    case "decimal":
+                        Default = Default + "m";
+                        break;
+                }
             }
         }
 
@@ -688,8 +848,6 @@
 
         #endregion
 
-        #region Nested type: SqlServerSchemaReader
-
         private class SqlServerSchemaReader : SchemaReader
         {
             private const string TableSQL = @"
@@ -998,6 +1156,7 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                     return result;
                 
                 Cmd.CommandText = TableSQL;
+                Cmd.CommandTimeout = 300;
 
                 using(Cmd)
                 {
@@ -1045,15 +1204,14 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                     }
                 }
 
+                // Check for property name clashes in columns
+                foreach(Column c in result.SelectMany(tbl => tbl.Columns.Where(c => tbl.Columns.FindAll(x => x.PropertyNameHumanCase == c.PropertyNameHumanCase).Count > 1)))
+                {
+                    c.PropertyNameHumanCase = c.PropertyName;
+                } 
+                
                 foreach(Table tbl in result)
                 {
-                    // Check for property name clashes
-                    foreach(Column c in tbl.Columns)
-                    {
-                        if(tbl.Columns.FindAll(x => x.PropertyNameHumanCase == c.PropertyNameHumanCase).Count > 1)
-                            c.PropertyNameHumanCase = c.PropertyName;
-                    }
-
                     tbl.Columns.ForEach(x => x.SetupEntityAndConfig());
                 }
 
@@ -1066,53 +1224,100 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                     return result;
 
                 Cmd.CommandText = ForeignKeySQL;
+                Cmd.CommandTimeout = 300;
 
+                var fkList = new List<ForeignKey>();
                 using(Cmd)
                 {
                     using(DbDataReader rdr = Cmd.ExecuteReader())
                     {
                         while(rdr.Read())
                         {
-                            string fkTable = rdr["FK_Table"].ToString();
+                            string fkTableName = rdr["FK_Table"].ToString();
                             string fkSchema = rdr["fkSchema"].ToString();
-                            Table tbl = result.GetTable(fkTable, fkSchema);
-                            if (tbl == null)
-                                continue;
-
-                            string pkTable = rdr["PK_Table"].ToString();
+                            string pkTableName = rdr["PK_Table"].ToString();
                             string pkSchema = rdr["pkSchema"].ToString();
-                            if(result.GetTable(pkTable, pkSchema) == null)
-                                continue;
-                                
                             string fkColumn = rdr["FK_Column"].ToString();
-                            Column col = tbl.Columns.Find(n => n.PropertyName == fkColumn);
-                            if(col != null)
-                            {
-                                tbl.HasForeignKey = true;
-                                string constraintName = rdr["Constraint_Name"].ToString();
-
-                                string pkTableHumanCase = Inflector.ToTitleCase(pkTable).Replace(" ", "").Replace("$", "");
-                                if(string.Compare(pkSchema, "dbo", StringComparison.OrdinalIgnoreCase) != 0)
-                                    pkTableHumanCase = pkSchema + "_" + pkTableHumanCase;
-
-                                string constraintNameHumanCase = Inflector.ToTitleCase(constraintName).Replace(" ", "").Replace("$", "");
-                                string fkName;
-                                if(col.PropertyNameHumanCase.EndsWith("Id"))
-                                    fkName = col.PropertyNameHumanCase.Substring(0, col.PropertyNameHumanCase.Length - 2) + "Fk";
-                                else
-                                    fkName = col.PropertyNameHumanCase + "Fk";
-
-                                col.EntityFk = string.Format("public virtual {0} {1} {2} {3}", pkTableHumanCase, fkName, "{ get; set; } // ",
-                                                             col.PropertyNameHumanCase + " - " + constraintNameHumanCase);
-
-                                col.ConfigFk = string.Format("Has{0}(a => a.{1}).WithMany().HasForeignKey(b => b.{2}); // {3}",
-                                                             col.IsNullable ? "Optional" : "Required", fkName, col.PropertyNameHumanCase, constraintNameHumanCase);
-                            }
+                            string pkColumn = rdr["PK_Column"].ToString();
+                            string constraintName = rdr["Constraint_Name"].ToString();
+                            fkList.Add(new ForeignKey(fkTableName, fkSchema, pkTableName, pkSchema, fkColumn, pkColumn, constraintName));
                         }
                     }
                 }
 
+                foreach (var foreignKey in fkList)
+                {
+                    Table fkTable = result.GetTable(foreignKey.FkTableName, foreignKey.FkSchema);
+                            if(fkTable == null)
+                        continue;   // Could be filtered out
+
+                    Table pkTable = result.GetTable(foreignKey.PkTableName, foreignKey.PkSchema);
+                            if(pkTable == null)
+                        continue;   // Could be filtered out
+
+                    Column fkCol = fkTable.Columns.Find(n => n.PropertyName == foreignKey.FkColumn);
+                            if(fkCol == null)
+                                continue;
+
+                    Column pkCol = pkTable.Columns.Find(n => n.PropertyName == foreignKey.PkColumn);
+                            if (pkCol == null)
+                                continue;
+
+                            fkTable.HasForeignKey = true;
+
+                    string pkTableHumanCase = Inflector.ToTitleCase(foreignKey.PkTableName).Replace(" ", "").Replace("$", "");
+                    if(string.Compare(foreignKey.PkSchema, "dbo", StringComparison.OrdinalIgnoreCase) != 0)
+                        pkTableHumanCase = foreignKey.PkSchema + "_" + pkTableHumanCase;
+
+                    string pkPropName = fkTable.GetUniqueColumnPropertyName(pkTableHumanCase);
+                    string fkPropName = pkTable.GetUniqueColumnPropertyName(fkTable.NameHumanCase);
+                    fkCol.EntityFk = string.Format("public virtual {0} {1} {2} {3}", pkTableHumanCase, pkPropName, "{ get; set; } // ",
+                                                    fkCol.PropertyNameHumanCase + " - " + foreignKey.ConstraintName);
+
+                    fkCol.ConfigFk = string.Format("{0}; // {1}", GetRelationship(fkCol, pkCol, pkPropName, fkPropName), foreignKey.ConstraintName);
+                    pkTable.AddReverseNavigation(fkCol, pkCol, pkTableHumanCase, fkTable, fkPropName, string.Format("{0}.{1}", fkTable.Name, foreignKey.ConstraintName));
+                }
+
                 return result;
+            }
+
+            private static string GetRelationship(Column fkCol, Column pkCol, string pkPropName, string fkPropName)
+            {
+                return string.Format("Has{0}(a => a.{1}){2}", GetHasMethod(fkCol, pkCol), pkPropName, GetWithMethod(fkCol, pkCol, fkPropName));
+            }
+
+            // HasOptional
+            // HasRequired
+            // HasMany
+            private static string GetHasMethod(Column fkCol, Column pkCol)
+            {
+                if (pkCol.IsPrimaryKey)
+                    return fkCol.IsNullable ? "Optional" : "Required";
+
+                return "Many";
+            }
+
+            // WithOptional
+            // WithRequired
+            // WithMany
+            // WithRequiredPrincipal
+            // WithRequiredDependent
+            private static string GetWithMethod(Column fkCol, Column pkCol, string fkPropName)
+            {
+                // 1:1
+                if (fkCol.IsPrimaryKey && pkCol.IsPrimaryKey)
+                    return string.Format(".WithOptional(b => b.{0})", fkPropName);
+
+                // 1:n
+                if(fkCol.IsPrimaryKey && !pkCol.IsPrimaryKey)
+                return string.Format(".WithRequiredDependent(b => b.{0})", pkCol.PropertyNameHumanCase);
+                
+                // n:1
+                if(!fkCol.IsPrimaryKey && pkCol.IsPrimaryKey)
+                    return string.Format(".WithMany(b => b.{0}).HasForeignKey(c => c.{1})", fkPropName, fkCol.PropertyNameHumanCase);
+
+                // n:n
+                return string.Format(".WithMany(b => b.{0}).HasForeignKey(c => c.{1})", fkPropName, fkCol.PropertyNameHumanCase);
             }
 
             private static Column CreateColumn(IDataRecord rdr, Regex rxClean, Table table)
@@ -1135,6 +1340,7 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                     IsStoreGenerated = rdr["IsStoreGenerated"].ToString().Trim().ToLower() == "true",
                     IsPrimaryKey = rdr["PrimaryKey"].ToString().Trim().ToLower() == "true"
                 };
+                col.CleanUpDefault();
                 col.PropertyName = CleanUp(col.Name);
                 col.PropertyName = rxClean.Replace(col.PropertyName, "_$1");
 
@@ -1207,19 +1413,37 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                         sysType = "byte[]";
                         break;
                     case "geography":
-                        sysType = "Microsoft.SqlServer.Types.SqlGeography";
+                        sysType = "System.Data.Spatial.DbGeography";
                         break;
                     case "geometry":
-                        sysType = "Microsoft.SqlServer.Types.SqlGeometry";
+                        sysType = "System.Data.Spatial.DbGeometry";
                         break;
                 }
                 return sysType;
             }
         }
 
-        #endregion
+        public class ForeignKey
+        {
+            public string FkTableName { get; private set; }
+            public string FkSchema { get; private set; }
+            public string PkTableName { get; private set; }
+            public string PkSchema { get; private set; }
+            public string FkColumn { get; private set; }
+            public string PkColumn { get; private set; }
+            public string ConstraintName { get; private set; }
 
-        #region Nested type: Table
+            public ForeignKey(string fkTableName, string fkSchema, string pkTableName, string pkSchema, string fkColumn, string pkColumn, string constraintName)
+            {
+                ConstraintName = constraintName;
+                PkColumn = pkColumn;
+                FkColumn = fkColumn;
+                PkSchema = pkSchema;
+                PkTableName = pkTableName;
+                FkSchema = fkSchema;
+                FkTableName = fkTableName;
+            }
+        }
 
         public class Table
         {
@@ -1234,15 +1458,23 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
             public bool HasNullableColumns;
 
             public List<Column> Columns;
+            public List<string> ReverseNavigationProperty;
+            public List<string> ReverseNavigationConfiguration;
+            public List<string> ReverseNavigationCtor;
+            public List<string> ReverseNavigationUniquePropName;
 
             public Table()
             {
                 Columns = new List<Column>();
+                ReverseNavigationProperty = new List<string>();
+                ReverseNavigationConfiguration = new List<string>();
+                ReverseNavigationCtor = new List<string>();
+                ReverseNavigationUniquePropName = new List<string>();
             }
 
             public IEnumerable<Column> PrimaryKeys
             {
-                get { return Columns.Where(x => x.IsPrimaryKey); }
+                get { return Columns.Where(x => x.IsPrimaryKey).ToList(); }
             }
 
             public string PrimaryKeyNameHumanCase()
@@ -1266,11 +1498,80 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
             {
                 return Columns.SingleOrDefault(x => String.Compare(x.Name, columnName, StringComparison.OrdinalIgnoreCase) == 0);
             }
+
+            public string GetUniqueColumnPropertyName(string columnName)
+            {
+                if (ReverseNavigationUniquePropName.Count == 0)
+                {
+                    ReverseNavigationUniquePropName.Add(NameHumanCase);
+                    ReverseNavigationUniquePropName.AddRange(Columns.Select(c => c.PropertyNameHumanCase));
+                }
+
+                if (!ReverseNavigationUniquePropName.Contains(columnName))
+                {
+                    ReverseNavigationUniquePropName.Add(columnName);
+                    return columnName;
+                }
+
+                for (int n = 1; n < 100; ++n)
+                {
+                    string col = columnName + n;
+                    if (ReverseNavigationUniquePropName.Contains(col))
+                        continue;
+                    ReverseNavigationUniquePropName.Add(col);
+                        return col;
+                }
+
+                // Give up
+                return columnName;
+            }
+
+            public void AddReverseNavigation(Column fkCol, Column pkCol, string fkName, Table fkTable, string propName, string constraint)
+            {
+                // 1:1
+                if(fkCol.IsPrimaryKey && pkCol.IsPrimaryKey)
+                {
+                    string s = string.Format("public virtual {0} {1} {{ get; set; }} // {2}", fkTable.NameHumanCase, propName, constraint);
+                    ReverseNavigationProperty.Add(s);
+                    return;
+                }
+
+                // 1:n
+                if (fkCol.IsPrimaryKey && !pkCol.IsPrimaryKey)
+                {
+                    string s = string.Format("public virtual {0} {1} {{ get; set; }} // {2}", fkTable.NameHumanCase, propName, constraint);
+                    ReverseNavigationProperty.Add(s);
+                    return;
+                }
+
+                // n:1
+                if(!fkCol.IsPrimaryKey && pkCol.IsPrimaryKey)
+                {
+                    string s = string.Format("public virtual ICollection<{0}> {1} {{ get; set; }} // {2}", fkTable.NameHumanCase, propName, constraint);
+                    ReverseNavigationProperty.Add(s);
+                    ReverseNavigationCtor.Add(string.Format("{0} = new List<{1}>();", propName, fkTable.NameHumanCase));
+                    return;
+                }
+
+                // n:n
+                string n = string.Format("public virtual ICollection<{0}> {1} {{ get; set; }} // {2}", fkTable.NameHumanCase, propName, constraint);
+                ReverseNavigationProperty.Add(n);
+                ReverseNavigationCtor.Add(string.Format("{0} = new List<{1}>();", propName, fkTable.NameHumanCase));
+            }
+
+            public void SetPrimaryKeys()
+            {
+                var cols = Columns.Where(x => x.IsPrimaryKey).ToList();
+                if (cols.Any())
+                    return;
+
+                // This table is not allowed in EntityFramework. Generate a composite key from all non-null fields
+                foreach(var col in Columns.Where(x => !x.IsNullable))
+                {
+                    col.IsPrimaryKey = true;
+                }
+            }
         }
-
-        #endregion
-
-        #region Nested type: Tables
 
         public class Tables : List<Table>
         {
@@ -1280,7 +1581,15 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                     String.Compare(x.Name, tableName, StringComparison.OrdinalIgnoreCase) == 0 && 
                     String.Compare(x.Schema, schema, StringComparison.OrdinalIgnoreCase) == 0);
             }
-        }
 
-        #endregion
+            public void SetPrimaryKeys()
+            {
+                foreach (var tbl in this)
+                {
+                    tbl.SetPrimaryKeys();
+                }
+            }
+        }
+    
+
 #>
