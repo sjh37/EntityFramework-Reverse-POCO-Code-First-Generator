@@ -15,7 +15,7 @@ namespace Tester
             {
                 using(var db = new MyDbContext())
                 {
-                    var data = db.AspnetApplications;
+                    var data = db.AspnetApplications.Take(5);
                     foreach(var row in data)
                     {
                         Console.WriteLine(row.ApplicationName);
