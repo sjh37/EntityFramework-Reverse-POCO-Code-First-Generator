@@ -398,8 +398,8 @@
                         break;
 
                     case "byte[]":
-                    case "microsoft.sqlserver.types.sqlgeography":
-                    case "microsoft.sqlserver.types.sqlgeometry":
+                    case "System.Data.Spatial.DbGeography":
+                    case "System.Data.Spatial.DbGeometry":
                         Default = string.Empty;
                         break;
                 }
@@ -1413,10 +1413,10 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                         sysType = "byte[]";
                         break;
                     case "geography":
-                        sysType = "Microsoft.SqlServer.Types.SqlGeography";
+                        sysType = "System.Data.Spatial.DbGeography";
                         break;
                     case "geometry":
-                        sysType = "Microsoft.SqlServer.Types.SqlGeometry";
+                        sysType = "System.Data.Spatial.DbGeometry";
                         break;
                 }
                 return sysType;

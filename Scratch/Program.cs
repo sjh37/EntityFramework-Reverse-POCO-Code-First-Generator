@@ -73,8 +73,8 @@ namespace Scratch
         string SchemaName = null;
 
         // Settings
-        string ConnectionStringName = "bybox";   // Uses last connection string in config if not specified
-        string ConnectionString = "Data Source=(local);Initial Catalog=bybox;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";   // Uses last connection string in config if not specified
+        string ConnectionStringName = "aspnetdb";   // Uses last connection string in config if not specified
+        string ConnectionString = "Data Source=(local);Initial Catalog=aspnetdb;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";   // Uses last connection string in config if not specified
         bool IncludeViews = true;
 
         // Use the following table/view name regex filters to include or exclude tables/views
@@ -109,8 +109,8 @@ namespace Scratch
             if(col.IsNullable &&
                 col.PropertyType != "byte[]" &&
                 col.PropertyType != "string" &&
-                col.PropertyType != "Microsoft.SqlServer.Types.SqlGeography" &&
-                col.PropertyType != "Microsoft.SqlServer.Types.SqlGeometry")
+                col.PropertyType != "System.Data.Spatial.DbGeography" &&
+                col.PropertyType != "System.Data.Spatial.DbGeometry")
                 result = "?";
             return result;
         }
@@ -317,8 +317,8 @@ namespace Scratch
                         break;
 
                     case "byte[]":
-                    case "microsoft.sqlserver.types.sqlgeography":
-                    case "microsoft.sqlserver.types.sqlgeometry":
+                    case "System.Data.Spatial.DbGeography":
+                    case "System.Data.Spatial.DbGeometry":
                         Default = string.Empty;
                         break;
                 }
@@ -1332,10 +1332,10 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                         sysType = "byte[]";
                         break;
                     case "geography":
-                        sysType = "Microsoft.SqlServer.Types.SqlGeography";
+                        sysType = "System.Data.Spatial.DbGeography";
                         break;
                     case "geometry":
-                        sysType = "Microsoft.SqlServer.Types.SqlGeometry";
+                        sysType = "System.Data.Spatial.DbGeometry";
                         break;
                 }
                 return sysType;

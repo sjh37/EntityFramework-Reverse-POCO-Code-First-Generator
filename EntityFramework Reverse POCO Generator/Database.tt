@@ -22,7 +22,7 @@
     //              TableFilterInclude = new Regex("(.*_FR_.*)|(data_.*)");
     //              TableFilterInclude = new Regex("^table_name1$|^table_name2$|etc");
     TableFilterExclude = null;
-    //TableFilterInclude = new Regex("^field_person_order$|^field_person_order_type$|^field_person_order_item$");
+    TableFilterInclude = null;
 
     // Read schema
 	var tables = LoadTables();

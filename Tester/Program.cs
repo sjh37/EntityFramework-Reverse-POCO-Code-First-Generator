@@ -15,10 +15,10 @@ namespace Tester
             {
                 using(var db = new MyDbContext())
                 {
-                    var data = db.FieldPersonOrder.Take(5);
+                    var data = db.AspnetApplications;
                     foreach(var row in data)
                     {
-                        Console.WriteLine(row.FieldPersonOrderId);
+                        Console.WriteLine(row.ApplicationName);
                     }
                 }
             }
