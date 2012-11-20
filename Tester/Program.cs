@@ -10,7 +10,6 @@ namespace Tester
     {
         static void Main()
         {
-            // C:\Users\Simon.Hughes\Documents\Visual Studio 2010\Templates\ItemTemplates\Visual C#
             try
             {
                 using(var db = new MyDbContext())
