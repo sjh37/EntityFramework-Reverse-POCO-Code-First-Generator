@@ -1075,6 +1075,7 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                     return result;
 
                 Cmd.CommandText = TableSQL;
+                Cmd.CommandTimeout = 300;
 
                 using(Cmd)
                 {
@@ -1142,6 +1143,7 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                     return result;
 
                 Cmd.CommandText = ForeignKeySQL;
+                Cmd.CommandTimeout = 300;
 
                 var fkList = new List<ForeignKey>();
                 using (Cmd)
