@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("EntityFramework.Reverse.POCO.CodeFirst.Generator")]
-[assembly: AssemblyDescription("Reverse engineers an existing database and generates EntityFramework Code First POCO classes, Configuration mappings and DbContext")]
+[assembly: AssemblyTitle("EntityFramework_Reverse_POCO_Generator")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Simon Hughes (www.hicrest.net), ByBox (www.bybox.com)")]
-[assembly: AssemblyProduct("EntityFramework Reverse POCO code first Generator")]
-[assembly: AssemblyCopyright("Copyright © Simon Hughes 2012")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("EntityFramework_Reverse_POCO_Generator")]
+[assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -19,5 +19,15 @@ using System.Runtime.InteropServices;
 // COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
 
-// The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("04ecda2b-7b46-41e1-8f87-ba03ea87aa71")]
+// Version information for an assembly consists of the following four values:
+//
+//      Major Version
+//      Minor Version 
+//      Build Number
+//      Revision
+//
+// You can specify all the values or you can default the Build and Revision Numbers 
+// by using the '*' as shown below:
+// [assembly: AssemblyVersion("1.0.*")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]

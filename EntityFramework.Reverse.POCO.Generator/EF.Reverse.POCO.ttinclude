@@ -1,0 +1,158 @@
+<#
+// Copyright © Simon Hughes 2012
+#>
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Entity;
+using System.Data.Entity.ModelConfiguration;
+
+namespace <#= Namespace #>
+{
+    // ************************************************************************
+    // Database context
+    public <# if(MakeClassesPartial) { #>partial <# } #>class <#=DbContextName#> : DbContext
+    {
+<#
+foreach(Table tbl in from t in tables.OrderBy(x => x.NameHumanCase) select t)
+{
+#>
+        public IDbSet<<#=tbl.NameHumanCase#>> <#=tbl.NameHumanCase#> { get; set; } // <#=tbl.Name#>
+<# } #>
+
+        static <#=DbContextName#>()
+        {
+            Database.SetInitializer<<#=DbContextName#>>(null);
+        }
+
+        public <#=DbContextName#>()
+            : base("Name=<#=ConnectionStringName#>")
+        {
+        }
+
+        public <#=DbContextName#>(string connectionString) : base(connectionString)
+        {
+        }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+<#
+foreach(Table tbl in from t in tables.OrderBy(x => x.NameHumanCase) select t)
+{
+#>
+            modelBuilder.Configurations.Add(new <#=tbl.NameHumanCase#>Configuration());
+<# } #>
+        }
+    }
+
+    // ************************************************************************
+    // POCO classes
+
+<#
+foreach(Table tbl in from t in tables.OrderBy(x => x.NameHumanCase) select t)
+{
+#>
+    // <#=tbl.Name#>
+    public <# if(MakeClassesPartial) { #>partial <# } #>class <#=tbl.NameHumanCase#>
+    {
+<#
+foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal))
+{
+#>
+        <#=col.Entity #>
+<# } #>
+<#
+if(tbl.ReverseNavigationProperty.Count() > 0)
+{
+#>
+
+        // Reverse navigation
+<#
+foreach(string s in tbl.ReverseNavigationProperty)
+{
+#>
+        <#=s #>;
+<# } } #>
+<# if(tbl.HasForeignKey) { #>
+
+        // Foreign keys
+<#
+foreach(Column col in from c in tbl.Columns.OrderBy(x => x.Ordinal) where c.EntityFk != null select c)
+{
+#>
+        <#=col.EntityFk #>
+<# } } #>
+<# 
+if(tbl.Columns.Where(c => c.Default != string.Empty).Count() > 0 || tbl.ReverseNavigationCtor.Count() > 0) 
+{ 
+#>
+
+        public <#=tbl.NameHumanCase#>()
+        {
+<#
+foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal).Where(c => c.Default != string.Empty))
+{
+#>
+            <#=col.PropertyNameHumanCase #> = <#=col.Default #>;
+<# } #>
+<#
+foreach(string s in tbl.ReverseNavigationCtor)
+{
+#>
+            <#=s #>
+<# } #>
+        }
+<# } #>
+    }
+
+<# } #>
+
+    // ************************************************************************
+    // POCO Configuration
+
+<#
+foreach(Table tbl in tables.OrderBy(x => x.NameHumanCase))
+{
+#>
+    // <#=tbl.Name#>
+    public <# if(MakeClassesPartial) { #>partial <# } #>class <#=tbl.NameHumanCase#>Configuration : EntityTypeConfiguration<<#=tbl.NameHumanCase#>>
+    {
+        public <#=tbl.NameHumanCase#>Configuration()
+        {
+            ToTable("<#=tbl.Schema#>.<#=tbl.Name#>");
+            HasKey(<#=tbl.PrimaryKeyNameHumanCase()#>);
+
+<#
+foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal))
+{
+#>
+            <#=col.Config #>
+<# } #>
+<#
+if(tbl.ReverseNavigationConfiguration.Count() > 0)
+{
+#>
+
+            // Reverse navigation
+<#
+foreach(string s in tbl.ReverseNavigationConfiguration)
+{
+#>
+            <#=s #>;
+<# } } #>
+<# if(tbl.HasForeignKey) { #>
+
+            // Foreign keys
+<#
+foreach(Column col in from c in tbl.Columns.OrderBy(x => x.Ordinal) where c.ConfigFk != null select c)
+{
+#>
+            <#=col.ConfigFk #>
+<# } } #>
+        }
+    }
+
+<# } #>
+}
