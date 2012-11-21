@@ -7,6 +7,9 @@
         <DefaultName>Database.tt</DefaultName>
         <Icon>__TemplateIcon.ico</Icon>
         <PreviewImage>__PreviewImage.png</PreviewImage>
+        <ProvideDefaultName>true</ProvideDefaultName>
+        <AppendDefaultFileExtension>true</AppendDefaultFileExtension>
+        <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
         <RequiredFrameworkVersion>4.0</RequiredFrameworkVersion>
         <Version>1.0.0</Version>
     </TemplateData>
@@ -14,9 +17,6 @@
         <References>
             <Reference>
                 <Assembly>System</Assembly>
-            </Reference>
-            <Reference>
-                <Assembly>System.Core</Assembly>
             </Reference>
             <Reference>
                 <Assembly>System.Data</Assembly>
@@ -31,14 +31,13 @@
                 <Assembly>System.ComponentModel.DataAnnotations</Assembly>
             </Reference>
             <Reference>
-                <Assembly>System.Configuration</Assembly>
-            </Reference>
-            <Reference>
                 <Assembly>EntityFramework</Assembly>
             </Reference>
         </References>
-        <ProjectItem TargetFileName="$fileinputname$.tt">Database.tt</ProjectItem>
-        <ProjectItem TargetFileName="EF.Reverse.POCO.Core.ttinclude">EF.Reverse.POCO.Core.ttinclude</ProjectItem>
-        <ProjectItem TargetFileName="EF.Reverse.POCO.ttinclude">EF.Reverse.POCO.ttinclude</ProjectItem>
+        <ProjectItem SubType="" TargetFileName="$fileinputname$.tt">Database.tt</ProjectItem>
+        <ProjectItem SubType="" TargetFileName="EF.Reverse.POCO.Core.ttinclude">EF.Reverse.POCO.Core.ttinclude</ProjectItem>
+        <ProjectItem SubType="" TargetFileName="EF.Reverse.POCO.ttinclude">EF.Reverse.POCO.ttinclude</ProjectItem>
+        <ProjectItem SubType="" TargetFileName="EF.Reverse.POCO.license.txt">license.txt</ProjectItem>
+        <ProjectItem SubType="" TargetFileName="EF.Reverse.POCO.notice.txt">Notice.txt</ProjectItem>
     </TemplateContent>
 </VSTemplate>

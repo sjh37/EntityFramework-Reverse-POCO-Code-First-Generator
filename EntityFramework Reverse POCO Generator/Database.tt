@@ -1,7 +1,7 @@
 ﻿<#@ include file="EF.Reverse.POCO.Core.ttinclude" #>
 <#
 	// Settings
-    ConnectionStringName = "aspnetdb";  // Uses last connection string in config if not specified
+    ConnectionStringName = "MyDbContext";  // Uses last connection string in config if not specified
     // Namespace = ""; // Override the namespace if you want to
     DbContextName = "MyDbContext";
     MakeClassesPartial = false;
