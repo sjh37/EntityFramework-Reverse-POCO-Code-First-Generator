@@ -14,38 +14,38 @@ namespace Scratch
     {
         static void Main()
         {
-            using (var sw = new StreamWriter(@"c:\fred.txt"))
+            using(var sw = new StreamWriter(@"c:\fred.txt"))
             {
                 var x = new GeneratedTextTransformation();
                 var tables = x.LoadTables();
-                foreach (var table in tables)
+                foreach(var table in tables)
                 {
                     Console.WriteLine(table.NameHumanCase);
                     sw.WriteLine(table.NameHumanCase);
 
-                    foreach (var rp in table.ReverseNavigationProperty)
+                    foreach(var rp in table.ReverseNavigationProperty)
                     {
                         Console.WriteLine("  " + rp);
                         sw.WriteLine("  " + rp);
                     }
-                    foreach (var col in table.Columns)
+                    foreach(var col in table.Columns)
                     {
                         //if(!string.IsNullOrWhiteSpace(col.Entity)) Console.WriteLine("  " + col.Entity);
-                        if (!string.IsNullOrWhiteSpace(col.EntityFk))
+                        if(!string.IsNullOrWhiteSpace(col.EntityFk))
                         {
                             Console.WriteLine("  " + col.EntityFk);
                             sw.WriteLine("  " + col.EntityFk);
                         }
                     }
-                    foreach (var rc in table.ReverseNavigationConfiguration)
+                    foreach(var rc in table.ReverseNavigationConfiguration)
                     {
                         Console.WriteLine("  " + rc);
                         sw.WriteLine("  " + rc);
                     }
-                    foreach (var col in table.Columns)
+                    foreach(var col in table.Columns)
                     {
                         //if(!string.IsNullOrWhiteSpace(col.Config)) Console.WriteLine("  " + col.Config);
-                        if (!string.IsNullOrWhiteSpace(col.ConfigFk))
+                        if(!string.IsNullOrWhiteSpace(col.ConfigFk))
                         {
                             Console.WriteLine("  " + col.ConfigFk);
                             sw.WriteLine("  " + col.ConfigFk);
@@ -60,8 +60,8 @@ namespace Scratch
 
     public class GeneratedTextTransformation
     {
-        private void WriteLine(string s) {  }
-        private void WriteLine(string s, object b) {  }
+        private void WriteLine(string s) { }
+        private void WriteLine(string s, object b) { }
         private void WriteLine(string s, object b, object c) { }
         private void Warning(string s) { }
         private string ZapPassword(string s) { return s; }
@@ -101,7 +101,7 @@ namespace Scratch
             return str;
         };
 
-        
+
 
         private static string CheckNullable(Column col)
         {
@@ -284,13 +284,13 @@ namespace Scratch
                         break;
                 }
                 string databaseGeneratedOption = string.Empty;
-                if (hasDatabaseGeneratedOption)
+                if(hasDatabaseGeneratedOption)
                 {
-                    if (IsIdentity)
+                    if(IsIdentity)
                         databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity)";
-                    if (IsStoreGenerated)
+                    if(IsStoreGenerated)
                         databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.Computed)";
-                    if (IsPrimaryKey && !IsIdentity && !IsStoreGenerated)
+                    if(IsPrimaryKey && !IsIdentity && !IsStoreGenerated)
                         databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.None)";
                 }
                 Config = string.Format("Property(x => x.{0}).HasColumnName(\"{1}\"){2}{3}{4};", PropertyNameHumanCase, PropertyName,
@@ -307,18 +307,18 @@ namespace Scratch
 
             public void CleanUpDefault()
             {
-                if (string.IsNullOrEmpty(Default))
+                if(string.IsNullOrEmpty(Default))
                     return;
 
-                while (Default.First() == '(' && Default.Last() == ')')
+                while(Default.First() == '(' && Default.Last() == ')')
                 {
                     Default = Default.Substring(1, Default.Length - 2);
                 }
 
-                if (Default.First() == '\'' && Default.Last() == '\'' && Default.Length > 1)
+                if(Default.First() == '\'' && Default.Last() == '\'' && Default.Length > 1)
                     Default = string.Format("\"{0}\"", Default.Substring(1, Default.Length - 2));
 
-                switch (PropertyType.ToLower())
+                switch(PropertyType.ToLower())
                 {
                     case "bool":
                         Default = (Default == "0") ? "false" : "true";
@@ -341,7 +341,7 @@ namespace Scratch
                     case "decimal":
                     case "byte":
                     case "guid":
-                       if(Default.First() == '\"' && Default.Last() == '\"' && Default.Length > 1)
+                        if(Default.First() == '\"' && Default.Last() == '\"' && Default.Length > 1)
                             Default = Default.Substring(1, Default.Length - 2);
                         break;
 
@@ -352,7 +352,7 @@ namespace Scratch
                         break;
                 }
 
-                if (string.IsNullOrWhiteSpace(Default))
+                if(string.IsNullOrWhiteSpace(Default))
                     return;
 
                 // Validate default
@@ -360,31 +360,31 @@ namespace Scratch
                 {
                     case "long":
                         long l;
-                        if (!long.TryParse(Default, out l))
-                            Default = string.Empty;
-                        break;
-                    
-                    case "short":
-                        short s;
-                        if (!short.TryParse(Default, out s))
+                        if(!long.TryParse(Default, out l))
                             Default = string.Empty;
                         break;
 
-                  case "int":
+                    case "short":
+                        short s;
+                        if(!short.TryParse(Default, out s))
+                            Default = string.Empty;
+                        break;
+
+                    case "int":
                         int i;
                         if(!int.TryParse(Default, out i))
                             Default = string.Empty;
                         break;
 
-                  case "datetime":
+                    case "datetime":
                         DateTime dt;
                         if(!DateTime.TryParse(Default, out dt))
-                            Default = string.Empty;
+                            Default = Default.ToLower().Contains("getdate()") ? "DateTime.Now" : string.Empty;
                         else
                             Default = string.Format("DateTime.Parse({0})", Default);
                         break;
 
-                  case "timespan":
+                    case "timespan":
                         TimeSpan ts;
                         if(!TimeSpan.TryParse(Default, out ts))
                             Default = string.Empty;
@@ -392,31 +392,31 @@ namespace Scratch
                             Default = string.Format("TimeSpan.Parse({0})", Default);
                         break;
 
-                  case "double":
+                    case "double":
                         double d;
                         if(!double.TryParse(Default, out d))
                             Default = string.Empty;
                         break;
 
-                  case "float":
+                    case "float":
                         float f;
                         if(!float.TryParse(Default, out f))
                             Default = string.Empty;
                         break;
 
-                  case "decimal":
+                    case "decimal":
                         decimal dec;
                         if(!decimal.TryParse(Default, out dec))
                             Default = string.Empty;
                         break;
 
-                  case "byte":
+                    case "byte":
                         byte b;
                         if(!byte.TryParse(Default, out b))
                             Default = string.Empty;
                         break;
 
-                  case "bool":
+                    case "bool":
                         bool x;
                         if(!bool.TryParse(Default, out x))
                             Default = string.Empty;
@@ -1175,11 +1175,11 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                 Cmd.CommandTimeout = 300;
 
                 var fkList = new List<ForeignKey>();
-                using (Cmd)
+                using(Cmd)
                 {
-                    using (DbDataReader rdr = Cmd.ExecuteReader())
+                    using(DbDataReader rdr = Cmd.ExecuteReader())
                     {
-                        while (rdr.Read())
+                        while(rdr.Read())
                         {
                             string fkTableName = rdr["FK_Table"].ToString();
                             string fkSchema = rdr["fkSchema"].ToString();
@@ -1198,7 +1198,7 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                     fkList.RemoveAll(x => x.ConstraintName == data.Key);
                 }
 
-                foreach (var foreignKey in fkList)
+                foreach(var foreignKey in fkList)
                 {
                     Table fkTable = result.GetTable(foreignKey.FkTableName, foreignKey.FkSchema);
                     if(fkTable == null)
@@ -1258,20 +1258,20 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
             // WithRequiredDependent
             private static string GetWithMethod(Relationship relationship, Column fkCol, Column pkCol, string fkPropName)
             {
-                switch (relationship)
+                switch(relationship)
                 {
                     case Relationship.OneToOne:
                         return string.Format(".WithOptional(b => b.{0})", fkPropName);
-                   
+
                     case Relationship.OneToMany:
                         return string.Format(".WithRequiredDependent(b => b.{0})", fkPropName);
-                    
+
                     case Relationship.ManyToOne:
                         return string.Format(".WithMany(b => b.{0}).HasForeignKey(c => c.{1})", fkPropName, fkCol.PropertyNameHumanCase);
-                    
+
                     case Relationship.ManyToMany:
                         return string.Format(".WithMany(b => b.{0}).HasForeignKey(c => c.{1})", fkPropName, fkCol.PropertyNameHumanCase);
-                    
+
                     default:
                         throw new ArgumentOutOfRangeException("relationship");
                 }
@@ -1438,9 +1438,9 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
             {
                 var data = PrimaryKeys.Select(x => "x." + x.PropertyNameHumanCase).ToList();
                 int n = data.Count();
-                if (n == 0)
+                if(n == 0)
                     return string.Empty;
-                if (n == 1)
+                if(n == 1)
                     return "x => " + data.First();
                 // More than one primary key
                 return string.Format("x => new {{ {0} }}", string.Join(", ", data));
@@ -1458,22 +1458,22 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
 
             public string GetUniqueColumnPropertyName(string columnName)
             {
-                if (ReverseNavigationUniquePropName.Count == 0)
+                if(ReverseNavigationUniquePropName.Count == 0)
                 {
                     ReverseNavigationUniquePropName.Add(NameHumanCase);
                     ReverseNavigationUniquePropName.AddRange(Columns.Select(c => c.PropertyNameHumanCase));
                 }
 
-                if (!ReverseNavigationUniquePropName.Contains(columnName))
+                if(!ReverseNavigationUniquePropName.Contains(columnName))
                 {
                     ReverseNavigationUniquePropName.Add(columnName);
                     return columnName;
                 }
 
-                for (int n = 1; n < 100; ++n)
+                for(int n = 1; n < 100; ++n)
                 {
                     string col = columnName + n;
-                    if (ReverseNavigationUniquePropName.Contains(col))
+                    if(ReverseNavigationUniquePropName.Contains(col))
                         continue;
                     ReverseNavigationUniquePropName.Add(col);
                     return col;
@@ -1485,26 +1485,26 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
 
             public void AddReverseNavigation(Relationship relationship, Column fkCol, Column pkCol, string fkName, Table fkTable, string propName, string constraint)
             {
-                switch (relationship)
+                switch(relationship)
                 {
                     case Relationship.OneToOne:
                         ReverseNavigationProperty.Add(string.Format("public virtual {0} {1} {{ get; set; }} // {2}", fkTable.NameHumanCase, propName, constraint));
                         break;
-                    
+
                     case Relationship.OneToMany:
                         ReverseNavigationProperty.Add(string.Format("public virtual {0} {1} {{ get; set; }} // {2}", fkTable.NameHumanCase, propName, constraint));
                         break;
-                    
+
                     case Relationship.ManyToOne:
                         ReverseNavigationProperty.Add(string.Format("public virtual ICollection<{0}> {1} {{ get; set; }} // {2}", fkTable.NameHumanCase, propName, constraint));
                         ReverseNavigationCtor.Add(string.Format("{0} = new List<{1}>();", propName, fkTable.NameHumanCase));
                         break;
-        
+
                     case Relationship.ManyToMany:
                         ReverseNavigationProperty.Add(string.Format("public virtual ICollection<{0}> {1} {{ get; set; }} // {2}", fkTable.NameHumanCase, propName, constraint));
                         ReverseNavigationCtor.Add(string.Format("{0} = new List<{1}>();", propName, fkTable.NameHumanCase));
                         break;
-                    
+
                     default:
                         throw new ArgumentOutOfRangeException("relationship");
                 }
@@ -1513,7 +1513,7 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
             public void SetPrimaryKeys()
             {
                 var cols = Columns.Where(x => x.IsPrimaryKey).ToList();
-                if (cols.Any())
+                if(cols.Any())
                     return;
 
                 // This table is not allowed in EntityFramework. Generate a composite key from all non-null fields
@@ -1523,7 +1523,7 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                 }
             }
         }
-        
+
         public class Tables : List<Table>
         {
             public Table GetTable(string tableName, string schema)
@@ -1535,7 +1535,7 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
 
             public void SetPrimaryKeys()
             {
-                foreach (var tbl in this)
+                foreach(var tbl in this)
                 {
                     tbl.SetPrimaryKeys();
                 }

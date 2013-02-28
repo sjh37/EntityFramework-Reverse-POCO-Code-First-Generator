@@ -462,8 +462,8 @@
 
                   case "datetime":
                         DateTime dt;
-                         if(!DateTime.TryParse(Default, out dt))
-                            Default = string.Empty;
+                        if (!DateTime.TryParse(Default, out dt))
+                            Default = Default.ToLower().Contains("getdate()") ? "DateTime.Now" : string.Empty;
                         else
                             Default = string.Format("DateTime.Parse({0})", Default);
                         break;
@@ -892,7 +892,7 @@ SELECT  [Extent1].[SchemaName],
         [UnionAll1].[TypeName],
         ISNULL([UnionAll1].[MaxLength],0) AS MaxLength,
         ISNULL([UnionAll1].[Precision], 0) AS Precision,
-		ISNULL([UnionAll1].[Default], '') AS [Default],
+        ISNULL([UnionAll1].[Default], '') AS [Default],
         ISNULL([UnionAll1].[DateTimePrecision], '') AS [DateTimePrecision],
         ISNULL([UnionAll1].[Scale], 0) AS Scale,
         [UnionAll1].[IsIdentity],
