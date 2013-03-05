@@ -327,6 +327,7 @@ namespace Scratch
                     case "string":
                     case "datetime":
                     case "timespan":
+                    case "datetimeoffset":
                         if(Default.First() != '"')
                             Default = string.Format("\"{0}\"", Default);
                         if(Default.Contains('\\'))
@@ -382,6 +383,14 @@ namespace Scratch
                             Default = Default.ToLower().Contains("getdate()") ? "DateTime.Now" : string.Empty;
                         else
                             Default = string.Format("DateTime.Parse({0})", Default);
+                        break;
+
+                    case "datetimeoffset":
+                        DateTimeOffset dto;
+                        if(!DateTimeOffset.TryParse(Default, out dto))
+                            Default = Default.ToLower().Contains("sysdatetimeoffset()") ? "DateTimeOffset.Now" : string.Empty;
+                        else
+                            Default = string.Format("DateTimeOffset.Parse({0})", Default);
                         break;
 
                     case "timespan":
@@ -808,7 +817,7 @@ SELECT  [Extent1].[SchemaName],
         [UnionAll1].[TypeName],
         ISNULL([UnionAll1].[MaxLength],0) AS MaxLength,
         ISNULL([UnionAll1].[Precision], 0) AS Precision,
-		ISNULL([UnionAll1].[Default], '') AS [Default],
+        ISNULL([UnionAll1].[Default], '') AS [Default],
         ISNULL([UnionAll1].[DateTimePrecision], '') AS [DateTimePrecision],
         ISNULL([UnionAll1].[Scale], 0) AS Scale,
         [UnionAll1].[IsIdentity],
@@ -1341,6 +1350,9 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                     case "datetime":
                     case "date":
                         sysType = "DateTime";
+                        break;
+                    case "datetimeoffset":
+                        sysType = "DateTimeOffset";
                         break;
                     case "time":
                         sysType = "TimeSpan";

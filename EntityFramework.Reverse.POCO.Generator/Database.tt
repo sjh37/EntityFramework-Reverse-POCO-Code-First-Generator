@@ -25,11 +25,11 @@
     TableFilterInclude = null;
 
     // Read schema
-	var tables = LoadTables();
+    var tables = LoadTables();
     
-	// Generate output
-	if (tables.Count>0)
-	{
+    // Generate output
+    if (tables.Count>0)
+    {
 #>
 <#@ include file="EF.Reverse.POCO.ttinclude" #>
 <# } #>

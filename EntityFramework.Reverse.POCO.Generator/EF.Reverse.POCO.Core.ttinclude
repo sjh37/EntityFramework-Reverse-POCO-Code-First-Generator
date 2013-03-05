@@ -411,6 +411,7 @@
                     case "string":
                     case "datetime":
                     case "timespan":
+                    case "datetimeoffset":
                         if(Default.First() != '"')
                             Default = string.Format("\"{0}\"", Default);
                         if(Default.Contains('\\'))
@@ -466,6 +467,14 @@
                             Default = Default.ToLower().Contains("getdate()") ? "DateTime.Now" : string.Empty;
                         else
                             Default = string.Format("DateTime.Parse({0})", Default);
+                        break;
+
+                    case "datetimeoffset":
+                        DateTimeOffset dto;
+                        if(!DateTimeOffset.TryParse(Default, out dto))
+                            Default = Default.ToLower().Contains("sysdatetimeoffset()") ? "DateTimeOffset.Now" : string.Empty;
+                        else
+                            Default = string.Format("DateTimeOffset.Parse({0})", Default);
                         break;
 
                   case "timespan":
@@ -1426,6 +1435,9 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
                     case "date":
                         sysType = "DateTime";
                         break;
+                    case "datetimeoffset":
+                        sysType = "DateTimeOffset";
+                        break;
                     case "time":
                         sysType = "TimeSpan";
                         break;
@@ -1581,12 +1593,12 @@ ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
 
                     case Relationship.ManyToOne:
                         ReverseNavigationProperty.Add(string.Format("public virtual ICollection<{0}> {1} {{ get; set; }} // {2}", fkTable.NameHumanCase, propName, constraint));
-                    ReverseNavigationCtor.Add(string.Format("{0} = new List<{1}>();", propName, fkTable.NameHumanCase));
+                        ReverseNavigationCtor.Add(string.Format("{0} = new List<{1}>();", propName, fkTable.NameHumanCase));
                         break;
 
                     case Relationship.ManyToMany:
                         ReverseNavigationProperty.Add(string.Format("public virtual ICollection<{0}> {1} {{ get; set; }} // {2}", fkTable.NameHumanCase, propName, constraint));
-                ReverseNavigationCtor.Add(string.Format("{0} = new List<{1}>();", propName, fkTable.NameHumanCase));
+                        ReverseNavigationCtor.Add(string.Format("{0} = new List<{1}>();", propName, fkTable.NameHumanCase));
                         break;
                     
                     default:
