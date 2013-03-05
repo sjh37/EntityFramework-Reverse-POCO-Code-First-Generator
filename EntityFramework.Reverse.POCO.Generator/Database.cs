@@ -14,6 +14,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration;
 
+// ReSharper disable DoNotCallOverridableMethodsInConstructor
+
 namespace EntityFramework_Reverse_POCO_Generator
 {
     // ************************************************************************
