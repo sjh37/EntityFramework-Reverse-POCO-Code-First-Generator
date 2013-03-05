@@ -1,14 +1,16 @@
 <#
 // Copyright © Simon Hughes 2012
 #>
+// ReSharper disable RedundantUsingDirective
+// ReSharper disable DoNotCallOverridableMethodsInConstructor
+// ReSharper disable InconsistentNaming
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration;
 using DatabaseGeneratedOption = System.ComponentModel.DataAnnotations.DatabaseGeneratedOption;
-
-// ReSharper disable DoNotCallOverridableMethodsInConstructor
 
 namespace <#= Namespace #>
 {

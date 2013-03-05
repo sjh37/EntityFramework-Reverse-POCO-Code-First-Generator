@@ -109,8 +109,8 @@ namespace Scratch
             if(col.IsNullable &&
                 col.PropertyType != "byte[]" &&
                 col.PropertyType != "string" &&
-                col.PropertyType != "System.Data.Spatial.DbGeography" &&
-                col.PropertyType != "System.Data.Spatial.DbGeometry")
+                col.PropertyType != "Microsoft.SqlServer.Types.SqlGeography" &&
+                col.PropertyType != "Microsoft.SqlServer.Types.SqlGeometry")
                 result = "?";
             return result;
         }
