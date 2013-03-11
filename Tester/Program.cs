@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using EntityFramework_Reverse_POCO_Generator;
 
 namespace Tester
@@ -14,10 +12,10 @@ namespace Tester
             {
                 using(var db = new MyDbContext())
                 {
-                    var data = db.AspnetApplications.Take(5);
+                    var data = db.AspnetSchemaVersions.Take(10);
                     foreach(var row in data)
                     {
-                        Console.WriteLine(row.ApplicationName);
+                        Console.WriteLine(row.Feature);
                     }
                 }
             }

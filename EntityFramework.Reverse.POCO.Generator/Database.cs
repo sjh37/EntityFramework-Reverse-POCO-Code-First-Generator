@@ -8,13 +8,16 @@
 //     Connection String Name: "MyDbContext"
 //     Connection String:      "Data Source=(local);Initial Catalog=aspnetdb;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator"
 
+// ReSharper disable RedundantUsingDirective
+// ReSharper disable DoNotCallOverridableMethodsInConstructor
+// ReSharper disable InconsistentNaming
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration;
-
-// ReSharper disable DoNotCallOverridableMethodsInConstructor
+using DatabaseGeneratedOption = System.ComponentModel.DataAnnotations.DatabaseGeneratedOption;
 
 namespace EntityFramework_Reverse_POCO_Generator
 {
@@ -289,7 +292,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     // POCO Configuration
 
     // aspnet_Applications
-    public class AspnetApplicationsConfiguration : EntityTypeConfiguration<AspnetApplications>
+    internal class AspnetApplicationsConfiguration : EntityTypeConfiguration<AspnetApplications>
     {
         public AspnetApplicationsConfiguration()
         {
@@ -304,7 +307,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // aspnet_Membership
-    public class AspnetMembershipConfiguration : EntityTypeConfiguration<AspnetMembership>
+    internal class AspnetMembershipConfiguration : EntityTypeConfiguration<AspnetMembership>
     {
         public AspnetMembershipConfiguration()
         {
@@ -340,7 +343,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // aspnet_Paths
-    public class AspnetPathsConfiguration : EntityTypeConfiguration<AspnetPaths>
+    internal class AspnetPathsConfiguration : EntityTypeConfiguration<AspnetPaths>
     {
         public AspnetPathsConfiguration()
         {
@@ -358,7 +361,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // aspnet_PersonalizationAllUsers
-    public class AspnetPersonalizationAllUsersConfiguration : EntityTypeConfiguration<AspnetPersonalizationAllUsers>
+    internal class AspnetPersonalizationAllUsersConfiguration : EntityTypeConfiguration<AspnetPersonalizationAllUsers>
     {
         public AspnetPersonalizationAllUsersConfiguration()
         {
@@ -375,7 +378,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // aspnet_PersonalizationPerUser
-    public class AspnetPersonalizationPerUserConfiguration : EntityTypeConfiguration<AspnetPersonalizationPerUser>
+    internal class AspnetPersonalizationPerUserConfiguration : EntityTypeConfiguration<AspnetPersonalizationPerUser>
     {
         public AspnetPersonalizationPerUserConfiguration()
         {
@@ -395,7 +398,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // aspnet_Profile
-    public class AspnetProfileConfiguration : EntityTypeConfiguration<AspnetProfile>
+    internal class AspnetProfileConfiguration : EntityTypeConfiguration<AspnetProfile>
     {
         public AspnetProfileConfiguration()
         {
@@ -414,7 +417,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // aspnet_Roles
-    public class AspnetRolesConfiguration : EntityTypeConfiguration<AspnetRoles>
+    internal class AspnetRolesConfiguration : EntityTypeConfiguration<AspnetRoles>
     {
         public AspnetRolesConfiguration()
         {
@@ -433,7 +436,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // aspnet_SchemaVersions
-    public class AspnetSchemaVersionsConfiguration : EntityTypeConfiguration<AspnetSchemaVersions>
+    internal class AspnetSchemaVersionsConfiguration : EntityTypeConfiguration<AspnetSchemaVersions>
     {
         public AspnetSchemaVersionsConfiguration()
         {
@@ -447,7 +450,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // aspnet_Users
-    public class AspnetUsersConfiguration : EntityTypeConfiguration<AspnetUsers>
+    internal class AspnetUsersConfiguration : EntityTypeConfiguration<AspnetUsers>
     {
         public AspnetUsersConfiguration()
         {
@@ -468,7 +471,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // aspnet_UsersInRoles
-    public class AspnetUsersInRolesConfiguration : EntityTypeConfiguration<AspnetUsersInRoles>
+    internal class AspnetUsersInRolesConfiguration : EntityTypeConfiguration<AspnetUsersInRoles>
     {
         public AspnetUsersInRolesConfiguration()
         {
@@ -485,7 +488,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // aspnet_WebEvent_Events
-    public class AspnetWebEventEventsConfiguration : EntityTypeConfiguration<AspnetWebEventEvents>
+    internal class AspnetWebEventEventsConfiguration : EntityTypeConfiguration<AspnetWebEventEvents>
     {
         public AspnetWebEventEventsConfiguration()
         {
