@@ -73,7 +73,7 @@ namespace Scratch
         string SchemaName = null;
 
         // Settings
-        string ConnectionStringName = "aspnetdb";   // Uses last connection string in config if not specified
+        string ConnectionStringName = "MyDbContext";   // Uses last connection string in config if not specified
         string ConnectionString = "Data Source=(local);Initial Catalog=aspnetdb;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";   // Uses last connection string in config if not specified
         bool IncludeViews = true;
 
@@ -1076,20 +1076,24 @@ FROM    (
 WHERE   NOT ([Extent1].[Name] IN ('EdmMetadata', '__MigrationHistory'))";
 
             private const string ForeignKeySQL = @"
-SELECT  FK_Table = FK.TABLE_NAME,
-        FK_Column = CU.COLUMN_NAME,
-        PK_Table = PK.TABLE_NAME,
-        PK_Column = PT.COLUMN_NAME,
-        Constraint_Name = C.CONSTRAINT_NAME,
+SELECT  FK.TABLE_NAME AS FK_Table,
+        FK.COLUMN_NAME AS FK_Column,
+        PK.TABLE_NAME AS PK_Table,
+        PK.COLUMN_NAME AS PK_Column,
+        FK.CONSTRAINT_NAME AS Constraint_Name,
         FK.TABLE_SCHEMA AS fkSchema,
-        PK.TABLE_SCHEMA AS pkSchema
-FROM    INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS C
-        INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS FK
-            ON C.CONSTRAINT_NAME = FK.CONSTRAINT_NAME
-        INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS PK
-            ON C.UNIQUE_CONSTRAINT_NAME = PK.CONSTRAINT_NAME
-        INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE CU
-            ON C.CONSTRAINT_NAME = CU.CONSTRAINT_NAME
+        PK.TABLE_SCHEMA AS pkSchema,
+        PT.COLUMN_NAME AS primarykey
+FROM    INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS AS C
+        INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS FK
+            ON FK.CONSTRAINT_CATALOG = C.CONSTRAINT_CATALOG
+               AND FK.CONSTRAINT_SCHEMA = C.CONSTRAINT_SCHEMA
+               AND FK.CONSTRAINT_NAME = C.CONSTRAINT_NAME
+        INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS PK
+            ON PK.CONSTRAINT_CATALOG = C.UNIQUE_CONSTRAINT_CATALOG
+               AND PK.CONSTRAINT_SCHEMA = C.UNIQUE_CONSTRAINT_SCHEMA
+               AND PK.CONSTRAINT_NAME = C.UNIQUE_CONSTRAINT_NAME
+               AND PK.ORDINAL_POSITION = FK.ORDINAL_POSITION
         INNER JOIN (
                     SELECT  i1.TABLE_NAME,
                             i2.COLUMN_NAME
@@ -1099,7 +1103,8 @@ FROM    INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS C
                     WHERE   i1.CONSTRAINT_TYPE = 'PRIMARY KEY'
                    ) PT
             ON PT.TABLE_NAME = PK.TABLE_NAME
-ORDER BY FK.TABLE_NAME, CU.COLUMN_NAME";
+WHERE   PT.COLUMN_NAME = PK.COLUMN_NAME
+ORDER BY FK.TABLE_NAME, FK.COLUMN_NAME";
 
             public SqlServerSchemaReader(DbConnection connection, DbProviderFactory factory)
                 : base(connection, factory)
