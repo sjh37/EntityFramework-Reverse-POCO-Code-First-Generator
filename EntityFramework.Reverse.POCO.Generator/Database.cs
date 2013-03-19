@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration;
+using System.Runtime.Serialization;
 
 //using DatabaseGeneratedOption = System.ComponentModel.DataAnnotations.DatabaseGeneratedOption;
 
@@ -74,12 +75,21 @@ namespace EntityFramework_Reverse_POCO_Generator
     // POCO classes
 
     // aspnet_Applications
+    [DataContract]
     public class AspnetApplications
     {
+        [DataMember(Order = 1, IsRequired = false)]
         public string ApplicationName { get; set; } // ApplicationName
+
+        [DataMember(Order = 2, IsRequired = false)]
         public string LoweredApplicationName { get; set; } // LoweredApplicationName
+
+        [DataMember(Order = 3, IsRequired = false)]
         public Guid ApplicationId { get; set; } // ApplicationId (Primary key)
+
+        [DataMember(Order = 4, IsRequired = true)]
         public string Description { get; set; } // Description
+
 
         // Reverse navigation
         public virtual ICollection<AspnetMembership> AspnetMembership { get; set; } // aspnet_Membership.FK__aspnet_Me__Appli__21B6055D;
@@ -98,29 +108,72 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // aspnet_Membership
+    [DataContract]
     public class AspnetMembership
     {
+        [DataMember(Order = 1, IsRequired = false)]
         public Guid ApplicationId { get; set; } // ApplicationId
+
+        [DataMember(Order = 2, IsRequired = false)]
         public Guid UserId { get; set; } // UserId (Primary key)
+
+        [DataMember(Order = 3, IsRequired = false)]
         public string Password { get; set; } // Password
+
+        [DataMember(Order = 4, IsRequired = false)]
         public int PasswordFormat { get; set; } // PasswordFormat
+
+        [DataMember(Order = 5, IsRequired = false)]
         public string PasswordSalt { get; set; } // PasswordSalt
+
+        [DataMember(Order = 6, IsRequired = true)]
         public string MobilePin { get; set; } // MobilePIN
+
+        [DataMember(Order = 7, IsRequired = true)]
         public string Email { get; set; } // Email
+
+        [DataMember(Order = 8, IsRequired = true)]
         public string LoweredEmail { get; set; } // LoweredEmail
+
+        [DataMember(Order = 9, IsRequired = true)]
         public string PasswordQuestion { get; set; } // PasswordQuestion
+
+        [DataMember(Order = 10, IsRequired = true)]
         public string PasswordAnswer { get; set; } // PasswordAnswer
+
+        [DataMember(Order = 11, IsRequired = false)]
         public bool IsApproved { get; set; } // IsApproved
+
+        [DataMember(Order = 12, IsRequired = false)]
         public bool IsLockedOut { get; set; } // IsLockedOut
+
+        [DataMember(Order = 13, IsRequired = false)]
         public DateTime CreateDate { get; set; } // CreateDate
+
+        [DataMember(Order = 14, IsRequired = false)]
         public DateTime LastLoginDate { get; set; } // LastLoginDate
+
+        [DataMember(Order = 15, IsRequired = false)]
         public DateTime LastPasswordChangedDate { get; set; } // LastPasswordChangedDate
+
+        [DataMember(Order = 16, IsRequired = false)]
         public DateTime LastLockoutDate { get; set; } // LastLockoutDate
+
+        [DataMember(Order = 17, IsRequired = false)]
         public int FailedPasswordAttemptCount { get; set; } // FailedPasswordAttemptCount
+
+        [DataMember(Order = 18, IsRequired = false)]
         public DateTime FailedPasswordAttemptWindowStart { get; set; } // FailedPasswordAttemptWindowStart
+
+        [DataMember(Order = 19, IsRequired = false)]
         public int FailedPasswordAnswerAttemptCount { get; set; } // FailedPasswordAnswerAttemptCount
+
+        [DataMember(Order = 20, IsRequired = false)]
         public DateTime FailedPasswordAnswerAttemptWindowStart { get; set; } // FailedPasswordAnswerAttemptWindowStart
+
+        [DataMember(Order = 21, IsRequired = true)]
         public string Comment { get; set; } // Comment
+
 
         // Foreign keys
         public virtual AspnetApplications AspnetApplications { get; set; } //  ApplicationId - FK__aspnet_Me__Appli__21B6055D
@@ -133,12 +186,21 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // aspnet_Paths
+    [DataContract]
     public class AspnetPaths
     {
+        [DataMember(Order = 1, IsRequired = false)]
         public Guid ApplicationId { get; set; } // ApplicationId
+
+        [DataMember(Order = 2, IsRequired = false)]
         public Guid PathId { get; set; } // PathId (Primary key)
+
+        [DataMember(Order = 3, IsRequired = false)]
         public string Path { get; set; } // Path
+
+        [DataMember(Order = 4, IsRequired = false)]
         public string LoweredPath { get; set; } // LoweredPath
+
 
         // Reverse navigation
         public virtual AspnetPersonalizationAllUsers AspnetPersonalizationAllUsers { get; set; } // aspnet_PersonalizationAllUsers.FK__aspnet_Pe__PathI__628FA481;
@@ -155,24 +217,42 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // aspnet_PersonalizationAllUsers
+    [DataContract]
     public class AspnetPersonalizationAllUsers
     {
+        [DataMember(Order = 1, IsRequired = false)]
         public Guid PathId { get; set; } // PathId (Primary key)
+
+        [DataMember(Order = 2, IsRequired = false)]
         public byte[] PageSettings { get; set; } // PageSettings
+
+        [DataMember(Order = 3, IsRequired = false)]
         public DateTime LastUpdatedDate { get; set; } // LastUpdatedDate
+
 
         // Foreign keys
         public virtual AspnetPaths AspnetPaths { get; set; } //  PathId - FK__aspnet_Pe__PathI__628FA481
     }
 
     // aspnet_PersonalizationPerUser
+    [DataContract]
     public class AspnetPersonalizationPerUser
     {
+        [DataMember(Order = 1, IsRequired = false)]
         public Guid Id { get; set; } // Id (Primary key)
+
+        [DataMember(Order = 2, IsRequired = true)]
         public Guid? PathId { get; set; } // PathId
+
+        [DataMember(Order = 3, IsRequired = true)]
         public Guid? UserId { get; set; } // UserId
+
+        [DataMember(Order = 4, IsRequired = false)]
         public byte[] PageSettings { get; set; } // PageSettings
+
+        [DataMember(Order = 5, IsRequired = false)]
         public DateTime LastUpdatedDate { get; set; } // LastUpdatedDate
+
 
         // Foreign keys
         public virtual AspnetPaths AspnetPaths { get; set; } //  PathId - FK__aspnet_Pe__PathI__68487DD7
@@ -185,26 +265,48 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // aspnet_Profile
+    [DataContract]
     public class AspnetProfile
     {
+        [DataMember(Order = 1, IsRequired = false)]
         public Guid UserId { get; set; } // UserId (Primary key)
+
+        [DataMember(Order = 2, IsRequired = false)]
         public string PropertyNames { get; set; } // PropertyNames
+
+        [DataMember(Order = 3, IsRequired = false)]
         public string PropertyValuesString { get; set; } // PropertyValuesString
+
+        [DataMember(Order = 4, IsRequired = false)]
         public byte[] PropertyValuesBinary { get; set; } // PropertyValuesBinary
+
+        [DataMember(Order = 5, IsRequired = false)]
         public DateTime LastUpdatedDate { get; set; } // LastUpdatedDate
+
 
         // Foreign keys
         public virtual AspnetUsers AspnetUsers { get; set; } //  UserId - FK__aspnet_Pr__UserI__38996AB5
     }
 
     // aspnet_Roles
+    [DataContract]
     public class AspnetRoles
     {
+        [DataMember(Order = 1, IsRequired = false)]
         public Guid ApplicationId { get; set; } // ApplicationId
+
+        [DataMember(Order = 2, IsRequired = false)]
         public Guid RoleId { get; set; } // RoleId (Primary key)
+
+        [DataMember(Order = 3, IsRequired = false)]
         public string RoleName { get; set; } // RoleName
+
+        [DataMember(Order = 4, IsRequired = false)]
         public string LoweredRoleName { get; set; } // LoweredRoleName
+
+        [DataMember(Order = 5, IsRequired = true)]
         public string Description { get; set; } // Description
+
 
         // Reverse navigation
         public virtual ICollection<AspnetUsersInRoles> AspnetUsersInRoles { get; set; } // aspnet_UsersInRoles.FK__aspnet_Us__RoleI__4AB81AF0;
@@ -220,23 +322,45 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // aspnet_SchemaVersions
+    [DataContract]
     public class AspnetSchemaVersions
     {
+        [DataMember(Order = 1, IsRequired = false)]
         public string Feature { get; set; } // Feature (Primary key)
+
+        [DataMember(Order = 2, IsRequired = false)]
         public string CompatibleSchemaVersion { get; set; } // CompatibleSchemaVersion (Primary key)
+
+        [DataMember(Order = 3, IsRequired = false)]
         public bool IsCurrentVersion { get; set; } // IsCurrentVersion
+
     }
 
     // aspnet_Users
+    [DataContract]
     public class AspnetUsers
     {
+        [DataMember(Order = 1, IsRequired = false)]
         public Guid ApplicationId { get; set; } // ApplicationId
+
+        [DataMember(Order = 2, IsRequired = false)]
         public Guid UserId { get; set; } // UserId (Primary key)
+
+        [DataMember(Order = 3, IsRequired = false)]
         public string UserName { get; set; } // UserName
+
+        [DataMember(Order = 4, IsRequired = false)]
         public string LoweredUserName { get; set; } // LoweredUserName
+
+        [DataMember(Order = 5, IsRequired = true)]
         public string MobileAlias { get; set; } // MobileAlias
+
+        [DataMember(Order = 6, IsRequired = false)]
         public bool IsAnonymous { get; set; } // IsAnonymous
+
+        [DataMember(Order = 7, IsRequired = false)]
         public DateTime LastActivityDate { get; set; } // LastActivityDate
+
 
         // Reverse navigation
         public virtual AspnetMembership AspnetMembership { get; set; } // aspnet_Membership.FK__aspnet_Me__UserI__22AA2996;
@@ -258,10 +382,15 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // aspnet_UsersInRoles
+    [DataContract]
     public class AspnetUsersInRoles
     {
+        [DataMember(Order = 1, IsRequired = false)]
         public Guid UserId { get; set; } // UserId (Primary key)
+
+        [DataMember(Order = 2, IsRequired = false)]
         public Guid RoleId { get; set; } // RoleId (Primary key)
+
 
         // Foreign keys
         public virtual AspnetUsers AspnetUsers { get; set; } //  UserId - FK__aspnet_Us__UserI__49C3F6B7
@@ -269,23 +398,54 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // aspnet_WebEvent_Events
+    [DataContract]
     public class AspnetWebEventEvents
     {
+        [DataMember(Order = 1, IsRequired = false)]
         public string EventId { get; set; } // EventId (Primary key)
+
+        [DataMember(Order = 2, IsRequired = false)]
         public DateTime EventTimeUtc { get; set; } // EventTimeUtc
+
+        [DataMember(Order = 3, IsRequired = false)]
         public DateTime EventTime { get; set; } // EventTime
+
+        [DataMember(Order = 4, IsRequired = false)]
         public string EventType { get; set; } // EventType
+
+        [DataMember(Order = 5, IsRequired = false)]
         public decimal EventSequence { get; set; } // EventSequence
+
+        [DataMember(Order = 6, IsRequired = false)]
         public decimal EventOccurrence { get; set; } // EventOccurrence
+
+        [DataMember(Order = 7, IsRequired = false)]
         public int EventCode { get; set; } // EventCode
+
+        [DataMember(Order = 8, IsRequired = false)]
         public int EventDetailCode { get; set; } // EventDetailCode
+
+        [DataMember(Order = 9, IsRequired = true)]
         public string Message { get; set; } // Message
+
+        [DataMember(Order = 10, IsRequired = true)]
         public string ApplicationPath { get; set; } // ApplicationPath
+
+        [DataMember(Order = 11, IsRequired = true)]
         public string ApplicationVirtualPath { get; set; } // ApplicationVirtualPath
+
+        [DataMember(Order = 12, IsRequired = false)]
         public string MachineName { get; set; } // MachineName
+
+        [DataMember(Order = 13, IsRequired = true)]
         public string RequestUrl { get; set; } // RequestUrl
+
+        [DataMember(Order = 14, IsRequired = true)]
         public string ExceptionType { get; set; } // ExceptionType
+
+        [DataMember(Order = 15, IsRequired = true)]
         public string Details { get; set; } // Details
+
     }
 
 

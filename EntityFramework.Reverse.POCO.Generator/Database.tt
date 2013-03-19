@@ -9,7 +9,7 @@
     
 
     // WCF
-    AddWcfDataAttributes = false;
+    AddWcfDataAttributes = true;
     // This string is inserted into the  [DataContract] attribute, before the closing square bracket.
     ExtraWcfDataContractAttributes = "";
     // Example: "";                                           = [DataContract]
