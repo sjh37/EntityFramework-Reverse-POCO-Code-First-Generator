@@ -1,17 +1,28 @@
 ﻿<#@ include file="EF.Reverse.POCO.Core.ttinclude" #>
 <#
-    // v1.4.1
+    // v1.5.0
     // Settings
     ConnectionStringName = "MyDbContext";  // Uses last connection string in config if not specified
     // Namespace = ""; // Override the namespace if you want to
     DbContextName = "MyDbContext";
     MakeClassesPartial = false;
     
+
+    // WCF
+    AddWcfDataAttributes = false;
+    // This string is inserted into the  [DataContract] attribute, before the closing square bracket.
+    ExtraWcfDataContractAttributes = "";
+    // Example: "";                                           = [DataContract]
+    //          "(Namespace = \"http://www.contoso.com\")";   = [DataContract(Namespace = "http://www.contoso.com")]
+    //          "(Namespace = Constants.ServiceNamespace)";   = [DataContract(Namespace = Constants.ServiceNamespace)]
+    
+
     // If there are multiple schema, then the table name is prefixed with the schema, except for dbo.
     // Ie. dbo.hello will be Hello.
     //     abc.hello will be AbcHello.
     SchemaName = null;
     
+
     // Use the following table/view name regex filters to include or exclude tables/views
     // Exclude filters are checked first and tables matching filters are removed.
     //  * If left null, none are excluded.

@@ -1,6 +1,6 @@
 <#
 // Copyright © Simon Hughes 2012
-// v1.4.1
+// v1.5.0
 #>
 <#@ template debug="true" hostspecific="true" language="C#" #>
 <#@ assembly name="EnvDTE" #>
@@ -28,16 +28,27 @@
         string Namespace = code.VsNamespaceSuggestion();
 #>
 <#+
-        // If there are multiple schema, then the table name is prefixed with the schema, except for dbo.
-        // Ie. dbo.hello will be Hello.
-        //     abc.hello will be AbcHello.
-        string SchemaName = null;
-
         // Settings
         string ConnectionStringName = "";   // Uses last connection string in config if not specified
         bool IncludeViews = true;
         string DbContextName = "MyDbContext";
         bool MakeClassesPartial = true;
+        
+
+        // WCF
+        bool AddWcfDataAttributes = false;
+        // This string is inserted into the  [DataContract] attribute, before the closing square bracket.
+        string ExtraWcfDataContractAttributes = "";
+        // Example: "";                                           = [DataContract]
+        //          "(Namespace = \"http://www.contoso.com\")";   = [DataContract(Namespace = "http://www.contoso.com")]
+        //          "(Namespace = Constants.ServiceNamespace)";   = [DataContract(Namespace = Constants.ServiceNamespace)]
+
+        
+        // If there are multiple schema, then the table name is prefixed with the schema, except for dbo.
+        // Ie. dbo.hello will be Hello.
+        //     abc.hello will be AbcHello.
+        string SchemaName = null;
+
 
         // Use the following table/view name regex filters to include or exclude tables/views
         // Exclude filters are checked first and tables matching filters are removed.

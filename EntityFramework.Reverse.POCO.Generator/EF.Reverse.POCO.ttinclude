@@ -1,6 +1,6 @@
 <#
 // Copyright © Simon Hughes 2012
-// v1.4.1
+// v1.5.0
 #>
 // ReSharper disable RedundantUsingDirective
 // ReSharper disable DoNotCallOverridableMethodsInConstructor
@@ -11,6 +11,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration;
+<# if(AddWcfDataAttributes) { #>using System.Runtime.Serialization;
+<# } #>
+
 //using DatabaseGeneratedOption = System.ComponentModel.DataAnnotations.DatabaseGeneratedOption;
 
 namespace <#= Namespace #>
@@ -61,13 +64,20 @@ foreach(Table tbl in from t in tables.OrderBy(x => x.NameHumanCase) select t)
 {
 #>
     // <#=tbl.Name#>
+<# if(AddWcfDataAttributes) { #>    [DataContract<#=ExtraWcfDataContractAttributes#>]
+<# } #>
     public <# if(MakeClassesPartial) { #>partial <# } #>class <#=tbl.NameHumanCase#>
     {
-<#
+<# int DataMemberOrder = 1;
 foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal))
 {
 #>
+<# if(AddWcfDataAttributes) { #>        [DataMember(Order = <#=DataMemberOrder++#>, IsRequired = <#=col.IsNullable ? "true" : "false"#>)]
+<# } #>
         <#=col.Entity #>
+<# if(AddWcfDataAttributes) { #>
+
+<# } #>
 <# } #>
 <#
 if(tbl.ReverseNavigationProperty.Count() > 0)
