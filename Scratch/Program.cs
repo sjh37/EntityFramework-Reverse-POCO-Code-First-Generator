@@ -67,15 +67,28 @@ namespace Scratch
         private string ZapPassword(string s) { return s; }
         private const string ProviderName = "System.Data.SqlClient";
 
+        // Settings
+        string ConnectionStringName = "MyDbContext";   // Uses last connection string in config if not specified
+        string ConnectionString = "Data Source=(local);Initial Catalog=aspnetdb;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";   // Uses last connection string in config if not specified
+        bool IncludeViews = true;
+        string DbContextName = "MyDbContext";
+        bool MakeClassesPartial = true;
+
+
+        // WCF
+        bool AddWcfDataAttributes = false;
+        // This string is inserted into the  [DataContract] attribute, before the closing square bracket.
+        string ExtraWcfDataContractAttributes = "";
+        // Example: "";                                           = [DataContract]
+        //          "(Namespace = \"http://www.contoso.com\")";   = [DataContract(Namespace = "http://www.contoso.com")]
+        //          "(Namespace = Constants.ServiceNamespace)";   = [DataContract(Namespace = Constants.ServiceNamespace)]
+
+
         // If there are multiple schema, then the table name is prefixed with the schema, except for dbo.
         // Ie. dbo.hello will be Hello.
         //     abc.hello will be AbcHello.
         string SchemaName = null;
 
-        // Settings
-        string ConnectionStringName = "MyDbContext";   // Uses last connection string in config if not specified
-        string ConnectionString = "Data Source=(local);Initial Catalog=aspnetdb;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";   // Uses last connection string in config if not specified
-        bool IncludeViews = true;
 
         // Use the following table/view name regex filters to include or exclude tables/views
         // Exclude filters are checked first and tables matching filters are removed.
@@ -159,7 +172,7 @@ namespace Scratch
                     conn.Open();
 
                     var reader = new SqlServerSchemaReader(conn, factory) { Outer = this };
-                    var result = reader.ReadSchema();
+                    var result = reader.ReadSchema(TableFilterExclude);
 
                     // Remove unrequired tables/views
                     for(int i = result.Count - 1; i >= 0; i--)
@@ -170,11 +183,6 @@ namespace Scratch
                             continue;
                         }
                         if(!IncludeViews && result[i].IsView)
-                        {
-                            result.RemoveAt(i);
-                            continue;
-                        }
-                        if(TableFilterExclude != null && TableFilterExclude.IsMatch(result[i].Name))
                         {
                             result.RemoveAt(i);
                             continue;
@@ -794,7 +802,7 @@ namespace Scratch
             }
 
             public GeneratedTextTransformation Outer;
-            public abstract Tables ReadSchema();
+            public abstract Tables ReadSchema(Regex TableFilterExclude);
             public abstract Tables ReadForeignKeys(Tables result);
 
             protected void WriteLine(string o)
@@ -1111,7 +1119,7 @@ ORDER BY FK.TABLE_NAME, FK.COLUMN_NAME";
             {
             }
 
-            public override Tables ReadSchema()
+            public override Tables ReadSchema(Regex TableFilterExclude)
             {
                 var result = new Tables();
                 if(Cmd == null)
@@ -1130,6 +1138,9 @@ ORDER BY FK.TABLE_NAME, FK.COLUMN_NAME";
                         while(rdr.Read())
                         {
                             string tableName = rdr["TableName"].ToString().Trim();
+                            if(TableFilterExclude != null && TableFilterExclude.IsMatch(tableName))
+                                continue;
+
                             if(lastTable != tableName || table == null)
                             {
                                 // The data from the database is not sorted

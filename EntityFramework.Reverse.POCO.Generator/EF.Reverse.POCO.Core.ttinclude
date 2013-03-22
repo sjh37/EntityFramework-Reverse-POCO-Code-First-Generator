@@ -255,7 +255,7 @@
                     conn.Open();
 
                     var reader = new SqlServerSchemaReader(conn, factory) { Outer = this };
-                    var result = reader.ReadSchema();
+                    var result = reader.ReadSchema(TableFilterExclude);
 
                     // Remove unrequired tables/views
                     for(int i = result.Count - 1; i >= 0; i--)
@@ -266,11 +266,6 @@
                             continue;
                         }
                         if(!IncludeViews && result[i].IsView)
-                        {
-                            result.RemoveAt(i);
-                            continue;
-                        }
-                        if(TableFilterExclude != null && TableFilterExclude.IsMatch(result[i].Name))
                         {
                             result.RemoveAt(i);
                             continue;
@@ -890,7 +885,7 @@
             }
 
             public GeneratedTextTransformation Outer;
-            public abstract Tables ReadSchema();
+            public abstract Tables ReadSchema(Regex TableFilterExclude);
             public abstract Tables ReadForeignKeys(Tables result);
 
             protected void WriteLine(string o)
@@ -1207,7 +1202,7 @@ ORDER BY FK.TABLE_NAME, FK.COLUMN_NAME";
             {
             }
 
-            public override Tables ReadSchema()
+            public override Tables ReadSchema(Regex TableFilterExclude)
             {
                 var result = new Tables();
                 if(Cmd == null)
@@ -1226,6 +1221,9 @@ ORDER BY FK.TABLE_NAME, FK.COLUMN_NAME";
                         while(rdr.Read())
                         {
                             string tableName = rdr["TableName"].ToString().Trim();
+                            if (TableFilterExclude != null && TableFilterExclude.IsMatch(tableName))
+                                continue;
+
                             if(lastTable != tableName || table == null)
                             {
                                 // The data from the database is not sorted
