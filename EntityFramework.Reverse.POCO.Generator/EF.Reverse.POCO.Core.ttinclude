@@ -1,6 +1,6 @@
 <#
 // Copyright © Simon Hughes 2012
-// v1.5.0
+// v1.5.1
 #>
 <#@ template debug="true" hostspecific="true" language="C#" #>
 <#@ assembly name="EnvDTE" #>

@@ -1,6 +1,6 @@
 <#
 // Copyright © Simon Hughes 2012
-// v1.5.0
+// v1.5.1
 #>
 // ReSharper disable RedundantUsingDirective
 // ReSharper disable DoNotCallOverridableMethodsInConstructor
@@ -72,7 +72,7 @@ foreach(Table tbl in from t in tables.OrderBy(x => x.NameHumanCase) select t)
 foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal))
 {
 #>
-<# if(AddWcfDataAttributes) { #>        [DataMember(Order = <#=DataMemberOrder++#>, IsRequired = <#=col.IsNullable ? "true" : "false"#>)]
+<# if(AddWcfDataAttributes) { #>        [DataMember(Order = <#=DataMemberOrder++#>, IsRequired = <#=col.IsNullable ? "false" : "true"#>)]
 <# } #>
         <#=col.Entity #>
 <# if(AddWcfDataAttributes) { #>
