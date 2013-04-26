@@ -6,6 +6,7 @@ using System.Data.Common;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Scratch
@@ -30,7 +31,7 @@ namespace Scratch
                     }
                     foreach(var col in table.Columns)
                     {
-                        //if(!string.IsNullOrWhiteSpace(col.Entity)) Console.WriteLine("  " + col.Entity);
+                        if(!string.IsNullOrWhiteSpace(col.Entity)) Console.WriteLine("  " + col.Entity);
                         if(!string.IsNullOrWhiteSpace(col.EntityFk))
                         {
                             Console.WriteLine("  " + col.EntityFk);
@@ -44,7 +45,7 @@ namespace Scratch
                     }
                     foreach(var col in table.Columns)
                     {
-                        //if(!string.IsNullOrWhiteSpace(col.Config)) Console.WriteLine("  " + col.Config);
+                        if(!string.IsNullOrWhiteSpace(col.Config)) Console.WriteLine("  " + col.Config);
                         if(!string.IsNullOrWhiteSpace(col.ConfigFk))
                         {
                             Console.WriteLine("  " + col.ConfigFk);
@@ -69,7 +70,7 @@ namespace Scratch
 
         // Settings
         string ConnectionStringName = "MyDbContext";   // Uses last connection string in config if not specified
-        string ConnectionString = "Data Source=(local);Initial Catalog=aspnetdb;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";   // Uses last connection string in config if not specified
+        string ConnectionString = "Data Source=(local);Initial Catalog=fred;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";   // Uses last connection string in config if not specified
         bool IncludeViews = true;
         string DbContextName = "MyDbContext";
         bool MakeClassesPartial = true;
@@ -107,7 +108,29 @@ namespace Scratch
 
         private static readonly Func<string, string> CleanUp = (str) =>
         {
-            str = RxCleanUp.Replace(str, "_");
+            // Replace punctuation and symbols in variable names as these are not allowed.
+            int len = str.Length;
+            if (len == 0)
+                return str;
+            var sb = new StringBuilder();
+            bool replacedCharacter = false;
+            for(int n = 0; n < len; ++n )
+            {
+                char c = str[n];
+                if (c != '_' && (char.IsSymbol(c) || char.IsPunctuation(c)))
+                {
+                    int ascii = c;
+                    sb.AppendFormat("{0}", ascii);
+                    replacedCharacter = true;
+                    continue;
+                }
+                sb.Append(c);
+            }
+            if (replacedCharacter)
+                str = sb.ToString();
+            
+            // Remove non alphanumerics
+            str = RxCleanUp.Replace(str, "");
             if(char.IsDigit(str[0]))
                 str = "C" + str;
 
@@ -301,7 +324,7 @@ namespace Scratch
                     if(IsPrimaryKey && !IsIdentity && !IsStoreGenerated)
                         databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.None)";
                 }
-                Config = string.Format("Property(x => x.{0}).HasColumnName(\"{1}\"){2}{3}{4};", PropertyNameHumanCase, PropertyName,
+                Config = string.Format("Property(x => x.{0}).HasColumnName(\"{1}\"){2}{3}{4};", PropertyNameHumanCase, Name,
                                             (IsNullable) ? ".IsOptional()" : ".IsRequired()",
                                             (MaxLength > 0) ? ".HasMaxLength(" + MaxLength + ")" : string.Empty,
                                             databaseGeneratedOption);
@@ -1331,6 +1354,8 @@ ORDER BY FK.TABLE_NAME, FK.COLUMN_NAME";
                     col.PropertyName = "_" + col.PropertyName;
 
                 col.PropertyNameHumanCase = Inflector.ToTitleCase(col.PropertyName).Replace(" ", "");
+                if (col.PropertyNameHumanCase == string.Empty)
+                    col.PropertyNameHumanCase = col.PropertyName;
 
                 // Make sure property name doesn't clash with class name
                 if(col.PropertyNameHumanCase == table.NameHumanCase)

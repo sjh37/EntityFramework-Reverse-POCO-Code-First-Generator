@@ -1,6 +1,6 @@
 ﻿<#@ include file="EF.Reverse.POCO.Core.ttinclude" #>
 <#
-    // v1.5.1
+    // v1.6.0
     // Settings
     ConnectionStringName = "MyDbContext";  // Uses last connection string in config if not specified
     // Namespace = ""; // Override the namespace if you want to
