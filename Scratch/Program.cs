@@ -324,9 +324,10 @@ namespace Scratch
                     if(IsPrimaryKey && !IsIdentity && !IsStoreGenerated)
                         databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.None)";
                 }
-                Config = string.Format("Property(x => x.{0}).HasColumnName(\"{1}\"){2}{3}{4};", PropertyNameHumanCase, Name,
+                Config = string.Format("Property(x => x.{0}).HasColumnName(\"{1}\"){2}{3}{4}{5};", PropertyNameHumanCase, Name, 
                                             (IsNullable) ? ".IsOptional()" : ".IsRequired()",
                                             (MaxLength > 0) ? ".HasMaxLength(" + MaxLength + ")" : string.Empty,
+                                            (Scale > 0) ? ".HasPrecision(" + Precision + "," + Scale + ")" : string.Empty, 
                                             databaseGeneratedOption);
             }
 
