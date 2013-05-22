@@ -22,9 +22,26 @@ using System.Data.Entity.ModelConfiguration;
 
 namespace EntityFramework_Reverse_POCO_Generator
 {
+    public interface IMyDbContext
+    {
+        IDbSet<AspnetApplications> AspnetApplications { get; set; } // aspnet_Applications
+        IDbSet<AspnetMembership> AspnetMembership { get; set; } // aspnet_Membership
+        IDbSet<AspnetPaths> AspnetPaths { get; set; } // aspnet_Paths
+        IDbSet<AspnetPersonalizationAllUsers> AspnetPersonalizationAllUsers { get; set; } // aspnet_PersonalizationAllUsers
+        IDbSet<AspnetPersonalizationPerUser> AspnetPersonalizationPerUser { get; set; } // aspnet_PersonalizationPerUser
+        IDbSet<AspnetProfile> AspnetProfile { get; set; } // aspnet_Profile
+        IDbSet<AspnetRoles> AspnetRoles { get; set; } // aspnet_Roles
+        IDbSet<AspnetSchemaVersions> AspnetSchemaVersions { get; set; } // aspnet_SchemaVersions
+        IDbSet<AspnetUsers> AspnetUsers { get; set; } // aspnet_Users
+        IDbSet<AspnetUsersInRoles> AspnetUsersInRoles { get; set; } // aspnet_UsersInRoles
+        IDbSet<AspnetWebEventEvents> AspnetWebEventEvents { get; set; } // aspnet_WebEvent_Events
+        
+        int SaveChanges();
+    }
+
     // ************************************************************************
     // Database context
-    public class MyDbContext : DbContext
+    public class MyDbContext : DbContext, IMyDbContext
     {
         public IDbSet<AspnetApplications> AspnetApplications { get; set; } // aspnet_Applications
         public IDbSet<AspnetMembership> AspnetMembership { get; set; } // aspnet_Membership
