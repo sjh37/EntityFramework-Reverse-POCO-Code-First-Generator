@@ -22,6 +22,8 @@ using System.Data.Entity.ModelConfiguration;
 
 namespace EntityFramework_Reverse_POCO_Generator
 {
+    // ************************************************************************
+    // Unit of work
     public interface IMyDbContext
     {
         IDbSet<AspnetApplications> AspnetApplications { get; set; } // aspnet_Applications
@@ -35,7 +37,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         IDbSet<AspnetUsers> AspnetUsers { get; set; } // aspnet_Users
         IDbSet<AspnetUsersInRoles> AspnetUsersInRoles { get; set; } // aspnet_UsersInRoles
         IDbSet<AspnetWebEventEvents> AspnetWebEventEvents { get; set; } // aspnet_WebEvent_Events
-        
+
         int SaveChanges();
     }
 
