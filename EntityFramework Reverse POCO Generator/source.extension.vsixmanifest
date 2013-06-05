@@ -3,7 +3,7 @@
     <Identifier Id="EntityFramework_Reverse_POCO_Generator..d542a934-8bd6-4136-b490-5f0049d62033">
         <Name>EntityFramework Reverse POCO Generator</Name>
         <Author>Simon Hughes</Author>
-        <Version>1.7.0</Version>
+        <Version>1.7.1</Version>
         <Description xml:space="preserve">Reverse engineers an existing database and generates EntityFramework Code First POCO classes, Configuration mappings and DbContext.</Description>
         <Locale>1033</Locale>
         <MoreInfoUrl>https://efreversepoco.codeplex.com</MoreInfoUrl>
