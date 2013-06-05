@@ -1,6 +1,6 @@
 <#
 // Copyright © Simon Hughes 2012
-// v1.7.0
+// v1.7.1
 #>
 <#@ template debug="true" hostspecific="true" language="C#" #>
 <#@ assembly name="EnvDTE" #>
@@ -1472,6 +1472,7 @@ ORDER BY FK.TABLE_NAME, FK.COLUMN_NAME";
                         break;
                     case "smalldatetime":
                     case "datetime":
+                    case "datetime2":
                     case "date":
                         sysType = "DateTime";
                         break;
