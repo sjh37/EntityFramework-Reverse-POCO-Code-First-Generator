@@ -24,7 +24,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 {
     // ************************************************************************
     // Unit of work
-    public interface IMyDbContext
+    public interface IMyDbContext : IDisposable
     {
         IDbSet<AspnetApplications> AspnetApplications { get; set; } // aspnet_Applications
         IDbSet<AspnetMembership> AspnetMembership { get; set; } // aspnet_Membership

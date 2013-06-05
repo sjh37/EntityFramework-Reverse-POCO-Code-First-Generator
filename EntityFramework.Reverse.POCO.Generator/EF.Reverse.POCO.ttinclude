@@ -1,6 +1,6 @@
 <#
 // Copyright © Simon Hughes 2012
-// v1.7.0
+// v1.7.1
 #>
 // ReSharper disable RedundantUsingDirective
 // ReSharper disable DoNotCallOverridableMethodsInConstructor
@@ -20,7 +20,7 @@ namespace <#= Namespace #>
 {
     // ************************************************************************
     // Unit of work
-    public interface I<#=DbContextName#>
+    public interface I<#=DbContextName#> : IDisposable
     {
 <#
 foreach(Table tbl in from t in tables.OrderBy(x => x.NameHumanCase) select t)

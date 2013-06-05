@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Data.Entity;
 using EntityFramework_Reverse_POCO_Generator;
 
 namespace Tester.UnitTest
@@ -34,7 +35,12 @@ namespace Tester.UnitTest
 
         public int SaveChanges()
         {
-            return 1;
+            return 0;
+        }
+
+        public void Dispose()
+        {
+            throw new NotImplementedException(); 
         }
     }
 }
