@@ -1390,6 +1390,7 @@ ORDER BY FK.TABLE_NAME, FK.COLUMN_NAME";
                         break;
                     case "smalldatetime":
                     case "datetime":
+                    case "datetime2":
                     case "date":
                         sysType = "DateTime";
                         break;
