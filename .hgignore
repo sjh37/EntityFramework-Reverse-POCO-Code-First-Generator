@@ -30,6 +30,7 @@ syntax: glob
 *.pdb
 *.plg
 *.rdl.data
+*.[dD]ot[sS]ettings
 *.sbr
 *.scc
 *.sdf
