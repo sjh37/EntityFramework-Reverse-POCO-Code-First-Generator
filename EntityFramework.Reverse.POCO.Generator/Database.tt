@@ -6,6 +6,7 @@
     // Namespace = ""; // Override the namespace if you want to
     DbContextName = "MyDbContext";
     MakeClassesPartial = false;
+    GenerateSeparateFiles = false;
     
 
     // WCF

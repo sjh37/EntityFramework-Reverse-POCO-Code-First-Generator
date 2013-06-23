@@ -26,6 +26,7 @@
 <#
         CodeGenerationTools code = new CodeGenerationTools(this);
         string Namespace = code.VsNamespaceSuggestion();
+        var fileManager = EntityFrameworkTemplateFileManager.Create(this);
 #>
 <#+
         // Settings
@@ -33,6 +34,7 @@
         bool IncludeViews = true;
         string DbContextName = "MyDbContext";
         bool MakeClassesPartial = true;
+        bool GenerateSeparateFiles = false;
         
 
         // WCF

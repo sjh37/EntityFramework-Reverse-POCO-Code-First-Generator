@@ -1,4 +1,5 @@
 <#
+fileManager.StartHeader();
 // Copyright © Simon Hughes 2012
 // v1.7.1
 #>
@@ -18,8 +19,11 @@ using System.Data.Entity.ModelConfiguration;
 
 namespace <#= Namespace #>
 {
+<# fileManager.StartNewFile("I" + DbContextName + ".cs"); #>
+<# if(!GenerateSeparateFiles) { #>
     // ************************************************************************
     // Unit of work
+<# } #>
     public interface I<#=DbContextName#> : IDisposable
     {
 <#
@@ -32,8 +36,11 @@ foreach(Table tbl in from t in tables.OrderBy(x => x.NameHumanCase) select t)
         int SaveChanges();
     }
 
+<# fileManager.StartNewFile(DbContextName + ".cs"); #>
+<# if(!GenerateSeparateFiles) { #>
     // ************************************************************************
     // Database context
+<# } #>
     public <# if(MakeClassesPartial) { #>partial <# } #>class <#=DbContextName#> : DbContext, I<#=DbContextName#>
     {
 <#
@@ -69,14 +76,17 @@ foreach(Table tbl in from t in tables.OrderBy(x => x.NameHumanCase) select t)
 <# } #>
         }
     }
+<# if(!GenerateSeparateFiles) { #>
 
     // ************************************************************************
     // POCO classes
 
+<# } #>
 <#
 foreach(Table tbl in from t in tables.OrderBy(x => x.NameHumanCase) select t)
 {
 #>
+<# fileManager.StartNewFile(tbl.NameHumanCase + ".cs"); #>
     // <#=tbl.Name#>
 <# if(AddWcfDataAttributes) { #>    [DataContract<#=ExtraWcfDataContractAttributes#>]
 <# } #>
@@ -138,14 +148,17 @@ foreach(string s in tbl.ReverseNavigationCtor)
     }
 
 <# } #>
+<# if(!GenerateSeparateFiles) { #>
 
     // ************************************************************************
     // POCO Configuration
 
+<# } #>
 <#
 foreach(Table tbl in tables.OrderBy(x => x.NameHumanCase))
 {
 #>
+<# fileManager.StartNewFile(tbl.NameHumanCase + "Configuration.cs"); #>
     // <#=tbl.Name#>
     internal <# if(MakeClassesPartial) { #>partial <# } #>class <#=tbl.NameHumanCase#>Configuration : EntityTypeConfiguration<<#=tbl.NameHumanCase#>>
     {
@@ -185,4 +198,8 @@ foreach(Column col in from c in tbl.Columns.OrderBy(x => x.Ordinal) where c.Conf
     }
 
 <# } #>
+<# fileManager.StartFooter(); #>
 }
+<# fileManager.EndBlock();
+if(GenerateSeparateFiles)
+    fileManager.Process(); #>
