@@ -4,6 +4,7 @@
     // Settings
     ConnectionStringName = "MyDbContext";  // Searches for this connection string in config files listed below
     ConfigFilenameSearchOrder = new[] { "app.config", "web.config", "app.config.transform", "web.config.transform" }; // Add more here if required
+    // The config files are searched for in the local project first, then the whole solution second.
 
 
     // Namespace = ""; // Override the namespace if you want to
