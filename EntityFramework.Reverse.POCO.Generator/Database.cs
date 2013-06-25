@@ -5,6 +5,7 @@
 // 
 // The following connection settings were used to generate this file
 // 
+//     Configuration file:     "EntityFramework.Reverse.POCO.Generator\App.config"
 //     Connection String Name: "MyDbContext"
 //     Connection String:      "Data Source=(local);Initial Catalog=aspnetdb;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator"
 

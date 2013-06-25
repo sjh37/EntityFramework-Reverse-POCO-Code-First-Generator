@@ -155,7 +155,7 @@
             _connectionString = _connectionString.Replace("|DataDirectory|", dataFilePath);
         }
 
-        public EnvDTE.Projects GetAllProjects()
+        public EnvDTE.Solution GetSolution()
         {
             var serviceProvider = (IServiceProvider)Host;
             if(serviceProvider == null)
@@ -165,9 +165,14 @@
             if(dte == null)
                 throw new Exception("Unable to retrieve EnvDTE.DTE");
 
-            return dte.Solution.Projects;
+            return dte.Solution;
         }
 
+        public EnvDTE.Projects GetAllProjects()
+        {
+            return GetSolution().Projects;
+        }
+        
         public EnvDTE.Project GetCurrentProject()
         {
             var serviceProvider = (IServiceProvider)Host;
@@ -251,12 +256,13 @@
         {
             InitConnectionString();
 
+            string solutionPath = Path.GetDirectoryName(GetSolution().FileName) + "\\";
             WriteLine("// This file was automatically generated.");
             WriteLine("// Do not make changes directly to this file - edit the template instead.");
             WriteLine("// ");
             WriteLine("// The following connection settings were used to generate this file");
             WriteLine("// ");
-            WriteLine("//     Configuration file:     \"{0}\"", _configFilePath);
+            WriteLine("//     Configuration file:     \"{0}\"", _configFilePath.Replace(solutionPath, String.Empty));
             WriteLine("//     Connection String Name: \"{0}\"", ConnectionStringName);
             WriteLine("//     Connection String:      \"{0}\"", ZapPassword(ConnectionString));
             WriteLine("");
