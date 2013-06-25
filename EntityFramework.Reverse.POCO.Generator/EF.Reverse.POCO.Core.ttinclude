@@ -2,7 +2,7 @@
 // Copyright © Simon Hughes 2012
 // v1.8.0
 #>
-<#@ template debug="true" hostspecific="true" language="C#" #>
+<#@ template hostspecific="true" language="C#" #>
 <#@ assembly name="EnvDTE" #>
 <#@ assembly name="System.Core" #>
 <#@ assembly name="System.Data" #>
@@ -24,50 +24,28 @@
 <#@ import namespace="System.Windows.Forms" #>
 <#@ output extension=".cs"#>
 <#
-        CodeGenerationTools code = new CodeGenerationTools(this);
+        var code = new CodeGenerationTools(this);
         string Namespace = code.VsNamespaceSuggestion();
         var fileManager = EntityFrameworkTemplateFileManager.Create(this);
 #>
 <#+
         // Settings
-        string ConnectionStringName = "";   // Uses last connection string in config if not specified
+        string ConnectionStringName = "";
         bool IncludeViews = true;
         string DbContextName = "MyDbContext";
         bool MakeClassesPartial = true;
         bool GenerateSeparateFiles = false;
-        
-
-        // WCF
         bool AddWcfDataAttributes = false;
-        // This string is inserted into the  [DataContract] attribute, before the closing square bracket.
         string ExtraWcfDataContractAttributes = "";
-        // Example: "";                                           = [DataContract]
-        //          "(Namespace = \"http://www.contoso.com\")";   = [DataContract(Namespace = "http://www.contoso.com")]
-        //          "(Namespace = Constants.ServiceNamespace)";   = [DataContract(Namespace = Constants.ServiceNamespace)]
-
-        
-        // If there are multiple schema, then the table name is prefixed with the schema, except for dbo.
-        // Ie. dbo.hello will be Hello.
-        //     abc.hello will be AbcHello.
         string SchemaName = null;
-
-
-        // Use the following table/view name regex filters to include or exclude tables/views
-        // Exclude filters are checked first and tables matching filters are removed.
-        //  * If left null, none are excluded.
-        //  * If not null, any tables matching the regex are excluded.
-        // Include filters are checked second.
-        //  * If left null, all are included.
-        //  * If not null, only the tables matching the regex are included.
-        //  Example:    TableFilterExclude = new Regex(".*auto.*");
-        //              TableFilterInclude = new Regex("(.*_fr_.*)|(data_.*)");
-        //              TableFilterInclude = new Regex("^table_name1$|^table_name2$|etc");
         Regex TableFilterExclude = null;
         Regex TableFilterInclude = null;
+        string[] ConfigFilenameSearchOrder = null;
+
 
         private string _connectionString = "";
         private string _providerName = "";
-
+        private string _configFilePath = "";
         private static readonly Regex RxCleanUp = new Regex(@"[^\w\d_]", RegexOptions.Compiled);
 
         private static readonly Func<string, string> CleanUp = (str) =>
@@ -105,7 +83,6 @@
         {
             get
             {
-                InitConnectionString();
                 return _connectionString;
             }
         }
@@ -114,7 +91,6 @@
         {
             get
             {
-                InitConnectionString();
                 return _providerName;
             }
         }
@@ -131,44 +107,36 @@
             return result;
         }
 
-        private string GetConnectionString(ref string connectionStringName, out string providerName)
+        private string GetConnectionString(ref string connectionStringName, out string providerName, out string configFilePath)
         {
-            var currentProject = GetCurrentProject();
-
             providerName = null;
+            configFilePath = String.Empty;
             string result = "";
-            var configFile = new ExeConfigurationFileMap { ExeConfigFilename = GetConfigPath() };
-
-            if(string.IsNullOrEmpty(configFile.ExeConfigFilename))
-                throw new ApplicationException("The project does not contain App.config or Web.config file.");
-
-            var config = ConfigurationManager.OpenMappedExeConfiguration(configFile, ConfigurationUserLevel.None);
-            var connSection = config.ConnectionStrings;
-
-            if(!string.IsNullOrEmpty(connectionStringName))
+            var paths = GetConfigPaths();
+            
+            // Find a configuration file with the named connection string
+            foreach (var path in paths)
             {
+                var configFile = new ExeConfigurationFileMap { ExeConfigFilename = path };
+                var config = ConfigurationManager.OpenMappedExeConfiguration(configFile, ConfigurationUserLevel.None);
+                var connSection = config.ConnectionStrings;
+
+                if (string.IsNullOrEmpty(connectionStringName))
+                    continue;
+
                 // Get the named connection string
                 try
                 {
                     result = connSection.ConnectionStrings[connectionStringName].ConnectionString;
                     providerName = connSection.ConnectionStrings[connectionStringName].ProviderName;
+                    configFilePath = path;
+                    return result;  // found it
                 }
                 catch
                 {
                     result = "There is no connection string name called '" + connectionStringName + "'";
                 }
-                return result;
             }
-
-            // No named connection string, therefore retrieve the last one from config
-            if(connSection.ConnectionStrings.Count > 0)
-            {
-                var connectionString = connSection.ConnectionStrings[connSection.ConnectionStrings.Count - 1];
-                connectionStringName = connectionString.Name;
-                result = connectionString.ConnectionString;
-                providerName = connectionString.ProviderName;
-            }
-
             return result;
         }
 
@@ -177,7 +145,7 @@
             if(!String.IsNullOrEmpty(_connectionString))
                 return;
 
-            _connectionString = GetConnectionString(ref ConnectionStringName, out _providerName);
+            _connectionString = GetConnectionString(ref ConnectionStringName, out _providerName, out _configFilePath);
 
             if(!_connectionString.Contains("|DataDirectory|"))
                 return;
@@ -187,45 +155,83 @@
             _connectionString = _connectionString.Replace("|DataDirectory|", dataFilePath);
         }
 
-
-        public EnvDTE.Project GetCurrentProject()
+        public EnvDTE.Projects GetAllProjects()
         {
-            IServiceProvider _ServiceProvider = (IServiceProvider)Host;
-            if(_ServiceProvider == null)
+            var serviceProvider = (IServiceProvider)Host;
+            if(serviceProvider == null)
                 throw new Exception("Host property returned unexpected value (null)");
 
-            EnvDTE.DTE dte = (EnvDTE.DTE)_ServiceProvider.GetService(typeof(EnvDTE.DTE));
+            var dte = (EnvDTE.DTE)serviceProvider.GetService(typeof(EnvDTE.DTE));
             if(dte == null)
                 throw new Exception("Unable to retrieve EnvDTE.DTE");
 
-            Array activeSolutionProjects = (Array)dte.ActiveSolutionProjects;
+            return dte.Solution.Projects;
+        }
+
+        public EnvDTE.Project GetCurrentProject()
+        {
+            var serviceProvider = (IServiceProvider)Host;
+            if(serviceProvider == null)
+                throw new Exception("Host property returned unexpected value (null)");
+
+            var dte = (EnvDTE.DTE)serviceProvider.GetService(typeof(EnvDTE.DTE));
+            if(dte == null)
+                throw new Exception("Unable to retrieve EnvDTE.DTE");
+
+            var activeSolutionProjects = (Array)dte.ActiveSolutionProjects;
             if(activeSolutionProjects == null)
                 throw new Exception("DTE.ActiveSolutionProjects returned null");
 
-            EnvDTE.Project dteProject = (EnvDTE.Project)activeSolutionProjects.GetValue(0);
+            var dteProject = (EnvDTE.Project)activeSolutionProjects.GetValue(0);
             if(dteProject == null)
                 throw new Exception("DTE.ActiveSolutionProjects[0] returned null");
 
             return dteProject;
         }
 
-        private string GetProjectPath()
+        private string GetProjectPath(EnvDTE.Project project)
         {
-            EnvDTE.Project project = GetCurrentProject();
             var info = new FileInfo(project.FullName);
             return info.Directory == null ? string.Empty : info.Directory.FullName;
         }
 
-        private string GetConfigPath()
+        private List<string> GetConfigPaths()
         {
+            var paths = new List<string>();
+            
+            // Local project first
             EnvDTE.Project project = GetCurrentProject();
-            foreach(EnvDTE.ProjectItem item in project.ProjectItems)
+            paths.AddRange(GetConfigPathsInProject(project));
+
+            // Then other projects next
+            var projects = GetAllProjects();
+            foreach (EnvDTE.Project dteProject in projects)
             {
-                // if it is the app.config file, then open it up
-                if(item.Name.Equals("App.config", StringComparison.InvariantCultureIgnoreCase) || item.Name.Equals("Web.config", StringComparison.InvariantCultureIgnoreCase))
-                    return GetProjectPath() + "\\" + item.Name;
+                paths.AddRange(GetConfigPathsInProject(dteProject));
             }
-            return String.Empty;
+
+            return paths;
+        }
+
+        private List<string> GetConfigPathsInProject(EnvDTE.Project project)
+        {
+            var paths = new List<string>();
+            foreach (string filename in ConfigFilenameSearchOrder)
+            {
+                paths.AddRange(GetConfigPathsInProjectForFile(project, filename));
+            }
+            return paths;
+        }
+
+        private List<string> GetConfigPathsInProjectForFile(EnvDTE.Project project, string filename)
+        {
+            var paths = new List<string>();
+            foreach (EnvDTE.ProjectItem item in project.ProjectItems)
+            {
+                if (item.Name.Equals(filename, StringComparison.InvariantCultureIgnoreCase))
+                    paths.Add(Path.Combine(GetProjectPath(project), item.Name));
+            }
+            return paths;
         }
 
         public string GetDataDirectory()
@@ -250,6 +256,7 @@
             WriteLine("// ");
             WriteLine("// The following connection settings were used to generate this file");
             WriteLine("// ");
+            WriteLine("//     Configuration file:     \"{0}\"", _configFilePath);
             WriteLine("//     Connection String Name: \"{0}\"", ConnectionStringName);
             WriteLine("//     Connection String:      \"{0}\"", ZapPassword(ConnectionString));
             WriteLine("");

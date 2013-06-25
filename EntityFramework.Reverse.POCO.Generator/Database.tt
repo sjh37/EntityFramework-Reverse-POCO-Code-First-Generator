@@ -2,7 +2,12 @@
 <#
     // v1.8.0
     // Settings
-    ConnectionStringName = "MyDbContext";  // Uses last connection string in config if not specified
+    ConnectionStringName = "MyDbContext";  // Searches for a connection string in config files.
+    ConfigFilenameSearchOrder = new[] { "app.config", "web.config", "app.config.transform", "web.config.transform" };
+
+
+
+
     // Namespace = ""; // Override the namespace if you want to
     DbContextName = "MyDbContext";
     MakeClassesPartial = false;
@@ -36,6 +41,7 @@
     //              TableFilterInclude = new Regex("^table_name1$|^table_name2$|etc");
     TableFilterExclude = null;
     TableFilterInclude = null;
+
 
     // Read schema
     var tables = LoadTables();
