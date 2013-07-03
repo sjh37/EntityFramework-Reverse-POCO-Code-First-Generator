@@ -1205,7 +1205,8 @@ FROM    (
 WHERE   NOT ([Extent1].[Name] IN ('EdmMetadata', '__MigrationHistory'))";
 
             private const string ForeignKeySQL = @"
-SELECT  FK.TABLE_NAME AS FK_Table,
+SELECT DISTINCT
+        FK.TABLE_NAME AS FK_Table,
         FK.COLUMN_NAME AS FK_Column,
         PK.TABLE_NAME AS PK_Table,
         PK.COLUMN_NAME AS PK_Column,
@@ -1233,7 +1234,8 @@ FROM    INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS AS C
                    ) PT
             ON PT.TABLE_NAME = PK.TABLE_NAME
 WHERE   PT.COLUMN_NAME = PK.COLUMN_NAME
-ORDER BY FK.TABLE_NAME, FK.COLUMN_NAME";
+ORDER BY FK.TABLE_NAME,
+        FK.COLUMN_NAME";
 
             public SqlServerSchemaReader(DbConnection connection, DbProviderFactory factory) 
                 : base(connection, factory)
@@ -1626,7 +1628,7 @@ ORDER BY FK.TABLE_NAME, FK.COLUMN_NAME";
                     if (ReverseNavigationUniquePropName.Contains(col))
                         continue;
                     ReverseNavigationUniquePropName.Add(col);
-                        return col;
+                    return col;
                 }
 
                 // Give up
