@@ -24,11 +24,6 @@ namespace Scratch
                     Console.WriteLine(table.NameHumanCase);
                     sw.WriteLine(table.NameHumanCase);
 
-                    foreach(var rp in table.ReverseNavigationProperty)
-                    {
-                        Console.WriteLine("  " + rp);
-                        sw.WriteLine("  " + rp);
-                    }
                     foreach(var col in table.Columns)
                     {
                         if(!string.IsNullOrWhiteSpace(col.Entity)) Console.WriteLine("  " + col.Entity);
@@ -38,19 +33,41 @@ namespace Scratch
                             sw.WriteLine("  " + col.EntityFk);
                         }
                     }
+                    if(table.Columns.Count > 0)
+                        Console.WriteLine();
+
+                    foreach(var rp in table.ReverseNavigationProperty)
+                    {
+                        Console.WriteLine("  " + rp);
+                        sw.WriteLine("  " + rp);
+                    }
+                    if(table.ReverseNavigationProperty.Count > 0)
+                        Console.WriteLine();
+
+                    Console.WriteLine("  // Config");
                     foreach(var rc in table.ReverseNavigationConfiguration)
                     {
                         Console.WriteLine("  " + rc);
                         sw.WriteLine("  " + rc);
-                    }
+                    } 
+                    if(table.ReverseNavigationConfiguration.Count > 0)
+                        Console.WriteLine();
+                    
                     foreach(var col in table.Columns)
                     {
-                        if(!string.IsNullOrWhiteSpace(col.Config)) Console.WriteLine("  " + col.Config);
-                        if(!string.IsNullOrWhiteSpace(col.ConfigFk))
-                        {
-                            Console.WriteLine("  " + col.ConfigFk);
-                            sw.WriteLine("  " + col.ConfigFk);
-                        }
+                        if(!string.IsNullOrWhiteSpace(col.Config)) 
+                            Console.WriteLine("  " + col.Config);
+                    }
+                    if(table.Columns.Count > 0)
+                        Console.WriteLine();
+
+                    var fks = table.Columns.Where(col => !string.IsNullOrWhiteSpace(col.ConfigFk)).ToList();
+                    if(fks.Count > 0)
+                        Console.WriteLine("  // FK's");
+                    foreach (var col in fks)
+                    {
+                        Console.WriteLine("  " + col.ConfigFk);
+                        sw.WriteLine("  " + col.ConfigFk);
                     }
                     Console.WriteLine();
                     sw.WriteLine();
@@ -70,7 +87,7 @@ namespace Scratch
 
         // Settings
         string ConnectionStringName = "MyDbContext";   // Uses last connection string in config if not specified
-        string ConnectionString = "Data Source=(local);Initial Catalog=fred;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";   // Uses last connection string in config if not specified
+        string ConnectionString = "Data Source=(local);Initial Catalog=aspnetdb;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";   // Uses last connection string in config if not specified
         bool IncludeViews = true;
         string DbContextName = "MyDbContext";
         bool MakeClassesPartial = true;
@@ -110,14 +127,14 @@ namespace Scratch
         {
             // Replace punctuation and symbols in variable names as these are not allowed.
             int len = str.Length;
-            if (len == 0)
+            if(len == 0)
                 return str;
             var sb = new StringBuilder();
             bool replacedCharacter = false;
-            for(int n = 0; n < len; ++n )
+            for(int n = 0; n < len; ++n)
             {
                 char c = str[n];
-                if (c != '_' && (char.IsSymbol(c) || char.IsPunctuation(c)))
+                if(c != '_' && (char.IsSymbol(c) || char.IsPunctuation(c)))
                 {
                     int ascii = c;
                     sb.AppendFormat("{0}", ascii);
@@ -126,9 +143,9 @@ namespace Scratch
                 }
                 sb.Append(c);
             }
-            if (replacedCharacter)
+            if(replacedCharacter)
                 str = sb.ToString();
-            
+
             // Remove non alphanumerics
             str = RxCleanUp.Replace(str, "");
             if(char.IsDigit(str[0]))
@@ -324,10 +341,10 @@ namespace Scratch
                     if(IsPrimaryKey && !IsIdentity && !IsStoreGenerated)
                         databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.None)";
                 }
-                Config = string.Format("Property(x => x.{0}).HasColumnName(\"{1}\"){2}{3}{4}{5};", PropertyNameHumanCase, Name, 
+                Config = string.Format("Property(x => x.{0}).HasColumnName(\"{1}\"){2}{3}{4}{5};", PropertyNameHumanCase, Name,
                                             (IsNullable) ? ".IsOptional()" : ".IsRequired()",
                                             (MaxLength > 0) ? ".HasMaxLength(" + MaxLength + ")" : string.Empty,
-                                            (Scale > 0) ? ".HasPrecision(" + Precision + "," + Scale + ")" : string.Empty, 
+                                            (Scale > 0) ? ".HasPrecision(" + Precision + "," + Scale + ")" : string.Empty,
                                             databaseGeneratedOption);
             }
 
@@ -1108,7 +1125,8 @@ FROM    (
 WHERE   NOT ([Extent1].[Name] IN ('EdmMetadata', '__MigrationHistory'))";
 
             private const string ForeignKeySQL = @"
-SELECT  FK.TABLE_NAME AS FK_Table,
+SELECT DISTINCT
+        FK.TABLE_NAME AS FK_Table,
         FK.COLUMN_NAME AS FK_Column,
         PK.TABLE_NAME AS PK_Table,
         PK.COLUMN_NAME AS PK_Column,
@@ -1136,7 +1154,8 @@ FROM    INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS AS C
                    ) PT
             ON PT.TABLE_NAME = PK.TABLE_NAME
 WHERE   PT.COLUMN_NAME = PK.COLUMN_NAME
-ORDER BY FK.TABLE_NAME, FK.COLUMN_NAME";
+ORDER BY FK.TABLE_NAME,
+        FK.COLUMN_NAME";
 
             public SqlServerSchemaReader(DbConnection connection, DbProviderFactory factory)
                 : base(connection, factory)
@@ -1238,11 +1257,6 @@ ORDER BY FK.TABLE_NAME, FK.COLUMN_NAME";
                             fkList.Add(new ForeignKey(fkTableName, fkSchema, pkTableName, pkSchema, fkColumn, pkColumn, constraintName));
                         }
                     }
-                }
-
-                foreach(var data in fkList.GroupBy(x => x.ConstraintName).Where(grp => grp.Count() > 1))
-                {
-                    fkList.RemoveAll(x => x.ConstraintName == data.Key);
                 }
 
                 foreach(var foreignKey in fkList)
@@ -1353,7 +1367,7 @@ ORDER BY FK.TABLE_NAME, FK.COLUMN_NAME";
                     col.PropertyName = "_" + col.PropertyName;
 
                 col.PropertyNameHumanCase = Inflector.ToTitleCase(col.PropertyName).Replace(" ", "");
-                if (col.PropertyNameHumanCase == string.Empty)
+                if(col.PropertyNameHumanCase == string.Empty)
                     col.PropertyNameHumanCase = col.PropertyName;
 
                 // Make sure property name doesn't clash with class name

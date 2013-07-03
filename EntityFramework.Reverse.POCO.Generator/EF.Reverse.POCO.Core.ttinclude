@@ -1,6 +1,6 @@
 <#
 // Copyright © Simon Hughes 2012
-// v1.9.1
+// v1.9.2
 #>
 <#@ template hostspecific="true" language="C#" #>
 <#@ assembly name="EnvDTE" #>
@@ -1339,11 +1339,6 @@ ORDER BY FK.TABLE_NAME,
                     }
                 }
                 
-                foreach(var data in fkList.GroupBy(x => x.ConstraintName).Where(grp => grp.Count() > 1))
-                {
-                    fkList.RemoveAll(x => x.ConstraintName == data.Key);
-                }
-
                 foreach (var foreignKey in fkList)
                 {
                     Table fkTable = result.GetTable(foreignKey.FkTableName, foreignKey.FkSchema);
