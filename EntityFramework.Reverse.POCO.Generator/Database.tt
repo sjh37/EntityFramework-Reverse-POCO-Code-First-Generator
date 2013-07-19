@@ -1,6 +1,6 @@
 ﻿<#@ include file="EF.Reverse.POCO.Core.ttinclude" #>
 <#
-    // v1.9.2
+    // v1.10.0
     // Settings
     ConnectionStringName = "MyDbContext";  // Searches for this connection string in config files listed below
     ConfigFilenameSearchOrder = new[] { "app.config", "web.config", "app.config.transform", "web.config.transform" }; // Add more here if required
