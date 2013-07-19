@@ -35,6 +35,7 @@
         string DbContextName = "MyDbContext";
         bool MakeClassesPartial = true;
         bool GenerateSeparateFiles = false;
+        bool UseCamelCase = true;
         bool AddWcfDataAttributes = false;
         string ExtraWcfDataContractAttributes = "";
         string SchemaName = null;
@@ -292,7 +293,7 @@
                     conn.Open();
 
                     var reader = new SqlServerSchemaReader(conn, factory) { Outer = this };
-                    var result = reader.ReadSchema(TableFilterExclude);
+                    var result = reader.ReadSchema(TableFilterExclude, UseCamelCase);
 
                     // Remove unrequired tables/views
                     for(int i = result.Count - 1; i >= 0; i--)
@@ -318,7 +319,7 @@
                         }
                     }
 
-                    result = reader.ReadForeignKeys(result);
+                    result = reader.ReadForeignKeys(result, UseCamelCase);
                     result.SetPrimaryKeys();
 
                     conn.Close();
@@ -923,8 +924,8 @@
             }
 
             public GeneratedTextTransformation Outer;
-            public abstract Tables ReadSchema(Regex TableFilterExclude);
-            public abstract Tables ReadForeignKeys(Tables result);
+            public abstract Tables ReadSchema(Regex TableFilterExclude, bool useCamelCase);
+            public abstract Tables ReadForeignKeys(Tables result, bool useCamelCase);
 
             protected void WriteLine(string o)
             {
@@ -1242,7 +1243,7 @@ ORDER BY FK.TABLE_NAME,
             {
             }
 
-            public override Tables ReadSchema(Regex TableFilterExclude)
+            public override Tables ReadSchema(Regex TableFilterExclude, bool useCamelCase)
             {
                 var result = new Tables();
                 if(Cmd == null)
@@ -1281,20 +1282,20 @@ ORDER BY FK.TABLE_NAME,
                                         HasNullableColumns = false
                                     };
                                     table.CleanName = CleanUp(table.Name);
-                                    table.ClassName = Inflector.MakeSingular(table.CleanName);
-                                    table.NameHumanCase = Inflector.ToTitleCase(table.Name).Replace(" ", "").Replace("$", "");
+                                    table.ClassName = useCamelCase ? Inflector.MakeSingular(table.CleanName) : table.CleanName;
+                                    table.NameHumanCase = (useCamelCase ? Inflector.ToTitleCase(table.Name) : table.Name).Replace(" ", "").Replace("$", "");
                                     if(string.Compare(table.Schema, "dbo", StringComparison.OrdinalIgnoreCase) != 0)
                                         table.NameHumanCase = table.Schema + "_" + table.NameHumanCase;
 
                                     // Check for table name clashes
-                                    if(result.Find(x => x.NameHumanCase == table.NameHumanCase) != null)
+                                    if(useCamelCase && result.Find(x => x.NameHumanCase == table.NameHumanCase) != null)
                                         table.NameHumanCase += "1";
 
                                     result.Add(table);
                                 }
                             }
 
-                            table.Columns.Add(CreateColumn(rdr, rxClean, table));
+                            table.Columns.Add(CreateColumn(rdr, rxClean, table, useCamelCase));
                         }
                     }
                 }
@@ -1313,7 +1314,7 @@ ORDER BY FK.TABLE_NAME,
                 return result;
             }
 
-            public override Tables ReadForeignKeys(Tables result)
+            public override Tables ReadForeignKeys(Tables result, bool useCamelCase)
             {
                 if(Cmd == null)
                     return result;
@@ -1359,7 +1360,7 @@ ORDER BY FK.TABLE_NAME,
 
                     fkTable.HasForeignKey = true;
 
-                    string pkTableHumanCase = Inflector.ToTitleCase(foreignKey.PkTableName).Replace(" ", "").Replace("$", "");
+                    string pkTableHumanCase = (useCamelCase ? Inflector.ToTitleCase(foreignKey.PkTableName) : foreignKey.PkTableName).Replace(" ", "").Replace("$", "");
                     if(string.Compare(foreignKey.PkSchema, "dbo", StringComparison.OrdinalIgnoreCase) != 0)
                         pkTableHumanCase = foreignKey.PkSchema + "_" + pkTableHumanCase;
 
@@ -1418,7 +1419,7 @@ ORDER BY FK.TABLE_NAME,
                 }
             }
 
-            private static Column CreateColumn(IDataRecord rdr, Regex rxClean, Table table)
+            private static Column CreateColumn(IDataRecord rdr, Regex rxClean, Table table, bool useCamelCase)
             {
                 if(rdr == null)
                     throw new ArgumentNullException("rdr");
@@ -1446,7 +1447,7 @@ ORDER BY FK.TABLE_NAME,
                 if(col.PropertyName == table.NameHumanCase)
                     col.PropertyName = "_" + col.PropertyName;
 
-                col.PropertyNameHumanCase = Inflector.ToTitleCase(col.PropertyName).Replace(" ", "");
+                col.PropertyNameHumanCase = (useCamelCase ? Inflector.ToTitleCase(col.PropertyName) : col.PropertyName).Replace(" ", "");
                 if (col.PropertyNameHumanCase == string.Empty)
                     col.PropertyNameHumanCase = col.PropertyName;
 

@@ -11,6 +11,7 @@
     DbContextName = "MyDbContext";
     MakeClassesPartial = false;
     GenerateSeparateFiles = false;
+    UseCamelCase = true;    // This will rename the tables & fields to use CamelCase. If false table & field names will be left alone.
     
 
     // WCF
@@ -25,6 +26,7 @@
     // If there are multiple schema, then the table name is prefixed with the schema, except for dbo.
     // Ie. dbo.hello will be Hello.
     //     abc.hello will be AbcHello.
+    // To only include a single schema, specify it below.
     SchemaName = null;
     
 
