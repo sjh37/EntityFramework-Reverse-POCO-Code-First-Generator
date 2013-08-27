@@ -313,7 +313,7 @@
                             result.RemoveAt(i);
                             continue;
                         }
-                        if(string.IsNullOrEmpty(result[i].PrimaryKeyNameHumanCase()))
+                        if(!result[i].IsView && string.IsNullOrEmpty(result[i].PrimaryKeyNameHumanCase()))
                         {
                             result.RemoveAt(i);
                         }
