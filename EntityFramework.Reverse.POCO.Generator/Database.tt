@@ -7,7 +7,26 @@
     // The config files are searched for in the local project first, then the whole solution second.
 
 
-    // Namespace = ""; // Override the namespace if you want to
+    // Add the elements that should be generated when the template is executed.
+    // Multiple projects can now be used that seperate the different concerns.
+    ElementsToGenerate =  Elements.Poco | Elements.Context | Elements.UnitOfWork | Elements.PocoConfiguration;
+
+    // Use these namespaces to specify where the different elements of the template are being generated.
+    PocoNamespace = "";
+    ContextNamespace = "";
+    UnitOfWorkNamespace = "";	
+    PocoConfigurationNamespace = "";
+
+    // Example of separate concerns:
+    //PocoNamespace = "MyProject.Model";
+    //ContextNamespace = "MyProject.Data";
+    //UnitOfWorkNamespace = "MyProject.Data";	
+    //PocoConfigurationNamespace = "MyProject.Data";
+    //ElementsToGenerate = Elements.Poco;   // Model Project
+    //ElementsToGenerate = Elements.Context | Elements.UnitOfWork | Elements.PocoConfiguration; //  Data project
+
+    
+    // Namespace = ""; // Override the default namespace here
     DbContextName = "MyDbContext";
     MakeClassesPartial = false;
     GenerateSeparateFiles = false;
@@ -29,7 +48,7 @@
     //     abc.hello will be AbcHello.
     // To only include a single schema, specify it below.
     SchemaName = null;
-    
+    PrependSchemaName = true;   // Control if the schema name is prepended to the table name
 
     // Use the following table/view name regex filters to include or exclude tables/views
     // Exclude filters are checked first and tables matching filters are removed.

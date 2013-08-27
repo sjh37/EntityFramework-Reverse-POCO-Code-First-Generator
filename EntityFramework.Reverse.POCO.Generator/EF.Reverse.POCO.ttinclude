@@ -6,21 +6,47 @@ fileManager.StartHeader();
 // ReSharper disable RedundantUsingDirective
 // ReSharper disable DoNotCallOverridableMethodsInConstructor
 // ReSharper disable InconsistentNaming
+// ReSharper disable PartialTypeWithSinglePart
 
 using System;
+<# if(ElementsToGenerate.HasFlag(Elements.Poco)){ #>
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Data.Entity;
-using System.Data.Entity.ModelConfiguration;
-<# if(AddWcfDataAttributes) { #>using System.Runtime.Serialization;
 <# } #>
-
+<# if(ElementsToGenerate.HasFlag(Elements.Context) || ElementsToGenerate.HasFlag(Elements.Poco)){ #>
+using System.ComponentModel.DataAnnotations.Schema;
+<# } #>
+<# if(ElementsToGenerate.HasFlag(Elements.Context) || ElementsToGenerate.HasFlag(Elements.UnitOfWork)){ #>
+using System.Data.Entity;
+<# } #>
+<# if(ElementsToGenerate.HasFlag(Elements.PocoConfiguration)){ #>
+using System.Data.Entity.ModelConfiguration;
+<# } #>
+<# if(AddWcfDataAttributes){ #>
+using System.Runtime.Serialization;
+<# } #>
+<# if((ElementsToGenerate.HasFlag(Elements.PocoConfiguration) || ElementsToGenerate.HasFlag(Elements.Context) || ElementsToGenerate.HasFlag(Elements.UnitOfWork)) && 
+      (!ElementsToGenerate.HasFlag(Elements.Poco) && !string.IsNullOrWhiteSpace(PocoNamespace))){ #>
+using <#= PocoNamespace #>;
+<# } #>
+<# 	if(	ElementsToGenerate.HasFlag(Elements.PocoConfiguration) && 
+        (!ElementsToGenerate.HasFlag(Elements.Context) && !string.IsNullOrWhiteSpace(ContextNamespace))){ #>
+using <#= ContextNamespace #>;
+<# } #>
+<# 	if( ElementsToGenerate.HasFlag(Elements.Context) && 
+        (!ElementsToGenerate.HasFlag(Elements.UnitOfWork) && !string.IsNullOrWhiteSpace(UnitOfWorkNamespace))){ #>
+using <#= UnitOfWorkNamespace #>;
+<# } #>
+<# 	if( ElementsToGenerate.HasFlag(Elements.Context) && 
+        (!ElementsToGenerate.HasFlag(Elements.PocoConfiguration) && !string.IsNullOrWhiteSpace(PocoConfigurationNamespace))){ #>
+using <#= PocoConfigurationNamespace #>;
+<# } #>
 //using DatabaseGeneratedOption = System.ComponentModel.DataAnnotations.DatabaseGeneratedOption;
 
 namespace <#= Namespace #>
 {
-<# fileManager.StartNewFile("I" + DbContextName + ".cs"); #>
-<# if(!GenerateSeparateFiles) { #>
+<# if(ElementsToGenerate.HasFlag(Elements.UnitOfWork)){ 
+       fileManager.StartNewFile("I" + DbContextName + ".cs"); 
+       if(!GenerateSeparateFiles) { #>
     // ************************************************************************
     // Unit of work
 <# } #>
@@ -36,7 +62,9 @@ foreach(Table tbl in from t in tables.OrderBy(x => x.NameHumanCase) select t)
         int SaveChanges();
     }
 
-<# fileManager.StartNewFile(DbContextName + ".cs"); #>
+<# }
+    if(ElementsToGenerate.HasFlag(Elements.Context)){ 
+    fileManager.StartNewFile(DbContextName + ".cs"); #>
 <# if(!GenerateSeparateFiles) { #>
     // ************************************************************************
     // Database context
@@ -76,7 +104,9 @@ foreach(Table tbl in from t in tables.OrderBy(x => x.NameHumanCase) select t)
 <# } #>
         }
     }
-<# if(!GenerateSeparateFiles) { #>
+<# }
+ if(ElementsToGenerate.HasFlag(Elements.Poco)){
+ if(!GenerateSeparateFiles) { #>
 
     // ************************************************************************
     // POCO classes
@@ -101,8 +131,7 @@ foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal))
         <#=col.Entity #>
 <# if(AddWcfDataAttributes) { #>
 
-<# } #>
-<# } #>
+<# } } #>
 <#
 if(tbl.ReverseNavigationProperty.Count() > 0)
 {
@@ -147,8 +176,9 @@ foreach(string s in tbl.ReverseNavigationCtor)
 <# } #>
     }
 
-<# } #>
-<# if(!GenerateSeparateFiles) { #>
+<# } }
+if(ElementsToGenerate.HasFlag(Elements.PocoConfiguration)){
+if(!GenerateSeparateFiles) { #>
 
     // ************************************************************************
     // POCO Configuration
@@ -197,7 +227,7 @@ foreach(Column col in from c in tbl.Columns.OrderBy(x => x.Ordinal) where c.Conf
         }
     }
 
-<# } #>
+<# } } #>
 <# fileManager.StartFooter(); #>
 }
 <# fileManager.EndBlock();
