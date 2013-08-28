@@ -49,13 +49,13 @@ namespace Scratch
                     {
                         Console.WriteLine("  " + rc);
                         sw.WriteLine("  " + rc);
-                    } 
+                    }
                     if(table.ReverseNavigationConfiguration.Count > 0)
                         Console.WriteLine();
-                    
+
                     foreach(var col in table.Columns)
                     {
-                        if(!string.IsNullOrWhiteSpace(col.Config)) 
+                        if(!string.IsNullOrWhiteSpace(col.Config))
                             Console.WriteLine("  " + col.Config);
                     }
                     if(table.Columns.Count > 0)
@@ -64,7 +64,7 @@ namespace Scratch
                     var fks = table.Columns.Where(col => !string.IsNullOrWhiteSpace(col.ConfigFk)).ToList();
                     if(fks.Count > 0)
                         Console.WriteLine("  // FK's");
-                    foreach (var col in fks)
+                    foreach(var col in fks)
                     {
                         Console.WriteLine("  " + col.ConfigFk);
                         sw.WriteLine("  " + col.ConfigFk);
@@ -91,16 +91,27 @@ namespace Scratch
         bool IncludeViews = true;
         string DbContextName = "MyDbContext";
         bool MakeClassesPartial = true;
-
-
-        // WCF
+        bool GenerateSeparateFiles = false;
+        bool UseCamelCase = true;
         bool AddWcfDataAttributes = false;
-        // This string is inserted into the  [DataContract] attribute, before the closing square bracket.
         string ExtraWcfDataContractAttributes = "";
-        // Example: "";                                           = [DataContract]
-        //          "(Namespace = \"http://www.contoso.com\")";   = [DataContract(Namespace = "http://www.contoso.com")]
-        //          "(Namespace = Constants.ServiceNamespace)";   = [DataContract(Namespace = Constants.ServiceNamespace)]
+        bool PrependSchemaName = true;
+        string[] ConfigFilenameSearchOrder = null;
+        private string _connectionString = "";
+        private string _providerName = "";
+        private string _configFilePath = "";
 
+        // Settings to allow selective code generation
+        [Flags]
+        private enum Elements
+        {
+            Poco = 1,
+            Context = 2,
+            UnitOfWork = 4,
+            PocoConfiguration = 8
+        };
+        Elements ElementsToGenerate = Elements.Poco | Elements.Context | Elements.UnitOfWork | Elements.PocoConfiguration;
+        string PocoNamespace, ContextNamespace, UnitOfWorkNamespace, PocoConfigurationNamespace = "";
 
         // If there are multiple schema, then the table name is prefixed with the schema, except for dbo.
         // Ie. dbo.hello will be Hello.
@@ -212,7 +223,7 @@ namespace Scratch
                     conn.Open();
 
                     var reader = new SqlServerSchemaReader(conn, factory) { Outer = this };
-                    var result = reader.ReadSchema(TableFilterExclude);
+                    var result = reader.ReadSchema(TableFilterExclude, UseCamelCase, PrependSchemaName);
 
                     // Remove unrequired tables/views
                     for(int i = result.Count - 1; i >= 0; i--)
@@ -232,14 +243,24 @@ namespace Scratch
                             result.RemoveAt(i);
                             continue;
                         }
-                        if(string.IsNullOrEmpty(result[i].PrimaryKeyNameHumanCase()))
+                        if(!result[i].IsView && string.IsNullOrEmpty(result[i].PrimaryKeyNameHumanCase()))
                         {
                             result.RemoveAt(i);
                         }
                     }
 
-                    result = reader.ReadForeignKeys(result);
+                    result = reader.ReadForeignKeys(result, UseCamelCase, PrependSchemaName);
                     result.SetPrimaryKeys();
+
+                    // Remove views that only consist of all nullable fields.
+                    // I.e. they do not contain any primary key, and therefore cannot be used by EF
+                    for(int i = result.Count - 1; i >= 0; i--)
+                    {
+                        if(string.IsNullOrEmpty(result[i].PrimaryKeyNameHumanCase()))
+                        {
+                            result.RemoveAt(i);
+                        }
+                    }
 
                     conn.Close();
                     return result;
@@ -843,8 +864,8 @@ namespace Scratch
             }
 
             public GeneratedTextTransformation Outer;
-            public abstract Tables ReadSchema(Regex TableFilterExclude);
-            public abstract Tables ReadForeignKeys(Tables result);
+            public abstract Tables ReadSchema(Regex TableFilterExclude, bool useCamelCase, bool prependSchemaName);
+            public abstract Tables ReadForeignKeys(Tables result, bool useCamelCase, bool prependSchemaName);
 
             protected void WriteLine(string o)
             {
@@ -1162,7 +1183,7 @@ ORDER BY FK.TABLE_NAME,
             {
             }
 
-            public override Tables ReadSchema(Regex TableFilterExclude)
+            public override Tables ReadSchema(Regex TableFilterExclude, bool useCamelCase, bool prependSchemaName)
             {
                 var result = new Tables();
                 if(Cmd == null)
@@ -1201,20 +1222,20 @@ ORDER BY FK.TABLE_NAME,
                                         HasNullableColumns = false
                                     };
                                     table.CleanName = CleanUp(table.Name);
-                                    table.ClassName = Inflector.MakeSingular(table.CleanName);
-                                    table.NameHumanCase = Inflector.ToTitleCase(table.Name).Replace(" ", "").Replace("$", "");
-                                    if(string.Compare(table.Schema, "dbo", StringComparison.OrdinalIgnoreCase) != 0)
+                                    table.ClassName = useCamelCase ? Inflector.MakeSingular(table.CleanName) : table.CleanName;
+                                    table.NameHumanCase = (useCamelCase ? Inflector.ToTitleCase(table.Name) : table.Name).Replace(" ", "").Replace("$", "");
+                                    if((string.Compare(table.Schema, "dbo", StringComparison.OrdinalIgnoreCase) != 0) && prependSchemaName)
                                         table.NameHumanCase = table.Schema + "_" + table.NameHumanCase;
 
                                     // Check for table name clashes
-                                    if(result.Find(x => x.NameHumanCase == table.NameHumanCase) != null)
+                                    if(useCamelCase && result.Find(x => x.NameHumanCase == table.NameHumanCase) != null)
                                         table.NameHumanCase += "1";
 
                                     result.Add(table);
                                 }
                             }
 
-                            table.Columns.Add(CreateColumn(rdr, rxClean, table));
+                            table.Columns.Add(CreateColumn(rdr, rxClean, table, useCamelCase));
                         }
                     }
                 }
@@ -1233,7 +1254,7 @@ ORDER BY FK.TABLE_NAME,
                 return result;
             }
 
-            public override Tables ReadForeignKeys(Tables result)
+            public override Tables ReadForeignKeys(Tables result, bool useCamelCase, bool prependSchemaName)
             {
                 if(Cmd == null)
                     return result;
@@ -1279,8 +1300,8 @@ ORDER BY FK.TABLE_NAME,
 
                     fkTable.HasForeignKey = true;
 
-                    string pkTableHumanCase = Inflector.ToTitleCase(foreignKey.PkTableName).Replace(" ", "").Replace("$", "");
-                    if(string.Compare(foreignKey.PkSchema, "dbo", StringComparison.OrdinalIgnoreCase) != 0)
+                    string pkTableHumanCase = (useCamelCase ? Inflector.ToTitleCase(foreignKey.PkTableName) : foreignKey.PkTableName).Replace(" ", "").Replace("$", "");
+                    if(string.Compare(foreignKey.PkSchema, "dbo", StringComparison.OrdinalIgnoreCase) != 0 && prependSchemaName)
                         pkTableHumanCase = foreignKey.PkSchema + "_" + pkTableHumanCase;
 
                     string pkPropName = fkTable.GetUniqueColumnPropertyName(pkTableHumanCase);
@@ -1338,7 +1359,7 @@ ORDER BY FK.TABLE_NAME,
                 }
             }
 
-            private static Column CreateColumn(IDataRecord rdr, Regex rxClean, Table table)
+            private static Column CreateColumn(IDataRecord rdr, Regex rxClean, Table table, bool useCamelCase)
             {
                 if(rdr == null)
                     throw new ArgumentNullException("rdr");
@@ -1366,7 +1387,7 @@ ORDER BY FK.TABLE_NAME,
                 if(col.PropertyName == table.NameHumanCase)
                     col.PropertyName = "_" + col.PropertyName;
 
-                col.PropertyNameHumanCase = Inflector.ToTitleCase(col.PropertyName).Replace(" ", "");
+                col.PropertyNameHumanCase = (useCamelCase ? Inflector.ToTitleCase(col.PropertyName) : col.PropertyName).Replace(" ", "");
                 if(col.PropertyNameHumanCase == string.Empty)
                     col.PropertyNameHumanCase = col.PropertyName;
 
