@@ -1544,6 +1544,7 @@ ORDER BY FK.TABLE_NAME,
                     case "image":
                     case "binary":
                     case "varbinary":
+                    case "varbinary(max)":
                     case "timestamp":
                         sysType = "byte[]";
                         break;
