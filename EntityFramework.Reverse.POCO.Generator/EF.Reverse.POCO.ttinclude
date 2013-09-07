@@ -40,7 +40,18 @@ using <#= UnitOfWorkNamespace #>;
         (!ElementsToGenerate.HasFlag(Elements.PocoConfiguration) && !string.IsNullOrWhiteSpace(PocoConfigurationNamespace))){ #>
 using <#= PocoConfigurationNamespace #>;
 <# } #>
+<# 	if(	ElementsToGenerate.HasFlag(Elements.PocoConfiguration)){
+        switch (TargetFrameworkVersion)
+        {
+            case "4.0":#>
+using DatabaseGeneratedOption = System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption;
+<#				break;
+            default: #>
 //using DatabaseGeneratedOption = System.ComponentModel.DataAnnotations.DatabaseGeneratedOption;
+<#				break;
+        }
+    }    
+#>
 
 namespace <#= Namespace #>
 {
@@ -86,11 +97,13 @@ foreach(Table tbl in from t in tables.OrderBy(x => x.NameHumanCase) select t)
         public <#=DbContextName#>()
             : base("Name=<#=ConnectionStringName#>")
         {
-        }
+			<#if(MakeClassesPartial) {#>InitializePartial();
+<#}#>        }
 
         public <#=DbContextName#>(string connectionString) : base(connectionString)
         {
-        }
+			<#if(MakeClassesPartial) {#>InitializePartial();
+<#}#>        }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -102,7 +115,14 @@ foreach(Table tbl in from t in tables.OrderBy(x => x.NameHumanCase) select t)
 #>
             modelBuilder.Configurations.Add(new <#=tbl.NameHumanCase#>Configuration());
 <# } #>
+			<#if(MakeClassesPartial) {#>OnModelCreatingPartial();
+<#}#>
         }
+
+<#if(MakeClassesPartial) {#>
+		partial void InitializePartial();
+		partial void OnModelCreatingPartial();
+<#}#>
     }
 <# }
  if(ElementsToGenerate.HasFlag(Elements.Poco)){
@@ -171,9 +191,13 @@ foreach(string s in tbl.ReverseNavigationCtor)
 {
 #>
             <#=s #>
-<# } #>
-        }
-<# } #>
+<# } 
+if(MakeClassesPartial) {#>
+			InitializePartial();
+<#}#>        }
+		<#if(MakeClassesPartial) {#>partial void InitializePartial();
+<#}#>
+<#} #>
     }
 
 <# } }
@@ -224,8 +248,11 @@ foreach(Column col in from c in tbl.Columns.OrderBy(x => x.Ordinal) where c.Conf
 #>
             <#=col.ConfigFk #>
 <# } } #>
+			InitializePartial();
         }
-    }
+<#if(MakeClassesPartial) {#>
+		partial void InitializePartial();
+<#}#>    }
 
 <# } } #>
 <# fileManager.StartFooter(); #>
