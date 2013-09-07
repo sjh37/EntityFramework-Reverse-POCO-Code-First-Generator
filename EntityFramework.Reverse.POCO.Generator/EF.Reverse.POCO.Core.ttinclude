@@ -35,7 +35,7 @@
         string DbContextName = "MyDbContext";
         bool MakeClassesPartial = true;
         bool GenerateSeparateFiles = false;
-        string FileExtension = ".cs"
+        string FileExtension = ".cs";
         bool UseCamelCase = true;
         bool AddWcfDataAttributes = false;
         string ExtraWcfDataContractAttributes = "";
