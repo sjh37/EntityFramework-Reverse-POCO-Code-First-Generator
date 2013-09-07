@@ -45,7 +45,7 @@ using <#= PocoConfigurationNamespace #>;
 namespace <#= Namespace #>
 {
 <# if(ElementsToGenerate.HasFlag(Elements.UnitOfWork)){ 
-       fileManager.StartNewFile("I" + DbContextName + ".cs"); 
+       fileManager.StartNewFile("I" + DbContextName + FileExtension); 
        if(!GenerateSeparateFiles) { #>
     // ************************************************************************
     // Unit of work
@@ -64,7 +64,7 @@ foreach(Table tbl in from t in tables.OrderBy(x => x.NameHumanCase) select t)
 
 <# }
     if(ElementsToGenerate.HasFlag(Elements.Context)){ 
-    fileManager.StartNewFile(DbContextName + ".cs"); #>
+    fileManager.StartNewFile(DbContextName + FileExtension); #>
 <# if(!GenerateSeparateFiles) { #>
     // ************************************************************************
     // Database context
@@ -116,7 +116,7 @@ foreach(Table tbl in from t in tables.OrderBy(x => x.NameHumanCase) select t)
 foreach(Table tbl in from t in tables.OrderBy(x => x.NameHumanCase) select t)
 {
 #>
-<# fileManager.StartNewFile(tbl.NameHumanCase + ".cs"); #>
+<# fileManager.StartNewFile(tbl.NameHumanCase + FileExtension); #>
     // <#=tbl.Name#>
 <# if(AddWcfDataAttributes) { #>    [DataContract<#=ExtraWcfDataContractAttributes#>]
 <# } #>
@@ -188,7 +188,7 @@ if(!GenerateSeparateFiles) { #>
 foreach(Table tbl in tables.OrderBy(x => x.NameHumanCase))
 {
 #>
-<# fileManager.StartNewFile(tbl.NameHumanCase + "Configuration.cs"); #>
+<# fileManager.StartNewFile(tbl.NameHumanCase + "Configuration" + FileExtension); #>
     // <#=tbl.Name#>
     internal <# if(MakeClassesPartial) { #>partial <# } #>class <#=tbl.NameHumanCase#>Configuration : EntityTypeConfiguration<<#=tbl.NameHumanCase#>>
     {

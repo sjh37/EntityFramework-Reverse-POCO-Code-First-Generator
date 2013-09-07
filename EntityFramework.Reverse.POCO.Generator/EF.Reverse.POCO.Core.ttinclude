@@ -30,11 +30,12 @@
 #>
 <#+
         // Settings
-        string ConnectionStringName = "";
+        string ConnectionStringName = "";        
         bool IncludeViews = true;
         string DbContextName = "MyDbContext";
         bool MakeClassesPartial = true;
         bool GenerateSeparateFiles = false;
+        string FileExtension = ".cs"
         bool UseCamelCase = true;
         bool AddWcfDataAttributes = false;
         string ExtraWcfDataContractAttributes = "";
