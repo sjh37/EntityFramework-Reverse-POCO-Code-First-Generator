@@ -113,6 +113,17 @@ namespace Scratch
         Elements ElementsToGenerate = Elements.Poco | Elements.Context | Elements.UnitOfWork | Elements.PocoConfiguration;
         string PocoNamespace, ContextNamespace, UnitOfWorkNamespace, PocoConfigurationNamespace = "";
 
+        // Settings to allow TargetFramework checks
+        static string TargetFrameworkVersion = null;
+        Func<string, bool> IsSupportedFrameworkVersion = (string frameworkVersion) =>
+        {
+            if (!string.IsNullOrEmpty(TargetFrameworkVersion))
+            {
+                return String.Compare(TargetFrameworkVersion, frameworkVersion) >= 0;
+            }
+            return true;
+        };
+
         // If there are multiple schema, then the table name is prefixed with the schema, except for dbo.
         // Ie. dbo.hello will be Hello.
         //     abc.hello will be AbcHello.

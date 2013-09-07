@@ -12,7 +12,7 @@ using System;
 <# if(ElementsToGenerate.HasFlag(Elements.Poco)){ #>
 using System.Collections.Generic;
 <# } #>
-<# if(ElementsToGenerate.HasFlag(Elements.Context) || ElementsToGenerate.HasFlag(Elements.Poco)){ #>
+<# if((ElementsToGenerate.HasFlag(Elements.Context) || ElementsToGenerate.HasFlag(Elements.Poco)) && IsSupportedFrameworkVersion("4.5")){ #>
 using System.ComponentModel.DataAnnotations.Schema;
 <# } #>
 <# if(ElementsToGenerate.HasFlag(Elements.Context) || ElementsToGenerate.HasFlag(Elements.UnitOfWork)){ #>
