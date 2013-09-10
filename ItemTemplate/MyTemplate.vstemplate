@@ -9,7 +9,7 @@
         <Icon>__TemplateIcon.ico</Icon>
         <PreviewImage>__PreviewImage.png</PreviewImage>
         <RequiredFrameworkVersion>4.0</RequiredFrameworkVersion>
-        <Version>1.11.0</Version>
+        <Version>1.12.0</Version>
     </TemplateData>
     <TemplateContent>
         <References>
