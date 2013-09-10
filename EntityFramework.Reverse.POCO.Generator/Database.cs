@@ -13,6 +13,7 @@
 // ReSharper disable DoNotCallOverridableMethodsInConstructor
 // ReSharper disable InconsistentNaming
 // ReSharper disable PartialTypeWithSinglePart
+// ReSharper disable PartialMethodWithSinglePart
 
 using System;
 using System.Collections.Generic;
