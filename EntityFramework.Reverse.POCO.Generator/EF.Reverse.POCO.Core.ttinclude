@@ -138,6 +138,15 @@
             configFilePath = String.Empty;
             string result = "";
             var paths = GetConfigPaths();
+            if (!paths.Any())   // JRoselle - lookup function if ConfigPaths fails
+            {
+                var sln = GetSolution();
+                paths.AddRange(
+                    ConfigFilenameSearchOrder
+                    .Select(sln.FindProjectItem)
+                    .Where(item => item != null)
+                    .Select(item => item.FileNames[0]));
+            }
 
             // Find a configuration file with the named connection string
             foreach (var path in paths)
