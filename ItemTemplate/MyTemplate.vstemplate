@@ -1,0 +1,39 @@
+<VSTemplate Version="3.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" Type="Item">
+    <TemplateData>
+        <DefaultName>Database.tt</DefaultName>
+        <Name>EntityFramework Reverse POCO Code First Generator</Name>
+        <Description>Reverse engineers an existing database and generates EntityFramework Code First POCO classes, Configuration mappings and DbContext.</Description>
+        <ProjectType>CSharp</ProjectType>
+        <SortOrder>10</SortOrder>
+        <ProjectSubType>Data</ProjectSubType>
+        <Icon>__TemplateIcon.ico</Icon>
+        <PreviewImage>__PreviewImage.png</PreviewImage>
+        <RequiredFrameworkVersion>4.0</RequiredFrameworkVersion>
+        <Version>1.12.0</Version>
+    </TemplateData>
+    <TemplateContent>
+        <References>
+            <Reference>
+                <Assembly>System</Assembly>
+            </Reference>
+            <Reference>
+                <Assembly>System.Data</Assembly>
+            </Reference>
+            <Reference>
+                <Assembly>System.Data.Entity</Assembly>
+            </Reference>
+            <Reference>
+                <Assembly>System.ComponentModel.Composition</Assembly>
+            </Reference>
+            <Reference>
+                <Assembly>System.ComponentModel.DataAnnotations</Assembly>
+            </Reference>
+            <Reference>
+                <Assembly>EntityFramework</Assembly>
+            </Reference>
+        </References>
+        <ProjectItem SubType="" TargetFileName="$fileinputname$.tt" ReplaceParameters="false">Database.tt</ProjectItem>
+        <ProjectItem SubType="" TargetFileName="EF.Reverse.POCO.Core.ttinclude" ReplaceParameters="false">EF.Reverse.POCO.Core.ttinclude</ProjectItem>
+        <ProjectItem SubType="" TargetFileName="EF.Reverse.POCO.ttinclude" ReplaceParameters="false">EF.Reverse.POCO.ttinclude</ProjectItem>
+    </TemplateContent>
+</VSTemplate>

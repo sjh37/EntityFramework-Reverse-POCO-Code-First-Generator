@@ -1,0 +1,75 @@
+﻿<#@ include file="EF.Reverse.POCO.Core.ttinclude" #>
+<#
+    // v1.12.0
+    // Settings
+    ConnectionStringName = "MyDbContext";  // Searches for this connection string in config files listed below
+    ConfigFilenameSearchOrder = new[] { "app.config", "web.config", "app.config.transform", "web.config.transform" }; // Add more here if required
+    // The config files are searched for in the local project first, then the whole solution second.
+
+
+    // Add the elements that should be generated when the template is executed.
+    // Multiple projects can now be used that seperate the different concerns.
+    ElementsToGenerate =  Elements.Poco | Elements.Context | Elements.UnitOfWork | Elements.PocoConfiguration;
+
+    // Use these namespaces to specify where the different elements of the template are being generated.
+    PocoNamespace = "";
+    ContextNamespace = "";
+    UnitOfWorkNamespace = "";	
+    PocoConfigurationNamespace = "";
+
+    // Example of separate concerns:
+    //PocoNamespace = "MyProject.Model";
+    //ContextNamespace = "MyProject.Data";
+    //UnitOfWorkNamespace = "MyProject.Data";	
+    //PocoConfigurationNamespace = "MyProject.Data";
+    //ElementsToGenerate = Elements.Poco;   // Model Project
+    //ElementsToGenerate = Elements.Context | Elements.UnitOfWork | Elements.PocoConfiguration; //  Data project
+
+    
+    // Namespace = ""; // Override the default namespace here
+    DbContextName = "MyDbContext";
+    MakeClassesPartial = false;
+    GenerateSeparateFiles = false;
+    UseCamelCase = true;    // This will rename the tables & fields to use CamelCase. If false table & field names will be left alone.
+    IncludeViews = true;
+    
+
+    // WCF
+    AddWcfDataAttributes = false;
+    // This string is inserted into the  [DataContract] attribute, before the closing square bracket.
+    ExtraWcfDataContractAttributes = "";
+    // Example: "";                                           = [DataContract]
+    //          "(Namespace = \"http://www.contoso.com\")";   = [DataContract(Namespace = "http://www.contoso.com")]
+    //          "(Namespace = Constants.ServiceNamespace)";   = [DataContract(Namespace = Constants.ServiceNamespace)]
+    
+
+    // If there are multiple schema, then the table name is prefixed with the schema, except for dbo.
+    // Ie. dbo.hello will be Hello.
+    //     abc.hello will be AbcHello.
+    // To only include a single schema, specify it below.
+    SchemaName = null;
+    PrependSchemaName = true;   // Control if the schema name is prepended to the table name
+
+    // Use the following table/view name regex filters to include or exclude tables/views
+    // Exclude filters are checked first and tables matching filters are removed.
+    //  * If left null, none are excluded.
+    //  * If not null, any tables matching the regex are excluded.
+    // Include filters are checked second.
+    //  * If left null, all are included.
+    //  * If not null, only the tables matching the regex are included.
+    //  Example:    TableFilterExclude = new Regex(".*auto.*");
+    //              TableFilterInclude = new Regex("(.*_FR_.*)|(data_.*)");
+    //              TableFilterInclude = new Regex("^table_name1$|^table_name2$|etc");
+    TableFilterExclude = null;
+    TableFilterInclude = null;
+
+
+    // Read schema
+    var tables = LoadTables();
+    
+    // Generate output
+    if (tables.Count>0)
+    {
+#>
+<#@ include file="EF.Reverse.POCO.ttinclude" #>
+<# } #>
