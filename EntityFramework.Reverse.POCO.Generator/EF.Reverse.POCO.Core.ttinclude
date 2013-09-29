@@ -269,6 +269,11 @@
 
         private List<string> GetConfigPathsInProjectForFile(EnvDTE.Project project, string filename)
         {
+			if(project.Kind == EnvDTE.Constants.vsProjectKindUnmodeled) {
+				// project is 'unloaded'
+				return new List<string>();
+            }
+
             var paths = new List<string>();
             foreach (EnvDTE.ProjectItem item in project.ProjectItems)
             {
