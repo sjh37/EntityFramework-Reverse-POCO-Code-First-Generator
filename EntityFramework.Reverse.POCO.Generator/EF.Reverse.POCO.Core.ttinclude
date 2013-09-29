@@ -1498,7 +1498,7 @@ ORDER BY FK.TABLE_NAME,
 
                 // Make sure property name doesn't clash with class name
                 if(col.PropertyName == table.NameHumanCase)
-                    col.PropertyName = "_" + col.PropertyName;
+                    col.PropertyName = col.PropertyName + "_";
 
                 col.PropertyNameHumanCase = (useCamelCase ? Inflector.ToTitleCase(col.PropertyName) : col.PropertyName).Replace(" ", "");
                 if (col.PropertyNameHumanCase == string.Empty)
