@@ -2,7 +2,6 @@
 using System.Linq;
 using EntityFramework_Reverse_POCO_Generator;
 using Tester.BusinessLogic;
-using Tester.Repository;
 
 namespace Tester
 {

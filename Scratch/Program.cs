@@ -117,7 +117,7 @@ namespace Scratch
         static string TargetFrameworkVersion = null;
         Func<string, bool> IsSupportedFrameworkVersion = (string frameworkVersion) =>
         {
-            if (!string.IsNullOrEmpty(TargetFrameworkVersion))
+            if(!string.IsNullOrEmpty(TargetFrameworkVersion))
             {
                 return String.Compare(TargetFrameworkVersion, frameworkVersion) >= 0;
             }
@@ -875,7 +875,7 @@ namespace Scratch
             }
 
             public GeneratedTextTransformation Outer;
-            public abstract Tables ReadSchema(Regex TableFilterExclude, bool useCamelCase, bool prependSchemaName);
+            public abstract Tables ReadSchema(Regex tableFilterExclude, bool useCamelCase, bool prependSchemaName);
             public abstract Tables ReadForeignKeys(Tables result, bool useCamelCase, bool prependSchemaName);
 
             protected void WriteLine(string o)
@@ -1194,7 +1194,7 @@ ORDER BY FK.TABLE_NAME,
             {
             }
 
-            public override Tables ReadSchema(Regex TableFilterExclude, bool useCamelCase, bool prependSchemaName)
+            public override Tables ReadSchema(Regex tableFilterExclude, bool useCamelCase, bool prependSchemaName)
             {
                 var result = new Tables();
                 if(Cmd == null)
@@ -1212,7 +1212,7 @@ ORDER BY FK.TABLE_NAME,
                         while(rdr.Read())
                         {
                             string tableName = rdr["TableName"].ToString().Trim();
-                            if(TableFilterExclude != null && TableFilterExclude.IsMatch(tableName))
+                            if(tableFilterExclude != null && tableFilterExclude.IsMatch(tableName))
                                 continue;
 
                             if(lastTable != tableName || table == null)
@@ -1396,7 +1396,7 @@ ORDER BY FK.TABLE_NAME,
 
                 // Make sure property name doesn't clash with class name
                 if(col.PropertyName == table.NameHumanCase)
-                    col.PropertyName = "_" + col.PropertyName;
+                    col.PropertyName = col.PropertyName + "_";
 
                 col.PropertyNameHumanCase = (useCamelCase ? Inflector.ToTitleCase(col.PropertyName) : col.PropertyName).Replace(" ", "");
                 if(col.PropertyNameHumanCase == string.Empty)
