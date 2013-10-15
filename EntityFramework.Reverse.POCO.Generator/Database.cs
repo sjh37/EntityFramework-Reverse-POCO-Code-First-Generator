@@ -91,6 +91,10 @@ namespace EntityFramework_Reverse_POCO_Generator
         {
         }
 
+        public MyDbContext(string connectionString, System.Data.Entity.Infrastructure.DbCompiledModel model) : base(connectionString, model)
+        {
+        }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -115,6 +119,31 @@ namespace EntityFramework_Reverse_POCO_Generator
             modelBuilder.Configurations.Add(new VwAspnetWebPartStatePathsConfiguration());
             modelBuilder.Configurations.Add(new VwAspnetWebPartStateSharedConfiguration());
             modelBuilder.Configurations.Add(new VwAspnetWebPartStateUserConfiguration());
+        }
+
+        public static DbModelBuilder CreateModel(DbModelBuilder modelBuilder, string schema)
+        {
+            modelBuilder.Configurations.Add(new AspnetApplicationsConfiguration(schema));
+            modelBuilder.Configurations.Add(new AspnetMembershipConfiguration(schema));
+            modelBuilder.Configurations.Add(new AspnetPathsConfiguration(schema));
+            modelBuilder.Configurations.Add(new AspnetPersonalizationAllUsersConfiguration(schema));
+            modelBuilder.Configurations.Add(new AspnetPersonalizationPerUserConfiguration(schema));
+            modelBuilder.Configurations.Add(new AspnetProfileConfiguration(schema));
+            modelBuilder.Configurations.Add(new AspnetRolesConfiguration(schema));
+            modelBuilder.Configurations.Add(new AspnetSchemaVersionsConfiguration(schema));
+            modelBuilder.Configurations.Add(new AspnetUsersConfiguration(schema));
+            modelBuilder.Configurations.Add(new AspnetUsersInRolesConfiguration(schema));
+            modelBuilder.Configurations.Add(new AspnetWebEventEventsConfiguration(schema));
+            modelBuilder.Configurations.Add(new VwAspnetApplicationsConfiguration(schema));
+            modelBuilder.Configurations.Add(new VwAspnetMembershipUsersConfiguration(schema));
+            modelBuilder.Configurations.Add(new VwAspnetProfilesConfiguration(schema));
+            modelBuilder.Configurations.Add(new VwAspnetRolesConfiguration(schema));
+            modelBuilder.Configurations.Add(new VwAspnetUsersConfiguration(schema));
+            modelBuilder.Configurations.Add(new VwAspnetUsersInRolesConfiguration(schema));
+            modelBuilder.Configurations.Add(new VwAspnetWebPartStatePathsConfiguration(schema));
+            modelBuilder.Configurations.Add(new VwAspnetWebPartStateSharedConfiguration(schema));
+            modelBuilder.Configurations.Add(new VwAspnetWebPartStateUserConfiguration(schema));
+            return modelBuilder;
         }
     }
 
@@ -443,9 +472,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     // aspnet_Applications
     internal class AspnetApplicationsConfiguration : EntityTypeConfiguration<AspnetApplications>
     {
-        public AspnetApplicationsConfiguration()
+        public AspnetApplicationsConfiguration(string schema = "dbo")
         {
-            ToTable("dbo.aspnet_Applications");
+            ToTable(schema + ".aspnet_Applications");
             HasKey(x => x.ApplicationId);
 
             Property(x => x.ApplicationName).HasColumnName("ApplicationName").IsRequired().HasMaxLength(256);
@@ -458,9 +487,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     // aspnet_Membership
     internal class AspnetMembershipConfiguration : EntityTypeConfiguration<AspnetMembership>
     {
-        public AspnetMembershipConfiguration()
+        public AspnetMembershipConfiguration(string schema = "dbo")
         {
-            ToTable("dbo.aspnet_Membership");
+            ToTable(schema + ".aspnet_Membership");
             HasKey(x => x.UserId);
 
             Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
@@ -494,9 +523,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     // aspnet_Paths
     internal class AspnetPathsConfiguration : EntityTypeConfiguration<AspnetPaths>
     {
-        public AspnetPathsConfiguration()
+        public AspnetPathsConfiguration(string schema = "dbo")
         {
-            ToTable("dbo.aspnet_Paths");
+            ToTable(schema + ".aspnet_Paths");
             HasKey(x => x.PathId);
 
             Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
@@ -512,9 +541,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     // aspnet_PersonalizationAllUsers
     internal class AspnetPersonalizationAllUsersConfiguration : EntityTypeConfiguration<AspnetPersonalizationAllUsers>
     {
-        public AspnetPersonalizationAllUsersConfiguration()
+        public AspnetPersonalizationAllUsersConfiguration(string schema = "dbo")
         {
-            ToTable("dbo.aspnet_PersonalizationAllUsers");
+            ToTable(schema + ".aspnet_PersonalizationAllUsers");
             HasKey(x => x.PathId);
 
             Property(x => x.PathId).HasColumnName("PathId").IsRequired();
@@ -529,9 +558,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     // aspnet_PersonalizationPerUser
     internal class AspnetPersonalizationPerUserConfiguration : EntityTypeConfiguration<AspnetPersonalizationPerUser>
     {
-        public AspnetPersonalizationPerUserConfiguration()
+        public AspnetPersonalizationPerUserConfiguration(string schema = "dbo")
         {
-            ToTable("dbo.aspnet_PersonalizationPerUser");
+            ToTable(schema + ".aspnet_PersonalizationPerUser");
             HasKey(x => x.Id);
 
             Property(x => x.Id).HasColumnName("Id").IsRequired();
@@ -549,9 +578,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     // aspnet_Profile
     internal class AspnetProfileConfiguration : EntityTypeConfiguration<AspnetProfile>
     {
-        public AspnetProfileConfiguration()
+        public AspnetProfileConfiguration(string schema = "dbo")
         {
-            ToTable("dbo.aspnet_Profile");
+            ToTable(schema + ".aspnet_Profile");
             HasKey(x => x.UserId);
 
             Property(x => x.UserId).HasColumnName("UserId").IsRequired();
@@ -568,9 +597,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     // aspnet_Roles
     internal class AspnetRolesConfiguration : EntityTypeConfiguration<AspnetRoles>
     {
-        public AspnetRolesConfiguration()
+        public AspnetRolesConfiguration(string schema = "dbo")
         {
-            ToTable("dbo.aspnet_Roles");
+            ToTable(schema + ".aspnet_Roles");
             HasKey(x => x.RoleId);
 
             Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
@@ -587,9 +616,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     // aspnet_SchemaVersions
     internal class AspnetSchemaVersionsConfiguration : EntityTypeConfiguration<AspnetSchemaVersions>
     {
-        public AspnetSchemaVersionsConfiguration()
+        public AspnetSchemaVersionsConfiguration(string schema = "dbo")
         {
-            ToTable("dbo.aspnet_SchemaVersions");
+            ToTable(schema + ".aspnet_SchemaVersions");
             HasKey(x => new { x.Feature, x.CompatibleSchemaVersion });
 
             Property(x => x.Feature).HasColumnName("Feature").IsRequired().HasMaxLength(128);
@@ -601,9 +630,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     // aspnet_Users
     internal class AspnetUsersConfiguration : EntityTypeConfiguration<AspnetUsers>
     {
-        public AspnetUsersConfiguration()
+        public AspnetUsersConfiguration(string schema = "dbo")
         {
-            ToTable("dbo.aspnet_Users");
+            ToTable(schema + ".aspnet_Users");
             HasKey(x => x.UserId);
 
             Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
@@ -622,9 +651,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     // aspnet_UsersInRoles
     internal class AspnetUsersInRolesConfiguration : EntityTypeConfiguration<AspnetUsersInRoles>
     {
-        public AspnetUsersInRolesConfiguration()
+        public AspnetUsersInRolesConfiguration(string schema = "dbo")
         {
-            ToTable("dbo.aspnet_UsersInRoles");
+            ToTable(schema + ".aspnet_UsersInRoles");
             HasKey(x => new { x.UserId, x.RoleId });
 
             Property(x => x.UserId).HasColumnName("UserId").IsRequired();
@@ -639,9 +668,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     // aspnet_WebEvent_Events
     internal class AspnetWebEventEventsConfiguration : EntityTypeConfiguration<AspnetWebEventEvents>
     {
-        public AspnetWebEventEventsConfiguration()
+        public AspnetWebEventEventsConfiguration(string schema = "dbo")
         {
-            ToTable("dbo.aspnet_WebEvent_Events");
+            ToTable(schema + ".aspnet_WebEvent_Events");
             HasKey(x => x.EventId);
 
             Property(x => x.EventId).HasColumnName("EventId").IsRequired().HasMaxLength(32);
@@ -665,9 +694,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     // vw_aspnet_Applications
     internal class VwAspnetApplicationsConfiguration : EntityTypeConfiguration<VwAspnetApplications>
     {
-        public VwAspnetApplicationsConfiguration()
+        public VwAspnetApplicationsConfiguration(string schema = "dbo")
         {
-            ToTable("dbo.vw_aspnet_Applications");
+            ToTable(schema + ".vw_aspnet_Applications");
             HasKey(x => new { x.ApplicationName, x.LoweredApplicationName, x.ApplicationId });
 
             Property(x => x.ApplicationName).HasColumnName("ApplicationName").IsRequired().HasMaxLength(256);
@@ -680,9 +709,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     // vw_aspnet_MembershipUsers
     internal class VwAspnetMembershipUsersConfiguration : EntityTypeConfiguration<VwAspnetMembershipUsers>
     {
-        public VwAspnetMembershipUsersConfiguration()
+        public VwAspnetMembershipUsersConfiguration(string schema = "dbo")
         {
-            ToTable("dbo.vw_aspnet_MembershipUsers");
+            ToTable(schema + ".vw_aspnet_MembershipUsers");
             HasKey(x => new { x.UserId, x.PasswordFormat, x.IsApproved, x.IsLockedOut, x.CreateDate, x.LastLoginDate, x.LastPasswordChangedDate, x.LastLockoutDate, x.FailedPasswordAttemptCount, x.FailedPasswordAttemptWindowStart, x.FailedPasswordAnswerAttemptCount, x.FailedPasswordAnswerAttemptWindowStart, x.ApplicationId, x.UserName, x.IsAnonymous, x.LastActivityDate });
 
             Property(x => x.UserId).HasColumnName("UserId").IsRequired();
@@ -714,9 +743,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     // vw_aspnet_Profiles
     internal class VwAspnetProfilesConfiguration : EntityTypeConfiguration<VwAspnetProfiles>
     {
-        public VwAspnetProfilesConfiguration()
+        public VwAspnetProfilesConfiguration(string schema = "dbo")
         {
-            ToTable("dbo.vw_aspnet_Profiles");
+            ToTable(schema + ".vw_aspnet_Profiles");
             HasKey(x => new { x.UserId, x.LastUpdatedDate });
 
             Property(x => x.UserId).HasColumnName("UserId").IsRequired();
@@ -728,9 +757,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     // vw_aspnet_Roles
     internal class VwAspnetRolesConfiguration : EntityTypeConfiguration<VwAspnetRoles>
     {
-        public VwAspnetRolesConfiguration()
+        public VwAspnetRolesConfiguration(string schema = "dbo")
         {
-            ToTable("dbo.vw_aspnet_Roles");
+            ToTable(schema + ".vw_aspnet_Roles");
             HasKey(x => new { x.ApplicationId, x.RoleId, x.RoleName, x.LoweredRoleName });
 
             Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
@@ -744,9 +773,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     // vw_aspnet_Users
     internal class VwAspnetUsersConfiguration : EntityTypeConfiguration<VwAspnetUsers>
     {
-        public VwAspnetUsersConfiguration()
+        public VwAspnetUsersConfiguration(string schema = "dbo")
         {
-            ToTable("dbo.vw_aspnet_Users");
+            ToTable(schema + ".vw_aspnet_Users");
             HasKey(x => new { x.ApplicationId, x.UserId, x.UserName, x.LoweredUserName, x.IsAnonymous, x.LastActivityDate });
 
             Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
@@ -762,9 +791,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     // vw_aspnet_UsersInRoles
     internal class VwAspnetUsersInRolesConfiguration : EntityTypeConfiguration<VwAspnetUsersInRoles>
     {
-        public VwAspnetUsersInRolesConfiguration()
+        public VwAspnetUsersInRolesConfiguration(string schema = "dbo")
         {
-            ToTable("dbo.vw_aspnet_UsersInRoles");
+            ToTable(schema + ".vw_aspnet_UsersInRoles");
             HasKey(x => new { x.UserId, x.RoleId });
 
             Property(x => x.UserId).HasColumnName("UserId").IsRequired();
@@ -775,9 +804,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     // vw_aspnet_WebPartState_Paths
     internal class VwAspnetWebPartStatePathsConfiguration : EntityTypeConfiguration<VwAspnetWebPartStatePaths>
     {
-        public VwAspnetWebPartStatePathsConfiguration()
+        public VwAspnetWebPartStatePathsConfiguration(string schema = "dbo")
         {
-            ToTable("dbo.vw_aspnet_WebPartState_Paths");
+            ToTable(schema + ".vw_aspnet_WebPartState_Paths");
             HasKey(x => new { x.ApplicationId, x.PathId, x.Path, x.LoweredPath });
 
             Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
@@ -790,9 +819,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     // vw_aspnet_WebPartState_Shared
     internal class VwAspnetWebPartStateSharedConfiguration : EntityTypeConfiguration<VwAspnetWebPartStateShared>
     {
-        public VwAspnetWebPartStateSharedConfiguration()
+        public VwAspnetWebPartStateSharedConfiguration(string schema = "dbo")
         {
-            ToTable("dbo.vw_aspnet_WebPartState_Shared");
+            ToTable(schema + ".vw_aspnet_WebPartState_Shared");
             HasKey(x => new { x.PathId, x.LastUpdatedDate });
 
             Property(x => x.PathId).HasColumnName("PathId").IsRequired();
@@ -804,9 +833,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     // vw_aspnet_WebPartState_User
     internal class VwAspnetWebPartStateUserConfiguration : EntityTypeConfiguration<VwAspnetWebPartStateUser>
     {
-        public VwAspnetWebPartStateUserConfiguration()
+        public VwAspnetWebPartStateUserConfiguration(string schema = "dbo")
         {
-            ToTable("dbo.vw_aspnet_WebPartState_User");
+            ToTable(schema + ".vw_aspnet_WebPartState_User");
             HasKey(x => x.LastUpdatedDate);
 
             Property(x => x.PathId).HasColumnName("PathId").IsOptional();

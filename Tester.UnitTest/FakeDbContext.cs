@@ -17,6 +17,15 @@ namespace Tester.UnitTest
         public IDbSet<AspnetUsers> AspnetUsers { get; set; }
         public IDbSet<AspnetUsersInRoles> AspnetUsersInRoles { get; set; }
         public IDbSet<AspnetWebEventEvents> AspnetWebEventEvents { get; set; }
+        public IDbSet<VwAspnetApplications> VwAspnetApplications { get; set; }
+        public IDbSet<VwAspnetMembershipUsers> VwAspnetMembershipUsers { get; set; }
+        public IDbSet<VwAspnetProfiles> VwAspnetProfiles { get; set; }
+        public IDbSet<VwAspnetRoles> VwAspnetRoles { get; set; }
+        public IDbSet<VwAspnetUsers> VwAspnetUsers { get; set; }
+        public IDbSet<VwAspnetUsersInRoles> VwAspnetUsersInRoles { get; set; }
+        public IDbSet<VwAspnetWebPartStatePaths> VwAspnetWebPartStatePaths { get; set; }
+        public IDbSet<VwAspnetWebPartStateShared> VwAspnetWebPartStateShared { get; set; }
+        public IDbSet<VwAspnetWebPartStateUser> VwAspnetWebPartStateUser { get; set; }
 
         public FakeDbContext()
         {
@@ -31,6 +40,15 @@ namespace Tester.UnitTest
             AspnetUsers = new FakeDbSet<AspnetUsers>();
             AspnetUsersInRoles = new FakeDbSet<AspnetUsersInRoles>();
             AspnetWebEventEvents = new FakeDbSet<AspnetWebEventEvents>();
+            VwAspnetApplications = new FakeDbSet<VwAspnetApplications>();
+            VwAspnetMembershipUsers = new FakeDbSet<VwAspnetMembershipUsers>();
+            VwAspnetProfiles = new FakeDbSet<VwAspnetProfiles>();
+            VwAspnetRoles = new FakeDbSet<VwAspnetRoles>();
+            VwAspnetUsers = new FakeDbSet<VwAspnetUsers>();
+            VwAspnetUsersInRoles = new FakeDbSet<VwAspnetUsersInRoles>();
+            VwAspnetWebPartStatePaths = new FakeDbSet<VwAspnetWebPartStatePaths>();
+            VwAspnetWebPartStateShared = new FakeDbSet<VwAspnetWebPartStateShared>();
+            VwAspnetWebPartStateUser = new FakeDbSet<VwAspnetWebPartStateUser>();
         }
 
         public int SaveChanges()
