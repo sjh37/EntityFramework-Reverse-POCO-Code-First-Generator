@@ -136,7 +136,7 @@ foreach(Table tbl in from t in tables.OrderBy(x => x.NameHumanCase) select t)
 #>
             modelBuilder.Configurations.Add(new <#=tbl.NameHumanCase#>Configuration(schema));
 <# } #>
-			return modelBuilder;
+            return modelBuilder;
         }
 <#if(MakeClassesPartial) {#>
 
