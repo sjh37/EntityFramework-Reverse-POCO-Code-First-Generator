@@ -87,7 +87,7 @@ namespace Scratch
 
         // Settings
         string ConnectionStringName = "MyDbContext";   // Uses last connection string in config if not specified
-        string ConnectionString = "Data Source=(local);Initial Catalog=aspnetdb;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";   // Uses last connection string in config if not specified
+        string ConnectionString = "Data Source=(local);Initial Catalog=FredManyToMany;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";   // Uses last connection string in config if not specified
         bool IncludeViews = true;
         string DbContextName = "MyDbContext";
         bool MakeClassesPartial = true;
@@ -262,6 +262,7 @@ namespace Scratch
 
                     result = reader.ReadForeignKeys(result, UseCamelCase, PrependSchemaName);
                     result.SetPrimaryKeys();
+                    result.SetMappingTables();
 
                     // Remove views that only consist of all nullable fields.
                     // I.e. they do not contain any primary key, and therefore cannot be used by EF
@@ -338,6 +339,7 @@ namespace Scratch
             public bool IsNullable;
             public bool IsPrimaryKey;
             public bool IsStoreGenerated;
+            public bool IsRowVersion;
 
             public string Config;
             public string ConfigFk;
@@ -373,10 +375,11 @@ namespace Scratch
                     if(IsPrimaryKey && !IsIdentity && !IsStoreGenerated)
                         databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.None)";
                 }
-                Config = string.Format("Property(x => x.{0}).HasColumnName(\"{1}\"){2}{3}{4}{5};", PropertyNameHumanCase, Name,
+                Config = string.Format("Property(x => x.{0}).HasColumnName(\"{1}\"){2}{3}{4}{5}{6};", PropertyNameHumanCase, Name,
                                             (IsNullable) ? ".IsOptional()" : ".IsRequired()",
                                             (MaxLength > 0) ? ".HasMaxLength(" + MaxLength + ")" : string.Empty,
                                             (Scale > 0) ? ".HasPrecision(" + Precision + "," + Scale + ")" : string.Empty,
+                                            (IsStoreGenerated) ? ".IsFixedLength().IsRowVersion()" : string.Empty,
                                             databaseGeneratedOption);
             }
 
@@ -1375,10 +1378,12 @@ ORDER BY FK.TABLE_NAME,
                 if(rdr == null)
                     throw new ArgumentNullException("rdr");
 
+                string typename = rdr["TypeName"].ToString().Trim();
+
                 var col = new Column
                 {
                     Name = rdr["ColumnName"].ToString().Trim(),
-                    PropertyType = GetPropertyType(rdr["TypeName"].ToString().Trim()),
+                    PropertyType = GetPropertyType(typename),
                     MaxLength = (int)rdr["MaxLength"],
                     Precision = (int)rdr["Precision"],
                     Default = rdr["Default"].ToString().Trim(),
@@ -1390,6 +1395,11 @@ ORDER BY FK.TABLE_NAME,
                     IsStoreGenerated = rdr["IsStoreGenerated"].ToString().Trim().ToLower() == "true",
                     IsPrimaryKey = rdr["PrimaryKey"].ToString().Trim().ToLower() == "true"
                 };
+                
+                col.IsRowVersion = col.IsStoreGenerated && !col.IsNullable && typename == "timestamp";
+                if (col.IsRowVersion)
+                    col.MaxLength = 8;
+
                 col.CleanUpDefault();
                 col.PropertyName = CleanUp(col.Name);
                 col.PropertyName = rxClean.Replace(col.PropertyName, "_$1");
@@ -1513,6 +1523,7 @@ ORDER BY FK.TABLE_NAME,
             public bool IsView;
             public bool HasForeignKey;
             public bool HasNullableColumns;
+            public bool IsMapping;
 
             public List<Column> Columns;
             public List<string> ReverseNavigationProperty;
@@ -1612,15 +1623,30 @@ ORDER BY FK.TABLE_NAME,
 
             public void SetPrimaryKeys()
             {
-                var cols = Columns.Where(x => x.IsPrimaryKey).ToList();
-                if(cols.Any())
-                    return;
+                if(PrimaryKeys.Any())
+                    return; // Table has at least one primary key
 
-                // This table is not allowed in EntityFramework. Generate a composite key from all non-null fields
+                // This table is not allowed in EntityFramework as it does not have a primary key.
+                // Therefore generate a composite key from all non-null fields.
                 foreach(var col in Columns.Where(x => !x.IsNullable))
                 {
                     col.IsPrimaryKey = true;
                 }
+            }
+
+            public void SetMappingTables()
+            {
+                IsMapping = false;
+                
+                // Must have at least 2 columns to be a mapping table
+                if (Columns.Count < 2)
+                    return;
+                
+                // Two columns must either be a primary key, or have a unique constraint.
+                int numPrimaryKeys = PrimaryKeys.Count();
+
+
+                // All columns are primary keys
             }
         }
 
@@ -1638,6 +1664,14 @@ ORDER BY FK.TABLE_NAME,
                 foreach(var tbl in this)
                 {
                     tbl.SetPrimaryKeys();
+                }
+            }
+
+            public void SetMappingTables()
+            {
+                foreach(var tbl in this)
+                {
+                    tbl.SetMappingTables();
                 }
             }
         }

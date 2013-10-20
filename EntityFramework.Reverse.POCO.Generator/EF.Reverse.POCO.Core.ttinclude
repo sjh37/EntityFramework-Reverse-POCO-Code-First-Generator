@@ -440,6 +440,7 @@
             public bool IsNullable;
             public bool IsPrimaryKey;
             public bool IsStoreGenerated;
+            public bool IsRowVersion;
 
             public string Config;
             public string ConfigFk;
@@ -475,10 +476,11 @@
                 if(IsPrimaryKey && !IsIdentity && !IsStoreGenerated)
                     databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.None)";
                 }
-                Config = string.Format("Property(x => x.{0}).HasColumnName(\"{1}\"){2}{3}{4}{5};", PropertyNameHumanCase, Name, 
+                Config = string.Format("Property(x => x.{0}).HasColumnName(\"{1}\"){2}{3}{4}{5}{6};", PropertyNameHumanCase, Name,
                                             (IsNullable) ? ".IsOptional()" : ".IsRequired()",
                                             (MaxLength > 0) ? ".HasMaxLength(" + MaxLength + ")" : string.Empty,
                                             (Scale > 0) ? ".HasPrecision(" + Precision + "," + Scale + ")" : string.Empty, 
+                                            (IsStoreGenerated) ? ".IsFixedLength().IsRowVersion()" : string.Empty,
                                             databaseGeneratedOption);
             }
 
@@ -1477,10 +1479,12 @@ ORDER BY FK.TABLE_NAME,
                 if(rdr == null)
                     throw new ArgumentNullException("rdr");
 
+                string typename = rdr["TypeName"].ToString().Trim();
+
                 var col = new Column
                 {
                     Name = rdr["ColumnName"].ToString().Trim(),
-                    PropertyType = GetPropertyType(rdr["TypeName"].ToString().Trim()),
+                    PropertyType = GetPropertyType(typename),
                     MaxLength = (int)rdr["MaxLength"],
                     Precision = (int)rdr["Precision"],
                     Default = rdr["Default"].ToString().Trim(),
@@ -1492,6 +1496,11 @@ ORDER BY FK.TABLE_NAME,
                     IsStoreGenerated = rdr["IsStoreGenerated"].ToString().Trim().ToLower() == "true",
                     IsPrimaryKey = rdr["PrimaryKey"].ToString().Trim().ToLower() == "true"
                 };
+                
+                col.IsRowVersion = col.IsStoreGenerated && !col.IsNullable && typename == "timestamp";
+                if (col.IsRowVersion)
+                    col.MaxLength = 8;
+
                 col.CleanUpDefault();
                 col.PropertyName = CleanUp(col.Name);
                 col.PropertyName = rxClean.Replace(col.PropertyName, "_$1");
@@ -1714,11 +1723,11 @@ ORDER BY FK.TABLE_NAME,
 
             public void SetPrimaryKeys()
             {
-                var cols = Columns.Where(x => x.IsPrimaryKey).ToList();
-                if (cols.Any())
-                    return;
+                if(PrimaryKeys.Any())
+                    return; // Table has at least one primary key
 
-                // This table is not allowed in EntityFramework. Generate a composite key from all non-null fields
+                // This table is not allowed in EntityFramework as it does not have a primary key.
+                // Therefore generate a composite key from all non-null fields.
                 foreach(var col in Columns.Where(x => !x.IsNullable))
                 {
                     col.IsPrimaryKey = true;
