@@ -15,7 +15,6 @@ namespace Tester.UnitTest
         public IDbSet<AspnetRoles> AspnetRoles { get; set; }
         public IDbSet<AspnetSchemaVersions> AspnetSchemaVersions { get; set; }
         public IDbSet<AspnetUsers> AspnetUsers { get; set; }
-        public IDbSet<AspnetUsersInRoles> AspnetUsersInRoles { get; set; }
         public IDbSet<AspnetWebEventEvents> AspnetWebEventEvents { get; set; }
         public IDbSet<VwAspnetApplications> VwAspnetApplications { get; set; }
         public IDbSet<VwAspnetMembershipUsers> VwAspnetMembershipUsers { get; set; }
@@ -38,7 +37,6 @@ namespace Tester.UnitTest
             AspnetRoles = new FakeDbSet<AspnetRoles>();
             AspnetSchemaVersions = new FakeDbSet<AspnetSchemaVersions>();
             AspnetUsers = new FakeDbSet<AspnetUsers>();
-            AspnetUsersInRoles = new FakeDbSet<AspnetUsersInRoles>();
             AspnetWebEventEvents = new FakeDbSet<AspnetWebEventEvents>();
             VwAspnetApplications = new FakeDbSet<VwAspnetApplications>();
             VwAspnetMembershipUsers = new FakeDbSet<VwAspnetMembershipUsers>();

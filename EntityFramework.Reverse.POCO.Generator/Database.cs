@@ -37,7 +37,6 @@ namespace EntityFramework_Reverse_POCO_Generator
         IDbSet<AspnetRoles> AspnetRoles { get; set; } // aspnet_Roles
         IDbSet<AspnetSchemaVersions> AspnetSchemaVersions { get; set; } // aspnet_SchemaVersions
         IDbSet<AspnetUsers> AspnetUsers { get; set; } // aspnet_Users
-        IDbSet<AspnetUsersInRoles> AspnetUsersInRoles { get; set; } // aspnet_UsersInRoles
         IDbSet<AspnetWebEventEvents> AspnetWebEventEvents { get; set; } // aspnet_WebEvent_Events
         IDbSet<VwAspnetApplications> VwAspnetApplications { get; set; } // vw_aspnet_Applications
         IDbSet<VwAspnetMembershipUsers> VwAspnetMembershipUsers { get; set; } // vw_aspnet_MembershipUsers
@@ -65,7 +64,6 @@ namespace EntityFramework_Reverse_POCO_Generator
         public IDbSet<AspnetRoles> AspnetRoles { get; set; } // aspnet_Roles
         public IDbSet<AspnetSchemaVersions> AspnetSchemaVersions { get; set; } // aspnet_SchemaVersions
         public IDbSet<AspnetUsers> AspnetUsers { get; set; } // aspnet_Users
-        public IDbSet<AspnetUsersInRoles> AspnetUsersInRoles { get; set; } // aspnet_UsersInRoles
         public IDbSet<AspnetWebEventEvents> AspnetWebEventEvents { get; set; } // aspnet_WebEvent_Events
         public IDbSet<VwAspnetApplications> VwAspnetApplications { get; set; } // vw_aspnet_Applications
         public IDbSet<VwAspnetMembershipUsers> VwAspnetMembershipUsers { get; set; } // vw_aspnet_MembershipUsers
@@ -108,7 +106,6 @@ namespace EntityFramework_Reverse_POCO_Generator
             modelBuilder.Configurations.Add(new AspnetRolesConfiguration());
             modelBuilder.Configurations.Add(new AspnetSchemaVersionsConfiguration());
             modelBuilder.Configurations.Add(new AspnetUsersConfiguration());
-            modelBuilder.Configurations.Add(new AspnetUsersInRolesConfiguration());
             modelBuilder.Configurations.Add(new AspnetWebEventEventsConfiguration());
             modelBuilder.Configurations.Add(new VwAspnetApplicationsConfiguration());
             modelBuilder.Configurations.Add(new VwAspnetMembershipUsersConfiguration());
@@ -132,7 +129,6 @@ namespace EntityFramework_Reverse_POCO_Generator
             modelBuilder.Configurations.Add(new AspnetRolesConfiguration(schema));
             modelBuilder.Configurations.Add(new AspnetSchemaVersionsConfiguration(schema));
             modelBuilder.Configurations.Add(new AspnetUsersConfiguration(schema));
-            modelBuilder.Configurations.Add(new AspnetUsersInRolesConfiguration(schema));
             modelBuilder.Configurations.Add(new AspnetWebEventEventsConfiguration(schema));
             modelBuilder.Configurations.Add(new VwAspnetApplicationsConfiguration(schema));
             modelBuilder.Configurations.Add(new VwAspnetMembershipUsersConfiguration(schema));
@@ -159,10 +155,10 @@ namespace EntityFramework_Reverse_POCO_Generator
         public string Description { get; set; } // Description
 
         // Reverse navigation
-        public virtual ICollection<AspnetMembership> AspnetMembership { get; set; } // aspnet_Membership.FK__aspnet_Me__Appli__21B6055D;
-        public virtual ICollection<AspnetPaths> AspnetPaths { get; set; } // aspnet_Paths.FK__aspnet_Pa__Appli__5AEE82B9;
-        public virtual ICollection<AspnetRoles> AspnetRoles { get; set; } // aspnet_Roles.FK__aspnet_Ro__Appli__440B1D61;
-        public virtual ICollection<AspnetUsers> AspnetUsers { get; set; } // aspnet_Users.FK__aspnet_Us__Appli__0DAF0CB0;
+        public virtual ICollection<AspnetMembership> AspnetMembership { get; set; } // aspnet_Membership.FK__aspnet_Me__Appli__21B6055D
+        public virtual ICollection<AspnetPaths> AspnetPaths { get; set; } // aspnet_Paths.FK__aspnet_Pa__Appli__5AEE82B9
+        public virtual ICollection<AspnetRoles> AspnetRoles { get; set; } // aspnet_Roles.FK__aspnet_Ro__Appli__440B1D61
+        public virtual ICollection<AspnetUsers> AspnetUsers { get; set; } // aspnet_Users.FK__aspnet_Us__Appli__0DAF0CB0
 
         public AspnetApplications()
         {
@@ -218,8 +214,8 @@ namespace EntityFramework_Reverse_POCO_Generator
         public string LoweredPath { get; set; } // LoweredPath
 
         // Reverse navigation
-        public virtual AspnetPersonalizationAllUsers AspnetPersonalizationAllUsers { get; set; } // aspnet_PersonalizationAllUsers.FK__aspnet_Pe__PathI__628FA481;
-        public virtual ICollection<AspnetPersonalizationPerUser> AspnetPersonalizationPerUser { get; set; } // aspnet_PersonalizationPerUser.FK__aspnet_Pe__PathI__68487DD7;
+        public virtual AspnetPersonalizationAllUsers AspnetPersonalizationAllUsers { get; set; } // aspnet_PersonalizationAllUsers.FK__aspnet_Pe__PathI__628FA481
+        public virtual ICollection<AspnetPersonalizationPerUser> AspnetPersonalizationPerUser { get; set; } // aspnet_PersonalizationPerUser.FK__aspnet_Pe__PathI__68487DD7
 
         // Foreign keys
         public virtual AspnetApplications AspnetApplications { get; set; } //  ApplicationId - FK__aspnet_Pa__Appli__5AEE82B9
@@ -284,7 +280,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public string Description { get; set; } // Description
 
         // Reverse navigation
-        public virtual ICollection<AspnetUsersInRoles> AspnetUsersInRoles { get; set; } // aspnet_UsersInRoles.FK__aspnet_Us__RoleI__4AB81AF0;
+        public virtual ICollection<AspnetUsers> AspnetUsers { get; set; } // Many to many mapping
 
         // Foreign keys
         public virtual AspnetApplications AspnetApplications { get; set; } //  ApplicationId - FK__aspnet_Ro__Appli__440B1D61
@@ -292,7 +288,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public AspnetRoles()
         {
             RoleId = Guid.NewGuid();
-            AspnetUsersInRoles = new List<AspnetUsersInRoles>();
+            AspnetUsers = new List<AspnetUsers>();
         }
     }
 
@@ -316,10 +312,10 @@ namespace EntityFramework_Reverse_POCO_Generator
         public DateTime LastActivityDate { get; set; } // LastActivityDate
 
         // Reverse navigation
-        public virtual AspnetMembership AspnetMembership { get; set; } // aspnet_Membership.FK__aspnet_Me__UserI__22AA2996;
-        public virtual ICollection<AspnetPersonalizationPerUser> AspnetPersonalizationPerUser { get; set; } // aspnet_PersonalizationPerUser.FK__aspnet_Pe__UserI__693CA210;
-        public virtual AspnetProfile AspnetProfile { get; set; } // aspnet_Profile.FK__aspnet_Pr__UserI__38996AB5;
-        public virtual ICollection<AspnetUsersInRoles> AspnetUsersInRoles { get; set; } // aspnet_UsersInRoles.FK__aspnet_Us__UserI__49C3F6B7;
+        public virtual ICollection<AspnetRoles> AspnetRoles { get; set; } // Many to many mapping
+        public virtual AspnetMembership AspnetMembership { get; set; } // aspnet_Membership.FK__aspnet_Me__UserI__22AA2996
+        public virtual ICollection<AspnetPersonalizationPerUser> AspnetPersonalizationPerUser { get; set; } // aspnet_PersonalizationPerUser.FK__aspnet_Pe__UserI__693CA210
+        public virtual AspnetProfile AspnetProfile { get; set; } // aspnet_Profile.FK__aspnet_Pr__UserI__38996AB5
 
         // Foreign keys
         public virtual AspnetApplications AspnetApplications { get; set; } //  ApplicationId - FK__aspnet_Us__Appli__0DAF0CB0
@@ -329,20 +325,9 @@ namespace EntityFramework_Reverse_POCO_Generator
             UserId = Guid.NewGuid();
             MobileAlias = "NULL";
             IsAnonymous = false;
+            AspnetRoles = new List<AspnetRoles>();
             AspnetPersonalizationPerUser = new List<AspnetPersonalizationPerUser>();
-            AspnetUsersInRoles = new List<AspnetUsersInRoles>();
         }
-    }
-
-    // aspnet_UsersInRoles
-    public class AspnetUsersInRoles
-    {
-        public Guid UserId { get; set; } // UserId (Primary key)
-        public Guid RoleId { get; set; } // RoleId (Primary key)
-
-        // Foreign keys
-        public virtual AspnetUsers AspnetUsers { get; set; } //  UserId - FK__aspnet_Us__UserI__49C3F6B7
-        public virtual AspnetRoles AspnetRoles { get; set; } //  RoleId - FK__aspnet_Us__RoleI__4AB81AF0
     }
 
     // aspnet_WebEvent_Events
@@ -610,6 +595,12 @@ namespace EntityFramework_Reverse_POCO_Generator
 
             // Foreign keys
             HasRequired(a => a.AspnetApplications).WithMany(b => b.AspnetRoles).HasForeignKey(c => c.ApplicationId); // FK__aspnet_Ro__Appli__440B1D61
+            HasMany(t => t.AspnetUsers).WithMany(t => t.AspnetRoles).Map(m => 
+            {
+                m.ToTable("aspnet_UsersInRoles");
+                m.MapLeftKey("RoleId");
+                m.MapRightKey("UserId");
+            });
         }
     }
 
@@ -645,23 +636,6 @@ namespace EntityFramework_Reverse_POCO_Generator
 
             // Foreign keys
             HasRequired(a => a.AspnetApplications).WithMany(b => b.AspnetUsers).HasForeignKey(c => c.ApplicationId); // FK__aspnet_Us__Appli__0DAF0CB0
-        }
-    }
-
-    // aspnet_UsersInRoles
-    internal class AspnetUsersInRolesConfiguration : EntityTypeConfiguration<AspnetUsersInRoles>
-    {
-        public AspnetUsersInRolesConfiguration(string schema = "dbo")
-        {
-            ToTable(schema + ".aspnet_UsersInRoles");
-            HasKey(x => new { x.UserId, x.RoleId });
-
-            Property(x => x.UserId).HasColumnName("UserId").IsRequired();
-            Property(x => x.RoleId).HasColumnName("RoleId").IsRequired();
-
-            // Foreign keys
-            HasRequired(a => a.AspnetUsers).WithMany(b => b.AspnetUsersInRoles).HasForeignKey(c => c.UserId); // FK__aspnet_Us__UserI__49C3F6B7
-            HasRequired(a => a.AspnetRoles).WithMany(b => b.AspnetUsersInRoles).HasForeignKey(c => c.RoleId); // FK__aspnet_Us__RoleI__4AB81AF0
         }
     }
 
