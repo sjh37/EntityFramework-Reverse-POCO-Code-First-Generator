@@ -1,3 +1,4 @@
+<#@ import namespace="System.Collections.Generic" #>
 <#
 fileManager.StartHeader();
 // Copyright © Simon Hughes 2012
@@ -65,7 +66,7 @@ namespace <#= Namespace #>
     public interface I<#=DbContextName#> : IDisposable
     {
 <#
-foreach(Table tbl in from t in tables.OrderBy(x => x.NameHumanCase) select t)
+foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
 {
 #>
         IDbSet<<#=tbl.NameHumanCase#>> <#=tbl.NameHumanCase#> { get; set; } // <#=tbl.Name#>
@@ -84,7 +85,7 @@ foreach(Table tbl in from t in tables.OrderBy(x => x.NameHumanCase) select t)
     public <# if(MakeClassesPartial) { #>partial <# } #>class <#=DbContextName#> : DbContext, I<#=DbContextName#>
     {
 <#
-foreach(Table tbl in from t in tables.OrderBy(x => x.NameHumanCase) select t)
+foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
 {
 #>
         public IDbSet<<#=tbl.NameHumanCase#>> <#=tbl.NameHumanCase#> { get; set; } // <#=tbl.Name#>
@@ -119,7 +120,7 @@ foreach(Table tbl in from t in tables.OrderBy(x => x.NameHumanCase) select t)
             base.OnModelCreating(modelBuilder);
 
 <#
-foreach(Table tbl in from t in tables.OrderBy(x => x.NameHumanCase) select t)
+foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
 {
 #>
             modelBuilder.Configurations.Add(new <#=tbl.NameHumanCase#>Configuration());
@@ -131,7 +132,7 @@ foreach(Table tbl in from t in tables.OrderBy(x => x.NameHumanCase) select t)
         public static DbModelBuilder CreateModel(DbModelBuilder modelBuilder, string schema)
         {
 <#
-foreach(Table tbl in from t in tables.OrderBy(x => x.NameHumanCase) select t)
+foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
 {
 #>
             modelBuilder.Configurations.Add(new <#=tbl.NameHumanCase#>Configuration(schema));
@@ -153,7 +154,7 @@ foreach(Table tbl in from t in tables.OrderBy(x => x.NameHumanCase) select t)
 
 <# } #>
 <#
-foreach(Table tbl in from t in tables.OrderBy(x => x.NameHumanCase) select t)
+foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
 {
 #>
 <# fileManager.StartNewFile(tbl.NameHumanCase + FileExtension); #>
@@ -182,7 +183,7 @@ if(tbl.ReverseNavigationProperty.Count() > 0)
 foreach(string s in tbl.ReverseNavigationProperty)
 {
 #>
-        <#=s #>;
+        <#=s #>
 <# } } #>
 <# if(tbl.HasForeignKey) { #>
 
@@ -228,7 +229,7 @@ if(!GenerateSeparateFiles) { #>
 
 <# } #>
 <#
-foreach(Table tbl in tables.OrderBy(x => x.NameHumanCase))
+foreach(Table tbl in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase))
 {
 #>
 <# fileManager.StartNewFile(tbl.NameHumanCase + "Configuration" + FileExtension); #>
@@ -246,18 +247,6 @@ foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal))
 #>
             <#=col.Config #>
 <# } #>
-<#
-if(tbl.ReverseNavigationConfiguration.Count() > 0)
-{
-#>
-
-            // Reverse navigation
-<#
-foreach(string s in tbl.ReverseNavigationConfiguration)
-{
-#>
-            <#=s #>;
-<# } } #>
 <# if(tbl.HasForeignKey) { #>
 
             // Foreign keys
@@ -267,6 +256,12 @@ foreach(Column col in from c in tbl.Columns.OrderBy(x => x.Ordinal) where c.Conf
 #>
             <#=col.ConfigFk #>
 <# } } #>
+<#
+foreach (string s in tbl.MappingConfiguration)
+{
+#>
+            <#=s#>
+<# } #>
 <#if(MakeClassesPartial) {#>
             InitializePartial();
 <#}#>        }

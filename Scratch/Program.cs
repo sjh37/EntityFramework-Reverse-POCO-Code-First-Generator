@@ -19,7 +19,7 @@ namespace Scratch
             {
                 var x = new GeneratedTextTransformation();
                 var tables = x.LoadTables();
-                foreach(var table in tables)
+                foreach(var table in tables.Where(t => !t.IsMapping))
                 {
                     Console.WriteLine(table.NameHumanCase);
                     sw.WriteLine(table.NameHumanCase);
@@ -45,12 +45,12 @@ namespace Scratch
                         Console.WriteLine();
 
                     Console.WriteLine("  // Config");
-                    foreach(var rc in table.ReverseNavigationConfiguration)
+                    foreach(var rc in table.MappingConfiguration)
                     {
                         Console.WriteLine("  " + rc);
                         sw.WriteLine("  " + rc);
                     }
-                    if(table.ReverseNavigationConfiguration.Count > 0)
+                    if(table.MappingConfiguration.Count > 0)
                         Console.WriteLine();
 
                     foreach(var col in table.Columns)
@@ -87,7 +87,7 @@ namespace Scratch
 
         // Settings
         string ConnectionStringName = "MyDbContext";   // Uses last connection string in config if not specified
-        string ConnectionString = "Data Source=(local);Initial Catalog=FredManyToMany;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";   // Uses last connection string in config if not specified
+        string ConnectionString = "Data Source=(local);Initial Catalog=aspnetdb;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";   // Uses last connection string in config if not specified
         bool IncludeViews = true;
         string DbContextName = "MyDbContext";
         bool MakeClassesPartial = true;
@@ -234,48 +234,51 @@ namespace Scratch
                     conn.Open();
 
                     var reader = new SqlServerSchemaReader(conn, factory) { Outer = this };
-                    var result = reader.ReadSchema(TableFilterExclude, UseCamelCase, PrependSchemaName);
+                    var tables = reader.ReadSchema(TableFilterExclude, UseCamelCase, PrependSchemaName);
 
                     // Remove unrequired tables/views
-                    for(int i = result.Count - 1; i >= 0; i--)
+                    for(int i = tables.Count - 1; i >= 0; i--)
                     {
-                        if(SchemaName != null && String.Compare(result[i].Schema, SchemaName, StringComparison.OrdinalIgnoreCase) != 0)
+                        if(SchemaName != null && String.Compare(tables[i].Schema, SchemaName, StringComparison.OrdinalIgnoreCase) != 0)
                         {
-                            result.RemoveAt(i);
+                            tables.RemoveAt(i);
                             continue;
                         }
-                        if(!IncludeViews && result[i].IsView)
+                        if(!IncludeViews && tables[i].IsView)
                         {
-                            result.RemoveAt(i);
+                            tables.RemoveAt(i);
                             continue;
                         }
-                        if(TableFilterInclude != null && !TableFilterInclude.IsMatch(result[i].Name))
+                        if(TableFilterInclude != null && !TableFilterInclude.IsMatch(tables[i].Name))
                         {
-                            result.RemoveAt(i);
+                            tables.RemoveAt(i);
                             continue;
                         }
-                        if(!result[i].IsView && string.IsNullOrEmpty(result[i].PrimaryKeyNameHumanCase()))
+                        if(!tables[i].IsView && string.IsNullOrEmpty(tables[i].PrimaryKeyNameHumanCase()))
                         {
-                            result.RemoveAt(i);
+                            tables.RemoveAt(i);
                         }
                     }
 
-                    result = reader.ReadForeignKeys(result, UseCamelCase, PrependSchemaName);
-                    result.SetPrimaryKeys();
-                    result.SetMappingTables();
+                    // Must be done in this order
+                    var fkList = reader.ReadForeignKeys();
+                    reader.IdentifyForeignKeys(fkList, tables);
+                    tables.SetPrimaryKeys();
+                    tables.IdentifyMappingTables(fkList, UseCamelCase, PrependSchemaName);
+                    reader.ProcessForeignKeys(fkList, tables, UseCamelCase, PrependSchemaName);
 
                     // Remove views that only consist of all nullable fields.
                     // I.e. they do not contain any primary key, and therefore cannot be used by EF
-                    for(int i = result.Count - 1; i >= 0; i--)
+                    for(int i = tables.Count - 1; i >= 0; i--)
                     {
-                        if(string.IsNullOrEmpty(result[i].PrimaryKeyNameHumanCase()))
+                        if(string.IsNullOrEmpty(tables[i].PrimaryKeyNameHumanCase()))
                         {
-                            result.RemoveAt(i);
+                            tables.RemoveAt(i);
                         }
                     }
 
                     conn.Close();
-                    return result;
+                    return tables;
                 }
             }
             catch(Exception x)
@@ -879,7 +882,9 @@ namespace Scratch
 
             public GeneratedTextTransformation Outer;
             public abstract Tables ReadSchema(Regex tableFilterExclude, bool useCamelCase, bool prependSchemaName);
-            public abstract Tables ReadForeignKeys(Tables result, bool useCamelCase, bool prependSchemaName);
+            public abstract List<ForeignKey> ReadForeignKeys();
+            public abstract void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool useCamelCase, bool prependSchemaName);
+            public abstract void IdentifyForeignKeys(List<ForeignKey> fkList, Tables tables);
 
             protected void WriteLine(string o)
             {
@@ -1268,14 +1273,14 @@ ORDER BY FK.TABLE_NAME,
                 return result;
             }
 
-            public override Tables ReadForeignKeys(Tables result, bool useCamelCase, bool prependSchemaName)
+            public override List<ForeignKey> ReadForeignKeys()
             {
-                if(Cmd == null)
-                    return result;
+                var fkList = new List<ForeignKey>();
+                if (Cmd == null)
+                    return fkList;
 
                 Cmd.CommandText = ForeignKeySQL;
 
-                var fkList = new List<ForeignKey>();
                 using(Cmd)
                 {
                     using(DbDataReader rdr = Cmd.ExecuteReader())
@@ -1294,29 +1299,25 @@ ORDER BY FK.TABLE_NAME,
                     }
                 }
 
+                return fkList;
+            }
+            
+            public override void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool useCamelCase, bool prependSchemaName)
+            {
                 foreach(var foreignKey in fkList)
                 {
-                    Table fkTable = result.GetTable(foreignKey.FkTableName, foreignKey.FkSchema);
-                    if(fkTable == null)
-                        continue;   // Could be filtered out
+                    Table fkTable = tables.GetTable(foreignKey.FkTableName, foreignKey.FkSchema);
+                    if (fkTable.IsMapping || !fkTable.HasForeignKey)
+                        continue;
 
-                    Table pkTable = result.GetTable(foreignKey.PkTableName, foreignKey.PkSchema);
-                    if(pkTable == null)
-                        continue;   // Could be filtered out
+                    Table pkTable = tables.GetTable(foreignKey.PkTableName, foreignKey.PkSchema);
+                    if (pkTable.IsMapping)
+                        continue;
 
                     Column fkCol = fkTable.Columns.Find(n => n.PropertyName == foreignKey.FkColumn);
-                    if(fkCol == null)
-                        continue;
-
                     Column pkCol = pkTable.Columns.Find(n => n.PropertyName == foreignKey.PkColumn);
-                    if(pkCol == null)
-                        continue;
 
-                    fkTable.HasForeignKey = true;
-
-                    string pkTableHumanCase = (useCamelCase ? Inflector.ToTitleCase(foreignKey.PkTableName) : foreignKey.PkTableName).Replace(" ", "").Replace("$", "");
-                    if(string.Compare(foreignKey.PkSchema, "dbo", StringComparison.OrdinalIgnoreCase) != 0 && prependSchemaName)
-                        pkTableHumanCase = foreignKey.PkSchema + "_" + pkTableHumanCase;
+                    var pkTableHumanCase = foreignKey.PkTableHumanCase(useCamelCase, prependSchemaName);
 
                     string pkPropName = fkTable.GetUniqueColumnPropertyName(pkTableHumanCase);
                     string fkPropName = pkTable.GetUniqueColumnPropertyName(fkTable.NameHumanCase);
@@ -1325,10 +1326,32 @@ ORDER BY FK.TABLE_NAME,
 
                     var relationship = CalcRelationship(pkTable, fkTable, fkCol, pkCol);
                     fkCol.ConfigFk = string.Format("{0}; // {1}", GetRelationship(relationship, fkCol, pkCol, pkPropName, fkPropName), foreignKey.ConstraintName);
-                    pkTable.AddReverseNavigation(relationship, fkCol, pkCol, pkTableHumanCase, fkTable, fkPropName, string.Format("{0}.{1}", fkTable.Name, foreignKey.ConstraintName));
+                    pkTable.AddReverseNavigation(relationship, pkTableHumanCase, fkTable, fkPropName, string.Format("{0}.{1}", fkTable.Name, foreignKey.ConstraintName));
                 }
+            }
 
-                return result;
+            public override void IdentifyForeignKeys(List<ForeignKey> fkList, Tables tables)
+            {
+                foreach(var foreignKey in fkList)
+                {
+                    Table fkTable = tables.GetTable(foreignKey.FkTableName, foreignKey.FkSchema);
+                    if(fkTable == null)
+                        continue;   // Could be filtered out
+
+                    Table pkTable = tables.GetTable(foreignKey.PkTableName, foreignKey.PkSchema);
+                    if(pkTable == null)
+                        continue;   // Could be filtered out
+
+                    Column fkCol = fkTable.Columns.Find(n => n.PropertyName == foreignKey.FkColumn);
+                    if(fkCol == null)
+                        continue;   // Could not find fk column
+
+                    Column pkCol = pkTable.Columns.Find(n => n.PropertyName == foreignKey.PkColumn);
+                    if(pkCol == null)
+                        continue;   // Could not find pk column
+
+                    fkTable.HasForeignKey = true;
+                }
             }
 
             private static string GetRelationship(Relationship relationship, Column fkCol, Column pkCol, string pkPropName, string fkPropName)
@@ -1510,6 +1533,14 @@ ORDER BY FK.TABLE_NAME,
                 FkSchema = fkSchema;
                 FkTableName = fkTableName;
             }
+
+            public string PkTableHumanCase(bool useCamelCase, bool prependSchemaName)
+            {
+                string pkTableHumanCase = (useCamelCase ? Inflector.ToTitleCase(PkTableName) : PkTableName).Replace(" ", "").Replace("$", "");
+                if (string.Compare(PkSchema, "dbo", StringComparison.OrdinalIgnoreCase) != 0 && prependSchemaName)
+                    pkTableHumanCase = PkSchema + "_" + pkTableHumanCase;
+                return pkTableHumanCase;
+            }
         }
 
         public class Table
@@ -1520,14 +1551,14 @@ ORDER BY FK.TABLE_NAME,
             public string Type;
             public string ClassName;
             public string CleanName;
+            public bool IsMapping;
             public bool IsView;
             public bool HasForeignKey;
             public bool HasNullableColumns;
-            public bool IsMapping;
 
             public List<Column> Columns;
             public List<string> ReverseNavigationProperty;
-            public List<string> ReverseNavigationConfiguration;
+            public List<string> MappingConfiguration;
             public List<string> ReverseNavigationCtor;
             public List<string> ReverseNavigationUniquePropName;
 
@@ -1535,7 +1566,7 @@ ORDER BY FK.TABLE_NAME,
             {
                 Columns = new List<Column>();
                 ReverseNavigationProperty = new List<string>();
-                ReverseNavigationConfiguration = new List<string>();
+                MappingConfiguration = new List<string>();
                 ReverseNavigationCtor = new List<string>();
                 ReverseNavigationUniquePropName = new List<string>();
             }
@@ -1594,7 +1625,7 @@ ORDER BY FK.TABLE_NAME,
                 return columnName;
             }
 
-            public void AddReverseNavigation(Relationship relationship, Column fkCol, Column pkCol, string fkName, Table fkTable, string propName, string constraint)
+            public void AddReverseNavigation(Relationship relationship, string fkName, Table fkTable, string propName, string constraint)
             {
                 switch(relationship)
                 {
@@ -1612,13 +1643,26 @@ ORDER BY FK.TABLE_NAME,
                         break;
 
                     case Relationship.ManyToMany:
-                        ReverseNavigationProperty.Add(string.Format("public virtual ICollection<{0}> {1} {{ get; set; }} // {2}", fkTable.NameHumanCase, propName, constraint));
+                        ReverseNavigationProperty.Add(string.Format("public virtual ICollection<{0}> {1} {{ get; set; }} // Many to many mapping", fkTable.NameHumanCase, propName));
                         ReverseNavigationCtor.Add(string.Format("{0} = new List<{1}>();", propName, fkTable.NameHumanCase));
                         break;
 
                     default:
                         throw new ArgumentOutOfRangeException("relationship");
                 }
+            }
+
+            public void AddMappingConfiguration(ForeignKey left, ForeignKey right, bool useCamelCase, bool prependSchemaName)
+            {
+                var leftTableHumanCase = left.PkTableHumanCase(useCamelCase, prependSchemaName);
+                var rightTableHumanCase = right.PkTableHumanCase(useCamelCase, prependSchemaName);
+
+                MappingConfiguration.Add(string.Format(@"HasMany(t => t.{0}).WithMany(t => t.{1}).Map(m => 
+            {{
+                m.ToTable(""{2}"");
+                m.MapLeftKey(""{3}"");
+                m.MapRightKey(""{4}"");
+            }});", rightTableHumanCase, leftTableHumanCase, left.FkTableName, left.FkColumn, right.FkColumn));
             }
 
             public void SetPrimaryKeys()
@@ -1634,19 +1678,47 @@ ORDER BY FK.TABLE_NAME,
                 }
             }
 
-            public void SetMappingTables()
+            public void IdentifyMappingTable(List<ForeignKey> fkList, Tables tables, bool useCamelCase, bool prependSchemaName)
             {
                 IsMapping = false;
-                
-                // Must have at least 2 columns to be a mapping table
-                if (Columns.Count < 2)
+
+                // Must have only 2 columns to be a mapping table
+                if (Columns.Count != 2)
                     return;
                 
-                // Two columns must either be a primary key, or have a unique constraint.
-                int numPrimaryKeys = PrimaryKeys.Count();
+                // All columns must be primary keys
+                if (PrimaryKeys.Count() != 2)
+                    return;
 
+                // No columns should be nullable
+                if (Columns.Any(x => x.IsNullable))
+                    return;
 
-                // All columns are primary keys
+                // Find the foreign keys for this table
+                var foreignKeys = fkList.Where(x =>
+                                               String.Compare(x.FkTableName, Name, StringComparison.OrdinalIgnoreCase) == 0 &&
+                                               String.Compare(x.FkSchema, Schema, StringComparison.OrdinalIgnoreCase) == 0)
+                                        .ToList();
+                
+                // Each column must have a foreign key, therefore check column and foreign key counts match
+                if (foreignKeys.Select(x => x.FkColumn).Distinct().Count() != 2)
+                    return;
+
+                IsMapping = true;
+                
+                ForeignKey left  = foreignKeys[0];
+                ForeignKey right = foreignKeys[1];
+                
+                Table leftTable = tables.GetTable(left.PkTableName, left.PkSchema);
+                Table rightTable = tables.GetTable(right.PkTableName, right.PkSchema);
+
+                leftTable.AddMappingConfiguration(left, right, useCamelCase, prependSchemaName);
+
+                rightTable.AddReverseNavigation(Relationship.ManyToMany, rightTable.NameHumanCase, leftTable,
+                                               rightTable.GetUniqueColumnPropertyName(leftTable.NameHumanCase), null);
+
+                leftTable.AddReverseNavigation(Relationship.ManyToMany, leftTable.NameHumanCase, rightTable,
+                                                leftTable.GetUniqueColumnPropertyName(rightTable.NameHumanCase), null);
             }
         }
 
@@ -1667,11 +1739,11 @@ ORDER BY FK.TABLE_NAME,
                 }
             }
 
-            public void SetMappingTables()
+            public void IdentifyMappingTables(List<ForeignKey> fkList, bool useCamelCase, bool prependSchemaName)
             {
-                foreach(var tbl in this)
+                foreach(var tbl in this.Where(x => x.HasForeignKey))
                 {
-                    tbl.SetMappingTables();
+                    tbl.IdentifyMappingTable(fkList, this, useCamelCase, prependSchemaName);
                 }
             }
         }
