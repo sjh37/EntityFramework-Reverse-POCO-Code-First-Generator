@@ -143,6 +143,7 @@ namespace Scratch
         Regex TableFilterExclude = null;
         Regex TableFilterInclude = null;
 
+
         private static readonly Regex RxCleanUp = new Regex(@"[^\w\d_]", RegexOptions.Compiled);
 
         private static readonly Func<string, string> CleanUp = (str) =>
@@ -357,7 +358,8 @@ namespace Scratch
             private void SetupConfig()
             {
                 bool hasDatabaseGeneratedOption = false;
-                switch(PropertyType.ToLower())
+                string propertyType = PropertyType.ToLower();
+                switch (propertyType)
                 {
                     case "long":
                     case "short":
@@ -382,7 +384,7 @@ namespace Scratch
                                             (IsNullable) ? ".IsOptional()" : ".IsRequired()",
                                             (MaxLength > 0) ? ".HasMaxLength(" + MaxLength + ")" : string.Empty,
                                             (Scale > 0) ? ".HasPrecision(" + Precision + "," + Scale + ")" : string.Empty,
-                                            (IsStoreGenerated) ? ".IsFixedLength().IsRowVersion()" : string.Empty,
+                                            (IsStoreGenerated && propertyType == "timestamp") ? ".IsFixedLength().IsRowVersion()" : string.Empty,
                                             databaseGeneratedOption);
             }
 
@@ -1304,28 +1306,42 @@ ORDER BY FK.TABLE_NAME,
             
             public override void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool useCamelCase, bool prependSchemaName)
             {
-                foreach(var foreignKey in fkList)
+                var constraints = fkList.Select(x => x.ConstraintName).Distinct();
+                foreach (var constraint in constraints)
                 {
+                    var localConstraint = constraint;
+                    var foreignKeys = fkList.Where(x => x.ConstraintName == localConstraint).ToList();
+                    var foreignKey = foreignKeys.First();
+
                     Table fkTable = tables.GetTable(foreignKey.FkTableName, foreignKey.FkSchema);
-                    if (fkTable.IsMapping || !fkTable.HasForeignKey)
+                    if (fkTable == null || fkTable.IsMapping || !fkTable.HasForeignKey)
                         continue;
 
                     Table pkTable = tables.GetTable(foreignKey.PkTableName, foreignKey.PkSchema);
-                    if (pkTable.IsMapping)
+                    if (pkTable == null || pkTable.IsMapping)
                         continue;
 
-                    Column fkCol = fkTable.Columns.Find(n => n.PropertyName == foreignKey.FkColumn);
-                    Column pkCol = pkTable.Columns.Find(n => n.PropertyName == foreignKey.PkColumn);
-
-                    var pkTableHumanCase = foreignKey.PkTableHumanCase(useCamelCase, prependSchemaName);
-
+                    string pkTableHumanCase = foreignKey.PkTableHumanCase(useCamelCase, prependSchemaName);
                     string pkPropName = fkTable.GetUniqueColumnPropertyName(pkTableHumanCase);
                     string fkPropName = pkTable.GetUniqueColumnPropertyName(fkTable.NameHumanCase);
-                    fkCol.EntityFk = string.Format("public virtual {0} {1} {2} {3}", pkTableHumanCase, pkPropName, "{ get; set; } // ",
-                                                    fkCol.PropertyNameHumanCase + " - " + foreignKey.ConstraintName);
+
+                    var fkCols = foreignKeys.Select(x => fkTable.Columns.Find(n => n.PropertyName == x.FkColumn)).Where(x => x != null).ToList();
+                    var pkCols = foreignKeys.Select(x => pkTable.Columns.Find(n => n.PropertyName == x.PkColumn)).Where(x => x != null).ToList();
+
+                    var fkCol = fkCols.First();
+                    var pkCol = pkCols.First();
+
+                    fkCol.EntityFk = string.Format("public virtual {0} {1} {2} {3}", pkTableHumanCase, pkPropName, "{ get; set; } // ", foreignKey.ConstraintName);
 
                     var relationship = CalcRelationship(pkTable, fkTable, fkCol, pkCol);
-                    fkCol.ConfigFk = string.Format("{0}; // {1}", GetRelationship(relationship, fkCol, pkCol, pkPropName, fkPropName), foreignKey.ConstraintName);
+
+                    string manyToManyMapping;
+                    if(foreignKeys.Count > 1)
+                        manyToManyMapping = string.Format("c => new {{ {0} }}", string.Join(", ", fkCols.Select(x => "c." + x.PropertyNameHumanCase).ToArray()));
+                    else
+                        manyToManyMapping = string.Format("c => c.{0}", fkCol.PropertyNameHumanCase);
+                    
+                    fkCol.ConfigFk = string.Format("{0}; // {1}", GetRelationship(relationship, fkCol, pkCol, pkPropName, fkPropName, manyToManyMapping), foreignKey.ConstraintName);
                     pkTable.AddReverseNavigation(relationship, pkTableHumanCase, fkTable, fkPropName, string.Format("{0}.{1}", fkTable.Name, foreignKey.ConstraintName));
                 }
             }
@@ -1354,9 +1370,9 @@ ORDER BY FK.TABLE_NAME,
                 }
             }
 
-            private static string GetRelationship(Relationship relationship, Column fkCol, Column pkCol, string pkPropName, string fkPropName)
+            private static string GetRelationship(Relationship relationship, Column fkCol, Column pkCol, string pkPropName, string fkPropName, string manyToManyMapping)
             {
-                return string.Format("Has{0}(a => a.{1}){2}", GetHasMethod(fkCol, pkCol), pkPropName, GetWithMethod(relationship, fkCol, pkCol, fkPropName));
+                return string.Format("Has{0}(a => a.{1}){2}", GetHasMethod(fkCol, pkCol), pkPropName, GetWithMethod(relationship, fkCol, fkPropName, manyToManyMapping));
             }
 
             // HasOptional
@@ -1375,7 +1391,7 @@ ORDER BY FK.TABLE_NAME,
             // WithMany
             // WithRequiredPrincipal
             // WithRequiredDependent
-            private static string GetWithMethod(Relationship relationship, Column fkCol, Column pkCol, string fkPropName)
+            private static string GetWithMethod(Relationship relationship, Column fkCol, string fkPropName, string manyToManyMapping)
             {
                 switch(relationship)
                 {
@@ -1389,7 +1405,7 @@ ORDER BY FK.TABLE_NAME,
                         return string.Format(".WithMany(b => b.{0}).HasForeignKey(c => c.{1})", fkPropName, fkCol.PropertyNameHumanCase);
 
                     case Relationship.ManyToMany:
-                        return string.Format(".WithMany(b => b.{0}).HasForeignKey(c => c.{1})", fkPropName, fkCol.PropertyNameHumanCase);
+                        return string.Format(".WithMany(b => b.{0}).HasForeignKey({1})", fkPropName, manyToManyMapping);
 
                     default:
                         throw new ArgumentOutOfRangeException("relationship");
@@ -1704,16 +1720,20 @@ ORDER BY FK.TABLE_NAME,
                 if (foreignKeys.Select(x => x.FkColumn).Distinct().Count() != 2)
                     return;
 
-                IsMapping = true;
-                
                 ForeignKey left  = foreignKeys[0];
                 ForeignKey right = foreignKeys[1];
                 
                 Table leftTable = tables.GetTable(left.PkTableName, left.PkSchema);
+                if (leftTable == null)
+                    return;
+
                 Table rightTable = tables.GetTable(right.PkTableName, right.PkSchema);
+                if (rightTable == null)
+                    return;
 
                 leftTable.AddMappingConfiguration(left, right, useCamelCase, prependSchemaName);
 
+                IsMapping = true;
                 rightTable.AddReverseNavigation(Relationship.ManyToMany, rightTable.NameHumanCase, leftTable,
                                                rightTable.GetUniqueColumnPropertyName(leftTable.NameHumanCase), null);
 
