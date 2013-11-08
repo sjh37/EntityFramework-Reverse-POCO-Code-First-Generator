@@ -497,18 +497,18 @@
 
             public void CleanUpDefault()
             {
-                if (string.IsNullOrEmpty(Default))
+                if(string.IsNullOrEmpty(Default))
                     return;
 
-                while (Default.First() == '(' && Default.Last() == ')')
+                while (Default.First() == '(' && Default.Last() == ')' && Default.Length > 2)
                 {
                     Default = Default.Substring(1, Default.Length - 2);
                 }
 
-                if (Default.First() == '\'' && Default.Last() == '\'' && Default.Length > 1)
+                if(Default.First() == '\'' && Default.Last() == '\'' && Default.Length > 2)
                     Default = string.Format("\"{0}\"", Default.Substring(1, Default.Length - 2));
 
-                switch (PropertyType.ToLower())
+                switch(PropertyType.ToLower())
                 {
                     case "bool":
                         Default = (Default == "0") ? "false" : "true";
@@ -532,7 +532,7 @@
                     case "decimal":
                     case "byte":
                     case "guid":
-                        if(Default.First() == '\"' && Default.Last() == '\"' && Default.Length > 1)
+                        if(Default.First() == '\"' && Default.Last() == '\"' && Default.Length > 2)
                             Default = Default.Substring(1, Default.Length - 2);
                         break;
 
@@ -543,7 +543,7 @@
                         break;
                 }
 
-                if (string.IsNullOrWhiteSpace(Default))
+                if(string.IsNullOrWhiteSpace(Default))
                     return;
 
                 // Validate default
@@ -551,25 +551,25 @@
                 {
                     case "long":
                         long l;
-                        if (!long.TryParse(Default, out l))
-                            Default = string.Empty;
-                        break;
-                    
-                    case "short":
-                        short s;
-                        if (!short.TryParse(Default, out s))
+                        if(!long.TryParse(Default, out l))
                             Default = string.Empty;
                         break;
 
-                  case "int":
+                    case "short":
+                        short s;
+                        if(!short.TryParse(Default, out s))
+                            Default = string.Empty;
+                        break;
+
+                    case "int":
                         int i;
                         if(!int.TryParse(Default, out i))
                             Default = string.Empty;
                         break;
 
-                  case "datetime":
+                    case "datetime":
                         DateTime dt;
-                        if (!DateTime.TryParse(Default, out dt))
+                        if(!DateTime.TryParse(Default, out dt))
                             Default = Default.ToLower().Contains("getdate()") ? "DateTime.Now" : string.Empty;
                         else
                             Default = string.Format("DateTime.Parse({0})", Default);
@@ -583,39 +583,39 @@
                             Default = string.Format("DateTimeOffset.Parse({0})", Default);
                         break;
 
-                  case "timespan":
+                    case "timespan":
                         TimeSpan ts;
-                         if(!TimeSpan.TryParse(Default, out ts))
+                        if(!TimeSpan.TryParse(Default, out ts))
                             Default = string.Empty;
                         else
                             Default = string.Format("TimeSpan.Parse({0})", Default);
                         break;
 
-                  case "double":
+                    case "double":
                         double d;
                         if(!double.TryParse(Default, out d))
                             Default = string.Empty;
                         break;
 
-                  case "float":
+                    case "float":
                         float f;
                         if(!float.TryParse(Default, out f))
                             Default = string.Empty;
                         break;
 
-                  case "decimal":
+                    case "decimal":
                         decimal dec;
                         if(!decimal.TryParse(Default, out dec))
                             Default = string.Empty;
                         break;
 
-                  case "byte":
+                    case "byte":
                         byte b;
                         if(!byte.TryParse(Default, out b))
                             Default = string.Empty;
                         break;
 
-                  case "bool":
+                    case "bool":
                         bool x;
                         if(!bool.TryParse(Default, out x))
                             Default = string.Empty;

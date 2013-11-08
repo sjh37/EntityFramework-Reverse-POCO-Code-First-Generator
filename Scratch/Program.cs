@@ -399,12 +399,12 @@ namespace Scratch
                 if(string.IsNullOrEmpty(Default))
                     return;
 
-                while(Default.First() == '(' && Default.Last() == ')')
+                while (Default.First() == '(' && Default.Last() == ')' && Default.Length > 2)
                 {
                     Default = Default.Substring(1, Default.Length - 2);
                 }
 
-                if(Default.First() == '\'' && Default.Last() == '\'' && Default.Length > 1)
+                if(Default.First() == '\'' && Default.Last() == '\'' && Default.Length > 2)
                     Default = string.Format("\"{0}\"", Default.Substring(1, Default.Length - 2));
 
                 switch(PropertyType.ToLower())
@@ -431,7 +431,7 @@ namespace Scratch
                     case "decimal":
                     case "byte":
                     case "guid":
-                        if(Default.First() == '\"' && Default.Last() == '\"' && Default.Length > 1)
+                        if(Default.First() == '\"' && Default.Last() == '\"' && Default.Length > 2)
                             Default = Default.Substring(1, Default.Length - 2);
                         break;
 
