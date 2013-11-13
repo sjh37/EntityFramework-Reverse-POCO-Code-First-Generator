@@ -87,9 +87,10 @@ namespace Scratch
 
         // Settings
         string ConnectionStringName = "MyDbContext";   // Uses last connection string in config if not specified
-        string ConnectionString = "Data Source=(local);Initial Catalog=bybox;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";   // Uses last connection string in config if not specified
+        string ConnectionString = "Data Source=(local);Initial Catalog=aspnetdb;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";   // Uses last connection string in config if not specified
         bool IncludeViews = true;
         string DbContextName = "MyDbContext";
+        string ConfigurationClassName = "Configuration";
         bool MakeClassesPartial = true;
         bool GenerateSeparateFiles = false;
         bool UseCamelCase = true;

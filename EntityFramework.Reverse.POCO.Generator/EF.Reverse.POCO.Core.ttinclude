@@ -33,6 +33,7 @@
         string ConnectionStringName = "";        		
         bool IncludeViews = true;
         string DbContextName = "MyDbContext";
+        string ConfigurationClassName = "Configuration";
         bool MakeClassesPartial = true;
         bool GenerateSeparateFiles = false;
         string FileExtension = ".cs";
