@@ -71,6 +71,18 @@
             return true;
         };
 
+        static string[] ReservedKeywords = new string[]
+        {
+            "abstract", "as", "base", "bool", "break", "byte", "case", "catch", "char",
+            "checked", "class", "const", "continue", "decimal", "default", "delegate", "do",
+            "double", "else", "enum", "event", "explicit", "extern", "false", "finally", "fixed", 
+            "float", "for", "foreach", "goto", "if", "implicit", "in", "int", "interface",
+            "internal", "is", "lock", "long", "namespace", "new", "null", "object", "operator",
+            "out", "override", "params", "private", "protected", "public", "readonly", "ref",
+            "return", "sbyte", "sealed", "short", "sizeof", "stackalloc", "static", "string",
+            "struct", "switch", "this", "throw", "true", "try", "typeof", "uint", "ulong",
+            "unchecked", "unsafe", "ushort", "using", "virtual", "volatile", "void", "while"
+        };
         private static readonly Regex RxCleanUp = new Regex(@"[^\w\d_]", RegexOptions.Compiled);
 
         private static readonly Func<string, string> CleanUp = (str) =>
@@ -1349,9 +1361,12 @@ ORDER BY FK.TABLE_NAME,
                                     if((string.Compare(table.Schema, "dbo", StringComparison.OrdinalIgnoreCase) != 0) && prependSchemaName)
                                         table.NameHumanCase = table.Schema + "_" + table.NameHumanCase;
 
-                                    // Check for table name clashes
-                                    if(useCamelCase && result.Find(x => x.NameHumanCase == table.NameHumanCase) != null)
+                                    // Check for table or C# name clashes
+                                    if (ReservedKeywords.Contains(table.NameHumanCase) ||
+                                        (useCamelCase && result.Find(x => x.NameHumanCase == table.NameHumanCase) != null))
+                                    {
                                         table.NameHumanCase += "1";
+                                    }
 
                                     result.Add(table);
                                 }
