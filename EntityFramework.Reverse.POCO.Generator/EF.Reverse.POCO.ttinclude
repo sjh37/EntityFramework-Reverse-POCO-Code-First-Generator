@@ -9,6 +9,7 @@ fileManager.StartHeader();
 // ReSharper disable InconsistentNaming
 // ReSharper disable PartialTypeWithSinglePart
 // ReSharper disable PartialMethodWithSinglePart
+// ReSharper disable RedundantNameQualifier
 
 using System;
 <# if(ElementsToGenerate.HasFlag(Elements.Poco)){ #>
