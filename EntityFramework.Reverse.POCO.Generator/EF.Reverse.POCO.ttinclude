@@ -55,6 +55,9 @@ using DatabaseGeneratedOption = System.ComponentModel.DataAnnotations.Schema.Dat
         }
     }    
 #>
+<#if (!string.IsNullOrEmpty(CollectionTypeNamespace)){
+        #>using <#=CollectionTypeNamespace#>;
+<#}#>
 
 namespace <#= Namespace #>
 {
