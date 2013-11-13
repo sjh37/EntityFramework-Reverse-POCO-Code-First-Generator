@@ -87,7 +87,7 @@ namespace Scratch
 
         // Settings
         string ConnectionStringName = "MyDbContext";   // Uses last connection string in config if not specified
-        string ConnectionString = "Data Source=(local);Initial Catalog=aspnetdb;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";   // Uses last connection string in config if not specified
+        string ConnectionString = "Data Source=(local);Initial Catalog=bybox;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";   // Uses last connection string in config if not specified
         bool IncludeViews = true;
         string DbContextName = "MyDbContext";
         bool MakeClassesPartial = true;
@@ -142,6 +142,19 @@ namespace Scratch
         //              TableFilterInclude = new Regex("^table_name1$|^table_name2$|etc");
         Regex TableFilterExclude = null;
         Regex TableFilterInclude = null;
+
+        static string[] ReservedKeywords = new string[]
+        {
+            "abstract", "as", "base", "bool", "break", "byte", "case", "catch", "char",
+            "checked", "class", "const", "continue", "decimal", "default", "delegate", "do",
+            "double", "else", "enum", "event", "explicit", "extern", "false", "finally", "fixed", 
+            "float", "for", "foreach", "goto", "if", "implicit", "in", "int", "interface",
+            "internal", "is", "lock", "long", "namespace", "new", "null", "object", "operator",
+            "out", "override", "params", "private", "protected", "public", "readonly", "ref",
+            "return", "sbyte", "sealed", "short", "sizeof", "stackalloc", "static", "string",
+            "struct", "switch", "this", "throw", "true", "try", "typeof", "uint", "ulong",
+            "unchecked", "unsafe", "ushort", "using", "virtual", "volatile", "void", "while"
+        };
 
 
         private static readonly Regex RxCleanUp = new Regex(@"[^\w\d_]", RegexOptions.Compiled);
@@ -1248,9 +1261,12 @@ ORDER BY FK.TABLE_NAME,
                                     if((string.Compare(table.Schema, "dbo", StringComparison.OrdinalIgnoreCase) != 0) && prependSchemaName)
                                         table.NameHumanCase = table.Schema + "_" + table.NameHumanCase;
 
-                                    // Check for table name clashes
-                                    if(useCamelCase && result.Find(x => x.NameHumanCase == table.NameHumanCase) != null)
+                                    // Check for table or C# name clashes
+                                    if (ReservedKeywords.Contains(table.NameHumanCase) ||
+                                        (useCamelCase && result.Find(x => x.NameHumanCase == table.NameHumanCase) != null))
+                                    {
                                         table.NameHumanCase += "1";
+                                    }
 
                                     result.Add(table);
                                 }
