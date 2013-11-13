@@ -482,17 +482,17 @@ namespace Scratch
                     case "datetime":
                         DateTime dt;
                         if(!DateTime.TryParse(Default, out dt))
-                            Default = Default.ToLower().Contains("getdate()") ? "DateTime.Now" : string.Empty;
+                            Default = Default.ToLower().Contains("getdate()") ? "System.DateTime.Now" : string.Empty;
                         else
-                            Default = string.Format("DateTime.Parse({0})", Default);
+                            Default = string.Format("System.DateTime.Parse({0})", Default);
                         break;
 
                     case "datetimeoffset":
                         DateTimeOffset dto;
                         if(!DateTimeOffset.TryParse(Default, out dto))
-                            Default = Default.ToLower().Contains("sysdatetimeoffset()") ? "DateTimeOffset.Now" : string.Empty;
+                            Default = Default.ToLower().Contains("sysdatetimeoffset()") ? "System.DateTimeOffset.Now" : string.Empty;
                         else
-                            Default = string.Format("DateTimeOffset.Parse({0})", Default);
+                            Default = string.Format("System.DateTimeOffset.Parse({0})", Default);
                         break;
 
                     case "timespan":
@@ -500,7 +500,7 @@ namespace Scratch
                         if(!TimeSpan.TryParse(Default, out ts))
                             Default = string.Empty;
                         else
-                            Default = string.Format("TimeSpan.Parse({0})", Default);
+                            Default = string.Format("System.TimeSpan.Parse({0})", Default);
                         break;
 
                     case "double":
@@ -535,7 +535,7 @@ namespace Scratch
 
                     case "guid":
                         if(Default.ToLower() == "newid()" || Default.ToLower() == "newsequentialid()")
-                            Default = "Guid.NewGuid()";
+                            Default = "System.Guid.NewGuid()";
                         break;
                 }
 

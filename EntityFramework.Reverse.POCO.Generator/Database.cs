@@ -14,6 +14,7 @@
 // ReSharper disable InconsistentNaming
 // ReSharper disable PartialTypeWithSinglePart
 // ReSharper disable PartialMethodWithSinglePart
+// ReSharper disable RedundantNameQualifier
 
 using System;
 using System.Collections.Generic;
@@ -162,7 +163,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public AspnetApplications()
         {
-            ApplicationId = Guid.NewGuid();
+            ApplicationId = System.Guid.NewGuid();
             AspnetMembership = new List<AspnetMembership>();
             AspnetPaths = new List<AspnetPaths>();
             AspnetRoles = new List<AspnetRoles>();
@@ -222,7 +223,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public AspnetPaths()
         {
-            PathId = Guid.NewGuid();
+            PathId = System.Guid.NewGuid();
             AspnetPersonalizationPerUser = new List<AspnetPersonalizationPerUser>();
         }
     }
@@ -253,7 +254,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public AspnetPersonalizationPerUser()
         {
-            Id = Guid.NewGuid();
+            Id = System.Guid.NewGuid();
         }
     }
 
@@ -287,7 +288,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public AspnetRoles()
         {
-            RoleId = Guid.NewGuid();
+            RoleId = System.Guid.NewGuid();
             AspnetUsers = new List<AspnetUsers>();
         }
     }
@@ -322,7 +323,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public AspnetUsers()
         {
-            UserId = Guid.NewGuid();
+            UserId = System.Guid.NewGuid();
             MobileAlias = "NULL";
             IsAnonymous = false;
             AspnetRoles = new List<AspnetRoles>();
