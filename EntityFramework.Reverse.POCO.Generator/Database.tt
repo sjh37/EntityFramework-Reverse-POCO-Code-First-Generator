@@ -64,6 +64,9 @@
     TableFilterExclude = null;
     TableFilterInclude = null;
 
+    CollectionType = "List";  // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example
+    CollectionTypeNamespace = ""; // "System.Collections.ObjectModel" is required if setting the CollectionType = "ObservableCollection"
+
 
     // Read schema
     var tables = LoadTables();
