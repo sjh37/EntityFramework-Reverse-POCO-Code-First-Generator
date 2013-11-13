@@ -200,7 +200,9 @@ namespace Scratch
                 col.PropertyType != "byte[]" &&
                 col.PropertyType != "string" &&
                 col.PropertyType != "Microsoft.SqlServer.Types.SqlGeography" &&
-                col.PropertyType != "Microsoft.SqlServer.Types.SqlGeometry")
+                col.PropertyType != "Microsoft.SqlServer.Types.SqlGeometry" &&
+                col.PropertyType != "System.Data.Spatial.DbGeography" &&
+                col.PropertyType != "System.Data.Spatial.DbGeometry")
                 result = "?";
             return result;
         }
