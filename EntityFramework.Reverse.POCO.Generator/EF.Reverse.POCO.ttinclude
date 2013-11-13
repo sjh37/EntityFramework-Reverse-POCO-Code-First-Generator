@@ -124,7 +124,7 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.Na
 foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
 {
 #>
-            modelBuilder.Configurations.Add(new <#=tbl.NameHumanCase#>Configuration());
+            modelBuilder.Configurations.Add(new <#=tbl.NameHumanCase + ConfigurationClassName#>());
 <# } #>
 <#if(MakeClassesPartial) {#>        OnModelCreatingPartial(modelBuilder);
 <#}#>
@@ -136,7 +136,7 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.Na
 foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
 {
 #>
-            modelBuilder.Configurations.Add(new <#=tbl.NameHumanCase#>Configuration(schema));
+            modelBuilder.Configurations.Add(new <#=tbl.NameHumanCase + ConfigurationClassName#>(schema));
 <# } #>
             return modelBuilder;
         }
@@ -233,11 +233,11 @@ if(!GenerateSeparateFiles) { #>
 foreach(Table tbl in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase))
 {
 #>
-<# fileManager.StartNewFile(tbl.NameHumanCase + "Configuration" + FileExtension); #>
+<# fileManager.StartNewFile(tbl.NameHumanCase + ConfigurationClassName + FileExtension); #>
     // <#=tbl.Name#>
-    internal <# if(MakeClassesPartial) { #>partial <# } #>class <#=tbl.NameHumanCase#>Configuration : EntityTypeConfiguration<<#=tbl.NameHumanCase#>>
+    internal <# if(MakeClassesPartial) { #>partial <# } #>class <#=tbl.NameHumanCase + ConfigurationClassName#> : EntityTypeConfiguration<<#=tbl.NameHumanCase#>>
     {
-        public <#=tbl.NameHumanCase#>Configuration(string schema = "<#=tbl.Schema#>")
+        public <#=tbl.NameHumanCase + ConfigurationClassName#>(string schema = "<#=tbl.Schema#>")
         {
             ToTable(schema + ".<#=tbl.Name#>");
             HasKey(<#=tbl.PrimaryKeyNameHumanCase()#>);

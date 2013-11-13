@@ -28,6 +28,7 @@
     
     // Namespace = ""; // Override the default namespace here
     DbContextName = "MyDbContext";
+    ConfigurationClassName = "Configuration"; // Mapping, Map, etc
     MakeClassesPartial = false;
     GenerateSeparateFiles = false;
     UseCamelCase = true;    // This will rename the tables & fields to use CamelCase. If false table & field names will be left alone.
