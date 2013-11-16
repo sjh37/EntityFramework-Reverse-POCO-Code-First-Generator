@@ -665,7 +665,7 @@
         /// </summary>
         public static class Inflector
         {
-            static PluralizationService PluralizationService = PluralizationService.CreateService(new CultureInfo("en-US"));
+            static readonly PluralizationService PluralizationService = PluralizationService.CreateService(CultureInfo.CurrentCulture);
 
             /// <summary>
             /// Makes the plural.
