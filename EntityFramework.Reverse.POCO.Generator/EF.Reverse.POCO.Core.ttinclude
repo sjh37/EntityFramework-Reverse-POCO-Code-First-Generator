@@ -34,6 +34,7 @@
         // Settings
         string ConnectionStringName = "";        		
         bool IncludeViews = true;
+        bool UseForeignKeyNameInNavigation = false;
         string DbContextName = "MyDbContext";
         string ConfigurationClassName = "Configuration";
         string CollectionType = "List";
@@ -221,11 +222,41 @@
             return dte.Solution;
         }
 
-        public EnvDTE.Projects GetAllProjects()
-        {
-            return GetSolution().Projects;
+       public IEnumerable<EnvDTE.Project> GetAllProjects()
+       {
+            foreach(var projectObj in GetSolution().Projects)
+            {
+                var project = projectObj as EnvDTE.Project;
+                if(project == null)
+                    continue;
+                if(project.Kind == EnvDTE.Constants.vsProjectKindSolutionItems)
+                    foreach(var p in RecurseSolutionFolder(project))
+                        yield return p;
+                else
+                    yield return project;
+            }
         }
-        
+
+        private IEnumerable<EnvDTE.Project> RecurseSolutionFolder(EnvDTE.Project project)
+        {
+            if (project.ProjectItems == null)
+                yield break;
+            
+            foreach (EnvDTE.ProjectItem projectItem in project.ProjectItems)
+            {
+                var subProject = projectItem.SubProject;
+                if (subProject == null)
+                    continue;
+                if (subProject.Kind == EnvDTE.Constants.vsProjectKindSolutionItems)
+                {
+                    foreach (var p in RecurseSolutionFolder(subProject))
+                        yield return p;
+                }
+                else
+                    yield return subProject;
+            }
+        }
+
         public EnvDTE.Project GetCurrentProject()
         {
             var serviceProvider = (IServiceProvider)Host;
@@ -385,8 +416,8 @@
                     var fkList = reader.ReadForeignKeys();
                     reader.IdentifyForeignKeys(fkList, tables);
                     tables.SetPrimaryKeys();
-                    tables.IdentifyMappingTables(fkList, UseCamelCase, PrependSchemaName, CollectionType);
-                    reader.ProcessForeignKeys(fkList, tables, UseCamelCase, PrependSchemaName, CollectionType);
+                    tables.IdentifyMappingTables(fkList, UseCamelCase, PrependSchemaName, CollectionType, UseForeignKeyNameInNavigation);
+                    reader.ProcessForeignKeys(fkList, tables, UseCamelCase, PrependSchemaName, CollectionType, UseForeignKeyNameInNavigation);
                     
                     // Remove views that only consist of all nullable fields.
                     // I.e. they do not contain any primary key, and therefore cannot be used by EF
@@ -831,7 +862,7 @@
             public GeneratedTextTransformation Outer;
             public abstract Tables ReadSchema(Regex tableFilterExclude, bool useCamelCase, bool prependSchemaName);
             public abstract List<ForeignKey> ReadForeignKeys();
-            public abstract void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool useCamelCase, bool prependSchemaName, string collectionType);
+            public abstract void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool useCamelCase, bool prependSchemaName, string collectionType, bool useForeignKeyNameInNavigation);
             public abstract void IdentifyForeignKeys(List<ForeignKey> fkList, Tables tables);
 
             protected void WriteLine(string o)
@@ -1253,7 +1284,7 @@ ORDER BY FK.TABLE_NAME,
                 return fkList;
             }
             
-            public override void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool useCamelCase, bool prependSchemaName, string collectionType)
+            public override void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool useCamelCase, bool prependSchemaName, string collectionType, bool useForeignKeyNameInNavigation)
             {
                 var constraints = fkList.Select(x => x.ConstraintName).Distinct();
                 foreach (var constraint in constraints)
@@ -1271,11 +1302,11 @@ ORDER BY FK.TABLE_NAME,
                         continue;
 
                     string pkTableHumanCase = foreignKey.PkTableHumanCase(useCamelCase, prependSchemaName);
-                    string pkPropName = fkTable.GetUniqueColumnPropertyName(pkTableHumanCase);
-                    string fkPropName = pkTable.GetUniqueColumnPropertyName(fkTable.NameHumanCase);
+                    string pkPropName = fkTable.GetUniqueColumnPropertyName(pkTableHumanCase, foreignKeys, useCamelCase, useForeignKeyNameInNavigation);
+                    string fkPropName = pkTable.GetUniqueColumnPropertyName(fkTable.NameHumanCase, foreignKeys, useCamelCase, useForeignKeyNameInNavigation);
 
-                    var fkCols = foreignKeys.Select(x => fkTable.Columns.Find(n => n.PropertyName == x.FkColumn)).Where(x => x != null).ToList();
-                    var pkCols = foreignKeys.Select(x => pkTable.Columns.Find(n => n.PropertyName == x.PkColumn)).Where(x => x != null).ToList();
+                    var fkCols = foreignKeys.Select(x => fkTable.Columns.Find(n => n.Name == x.FkColumn)).Where(x => x != null).ToList();
+                    var pkCols = foreignKeys.Select(x => pkTable.Columns.Find(n => n.Name == x.PkColumn)).Where(x => x != null).ToList();
 
                     var fkCol = fkCols.First();
                     var pkCol = pkCols.First();
@@ -1563,7 +1594,7 @@ ORDER BY FK.TABLE_NAME,
                 return Columns.SingleOrDefault(x => String.Compare(x.Name, columnName, StringComparison.OrdinalIgnoreCase) == 0);
             }
 
-            public string GetUniqueColumnPropertyName(string columnName)
+            public string GetUniqueColumnPropertyName(string tableNameHumanCase, IList<ForeignKey> fKeys, bool useCamelCase, bool useForeignKeyNameInNavigation)
             {
                 if (ReverseNavigationUniquePropName.Count == 0)
                 {
@@ -1571,15 +1602,25 @@ ORDER BY FK.TABLE_NAME,
                     ReverseNavigationUniquePropName.AddRange(Columns.Select(c => c.PropertyNameHumanCase));
                 }
 
-                if (!ReverseNavigationUniquePropName.Contains(columnName))
+                if (!useForeignKeyNameInNavigation)
                 {
-                    ReverseNavigationUniquePropName.Add(columnName);
-                    return columnName;
+                    if (!ReverseNavigationUniquePropName.Contains(tableNameHumanCase))
+                    {
+                        ReverseNavigationUniquePropName.Add(tableNameHumanCase);
+                        return tableNameHumanCase;
+                    }
                 }
 
-                for (int n = 1; n < 100; ++n)
+                for (int n = 0; n < 99; ++n)
                 {
-                    string col = columnName + n;
+                    string col;
+                    if (useForeignKeyNameInNavigation && fKeys != null && fKeys.Count > n)
+                    {
+                        string fkName = (useCamelCase ? Inflector.ToTitleCase(fKeys[n].FkColumn) : fKeys[n].FkColumn);
+                        col = tableNameHumanCase + "_" + fkName.Replace(" ", "").Replace("$", "");
+                    }
+                    else
+                        col = tableNameHumanCase + (n + 1);
                     if (ReverseNavigationUniquePropName.Contains(col))
                         continue;
                     ReverseNavigationUniquePropName.Add(col);
@@ -1587,7 +1628,7 @@ ORDER BY FK.TABLE_NAME,
                 }
 
                 // Give up
-                return columnName;
+                return tableNameHumanCase;
             }
 
             public void AddReverseNavigation(Relationship relationship, string fkName, Table fkTable, string propName, string constraint, string collectionType)
@@ -1643,7 +1684,7 @@ ORDER BY FK.TABLE_NAME,
                 }
             }
 
-            public void IdentifyMappingTable(List<ForeignKey> fkList, Tables tables, bool useCamelCase, bool prependSchemaName, string collectionType)
+            public void IdentifyMappingTable(List<ForeignKey> fkList, Tables tables, bool useCamelCase, bool prependSchemaName, string collectionType, bool useForeignKeyNameInNavigation)
             {
                 IsMapping = false;
 
@@ -1684,10 +1725,10 @@ ORDER BY FK.TABLE_NAME,
 
                 IsMapping = true;
                 rightTable.AddReverseNavigation(Relationship.ManyToMany, rightTable.NameHumanCase, leftTable,
-                                               rightTable.GetUniqueColumnPropertyName(leftTable.NameHumanCase), null, collectionType);
+                                               rightTable.GetUniqueColumnPropertyName(leftTable.NameHumanCase, foreignKeys, useCamelCase, useForeignKeyNameInNavigation), null, collectionType);
 
                 leftTable.AddReverseNavigation(Relationship.ManyToMany, leftTable.NameHumanCase, rightTable,
-                                                leftTable.GetUniqueColumnPropertyName(rightTable.NameHumanCase), null, collectionType);
+                                                leftTable.GetUniqueColumnPropertyName(rightTable.NameHumanCase, foreignKeys, useCamelCase, useForeignKeyNameInNavigation), null, collectionType);
             }
         }
 
@@ -1708,11 +1749,11 @@ ORDER BY FK.TABLE_NAME,
                 }
             }
 
-            public void IdentifyMappingTables(List<ForeignKey> fkList, bool useCamelCase, bool prependSchemaName, string collectionType)
+            public void IdentifyMappingTables(List<ForeignKey> fkList, bool useCamelCase, bool prependSchemaName, string collectionType, bool useForeignKeyNameInNavigation)
             {
                 foreach(var tbl in this.Where(x => x.HasForeignKey))
                 {
-                    tbl.IdentifyMappingTable(fkList, this, useCamelCase, prependSchemaName, collectionType);
+                    tbl.IdentifyMappingTable(fkList, this, useCamelCase, prependSchemaName, collectionType, useForeignKeyNameInNavigation);
                 }
             }
         }
