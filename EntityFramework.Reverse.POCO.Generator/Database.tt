@@ -1,6 +1,6 @@
 ﻿<#@ include file="EF.Reverse.POCO.Core.ttinclude" #>
 <#
-    // v2.1.0
+    // v2.2.0
     // Settings
     ConnectionStringName = "MyDbContext";  // Searches for this connection string in config files listed below
     ConfigFilenameSearchOrder = new[] { "app.config", "web.config", "app.config.transform", "web.config.transform" }; // Add more here if required
@@ -28,7 +28,7 @@
     
     // Namespace = ""; // Override the default namespace here
     DbContextName = "MyDbContext";
-    ConfigurationClassName = "Configuration"; // Mapping, Map, etc
+    ConfigurationClassName = "Configuration"; // Configuration, Mapping, Map, etc
     MakeClassesPartial = false;
     GenerateSeparateFiles = false;
     UseCamelCase = true;    // This will rename the tables & fields to use CamelCase. If false table & field names will be left alone.

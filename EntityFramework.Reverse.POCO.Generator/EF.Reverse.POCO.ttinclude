@@ -2,7 +2,7 @@
 <#
 fileManager.StartHeader();
 // Copyright © Simon Hughes 2012
-// v2.1.0
+// v2.2.0
 #>
 // ReSharper disable RedundantUsingDirective
 // ReSharper disable DoNotCallOverridableMethodsInConstructor
@@ -184,7 +184,7 @@ if(tbl.ReverseNavigationProperty.Count() > 0)
 
         // Reverse navigation
 <#
-foreach(string s in tbl.ReverseNavigationProperty)
+foreach(string s in tbl.ReverseNavigationProperty.OrderBy(x => x))
 {
 #>
         <#=s #>
@@ -193,7 +193,7 @@ foreach(string s in tbl.ReverseNavigationProperty)
 
         // Foreign keys
 <#
-foreach(Column col in from c in tbl.Columns.OrderBy(x => x.Ordinal) where c.EntityFk != null select c)
+foreach(Column col in from c in tbl.Columns.OrderBy(x => x.EntityFk) where c.EntityFk != null select c)
 {
 #>
         <#=col.EntityFk #>
