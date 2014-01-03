@@ -313,10 +313,10 @@ namespace EntityFramework_Reverse_POCO_Generator
         public DateTime LastActivityDate { get; set; } // LastActivityDate
 
         // Reverse navigation
-        public virtual ICollection<AspnetRoles> AspnetRoles { get; set; } // Many to many mapping
         public virtual AspnetMembership AspnetMembership { get; set; } // aspnet_Membership.FK__aspnet_Me__UserI__22AA2996
-        public virtual ICollection<AspnetPersonalizationPerUser> AspnetPersonalizationPerUser { get; set; } // aspnet_PersonalizationPerUser.FK__aspnet_Pe__UserI__693CA210
         public virtual AspnetProfile AspnetProfile { get; set; } // aspnet_Profile.FK__aspnet_Pr__UserI__38996AB5
+        public virtual ICollection<AspnetPersonalizationPerUser> AspnetPersonalizationPerUser { get; set; } // aspnet_PersonalizationPerUser.FK__aspnet_Pe__UserI__693CA210
+        public virtual ICollection<AspnetRoles> AspnetRoles { get; set; } // Many to many mapping
 
         // Foreign keys
         public virtual AspnetApplications AspnetApplications { get; set; } //  FK__aspnet_Us__Appli__0DAF0CB0
@@ -326,8 +326,8 @@ namespace EntityFramework_Reverse_POCO_Generator
             UserId = System.Guid.NewGuid();
             MobileAlias = "NULL";
             IsAnonymous = false;
-            AspnetRoles = new List<AspnetRoles>();
             AspnetPersonalizationPerUser = new List<AspnetPersonalizationPerUser>();
+            AspnetRoles = new List<AspnetRoles>();
         }
     }
 
@@ -596,6 +596,12 @@ namespace EntityFramework_Reverse_POCO_Generator
 
             // Foreign keys
             HasRequired(a => a.AspnetApplications).WithMany(b => b.AspnetRoles).HasForeignKey(c => c.ApplicationId); // FK__aspnet_Ro__Appli__440B1D61
+            HasMany(t => t.AspnetUsers).WithMany(t => t.AspnetRoles).Map(m => 
+            {
+                m.ToTable("aspnet_UsersInRoles");
+                m.MapLeftKey("RoleId");
+                m.MapRightKey("UserId");
+            });
             HasMany(t => t.AspnetUsers).WithMany(t => t.AspnetRoles).Map(m => 
             {
                 m.ToTable("aspnet_UsersInRoles");
