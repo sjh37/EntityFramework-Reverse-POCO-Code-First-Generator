@@ -1418,15 +1418,13 @@ ORDER BY FK.TABLE_NAME,
             public Table()
             {
                 Columns = new List<Column>();
-                ReverseNavigationProperty = new List<string>();
-                MappingConfiguration = new List<string>();
-                ReverseNavigationCtor = new List<string>();
-                ReverseNavigationUniquePropName = new List<string>();
+                ResetNavigationProperties();
                 ReverseNavigationUniquePropNameClashes = new List<string>();
             }
 
             public void ResetNavigationProperties()
             {
+                MappingConfiguration = new List<string>();
                 ReverseNavigationProperty = new List<string>();
                 ReverseNavigationCtor = new List<string>();
                 ReverseNavigationUniquePropName = new List<string>();
