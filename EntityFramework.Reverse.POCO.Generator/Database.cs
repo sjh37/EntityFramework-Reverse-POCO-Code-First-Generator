@@ -725,12 +725,6 @@ namespace EntityFramework_Reverse_POCO_Generator
                 m.MapLeftKey("CustomerID");
                 m.MapRightKey("CustomerTypeID");
             });
-            HasMany(t => t.CustomerDemographics).WithMany(t => t.Customers).Map(m => 
-            {
-                m.ToTable("CustomerCustomerDemo");
-                m.MapLeftKey("CustomerID");
-                m.MapRightKey("CustomerTypeID");
-            });
         }
     }
 
@@ -763,12 +757,6 @@ namespace EntityFramework_Reverse_POCO_Generator
 
             // Foreign keys
             HasOptional(a => a.Employees_ReportsTo).WithMany(b => b.Employees2).HasForeignKey(c => c.ReportsTo); // FK_Employees_Employees
-            HasMany(t => t.Territories).WithMany(t => t.Employees).Map(m => 
-            {
-                m.ToTable("EmployeeTerritories");
-                m.MapLeftKey("EmployeeID");
-                m.MapRightKey("TerritoryID");
-            });
             HasMany(t => t.Territories).WithMany(t => t.Employees).Map(m => 
             {
                 m.ToTable("EmployeeTerritories");
