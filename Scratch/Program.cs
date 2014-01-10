@@ -89,7 +89,7 @@ namespace Scratch
 
         // Settings
         string ConnectionStringName = "MyDbContext";   // Uses last connection string in config if not specified
-        string ConnectionString = "Data Source=(local);Initial Catalog=aspnetdb;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";   // Uses last connection string in config if not specified
+        string ConnectionString = "Data Source=(local);Initial Catalog=Northwind;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";   // Uses last connection string in config if not specified
         bool IncludeViews = true;
         string DbContextName = "MyDbContext";
         string ConfigurationClassName = "Configuration";
@@ -1077,7 +1077,7 @@ ORDER BY FK.TABLE_NAME,
                                     };
                                     table.CleanName = CleanUp(table.Name);
                                     table.ClassName = useCamelCase ? Inflector.MakeSingular(table.CleanName) : table.CleanName;
-                                    table.NameHumanCase = (useCamelCase ? Inflector.ToTitleCase(table.Name) : table.Name).Replace(" ", "").Replace("$", "");
+                                    table.NameHumanCase = (useCamelCase ? Inflector.ToTitleCase(Inflector.MakeSingular(table.Name)) : table.Name).Replace(" ", "").Replace("$", "");
                                     if ((string.Compare(table.Schema, "dbo", StringComparison.OrdinalIgnoreCase) != 0) && prependSchemaName)
                                         table.NameHumanCase = table.Schema + "_" + table.NameHumanCase;
 
@@ -1388,7 +1388,7 @@ ORDER BY FK.TABLE_NAME,
 
             public string PkTableHumanCase(bool useCamelCase, bool prependSchemaName)
             {
-                string pkTableHumanCase = (useCamelCase ? Inflector.ToTitleCase(PkTableName) : PkTableName).Replace(" ", "").Replace("$", "");
+                string pkTableHumanCase = (useCamelCase ? Inflector.ToTitleCase(Inflector.MakeSingular(PkTableName)) : PkTableName).Replace(" ", "").Replace("$", "");
                 if (string.Compare(PkSchema, "dbo", StringComparison.OrdinalIgnoreCase) != 0 && prependSchemaName)
                     pkTableHumanCase = PkSchema + "_" + pkTableHumanCase;
                 return pkTableHumanCase;
@@ -1459,13 +1459,17 @@ ORDER BY FK.TABLE_NAME,
 
             public string GetUniqueColumnPropertyName(string tableNameHumanCase, IList<ForeignKey> fKeys, bool useCamelCase, bool checkForFkNameClashes)
             {
+                tableNameHumanCase = Inflector.MakePlural(tableNameHumanCase);
                 if (ReverseNavigationUniquePropName.Count == 0)
                 {
                     ReverseNavigationUniquePropName.Add(NameHumanCase);
                     ReverseNavigationUniquePropName.AddRange(Columns.Select(c => c.PropertyNameHumanCase));
                 }
 
-                if (checkForFkNameClashes && ReverseNavigationUniquePropName.Contains(tableNameHumanCase))
+                if (tableNameHumanCase == "Employees")
+                    Console.WriteLine("deleteme");
+
+                if (checkForFkNameClashes && ReverseNavigationUniquePropName.Contains(tableNameHumanCase) && !ReverseNavigationUniquePropNameClashes.Contains(tableNameHumanCase))
                     ReverseNavigationUniquePropNameClashes.Add(tableNameHumanCase);
 
                 if (!ReverseNavigationUniquePropNameClashes.Contains(tableNameHumanCase) && !ReverseNavigationUniquePropName.Contains(tableNameHumanCase))
@@ -1474,16 +1478,24 @@ ORDER BY FK.TABLE_NAME,
                     return tableNameHumanCase;
                 }
 
-                for (int n = 0; n < 99; ++n)
+                if (fKeys != null)
                 {
-                    string col;
-                    if (fKeys != null && fKeys.Count > n)
+                    foreach (ForeignKey fk in fKeys)
                     {
-                        string fkName = (useCamelCase ? Inflector.ToTitleCase(fKeys[n].FkColumn) : fKeys[n].FkColumn);
-                        col = tableNameHumanCase + "_" + fkName.Replace(" ", "").Replace("$", "");
+                        string fkName = (useCamelCase ? Inflector.ToTitleCase(fk.FkColumn) : fk.FkColumn);
+                        string col = tableNameHumanCase + "_" + fkName.Replace(" ", "").Replace("$", "");
+
+                        if (ReverseNavigationUniquePropName.Contains(col))
+                            continue;
+
+                        ReverseNavigationUniquePropName.Add(col);
+                        return col;
                     }
-                    else
-                        col = tableNameHumanCase + (n + 1);
+                }
+
+                for (int n = 1; n < 99; ++n)
+                {
+                    string col = tableNameHumanCase + n;
 
                     if (ReverseNavigationUniquePropName.Contains(col))
                         continue;
@@ -1525,8 +1537,8 @@ ORDER BY FK.TABLE_NAME,
 
             public void AddMappingConfiguration(ForeignKey left, ForeignKey right, bool useCamelCase, bool prependSchemaName)
             {
-                var leftTableHumanCase = left.PkTableHumanCase(useCamelCase, prependSchemaName);
-                var rightTableHumanCase = right.PkTableHumanCase(useCamelCase, prependSchemaName);
+                var leftTableHumanCase = Inflector.MakePlural(left.PkTableHumanCase(useCamelCase, prependSchemaName));
+                var rightTableHumanCase = Inflector.MakePlural(right.PkTableHumanCase(useCamelCase, prependSchemaName));
 
                 MappingConfiguration.Add(string.Format(@"HasMany(t => t.{0}).WithMany(t => t.{1}).Map(m => 
             {{

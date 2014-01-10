@@ -29,32 +29,32 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Unit of work
     public interface IMyDbContext : IDisposable
     {
-        IDbSet<AlphabeticalListOfProducts> AlphabeticalListOfProducts { get; set; } // Alphabetical list of products
-        IDbSet<Categories> Categories { get; set; } // Categories
+        IDbSet<AlphabeticalListOfProduct> AlphabeticalListOfProduct { get; set; } // Alphabetical list of products
+        IDbSet<Category> Category { get; set; } // Categories
         IDbSet<CategorySalesFor1997> CategorySalesFor1997 { get; set; } // Category Sales for 1997
         IDbSet<CurrentProductList> CurrentProductList { get; set; } // Current Product List
+        IDbSet<Customer> Customer { get; set; } // Customers
         IDbSet<CustomerAndSuppliersByCity> CustomerAndSuppliersByCity { get; set; } // Customer and Suppliers by City
-        IDbSet<CustomerDemographics> CustomerDemographics { get; set; } // CustomerDemographics
-        IDbSet<Customers> Customers { get; set; } // Customers
-        IDbSet<Employees> Employees { get; set; } // Employees
-        IDbSet<Invoices> Invoices { get; set; } // Invoices
-        IDbSet<OrderDetails> OrderDetails { get; set; } // Order Details
+        IDbSet<CustomerDemographic> CustomerDemographic { get; set; } // CustomerDemographics
+        IDbSet<Employee> Employee { get; set; } // Employees
+        IDbSet<Invoice> Invoice { get; set; } // Invoices
+        IDbSet<Order> Order { get; set; } // Orders
+        IDbSet<OrderDetail> OrderDetail { get; set; } // Order Details
         IDbSet<OrderDetailsExtended> OrderDetailsExtended { get; set; } // Order Details Extended
-        IDbSet<Orders> Orders { get; set; } // Orders
         IDbSet<OrdersQry> OrdersQry { get; set; } // Orders Qry
-        IDbSet<OrderSubtotals> OrderSubtotals { get; set; } // Order Subtotals
-        IDbSet<Products> Products { get; set; } // Products
+        IDbSet<OrderSubtotal> OrderSubtotal { get; set; } // Order Subtotals
+        IDbSet<Product> Product { get; set; } // Products
         IDbSet<ProductsAboveAveragePrice> ProductsAboveAveragePrice { get; set; } // Products Above Average Price
         IDbSet<ProductSalesFor1997> ProductSalesFor1997 { get; set; } // Product Sales for 1997
         IDbSet<ProductsByCategory> ProductsByCategory { get; set; } // Products by Category
         IDbSet<Region> Region { get; set; } // Region
         IDbSet<SalesByCategory> SalesByCategory { get; set; } // Sales by Category
         IDbSet<SalesTotalsByAmount> SalesTotalsByAmount { get; set; } // Sales Totals by Amount
-        IDbSet<Shippers> Shippers { get; set; } // Shippers
+        IDbSet<Shipper> Shipper { get; set; } // Shippers
         IDbSet<SummaryOfSalesByQuarter> SummaryOfSalesByQuarter { get; set; } // Summary of Sales by Quarter
         IDbSet<SummaryOfSalesByYear> SummaryOfSalesByYear { get; set; } // Summary of Sales by Year
-        IDbSet<Suppliers> Suppliers { get; set; } // Suppliers
-        IDbSet<Territories> Territories { get; set; } // Territories
+        IDbSet<Supplier> Supplier { get; set; } // Suppliers
+        IDbSet<Territory> Territory { get; set; } // Territories
 
         int SaveChanges();
     }
@@ -63,32 +63,32 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Database context
     public class MyDbContext : DbContext, IMyDbContext
     {
-        public IDbSet<AlphabeticalListOfProducts> AlphabeticalListOfProducts { get; set; } // Alphabetical list of products
-        public IDbSet<Categories> Categories { get; set; } // Categories
+        public IDbSet<AlphabeticalListOfProduct> AlphabeticalListOfProduct { get; set; } // Alphabetical list of products
+        public IDbSet<Category> Category { get; set; } // Categories
         public IDbSet<CategorySalesFor1997> CategorySalesFor1997 { get; set; } // Category Sales for 1997
         public IDbSet<CurrentProductList> CurrentProductList { get; set; } // Current Product List
+        public IDbSet<Customer> Customer { get; set; } // Customers
         public IDbSet<CustomerAndSuppliersByCity> CustomerAndSuppliersByCity { get; set; } // Customer and Suppliers by City
-        public IDbSet<CustomerDemographics> CustomerDemographics { get; set; } // CustomerDemographics
-        public IDbSet<Customers> Customers { get; set; } // Customers
-        public IDbSet<Employees> Employees { get; set; } // Employees
-        public IDbSet<Invoices> Invoices { get; set; } // Invoices
-        public IDbSet<OrderDetails> OrderDetails { get; set; } // Order Details
+        public IDbSet<CustomerDemographic> CustomerDemographic { get; set; } // CustomerDemographics
+        public IDbSet<Employee> Employee { get; set; } // Employees
+        public IDbSet<Invoice> Invoice { get; set; } // Invoices
+        public IDbSet<Order> Order { get; set; } // Orders
+        public IDbSet<OrderDetail> OrderDetail { get; set; } // Order Details
         public IDbSet<OrderDetailsExtended> OrderDetailsExtended { get; set; } // Order Details Extended
-        public IDbSet<Orders> Orders { get; set; } // Orders
         public IDbSet<OrdersQry> OrdersQry { get; set; } // Orders Qry
-        public IDbSet<OrderSubtotals> OrderSubtotals { get; set; } // Order Subtotals
-        public IDbSet<Products> Products { get; set; } // Products
+        public IDbSet<OrderSubtotal> OrderSubtotal { get; set; } // Order Subtotals
+        public IDbSet<Product> Product { get; set; } // Products
         public IDbSet<ProductsAboveAveragePrice> ProductsAboveAveragePrice { get; set; } // Products Above Average Price
         public IDbSet<ProductSalesFor1997> ProductSalesFor1997 { get; set; } // Product Sales for 1997
         public IDbSet<ProductsByCategory> ProductsByCategory { get; set; } // Products by Category
         public IDbSet<Region> Region { get; set; } // Region
         public IDbSet<SalesByCategory> SalesByCategory { get; set; } // Sales by Category
         public IDbSet<SalesTotalsByAmount> SalesTotalsByAmount { get; set; } // Sales Totals by Amount
-        public IDbSet<Shippers> Shippers { get; set; } // Shippers
+        public IDbSet<Shipper> Shipper { get; set; } // Shippers
         public IDbSet<SummaryOfSalesByQuarter> SummaryOfSalesByQuarter { get; set; } // Summary of Sales by Quarter
         public IDbSet<SummaryOfSalesByYear> SummaryOfSalesByYear { get; set; } // Summary of Sales by Year
-        public IDbSet<Suppliers> Suppliers { get; set; } // Suppliers
-        public IDbSet<Territories> Territories { get; set; } // Territories
+        public IDbSet<Supplier> Supplier { get; set; } // Suppliers
+        public IDbSet<Territory> Territory { get; set; } // Territories
 
         static MyDbContext()
         {
@@ -112,62 +112,62 @@ namespace EntityFramework_Reverse_POCO_Generator
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Configurations.Add(new AlphabeticalListOfProductsConfiguration());
-            modelBuilder.Configurations.Add(new CategoriesConfiguration());
+            modelBuilder.Configurations.Add(new AlphabeticalListOfProductConfiguration());
+            modelBuilder.Configurations.Add(new CategoryConfiguration());
             modelBuilder.Configurations.Add(new CategorySalesFor1997Configuration());
             modelBuilder.Configurations.Add(new CurrentProductListConfiguration());
+            modelBuilder.Configurations.Add(new CustomerConfiguration());
             modelBuilder.Configurations.Add(new CustomerAndSuppliersByCityConfiguration());
-            modelBuilder.Configurations.Add(new CustomerDemographicsConfiguration());
-            modelBuilder.Configurations.Add(new CustomersConfiguration());
-            modelBuilder.Configurations.Add(new EmployeesConfiguration());
-            modelBuilder.Configurations.Add(new InvoicesConfiguration());
-            modelBuilder.Configurations.Add(new OrderDetailsConfiguration());
+            modelBuilder.Configurations.Add(new CustomerDemographicConfiguration());
+            modelBuilder.Configurations.Add(new EmployeeConfiguration());
+            modelBuilder.Configurations.Add(new InvoiceConfiguration());
+            modelBuilder.Configurations.Add(new OrderConfiguration());
+            modelBuilder.Configurations.Add(new OrderDetailConfiguration());
             modelBuilder.Configurations.Add(new OrderDetailsExtendedConfiguration());
-            modelBuilder.Configurations.Add(new OrdersConfiguration());
             modelBuilder.Configurations.Add(new OrdersQryConfiguration());
-            modelBuilder.Configurations.Add(new OrderSubtotalsConfiguration());
-            modelBuilder.Configurations.Add(new ProductsConfiguration());
+            modelBuilder.Configurations.Add(new OrderSubtotalConfiguration());
+            modelBuilder.Configurations.Add(new ProductConfiguration());
             modelBuilder.Configurations.Add(new ProductsAboveAveragePriceConfiguration());
             modelBuilder.Configurations.Add(new ProductSalesFor1997Configuration());
             modelBuilder.Configurations.Add(new ProductsByCategoryConfiguration());
             modelBuilder.Configurations.Add(new RegionConfiguration());
             modelBuilder.Configurations.Add(new SalesByCategoryConfiguration());
             modelBuilder.Configurations.Add(new SalesTotalsByAmountConfiguration());
-            modelBuilder.Configurations.Add(new ShippersConfiguration());
+            modelBuilder.Configurations.Add(new ShipperConfiguration());
             modelBuilder.Configurations.Add(new SummaryOfSalesByQuarterConfiguration());
             modelBuilder.Configurations.Add(new SummaryOfSalesByYearConfiguration());
-            modelBuilder.Configurations.Add(new SuppliersConfiguration());
-            modelBuilder.Configurations.Add(new TerritoriesConfiguration());
+            modelBuilder.Configurations.Add(new SupplierConfiguration());
+            modelBuilder.Configurations.Add(new TerritoryConfiguration());
         }
 
         public static DbModelBuilder CreateModel(DbModelBuilder modelBuilder, string schema)
         {
-            modelBuilder.Configurations.Add(new AlphabeticalListOfProductsConfiguration(schema));
-            modelBuilder.Configurations.Add(new CategoriesConfiguration(schema));
+            modelBuilder.Configurations.Add(new AlphabeticalListOfProductConfiguration(schema));
+            modelBuilder.Configurations.Add(new CategoryConfiguration(schema));
             modelBuilder.Configurations.Add(new CategorySalesFor1997Configuration(schema));
             modelBuilder.Configurations.Add(new CurrentProductListConfiguration(schema));
+            modelBuilder.Configurations.Add(new CustomerConfiguration(schema));
             modelBuilder.Configurations.Add(new CustomerAndSuppliersByCityConfiguration(schema));
-            modelBuilder.Configurations.Add(new CustomerDemographicsConfiguration(schema));
-            modelBuilder.Configurations.Add(new CustomersConfiguration(schema));
-            modelBuilder.Configurations.Add(new EmployeesConfiguration(schema));
-            modelBuilder.Configurations.Add(new InvoicesConfiguration(schema));
-            modelBuilder.Configurations.Add(new OrderDetailsConfiguration(schema));
+            modelBuilder.Configurations.Add(new CustomerDemographicConfiguration(schema));
+            modelBuilder.Configurations.Add(new EmployeeConfiguration(schema));
+            modelBuilder.Configurations.Add(new InvoiceConfiguration(schema));
+            modelBuilder.Configurations.Add(new OrderConfiguration(schema));
+            modelBuilder.Configurations.Add(new OrderDetailConfiguration(schema));
             modelBuilder.Configurations.Add(new OrderDetailsExtendedConfiguration(schema));
-            modelBuilder.Configurations.Add(new OrdersConfiguration(schema));
             modelBuilder.Configurations.Add(new OrdersQryConfiguration(schema));
-            modelBuilder.Configurations.Add(new OrderSubtotalsConfiguration(schema));
-            modelBuilder.Configurations.Add(new ProductsConfiguration(schema));
+            modelBuilder.Configurations.Add(new OrderSubtotalConfiguration(schema));
+            modelBuilder.Configurations.Add(new ProductConfiguration(schema));
             modelBuilder.Configurations.Add(new ProductsAboveAveragePriceConfiguration(schema));
             modelBuilder.Configurations.Add(new ProductSalesFor1997Configuration(schema));
             modelBuilder.Configurations.Add(new ProductsByCategoryConfiguration(schema));
             modelBuilder.Configurations.Add(new RegionConfiguration(schema));
             modelBuilder.Configurations.Add(new SalesByCategoryConfiguration(schema));
             modelBuilder.Configurations.Add(new SalesTotalsByAmountConfiguration(schema));
-            modelBuilder.Configurations.Add(new ShippersConfiguration(schema));
+            modelBuilder.Configurations.Add(new ShipperConfiguration(schema));
             modelBuilder.Configurations.Add(new SummaryOfSalesByQuarterConfiguration(schema));
             modelBuilder.Configurations.Add(new SummaryOfSalesByYearConfiguration(schema));
-            modelBuilder.Configurations.Add(new SuppliersConfiguration(schema));
-            modelBuilder.Configurations.Add(new TerritoriesConfiguration(schema));
+            modelBuilder.Configurations.Add(new SupplierConfiguration(schema));
+            modelBuilder.Configurations.Add(new TerritoryConfiguration(schema));
             return modelBuilder;
         }
     }
@@ -176,7 +176,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     // POCO classes
 
     // Alphabetical list of products
-    public class AlphabeticalListOfProducts
+    public class AlphabeticalListOfProduct
     {
         public int ProductId { get; set; } // ProductID
         public string ProductName { get; set; } // ProductName
@@ -192,7 +192,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Categories
-    public class Categories
+    public class Category
     {
         public int CategoryId { get; set; } // CategoryID (Primary key)
         public string CategoryName { get; set; } // CategoryName
@@ -200,11 +200,11 @@ namespace EntityFramework_Reverse_POCO_Generator
         public byte[] Picture { get; set; } // Picture
 
         // Reverse navigation
-        public virtual ICollection<Products> Products { get; set; } // Products.FK_Products_Categories
+        public virtual ICollection<Product> Products { get; set; } // Products.FK_Products_Categories
 
-        public Categories()
+        public Category()
         {
-            Products = new List<Products>();
+            Products = new List<Product>();
         }
     }
 
@@ -222,32 +222,8 @@ namespace EntityFramework_Reverse_POCO_Generator
         public string ProductName { get; set; } // ProductName
     }
 
-    // Customer and Suppliers by City
-    public class CustomerAndSuppliersByCity
-    {
-        public string City { get; set; } // City
-        public string CompanyName { get; set; } // CompanyName
-        public string ContactName { get; set; } // ContactName
-        public string Relationship { get; set; } // Relationship
-    }
-
-    // CustomerDemographics
-    public class CustomerDemographics
-    {
-        public string CustomerTypeId { get; set; } // CustomerTypeID (Primary key)
-        public string CustomerDesc { get; set; } // CustomerDesc
-
-        // Reverse navigation
-        public virtual ICollection<Customers> Customers { get; set; } // Many to many mapping
-
-        public CustomerDemographics()
-        {
-            Customers = new List<Customers>();
-        }
-    }
-
     // Customers
-    public class Customers
+    public class Customer
     {
         public string CustomerId { get; set; } // CustomerID (Primary key)
         public string CompanyName { get; set; } // CompanyName
@@ -262,18 +238,42 @@ namespace EntityFramework_Reverse_POCO_Generator
         public string Fax { get; set; } // Fax
 
         // Reverse navigation
-        public virtual ICollection<CustomerDemographics> CustomerDemographics { get; set; } // Many to many mapping
-        public virtual ICollection<Orders> Orders { get; set; } // Orders.FK_Orders_Customers
+        public virtual ICollection<CustomerDemographic> CustomerDemographics { get; set; } // Many to many mapping
+        public virtual ICollection<Order> Orders { get; set; } // Orders.FK_Orders_Customers
 
-        public Customers()
+        public Customer()
         {
-            Orders = new List<Orders>();
-            CustomerDemographics = new List<CustomerDemographics>();
+            Orders = new List<Order>();
+            CustomerDemographics = new List<CustomerDemographic>();
+        }
+    }
+
+    // Customer and Suppliers by City
+    public class CustomerAndSuppliersByCity
+    {
+        public string City { get; set; } // City
+        public string CompanyName { get; set; } // CompanyName
+        public string ContactName { get; set; } // ContactName
+        public string Relationship { get; set; } // Relationship
+    }
+
+    // CustomerDemographics
+    public class CustomerDemographic
+    {
+        public string CustomerTypeId { get; set; } // CustomerTypeID (Primary key)
+        public string CustomerDesc { get; set; } // CustomerDesc
+
+        // Reverse navigation
+        public virtual ICollection<Customer> Customers { get; set; } // Many to many mapping
+
+        public CustomerDemographic()
+        {
+            Customers = new List<Customer>();
         }
     }
 
     // Employees
-    public class Employees
+    public class Employee
     {
         public int EmployeeId { get; set; } // EmployeeID (Primary key)
         public string LastName { get; set; } // LastName
@@ -295,23 +295,23 @@ namespace EntityFramework_Reverse_POCO_Generator
         public string PhotoPath { get; set; } // PhotoPath
 
         // Reverse navigation
-        public virtual ICollection<Employees> Employees2 { get; set; } // Employees.FK_Employees_Employees
-        public virtual ICollection<Orders> Orders { get; set; } // Orders.FK_Orders_Employees
-        public virtual ICollection<Territories> Territories { get; set; } // Many to many mapping
+        public virtual ICollection<Employee> Employees2 { get; set; } // Employees.FK_Employees_Employees
+        public virtual ICollection<Order> Orders { get; set; } // Orders.FK_Orders_Employees
+        public virtual ICollection<Territory> Territories { get; set; } // Many to many mapping
 
         // Foreign keys
-        public virtual Employees Employees_ReportsTo { get; set; } //  FK_Employees_Employees
+        public virtual Employee Employees_ReportsTo { get; set; } //  FK_Employees_Employees
 
-        public Employees()
+        public Employee()
         {
-            Employees2 = new List<Employees>();
-            Orders = new List<Orders>();
-            Territories = new List<Territories>();
+            Employees2 = new List<Employee>();
+            Orders = new List<Order>();
+            Territories = new List<Territory>();
         }
     }
 
     // Invoices
-    public class Invoices
+    public class Invoice
     {
         public string ShipName { get; set; } // ShipName
         public string ShipAddress { get; set; } // ShipAddress
@@ -341,41 +341,8 @@ namespace EntityFramework_Reverse_POCO_Generator
         public decimal? Freight { get; set; } // Freight
     }
 
-    // Order Details
-    public class OrderDetails
-    {
-        public int OrderId { get; set; } // OrderID (Primary key)
-        public int ProductId { get; set; } // ProductID (Primary key)
-        public decimal UnitPrice { get; set; } // UnitPrice
-        public short Quantity { get; set; } // Quantity
-        public float Discount { get; set; } // Discount
-
-        // Foreign keys
-        public virtual Orders Orders { get; set; } //  FK_Order_Details_Orders
-        public virtual Products Products { get; set; } //  FK_Order_Details_Products
-
-        public OrderDetails()
-        {
-            UnitPrice = 0m;
-            Quantity = 1;
-            Discount = 0;
-        }
-    }
-
-    // Order Details Extended
-    public class OrderDetailsExtended
-    {
-        public int OrderId { get; set; } // OrderID
-        public int ProductId { get; set; } // ProductID
-        public string ProductName { get; set; } // ProductName
-        public decimal UnitPrice { get; set; } // UnitPrice
-        public short Quantity { get; set; } // Quantity
-        public float Discount { get; set; } // Discount
-        public decimal? ExtendedPrice { get; set; } // ExtendedPrice
-    }
-
     // Orders
-    public class Orders
+    public class Order
     {
         public int OrderId { get; set; } // OrderID (Primary key)
         public string CustomerId { get; set; } // CustomerID
@@ -393,18 +360,51 @@ namespace EntityFramework_Reverse_POCO_Generator
         public string ShipCountry { get; set; } // ShipCountry
 
         // Reverse navigation
-        public virtual ICollection<OrderDetails> OrderDetails { get; set; } // Many to many mapping
+        public virtual ICollection<OrderDetail> OrderDetails { get; set; } // Many to many mapping
 
         // Foreign keys
-        public virtual Customers Customers { get; set; } //  FK_Orders_Customers
-        public virtual Employees Employees { get; set; } //  FK_Orders_Employees
-        public virtual Shippers Shippers { get; set; } //  FK_Orders_Shippers
+        public virtual Customer Customers { get; set; } //  FK_Orders_Customers
+        public virtual Employee Employees { get; set; } //  FK_Orders_Employees
+        public virtual Shipper Shippers { get; set; } //  FK_Orders_Shippers
 
-        public Orders()
+        public Order()
         {
             Freight = 0m;
-            OrderDetails = new List<OrderDetails>();
+            OrderDetails = new List<OrderDetail>();
         }
+    }
+
+    // Order Details
+    public class OrderDetail
+    {
+        public int OrderId { get; set; } // OrderID (Primary key)
+        public int ProductId { get; set; } // ProductID (Primary key)
+        public decimal UnitPrice { get; set; } // UnitPrice
+        public short Quantity { get; set; } // Quantity
+        public float Discount { get; set; } // Discount
+
+        // Foreign keys
+        public virtual Order Orders { get; set; } //  FK_Order_Details_Orders
+        public virtual Product Products { get; set; } //  FK_Order_Details_Products
+
+        public OrderDetail()
+        {
+            UnitPrice = 0m;
+            Quantity = 1;
+            Discount = 0;
+        }
+    }
+
+    // Order Details Extended
+    public class OrderDetailsExtended
+    {
+        public int OrderId { get; set; } // OrderID
+        public int ProductId { get; set; } // ProductID
+        public string ProductName { get; set; } // ProductName
+        public decimal UnitPrice { get; set; } // UnitPrice
+        public short Quantity { get; set; } // Quantity
+        public float Discount { get; set; } // Discount
+        public decimal? ExtendedPrice { get; set; } // ExtendedPrice
     }
 
     // Orders Qry
@@ -433,14 +433,14 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Order Subtotals
-    public class OrderSubtotals
+    public class OrderSubtotal
     {
         public int OrderId { get; set; } // OrderID
         public decimal? Subtotal { get; set; } // Subtotal
     }
 
     // Products
-    public class Products
+    public class Product
     {
         public int ProductId { get; set; } // ProductID (Primary key)
         public string ProductName { get; set; } // ProductName
@@ -454,20 +454,20 @@ namespace EntityFramework_Reverse_POCO_Generator
         public bool Discontinued { get; set; } // Discontinued
 
         // Reverse navigation
-        public virtual ICollection<OrderDetails> OrderDetails { get; set; } // Many to many mapping
+        public virtual ICollection<OrderDetail> OrderDetails { get; set; } // Many to many mapping
 
         // Foreign keys
-        public virtual Categories Categories { get; set; } //  FK_Products_Categories
-        public virtual Suppliers Suppliers { get; set; } //  FK_Products_Suppliers
+        public virtual Category Categories { get; set; } //  FK_Products_Categories
+        public virtual Supplier Suppliers { get; set; } //  FK_Products_Suppliers
 
-        public Products()
+        public Product()
         {
             UnitPrice = 0m;
             UnitsInStock = 0;
             UnitsOnOrder = 0;
             ReorderLevel = 0;
             Discontinued = false;
-            OrderDetails = new List<OrderDetails>();
+            OrderDetails = new List<OrderDetail>();
         }
     }
 
@@ -503,11 +503,11 @@ namespace EntityFramework_Reverse_POCO_Generator
         public string RegionDescription { get; set; } // RegionDescription
 
         // Reverse navigation
-        public virtual ICollection<Territories> Territories { get; set; } // Territories.FK_Territories_Region
+        public virtual ICollection<Territory> Territories { get; set; } // Territories.FK_Territories_Region
 
         public Region()
         {
-            Territories = new List<Territories>();
+            Territories = new List<Territory>();
         }
     }
 
@@ -530,18 +530,18 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Shippers
-    public class Shippers
+    public class Shipper
     {
         public int ShipperId { get; set; } // ShipperID (Primary key)
         public string CompanyName { get; set; } // CompanyName
         public string Phone { get; set; } // Phone
 
         // Reverse navigation
-        public virtual ICollection<Orders> Orders { get; set; } // Orders.FK_Orders_Shippers
+        public virtual ICollection<Order> Orders { get; set; } // Orders.FK_Orders_Shippers
 
-        public Shippers()
+        public Shipper()
         {
-            Orders = new List<Orders>();
+            Orders = new List<Order>();
         }
     }
 
@@ -562,7 +562,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Suppliers
-    public class Suppliers
+    public class Supplier
     {
         public int SupplierId { get; set; } // SupplierID (Primary key)
         public string CompanyName { get; set; } // CompanyName
@@ -578,30 +578,30 @@ namespace EntityFramework_Reverse_POCO_Generator
         public string HomePage { get; set; } // HomePage
 
         // Reverse navigation
-        public virtual ICollection<Products> Products { get; set; } // Products.FK_Products_Suppliers
+        public virtual ICollection<Product> Products { get; set; } // Products.FK_Products_Suppliers
 
-        public Suppliers()
+        public Supplier()
         {
-            Products = new List<Products>();
+            Products = new List<Product>();
         }
     }
 
     // Territories
-    public class Territories
+    public class Territory
     {
         public string TerritoryId { get; set; } // TerritoryID (Primary key)
         public string TerritoryDescription { get; set; } // TerritoryDescription
         public int RegionId { get; set; } // RegionID
 
         // Reverse navigation
-        public virtual ICollection<Employees> Employees { get; set; } // Many to many mapping
+        public virtual ICollection<Employee> Employees { get; set; } // Many to many mapping
 
         // Foreign keys
-        public virtual Region Region { get; set; } //  FK_Territories_Region
+        public virtual Region Regions { get; set; } //  FK_Territories_Region
 
-        public Territories()
+        public Territory()
         {
-            Employees = new List<Employees>();
+            Employees = new List<Employee>();
         }
     }
 
@@ -610,9 +610,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     // POCO Configuration
 
     // Alphabetical list of products
-    internal class AlphabeticalListOfProductsConfiguration : EntityTypeConfiguration<AlphabeticalListOfProducts>
+    internal class AlphabeticalListOfProductConfiguration : EntityTypeConfiguration<AlphabeticalListOfProduct>
     {
-        public AlphabeticalListOfProductsConfiguration(string schema = "dbo")
+        public AlphabeticalListOfProductConfiguration(string schema = "dbo")
         {
             ToTable(schema + ".Alphabetical list of products");
             HasKey(x => new { x.ProductId, x.ProductName, x.Discontinued, x.CategoryName });
@@ -632,9 +632,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Categories
-    internal class CategoriesConfiguration : EntityTypeConfiguration<Categories>
+    internal class CategoryConfiguration : EntityTypeConfiguration<Category>
     {
-        public CategoriesConfiguration(string schema = "dbo")
+        public CategoryConfiguration(string schema = "dbo")
         {
             ToTable(schema + ".Categories");
             HasKey(x => x.CategoryId);
@@ -672,38 +672,10 @@ namespace EntityFramework_Reverse_POCO_Generator
         }
     }
 
-    // Customer and Suppliers by City
-    internal class CustomerAndSuppliersByCityConfiguration : EntityTypeConfiguration<CustomerAndSuppliersByCity>
-    {
-        public CustomerAndSuppliersByCityConfiguration(string schema = "dbo")
-        {
-            ToTable(schema + ".Customer and Suppliers by City");
-            HasKey(x => new { x.CompanyName, x.Relationship });
-
-            Property(x => x.City).HasColumnName("City").IsOptional().HasMaxLength(15);
-            Property(x => x.CompanyName).HasColumnName("CompanyName").IsRequired().HasMaxLength(40);
-            Property(x => x.ContactName).HasColumnName("ContactName").IsOptional().HasMaxLength(30);
-            Property(x => x.Relationship).HasColumnName("Relationship").IsRequired().HasMaxLength(9);
-        }
-    }
-
-    // CustomerDemographics
-    internal class CustomerDemographicsConfiguration : EntityTypeConfiguration<CustomerDemographics>
-    {
-        public CustomerDemographicsConfiguration(string schema = "dbo")
-        {
-            ToTable(schema + ".CustomerDemographics");
-            HasKey(x => x.CustomerTypeId);
-
-            Property(x => x.CustomerTypeId).HasColumnName("CustomerTypeID").IsRequired().HasMaxLength(10);
-            Property(x => x.CustomerDesc).HasColumnName("CustomerDesc").IsOptional().HasMaxLength(1073741823);
-        }
-    }
-
     // Customers
-    internal class CustomersConfiguration : EntityTypeConfiguration<Customers>
+    internal class CustomerConfiguration : EntityTypeConfiguration<Customer>
     {
-        public CustomersConfiguration(string schema = "dbo")
+        public CustomerConfiguration(string schema = "dbo")
         {
             ToTable(schema + ".Customers");
             HasKey(x => x.CustomerId);
@@ -728,10 +700,38 @@ namespace EntityFramework_Reverse_POCO_Generator
         }
     }
 
-    // Employees
-    internal class EmployeesConfiguration : EntityTypeConfiguration<Employees>
+    // Customer and Suppliers by City
+    internal class CustomerAndSuppliersByCityConfiguration : EntityTypeConfiguration<CustomerAndSuppliersByCity>
     {
-        public EmployeesConfiguration(string schema = "dbo")
+        public CustomerAndSuppliersByCityConfiguration(string schema = "dbo")
+        {
+            ToTable(schema + ".Customer and Suppliers by City");
+            HasKey(x => new { x.CompanyName, x.Relationship });
+
+            Property(x => x.City).HasColumnName("City").IsOptional().HasMaxLength(15);
+            Property(x => x.CompanyName).HasColumnName("CompanyName").IsRequired().HasMaxLength(40);
+            Property(x => x.ContactName).HasColumnName("ContactName").IsOptional().HasMaxLength(30);
+            Property(x => x.Relationship).HasColumnName("Relationship").IsRequired().HasMaxLength(9);
+        }
+    }
+
+    // CustomerDemographics
+    internal class CustomerDemographicConfiguration : EntityTypeConfiguration<CustomerDemographic>
+    {
+        public CustomerDemographicConfiguration(string schema = "dbo")
+        {
+            ToTable(schema + ".CustomerDemographics");
+            HasKey(x => x.CustomerTypeId);
+
+            Property(x => x.CustomerTypeId).HasColumnName("CustomerTypeID").IsRequired().HasMaxLength(10);
+            Property(x => x.CustomerDesc).HasColumnName("CustomerDesc").IsOptional().HasMaxLength(1073741823);
+        }
+    }
+
+    // Employees
+    internal class EmployeeConfiguration : EntityTypeConfiguration<Employee>
+    {
+        public EmployeeConfiguration(string schema = "dbo")
         {
             ToTable(schema + ".Employees");
             HasKey(x => x.EmployeeId);
@@ -767,9 +767,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Invoices
-    internal class InvoicesConfiguration : EntityTypeConfiguration<Invoices>
+    internal class InvoiceConfiguration : EntityTypeConfiguration<Invoice>
     {
-        public InvoicesConfiguration(string schema = "dbo")
+        public InvoiceConfiguration(string schema = "dbo")
         {
             ToTable(schema + ".Invoices");
             HasKey(x => new { x.CustomerName, x.Salesperson, x.OrderId, x.ShipperName, x.ProductId, x.ProductName, x.UnitPrice, x.Quantity, x.Discount });
@@ -803,10 +803,40 @@ namespace EntityFramework_Reverse_POCO_Generator
         }
     }
 
-    // Order Details
-    internal class OrderDetailsConfiguration : EntityTypeConfiguration<OrderDetails>
+    // Orders
+    internal class OrderConfiguration : EntityTypeConfiguration<Order>
     {
-        public OrderDetailsConfiguration(string schema = "dbo")
+        public OrderConfiguration(string schema = "dbo")
+        {
+            ToTable(schema + ".Orders");
+            HasKey(x => x.OrderId);
+
+            Property(x => x.OrderId).HasColumnName("OrderID").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.CustomerId).HasColumnName("CustomerID").IsOptional().HasMaxLength(5);
+            Property(x => x.EmployeeId).HasColumnName("EmployeeID").IsOptional();
+            Property(x => x.OrderDate).HasColumnName("OrderDate").IsOptional();
+            Property(x => x.RequiredDate).HasColumnName("RequiredDate").IsOptional();
+            Property(x => x.ShippedDate).HasColumnName("ShippedDate").IsOptional();
+            Property(x => x.ShipVia).HasColumnName("ShipVia").IsOptional();
+            Property(x => x.Freight).HasColumnName("Freight").IsOptional().HasPrecision(19,4);
+            Property(x => x.ShipName).HasColumnName("ShipName").IsOptional().HasMaxLength(40);
+            Property(x => x.ShipAddress).HasColumnName("ShipAddress").IsOptional().HasMaxLength(60);
+            Property(x => x.ShipCity).HasColumnName("ShipCity").IsOptional().HasMaxLength(15);
+            Property(x => x.ShipRegion).HasColumnName("ShipRegion").IsOptional().HasMaxLength(15);
+            Property(x => x.ShipPostalCode).HasColumnName("ShipPostalCode").IsOptional().HasMaxLength(10);
+            Property(x => x.ShipCountry).HasColumnName("ShipCountry").IsOptional().HasMaxLength(15);
+
+            // Foreign keys
+            HasOptional(a => a.Customers).WithMany(b => b.Orders).HasForeignKey(c => c.CustomerId); // FK_Orders_Customers
+            HasOptional(a => a.Employees).WithMany(b => b.Orders).HasForeignKey(c => c.EmployeeId); // FK_Orders_Employees
+            HasOptional(a => a.Shippers).WithMany(b => b.Orders).HasForeignKey(c => c.ShipVia); // FK_Orders_Shippers
+        }
+    }
+
+    // Order Details
+    internal class OrderDetailConfiguration : EntityTypeConfiguration<OrderDetail>
+    {
+        public OrderDetailConfiguration(string schema = "dbo")
         {
             ToTable(schema + ".Order Details");
             HasKey(x => new { x.OrderId, x.ProductId });
@@ -838,36 +868,6 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.Quantity).HasColumnName("Quantity").IsRequired();
             Property(x => x.Discount).HasColumnName("Discount").IsRequired();
             Property(x => x.ExtendedPrice).HasColumnName("ExtendedPrice").IsOptional().HasPrecision(19,4);
-        }
-    }
-
-    // Orders
-    internal class OrdersConfiguration : EntityTypeConfiguration<Orders>
-    {
-        public OrdersConfiguration(string schema = "dbo")
-        {
-            ToTable(schema + ".Orders");
-            HasKey(x => x.OrderId);
-
-            Property(x => x.OrderId).HasColumnName("OrderID").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
-            Property(x => x.CustomerId).HasColumnName("CustomerID").IsOptional().HasMaxLength(5);
-            Property(x => x.EmployeeId).HasColumnName("EmployeeID").IsOptional();
-            Property(x => x.OrderDate).HasColumnName("OrderDate").IsOptional();
-            Property(x => x.RequiredDate).HasColumnName("RequiredDate").IsOptional();
-            Property(x => x.ShippedDate).HasColumnName("ShippedDate").IsOptional();
-            Property(x => x.ShipVia).HasColumnName("ShipVia").IsOptional();
-            Property(x => x.Freight).HasColumnName("Freight").IsOptional().HasPrecision(19,4);
-            Property(x => x.ShipName).HasColumnName("ShipName").IsOptional().HasMaxLength(40);
-            Property(x => x.ShipAddress).HasColumnName("ShipAddress").IsOptional().HasMaxLength(60);
-            Property(x => x.ShipCity).HasColumnName("ShipCity").IsOptional().HasMaxLength(15);
-            Property(x => x.ShipRegion).HasColumnName("ShipRegion").IsOptional().HasMaxLength(15);
-            Property(x => x.ShipPostalCode).HasColumnName("ShipPostalCode").IsOptional().HasMaxLength(10);
-            Property(x => x.ShipCountry).HasColumnName("ShipCountry").IsOptional().HasMaxLength(15);
-
-            // Foreign keys
-            HasOptional(a => a.Customers).WithMany(b => b.Orders).HasForeignKey(c => c.CustomerId); // FK_Orders_Customers
-            HasOptional(a => a.Employees).WithMany(b => b.Orders).HasForeignKey(c => c.EmployeeId); // FK_Orders_Employees
-            HasOptional(a => a.Shippers).WithMany(b => b.Orders).HasForeignKey(c => c.ShipVia); // FK_Orders_Shippers
         }
     }
 
@@ -903,9 +903,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Order Subtotals
-    internal class OrderSubtotalsConfiguration : EntityTypeConfiguration<OrderSubtotals>
+    internal class OrderSubtotalConfiguration : EntityTypeConfiguration<OrderSubtotal>
     {
-        public OrderSubtotalsConfiguration(string schema = "dbo")
+        public OrderSubtotalConfiguration(string schema = "dbo")
         {
             ToTable(schema + ".Order Subtotals");
             HasKey(x => x.OrderId);
@@ -916,9 +916,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Products
-    internal class ProductsConfiguration : EntityTypeConfiguration<Products>
+    internal class ProductConfiguration : EntityTypeConfiguration<Product>
     {
-        public ProductsConfiguration(string schema = "dbo")
+        public ProductConfiguration(string schema = "dbo")
         {
             ToTable(schema + ".Products");
             HasKey(x => x.ProductId);
@@ -1027,9 +1027,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Shippers
-    internal class ShippersConfiguration : EntityTypeConfiguration<Shippers>
+    internal class ShipperConfiguration : EntityTypeConfiguration<Shipper>
     {
-        public ShippersConfiguration(string schema = "dbo")
+        public ShipperConfiguration(string schema = "dbo")
         {
             ToTable(schema + ".Shippers");
             HasKey(x => x.ShipperId);
@@ -1069,9 +1069,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Suppliers
-    internal class SuppliersConfiguration : EntityTypeConfiguration<Suppliers>
+    internal class SupplierConfiguration : EntityTypeConfiguration<Supplier>
     {
-        public SuppliersConfiguration(string schema = "dbo")
+        public SupplierConfiguration(string schema = "dbo")
         {
             ToTable(schema + ".Suppliers");
             HasKey(x => x.SupplierId);
@@ -1092,9 +1092,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Territories
-    internal class TerritoriesConfiguration : EntityTypeConfiguration<Territories>
+    internal class TerritoryConfiguration : EntityTypeConfiguration<Territory>
     {
-        public TerritoriesConfiguration(string schema = "dbo")
+        public TerritoryConfiguration(string schema = "dbo")
         {
             ToTable(schema + ".Territories");
             HasKey(x => x.TerritoryId);
@@ -1104,7 +1104,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.RegionId).HasColumnName("RegionID").IsRequired();
 
             // Foreign keys
-            HasRequired(a => a.Region).WithMany(b => b.Territories).HasForeignKey(c => c.RegionId); // FK_Territories_Region
+            HasRequired(a => a.Regions).WithMany(b => b.Territories).HasForeignKey(c => c.RegionId); // FK_Territories_Region
         }
     }
 

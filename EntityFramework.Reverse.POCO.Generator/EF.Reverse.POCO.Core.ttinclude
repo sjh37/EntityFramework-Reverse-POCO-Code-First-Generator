@@ -1224,7 +1224,7 @@ ORDER BY FK.TABLE_NAME,
                                     };
                                     table.CleanName = CleanUp(table.Name);
                                     table.ClassName = useCamelCase ? Inflector.MakeSingular(table.CleanName) : table.CleanName;
-                                    table.NameHumanCase = (useCamelCase ? Inflector.ToTitleCase(table.Name) : table.Name).Replace(" ", "").Replace("$", "");
+                                    table.NameHumanCase = (useCamelCase ? Inflector.ToTitleCase(Inflector.MakeSingular(table.Name)) : table.Name).Replace(" ", "").Replace("$", "");
                                     if((string.Compare(table.Schema, "dbo", StringComparison.OrdinalIgnoreCase) != 0) && prependSchemaName)
                                         table.NameHumanCase = table.Schema + "_" + table.NameHumanCase;
 
@@ -1535,7 +1535,7 @@ ORDER BY FK.TABLE_NAME,
 
             public string PkTableHumanCase(bool useCamelCase, bool prependSchemaName)
             {
-                string pkTableHumanCase = (useCamelCase ? Inflector.ToTitleCase(PkTableName) : PkTableName).Replace(" ", "").Replace("$", "");
+                string pkTableHumanCase = (useCamelCase ? Inflector.ToTitleCase(Inflector.MakeSingular(PkTableName)) : PkTableName).Replace(" ", "").Replace("$", "");
                 if (string.Compare(PkSchema, "dbo", StringComparison.OrdinalIgnoreCase) != 0 && prependSchemaName)
                     pkTableHumanCase = PkSchema + "_" + pkTableHumanCase;
                 return pkTableHumanCase;
@@ -1606,6 +1606,7 @@ ORDER BY FK.TABLE_NAME,
 
             public string GetUniqueColumnPropertyName(string tableNameHumanCase, IList<ForeignKey> fKeys, bool useCamelCase, bool checkForFkNameClashes)
             {
+                tableNameHumanCase = Inflector.MakePlural(tableNameHumanCase);
                 if (ReverseNavigationUniquePropName.Count == 0)
                 {
                     ReverseNavigationUniquePropName.Add(NameHumanCase);
@@ -1672,8 +1673,8 @@ ORDER BY FK.TABLE_NAME,
 
             public void AddMappingConfiguration(ForeignKey left, ForeignKey right, bool useCamelCase, bool prependSchemaName)
             {
-                var leftTableHumanCase = left.PkTableHumanCase(useCamelCase, prependSchemaName);
-                var rightTableHumanCase = right.PkTableHumanCase(useCamelCase, prependSchemaName);
+                var leftTableHumanCase = Inflector.MakePlural(left.PkTableHumanCase(useCamelCase, prependSchemaName));
+                var rightTableHumanCase = Inflector.MakePlural(right.PkTableHumanCase(useCamelCase, prependSchemaName));
 
                 MappingConfiguration.Add(string.Format(@"HasMany(t => t.{0}).WithMany(t => t.{1}).Map(m => 
             {{
