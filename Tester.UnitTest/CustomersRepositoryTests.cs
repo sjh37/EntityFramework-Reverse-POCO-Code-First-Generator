@@ -1,5 +1,4 @@
-﻿using System;
-using EntityFramework_Reverse_POCO_Generator;
+﻿using EntityFramework_Reverse_POCO_Generator;
 using NUnit.Framework;
 using Tester.BusinessLogic;
 
@@ -17,12 +16,12 @@ namespace Tester.UnitTest
             // Arrange
             _context = new FakeDbContext();
 
-            _context.CurrentProductList.Attach(new CurrentProductList
+            _context.CurrentProductLists.Attach(new CurrentProductList
             {
                 ProductId = 1,
                 ProductName = "abc"
             });
-            _context.CurrentProductList.Attach(new CurrentProductList
+            _context.CurrentProductLists.Attach(new CurrentProductList
             {
                 ProductId = 2,
                 ProductName = "def"

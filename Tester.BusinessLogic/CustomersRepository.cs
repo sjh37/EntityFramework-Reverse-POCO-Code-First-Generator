@@ -16,7 +16,7 @@ namespace Tester.BusinessLogic
             _context = context;
         }
 
-        public IQueryable<Customers> GetTop10()
+        public IQueryable<Customer> GetTop10()
         {
             return _context.Customers.Take(10);
         }

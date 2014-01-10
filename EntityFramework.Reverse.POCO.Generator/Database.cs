@@ -29,32 +29,32 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Unit of work
     public interface IMyDbContext : IDisposable
     {
-        IDbSet<AlphabeticalListOfProduct> AlphabeticalListOfProduct { get; set; } // Alphabetical list of products
-        IDbSet<Category> Category { get; set; } // Categories
+        IDbSet<AlphabeticalListOfProduct> AlphabeticalListOfProducts { get; set; } // Alphabetical list of products
+        IDbSet<Category> Categories { get; set; } // Categories
         IDbSet<CategorySalesFor1997> CategorySalesFor1997 { get; set; } // Category Sales for 1997
-        IDbSet<CurrentProductList> CurrentProductList { get; set; } // Current Product List
-        IDbSet<Customer> Customer { get; set; } // Customers
-        IDbSet<CustomerAndSuppliersByCity> CustomerAndSuppliersByCity { get; set; } // Customer and Suppliers by City
-        IDbSet<CustomerDemographic> CustomerDemographic { get; set; } // CustomerDemographics
-        IDbSet<Employee> Employee { get; set; } // Employees
-        IDbSet<Invoice> Invoice { get; set; } // Invoices
-        IDbSet<Order> Order { get; set; } // Orders
-        IDbSet<OrderDetail> OrderDetail { get; set; } // Order Details
-        IDbSet<OrderDetailsExtended> OrderDetailsExtended { get; set; } // Order Details Extended
-        IDbSet<OrdersQry> OrdersQry { get; set; } // Orders Qry
-        IDbSet<OrderSubtotal> OrderSubtotal { get; set; } // Order Subtotals
-        IDbSet<Product> Product { get; set; } // Products
-        IDbSet<ProductsAboveAveragePrice> ProductsAboveAveragePrice { get; set; } // Products Above Average Price
+        IDbSet<CurrentProductList> CurrentProductLists { get; set; } // Current Product List
+        IDbSet<Customer> Customers { get; set; } // Customers
+        IDbSet<CustomerAndSuppliersByCity> CustomerAndSuppliersByCities { get; set; } // Customer and Suppliers by City
+        IDbSet<CustomerDemographic> CustomerDemographics { get; set; } // CustomerDemographics
+        IDbSet<Employee> Employees { get; set; } // Employees
+        IDbSet<Invoice> Invoices { get; set; } // Invoices
+        IDbSet<Order> Orders { get; set; } // Orders
+        IDbSet<OrderDetail> OrderDetails { get; set; } // Order Details
+        IDbSet<OrderDetailsExtended> OrderDetailsExtendeds { get; set; } // Order Details Extended
+        IDbSet<OrdersQry> OrdersQries { get; set; } // Orders Qry
+        IDbSet<OrderSubtotal> OrderSubtotals { get; set; } // Order Subtotals
+        IDbSet<Product> Products { get; set; } // Products
+        IDbSet<ProductsAboveAveragePrice> ProductsAboveAveragePrices { get; set; } // Products Above Average Price
         IDbSet<ProductSalesFor1997> ProductSalesFor1997 { get; set; } // Product Sales for 1997
-        IDbSet<ProductsByCategory> ProductsByCategory { get; set; } // Products by Category
-        IDbSet<Region> Region { get; set; } // Region
-        IDbSet<SalesByCategory> SalesByCategory { get; set; } // Sales by Category
-        IDbSet<SalesTotalsByAmount> SalesTotalsByAmount { get; set; } // Sales Totals by Amount
-        IDbSet<Shipper> Shipper { get; set; } // Shippers
-        IDbSet<SummaryOfSalesByQuarter> SummaryOfSalesByQuarter { get; set; } // Summary of Sales by Quarter
-        IDbSet<SummaryOfSalesByYear> SummaryOfSalesByYear { get; set; } // Summary of Sales by Year
-        IDbSet<Supplier> Supplier { get; set; } // Suppliers
-        IDbSet<Territory> Territory { get; set; } // Territories
+        IDbSet<ProductsByCategory> ProductsByCategories { get; set; } // Products by Category
+        IDbSet<Region> Regions { get; set; } // Region
+        IDbSet<SalesByCategory> SalesByCategories { get; set; } // Sales by Category
+        IDbSet<SalesTotalsByAmount> SalesTotalsByAmounts { get; set; } // Sales Totals by Amount
+        IDbSet<Shipper> Shippers { get; set; } // Shippers
+        IDbSet<SummaryOfSalesByQuarter> SummaryOfSalesByQuarters { get; set; } // Summary of Sales by Quarter
+        IDbSet<SummaryOfSalesByYear> SummaryOfSalesByYears { get; set; } // Summary of Sales by Year
+        IDbSet<Supplier> Suppliers { get; set; } // Suppliers
+        IDbSet<Territory> Territories { get; set; } // Territories
 
         int SaveChanges();
     }
@@ -63,32 +63,32 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Database context
     public class MyDbContext : DbContext, IMyDbContext
     {
-        public IDbSet<AlphabeticalListOfProduct> AlphabeticalListOfProduct { get; set; } // Alphabetical list of products
-        public IDbSet<Category> Category { get; set; } // Categories
+        public IDbSet<AlphabeticalListOfProduct> AlphabeticalListOfProducts { get; set; } // Alphabetical list of products
+        public IDbSet<Category> Categories { get; set; } // Categories
         public IDbSet<CategorySalesFor1997> CategorySalesFor1997 { get; set; } // Category Sales for 1997
-        public IDbSet<CurrentProductList> CurrentProductList { get; set; } // Current Product List
-        public IDbSet<Customer> Customer { get; set; } // Customers
-        public IDbSet<CustomerAndSuppliersByCity> CustomerAndSuppliersByCity { get; set; } // Customer and Suppliers by City
-        public IDbSet<CustomerDemographic> CustomerDemographic { get; set; } // CustomerDemographics
-        public IDbSet<Employee> Employee { get; set; } // Employees
-        public IDbSet<Invoice> Invoice { get; set; } // Invoices
-        public IDbSet<Order> Order { get; set; } // Orders
-        public IDbSet<OrderDetail> OrderDetail { get; set; } // Order Details
-        public IDbSet<OrderDetailsExtended> OrderDetailsExtended { get; set; } // Order Details Extended
-        public IDbSet<OrdersQry> OrdersQry { get; set; } // Orders Qry
-        public IDbSet<OrderSubtotal> OrderSubtotal { get; set; } // Order Subtotals
-        public IDbSet<Product> Product { get; set; } // Products
-        public IDbSet<ProductsAboveAveragePrice> ProductsAboveAveragePrice { get; set; } // Products Above Average Price
+        public IDbSet<CurrentProductList> CurrentProductLists { get; set; } // Current Product List
+        public IDbSet<Customer> Customers { get; set; } // Customers
+        public IDbSet<CustomerAndSuppliersByCity> CustomerAndSuppliersByCities { get; set; } // Customer and Suppliers by City
+        public IDbSet<CustomerDemographic> CustomerDemographics { get; set; } // CustomerDemographics
+        public IDbSet<Employee> Employees { get; set; } // Employees
+        public IDbSet<Invoice> Invoices { get; set; } // Invoices
+        public IDbSet<Order> Orders { get; set; } // Orders
+        public IDbSet<OrderDetail> OrderDetails { get; set; } // Order Details
+        public IDbSet<OrderDetailsExtended> OrderDetailsExtendeds { get; set; } // Order Details Extended
+        public IDbSet<OrdersQry> OrdersQries { get; set; } // Orders Qry
+        public IDbSet<OrderSubtotal> OrderSubtotals { get; set; } // Order Subtotals
+        public IDbSet<Product> Products { get; set; } // Products
+        public IDbSet<ProductsAboveAveragePrice> ProductsAboveAveragePrices { get; set; } // Products Above Average Price
         public IDbSet<ProductSalesFor1997> ProductSalesFor1997 { get; set; } // Product Sales for 1997
-        public IDbSet<ProductsByCategory> ProductsByCategory { get; set; } // Products by Category
-        public IDbSet<Region> Region { get; set; } // Region
-        public IDbSet<SalesByCategory> SalesByCategory { get; set; } // Sales by Category
-        public IDbSet<SalesTotalsByAmount> SalesTotalsByAmount { get; set; } // Sales Totals by Amount
-        public IDbSet<Shipper> Shipper { get; set; } // Shippers
-        public IDbSet<SummaryOfSalesByQuarter> SummaryOfSalesByQuarter { get; set; } // Summary of Sales by Quarter
-        public IDbSet<SummaryOfSalesByYear> SummaryOfSalesByYear { get; set; } // Summary of Sales by Year
-        public IDbSet<Supplier> Supplier { get; set; } // Suppliers
-        public IDbSet<Territory> Territory { get; set; } // Territories
+        public IDbSet<ProductsByCategory> ProductsByCategories { get; set; } // Products by Category
+        public IDbSet<Region> Regions { get; set; } // Region
+        public IDbSet<SalesByCategory> SalesByCategories { get; set; } // Sales by Category
+        public IDbSet<SalesTotalsByAmount> SalesTotalsByAmounts { get; set; } // Sales Totals by Amount
+        public IDbSet<Shipper> Shippers { get; set; } // Shippers
+        public IDbSet<SummaryOfSalesByQuarter> SummaryOfSalesByQuarters { get; set; } // Summary of Sales by Quarter
+        public IDbSet<SummaryOfSalesByYear> SummaryOfSalesByYears { get; set; } // Summary of Sales by Year
+        public IDbSet<Supplier> Suppliers { get; set; } // Suppliers
+        public IDbSet<Territory> Territories { get; set; } // Territories
 
         static MyDbContext()
         {
@@ -295,16 +295,16 @@ namespace EntityFramework_Reverse_POCO_Generator
         public string PhotoPath { get; set; } // PhotoPath
 
         // Reverse navigation
-        public virtual ICollection<Employee> Employees2 { get; set; } // Employees.FK_Employees_Employees
+        public virtual ICollection<Employee> Employees { get; set; } // Employees.FK_Employees_Employees
         public virtual ICollection<Order> Orders { get; set; } // Orders.FK_Orders_Employees
         public virtual ICollection<Territory> Territories { get; set; } // Many to many mapping
 
         // Foreign keys
-        public virtual Employee Employees_ReportsTo { get; set; } //  FK_Employees_Employees
+        public virtual Employee Employee_ReportsTo { get; set; } //  FK_Employees_Employees
 
         public Employee()
         {
-            Employees2 = new List<Employee>();
+            Employees = new List<Employee>();
             Orders = new List<Order>();
             Territories = new List<Territory>();
         }
@@ -363,9 +363,9 @@ namespace EntityFramework_Reverse_POCO_Generator
         public virtual ICollection<OrderDetail> OrderDetails { get; set; } // Many to many mapping
 
         // Foreign keys
-        public virtual Customer Customers { get; set; } //  FK_Orders_Customers
-        public virtual Employee Employees { get; set; } //  FK_Orders_Employees
-        public virtual Shipper Shippers { get; set; } //  FK_Orders_Shippers
+        public virtual Customer Customer { get; set; } //  FK_Orders_Customers
+        public virtual Employee Employee { get; set; } //  FK_Orders_Employees
+        public virtual Shipper Shipper { get; set; } //  FK_Orders_Shippers
 
         public Order()
         {
@@ -384,8 +384,8 @@ namespace EntityFramework_Reverse_POCO_Generator
         public float Discount { get; set; } // Discount
 
         // Foreign keys
-        public virtual Order Orders { get; set; } //  FK_Order_Details_Orders
-        public virtual Product Products { get; set; } //  FK_Order_Details_Products
+        public virtual Order Order { get; set; } //  FK_Order_Details_Orders
+        public virtual Product Product { get; set; } //  FK_Order_Details_Products
 
         public OrderDetail()
         {
@@ -457,8 +457,8 @@ namespace EntityFramework_Reverse_POCO_Generator
         public virtual ICollection<OrderDetail> OrderDetails { get; set; } // Many to many mapping
 
         // Foreign keys
-        public virtual Category Categories { get; set; } //  FK_Products_Categories
-        public virtual Supplier Suppliers { get; set; } //  FK_Products_Suppliers
+        public virtual Category Category { get; set; } //  FK_Products_Categories
+        public virtual Supplier Supplier { get; set; } //  FK_Products_Suppliers
 
         public Product()
         {
@@ -597,7 +597,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public virtual ICollection<Employee> Employees { get; set; } // Many to many mapping
 
         // Foreign keys
-        public virtual Region Regions { get; set; } //  FK_Territories_Region
+        public virtual Region Region { get; set; } //  FK_Territories_Region
 
         public Territory()
         {
@@ -756,7 +756,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.PhotoPath).HasColumnName("PhotoPath").IsOptional().HasMaxLength(255);
 
             // Foreign keys
-            HasOptional(a => a.Employees_ReportsTo).WithMany(b => b.Employees2).HasForeignKey(c => c.ReportsTo); // FK_Employees_Employees
+            HasOptional(a => a.Employee_ReportsTo).WithMany(b => b.Employees).HasForeignKey(c => c.ReportsTo); // FK_Employees_Employees
             HasMany(t => t.Territories).WithMany(t => t.Employees).Map(m => 
             {
                 m.ToTable("EmployeeTerritories");
@@ -827,9 +827,9 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.ShipCountry).HasColumnName("ShipCountry").IsOptional().HasMaxLength(15);
 
             // Foreign keys
-            HasOptional(a => a.Customers).WithMany(b => b.Orders).HasForeignKey(c => c.CustomerId); // FK_Orders_Customers
-            HasOptional(a => a.Employees).WithMany(b => b.Orders).HasForeignKey(c => c.EmployeeId); // FK_Orders_Employees
-            HasOptional(a => a.Shippers).WithMany(b => b.Orders).HasForeignKey(c => c.ShipVia); // FK_Orders_Shippers
+            HasOptional(a => a.Customer).WithMany(b => b.Orders).HasForeignKey(c => c.CustomerId); // FK_Orders_Customers
+            HasOptional(a => a.Employee).WithMany(b => b.Orders).HasForeignKey(c => c.EmployeeId); // FK_Orders_Employees
+            HasOptional(a => a.Shipper).WithMany(b => b.Orders).HasForeignKey(c => c.ShipVia); // FK_Orders_Shippers
         }
     }
 
@@ -848,8 +848,8 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.Discount).HasColumnName("Discount").IsRequired();
 
             // Foreign keys
-            HasRequired(a => a.Orders).WithMany(b => b.OrderDetails).HasForeignKey(c => c.OrderId); // FK_Order_Details_Orders
-            HasRequired(a => a.Products).WithMany(b => b.OrderDetails).HasForeignKey(c => c.ProductId); // FK_Order_Details_Products
+            HasRequired(a => a.Order).WithMany(b => b.OrderDetails).HasForeignKey(c => c.OrderId); // FK_Order_Details_Orders
+            HasRequired(a => a.Product).WithMany(b => b.OrderDetails).HasForeignKey(c => c.ProductId); // FK_Order_Details_Products
         }
     }
 
@@ -935,8 +935,8 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.Discontinued).HasColumnName("Discontinued").IsRequired();
 
             // Foreign keys
-            HasOptional(a => a.Suppliers).WithMany(b => b.Products).HasForeignKey(c => c.SupplierId); // FK_Products_Suppliers
-            HasOptional(a => a.Categories).WithMany(b => b.Products).HasForeignKey(c => c.CategoryId); // FK_Products_Categories
+            HasOptional(a => a.Supplier).WithMany(b => b.Products).HasForeignKey(c => c.SupplierId); // FK_Products_Suppliers
+            HasOptional(a => a.Category).WithMany(b => b.Products).HasForeignKey(c => c.CategoryId); // FK_Products_Categories
         }
     }
 
@@ -1104,7 +1104,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.RegionId).HasColumnName("RegionID").IsRequired();
 
             // Foreign keys
-            HasRequired(a => a.Regions).WithMany(b => b.Territories).HasForeignKey(c => c.RegionId); // FK_Territories_Region
+            HasRequired(a => a.Region).WithMany(b => b.Territories).HasForeignKey(c => c.RegionId); // FK_Territories_Region
         }
     }
 
