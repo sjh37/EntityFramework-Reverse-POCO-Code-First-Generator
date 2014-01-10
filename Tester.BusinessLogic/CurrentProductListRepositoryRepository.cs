@@ -23,12 +23,12 @@ namespace Tester.BusinessLogic
 
         public CurrentProductList GetProductByID(int id)
         {
-            return _context.CurrentProductList.FirstOrDefault(x => x.ProductId == id);
+            return _context.CurrentProductLists.FirstOrDefault(x => x.ProductId == id);
         }
 
         public IQueryable<CurrentProductList> All()
         {
-            return _context.CurrentProductList;
+            return _context.CurrentProductLists;
         }
 
         public bool UpdateProductName(int id, string newName)

@@ -1158,8 +1158,8 @@ ORDER BY FK.TABLE_NAME,
                         continue;
 
                     string pkTableHumanCase = foreignKey.PkTableHumanCase(useCamelCase, prependSchemaName);
-                    string pkPropName = fkTable.GetUniqueColumnPropertyName(pkTableHumanCase, foreignKeys, useCamelCase, checkForFkNameClashes);
-                    string fkPropName = pkTable.GetUniqueColumnPropertyName(fkTable.NameHumanCase, foreignKeys, useCamelCase, checkForFkNameClashes);
+                    string pkPropName = fkTable.GetUniqueColumnPropertyName(pkTableHumanCase, foreignKey, useCamelCase, checkForFkNameClashes, true);
+                    string fkPropName = pkTable.GetUniqueColumnPropertyName(fkTable.NameHumanCase, foreignKey, useCamelCase, checkForFkNameClashes, false);
 
                     var fkCols = foreignKeys.Select(x => fkTable.Columns.Find(n => n.Name == x.FkColumn)).Where(x => x != null).ToList();
                     var pkCols = foreignKeys.Select(x => pkTable.Columns.Find(n => n.Name == x.PkColumn)).Where(x => x != null).ToList();
@@ -1457,45 +1457,43 @@ ORDER BY FK.TABLE_NAME,
                 return Columns.SingleOrDefault(x => String.Compare(x.Name, columnName, StringComparison.OrdinalIgnoreCase) == 0);
             }
 
-            public string GetUniqueColumnPropertyName(string tableNameHumanCase, IList<ForeignKey> fKeys, bool useCamelCase, bool checkForFkNameClashes)
+            public string GetUniqueColumnPropertyName(string tableNameHumanCase, ForeignKey foreignKey, bool useCamelCase, bool checkForFkNameClashes, bool makeSingular)
             {
-                tableNameHumanCase = Inflector.MakePlural(tableNameHumanCase);
                 if (ReverseNavigationUniquePropName.Count == 0)
                 {
                     ReverseNavigationUniquePropName.Add(NameHumanCase);
                     ReverseNavigationUniquePropName.AddRange(Columns.Select(c => c.PropertyNameHumanCase));
                 }
 
-                if (tableNameHumanCase == "Employees")
-                    Console.WriteLine("deleteme");
+                if (!makeSingular)
+                    tableNameHumanCase = Inflector.MakePlural(tableNameHumanCase);
 
                 if (checkForFkNameClashes && ReverseNavigationUniquePropName.Contains(tableNameHumanCase) && !ReverseNavigationUniquePropNameClashes.Contains(tableNameHumanCase))
-                    ReverseNavigationUniquePropNameClashes.Add(tableNameHumanCase);
+                    ReverseNavigationUniquePropNameClashes.Add(tableNameHumanCase); // Name clash
 
+                // Try without appending foreign key name
                 if (!ReverseNavigationUniquePropNameClashes.Contains(tableNameHumanCase) && !ReverseNavigationUniquePropName.Contains(tableNameHumanCase))
                 {
                     ReverseNavigationUniquePropName.Add(tableNameHumanCase);
                     return tableNameHumanCase;
                 }
 
-                if (fKeys != null)
+                // Append foreign key name
+                string fkName = (useCamelCase ? Inflector.ToTitleCase(foreignKey.FkColumn) : foreignKey.FkColumn);
+                string col = tableNameHumanCase + "_" + fkName.Replace(" ", "").Replace("$", "");
+
+                if (checkForFkNameClashes && ReverseNavigationUniquePropName.Contains(col) && !ReverseNavigationUniquePropNameClashes.Contains(col))
+                    ReverseNavigationUniquePropNameClashes.Add(col); // Name clash
+
+                if (!ReverseNavigationUniquePropNameClashes.Contains(col) && !ReverseNavigationUniquePropName.Contains(col))
                 {
-                    foreach (ForeignKey fk in fKeys)
-                    {
-                        string fkName = (useCamelCase ? Inflector.ToTitleCase(fk.FkColumn) : fk.FkColumn);
-                        string col = tableNameHumanCase + "_" + fkName.Replace(" ", "").Replace("$", "");
-
-                        if (ReverseNavigationUniquePropName.Contains(col))
-                            continue;
-
-                        ReverseNavigationUniquePropName.Add(col);
-                        return col;
-                    }
+                    ReverseNavigationUniquePropName.Add(col);
+                    return col;
                 }
 
                 for (int n = 1; n < 99; ++n)
                 {
-                    string col = tableNameHumanCase + n;
+                    col = tableNameHumanCase + n;
 
                     if (ReverseNavigationUniquePropName.Contains(col))
                         continue;
@@ -1602,10 +1600,10 @@ ORDER BY FK.TABLE_NAME,
 
                 IsMapping = true;
                 rightTable.AddReverseNavigation(Relationship.ManyToMany, rightTable.NameHumanCase, leftTable,
-                                               rightTable.GetUniqueColumnPropertyName(leftTable.NameHumanCase, foreignKeys, useCamelCase, checkForFkNameClashes), null, collectionType);
+                                               rightTable.GetUniqueColumnPropertyName(leftTable.NameHumanCase, left, useCamelCase, checkForFkNameClashes, false), null, collectionType);
 
                 leftTable.AddReverseNavigation(Relationship.ManyToMany, leftTable.NameHumanCase, rightTable,
-                                                leftTable.GetUniqueColumnPropertyName(rightTable.NameHumanCase, foreignKeys, useCamelCase, checkForFkNameClashes), null, collectionType);
+                                                leftTable.GetUniqueColumnPropertyName(rightTable.NameHumanCase, right, useCamelCase, checkForFkNameClashes, false), null, collectionType);
             }
         }
 

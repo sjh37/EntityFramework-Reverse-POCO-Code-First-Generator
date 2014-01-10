@@ -5,6 +5,6 @@ namespace Tester.BusinessLogic
 {
     public interface ICustomersRepository
     {
-        IQueryable<Customers> GetTop10();
+        IQueryable<Customer> GetTop10();
     }
 }
