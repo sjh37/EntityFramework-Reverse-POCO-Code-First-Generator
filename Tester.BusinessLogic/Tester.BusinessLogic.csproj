@@ -49,10 +49,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AspnetApplicationRepository.cs" />
-    <Compile Include="AspnetSchemaVersionsRepository.cs" />
-    <Compile Include="IAspnetApplicationRepository.cs" />
-    <Compile Include="IAspnetSchemaVersionsRepository.cs" />
+    <Compile Include="CurrentProductListRepositoryRepository.cs" />
+    <Compile Include="CustomersRepository.cs" />
+    <Compile Include="ICurrentProductListRepository.cs" />
+    <Compile Include="ICustomersRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

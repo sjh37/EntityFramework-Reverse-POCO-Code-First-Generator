@@ -7,7 +7,7 @@
 // 
 //     Configuration file:     "EntityFramework.Reverse.POCO.Generator\App.config"
 //     Connection String Name: "MyDbContext"
-//     Connection String:      "Data Source=(local);Initial Catalog=aspnetdb;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator"
+//     Connection String:      "Data Source=(local);Initial Catalog=northwind;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator"
 
 // ReSharper disable RedundantUsingDirective
 // ReSharper disable DoNotCallOverridableMethodsInConstructor
@@ -29,25 +29,32 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Unit of work
     public interface IMyDbContext : IDisposable
     {
-        IDbSet<AspnetApplications> AspnetApplications { get; set; } // aspnet_Applications
-        IDbSet<AspnetMembership> AspnetMembership { get; set; } // aspnet_Membership
-        IDbSet<AspnetPaths> AspnetPaths { get; set; } // aspnet_Paths
-        IDbSet<AspnetPersonalizationAllUsers> AspnetPersonalizationAllUsers { get; set; } // aspnet_PersonalizationAllUsers
-        IDbSet<AspnetPersonalizationPerUser> AspnetPersonalizationPerUser { get; set; } // aspnet_PersonalizationPerUser
-        IDbSet<AspnetProfile> AspnetProfile { get; set; } // aspnet_Profile
-        IDbSet<AspnetRoles> AspnetRoles { get; set; } // aspnet_Roles
-        IDbSet<AspnetSchemaVersions> AspnetSchemaVersions { get; set; } // aspnet_SchemaVersions
-        IDbSet<AspnetUsers> AspnetUsers { get; set; } // aspnet_Users
-        IDbSet<AspnetWebEventEvents> AspnetWebEventEvents { get; set; } // aspnet_WebEvent_Events
-        IDbSet<VwAspnetApplications> VwAspnetApplications { get; set; } // vw_aspnet_Applications
-        IDbSet<VwAspnetMembershipUsers> VwAspnetMembershipUsers { get; set; } // vw_aspnet_MembershipUsers
-        IDbSet<VwAspnetProfiles> VwAspnetProfiles { get; set; } // vw_aspnet_Profiles
-        IDbSet<VwAspnetRoles> VwAspnetRoles { get; set; } // vw_aspnet_Roles
-        IDbSet<VwAspnetUsers> VwAspnetUsers { get; set; } // vw_aspnet_Users
-        IDbSet<VwAspnetUsersInRoles> VwAspnetUsersInRoles { get; set; } // vw_aspnet_UsersInRoles
-        IDbSet<VwAspnetWebPartStatePaths> VwAspnetWebPartStatePaths { get; set; } // vw_aspnet_WebPartState_Paths
-        IDbSet<VwAspnetWebPartStateShared> VwAspnetWebPartStateShared { get; set; } // vw_aspnet_WebPartState_Shared
-        IDbSet<VwAspnetWebPartStateUser> VwAspnetWebPartStateUser { get; set; } // vw_aspnet_WebPartState_User
+        IDbSet<AlphabeticalListOfProducts> AlphabeticalListOfProducts { get; set; } // Alphabetical list of products
+        IDbSet<Categories> Categories { get; set; } // Categories
+        IDbSet<CategorySalesFor1997> CategorySalesFor1997 { get; set; } // Category Sales for 1997
+        IDbSet<CurrentProductList> CurrentProductList { get; set; } // Current Product List
+        IDbSet<CustomerAndSuppliersByCity> CustomerAndSuppliersByCity { get; set; } // Customer and Suppliers by City
+        IDbSet<CustomerDemographics> CustomerDemographics { get; set; } // CustomerDemographics
+        IDbSet<Customers> Customers { get; set; } // Customers
+        IDbSet<Employees> Employees { get; set; } // Employees
+        IDbSet<Invoices> Invoices { get; set; } // Invoices
+        IDbSet<OrderDetails> OrderDetails { get; set; } // Order Details
+        IDbSet<OrderDetailsExtended> OrderDetailsExtended { get; set; } // Order Details Extended
+        IDbSet<Orders> Orders { get; set; } // Orders
+        IDbSet<OrdersQry> OrdersQry { get; set; } // Orders Qry
+        IDbSet<OrderSubtotals> OrderSubtotals { get; set; } // Order Subtotals
+        IDbSet<Products> Products { get; set; } // Products
+        IDbSet<ProductsAboveAveragePrice> ProductsAboveAveragePrice { get; set; } // Products Above Average Price
+        IDbSet<ProductSalesFor1997> ProductSalesFor1997 { get; set; } // Product Sales for 1997
+        IDbSet<ProductsByCategory> ProductsByCategory { get; set; } // Products by Category
+        IDbSet<Region> Region { get; set; } // Region
+        IDbSet<SalesByCategory> SalesByCategory { get; set; } // Sales by Category
+        IDbSet<SalesTotalsByAmount> SalesTotalsByAmount { get; set; } // Sales Totals by Amount
+        IDbSet<Shippers> Shippers { get; set; } // Shippers
+        IDbSet<SummaryOfSalesByQuarter> SummaryOfSalesByQuarter { get; set; } // Summary of Sales by Quarter
+        IDbSet<SummaryOfSalesByYear> SummaryOfSalesByYear { get; set; } // Summary of Sales by Year
+        IDbSet<Suppliers> Suppliers { get; set; } // Suppliers
+        IDbSet<Territories> Territories { get; set; } // Territories
 
         int SaveChanges();
     }
@@ -56,25 +63,32 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Database context
     public class MyDbContext : DbContext, IMyDbContext
     {
-        public IDbSet<AspnetApplications> AspnetApplications { get; set; } // aspnet_Applications
-        public IDbSet<AspnetMembership> AspnetMembership { get; set; } // aspnet_Membership
-        public IDbSet<AspnetPaths> AspnetPaths { get; set; } // aspnet_Paths
-        public IDbSet<AspnetPersonalizationAllUsers> AspnetPersonalizationAllUsers { get; set; } // aspnet_PersonalizationAllUsers
-        public IDbSet<AspnetPersonalizationPerUser> AspnetPersonalizationPerUser { get; set; } // aspnet_PersonalizationPerUser
-        public IDbSet<AspnetProfile> AspnetProfile { get; set; } // aspnet_Profile
-        public IDbSet<AspnetRoles> AspnetRoles { get; set; } // aspnet_Roles
-        public IDbSet<AspnetSchemaVersions> AspnetSchemaVersions { get; set; } // aspnet_SchemaVersions
-        public IDbSet<AspnetUsers> AspnetUsers { get; set; } // aspnet_Users
-        public IDbSet<AspnetWebEventEvents> AspnetWebEventEvents { get; set; } // aspnet_WebEvent_Events
-        public IDbSet<VwAspnetApplications> VwAspnetApplications { get; set; } // vw_aspnet_Applications
-        public IDbSet<VwAspnetMembershipUsers> VwAspnetMembershipUsers { get; set; } // vw_aspnet_MembershipUsers
-        public IDbSet<VwAspnetProfiles> VwAspnetProfiles { get; set; } // vw_aspnet_Profiles
-        public IDbSet<VwAspnetRoles> VwAspnetRoles { get; set; } // vw_aspnet_Roles
-        public IDbSet<VwAspnetUsers> VwAspnetUsers { get; set; } // vw_aspnet_Users
-        public IDbSet<VwAspnetUsersInRoles> VwAspnetUsersInRoles { get; set; } // vw_aspnet_UsersInRoles
-        public IDbSet<VwAspnetWebPartStatePaths> VwAspnetWebPartStatePaths { get; set; } // vw_aspnet_WebPartState_Paths
-        public IDbSet<VwAspnetWebPartStateShared> VwAspnetWebPartStateShared { get; set; } // vw_aspnet_WebPartState_Shared
-        public IDbSet<VwAspnetWebPartStateUser> VwAspnetWebPartStateUser { get; set; } // vw_aspnet_WebPartState_User
+        public IDbSet<AlphabeticalListOfProducts> AlphabeticalListOfProducts { get; set; } // Alphabetical list of products
+        public IDbSet<Categories> Categories { get; set; } // Categories
+        public IDbSet<CategorySalesFor1997> CategorySalesFor1997 { get; set; } // Category Sales for 1997
+        public IDbSet<CurrentProductList> CurrentProductList { get; set; } // Current Product List
+        public IDbSet<CustomerAndSuppliersByCity> CustomerAndSuppliersByCity { get; set; } // Customer and Suppliers by City
+        public IDbSet<CustomerDemographics> CustomerDemographics { get; set; } // CustomerDemographics
+        public IDbSet<Customers> Customers { get; set; } // Customers
+        public IDbSet<Employees> Employees { get; set; } // Employees
+        public IDbSet<Invoices> Invoices { get; set; } // Invoices
+        public IDbSet<OrderDetails> OrderDetails { get; set; } // Order Details
+        public IDbSet<OrderDetailsExtended> OrderDetailsExtended { get; set; } // Order Details Extended
+        public IDbSet<Orders> Orders { get; set; } // Orders
+        public IDbSet<OrdersQry> OrdersQry { get; set; } // Orders Qry
+        public IDbSet<OrderSubtotals> OrderSubtotals { get; set; } // Order Subtotals
+        public IDbSet<Products> Products { get; set; } // Products
+        public IDbSet<ProductsAboveAveragePrice> ProductsAboveAveragePrice { get; set; } // Products Above Average Price
+        public IDbSet<ProductSalesFor1997> ProductSalesFor1997 { get; set; } // Product Sales for 1997
+        public IDbSet<ProductsByCategory> ProductsByCategory { get; set; } // Products by Category
+        public IDbSet<Region> Region { get; set; } // Region
+        public IDbSet<SalesByCategory> SalesByCategory { get; set; } // Sales by Category
+        public IDbSet<SalesTotalsByAmount> SalesTotalsByAmount { get; set; } // Sales Totals by Amount
+        public IDbSet<Shippers> Shippers { get; set; } // Shippers
+        public IDbSet<SummaryOfSalesByQuarter> SummaryOfSalesByQuarter { get; set; } // Summary of Sales by Quarter
+        public IDbSet<SummaryOfSalesByYear> SummaryOfSalesByYear { get; set; } // Summary of Sales by Year
+        public IDbSet<Suppliers> Suppliers { get; set; } // Suppliers
+        public IDbSet<Territories> Territories { get; set; } // Territories
 
         static MyDbContext()
         {
@@ -98,48 +112,62 @@ namespace EntityFramework_Reverse_POCO_Generator
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Configurations.Add(new AspnetApplicationsConfiguration());
-            modelBuilder.Configurations.Add(new AspnetMembershipConfiguration());
-            modelBuilder.Configurations.Add(new AspnetPathsConfiguration());
-            modelBuilder.Configurations.Add(new AspnetPersonalizationAllUsersConfiguration());
-            modelBuilder.Configurations.Add(new AspnetPersonalizationPerUserConfiguration());
-            modelBuilder.Configurations.Add(new AspnetProfileConfiguration());
-            modelBuilder.Configurations.Add(new AspnetRolesConfiguration());
-            modelBuilder.Configurations.Add(new AspnetSchemaVersionsConfiguration());
-            modelBuilder.Configurations.Add(new AspnetUsersConfiguration());
-            modelBuilder.Configurations.Add(new AspnetWebEventEventsConfiguration());
-            modelBuilder.Configurations.Add(new VwAspnetApplicationsConfiguration());
-            modelBuilder.Configurations.Add(new VwAspnetMembershipUsersConfiguration());
-            modelBuilder.Configurations.Add(new VwAspnetProfilesConfiguration());
-            modelBuilder.Configurations.Add(new VwAspnetRolesConfiguration());
-            modelBuilder.Configurations.Add(new VwAspnetUsersConfiguration());
-            modelBuilder.Configurations.Add(new VwAspnetUsersInRolesConfiguration());
-            modelBuilder.Configurations.Add(new VwAspnetWebPartStatePathsConfiguration());
-            modelBuilder.Configurations.Add(new VwAspnetWebPartStateSharedConfiguration());
-            modelBuilder.Configurations.Add(new VwAspnetWebPartStateUserConfiguration());
+            modelBuilder.Configurations.Add(new AlphabeticalListOfProductsConfiguration());
+            modelBuilder.Configurations.Add(new CategoriesConfiguration());
+            modelBuilder.Configurations.Add(new CategorySalesFor1997Configuration());
+            modelBuilder.Configurations.Add(new CurrentProductListConfiguration());
+            modelBuilder.Configurations.Add(new CustomerAndSuppliersByCityConfiguration());
+            modelBuilder.Configurations.Add(new CustomerDemographicsConfiguration());
+            modelBuilder.Configurations.Add(new CustomersConfiguration());
+            modelBuilder.Configurations.Add(new EmployeesConfiguration());
+            modelBuilder.Configurations.Add(new InvoicesConfiguration());
+            modelBuilder.Configurations.Add(new OrderDetailsConfiguration());
+            modelBuilder.Configurations.Add(new OrderDetailsExtendedConfiguration());
+            modelBuilder.Configurations.Add(new OrdersConfiguration());
+            modelBuilder.Configurations.Add(new OrdersQryConfiguration());
+            modelBuilder.Configurations.Add(new OrderSubtotalsConfiguration());
+            modelBuilder.Configurations.Add(new ProductsConfiguration());
+            modelBuilder.Configurations.Add(new ProductsAboveAveragePriceConfiguration());
+            modelBuilder.Configurations.Add(new ProductSalesFor1997Configuration());
+            modelBuilder.Configurations.Add(new ProductsByCategoryConfiguration());
+            modelBuilder.Configurations.Add(new RegionConfiguration());
+            modelBuilder.Configurations.Add(new SalesByCategoryConfiguration());
+            modelBuilder.Configurations.Add(new SalesTotalsByAmountConfiguration());
+            modelBuilder.Configurations.Add(new ShippersConfiguration());
+            modelBuilder.Configurations.Add(new SummaryOfSalesByQuarterConfiguration());
+            modelBuilder.Configurations.Add(new SummaryOfSalesByYearConfiguration());
+            modelBuilder.Configurations.Add(new SuppliersConfiguration());
+            modelBuilder.Configurations.Add(new TerritoriesConfiguration());
         }
 
         public static DbModelBuilder CreateModel(DbModelBuilder modelBuilder, string schema)
         {
-            modelBuilder.Configurations.Add(new AspnetApplicationsConfiguration(schema));
-            modelBuilder.Configurations.Add(new AspnetMembershipConfiguration(schema));
-            modelBuilder.Configurations.Add(new AspnetPathsConfiguration(schema));
-            modelBuilder.Configurations.Add(new AspnetPersonalizationAllUsersConfiguration(schema));
-            modelBuilder.Configurations.Add(new AspnetPersonalizationPerUserConfiguration(schema));
-            modelBuilder.Configurations.Add(new AspnetProfileConfiguration(schema));
-            modelBuilder.Configurations.Add(new AspnetRolesConfiguration(schema));
-            modelBuilder.Configurations.Add(new AspnetSchemaVersionsConfiguration(schema));
-            modelBuilder.Configurations.Add(new AspnetUsersConfiguration(schema));
-            modelBuilder.Configurations.Add(new AspnetWebEventEventsConfiguration(schema));
-            modelBuilder.Configurations.Add(new VwAspnetApplicationsConfiguration(schema));
-            modelBuilder.Configurations.Add(new VwAspnetMembershipUsersConfiguration(schema));
-            modelBuilder.Configurations.Add(new VwAspnetProfilesConfiguration(schema));
-            modelBuilder.Configurations.Add(new VwAspnetRolesConfiguration(schema));
-            modelBuilder.Configurations.Add(new VwAspnetUsersConfiguration(schema));
-            modelBuilder.Configurations.Add(new VwAspnetUsersInRolesConfiguration(schema));
-            modelBuilder.Configurations.Add(new VwAspnetWebPartStatePathsConfiguration(schema));
-            modelBuilder.Configurations.Add(new VwAspnetWebPartStateSharedConfiguration(schema));
-            modelBuilder.Configurations.Add(new VwAspnetWebPartStateUserConfiguration(schema));
+            modelBuilder.Configurations.Add(new AlphabeticalListOfProductsConfiguration(schema));
+            modelBuilder.Configurations.Add(new CategoriesConfiguration(schema));
+            modelBuilder.Configurations.Add(new CategorySalesFor1997Configuration(schema));
+            modelBuilder.Configurations.Add(new CurrentProductListConfiguration(schema));
+            modelBuilder.Configurations.Add(new CustomerAndSuppliersByCityConfiguration(schema));
+            modelBuilder.Configurations.Add(new CustomerDemographicsConfiguration(schema));
+            modelBuilder.Configurations.Add(new CustomersConfiguration(schema));
+            modelBuilder.Configurations.Add(new EmployeesConfiguration(schema));
+            modelBuilder.Configurations.Add(new InvoicesConfiguration(schema));
+            modelBuilder.Configurations.Add(new OrderDetailsConfiguration(schema));
+            modelBuilder.Configurations.Add(new OrderDetailsExtendedConfiguration(schema));
+            modelBuilder.Configurations.Add(new OrdersConfiguration(schema));
+            modelBuilder.Configurations.Add(new OrdersQryConfiguration(schema));
+            modelBuilder.Configurations.Add(new OrderSubtotalsConfiguration(schema));
+            modelBuilder.Configurations.Add(new ProductsConfiguration(schema));
+            modelBuilder.Configurations.Add(new ProductsAboveAveragePriceConfiguration(schema));
+            modelBuilder.Configurations.Add(new ProductSalesFor1997Configuration(schema));
+            modelBuilder.Configurations.Add(new ProductsByCategoryConfiguration(schema));
+            modelBuilder.Configurations.Add(new RegionConfiguration(schema));
+            modelBuilder.Configurations.Add(new SalesByCategoryConfiguration(schema));
+            modelBuilder.Configurations.Add(new SalesTotalsByAmountConfiguration(schema));
+            modelBuilder.Configurations.Add(new ShippersConfiguration(schema));
+            modelBuilder.Configurations.Add(new SummaryOfSalesByQuarterConfiguration(schema));
+            modelBuilder.Configurations.Add(new SummaryOfSalesByYearConfiguration(schema));
+            modelBuilder.Configurations.Add(new SuppliersConfiguration(schema));
+            modelBuilder.Configurations.Add(new TerritoriesConfiguration(schema));
             return modelBuilder;
         }
     }
@@ -147,682 +175,948 @@ namespace EntityFramework_Reverse_POCO_Generator
     // ************************************************************************
     // POCO classes
 
-    // aspnet_Applications
-    public class AspnetApplications
+    // Alphabetical list of products
+    public class AlphabeticalListOfProducts
     {
-        public string ApplicationName { get; set; } // ApplicationName
-        public string LoweredApplicationName { get; set; } // LoweredApplicationName
-        public Guid ApplicationId { get; set; } // ApplicationId (Primary key)
+        public int ProductId { get; set; } // ProductID
+        public string ProductName { get; set; } // ProductName
+        public int? SupplierId { get; set; } // SupplierID
+        public int? CategoryId { get; set; } // CategoryID
+        public string QuantityPerUnit { get; set; } // QuantityPerUnit
+        public decimal? UnitPrice { get; set; } // UnitPrice
+        public short? UnitsInStock { get; set; } // UnitsInStock
+        public short? UnitsOnOrder { get; set; } // UnitsOnOrder
+        public short? ReorderLevel { get; set; } // ReorderLevel
+        public bool Discontinued { get; set; } // Discontinued
+        public string CategoryName { get; set; } // CategoryName
+    }
+
+    // Categories
+    public class Categories
+    {
+        public int CategoryId { get; set; } // CategoryID (Primary key)
+        public string CategoryName { get; set; } // CategoryName
         public string Description { get; set; } // Description
+        public byte[] Picture { get; set; } // Picture
 
         // Reverse navigation
-        public virtual ICollection<AspnetMembership> AspnetMembership { get; set; } // aspnet_Membership.FK__aspnet_Me__Appli__21B6055D
-        public virtual ICollection<AspnetPaths> AspnetPaths { get; set; } // aspnet_Paths.FK__aspnet_Pa__Appli__5AEE82B9
-        public virtual ICollection<AspnetRoles> AspnetRoles { get; set; } // aspnet_Roles.FK__aspnet_Ro__Appli__440B1D61
-        public virtual ICollection<AspnetUsers> AspnetUsers { get; set; } // aspnet_Users.FK__aspnet_Us__Appli__0DAF0CB0
+        public virtual ICollection<Products> Products { get; set; } // Products.FK_Products_Categories
 
-        public AspnetApplications()
+        public Categories()
         {
-            ApplicationId = System.Guid.NewGuid();
-            AspnetMembership = new List<AspnetMembership>();
-            AspnetPaths = new List<AspnetPaths>();
-            AspnetRoles = new List<AspnetRoles>();
-            AspnetUsers = new List<AspnetUsers>();
+            Products = new List<Products>();
         }
     }
 
-    // aspnet_Membership
-    public class AspnetMembership
+    // Category Sales for 1997
+    public class CategorySalesFor1997
     {
-        public Guid ApplicationId { get; set; } // ApplicationId
-        public Guid UserId { get; set; } // UserId (Primary key)
-        public string Password { get; set; } // Password
-        public int PasswordFormat { get; set; } // PasswordFormat
-        public string PasswordSalt { get; set; } // PasswordSalt
-        public string MobilePin { get; set; } // MobilePIN
-        public string Email { get; set; } // Email
-        public string LoweredEmail { get; set; } // LoweredEmail
-        public string PasswordQuestion { get; set; } // PasswordQuestion
-        public string PasswordAnswer { get; set; } // PasswordAnswer
-        public bool IsApproved { get; set; } // IsApproved
-        public bool IsLockedOut { get; set; } // IsLockedOut
-        public DateTime CreateDate { get; set; } // CreateDate
-        public DateTime LastLoginDate { get; set; } // LastLoginDate
-        public DateTime LastPasswordChangedDate { get; set; } // LastPasswordChangedDate
-        public DateTime LastLockoutDate { get; set; } // LastLockoutDate
-        public int FailedPasswordAttemptCount { get; set; } // FailedPasswordAttemptCount
-        public DateTime FailedPasswordAttemptWindowStart { get; set; } // FailedPasswordAttemptWindowStart
-        public int FailedPasswordAnswerAttemptCount { get; set; } // FailedPasswordAnswerAttemptCount
-        public DateTime FailedPasswordAnswerAttemptWindowStart { get; set; } // FailedPasswordAnswerAttemptWindowStart
-        public string Comment { get; set; } // Comment
-
-        // Foreign keys
-        public virtual AspnetApplications AspnetApplications { get; set; } //  FK__aspnet_Me__Appli__21B6055D
-        public virtual AspnetUsers AspnetUsers { get; set; } //  FK__aspnet_Me__UserI__22AA2996
-
-        public AspnetMembership()
-        {
-            PasswordFormat = 0;
-        }
+        public string CategoryName { get; set; } // CategoryName
+        public decimal? CategorySales { get; set; } // CategorySales
     }
 
-    // aspnet_Paths
-    public class AspnetPaths
+    // Current Product List
+    public class CurrentProductList
     {
-        public Guid ApplicationId { get; set; } // ApplicationId
-        public Guid PathId { get; set; } // PathId (Primary key)
-        public string Path { get; set; } // Path
-        public string LoweredPath { get; set; } // LoweredPath
+        public int ProductId { get; set; } // ProductID
+        public string ProductName { get; set; } // ProductName
+    }
+
+    // Customer and Suppliers by City
+    public class CustomerAndSuppliersByCity
+    {
+        public string City { get; set; } // City
+        public string CompanyName { get; set; } // CompanyName
+        public string ContactName { get; set; } // ContactName
+        public string Relationship { get; set; } // Relationship
+    }
+
+    // CustomerDemographics
+    public class CustomerDemographics
+    {
+        public string CustomerTypeId { get; set; } // CustomerTypeID (Primary key)
+        public string CustomerDesc { get; set; } // CustomerDesc
 
         // Reverse navigation
-        public virtual AspnetPersonalizationAllUsers AspnetPersonalizationAllUsers { get; set; } // aspnet_PersonalizationAllUsers.FK__aspnet_Pe__PathI__628FA481
-        public virtual ICollection<AspnetPersonalizationPerUser> AspnetPersonalizationPerUser { get; set; } // aspnet_PersonalizationPerUser.FK__aspnet_Pe__PathI__68487DD7
+        public virtual ICollection<Customers> Customers { get; set; } // Many to many mapping
 
-        // Foreign keys
-        public virtual AspnetApplications AspnetApplications { get; set; } //  FK__aspnet_Pa__Appli__5AEE82B9
-
-        public AspnetPaths()
+        public CustomerDemographics()
         {
-            PathId = System.Guid.NewGuid();
-            AspnetPersonalizationPerUser = new List<AspnetPersonalizationPerUser>();
+            Customers = new List<Customers>();
         }
     }
 
-    // aspnet_PersonalizationAllUsers
-    public class AspnetPersonalizationAllUsers
+    // Customers
+    public class Customers
     {
-        public Guid PathId { get; set; } // PathId (Primary key)
-        public byte[] PageSettings { get; set; } // PageSettings
-        public DateTime LastUpdatedDate { get; set; } // LastUpdatedDate
-
-        // Foreign keys
-        public virtual AspnetPaths AspnetPaths { get; set; } //  FK__aspnet_Pe__PathI__628FA481
-    }
-
-    // aspnet_PersonalizationPerUser
-    public class AspnetPersonalizationPerUser
-    {
-        public Guid Id { get; set; } // Id (Primary key)
-        public Guid? PathId { get; set; } // PathId
-        public Guid? UserId { get; set; } // UserId
-        public byte[] PageSettings { get; set; } // PageSettings
-        public DateTime LastUpdatedDate { get; set; } // LastUpdatedDate
-
-        // Foreign keys
-        public virtual AspnetPaths AspnetPaths { get; set; } //  FK__aspnet_Pe__PathI__68487DD7
-        public virtual AspnetUsers AspnetUsers { get; set; } //  FK__aspnet_Pe__UserI__693CA210
-
-        public AspnetPersonalizationPerUser()
-        {
-            Id = System.Guid.NewGuid();
-        }
-    }
-
-    // aspnet_Profile
-    public class AspnetProfile
-    {
-        public Guid UserId { get; set; } // UserId (Primary key)
-        public string PropertyNames { get; set; } // PropertyNames
-        public string PropertyValuesString { get; set; } // PropertyValuesString
-        public byte[] PropertyValuesBinary { get; set; } // PropertyValuesBinary
-        public DateTime LastUpdatedDate { get; set; } // LastUpdatedDate
-
-        // Foreign keys
-        public virtual AspnetUsers AspnetUsers { get; set; } //  FK__aspnet_Pr__UserI__38996AB5
-    }
-
-    // aspnet_Roles
-    public class AspnetRoles
-    {
-        public Guid ApplicationId { get; set; } // ApplicationId
-        public Guid RoleId { get; set; } // RoleId (Primary key)
-        public string RoleName { get; set; } // RoleName
-        public string LoweredRoleName { get; set; } // LoweredRoleName
-        public string Description { get; set; } // Description
+        public string CustomerId { get; set; } // CustomerID (Primary key)
+        public string CompanyName { get; set; } // CompanyName
+        public string ContactName { get; set; } // ContactName
+        public string ContactTitle { get; set; } // ContactTitle
+        public string Address { get; set; } // Address
+        public string City { get; set; } // City
+        public string Region { get; set; } // Region
+        public string PostalCode { get; set; } // PostalCode
+        public string Country { get; set; } // Country
+        public string Phone { get; set; } // Phone
+        public string Fax { get; set; } // Fax
 
         // Reverse navigation
-        public virtual ICollection<AspnetUsers> AspnetUsers { get; set; } // Many to many mapping
+        public virtual ICollection<CustomerDemographics> CustomerDemographics { get; set; } // Many to many mapping
+        public virtual ICollection<Orders> Orders { get; set; } // Orders.FK_Orders_Customers
 
-        // Foreign keys
-        public virtual AspnetApplications AspnetApplications { get; set; } //  FK__aspnet_Ro__Appli__440B1D61
-
-        public AspnetRoles()
+        public Customers()
         {
-            RoleId = System.Guid.NewGuid();
-            AspnetUsers = new List<AspnetUsers>();
+            Orders = new List<Orders>();
+            CustomerDemographics = new List<CustomerDemographics>();
         }
     }
 
-    // aspnet_SchemaVersions
-    public class AspnetSchemaVersions
+    // Employees
+    public class Employees
     {
-        public string Feature { get; set; } // Feature (Primary key)
-        public string CompatibleSchemaVersion { get; set; } // CompatibleSchemaVersion (Primary key)
-        public bool IsCurrentVersion { get; set; } // IsCurrentVersion
-    }
-
-    // aspnet_Users
-    public class AspnetUsers
-    {
-        public Guid ApplicationId { get; set; } // ApplicationId
-        public Guid UserId { get; set; } // UserId (Primary key)
-        public string UserName { get; set; } // UserName
-        public string LoweredUserName { get; set; } // LoweredUserName
-        public string MobileAlias { get; set; } // MobileAlias
-        public bool IsAnonymous { get; set; } // IsAnonymous
-        public DateTime LastActivityDate { get; set; } // LastActivityDate
+        public int EmployeeId { get; set; } // EmployeeID (Primary key)
+        public string LastName { get; set; } // LastName
+        public string FirstName { get; set; } // FirstName
+        public string Title { get; set; } // Title
+        public string TitleOfCourtesy { get; set; } // TitleOfCourtesy
+        public DateTime? BirthDate { get; set; } // BirthDate
+        public DateTime? HireDate { get; set; } // HireDate
+        public string Address { get; set; } // Address
+        public string City { get; set; } // City
+        public string Region { get; set; } // Region
+        public string PostalCode { get; set; } // PostalCode
+        public string Country { get; set; } // Country
+        public string HomePhone { get; set; } // HomePhone
+        public string Extension { get; set; } // Extension
+        public byte[] Photo { get; set; } // Photo
+        public string Notes { get; set; } // Notes
+        public int? ReportsTo { get; set; } // ReportsTo
+        public string PhotoPath { get; set; } // PhotoPath
 
         // Reverse navigation
-        public virtual AspnetMembership AspnetMembership { get; set; } // aspnet_Membership.FK__aspnet_Me__UserI__22AA2996
-        public virtual AspnetProfile AspnetProfile { get; set; } // aspnet_Profile.FK__aspnet_Pr__UserI__38996AB5
-        public virtual ICollection<AspnetPersonalizationPerUser> AspnetPersonalizationPerUser { get; set; } // aspnet_PersonalizationPerUser.FK__aspnet_Pe__UserI__693CA210
-        public virtual ICollection<AspnetRoles> AspnetRoles { get; set; } // Many to many mapping
+        public virtual ICollection<Employees> Employees2 { get; set; } // Employees.FK_Employees_Employees
+        public virtual ICollection<Orders> Orders { get; set; } // Orders.FK_Orders_Employees
+        public virtual ICollection<Territories> Territories { get; set; } // Many to many mapping
 
         // Foreign keys
-        public virtual AspnetApplications AspnetApplications { get; set; } //  FK__aspnet_Us__Appli__0DAF0CB0
+        public virtual Employees Employees_ReportsTo { get; set; } //  FK_Employees_Employees
 
-        public AspnetUsers()
+        public Employees()
         {
-            UserId = System.Guid.NewGuid();
-            MobileAlias = "NULL";
-            IsAnonymous = false;
-            AspnetPersonalizationPerUser = new List<AspnetPersonalizationPerUser>();
-            AspnetRoles = new List<AspnetRoles>();
+            Employees2 = new List<Employees>();
+            Orders = new List<Orders>();
+            Territories = new List<Territories>();
         }
     }
 
-    // aspnet_WebEvent_Events
-    public class AspnetWebEventEvents
+    // Invoices
+    public class Invoices
     {
-        public string EventId { get; set; } // EventId (Primary key)
-        public DateTime EventTimeUtc { get; set; } // EventTimeUtc
-        public DateTime EventTime { get; set; } // EventTime
-        public string EventType { get; set; } // EventType
-        public decimal EventSequence { get; set; } // EventSequence
-        public decimal EventOccurrence { get; set; } // EventOccurrence
-        public int EventCode { get; set; } // EventCode
-        public int EventDetailCode { get; set; } // EventDetailCode
-        public string Message { get; set; } // Message
-        public string ApplicationPath { get; set; } // ApplicationPath
-        public string ApplicationVirtualPath { get; set; } // ApplicationVirtualPath
-        public string MachineName { get; set; } // MachineName
-        public string RequestUrl { get; set; } // RequestUrl
-        public string ExceptionType { get; set; } // ExceptionType
-        public string Details { get; set; } // Details
+        public string ShipName { get; set; } // ShipName
+        public string ShipAddress { get; set; } // ShipAddress
+        public string ShipCity { get; set; } // ShipCity
+        public string ShipRegion { get; set; } // ShipRegion
+        public string ShipPostalCode { get; set; } // ShipPostalCode
+        public string ShipCountry { get; set; } // ShipCountry
+        public string CustomerId { get; set; } // CustomerID
+        public string CustomerName { get; set; } // CustomerName
+        public string Address { get; set; } // Address
+        public string City { get; set; } // City
+        public string Region { get; set; } // Region
+        public string PostalCode { get; set; } // PostalCode
+        public string Country { get; set; } // Country
+        public string Salesperson { get; set; } // Salesperson
+        public int OrderId { get; set; } // OrderID
+        public DateTime? OrderDate { get; set; } // OrderDate
+        public DateTime? RequiredDate { get; set; } // RequiredDate
+        public DateTime? ShippedDate { get; set; } // ShippedDate
+        public string ShipperName { get; set; } // ShipperName
+        public int ProductId { get; set; } // ProductID
+        public string ProductName { get; set; } // ProductName
+        public decimal UnitPrice { get; set; } // UnitPrice
+        public short Quantity { get; set; } // Quantity
+        public float Discount { get; set; } // Discount
+        public decimal? ExtendedPrice { get; set; } // ExtendedPrice
+        public decimal? Freight { get; set; } // Freight
     }
 
-    // vw_aspnet_Applications
-    public class VwAspnetApplications
+    // Order Details
+    public class OrderDetails
     {
-        public string ApplicationName { get; set; } // ApplicationName
-        public string LoweredApplicationName { get; set; } // LoweredApplicationName
-        public Guid ApplicationId { get; set; } // ApplicationId
-        public string Description { get; set; } // Description
+        public int OrderId { get; set; } // OrderID (Primary key)
+        public int ProductId { get; set; } // ProductID (Primary key)
+        public decimal UnitPrice { get; set; } // UnitPrice
+        public short Quantity { get; set; } // Quantity
+        public float Discount { get; set; } // Discount
+
+        // Foreign keys
+        public virtual Orders Orders { get; set; } //  FK_Order_Details_Orders
+        public virtual Products Products { get; set; } //  FK_Order_Details_Products
+
+        public OrderDetails()
+        {
+            UnitPrice = 0m;
+            Quantity = 1;
+            Discount = 0;
+        }
     }
 
-    // vw_aspnet_MembershipUsers
-    public class VwAspnetMembershipUsers
+    // Order Details Extended
+    public class OrderDetailsExtended
     {
-        public Guid UserId { get; set; } // UserId
-        public int PasswordFormat { get; set; } // PasswordFormat
-        public string MobilePin { get; set; } // MobilePIN
-        public string Email { get; set; } // Email
-        public string LoweredEmail { get; set; } // LoweredEmail
-        public string PasswordQuestion { get; set; } // PasswordQuestion
-        public string PasswordAnswer { get; set; } // PasswordAnswer
-        public bool IsApproved { get; set; } // IsApproved
-        public bool IsLockedOut { get; set; } // IsLockedOut
-        public DateTime CreateDate { get; set; } // CreateDate
-        public DateTime LastLoginDate { get; set; } // LastLoginDate
-        public DateTime LastPasswordChangedDate { get; set; } // LastPasswordChangedDate
-        public DateTime LastLockoutDate { get; set; } // LastLockoutDate
-        public int FailedPasswordAttemptCount { get; set; } // FailedPasswordAttemptCount
-        public DateTime FailedPasswordAttemptWindowStart { get; set; } // FailedPasswordAttemptWindowStart
-        public int FailedPasswordAnswerAttemptCount { get; set; } // FailedPasswordAnswerAttemptCount
-        public DateTime FailedPasswordAnswerAttemptWindowStart { get; set; } // FailedPasswordAnswerAttemptWindowStart
-        public string Comment { get; set; } // Comment
-        public Guid ApplicationId { get; set; } // ApplicationId
-        public string UserName { get; set; } // UserName
-        public string MobileAlias { get; set; } // MobileAlias
-        public bool IsAnonymous { get; set; } // IsAnonymous
-        public DateTime LastActivityDate { get; set; } // LastActivityDate
+        public int OrderId { get; set; } // OrderID
+        public int ProductId { get; set; } // ProductID
+        public string ProductName { get; set; } // ProductName
+        public decimal UnitPrice { get; set; } // UnitPrice
+        public short Quantity { get; set; } // Quantity
+        public float Discount { get; set; } // Discount
+        public decimal? ExtendedPrice { get; set; } // ExtendedPrice
     }
 
-    // vw_aspnet_Profiles
-    public class VwAspnetProfiles
+    // Orders
+    public class Orders
     {
-        public Guid UserId { get; set; } // UserId
-        public DateTime LastUpdatedDate { get; set; } // LastUpdatedDate
-        public int? DataSize { get; set; } // DataSize
+        public int OrderId { get; set; } // OrderID (Primary key)
+        public string CustomerId { get; set; } // CustomerID
+        public int? EmployeeId { get; set; } // EmployeeID
+        public DateTime? OrderDate { get; set; } // OrderDate
+        public DateTime? RequiredDate { get; set; } // RequiredDate
+        public DateTime? ShippedDate { get; set; } // ShippedDate
+        public int? ShipVia { get; set; } // ShipVia
+        public decimal? Freight { get; set; } // Freight
+        public string ShipName { get; set; } // ShipName
+        public string ShipAddress { get; set; } // ShipAddress
+        public string ShipCity { get; set; } // ShipCity
+        public string ShipRegion { get; set; } // ShipRegion
+        public string ShipPostalCode { get; set; } // ShipPostalCode
+        public string ShipCountry { get; set; } // ShipCountry
+
+        // Reverse navigation
+        public virtual ICollection<OrderDetails> OrderDetails { get; set; } // Many to many mapping
+
+        // Foreign keys
+        public virtual Customers Customers { get; set; } //  FK_Orders_Customers
+        public virtual Employees Employees { get; set; } //  FK_Orders_Employees
+        public virtual Shippers Shippers { get; set; } //  FK_Orders_Shippers
+
+        public Orders()
+        {
+            Freight = 0m;
+            OrderDetails = new List<OrderDetails>();
+        }
     }
 
-    // vw_aspnet_Roles
-    public class VwAspnetRoles
+    // Orders Qry
+    public class OrdersQry
     {
-        public Guid ApplicationId { get; set; } // ApplicationId
-        public Guid RoleId { get; set; } // RoleId
-        public string RoleName { get; set; } // RoleName
-        public string LoweredRoleName { get; set; } // LoweredRoleName
-        public string Description { get; set; } // Description
+        public int OrderId { get; set; } // OrderID
+        public string CustomerId { get; set; } // CustomerID
+        public int? EmployeeId { get; set; } // EmployeeID
+        public DateTime? OrderDate { get; set; } // OrderDate
+        public DateTime? RequiredDate { get; set; } // RequiredDate
+        public DateTime? ShippedDate { get; set; } // ShippedDate
+        public int? ShipVia { get; set; } // ShipVia
+        public decimal? Freight { get; set; } // Freight
+        public string ShipName { get; set; } // ShipName
+        public string ShipAddress { get; set; } // ShipAddress
+        public string ShipCity { get; set; } // ShipCity
+        public string ShipRegion { get; set; } // ShipRegion
+        public string ShipPostalCode { get; set; } // ShipPostalCode
+        public string ShipCountry { get; set; } // ShipCountry
+        public string CompanyName { get; set; } // CompanyName
+        public string Address { get; set; } // Address
+        public string City { get; set; } // City
+        public string Region { get; set; } // Region
+        public string PostalCode { get; set; } // PostalCode
+        public string Country { get; set; } // Country
     }
 
-    // vw_aspnet_Users
-    public class VwAspnetUsers
+    // Order Subtotals
+    public class OrderSubtotals
     {
-        public Guid ApplicationId { get; set; } // ApplicationId
-        public Guid UserId { get; set; } // UserId
-        public string UserName { get; set; } // UserName
-        public string LoweredUserName { get; set; } // LoweredUserName
-        public string MobileAlias { get; set; } // MobileAlias
-        public bool IsAnonymous { get; set; } // IsAnonymous
-        public DateTime LastActivityDate { get; set; } // LastActivityDate
+        public int OrderId { get; set; } // OrderID
+        public decimal? Subtotal { get; set; } // Subtotal
     }
 
-    // vw_aspnet_UsersInRoles
-    public class VwAspnetUsersInRoles
+    // Products
+    public class Products
     {
-        public Guid UserId { get; set; } // UserId
-        public Guid RoleId { get; set; } // RoleId
+        public int ProductId { get; set; } // ProductID (Primary key)
+        public string ProductName { get; set; } // ProductName
+        public int? SupplierId { get; set; } // SupplierID
+        public int? CategoryId { get; set; } // CategoryID
+        public string QuantityPerUnit { get; set; } // QuantityPerUnit
+        public decimal? UnitPrice { get; set; } // UnitPrice
+        public short? UnitsInStock { get; set; } // UnitsInStock
+        public short? UnitsOnOrder { get; set; } // UnitsOnOrder
+        public short? ReorderLevel { get; set; } // ReorderLevel
+        public bool Discontinued { get; set; } // Discontinued
+
+        // Reverse navigation
+        public virtual ICollection<OrderDetails> OrderDetails { get; set; } // Many to many mapping
+
+        // Foreign keys
+        public virtual Categories Categories { get; set; } //  FK_Products_Categories
+        public virtual Suppliers Suppliers { get; set; } //  FK_Products_Suppliers
+
+        public Products()
+        {
+            UnitPrice = 0m;
+            UnitsInStock = 0;
+            UnitsOnOrder = 0;
+            ReorderLevel = 0;
+            Discontinued = false;
+            OrderDetails = new List<OrderDetails>();
+        }
     }
 
-    // vw_aspnet_WebPartState_Paths
-    public class VwAspnetWebPartStatePaths
+    // Products Above Average Price
+    public class ProductsAboveAveragePrice
     {
-        public Guid ApplicationId { get; set; } // ApplicationId
-        public Guid PathId { get; set; } // PathId
-        public string Path { get; set; } // Path
-        public string LoweredPath { get; set; } // LoweredPath
+        public string ProductName { get; set; } // ProductName
+        public decimal? UnitPrice { get; set; } // UnitPrice
     }
 
-    // vw_aspnet_WebPartState_Shared
-    public class VwAspnetWebPartStateShared
+    // Product Sales for 1997
+    public class ProductSalesFor1997
     {
-        public Guid PathId { get; set; } // PathId
-        public int? DataSize { get; set; } // DataSize
-        public DateTime LastUpdatedDate { get; set; } // LastUpdatedDate
+        public string CategoryName { get; set; } // CategoryName
+        public string ProductName { get; set; } // ProductName
+        public decimal? ProductSales { get; set; } // ProductSales
     }
 
-    // vw_aspnet_WebPartState_User
-    public class VwAspnetWebPartStateUser
+    // Products by Category
+    public class ProductsByCategory
     {
-        public Guid? PathId { get; set; } // PathId
-        public Guid? UserId { get; set; } // UserId
-        public int? DataSize { get; set; } // DataSize
-        public DateTime LastUpdatedDate { get; set; } // LastUpdatedDate
+        public string CategoryName { get; set; } // CategoryName
+        public string ProductName { get; set; } // ProductName
+        public string QuantityPerUnit { get; set; } // QuantityPerUnit
+        public short? UnitsInStock { get; set; } // UnitsInStock
+        public bool Discontinued { get; set; } // Discontinued
+    }
+
+    // Region
+    public class Region
+    {
+        public int RegionId { get; set; } // RegionID (Primary key)
+        public string RegionDescription { get; set; } // RegionDescription
+
+        // Reverse navigation
+        public virtual ICollection<Territories> Territories { get; set; } // Territories.FK_Territories_Region
+
+        public Region()
+        {
+            Territories = new List<Territories>();
+        }
+    }
+
+    // Sales by Category
+    public class SalesByCategory
+    {
+        public int CategoryId { get; set; } // CategoryID
+        public string CategoryName { get; set; } // CategoryName
+        public string ProductName { get; set; } // ProductName
+        public decimal? ProductSales { get; set; } // ProductSales
+    }
+
+    // Sales Totals by Amount
+    public class SalesTotalsByAmount
+    {
+        public decimal? SaleAmount { get; set; } // SaleAmount
+        public int OrderId { get; set; } // OrderID
+        public string CompanyName { get; set; } // CompanyName
+        public DateTime? ShippedDate { get; set; } // ShippedDate
+    }
+
+    // Shippers
+    public class Shippers
+    {
+        public int ShipperId { get; set; } // ShipperID (Primary key)
+        public string CompanyName { get; set; } // CompanyName
+        public string Phone { get; set; } // Phone
+
+        // Reverse navigation
+        public virtual ICollection<Orders> Orders { get; set; } // Orders.FK_Orders_Shippers
+
+        public Shippers()
+        {
+            Orders = new List<Orders>();
+        }
+    }
+
+    // Summary of Sales by Quarter
+    public class SummaryOfSalesByQuarter
+    {
+        public DateTime? ShippedDate { get; set; } // ShippedDate
+        public int OrderId { get; set; } // OrderID
+        public decimal? Subtotal { get; set; } // Subtotal
+    }
+
+    // Summary of Sales by Year
+    public class SummaryOfSalesByYear
+    {
+        public DateTime? ShippedDate { get; set; } // ShippedDate
+        public int OrderId { get; set; } // OrderID
+        public decimal? Subtotal { get; set; } // Subtotal
+    }
+
+    // Suppliers
+    public class Suppliers
+    {
+        public int SupplierId { get; set; } // SupplierID (Primary key)
+        public string CompanyName { get; set; } // CompanyName
+        public string ContactName { get; set; } // ContactName
+        public string ContactTitle { get; set; } // ContactTitle
+        public string Address { get; set; } // Address
+        public string City { get; set; } // City
+        public string Region { get; set; } // Region
+        public string PostalCode { get; set; } // PostalCode
+        public string Country { get; set; } // Country
+        public string Phone { get; set; } // Phone
+        public string Fax { get; set; } // Fax
+        public string HomePage { get; set; } // HomePage
+
+        // Reverse navigation
+        public virtual ICollection<Products> Products { get; set; } // Products.FK_Products_Suppliers
+
+        public Suppliers()
+        {
+            Products = new List<Products>();
+        }
+    }
+
+    // Territories
+    public class Territories
+    {
+        public string TerritoryId { get; set; } // TerritoryID (Primary key)
+        public string TerritoryDescription { get; set; } // TerritoryDescription
+        public int RegionId { get; set; } // RegionID
+
+        // Reverse navigation
+        public virtual ICollection<Employees> Employees { get; set; } // Many to many mapping
+
+        // Foreign keys
+        public virtual Region Region { get; set; } //  FK_Territories_Region
+
+        public Territories()
+        {
+            Employees = new List<Employees>();
+        }
     }
 
 
     // ************************************************************************
     // POCO Configuration
 
-    // aspnet_Applications
-    internal class AspnetApplicationsConfiguration : EntityTypeConfiguration<AspnetApplications>
+    // Alphabetical list of products
+    internal class AlphabeticalListOfProductsConfiguration : EntityTypeConfiguration<AlphabeticalListOfProducts>
     {
-        public AspnetApplicationsConfiguration(string schema = "dbo")
+        public AlphabeticalListOfProductsConfiguration(string schema = "dbo")
         {
-            ToTable(schema + ".aspnet_Applications");
-            HasKey(x => x.ApplicationId);
+            ToTable(schema + ".Alphabetical list of products");
+            HasKey(x => new { x.ProductId, x.ProductName, x.Discontinued, x.CategoryName });
 
-            Property(x => x.ApplicationName).HasColumnName("ApplicationName").IsRequired().HasMaxLength(256);
-            Property(x => x.LoweredApplicationName).HasColumnName("LoweredApplicationName").IsRequired().HasMaxLength(256);
-            Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
-            Property(x => x.Description).HasColumnName("Description").IsOptional().HasMaxLength(256);
+            Property(x => x.ProductId).HasColumnName("ProductID").IsRequired();
+            Property(x => x.ProductName).HasColumnName("ProductName").IsRequired().HasMaxLength(40);
+            Property(x => x.SupplierId).HasColumnName("SupplierID").IsOptional();
+            Property(x => x.CategoryId).HasColumnName("CategoryID").IsOptional();
+            Property(x => x.QuantityPerUnit).HasColumnName("QuantityPerUnit").IsOptional().HasMaxLength(20);
+            Property(x => x.UnitPrice).HasColumnName("UnitPrice").IsOptional().HasPrecision(19,4);
+            Property(x => x.UnitsInStock).HasColumnName("UnitsInStock").IsOptional();
+            Property(x => x.UnitsOnOrder).HasColumnName("UnitsOnOrder").IsOptional();
+            Property(x => x.ReorderLevel).HasColumnName("ReorderLevel").IsOptional();
+            Property(x => x.Discontinued).HasColumnName("Discontinued").IsRequired();
+            Property(x => x.CategoryName).HasColumnName("CategoryName").IsRequired().HasMaxLength(15);
         }
     }
 
-    // aspnet_Membership
-    internal class AspnetMembershipConfiguration : EntityTypeConfiguration<AspnetMembership>
+    // Categories
+    internal class CategoriesConfiguration : EntityTypeConfiguration<Categories>
     {
-        public AspnetMembershipConfiguration(string schema = "dbo")
+        public CategoriesConfiguration(string schema = "dbo")
         {
-            ToTable(schema + ".aspnet_Membership");
-            HasKey(x => x.UserId);
+            ToTable(schema + ".Categories");
+            HasKey(x => x.CategoryId);
 
-            Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
-            Property(x => x.UserId).HasColumnName("UserId").IsRequired();
-            Property(x => x.Password).HasColumnName("Password").IsRequired().HasMaxLength(128);
-            Property(x => x.PasswordFormat).HasColumnName("PasswordFormat").IsRequired();
-            Property(x => x.PasswordSalt).HasColumnName("PasswordSalt").IsRequired().HasMaxLength(128);
-            Property(x => x.MobilePin).HasColumnName("MobilePIN").IsOptional().HasMaxLength(16);
-            Property(x => x.Email).HasColumnName("Email").IsOptional().HasMaxLength(256);
-            Property(x => x.LoweredEmail).HasColumnName("LoweredEmail").IsOptional().HasMaxLength(256);
-            Property(x => x.PasswordQuestion).HasColumnName("PasswordQuestion").IsOptional().HasMaxLength(256);
-            Property(x => x.PasswordAnswer).HasColumnName("PasswordAnswer").IsOptional().HasMaxLength(128);
-            Property(x => x.IsApproved).HasColumnName("IsApproved").IsRequired();
-            Property(x => x.IsLockedOut).HasColumnName("IsLockedOut").IsRequired();
-            Property(x => x.CreateDate).HasColumnName("CreateDate").IsRequired();
-            Property(x => x.LastLoginDate).HasColumnName("LastLoginDate").IsRequired();
-            Property(x => x.LastPasswordChangedDate).HasColumnName("LastPasswordChangedDate").IsRequired();
-            Property(x => x.LastLockoutDate).HasColumnName("LastLockoutDate").IsRequired();
-            Property(x => x.FailedPasswordAttemptCount).HasColumnName("FailedPasswordAttemptCount").IsRequired();
-            Property(x => x.FailedPasswordAttemptWindowStart).HasColumnName("FailedPasswordAttemptWindowStart").IsRequired();
-            Property(x => x.FailedPasswordAnswerAttemptCount).HasColumnName("FailedPasswordAnswerAttemptCount").IsRequired();
-            Property(x => x.FailedPasswordAnswerAttemptWindowStart).HasColumnName("FailedPasswordAnswerAttemptWindowStart").IsRequired();
-            Property(x => x.Comment).HasColumnName("Comment").IsOptional().HasMaxLength(1073741823);
-
-            // Foreign keys
-            HasRequired(a => a.AspnetApplications).WithMany(b => b.AspnetMembership).HasForeignKey(c => c.ApplicationId); // FK__aspnet_Me__Appli__21B6055D
-            HasRequired(a => a.AspnetUsers).WithOptional(b => b.AspnetMembership); // FK__aspnet_Me__UserI__22AA2996
+            Property(x => x.CategoryId).HasColumnName("CategoryID").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.CategoryName).HasColumnName("CategoryName").IsRequired().HasMaxLength(15);
+            Property(x => x.Description).HasColumnName("Description").IsOptional().HasMaxLength(1073741823);
+            Property(x => x.Picture).HasColumnName("Picture").IsOptional().HasMaxLength(2147483647);
         }
     }
 
-    // aspnet_Paths
-    internal class AspnetPathsConfiguration : EntityTypeConfiguration<AspnetPaths>
+    // Category Sales for 1997
+    internal class CategorySalesFor1997Configuration : EntityTypeConfiguration<CategorySalesFor1997>
     {
-        public AspnetPathsConfiguration(string schema = "dbo")
+        public CategorySalesFor1997Configuration(string schema = "dbo")
         {
-            ToTable(schema + ".aspnet_Paths");
-            HasKey(x => x.PathId);
+            ToTable(schema + ".Category Sales for 1997");
+            HasKey(x => x.CategoryName);
 
-            Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
-            Property(x => x.PathId).HasColumnName("PathId").IsRequired();
-            Property(x => x.Path).HasColumnName("Path").IsRequired().HasMaxLength(256);
-            Property(x => x.LoweredPath).HasColumnName("LoweredPath").IsRequired().HasMaxLength(256);
-
-            // Foreign keys
-            HasRequired(a => a.AspnetApplications).WithMany(b => b.AspnetPaths).HasForeignKey(c => c.ApplicationId); // FK__aspnet_Pa__Appli__5AEE82B9
+            Property(x => x.CategoryName).HasColumnName("CategoryName").IsRequired().HasMaxLength(15);
+            Property(x => x.CategorySales).HasColumnName("CategorySales").IsOptional().HasPrecision(19,4);
         }
     }
 
-    // aspnet_PersonalizationAllUsers
-    internal class AspnetPersonalizationAllUsersConfiguration : EntityTypeConfiguration<AspnetPersonalizationAllUsers>
+    // Current Product List
+    internal class CurrentProductListConfiguration : EntityTypeConfiguration<CurrentProductList>
     {
-        public AspnetPersonalizationAllUsersConfiguration(string schema = "dbo")
+        public CurrentProductListConfiguration(string schema = "dbo")
         {
-            ToTable(schema + ".aspnet_PersonalizationAllUsers");
-            HasKey(x => x.PathId);
+            ToTable(schema + ".Current Product List");
+            HasKey(x => new { x.ProductId, x.ProductName });
 
-            Property(x => x.PathId).HasColumnName("PathId").IsRequired();
-            Property(x => x.PageSettings).HasColumnName("PageSettings").IsRequired().HasMaxLength(2147483647);
-            Property(x => x.LastUpdatedDate).HasColumnName("LastUpdatedDate").IsRequired();
-
-            // Foreign keys
-            HasRequired(a => a.AspnetPaths).WithOptional(b => b.AspnetPersonalizationAllUsers); // FK__aspnet_Pe__PathI__628FA481
+            Property(x => x.ProductId).HasColumnName("ProductID").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.ProductName).HasColumnName("ProductName").IsRequired().HasMaxLength(40);
         }
     }
 
-    // aspnet_PersonalizationPerUser
-    internal class AspnetPersonalizationPerUserConfiguration : EntityTypeConfiguration<AspnetPersonalizationPerUser>
+    // Customer and Suppliers by City
+    internal class CustomerAndSuppliersByCityConfiguration : EntityTypeConfiguration<CustomerAndSuppliersByCity>
     {
-        public AspnetPersonalizationPerUserConfiguration(string schema = "dbo")
+        public CustomerAndSuppliersByCityConfiguration(string schema = "dbo")
         {
-            ToTable(schema + ".aspnet_PersonalizationPerUser");
-            HasKey(x => x.Id);
+            ToTable(schema + ".Customer and Suppliers by City");
+            HasKey(x => new { x.CompanyName, x.Relationship });
 
-            Property(x => x.Id).HasColumnName("Id").IsRequired();
-            Property(x => x.PathId).HasColumnName("PathId").IsOptional();
-            Property(x => x.UserId).HasColumnName("UserId").IsOptional();
-            Property(x => x.PageSettings).HasColumnName("PageSettings").IsRequired().HasMaxLength(2147483647);
-            Property(x => x.LastUpdatedDate).HasColumnName("LastUpdatedDate").IsRequired();
-
-            // Foreign keys
-            HasOptional(a => a.AspnetPaths).WithMany(b => b.AspnetPersonalizationPerUser).HasForeignKey(c => c.PathId); // FK__aspnet_Pe__PathI__68487DD7
-            HasOptional(a => a.AspnetUsers).WithMany(b => b.AspnetPersonalizationPerUser).HasForeignKey(c => c.UserId); // FK__aspnet_Pe__UserI__693CA210
+            Property(x => x.City).HasColumnName("City").IsOptional().HasMaxLength(15);
+            Property(x => x.CompanyName).HasColumnName("CompanyName").IsRequired().HasMaxLength(40);
+            Property(x => x.ContactName).HasColumnName("ContactName").IsOptional().HasMaxLength(30);
+            Property(x => x.Relationship).HasColumnName("Relationship").IsRequired().HasMaxLength(9);
         }
     }
 
-    // aspnet_Profile
-    internal class AspnetProfileConfiguration : EntityTypeConfiguration<AspnetProfile>
+    // CustomerDemographics
+    internal class CustomerDemographicsConfiguration : EntityTypeConfiguration<CustomerDemographics>
     {
-        public AspnetProfileConfiguration(string schema = "dbo")
+        public CustomerDemographicsConfiguration(string schema = "dbo")
         {
-            ToTable(schema + ".aspnet_Profile");
-            HasKey(x => x.UserId);
+            ToTable(schema + ".CustomerDemographics");
+            HasKey(x => x.CustomerTypeId);
 
-            Property(x => x.UserId).HasColumnName("UserId").IsRequired();
-            Property(x => x.PropertyNames).HasColumnName("PropertyNames").IsRequired().HasMaxLength(1073741823);
-            Property(x => x.PropertyValuesString).HasColumnName("PropertyValuesString").IsRequired().HasMaxLength(1073741823);
-            Property(x => x.PropertyValuesBinary).HasColumnName("PropertyValuesBinary").IsRequired().HasMaxLength(2147483647);
-            Property(x => x.LastUpdatedDate).HasColumnName("LastUpdatedDate").IsRequired();
-
-            // Foreign keys
-            HasRequired(a => a.AspnetUsers).WithOptional(b => b.AspnetProfile); // FK__aspnet_Pr__UserI__38996AB5
+            Property(x => x.CustomerTypeId).HasColumnName("CustomerTypeID").IsRequired().HasMaxLength(10);
+            Property(x => x.CustomerDesc).HasColumnName("CustomerDesc").IsOptional().HasMaxLength(1073741823);
         }
     }
 
-    // aspnet_Roles
-    internal class AspnetRolesConfiguration : EntityTypeConfiguration<AspnetRoles>
+    // Customers
+    internal class CustomersConfiguration : EntityTypeConfiguration<Customers>
     {
-        public AspnetRolesConfiguration(string schema = "dbo")
+        public CustomersConfiguration(string schema = "dbo")
         {
-            ToTable(schema + ".aspnet_Roles");
-            HasKey(x => x.RoleId);
+            ToTable(schema + ".Customers");
+            HasKey(x => x.CustomerId);
 
-            Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
-            Property(x => x.RoleId).HasColumnName("RoleId").IsRequired();
-            Property(x => x.RoleName).HasColumnName("RoleName").IsRequired().HasMaxLength(256);
-            Property(x => x.LoweredRoleName).HasColumnName("LoweredRoleName").IsRequired().HasMaxLength(256);
-            Property(x => x.Description).HasColumnName("Description").IsOptional().HasMaxLength(256);
-
-            // Foreign keys
-            HasRequired(a => a.AspnetApplications).WithMany(b => b.AspnetRoles).HasForeignKey(c => c.ApplicationId); // FK__aspnet_Ro__Appli__440B1D61
-            HasMany(t => t.AspnetUsers).WithMany(t => t.AspnetRoles).Map(m => 
+            Property(x => x.CustomerId).HasColumnName("CustomerID").IsRequired().HasMaxLength(5);
+            Property(x => x.CompanyName).HasColumnName("CompanyName").IsRequired().HasMaxLength(40);
+            Property(x => x.ContactName).HasColumnName("ContactName").IsOptional().HasMaxLength(30);
+            Property(x => x.ContactTitle).HasColumnName("ContactTitle").IsOptional().HasMaxLength(30);
+            Property(x => x.Address).HasColumnName("Address").IsOptional().HasMaxLength(60);
+            Property(x => x.City).HasColumnName("City").IsOptional().HasMaxLength(15);
+            Property(x => x.Region).HasColumnName("Region").IsOptional().HasMaxLength(15);
+            Property(x => x.PostalCode).HasColumnName("PostalCode").IsOptional().HasMaxLength(10);
+            Property(x => x.Country).HasColumnName("Country").IsOptional().HasMaxLength(15);
+            Property(x => x.Phone).HasColumnName("Phone").IsOptional().HasMaxLength(24);
+            Property(x => x.Fax).HasColumnName("Fax").IsOptional().HasMaxLength(24);
+            HasMany(t => t.CustomerDemographics).WithMany(t => t.Customers).Map(m => 
             {
-                m.ToTable("aspnet_UsersInRoles");
-                m.MapLeftKey("RoleId");
-                m.MapRightKey("UserId");
+                m.ToTable("CustomerCustomerDemo");
+                m.MapLeftKey("CustomerID");
+                m.MapRightKey("CustomerTypeID");
             });
-            HasMany(t => t.AspnetUsers).WithMany(t => t.AspnetRoles).Map(m => 
+            HasMany(t => t.CustomerDemographics).WithMany(t => t.Customers).Map(m => 
             {
-                m.ToTable("aspnet_UsersInRoles");
-                m.MapLeftKey("RoleId");
-                m.MapRightKey("UserId");
+                m.ToTable("CustomerCustomerDemo");
+                m.MapLeftKey("CustomerID");
+                m.MapRightKey("CustomerTypeID");
             });
         }
     }
 
-    // aspnet_SchemaVersions
-    internal class AspnetSchemaVersionsConfiguration : EntityTypeConfiguration<AspnetSchemaVersions>
+    // Employees
+    internal class EmployeesConfiguration : EntityTypeConfiguration<Employees>
     {
-        public AspnetSchemaVersionsConfiguration(string schema = "dbo")
+        public EmployeesConfiguration(string schema = "dbo")
         {
-            ToTable(schema + ".aspnet_SchemaVersions");
-            HasKey(x => new { x.Feature, x.CompatibleSchemaVersion });
+            ToTable(schema + ".Employees");
+            HasKey(x => x.EmployeeId);
 
-            Property(x => x.Feature).HasColumnName("Feature").IsRequired().HasMaxLength(128);
-            Property(x => x.CompatibleSchemaVersion).HasColumnName("CompatibleSchemaVersion").IsRequired().HasMaxLength(128);
-            Property(x => x.IsCurrentVersion).HasColumnName("IsCurrentVersion").IsRequired();
-        }
-    }
-
-    // aspnet_Users
-    internal class AspnetUsersConfiguration : EntityTypeConfiguration<AspnetUsers>
-    {
-        public AspnetUsersConfiguration(string schema = "dbo")
-        {
-            ToTable(schema + ".aspnet_Users");
-            HasKey(x => x.UserId);
-
-            Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
-            Property(x => x.UserId).HasColumnName("UserId").IsRequired();
-            Property(x => x.UserName).HasColumnName("UserName").IsRequired().HasMaxLength(256);
-            Property(x => x.LoweredUserName).HasColumnName("LoweredUserName").IsRequired().HasMaxLength(256);
-            Property(x => x.MobileAlias).HasColumnName("MobileAlias").IsOptional().HasMaxLength(16);
-            Property(x => x.IsAnonymous).HasColumnName("IsAnonymous").IsRequired();
-            Property(x => x.LastActivityDate).HasColumnName("LastActivityDate").IsRequired();
+            Property(x => x.EmployeeId).HasColumnName("EmployeeID").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.LastName).HasColumnName("LastName").IsRequired().HasMaxLength(20);
+            Property(x => x.FirstName).HasColumnName("FirstName").IsRequired().HasMaxLength(10);
+            Property(x => x.Title).HasColumnName("Title").IsOptional().HasMaxLength(30);
+            Property(x => x.TitleOfCourtesy).HasColumnName("TitleOfCourtesy").IsOptional().HasMaxLength(25);
+            Property(x => x.BirthDate).HasColumnName("BirthDate").IsOptional();
+            Property(x => x.HireDate).HasColumnName("HireDate").IsOptional();
+            Property(x => x.Address).HasColumnName("Address").IsOptional().HasMaxLength(60);
+            Property(x => x.City).HasColumnName("City").IsOptional().HasMaxLength(15);
+            Property(x => x.Region).HasColumnName("Region").IsOptional().HasMaxLength(15);
+            Property(x => x.PostalCode).HasColumnName("PostalCode").IsOptional().HasMaxLength(10);
+            Property(x => x.Country).HasColumnName("Country").IsOptional().HasMaxLength(15);
+            Property(x => x.HomePhone).HasColumnName("HomePhone").IsOptional().HasMaxLength(24);
+            Property(x => x.Extension).HasColumnName("Extension").IsOptional().HasMaxLength(4);
+            Property(x => x.Photo).HasColumnName("Photo").IsOptional().HasMaxLength(2147483647);
+            Property(x => x.Notes).HasColumnName("Notes").IsOptional().HasMaxLength(1073741823);
+            Property(x => x.ReportsTo).HasColumnName("ReportsTo").IsOptional();
+            Property(x => x.PhotoPath).HasColumnName("PhotoPath").IsOptional().HasMaxLength(255);
 
             // Foreign keys
-            HasRequired(a => a.AspnetApplications).WithMany(b => b.AspnetUsers).HasForeignKey(c => c.ApplicationId); // FK__aspnet_Us__Appli__0DAF0CB0
+            HasOptional(a => a.Employees_ReportsTo).WithMany(b => b.Employees2).HasForeignKey(c => c.ReportsTo); // FK_Employees_Employees
+            HasMany(t => t.Territories).WithMany(t => t.Employees).Map(m => 
+            {
+                m.ToTable("EmployeeTerritories");
+                m.MapLeftKey("EmployeeID");
+                m.MapRightKey("TerritoryID");
+            });
+            HasMany(t => t.Territories).WithMany(t => t.Employees).Map(m => 
+            {
+                m.ToTable("EmployeeTerritories");
+                m.MapLeftKey("EmployeeID");
+                m.MapRightKey("TerritoryID");
+            });
         }
     }
 
-    // aspnet_WebEvent_Events
-    internal class AspnetWebEventEventsConfiguration : EntityTypeConfiguration<AspnetWebEventEvents>
+    // Invoices
+    internal class InvoicesConfiguration : EntityTypeConfiguration<Invoices>
     {
-        public AspnetWebEventEventsConfiguration(string schema = "dbo")
+        public InvoicesConfiguration(string schema = "dbo")
         {
-            ToTable(schema + ".aspnet_WebEvent_Events");
-            HasKey(x => x.EventId);
+            ToTable(schema + ".Invoices");
+            HasKey(x => new { x.CustomerName, x.Salesperson, x.OrderId, x.ShipperName, x.ProductId, x.ProductName, x.UnitPrice, x.Quantity, x.Discount });
 
-            Property(x => x.EventId).HasColumnName("EventId").IsRequired().HasMaxLength(32);
-            Property(x => x.EventTimeUtc).HasColumnName("EventTimeUtc").IsRequired();
-            Property(x => x.EventTime).HasColumnName("EventTime").IsRequired();
-            Property(x => x.EventType).HasColumnName("EventType").IsRequired().HasMaxLength(256);
-            Property(x => x.EventSequence).HasColumnName("EventSequence").IsRequired();
-            Property(x => x.EventOccurrence).HasColumnName("EventOccurrence").IsRequired();
-            Property(x => x.EventCode).HasColumnName("EventCode").IsRequired();
-            Property(x => x.EventDetailCode).HasColumnName("EventDetailCode").IsRequired();
-            Property(x => x.Message).HasColumnName("Message").IsOptional().HasMaxLength(1024);
-            Property(x => x.ApplicationPath).HasColumnName("ApplicationPath").IsOptional().HasMaxLength(256);
-            Property(x => x.ApplicationVirtualPath).HasColumnName("ApplicationVirtualPath").IsOptional().HasMaxLength(256);
-            Property(x => x.MachineName).HasColumnName("MachineName").IsRequired().HasMaxLength(256);
-            Property(x => x.RequestUrl).HasColumnName("RequestUrl").IsOptional().HasMaxLength(1024);
-            Property(x => x.ExceptionType).HasColumnName("ExceptionType").IsOptional().HasMaxLength(256);
-            Property(x => x.Details).HasColumnName("Details").IsOptional().HasMaxLength(1073741823);
+            Property(x => x.ShipName).HasColumnName("ShipName").IsOptional().HasMaxLength(40);
+            Property(x => x.ShipAddress).HasColumnName("ShipAddress").IsOptional().HasMaxLength(60);
+            Property(x => x.ShipCity).HasColumnName("ShipCity").IsOptional().HasMaxLength(15);
+            Property(x => x.ShipRegion).HasColumnName("ShipRegion").IsOptional().HasMaxLength(15);
+            Property(x => x.ShipPostalCode).HasColumnName("ShipPostalCode").IsOptional().HasMaxLength(10);
+            Property(x => x.ShipCountry).HasColumnName("ShipCountry").IsOptional().HasMaxLength(15);
+            Property(x => x.CustomerId).HasColumnName("CustomerID").IsOptional().HasMaxLength(5);
+            Property(x => x.CustomerName).HasColumnName("CustomerName").IsRequired().HasMaxLength(40);
+            Property(x => x.Address).HasColumnName("Address").IsOptional().HasMaxLength(60);
+            Property(x => x.City).HasColumnName("City").IsOptional().HasMaxLength(15);
+            Property(x => x.Region).HasColumnName("Region").IsOptional().HasMaxLength(15);
+            Property(x => x.PostalCode).HasColumnName("PostalCode").IsOptional().HasMaxLength(10);
+            Property(x => x.Country).HasColumnName("Country").IsOptional().HasMaxLength(15);
+            Property(x => x.Salesperson).HasColumnName("Salesperson").IsRequired().HasMaxLength(31);
+            Property(x => x.OrderId).HasColumnName("OrderID").IsRequired();
+            Property(x => x.OrderDate).HasColumnName("OrderDate").IsOptional();
+            Property(x => x.RequiredDate).HasColumnName("RequiredDate").IsOptional();
+            Property(x => x.ShippedDate).HasColumnName("ShippedDate").IsOptional();
+            Property(x => x.ShipperName).HasColumnName("ShipperName").IsRequired().HasMaxLength(40);
+            Property(x => x.ProductId).HasColumnName("ProductID").IsRequired();
+            Property(x => x.ProductName).HasColumnName("ProductName").IsRequired().HasMaxLength(40);
+            Property(x => x.UnitPrice).HasColumnName("UnitPrice").IsRequired().HasPrecision(19,4);
+            Property(x => x.Quantity).HasColumnName("Quantity").IsRequired();
+            Property(x => x.Discount).HasColumnName("Discount").IsRequired();
+            Property(x => x.ExtendedPrice).HasColumnName("ExtendedPrice").IsOptional().HasPrecision(19,4);
+            Property(x => x.Freight).HasColumnName("Freight").IsOptional().HasPrecision(19,4);
         }
     }
 
-    // vw_aspnet_Applications
-    internal class VwAspnetApplicationsConfiguration : EntityTypeConfiguration<VwAspnetApplications>
+    // Order Details
+    internal class OrderDetailsConfiguration : EntityTypeConfiguration<OrderDetails>
     {
-        public VwAspnetApplicationsConfiguration(string schema = "dbo")
+        public OrderDetailsConfiguration(string schema = "dbo")
         {
-            ToTable(schema + ".vw_aspnet_Applications");
-            HasKey(x => new { x.ApplicationName, x.LoweredApplicationName, x.ApplicationId });
+            ToTable(schema + ".Order Details");
+            HasKey(x => new { x.OrderId, x.ProductId });
 
-            Property(x => x.ApplicationName).HasColumnName("ApplicationName").IsRequired().HasMaxLength(256);
-            Property(x => x.LoweredApplicationName).HasColumnName("LoweredApplicationName").IsRequired().HasMaxLength(256);
-            Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
-            Property(x => x.Description).HasColumnName("Description").IsOptional().HasMaxLength(256);
+            Property(x => x.OrderId).HasColumnName("OrderID").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.ProductId).HasColumnName("ProductID").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.UnitPrice).HasColumnName("UnitPrice").IsRequired().HasPrecision(19,4);
+            Property(x => x.Quantity).HasColumnName("Quantity").IsRequired();
+            Property(x => x.Discount).HasColumnName("Discount").IsRequired();
+
+            // Foreign keys
+            HasRequired(a => a.Orders).WithMany(b => b.OrderDetails).HasForeignKey(c => c.OrderId); // FK_Order_Details_Orders
+            HasRequired(a => a.Products).WithMany(b => b.OrderDetails).HasForeignKey(c => c.ProductId); // FK_Order_Details_Products
         }
     }
 
-    // vw_aspnet_MembershipUsers
-    internal class VwAspnetMembershipUsersConfiguration : EntityTypeConfiguration<VwAspnetMembershipUsers>
+    // Order Details Extended
+    internal class OrderDetailsExtendedConfiguration : EntityTypeConfiguration<OrderDetailsExtended>
     {
-        public VwAspnetMembershipUsersConfiguration(string schema = "dbo")
+        public OrderDetailsExtendedConfiguration(string schema = "dbo")
         {
-            ToTable(schema + ".vw_aspnet_MembershipUsers");
-            HasKey(x => new { x.UserId, x.PasswordFormat, x.IsApproved, x.IsLockedOut, x.CreateDate, x.LastLoginDate, x.LastPasswordChangedDate, x.LastLockoutDate, x.FailedPasswordAttemptCount, x.FailedPasswordAttemptWindowStart, x.FailedPasswordAnswerAttemptCount, x.FailedPasswordAnswerAttemptWindowStart, x.ApplicationId, x.UserName, x.IsAnonymous, x.LastActivityDate });
+            ToTable(schema + ".Order Details Extended");
+            HasKey(x => new { x.OrderId, x.ProductId, x.ProductName, x.UnitPrice, x.Quantity, x.Discount });
 
-            Property(x => x.UserId).HasColumnName("UserId").IsRequired();
-            Property(x => x.PasswordFormat).HasColumnName("PasswordFormat").IsRequired();
-            Property(x => x.MobilePin).HasColumnName("MobilePIN").IsOptional().HasMaxLength(16);
-            Property(x => x.Email).HasColumnName("Email").IsOptional().HasMaxLength(256);
-            Property(x => x.LoweredEmail).HasColumnName("LoweredEmail").IsOptional().HasMaxLength(256);
-            Property(x => x.PasswordQuestion).HasColumnName("PasswordQuestion").IsOptional().HasMaxLength(256);
-            Property(x => x.PasswordAnswer).HasColumnName("PasswordAnswer").IsOptional().HasMaxLength(128);
-            Property(x => x.IsApproved).HasColumnName("IsApproved").IsRequired();
-            Property(x => x.IsLockedOut).HasColumnName("IsLockedOut").IsRequired();
-            Property(x => x.CreateDate).HasColumnName("CreateDate").IsRequired();
-            Property(x => x.LastLoginDate).HasColumnName("LastLoginDate").IsRequired();
-            Property(x => x.LastPasswordChangedDate).HasColumnName("LastPasswordChangedDate").IsRequired();
-            Property(x => x.LastLockoutDate).HasColumnName("LastLockoutDate").IsRequired();
-            Property(x => x.FailedPasswordAttemptCount).HasColumnName("FailedPasswordAttemptCount").IsRequired();
-            Property(x => x.FailedPasswordAttemptWindowStart).HasColumnName("FailedPasswordAttemptWindowStart").IsRequired();
-            Property(x => x.FailedPasswordAnswerAttemptCount).HasColumnName("FailedPasswordAnswerAttemptCount").IsRequired();
-            Property(x => x.FailedPasswordAnswerAttemptWindowStart).HasColumnName("FailedPasswordAnswerAttemptWindowStart").IsRequired();
-            Property(x => x.Comment).HasColumnName("Comment").IsOptional().HasMaxLength(1073741823);
-            Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
-            Property(x => x.UserName).HasColumnName("UserName").IsRequired().HasMaxLength(256);
-            Property(x => x.MobileAlias).HasColumnName("MobileAlias").IsOptional().HasMaxLength(16);
-            Property(x => x.IsAnonymous).HasColumnName("IsAnonymous").IsRequired();
-            Property(x => x.LastActivityDate).HasColumnName("LastActivityDate").IsRequired();
+            Property(x => x.OrderId).HasColumnName("OrderID").IsRequired();
+            Property(x => x.ProductId).HasColumnName("ProductID").IsRequired();
+            Property(x => x.ProductName).HasColumnName("ProductName").IsRequired().HasMaxLength(40);
+            Property(x => x.UnitPrice).HasColumnName("UnitPrice").IsRequired().HasPrecision(19,4);
+            Property(x => x.Quantity).HasColumnName("Quantity").IsRequired();
+            Property(x => x.Discount).HasColumnName("Discount").IsRequired();
+            Property(x => x.ExtendedPrice).HasColumnName("ExtendedPrice").IsOptional().HasPrecision(19,4);
         }
     }
 
-    // vw_aspnet_Profiles
-    internal class VwAspnetProfilesConfiguration : EntityTypeConfiguration<VwAspnetProfiles>
+    // Orders
+    internal class OrdersConfiguration : EntityTypeConfiguration<Orders>
     {
-        public VwAspnetProfilesConfiguration(string schema = "dbo")
+        public OrdersConfiguration(string schema = "dbo")
         {
-            ToTable(schema + ".vw_aspnet_Profiles");
-            HasKey(x => new { x.UserId, x.LastUpdatedDate });
+            ToTable(schema + ".Orders");
+            HasKey(x => x.OrderId);
 
-            Property(x => x.UserId).HasColumnName("UserId").IsRequired();
-            Property(x => x.LastUpdatedDate).HasColumnName("LastUpdatedDate").IsRequired();
-            Property(x => x.DataSize).HasColumnName("DataSize").IsOptional();
+            Property(x => x.OrderId).HasColumnName("OrderID").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.CustomerId).HasColumnName("CustomerID").IsOptional().HasMaxLength(5);
+            Property(x => x.EmployeeId).HasColumnName("EmployeeID").IsOptional();
+            Property(x => x.OrderDate).HasColumnName("OrderDate").IsOptional();
+            Property(x => x.RequiredDate).HasColumnName("RequiredDate").IsOptional();
+            Property(x => x.ShippedDate).HasColumnName("ShippedDate").IsOptional();
+            Property(x => x.ShipVia).HasColumnName("ShipVia").IsOptional();
+            Property(x => x.Freight).HasColumnName("Freight").IsOptional().HasPrecision(19,4);
+            Property(x => x.ShipName).HasColumnName("ShipName").IsOptional().HasMaxLength(40);
+            Property(x => x.ShipAddress).HasColumnName("ShipAddress").IsOptional().HasMaxLength(60);
+            Property(x => x.ShipCity).HasColumnName("ShipCity").IsOptional().HasMaxLength(15);
+            Property(x => x.ShipRegion).HasColumnName("ShipRegion").IsOptional().HasMaxLength(15);
+            Property(x => x.ShipPostalCode).HasColumnName("ShipPostalCode").IsOptional().HasMaxLength(10);
+            Property(x => x.ShipCountry).HasColumnName("ShipCountry").IsOptional().HasMaxLength(15);
+
+            // Foreign keys
+            HasOptional(a => a.Customers).WithMany(b => b.Orders).HasForeignKey(c => c.CustomerId); // FK_Orders_Customers
+            HasOptional(a => a.Employees).WithMany(b => b.Orders).HasForeignKey(c => c.EmployeeId); // FK_Orders_Employees
+            HasOptional(a => a.Shippers).WithMany(b => b.Orders).HasForeignKey(c => c.ShipVia); // FK_Orders_Shippers
         }
     }
 
-    // vw_aspnet_Roles
-    internal class VwAspnetRolesConfiguration : EntityTypeConfiguration<VwAspnetRoles>
+    // Orders Qry
+    internal class OrdersQryConfiguration : EntityTypeConfiguration<OrdersQry>
     {
-        public VwAspnetRolesConfiguration(string schema = "dbo")
+        public OrdersQryConfiguration(string schema = "dbo")
         {
-            ToTable(schema + ".vw_aspnet_Roles");
-            HasKey(x => new { x.ApplicationId, x.RoleId, x.RoleName, x.LoweredRoleName });
+            ToTable(schema + ".Orders Qry");
+            HasKey(x => new { x.OrderId, x.CompanyName });
 
-            Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
-            Property(x => x.RoleId).HasColumnName("RoleId").IsRequired();
-            Property(x => x.RoleName).HasColumnName("RoleName").IsRequired().HasMaxLength(256);
-            Property(x => x.LoweredRoleName).HasColumnName("LoweredRoleName").IsRequired().HasMaxLength(256);
-            Property(x => x.Description).HasColumnName("Description").IsOptional().HasMaxLength(256);
+            Property(x => x.OrderId).HasColumnName("OrderID").IsRequired();
+            Property(x => x.CustomerId).HasColumnName("CustomerID").IsOptional().HasMaxLength(5);
+            Property(x => x.EmployeeId).HasColumnName("EmployeeID").IsOptional();
+            Property(x => x.OrderDate).HasColumnName("OrderDate").IsOptional();
+            Property(x => x.RequiredDate).HasColumnName("RequiredDate").IsOptional();
+            Property(x => x.ShippedDate).HasColumnName("ShippedDate").IsOptional();
+            Property(x => x.ShipVia).HasColumnName("ShipVia").IsOptional();
+            Property(x => x.Freight).HasColumnName("Freight").IsOptional().HasPrecision(19,4);
+            Property(x => x.ShipName).HasColumnName("ShipName").IsOptional().HasMaxLength(40);
+            Property(x => x.ShipAddress).HasColumnName("ShipAddress").IsOptional().HasMaxLength(60);
+            Property(x => x.ShipCity).HasColumnName("ShipCity").IsOptional().HasMaxLength(15);
+            Property(x => x.ShipRegion).HasColumnName("ShipRegion").IsOptional().HasMaxLength(15);
+            Property(x => x.ShipPostalCode).HasColumnName("ShipPostalCode").IsOptional().HasMaxLength(10);
+            Property(x => x.ShipCountry).HasColumnName("ShipCountry").IsOptional().HasMaxLength(15);
+            Property(x => x.CompanyName).HasColumnName("CompanyName").IsRequired().HasMaxLength(40);
+            Property(x => x.Address).HasColumnName("Address").IsOptional().HasMaxLength(60);
+            Property(x => x.City).HasColumnName("City").IsOptional().HasMaxLength(15);
+            Property(x => x.Region).HasColumnName("Region").IsOptional().HasMaxLength(15);
+            Property(x => x.PostalCode).HasColumnName("PostalCode").IsOptional().HasMaxLength(10);
+            Property(x => x.Country).HasColumnName("Country").IsOptional().HasMaxLength(15);
         }
     }
 
-    // vw_aspnet_Users
-    internal class VwAspnetUsersConfiguration : EntityTypeConfiguration<VwAspnetUsers>
+    // Order Subtotals
+    internal class OrderSubtotalsConfiguration : EntityTypeConfiguration<OrderSubtotals>
     {
-        public VwAspnetUsersConfiguration(string schema = "dbo")
+        public OrderSubtotalsConfiguration(string schema = "dbo")
         {
-            ToTable(schema + ".vw_aspnet_Users");
-            HasKey(x => new { x.ApplicationId, x.UserId, x.UserName, x.LoweredUserName, x.IsAnonymous, x.LastActivityDate });
+            ToTable(schema + ".Order Subtotals");
+            HasKey(x => x.OrderId);
 
-            Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
-            Property(x => x.UserId).HasColumnName("UserId").IsRequired();
-            Property(x => x.UserName).HasColumnName("UserName").IsRequired().HasMaxLength(256);
-            Property(x => x.LoweredUserName).HasColumnName("LoweredUserName").IsRequired().HasMaxLength(256);
-            Property(x => x.MobileAlias).HasColumnName("MobileAlias").IsOptional().HasMaxLength(16);
-            Property(x => x.IsAnonymous).HasColumnName("IsAnonymous").IsRequired();
-            Property(x => x.LastActivityDate).HasColumnName("LastActivityDate").IsRequired();
+            Property(x => x.OrderId).HasColumnName("OrderID").IsRequired();
+            Property(x => x.Subtotal).HasColumnName("Subtotal").IsOptional().HasPrecision(19,4);
         }
     }
 
-    // vw_aspnet_UsersInRoles
-    internal class VwAspnetUsersInRolesConfiguration : EntityTypeConfiguration<VwAspnetUsersInRoles>
+    // Products
+    internal class ProductsConfiguration : EntityTypeConfiguration<Products>
     {
-        public VwAspnetUsersInRolesConfiguration(string schema = "dbo")
+        public ProductsConfiguration(string schema = "dbo")
         {
-            ToTable(schema + ".vw_aspnet_UsersInRoles");
-            HasKey(x => new { x.UserId, x.RoleId });
+            ToTable(schema + ".Products");
+            HasKey(x => x.ProductId);
 
-            Property(x => x.UserId).HasColumnName("UserId").IsRequired();
-            Property(x => x.RoleId).HasColumnName("RoleId").IsRequired();
+            Property(x => x.ProductId).HasColumnName("ProductID").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.ProductName).HasColumnName("ProductName").IsRequired().HasMaxLength(40);
+            Property(x => x.SupplierId).HasColumnName("SupplierID").IsOptional();
+            Property(x => x.CategoryId).HasColumnName("CategoryID").IsOptional();
+            Property(x => x.QuantityPerUnit).HasColumnName("QuantityPerUnit").IsOptional().HasMaxLength(20);
+            Property(x => x.UnitPrice).HasColumnName("UnitPrice").IsOptional().HasPrecision(19,4);
+            Property(x => x.UnitsInStock).HasColumnName("UnitsInStock").IsOptional();
+            Property(x => x.UnitsOnOrder).HasColumnName("UnitsOnOrder").IsOptional();
+            Property(x => x.ReorderLevel).HasColumnName("ReorderLevel").IsOptional();
+            Property(x => x.Discontinued).HasColumnName("Discontinued").IsRequired();
+
+            // Foreign keys
+            HasOptional(a => a.Suppliers).WithMany(b => b.Products).HasForeignKey(c => c.SupplierId); // FK_Products_Suppliers
+            HasOptional(a => a.Categories).WithMany(b => b.Products).HasForeignKey(c => c.CategoryId); // FK_Products_Categories
         }
     }
 
-    // vw_aspnet_WebPartState_Paths
-    internal class VwAspnetWebPartStatePathsConfiguration : EntityTypeConfiguration<VwAspnetWebPartStatePaths>
+    // Products Above Average Price
+    internal class ProductsAboveAveragePriceConfiguration : EntityTypeConfiguration<ProductsAboveAveragePrice>
     {
-        public VwAspnetWebPartStatePathsConfiguration(string schema = "dbo")
+        public ProductsAboveAveragePriceConfiguration(string schema = "dbo")
         {
-            ToTable(schema + ".vw_aspnet_WebPartState_Paths");
-            HasKey(x => new { x.ApplicationId, x.PathId, x.Path, x.LoweredPath });
+            ToTable(schema + ".Products Above Average Price");
+            HasKey(x => x.ProductName);
 
-            Property(x => x.ApplicationId).HasColumnName("ApplicationId").IsRequired();
-            Property(x => x.PathId).HasColumnName("PathId").IsRequired();
-            Property(x => x.Path).HasColumnName("Path").IsRequired().HasMaxLength(256);
-            Property(x => x.LoweredPath).HasColumnName("LoweredPath").IsRequired().HasMaxLength(256);
+            Property(x => x.ProductName).HasColumnName("ProductName").IsRequired().HasMaxLength(40);
+            Property(x => x.UnitPrice).HasColumnName("UnitPrice").IsOptional().HasPrecision(19,4);
         }
     }
 
-    // vw_aspnet_WebPartState_Shared
-    internal class VwAspnetWebPartStateSharedConfiguration : EntityTypeConfiguration<VwAspnetWebPartStateShared>
+    // Product Sales for 1997
+    internal class ProductSalesFor1997Configuration : EntityTypeConfiguration<ProductSalesFor1997>
     {
-        public VwAspnetWebPartStateSharedConfiguration(string schema = "dbo")
+        public ProductSalesFor1997Configuration(string schema = "dbo")
         {
-            ToTable(schema + ".vw_aspnet_WebPartState_Shared");
-            HasKey(x => new { x.PathId, x.LastUpdatedDate });
+            ToTable(schema + ".Product Sales for 1997");
+            HasKey(x => new { x.CategoryName, x.ProductName });
 
-            Property(x => x.PathId).HasColumnName("PathId").IsRequired();
-            Property(x => x.DataSize).HasColumnName("DataSize").IsOptional();
-            Property(x => x.LastUpdatedDate).HasColumnName("LastUpdatedDate").IsRequired();
+            Property(x => x.CategoryName).HasColumnName("CategoryName").IsRequired().HasMaxLength(15);
+            Property(x => x.ProductName).HasColumnName("ProductName").IsRequired().HasMaxLength(40);
+            Property(x => x.ProductSales).HasColumnName("ProductSales").IsOptional().HasPrecision(19,4);
         }
     }
 
-    // vw_aspnet_WebPartState_User
-    internal class VwAspnetWebPartStateUserConfiguration : EntityTypeConfiguration<VwAspnetWebPartStateUser>
+    // Products by Category
+    internal class ProductsByCategoryConfiguration : EntityTypeConfiguration<ProductsByCategory>
     {
-        public VwAspnetWebPartStateUserConfiguration(string schema = "dbo")
+        public ProductsByCategoryConfiguration(string schema = "dbo")
         {
-            ToTable(schema + ".vw_aspnet_WebPartState_User");
-            HasKey(x => x.LastUpdatedDate);
+            ToTable(schema + ".Products by Category");
+            HasKey(x => new { x.CategoryName, x.ProductName, x.Discontinued });
 
-            Property(x => x.PathId).HasColumnName("PathId").IsOptional();
-            Property(x => x.UserId).HasColumnName("UserId").IsOptional();
-            Property(x => x.DataSize).HasColumnName("DataSize").IsOptional();
-            Property(x => x.LastUpdatedDate).HasColumnName("LastUpdatedDate").IsRequired();
+            Property(x => x.CategoryName).HasColumnName("CategoryName").IsRequired().HasMaxLength(15);
+            Property(x => x.ProductName).HasColumnName("ProductName").IsRequired().HasMaxLength(40);
+            Property(x => x.QuantityPerUnit).HasColumnName("QuantityPerUnit").IsOptional().HasMaxLength(20);
+            Property(x => x.UnitsInStock).HasColumnName("UnitsInStock").IsOptional();
+            Property(x => x.Discontinued).HasColumnName("Discontinued").IsRequired();
+        }
+    }
+
+    // Region
+    internal class RegionConfiguration : EntityTypeConfiguration<Region>
+    {
+        public RegionConfiguration(string schema = "dbo")
+        {
+            ToTable(schema + ".Region");
+            HasKey(x => x.RegionId);
+
+            Property(x => x.RegionId).HasColumnName("RegionID").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.RegionDescription).HasColumnName("RegionDescription").IsRequired().HasMaxLength(50);
+        }
+    }
+
+    // Sales by Category
+    internal class SalesByCategoryConfiguration : EntityTypeConfiguration<SalesByCategory>
+    {
+        public SalesByCategoryConfiguration(string schema = "dbo")
+        {
+            ToTable(schema + ".Sales by Category");
+            HasKey(x => new { x.CategoryId, x.CategoryName, x.ProductName });
+
+            Property(x => x.CategoryId).HasColumnName("CategoryID").IsRequired();
+            Property(x => x.CategoryName).HasColumnName("CategoryName").IsRequired().HasMaxLength(15);
+            Property(x => x.ProductName).HasColumnName("ProductName").IsRequired().HasMaxLength(40);
+            Property(x => x.ProductSales).HasColumnName("ProductSales").IsOptional().HasPrecision(19,4);
+        }
+    }
+
+    // Sales Totals by Amount
+    internal class SalesTotalsByAmountConfiguration : EntityTypeConfiguration<SalesTotalsByAmount>
+    {
+        public SalesTotalsByAmountConfiguration(string schema = "dbo")
+        {
+            ToTable(schema + ".Sales Totals by Amount");
+            HasKey(x => new { x.OrderId, x.CompanyName });
+
+            Property(x => x.SaleAmount).HasColumnName("SaleAmount").IsOptional().HasPrecision(19,4);
+            Property(x => x.OrderId).HasColumnName("OrderID").IsRequired();
+            Property(x => x.CompanyName).HasColumnName("CompanyName").IsRequired().HasMaxLength(40);
+            Property(x => x.ShippedDate).HasColumnName("ShippedDate").IsOptional();
+        }
+    }
+
+    // Shippers
+    internal class ShippersConfiguration : EntityTypeConfiguration<Shippers>
+    {
+        public ShippersConfiguration(string schema = "dbo")
+        {
+            ToTable(schema + ".Shippers");
+            HasKey(x => x.ShipperId);
+
+            Property(x => x.ShipperId).HasColumnName("ShipperID").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.CompanyName).HasColumnName("CompanyName").IsRequired().HasMaxLength(40);
+            Property(x => x.Phone).HasColumnName("Phone").IsOptional().HasMaxLength(24);
+        }
+    }
+
+    // Summary of Sales by Quarter
+    internal class SummaryOfSalesByQuarterConfiguration : EntityTypeConfiguration<SummaryOfSalesByQuarter>
+    {
+        public SummaryOfSalesByQuarterConfiguration(string schema = "dbo")
+        {
+            ToTable(schema + ".Summary of Sales by Quarter");
+            HasKey(x => x.OrderId);
+
+            Property(x => x.ShippedDate).HasColumnName("ShippedDate").IsOptional();
+            Property(x => x.OrderId).HasColumnName("OrderID").IsRequired();
+            Property(x => x.Subtotal).HasColumnName("Subtotal").IsOptional().HasPrecision(19,4);
+        }
+    }
+
+    // Summary of Sales by Year
+    internal class SummaryOfSalesByYearConfiguration : EntityTypeConfiguration<SummaryOfSalesByYear>
+    {
+        public SummaryOfSalesByYearConfiguration(string schema = "dbo")
+        {
+            ToTable(schema + ".Summary of Sales by Year");
+            HasKey(x => x.OrderId);
+
+            Property(x => x.ShippedDate).HasColumnName("ShippedDate").IsOptional();
+            Property(x => x.OrderId).HasColumnName("OrderID").IsRequired();
+            Property(x => x.Subtotal).HasColumnName("Subtotal").IsOptional().HasPrecision(19,4);
+        }
+    }
+
+    // Suppliers
+    internal class SuppliersConfiguration : EntityTypeConfiguration<Suppliers>
+    {
+        public SuppliersConfiguration(string schema = "dbo")
+        {
+            ToTable(schema + ".Suppliers");
+            HasKey(x => x.SupplierId);
+
+            Property(x => x.SupplierId).HasColumnName("SupplierID").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.CompanyName).HasColumnName("CompanyName").IsRequired().HasMaxLength(40);
+            Property(x => x.ContactName).HasColumnName("ContactName").IsOptional().HasMaxLength(30);
+            Property(x => x.ContactTitle).HasColumnName("ContactTitle").IsOptional().HasMaxLength(30);
+            Property(x => x.Address).HasColumnName("Address").IsOptional().HasMaxLength(60);
+            Property(x => x.City).HasColumnName("City").IsOptional().HasMaxLength(15);
+            Property(x => x.Region).HasColumnName("Region").IsOptional().HasMaxLength(15);
+            Property(x => x.PostalCode).HasColumnName("PostalCode").IsOptional().HasMaxLength(10);
+            Property(x => x.Country).HasColumnName("Country").IsOptional().HasMaxLength(15);
+            Property(x => x.Phone).HasColumnName("Phone").IsOptional().HasMaxLength(24);
+            Property(x => x.Fax).HasColumnName("Fax").IsOptional().HasMaxLength(24);
+            Property(x => x.HomePage).HasColumnName("HomePage").IsOptional().HasMaxLength(1073741823);
+        }
+    }
+
+    // Territories
+    internal class TerritoriesConfiguration : EntityTypeConfiguration<Territories>
+    {
+        public TerritoriesConfiguration(string schema = "dbo")
+        {
+            ToTable(schema + ".Territories");
+            HasKey(x => x.TerritoryId);
+
+            Property(x => x.TerritoryId).HasColumnName("TerritoryID").IsRequired().HasMaxLength(20);
+            Property(x => x.TerritoryDescription).HasColumnName("TerritoryDescription").IsRequired().HasMaxLength(50);
+            Property(x => x.RegionId).HasColumnName("RegionID").IsRequired();
+
+            // Foreign keys
+            HasRequired(a => a.Region).WithMany(b => b.Territories).HasForeignKey(c => c.RegionId); // FK_Territories_Region
         }
     }
 

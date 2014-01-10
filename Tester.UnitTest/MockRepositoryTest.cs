@@ -9,39 +9,39 @@ namespace Tester.UnitTest
     [TestFixture]
     public class MockRepositoryTest
     {
-        public IRepository<AspnetApplications> AspnetApplications { get; private set; }
+        private IRepository<CurrentProductList> CurrentProductList { get; set; }
 
         [SetUp]
         public void Setup()
         {
             // Arrange
-            AspnetApplications = new MockRepository<AspnetApplications>();
-            AspnetApplications.InsertOnSubmit(new AspnetApplications { ApplicationId = new Guid(), ApplicationName = "app1", Description = "description", LoweredApplicationName = "moq testing" });
-            AspnetApplications.InsertOnSubmit(new AspnetApplications { ApplicationId = new Guid(), ApplicationName = "app2", Description = "another description", LoweredApplicationName = "moq testing" });
+            CurrentProductList = new MockRepository<CurrentProductList>();
+            CurrentProductList.InsertOnSubmit(new CurrentProductList { ProductId = 1, ProductName = "abc"});
+            CurrentProductList.InsertOnSubmit(new CurrentProductList { ProductId = 2, ProductName = "def"});
         }
 
         [Test]
         public void InsertTest()
         {
             // Act
-            AspnetApplications.SubmitChanges();
+            CurrentProductList.SubmitChanges();
             
             // Assert
-            Assert.AreEqual(2, AspnetApplications.All.Count());
-            Assert.AreEqual("app1", AspnetApplications.All.First().ApplicationName);
-            Assert.AreEqual("app2", AspnetApplications.All.Last().ApplicationName);
+            Assert.AreEqual(2, CurrentProductList.All.Count());
+            Assert.AreEqual("abc", CurrentProductList.All.First().ProductName);
+            Assert.AreEqual("def", CurrentProductList.All.Last().ProductName);
         }
 
         [Test]
         public void DeleteTest()
         {
             // Act
-            AspnetApplications.DeleteOnSubmit(AspnetApplications.All.First());
-            AspnetApplications.SubmitChanges();
+            CurrentProductList.DeleteOnSubmit(CurrentProductList.All.First());
+            CurrentProductList.SubmitChanges();
 
             // Assert
-            Assert.AreEqual(1, AspnetApplications.All.Count());
-            Assert.AreEqual("app2", AspnetApplications.All.First().ApplicationName);
+            Assert.AreEqual(1, CurrentProductList.All.Count());
+            Assert.AreEqual("def", CurrentProductList.All.First().ProductName);
         }
     }
 }
