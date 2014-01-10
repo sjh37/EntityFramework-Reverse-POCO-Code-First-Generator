@@ -3,8 +3,8 @@ using EntityFramework_Reverse_POCO_Generator;
 
 namespace Tester.BusinessLogic
 {
-    public interface IAspnetSchemaVersionsRepository
+    public interface ICustomersRepository
     {
-        IQueryable<AspnetSchemaVersions> GetTop10();
+        IQueryable<Customers> GetTop10();
     }
 }

@@ -4,11 +4,11 @@ using EntityFramework_Reverse_POCO_Generator;
 
 namespace Tester.BusinessLogic
 {
-    public class AspnetSchemaVersionsRepository : IAspnetSchemaVersionsRepository
+    public class CustomersRepository : ICustomersRepository
     {
         private readonly IMyDbContext _context;
 
-        public AspnetSchemaVersionsRepository(IMyDbContext context)
+        public CustomersRepository(IMyDbContext context)
         {
             if(context == null)
                 throw new ArgumentNullException("context");
@@ -16,9 +16,9 @@ namespace Tester.BusinessLogic
             _context = context;
         }
 
-        public IQueryable<AspnetSchemaVersions> GetTop10()
+        public IQueryable<Customers> GetTop10()
         {
-            return _context.AspnetSchemaVersions.Take(10);
+            return _context.Customers.Take(10);
         }
     }
 }

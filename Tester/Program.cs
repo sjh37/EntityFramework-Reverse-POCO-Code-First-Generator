@@ -5,7 +5,7 @@ using Tester.BusinessLogic;
 
 namespace Tester
 {
-    class Program
+    public class Program
     {
         static void Main()
         {
@@ -14,20 +14,20 @@ namespace Tester
                 using(var db = new MyDbContext())
                 {
                     Console.WriteLine("*** Using EF directly ***");
-                    var data = db.AspnetSchemaVersions.Take(10);
+                    var data = db.Customers.Take(10);
                     foreach(var row in data)
                     {
-                        Console.WriteLine(row.Feature);
+                        Console.WriteLine(row.CompanyName);
                     }
 
                     Console.WriteLine();
 
                     Console.WriteLine("*** Using EF via a repository ***");
-                    IAspnetSchemaVersionsRepository aspnetSchemaVersionsRepository = new AspnetSchemaVersionsRepository(db);
-                    var moqData = aspnetSchemaVersionsRepository.GetTop10();
-                    foreach(var row in moqData)
+                    ICustomersRepository customersRepository = new CustomersRepository(db);
+                    var repoData = customersRepository.GetTop10();
+                    foreach(var row in repoData)
                     {
-                        Console.WriteLine(row.Feature);
+                        Console.WriteLine(row.CompanyName);
                     }
                 }
             }
