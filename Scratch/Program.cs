@@ -359,7 +359,7 @@ namespace Scratch
 
             private void SetupEntity()
             {
-                Entity = string.Format("public {0}{1} {2} {3} // {4}{5}", PropertyType, CheckNullable(this), PropertyNameHumanCase, "{ get; set; }", Name, IsPrimaryKey ? " (Primary key)" : string.Empty);
+                Entity = string.Format("public {0}{1} {2} {3} // {4}{5}", PropertyType, CheckNullable(this), PropertyNameHumanCase, IsStoreGenerated ? "{ get; internal set; }" : "{ get; set; }", Name, IsPrimaryKey ? " (Primary key)" : string.Empty);
             }
 
             private void SetupConfig()
