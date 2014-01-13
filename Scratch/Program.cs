@@ -102,6 +102,7 @@ namespace Scratch
         bool AddWcfDataAttributes = false;
         string ExtraWcfDataContractAttributes = "";
         string SchemaName = null;
+        static bool DisableGeographyTypes = false;
         bool PrependSchemaName = true;
         Regex TableFilterExclude = null;
         Regex TableFilterInclude = null;
@@ -1093,7 +1094,9 @@ ORDER BY FK.TABLE_NAME,
                                 }
                             }
 
-                            table.Columns.Add(CreateColumn(rdr, rxClean, table, useCamelCase));
+                            var col = CreateColumn(rdr, rxClean, table, useCamelCase);
+                            if (col != null)
+                                table.Columns.Add(col);
                         }
                     }
                 }
@@ -1298,6 +1301,10 @@ ORDER BY FK.TABLE_NAME,
                 if (CheckNullable(col) != string.Empty)
                     table.HasNullableColumns = true;
 
+                // If PropertyType is empty, return null. Most likely ignoring a column due to legacy (such as OData not supporting spatial types)
+                if (string.IsNullOrEmpty(col.PropertyType))
+                    return null;
+
                 return col;
             }
 
@@ -1356,10 +1363,16 @@ ORDER BY FK.TABLE_NAME,
                         sysType = "byte[]";
                         break;
                     case "geography":
-                        sysType = "System.Data.Spatial.DbGeography";
+                        if (DisableGeographyTypes)
+                            sysType = "";
+                        else
+                            sysType = "System.Data.Spatial.DbGeography";
                         break;
                     case "geometry":
-                        sysType = "System.Data.Spatial.DbGeometry";
+                        if (DisableGeographyTypes)
+                            sysType = "";
+                        else
+                            sysType = "System.Data.Spatial.DbGeometry";
                         break;
                 }
                 return sysType;
