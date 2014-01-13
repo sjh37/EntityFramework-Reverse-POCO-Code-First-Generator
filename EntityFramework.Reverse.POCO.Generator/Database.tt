@@ -12,6 +12,7 @@
     GenerateSeparateFiles = false;
     UseCamelCase = true;    // This will rename the tables & fields to use CamelCase. If false table & field names will be left alone.
     IncludeViews = true;
+    DisableGeographyTypes = false; // Turns off use of System.Data.Spatial.DbGeography and System.Data.Spatial.DbGeometry as OData doesn't support entities with geometry/geography types.
     CollectionType = "List";  // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example
     CollectionTypeNamespace = ""; // "System.Collections.ObjectModel" is required if setting the CollectionType = "ObservableCollection"
     ConnectionStringName = "MyDbContext";  // Searches for this connection string in config files listed below
