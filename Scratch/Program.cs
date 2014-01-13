@@ -374,6 +374,7 @@ namespace Scratch
                     case "double":
                     case "float":
                     case "decimal":
+                    case "string":
                         hasDatabaseGeneratedOption = true;
                         break;
                 }
