@@ -164,16 +164,18 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.Na
 <# fileManager.StartNewFile(tbl.NameHumanCase + FileExtension); #>
     // <#=tbl.Name#>
 <# if(AddWcfDataAttributes) { #>    [DataContract<#=ExtraWcfDataContractAttributes#>]
-<# } #>
-    public <# if(MakeClassesPartial) { #>partial <# } #>class <#=tbl.NameHumanCase#>
+<# } 
+    WritePocoClassAttributes(tbl);#>
+    public <# if(MakeClassesPartial) { #>partial <# } #>class <#=tbl.NameHumanCase#><#=WritePocoBaseClasses != null ? " : " + WritePocoBaseClasses(tbl) : "" #>
     {
+<# WritePocoBaseClassBody(tbl); #>
 <# int DataMemberOrder = 1;
 foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal))
 {
 #>
 <# if(AddWcfDataAttributes) { #>        [DataMember(Order = <#=DataMemberOrder++#>, IsRequired = <#=col.IsNullable ? "false" : "true"#>)]
 <# } #>
-        <#=col.Entity #>
+        <#= WritePocoColumn(col) #>
 <# if(AddWcfDataAttributes) { #>
 
 <# } } #>

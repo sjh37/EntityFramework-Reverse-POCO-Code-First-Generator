@@ -2,6 +2,7 @@
 <#
     // v2.2.0
     // Please make changes to the settings below.
+    // All you have to do is save this file, and the output file(s) is/are generated. Compiling does not regenerate the file(s).
 
     // Misc settings **********************************************************************************************************************
     // Namespace = ""; // Override the default namespace here
@@ -70,8 +71,34 @@
     //          "(Namespace = Constants.ServiceNamespace)";   = [DataContract(Namespace = Constants.ServiceNamespace)]
     
 
+    // Callbacks **********************************************************************************************************************
+    // This method will be called right before we write the POCO header.
+    Action<Table> WritePocoClassAttributes = t =>
+    {
+        // Do nothing by default
+        // Example:
+        // if(t.ClassName.StartsWith("Order"))
+        //     WriteLine("    [SomeAttribute]");
+    };
 
+    // Writes optional base classes
+    Func<Table, string> WritePocoBaseClasses = null;    // t => "IMyBaseClass";
 
+    // Writes any boilerplate stuff
+    Action<Table> WritePocoBaseClassBody = t =>
+    {
+        // Do nothing by default
+        // Example:
+        // WriteLine("        // " + t.ClassName);
+    };
+
+    Func<Column, string> WritePocoColumn = c => c.Entity;
+
+    
+    // That's it, nothing else to configure ***********************************************************************************************
+    
+    
+    
     // Read schema
     var tables = LoadTables();
     

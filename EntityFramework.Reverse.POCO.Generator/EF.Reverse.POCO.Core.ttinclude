@@ -31,7 +31,7 @@
         var fileManager = EntityFrameworkTemplateFileManager.Create(this);
 #>
 <#+
-        // Settings
+        // Settings - edit these in the main <name>.tt file *******************************************************************************
         string ConnectionStringName = "";        		
         bool IncludeViews = true;
         string DbContextName = "MyDbContext";
