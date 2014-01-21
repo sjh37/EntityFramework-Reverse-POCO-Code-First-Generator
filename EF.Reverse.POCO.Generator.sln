@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFramework.Reverse.POCO.Generator", "EntityFramework.Reverse.POCO.Generator\EntityFramework.Reverse.POCO.Generator.csproj", "{FA93A0BD-8B45-43BA-9C57-1D8FD63CAEAE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tester.Integration", "Tester\Tester.Integration.csproj", "{D21BA1F2-7796-4263-B4CA-5C1BB33729CA}"
@@ -21,6 +23,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{1B05EA
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tester.BusinessLogic", "Tester.BusinessLogic\Tester.BusinessLogic.csproj", "{2F59926C-597F-448E-B9B0-BE9F9E0F0404}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestDatabases", "TestDatabases", "{83372A77-8739-4868-A461-5FEA78E3E645}"
+	ProjectSection(SolutionItems) = preProject
+		NorthwindSqlCe40.sdf = NorthwindSqlCe40.sdf
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
