@@ -1,5 +1,6 @@
 @echo off
-copy "EntityFramework.Reverse.POCO.Generator\*.tt*" ItemTemplate\ItemTemplates\
+copy "EntityFramework.Reverse.POCO.Generator\*.ttinclude" ItemTemplate\ItemTemplates\
+copy "EntityFramework.Reverse.POCO.Generator\Database.tt" ItemTemplate\ItemTemplates\
 copy "ItemTemplate\*.png" ItemTemplate\ItemTemplates\
 copy "ItemTemplate\*.ico" ItemTemplate\ItemTemplates\
 copy "ItemTemplate\*.vstemplate" ItemTemplate\ItemTemplates\

@@ -61,12 +61,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Database NorthwindSqlCe40.cs">
+      <DependentUpon>Database NorthwindSqlCe40.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Database.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Database.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="Database NorthwindSqlCe40.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Database NorthwindSqlCe40.cs</LastGenOutput>
+    </None>
     <None Include="EF.Reverse.POCO.Generator.pfx" />
     <None Include="App.config">
       <SubType>Designer</SubType>
