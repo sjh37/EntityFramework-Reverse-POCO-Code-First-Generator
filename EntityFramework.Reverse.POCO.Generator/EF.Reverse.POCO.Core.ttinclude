@@ -1117,6 +1117,70 @@ WHERE   PT.COLUMN_NAME = PK.COLUMN_NAME
 ORDER BY FK.TABLE_NAME,
         FK.COLUMN_NAME";
 
+			private const string TableSQLCE = @"
+SELECT  '' AS SchemaName,
+		c.TABLE_NAME AS TableName,
+		'BASE TABLE' AS TableType,
+		c.ORDINAL_POSITION AS Ordinal,
+		c.COLUMN_NAME AS ColumnName,
+		CAST(CASE WHEN c.IS_NULLABLE = N'YES' THEN 1
+		ELSE 0 END AS bit) AS IsNullable,
+		c.DATA_TYPE AS TypeName,
+		CASE WHEN c.CHARACTER_MAXIMUM_LENGTH IS NOT NULL THEN c.CHARACTER_MAXIMUM_LENGTH
+		ELSE 0 END AS MaxLength,
+		CASE WHEN c.NUMERIC_PRECISION IS NOT NULL THEN c.NUMERIC_PRECISION
+		ELSE 0 END AS Precision,
+		c.COLUMN_DEFAULT AS [Default],
+		CASE WHEN c.DATA_TYPE = N'datetime' THEN 0
+		ELSE 0 END AS DateTimePrecision,
+		CASE WHEN c.DATA_TYPE = N'datetime' THEN 0
+		WHEN c.NUMERIC_SCALE IS NOT NULL THEN c.NUMERIC_SCALE
+		ELSE 0 END AS Scale,
+		CAST(CASE WHEN c.AUTOINC_INCREMENT > 0 THEN 1
+		ELSE 0 END AS bit) AS IsIdentity,
+		CAST(CASE WHEN c.DATA_TYPE = N'rowversion' THEN 1
+		ELSE 0 END AS bit) AS IsStoreGenerated,
+		CAST(CASE WHEN u.TABLE_NAME IS NULL THEN 0
+		ELSE 1 END AS bit) AS PrimaryKey				
+FROM INFORMATION_SCHEMA.COLUMNS c
+		INNER JOIN INFORMATION_SCHEMA.TABLES t 
+			ON c.TABLE_NAME = t.TABLE_NAME
+		LEFT JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS AS cons 
+			ON cons.TABLE_NAME = c.TABLE_NAME 
+		LEFT JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS u 
+			ON cons.CONSTRAINT_NAME = u.CONSTRAINT_NAME AND u.TABLE_NAME = c.TABLE_NAME AND u.COLUMN_NAME = c.COLUMN_NAME
+WHERE t.TABLE_TYPE <> N'SYSTEM TABLE' AND cons.CONSTRAINT_TYPE = 'PRIMARY KEY'
+ORDER BY c.TABLE_NAME, c.COLUMN_NAME, c.ORDINAL_POSITION;";
+
+			private const string ForeignKeySQLCE = @"
+SELECT DISTINCT
+        FK.TABLE_NAME AS FK_Table,
+        FK.COLUMN_NAME AS FK_Column,
+        PK.TABLE_NAME AS PK_Table,
+        PK.COLUMN_NAME AS PK_Column,
+        FK.CONSTRAINT_NAME AS Constraint_Name,
+        '' AS fkSchema,
+        '' AS pkSchema,
+        PT.COLUMN_NAME AS primarykey
+FROM    INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS AS C
+        INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS FK
+            ON FK.CONSTRAINT_NAME = C.CONSTRAINT_NAME
+        INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS PK
+            ON PK.CONSTRAINT_NAME = C.UNIQUE_CONSTRAINT_NAME
+               AND PK.ORDINAL_POSITION = FK.ORDINAL_POSITION
+        INNER JOIN (
+                    SELECT  i1.TABLE_NAME,
+                            i2.COLUMN_NAME
+                    FROM    INFORMATION_SCHEMA.TABLE_CONSTRAINTS i1
+                            INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE i2
+                                ON i1.CONSTRAINT_NAME = i2.CONSTRAINT_NAME
+                    WHERE   i1.CONSTRAINT_TYPE = 'PRIMARY KEY'
+                   ) PT
+            ON PT.TABLE_NAME = PK.TABLE_NAME
+WHERE   PT.COLUMN_NAME = PK.COLUMN_NAME
+ORDER BY FK.TABLE_NAME,
+        FK.COLUMN_NAME;";
+
             public SqlServerSchemaReader(DbConnection connection, DbProviderFactory factory) 
                 : base(connection, factory)
             {
@@ -1129,58 +1193,57 @@ ORDER BY FK.TABLE_NAME,
                     return result;
                 
                 Cmd.CommandText = TableSQL;
+                if (Cmd.GetType().Name == "SqlCeCommand")
+                    Cmd.CommandText = TableSQLCE;
 
-                using(Cmd)
+                using(DbDataReader rdr = Cmd.ExecuteReader())
                 {
-                    using(DbDataReader rdr = Cmd.ExecuteReader())
+                    var rxClean = new Regex("^(event|Equals|GetHashCode|GetType|ToString|repo|Save|IsNew|Insert|Update|Delete|Exists|SingleOrDefault|Single|First|FirstOrDefault|Fetch|Page|Query)$");
+                    var lastTable = string.Empty;
+                    Table table = null;
+                    while(rdr.Read())
                     {
-                        var rxClean = new Regex("^(event|Equals|GetHashCode|GetType|ToString|repo|Save|IsNew|Insert|Update|Delete|Exists|SingleOrDefault|Single|First|FirstOrDefault|Fetch|Page|Query)$");
-                        var lastTable = string.Empty;
-                        Table table = null;
-                        while(rdr.Read())
+                        string tableName = rdr["TableName"].ToString().Trim();
+                        if(tableFilterExclude != null && tableFilterExclude.IsMatch(tableName))
+                            continue;
+
+                        if(lastTable != tableName || table == null)
                         {
-                            string tableName = rdr["TableName"].ToString().Trim();
-                            if(tableFilterExclude != null && tableFilterExclude.IsMatch(tableName))
-                                continue;
-
-                            if(lastTable != tableName || table == null)
+                            // The data from the database is not sorted
+                            string schema = rdr["SchemaName"].ToString().Trim();
+                            table = result.Find(x => x.Name == tableName && x.Schema == schema);
+                            if(table == null)
                             {
-                                // The data from the database is not sorted
-                                string schema = rdr["SchemaName"].ToString().Trim();
-                                table = result.Find(x => x.Name == tableName && x.Schema == schema);
-                                if(table == null)
+                                table = new Table
                                 {
-                                    table = new Table
-                                    {
-                                        Name = tableName,
-                                        Schema = schema,
-                                        IsView = String.Compare(rdr["TableType"].ToString().Trim(), "View", StringComparison.OrdinalIgnoreCase) == 0,
+                                    Name = tableName,
+                                    Schema = schema,
+                                    IsView = String.Compare(rdr["TableType"].ToString().Trim(), "View", StringComparison.OrdinalIgnoreCase) == 0,
 
-                                        // Will be set later
-                                        HasForeignKey = false,
-                                        HasNullableColumns = false
-                                    };
-                                    table.CleanName = CleanUp(table.Name);
-                                    table.ClassName = useCamelCase ? Inflector.MakeSingular(table.CleanName) : table.CleanName;
-                                    table.NameHumanCase = (useCamelCase ? Inflector.ToTitleCase(Inflector.MakeSingular(table.Name)) : table.Name).Replace(" ", "").Replace("$", "");
-                                    if((string.Compare(table.Schema, "dbo", StringComparison.OrdinalIgnoreCase) != 0) && prependSchemaName)
-                                        table.NameHumanCase = table.Schema + "_" + table.NameHumanCase;
+                                    // Will be set later
+                                    HasForeignKey = false,
+                                    HasNullableColumns = false
+                                };
+                                table.CleanName = CleanUp(table.Name);
+                                table.ClassName = useCamelCase ? Inflector.MakeSingular(table.CleanName) : table.CleanName;
+                                table.NameHumanCase = (useCamelCase ? Inflector.ToTitleCase(Inflector.MakeSingular(table.Name)) : table.Name).Replace(" ", "").Replace("$", "");
+                                if((string.Compare(table.Schema, "dbo", StringComparison.OrdinalIgnoreCase) != 0) && prependSchemaName)
+                                    table.NameHumanCase = table.Schema + "_" + table.NameHumanCase;
 
-                                    // Check for table or C# name clashes
-                                    if (ReservedKeywords.Contains(table.NameHumanCase) ||
-                                        (useCamelCase && result.Find(x => x.NameHumanCase == table.NameHumanCase) != null))
-                                    {
-                                        table.NameHumanCase += "1";
-                                    }
-
-                                    result.Add(table);
+                                // Check for table or C# name clashes
+                                if (ReservedKeywords.Contains(table.NameHumanCase) ||
+                                    (useCamelCase && result.Find(x => x.NameHumanCase == table.NameHumanCase) != null))
+                                {
+                                    table.NameHumanCase += "1";
                                 }
-                            }
 
-                            var col = CreateColumn(rdr, rxClean, table, useCamelCase);
-                            if(col != null)
-                                table.Columns.Add(col);
+                                result.Add(table);
+                            }
                         }
+
+                        var col = CreateColumn(rdr, rxClean, table, useCamelCase);
+                        if(col != null)
+                            table.Columns.Add(col);
                     }
                 }
 
@@ -1205,22 +1268,21 @@ ORDER BY FK.TABLE_NAME,
                     return fkList;
 
                 Cmd.CommandText = ForeignKeySQL;
+                if (Cmd.GetType().Name == "SqlCeCommand")
+                    Cmd.CommandText = ForeignKeySQLCE;
 
-                using(Cmd)
+                using(DbDataReader rdr = Cmd.ExecuteReader())
                 {
-                    using(DbDataReader rdr = Cmd.ExecuteReader())
+                    while(rdr.Read())
                     {
-                        while(rdr.Read())
-                        {
-                            string fkTableName = rdr["FK_Table"].ToString();
-                            string fkSchema = rdr["fkSchema"].ToString();
-                            string pkTableName = rdr["PK_Table"].ToString();
-                            string pkSchema = rdr["pkSchema"].ToString();
-                            string fkColumn = rdr["FK_Column"].ToString();
-                            string pkColumn = rdr["PK_Column"].ToString();
-                            string constraintName = rdr["Constraint_Name"].ToString();
-                            fkList.Add(new ForeignKey(fkTableName, fkSchema, pkTableName, pkSchema, fkColumn, pkColumn, constraintName));
-                        }
+                        string fkTableName = rdr["FK_Table"].ToString();
+                        string fkSchema = rdr["fkSchema"].ToString();
+                        string pkTableName = rdr["PK_Table"].ToString();
+                        string pkSchema = rdr["pkSchema"].ToString();
+                        string fkColumn = rdr["FK_Column"].ToString().Replace(" ", "");
+                        string pkColumn = rdr["PK_Column"].ToString().Replace(" ", "");
+                        string constraintName = rdr["Constraint_Name"].ToString().Replace(" ", "");
+                        fkList.Add(new ForeignKey(fkTableName, fkSchema, pkTableName, pkSchema, fkColumn, pkColumn, constraintName));
                     }
                 }
                 
