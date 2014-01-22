@@ -1,13 +1,15 @@
 ﻿<#@ include file="EF.Reverse.POCO.Core.ttinclude" #>
 <#
-    // v2.2.0
+    // v2.2.1
     // Please make changes to the settings below.
     // All you have to do is save this file, and the output file(s) is/are generated. Compiling does not regenerate the file(s).
 
     // Misc settings **********************************************************************************************************************
     // Namespace = ""; // Override the default namespace here
-    DbContextName = "MyDbContext";
+    DbContextName = "MyDbContextSqlCE4";
+    ConnectionStringName = "MyDbContextSqlCE4";  // Searches for this connection string in config files listed below
     ConfigurationClassName = "Configuration"; // Configuration, Mapping, Map, etc. This is appended to the Poco class name to configure the mappings.
+    ConfigFilenameSearchOrder = new[] { "app.config", "web.config", "app.config.transform", "web.config.transform" }; // Add more here if required. The config files are searched for in the local project first, then the whole solution second.
     MakeClassesPartial = false;
     GenerateSeparateFiles = false;
     UseCamelCase = true;    // This will rename the tables & fields to use CamelCase. If false table & field names will be left alone.
@@ -15,9 +17,6 @@
     DisableGeographyTypes = false; // Turns off use of System.Data.Spatial.DbGeography and System.Data.Spatial.DbGeometry as OData doesn't support entities with geometry/geography types.
     CollectionType = "List";  // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example
     CollectionTypeNamespace = ""; // "System.Collections.ObjectModel" is required if setting the CollectionType = "ObservableCollection"
-    ConnectionStringName = "MyDbContextSqlCE4";  // Searches for this connection string in config files listed below
-    ConfigFilenameSearchOrder = new[] { "app.config", "web.config", "app.config.transform", "web.config.transform" }; // Add more here if required
-        // The config files are searched for in the local project first, then the whole solution second.
     
 
     // Elements to generate ***************************************************************************************************************
