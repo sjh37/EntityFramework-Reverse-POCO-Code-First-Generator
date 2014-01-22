@@ -554,7 +554,7 @@ namespace Scratch
         /// </summary>
         public static class Inflector
         {
-            static readonly PluralizationService PluralizationService = PluralizationService.CreateService(CultureInfo.CurrentCulture);
+            static readonly PluralizationService PluralizationService = PluralizationService.CreateService(new CultureInfo("en-US"));
 
             /// <summary>
             /// Makes the plural.
