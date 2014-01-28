@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.30110.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFramework.Reverse.POCO.Generator", "EntityFramework.Reverse.POCO.Generator\EntityFramework.Reverse.POCO.Generator.csproj", "{FA93A0BD-8B45-43BA-9C57-1D8FD63CAEAE}"
 EndProject
@@ -15,18 +15,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tester.Repository", "Tester
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tester.UnitTest", "Tester.UnitTest\Tester.UnitTest.csproj", "{8C949A14-F572-457B-A069-52AEC2526AD5}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{1B05EAC6-FBBB-4DFB-990D-720CC7D51441}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-		.nuget\NuGet.exe = .nuget\NuGet.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tester.BusinessLogic", "Tester.BusinessLogic\Tester.BusinessLogic.csproj", "{2F59926C-597F-448E-B9B0-BE9F9E0F0404}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestDatabases", "TestDatabases", "{83372A77-8739-4868-A461-5FEA78E3E645}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{74858508-B074-40EA-8F3C-4B9AC7936EE0}"
 	ProjectSection(SolutionItems) = preProject
-		NorthwindSqlCe40.sdf = NorthwindSqlCe40.sdf
+		NuGet.Config = NuGet.Config
 	EndProjectSection
 EndProject
 Global
