@@ -244,8 +244,12 @@ foreach(Table tbl in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCas
     {
         public <#=tbl.NameHumanCase + ConfigurationClassName#>(string schema = "<#=tbl.Schema#>")
         {
- <# if (!string.IsNullOrEmpty(tbl.Schema)) { #>           ToTable(schema + ".<#=tbl.Name#>");<# } #>
-            HasKey(<#=tbl.PrimaryKeyNameHumanCase()#>);
+ <# if (!string.IsNullOrEmpty(tbl.Schema)) { #>
+           ToTable(schema + ".<#=tbl.Name#>");
+ <# } else { #>
+           ToTable("<#=tbl.Name#>");
+ <# } #>
+           HasKey(<#=tbl.PrimaryKeyNameHumanCase()#>);
 
 <#
 foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal))

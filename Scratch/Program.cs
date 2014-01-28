@@ -562,7 +562,7 @@ namespace Scratch
         /// </summary>
         public static class Inflector
         {
-            static readonly PluralizationService PluralizationService = PluralizationService.CreateService(new CultureInfo("en-US"));
+            static readonly PluralizationService PluralizationService = PluralizationService.CreateService(new System.Globalization.CultureInfo("en-US"));
 
             /// <summary>
             /// Makes the plural.
@@ -1136,9 +1136,9 @@ ORDER BY FK.TABLE_NAME,
                 {
                     while (rdr.Read())
                     {
-                        string fkTableName = rdr["FK_Table"].ToString().Replace(" ", "");
+                        string fkTableName = rdr["FK_Table"].ToString();
                         string fkSchema = rdr["fkSchema"].ToString();
-                        string pkTableName = rdr["PK_Table"].ToString().Replace(" ", "");
+                        string pkTableName = rdr["PK_Table"].ToString();
                         string pkSchema = rdr["pkSchema"].ToString();
                         string fkColumn = rdr["FK_Column"].ToString().Replace(" ", "");
                         string pkColumn = rdr["PK_Column"].ToString().Replace(" ", "");
