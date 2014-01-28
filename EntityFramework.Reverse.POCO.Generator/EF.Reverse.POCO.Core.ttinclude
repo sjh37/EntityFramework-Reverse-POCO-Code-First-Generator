@@ -385,6 +385,9 @@
                     conn.ConnectionString = ConnectionString;
                     conn.Open();
 
+                    if (conn.GetType().Name == "SqlCeConnection")
+                       PrependSchemaName = false;
+
                     var reader = new SqlServerSchemaReader(conn, factory) { Outer = this };
                     var tables = reader.ReadSchema(TableFilterExclude, UseCamelCase, PrependSchemaName);
 
@@ -1275,9 +1278,9 @@ ORDER BY FK.TABLE_NAME,
                 {
                     while(rdr.Read())
                     {
-                        string fkTableName = rdr["FK_Table"].ToString();
+                        string fkTableName = rdr["FK_Table"].ToString().Replace(" ", "");
                         string fkSchema = rdr["fkSchema"].ToString();
-                        string pkTableName = rdr["PK_Table"].ToString();
+                        string pkTableName = rdr["PK_Table"].ToString().Replace(" ", "");
                         string pkSchema = rdr["pkSchema"].ToString();
                         string fkColumn = rdr["FK_Column"].ToString().Replace(" ", "");
                         string pkColumn = rdr["PK_Column"].ToString().Replace(" ", "");
@@ -1310,8 +1313,8 @@ ORDER BY FK.TABLE_NAME,
                     string pkPropName = fkTable.GetUniqueColumnPropertyName(pkTableHumanCase, foreignKey, useCamelCase, checkForFkNameClashes, true);
                     string fkPropName = pkTable.GetUniqueColumnPropertyName(fkTable.NameHumanCase, foreignKey, useCamelCase, checkForFkNameClashes, false);
 
-                    var fkCols = foreignKeys.Select(x => fkTable.Columns.Find(n => n.Name == x.FkColumn)).Where(x => x != null).ToList();
-                    var pkCols = foreignKeys.Select(x => pkTable.Columns.Find(n => n.Name == x.PkColumn)).Where(x => x != null).ToList();
+                    var fkCols = foreignKeys.Select(x => fkTable.Columns.Find(n => n.PropertyName == x.FkColumn)).Where(x => x != null).ToList();
+                    var pkCols = foreignKeys.Select(x => pkTable.Columns.Find(n => n.PropertyName == x.PkColumn)).Where(x => x != null).ToList();
 
                     var fkCol = fkCols.First();
                     var pkCol = pkCols.First();

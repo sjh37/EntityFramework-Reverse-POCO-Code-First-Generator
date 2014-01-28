@@ -244,7 +244,7 @@ foreach(Table tbl in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCas
     {
         public <#=tbl.NameHumanCase + ConfigurationClassName#>(string schema = "<#=tbl.Schema#>")
         {
-            ToTable(schema + ".<#=tbl.Name#>");
+ <# if (!string.IsNullOrEmpty(tbl.Schema)) { #>           ToTable(schema + ".<#=tbl.Name#>");<# } #> 
             HasKey(<#=tbl.PrimaryKeyNameHumanCase()#>);
 
 <#

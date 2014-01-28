@@ -85,11 +85,16 @@ namespace Scratch
         private void WriteLine(string s, object b, object c) { }
         private void Warning(string s) { }
         private string ZapPassword(string s) { return s; }
-        private const string ProviderName = "System.Data.SqlClient";
 
         // Settings
-        string ConnectionStringName = "MyDbContext";   // Uses last connection string in config if not specified
+        private const string ProviderName = "System.Data.SqlClient";
         string ConnectionString = "Data Source=(local);Initial Catalog=Northwind;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";   // Uses last connection string in config if not specified
+
+        // Use this when testing SQL Server Compact 4.0
+        //private const string ProviderName = "System.Data.SqlServerCe.4.0";
+        //string ConnectionString = @"Data Source=|DataDirectory|\NorthwindSqlCe40.sdf";   // Uses last connection string in config if not specified
+
+        string ConnectionStringName = "MyDbContext";   // Uses last connection string in config if not specified
         bool IncludeViews = true;
         string DbContextName = "MyDbContext";
         string ConfigurationClassName = "Configuration";
@@ -237,6 +242,9 @@ namespace Scratch
                 {
                     conn.ConnectionString = ConnectionString;
                     conn.Open();
+
+                    if (conn.GetType().Name == "SqlCeConnection")
+                        PrependSchemaName = false;
 
                     var reader = new SqlServerSchemaReader(conn, factory) { Outer = this };
                     var tables = reader.ReadSchema(TableFilterExclude, UseCamelCase, PrependSchemaName);
@@ -1128,9 +1136,9 @@ ORDER BY FK.TABLE_NAME,
                 {
                     while (rdr.Read())
                     {
-                        string fkTableName = rdr["FK_Table"].ToString();
+                        string fkTableName = rdr["FK_Table"].ToString().Replace(" ", "");
                         string fkSchema = rdr["fkSchema"].ToString();
-                        string pkTableName = rdr["PK_Table"].ToString();
+                        string pkTableName = rdr["PK_Table"].ToString().Replace(" ", "");
                         string pkSchema = rdr["pkSchema"].ToString();
                         string fkColumn = rdr["FK_Column"].ToString().Replace(" ", "");
                         string pkColumn = rdr["PK_Column"].ToString().Replace(" ", "");
@@ -1163,8 +1171,8 @@ ORDER BY FK.TABLE_NAME,
                     string pkPropName = fkTable.GetUniqueColumnPropertyName(pkTableHumanCase, foreignKey, useCamelCase, checkForFkNameClashes, true);
                     string fkPropName = pkTable.GetUniqueColumnPropertyName(fkTable.NameHumanCase, foreignKey, useCamelCase, checkForFkNameClashes, false);
 
-                    var fkCols = foreignKeys.Select(x => fkTable.Columns.Find(n => n.Name == x.FkColumn)).Where(x => x != null).ToList();
-                    var pkCols = foreignKeys.Select(x => pkTable.Columns.Find(n => n.Name == x.PkColumn)).Where(x => x != null).ToList();
+                    var fkCols = foreignKeys.Select(x => fkTable.Columns.Find(n => n.PropertyName == x.FkColumn)).Where(x => x != null).ToList();
+                    var pkCols = foreignKeys.Select(x => pkTable.Columns.Find(n => n.PropertyName == x.PkColumn)).Where(x => x != null).ToList();
 
                     var fkCol = fkCols.First();
                     var pkCol = pkCols.First();
