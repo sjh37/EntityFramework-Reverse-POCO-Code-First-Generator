@@ -19,6 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tester.BusinessLogic", "Tes
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{74858508-B074-40EA-8F3C-4B9AC7936EE0}"
 	ProjectSection(SolutionItems) = preProject
+		NorthwindSqlCe40.sdf = NorthwindSqlCe40.sdf
 		NuGet.Config = NuGet.Config
 	EndProjectSection
 EndProject
