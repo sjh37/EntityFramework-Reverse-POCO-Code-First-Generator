@@ -5,7 +5,7 @@
     // All you have to do is save this file, and the output file(s) is/are generated. Compiling does not regenerate the file(s).
 
     // Misc settings **********************************************************************************************************************
-    // Namespace = ""; // Override the default namespace here
+    Namespace = "EntityFramework_Reverse_POCO_Generator.SqlCe4"; // Override the default namespace here
     DbContextName = "MyDbContextSqlCE4";
     ConnectionStringName = "MyDbContextSqlCE4";  // Searches for this connection string in config files listed below
     ConfigurationClassName = "Configuration"; // Configuration, Mapping, Map, etc. This is appended to the Poco class name to configure the mappings.

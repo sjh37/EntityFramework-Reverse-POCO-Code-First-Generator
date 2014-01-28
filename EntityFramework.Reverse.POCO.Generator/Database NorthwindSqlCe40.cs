@@ -23,7 +23,7 @@ using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration;
 //using DatabaseGeneratedOption = System.ComponentModel.DataAnnotations.DatabaseGeneratedOption;
 
-namespace EntityFramework_Reverse_POCO_Generator
+namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
 {
     // ************************************************************************
     // Unit of work
