@@ -1319,7 +1319,7 @@ ORDER BY FK.TABLE_NAME,
 
                     string pkTableHumanCase = foreignKey.PkTableHumanCase(useCamelCase, prependSchemaName);
                     string pkPropName = fkTable.GetUniqueColumnPropertyName(pkTableHumanCase, foreignKey, useCamelCase, checkForFkNameClashes, true);
-						  bool fkMakePropNameSingular = relationship == Relationship.OneToOne;
+                    bool fkMakePropNameSingular = (relationship == Relationship.OneToOne);
                     string fkPropName = pkTable.GetUniqueColumnPropertyName(fkTable.NameHumanCase, foreignKey, useCamelCase, checkForFkNameClashes, fkMakePropNameSingular);
 
                     fkCol.EntityFk = string.Format("public virtual {0} {1} {2} {3}", pkTableHumanCase, pkPropName, "{ get; set; } // ", foreignKey.ConstraintName);

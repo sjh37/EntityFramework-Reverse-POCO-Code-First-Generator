@@ -1167,19 +1167,20 @@ ORDER BY FK.TABLE_NAME,
                     if (pkTable == null || pkTable.IsMapping)
                         continue;
 
-                    string pkTableHumanCase = foreignKey.PkTableHumanCase(useCamelCase, prependSchemaName);
-                    string pkPropName = fkTable.GetUniqueColumnPropertyName(pkTableHumanCase, foreignKey, useCamelCase, checkForFkNameClashes, true);
-                    string fkPropName = pkTable.GetUniqueColumnPropertyName(fkTable.NameHumanCase, foreignKey, useCamelCase, checkForFkNameClashes, false);
-
                     var fkCols = foreignKeys.Select(x => fkTable.Columns.Find(n => n.PropertyName == x.FkColumn)).Where(x => x != null).ToList();
                     var pkCols = foreignKeys.Select(x => pkTable.Columns.Find(n => n.PropertyName == x.PkColumn)).Where(x => x != null).ToList();
 
                     var fkCol = fkCols.First();
                     var pkCol = pkCols.First();
 
-                    fkCol.EntityFk = string.Format("public virtual {0} {1} {2} {3}", pkTableHumanCase, pkPropName, "{ get; set; } // ", foreignKey.ConstraintName);
-
                     var relationship = CalcRelationship(pkTable, fkTable, fkCol, pkCol);
+
+                    string pkTableHumanCase = foreignKey.PkTableHumanCase(useCamelCase, prependSchemaName);
+                    string pkPropName = fkTable.GetUniqueColumnPropertyName(pkTableHumanCase, foreignKey, useCamelCase, checkForFkNameClashes, true);
+                    bool fkMakePropNameSingular = (relationship == Relationship.OneToOne);
+                    string fkPropName = pkTable.GetUniqueColumnPropertyName(fkTable.NameHumanCase, foreignKey, useCamelCase, checkForFkNameClashes, fkMakePropNameSingular);
+
+                    fkCol.EntityFk = string.Format("public virtual {0} {1} {2} {3}", pkTableHumanCase, pkPropName, "{ get; set; } // ", foreignKey.ConstraintName);
 
                     string manyToManyMapping;
                     if (foreignKeys.Count > 1)
