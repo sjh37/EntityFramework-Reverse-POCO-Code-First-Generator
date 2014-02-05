@@ -663,8 +663,10 @@
 
                     case "decimal":
                         decimal dec;
-                        if(!decimal.TryParse(Default, out dec))
+                        if (!decimal.TryParse(Default, out dec))
                             Default = string.Empty;
+                        else
+                            Default += "m";
                         break;
 
                     case "byte":
@@ -682,14 +684,6 @@
                     case "guid":
                         if(Default.ToLower() == "newid()" || Default.ToLower() == "newsequentialid()")
                             Default = "System.Guid.NewGuid()";
-                        break;
-                }
-
-                // Append type letters
-                switch(PropertyType.ToLower())
-                {
-                    case "decimal":
-                        Default = Default + "m";
                         break;
                 }
             }
