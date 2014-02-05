@@ -401,7 +401,7 @@ namespace Scratch
                                             (IsNullable) ? ".IsOptional()" : ".IsRequired()",
                                             (MaxLength > 0) ? ".HasMaxLength(" + MaxLength + ")" : string.Empty,
                                             (Scale > 0) ? ".HasPrecision(" + Precision + "," + Scale + ")" : string.Empty,
-                                            (IsStoreGenerated && propertyType == "timestamp") ? ".IsFixedLength().IsRowVersion()" : string.Empty,
+                                            (IsRowVersion) ? ".IsFixedLength().IsRowVersion()" : string.Empty,
                                             databaseGeneratedOption);
             }
 
