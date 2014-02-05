@@ -88,7 +88,7 @@ namespace Scratch
 
         // Settings
         private const string ProviderName = "System.Data.SqlClient";
-        string ConnectionString = "Data Source=(local);Initial Catalog=Northwind;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";   // Uses last connection string in config if not specified
+        string ConnectionString = "Data Source=(local);Initial Catalog=northwind;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";   // Uses last connection string in config if not specified
 
         // Use this when testing SQL Server Compact 4.0
         //private const string ProviderName = "System.Data.SqlServerCe.4.0";
@@ -523,6 +523,8 @@ namespace Scratch
                         decimal dec;
                         if (!decimal.TryParse(Default, out dec))
                             Default = string.Empty;
+                        else
+                            Default += "m";
                         break;
 
                     case "byte":
@@ -540,14 +542,6 @@ namespace Scratch
                     case "guid":
                         if (Default.ToLower() == "newid()" || Default.ToLower() == "newsequentialid()")
                             Default = "System.Guid.NewGuid()";
-                        break;
-                }
-
-                // Append type letters
-                switch (PropertyType.ToLower())
-                {
-                    case "decimal":
-                        Default = Default + "m";
                         break;
                 }
             }
