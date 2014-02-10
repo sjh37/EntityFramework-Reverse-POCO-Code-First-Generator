@@ -20,9 +20,6 @@
                 <Assembly>System.Data</Assembly>
             </Reference>
             <Reference>
-                <Assembly>System.Data.Entity</Assembly>
-            </Reference>
-            <Reference>
                 <Assembly>System.ComponentModel.Composition</Assembly>
             </Reference>
             <Reference>
