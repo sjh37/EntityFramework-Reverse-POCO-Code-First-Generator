@@ -6,7 +6,6 @@
 <#@ assembly name="EnvDTE" #>
 <#@ assembly name="System.Core" #>
 <#@ assembly name="System.Data" #>
-<#@ assembly name="System.Data.Entity.Design" #>
 <#@ assembly name="System.Xml" #>
 <#@ assembly name="System.Configuration" #>
 <#@ assembly name="System.Windows.Forms" #>
@@ -146,8 +145,8 @@
                 col.PropertyType != "string" &&
                 col.PropertyType != "Microsoft.SqlServer.Types.SqlGeography" &&
                 col.PropertyType != "Microsoft.SqlServer.Types.SqlGeometry" &&
-                col.PropertyType != "System.Data.Spatial.DbGeography" &&
-                col.PropertyType != "System.Data.Spatial.DbGeometry")
+                col.PropertyType != "System.Data.Entity.Spatial.DbGeography" &&
+                col.PropertyType != "System.Data.Entity.Spatial.DbGeometry")
                 result = "?";
             return result;
         }
@@ -595,8 +594,8 @@
                         break;
 
                     case "byte[]":
-                    case "System.Data.Spatial.DbGeography":
-                    case "System.Data.Spatial.DbGeometry":
+                    case "System.Data.Entity.Spatial.DbGeography":
+                    case "System.Data.Entity.Spatial.DbGeometry":
                         Default = string.Empty;
                         break;
                 }
@@ -1509,13 +1508,13 @@ ORDER BY FK.TABLE_NAME,
                         if (DisableGeographyTypes)
                             sysType = "";
                         else
-                            sysType = "System.Data.Spatial.DbGeography";
+                            sysType = "System.Data.Entity.Spatial.DbGeography";
                         break;
                     case "geometry":
                         if (DisableGeographyTypes)
                             sysType = "";
                         else
-                            sysType = "System.Data.Spatial.DbGeometry";
+                            sysType = "System.Data.Entity.Spatial.DbGeometry";
                         break;
                 }
                 return sysType;

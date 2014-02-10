@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.Entity.Design.PluralizationServices;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -194,8 +193,8 @@ namespace Scratch
                 col.PropertyType != "string" &&
                 col.PropertyType != "Microsoft.SqlServer.Types.SqlGeography" &&
                 col.PropertyType != "Microsoft.SqlServer.Types.SqlGeometry" &&
-                col.PropertyType != "System.Data.Spatial.DbGeography" &&
-                col.PropertyType != "System.Data.Spatial.DbGeometry")
+                col.PropertyType != "System.Data.Entity.Spatial.DbGeography" &&
+                col.PropertyType != "System.Data.Entity.Spatial.DbGeometry")
                 result = "?";
             return result;
         }
@@ -453,8 +452,8 @@ namespace Scratch
                         break;
 
                     case "byte[]":
-                    case "System.Data.Spatial.DbGeography":
-                    case "System.Data.Spatial.DbGeometry":
+                    case "System.Data.Entity.Spatial.DbGeography":
+                    case "System.Data.Entity.Spatial.DbGeometry":
                         Default = string.Empty;
                         break;
                 }
@@ -1367,13 +1366,13 @@ ORDER BY FK.TABLE_NAME,
                         if (DisableGeographyTypes)
                             sysType = "";
                         else
-                            sysType = "System.Data.Spatial.DbGeography";
+                            sysType = "System.Data.Entity.Spatial.DbGeography";
                         break;
                     case "geometry":
                         if (DisableGeographyTypes)
                             sysType = "";
                         else
-                            sysType = "System.Data.Spatial.DbGeometry";
+                            sysType = "System.Data.Entity.Spatial.DbGeometry";
                         break;
                 }
                 return sysType;
