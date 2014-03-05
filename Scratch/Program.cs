@@ -103,6 +103,7 @@ namespace Scratch
         bool GenerateSeparateFiles = false;
         string FileExtension = ".cs";
         bool UseCamelCase = true;
+        bool IncludeComments = true;
         bool AddWcfDataAttributes = false;
         string ExtraWcfDataContractAttributes = "";
         string SchemaName = null;
@@ -246,7 +247,7 @@ namespace Scratch
                         PrependSchemaName = false;
 
                     var reader = new SqlServerSchemaReader(conn, factory) { Outer = this };
-                    var tables = reader.ReadSchema(TableFilterExclude, UseCamelCase, PrependSchemaName);
+                    var tables = reader.ReadSchema(TableFilterExclude, UseCamelCase, PrependSchemaName, IncludeComments);
 
                     // Remove unrequired tables/views
                     for (int i = tables.Count - 1; i >= 0; i--)
@@ -276,12 +277,12 @@ namespace Scratch
                     var fkList = reader.ReadForeignKeys();
                     reader.IdentifyForeignKeys(fkList, tables);
                     tables.SetPrimaryKeys();
-                    reader.ProcessForeignKeys(fkList, tables, UseCamelCase, PrependSchemaName, CollectionType, true);
-                    tables.IdentifyMappingTables(fkList, UseCamelCase, PrependSchemaName, CollectionType, true);
+                    reader.ProcessForeignKeys(fkList, tables, UseCamelCase, PrependSchemaName, CollectionType, true, IncludeComments);
+                    tables.IdentifyMappingTables(fkList, UseCamelCase, PrependSchemaName, CollectionType, true, IncludeComments);
 
                     tables.ResetNavigationProperties();
-                    reader.ProcessForeignKeys(fkList, tables, UseCamelCase, PrependSchemaName, CollectionType, false);
-                    tables.IdentifyMappingTables(fkList, UseCamelCase, PrependSchemaName, CollectionType, false);
+                    reader.ProcessForeignKeys(fkList, tables, UseCamelCase, PrependSchemaName, CollectionType, false, IncludeComments);
+                    tables.IdentifyMappingTables(fkList, UseCamelCase, PrependSchemaName, CollectionType, false, IncludeComments);
 
                     // Remove views that only consist of all nullable fields.
                     // I.e. they do not contain any primary key, and therefore cannot be used by EF
@@ -365,9 +366,20 @@ namespace Scratch
             public string Entity;
             public string EntityFk;
 
-            private void SetupEntity()
+            private void SetupEntity(bool includeComments)
             {
-                Entity = string.Format("public {0}{1} {2} {3} // {4}{5}", PropertyType, CheckNullable(this), PropertyNameHumanCase, IsStoreGenerated ? "{ get; internal set; }" : "{ get; set; }", Name, IsPrimaryKey ? " (Primary key)" : string.Empty);
+                string comments;
+                if (includeComments)
+                {
+                    comments = " // " + Name;
+                    if (IsPrimaryKey)
+                        comments += " (Primary key)";
+                }
+                else
+                {
+                    comments = string.Empty;
+                }
+                Entity = string.Format("public {0}{1} {2} {3}{4}", PropertyType, CheckNullable(this), PropertyNameHumanCase, IsStoreGenerated ? "{ get; internal set; }" : "{ get; set; }", comments);
             }
 
             private void SetupConfig()
@@ -404,9 +416,9 @@ namespace Scratch
                                             databaseGeneratedOption);
             }
 
-            public void SetupEntityAndConfig()
+            public void SetupEntityAndConfig(bool includeComments)
             {
-                SetupEntity();
+                SetupEntity(includeComments);
                 SetupConfig();
             }
 
@@ -655,9 +667,9 @@ namespace Scratch
             }
 
             public GeneratedTextTransformation Outer;
-            public abstract Tables ReadSchema(Regex tableFilterExclude, bool useCamelCase, bool prependSchemaName);
+            public abstract Tables ReadSchema(Regex tableFilterExclude, bool useCamelCase, bool prependSchemaName, bool includeComments);
             public abstract List<ForeignKey> ReadForeignKeys();
-            public abstract void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool useCamelCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes);
+            public abstract void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool useCamelCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, bool includeComments);
             public abstract void IdentifyForeignKeys(List<ForeignKey> fkList, Tables tables);
 
             protected void WriteLine(string o)
@@ -1040,7 +1052,7 @@ ORDER BY FK.TABLE_NAME,
             {
             }
 
-            public override Tables ReadSchema(Regex tableFilterExclude, bool useCamelCase, bool prependSchemaName)
+            public override Tables ReadSchema(Regex tableFilterExclude, bool useCamelCase, bool prependSchemaName, bool includeComments)
             {
                 var result = new Tables();
                 if (Cmd == null)
@@ -1110,7 +1122,7 @@ ORDER BY FK.TABLE_NAME,
 
                 foreach (Table tbl in result)
                 {
-                    tbl.Columns.ForEach(x => x.SetupEntityAndConfig());
+                    tbl.Columns.ForEach(x => x.SetupEntityAndConfig(includeComments));
                 }
 
                 return result;
@@ -1144,7 +1156,7 @@ ORDER BY FK.TABLE_NAME,
                 return fkList;
             }
 
-            public override void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool useCamelCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes)
+            public override void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool useCamelCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, bool includeComments)
             {
                 var constraints = fkList.Select(x => x.ConstraintName).Distinct();
                 foreach (var constraint in constraints)
@@ -1174,7 +1186,7 @@ ORDER BY FK.TABLE_NAME,
                     bool fkMakePropNameSingular = (relationship == Relationship.OneToOne);
                     string fkPropName = pkTable.GetUniqueColumnPropertyName(fkTable.NameHumanCase, foreignKey, useCamelCase, checkForFkNameClashes, fkMakePropNameSingular);
 
-                    fkCol.EntityFk = string.Format("public virtual {0} {1} {2} {3}", pkTableHumanCase, pkPropName, "{ get; set; } // ", foreignKey.ConstraintName);
+                    fkCol.EntityFk = string.Format("public virtual {0} {1} {2}{3}", pkTableHumanCase, pkPropName, "{ get; set; }", includeComments ? " // " + foreignKey.ConstraintName : string.Empty);
 
                     string manyToManyMapping;
                     if (foreignKeys.Count > 1)
@@ -1182,8 +1194,8 @@ ORDER BY FK.TABLE_NAME,
                     else
                         manyToManyMapping = string.Format("c => c.{0}", fkCol.PropertyNameHumanCase);
 
-                    fkCol.ConfigFk = string.Format("{0}; // {1}", GetRelationship(relationship, fkCol, pkCol, pkPropName, fkPropName, manyToManyMapping), foreignKey.ConstraintName);
-                    pkTable.AddReverseNavigation(relationship, pkTableHumanCase, fkTable, fkPropName, string.Format("{0}.{1}", fkTable.Name, foreignKey.ConstraintName), collectionType);
+                    fkCol.ConfigFk = string.Format("{0};{1}", GetRelationship(relationship, fkCol, pkCol, pkPropName, fkPropName, manyToManyMapping), includeComments ? " // " + foreignKey.ConstraintName : string.Empty);
+                    pkTable.AddReverseNavigation(relationship, pkTableHumanCase, fkTable, fkPropName, string.Format("{0}.{1}", fkTable.Name, foreignKey.ConstraintName), collectionType, includeComments);
                 }
             }
 
@@ -1522,25 +1534,25 @@ ORDER BY FK.TABLE_NAME,
                 return tableNameHumanCase;
             }
 
-            public void AddReverseNavigation(Relationship relationship, string fkName, Table fkTable, string propName, string constraint, string collectionType)
+            public void AddReverseNavigation(Relationship relationship, string fkName, Table fkTable, string propName, string constraint, string collectionType, bool includeComments)
             {
                 switch (relationship)
                 {
                     case Relationship.OneToOne:
-                        ReverseNavigationProperty.Add(string.Format("public virtual {0} {1} {{ get; set; }} // {2}", fkTable.NameHumanCase, propName, constraint));
+                        ReverseNavigationProperty.Add(string.Format("public virtual {0} {1} {{ get; set; }}{2}", fkTable.NameHumanCase, propName, includeComments ? " // " + constraint : string.Empty));
                         break;
 
                     case Relationship.OneToMany:
-                        ReverseNavigationProperty.Add(string.Format("public virtual {0} {1} {{ get; set; }} // {2}", fkTable.NameHumanCase, propName, constraint));
+                        ReverseNavigationProperty.Add(string.Format("public virtual {0} {1} {{ get; set; }}{2}", fkTable.NameHumanCase, propName, includeComments ? " // " + constraint : string.Empty));
                         break;
 
                     case Relationship.ManyToOne:
-                        ReverseNavigationProperty.Add(string.Format("public virtual ICollection<{0}> {1} {{ get; set; }} // {2}", fkTable.NameHumanCase, propName, constraint));
+                        ReverseNavigationProperty.Add(string.Format("public virtual ICollection<{0}> {1} {{ get; set; }}{2}", fkTable.NameHumanCase, propName, includeComments ? " // " + constraint : string.Empty));
                         ReverseNavigationCtor.Add(string.Format("{0} = new {1}<{2}>();", propName, collectionType, fkTable.NameHumanCase));
                         break;
 
                     case Relationship.ManyToMany:
-                        ReverseNavigationProperty.Add(string.Format("public virtual ICollection<{0}> {1} {{ get; set; }} // Many to many mapping", fkTable.NameHumanCase, propName));
+                        ReverseNavigationProperty.Add(string.Format("public virtual ICollection<{0}> {1} {{ get; set; }}{2}", fkTable.NameHumanCase, propName, includeComments ? " // Many to many mapping" : string.Empty));
                         ReverseNavigationCtor.Add(string.Format("{0} = new {1}<{2}>();", propName, collectionType, fkTable.NameHumanCase));
                         break;
 
@@ -1575,7 +1587,7 @@ ORDER BY FK.TABLE_NAME,
                 }
             }
 
-            public void IdentifyMappingTable(List<ForeignKey> fkList, Tables tables, bool useCamelCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes)
+            public void IdentifyMappingTable(List<ForeignKey> fkList, Tables tables, bool useCamelCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, bool includeComments)
             {
                 IsMapping = false;
 
@@ -1616,10 +1628,10 @@ ORDER BY FK.TABLE_NAME,
 
                 IsMapping = true;
                 rightTable.AddReverseNavigation(Relationship.ManyToMany, rightTable.NameHumanCase, leftTable,
-                                               rightTable.GetUniqueColumnPropertyName(leftTable.NameHumanCase, left, useCamelCase, checkForFkNameClashes, false), null, collectionType);
+                                               rightTable.GetUniqueColumnPropertyName(leftTable.NameHumanCase, left, useCamelCase, checkForFkNameClashes, false), null, collectionType, includeComments);
 
                 leftTable.AddReverseNavigation(Relationship.ManyToMany, leftTable.NameHumanCase, rightTable,
-                                                leftTable.GetUniqueColumnPropertyName(rightTable.NameHumanCase, right, useCamelCase, checkForFkNameClashes, false), null, collectionType);
+                                                leftTable.GetUniqueColumnPropertyName(rightTable.NameHumanCase, right, useCamelCase, checkForFkNameClashes, false), null, collectionType, includeComments);
             }
         }
 
@@ -1640,11 +1652,11 @@ ORDER BY FK.TABLE_NAME,
                 }
             }
 
-            public void IdentifyMappingTables(List<ForeignKey> fkList, bool useCamelCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes)
+            public void IdentifyMappingTables(List<ForeignKey> fkList, bool useCamelCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, bool includeComments)
             {
                 foreach (var tbl in this.Where(x => x.HasForeignKey))
                 {
-                    tbl.IdentifyMappingTable(fkList, this, useCamelCase, prependSchemaName, collectionType, checkForFkNameClashes);
+                    tbl.IdentifyMappingTable(fkList, this, useCamelCase, prependSchemaName, collectionType, checkForFkNameClashes, includeComments);
                 }
             }
 

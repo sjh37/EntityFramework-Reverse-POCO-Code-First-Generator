@@ -13,6 +13,7 @@
     MakeClassesPartial = false;
     GenerateSeparateFiles = false;
     UseCamelCase = true;    // This will rename the tables & fields to use CamelCase. If false table & field names will be left alone.
+    IncludeComments = true; // Adds comments the generated code
     IncludeViews = true;
     DisableGeographyTypes = false; // Turns off use of System.Data.Entity.Spatial.DbGeography and System.Data.Entity.Spatial.DbGeometry as OData doesn't support entities with geometry/geography types.
     CollectionType = "List";  // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example

@@ -73,7 +73,10 @@ namespace <#= Namespace #>
 foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
 {
 #>
-        IDbSet<<#=tbl.NameHumanCase#>> <#=Inflector.MakePlural(tbl.NameHumanCase)#> { get; set; } // <#=tbl.Name#>
+        IDbSet<<#=tbl.NameHumanCase#>> <#=Inflector.MakePlural(tbl.NameHumanCase)#> { get; set; }<#if(IncludeComments){#> // <#=tbl.Name#>
+<# } else { #>
+
+<# } #>
 <# } #>
 
         int SaveChanges();
@@ -92,7 +95,10 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.Na
 foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
 {
 #>
-        public IDbSet<<#=tbl.NameHumanCase#>> <#=Inflector.MakePlural(tbl.NameHumanCase)#> { get; set; } // <#=tbl.Name#>
+        public IDbSet<<#=tbl.NameHumanCase#>> <#=Inflector.MakePlural(tbl.NameHumanCase)#> { get; set; }<#if(IncludeComments){#> // <#=tbl.Name#>
+<# } else { #>
+
+<# } #>
 <# } #>
 
         static <#=DbContextName#>()
@@ -162,7 +168,8 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.Na
 {
 #>
 <# fileManager.StartNewFile(tbl.NameHumanCase + FileExtension); #>
-    // <#=tbl.Name#>
+<#if(IncludeComments){#>    // <#=tbl.Name#>
+<# } #>
 <# if(AddWcfDataAttributes) { #>    [DataContract<#=ExtraWcfDataContractAttributes#>]
 <# } 
     WritePocoClassAttributes(tbl);#>
@@ -184,7 +191,8 @@ if(tbl.ReverseNavigationProperty.Count() > 0)
 {
 #>
 
-        // Reverse navigation
+<#if(IncludeComments){#>        // Reverse navigation
+<# } #>
 <#
 foreach(string s in tbl.ReverseNavigationProperty.OrderBy(x => x))
 {
@@ -193,7 +201,8 @@ foreach(string s in tbl.ReverseNavigationProperty.OrderBy(x => x))
 <# } } #>
 <# if(tbl.HasForeignKey) { #>
 
-        // Foreign keys
+<#if(IncludeComments){#>        // Foreign keys
+<# } #>
 <#
 foreach(Column col in from c in tbl.Columns.OrderBy(x => x.EntityFk) where c.EntityFk != null select c)
 {
@@ -239,7 +248,8 @@ foreach(Table tbl in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCas
 {
 #>
 <# fileManager.StartNewFile(tbl.NameHumanCase + ConfigurationClassName + FileExtension); #>
-    // <#=tbl.Name#>
+<#if(IncludeComments){#>    // <#=tbl.Name#>
+<# } #>
     internal <# if(MakeClassesPartial) { #>partial <# } #>class <#=tbl.NameHumanCase + ConfigurationClassName#> : EntityTypeConfiguration<<#=tbl.NameHumanCase#>>
     {
         public <#=tbl.NameHumanCase + ConfigurationClassName#>(string schema = "<#=tbl.Schema#>")
@@ -259,7 +269,8 @@ foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal))
 <# } #>
 <# if(tbl.HasForeignKey) { #>
 
-            // Foreign keys
+<#if(IncludeComments){#>            // Foreign keys
+<# } #>
 <#
 foreach(Column col in from c in tbl.Columns.OrderBy(x => x.Ordinal) where c.ConfigFk != null select c)
 {
