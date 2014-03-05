@@ -553,6 +553,8 @@ namespace Scratch
                     case "guid":
                         if (Default.ToLower() == "newid()" || Default.ToLower() == "newsequentialid()")
                             Default = "System.Guid.NewGuid()";
+                        else
+                            Default = string.Format("Guid.Parse(\"{0}\")", Default);
                         break;
                 }
             }
