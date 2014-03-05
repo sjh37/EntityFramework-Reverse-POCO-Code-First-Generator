@@ -300,7 +300,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public virtual ICollection<Territory> Territories { get; set; } // Many to many mapping
 
         // Foreign keys
-        public virtual Employee Employee_ReportsTo { get; set; } //  FK_Employees_Employees
+        public virtual Employee Employee_ReportsTo { get; set; } // FK_Employees_Employees
 
         public Employee()
         {
@@ -363,9 +363,9 @@ namespace EntityFramework_Reverse_POCO_Generator
         public virtual ICollection<OrderDetail> OrderDetails { get; set; } // Many to many mapping
 
         // Foreign keys
-        public virtual Customer Customer { get; set; } //  FK_Orders_Customers
-        public virtual Employee Employee { get; set; } //  FK_Orders_Employees
-        public virtual Shipper Shipper { get; set; } //  FK_Orders_Shippers
+        public virtual Customer Customer { get; set; } // FK_Orders_Customers
+        public virtual Employee Employee { get; set; } // FK_Orders_Employees
+        public virtual Shipper Shipper { get; set; } // FK_Orders_Shippers
 
         public Order()
         {
@@ -384,8 +384,8 @@ namespace EntityFramework_Reverse_POCO_Generator
         public float Discount { get; set; } // Discount
 
         // Foreign keys
-        public virtual Order Order { get; set; } //  FK_Order_Details_Orders
-        public virtual Product Product { get; set; } //  FK_Order_Details_Products
+        public virtual Order Order { get; set; } // FK_Order_Details_Orders
+        public virtual Product Product { get; set; } // FK_Order_Details_Products
 
         public OrderDetail()
         {
@@ -457,8 +457,8 @@ namespace EntityFramework_Reverse_POCO_Generator
         public virtual ICollection<OrderDetail> OrderDetails { get; set; } // Many to many mapping
 
         // Foreign keys
-        public virtual Category Category { get; set; } //  FK_Products_Categories
-        public virtual Supplier Supplier { get; set; } //  FK_Products_Suppliers
+        public virtual Category Category { get; set; } // FK_Products_Categories
+        public virtual Supplier Supplier { get; set; } // FK_Products_Suppliers
 
         public Product()
         {
@@ -597,7 +597,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public virtual ICollection<Employee> Employees { get; set; } // Many to many mapping
 
         // Foreign keys
-        public virtual Region Region { get; set; } //  FK_Territories_Region
+        public virtual Region Region { get; set; } // FK_Territories_Region
 
         public Territory()
         {
