@@ -1221,8 +1221,9 @@ ORDER BY FK.TABLE_NAME,
                                     HasNullableColumns = false
                                 };
                                 table.CleanName = CleanUp(table.Name);
-                                table.ClassName = useCamelCase ? Inflector.MakeSingular(table.CleanName) : table.CleanName;
-                                table.NameHumanCase = (useCamelCase ? Inflector.ToTitleCase(Inflector.MakeSingular(table.Name)) : table.Name).Replace(" ", "").Replace("$", "");
+                                table.ClassName = Inflector.MakeSingular(table.CleanName);
+                                string singular = Inflector.MakeSingular(table.Name);
+                                table.NameHumanCase = (useCamelCase ? Inflector.ToTitleCase(singular) : singular).Replace(" ", "").Replace("$", "");
                                 if((string.Compare(table.Schema, "dbo", StringComparison.OrdinalIgnoreCase) != 0) && prependSchemaName)
                                     table.NameHumanCase = table.Schema + "_" + table.NameHumanCase;
 
@@ -1544,7 +1545,8 @@ ORDER BY FK.TABLE_NAME,
 
             public string PkTableHumanCase(bool useCamelCase, bool prependSchemaName)
             {
-                string pkTableHumanCase = (useCamelCase ? Inflector.ToTitleCase(Inflector.MakeSingular(PkTableName)) : PkTableName).Replace(" ", "").Replace("$", "");
+                string singular = Inflector.MakeSingular(PkTableName);
+                string pkTableHumanCase = (useCamelCase ? Inflector.ToTitleCase(singular) : singular).Replace(" ", "").Replace("$", "");
                 if (string.Compare(PkSchema, "dbo", StringComparison.OrdinalIgnoreCase) != 0 && prependSchemaName)
                     pkTableHumanCase = PkSchema + "_" + pkTableHumanCase;
                 return pkTableHumanCase;
