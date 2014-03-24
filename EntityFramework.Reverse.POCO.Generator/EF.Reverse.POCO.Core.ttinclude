@@ -1317,8 +1317,8 @@ ORDER BY FK.TABLE_NAME,
                     if (pkTable == null || pkTable.IsMapping)
                         continue;
 
-                    var fkCols = foreignKeys.Select(x => fkTable.Columns.Find(n => n.PropertyName == x.FkColumn)).Where(x => x != null).ToList();
-                    var pkCols = foreignKeys.Select(x => pkTable.Columns.Find(n => n.PropertyName == x.PkColumn)).Where(x => x != null).ToList();
+                    var fkCols = foreignKeys.Select(x => fkTable.Columns.Find(n => n.PropertyName == x.FkColumn)).Where(x => x != null).OrderBy(o => o.Ordinal).ToList();
+                    var pkCols = foreignKeys.Select(x => pkTable.Columns.Find(n => n.PropertyName == x.PkColumn)).Where(x => x != null).OrderBy(o => o.Ordinal).ToList();
 
                     var fkCol = fkCols.First();
                     var pkCol = pkCols.First();
