@@ -195,9 +195,9 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         public virtual ICollection<OrderDetail> OrderDetails { get; set; } // Many to many mapping
 
         // Foreign keys
-        public virtual Customer Customer { get; set; } //  Orders_FK00
-        public virtual Employee Employee { get; set; } //  Orders_FK02
-        public virtual Shipper Shipper { get; set; } //  Orders_FK01
+        public virtual Customer Customer { get; set; } // Orders_FK00
+        public virtual Employee Employee { get; set; } // Orders_FK02
+        public virtual Shipper Shipper { get; set; } // Orders_FK01
 
         public Order()
         {
@@ -215,8 +215,8 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         public float Discount { get; set; } // Discount
 
         // Foreign keys
-        public virtual Order Order { get; set; } //  OrderDetails_FK01
-        public virtual Product Product { get; set; } //  OrderDetails_FK00
+        public virtual Order Order { get; set; } // OrderDetails_FK01
+        public virtual Product Product { get; set; } // OrderDetails_FK00
     }
 
     // Products
@@ -238,8 +238,8 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         public virtual ICollection<OrderDetail> OrderDetails { get; set; } // Many to many mapping
 
         // Foreign keys
-        public virtual Category Category { get; set; } //  Products_FK01
-        public virtual Supplier Supplier { get; set; } //  Products_FK00
+        public virtual Category Category { get; set; } // Products_FK01
+        public virtual Supplier Supplier { get; set; } // Products_FK00
 
         public Product()
         {
