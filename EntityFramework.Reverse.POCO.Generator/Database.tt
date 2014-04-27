@@ -62,6 +62,12 @@
     TableFilterExclude = null;
     TableFilterInclude = null;
 
+    // Table renaming *********************************************************************************************************************
+    // Use the following regex to rename tables such as tblOrders to Orders, AB_Shipments to Shipments, etc.
+    // TableRenameFilter = new Regex("^tbl|^AB_");
+    TableRenameFilter = null;
+    TableRenameReplacement = "";
+
 
     // WCF ********************************************************************************************************************************
     // This is only intended as a helper, to get you started creating WCF contracts, and to save a lot of typing.
