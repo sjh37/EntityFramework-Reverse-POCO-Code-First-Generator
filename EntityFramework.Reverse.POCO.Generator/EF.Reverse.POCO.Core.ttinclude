@@ -49,6 +49,8 @@
         bool PrependSchemaName = true;
         Regex TableFilterExclude = null;
         Regex TableFilterInclude = null;
+        Regex TableRenameFilter = null;
+        string TableRenameReplacement = "";
         string[] ConfigFilenameSearchOrder = null;
         private string _connectionString = "";
         private string _providerName = "";
@@ -389,7 +391,7 @@
                        PrependSchemaName = false;
 
                     var reader = new SqlServerSchemaReader(conn, factory) { Outer = this };
-                    var tables = reader.ReadSchema(TableFilterExclude, UseCamelCase, PrependSchemaName, IncludeComments);
+                    var tables = reader.ReadSchema(TableFilterExclude, UseCamelCase, PrependSchemaName, IncludeComments, TableRenameFilter, TableRenameReplacement);
 
                     // Remove unrequired tables/views
                     for(int i = tables.Count - 1; i >= 0; i--)
@@ -416,7 +418,7 @@
                     }
 
                     // Must be done in this order
-                    var fkList = reader.ReadForeignKeys();
+                    var fkList = reader.ReadForeignKeys(TableRenameFilter, TableRenameReplacement);
                     reader.IdentifyForeignKeys(fkList, tables);
                     tables.SetPrimaryKeys();
                     reader.ProcessForeignKeys(fkList, tables, UseCamelCase, PrependSchemaName, CollectionType, true, IncludeComments);
@@ -811,8 +813,8 @@
             }
 
             public GeneratedTextTransformation Outer;
-            public abstract Tables ReadSchema(Regex tableFilterExclude, bool useCamelCase, bool prependSchemaName, bool includeComments);
-            public abstract List<ForeignKey> ReadForeignKeys();
+            public abstract Tables ReadSchema(Regex tableFilterExclude, bool useCamelCase, bool prependSchemaName, bool includeComments, Regex tableRenameFilter, string tableRenameReplacement);
+            public abstract List<ForeignKey> ReadForeignKeys(Regex tableRenameFilter, string tableRenameReplacement);
             public abstract void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool useCamelCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, bool includeComments);
             public abstract void IdentifyForeignKeys(List<ForeignKey> fkList, Tables tables);
 
@@ -1196,7 +1198,7 @@ ORDER BY FK.TABLE_NAME,
             {
             }
 
-            public override Tables ReadSchema(Regex tableFilterExclude, bool useCamelCase, bool prependSchemaName, bool includeComments)
+            public override Tables ReadSchema(Regex tableFilterExclude, bool useCamelCase, bool prependSchemaName, bool includeComments, Regex tableRenameFilter, string tableRenameReplacement)
             {
                 var result = new Tables();
                 if(Cmd == null)
@@ -1234,9 +1236,13 @@ ORDER BY FK.TABLE_NAME,
                                     HasForeignKey = false,
                                     HasNullableColumns = false
                                 };
-                                table.CleanName = CleanUp(table.Name);
+                                
+                                if(tableRenameFilter != null)
+                                    tableName = tableRenameFilter.Replace(tableName, tableRenameReplacement);
+
+                                table.CleanName = CleanUp(tableName);
                                 table.ClassName = Inflector.MakeSingular(table.CleanName);
-                                string singular = Inflector.MakeSingular(table.Name);
+                                string singular = Inflector.MakeSingular(tableName);
                                 table.NameHumanCase = (useCamelCase ? Inflector.ToTitleCase(singular) : singular).Replace(" ", "").Replace("$", "");
                                 if((string.Compare(table.Schema, "dbo", StringComparison.OrdinalIgnoreCase) != 0) && prependSchemaName)
                                     table.NameHumanCase = table.Schema + "_" + table.NameHumanCase;
@@ -1272,7 +1278,7 @@ ORDER BY FK.TABLE_NAME,
                 return result;
             }
 
-            public override List<ForeignKey> ReadForeignKeys()
+            public override List<ForeignKey> ReadForeignKeys(Regex tableRenameFilter, string tableRenameReplacement)
             {
                 var fkList = new List<ForeignKey>();
                 if(Cmd == null)
@@ -1293,7 +1299,20 @@ ORDER BY FK.TABLE_NAME,
                         string fkColumn = rdr["FK_Column"].ToString().Replace(" ", "");
                         string pkColumn = rdr["PK_Column"].ToString().Replace(" ", "");
                         string constraintName = rdr["Constraint_Name"].ToString().Replace(" ", "");
-                        fkList.Add(new ForeignKey(fkTableName, fkSchema, pkTableName, pkSchema, fkColumn, pkColumn, constraintName));
+                        
+                        string fkTableNameFiltered, pkTableNameFiltered;
+                        if (tableRenameFilter != null)
+                        {
+                            fkTableNameFiltered = tableRenameFilter.Replace(fkTableName, tableRenameReplacement);
+                            pkTableNameFiltered = tableRenameFilter.Replace(pkTableName, tableRenameReplacement);
+                        }
+                        else
+                        {
+                            fkTableNameFiltered = fkTableName;
+                            pkTableNameFiltered = pkTableName;
+                        }
+
+                        fkList.Add(new ForeignKey(fkTableName, fkSchema, pkTableName, pkSchema, fkColumn, pkColumn, constraintName, fkTableNameFiltered, pkTableNameFiltered));
                     }
                 }
                 
@@ -1539,14 +1558,16 @@ ORDER BY FK.TABLE_NAME,
         public class ForeignKey
         {
             public string FkTableName { get; private set; }
+            public string FkTableNameFiltered { get; private set; }
             public string FkSchema { get; private set; }
             public string PkTableName { get; private set; }
+            public string PkTableNameFiltered { get; private set; }
             public string PkSchema { get; private set; }
             public string FkColumn { get; private set; }
             public string PkColumn { get; private set; }
             public string ConstraintName { get; private set; }
 
-            public ForeignKey(string fkTableName, string fkSchema, string pkTableName, string pkSchema, string fkColumn, string pkColumn, string constraintName)
+            public ForeignKey(string fkTableName, string fkSchema, string pkTableName, string pkSchema, string fkColumn, string pkColumn, string constraintName, string fkTableNameFiltered, string pkTableNameFiltered)
             {
                 ConstraintName = constraintName;
                 PkColumn = pkColumn;
@@ -1555,11 +1576,13 @@ ORDER BY FK.TABLE_NAME,
                 PkTableName = pkTableName;
                 FkSchema = fkSchema;
                 FkTableName = fkTableName;
+                FkTableNameFiltered = fkTableNameFiltered;
+                PkTableNameFiltered = pkTableNameFiltered;
             }
 
             public string PkTableHumanCase(bool useCamelCase, bool prependSchemaName)
             {
-                string singular = Inflector.MakeSingular(PkTableName);
+                string singular = Inflector.MakeSingular(PkTableNameFiltered);
                 string pkTableHumanCase = (useCamelCase ? Inflector.ToTitleCase(singular) : singular).Replace(" ", "").Replace("$", "");
                 if (string.Compare(PkSchema, "dbo", StringComparison.OrdinalIgnoreCase) != 0 && prependSchemaName)
                     pkTableHumanCase = PkSchema + "_" + pkTableHumanCase;
