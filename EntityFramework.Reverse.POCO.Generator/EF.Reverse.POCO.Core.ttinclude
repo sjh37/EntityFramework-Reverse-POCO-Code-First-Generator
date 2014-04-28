@@ -713,7 +713,7 @@
         /// </summary>
         public static class Inflector
         {
-            static readonly PluralizationService PluralizationService = PluralizationService.CreateService(new System.Globalization.CultureInfo("en-US"));
+            static public PluralizationService PluralizationService = null;
 
             /// <summary>
             /// Makes the plural.
@@ -722,7 +722,7 @@
             /// <returns></returns>
             public static string MakePlural(string word)
             {
-                return PluralizationService.Pluralize(word);
+                return (PluralizationService == null) ? word : PluralizationService.Pluralize(word);
             }
 
             /// <summary>
@@ -732,7 +732,7 @@
             /// <returns></returns>
             public static string MakeSingular(string word)
             {
-                return PluralizationService.Singularize(word);
+                return (PluralizationService == null) ? word : PluralizationService.Singularize(word);
             }
 
             /// <summary>

@@ -20,6 +20,18 @@
     CollectionTypeNamespace = ""; // "System.Collections.ObjectModel" is required if setting the CollectionType = "ObservableCollection"
     
 
+    // Pluralization **********************************************************************************************************************
+    // To turn off pluralization, use:
+    //      Inflector.PluralizationService = null;
+    // Default pluralization, use:
+    //      Inflector.PluralizationService = PluralizationService.CreateService(new CultureInfo("en"));
+    // For Spanish pluralization:
+    //      Install EF6.Contrib NuGet Package. Run the following command in the Package Manager Console: Install-Package EF6.Contrib 
+    //      Source code: http://ef6contrib.codeplex.com/SourceControl/latest#src/EntityFramework.Contrib/Infrastructure/Pluralization/
+    //      Inflector.PluralizationService = SpanishPluralizationService();
+    Inflector.PluralizationService = PluralizationService.CreateService(new CultureInfo("en"));
+    
+    
     // Elements to generate ***************************************************************************************************************
     // Add the elements that should be generated when the template is executed.
     // Multiple projects can now be used that separate the different concerns.
