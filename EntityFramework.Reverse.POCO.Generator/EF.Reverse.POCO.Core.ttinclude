@@ -3,22 +3,14 @@
 // v2.4.1
 #>
 <#@ template hostspecific="true" language="C#" #>
-<#@ assembly name="EnvDTE" #>
-<#@ assembly name="System.Core" #>
-<#@ assembly name="System.Data" #>
-<#@ assembly name="System.Xml" #>
+<#@ include file="EF6.Utility.CS.ttinclude"#>
 <#@ assembly name="System.Configuration" #>
 <#@ assembly name="System.Windows.Forms" #>
-<#@ include file="EF.Utility.CS.ttinclude"#>
-<#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="System.Data" #>
 <#@ import namespace="System.Data.SqlClient" #>
 <#@ import namespace="System.Data.Common" #>
-<#@ import namespace="System.Data.Entity.Design.PluralizationServices" #>
+<#@ import namespace="System.Data.Entity.Infrastructure.Pluralization" #>
 <#@ import namespace="System.Diagnostics" #>
-<#@ import namespace="System.Globalization" #>
-<#@ import namespace="System.IO" #>
-<#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Text.RegularExpressions" #>
 <#@ import namespace="System.Configuration" #>
@@ -137,6 +129,14 @@
             get
             {
                 return _providerName;
+            }
+        }
+
+        public static void ArgumentNotNull<T>(T arg, string name) where T : class
+        {
+            if (arg == null)
+            {
+                throw new ArgumentNullException(name);
             }
         }
 
@@ -713,7 +713,7 @@
         /// </summary>
         public static class Inflector
         {
-            static public PluralizationService PluralizationService = null;
+            static public IPluralizationService PluralizationService = null;
 
             /// <summary>
             /// Makes the plural.
@@ -722,7 +722,14 @@
             /// <returns></returns>
             public static string MakePlural(string word)
             {
-                return (PluralizationService == null) ? word : PluralizationService.Pluralize(word);
+                try
+                {
+                    return (PluralizationService == null) ? word : PluralizationService.Pluralize(word);
+                }
+                catch (Exception)
+                {
+                    return word;
+                }
             }
 
             /// <summary>
@@ -732,7 +739,14 @@
             /// <returns></returns>
             public static string MakeSingular(string word)
             {
-                return (PluralizationService == null) ? word : PluralizationService.Singularize(word);
+                try
+                {
+                    return (PluralizationService == null) ? word : PluralizationService.Singularize(word);
+                }
+                catch (Exception)
+                {
+                    return word;
+                }
             }
 
             /// <summary>

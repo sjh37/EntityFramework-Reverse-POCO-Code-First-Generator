@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Data.Entity.Design.PluralizationServices;
+using System.Data.Entity.Infrastructure.Pluralization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -14,6 +14,10 @@ namespace Scratch
     {
         static void Main()
         {
+            GeneratedTextTransformation.Inflector.PluralizationService = new SpanishPluralizationService();
+            GeneratedTextTransformation.Inflector.PluralizationService = null;
+            GeneratedTextTransformation.Inflector.PluralizationService = new EnglishPluralizationService();
+            
             using (var sw = new StreamWriter(@"c:\fred.txt"))
             {
                 var x = new GeneratedTextTransformation();
@@ -571,7 +575,7 @@ namespace Scratch
         /// </summary>
         public static class Inflector
         {
-            static readonly PluralizationService PluralizationService = PluralizationService.CreateService(new System.Globalization.CultureInfo("en-US"));
+            static public IPluralizationService PluralizationService = null;
 
             /// <summary>
             /// Makes the plural.
@@ -580,7 +584,14 @@ namespace Scratch
             /// <returns></returns>
             public static string MakePlural(string word)
             {
-                return PluralizationService.Pluralize(word);
+                try
+                {
+                    return (PluralizationService == null) ? word : PluralizationService.Pluralize(word);
+                }
+                catch (Exception)
+                {
+                    return word;
+                }
             }
 
             /// <summary>
@@ -590,7 +601,14 @@ namespace Scratch
             /// <returns></returns>
             public static string MakeSingular(string word)
             {
-                return PluralizationService.Singularize(word);
+                try
+                {
+                    return (PluralizationService == null) ? word : PluralizationService.Singularize(word);
+                }
+                catch (Exception)
+                {
+                    return word;
+                }
             }
 
             /// <summary>
@@ -1094,8 +1112,8 @@ ORDER BY FK.TABLE_NAME,
                                     HasForeignKey = false,
                                     HasNullableColumns = false
                                 };
-                                
-                                if(tableRenameFilter != null)
+
+                                if (tableRenameFilter != null)
                                     tableName = tableRenameFilter.Replace(tableName, tableRenameReplacement);
 
                                 table.CleanName = CleanUp(tableName);
@@ -1157,7 +1175,7 @@ ORDER BY FK.TABLE_NAME,
                         string fkColumn = rdr["FK_Column"].ToString().Replace(" ", "");
                         string pkColumn = rdr["PK_Column"].ToString().Replace(" ", "");
                         string constraintName = rdr["Constraint_Name"].ToString().Replace(" ", "");
-                        
+
                         string fkTableNameFiltered, pkTableNameFiltered;
                         if (tableRenameFilter != null)
                         {

@@ -13,12 +13,26 @@
     MakeClassesPartial = false;
     GenerateSeparateFiles = false;
     UseCamelCase = true;    // This will rename the tables & fields to use CamelCase. If false table & field names will be left alone.
+    IncludeComments = true; // Adds comments the generated code
     IncludeViews = true;
     DisableGeographyTypes = false; // Turns off use of System.Data.Entity.Spatial.DbGeography and System.Data.Entity.Spatial.DbGeometry as OData doesn't support entities with geometry/geography types.
     CollectionType = "List";  // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example
     CollectionTypeNamespace = ""; // "System.Collections.ObjectModel" is required if setting the CollectionType = "ObservableCollection"
     
 
+    // Pluralization **********************************************************************************************************************
+    // To turn off pluralization, use:
+    //      Inflector.PluralizationService = null;
+    // Default pluralization, use:
+    //      Inflector.PluralizationService = new EnglishPluralizationService();
+    // For Spanish pluralization:
+    //      1. Intall the "EF6.Contrib" Nuget Package.
+    //      2. Add the following to the top of this file and adjust path, and remove the space between the angle bracket and # at the beginning and end.
+    //         < #@ assembly name="your full path to \EntityFramework.Contrib.dll" # >
+    //      3. Change the line below to: Inflector.PluralizationService = new SpanishPluralizationService();
+    Inflector.PluralizationService = new EnglishPluralizationService();
+    
+    
     // Elements to generate ***************************************************************************************************************
     // Add the elements that should be generated when the template is executed.
     // Multiple projects can now be used that separate the different concerns.
@@ -60,6 +74,12 @@
     //              TableFilterInclude = new Regex("^table_name1$|^table_name2$|etc");
     TableFilterExclude = null;
     TableFilterInclude = null;
+
+    // Table renaming *********************************************************************************************************************
+    // Use the following regex to rename tables such as tblOrders to Orders, AB_Shipments to Shipments, etc.
+    // TableRenameFilter = new Regex("^tbl|^AB_");
+    TableRenameFilter = null;
+    TableRenameReplacement = "";
 
 
     // WCF ********************************************************************************************************************************

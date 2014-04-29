@@ -24,12 +24,13 @@
     // To turn off pluralization, use:
     //      Inflector.PluralizationService = null;
     // Default pluralization, use:
-    //      Inflector.PluralizationService = PluralizationService.CreateService(new CultureInfo("en"));
+    //      Inflector.PluralizationService = new EnglishPluralizationService();
     // For Spanish pluralization:
-    //      Install EF6.Contrib NuGet Package. Run the following command in the Package Manager Console: Install-Package EF6.Contrib 
-    //      Source code: http://ef6contrib.codeplex.com/SourceControl/latest#src/EntityFramework.Contrib/Infrastructure/Pluralization/
-    //      Inflector.PluralizationService = SpanishPluralizationService();
-    Inflector.PluralizationService = PluralizationService.CreateService(new CultureInfo("en"));
+    //      1. Intall the "EF6.Contrib" Nuget Package.
+    //      2. Add the following to the top of this file and adjust path, and remove the space between the angle bracket and # at the beginning and end.
+    //         < #@ assembly name="your full path to \EntityFramework.Contrib.dll" # >
+    //      3. Change the line below to: Inflector.PluralizationService = new SpanishPluralizationService();
+    Inflector.PluralizationService = new EnglishPluralizationService();
     
     
     // Elements to generate ***************************************************************************************************************
