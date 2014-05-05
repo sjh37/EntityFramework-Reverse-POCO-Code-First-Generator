@@ -19,7 +19,7 @@
     CollectionType = "List";  // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example
     CollectionTypeNamespace = ""; // "System.Collections.ObjectModel" is required if setting the CollectionType = "ObservableCollection"
     
-	// Migrations *************************************************************************************************************************
+	// Migrations ************************************************************************************************************************
 	MigrationConfigurationFileName = "MyDbContextDBMigrationConfiguration"; //empty to not create
 	MigrationStrategy = "MigrateDatabaseToLatestVersion"; // MigrateDatabaseToLatestVersion, CreateDatabaseIfNotExists or DropCreateDatabaseIfModelChanges
 	AutomaticMigrationsEnabled = true;
