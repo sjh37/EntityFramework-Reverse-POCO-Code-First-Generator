@@ -48,6 +48,11 @@
         private string _providerName = "";
         private string _configFilePath = "";
 
+		string MigrationConfigurationFileName = null;
+		string MigrationStrategy = "MigrateDatabaseToLatestVersion";
+		bool AutomaticMigrationsEnabled = true;
+		bool AutomaticMigrationDataLossAllowed = true;
+
         // Settings to allow selective code generation
         [Flags]
         private enum Elements
