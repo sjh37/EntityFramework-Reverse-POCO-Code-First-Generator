@@ -58,6 +58,9 @@ using DatabaseGeneratedOption = System.ComponentModel.DataAnnotations.Schema.Dat
 <#if (!string.IsNullOrEmpty(CollectionTypeNamespace)){
         #>using <#=CollectionTypeNamespace#>;
 <#}#>
+<#if (!string.IsNullOrEmpty(MigrationConfigurationFileName)){
+        #>using System.Data.Entity.Migrations;
+<#}#>
 
 namespace <#= Namespace #>
 {
@@ -83,6 +86,38 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.Na
     }
 
 <# }
+ if(!string.IsNullOrWhiteSpace(MigrationConfigurationFileName)) {
+       fileManager.StartNewFile(MigrationConfigurationFileName + FileExtension);  #>
+<# if(!GenerateSeparateFiles) { #>
+    // ************************************************************************
+    // Db Migration Configuration
+<# } #>
+    public <# if(MakeClassesPartial) { #>partial <# } #>class <#=MigrationConfigurationFileName#> : DbMigrationsConfiguration<<#=DbContextName#>>
+    {
+		public <#=MigrationConfigurationFileName#>()
+        {
+            AutomaticMigrationsEnabled = <# if (AutomaticMigrationsEnabled) { #>true<# } else { #>false<# } #>;
+            AutomaticMigrationDataLossAllowed = <# if (AutomaticMigrationDataLossAllowed) { #>true<# } else { #>false<# } #>;
+        }
+
+		//protected override void Seed(<#=DbContextName#> context)
+        //{
+           
+            //  This method will be called after migrating to the latest version.
+
+            //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
+            //  to avoid creating duplicate seed data. E.g.
+            //
+            //    context.People.AddOrUpdate(
+            //      p => p.FullName,
+            //      new Person { FullName = "Andrew Peters" },
+            //      new Person { FullName = "Brice Lambson" },
+            //      new Person { FullName = "Rowan Miller" }
+            //    );
+            //
+        //}
+	}
+<# } 
     if(ElementsToGenerate.HasFlag(Elements.Context)){ 
     fileManager.StartNewFile(DbContextName + FileExtension); #>
 <# if(!GenerateSeparateFiles) { #>
@@ -103,7 +138,11 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.Na
 
         static <#=DbContextName#>()
         {
+		<#if(string.IsNullOrWhiteSpace(MigrationConfigurationFileName)) {#>
             Database.SetInitializer<<#=DbContextName#>>(null);
+			<#} else {#>
+            Database.SetInitializer<<#=DbContextName#>>(new <#=MigrationStrategy#><<#=DbContextName#>, <#=MigrationConfigurationFileName#>>());
+			<#}#>
         }
 
         public <#=DbContextName#>()
