@@ -53,7 +53,7 @@ using DatabaseGeneratedOption = System.ComponentModel.DataAnnotations.Schema.Dat
 //using DatabaseGeneratedOption = System.ComponentModel.DataAnnotations.DatabaseGeneratedOption;
 <#              break;
         }
-    }    
+    }     
 #>
 <#if (!string.IsNullOrEmpty(CollectionTypeNamespace)){
         #>using <#=CollectionTypeNamespace#>;
