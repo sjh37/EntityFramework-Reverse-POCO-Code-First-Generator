@@ -17,7 +17,7 @@ namespace Scratch
             GeneratedTextTransformation.Inflector.PluralizationService = new SpanishPluralizationService();
             GeneratedTextTransformation.Inflector.PluralizationService = null;
             GeneratedTextTransformation.Inflector.PluralizationService = new EnglishPluralizationService();
-            
+
             using (var sw = new StreamWriter(@"c:\fred.txt"))
             {
                 var x = new GeneratedTextTransformation();
@@ -254,6 +254,7 @@ namespace Scratch
 
                     var reader = new SqlServerSchemaReader(conn, factory) { Outer = this };
                     var tables = reader.ReadSchema(TableFilterExclude, UseCamelCase, PrependSchemaName, IncludeComments, TableRenameFilter, TableRenameReplacement);
+                    tables.SetPrimaryKeys();
 
                     // Remove unrequired tables/views
                     for (int i = tables.Count - 1; i >= 0; i--)
@@ -282,7 +283,6 @@ namespace Scratch
                     // Must be done in this order
                     var fkList = reader.ReadForeignKeys(TableRenameFilter, TableRenameReplacement);
                     reader.IdentifyForeignKeys(fkList, tables);
-                    tables.SetPrimaryKeys();
                     reader.ProcessForeignKeys(fkList, tables, UseCamelCase, PrependSchemaName, CollectionType, true, IncludeComments);
                     tables.IdentifyMappingTables(fkList, UseCamelCase, PrependSchemaName, CollectionType, true, IncludeComments);
 
@@ -1310,16 +1310,18 @@ ORDER BY FK.TABLE_NAME,
                     throw new ArgumentNullException("rdr");
 
                 string typename = rdr["TypeName"].ToString().Trim();
+                var scale = (int)rdr["Scale"];
+                var precision = (int)rdr["Precision"];
 
                 var col = new Column
                 {
                     Name = rdr["ColumnName"].ToString().Trim(),
-                    PropertyType = GetPropertyType(typename),
+                    PropertyType = GetPropertyType(typename, scale, precision),
                     MaxLength = (int)rdr["MaxLength"],
-                    Precision = (int)rdr["Precision"],
+                    Precision = precision,
                     Default = rdr["Default"].ToString().Trim(),
                     DateTimePrecision = (int)rdr["DateTimePrecision"],
-                    Scale = (int)rdr["Scale"],
+                    Scale = scale,
                     Ordinal = (int)rdr["Ordinal"],
                     IsIdentity = rdr["IsIdentity"].ToString().Trim().ToLower() == "true",
                     IsNullable = rdr["IsNullable"].ToString().Trim().ToLower() == "true",
@@ -1360,7 +1362,7 @@ ORDER BY FK.TABLE_NAME,
                 return col;
             }
 
-            private static string GetPropertyType(string sqlType)
+            private static string GetPropertyType(string sqlType, int scale, int precision)
             {
                 string sysType = "string";
                 switch (sqlType)
@@ -1396,8 +1398,22 @@ ORDER BY FK.TABLE_NAME,
                         sysType = "float";
                         break;
                     case "numeric":
-                    case "smallmoney":
                     case "decimal":
+                        if (scale == 0)
+                        {
+                            if (precision >= 15)
+                                sysType = "Int64";
+                            else if (precision >= 8)
+                                sysType = "Int32";
+                            else
+                                sysType = "Int16";
+                        }
+                        else
+                        {
+                            sysType = "Decimal";
+                        }
+                        break;
+                    case "smallmoney":
                     case "money":
                         sysType = "decimal";
                         break;
