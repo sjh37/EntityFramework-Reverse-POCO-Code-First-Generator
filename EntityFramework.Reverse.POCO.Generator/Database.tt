@@ -1,0 +1,130 @@
+﻿<#@ include file="EF.Reverse.POCO.Core.ttinclude" #>
+<#
+    // v2.5.0
+    // Please make changes to the settings below.
+    // All you have to do is save this file, and the output file(s) is/are generated. Compiling does not regenerate the file(s).
+
+    // Misc settings **********************************************************************************************************************
+    // Namespace = ""; // Override the default namespace here
+    DbContextName = "MyDbContext";
+    ConnectionStringName = "MyDbContext";  // Searches for this connection string in config files listed below
+    ConfigurationClassName = "Configuration"; // Configuration, Mapping, Map, etc. This is appended to the Poco class name to configure the mappings.
+    ConfigFilenameSearchOrder = new[] { "app.config", "web.config", "app.config.transform", "web.config.transform" }; // Add more here if required. The config files are searched for in the local project first, then the whole solution second.
+    MakeClassesPartial = false;
+    GenerateSeparateFiles = false;
+    UseCamelCase = true;    // This will rename the tables & fields to use CamelCase. If false table & field names will be left alone.
+    IncludeComments = true; // Adds comments the generated code
+    IncludeViews = true;
+    DisableGeographyTypes = false; // Turns off use of System.Data.Entity.Spatial.DbGeography and System.Data.Entity.Spatial.DbGeometry as OData doesn't support entities with geometry/geography types.
+    CollectionType = "List";  // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example
+    CollectionTypeNamespace = ""; // "System.Collections.ObjectModel" is required if setting the CollectionType = "ObservableCollection"
+    
+
+    // Pluralization **********************************************************************************************************************
+    // To turn off pluralization, use:
+    //      Inflector.PluralizationService = null;
+    // Default pluralization, use:
+    //      Inflector.PluralizationService = new EnglishPluralizationService();
+    // For Spanish pluralization:
+    //      1. Intall the "EF6.Contrib" Nuget Package.
+    //      2. Add the following to the top of this file and adjust path, and remove the space between the angle bracket and # at the beginning and end.
+    //         < #@ assembly name="your full path to \EntityFramework.Contrib.dll" # >
+    //      3. Change the line below to: Inflector.PluralizationService = new SpanishPluralizationService();
+    Inflector.PluralizationService = new EnglishPluralizationService();
+    
+    
+    // Elements to generate ***************************************************************************************************************
+    // Add the elements that should be generated when the template is executed.
+    // Multiple projects can now be used that separate the different concerns.
+    ElementsToGenerate =  Elements.Poco | Elements.Context | Elements.UnitOfWork | Elements.PocoConfiguration;
+
+    // Use these namespaces to specify where the different elements of the template are being generated.
+    PocoNamespace = "";
+    ContextNamespace = "";
+    UnitOfWorkNamespace = "";	
+    PocoConfigurationNamespace = "";
+
+    // Example of separate concerns:
+    //PocoNamespace = "MyProject.Model";
+    //ContextNamespace = "MyProject.Data";
+    //UnitOfWorkNamespace = "MyProject.Data";	
+    //PocoConfigurationNamespace = "MyProject.Data";
+    //ElementsToGenerate = Elements.Poco;   // Model Project
+    //ElementsToGenerate = Elements.Context | Elements.UnitOfWork | Elements.PocoConfiguration; //  Data project
+
+    
+    // Schema *****************************************************************************************************************************
+    // If there are multiple schema, then the table name is prefixed with the schema, except for dbo.
+    // Ie. dbo.hello will be Hello.
+    //     abc.hello will be AbcHello.
+    // To only include a single schema, specify it below.
+    SchemaName = null;
+    PrependSchemaName = true;   // Control if the schema name is prepended to the table name
+
+    // Filtering **************************************************************************************************************************
+    // Use the following table/view name regex filters to include or exclude tables/views
+    // Exclude filters are checked first and tables matching filters are removed.
+    //  * If left null, none are excluded.
+    //  * If not null, any tables matching the regex are excluded.
+    // Include filters are checked second.
+    //  * If left null, all are included.
+    //  * If not null, only the tables matching the regex are included.
+    //  Example:    TableFilterExclude = new Regex(".*auto.*");
+    //              TableFilterInclude = new Regex("(.*_FR_.*)|(data_.*)");
+    //              TableFilterInclude = new Regex("^table_name1$|^table_name2$|etc");
+    TableFilterExclude = null;
+    TableFilterInclude = null;
+
+    // Table renaming *********************************************************************************************************************
+    // Use the following regex to rename tables such as tblOrders to Orders, AB_Shipments to Shipments, etc.
+    // TableRenameFilter = new Regex("^tbl|^AB_");
+    TableRenameFilter = null;
+    TableRenameReplacement = "";
+
+
+    // WCF ********************************************************************************************************************************
+    // This is only intended as a helper, to get you started creating WCF contracts, and to save a lot of typing.
+    AddWcfDataAttributes = false;
+    ExtraWcfDataContractAttributes = "";    // This string is inserted into the  [DataContract] attribute, before the closing square bracket.
+    // Example: "";                                           = [DataContract]
+    //          "(Namespace = \"http://www.contoso.com\")";   = [DataContract(Namespace = "http://www.contoso.com")]
+    //          "(Namespace = Constants.ServiceNamespace)";   = [DataContract(Namespace = Constants.ServiceNamespace)]
+    
+
+    // Callbacks **********************************************************************************************************************
+    // This method will be called right before we write the POCO header.
+    Action<Table> WritePocoClassAttributes = t =>
+    {
+        // Do nothing by default
+        // Example:
+        // if(t.ClassName.StartsWith("Order"))
+        //     WriteLine("    [SomeAttribute]");
+    };
+
+    // Writes optional base classes
+    Func<Table, string> WritePocoBaseClasses = null;    // t => "IMyBaseClass";
+
+    // Writes any boilerplate stuff
+    Action<Table> WritePocoBaseClassBody = t =>
+    {
+        // Do nothing by default
+        // Example:
+        // WriteLine("        // " + t.ClassName);
+    };
+
+    Func<Column, string> WritePocoColumn = c => c.Entity;
+
+    
+    // That's it, nothing else to configure ***********************************************************************************************
+    
+    
+    
+    // Read schema
+    var tables = LoadTables();
+    
+    // Generate output
+    if (tables.Count>0)
+    {
+#>
+<#@ include file="EF.Reverse.POCO.ttinclude" #>
+<# } #>

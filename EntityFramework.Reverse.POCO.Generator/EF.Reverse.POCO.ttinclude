@@ -1,0 +1,298 @@
+<#@ import namespace="System.Collections.Generic" #>
+<#
+fileManager.StartHeader();
+// Copyright © Simon Hughes 2012
+// v2.5.0
+#>
+// ReSharper disable RedundantUsingDirective
+// ReSharper disable DoNotCallOverridableMethodsInConstructor
+// ReSharper disable InconsistentNaming
+// ReSharper disable PartialTypeWithSinglePart
+// ReSharper disable PartialMethodWithSinglePart
+// ReSharper disable RedundantNameQualifier
+
+using System;
+<# if(ElementsToGenerate.HasFlag(Elements.Poco)){ #>
+using System.Collections.Generic;
+<# } #>
+<# if((ElementsToGenerate.HasFlag(Elements.Context) || ElementsToGenerate.HasFlag(Elements.Poco)) && IsSupportedFrameworkVersion("4.5")){ #>
+using System.ComponentModel.DataAnnotations.Schema;
+<# } #>
+<# if(ElementsToGenerate.HasFlag(Elements.Context) || ElementsToGenerate.HasFlag(Elements.UnitOfWork)){ #>
+using System.Data.Entity;
+<# } #>
+<# if(ElementsToGenerate.HasFlag(Elements.PocoConfiguration)){ #>
+using System.Data.Entity.ModelConfiguration;
+<# } #>
+<# if(AddWcfDataAttributes){ #>
+using System.Runtime.Serialization;
+<# } #>
+<# if((ElementsToGenerate.HasFlag(Elements.PocoConfiguration) || ElementsToGenerate.HasFlag(Elements.Context) || ElementsToGenerate.HasFlag(Elements.UnitOfWork)) && 
+      (!ElementsToGenerate.HasFlag(Elements.Poco) && !string.IsNullOrWhiteSpace(PocoNamespace))){ #>
+using <#= PocoNamespace #>;
+<# } #>
+<# 	if(	ElementsToGenerate.HasFlag(Elements.PocoConfiguration) && 
+        (!ElementsToGenerate.HasFlag(Elements.Context) && !string.IsNullOrWhiteSpace(ContextNamespace))){ #>
+using <#= ContextNamespace #>;
+<# } #>
+<# 	if( ElementsToGenerate.HasFlag(Elements.Context) && 
+        (!ElementsToGenerate.HasFlag(Elements.UnitOfWork) && !string.IsNullOrWhiteSpace(UnitOfWorkNamespace))){ #>
+using <#= UnitOfWorkNamespace #>;
+<# } #>
+<# 	if( ElementsToGenerate.HasFlag(Elements.Context) && 
+        (!ElementsToGenerate.HasFlag(Elements.PocoConfiguration) && !string.IsNullOrWhiteSpace(PocoConfigurationNamespace))){ #>
+using <#= PocoConfigurationNamespace #>;
+<# } #>
+<# 	if(	ElementsToGenerate.HasFlag(Elements.PocoConfiguration)){
+        switch (TargetFrameworkVersion)
+        {
+            case "4.0":#>
+using DatabaseGeneratedOption = System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption;
+<#              break;
+            default: #>
+//using DatabaseGeneratedOption = System.ComponentModel.DataAnnotations.DatabaseGeneratedOption;
+<#              break;
+        }
+    }    
+#>
+<#if (!string.IsNullOrEmpty(CollectionTypeNamespace)){
+        #>using <#=CollectionTypeNamespace#>;
+<#}#>
+
+namespace <#= Namespace #>
+{
+<# if(ElementsToGenerate.HasFlag(Elements.UnitOfWork)){ 
+       fileManager.StartNewFile("I" + DbContextName + FileExtension); 
+       if(!GenerateSeparateFiles) { #>
+    // ************************************************************************
+    // Unit of work
+<# } #>
+    public interface I<#=DbContextName#> : IDisposable
+    {
+<#
+foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
+{
+#>
+        IDbSet<<#=tbl.NameHumanCase#>> <#=Inflector.MakePlural(tbl.NameHumanCase)#> { get; set; }<#if(IncludeComments){#> // <#=tbl.Name#>
+<# } else { #>
+
+<# } #>
+<# } #>
+
+        int SaveChanges();
+    }
+
+<# }
+    if(ElementsToGenerate.HasFlag(Elements.Context)){ 
+    fileManager.StartNewFile(DbContextName + FileExtension); #>
+<# if(!GenerateSeparateFiles) { #>
+    // ************************************************************************
+    // Database context
+<# } #>
+    public <# if(MakeClassesPartial) { #>partial <# } #>class <#=DbContextName#> : DbContext, I<#=DbContextName#>
+    {
+<#
+foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
+{
+#>
+        public IDbSet<<#=tbl.NameHumanCase#>> <#=Inflector.MakePlural(tbl.NameHumanCase)#> { get; set; }<#if(IncludeComments){#> // <#=tbl.Name#>
+<# } else { #>
+
+<# } #>
+<# } #>
+
+        static <#=DbContextName#>()
+        {
+            Database.SetInitializer<<#=DbContextName#>>(null);
+        }
+
+        public <#=DbContextName#>()
+            : base("Name=<#=ConnectionStringName#>")
+        {
+<#if(MakeClassesPartial) {#>        InitializePartial();
+<#}#>
+        }
+
+        public <#=DbContextName#>(string connectionString) : base(connectionString)
+        {
+<#if(MakeClassesPartial) {#>        InitializePartial();
+<#}#>
+        }
+
+        public <#=DbContextName#>(string connectionString, System.Data.Entity.Infrastructure.DbCompiledModel model) : base(connectionString, model)
+        {
+<#if(MakeClassesPartial) {#>        InitializePartial();
+<#}#>
+        }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+<#
+foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
+{
+#>
+            modelBuilder.Configurations.Add(new <#=tbl.NameHumanCase + ConfigurationClassName#>());
+<# } #>
+<#if(MakeClassesPartial) {#>        OnModelCreatingPartial(modelBuilder);
+<#}#>
+        }
+
+        public static DbModelBuilder CreateModel(DbModelBuilder modelBuilder, string schema)
+        {
+<#
+foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
+{
+#>
+            modelBuilder.Configurations.Add(new <#=tbl.NameHumanCase + ConfigurationClassName#>(schema));
+<# } #>
+            return modelBuilder;
+        }
+<#if(MakeClassesPartial) {#>
+
+        partial void InitializePartial();
+        partial void OnModelCreatingPartial(DbModelBuilder modelBuilder);
+<#}#>
+    }
+<# }
+ if(ElementsToGenerate.HasFlag(Elements.Poco)){
+ if(!GenerateSeparateFiles) { #>
+
+    // ************************************************************************
+    // POCO classes
+
+<# } #>
+<#
+foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
+{
+#>
+<# fileManager.StartNewFile(tbl.NameHumanCase + FileExtension); #>
+<#if(IncludeComments){#>    // <#=tbl.Name#>
+<# } #>
+<# if(AddWcfDataAttributes) { #>    [DataContract<#=ExtraWcfDataContractAttributes#>]
+<# } 
+    WritePocoClassAttributes(tbl);#>
+    public <# if(MakeClassesPartial) { #>partial <# } #>class <#=tbl.NameHumanCase#><#=WritePocoBaseClasses != null ? " : " + WritePocoBaseClasses(tbl) : "" #>
+    {
+<# WritePocoBaseClassBody(tbl); #>
+<# int DataMemberOrder = 1;
+foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal))
+{
+#>
+<# if(AddWcfDataAttributes) { #>        [DataMember(Order = <#=DataMemberOrder++#>, IsRequired = <#=col.IsNullable ? "false" : "true"#>)]
+<# } #>
+        <#= WritePocoColumn(col) #>
+<# if(AddWcfDataAttributes) { #>
+
+<# } } #>
+<#
+if(tbl.ReverseNavigationProperty.Count() > 0)
+{
+#>
+
+<#if(IncludeComments){#>        // Reverse navigation
+<# } #>
+<#
+foreach(string s in tbl.ReverseNavigationProperty.OrderBy(x => x))
+{
+#>
+        <#=s #>
+<# } } #>
+<# if(tbl.HasForeignKey) { #>
+
+<#if(IncludeComments){#>        // Foreign keys
+<# } #>
+<#
+foreach(Column col in from c in tbl.Columns.OrderBy(x => x.EntityFk) where c.EntityFk != null select c)
+{
+#>
+        <#=col.EntityFk #>
+<# } } #>
+<# 
+if(tbl.Columns.Where(c => c.Default != string.Empty).Count() > 0 || tbl.ReverseNavigationCtor.Count() > 0) 
+{ 
+#>
+
+        public <#=tbl.NameHumanCase#>()
+        {
+<#
+foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal).Where(c => c.Default != string.Empty))
+{
+#>
+            <#=col.PropertyNameHumanCase #> = <#=col.Default #>;
+<# } #>
+<#
+foreach(string s in tbl.ReverseNavigationCtor)
+{
+#>
+            <#=s #>
+<# } 
+if(MakeClassesPartial) {#>
+            InitializePartial();
+<#}#>        }
+<#if(MakeClassesPartial) {#>        partial void InitializePartial();
+<#} }#>
+    }
+
+<# } }
+if(ElementsToGenerate.HasFlag(Elements.PocoConfiguration)){
+if(!GenerateSeparateFiles) { #>
+
+    // ************************************************************************
+    // POCO Configuration
+
+<# } #>
+<#
+foreach(Table tbl in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase))
+{
+#>
+<# fileManager.StartNewFile(tbl.NameHumanCase + ConfigurationClassName + FileExtension); #>
+<#if(IncludeComments){#>    // <#=tbl.Name#>
+<# } #>
+    internal <# if(MakeClassesPartial) { #>partial <# } #>class <#=tbl.NameHumanCase + ConfigurationClassName#> : EntityTypeConfiguration<<#=tbl.NameHumanCase#>>
+    {
+        public <#=tbl.NameHumanCase + ConfigurationClassName#>(string schema = "<#=tbl.Schema#>")
+        {
+ <# if (!string.IsNullOrEmpty(tbl.Schema)) { #>
+           ToTable(schema + ".<#=tbl.Name#>");
+ <# } else { #>
+           ToTable("<#=tbl.Name#>");
+ <# } #>
+           HasKey(<#=tbl.PrimaryKeyNameHumanCase()#>);
+
+<#
+foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal))
+{
+#>
+            <#=col.Config #>
+<# } #>
+<# if(tbl.HasForeignKey) { #>
+
+<#if(IncludeComments){#>            // Foreign keys
+<# } #>
+<#
+foreach(Column col in from c in tbl.Columns.OrderBy(x => x.Ordinal) where c.ConfigFk != null select c)
+{
+#>
+            <#=col.ConfigFk #>
+<# } } #>
+<#
+foreach (string s in tbl.MappingConfiguration)
+{
+#>
+            <#=s#>
+<# } #>
+<#if(MakeClassesPartial) {#>
+            InitializePartial();
+<#}#>        }
+<#if(MakeClassesPartial) {#>
+        partial void InitializePartial();
+<#}#>    }
+
+<# } } #>
+<# fileManager.StartFooter(); #>
+}
+<# fileManager.EndBlock();
+if(GenerateSeparateFiles)
+    fileManager.Process(); #>
