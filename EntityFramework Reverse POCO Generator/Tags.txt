@@ -1,1 +1,1 @@
-﻿Entity Framework, POCO, POCO Templates, reverse engineering, T4, Code Generator
+﻿Reverse Poco, Data, Entity Framework, Code Generator, Database, reverse engineering, C#, SQL Server, POCO, Code First, CodeFirst
