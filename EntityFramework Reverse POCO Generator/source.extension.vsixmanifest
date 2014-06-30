@@ -16,25 +16,29 @@
                 <Edition>Ultimate</Edition>
                 <Edition>Premium</Edition>
                 <Edition>Pro</Edition>
-                <Edition>Express_All</Edition>
+                <Edition>VCSExpress</Edition>
+                <Edition>VWDExpress</Edition>
             </VisualStudio>
             <VisualStudio Version="11.0">
                 <Edition>Ultimate</Edition>
                 <Edition>Premium</Edition>
                 <Edition>Pro</Edition>
-                <Edition>Express_All</Edition>
+                <Edition>VCSExpress</Edition>
+                <Edition>VWDExpress</Edition>
             </VisualStudio>
             <VisualStudio Version="12.0">
                 <Edition>Ultimate</Edition>
                 <Edition>Premium</Edition>
                 <Edition>Pro</Edition>
-                <Edition>Express_All</Edition>
+                <Edition>VCSExpress</Edition>
+                <Edition>VWDExpress</Edition>
             </VisualStudio>
             <VisualStudio Version="13.0">
                 <Edition>Ultimate</Edition>
                 <Edition>Premium</Edition>
                 <Edition>Pro</Edition>
-                <Edition>Express_All</Edition>
+                <Edition>VCSExpress</Edition>
+                <Edition>VWDExpress</Edition>
             </VisualStudio>
         </SupportedProducts>
         <SupportedFrameworkRuntimeEdition MinVersion="4.0" MaxVersion="4.5" />

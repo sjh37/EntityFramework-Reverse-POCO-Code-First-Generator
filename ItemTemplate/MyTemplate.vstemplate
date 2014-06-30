@@ -5,8 +5,8 @@
         <Description>Reverse engineers an existing database and generates EntityFramework Code First POCO classes, Configuration mappings and DbContext.</Description>
         <ProjectType>CSharp</ProjectType>
         <SortOrder>10</SortOrder>
-        <Icon>__TemplateIcon.ico</Icon>
-        <PreviewImage>__PreviewImage.png</PreviewImage>
+        <Icon>TemplateIcon.ico</Icon>
+        <PreviewImage>PreviewImage.png</PreviewImage>
         <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
         <RequiredFrameworkVersion>4.0</RequiredFrameworkVersion>
         <Version>2.5.1</Version>
