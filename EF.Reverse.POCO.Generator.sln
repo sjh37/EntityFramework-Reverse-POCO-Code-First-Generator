@@ -1,15 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30110.0
+VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFramework.Reverse.POCO.Generator", "EntityFramework.Reverse.POCO.Generator\EntityFramework.Reverse.POCO.Generator.csproj", "{FA93A0BD-8B45-43BA-9C57-1D8FD63CAEAE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tester.Integration", "Tester\Tester.Integration.csproj", "{D21BA1F2-7796-4263-B4CA-5C1BB33729CA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scratch", "Scratch\Scratch.csproj", "{80B4FBAC-AF39-4470-B21E-794422DFC183}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFramework Reverse POCO Generator", "EntityFramework Reverse POCO Generator\EntityFramework Reverse POCO Generator.csproj", "{E583934B-B4BF-4E32-AF7A-61360BB742C4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tester.Repository", "Tester.Repository\Tester.Repository.csproj", "{7BEC62D9-3836-4EDC-ABAC-4D3F5D983F22}"
 EndProject
@@ -22,6 +20,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		NorthwindSqlCe40.sdf = NorthwindSqlCe40.sdf
 		NuGet.Config = NuGet.Config
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFramework Reverse POCO Generator", "EntityFramework Reverse POCO Generator\EntityFramework Reverse POCO Generator.csproj", "{14C1FD62-34DB-49B9-B35A-B363398D0914}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -65,17 +65,6 @@ Global
 		{80B4FBAC-AF39-4470-B21E-794422DFC183}.Release|Mixed Platforms.Build.0 = Release|x86
 		{80B4FBAC-AF39-4470-B21E-794422DFC183}.Release|x86.ActiveCfg = Release|x86
 		{80B4FBAC-AF39-4470-B21E-794422DFC183}.Release|x86.Build.0 = Release|x86
-		{E583934B-B4BF-4E32-AF7A-61360BB742C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E583934B-B4BF-4E32-AF7A-61360BB742C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E583934B-B4BF-4E32-AF7A-61360BB742C4}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{E583934B-B4BF-4E32-AF7A-61360BB742C4}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{E583934B-B4BF-4E32-AF7A-61360BB742C4}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{E583934B-B4BF-4E32-AF7A-61360BB742C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E583934B-B4BF-4E32-AF7A-61360BB742C4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E583934B-B4BF-4E32-AF7A-61360BB742C4}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{E583934B-B4BF-4E32-AF7A-61360BB742C4}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{E583934B-B4BF-4E32-AF7A-61360BB742C4}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{E583934B-B4BF-4E32-AF7A-61360BB742C4}.Release|x86.ActiveCfg = Release|Any CPU
 		{7BEC62D9-3836-4EDC-ABAC-4D3F5D983F22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7BEC62D9-3836-4EDC-ABAC-4D3F5D983F22}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7BEC62D9-3836-4EDC-ABAC-4D3F5D983F22}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -103,6 +92,15 @@ Global
 		{2F59926C-597F-448E-B9B0-BE9F9E0F0404}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{2F59926C-597F-448E-B9B0-BE9F9E0F0404}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{2F59926C-597F-448E-B9B0-BE9F9E0F0404}.Release|x86.ActiveCfg = Release|Any CPU
+		{14C1FD62-34DB-49B9-B35A-B363398D0914}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14C1FD62-34DB-49B9-B35A-B363398D0914}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14C1FD62-34DB-49B9-B35A-B363398D0914}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{14C1FD62-34DB-49B9-B35A-B363398D0914}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{14C1FD62-34DB-49B9-B35A-B363398D0914}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14C1FD62-34DB-49B9-B35A-B363398D0914}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14C1FD62-34DB-49B9-B35A-B363398D0914}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{14C1FD62-34DB-49B9-B35A-B363398D0914}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{14C1FD62-34DB-49B9-B35A-B363398D0914}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
