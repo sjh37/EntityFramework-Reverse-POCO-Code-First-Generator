@@ -10,3 +10,4 @@ del *.zip
 del *.p* *.t* *.i* *.v*
 copy *.zip "..\..\EntityFramework Reverse POCO Generator\ItemTemplates\"
 cd..\..
+pause
