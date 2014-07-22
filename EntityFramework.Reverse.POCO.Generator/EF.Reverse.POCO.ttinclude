@@ -2,7 +2,7 @@
 <#
 fileManager.StartHeader();
 // Copyright © Simon Hughes 2012
-// v2.5.1
+// v2.6.0
 #>
 // ReSharper disable RedundantUsingDirective
 // ReSharper disable DoNotCallOverridableMethodsInConstructor
@@ -180,6 +180,12 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.Na
 foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal))
 {
 #>
+<#if(IncludeExtendedPropertyComments == ExtendedPropertyCommentsStyle.InSummaryBlock && !string.IsNullOrEmpty(col.ExtendedProperty)){#>
+
+        ///<summary>
+        /// <#=col.ExtendedProperty#>
+        ///</summary>
+<# } #>
 <# if(AddWcfDataAttributes) { #>        [DataMember(Order = <#=DataMemberOrder++#>, IsRequired = <#=col.IsNullable ? "false" : "true"#>)]
 <# } #>
         <#= WritePocoColumn(col) #>
