@@ -1,6 +1,6 @@
 <#
 // Copyright © Simon Hughes 2012
-// v2.5.1
+// v2.6.0
 #>
 <#@ template hostspecific="true" language="C#" #>
 <#@ include file="EF6.Utility.CS.ttinclude"#>
@@ -22,6 +22,15 @@
         var fileManager = EntityFrameworkTemplateFileManager.Create(this);
 #>
 <#+
+
+        [Flags]
+        public enum ExtendedPropertyCommentsStyle
+        {
+            None,
+            InSummaryBlock,
+            AtEndOfField
+        };
+        
         // Settings - edit these in the main <name>.tt file *******************************************************************************
         string ConnectionStringName = "";        		
         bool IncludeViews = true;
@@ -34,6 +43,7 @@
         string FileExtension = ".cs";
         bool UseCamelCase = true;
         bool IncludeComments = true;
+        ExtendedPropertyCommentsStyle IncludeExtendedPropertyComments = ExtendedPropertyCommentsStyle.InSummaryBlock;
         bool AddWcfDataAttributes = false;
         string ExtraWcfDataContractAttributes = "";
         string SchemaName = null;
@@ -391,7 +401,7 @@
                        PrependSchemaName = false;
 
                     var reader = new SqlServerSchemaReader(conn, factory) { Outer = this };
-                    var tables = reader.ReadSchema(TableFilterExclude, UseCamelCase, PrependSchemaName, IncludeComments, TableRenameFilter, TableRenameReplacement);
+                    var tables = reader.ReadSchema(TableFilterExclude, UseCamelCase, PrependSchemaName, IncludeComments, TableRenameFilter, TableRenameReplacement, IncludeExtendedPropertyComments);
                     tables.SetPrimaryKeys();
 
                     // Remove unrequired tables/views
@@ -427,7 +437,7 @@
                     tables.ResetNavigationProperties();
                     reader.ProcessForeignKeys(fkList, tables, UseCamelCase, PrependSchemaName, CollectionType, false, IncludeComments);
                     tables.IdentifyMappingTables(fkList, UseCamelCase, PrependSchemaName, CollectionType, false, IncludeComments);
-                    
+
                     // Remove views that only consist of all nullable fields.
                     // I.e. they do not contain any primary key, and therefore cannot be used by EF
                     for(int i = tables.Count - 1; i >= 0; i--)
@@ -498,6 +508,7 @@
             public string PropertyType;
             public int Scale;
             public int Ordinal;
+            public string ExtendedProperty;
 
             public bool IsIdentity;
             public bool IsNullable;
@@ -510,7 +521,7 @@
             public string Entity;
             public string EntityFk;
 
-            private void SetupEntity(bool includeComments)
+            private void SetupEntity(bool includeComments, ExtendedPropertyCommentsStyle includeExtendedPropertyComments)
             {
                 string comments;
                 if (includeComments)
@@ -523,6 +534,15 @@
                 {
                     comments = string.Empty;
                 }
+
+                if (includeExtendedPropertyComments == ExtendedPropertyCommentsStyle.AtEndOfField && !string.IsNullOrEmpty(ExtendedProperty))
+                {
+                    if (string.IsNullOrEmpty(comments))
+                        comments = " // " + ExtendedProperty;
+                    else
+                        comments += ". " + ExtendedProperty;
+                }
+
                 Entity = string.Format("public {0}{1} {2} {3}{4}", PropertyType, CheckNullable(this), PropertyNameHumanCase, IsStoreGenerated ? "{ get; internal set; }" : "{ get; set; }", comments);
             }
 
@@ -560,9 +580,9 @@
                                             databaseGeneratedOption);
             }
 
-            public void SetupEntityAndConfig(bool includeComments)
+            public void SetupEntityAndConfig(bool includeComments, ExtendedPropertyCommentsStyle includeExtendedPropertyComments)
             {
-                SetupEntity(includeComments);
+                SetupEntity(includeComments, includeExtendedPropertyComments);
                 SetupConfig();
             }
 
@@ -827,10 +847,11 @@
             }
 
             public GeneratedTextTransformation Outer;
-            public abstract Tables ReadSchema(Regex tableFilterExclude, bool useCamelCase, bool prependSchemaName, bool includeComments, Regex tableRenameFilter, string tableRenameReplacement);
+            public abstract Tables ReadSchema(Regex tableFilterExclude, bool useCamelCase, bool prependSchemaName, bool includeComments, Regex tableRenameFilter, string tableRenameReplacement, ExtendedPropertyCommentsStyle includeExtendedPropertyComments);
             public abstract List<ForeignKey> ReadForeignKeys(Regex tableRenameFilter, string tableRenameReplacement);
             public abstract void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool useCamelCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, bool includeComments);
             public abstract void IdentifyForeignKeys(List<ForeignKey> fkList, Tables tables);
+            public abstract void ReadExtendedProperties(Tables tables);
 
             protected void WriteLine(string o)
             {
@@ -1143,6 +1164,22 @@ WHERE   PT.COLUMN_NAME = PK.COLUMN_NAME
 ORDER BY FK.TABLE_NAME,
         FK.COLUMN_NAME";
 
+        private const string ExtendedPropertySQL = @"
+SELECT  s.name AS [schema],
+        t.name AS [table],
+        c.name AS [column],
+        value AS [property]
+FROM    sys.extended_properties AS ep
+        INNER JOIN sys.tables AS t
+            ON ep.major_id = t.object_id
+        INNER JOIN sys.schemas AS s
+            ON s.schema_id = t.schema_id
+        INNER JOIN sys.columns AS c
+            ON ep.major_id = c.object_id
+               AND ep.minor_id = c.column_id
+WHERE   class = 1
+ORDER BY t.name";
+
 			private const string TableSQLCE = @"
 SELECT  '' AS SchemaName,
 		c.TABLE_NAME AS TableName,
@@ -1212,7 +1249,7 @@ ORDER BY FK.TABLE_NAME,
             {
             }
 
-            public override Tables ReadSchema(Regex tableFilterExclude, bool useCamelCase, bool prependSchemaName, bool includeComments, Regex tableRenameFilter, string tableRenameReplacement)
+            public override Tables ReadSchema(Regex tableFilterExclude, bool useCamelCase, bool prependSchemaName, bool includeComments, Regex tableRenameFilter, string tableRenameReplacement, ExtendedPropertyCommentsStyle includeExtendedPropertyComments)
             {
                 var result = new Tables();
                 if(Cmd == null)
@@ -1282,11 +1319,14 @@ ORDER BY FK.TABLE_NAME,
                 foreach(Column c in result.SelectMany(tbl => tbl.Columns.Where(c => tbl.Columns.FindAll(x => x.PropertyNameHumanCase == c.PropertyNameHumanCase).Count > 1)))
                 {
                     c.PropertyNameHumanCase = c.PropertyName;
-                } 
+                }
+
+                if (includeExtendedPropertyComments != ExtendedPropertyCommentsStyle.None)
+                    ReadExtendedProperties(result);
                 
                 foreach(Table tbl in result)
                 {
-                    tbl.Columns.ForEach(x => x.SetupEntityAndConfig(includeComments));
+                    tbl.Columns.ForEach(x => x.SetupEntityAndConfig(includeComments, includeExtendedPropertyComments));
                 }
 
                 return result;
@@ -1331,6 +1371,42 @@ ORDER BY FK.TABLE_NAME,
                 }
                 
                 return fkList;
+            }
+
+            public override void ReadExtendedProperties(Tables tables)
+            {
+                if(Cmd == null)
+                    return;
+
+                if (Cmd.GetType().Name == "SqlCeCommand")
+                    return;
+
+                Cmd.CommandText = ExtendedPropertySQL;
+
+                using(DbDataReader rdr = Cmd.ExecuteReader())
+                {
+                    Table t = null;
+                    while(rdr.Read())
+                    {
+                        string schema           = rdr["schema"].ToString().Trim();
+                        string tableName        = rdr["table"].ToString().Trim();
+                        string column           = rdr["column"].ToString().Trim();
+                        string extendedProperty = rdr["property"].ToString().Trim();
+
+                        if (extendedProperty == string.Empty)
+                            continue;
+
+                        if(t == null || t.Name != tableName || t.Schema != schema)
+                            t = tables.Find(x => x.Name == tableName && x.Schema == schema);
+
+                        if (t != null)
+                        {
+                            var col = t.Columns.Find(x => x.Name == column);
+                            if (col != null)
+                                col.ExtendedProperty = extendedProperty;
+                        }
+                    }
+                }
             }
             
             public override void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool useCamelCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, bool includeComments)
