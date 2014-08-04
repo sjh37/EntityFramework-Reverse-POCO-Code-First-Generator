@@ -1042,6 +1042,18 @@ FROM    sys.extended_properties AS ep
 WHERE   class = 1
 ORDER BY t.name";
 
+            private const string ExtendedPropertyTableExistsSQLCE = @"
+SELECT  1
+FROM    INFORMATION_SCHEMA.TABLES
+WHERE   TABLE_NAME = '__ExtendedProperties';";
+
+            private const string ExtendedPropertySQLCE = @"
+SELECT  '' AS [schema],
+        [ObjectName] AS [column],
+        [ParentName] AS [table],
+        [Value] AS [property]
+FROM    [__ExtendedProperties];";
+
             private const string TableSQLCE = @"
 SELECT  '' AS SchemaName,
 		c.TABLE_NAME AS TableName,
@@ -1240,10 +1252,17 @@ ORDER BY FK.TABLE_NAME,
                 if (Cmd == null)
                     return;
 
-                if (Cmd.GetType().Name == "SqlCeCommand")
-                    return;
-
                 Cmd.CommandText = ExtendedPropertySQL;
+
+                if (Cmd.GetType().Name == "SqlCeCommand")
+                {
+                    Cmd.CommandText = ExtendedPropertyTableExistsSQLCE;
+                    var obj = Cmd.ExecuteScalar();
+                    if (obj == null)
+                        return;
+
+                    Cmd.CommandText = ExtendedPropertySQLCE;
+                }
 
                 using (DbDataReader rdr = Cmd.ExecuteReader())
                 {
