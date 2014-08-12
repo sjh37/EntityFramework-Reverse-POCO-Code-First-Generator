@@ -1284,7 +1284,10 @@ ORDER BY FK.TABLE_NAME,
                         {
                             var col = t.Columns.Find(x => x.Name == column);
                             if (col != null)
+                            {
+                                extendedProperty = extendedProperty.Replace("\n", " ").Replace("\r", " ");
                                 col.ExtendedProperty = extendedProperty;
+                            }
                         }
                     }
                 }
