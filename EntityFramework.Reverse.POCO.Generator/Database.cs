@@ -681,7 +681,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             ToTable(schema + ".Customers");
             HasKey(x => x.CustomerId);
 
-            Property(x => x.CustomerId).HasColumnName("CustomerID").IsRequired().HasMaxLength(5).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.CustomerId).HasColumnName("CustomerID").IsRequired().IsFixedLength().HasMaxLength(5).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(x => x.CompanyName).HasColumnName("CompanyName").IsRequired().HasMaxLength(40);
             Property(x => x.ContactName).HasColumnName("ContactName").IsOptional().HasMaxLength(30);
             Property(x => x.ContactTitle).HasColumnName("ContactTitle").IsOptional().HasMaxLength(30);
@@ -724,7 +724,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             ToTable(schema + ".CustomerDemographics");
             HasKey(x => x.CustomerTypeId);
 
-            Property(x => x.CustomerTypeId).HasColumnName("CustomerTypeID").IsRequired().HasMaxLength(10).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.CustomerTypeId).HasColumnName("CustomerTypeID").IsRequired().IsFixedLength().HasMaxLength(10).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(x => x.CustomerDesc).HasColumnName("CustomerDesc").IsOptional().HasMaxLength(1073741823);
         }
     }
@@ -781,7 +781,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.ShipRegion).HasColumnName("ShipRegion").IsOptional().HasMaxLength(15);
             Property(x => x.ShipPostalCode).HasColumnName("ShipPostalCode").IsOptional().HasMaxLength(10);
             Property(x => x.ShipCountry).HasColumnName("ShipCountry").IsOptional().HasMaxLength(15);
-            Property(x => x.CustomerId).HasColumnName("CustomerID").IsOptional().HasMaxLength(5);
+            Property(x => x.CustomerId).HasColumnName("CustomerID").IsOptional().IsFixedLength().HasMaxLength(5);
             Property(x => x.CustomerName).HasColumnName("CustomerName").IsRequired().HasMaxLength(40);
             Property(x => x.Address).HasColumnName("Address").IsOptional().HasMaxLength(60);
             Property(x => x.City).HasColumnName("City").IsOptional().HasMaxLength(15);
@@ -813,7 +813,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             HasKey(x => x.OrderId);
 
             Property(x => x.OrderId).HasColumnName("OrderID").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
-            Property(x => x.CustomerId).HasColumnName("CustomerID").IsOptional().HasMaxLength(5);
+            Property(x => x.CustomerId).HasColumnName("CustomerID").IsOptional().IsFixedLength().HasMaxLength(5);
             Property(x => x.EmployeeId).HasColumnName("EmployeeID").IsOptional();
             Property(x => x.OrderDate).HasColumnName("OrderDate").IsOptional();
             Property(x => x.RequiredDate).HasColumnName("RequiredDate").IsOptional();
@@ -881,7 +881,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             HasKey(x => new { x.OrderId, x.CompanyName });
 
             Property(x => x.OrderId).HasColumnName("OrderID").IsRequired();
-            Property(x => x.CustomerId).HasColumnName("CustomerID").IsOptional().HasMaxLength(5);
+            Property(x => x.CustomerId).HasColumnName("CustomerID").IsOptional().IsFixedLength().HasMaxLength(5);
             Property(x => x.EmployeeId).HasColumnName("EmployeeID").IsOptional();
             Property(x => x.OrderDate).HasColumnName("OrderDate").IsOptional();
             Property(x => x.RequiredDate).HasColumnName("RequiredDate").IsOptional();
@@ -993,7 +993,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             HasKey(x => x.RegionId);
 
             Property(x => x.RegionId).HasColumnName("RegionID").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
-            Property(x => x.RegionDescription).HasColumnName("RegionDescription").IsRequired().HasMaxLength(50);
+            Property(x => x.RegionDescription).HasColumnName("RegionDescription").IsRequired().IsFixedLength().HasMaxLength(50);
         }
     }
 
@@ -1101,7 +1101,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             HasKey(x => x.TerritoryId);
 
             Property(x => x.TerritoryId).HasColumnName("TerritoryID").IsRequired().HasMaxLength(20).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
-            Property(x => x.TerritoryDescription).HasColumnName("TerritoryDescription").IsRequired().HasMaxLength(50);
+            Property(x => x.TerritoryDescription).HasColumnName("TerritoryDescription").IsRequired().IsFixedLength().HasMaxLength(50);
             Property(x => x.RegionId).HasColumnName("RegionID").IsRequired();
 
             // Foreign keys
