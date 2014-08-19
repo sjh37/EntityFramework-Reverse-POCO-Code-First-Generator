@@ -377,6 +377,7 @@ namespace Scratch
             public bool IsPrimaryKey;
             public bool IsStoreGenerated;
             public bool IsRowVersion;
+            public bool IsFixedLength;
 
             public string Config;
             public string ConfigFk;
@@ -434,8 +435,9 @@ namespace Scratch
                     if (IsPrimaryKey && !IsIdentity && !IsStoreGenerated)
                         databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.None)";
                 }
-                Config = string.Format("Property(x => x.{0}).HasColumnName(\"{1}\"){2}{3}{4}{5}{6};", PropertyNameHumanCase, Name,
+                Config = string.Format("Property(x => x.{0}).HasColumnName(\"{1}\"){2}{3}{4}{5}{6}{7};", PropertyNameHumanCase, Name,
                                             (IsNullable) ? ".IsOptional()" : ".IsRequired()",
+                                            (IsFixedLength) ? ".IsFixedLength()" : "",
                                             (MaxLength > 0) ? ".HasMaxLength(" + MaxLength + ")" : string.Empty,
                                             (Scale > 0) ? ".HasPrecision(" + Precision + "," + Scale + ")" : string.Empty,
                                             (IsRowVersion) ? ".IsFixedLength().IsRowVersion()" : string.Empty,
@@ -1407,7 +1409,7 @@ ORDER BY FK.TABLE_NAME,
                 if (rdr == null)
                     throw new ArgumentNullException("rdr");
 
-                string typename = rdr["TypeName"].ToString().Trim();
+                string typename = rdr["TypeName"].ToString().Trim().ToLower();
                 var scale = (int)rdr["Scale"];
                 var precision = (int)rdr["Precision"];
 
@@ -1427,6 +1429,8 @@ ORDER BY FK.TABLE_NAME,
                     IsPrimaryKey = rdr["PrimaryKey"].ToString().Trim().ToLower() == "true"
                 };
 
+                col.IsFixedLength = (typename == "char" || typename == "nchar");
+                
                 col.IsRowVersion = col.IsStoreGenerated && !col.IsNullable && typename == "timestamp";
                 if (col.IsRowVersion)
                     col.MaxLength = 8;
