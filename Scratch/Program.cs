@@ -437,10 +437,10 @@ namespace Scratch
                 }
                 Config = string.Format("Property(x => x.{0}).HasColumnName(\"{1}\"){2}{3}{4}{5}{6}{7};", PropertyNameHumanCase, Name,
                                             (IsNullable) ? ".IsOptional()" : ".IsRequired()",
-                                            (IsFixedLength) ? ".IsFixedLength()" : "",
+                                            (IsFixedLength || IsRowVersion) ? ".IsFixedLength()" : "",
                                             (MaxLength > 0) ? ".HasMaxLength(" + MaxLength + ")" : string.Empty,
                                             (Scale > 0) ? ".HasPrecision(" + Precision + "," + Scale + ")" : string.Empty,
-                                            (IsRowVersion) ? ".IsFixedLength().IsRowVersion()" : string.Empty,
+                                            (IsRowVersion) ? ".IsRowVersion()" : string.Empty,
                                             databaseGeneratedOption);
             }
 
@@ -1430,7 +1430,7 @@ ORDER BY FK.TABLE_NAME,
                 };
 
                 col.IsFixedLength = (typename == "char" || typename == "nchar");
-                
+
                 col.IsRowVersion = col.IsStoreGenerated && !col.IsNullable && typename == "timestamp";
                 if (col.IsRowVersion)
                     col.MaxLength = 8;
