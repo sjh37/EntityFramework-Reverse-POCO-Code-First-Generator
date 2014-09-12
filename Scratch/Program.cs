@@ -378,6 +378,7 @@ namespace Scratch
             public bool IsStoreGenerated;
             public bool IsRowVersion;
             public bool IsFixedLength;
+            public bool IsUnicode;
 
             public string Config;
             public string ConfigFk;
@@ -435,9 +436,10 @@ namespace Scratch
                     if (IsPrimaryKey && !IsIdentity && !IsStoreGenerated)
                         databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.None)";
                 }
-                Config = string.Format("Property(x => x.{0}).HasColumnName(\"{1}\"){2}{3}{4}{5}{6}{7};", PropertyNameHumanCase, Name,
+                Config = string.Format("Property(x => x.{0}).HasColumnName(\"{1}\"){2}{3}{4}{5}{6}{7}{8};", PropertyNameHumanCase, Name,
                                             (IsNullable) ? ".IsOptional()" : ".IsRequired()",
                                             (IsFixedLength || IsRowVersion) ? ".IsFixedLength()" : "",
+                                            (IsUnicode) ? string.Empty : ".IsUnicode(false)",
                                             (MaxLength > 0) ? ".HasMaxLength(" + MaxLength + ")" : string.Empty,
                                             (Scale > 0) ? ".HasPrecision(" + Precision + "," + Scale + ")" : string.Empty,
                                             (IsRowVersion) ? ".IsRowVersion()" : string.Empty,
@@ -1430,6 +1432,7 @@ ORDER BY FK.TABLE_NAME,
                 };
 
                 col.IsFixedLength = (typename == "char" || typename == "nchar");
+                col.IsUnicode = !(typename == "char" || typename == "varchar" || typename == "text");
 
                 col.IsRowVersion = col.IsStoreGenerated && !col.IsNullable && typename == "timestamp";
                 if (col.IsRowVersion)

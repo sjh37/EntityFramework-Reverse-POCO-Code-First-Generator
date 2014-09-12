@@ -22,7 +22,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration;
 //using DatabaseGeneratedOption = System.ComponentModel.DataAnnotations.DatabaseGeneratedOption;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EntityFramework_Reverse_POCO_Generator
 {
@@ -712,7 +711,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.City).HasColumnName("City").IsOptional().HasMaxLength(15);
             Property(x => x.CompanyName).HasColumnName("CompanyName").IsRequired().HasMaxLength(40);
             Property(x => x.ContactName).HasColumnName("ContactName").IsOptional().HasMaxLength(30);
-            Property(x => x.Relationship).HasColumnName("Relationship").IsRequired().HasMaxLength(9);
+            Property(x => x.Relationship).HasColumnName("Relationship").IsRequired().IsUnicode(false).HasMaxLength(9);
         }
     }
 
