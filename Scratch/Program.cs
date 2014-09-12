@@ -1500,22 +1500,8 @@ ORDER BY FK.TABLE_NAME,
                         sysType = "float";
                         break;
                     case "numeric":
-                    case "decimal":
-                        if (scale == 0)
-                        {
-                            if (precision >= 15)
-                                sysType = "Int64";
-                            else if (precision >= 8)
-                                sysType = "Int32";
-                            else
-                                sysType = "Int16";
-                        }
-                        else
-                        {
-                            sysType = "Decimal";
-                        }
-                        break;
                     case "smallmoney":
+                    case "decimal":
                     case "money":
                         sysType = "decimal";
                         break;
