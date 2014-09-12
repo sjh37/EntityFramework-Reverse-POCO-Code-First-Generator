@@ -51,7 +51,6 @@ using DatabaseGeneratedOption = System.ComponentModel.DataAnnotations.Schema.Dat
 <#              break;
             default: #>
 //using DatabaseGeneratedOption = System.ComponentModel.DataAnnotations.DatabaseGeneratedOption;
-using System.ComponentModel.DataAnnotations.Schema;
 <#              break;
         }
     }    
