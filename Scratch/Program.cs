@@ -117,7 +117,7 @@ namespace Scratch
         string FileExtension = ".cs";
         bool UseCamelCase = true;
         bool IncludeComments = true;
-        ExtendedPropertyCommentsStyle IncludeExtendedPropertyComments = ExtendedPropertyCommentsStyle.AtEndOfField;
+        ExtendedPropertyCommentsStyle IncludeExtendedPropertyComments = ExtendedPropertyCommentsStyle.InSummaryBlock;
         bool AddWcfDataAttributes = false;
         string ExtraWcfDataContractAttributes = "";
         string SchemaName = null;
@@ -125,12 +125,11 @@ namespace Scratch
         bool PrependSchemaName = true;
         Regex TableFilterExclude = null;
         Regex TableFilterInclude = null;
-        Regex TableRenameFilter = null;
-        string TableRenameReplacement = "";
         string[] ConfigFilenameSearchOrder = null;
         private string _connectionString = "";
         private string _providerName = "";
         private string _configFilePath = "";
+        Func<string, string, string> TableRename;
 
         // Settings to allow selective code generation
         [Flags]
@@ -263,7 +262,7 @@ namespace Scratch
                         PrependSchemaName = false;
 
                     var reader = new SqlServerSchemaReader(conn, factory) { Outer = this };
-                    var tables = reader.ReadSchema(TableFilterExclude, UseCamelCase, PrependSchemaName, IncludeComments, TableRenameFilter, TableRenameReplacement, IncludeExtendedPropertyComments);
+                    var tables = reader.ReadSchema(TableFilterExclude, UseCamelCase, PrependSchemaName, IncludeComments, IncludeExtendedPropertyComments, TableRename);
                     tables.SetPrimaryKeys();
 
                     // Remove unrequired tables/views
@@ -291,7 +290,7 @@ namespace Scratch
                     }
 
                     // Must be done in this order
-                    var fkList = reader.ReadForeignKeys(TableRenameFilter, TableRenameReplacement);
+                    var fkList = reader.ReadForeignKeys(TableRename);
                     reader.IdentifyForeignKeys(fkList, tables);
                     reader.ProcessForeignKeys(fkList, tables, UseCamelCase, PrependSchemaName, CollectionType, true, IncludeComments);
                     tables.IdentifyMappingTables(fkList, UseCamelCase, PrependSchemaName, CollectionType, true, IncludeComments);
@@ -713,8 +712,8 @@ namespace Scratch
             }
 
             public GeneratedTextTransformation Outer;
-            public abstract Tables ReadSchema(Regex tableFilterExclude, bool useCamelCase, bool prependSchemaName, bool includeComments, Regex tableRenameFilter, string tableRenameReplacement, ExtendedPropertyCommentsStyle includeExtendedPropertyComments);
-            public abstract List<ForeignKey> ReadForeignKeys(Regex tableRenameFilter, string tableRenameReplacement);
+            public abstract Tables ReadSchema(Regex tableFilterExclude, bool useCamelCase, bool prependSchemaName, bool includeComments, ExtendedPropertyCommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename);
+            public abstract List<ForeignKey> ReadForeignKeys(Func<string, string, string> tableRename);
             public abstract void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool useCamelCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, bool includeComments);
             public abstract void IdentifyForeignKeys(List<ForeignKey> fkList, Tables tables);
             public abstract void ReadExtendedProperties(Tables tables);
@@ -1127,16 +1126,17 @@ ORDER BY FK.TABLE_NAME,
             {
             }
 
-            public override Tables ReadSchema(Regex tableFilterExclude, bool useCamelCase, bool prependSchemaName, bool includeComments, Regex tableRenameFilter, string tableRenameReplacement, ExtendedPropertyCommentsStyle includeExtendedPropertyComments)
+            public override Tables ReadSchema(Regex tableFilterExclude, bool useCamelCase, bool prependSchemaName, bool includeComments, ExtendedPropertyCommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename)
             {
                 var result = new Tables();
                 if (Cmd == null)
                     return result;
 
                 Cmd.CommandText = TableSQL;
-                Cmd.CommandTimeout = 600;
                 if (Cmd.GetType().Name == "SqlCeCommand")
                     Cmd.CommandText = TableSQLCE;
+                else
+                    Cmd.CommandTimeout = 600;
 
                 using (DbDataReader rdr = Cmd.ExecuteReader())
                 {
@@ -1167,8 +1167,7 @@ ORDER BY FK.TABLE_NAME,
                                     HasNullableColumns = false
                                 };
 
-                                if (tableRenameFilter != null)
-                                    tableName = tableRenameFilter.Replace(tableName, tableRenameReplacement);
+                                tableName = tableRename(tableName, schema);
 
                                 table.CleanName = CleanUp(tableName);
                                 table.ClassName = Inflector.MakeSingular(table.CleanName);
@@ -1211,7 +1210,7 @@ ORDER BY FK.TABLE_NAME,
                 return result;
             }
 
-            public override List<ForeignKey> ReadForeignKeys(Regex tableRenameFilter, string tableRenameReplacement)
+            public override List<ForeignKey> ReadForeignKeys(Func<string, string, string> tableRename)
             {
                 var fkList = new List<ForeignKey>();
                 if (Cmd == null)
@@ -1234,16 +1233,8 @@ ORDER BY FK.TABLE_NAME,
                         string constraintName = rdr["Constraint_Name"].ToString().Replace(" ", "");
 
                         string fkTableNameFiltered, pkTableNameFiltered;
-                        if (tableRenameFilter != null)
-                        {
-                            fkTableNameFiltered = tableRenameFilter.Replace(fkTableName, tableRenameReplacement);
-                            pkTableNameFiltered = tableRenameFilter.Replace(pkTableName, tableRenameReplacement);
-                        }
-                        else
-                        {
-                            fkTableNameFiltered = fkTableName;
-                            pkTableNameFiltered = pkTableName;
-                        }
+                        fkTableNameFiltered = tableRename(fkTableName, fkSchema);
+                        pkTableNameFiltered = tableRename(pkTableName, pkSchema);
 
                         fkList.Add(new ForeignKey(fkTableName, fkSchema, pkTableName, pkSchema, fkColumn, pkColumn, constraintName, fkTableNameFiltered, pkTableNameFiltered));
                     }
