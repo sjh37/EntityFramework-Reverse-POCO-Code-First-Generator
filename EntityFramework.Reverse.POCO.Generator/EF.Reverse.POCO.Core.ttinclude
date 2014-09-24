@@ -1856,10 +1856,10 @@ ORDER BY FK.TABLE_NAME,
 
                 MappingConfiguration.Add(string.Format(@"HasMany(t => t.{0}).WithMany(t => t.{1}).Map(m => 
             {{
-                m.ToTable(""{2}"");
+                m.ToTable(""{2}""{5});
                 m.MapLeftKey(""{3}"");
                 m.MapRightKey(""{4}"");
-            }});", rightTableHumanCase, leftTableHumanCase, left.FkTableName, left.FkColumn, right.FkColumn));
+            }});", rightTableHumanCase, leftTableHumanCase, left.FkTableName, left.FkColumn, right.FkColumn, prependSchemaName ? ", schema" : ""));
             }
 
             public void SetPrimaryKeys()
