@@ -1134,6 +1134,7 @@ ORDER BY FK.TABLE_NAME,
                     return result;
 
                 Cmd.CommandText = TableSQL;
+                Cmd.CommandTimeout = 600;
                 if (Cmd.GetType().Name == "SqlCeCommand")
                     Cmd.CommandText = TableSQLCE;
 
