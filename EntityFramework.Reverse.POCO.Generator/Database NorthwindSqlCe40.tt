@@ -13,7 +13,7 @@
     MakeClassesPartial = false;
     GenerateSeparateFiles = false;
     UseCamelCase = true;    // This will rename the tables & fields to use CamelCase. If false table & field names will be left alone.
-    IncludeComments = true; // Adds comments the generated code
+    IncludeComments = true; // Adds comments to the generated code
     IncludeExtendedPropertyComments = ExtendedPropertyCommentsStyle.AtEndOfField; // Adds extended properties as comments to the generated code
     IncludeViews = true;
     DisableGeographyTypes = false; // Turns off use of System.Data.Entity.Spatial.DbGeography and System.Data.Entity.Spatial.DbGeometry as OData doesn't support entities with geometry/geography types.
@@ -77,10 +77,15 @@
     TableFilterInclude = null;
 
     // Table renaming *********************************************************************************************************************
-    // Use the following regex to rename tables such as tblOrders to Orders, AB_Shipments to Shipments, etc.
-    // TableRenameFilter = new Regex("^tbl|^AB_");
-    TableRenameFilter = null;
-    TableRenameReplacement = "";
+    // Use the following function to rename tables such as tblOrders to Orders, Shipments_AB to Shipments, etc.
+    // Example:
+    /*TableRename = (name, schema) =>
+    {
+        if (name.StartsWith("tbl"))
+            name = name.Remove(0, 3);
+        return name.Replace("_AB", "");
+    };*/
+    TableRename = (name, schema) => name;   // Do nothing by default
 
 
     // WCF ********************************************************************************************************************************

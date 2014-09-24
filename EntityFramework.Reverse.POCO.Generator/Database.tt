@@ -77,10 +77,15 @@
     TableFilterInclude = null;
 
     // Table renaming *********************************************************************************************************************
-    // Use the following regex to rename tables such as tblOrders to Orders, AB_Shipments to Shipments, etc.
-    // TableRenameFilter = new Regex("^tbl|^AB_");
-    TableRenameFilter = null;
-    TableRenameReplacement = "";
+    // Use the following function to rename tables such as tblOrders to Orders, Shipments_AB to Shipments, etc.
+    // Example:
+    /*TableRename = (name, schema) =>
+    {
+        if (name.StartsWith("tbl"))
+            name = name.Remove(0, 3);
+        return name.Replace("_AB", "");
+    };*/
+    TableRename = (name, schema) => name;   // Do nothing by default
 
 
     // WCF ********************************************************************************************************************************
@@ -124,7 +129,7 @@
     var tables = LoadTables();
     
     // Generate output
-    if (tables.Count>0)
+    if (tables.Count > 0)
     {
 #>
 <#@ include file="EF.Reverse.POCO.ttinclude" #>
