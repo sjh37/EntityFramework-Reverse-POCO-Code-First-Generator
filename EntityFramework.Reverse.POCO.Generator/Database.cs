@@ -18,6 +18,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Linq.Expressions;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration;
@@ -169,6 +172,161 @@ namespace EntityFramework_Reverse_POCO_Generator
             modelBuilder.Configurations.Add(new SupplierConfiguration(schema));
             modelBuilder.Configurations.Add(new TerritoryConfiguration(schema));
             return modelBuilder;
+        }
+    }
+
+    // ************************************************************************
+    // Fake Database context
+    public class FakeMyDbContext : IMyDbContext
+    {
+        public IDbSet<AlphabeticalListOfProduct> AlphabeticalListOfProducts { get; set; }
+        public IDbSet<Category> Categories { get; set; }
+        public IDbSet<CategorySalesFor1997> CategorySalesFor1997 { get; set; }
+        public IDbSet<CurrentProductList> CurrentProductLists { get; set; }
+        public IDbSet<Customer> Customers { get; set; }
+        public IDbSet<CustomerAndSuppliersByCity> CustomerAndSuppliersByCities { get; set; }
+        public IDbSet<CustomerDemographic> CustomerDemographics { get; set; }
+        public IDbSet<Employee> Employees { get; set; }
+        public IDbSet<Invoice> Invoices { get; set; }
+        public IDbSet<Order> Orders { get; set; }
+        public IDbSet<OrderDetail> OrderDetails { get; set; }
+        public IDbSet<OrderDetailsExtended> OrderDetailsExtendeds { get; set; }
+        public IDbSet<OrdersQry> OrdersQries { get; set; }
+        public IDbSet<OrderSubtotal> OrderSubtotals { get; set; }
+        public IDbSet<Product> Products { get; set; }
+        public IDbSet<ProductsAboveAveragePrice> ProductsAboveAveragePrices { get; set; }
+        public IDbSet<ProductSalesFor1997> ProductSalesFor1997 { get; set; }
+        public IDbSet<ProductsByCategory> ProductsByCategories { get; set; }
+        public IDbSet<Region> Regions { get; set; }
+        public IDbSet<SalesByCategory> SalesByCategories { get; set; }
+        public IDbSet<SalesTotalsByAmount> SalesTotalsByAmounts { get; set; }
+        public IDbSet<Shipper> Shippers { get; set; }
+        public IDbSet<SummaryOfSalesByQuarter> SummaryOfSalesByQuarters { get; set; }
+        public IDbSet<SummaryOfSalesByYear> SummaryOfSalesByYears { get; set; }
+        public IDbSet<Supplier> Suppliers { get; set; }
+        public IDbSet<Territory> Territories { get; set; }
+
+        public FakeMyDbContext()
+        {
+            AlphabeticalListOfProducts = new FakeDbSet<AlphabeticalListOfProduct>();
+            Categories = new FakeDbSet<Category>();
+            CategorySalesFor1997 = new FakeDbSet<CategorySalesFor1997>();
+            CurrentProductLists = new FakeDbSet<CurrentProductList>();
+            Customers = new FakeDbSet<Customer>();
+            CustomerAndSuppliersByCities = new FakeDbSet<CustomerAndSuppliersByCity>();
+            CustomerDemographics = new FakeDbSet<CustomerDemographic>();
+            Employees = new FakeDbSet<Employee>();
+            Invoices = new FakeDbSet<Invoice>();
+            Orders = new FakeDbSet<Order>();
+            OrderDetails = new FakeDbSet<OrderDetail>();
+            OrderDetailsExtendeds = new FakeDbSet<OrderDetailsExtended>();
+            OrdersQries = new FakeDbSet<OrdersQry>();
+            OrderSubtotals = new FakeDbSet<OrderSubtotal>();
+            Products = new FakeDbSet<Product>();
+            ProductsAboveAveragePrices = new FakeDbSet<ProductsAboveAveragePrice>();
+            ProductSalesFor1997 = new FakeDbSet<ProductSalesFor1997>();
+            ProductsByCategories = new FakeDbSet<ProductsByCategory>();
+            Regions = new FakeDbSet<Region>();
+            SalesByCategories = new FakeDbSet<SalesByCategory>();
+            SalesTotalsByAmounts = new FakeDbSet<SalesTotalsByAmount>();
+            Shippers = new FakeDbSet<Shipper>();
+            SummaryOfSalesByQuarters = new FakeDbSet<SummaryOfSalesByQuarter>();
+            SummaryOfSalesByYears = new FakeDbSet<SummaryOfSalesByYear>();
+            Suppliers = new FakeDbSet<Supplier>();
+            Territories = new FakeDbSet<Territory>();
+        }
+
+        public int SaveChanges()
+        {
+            return 0;
+        }
+
+        public void Dispose()
+        {
+            throw new NotImplementedException(); 
+        }
+    }
+
+    // ************************************************************************
+    // Fake DbSet
+    public class FakeDbSet<T> : IDbSet<T> where T : class
+    {
+        private readonly HashSet<T> _data;
+
+        public FakeDbSet()
+        {
+            _data = new HashSet<T>();
+        }
+
+        public virtual T Find(params object[] keyValues)
+        {
+            throw new NotImplementedException();
+        }
+
+        public T Add(T item)
+        {
+            _data.Add(item);
+            return item;
+        }
+
+        public T Remove(T item)
+        {
+            _data.Remove(item);
+            return item;
+        }
+
+        public T Attach(T item)
+        {
+            _data.Add(item);
+            return item;
+        }
+
+        public void Detach(T item)
+        {
+            _data.Remove(item);
+        }
+
+        Type IQueryable.ElementType
+        {
+            get { return _data.AsQueryable().ElementType; }
+        }
+
+        Expression IQueryable.Expression
+        {
+            get { return _data.AsQueryable().Expression; }
+        }
+
+        IQueryProvider IQueryable.Provider
+        {
+            get { return _data.AsQueryable().Provider; }
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return _data.GetEnumerator();
+        }
+
+        IEnumerator<T> IEnumerable<T>.GetEnumerator()
+        {
+            return _data.GetEnumerator();
+        }
+
+        public T Create()
+        {
+            return Activator.CreateInstance<T>();
+        }
+
+        public ObservableCollection<T> Local
+        {
+            get
+            {
+                return new ObservableCollection<T>(_data);
+            }
+        }
+
+        public TDerivedEntity Create<TDerivedEntity>() where TDerivedEntity : class, T
+        {
+            return Activator.CreateInstance<TDerivedEntity>();
         }
     }
 
