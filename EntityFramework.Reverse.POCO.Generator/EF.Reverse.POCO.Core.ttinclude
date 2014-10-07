@@ -34,6 +34,7 @@
         // Settings - edit these in the main <name>.tt file *******************************************************************************
         string ConnectionStringName = "";        		
         bool IncludeViews = true;
+        bool AddUnitTestingDbContext = true;
         string DbContextName = "MyDbContext";
         string ConfigurationClassName = "Configuration";
         string CollectionType = "List";
