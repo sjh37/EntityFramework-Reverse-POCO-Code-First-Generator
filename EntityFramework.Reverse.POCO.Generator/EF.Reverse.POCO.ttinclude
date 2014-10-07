@@ -161,30 +161,32 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.Na
 <#}#>
     }
 <# }
-    if(ElementsToGenerate.HasFlag(Elements.Context) && AddUnitTestingDbContext){ 
-    fileManager.StartNewFile("Fake" + DbContextName + FileExtension); #>
-<# if(!GenerateSeparateFiles) { #>
+    if (ElementsToGenerate.HasFlag(Elements.Context) && AddUnitTestingDbContext)
+    {
+        fileManager.StartNewFile("Fake" + DbContextName + FileExtension); #>
+<# if (!GenerateSeparateFiles)
+{ #>
 
     // ************************************************************************
     // Fake Database context
 <# } #>
-    public <# if(MakeClassesPartial) { #>partial <# } #>class Fake<#=DbContextName#> : I<#=DbContextName#>
+    public class Fake<#=DbContextName #> : I<#=DbContextName #>
     {
 <#
-foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
+foreach (Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
 {
 #>
-        public IDbSet<<#=tbl.NameHumanCase#>> <#=Inflector.MakePlural(tbl.NameHumanCase)#> { get; set; }
+        public IDbSet<<#=tbl.NameHumanCase #>> <#=Inflector.MakePlural(tbl.NameHumanCase) #> { get; set; }
 <# } #>
 
-        public Fake<#=DbContextName#>()
+        public Fake<#=DbContextName #>()
         {
 <#
-foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
+foreach (Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
 {
 #>
-            <#=Inflector.MakePlural(tbl.NameHumanCase)#> = new FakeDbSet<<#=tbl.NameHumanCase#>>();
-<#}#>
+            <#=Inflector.MakePlural(tbl.NameHumanCase) #> = new FakeDbSet<<#=tbl.NameHumanCase #>>();
+<# } #>
         }
 
         public int SaveChanges()
@@ -195,6 +197,93 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.Na
         public void Dispose()
         {
             throw new NotImplementedException(); 
+        }
+    }
+<#fileManager.StartNewFile("FakeDbSet" + FileExtension); #>
+<# if (!GenerateSeparateFiles)
+{ #>
+
+    // ************************************************************************
+    // Fake DbSet
+<# } #>
+    public class FakeDbSet<T> : IDbSet<T> where T : class
+    {
+        private readonly HashSet<T> _data;
+
+        public FakeDbSet()
+        {
+            _data = new HashSet<T>();
+        }
+
+        public virtual T Find(params object[] keyValues)
+        {
+            throw new NotImplementedException();
+        }
+
+        public T Add(T item)
+        {
+            _data.Add(item);
+            return item;
+        }
+
+        public T Remove(T item)
+        {
+            _data.Remove(item);
+            return item;
+        }
+
+        public T Attach(T item)
+        {
+            _data.Add(item);
+            return item;
+        }
+
+        public void Detach(T item)
+        {
+            _data.Remove(item);
+        }
+
+        Type IQueryable.ElementType
+        {
+            get { return _data.AsQueryable().ElementType; }
+        }
+
+        Expression IQueryable.Expression
+        {
+            get { return _data.AsQueryable().Expression; }
+        }
+
+        IQueryProvider IQueryable.Provider
+        {
+            get { return _data.AsQueryable().Provider; }
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return _data.GetEnumerator();
+        }
+
+        IEnumerator<T> IEnumerable<T>.GetEnumerator()
+        {
+            return _data.GetEnumerator();
+        }
+
+        public T Create()
+        {
+            return Activator.CreateInstance<T>();
+        }
+
+        public ObservableCollection<T> Local
+        {
+            get
+            {
+                return new ObservableCollection<T>(_data);
+            }
+        }
+
+        public TDerivedEntity Create<TDerivedEntity>() where TDerivedEntity : class, T
+        {
+            return Activator.CreateInstance<TDerivedEntity>();
         }
     }
 <# }
