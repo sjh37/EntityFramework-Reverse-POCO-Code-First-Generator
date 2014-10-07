@@ -18,6 +18,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Linq.Expressions;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration;
@@ -97,6 +100,125 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
             modelBuilder.Configurations.Add(new ShipperConfiguration(schema));
             modelBuilder.Configurations.Add(new SupplierConfiguration(schema));
             return modelBuilder;
+        }
+    }
+
+    // ************************************************************************
+    // Fake Database context
+    public class FakeMyDbContextSqlCE4 : IMyDbContextSqlCE4
+    {
+        public IDbSet<Category> Categories { get; set; }
+        public IDbSet<Customer> Customers { get; set; }
+        public IDbSet<Employee> Employees { get; set; }
+        public IDbSet<Order> Orders { get; set; }
+        public IDbSet<OrderDetail> OrderDetails { get; set; }
+        public IDbSet<Product> Products { get; set; }
+        public IDbSet<Shipper> Shippers { get; set; }
+        public IDbSet<Supplier> Suppliers { get; set; }
+
+        public FakeMyDbContextSqlCE4()
+        {
+            Categories = new FakeDbSet<Category>();
+            Customers = new FakeDbSet<Customer>();
+            Employees = new FakeDbSet<Employee>();
+            Orders = new FakeDbSet<Order>();
+            OrderDetails = new FakeDbSet<OrderDetail>();
+            Products = new FakeDbSet<Product>();
+            Shippers = new FakeDbSet<Shipper>();
+            Suppliers = new FakeDbSet<Supplier>();
+        }
+
+        public int SaveChanges()
+        {
+            return 0;
+        }
+
+        public void Dispose()
+        {
+            throw new NotImplementedException(); 
+        }
+    }
+
+    // ************************************************************************
+    // Fake DbSet
+    public class FakeDbSet<T> : IDbSet<T> where T : class
+    {
+        private readonly HashSet<T> _data;
+
+        public FakeDbSet()
+        {
+            _data = new HashSet<T>();
+        }
+
+        public virtual T Find(params object[] keyValues)
+        {
+            throw new NotImplementedException();
+        }
+
+        public T Add(T item)
+        {
+            _data.Add(item);
+            return item;
+        }
+
+        public T Remove(T item)
+        {
+            _data.Remove(item);
+            return item;
+        }
+
+        public T Attach(T item)
+        {
+            _data.Add(item);
+            return item;
+        }
+
+        public void Detach(T item)
+        {
+            _data.Remove(item);
+        }
+
+        Type IQueryable.ElementType
+        {
+            get { return _data.AsQueryable().ElementType; }
+        }
+
+        Expression IQueryable.Expression
+        {
+            get { return _data.AsQueryable().Expression; }
+        }
+
+        IQueryProvider IQueryable.Provider
+        {
+            get { return _data.AsQueryable().Provider; }
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return _data.GetEnumerator();
+        }
+
+        IEnumerator<T> IEnumerable<T>.GetEnumerator()
+        {
+            return _data.GetEnumerator();
+        }
+
+        public T Create()
+        {
+            return Activator.CreateInstance<T>();
+        }
+
+        public ObservableCollection<T> Local
+        {
+            get
+            {
+                return new ObservableCollection<T>(_data);
+            }
+        }
+
+        public TDerivedEntity Create<TDerivedEntity>() where TDerivedEntity : class, T
+        {
+            return Activator.CreateInstance<TDerivedEntity>();
         }
     }
 
