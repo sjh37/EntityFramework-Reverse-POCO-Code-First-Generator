@@ -12,13 +12,18 @@ fileManager.StartHeader();
 // ReSharper disable RedundantNameQualifier
 
 using System;
-<# if(ElementsToGenerate.HasFlag(Elements.Poco)){ #>
+<# if(ElementsToGenerate.HasFlag(Elements.Poco) || (ElementsToGenerate.HasFlag(Elements.Context) && AddUnitTestingDbContext)){ #>
 using System.Collections.Generic;
+<# } #>
+<# if(ElementsToGenerate.HasFlag(Elements.Context) && AddUnitTestingDbContext){ #>
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Linq.Expressions;
 <# } #>
 <# if((ElementsToGenerate.HasFlag(Elements.Context) || ElementsToGenerate.HasFlag(Elements.Poco)) && IsSupportedFrameworkVersion("4.5")){ #>
 using System.ComponentModel.DataAnnotations.Schema;
 <# } #>
-<# if(ElementsToGenerate.HasFlag(Elements.Context) || ElementsToGenerate.HasFlag(Elements.UnitOfWork)){ #>
+<# if(ElementsToGenerate.HasFlag(Elements.Context) || ElementsToGenerate.HasFlag(Elements.UnitOfWork) || AddUnitTestingDbContext){ #>
 using System.Data.Entity;
 <# } #>
 <# if(ElementsToGenerate.HasFlag(Elements.PocoConfiguration)){ #>
@@ -154,6 +159,43 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.Na
         partial void InitializePartial();
         partial void OnModelCreatingPartial(DbModelBuilder modelBuilder);
 <#}#>
+    }
+<# }
+    if(ElementsToGenerate.HasFlag(Elements.Context) && AddUnitTestingDbContext){ 
+    fileManager.StartNewFile("Fake" + DbContextName + FileExtension); #>
+<# if(!GenerateSeparateFiles) { #>
+
+    // ************************************************************************
+    // Fake Database context
+<# } #>
+    public <# if(MakeClassesPartial) { #>partial <# } #>class Fake<#=DbContextName#> : I<#=DbContextName#>
+    {
+<#
+foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
+{
+#>
+        public IDbSet<<#=tbl.NameHumanCase#>> <#=Inflector.MakePlural(tbl.NameHumanCase)#> { get; set; }
+<# } #>
+
+        public Fake<#=DbContextName#>()
+        {
+<#
+foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
+{
+#>
+            <#=Inflector.MakePlural(tbl.NameHumanCase)#> = new FakeDbSet<<#=tbl.NameHumanCase#>>();
+<#}#>
+        }
+
+        public int SaveChanges()
+        {
+            return 0;
+        }
+
+        public void Dispose()
+        {
+            throw new NotImplementedException(); 
+        }
     }
 <# }
  if(ElementsToGenerate.HasFlag(Elements.Poco)){

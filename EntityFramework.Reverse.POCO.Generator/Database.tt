@@ -19,6 +19,7 @@
     DisableGeographyTypes = false; // Turns off use of System.Data.Entity.Spatial.DbGeography and System.Data.Entity.Spatial.DbGeometry as OData doesn't support entities with geometry/geography types.
     CollectionType = "List";  // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example
     CollectionTypeNamespace = ""; // "System.Collections.ObjectModel" is required if setting the CollectionType = "ObservableCollection"
+    AddUnitTestingDbContext = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing
     
 
     // Pluralization **********************************************************************************************************************
