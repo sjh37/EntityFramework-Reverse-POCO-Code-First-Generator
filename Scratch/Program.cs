@@ -1309,6 +1309,11 @@ ORDER BY FK.TABLE_NAME,
                     var fkCols = foreignKeys.Select(x => fkTable.Columns.Find(n => n.PropertyName == x.FkColumn)).Where(x => x != null).OrderBy(o => o.Ordinal).ToList();
                     var pkCols = foreignKeys.Select(x => pkTable.Columns.Find(n => n.PropertyName == x.PkColumn)).Where(x => x != null).OrderBy(o => o.Ordinal).ToList();
 
+                    if (!fkCols.Any())
+                        fkCols = foreignKeys.Select(x => fkTable.Columns.Find(n => n.PropertyName == x.FkColumn + "_")).Where(x => x != null).OrderBy(o => o.Ordinal).ToList();
+                    if (!pkCols.Any())
+                        pkCols = foreignKeys.Select(x => pkTable.Columns.Find(n => n.PropertyName == x.PkColumn + "_")).Where(x => x != null).OrderBy(o => o.Ordinal).ToList();
+
                     var fkCol = fkCols.First();
                     var pkCol = pkCols.First();
 
