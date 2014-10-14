@@ -111,7 +111,7 @@
     // Writes optional base classes
     Func<Table, string> WritePocoBaseClasses = t =>
     {
-        //if (t.ClassName == "Member")
+        //if (t.ClassName == "User")
         //    return ": IdentityUser<int, CustomUserLogin, CustomUserRole, CustomUserClaim>";
         return "";
     };
