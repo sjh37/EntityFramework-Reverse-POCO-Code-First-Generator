@@ -109,7 +109,12 @@
     };
 
     // Writes optional base classes
-    Func<Table, string> WritePocoBaseClasses = null;    // t => "IMyBaseClass";
+    Func<Table, string> WritePocoBaseClasses = t =>
+    {
+        //if (t.ClassName == "Member")
+        //    return ": IdentityUser<int, CustomUserLogin, CustomUserRole, CustomUserClaim>";
+        return "";
+    };
 
     // Writes any boilerplate stuff
     Action<Table> WritePocoBaseClassBody = t =>
