@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFramework.Reverse.POCO.Generator", "EntityFramework.Reverse.POCO.Generator\EntityFramework.Reverse.POCO.Generator.csproj", "{FA93A0BD-8B45-43BA-9C57-1D8FD63CAEAE}"
 EndProject
@@ -18,7 +18,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{74858508-B074-40EA-8F3C-4B9AC7936EE0}"
 	ProjectSection(SolutionItems) = preProject
 		NorthwindSqlCe40.sdf = NorthwindSqlCe40.sdf
-		NuGet.Config = NuGet.Config
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFramework Reverse POCO Generator", "EntityFramework Reverse POCO Generator\EntityFramework Reverse POCO Generator.csproj", "{14C1FD62-34DB-49B9-B35A-B363398D0914}"

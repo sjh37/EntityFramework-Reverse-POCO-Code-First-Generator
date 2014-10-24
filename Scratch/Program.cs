@@ -14,8 +14,8 @@ namespace Scratch
     {
         static void Main()
         {
-            GeneratedTextTransformation.Inflector.PluralizationService = new SpanishPluralizationService();
-            GeneratedTextTransformation.Inflector.PluralizationService = null;
+            //GeneratedTextTransformation.Inflector.PluralizationService = new SpanishPluralizationService();
+            //GeneratedTextTransformation.Inflector.PluralizationService = null;
             GeneratedTextTransformation.Inflector.PluralizationService = new EnglishPluralizationService();
 
             using (var sw = new StreamWriter(@"c:\fred.txt"))
