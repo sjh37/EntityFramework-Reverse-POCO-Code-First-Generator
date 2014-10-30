@@ -57,6 +57,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         IDbSet<SummaryOfSalesByQuarter> SummaryOfSalesByQuarters { get; set; } // Summary of Sales by Quarter
         IDbSet<SummaryOfSalesByYear> SummaryOfSalesByYears { get; set; } // Summary of Sales by Year
         IDbSet<Supplier> Suppliers { get; set; } // Suppliers
+        IDbSet<Sysdiagram> Sysdiagrams { get; set; } // sysdiagrams
         IDbSet<Territory> Territories { get; set; } // Territories
 
         int SaveChanges();
@@ -91,6 +92,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public IDbSet<SummaryOfSalesByQuarter> SummaryOfSalesByQuarters { get; set; } // Summary of Sales by Quarter
         public IDbSet<SummaryOfSalesByYear> SummaryOfSalesByYears { get; set; } // Summary of Sales by Year
         public IDbSet<Supplier> Suppliers { get; set; } // Suppliers
+        public IDbSet<Sysdiagram> Sysdiagrams { get; set; } // sysdiagrams
         public IDbSet<Territory> Territories { get; set; } // Territories
 
         static MyDbContext()
@@ -140,6 +142,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             modelBuilder.Configurations.Add(new SummaryOfSalesByQuarterConfiguration());
             modelBuilder.Configurations.Add(new SummaryOfSalesByYearConfiguration());
             modelBuilder.Configurations.Add(new SupplierConfiguration());
+            modelBuilder.Configurations.Add(new SysdiagramConfiguration());
             modelBuilder.Configurations.Add(new TerritoryConfiguration());
         }
 
@@ -170,6 +173,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             modelBuilder.Configurations.Add(new SummaryOfSalesByQuarterConfiguration(schema));
             modelBuilder.Configurations.Add(new SummaryOfSalesByYearConfiguration(schema));
             modelBuilder.Configurations.Add(new SupplierConfiguration(schema));
+            modelBuilder.Configurations.Add(new SysdiagramConfiguration(schema));
             modelBuilder.Configurations.Add(new TerritoryConfiguration(schema));
             return modelBuilder;
         }
@@ -204,6 +208,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public IDbSet<SummaryOfSalesByQuarter> SummaryOfSalesByQuarters { get; set; }
         public IDbSet<SummaryOfSalesByYear> SummaryOfSalesByYears { get; set; }
         public IDbSet<Supplier> Suppliers { get; set; }
+        public IDbSet<Sysdiagram> Sysdiagrams { get; set; }
         public IDbSet<Territory> Territories { get; set; }
 
         public FakeMyDbContext()
@@ -233,6 +238,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             SummaryOfSalesByQuarters = new FakeDbSet<SummaryOfSalesByQuarter>();
             SummaryOfSalesByYears = new FakeDbSet<SummaryOfSalesByYear>();
             Suppliers = new FakeDbSet<Supplier>();
+            Sysdiagrams = new FakeDbSet<Sysdiagram>();
             Territories = new FakeDbSet<Territory>();
         }
 
@@ -744,6 +750,16 @@ namespace EntityFramework_Reverse_POCO_Generator
         }
     }
 
+    // sysdiagrams
+    public class Sysdiagram
+    {
+        public string Name { get; set; } // name
+        public int PrincipalId { get; set; } // principal_id
+        public int DiagramId { get; set; } // diagram_id (Primary key)
+        public int? Version { get; set; } // version
+        public byte[] Definition { get; set; } // definition
+    }
+
     // Territories
     public class Territory
     {
@@ -930,7 +946,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public InvoiceConfiguration(string schema = "dbo")
         {
             ToTable(schema + ".Invoices");
-            HasKey(x => new { x.CustomerName, x.Salesperson, x.OrderId, x.ShipperName, x.ProductId, x.ProductName, x.UnitPrice, x.Quantity, x.Discount });
+            HasKey(x => new { x.ShipperName, x.ProductId, x.ProductName, x.UnitPrice, x.Quantity, x.Discount, x.Salesperson, x.OrderId, x.CustomerName });
 
             Property(x => x.ShipName).HasColumnName("ShipName").IsOptional().HasMaxLength(40);
             Property(x => x.ShipAddress).HasColumnName("ShipAddress").IsOptional().HasMaxLength(60);
@@ -1246,6 +1262,22 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.Phone).HasColumnName("Phone").IsOptional().HasMaxLength(24);
             Property(x => x.Fax).HasColumnName("Fax").IsOptional().HasMaxLength(24);
             Property(x => x.HomePage).HasColumnName("HomePage").IsOptional().HasMaxLength(1073741823);
+        }
+    }
+
+    // sysdiagrams
+    internal class SysdiagramConfiguration : EntityTypeConfiguration<Sysdiagram>
+    {
+        public SysdiagramConfiguration(string schema = "dbo")
+        {
+            ToTable(schema + ".sysdiagrams");
+            HasKey(x => x.DiagramId);
+
+            Property(x => x.Name).HasColumnName("name").IsRequired().HasMaxLength(128);
+            Property(x => x.PrincipalId).HasColumnName("principal_id").IsRequired();
+            Property(x => x.DiagramId).HasColumnName("diagram_id").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.Version).HasColumnName("version").IsOptional();
+            Property(x => x.Definition).HasColumnName("definition").IsOptional();
         }
     }
 
