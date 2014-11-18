@@ -395,7 +395,10 @@
 
         private Tables LoadTables(DbProviderFactory factory)
         {
-            if(factory == null)
+            if(factory == null || !(ElementsToGenerate.HasFlag(Elements.Poco) || 
+                                    ElementsToGenerate.HasFlag(Elements.Context) || 
+                                    ElementsToGenerate.HasFlag(Elements.UnitOfWork) || 
+                                    ElementsToGenerate.HasFlag(Elements.PocoConfiguration)))
                 return new Tables();
 
             try

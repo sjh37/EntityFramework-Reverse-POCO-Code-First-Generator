@@ -427,6 +427,20 @@ foreach (string s in tbl.MappingConfiguration)
         partial void InitializePartial();
 <#}#>    }
 
+<# } }
+if(ElementsToGenerate.HasFlag(Elements.StoredProcedures)){
+if(!GenerateSeparateFiles) { #>
+
+    // ************************************************************************
+    // Stored Procedures
+
+<# } #>
+<#
+foreach(StoredProcedure sp in storedProcs)
+{
+#>
+<# fileManager.StartNewFile(sp.NameHumanCase + FileExtension); #>
+    // <#= sp.NameHumanCase #>
 <# } } #>
 <# fileManager.StartFooter(); #>
 }
