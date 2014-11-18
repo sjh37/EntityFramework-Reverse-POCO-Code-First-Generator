@@ -132,10 +132,10 @@
     
     
     // Read schema
-    var tables = LoadTables();
+    var tables = LoadTables(GetDbProviderFactory());
     
     // Generate output
-    if (tables.Count>0)
+    if (tables.Count > 0)
     {
 #>
 <#@ include file="EF.Reverse.POCO.ttinclude" #>

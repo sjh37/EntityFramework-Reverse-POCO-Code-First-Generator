@@ -16,11 +16,11 @@
     IncludeComments = true; // Adds comments to the generated code
     IncludeExtendedPropertyComments = ExtendedPropertyCommentsStyle.AtEndOfField; // Adds extended properties as comments to the generated code
     IncludeViews = true;
+    IncludeStoredProcedures = true;
     DisableGeographyTypes = false; // Turns off use of System.Data.Entity.Spatial.DbGeography and System.Data.Entity.Spatial.DbGeometry as OData doesn't support entities with geometry/geography types.
     CollectionType = "List";  // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example
     CollectionTypeNamespace = ""; // "System.Collections.ObjectModel" is required if setting the CollectionType = "ObservableCollection"
     AddUnitTestingDbContext = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing
-    
 
     // Pluralization **********************************************************************************************************************
     // To turn off pluralization, use:
@@ -38,7 +38,7 @@
     // Elements to generate ***************************************************************************************************************
     // Add the elements that should be generated when the template is executed.
     // Multiple projects can now be used that separate the different concerns.
-    ElementsToGenerate =  Elements.Poco | Elements.Context | Elements.UnitOfWork | Elements.PocoConfiguration;
+    ElementsToGenerate =  Elements.Poco | Elements.Context | Elements.UnitOfWork | Elements.PocoConfiguration | Elements.StoredProcedures;
 
     // Use these namespaces to specify where the different elements of the template are being generated.
     PocoNamespace = "";
@@ -63,6 +63,7 @@
     SchemaName = null;
     PrependSchemaName = true;   // Control if the schema name is prepended to the table name
 
+
     // Filtering **************************************************************************************************************************
     // Use the following table/view name regex filters to include or exclude tables/views
     // Exclude filters are checked first and tables matching filters are removed.
@@ -77,6 +78,13 @@
     TableFilterExclude = null;
     TableFilterInclude = null;
 
+
+    // Stored Procedures ******************************************************************************************************************
+    // Use the following regex filters to include or exclude stored procedures
+    StoredProcedureFilterExclude = null;
+    StoredProcedureFilterInclude = null;
+
+
     // Table renaming *********************************************************************************************************************
     // Use the following function to rename tables such as tblOrders to Orders, Shipments_AB to Shipments, etc.
     // Example:
@@ -87,6 +95,17 @@
         return name.Replace("_AB", "");
     };*/
     TableRename = (name, schema) => name;   // Do nothing by default
+    
+    // StoredProcedure renaming ************************************************************************************************************
+    // Use the following function to rename stored procs such as sp_CreateOrderHistory to CreateOrderHistory, my_sp_shipments to Shipments, etc.
+    // Example:
+    /*StoredProcedureRename = (name, schema) =>
+    {
+        if (name.StartsWith("sp_"))
+            name = name.Remove(0, 3);
+        return name.Replace("my_sp_", "");
+    };*/
+    StoredProcedureRename = (name, schema) => name;   // Do nothing by default
 
 
     // WCF ********************************************************************************************************************************
@@ -132,10 +151,12 @@
     
     
     // Read schema
-    var tables = LoadTables();
+    var factory = GetDbProviderFactory();
+    var tables = LoadTables(factory);
+    var storedProcs = LoadStoredProcs(factory);
     
     // Generate output
-    if (tables.Count > 0)
+    if (tables.Count > 0 || storedProcs.Count > 0)
     {
 #>
 <#@ include file="EF.Reverse.POCO.ttinclude" #>
