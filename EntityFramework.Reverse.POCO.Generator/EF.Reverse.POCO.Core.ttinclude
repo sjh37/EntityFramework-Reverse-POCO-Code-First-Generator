@@ -54,7 +54,6 @@
         Regex TableFilterInclude = null;
         Regex StoredProcedureFilterExclude = null;
         Regex StoredProcedureFilterInclude = null;
-        bool IncludeStoredProcedures = false;
         string[] ConfigFilenameSearchOrder = null;
         private string _connectionString = "";
         private string _providerName = "";
@@ -476,7 +475,7 @@
         
         private List<StoredProcedure> LoadStoredProcs(DbProviderFactory factory)
         {
-            if(factory == null || !IncludeStoredProcedures)
+            if(factory == null || !ElementsToGenerate.HasFlag(Elements.StoredProcedures))
                 return new List<StoredProcedure>();
 
             try

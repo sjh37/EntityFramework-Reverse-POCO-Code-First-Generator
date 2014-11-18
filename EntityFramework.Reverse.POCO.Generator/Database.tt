@@ -16,7 +16,6 @@
     IncludeComments = true; // Adds comments to the generated code
     IncludeExtendedPropertyComments = ExtendedPropertyCommentsStyle.AtEndOfField; // Adds extended properties as comments to the generated code
     IncludeViews = true;
-    IncludeStoredProcedures = true;
     DisableGeographyTypes = false; // Turns off use of System.Data.Entity.Spatial.DbGeography and System.Data.Entity.Spatial.DbGeometry as OData doesn't support entities with geometry/geography types.
     CollectionType = "List";  // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example
     CollectionTypeNamespace = ""; // "System.Collections.ObjectModel" is required if setting the CollectionType = "ObservableCollection"
