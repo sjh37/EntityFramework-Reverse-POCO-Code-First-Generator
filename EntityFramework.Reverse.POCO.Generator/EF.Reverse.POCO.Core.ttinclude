@@ -65,6 +65,7 @@
         [Flags]
         private enum Elements
         {
+            None = 0,
             Poco = 1,
             Context = 2,
             UnitOfWork = 4,
@@ -1266,7 +1267,8 @@ FROM    INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS AS C
             ON PT.TABLE_NAME = PK.TABLE_NAME
 WHERE   PT.COLUMN_NAME = PK.COLUMN_NAME
 ORDER BY FK.TABLE_NAME,
-        FK.COLUMN_NAME";
+        FK.COLUMN_NAME
+OPTION (QUERYTRACEON 9481)";
 
         private const string ExtendedPropertySQL = @"
 SELECT  s.name AS [schema],
