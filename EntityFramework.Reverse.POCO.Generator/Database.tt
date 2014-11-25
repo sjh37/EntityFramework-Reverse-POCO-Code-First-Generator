@@ -1,6 +1,6 @@
 ﻿<#@ include file="EF.Reverse.POCO.Core.ttinclude" #>
 <#
-    // v2.8.1
+    // v2.8.2
     // Please make changes to the settings below.
     // All you have to do is save this file, and the output file(s) is/are generated. Compiling does not regenerate the file(s).
 
@@ -37,7 +37,7 @@
     // Elements to generate ***************************************************************************************************************
     // Add the elements that should be generated when the template is executed.
     // Multiple projects can now be used that separate the different concerns.
-    ElementsToGenerate =  Elements.Poco | Elements.Context | Elements.UnitOfWork | Elements.PocoConfiguration | Elements.StoredProcedures;
+    ElementsToGenerate =  Elements.Poco | Elements.Context | Elements.UnitOfWork | Elements.PocoConfiguration;
 
     // Use these namespaces to specify where the different elements of the template are being generated.
     PocoNamespace = "";
@@ -152,7 +152,8 @@
     // Read schema
     var factory = GetDbProviderFactory();
     var tables = LoadTables(factory);
-    var storedProcs = LoadStoredProcs(factory);
+    var storedProcs = new List<StoredProcedure>();
+    //var storedProcs = LoadStoredProcs(factory); // not ready
     
     // Generate output
     if (tables.Count > 0 || storedProcs.Count > 0)

@@ -1,6 +1,6 @@
 ﻿<#@ include file="EF.Reverse.POCO.Core.ttinclude" #>
 <#
-    // v2.8.1
+    // v2.8.2
     // Please make changes to the settings below.
     // All you have to do is save this file, and the output file(s) is/are generated. Compiling does not regenerate the file(s).
 
@@ -133,6 +133,7 @@
     
     // Read schema
     var tables = LoadTables(GetDbProviderFactory());
+    var storedProcs = new List<StoredProcedure>();
     
     // Generate output
     if (tables.Count > 0)
