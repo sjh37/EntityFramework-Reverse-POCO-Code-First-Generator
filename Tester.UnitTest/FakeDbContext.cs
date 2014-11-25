@@ -31,6 +31,7 @@ namespace Tester.UnitTest
         public IDbSet<SummaryOfSalesByQuarter>      SummaryOfSalesByQuarters     { get; set; } // Summary of Sales by Quarter
         public IDbSet<SummaryOfSalesByYear>         SummaryOfSalesByYears        { get; set; } // Summary of Sales by Year
         public IDbSet<Supplier>                     Suppliers                    { get; set; } // Suppliers
+        public IDbSet<Sysdiagram>                   Sysdiagrams                  { get; set; } // sysdiagrams
         public IDbSet<Territory>                    Territories                  { get; set; } // Territories
 
         public FakeDbContext()
@@ -60,6 +61,7 @@ namespace Tester.UnitTest
             SummaryOfSalesByQuarters     = new FakeDbSet<SummaryOfSalesByQuarter>();
             SummaryOfSalesByYears        = new FakeDbSet<SummaryOfSalesByYear>();
             Suppliers                    = new FakeDbSet<Supplier>();
+            Sysdiagrams                  = new FakeDbSet<Sysdiagram>();
             Territories                  = new FakeDbSet<Territory>();
         }
 
