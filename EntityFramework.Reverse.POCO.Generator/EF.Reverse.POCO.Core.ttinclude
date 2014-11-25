@@ -1234,7 +1234,8 @@ FROM    (
                          WHERE  [Extent4].[ConstraintType] = N'PRIMARY KEY'
                         ) AS [Project5]
             ON [UnionAll1].[Id] = [Project5].[C1]
-WHERE   NOT ([Extent1].[Name] IN ('EdmMetadata', '__MigrationHistory'))";
+WHERE   NOT ([Extent1].[Name] IN ('EdmMetadata', '__MigrationHistory'))
+OPTION (QUERYTRACEON 9481)";
 
             private const string ForeignKeySQL = @"
 SELECT DISTINCT
@@ -1938,7 +1939,7 @@ ORDER BY P.SPECIFIC_SCHEMA,
 
             public IEnumerable<Column> PrimaryKeys
             {
-                get { return Columns.Where(x => x.IsPrimaryKey).ToList(); }
+                get { return Columns.Where(x => x.IsPrimaryKey).OrderBy(x => x.Ordinal).ToList(); }
             }
 
             public string PrimaryKeyNameHumanCase()

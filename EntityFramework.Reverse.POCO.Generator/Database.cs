@@ -946,7 +946,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public InvoiceConfiguration(string schema = "dbo")
         {
             ToTable(schema + ".Invoices");
-            HasKey(x => new { x.ShipperName, x.ProductId, x.ProductName, x.UnitPrice, x.Quantity, x.Discount, x.Salesperson, x.OrderId, x.CustomerName });
+            HasKey(x => new { x.CustomerName, x.Salesperson, x.OrderId, x.ShipperName, x.ProductId, x.ProductName, x.UnitPrice, x.Quantity, x.Discount });
 
             Property(x => x.ShipName).HasColumnName("ShipName").IsOptional().HasMaxLength(40);
             Property(x => x.ShipAddress).HasColumnName("ShipAddress").IsOptional().HasMaxLength(60);
