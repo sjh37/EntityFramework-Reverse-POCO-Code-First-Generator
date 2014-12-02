@@ -108,6 +108,7 @@ namespace Scratch
         // Settings - edit these in the main <name>.tt file *******************************************************************************
         string ConnectionStringName = "MyDbContext";
         bool IncludeViews = true;
+        bool AddUnitTestingDbContext = true;
         string DbContextName = "MyDbContext";
         string ConfigurationClassName = "Configuration";
         string CollectionType = "List";
@@ -125,22 +126,27 @@ namespace Scratch
         bool PrependSchemaName = true;
         Regex TableFilterExclude = null;
         Regex TableFilterInclude = null;
+        Regex StoredProcedureFilterExclude = null;
+        Regex StoredProcedureFilterInclude = null;
         string[] ConfigFilenameSearchOrder = null;
         private string _connectionString = "";
         private string _providerName = "";
         private string _configFilePath = "";
         Func<string, string, string> TableRename;
+        Func<string, string, string> StoredProcedureRename;
 
         // Settings to allow selective code generation
         [Flags]
         private enum Elements
         {
+            None = 0,
             Poco = 1,
             Context = 2,
             UnitOfWork = 4,
-            PocoConfiguration = 8
+            PocoConfiguration = 8,
+            StoredProcedures = 16
         };
-        Elements ElementsToGenerate = Elements.Poco | Elements.Context | Elements.UnitOfWork | Elements.PocoConfiguration;
+        Elements ElementsToGenerate = Elements.Poco | Elements.Context | Elements.UnitOfWork | Elements.PocoConfiguration | Elements.StoredProcedures;
         string PocoNamespace, ContextNamespace, UnitOfWorkNamespace, PocoConfigurationNamespace = "";
 
         // Settings to allow TargetFramework checks
@@ -323,6 +329,56 @@ namespace Scratch
                 WriteLine("// -----------------------------------------------------------------------------------------");
                 WriteLine("");
                 return new Tables();
+            }
+        }
+
+        private List<StoredProcedure> LoadStoredProcs(DbProviderFactory factory)
+        {
+            if (factory == null || !ElementsToGenerate.HasFlag(Elements.StoredProcedures))
+                return new List<StoredProcedure>();
+
+            try
+            {
+                using (DbConnection conn = factory.CreateConnection())
+                {
+                    conn.ConnectionString = ConnectionString;
+                    conn.Open();
+
+                    if (conn.GetType().Name == "SqlCeConnection")
+                        return new List<StoredProcedure>();
+
+                    var reader = new SqlServerSchemaReader(conn, factory) { Outer = this };
+                    var storedProcs = reader.ReadStoredProcs(StoredProcedureFilterExclude, UseCamelCase, PrependSchemaName, StoredProcedureRename, SchemaName);
+
+                    // Remove unrequired stored procs
+                    for (int i = storedProcs.Count - 1; i >= 0; i--)
+                    {
+                        if (SchemaName != null && String.Compare(storedProcs[i].Schema, SchemaName, StringComparison.OrdinalIgnoreCase) != 0)
+                        {
+                            storedProcs.RemoveAt(i);
+                            continue;
+                        }
+                        if (StoredProcedureFilterInclude != null && !StoredProcedureFilterInclude.IsMatch(storedProcs[i].Name))
+                        {
+                            storedProcs.RemoveAt(i);
+                            continue;
+                        }
+                    }
+
+                    conn.Close();
+                    return storedProcs;
+                }
+            }
+            catch (Exception x)
+            {
+                string error = x.Message.Replace("\r\n", "\n").Replace("\n", " ");
+                Warning(string.Format("Failed to read database schema for stored procedures - {0}", error));
+                WriteLine("");
+                WriteLine("// -----------------------------------------------------------------------------------------");
+                WriteLine("// Failed to read database schema for stored procedures - {0}", error);
+                WriteLine("// -----------------------------------------------------------------------------------------");
+                WriteLine("");
+                return new List<StoredProcedure>();
             }
         }
 
@@ -591,6 +647,43 @@ namespace Scratch
 
         #endregion
 
+        #region Nested type: Stored Procedure
+
+        public class StoredProcedure
+        {
+            public string Schema;
+            public string Name;
+            public string NameHumanCase;
+            public List<StoredProcedureParameter> Parameters;
+
+            public StoredProcedure()
+            {
+                Parameters = new List<StoredProcedureParameter>();
+            }
+        }
+
+        public enum StoredProcedureParameterMode
+        {
+            In,
+            InOut,
+            Out
+        };
+
+        public class StoredProcedureParameter
+        {
+            public int Ordinal;
+            public StoredProcedureParameterMode Mode;
+            public string Name;
+            public string NameHumanCase;
+            public string PropertyType;
+            public int DateTimePrecision;
+            public int MaxLength;
+            public int Precision;
+            public int Scale;
+        }
+
+        #endregion
+
         #region Nested type: Inflector
 
         /// <summary>
@@ -700,23 +793,59 @@ namespace Scratch
 
         #region Nested type: SchemaReader
 
+        private class SqlServerDatabaseHelper
+        {
+            public int Major { get; private set; }
+            public int Minor { get; private set; }
+            public int Build { get; private set; }
+            public bool IsSqlCe { get; private set; }
+            public const int Timeout = 600; // Some database are slow / overburdened
+
+            public SqlServerDatabaseHelper(int major, int minor, int build, bool isSqlCe)
+            {
+                Major = major;
+                Minor = minor;
+                Build = build;
+                IsSqlCe = isSqlCe;
+            }
+
+            public string AppendSql()
+            {
+                if (IsSqlCe)
+                    return string.Empty;
+                if (Major < 12)
+                    return string.Empty;
+
+                // Enables the 9481 trace flag to deal with Sql Server 2014 performance regression
+                return " OPTION (QUERYTRACEON 9481)";
+            }
+        }
+
         private abstract class SchemaReader
         {
             protected readonly DbCommand Cmd;
+            protected SqlServerDatabaseHelper SqlServerDatabaseHelper;
 
             protected SchemaReader(DbConnection connection, DbProviderFactory factory)
             {
+                SqlServerDatabaseHelper = null;
                 Cmd = factory.CreateCommand();
-                if (Cmd != null)
-                    Cmd.Connection = connection;
+                if (Cmd == null)
+                    return;
+
+                Cmd.Connection = connection;
+                if (Cmd.GetType().Name == "SqlCeCommand")
+                    SqlServerDatabaseHelper = new SqlServerDatabaseHelper(0, 0, 0, true);
             }
 
             public GeneratedTextTransformation Outer;
             public abstract Tables ReadSchema(Regex tableFilterExclude, bool useCamelCase, bool prependSchemaName, bool includeComments, ExtendedPropertyCommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, string schemaNameFilter);
+            public abstract List<StoredProcedure> ReadStoredProcs(Regex storedProcedureFilterExclude, bool useCamelCase, bool prependSchemaName, Func<string, string, string> StoredProcedureRename, string schemaNameFilter);
             public abstract List<ForeignKey> ReadForeignKeys(Func<string, string, string> tableRename);
             public abstract void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool useCamelCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, bool includeComments);
             public abstract void IdentifyForeignKeys(List<ForeignKey> fkList, Tables tables);
             public abstract void ReadExtendedProperties(Tables tables);
+
 
             protected void WriteLine(string o)
             {
@@ -1026,8 +1155,12 @@ FROM    INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS AS C
                    ) PT
             ON PT.TABLE_NAME = PK.TABLE_NAME
 WHERE   PT.COLUMN_NAME = PK.COLUMN_NAME
-ORDER BY FK.TABLE_NAME,
-        FK.COLUMN_NAME";
+ORDER BY FK.TABLE_NAME, FK.COLUMN_NAME";
+
+            private const string SqlServerVersionSQL = @"
+SELECT  (@@microsoftversion / 0x1000000) & 0xff AS [VersionMajor],
+        (@@microsoftversion / 0x10000) & 0xff AS [VersionMinor],
+        (@@microsoftversion & 0xffff) AS [BuildNumber]";
 
             private const string ExtendedPropertySQL = @"
 SELECT  s.name AS [schema],
@@ -1059,36 +1192,36 @@ FROM    [__ExtendedProperties];";
 
             private const string TableSQLCE = @"
 SELECT  '' AS SchemaName,
-		c.TABLE_NAME AS TableName,
-		'BASE TABLE' AS TableType,
-		c.ORDINAL_POSITION AS Ordinal,
-		c.COLUMN_NAME AS ColumnName,
-		CAST(CASE WHEN c.IS_NULLABLE = N'YES' THEN 1
-		ELSE 0 END AS bit) AS IsNullable,
-		c.DATA_TYPE AS TypeName,
-		CASE WHEN c.CHARACTER_MAXIMUM_LENGTH IS NOT NULL THEN c.CHARACTER_MAXIMUM_LENGTH
-		ELSE 0 END AS MaxLength,
-		CASE WHEN c.NUMERIC_PRECISION IS NOT NULL THEN c.NUMERIC_PRECISION
-		ELSE 0 END AS Precision,
-		c.COLUMN_DEFAULT AS [Default],
-		CASE WHEN c.DATA_TYPE = N'datetime' THEN 0
-		ELSE 0 END AS DateTimePrecision,
-		CASE WHEN c.DATA_TYPE = N'datetime' THEN 0
-		WHEN c.NUMERIC_SCALE IS NOT NULL THEN c.NUMERIC_SCALE
-		ELSE 0 END AS Scale,
-		CAST(CASE WHEN c.AUTOINC_INCREMENT > 0 THEN 1
-		ELSE 0 END AS bit) AS IsIdentity,
-		CAST(CASE WHEN c.DATA_TYPE = N'rowversion' THEN 1
-		ELSE 0 END AS bit) AS IsStoreGenerated,
-		CAST(CASE WHEN u.TABLE_NAME IS NULL THEN 0
-		ELSE 1 END AS bit) AS PrimaryKey				
+        c.TABLE_NAME AS TableName,
+        'BASE TABLE' AS TableType,
+        c.ORDINAL_POSITION AS Ordinal,
+        c.COLUMN_NAME AS ColumnName,
+        CAST(CASE WHEN c.IS_NULLABLE = N'YES' THEN 1
+        ELSE 0 END AS bit) AS IsNullable,
+        c.DATA_TYPE AS TypeName,
+        CASE WHEN c.CHARACTER_MAXIMUM_LENGTH IS NOT NULL THEN c.CHARACTER_MAXIMUM_LENGTH
+        ELSE 0 END AS MaxLength,
+        CASE WHEN c.NUMERIC_PRECISION IS NOT NULL THEN c.NUMERIC_PRECISION
+        ELSE 0 END AS Precision,
+        c.COLUMN_DEFAULT AS [Default],
+        CASE WHEN c.DATA_TYPE = N'datetime' THEN 0
+        ELSE 0 END AS DateTimePrecision,
+        CASE WHEN c.DATA_TYPE = N'datetime' THEN 0
+        WHEN c.NUMERIC_SCALE IS NOT NULL THEN c.NUMERIC_SCALE
+        ELSE 0 END AS Scale,
+        CAST(CASE WHEN c.AUTOINC_INCREMENT > 0 THEN 1
+        ELSE 0 END AS bit) AS IsIdentity,
+        CAST(CASE WHEN c.DATA_TYPE = N'rowversion' THEN 1
+        ELSE 0 END AS bit) AS IsStoreGenerated,
+        CAST(CASE WHEN u.TABLE_NAME IS NULL THEN 0
+        ELSE 1 END AS bit) AS PrimaryKey				
 FROM INFORMATION_SCHEMA.COLUMNS c
-		INNER JOIN INFORMATION_SCHEMA.TABLES t 
-			ON c.TABLE_NAME = t.TABLE_NAME
-		LEFT JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS AS cons 
-			ON cons.TABLE_NAME = c.TABLE_NAME 
-		LEFT JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS u 
-			ON cons.CONSTRAINT_NAME = u.CONSTRAINT_NAME AND u.TABLE_NAME = c.TABLE_NAME AND u.COLUMN_NAME = c.COLUMN_NAME
+        INNER JOIN INFORMATION_SCHEMA.TABLES t 
+            ON c.TABLE_NAME = t.TABLE_NAME
+        LEFT JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS AS cons 
+            ON cons.TABLE_NAME = c.TABLE_NAME 
+        LEFT JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS u 
+            ON cons.CONSTRAINT_NAME = u.CONSTRAINT_NAME AND u.TABLE_NAME = c.TABLE_NAME AND u.COLUMN_NAME = c.COLUMN_NAME
 WHERE t.TABLE_TYPE <> N'SYSTEM TABLE' AND cons.CONSTRAINT_TYPE = 'PRIMARY KEY'
 ORDER BY c.TABLE_NAME, c.COLUMN_NAME, c.ORDINAL_POSITION;";
 
@@ -1121,9 +1254,48 @@ WHERE   PT.COLUMN_NAME = PK.COLUMN_NAME
 ORDER BY FK.TABLE_NAME,
         FK.COLUMN_NAME;";
 
+            private const string StoredProcedureSQL = @"
+SELECT  P.SPECIFIC_SCHEMA,
+        P.SPECIFIC_NAME,
+        P.ORDINAL_POSITION,
+        P.PARAMETER_MODE,
+        P.PARAMETER_NAME,
+        P.DATA_TYPE,
+        ISNULL(P.CHARACTER_MAXIMUM_LENGTH, 0) AS CHARACTER_MAXIMUM_LENGTH,
+        ISNULL(P.NUMERIC_PRECISION, 0) AS NUMERIC_PRECISION,
+        ISNULL(P.NUMERIC_SCALE, 0) AS NUMERIC_SCALE,
+        ISNULL(P.DATETIME_PRECISION, 0) AS DATETIME_PRECISION
+FROM    INFORMATION_SCHEMA.PARAMETERS P
+        INNER JOIN INFORMATION_SCHEMA.ROUTINES R
+            ON P.SPECIFIC_SCHEMA = R.SPECIFIC_SCHEMA
+               AND P.SPECIFIC_NAME = R.SPECIFIC_NAME
+               AND R.ROUTINE_TYPE = 'PROCEDURE'
+WHERE   P.IS_RESULT = 'NO'
+ORDER BY P.SPECIFIC_SCHEMA,
+        P.SPECIFIC_NAME,
+        P.ORDINAL_POSITION";
+
             public SqlServerSchemaReader(DbConnection connection, DbProviderFactory factory)
                 : base(connection, factory)
             {
+                GetDatabaseVersion();
+            }
+
+            private void GetDatabaseVersion()
+            {
+                if (SqlServerDatabaseHelper != null || Cmd == null)
+                    return;
+
+                Cmd.CommandText = SqlServerVersionSQL;
+                using (DbDataReader rdr = Cmd.ExecuteReader())
+                {
+                    if (!rdr.Read())    // Only expecting one row
+                        return;
+                    var major = (int) rdr["VersionMajor"];
+                    var minor = (int) rdr["VersionMinor"];
+                    var build = (int) rdr["BuildNumber"];
+                    SqlServerDatabaseHelper = new SqlServerDatabaseHelper(major, minor, build, false);
+                }
             }
 
             public override Tables ReadSchema(Regex tableFilterExclude, bool useCamelCase, bool prependSchemaName, bool includeComments, ExtendedPropertyCommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, string schemaNameFilter)
@@ -1132,11 +1304,11 @@ ORDER BY FK.TABLE_NAME,
                 if (Cmd == null)
                     return result;
 
-                Cmd.CommandText = TableSQL;
-                if (Cmd.GetType().Name == "SqlCeCommand")
+                Cmd.CommandText = TableSQL + SqlServerDatabaseHelper.AppendSql();
+                if (SqlServerDatabaseHelper.IsSqlCe)
                     Cmd.CommandText = TableSQLCE;
                 else
-                    Cmd.CommandTimeout = 600;
+                    Cmd.CommandTimeout = SqlServerDatabaseHelper.Timeout;
 
                 using (DbDataReader rdr = Cmd.ExecuteReader())
                 {
@@ -1219,9 +1391,11 @@ ORDER BY FK.TABLE_NAME,
                 if (Cmd == null)
                     return fkList;
 
-                Cmd.CommandText = ForeignKeySQL;
-                if (Cmd.GetType().Name == "SqlCeCommand")
+                Cmd.CommandText = ForeignKeySQL + SqlServerDatabaseHelper.AppendSql();
+                if (SqlServerDatabaseHelper.IsSqlCe)
                     Cmd.CommandText = ForeignKeySQLCE;
+                else
+                    Cmd.CommandTimeout = SqlServerDatabaseHelper.Timeout;
 
                 using (DbDataReader rdr = Cmd.ExecuteReader())
                 {
@@ -1251,9 +1425,9 @@ ORDER BY FK.TABLE_NAME,
                 if (Cmd == null)
                     return;
 
-                Cmd.CommandText = ExtendedPropertySQL;
+                Cmd.CommandText = ExtendedPropertySQL + SqlServerDatabaseHelper.AppendSql();
 
-                if (Cmd.GetType().Name == "SqlCeCommand")
+                if (SqlServerDatabaseHelper.IsSqlCe)
                 {
                     Cmd.CommandText = ExtendedPropertyTableExistsSQLCE;
                     var obj = Cmd.ExecuteScalar();
@@ -1290,6 +1464,71 @@ ORDER BY FK.TABLE_NAME,
                         }
                     }
                 }
+            }
+
+            public override List<StoredProcedure> ReadStoredProcs(Regex spFilterExclude, bool useCamelCase, bool prependSchemaName, Func<string, string, string> StoredProcedureRename, string schemaNameFilter)
+            {
+                var result = new List<StoredProcedure>();
+                if (Cmd == null)
+                    return result;
+
+                Cmd.CommandText = StoredProcedureSQL + SqlServerDatabaseHelper.AppendSql();
+                if (SqlServerDatabaseHelper.IsSqlCe)
+                    return result;
+                Cmd.CommandTimeout = SqlServerDatabaseHelper.Timeout;
+
+                using (DbDataReader rdr = Cmd.ExecuteReader())
+                {
+                    var lastSp = string.Empty;
+                    StoredProcedure sp = null;
+                    while (rdr.Read())
+                    {
+                        string spName = rdr["SPECIFIC_NAME"].ToString().Trim();
+                        if (spFilterExclude != null && spFilterExclude.IsMatch(spName))
+                            continue;
+
+                        string schema = rdr["SPECIFIC_SCHEMA"].ToString().Trim();
+                        if (schemaNameFilter != null && !schema.Equals(schemaNameFilter, StringComparison.CurrentCultureIgnoreCase))
+                            continue;
+
+                        if (lastSp != spName || sp == null)
+                        {
+                            sp = new StoredProcedure
+                            {
+                                Name = spName,
+                                NameHumanCase = (useCamelCase ? Inflector.ToTitleCase(spName) : spName).Replace(" ", "").Replace("$", ""),
+                                Schema = schema
+                            };
+                            if ((string.Compare(schema, "dbo", StringComparison.OrdinalIgnoreCase) != 0) && prependSchemaName)
+                                sp.NameHumanCase = schema + "_" + sp.NameHumanCase;
+
+                            result.Add(sp);
+                        }
+
+                        string typename = rdr["DATA_TYPE"].ToString().Trim().ToLower();
+                        var scale = (int)rdr["NUMERIC_SCALE"];
+                        var precision = (int)((byte)rdr["NUMERIC_PRECISION"]);
+                        var parameterMode = rdr["PARAMETER_MODE"].ToString().Trim().ToUpper();
+
+                        var param = new StoredProcedureParameter
+                        {
+                            Ordinal = (int)rdr["ORDINAL_POSITION"],
+                            Mode = (parameterMode == "IN") ? StoredProcedureParameterMode.In : StoredProcedureParameterMode.InOut,
+                            Name = rdr["PARAMETER_NAME"].ToString().Trim(),
+                            PropertyType = GetPropertyType(typename, scale, precision),
+                            DateTimePrecision = (Int16)rdr["DATETIME_PRECISION"],
+                            MaxLength = (int)rdr["CHARACTER_MAXIMUM_LENGTH"],
+                            Precision = precision,
+                            Scale = scale
+                        };
+
+                        var clean = CleanUp(param.Name);
+                        param.NameHumanCase = (useCamelCase ? Inflector.ToTitleCase(clean) : clean).Replace(" ", "");
+
+                        sp.Parameters.Add(param);
+                    }
+                }
+                return result;
             }
 
             public override void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool useCamelCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, bool includeComments)
@@ -1610,7 +1849,7 @@ ORDER BY FK.TABLE_NAME,
 
             public IEnumerable<Column> PrimaryKeys
             {
-                get { return Columns.Where(x => x.IsPrimaryKey).ToList(); }
+                get { return Columns.Where(x => x.IsPrimaryKey).OrderBy(x => x.Ordinal).ToList(); }
             }
 
             public string PrimaryKeyNameHumanCase()
