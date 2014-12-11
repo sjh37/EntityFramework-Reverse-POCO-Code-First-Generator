@@ -1,13 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30723.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFramework.Reverse.POCO.Generator", "EntityFramework.Reverse.POCO.Generator\EntityFramework.Reverse.POCO.Generator.csproj", "{FA93A0BD-8B45-43BA-9C57-1D8FD63CAEAE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tester.Integration", "Tester\Tester.Integration.csproj", "{D21BA1F2-7796-4263-B4CA-5C1BB33729CA}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scratch", "Scratch\Scratch.csproj", "{80B4FBAC-AF39-4470-B21E-794422DFC183}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tester.Repository", "Tester.Repository\Tester.Repository.csproj", "{7BEC62D9-3836-4EDC-ABAC-4D3F5D983F22}"
 EndProject
@@ -53,17 +51,6 @@ Global
 		{D21BA1F2-7796-4263-B4CA-5C1BB33729CA}.Release|Mixed Platforms.Build.0 = Release|x86
 		{D21BA1F2-7796-4263-B4CA-5C1BB33729CA}.Release|x86.ActiveCfg = Release|x86
 		{D21BA1F2-7796-4263-B4CA-5C1BB33729CA}.Release|x86.Build.0 = Release|x86
-		{80B4FBAC-AF39-4470-B21E-794422DFC183}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{80B4FBAC-AF39-4470-B21E-794422DFC183}.Debug|Any CPU.Build.0 = Debug|x86
-		{80B4FBAC-AF39-4470-B21E-794422DFC183}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{80B4FBAC-AF39-4470-B21E-794422DFC183}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{80B4FBAC-AF39-4470-B21E-794422DFC183}.Debug|x86.ActiveCfg = Debug|x86
-		{80B4FBAC-AF39-4470-B21E-794422DFC183}.Debug|x86.Build.0 = Debug|x86
-		{80B4FBAC-AF39-4470-B21E-794422DFC183}.Release|Any CPU.ActiveCfg = Release|x86
-		{80B4FBAC-AF39-4470-B21E-794422DFC183}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{80B4FBAC-AF39-4470-B21E-794422DFC183}.Release|Mixed Platforms.Build.0 = Release|x86
-		{80B4FBAC-AF39-4470-B21E-794422DFC183}.Release|x86.ActiveCfg = Release|x86
-		{80B4FBAC-AF39-4470-B21E-794422DFC183}.Release|x86.Build.0 = Release|x86
 		{7BEC62D9-3836-4EDC-ABAC-4D3F5D983F22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7BEC62D9-3836-4EDC-ABAC-4D3F5D983F22}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7BEC62D9-3836-4EDC-ABAC-4D3F5D983F22}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
