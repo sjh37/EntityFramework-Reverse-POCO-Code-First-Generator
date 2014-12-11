@@ -7,7 +7,7 @@
     // Misc settings **********************************************************************************************************************
     // Namespace = ""; // Override the default namespace here
     DbContextName = "MyDbContext";
-    DbContextBaseClass = "DbContext";   // For ASP.NET Identity use "IdentityDbContext<ApplicationUser>"
+    DbContextBaseClass = "DbContext";   // Specify what the base class is for your DbContext. For ASP.NET Identity use "IdentityDbContext<ApplicationUser>"
     ConnectionStringName = "MyDbContext";   // Searches for this connection string in config files listed below
     ConfigurationClassName = "Configuration"; // Configuration, Mapping, Map, etc. This is appended to the Poco class name to configure the mappings.
     ConfigFilenameSearchOrder = new[] { "app.config", "web.config", "app.config.transform", "web.config.transform" }; // Add more here if required. The config files are searched for in the local project first, then the whole solution second.
@@ -21,6 +21,7 @@
     CollectionType = "List";  // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example
     CollectionTypeNamespace = ""; // "System.Collections.ObjectModel" is required if setting the CollectionType = "ObservableCollection"
     AddUnitTestingDbContext = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing
+    IncludeQueryTraceOn9481 = true; // SqlServer 2014 is known to freeze or take a long time when this file is saved. If it does, set this to true.
 
     // Pluralization **********************************************************************************************************************
     // To turn off pluralization, use:
@@ -40,19 +41,23 @@
     // Multiple projects can now be used that separate the different concerns.
     ElementsToGenerate =  Elements.Poco | Elements.Context | Elements.UnitOfWork | Elements.PocoConfiguration;
 
-    // Use these namespaces to specify where the different elements of the template are being generated.
+    // Use these namespaces to specify where the different elements now live. These may even be in different assemblies.
+    // Please note this does not create the files in these locations, it only adds a using statement to say where they are.
+    // I show how this works on the video from 26:08 onwards.
+    // The way to do this is to add the "EntityFramework Reverse POCO Code First Generator" into each of these folders.
+    // Then set the .tt to only generate the relevant section you need by setting
+    //      ElementsToGenerate = Elements.Poco; in your Entity folder,
+    //      ElementsToGenerate = Elements.Context | Elements.UnitOfWork; in your Context folder,
+    //      ElementsToGenerate = Elements.PocoConfiguration; in your Maps folder.
+    //      PocoNamespace = "YourProject.Entities";
+    //      ContextNamespace = "YourProject.Context";
+    //      UnitOfWorkNamespace = "YourProject.Context";	
+    //      PocoConfigurationNamespace = "YourProject.Maps";
+    // You also need to set the following to the namespace where they now live:
     PocoNamespace = "";
     ContextNamespace = "";
     UnitOfWorkNamespace = "";	
     PocoConfigurationNamespace = "";
-
-    // Example of separate concerns:
-    //PocoNamespace = "MyProject.Model";
-    //ContextNamespace = "MyProject.Data";
-    //UnitOfWorkNamespace = "MyProject.Data";	
-    //PocoConfigurationNamespace = "MyProject.Data";
-    //ElementsToGenerate = Elements.Poco;   // Model Project
-    //ElementsToGenerate = Elements.Context | Elements.UnitOfWork | Elements.PocoConfiguration; //  Data project
 
     
     // Schema *****************************************************************************************************************************
