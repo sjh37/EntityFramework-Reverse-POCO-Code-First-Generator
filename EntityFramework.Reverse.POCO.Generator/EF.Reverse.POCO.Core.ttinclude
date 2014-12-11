@@ -45,6 +45,7 @@
         string FileExtension = ".cs";
         bool UseCamelCase = true;
         bool IncludeComments = true;
+        bool IncludeQueryTraceOn9481 = false;
         ExtendedPropertyCommentsStyle IncludeExtendedPropertyComments = ExtendedPropertyCommentsStyle.InSummaryBlock;
         bool AddWcfDataAttributes = false;
         string ExtraWcfDataContractAttributes = "";
@@ -227,7 +228,7 @@
             _connectionString = _connectionString.Replace("|DataDirectory|", dataFilePath);
         }
 
-        public EnvDTE.Solution GetSolution()
+        public EnvDTE.DTE GetDTE()
         {
             var serviceProvider = (IServiceProvider)Host;
             if(serviceProvider == null)
@@ -237,7 +238,12 @@
             if(dte == null)
                 throw new Exception("Unable to retrieve EnvDTE.DTE");
 
-            return dte.Solution;
+            return dte;
+        }
+        
+        public EnvDTE.Solution GetSolution()
+        {
+            return GetDTE().Solution;
         }
 
        public IEnumerable<EnvDTE.Project> GetAllProjects()
@@ -277,23 +283,23 @@
 
         public EnvDTE.Project GetCurrentProject()
         {
-            var serviceProvider = (IServiceProvider)Host;
-            if(serviceProvider == null)
-                throw new Exception("Host property returned unexpected value (null)");
-
-            var dte = (EnvDTE.DTE)serviceProvider.GetService(typeof(EnvDTE.DTE));
-            if(dte == null)
-                throw new Exception("Unable to retrieve EnvDTE.DTE");
-
+            var dte = GetDTE();
             var activeSolutionProjects = (Array)dte.ActiveSolutionProjects;
             if(activeSolutionProjects == null)
                 throw new Exception("DTE.ActiveSolutionProjects returned null");
 
-            var dteProject = (EnvDTE.Project)activeSolutionProjects.GetValue(0);
-            if(dteProject == null)
-                throw new Exception("DTE.ActiveSolutionProjects[0] returned null");
+            if (activeSolutionProjects.Length > 0)
+            {
+                var dteProject = (EnvDTE.Project) activeSolutionProjects.GetValue(0);
+                if (dteProject != null)
+                    return dteProject;
+            }
 
-            return dteProject;
+            var item = dte.Solution.FindProjectItem(Host.TemplateFile);
+            if (item != null && item.ContainingProject != null)
+                return item.ContainingProject;
+            
+            throw new InvalidOperationException("Error in GetCurrentProject(). Unable to find project.");
         }
 
         private string GetProjectPath(EnvDTE.Project project)
@@ -1235,8 +1241,7 @@ FROM    (
                          WHERE  [Extent4].[ConstraintType] = N'PRIMARY KEY'
                         ) AS [Project5]
             ON [UnionAll1].[Id] = [Project5].[C1]
-WHERE   NOT ([Extent1].[Name] IN ('EdmMetadata', '__MigrationHistory'))
-OPTION (QUERYTRACEON 9481)";
+WHERE   NOT ([Extent1].[Name] IN ('EdmMetadata', '__MigrationHistory'))";
 
             private const string ForeignKeySQL = @"
 SELECT DISTINCT
@@ -1268,8 +1273,7 @@ FROM    INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS AS C
                    ) PT
             ON PT.TABLE_NAME = PK.TABLE_NAME
 WHERE   PT.COLUMN_NAME = PK.COLUMN_NAME
-ORDER BY FK.TABLE_NAME, FK.COLUMN_NAME
-OPTION (QUERYTRACEON 9481)";
+ORDER BY FK.TABLE_NAME, FK.COLUMN_NAME";
 
         private const string ExtendedPropertySQL = @"
 SELECT  s.name AS [schema],
@@ -1389,13 +1393,20 @@ ORDER BY P.SPECIFIC_SCHEMA,
             {
             }
 
+            private string IncludeQueryTraceOn9481()
+            {
+                if (IncludeQueryTraceOn9481) todoxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+                    return "";
+                return string.Empty;
+            }
+
             public override Tables ReadSchema(Regex tableFilterExclude, bool useCamelCase, bool prependSchemaName, bool includeComments, ExtendedPropertyCommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, string schemaNameFilter)
             {
                 var result = new Tables();
                 if(Cmd == null)
                     return result;
                 
-                Cmd.CommandText = TableSQL;
+                Cmd.CommandText = TableSQL + IncludeQueryTraceOn9481();
                 if (Cmd.GetType().Name == "SqlCeCommand")
                     Cmd.CommandText = TableSQLCE;
                 else
