@@ -45,7 +45,7 @@
         string FileExtension = ".cs";
         bool UseCamelCase = true;
         bool IncludeComments = true;
-        bool IncludeQueryTraceOn9481 = false;
+        bool IncludeQueryTraceOn9481Flag = false;
         ExtendedPropertyCommentsStyle IncludeExtendedPropertyComments = ExtendedPropertyCommentsStyle.InSummaryBlock;
         bool AddWcfDataAttributes = false;
         string ExtraWcfDataContractAttributes = "";
@@ -419,7 +419,7 @@
                     if (conn.GetType().Name == "SqlCeConnection")
                        PrependSchemaName = false;
 
-                    var reader = new SqlServerSchemaReader(conn, factory) { Outer = this };
+                    var reader = new SqlServerSchemaReader(conn, factory, IncludeQueryTraceOn9481Flag) { Outer = this };
                     var tables = reader.ReadSchema(TableFilterExclude, UseCamelCase, PrependSchemaName, IncludeComments, IncludeExtendedPropertyComments, TableRename, SchemaName);
                     tables.SetPrimaryKeys();
 
@@ -499,7 +499,7 @@
                     if (conn.GetType().Name == "SqlCeConnection")
                        return new List<StoredProcedure>();
 
-                    var reader = new SqlServerSchemaReader(conn, factory) { Outer = this };
+                    var reader = new SqlServerSchemaReader(conn, factory, IncludeQueryTraceOn9481Flag) { Outer = this };
                     var storedProcs = reader.ReadStoredProcs(StoredProcedureFilterExclude, UseCamelCase, PrependSchemaName, StoredProcedureRename, SchemaName);
 
                     // Remove unrequired stored procs
@@ -1388,15 +1388,19 @@ ORDER BY P.SPECIFIC_SCHEMA,
         P.SPECIFIC_NAME,
         P.ORDINAL_POSITION";
 
-            public SqlServerSchemaReader(DbConnection connection, DbProviderFactory factory) 
+            private bool IncludeQueryTraceOn9481Flag;
+
+            public SqlServerSchemaReader(DbConnection connection, DbProviderFactory factory, bool includeQueryTraceOn9481Flag) 
                 : base(connection, factory)
             {
+                IncludeQueryTraceOn9481Flag = includeQueryTraceOn9481Flag;
             }
 
             private string IncludeQueryTraceOn9481()
             {
-                if (IncludeQueryTraceOn9481) todoxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-                    return "";
+                if (IncludeQueryTraceOn9481Flag)
+                    return @" 
+OPTION (QUERYTRACEON 9481)";
                 return string.Empty;
             }
 
@@ -1493,7 +1497,7 @@ ORDER BY P.SPECIFIC_SCHEMA,
                 if(Cmd == null)
                     return fkList;
 
-                Cmd.CommandText = ForeignKeySQL;
+                Cmd.CommandText = ForeignKeySQL + IncludeQueryTraceOn9481();
                 if (Cmd.GetType().Name == "SqlCeCommand")
                     Cmd.CommandText = ForeignKeySQLCE;
                 else
@@ -1527,7 +1531,7 @@ ORDER BY P.SPECIFIC_SCHEMA,
                 if(Cmd == null)
                     return;
 
-                Cmd.CommandText = ExtendedPropertySQL;
+                Cmd.CommandText = ExtendedPropertySQL + IncludeQueryTraceOn9481();
 
                 if (Cmd.GetType().Name == "SqlCeCommand")
                 {
@@ -1574,7 +1578,7 @@ ORDER BY P.SPECIFIC_SCHEMA,
                 if(Cmd == null)
                     return result;
             
-                Cmd.CommandText = StoredProcedureSQL;
+                Cmd.CommandText = StoredProcedureSQL + IncludeQueryTraceOn9481();
                 if (Cmd.GetType().Name == "SqlCeCommand")
                     return result;
                 Cmd.CommandTimeout = 600;
