@@ -21,7 +21,7 @@
     CollectionType = "List";  // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example
     CollectionTypeNamespace = ""; // "System.Collections.ObjectModel" is required if setting the CollectionType = "ObservableCollection"
     AddUnitTestingDbContext = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing
-    IncludeQueryTraceOn9481 = true; // SqlServer 2014 is known to freeze or take a long time when this file is saved. If it does, set this to true.
+    IncludeQueryTraceOn9481Flag = false; // SqlServer 2014 is known to appear frozen / take a long time when this file is saved. If it does, set this to true.
 
     // Pluralization **********************************************************************************************************************
     // To turn off pluralization, use:
