@@ -10,6 +10,7 @@ fileManager.StartHeader();
 // ReSharper disable PartialTypeWithSinglePart
 // ReSharper disable PartialMethodWithSinglePart
 // ReSharper disable RedundantNameQualifier
+// TargetFrameworkVersion = <#=TargetFrameworkVersion #>
 
 using System;
 <# if(ElementsToGenerate.HasFlag(Elements.Poco) || (ElementsToGenerate.HasFlag(Elements.Context) && AddUnitTestingDbContext)){ #>
