@@ -9,6 +9,7 @@
     DbContextName = "MyDbContextSqlCE4";
     ConnectionStringName = "MyDbContextSqlCE4";  // Searches for this connection string in config files listed below
     ConfigurationClassName = "Configuration"; // Configuration, Mapping, Map, etc. This is appended to the Poco class name to configure the mappings.
+    TargetFrameworkVersion = "4.5"; // Please set this to your .NET framework version, 4.0, 4.5, 4.51, etc.
     ConfigFilenameSearchOrder = new[] { "app.config", "web.config", "app.config.transform", "web.config.transform" }; // Add more here if required. The config files are searched for in the local project first, then the whole solution second.
     MakeClassesPartial = false;
     GenerateSeparateFiles = false;
@@ -32,7 +33,14 @@
     //      2. Add the following to the top of this file and adjust path, and remove the space between the angle bracket and # at the beginning and end.
     //         < #@ assembly name="your full path to \EntityFramework.Contrib.dll" # >
     //      3. Change the line below to: Inflector.PluralizationService = new SpanishPluralizationService();
-    Inflector.PluralizationService = new EnglishPluralizationService();
+    Inflector.PluralizationService = new EnglishPluralizationService(new[]
+    {
+        // Create custom ("Singular", "Plural") forms for one-off words as needed
+        new CustomPluralizationEntry("LiveQuiz", "LiveQuizzes"),
+        new CustomPluralizationEntry("Course", "Courses"),
+        new CustomPluralizationEntry("CustomerStatus", "CustomerStatus"), // Use same value to prevent pluralisation
+        new CustomPluralizationEntry("EmployeeStatus", "EmployeeStatus"),
+    });
     
     
     // Elements to generate ***************************************************************************************************************
