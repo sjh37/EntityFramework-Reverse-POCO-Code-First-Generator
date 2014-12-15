@@ -78,7 +78,7 @@
         string PocoNamespace, ContextNamespace, UnitOfWorkNamespace, PocoConfigurationNamespace = "";
 
         // Settings to allow TargetFramework checks
-        static string TargetFrameworkVersion = string.Format("{0}.{1}", Environment.Version.Major, Environment.Version.Minor);
+        private static string TargetFrameworkVersion;
         Func<string,bool> IsSupportedFrameworkVersion = (string frameworkVersion) =>
         {
             if (!string.IsNullOrEmpty(TargetFrameworkVersion))
