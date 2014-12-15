@@ -15,6 +15,7 @@
 // ReSharper disable PartialTypeWithSinglePart
 // ReSharper disable PartialMethodWithSinglePart
 // ReSharper disable RedundantNameQualifier
+// TargetFrameworkVersion = 4.5
 
 using System;
 using System.Collections.Generic;
