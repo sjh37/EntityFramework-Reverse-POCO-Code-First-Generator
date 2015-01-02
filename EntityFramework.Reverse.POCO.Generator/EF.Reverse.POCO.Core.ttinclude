@@ -517,6 +517,9 @@
                         }
                     }
 
+                    foreach (var proc in storedProcs)
+                        reader.ReadStoredProcReturnObject(proc);
+
                     conn.Close();
                     return storedProcs;
                 }
@@ -1384,6 +1387,25 @@ FROM    INFORMATION_SCHEMA.PARAMETERS P
                AND P.SPECIFIC_NAME = R.SPECIFIC_NAME
                AND R.ROUTINE_TYPE = 'PROCEDURE'
 WHERE   P.IS_RESULT = 'NO'
+        AND P.SPECIFIC_SCHEMA + P.SPECIFIC_NAME IN (
+			SELECT  SCHEMA_NAME(sp.schema_id) + sp.name
+			FROM    sys.all_objects AS sp
+					LEFT OUTER JOIN sys.all_sql_modules AS sm
+						ON sm.object_id = sp.object_id
+			WHERE   sp.type = 'P'
+					AND (
+						 CAST(CASE WHEN sp.is_ms_shipped = 1 THEN 1
+								   WHEN (SELECT major_id
+										 FROM   sys.extended_properties
+										 WHERE  major_id = sp.object_id
+												AND minor_id = 0
+												AND class = 1
+												AND name = N'microsoft_database_tools_support') IS NOT NULL THEN 1
+								   ELSE 0
+							  END AS BIT) = 0
+						 AND ISNULL(sm.uses_native_compilation, 0) = 0
+						)
+		)
 ORDER BY P.SPECIFIC_SCHEMA,
         P.SPECIFIC_NAME,
         P.ORDINAL_POSITION";
@@ -1599,6 +1621,7 @@ OPTION (QUERYTRACEON 9481)";
 
                         if (lastSp != spName || sp == null)
                         {
+                            lastSp = spName;
                             sp = new StoredProcedure
                             {
                                 Name = spName,
