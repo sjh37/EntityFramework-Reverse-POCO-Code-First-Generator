@@ -309,8 +309,15 @@
             if (string.IsNullOrWhiteSpace(fullProjectName))
                 return string.Empty;
 
-            var info = new FileInfo(fullProjectName);
-            return info.Directory == null ? string.Empty : info.Directory.FullName;
+            try
+			{
+				var info = new FileInfo(fullProjectName);
+				return info.Directory == null ? string.Empty : info.Directory.FullName;
+			}
+			catch{
+				WriteLine("// Project " + fullProjectName + " excluded.");
+				return string.Empty;
+			}
         }
 
         private List<string> GetConfigPaths()
