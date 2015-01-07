@@ -22,7 +22,7 @@
     CollectionType = "List";  // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example
     CollectionTypeNamespace = ""; // "System.Collections.ObjectModel" is required if setting the CollectionType = "ObservableCollection"
     AddUnitTestingDbContext = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing
-    IncludeQueryTraceOn9481Flag = false; // SqlServer 2014 is known to appear frozen / take a long time when this file is saved. If it does, set this to true (you will also need elevated privileges!).
+    IncludeQueryTraceOn9481Flag = true; // SqlServer 2014 is known to appear frozen / take a long time when this file is saved. If it does, set this to true (you will also need elevated privileges!).
 
     // Pluralization **********************************************************************************************************************
     // To turn off pluralization, use:
@@ -47,7 +47,7 @@
     // Elements to generate ***************************************************************************************************************
     // Add the elements that should be generated when the template is executed.
     // Multiple projects can now be used that separate the different concerns.
-    ElementsToGenerate =  Elements.Poco | Elements.Context | Elements.UnitOfWork | Elements.PocoConfiguration;
+    ElementsToGenerate =  Elements.StoredProcedures;
 
     // Use these namespaces to specify where the different elements now live. These may even be in different assemblies.
     // Please note this does not create the files in these locations, it only adds a using statement to say where they are.
@@ -166,8 +166,7 @@
     // Read schema
     var factory = GetDbProviderFactory();
     var tables = LoadTables(factory);
-    var storedProcs = new List<StoredProcedure>();
-    //var storedProcs = LoadStoredProcs(factory); // not ready
+    var storedProcs = LoadStoredProcs(factory);
     
     // Generate output
     if (tables.Count > 0 || storedProcs.Count > 0)
