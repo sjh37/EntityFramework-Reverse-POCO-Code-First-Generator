@@ -1911,6 +1911,11 @@ OPTION (QUERYTRACEON 9481)";
                 }
                 return sysType;
             }
+
+            public void ReadStoredProcReturnObject(StoredProcedure proc)
+            {
+                // todo
+            }
         }
 
         public class ForeignKey
