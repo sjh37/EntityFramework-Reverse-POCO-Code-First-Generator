@@ -1299,5 +1299,55 @@ namespace EntityFramework_Reverse_POCO_Generator
         }
     }
 
-}
 
+    // ************************************************************************
+    // Stored Procedures
+
+    public class CustOrderHistReturnModel
+    {
+        public String ProductName { get; set; }
+        public Int32? Total { get; set; }
+    }
+
+    public class CustOrdersDetailReturnModel
+    {
+        public String ProductName { get; set; }
+        public Decimal? UnitPrice { get; set; }
+        public Int16 Quantity { get; set; }
+        public Int32? Discount { get; set; }
+        public Decimal? ExtendedPrice { get; set; }
+    }
+
+    public class CustOrdersOrdersReturnModel
+    {
+        public Int32 OrderId { get; set; }
+        public DateTime? OrderDate { get; set; }
+        public DateTime? RequiredDate { get; set; }
+        public DateTime? ShippedDate { get; set; }
+    }
+
+    public class EmployeeSalesByCountryReturnModel
+    {
+        public String Country { get; set; }
+        public String LastName { get; set; }
+        public String FirstName { get; set; }
+        public DateTime? ShippedDate { get; set; }
+        public Int32 OrderId { get; set; }
+        public Decimal? SaleAmount { get; set; }
+    }
+
+    public class SalesByYearReturnModel
+    {
+        public DateTime? ShippedDate { get; set; }
+        public Int32 OrderId { get; set; }
+        public Decimal? Subtotal { get; set; }
+        public String Year { get; set; }
+    }
+
+    public class SalesByCategoryReturnModel
+    {
+        public String ProductName { get; set; }
+        public Decimal? TotalPurchase { get; set; }
+    }
+
+}

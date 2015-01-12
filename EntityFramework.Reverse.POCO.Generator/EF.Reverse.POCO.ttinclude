@@ -437,9 +437,11 @@ if(!GenerateSeparateFiles) { #>
 
 <# } #>
 <#
-foreach(StoredProcedure sp in storedProcs.Where(sp => sp.ReturnColumns.Count > 0))
+foreach(StoredProcedure sp in storedProcs)
 {
-    string spReturnClassName = WriteStoredProcReturnClassName(sp);
+    if (sp.ReturnColumns.Count > 0)
+    {
+        string spReturnClassName = WriteStoredProcReturnModelName(sp);
 #>
 <# fileManager.StartNewFile(spReturnClassName + FileExtension); #>
     public class <#= spReturnClassName #>
@@ -451,6 +453,7 @@ foreach (var returnColumn in sp.ReturnColumns)
         <#= WriteStoredProcReturnColumn(returnColumn) #>
 <# } #>
     }
+<# } #>
 
 <# } } #>
 <# fileManager.StartFooter(); #>
