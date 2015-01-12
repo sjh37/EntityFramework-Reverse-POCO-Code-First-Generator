@@ -168,7 +168,19 @@
         int count = sp.Parameters.Count;
         foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
         {
-            sb.AppendFormat("{0} {1}{2}", p.PropertyType, p.NameHumanCase, (n++ < count) ? ", " : string.Empty);
+            sb.AppendFormat("{0}{1} {2}{3}", p.Mode == StoredProcedureParameterMode.In ? "" : "out ", p.PropertyType, p.NameHumanCase, (n++ < count) ? ", " : string.Empty);
+        }
+        return sb.ToString();
+    };
+
+    Func<StoredProcedure, string> WriteStoredProcFunctionSqlAtParams = sp =>
+    {
+        var sb = new StringBuilder();
+        int n = 1;
+        int count = sp.Parameters.Count;
+        foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
+        {
+            sb.AppendFormat("{0}{1}", p.Name, (n++ < count) ? ", " : string.Empty);
         }
         return sb.ToString();
     };

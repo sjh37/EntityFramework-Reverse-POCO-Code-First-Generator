@@ -103,7 +103,7 @@ foreach (StoredProcedure sp in storedProcs)
 <# }
 }
 #>
-/**/<# } #>
+<# /**/} #>
     }
 
 <# }
@@ -178,7 +178,37 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.Na
         partial void InitializePartial();
         partial void OnModelCreatingPartial(DbModelBuilder modelBuilder);
 <#}#>
-    }
+<# if (ElementsToGenerate.HasFlag(Elements.StoredProcedures))
+{ #>
+        
+        // Stored Procedures
+<#
+foreach (StoredProcedure sp in storedProcs)
+{
+    string spExecName = WriteStoredProcFunctionName(sp);
+    if (sp.ReturnColumns.Count > 0)
+    {
+        string spReturnClassName = WriteStoredProcReturnModelName(sp); #>  
+        IEnumerable<<#= spReturnClassName #>> <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp)#>)
+        {
+            return Database.SqlQuery<<#= spReturnClassName #>>("exec <#= sp.Name #> <#= WriteStoredProcFunctionSqlAtParams(sp) #>", new 
+            {
+                list_params 
+            }).ToList<<#= spReturnClassName #>>();
+        }
+
+<# } else { #>
+        int <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp)#>)
+        {
+            return Database.SqlQuery<int>("exec <#= sp.Name #> <#= WriteStoredProcFunctionSqlAtParams(sp) #>", new 
+            {
+                list_params 
+            }).ToList<int>();
+        }
+
+<# }
+}}
+/**/#>    }
 <# }
     if (ElementsToGenerate.HasFlag(Elements.Context) && AddUnitTestingDbContext)
     {
