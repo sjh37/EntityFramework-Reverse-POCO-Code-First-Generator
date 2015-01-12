@@ -86,6 +86,24 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.Na
 <# } #>
 
         int SaveChanges();
+<# if (ElementsToGenerate.HasFlag(Elements.StoredProcedures))
+{ #>
+        
+        // Stored Procedures
+<#
+foreach (StoredProcedure sp in storedProcs)
+{
+    string spExecName = WriteStoredProcFunctionName(sp);
+    if (sp.ReturnColumns.Count > 0)
+    {
+        string spReturnClassName = WriteStoredProcReturnModelName(sp); #>  
+        IEnumerable<<#= spReturnClassName #>> <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp)#>);
+<# } else { #>
+        int <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp)#>);
+<# }
+}
+#>
+/**/<# } #>
     }
 
 <# }

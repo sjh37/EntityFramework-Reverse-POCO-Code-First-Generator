@@ -158,8 +158,20 @@
 
     Func<Column, string> WritePocoColumn = c => c.Entity;
 
-    Func<StoredProcedure, string> WriteStoredProcClassName = sp => 
-        string.Format("todo");
+    Func<StoredProcedure, string> WriteStoredProcFunctionName = sp => 
+        string.Format("{0}{1}", (sp.Schema.ToLower() != "dbo") ? sp.Schema + "_" : string.Empty, sp.NameHumanCase);
+
+    Func<StoredProcedure, string> WriteStoredProcFunctionParams = sp =>
+    {
+        var sb = new StringBuilder();
+        int n = 1;
+        int count = sp.Parameters.Count;
+        foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
+        {
+            sb.AppendFormat("{0} {1}{2}", p.PropertyType, p.NameHumanCase, (n++ < count) ? ", " : string.Empty);
+        }
+        return sb.ToString();
+    };
     
     Func<StoredProcedure, string> WriteStoredProcReturnModelName = sp => 
         string.Format("{0}{1}ReturnModel", (sp.Schema.ToLower() != "dbo") ? sp.Schema + "_" : string.Empty, sp.NameHumanCase);

@@ -310,14 +310,14 @@
                 return string.Empty;
 
             try
-			{
-				var info = new FileInfo(fullProjectName);
-				return info.Directory == null ? string.Empty : info.Directory.FullName;
-			}
-			catch{
-				WriteLine("// Project " + fullProjectName + " excluded.");
-				return string.Empty;
-			}
+            {
+                var info = new FileInfo(fullProjectName);
+                return info.Directory == null ? string.Empty : info.Directory.FullName;
+            }
+            catch{
+                WriteLine("// Project " + fullProjectName + " excluded.");
+                return string.Empty;
+            }
         }
 
         private List<string> GetConfigPaths()
@@ -1315,42 +1315,42 @@ SELECT  '' AS [schema],
         [Value] AS [property]
 FROM    [__ExtendedProperties];";
 
-			private const string TableSQLCE = @"
+            private const string TableSQLCE = @"
 SELECT  '' AS SchemaName,
-		c.TABLE_NAME AS TableName,
-		'BASE TABLE' AS TableType,
-		c.ORDINAL_POSITION AS Ordinal,
-		c.COLUMN_NAME AS ColumnName,
-		CAST(CASE WHEN c.IS_NULLABLE = N'YES' THEN 1
-		ELSE 0 END AS bit) AS IsNullable,
-		c.DATA_TYPE AS TypeName,
-		CASE WHEN c.CHARACTER_MAXIMUM_LENGTH IS NOT NULL THEN c.CHARACTER_MAXIMUM_LENGTH
-		ELSE 0 END AS MaxLength,
-		CASE WHEN c.NUMERIC_PRECISION IS NOT NULL THEN c.NUMERIC_PRECISION
-		ELSE 0 END AS Precision,
-		c.COLUMN_DEFAULT AS [Default],
-		CASE WHEN c.DATA_TYPE = N'datetime' THEN 0
-		ELSE 0 END AS DateTimePrecision,
-		CASE WHEN c.DATA_TYPE = N'datetime' THEN 0
-		WHEN c.NUMERIC_SCALE IS NOT NULL THEN c.NUMERIC_SCALE
-		ELSE 0 END AS Scale,
-		CAST(CASE WHEN c.AUTOINC_INCREMENT > 0 THEN 1
-		ELSE 0 END AS bit) AS IsIdentity,
-		CAST(CASE WHEN c.DATA_TYPE = N'rowversion' THEN 1
-		ELSE 0 END AS bit) AS IsStoreGenerated,
-		CAST(CASE WHEN u.TABLE_NAME IS NULL THEN 0
-		ELSE 1 END AS bit) AS PrimaryKey				
+        c.TABLE_NAME AS TableName,
+        'BASE TABLE' AS TableType,
+        c.ORDINAL_POSITION AS Ordinal,
+        c.COLUMN_NAME AS ColumnName,
+        CAST(CASE WHEN c.IS_NULLABLE = N'YES' THEN 1
+        ELSE 0 END AS bit) AS IsNullable,
+        c.DATA_TYPE AS TypeName,
+        CASE WHEN c.CHARACTER_MAXIMUM_LENGTH IS NOT NULL THEN c.CHARACTER_MAXIMUM_LENGTH
+        ELSE 0 END AS MaxLength,
+        CASE WHEN c.NUMERIC_PRECISION IS NOT NULL THEN c.NUMERIC_PRECISION
+        ELSE 0 END AS Precision,
+        c.COLUMN_DEFAULT AS [Default],
+        CASE WHEN c.DATA_TYPE = N'datetime' THEN 0
+        ELSE 0 END AS DateTimePrecision,
+        CASE WHEN c.DATA_TYPE = N'datetime' THEN 0
+        WHEN c.NUMERIC_SCALE IS NOT NULL THEN c.NUMERIC_SCALE
+        ELSE 0 END AS Scale,
+        CAST(CASE WHEN c.AUTOINC_INCREMENT > 0 THEN 1
+        ELSE 0 END AS bit) AS IsIdentity,
+        CAST(CASE WHEN c.DATA_TYPE = N'rowversion' THEN 1
+        ELSE 0 END AS bit) AS IsStoreGenerated,
+        CAST(CASE WHEN u.TABLE_NAME IS NULL THEN 0
+        ELSE 1 END AS bit) AS PrimaryKey				
 FROM INFORMATION_SCHEMA.COLUMNS c
-		INNER JOIN INFORMATION_SCHEMA.TABLES t 
-			ON c.TABLE_NAME = t.TABLE_NAME
-		LEFT JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS AS cons 
-			ON cons.TABLE_NAME = c.TABLE_NAME 
-		LEFT JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS u 
-			ON cons.CONSTRAINT_NAME = u.CONSTRAINT_NAME AND u.TABLE_NAME = c.TABLE_NAME AND u.COLUMN_NAME = c.COLUMN_NAME
+        INNER JOIN INFORMATION_SCHEMA.TABLES t 
+            ON c.TABLE_NAME = t.TABLE_NAME
+        LEFT JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS AS cons 
+            ON cons.TABLE_NAME = c.TABLE_NAME 
+        LEFT JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS u 
+            ON cons.CONSTRAINT_NAME = u.CONSTRAINT_NAME AND u.TABLE_NAME = c.TABLE_NAME AND u.COLUMN_NAME = c.COLUMN_NAME
 WHERE t.TABLE_TYPE <> N'SYSTEM TABLE' AND cons.CONSTRAINT_TYPE = 'PRIMARY KEY'
 ORDER BY c.TABLE_NAME, c.COLUMN_NAME, c.ORDINAL_POSITION;";
 
-			private const string ForeignKeySQLCE = @"
+            private const string ForeignKeySQLCE = @"
 SELECT DISTINCT
         FK.TABLE_NAME AS FK_Table,
         FK.COLUMN_NAME AS FK_Column,
@@ -1397,24 +1397,24 @@ FROM    INFORMATION_SCHEMA.PARAMETERS P
                AND R.ROUTINE_TYPE = 'PROCEDURE'
 WHERE   P.IS_RESULT = 'NO'
         AND P.SPECIFIC_SCHEMA + P.SPECIFIC_NAME IN (
-			SELECT  SCHEMA_NAME(sp.schema_id) + sp.name
-			FROM    sys.all_objects AS sp
-					LEFT OUTER JOIN sys.all_sql_modules AS sm
-						ON sm.object_id = sp.object_id
-			WHERE   sp.type = 'P'
-					AND (
-						 CAST(CASE WHEN sp.is_ms_shipped = 1 THEN 1
-								   WHEN (SELECT major_id
-										 FROM   sys.extended_properties
-										 WHERE  major_id = sp.object_id
-												AND minor_id = 0
-												AND class = 1
-												AND name = N'microsoft_database_tools_support') IS NOT NULL THEN 1
-								   ELSE 0
-							  END AS BIT) = 0
-						 AND ISNULL(sm.uses_native_compilation, 0) = 0
-						)
-		)
+            SELECT  SCHEMA_NAME(sp.schema_id) + sp.name
+            FROM    sys.all_objects AS sp
+                    LEFT OUTER JOIN sys.all_sql_modules AS sm
+                        ON sm.object_id = sp.object_id
+            WHERE   sp.type = 'P'
+                    AND (
+                         CAST(CASE WHEN sp.is_ms_shipped = 1 THEN 1
+                                   WHEN (SELECT major_id
+                                         FROM   sys.extended_properties
+                                         WHERE  major_id = sp.object_id
+                                                AND minor_id = 0
+                                                AND class = 1
+                                                AND name = N'microsoft_database_tools_support') IS NOT NULL THEN 1
+                                   ELSE 0
+                              END AS BIT) = 0
+                         AND ISNULL(sm.uses_native_compilation, 0) = 0
+                        )
+        )
 ORDER BY P.SPECIFIC_SCHEMA,
         P.SPECIFIC_NAME,
         P.ORDINAL_POSITION";
@@ -1660,7 +1660,7 @@ OPTION (QUERYTRACEON 9481)";
                             Scale = scale
                         };
 
-                        var clean = CleanUp(param.Name);
+                        var clean = CleanUp(param.Name.Replace("@", ""));
                         param.NameHumanCase = (useCamelCase ? Inflector.ToTitleCase(clean) : clean).Replace(" ", "");
 
                         sp.Parameters.Add(param);
@@ -1710,14 +1710,18 @@ OPTION (QUERYTRACEON 9481)";
                     // Tidy up
                     foreach (var col in proc.ReturnColumns)
                     {
-                        
                         col.ColumnName = Regex.Replace(col.ColumnName, @"[^A-Za-z0-9\s]*", "");
                         col.ColumnName = Inflector.ToTitleCase(col.ColumnName).Replace(" ", "");
+                    }
+                    foreach (var p in proc.Parameters)
+                    {
+                        p.NameHumanCase = Regex.Replace(p.NameHumanCase, @"[^A-Za-z0-9\s]*", "");
+                        //p.NameHumanCase = Inflector.ToTitleCase(p.NameHumanCase).Replace(" ", "");
                     }
                 }
                 catch (Exception)
                 {
-    				// Stored procedure does not have a return type
+                    // Stored procedure does not have a return type
                 }
             }
 
