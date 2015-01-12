@@ -525,7 +525,7 @@
                     }
 
                     foreach (var proc in storedProcs)
-                        reader.ReadStoredProcReturnObject(proc);
+                        reader.ReadStoredProcReturnObject(ConnectionString, proc);
 
                     conn.Close();
                     return storedProcs;
@@ -817,10 +817,12 @@
             public string Name;
             public string NameHumanCase;
             public List<StoredProcedureParameter> Parameters;
+            public List<DataColumn> ReturnColumns;
 
             public StoredProcedure()
             {
                 Parameters = new List<StoredProcedureParameter>();
+                ReturnColumns = new List<DataColumn>();
             }
         }
 
@@ -1667,6 +1669,58 @@ OPTION (QUERYTRACEON 9481)";
                 return result;
             }
 
+            public void ReadStoredProcReturnObject(string connectionString, StoredProcedure proc)
+            {
+                try
+                {
+                    var sb = new StringBuilder();
+                    sb.Append("SET FMTONLY OFF; SET FMTONLY ON; \n");
+
+                    sb.Append(String.Format("exec [{0}].[{1}] ", proc.Schema, proc.Name));
+
+                    var count = 1;
+                    int paramCount = proc.Parameters.Count;
+                    foreach (var param in proc.Parameters)
+                    {
+                        sb.Append(String.Format("{0}=null", param.Name));
+                        if (count < paramCount)
+                            sb.Append(", ");
+                        count++;
+                    }
+
+                    sb.Append("\n SET FMTONLY OFF; SET FMTONLY OFF;");
+
+                    var ds = new DataSet();
+                    using (var sqlConnection = new SqlConnection(connectionString))
+                    {
+                        using (var sqlAdapter = new SqlDataAdapter(sb.ToString(), sqlConnection))
+                        {
+                            if (sqlConnection.State != ConnectionState.Open)
+                                sqlConnection.Open();
+                            sqlAdapter.SelectCommand.ExecuteReader(CommandBehavior.SchemaOnly | CommandBehavior.KeyInfo);
+                            sqlConnection.Close();
+                            sqlAdapter.FillSchema(ds, SchemaType.Source, "MyTable");
+                        }
+                    }
+
+                    if (ds.Tables.Count < 1)
+                        return;
+
+                    proc.ReturnColumns = ds.Tables[0].Columns.Cast<DataColumn>().ToList();
+                    // Tidy up
+                    foreach (var col in proc.ReturnColumns)
+                    {
+                        
+                        col.ColumnName = Regex.Replace(col.ColumnName, @"[^A-Za-z0-9\s]*", "");
+                        col.ColumnName = Inflector.ToTitleCase(col.ColumnName).Replace(" ", "");
+                    }
+                }
+                catch (Exception)
+                {
+    				// Stored procedure does not have a return type
+                }
+            }
+
             public override void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool useCamelCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, bool includeComments)
             {
                 var constraints = fkList.Select(x => x.ConstraintName).Distinct();
@@ -1910,11 +1964,6 @@ OPTION (QUERYTRACEON 9481)";
                         break;
                 }
                 return sysType;
-            }
-
-            public void ReadStoredProcReturnObject(StoredProcedure proc)
-            {
-                // todo
             }
         }
 
