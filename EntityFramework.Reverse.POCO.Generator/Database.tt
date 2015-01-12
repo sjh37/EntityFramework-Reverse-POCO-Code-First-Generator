@@ -47,7 +47,7 @@
     // Elements to generate ***************************************************************************************************************
     // Add the elements that should be generated when the template is executed.
     // Multiple projects can now be used that separate the different concerns.
-    ElementsToGenerate =  Elements.Poco | Elements.Context | Elements.UnitOfWork | Elements.PocoConfiguration;
+    ElementsToGenerate =  Elements.StoredProcedures;
 
     // Use these namespaces to specify where the different elements now live. These may even be in different assemblies.
     // Please note this does not create the files in these locations, it only adds a using statement to say where they are.
@@ -158,6 +158,13 @@
 
     Func<Column, string> WritePocoColumn = c => c.Entity;
 
+    Func<StoredProcedure, string> WriteStoredProcReturnClassName = sp => 
+        string.Format("{0}{1}ReturnType", (sp.Schema.ToLower() != "dbo") ? sp.Schema + "_" : string.Empty, sp.NameHumanCase);
+
+    Func<DataColumn, string> WriteStoredProcReturnColumn = col => 
+        string.Format("public {0}{1}{2} {{ get; set; }}",
+            col.DataType.Name, (col.AllowDBNull && col.DataType != typeof (string)) ? "? " : " ", col.ColumnName);
+
     
     // That's it, nothing else to configure ***********************************************************************************************
     
@@ -166,8 +173,7 @@
     // Read schema
     var factory = GetDbProviderFactory();
     var tables = LoadTables(factory);
-    var storedProcs = new List<StoredProcedure>();
-    //var storedProcs = LoadStoredProcs(factory); // not ready
+    var storedProcs = LoadStoredProcs(factory);
     
     // Generate output
     if (tables.Count > 0 || storedProcs.Count > 0)
