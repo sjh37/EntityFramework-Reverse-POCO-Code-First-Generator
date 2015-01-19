@@ -66,17 +66,11 @@ namespace EntityFramework_Reverse_POCO_Generator
         int SaveChanges();
         
         // Stored Procedures
-  
         List<CustOrderHistReturnModel> CustOrderHist(string customerId, out int procResult);
-  
         List<CustOrdersDetailReturnModel> CustOrdersDetail(int orderId, out int procResult);
-  
         List<CustOrdersOrdersReturnModel> CustOrdersOrders(string customerId, out int procResult);
-  
         List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(DateTime beginningDate, DateTime endingDate, out int procResult);
-  
         List<SalesByYearReturnModel> SalesByYear(DateTime beginningDate, DateTime endingDate, out int procResult);
-  
         List<SalesByCategoryReturnModel> SalesByCategory(string categoryName, string ordYear, out int procResult);
     }
 
@@ -196,15 +190,14 @@ namespace EntityFramework_Reverse_POCO_Generator
         }
         
         // Stored Procedures
-  
         public List<CustOrderHistReturnModel> CustOrderHist(string customerId, out int procResult)
         {
-            var CustomerIDParam = new SqlParameter { ParameterName = "@CustomerID", SqlDbType = SqlDbType.NChar, Direction = ParameterDirection.Input, Value = customerId, Size = 5 };
+            var customerIdParam = new SqlParameter { ParameterName = "@CustomerID", SqlDbType = SqlDbType.NChar, Direction = ParameterDirection.Input, Value = customerId, Size = 5 };
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
  
             var procResultData = Database.SqlQuery<CustOrderHistReturnModel>("EXEC @procResult = CustOrderHist @CustomerID", new object[]
             {
-                CustomerIDParam,
+                customerIdParam,
                 procResultParam
 
             }).ToList();
@@ -213,15 +206,14 @@ namespace EntityFramework_Reverse_POCO_Generator
             return procResultData;
         }
 
-  
         public List<CustOrdersDetailReturnModel> CustOrdersDetail(int orderId, out int procResult)
         {
-            var OrderIDParam = new SqlParameter { ParameterName = "@OrderID", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = orderId };
+            var orderIdParam = new SqlParameter { ParameterName = "@OrderID", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = orderId };
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
  
             var procResultData = Database.SqlQuery<CustOrdersDetailReturnModel>("EXEC @procResult = CustOrdersDetail @OrderID", new object[]
             {
-                OrderIDParam,
+                orderIdParam,
                 procResultParam
 
             }).ToList();
@@ -230,15 +222,14 @@ namespace EntityFramework_Reverse_POCO_Generator
             return procResultData;
         }
 
-  
         public List<CustOrdersOrdersReturnModel> CustOrdersOrders(string customerId, out int procResult)
         {
-            var CustomerIDParam = new SqlParameter { ParameterName = "@CustomerID", SqlDbType = SqlDbType.NChar, Direction = ParameterDirection.Input, Value = customerId, Size = 5 };
+            var customerIdParam = new SqlParameter { ParameterName = "@CustomerID", SqlDbType = SqlDbType.NChar, Direction = ParameterDirection.Input, Value = customerId, Size = 5 };
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
  
             var procResultData = Database.SqlQuery<CustOrdersOrdersReturnModel>("EXEC @procResult = CustOrdersOrders @CustomerID", new object[]
             {
-                CustomerIDParam,
+                customerIdParam,
                 procResultParam
 
             }).ToList();
@@ -247,17 +238,16 @@ namespace EntityFramework_Reverse_POCO_Generator
             return procResultData;
         }
 
-  
         public List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(DateTime beginningDate, DateTime endingDate, out int procResult)
         {
-            var Beginning_DateParam = new SqlParameter { ParameterName = "@Beginning_Date", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = beginningDate };
-            var Ending_DateParam = new SqlParameter { ParameterName = "@Ending_Date", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = endingDate };
+            var beginningDateParam = new SqlParameter { ParameterName = "@Beginning_Date", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = beginningDate };
+            var endingDateParam = new SqlParameter { ParameterName = "@Ending_Date", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = endingDate };
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
  
             var procResultData = Database.SqlQuery<EmployeeSalesByCountryReturnModel>("EXEC @procResult = Employee Sales by Country @Beginning_Date, @Ending_Date", new object[]
             {
-                Beginning_DateParam,
-                Ending_DateParam,
+                beginningDateParam,
+                endingDateParam,
                 procResultParam
 
             }).ToList();
@@ -266,17 +256,16 @@ namespace EntityFramework_Reverse_POCO_Generator
             return procResultData;
         }
 
-  
         public List<SalesByYearReturnModel> SalesByYear(DateTime beginningDate, DateTime endingDate, out int procResult)
         {
-            var Beginning_DateParam = new SqlParameter { ParameterName = "@Beginning_Date", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = beginningDate };
-            var Ending_DateParam = new SqlParameter { ParameterName = "@Ending_Date", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = endingDate };
+            var beginningDateParam = new SqlParameter { ParameterName = "@Beginning_Date", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = beginningDate };
+            var endingDateParam = new SqlParameter { ParameterName = "@Ending_Date", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = endingDate };
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
  
             var procResultData = Database.SqlQuery<SalesByYearReturnModel>("EXEC @procResult = Sales by Year @Beginning_Date, @Ending_Date", new object[]
             {
-                Beginning_DateParam,
-                Ending_DateParam,
+                beginningDateParam,
+                endingDateParam,
                 procResultParam
 
             }).ToList();
@@ -285,17 +274,16 @@ namespace EntityFramework_Reverse_POCO_Generator
             return procResultData;
         }
 
-  
         public List<SalesByCategoryReturnModel> SalesByCategory(string categoryName, string ordYear, out int procResult)
         {
-            var CategoryNameParam = new SqlParameter { ParameterName = "@CategoryName", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = categoryName, Size = 15 };
-            var OrdYearParam = new SqlParameter { ParameterName = "@OrdYear", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = ordYear, Size = 4 };
+            var categoryNameParam = new SqlParameter { ParameterName = "@CategoryName", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = categoryName, Size = 15 };
+            var ordYearParam = new SqlParameter { ParameterName = "@OrdYear", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = ordYear, Size = 4 };
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
  
             var procResultData = Database.SqlQuery<SalesByCategoryReturnModel>("EXEC @procResult = SalesByCategory @CategoryName, @OrdYear", new object[]
             {
-                CategoryNameParam,
-                OrdYearParam,
+                categoryNameParam,
+                ordYearParam,
                 procResultParam
 
             }).ToList();
@@ -380,7 +368,6 @@ namespace EntityFramework_Reverse_POCO_Generator
         }
         
         // Stored Procedures
-  
         public List<CustOrderHistReturnModel> CustOrderHist(string customerId, out int procResult)
         {
  
@@ -388,7 +375,6 @@ namespace EntityFramework_Reverse_POCO_Generator
             return new List<CustOrderHistReturnModel>();
         }
 
-  
         public List<CustOrdersDetailReturnModel> CustOrdersDetail(int orderId, out int procResult)
         {
  
@@ -396,7 +382,6 @@ namespace EntityFramework_Reverse_POCO_Generator
             return new List<CustOrdersDetailReturnModel>();
         }
 
-  
         public List<CustOrdersOrdersReturnModel> CustOrdersOrders(string customerId, out int procResult)
         {
  
@@ -404,7 +389,6 @@ namespace EntityFramework_Reverse_POCO_Generator
             return new List<CustOrdersOrdersReturnModel>();
         }
 
-  
         public List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(DateTime beginningDate, DateTime endingDate, out int procResult)
         {
  
@@ -412,7 +396,6 @@ namespace EntityFramework_Reverse_POCO_Generator
             return new List<EmployeeSalesByCountryReturnModel>();
         }
 
-  
         public List<SalesByYearReturnModel> SalesByYear(DateTime beginningDate, DateTime endingDate, out int procResult)
         {
  
@@ -420,7 +403,6 @@ namespace EntityFramework_Reverse_POCO_Generator
             return new List<SalesByYearReturnModel>();
         }
 
-  
         public List<SalesByCategoryReturnModel> SalesByCategory(string categoryName, string ordYear, out int procResult)
         {
  
@@ -1477,7 +1459,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
 
     // ************************************************************************
-    // Stored Procedures
+    // Stored procedure return models
 
     public class CustOrderHistReturnModel
     {
