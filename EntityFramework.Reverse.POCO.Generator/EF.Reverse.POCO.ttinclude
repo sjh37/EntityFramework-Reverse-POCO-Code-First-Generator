@@ -518,7 +518,7 @@ if(ElementsToGenerate.HasFlag(Elements.StoredProcedures)){
 if(!GenerateSeparateFiles) { #>
 
     // ************************************************************************
-    // Stored Procedures
+    // Stored procedure return models
 
 <# } #>
 <#
