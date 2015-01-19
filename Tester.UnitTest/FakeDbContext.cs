@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using EntityFramework_Reverse_POCO_Generator;
 
@@ -73,6 +74,48 @@ namespace Tester.UnitTest
         public void Dispose()
         {
             throw new NotImplementedException(); 
+        }
+
+        public List<CustOrderHistReturnModel> CustOrderHist(string customerId, out int procResult)
+        {
+
+            procResult = 0;
+            return new List<CustOrderHistReturnModel>();
+        }
+
+        public List<CustOrdersDetailReturnModel> CustOrdersDetail(int orderId, out int procResult)
+        {
+
+            procResult = 0;
+            return new List<CustOrdersDetailReturnModel>();
+        }
+
+        public List<CustOrdersOrdersReturnModel> CustOrdersOrders(string customerId, out int procResult)
+        {
+
+            procResult = 0;
+            return new List<CustOrdersOrdersReturnModel>();
+        }
+
+        public List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(DateTime beginningDate, DateTime endingDate, out int procResult)
+        {
+
+            procResult = 0;
+            return new List<EmployeeSalesByCountryReturnModel>();
+        }
+
+        public List<SalesByYearReturnModel> SalesByYear(DateTime beginningDate, DateTime endingDate, out int procResult)
+        {
+
+            procResult = 0;
+            return new List<SalesByYearReturnModel>();
+        }
+
+        public List<SalesByCategoryReturnModel> SalesByCategory(string categoryName, string ordYear, out int procResult)
+        {
+
+            procResult = 0;
+            return new List<SalesByCategoryReturnModel>();
         }
     }
 }
