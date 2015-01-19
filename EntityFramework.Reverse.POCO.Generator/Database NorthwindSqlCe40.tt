@@ -85,6 +85,7 @@
     TableFilterExclude = null;
     TableFilterInclude = null;
 
+
     // Table renaming *********************************************************************************************************************
     // Use the following function to rename tables such as tblOrders to Orders, Shipments_AB to Shipments, etc.
     // Example:
@@ -95,6 +96,7 @@
         return name.Replace("_AB", "");
     };*/
     TableRename = (name, schema) => name;   // Do nothing by default
+
 
 
     // WCF ********************************************************************************************************************************
@@ -137,7 +139,16 @@
     
     // That's it, nothing else to configure ***********************************************************************************************
     
-    
+    // Stored procedure are not supported in SqlCE - create dummy functions
+    StoredProcedureRename = (name, schema) => name;   // Do nothing by default
+    Func<StoredProcedure, string> WriteStoredProcFunctionName = null;
+    Func<StoredProcedure, string> WriteStoredProcFunctionParams = null;
+    Func<StoredProcedure, string> WriteStoredProcFunctionSqlAtParams = null;
+    Func<StoredProcedure, string> WriteStoredProcFunctionDeclareSqlParameter = null;
+    Func<StoredProcedure, string> WriteStoredProcFunctionSqlParameterAnonymousArray = null;
+    Func<StoredProcedure, bool, string> WriteStoredProcFunctionSetSqlParameters = null;
+    Func<StoredProcedure, string> WriteStoredProcReturnModelName = null;
+    Func<DataColumn, string> WriteStoredProcReturnColumn = null;
     
     // Read schema
     var tables = LoadTables(GetDbProviderFactory());
