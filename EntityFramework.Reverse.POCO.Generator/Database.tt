@@ -200,7 +200,7 @@
         foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
         {
             sb.AppendLine(string.Format("            var {0}Param = new SqlParameter {{ ParameterName = \"{1}\", SqlDbType = SqlDbType.{2}, Direction = ParameterDirection.{3}{4}{5} }};", 
-                p.Name.Replace("@", ""), 
+                p.NameHumanCase, 
                 p.Name, 
                 p.SqlDbType, 
                 p.Mode == StoredProcedureParameterMode.In ? "Input" : "Output",
@@ -216,7 +216,7 @@
         var sb = new StringBuilder();
         foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
         {
-            sb.AppendLine(string.Format("                {0}Param,", p.Name.Replace("@", "")));
+            sb.AppendLine(string.Format("                {0}Param,", p.NameHumanCase));
         }
         sb.AppendLine("                procResultParam");
         return sb.ToString();
@@ -227,11 +227,10 @@
         var sb = new StringBuilder();
         foreach (var p in sp.Parameters.Where(x => x.Mode != StoredProcedureParameterMode.In).OrderBy(x => x.Ordinal))
         {
-            var name = p.Name.Replace("@", "");
             if(isFake)
-                sb.AppendLine(string.Format("            {0} = default({1});", name, p.PropertyType));
+                sb.AppendLine(string.Format("            {0} = default({1});", p.NameHumanCase, p.PropertyType));
             else
-                sb.AppendLine(string.Format("            {0} = ({1}) {2}Param.Value;", name, p.PropertyType, name));
+                sb.AppendLine(string.Format("            {0} = ({1}) {2}Param.Value;", p.NameHumanCase, p.PropertyType, p.NameHumanCase));
         }
         return sb.ToString();
     };
