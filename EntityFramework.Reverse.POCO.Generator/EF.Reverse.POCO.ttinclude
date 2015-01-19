@@ -100,8 +100,7 @@ foreach (StoredProcedure sp in storedProcs)
     string spExecName = WriteStoredProcFunctionName(sp);
     if (sp.ReturnColumns.Count > 0)
     {
-        string spReturnClassName = WriteStoredProcReturnModelName(sp); #>  
-        List<<#= spReturnClassName #>> <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp)#>);
+        string spReturnClassName = WriteStoredProcReturnModelName(sp);#>        List<<#= spReturnClassName #>> <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp)#>);
 <# } else { #>
         int <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp)#>);
 <# }
@@ -192,7 +191,7 @@ foreach (StoredProcedure sp in storedProcs)
     string spExecName = WriteStoredProcFunctionName(sp);
     if (sp.ReturnColumns.Count > 0)
     {
-        string spReturnClassName = WriteStoredProcReturnModelName(sp); #>  
+        string spReturnClassName = WriteStoredProcReturnModelName(sp); #>
         public List<<#= spReturnClassName #>> <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp)#>)
         {
 <#= WriteStoredProcFunctionDeclareSqlParameter(sp) #> 
@@ -268,7 +267,7 @@ foreach (StoredProcedure sp in storedProcs)
     string spExecName = WriteStoredProcFunctionName(sp);
     if (sp.ReturnColumns.Count > 0)
     {
-        string spReturnClassName = WriteStoredProcReturnModelName(sp); #>  
+        string spReturnClassName = WriteStoredProcReturnModelName(sp); #>
         public List<<#= spReturnClassName #>> <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp)#>)
         {
 <#= WriteStoredProcFunctionSetSqlParameters(sp, true) #> 
