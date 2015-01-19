@@ -839,6 +839,7 @@
             public StoredProcedureParameterMode Mode;
             public string Name;
             public string NameHumanCase;
+            public string SqlDbType;
             public string PropertyType;
             public int DateTimePrecision;
             public int MaxLength;
@@ -950,6 +951,16 @@
             public static string MakeInitialCaps(string word)
             {
                 return String.Concat(word.Substring(0, 1).ToUpper(), word.Substring(1).ToLower());
+            } 
+            
+            /// <summary>
+            /// Makes the initial character lowercase.
+            /// </summary>
+            /// <param name="word">The word.</param>
+            /// <returns></returns>
+            public static string MakeInitialLower(string word)
+            {
+                return String.Concat(word.Substring(0, 1).ToLower(), word.Substring(1));
             }
         }
 
@@ -1653,6 +1664,7 @@ OPTION (QUERYTRACEON 9481)";
                             Ordinal = (int) rdr["ORDINAL_POSITION"],
                             Mode = (parameterMode == "IN") ? StoredProcedureParameterMode.In : StoredProcedureParameterMode.InOut,
                             Name = rdr["PARAMETER_NAME"].ToString().Trim(),
+                            SqlDbType = GetSqlDbType(typename, scale, precision),
                             PropertyType = GetPropertyType(typename, scale, precision),
                             DateTimePrecision = (Int16) rdr["DATETIME_PRECISION"],
                             MaxLength = (int) rdr["CHARACTER_MAXIMUM_LENGTH"],
@@ -1661,7 +1673,7 @@ OPTION (QUERYTRACEON 9481)";
                         };
 
                         var clean = CleanUp(param.Name.Replace("@", ""));
-                        param.NameHumanCase = (useCamelCase ? Inflector.ToTitleCase(clean) : clean).Replace(" ", "");
+                        param.NameHumanCase = Inflector.MakeInitialLower((useCamelCase ? Inflector.ToTitleCase(clean) : clean).Replace(" ", ""));
 
                         sp.Parameters.Add(param);
                     }
@@ -1898,6 +1910,130 @@ OPTION (QUERYTRACEON 9481)";
                     return null;
 
                 return col;
+            }
+
+            private static string GetSqlDbType(string sqlType, int scale, int precision)
+            {
+                string sysType = "VarChar";
+                switch(sqlType)
+                {
+                    case "bigint":
+                        sysType = "BigInt";
+                        break;
+
+                    case "binary":
+                        sysType = "Binary";
+                        break;
+
+                    case "bit":
+                        sysType = "Bit";
+                        break;
+
+                    case "char":
+                        sysType = "Char";
+                        break;
+
+                    case "datetime":
+                        sysType = "DateTime";
+                        break;
+
+                    case "decimal":
+                        sysType = "Decimal";
+                        break;
+
+                    case "float":
+                        sysType = "Float";
+                        break;
+
+                    case "image":
+                        sysType = "Image";
+                        break;
+
+                    case "int":
+                        sysType = "Int";
+                        break;
+
+                    case "money":
+                        sysType = "Money";
+                        break;
+
+                    case "nchar":
+                        sysType = "NChar";
+                        break;
+
+                    case "ntext":
+                        sysType = "NText";
+                        break;
+
+                    case "Real":
+                        sysType = "real";
+                        break;
+
+                    case "smalldatetime":
+                        sysType = "SmallDateTime";
+                        break;
+
+                    case "smallint":
+                        sysType = "SmallInt";
+                        break;
+
+                    case "smallmoney":
+                        sysType = "SmallMoney";
+                        break;
+
+                    case "text":
+                        sysType = "Text";
+                        break;
+
+                    case "timestamp":
+                        sysType = "Timestamp";
+                        break;
+
+                    case "tinyint":
+                        sysType = "TinyInt";
+                        break;
+
+                    case "varbinary":
+                        sysType = "VarBinary";
+                        break;
+
+                    case "varchar":
+                        sysType = "VarChar";
+                        break;
+
+                    case "variant":
+                        sysType = "Variant";
+                        break;
+
+                    case "xml":
+                        sysType = "Xml";
+                        break;
+
+                    case "udt":
+                        sysType = "Udt";
+                        break;
+
+                    case "structured":
+                        sysType = "Structured";
+                        break;
+
+                    case "date":
+                        sysType = "Date";
+                        break;
+
+                    case "time":
+                        sysType = "Time";
+                        break;
+
+                    case "datetime2":
+                        sysType = "DateTime2";
+                        break;
+
+                    case "datetimeoffset":
+                        sysType = "DateTimeOffset";
+                        break;
+                }
+                return sysType;
             }
 
             private static string GetPropertyType(string sqlType, int scale, int precision)

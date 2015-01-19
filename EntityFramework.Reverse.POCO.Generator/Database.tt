@@ -168,8 +168,14 @@
         int count = sp.Parameters.Count;
         foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
         {
-            sb.AppendFormat("{0}{1} {2}{3}", p.Mode == StoredProcedureParameterMode.In ? "" : "out ", p.PropertyType, p.NameHumanCase, (n++ < count) ? ", " : string.Empty);
+            sb.AppendFormat("{0}{1} {2}{3}", 
+                p.Mode == StoredProcedureParameterMode.In ? "" : "out ", 
+                p.PropertyType, 
+                p.NameHumanCase, 
+                (n++ < count) ? ", " : string.Empty);
         }
+        if (sp.ReturnColumns.Count > 0)
+            sb.AppendFormat(", out int procResult");
         return sb.ToString();
     };
 
@@ -180,7 +186,52 @@
         int count = sp.Parameters.Count;
         foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
         {
-            sb.AppendFormat("{0}{1}", p.Name, (n++ < count) ? ", " : string.Empty);
+            sb.AppendFormat("{0}{1}{2}", 
+                p.Name, 
+                p.Mode == StoredProcedureParameterMode.In ? string.Empty : " OUTPUT", 
+                (n++ < count) ? ", " : string.Empty);
+        }
+        return sb.ToString();
+    };
+
+    Func<StoredProcedure, string> WriteStoredProcFunctionDeclareSqlParameter = sp =>
+    {
+        var sb = new StringBuilder();
+        foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
+        {
+            sb.AppendLine(string.Format("            var {0}Param = new SqlParameter {{ ParameterName = \"{1}\", SqlDbType = SqlDbType.{2}, Direction = ParameterDirection.{3}{4}{5} }};", 
+                p.Name.Replace("@", ""), 
+                p.Name, 
+                p.SqlDbType, 
+                p.Mode == StoredProcedureParameterMode.In ? "Input" : "Output",
+                p.Mode == StoredProcedureParameterMode.In ? ", Value = " + p.NameHumanCase : string.Empty,
+                p.MaxLength > 0 ? ", Size = " + p.MaxLength : string.Empty));
+        }
+        sb.AppendLine("            var procResultParam = new SqlParameter { ParameterName = \"@procResult\", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };");
+        return sb.ToString();
+    };
+
+    Func<StoredProcedure, string> WriteStoredProcFunctionSqlParameterAnonymousArray = sp =>
+    {
+        var sb = new StringBuilder();
+        foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
+        {
+            sb.AppendLine(string.Format("                {0}Param,", p.Name.Replace("@", "")));
+        }
+        sb.AppendLine("                procResultParam");
+        return sb.ToString();
+    };
+    
+    Func<StoredProcedure, bool, string> WriteStoredProcFunctionSetSqlParameters = (sp, isFake) =>
+    {
+        var sb = new StringBuilder();
+        foreach (var p in sp.Parameters.Where(x => x.Mode != StoredProcedureParameterMode.In).OrderBy(x => x.Ordinal))
+        {
+            var name = p.Name.Replace("@", "");
+            if(isFake)
+                sb.AppendLine(string.Format("            {0} = default({1});", name, p.PropertyType));
+            else
+                sb.AppendLine(string.Format("            {0} = ({1}) {2}Param.Value;", name, p.PropertyType, name));
         }
         return sb.ToString();
     };

@@ -27,6 +27,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 <# if(ElementsToGenerate.HasFlag(Elements.Context) || ElementsToGenerate.HasFlag(Elements.UnitOfWork) || AddUnitTestingDbContext){ #>
 using System.Data.Entity;
 <# } #>
+<# if(ElementsToGenerate.HasFlag(Elements.StoredProcedures)){ #>
+using System.Data;
+using System.Data.SqlClient;
+<# } #>
 <# if(ElementsToGenerate.HasFlag(Elements.PocoConfiguration)){ #>
 using System.Data.Entity.ModelConfiguration;
 <# } #>
@@ -97,7 +101,7 @@ foreach (StoredProcedure sp in storedProcs)
     if (sp.ReturnColumns.Count > 0)
     {
         string spReturnClassName = WriteStoredProcReturnModelName(sp); #>  
-        IEnumerable<<#= spReturnClassName #>> <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp)#>);
+        List<<#= spReturnClassName #>> <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp)#>);
 <# } else { #>
         int <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp)#>);
 <# }
@@ -189,21 +193,28 @@ foreach (StoredProcedure sp in storedProcs)
     if (sp.ReturnColumns.Count > 0)
     {
         string spReturnClassName = WriteStoredProcReturnModelName(sp); #>  
-        IEnumerable<<#= spReturnClassName #>> <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp)#>)
+        public List<<#= spReturnClassName #>> <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp)#>)
         {
-            return Database.SqlQuery<<#= spReturnClassName #>>("exec <#= sp.Name #> <#= WriteStoredProcFunctionSqlAtParams(sp) #>", new 
+<#= WriteStoredProcFunctionDeclareSqlParameter(sp) #> 
+            var procResultData = Database.SqlQuery<<#= spReturnClassName #>>("EXEC @procResult = <#= sp.Name #> <#= WriteStoredProcFunctionSqlAtParams(sp) #>", new object[]
             {
-                list_params 
-            }).ToList<<#= spReturnClassName #>>();
+<#= WriteStoredProcFunctionSqlParameterAnonymousArray(sp) #>
+            }).ToList();
+<#= WriteStoredProcFunctionSetSqlParameters(sp, true) #> 
+            procResult = (int) procResultParam.Value;
+            return procResultData;
         }
 
 <# } else { #>
-        int <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp)#>)
+        public int <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp)#>)
         {
-            return Database.SqlQuery<int>("exec <#= sp.Name #> <#= WriteStoredProcFunctionSqlAtParams(sp) #>", new 
+<#= WriteStoredProcFunctionDeclareSqlParameter(sp) #> 
+            Database.ExecuteSqlCommand("EXEC @procResult = <#= sp.Name #> <#= WriteStoredProcFunctionSqlAtParams(sp) #>", new object[]
             {
-                list_params 
-            }).ToList<int>();
+<#= WriteStoredProcFunctionSqlParameterAnonymousArray(sp) #> 
+            });
+<#= WriteStoredProcFunctionSetSqlParameters(sp, false) #> 
+            return (int) procResultParam.Value;
         }
 
 <# }
@@ -247,6 +258,33 @@ foreach (Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.N
         {
             throw new NotImplementedException(); 
         }
+<# if (ElementsToGenerate.HasFlag(Elements.StoredProcedures))
+{ #>
+        
+        // Stored Procedures
+<#
+foreach (StoredProcedure sp in storedProcs)
+{
+    string spExecName = WriteStoredProcFunctionName(sp);
+    if (sp.ReturnColumns.Count > 0)
+    {
+        string spReturnClassName = WriteStoredProcReturnModelName(sp); #>  
+        public List<<#= spReturnClassName #>> <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp)#>)
+        {
+<#= WriteStoredProcFunctionSetSqlParameters(sp, true) #> 
+            procResult = 0;
+            return new List<<#= spReturnClassName #>>();
+        }
+
+<# } else { #>
+        public int <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp)#>)
+        {
+<#= WriteStoredProcFunctionSetSqlParameters(sp, true) #> 
+            return 0;
+        }
+
+<# }
+}}/**/#>
     }
 <#fileManager.StartNewFile("FakeDbSet" + FileExtension); #>
 <# if (!GenerateSeparateFiles)
