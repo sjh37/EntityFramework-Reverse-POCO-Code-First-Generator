@@ -2343,14 +2343,19 @@ OPTION (QUERYTRACEON 9481)";
                 if (rightTable == null)
                     return;
 
+                if (leftTable == rightTable)
+                    return;
+
                 leftTable.AddMappingConfiguration(left, right, useCamelCase, prependSchemaName);
 
                 IsMapping = true;
                 rightTable.AddReverseNavigation(Relationship.ManyToMany, rightTable.NameHumanCase, leftTable,
-                                               rightTable.GetUniqueColumnPropertyName(leftTable.NameHumanCase, left, useCamelCase, checkForFkNameClashes, false), null, collectionType, includeComments);
+                    rightTable.GetUniqueColumnPropertyName(leftTable.NameHumanCase, left, useCamelCase, checkForFkNameClashes, false), 
+                    null, collectionType, includeComments);
 
                 leftTable.AddReverseNavigation(Relationship.ManyToMany, leftTable.NameHumanCase, rightTable,
-                                                leftTable.GetUniqueColumnPropertyName(rightTable.NameHumanCase, right, useCamelCase, checkForFkNameClashes, false), null, collectionType, includeComments);
+                    leftTable.GetUniqueColumnPropertyName(rightTable.NameHumanCase, right, useCamelCase, checkForFkNameClashes, false), 
+                    null, collectionType, includeComments);
             }
         }
 
