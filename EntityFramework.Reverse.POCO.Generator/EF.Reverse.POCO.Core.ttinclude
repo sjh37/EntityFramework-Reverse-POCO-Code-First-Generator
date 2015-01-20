@@ -1275,7 +1275,8 @@ SELECT DISTINCT
         FK.CONSTRAINT_NAME AS Constraint_Name,
         FK.TABLE_SCHEMA AS fkSchema,
         PK.TABLE_SCHEMA AS pkSchema,
-        PT.COLUMN_NAME AS primarykey
+        PT.COLUMN_NAME AS primarykey,
+		FK.ORDINAL_POSITION
 FROM    INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS AS C
         INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS FK
             ON FK.CONSTRAINT_CATALOG = C.CONSTRAINT_CATALOG
@@ -1370,7 +1371,8 @@ SELECT DISTINCT
         FK.CONSTRAINT_NAME AS Constraint_Name,
         '' AS fkSchema,
         '' AS pkSchema,
-        PT.COLUMN_NAME AS primarykey
+        PT.COLUMN_NAME AS primarykey,
+        FK.ORDINAL_POSITION
 FROM    INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS AS C
         INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS FK
             ON FK.CONSTRAINT_NAME = C.CONSTRAINT_NAME
@@ -1387,8 +1389,7 @@ FROM    INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS AS C
                    ) PT
             ON PT.TABLE_NAME = PK.TABLE_NAME
 WHERE   PT.COLUMN_NAME = PK.COLUMN_NAME
-ORDER BY FK.TABLE_NAME,
-        FK.COLUMN_NAME;";
+ORDER BY FK.TABLE_NAME, FK.COLUMN_NAME;";
 
             private const string StoredProcedureSQL = @"
 SELECT  P.SPECIFIC_SCHEMA,
@@ -1556,12 +1557,13 @@ OPTION (QUERYTRACEON 9481)";
                         string fkColumn = rdr["FK_Column"].ToString().Replace(" ", "");
                         string pkColumn = rdr["PK_Column"].ToString().Replace(" ", "");
                         string constraintName = rdr["Constraint_Name"].ToString().Replace(" ", "");
+                        int ordinal = (int) rdr["ORDINAL_POSITION"];
                         
                         string fkTableNameFiltered, pkTableNameFiltered;
                         fkTableNameFiltered = tableRename(fkTableName, fkSchema);
                         pkTableNameFiltered = tableRename(pkTableName, pkSchema);
 
-                        fkList.Add(new ForeignKey(fkTableName, fkSchema, pkTableName, pkSchema, fkColumn, pkColumn, constraintName, fkTableNameFiltered, pkTableNameFiltered));
+                        fkList.Add(new ForeignKey(fkTableName, fkSchema, pkTableName, pkSchema, fkColumn, pkColumn, constraintName, fkTableNameFiltered, pkTableNameFiltered, ordinal));
                     }
                 }
                 
@@ -1754,33 +1756,48 @@ OPTION (QUERYTRACEON 9481)";
                     if (pkTable == null || pkTable.IsMapping)
                         continue;
 
-                    var fkCols = foreignKeys.Select(x => fkTable.Columns.Find(n => n.PropertyName == x.FkColumn)).Where(x => x != null).OrderBy(o => o.Ordinal).ToList();
+                    var fkCols = foreignKeys.Select(x => new
+                        {
+                            fkOrdinal = x.Ordinal, 
+                            col = fkTable.Columns.Find(n => n.PropertyName == x.FkColumn)
+                        })
+                        .Where(x => x != null)
+                        .ToList();
+
                     var pkCols = foreignKeys.Select(x => pkTable.Columns.Find(n => n.PropertyName == x.PkColumn)).Where(x => x != null).OrderBy(o => o.Ordinal).ToList();
 
                     if (!fkCols.Any())
-                        fkCols = foreignKeys.Select(x => fkTable.Columns.Find(n => n.PropertyName == x.FkColumn + "_")).Where(x => x != null).OrderBy(o => o.Ordinal).ToList();
+                    {
+                        fkCols = foreignKeys.Select(x => new 
+                            { 
+                                fkOrdinal = x.Ordinal, 
+                                col = fkTable.Columns.Find(n => n.PropertyName == x.FkColumn + "_")
+                            })
+                            .Where(x => x != null)
+                            .ToList();
+                    }
                     if (!pkCols.Any())
                         pkCols = foreignKeys.Select(x => pkTable.Columns.Find(n => n.PropertyName == x.PkColumn + "_")).Where(x => x != null).OrderBy(o => o.Ordinal).ToList();
 
                     var fkCol = fkCols.First();
                     var pkCol = pkCols.First();
 
-                    var relationship = CalcRelationship(pkTable, fkTable, fkCol, pkCol);
+                    var relationship = CalcRelationship(pkTable, fkTable, fkCol.col, pkCol);
 
                     string pkTableHumanCase = foreignKey.PkTableHumanCase(useCamelCase, prependSchemaName);
                     string pkPropName = fkTable.GetUniqueColumnPropertyName(pkTableHumanCase, foreignKey, useCamelCase, checkForFkNameClashes, true);
                     bool fkMakePropNameSingular = (relationship == Relationship.OneToOne);
                     string fkPropName = pkTable.GetUniqueColumnPropertyName(fkTable.NameHumanCase, foreignKey, useCamelCase, checkForFkNameClashes, fkMakePropNameSingular);
 
-                    fkCol.EntityFk = string.Format("public virtual {0} {1} {2}{3}", pkTableHumanCase, pkPropName, "{ get; set; }", includeComments ? " // " + foreignKey.ConstraintName : string.Empty);
+                    fkCol.col.EntityFk = string.Format("public virtual {0} {1} {2}{3}", pkTableHumanCase, pkPropName, "{ get; set; }", includeComments ? " // " + foreignKey.ConstraintName : string.Empty);
 
                     string manyToManyMapping;
                     if(foreignKeys.Count > 1)
-                        manyToManyMapping = string.Format("c => new {{ {0} }}", string.Join(", ", fkCols.Select(x => "c." + x.PropertyNameHumanCase).ToArray()));
+                        manyToManyMapping = string.Format("c => new {{ {0} }}", string.Join(", ", fkCols.OrderBy(o => o.fkOrdinal).Select(x => "c." + x.col.PropertyNameHumanCase).ToArray()));
                     else
-                        manyToManyMapping = string.Format("c => c.{0}", fkCol.PropertyNameHumanCase);
+                        manyToManyMapping = string.Format("c => c.{0}", fkCol.col.PropertyNameHumanCase);
 
-                    fkCol.ConfigFk = string.Format("{0};{1}", GetRelationship(relationship, fkCol, pkCol, pkPropName, fkPropName, manyToManyMapping), includeComments ? " // " + foreignKey.ConstraintName : string.Empty);
+                    fkCol.col.ConfigFk = string.Format("{0};{1}", GetRelationship(relationship, fkCol.col, pkCol, pkPropName, fkPropName, manyToManyMapping), includeComments ? " // " + foreignKey.ConstraintName : string.Empty);
                     pkTable.AddReverseNavigation(relationship, pkTableHumanCase, fkTable, fkPropName, string.Format("{0}.{1}", fkTable.Name, foreignKey.ConstraintName), collectionType, includeComments);
                 }
             }
@@ -2118,8 +2135,9 @@ OPTION (QUERYTRACEON 9481)";
             public string FkColumn { get; private set; }
             public string PkColumn { get; private set; }
             public string ConstraintName { get; private set; }
+            public int Ordinal { get; private set; }
 
-            public ForeignKey(string fkTableName, string fkSchema, string pkTableName, string pkSchema, string fkColumn, string pkColumn, string constraintName, string fkTableNameFiltered, string pkTableNameFiltered)
+            public ForeignKey(string fkTableName, string fkSchema, string pkTableName, string pkSchema, string fkColumn, string pkColumn, string constraintName, string fkTableNameFiltered, string pkTableNameFiltered, int ordinal)
             {
                 ConstraintName = constraintName;
                 PkColumn = pkColumn;
@@ -2130,6 +2148,7 @@ OPTION (QUERYTRACEON 9481)";
                 FkTableName = fkTableName;
                 FkTableNameFiltered = fkTableNameFiltered;
                 PkTableNameFiltered = pkTableNameFiltered;
+                Ordinal = ordinal;
             }
 
             public string PkTableHumanCase(bool useCamelCase, bool prependSchemaName)
