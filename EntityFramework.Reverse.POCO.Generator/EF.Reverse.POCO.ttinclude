@@ -16,6 +16,9 @@ using System;
 <# if(ElementsToGenerate.HasFlag(Elements.Poco) || (ElementsToGenerate.HasFlag(Elements.Context) && AddUnitTestingDbContext)){ #>
 using System.Collections.Generic;
 <# } #>
+<# if(ElementsToGenerate.HasFlag(Elements.StoredProcedures) && !(ElementsToGenerate.HasFlag(Elements.Context) && AddUnitTestingDbContext)){ #>
+using System.Linq;
+<# } #>
 <# if(ElementsToGenerate.HasFlag(Elements.Context) && AddUnitTestingDbContext){ #>
 using System.Collections.ObjectModel;
 using System.Linq;
