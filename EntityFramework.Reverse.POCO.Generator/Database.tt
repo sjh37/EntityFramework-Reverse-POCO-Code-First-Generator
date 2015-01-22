@@ -1,6 +1,6 @@
 ﻿<#@ include file="EF.Reverse.POCO.Core.ttinclude" #>
 <#
-    // v2.9.0
+    // v2.9.1
     // Please make changes to the settings below.
     // All you have to do is save this file, and the output file(s) is/are generated. Compiling does not regenerate the file(s).
 
@@ -22,7 +22,7 @@
     CollectionType = "List";  // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example
     CollectionTypeNamespace = ""; // "System.Collections.ObjectModel" is required if setting the CollectionType = "ObservableCollection"
     AddUnitTestingDbContext = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing
-    IncludeQueryTraceOn9481Flag = false; // SqlServer 2014 is known to appear frozen / take a long time when this file is saved. If it does, set this to true (you will also need elevated privileges!).
+    IncludeQueryTraceOn9481Flag = false; // If SqlServer 2014 appears frozen / take a long time when this file is saved, try setting this to true (you will also need elevated privileges).
 
     // Pluralization **********************************************************************************************************************
     // To turn off pluralization, use:
