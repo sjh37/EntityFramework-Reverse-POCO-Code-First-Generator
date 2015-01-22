@@ -24,6 +24,12 @@
     AddUnitTestingDbContext = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing
     IncludeQueryTraceOn9481Flag = false; // If SqlServer 2014 appears frozen / take a long time when this file is saved, try setting this to true (you will also need elevated privileges).
 
+	// Migrations ************************************************************************************************************************
+	MigrationConfigurationFileName = "MyDbContextDBMigrationConfiguration"; //empty to not create
+	MigrationStrategy = "MigrateDatabaseToLatestVersion"; // MigrateDatabaseToLatestVersion, CreateDatabaseIfNotExists or DropCreateDatabaseIfModelChanges
+	AutomaticMigrationsEnabled = true;
+    AutomaticMigrationDataLossAllowed = true; //if true, can drop fields and loss data during automatic migration
+
     // Pluralization **********************************************************************************************************************
     // To turn off pluralization, use:
     //      Inflector.PluralizationService = null;
