@@ -16,7 +16,7 @@
 <#@ import namespace="System.Configuration" #>
 <#@ import namespace="System.Windows.Forms" #>
 <#@ output extension=".cs"#>
-<#
+<# 
         var code = new CodeGenerationTools(this);
         string Namespace = code.VsNamespaceSuggestion();
         var fileManager = EntityFrameworkTemplateFileManager.Create(this);
@@ -62,6 +62,11 @@
         private string _configFilePath = "";
         Func<string, string, string> TableRename;
         Func<string, string, string> StoredProcedureRename;
+
+		string MigrationConfigurationFileName = null;
+		string MigrationStrategy = "MigrateDatabaseToLatestVersion";
+		bool AutomaticMigrationsEnabled = true;
+		bool AutomaticMigrationDataLossAllowed = true;
 
         // Settings to allow selective code generation
         [Flags]
