@@ -276,8 +276,8 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public List<SalesByCategoryReturnModel> SalesByCategory(string categoryName, string ordYear, out int procResult)
         {
-            var categoryNameParam = new SqlParameter { ParameterName = "@CategoryName", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = categoryName, Size = 15 };
-            var ordYearParam = new SqlParameter { ParameterName = "@OrdYear", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = ordYear, Size = 4 };
+            var categoryNameParam = new SqlParameter { ParameterName = "@CategoryName", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = categoryName, Size = 15 };
+            var ordYearParam = new SqlParameter { ParameterName = "@OrdYear", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = ordYear, Size = 4 };
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
  
             var procResultData = Database.SqlQuery<SalesByCategoryReturnModel>("EXEC @procResult = SalesByCategory @CategoryName, @OrdYear", new object[]
