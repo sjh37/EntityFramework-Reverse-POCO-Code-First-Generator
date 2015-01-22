@@ -63,10 +63,10 @@
         Func<string, string, string> TableRename;
         Func<string, string, string> StoredProcedureRename;
 
-		string MigrationConfigurationFileName = null;
-		string MigrationStrategy = "MigrateDatabaseToLatestVersion";
-		bool AutomaticMigrationsEnabled = true;
-		bool AutomaticMigrationDataLossAllowed = true;
+        string MigrationConfigurationFileName = null;
+        string MigrationStrategy = "MigrateDatabaseToLatestVersion";
+        bool AutomaticMigrationsEnabled = true;
+        bool AutomaticMigrationDataLossAllowed = true;
 
         // Settings to allow selective code generation
         [Flags]
