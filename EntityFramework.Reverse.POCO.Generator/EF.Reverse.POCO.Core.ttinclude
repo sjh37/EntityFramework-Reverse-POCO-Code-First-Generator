@@ -1982,8 +1982,16 @@ OPTION (QUERYTRACEON 9481)";
                         sysType = "NText";
                         break;
 
-                    case "Real":
-                        sysType = "real";
+                    case "nvarchar":
+                        sysType = "NVarChar";
+                        break;
+
+                    case "real":
+                        sysType = "Real";
+                        break;
+
+                    case "uniqueidentifier":
+                        sysType = "UniqueIdentifier";
                         break;
 
                     case "smalldatetime":
