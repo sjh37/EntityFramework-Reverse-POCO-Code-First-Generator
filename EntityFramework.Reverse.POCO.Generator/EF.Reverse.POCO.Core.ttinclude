@@ -1,6 +1,6 @@
 <#
 // Copyright © Simon Hughes 2012
-// v2.9.1
+// v2.10.0
 #>
 <#@ template hostspecific="true" language="C#" #>
 <#@ include file="EF6.Utility.CS.ttinclude"#>
