@@ -1,8 +1,9 @@
 <#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Security.Cryptography.X509Certificates" #>
 <#
 fileManager.StartHeader();
 // Copyright © Simon Hughes 2012
-// v2.9.1
+// v2.10.0
 #>
 // ReSharper disable RedundantUsingDirective
 // ReSharper disable DoNotCallOverridableMethodsInConstructor
@@ -565,11 +566,9 @@ if(!GenerateSeparateFiles) { #>
 
 <# } #>
 <#
-foreach(StoredProcedure sp in storedProcs)
+foreach(StoredProcedure sp in storedProcs.Where(x => x.ReturnColumns.Count > 0))
 {
-    if (sp.ReturnColumns.Count > 0)
-    {
-        string spReturnClassName = WriteStoredProcReturnModelName(sp);
+    string spReturnClassName = WriteStoredProcReturnModelName(sp);
 #>
 <# fileManager.StartNewFile(spReturnClassName + FileExtension); #>
     public class <#= spReturnClassName #>
@@ -581,7 +580,6 @@ foreach (var returnColumn in sp.ReturnColumns)
         <#= WriteStoredProcReturnColumn(returnColumn) #>
 <# } #>
     }
-<# } #>
 
 <# } } #>
 <# fileManager.StartFooter(); #>
