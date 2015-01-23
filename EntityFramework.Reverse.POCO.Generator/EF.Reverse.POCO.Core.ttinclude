@@ -1429,7 +1429,6 @@ WHERE   P.IS_RESULT = 'NO'
                                                 AND name = N'microsoft_database_tools_support') IS NOT NULL THEN 1
                                    ELSE 0
                               END AS BIT) = 0
-                         AND ISNULL(sm.uses_native_compilation, 0) = 0
                         )
         )
 ORDER BY P.SPECIFIC_SCHEMA,
