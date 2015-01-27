@@ -1681,6 +1681,11 @@ OPTION (QUERYTRACEON 9481)";
                         var clean = CleanUp(param.Name.Replace("@", ""));
                         param.NameHumanCase = Inflector.MakeInitialLower((useCamelCase ? Inflector.ToTitleCase(clean) : clean).Replace(" ", ""));
 
+                        if (ReservedKeywords.Contains(param.NameHumanCase))
+                        {
+                            param.NameHumanCase = "@" + param.NameHumanCase;
+                        }
+
                         sp.Parameters.Add(param);
                     }
                 }
