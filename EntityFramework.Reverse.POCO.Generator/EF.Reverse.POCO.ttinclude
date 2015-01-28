@@ -180,19 +180,19 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.Na
         public <#=DbContextName#>()
             : base("Name=<#=ConnectionStringName#>")
         {
-<#if(MakeClassesPartial) {#>        InitializePartial();
+<#if(MakeClassesPartial) {#>            InitializePartial();
 <#}#>
         }
 
         public <#=DbContextName#>(string connectionString) : base(connectionString)
         {
-<#if(MakeClassesPartial) {#>        InitializePartial();
+<#if(MakeClassesPartial) {#>            InitializePartial();
 <#}#>
         }
 
         public <#=DbContextName#>(string connectionString, System.Data.Entity.Infrastructure.DbCompiledModel model) : base(connectionString, model)
         {
-<#if(MakeClassesPartial) {#>        InitializePartial();
+<#if(MakeClassesPartial) {#>            InitializePartial();
 <#}#>
         }
 
@@ -206,7 +206,9 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.Na
 #>
             modelBuilder.Configurations.Add(new <#=tbl.NameHumanCase + ConfigurationClassName#>());
 <# } #>
-<#if(MakeClassesPartial) {#>        OnModelCreatingPartial(modelBuilder);
+<#if(MakeClassesPartial) {#>
+
+            OnModelCreatingPartial(modelBuilder);
 <#}#>
         }
 
