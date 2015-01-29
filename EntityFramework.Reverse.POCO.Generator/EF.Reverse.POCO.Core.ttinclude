@@ -2316,17 +2316,14 @@ OPTION (QUERYTRACEON 9481)";
                 }
             }
 
-            public void AddMappingConfiguration(ForeignKey left, ForeignKey right, bool useCamelCase, bool prependSchemaName)
+            public void AddMappingConfiguration(ForeignKey left, ForeignKey right, bool useCamelCase, bool prependSchemaName, string leftPropName, string rightPropName)
             {
-                var leftTableHumanCase = Inflector.MakePlural(left.PkTableHumanCase(useCamelCase, prependSchemaName));
-                var rightTableHumanCase = Inflector.MakePlural(right.PkTableHumanCase(useCamelCase, prependSchemaName));
-
                 MappingConfiguration.Add(string.Format(@"HasMany(t => t.{0}).WithMany(t => t.{1}).Map(m => 
             {{
                 m.ToTable(""{2}""{5});
                 m.MapLeftKey(""{3}"");
                 m.MapRightKey(""{4}"");
-            }});", rightTableHumanCase, leftTableHumanCase, left.FkTableName, left.FkColumn, right.FkColumn, prependSchemaName ? ", schema" : ""));
+            }});", leftPropName, rightPropName, left.FkTableName, left.FkColumn, right.FkColumn, prependSchemaName ? ", schema" : ""));
             }
 
             public void SetPrimaryKeys()
@@ -2382,16 +2379,13 @@ OPTION (QUERYTRACEON 9481)";
                 if (leftTable == rightTable)
                     return;
 
-                leftTable.AddMappingConfiguration(left, right, useCamelCase, prependSchemaName);
+                var leftPropName  = leftTable.GetUniqueColumnPropertyName(rightTable.NameHumanCase, right, useCamelCase, checkForFkNameClashes, false);
+                var rightPropName = rightTable.GetUniqueColumnPropertyName(leftTable.NameHumanCase, left, useCamelCase, checkForFkNameClashes, false);
+                leftTable.AddMappingConfiguration(left, right, useCamelCase, prependSchemaName, leftPropName, rightPropName);
 
                 IsMapping = true;
-                rightTable.AddReverseNavigation(Relationship.ManyToMany, rightTable.NameHumanCase, leftTable,
-                    rightTable.GetUniqueColumnPropertyName(leftTable.NameHumanCase, left, useCamelCase, checkForFkNameClashes, false), 
-                    null, collectionType, includeComments);
-
-                leftTable.AddReverseNavigation(Relationship.ManyToMany, leftTable.NameHumanCase, rightTable,
-                    leftTable.GetUniqueColumnPropertyName(rightTable.NameHumanCase, right, useCamelCase, checkForFkNameClashes, false), 
-                    null, collectionType, includeComments);
+                rightTable.AddReverseNavigation(Relationship.ManyToMany, rightTable.NameHumanCase, leftTable, rightPropName, null, collectionType, includeComments);
+                leftTable .AddReverseNavigation(Relationship.ManyToMany, leftTable.NameHumanCase, rightTable, leftPropName, null, collectionType, includeComments);
             }
         }
 
