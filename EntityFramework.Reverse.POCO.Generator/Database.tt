@@ -246,7 +246,7 @@
 
     Func<DataColumn, string> WriteStoredProcReturnColumn = col => 
         string.Format("public {0}{1}{2} {{ get; set; }}",
-            col.DataType.Name, (col.AllowDBNull && col.DataType != typeof (string)) ? "? " : " ", col.ColumnName);
+            col.DataType.Name, StoredProcedure.CheckNullable(col), col.ColumnName);
 
     
     // That's it, nothing else to configure ***********************************************************************************************
