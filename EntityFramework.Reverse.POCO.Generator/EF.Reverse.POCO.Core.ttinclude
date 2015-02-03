@@ -93,6 +93,16 @@
             return true;
         };
 
+        static string[] NotNullable = new string[]
+        {
+            "string", 
+            "byte[]", 
+            "Microsoft.SqlServer.Types.SqlGeography", 
+            "Microsoft.SqlServer.Types.SqlGeometry",
+            "System.Data.Entity.Spatial.DbGeography",
+            "System.Data.Entity.Spatial.DbGeometry"
+        };
+        
         static string[] ReservedKeywords = new string[]
         {
             "abstract", "as", "base", "bool", "break", "byte", "case", "catch", "char",
@@ -165,13 +175,7 @@
         private static string CheckNullable(Column col)
         {
             string result = "";
-            if(col.IsNullable &&
-                col.PropertyType != "byte[]" &&
-                col.PropertyType != "string" &&
-                col.PropertyType != "Microsoft.SqlServer.Types.SqlGeography" &&
-                col.PropertyType != "Microsoft.SqlServer.Types.SqlGeometry" &&
-                col.PropertyType != "System.Data.Entity.Spatial.DbGeography" &&
-                col.PropertyType != "System.Data.Entity.Spatial.DbGeometry")
+            if(col.IsNullable && !NotNullable.Contains(col.PropertyType, StringComparer.InvariantCultureIgnoreCase))
                 result = "?";
             return result;
         }
@@ -828,6 +832,14 @@
             {
                 Parameters = new List<StoredProcedureParameter>();
                 ReturnColumns = new List<DataColumn>();
+            }
+
+            public static string CheckNullable(DataColumn col)
+            {
+                string result = " ";
+                if(col.AllowDBNull && !NotNullable.Contains(col.DataType.Name, StringComparer.InvariantCultureIgnoreCase))
+                    result = "? ";
+                return result;
             }
         }
 
