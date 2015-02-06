@@ -27,7 +27,7 @@ using System.Data.Entity;
 using System.Data;
 using System.Data.SqlClient;
 using System.Data.Entity.ModelConfiguration;
-//using DatabaseGeneratedOption = System.ComponentModel.DataAnnotations.DatabaseGeneratedOption;
+using DatabaseGeneratedOption = System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption;
 
 namespace EntityFramework_Reverse_POCO_Generator
 {

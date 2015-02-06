@@ -60,7 +60,8 @@ using <#= PocoConfigurationNamespace #>;
 <# 	if(	ElementsToGenerate.HasFlag(Elements.PocoConfiguration)){
         switch (TargetFrameworkVersion)
         {
-            case "4.0":#>
+            case "4.0":
+            case "4.5":#>
 using DatabaseGeneratedOption = System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption;
 <#              break;
             default: #>
