@@ -753,7 +753,7 @@
                     case "datetime":
                         DateTime dt;
                         if(!DateTime.TryParse(Default, out dt))
-                            Default = Default.ToLower().Contains("getdate()") ? "System.DateTime.Now" : string.Empty;
+                            Default = Default.ToLower().Contains("getdate()") ? "System.DateTime.Now" :  Default.ToLower().Contains("getutcdate()") ? "System.DateTime.UtcNow" : string.Empty;
                         else
                             Default = string.Format("System.DateTime.Parse({0})", Default);
                         break;
