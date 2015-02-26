@@ -1674,6 +1674,8 @@ OPTION (QUERYTRACEON 9481)";
                             if((string.Compare(schema, "dbo", StringComparison.OrdinalIgnoreCase) != 0) && prependSchemaName)
                                 sp.NameHumanCase = schema + "_" + sp.NameHumanCase;
                             
+                            sp.NameHumanCase = StoredProcedureRename(sp.NameHumanCase, schema);
+                            
                             result.Add(sp);
                         }
 
