@@ -145,7 +145,7 @@
     // That's it, nothing else to configure ***********************************************************************************************
     
     // Stored procedure are not supported in SqlCE - create dummy functions
-    StoredProcedureRename = (name, schema) => name;   // Do nothing by default
+    StoredProcedureRename = (name, schema) => name;
     Func<StoredProcedure, string> WriteStoredProcFunctionName = null;
     Func<StoredProcedure, string> WriteStoredProcFunctionParams = null;
     Func<StoredProcedure, string> WriteStoredProcFunctionSqlAtParams = null;
