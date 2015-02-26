@@ -432,8 +432,13 @@
                     conn.ConnectionString = ConnectionString;
                     conn.Open();
 
+                    bool isSqlCE = false;
                     if (conn.GetType().Name == "SqlCeConnection")
-                       PrependSchemaName = false;
+                    {
+                        PrependSchemaName = false;
+                        isSqlCE = true;
+                    }
+
 
                     var reader = new SqlServerSchemaReader(conn, factory, IncludeQueryTraceOn9481Flag) { Outer = this };
                     var tables = reader.ReadSchema(TableFilterExclude, UseCamelCase, PrependSchemaName, IncludeComments, IncludeExtendedPropertyComments, TableRename, SchemaName);
@@ -467,11 +472,11 @@
                     var fkList = reader.ReadForeignKeys(TableRename);
                     reader.IdentifyForeignKeys(fkList, tables);
                     reader.ProcessForeignKeys(fkList, tables, UseCamelCase, PrependSchemaName, CollectionType, true, IncludeComments);
-                    tables.IdentifyMappingTables(fkList, UseCamelCase, PrependSchemaName, CollectionType, true, IncludeComments);
+                    tables.IdentifyMappingTables(fkList, UseCamelCase, CollectionType, true, IncludeComments, isSqlCE);
 
                     tables.ResetNavigationProperties();
                     reader.ProcessForeignKeys(fkList, tables, UseCamelCase, PrependSchemaName, CollectionType, false, IncludeComments);
-                    tables.IdentifyMappingTables(fkList, UseCamelCase, PrependSchemaName, CollectionType, false, IncludeComments);
+                    tables.IdentifyMappingTables(fkList, UseCamelCase, CollectionType, false, IncludeComments, isSqlCE);
 
                     // Remove views that only consist of all nullable fields.
                     // I.e. they do not contain any primary key, and therefore cannot be used by EF
@@ -1293,7 +1298,7 @@ SELECT DISTINCT
         FK.TABLE_SCHEMA AS fkSchema,
         PK.TABLE_SCHEMA AS pkSchema,
         PT.COLUMN_NAME AS primarykey,
-		FK.ORDINAL_POSITION
+        FK.ORDINAL_POSITION
 FROM    INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS AS C
         INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS FK
             ON FK.CONSTRAINT_CATALOG = C.CONSTRAINT_CATALOG
@@ -2317,14 +2322,14 @@ OPTION (QUERYTRACEON 9481)";
                 }
             }
 
-            public void AddMappingConfiguration(ForeignKey left, ForeignKey right, bool useCamelCase, bool prependSchemaName, string leftPropName, string rightPropName)
+            public void AddMappingConfiguration(ForeignKey left, ForeignKey right, bool useCamelCase, string leftPropName, string rightPropName, bool isSqlCE)
             {
                 MappingConfiguration.Add(string.Format(@"HasMany(t => t.{0}).WithMany(t => t.{1}).Map(m => 
             {{
                 m.ToTable(""{2}""{5});
                 m.MapLeftKey(""{3}"");
                 m.MapRightKey(""{4}"");
-            }});", leftPropName, rightPropName, left.FkTableName, left.FkColumn, right.FkColumn, prependSchemaName ? ", schema" : ""));
+            }});", leftPropName, rightPropName, left.FkTableName, left.FkColumn, right.FkColumn, isSqlCE ? string.Empty : ", schema"));
             }
 
             public void SetPrimaryKeys()
@@ -2340,7 +2345,7 @@ OPTION (QUERYTRACEON 9481)";
                 }
             }
 
-            public void IdentifyMappingTable(List<ForeignKey> fkList, Tables tables, bool useCamelCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, bool includeComments)
+            public void IdentifyMappingTable(List<ForeignKey> fkList, Tables tables, bool useCamelCase, string collectionType, bool checkForFkNameClashes, bool includeComments, bool isSqlCE)
             {
                 IsMapping = false;
 
@@ -2382,7 +2387,7 @@ OPTION (QUERYTRACEON 9481)";
 
                 var leftPropName  = leftTable.GetUniqueColumnPropertyName(rightTable.NameHumanCase, right, useCamelCase, checkForFkNameClashes, false);
                 var rightPropName = rightTable.GetUniqueColumnPropertyName(leftTable.NameHumanCase, left, useCamelCase, checkForFkNameClashes, false);
-                leftTable.AddMappingConfiguration(left, right, useCamelCase, prependSchemaName, leftPropName, rightPropName);
+                leftTable.AddMappingConfiguration(left, right, useCamelCase, leftPropName, rightPropName, isSqlCE);
 
                 IsMapping = true;
                 rightTable.AddReverseNavigation(Relationship.ManyToMany, rightTable.NameHumanCase, leftTable, rightPropName, null, collectionType, includeComments);
@@ -2407,11 +2412,11 @@ OPTION (QUERYTRACEON 9481)";
                 }
             }
 
-            public void IdentifyMappingTables(List<ForeignKey> fkList, bool useCamelCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, bool includeComments)
+            public void IdentifyMappingTables(List<ForeignKey> fkList, bool useCamelCase, string collectionType, bool checkForFkNameClashes, bool includeComments, bool isSqlCE)
             {
                 foreach(var tbl in this.Where(x => x.HasForeignKey))
                 {
-                    tbl.IdentifyMappingTable(fkList, this, useCamelCase, prependSchemaName, collectionType, checkForFkNameClashes, includeComments);
+                    tbl.IdentifyMappingTable(fkList, this, useCamelCase, collectionType, checkForFkNameClashes, includeComments, isSqlCE);
                 }
             }
 
