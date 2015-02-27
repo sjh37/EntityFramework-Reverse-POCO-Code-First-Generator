@@ -13,7 +13,9 @@ fileManager.StartHeader();
 // ReSharper disable RedundantNameQualifier
 // TargetFrameworkVersion = <#=TargetFrameworkVersion #>
 
-using System;
+<# foreach(var additionalNamespace in AdditionalNamespaces) { #>
+using <#= additionalNamespace #>;
+<# } #>
 <# if(ElementsToGenerate.HasFlag(Elements.Poco) || (ElementsToGenerate.HasFlag(Elements.Context) && AddUnitTestingDbContext)){ #>
 using System.Collections.Generic;
 <# } #>
@@ -61,7 +63,8 @@ using <#= PocoConfigurationNamespace #>;
         switch (TargetFrameworkVersion)
         {
             case "4.0":
-            case "4.5":#>
+            case "4.5":
+            case "4.51":#>
 using DatabaseGeneratedOption = System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption;
 <#              break;
             default: #>
