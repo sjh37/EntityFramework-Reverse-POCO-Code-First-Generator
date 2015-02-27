@@ -57,6 +57,7 @@
         Regex StoredProcedureFilterExclude = null;
         Regex StoredProcedureFilterInclude = null;
         string[] ConfigFilenameSearchOrder = null;
+        string[] AdditionalNamespaces = null;
         private string _connectionString = "";
         private string _providerName = "";
         private string _configFilePath = "";
