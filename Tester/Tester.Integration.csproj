@@ -68,10 +68,6 @@
       <Project>{2F59926C-597F-448E-B9B0-BE9F9E0F0404}</Project>
       <Name>Tester.BusinessLogic</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Tester.Repository\Tester.Repository.csproj">
-      <Project>{7BEC62D9-3836-4EDC-ABAC-4D3F5D983F22}</Project>
-      <Name>Tester.Repository</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
