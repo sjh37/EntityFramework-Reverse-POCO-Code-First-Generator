@@ -53,6 +53,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CustomersRepositoryTests.cs" />
+    <Compile Include="IRepository.cs" />
+    <Compile Include="MockRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MockRepositoryTest.cs" />
   </ItemGroup>
@@ -68,10 +70,6 @@
     <ProjectReference Include="..\Tester.BusinessLogic\Tester.BusinessLogic.csproj">
       <Project>{2F59926C-597F-448E-B9B0-BE9F9E0F0404}</Project>
       <Name>Tester.BusinessLogic</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Tester.Repository\Tester.Repository.csproj">
-      <Project>{7bec62d9-3836-4edc-abac-4d3f5d983f22}</Project>
-      <Name>Tester.Repository</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

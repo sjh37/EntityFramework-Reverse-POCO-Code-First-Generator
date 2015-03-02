@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection;
 
-namespace Tester.Repository
+namespace Tester.UnitTest
 {
     public class MockRepository<TEntity> : IRepository<TEntity> where TEntity : class
     {

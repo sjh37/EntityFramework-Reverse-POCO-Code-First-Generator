@@ -1,7 +1,7 @@
-﻿using System.Linq;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 
-namespace Tester.Repository
+namespace Tester.UnitTest
 {
     public interface IRepository<TEntity> where TEntity : class
     {
