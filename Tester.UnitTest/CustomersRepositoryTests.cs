@@ -14,7 +14,7 @@ namespace Tester.UnitTest
         public void Setup()
         {
             // Arrange
-            _context = new FakeDbContext();
+            _context = new FakeMyDbContext();
 
             _context.CurrentProductLists.Attach(new CurrentProductList
             {
