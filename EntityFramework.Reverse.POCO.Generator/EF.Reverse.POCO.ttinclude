@@ -17,6 +17,7 @@ fileManager.StartHeader();
 <# foreach(var additionalNamespace in AdditionalNamespaces) { #>
 using <#= additionalNamespace #>;
 <# } #>
+using System.CodeDom.Compiler;
 <# if(ElementsToGenerate.HasFlag(Elements.Poco) || (ElementsToGenerate.HasFlag(Elements.Context) && AddUnitTestingDbContext)){ #>
 using System.Collections.Generic;
 <# } #>
@@ -130,6 +131,7 @@ foreach (StoredProcedure sp in storedProcs)
 <# } #>
     public <# if(MakeClassesPartial) { #>partial <# } #>class <#=MigrationConfigurationFileName#> : DbMigrationsConfiguration<<#=DbContextName#>>
     {
+        <#= CodeGeneratedAttribute #>
         public <#=MigrationConfigurationFileName#>()
         {
             AutomaticMigrationsEnabled = <# if (AutomaticMigrationsEnabled) { #>true<# } else { #>false<# } #>;
@@ -160,19 +162,21 @@ foreach (StoredProcedure sp in storedProcs)
 <# if(!GenerateSeparateFiles) { #>
     // ************************************************************************
     // Database context
-<# } #>
+<# } #><# if (!MakeClassesPartial) { WriteLine("    " + CodeGeneratedAttribute); }#>
     public <# if(MakeClassesPartial) { #>partial <# } #>class <#=DbContextName#> : <#=DbContextBaseClass#>, I<#=DbContextName#>
     {
 <#
 foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
 {
 #>
+        <#= CodeGeneratedAttribute #>
         public IDbSet<<#=tbl.NameHumanCase#>> <#=Inflector.MakePlural(tbl.NameHumanCase)#> { get; set; }<#if(IncludeComments){#> // <#=tbl.Name#>
+
 <# } else { #>
 
 <# } #>
 <# } #>
-
+        <#= CodeGeneratedAttribute #>
         static <#=DbContextName#>()
         {
 <#if(string.IsNullOrWhiteSpace(MigrationConfigurationFileName)) {#>
@@ -182,6 +186,7 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.Na
 <#}#>
         }
 
+        <#= CodeGeneratedAttribute #>
         public <#=DbContextName#>()
             : base("Name=<#=ConnectionStringName#>")
         {
@@ -189,18 +194,21 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.Na
 <#}#>
         }
 
+        <#= CodeGeneratedAttribute #>
         public <#=DbContextName#>(string connectionString) : base(connectionString)
         {
 <#if(MakeClassesPartial) {#>            InitializePartial();
 <#}#>
         }
 
+        <#= CodeGeneratedAttribute #>
         public <#=DbContextName#>(string connectionString, System.Data.Entity.Infrastructure.DbCompiledModel model) : base(connectionString, model)
         {
 <#if(MakeClassesPartial) {#>            InitializePartial();
 <#}#>
         }
 
+        <#= CodeGeneratedAttribute #>
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -217,6 +225,7 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.Na
 <#}#>
         }
 
+        <#= CodeGeneratedAttribute #>
         public static DbModelBuilder CreateModel(DbModelBuilder modelBuilder, string schema)
         {
 <#
@@ -243,6 +252,7 @@ foreach (StoredProcedure sp in storedProcs)
     if (sp.ReturnColumns.Count > 0)
     {
         string spReturnClassName = WriteStoredProcReturnModelName(sp); #>
+        <#= CodeGeneratedAttribute #>
         public List<<#= spReturnClassName #>> <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp)#>)
         {
 <#= WriteStoredProcFunctionDeclareSqlParameter(sp) #> 
@@ -256,6 +266,7 @@ foreach (StoredProcedure sp in storedProcs)
         }
 
 <# } else { #>
+        <#= CodeGeneratedAttribute #>
         public int <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp)#>)
         {
 <#= WriteStoredProcFunctionDeclareSqlParameter(sp) #> 
@@ -280,6 +291,7 @@ foreach (StoredProcedure sp in storedProcs)
     // ************************************************************************
     // Fake Database context
 <# } #>
+    <#= CodeGeneratedAttribute #>
     public class Fake<#=DbContextName #> : I<#=DbContextName #>
     {
 <#
@@ -343,6 +355,7 @@ foreach (StoredProcedure sp in storedProcs)
     // ************************************************************************
     // Fake DbSet
 <# } #>
+    <#= CodeGeneratedAttribute #>
     public class FakeDbSet<T> : IDbSet<T> where T : class
     {
         private readonly HashSet<T> _data;
@@ -440,7 +453,7 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.Na
 <# } #>
 <# if(AddWcfDataAttributes) { #>    [DataContract<#=ExtraWcfDataContractAttributes#>]
 <# } 
-    WritePocoClassAttributes(tbl);#>
+    WritePocoClassAttributes(tbl);#><# if (!MakeClassesPartial) { WriteLine("    " + CodeGeneratedAttribute); }#>
     public <# if(MakeClassesPartial) { #>partial <# } #>class <#=tbl.NameHumanCase#><#=WritePocoBaseClasses != null ? WritePocoBaseClasses(tbl) : "" #>
     {
 <# WritePocoBaseClassBody(tbl); #>
@@ -456,6 +469,8 @@ foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal).Where(x => !x.Hidden))
 <# } #>
 <# if(AddWcfDataAttributes) { #>        [DataMember(Order = <#=DataMemberOrder++#>, IsRequired = <#=col.IsNullable ? "false" : "true"#>)]
 <# } #>
+
+        <#= CodeGeneratedAttribute #>
         <#= WritePocoColumn(col) #>
 <# if(AddWcfDataAttributes) { #>
 
@@ -487,7 +502,8 @@ foreach(Column col in from c in tbl.Columns.OrderBy(x => x.EntityFk) where c.Ent
 if(tbl.Columns.Where(c => c.Default != string.Empty).Count() > 0 || tbl.ReverseNavigationCtor.Count() > 0) 
 { 
 #>
-
+        
+        <#= CodeGeneratedAttribute #>
         public <#=tbl.NameHumanCase#>()
         {
 <#
@@ -505,7 +521,9 @@ foreach(string s in tbl.ReverseNavigationCtor)
 if(MakeClassesPartial) {#>
             InitializePartial();
 <#}#>        }
-<#if(MakeClassesPartial) {#>        partial void InitializePartial();
+<#if(MakeClassesPartial) {#>
+
+        partial void InitializePartial();
 <#} }#>
     }
 
@@ -526,6 +544,7 @@ foreach(Table tbl in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCas
 <# } #>
     internal <# if(MakeClassesPartial) { #>partial <# } #>class <#=tbl.NameHumanCase + ConfigurationClassName#> : EntityTypeConfiguration<<#=tbl.NameHumanCase#>>
     {
+        <#= CodeGeneratedAttribute #>
         public <#=tbl.NameHumanCase + ConfigurationClassName#>(string schema = "<#=tbl.Schema#>")
         {
  <# if (!string.IsNullOrEmpty(tbl.Schema)) { #>
