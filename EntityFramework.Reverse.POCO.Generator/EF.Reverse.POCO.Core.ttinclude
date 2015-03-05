@@ -1948,6 +1948,7 @@ OPTION (QUERYTRACEON 9481)";
                     table.HasNullableColumns = true;
 
                 col = updateColumn(col, table);
+
                 // If PropertyType is empty, return null. Most likely ignoring a column due to legacy (such as OData not supporting spatial types)
                 if(string.IsNullOrEmpty(col.PropertyType))
                     return null;
