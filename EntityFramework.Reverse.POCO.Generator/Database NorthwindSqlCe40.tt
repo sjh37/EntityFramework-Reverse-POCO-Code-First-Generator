@@ -88,8 +88,10 @@
     //  Example:    TableFilterExclude = new Regex(".*auto.*");
     //              TableFilterInclude = new Regex("(.*_FR_.*)|(data_.*)");
     //              TableFilterInclude = new Regex("^table_name1$|^table_name2$|etc");
+    //              ColumnFilterExclude = new Regex("^FK_.*$");
     TableFilterExclude = null;
     TableFilterInclude = null;
+    ColumnFilterExclude = null;
 
 
     // Table renaming *********************************************************************************************************************
@@ -103,6 +105,20 @@
     };*/
     TableRename = (name, schema) => name;   // Do nothing by default
 
+    // Column modification*****************************************************************************************************************
+    // Use the following function if you need to apply additional modifications to a column
+    // eg. normalise names etc.
+    // Example
+    /*
+    UpdateColumn = (Column column, Table table) => 
+    {
+        if (column.PropertyNameHumanCase == "PkId")
+            column.PropertyNameHumanCase = "Id";
+
+        return column;
+    };
+    */
+    UpdateColumn = (Column column, Table table) => column; // Do nothing by default
 
 
     // WCF ********************************************************************************************************************************

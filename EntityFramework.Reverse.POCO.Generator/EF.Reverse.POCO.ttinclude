@@ -12,7 +12,7 @@ fileManager.StartHeader();
 // ReSharper disable PartialMethodWithSinglePart
 // ReSharper disable RedundantNameQualifier
 // TargetFrameworkVersion = <#=TargetFrameworkVersion #>
-#pragma warning disable 1591
+#pragma warning disable 1591    //  Ignore "Missing XML Comment" warning
 
 <# foreach(var additionalNamespace in AdditionalNamespaces) { #>
 using <#= additionalNamespace #>;

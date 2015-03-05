@@ -16,6 +16,7 @@
 // ReSharper disable PartialMethodWithSinglePart
 // ReSharper disable RedundantNameQualifier
 // TargetFrameworkVersion = 4.5
+#pragma warning disable 1591    //  Ignore "Missing XML Comment" warning
 
 using System;
 using System.Collections.Generic;

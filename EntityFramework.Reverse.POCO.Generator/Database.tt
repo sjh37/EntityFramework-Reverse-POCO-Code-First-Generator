@@ -131,6 +131,7 @@
     };
     */
     UpdateColumn = (Column column, Table table) => column; // Do nothing by default
+
     // StoredProcedure renaming ************************************************************************************************************
     // Use the following function to rename stored procs such as sp_CreateOrderHistory to CreateOrderHistory, my_sp_shipments to Shipments, etc.
     // Example:
