@@ -1878,9 +1878,9 @@ OPTION (QUERYTRACEON 9481)";
 
                     case Relationship.ManyToOne:
                         if (!fkCol.Hidden)
-                            return string.Format(".WithMany(b => b.{0}).HasForeignKey(c => c.{1})", fkPropName, fkCol.PropertyNameHumanCase);
+                            return string.Format(".WithMany(b => b.{0}).HasForeignKey(c => c.{1})", fkPropName, fkCol.PropertyNameHumanCase);   // Foreign Key Association
                         else
-                            return string.Format(".WithMany(b => b.{0}).Map(c => c.MapKey(\"{1}\"))", fkPropName, fkCol.Name);
+                            return string.Format(".WithMany(b => b.{0}).Map(c => c.MapKey(\"{1}\"))", fkPropName, fkCol.Name);  // Independent Association
 
                     case Relationship.ManyToMany:
                         return string.Format(".WithMany(b => b.{0}).HasForeignKey({1})", fkPropName, manyToManyMapping);
