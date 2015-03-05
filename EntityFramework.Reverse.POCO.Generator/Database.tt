@@ -125,7 +125,6 @@
     {
         if (column.PropertyNameHumanCase == "PkId")
             column.PropertyNameHumanCase = "Id";
-
         return column;
     };*/
     UpdateColumn = (Column column, Table table) => column; // Do nothing by default

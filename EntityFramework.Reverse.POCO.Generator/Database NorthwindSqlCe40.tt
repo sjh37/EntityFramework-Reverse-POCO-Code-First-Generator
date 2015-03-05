@@ -109,15 +109,12 @@
     // Use the following function if you need to apply additional modifications to a column
     // eg. normalise names etc.
     // Example
-    /*
-    UpdateColumn = (Column column, Table table) => 
+    /*UpdateColumn = (Column column, Table table) => 
     {
         if (column.PropertyNameHumanCase == "PkId")
             column.PropertyNameHumanCase = "Id";
-
         return column;
-    };
-    */
+    };*/
     UpdateColumn = (Column column, Table table) => column; // Do nothing by default
 
 
