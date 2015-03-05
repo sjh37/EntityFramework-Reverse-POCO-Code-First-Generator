@@ -14,7 +14,7 @@ namespace Tester
                 using(var db = new MyDbContext())
                 {
                     Console.WriteLine("*** Using EF directly ***");
-                    var data = db.Customers.Take(10);
+                    var data = db.Customers.Take(10).OrderBy(x => x.CustomerId);
                     foreach(var row in data)
                     {
                         Console.WriteLine(row.CompanyName);
