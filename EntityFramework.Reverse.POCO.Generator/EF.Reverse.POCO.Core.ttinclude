@@ -1915,7 +1915,7 @@ OPTION (QUERYTRACEON 9481)";
                     IsPrimaryKey = rdr["PrimaryKey"].ToString().Trim().ToLower() == "true"
                 };
                 
-                if(columnFilterExclude != null && columnFilterExclude.IsMatch(col.Name))
+                if(columnFilterExclude != null && !col.IsPrimaryKey && columnFilterExclude.IsMatch(col.Name))
                     col.Hidden = true;
 
                 col.IsFixedLength = (typename == "char" || typename == "nchar");
@@ -2350,7 +2350,7 @@ OPTION (QUERYTRACEON 9481)";
 
                 // This table is not allowed in EntityFramework as it does not have a primary key.
                 // Therefore generate a composite key from all non-null fields.
-                foreach(var col in Columns.Where(x => !x.IsNullable))
+                foreach(var col in Columns.Where(x => !x.IsNullable && !x.Hidden))
                 {
                     col.IsPrimaryKey = true;
                 }
