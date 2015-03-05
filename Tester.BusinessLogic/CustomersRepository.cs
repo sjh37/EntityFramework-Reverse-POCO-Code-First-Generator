@@ -18,7 +18,7 @@ namespace Tester.BusinessLogic
 
         public IQueryable<Customer> GetTop10()
         {
-            return _context.Customers.Take(10);
+            return _context.Customers.Take(10).OrderBy(x => x.CustomerId);
         }
     }
 }
