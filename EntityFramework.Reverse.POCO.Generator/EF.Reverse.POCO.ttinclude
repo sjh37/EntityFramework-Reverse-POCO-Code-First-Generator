@@ -12,6 +12,7 @@ fileManager.StartHeader();
 // ReSharper disable PartialMethodWithSinglePart
 // ReSharper disable RedundantNameQualifier
 // TargetFrameworkVersion = <#=TargetFrameworkVersion #>
+#pragma warning disable 1591
 
 <# foreach(var additionalNamespace in AdditionalNamespaces) { #>
 using <#= additionalNamespace #>;
@@ -71,7 +72,7 @@ using DatabaseGeneratedOption = System.ComponentModel.DataAnnotations.Schema.Dat
 //using DatabaseGeneratedOption = System.ComponentModel.DataAnnotations.DatabaseGeneratedOption;
 <#              break;
         }
-    }     
+    } 
 #>
 <#if (!string.IsNullOrEmpty(CollectionTypeNamespace)){
 #>using <#=CollectionTypeNamespace#>;
@@ -153,7 +154,7 @@ foreach (StoredProcedure sp in storedProcs)
         //}
     }
 
-<# } 
+<# }
     if(ElementsToGenerate.HasFlag(Elements.Context)){ 
     fileManager.StartNewFile(DbContextName + FileExtension); #>
 <# if(!GenerateSeparateFiles) { #>
@@ -444,7 +445,7 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.Na
     {
 <# WritePocoBaseClassBody(tbl); #>
 <# int DataMemberOrder = 1;
-foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal))
+foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal).Where(x => !x.Hidden))
 {
 #>
 <#if(IncludeExtendedPropertyComments == ExtendedPropertyCommentsStyle.InSummaryBlock && !string.IsNullOrEmpty(col.ExtendedProperty)){#>
@@ -535,7 +536,7 @@ foreach(Table tbl in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCas
            HasKey(<#=tbl.PrimaryKeyNameHumanCase()#>);
 
 <#
-foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal))
+foreach(Column col in tbl.Columns.Where(x => !x.Hidden).OrderBy(x => x.Ordinal))
 {
 #>
             <#=col.Config #>

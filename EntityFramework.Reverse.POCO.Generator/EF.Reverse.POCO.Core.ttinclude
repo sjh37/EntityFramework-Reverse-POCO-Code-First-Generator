@@ -16,7 +16,7 @@
 <#@ import namespace="System.Configuration" #>
 <#@ import namespace="System.Windows.Forms" #>
 <#@ output extension=".cs"#>
-<# 
+<#
         var code = new CodeGenerationTools(this);
         string Namespace = code.VsNamespaceSuggestion();
         var fileManager = EntityFrameworkTemplateFileManager.Create(this);
@@ -56,6 +56,7 @@
         Regex TableFilterInclude = null;
         Regex StoredProcedureFilterExclude = null;
         Regex StoredProcedureFilterInclude = null;
+        Regex ColumnFilterExclude = null;
         string[] ConfigFilenameSearchOrder = null;
         string[] AdditionalNamespaces = null;
         private string _connectionString = "";
@@ -63,7 +64,7 @@
         private string _configFilePath = "";
         Func<string, string, string> TableRename;
         Func<string, string, string> StoredProcedureRename;
-
+        Func<Column, Table, Column> UpdateColumn;
         string MigrationConfigurationFileName = null;
         string MigrationStrategy = "MigrateDatabaseToLatestVersion";
         bool AutomaticMigrationsEnabled = true;
@@ -442,7 +443,7 @@
 
 
                     var reader = new SqlServerSchemaReader(conn, factory, IncludeQueryTraceOn9481Flag) { Outer = this };
-                    var tables = reader.ReadSchema(TableFilterExclude, UseCamelCase, PrependSchemaName, IncludeComments, IncludeExtendedPropertyComments, TableRename, SchemaName);
+                    var tables = reader.ReadSchema(TableFilterExclude, ColumnFilterExclude, UseCamelCase, PrependSchemaName, IncludeComments, IncludeExtendedPropertyComments, TableRename, SchemaName, UpdateColumn);
                     tables.SetPrimaryKeys();
 
                     // Remove unrequired tables/views
@@ -611,6 +612,7 @@
             public bool IsRowVersion;
             public bool IsFixedLength;
             public bool IsUnicode;
+            public bool Hidden;
 
             public string Config;
             public string ConfigFk;
@@ -974,7 +976,7 @@
             public static string MakeInitialCaps(string word)
             {
                 return String.Concat(word.Substring(0, 1).ToUpper(), word.Substring(1).ToLower());
-            } 
+            }
             
             /// <summary>
             /// Makes the initial character lowercase.
@@ -1003,13 +1005,12 @@
             }
 
             public GeneratedTextTransformation Outer;
-            public abstract Tables ReadSchema(Regex tableFilterExclude, bool useCamelCase, bool prependSchemaName, bool includeComments, ExtendedPropertyCommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, string schemaNameFilter);
+            public abstract Tables ReadSchema(Regex tableFilterExclude, Regex columnFilterExclude, bool useCamelCase, bool prependSchemaName, bool includeComments, ExtendedPropertyCommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, string schemaNameFilter, Func<Column, Table, Column> updateColumn);
             public abstract List<StoredProcedure> ReadStoredProcs(Regex storedProcedureFilterExclude, bool useCamelCase, bool prependSchemaName , Func<string, string, string> StoredProcedureRename, string schemaNameFilter);
             public abstract List<ForeignKey> ReadForeignKeys(Func<string, string, string> tableRename);
             public abstract void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool useCamelCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, bool includeComments);
             public abstract void IdentifyForeignKeys(List<ForeignKey> fkList, Tables tables);
             public abstract void ReadExtendedProperties(Tables tables);
-
 
             protected void WriteLine(string o)
             {
@@ -1469,7 +1470,7 @@ OPTION (QUERYTRACEON 9481)";
                 return string.Empty;
             }
 
-            public override Tables ReadSchema(Regex tableFilterExclude, bool useCamelCase, bool prependSchemaName, bool includeComments, ExtendedPropertyCommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, string schemaNameFilter)
+            public override Tables ReadSchema(Regex tableFilterExclude, Regex columnFilterExclude, bool useCamelCase, bool prependSchemaName, bool includeComments, ExtendedPropertyCommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, string schemaNameFilter, Func<Column, Table, Column> updateColumn)
             {
                 var result = new Tables();
                 if(Cmd == null)
@@ -1533,7 +1534,7 @@ OPTION (QUERYTRACEON 9481)";
                             }
                         }
 
-                        var col = CreateColumn(rdr, rxClean, table, useCamelCase);
+                        var col = CreateColumn(rdr, rxClean, table, useCamelCase, columnFilterExclude, updateColumn);
                         if(col != null)
                             table.Columns.Add(col);
                     }
@@ -1876,7 +1877,10 @@ OPTION (QUERYTRACEON 9481)";
                         return string.Format(".WithRequiredDependent(b => b.{0})", fkPropName);
 
                     case Relationship.ManyToOne:
+                        if (!fkCol.Hidden)
                         return string.Format(".WithMany(b => b.{0}).HasForeignKey(c => c.{1})", fkPropName, fkCol.PropertyNameHumanCase);
+                        else
+                            return string.Format(".WithMany(b => b.{0}).Map(c => c.MapKey(\"{1}\"))", fkPropName, fkCol.Name);
 
                     case Relationship.ManyToMany:
                         return string.Format(".WithMany(b => b.{0}).HasForeignKey({1})", fkPropName, manyToManyMapping);
@@ -1886,7 +1890,7 @@ OPTION (QUERYTRACEON 9481)";
                 }
             }
 
-            private static Column CreateColumn(IDataRecord rdr, Regex rxClean, Table table, bool useCamelCase)
+            private static Column CreateColumn(IDataRecord rdr, Regex rxClean, Table table, bool useCamelCase, Regex columnFilterExclude, Func<Column, Table, Column> updateColumn)
             {
                 if(rdr == null)
                     throw new ArgumentNullException("rdr");
@@ -1911,6 +1915,9 @@ OPTION (QUERYTRACEON 9481)";
                     IsPrimaryKey = rdr["PrimaryKey"].ToString().Trim().ToLower() == "true"
                 };
                 
+                if(columnFilterExclude != null && columnFilterExclude.IsMatch(col.Name))
+                    col.Hidden = true;
+
                 col.IsFixedLength = (typename == "char" || typename == "nchar");
                 col.IsUnicode = !(typename == "char" || typename == "varchar" || typename == "text");
                 
@@ -1940,6 +1947,7 @@ OPTION (QUERYTRACEON 9481)";
                 if(CheckNullable(col) != string.Empty)
                     table.HasNullableColumns = true;
 
+                col = updateColumn(col, table);
                 // If PropertyType is empty, return null. Most likely ignoring a column due to legacy (such as OData not supporting spatial types)
                 if(string.IsNullOrEmpty(col.PropertyType))
                     return null;
