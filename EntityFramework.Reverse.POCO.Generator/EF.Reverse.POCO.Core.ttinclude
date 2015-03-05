@@ -1878,7 +1878,7 @@ OPTION (QUERYTRACEON 9481)";
 
                     case Relationship.ManyToOne:
                         if (!fkCol.Hidden)
-                        return string.Format(".WithMany(b => b.{0}).HasForeignKey(c => c.{1})", fkPropName, fkCol.PropertyNameHumanCase);
+                            return string.Format(".WithMany(b => b.{0}).HasForeignKey(c => c.{1})", fkPropName, fkCol.PropertyNameHumanCase);
                         else
                             return string.Format(".WithMany(b => b.{0}).Map(c => c.MapKey(\"{1}\"))", fkPropName, fkCol.Name);
 
