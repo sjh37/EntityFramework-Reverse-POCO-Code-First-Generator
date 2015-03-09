@@ -646,6 +646,7 @@
             public string PropertyType;
             public int Scale;
             public int Ordinal;
+            public int PrimaryKeyOrdinal;
             public string ExtendedProperty;
 
             public bool IsIdentity;
@@ -656,6 +657,7 @@
             public bool IsFixedLength;
             public bool IsUnicode;
             public bool Hidden;
+            public bool IsForeignKey;
 
             public string Config;
             public string ConfigFk;
@@ -1066,272 +1068,64 @@
         private class SqlServerSchemaReader : SchemaReader
         {
             private const string TableSQL = @"
-SELECT  [Extent1].[SchemaName],
-        [Extent1].[Name] AS TableName,
-        [Extent1].[TABLE_TYPE] AS TableType,
-        [UnionAll1].[Ordinal],
-        [UnionAll1].[Name] AS ColumnName,
-        [UnionAll1].[IsNullable],
-        [UnionAll1].[TypeName],
-        ISNULL([UnionAll1].[MaxLength],0) AS MaxLength,
-        ISNULL([UnionAll1].[Precision], 0) AS Precision,
-        ISNULL([UnionAll1].[Default], '') AS [Default],
-        ISNULL([UnionAll1].[DateTimePrecision], '') AS [DateTimePrecision],
-        ISNULL([UnionAll1].[Scale], 0) AS Scale,
-        [UnionAll1].[IsIdentity],
-        [UnionAll1].[IsStoreGenerated],
-        CASE WHEN ([Project5].[C2] IS NULL) THEN CAST(0 AS BIT)
-             ELSE [Project5].[C2]
-        END AS PrimaryKey
-FROM    (
-         SELECT QUOTENAME(TABLE_SCHEMA) + QUOTENAME(TABLE_NAME) [Id],
-                TABLE_SCHEMA [SchemaName],
-                TABLE_NAME [Name],
-                TABLE_TYPE
-         FROM   INFORMATION_SCHEMA.TABLES
-         WHERE  TABLE_TYPE IN ('BASE TABLE', 'VIEW')
-        ) AS [Extent1]
-        INNER JOIN (
-                    SELECT  [Extent2].[Id] AS [Id],
-                            [Extent2].[Name] AS [Name],
-                            [Extent2].[Ordinal] AS [Ordinal],
-                            [Extent2].[IsNullable] AS [IsNullable],
-                            [Extent2].[TypeName] AS [TypeName],
-                            [Extent2].[MaxLength] AS [MaxLength],
-                            [Extent2].[Precision] AS [Precision],
-                            [Extent2].[Default],
-                            [Extent2].[DateTimePrecision] AS [DateTimePrecision],
-                            [Extent2].[Scale] AS [Scale],
-                            [Extent2].[IsIdentity] AS [IsIdentity],
-                            [Extent2].[IsStoreGenerated] AS [IsStoreGenerated],
-                            0 AS [C1],
-                            [Extent2].[ParentId] AS [ParentId]
-                    FROM    (
-                             SELECT QUOTENAME(c.TABLE_SCHEMA) + QUOTENAME(c.TABLE_NAME) + QUOTENAME(c.COLUMN_NAME) [Id],
-                                    QUOTENAME(c.TABLE_SCHEMA) + QUOTENAME(c.TABLE_NAME) [ParentId],
-                                    c.COLUMN_NAME [Name],
-                                    c.ORDINAL_POSITION [Ordinal],
-                                    CAST(CASE c.IS_NULLABLE
-                                           WHEN 'YES' THEN 1
-                                           WHEN 'NO' THEN 0
-                                           ELSE 0
-                                         END AS BIT) [IsNullable],
-                                    CASE WHEN c.DATA_TYPE IN ('varchar', 'nvarchar', 'varbinary')
-                                              AND c.CHARACTER_MAXIMUM_LENGTH = -1 THEN c.DATA_TYPE + '(max)'
-                                         ELSE c.DATA_TYPE
-                                    END AS [TypeName],
-                                    c.CHARACTER_MAXIMUM_LENGTH [MaxLength],
-                                    CAST(c.NUMERIC_PRECISION AS INTEGER) [Precision],
-                                    CAST(c.DATETIME_PRECISION AS INTEGER) [DateTimePrecision],
-                                    CAST(c.NUMERIC_SCALE AS INTEGER) [Scale],
-                                    c.COLLATION_CATALOG [CollationCatalog],
-                                    c.COLLATION_SCHEMA [CollationSchema],
-                                    c.COLLATION_NAME [CollationName],
-                                    c.CHARACTER_SET_CATALOG [CharacterSetCatalog],
-                                    c.CHARACTER_SET_SCHEMA [CharacterSetSchema],
-                                    c.CHARACTER_SET_NAME [CharacterSetName],
-                                    CAST(0 AS BIT) AS [IsMultiSet],
-                                    CAST(COLUMNPROPERTY(OBJECT_ID(QUOTENAME(c.TABLE_SCHEMA) + '.' + QUOTENAME(c.TABLE_NAME)), c.COLUMN_NAME, 'IsIdentity') AS BIT) AS [IsIdentity],
-                                    CAST(COLUMNPROPERTY(OBJECT_ID(QUOTENAME(c.TABLE_SCHEMA) + '.' + QUOTENAME(c.TABLE_NAME)), c.COLUMN_NAME, 'IsComputed')
-                                    | CASE WHEN c.DATA_TYPE = 'timestamp' THEN 1
-                                           ELSE 0
-                                      END AS BIT) AS [IsStoreGenerated],
-                                    c.COLUMN_DEFAULT AS [Default]
-                             FROM   INFORMATION_SCHEMA.COLUMNS c
-                                    INNER JOIN INFORMATION_SCHEMA.TABLES t
-                                        ON c.TABLE_CATALOG = t.TABLE_CATALOG
-                                           AND c.TABLE_SCHEMA = t.TABLE_SCHEMA
-                                           AND c.TABLE_NAME = t.TABLE_NAME
-                                           AND t.TABLE_TYPE IN ('BASE TABLE', 'VIEW')
-                            ) AS [Extent2]
-                    UNION ALL
-                    SELECT  [Extent3].[Id] AS [Id],
-                            [Extent3].[Name] AS [Name],
-                            [Extent3].[Ordinal] AS [Ordinal],
-                            [Extent3].[IsNullable] AS [IsNullable],
-                            [Extent3].[TypeName] AS [TypeName],
-                            [Extent3].[MaxLength] AS [MaxLength],
-                            [Extent3].[Precision] AS [Precision],
-                            [Extent3].[Default],
-                            [Extent3].[DateTimePrecision] AS [DateTimePrecision],
-                            [Extent3].[Scale] AS [Scale],
-                            [Extent3].[IsIdentity] AS [IsIdentity],
-                            [Extent3].[IsStoreGenerated] AS [IsStoreGenerated],
-                            6 AS [C1],
-                            [Extent3].[ParentId] AS [ParentId]
-                    FROM    (
-                             SELECT QUOTENAME(c.TABLE_SCHEMA) + QUOTENAME(c.TABLE_NAME) + QUOTENAME(c.COLUMN_NAME) [Id],
-                                    QUOTENAME(c.TABLE_SCHEMA) + QUOTENAME(c.TABLE_NAME) [ParentId],
-                                    c.COLUMN_NAME [Name],
-                                    c.ORDINAL_POSITION [Ordinal],
-                                    CAST(CASE c.IS_NULLABLE
-                                           WHEN 'YES' THEN 1
-                                           WHEN 'NO' THEN 0
-                                           ELSE 0
-                                         END AS BIT) [IsNullable],
-                                    CASE WHEN c.DATA_TYPE IN ('varchar', 'nvarchar', 'varbinary')
-                                              AND c.CHARACTER_MAXIMUM_LENGTH = -1 THEN c.DATA_TYPE + '(max)'
-                                         ELSE c.DATA_TYPE
-                                    END AS [TypeName],
-                                    c.CHARACTER_MAXIMUM_LENGTH [MaxLength],
-                                    CAST(c.NUMERIC_PRECISION AS INTEGER) [Precision],
-                                    CAST(c.DATETIME_PRECISION AS INTEGER) AS [DateTimePrecision],
-                                    CAST(c.NUMERIC_SCALE AS INTEGER) [Scale],
-                                    c.COLLATION_CATALOG [CollationCatalog],
-                                    c.COLLATION_SCHEMA [CollationSchema],
-                                    c.COLLATION_NAME [CollationName],
-                                    c.CHARACTER_SET_CATALOG [CharacterSetCatalog],
-                                    c.CHARACTER_SET_SCHEMA [CharacterSetSchema],
-                                    c.CHARACTER_SET_NAME [CharacterSetName],
-                                    CAST(0 AS BIT) AS [IsMultiSet],
-                                    CAST(COLUMNPROPERTY(OBJECT_ID(QUOTENAME(c.TABLE_SCHEMA) + '.' + QUOTENAME(c.TABLE_NAME)), c.COLUMN_NAME, 'IsIdentity') AS BIT) AS [IsIdentity],
-                                    CAST(COLUMNPROPERTY(OBJECT_ID(QUOTENAME(c.TABLE_SCHEMA) + '.' + QUOTENAME(c.TABLE_NAME)), c.COLUMN_NAME, 'IsComputed')
-                                    | CASE WHEN c.DATA_TYPE = 'timestamp' THEN 1
-                                           ELSE 0
-                                      END AS BIT) AS [IsStoreGenerated],
-                                    c.COLUMN_DEFAULT [Default]
-                             FROM   INFORMATION_SCHEMA.COLUMNS c
-                                    INNER JOIN INFORMATION_SCHEMA.VIEWS v
-                                        ON c.TABLE_CATALOG = v.TABLE_CATALOG
-                                           AND c.TABLE_SCHEMA = v.TABLE_SCHEMA
-                                           AND c.TABLE_NAME = v.TABLE_NAME
-                             WHERE  NOT (
-                                         v.TABLE_SCHEMA = 'dbo'
-                                         AND v.TABLE_NAME IN ('syssegments', 'sysconstraints')
-                                         AND SUBSTRING(CAST(SERVERPROPERTY('productversion') AS VARCHAR(20)), 1, 1) = 8
-                                        )
-                            ) AS [Extent3]
-                   ) AS [UnionAll1]
-            ON (0 = [UnionAll1].[C1])
-               AND ([Extent1].[Id] = [UnionAll1].[ParentId])
-        LEFT OUTER JOIN (
-                         SELECT [UnionAll2].[Id] AS [C1],
-                                CAST(1 AS BIT) AS [C2]
-                         FROM   (
-                                 SELECT QUOTENAME(tc.CONSTRAINT_SCHEMA) + QUOTENAME(tc.CONSTRAINT_NAME) [Id],
-                                        QUOTENAME(tc.TABLE_SCHEMA) + QUOTENAME(tc.TABLE_NAME) [ParentId],
-                                        tc.CONSTRAINT_NAME [Name],
-                                        tc.CONSTRAINT_TYPE [ConstraintType],
-                                        CAST(CASE tc.IS_DEFERRABLE
-                                               WHEN 'NO' THEN 0
-                                               ELSE 1
-                                             END AS BIT) [IsDeferrable],
-                                        CAST(CASE tc.INITIALLY_DEFERRED
-                                               WHEN 'NO' THEN 0
-                                               ELSE 1
-                                             END AS BIT) [IsInitiallyDeferred]
-                                 FROM   INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc
-                                 WHERE  tc.TABLE_NAME IS NOT NULL
-                                ) AS [Extent4]
-                                INNER JOIN (
-                                            SELECT  7 AS [C1],
-                                                    [Extent5].[ConstraintId] AS [ConstraintId],
-                                                    [Extent6].[Id] AS [Id]
-                                            FROM    (
-                                                     SELECT QUOTENAME(CONSTRAINT_SCHEMA) + QUOTENAME(CONSTRAINT_NAME) [ConstraintId],
-                                                            QUOTENAME(TABLE_SCHEMA) + QUOTENAME(TABLE_NAME) + QUOTENAME(COLUMN_NAME) [ColumnId]
-                                                     FROM   INFORMATION_SCHEMA.KEY_COLUMN_USAGE
-                                                    ) AS [Extent5]
-                                                    INNER JOIN (
-                                                                SELECT  QUOTENAME(c.TABLE_SCHEMA) + QUOTENAME(c.TABLE_NAME) + QUOTENAME(c.COLUMN_NAME) [Id],
-                                                                        QUOTENAME(c.TABLE_SCHEMA) + QUOTENAME(c.TABLE_NAME) [ParentId],
-                                                                        c.COLUMN_NAME [Name],
-                                                                        c.ORDINAL_POSITION [Ordinal],
-                                                                        CAST(CASE c.IS_NULLABLE
-                                                                               WHEN 'YES' THEN 1
-                                                                               WHEN 'NO' THEN 0
-                                                                               ELSE 0
-                                                                             END AS BIT) [IsNullable],
-                                                                        CASE WHEN c.DATA_TYPE IN ('varchar', 'nvarchar', 'varbinary')
-                                                                                  AND c.CHARACTER_MAXIMUM_LENGTH = -1 THEN c.DATA_TYPE + '(max)'
-                                                                             ELSE c.DATA_TYPE
-                                                                        END AS [TypeName],
-                                                                        c.CHARACTER_MAXIMUM_LENGTH [MaxLength],
-                                                                        CAST(c.NUMERIC_PRECISION AS INTEGER) [Precision],
-                                                                        CAST(c.DATETIME_PRECISION AS INTEGER) [DateTimePrecision],
-                                                                        CAST(c.NUMERIC_SCALE AS INTEGER) [Scale],
-                                                                        c.COLLATION_CATALOG [CollationCatalog],
-                                                                        c.COLLATION_SCHEMA [CollationSchema],
-                                                                        c.COLLATION_NAME [CollationName],
-                                                                        c.CHARACTER_SET_CATALOG [CharacterSetCatalog],
-                                                                        c.CHARACTER_SET_SCHEMA [CharacterSetSchema],
-                                                                        c.CHARACTER_SET_NAME [CharacterSetName],
-                                                                        CAST(0 AS BIT) AS [IsMultiSet],
-                                                                        CAST(COLUMNPROPERTY(OBJECT_ID(QUOTENAME(c.TABLE_SCHEMA) + '.' + QUOTENAME(c.TABLE_NAME)),
-                                                                                            c.COLUMN_NAME, 'IsIdentity') AS BIT) AS [IsIdentity],
-                                                                        CAST(COLUMNPROPERTY(OBJECT_ID(QUOTENAME(c.TABLE_SCHEMA) + '.' + QUOTENAME(c.TABLE_NAME)),
-                                                                                            c.COLUMN_NAME, 'IsComputed')
-                                                                        | CASE WHEN c.DATA_TYPE = 'timestamp' THEN 1
-                                                                               ELSE 0
-                                                                          END AS BIT) AS [IsStoreGenerated],
-                                                                        c.COLUMN_DEFAULT AS [Default]
-                                                                FROM    INFORMATION_SCHEMA.COLUMNS c
-                                                                        INNER JOIN INFORMATION_SCHEMA.TABLES t
-                                                                            ON c.TABLE_CATALOG = t.TABLE_CATALOG
-                                                                               AND c.TABLE_SCHEMA = t.TABLE_SCHEMA
-                                                                               AND c.TABLE_NAME = t.TABLE_NAME
-                                                                               AND t.TABLE_TYPE IN ('BASE TABLE', 'VIEW')
-                                                               ) AS [Extent6]
-                                                        ON [Extent6].[Id] = [Extent5].[ColumnId]
-                                            UNION ALL
-                                            SELECT  11 AS [C1],
-                                                    [Extent7].[ConstraintId] AS [ConstraintId],
-                                                    [Extent8].[Id] AS [Id]
-                                            FROM    (
-                                                     SELECT CAST( NULL AS NVARCHAR (1)) [ConstraintId], CAST( NULL AS NVARCHAR (MAX)) [ColumnId] WHERE 1= 2
-                                                    ) AS [Extent7]
-                                                    INNER JOIN (
-                                                                SELECT  QUOTENAME(c.TABLE_SCHEMA) + QUOTENAME(c.TABLE_NAME) + QUOTENAME(c.COLUMN_NAME) [Id],
-                                                                        QUOTENAME(c.TABLE_SCHEMA) + QUOTENAME(c.TABLE_NAME) [ParentId],
-                                                                        c.COLUMN_NAME [Name],
-                                                                        c.ORDINAL_POSITION [Ordinal],
-                                                                        CAST(CASE c.IS_NULLABLE
-                                                                               WHEN 'YES' THEN 1
-                                                                               WHEN 'NO' THEN 0
-                                                                               ELSE 0
-                                                                             END AS BIT) [IsNullable],
-                                                                        CASE WHEN c.DATA_TYPE IN ('varchar', 'nvarchar', 'varbinary')
-                                                                                  AND c.CHARACTER_MAXIMUM_LENGTH = -1 THEN c.DATA_TYPE + '(max)'
-                                                                             ELSE c.DATA_TYPE
-                                                                        END AS [TypeName],
-                                                                        c.CHARACTER_MAXIMUM_LENGTH [MaxLength],
-                                                                        CAST(c.NUMERIC_PRECISION AS INTEGER) [Precision],
-                                                                        CAST(c.DATETIME_PRECISION AS INTEGER) AS [DateTimePrecision],
-                                                                        CAST(c.NUMERIC_SCALE AS INTEGER) [Scale],
-                                                                        c.COLLATION_CATALOG [CollationCatalog],
-                                                                        c.COLLATION_SCHEMA [CollationSchema],
-                                                                        c.COLLATION_NAME [CollationName],
-                                                                        c.CHARACTER_SET_CATALOG [CharacterSetCatalog],
-                                                                        c.CHARACTER_SET_SCHEMA [CharacterSetSchema],
-                                                                        c.CHARACTER_SET_NAME [CharacterSetName],
-                                                                        CAST(0 AS BIT) AS [IsMultiSet],
-                                                                        CAST(COLUMNPROPERTY(OBJECT_ID(QUOTENAME(c.TABLE_SCHEMA) + '.' + QUOTENAME(c.TABLE_NAME)),
-                                                                                            c.COLUMN_NAME, 'IsIdentity') AS BIT) AS [IsIdentity],
-                                                                        CAST(COLUMNPROPERTY(OBJECT_ID(QUOTENAME(c.TABLE_SCHEMA) + '.' + QUOTENAME(c.TABLE_NAME)),
-                                                                                            c.COLUMN_NAME, 'IsComputed')
-                                                                        | CASE WHEN c.DATA_TYPE = 'timestamp' THEN 1
-                                                                               ELSE 0
-                                                                          END AS BIT) AS [IsStoreGenerated],
-                                                                        c.COLUMN_DEFAULT [Default]
-                                                                FROM    INFORMATION_SCHEMA.COLUMNS c
-                                                                        INNER JOIN INFORMATION_SCHEMA.VIEWS v
-                                                                            ON c.TABLE_CATALOG = v.TABLE_CATALOG
-                                                                               AND c.TABLE_SCHEMA = v.TABLE_SCHEMA
-                                                                               AND c.TABLE_NAME = v.TABLE_NAME
-                                                                WHERE   NOT (
-                                                                             v.TABLE_SCHEMA = 'dbo'
-                                                                             AND v.TABLE_NAME IN ('syssegments', 'sysconstraints')
-                                                                             AND SUBSTRING(CAST(SERVERPROPERTY('productversion') AS VARCHAR(20)), 1, 1) = 8
-                                                                            )
-                                                               ) AS [Extent8]
-                                                        ON [Extent8].[Id] = [Extent7].[ColumnId]
-                                           ) AS [UnionAll2]
-                                    ON (7 = [UnionAll2].[C1])
-                                       AND ([Extent4].[Id] = [UnionAll2].[ConstraintId])
-                         WHERE  [Extent4].[ConstraintType] = N'PRIMARY KEY'
-                        ) AS [Project5]
-            ON [UnionAll1].[Id] = [Project5].[C1]
-WHERE   NOT ([Extent1].[Name] IN ('EdmMetadata', '__MigrationHistory'))";
+SELECT  c.TABLE_SCHEMA SchemaName,
+        c.TABLE_NAME TableName,
+        t.TABLE_TYPE TableType,
+        c.ORDINAL_POSITION Ordinal,
+        c.COLUMN_NAME ColumnName,
+        CAST(CASE WHEN IS_NULLABLE = 'YES' THEN 1
+                  ELSE 0
+             END AS BIT) IsNullable,
+        DATA_TYPE TypeName,
+        ISNULL(CHARACTER_MAXIMUM_LENGTH, 0) [MaxLength],
+        CAST(ISNULL(NUMERIC_PRECISION, 0) AS INT) [Precision],
+        ISNULL(COLUMN_DEFAULT, '') [Default],
+        CAST(ISNULL(DATETIME_PRECISION, 0) AS INT) DateTimePrecision,
+        ISNULL(NUMERIC_SCALE, 0) Scale,
+        CAST(COLUMNPROPERTY(OBJECT_ID(c.TABLE_SCHEMA + '.' + c.TABLE_NAME), c.COLUMN_NAME, 'IsIdentity') AS BIT) IsIdentity,
+        CAST(CASE WHEN COLUMNPROPERTY(OBJECT_ID(c.TABLE_NAME), c.COLUMN_NAME, 'IsIdentity') = 1 THEN 1
+                  WHEN COLUMNPROPERTY(OBJECT_ID(c.TABLE_NAME), c.COLUMN_NAME, 'IsComputed') = 1 THEN 1
+                  WHEN DATA_TYPE = 'TIMESTAMP' THEN 1
+                  ELSE 0
+             END AS BIT) IsStoreGenerated,
+        CAST(CASE WHEN pk.ORDINAL_POSITION IS NULL THEN 0
+                  ELSE 1
+             END AS BIT) PrimaryKey,
+        ISNULL(pk.ORDINAL_POSITION, 0) PrimaryKeyOrdinal,
+        CAST(CASE WHEN fk.COLUMN_NAME IS NULL THEN 0
+                  ELSE 1
+             END AS BIT) IsForeignKey
+FROM    INFORMATION_SCHEMA.COLUMNS c
+        LEFT OUTER JOIN (SELECT u.TABLE_SCHEMA,
+                                u.TABLE_NAME,
+                                u.COLUMN_NAME,
+                                u.ORDINAL_POSITION
+                         FROM   INFORMATION_SCHEMA.KEY_COLUMN_USAGE u
+                                INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc
+                                    ON u.TABLE_SCHEMA = tc.CONSTRAINT_SCHEMA
+                                       AND u.TABLE_NAME = tc.TABLE_NAME
+                                       AND u.CONSTRAINT_NAME = tc.CONSTRAINT_NAME
+                         WHERE  CONSTRAINT_TYPE = 'PRIMARY KEY') pk
+            ON c.TABLE_SCHEMA = pk.TABLE_SCHEMA
+               AND c.TABLE_NAME = pk.TABLE_NAME
+               AND c.COLUMN_NAME = pk.COLUMN_NAME
+        LEFT OUTER JOIN (SELECT DISTINCT
+                                u.TABLE_SCHEMA,
+                                u.TABLE_NAME,
+                                u.COLUMN_NAME
+                         FROM   INFORMATION_SCHEMA.KEY_COLUMN_USAGE u
+                                INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc
+                                    ON u.TABLE_SCHEMA = tc.CONSTRAINT_SCHEMA
+                                       AND u.TABLE_NAME = tc.TABLE_NAME
+                                       AND u.CONSTRAINT_NAME = tc.CONSTRAINT_NAME
+                         WHERE  CONSTRAINT_TYPE = 'FOREIGN KEY') fk
+            ON c.TABLE_SCHEMA = fk.TABLE_SCHEMA
+               AND c.TABLE_NAME = fk.TABLE_NAME
+               AND c.COLUMN_NAME = fk.COLUMN_NAME
+        INNER JOIN INFORMATION_SCHEMA.TABLES t
+            ON c.TABLE_SCHEMA = t.TABLE_SCHEMA
+               AND c.TABLE_NAME = t.TABLE_NAME
+WHERE c.TABLE_NAME NOT IN ('EdmMetadata', '__MigrationHistory')";
 
             private const string ForeignKeySQL = @"
 SELECT DISTINCT
@@ -1955,7 +1749,9 @@ OPTION (QUERYTRACEON 9481)";
                     IsIdentity = rdr["IsIdentity"].ToString().Trim().ToLower() == "true",
                     IsNullable = rdr["IsNullable"].ToString().Trim().ToLower() == "true",
                     IsStoreGenerated = rdr["IsStoreGenerated"].ToString().Trim().ToLower() == "true",
-                    IsPrimaryKey = rdr["PrimaryKey"].ToString().Trim().ToLower() == "true"
+                    IsPrimaryKey = rdr["PrimaryKey"].ToString().Trim().ToLower() == "true",
+                    PrimaryKeyOrdinal = (int)rdr["PrimaryKeyOrdinal"],
+                    IsForeignKey = rdr["IsForeignKey"].ToString().Trim().ToLower() == "true"
                 };
                 
                 if(columnFilterExclude != null && !col.IsPrimaryKey && columnFilterExclude.IsMatch(col.Name))
