@@ -96,6 +96,8 @@
             return true;
         };
 
+        public const string DataDirectory = "|DataDirectory|";
+
         static string[] NotNullable = new string[]
         {
             "string", 
@@ -189,15 +191,6 @@
             configFilePath = String.Empty;
             string result = "";
             var paths = GetConfigPaths();
-            if (!paths.Any())   // JRoselle - lookup function if ConfigPaths fails
-            {
-                var sln = GetSolution();
-                paths.AddRange(
-                    ConfigFilenameSearchOrder
-                    .Select(sln.FindProjectItem)
-                    .Where(item => item != null)
-                    .Select(item => item.FileNames[0]));
-            }
 
             // Find a configuration file with the named connection string
             foreach (var path in paths)
@@ -232,12 +225,12 @@
 
             _connectionString = GetConnectionString(ref ConnectionStringName, out _providerName, out _configFilePath);
 
-            if(!_connectionString.Contains("|DataDirectory|"))
+            if(!_connectionString.Contains(DataDirectory))
                 return;
 
             // Replace data directory path
             string dataFilePath = GetDataDirectory();
-            _connectionString = _connectionString.Replace("|DataDirectory|", dataFilePath);
+            _connectionString = _connectionString.Replace(DataDirectory, dataFilePath);
         }
 
         public EnvDTE.DTE GetDTE()
@@ -347,6 +340,16 @@
                 paths.AddRange(GetConfigPathsInProject(dteProject));
             }
 
+            if (!paths.Any())
+            {
+                var sln = GetSolution();
+                paths.AddRange(
+                    ConfigFilenameSearchOrder
+                    .Select(sln.FindProjectItem)
+                    .Where(item => item != null)
+                    .Select(item => item.FileNames[0]));
+            }
+
             return paths;
         }
 
@@ -376,8 +379,35 @@
             return paths;
         }
 
+        // Search for the database file
         public string GetDataDirectory()
         {
+            var factory = TryGetDbProviderFactory();
+            if (factory != null)
+            {
+                var paths = GetConfigPaths();
+                paths.Add(GetSolution().FullName);
+                using (DbConnection conn = factory.CreateConnection())
+                {
+                    foreach (var path in paths)
+                    {
+                        try
+                        {
+                            var directory = Path.GetDirectoryName(path) + "\\";
+                            var connStr = _connectionString.Replace(DataDirectory, directory);
+                            conn.ConnectionString = connStr;
+                            conn.Open();
+                            return directory;   // Successfully opened the database. Return the datapath where we found it
+                        }
+                        catch (Exception)
+                        {
+                            // Could not open the database. Eat error, and try next path
+                        }
+                    }
+                }
+            }
+
+            // Fall back to default
             var project = GetCurrentProject();
             return Path.GetDirectoryName(project.FileName) + "\\App_Data\\";
         }		
@@ -416,6 +446,18 @@
                 WriteLine("// Failed to load provider \"{0}\" - {1}", ProviderName, error);
                 WriteLine("// -----------------------------------------------------------------------------------------");
                 WriteLine("");
+                return null;
+            }
+        }
+
+        private DbProviderFactory TryGetDbProviderFactory()
+        {
+            try
+            {
+                return DbProviderFactories.GetFactory(ProviderName);
+            }
+            catch (Exception)
+            {
                 return null;
             }
         }
