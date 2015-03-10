@@ -810,7 +810,7 @@
                     case "datetime":
                         DateTime dt;
                         if(!DateTime.TryParse(Default, out dt))
-                            Default = lower.Contains("getdate()") ? "System.DateTime.Now" :  lower.Contains("getutcdate()") ? "System.DateTime.UtcNow" : string.Empty;
+                            Default = lower.Contains("getdate()") ? "System.DateTime.Now" : lower.Contains("getutcdate()") ? "System.DateTime.UtcNow" : string.Empty;
                         else
                             Default = string.Format("System.DateTime.Parse({0})", Default);
                         break;
@@ -818,7 +818,7 @@
                     case "datetimeoffset":
                         DateTimeOffset dto;
                         if(!DateTimeOffset.TryParse(Default, out dto))
-                            Default = lower.Contains("sysdatetimeoffset()") ? "System.DateTimeOffset.Now" : string.Empty;
+                            Default = lower.Contains("sysdatetimeoffset") ? "System.DateTimeOffset.Now" : lower.Contains("sysutcdatetime") ? "System.DateTimeOffset.UtcNow" : string.Empty;
                         else
                             Default = string.Format("System.DateTimeOffset.Parse({0})", Default);
                         break;
