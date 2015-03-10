@@ -744,7 +744,11 @@
                 if(Default.First() == '\'' && Default.Last() == '\'' && Default.Length >= 2)
                     Default = string.Format("\"{0}\"", Default.Substring(1, Default.Length - 2));
 
-                switch(PropertyType.ToLower())
+                string lower = Default.ToLower();
+                string lowerPropertyType = PropertyType.ToLower();
+
+                // Cleanup default
+                switch(lowerPropertyType)
                 {
                     case "bool":
                         Default = (Default == "0") ? "false" : "true";
@@ -783,7 +787,7 @@
                     return;
 
                 // Validate default
-                switch(PropertyType.ToLower())
+                switch(lowerPropertyType)
                 {
                     case "long":
                         long l;
@@ -806,7 +810,7 @@
                     case "datetime":
                         DateTime dt;
                         if(!DateTime.TryParse(Default, out dt))
-                            Default = Default.ToLower().Contains("getdate()") ? "System.DateTime.Now" :  Default.ToLower().Contains("getutcdate()") ? "System.DateTime.UtcNow" : string.Empty;
+                            Default = lower.Contains("getdate()") ? "System.DateTime.Now" :  lower.Contains("getutcdate()") ? "System.DateTime.UtcNow" : string.Empty;
                         else
                             Default = string.Format("System.DateTime.Parse({0})", Default);
                         break;
@@ -814,7 +818,7 @@
                     case "datetimeoffset":
                         DateTimeOffset dto;
                         if(!DateTimeOffset.TryParse(Default, out dto))
-                            Default = Default.ToLower().Contains("sysdatetimeoffset()") ? "System.DateTimeOffset.Now" : string.Empty;
+                            Default = lower.Contains("sysdatetimeoffset()") ? "System.DateTimeOffset.Now" : string.Empty;
                         else
                             Default = string.Format("System.DateTimeOffset.Parse({0})", Default);
                         break;
@@ -859,8 +863,13 @@
                             Default = string.Empty;
                         break;
 
+                    case "string":
+                        if (lower.Contains("newid()") || lower.Contains("newsequentialid()"))
+                            Default = "Guid.NewGuid().ToString()";
+                        break;
+
                     case "guid":
-                        if (Default.ToLower() == "newid()" || Default.ToLower() == "newsequentialid()")
+                        if (lower.Contains("newid()") || lower.Contains("newsequentialid()"))
                             Default = "System.Guid.NewGuid()";
                         else
                             Default = string.Format("Guid.Parse(\"{0}\")", Default);
