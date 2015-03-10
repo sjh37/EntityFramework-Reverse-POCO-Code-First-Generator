@@ -1077,33 +1077,33 @@
         private class SqlServerSchemaReader : SchemaReader
         {
             private const string TableSQL = @"
-SELECT  c.TABLE_SCHEMA SchemaName,
-        c.TABLE_NAME TableName,
-        t.TABLE_TYPE TableType,
-        c.ORDINAL_POSITION Ordinal,
-        c.COLUMN_NAME ColumnName,
+SELECT  c.TABLE_SCHEMA AS SchemaName,
+        c.TABLE_NAME AS TableName,
+        t.TABLE_TYPE AS TableType,
+        c.ORDINAL_POSITION AS Ordinal,
+        c.COLUMN_NAME AS ColumnName,
         CAST(CASE WHEN IS_NULLABLE = 'YES' THEN 1
                   ELSE 0
-             END AS BIT) IsNullable,
-        DATA_TYPE TypeName,
-        ISNULL(CHARACTER_MAXIMUM_LENGTH, 0) [MaxLength],
-        CAST(ISNULL(NUMERIC_PRECISION, 0) AS INT) [Precision],
-        ISNULL(COLUMN_DEFAULT, '') [Default],
-        CAST(ISNULL(DATETIME_PRECISION, 0) AS INT) DateTimePrecision,
-        ISNULL(NUMERIC_SCALE, 0) Scale,
-        CAST(COLUMNPROPERTY(OBJECT_ID(c.TABLE_SCHEMA + '.' + c.TABLE_NAME), c.COLUMN_NAME, 'IsIdentity') AS BIT) IsIdentity,
-        CAST(CASE WHEN COLUMNPROPERTY(OBJECT_ID(c.TABLE_NAME), c.COLUMN_NAME, 'IsIdentity') = 1 THEN 1
-                  WHEN COLUMNPROPERTY(OBJECT_ID(c.TABLE_NAME), c.COLUMN_NAME, 'IsComputed') = 1 THEN 1
+             END AS BIT) AS IsNullable,
+        DATA_TYPE AS TypeName,
+        ISNULL(CHARACTER_MAXIMUM_LENGTH, 0) AS [MaxLength],
+        CAST(ISNULL(NUMERIC_PRECISION, 0) AS INT) AS [Precision],
+        ISNULL(COLUMN_DEFAULT, '') AS [Default],
+        CAST(ISNULL(DATETIME_PRECISION, 0) AS INT) AS DateTimePrecision,
+        ISNULL(NUMERIC_SCALE, 0) AS Scale,
+        CAST(COLUMNPROPERTY(OBJECT_ID(QUOTENAME(c.TABLE_SCHEMA) + '.' + QUOTENAME(c.TABLE_NAME)), c.COLUMN_NAME, 'IsIdentity') AS BIT) AS IsIdentity,
+        CAST(CASE WHEN COLUMNPROPERTY(OBJECT_ID(QUOTENAME(c.TABLE_SCHEMA) + '.' + QUOTENAME(c.TABLE_NAME)), c.COLUMN_NAME, 'IsIdentity') = 1 THEN 1
+                  WHEN COLUMNPROPERTY(OBJECT_ID(QUOTENAME(c.TABLE_SCHEMA) + '.' + QUOTENAME(c.TABLE_NAME)), c.COLUMN_NAME, 'IsComputed') = 1 THEN 1
                   WHEN DATA_TYPE = 'TIMESTAMP' THEN 1
                   ELSE 0
-             END AS BIT) IsStoreGenerated,
+             END AS BIT) AS IsStoreGenerated,
         CAST(CASE WHEN pk.ORDINAL_POSITION IS NULL THEN 0
                   ELSE 1
-             END AS BIT) PrimaryKey,
+             END AS BIT) AS PrimaryKey,
         ISNULL(pk.ORDINAL_POSITION, 0) PrimaryKeyOrdinal,
         CAST(CASE WHEN fk.COLUMN_NAME IS NULL THEN 0
                   ELSE 1
-             END AS BIT) IsForeignKey
+             END AS BIT) AS IsForeignKey
 FROM    INFORMATION_SCHEMA.COLUMNS c
         LEFT OUTER JOIN (SELECT u.TABLE_SCHEMA,
                                 u.TABLE_NAME,
