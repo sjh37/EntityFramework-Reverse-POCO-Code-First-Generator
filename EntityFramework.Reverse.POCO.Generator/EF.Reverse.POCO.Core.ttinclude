@@ -648,10 +648,12 @@
             public int Ordinal;
             public int PrimaryKeyOrdinal;
             public string ExtendedProperty;
+            public string UniqueIndexName;
 
             public bool IsIdentity;
             public bool IsNullable;
             public bool IsPrimaryKey;
+            public bool IsPrimaryKeyViaUniqueIndex;
             public bool IsStoreGenerated;
             public bool IsRowVersion;
             public bool IsFixedLength;
@@ -671,7 +673,12 @@
                 {
                     comments = " // " + Name;
                     if (IsPrimaryKey)
-                        comments += " (Primary key)";
+                    {
+                        if (IsPrimaryKeyViaUniqueIndex)
+                            comments += " (Primary key via unique index " + UniqueIndexName + ")";
+                        else
+                            comments += " (Primary key)";
+                    }
                 }
                 else
                 {
@@ -1064,6 +1071,7 @@
             public abstract List<ForeignKey> ReadForeignKeys(Func<string, string, string> tableRename);
             public abstract void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool useCamelCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, bool includeComments);
             public abstract void IdentifyForeignKeys(List<ForeignKey> fkList, Tables tables);
+            public abstract void ReadUniqueIndexes(Tables tables);
             public abstract void ReadExtendedProperties(Tables tables);
 
             protected void WriteLine(string o)
@@ -1137,37 +1145,32 @@ FROM    INFORMATION_SCHEMA.COLUMNS c
 WHERE c.TABLE_NAME NOT IN ('EdmMetadata', '__MigrationHistory')";
 
             private const string ForeignKeySQL = @"
-SELECT DISTINCT
-        FK.TABLE_NAME AS FK_Table,
-        FK.COLUMN_NAME AS FK_Column,
-        PK.TABLE_NAME AS PK_Table,
-        PK.COLUMN_NAME AS PK_Column,
-        FK.CONSTRAINT_NAME AS Constraint_Name,
-        FK.TABLE_SCHEMA AS fkSchema,
-        PK.TABLE_SCHEMA AS pkSchema,
-        PT.COLUMN_NAME AS primarykey,
-        FK.ORDINAL_POSITION
-FROM    INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS AS C
-        INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS FK
-            ON FK.CONSTRAINT_CATALOG = C.CONSTRAINT_CATALOG
-               AND FK.CONSTRAINT_SCHEMA = C.CONSTRAINT_SCHEMA
-               AND FK.CONSTRAINT_NAME = C.CONSTRAINT_NAME
-        INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS PK
-            ON PK.CONSTRAINT_CATALOG = C.UNIQUE_CONSTRAINT_CATALOG
-               AND PK.CONSTRAINT_SCHEMA = C.UNIQUE_CONSTRAINT_SCHEMA
-               AND PK.CONSTRAINT_NAME = C.UNIQUE_CONSTRAINT_NAME
-               AND PK.ORDINAL_POSITION = FK.ORDINAL_POSITION
-        INNER JOIN (
-                    SELECT  i1.TABLE_NAME,
-                            i2.COLUMN_NAME
-                    FROM    INFORMATION_SCHEMA.TABLE_CONSTRAINTS i1
-                            INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE i2
-                                ON i1.CONSTRAINT_NAME = i2.CONSTRAINT_NAME
-                    WHERE   i1.CONSTRAINT_TYPE = 'PRIMARY KEY'
-                   ) PT
-            ON PT.TABLE_NAME = PK.TABLE_NAME
-WHERE   PT.COLUMN_NAME = PK.COLUMN_NAME
-ORDER BY FK.TABLE_NAME, FK.COLUMN_NAME";
+SELECT  FK.name AS FK_Table,
+        FkCol.name AS FK_Column,
+        PK.name AS PK_Table,
+        PkCol.name AS PK_Column,
+        OBJECT_NAME(f.object_id) AS Constraint_Name,
+        SCHEMA_NAME(FK.schema_id) AS fkSchema,
+        SCHEMA_NAME(PK.schema_id) AS pkSchema,
+        PkCol.name AS primarykey,
+        k.constraint_column_id AS ORDINAL_POSITION
+FROM    sys.objects AS PK
+        INNER JOIN sys.foreign_keys AS f
+            INNER JOIN sys.foreign_key_columns AS k
+                ON k.constraint_object_id = f.object_id
+            INNER JOIN sys.indexes AS i
+                ON f.referenced_object_id = i.object_id
+                   AND f.key_index_id = i.index_id
+            ON PK.object_id = f.referenced_object_id
+        INNER JOIN sys.objects AS FK
+            ON f.parent_object_id = FK.object_id
+        INNER JOIN sys.columns AS PkCol
+            ON f.referenced_object_id = PkCol.object_id
+               AND k.referenced_column_id = PkCol.column_id
+        INNER JOIN sys.columns AS FkCol
+            ON f.parent_object_id = FkCol.object_id
+               AND k.parent_column_id = FkCol.column_id
+ORDER BY FK_Table, FK_Column";
 
         private const string ExtendedPropertySQL = @"
 SELECT  s.name AS [schema],
@@ -1204,33 +1207,48 @@ SELECT  '' AS SchemaName,
         c.ORDINAL_POSITION AS Ordinal,
         c.COLUMN_NAME AS ColumnName,
         CAST(CASE WHEN c.IS_NULLABLE = N'YES' THEN 1
-        ELSE 0 END AS bit) AS IsNullable,
+                  ELSE 0
+             END AS BIT) AS IsNullable,
         c.DATA_TYPE AS TypeName,
         CASE WHEN c.CHARACTER_MAXIMUM_LENGTH IS NOT NULL THEN c.CHARACTER_MAXIMUM_LENGTH
-        ELSE 0 END AS MaxLength,
+             ELSE 0
+        END AS MaxLength,
         CASE WHEN c.NUMERIC_PRECISION IS NOT NULL THEN c.NUMERIC_PRECISION
-        ELSE 0 END AS Precision,
+             ELSE 0
+        END AS Precision,
         c.COLUMN_DEFAULT AS [Default],
         CASE WHEN c.DATA_TYPE = N'datetime' THEN 0
-        ELSE 0 END AS DateTimePrecision,
+             ELSE 0
+        END AS DateTimePrecision,
         CASE WHEN c.DATA_TYPE = N'datetime' THEN 0
-        WHEN c.NUMERIC_SCALE IS NOT NULL THEN c.NUMERIC_SCALE
-        ELSE 0 END AS Scale,
+             WHEN c.NUMERIC_SCALE IS NOT NULL THEN c.NUMERIC_SCALE
+             ELSE 0
+        END AS Scale,
         CAST(CASE WHEN c.AUTOINC_INCREMENT > 0 THEN 1
-        ELSE 0 END AS bit) AS IsIdentity,
+                  ELSE 0
+             END AS BIT) AS IsIdentity,
         CAST(CASE WHEN c.DATA_TYPE = N'rowversion' THEN 1
-        ELSE 0 END AS bit) AS IsStoreGenerated,
+                  ELSE 0
+             END AS BIT) AS IsStoreGenerated,
         CAST(CASE WHEN u.TABLE_NAME IS NULL THEN 0
-        ELSE 1 END AS bit) AS PrimaryKey				
-FROM INFORMATION_SCHEMA.COLUMNS c
-        INNER JOIN INFORMATION_SCHEMA.TABLES t 
+                  ELSE 1
+             END AS BIT) AS PrimaryKey,
+        0 AS PrimaryKeyOrdinal,
+        0 as IsForeignKey
+FROM    INFORMATION_SCHEMA.COLUMNS c
+        INNER JOIN INFORMATION_SCHEMA.TABLES t
             ON c.TABLE_NAME = t.TABLE_NAME
-        LEFT JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS AS cons 
-            ON cons.TABLE_NAME = c.TABLE_NAME 
-        LEFT JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS u 
-            ON cons.CONSTRAINT_NAME = u.CONSTRAINT_NAME AND u.TABLE_NAME = c.TABLE_NAME AND u.COLUMN_NAME = c.COLUMN_NAME
-WHERE t.TABLE_TYPE <> N'SYSTEM TABLE' AND cons.CONSTRAINT_TYPE = 'PRIMARY KEY'
-ORDER BY c.TABLE_NAME, c.COLUMN_NAME, c.ORDINAL_POSITION;";
+        LEFT JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS AS cons
+            ON cons.TABLE_NAME = c.TABLE_NAME
+        LEFT JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS u
+            ON cons.CONSTRAINT_NAME = u.CONSTRAINT_NAME
+               AND u.TABLE_NAME = c.TABLE_NAME
+               AND u.COLUMN_NAME = c.COLUMN_NAME
+WHERE   t.TABLE_TYPE <> N'SYSTEM TABLE'
+        AND cons.CONSTRAINT_TYPE = 'PRIMARY KEY'
+ORDER BY c.TABLE_NAME,
+        c.COLUMN_NAME,
+        c.ORDINAL_POSITION;";
 
             private const string ForeignKeySQLCE = @"
 SELECT DISTINCT
@@ -1299,6 +1317,33 @@ WHERE   P.IS_RESULT = 'NO'
 ORDER BY P.SPECIFIC_SCHEMA,
         P.SPECIFIC_NAME,
         P.ORDINAL_POSITION";
+
+            private const string UniqueIndexSQL = @"
+SELECT  SCHEMA_NAME(t.schema_id) AS TableSchema,
+        t.name AS TableName,
+        ind.name AS IndexName,
+        ic.key_ordinal AS KeyOrdinal,
+        col.name AS ColumnName,
+        (SELECT COUNT(1)
+         FROM   sys.index_columns i
+         WHERE  i.object_id = ind.object_id
+                AND i.index_id = ind.index_id) AS ColumnCount
+FROM    sys.tables t
+        INNER JOIN sys.indexes ind
+            ON ind.object_id = t.object_id
+        INNER JOIN sys.index_columns ic
+            ON ind.object_id = ic.object_id
+               AND ind.index_id = ic.index_id
+        INNER JOIN sys.columns col
+            ON ic.object_id = col.object_id
+               AND ic.column_id = col.column_id
+WHERE   t.is_ms_shipped = 0
+        AND (
+             ind.is_unique = 1
+             OR ind.is_primary_key = 1
+             OR ind.is_unique_constraint = 1
+            )
+        AND ind.ignore_dup_key = 0";
 
             private bool IncludeQueryTraceOn9481Flag;
 
@@ -1394,6 +1439,8 @@ OPTION (QUERYTRACEON 9481)";
 
                 if (includeExtendedPropertyComments != ExtendedPropertyCommentsStyle.None)
                     ReadExtendedProperties(result);
+
+                ReadUniqueIndexes(result);
                 
                 foreach(Table tbl in result)
                 {
@@ -1428,15 +1475,88 @@ OPTION (QUERYTRACEON 9481)";
                         string constraintName = rdr["Constraint_Name"].ToString().Replace(" ", "");
                         int ordinal = (int) rdr["ORDINAL_POSITION"];
                         
-                        string fkTableNameFiltered, pkTableNameFiltered;
-                        fkTableNameFiltered = tableRename(fkTableName, fkSchema);
-                        pkTableNameFiltered = tableRename(pkTableName, pkSchema);
+                        string fkTableNameFiltered = tableRename(fkTableName, fkSchema);
+                        string pkTableNameFiltered = tableRename(pkTableName, pkSchema);
 
                         fkList.Add(new ForeignKey(fkTableName, fkSchema, pkTableName, pkSchema, fkColumn, pkColumn, constraintName, fkTableNameFiltered, pkTableNameFiltered, ordinal));
                     }
                 }
                 
                 return fkList;
+            }
+
+            // When a table has no primary keys, all the NOT NULL columns are set as being the primary key.
+            // This function reads the unique indexes for a table, and correctly sets the columns being used as primary keys.
+            public override void ReadUniqueIndexes(Tables tables)
+            {
+                if (Cmd == null)
+                    return;
+
+                if (Cmd.GetType().Name == "SqlCeCommand")
+                    return;
+
+                Cmd.CommandText = UniqueIndexSQL + IncludeQueryTraceOn9481();
+
+                var list = new List<UniqueIndex>();
+                using (DbDataReader rdr = Cmd.ExecuteReader())
+                {
+                    while (rdr.Read())
+                    {
+                        var uniqueIndex = new UniqueIndex();
+
+                        uniqueIndex.Schema      = rdr["TableSchema"].ToString().Trim();
+                        uniqueIndex.TableName   = rdr["TableName"].ToString().Trim();
+                        uniqueIndex.IndexName   = rdr["IndexName"].ToString().Trim();
+                        uniqueIndex.KeyOrdinal  = (byte) rdr["KeyOrdinal"];
+                        uniqueIndex.Column      = rdr["ColumnName"].ToString().Trim();
+                        uniqueIndex.ColumnCount = (int) rdr["ColumnCount"];
+
+                        list.Add(uniqueIndex);
+                    }
+                }
+
+                Table t = null;
+                var indexes = list
+                    .Select(x => new { x.Schema, x.TableName, x.IndexName })
+                    .Distinct()
+                    .OrderBy(o => o.Schema)
+                    .ThenBy(o => o.TableName)
+                    .ThenBy(o => o.IndexName);
+
+                foreach (var index in indexes)
+                {
+                    if (t == null || t.Name != index.TableName || t.Schema != index.Schema)
+                        t = tables.Find(x => x.Name == index.TableName && x.Schema == index.Schema);
+
+                    if (t != null && !t.PrimaryKeys.Any())
+                    {
+                        // Table has no primary keys
+                        var uniqueIndexKeys =
+                            list.Where(x => x.Schema == index.Schema && x.TableName == index.TableName && x.IndexName == index.IndexName)
+                                .Select(x => new { x.IndexName, x.KeyOrdinal, x.Column, x.ColumnCount })
+                                .OrderBy(o => o.ColumnCount)
+                                .ThenBy(o => o.IndexName);
+
+                        // Process only the first index with the lowest unique column count
+                        string indexName = null;
+                        foreach (var key in uniqueIndexKeys)
+                        {
+                            if (indexName == null)
+                                indexName = key.IndexName;
+
+                            if (indexName != key.IndexName)
+                                break;  // First unique index with lowest column count has been processed, exit.
+
+                            var col = t.Columns.Find(x => x.Name == key.Column);
+                            if (col != null && !col.IsNullable && !col.Hidden)
+                            {
+                                col.IsPrimaryKey = true;
+                                col.IsPrimaryKeyViaUniqueIndex = true;
+                                col.UniqueIndexName = indexName;
+                            }
+                        }
+                    }
+                }
             }
 
             public override void ReadExtendedProperties(Tables tables)
@@ -1451,7 +1571,7 @@ OPTION (QUERYTRACEON 9481)";
                     Cmd.CommandText = ExtendedPropertyTableExistsSQLCE;
                     var obj = Cmd.ExecuteScalar();
                     if (obj == null)
-                    return;
+                        return;
 
                     Cmd.CommandText = ExtendedPropertySQLCE;
                 }
@@ -1647,6 +1767,9 @@ OPTION (QUERYTRACEON 9481)";
                     var fkCol = fkCols.First();
                     var pkCol = pkCols.First();
 
+                    if (!pkCol.IsPrimaryKey)
+                        continue;
+
                     var relationship = CalcRelationship(pkTable, fkTable, fkCol.col, pkCol);
 
                     string pkTableHumanCase = foreignKey.PkTableHumanCase(useCamelCase, prependSchemaName);
@@ -1693,15 +1816,24 @@ OPTION (QUERYTRACEON 9481)";
 
             private static string GetRelationship(Relationship relationship, Column fkCol, Column pkCol, string pkPropName, string fkPropName, string manyToManyMapping)
             {
-                return string.Format("Has{0}(a => a.{1}){2}", GetHasMethod(fkCol, pkCol), pkPropName, GetWithMethod(relationship, fkCol, fkPropName, manyToManyMapping));
+                return string.Format("Has{0}(a => a.{1}){2}", GetHasMethod(relationship, fkCol, pkCol), pkPropName, GetWithMethod(relationship, fkCol, fkPropName, manyToManyMapping));
             }
 
             // HasOptional
             // HasRequired
             // HasMany
-            private static string GetHasMethod(Column fkCol, Column pkCol)
+            private static string GetHasMethod(Relationship relationship, Column fkCol, Column pkCol)
             {
-                if (pkCol.IsPrimaryKey)
+                bool withMany = false;
+                switch (relationship)
+                {
+                    case Relationship.ManyToOne:
+                    case Relationship.ManyToMany:
+                        withMany = true;
+                        break;
+                }
+
+                if (withMany || pkCol.IsPrimaryKey)
                     return fkCol.IsNullable ? "Optional" : "Required";
 
                 return "Many";
@@ -1725,8 +1857,7 @@ OPTION (QUERYTRACEON 9481)";
                     case Relationship.ManyToOne:
                         if (!fkCol.Hidden)
                             return string.Format(".WithMany(b => b.{0}).HasForeignKey(c => c.{1})", fkPropName, fkCol.PropertyNameHumanCase);   // Foreign Key Association
-                        else
-                            return string.Format(".WithMany(b => b.{0}).Map(c => c.MapKey(\"{1}\"))", fkPropName, fkCol.Name);  // Independent Association
+                        return string.Format(".WithMany(b => b.{0}).Map(c => c.MapKey(\"{1}\"))", fkPropName, fkCol.Name);  // Independent Association
 
                     case Relationship.ManyToMany:
                         return string.Format(".WithMany(b => b.{0}).HasForeignKey({1})", fkPropName, manyToManyMapping);
@@ -2044,6 +2175,16 @@ OPTION (QUERYTRACEON 9481)";
             }
         }
 
+        public class UniqueIndex
+        {
+            public string Schema;
+            public string TableName;
+            public string IndexName;
+            public byte KeyOrdinal;
+            public string Column;
+            public int ColumnCount;
+        }
+        
         public class Table
         {
             public string Name;
