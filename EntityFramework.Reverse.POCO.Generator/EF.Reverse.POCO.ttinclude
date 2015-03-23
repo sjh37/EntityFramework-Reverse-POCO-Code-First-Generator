@@ -597,7 +597,7 @@ foreach(StoredProcedure sp in storedProcs.Where(x => x.ReturnColumns.Count > 0))
     string spReturnClassName = WriteStoredProcReturnModelName(sp);
 #>
 <# fileManager.StartNewFile(spReturnClassName + FileExtension); #>
-    public class <#= spReturnClassName #>
+    public <# if(MakeClassesPartial) { #>partial <# } #>class <#= spReturnClassName #>
     {
 <#
 foreach (var returnColumn in sp.ReturnColumns)
