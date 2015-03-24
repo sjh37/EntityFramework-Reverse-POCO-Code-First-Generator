@@ -1456,7 +1456,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             ToTable(schema + ".Categories");
             HasKey(x => x.CategoryId);
 
-            Property(x => x.CategoryId).HasColumnName("CategoryID").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Computed);
+            Property(x => x.CategoryId).HasColumnName("CategoryID").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
             Property(x => x.CategoryName).HasColumnName("CategoryName").IsRequired().HasMaxLength(15);
             Property(x => x.Description).HasColumnName("Description").IsOptional().HasMaxLength(1073741823);
             Property(x => x.Picture).HasColumnName("Picture").IsOptional().HasMaxLength(2147483647);
@@ -1486,7 +1486,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             ToTable(schema + ".Current Product List");
             HasKey(x => new { x.ProductId, x.ProductName });
 
-            Property(x => x.ProductId).HasColumnName("ProductID").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Computed);
+            Property(x => x.ProductId).HasColumnName("ProductID").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
             Property(x => x.ProductName).HasColumnName("ProductName").IsRequired().HasMaxLength(40);
         }
     }
@@ -1559,7 +1559,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             ToTable(schema + ".Employees");
             HasKey(x => x.EmployeeId);
 
-            Property(x => x.EmployeeId).HasColumnName("EmployeeID").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Computed);
+            Property(x => x.EmployeeId).HasColumnName("EmployeeID").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
             Property(x => x.LastName).HasColumnName("LastName").IsRequired().HasMaxLength(20);
             Property(x => x.FirstName).HasColumnName("FirstName").IsRequired().HasMaxLength(10);
             Property(x => x.Title).HasColumnName("Title").IsOptional().HasMaxLength(30);
@@ -1636,7 +1636,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             ToTable(schema + ".Orders");
             HasKey(x => x.OrderId);
 
-            Property(x => x.OrderId).HasColumnName("OrderID").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Computed);
+            Property(x => x.OrderId).HasColumnName("OrderID").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
             Property(x => x.CustomerId).HasColumnName("CustomerID").IsOptional().IsFixedLength().HasMaxLength(5);
             Property(x => x.EmployeeId).HasColumnName("EmployeeID").IsOptional();
             Property(x => x.OrderDate).HasColumnName("OrderDate").IsOptional();
@@ -1753,7 +1753,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             ToTable(schema + ".Products");
             HasKey(x => x.ProductId);
 
-            Property(x => x.ProductId).HasColumnName("ProductID").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Computed);
+            Property(x => x.ProductId).HasColumnName("ProductID").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
             Property(x => x.ProductName).HasColumnName("ProductName").IsRequired().HasMaxLength(40);
             Property(x => x.SupplierId).HasColumnName("SupplierID").IsOptional();
             Property(x => x.CategoryId).HasColumnName("CategoryID").IsOptional();
@@ -1871,7 +1871,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             ToTable(schema + ".Shippers");
             HasKey(x => x.ShipperId);
 
-            Property(x => x.ShipperId).HasColumnName("ShipperID").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Computed);
+            Property(x => x.ShipperId).HasColumnName("ShipperID").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
             Property(x => x.CompanyName).HasColumnName("CompanyName").IsRequired().HasMaxLength(40);
             Property(x => x.Phone).HasColumnName("Phone").IsOptional().HasMaxLength(24);
         }
@@ -1916,7 +1916,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             ToTable(schema + ".Suppliers");
             HasKey(x => x.SupplierId);
 
-            Property(x => x.SupplierId).HasColumnName("SupplierID").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Computed);
+            Property(x => x.SupplierId).HasColumnName("SupplierID").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
             Property(x => x.CompanyName).HasColumnName("CompanyName").IsRequired().HasMaxLength(40);
             Property(x => x.ContactName).HasColumnName("ContactName").IsOptional().HasMaxLength(30);
             Property(x => x.ContactTitle).HasColumnName("ContactTitle").IsOptional().HasMaxLength(30);
@@ -1942,7 +1942,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
             Property(x => x.Name).HasColumnName("name").IsRequired().HasMaxLength(128);
             Property(x => x.PrincipalId).HasColumnName("principal_id").IsRequired();
-            Property(x => x.DiagramId).HasColumnName("diagram_id").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Computed);
+            Property(x => x.DiagramId).HasColumnName("diagram_id").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
             Property(x => x.Version).HasColumnName("version").IsOptional();
             Property(x => x.Definition).HasColumnName("definition").IsOptional();
         }
