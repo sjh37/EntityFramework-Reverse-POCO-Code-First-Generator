@@ -59,6 +59,7 @@
         Regex ColumnFilterExclude = null;
         string[] ConfigFilenameSearchOrder = null;
         string[] AdditionalNamespaces = null;
+        string[] AdditionalContextInterfaceItems = null;
         private string _connectionString = "";
         private string _providerName = "";
         private string _configFilePath = "";
