@@ -182,8 +182,7 @@
 
     Func<Column, string> WritePocoColumn = c => c.Entity;
 
-    Func<StoredProcedure, string> WriteStoredProcFunctionName = sp => 
-        string.Format("{0}{1}", (sp.Schema.ToLower() != "dbo") ? sp.Schema + "_" : string.Empty, sp.NameHumanCase);
+    Func<StoredProcedure, string> WriteStoredProcFunctionName = sp => sp.NameHumanCase;
 
     Func<StoredProcedure, string> WriteStoredProcFunctionParams = sp =>
     {
@@ -260,7 +259,7 @@
     };
     
     Func<StoredProcedure, string> WriteStoredProcReturnModelName = sp => 
-        string.Format("{0}{1}ReturnModel", (sp.Schema.ToLower() != "dbo") ? sp.Schema + "_" : string.Empty, sp.NameHumanCase);
+        string.Format("{0}ReturnModel", sp.NameHumanCase);
 
     Func<DataColumn, string> WriteStoredProcReturnColumn = col => 
         string.Format("public {0}{1}{2} {{ get; set; }}",
