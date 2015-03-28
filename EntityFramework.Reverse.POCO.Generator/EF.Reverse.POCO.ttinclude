@@ -185,7 +185,7 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.Na
 <#if(string.IsNullOrWhiteSpace(MigrationConfigurationFileName)) {#>
             Database.SetInitializer<<#=DbContextName#>>(null);
 <#} else {#>
-            Database.SetInitializer(new <#=MigrationStrategy#><<#=DbContextName#>, <#=MigrationConfigurationFileName#>>());
+            Database.SetInitializer(new <#=MigrationStrategy#><<#=DbContextName#><#if (MigrationStrategy == "MigrateDatabaseToLatestVersion"){#>, <#=MigrationConfigurationFileName#><#}#>>());
 <#}#>
         }
 
