@@ -1916,6 +1916,11 @@ OPTION (QUERYTRACEON 9481)";
                 col.PropertyName = CleanUp(col.Name);
                 col.PropertyName = rxClean.Replace(col.PropertyName, "_$1");
 
+                if (ReservedKeywords.Contains(col.PropertyName))
+                {
+                    col.PropertyName = "@" + col.PropertyName;
+                }
+
                 // Make sure property name doesn't clash with class name
                 if(col.PropertyName == table.NameHumanCase)
                     col.PropertyName = col.PropertyName + "_";
