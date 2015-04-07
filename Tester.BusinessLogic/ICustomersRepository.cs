@@ -6,5 +6,7 @@ namespace Tester.BusinessLogic
     public interface ICustomersRepository
     {
         IQueryable<Customer> GetTop10();
+        int Count();
+        Customer FindById(string id);
     }
 }

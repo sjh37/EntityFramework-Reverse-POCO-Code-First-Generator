@@ -20,5 +20,15 @@ namespace Tester.BusinessLogic
         {
             return _context.Customers.Take(10).OrderBy(x => x.CustomerId);
         }
+
+        public int Count()
+        {
+            return _context.Customers.Count();
+        }
+
+        public Customer FindById(string id)
+        {
+            return _context.Customers.FirstOrDefault(x => x.CustomerId == id);
+        }
     }
 }
