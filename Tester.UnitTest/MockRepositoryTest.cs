@@ -8,39 +8,39 @@ namespace Tester.UnitTest
     [TestFixture]
     public class MockRepositoryTest
     {
-        private IRepository<CurrentProductList> CurrentProductList { get; set; }
+        private IRepository<Customer> Customers { get; set; }
 
         [SetUp]
         public void Setup()
         {
             // Arrange
-            CurrentProductList = new MockRepository<CurrentProductList>();
-            CurrentProductList.InsertOnSubmit(new CurrentProductList { ProductId = 1, ProductName = "abc"});
-            CurrentProductList.InsertOnSubmit(new CurrentProductList { ProductId = 2, ProductName = "def"});
+            Customers = new MockRepository<Customer>();
+            Customers.InsertOnSubmit(new Customer { CustomerId = "1", CompanyName = "abc" });
+            Customers.InsertOnSubmit(new Customer { CustomerId = "2", CompanyName = "def" });
         }
 
         [Test]
         public void InsertTest()
         {
             // Act
-            CurrentProductList.SubmitChanges();
+            Customers.SubmitChanges();
             
             // Assert
-            Assert.AreEqual(2, CurrentProductList.All.Count());
-            Assert.AreEqual("abc", CurrentProductList.All.First().ProductName);
-            Assert.AreEqual("def", CurrentProductList.All.Last().ProductName);
+            Assert.AreEqual(2, Customers.All.Count());
+            Assert.AreEqual("abc", Customers.All.First().CompanyName);
+            Assert.AreEqual("def", Customers.All.Last().CompanyName);
         }
 
         [Test]
         public void DeleteTest()
         {
             // Act
-            CurrentProductList.DeleteOnSubmit(CurrentProductList.All.First());
-            CurrentProductList.SubmitChanges();
+            Customers.DeleteOnSubmit(Customers.All.First());
+            Customers.SubmitChanges();
 
             // Assert
-            Assert.AreEqual(1, CurrentProductList.All.Count());
-            Assert.AreEqual("def", CurrentProductList.All.First().ProductName);
+            Assert.AreEqual(1, Customers.All.Count());
+            Assert.AreEqual("def", Customers.All.First().CompanyName);
         }
     }
 }

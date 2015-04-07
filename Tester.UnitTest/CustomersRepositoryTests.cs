@@ -1,4 +1,5 @@
-﻿using EntityFramework_Reverse_POCO_Generator;
+﻿using System.Linq;
+using EntityFramework_Reverse_POCO_Generator;
 using NUnit.Framework;
 using Tester.BusinessLogic;
 
@@ -7,7 +8,7 @@ namespace Tester.UnitTest
     [TestFixture]
     public class CustomersRepositoryTests
     {
-        private ICurrentProductListRepository _currentProductListRepositoryRepository;
+        private ICustomersRepository _customersRepository;
         private IMyDbContext _context;
 
         [SetUp]
@@ -16,61 +17,45 @@ namespace Tester.UnitTest
             // Arrange
             _context = new FakeMyDbContext();
 
-            _context.CurrentProductLists.Attach(new CurrentProductList
+            _context.Customers.Attach(new Customer
             {
-                ProductId = 1,
-                ProductName = "abc"
+                CustomerId = "1",
+                CompanyName = "abc"
             });
-            _context.CurrentProductLists.Attach(new CurrentProductList
+            _context.Customers.Attach(new Customer
             {
-                ProductId = 2,
-                ProductName = "def"
+                CustomerId = "2",
+                CompanyName = "def"
             });
 
-            _currentProductListRepositoryRepository = new CurrentProductListRepositoryRepository(_context);
+            _customersRepository = new CustomersRepository(_context);
         }
 
         [Test]
         public void GetCount()
         {
             // Act
-            int count = _currentProductListRepositoryRepository.GetCount();
+            int count = _customersRepository.Count();
             
             // Assert
             Assert.AreEqual(2, count);
         }
 
         [Test]
-        public void GetProductByID()
+        public void GetByID()
         {
             // Act
-            var abc = _currentProductListRepositoryRepository.GetProductByID(1);
-            var def = _currentProductListRepositoryRepository.GetProductByID(2);
-            var ghi = _currentProductListRepositoryRepository.GetProductByID(3);
+            var abc = _customersRepository.FindById("1");
+            var def = _customersRepository.FindById("2");
+            var ghi = _customersRepository.FindById("3");
 
             // Assert
             Assert.IsNotNull(abc);
             Assert.IsNotNull(def);
             Assert.IsNull(ghi);
 
-            Assert.AreEqual("abc", abc.ProductName);
-            Assert.AreEqual("def", def.ProductName);
-        }
-
-        
-        [Test]
-        public void UpdateProductName()
-        {
-            // Act
-            bool updated = _currentProductListRepositoryRepository.UpdateProductName(2, "fred");
-            var count = _currentProductListRepositoryRepository.GetCount();
-            var data = _currentProductListRepositoryRepository.GetProductByID(2);
-
-            // Assert
-            Assert.AreEqual(true, updated);
-            Assert.AreEqual(2, count);
-            Assert.IsNotNull(data);
-            Assert.AreEqual("fred", data.ProductName);
+            Assert.AreEqual("abc", abc.CompanyName);
+            Assert.AreEqual("def", def.CompanyName);
         }
     }
 }
