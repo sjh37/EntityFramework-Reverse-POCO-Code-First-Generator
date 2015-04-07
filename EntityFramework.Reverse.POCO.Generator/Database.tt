@@ -198,7 +198,7 @@
                 (n++ < count) ? ", " : string.Empty);
         }
         if (sp.ReturnColumns.Count > 0)
-            sb.AppendFormat(", out int procResult");
+            sb.AppendFormat((sp.Parameters.Count > 0 ?  "," : "") + " out int procResult");
         return sb.ToString();
     };
 
