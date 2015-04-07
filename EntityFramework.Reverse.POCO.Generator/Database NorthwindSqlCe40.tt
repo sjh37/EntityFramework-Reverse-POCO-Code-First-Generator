@@ -22,6 +22,10 @@
     CollectionTypeNamespace = ""; // "System.Collections.ObjectModel" is required if setting the CollectionType = "ObservableCollection"
     AddUnitTestingDbContext = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing
     AdditionalNamespaces = new[] { "System" };  // To include extra namespaces, include them here. i.e. "Microsoft.AspNet.Identity.EntityFramework"
+    AdditionalContextInterfaceItems = new[] // To include extra db context interface items, include them here. Also set MakeClassesPartial=true, and implement the partial DbContext class functions.
+    {
+        ""  //  example: "void SetAutoDetectChangesEnabled(bool flag);"
+    };
     
     // Migrations ************************************************************************************************************************
     MigrationConfigurationFileName = ""; // null or empty to not create migrations
@@ -54,28 +58,33 @@
     // Multiple projects can now be used that separate the different concerns.
     ElementsToGenerate =  Elements.Poco | Elements.Context | Elements.UnitOfWork | Elements.PocoConfiguration;
 
-    // Use these namespaces to specify where the different elements of the template are being generated.
+    // Use these namespaces to specify where the different elements now live. These may even be in different assemblies.
+    // Please note this does not create the files in these locations, it only adds a using statement to say where they are.
+    // I show how this works on the video from 26:08 onwards.
+    // The way to do this is to add the "EntityFramework Reverse POCO Code First Generator" into each of these folders.
+    // Then set the .tt to only generate the relevant section you need by setting
+    //      ElementsToGenerate = Elements.Poco; in your Entity folder,
+    //      ElementsToGenerate = Elements.Context | Elements.UnitOfWork; in your Context folder,
+    //      ElementsToGenerate = Elements.PocoConfiguration; in your Maps folder.
+    //      PocoNamespace = "YourProject.Entities";
+    //      ContextNamespace = "YourProject.Context";
+    //      UnitOfWorkNamespace = "YourProject.Context";	
+    //      PocoConfigurationNamespace = "YourProject.Maps";
+    // You also need to set the following to the namespace where they now live:
     PocoNamespace = "";
     ContextNamespace = "";
     UnitOfWorkNamespace = "";	
     PocoConfigurationNamespace = "";
 
-    // Example of separate concerns:
-    //PocoNamespace = "MyProject.Model";
-    //ContextNamespace = "MyProject.Data";
-    //UnitOfWorkNamespace = "MyProject.Data";	
-    //PocoConfigurationNamespace = "MyProject.Data";
-    //ElementsToGenerate = Elements.Poco;   // Model Project
-    //ElementsToGenerate = Elements.Context | Elements.UnitOfWork | Elements.PocoConfiguration; //  Data project
-
     
     // Schema *****************************************************************************************************************************
-    // If there are multiple schema, then the table name is prefixed with the schema, except for dbo.
+    // If there are multiple schemas, then the table name is prefixed with the schema, except for dbo.
     // Ie. dbo.hello will be Hello.
     //     abc.hello will be AbcHello.
     // To only include a single schema, specify it below.
     SchemaName = null;
     PrependSchemaName = true;   // Control if the schema name is prepended to the table name
+
 
     // Filtering **************************************************************************************************************************
     // Use the following table/view name regex filters to include or exclude tables/views
