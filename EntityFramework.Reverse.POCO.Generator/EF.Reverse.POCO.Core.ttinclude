@@ -1281,8 +1281,8 @@ WHERE   PT.COLUMN_NAME = PK.COLUMN_NAME
 ORDER BY FK.TABLE_NAME, FK.COLUMN_NAME;";
 
             private const string StoredProcedureSQL = @"
-SELECT  P.SPECIFIC_SCHEMA,
-        P.SPECIFIC_NAME,
+SELECT  R.SPECIFIC_SCHEMA,
+        R.SPECIFIC_NAME,
         P.ORDINAL_POSITION,
         P.PARAMETER_MODE,
         P.PARAMETER_NAME,
@@ -1291,32 +1291,34 @@ SELECT  P.SPECIFIC_SCHEMA,
         ISNULL(P.NUMERIC_PRECISION, 0) AS NUMERIC_PRECISION,
         ISNULL(P.NUMERIC_SCALE, 0) AS NUMERIC_SCALE,
         ISNULL(P.DATETIME_PRECISION, 0) AS DATETIME_PRECISION
-FROM    INFORMATION_SCHEMA.PARAMETERS P
-        INNER JOIN INFORMATION_SCHEMA.ROUTINES R
+FROM    INFORMATION_SCHEMA.ROUTINES R
+        LEFT OUTER JOIN INFORMATION_SCHEMA.PARAMETERS P
             ON P.SPECIFIC_SCHEMA = R.SPECIFIC_SCHEMA
                AND P.SPECIFIC_NAME = R.SPECIFIC_NAME
-               AND R.ROUTINE_TYPE = 'PROCEDURE'
-WHERE   P.IS_RESULT = 'NO'
-        AND P.SPECIFIC_SCHEMA + P.SPECIFIC_NAME IN (
+WHERE   R.ROUTINE_TYPE = 'PROCEDURE'
+        AND (
+             P.IS_RESULT = 'NO'
+             OR P.IS_RESULT IS NULL
+            )
+        AND R.SPECIFIC_SCHEMA + R.SPECIFIC_NAME IN (
             SELECT  SCHEMA_NAME(sp.schema_id) + sp.name
             FROM    sys.all_objects AS sp
                     LEFT OUTER JOIN sys.all_sql_modules AS sm
                         ON sm.object_id = sp.object_id
             WHERE   sp.type = 'P'
-                    AND (
-                         CAST(CASE WHEN sp.is_ms_shipped = 1 THEN 1
-                                   WHEN (SELECT major_id
-                                         FROM   sys.extended_properties
-                                         WHERE  major_id = sp.object_id
+                    AND (CAST(CASE WHEN sp.is_ms_shipped = 1 THEN 1
+                                    WHEN (
+                                            SELECT major_id
+                                            FROM   sys.extended_properties
+                                            WHERE  major_id = sp.object_id
                                                 AND minor_id = 0
                                                 AND class = 1
-                                                AND name = N'microsoft_database_tools_support') IS NOT NULL THEN 1
-                                   ELSE 0
-                              END AS BIT) = 0
-                        )
-        )
-ORDER BY P.SPECIFIC_SCHEMA,
-        P.SPECIFIC_NAME,
+                                                AND name = N'microsoft_database_tools_support'
+                                        ) IS NOT NULL THEN 1
+                                    ELSE 0
+                                END AS BIT) = 0))
+ORDER BY R.SPECIFIC_SCHEMA,
+        R.SPECIFIC_NAME,
         P.ORDINAL_POSITION";
 
             private const string UniqueIndexSQL = @"
@@ -1648,33 +1650,38 @@ OPTION (QUERYTRACEON 9481)";
                             result.Add(sp);
                         }
 
-                        string typename = rdr["DATA_TYPE"].ToString().Trim().ToLower();
-                        var scale = (int) rdr["NUMERIC_SCALE"];
-                        var precision = (int)((byte) rdr["NUMERIC_PRECISION"]);
-                        var parameterMode = rdr["PARAMETER_MODE"].ToString().Trim().ToUpper();
-
-                        var param = new StoredProcedureParameter
+                        if (rdr["DATA_TYPE"] != null && rdr["DATA_TYPE"] != DBNull.Value)
                         {
-                            Ordinal = (int) rdr["ORDINAL_POSITION"],
-                            Mode = (parameterMode == "IN") ? StoredProcedureParameterMode.In : StoredProcedureParameterMode.InOut,
-                            Name = rdr["PARAMETER_NAME"].ToString().Trim(),
-                            SqlDbType = GetSqlDbType(typename, scale, precision),
-                            PropertyType = GetPropertyType(typename, scale, precision),
-                            DateTimePrecision = (Int16) rdr["DATETIME_PRECISION"],
-                            MaxLength = (int) rdr["CHARACTER_MAXIMUM_LENGTH"],
-                            Precision = precision,
-                            Scale = scale
-                        };
+                            string typename = rdr["DATA_TYPE"].ToString().Trim().ToLower();
+                            var scale = (int) rdr["NUMERIC_SCALE"];
+                            var precision = (int) ((byte) rdr["NUMERIC_PRECISION"]);
+                            var parameterMode = rdr["PARAMETER_MODE"].ToString().Trim().ToUpper();
 
-                        var clean = CleanUp(param.Name.Replace("@", ""));
-                        param.NameHumanCase = Inflector.MakeInitialLower((useCamelCase ? Inflector.ToTitleCase(clean) : clean).Replace(" ", ""));
+                            var param = new StoredProcedureParameter
+                            {
+                                Ordinal = (int) rdr["ORDINAL_POSITION"],
+                                Mode = (parameterMode == "IN") ? StoredProcedureParameterMode.In : StoredProcedureParameterMode.InOut,
+                                Name = rdr["PARAMETER_NAME"].ToString().Trim(),
+                                SqlDbType = GetSqlDbType(typename, scale, precision),
+                                PropertyType = GetPropertyType(typename, scale, precision),
+                                DateTimePrecision = (Int16) rdr["DATETIME_PRECISION"],
+                                MaxLength = (int) rdr["CHARACTER_MAXIMUM_LENGTH"],
+                                Precision = precision,
+                                Scale = scale
+                            };
 
-                        if (ReservedKeywords.Contains(param.NameHumanCase))
-                        {
-                            param.NameHumanCase = "@" + param.NameHumanCase;
+                            var clean = CleanUp(param.Name.Replace("@", ""));
+                            param.NameHumanCase =
+                                Inflector.MakeInitialLower(
+                                    (useCamelCase ? Inflector.ToTitleCase(clean) : clean).Replace(" ", ""));
+
+                            if (ReservedKeywords.Contains(param.NameHumanCase))
+                            {
+                                param.NameHumanCase = "@" + param.NameHumanCase;
+                            }
+
+                            sp.Parameters.Add(param);
                         }
-
-                        sp.Parameters.Add(param);
                     }
                 }
                 return result;
