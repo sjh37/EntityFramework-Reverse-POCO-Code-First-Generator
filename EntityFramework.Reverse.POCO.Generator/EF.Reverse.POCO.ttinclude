@@ -468,8 +468,7 @@ foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal).Where(x => !x.Hidden))
 
         ///<summary>
         /// <#=col.ExtendedProperty#>
-        ///</summary>
-<# } #>
+        ///</summary><# } #>
 <# if(AddWcfDataAttributes) { #>        [DataMember(Order = <#=DataMemberOrder++#>, IsRequired = <#=col.IsNullable ? "false" : "true"#>)]
 <# } #>
 
