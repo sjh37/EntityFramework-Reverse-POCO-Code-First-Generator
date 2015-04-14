@@ -610,9 +610,39 @@
             OneToMany,
             ManyToOne,
             ManyToMany,
+            DoNotUse
         }
 
-        public static Relationship CalcRelationship(Table pkTable, Table fkTable, Column fkCol, Column pkCol)
+         public static Relationship CalcRelationship(Table pkTable, Table fkTable, List<Column> fkCols, List<Column> pkCols)
+        {
+            if (fkCols.Count() == 1 && pkCols.Count() == 1)
+                return CalcRelationshipSingle(pkTable, fkTable, fkCols.First(), pkCols.First());
+
+            // This relationship has multiple composite keys
+            return Relationship.DoNotUse;
+
+            /*bool fkTableAllPrimaryKeys = (fkTable.PrimaryKeys.Count() == fkCols.Count());
+            bool pkTableAllPrimaryKeys = (pkTable.PrimaryKeys.Count() == pkCols.Count());
+            bool fkColumnsAllPrimaryKeys = (fkCols.Count(x => x.IsPrimaryKey) == fkCols.Count());
+            bool pkColumnsAllPrimaryKeys = (pkCols.Count(x => x.IsPrimaryKey) == pkCols.Count());
+
+            // 1:1
+            if(fkColumnsAllPrimaryKeys && pkColumnsAllPrimaryKeys && fkTableAllPrimaryKeys && pkTableAllPrimaryKeys)
+                return Relationship.OneToOne;
+
+            // 1:n
+            if(fkColumnsAllPrimaryKeys && !pkColumnsAllPrimaryKeys && fkTableAllPrimaryKeys)
+                return Relationship.OneToMany;
+
+            // n:1
+            if(!fkColumnsAllPrimaryKeys && pkColumnsAllPrimaryKeys && pkTableAllPrimaryKeys)
+                return Relationship.ManyToOne;
+
+            // n:n
+            return Relationship.ManyToMany;*/
+        }
+        
+        public static Relationship CalcRelationshipSingle(Table pkTable, Table fkTable, Column fkCol, Column pkCol)
         {
             bool fkTableSinglePrimaryKey = (fkTable.PrimaryKeys.Count() == 1);
             bool pkTableSinglePrimaryKey = (pkTable.PrimaryKeys.Count() == 1);
@@ -1778,7 +1808,9 @@ OPTION (QUERYTRACEON 9481)";
                     if (!pkCol.IsPrimaryKey)
                         continue;
 
-                    var relationship = CalcRelationship(pkTable, fkTable, fkCol.col, pkCol);
+                    var relationship = CalcRelationship(pkTable, fkTable, fkCols.OrderBy(o => o.fkOrdinal).Select(c => c.col).ToList(), pkCols);
+                    if (relationship == Relationship.DoNotUse)
+                        continue;
 
                     string pkTableHumanCase = foreignKey.PkTableHumanCase(useCamelCase, prependSchemaName);
                     string pkPropName = fkTable.GetUniqueColumnPropertyName(pkTableHumanCase, foreignKey, useCamelCase, checkForFkNameClashes, true);
