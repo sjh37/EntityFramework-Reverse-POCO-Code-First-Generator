@@ -35,6 +35,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 {
     // ************************************************************************
     // Unit of work
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public interface IMyDbContext : IDisposable
     {
         IDbSet<AlphabeticalListOfProduct> AlphabeticalListOfProducts { get; set; } // Alphabetical list of products
@@ -79,113 +80,55 @@ namespace EntityFramework_Reverse_POCO_Generator
 
     // ************************************************************************
     // Database context
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class MyDbContext : DbContext, IMyDbContext
     {
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public IDbSet<AlphabeticalListOfProduct> AlphabeticalListOfProducts { get; set; } // Alphabetical list of products
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public IDbSet<Category> Categories { get; set; } // Categories
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public IDbSet<CategorySalesFor1997> CategorySalesFor1997 { get; set; } // Category Sales for 1997
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public IDbSet<CurrentProductList> CurrentProductLists { get; set; } // Current Product List
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public IDbSet<Customer> Customers { get; set; } // Customers
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public IDbSet<CustomerAndSuppliersByCity> CustomerAndSuppliersByCities { get; set; } // Customer and Suppliers by City
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public IDbSet<CustomerDemographic> CustomerDemographics { get; set; } // CustomerDemographics
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public IDbSet<Employee> Employees { get; set; } // Employees
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public IDbSet<Invoice> Invoices { get; set; } // Invoices
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public IDbSet<Order> Orders { get; set; } // Orders
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public IDbSet<OrderDetail> OrderDetails { get; set; } // Order Details
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public IDbSet<OrderDetailsExtended> OrderDetailsExtendeds { get; set; } // Order Details Extended
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public IDbSet<OrdersQry> OrdersQries { get; set; } // Orders Qry
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public IDbSet<OrderSubtotal> OrderSubtotals { get; set; } // Order Subtotals
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public IDbSet<Product> Products { get; set; } // Products
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public IDbSet<ProductsAboveAveragePrice> ProductsAboveAveragePrices { get; set; } // Products Above Average Price
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public IDbSet<ProductSalesFor1997> ProductSalesFor1997 { get; set; } // Product Sales for 1997
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public IDbSet<ProductsByCategory> ProductsByCategories { get; set; } // Products by Category
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public IDbSet<Region> Regions { get; set; } // Region
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public IDbSet<SalesByCategory> SalesByCategories { get; set; } // Sales by Category
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public IDbSet<SalesTotalsByAmount> SalesTotalsByAmounts { get; set; } // Sales Totals by Amount
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public IDbSet<Shipper> Shippers { get; set; } // Shippers
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public IDbSet<SummaryOfSalesByQuarter> SummaryOfSalesByQuarters { get; set; } // Summary of Sales by Quarter
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public IDbSet<SummaryOfSalesByYear> SummaryOfSalesByYears { get; set; } // Summary of Sales by Year
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public IDbSet<Supplier> Suppliers { get; set; } // Suppliers
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public IDbSet<Sysdiagram> Sysdiagrams { get; set; } // sysdiagrams
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public IDbSet<Territory> Territories { get; set; } // Territories
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
+        
         static MyDbContext()
         {
             Database.SetInitializer<MyDbContext>(null);
         }
 
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public MyDbContext()
             : base("Name=MyDbContext")
         {
         }
 
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public MyDbContext(string connectionString) : base(connectionString)
         {
         }
 
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public MyDbContext(string connectionString, System.Data.Entity.Infrastructure.DbCompiledModel model) : base(connectionString, model)
         {
         }
 
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -219,7 +162,6 @@ namespace EntityFramework_Reverse_POCO_Generator
             modelBuilder.Configurations.Add(new TerritoryConfiguration());
         }
 
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public static DbModelBuilder CreateModel(DbModelBuilder modelBuilder, string schema)
         {
             modelBuilder.Configurations.Add(new AlphabeticalListOfProductConfiguration(schema));
@@ -253,124 +195,80 @@ namespace EntityFramework_Reverse_POCO_Generator
         }
         
         // Stored Procedures
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public List<CustOrderHistReturnModel> CustOrderHist(string customerId, out int procResult)
         {
             var customerIdParam = new SqlParameter { ParameterName = "@CustomerID", SqlDbType = SqlDbType.NChar, Direction = ParameterDirection.Input, Value = customerId, Size = 5 };
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
  
-            var procResultData = Database.SqlQuery<CustOrderHistReturnModel>("EXEC @procResult = [CustOrderHist] @CustomerID", new object[]
-            {
-                customerIdParam,
-                procResultParam
-
-            }).ToList();
+            var procResultData = Database.SqlQuery<CustOrderHistReturnModel>("EXEC @procResult = [CustOrderHist] @CustomerID", customerIdParam, procResultParam).ToList();
  
             procResult = (int) procResultParam.Value;
             return procResultData;
         }
 
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public List<CustOrdersDetailReturnModel> CustOrdersDetail(int orderId, out int procResult)
         {
             var orderIdParam = new SqlParameter { ParameterName = "@OrderID", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = orderId };
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
  
-            var procResultData = Database.SqlQuery<CustOrdersDetailReturnModel>("EXEC @procResult = [CustOrdersDetail] @OrderID", new object[]
-            {
-                orderIdParam,
-                procResultParam
-
-            }).ToList();
+            var procResultData = Database.SqlQuery<CustOrdersDetailReturnModel>("EXEC @procResult = [CustOrdersDetail] @OrderID", orderIdParam, procResultParam).ToList();
  
             procResult = (int) procResultParam.Value;
             return procResultData;
         }
 
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public List<CustOrdersOrdersReturnModel> CustOrdersOrders(string customerId, out int procResult)
         {
             var customerIdParam = new SqlParameter { ParameterName = "@CustomerID", SqlDbType = SqlDbType.NChar, Direction = ParameterDirection.Input, Value = customerId, Size = 5 };
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
  
-            var procResultData = Database.SqlQuery<CustOrdersOrdersReturnModel>("EXEC @procResult = [CustOrdersOrders] @CustomerID", new object[]
-            {
-                customerIdParam,
-                procResultParam
-
-            }).ToList();
+            var procResultData = Database.SqlQuery<CustOrdersOrdersReturnModel>("EXEC @procResult = [CustOrdersOrders] @CustomerID", customerIdParam, procResultParam).ToList();
  
             procResult = (int) procResultParam.Value;
             return procResultData;
         }
 
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(DateTime beginningDate, DateTime endingDate, out int procResult)
         {
             var beginningDateParam = new SqlParameter { ParameterName = "@Beginning_Date", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = beginningDate };
             var endingDateParam = new SqlParameter { ParameterName = "@Ending_Date", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = endingDate };
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
  
-            var procResultData = Database.SqlQuery<EmployeeSalesByCountryReturnModel>("EXEC @procResult = [Employee Sales by Country] @Beginning_Date, @Ending_Date", new object[]
-            {
-                beginningDateParam,
-                endingDateParam,
-                procResultParam
-
-            }).ToList();
+            var procResultData = Database.SqlQuery<EmployeeSalesByCountryReturnModel>("EXEC @procResult = [Employee Sales by Country] @Beginning_Date, @Ending_Date", beginningDateParam, endingDateParam, procResultParam).ToList();
  
             procResult = (int) procResultParam.Value;
             return procResultData;
         }
 
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public List<SalesByYearReturnModel> SalesByYear(DateTime beginningDate, DateTime endingDate, out int procResult)
         {
             var beginningDateParam = new SqlParameter { ParameterName = "@Beginning_Date", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = beginningDate };
             var endingDateParam = new SqlParameter { ParameterName = "@Ending_Date", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = endingDate };
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
  
-            var procResultData = Database.SqlQuery<SalesByYearReturnModel>("EXEC @procResult = [Sales by Year] @Beginning_Date, @Ending_Date", new object[]
-            {
-                beginningDateParam,
-                endingDateParam,
-                procResultParam
-
-            }).ToList();
+            var procResultData = Database.SqlQuery<SalesByYearReturnModel>("EXEC @procResult = [Sales by Year] @Beginning_Date, @Ending_Date", beginningDateParam, endingDateParam, procResultParam).ToList();
  
             procResult = (int) procResultParam.Value;
             return procResultData;
         }
 
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public List<SalesByCategoryReturnModel> SalesByCategory(string categoryName, string ordYear, out int procResult)
         {
             var categoryNameParam = new SqlParameter { ParameterName = "@CategoryName", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = categoryName, Size = 15 };
             var ordYearParam = new SqlParameter { ParameterName = "@OrdYear", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = ordYear, Size = 4 };
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
  
-            var procResultData = Database.SqlQuery<SalesByCategoryReturnModel>("EXEC @procResult = [SalesByCategory] @CategoryName, @OrdYear", new object[]
-            {
-                categoryNameParam,
-                ordYearParam,
-                procResultParam
-
-            }).ToList();
+            var procResultData = Database.SqlQuery<SalesByCategoryReturnModel>("EXEC @procResult = [SalesByCategory] @CategoryName, @OrdYear", categoryNameParam, ordYearParam, procResultParam).ToList();
  
             procResult = (int) procResultParam.Value;
             return procResultData;
         }
 
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public List<TenMostExpensiveProductsReturnModel> TenMostExpensiveProducts( out int procResult)
         {
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
  
-            var procResultData = Database.SqlQuery<TenMostExpensiveProductsReturnModel>("EXEC @procResult = [Ten Most Expensive Products] ", new object[]
-            {
-                procResultParam
-
-            }).ToList();
+            var procResultData = Database.SqlQuery<TenMostExpensiveProductsReturnModel>("EXEC @procResult = [Ten Most Expensive Products] ", procResultParam).ToList();
  
             procResult = (int) procResultParam.Value;
             return procResultData;
@@ -380,7 +278,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
     // ************************************************************************
     // Fake Database context
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class FakeMyDbContext : IMyDbContext
     {
         public IDbSet<AlphabeticalListOfProduct> AlphabeticalListOfProducts { get; set; }
@@ -506,7 +404,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
     // ************************************************************************
     // Fake DbSet
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class FakeDbSet<T> : IDbSet<T> where T : class
     {
         private readonly HashSet<T> _data;
@@ -592,65 +490,34 @@ namespace EntityFramework_Reverse_POCO_Generator
     // POCO classes
 
     // Alphabetical list of products
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class AlphabeticalListOfProduct
     {
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public int ProductId { get; set; } // ProductID
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string ProductName { get; set; } // ProductName
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public int? SupplierId { get; set; } // SupplierID
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public int? CategoryId { get; set; } // CategoryID
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string QuantityPerUnit { get; set; } // QuantityPerUnit
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public decimal? UnitPrice { get; set; } // UnitPrice
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public short? UnitsInStock { get; set; } // UnitsInStock
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public short? UnitsOnOrder { get; set; } // UnitsOnOrder
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public short? ReorderLevel { get; set; } // ReorderLevel
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public bool Discontinued { get; set; } // Discontinued
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string CategoryName { get; set; } // CategoryName
     }
 
     // Categories
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class Category
     {
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public int CategoryId { get; internal set; } // CategoryID (Primary key)
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string CategoryName { get; set; } // CategoryName
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string Description { get; set; } // Description
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public byte[] Picture { get; set; } // Picture
 
         // Reverse navigation
         public virtual ICollection<Product> Products { get; set; } // Products.FK_Products_Categories
         
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public Category()
         {
             Products = new List<Product>();
@@ -658,72 +525,41 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Category Sales for 1997
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class CategorySalesFor1997
     {
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string CategoryName { get; set; } // CategoryName
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public decimal? CategorySales { get; set; } // CategorySales
     }
 
     // Current Product List
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class CurrentProductList
     {
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public int ProductId { get; internal set; } // ProductID
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string ProductName { get; set; } // ProductName
     }
 
     // Customers
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class Customer
     {
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string CustomerId { get; set; } // CustomerID (Primary key)
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string CompanyName { get; set; } // CompanyName
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string ContactName { get; set; } // ContactName
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string ContactTitle { get; set; } // ContactTitle
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string Address { get; set; } // Address
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string City { get; set; } // City
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string Region { get; set; } // Region
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string PostalCode { get; set; } // PostalCode
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string Country { get; set; } // Country
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string Phone { get; set; } // Phone
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string Fax { get; set; } // Fax
 
         // Reverse navigation
         public virtual ICollection<CustomerDemographic> CustomerDemographics { get; set; } // Many to many mapping
         public virtual ICollection<Order> Orders { get; set; } // Orders.FK_Orders_Customers
         
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public Customer()
         {
             Orders = new List<Order>();
@@ -732,38 +568,25 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Customer and Suppliers by City
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class CustomerAndSuppliersByCity
     {
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string City { get; set; } // City
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string CompanyName { get; set; } // CompanyName
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string ContactName { get; set; } // ContactName
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string Relationship { get; set; } // Relationship
     }
 
     // CustomerDemographics
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class CustomerDemographic
     {
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string CustomerTypeId { get; set; } // CustomerTypeID (Primary key)
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string CustomerDesc { get; set; } // CustomerDesc
 
         // Reverse navigation
         public virtual ICollection<Customer> Customers { get; set; } // Many to many mapping
         
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public CustomerDemographic()
         {
             Customers = new List<Customer>();
@@ -771,62 +594,26 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Employees
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class Employee
     {
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public int EmployeeId { get; internal set; } // EmployeeID (Primary key)
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string LastName { get; set; } // LastName
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string FirstName { get; set; } // FirstName
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string Title { get; set; } // Title
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string TitleOfCourtesy { get; set; } // TitleOfCourtesy
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public DateTime? BirthDate { get; set; } // BirthDate
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public DateTime? HireDate { get; set; } // HireDate
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string Address { get; set; } // Address
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string City { get; set; } // City
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string Region { get; set; } // Region
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string PostalCode { get; set; } // PostalCode
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string Country { get; set; } // Country
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string HomePhone { get; set; } // HomePhone
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string Extension { get; set; } // Extension
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public byte[] Photo { get; set; } // Photo
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string Notes { get; set; } // Notes
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public int? ReportsTo { get; set; } // ReportsTo
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string PhotoPath { get; set; } // PhotoPath
 
         // Reverse navigation
@@ -837,7 +624,6 @@ namespace EntityFramework_Reverse_POCO_Generator
         // Foreign keys
         public virtual Employee Employee_ReportsTo { get; set; } // FK_Employees_Employees
         
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public Employee()
         {
             Employees = new List<Employee>();
@@ -847,134 +633,54 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Invoices
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class Invoice
     {
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string ShipName { get; set; } // ShipName
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string ShipAddress { get; set; } // ShipAddress
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string ShipCity { get; set; } // ShipCity
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string ShipRegion { get; set; } // ShipRegion
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string ShipPostalCode { get; set; } // ShipPostalCode
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string ShipCountry { get; set; } // ShipCountry
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string CustomerId { get; set; } // CustomerID
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string CustomerName { get; set; } // CustomerName
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string Address { get; set; } // Address
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string City { get; set; } // City
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string Region { get; set; } // Region
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string PostalCode { get; set; } // PostalCode
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string Country { get; set; } // Country
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string Salesperson { get; set; } // Salesperson
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public int OrderId { get; set; } // OrderID
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public DateTime? OrderDate { get; set; } // OrderDate
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public DateTime? RequiredDate { get; set; } // RequiredDate
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public DateTime? ShippedDate { get; set; } // ShippedDate
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string ShipperName { get; set; } // ShipperName
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public int ProductId { get; set; } // ProductID
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string ProductName { get; set; } // ProductName
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public decimal UnitPrice { get; set; } // UnitPrice
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public short Quantity { get; set; } // Quantity
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public float Discount { get; set; } // Discount
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public decimal? ExtendedPrice { get; set; } // ExtendedPrice
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public decimal? Freight { get; set; } // Freight
     }
 
     // Orders
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class Order
     {
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public int OrderId { get; internal set; } // OrderID (Primary key)
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string CustomerId { get; set; } // CustomerID
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public int? EmployeeId { get; set; } // EmployeeID
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public DateTime? OrderDate { get; set; } // OrderDate
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public DateTime? RequiredDate { get; set; } // RequiredDate
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public DateTime? ShippedDate { get; set; } // ShippedDate
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public int? ShipVia { get; set; } // ShipVia
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public decimal? Freight { get; set; } // Freight
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string ShipName { get; set; } // ShipName
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string ShipAddress { get; set; } // ShipAddress
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string ShipCity { get; set; } // ShipCity
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string ShipRegion { get; set; } // ShipRegion
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string ShipPostalCode { get; set; } // ShipPostalCode
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string ShipCountry { get; set; } // ShipCountry
 
         // Reverse navigation
@@ -985,7 +691,6 @@ namespace EntityFramework_Reverse_POCO_Generator
         public virtual Employee Employee { get; set; } // FK_Orders_Employees
         public virtual Shipper Shipper { get; set; } // FK_Orders_Shippers
         
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public Order()
         {
             Freight = 0m;
@@ -994,30 +699,19 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Order Details
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class OrderDetail
     {
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public int OrderId { get; set; } // OrderID (Primary key)
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public int ProductId { get; set; } // ProductID (Primary key)
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public decimal UnitPrice { get; set; } // UnitPrice
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public short Quantity { get; set; } // Quantity
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public float Discount { get; set; } // Discount
 
         // Foreign keys
         public virtual Order Order { get; set; } // FK_Order_Details_Orders
         public virtual Product Product { get; set; } // FK_Order_Details_Products
         
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public OrderDetail()
         {
             UnitPrice = 0m;
@@ -1027,143 +721,65 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Order Details Extended
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class OrderDetailsExtended
     {
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public int OrderId { get; set; } // OrderID
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public int ProductId { get; set; } // ProductID
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string ProductName { get; set; } // ProductName
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public decimal UnitPrice { get; set; } // UnitPrice
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public short Quantity { get; set; } // Quantity
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public float Discount { get; set; } // Discount
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public decimal? ExtendedPrice { get; set; } // ExtendedPrice
     }
 
     // Orders Qry
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class OrdersQry
     {
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public int OrderId { get; set; } // OrderID
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string CustomerId { get; set; } // CustomerID
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public int? EmployeeId { get; set; } // EmployeeID
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public DateTime? OrderDate { get; set; } // OrderDate
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public DateTime? RequiredDate { get; set; } // RequiredDate
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public DateTime? ShippedDate { get; set; } // ShippedDate
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public int? ShipVia { get; set; } // ShipVia
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public decimal? Freight { get; set; } // Freight
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string ShipName { get; set; } // ShipName
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string ShipAddress { get; set; } // ShipAddress
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string ShipCity { get; set; } // ShipCity
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string ShipRegion { get; set; } // ShipRegion
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string ShipPostalCode { get; set; } // ShipPostalCode
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string ShipCountry { get; set; } // ShipCountry
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string CompanyName { get; set; } // CompanyName
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string Address { get; set; } // Address
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string City { get; set; } // City
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string Region { get; set; } // Region
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string PostalCode { get; set; } // PostalCode
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string Country { get; set; } // Country
     }
 
     // Order Subtotals
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class OrderSubtotal
     {
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public int OrderId { get; set; } // OrderID
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public decimal? Subtotal { get; set; } // Subtotal
     }
 
     // Products
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class Product
     {
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public int ProductId { get; internal set; } // ProductID (Primary key)
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string ProductName { get; set; } // ProductName
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public int? SupplierId { get; set; } // SupplierID
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public int? CategoryId { get; set; } // CategoryID
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string QuantityPerUnit { get; set; } // QuantityPerUnit
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public decimal? UnitPrice { get; set; } // UnitPrice
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public short? UnitsInStock { get; set; } // UnitsInStock
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public short? UnitsOnOrder { get; set; } // UnitsOnOrder
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public short? ReorderLevel { get; set; } // ReorderLevel
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public bool Discontinued { get; set; } // Discontinued
 
         // Reverse navigation
@@ -1173,7 +789,6 @@ namespace EntityFramework_Reverse_POCO_Generator
         public virtual Category Category { get; set; } // FK_Products_Categories
         public virtual Supplier Supplier { get; set; } // FK_Products_Suppliers
         
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public Product()
         {
             UnitPrice = 0m;
@@ -1186,68 +801,43 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Products Above Average Price
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class ProductsAboveAveragePrice
     {
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string ProductName { get; set; } // ProductName
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public decimal? UnitPrice { get; set; } // UnitPrice
     }
 
     // Product Sales for 1997
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class ProductSalesFor1997
     {
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string CategoryName { get; set; } // CategoryName
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string ProductName { get; set; } // ProductName
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public decimal? ProductSales { get; set; } // ProductSales
     }
 
     // Products by Category
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class ProductsByCategory
     {
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string CategoryName { get; set; } // CategoryName
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string ProductName { get; set; } // ProductName
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string QuantityPerUnit { get; set; } // QuantityPerUnit
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public short? UnitsInStock { get; set; } // UnitsInStock
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public bool Discontinued { get; set; } // Discontinued
     }
 
     // Region
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class Region
     {
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public int RegionId { get; set; } // RegionID (Primary key)
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string RegionDescription { get; set; } // RegionDescription
 
         // Reverse navigation
         public virtual ICollection<Territory> Territories { get; set; } // Territories.FK_Territories_Region
         
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public Region()
         {
             Territories = new List<Territory>();
@@ -1255,59 +845,36 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Sales by Category
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class SalesByCategory
     {
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public int CategoryId { get; set; } // CategoryID
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string CategoryName { get; set; } // CategoryName
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string ProductName { get; set; } // ProductName
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public decimal? ProductSales { get; set; } // ProductSales
     }
 
     // Sales Totals by Amount
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class SalesTotalsByAmount
     {
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public decimal? SaleAmount { get; set; } // SaleAmount
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public int OrderId { get; set; } // OrderID
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string CompanyName { get; set; } // CompanyName
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public DateTime? ShippedDate { get; set; } // ShippedDate
     }
 
     // Shippers
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class Shipper
     {
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public int ShipperId { get; internal set; } // ShipperID (Primary key)
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string CompanyName { get; set; } // CompanyName
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string Phone { get; set; } // Phone
 
         // Reverse navigation
         public virtual ICollection<Order> Orders { get; set; } // Orders.FK_Orders_Shippers
         
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public Shipper()
         {
             Orders = new List<Order>();
@@ -1315,80 +882,43 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Summary of Sales by Quarter
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class SummaryOfSalesByQuarter
     {
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public DateTime? ShippedDate { get; set; } // ShippedDate
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public int OrderId { get; set; } // OrderID
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public decimal? Subtotal { get; set; } // Subtotal
     }
 
     // Summary of Sales by Year
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class SummaryOfSalesByYear
     {
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public DateTime? ShippedDate { get; set; } // ShippedDate
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public int OrderId { get; set; } // OrderID
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public decimal? Subtotal { get; set; } // Subtotal
     }
 
     // Suppliers
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class Supplier
     {
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public int SupplierId { get; internal set; } // SupplierID (Primary key)
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string CompanyName { get; set; } // CompanyName
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string ContactName { get; set; } // ContactName
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string ContactTitle { get; set; } // ContactTitle
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string Address { get; set; } // Address
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string City { get; set; } // City
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string Region { get; set; } // Region
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string PostalCode { get; set; } // PostalCode
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string Country { get; set; } // Country
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string Phone { get; set; } // Phone
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string Fax { get; set; } // Fax
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string HomePage { get; set; } // HomePage
 
         // Reverse navigation
         public virtual ICollection<Product> Products { get; set; } // Products.FK_Products_Suppliers
         
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public Supplier()
         {
             Products = new List<Product>();
@@ -1396,38 +926,22 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // sysdiagrams
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class Sysdiagram
     {
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string Name { get; set; } // name
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public int PrincipalId { get; set; } // principal_id
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public int DiagramId { get; internal set; } // diagram_id (Primary key)
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public int? Version { get; set; } // version
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public byte[] Definition { get; set; } // definition
     }
 
     // Territories
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class Territory
     {
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string TerritoryId { get; set; } // TerritoryID (Primary key)
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public string TerritoryDescription { get; set; } // TerritoryDescription
-
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public int RegionId { get; set; } // RegionID
 
         // Reverse navigation
@@ -1436,7 +950,6 @@ namespace EntityFramework_Reverse_POCO_Generator
         // Foreign keys
         public virtual Region Region { get; set; } // FK_Territories_Region
         
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public Territory()
         {
             Employees = new List<Employee>();
@@ -1448,9 +961,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     // POCO Configuration
 
     // Alphabetical list of products
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class AlphabeticalListOfProductConfiguration : EntityTypeConfiguration<AlphabeticalListOfProduct>
     {
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public AlphabeticalListOfProductConfiguration(string schema = "dbo")
         {
             ToTable(schema + ".Alphabetical list of products");
@@ -1471,9 +984,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Categories
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class CategoryConfiguration : EntityTypeConfiguration<Category>
     {
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public CategoryConfiguration(string schema = "dbo")
         {
             ToTable(schema + ".Categories");
@@ -1487,9 +1000,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Category Sales for 1997
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class CategorySalesFor1997Configuration : EntityTypeConfiguration<CategorySalesFor1997>
     {
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public CategorySalesFor1997Configuration(string schema = "dbo")
         {
             ToTable(schema + ".Category Sales for 1997");
@@ -1501,9 +1014,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Current Product List
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class CurrentProductListConfiguration : EntityTypeConfiguration<CurrentProductList>
     {
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public CurrentProductListConfiguration(string schema = "dbo")
         {
             ToTable(schema + ".Current Product List");
@@ -1515,9 +1028,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Customers
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class CustomerConfiguration : EntityTypeConfiguration<Customer>
     {
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public CustomerConfiguration(string schema = "dbo")
         {
             ToTable(schema + ".Customers");
@@ -1544,9 +1057,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Customer and Suppliers by City
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class CustomerAndSuppliersByCityConfiguration : EntityTypeConfiguration<CustomerAndSuppliersByCity>
     {
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public CustomerAndSuppliersByCityConfiguration(string schema = "dbo")
         {
             ToTable(schema + ".Customer and Suppliers by City");
@@ -1560,9 +1073,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // CustomerDemographics
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class CustomerDemographicConfiguration : EntityTypeConfiguration<CustomerDemographic>
     {
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public CustomerDemographicConfiguration(string schema = "dbo")
         {
             ToTable(schema + ".CustomerDemographics");
@@ -1574,9 +1087,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Employees
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class EmployeeConfiguration : EntityTypeConfiguration<Employee>
     {
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public EmployeeConfiguration(string schema = "dbo")
         {
             ToTable(schema + ".Employees");
@@ -1613,9 +1126,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Invoices
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class InvoiceConfiguration : EntityTypeConfiguration<Invoice>
     {
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public InvoiceConfiguration(string schema = "dbo")
         {
             ToTable(schema + ".Invoices");
@@ -1651,9 +1164,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Orders
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class OrderConfiguration : EntityTypeConfiguration<Order>
     {
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public OrderConfiguration(string schema = "dbo")
         {
             ToTable(schema + ".Orders");
@@ -1682,9 +1195,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Order Details
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class OrderDetailConfiguration : EntityTypeConfiguration<OrderDetail>
     {
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public OrderDetailConfiguration(string schema = "dbo")
         {
             ToTable(schema + ".Order Details");
@@ -1703,9 +1216,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Order Details Extended
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class OrderDetailsExtendedConfiguration : EntityTypeConfiguration<OrderDetailsExtended>
     {
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public OrderDetailsExtendedConfiguration(string schema = "dbo")
         {
             ToTable(schema + ".Order Details Extended");
@@ -1722,9 +1235,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Orders Qry
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class OrdersQryConfiguration : EntityTypeConfiguration<OrdersQry>
     {
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public OrdersQryConfiguration(string schema = "dbo")
         {
             ToTable(schema + ".Orders Qry");
@@ -1754,9 +1267,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Order Subtotals
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class OrderSubtotalConfiguration : EntityTypeConfiguration<OrderSubtotal>
     {
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public OrderSubtotalConfiguration(string schema = "dbo")
         {
             ToTable(schema + ".Order Subtotals");
@@ -1768,9 +1281,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Products
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class ProductConfiguration : EntityTypeConfiguration<Product>
     {
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public ProductConfiguration(string schema = "dbo")
         {
             ToTable(schema + ".Products");
@@ -1794,9 +1307,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Products Above Average Price
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class ProductsAboveAveragePriceConfiguration : EntityTypeConfiguration<ProductsAboveAveragePrice>
     {
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public ProductsAboveAveragePriceConfiguration(string schema = "dbo")
         {
             ToTable(schema + ".Products Above Average Price");
@@ -1808,9 +1321,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Product Sales for 1997
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class ProductSalesFor1997Configuration : EntityTypeConfiguration<ProductSalesFor1997>
     {
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public ProductSalesFor1997Configuration(string schema = "dbo")
         {
             ToTable(schema + ".Product Sales for 1997");
@@ -1823,9 +1336,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Products by Category
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class ProductsByCategoryConfiguration : EntityTypeConfiguration<ProductsByCategory>
     {
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public ProductsByCategoryConfiguration(string schema = "dbo")
         {
             ToTable(schema + ".Products by Category");
@@ -1840,9 +1353,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Region
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class RegionConfiguration : EntityTypeConfiguration<Region>
     {
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public RegionConfiguration(string schema = "dbo")
         {
             ToTable(schema + ".Region");
@@ -1854,9 +1367,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Sales by Category
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class SalesByCategoryConfiguration : EntityTypeConfiguration<SalesByCategory>
     {
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public SalesByCategoryConfiguration(string schema = "dbo")
         {
             ToTable(schema + ".Sales by Category");
@@ -1870,9 +1383,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Sales Totals by Amount
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class SalesTotalsByAmountConfiguration : EntityTypeConfiguration<SalesTotalsByAmount>
     {
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public SalesTotalsByAmountConfiguration(string schema = "dbo")
         {
             ToTable(schema + ".Sales Totals by Amount");
@@ -1886,9 +1399,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Shippers
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class ShipperConfiguration : EntityTypeConfiguration<Shipper>
     {
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public ShipperConfiguration(string schema = "dbo")
         {
             ToTable(schema + ".Shippers");
@@ -1901,9 +1414,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Summary of Sales by Quarter
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class SummaryOfSalesByQuarterConfiguration : EntityTypeConfiguration<SummaryOfSalesByQuarter>
     {
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public SummaryOfSalesByQuarterConfiguration(string schema = "dbo")
         {
             ToTable(schema + ".Summary of Sales by Quarter");
@@ -1916,9 +1429,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Summary of Sales by Year
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class SummaryOfSalesByYearConfiguration : EntityTypeConfiguration<SummaryOfSalesByYear>
     {
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public SummaryOfSalesByYearConfiguration(string schema = "dbo")
         {
             ToTable(schema + ".Summary of Sales by Year");
@@ -1931,9 +1444,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Suppliers
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class SupplierConfiguration : EntityTypeConfiguration<Supplier>
     {
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public SupplierConfiguration(string schema = "dbo")
         {
             ToTable(schema + ".Suppliers");
@@ -1955,9 +1468,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // sysdiagrams
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class SysdiagramConfiguration : EntityTypeConfiguration<Sysdiagram>
     {
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public SysdiagramConfiguration(string schema = "dbo")
         {
             ToTable(schema + ".sysdiagrams");
@@ -1972,9 +1485,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Territories
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class TerritoryConfiguration : EntityTypeConfiguration<Territory>
     {
-        [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "1.0.0.0")]
         public TerritoryConfiguration(string schema = "dbo")
         {
             ToTable(schema + ".Territories");
@@ -1993,12 +1506,14 @@ namespace EntityFramework_Reverse_POCO_Generator
     // ************************************************************************
     // Stored procedure return models
 
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class CustOrderHistReturnModel
     {
         public String ProductName { get; set; }
         public Int32? Total { get; set; }
     }
 
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class CustOrdersDetailReturnModel
     {
         public String ProductName { get; set; }
@@ -2008,6 +1523,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public Decimal? ExtendedPrice { get; set; }
     }
 
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class CustOrdersOrdersReturnModel
     {
         public Int32 OrderId { get; set; }
@@ -2016,6 +1532,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public DateTime? ShippedDate { get; set; }
     }
 
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class EmployeeSalesByCountryReturnModel
     {
         public String Country { get; set; }
@@ -2026,6 +1543,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public Decimal? SaleAmount { get; set; }
     }
 
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class SalesByYearReturnModel
     {
         public DateTime? ShippedDate { get; set; }
@@ -2034,12 +1552,14 @@ namespace EntityFramework_Reverse_POCO_Generator
         public String Year { get; set; }
     }
 
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class SalesByCategoryReturnModel
     {
         public String ProductName { get; set; }
         public Decimal? TotalPurchase { get; set; }
     }
 
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class TenMostExpensiveProductsReturnModel
     {
         public String TenMostExpensiveProducts { get; set; }

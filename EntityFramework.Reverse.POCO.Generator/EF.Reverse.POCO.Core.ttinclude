@@ -71,7 +71,7 @@
         bool AutomaticMigrationsEnabled = true;
         bool AutomaticMigrationDataLossAllowed = true;
 
-        string CodeGeneratedAttribute = "[GeneratedCodeAttribute(\"EF.Reverse.POCO.Generator\", \"1.0.0.0\")]";
+        string CodeGeneratedAttribute = "[GeneratedCodeAttribute(\"EF.Reverse.POCO.Generator\", \"2.12.1.0\")]";
         // Settings to allow selective code generation
         [Flags]
         private enum Elements
