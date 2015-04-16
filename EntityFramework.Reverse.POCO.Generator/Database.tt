@@ -239,9 +239,9 @@
         var sb = new StringBuilder();
         foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
         {
-            sb.AppendLine(string.Format("                {0}Param,", p.NameHumanCase));
+            sb.Append(string.Format("{0}Param, ", p.NameHumanCase));
         }
-        sb.AppendLine("                procResultParam");
+        sb.Append("procResultParam");
         return sb.ToString();
     };
     
