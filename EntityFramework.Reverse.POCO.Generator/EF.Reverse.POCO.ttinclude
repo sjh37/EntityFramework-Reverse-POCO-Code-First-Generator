@@ -90,7 +90,6 @@ namespace <#= Namespace #>
     // ************************************************************************
     // Unit of work
 <# } #>
-    <#= CodeGeneratedAttribute #>
     public interface I<#=DbContextName#> : IDisposable
     {
 <#
@@ -133,7 +132,6 @@ foreach (StoredProcedure sp in storedProcs)
     // ************************************************************************
     // Db Migration Configuration
 <# } #>
-    <#= CodeGeneratedAttribute #>
     public <# if(MakeClassesPartial) { #>partial <# } #>class <#=MigrationConfigurationFileName#> : DbMigrationsConfiguration<<#=DbContextName#>>
     {
         public <#=MigrationConfigurationFileName#>()
@@ -167,7 +165,6 @@ foreach (StoredProcedure sp in storedProcs)
     // ************************************************************************
     // Database context
 <# } #>
-    <#= CodeGeneratedAttribute #>
     public <# if(MakeClassesPartial) { #>partial <# } #>class <#=DbContextName#> : <#=DbContextBaseClass#>, I<#=DbContextName#>
     {
 <#
@@ -205,6 +202,11 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.Na
         {
 <#if(MakeClassesPartial) {#>            InitializePartial();
 <#}#>
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -305,9 +307,13 @@ foreach (Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.N
             return 0;
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+        }
+        
         public void Dispose()
         {
-            throw new NotImplementedException(); 
+            Dispose(true);
         }
 <# if (ElementsToGenerate.HasFlag(Elements.StoredProcedures))
 { #>
@@ -443,7 +449,9 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.Na
 <# if(AddWcfDataAttributes) { #>    [DataContract<#=ExtraWcfDataContractAttributes#>]
 <# } 
     WritePocoClassAttributes(tbl);#>
+<#if (tbl.ReverseNavigationCtor.Any()){ #>
     <#= CodeGeneratedAttribute #>
+<# } #>
     public <# if(MakeClassesPartial) { #>partial <# } #>class <#=tbl.NameHumanCase#><#=WritePocoBaseClasses != null ? WritePocoBaseClasses(tbl) : "" #>
     {
 <# WritePocoBaseClassBody(tbl); #>
@@ -528,7 +536,6 @@ foreach(Table tbl in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCas
 <# fileManager.StartNewFile(tbl.NameHumanCase + ConfigurationClassName + FileExtension); #>
 <#if(IncludeComments){#>    // <#=tbl.Name#>
 <# } #>
-    <#= CodeGeneratedAttribute #>
     internal <# if(MakeClassesPartial) { #>partial <# } #>class <#=tbl.NameHumanCase + ConfigurationClassName#> : EntityTypeConfiguration<<#=tbl.NameHumanCase#>>
     {
         public <#=tbl.NameHumanCase + ConfigurationClassName#>(string schema = "<#=tbl.Schema#>")
@@ -583,7 +590,6 @@ foreach(StoredProcedure sp in storedProcs.Where(x => x.ReturnColumns.Count > 0))
     string spReturnClassName = WriteStoredProcReturnModelName(sp);
 #>
 <# fileManager.StartNewFile(spReturnClassName + FileExtension); #>
-    <#= CodeGeneratedAttribute #>
     public <# if(MakeClassesPartial) { #>partial <# } #>class <#= spReturnClassName #>
     {
 <#
