@@ -252,7 +252,7 @@ foreach (StoredProcedure sp in storedProcs)
         public List<<#= spReturnClassName #>> <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp)#>)
         {
 <#= WriteStoredProcFunctionDeclareSqlParameter(sp) #> 
-            var procResultData = Database.SqlQuery<<#= spReturnClassName #>>("EXEC @procResult = [<#= sp.Name #>] <#= WriteStoredProcFunctionSqlAtParams(sp) #>", <#= WriteStoredProcFunctionSqlParameterAnonymousArray(sp) #>).ToList();
+            var procResultData = Database.SqlQuery<<#= spReturnClassName #>>("EXEC @procResult = [<#=sp.Schema#>].[<#= sp.Name #>] <#= WriteStoredProcFunctionSqlAtParams(sp) #>", <#= WriteStoredProcFunctionSqlParameterAnonymousArray(sp) #>).ToList();
 <#= WriteStoredProcFunctionSetSqlParameters(sp, true) #> 
             procResult = (int) procResultParam.Value;
             return procResultData;
@@ -262,7 +262,7 @@ foreach (StoredProcedure sp in storedProcs)
         public int <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp)#>)
         {
 <#= WriteStoredProcFunctionDeclareSqlParameter(sp) #> 
-            Database.ExecuteSqlCommand("EXEC @procResult = [<#= sp.Name #>] <#= WriteStoredProcFunctionSqlAtParams(sp) #>", <#= WriteStoredProcFunctionSqlParameterAnonymousArray(sp) #>);
+            Database.ExecuteSqlCommand("EXEC @procResult = [<#=sp.Schema#>].[<#= sp.Name #>] <#= WriteStoredProcFunctionSqlAtParams(sp) #>", <#= WriteStoredProcFunctionSqlParameterAnonymousArray(sp) #>);
 <#= WriteStoredProcFunctionSetSqlParameters(sp, false) #> 
             return (int) procResultParam.Value;
         }
