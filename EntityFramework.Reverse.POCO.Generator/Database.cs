@@ -35,7 +35,6 @@ namespace EntityFramework_Reverse_POCO_Generator
 {
     // ************************************************************************
     // Unit of work
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public interface IMyDbContext : IDisposable
     {
         IDbSet<AlphabeticalListOfProduct> AlphabeticalListOfProducts { get; set; } // Alphabetical list of products
@@ -80,7 +79,6 @@ namespace EntityFramework_Reverse_POCO_Generator
 
     // ************************************************************************
     // Database context
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class MyDbContext : DbContext, IMyDbContext
     {
         public IDbSet<AlphabeticalListOfProduct> AlphabeticalListOfProducts { get; set; } // Alphabetical list of products
@@ -127,6 +125,11 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public MyDbContext(string connectionString, System.Data.Entity.Infrastructure.DbCompiledModel model) : base(connectionString, model)
         {
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -200,7 +203,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             var customerIdParam = new SqlParameter { ParameterName = "@CustomerID", SqlDbType = SqlDbType.NChar, Direction = ParameterDirection.Input, Value = customerId, Size = 5 };
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
  
-            var procResultData = Database.SqlQuery<CustOrderHistReturnModel>("EXEC @procResult = [CustOrderHist] @CustomerID", customerIdParam, procResultParam).ToList();
+            var procResultData = Database.SqlQuery<CustOrderHistReturnModel>("EXEC @procResult = [dbo].[CustOrderHist] @CustomerID", customerIdParam, procResultParam).ToList();
  
             procResult = (int) procResultParam.Value;
             return procResultData;
@@ -211,7 +214,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             var orderIdParam = new SqlParameter { ParameterName = "@OrderID", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = orderId };
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
  
-            var procResultData = Database.SqlQuery<CustOrdersDetailReturnModel>("EXEC @procResult = [CustOrdersDetail] @OrderID", orderIdParam, procResultParam).ToList();
+            var procResultData = Database.SqlQuery<CustOrdersDetailReturnModel>("EXEC @procResult = [dbo].[CustOrdersDetail] @OrderID", orderIdParam, procResultParam).ToList();
  
             procResult = (int) procResultParam.Value;
             return procResultData;
@@ -222,7 +225,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             var customerIdParam = new SqlParameter { ParameterName = "@CustomerID", SqlDbType = SqlDbType.NChar, Direction = ParameterDirection.Input, Value = customerId, Size = 5 };
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
  
-            var procResultData = Database.SqlQuery<CustOrdersOrdersReturnModel>("EXEC @procResult = [CustOrdersOrders] @CustomerID", customerIdParam, procResultParam).ToList();
+            var procResultData = Database.SqlQuery<CustOrdersOrdersReturnModel>("EXEC @procResult = [dbo].[CustOrdersOrders] @CustomerID", customerIdParam, procResultParam).ToList();
  
             procResult = (int) procResultParam.Value;
             return procResultData;
@@ -234,7 +237,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             var endingDateParam = new SqlParameter { ParameterName = "@Ending_Date", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = endingDate };
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
  
-            var procResultData = Database.SqlQuery<EmployeeSalesByCountryReturnModel>("EXEC @procResult = [Employee Sales by Country] @Beginning_Date, @Ending_Date", beginningDateParam, endingDateParam, procResultParam).ToList();
+            var procResultData = Database.SqlQuery<EmployeeSalesByCountryReturnModel>("EXEC @procResult = [dbo].[Employee Sales by Country] @Beginning_Date, @Ending_Date", beginningDateParam, endingDateParam, procResultParam).ToList();
  
             procResult = (int) procResultParam.Value;
             return procResultData;
@@ -246,7 +249,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             var endingDateParam = new SqlParameter { ParameterName = "@Ending_Date", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = endingDate };
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
  
-            var procResultData = Database.SqlQuery<SalesByYearReturnModel>("EXEC @procResult = [Sales by Year] @Beginning_Date, @Ending_Date", beginningDateParam, endingDateParam, procResultParam).ToList();
+            var procResultData = Database.SqlQuery<SalesByYearReturnModel>("EXEC @procResult = [dbo].[Sales by Year] @Beginning_Date, @Ending_Date", beginningDateParam, endingDateParam, procResultParam).ToList();
  
             procResult = (int) procResultParam.Value;
             return procResultData;
@@ -258,7 +261,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             var ordYearParam = new SqlParameter { ParameterName = "@OrdYear", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = ordYear, Size = 4 };
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
  
-            var procResultData = Database.SqlQuery<SalesByCategoryReturnModel>("EXEC @procResult = [SalesByCategory] @CategoryName, @OrdYear", categoryNameParam, ordYearParam, procResultParam).ToList();
+            var procResultData = Database.SqlQuery<SalesByCategoryReturnModel>("EXEC @procResult = [dbo].[SalesByCategory] @CategoryName, @OrdYear", categoryNameParam, ordYearParam, procResultParam).ToList();
  
             procResult = (int) procResultParam.Value;
             return procResultData;
@@ -268,7 +271,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         {
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
  
-            var procResultData = Database.SqlQuery<TenMostExpensiveProductsReturnModel>("EXEC @procResult = [Ten Most Expensive Products] ", procResultParam).ToList();
+            var procResultData = Database.SqlQuery<TenMostExpensiveProductsReturnModel>("EXEC @procResult = [dbo].[Ten Most Expensive Products] ", procResultParam).ToList();
  
             procResult = (int) procResultParam.Value;
             return procResultData;
@@ -345,9 +348,13 @@ namespace EntityFramework_Reverse_POCO_Generator
             return 0;
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+        }
+        
         public void Dispose()
         {
-            throw new NotImplementedException(); 
+            Dispose(true);
         }
         
         // Stored Procedures
@@ -490,7 +497,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     // POCO classes
 
     // Alphabetical list of products
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class AlphabeticalListOfProduct
     {
         public int ProductId { get; set; } // ProductID
@@ -525,7 +531,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Category Sales for 1997
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class CategorySalesFor1997
     {
         public string CategoryName { get; set; } // CategoryName
@@ -533,7 +538,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Current Product List
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class CurrentProductList
     {
         public int ProductId { get; internal set; } // ProductID
@@ -568,7 +572,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Customer and Suppliers by City
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class CustomerAndSuppliersByCity
     {
         public string City { get; set; } // City
@@ -633,7 +636,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Invoices
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class Invoice
     {
         public string ShipName { get; set; } // ShipName
@@ -699,7 +701,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Order Details
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class OrderDetail
     {
         public int OrderId { get; set; } // OrderID (Primary key)
@@ -721,7 +722,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Order Details Extended
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class OrderDetailsExtended
     {
         public int OrderId { get; set; } // OrderID
@@ -734,7 +734,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Orders Qry
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class OrdersQry
     {
         public int OrderId { get; set; } // OrderID
@@ -760,7 +759,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Order Subtotals
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class OrderSubtotal
     {
         public int OrderId { get; set; } // OrderID
@@ -801,7 +799,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Products Above Average Price
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class ProductsAboveAveragePrice
     {
         public string ProductName { get; set; } // ProductName
@@ -809,7 +806,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Product Sales for 1997
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class ProductSalesFor1997
     {
         public string CategoryName { get; set; } // CategoryName
@@ -818,7 +814,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Products by Category
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class ProductsByCategory
     {
         public string CategoryName { get; set; } // CategoryName
@@ -845,7 +840,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Sales by Category
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class SalesByCategory
     {
         public int CategoryId { get; set; } // CategoryID
@@ -855,7 +849,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Sales Totals by Amount
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class SalesTotalsByAmount
     {
         public decimal? SaleAmount { get; set; } // SaleAmount
@@ -882,7 +875,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Summary of Sales by Quarter
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class SummaryOfSalesByQuarter
     {
         public DateTime? ShippedDate { get; set; } // ShippedDate
@@ -891,7 +883,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Summary of Sales by Year
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class SummaryOfSalesByYear
     {
         public DateTime? ShippedDate { get; set; } // ShippedDate
@@ -926,7 +917,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // sysdiagrams
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class Sysdiagram
     {
         public string Name { get; set; } // name
@@ -961,7 +951,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     // POCO Configuration
 
     // Alphabetical list of products
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class AlphabeticalListOfProductConfiguration : EntityTypeConfiguration<AlphabeticalListOfProduct>
     {
         public AlphabeticalListOfProductConfiguration(string schema = "dbo")
@@ -984,7 +973,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Categories
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class CategoryConfiguration : EntityTypeConfiguration<Category>
     {
         public CategoryConfiguration(string schema = "dbo")
@@ -1000,7 +988,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Category Sales for 1997
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class CategorySalesFor1997Configuration : EntityTypeConfiguration<CategorySalesFor1997>
     {
         public CategorySalesFor1997Configuration(string schema = "dbo")
@@ -1014,7 +1001,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Current Product List
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class CurrentProductListConfiguration : EntityTypeConfiguration<CurrentProductList>
     {
         public CurrentProductListConfiguration(string schema = "dbo")
@@ -1028,7 +1014,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Customers
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class CustomerConfiguration : EntityTypeConfiguration<Customer>
     {
         public CustomerConfiguration(string schema = "dbo")
@@ -1057,7 +1042,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Customer and Suppliers by City
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class CustomerAndSuppliersByCityConfiguration : EntityTypeConfiguration<CustomerAndSuppliersByCity>
     {
         public CustomerAndSuppliersByCityConfiguration(string schema = "dbo")
@@ -1073,7 +1057,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // CustomerDemographics
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class CustomerDemographicConfiguration : EntityTypeConfiguration<CustomerDemographic>
     {
         public CustomerDemographicConfiguration(string schema = "dbo")
@@ -1087,7 +1070,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Employees
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class EmployeeConfiguration : EntityTypeConfiguration<Employee>
     {
         public EmployeeConfiguration(string schema = "dbo")
@@ -1126,7 +1108,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Invoices
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class InvoiceConfiguration : EntityTypeConfiguration<Invoice>
     {
         public InvoiceConfiguration(string schema = "dbo")
@@ -1164,7 +1145,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Orders
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class OrderConfiguration : EntityTypeConfiguration<Order>
     {
         public OrderConfiguration(string schema = "dbo")
@@ -1195,7 +1175,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Order Details
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class OrderDetailConfiguration : EntityTypeConfiguration<OrderDetail>
     {
         public OrderDetailConfiguration(string schema = "dbo")
@@ -1216,7 +1195,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Order Details Extended
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class OrderDetailsExtendedConfiguration : EntityTypeConfiguration<OrderDetailsExtended>
     {
         public OrderDetailsExtendedConfiguration(string schema = "dbo")
@@ -1235,7 +1213,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Orders Qry
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class OrdersQryConfiguration : EntityTypeConfiguration<OrdersQry>
     {
         public OrdersQryConfiguration(string schema = "dbo")
@@ -1267,7 +1244,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Order Subtotals
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class OrderSubtotalConfiguration : EntityTypeConfiguration<OrderSubtotal>
     {
         public OrderSubtotalConfiguration(string schema = "dbo")
@@ -1281,7 +1257,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Products
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class ProductConfiguration : EntityTypeConfiguration<Product>
     {
         public ProductConfiguration(string schema = "dbo")
@@ -1307,7 +1282,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Products Above Average Price
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class ProductsAboveAveragePriceConfiguration : EntityTypeConfiguration<ProductsAboveAveragePrice>
     {
         public ProductsAboveAveragePriceConfiguration(string schema = "dbo")
@@ -1321,7 +1295,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Product Sales for 1997
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class ProductSalesFor1997Configuration : EntityTypeConfiguration<ProductSalesFor1997>
     {
         public ProductSalesFor1997Configuration(string schema = "dbo")
@@ -1336,7 +1309,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Products by Category
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class ProductsByCategoryConfiguration : EntityTypeConfiguration<ProductsByCategory>
     {
         public ProductsByCategoryConfiguration(string schema = "dbo")
@@ -1353,7 +1325,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Region
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class RegionConfiguration : EntityTypeConfiguration<Region>
     {
         public RegionConfiguration(string schema = "dbo")
@@ -1367,7 +1338,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Sales by Category
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class SalesByCategoryConfiguration : EntityTypeConfiguration<SalesByCategory>
     {
         public SalesByCategoryConfiguration(string schema = "dbo")
@@ -1383,7 +1353,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Sales Totals by Amount
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class SalesTotalsByAmountConfiguration : EntityTypeConfiguration<SalesTotalsByAmount>
     {
         public SalesTotalsByAmountConfiguration(string schema = "dbo")
@@ -1399,7 +1368,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Shippers
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class ShipperConfiguration : EntityTypeConfiguration<Shipper>
     {
         public ShipperConfiguration(string schema = "dbo")
@@ -1414,7 +1382,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Summary of Sales by Quarter
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class SummaryOfSalesByQuarterConfiguration : EntityTypeConfiguration<SummaryOfSalesByQuarter>
     {
         public SummaryOfSalesByQuarterConfiguration(string schema = "dbo")
@@ -1429,7 +1396,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Summary of Sales by Year
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class SummaryOfSalesByYearConfiguration : EntityTypeConfiguration<SummaryOfSalesByYear>
     {
         public SummaryOfSalesByYearConfiguration(string schema = "dbo")
@@ -1444,7 +1410,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Suppliers
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class SupplierConfiguration : EntityTypeConfiguration<Supplier>
     {
         public SupplierConfiguration(string schema = "dbo")
@@ -1468,7 +1433,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // sysdiagrams
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class SysdiagramConfiguration : EntityTypeConfiguration<Sysdiagram>
     {
         public SysdiagramConfiguration(string schema = "dbo")
@@ -1485,7 +1449,6 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Territories
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     internal class TerritoryConfiguration : EntityTypeConfiguration<Territory>
     {
         public TerritoryConfiguration(string schema = "dbo")
@@ -1506,14 +1469,12 @@ namespace EntityFramework_Reverse_POCO_Generator
     // ************************************************************************
     // Stored procedure return models
 
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class CustOrderHistReturnModel
     {
         public String ProductName { get; set; }
         public Int32? Total { get; set; }
     }
 
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class CustOrdersDetailReturnModel
     {
         public String ProductName { get; set; }
@@ -1523,43 +1484,38 @@ namespace EntityFramework_Reverse_POCO_Generator
         public Decimal? ExtendedPrice { get; set; }
     }
 
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class CustOrdersOrdersReturnModel
     {
-        public Int32 OrderId { get; set; }
+        public Int32 OrderID { get; set; }
         public DateTime? OrderDate { get; set; }
         public DateTime? RequiredDate { get; set; }
         public DateTime? ShippedDate { get; set; }
     }
 
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class EmployeeSalesByCountryReturnModel
     {
         public String Country { get; set; }
         public String LastName { get; set; }
         public String FirstName { get; set; }
         public DateTime? ShippedDate { get; set; }
-        public Int32 OrderId { get; set; }
+        public Int32 OrderID { get; set; }
         public Decimal? SaleAmount { get; set; }
     }
 
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class SalesByYearReturnModel
     {
         public DateTime? ShippedDate { get; set; }
-        public Int32 OrderId { get; set; }
+        public Int32 OrderID { get; set; }
         public Decimal? Subtotal { get; set; }
         public String Year { get; set; }
     }
 
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class SalesByCategoryReturnModel
     {
         public String ProductName { get; set; }
         public Decimal? TotalPurchase { get; set; }
     }
 
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.1.0")]
     public class TenMostExpensiveProductsReturnModel
     {
         public String TenMostExpensiveProducts { get; set; }
