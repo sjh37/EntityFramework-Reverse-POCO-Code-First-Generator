@@ -588,7 +588,9 @@
                         reader.ReadStoredProcReturnObject(ConnectionString, proc);
 
                     conn.Close();
-                    return storedProcs;
+
+                    // Remove stored procs where the return model type contains spaces and cannot be mapped
+                    return storedProcs.Where(sp => sp.ReturnColumns.Any(c => !c.ColumnName.Contains(" "))).ToList();
                 }
             }
             catch(Exception x)
@@ -1751,21 +1753,12 @@ OPTION (QUERYTRACEON 9481)";
                         }
                     }
 
-                    if (ds.Tables.Count < 1)
-                        return;
-
-                    proc.ReturnColumns = ds.Tables[0].Columns.Cast<DataColumn>().ToList();
-                    // Tidy up
-                    foreach (var col in proc.ReturnColumns)
-                    {
-                        col.ColumnName = Regex.Replace(col.ColumnName, @"[^A-Za-z0-9\s]*", "");
-                        col.ColumnName = Inflector.ToTitleCase(col.ColumnName).Replace(" ", "");
-                    }
+                    // Tidy up parameters
                     foreach (var p in proc.Parameters)
-                    {
                         p.NameHumanCase = Regex.Replace(p.NameHumanCase, @"[^A-Za-z0-9\s]*", "");
-                        //p.NameHumanCase = Inflector.ToTitleCase(p.NameHumanCase).Replace(" ", "");
-                    }
+
+                    if (ds.Tables.Count > 0)
+                        proc.ReturnColumns = ds.Tables[0].Columns.Cast<DataColumn>().ToList();
                 }
                 catch (Exception)
                 {
