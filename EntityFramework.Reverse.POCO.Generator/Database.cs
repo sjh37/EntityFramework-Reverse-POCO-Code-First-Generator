@@ -15,7 +15,7 @@
 // ReSharper disable PartialTypeWithSinglePart
 // ReSharper disable PartialMethodWithSinglePart
 // ReSharper disable RedundantNameQualifier
-// TargetFrameworkVersion = 4.5
+// TargetFrameworkVersion = 4.51
 #pragma warning disable 1591    //  Ignore "Missing XML Comment" warning
 
 using System;
@@ -29,6 +29,8 @@ using System.Data.Entity;
 using System.Data;
 using System.Data.SqlClient;
 using System.Data.Entity.ModelConfiguration;
+using System.Threading;
+using System.Threading.Tasks;
 using DatabaseGeneratedOption = System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption;
 
 namespace EntityFramework_Reverse_POCO_Generator
@@ -66,6 +68,8 @@ namespace EntityFramework_Reverse_POCO_Generator
         IDbSet<Territory> Territories { get; set; } // Territories
 
         int SaveChanges();
+        Task<int> SaveChangesAsync();
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken);
         
         // Stored Procedures
         List<CustOrderHistReturnModel> CustOrderHist(string customerId, out int procResult);
@@ -346,6 +350,16 @@ namespace EntityFramework_Reverse_POCO_Generator
         public int SaveChanges()
         {
             return 0;
+        }
+
+        public Task<int> SaveChangesAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> SaveChangesAsync(CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
         }
 
         protected virtual void Dispose(bool disposing)

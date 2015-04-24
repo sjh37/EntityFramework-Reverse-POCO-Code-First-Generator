@@ -9,7 +9,7 @@
     DbContextName = "MyDbContextSqlCE4";
     ConnectionStringName = "MyDbContextSqlCE4";  // Searches for this connection string in config files listed below
     ConfigurationClassName = "Configuration"; // Configuration, Mapping, Map, etc. This is appended to the Poco class name to configure the mappings.
-    TargetFrameworkVersion = "4.5"; // Please set this to your .NET framework version, 4.0, 4.5, 4.51, etc.
+    TargetFrameworkVersion = "4.51"; // Please set this to your .NET framework version, 4.0, 4.5, 4.51, etc.
     ConfigFilenameSearchOrder = new[] { "app.config", "web.config", "app.config.transform", "web.config.transform" }; // Add more here if required. The config files are searched for in the local project first, then the whole solution second.
     MakeClassesPartial = false;
     GenerateSeparateFiles = false;
