@@ -92,7 +92,9 @@
         {
             if (!string.IsNullOrEmpty(TargetFrameworkVersion))
             {
-                return String.Compare(TargetFrameworkVersion, frameworkVersion) >= 0;				
+                float target = float.Parse(TargetFrameworkVersion);
+                float isSupported = float.Parse(frameworkVersion);
+                return isSupported <= target;
             }
             return true;
         };

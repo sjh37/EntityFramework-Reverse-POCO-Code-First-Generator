@@ -61,6 +61,10 @@ using <#= UnitOfWorkNamespace #>;
         (!ElementsToGenerate.HasFlag(Elements.PocoConfiguration) && !string.IsNullOrWhiteSpace(PocoConfigurationNamespace))){ #>
 using <#= PocoConfigurationNamespace #>;
 <# } #>
+<# if (IsSupportedFrameworkVersion("4.5")) { #>
+using System.Threading;
+using System.Threading.Tasks;
+<# } #>
 <# 	if(	ElementsToGenerate.HasFlag(Elements.PocoConfiguration)){
         switch (TargetFrameworkVersion)
         {
@@ -84,30 +88,39 @@ using DatabaseGeneratedOption = System.ComponentModel.DataAnnotations.Schema.Dat
 
 namespace <#= Namespace #>
 {
-<# if(ElementsToGenerate.HasFlag(Elements.UnitOfWork)){ 
-       fileManager.StartNewFile("I" + DbContextName + FileExtension); 
-       if(!GenerateSeparateFiles) { #>
+<# if (ElementsToGenerate.HasFlag(Elements.UnitOfWork))
+{
+    fileManager.StartNewFile("I" + DbContextName + FileExtension);
+    if (!GenerateSeparateFiles)
+    { #>
     // ************************************************************************
     // Unit of work
 <# } #>
-    public interface I<#=DbContextName#> : IDisposable
+    public interface I<#=DbContextName #> : IDisposable
     {
 <#
-foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
+foreach (Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
 {
 #>
-        IDbSet<<#=tbl.NameHumanCase#>> <#=Inflector.MakePlural(tbl.NameHumanCase)#> { get; set; }<#if(IncludeComments){#> // <#=tbl.Name#>
-<# } else { #>
+        IDbSet<<#=tbl.NameHumanCase #>> <#=Inflector.MakePlural(tbl.NameHumanCase) #> { get; set; }<#if (IncludeComments)
+{ #> // <#=tbl.Name #>
+<# }
+else
+{ #>
 
 <# } #>
 <# } #>
 
-<#foreach(string s in AdditionalContextInterfaceItems.Where(x => !string.IsNullOrEmpty(x))) {#>
-        <#=s#>
+<#foreach (string s in AdditionalContextInterfaceItems.Where(x => !string.IsNullOrEmpty(x)))
+{ #>
+        <#=s #>
 <# } #>
         int SaveChanges();
-<# if (ElementsToGenerate.HasFlag(Elements.StoredProcedures))
-{ #>
+<# if (IsSupportedFrameworkVersion("4.5")) { #>
+        Task<int> SaveChangesAsync();
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+<# } #>
+<# if (ElementsToGenerate.HasFlag(Elements.StoredProcedures)) { #>
         
         // Stored Procedures
 <#
@@ -306,6 +319,18 @@ foreach (Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.N
         {
             return 0;
         }
+<# if (IsSupportedFrameworkVersion("4.5")) { #>
+
+        public Task<int> SaveChangesAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> SaveChangesAsync(CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+<# } #>
 
         protected virtual void Dispose(bool disposing)
         {
