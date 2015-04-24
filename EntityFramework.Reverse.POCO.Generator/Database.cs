@@ -73,10 +73,10 @@ namespace EntityFramework_Reverse_POCO_Generator
         
         // Stored Procedures
         List<CustOrderHistReturnModel> CustOrderHist(string customerId, out int procResult);
-        List<CustOrdersDetailReturnModel> CustOrdersDetail(int orderId, out int procResult);
+        List<CustOrdersDetailReturnModel> CustOrdersDetail(int? orderId, out int procResult);
         List<CustOrdersOrdersReturnModel> CustOrdersOrders(string customerId, out int procResult);
-        List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(DateTime beginningDate, DateTime endingDate, out int procResult);
-        List<SalesByYearReturnModel> SalesByYear(DateTime beginningDate, DateTime endingDate, out int procResult);
+        List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(DateTime? beginningDate, DateTime? endingDate, out int procResult);
+        List<SalesByYearReturnModel> SalesByYear(DateTime? beginningDate, DateTime? endingDate, out int procResult);
         List<SalesByCategoryReturnModel> SalesByCategory(string categoryName, string ordYear, out int procResult);
         List<TenMostExpensiveProductsReturnModel> TenMostExpensiveProducts( out int procResult);
     }
@@ -213,9 +213,9 @@ namespace EntityFramework_Reverse_POCO_Generator
             return procResultData;
         }
 
-        public List<CustOrdersDetailReturnModel> CustOrdersDetail(int orderId, out int procResult)
+        public List<CustOrdersDetailReturnModel> CustOrdersDetail(int? orderId, out int procResult)
         {
-            var orderIdParam = new SqlParameter { ParameterName = "@OrderID", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = orderId };
+            var orderIdParam = new SqlParameter { ParameterName = "@OrderID", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = orderId.GetValueOrDefault() };
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
  
             var procResultData = Database.SqlQuery<CustOrdersDetailReturnModel>("EXEC @procResult = [dbo].[CustOrdersDetail] @OrderID", orderIdParam, procResultParam).ToList();
@@ -235,10 +235,10 @@ namespace EntityFramework_Reverse_POCO_Generator
             return procResultData;
         }
 
-        public List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(DateTime beginningDate, DateTime endingDate, out int procResult)
+        public List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(DateTime? beginningDate, DateTime? endingDate, out int procResult)
         {
-            var beginningDateParam = new SqlParameter { ParameterName = "@Beginning_Date", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = beginningDate };
-            var endingDateParam = new SqlParameter { ParameterName = "@Ending_Date", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = endingDate };
+            var beginningDateParam = new SqlParameter { ParameterName = "@Beginning_Date", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = beginningDate.GetValueOrDefault() };
+            var endingDateParam = new SqlParameter { ParameterName = "@Ending_Date", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = endingDate.GetValueOrDefault() };
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
  
             var procResultData = Database.SqlQuery<EmployeeSalesByCountryReturnModel>("EXEC @procResult = [dbo].[Employee Sales by Country] @Beginning_Date, @Ending_Date", beginningDateParam, endingDateParam, procResultParam).ToList();
@@ -247,10 +247,10 @@ namespace EntityFramework_Reverse_POCO_Generator
             return procResultData;
         }
 
-        public List<SalesByYearReturnModel> SalesByYear(DateTime beginningDate, DateTime endingDate, out int procResult)
+        public List<SalesByYearReturnModel> SalesByYear(DateTime? beginningDate, DateTime? endingDate, out int procResult)
         {
-            var beginningDateParam = new SqlParameter { ParameterName = "@Beginning_Date", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = beginningDate };
-            var endingDateParam = new SqlParameter { ParameterName = "@Ending_Date", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = endingDate };
+            var beginningDateParam = new SqlParameter { ParameterName = "@Beginning_Date", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = beginningDate.GetValueOrDefault() };
+            var endingDateParam = new SqlParameter { ParameterName = "@Ending_Date", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = endingDate.GetValueOrDefault() };
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
  
             var procResultData = Database.SqlQuery<SalesByYearReturnModel>("EXEC @procResult = [dbo].[Sales by Year] @Beginning_Date, @Ending_Date", beginningDateParam, endingDateParam, procResultParam).ToList();
@@ -379,7 +379,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             return new List<CustOrderHistReturnModel>();
         }
 
-        public List<CustOrdersDetailReturnModel> CustOrdersDetail(int orderId, out int procResult)
+        public List<CustOrdersDetailReturnModel> CustOrdersDetail(int? orderId, out int procResult)
         {
  
             procResult = 0;
@@ -393,14 +393,14 @@ namespace EntityFramework_Reverse_POCO_Generator
             return new List<CustOrdersOrdersReturnModel>();
         }
 
-        public List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(DateTime beginningDate, DateTime endingDate, out int procResult)
+        public List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(DateTime? beginningDate, DateTime? endingDate, out int procResult)
         {
  
             procResult = 0;
             return new List<EmployeeSalesByCountryReturnModel>();
         }
 
-        public List<SalesByYearReturnModel> SalesByYear(DateTime beginningDate, DateTime endingDate, out int procResult)
+        public List<SalesByYearReturnModel> SalesByYear(DateTime? beginningDate, DateTime? endingDate, out int procResult)
         {
  
             procResult = 0;
