@@ -191,9 +191,10 @@
         int count = sp.Parameters.Count;
         foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
         {
-            sb.AppendFormat("{0}{1} {2}{3}", 
+            sb.AppendFormat("{0}{1}{2} {3}{4}", 
                 p.Mode == StoredProcedureParameterMode.In ? "" : "out ", 
-                p.PropertyType, 
+                p.PropertyType,
+                p.PropertyType.ToLower() == "string" ? string.Empty : "?",
                 p.NameHumanCase, 
                 (n++ < count) ? ", " : string.Empty);
         }
@@ -222,12 +223,14 @@
         var sb = new StringBuilder();
         foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
         {
+            var getValueOrDefault = p.PropertyType.ToLower() == "string" ? string.Empty : ".GetValueOrDefault()";
+    
             sb.AppendLine(string.Format("            var {0}Param = new SqlParameter {{ ParameterName = \"{1}\", SqlDbType = SqlDbType.{2}, Direction = ParameterDirection.{3}{4}{5} }};", 
                 p.NameHumanCase, 
                 p.Name, 
                 p.SqlDbType, 
                 p.Mode == StoredProcedureParameterMode.In ? "Input" : "Output",
-                p.Mode == StoredProcedureParameterMode.In ? ", Value = " + p.NameHumanCase : string.Empty,
+                p.Mode == StoredProcedureParameterMode.In ? ", Value = " + p.NameHumanCase + getValueOrDefault : string.Empty,
                 p.MaxLength > 0 ? ", Size = " + p.MaxLength : string.Empty));
         }
         sb.AppendLine("            var procResultParam = new SqlParameter { ParameterName = \"@procResult\", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };");
