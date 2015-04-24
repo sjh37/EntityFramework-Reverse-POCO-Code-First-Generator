@@ -911,6 +911,8 @@
                     case "guid":
                         if (lower.Contains("newid()") || lower.Contains("newsequentialid()"))
                             Default = "System.Guid.NewGuid()";
+                        else if (lower.Contains("null"))
+                            Default = "null";
                         else
                             Default = string.Format("Guid.Parse(\"{0}\")", Default);
                         break;
