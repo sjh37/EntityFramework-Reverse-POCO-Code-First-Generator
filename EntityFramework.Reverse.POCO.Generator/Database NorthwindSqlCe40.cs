@@ -117,7 +117,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
 
     // ************************************************************************
     // Fake Database context
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.2.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.3.0")]
     public class FakeMyDbContextSqlCE4 : IMyDbContextSqlCE4
     {
         public IDbSet<Category> Categories { get; set; }
@@ -168,7 +168,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
 
     // ************************************************************************
     // Fake DbSet
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.2.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.3.0")]
     public class FakeDbSet<T> : IDbSet<T> where T : class
     {
         private readonly HashSet<T> _data;
@@ -254,7 +254,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     // POCO classes
 
     // Categories
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.2.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.3.0")]
     public class Category
     {
         public int CategoryId { get; set; } // Category ID (Primary key)
@@ -272,7 +272,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     }
 
     // Customers
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.2.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.3.0")]
     public class Customer
     {
         public string CustomerId { get; set; } // Customer ID (Primary key)
@@ -297,7 +297,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     }
 
     // Employees
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.2.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.3.0")]
     public class Employee
     {
         public int EmployeeId { get; set; } // Employee ID (Primary key)
@@ -327,7 +327,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     }
 
     // Orders
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.2.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.3.0")]
     public class Order
     {
         public int OrderId { get; set; } // Order ID (Primary key)
@@ -374,7 +374,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     }
 
     // Products
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.2.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.3.0")]
     public class Product
     {
         public int ProductId { get; set; } // Product ID (Primary key)
@@ -403,7 +403,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     }
 
     // Shippers
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.2.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.3.0")]
     public class Shipper
     {
         public int ShipperId { get; set; } // Shipper ID (Primary key)
@@ -419,7 +419,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     }
 
     // Suppliers
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.2.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.3.0")]
     public class Supplier
     {
         public int SupplierId { get; set; } // Supplier ID (Primary key)
