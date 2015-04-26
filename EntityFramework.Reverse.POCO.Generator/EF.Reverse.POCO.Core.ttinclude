@@ -592,7 +592,19 @@
                     conn.Close();
 
                     // Remove stored procs where the return model type contains spaces and cannot be mapped
-                    return storedProcs.Where(sp => sp.ReturnColumns.Any(c => !c.ColumnName.Contains(" "))).ToList();
+                    var validStoredProcedures = new List<StoredProcedure>();
+                    foreach (var sp in storedProcs)
+                    {
+                        if (sp.ReturnColumns.Count() == 0)
+                        {
+                            validStoredProcedures.Add(sp);
+                            continue;
+                        }
+                        if (sp.ReturnColumns.Any(c => c.ColumnName.Contains(" ")))
+                            continue;   // Return column contains a space. Ignore as this cannot be mapped.
+                        validStoredProcedures.Add(sp);
+                    }
+                    return validStoredProcedures;
                 }
             }
             catch(Exception x)
