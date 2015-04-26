@@ -1,6 +1,6 @@
 <#
 // Copyright © Simon Hughes 2012
-// v2.12.2
+// v2.12.3
 #>
 <#@ template hostspecific="true" language="C#" #>
 <#@ include file="EF6.Utility.CS.ttinclude"#>
@@ -71,7 +71,7 @@
         bool AutomaticMigrationsEnabled = true;
         bool AutomaticMigrationDataLossAllowed = true;
 
-        string CodeGeneratedAttribute = "[GeneratedCodeAttribute(\"EF.Reverse.POCO.Generator\", \"2.12.2.0\")]";
+        string CodeGeneratedAttribute = "[GeneratedCodeAttribute(\"EF.Reverse.POCO.Generator\", \"2.12.3.0\")]";
         // Settings to allow selective code generation
         [Flags]
         private enum Elements
