@@ -1567,44 +1567,43 @@ OPTION (QUERYTRACEON 9481)";
                 }
 
                 Table t = null;
-                var indexes = list
-                    .Select(x => new { x.Schema, x.TableName, x.IndexName })
-                    .Distinct()
-                    .OrderBy(o => o.Schema)
-                    .ThenBy(o => o.TableName)
-                    .ThenBy(o => o.IndexName);
+                var indexTables = list
+                    .Select(x => new { x.Schema, x.TableName })
+                    .Distinct();
 
-                foreach (var index in indexes)
+                foreach (var indexTable in indexTables)
                 {
-                    if (t == null || t.Name != index.TableName || t.Schema != index.Schema)
-                        t = tables.Find(x => x.Name == index.TableName && x.Schema == index.Schema);
+                    // Lookup table
+                    if (t == null || t.Name != indexTable.TableName || t.Schema != indexTable.Schema)
+                        t = tables.Find(x => x.Name == indexTable.TableName && x.Schema == indexTable.Schema);
 
-                    if (t != null && !t.PrimaryKeys.Any())
+                    // Check if table has no primary keys
+                    if (t == null || t.PrimaryKeys.Any())
+                        continue; // Already has a primary key, ignore this unique constraint
+
+                    // Find unique indexes for tabve
+                    var uniqueIndexKeys =
+                        list.Where(x => x.Schema == indexTable.Schema && x.TableName == indexTable.TableName)
+                            .Select(x => new { x.IndexName, x.KeyOrdinal, x.Column, x.ColumnCount })
+                            .OrderBy(o => o.ColumnCount)
+                            .ThenBy(o => o.KeyOrdinal);
+
+                    // Process only the first index with the lowest unique column count
+                    string indexName = null;
+                    foreach (var key in uniqueIndexKeys)
                     {
-                        // Table has no primary keys
-                        var uniqueIndexKeys =
-                            list.Where(x => x.Schema == index.Schema && x.TableName == index.TableName && x.IndexName == index.IndexName)
-                                .Select(x => new { x.IndexName, x.KeyOrdinal, x.Column, x.ColumnCount })
-                                .OrderBy(o => o.ColumnCount)
-                                .ThenBy(o => o.IndexName);
+                        if (indexName == null)
+                            indexName = key.IndexName;
 
-                        // Process only the first index with the lowest unique column count
-                        string indexName = null;
-                        foreach (var key in uniqueIndexKeys)
+                        if (indexName != key.IndexName)
+                            break; // First unique index with lowest column count has been processed, exit.
+
+                        var col = t.Columns.Find(x => x.Name == key.Column);
+                        if (col != null && !col.IsNullable && !col.Hidden)
                         {
-                            if (indexName == null)
-                                indexName = key.IndexName;
-
-                            if (indexName != key.IndexName)
-                                break;  // First unique index with lowest column count has been processed, exit.
-
-                            var col = t.Columns.Find(x => x.Name == key.Column);
-                            if (col != null && !col.IsNullable && !col.Hidden)
-                            {
-                                col.IsPrimaryKey = true;
-                                col.IsPrimaryKeyViaUniqueIndex = true;
-                                col.UniqueIndexName = indexName;
-                            }
+                            col.IsPrimaryKey = true;
+                            col.IsPrimaryKeyViaUniqueIndex = true;
+                            col.UniqueIndexName = indexName;
                         }
                     }
                 }
