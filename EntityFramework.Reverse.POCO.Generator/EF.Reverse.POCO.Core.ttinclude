@@ -740,7 +740,7 @@
                         comments += ". " + ExtendedProperty;
                 }
 
-                Entity = string.Format("public {0}{1} {2} {3}{4}", PropertyType, CheckNullable(this), PropertyNameHumanCase, IsStoreGenerated ? "{ get; internal set; }" : "{ get; set; }", comments);
+                Entity = string.Format("public {0}{1} {2} {3}{4}", PropertyType, CheckNullable(this), PropertyNameHumanCase, "{ get; set; }", comments);
             }
 
             private void SetupConfig()
