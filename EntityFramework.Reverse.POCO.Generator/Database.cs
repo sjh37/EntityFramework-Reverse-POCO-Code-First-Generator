@@ -530,7 +530,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.3.0")]
     public class Category
     {
-        public int CategoryId { get; internal set; } // CategoryID (Primary key)
+        public int CategoryId { get; set; } // CategoryID (Primary key)
         public string CategoryName { get; set; } // CategoryName
         public string Description { get; set; } // Description
         public byte[] Picture { get; set; } // Picture
@@ -554,7 +554,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Current Product List
     public class CurrentProductList
     {
-        public int ProductId { get; internal set; } // ProductID
+        public int ProductId { get; set; } // ProductID
         public string ProductName { get; set; } // ProductName
     }
 
@@ -614,7 +614,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.3.0")]
     public class Employee
     {
-        public int EmployeeId { get; internal set; } // EmployeeID (Primary key)
+        public int EmployeeId { get; set; } // EmployeeID (Primary key)
         public string LastName { get; set; } // LastName
         public string FirstName { get; set; } // FirstName
         public string Title { get; set; } // Title
@@ -684,7 +684,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.3.0")]
     public class Order
     {
-        public int OrderId { get; internal set; } // OrderID (Primary key)
+        public int OrderId { get; set; } // OrderID (Primary key)
         public string CustomerId { get; set; } // CustomerID
         public int? EmployeeId { get; set; } // EmployeeID
         public DateTime? OrderDate { get; set; } // OrderDate
@@ -783,7 +783,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.3.0")]
     public class Product
     {
-        public int ProductId { get; internal set; } // ProductID (Primary key)
+        public int ProductId { get; set; } // ProductID (Primary key)
         public string ProductName { get; set; } // ProductName
         public int? SupplierId { get; set; } // SupplierID
         public int? CategoryId { get; set; } // CategoryID
@@ -875,7 +875,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.3.0")]
     public class Shipper
     {
-        public int ShipperId { get; internal set; } // ShipperID (Primary key)
+        public int ShipperId { get; set; } // ShipperID (Primary key)
         public string CompanyName { get; set; } // CompanyName
         public string Phone { get; set; } // Phone
 
@@ -908,7 +908,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.12.3.0")]
     public class Supplier
     {
-        public int SupplierId { get; internal set; } // SupplierID (Primary key)
+        public int SupplierId { get; set; } // SupplierID (Primary key)
         public string CompanyName { get; set; } // CompanyName
         public string ContactName { get; set; } // ContactName
         public string ContactTitle { get; set; } // ContactTitle
@@ -935,7 +935,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     {
         public string Name { get; set; } // name
         public int PrincipalId { get; set; } // principal_id
-        public int DiagramId { get; internal set; } // diagram_id (Primary key)
+        public int DiagramId { get; set; } // diagram_id (Primary key)
         public int? Version { get; set; } // version
         public byte[] Definition { get; set; } // definition
     }
