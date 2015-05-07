@@ -36,6 +36,7 @@
         bool IncludeViews = true;
         bool AddUnitTestingDbContext = true;
         string DbContextName = "MyDbContext";
+        string DbContextInterfaceBaseClasses = "IDisposable";
         string DbContextBaseClass = "DbContext";
         string ConfigurationClassName = "Configuration";
         string CollectionType = "List";
@@ -70,7 +71,6 @@
         string MigrationStrategy = "MigrateDatabaseToLatestVersion";
         bool AutomaticMigrationsEnabled = true;
         bool AutomaticMigrationDataLossAllowed = true;
-        string BaseContextInterface = null;
 
         string CodeGeneratedAttribute = "[GeneratedCodeAttribute(\"EF.Reverse.POCO.Generator\", \"2.12.3.0\")]";
         // Settings to allow selective code generation

@@ -96,7 +96,7 @@ namespace <#= Namespace #>
     // ************************************************************************
     // Unit of work
 <# } #>
-    public interface I<#=DbContextName #> : <#= BaseContextInterface != null ? BaseContextInterface + "," : string.Empty #> IDisposable
+    public interface I<#=DbContextName #> : <#= DbContextInterfaceBaseClasses #>
     {
 <#
 foreach (Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
