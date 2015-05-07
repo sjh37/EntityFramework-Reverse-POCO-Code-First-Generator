@@ -195,7 +195,7 @@
             sb.AppendFormat("{0}{1}{2} {3}{4}", 
                 p.Mode == StoredProcedureParameterMode.In ? "" : "out ", 
                 p.PropertyType,
-                p.PropertyType.ToLower() == "string" ? string.Empty : "?",
+                NotNullable.Contains(p.PropertyType.ToLower()) ? string.Empty : "?",
                 p.NameHumanCase, 
                 (n++ < count) ? ", " : string.Empty);
         }
@@ -224,7 +224,7 @@
         var sb = new StringBuilder();
         foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
         {
-            var getValueOrDefault = p.PropertyType.ToLower() == "string" ? string.Empty : ".GetValueOrDefault()";
+            var getValueOrDefault = NotNullable.Contains(p.PropertyType.ToLower()) ? string.Empty : ".GetValueOrDefault()";
     
             sb.AppendLine(string.Format("            var {0}Param = new SqlParameter {{ ParameterName = \"{1}\", SqlDbType = SqlDbType.{2}, Direction = ParameterDirection.{3}{4}{5} }};", 
                 p.NameHumanCase, 
