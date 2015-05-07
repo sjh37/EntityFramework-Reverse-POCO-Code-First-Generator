@@ -7,6 +7,7 @@
     // Misc settings **********************************************************************************************************************
     Namespace = "EntityFramework_Reverse_POCO_Generator.SqlCe4"; // Override the default namespace here
     DbContextName = "MyDbContextSqlCE4";
+    DbContextInterfaceBaseClasses = "IDisposable";    // Specify what the base classes are for your database context interface
     ConnectionStringName = "MyDbContextSqlCE4";  // Searches for this connection string in config files listed below
     ConfigurationClassName = "Configuration"; // Configuration, Mapping, Map, etc. This is appended to the Poco class name to configure the mappings.
     TargetFrameworkVersion = "4.51"; // Please set this to your .NET framework version, 4.0, 4.5, 4.51, etc.
