@@ -2277,7 +2277,13 @@ OPTION (QUERYTRACEON 9481)";
 
             public IEnumerable<Column> PrimaryKeys
             {
-                get { return Columns.Where(x => x.IsPrimaryKey).OrderBy(x => x.Ordinal).ToList(); }
+                get
+                {
+                    return Columns.Where(x => x.IsPrimaryKey)
+                                  .OrderBy(x => x.PrimaryKeyOrdinal)
+                                  .ThenBy(x => x.Ordinal)
+                                  .ToList();
+                }
             }
 
             public string PrimaryKeyNameHumanCase()
