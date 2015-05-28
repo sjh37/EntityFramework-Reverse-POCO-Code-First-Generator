@@ -1,0 +1,633 @@
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Security.Cryptography.X509Certificates" #>
+<#
+fileManager.StartHeader();
+// Copyright © Simon Hughes 2012
+// v2.13.0
+#>
+// ReSharper disable RedundantUsingDirective
+// ReSharper disable DoNotCallOverridableMethodsInConstructor
+// ReSharper disable InconsistentNaming
+// ReSharper disable PartialTypeWithSinglePart
+// ReSharper disable PartialMethodWithSinglePart
+// ReSharper disable RedundantNameQualifier
+// TargetFrameworkVersion = <#=TargetFrameworkVersion #>
+#pragma warning disable 1591    //  Ignore "Missing XML Comment" warning
+
+<# foreach(var additionalNamespace in AdditionalNamespaces) { #>
+using <#= additionalNamespace #>;
+<# } #>
+using System.CodeDom.Compiler;
+<# if(ElementsToGenerate.HasFlag(Elements.Poco) || (ElementsToGenerate.HasFlag(Elements.Context) && AddUnitTestingDbContext)){ #>
+using System.Collections.Generic;
+<# } #>
+<# if(ElementsToGenerate.HasFlag(Elements.StoredProcedures) && !(ElementsToGenerate.HasFlag(Elements.Context) && AddUnitTestingDbContext)){ #>
+using System.Linq;
+<# } #>
+<# if(ElementsToGenerate.HasFlag(Elements.Context) && AddUnitTestingDbContext){ #>
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Linq.Expressions;
+<# } #>
+<# if((ElementsToGenerate.HasFlag(Elements.Context) || ElementsToGenerate.HasFlag(Elements.Poco)) && IsSupportedFrameworkVersion("4.5")){ #>
+using System.ComponentModel.DataAnnotations.Schema;
+<# } #>
+<# if(ElementsToGenerate.HasFlag(Elements.Context) || ElementsToGenerate.HasFlag(Elements.UnitOfWork) || AddUnitTestingDbContext){ #>
+using System.Data.Entity;
+<# } #>
+<# if(ElementsToGenerate.HasFlag(Elements.StoredProcedures)){ #>
+using System.Data;
+using System.Data.SqlClient;
+<# } #>
+<# if(ElementsToGenerate.HasFlag(Elements.PocoConfiguration)){ #>
+using System.Data.Entity.ModelConfiguration;
+<# } #>
+<# if(AddWcfDataAttributes){ #>
+using System.Runtime.Serialization;
+<# } #>
+<# if((ElementsToGenerate.HasFlag(Elements.PocoConfiguration) || ElementsToGenerate.HasFlag(Elements.Context) || ElementsToGenerate.HasFlag(Elements.UnitOfWork)) && 
+      (!ElementsToGenerate.HasFlag(Elements.Poco) && !string.IsNullOrWhiteSpace(PocoNamespace))){ #>
+using <#= PocoNamespace #>;
+<# } #>
+<# 	if(	ElementsToGenerate.HasFlag(Elements.PocoConfiguration) && 
+        (!ElementsToGenerate.HasFlag(Elements.Context) && !string.IsNullOrWhiteSpace(ContextNamespace))){ #>
+using <#= ContextNamespace #>;
+<# } #>
+<# 	if( ElementsToGenerate.HasFlag(Elements.Context) && 
+        (!ElementsToGenerate.HasFlag(Elements.UnitOfWork) && !string.IsNullOrWhiteSpace(UnitOfWorkNamespace))){ #>
+using <#= UnitOfWorkNamespace #>;
+<# } #>
+<# 	if( ElementsToGenerate.HasFlag(Elements.Context) && 
+        (!ElementsToGenerate.HasFlag(Elements.PocoConfiguration) && !string.IsNullOrWhiteSpace(PocoConfigurationNamespace))){ #>
+using <#= PocoConfigurationNamespace #>;
+<# } #>
+<# if (IsSupportedFrameworkVersion("4.5")) { #>
+using System.Threading;
+using System.Threading.Tasks;
+<# } #>
+<# 	if(	ElementsToGenerate.HasFlag(Elements.PocoConfiguration)){
+        switch (TargetFrameworkVersion)
+        {
+            case "4.0":
+            case "4.5":
+            case "4.51":#>
+using DatabaseGeneratedOption = System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption;
+<#              break;
+            default: #>
+//using DatabaseGeneratedOption = System.ComponentModel.DataAnnotations.DatabaseGeneratedOption;
+<#              break;
+        }
+    } 
+#>
+<#if (!string.IsNullOrEmpty(CollectionTypeNamespace)){
+#>using <#=CollectionTypeNamespace#>;
+<#}#>
+<#if (!string.IsNullOrEmpty(MigrationConfigurationFileName)){
+#>using System.Data.Entity.Migrations;
+<#}#>
+
+namespace <#= Namespace #>
+{
+<# if (ElementsToGenerate.HasFlag(Elements.UnitOfWork))
+{
+    fileManager.StartNewFile("I" + DbContextName + FileExtension);
+    if (!GenerateSeparateFiles)
+    { #>
+    // ************************************************************************
+    // Unit of work
+<# } #>
+    public interface I<#=DbContextName #> : <#= DbContextInterfaceBaseClasses #>
+    {
+<#
+foreach (Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
+{
+#>
+        IDbSet<<#=tbl.NameHumanCase #>> <#=Inflector.MakePlural(tbl.NameHumanCase) #> { get; set; }<#if (IncludeComments)
+{ #> // <#=tbl.Name #>
+<# }
+else
+{ #>
+
+<# } #>
+<# } #>
+
+<#foreach (string s in AdditionalContextInterfaceItems.Where(x => !string.IsNullOrEmpty(x)))
+{ #>
+        <#=s #>
+<# } #>
+        int SaveChanges();
+<# if (IsSupportedFrameworkVersion("4.5")) { #>
+        Task<int> SaveChangesAsync();
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+<# } #>
+<# if (ElementsToGenerate.HasFlag(Elements.StoredProcedures)) { #>
+        
+        // Stored Procedures
+<#
+foreach (StoredProcedure sp in storedProcs)
+{
+    string spExecName = WriteStoredProcFunctionName(sp);
+    if (sp.ReturnColumns.Count > 0)
+    {
+        string spReturnClassName = WriteStoredProcReturnModelName(sp);#>        List<<#= spReturnClassName #>> <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp)#>);
+<# } else { #>
+        int <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp)#>);
+<# }
+}
+#>
+<# /**/} #>
+    }
+
+<# }
+ if(!string.IsNullOrWhiteSpace(MigrationConfigurationFileName)) {
+       fileManager.StartNewFile(MigrationConfigurationFileName + FileExtension);  #>
+<# if(!GenerateSeparateFiles) { #>
+    // ************************************************************************
+    // Db Migration Configuration
+<# } #>
+    public <# if(MakeClassesPartial) { #>partial <# } #>class <#=MigrationConfigurationFileName#> : DbMigrationsConfiguration<<#=DbContextName#>>
+    {
+        public <#=MigrationConfigurationFileName#>()
+        {
+            AutomaticMigrationsEnabled = <# if (AutomaticMigrationsEnabled) { #>true<# } else { #>false<# } #>;
+            AutomaticMigrationDataLossAllowed = <# if (AutomaticMigrationDataLossAllowed) { #>true<# } else { #>false<# } #>;
+        }
+
+        //protected override void Seed(<#=DbContextName#> context)
+        //{
+           
+            // This method will be called after migrating to the latest version.
+
+            // You can use the DbSet<T>.AddOrUpdate() helper extension method 
+            // to avoid creating duplicate seed data. E.g.
+            //
+            //   context.People.AddOrUpdate(
+            //     p => p.FullName,
+            //     new Person { FullName = "Andrew Peters" },
+            //     new Person { FullName = "Brice Lambson" },
+            //     new Person { FullName = "Rowan Miller" }
+            //   );
+            //
+        //}
+    }
+
+<# }
+    if(ElementsToGenerate.HasFlag(Elements.Context)){ 
+    fileManager.StartNewFile(DbContextName + FileExtension); #>
+<# if(!GenerateSeparateFiles) { #>
+    // ************************************************************************
+    // Database context
+<# } #>
+    public <# if(MakeClassesPartial) { #>partial <# } #>class <#=DbContextName#> : <#=DbContextBaseClass#>, I<#=DbContextName#>
+    {
+<#
+foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
+{
+#>
+        public IDbSet<<#=tbl.NameHumanCase#>> <#=Inflector.MakePlural(tbl.NameHumanCase)#> { get; set; }<#if(IncludeComments){#> // <#=tbl.Name#>
+<# } else { #>
+<# } #>
+<# } #>
+        
+        static <#=DbContextName#>()
+        {
+<#if(string.IsNullOrWhiteSpace(MigrationConfigurationFileName)) {#>
+            Database.SetInitializer<<#=DbContextName#>>(null);
+<#} else {#>
+            Database.SetInitializer(new <#=MigrationStrategy#><<#=DbContextName#><#if (MigrationStrategy == "MigrateDatabaseToLatestVersion"){#>, <#=MigrationConfigurationFileName#><#}#>>());
+<#}#>
+        }
+
+        public <#=DbContextName#>()
+            : base("Name=<#=ConnectionStringName#>")
+        {
+<#if(MakeClassesPartial) {#>            InitializePartial();
+<#}#>
+        }
+
+        public <#=DbContextName#>(string connectionString) : base(connectionString)
+        {
+<#if(MakeClassesPartial) {#>            InitializePartial();
+<#}#>
+        }
+
+        public <#=DbContextName#>(string connectionString, System.Data.Entity.Infrastructure.DbCompiledModel model) : base(connectionString, model)
+        {
+<#if(MakeClassesPartial) {#>            InitializePartial();
+<#}#>
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+        }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+<#
+foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
+{
+#>
+            modelBuilder.Configurations.Add(new <#=tbl.NameHumanCase + ConfigurationClassName#>());
+<# } #>
+<#if(MakeClassesPartial) {#>
+
+            OnModelCreatingPartial(modelBuilder);
+<#}#>
+        }
+
+        public static DbModelBuilder CreateModel(DbModelBuilder modelBuilder, string schema)
+        {
+<#
+foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
+{
+#>
+            modelBuilder.Configurations.Add(new <#=tbl.NameHumanCase + ConfigurationClassName#>(schema));
+<# } #>
+            return modelBuilder;
+        }
+<#if(MakeClassesPartial) {#>
+
+        partial void InitializePartial();
+        partial void OnModelCreatingPartial(DbModelBuilder modelBuilder);
+<#}#>
+<# if (ElementsToGenerate.HasFlag(Elements.StoredProcedures))
+{ #>
+        
+        // Stored Procedures
+<#
+foreach (StoredProcedure sp in storedProcs)
+{
+    string spExecName = WriteStoredProcFunctionName(sp);
+    if (sp.ReturnColumns.Count > 0)
+    {
+        string spReturnClassName = WriteStoredProcReturnModelName(sp); #>
+        public List<<#= spReturnClassName #>> <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp)#>)
+        {
+<#= WriteStoredProcFunctionDeclareSqlParameter(sp) #> 
+            var procResultData = Database.SqlQuery<<#= spReturnClassName #>>("EXEC @procResult = [<#=sp.Schema#>].[<#= sp.Name #>] <#= WriteStoredProcFunctionSqlAtParams(sp) #>", <#= WriteStoredProcFunctionSqlParameterAnonymousArray(sp) #>).ToList();
+<#= WriteStoredProcFunctionSetSqlParameters(sp, true) #> 
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+<# } else { #>
+        public int <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp)#>)
+        {
+<#= WriteStoredProcFunctionDeclareSqlParameter(sp) #> 
+            Database.ExecuteSqlCommand("EXEC @procResult = [<#=sp.Schema#>].[<#= sp.Name #>] <#= WriteStoredProcFunctionSqlAtParams(sp) #>", <#= WriteStoredProcFunctionSqlParameterAnonymousArray(sp) #>);
+<#= WriteStoredProcFunctionSetSqlParameters(sp, false) #> 
+            return (int) procResultParam.Value;
+        }
+
+<# }
+}}
+/**/#>    }
+<# }
+    if (ElementsToGenerate.HasFlag(Elements.Context) && AddUnitTestingDbContext)
+    {
+        fileManager.StartNewFile("Fake" + DbContextName + FileExtension); #>
+<# if (!GenerateSeparateFiles)
+{ #>
+
+    // ************************************************************************
+    // Fake Database context
+<# } #>
+    <#= CodeGeneratedAttribute #>
+    public class Fake<#=DbContextName #> : I<#=DbContextName #>
+    {
+<#
+foreach (Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
+{
+#>
+        public IDbSet<<#=tbl.NameHumanCase #>> <#=Inflector.MakePlural(tbl.NameHumanCase) #> { get; set; }
+<# } #>
+
+        public Fake<#=DbContextName #>()
+        {
+<#
+foreach (Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
+{
+#>
+            <#=Inflector.MakePlural(tbl.NameHumanCase) #> = new FakeDbSet<<#=tbl.NameHumanCase #>>();
+<# } #>
+        }
+
+        public int SaveChanges()
+        {
+            return 0;
+        }
+<# if (IsSupportedFrameworkVersion("4.5")) { #>
+
+        public Task<int> SaveChangesAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> SaveChangesAsync(CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+<# } #>
+
+        protected virtual void Dispose(bool disposing)
+        {
+        }
+        
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+<# if (ElementsToGenerate.HasFlag(Elements.StoredProcedures))
+{ #>
+        
+        // Stored Procedures
+<#
+foreach (StoredProcedure sp in storedProcs)
+{
+    string spExecName = WriteStoredProcFunctionName(sp);
+    if (sp.ReturnColumns.Count > 0)
+    {
+        string spReturnClassName = WriteStoredProcReturnModelName(sp); #>
+        public List<<#= spReturnClassName #>> <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp)#>)
+        {
+<#= WriteStoredProcFunctionSetSqlParameters(sp, true) #> 
+            procResult = 0;
+            return new List<<#= spReturnClassName #>>();
+        }
+
+<# } else { #>
+        public int <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp)#>)
+        {
+<#= WriteStoredProcFunctionSetSqlParameters(sp, true) #> 
+            return 0;
+        }
+
+<# }
+}}/**/#>
+    }
+<#fileManager.StartNewFile("FakeDbSet" + FileExtension); #>
+<# if (!GenerateSeparateFiles)
+{ #>
+
+    // ************************************************************************
+    // Fake DbSet
+<# } #>
+    <#= CodeGeneratedAttribute #>
+    public class FakeDbSet<T> : IDbSet<T> where T : class
+    {
+        private readonly HashSet<T> _data;
+
+        public FakeDbSet()
+        {
+            _data = new HashSet<T>();
+        }
+
+        public virtual T Find(params object[] keyValues)
+        {
+            throw new NotImplementedException();
+        }
+
+        public T Add(T item)
+        {
+            _data.Add(item);
+            return item;
+        }
+
+        public T Remove(T item)
+        {
+            _data.Remove(item);
+            return item;
+        }
+
+        public T Attach(T item)
+        {
+            _data.Add(item);
+            return item;
+        }
+
+        public void Detach(T item)
+        {
+            _data.Remove(item);
+        }
+
+        Type IQueryable.ElementType
+        {
+            get { return _data.AsQueryable().ElementType; }
+        }
+
+        Expression IQueryable.Expression
+        {
+            get { return _data.AsQueryable().Expression; }
+        }
+
+        IQueryProvider IQueryable.Provider
+        {
+            get { return _data.AsQueryable().Provider; }
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return _data.GetEnumerator();
+        }
+
+        IEnumerator<T> IEnumerable<T>.GetEnumerator()
+        {
+            return _data.GetEnumerator();
+        }
+
+        public T Create()
+        {
+            return Activator.CreateInstance<T>();
+        }
+
+        public ObservableCollection<T> Local
+        {
+            get
+            {
+                return new ObservableCollection<T>(_data);
+            }
+        }
+
+        public TDerivedEntity Create<TDerivedEntity>() where TDerivedEntity : class, T
+        {
+            return Activator.CreateInstance<TDerivedEntity>();
+        }
+    }
+<# }
+ if(ElementsToGenerate.HasFlag(Elements.Poco)){
+ if(!GenerateSeparateFiles) { #>
+
+    // ************************************************************************
+    // POCO classes
+
+<# } #>
+<#
+foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
+{
+#>
+<# fileManager.StartNewFile(tbl.NameHumanCase + FileExtension); #>
+<#if(IncludeComments){#>    // <#=tbl.Name#>
+<# } #>
+<# if(AddWcfDataAttributes) { #>    [DataContract<#=ExtraWcfDataContractAttributes#>]
+<# } 
+    WritePocoClassAttributes(tbl);#>
+<#if (tbl.ReverseNavigationCtor.Any()){ #>
+    <#= CodeGeneratedAttribute #>
+<# } #>
+    public <# if(MakeClassesPartial) { #>partial <# } #>class <#=tbl.NameHumanCase#><#=WritePocoBaseClasses != null ? WritePocoBaseClasses(tbl) : "" #>
+    {
+<# WritePocoBaseClassBody(tbl); #>
+<# int DataMemberOrder = 1;
+foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal).Where(x => !x.Hidden))
+{
+#>
+<#if(IncludeExtendedPropertyComments == ExtendedPropertyCommentsStyle.InSummaryBlock && !string.IsNullOrEmpty(col.ExtendedProperty)){#>
+
+        ///<summary>
+        /// <#=col.ExtendedProperty#>
+        ///</summary><# } #>
+<# if(AddWcfDataAttributes) { #>        [DataMember(Order = <#=DataMemberOrder++#>, IsRequired = <#=col.IsNullable ? "false" : "true"#>)]
+<# } #>
+        <#= WritePocoColumn(col) #>
+<# if(AddWcfDataAttributes) { #>
+
+<# } } #>
+<#
+if(tbl.ReverseNavigationProperty.Count() > 0)
+{
+#>
+
+<#if(IncludeComments){#>        // Reverse navigation
+<# } #>
+<#
+foreach(string s in tbl.ReverseNavigationProperty.OrderBy(x => x))
+{
+#>
+        <#=s #>
+<# } } #>
+<# if(tbl.HasForeignKey) { #>
+
+<#if(IncludeComments){#>        // Foreign keys
+<# } #>
+<#
+foreach(Column col in from c in tbl.Columns.OrderBy(x => x.EntityFk) where c.EntityFk != null select c)
+{
+#>
+        <#=col.EntityFk #>
+<# } } #>
+<# 
+if(tbl.Columns.Where(c => c.Default != string.Empty).Count() > 0 || tbl.ReverseNavigationCtor.Count() > 0) 
+{ 
+#>
+        
+        public <#=tbl.NameHumanCase#>()
+        {
+<#
+foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal).Where(c => c.Default != string.Empty))
+{
+#>
+            <#=col.PropertyNameHumanCase #> = <#=col.Default #>;
+<# } #>
+<#
+foreach(string s in tbl.ReverseNavigationCtor)
+{
+#>
+            <#=s #>
+<# } 
+if(MakeClassesPartial) {#>
+            InitializePartial();
+<#}#>        }
+<#if(MakeClassesPartial) {#>
+
+        partial void InitializePartial();
+<#} }#>
+    }
+
+<# } }
+if(ElementsToGenerate.HasFlag(Elements.PocoConfiguration)){
+if(!GenerateSeparateFiles) { #>
+
+    // ************************************************************************
+    // POCO Configuration
+
+<# } #>
+<#
+foreach(Table tbl in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase))
+{
+#>
+<# fileManager.StartNewFile(tbl.NameHumanCase + ConfigurationClassName + FileExtension); #>
+<#if(IncludeComments){#>    // <#=tbl.Name#>
+<# } #>
+    internal <# if(MakeClassesPartial) { #>partial <# } #>class <#=tbl.NameHumanCase + ConfigurationClassName#> : EntityTypeConfiguration<<#=tbl.NameHumanCase#>>
+    {
+        public <#=tbl.NameHumanCase + ConfigurationClassName#>(string schema = "<#=tbl.Schema#>")
+        {
+ <# if (!string.IsNullOrEmpty(tbl.Schema)) { #>
+           ToTable(schema + ".<#=tbl.Name#>");
+ <# } else { #>
+           ToTable("<#=tbl.Name#>");
+ <# } #>
+           HasKey(<#=tbl.PrimaryKeyNameHumanCase()#>);
+
+<#
+foreach(Column col in tbl.Columns.Where(x => !x.Hidden).OrderBy(x => x.Ordinal))
+{
+#>
+            <#=col.Config #>
+<# } #>
+<# if(tbl.HasForeignKey) { #>
+
+<#if(IncludeComments){#>            // Foreign keys
+<# } #>
+<#
+foreach(Column col in from c in tbl.Columns.OrderBy(x => x.Ordinal) where c.ConfigFk != null select c)
+{
+#>
+            <#=col.ConfigFk #>
+<# } } #>
+<#
+foreach (string s in tbl.MappingConfiguration)
+{
+#>
+            <#=s#>
+<# } #>
+<#if(MakeClassesPartial) {#>
+            InitializePartial();
+<#}#>        }
+<#if(MakeClassesPartial) {#>
+        partial void InitializePartial();
+<#}#>    }
+
+<# } }
+if(ElementsToGenerate.HasFlag(Elements.StoredProcedures)){
+if(!GenerateSeparateFiles) { #>
+
+    // ************************************************************************
+    // Stored procedure return models
+
+<# } #>
+<#
+foreach(StoredProcedure sp in storedProcs.Where(x => x.ReturnColumns.Count > 0))
+{
+    string spReturnClassName = WriteStoredProcReturnModelName(sp);
+#>
+<# fileManager.StartNewFile(spReturnClassName + FileExtension); #>
+    public <# if(MakeClassesPartial) { #>partial <# } #>class <#= spReturnClassName #>
+    {
+<#
+foreach (var returnColumn in sp.ReturnColumns)
+{
+#>
+        <#= WriteStoredProcReturnColumn(returnColumn) #>
+<# } #>
+    }
+
+<# } } #>
+<# fileManager.StartFooter(); #>
+}
+<# fileManager.EndBlock();
+if(GenerateSeparateFiles)
+    fileManager.Process(); #>

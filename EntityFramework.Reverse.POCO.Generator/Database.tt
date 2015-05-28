@@ -1,0 +1,287 @@
+﻿<#@ include file="EF.Reverse.POCO.Core.ttinclude" #>
+<#
+    // v2.13.0
+    // Please make changes to the settings below.
+    // All you have to do is save this file, and the output file(s) is/are generated. Compiling does not regenerate the file(s).
+
+    // Main settings **********************************************************************************************************************
+    // Namespace = ""; // Override the default namespace here
+    DbContextName = "MyDbContext";
+    DbContextInterfaceBaseClasses = "IDisposable";    // Specify what the base classes are for your database context interface
+    DbContextBaseClass = "DbContext";   // Specify what the base class is for your DbContext. For ASP.NET Identity use "IdentityDbContext<ApplicationUser>"
+    ConnectionStringName = "MyDbContext";   // Searches for this connection string in config files listed below
+    TargetFrameworkVersion = "4.51"; // Please set this to your .NET framework version, 4.0, 4.5, 4.51, etc.
+    ConfigurationClassName = "Configuration"; // Configuration, Mapping, Map, etc. This is appended to the Poco class name to configure the mappings.
+    ConfigFilenameSearchOrder = new[] { "app.config", "web.config", "app.config.transform", "web.config.transform" }; // Add more here if required. The config files are searched for in the local project first, then the whole solution second.
+    MakeClassesPartial = false;
+    GenerateSeparateFiles = false;
+    UseCamelCase = true;    // This will rename the tables & fields to use CamelCase. If false table & field names will be left alone.
+    IncludeComments = true; // Adds comments to the generated code
+    IncludeExtendedPropertyComments = ExtendedPropertyCommentsStyle.AtEndOfField; // Adds extended properties as comments to the generated code
+    IncludeViews = true;
+    DisableGeographyTypes = false; // Turns off use of System.Data.Entity.Spatial.DbGeography and System.Data.Entity.Spatial.DbGeometry as OData doesn't support entities with geometry/geography types.
+    CollectionType = "List";  // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example
+    CollectionTypeNamespace = ""; // "System.Collections.ObjectModel" is required if setting the CollectionType = "ObservableCollection"
+    AddUnitTestingDbContext = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing
+    IncludeQueryTraceOn9481Flag = false; // If SqlServer 2014 appears frozen / take a long time when this file is saved, try setting this to true (you will also need elevated privileges).
+    AdditionalNamespaces = new[] { "System" };  // To include extra namespaces, include them here. i.e. "Microsoft.AspNet.Identity.EntityFramework"
+    AdditionalContextInterfaceItems = new[] // To include extra db context interface items, include them here. Also set MakeClassesPartial=true, and implement the partial DbContext class functions.
+    {
+        ""  //  example: "void SetAutoDetectChangesEnabled(bool flag);"
+    };
+
+    // Migrations *************************************************************************************************************************
+    MigrationConfigurationFileName = ""; // null or empty to not create migrations
+    MigrationStrategy = "MigrateDatabaseToLatestVersion"; // MigrateDatabaseToLatestVersion, CreateDatabaseIfNotExists or DropCreateDatabaseIfModelChanges
+    AutomaticMigrationsEnabled = true;
+    AutomaticMigrationDataLossAllowed = true; // if true, can drop fields and lose data during automatic migration
+
+    // Pluralization **********************************************************************************************************************
+    // To turn off pluralization, use:
+    //      Inflector.PluralizationService = null;
+    // Default pluralization, use:
+    //      Inflector.PluralizationService = new EnglishPluralizationService();
+    // For Spanish pluralization:
+    //      1. Intall the "EF6.Contrib" Nuget Package.
+    //      2. Add the following to the top of this file and adjust path, and remove the space between the angle bracket and # at the beginning and end.
+    //         < #@ assembly name="your full path to \EntityFramework.Contrib.dll" # >
+    //      3. Change the line below to: Inflector.PluralizationService = new SpanishPluralizationService();
+    Inflector.PluralizationService = new EnglishPluralizationService(new[]
+    {
+        // Create custom ("Singular", "Plural") forms for one-off words as needed
+        new CustomPluralizationEntry("LiveQuiz", "LiveQuizzes"),
+        new CustomPluralizationEntry("Course", "Courses"),
+        new CustomPluralizationEntry("CustomerStatus", "CustomerStatus"), // Use same value to prevent pluralisation
+        new CustomPluralizationEntry("EmployeeStatus", "EmployeeStatus")
+    });
+    
+    
+    // Elements to generate ***************************************************************************************************************
+    // Add the elements that should be generated when the template is executed.
+    // Multiple projects can now be used that separate the different concerns.
+    ElementsToGenerate = Elements.Poco | Elements.Context | Elements.UnitOfWork | Elements.PocoConfiguration | Elements.StoredProcedures;
+
+    // Use these namespaces to specify where the different elements now live. These may even be in different assemblies.
+    // Please note this does not create the files in these locations, it only adds a using statement to say where they are.
+    // I show how this works on the video from 26:08 onwards.
+    // The way to do this is to add the "EntityFramework Reverse POCO Code First Generator" into each of these folders.
+    // Then set the .tt to only generate the relevant section you need by setting
+    //      ElementsToGenerate = Elements.Poco; in your Entity folder,
+    //      ElementsToGenerate = Elements.Context | Elements.UnitOfWork; in your Context folder,
+    //      ElementsToGenerate = Elements.PocoConfiguration; in your Maps folder.
+    //      PocoNamespace = "YourProject.Entities";
+    //      ContextNamespace = "YourProject.Context";
+    //      UnitOfWorkNamespace = "YourProject.Context";	
+    //      PocoConfigurationNamespace = "YourProject.Maps";
+    // You also need to set the following to the namespace where they now live:
+    PocoNamespace = "";
+    ContextNamespace = "";
+    UnitOfWorkNamespace = "";	
+    PocoConfigurationNamespace = "";
+
+    
+    // Schema *****************************************************************************************************************************
+    // If there are multiple schemas, then the table name is prefixed with the schema, except for dbo.
+    // Ie. dbo.hello will be Hello.
+    //     abc.hello will be AbcHello.
+    // To only include a single schema, specify it below.
+    SchemaName = null;
+    PrependSchemaName = true;   // Control if the schema name is prepended to the table name
+
+
+    // Filtering **************************************************************************************************************************
+    // Use the following table/view name regex filters to include or exclude tables/views
+    // Exclude filters are checked first and tables matching filters are removed.
+    //  * If left null, none are excluded.
+    //  * If not null, any tables matching the regex are excluded.
+    // Include filters are checked second.
+    //  * If left null, all are included.
+    //  * If not null, only the tables matching the regex are included.
+    //  Example:    TableFilterExclude = new Regex(".*auto.*");
+    //              TableFilterInclude = new Regex("(.*_FR_.*)|(data_.*)");
+    //              TableFilterInclude = new Regex("^table_name1$|^table_name2$|etc");
+    //              ColumnFilterExclude = new Regex("^FK_.*$");
+    TableFilterExclude = null;
+    TableFilterInclude = null;
+    ColumnFilterExclude = null;
+
+    // Stored Procedures ******************************************************************************************************************
+    // Use the following regex filters to include or exclude stored procedures
+    StoredProcedureFilterExclude = null;
+    StoredProcedureFilterInclude = null;
+
+
+    // Table renaming *********************************************************************************************************************
+    // Use the following function to rename tables such as tblOrders to Orders, Shipments_AB to Shipments, etc.
+    // Example:
+    /*TableRename = (name, schema) =>
+    {
+        if (name.StartsWith("tbl"))
+            name = name.Remove(0, 3);
+        return name.Replace("_AB", "");
+    };*/
+    TableRename = (name, schema) => name;   // Do nothing by default
+    
+    // Column modification*****************************************************************************************************************
+    // Use the following function if you need to apply additional modifications to a column
+    // eg. normalise names etc.
+    // Example
+    /*UpdateColumn = (Column column, Table table) => 
+    {
+        if (column.PropertyNameHumanCase == "PkId")
+            column.PropertyNameHumanCase = "Id";
+        return column;
+    };*/
+    UpdateColumn = (Column column, Table table) => column; // Do nothing by default
+
+    // StoredProcedure renaming ************************************************************************************************************
+    // Use the following function to rename stored procs such as sp_CreateOrderHistory to CreateOrderHistory, my_sp_shipments to Shipments, etc.
+    // Example:
+    /*StoredProcedureRename = (name, schema) =>
+    {
+        if (name.StartsWith("sp_"))
+            name = name.Remove(0, 3);
+        return name.Replace("my_sp_", "");
+    };*/
+    StoredProcedureRename = (name, schema) => name;   // Do nothing by default
+
+
+    // WCF ********************************************************************************************************************************
+    // This is only intended as a helper, to get you started creating WCF contracts, and to save a lot of typing.
+    AddWcfDataAttributes = false;
+    ExtraWcfDataContractAttributes = "";    // This string is inserted into the  [DataContract] attribute, before the closing square bracket.
+    // Example: "";                                           = [DataContract]
+    //          "(Namespace = \"http://www.contoso.com\")";   = [DataContract(Namespace = "http://www.contoso.com")]
+    //          "(Namespace = Constants.ServiceNamespace)";   = [DataContract(Namespace = Constants.ServiceNamespace)]
+    
+
+    // Callbacks **********************************************************************************************************************
+    // This method will be called right before we write the POCO header.
+    Action<Table> WritePocoClassAttributes = t =>
+    {
+        // Do nothing by default
+        // Example:
+        // if(t.ClassName.StartsWith("Order"))
+        //     WriteLine("    [SomeAttribute]");
+    };
+
+    // Writes optional base classes
+    Func<Table, string> WritePocoBaseClasses = t =>
+    {
+        //if (t.ClassName == "User")
+        //    return ": IdentityUser<int, CustomUserLogin, CustomUserRole, CustomUserClaim>";
+        return "";
+    };
+
+    // Writes any boilerplate stuff
+    Action<Table> WritePocoBaseClassBody = t =>
+    {
+        // Do nothing by default
+        // Example:
+        // WriteLine("        // " + t.ClassName);
+    };
+
+    Func<Column, string> WritePocoColumn = c => c.Entity;
+
+    Func<StoredProcedure, string> WriteStoredProcFunctionName = sp => sp.NameHumanCase;
+
+    Func<StoredProcedure, string> WriteStoredProcFunctionParams = sp =>
+    {
+        var sb = new StringBuilder();
+        int n = 1;
+        int count = sp.Parameters.Count;
+        foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
+        {
+            sb.AppendFormat("{0}{1}{2} {3}{4}", 
+                p.Mode == StoredProcedureParameterMode.In ? "" : "out ", 
+                p.PropertyType,
+                NotNullable.Contains(p.PropertyType.ToLower()) ? string.Empty : "?",
+                p.NameHumanCase, 
+                (n++ < count) ? ", " : string.Empty);
+        }
+        if (sp.ReturnColumns.Count > 0)
+            sb.AppendFormat((sp.Parameters.Count > 0 ?  "," : "") + " out int procResult");
+        return sb.ToString();
+    };
+
+    Func<StoredProcedure, string> WriteStoredProcFunctionSqlAtParams = sp =>
+    {
+        var sb = new StringBuilder();
+        int n = 1;
+        int count = sp.Parameters.Count;
+        foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
+        {
+            sb.AppendFormat("{0}{1}{2}", 
+                p.Name, 
+                p.Mode == StoredProcedureParameterMode.In ? string.Empty : " OUTPUT", 
+                (n++ < count) ? ", " : string.Empty);
+        }
+        return sb.ToString();
+    };
+
+    Func<StoredProcedure, string> WriteStoredProcFunctionDeclareSqlParameter = sp =>
+    {
+        var sb = new StringBuilder();
+        foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
+        {
+            var getValueOrDefault = NotNullable.Contains(p.PropertyType.ToLower()) ? string.Empty : ".GetValueOrDefault()";
+    
+            sb.AppendLine(string.Format("            var {0}Param = new SqlParameter {{ ParameterName = \"{1}\", SqlDbType = SqlDbType.{2}, Direction = ParameterDirection.{3}{4}{5} }};", 
+                p.NameHumanCase, 
+                p.Name, 
+                p.SqlDbType, 
+                p.Mode == StoredProcedureParameterMode.In ? "Input" : "Output",
+                p.Mode == StoredProcedureParameterMode.In ? ", Value = " + p.NameHumanCase + getValueOrDefault : string.Empty,
+                p.MaxLength > 0 ? ", Size = " + p.MaxLength : string.Empty));
+        }
+        sb.AppendLine("            var procResultParam = new SqlParameter { ParameterName = \"@procResult\", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };");
+        return sb.ToString();
+    };
+
+    Func<StoredProcedure, string> WriteStoredProcFunctionSqlParameterAnonymousArray = sp =>
+    {
+        var sb = new StringBuilder();
+        foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
+        {
+            sb.Append(string.Format("{0}Param, ", p.NameHumanCase));
+        }
+        sb.Append("procResultParam");
+        return sb.ToString();
+    };
+    
+    Func<StoredProcedure, bool, string> WriteStoredProcFunctionSetSqlParameters = (sp, isFake) =>
+    {
+        var sb = new StringBuilder();
+        foreach (var p in sp.Parameters.Where(x => x.Mode != StoredProcedureParameterMode.In).OrderBy(x => x.Ordinal))
+        {
+            if(isFake)
+                sb.AppendLine(string.Format("            {0} = default({1});", p.NameHumanCase, p.PropertyType));
+            else
+                sb.AppendLine(string.Format("            {0} = ({1}) {2}Param.Value;", p.NameHumanCase, p.PropertyType, p.NameHumanCase));
+        }
+        return sb.ToString();
+    };
+    
+    Func<StoredProcedure, string> WriteStoredProcReturnModelName = sp => 
+        string.Format("{0}ReturnModel", sp.NameHumanCase);
+
+    Func<DataColumn, string> WriteStoredProcReturnColumn = col => 
+        string.Format("public {0}{1}{2} {{ get; set; }}",
+            col.DataType.Name, StoredProcedure.CheckNullable(col), col.ColumnName);
+
+    
+    // That's it, nothing else to configure ***********************************************************************************************
+    
+    
+    
+    // Read schema
+    var factory = GetDbProviderFactory();
+    var tables = LoadTables(factory);
+    var storedProcs = LoadStoredProcs(factory);
+    
+    // Generate output
+    if (tables.Count > 0 || storedProcs.Count > 0)
+    {
+#>
+<#@ include file="EF.Reverse.POCO.ttinclude" #>
+<# } #>
