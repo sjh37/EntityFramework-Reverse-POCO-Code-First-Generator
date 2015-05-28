@@ -715,6 +715,12 @@
             public string Entity;
             public List<string> EntityFk = new List<string>();
 
+            public void ResetNavigationProperties()
+            {
+                ConfigFk = new List<string>();
+                EntityFk = new List<string>();
+            }
+
             private void SetupEntity(bool includeComments, ExtendedPropertyCommentsStyle includeExtendedPropertyComments)
             {
                 string comments;
@@ -2273,6 +2279,8 @@ OPTION (QUERYTRACEON 9481)";
                 ReverseNavigationProperty = new List<string>();
                 ReverseNavigationCtor = new List<string>();
                 ReverseNavigationUniquePropName = new List<string>();
+                foreach (var col in Columns)
+                    col.ResetNavigationProperties();
             }
 
             public IEnumerable<Column> PrimaryKeys
