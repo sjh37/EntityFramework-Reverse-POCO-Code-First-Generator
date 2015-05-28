@@ -513,7 +513,7 @@ foreach(string s in tbl.ReverseNavigationProperty.OrderBy(x => x))
 <#if(IncludeComments){#>        // Foreign keys
 <# } #>
 <#
-foreach(var entityFk in tbl.Columns.SelectMany(x => x.EntityFk).Distinct().OrderBy(o => o))
+foreach(var entityFk in tbl.Columns.SelectMany(x => x.EntityFk).OrderBy(o => o))
 {
 #>
         <#=entityFk #>
@@ -583,7 +583,7 @@ foreach(Column col in tbl.Columns.Where(x => !x.Hidden).OrderBy(x => x.Ordinal))
 <#if(IncludeComments){#>            // Foreign keys
 <# } #>
 <#
-foreach(var configFk in tbl.Columns.SelectMany(x => x.ConfigFk).Distinct().OrderBy(o => o))
+foreach(var configFk in tbl.Columns.SelectMany(x => x.ConfigFk).OrderBy(o => o))
 {
 #>
             <#=configFk #>
