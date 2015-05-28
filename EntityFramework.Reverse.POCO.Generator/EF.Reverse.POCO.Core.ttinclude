@@ -711,9 +711,9 @@
             public bool IsForeignKey;
 
             public string Config;
-            public string ConfigFk;
+            public List<string> ConfigFk = new List<string>();
             public string Entity;
-            public string EntityFk;
+            public List<string> EntityFk = new List<string>();
 
             private void SetupEntity(bool includeComments, ExtendedPropertyCommentsStyle includeExtendedPropertyComments)
             {
@@ -1827,7 +1827,7 @@ OPTION (QUERYTRACEON 9481)";
                     bool fkMakePropNameSingular = (relationship == Relationship.OneToOne);
                     string fkPropName = pkTable.GetUniqueColumnPropertyName(fkTable.NameHumanCase, foreignKey, useCamelCase, checkForFkNameClashes, fkMakePropNameSingular);
 
-                    fkCol.col.EntityFk = string.Format("public virtual {0} {1} {2}{3}", pkTableHumanCase, pkPropName, "{ get; set; }", includeComments ? " // " + foreignKey.ConstraintName : string.Empty);
+                    fkCol.col.EntityFk.Add(string.Format("public virtual {0} {1} {2}{3}", pkTableHumanCase, pkPropName, "{ get; set; }", includeComments ? " // " + foreignKey.ConstraintName : string.Empty));
 
                     string manyToManyMapping;
                     if(foreignKeys.Count > 1)
@@ -1835,7 +1835,7 @@ OPTION (QUERYTRACEON 9481)";
                     else
                         manyToManyMapping = string.Format("c => c.{0}", fkCol.col.PropertyNameHumanCase);
 
-                    fkCol.col.ConfigFk = string.Format("{0};{1}", GetRelationship(relationship, fkCol.col, pkCol, pkPropName, fkPropName, manyToManyMapping), includeComments ? " // " + foreignKey.ConstraintName : string.Empty);
+                    fkCol.col.ConfigFk.Add(string.Format("{0};{1}", GetRelationship(relationship, fkCol.col, pkCol, pkPropName, fkPropName, manyToManyMapping), includeComments ? " // " + foreignKey.ConstraintName : string.Empty));
                     pkTable.AddReverseNavigation(relationship, pkTableHumanCase, fkTable, fkPropName, string.Format("{0}.{1}", fkTable.Name, foreignKey.ConstraintName), collectionType, includeComments);
                 }
             }

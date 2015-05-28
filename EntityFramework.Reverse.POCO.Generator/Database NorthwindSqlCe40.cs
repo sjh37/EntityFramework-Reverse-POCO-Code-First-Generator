@@ -535,9 +535,9 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
             Property(x => x.Freight).HasColumnName("Freight").IsOptional().HasPrecision(19,4);
 
             // Foreign keys
-            HasRequired(a => a.Customer).WithMany(b => b.Orders).HasForeignKey(c => c.CustomerId); // Orders_FK00
             HasOptional(a => a.Employee).WithMany(b => b.Orders).HasForeignKey(c => c.EmployeeId); // Orders_FK02
             HasOptional(a => a.Shipper).WithMany(b => b.Orders).HasForeignKey(c => c.ShipVia); // Orders_FK01
+            HasRequired(a => a.Customer).WithMany(b => b.Orders).HasForeignKey(c => c.CustomerId); // Orders_FK00
         }
     }
 
@@ -582,8 +582,8 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
             Property(x => x.Discontinued).HasColumnName("Discontinued").IsRequired();
 
             // Foreign keys
-            HasOptional(a => a.Supplier).WithMany(b => b.Products).HasForeignKey(c => c.SupplierId); // Products_FK00
             HasOptional(a => a.Category).WithMany(b => b.Products).HasForeignKey(c => c.CategoryId); // Products_FK01
+            HasOptional(a => a.Supplier).WithMany(b => b.Products).HasForeignKey(c => c.SupplierId); // Products_FK00
         }
     }
 

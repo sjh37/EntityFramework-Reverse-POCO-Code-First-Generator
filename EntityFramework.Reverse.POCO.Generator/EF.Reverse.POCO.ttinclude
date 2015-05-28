@@ -513,10 +513,10 @@ foreach(string s in tbl.ReverseNavigationProperty.OrderBy(x => x))
 <#if(IncludeComments){#>        // Foreign keys
 <# } #>
 <#
-foreach(Column col in from c in tbl.Columns.OrderBy(x => x.EntityFk) where c.EntityFk != null select c)
+foreach(var entityFk in tbl.Columns.SelectMany(x => x.EntityFk).Distinct().OrderBy(o => o))
 {
 #>
-        <#=col.EntityFk #>
+        <#=entityFk #>
 <# } } #>
 <# 
 if(tbl.Columns.Where(c => c.Default != string.Empty).Count() > 0 || tbl.ReverseNavigationCtor.Count() > 0) 
@@ -583,10 +583,10 @@ foreach(Column col in tbl.Columns.Where(x => !x.Hidden).OrderBy(x => x.Ordinal))
 <#if(IncludeComments){#>            // Foreign keys
 <# } #>
 <#
-foreach(Column col in from c in tbl.Columns.OrderBy(x => x.Ordinal) where c.ConfigFk != null select c)
+foreach(var configFk in tbl.Columns.SelectMany(x => x.ConfigFk).Distinct().OrderBy(o => o))
 {
 #>
-            <#=col.ConfigFk #>
+            <#=configFk #>
 <# } } #>
 <#
 foreach (string s in tbl.MappingConfiguration)
