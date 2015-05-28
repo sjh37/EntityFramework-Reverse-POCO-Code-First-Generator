@@ -30,9 +30,9 @@
             InSummaryBlock,
             AtEndOfField
         };
-        
+
         // Settings - edit these in the main <name>.tt file *******************************************************************************
-        string ConnectionStringName = "";        		
+        string ConnectionStringName = "";
         bool IncludeViews = true;
         bool AddUnitTestingDbContext = true;
         string DbContextName = "MyDbContext";
@@ -105,19 +105,19 @@
 
         static string[] NotNullable = new string[]
         {
-            "string", 
-            "byte[]", 
-            "Microsoft.SqlServer.Types.SqlGeography", 
+            "string",
+            "byte[]",
+            "Microsoft.SqlServer.Types.SqlGeography",
             "Microsoft.SqlServer.Types.SqlGeometry",
             "System.Data.Entity.Spatial.DbGeography",
             "System.Data.Entity.Spatial.DbGeometry"
         };
-        
+
         static string[] ReservedKeywords = new string[]
         {
             "abstract", "as", "base", "bool", "break", "byte", "case", "catch", "char",
             "checked", "class", "const", "continue", "decimal", "default", "delegate", "do",
-            "double", "else", "enum", "event", "explicit", "extern", "false", "finally", "fixed", 
+            "double", "else", "enum", "event", "explicit", "extern", "false", "finally", "fixed",
             "float", "for", "foreach", "goto", "if", "implicit", "in", "int", "interface",
             "internal", "is", "lock", "long", "namespace", "new", "null", "object", "operator",
             "out", "override", "params", "private", "protected", "public", "readonly", "ref",
@@ -149,7 +149,7 @@
             }
             if (replacedCharacter)
                 str = sb.ToString();
-            
+
             // Remove non alphanumerics
             str = RxCleanUp.Replace(str, "");
             if(char.IsDigit(str[0]))
@@ -250,7 +250,7 @@
 
             return dte;
         }
-        
+
         public EnvDTE.Solution GetSolution()
         {
             return GetDTE().Solution;
@@ -275,7 +275,7 @@
         {
             if (project.ProjectItems == null)
                 yield break;
-            
+
             foreach (EnvDTE.ProjectItem projectItem in project.ProjectItems)
             {
                 var subProject = projectItem.SubProject;
@@ -308,7 +308,7 @@
             var item = dte.Solution.FindProjectItem(Host.TemplateFile);
             if (item != null && item.ContainingProject != null)
                 return item.ContainingProject;
-            
+
             throw new InvalidOperationException("Error in GetCurrentProject(). Unable to find project.");
         }
 
@@ -333,7 +333,7 @@
         private List<string> GetConfigPaths()
         {
             var paths = new List<string>();
-            
+
             // Local project first
             EnvDTE.Project project = GetCurrentProject();
             paths.AddRange(GetConfigPathsInProject(project));
@@ -415,7 +415,7 @@
             // Fall back to default
             var project = GetCurrentProject();
             return Path.GetDirectoryName(project.FileName) + "\\App_Data\\";
-        }		
+        }
 
         private static string ZapPassword(string connectionString)
         {
@@ -469,9 +469,9 @@
 
         private Tables LoadTables(DbProviderFactory factory)
         {
-            if(factory == null || !(ElementsToGenerate.HasFlag(Elements.Poco) || 
-                                    ElementsToGenerate.HasFlag(Elements.Context) || 
-                                    ElementsToGenerate.HasFlag(Elements.UnitOfWork) || 
+            if(factory == null || !(ElementsToGenerate.HasFlag(Elements.Poco) ||
+                                    ElementsToGenerate.HasFlag(Elements.Context) ||
+                                    ElementsToGenerate.HasFlag(Elements.UnitOfWork) ||
                                     ElementsToGenerate.HasFlag(Elements.PocoConfiguration)))
                 return new Tables();
 
@@ -554,7 +554,7 @@
                 return new Tables();
             }
         }
-        
+
         private List<StoredProcedure> LoadStoredProcs(DbProviderFactory factory)
         {
             if(factory == null || !ElementsToGenerate.HasFlag(Elements.StoredProcedures))
@@ -659,7 +659,7 @@
             // n:n
             return Relationship.ManyToMany;*/
         }
-        
+
         public static Relationship CalcRelationshipSingle(Table pkTable, Table fkTable, Column fkCol, Column pkCol)
         {
             bool fkTableSinglePrimaryKey = (fkTable.PrimaryKeys.Count() == 1);
@@ -969,7 +969,7 @@
             InOut,
             Out
         };
-    
+
         public class StoredProcedureParameter
         {
             public int Ordinal;
@@ -1089,7 +1089,7 @@
             {
                 return String.Concat(word.Substring(0, 1).ToUpper(), word.Substring(1).ToLower());
             }
-            
+
             /// <summary>
             /// Makes the initial character lowercase.
             /// </summary>
@@ -1400,7 +1400,7 @@ WHERE   t.is_ms_shipped = 0
 
             private bool IncludeQueryTraceOn9481Flag;
 
-            public SqlServerSchemaReader(DbConnection connection, DbProviderFactory factory, bool includeQueryTraceOn9481Flag) 
+            public SqlServerSchemaReader(DbConnection connection, DbProviderFactory factory, bool includeQueryTraceOn9481Flag)
                 : base(connection, factory)
             {
                 IncludeQueryTraceOn9481Flag = includeQueryTraceOn9481Flag;
@@ -1409,7 +1409,7 @@ WHERE   t.is_ms_shipped = 0
             private string IncludeQueryTraceOn9481()
             {
                 if (IncludeQueryTraceOn9481Flag)
-                    return @" 
+                    return @"
 OPTION (QUERYTRACEON 9481)";
                 return string.Empty;
             }
@@ -1419,7 +1419,7 @@ OPTION (QUERYTRACEON 9481)";
                 var result = new Tables();
                 if(Cmd == null)
                     return result;
-                
+
                 Cmd.CommandText = TableSQL + IncludeQueryTraceOn9481();
                 if (Cmd.GetType().Name == "SqlCeCommand")
                     Cmd.CommandText = TableSQLCE;
@@ -1460,6 +1460,11 @@ OPTION (QUERYTRACEON 9481)";
 
                                 tableName = tableRename(tableName, schema);
 
+                                // Handle table names with underscores - singularise just the last word
+                                var tableNameParts = tableName.Split(new [] {'_'});
+                                tableNameParts[tableNameParts.Length -1] = Inflector.MakeSingular(tableNameParts[tableNameParts.Length -1]);
+                                tableName = string.Join("_", tableNameParts);
+
                                 table.CleanName = CleanUp(tableName);
                                 table.ClassName = Inflector.MakeSingular(table.CleanName);
                                 string singular = Inflector.MakeSingular(tableName);
@@ -1494,7 +1499,7 @@ OPTION (QUERYTRACEON 9481)";
                     ReadExtendedProperties(result);
 
                 ReadUniqueIndexes(result);
-                
+
                 foreach(Table tbl in result)
                 {
                     tbl.Columns.ForEach(x => x.SetupEntityAndConfig(includeComments, includeExtendedPropertyComments));
@@ -1527,14 +1532,14 @@ OPTION (QUERYTRACEON 9481)";
                         string pkColumn = rdr["PK_Column"].ToString().Replace(" ", "");
                         string constraintName = rdr["Constraint_Name"].ToString().Replace(" ", "");
                         int ordinal = (int) rdr["ORDINAL_POSITION"];
-                        
+
                         string fkTableNameFiltered = tableRename(fkTableName, fkSchema);
                         string pkTableNameFiltered = tableRename(pkTableName, pkSchema);
 
                         fkList.Add(new ForeignKey(fkTableName, fkSchema, pkTableName, pkSchema, fkColumn, pkColumn, constraintName, fkTableNameFiltered, pkTableNameFiltered, ordinal));
                     }
                 }
-                
+
                 return fkList;
             }
 
@@ -1656,13 +1661,13 @@ OPTION (QUERYTRACEON 9481)";
                     }
                 }
             }
-            
+
             public override List<StoredProcedure> ReadStoredProcs(Regex spFilterExclude, bool useCamelCase, bool prependSchemaName , Func<string, string, string> StoredProcedureRename, string schemaNameFilter)
             {
                 var result = new List<StoredProcedure>();
                 if(Cmd == null)
                     return result;
-            
+
                 Cmd.CommandText = StoredProcedureSQL + IncludeQueryTraceOn9481();
                 if (Cmd.GetType().Name == "SqlCeCommand")
                     return result;
@@ -1693,9 +1698,9 @@ OPTION (QUERYTRACEON 9481)";
                             };
                             if((string.Compare(schema, "dbo", StringComparison.OrdinalIgnoreCase) != 0) && prependSchemaName)
                                 sp.NameHumanCase = schema + "_" + sp.NameHumanCase;
-                            
+
                             sp.NameHumanCase = StoredProcedureRename(sp.NameHumanCase, schema);
-                            
+
                             result.Add(sp);
                         }
 
@@ -1802,7 +1807,7 @@ OPTION (QUERYTRACEON 9481)";
 
                     var fkCols = foreignKeys.Select(x => new
                         {
-                            fkOrdinal = x.Ordinal, 
+                            fkOrdinal = x.Ordinal,
                             col = fkTable.Columns.Find(n => n.PropertyName == x.FkColumn || n.PropertyName == x.FkColumn + "_")
                         })
                         .Where(x => x != null)
@@ -1943,13 +1948,13 @@ OPTION (QUERYTRACEON 9481)";
                     PrimaryKeyOrdinal = (int)rdr["PrimaryKeyOrdinal"],
                     IsForeignKey = rdr["IsForeignKey"].ToString().Trim().ToLower() == "true"
                 };
-                
+
                 if(columnFilterExclude != null && !col.IsPrimaryKey && columnFilterExclude.IsMatch(col.Name))
                     col.Hidden = true;
 
                 col.IsFixedLength = (typename == "char" || typename == "nchar");
                 col.IsUnicode = !(typename == "char" || typename == "varchar" || typename == "text");
-                
+
                 col.IsRowVersion = col.IsStoreGenerated && !col.IsNullable && typename == "timestamp";
                 if (col.IsRowVersion)
                     col.MaxLength = 8;
@@ -2239,7 +2244,7 @@ OPTION (QUERYTRACEON 9481)";
             public string Column;
             public int ColumnCount;
         }
-        
+
         public class Table
         {
             public string Name;
@@ -2348,7 +2353,7 @@ OPTION (QUERYTRACEON 9481)";
 
                     if (ReverseNavigationUniquePropName.Contains(col))
                         continue;
-                    
+
                     ReverseNavigationUniquePropName.Add(col);
                     return col;
                 }
@@ -2378,7 +2383,7 @@ OPTION (QUERYTRACEON 9481)";
                         ReverseNavigationProperty.Add(string.Format("public virtual ICollection<{0}> {1} {{ get; set; }}{2}", fkTable.NameHumanCase, propName, includeComments ? " // Many to many mapping" : string.Empty));
                         ReverseNavigationCtor.Add(string.Format("{0} = new {1}<{2}>();", propName, collectionType, fkTable.NameHumanCase));
                         break;
-                    
+
                     default:
                         throw new ArgumentOutOfRangeException("relationship");
                 }
@@ -2386,7 +2391,7 @@ OPTION (QUERYTRACEON 9481)";
 
             public void AddMappingConfiguration(ForeignKey left, ForeignKey right, bool useCamelCase, string leftPropName, string rightPropName, bool isSqlCE)
             {
-                MappingConfiguration.Add(string.Format(@"HasMany(t => t.{0}).WithMany(t => t.{1}).Map(m => 
+                MappingConfiguration.Add(string.Format(@"HasMany(t => t.{0}).WithMany(t => t.{1}).Map(m =>
             {{
                 m.ToTable(""{2}""{5});
                 m.MapLeftKey(""{3}"");
@@ -2414,7 +2419,7 @@ OPTION (QUERYTRACEON 9481)";
                 // Must have only 2 columns to be a mapping table
                 if (Columns.Count != 2)
                     return;
-                
+
                 // All columns must be primary keys
                 if (PrimaryKeys.Count() != 2)
                     return;
@@ -2428,14 +2433,14 @@ OPTION (QUERYTRACEON 9481)";
                                                String.Compare(x.FkTableName, Name, StringComparison.OrdinalIgnoreCase) == 0 &&
                                                String.Compare(x.FkSchema, Schema, StringComparison.OrdinalIgnoreCase) == 0)
                                         .ToList();
-                
+
                 // Each column must have a foreign key, therefore check column and foreign key counts match
                 if (foreignKeys.Select(x => x.FkColumn).Distinct().Count() != 2)
                     return;
 
                 ForeignKey left  = foreignKeys[0];
                 ForeignKey right = foreignKeys[1];
-                
+
                 Table leftTable = tables.GetTable(left.PkTableName, left.PkSchema);
                 if (leftTable == null)
                     return;
@@ -2461,8 +2466,8 @@ OPTION (QUERYTRACEON 9481)";
         {
             public Table GetTable(string tableName, string schema)
             {
-                return this.SingleOrDefault(x => 
-                    String.Compare(x.Name, tableName, StringComparison.OrdinalIgnoreCase) == 0 && 
+                return this.SingleOrDefault(x =>
+                    String.Compare(x.Name, tableName, StringComparison.OrdinalIgnoreCase) == 0 &&
                     String.Compare(x.Schema, schema, StringComparison.OrdinalIgnoreCase) == 0);
             }
 
