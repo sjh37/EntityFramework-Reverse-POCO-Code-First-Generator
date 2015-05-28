@@ -1290,8 +1290,8 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.Discontinued).HasColumnName("Discontinued").IsRequired();
 
             // Foreign keys
-            HasOptional(a => a.Supplier).WithMany(b => b.Products).HasForeignKey(c => c.SupplierId); // FK_Products_Suppliers
             HasOptional(a => a.Category).WithMany(b => b.Products).HasForeignKey(c => c.CategoryId); // FK_Products_Categories
+            HasOptional(a => a.Supplier).WithMany(b => b.Products).HasForeignKey(c => c.SupplierId); // FK_Products_Suppliers
         }
     }
 
