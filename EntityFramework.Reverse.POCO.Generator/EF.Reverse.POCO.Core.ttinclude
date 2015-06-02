@@ -2351,7 +2351,7 @@ OPTION (QUERYTRACEON 9481)";
                 }
 
                 for (int n = 1; n < 99; ++n)
-                    {
+                {
                     col = tableNameHumanCase + n;
 
                     if (ReverseNavigationUniquePropName.Contains(col))
