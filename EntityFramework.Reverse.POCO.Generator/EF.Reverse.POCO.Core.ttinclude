@@ -795,9 +795,13 @@
 
             public void CleanUpDefault()
             {
-                if(string.IsNullOrEmpty(Default))
+                if (string.IsNullOrWhiteSpace(Default))
+                {
+                    Default = string.Empty;
                     return;
+                }
 
+                // Remove outer brackets
                 while (Default.First() == '(' && Default.Last() == ')' && Default.Length > 2)
                 {
                     Default = Default.Substring(1, Default.Length - 2);
@@ -845,8 +849,17 @@
                         break;
                 }
 
-                if(string.IsNullOrWhiteSpace(Default))
+                if(lowerPropertyType == "string" && lower.StartsWith("space("))
+                {
+                    Default = "\"\"";
                     return;
+                }
+
+                if(string.IsNullOrWhiteSpace(Default))
+                {
+                    Default = string.Empty;
+                    return;
+                }
 
                 // Validate default
                 switch(lowerPropertyType)
