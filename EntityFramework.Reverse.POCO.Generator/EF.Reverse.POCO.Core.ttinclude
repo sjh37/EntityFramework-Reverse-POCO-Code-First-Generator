@@ -757,6 +757,7 @@
                 string propertyType = PropertyType.ToLower();
                 switch (propertyType)
                 {
+                    case "bool":
                     case "long":
                     case "short":
                     case "int":
