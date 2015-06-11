@@ -610,7 +610,7 @@ if(!GenerateSeparateFiles) { #>
 
 <# } #>
 <#
-foreach(StoredProcedure sp in storedProcs.Where(x => x.ReturnColumns.Count > 0))
+foreach(StoredProcedure sp in storedProcs.Where(x => x.ReturnColumns.Count > 0 && !StoredProcedureReturnTypes.ContainsKey(x.NameHumanCase) && !StoredProcedureReturnTypes.ContainsKey(x.Name)))
 {
     string spReturnClassName = WriteStoredProcReturnModelName(sp);
 #>
