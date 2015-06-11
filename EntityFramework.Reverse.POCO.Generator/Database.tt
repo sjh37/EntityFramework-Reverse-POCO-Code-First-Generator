@@ -145,6 +145,13 @@
     };*/
     StoredProcedureRename = (name, schema) => name;   // Do nothing by default
 
+    // StoredProcedure return types *******************************************************************************************************
+    // Override generation of return models for stored procedures that return entities.
+    // If a stored procedure returns an entity, add it to the list below.
+    // This will suppress the generation of the return model, and instead return the entity.
+    // Example:                       Proc name      Return this entity type instead
+    //StoredProcedureReturnTypes.Add("SalesByYear", "SummaryOfSalesByYear");
+
 
     // WCF ********************************************************************************************************************************
     // This is only intended as a helper, to get you started creating WCF contracts, and to save a lot of typing.
@@ -261,9 +268,13 @@
         }
         return sb.ToString();
     };
-    
-    Func<StoredProcedure, string> WriteStoredProcReturnModelName = sp => 
-        string.Format("{0}ReturnModel", sp.NameHumanCase);
+
+    Func<StoredProcedure, string> WriteStoredProcReturnModelName = sp =>
+        StoredProcedureReturnTypes.ContainsKey(sp.NameHumanCase)
+            ? StoredProcedureReturnTypes[sp.NameHumanCase]
+            : StoredProcedureReturnTypes.ContainsKey(sp.Name)
+                ? StoredProcedureReturnTypes[sp.Name]
+                : string.Format("{0}ReturnModel", sp.NameHumanCase);
 
     Func<DataColumn, string> WriteStoredProcReturnColumn = col => 
         string.Format("public {0}{1}{2} {{ get; set; }}",

@@ -57,6 +57,7 @@
         Regex TableFilterInclude = null;
         Regex StoredProcedureFilterExclude = null;
         Regex StoredProcedureFilterInclude = null;
+        Dictionary<string, string> StoredProcedureReturnTypes = new Dictionary<string, string>();
         Regex ColumnFilterExclude = null;
         string[] ConfigFilenameSearchOrder = null;
         string[] AdditionalNamespaces = null;
