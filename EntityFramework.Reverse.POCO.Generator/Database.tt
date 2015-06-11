@@ -192,7 +192,7 @@
 
     Func<StoredProcedure, string> WriteStoredProcFunctionName = sp => sp.NameHumanCase;
 
-    Func<StoredProcedure, string> WriteStoredProcFunctionParams = sp =>
+    Func<StoredProcedure, bool, string> WriteStoredProcFunctionParams = (sp, includeProcResult) =>
     {
         var sb = new StringBuilder();
         int n = 1;
@@ -206,8 +206,23 @@
                 p.NameHumanCase, 
                 (n++ < count) ? ", " : string.Empty);
         }
-        if (sp.ReturnColumns.Count > 0)
+        if (includeProcResult && sp.ReturnColumns.Count > 0)
             sb.AppendFormat((sp.Parameters.Count > 0 ?  "," : "") + " out int procResult");
+        return sb.ToString();
+    };
+    
+    Func<StoredProcedure, string> WriteStoredProcFunctionOverloadCall = (sp) =>
+    {
+        var sb = new StringBuilder();
+        int n = 1;
+        int count = sp.Parameters.Count;
+        foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
+        {
+            sb.AppendFormat("{0}{1}, ", 
+                p.Mode == StoredProcedureParameterMode.In ? "" : "out ", 
+                p.NameHumanCase);
+        }
+        sb.AppendFormat("out procResult");
         return sb.ToString();
     };
 
