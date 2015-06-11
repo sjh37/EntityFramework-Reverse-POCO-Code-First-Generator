@@ -72,6 +72,7 @@
         string MigrationStrategy = "MigrateDatabaseToLatestVersion";
         bool AutomaticMigrationsEnabled = true;
         bool AutomaticMigrationDataLossAllowed = true;
+        List<EnumDefinition> EnumsDefinitions = new List<EnumDefinition>();
 
         string CodeGeneratedAttribute = "[GeneratedCodeAttribute(\"EF.Reverse.POCO.Generator\", \"2.13.1.0\")]";
         // Settings to allow selective code generation
@@ -680,6 +681,13 @@
 
             // n:n
             return Relationship.ManyToMany;
+        }
+
+        public class EnumDefinition
+        {
+            public string Table;
+            public string Column;
+            public string EnumType;
         }
 
         #region Nested type: Column
