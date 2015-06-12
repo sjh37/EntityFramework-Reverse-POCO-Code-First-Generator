@@ -9,6 +9,9 @@
 //     Connection String Name: "MyDbContext"
 //     Connection String:      "Data Source=(local);Initial Catalog=northwind;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator"
 
+// Database Edition: Developer Edition (64-bit)
+// Database Engine Edition: Enterprise
+
 // ReSharper disable RedundantUsingDirective
 // ReSharper disable DoNotCallOverridableMethodsInConstructor
 // ReSharper disable InconsistentNaming
