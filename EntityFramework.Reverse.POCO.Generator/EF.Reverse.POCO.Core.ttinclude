@@ -556,6 +556,7 @@
                 return new Tables();
             }
         }
+
         
         private List<StoredProcedure> LoadStoredProcs(DbProviderFactory factory)
         {
@@ -1164,6 +1165,8 @@
 
         private class SqlServerSchemaReader : SchemaReader
         {
+            private static string SqlDatabaseEdition, SqlDatabaseEngineEdition;
+
             private const string TableSQL = @"
 SELECT  c.TABLE_SCHEMA AS SchemaName,
         c.TABLE_NAME AS TableName,
@@ -1400,6 +1403,37 @@ ORDER BY R.SPECIFIC_SCHEMA,
         R.SPECIFIC_NAME,
         P.ORDINAL_POSITION";
 
+            private const string StoredProcedureSQLAzure = @"
+SELECT  R.SPECIFIC_SCHEMA,
+        R.SPECIFIC_NAME,
+        P.ORDINAL_POSITION,
+        P.PARAMETER_MODE,
+        P.PARAMETER_NAME,
+        P.DATA_TYPE,
+        ISNULL(P.CHARACTER_MAXIMUM_LENGTH, 0) AS CHARACTER_MAXIMUM_LENGTH,
+        ISNULL(P.NUMERIC_PRECISION, 0) AS NUMERIC_PRECISION,
+        ISNULL(P.NUMERIC_SCALE, 0) AS NUMERIC_SCALE,
+        ISNULL(P.DATETIME_PRECISION, 0) AS DATETIME_PRECISION
+FROM    INFORMATION_SCHEMA.ROUTINES R
+        LEFT OUTER JOIN INFORMATION_SCHEMA.PARAMETERS P
+            ON P.SPECIFIC_SCHEMA = R.SPECIFIC_SCHEMA
+               AND P.SPECIFIC_NAME = R.SPECIFIC_NAME
+WHERE   R.ROUTINE_TYPE = 'PROCEDURE'
+        AND (
+             P.IS_RESULT = 'NO'
+             OR P.IS_RESULT IS NULL
+            )
+        AND R.SPECIFIC_SCHEMA + R.SPECIFIC_NAME IN (
+            SELECT  SCHEMA_NAME(sp.schema_id) + sp.name
+            FROM    sys.all_objects AS sp
+                    LEFT OUTER JOIN sys.all_sql_modules AS sm
+                        ON sm.object_id = sp.object_id
+            WHERE   sp.type = 'P'
+                    AND sp.is_ms_shipped = 0)
+ORDER BY R.SPECIFIC_SCHEMA,
+        R.SPECIFIC_NAME,
+        P.ORDINAL_POSITION";
+
             private const string UniqueIndexSQL = @"
 SELECT  SCHEMA_NAME(t.schema_id) AS TableSchema,
         t.name AS TableName,
@@ -1441,6 +1475,40 @@ WHERE   t.is_ms_shipped = 0
                     return @" 
 OPTION (QUERYTRACEON 9481)";
                 return string.Empty;
+            }
+
+            private bool IsAzure()
+            {
+                if (string.IsNullOrEmpty(SqlDatabaseEdition))
+                {
+                    if (Cmd == null)
+                        return false;
+
+                    Cmd.CommandText = @"
+SELECT  SERVERPROPERTY('Edition') AS Edition,
+        CASE SERVERPROPERTY('EngineEdition')
+            WHEN 1 THEN 'Personal'
+            WHEN 2 THEN 'Standard'
+            WHEN 3 THEN 'Enterprise'
+            WHEN 4 THEN 'Express'
+            WHEN 5 THEN 'Azure'
+            ELSE 'Unknown'
+        END AS EngineEdition;";
+
+                    using (DbDataReader rdr = Cmd.ExecuteReader())
+                    {
+                        if (rdr.Read())
+                        {
+                            SqlDatabaseEdition = rdr["Edition"].ToString();
+                            SqlDatabaseEngineEdition = rdr["EngineEdition"].ToString();
+                            WriteLine("// Database Edition: " + SqlDatabaseEdition);
+                            WriteLine("// Database Engine Edition: " + SqlDatabaseEngineEdition);
+                            WriteLine("");
+                        }
+                    }
+                }
+
+                return SqlDatabaseEngineEdition == "Azure";
             }
 
             public override Tables ReadSchema(Regex tableFilterExclude, Regex columnFilterExclude, bool useCamelCase, bool prependSchemaName, bool includeComments, ExtendedPropertyCommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, string schemaNameFilter, Func<Column, Table, Column> updateColumn)
@@ -1645,8 +1713,6 @@ OPTION (QUERYTRACEON 9481)";
                 if(Cmd == null)
                     return;
 
-                Cmd.CommandText = ExtendedPropertySQL + IncludeQueryTraceOn9481();
-
                 if (Cmd.GetType().Name == "SqlCeCommand")
                 {
                     Cmd.CommandText = ExtendedPropertyTableExistsSQLCE;
@@ -1655,6 +1721,13 @@ OPTION (QUERYTRACEON 9481)";
                         return;
 
                     Cmd.CommandText = ExtendedPropertySQLCE;
+                }
+                else
+                {
+                    if (IsAzure())
+                        return;
+
+                    Cmd.CommandText = ExtendedPropertySQL + IncludeQueryTraceOn9481();
                 }
 
                 using(DbDataReader rdr = Cmd.ExecuteReader())
@@ -1692,9 +1765,14 @@ OPTION (QUERYTRACEON 9481)";
                 if(Cmd == null)
                     return result;
             
-                Cmd.CommandText = StoredProcedureSQL + IncludeQueryTraceOn9481();
                 if (Cmd.GetType().Name == "SqlCeCommand")
                     return result;
+
+                if (IsAzure())
+                    Cmd.CommandText = StoredProcedureSQLAzure + IncludeQueryTraceOn9481();
+                else
+                    Cmd.CommandText = StoredProcedureSQL + IncludeQueryTraceOn9481();
+
                 Cmd.CommandTimeout = 600;
 
                 using(DbDataReader rdr = Cmd.ExecuteReader())
