@@ -28,7 +28,7 @@
         ""  //  example: "void SetAutoDetectChangesEnabled(bool flag);"
     };
     
-    // Migrations ************************************************************************************************************************
+    // Migrations *************************************************************************************************************************
     MigrationConfigurationFileName = ""; // null or empty to not create migrations
     MigrationStrategy = "MigrateDatabaseToLatestVersion"; // MigrateDatabaseToLatestVersion, CreateDatabaseIfNotExists or DropCreateDatabaseIfModelChanges
     AutomaticMigrationsEnabled = true;
@@ -116,16 +116,29 @@
     TableRename = (name, schema) => name;   // Do nothing by default
 
     // Column modification*****************************************************************************************************************
+    // Use the following list to replace column byte types with Enums.
+    // As long as the type can be mapped to your new type, all is well.
+    //EnumsDefinitions.Add(new EnumDefinition { Table = "match_table_name", Column = "match_column_name", EnumType = "name_of_enum" });
+    //EnumsDefinitions.Add(new EnumDefinition { Table = "OrderHeader", Column = "OrderStatus", EnumType = "OrderStatusType" }); // This will replace OrderHeader.OrderStatus type to be an OrderStatusType enum
+    
     // Use the following function if you need to apply additional modifications to a column
     // eg. normalise names etc.
-    // Example
-    /*UpdateColumn = (Column column, Table table) => 
+    UpdateColumn = (Column column, Table table) => 
     {
-        if (column.PropertyNameHumanCase == "PkId")
-            column.PropertyNameHumanCase = "Id";
+        // Example
+        //if (column.PropertyNameHumanCase == "PkId")
+        //    column.PropertyNameHumanCase = "Id";
+
+        // Perform Enum property type replacement
+        var enumDefinition = EnumsDefinitions.FirstOrDefault(e =>
+            (e.Table == table.Name || e.Table == table.NameHumanCase) &&
+            (e.Column == column.Name || e.Column == column.PropertyNameHumanCase));
+
+        if (enumDefinition != null)
+            column.PropertyType = enumDefinition.EnumType;
+        
         return column;
-    };*/
-    UpdateColumn = (Column column, Table table) => column; // Do nothing by default
+    };
 
 
     // WCF ********************************************************************************************************************************
@@ -171,7 +184,8 @@
     // Stored procedure are not supported in SqlCE - create dummy functions
     StoredProcedureRename = (name, schema) => name;
     Func<StoredProcedure, string> WriteStoredProcFunctionName = null;
-    Func<StoredProcedure, string> WriteStoredProcFunctionParams = null;
+    Func<StoredProcedure, bool, string> WriteStoredProcFunctionParams = null;
+    Func<StoredProcedure, string> WriteStoredProcFunctionOverloadCall = null;
     Func<StoredProcedure, string> WriteStoredProcFunctionSqlAtParams = null;
     Func<StoredProcedure, string> WriteStoredProcFunctionDeclareSqlParameter = null;
     Func<StoredProcedure, string> WriteStoredProcFunctionSqlParameterAnonymousArray = null;
