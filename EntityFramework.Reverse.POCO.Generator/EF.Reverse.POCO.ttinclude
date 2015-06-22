@@ -3,7 +3,7 @@
 <#
 fileManager.StartHeader();
 // Copyright © Simon Hughes 2012
-// v2.13.0
+// v2.14.0
 #>
 // ReSharper disable RedundantUsingDirective
 // ReSharper disable DoNotCallOverridableMethodsInConstructor
@@ -38,6 +38,11 @@ using System.Data.Entity;
 <# if(ElementsToGenerate.HasFlag(Elements.StoredProcedures)){ #>
 using System.Data;
 using System.Data.SqlClient;
+<# } #>
+<# if(ElementsToGenerate.HasFlag(Elements.StoredProcedures) && IncludeTableValuedFunctions){ #>
+using System.Data.Entity.Infrastructure;
+using System.Data.Entity.Core.Objects;
+using CodeFirstStoreFunctions;
 <# } #>
 <# if(ElementsToGenerate.HasFlag(Elements.PocoConfiguration)){ #>
 using System.Data.Entity.ModelConfiguration;
@@ -124,15 +129,29 @@ else
         
         // Stored Procedures
 <#
-foreach (StoredProcedure sp in storedProcs)
+foreach (StoredProcedure sp in storedProcs.Where(s => !s.IsTVF))
 {
     string spExecName = WriteStoredProcFunctionName(sp);
     if (sp.ReturnColumns.Count > 0)
     {
-        string spReturnClassName = WriteStoredProcReturnModelName(sp);#>        List<<#= spReturnClassName #>> <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp)#>);
+        string spReturnClassName = WriteStoredProcReturnModelName(sp);#>        List<<#= spReturnClassName #>> <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp, true)#>);
 <# } else { #>
-        int <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp)#>);
+        int <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp, true)#>);
 <# }
+}
+
+if (IncludeTableValuedFunctions)
+{ #>
+
+        // Table Valued Functions
+<#      foreach (StoredProcedure sp in storedProcs.Where(s => s.IsTVF))
+        {
+            string spExecName = WriteStoredProcFunctionName(sp);
+            string spReturnClassName = WriteStoredProcReturnModelName(sp);
+#>
+        IQueryable<<#= spReturnClassName #>> <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp, false)#>);
+<#
+    }
 }
 #>
 <# /**/} #>
@@ -192,9 +211,9 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.Na
         static <#=DbContextName#>()
         {
 <#if(string.IsNullOrWhiteSpace(MigrationConfigurationFileName)) {#>
-            Database.SetInitializer<<#=DbContextName#>>(null);
+            System.Data.Entity.Database.SetInitializer<<#=DbContextName#>>(null);
 <#} else {#>
-            Database.SetInitializer(new <#=MigrationStrategy#><<#=DbContextName#><#if (MigrationStrategy == "MigrateDatabaseToLatestVersion"){#>, <#=MigrationConfigurationFileName#><#}#>>());
+            System.Data.Entity.Database.SetInitializer(new <#=MigrationStrategy#><<#=DbContextName#><#if (MigrationStrategy == "MigrateDatabaseToLatestVersion"){#>, <#=MigrationConfigurationFileName#><#}#>>());
 <#}#>
         }
 
@@ -225,6 +244,13 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.Na
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+<# if(ElementsToGenerate.HasFlag(Elements.StoredProcedures) && IncludeTableValuedFunctions)
+{ #>
+
+            modelBuilder.Conventions.Add(new FunctionsConvention<<#=DbContextName#>>("dbo"));
+<#      foreach (StoredProcedure sp in storedProcs.Where(s => s.IsTVF)){#>
+            modelBuilder.ComplexType<<#=WriteStoredProcReturnModelName(sp)#>>();
+<# } } #>
 
 <#
 foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
@@ -258,13 +284,19 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.Na
         
         // Stored Procedures
 <#
-foreach (StoredProcedure sp in storedProcs)
+foreach (StoredProcedure sp in storedProcs.Where(s => !s.IsTVF))
 {
     string spExecName = WriteStoredProcFunctionName(sp);
     if (sp.ReturnColumns.Count > 0)
     {
         string spReturnClassName = WriteStoredProcReturnModelName(sp); #>
-        public List<<#= spReturnClassName #>> <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp)#>)
+        public List<<#= spReturnClassName #>> <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp, false)#>)
+        {
+            int procResult;
+            return <#= spExecName #>(<#=WriteStoredProcFunctionOverloadCall(sp)#>);
+        }
+
+        public List<<#= spReturnClassName #>> <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp, true)#>)
         {
 <#= WriteStoredProcFunctionDeclareSqlParameter(sp) #> 
             var procResultData = Database.SqlQuery<<#= spReturnClassName #>>("EXEC @procResult = [<#=sp.Schema#>].[<#= sp.Name #>] <#= WriteStoredProcFunctionSqlAtParams(sp) #>", <#= WriteStoredProcFunctionSqlParameterAnonymousArray(sp) #>).ToList();
@@ -274,7 +306,7 @@ foreach (StoredProcedure sp in storedProcs)
         }
 
 <# } else { #>
-        public int <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp)#>)
+        public int <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp, true)#>)
         {
 <#= WriteStoredProcFunctionDeclareSqlParameter(sp) #> 
             Database.ExecuteSqlCommand("EXEC @procResult = [<#=sp.Schema#>].[<#= sp.Name #>] <#= WriteStoredProcFunctionSqlAtParams(sp) #>", <#= WriteStoredProcFunctionSqlParameterAnonymousArray(sp) #>);
@@ -283,7 +315,24 @@ foreach (StoredProcedure sp in storedProcs)
         }
 
 <# }
-}}
+}
+if (IncludeTableValuedFunctions)
+{ #>
+        // Table Valued Functions
+<#
+        foreach (StoredProcedure sp in storedProcs.Where(s => s.IsTVF))
+        {
+            string spExecName = WriteStoredProcFunctionName(sp);
+            string spReturnClassName = WriteStoredProcReturnModelName(sp);
+#>
+        [DbFunction("<#=DbContextName#>", "<#=sp.Name#>")]
+        public IQueryable<<#= spReturnClassName #>> <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp, false)#>)
+        {
+<#= WriteTableValuedFunctionDeclareSqlParameter(sp) #> 
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<<#=spReturnClassName#>>("[<#=DbContextName#>].[<#=sp.Name#>](<#= WriteStoredProcFunctionSqlAtParams(sp) #>)", <#= WriteTableValuedFunctionSqlParameterAnonymousArray(sp) #>);
+        }
+
+<# } } }
 /**/#>    }
 <# }
     if (ElementsToGenerate.HasFlag(Elements.Context) && AddUnitTestingDbContext)
@@ -345,13 +394,19 @@ foreach (Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.N
         
         // Stored Procedures
 <#
-foreach (StoredProcedure sp in storedProcs)
+foreach (StoredProcedure sp in storedProcs.Where(s => !s.IsTVF))
 {
     string spExecName = WriteStoredProcFunctionName(sp);
     if (sp.ReturnColumns.Count > 0)
     {
         string spReturnClassName = WriteStoredProcReturnModelName(sp); #>
-        public List<<#= spReturnClassName #>> <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp)#>)
+        public List<<#= spReturnClassName #>> <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp, false)#>)
+        {
+            int procResult;
+            return <#= spExecName #>(<#=WriteStoredProcFunctionOverloadCall(sp)#>);
+        }
+
+        public List<<#= spReturnClassName #>> <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp, true)#>)
         {
 <#= WriteStoredProcFunctionSetSqlParameters(sp, true) #> 
             procResult = 0;
@@ -359,14 +414,32 @@ foreach (StoredProcedure sp in storedProcs)
         }
 
 <# } else { #>
-        public int <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp)#>)
+        public int <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp, true)#>)
         {
 <#= WriteStoredProcFunctionSetSqlParameters(sp, true) #> 
             return 0;
         }
 
-<# }
-}}/**/#>
+<# }}
+if (IncludeTableValuedFunctions)
+{ #>
+        // Table Valued Functions
+<#
+    foreach (StoredProcedure spTvf in storedProcs.Where(s => s.IsTVF))
+    {
+        string spExecNamespTvf = WriteStoredProcFunctionName(spTvf);
+        string spReturnClassName = WriteStoredProcReturnModelName(spTvf);
+#>
+        [DbFunction("<#=DbContextName#>", "<#=spTvf.Name#>")]
+        public IQueryable<<#= spReturnClassName #>> <#= spExecNamespTvf #>(<#=WriteStoredProcFunctionParams(spTvf, false)#>)
+        {
+            return new List<<#= spReturnClassName #>>().AsQueryable();
+        }
+
+<#
+    }
+}
+}/**/#>
     }
 <#fileManager.StartNewFile("FakeDbSet" + FileExtension); #>
 <# if (!GenerateSeparateFiles)
@@ -488,7 +561,8 @@ foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal).Where(x => !x.Hidden))
 
         ///<summary>
         /// <#=col.ExtendedProperty#>
-        ///</summary><# } #>
+        ///</summary>
+<# } #>
 <# if(AddWcfDataAttributes) { #>        [DataMember(Order = <#=DataMemberOrder++#>, IsRequired = <#=col.IsNullable ? "false" : "true"#>)]
 <# } #>
         <#= WritePocoColumn(col) #>
@@ -513,10 +587,10 @@ foreach(string s in tbl.ReverseNavigationProperty.OrderBy(x => x))
 <#if(IncludeComments){#>        // Foreign keys
 <# } #>
 <#
-foreach(Column col in from c in tbl.Columns.OrderBy(x => x.EntityFk) where c.EntityFk != null select c)
+foreach(var entityFk in tbl.Columns.SelectMany(x => x.EntityFk).OrderBy(o => o))
 {
 #>
-        <#=col.EntityFk #>
+        <#=entityFk #>
 <# } } #>
 <# 
 if(tbl.Columns.Where(c => c.Default != string.Empty).Count() > 0 || tbl.ReverseNavigationCtor.Count() > 0) 
@@ -583,10 +657,10 @@ foreach(Column col in tbl.Columns.Where(x => !x.Hidden).OrderBy(x => x.Ordinal))
 <#if(IncludeComments){#>            // Foreign keys
 <# } #>
 <#
-foreach(Column col in from c in tbl.Columns.OrderBy(x => x.Ordinal) where c.ConfigFk != null select c)
+foreach(var configFk in tbl.Columns.SelectMany(x => x.ConfigFk).OrderBy(o => o))
 {
 #>
-            <#=col.ConfigFk #>
+            <#=configFk #>
 <# } } #>
 <#
 foreach (string s in tbl.MappingConfiguration)
@@ -610,7 +684,7 @@ if(!GenerateSeparateFiles) { #>
 
 <# } #>
 <#
-foreach(StoredProcedure sp in storedProcs.Where(x => x.ReturnColumns.Count > 0))
+foreach(StoredProcedure sp in storedProcs.Where(x => x.ReturnColumns.Count > 0 && !StoredProcedureReturnTypes.ContainsKey(x.NameHumanCase) && !StoredProcedureReturnTypes.ContainsKey(x.Name)))
 {
     string spReturnClassName = WriteStoredProcReturnModelName(sp);
 #>
