@@ -118,7 +118,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         
         static MyDbContext()
         {
-            Database.SetInitializer<MyDbContext>(null);
+            System.Data.Entity.Database.SetInitializer<MyDbContext>(null);
         }
 
         public MyDbContext()

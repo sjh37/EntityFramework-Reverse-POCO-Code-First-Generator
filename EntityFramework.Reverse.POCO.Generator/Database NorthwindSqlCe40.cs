@@ -66,7 +66,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         
         static MyDbContextSqlCE4()
         {
-            Database.SetInitializer<MyDbContextSqlCE4>(null);
+            System.Data.Entity.Database.SetInitializer<MyDbContextSqlCE4>(null);
         }
 
         public MyDbContextSqlCE4()
