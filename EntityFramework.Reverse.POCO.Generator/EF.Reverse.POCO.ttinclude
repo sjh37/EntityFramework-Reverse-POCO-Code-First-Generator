@@ -129,7 +129,7 @@ else
         
         // Stored Procedures
 <#
-foreach (StoredProcedure sp in storedProcs)
+foreach (StoredProcedure sp in storedProcs.Where(s => !s.IsTVF))
 {
     string spExecName = WriteStoredProcFunctionName(sp);
     if (sp.ReturnColumns.Count > 0)
@@ -149,7 +149,7 @@ if (IncludeTableValuedFunctions)
             string spExecName = WriteStoredProcFunctionName(sp);
             string spReturnClassName = WriteStoredProcReturnModelName(sp);
 #>
-        IQueryable<<#= spReturnClassName #>> <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp, true)#>);
+        IQueryable<<#= spReturnClassName #>> <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp, false)#>);
 <#
     }
 }
@@ -248,7 +248,9 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.Na
 { #>
 
             modelBuilder.Conventions.Add(new FunctionsConvention<<#=DbContextName#>>("dbo"));
-<# } #>
+<#      foreach (StoredProcedure sp in storedProcs.Where(s => s.IsTVF)){#>
+            modelBuilder.ComplexType<<#=WriteStoredProcReturnModelName(sp)#>>();
+<# } } #>
 
 <#
 foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
@@ -324,10 +326,10 @@ if (IncludeTableValuedFunctions)
             string spReturnClassName = WriteStoredProcReturnModelName(sp);
 #>
         [DbFunction("<#=DbContextName#>", "<#=sp.Name#>")]
-        public IQueryable<<#= spReturnClassName #>> <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp, true)#>)
+        public IQueryable<<#= spReturnClassName #>> <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp, false)#>)
         {
 <#= WriteTableValuedFunctionDeclareSqlParameter(sp) #> 
-            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<Customer>("[<#=DbContextName#>].[<#=sp.Name#>](<#= WriteStoredProcFunctionSqlAtParams(sp) #>)", <#= WriteTableValuedFunctionSqlParameterAnonymousArray(sp) #>);
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<<#=spReturnClassName#>>("[<#=DbContextName#>].[<#=sp.Name#>](<#= WriteStoredProcFunctionSqlAtParams(sp) #>)", <#= WriteTableValuedFunctionSqlParameterAnonymousArray(sp) #>);
         }
 
 <# } } }
@@ -429,7 +431,7 @@ if (IncludeTableValuedFunctions)
         string spReturnClassName = WriteStoredProcReturnModelName(spTvf);
 #>
         [DbFunction("<#=DbContextName#>", "<#=spTvf.Name#>")]
-        public IQueryable<<#= spReturnClassName #>> <#= spExecNamespTvf #>(<#=WriteStoredProcFunctionParams(spTvf, true)#>)
+        public IQueryable<<#= spReturnClassName #>> <#= spExecNamespTvf #>(<#=WriteStoredProcFunctionParams(spTvf, false)#>)
         {
             return new List<<#= spReturnClassName #>>().AsQueryable();
         }
