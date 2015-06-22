@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
+    <Metadata>
+        <Identity Id="EntityFramework_Reverse_POCO_Generator..d542a934-8bd6-4136-b490-5f0049d62033" Version="2.13.1" Language="en-US" Publisher="Simon Hughes" />
+        <DisplayName>EntityFramework Reverse POCO Generator</DisplayName>
+        <Description xml:space="preserve">Reverse engineers an existing database and generates EntityFramework Code First POCO classes, Configuration mappings and DbContext.</Description>
+        <MoreInfo>https://efreversepoco.codeplex.com</MoreInfo>
+        <License>license.txt</License>
+        <Icon>TemplateIcon.ico</Icon>
+        <PreviewImage>PreviewImage.png</PreviewImage>
+        <Tags>Reverse Poco, Data, Entity Framework, Code Generator, Database, reverse engineering, C#, SQL Server, POCO, Code First, CodeFirst</Tags>
+    </Metadata>
+    <Installation AllUsers="true">
+        <InstallationTarget Version="[11.0,]" Id="Microsoft.VisualStudio.Pro" />
+        <InstallationTarget Version="[11.0,]" Id="Microsoft.VisualStudio.Premium" />
+        <InstallationTarget Version="[11.0,]" Id="Microsoft.VisualStudio.Ultimate" />
+        <InstallationTarget Version="[11.0,]" Id="Microsoft.VisualStudio.VSWinExpress" />
+        <InstallationTarget Version="[11.0,]" Id="Microsoft.VisualStudio.VPDExpress" />
+        <InstallationTarget Version="[11.0,]" Id="Microsoft.VisualStudio.VWDExpress" />
+    </Installation>
+    <Dependencies>
+        <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
+    </Dependencies>
+    <Assets>
+        <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="File" Path="ItemTemplates" d:TargetPath="ItemTemplates\efrpoco.zip" />
+    </Assets>
+</PackageManifest>
