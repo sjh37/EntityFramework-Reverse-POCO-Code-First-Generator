@@ -34,6 +34,7 @@
         // Settings - edit these in the main <name>.tt file *******************************************************************************
         string ConnectionStringName = "";        		
         bool IncludeViews = true;
+        bool IncludeTableValuedFunctions = false;
         bool AddUnitTestingDbContext = true;
         string DbContextName = "MyDbContext";
         string DbContextInterfaceBaseClasses = "IDisposable";
@@ -574,7 +575,7 @@
                        return new List<StoredProcedure>();
 
                     var reader = new SqlServerSchemaReader(conn, factory, IncludeQueryTraceOn9481Flag) { Outer = this };
-                    var storedProcs = reader.ReadStoredProcs(StoredProcedureFilterExclude, UseCamelCase, PrependSchemaName, StoredProcedureRename, SchemaName);
+                    var storedProcs = reader.ReadStoredProcs(StoredProcedureFilterExclude, UseCamelCase, PrependSchemaName, StoredProcedureRename, SchemaName, IncludeTableValuedFunctions);
 
                     // Remove unrequired stored procs
                     for(int i = storedProcs.Count - 1; i >= 0; i--)
@@ -977,6 +978,7 @@
             public string NameHumanCase;
             public List<StoredProcedureParameter> Parameters;
             public List<DataColumn> ReturnColumns;
+            public bool IsTVF;
 
             public StoredProcedure()
             {
@@ -1148,7 +1150,7 @@
 
             public GeneratedTextTransformation Outer;
             public abstract Tables ReadSchema(Regex tableFilterExclude, Regex columnFilterExclude, bool useCamelCase, bool prependSchemaName, bool includeComments, ExtendedPropertyCommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, string schemaNameFilter, Func<Column, Table, Column> updateColumn);
-            public abstract List<StoredProcedure> ReadStoredProcs(Regex storedProcedureFilterExclude, bool useCamelCase, bool prependSchemaName , Func<string, string, string> StoredProcedureRename, string schemaNameFilter);
+            public abstract List<StoredProcedure> ReadStoredProcs(Regex storedProcedureFilterExclude, bool useCamelCase, bool prependSchemaName , Func<string, string, string> StoredProcedureRename, string schemaNameFilter, bool includeTableValuedFunctions);
             public abstract List<ForeignKey> ReadForeignKeys(Func<string, string, string> tableRename);
             public abstract void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool useCamelCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, bool includeComments);
             public abstract void IdentifyForeignKeys(List<ForeignKey> fkList, Tables tables);
@@ -1365,6 +1367,7 @@ ORDER BY FK.TABLE_NAME, FK.COLUMN_NAME;";
             private const string StoredProcedureSQL = @"
 SELECT  R.SPECIFIC_SCHEMA,
         R.SPECIFIC_NAME,
+        R.ROUTINE_TYPE,
         P.ORDINAL_POSITION,
         P.PARAMETER_MODE,
         P.PARAMETER_NAME,
@@ -1389,16 +1392,35 @@ WHERE   R.ROUTINE_TYPE = 'PROCEDURE'
                         ON sm.object_id = sp.object_id
             WHERE   sp.type = 'P'
                     AND (CAST(CASE WHEN sp.is_ms_shipped = 1 THEN 1
-                                    WHEN (
-                                            SELECT major_id
-                                            FROM   sys.extended_properties
-                                            WHERE  major_id = sp.object_id
+                                   WHEN (
+                                         SELECT major_id
+                                         FROM   sys.extended_properties
+                                         WHERE  major_id = sp.object_id
                                                 AND minor_id = 0
                                                 AND class = 1
                                                 AND name = N'microsoft_database_tools_support'
                                         ) IS NOT NULL THEN 1
-                                    ELSE 0
-                                END AS BIT) = 0))
+                                   ELSE 0
+                              END AS BIT) = 0))
+
+UNION ALL
+SELECT  R.SPECIFIC_SCHEMA,
+        R.SPECIFIC_NAME,
+        R.ROUTINE_TYPE,
+        P.ORDINAL_POSITION,
+        P.PARAMETER_MODE,
+        P.PARAMETER_NAME,
+        P.DATA_TYPE,
+        ISNULL(P.CHARACTER_MAXIMUM_LENGTH, 0) AS CHARACTER_MAXIMUM_LENGTH,
+        ISNULL(P.NUMERIC_PRECISION, 0) AS NUMERIC_PRECISION,
+        ISNULL(P.NUMERIC_SCALE, 0) AS NUMERIC_SCALE,
+        ISNULL(P.DATETIME_PRECISION, 0) AS DATETIME_PRECISION
+FROM    INFORMATION_SCHEMA.ROUTINES R
+        LEFT OUTER JOIN INFORMATION_SCHEMA.PARAMETERS P
+            ON P.SPECIFIC_SCHEMA = R.SPECIFIC_SCHEMA
+               AND P.SPECIFIC_NAME = R.SPECIFIC_NAME
+WHERE   R.ROUTINE_TYPE = 'FUNCTION'
+        AND R.DATA_TYPE = 'TABLE'
 ORDER BY R.SPECIFIC_SCHEMA,
         R.SPECIFIC_NAME,
         P.ORDINAL_POSITION";
@@ -1406,6 +1428,7 @@ ORDER BY R.SPECIFIC_SCHEMA,
             private const string StoredProcedureSQLAzure = @"
 SELECT  R.SPECIFIC_SCHEMA,
         R.SPECIFIC_NAME,
+        R.ROUTINE_TYPE,
         P.ORDINAL_POSITION,
         P.PARAMETER_MODE,
         P.PARAMETER_NAME,
@@ -1430,9 +1453,27 @@ WHERE   R.ROUTINE_TYPE = 'PROCEDURE'
                         ON sm.object_id = sp.object_id
             WHERE   sp.type = 'P'
                     AND sp.is_ms_shipped = 0)
+UNION ALL
+SELECT  R.SPECIFIC_SCHEMA,
+        R.SPECIFIC_NAME,
+        R.ROUTINE_TYPE,
+        P.ORDINAL_POSITION,
+        P.PARAMETER_MODE,
+        P.PARAMETER_NAME,
+        P.DATA_TYPE,
+        ISNULL(P.CHARACTER_MAXIMUM_LENGTH, 0) AS CHARACTER_MAXIMUM_LENGTH,
+        ISNULL(P.NUMERIC_PRECISION, 0) AS NUMERIC_PRECISION,
+        ISNULL(P.NUMERIC_SCALE, 0) AS NUMERIC_SCALE,
+        ISNULL(P.DATETIME_PRECISION, 0) AS DATETIME_PRECISION
+FROM    INFORMATION_SCHEMA.ROUTINES R
+        LEFT OUTER JOIN INFORMATION_SCHEMA.PARAMETERS P
+            ON P.SPECIFIC_SCHEMA = R.SPECIFIC_SCHEMA
+               AND P.SPECIFIC_NAME = R.SPECIFIC_NAME
+WHERE   R.ROUTINE_TYPE = 'FUNCTION'
+        AND R.DATA_TYPE = 'TABLE'
 ORDER BY R.SPECIFIC_SCHEMA,
         R.SPECIFIC_NAME,
-        P.ORDINAL_POSITION";
+        P.ORDINAL_POSITION;";
 
             private const string UniqueIndexSQL = @"
 SELECT  SCHEMA_NAME(t.schema_id) AS TableSchema,
@@ -1759,7 +1800,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
             }
             
-            public override List<StoredProcedure> ReadStoredProcs(Regex spFilterExclude, bool useCamelCase, bool prependSchemaName , Func<string, string, string> StoredProcedureRename, string schemaNameFilter)
+            public override List<StoredProcedure> ReadStoredProcs(Regex spFilterExclude, bool useCamelCase, bool prependSchemaName , Func<string, string, string> StoredProcedureRename, string schemaNameFilter, bool includeTableValuedFunctions)
             {
                 var result = new List<StoredProcedure>();
                 if(Cmd == null)
@@ -1781,6 +1822,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     StoredProcedure sp = null;
                     while (rdr.Read())
                     {
+                        string spType = rdr["ROUTINE_TYPE"].ToString().Trim().ToUpper();
+                        bool isTVF = (spType == "FUNCTION");
+                        if (isTVF && !includeTableValuedFunctions)
+                            continue;
+
                         string spName = rdr["SPECIFIC_NAME"].ToString().Trim();
                         if(spFilterExclude != null && spFilterExclude.IsMatch(spName))
                             continue;
@@ -1794,6 +1840,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                             lastSp = spName;
                             sp = new StoredProcedure
                             {
+                                IsTVF = isTVF,
                                 Name = spName,
                                 NameHumanCase = (useCamelCase ? Inflector.ToTitleCase(spName) : spName).Replace(" ", "").Replace("$", ""),
                                 Schema = schema
@@ -1849,18 +1896,26 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 {
                     var sb = new StringBuilder();
                     sb.Append("SET FMTONLY OFF; SET FMTONLY ON; \n");
-
-                    sb.Append(String.Format("exec [{0}].[{1}] ", proc.Schema, proc.Name));
+                    if (proc.IsTVF)
+                        sb.Append(String.Format("SELECT * FROM [{0}].[{1}](", proc.Schema, proc.Name));
+                    else
+                        sb.Append(String.Format("exec [{0}].[{1}] ", proc.Schema, proc.Name));
 
                     var count = 1;
                     int paramCount = proc.Parameters.Count;
                     foreach (var param in proc.Parameters)
                     {
-                        sb.Append(String.Format("{0}=null", param.Name));
+                        if (proc.IsTVF)
+                            sb.Append("null");
+                        else
+                            sb.Append(String.Format("{0}=null", param.Name));
+
                         if (count < paramCount)
                             sb.Append(", ");
                         count++;
                     }
+                    if (proc.IsTVF)
+                        sb.Append(")");
 
                     sb.Append("\n SET FMTONLY OFF; SET FMTONLY OFF;");
 

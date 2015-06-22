@@ -188,7 +188,9 @@
     Func<StoredProcedure, string> WriteStoredProcFunctionOverloadCall = null;
     Func<StoredProcedure, string> WriteStoredProcFunctionSqlAtParams = null;
     Func<StoredProcedure, string> WriteStoredProcFunctionDeclareSqlParameter = null;
+    Func<StoredProcedure, string> WriteTableValuedFunctionDeclareSqlParameter = null;
     Func<StoredProcedure, string> WriteStoredProcFunctionSqlParameterAnonymousArray = null;
+    Func<StoredProcedure, string> WriteTableValuedFunctionSqlParameterAnonymousArray = null;
     Func<StoredProcedure, bool, string> WriteStoredProcFunctionSetSqlParameters = null;
     Func<StoredProcedure, string> WriteStoredProcReturnModelName = null;
     Func<DataColumn, string> WriteStoredProcReturnColumn = null;

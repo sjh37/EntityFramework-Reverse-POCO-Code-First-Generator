@@ -19,6 +19,7 @@
     IncludeComments = true; // Adds comments to the generated code
     IncludeExtendedPropertyComments = ExtendedPropertyCommentsStyle.AtEndOfField; // Adds extended properties as comments to the generated code
     IncludeViews = true;
+    IncludeTableValuedFunctions = false; // If true, you must also install the "EntityFramework.CodeFirstStoreFunctions" Nuget Package.
     DisableGeographyTypes = false; // Turns off use of System.Data.Entity.Spatial.DbGeography and System.Data.Entity.Spatial.DbGeometry as OData doesn't support entities with geometry/geography types.
     CollectionType = "List";  // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example
     CollectionTypeNamespace = ""; // "System.Collections.ObjectModel" is required if setting the CollectionType = "ObservableCollection"
@@ -227,7 +228,6 @@
     Func<StoredProcedure, string> WriteStoredProcFunctionOverloadCall = (sp) =>
     {
         var sb = new StringBuilder();
-        int n = 1;
         int count = sp.Parameters.Count;
         foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
         {
@@ -235,7 +235,7 @@
                 p.Mode == StoredProcedureParameterMode.In ? "" : "out ", 
                 p.NameHumanCase);
         }
-        sb.AppendFormat("out procResult");
+        sb.Append("out procResult");
         return sb.ToString();
     };
 
@@ -273,6 +273,21 @@
         return sb.ToString();
     };
 
+    Func<StoredProcedure, string> WriteTableValuedFunctionDeclareSqlParameter = sp =>
+    {
+        var sb = new StringBuilder();
+        foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
+        {
+            var getValueOrDefault = NotNullable.Contains(p.PropertyType.ToLower()) ? string.Empty : ".GetValueOrDefault()";
+    
+            sb.AppendLine(string.Format("            var {0}Param = new ObjectParameter(\"{1}\", {2});", 
+                p.NameHumanCase, 
+                p.Name.Substring(1), 
+                p.Mode == StoredProcedureParameterMode.In ? p.NameHumanCase + getValueOrDefault : string.Empty));
+        }
+        return sb.ToString();
+    };
+
     Func<StoredProcedure, string> WriteStoredProcFunctionSqlParameterAnonymousArray = sp =>
     {
         var sb = new StringBuilder();
@@ -284,6 +299,18 @@
         return sb.ToString();
     };
     
+    Func<StoredProcedure, string> WriteTableValuedFunctionSqlParameterAnonymousArray = sp =>
+    {
+        if (sp.Parameters.Count == 0) 
+            return "new ObjectParameter[] { }";
+        var sb = new StringBuilder();
+        foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
+        {
+            sb.Append(string.Format("{0}Param, ", p.NameHumanCase));
+        }
+        return sb.ToString().Substring(0, sb.Length - 2);
+    };
+
     Func<StoredProcedure, bool, string> WriteStoredProcFunctionSetSqlParameters = (sp, isFake) =>
     {
         var sb = new StringBuilder();

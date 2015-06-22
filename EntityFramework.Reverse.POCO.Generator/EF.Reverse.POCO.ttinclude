@@ -39,6 +39,11 @@ using System.Data.Entity;
 using System.Data;
 using System.Data.SqlClient;
 <# } #>
+<# if(ElementsToGenerate.HasFlag(Elements.StoredProcedures) && IncludeTableValuedFunctions){ #>
+using System.Data.Entity.Infrastructure;
+using System.Data.Entity.Core.Objects;
+using CodeFirstStoreFunctions;
+<# } #>
 <# if(ElementsToGenerate.HasFlag(Elements.PocoConfiguration)){ #>
 using System.Data.Entity.ModelConfiguration;
 <# } #>
@@ -134,6 +139,20 @@ foreach (StoredProcedure sp in storedProcs)
         int <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp, true)#>);
 <# }
 }
+
+if (IncludeTableValuedFunctions)
+{ #>
+
+        // Table Valued Functions
+<#      foreach (StoredProcedure sp in storedProcs.Where(s => s.IsTVF))
+        {
+            string spExecName = WriteStoredProcFunctionName(sp);
+            string spReturnClassName = WriteStoredProcReturnModelName(sp);
+#>
+        IQueryable<<#= spReturnClassName #>> <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp, true)#>);
+<#
+    }
+}
 #>
 <# /**/} #>
     }
@@ -225,6 +244,11 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.Na
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+<# if(ElementsToGenerate.HasFlag(Elements.StoredProcedures) && IncludeTableValuedFunctions)
+{ #>
+
+            modelBuilder.Conventions.Add(new FunctionsConvention<<#=DbContextName#>>("dbo"));
+<# } #>
 
 <#
 foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
@@ -258,7 +282,7 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.Na
         
         // Stored Procedures
 <#
-foreach (StoredProcedure sp in storedProcs)
+foreach (StoredProcedure sp in storedProcs.Where(s => !s.IsTVF))
 {
     string spExecName = WriteStoredProcFunctionName(sp);
     if (sp.ReturnColumns.Count > 0)
@@ -289,7 +313,24 @@ foreach (StoredProcedure sp in storedProcs)
         }
 
 <# }
-}}
+}
+if (IncludeTableValuedFunctions)
+{ #>
+        // Table Valued Functions
+<#
+        foreach (StoredProcedure sp in storedProcs.Where(s => s.IsTVF))
+        {
+            string spExecName = WriteStoredProcFunctionName(sp);
+            string spReturnClassName = WriteStoredProcReturnModelName(sp);
+#>
+        [DbFunction("<#=DbContextName#>", "<#=sp.Name#>")]
+        public IQueryable<<#= spReturnClassName #>> <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp, true)#>)
+        {
+<#= WriteTableValuedFunctionDeclareSqlParameter(sp) #> 
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<Customer>("[<#=DbContextName#>].[<#=sp.Name#>](<#= WriteStoredProcFunctionSqlAtParams(sp) #>)", <#= WriteTableValuedFunctionSqlParameterAnonymousArray(sp) #>);
+        }
+
+<# } } }
 /**/#>    }
 <# }
     if (ElementsToGenerate.HasFlag(Elements.Context) && AddUnitTestingDbContext)
@@ -351,7 +392,7 @@ foreach (Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.N
         
         // Stored Procedures
 <#
-foreach (StoredProcedure sp in storedProcs)
+foreach (StoredProcedure sp in storedProcs.Where(s => !s.IsTVF))
 {
     string spExecName = WriteStoredProcFunctionName(sp);
     if (sp.ReturnColumns.Count > 0)
@@ -377,8 +418,26 @@ foreach (StoredProcedure sp in storedProcs)
             return 0;
         }
 
-<# }
-}}/**/#>
+<# }}
+if (IncludeTableValuedFunctions)
+{ #>
+        // Table Valued Functions
+<#
+    foreach (StoredProcedure spTvf in storedProcs.Where(s => s.IsTVF))
+    {
+        string spExecNamespTvf = WriteStoredProcFunctionName(spTvf);
+        string spReturnClassName = WriteStoredProcReturnModelName(spTvf);
+#>
+        [DbFunction("<#=DbContextName#>", "<#=spTvf.Name#>")]
+        public IQueryable<<#= spReturnClassName #>> <#= spExecNamespTvf #>(<#=WriteStoredProcFunctionParams(spTvf, true)#>)
+        {
+            return new List<<#= spReturnClassName #>>().AsQueryable();
+        }
+
+<#
+    }
+}
+}/**/#>
     }
 <#fileManager.StartNewFile("FakeDbSet" + FileExtension); #>
 <# if (!GenerateSeparateFiles)
