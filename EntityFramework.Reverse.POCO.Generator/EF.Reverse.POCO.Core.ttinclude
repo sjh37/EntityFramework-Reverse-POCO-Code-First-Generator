@@ -1599,8 +1599,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                                 tableName = tableRename(tableName, schema);
 
                                 // Handle table names with underscores - singularise just the last word
-                                var tableNameParts = tableName.Split(new [] {'_'});
-                                tableNameParts[tableNameParts.Length -1] = Inflector.MakeSingular(tableNameParts[tableNameParts.Length -1]);
+                                var tableNameParts = tableName.Split('_');
+                                tableNameParts[tableNameParts.Length - 1] = Inflector.MakeSingular(tableNameParts[tableNameParts.Length - 1]);
                                 tableName = string.Join("_", tableNameParts);
 
                                 table.CleanName = CleanUp(tableName);
