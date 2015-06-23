@@ -268,6 +268,9 @@
                 p.Mode == StoredProcedureParameterMode.In ? "Input" : "Output",
                 p.Mode == StoredProcedureParameterMode.In ? ", Value = " + p.NameHumanCase + getValueOrDefault : string.Empty,
                 p.MaxLength > 0 ? ", Size = " + p.MaxLength : string.Empty));
+
+                if (p.Mode == StoredProcedureParameterMode.In)
+                    sb.AppendFormat("            if (!({0}Param.Value is ValueType) && {0}Param.Value == null){1}                {0}Param.Value = DBNull.Value;{1}{1}", p.NameHumanCase, Environment.NewLine);
         }
         sb.AppendLine("            var procResultParam = new SqlParameter { ParameterName = \"@procResult\", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };");
         return sb.ToString();
