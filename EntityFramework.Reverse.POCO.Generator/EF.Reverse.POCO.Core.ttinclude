@@ -1597,15 +1597,21 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                                 };
 
                                 tableName = tableRename(tableName, schema);
+                                string singular;
 
                                 // Handle table names with underscores - singularise just the last word
-                                var tableNameParts = tableName.Split('_');
-                                tableNameParts[tableNameParts.Length - 1] = Inflector.MakeSingular(tableNameParts[tableNameParts.Length - 1]);
-                                tableName = string.Join("_", tableNameParts);
-
-                                table.CleanName = CleanUp(tableName);
-                                table.ClassName = Inflector.MakeSingular(table.CleanName);
-                                string singular = Inflector.MakeSingular(tableName);
+                                if (tableName.Contains('_'))
+                                {
+                                    var tableNameParts = tableName.Split('_');
+                                    tableNameParts[tableNameParts.Length - 1] = Inflector.MakeSingular(tableNameParts[tableNameParts.Length - 1]); // Singularise just the last word
+                                    singular = CleanUp(string.Join("_", tableNameParts));
+                                    table.ClassName = singular;
+                                }
+                                else
+                                {
+                                    table.ClassName = Inflector.MakeSingular(CleanUp(tableName));
+                                    singular = Inflector.MakeSingular(tableName);
+                                }
                                 table.NameHumanCase = (useCamelCase ? Inflector.ToTitleCase(singular) : singular).Replace(" ", "").Replace("$", "");
                                 if((string.Compare(table.Schema, "dbo", StringComparison.OrdinalIgnoreCase) != 0) && prependSchemaName)
                                     table.NameHumanCase = table.Schema + "_" + table.NameHumanCase;
@@ -2389,7 +2395,17 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
             public string PkTableHumanCase(bool useCamelCase, bool prependSchemaName)
             {
-                string singular = Inflector.MakeSingular(PkTableNameFiltered);
+                string singular;
+                if (PkTableNameFiltered.Contains('_'))
+                {
+                    var tableNameParts = PkTableNameFiltered.Split('_');
+                    tableNameParts[tableNameParts.Length - 1] = Inflector.MakeSingular(tableNameParts[tableNameParts.Length - 1]); // Singularise just the last word
+                    singular = string.Join("_", tableNameParts);
+                }
+                else
+                {
+                    singular = Inflector.MakeSingular(PkTableNameFiltered);
+                }
                 string pkTableHumanCase = (useCamelCase ? Inflector.ToTitleCase(singular) : singular).Replace(" ", "").Replace("$", "");
                 if (string.Compare(PkSchema, "dbo", StringComparison.OrdinalIgnoreCase) != 0 && prependSchemaName)
                     pkTableHumanCase = PkSchema + "_" + pkTableHumanCase;
@@ -2414,7 +2430,6 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             public string Schema;
             public string Type;
             public string ClassName;
-            public string CleanName;
             public bool IsMapping;
             public bool IsView;
             public bool HasForeignKey;
