@@ -1,6 +1,6 @@
 ﻿<#@ include file="EF.Reverse.POCO.Core.ttinclude" #>
 <#
-    // v2.14.0
+    // v2.14.1
     // Please make changes to the settings below.
     // All you have to do is save this file, and the output file(s) is/are generated. Compiling does not regenerate the file(s).
 
@@ -319,10 +319,18 @@
         var sb = new StringBuilder();
         foreach (var p in sp.Parameters.Where(x => x.Mode != StoredProcedureParameterMode.In).OrderBy(x => x.Ordinal))
         {
+            string Default = string.Format("default({0})", p.PropertyType);
+            bool notNullable = NotNullable.Contains(p.PropertyType.ToLower());
+
             if(isFake)
-                sb.AppendLine(string.Format("            {0} = default({1});", p.NameHumanCase, p.PropertyType));
+                sb.AppendLine(string.Format("            {0} = {1};", p.NameHumanCase, Default));
             else
+            {
+                sb.AppendLine(string.Format("            if (((INullable){0}Param.SqlValue).IsNull)", p.NameHumanCase));
+                sb.AppendLine(string.Format("                {0} = {1};", p.NameHumanCase, notNullable ? Default : "null"));
+                sb.AppendLine("            else");
                 sb.AppendLine(string.Format("            {0} = ({1}) {2}Param.Value;", p.NameHumanCase, p.PropertyType, p.NameHumanCase));
+        }
         }
         return sb.ToString();
     };
