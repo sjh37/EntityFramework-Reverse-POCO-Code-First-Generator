@@ -764,31 +764,14 @@
 
             private void SetupConfig()
             {
-                bool hasDatabaseGeneratedOption = false;
-                string propertyType = PropertyType.ToLower();
-                switch (propertyType)
-                {
-                    case "bool":
-                    case "long":
-                    case "short":
-                    case "int":
-                    case "double":
-                    case "float":
-                    case "decimal":
-                    case "string":
-                        hasDatabaseGeneratedOption = true;
-                        break;
-                }
                 string databaseGeneratedOption = string.Empty;
-                if(hasDatabaseGeneratedOption)
-                {
-                    if(IsIdentity)
-                        databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity)";
-                    if(IsStoreGenerated && !IsIdentity)
-                        databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.Computed)";
-                    if(IsPrimaryKey && !IsIdentity && !IsStoreGenerated)
-                        databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.None)";
-                }
+                if(IsIdentity)
+                    databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity)";
+                if(IsStoreGenerated && !IsIdentity)
+                    databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.Computed)";
+                if(IsPrimaryKey && !IsIdentity && !IsStoreGenerated)
+                    databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.None)";
+
                 Config = string.Format("Property(x => x.{0}).HasColumnName(\"{1}\"){2}{3}{4}{5}{6}{7}{8};", PropertyNameHumanCase, Name,
                                             (IsNullable) ? ".IsOptional()" : ".IsRequired()",
                                             (IsFixedLength || IsRowVersion) ? ".IsFixedLength()" : "",
