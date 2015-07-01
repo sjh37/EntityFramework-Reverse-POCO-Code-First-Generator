@@ -1162,7 +1162,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.Fax).HasColumnName("Fax").IsOptional().HasMaxLength(24);
             HasMany(t => t.CustomerDemographics).WithMany(t => t.Customers).Map(m => 
             {
-                m.ToTable("CustomerCustomerDemo", schema);
+                m.ToTable("CustomerCustomerDemo", "dbo");
                 m.MapLeftKey("CustomerID");
                 m.MapRightKey("CustomerTypeID");
             });
@@ -1228,7 +1228,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             HasOptional(a => a.Employee_ReportsTo).WithMany(b => b.Employees).HasForeignKey(c => c.ReportsTo); // FK_Employees_Employees
             HasMany(t => t.Territories).WithMany(t => t.Employees).Map(m => 
             {
-                m.ToTable("EmployeeTerritories", schema);
+                m.ToTable("EmployeeTerritories", "dbo");
                 m.MapLeftKey("EmployeeID");
                 m.MapRightKey("TerritoryID");
             });
