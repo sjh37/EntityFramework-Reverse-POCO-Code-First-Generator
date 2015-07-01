@@ -2558,7 +2558,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 m.ToTable(""{2}""{5});
                 m.MapLeftKey(""{3}"");
                 m.MapRightKey(""{4}"");
-            }});", leftPropName, rightPropName, left.FkTableName, left.FkColumn, right.FkColumn, isSqlCE ? string.Empty : ", schema"));
+            }});", leftPropName, rightPropName, left.FkTableName, left.FkColumn, right.FkColumn, isSqlCE ? string.Empty : ", \"" + left.FkSchema + "\""));
             }
 
             public void SetPrimaryKeys()
