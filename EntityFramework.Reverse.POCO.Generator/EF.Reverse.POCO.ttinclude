@@ -38,6 +38,7 @@ using System.Data.Entity;
 <# if(ElementsToGenerate.HasFlag(Elements.StoredProcedures)){ #>
 using System.Data;
 using System.Data.SqlClient;
+using System.Data.SqlTypes;
 <# } #>
 <# if(ElementsToGenerate.HasFlag(Elements.StoredProcedures) && IncludeTableValuedFunctions){ #>
 using System.Data.Entity.Infrastructure;

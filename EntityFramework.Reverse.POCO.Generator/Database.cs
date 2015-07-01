@@ -31,6 +31,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Data;
 using System.Data.SqlClient;
+using System.Data.SqlTypes;
 using System.Data.Entity.ModelConfiguration;
 using System.Threading;
 using System.Threading.Tasks;
