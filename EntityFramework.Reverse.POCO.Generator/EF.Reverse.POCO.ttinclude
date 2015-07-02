@@ -2,7 +2,7 @@
 <#@ import namespace="System.Security.Cryptography.X509Certificates" #>
 <#
 fileManager.StartHeader();
-// Copyright © Simon Hughes 2012
+// Copyright (C) Simon Hughes 2012
 // v2.14.2
 #>
 // ReSharper disable RedundantUsingDirective

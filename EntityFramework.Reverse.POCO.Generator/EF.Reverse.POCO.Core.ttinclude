@@ -1,5 +1,5 @@
 <#
-// Copyright © Simon Hughes 2012
+// Copyright (C) Simon Hughes 2012
 // v2.14.2
 #>
 <#@ template hostspecific="true" language="C#" #>

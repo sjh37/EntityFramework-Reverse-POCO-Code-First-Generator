@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Simon Hughes (www.hicrest.net), ByBox (www.bybox.com)")]
 [assembly: AssemblyProduct("EntityFramework Reverse POCO code first Generator")]
-[assembly: AssemblyCopyright("Copyright © Simon Hughes 2012")]
+[assembly: AssemblyCopyright("Copyright (C) Simon Hughes 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
