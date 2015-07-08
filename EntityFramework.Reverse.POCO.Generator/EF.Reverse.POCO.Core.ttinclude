@@ -1019,7 +1019,17 @@
             {
                 try
                 {
-                    return (PluralizationService == null) ? word : PluralizationService.Pluralize(word);
+                    if(PluralizationService == null) 
+                        return word;
+
+                    if (word.Contains('_'))
+                    {
+                        var parts = word.Split('_');
+                        parts[parts.Length - 1] = PluralizationService.Pluralize(parts[parts.Length - 1]); // Pluralize just the last word
+                        return string.Join("_", parts);
+                    }
+
+                    return PluralizationService.Pluralize(word);
                 }
                 catch (Exception)
                 {
@@ -1036,7 +1046,17 @@
             {
                 try
                 {
-                    return (PluralizationService == null) ? word : PluralizationService.Singularize(word);
+                    if(PluralizationService == null) 
+                        return word;
+
+                    if (word.Contains('_'))
+                    {
+                        var parts = word.Split('_');
+                        parts[parts.Length - 1] = PluralizationService.Singularize(parts[parts.Length - 1]); // Singularize just the last word
+                        return string.Join("_", parts);
+                    }
+                    
+                    return PluralizationService.Singularize(word);
                 }
                 catch (Exception)
                 {
@@ -1580,21 +1600,10 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                                 };
 
                                 tableName = tableRename(tableName, schema);
-                                string singular;
 
                                 // Handle table names with underscores - singularise just the last word
-                                if (tableName.Contains('_'))
-                                {
-                                    var tableNameParts = tableName.Split('_');
-                                    tableNameParts[tableNameParts.Length - 1] = Inflector.MakeSingular(tableNameParts[tableNameParts.Length - 1]); // Singularise just the last word
-                                    singular = CleanUp(string.Join("_", tableNameParts));
-                                    table.ClassName = singular;
-                                }
-                                else
-                                {
-                                    table.ClassName = Inflector.MakeSingular(CleanUp(tableName));
-                                    singular = Inflector.MakeSingular(tableName);
-                                }
+                                table.ClassName = Inflector.MakeSingular(CleanUp(tableName));
+                                string singular = Inflector.MakeSingular(tableName);
                                 table.NameHumanCase = (useCamelCase ? Inflector.ToTitleCase(singular) : singular).Replace(" ", "").Replace("$", "");
                                 if((string.Compare(table.Schema, "dbo", StringComparison.OrdinalIgnoreCase) != 0) && prependSchemaName)
                                     table.NameHumanCase = table.Schema + "_" + table.NameHumanCase;
@@ -2378,17 +2387,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
             public string PkTableHumanCase(bool useCamelCase, bool prependSchemaName)
             {
-                string singular;
-                if (PkTableNameFiltered.Contains('_'))
-                {
-                    var tableNameParts = PkTableNameFiltered.Split('_');
-                    tableNameParts[tableNameParts.Length - 1] = Inflector.MakeSingular(tableNameParts[tableNameParts.Length - 1]); // Singularise just the last word
-                    singular = string.Join("_", tableNameParts);
-                }
-                else
-                {
-                    singular = Inflector.MakeSingular(PkTableNameFiltered);
-                }
+                string singular = Inflector.MakeSingular(PkTableNameFiltered);
                 string pkTableHumanCase = (useCamelCase ? Inflector.ToTitleCase(singular) : singular).Replace(" ", "").Replace("$", "");
                 if (string.Compare(PkSchema, "dbo", StringComparison.OrdinalIgnoreCase) != 0 && prependSchemaName)
                     pkTableHumanCase = PkSchema + "_" + pkTableHumanCase;
