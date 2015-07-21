@@ -1082,7 +1082,12 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Alphabetical list of products
     internal class AlphabeticalListOfProductConfiguration : EntityTypeConfiguration<AlphabeticalListOfProduct>
     {
-        public AlphabeticalListOfProductConfiguration(string schema = "dbo")
+        public AlphabeticalListOfProductConfiguration()
+            : this("dbo")
+        {
+        }
+ 
+        public AlphabeticalListOfProductConfiguration(string schema)
         {
             ToTable(schema + ".Alphabetical list of products");
             HasKey(x => new { x.ProductId, x.ProductName, x.Discontinued, x.CategoryName });
@@ -1104,7 +1109,12 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Categories
     internal class CategoryConfiguration : EntityTypeConfiguration<Category>
     {
-        public CategoryConfiguration(string schema = "dbo")
+        public CategoryConfiguration()
+            : this("dbo")
+        {
+        }
+ 
+        public CategoryConfiguration(string schema)
         {
             ToTable(schema + ".Categories");
             HasKey(x => x.CategoryId);
@@ -1119,7 +1129,12 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Category Sales for 1997
     internal class CategorySalesFor1997Configuration : EntityTypeConfiguration<CategorySalesFor1997>
     {
-        public CategorySalesFor1997Configuration(string schema = "dbo")
+        public CategorySalesFor1997Configuration()
+            : this("dbo")
+        {
+        }
+ 
+        public CategorySalesFor1997Configuration(string schema)
         {
             ToTable(schema + ".Category Sales for 1997");
             HasKey(x => x.CategoryName);
@@ -1132,7 +1147,12 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Current Product List
     internal class CurrentProductListConfiguration : EntityTypeConfiguration<CurrentProductList>
     {
-        public CurrentProductListConfiguration(string schema = "dbo")
+        public CurrentProductListConfiguration()
+            : this("dbo")
+        {
+        }
+ 
+        public CurrentProductListConfiguration(string schema)
         {
             ToTable(schema + ".Current Product List");
             HasKey(x => new { x.ProductId, x.ProductName });
@@ -1145,7 +1165,12 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Customers
     internal class CustomerConfiguration : EntityTypeConfiguration<Customer>
     {
-        public CustomerConfiguration(string schema = "dbo")
+        public CustomerConfiguration()
+            : this("dbo")
+        {
+        }
+ 
+        public CustomerConfiguration(string schema)
         {
             ToTable(schema + ".Customers");
             HasKey(x => x.CustomerId);
@@ -1173,7 +1198,12 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Customer and Suppliers by City
     internal class CustomerAndSuppliersByCityConfiguration : EntityTypeConfiguration<CustomerAndSuppliersByCity>
     {
-        public CustomerAndSuppliersByCityConfiguration(string schema = "dbo")
+        public CustomerAndSuppliersByCityConfiguration()
+            : this("dbo")
+        {
+        }
+ 
+        public CustomerAndSuppliersByCityConfiguration(string schema)
         {
             ToTable(schema + ".Customer and Suppliers by City");
             HasKey(x => new { x.CompanyName, x.Relationship });
@@ -1188,7 +1218,12 @@ namespace EntityFramework_Reverse_POCO_Generator
     // CustomerDemographics
     internal class CustomerDemographicConfiguration : EntityTypeConfiguration<CustomerDemographic>
     {
-        public CustomerDemographicConfiguration(string schema = "dbo")
+        public CustomerDemographicConfiguration()
+            : this("dbo")
+        {
+        }
+ 
+        public CustomerDemographicConfiguration(string schema)
         {
             ToTable(schema + ".CustomerDemographics");
             HasKey(x => x.CustomerTypeId);
@@ -1201,7 +1236,12 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Employees
     internal class EmployeeConfiguration : EntityTypeConfiguration<Employee>
     {
-        public EmployeeConfiguration(string schema = "dbo")
+        public EmployeeConfiguration()
+            : this("dbo")
+        {
+        }
+ 
+        public EmployeeConfiguration(string schema)
         {
             ToTable(schema + ".Employees");
             HasKey(x => x.EmployeeId);
@@ -1239,7 +1279,12 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Invoices
     internal class InvoiceConfiguration : EntityTypeConfiguration<Invoice>
     {
-        public InvoiceConfiguration(string schema = "dbo")
+        public InvoiceConfiguration()
+            : this("dbo")
+        {
+        }
+ 
+        public InvoiceConfiguration(string schema)
         {
             ToTable(schema + ".Invoices");
             HasKey(x => new { x.CustomerName, x.Salesperson, x.OrderId, x.ShipperName, x.ProductId, x.ProductName, x.UnitPrice, x.Quantity, x.Discount });
@@ -1276,7 +1321,12 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Orders
     internal class OrderConfiguration : EntityTypeConfiguration<Order>
     {
-        public OrderConfiguration(string schema = "dbo")
+        public OrderConfiguration()
+            : this("dbo")
+        {
+        }
+ 
+        public OrderConfiguration(string schema)
         {
             ToTable(schema + ".Orders");
             HasKey(x => x.OrderId);
@@ -1306,7 +1356,12 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Order Details
     internal class OrderDetailConfiguration : EntityTypeConfiguration<OrderDetail>
     {
-        public OrderDetailConfiguration(string schema = "dbo")
+        public OrderDetailConfiguration()
+            : this("dbo")
+        {
+        }
+ 
+        public OrderDetailConfiguration(string schema)
         {
             ToTable(schema + ".Order Details");
             HasKey(x => new { x.OrderId, x.ProductId });
@@ -1326,7 +1381,12 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Order Details Extended
     internal class OrderDetailsExtendedConfiguration : EntityTypeConfiguration<OrderDetailsExtended>
     {
-        public OrderDetailsExtendedConfiguration(string schema = "dbo")
+        public OrderDetailsExtendedConfiguration()
+            : this("dbo")
+        {
+        }
+ 
+        public OrderDetailsExtendedConfiguration(string schema)
         {
             ToTable(schema + ".Order Details Extended");
             HasKey(x => new { x.OrderId, x.ProductId, x.ProductName, x.UnitPrice, x.Quantity, x.Discount });
@@ -1344,7 +1404,12 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Orders Qry
     internal class OrdersQryConfiguration : EntityTypeConfiguration<OrdersQry>
     {
-        public OrdersQryConfiguration(string schema = "dbo")
+        public OrdersQryConfiguration()
+            : this("dbo")
+        {
+        }
+ 
+        public OrdersQryConfiguration(string schema)
         {
             ToTable(schema + ".Orders Qry");
             HasKey(x => new { x.OrderId, x.CompanyName });
@@ -1375,7 +1440,12 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Order Subtotals
     internal class OrderSubtotalConfiguration : EntityTypeConfiguration<OrderSubtotal>
     {
-        public OrderSubtotalConfiguration(string schema = "dbo")
+        public OrderSubtotalConfiguration()
+            : this("dbo")
+        {
+        }
+ 
+        public OrderSubtotalConfiguration(string schema)
         {
             ToTable(schema + ".Order Subtotals");
             HasKey(x => x.OrderId);
@@ -1388,7 +1458,12 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Products
     internal class ProductConfiguration : EntityTypeConfiguration<Product>
     {
-        public ProductConfiguration(string schema = "dbo")
+        public ProductConfiguration()
+            : this("dbo")
+        {
+        }
+ 
+        public ProductConfiguration(string schema)
         {
             ToTable(schema + ".Products");
             HasKey(x => x.ProductId);
@@ -1413,7 +1488,12 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Products Above Average Price
     internal class ProductsAboveAveragePriceConfiguration : EntityTypeConfiguration<ProductsAboveAveragePrice>
     {
-        public ProductsAboveAveragePriceConfiguration(string schema = "dbo")
+        public ProductsAboveAveragePriceConfiguration()
+            : this("dbo")
+        {
+        }
+ 
+        public ProductsAboveAveragePriceConfiguration(string schema)
         {
             ToTable(schema + ".Products Above Average Price");
             HasKey(x => x.ProductName);
@@ -1426,7 +1506,12 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Product Sales for 1997
     internal class ProductSalesFor1997Configuration : EntityTypeConfiguration<ProductSalesFor1997>
     {
-        public ProductSalesFor1997Configuration(string schema = "dbo")
+        public ProductSalesFor1997Configuration()
+            : this("dbo")
+        {
+        }
+ 
+        public ProductSalesFor1997Configuration(string schema)
         {
             ToTable(schema + ".Product Sales for 1997");
             HasKey(x => new { x.CategoryName, x.ProductName });
@@ -1440,7 +1525,12 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Products by Category
     internal class ProductsByCategoryConfiguration : EntityTypeConfiguration<ProductsByCategory>
     {
-        public ProductsByCategoryConfiguration(string schema = "dbo")
+        public ProductsByCategoryConfiguration()
+            : this("dbo")
+        {
+        }
+ 
+        public ProductsByCategoryConfiguration(string schema)
         {
             ToTable(schema + ".Products by Category");
             HasKey(x => new { x.CategoryName, x.ProductName, x.Discontinued });
@@ -1456,7 +1546,12 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Region
     internal class RegionConfiguration : EntityTypeConfiguration<Region>
     {
-        public RegionConfiguration(string schema = "dbo")
+        public RegionConfiguration()
+            : this("dbo")
+        {
+        }
+ 
+        public RegionConfiguration(string schema)
         {
             ToTable(schema + ".Region");
             HasKey(x => x.RegionId);
@@ -1469,7 +1564,12 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Sales by Category
     internal class SalesByCategoryConfiguration : EntityTypeConfiguration<SalesByCategory>
     {
-        public SalesByCategoryConfiguration(string schema = "dbo")
+        public SalesByCategoryConfiguration()
+            : this("dbo")
+        {
+        }
+ 
+        public SalesByCategoryConfiguration(string schema)
         {
             ToTable(schema + ".Sales by Category");
             HasKey(x => new { x.CategoryId, x.CategoryName, x.ProductName });
@@ -1484,7 +1584,12 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Sales Totals by Amount
     internal class SalesTotalsByAmountConfiguration : EntityTypeConfiguration<SalesTotalsByAmount>
     {
-        public SalesTotalsByAmountConfiguration(string schema = "dbo")
+        public SalesTotalsByAmountConfiguration()
+            : this("dbo")
+        {
+        }
+ 
+        public SalesTotalsByAmountConfiguration(string schema)
         {
             ToTable(schema + ".Sales Totals by Amount");
             HasKey(x => new { x.OrderId, x.CompanyName });
@@ -1499,7 +1604,12 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Shippers
     internal class ShipperConfiguration : EntityTypeConfiguration<Shipper>
     {
-        public ShipperConfiguration(string schema = "dbo")
+        public ShipperConfiguration()
+            : this("dbo")
+        {
+        }
+ 
+        public ShipperConfiguration(string schema)
         {
             ToTable(schema + ".Shippers");
             HasKey(x => x.ShipperId);
@@ -1513,7 +1623,12 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Summary of Sales by Quarter
     internal class SummaryOfSalesByQuarterConfiguration : EntityTypeConfiguration<SummaryOfSalesByQuarter>
     {
-        public SummaryOfSalesByQuarterConfiguration(string schema = "dbo")
+        public SummaryOfSalesByQuarterConfiguration()
+            : this("dbo")
+        {
+        }
+ 
+        public SummaryOfSalesByQuarterConfiguration(string schema)
         {
             ToTable(schema + ".Summary of Sales by Quarter");
             HasKey(x => x.OrderId);
@@ -1527,7 +1642,12 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Summary of Sales by Year
     internal class SummaryOfSalesByYearConfiguration : EntityTypeConfiguration<SummaryOfSalesByYear>
     {
-        public SummaryOfSalesByYearConfiguration(string schema = "dbo")
+        public SummaryOfSalesByYearConfiguration()
+            : this("dbo")
+        {
+        }
+ 
+        public SummaryOfSalesByYearConfiguration(string schema)
         {
             ToTable(schema + ".Summary of Sales by Year");
             HasKey(x => x.OrderId);
@@ -1541,7 +1661,12 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Suppliers
     internal class SupplierConfiguration : EntityTypeConfiguration<Supplier>
     {
-        public SupplierConfiguration(string schema = "dbo")
+        public SupplierConfiguration()
+            : this("dbo")
+        {
+        }
+ 
+        public SupplierConfiguration(string schema)
         {
             ToTable(schema + ".Suppliers");
             HasKey(x => x.SupplierId);
@@ -1564,7 +1689,12 @@ namespace EntityFramework_Reverse_POCO_Generator
     // sysdiagrams
     internal class SysdiagramConfiguration : EntityTypeConfiguration<Sysdiagram>
     {
-        public SysdiagramConfiguration(string schema = "dbo")
+        public SysdiagramConfiguration()
+            : this("dbo")
+        {
+        }
+ 
+        public SysdiagramConfiguration(string schema)
         {
             ToTable(schema + ".sysdiagrams");
             HasKey(x => x.DiagramId);
@@ -1580,7 +1710,12 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Territories
     internal class TerritoryConfiguration : EntityTypeConfiguration<Territory>
     {
-        public TerritoryConfiguration(string schema = "dbo")
+        public TerritoryConfiguration()
+            : this("dbo")
+        {
+        }
+ 
+        public TerritoryConfiguration(string schema)
         {
             ToTable(schema + ".Territories");
             HasKey(x => x.TerritoryId);
