@@ -638,7 +638,12 @@ foreach(Table tbl in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCas
 <# } #>
     internal <# if(MakeClassesPartial) { #>partial <# } #>class <#=tbl.NameHumanCase + ConfigurationClassName#> : EntityTypeConfiguration<<#=tbl.NameHumanCase#>>
     {
-        public <#=tbl.NameHumanCase + ConfigurationClassName#>(string schema = "<#=tbl.Schema#>")
+        public <#=tbl.NameHumanCase + ConfigurationClassName#>()
+            : this(<# if (string.IsNullOrEmpty(tbl.Schema)) { #>""<# } else { #>"<#=tbl.Schema#>"<# } #>)
+        {
+        }
+ 
+        public <#=tbl.NameHumanCase + ConfigurationClassName#>(string schema)
         {
  <# if (!string.IsNullOrEmpty(tbl.Schema)) { #>
            ToTable(schema + ".<#=tbl.Name#>");
