@@ -358,7 +358,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
     // ************************************************************************
     // Fake Database context
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.14.2.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.14.3.0")]
     public class FakeMyDbContext : IMyDbContext
     {
         public IDbSet<AlphabeticalListOfProduct> AlphabeticalListOfProducts { get; set; }
@@ -540,7 +540,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
     // ************************************************************************
     // Fake DbSet
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.14.2.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.14.3.0")]
     public class FakeDbSet<T> : IDbSet<T> where T : class
     {
         private readonly HashSet<T> _data;
@@ -642,7 +642,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Categories
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.14.2.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.14.3.0")]
     public class Category
     {
         public int CategoryId { get; set; } // CategoryID (Primary key)
@@ -674,7 +674,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Customers
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.14.2.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.14.3.0")]
     public class Customer
     {
         public string CustomerId { get; set; } // CustomerID (Primary key)
@@ -710,7 +710,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // CustomerDemographics
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.14.2.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.14.3.0")]
     public class CustomerDemographic
     {
         public string CustomerTypeId { get; set; } // CustomerTypeID (Primary key)
@@ -726,7 +726,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Employees
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.14.2.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.14.3.0")]
     public class Employee
     {
         public int EmployeeId { get; set; } // EmployeeID (Primary key)
@@ -796,7 +796,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Orders
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.14.2.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.14.3.0")]
     public class Order
     {
         public int OrderId { get; set; } // OrderID (Primary key)
@@ -895,7 +895,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Products
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.14.2.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.14.3.0")]
     public class Product
     {
         public int ProductId { get; set; } // ProductID (Primary key)
@@ -953,7 +953,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Region
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.14.2.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.14.3.0")]
     public class Region
     {
         public int RegionId { get; set; } // RegionID (Primary key)
@@ -987,7 +987,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Shippers
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.14.2.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.14.3.0")]
     public class Shipper
     {
         public int ShipperId { get; set; } // ShipperID (Primary key)
@@ -1020,7 +1020,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Suppliers
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.14.2.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.14.3.0")]
     public class Supplier
     {
         public int SupplierId { get; set; } // SupplierID (Primary key)
@@ -1056,7 +1056,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Territories
-    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.14.2.0")]
+    [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.14.3.0")]
     public class Territory
     {
         public string TerritoryId { get; set; } // TerritoryID (Primary key)
