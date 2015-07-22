@@ -594,7 +594,7 @@ foreach(var entityFk in tbl.Columns.SelectMany(x => x.EntityFk).OrderBy(o => o))
         <#=entityFk #>
 <# } } #>
 <# 
-if(tbl.Columns.Where(c => c.Default != string.Empty).Count() > 0 || tbl.ReverseNavigationCtor.Count() > 0) 
+if(tbl.Columns.Where(c => c.Default != string.Empty).Count() > 0 || tbl.ReverseNavigationCtor.Count() > 0 || MakeClassesPartial) 
 { 
 #>
         
