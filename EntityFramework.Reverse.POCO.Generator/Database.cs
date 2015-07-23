@@ -1121,7 +1121,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
             Property(x => x.CategoryId).HasColumnName("CategoryID").IsRequired().HasColumnType("int").HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
             Property(x => x.CategoryName).HasColumnName("CategoryName").IsRequired().HasColumnType("nvarchar").HasMaxLength(15);
-            Property(x => x.Description).HasColumnName("Description").IsOptional().HasColumnType("ntext").HasMaxLength(1073741823);
+            Property(x => x.Description).HasColumnName("Description").IsOptional().HasColumnType("ntext").IsMaxLength();
             Property(x => x.Picture).HasColumnName("Picture").IsOptional().HasColumnType("image").HasMaxLength(2147483647);
         }
     }
@@ -1229,7 +1229,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             HasKey(x => x.CustomerTypeId);
 
             Property(x => x.CustomerTypeId).HasColumnName("CustomerTypeID").IsRequired().IsFixedLength().HasColumnType("nchar").HasMaxLength(10).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
-            Property(x => x.CustomerDesc).HasColumnName("CustomerDesc").IsOptional().HasColumnType("ntext").HasMaxLength(1073741823);
+            Property(x => x.CustomerDesc).HasColumnName("CustomerDesc").IsOptional().HasColumnType("ntext").IsMaxLength();
         }
     }
 
@@ -1261,7 +1261,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.HomePhone).HasColumnName("HomePhone").IsOptional().HasColumnType("nvarchar").HasMaxLength(24);
             Property(x => x.Extension).HasColumnName("Extension").IsOptional().HasColumnType("nvarchar").HasMaxLength(4);
             Property(x => x.Photo).HasColumnName("Photo").IsOptional().HasColumnType("image").HasMaxLength(2147483647);
-            Property(x => x.Notes).HasColumnName("Notes").IsOptional().HasColumnType("ntext").HasMaxLength(1073741823);
+            Property(x => x.Notes).HasColumnName("Notes").IsOptional().HasColumnType("ntext").IsMaxLength();
             Property(x => x.ReportsTo).HasColumnName("ReportsTo").IsOptional().HasColumnType("int");
             Property(x => x.PhotoPath).HasColumnName("PhotoPath").IsOptional().HasColumnType("nvarchar").HasMaxLength(255);
 
@@ -1682,7 +1682,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.Country).HasColumnName("Country").IsOptional().HasColumnType("nvarchar").HasMaxLength(15);
             Property(x => x.Phone).HasColumnName("Phone").IsOptional().HasColumnType("nvarchar").HasMaxLength(24);
             Property(x => x.Fax).HasColumnName("Fax").IsOptional().HasColumnType("nvarchar").HasMaxLength(24);
-            Property(x => x.HomePage).HasColumnName("HomePage").IsOptional().HasColumnType("ntext").HasMaxLength(1073741823);
+            Property(x => x.HomePage).HasColumnName("HomePage").IsOptional().HasColumnType("ntext").IsMaxLength();
         }
     }
 
