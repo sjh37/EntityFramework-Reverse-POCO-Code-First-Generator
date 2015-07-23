@@ -301,7 +301,7 @@ foreach (StoredProcedure sp in storedProcs.Where(s => !s.IsTVF))
         {
 <#= WriteStoredProcFunctionDeclareSqlParameter(sp) #> 
             var procResultData = Database.SqlQuery<<#= spReturnClassName #>>("EXEC @procResult = [<#=sp.Schema#>].[<#= sp.Name #>] <#= WriteStoredProcFunctionSqlAtParams(sp) #>", <#= WriteStoredProcFunctionSqlParameterAnonymousArray(sp) #>).ToList();
-<#= WriteStoredProcFunctionSetSqlParameters(sp, true) #> 
+<#= WriteStoredProcFunctionSetSqlParameters(sp, false) #> 
             procResult = (int) procResultParam.Value;
             return procResultData;
         }
