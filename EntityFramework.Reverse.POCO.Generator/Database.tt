@@ -331,7 +331,7 @@
                 sb.AppendLine(string.Format("                {0} = {1};", p.NameHumanCase, notNullable ? Default : "null"));
                 sb.AppendLine("            else");
                 sb.AppendLine(string.Format("            {0} = ({1}) {2}Param.Value;", p.NameHumanCase, p.PropertyType, p.NameHumanCase));
-        }
+            }
         }
         return sb.ToString();
     };
