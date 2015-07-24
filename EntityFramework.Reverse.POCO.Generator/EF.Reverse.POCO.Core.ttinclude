@@ -855,6 +855,13 @@
                     return;
                 }
 
+                // Ignore defaults we cannot interpret (we would need SQL to C# compiler)
+                if (lower.StartsWith("create default"))
+                {
+                    Default = string.Empty;
+                    return;
+                }
+
                 if(string.IsNullOrWhiteSpace(Default))
                 {
                     Default = string.Empty;
