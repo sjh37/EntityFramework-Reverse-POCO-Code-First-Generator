@@ -32,7 +32,7 @@
         };
         
         // Settings - edit these in the main <name>.tt file *******************************************************************************
-        string ConnectionStringName = "";        		
+        string ConnectionStringName = "";
         bool IncludeViews = true;
         bool IncludeTableValuedFunctions = false;
         bool AddUnitTestingDbContext = true;
