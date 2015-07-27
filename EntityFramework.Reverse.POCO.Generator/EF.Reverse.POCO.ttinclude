@@ -85,9 +85,6 @@ using DatabaseGeneratedOption = System.ComponentModel.DataAnnotations.Schema.Dat
         }
     } 
 #>
-<#if (!string.IsNullOrEmpty(CollectionTypeNamespace)){
-#>using <#=CollectionTypeNamespace#>;
-<#}#>
 <#if (!string.IsNullOrEmpty(MigrationConfigurationFileName)){
 #>using System.Data.Entity.Migrations;
 <#}#>

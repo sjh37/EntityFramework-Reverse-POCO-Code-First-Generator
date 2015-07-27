@@ -41,7 +41,6 @@
         string DbContextBaseClass = "DbContext";
         string ConfigurationClassName = "Configuration";
         string CollectionType = "List";
-        string CollectionTypeNamespace = "";
         bool MakeClassesPartial = true;
         bool GenerateSeparateFiles = false;
         string FileExtension = ".cs";
