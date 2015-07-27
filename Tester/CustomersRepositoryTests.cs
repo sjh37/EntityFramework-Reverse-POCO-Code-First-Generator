@@ -35,7 +35,6 @@ namespace Tester
         public void SetUp()
         {
             _db = new MyDbContext();
-            Console.WriteLine();
         }
 
         [Test]
