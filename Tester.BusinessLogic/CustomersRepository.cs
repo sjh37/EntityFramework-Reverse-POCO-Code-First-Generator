@@ -30,5 +30,17 @@ namespace Tester.BusinessLogic
         {
             return _context.Customers.FirstOrDefault(x => x.CustomerId == id);
         }
+
+        public void AddCustomer(Customer customer)
+        {
+            _context.Customers.Add(customer);
+            _context.SaveChanges();
+        }
+
+        public void DeleteCustomer(Customer customer)
+        {
+            _context.Customers.Remove(customer);
+            _context.SaveChanges();
+        }
     }
 }

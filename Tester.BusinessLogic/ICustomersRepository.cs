@@ -8,5 +8,7 @@ namespace Tester.BusinessLogic
         IQueryable<Customer> GetTop10();
         int Count();
         Customer FindById(string id);
+        void AddCustomer(Customer customer);
+        void DeleteCustomer(Customer customer);
     }
 }
