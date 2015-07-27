@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using EntityFramework_Reverse_POCO_Generator;
+﻿using EntityFramework_Reverse_POCO_Generator;
 using NUnit.Framework;
 using Tester.BusinessLogic;
 
