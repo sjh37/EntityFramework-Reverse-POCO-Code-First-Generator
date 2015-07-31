@@ -375,19 +375,16 @@
 
         private List<string> GetConfigPathsInProjectForFile(EnvDTE.Project project, string filename)
         {
-            var paths = new List<string>();
-            if(project == null || project.Kind == EnvDTE.Constants.vsProjectKindUnmodeled) {
-                // project is 'unloaded'
-                return paths;
+            if(project == null || project.Kind == EnvDTE.Constants.vsProjectKindUnmodeled) 
+            {
+                // Project is 'unloaded'
+                return new List<string>();
             }
 
-            var paths = new List<string>();
-            foreach (EnvDTE.ProjectItem item in project.ProjectItems)
-            {
-                if (item.Name.Equals(filename, StringComparison.InvariantCultureIgnoreCase))
-                    paths.Add(Path.Combine(GetProjectPath(project), item.Name));
-            }
-            return paths;
+            return (from   ProjectItem item in project.ProjectItems
+                    where  item.Name.Equals(filename, StringComparison.InvariantCultureIgnoreCase)
+                    select Path.Combine(GetProjectPath(project), item.Name))
+                .ToList();
         }
 
         // Search for the database file
