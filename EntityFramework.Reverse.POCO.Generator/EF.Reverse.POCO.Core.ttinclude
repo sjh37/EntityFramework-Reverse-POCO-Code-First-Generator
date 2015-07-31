@@ -15,6 +15,7 @@
 <#@ import namespace="System.Text.RegularExpressions" #>
 <#@ import namespace="System.Configuration" #>
 <#@ import namespace="System.Windows.Forms" #>
+<#@ import namespace="EnvDTE" #>
 <#@ output extension=".cs"#>
 <#
         var code = new CodeGenerationTools(this);
@@ -203,7 +204,7 @@
             foreach (var path in paths)
             {
                 var configFile = new ExeConfigurationFileMap { ExeConfigFilename = path };
-                var config = ConfigurationManager.OpenMappedExeConfiguration(configFile, ConfigurationUserLevel.None);
+                var config = System.Configuration.ConfigurationManager.OpenMappedExeConfiguration(configFile, ConfigurationUserLevel.None);
                 var connSection = config.ConnectionStrings;
 
                 if (string.IsNullOrEmpty(connectionStringName))
@@ -347,7 +348,7 @@
                 paths.AddRange(GetConfigPathsInProject(dteProject));
             }
 
-            if (!paths.Any())
+            if (!paths.Any() && ConfigFilenameSearchOrder != null)
             {
                 var sln = GetSolution();
                 paths.AddRange(
@@ -363,6 +364,8 @@
         private List<string> GetConfigPathsInProject(EnvDTE.Project project)
         {
             var paths = new List<string>();
+            if (ConfigFilenameSearchOrder == null || project == null)
+                return paths;
             foreach (string filename in ConfigFilenameSearchOrder)
             {
                 paths.AddRange(GetConfigPathsInProjectForFile(project, filename));
@@ -372,9 +375,10 @@
 
         private List<string> GetConfigPathsInProjectForFile(EnvDTE.Project project, string filename)
         {
-            if(project.Kind == EnvDTE.Constants.vsProjectKindUnmodeled) {
+            var paths = new List<string>();
+            if(project == null || project.Kind == EnvDTE.Constants.vsProjectKindUnmodeled) {
                 // project is 'unloaded'
-                return new List<string>();
+                return paths;
             }
 
             var paths = new List<string>();
