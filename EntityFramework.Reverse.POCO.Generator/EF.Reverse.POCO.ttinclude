@@ -69,7 +69,6 @@ using <#= PocoConfigurationNamespace #>;
 <# } #>
 <# if (IsSupportedFrameworkVersion("4.5")) { #>
 using System.Threading;
-using System.Threading.Tasks;
 <# } #>
 <# 	if(	ElementsToGenerate.HasFlag(Elements.PocoConfiguration)){
         switch (TargetFrameworkVersion)
@@ -120,8 +119,8 @@ else
 <# } #>
         int SaveChanges();
 <# if (IsSupportedFrameworkVersion("4.5")) { #>
-        Task<int> SaveChangesAsync();
-        Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<int> SaveChangesAsync();
+        System.Threading.Tasks.Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 <# } #>
 <# if (ElementsToGenerate.HasFlag(Elements.StoredProcedures)) { #>
         
@@ -368,12 +367,12 @@ foreach (Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.N
         }
 <# if (IsSupportedFrameworkVersion("4.5")) { #>
 
-        public Task<int> SaveChangesAsync()
+        public System.Threading.Tasks.Task<int> SaveChangesAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Task<int> SaveChangesAsync(CancellationToken cancellationToken)
+        public System.Threading.Tasks.Task<int> SaveChangesAsync(CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }

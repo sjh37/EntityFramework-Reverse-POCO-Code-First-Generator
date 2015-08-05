@@ -34,7 +34,6 @@ using System.Data.SqlClient;
 using System.Data.SqlTypes;
 using System.Data.Entity.ModelConfiguration;
 using System.Threading;
-using System.Threading.Tasks;
 using DatabaseGeneratedOption = System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption;
 
 namespace EntityFramework_Reverse_POCO_Generator
@@ -72,8 +71,8 @@ namespace EntityFramework_Reverse_POCO_Generator
         IDbSet<Territory> Territories { get; set; } // Territories
 
         int SaveChanges();
-        Task<int> SaveChangesAsync();
-        Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<int> SaveChangesAsync();
+        System.Threading.Tasks.Task<int> SaveChangesAsync(CancellationToken cancellationToken);
         
         // Stored Procedures
         List<CustOrderHistReturnModel> CustOrderHist(string customerId, out int procResult);
@@ -425,12 +424,12 @@ namespace EntityFramework_Reverse_POCO_Generator
             return 0;
         }
 
-        public Task<int> SaveChangesAsync()
+        public System.Threading.Tasks.Task<int> SaveChangesAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Task<int> SaveChangesAsync(CancellationToken cancellationToken)
+        public System.Threading.Tasks.Task<int> SaveChangesAsync(CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
