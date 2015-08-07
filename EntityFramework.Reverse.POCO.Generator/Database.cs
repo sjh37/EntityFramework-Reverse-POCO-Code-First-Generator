@@ -26,6 +26,7 @@ using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Data.Entity.Infrastructure;
 using System.Linq.Expressions;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
@@ -42,33 +43,33 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Unit of work
     public interface IMyDbContext : IDisposable
     {
-        IDbSet<AlphabeticalListOfProduct> AlphabeticalListOfProducts { get; set; } // Alphabetical list of products
-        IDbSet<Category> Categories { get; set; } // Categories
-        IDbSet<CategorySalesFor1997> CategorySalesFor1997 { get; set; } // Category Sales for 1997
-        IDbSet<CurrentProductList> CurrentProductLists { get; set; } // Current Product List
-        IDbSet<Customer> Customers { get; set; } // Customers
-        IDbSet<CustomerAndSuppliersByCity> CustomerAndSuppliersByCities { get; set; } // Customer and Suppliers by City
-        IDbSet<CustomerDemographic> CustomerDemographics { get; set; } // CustomerDemographics
-        IDbSet<Employee> Employees { get; set; } // Employees
-        IDbSet<Invoice> Invoices { get; set; } // Invoices
-        IDbSet<Order> Orders { get; set; } // Orders
-        IDbSet<OrderDetail> OrderDetails { get; set; } // Order Details
-        IDbSet<OrderDetailsExtended> OrderDetailsExtendeds { get; set; } // Order Details Extended
-        IDbSet<OrdersQry> OrdersQries { get; set; } // Orders Qry
-        IDbSet<OrderSubtotal> OrderSubtotals { get; set; } // Order Subtotals
-        IDbSet<Product> Products { get; set; } // Products
-        IDbSet<ProductsAboveAveragePrice> ProductsAboveAveragePrices { get; set; } // Products Above Average Price
-        IDbSet<ProductSalesFor1997> ProductSalesFor1997 { get; set; } // Product Sales for 1997
-        IDbSet<ProductsByCategory> ProductsByCategories { get; set; } // Products by Category
-        IDbSet<Region> Regions { get; set; } // Region
-        IDbSet<SalesByCategory> SalesByCategories { get; set; } // Sales by Category
-        IDbSet<SalesTotalsByAmount> SalesTotalsByAmounts { get; set; } // Sales Totals by Amount
-        IDbSet<Shipper> Shippers { get; set; } // Shippers
-        IDbSet<SummaryOfSalesByQuarter> SummaryOfSalesByQuarters { get; set; } // Summary of Sales by Quarter
-        IDbSet<SummaryOfSalesByYear> SummaryOfSalesByYears { get; set; } // Summary of Sales by Year
-        IDbSet<Supplier> Suppliers { get; set; } // Suppliers
-        IDbSet<Sysdiagram> Sysdiagrams { get; set; } // sysdiagrams
-        IDbSet<Territory> Territories { get; set; } // Territories
+        DbSet<AlphabeticalListOfProduct> AlphabeticalListOfProducts { get; set; } // Alphabetical list of products
+        DbSet<Category> Categories { get; set; } // Categories
+        DbSet<CategorySalesFor1997> CategorySalesFor1997 { get; set; } // Category Sales for 1997
+        DbSet<CurrentProductList> CurrentProductLists { get; set; } // Current Product List
+        DbSet<Customer> Customers { get; set; } // Customers
+        DbSet<CustomerAndSuppliersByCity> CustomerAndSuppliersByCities { get; set; } // Customer and Suppliers by City
+        DbSet<CustomerDemographic> CustomerDemographics { get; set; } // CustomerDemographics
+        DbSet<Employee> Employees { get; set; } // Employees
+        DbSet<Invoice> Invoices { get; set; } // Invoices
+        DbSet<Order> Orders { get; set; } // Orders
+        DbSet<OrderDetail> OrderDetails { get; set; } // Order Details
+        DbSet<OrderDetailsExtended> OrderDetailsExtendeds { get; set; } // Order Details Extended
+        DbSet<OrdersQry> OrdersQries { get; set; } // Orders Qry
+        DbSet<OrderSubtotal> OrderSubtotals { get; set; } // Order Subtotals
+        DbSet<Product> Products { get; set; } // Products
+        DbSet<ProductsAboveAveragePrice> ProductsAboveAveragePrices { get; set; } // Products Above Average Price
+        DbSet<ProductSalesFor1997> ProductSalesFor1997 { get; set; } // Product Sales for 1997
+        DbSet<ProductsByCategory> ProductsByCategories { get; set; } // Products by Category
+        DbSet<Region> Regions { get; set; } // Region
+        DbSet<SalesByCategory> SalesByCategories { get; set; } // Sales by Category
+        DbSet<SalesTotalsByAmount> SalesTotalsByAmounts { get; set; } // Sales Totals by Amount
+        DbSet<Shipper> Shippers { get; set; } // Shippers
+        DbSet<SummaryOfSalesByQuarter> SummaryOfSalesByQuarters { get; set; } // Summary of Sales by Quarter
+        DbSet<SummaryOfSalesByYear> SummaryOfSalesByYears { get; set; } // Summary of Sales by Year
+        DbSet<Supplier> Suppliers { get; set; } // Suppliers
+        DbSet<Sysdiagram> Sysdiagrams { get; set; } // sysdiagrams
+        DbSet<Territory> Territories { get; set; } // Territories
 
         int SaveChanges();
         System.Threading.Tasks.Task<int> SaveChangesAsync();
@@ -88,33 +89,33 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Database context
     public class MyDbContext : DbContext, IMyDbContext
     {
-        public IDbSet<AlphabeticalListOfProduct> AlphabeticalListOfProducts { get; set; } // Alphabetical list of products
-        public IDbSet<Category> Categories { get; set; } // Categories
-        public IDbSet<CategorySalesFor1997> CategorySalesFor1997 { get; set; } // Category Sales for 1997
-        public IDbSet<CurrentProductList> CurrentProductLists { get; set; } // Current Product List
-        public IDbSet<Customer> Customers { get; set; } // Customers
-        public IDbSet<CustomerAndSuppliersByCity> CustomerAndSuppliersByCities { get; set; } // Customer and Suppliers by City
-        public IDbSet<CustomerDemographic> CustomerDemographics { get; set; } // CustomerDemographics
-        public IDbSet<Employee> Employees { get; set; } // Employees
-        public IDbSet<Invoice> Invoices { get; set; } // Invoices
-        public IDbSet<Order> Orders { get; set; } // Orders
-        public IDbSet<OrderDetail> OrderDetails { get; set; } // Order Details
-        public IDbSet<OrderDetailsExtended> OrderDetailsExtendeds { get; set; } // Order Details Extended
-        public IDbSet<OrdersQry> OrdersQries { get; set; } // Orders Qry
-        public IDbSet<OrderSubtotal> OrderSubtotals { get; set; } // Order Subtotals
-        public IDbSet<Product> Products { get; set; } // Products
-        public IDbSet<ProductsAboveAveragePrice> ProductsAboveAveragePrices { get; set; } // Products Above Average Price
-        public IDbSet<ProductSalesFor1997> ProductSalesFor1997 { get; set; } // Product Sales for 1997
-        public IDbSet<ProductsByCategory> ProductsByCategories { get; set; } // Products by Category
-        public IDbSet<Region> Regions { get; set; } // Region
-        public IDbSet<SalesByCategory> SalesByCategories { get; set; } // Sales by Category
-        public IDbSet<SalesTotalsByAmount> SalesTotalsByAmounts { get; set; } // Sales Totals by Amount
-        public IDbSet<Shipper> Shippers { get; set; } // Shippers
-        public IDbSet<SummaryOfSalesByQuarter> SummaryOfSalesByQuarters { get; set; } // Summary of Sales by Quarter
-        public IDbSet<SummaryOfSalesByYear> SummaryOfSalesByYears { get; set; } // Summary of Sales by Year
-        public IDbSet<Supplier> Suppliers { get; set; } // Suppliers
-        public IDbSet<Sysdiagram> Sysdiagrams { get; set; } // sysdiagrams
-        public IDbSet<Territory> Territories { get; set; } // Territories
+        public DbSet<AlphabeticalListOfProduct> AlphabeticalListOfProducts { get; set; } // Alphabetical list of products
+        public DbSet<Category> Categories { get; set; } // Categories
+        public DbSet<CategorySalesFor1997> CategorySalesFor1997 { get; set; } // Category Sales for 1997
+        public DbSet<CurrentProductList> CurrentProductLists { get; set; } // Current Product List
+        public DbSet<Customer> Customers { get; set; } // Customers
+        public DbSet<CustomerAndSuppliersByCity> CustomerAndSuppliersByCities { get; set; } // Customer and Suppliers by City
+        public DbSet<CustomerDemographic> CustomerDemographics { get; set; } // CustomerDemographics
+        public DbSet<Employee> Employees { get; set; } // Employees
+        public DbSet<Invoice> Invoices { get; set; } // Invoices
+        public DbSet<Order> Orders { get; set; } // Orders
+        public DbSet<OrderDetail> OrderDetails { get; set; } // Order Details
+        public DbSet<OrderDetailsExtended> OrderDetailsExtendeds { get; set; } // Order Details Extended
+        public DbSet<OrdersQry> OrdersQries { get; set; } // Orders Qry
+        public DbSet<OrderSubtotal> OrderSubtotals { get; set; } // Order Subtotals
+        public DbSet<Product> Products { get; set; } // Products
+        public DbSet<ProductsAboveAveragePrice> ProductsAboveAveragePrices { get; set; } // Products Above Average Price
+        public DbSet<ProductSalesFor1997> ProductSalesFor1997 { get; set; } // Product Sales for 1997
+        public DbSet<ProductsByCategory> ProductsByCategories { get; set; } // Products by Category
+        public DbSet<Region> Regions { get; set; } // Region
+        public DbSet<SalesByCategory> SalesByCategories { get; set; } // Sales by Category
+        public DbSet<SalesTotalsByAmount> SalesTotalsByAmounts { get; set; } // Sales Totals by Amount
+        public DbSet<Shipper> Shippers { get; set; } // Shippers
+        public DbSet<SummaryOfSalesByQuarter> SummaryOfSalesByQuarters { get; set; } // Summary of Sales by Quarter
+        public DbSet<SummaryOfSalesByYear> SummaryOfSalesByYears { get; set; } // Summary of Sales by Year
+        public DbSet<Supplier> Suppliers { get; set; } // Suppliers
+        public DbSet<Sysdiagram> Sysdiagrams { get; set; } // sysdiagrams
+        public DbSet<Territory> Territories { get; set; } // Territories
         
         static MyDbContext()
         {
@@ -360,33 +361,33 @@ namespace EntityFramework_Reverse_POCO_Generator
     [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.14.3.0")]
     public class FakeMyDbContext : IMyDbContext
     {
-        public IDbSet<AlphabeticalListOfProduct> AlphabeticalListOfProducts { get; set; }
-        public IDbSet<Category> Categories { get; set; }
-        public IDbSet<CategorySalesFor1997> CategorySalesFor1997 { get; set; }
-        public IDbSet<CurrentProductList> CurrentProductLists { get; set; }
-        public IDbSet<Customer> Customers { get; set; }
-        public IDbSet<CustomerAndSuppliersByCity> CustomerAndSuppliersByCities { get; set; }
-        public IDbSet<CustomerDemographic> CustomerDemographics { get; set; }
-        public IDbSet<Employee> Employees { get; set; }
-        public IDbSet<Invoice> Invoices { get; set; }
-        public IDbSet<Order> Orders { get; set; }
-        public IDbSet<OrderDetail> OrderDetails { get; set; }
-        public IDbSet<OrderDetailsExtended> OrderDetailsExtendeds { get; set; }
-        public IDbSet<OrdersQry> OrdersQries { get; set; }
-        public IDbSet<OrderSubtotal> OrderSubtotals { get; set; }
-        public IDbSet<Product> Products { get; set; }
-        public IDbSet<ProductsAboveAveragePrice> ProductsAboveAveragePrices { get; set; }
-        public IDbSet<ProductSalesFor1997> ProductSalesFor1997 { get; set; }
-        public IDbSet<ProductsByCategory> ProductsByCategories { get; set; }
-        public IDbSet<Region> Regions { get; set; }
-        public IDbSet<SalesByCategory> SalesByCategories { get; set; }
-        public IDbSet<SalesTotalsByAmount> SalesTotalsByAmounts { get; set; }
-        public IDbSet<Shipper> Shippers { get; set; }
-        public IDbSet<SummaryOfSalesByQuarter> SummaryOfSalesByQuarters { get; set; }
-        public IDbSet<SummaryOfSalesByYear> SummaryOfSalesByYears { get; set; }
-        public IDbSet<Supplier> Suppliers { get; set; }
-        public IDbSet<Sysdiagram> Sysdiagrams { get; set; }
-        public IDbSet<Territory> Territories { get; set; }
+        public DbSet<AlphabeticalListOfProduct> AlphabeticalListOfProducts { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<CategorySalesFor1997> CategorySalesFor1997 { get; set; }
+        public DbSet<CurrentProductList> CurrentProductLists { get; set; }
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<CustomerAndSuppliersByCity> CustomerAndSuppliersByCities { get; set; }
+        public DbSet<CustomerDemographic> CustomerDemographics { get; set; }
+        public DbSet<Employee> Employees { get; set; }
+        public DbSet<Invoice> Invoices { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderDetail> OrderDetails { get; set; }
+        public DbSet<OrderDetailsExtended> OrderDetailsExtendeds { get; set; }
+        public DbSet<OrdersQry> OrdersQries { get; set; }
+        public DbSet<OrderSubtotal> OrderSubtotals { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<ProductsAboveAveragePrice> ProductsAboveAveragePrices { get; set; }
+        public DbSet<ProductSalesFor1997> ProductSalesFor1997 { get; set; }
+        public DbSet<ProductsByCategory> ProductsByCategories { get; set; }
+        public DbSet<Region> Regions { get; set; }
+        public DbSet<SalesByCategory> SalesByCategories { get; set; }
+        public DbSet<SalesTotalsByAmount> SalesTotalsByAmounts { get; set; }
+        public DbSet<Shipper> Shippers { get; set; }
+        public DbSet<SummaryOfSalesByQuarter> SummaryOfSalesByQuarters { get; set; }
+        public DbSet<SummaryOfSalesByYear> SummaryOfSalesByYears { get; set; }
+        public DbSet<Supplier> Suppliers { get; set; }
+        public DbSet<Sysdiagram> Sysdiagrams { get; set; }
+        public DbSet<Territory> Territories { get; set; }
 
         public FakeMyDbContext()
         {
@@ -418,10 +419,12 @@ namespace EntityFramework_Reverse_POCO_Generator
             Sysdiagrams = new FakeDbSet<Sysdiagram>();
             Territories = new FakeDbSet<Territory>();
         }
-
+        
+        public int SaveChangesCount { get; private set; } 
         public int SaveChanges()
         {
-            return 0;
+            ++SaveChangesCount;
+            return 1;
         }
 
         public System.Threading.Tasks.Task<int> SaveChangesAsync()
@@ -539,86 +542,206 @@ namespace EntityFramework_Reverse_POCO_Generator
 
     // ************************************************************************
     // Fake DbSet
+    // Implementing Find:
+    //      The Find method is difficult to implement in a generic fashion. If
+    //      you need to test code that makes use of the Find method it is
+    //      easiest to create a test DbSet for each of the entity types that
+    //      need to support find. You can then write logic to find that
+    //      particular type of entity, as shown below:
+    //      public class FakeBlogDbSet : FakeDbSet<Blog>
+    //      {
+    //          public override Blog Find(params object[] keyValues)
+    //          {
+    //              var id = (int) keyValues.Single();
+    //              return this.SingleOrDefault(b => b.BlogId == id);
+    //          }
+    //      }
+    //      Read more about it here: https://msdn.microsoft.com/en-us/data/dn314431.aspx
     [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.14.3.0")]
-    public class FakeDbSet<T> : IDbSet<T> where T : class
-    {
-        private readonly HashSet<T> _data;
-
-        public FakeDbSet()
-        {
-            _data = new HashSet<T>();
+    public class FakeDbSet<TEntity> : DbSet<TEntity>, IQueryable, IEnumerable<TEntity>, IDbAsyncEnumerable<TEntity> 
+        where TEntity : class 
+    { 
+        private readonly ObservableCollection<TEntity> _data;
+        private readonly IQueryable _query;
+ 
+        public FakeDbSet() 
+        { 
+            _data = new ObservableCollection<TEntity>(); 
+            _query = _data.AsQueryable(); 
         }
 
-        public virtual T Find(params object[] keyValues)
+        public override IEnumerable<TEntity> AddRange(IEnumerable<TEntity> entities)
         {
-            throw new NotImplementedException();
-        }
-
-        public T Add(T item)
-        {
-            _data.Add(item);
-            return item;
-        }
-
-        public T Remove(T item)
-        {
-            _data.Remove(item);
-            return item;
-        }
-
-        public T Attach(T item)
-        {
-            _data.Add(item);
-            return item;
-        }
-
-        public void Detach(T item)
-        {
-            _data.Remove(item);
-        }
-
-        Type IQueryable.ElementType
-        {
-            get { return _data.AsQueryable().ElementType; }
-        }
-
-        Expression IQueryable.Expression
-        {
-            get { return _data.AsQueryable().Expression; }
-        }
-
-        IQueryProvider IQueryable.Provider
-        {
-            get { return _data.AsQueryable().Provider; }
-        }
-
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return _data.GetEnumerator();
-        }
-
-        IEnumerator<T> IEnumerable<T>.GetEnumerator()
-        {
-            return _data.GetEnumerator();
-        }
-
-        public T Create()
-        {
-            return Activator.CreateInstance<T>();
-        }
-
-        public ObservableCollection<T> Local
-        {
-            get
+            if (entities == null) throw new ArgumentNullException("entities");
+            var items = entities.ToList();
+            foreach (var entity in items)
             {
-                return new ObservableCollection<T>(_data);
+                _data.Add(entity);
             }
+            return items;
         }
-
-        public TDerivedEntity Create<TDerivedEntity>() where TDerivedEntity : class, T
+        
+        public override TEntity Add(TEntity item) 
         {
-            return Activator.CreateInstance<TDerivedEntity>();
+            if (item == null) throw new ArgumentNullException("item");
+            _data.Add(item); 
+            return item; 
+        } 
+ 
+        public override TEntity Remove(TEntity item) 
+        {
+            if (item == null) throw new ArgumentNullException("item");
+            _data.Remove(item); 
+            return item; 
+        } 
+ 
+        public override TEntity Attach(TEntity item) 
+        {
+            if (item == null) throw new ArgumentNullException("item");
+            _data.Add(item); 
+            return item; 
+        } 
+ 
+        public override TEntity Create() 
+        { 
+            return Activator.CreateInstance<TEntity>(); 
+        } 
+ 
+        public override TDerivedEntity Create<TDerivedEntity>() 
+        { 
+            return Activator.CreateInstance<TDerivedEntity>(); 
+        } 
+ 
+        public override ObservableCollection<TEntity> Local 
+        { 
+            get { return _data; } 
+        } 
+ 
+        Type IQueryable.ElementType 
+        { 
+            get { return _query.ElementType; } 
+        } 
+ 
+        Expression IQueryable.Expression 
+        { 
+            get { return _query.Expression; } 
+        } 
+ 
+        IQueryProvider IQueryable.Provider 
+        { 
+            get { return new FakeDbAsyncQueryProvider<TEntity>(_query.Provider); } 
+        } 
+ 
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() 
+        { 
+            return _data.GetEnumerator(); 
+        } 
+ 
+        IEnumerator<TEntity> IEnumerable<TEntity>.GetEnumerator() 
+        { 
+            return _data.GetEnumerator(); 
+        } 
+ 
+        IDbAsyncEnumerator<TEntity> IDbAsyncEnumerable<TEntity>.GetAsyncEnumerator() 
+        { 
+            return new FakeDbAsyncEnumerator<TEntity>(_data.GetEnumerator()); 
         }
+    } 
+ 
+    internal class FakeDbAsyncQueryProvider<TEntity> : IDbAsyncQueryProvider 
+    { 
+        private readonly IQueryProvider _inner; 
+ 
+        internal FakeDbAsyncQueryProvider(IQueryProvider inner) 
+        { 
+            _inner = inner; 
+        } 
+ 
+        public IQueryable CreateQuery(Expression expression) 
+        { 
+            return new FakeDbAsyncEnumerable<TEntity>(expression); 
+        } 
+ 
+        public IQueryable<TElement> CreateQuery<TElement>(Expression expression) 
+        { 
+            return new FakeDbAsyncEnumerable<TElement>(expression); 
+        } 
+ 
+        public object Execute(Expression expression) 
+        { 
+            return _inner.Execute(expression); 
+        } 
+ 
+        public TResult Execute<TResult>(Expression expression) 
+        { 
+            return _inner.Execute<TResult>(expression); 
+        } 
+ 
+        public System.Threading.Tasks.Task<object> ExecuteAsync(Expression expression, CancellationToken cancellationToken) 
+        { 
+            return System.Threading.Tasks.Task.FromResult(Execute(expression)); 
+        } 
+ 
+        public System.Threading.Tasks.Task<TResult> ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken) 
+        { 
+            return System.Threading.Tasks.Task.FromResult(Execute<TResult>(expression)); 
+        } 
+    } 
+ 
+    internal class FakeDbAsyncEnumerable<T> : EnumerableQuery<T>, IDbAsyncEnumerable<T>, IQueryable<T> 
+    { 
+        public FakeDbAsyncEnumerable(IEnumerable<T> enumerable) 
+            : base(enumerable) 
+        { } 
+ 
+        public FakeDbAsyncEnumerable(Expression expression) 
+            : base(expression) 
+        { } 
+ 
+        public IDbAsyncEnumerator<T> GetAsyncEnumerator() 
+        { 
+            return new FakeDbAsyncEnumerator<T>(this.AsEnumerable().GetEnumerator()); 
+        } 
+ 
+        IDbAsyncEnumerator IDbAsyncEnumerable.GetAsyncEnumerator() 
+        { 
+            return GetAsyncEnumerator(); 
+        } 
+ 
+        IQueryProvider IQueryable.Provider 
+        { 
+            get { return new FakeDbAsyncQueryProvider<T>(this); } 
+        } 
+    } 
+ 
+    internal class FakeDbAsyncEnumerator<T> : IDbAsyncEnumerator<T> 
+    { 
+        private readonly IEnumerator<T> _inner; 
+ 
+        public FakeDbAsyncEnumerator(IEnumerator<T> inner) 
+        { 
+            _inner = inner; 
+        } 
+ 
+        public void Dispose() 
+        { 
+            _inner.Dispose(); 
+        } 
+ 
+        public System.Threading.Tasks.Task<bool> MoveNextAsync(CancellationToken cancellationToken) 
+        { 
+            return System.Threading.Tasks.Task.FromResult(_inner.MoveNext()); 
+        } 
+ 
+        public T Current 
+        { 
+            get { return _inner.Current; } 
+        } 
+ 
+        object IDbAsyncEnumerator.Current 
+        { 
+            get { return Current; } 
+        } 
     }
 
     // ************************************************************************
