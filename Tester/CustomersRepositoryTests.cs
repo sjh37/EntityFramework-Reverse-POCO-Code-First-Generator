@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using EntityFramework_Reverse_POCO_Generator;
 using NUnit.Framework;
@@ -72,6 +71,24 @@ namespace Tester
 
             // Act
             var data = customersRepository.GetTop10();
+
+            // Assert
+            Assert.AreEqual(_dictionary.Count, data.Count());
+            foreach (var customer in data)
+            {
+                Assert.IsTrue(_dictionary.ContainsKey(customer.CustomerId));
+                Assert.AreEqual(_dictionary[customer.CustomerId], customer.CompanyName);
+            }
+        }
+
+        [Test]
+        public async void use_EF_via_repository_async()
+        {
+            // Arrange
+            ICustomersRepository customersRepository = new CustomersRepository(_db);
+
+            // Act
+            var data = await customersRepository.GetTop10Async();
 
             // Assert
             Assert.AreEqual(_dictionary.Count, data.Count());
