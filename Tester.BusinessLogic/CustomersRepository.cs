@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 using EntityFramework_Reverse_POCO_Generator;
 
 namespace Tester.BusinessLogic
@@ -20,6 +23,11 @@ namespace Tester.BusinessLogic
         {
             return _context.Customers.Take(10).OrderBy(x => x.CustomerId);
         }
+
+        public async Task<List<Customer>> GetTop10Async()
+        {
+            return await GetTop10().ToListAsync();
+        } 
 
         public int Count()
         {
