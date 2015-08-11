@@ -3,7 +3,7 @@
 <#
 fileManager.StartHeader();
 // Copyright (C) Simon Hughes 2012
-// v2.15.0
+// v2.15.1
 #>
 // ReSharper disable RedundantUsingDirective
 // ReSharper disable DoNotCallOverridableMethodsInConstructor
