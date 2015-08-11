@@ -259,7 +259,8 @@
         var sb = new StringBuilder();
         foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
         {
-            var getValueOrDefault = NotNullable.Contains(p.PropertyType.ToLower()) ? string.Empty : ".GetValueOrDefault()";
+            bool isNullable = !NotNullable.Contains(p.PropertyType.ToLower());
+            var getValueOrDefault = isNullable ? ".GetValueOrDefault()" : string.Empty;
     
             sb.AppendLine(string.Format("            var {0}Param = new SqlParameter {{ ParameterName = \"{1}\", SqlDbType = SqlDbType.{2}, Direction = ParameterDirection.{3}{4}{5} }};", 
                 p.NameHumanCase, 
@@ -270,7 +271,13 @@
                 p.MaxLength > 0 ? ", Size = " + p.MaxLength : string.Empty));
 
                 if (p.Mode == StoredProcedureParameterMode.In)
-                    sb.AppendFormat("            if (!({0}Param.Value is ValueType) && {0}Param.Value == null){1}                {0}Param.Value = DBNull.Value;{1}{1}", p.NameHumanCase, Environment.NewLine);
+                {
+                    sb.AppendFormat(
+                        isNullable
+                            ? "            if (!{0}.HasValue){1}                {0}Param.Value = DBNull.Value;{1}{1}"
+                            : "            if ({0}Param.Value == null){1}                {0}Param.Value = DBNull.Value;{1}{1}",
+                        p.NameHumanCase, Environment.NewLine);
+                }
         }
         sb.AppendLine("            var procResultParam = new SqlParameter { ParameterName = \"@procResult\", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };");
         return sb.ToString();
@@ -361,4 +368,5 @@
     {
 #>
 <#@ include file="EF.Reverse.POCO.ttinclude" #>
+<#@ import namespace="System.Xml.Schema" #>
 <# } #>

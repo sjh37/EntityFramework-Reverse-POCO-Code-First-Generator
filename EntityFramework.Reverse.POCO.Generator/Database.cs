@@ -215,7 +215,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public List<CustOrderHistReturnModel> CustOrderHist(string customerId, out int procResult)
         {
             var customerIdParam = new SqlParameter { ParameterName = "@CustomerID", SqlDbType = SqlDbType.NChar, Direction = ParameterDirection.Input, Value = customerId, Size = 5 };
-            if (!(customerIdParam.Value is ValueType) && customerIdParam.Value == null)
+            if (customerIdParam.Value == null)
                 customerIdParam.Value = DBNull.Value;
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
@@ -235,7 +235,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public List<CustOrdersDetailReturnModel> CustOrdersDetail(int? orderId, out int procResult)
         {
             var orderIdParam = new SqlParameter { ParameterName = "@OrderID", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = orderId.GetValueOrDefault() };
-            if (!(orderIdParam.Value is ValueType) && orderIdParam.Value == null)
+            if (!orderId.HasValue)
                 orderIdParam.Value = DBNull.Value;
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
@@ -255,7 +255,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public List<CustOrdersOrdersReturnModel> CustOrdersOrders(string customerId, out int procResult)
         {
             var customerIdParam = new SqlParameter { ParameterName = "@CustomerID", SqlDbType = SqlDbType.NChar, Direction = ParameterDirection.Input, Value = customerId, Size = 5 };
-            if (!(customerIdParam.Value is ValueType) && customerIdParam.Value == null)
+            if (customerIdParam.Value == null)
                 customerIdParam.Value = DBNull.Value;
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
@@ -275,11 +275,11 @@ namespace EntityFramework_Reverse_POCO_Generator
         public List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(DateTime? beginningDate, DateTime? endingDate, out int procResult)
         {
             var beginningDateParam = new SqlParameter { ParameterName = "@Beginning_Date", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = beginningDate.GetValueOrDefault() };
-            if (!(beginningDateParam.Value is ValueType) && beginningDateParam.Value == null)
+            if (!beginningDate.HasValue)
                 beginningDateParam.Value = DBNull.Value;
 
             var endingDateParam = new SqlParameter { ParameterName = "@Ending_Date", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = endingDate.GetValueOrDefault() };
-            if (!(endingDateParam.Value is ValueType) && endingDateParam.Value == null)
+            if (!endingDate.HasValue)
                 endingDateParam.Value = DBNull.Value;
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
@@ -299,11 +299,11 @@ namespace EntityFramework_Reverse_POCO_Generator
         public List<SalesByYearReturnModel> SalesByYear(DateTime? beginningDate, DateTime? endingDate, out int procResult)
         {
             var beginningDateParam = new SqlParameter { ParameterName = "@Beginning_Date", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = beginningDate.GetValueOrDefault() };
-            if (!(beginningDateParam.Value is ValueType) && beginningDateParam.Value == null)
+            if (!beginningDate.HasValue)
                 beginningDateParam.Value = DBNull.Value;
 
             var endingDateParam = new SqlParameter { ParameterName = "@Ending_Date", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = endingDate.GetValueOrDefault() };
-            if (!(endingDateParam.Value is ValueType) && endingDateParam.Value == null)
+            if (!endingDate.HasValue)
                 endingDateParam.Value = DBNull.Value;
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
@@ -323,11 +323,11 @@ namespace EntityFramework_Reverse_POCO_Generator
         public List<SalesByCategoryReturnModel> SalesByCategory(string categoryName, string ordYear, out int procResult)
         {
             var categoryNameParam = new SqlParameter { ParameterName = "@CategoryName", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = categoryName, Size = 15 };
-            if (!(categoryNameParam.Value is ValueType) && categoryNameParam.Value == null)
+            if (categoryNameParam.Value == null)
                 categoryNameParam.Value = DBNull.Value;
 
             var ordYearParam = new SqlParameter { ParameterName = "@OrdYear", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = ordYear, Size = 4 };
-            if (!(ordYearParam.Value is ValueType) && ordYearParam.Value == null)
+            if (ordYearParam.Value == null)
                 ordYearParam.Value = DBNull.Value;
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
