@@ -639,15 +639,14 @@
             DoNotUse
         }
 
-         public static Relationship CalcRelationship(Table pkTable, Table fkTable, List<Column> fkCols, List<Column> pkCols)
+        public static Relationship CalcRelationship(Table pkTable, Table fkTable, List<Column> fkCols, List<Column> pkCols)
         {
             if (fkCols.Count() == 1 && pkCols.Count() == 1)
                 return CalcRelationshipSingle(pkTable, fkTable, fkCols.First(), pkCols.First());
 
             // This relationship has multiple composite keys
-            return Relationship.DoNotUse;
 
-            /*bool fkTableAllPrimaryKeys = (fkTable.PrimaryKeys.Count() == fkCols.Count());
+            bool fkTableAllPrimaryKeys = (fkTable.PrimaryKeys.Count() == fkCols.Count());
             bool pkTableAllPrimaryKeys = (pkTable.PrimaryKeys.Count() == pkCols.Count());
             bool fkColumnsAllPrimaryKeys = (fkCols.Count(x => x.IsPrimaryKey) == fkCols.Count());
             bool pkColumnsAllPrimaryKeys = (pkCols.Count(x => x.IsPrimaryKey) == pkCols.Count());
@@ -665,7 +664,7 @@
                 return Relationship.ManyToOne;
 
             // n:n
-            return Relationship.ManyToMany;*/
+            return Relationship.ManyToMany;
         }
         
         public static Relationship CalcRelationshipSingle(Table pkTable, Table fkTable, Column fkCol, Column pkCol)
@@ -2010,13 +2009,17 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
                     fkCol.col.EntityFk.Add(string.Format("public virtual {0} {1} {2}{3}", pkTableHumanCase, pkPropName, "{ get; set; }", includeComments ? " // " + foreignKey.ConstraintName : string.Empty));
 
-                    string manyToManyMapping;
+                    string manyToManyMapping, mapKey;
                     if(foreignKeys.Count > 1)
+                    {
                         manyToManyMapping = string.Format("c => new {{ {0} }}", string.Join(", ", fkCols.OrderBy(o => o.fkOrdinal).Select(x => "c." + x.col.PropertyNameHumanCase).ToArray()));
-                    else
+                        mapKey = string.Format("{0}", string.Join(",", fkCols.OrderBy(o => o.fkOrdinal).Select(x => "\"" + x.col.Name + "\"").ToArray()));
+                    } else {
                         manyToManyMapping = string.Format("c => c.{0}", fkCol.col.PropertyNameHumanCase);
+                        mapKey = string.Format("\"{0}\"", fkCol.col.Name);
+                    }
 
-                    fkCol.col.ConfigFk.Add(string.Format("{0};{1}", GetRelationship(relationship, fkCol.col, pkCol, pkPropName, fkPropName, manyToManyMapping), includeComments ? " // " + foreignKey.ConstraintName : string.Empty));
+                    fkCol.col.ConfigFk.Add(string.Format("{0};{1}", GetRelationship(relationship, fkCol.col, pkCol, pkPropName, fkPropName, manyToManyMapping, mapKey), includeComments ? " // " + foreignKey.ConstraintName : string.Empty));
                     pkTable.AddReverseNavigation(relationship, pkTableHumanCase, fkTable, fkPropName, string.Format("{0}.{1}", fkTable.Name, foreignKey.ConstraintName), collectionType, includeComments);
                 }
             }
@@ -2045,9 +2048,9 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
             }
 
-            private static string GetRelationship(Relationship relationship, Column fkCol, Column pkCol, string pkPropName, string fkPropName, string manyToManyMapping)
+            private static string GetRelationship(Relationship relationship, Column fkCol, Column pkCol, string pkPropName, string fkPropName, string manyToManyMapping, string mapKey)
             {
-                return string.Format("Has{0}(a => a.{1}){2}", GetHasMethod(relationship, fkCol, pkCol), pkPropName, GetWithMethod(relationship, fkCol, fkPropName, manyToManyMapping));
+                return string.Format("Has{0}(a => a.{1}){2}", GetHasMethod(relationship, fkCol, pkCol), pkPropName, GetWithMethod(relationship, fkCol, fkPropName, manyToManyMapping, mapKey));
             }
 
             // HasOptional
@@ -2075,7 +2078,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             // WithMany
             // WithRequiredPrincipal
             // WithRequiredDependent
-            private static string GetWithMethod(Relationship relationship, Column fkCol, string fkPropName, string manyToManyMapping)
+            private static string GetWithMethod(Relationship relationship, Column fkCol, string fkPropName, string manyToManyMapping, string mapKey)
             {
                 switch (relationship)
                 {
@@ -2087,8 +2090,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
                     case Relationship.ManyToOne:
                         if (!fkCol.Hidden)
-                            return string.Format(".WithMany(b => b.{0}).HasForeignKey(c => c.{1})", fkPropName, fkCol.PropertyNameHumanCase);   // Foreign Key Association
-                        return string.Format(".WithMany(b => b.{0}).Map(c => c.MapKey(\"{1}\"))", fkPropName, fkCol.Name);  // Independent Association
+                            return string.Format(".WithMany(b => b.{0}).HasForeignKey({1})", fkPropName, manyToManyMapping);   // Foreign Key Association
+                        return string.Format(".WithMany(b => b.{0}).Map(c => c.MapKey({1}))", fkPropName, mapKey);  // Independent Association
 
                     case Relationship.ManyToMany:
                         return string.Format(".WithMany(b => b.{0}).HasForeignKey({1})", fkPropName, manyToManyMapping);
