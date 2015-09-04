@@ -561,11 +561,11 @@ if (IncludeTableValuedFunctions)
         }
     } 
  
-    internal class FakeDbAsyncQueryProvider<TEntity> : IDbAsyncQueryProvider 
+    public class FakeDbAsyncQueryProvider<TEntity> : IDbAsyncQueryProvider 
     { 
         private readonly IQueryProvider _inner; 
  
-        internal FakeDbAsyncQueryProvider(IQueryProvider inner) 
+        public FakeDbAsyncQueryProvider(IQueryProvider inner) 
         { 
             _inner = inner; 
         } 
@@ -601,7 +601,7 @@ if (IncludeTableValuedFunctions)
         } 
     } 
  
-    internal class FakeDbAsyncEnumerable<T> : EnumerableQuery<T>, IDbAsyncEnumerable<T>, IQueryable<T> 
+    public class FakeDbAsyncEnumerable<T> : EnumerableQuery<T>, IDbAsyncEnumerable<T>, IQueryable<T> 
     { 
         public FakeDbAsyncEnumerable(IEnumerable<T> enumerable) 
             : base(enumerable) 
@@ -627,7 +627,7 @@ if (IncludeTableValuedFunctions)
         } 
     } 
  
-    internal class FakeDbAsyncEnumerator<T> : IDbAsyncEnumerator<T> 
+    public class FakeDbAsyncEnumerator<T> : IDbAsyncEnumerator<T> 
     { 
         private readonly IEnumerator<T> _inner; 
  
@@ -762,7 +762,7 @@ foreach(Table tbl in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCas
 <# fileManager.StartNewFile(tbl.NameHumanCase + ConfigurationClassName + FileExtension); #>
 <#if(IncludeComments){#>    // <#=tbl.Name#>
 <# } #>
-    internal <# if(MakeClassesPartial) { #>partial <# } #>class <#=tbl.NameHumanCase + ConfigurationClassName#> : EntityTypeConfiguration<<#=tbl.NameHumanCase#>>
+    public <# if(MakeClassesPartial) { #>partial <# } #>class <#=tbl.NameHumanCase + ConfigurationClassName#> : EntityTypeConfiguration<<#=tbl.NameHumanCase#>>
     {
         public <#=tbl.NameHumanCase + ConfigurationClassName#>()
             : this(<# if (string.IsNullOrEmpty(tbl.Schema)) { #>""<# } else { #>"<#=tbl.Schema#>"<# } #>)
