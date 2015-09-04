@@ -652,11 +652,11 @@ namespace EntityFramework_Reverse_POCO_Generator
         }
     } 
  
-    internal class FakeDbAsyncQueryProvider<TEntity> : IDbAsyncQueryProvider 
+    public class FakeDbAsyncQueryProvider<TEntity> : IDbAsyncQueryProvider 
     { 
         private readonly IQueryProvider _inner; 
  
-        internal FakeDbAsyncQueryProvider(IQueryProvider inner) 
+        public FakeDbAsyncQueryProvider(IQueryProvider inner) 
         { 
             _inner = inner; 
         } 
@@ -692,7 +692,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         } 
     } 
  
-    internal class FakeDbAsyncEnumerable<T> : EnumerableQuery<T>, IDbAsyncEnumerable<T>, IQueryable<T> 
+    public class FakeDbAsyncEnumerable<T> : EnumerableQuery<T>, IDbAsyncEnumerable<T>, IQueryable<T> 
     { 
         public FakeDbAsyncEnumerable(IEnumerable<T> enumerable) 
             : base(enumerable) 
@@ -718,7 +718,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         } 
     } 
  
-    internal class FakeDbAsyncEnumerator<T> : IDbAsyncEnumerator<T> 
+    public class FakeDbAsyncEnumerator<T> : IDbAsyncEnumerator<T> 
     { 
         private readonly IEnumerator<T> _inner; 
  
@@ -1206,7 +1206,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     // POCO Configuration
 
     // Alphabetical list of products
-    internal class AlphabeticalListOfProductConfiguration : EntityTypeConfiguration<AlphabeticalListOfProduct>
+    public class AlphabeticalListOfProductConfiguration : EntityTypeConfiguration<AlphabeticalListOfProduct>
     {
         public AlphabeticalListOfProductConfiguration()
             : this("dbo")
@@ -1233,7 +1233,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Categories
-    internal class CategoryConfiguration : EntityTypeConfiguration<Category>
+    public class CategoryConfiguration : EntityTypeConfiguration<Category>
     {
         public CategoryConfiguration()
             : this("dbo")
@@ -1253,7 +1253,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Category Sales for 1997
-    internal class CategorySalesFor1997Configuration : EntityTypeConfiguration<CategorySalesFor1997>
+    public class CategorySalesFor1997Configuration : EntityTypeConfiguration<CategorySalesFor1997>
     {
         public CategorySalesFor1997Configuration()
             : this("dbo")
@@ -1271,7 +1271,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Current Product List
-    internal class CurrentProductListConfiguration : EntityTypeConfiguration<CurrentProductList>
+    public class CurrentProductListConfiguration : EntityTypeConfiguration<CurrentProductList>
     {
         public CurrentProductListConfiguration()
             : this("dbo")
@@ -1289,7 +1289,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Customers
-    internal class CustomerConfiguration : EntityTypeConfiguration<Customer>
+    public class CustomerConfiguration : EntityTypeConfiguration<Customer>
     {
         public CustomerConfiguration()
             : this("dbo")
@@ -1322,7 +1322,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Customer and Suppliers by City
-    internal class CustomerAndSuppliersByCityConfiguration : EntityTypeConfiguration<CustomerAndSuppliersByCity>
+    public class CustomerAndSuppliersByCityConfiguration : EntityTypeConfiguration<CustomerAndSuppliersByCity>
     {
         public CustomerAndSuppliersByCityConfiguration()
             : this("dbo")
@@ -1342,7 +1342,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // CustomerDemographics
-    internal class CustomerDemographicConfiguration : EntityTypeConfiguration<CustomerDemographic>
+    public class CustomerDemographicConfiguration : EntityTypeConfiguration<CustomerDemographic>
     {
         public CustomerDemographicConfiguration()
             : this("dbo")
@@ -1360,7 +1360,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Employees
-    internal class EmployeeConfiguration : EntityTypeConfiguration<Employee>
+    public class EmployeeConfiguration : EntityTypeConfiguration<Employee>
     {
         public EmployeeConfiguration()
             : this("dbo")
@@ -1403,7 +1403,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Invoices
-    internal class InvoiceConfiguration : EntityTypeConfiguration<Invoice>
+    public class InvoiceConfiguration : EntityTypeConfiguration<Invoice>
     {
         public InvoiceConfiguration()
             : this("dbo")
@@ -1445,7 +1445,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Orders
-    internal class OrderConfiguration : EntityTypeConfiguration<Order>
+    public class OrderConfiguration : EntityTypeConfiguration<Order>
     {
         public OrderConfiguration()
             : this("dbo")
@@ -1480,7 +1480,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Order Details
-    internal class OrderDetailConfiguration : EntityTypeConfiguration<OrderDetail>
+    public class OrderDetailConfiguration : EntityTypeConfiguration<OrderDetail>
     {
         public OrderDetailConfiguration()
             : this("dbo")
@@ -1505,7 +1505,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Order Details Extended
-    internal class OrderDetailsExtendedConfiguration : EntityTypeConfiguration<OrderDetailsExtended>
+    public class OrderDetailsExtendedConfiguration : EntityTypeConfiguration<OrderDetailsExtended>
     {
         public OrderDetailsExtendedConfiguration()
             : this("dbo")
@@ -1528,7 +1528,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Orders Qry
-    internal class OrdersQryConfiguration : EntityTypeConfiguration<OrdersQry>
+    public class OrdersQryConfiguration : EntityTypeConfiguration<OrdersQry>
     {
         public OrdersQryConfiguration()
             : this("dbo")
@@ -1564,7 +1564,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Order Subtotals
-    internal class OrderSubtotalConfiguration : EntityTypeConfiguration<OrderSubtotal>
+    public class OrderSubtotalConfiguration : EntityTypeConfiguration<OrderSubtotal>
     {
         public OrderSubtotalConfiguration()
             : this("dbo")
@@ -1582,7 +1582,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Products
-    internal class ProductConfiguration : EntityTypeConfiguration<Product>
+    public class ProductConfiguration : EntityTypeConfiguration<Product>
     {
         public ProductConfiguration()
             : this("dbo")
@@ -1612,7 +1612,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Products Above Average Price
-    internal class ProductsAboveAveragePriceConfiguration : EntityTypeConfiguration<ProductsAboveAveragePrice>
+    public class ProductsAboveAveragePriceConfiguration : EntityTypeConfiguration<ProductsAboveAveragePrice>
     {
         public ProductsAboveAveragePriceConfiguration()
             : this("dbo")
@@ -1630,7 +1630,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Product Sales for 1997
-    internal class ProductSalesFor1997Configuration : EntityTypeConfiguration<ProductSalesFor1997>
+    public class ProductSalesFor1997Configuration : EntityTypeConfiguration<ProductSalesFor1997>
     {
         public ProductSalesFor1997Configuration()
             : this("dbo")
@@ -1649,7 +1649,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Products by Category
-    internal class ProductsByCategoryConfiguration : EntityTypeConfiguration<ProductsByCategory>
+    public class ProductsByCategoryConfiguration : EntityTypeConfiguration<ProductsByCategory>
     {
         public ProductsByCategoryConfiguration()
             : this("dbo")
@@ -1670,7 +1670,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Region
-    internal class RegionConfiguration : EntityTypeConfiguration<Region>
+    public class RegionConfiguration : EntityTypeConfiguration<Region>
     {
         public RegionConfiguration()
             : this("dbo")
@@ -1688,7 +1688,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Sales by Category
-    internal class SalesByCategoryConfiguration : EntityTypeConfiguration<SalesByCategory>
+    public class SalesByCategoryConfiguration : EntityTypeConfiguration<SalesByCategory>
     {
         public SalesByCategoryConfiguration()
             : this("dbo")
@@ -1708,7 +1708,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Sales Totals by Amount
-    internal class SalesTotalsByAmountConfiguration : EntityTypeConfiguration<SalesTotalsByAmount>
+    public class SalesTotalsByAmountConfiguration : EntityTypeConfiguration<SalesTotalsByAmount>
     {
         public SalesTotalsByAmountConfiguration()
             : this("dbo")
@@ -1728,7 +1728,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Shippers
-    internal class ShipperConfiguration : EntityTypeConfiguration<Shipper>
+    public class ShipperConfiguration : EntityTypeConfiguration<Shipper>
     {
         public ShipperConfiguration()
             : this("dbo")
@@ -1747,7 +1747,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Summary of Sales by Quarter
-    internal class SummaryOfSalesByQuarterConfiguration : EntityTypeConfiguration<SummaryOfSalesByQuarter>
+    public class SummaryOfSalesByQuarterConfiguration : EntityTypeConfiguration<SummaryOfSalesByQuarter>
     {
         public SummaryOfSalesByQuarterConfiguration()
             : this("dbo")
@@ -1766,7 +1766,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Summary of Sales by Year
-    internal class SummaryOfSalesByYearConfiguration : EntityTypeConfiguration<SummaryOfSalesByYear>
+    public class SummaryOfSalesByYearConfiguration : EntityTypeConfiguration<SummaryOfSalesByYear>
     {
         public SummaryOfSalesByYearConfiguration()
             : this("dbo")
@@ -1785,7 +1785,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Suppliers
-    internal class SupplierConfiguration : EntityTypeConfiguration<Supplier>
+    public class SupplierConfiguration : EntityTypeConfiguration<Supplier>
     {
         public SupplierConfiguration()
             : this("dbo")
@@ -1813,7 +1813,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // sysdiagrams
-    internal class SysdiagramConfiguration : EntityTypeConfiguration<Sysdiagram>
+    public class SysdiagramConfiguration : EntityTypeConfiguration<Sysdiagram>
     {
         public SysdiagramConfiguration()
             : this("dbo")
@@ -1834,7 +1834,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     // Territories
-    internal class TerritoryConfiguration : EntityTypeConfiguration<Territory>
+    public class TerritoryConfiguration : EntityTypeConfiguration<Territory>
     {
         public TerritoryConfiguration()
             : this("dbo")
