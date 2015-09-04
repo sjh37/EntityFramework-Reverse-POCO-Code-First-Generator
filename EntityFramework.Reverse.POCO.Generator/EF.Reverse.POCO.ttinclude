@@ -72,19 +72,11 @@ using <#= PocoConfigurationNamespace #>;
 using System.Threading;
 <# } #>
 <# 	if(	ElementsToGenerate.HasFlag(Elements.PocoConfiguration)){
-        switch (TargetFrameworkVersion)
-        {
-            case "4.0":
-            case "4.5":
-            case "4.51":#>
+        if (IsSupportedFrameworkVersion("4.0")) {#>
 using DatabaseGeneratedOption = System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption;
-<#              break;
-            default: #>
+<#      } else { #>
 //using DatabaseGeneratedOption = System.ComponentModel.DataAnnotations.DatabaseGeneratedOption;
-<#              break;
-        }
-    } 
-#>
+<# } } #>
 <#if (!string.IsNullOrEmpty(MigrationConfigurationFileName)){
 #>using System.Data.Entity.Migrations;
 <#}#>
