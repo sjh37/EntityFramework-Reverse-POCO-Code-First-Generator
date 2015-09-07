@@ -4,6 +4,8 @@ using NUnit.Framework;
 
 namespace Tester
 {
+/* Include the following unit tests if database.tt IncludeTableValuedFunctions = true
+
     [TestFixture]
     public class TvfTests
     {
@@ -43,4 +45,5 @@ namespace Tester
             Assert.AreEqual(45, data[1].IntValue);
         }
     }
+ */
 }
