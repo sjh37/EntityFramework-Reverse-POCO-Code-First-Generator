@@ -316,6 +316,7 @@ if (IncludeTableValuedFunctions)
             string spReturnClassName = WriteStoredProcReturnModelName(sp);
 #>
         [DbFunction("<#=DbContextName#>", "<#=sp.Name#>")]
+        [DbFunctionDetails(DatabaseSchema = "<#=sp.Schema#>")]
         public IQueryable<<#= spReturnClassName #>> <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp, false)#>)
         {
 <#= WriteTableValuedFunctionDeclareSqlParameter(sp) #> 

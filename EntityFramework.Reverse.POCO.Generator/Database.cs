@@ -37,6 +37,9 @@ using System.Data.Entity;
 using System.Data;
 using System.Data.SqlClient;
 using System.Data.SqlTypes;
+using System.Data.Entity.Infrastructure;
+using System.Data.Entity.Core.Objects;
+using CodeFirstStoreFunctions;
 using System.Data.Entity.ModelConfiguration;
 using System.Threading;
 using DatabaseGeneratedOption = System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption;
@@ -87,6 +90,10 @@ namespace EntityFramework_Reverse_POCO_Generator
         List<SalesByYearReturnModel> SalesByYear(DateTime? beginningDate, DateTime? endingDate, out int procResult);
         List<SalesByCategoryReturnModel> SalesByCategory(string categoryName, string ordYear, out int procResult);
         List<TenMostExpensiveProductsReturnModel> TenMostExpensiveProducts( out int procResult);
+
+        // Table Valued Functions
+        IQueryable<CsvToIntReturnModel> CsvToInt(string array, string array2);
+        IQueryable<FFRS_CsvToInt2ReturnModel> FFRS_CsvToInt2(string array, string array2);
     }
 
     // ************************************************************************
@@ -147,6 +154,10 @@ namespace EntityFramework_Reverse_POCO_Generator
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Conventions.Add(new FunctionsConvention<MyDbContext>("dbo"));
+            modelBuilder.ComplexType<CsvToIntReturnModel>();
+            modelBuilder.ComplexType<FFRS_CsvToInt2ReturnModel>();
 
             modelBuilder.Configurations.Add(new AlphabeticalListOfProductConfiguration());
             modelBuilder.Configurations.Add(new CategoryConfiguration());
@@ -358,6 +369,27 @@ namespace EntityFramework_Reverse_POCO_Generator
             return procResultData;
         }
 
+        // Table Valued Functions
+        [DbFunction("MyDbContext", "CsvToInt")]
+        [DbFunctionDetails(DatabaseSchema = "dbo")]
+        public IQueryable<CsvToIntReturnModel> CsvToInt(string array, string array2)
+        {
+            var arrayParam = new ObjectParameter("array", array);
+            var array2Param = new ObjectParameter("array2", array2);
+ 
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<CsvToIntReturnModel>("[MyDbContext].[CsvToInt](@array, @array2)", arrayParam, array2Param);
+        }
+
+        [DbFunction("MyDbContext", "CsvToInt2")]
+        [DbFunctionDetails(DatabaseSchema = "FFRS")]
+        public IQueryable<FFRS_CsvToInt2ReturnModel> FFRS_CsvToInt2(string array, string array2)
+        {
+            var arrayParam = new ObjectParameter("array", array);
+            var array2Param = new ObjectParameter("array2", array2);
+ 
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<FFRS_CsvToInt2ReturnModel>("[MyDbContext].[CsvToInt2](@array, @array2)", arrayParam, array2Param);
+        }
+
     }
 
     // ************************************************************************
@@ -540,6 +572,19 @@ namespace EntityFramework_Reverse_POCO_Generator
  
             procResult = 0;
             return new List<TenMostExpensiveProductsReturnModel>();
+        }
+
+        // Table Valued Functions
+        [DbFunction("MyDbContext", "CsvToInt")]
+        public IQueryable<CsvToIntReturnModel> CsvToInt(string array, string array2)
+        {
+            return new List<CsvToIntReturnModel>().AsQueryable();
+        }
+
+        [DbFunction("MyDbContext", "CsvToInt2")]
+        public IQueryable<FFRS_CsvToInt2ReturnModel> FFRS_CsvToInt2(string array, string array2)
+        {
+            return new List<FFRS_CsvToInt2ReturnModel>().AsQueryable();
         }
 
     }
@@ -1859,6 +1904,11 @@ namespace EntityFramework_Reverse_POCO_Generator
     // ************************************************************************
     // Stored procedure return models
 
+    public class CsvToIntReturnModel
+    {
+        public Int32? IntValue { get; set; }
+    }
+
     public class CustOrderHistReturnModel
     {
         public String ProductName { get; set; }
@@ -1910,6 +1960,11 @@ namespace EntityFramework_Reverse_POCO_Generator
     {
         public String TenMostExpensiveProducts { get; set; }
         public Decimal? UnitPrice { get; set; }
+    }
+
+    public class FFRS_CsvToInt2ReturnModel
+    {
+        public Int32? IntValue { get; set; }
     }
 
 }

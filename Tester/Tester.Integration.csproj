@@ -63,6 +63,7 @@
   <ItemGroup>
     <Compile Include="CustomersRepositoryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TvfTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\EntityFramework.Reverse.POCO.Generator\EntityFramework.Reverse.POCO.Generator.csproj">
