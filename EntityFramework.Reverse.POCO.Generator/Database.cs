@@ -144,6 +144,15 @@ namespace EntityFramework_Reverse_POCO_Generator
             base.Dispose(disposing);
         }
 
+        public bool IsSqlParameterNull(SqlParameter param)
+        {
+            var sqlValue = param.SqlValue;
+            var nullableValue = sqlValue as INullable;
+            if (nullableValue != null)
+                return nullableValue.IsNull;
+            return (sqlValue == null || sqlValue == DBNull.Value);
+        }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
