@@ -31,6 +31,7 @@
     };
 
     // Migrations *************************************************************************************************************************
+    ContextKey = "";
     MigrationConfigurationFileName = ""; // null or empty to not create migrations
     MigrationStrategy = "MigrateDatabaseToLatestVersion"; // MigrateDatabaseToLatestVersion, CreateDatabaseIfNotExists or DropCreateDatabaseIfModelChanges
     AutomaticMigrationsEnabled = true;
