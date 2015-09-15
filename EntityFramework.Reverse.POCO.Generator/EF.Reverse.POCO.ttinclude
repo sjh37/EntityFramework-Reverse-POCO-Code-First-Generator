@@ -421,6 +421,12 @@ foreach (StoredProcedure sp in storedProcs.Where(s => !s.IsTVF))
             procResult = 0;
             return new List<<#= spReturnClassName #>>();
         }
+<# } else { #>
+        public <#= spReturnClassName #> <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp, false)#>)
+        {
+            int procResult;
+            return <#= spExecName #>(<#=WriteStoredProcFunctionOverloadCall(sp)#>);
+        }
 
 <# } else { #>
         public int <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp, true)#>)
@@ -722,14 +728,14 @@ foreach(var entityFk in tbl.Columns.SelectMany(x => x.EntityFk).OrderBy(o => o))
         <#=entityFk #>
 <# } } #>
 <# 
-if(tbl.Columns.Where(c => c.Default != string.Empty).Count() > 0 || tbl.ReverseNavigationCtor.Count() > 0 || MakeClassesPartial) 
+if(tbl.Columns.Where(c => c.Default != string.Empty && !c.Hidden).Count() > 0 || tbl.ReverseNavigationCtor.Count() > 0 || MakeClassesPartial) 
 { 
 #>
         
         public <#=tbl.NameHumanCase#>()
         {
 <#
-foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal).Where(c => c.Default != string.Empty))
+foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal).Where(c => c.Default != string.Empty && !c.Hidden))
 {
 #>
             <#=col.PropertyNameHumanCase #> = <#=col.Default #>;
@@ -818,7 +824,7 @@ if(!GenerateSeparateFiles) { #>
 
 <# } #>
 <#
-foreach(StoredProcedure sp in storedProcs.Where(x => x.ReturnColumns.Count > 0 && !StoredProcedureReturnTypes.ContainsKey(x.NameHumanCase) && !StoredProcedureReturnTypes.ContainsKey(x.Name)))
+foreach(StoredProcedure sp in storedProcs.Where(x => x.ReturnModels.Count > 0 && x.ReturnModels.Any(returnColumns => returnColumns.Any()) && !StoredProcedureReturnTypes.ContainsKey(x.NameHumanCase) && !StoredProcedureReturnTypes.ContainsKey(x.Name)))
 {
     string spReturnClassName = WriteStoredProcReturnModelName(sp);
 #>
