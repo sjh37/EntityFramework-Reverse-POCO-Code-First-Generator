@@ -2631,9 +2631,6 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 if (rightTable == null)
                     return;
 
-                if (leftTable == rightTable)
-                    return;
-
                 var leftPropName  = leftTable.GetUniqueColumnPropertyName(rightTable.NameHumanCase, right, useCamelCase, checkForFkNameClashes, false);
                 var rightPropName = rightTable.GetUniqueColumnPropertyName(leftTable.NameHumanCase, left, useCamelCase, checkForFkNameClashes, false);
                 leftTable.AddMappingConfiguration(left, right, useCamelCase, leftPropName, rightPropName, isSqlCE);
