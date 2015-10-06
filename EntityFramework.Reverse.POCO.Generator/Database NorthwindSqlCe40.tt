@@ -186,15 +186,18 @@
     Func<StoredProcedure, bool, string> WriteStoredProcFunctionParams = null;
     Func<StoredProcedure, string> WriteStoredProcFunctionOverloadCall = null;
     Func<StoredProcedure, string> WriteStoredProcFunctionSqlAtParams = null;
+    Func<StoredProcedureParameter, string> WriteStoredProcSqlParameterName = null;
     Func<StoredProcedure, string> WriteStoredProcFunctionDeclareSqlParameter = null;
     Func<StoredProcedure, string> WriteTableValuedFunctionDeclareSqlParameter = null;
     Func<StoredProcedure, string> WriteStoredProcFunctionSqlParameterAnonymousArray = null;
     Func<StoredProcedure, string> WriteTableValuedFunctionSqlParameterAnonymousArray = null;
     Func<StoredProcedure, bool, string> WriteStoredProcFunctionSetSqlParameters = null;
     Func<StoredProcedure, string> WriteStoredProcReturnModelName = null;
+    Func<StoredProcedure, string> WriteStoredProcReturnType = null;
     Func<DataColumn, string> WriteStoredProcReturnColumn = null;
     
     // Read schema
+    IsSqlCe = true;
     var tables = LoadTables(GetDbProviderFactory());
     var storedProcs = new List<StoredProcedure>();
     
