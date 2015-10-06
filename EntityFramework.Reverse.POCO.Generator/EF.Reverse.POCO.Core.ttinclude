@@ -44,6 +44,7 @@
         string CollectionType = "List";
         bool MakeClassesPartial = true;
         bool GenerateSeparateFiles = false;
+        bool IsSqlCe = false;
         string FileExtension = ".cs";
         bool UseCamelCase = true;
         bool IncludeComments = true;
@@ -474,6 +475,19 @@
             }
         }
 
+        private bool IsSqlCeConnection(DbProviderFactory factory)
+        {
+            using (DbConnection conn = factory.CreateConnection())
+            {
+                conn.ConnectionString = ConnectionString;
+                conn.Open();
+
+                if(conn.GetType().Name.ToLower() == "sqlceconnection")
+                    return true;
+            }
+            return false;
+        }
+        
         private Tables LoadTables(DbProviderFactory factory)
         {
             if(factory == null || !(ElementsToGenerate.HasFlag(Elements.Poco) || 
@@ -489,12 +503,8 @@
                     conn.ConnectionString = ConnectionString;
                     conn.Open();
 
-                    bool isSqlCE = false;
-                    if (conn.GetType().Name == "SqlCeConnection")
-                    {
+                    if(IsSqlCe)
                         PrependSchemaName = false;
-                        isSqlCE = true;
-                    }
 
 
                     var reader = new SqlServerSchemaReader(conn, factory, IncludeQueryTraceOn9481Flag) { Outer = this };
@@ -529,11 +539,11 @@
                     var fkList = reader.ReadForeignKeys(TableRename);
                     reader.IdentifyForeignKeys(fkList, tables);
                     reader.ProcessForeignKeys(fkList, tables, UseCamelCase, PrependSchemaName, CollectionType, true, IncludeComments);
-                    tables.IdentifyMappingTables(fkList, UseCamelCase, CollectionType, true, IncludeComments, isSqlCE);
+                    tables.IdentifyMappingTables(fkList, UseCamelCase, CollectionType, true, IncludeComments, IsSqlCe);
 
                     tables.ResetNavigationProperties();
                     reader.ProcessForeignKeys(fkList, tables, UseCamelCase, PrependSchemaName, CollectionType, false, IncludeComments);
-                    tables.IdentifyMappingTables(fkList, UseCamelCase, CollectionType, false, IncludeComments, isSqlCE);
+                    tables.IdentifyMappingTables(fkList, UseCamelCase, CollectionType, false, IncludeComments, IsSqlCe);
 
                     // Remove views that only consist of all nullable fields.
                     // I.e. they do not contain any primary key, and therefore cannot be used by EF
@@ -575,7 +585,7 @@
                     conn.ConnectionString = ConnectionString;
                     conn.Open();
 
-                    if (conn.GetType().Name == "SqlCeConnection")
+                    if (IsSqlCe)
                        return new List<StoredProcedure>();
 
                     var reader = new SqlServerSchemaReader(conn, factory, IncludeQueryTraceOn9481Flag) { Outer = this };
@@ -605,14 +615,13 @@
                     var validStoredProcedures = new List<StoredProcedure>();
                     foreach (var sp in storedProcs)
                     {
-                        if (sp.ReturnColumns.Count() == 0)
+                        if (!sp.ReturnModels.Any())
                         {
                             validStoredProcedures.Add(sp);
                             continue;
                         }
-                        if (sp.ReturnColumns.Any(c => c.ColumnName.Contains(" ")))
-                            continue;   // Return column contains a space. Ignore as this cannot be mapped.
-                        validStoredProcedures.Add(sp);
+                        if(!sp.ReturnModels.Any(returnColumns => returnColumns.Any(c => c.ColumnName.Contains(" "))))
+                            validStoredProcedures.Add(sp);
                     }
                     return validStoredProcedures;
                 }
@@ -975,13 +984,13 @@
             public string Name;
             public string NameHumanCase;
             public List<StoredProcedureParameter> Parameters;
-            public List<DataColumn> ReturnColumns;
+            public List<List<DataColumn>> ReturnModels;    // A list of return models, containing a list of return columns
             public bool IsTVF;
 
             public StoredProcedure()
             {
                 Parameters = new List<StoredProcedureParameter>();
-                ReturnColumns = new List<DataColumn>();
+                ReturnModels = new List<List<DataColumn>>();
             }
 
             public static string CheckNullable(DataColumn col)
@@ -1954,8 +1963,10 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     foreach (var p in proc.Parameters)
                         p.NameHumanCase = Regex.Replace(p.NameHumanCase, @"[^A-Za-z0-9\s]*", "");
 
-                    if (ds.Tables.Count > 0)
-                        proc.ReturnColumns = ds.Tables[0].Columns.Cast<DataColumn>().ToList();
+                    for(count = 0; count < ds.Tables.Count; count++)
+                    {
+                        proc.ReturnModels.Add(ds.Tables[count].Columns.Cast<DataColumn>().ToList());
+                    }
                 }
                 catch (Exception)
                 {

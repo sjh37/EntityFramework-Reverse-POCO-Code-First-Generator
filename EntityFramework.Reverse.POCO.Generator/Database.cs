@@ -35,6 +35,7 @@ using System.Linq.Expressions;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Data;
+using System.Data.Entity.Core.Objects;
 using System.Data.SqlClient;
 using System.Data.SqlTypes;
 using System.Data.Entity.ModelConfiguration;
@@ -80,13 +81,20 @@ namespace EntityFramework_Reverse_POCO_Generator
         System.Threading.Tasks.Task<int> SaveChangesAsync(CancellationToken cancellationToken);
         
         // Stored Procedures
+        List<CustOrderHistReturnModel> CustOrderHist(string customerId);
         List<CustOrderHistReturnModel> CustOrderHist(string customerId, out int procResult);
+        List<CustOrdersDetailReturnModel> CustOrdersDetail(int? orderId);
         List<CustOrdersDetailReturnModel> CustOrdersDetail(int? orderId, out int procResult);
+        List<CustOrdersOrdersReturnModel> CustOrdersOrders(string customerId);
         List<CustOrdersOrdersReturnModel> CustOrdersOrders(string customerId, out int procResult);
+        List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(DateTime? beginningDate, DateTime? endingDate);
         List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(DateTime? beginningDate, DateTime? endingDate, out int procResult);
+        List<SalesByYearReturnModel> SalesByYear(DateTime? beginningDate, DateTime? endingDate);
         List<SalesByYearReturnModel> SalesByYear(DateTime? beginningDate, DateTime? endingDate, out int procResult);
+        List<SalesByCategoryReturnModel> SalesByCategory(string categoryName, string ordYear);
         List<SalesByCategoryReturnModel> SalesByCategory(string categoryName, string ordYear, out int procResult);
-        List<TenMostExpensiveProductsReturnModel> TenMostExpensiveProducts( out int procResult);
+        List<TenMostExpensiveProductsReturnModel> TenMostExpensiveProducts();
+        List<TenMostExpensiveProductsReturnModel> TenMostExpensiveProducts(out int procResult);
     }
 
     // ************************************************************************
@@ -232,9 +240,8 @@ namespace EntityFramework_Reverse_POCO_Generator
                 customerIdParam.Value = DBNull.Value;
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
- 
             var procResultData = Database.SqlQuery<CustOrderHistReturnModel>("EXEC @procResult = [dbo].[CustOrderHist] @CustomerID", customerIdParam, procResultParam).ToList();
- 
+
             procResult = (int) procResultParam.Value;
             return procResultData;
         }
@@ -252,9 +259,8 @@ namespace EntityFramework_Reverse_POCO_Generator
                 orderIdParam.Value = DBNull.Value;
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
- 
             var procResultData = Database.SqlQuery<CustOrdersDetailReturnModel>("EXEC @procResult = [dbo].[CustOrdersDetail] @OrderID", orderIdParam, procResultParam).ToList();
- 
+
             procResult = (int) procResultParam.Value;
             return procResultData;
         }
@@ -272,9 +278,8 @@ namespace EntityFramework_Reverse_POCO_Generator
                 customerIdParam.Value = DBNull.Value;
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
- 
             var procResultData = Database.SqlQuery<CustOrdersOrdersReturnModel>("EXEC @procResult = [dbo].[CustOrdersOrders] @CustomerID", customerIdParam, procResultParam).ToList();
- 
+
             procResult = (int) procResultParam.Value;
             return procResultData;
         }
@@ -296,9 +301,8 @@ namespace EntityFramework_Reverse_POCO_Generator
                 endingDateParam.Value = DBNull.Value;
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
- 
             var procResultData = Database.SqlQuery<EmployeeSalesByCountryReturnModel>("EXEC @procResult = [dbo].[Employee Sales by Country] @Beginning_Date, @Ending_Date", beginningDateParam, endingDateParam, procResultParam).ToList();
- 
+
             procResult = (int) procResultParam.Value;
             return procResultData;
         }
@@ -320,9 +324,8 @@ namespace EntityFramework_Reverse_POCO_Generator
                 endingDateParam.Value = DBNull.Value;
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
- 
             var procResultData = Database.SqlQuery<SalesByYearReturnModel>("EXEC @procResult = [dbo].[Sales by Year] @Beginning_Date, @Ending_Date", beginningDateParam, endingDateParam, procResultParam).ToList();
- 
+
             procResult = (int) procResultParam.Value;
             return procResultData;
         }
@@ -344,9 +347,8 @@ namespace EntityFramework_Reverse_POCO_Generator
                 ordYearParam.Value = DBNull.Value;
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
- 
             var procResultData = Database.SqlQuery<SalesByCategoryReturnModel>("EXEC @procResult = [dbo].[SalesByCategory] @CategoryName, @OrdYear", categoryNameParam, ordYearParam, procResultParam).ToList();
- 
+
             procResult = (int) procResultParam.Value;
             return procResultData;
         }
@@ -357,12 +359,11 @@ namespace EntityFramework_Reverse_POCO_Generator
             return TenMostExpensiveProducts(out procResult);
         }
 
-        public List<TenMostExpensiveProductsReturnModel> TenMostExpensiveProducts( out int procResult)
+        public List<TenMostExpensiveProductsReturnModel> TenMostExpensiveProducts(out int procResult)
         {
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
- 
             var procResultData = Database.SqlQuery<TenMostExpensiveProductsReturnModel>("EXEC @procResult = [dbo].[Ten Most Expensive Products] ", procResultParam).ToList();
- 
+
             procResult = (int) procResultParam.Value;
             return procResultData;
         }
@@ -468,7 +469,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public List<CustOrderHistReturnModel> CustOrderHist(string customerId, out int procResult)
         {
- 
+
             procResult = 0;
             return new List<CustOrderHistReturnModel>();
         }
@@ -481,7 +482,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public List<CustOrdersDetailReturnModel> CustOrdersDetail(int? orderId, out int procResult)
         {
- 
+
             procResult = 0;
             return new List<CustOrdersDetailReturnModel>();
         }
@@ -494,7 +495,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public List<CustOrdersOrdersReturnModel> CustOrdersOrders(string customerId, out int procResult)
         {
- 
+
             procResult = 0;
             return new List<CustOrdersOrdersReturnModel>();
         }
@@ -507,7 +508,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(DateTime? beginningDate, DateTime? endingDate, out int procResult)
         {
- 
+
             procResult = 0;
             return new List<EmployeeSalesByCountryReturnModel>();
         }
@@ -520,7 +521,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public List<SalesByYearReturnModel> SalesByYear(DateTime? beginningDate, DateTime? endingDate, out int procResult)
         {
- 
+
             procResult = 0;
             return new List<SalesByYearReturnModel>();
         }
@@ -533,7 +534,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public List<SalesByCategoryReturnModel> SalesByCategory(string categoryName, string ordYear, out int procResult)
         {
- 
+
             procResult = 0;
             return new List<SalesByCategoryReturnModel>();
         }
@@ -544,9 +545,9 @@ namespace EntityFramework_Reverse_POCO_Generator
             return TenMostExpensiveProducts(out procResult);
         }
 
-        public List<TenMostExpensiveProductsReturnModel> TenMostExpensiveProducts( out int procResult)
+        public List<TenMostExpensiveProductsReturnModel> TenMostExpensiveProducts(out int procResult)
         {
- 
+
             procResult = 0;
             return new List<TenMostExpensiveProductsReturnModel>();
         }
