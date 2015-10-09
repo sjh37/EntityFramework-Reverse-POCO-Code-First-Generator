@@ -787,7 +787,7 @@ if(tbl.Columns.Where(c => c.Default != string.Empty && !c.Hidden).Count() > 0 ||
 foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal).Where(c => c.Default != string.Empty && !c.Hidden))
 {
 #>
-            <#=col.PropertyNameHumanCase #> = <#=col.Default #>;
+            <#=col.NameHumanCase #> = <#=col.Default #>;
 <# } #>
 <#
 foreach(string s in tbl.ReverseNavigationCtor)
