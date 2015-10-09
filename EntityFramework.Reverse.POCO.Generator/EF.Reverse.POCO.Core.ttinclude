@@ -1961,7 +1961,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
                     // Tidy up parameters
                     foreach (var p in proc.Parameters)
-                        p.NameHumanCase = Regex.Replace(p.NameHumanCase, @"[^A-Za-z0-9\s]*", "");
+                        p.NameHumanCase = Regex.Replace(p.NameHumanCase, @"[^A-Za-z0-9@\s]*", "");
 
                     for(count = 0; count < ds.Tables.Count; count++)
                     {
