@@ -140,7 +140,7 @@
         var enumDefinition = EnumsDefinitions.FirstOrDefault(e =>
             (e.Schema.ToLowerInvariant() == table.Schema.ToLowerInvariant()) &&
             (e.Table == table.Name || e.Table == table.NameHumanCase) &&
-            (e.Column == column.Name || e.Column == column.PropertyNameHumanCase));
+            (e.Column == column.Name || e.Column == column.NameHumanCase));
 
         if (enumDefinition != null)
             column.PropertyType = enumDefinition.EnumType;
