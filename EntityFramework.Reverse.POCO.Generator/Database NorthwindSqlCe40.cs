@@ -495,8 +495,8 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         public float Discount { get; set; } // Discount
 
         // Foreign keys
-        public virtual Order Order { get; set; } // OrderDetails_FK01
-        public virtual Product Product { get; set; } // OrderDetails_FK00
+        public virtual Order Order { get; set; } // Order Details_FK01
+        public virtual Product Product { get; set; } // Order Details_FK00
     }
 
     // Products
@@ -707,8 +707,8 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
             Property(x => x.Discount).HasColumnName("Discount").IsRequired().HasColumnType("real");
 
             // Foreign keys
-            HasRequired(a => a.Order).WithMany(b => b.OrderDetails).HasForeignKey(c => c.OrderId); // OrderDetails_FK01
-            HasRequired(a => a.Product).WithMany(b => b.OrderDetails).HasForeignKey(c => c.ProductId); // OrderDetails_FK00
+            HasRequired(a => a.Order).WithMany(b => b.OrderDetails).HasForeignKey(c => c.OrderId); // Order Details_FK01
+            HasRequired(a => a.Product).WithMany(b => b.OrderDetails).HasForeignKey(c => c.ProductId); // Order Details_FK00
         }
     }
 
