@@ -741,6 +741,8 @@
             public string Entity;
             public List<string> EntityFk = new List<string>();
 
+            public Table ParentTable;
+
             public void ResetNavigationProperties()
             {
                 ConfigFk = new List<string>();
@@ -1652,7 +1654,13 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 // Check for property name clashes in columns
                 foreach(Column c in result.SelectMany(tbl => tbl.Columns.Where(c => tbl.Columns.FindAll(x => x.NameHumanCase == c.NameHumanCase).Count > 1)))
                 {
-                    c.NameHumanCase = c.Name;
+                    int n = 1;
+                    var original = c.NameHumanCase;
+                    c.NameHumanCase = original + n++;
+
+                    // Check if the above resolved the name clash, if not, use next value
+                    while(c.ParentTable.Columns.Count(c2 => c2.NameHumanCase == c.NameHumanCase) > 1)
+                        c.NameHumanCase = original + n++;
                 }
 
                 if (includeExtendedPropertyComments != ExtendedPropertyCommentsStyle.None)
@@ -2144,7 +2152,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     IsStoreGenerated = rdr["IsStoreGenerated"].ToString().Trim().ToLower() == "true",
                     IsPrimaryKey = rdr["PrimaryKey"].ToString().Trim().ToLower() == "true",
                     PrimaryKeyOrdinal = (int)rdr["PrimaryKeyOrdinal"],
-                    IsForeignKey = rdr["IsForeignKey"].ToString().Trim().ToLower() == "true"
+                    IsForeignKey = rdr["IsForeignKey"].ToString().Trim().ToLower() == "true",
+                    ParentTable = table
                 };
                 
                 if(columnFilterExclude != null && !col.IsPrimaryKey && columnFilterExclude.IsMatch(col.Name))
