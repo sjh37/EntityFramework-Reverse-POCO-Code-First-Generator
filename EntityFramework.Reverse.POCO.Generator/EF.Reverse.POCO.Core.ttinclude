@@ -423,7 +423,7 @@
 
         private static string ZapPassword(string connectionString)
         {
-            var rx = new Regex("password=.*;", RegexOptions.Singleline | RegexOptions.Multiline | RegexOptions.IgnoreCase);
+            var rx = new Regex("password=[^\";]*", RegexOptions.Singleline | RegexOptions.Multiline | RegexOptions.IgnoreCase);
             return rx.Replace(connectionString, "password=**zapped**;");
         }
 
