@@ -431,12 +431,14 @@ foreach (Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.N
 
         public System.Threading.Tasks.Task<int> SaveChangesAsync()
         {
-            throw new NotImplementedException();
+            ++SaveChangesCount;
+            return System.Threading.Tasks.Task<int>.Factory.StartNew(() => 1);
         }
 
         public System.Threading.Tasks.Task<int> SaveChangesAsync(CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            ++SaveChangesCount;
+            return System.Threading.Tasks.Task<int>.Factory.StartNew(() => 1, cancellationToken);
         }
 <# } #>
 <#if(MakeClassesPartial) {#>
