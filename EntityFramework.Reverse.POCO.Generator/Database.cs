@@ -443,12 +443,14 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public System.Threading.Tasks.Task<int> SaveChangesAsync()
         {
-            throw new NotImplementedException();
+            ++SaveChangesCount;
+            return System.Threading.Tasks.Task<int>.Factory.StartNew(() => 1);
         }
 
         public System.Threading.Tasks.Task<int> SaveChangesAsync(CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            ++SaveChangesCount;
+            return System.Threading.Tasks.Task<int>.Factory.StartNew(() => 1, cancellationToken);
         }
 
         protected virtual void Dispose(bool disposing)
