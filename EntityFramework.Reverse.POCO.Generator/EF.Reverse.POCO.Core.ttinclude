@@ -2155,8 +2155,9 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     IsForeignKey = rdr["IsForeignKey"].ToString().Trim().ToLower() == "true",
                     ParentTable = table
                 };
-                
-                if(columnFilterExclude != null && !col.IsPrimaryKey && columnFilterExclude.IsMatch(col.Name))
+
+                var fullName = string.Format("{0}.{1}.{2}", table.Name, table.Schema, col.Name);
+                if(columnFilterExclude != null && !col.IsPrimaryKey && (columnFilterExclude.IsMatch(col.Name) || columnFilterExclude.IsMatch(fullName)))
                     col.Hidden = true;
 
                 col.IsFixedLength = (typename == "char" || typename == "nchar");
