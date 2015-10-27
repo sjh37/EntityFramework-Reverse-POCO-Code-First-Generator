@@ -766,7 +766,9 @@ if(tbl.ReverseNavigationProperty.Count() > 0)
 <#
 foreach(string s in tbl.ReverseNavigationProperty.OrderBy(x => x))
 {
-#>
+    foreach (var rnpda in AdditionalReverseNavigationsDataAnnotations) {#>
+        [<#=rnpda #>]
+<# } #>
         <#=s #>
 <# } } #>
 <# if(tbl.HasForeignKey) { #>
@@ -776,7 +778,9 @@ foreach(string s in tbl.ReverseNavigationProperty.OrderBy(x => x))
 <#
 foreach(var entityFk in tbl.Columns.SelectMany(x => x.EntityFk).OrderBy(o => o))
 {
-#>
+    foreach (var fkda in AdditionalForeignKeysDataAnnotations) {#>
+        [<#=fkda #>]
+<# } #>
         <#=entityFk #>
 <# } } #>
 <# 
