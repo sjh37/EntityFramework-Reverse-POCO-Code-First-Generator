@@ -64,6 +64,8 @@
         string[] ConfigFilenameSearchOrder = null;
         string[] AdditionalNamespaces = null;
         string[] AdditionalContextInterfaceItems = null;
+        string[] AdditionalReverseNavigationsDataAnnotations = null;
+        string[] AdditionalForeignKeysDataAnnotations = null;
         private string _connectionString = "";
         private string _providerName = "";
         private string _configFilePath = "";
