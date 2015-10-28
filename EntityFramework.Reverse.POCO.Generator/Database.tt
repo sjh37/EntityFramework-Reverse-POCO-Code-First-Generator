@@ -1,6 +1,6 @@
 ﻿<#@ include file="EF.Reverse.POCO.Core.ttinclude" #>
 <#
-    // v2.15.2
+    // v2.16.0
     // Please make changes to the settings below.
     // All you have to do is save this file, and the output file(s) is/are generated. Compiling does not regenerate the file(s).
 
@@ -29,6 +29,17 @@
     {
         ""  //  example: "void SetAutoDetectChangesEnabled(bool flag);"
     };
+    // If you need to serialize your entities with the JsonSerializer from Newtonsoft, this would serialize
+    // all properties including the Reverse Navigation and Foreign Keys. The simplest way to exclude them is
+    // to use the data annotation [JsonIgnore] on reverse navigation and foreign keys.
+    AdditionalReverseNavigationsDataAnnotations = new string[] // Data Annotations for ReverseNavigationProperty.
+    {
+        // "JsonIgnore"
+    };  
+    AdditionalForeignKeysDataAnnotations = new string[] // Data Annotations for ForeignKeys.
+    {
+        // "JsonIgnore"
+    };  
 
     // Migrations *************************************************************************************************************************
     ContextKey = "";
@@ -141,7 +152,7 @@
         var enumDefinition = EnumsDefinitions.FirstOrDefault(e =>
             (e.Schema.ToLowerInvariant() == table.Schema.ToLowerInvariant()) &&
             (e.Table == table.Name || e.Table == table.NameHumanCase) &&
-            (e.Column == column.Name || e.Column == column.PropertyNameHumanCase));
+            (e.Column == column.Name || e.Column == column.NameHumanCase));
 
         if (enumDefinition != null)
             column.PropertyType = enumDefinition.EnumType;
@@ -221,15 +232,14 @@
                 p.NameHumanCase, 
                 (n++ < count) ? ", " : string.Empty);
         }
-        if (includeProcResult && sp.ReturnColumns.Count > 0)
-            sb.AppendFormat((sp.Parameters.Count > 0 ?  "," : "") + " out int procResult");
+        if (includeProcResult && sp.ReturnModels.Count > 0 && sp.ReturnModels.First().Count > 0)
+            sb.AppendFormat((sp.Parameters.Count > 0 ?  ", " : "") + "out int procResult");
         return sb.ToString();
     };
     
     Func<StoredProcedure, string> WriteStoredProcFunctionOverloadCall = (sp) =>
     {
         var sb = new StringBuilder();
-        int count = sp.Parameters.Count;
         foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
         {
             sb.AppendFormat("{0}{1}, ", 
@@ -255,6 +265,8 @@
         return sb.ToString();
     };
 
+    Func<StoredProcedureParameter, string> WriteStoredProcSqlParameterName = p => p.NameHumanCase + "Param";
+
     Func<StoredProcedure, string> WriteStoredProcFunctionDeclareSqlParameter = sp =>
     {
         var sb = new StringBuilder();
@@ -263,8 +275,8 @@
             bool isNullable = !NotNullable.Contains(p.PropertyType.ToLower());
             var getValueOrDefault = isNullable ? ".GetValueOrDefault()" : string.Empty;
     
-            sb.AppendLine(string.Format("            var {0}Param = new SqlParameter {{ ParameterName = \"{1}\", SqlDbType = SqlDbType.{2}, Direction = ParameterDirection.{3}{4}{5} }};", 
-                p.NameHumanCase, 
+            sb.AppendLine(string.Format("            var {0} = new SqlParameter {{ ParameterName = \"{1}\", SqlDbType = SqlDbType.{2}, Direction = ParameterDirection.{3}{4}{5} }};", 
+                WriteStoredProcSqlParameterName(p), 
                 p.Name, 
                 p.SqlDbType, 
                 p.Mode == StoredProcedureParameterMode.In ? "Input" : "Output",
@@ -280,7 +292,8 @@
                         p.NameHumanCase, Environment.NewLine);
                 }
         }
-        sb.AppendLine("            var procResultParam = new SqlParameter { ParameterName = \"@procResult\", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };");
+        if(sp.ReturnModels.Count < 2)
+            sb.AppendLine("            var procResultParam = new SqlParameter { ParameterName = \"@procResult\", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };");
         return sb.ToString();
     };
 
@@ -354,6 +367,16 @@
         string.Format("public {0}{1}{2} {{ get; set; }}",
             col.DataType.Name, StoredProcedure.CheckNullable(col), col.ColumnName);
 
+    Func<StoredProcedure, string> WriteStoredProcReturnType = (sp) =>
+    {
+        var returnModelCount = sp.ReturnModels.Count;
+        if (returnModelCount == 0)
+            return "int";
+
+        var spReturnClassName = WriteStoredProcReturnModelName(sp);
+        return (returnModelCount == 1) ? string.Format("List<{0}>", spReturnClassName) : spReturnClassName;
+    };
+
     
     // That's it, nothing else to configure ***********************************************************************************************
     
@@ -361,6 +384,7 @@
     
     // Read schema
     var factory = GetDbProviderFactory();
+    IsSqlCe = IsSqlCeConnection(factory);
     var tables = LoadTables(factory);
     var storedProcs = LoadStoredProcs(factory);
     
