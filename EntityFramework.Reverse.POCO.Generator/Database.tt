@@ -1,6 +1,6 @@
 ﻿<#@ include file="EF.Reverse.POCO.Core.ttinclude" #>
 <#
-    // v2.15.2
+    // v2.16.0
     // Please make changes to the settings below.
     // All you have to do is save this file, and the output file(s) is/are generated. Compiling does not regenerate the file(s).
 
@@ -29,6 +29,17 @@
     {
         ""  //  example: "void SetAutoDetectChangesEnabled(bool flag);"
     };
+    // If you need to serialize your entities with the JsonSerializer from Newtonsoft, this would serialize
+    // all properties including the Reverse Navigation and Foreign Keys. The simplest way to exclude them is
+    // to use the data annotation [JsonIgnore] on reverse navigation and foreign keys.
+    AdditionalReverseNavigationsDataAnnotations = new string[] // Data Annotations for ReverseNavigationProperty.
+    {
+        // "JsonIgnore"
+    };  
+    AdditionalForeignKeysDataAnnotations = new string[] // Data Annotations for ForeignKeys.
+    {
+        // "JsonIgnore"
+    };  
 
     // Migrations *************************************************************************************************************************
     MigrationConfigurationFileName = ""; // null or empty to not create migrations
