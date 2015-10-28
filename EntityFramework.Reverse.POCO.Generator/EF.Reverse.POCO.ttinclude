@@ -162,12 +162,10 @@ if (IncludeTableValuedFunctions)
         public <#=MigrationConfigurationFileName#>()
         {
             AutomaticMigrationsEnabled = <# if (AutomaticMigrationsEnabled) { #>true<# } else { #>false<# } #>;
-            AutomaticMigrationDataLossAllowed = <# if (AutomaticMigrationDataLossAllowed) { #>true<# } else { #>false<# } #>;<#
-            if (!string.IsNullOrEmpty(ContextKey))
-            #>
+            AutomaticMigrationDataLossAllowed = <# if (AutomaticMigrationDataLossAllowed) { #>true<# } else { #>false<# } #>;
+<# if (!string.IsNullOrEmpty(ContextKey)) { #>
             ContextKey = "<#= ContextKey #>";
-            <# 
-            #>
+<# } #>
         }
 
         //protected override void Seed(<#=DbContextName#> context)

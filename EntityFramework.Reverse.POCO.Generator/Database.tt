@@ -42,9 +42,9 @@
     };  
 
     // Migrations *************************************************************************************************************************
-    ContextKey = "";
     MigrationConfigurationFileName = ""; // null or empty to not create migrations
     MigrationStrategy = "MigrateDatabaseToLatestVersion"; // MigrateDatabaseToLatestVersion, CreateDatabaseIfNotExists or DropCreateDatabaseIfModelChanges
+    ContextKey = ""; // Sets the string used to distinguish migrations belonging to this configuration from migrations belonging to other configurations using the same database. This property enables migrations from multiple different models to be applied to applied to a single database.
     AutomaticMigrationsEnabled = true;
     AutomaticMigrationDataLossAllowed = true; // if true, can drop fields and lose data during automatic migration
 
