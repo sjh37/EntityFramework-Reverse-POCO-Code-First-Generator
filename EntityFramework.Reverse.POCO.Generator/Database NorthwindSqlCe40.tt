@@ -1,10 +1,10 @@
 ﻿<#@ include file="EF.Reverse.POCO.Core.ttinclude" #>
 <#
-    // v2.15.2
+    // v2.16.0
     // Please make changes to the settings below.
     // All you have to do is save this file, and the output file(s) is/are generated. Compiling does not regenerate the file(s).
 
-    // Misc settings **********************************************************************************************************************
+    // Main settings **********************************************************************************************************************
     Namespace = "EntityFramework_Reverse_POCO_Generator.SqlCe4"; // Override the default namespace here
     DbContextName = "MyDbContextSqlCE4";
     DbContextInterfaceBaseClasses = "IDisposable";    // Specify what the base classes are for your database context interface
@@ -26,6 +26,17 @@
     {
         ""  //  example: "void SetAutoDetectChangesEnabled(bool flag);"
     };
+    // If you need to serialize your entities with the JsonSerializer from Newtonsoft, this would serialize
+    // all properties including the Reverse Navigation and Foreign Keys. The simplest way to exclude them is
+    // to use the data annotation [JsonIgnore] on reverse navigation and foreign keys.
+    AdditionalReverseNavigationsDataAnnotations = new string[] // Data Annotations for ReverseNavigationProperty.
+    {
+        // "JsonIgnore"
+    };  
+    AdditionalForeignKeysDataAnnotations = new string[] // Data Annotations for ForeignKeys.
+    {
+        // "JsonIgnore"
+    };  
     
     // Migrations *************************************************************************************************************************
     MigrationConfigurationFileName = ""; // null or empty to not create migrations
@@ -117,8 +128,8 @@
     // Column modification*****************************************************************************************************************
     // Use the following list to replace column byte types with Enums.
     // As long as the type can be mapped to your new type, all is well.
-    //EnumsDefinitions.Add(new EnumDefinition { Table = "match_table_name", Column = "match_column_name", EnumType = "name_of_enum" });
-    //EnumsDefinitions.Add(new EnumDefinition { Table = "OrderHeader", Column = "OrderStatus", EnumType = "OrderStatusType" }); // This will replace OrderHeader.OrderStatus type to be an OrderStatusType enum
+    //EnumsDefinitions.Add(new EnumDefinition { Schema = "dbo", Table = "match_table_name", Column = "match_column_name", EnumType = "name_of_enum" });
+    //EnumsDefinitions.Add(new EnumDefinition { Schema = "dbo", Table = "OrderHeader", Column = "OrderStatus", EnumType = "OrderStatusType" }); // This will replace OrderHeader.OrderStatus type to be an OrderStatusType enum
     
     // Use the following function if you need to apply additional modifications to a column
     // eg. normalise names etc.
@@ -130,8 +141,9 @@
 
         // Perform Enum property type replacement
         var enumDefinition = EnumsDefinitions.FirstOrDefault(e =>
+            (e.Schema.ToLowerInvariant() == table.Schema.ToLowerInvariant()) &&
             (e.Table == table.Name || e.Table == table.NameHumanCase) &&
-            (e.Column == column.Name || e.Column == column.PropertyNameHumanCase));
+            (e.Column == column.Name || e.Column == column.NameHumanCase));
 
         if (enumDefinition != null)
             column.PropertyType = enumDefinition.EnumType;
@@ -186,15 +198,18 @@
     Func<StoredProcedure, bool, string> WriteStoredProcFunctionParams = null;
     Func<StoredProcedure, string> WriteStoredProcFunctionOverloadCall = null;
     Func<StoredProcedure, string> WriteStoredProcFunctionSqlAtParams = null;
+    Func<StoredProcedureParameter, string> WriteStoredProcSqlParameterName = null;
     Func<StoredProcedure, string> WriteStoredProcFunctionDeclareSqlParameter = null;
     Func<StoredProcedure, string> WriteTableValuedFunctionDeclareSqlParameter = null;
     Func<StoredProcedure, string> WriteStoredProcFunctionSqlParameterAnonymousArray = null;
     Func<StoredProcedure, string> WriteTableValuedFunctionSqlParameterAnonymousArray = null;
     Func<StoredProcedure, bool, string> WriteStoredProcFunctionSetSqlParameters = null;
     Func<StoredProcedure, string> WriteStoredProcReturnModelName = null;
+    Func<StoredProcedure, string> WriteStoredProcReturnType = null;
     Func<DataColumn, string> WriteStoredProcReturnColumn = null;
     
     // Read schema
+    IsSqlCe = true;
     var tables = LoadTables(GetDbProviderFactory());
     var storedProcs = new List<StoredProcedure>();
     
