@@ -145,8 +145,8 @@
     UpdateColumn = (Column column, Table table) => 
     {
         // Example
-        //if (column.PropertyNameHumanCase == "PkId")
-        //    column.PropertyNameHumanCase = "Id";
+        //if (column.NameHumanCase == "PkId")
+        //    column.NameHumanCase = "Id";
 
         // Perform Enum property type replacement
         var enumDefinition = EnumsDefinitions.FirstOrDefault(e =>
