@@ -253,7 +253,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public List<CustOrdersDetailReturnModel> CustOrdersDetail(int? orderId, out int procResult)
         {
-            var orderIdParam = new SqlParameter { ParameterName = "@OrderID", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = orderId.GetValueOrDefault() };
+            var orderIdParam = new SqlParameter { ParameterName = "@OrderID", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = orderId.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!orderId.HasValue)
                 orderIdParam.Value = DBNull.Value;
 
