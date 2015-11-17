@@ -864,12 +864,6 @@
                         break;
                 }
 
-                if(lowerPropertyType == "string" && lower.StartsWith("space("))
-                {
-                    Default = "\"\"";
-                    return;
-                }
-
                 // Ignore defaults we cannot interpret (we would need SQL to C# compiler)
                 if (lower.StartsWith("create default"))
                 {
@@ -963,6 +957,10 @@
                     case "string":
                         if (lower.Contains("newid()") || lower.Contains("newsequentialid()"))
                             Default = "Guid.NewGuid().ToString()";
+                        if(lower.StartsWith("space("))
+                            Default = "\"\"";
+                        if(lower == "null")
+                            Default = string.Empty;
                         break;
 
                     case "guid":
