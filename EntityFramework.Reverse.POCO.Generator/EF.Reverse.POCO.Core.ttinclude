@@ -114,10 +114,11 @@
         {
             "string", 
             "byte[]", 
-            "Microsoft.SqlServer.Types.SqlGeography", 
-            "Microsoft.SqlServer.Types.SqlGeometry",
-            "System.Data.Entity.Spatial.DbGeography",
-            "System.Data.Entity.Spatial.DbGeometry"
+            "datatable", 
+            "microsoft.sqlserver.types.sqlgeography", 
+            "microsoft.sqlserver.types.sqlgeometry",
+            "system.data.entity.spatial.dbgeography",
+            "system.data.entity.spatial.dbgeometry"
         };
         
         static string[] ReservedKeywords = new string[]
@@ -1018,6 +1019,7 @@
             public string NameHumanCase;
             public string SqlDbType;
             public string PropertyType;
+            public string UserDefinedTypeName;
             public int DateTimePrecision;
             public int MaxLength;
             public int Precision;
@@ -1304,14 +1306,14 @@ ORDER BY t.name";
             private const string ExtendedPropertyTableExistsSQLCE = @"
 SELECT  1
 FROM    INFORMATION_SCHEMA.TABLES
-WHERE   TABLE_NAME = '__ExtendedProperties';";
+WHERE   TABLE_NAME = '__ExtendedProperties'";
 
             private const string ExtendedPropertySQLCE = @"
 SELECT  '' AS [schema],
         [ObjectName] AS [column],
         [ParentName] AS [table],
         [Value] AS [property]
-FROM    [__ExtendedProperties];";
+FROM    [__ExtendedProperties]";
 
             private const string TableSQLCE = @"
 SELECT  '' AS SchemaName,
@@ -1361,7 +1363,7 @@ WHERE   t.TABLE_TYPE <> N'SYSTEM TABLE'
         AND cons.CONSTRAINT_TYPE = 'PRIMARY KEY'
 ORDER BY c.TABLE_NAME,
         c.COLUMN_NAME,
-        c.ORDINAL_POSITION;";
+        c.ORDINAL_POSITION";
 
             private const string ForeignKeySQLCE = @"
 SELECT DISTINCT
@@ -1390,7 +1392,7 @@ FROM    INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS AS C
                    ) PT
             ON PT.TABLE_NAME = PK.TABLE_NAME
 WHERE   PT.COLUMN_NAME = PK.COLUMN_NAME
-ORDER BY FK.TABLE_NAME, FK.COLUMN_NAME;";
+ORDER BY FK.TABLE_NAME, FK.COLUMN_NAME";
 
             private const string StoredProcedureSQL = @"
 SELECT  R.SPECIFIC_SCHEMA,
@@ -1403,7 +1405,8 @@ SELECT  R.SPECIFIC_SCHEMA,
         ISNULL(P.CHARACTER_MAXIMUM_LENGTH, 0) AS CHARACTER_MAXIMUM_LENGTH,
         ISNULL(P.NUMERIC_PRECISION, 0) AS NUMERIC_PRECISION,
         ISNULL(P.NUMERIC_SCALE, 0) AS NUMERIC_SCALE,
-        ISNULL(P.DATETIME_PRECISION, 0) AS DATETIME_PRECISION
+        ISNULL(P.DATETIME_PRECISION, 0) AS DATETIME_PRECISION,
+        p.USER_DEFINED_TYPE_SCHEMA + '.' + P.USER_DEFINED_TYPE_NAME AS USER_DEFINED_TYPE
 FROM    INFORMATION_SCHEMA.ROUTINES R
         LEFT OUTER JOIN INFORMATION_SCHEMA.PARAMETERS P
             ON P.SPECIFIC_SCHEMA = R.SPECIFIC_SCHEMA
@@ -1442,7 +1445,8 @@ SELECT  R.SPECIFIC_SCHEMA,
         ISNULL(P.CHARACTER_MAXIMUM_LENGTH, 0) AS CHARACTER_MAXIMUM_LENGTH,
         ISNULL(P.NUMERIC_PRECISION, 0) AS NUMERIC_PRECISION,
         ISNULL(P.NUMERIC_SCALE, 0) AS NUMERIC_SCALE,
-        ISNULL(P.DATETIME_PRECISION, 0) AS DATETIME_PRECISION
+        ISNULL(P.DATETIME_PRECISION, 0) AS DATETIME_PRECISION,
+        p.USER_DEFINED_TYPE_SCHEMA + '.' + P.USER_DEFINED_TYPE_NAME AS USER_DEFINED_TYPE
 FROM    INFORMATION_SCHEMA.ROUTINES R
         LEFT OUTER JOIN INFORMATION_SCHEMA.PARAMETERS P
             ON P.SPECIFIC_SCHEMA = R.SPECIFIC_SCHEMA
@@ -1464,7 +1468,8 @@ SELECT  R.SPECIFIC_SCHEMA,
         ISNULL(P.CHARACTER_MAXIMUM_LENGTH, 0) AS CHARACTER_MAXIMUM_LENGTH,
         ISNULL(P.NUMERIC_PRECISION, 0) AS NUMERIC_PRECISION,
         ISNULL(P.NUMERIC_SCALE, 0) AS NUMERIC_SCALE,
-        ISNULL(P.DATETIME_PRECISION, 0) AS DATETIME_PRECISION
+        ISNULL(P.DATETIME_PRECISION, 0) AS DATETIME_PRECISION,
+        p.USER_DEFINED_TYPE_SCHEMA + '.' + P.USER_DEFINED_TYPE_NAME AS USER_DEFINED_TYPE
 FROM    INFORMATION_SCHEMA.ROUTINES R
         LEFT OUTER JOIN INFORMATION_SCHEMA.PARAMETERS P
             ON P.SPECIFIC_SCHEMA = R.SPECIFIC_SCHEMA
@@ -1492,7 +1497,8 @@ SELECT  R.SPECIFIC_SCHEMA,
         ISNULL(P.CHARACTER_MAXIMUM_LENGTH, 0) AS CHARACTER_MAXIMUM_LENGTH,
         ISNULL(P.NUMERIC_PRECISION, 0) AS NUMERIC_PRECISION,
         ISNULL(P.NUMERIC_SCALE, 0) AS NUMERIC_SCALE,
-        ISNULL(P.DATETIME_PRECISION, 0) AS DATETIME_PRECISION
+        ISNULL(P.DATETIME_PRECISION, 0) AS DATETIME_PRECISION,
+        p.USER_DEFINED_TYPE_SCHEMA + '.' + P.USER_DEFINED_TYPE_NAME AS USER_DEFINED_TYPE
 FROM    INFORMATION_SCHEMA.ROUTINES R
         LEFT OUTER JOIN INFORMATION_SCHEMA.PARAMETERS P
             ON P.SPECIFIC_SCHEMA = R.SPECIFIC_SCHEMA
@@ -1501,7 +1507,7 @@ WHERE   R.ROUTINE_TYPE = 'FUNCTION'
         AND R.DATA_TYPE = 'TABLE'
 ORDER BY R.SPECIFIC_SCHEMA,
         R.SPECIFIC_NAME,
-        P.ORDINAL_POSITION;";
+        P.ORDINAL_POSITION";
 
             private const string UniqueIndexSQL = @"
 SELECT  SCHEMA_NAME(t.schema_id) AS TableSchema,
@@ -1562,7 +1568,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             WHEN 4 THEN 'Express'
             WHEN 5 THEN 'Azure'
             ELSE 'Unknown'
-        END AS EngineEdition;";
+        END AS EngineEdition";
 
                     using (DbDataReader rdr = Cmd.ExecuteReader())
                     {
@@ -1904,7 +1910,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                                 DateTimePrecision = (Int16) rdr["DATETIME_PRECISION"],
                                 MaxLength = (int) rdr["CHARACTER_MAXIMUM_LENGTH"],
                                 Precision = precision,
-                                Scale = scale
+                                Scale = scale,
+                                UserDefinedTypeName = rdr["USER_DEFINED_TYPE"].ToString().Trim()
                             };
 
                             var clean = CleanUp(param.Name.Replace("@", ""));
@@ -2308,6 +2315,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         sysType = "Udt";
                         break;
 
+                    case "table type":
                     case "structured":
                         sysType = "Structured";
                         break;
@@ -2356,6 +2364,9 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         break;
                     case "datetimeoffset":
                         sysType = "DateTimeOffset";
+                        break;
+                    case "table type":
+                        sysType = "DataTable";
                         break;
                     case "time":
                         sysType = "TimeSpan";
