@@ -535,7 +535,7 @@ if (IncludeTableValuedFunctions)
     //      Read more about it here: https://msdn.microsoft.com/en-us/data/dn314431.aspx
 <# } #>
     <#= CodeGeneratedAttribute #>
-    public class FakeDbSet<TEntity> : DbSet<TEntity>, IQueryable, IEnumerable<TEntity>, IDbAsyncEnumerable<TEntity> 
+    public <# if(MakeClassesPartial) { #>partial <# } #>class FakeDbSet<TEntity> : DbSet<TEntity>, IQueryable, IEnumerable<TEntity>, IDbAsyncEnumerable<TEntity> 
         where TEntity : class 
     { 
         private readonly ObservableCollection<TEntity> _data;
@@ -545,7 +545,10 @@ if (IncludeTableValuedFunctions)
         { 
             _data = new ObservableCollection<TEntity>(); 
             _query = _data.AsQueryable(); 
-        }
+<#if(MakeClassesPartial) {#>
+
+            InitializePartial();
+<#}#>        }
 
         public override IEnumerable<TEntity> AddRange(IEnumerable<TEntity> entities)
         {
@@ -623,7 +626,10 @@ if (IncludeTableValuedFunctions)
         { 
             return new FakeDbAsyncEnumerator<TEntity>(_data.GetEnumerator()); 
         }
-    } 
+<#if(MakeClassesPartial) {#>
+
+        partial void InitializePartial();
+<#}#>    } 
  
     public class FakeDbAsyncQueryProvider<TEntity> : IDbAsyncQueryProvider 
     { 
