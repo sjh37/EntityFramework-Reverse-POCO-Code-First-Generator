@@ -11,6 +11,7 @@ namespace Tester.BusinessLogic
         Task<List<Customer>> GetTop10Async();
         int Count();
         Customer FindById(string id);
+        Customer Find(string id);
         void AddCustomer(Customer customer);
         void DeleteCustomer(Customer customer);
     }

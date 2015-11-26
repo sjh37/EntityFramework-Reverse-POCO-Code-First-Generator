@@ -100,7 +100,7 @@ namespace Tester
         }
 
         [Test]
-        public void Insert_and_delete_TEST_record_succesfully()
+        public void Insert_and_delete_TEST_record_succesfully_via_FindById()
         {
             // Arrange
             var db2 = new MyDbContext();
@@ -119,6 +119,34 @@ namespace Tester
             var customer2 = customersRepository2.FindById(customer.CustomerId);
             customersRepository2.DeleteCustomer(customer2);
             var customer3 = customersRepository3.FindById(customer.CustomerId); // Should not be found
+            
+            // Assert
+            Assert.IsNotNull(customer2);
+            Assert.AreEqual(customer.CustomerId, customer2.CustomerId);
+            Assert.AreEqual(customer.CompanyName, customer2.CompanyName);
+            Assert.IsNull(customer3);
+        }
+
+        [Test]
+        public void Insert_and_delete_TEST_record_succesfully_via_Find()
+        {
+            // Arrange
+            var db2 = new MyDbContext();
+            var db3 = new MyDbContext();
+            ICustomersRepository customersRepository1 = new CustomersRepository(_db);
+            ICustomersRepository customersRepository2 = new CustomersRepository(db2);
+            ICustomersRepository customersRepository3 = new CustomersRepository(db3);
+            var customer = new Customer
+            {
+                CustomerId = "TEST.",
+                CompanyName = "Integration testing"
+            };
+
+            // Act
+            customersRepository1.AddCustomer(customer);
+            var customer2 = customersRepository2.Find(customer.CustomerId);
+            customersRepository2.DeleteCustomer(customer2);
+            var customer3 = customersRepository3.Find(customer.CustomerId); // Should not be found
             
             // Assert
             Assert.IsNotNull(customer2);

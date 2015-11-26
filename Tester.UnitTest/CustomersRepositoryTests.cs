@@ -47,7 +47,7 @@ namespace Tester.UnitTest
         }
 
         [Test]
-        public void GetByID()
+        public void FindById()
         {
             // Act
             var abc = _customersRepository.FindById("1");
@@ -61,6 +61,43 @@ namespace Tester.UnitTest
 
             Assert.AreEqual("abc", abc.CompanyName);
             Assert.AreEqual("def", def.CompanyName);
+        }
+
+        [Test]
+        public void Find()
+        {
+            // Act
+            var abc = _customersRepository.Find("1");
+            var def = _customersRepository.Find("2");
+            var ghi = _customersRepository.Find("3");
+
+            // Assert
+            Assert.IsNotNull(abc);
+            Assert.IsNotNull(def);
+            Assert.IsNull(ghi);
+
+            Assert.AreEqual("abc", abc.CompanyName);
+            Assert.AreEqual("def", def.CompanyName);
+        }
+        
+        [Test]
+        public void FindById_ShouldFail()
+        {
+            // Act
+            var result = _customersRepository.FindById("123");
+
+            // Assert
+            Assert.IsNull(result);
+        }
+
+        [Test]
+        public void Find_ShouldFail()
+        {
+            // Act
+            var result = _customersRepository.Find("123");
+
+            // Assert
+            Assert.IsNull(result);
         }
 
         [Test]

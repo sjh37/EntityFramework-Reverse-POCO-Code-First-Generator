@@ -134,14 +134,14 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
 
         public FakeMyDbContextSqlCE4()
         {
-            Categories = new FakeDbSet<Category>();
-            Customers = new FakeDbSet<Customer>();
-            Employees = new FakeDbSet<Employee>();
-            Orders = new FakeDbSet<Order>();
-            OrderDetails = new FakeDbSet<OrderDetail>();
-            Products = new FakeDbSet<Product>();
-            Shippers = new FakeDbSet<Shipper>();
-            Suppliers = new FakeDbSet<Supplier>();
+            Categories = new FakeDbSet<Category>("CategoryId");
+            Customers = new FakeDbSet<Customer>("CustomerId");
+            Employees = new FakeDbSet<Employee>("EmployeeId");
+            Orders = new FakeDbSet<Order>("OrderId");
+            OrderDetails = new FakeDbSet<OrderDetail>("OrderId", "ProductId");
+            Products = new FakeDbSet<Product>("ProductId");
+            Shippers = new FakeDbSet<Shipper>("ShipperId");
+            Suppliers = new FakeDbSet<Supplier>("SupplierId");
         }
         
         public int SaveChangesCount { get; private set; } 
@@ -194,6 +194,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     public class FakeDbSet<TEntity> : DbSet<TEntity>, IQueryable, IEnumerable<TEntity>, IDbAsyncEnumerable<TEntity> 
         where TEntity : class 
     { 
+        private readonly System.Reflection.PropertyInfo[] _primaryKeys;
         private readonly ObservableCollection<TEntity> _data;
         private readonly IQueryable _query;
  
@@ -201,6 +202,40 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         { 
             _data = new ObservableCollection<TEntity>(); 
             _query = _data.AsQueryable(); 
+        }
+
+        public FakeDbSet(params string[] primaryKeys)
+        {
+            _primaryKeys = typeof(TEntity).GetProperties().Where(x => primaryKeys.Contains(x.Name)).ToArray();
+            _data = new ObservableCollection<TEntity>(); 
+            _query = _data.AsQueryable(); 
+        }
+
+        public override TEntity Find(params object[] keyValues)
+        {
+            if (_primaryKeys == null)
+                throw new ArgumentException("No primary keys defined");
+            if (keyValues.Length != _primaryKeys.Length)
+                throw new ArgumentException("Incorrect number of keys passed to Find method");
+
+            var keyQuery = this.AsQueryable();
+            keyQuery = keyValues
+                .Select((t, i) => i)
+                .Aggregate(keyQuery,
+                    (current, x) =>
+                        current.Where(entity => _primaryKeys[x].GetValue(entity, null).Equals(keyValues[x])));
+
+            return keyQuery.SingleOrDefault();
+        }
+
+        public override System.Threading.Tasks.Task<TEntity> FindAsync(CancellationToken cancellationToken, params object[] keyValues)
+        {
+            return System.Threading.Tasks.Task<TEntity>.Factory.StartNew(() => Find(keyValues), cancellationToken);
+        }
+
+        public override System.Threading.Tasks.Task<TEntity> FindAsync(params object[] keyValues)
+        {
+            return System.Threading.Tasks.Task<TEntity>.Factory.StartNew(() => Find(keyValues));
         }
 
         public override IEnumerable<TEntity> AddRange(IEnumerable<TEntity> entities)
