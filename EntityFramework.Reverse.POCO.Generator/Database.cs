@@ -404,33 +404,33 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public FakeMyDbContext()
         {
-            AlphabeticalListOfProducts = new FakeDbSet<AlphabeticalListOfProduct>();
-            Categories = new FakeDbSet<Category>();
-            CategorySalesFor1997 = new FakeDbSet<CategorySalesFor1997>();
-            CurrentProductLists = new FakeDbSet<CurrentProductList>();
-            Customers = new FakeDbSet<Customer>();
-            CustomerAndSuppliersByCities = new FakeDbSet<CustomerAndSuppliersByCity>();
-            CustomerDemographics = new FakeDbSet<CustomerDemographic>();
-            Employees = new FakeDbSet<Employee>();
-            Invoices = new FakeDbSet<Invoice>();
-            Orders = new FakeDbSet<Order>();
-            OrderDetails = new FakeDbSet<OrderDetail>();
-            OrderDetailsExtendeds = new FakeDbSet<OrderDetailsExtended>();
-            OrdersQries = new FakeDbSet<OrdersQry>();
-            OrderSubtotals = new FakeDbSet<OrderSubtotal>();
-            Products = new FakeDbSet<Product>();
-            ProductsAboveAveragePrices = new FakeDbSet<ProductsAboveAveragePrice>();
-            ProductSalesFor1997 = new FakeDbSet<ProductSalesFor1997>();
-            ProductsByCategories = new FakeDbSet<ProductsByCategory>();
-            Regions = new FakeDbSet<Region>();
-            SalesByCategories = new FakeDbSet<SalesByCategory>();
-            SalesTotalsByAmounts = new FakeDbSet<SalesTotalsByAmount>();
-            Shippers = new FakeDbSet<Shipper>();
-            SummaryOfSalesByQuarters = new FakeDbSet<SummaryOfSalesByQuarter>();
-            SummaryOfSalesByYears = new FakeDbSet<SummaryOfSalesByYear>();
-            Suppliers = new FakeDbSet<Supplier>();
-            Sysdiagrams = new FakeDbSet<Sysdiagram>();
-            Territories = new FakeDbSet<Territory>();
+            AlphabeticalListOfProducts = new FakeDbSet<AlphabeticalListOfProduct>("ProductId", "ProductName", "Discontinued", "CategoryName");
+            Categories = new FakeDbSet<Category>("CategoryId");
+            CategorySalesFor1997 = new FakeDbSet<CategorySalesFor1997>("CategoryName");
+            CurrentProductLists = new FakeDbSet<CurrentProductList>("ProductId", "ProductName");
+            Customers = new FakeDbSet<Customer>("CustomerId");
+            CustomerAndSuppliersByCities = new FakeDbSet<CustomerAndSuppliersByCity>("CompanyName", "Relationship");
+            CustomerDemographics = new FakeDbSet<CustomerDemographic>("CustomerTypeId");
+            Employees = new FakeDbSet<Employee>("EmployeeId");
+            Invoices = new FakeDbSet<Invoice>("CustomerName", "Salesperson", "OrderId", "ShipperName", "ProductId", "ProductName", "UnitPrice", "Quantity", "Discount");
+            Orders = new FakeDbSet<Order>("OrderId");
+            OrderDetails = new FakeDbSet<OrderDetail>("OrderId", "ProductId");
+            OrderDetailsExtendeds = new FakeDbSet<OrderDetailsExtended>("OrderId", "ProductId", "ProductName", "UnitPrice", "Quantity", "Discount");
+            OrdersQries = new FakeDbSet<OrdersQry>("OrderId", "CompanyName");
+            OrderSubtotals = new FakeDbSet<OrderSubtotal>("OrderId");
+            Products = new FakeDbSet<Product>("ProductId");
+            ProductsAboveAveragePrices = new FakeDbSet<ProductsAboveAveragePrice>("ProductName");
+            ProductSalesFor1997 = new FakeDbSet<ProductSalesFor1997>("CategoryName", "ProductName");
+            ProductsByCategories = new FakeDbSet<ProductsByCategory>("CategoryName", "ProductName", "Discontinued");
+            Regions = new FakeDbSet<Region>("RegionId");
+            SalesByCategories = new FakeDbSet<SalesByCategory>("CategoryId", "CategoryName", "ProductName");
+            SalesTotalsByAmounts = new FakeDbSet<SalesTotalsByAmount>("OrderId", "CompanyName");
+            Shippers = new FakeDbSet<Shipper>("ShipperId");
+            SummaryOfSalesByQuarters = new FakeDbSet<SummaryOfSalesByQuarter>("OrderId");
+            SummaryOfSalesByYears = new FakeDbSet<SummaryOfSalesByYear>("OrderId");
+            Suppliers = new FakeDbSet<Supplier>("SupplierId");
+            Sysdiagrams = new FakeDbSet<Sysdiagram>("DiagramId");
+            Territories = new FakeDbSet<Territory>("TerritoryId");
         }
         
         public int SaveChangesCount { get; private set; } 
@@ -576,6 +576,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     public class FakeDbSet<TEntity> : DbSet<TEntity>, IQueryable, IEnumerable<TEntity>, IDbAsyncEnumerable<TEntity> 
         where TEntity : class 
     { 
+        private readonly System.Reflection.PropertyInfo[] _primaryKeys;
         private readonly ObservableCollection<TEntity> _data;
         private readonly IQueryable _query;
  
@@ -583,6 +584,39 @@ namespace EntityFramework_Reverse_POCO_Generator
         { 
             _data = new ObservableCollection<TEntity>(); 
             _query = _data.AsQueryable(); 
+        }
+
+        public FakeDbSet(params string[] primaryKeys)
+        {
+            _primaryKeys = typeof(TEntity).GetProperties().Where(x => primaryKeys.Contains(x.Name)).ToArray();
+            _data = new ObservableCollection<TEntity>(); 
+            _query = _data.AsQueryable(); 
+        }
+
+        public override TEntity Find(params object[] keyValues)
+        {
+            if (_primaryKeys == null)
+                throw new ArgumentException("No primary keys defined");
+            if (keyValues.Length != _primaryKeys.Length)
+                throw new ArgumentException("Incorrect number of keys passed to Find method");
+
+            var keyQuery = this.AsQueryable();
+            keyQuery = keyValues
+                .Select((t, i) => i)
+                .Aggregate(keyQuery,
+                    (current, x) => current.Where(entity => _primaryKeys[x].GetValue(entity, null).Equals(keyValues[x])));
+
+            return keyQuery.SingleOrDefault();
+        }
+
+        public override System.Threading.Tasks.Task<TEntity> FindAsync(CancellationToken cancellationToken, params object[] keyValues)
+        {
+            return System.Threading.Tasks.Task<TEntity>.Factory.StartNew(() => Find(keyValues), cancellationToken);
+        }
+
+        public override System.Threading.Tasks.Task<TEntity> FindAsync(params object[] keyValues)
+        {
+            return System.Threading.Tasks.Task<TEntity>.Factory.StartNew(() => Find(keyValues));
         }
 
         public override IEnumerable<TEntity> AddRange(IEnumerable<TEntity> entities)

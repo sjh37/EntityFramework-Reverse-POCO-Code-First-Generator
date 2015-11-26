@@ -39,6 +39,11 @@ namespace Tester.BusinessLogic
             return _context.Customers.FirstOrDefault(x => x.CustomerId == id);
         }
 
+        public Customer Find(string id)
+        {
+            return _context.Customers.Find(id);
+        }
+
         public void AddCustomer(Customer customer)
         {
             _context.Customers.Add(customer);

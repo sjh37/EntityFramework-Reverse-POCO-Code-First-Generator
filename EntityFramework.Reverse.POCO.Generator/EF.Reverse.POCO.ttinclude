@@ -419,7 +419,7 @@ foreach (Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.N
 foreach (Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
 {
 #>
-            <#=Inflector.MakePlural(tbl.NameHumanCase) #> = new FakeDbSet<<#=tbl.NameHumanCase #>>();
+            <#=Inflector.MakePlural(tbl.NameHumanCase) #> = new FakeDbSet<<#=tbl.NameHumanCase #>>(<#= string.Join(", ", tbl.PrimaryKeys.Select(x => "\"" + x.NameHumanCase + "\"")) #>);
 <# } #>
 <#if(MakeClassesPartial) {#>
 
@@ -538,6 +538,7 @@ if (IncludeTableValuedFunctions)
     public <# if(MakeClassesPartial) { #>partial <# } #>class FakeDbSet<TEntity> : DbSet<TEntity>, IQueryable, IEnumerable<TEntity>, IDbAsyncEnumerable<TEntity> 
         where TEntity : class 
     { 
+        private readonly System.Reflection.PropertyInfo[] _primaryKeys;
         private readonly ObservableCollection<TEntity> _data;
         private readonly IQueryable _query;
  
@@ -549,6 +550,43 @@ if (IncludeTableValuedFunctions)
 
             InitializePartial();
 <#}#>        }
+
+        public FakeDbSet(params string[] primaryKeys)
+        {
+            _primaryKeys = typeof(TEntity).GetProperties().Where(x => primaryKeys.Contains(x.Name)).ToArray();
+            _data = new ObservableCollection<TEntity>(); 
+            _query = _data.AsQueryable(); 
+<#if(MakeClassesPartial) {#>
+
+            InitializePartial();
+<#}#>        }
+
+        public override TEntity Find(params object[] keyValues)
+        {
+            if (_primaryKeys == null)
+                throw new ArgumentException("No primary keys defined");
+            if (keyValues.Length != _primaryKeys.Length)
+                throw new ArgumentException("Incorrect number of keys passed to Find method");
+
+            var keyQuery = this.AsQueryable();
+            keyQuery = keyValues
+                .Select((t, i) => i)
+                .Aggregate(keyQuery,
+                    (current, x) =>
+                        current.Where(entity => _primaryKeys[x].GetValue(entity, null).Equals(keyValues[x])));
+
+            return keyQuery.SingleOrDefault();
+        }
+
+        public override System.Threading.Tasks.Task<TEntity> FindAsync(CancellationToken cancellationToken, params object[] keyValues)
+        {
+            return System.Threading.Tasks.Task<TEntity>.Factory.StartNew(() => Find(keyValues), cancellationToken);
+        }
+
+        public override System.Threading.Tasks.Task<TEntity> FindAsync(params object[] keyValues)
+        {
+            return System.Threading.Tasks.Task<TEntity>.Factory.StartNew(() => Find(keyValues));
+        }
 
         public override IEnumerable<TEntity> AddRange(IEnumerable<TEntity> entities)
         {
