@@ -1635,7 +1635,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                                 // Handle table names with underscores - singularise just the last word
                                 table.ClassName = Inflector.MakeSingular(CleanUp(tableName));
                                 string singular = Inflector.MakeSingular(tableName);
-                                table.NameHumanCase = (useCamelCase ? Inflector.ToTitleCase(singular) : singular).Replace(" ", "").Replace("$", "");
+                                table.NameHumanCase = (useCamelCase ? Inflector.ToTitleCase(singular) : singular).Replace(" ", "").Replace("$", "").Replace(".", "");
                                 if((string.Compare(table.Schema, "dbo", StringComparison.OrdinalIgnoreCase) != 0) && prependSchemaName)
                                     table.NameHumanCase = table.Schema + "_" + table.NameHumanCase;
 
