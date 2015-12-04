@@ -110,18 +110,19 @@
 
         public const string DataDirectory = "|DataDirectory|";
 
-        static string[] NotNullable = new string[]
+        static readonly List<string> NotNullable = new List<string>
         {
             "string", 
             "byte[]", 
             "datatable", 
+            "object", 
             "microsoft.sqlserver.types.sqlgeography", 
             "microsoft.sqlserver.types.sqlgeometry",
             "system.data.entity.spatial.dbgeography",
             "system.data.entity.spatial.dbgeometry"
         };
         
-        static string[] ReservedKeywords = new string[]
+        static readonly List<string> ReservedKeywords = new List<string>
         {
             "abstract", "as", "base", "bool", "break", "byte", "case", "catch", "char",
             "checked", "class", "const", "continue", "decimal", "default", "delegate", "do",
@@ -192,10 +193,9 @@
 
         private static string CheckNullable(Column col)
         {
-            string result = "";
-            if(col.IsNullable && !NotNullable.Contains(col.PropertyType, StringComparer.InvariantCultureIgnoreCase))
-                result = "?";
-            return result;
+            if(col.IsNullable && !NotNullable.Contains(col.PropertyType.ToLower()))
+                return "?";
+            return "";
         }
 
         private string GetConnectionString(ref string connectionStringName, out string providerName, out string configFilePath)
@@ -997,10 +997,9 @@
 
             public static string CheckNullable(DataColumn col)
             {
-                string result = " ";
-                if(col.AllowDBNull && !NotNullable.Contains(col.DataType.Name, StringComparer.InvariantCultureIgnoreCase))
-                    result = "? ";
-                return result;
+                if (col.AllowDBNull && !NotNullable.Contains(col.DataType.Name.ToLower()))
+                    return "? ";
+                return " ";
             }
         }
 
@@ -1920,9 +1919,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                                     (useCamelCase ? Inflector.ToTitleCase(clean) : clean).Replace(" ", ""));
 
                             if (ReservedKeywords.Contains(param.NameHumanCase))
-                            {
                                 param.NameHumanCase = "@" + param.NameHumanCase;
-                            }
 
                             sp.Parameters.Add(param);
                         }
@@ -2179,9 +2176,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 col.NameHumanCase = rxClean.Replace(col.NameHumanCase, "_$1");
 
                 if (ReservedKeywords.Contains(col.NameHumanCase))
-                {
                     col.NameHumanCase = "@" + col.NameHumanCase;
-                }
 
                 var titleCase = (useCamelCase ? Inflector.ToTitleCase(col.NameHumanCase) : col.NameHumanCase).Replace(" ", "");
                 if (titleCase != string.Empty)
