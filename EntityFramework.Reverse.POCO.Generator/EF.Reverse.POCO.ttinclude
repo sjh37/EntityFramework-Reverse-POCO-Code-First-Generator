@@ -19,7 +19,7 @@ fileManager.StartHeader();
 using <#= additionalNamespace #>;
 <# } #>
 using System.CodeDom.Compiler;
-<# if(ElementsToGenerate.HasFlag(Elements.Poco) || (ElementsToGenerate.HasFlag(Elements.Context) && AddUnitTestingDbContext)){ #>
+<# if(ElementsToGenerate.HasFlag(Elements.Poco) || ElementsToGenerate.HasFlag(Elements.StoredProcedures) || (ElementsToGenerate.HasFlag(Elements.Context) && AddUnitTestingDbContext)){ #>
 using System.Collections.Generic;
 <# } #>
 <# if(ElementsToGenerate.HasFlag(Elements.StoredProcedures) && !(ElementsToGenerate.HasFlag(Elements.Context) && AddUnitTestingDbContext)){ #>
