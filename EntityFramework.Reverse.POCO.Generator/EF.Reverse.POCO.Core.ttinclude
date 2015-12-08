@@ -2014,7 +2014,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         continue;
 
                     var pkCols = foreignKeys.Select(x => pkTable.Columns.Find(n => string.Equals(n.Name, x.PkColumn, StringComparison.InvariantCultureIgnoreCase)))
-                                            .Where(x => x != null)
+                                            .Where(x => x != null && x.IsPrimaryKey)
                                             .OrderBy(o => o.Ordinal)
                                             .ToList();
 
@@ -2023,9 +2023,6 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
                     var fkCol = fkCols.First();
                     var pkCol = pkCols.First();
-
-                    if (!pkCol.IsPrimaryKey)
-                        continue;
 
                     var relationship = CalcRelationship(pkTable, fkTable, fkCols.OrderBy(o => o.fkOrdinal).Select(c => c.col).ToList(), pkCols);
                     if (relationship == Relationship.DoNotUse)
