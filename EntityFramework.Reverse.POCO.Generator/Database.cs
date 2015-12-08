@@ -573,8 +573,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     //      }
     //      Read more about it here: https://msdn.microsoft.com/en-us/data/dn314431.aspx
     [GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.17.1.0")]
-    public class FakeDbSet<TEntity> : DbSet<TEntity>, IQueryable, IEnumerable<TEntity>, IDbAsyncEnumerable<TEntity> 
-        where TEntity : class 
+    public class FakeDbSet<TEntity> : DbSet<TEntity>, IQueryable, IEnumerable<TEntity>, IDbAsyncEnumerable<TEntity> where TEntity : class 
     { 
         private readonly System.Reflection.PropertyInfo[] _primaryKeys;
         private readonly ObservableCollection<TEntity> _data;
