@@ -37,13 +37,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 <# if(ElementsToGenerate.HasFlag(Elements.Context) || ElementsToGenerate.HasFlag(Elements.UnitOfWork) || AddUnitTestingDbContext){ #>
 using System.Data.Entity;
 <# } #>
-<# if(ElementsToGenerate.HasFlag(Elements.StoredProcedures)){ #>
+<# if(ElementsToGenerate.HasFlag(Elements.StoredProcedures) && ElementsToGenerate.HasFlag(Elements.Context)){ #>
 using System.Data;
 using System.Data.Entity.Core.Objects;
 using System.Data.SqlClient;
 using System.Data.SqlTypes;
 <# } #>
-<# if(ElementsToGenerate.HasFlag(Elements.StoredProcedures) && IncludeTableValuedFunctions){ #>
+<# if(ElementsToGenerate.HasFlag(Elements.StoredProcedures) && ElementsToGenerate.HasFlag(Elements.Context) && IncludeTableValuedFunctions){ #>
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Core.Objects;
 using CodeFirstStoreFunctions;
@@ -535,7 +535,8 @@ if (IncludeTableValuedFunctions)
     //      Read more about it here: https://msdn.microsoft.com/en-us/data/dn314431.aspx
 <# } #>
     <#= CodeGeneratedAttribute #>
-    public <# if(MakeClassesPartial) { #>partial <# } #>class FakeDbSet<TEntity> : DbSet<TEntity>, IQueryable, IEnumerable<TEntity><# if (IsSupportedFrameworkVersion("4.5")) { #>, IDbAsyncEnumerable<TEntity><# } #> where TEntity : class 
+    public <# if(MakeClassesPartial) { #>partial <# } #>class FakeDbSet<TEntity> : DbSet<TEntity>, IQueryable, IEnumerable<TEntity>, IDbAsyncEnumerable<TEntity> 
+        where TEntity : class 
     { 
         private readonly System.Reflection.PropertyInfo[] _primaryKeys;
         private readonly ObservableCollection<TEntity> _data;
@@ -576,7 +577,6 @@ if (IncludeTableValuedFunctions)
 
             return keyQuery.SingleOrDefault();
         }
-<# if (IsSupportedFrameworkVersion("4.5")) { #>
 
         public override System.Threading.Tasks.Task<TEntity> FindAsync(CancellationToken cancellationToken, params object[] keyValues)
         {
@@ -587,7 +587,6 @@ if (IncludeTableValuedFunctions)
         {
             return System.Threading.Tasks.Task<TEntity>.Factory.StartNew(() => Find(keyValues));
         }
-<#}#>
 
         public override IEnumerable<TEntity> AddRange(IEnumerable<TEntity> entities)
         {
@@ -648,11 +647,7 @@ if (IncludeTableValuedFunctions)
  
         IQueryProvider IQueryable.Provider 
         { 
-<# if (IsSupportedFrameworkVersion("4.5")) { #>
             get { return new FakeDbAsyncQueryProvider<TEntity>(_query.Provider); } 
-<# } else { #>
-            get { return _query.Provider; } 
-<# } #>
         } 
  
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() 
@@ -664,20 +659,16 @@ if (IncludeTableValuedFunctions)
         { 
             return _data.GetEnumerator(); 
         } 
-<# if (IsSupportedFrameworkVersion("4.5")) { #>
  
         IDbAsyncEnumerator<TEntity> IDbAsyncEnumerable<TEntity>.GetAsyncEnumerator() 
         { 
             return new FakeDbAsyncEnumerator<TEntity>(_data.GetEnumerator()); 
         }
-<# } #>
 <#if(MakeClassesPartial) {#>
 
         partial void InitializePartial();
 <#}#>    } 
-<# if (IsSupportedFrameworkVersion("4.5"))
-{ #>
-
+ 
     public class FakeDbAsyncQueryProvider<TEntity> : IDbAsyncQueryProvider 
     { 
         private readonly IQueryProvider _inner; 
@@ -773,7 +764,6 @@ if (IncludeTableValuedFunctions)
             get { return Current; } 
         } 
     }
-<# } #>
 <# }
  if(ElementsToGenerate.HasFlag(Elements.Poco)){
  if(!GenerateSeparateFiles) { #>
@@ -930,7 +920,7 @@ foreach (string s in tbl.MappingConfiguration)
 <#}#>    }
 
 <# } }
-if(ElementsToGenerate.HasFlag(Elements.StoredProcedures)){
+if(ElementsToGenerate.HasFlag(Elements.StoredProcedures) && ElementsToGenerate.HasFlag(Elements.Poco)){
 if(!GenerateSeparateFiles) { #>
 
     // ************************************************************************
