@@ -37,7 +37,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 <# if(ElementsToGenerate.HasFlag(Elements.Context) || ElementsToGenerate.HasFlag(Elements.UnitOfWork) || AddUnitTestingDbContext){ #>
 using System.Data.Entity;
 <# } #>
-<# if(ElementsToGenerate.HasFlag(Elements.StoredProcedures) && ElementsToGenerate.HasFlag(Elements.Context)){ #>
+<# if(ElementsToGenerate.HasFlag(Elements.StoredProcedures) || ElementsToGenerate.HasFlag(Elements.Context)){ #>
 using System.Data;
 using System.Data.Entity.Core.Objects;
 using System.Data.SqlClient;
