@@ -119,7 +119,8 @@
             "microsoft.sqlserver.types.sqlgeography", 
             "microsoft.sqlserver.types.sqlgeometry",
             "system.data.entity.spatial.dbgeography",
-            "system.data.entity.spatial.dbgeometry"
+            "system.data.entity.spatial.dbgeometry",
+            "system.data.entity.hierarchy.hierarchyid"
         };
         
         static readonly List<string> ReservedKeywords = new List<string>
@@ -2168,6 +2169,9 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 if (col.IsRowVersion)
                     col.MaxLength = 8;
 
+                if(typename == "hierarchyid")
+                    col.MaxLength = 0;
+
                 col.CleanUpDefault();
                 col.NameHumanCase = CleanUp(col.Name);
                 col.NameHumanCase = rxClean.Replace(col.NameHumanCase, "_$1");
@@ -2203,6 +2207,10 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 string sysType = "VarChar";
                 switch(sqlType)
                 {
+                    case "hierarchyid":
+                        sysType = "VarChar";
+                        break;
+
                     case "bigint":
                         sysType = "BigInt";
                         break;
@@ -2336,6 +2344,9 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 string sysType = "string";
                 switch(sqlType)
                 {
+                    case "hierarchyid":
+                        sysType = "System.Data.Entity.Hierarchy.HierarchyId";
+                        break;
                     case "bigint":
                         sysType = "long";
                         break;
