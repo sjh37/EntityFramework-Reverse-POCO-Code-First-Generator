@@ -1608,6 +1608,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         string tableName = rdr["TableName"].ToString().Trim();
                         if(tableFilterExclude != null && tableFilterExclude.IsMatch(tableName))
                             continue;
+                        if (tableName.Contains('.'))
+                            continue;
 
                         string schema = rdr["SchemaName"].ToString().Trim();
                         if(schemaNameFilter != null && !schema.Equals(schemaNameFilter, StringComparison.CurrentCultureIgnoreCase))
