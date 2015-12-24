@@ -2699,7 +2699,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
             public void IdentifyMappingTables(List<ForeignKey> fkList, bool useCamelCase, string collectionType, bool checkForFkNameClashes, bool includeComments, bool isSqlCE)
             {
-                foreach(var tbl in this.Where(x => x.HasForeignKey && !x.Name.Contains(" ")))
+                foreach(var tbl in this.Where(x => x.HasForeignKey))
                 {
                     tbl.IdentifyMappingTable(fkList, this, useCamelCase, collectionType, checkForFkNameClashes, includeComments, isSqlCE);
                 }
