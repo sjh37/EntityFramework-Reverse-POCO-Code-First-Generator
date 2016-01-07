@@ -2159,7 +2159,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     ParentTable = table
                 };
 
-                var fullName = string.Format("{0}.{1}.{2}", table.Name, table.Schema, col.Name);
+                var fullName = string.Format("{0}.{1}.{2}", table.Schema, table.Name, col.Name);
                 if(columnFilterExclude != null && !col.IsPrimaryKey && (columnFilterExclude.IsMatch(col.Name) || columnFilterExclude.IsMatch(fullName)))
                     col.Hidden = true;
 
