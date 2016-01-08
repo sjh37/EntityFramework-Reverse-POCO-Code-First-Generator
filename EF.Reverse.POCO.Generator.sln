@@ -41,7 +41,6 @@ Global
 		{D21BA1F2-7796-4263-B4CA-5C1BB33729CA}.Debug|x86.Build.0 = Debug|x86
 		{D21BA1F2-7796-4263-B4CA-5C1BB33729CA}.Release|Any CPU.ActiveCfg = Release|x86
 		{D21BA1F2-7796-4263-B4CA-5C1BB33729CA}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{D21BA1F2-7796-4263-B4CA-5C1BB33729CA}.Release|Mixed Platforms.Build.0 = Release|x86
 		{D21BA1F2-7796-4263-B4CA-5C1BB33729CA}.Release|x86.ActiveCfg = Release|x86
 		{D21BA1F2-7796-4263-B4CA-5C1BB33729CA}.Release|x86.Build.0 = Release|x86
 		{8C949A14-F572-457B-A069-52AEC2526AD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -51,7 +50,6 @@ Global
 		{8C949A14-F572-457B-A069-52AEC2526AD5}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{8C949A14-F572-457B-A069-52AEC2526AD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C949A14-F572-457B-A069-52AEC2526AD5}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{8C949A14-F572-457B-A069-52AEC2526AD5}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{8C949A14-F572-457B-A069-52AEC2526AD5}.Release|x86.ActiveCfg = Release|Any CPU
 		{2F59926C-597F-448E-B9B0-BE9F9E0F0404}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2F59926C-597F-448E-B9B0-BE9F9E0F0404}.Debug|Any CPU.Build.0 = Debug|Any CPU
@@ -60,10 +58,8 @@ Global
 		{2F59926C-597F-448E-B9B0-BE9F9E0F0404}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{2F59926C-597F-448E-B9B0-BE9F9E0F0404}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2F59926C-597F-448E-B9B0-BE9F9E0F0404}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{2F59926C-597F-448E-B9B0-BE9F9E0F0404}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{2F59926C-597F-448E-B9B0-BE9F9E0F0404}.Release|x86.ActiveCfg = Release|Any CPU
 		{14C1FD62-34DB-49B9-B35A-B363398D0914}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{14C1FD62-34DB-49B9-B35A-B363398D0914}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{14C1FD62-34DB-49B9-B35A-B363398D0914}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{14C1FD62-34DB-49B9-B35A-B363398D0914}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{14C1FD62-34DB-49B9-B35A-B363398D0914}.Release|Any CPU.ActiveCfg = Release|Any CPU
