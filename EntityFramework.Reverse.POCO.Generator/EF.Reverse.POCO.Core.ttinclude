@@ -52,9 +52,10 @@
         ExtendedPropertyCommentsStyle IncludeExtendedPropertyComments = ExtendedPropertyCommentsStyle.InSummaryBlock;
         bool AddWcfDataAttributes = false;
         string ExtraWcfDataContractAttributes = "";
-        string SchemaName = null;
         static bool DisableGeographyTypes = false;
         bool PrependSchemaName = true;
+        Regex SchemaFilterExclude = null;
+        Regex SchemaFilterInclude = null;
         Regex TableFilterExclude = null;
         Regex TableFilterInclude = null;
         Regex StoredProcedureFilterExclude = null;
@@ -511,18 +512,18 @@
 
 
                     var reader = new SqlServerSchemaReader(conn, factory, IncludeQueryTraceOn9481Flag) { Outer = this };
-                    var tables = reader.ReadSchema(TableFilterExclude, ColumnFilterExclude, UseCamelCase, PrependSchemaName, IncludeComments, IncludeExtendedPropertyComments, TableRename, SchemaName, UpdateColumn);
+                    var tables = reader.ReadSchema(SchemaFilterExclude, TableFilterExclude, ColumnFilterExclude, UseCamelCase, PrependSchemaName, IncludeComments, IncludeExtendedPropertyComments, TableRename, UpdateColumn);
                     tables.SetPrimaryKeys();
 
                     // Remove unrequired tables/views
                     for(int i = tables.Count - 1; i >= 0; i--)
                     {
-                        if(SchemaName != null && String.Compare(tables[i].Schema, SchemaName, StringComparison.OrdinalIgnoreCase) != 0)
+                        if(!IncludeViews && tables[i].IsView)
                         {
                             tables.RemoveAt(i);
                             continue;
                         }
-                        if(!IncludeViews && tables[i].IsView)
+                        if(SchemaFilterInclude != null && !SchemaFilterInclude.IsMatch(tables[i].Schema))
                         {
                             tables.RemoveAt(i);
                             continue;
@@ -592,12 +593,12 @@
                        return new List<StoredProcedure>();
 
                     var reader = new SqlServerSchemaReader(conn, factory, IncludeQueryTraceOn9481Flag) { Outer = this };
-                    var storedProcs = reader.ReadStoredProcs(StoredProcedureFilterExclude, UseCamelCase, PrependSchemaName, StoredProcedureRename, SchemaName, IncludeTableValuedFunctions);
+                    var storedProcs = reader.ReadStoredProcs(SchemaFilterExclude, StoredProcedureFilterExclude, UseCamelCase, PrependSchemaName, StoredProcedureRename, IncludeTableValuedFunctions);
 
                     // Remove unrequired stored procs
                     for(int i = storedProcs.Count - 1; i >= 0; i--)
                     {
-                        if(SchemaName != null && String.Compare(storedProcs[i].Schema, SchemaName, StringComparison.OrdinalIgnoreCase) != 0)
+                        if(SchemaFilterInclude != null && !SchemaFilterInclude.IsMatch(storedProcs[i].Schema))
                         {
                             storedProcs.RemoveAt(i);
                             continue;
@@ -1179,8 +1180,8 @@
             }
 
             public GeneratedTextTransformation Outer;
-            public abstract Tables ReadSchema(Regex tableFilterExclude, Regex columnFilterExclude, bool useCamelCase, bool prependSchemaName, bool includeComments, ExtendedPropertyCommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, string schemaNameFilter, Func<Column, Table, Column> updateColumn);
-            public abstract List<StoredProcedure> ReadStoredProcs(Regex storedProcedureFilterExclude, bool useCamelCase, bool prependSchemaName , Func<string, string, string> StoredProcedureRename, string schemaNameFilter, bool includeTableValuedFunctions);
+            public abstract Tables ReadSchema(Regex schemaFilterExclude, Regex tableFilterExclude, Regex columnFilterExclude, bool useCamelCase, bool prependSchemaName, bool includeComments, ExtendedPropertyCommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, Func<Column, Table, Column> updateColumn);
+            public abstract List<StoredProcedure> ReadStoredProcs(Regex SchemaFilterExclude, Regex storedProcedureFilterExclude, bool useCamelCase, bool prependSchemaName , Func<string, string, string> StoredProcedureRename, bool includeTableValuedFunctions);
             public abstract List<ForeignKey> ReadForeignKeys(Func<string, string, string> tableRename);
             public abstract void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool useCamelCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, bool includeComments);
             public abstract void IdentifyForeignKeys(List<ForeignKey> fkList, Tables tables);
@@ -1586,7 +1587,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 return SqlDatabaseEngineEdition == "Azure";
             }
 
-            public override Tables ReadSchema(Regex tableFilterExclude, Regex columnFilterExclude, bool useCamelCase, bool prependSchemaName, bool includeComments, ExtendedPropertyCommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, string schemaNameFilter, Func<Column, Table, Column> updateColumn)
+            public override Tables ReadSchema(Regex schemaFilterExclude, Regex tableFilterExclude, Regex columnFilterExclude, bool useCamelCase, bool prependSchemaName, bool includeComments, ExtendedPropertyCommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, Func<Column, Table, Column> updateColumn)
             {
                 var result = new Tables();
                 if(Cmd == null)
@@ -1605,14 +1606,14 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     Table table = null;
                     while(rdr.Read())
                     {
+                        string schema = rdr["SchemaName"].ToString().Trim();
+                        if(schemaFilterExclude != null && schemaFilterExclude.IsMatch(schema))
+                            continue;
+
                         string tableName = rdr["TableName"].ToString().Trim();
                         if(tableFilterExclude != null && tableFilterExclude.IsMatch(tableName))
                             continue;
-                        if (tableName.Contains('.'))
-                            continue;
-
-                        string schema = rdr["SchemaName"].ToString().Trim();
-                        if(schemaNameFilter != null && !schema.Equals(schemaNameFilter, StringComparison.CurrentCultureIgnoreCase))
+                        if (tableName.Contains('.'))    // EF does not allow tables to contain a period character
                             continue;
 
                         if(lastTable != tableName || table == null)
@@ -1842,7 +1843,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
             }
             
-            public override List<StoredProcedure> ReadStoredProcs(Regex spFilterExclude, bool useCamelCase, bool prependSchemaName , Func<string, string, string> StoredProcedureRename, string schemaNameFilter, bool includeTableValuedFunctions)
+            public override List<StoredProcedure> ReadStoredProcs(Regex schemaFilterExclude, Regex storedProcedureFilterExclude, bool useCamelCase, bool prependSchemaName , Func<string, string, string> StoredProcedureRename, bool includeTableValuedFunctions)
             {
                 var result = new List<StoredProcedure>();
                 if(Cmd == null)
@@ -1869,12 +1870,12 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         if (isTVF && !includeTableValuedFunctions)
                             continue;
 
-                        string spName = rdr["SPECIFIC_NAME"].ToString().Trim();
-                        if(spFilterExclude != null && spFilterExclude.IsMatch(spName))
+                        string schema = rdr["SPECIFIC_SCHEMA"].ToString().Trim();
+                        if(schemaFilterExclude != null && schemaFilterExclude.IsMatch(schema))
                             continue;
 
-                        string schema = rdr["SPECIFIC_SCHEMA"].ToString().Trim();
-                        if(schemaNameFilter != null && !schema.Equals(schemaNameFilter, StringComparison.CurrentCultureIgnoreCase))
+                        string spName = rdr["SPECIFIC_NAME"].ToString().Trim();
+                        if(storedProcedureFilterExclude != null && storedProcedureFilterExclude.IsMatch(spName))
                             continue;
 
                         if (lastSp != spName || sp == null)
