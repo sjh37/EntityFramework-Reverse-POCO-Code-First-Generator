@@ -96,8 +96,6 @@
     // If there are multiple schemas, then the table name is prefixed with the schema, except for dbo.
     // Ie. dbo.hello will be Hello.
     //     abc.hello will be AbcHello.
-    // To only include a single schema, specify it below.
-    SchemaName = null;
     PrependSchemaName = true;   // Control if the schema name is prepended to the table name
 
 
@@ -113,6 +111,8 @@
     //              TableFilterInclude = new Regex("(.*_FR_.*)|(data_.*)");
     //              TableFilterInclude = new Regex("^table_name1$|^table_name2$|etc");
     //              ColumnFilterExclude = new Regex("^FK_.*$");
+    SchemaFilterExclude = null;
+    SchemaFilterInclude = null;
     TableFilterExclude = null;
     TableFilterInclude = null;
     ColumnFilterExclude = null;
