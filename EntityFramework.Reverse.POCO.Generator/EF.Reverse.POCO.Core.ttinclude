@@ -844,7 +844,7 @@
                     case "datetimeoffset":
                         if(Default.First() != '"')
                             Default = string.Format("\"{0}\"", Default);
-                        if(Default.Contains('\\'))
+                        if(Default.Contains('\\') || Default.Contains('\r') || Default.Contains('\n'))
                             Default = "@" + Default;
                         break;
 
