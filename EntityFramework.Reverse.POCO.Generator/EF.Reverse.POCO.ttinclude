@@ -28,7 +28,6 @@ using System.Linq;
 <# if(ElementsToGenerate.HasFlag(Elements.Context) && AddUnitTestingDbContext){ #>
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Data.Entity.Infrastructure;
 using System.Linq.Expressions;
 <# } #>
 <# if((ElementsToGenerate.HasFlag(Elements.Context) || ElementsToGenerate.HasFlag(Elements.Poco)) && IsSupportedFrameworkVersion("4.5")){ #>
@@ -37,7 +36,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 <# if(ElementsToGenerate.HasFlag(Elements.Context) || ElementsToGenerate.HasFlag(Elements.UnitOfWork) || AddUnitTestingDbContext){ #>
 using System.Data.Entity;
 <# } #>
-<# if(ElementsToGenerate.HasFlag(Elements.StoredProcedures)){ #>
+<# if(ElementsToGenerate.HasFlag(Elements.StoredProcedures) || (ElementsToGenerate.HasFlag(Elements.Context) && AddUnitTestingDbContext)){ #>
 using System.Data.Entity.Infrastructure;
 <# } #>
 <# if(ElementsToGenerate.HasFlag(Elements.StoredProcedures) || ElementsToGenerate.HasFlag(Elements.Context)){ #>
