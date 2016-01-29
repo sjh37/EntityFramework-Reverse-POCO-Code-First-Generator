@@ -17,16 +17,16 @@ namespace Tester
         {
             _dictionary = new Dictionary<string, string>
             {
-                {"ALFKI", "Alfreds Futterkiste"},
-                {"ANATR", "Ana Trujillo Emparedados y helados"},
-                {"ANTON", "Antonio Moreno Taquería"},
-                {"AROUT", "Around the Horn"},
-                {"BERGS", "Berglunds snabbköp"},
-                {"BLAUS", "Blauer See Delikatessen"},
-                {"BLONP", "Blondesddsl père et fils"},
-                {"BOLID", "Bólido Comidas preparadas"},
-                {"BONAP", "Bon app'"},
-                {"BOTTM", "Bottom-Dollar Markets"}
+                { "ALFKI", "Alfreds Futterkiste" },
+                { "ANATR", "Ana Trujillo Emparedados y helados" },
+                { "ANTON", "Antonio Moreno Taquería" },
+                { "AROUT", "Around the Horn" },
+                { "BERGS", "Berglunds snabbköp" },
+                { "BLAUS", "Blauer See Delikatessen" },
+                { "BLONP", "Blondesddsl père et fils" },
+                { "BOLID", "Bólido Comidas preparadas" },
+                { "BONAP", "Bon app'" },
+                { "BOTTM", "Bottom-Dollar Markets"}
             };
         }
 
@@ -52,7 +52,7 @@ namespace Tester
             // Arrange
 
             // Act
-            var data = _db.Customers.Take(10).OrderBy(x => x.CustomerId);
+            var data = _db.Customers.Take(10).OrderBy(x => x.CustomerId).ToList();
 
             // Assert
             Assert.AreEqual(_dictionary.Count, data.Count());
@@ -70,7 +70,7 @@ namespace Tester
             ICustomersRepository customersRepository = new CustomersRepository(_db);
 
             // Act
-            var data = customersRepository.GetTop10();
+            var data = customersRepository.GetTop10().ToList();
 
             // Assert
             Assert.AreEqual(_dictionary.Count, data.Count());
@@ -91,7 +91,7 @@ namespace Tester
             var data = await customersRepository.GetTop10Async();
 
             // Assert
-            Assert.AreEqual(_dictionary.Count, data.Count());
+            Assert.AreEqual(_dictionary.Count, data.Count);
             foreach (var customer in data)
             {
                 Assert.IsTrue(_dictionary.ContainsKey(customer.CustomerId));
