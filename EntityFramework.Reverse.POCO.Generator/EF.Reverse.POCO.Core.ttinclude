@@ -594,6 +594,7 @@
 
                     var reader = new SqlServerSchemaReader(conn, factory, IncludeQueryTraceOn9481Flag) { Outer = this };
                     var storedProcs = reader.ReadStoredProcs(SchemaFilterExclude, StoredProcedureFilterExclude, UseCamelCase, PrependSchemaName, StoredProcedureRename, IncludeTableValuedFunctions);
+                    conn.Close();
 
                     // Remove unrequired stored procs
                     for(int i = storedProcs.Count - 1; i >= 0; i--)
@@ -610,10 +611,11 @@
                         }
                     }
 
-                    foreach (var proc in storedProcs)
-                        reader.ReadStoredProcReturnObject(ConnectionString, proc);
-
-                    conn.Close();
+                    using (var sqlConnection = new SqlConnection(ConnectionString))
+                    {
+                        foreach (var proc in storedProcs)
+                            reader.ReadStoredProcReturnObject(sqlConnection, proc);
+                    }
 
                     // Remove stored procs where the return model type contains spaces and cannot be mapped
                     var validStoredProcedures = new List<StoredProcedure>();
@@ -1932,53 +1934,55 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 return result;
             }
 
-            public void ReadStoredProcReturnObject(string connectionString, StoredProcedure proc)
+            public void ReadStoredProcReturnObject(SqlConnection sqlConnection, StoredProcedure proc)
             {
                 try
                 {
                     var sb = new StringBuilder();
-                    sb.Append("SET FMTONLY OFF; SET FMTONLY ON; \n");
+                    sb.AppendLine();
+                    sb.AppendLine("SET FMTONLY OFF; SET FMTONLY ON;");
                     if (proc.IsTVF)
-                        sb.Append(String.Format("SELECT * FROM [{0}].[{1}](", proc.Schema, proc.Name));
-                    else
-                        sb.Append(String.Format("exec [{0}].[{1}] ", proc.Schema, proc.Name));
-
-                    var count = 1;
-                    int paramCount = proc.Parameters.Count;
-                    foreach (var param in proc.Parameters)
                     {
-                        if (proc.IsTVF)
-                            sb.Append("null");
-                        else
-                            sb.Append(String.Format("{0}=null", param.Name));
+                        sb.Append(String.Format("SELECT * FROM [{0}].[{1}](", proc.Schema, proc.Name));
+                        foreach (var param in proc.Parameters)
+                            sb.Append("null, ");
 
-                        if (count < paramCount)
-                            sb.Append(", ");
-                        count++;
+                        if(proc.Parameters.Count > 0)
+                            sb.Length -= 2;
+
+                        sb.AppendLine(");");
                     }
-                    if (proc.IsTVF)
-                        sb.Append(")");
+                    else
+                    {
+                        foreach (var param in proc.Parameters)
+                            sb.AppendLine(String.Format("DECLARE {0} {1};", param.Name, param.SqlDbType == "Structured" ? param.UserDefinedTypeName : param.SqlDbType));
 
-                    sb.Append("\n SET FMTONLY OFF; SET FMTONLY OFF;");
+                        sb.Append(String.Format("exec [{0}].[{1}] ", proc.Schema, proc.Name));
+                        foreach (var param in proc.Parameters)
+                            sb.Append(String.Format("{0}, ", param.Name));
+
+                        if(proc.Parameters.Count > 0)
+                            sb.Length -= 2;
+    
+                        sb.AppendLine(";");
+                    }
+                    sb.AppendLine("SET FMTONLY OFF; SET FMTONLY OFF;");
 
                     var ds = new DataSet();
-                    using (var sqlConnection = new SqlConnection(connectionString))
+                    using (var sqlAdapter = new SqlDataAdapter(sb.ToString(), sqlConnection))
                     {
-                        using (var sqlAdapter = new SqlDataAdapter(sb.ToString(), sqlConnection))
-                        {
-                            if (sqlConnection.State != ConnectionState.Open)
-                                sqlConnection.Open();
-                            sqlAdapter.SelectCommand.ExecuteReader(CommandBehavior.SchemaOnly | CommandBehavior.KeyInfo);
-                            sqlConnection.Close();
-                            sqlAdapter.FillSchema(ds, SchemaType.Source, "MyTable");
-                        }
+                        if (sqlConnection.State != ConnectionState.Open)
+                            sqlConnection.Open();
+                        sqlAdapter.SelectCommand.ExecuteReader(CommandBehavior.SchemaOnly | CommandBehavior.KeyInfo);
+                        sqlConnection.Close();
+                        sqlAdapter.FillSchema(ds, SchemaType.Source, "MyTable");
                     }
 
                     // Tidy up parameters
                     foreach (var p in proc.Parameters)
                         p.NameHumanCase = Regex.Replace(p.NameHumanCase, @"[^A-Za-z0-9@\s]*", "");
 
-                    for(count = 0; count < ds.Tables.Count; count++)
+                    for(var count = 0; count < ds.Tables.Count; count++)
                     {
                         proc.ReturnModels.Add(ds.Tables[count].Columns.Cast<DataColumn>().ToList());
                     }
