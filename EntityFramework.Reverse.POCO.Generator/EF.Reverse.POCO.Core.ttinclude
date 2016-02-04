@@ -382,16 +382,23 @@
 
         private List<string> GetConfigPathsInProjectForFile(EnvDTE.Project project, string filename)
         {
-            if(project == null || project.Kind == EnvDTE.Constants.vsProjectKindUnmodeled) 
+            try
             {
-                // Project is 'unloaded'
+                if (project == null || project.Kind == EnvDTE.Constants.vsProjectKindUnmodeled)
+                {
+                    // Project is 'unloaded'
+                    return new List<string>();
+                }
+
+                return (from ProjectItem item in project.ProjectItems
+                        where item.Name.Equals(filename, StringComparison.InvariantCultureIgnoreCase)
+                        select Path.Combine(GetProjectPath(project), item.Name))
+                        .ToList();
+            }
+            catch (Exception)
+            {
                 return new List<string>();
             }
-
-            return (from   ProjectItem item in project.ProjectItems
-                    where  item.Name.Equals(filename, StringComparison.InvariantCultureIgnoreCase)
-                    select Path.Combine(GetProjectPath(project), item.Name))
-                .ToList();
         }
 
         // Search for the database file
