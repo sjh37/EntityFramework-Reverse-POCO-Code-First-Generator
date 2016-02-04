@@ -837,7 +837,7 @@
                 switch(lowerPropertyType)
                 {
                     case "bool":
-                        Default = (Default == "0") ? "false" : "true";
+                        Default = (Default == "0" || lower == "\"false\"" || lower == "false") ? "false" : "true";
                         break;
 
                     case "string":
