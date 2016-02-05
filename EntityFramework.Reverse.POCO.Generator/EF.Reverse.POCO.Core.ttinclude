@@ -35,6 +35,7 @@
         // Settings - edit these in the main <name>.tt file *******************************************************************************
         string ConnectionStringName = "";
         bool IncludeViews = true;
+        bool IncludeStoredProcedures = true;
         bool IncludeTableValuedFunctions = false;
         bool AddUnitTestingDbContext = true;
         string DbContextName = "MyDbContext";
@@ -89,10 +90,9 @@
             Poco = 1,
             Context = 2,
             UnitOfWork = 4,
-            PocoConfiguration = 8,
-            StoredProcedures = 16
+            PocoConfiguration = 8
         };
-        Elements ElementsToGenerate = Elements.Poco | Elements.Context | Elements.UnitOfWork | Elements.PocoConfiguration | Elements.StoredProcedures;
+        Elements ElementsToGenerate = Elements.Poco | Elements.Context | Elements.UnitOfWork | Elements.PocoConfiguration;
         string PocoNamespace, ContextNamespace, UnitOfWorkNamespace, PocoConfigurationNamespace = "";
 
         // Settings to allow TargetFramework checks
@@ -586,7 +586,7 @@
         
         private List<StoredProcedure> LoadStoredProcs(DbProviderFactory factory)
         {
-            if(factory == null || !ElementsToGenerate.HasFlag(Elements.StoredProcedures))
+            if(factory == null || !IncludeStoredProcedures)
                 return new List<StoredProcedure>();
 
             try

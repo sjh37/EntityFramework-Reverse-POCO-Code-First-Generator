@@ -19,10 +19,10 @@ fileManager.StartHeader();
 using <#= additionalNamespace #>;
 <# } #>
 using System.CodeDom.Compiler;
-<# if(ElementsToGenerate.HasFlag(Elements.Poco) || ElementsToGenerate.HasFlag(Elements.StoredProcedures) || (ElementsToGenerate.HasFlag(Elements.Context) && AddUnitTestingDbContext)){ #>
+<# if(ElementsToGenerate.HasFlag(Elements.Poco) || IncludeStoredProcedures || (ElementsToGenerate.HasFlag(Elements.Context) && AddUnitTestingDbContext)){ #>
 using System.Collections.Generic;
 <# } #>
-<# if(ElementsToGenerate.HasFlag(Elements.StoredProcedures) && !(ElementsToGenerate.HasFlag(Elements.Context) && AddUnitTestingDbContext)){ #>
+<# if(IncludeStoredProcedures && !(ElementsToGenerate.HasFlag(Elements.Context) && AddUnitTestingDbContext)){ #>
 using System.Linq;
 <# } #>
 <# if(ElementsToGenerate.HasFlag(Elements.Context) && AddUnitTestingDbContext){ #>
@@ -36,16 +36,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 <# if(ElementsToGenerate.HasFlag(Elements.Context) || ElementsToGenerate.HasFlag(Elements.UnitOfWork) || AddUnitTestingDbContext){ #>
 using System.Data.Entity;
 <# } #>
-<# if(ElementsToGenerate.HasFlag(Elements.StoredProcedures) || (ElementsToGenerate.HasFlag(Elements.Context) && AddUnitTestingDbContext)){ #>
+<# if(IncludeStoredProcedures || (ElementsToGenerate.HasFlag(Elements.Context) && AddUnitTestingDbContext)){ #>
 using System.Data.Entity.Infrastructure;
 <# } #>
-<# if(ElementsToGenerate.HasFlag(Elements.StoredProcedures) || ElementsToGenerate.HasFlag(Elements.Context)){ #>
+<# if(IncludeStoredProcedures || ElementsToGenerate.HasFlag(Elements.Context)){ #>
 using System.Data;
 using System.Data.Entity.Core.Objects;
 using System.Data.SqlClient;
 using System.Data.SqlTypes;
 <# } #>
-<# if(ElementsToGenerate.HasFlag(Elements.StoredProcedures) && ElementsToGenerate.HasFlag(Elements.Context) && IncludeTableValuedFunctions){ #>
+<# if(IncludeStoredProcedures && ElementsToGenerate.HasFlag(Elements.Context) && IncludeTableValuedFunctions){ #>
 using System.Data.Entity.Core.Objects;
 using CodeFirstStoreFunctions;
 <# } #>
@@ -118,7 +118,7 @@ else
         System.Threading.Tasks.Task<int> SaveChangesAsync();
         System.Threading.Tasks.Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 <# } #>
-<# if (ElementsToGenerate.HasFlag(Elements.StoredProcedures)) { #>
+<# if (IncludeStoredProcedures) { #>
         
         // Stored Procedures
 <#      // Interface
@@ -253,7 +253,7 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.Na
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-<# if(ElementsToGenerate.HasFlag(Elements.StoredProcedures) && IncludeTableValuedFunctions)
+<# if(IncludeStoredProcedures && IncludeTableValuedFunctions)
 { #>
 
             modelBuilder.Conventions.Add(new FunctionsConvention<<#=DbContextName#>>("dbo"));
@@ -288,7 +288,7 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.Na
         partial void InitializePartial();
         partial void OnModelCreatingPartial(DbModelBuilder modelBuilder);
 <#}#>
-<# if (ElementsToGenerate.HasFlag(Elements.StoredProcedures))
+<# if (IncludeStoredProcedures)
 { #>
         
         // Stored Procedures
@@ -460,7 +460,7 @@ foreach (Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.N
         {
             Dispose(true);
         }
-<# if (ElementsToGenerate.HasFlag(Elements.StoredProcedures))
+<# if (IncludeStoredProcedures)
 { #>
         
         // Stored Procedures
@@ -931,7 +931,7 @@ foreach (string s in tbl.MappingConfiguration)
 <#}#>    }
 
 <# } }
-if(ElementsToGenerate.HasFlag(Elements.StoredProcedures) && ElementsToGenerate.HasFlag(Elements.Poco)){
+if(IncludeStoredProcedures && ElementsToGenerate.HasFlag(Elements.Poco)){
 if(!GenerateSeparateFiles) { #>
 
     // ************************************************************************
