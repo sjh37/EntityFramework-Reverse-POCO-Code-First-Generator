@@ -19,6 +19,7 @@
     IncludeComments = true; // Adds comments to the generated code
     IncludeExtendedPropertyComments = ExtendedPropertyCommentsStyle.InSummaryBlock; // Adds extended properties as comments to the generated code
     IncludeViews = true;
+    IncludeStoredProcedures = true;
     IncludeTableValuedFunctions = false; // If true, you must also install the "EntityFramework.CodeFirstStoreFunctions" Nuget Package.
     DisableGeographyTypes = false; // Turns off use of System.Data.Entity.Spatial.DbGeography and System.Data.Entity.Spatial.DbGeometry as OData doesn't support entities with geometry/geography types.
     CollectionType = "List";  // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example. Add "System.Collections.ObjectModel" to AdditionalNamespaces if setting the CollectionType = "ObservableCollection".
@@ -71,7 +72,7 @@
     // Elements to generate ***************************************************************************************************************
     // Add the elements that should be generated when the template is executed.
     // Multiple projects can now be used that separate the different concerns.
-    ElementsToGenerate = Elements.Poco | Elements.Context | Elements.UnitOfWork | Elements.PocoConfiguration | Elements.StoredProcedures;
+    ElementsToGenerate = Elements.Poco | Elements.Context | Elements.UnitOfWork | Elements.PocoConfiguration;
 
     // Use these namespaces to specify where the different elements now live. These may even be in different assemblies.
     // Please note this does not create the files in these locations, it only adds a using statement to say where they are.
