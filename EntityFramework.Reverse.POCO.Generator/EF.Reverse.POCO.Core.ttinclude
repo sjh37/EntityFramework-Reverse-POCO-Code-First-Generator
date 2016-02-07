@@ -1581,6 +1581,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             ELSE 'Unknown'
         END AS EngineEdition";
 
+                    Cmd.CommandTimeout = 600;
+
                     using (DbDataReader rdr = Cmd.ExecuteReader())
                     {
                         if (rdr.Read())
@@ -1740,6 +1742,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     return;
 
                 Cmd.CommandText = UniqueIndexSQL + IncludeQueryTraceOn9481();
+                Cmd.CommandTimeout = 600;
 
                 var list = new List<UniqueIndex>();
                 using (DbDataReader rdr = Cmd.ExecuteReader())
@@ -1822,6 +1825,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         return;
 
                     Cmd.CommandText = ExtendedPropertySQL + IncludeQueryTraceOn9481();
+                    Cmd.CommandTimeout = 600;
                 }
 
                 using(DbDataReader rdr = Cmd.ExecuteReader())
