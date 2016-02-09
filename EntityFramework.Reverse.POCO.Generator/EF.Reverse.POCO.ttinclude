@@ -767,7 +767,7 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.Na
 <# fileManager.StartNewFile(tbl.NameHumanCase + FileExtension); #>
 <#if(IncludeComments){#>    // <#=tbl.Name#>
 <# } #>
-<# if(AddWcfDataAttributes) { #>    [DataContract<#=ExtraWcfDataContractAttributes#>]
+<# if(AddWcfDataAttributes) { #>    [System.Runtime.Serialization.DataContract<#=ExtraWcfDataContractAttributes#>]
 <# } 
     WritePocoClassAttributes(tbl);#>
 <#if (tbl.ReverseNavigationCtor.Any()){ #>
@@ -786,7 +786,7 @@ foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal).Where(x => !x.Hidden))
         /// <#=col.ExtendedProperty#>
         ///</summary>
 <# } #>
-<# if(AddWcfDataAttributes) { #>        [DataMember(Order = <#=DataMemberOrder++#>, IsRequired = <#=col.IsNullable ? "false" : "true"#>)]
+<# if(AddWcfDataAttributes) { #>        [System.Runtime.Serialization.DataMember(Order = <#=DataMemberOrder++#>, IsRequired = <#=col.IsNullable ? "false" : "true"#>)]
 <# } #>
         <#= WritePocoColumn(col) #>
 <# if(AddWcfDataAttributes) { #>
@@ -921,28 +921,38 @@ foreach(StoredProcedure sp in storedProcs.Where(x => x.ReturnModels.Count > 0 &&
     string spReturnClassName = WriteStoredProcReturnModelName(sp);
 #>
 <# fileManager.StartNewFile(spReturnClassName + FileExtension);#>
+<# if(AddWcfDataAttributes) { #>    [System.Runtime.Serialization.DataContract<#=ExtraWcfDataContractAttributes#>]
+<# } #>
     public <# if(MakeClassesPartial) { #>partial <# } #>class <#= spReturnClassName #>
     {
 <#
+int DataMemberOrder = 1;
 var returnModelCount = sp.ReturnModels.Count;
 if(returnModelCount < 2)
 {
     foreach (var returnColumn in sp.ReturnModels.First())
     { #>
+<# if(AddWcfDataAttributes) { #>        [System.Runtime.Serialization.DataMember(Order = <#=DataMemberOrder++#>, IsRequired = <#=StoredProcedure.IsNullable(returnColumn) ? "false" : "true"#>)]
+<# } #>
         <#= WriteStoredProcReturnColumn(returnColumn) #>
 <#  }
 } else {
     int model = 0;
     foreach (var returnModel in sp.ReturnModels)
     {
+        int SubDataMemberOrder = 1;
         model++;#>
         public class ResultSetModel<#= model #>
         {
 <#      foreach (var returnColumn in returnModel)
         { #>
+<# if(AddWcfDataAttributes) { #>            [System.Runtime.Serialization.DataMember(Order = <#=SubDataMemberOrder++#>, IsRequired = <#=StoredProcedure.IsNullable(returnColumn) ? "false" : "true"#>)]
+<# } #>
             <#= WriteStoredProcReturnColumn(returnColumn) #>
 <#      }#>
         }
+<# if(AddWcfDataAttributes) { #>        [System.Runtime.Serialization.DataMember(Order = <#=DataMemberOrder++#>, IsRequired = true)]
+<# } #>
         public System.Collections.Generic.List<ResultSetModel<#= model #>> ResultSet<#= model #>;
 
 <#  } #>
