@@ -1016,11 +1016,16 @@
                 ReturnModels = new List<List<DataColumn>>();
             }
 
-            public static string CheckNullable(DataColumn col)
+            public static bool IsNullable(DataColumn col)
             {
                 if (col.AllowDBNull && !NotNullable.Contains(col.DataType.Name.ToLower()))
-                    return "? ";
-                return " ";
+                    return true;
+                return false;
+            }
+
+            public static string CheckNullable(DataColumn col)
+            {
+                return IsNullable(col) ? "? " : " ";
             }
         }
 
