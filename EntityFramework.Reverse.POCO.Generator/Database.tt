@@ -7,8 +7,8 @@
     // Main settings **********************************************************************************************************************
     // Namespace = ""; // Override the default namespace here
     DbContextName = "MyDbContext";
-    DbContextInterfaceBaseClasses = "IDisposable";    // Specify what the base classes are for your database context interface
-    DbContextBaseClass = "DbContext";   // Specify what the base class is for your DbContext. For ASP.NET Identity use "IdentityDbContext<ApplicationUser>"
+    DbContextInterfaceBaseClasses = "System.IDisposable";    // Specify what the base classes are for your database context interface
+    DbContextBaseClass = "System.Data.Entity.DbContext";   // Specify what the base class is for your DbContext. For ASP.NET Identity use "IdentityDbContext<ApplicationUser>"
     ConnectionStringName = "MyDbContext";   // Searches for this connection string in config files listed below
     TargetFrameworkVersion = "4.51"; // Please set this to your .NET framework version, 4.0, 4.5, 4.51, etc.
     ConfigurationClassName = "Configuration"; // Configuration, Mapping, Map, etc. This is appended to the Poco class name to configure the mappings.
@@ -22,10 +22,10 @@
     IncludeStoredProcedures = true;
     IncludeTableValuedFunctions = false; // If true, you must also install the "EntityFramework.CodeFirstStoreFunctions" Nuget Package.
     DisableGeographyTypes = false; // Turns off use of System.Data.Entity.Spatial.DbGeography and System.Data.Entity.Spatial.DbGeometry as OData doesn't support entities with geometry/geography types.
-    CollectionType = "List";  // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example. Add "System.Collections.ObjectModel" to AdditionalNamespaces if setting the CollectionType = "ObservableCollection".
+    CollectionType = "System.Collections.Generic.List";  // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example. Add "System.Collections.ObjectModel" to AdditionalNamespaces if setting the CollectionType = "ObservableCollection".
     AddUnitTestingDbContext = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing
     IncludeQueryTraceOn9481Flag = false; // If SqlServer 2014 appears frozen / take a long time when this file is saved, try setting this to true (you will also need elevated privileges).
-    AdditionalNamespaces = new[] { "System" };  // To include extra namespaces, include them here. i.e. "Microsoft.AspNet.Identity.EntityFramework"
+    AdditionalNamespaces = new[] { "" };  // To include extra namespaces, include them here. i.e. "Microsoft.AspNet.Identity.EntityFramework"
     AdditionalContextInterfaceItems = new[] // To include extra db context interface items, include them here. Also set MakeClassesPartial=true, and implement the partial DbContext class functions.
     {
         ""  //  example: "void SetAutoDetectChangesEnabled(bool flag);"
@@ -276,7 +276,7 @@
             bool isNullable = !NotNullable.Contains(p.PropertyType.ToLower());
             var getValueOrDefault = isNullable ? ".GetValueOrDefault()" : string.Empty;
 
-            sb.AppendLine(string.Format("            var {0} = new SqlParameter {{ ParameterName = \"{1}\", SqlDbType = SqlDbType.{2}, Direction = ParameterDirection.{3}{4}{5}{6}{7} }};", 
+            sb.AppendLine(string.Format("            var {0} = new System.Data.SqlClient.SqlParameter {{ ParameterName = \"{1}\", SqlDbType = System.Data.SqlDbType.{2}, Direction = System.Data.ParameterDirection.{3}{4}{5}{6}{7} }};", 
                 WriteStoredProcSqlParameterName(p), 
                 p.Name, 
                 p.SqlDbType, 
@@ -290,13 +290,13 @@
                 {
                     sb.AppendFormat(
                         isNullable
-                            ? "            if (!{0}.HasValue){1}                {0}Param.Value = DBNull.Value;{1}{1}"
-                            : "            if ({0}Param.Value == null){1}                {0}Param.Value = DBNull.Value;{1}{1}",
+                            ? "            if (!{0}.HasValue){1}                {0}Param.Value = System.DBNull.Value;{1}{1}"
+                            : "            if ({0}Param.Value == null){1}                {0}Param.Value = System.DBNull.Value;{1}{1}",
                         p.NameHumanCase, Environment.NewLine);
                 }
         }
         if(sp.ReturnModels.Count < 2)
-            sb.AppendLine("            var procResultParam = new SqlParameter { ParameterName = \"@procResult\", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };");
+            sb.AppendLine("            var procResultParam = new System.Data.SqlClient.SqlParameter { ParameterName = \"@procResult\", SqlDbType = System.Data.SqlDbType.Int, Direction = System.Data.ParameterDirection.Output };");
         return sb.ToString();
     };
 
@@ -307,7 +307,7 @@
         {
             var getValueOrDefault = NotNullable.Contains(p.PropertyType.ToLower()) ? string.Empty : ".GetValueOrDefault()";
     
-            sb.AppendLine(string.Format("            var {0}Param = new ObjectParameter(\"{1}\", {2});", 
+            sb.AppendLine(string.Format("            var {0}Param = new System.Data.Entity.Core.Objects.ObjectParameter(\"{1}\", {2});", 
                 p.NameHumanCase, 
                 p.Name.Substring(1), 
                 p.Mode == StoredProcedureParameterMode.In ? p.NameHumanCase + getValueOrDefault : string.Empty));
@@ -329,7 +329,7 @@
     Func<StoredProcedure, string> WriteTableValuedFunctionSqlParameterAnonymousArray = sp =>
     {
         if (sp.Parameters.Count == 0) 
-            return "new ObjectParameter[] { }";
+            return "new System.Data.Entity.Core.Objects.ObjectParameter[] { }";
         var sb = new StringBuilder();
         foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
         {
@@ -367,7 +367,7 @@
                 : string.Format("{0}ReturnModel", sp.NameHumanCase);
 
     Func<DataColumn, string> WriteStoredProcReturnColumn = col => 
-        string.Format("public {0}{1}{2} {{ get; set; }}",
+        string.Format("public System.{0}{1}{2} {{ get; set; }}",
             col.DataType.Name, StoredProcedure.CheckNullable(col), col.ColumnName);
 
     Func<StoredProcedure, string> WriteStoredProcReturnType = (sp) =>
@@ -377,7 +377,7 @@
             return "int";
 
         var spReturnClassName = WriteStoredProcReturnModelName(sp);
-        return (returnModelCount == 1) ? string.Format("List<{0}>", spReturnClassName) : spReturnClassName;
+        return (returnModelCount == 1) ? string.Format("System.Collections.Generic.List<{0}>", spReturnClassName) : spReturnClassName;
     };
 
     

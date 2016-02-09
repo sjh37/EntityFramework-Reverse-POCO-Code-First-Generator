@@ -35,14 +35,14 @@
         // Settings - edit these in the main <name>.tt file *******************************************************************************
         string ConnectionStringName = "";
         bool IncludeViews = true;
-        bool IncludeStoredProcedures = true;
+        bool IncludeStoredProcedures = false;
         bool IncludeTableValuedFunctions = false;
         bool AddUnitTestingDbContext = true;
         string DbContextName = "MyDbContext";
-        string DbContextInterfaceBaseClasses = "IDisposable";
+        string DbContextInterfaceBaseClasses = "System.IDisposable";
         string DbContextBaseClass = "DbContext";
         string ConfigurationClassName = "Configuration";
-        string CollectionType = "List";
+        string CollectionType = "System.Collections.Generic.List";
         bool MakeClassesPartial = true;
         bool GenerateSeparateFiles = false;
         bool IsSqlCe = false;
@@ -81,7 +81,8 @@
         bool AutomaticMigrationDataLossAllowed = true;
         List<EnumDefinition> EnumsDefinitions = new List<EnumDefinition>();
 
-        string CodeGeneratedAttribute = "[GeneratedCodeAttribute(\"EF.Reverse.POCO.Generator\", \"2.17.2.0\")]";
+        string CodeGeneratedAttribute = "[System.CodeDom.Compiler.GeneratedCodeAttribute(\"EF.Reverse.POCO.Generator\", \"2.17.2.0\")]";
+        
         // Settings to allow selective code generation
         [Flags]
         private enum Elements
@@ -116,6 +117,7 @@
             "string", 
             "byte[]", 
             "datatable", 
+            "system.data.datatable", 
             "object", 
             "microsoft.sqlserver.types.sqlgeography", 
             "microsoft.sqlserver.types.sqlgeometry",
@@ -796,11 +798,11 @@
             {
                 string databaseGeneratedOption = string.Empty;
                 if(IsIdentity)
-                    databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity)";
+                    databaseGeneratedOption = ".HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity)";
                 if(IsStoreGenerated && !IsIdentity)
-                    databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.Computed)";
+                    databaseGeneratedOption = ".HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Computed)";
                 if(IsPrimaryKey && !IsIdentity && !IsStoreGenerated)
-                    databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.None)";
+                    databaseGeneratedOption = ".HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None)";
 
                 Config = string.Format("Property(x => x.{0}).HasColumnName(\"{1}\"){2}{3}{4}{5}{6}{7}{8}{9}{10};", NameHumanCase, Name,
                                             (IsNullable) ? ".IsOptional()" : ".IsRequired()",
@@ -849,8 +851,11 @@
 
                     case "string":
                     case "datetime":
+                    case "system.datetime":
                     case "timespan":
+                    case "system.timespan":
                     case "datetimeoffset":
+                    case "system.datetimeoffset":
                         if(Default.First() != '"')
                             Default = string.Format("\"{0}\"", Default);
                         if(Default.Contains('\\') || Default.Contains('\r') || Default.Contains('\n'))
@@ -865,6 +870,7 @@
                     case "decimal":
                     case "byte":
                     case "guid":
+                    case "system.guid":
                         if(Default.First() == '\"' && Default.Last() == '\"' && Default.Length > 2)
                             Default = Default.Substring(1, Default.Length - 2);
                         break;
@@ -911,6 +917,7 @@
                         break;
 
                     case "datetime":
+                    case "system.datetime":
                         DateTime dt;
                         if(!DateTime.TryParse(Default, out dt))
                             Default = lower.Contains("getdate()") ? "System.DateTime.Now" : lower.Contains("getutcdate()") ? "System.DateTime.UtcNow" : string.Empty;
@@ -919,6 +926,7 @@
                         break;
 
                     case "datetimeoffset":
+                    case "system.datetimeoffset":
                         DateTimeOffset dto;
                         if(!DateTimeOffset.TryParse(Default, out dto))
                             Default = lower.Contains("sysdatetimeoffset") ? "System.DateTimeOffset.Now" : lower.Contains("sysutcdatetime") ? "System.DateTimeOffset.UtcNow" : string.Empty;
@@ -927,6 +935,7 @@
                         break;
 
                     case "timespan":
+                    case "system.timespan":
                         TimeSpan ts;
                         if(!TimeSpan.TryParse(Default, out ts))
                             Default = string.Empty;
@@ -968,7 +977,7 @@
 
                     case "string":
                         if (lower.Contains("newid()") || lower.Contains("newsequentialid()"))
-                            Default = "Guid.NewGuid().ToString()";
+                            Default = "System.Guid.NewGuid().ToString()";
                         if(lower.StartsWith("space("))
                             Default = "\"\"";
                         if(lower == "null")
@@ -976,12 +985,13 @@
                         break;
 
                     case "guid":
+                    case "system.guid":
                         if (lower.Contains("newid()") || lower.Contains("newsequentialid()"))
                             Default = "System.Guid.NewGuid()";
                         else if (lower.Contains("null"))
                             Default = "null";
                         else
-                            Default = string.Format("Guid.Parse(\"{0}\")", Default);
+                            Default = string.Format("System.Guid.Parse(\"{0}\")", Default);
                         break;
                 }
             }
@@ -2376,22 +2386,22 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         sysType = "int";
                         break;
                     case "uniqueidentifier":
-                        sysType = "Guid";
+                        sysType = "System.Guid";
                         break;
                     case "smalldatetime":
                     case "datetime":
                     case "datetime2":
                     case "date":
-                        sysType = "DateTime";
+                        sysType = "System.DateTime";
                         break;
                     case "datetimeoffset":
-                        sysType = "DateTimeOffset";
+                        sysType = "System.DateTimeOffset";
                         break;
                     case "table type":
-                        sysType = "DataTable";
+                        sysType = "System.Data.DataTable";
                         break;
                     case "time":
-                        sysType = "TimeSpan";
+                        sysType = "System.TimeSpan";
                         break;
                     case "float":
                         sysType = "double";
@@ -2613,12 +2623,12 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         break;
 
                     case Relationship.ManyToOne:
-                        ReverseNavigationProperty.Add(string.Format("public virtual ICollection<{0}> {1} {{ get; set; }}{2}", fkTable.NameHumanCase, propName, includeComments ? " // " + constraint : string.Empty));
+                        ReverseNavigationProperty.Add(string.Format("public virtual System.Collections.Generic.ICollection<{0}> {1} {{ get; set; }}{2}", fkTable.NameHumanCase, propName, includeComments ? " // " + constraint : string.Empty));
                         ReverseNavigationCtor.Add(string.Format("{0} = new {1}<{2}>();", propName, collectionType, fkTable.NameHumanCase));
                         break;
 
                     case Relationship.ManyToMany:
-                        ReverseNavigationProperty.Add(string.Format("public virtual ICollection<{0}> {1} {{ get; set; }}{2}", fkTable.NameHumanCase, propName, includeComments ? " // Many to many mapping" : string.Empty));
+                        ReverseNavigationProperty.Add(string.Format("public virtual System.Collections.Generic.ICollection<{0}> {1} {{ get; set; }}{2}", fkTable.NameHumanCase, propName, includeComments ? " // Many to many mapping" : string.Empty));
                         ReverseNavigationCtor.Add(string.Format("{0} = new {1}<{2}>();", propName, collectionType, fkTable.NameHumanCase));
                         break;
                     
