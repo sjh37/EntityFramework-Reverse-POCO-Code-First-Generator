@@ -2,6 +2,7 @@
 
 **Beautifully generated code first code**
 * Downloadable VSIX installer from the [visual studio gallery](https://visualstudiogallery.msdn.microsoft.com/ee4fcff9-0c4c-4179-afd9-7a2fb90f5838).
+![Visual Studio Partner](https://i1.visualstudiogallery.msdn.s-msft.com/content/visualstudio/vsippartnerlogonew.png)
 
 ### Project Description
 
