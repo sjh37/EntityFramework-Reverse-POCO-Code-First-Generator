@@ -35,7 +35,7 @@ This generator was designed to be customisable from the very beginning,
 and not fixed and rigid like other generators.
 Go and play with the settings in the `<database>.tt` file, that's what it's there for.
 
-If your database changes, simply re-save the `<database>.tt` file. It's that good.
+If your database changes, simply re-save the `<database>.tt` file. That's it.
 
 [Click here](https://github.com/sjh37/efreversepoco/wiki/Full-control-over-the-generated-code) to see a full list of features.
 
