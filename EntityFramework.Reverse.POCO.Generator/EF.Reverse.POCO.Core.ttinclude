@@ -777,6 +777,9 @@
                         else
                             comments += " (Primary key)";
                     }
+
+                    if (MaxLength > 0)
+                        comments += string.Format(" (length: {0})", MaxLength);
                 }
                 else
                 {

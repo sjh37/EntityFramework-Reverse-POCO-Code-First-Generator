@@ -787,16 +787,16 @@ namespace EntityFramework_Reverse_POCO_Generator
     public class AlphabeticalListOfProduct
     {
         public int ProductId { get; set; } // ProductID
-        public string ProductName { get; set; } // ProductName
+        public string ProductName { get; set; } // ProductName (length: 40)
         public int? SupplierId { get; set; } // SupplierID
         public int? CategoryId { get; set; } // CategoryID
-        public string QuantityPerUnit { get; set; } // QuantityPerUnit
+        public string QuantityPerUnit { get; set; } // QuantityPerUnit (length: 20)
         public decimal? UnitPrice { get; set; } // UnitPrice
         public short? UnitsInStock { get; set; } // UnitsInStock
         public short? UnitsOnOrder { get; set; } // UnitsOnOrder
         public short? ReorderLevel { get; set; } // ReorderLevel
         public bool Discontinued { get; set; } // Discontinued
-        public string CategoryName { get; set; } // CategoryName
+        public string CategoryName { get; set; } // CategoryName (length: 15)
     }
 
     // Categories
@@ -804,9 +804,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     public class Category
     {
         public int CategoryId { get; set; } // CategoryID (Primary key)
-        public string CategoryName { get; set; } // CategoryName
-        public string Description { get; set; } // Description
-        public byte[] Picture { get; set; } // Picture
+        public string CategoryName { get; set; } // CategoryName (length: 15)
+        public string Description { get; set; } // Description (length: 1073741823)
+        public byte[] Picture { get; set; } // Picture (length: 2147483647)
 
         // Reverse navigation
         public virtual System.Collections.Generic.ICollection<Product> Products { get; set; } // Products.FK_Products_Categories
@@ -820,7 +820,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Category Sales for 1997
     public class CategorySalesFor1997
     {
-        public string CategoryName { get; set; } // CategoryName
+        public string CategoryName { get; set; } // CategoryName (length: 15)
         public decimal? CategorySales { get; set; } // CategorySales
     }
 
@@ -828,24 +828,24 @@ namespace EntityFramework_Reverse_POCO_Generator
     public class CurrentProductList
     {
         public int ProductId { get; set; } // ProductID
-        public string ProductName { get; set; } // ProductName
+        public string ProductName { get; set; } // ProductName (length: 40)
     }
 
     // Customers
     [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.18.1.0")]
     public class Customer
     {
-        public string CustomerId { get; set; } // CustomerID (Primary key)
-        public string CompanyName { get; set; } // CompanyName
-        public string ContactName { get; set; } // ContactName
-        public string ContactTitle { get; set; } // ContactTitle
-        public string Address { get; set; } // Address
-        public string City { get; set; } // City
-        public string Region { get; set; } // Region
-        public string PostalCode { get; set; } // PostalCode
-        public string Country { get; set; } // Country
-        public string Phone { get; set; } // Phone
-        public string Fax { get; set; } // Fax
+        public string CustomerId { get; set; } // CustomerID (Primary key) (length: 5)
+        public string CompanyName { get; set; } // CompanyName (length: 40)
+        public string ContactName { get; set; } // ContactName (length: 30)
+        public string ContactTitle { get; set; } // ContactTitle (length: 30)
+        public string Address { get; set; } // Address (length: 60)
+        public string City { get; set; } // City (length: 15)
+        public string Region { get; set; } // Region (length: 15)
+        public string PostalCode { get; set; } // PostalCode (length: 10)
+        public string Country { get; set; } // Country (length: 15)
+        public string Phone { get; set; } // Phone (length: 24)
+        public string Fax { get; set; } // Fax (length: 24)
 
         // Reverse navigation
         public virtual System.Collections.Generic.ICollection<CustomerDemographic> CustomerDemographics { get; set; } // Many to many mapping
@@ -861,18 +861,18 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Customer and Suppliers by City
     public class CustomerAndSuppliersByCity
     {
-        public string City { get; set; } // City
-        public string CompanyName { get; set; } // CompanyName
-        public string ContactName { get; set; } // ContactName
-        public string Relationship { get; set; } // Relationship
+        public string City { get; set; } // City (length: 15)
+        public string CompanyName { get; set; } // CompanyName (length: 40)
+        public string ContactName { get; set; } // ContactName (length: 30)
+        public string Relationship { get; set; } // Relationship (length: 9)
     }
 
     // CustomerDemographics
     [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.18.1.0")]
     public class CustomerDemographic
     {
-        public string CustomerTypeId { get; set; } // CustomerTypeID (Primary key)
-        public string CustomerDesc { get; set; } // CustomerDesc
+        public string CustomerTypeId { get; set; } // CustomerTypeID (Primary key) (length: 10)
+        public string CustomerDesc { get; set; } // CustomerDesc (length: 1073741823)
 
         // Reverse navigation
         public virtual System.Collections.Generic.ICollection<Customer> Customers { get; set; } // Many to many mapping
@@ -888,23 +888,23 @@ namespace EntityFramework_Reverse_POCO_Generator
     public class Employee
     {
         public int EmployeeId { get; set; } // EmployeeID (Primary key)
-        public string LastName { get; set; } // LastName
-        public string FirstName { get; set; } // FirstName
-        public string Title { get; set; } // Title
-        public string TitleOfCourtesy { get; set; } // TitleOfCourtesy
+        public string LastName { get; set; } // LastName (length: 20)
+        public string FirstName { get; set; } // FirstName (length: 10)
+        public string Title { get; set; } // Title (length: 30)
+        public string TitleOfCourtesy { get; set; } // TitleOfCourtesy (length: 25)
         public System.DateTime? BirthDate { get; set; } // BirthDate
         public System.DateTime? HireDate { get; set; } // HireDate
-        public string Address { get; set; } // Address
-        public string City { get; set; } // City
-        public string Region { get; set; } // Region
-        public string PostalCode { get; set; } // PostalCode
-        public string Country { get; set; } // Country
-        public string HomePhone { get; set; } // HomePhone
-        public string Extension { get; set; } // Extension
-        public byte[] Photo { get; set; } // Photo
-        public string Notes { get; set; } // Notes
+        public string Address { get; set; } // Address (length: 60)
+        public string City { get; set; } // City (length: 15)
+        public string Region { get; set; } // Region (length: 15)
+        public string PostalCode { get; set; } // PostalCode (length: 10)
+        public string Country { get; set; } // Country (length: 15)
+        public string HomePhone { get; set; } // HomePhone (length: 24)
+        public string Extension { get; set; } // Extension (length: 4)
+        public byte[] Photo { get; set; } // Photo (length: 2147483647)
+        public string Notes { get; set; } // Notes (length: 1073741823)
         public int? ReportsTo { get; set; } // ReportsTo
-        public string PhotoPath { get; set; } // PhotoPath
+        public string PhotoPath { get; set; } // PhotoPath (length: 255)
 
         // Reverse navigation
         public virtual System.Collections.Generic.ICollection<Employee> Employees { get; set; } // Employees.FK_Employees_Employees
@@ -925,27 +925,27 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Invoices
     public class Invoice
     {
-        public string ShipName { get; set; } // ShipName
-        public string ShipAddress { get; set; } // ShipAddress
-        public string ShipCity { get; set; } // ShipCity
-        public string ShipRegion { get; set; } // ShipRegion
-        public string ShipPostalCode { get; set; } // ShipPostalCode
-        public string ShipCountry { get; set; } // ShipCountry
-        public string CustomerId { get; set; } // CustomerID
-        public string CustomerName { get; set; } // CustomerName
-        public string Address { get; set; } // Address
-        public string City { get; set; } // City
-        public string Region { get; set; } // Region
-        public string PostalCode { get; set; } // PostalCode
-        public string Country { get; set; } // Country
-        public string Salesperson { get; set; } // Salesperson
+        public string ShipName { get; set; } // ShipName (length: 40)
+        public string ShipAddress { get; set; } // ShipAddress (length: 60)
+        public string ShipCity { get; set; } // ShipCity (length: 15)
+        public string ShipRegion { get; set; } // ShipRegion (length: 15)
+        public string ShipPostalCode { get; set; } // ShipPostalCode (length: 10)
+        public string ShipCountry { get; set; } // ShipCountry (length: 15)
+        public string CustomerId { get; set; } // CustomerID (length: 5)
+        public string CustomerName { get; set; } // CustomerName (length: 40)
+        public string Address { get; set; } // Address (length: 60)
+        public string City { get; set; } // City (length: 15)
+        public string Region { get; set; } // Region (length: 15)
+        public string PostalCode { get; set; } // PostalCode (length: 10)
+        public string Country { get; set; } // Country (length: 15)
+        public string Salesperson { get; set; } // Salesperson (length: 31)
         public int OrderId { get; set; } // OrderID
         public System.DateTime? OrderDate { get; set; } // OrderDate
         public System.DateTime? RequiredDate { get; set; } // RequiredDate
         public System.DateTime? ShippedDate { get; set; } // ShippedDate
-        public string ShipperName { get; set; } // ShipperName
+        public string ShipperName { get; set; } // ShipperName (length: 40)
         public int ProductId { get; set; } // ProductID
-        public string ProductName { get; set; } // ProductName
+        public string ProductName { get; set; } // ProductName (length: 40)
         public decimal UnitPrice { get; set; } // UnitPrice
         public short Quantity { get; set; } // Quantity
         public float Discount { get; set; } // Discount
@@ -958,19 +958,19 @@ namespace EntityFramework_Reverse_POCO_Generator
     public class Order
     {
         public int OrderId { get; set; } // OrderID (Primary key)
-        public string CustomerId { get; set; } // CustomerID
+        public string CustomerId { get; set; } // CustomerID (length: 5)
         public int? EmployeeId { get; set; } // EmployeeID
         public System.DateTime? OrderDate { get; set; } // OrderDate
         public System.DateTime? RequiredDate { get; set; } // RequiredDate
         public System.DateTime? ShippedDate { get; set; } // ShippedDate
         public int? ShipVia { get; set; } // ShipVia
         public decimal? Freight { get; set; } // Freight
-        public string ShipName { get; set; } // ShipName
-        public string ShipAddress { get; set; } // ShipAddress
-        public string ShipCity { get; set; } // ShipCity
-        public string ShipRegion { get; set; } // ShipRegion
-        public string ShipPostalCode { get; set; } // ShipPostalCode
-        public string ShipCountry { get; set; } // ShipCountry
+        public string ShipName { get; set; } // ShipName (length: 40)
+        public string ShipAddress { get; set; } // ShipAddress (length: 60)
+        public string ShipCity { get; set; } // ShipCity (length: 15)
+        public string ShipRegion { get; set; } // ShipRegion (length: 15)
+        public string ShipPostalCode { get; set; } // ShipPostalCode (length: 10)
+        public string ShipCountry { get; set; } // ShipCountry (length: 15)
 
         // Reverse navigation
         public virtual System.Collections.Generic.ICollection<OrderDetail> OrderDetails { get; set; } // Many to many mapping
@@ -1013,7 +1013,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     {
         public int OrderId { get; set; } // OrderID
         public int ProductId { get; set; } // ProductID
-        public string ProductName { get; set; } // ProductName
+        public string ProductName { get; set; } // ProductName (length: 40)
         public decimal UnitPrice { get; set; } // UnitPrice
         public short Quantity { get; set; } // Quantity
         public float Discount { get; set; } // Discount
@@ -1024,25 +1024,25 @@ namespace EntityFramework_Reverse_POCO_Generator
     public class OrdersQry
     {
         public int OrderId { get; set; } // OrderID
-        public string CustomerId { get; set; } // CustomerID
+        public string CustomerId { get; set; } // CustomerID (length: 5)
         public int? EmployeeId { get; set; } // EmployeeID
         public System.DateTime? OrderDate { get; set; } // OrderDate
         public System.DateTime? RequiredDate { get; set; } // RequiredDate
         public System.DateTime? ShippedDate { get; set; } // ShippedDate
         public int? ShipVia { get; set; } // ShipVia
         public decimal? Freight { get; set; } // Freight
-        public string ShipName { get; set; } // ShipName
-        public string ShipAddress { get; set; } // ShipAddress
-        public string ShipCity { get; set; } // ShipCity
-        public string ShipRegion { get; set; } // ShipRegion
-        public string ShipPostalCode { get; set; } // ShipPostalCode
-        public string ShipCountry { get; set; } // ShipCountry
-        public string CompanyName { get; set; } // CompanyName
-        public string Address { get; set; } // Address
-        public string City { get; set; } // City
-        public string Region { get; set; } // Region
-        public string PostalCode { get; set; } // PostalCode
-        public string Country { get; set; } // Country
+        public string ShipName { get; set; } // ShipName (length: 40)
+        public string ShipAddress { get; set; } // ShipAddress (length: 60)
+        public string ShipCity { get; set; } // ShipCity (length: 15)
+        public string ShipRegion { get; set; } // ShipRegion (length: 15)
+        public string ShipPostalCode { get; set; } // ShipPostalCode (length: 10)
+        public string ShipCountry { get; set; } // ShipCountry (length: 15)
+        public string CompanyName { get; set; } // CompanyName (length: 40)
+        public string Address { get; set; } // Address (length: 60)
+        public string City { get; set; } // City (length: 15)
+        public string Region { get; set; } // Region (length: 15)
+        public string PostalCode { get; set; } // PostalCode (length: 10)
+        public string Country { get; set; } // Country (length: 15)
     }
 
     // Order Subtotals
@@ -1057,10 +1057,10 @@ namespace EntityFramework_Reverse_POCO_Generator
     public class Product
     {
         public int ProductId { get; set; } // ProductID (Primary key)
-        public string ProductName { get; set; } // ProductName
+        public string ProductName { get; set; } // ProductName (length: 40)
         public int? SupplierId { get; set; } // SupplierID
         public int? CategoryId { get; set; } // CategoryID
-        public string QuantityPerUnit { get; set; } // QuantityPerUnit
+        public string QuantityPerUnit { get; set; } // QuantityPerUnit (length: 20)
         public decimal? UnitPrice { get; set; } // UnitPrice
         public short? UnitsInStock { get; set; } // UnitsInStock
         public short? UnitsOnOrder { get; set; } // UnitsOnOrder
@@ -1088,24 +1088,24 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Products Above Average Price
     public class ProductsAboveAveragePrice
     {
-        public string ProductName { get; set; } // ProductName
+        public string ProductName { get; set; } // ProductName (length: 40)
         public decimal? UnitPrice { get; set; } // UnitPrice
     }
 
     // Product Sales for 1997
     public class ProductSalesFor1997
     {
-        public string CategoryName { get; set; } // CategoryName
-        public string ProductName { get; set; } // ProductName
+        public string CategoryName { get; set; } // CategoryName (length: 15)
+        public string ProductName { get; set; } // ProductName (length: 40)
         public decimal? ProductSales { get; set; } // ProductSales
     }
 
     // Products by Category
     public class ProductsByCategory
     {
-        public string CategoryName { get; set; } // CategoryName
-        public string ProductName { get; set; } // ProductName
-        public string QuantityPerUnit { get; set; } // QuantityPerUnit
+        public string CategoryName { get; set; } // CategoryName (length: 15)
+        public string ProductName { get; set; } // ProductName (length: 40)
+        public string QuantityPerUnit { get; set; } // QuantityPerUnit (length: 20)
         public short? UnitsInStock { get; set; } // UnitsInStock
         public bool Discontinued { get; set; } // Discontinued
     }
@@ -1115,7 +1115,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     public class Region
     {
         public int RegionId { get; set; } // RegionID (Primary key)
-        public string RegionDescription { get; set; } // RegionDescription
+        public string RegionDescription { get; set; } // RegionDescription (length: 50)
 
         // Reverse navigation
         public virtual System.Collections.Generic.ICollection<Territory> Territories { get; set; } // Territories.FK_Territories_Region
@@ -1130,8 +1130,8 @@ namespace EntityFramework_Reverse_POCO_Generator
     public class SalesByCategory
     {
         public int CategoryId { get; set; } // CategoryID
-        public string CategoryName { get; set; } // CategoryName
-        public string ProductName { get; set; } // ProductName
+        public string CategoryName { get; set; } // CategoryName (length: 15)
+        public string ProductName { get; set; } // ProductName (length: 40)
         public decimal? ProductSales { get; set; } // ProductSales
     }
 
@@ -1140,7 +1140,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     {
         public decimal? SaleAmount { get; set; } // SaleAmount
         public int OrderId { get; set; } // OrderID
-        public string CompanyName { get; set; } // CompanyName
+        public string CompanyName { get; set; } // CompanyName (length: 40)
         public System.DateTime? ShippedDate { get; set; } // ShippedDate
     }
 
@@ -1149,8 +1149,8 @@ namespace EntityFramework_Reverse_POCO_Generator
     public class Shipper
     {
         public int ShipperId { get; set; } // ShipperID (Primary key)
-        public string CompanyName { get; set; } // CompanyName
-        public string Phone { get; set; } // Phone
+        public string CompanyName { get; set; } // CompanyName (length: 40)
+        public string Phone { get; set; } // Phone (length: 24)
 
         // Reverse navigation
         public virtual System.Collections.Generic.ICollection<Order> Orders { get; set; } // Orders.FK_Orders_Shippers
@@ -1182,17 +1182,17 @@ namespace EntityFramework_Reverse_POCO_Generator
     public class Supplier
     {
         public int SupplierId { get; set; } // SupplierID (Primary key)
-        public string CompanyName { get; set; } // CompanyName
-        public string ContactName { get; set; } // ContactName
-        public string ContactTitle { get; set; } // ContactTitle
-        public string Address { get; set; } // Address
-        public string City { get; set; } // City
-        public string Region { get; set; } // Region
-        public string PostalCode { get; set; } // PostalCode
-        public string Country { get; set; } // Country
-        public string Phone { get; set; } // Phone
-        public string Fax { get; set; } // Fax
-        public string HomePage { get; set; } // HomePage
+        public string CompanyName { get; set; } // CompanyName (length: 40)
+        public string ContactName { get; set; } // ContactName (length: 30)
+        public string ContactTitle { get; set; } // ContactTitle (length: 30)
+        public string Address { get; set; } // Address (length: 60)
+        public string City { get; set; } // City (length: 15)
+        public string Region { get; set; } // Region (length: 15)
+        public string PostalCode { get; set; } // PostalCode (length: 10)
+        public string Country { get; set; } // Country (length: 15)
+        public string Phone { get; set; } // Phone (length: 24)
+        public string Fax { get; set; } // Fax (length: 24)
+        public string HomePage { get; set; } // HomePage (length: 1073741823)
 
         // Reverse navigation
         public virtual System.Collections.Generic.ICollection<Product> Products { get; set; } // Products.FK_Products_Suppliers
@@ -1206,7 +1206,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     // sysdiagrams
     public class Sysdiagram
     {
-        public string Name { get; set; } // name
+        public string Name { get; set; } // name (length: 128)
         public int PrincipalId { get; set; } // principal_id
         public int DiagramId { get; set; } // diagram_id (Primary key)
         public int? Version { get; set; } // version
@@ -1217,8 +1217,8 @@ namespace EntityFramework_Reverse_POCO_Generator
     [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.18.1.0")]
     public class Territory
     {
-        public string TerritoryId { get; set; } // TerritoryID (Primary key)
-        public string TerritoryDescription { get; set; } // TerritoryDescription
+        public string TerritoryId { get; set; } // TerritoryID (Primary key) (length: 20)
+        public string TerritoryDescription { get; set; } // TerritoryDescription (length: 50)
         public int RegionId { get; set; } // RegionID
 
         // Reverse navigation
