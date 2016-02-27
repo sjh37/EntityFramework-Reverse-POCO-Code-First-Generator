@@ -69,7 +69,7 @@ foreach(var usingStatement in usingsAll.Distinct().OrderBy(x => x)) { #>
     public interface I<#=DbContextName #> : <#= DbContextInterfaceBaseClasses #>
     {
 <#
-foreach (Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
+foreach (Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKey).OrderBy(x => x.NameHumanCase) select t)
 {
 #>
         System.Data.Entity.DbSet<<#=tbl.NameHumanCase #>> <#=Inflector.MakePlural(tbl.NameHumanCase) #> { get; set; }<#if (IncludeComments)
@@ -174,7 +174,7 @@ foreach(var usingStatement in usingsContext.Distinct().OrderBy(x => x)) { #>
     public <# if(MakeClassesPartial) { #>partial <# } #>class <#=DbContextName#> : <#=DbContextBaseClass#>, I<#=DbContextName#>
     {
 <#
-foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
+foreach(Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKey).OrderBy(x => x.NameHumanCase) select t)
 {
 #>
         public System.Data.Entity.DbSet<<#=tbl.NameHumanCase#>> <#=Inflector.MakePlural(tbl.NameHumanCase)#> { get; set; }<#if(IncludeComments){#> // <#=tbl.Name#>
@@ -239,7 +239,7 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.Na
 <# } } #>
 
 <#
-foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
+foreach(Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKey).OrderBy(x => x.NameHumanCase) select t)
 {
 #>
             modelBuilder.Configurations.Add(new <#=tbl.NameHumanCase + ConfigurationClassName#>());
@@ -253,7 +253,7 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.Na
         public static System.Data.Entity.DbModelBuilder CreateModel(System.Data.Entity.DbModelBuilder modelBuilder, string schema)
         {
 <#
-foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
+foreach(Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKey).OrderBy(x => x.NameHumanCase) select t)
 {
 #>
             modelBuilder.Configurations.Add(new <#=tbl.NameHumanCase + ConfigurationClassName#>(schema));
@@ -385,7 +385,7 @@ if (IncludeTableValuedFunctions)
     public <# if(MakeClassesPartial) { #>partial <# } #>class Fake<#=DbContextName #> : I<#=DbContextName #>
     {
 <#
-foreach (Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
+foreach (Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKey).OrderBy(x => x.NameHumanCase) select t)
 {
 #>
         public System.Data.Entity.DbSet<<#=tbl.NameHumanCase #>> <#=Inflector.MakePlural(tbl.NameHumanCase) #> { get; set; }
@@ -394,7 +394,7 @@ foreach (Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.N
         public Fake<#=DbContextName #>()
         {
 <#
-foreach (Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
+foreach (Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKey).OrderBy(x => x.NameHumanCase) select t)
 {
 #>
             <#=Inflector.MakePlural(tbl.NameHumanCase) #> = new FakeDbSet<<#=tbl.NameHumanCase #>>(<#= string.Join(", ", tbl.PrimaryKeys.Select(x => "\"" + x.NameHumanCase + "\"")) #>);
@@ -764,7 +764,11 @@ if (IncludeTableValuedFunctions)
 foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
 {
 #>
-<# fileManager.StartNewFile(tbl.NameHumanCase + FileExtension); #>
+<# fileManager.StartNewFile(tbl.NameHumanCase + FileExtension);
+if(!tbl.HasPrimaryKey) { #>
+    // The table '<#=tbl.Name#>' is not usable by entity framework because it
+    // does not have a primary key. It is listed here for completeness.
+<# } #>
 <#if(IncludeComments){#>    // <#=tbl.Name#>
 <# } #>
 <# if(AddWcfDataAttributes) { #>    [System.Runtime.Serialization.DataContract<#=ExtraWcfDataContractAttributes#>]
@@ -856,7 +860,7 @@ if(!GenerateSeparateFiles) { #>
 
 <# } #>
 <#
-foreach(Table tbl in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase))
+foreach(Table tbl in tables.Where(t => !t.IsMapping && t.HasPrimaryKey).OrderBy(x => x.NameHumanCase))
 {
 #>
 <# fileManager.StartNewFile(tbl.NameHumanCase + ConfigurationClassName + FileExtension);

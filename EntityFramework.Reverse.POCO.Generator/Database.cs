@@ -1110,6 +1110,17 @@ namespace EntityFramework_Reverse_POCO_Generator
         public bool Discontinued { get; set; } // Discontinued
     }
 
+    // The table 'Quarterly Orders' is not usable by entity framework because it
+    // does not have a primary key. It is listed here for completeness.
+    // Quarterly Orders
+    public class QuarterlyOrder
+    {
+        public string CustomerId { get; set; } // CustomerID (length: 5)
+        public string CompanyName { get; set; } // CompanyName (length: 40)
+        public string City { get; set; } // City (length: 15)
+        public string Country { get; set; } // Country (length: 15)
+    }
+
     // Region
     [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.18.1.0")]
     public class Region

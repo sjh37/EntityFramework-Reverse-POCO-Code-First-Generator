@@ -542,10 +542,6 @@
                             tables.RemoveAt(i);
                             continue;
                         }
-                        if(!tables[i].IsView && string.IsNullOrEmpty(tables[i].PrimaryKeyNameHumanCase()))
-                        {
-                            tables.RemoveAt(i);
-                        }
                     }
 
                     // Must be done in this order
@@ -558,15 +554,8 @@
                     reader.ProcessForeignKeys(fkList, tables, UseCamelCase, PrependSchemaName, CollectionType, false, IncludeComments);
                     tables.IdentifyMappingTables(fkList, UseCamelCase, CollectionType, false, IncludeComments, IsSqlCe);
 
-                    // Remove views that only consist of all nullable fields.
-                    // I.e. they do not contain any primary key, and therefore cannot be used by EF
-                    for(int i = tables.Count - 1; i >= 0; i--)
-                    {
-                        if(string.IsNullOrEmpty(tables[i].PrimaryKeyNameHumanCase()))
-                        {
-                            tables.RemoveAt(i);
-                        }
-                    }
+                    foreach(var t in tables)
+                        t.SetHasPrimaryKey();
 
                     conn.Close();
                     return tables;
@@ -2511,6 +2500,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             public bool IsView;
             public bool HasForeignKey;
             public bool HasNullableColumns;
+            public bool HasPrimaryKey;
 
             public List<Column> Columns;
             public List<string> ReverseNavigationProperty;
@@ -2536,6 +2526,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     col.ResetNavigationProperties();
             }
 
+            public void SetHasPrimaryKey()
+            {
+                HasPrimaryKey = Columns.Any(x => x.IsPrimaryKey);
+            }
+            
             public IEnumerable<Column> PrimaryKeys
             {
                 get
