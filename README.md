@@ -71,11 +71,6 @@ A simple UI for the generator is available at
 [efreversepocoui.codeplex.com](https://efreversepocoui.codeplex.com/) which helps you
 to create a regex to filter your tables.
 
-### Notice
-
-This is a derivitive work originally based on the PetaPoco template.
-It has been extensively changed to generate EntityFramework code.
-
 Regards,
 Simon Hughes
 
