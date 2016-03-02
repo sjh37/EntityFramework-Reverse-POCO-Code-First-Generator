@@ -2183,6 +2183,12 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     ParentTable = table
                 };
 
+                if (col.IsPrimaryKey && !col.IsIdentity && col.IsStoreGenerated && typename == "uniqueidentifier")
+                {
+                    col.IsStoreGenerated = false;
+                    col.IsIdentity = true;
+                }
+
                 var fullName = string.Format("{0}.{1}.{2}", table.Schema, table.Name, col.Name);
                 if(columnFilterExclude != null && !col.IsPrimaryKey && (columnFilterExclude.IsMatch(col.Name) || columnFilterExclude.IsMatch(fullName)))
                     col.Hidden = true;
