@@ -41,6 +41,8 @@
         string DbContextName = "MyDbContext";
         string DbContextInterfaceBaseClasses = "System.IDisposable";
         string DbContextBaseClass = "DbContext";
+        string _defaultConstructorArgument = null;
+        string DefaultConstructorArgument {get {return _defaultConstructorArgument ?? String.Format('"' + "Name={0}" + '"',ConnectionStringName);} set {_defaultConstructorArgument = value;}}
         string ConfigurationClassName = "Configuration";
         string CollectionType = "System.Collections.Generic.List";
         bool MakeClassesPartial = true;
