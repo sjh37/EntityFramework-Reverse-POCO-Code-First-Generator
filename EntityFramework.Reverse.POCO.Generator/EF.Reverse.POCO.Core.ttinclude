@@ -43,6 +43,7 @@
         string DbContextBaseClass = "DbContext";
         string ConfigurationClassName = "Configuration";
         string CollectionType = "System.Collections.Generic.List";
+        static bool NullableShortHand = true;
         bool MakeClassesPartial = true;
         bool GenerateSeparateFiles = false;
         bool IsSqlCe = false;
@@ -195,11 +196,9 @@
             }
         }
 
-        private static string CheckNullable(Column col)
+        private static bool IsNullable(Column col)
         {
-            if(col.IsNullable && !NotNullable.Contains(col.PropertyType.ToLower()))
-                return "?";
-            return "";
+            return col.IsNullable && !NotNullable.Contains(col.PropertyType.ToLower());
         }
 
         private string GetConnectionString(ref string connectionStringName, out string providerName, out string configFilePath)
@@ -434,7 +433,7 @@
             // Fall back to default
             var project = GetCurrentProject();
             return Path.GetDirectoryName(project.FileName) + "\\App_Data\\";
-        }		
+        }        
 
         private static string ZapPassword(string connectionString)
         {
@@ -783,7 +782,13 @@
                         comments += ". " + ExtendedProperty;
                 }
 
-                Entity = string.Format("public {0}{1} {2} {3}{4}", PropertyType, CheckNullable(this), NameHumanCase, "{ get; set; }", comments);
+                Entity = string.Format("public {0} {1} {2}{3}", WrapIfNullable(PropertyType, this), NameHumanCase, "{ get; set; }", comments);
+            }
+
+            private string WrapIfNullable(string propType, Column col) {
+                if(!IsNullable(col))
+                    return propType;
+                return String.Format(NullableShortHand ? "{0}?" : "System.Nullable<{0}>",propType);
             }
 
             private void SetupConfig()
@@ -1010,15 +1015,15 @@
 
             public static bool IsNullable(DataColumn col)
             {
-                if (col.AllowDBNull && !NotNullable.Contains(col.DataType.Name.ToLower()))
-                    return true;
-                return false;
+                return col.AllowDBNull && !NotNullable.Contains(col.DataType.Name.ToLower());
             }
 
-            public static string CheckNullable(DataColumn col)
-            {
-                return IsNullable(col) ? "? " : " ";
+            public static string WrapTypeIfNullable(string propertyType, DataColumn col) {
+                if(!IsNullable(col))
+                    return propertyType;
+                return String.Format(NullableShortHand ? "{0}?" : "System.Nullable<{0}>",propertyType);
             }
+
         }
 
         public enum StoredProcedureParameterMode
@@ -2222,8 +2227,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 if(char.IsDigit(col.NameHumanCase[0]))
                     col.NameHumanCase = "_" + col.NameHumanCase;
 
-                if(CheckNullable(col) != string.Empty)
-                    table.HasNullableColumns = true;
+                table.HasNullableColumns = IsNullable(col);
 
                 col = updateColumn(col, table);
 
