@@ -193,7 +193,7 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKey
         }
 
         public <#=DbContextName#>()
-            : base("Name=<#=ConnectionStringName#>")
+            : base(<#=DefaultConstructorArgument#>)
         {
 <#if(MakeClassesPartial) {#>            InitializePartial();
 <#}#>
