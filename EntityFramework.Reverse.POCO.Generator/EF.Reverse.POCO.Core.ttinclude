@@ -39,8 +39,8 @@
         bool IncludeTableValuedFunctions = false;
         bool AddUnitTestingDbContext = true;
         string DbContextName = "MyDbContext";
-		string _dbContextInterfaceName = null;
-		string DbContextInterfaceName {get {return _dbContextInterfaceName ?? ("I" + DbContextName);} set {_dbContextInterfaceName = value;}}
+        string _dbContextInterfaceName = null;
+        string DbContextInterfaceName {get {return _dbContextInterfaceName ?? ("I" + DbContextName);} set {_dbContextInterfaceName = value;}}
         string DbContextInterfaceBaseClasses = "System.IDisposable";
         string DbContextBaseClass = "DbContext";
         string ConfigurationClassName = "Configuration";
