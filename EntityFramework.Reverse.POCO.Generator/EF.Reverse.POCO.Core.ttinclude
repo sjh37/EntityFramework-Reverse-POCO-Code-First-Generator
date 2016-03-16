@@ -67,6 +67,7 @@
         Regex TableFilterInclude = null;
         Regex StoredProcedureFilterExclude = null;
         Regex StoredProcedureFilterInclude = null;
+        bool IncludeForeignKeys = true;
         Dictionary<string, string> StoredProcedureReturnTypes = new Dictionary<string, string>();
         Regex ColumnFilterExclude = null;
         string[] ConfigFilenameSearchOrder = null;
@@ -549,16 +550,25 @@
                     }
 
                     // Must be done in this order
-                    var fkList = reader.ReadForeignKeys(TableRename);
-                    reader.IdentifyForeignKeys(fkList, tables);
-                    reader.ProcessForeignKeys(fkList, tables, UseCamelCase, PrependSchemaName, CollectionType, true, IncludeComments);
-                    if(UseMappingTables)
-                        tables.IdentifyMappingTables(fkList, UseCamelCase, CollectionType, true, IncludeComments, IsSqlCe);
+                    List<ForeignKey> fkList = null;
+                    if (IncludeForeignKeys)
+                    {
+                        fkList = reader.ReadForeignKeys(TableRename);
+                        reader.IdentifyForeignKeys(fkList, tables);
+                        reader.ProcessForeignKeys(fkList, tables, UseCamelCase, PrependSchemaName, CollectionType, true, IncludeComments);
+
+                        if(UseMappingTables)
+                            tables.IdentifyMappingTables(fkList, UseCamelCase, CollectionType, true, IncludeComments, IsSqlCe);
+                    }
 
                     tables.ResetNavigationProperties();
-                    reader.ProcessForeignKeys(fkList, tables, UseCamelCase, PrependSchemaName, CollectionType, false, IncludeComments);
-                    if(UseMappingTables)
-                        tables.IdentifyMappingTables(fkList, UseCamelCase, CollectionType, false, IncludeComments, IsSqlCe);
+                    
+                    if (IncludeForeignKeys && fkList != null)
+                    {
+                        reader.ProcessForeignKeys(fkList, tables, UseCamelCase, PrependSchemaName, CollectionType, false, IncludeComments);
+                        if(UseMappingTables)
+                            tables.IdentifyMappingTables(fkList, UseCamelCase, CollectionType, false, IncludeComments, IsSqlCe);
+                    }
 
                     foreach(var t in tables)
                         t.SetHasPrimaryKey();
