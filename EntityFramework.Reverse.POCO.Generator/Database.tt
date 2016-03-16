@@ -225,8 +225,8 @@
 
     ForeignKeyFilter = (ForeignKey fk) =>
     {
-        // return null to not include this foreign key
-        // Example, to not include any foreign key for a table, use:
+        // Return null to exclude this foreign key
+        // Example, to exclude all foreign keys for the Categories table, use:
         // if (fk.PkTableName == "Categories")
         //    return null;
         return fk;
