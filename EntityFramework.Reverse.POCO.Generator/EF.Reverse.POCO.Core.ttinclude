@@ -50,6 +50,7 @@
         static bool NullableShortHand = true;
         bool MakeClassesPartial = true;
         bool GenerateSeparateFiles = false;
+        bool UseMappingTables = true;
         bool IsSqlCe = false;
         string FileExtension = ".cs";
         bool UseCamelCase = true;
@@ -551,11 +552,13 @@
                     var fkList = reader.ReadForeignKeys(TableRename);
                     reader.IdentifyForeignKeys(fkList, tables);
                     reader.ProcessForeignKeys(fkList, tables, UseCamelCase, PrependSchemaName, CollectionType, true, IncludeComments);
-                    tables.IdentifyMappingTables(fkList, UseCamelCase, CollectionType, true, IncludeComments, IsSqlCe);
+                    if(UseMappingTables)
+                        tables.IdentifyMappingTables(fkList, UseCamelCase, CollectionType, true, IncludeComments, IsSqlCe);
 
                     tables.ResetNavigationProperties();
                     reader.ProcessForeignKeys(fkList, tables, UseCamelCase, PrependSchemaName, CollectionType, false, IncludeComments);
-                    tables.IdentifyMappingTables(fkList, UseCamelCase, CollectionType, false, IncludeComments, IsSqlCe);
+                    if(UseMappingTables)
+                        tables.IdentifyMappingTables(fkList, UseCamelCase, CollectionType, false, IncludeComments, IsSqlCe);
 
                     foreach(var t in tables)
                         t.SetHasPrimaryKey();

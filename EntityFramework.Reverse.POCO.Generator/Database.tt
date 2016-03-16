@@ -17,6 +17,7 @@
     ConfigFilenameSearchOrder = new[] { "app.config", "web.config", "app.config.transform", "web.config.transform" }; // Add more here if required. The config files are searched for in the local project first, then the whole solution second.
     MakeClassesPartial = false;
     GenerateSeparateFiles = false;
+    UseMappingTables = true; // If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
     UseCamelCase = true;    // This will rename the tables & fields to use CamelCase. If false table & field names will be left alone.
     IncludeComments = true; // Adds comments to the generated code
     IncludeExtendedPropertyComments = ExtendedPropertyCommentsStyle.InSummaryBlock; // Adds extended properties as comments to the generated code

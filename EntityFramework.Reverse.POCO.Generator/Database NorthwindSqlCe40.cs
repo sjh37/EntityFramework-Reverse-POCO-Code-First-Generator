@@ -468,8 +468,8 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         public string LastName { get; set; } // Last Name (length: 20)
         public string FirstName { get; set; } // First Name (length: 10)
         public string Title { get; set; } // Title (length: 30)
-        public System.DateTime? BirthDate { get; set; } // Birth Date
-        public System.DateTime? HireDate { get; set; } // Hire Date
+        public System.Nullable<System.DateTime> BirthDate { get; set; } // Birth Date
+        public System.Nullable<System.DateTime> HireDate { get; set; } // Hire Date
         public string Address { get; set; } // Address (length: 60)
         public string City { get; set; } // City (length: 15)
         public string Region { get; set; } // Region (length: 15)
@@ -479,7 +479,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         public string Extension { get; set; } // Extension (length: 4)
         public byte[] Photo { get; set; } // Photo (length: 1073741823)
         public string Notes { get; set; } // Notes (length: 536870911)
-        public int? ReportsTo { get; set; } // Reports To
+        public System.Nullable<int> ReportsTo { get; set; } // Reports To
 
         // Reverse navigation
         public virtual System.Collections.Generic.ICollection<Order> Orders { get; set; } // Orders.Orders_FK02
@@ -496,18 +496,18 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     {
         public int OrderId { get; set; } // Order ID (Primary key)
         public string CustomerId { get; set; } // Customer ID (length: 5)
-        public int? EmployeeId { get; set; } // Employee ID
+        public System.Nullable<int> EmployeeId { get; set; } // Employee ID
         public string ShipName { get; set; } // Ship Name (length: 40)
         public string ShipAddress { get; set; } // Ship Address (length: 60)
         public string ShipCity { get; set; } // Ship City (length: 15)
         public string ShipRegion { get; set; } // Ship Region (length: 15)
         public string ShipPostalCode { get; set; } // Ship Postal Code (length: 10)
         public string ShipCountry { get; set; } // Ship Country (length: 15)
-        public int? ShipVia { get; set; } // Ship Via
-        public System.DateTime? OrderDate { get; set; } // Order Date
-        public System.DateTime? RequiredDate { get; set; } // Required Date
-        public System.DateTime? ShippedDate { get; set; } // Shipped Date
-        public decimal? Freight { get; set; } // Freight
+        public System.Nullable<int> ShipVia { get; set; } // Ship Via
+        public System.Nullable<System.DateTime> OrderDate { get; set; } // Order Date
+        public System.Nullable<System.DateTime> RequiredDate { get; set; } // Required Date
+        public System.Nullable<System.DateTime> ShippedDate { get; set; } // Shipped Date
+        public System.Nullable<decimal> Freight { get; set; } // Freight
 
         // Reverse navigation
         public virtual System.Collections.Generic.ICollection<OrderDetail> OrderDetails { get; set; } // Many to many mapping
@@ -542,15 +542,15 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     public class Product
     {
         public int ProductId { get; set; } // Product ID (Primary key)
-        public int? SupplierId { get; set; } // Supplier ID
-        public int? CategoryId { get; set; } // Category ID
+        public System.Nullable<int> SupplierId { get; set; } // Supplier ID
+        public System.Nullable<int> CategoryId { get; set; } // Category ID
         public string ProductName { get; set; } // Product Name (length: 40)
         public string EnglishName { get; set; } // English Name (length: 40)
         public string QuantityPerUnit { get; set; } // Quantity Per Unit (length: 20)
-        public decimal? UnitPrice { get; set; } // Unit Price
-        public short? UnitsInStock { get; set; } // Units In Stock
-        public short? UnitsOnOrder { get; set; } // Units On Order
-        public short? ReorderLevel { get; set; } // Reorder Level
+        public System.Nullable<decimal> UnitPrice { get; set; } // Unit Price
+        public System.Nullable<short> UnitsInStock { get; set; } // Units In Stock
+        public System.Nullable<short> UnitsOnOrder { get; set; } // Units On Order
+        public System.Nullable<short> ReorderLevel { get; set; } // Reorder Level
         public bool Discontinued { get; set; } // Discontinued
 
         // Reverse navigation

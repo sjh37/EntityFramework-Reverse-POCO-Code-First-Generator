@@ -7,20 +7,24 @@
     // Main settings **********************************************************************************************************************
     Namespace = "EntityFramework_Reverse_POCO_Generator.SqlCe4"; // Override the default namespace here
     DbContextName = "MyDbContextSqlCE4";
+    //DbContextInterfaceName = "IMyDbContext"; //Defaults to "I" + DbContextName
     DbContextInterfaceBaseClasses = "System.IDisposable";    // Specify what the base classes are for your database context interface
     DbContextBaseClass = "System.Data.Entity.DbContext";   // Specify what the base class is for your DbContext. For ASP.NET Identity use "IdentityDbContext<ApplicationUser>"
     ConnectionStringName = "MyDbContextSqlCE4";  // Searches for this connection string in config files listed below
+    //DefaultConstructorArgument = "EnvironmentConnectionStrings.MyDbContext"; //defaults to "Name=" + ConnectionStringName
     TargetFrameworkVersion = "4.51"; // Please set this to your .NET framework version, 4.0, 4.5, 4.51, etc.
     ConfigurationClassName = "Configuration"; // Configuration, Mapping, Map, etc. This is appended to the Poco class name to configure the mappings.
     ConfigFilenameSearchOrder = new[] { "app.config", "web.config", "app.config.transform", "web.config.transform" }; // Add more here if required. The config files are searched for in the local project first, then the whole solution second.
     MakeClassesPartial = false;
     GenerateSeparateFiles = false;
+    UseMappingTables = true; // If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
     UseCamelCase = true;    // This will rename the tables & fields to use CamelCase. If false table & field names will be left alone.
     IncludeComments = true; // Adds comments to the generated code
     IncludeExtendedPropertyComments = ExtendedPropertyCommentsStyle.InSummaryBlock; // Adds extended properties as comments to the generated code
     IncludeViews = true;
     DisableGeographyTypes = false; // Turns off use of System.Data.Entity.Spatial.DbGeography and System.Data.Entity.Spatial.DbGeometry as OData doesn't support entities with geometry/geography types.
     CollectionType = "System.Collections.Generic.List";  // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example. Add "System.Collections.ObjectModel" to AdditionalNamespaces if setting the CollectionType = "ObservableCollection".
+    NullableShortHand = false; //true => T?, false => Nullable<T>
     AddUnitTestingDbContext = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing
     AdditionalNamespaces = new[] { "" };  // To include extra namespaces, include them here. i.e. "Microsoft.AspNet.Identity.EntityFramework"
     AdditionalContextInterfaceItems = new[] // To include extra db context interface items, include them here. Also set MakeClassesPartial=true, and implement the partial DbContext class functions.
