@@ -67,7 +67,6 @@
         Regex TableFilterInclude = null;
         Regex StoredProcedureFilterExclude = null;
         Regex StoredProcedureFilterInclude = null;
-        bool IncludeForeignKeys = true;
         Dictionary<string, string> StoredProcedureReturnTypes = new Dictionary<string, string>();
         Regex ColumnFilterExclude = null;
         string[] ConfigFilenameSearchOrder = null;
@@ -81,6 +80,7 @@
         Func<string, string, string> TableRename;
         Func<string, string, string> StoredProcedureRename;
         Func<Column, Table, Column> UpdateColumn;
+        Func<ForeignKey, ForeignKey> ForeignKeyFilter;
         string MigrationConfigurationFileName = null;
         string MigrationStrategy = "MigrateDatabaseToLatestVersion";
         string ContextKey = null;
@@ -550,25 +550,18 @@
                     }
 
                     // Must be done in this order
-                    List<ForeignKey> fkList = null;
-                    if (IncludeForeignKeys)
-                    {
-                        fkList = reader.ReadForeignKeys(TableRename);
-                        reader.IdentifyForeignKeys(fkList, tables);
-                        reader.ProcessForeignKeys(fkList, tables, UseCamelCase, PrependSchemaName, CollectionType, true, IncludeComments);
+                    var fkList = reader.ReadForeignKeys(TableRename, ForeignKeyFilter);
+                    reader.IdentifyForeignKeys(fkList, tables);
+                    reader.ProcessForeignKeys(fkList, tables, UseCamelCase, PrependSchemaName, CollectionType, true, IncludeComments);
 
-                        if(UseMappingTables)
-                            tables.IdentifyMappingTables(fkList, UseCamelCase, CollectionType, true, IncludeComments, IsSqlCe);
-                    }
+                    if(UseMappingTables)
+                        tables.IdentifyMappingTables(fkList, UseCamelCase, CollectionType, true, IncludeComments, IsSqlCe);
 
                     tables.ResetNavigationProperties();
                     
-                    if (IncludeForeignKeys && fkList != null)
-                    {
-                        reader.ProcessForeignKeys(fkList, tables, UseCamelCase, PrependSchemaName, CollectionType, false, IncludeComments);
-                        if(UseMappingTables)
-                            tables.IdentifyMappingTables(fkList, UseCamelCase, CollectionType, false, IncludeComments, IsSqlCe);
-                    }
+                    reader.ProcessForeignKeys(fkList, tables, UseCamelCase, PrependSchemaName, CollectionType, false, IncludeComments);
+                    if(UseMappingTables)
+                        tables.IdentifyMappingTables(fkList, UseCamelCase, CollectionType, false, IncludeComments, IsSqlCe);
 
                     foreach(var t in tables)
                         t.SetHasPrimaryKey();
@@ -1220,7 +1213,7 @@
             public GeneratedTextTransformation Outer;
             public abstract Tables ReadSchema(Regex schemaFilterExclude, Regex tableFilterExclude, Regex columnFilterExclude, bool useCamelCase, bool prependSchemaName, bool includeComments, ExtendedPropertyCommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, Func<Column, Table, Column> updateColumn);
             public abstract List<StoredProcedure> ReadStoredProcs(Regex SchemaFilterExclude, Regex storedProcedureFilterExclude, bool useCamelCase, bool prependSchemaName , Func<string, string, string> StoredProcedureRename, bool includeTableValuedFunctions);
-            public abstract List<ForeignKey> ReadForeignKeys(Func<string, string, string> tableRename);
+            public abstract List<ForeignKey> ReadForeignKeys(Func<string, string, string> tableRename, Func<ForeignKey, ForeignKey> foreignKeyFilter);
             public abstract void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool useCamelCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, bool includeComments);
             public abstract void IdentifyForeignKeys(List<ForeignKey> fkList, Tables tables);
             public abstract void ReadUniqueIndexes(Tables tables);
@@ -1725,7 +1718,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 return result;
             }
 
-            public override List<ForeignKey> ReadForeignKeys(Func<string, string, string> tableRename)
+            public override List<ForeignKey> ReadForeignKeys(Func<string, string, string> tableRename, Func<ForeignKey, ForeignKey> foreignKeyFilter)
             {
                 var fkList = new List<ForeignKey>();
                 if(Cmd == null)
@@ -1753,7 +1746,12 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         string fkTableNameFiltered = tableRename(fkTableName, fkSchema);
                         string pkTableNameFiltered = tableRename(pkTableName, pkSchema);
 
-                        fkList.Add(new ForeignKey(fkTableName, fkSchema, pkTableName, pkSchema, fkColumn, pkColumn, constraintName, fkTableNameFiltered, pkTableNameFiltered, ordinal));
+                        var fk = new ForeignKey(fkTableName, fkSchema, pkTableName, pkSchema, fkColumn, pkColumn,
+                            constraintName, fkTableNameFiltered, pkTableNameFiltered, ordinal);
+
+                        var filteredFk = foreignKeyFilter(fk);
+                        if(filteredFk != null)
+                            fkList.Add(filteredFk);
                     }
                 }
                 
