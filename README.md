@@ -71,6 +71,9 @@ A simple UI for the generator is available at
 [efreversepocoui.codeplex.com](https://efreversepocoui.codeplex.com/) which helps you
 to create a regex to filter your tables.
 
+## Editing TT (T4) Files
+To have full syntax highlighting and intellisense when editing TT files, I use the Resharper plugin ForTea. I can't imagine editing TT files without it.
+
 Regards,
 Simon Hughes
 
