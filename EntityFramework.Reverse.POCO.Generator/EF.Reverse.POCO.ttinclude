@@ -199,13 +199,29 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKey
 <#}#>
         }
 
-        public <#=DbContextName#>(string connectionString) : base(connectionString)
+        public <#=DbContextName#>(string connectionString)
+            : base(connectionString)
         {
 <#if(MakeClassesPartial) {#>            InitializePartial();
 <#}#>
         }
 
-        public <#=DbContextName#>(string connectionString, System.Data.Entity.Infrastructure.DbCompiledModel model) : base(connectionString, model)
+        public <#=DbContextName#>(string connectionString, System.Data.Entity.Infrastructure.DbCompiledModel model)
+            : base(connectionString, model)
+        {
+<#if(MakeClassesPartial) {#>            InitializePartial();
+<#}#>
+        }
+
+        public <#=DbContextName#>(System.Data.Common.DbConnection existingConnection, bool contextOwnsConnection)
+            : base(existingConnection, contextOwnsConnection)
+        {
+<#if(MakeClassesPartial) {#>            InitializePartial();
+<#}#>
+        }
+
+        public <#=DbContextName#>(System.Data.Common.DbConnection existingConnection, System.Data.Entity.Infrastructure.DbCompiledModel model, bool contextOwnsConnection)
+            : base(existingConnection, model, contextOwnsConnection)
         {
 <#if(MakeClassesPartial) {#>            InitializePartial();
 <#}#>

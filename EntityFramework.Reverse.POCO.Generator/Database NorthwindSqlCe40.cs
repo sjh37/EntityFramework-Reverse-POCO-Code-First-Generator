@@ -68,11 +68,23 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         {
         }
 
-        public MyDbContextSqlCE4(string connectionString) : base(connectionString)
+        public MyDbContextSqlCE4(string connectionString)
+            : base(connectionString)
         {
         }
 
-        public MyDbContextSqlCE4(string connectionString, System.Data.Entity.Infrastructure.DbCompiledModel model) : base(connectionString, model)
+        public MyDbContextSqlCE4(string connectionString, System.Data.Entity.Infrastructure.DbCompiledModel model)
+            : base(connectionString, model)
+        {
+        }
+
+        public MyDbContextSqlCE4(System.Data.Common.DbConnection existingConnection, bool contextOwnsConnection)
+            : base(existingConnection, contextOwnsConnection)
+        {
+        }
+
+        public MyDbContextSqlCE4(System.Data.Common.DbConnection existingConnection, System.Data.Entity.Infrastructure.DbCompiledModel model, bool contextOwnsConnection)
+            : base(existingConnection, model, contextOwnsConnection)
         {
         }
 
