@@ -222,6 +222,10 @@
 
     Func<StoredProcedure, string> WriteStoredProcFunctionName = sp => sp.NameHumanCase;
 
+    
+    // ***********************************************************************
+    // ** Experienced developers only below this point
+
     Func<StoredProcedure, bool, string> WriteStoredProcFunctionParams = (sp, includeProcResult) =>
     {
         var sb = new StringBuilder();
