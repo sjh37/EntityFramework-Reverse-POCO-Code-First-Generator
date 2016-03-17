@@ -188,7 +188,7 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKey
 <#if(string.IsNullOrWhiteSpace(MigrationConfigurationFileName)) {#>
             System.Data.Entity.Database.SetInitializer<<#=DbContextName#>>(null);
 <#} else {#>
-            System.Data.Entity.Database.SetInitializer(new <#=MigrationStrategy#><<#=DbContextName#><#if (MigrationStrategy == "MigrateDatabaseToLatestVersion"){#>, <#=MigrationConfigurationFileName#><#}#>>());
+            System.Data.Entity.Database.SetInitializer(new System.Data.Entity.<#=MigrationStrategy#><<#=DbContextName#><#if (MigrationStrategy == "MigrateDatabaseToLatestVersion"){#>, <#=MigrationConfigurationFileName#><#}#>>());
 <#}#>
         }
 
