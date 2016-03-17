@@ -130,7 +130,7 @@ if (IncludeTableValuedFunctions)
     // ************************************************************************
     // Db Migration Configuration
 <# } #>
-    public <# if(MakeClassesPartial) { #>partial <# } #>class <#=MigrationConfigurationFileName#> : DbMigrationsConfiguration<<#=DbContextName#>>
+    public <# if(MakeClassesPartial) { #>partial <# } #>class <#=MigrationConfigurationFileName#> : System.Data.Entity.Migrations.DbMigrationsConfiguration<<#=DbContextName#>>
     {
         public <#=MigrationConfigurationFileName#>()
         {
