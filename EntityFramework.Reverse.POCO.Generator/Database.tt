@@ -221,8 +221,6 @@
 
     Func<Column, string> WritePocoColumn = c => c.Entity;
 
-    Func<StoredProcedure, string> WriteStoredProcFunctionName = sp => sp.NameHumanCase;
-
     ForeignKeyFilter = (ForeignKey fk) =>
     {
         // Return null to exclude this foreign key
@@ -232,8 +230,12 @@
         return fk;
     };
     
+
+
     // ***********************************************************************
     // ** Experienced developers only below this point
+
+    Func<StoredProcedure, string> WriteStoredProcFunctionName = sp => sp.NameHumanCase;
 
     Func<StoredProcedure, bool, string> WriteStoredProcFunctionParams = (sp, includeProcResult) =>
     {
