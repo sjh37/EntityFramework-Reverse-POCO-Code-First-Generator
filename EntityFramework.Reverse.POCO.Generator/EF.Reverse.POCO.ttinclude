@@ -130,6 +130,7 @@ if (IncludeTableValuedFunctions)
     // ************************************************************************
     // Db Migration Configuration
 <# } #>
+    <#= CodeGeneratedAttribute #>
     internal sealed <# if(MakeClassesPartial) { #>partial <# } #>class <#=MigrationConfigurationFileName#> : System.Data.Entity.Migrations.DbMigrationsConfiguration<<#=DbContextName#>>
     {
         public <#=MigrationConfigurationFileName#>()
@@ -171,6 +172,7 @@ foreach(var usingStatement in usingsContext.Distinct().OrderBy(x => x)) { #>
 <# } #>
 
 <# } #>
+    <#= CodeGeneratedAttribute #>
     public <# if(MakeClassesPartial) { #>partial <# } #>class <#=DbContextName#> : <#=DbContextBaseClass#>, <#=DbContextInterfaceName#>
     {
 <#
@@ -671,7 +673,8 @@ if (IncludeTableValuedFunctions)
 <#}#>    } 
 <# if (IsSupportedFrameworkVersion("4.5"))
 { #>
- 
+
+    <#= CodeGeneratedAttribute #>
     public class FakeDbAsyncQueryProvider<TEntity> : System.Data.Entity.Infrastructure.IDbAsyncQueryProvider 
     { 
         private readonly IQueryProvider _inner; 
@@ -711,7 +714,8 @@ if (IncludeTableValuedFunctions)
             return System.Threading.Tasks.Task.FromResult(Execute<TResult>(expression)); 
         } 
     } 
- 
+    
+    <#= CodeGeneratedAttribute #>
     public class FakeDbAsyncEnumerable<T> : EnumerableQuery<T>, System.Data.Entity.Infrastructure.IDbAsyncEnumerable<T>, IQueryable<T> 
     { 
         public FakeDbAsyncEnumerable(System.Collections.Generic.IEnumerable<T> enumerable) 
@@ -738,6 +742,7 @@ if (IncludeTableValuedFunctions)
         } 
     } 
  
+    <#= CodeGeneratedAttribute #>
     public class FakeDbAsyncEnumerator<T> : System.Data.Entity.Infrastructure.IDbAsyncEnumerator<T> 
     { 
         private readonly System.Collections.Generic.IEnumerator<T> _inner; 
@@ -790,9 +795,7 @@ if(!tbl.HasPrimaryKey) { #>
 <# if(AddWcfDataAttributes) { #>    [System.Runtime.Serialization.DataContract<#=ExtraWcfDataContractAttributes#>]
 <# } 
     WritePocoClassAttributes(tbl);#>
-<#if (tbl.ReverseNavigationCtor.Any()){ #>
     <#= CodeGeneratedAttribute #>
-<# } #>
     public <# if(MakeClassesPartial) { #>partial <# } #>class <#=tbl.NameHumanCase#><#=WritePocoBaseClasses != null ? WritePocoBaseClasses(tbl) : "" #>
     {
 <# WritePocoBaseClassBody(tbl); #>
@@ -882,6 +885,7 @@ foreach(Table tbl in tables.Where(t => !t.IsMapping && t.HasPrimaryKey).OrderBy(
 <# fileManager.StartNewFile(tbl.NameHumanCase + ConfigurationClassName + FileExtension);
 if(IncludeComments){#>    // <#=tbl.Name#>
 <# } #>
+    <#= CodeGeneratedAttribute #>
     public <# if(MakeClassesPartial) { #>partial <# } #>class <#=tbl.NameHumanCase + ConfigurationClassName#> : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<<#=tbl.NameHumanCase#>>
     {
         public <#=tbl.NameHumanCase + ConfigurationClassName#>()
@@ -943,6 +947,7 @@ foreach(StoredProcedure sp in storedProcs.Where(x => x.ReturnModels.Count > 0 &&
 <# fileManager.StartNewFile(spReturnClassName + FileExtension);#>
 <# if(AddWcfDataAttributes) { #>    [System.Runtime.Serialization.DataContract<#=ExtraWcfDataContractAttributes#>]
 <# } #>
+    <#= CodeGeneratedAttribute #>
     public <# if(MakeClassesPartial) { #>partial <# } #>class <#= spReturnClassName #>
     {
 <#
@@ -962,6 +967,7 @@ if(returnModelCount < 2)
     {
         int SubDataMemberOrder = 1;
         model++;#>
+        <#= CodeGeneratedAttribute #>
         public class ResultSetModel<#= model #>
         {
 <#      foreach (var returnColumn in returnModel)
