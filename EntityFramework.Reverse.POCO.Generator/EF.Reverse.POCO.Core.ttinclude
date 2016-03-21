@@ -2692,7 +2692,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             {
                 IsMapping = false;
 
-                var nonReadOnlyColumns = Columns.Where(c => !c.IsIdentity && !c.IsRowVersion && !c.IsStoreGenerated).ToList();
+                var nonReadOnlyColumns = Columns.Where(c => !c.IsIdentity && !c.IsRowVersion && !c.IsStoreGenerated && !c.Hidden).ToList();
                 
                 // Ignoring read-only columns, it must have only 2 columns to be a mapping table
                 if (nonReadOnlyColumns.Count != 2)
