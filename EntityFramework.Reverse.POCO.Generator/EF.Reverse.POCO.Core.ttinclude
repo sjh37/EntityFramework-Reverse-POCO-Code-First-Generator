@@ -1919,9 +1919,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         if(storedProcedureFilterExclude != null && storedProcedureFilterExclude.IsMatch(spName))
                             continue;
 
-                        if (lastSp != spName || sp == null)
+                        var fullname = schema + "." + spName;
+
+                        if (lastSp != fullname || sp == null)
                         {
-                            lastSp = spName;
+                            lastSp = fullname;
                             sp = new StoredProcedure
                             {
                                 IsTVF = isTVF,
