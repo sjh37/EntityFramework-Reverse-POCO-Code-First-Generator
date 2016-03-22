@@ -150,7 +150,11 @@
     UpdateColumn = (Column column, Table table) => 
     {
         // Example
-        //if (column.NameHumanCase == "PkId")
+        //if (column.IsPrimaryKey && column.NameHumanCase == "PkId")
+        //    column.NameHumanCase = "Id";
+
+        // Remove table name from primary key
+        //if (column.IsPrimaryKey && column.NameHumanCase.Equals(table.NameHumanCase + "Id", StringComparison.InvariantCultureIgnoreCase))
         //    column.NameHumanCase = "Id";
 
         // Perform Enum property type replacement
