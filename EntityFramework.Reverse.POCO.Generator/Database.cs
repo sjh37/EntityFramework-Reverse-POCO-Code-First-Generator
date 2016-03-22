@@ -805,13 +805,13 @@ namespace EntityFramework_Reverse_POCO_Generator
     {
         public int ProductId { get; set; } // ProductID
         public string ProductName { get; set; } // ProductName (length: 40)
-        public System.Nullable<int> SupplierId { get; set; } // SupplierID
-        public System.Nullable<int> CategoryId { get; set; } // CategoryID
+        public int? SupplierId { get; set; } // SupplierID
+        public int? CategoryId { get; set; } // CategoryID
         public string QuantityPerUnit { get; set; } // QuantityPerUnit (length: 20)
-        public System.Nullable<decimal> UnitPrice { get; set; } // UnitPrice
-        public System.Nullable<short> UnitsInStock { get; set; } // UnitsInStock
-        public System.Nullable<short> UnitsOnOrder { get; set; } // UnitsOnOrder
-        public System.Nullable<short> ReorderLevel { get; set; } // ReorderLevel
+        public decimal? UnitPrice { get; set; } // UnitPrice
+        public short? UnitsInStock { get; set; } // UnitsInStock
+        public short? UnitsOnOrder { get; set; } // UnitsOnOrder
+        public short? ReorderLevel { get; set; } // ReorderLevel
         public bool Discontinued { get; set; } // Discontinued
         public string CategoryName { get; set; } // CategoryName (length: 15)
     }
@@ -839,7 +839,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     public class CategorySalesFor1997
     {
         public string CategoryName { get; set; } // CategoryName (length: 15)
-        public System.Nullable<decimal> CategorySales { get; set; } // CategorySales
+        public decimal? CategorySales { get; set; } // CategorySales
     }
 
     // Current Product List
@@ -912,8 +912,8 @@ namespace EntityFramework_Reverse_POCO_Generator
         public string FirstName { get; set; } // FirstName (length: 10)
         public string Title { get; set; } // Title (length: 30)
         public string TitleOfCourtesy { get; set; } // TitleOfCourtesy (length: 25)
-        public System.Nullable<System.DateTime> BirthDate { get; set; } // BirthDate
-        public System.Nullable<System.DateTime> HireDate { get; set; } // HireDate
+        public System.DateTime? BirthDate { get; set; } // BirthDate
+        public System.DateTime? HireDate { get; set; } // HireDate
         public string Address { get; set; } // Address (length: 60)
         public string City { get; set; } // City (length: 15)
         public string Region { get; set; } // Region (length: 15)
@@ -923,7 +923,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public string Extension { get; set; } // Extension (length: 4)
         public byte[] Photo { get; set; } // Photo (length: 2147483647)
         public string Notes { get; set; } // Notes (length: 1073741823)
-        public System.Nullable<int> ReportsTo { get; set; } // ReportsTo
+        public int? ReportsTo { get; set; } // ReportsTo
         public string PhotoPath { get; set; } // PhotoPath (length: 255)
 
         // Reverse navigation
@@ -961,17 +961,17 @@ namespace EntityFramework_Reverse_POCO_Generator
         public string Country { get; set; } // Country (length: 15)
         public string Salesperson { get; set; } // Salesperson (length: 31)
         public int OrderId { get; set; } // OrderID
-        public System.Nullable<System.DateTime> OrderDate { get; set; } // OrderDate
-        public System.Nullable<System.DateTime> RequiredDate { get; set; } // RequiredDate
-        public System.Nullable<System.DateTime> ShippedDate { get; set; } // ShippedDate
+        public System.DateTime? OrderDate { get; set; } // OrderDate
+        public System.DateTime? RequiredDate { get; set; } // RequiredDate
+        public System.DateTime? ShippedDate { get; set; } // ShippedDate
         public string ShipperName { get; set; } // ShipperName (length: 40)
         public int ProductId { get; set; } // ProductID
         public string ProductName { get; set; } // ProductName (length: 40)
         public decimal UnitPrice { get; set; } // UnitPrice
         public short Quantity { get; set; } // Quantity
         public float Discount { get; set; } // Discount
-        public System.Nullable<decimal> ExtendedPrice { get; set; } // ExtendedPrice
-        public System.Nullable<decimal> Freight { get; set; } // Freight
+        public decimal? ExtendedPrice { get; set; } // ExtendedPrice
+        public decimal? Freight { get; set; } // Freight
     }
 
     // Orders
@@ -980,12 +980,12 @@ namespace EntityFramework_Reverse_POCO_Generator
     {
         public int OrderId { get; set; } // OrderID (Primary key)
         public string CustomerId { get; set; } // CustomerID (length: 5)
-        public System.Nullable<int> EmployeeId { get; set; } // EmployeeID
-        public System.Nullable<System.DateTime> OrderDate { get; set; } // OrderDate
-        public System.Nullable<System.DateTime> RequiredDate { get; set; } // RequiredDate
-        public System.Nullable<System.DateTime> ShippedDate { get; set; } // ShippedDate
-        public System.Nullable<int> ShipVia { get; set; } // ShipVia
-        public System.Nullable<decimal> Freight { get; set; } // Freight
+        public int? EmployeeId { get; set; } // EmployeeID
+        public System.DateTime? OrderDate { get; set; } // OrderDate
+        public System.DateTime? RequiredDate { get; set; } // RequiredDate
+        public System.DateTime? ShippedDate { get; set; } // ShippedDate
+        public int? ShipVia { get; set; } // ShipVia
+        public decimal? Freight { get; set; } // Freight
         public string ShipName { get; set; } // ShipName (length: 40)
         public string ShipAddress { get; set; } // ShipAddress (length: 60)
         public string ShipCity { get; set; } // ShipCity (length: 15)
@@ -1040,7 +1040,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public decimal UnitPrice { get; set; } // UnitPrice
         public short Quantity { get; set; } // Quantity
         public float Discount { get; set; } // Discount
-        public System.Nullable<decimal> ExtendedPrice { get; set; } // ExtendedPrice
+        public decimal? ExtendedPrice { get; set; } // ExtendedPrice
     }
 
     // Orders Qry
@@ -1049,12 +1049,12 @@ namespace EntityFramework_Reverse_POCO_Generator
     {
         public int OrderId { get; set; } // OrderID
         public string CustomerId { get; set; } // CustomerID (length: 5)
-        public System.Nullable<int> EmployeeId { get; set; } // EmployeeID
-        public System.Nullable<System.DateTime> OrderDate { get; set; } // OrderDate
-        public System.Nullable<System.DateTime> RequiredDate { get; set; } // RequiredDate
-        public System.Nullable<System.DateTime> ShippedDate { get; set; } // ShippedDate
-        public System.Nullable<int> ShipVia { get; set; } // ShipVia
-        public System.Nullable<decimal> Freight { get; set; } // Freight
+        public int? EmployeeId { get; set; } // EmployeeID
+        public System.DateTime? OrderDate { get; set; } // OrderDate
+        public System.DateTime? RequiredDate { get; set; } // RequiredDate
+        public System.DateTime? ShippedDate { get; set; } // ShippedDate
+        public int? ShipVia { get; set; } // ShipVia
+        public decimal? Freight { get; set; } // Freight
         public string ShipName { get; set; } // ShipName (length: 40)
         public string ShipAddress { get; set; } // ShipAddress (length: 60)
         public string ShipCity { get; set; } // ShipCity (length: 15)
@@ -1074,7 +1074,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     public class OrderSubtotal
     {
         public int OrderId { get; set; } // OrderID
-        public System.Nullable<decimal> Subtotal { get; set; } // Subtotal
+        public decimal? Subtotal { get; set; } // Subtotal
     }
 
     // Products
@@ -1083,13 +1083,13 @@ namespace EntityFramework_Reverse_POCO_Generator
     {
         public int ProductId { get; set; } // ProductID (Primary key)
         public string ProductName { get; set; } // ProductName (length: 40)
-        public System.Nullable<int> SupplierId { get; set; } // SupplierID
-        public System.Nullable<int> CategoryId { get; set; } // CategoryID
+        public int? SupplierId { get; set; } // SupplierID
+        public int? CategoryId { get; set; } // CategoryID
         public string QuantityPerUnit { get; set; } // QuantityPerUnit (length: 20)
-        public System.Nullable<decimal> UnitPrice { get; set; } // UnitPrice
-        public System.Nullable<short> UnitsInStock { get; set; } // UnitsInStock
-        public System.Nullable<short> UnitsOnOrder { get; set; } // UnitsOnOrder
-        public System.Nullable<short> ReorderLevel { get; set; } // ReorderLevel
+        public decimal? UnitPrice { get; set; } // UnitPrice
+        public short? UnitsInStock { get; set; } // UnitsInStock
+        public short? UnitsOnOrder { get; set; } // UnitsOnOrder
+        public short? ReorderLevel { get; set; } // ReorderLevel
         public bool Discontinued { get; set; } // Discontinued
 
         // Reverse navigation
@@ -1115,7 +1115,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     public class ProductsAboveAveragePrice
     {
         public string ProductName { get; set; } // ProductName (length: 40)
-        public System.Nullable<decimal> UnitPrice { get; set; } // UnitPrice
+        public decimal? UnitPrice { get; set; } // UnitPrice
     }
 
     // Product Sales for 1997
@@ -1124,7 +1124,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     {
         public string CategoryName { get; set; } // CategoryName (length: 15)
         public string ProductName { get; set; } // ProductName (length: 40)
-        public System.Nullable<decimal> ProductSales { get; set; } // ProductSales
+        public decimal? ProductSales { get; set; } // ProductSales
     }
 
     // Products by Category
@@ -1134,7 +1134,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public string CategoryName { get; set; } // CategoryName (length: 15)
         public string ProductName { get; set; } // ProductName (length: 40)
         public string QuantityPerUnit { get; set; } // QuantityPerUnit (length: 20)
-        public System.Nullable<short> UnitsInStock { get; set; } // UnitsInStock
+        public short? UnitsInStock { get; set; } // UnitsInStock
         public bool Discontinued { get; set; } // Discontinued
     }
 
@@ -1173,17 +1173,17 @@ namespace EntityFramework_Reverse_POCO_Generator
         public int CategoryId { get; set; } // CategoryID
         public string CategoryName { get; set; } // CategoryName (length: 15)
         public string ProductName { get; set; } // ProductName (length: 40)
-        public System.Nullable<decimal> ProductSales { get; set; } // ProductSales
+        public decimal? ProductSales { get; set; } // ProductSales
     }
 
     // Sales Totals by Amount
     [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.0.0")]
     public class SalesTotalsByAmount
     {
-        public System.Nullable<decimal> SaleAmount { get; set; } // SaleAmount
+        public decimal? SaleAmount { get; set; } // SaleAmount
         public int OrderId { get; set; } // OrderID
         public string CompanyName { get; set; } // CompanyName (length: 40)
-        public System.Nullable<System.DateTime> ShippedDate { get; set; } // ShippedDate
+        public System.DateTime? ShippedDate { get; set; } // ShippedDate
     }
 
     // Shippers
@@ -1207,18 +1207,18 @@ namespace EntityFramework_Reverse_POCO_Generator
     [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.0.0")]
     public class SummaryOfSalesByQuarter
     {
-        public System.Nullable<System.DateTime> ShippedDate { get; set; } // ShippedDate
+        public System.DateTime? ShippedDate { get; set; } // ShippedDate
         public int OrderId { get; set; } // OrderID
-        public System.Nullable<decimal> Subtotal { get; set; } // Subtotal
+        public decimal? Subtotal { get; set; } // Subtotal
     }
 
     // Summary of Sales by Year
     [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.0.0")]
     public class SummaryOfSalesByYear
     {
-        public System.Nullable<System.DateTime> ShippedDate { get; set; } // ShippedDate
+        public System.DateTime? ShippedDate { get; set; } // ShippedDate
         public int OrderId { get; set; } // OrderID
-        public System.Nullable<decimal> Subtotal { get; set; } // Subtotal
+        public decimal? Subtotal { get; set; } // Subtotal
     }
 
     // Suppliers
@@ -1254,7 +1254,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public string Name { get; set; } // name (length: 128)
         public int PrincipalId { get; set; } // principal_id
         public int DiagramId { get; set; } // diagram_id (Primary key)
-        public System.Nullable<int> Version { get; set; } // version
+        public int? Version { get; set; } // version
         public byte[] Definition { get; set; } // definition
     }
 
@@ -1967,26 +1967,26 @@ namespace EntityFramework_Reverse_POCO_Generator
     public class CustOrderHistReturnModel
     {
         public System.String ProductName { get; set; }
-        public System.Nullable<System.Int32> Total { get; set; }
+        public System.Int32? Total { get; set; }
     }
 
     [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.0.0")]
     public class CustOrdersDetailReturnModel
     {
         public System.String ProductName { get; set; }
-        public System.Nullable<System.Decimal> UnitPrice { get; set; }
+        public System.Decimal? UnitPrice { get; set; }
         public System.Int16 Quantity { get; set; }
-        public System.Nullable<System.Int32> Discount { get; set; }
-        public System.Nullable<System.Decimal> ExtendedPrice { get; set; }
+        public System.Int32? Discount { get; set; }
+        public System.Decimal? ExtendedPrice { get; set; }
     }
 
     [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.0.0")]
     public class CustOrdersOrdersReturnModel
     {
         public System.Int32 OrderID { get; set; }
-        public System.Nullable<System.DateTime> OrderDate { get; set; }
-        public System.Nullable<System.DateTime> RequiredDate { get; set; }
-        public System.Nullable<System.DateTime> ShippedDate { get; set; }
+        public System.DateTime? OrderDate { get; set; }
+        public System.DateTime? RequiredDate { get; set; }
+        public System.DateTime? ShippedDate { get; set; }
     }
 
     [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.0.0")]
@@ -1995,17 +1995,17 @@ namespace EntityFramework_Reverse_POCO_Generator
         public System.String Country { get; set; }
         public System.String LastName { get; set; }
         public System.String FirstName { get; set; }
-        public System.Nullable<System.DateTime> ShippedDate { get; set; }
+        public System.DateTime? ShippedDate { get; set; }
         public System.Int32 OrderID { get; set; }
-        public System.Nullable<System.Decimal> SaleAmount { get; set; }
+        public System.Decimal? SaleAmount { get; set; }
     }
 
     [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.0.0")]
     public class SalesByYearReturnModel
     {
-        public System.Nullable<System.DateTime> ShippedDate { get; set; }
+        public System.DateTime? ShippedDate { get; set; }
         public System.Int32 OrderID { get; set; }
-        public System.Nullable<System.Decimal> Subtotal { get; set; }
+        public System.Decimal? Subtotal { get; set; }
         public System.String Year { get; set; }
     }
 
@@ -2013,14 +2013,14 @@ namespace EntityFramework_Reverse_POCO_Generator
     public class SalesByCategoryReturnModel
     {
         public System.String ProductName { get; set; }
-        public System.Nullable<System.Decimal> TotalPurchase { get; set; }
+        public System.Decimal? TotalPurchase { get; set; }
     }
 
     [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.0.0")]
     public class TenMostExpensiveProductsReturnModel
     {
         public System.String TenMostExpensiveProducts { get; set; }
-        public System.Nullable<System.Decimal> UnitPrice { get; set; }
+        public System.Decimal? UnitPrice { get; set; }
     }
 
 }
