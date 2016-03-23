@@ -526,17 +526,12 @@
 
 
                     var reader = new SqlServerSchemaReader(conn, factory, IncludeQueryTraceOn9481Flag) { Outer = this };
-                    var tables = reader.ReadSchema(SchemaFilterExclude, TableFilterExclude, ColumnFilterExclude, UseCamelCase, PrependSchemaName, IncludeComments, IncludeExtendedPropertyComments, TableRename, UpdateColumn);
+                    var tables = reader.ReadSchema(SchemaFilterExclude, TableFilterExclude, ColumnFilterExclude, UseCamelCase, PrependSchemaName, IncludeComments, IncludeViews, IncludeExtendedPropertyComments, TableRename, UpdateColumn);
                     tables.SetPrimaryKeys();
 
                     // Remove unrequired tables/views
                     for(int i = tables.Count - 1; i >= 0; i--)
                     {
-                        if(!IncludeViews && tables[i].IsView)
-                        {
-                            tables.RemoveAt(i);
-                            continue;
-                        }
                         if(SchemaFilterInclude != null && !SchemaFilterInclude.IsMatch(tables[i].Schema))
                         {
                             tables.RemoveAt(i);
@@ -1211,7 +1206,7 @@
             }
 
             public GeneratedTextTransformation Outer;
-            public abstract Tables ReadSchema(Regex schemaFilterExclude, Regex tableFilterExclude, Regex columnFilterExclude, bool useCamelCase, bool prependSchemaName, bool includeComments, ExtendedPropertyCommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, Func<Column, Table, Column> updateColumn);
+            public abstract Tables ReadSchema(Regex schemaFilterExclude, Regex tableFilterExclude, Regex columnFilterExclude, bool useCamelCase, bool prependSchemaName, bool includeComments, bool includeViews, ExtendedPropertyCommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, Func<Column, Table, Column> updateColumn);
             public abstract List<StoredProcedure> ReadStoredProcs(Regex SchemaFilterExclude, Regex storedProcedureFilterExclude, bool useCamelCase, bool prependSchemaName , Func<string, string, string> StoredProcedureRename, bool includeTableValuedFunctions);
             public abstract List<ForeignKey> ReadForeignKeys(Func<string, string, string> tableRename, Func<ForeignKey, ForeignKey> foreignKeyFilter);
             public abstract void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool useCamelCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, bool includeComments);
@@ -1621,7 +1616,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 return SqlDatabaseEngineEdition == "Azure";
             }
 
-            public override Tables ReadSchema(Regex schemaFilterExclude, Regex tableFilterExclude, Regex columnFilterExclude, bool useCamelCase, bool prependSchemaName, bool includeComments, ExtendedPropertyCommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, Func<Column, Table, Column> updateColumn)
+            public override Tables ReadSchema(Regex schemaFilterExclude, Regex tableFilterExclude, Regex columnFilterExclude, bool useCamelCase, bool prependSchemaName, bool includeComments, bool includeViews, ExtendedPropertyCommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, Func<Column, Table, Column> updateColumn)
             {
                 var result = new Tables();
                 if(Cmd == null)
@@ -1667,7 +1662,14 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                                     HasNullableColumns = false
                                 };
 
+                                if (!includeViews && table.IsView)
+                                    continue;
+
                                 tableName = tableRename(tableName, schema);
+                                if(tableFilterExclude != null && tableFilterExclude.IsMatch(tableName))
+                                    continue;
+                                if (tableName.Contains('.'))    // EF does not allow tables to contain a period character
+                                    continue;
 
                                 // Handle table names with underscores - singularise just the last word
                                 table.ClassName = Inflector.MakeSingular(CleanUp(tableName));
