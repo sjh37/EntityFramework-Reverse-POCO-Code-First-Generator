@@ -1352,7 +1352,9 @@ SELECT  '' AS SchemaName,
         CAST(CASE WHEN c.IS_NULLABLE = N'YES' THEN 1
                   ELSE 0
              END AS BIT) AS IsNullable,
-        c.DATA_TYPE AS TypeName,
+        CASE WHEN c.DATA_TYPE = N'rowversion' THEN 'timestamp'
+             ELSE c.DATA_TYPE
+        END AS TypeName,
         CASE WHEN c.CHARACTER_MAXIMUM_LENGTH IS NOT NULL THEN c.CHARACTER_MAXIMUM_LENGTH
              ELSE 0
         END AS MaxLength,
