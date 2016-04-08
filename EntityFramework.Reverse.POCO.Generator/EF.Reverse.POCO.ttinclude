@@ -66,7 +66,7 @@ foreach(var usingStatement in usingsAll.Distinct().OrderBy(x => x)) { #>
     // ************************************************************************
     // Unit of work
 <# }#>
-    public interface <#=DbContextInterfaceName #> : <#= DbContextInterfaceBaseClasses #>
+    public <# if(MakeDbContextInterfacePartial) { #>partial <# } #>interface <#=DbContextInterfaceName #> : <#= DbContextInterfaceBaseClasses #>
     {
 <#
 foreach (Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKey).OrderBy(x => x.NameHumanCase) select t)

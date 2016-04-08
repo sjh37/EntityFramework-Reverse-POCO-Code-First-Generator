@@ -16,6 +16,7 @@
     ConfigurationClassName = "Configuration"; // Configuration, Mapping, Map, etc. This is appended to the Poco class name to configure the mappings.
     ConfigFilenameSearchOrder = new[] { "app.config", "web.config", "app.config.transform", "web.config.transform" }; // Add more here if required. The config files are searched for in the local project first, then the whole solution second.
     MakeClassesPartial = false;
+    MakeDbContextInterfacePartial = false;
     GenerateSeparateFiles = false;
     UseMappingTables = true; // If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
     UseCamelCase = true;    // This will rename the tables & fields to use CamelCase. If false table & field names will be left alone.
@@ -40,11 +41,11 @@
     AdditionalReverseNavigationsDataAnnotations = new string[] // Data Annotations for ReverseNavigationProperty.
     {
         // "JsonIgnore"
-    };  
+    };
     AdditionalForeignKeysDataAnnotations = new string[] // Data Annotations for ForeignKeys.
     {
         // "JsonIgnore"
-    };  
+    };
 
     // Migrations *************************************************************************************************************************
     MigrationConfigurationFileName = ""; // null or empty to not create migrations
@@ -71,8 +72,8 @@
         new CustomPluralizationEntry("CustomerStatus", "CustomerStatus"), // Use same value to prevent pluralisation
         new CustomPluralizationEntry("EmployeeStatus", "EmployeeStatus")
     });
-    
-    
+
+
     // Elements to generate ***************************************************************************************************************
     // Add the elements that should be generated when the template is executed.
     // Multiple projects can now be used that separate the different concerns.
@@ -88,15 +89,15 @@
     //      ElementsToGenerate = Elements.PocoConfiguration; in your Maps folder.
     //      PocoNamespace = "YourProject.Entities";
     //      ContextNamespace = "YourProject.Context";
-    //      UnitOfWorkNamespace = "YourProject.Context";	
+    //      UnitOfWorkNamespace = "YourProject.Context";
     //      PocoConfigurationNamespace = "YourProject.Maps";
     // You also need to set the following to the namespace where they now live:
     PocoNamespace = "";
     ContextNamespace = "";
-    UnitOfWorkNamespace = "";	
+    UnitOfWorkNamespace = "";
     PocoConfigurationNamespace = "";
 
-    
+
     // Schema *****************************************************************************************************************************
     // If there are multiple schemas, then the table name is prefixed with the schema, except for dbo.
     // Ie. dbo.hello will be Hello.
@@ -138,16 +139,16 @@
         return name.Replace("_AB", "");
     };*/
     TableRename = (name, schema) => name;   // Do nothing by default
-    
+
     // Column modification*****************************************************************************************************************
     // Use the following list to replace column byte types with Enums.
     // As long as the type can be mapped to your new type, all is well.
     //EnumsDefinitions.Add(new EnumDefinition { Schema = "dbo", Table = "match_table_name", Column = "match_column_name", EnumType = "name_of_enum" });
     //EnumsDefinitions.Add(new EnumDefinition { Schema = "dbo", Table = "OrderHeader", Column = "OrderStatus", EnumType = "OrderStatusType" }); // This will replace OrderHeader.OrderStatus type to be an OrderStatusType enum
-    
+
     // Use the following function if you need to apply additional modifications to a column
     // eg. normalise names etc.
-    UpdateColumn = (Column column, Table table) => 
+    UpdateColumn = (Column column, Table table) =>
     {
         // Example
         //if (column.IsPrimaryKey && column.NameHumanCase == "PkId")
@@ -165,7 +166,7 @@
 
         if (enumDefinition != null)
             column.PropertyType = enumDefinition.EnumType;
-        
+
         return column;
     };
 
@@ -195,7 +196,7 @@
     // Example: "";                                           = [DataContract]
     //          "(Namespace = \"http://www.contoso.com\")";   = [DataContract(Namespace = "http://www.contoso.com")]
     //          "(Namespace = Constants.ServiceNamespace)";   = [DataContract(Namespace = Constants.ServiceNamespace)]
-    
+
 
     // Callbacks **********************************************************************************************************************
     // This method will be called right before we write the POCO header.
@@ -233,7 +234,7 @@
         //    return null;
         return fk;
     };
-    
+
 
 
     // ***********************************************************************
@@ -248,25 +249,25 @@
         int count = sp.Parameters.Count;
         foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
         {
-            sb.AppendFormat("{0}{1}{2} {3}{4}", 
-                p.Mode == StoredProcedureParameterMode.In ? "" : "out ", 
+            sb.AppendFormat("{0}{1}{2} {3}{4}",
+                p.Mode == StoredProcedureParameterMode.In ? "" : "out ",
                 p.PropertyType,
                 NotNullable.Contains(p.PropertyType.ToLower()) ? string.Empty : "?",
-                p.NameHumanCase, 
+                p.NameHumanCase,
                 (n++ < count) ? ", " : string.Empty);
         }
         if (includeProcResult && sp.ReturnModels.Count > 0 && sp.ReturnModels.First().Count > 0)
             sb.AppendFormat((sp.Parameters.Count > 0 ?  ", " : "") + "out int procResult");
         return sb.ToString();
     };
-    
+
     Func<StoredProcedure, string> WriteStoredProcFunctionOverloadCall = (sp) =>
     {
         var sb = new StringBuilder();
         foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
         {
-            sb.AppendFormat("{0}{1}, ", 
-                p.Mode == StoredProcedureParameterMode.In ? "" : "out ", 
+            sb.AppendFormat("{0}{1}, ",
+                p.Mode == StoredProcedureParameterMode.In ? "" : "out ",
                 p.NameHumanCase);
         }
         sb.Append("out procResult");
@@ -280,9 +281,9 @@
         int count = sp.Parameters.Count;
         foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
         {
-            sb.AppendFormat("{0}{1}{2}", 
-                p.Name, 
-                p.Mode == StoredProcedureParameterMode.In ? string.Empty : " OUTPUT", 
+            sb.AppendFormat("{0}{1}{2}",
+                p.Name,
+                p.Mode == StoredProcedureParameterMode.In ? string.Empty : " OUTPUT",
                 (n++ < count) ? ", " : string.Empty);
         }
         return sb.ToString();
@@ -298,10 +299,10 @@
             bool isNullable = !NotNullable.Contains(p.PropertyType.ToLower());
             var getValueOrDefault = isNullable ? ".GetValueOrDefault()" : string.Empty;
 
-            sb.AppendLine(string.Format("            var {0} = new System.Data.SqlClient.SqlParameter {{ ParameterName = \"{1}\", SqlDbType = System.Data.SqlDbType.{2}, Direction = System.Data.ParameterDirection.{3}{4}{5}{6}{7} }};", 
-                WriteStoredProcSqlParameterName(p), 
-                p.Name, 
-                p.SqlDbType, 
+            sb.AppendLine(string.Format("            var {0} = new System.Data.SqlClient.SqlParameter {{ ParameterName = \"{1}\", SqlDbType = System.Data.SqlDbType.{2}, Direction = System.Data.ParameterDirection.{3}{4}{5}{6}{7} }};",
+                WriteStoredProcSqlParameterName(p),
+                p.Name,
+                p.SqlDbType,
                 p.Mode == StoredProcedureParameterMode.In ? "Input" : "Output",
                 p.Mode == StoredProcedureParameterMode.In ? ", Value = " + p.NameHumanCase + getValueOrDefault : string.Empty,
                 p.MaxLength > 0 ? ", Size = " + p.MaxLength : string.Empty,
@@ -328,10 +329,10 @@
         foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
         {
             var getValueOrDefault = NotNullable.Contains(p.PropertyType.ToLower()) ? string.Empty : ".GetValueOrDefault()";
-    
-            sb.AppendLine(string.Format("            var {0}Param = new System.Data.Entity.Core.Objects.ObjectParameter(\"{1}\", {2});", 
-                p.NameHumanCase, 
-                p.Name.Substring(1), 
+
+            sb.AppendLine(string.Format("            var {0}Param = new System.Data.Entity.Core.Objects.ObjectParameter(\"{1}\", {2});",
+                p.NameHumanCase,
+                p.Name.Substring(1),
                 p.Mode == StoredProcedureParameterMode.In ? p.NameHumanCase + getValueOrDefault : string.Empty));
         }
         return sb.ToString();
@@ -347,10 +348,10 @@
         sb.Append("procResultParam");
         return sb.ToString();
     };
-    
+
     Func<StoredProcedure, string> WriteTableValuedFunctionSqlParameterAnonymousArray = sp =>
     {
-        if (sp.Parameters.Count == 0) 
+        if (sp.Parameters.Count == 0)
             return "new System.Data.Entity.Core.Objects.ObjectParameter[] { }";
         var sb = new StringBuilder();
         foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
@@ -388,7 +389,7 @@
                 ? StoredProcedureReturnTypes[sp.Name]
                 : string.Format("{0}ReturnModel", sp.NameHumanCase);
 
-    Func<DataColumn, string> WriteStoredProcReturnColumn = col => 
+    Func<DataColumn, string> WriteStoredProcReturnColumn = col =>
         string.Format("public {0} {1} {{ get; set; }}",
             StoredProcedure.WrapTypeIfNullable("System." + col.DataType.Name,col), col.ColumnName);
 
@@ -402,17 +403,17 @@
         return (returnModelCount == 1) ? string.Format("System.Collections.Generic.List<{0}>", spReturnClassName) : spReturnClassName;
     };
 
-    
+
     // That's it, nothing else to configure ***********************************************************************************************
-    
-    
-    
+
+
+
     // Read schema
     var factory = GetDbProviderFactory();
     IsSqlCe = IsSqlCeConnection(factory);
     var tables = LoadTables(factory);
     var storedProcs = LoadStoredProcs(factory);
-    
+
     // Generate output
     if (tables.Count > 0 || storedProcs.Count > 0)
     {
