@@ -49,6 +49,7 @@
         string CollectionType = "System.Collections.Generic.List";
         static bool NullableShortHand = true;
         bool MakeClassesPartial = true;
+        bool MakeDbContextInterfacePartial = false;
         bool GenerateSeparateFiles = false;
         bool UseMappingTables = true;
         bool IsSqlCe = false;
