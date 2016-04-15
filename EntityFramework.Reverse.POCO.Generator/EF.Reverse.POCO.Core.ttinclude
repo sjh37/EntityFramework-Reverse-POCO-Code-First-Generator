@@ -807,7 +807,7 @@
                 if(IsPrimaryKey && !IsIdentity && !IsStoreGenerated)
                     databaseGeneratedOption = ".HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None)";
 
-                Config = string.Format("Property(x => x.{0}).HasColumnName(\"{1}\"){2}{3}{4}{5}{6}{7}{8}{9}{10};", NameHumanCase, Name,
+                Config = string.Format("Property(x => x.{0}).HasColumnName(@\"{1}\"){2}{3}{4}{5}{6}{7}{8}{9}{10};", NameHumanCase, Name,
                                             (IsNullable) ? ".IsOptional()" : ".IsRequired()",
                                             (IsFixedLength || IsRowVersion) ? ".IsFixedLength()" : "",
                                             (IsUnicode) ? string.Empty : ".IsUnicode(false)",
