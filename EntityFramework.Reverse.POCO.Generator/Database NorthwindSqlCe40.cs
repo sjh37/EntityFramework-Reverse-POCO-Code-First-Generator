@@ -47,7 +47,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
 
     // ************************************************************************
     // Database context
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.1.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.2.0")]
     public class MyDbContextSqlCE4 : System.Data.Entity.DbContext, IMyDbContextSqlCE4
     {
         public System.Data.Entity.DbSet<Category> Categories { get; set; } // Categories
@@ -124,7 +124,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
 
     // ************************************************************************
     // Fake Database context
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.1.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.2.0")]
     public class FakeMyDbContextSqlCE4 : IMyDbContextSqlCE4
     {
         public System.Data.Entity.DbSet<Category> Categories { get; set; }
@@ -194,7 +194,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     //          }
     //      }
     //      Read more about it here: https://msdn.microsoft.com/en-us/data/dn314431.aspx
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.1.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.2.0")]
     public class FakeDbSet<TEntity> : System.Data.Entity.DbSet<TEntity>, IQueryable, System.Collections.Generic.IEnumerable<TEntity>, System.Data.Entity.Infrastructure.IDbAsyncEnumerable<TEntity> where TEntity : class 
     { 
         private readonly System.Reflection.PropertyInfo[] _primaryKeys;
@@ -319,7 +319,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         }
     } 
 
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.1.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.2.0")]
     public class FakeDbAsyncQueryProvider<TEntity> : System.Data.Entity.Infrastructure.IDbAsyncQueryProvider 
     { 
         private readonly IQueryProvider _inner; 
@@ -360,7 +360,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         } 
     } 
     
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.1.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.2.0")]
     public class FakeDbAsyncEnumerable<T> : EnumerableQuery<T>, System.Data.Entity.Infrastructure.IDbAsyncEnumerable<T>, IQueryable<T> 
     { 
         public FakeDbAsyncEnumerable(System.Collections.Generic.IEnumerable<T> enumerable) 
@@ -387,7 +387,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         } 
     } 
  
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.1.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.2.0")]
     public class FakeDbAsyncEnumerator<T> : System.Data.Entity.Infrastructure.IDbAsyncEnumerator<T> 
     { 
         private readonly System.Collections.Generic.IEnumerator<T> _inner; 
@@ -422,7 +422,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     // POCO classes
 
     // Categories
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.1.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.2.0")]
     public class Category
     {
         public int CategoryId { get; set; } // Category ID (Primary key)
@@ -440,7 +440,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     }
 
     // Customers
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.1.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.2.0")]
     public class Customer
     {
         public string CustomerId { get; set; } // Customer ID (Primary key) (length: 5)
@@ -465,7 +465,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     }
 
     // Employees
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.1.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.2.0")]
     public class Employee
     {
         public int EmployeeId { get; set; } // Employee ID (Primary key)
@@ -495,7 +495,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     }
 
     // Orders
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.1.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.2.0")]
     public class Order
     {
         public int OrderId { get; set; } // Order ID (Primary key)
@@ -528,7 +528,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     }
 
     // Order Details
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.1.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.2.0")]
     public class OrderDetail
     {
         public int OrderId { get; set; } // Order ID (Primary key)
@@ -543,7 +543,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     }
 
     // Products
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.1.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.2.0")]
     public class Product
     {
         public int ProductId { get; set; } // Product ID (Primary key)
@@ -572,7 +572,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     }
 
     // Shippers
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.1.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.2.0")]
     public class Shipper
     {
         public int ShipperId { get; set; } // Shipper ID (Primary key)
@@ -588,7 +588,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     }
 
     // Suppliers
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.1.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.2.0")]
     public class Supplier
     {
         public int SupplierId { get; set; } // Supplier ID (Primary key)
@@ -617,7 +617,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     // POCO Configuration
 
     // Categories
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.1.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.2.0")]
     public class CategoryConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<Category>
     {
         public CategoryConfiguration()
@@ -630,15 +630,15 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
             ToTable("Categories");
             HasKey(x => x.CategoryId);
 
-            Property(x => x.CategoryId).HasColumnName("Category ID").IsRequired().HasColumnType("int").HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity);
-            Property(x => x.CategoryName).HasColumnName("Category Name").IsRequired().HasColumnType("nvarchar").HasMaxLength(15);
-            Property(x => x.Description).HasColumnName("Description").IsOptional().HasColumnType("ntext").IsMaxLength();
-            Property(x => x.Picture).HasColumnName("Picture").IsOptional().HasColumnType("image").HasMaxLength(1073741823);
+            Property(x => x.CategoryId).HasColumnName(@"Category ID").IsRequired().HasColumnType("int").HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity);
+            Property(x => x.CategoryName).HasColumnName(@"Category Name").IsRequired().HasColumnType("nvarchar").HasMaxLength(15);
+            Property(x => x.Description).HasColumnName(@"Description").IsOptional().HasColumnType("ntext").IsMaxLength();
+            Property(x => x.Picture).HasColumnName(@"Picture").IsOptional().HasColumnType("image").HasMaxLength(1073741823);
         }
     }
 
     // Customers
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.1.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.2.0")]
     public class CustomerConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<Customer>
     {
         public CustomerConfiguration()
@@ -651,22 +651,22 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
             ToTable("Customers");
             HasKey(x => x.CustomerId);
 
-            Property(x => x.CustomerId).HasColumnName("Customer ID").IsRequired().HasColumnType("nvarchar").HasMaxLength(5).HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None);
-            Property(x => x.CompanyName).HasColumnName("Company Name").IsRequired().HasColumnType("nvarchar").HasMaxLength(40);
-            Property(x => x.ContactName).HasColumnName("Contact Name").IsOptional().HasColumnType("nvarchar").HasMaxLength(30);
-            Property(x => x.ContactTitle).HasColumnName("Contact Title").IsOptional().HasColumnType("nvarchar").HasMaxLength(30);
-            Property(x => x.Address).HasColumnName("Address").IsOptional().HasColumnType("nvarchar").HasMaxLength(60);
-            Property(x => x.City).HasColumnName("City").IsOptional().HasColumnType("nvarchar").HasMaxLength(15);
-            Property(x => x.Region).HasColumnName("Region").IsOptional().HasColumnType("nvarchar").HasMaxLength(15);
-            Property(x => x.PostalCode).HasColumnName("Postal Code").IsOptional().HasColumnType("nvarchar").HasMaxLength(10);
-            Property(x => x.Country).HasColumnName("Country").IsOptional().HasColumnType("nvarchar").HasMaxLength(15);
-            Property(x => x.Phone).HasColumnName("Phone").IsOptional().HasColumnType("nvarchar").HasMaxLength(24);
-            Property(x => x.Fax).HasColumnName("Fax").IsOptional().HasColumnType("nvarchar").HasMaxLength(24);
+            Property(x => x.CustomerId).HasColumnName(@"Customer ID").IsRequired().HasColumnType("nvarchar").HasMaxLength(5).HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None);
+            Property(x => x.CompanyName).HasColumnName(@"Company Name").IsRequired().HasColumnType("nvarchar").HasMaxLength(40);
+            Property(x => x.ContactName).HasColumnName(@"Contact Name").IsOptional().HasColumnType("nvarchar").HasMaxLength(30);
+            Property(x => x.ContactTitle).HasColumnName(@"Contact Title").IsOptional().HasColumnType("nvarchar").HasMaxLength(30);
+            Property(x => x.Address).HasColumnName(@"Address").IsOptional().HasColumnType("nvarchar").HasMaxLength(60);
+            Property(x => x.City).HasColumnName(@"City").IsOptional().HasColumnType("nvarchar").HasMaxLength(15);
+            Property(x => x.Region).HasColumnName(@"Region").IsOptional().HasColumnType("nvarchar").HasMaxLength(15);
+            Property(x => x.PostalCode).HasColumnName(@"Postal Code").IsOptional().HasColumnType("nvarchar").HasMaxLength(10);
+            Property(x => x.Country).HasColumnName(@"Country").IsOptional().HasColumnType("nvarchar").HasMaxLength(15);
+            Property(x => x.Phone).HasColumnName(@"Phone").IsOptional().HasColumnType("nvarchar").HasMaxLength(24);
+            Property(x => x.Fax).HasColumnName(@"Fax").IsOptional().HasColumnType("nvarchar").HasMaxLength(24);
         }
     }
 
     // Employees
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.1.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.2.0")]
     public class EmployeeConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<Employee>
     {
         public EmployeeConfiguration()
@@ -679,27 +679,27 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
             ToTable("Employees");
             HasKey(x => x.EmployeeId);
 
-            Property(x => x.EmployeeId).HasColumnName("Employee ID").IsRequired().HasColumnType("int").HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity);
-            Property(x => x.LastName).HasColumnName("Last Name").IsRequired().HasColumnType("nvarchar").HasMaxLength(20);
-            Property(x => x.FirstName).HasColumnName("First Name").IsRequired().HasColumnType("nvarchar").HasMaxLength(10);
-            Property(x => x.Title).HasColumnName("Title").IsOptional().HasColumnType("nvarchar").HasMaxLength(30);
-            Property(x => x.BirthDate).HasColumnName("Birth Date").IsOptional().HasColumnType("datetime");
-            Property(x => x.HireDate).HasColumnName("Hire Date").IsOptional().HasColumnType("datetime");
-            Property(x => x.Address).HasColumnName("Address").IsOptional().HasColumnType("nvarchar").HasMaxLength(60);
-            Property(x => x.City).HasColumnName("City").IsOptional().HasColumnType("nvarchar").HasMaxLength(15);
-            Property(x => x.Region).HasColumnName("Region").IsOptional().HasColumnType("nvarchar").HasMaxLength(15);
-            Property(x => x.PostalCode).HasColumnName("Postal Code").IsOptional().HasColumnType("nvarchar").HasMaxLength(10);
-            Property(x => x.Country).HasColumnName("Country").IsOptional().HasColumnType("nvarchar").HasMaxLength(15);
-            Property(x => x.HomePhone).HasColumnName("Home Phone").IsOptional().HasColumnType("nvarchar").HasMaxLength(24);
-            Property(x => x.Extension).HasColumnName("Extension").IsOptional().HasColumnType("nvarchar").HasMaxLength(4);
-            Property(x => x.Photo).HasColumnName("Photo").IsOptional().HasColumnType("image").HasMaxLength(1073741823);
-            Property(x => x.Notes).HasColumnName("Notes").IsOptional().HasColumnType("ntext").IsMaxLength();
-            Property(x => x.ReportsTo).HasColumnName("Reports To").IsOptional().HasColumnType("int");
+            Property(x => x.EmployeeId).HasColumnName(@"Employee ID").IsRequired().HasColumnType("int").HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity);
+            Property(x => x.LastName).HasColumnName(@"Last Name").IsRequired().HasColumnType("nvarchar").HasMaxLength(20);
+            Property(x => x.FirstName).HasColumnName(@"First Name").IsRequired().HasColumnType("nvarchar").HasMaxLength(10);
+            Property(x => x.Title).HasColumnName(@"Title").IsOptional().HasColumnType("nvarchar").HasMaxLength(30);
+            Property(x => x.BirthDate).HasColumnName(@"Birth Date").IsOptional().HasColumnType("datetime");
+            Property(x => x.HireDate).HasColumnName(@"Hire Date").IsOptional().HasColumnType("datetime");
+            Property(x => x.Address).HasColumnName(@"Address").IsOptional().HasColumnType("nvarchar").HasMaxLength(60);
+            Property(x => x.City).HasColumnName(@"City").IsOptional().HasColumnType("nvarchar").HasMaxLength(15);
+            Property(x => x.Region).HasColumnName(@"Region").IsOptional().HasColumnType("nvarchar").HasMaxLength(15);
+            Property(x => x.PostalCode).HasColumnName(@"Postal Code").IsOptional().HasColumnType("nvarchar").HasMaxLength(10);
+            Property(x => x.Country).HasColumnName(@"Country").IsOptional().HasColumnType("nvarchar").HasMaxLength(15);
+            Property(x => x.HomePhone).HasColumnName(@"Home Phone").IsOptional().HasColumnType("nvarchar").HasMaxLength(24);
+            Property(x => x.Extension).HasColumnName(@"Extension").IsOptional().HasColumnType("nvarchar").HasMaxLength(4);
+            Property(x => x.Photo).HasColumnName(@"Photo").IsOptional().HasColumnType("image").HasMaxLength(1073741823);
+            Property(x => x.Notes).HasColumnName(@"Notes").IsOptional().HasColumnType("ntext").IsMaxLength();
+            Property(x => x.ReportsTo).HasColumnName(@"Reports To").IsOptional().HasColumnType("int");
         }
     }
 
     // Orders
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.1.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.2.0")]
     public class OrderConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<Order>
     {
         public OrderConfiguration()
@@ -712,20 +712,20 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
             ToTable("Orders");
             HasKey(x => x.OrderId);
 
-            Property(x => x.OrderId).HasColumnName("Order ID").IsRequired().HasColumnType("int").HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None);
-            Property(x => x.CustomerId).HasColumnName("Customer ID").IsRequired().HasColumnType("nvarchar").HasMaxLength(5);
-            Property(x => x.EmployeeId).HasColumnName("Employee ID").IsOptional().HasColumnType("int");
-            Property(x => x.ShipName).HasColumnName("Ship Name").IsOptional().HasColumnType("nvarchar").HasMaxLength(40);
-            Property(x => x.ShipAddress).HasColumnName("Ship Address").IsOptional().HasColumnType("nvarchar").HasMaxLength(60);
-            Property(x => x.ShipCity).HasColumnName("Ship City").IsOptional().HasColumnType("nvarchar").HasMaxLength(15);
-            Property(x => x.ShipRegion).HasColumnName("Ship Region").IsOptional().HasColumnType("nvarchar").HasMaxLength(15);
-            Property(x => x.ShipPostalCode).HasColumnName("Ship Postal Code").IsOptional().HasColumnType("nvarchar").HasMaxLength(10);
-            Property(x => x.ShipCountry).HasColumnName("Ship Country").IsOptional().HasColumnType("nvarchar").HasMaxLength(15);
-            Property(x => x.ShipVia).HasColumnName("Ship Via").IsOptional().HasColumnType("int");
-            Property(x => x.OrderDate).HasColumnName("Order Date").IsOptional().HasColumnType("datetime");
-            Property(x => x.RequiredDate).HasColumnName("Required Date").IsOptional().HasColumnType("datetime");
-            Property(x => x.ShippedDate).HasColumnName("Shipped Date").IsOptional().HasColumnType("datetime");
-            Property(x => x.Freight).HasColumnName("Freight").IsOptional().HasColumnType("money").HasPrecision(19,4);
+            Property(x => x.OrderId).HasColumnName(@"Order ID").IsRequired().HasColumnType("int").HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None);
+            Property(x => x.CustomerId).HasColumnName(@"Customer ID").IsRequired().HasColumnType("nvarchar").HasMaxLength(5);
+            Property(x => x.EmployeeId).HasColumnName(@"Employee ID").IsOptional().HasColumnType("int");
+            Property(x => x.ShipName).HasColumnName(@"Ship Name").IsOptional().HasColumnType("nvarchar").HasMaxLength(40);
+            Property(x => x.ShipAddress).HasColumnName(@"Ship Address").IsOptional().HasColumnType("nvarchar").HasMaxLength(60);
+            Property(x => x.ShipCity).HasColumnName(@"Ship City").IsOptional().HasColumnType("nvarchar").HasMaxLength(15);
+            Property(x => x.ShipRegion).HasColumnName(@"Ship Region").IsOptional().HasColumnType("nvarchar").HasMaxLength(15);
+            Property(x => x.ShipPostalCode).HasColumnName(@"Ship Postal Code").IsOptional().HasColumnType("nvarchar").HasMaxLength(10);
+            Property(x => x.ShipCountry).HasColumnName(@"Ship Country").IsOptional().HasColumnType("nvarchar").HasMaxLength(15);
+            Property(x => x.ShipVia).HasColumnName(@"Ship Via").IsOptional().HasColumnType("int");
+            Property(x => x.OrderDate).HasColumnName(@"Order Date").IsOptional().HasColumnType("datetime");
+            Property(x => x.RequiredDate).HasColumnName(@"Required Date").IsOptional().HasColumnType("datetime");
+            Property(x => x.ShippedDate).HasColumnName(@"Shipped Date").IsOptional().HasColumnType("datetime");
+            Property(x => x.Freight).HasColumnName(@"Freight").IsOptional().HasColumnType("money").HasPrecision(19,4);
 
             // Foreign keys
             HasOptional(a => a.Employee).WithMany(b => b.Orders).HasForeignKey(c => c.EmployeeId); // Orders_FK02
@@ -735,7 +735,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     }
 
     // Order Details
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.1.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.2.0")]
     public class OrderDetailConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<OrderDetail>
     {
         public OrderDetailConfiguration()
@@ -748,11 +748,11 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
             ToTable("Order Details");
             HasKey(x => new { x.OrderId, x.ProductId });
 
-            Property(x => x.OrderId).HasColumnName("Order ID").IsRequired().HasColumnType("int").HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None);
-            Property(x => x.ProductId).HasColumnName("Product ID").IsRequired().HasColumnType("int").HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None);
-            Property(x => x.UnitPrice).HasColumnName("Unit Price").IsRequired().HasColumnType("money").HasPrecision(19,4);
-            Property(x => x.Quantity).HasColumnName("Quantity").IsRequired().HasColumnType("smallint");
-            Property(x => x.Discount).HasColumnName("Discount").IsRequired().HasColumnType("real");
+            Property(x => x.OrderId).HasColumnName(@"Order ID").IsRequired().HasColumnType("int").HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None);
+            Property(x => x.ProductId).HasColumnName(@"Product ID").IsRequired().HasColumnType("int").HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None);
+            Property(x => x.UnitPrice).HasColumnName(@"Unit Price").IsRequired().HasColumnType("money").HasPrecision(19,4);
+            Property(x => x.Quantity).HasColumnName(@"Quantity").IsRequired().HasColumnType("smallint");
+            Property(x => x.Discount).HasColumnName(@"Discount").IsRequired().HasColumnType("real");
 
             // Foreign keys
             HasRequired(a => a.Order).WithMany(b => b.OrderDetails).HasForeignKey(c => c.OrderId); // Order Details_FK01
@@ -761,7 +761,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     }
 
     // Products
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.1.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.2.0")]
     public class ProductConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<Product>
     {
         public ProductConfiguration()
@@ -774,17 +774,17 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
             ToTable("Products");
             HasKey(x => x.ProductId);
 
-            Property(x => x.ProductId).HasColumnName("Product ID").IsRequired().HasColumnType("int").HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity);
-            Property(x => x.SupplierId).HasColumnName("Supplier ID").IsOptional().HasColumnType("int");
-            Property(x => x.CategoryId).HasColumnName("Category ID").IsOptional().HasColumnType("int");
-            Property(x => x.ProductName).HasColumnName("Product Name").IsRequired().HasColumnType("nvarchar").HasMaxLength(40);
-            Property(x => x.EnglishName).HasColumnName("English Name").IsOptional().HasColumnType("nvarchar").HasMaxLength(40);
-            Property(x => x.QuantityPerUnit).HasColumnName("Quantity Per Unit").IsOptional().HasColumnType("nvarchar").HasMaxLength(20);
-            Property(x => x.UnitPrice).HasColumnName("Unit Price").IsOptional().HasColumnType("money").HasPrecision(19,4);
-            Property(x => x.UnitsInStock).HasColumnName("Units In Stock").IsOptional().HasColumnType("smallint");
-            Property(x => x.UnitsOnOrder).HasColumnName("Units On Order").IsOptional().HasColumnType("smallint");
-            Property(x => x.ReorderLevel).HasColumnName("Reorder Level").IsOptional().HasColumnType("smallint");
-            Property(x => x.Discontinued).HasColumnName("Discontinued").IsRequired().HasColumnType("bit");
+            Property(x => x.ProductId).HasColumnName(@"Product ID").IsRequired().HasColumnType("int").HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity);
+            Property(x => x.SupplierId).HasColumnName(@"Supplier ID").IsOptional().HasColumnType("int");
+            Property(x => x.CategoryId).HasColumnName(@"Category ID").IsOptional().HasColumnType("int");
+            Property(x => x.ProductName).HasColumnName(@"Product Name").IsRequired().HasColumnType("nvarchar").HasMaxLength(40);
+            Property(x => x.EnglishName).HasColumnName(@"English Name").IsOptional().HasColumnType("nvarchar").HasMaxLength(40);
+            Property(x => x.QuantityPerUnit).HasColumnName(@"Quantity Per Unit").IsOptional().HasColumnType("nvarchar").HasMaxLength(20);
+            Property(x => x.UnitPrice).HasColumnName(@"Unit Price").IsOptional().HasColumnType("money").HasPrecision(19,4);
+            Property(x => x.UnitsInStock).HasColumnName(@"Units In Stock").IsOptional().HasColumnType("smallint");
+            Property(x => x.UnitsOnOrder).HasColumnName(@"Units On Order").IsOptional().HasColumnType("smallint");
+            Property(x => x.ReorderLevel).HasColumnName(@"Reorder Level").IsOptional().HasColumnType("smallint");
+            Property(x => x.Discontinued).HasColumnName(@"Discontinued").IsRequired().HasColumnType("bit");
 
             // Foreign keys
             HasOptional(a => a.Category).WithMany(b => b.Products).HasForeignKey(c => c.CategoryId); // Products_FK01
@@ -793,7 +793,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     }
 
     // Shippers
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.1.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.2.0")]
     public class ShipperConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<Shipper>
     {
         public ShipperConfiguration()
@@ -806,13 +806,13 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
             ToTable("Shippers");
             HasKey(x => x.ShipperId);
 
-            Property(x => x.ShipperId).HasColumnName("Shipper ID").IsRequired().HasColumnType("int").HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity);
-            Property(x => x.CompanyName).HasColumnName("Company Name").IsRequired().HasColumnType("nvarchar").HasMaxLength(40);
+            Property(x => x.ShipperId).HasColumnName(@"Shipper ID").IsRequired().HasColumnType("int").HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity);
+            Property(x => x.CompanyName).HasColumnName(@"Company Name").IsRequired().HasColumnType("nvarchar").HasMaxLength(40);
         }
     }
 
     // Suppliers
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.1.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.2.0")]
     public class SupplierConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<Supplier>
     {
         public SupplierConfiguration()
@@ -825,17 +825,17 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
             ToTable("Suppliers");
             HasKey(x => x.SupplierId);
 
-            Property(x => x.SupplierId).HasColumnName("Supplier ID").IsRequired().HasColumnType("int").HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity);
-            Property(x => x.CompanyName).HasColumnName("Company Name").IsRequired().HasColumnType("nvarchar").HasMaxLength(40);
-            Property(x => x.ContactName).HasColumnName("Contact Name").IsOptional().HasColumnType("nvarchar").HasMaxLength(30);
-            Property(x => x.ContactTitle).HasColumnName("Contact Title").IsOptional().HasColumnType("nvarchar").HasMaxLength(30);
-            Property(x => x.Address).HasColumnName("Address").IsOptional().HasColumnType("nvarchar").HasMaxLength(60);
-            Property(x => x.City).HasColumnName("City").IsOptional().HasColumnType("nvarchar").HasMaxLength(15);
-            Property(x => x.Region).HasColumnName("Region").IsOptional().HasColumnType("nvarchar").HasMaxLength(15);
-            Property(x => x.PostalCode).HasColumnName("Postal Code").IsOptional().HasColumnType("nvarchar").HasMaxLength(10);
-            Property(x => x.Country).HasColumnName("Country").IsOptional().HasColumnType("nvarchar").HasMaxLength(15);
-            Property(x => x.Phone).HasColumnName("Phone").IsOptional().HasColumnType("nvarchar").HasMaxLength(24);
-            Property(x => x.Fax).HasColumnName("Fax").IsOptional().HasColumnType("nvarchar").HasMaxLength(24);
+            Property(x => x.SupplierId).HasColumnName(@"Supplier ID").IsRequired().HasColumnType("int").HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity);
+            Property(x => x.CompanyName).HasColumnName(@"Company Name").IsRequired().HasColumnType("nvarchar").HasMaxLength(40);
+            Property(x => x.ContactName).HasColumnName(@"Contact Name").IsOptional().HasColumnType("nvarchar").HasMaxLength(30);
+            Property(x => x.ContactTitle).HasColumnName(@"Contact Title").IsOptional().HasColumnType("nvarchar").HasMaxLength(30);
+            Property(x => x.Address).HasColumnName(@"Address").IsOptional().HasColumnType("nvarchar").HasMaxLength(60);
+            Property(x => x.City).HasColumnName(@"City").IsOptional().HasColumnType("nvarchar").HasMaxLength(15);
+            Property(x => x.Region).HasColumnName(@"Region").IsOptional().HasColumnType("nvarchar").HasMaxLength(15);
+            Property(x => x.PostalCode).HasColumnName(@"Postal Code").IsOptional().HasColumnType("nvarchar").HasMaxLength(10);
+            Property(x => x.Country).HasColumnName(@"Country").IsOptional().HasColumnType("nvarchar").HasMaxLength(15);
+            Property(x => x.Phone).HasColumnName(@"Phone").IsOptional().HasColumnType("nvarchar").HasMaxLength(24);
+            Property(x => x.Fax).HasColumnName(@"Fax").IsOptional().HasColumnType("nvarchar").HasMaxLength(24);
         }
     }
 
