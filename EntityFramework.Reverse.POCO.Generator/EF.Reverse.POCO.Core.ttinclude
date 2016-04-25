@@ -89,7 +89,7 @@
         bool AutomaticMigrationDataLossAllowed = true;
         List<EnumDefinition> EnumsDefinitions = new List<EnumDefinition>();
 
-        string CodeGeneratedAttribute = "[System.CodeDom.Compiler.GeneratedCodeAttribute(\"EF.Reverse.POCO.Generator\", \"2.19.2.0\")]";
+        string CodeGeneratedAttribute = "[System.CodeDom.Compiler.GeneratedCode(\"EF.Reverse.POCO.Generator\", \"2.19.2.0\")]";
         
         // Settings to allow selective code generation
         [Flags]
