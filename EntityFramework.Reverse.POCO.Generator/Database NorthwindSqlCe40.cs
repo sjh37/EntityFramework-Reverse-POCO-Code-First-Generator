@@ -58,7 +58,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         public System.Data.Entity.DbSet<Product> Products { get; set; } // Products
         public System.Data.Entity.DbSet<Shipper> Shippers { get; set; } // Shippers
         public System.Data.Entity.DbSet<Supplier> Suppliers { get; set; } // Suppliers
-        
+
         static MyDbContextSqlCE4()
         {
             System.Data.Entity.Database.SetInitializer<MyDbContextSqlCE4>(null);
@@ -147,8 +147,8 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
             Shippers = new FakeDbSet<Shipper>("ShipperId");
             Suppliers = new FakeDbSet<Supplier>("SupplierId");
         }
-        
-        public int SaveChangesCount { get; private set; } 
+
+        public int SaveChangesCount { get; private set; }
         public int SaveChanges()
         {
             ++SaveChangesCount;
@@ -170,7 +170,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         protected virtual void Dispose(bool disposing)
         {
         }
-        
+
         public void Dispose()
         {
             Dispose(true);
@@ -195,23 +195,23 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     //      }
     //      Read more about it here: https://msdn.microsoft.com/en-us/data/dn314431.aspx
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.19.2.0")]
-    public class FakeDbSet<TEntity> : System.Data.Entity.DbSet<TEntity>, IQueryable, System.Collections.Generic.IEnumerable<TEntity>, System.Data.Entity.Infrastructure.IDbAsyncEnumerable<TEntity> where TEntity : class 
-    { 
+    public class FakeDbSet<TEntity> : System.Data.Entity.DbSet<TEntity>, IQueryable, System.Collections.Generic.IEnumerable<TEntity>, System.Data.Entity.Infrastructure.IDbAsyncEnumerable<TEntity> where TEntity : class
+    {
         private readonly System.Reflection.PropertyInfo[] _primaryKeys;
         private readonly System.Collections.ObjectModel.ObservableCollection<TEntity> _data;
         private readonly IQueryable _query;
- 
-        public FakeDbSet() 
-        { 
-            _data = new System.Collections.ObjectModel.ObservableCollection<TEntity>(); 
-            _query = _data.AsQueryable(); 
+
+        public FakeDbSet()
+        {
+            _data = new System.Collections.ObjectModel.ObservableCollection<TEntity>();
+            _query = _data.AsQueryable();
         }
 
         public FakeDbSet(params string[] primaryKeys)
         {
             _primaryKeys = typeof(TEntity).GetProperties().Where(x => primaryKeys.Contains(x.Name)).ToArray();
-            _data = new System.Collections.ObjectModel.ObservableCollection<TEntity>(); 
-            _query = _data.AsQueryable(); 
+            _data = new System.Collections.ObjectModel.ObservableCollection<TEntity>();
+            _query = _data.AsQueryable();
         }
 
         public override TEntity Find(params object[] keyValues)
@@ -251,171 +251,171 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
             }
             return items;
         }
-        
-        public override TEntity Add(TEntity item) 
+
+        public override TEntity Add(TEntity item)
         {
             if (item == null) throw new System.ArgumentNullException("item");
-            _data.Add(item); 
-            return item; 
-        } 
- 
-        public override TEntity Remove(TEntity item) 
-        {
-            if (item == null) throw new System.ArgumentNullException("item");
-            _data.Remove(item); 
-            return item; 
-        } 
- 
-        public override TEntity Attach(TEntity item) 
-        {
-            if (item == null) throw new System.ArgumentNullException("item");
-            _data.Add(item); 
-            return item; 
-        } 
- 
-        public override TEntity Create() 
-        { 
-            return System.Activator.CreateInstance<TEntity>(); 
-        } 
- 
-        public override TDerivedEntity Create<TDerivedEntity>() 
-        { 
-            return System.Activator.CreateInstance<TDerivedEntity>(); 
-        } 
- 
-        public override System.Collections.ObjectModel.ObservableCollection<TEntity> Local 
-        { 
-            get { return _data; } 
-        } 
- 
-        System.Type IQueryable.ElementType
-        { 
-            get { return _query.ElementType; } 
-        } 
- 
-        System.Linq.Expressions.Expression IQueryable.Expression 
-        { 
-            get { return _query.Expression; } 
-        } 
- 
-        IQueryProvider IQueryable.Provider 
-        { 
-            get { return new FakeDbAsyncQueryProvider<TEntity>(_query.Provider); } 
-        } 
- 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() 
-        { 
-            return _data.GetEnumerator(); 
-        } 
- 
-        System.Collections.Generic.IEnumerator<TEntity> System.Collections.Generic.IEnumerable<TEntity>.GetEnumerator() 
-        { 
-            return _data.GetEnumerator(); 
-        } 
- 
-        System.Data.Entity.Infrastructure.IDbAsyncEnumerator<TEntity> System.Data.Entity.Infrastructure.IDbAsyncEnumerable<TEntity>.GetAsyncEnumerator() 
-        { 
-            return new FakeDbAsyncEnumerator<TEntity>(_data.GetEnumerator()); 
+            _data.Add(item);
+            return item;
         }
-    } 
+
+        public override TEntity Remove(TEntity item)
+        {
+            if (item == null) throw new System.ArgumentNullException("item");
+            _data.Remove(item);
+            return item;
+        }
+
+        public override TEntity Attach(TEntity item)
+        {
+            if (item == null) throw new System.ArgumentNullException("item");
+            _data.Add(item);
+            return item;
+        }
+
+        public override TEntity Create()
+        {
+            return System.Activator.CreateInstance<TEntity>();
+        }
+
+        public override TDerivedEntity Create<TDerivedEntity>()
+        {
+            return System.Activator.CreateInstance<TDerivedEntity>();
+        }
+
+        public override System.Collections.ObjectModel.ObservableCollection<TEntity> Local
+        {
+            get { return _data; }
+        }
+
+        System.Type IQueryable.ElementType
+        {
+            get { return _query.ElementType; }
+        }
+
+        System.Linq.Expressions.Expression IQueryable.Expression
+        {
+            get { return _query.Expression; }
+        }
+
+        IQueryProvider IQueryable.Provider
+        {
+            get { return new FakeDbAsyncQueryProvider<TEntity>(_query.Provider); }
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return _data.GetEnumerator();
+        }
+
+        System.Collections.Generic.IEnumerator<TEntity> System.Collections.Generic.IEnumerable<TEntity>.GetEnumerator()
+        {
+            return _data.GetEnumerator();
+        }
+
+        System.Data.Entity.Infrastructure.IDbAsyncEnumerator<TEntity> System.Data.Entity.Infrastructure.IDbAsyncEnumerable<TEntity>.GetAsyncEnumerator()
+        {
+            return new FakeDbAsyncEnumerator<TEntity>(_data.GetEnumerator());
+        }
+    }
 
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.19.2.0")]
-    public class FakeDbAsyncQueryProvider<TEntity> : System.Data.Entity.Infrastructure.IDbAsyncQueryProvider 
-    { 
-        private readonly IQueryProvider _inner; 
- 
-        public FakeDbAsyncQueryProvider(IQueryProvider inner) 
-        { 
-            _inner = inner; 
-        } 
- 
-        public IQueryable CreateQuery(System.Linq.Expressions.Expression expression) 
-        { 
-            return new FakeDbAsyncEnumerable<TEntity>(expression); 
-        } 
- 
-        public IQueryable<TElement> CreateQuery<TElement>(System.Linq.Expressions.Expression expression) 
-        { 
-            return new FakeDbAsyncEnumerable<TElement>(expression); 
-        } 
- 
-        public object Execute(System.Linq.Expressions.Expression expression) 
-        { 
-            return _inner.Execute(expression); 
-        } 
- 
-        public TResult Execute<TResult>(System.Linq.Expressions.Expression expression) 
-        { 
-            return _inner.Execute<TResult>(expression); 
-        } 
- 
-        public System.Threading.Tasks.Task<object> ExecuteAsync(System.Linq.Expressions.Expression expression, System.Threading.CancellationToken cancellationToken) 
-        { 
-            return System.Threading.Tasks.Task.FromResult(Execute(expression)); 
-        } 
- 
-        public System.Threading.Tasks.Task<TResult> ExecuteAsync<TResult>(System.Linq.Expressions.Expression expression, System.Threading.CancellationToken cancellationToken) 
-        { 
-            return System.Threading.Tasks.Task.FromResult(Execute<TResult>(expression)); 
-        } 
-    } 
-    
+    public class FakeDbAsyncQueryProvider<TEntity> : System.Data.Entity.Infrastructure.IDbAsyncQueryProvider
+    {
+        private readonly IQueryProvider _inner;
+
+        public FakeDbAsyncQueryProvider(IQueryProvider inner)
+        {
+            _inner = inner;
+        }
+
+        public IQueryable CreateQuery(System.Linq.Expressions.Expression expression)
+        {
+            return new FakeDbAsyncEnumerable<TEntity>(expression);
+        }
+
+        public IQueryable<TElement> CreateQuery<TElement>(System.Linq.Expressions.Expression expression)
+        {
+            return new FakeDbAsyncEnumerable<TElement>(expression);
+        }
+
+        public object Execute(System.Linq.Expressions.Expression expression)
+        {
+            return _inner.Execute(expression);
+        }
+
+        public TResult Execute<TResult>(System.Linq.Expressions.Expression expression)
+        {
+            return _inner.Execute<TResult>(expression);
+        }
+
+        public System.Threading.Tasks.Task<object> ExecuteAsync(System.Linq.Expressions.Expression expression, System.Threading.CancellationToken cancellationToken)
+        {
+            return System.Threading.Tasks.Task.FromResult(Execute(expression));
+        }
+
+        public System.Threading.Tasks.Task<TResult> ExecuteAsync<TResult>(System.Linq.Expressions.Expression expression, System.Threading.CancellationToken cancellationToken)
+        {
+            return System.Threading.Tasks.Task.FromResult(Execute<TResult>(expression));
+        }
+    }
+
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.19.2.0")]
-    public class FakeDbAsyncEnumerable<T> : EnumerableQuery<T>, System.Data.Entity.Infrastructure.IDbAsyncEnumerable<T>, IQueryable<T> 
-    { 
-        public FakeDbAsyncEnumerable(System.Collections.Generic.IEnumerable<T> enumerable) 
-            : base(enumerable) 
-        { } 
- 
-        public FakeDbAsyncEnumerable(System.Linq.Expressions.Expression expression) 
-            : base(expression) 
-        { } 
- 
-        public System.Data.Entity.Infrastructure.IDbAsyncEnumerator<T> GetAsyncEnumerator() 
-        { 
-            return new FakeDbAsyncEnumerator<T>(this.AsEnumerable().GetEnumerator()); 
-        } 
- 
-        System.Data.Entity.Infrastructure.IDbAsyncEnumerator System.Data.Entity.Infrastructure.IDbAsyncEnumerable.GetAsyncEnumerator() 
-        { 
-            return GetAsyncEnumerator(); 
-        } 
- 
-        IQueryProvider IQueryable.Provider 
-        { 
-            get { return new FakeDbAsyncQueryProvider<T>(this); } 
-        } 
-    } 
- 
+    public class FakeDbAsyncEnumerable<T> : EnumerableQuery<T>, System.Data.Entity.Infrastructure.IDbAsyncEnumerable<T>, IQueryable<T>
+    {
+        public FakeDbAsyncEnumerable(System.Collections.Generic.IEnumerable<T> enumerable)
+            : base(enumerable)
+        { }
+
+        public FakeDbAsyncEnumerable(System.Linq.Expressions.Expression expression)
+            : base(expression)
+        { }
+
+        public System.Data.Entity.Infrastructure.IDbAsyncEnumerator<T> GetAsyncEnumerator()
+        {
+            return new FakeDbAsyncEnumerator<T>(this.AsEnumerable().GetEnumerator());
+        }
+
+        System.Data.Entity.Infrastructure.IDbAsyncEnumerator System.Data.Entity.Infrastructure.IDbAsyncEnumerable.GetAsyncEnumerator()
+        {
+            return GetAsyncEnumerator();
+        }
+
+        IQueryProvider IQueryable.Provider
+        {
+            get { return new FakeDbAsyncQueryProvider<T>(this); }
+        }
+    }
+
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.19.2.0")]
-    public class FakeDbAsyncEnumerator<T> : System.Data.Entity.Infrastructure.IDbAsyncEnumerator<T> 
-    { 
-        private readonly System.Collections.Generic.IEnumerator<T> _inner; 
- 
-        public FakeDbAsyncEnumerator(System.Collections.Generic.IEnumerator<T> inner) 
-        { 
-            _inner = inner; 
-        } 
- 
-        public void Dispose() 
-        { 
-            _inner.Dispose(); 
-        } 
- 
-        public System.Threading.Tasks.Task<bool> MoveNextAsync(System.Threading.CancellationToken cancellationToken) 
-        { 
-            return System.Threading.Tasks.Task.FromResult(_inner.MoveNext()); 
-        } 
- 
-        public T Current 
-        { 
-            get { return _inner.Current; } 
-        } 
- 
-        object System.Data.Entity.Infrastructure.IDbAsyncEnumerator.Current 
-        { 
-            get { return Current; } 
-        } 
+    public class FakeDbAsyncEnumerator<T> : System.Data.Entity.Infrastructure.IDbAsyncEnumerator<T>
+    {
+        private readonly System.Collections.Generic.IEnumerator<T> _inner;
+
+        public FakeDbAsyncEnumerator(System.Collections.Generic.IEnumerator<T> inner)
+        {
+            _inner = inner;
+        }
+
+        public void Dispose()
+        {
+            _inner.Dispose();
+        }
+
+        public System.Threading.Tasks.Task<bool> MoveNextAsync(System.Threading.CancellationToken cancellationToken)
+        {
+            return System.Threading.Tasks.Task.FromResult(_inner.MoveNext());
+        }
+
+        public T Current
+        {
+            get { return _inner.Current; }
+        }
+
+        object System.Data.Entity.Infrastructure.IDbAsyncEnumerator.Current
+        {
+            get { return Current; }
+        }
     }
 
     // ************************************************************************
@@ -432,7 +432,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
 
         // Reverse navigation
         public virtual System.Collections.Generic.ICollection<Product> Products { get; set; } // Products.Products_FK01
-        
+
         public Category()
         {
             Products = new System.Collections.Generic.List<Product>();
@@ -457,7 +457,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
 
         // Reverse navigation
         public virtual System.Collections.Generic.ICollection<Order> Orders { get; set; } // Orders.Orders_FK00
-        
+
         public Customer()
         {
             Orders = new System.Collections.Generic.List<Order>();
@@ -487,7 +487,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
 
         // Reverse navigation
         public virtual System.Collections.Generic.ICollection<Order> Orders { get; set; } // Orders.Orders_FK02
-        
+
         public Employee()
         {
             Orders = new System.Collections.Generic.List<Order>();
@@ -520,7 +520,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         public virtual Customer Customer { get; set; } // Orders_FK00
         public virtual Employee Employee { get; set; } // Orders_FK02
         public virtual Shipper Shipper { get; set; } // Orders_FK01
-        
+
         public Order()
         {
             OrderDetails = new System.Collections.Generic.List<OrderDetail>();
@@ -564,7 +564,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         // Foreign keys
         public virtual Category Category { get; set; } // Products_FK01
         public virtual Supplier Supplier { get; set; } // Products_FK00
-        
+
         public Product()
         {
             OrderDetails = new System.Collections.Generic.List<OrderDetail>();
@@ -580,7 +580,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
 
         // Reverse navigation
         public virtual System.Collections.Generic.ICollection<Order> Orders { get; set; } // Orders.Orders_FK01
-        
+
         public Shipper()
         {
             Orders = new System.Collections.Generic.List<Order>();
@@ -605,7 +605,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
 
         // Reverse navigation
         public virtual System.Collections.Generic.ICollection<Product> Products { get; set; } // Products.Products_FK00
-        
+
         public Supplier()
         {
             Products = new System.Collections.Generic.List<Product>();
@@ -624,7 +624,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
             : this("")
         {
         }
- 
+
         public CategoryConfiguration(string schema)
         {
             ToTable("Categories");
@@ -645,7 +645,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
             : this("")
         {
         }
- 
+
         public CustomerConfiguration(string schema)
         {
             ToTable("Customers");
@@ -673,7 +673,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
             : this("")
         {
         }
- 
+
         public EmployeeConfiguration(string schema)
         {
             ToTable("Employees");
@@ -706,7 +706,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
             : this("")
         {
         }
- 
+
         public OrderConfiguration(string schema)
         {
             ToTable("Orders");
@@ -742,7 +742,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
             : this("")
         {
         }
- 
+
         public OrderDetailConfiguration(string schema)
         {
             ToTable("Order Details");
@@ -768,7 +768,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
             : this("")
         {
         }
- 
+
         public ProductConfiguration(string schema)
         {
             ToTable("Products");
@@ -800,7 +800,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
             : this("")
         {
         }
- 
+
         public ShipperConfiguration(string schema)
         {
             ToTable("Shippers");
@@ -819,7 +819,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
             : this("")
         {
         }
- 
+
         public SupplierConfiguration(string schema)
         {
             ToTable("Suppliers");
