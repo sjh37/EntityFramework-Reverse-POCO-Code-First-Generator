@@ -1297,7 +1297,8 @@ SELECT  FK.name AS FK_Table,
         SCHEMA_NAME(FK.schema_id) AS fkSchema,
         SCHEMA_NAME(PK.schema_id) AS pkSchema,
         PkCol.name AS primarykey,
-        k.constraint_column_id AS ORDINAL_POSITION
+        k.constraint_column_id AS ORDINAL_POSITION,
+        CASE WHEN f.delete_referential_action = 1 THEN 1 ELSE 0 END as CascadeOnDelete
 FROM    sys.objects AS PK
         INNER JOIN sys.foreign_keys AS f
             INNER JOIN sys.foreign_key_columns AS k
@@ -1406,7 +1407,8 @@ SELECT DISTINCT
         '' AS fkSchema,
         '' AS pkSchema,
         PT.COLUMN_NAME AS primarykey,
-        FK.ORDINAL_POSITION
+        FK.ORDINAL_POSITION,
+        0 AS CascadeOnDelete
 FROM    INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS AS C
         INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS FK
             ON FK.CONSTRAINT_NAME = C.CONSTRAINT_NAME
@@ -1747,12 +1749,13 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         string pkColumn = rdr["PK_Column"].ToString();
                         string constraintName = rdr["Constraint_Name"].ToString();
                         int ordinal = (int) rdr["ORDINAL_POSITION"];
+                        bool cascadeOnDelete = ((int) rdr["CascadeOnDelete"]) == 1;
                         
                         string fkTableNameFiltered = tableRename(fkTableName, fkSchema);
                         string pkTableNameFiltered = tableRename(pkTableName, pkSchema);
 
                         var fk = new ForeignKey(fkTableName, fkSchema, pkTableName, pkSchema, fkColumn, pkColumn,
-                            constraintName, fkTableNameFiltered, pkTableNameFiltered, ordinal);
+                            constraintName, fkTableNameFiltered, pkTableNameFiltered, ordinal, cascadeOnDelete);
 
                         var filteredFk = foreignKeyFilter(fk);
                         if(filteredFk != null)
@@ -2099,7 +2102,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         mapKey = string.Format("\"{0}\"", fkCol.col.Name);
                     }
 
-                    fkCol.col.ConfigFk.Add(string.Format("{0};{1}", GetRelationship(relationship, fkCol.col, pkCol, pkPropName, fkPropName, manyToManyMapping, mapKey), includeComments ? " // " + foreignKey.ConstraintName : string.Empty));
+                    fkCol.col.ConfigFk.Add(string.Format("{0};{1}", GetRelationship(relationship, fkCol.col, pkCol, pkPropName, fkPropName, manyToManyMapping, mapKey, foreignKey.CascadeOnDelete), includeComments ? " // " + foreignKey.ConstraintName : string.Empty));
                     pkTable.AddReverseNavigation(relationship, pkTableHumanCase, fkTable, fkPropName, string.Format("{0}.{1}", fkTable.Name, foreignKey.ConstraintName), collectionType, includeComments);
                 }
             }
@@ -2128,9 +2131,13 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
             }
 
-            private static string GetRelationship(Relationship relationship, Column fkCol, Column pkCol, string pkPropName, string fkPropName, string manyToManyMapping, string mapKey)
+            private static string GetRelationship(Relationship relationship, Column fkCol, Column pkCol, string pkPropName, string fkPropName, string manyToManyMapping, string mapKey, bool cascadeOnDelete)
             {
-                return string.Format("Has{0}(a => a.{1}){2}", GetHasMethod(relationship, fkCol, pkCol), pkPropName, GetWithMethod(relationship, fkCol, fkPropName, manyToManyMapping, mapKey));
+                return string.Format("Has{0}(a => a.{1}){2}{3}", 
+                    GetHasMethod(relationship, fkCol, pkCol), 
+                    pkPropName, 
+                    GetWithMethod(relationship, fkCol, fkPropName, manyToManyMapping, mapKey),
+                    cascadeOnDelete ? ".WillCascadeOnDelete()" : string.Empty);
             }
 
             // HasOptional
@@ -2486,8 +2493,9 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             public string PkColumn { get; private set; }
             public string ConstraintName { get; private set; }
             public int Ordinal { get; private set; }
+            public bool CascadeOnDelete { get; private set; }
 
-            public ForeignKey(string fkTableName, string fkSchema, string pkTableName, string pkSchema, string fkColumn, string pkColumn, string constraintName, string fkTableNameFiltered, string pkTableNameFiltered, int ordinal)
+            public ForeignKey(string fkTableName, string fkSchema, string pkTableName, string pkSchema, string fkColumn, string pkColumn, string constraintName, string fkTableNameFiltered, string pkTableNameFiltered, int ordinal, bool cascadeOnDelete)
             {
                 ConstraintName = constraintName;
                 PkColumn = pkColumn;
@@ -2499,6 +2507,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 FkTableNameFiltered = fkTableNameFiltered;
                 PkTableNameFiltered = pkTableNameFiltered;
                 Ordinal = ordinal;
+                CascadeOnDelete = cascadeOnDelete;
             }
 
             public string PkTableHumanCase(bool useCamelCase, bool prependSchemaName)
