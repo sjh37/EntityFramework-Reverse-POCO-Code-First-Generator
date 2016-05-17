@@ -755,7 +755,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
             Property(x => x.Discount).HasColumnName(@"Discount").IsRequired().HasColumnType("real");
 
             // Foreign keys
-            HasRequired(a => a.Order).WithMany(b => b.OrderDetails).HasForeignKey(c => c.OrderId); // Order Details_FK01
+            HasRequired(a => a.Order).WithMany(b => b.OrderDetails).HasForeignKey(c => c.OrderId).WillCascadeOnDelete(); // Order Details_FK01
             HasRequired(a => a.Product).WithMany(b => b.OrderDetails).HasForeignKey(c => c.ProductId); // Order Details_FK00
         }
     }
