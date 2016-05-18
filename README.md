@@ -9,8 +9,8 @@
 Reverse engineers an existing database and generates Entity Framework Code
 First Poco classes, Configuration mappings and DbContext. Includes support for WCF.
 
-Watch the free [tutorial video](http://visualstudiogallery.msdn.microsoft.com/ee4fcff9-0c4c-4179-afd9-7a2fb90f5838).
-Watch an in-depth tutorial video at [pluralsight](https://app.pluralsight.com/library/courses/code-first-entity-framework-legacy-databases/table-of-contents) ![logo](http://www.simonhughes.co.uk/pluralsight-logo-tiny.png)
+* Watch the free [tutorial video](http://visualstudiogallery.msdn.microsoft.com/ee4fcff9-0c4c-4179-afd9-7a2fb90f5838).
+* Watch an in-depth tutorial video at [pluralsight](https://app.pluralsight.com/library/courses/code-first-entity-framework-legacy-databases/table-of-contents) ![logo](http://www.simonhughes.co.uk/pluralsight-logo-tiny.png)
 
 Please note, this is not the Microsoft reverse generator.
 This is one I created to generate beautiful code-first code, as if I
