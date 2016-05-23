@@ -72,7 +72,7 @@ foreach(var usingStatement in usingsAll.Distinct().OrderBy(x => x)) { #>
 foreach (Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKey).OrderBy(x => x.NameHumanCase) select t)
 {
 #>
-        System.Data.Entity.DbSet<<#=tbl.NameHumanCase #>> <#=Inflector.MakePlural(tbl.NameHumanCase) #> { get; set; }<#if (IncludeComments)
+        System.Data.Entity.DbSet<<#=tbl.NameHumanCase #>> <#=Inflector.MakePlural(tbl.NameHumanCase) #> { get; set; }<#if (IncludeComments != CommentsStyle.None)
 { #> // <#=tbl.Name #>
 <# }
 else
@@ -179,7 +179,7 @@ foreach(var usingStatement in usingsContext.Distinct().OrderBy(x => x)) { #>
 foreach(Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKey).OrderBy(x => x.NameHumanCase) select t)
 {
 #>
-        public System.Data.Entity.DbSet<<#=tbl.NameHumanCase#>> <#=Inflector.MakePlural(tbl.NameHumanCase)#> { get; set; }<#if(IncludeComments){#> // <#=tbl.Name#>
+        public System.Data.Entity.DbSet<<#=tbl.NameHumanCase#>> <#=Inflector.MakePlural(tbl.NameHumanCase)#> { get; set; }<#if(IncludeComments != CommentsStyle.None){#> // <#=tbl.Name#>
 <# } else { #>
 
 <# } #>
@@ -790,7 +790,7 @@ if(!tbl.HasPrimaryKey) { #>
     // The table '<#=tbl.Name#>' is not usable by entity framework because it
     // does not have a primary key. It is listed here for completeness.
 <# } #>
-<#if(IncludeComments){#>    // <#=tbl.Name#>
+<#if(IncludeComments != CommentsStyle.None){#>    // <#=tbl.Name#>
 <# } #>
 <# if(AddWcfDataAttributes) { #>    [System.Runtime.Serialization.DataContract<#=ExtraWcfDataContractAttributes#>]
 <# } 
@@ -803,10 +803,10 @@ if(!tbl.HasPrimaryKey) { #>
 foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal).Where(x => !x.Hidden))
 {
 #>
-<#if(IncludeExtendedPropertyComments == ExtendedPropertyCommentsStyle.InSummaryBlock && !string.IsNullOrEmpty(col.ExtendedProperty)){#>
+<#if((IncludeExtendedPropertyComments == CommentsStyle.InSummaryBlock || IncludeComments == CommentsStyle.InSummaryBlock) && !string.IsNullOrEmpty(col.SummaryComments)){#>
 
         ///<summary>
-        /// <#=col.ExtendedProperty#>
+        /// <#=col.SummaryComments#>
         ///</summary>
 <# } #>
 <# if(AddWcfDataAttributes) { #>        [System.Runtime.Serialization.DataMember(Order = <#=DataMemberOrder++#>, IsRequired = <#=col.IsNullable ? "false" : "true"#>)]
@@ -820,7 +820,7 @@ if(tbl.ReverseNavigationProperty.Count() > 0)
 {
 #>
 
-<#if(IncludeComments){#>        // Reverse navigation
+<#if(IncludeComments != CommentsStyle.None){#>        // Reverse navigation
 <# } #>
 <#
 foreach(string s in tbl.ReverseNavigationProperty.OrderBy(x => x))
@@ -832,7 +832,7 @@ foreach(string s in tbl.ReverseNavigationProperty.OrderBy(x => x))
 <# } } #>
 <# if(tbl.HasForeignKey) { #>
 
-<#if(IncludeComments){#>        // Foreign keys
+<#if(IncludeComments != CommentsStyle.None){#>        // Foreign keys
 <# } #>
 <#
 foreach(var entityFk in tbl.Columns.SelectMany(x => x.EntityFk).OrderBy(o => o))
@@ -883,7 +883,7 @@ foreach(Table tbl in tables.Where(t => !t.IsMapping && t.HasPrimaryKey).OrderBy(
 {
 #>
 <# fileManager.StartNewFile(tbl.NameHumanCase + ConfigurationClassName + FileExtension);
-if(IncludeComments){#>    // <#=tbl.Name#>
+if(IncludeComments != CommentsStyle.None){#>    // <#=tbl.Name#>
 <# } #>
     <#= CodeGeneratedAttribute #>
     public <# if(MakeClassesPartial) { #>partial <# } #>class <#=tbl.NameHumanCase + ConfigurationClassName#> : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<<#=tbl.NameHumanCase#>>
@@ -910,7 +910,7 @@ foreach(Column col in tbl.Columns.Where(x => !x.Hidden).OrderBy(x => x.Ordinal))
 <# } #>
 <# if(tbl.HasForeignKey) { #>
 
-<#if(IncludeComments){#>            // Foreign keys
+<#if(IncludeComments != CommentsStyle.None){#>            // Foreign keys
 <# } #>
 <#
 foreach(var configFk in tbl.Columns.SelectMany(x => x.ConfigFk).OrderBy(o => o))

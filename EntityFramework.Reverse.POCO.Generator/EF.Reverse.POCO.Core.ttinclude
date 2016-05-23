@@ -25,7 +25,7 @@
 <#+
 
         [Flags]
-        public enum ExtendedPropertyCommentsStyle
+        public enum CommentsStyle
         {
             None,
             InSummaryBlock,
@@ -55,9 +55,9 @@
         bool IsSqlCe = false;
         string FileExtension = ".cs";
         bool UseCamelCase = true;
-        bool IncludeComments = true;
+        CommentsStyle IncludeComments = CommentsStyle.AtEndOfField;
         bool IncludeQueryTraceOn9481Flag = false;
-        ExtendedPropertyCommentsStyle IncludeExtendedPropertyComments = ExtendedPropertyCommentsStyle.InSummaryBlock;
+        CommentsStyle IncludeExtendedPropertyComments = CommentsStyle.InSummaryBlock;
         bool AddWcfDataAttributes = false;
         string ExtraWcfDataContractAttributes = "";
         static bool DisableGeographyTypes = false;
@@ -731,6 +731,7 @@
             public int Ordinal;
             public int PrimaryKeyOrdinal;
             public string ExtendedProperty;
+			public string SummaryComments;
             public string UniqueIndexName;
 
             public bool IsIdentity;
@@ -758,12 +759,12 @@
                 EntityFk = new List<string>();
             }
 
-            private void SetupEntity(bool includeComments, ExtendedPropertyCommentsStyle includeExtendedPropertyComments)
+            private void SetupEntity(CommentsStyle includeComments, CommentsStyle includeExtendedPropertyComments)
             {
-                string comments;
-                if (includeComments)
+                var comments = string.Empty;
+                if (includeComments != CommentsStyle.None)
                 {
-                    comments = " // " + Name;
+                    comments = Name;
                     if (IsPrimaryKey)
                     {
                         if (IsPrimaryKeyViaUniqueIndex)
@@ -775,20 +776,31 @@
                     if (MaxLength > 0)
                         comments += string.Format(" (length: {0})", MaxLength);
                 }
-                else
-                {
-                    comments = string.Empty;
-                }
 
-                if (includeExtendedPropertyComments == ExtendedPropertyCommentsStyle.AtEndOfField && !string.IsNullOrEmpty(ExtendedProperty))
+                var inlineComments = includeComments == CommentsStyle.AtEndOfField ? " // " + comments : string.Empty;
+
+                SummaryComments = string.Empty;
+                if (includeComments == CommentsStyle.InSummaryBlock && !string.IsNullOrEmpty(comments))
                 {
-                    if (string.IsNullOrEmpty(comments))
-                        comments = " // " + ExtendedProperty;
+                    SummaryComments = comments;
+                }
+                if (includeExtendedPropertyComments == CommentsStyle.InSummaryBlock && !string.IsNullOrEmpty(ExtendedProperty))
+                {
+					if (string.IsNullOrEmpty(SummaryComments))
+                        SummaryComments = ExtendedProperty;
                     else
-                        comments += ". " + ExtendedProperty;
+                        SummaryComments += ". " + ExtendedProperty;
+				}
+
+                if (includeExtendedPropertyComments == CommentsStyle.AtEndOfField && !string.IsNullOrEmpty(ExtendedProperty))
+                {
+                    if (string.IsNullOrEmpty(inlineComments))
+                        inlineComments = " // " + ExtendedProperty;
+                    else
+                        inlineComments += ". " + ExtendedProperty;
                 }
 
-                Entity = string.Format("public {0} {1} {2}{3}", WrapIfNullable(PropertyType, this), NameHumanCase, "{ get; set; }", comments);
+                Entity = string.Format("public {0} {1} {2}{3}", WrapIfNullable(PropertyType, this), NameHumanCase, "{ get; set; }", inlineComments);
             }
 
             private string WrapIfNullable(string propType, Column col) {
@@ -819,7 +831,7 @@
                                             databaseGeneratedOption);
             }
 
-            public void SetupEntityAndConfig(bool includeComments, ExtendedPropertyCommentsStyle includeExtendedPropertyComments)
+            public void SetupEntityAndConfig(CommentsStyle includeComments, CommentsStyle includeExtendedPropertyComments)
             {
                 SetupEntity(includeComments, includeExtendedPropertyComments);
                 SetupConfig();
@@ -1207,10 +1219,10 @@
             }
 
             public GeneratedTextTransformation Outer;
-            public abstract Tables ReadSchema(Regex schemaFilterExclude, Regex tableFilterExclude, Regex columnFilterExclude, bool useCamelCase, bool prependSchemaName, bool includeComments, bool includeViews, ExtendedPropertyCommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, Func<Column, Table, Column> updateColumn);
+            public abstract Tables ReadSchema(Regex schemaFilterExclude, Regex tableFilterExclude, Regex columnFilterExclude, bool useCamelCase, bool prependSchemaName, CommentsStyle includeComments, bool includeViews, CommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, Func<Column, Table, Column> updateColumn);
             public abstract List<StoredProcedure> ReadStoredProcs(Regex SchemaFilterExclude, Regex storedProcedureFilterExclude, bool useCamelCase, bool prependSchemaName , Func<string, string, string> StoredProcedureRename, bool includeTableValuedFunctions);
             public abstract List<ForeignKey> ReadForeignKeys(Func<string, string, string> tableRename, Func<ForeignKey, ForeignKey> foreignKeyFilter);
-            public abstract void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool useCamelCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, bool includeComments);
+            public abstract void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool useCamelCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments);
             public abstract void IdentifyForeignKeys(List<ForeignKey> fkList, Tables tables);
             public abstract void ReadUniqueIndexes(Tables tables);
             public abstract void ReadExtendedProperties(Tables tables);
@@ -1621,7 +1633,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 return SqlDatabaseEngineEdition == "Azure";
             }
 
-            public override Tables ReadSchema(Regex schemaFilterExclude, Regex tableFilterExclude, Regex columnFilterExclude, bool useCamelCase, bool prependSchemaName, bool includeComments, bool includeViews, ExtendedPropertyCommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, Func<Column, Table, Column> updateColumn)
+            public override Tables ReadSchema(Regex schemaFilterExclude, Regex tableFilterExclude, Regex columnFilterExclude, bool useCamelCase, bool prependSchemaName, CommentsStyle includeComments, bool includeViews, CommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, Func<Column, Table, Column> updateColumn)
             {
                 var result = new Tables();
                 if(Cmd == null)
@@ -1712,7 +1724,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         c.NameHumanCase = original + n++;
                 }
 
-                if (includeExtendedPropertyComments != ExtendedPropertyCommentsStyle.None)
+                if (includeExtendedPropertyComments != CommentsStyle.None)
                     ReadExtendedProperties(result);
 
                 ReadUniqueIndexes(result);
@@ -2042,7 +2054,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
             }
 
-            public override void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool useCamelCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, bool includeComments)
+            public override void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool useCamelCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments)
             {
                 var constraints = fkList.Select(x => x.ConstraintName).Distinct();
                 foreach (var constraint in constraints)
@@ -2090,7 +2102,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     bool fkMakePropNameSingular = (relationship == Relationship.OneToOne);
                     string fkPropName = pkTable.GetUniqueColumnName(fkTable.NameHumanCase, foreignKey, useCamelCase, checkForFkNameClashes, fkMakePropNameSingular);
 
-                    fkCol.col.EntityFk.Add(string.Format("public virtual {0} {1} {2}{3}", pkTableHumanCase, pkPropName, "{ get; set; }", includeComments ? " // " + foreignKey.ConstraintName : string.Empty));
+                    fkCol.col.EntityFk.Add(string.Format("public virtual {0} {1} {2}{3}", pkTableHumanCase, pkPropName, "{ get; set; }", includeComments != CommentsStyle.None ? " // " + foreignKey.ConstraintName : string.Empty));
 
                     string manyToManyMapping, mapKey;
                     if(foreignKeys.Count > 1)
@@ -2102,7 +2114,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         mapKey = string.Format("\"{0}\"", fkCol.col.Name);
                     }
 
-                    fkCol.col.ConfigFk.Add(string.Format("{0};{1}", GetRelationship(relationship, fkCol.col, pkCol, pkPropName, fkPropName, manyToManyMapping, mapKey, foreignKey.CascadeOnDelete), includeComments ? " // " + foreignKey.ConstraintName : string.Empty));
+                    fkCol.col.ConfigFk.Add(string.Format("{0};{1}", GetRelationship(relationship, fkCol.col, pkCol, pkPropName, fkPropName, manyToManyMapping, mapKey, foreignKey.CascadeOnDelete), includeComments != CommentsStyle.None ? " // " + foreignKey.ConstraintName : string.Empty));
                     pkTable.AddReverseNavigation(relationship, pkTableHumanCase, fkTable, fkPropName, string.Format("{0}.{1}", fkTable.Name, foreignKey.ConstraintName), collectionType, includeComments);
                 }
             }
@@ -2654,25 +2666,25 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 return tableNameHumanCase;
             }
 
-            public void AddReverseNavigation(Relationship relationship, string fkName, Table fkTable, string propName, string constraint, string collectionType, bool includeComments)
+            public void AddReverseNavigation(Relationship relationship, string fkName, Table fkTable, string propName, string constraint, string collectionType, CommentsStyle includeComments)
             {
                 switch (relationship)
                 {
                     case Relationship.OneToOne:
-                        ReverseNavigationProperty.Add(string.Format("public virtual {0} {1} {{ get; set; }}{2}", fkTable.NameHumanCase, propName, includeComments ? " // " + constraint : string.Empty));
+                        ReverseNavigationProperty.Add(string.Format("public virtual {0} {1} {{ get; set; }}{2}", fkTable.NameHumanCase, propName, includeComments != CommentsStyle.None ? " // " + constraint : string.Empty));
                         break;
 
                     case Relationship.OneToMany:
-                        ReverseNavigationProperty.Add(string.Format("public virtual {0} {1} {{ get; set; }}{2}", fkTable.NameHumanCase, propName, includeComments ? " // " + constraint : string.Empty));
+                        ReverseNavigationProperty.Add(string.Format("public virtual {0} {1} {{ get; set; }}{2}", fkTable.NameHumanCase, propName, includeComments != CommentsStyle.None ? " // " + constraint : string.Empty));
                         break;
 
                     case Relationship.ManyToOne:
-                        ReverseNavigationProperty.Add(string.Format("public virtual System.Collections.Generic.ICollection<{0}> {1} {{ get; set; }}{2}", fkTable.NameHumanCase, propName, includeComments ? " // " + constraint : string.Empty));
+                        ReverseNavigationProperty.Add(string.Format("public virtual System.Collections.Generic.ICollection<{0}> {1} {{ get; set; }}{2}", fkTable.NameHumanCase, propName, includeComments != CommentsStyle.None ? " // " + constraint : string.Empty));
                         ReverseNavigationCtor.Add(string.Format("{0} = new {1}<{2}>();", propName, collectionType, fkTable.NameHumanCase));
                         break;
 
                     case Relationship.ManyToMany:
-                        ReverseNavigationProperty.Add(string.Format("public virtual System.Collections.Generic.ICollection<{0}> {1} {{ get; set; }}{2}", fkTable.NameHumanCase, propName, includeComments ? " // Many to many mapping" : string.Empty));
+                        ReverseNavigationProperty.Add(string.Format("public virtual System.Collections.Generic.ICollection<{0}> {1} {{ get; set; }}{2}", fkTable.NameHumanCase, propName, includeComments != CommentsStyle.None ? " // Many to many mapping" : string.Empty));
                         ReverseNavigationCtor.Add(string.Format("{0} = new {1}<{2}>();", propName, collectionType, fkTable.NameHumanCase));
                         break;
                     
@@ -2704,7 +2716,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
             }
 
-            public void IdentifyMappingTable(List<ForeignKey> fkList, Tables tables, bool useCamelCase, string collectionType, bool checkForFkNameClashes, bool includeComments, bool isSqlCE)
+            public void IdentifyMappingTable(List<ForeignKey> fkList, Tables tables, bool useCamelCase, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments, bool isSqlCE)
             {
                 IsMapping = false;
 
@@ -2770,7 +2782,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
             }
 
-            public void IdentifyMappingTables(List<ForeignKey> fkList, bool useCamelCase, string collectionType, bool checkForFkNameClashes, bool includeComments, bool isSqlCE)
+            public void IdentifyMappingTables(List<ForeignKey> fkList, bool useCamelCase, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments, bool isSqlCE)
             {
                 foreach(var tbl in this.Where(x => x.HasForeignKey))
                 {
