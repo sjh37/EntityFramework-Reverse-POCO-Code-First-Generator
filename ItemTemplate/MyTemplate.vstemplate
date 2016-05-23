@@ -9,7 +9,7 @@
         <PreviewImage>PreviewImage.png</PreviewImage>
         <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
         <RequiredFrameworkVersion>4.0</RequiredFrameworkVersion>
-        <Version>2.19.2</Version>
+        <Version>2.19.3</Version>
     </TemplateData>
     <TemplateContent>
         <References>
