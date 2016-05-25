@@ -242,6 +242,11 @@
     // ** Experienced developers only below this point
 
     Func<StoredProcedure, string> WriteStoredProcFunctionName = sp => sp.NameHumanCase;
+    
+    Func<StoredProcedure, bool> StoredProcHasOutParams = (sp) =>
+    {
+        return sp.Parameters.Any(x => x.Mode != StoredProcedureParameterMode.In);
+    };
 
     Func<StoredProcedure, bool, string> WriteStoredProcFunctionParams = (sp, includeProcResult) =>
     {
@@ -292,7 +297,7 @@
 
     Func<StoredProcedureParameter, string> WriteStoredProcSqlParameterName = p => p.NameHumanCase + "Param";
 
-    Func<StoredProcedure, string> WriteStoredProcFunctionDeclareSqlParameter = sp =>
+    Func<StoredProcedure, bool, string> WriteStoredProcFunctionDeclareSqlParameter = (sp, includeProcResult) =>
     {
         var sb = new StringBuilder();
         foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
@@ -319,7 +324,7 @@
                         p.NameHumanCase, Environment.NewLine);
                 }
         }
-        if(sp.ReturnModels.Count < 2)
+        if(includeProcResult && sp.ReturnModels.Count < 2)
             sb.AppendLine("            var procResultParam = new System.Data.SqlClient.SqlParameter { ParameterName = \"@procResult\", SqlDbType = System.Data.SqlDbType.Int, Direction = System.Data.ParameterDirection.Output };");
         return sb.ToString();
     };
@@ -339,14 +344,19 @@
         return sb.ToString();
     };
 
-    Func<StoredProcedure, string> WriteStoredProcFunctionSqlParameterAnonymousArray = sp =>
+    Func<StoredProcedure, bool, string> WriteStoredProcFunctionSqlParameterAnonymousArray = (sp, includeProcResultParam) =>
     {
         var sb = new StringBuilder();
+        bool hasParam = false;
         foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
         {
             sb.Append(string.Format("{0}Param, ", p.NameHumanCase));
+            hasParam = true;
         }
-        sb.Append("procResultParam");
+        if (includeProcResultParam)
+            sb.Append("procResultParam");
+        else if(hasParam)
+            sb.Remove(sb.Length - 2, 2);
         return sb.ToString();
     };
 

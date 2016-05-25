@@ -210,13 +210,14 @@
     // Stored procedure are not supported in SqlCE - create dummy functions
     StoredProcedureRename = (name, schema) => name;
     Func<StoredProcedure, string> WriteStoredProcFunctionName = null;
+    Func<StoredProcedure, bool> StoredProcHasOutParams = null;
     Func<StoredProcedure, bool, string> WriteStoredProcFunctionParams = null;
     Func<StoredProcedure, string> WriteStoredProcFunctionOverloadCall = null;
     Func<StoredProcedure, string> WriteStoredProcFunctionSqlAtParams = null;
     Func<StoredProcedureParameter, string> WriteStoredProcSqlParameterName = null;
-    Func<StoredProcedure, string> WriteStoredProcFunctionDeclareSqlParameter = null;
+    Func<StoredProcedure, bool, string> WriteStoredProcFunctionDeclareSqlParameter = null;
     Func<StoredProcedure, string> WriteTableValuedFunctionDeclareSqlParameter = null;
-    Func<StoredProcedure, string> WriteStoredProcFunctionSqlParameterAnonymousArray = null;
+    Func<StoredProcedure, bool, string> WriteStoredProcFunctionSqlParameterAnonymousArray = null;
     Func<StoredProcedure, string> WriteTableValuedFunctionSqlParameterAnonymousArray = null;
     Func<StoredProcedure, bool, string> WriteStoredProcFunctionSetSqlParameters = null;
     Func<StoredProcedure, string> WriteStoredProcReturnModelName = null;
