@@ -1618,7 +1618,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.PhotoPath).HasColumnName(@"PhotoPath").IsOptional().HasColumnType("nvarchar").HasMaxLength(255);
 
             // Foreign keys
-            HasOptional(a => a.Employee_ReportsTo).WithMany(b => b.Employees).HasForeignKey(c => c.ReportsTo); // FK_Employees_Employees
+            HasOptional(a => a.Employee_ReportsTo).WithMany(b => b.Employees).HasForeignKey(c => c.ReportsTo).WillCascadeOnDelete(false); // FK_Employees_Employees
             HasMany(t => t.Territories).WithMany(t => t.Employees).Map(m => 
             {
                 m.ToTable("EmployeeTerritories", "dbo");
@@ -1701,9 +1701,9 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.ShipCountry).HasColumnName(@"ShipCountry").IsOptional().HasColumnType("nvarchar").HasMaxLength(15);
 
             // Foreign keys
-            HasOptional(a => a.Customer).WithMany(b => b.Orders).HasForeignKey(c => c.CustomerId); // FK_Orders_Customers
-            HasOptional(a => a.Employee).WithMany(b => b.Orders).HasForeignKey(c => c.EmployeeId); // FK_Orders_Employees
-            HasOptional(a => a.Shipper).WithMany(b => b.Orders).HasForeignKey(c => c.ShipVia); // FK_Orders_Shippers
+            HasOptional(a => a.Customer).WithMany(b => b.Orders).HasForeignKey(c => c.CustomerId).WillCascadeOnDelete(false); // FK_Orders_Customers
+            HasOptional(a => a.Employee).WithMany(b => b.Orders).HasForeignKey(c => c.EmployeeId).WillCascadeOnDelete(false); // FK_Orders_Employees
+            HasOptional(a => a.Shipper).WithMany(b => b.Orders).HasForeignKey(c => c.ShipVia).WillCascadeOnDelete(false); // FK_Orders_Shippers
         }
     }
 
@@ -1728,8 +1728,8 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.Discount).HasColumnName(@"Discount").IsRequired().HasColumnType("real");
 
             // Foreign keys
-            HasRequired(a => a.Order).WithMany(b => b.OrderDetails).HasForeignKey(c => c.OrderId); // FK_Order_Details_Orders
-            HasRequired(a => a.Product).WithMany(b => b.OrderDetails).HasForeignKey(c => c.ProductId); // FK_Order_Details_Products
+            HasRequired(a => a.Order).WithMany(b => b.OrderDetails).HasForeignKey(c => c.OrderId).WillCascadeOnDelete(false); // FK_Order_Details_Orders
+            HasRequired(a => a.Product).WithMany(b => b.OrderDetails).HasForeignKey(c => c.ProductId).WillCascadeOnDelete(false); // FK_Order_Details_Products
         }
     }
 
@@ -1839,8 +1839,8 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.Discontinued).HasColumnName(@"Discontinued").IsRequired().HasColumnType("bit");
 
             // Foreign keys
-            HasOptional(a => a.Category).WithMany(b => b.Products).HasForeignKey(c => c.CategoryId); // FK_Products_Categories
-            HasOptional(a => a.Supplier).WithMany(b => b.Products).HasForeignKey(c => c.SupplierId); // FK_Products_Suppliers
+            HasOptional(a => a.Category).WithMany(b => b.Products).HasForeignKey(c => c.CategoryId).WillCascadeOnDelete(false); // FK_Products_Categories
+            HasOptional(a => a.Supplier).WithMany(b => b.Products).HasForeignKey(c => c.SupplierId).WillCascadeOnDelete(false); // FK_Products_Suppliers
         }
     }
 
@@ -2096,7 +2096,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.RegionId).HasColumnName(@"RegionID").IsRequired().HasColumnType("int");
 
             // Foreign keys
-            HasRequired(a => a.Region).WithMany(b => b.Territories).HasForeignKey(c => c.RegionId); // FK_Territories_Region
+            HasRequired(a => a.Region).WithMany(b => b.Territories).HasForeignKey(c => c.RegionId).WillCascadeOnDelete(false); // FK_Territories_Region
         }
     }
 

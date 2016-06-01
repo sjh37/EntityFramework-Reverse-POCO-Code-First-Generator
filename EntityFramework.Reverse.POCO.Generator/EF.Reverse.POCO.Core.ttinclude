@@ -2149,7 +2149,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     GetHasMethod(relationship, fkCol, pkCol), 
                     pkPropName, 
                     GetWithMethod(relationship, fkCol, fkPropName, manyToManyMapping, mapKey),
-                    cascadeOnDelete ? ".WillCascadeOnDelete()" : string.Empty);
+                    cascadeOnDelete ? string.Empty: ".WillCascadeOnDelete(false)");
             }
 
             // HasOptional
