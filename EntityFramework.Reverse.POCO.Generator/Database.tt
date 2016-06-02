@@ -236,6 +236,39 @@
         return fk;
     };
 
+    ForeignKeyName = (tableName, foreignKeyName, attempt) =>
+    {
+        // 5 Attempts to correctly name the foreign key
+        switch (attempt)
+        {
+            case 1:
+                // Try without appending foreign key name
+                return tableName;
+            
+            case 2:
+                // Only called if foreign key name ends with "id"
+                // Use foreign key name without "id" at end of string
+                return foreignKeyName.Remove(foreignKeyName.Length-2, 2);
+
+            case 3:
+                // Use foreign key name only
+                return foreignKeyName;
+
+            case 4:
+                // Use table name and foreign key name
+                return tableName + "_" + foreignKeyName;
+
+            case 5:
+                // Used in for loop 1 to 99 to append a number to the end
+                return tableName;
+            
+            default:
+                // Give up
+                return tableName;
+        }
+    };
+
+    // That's it, nothing else to configure ***********************************************************************************************
 
 
     // ***********************************************************************
@@ -414,8 +447,6 @@
         return (returnModelCount == 1) ? string.Format("System.Collections.Generic.List<{0}>", spReturnClassName) : spReturnClassName;
     };
 
-
-    // That's it, nothing else to configure ***********************************************************************************************
 
 
 
