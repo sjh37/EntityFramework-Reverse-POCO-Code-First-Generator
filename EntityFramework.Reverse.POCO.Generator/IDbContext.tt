@@ -1,0 +1,239 @@
+﻿namespace Interfaces
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Data.Entity;
+    using System.Data.Entity.Infrastructure;
+    using System.Data.Entity.Validation;
+    using System.Threading;
+    using System.Threading.Tasks;
+
+    /// <summary>
+    /// The database context class.
+    /// </summary>
+    /// <seealso cref="System.IDisposable" />
+    /// <seealso cref="System.Data.Entity.Infrastructure.IObjectContextAdapter" />
+    public interface IDbContext : IDisposable, IObjectContextAdapter
+    {
+        /// <summary>
+        /// Gets a <see cref="IDbContext.Database" /> instance for
+        /// this context that allows for creation/deletion/existence
+        /// checks for the underlying database.
+        /// </summary>
+        /// <value>The database.</value>
+        Database Database { get; }
+
+        /// <summary>
+        /// Gets access to features of the context that deal with change
+        /// tracking of entities.
+        /// </summary>
+        /// <value>An <see langword="object" /> used to access features that deal with
+        /// change tracking.</value>
+        DbChangeTracker ChangeTracker { get; }
+
+        /// <summary>
+        /// Gets access to configuration options for the context.
+        /// </summary>
+        /// <value>An <see langword="object" /> used to access configuration options.</value>
+        DbContextConfiguration Configuration { get; }
+
+        /// <summary>
+        /// Returns a <see cref="System.Data.Entity.DbSet" /> instance for
+        /// access to entities of the given type in the context and the
+        /// underlying store.
+        /// </summary>
+        /// <typeparam name="TEntity">The type entity for which a set should be returned.</typeparam>
+        /// <returns>A set for the given entity type.</returns>
+        /// <remarks>Note that Entity Framework requires that this method return the same
+        /// instance each time that it is called for a given context instance
+        /// and entity type. Also, the non-generic
+        /// <see cref="System.Data.Entity.DbSet" /> returned by the
+        /// <see cref="System.Data.Entity.DbContext" /> method must wrap the
+        /// same underlying query and set of entities. These invariants must be
+        /// maintained if this method is overridden for anything other than
+        /// creating test doubles for unit testing. See the
+        /// <see cref="System.Data.Entity.DbSet" /> class for more details.</remarks>
+        DbSet<TEntity> Set<TEntity>()
+            where TEntity : class;
+
+        /// <summary>
+        /// <para>
+        /// Returns a non-generic <see cref="System.Data.Entity.DbSet" /></para>
+        /// <para>
+        /// instance for access to entities of the given type in the context and
+        /// the underlying store.
+        /// </para>
+        /// </summary>
+        /// <param name="entityType">The type of entity for which a set should be returned.</param>
+        /// <returns>A set for the given entity type.</returns>
+        /// <remarks>Note that Entity Framework requires that this method return the same
+        /// instance each time that it is called for a given context instance
+        /// and entity type. Also, the generic
+        /// <see cref="System.Data.Entity.DbSet" /> returned by the
+        /// <see cref="System.Data.Entity.DbContext" /> method must wrap the
+        /// same underlying query and set of entities. These invariants must be
+        /// maintained if this method is overridden for anything other than
+        /// creating test doubles for unit testing. See the
+        /// <see cref="System.Data.Entity.DbSet" /> class for more details.</remarks>
+        DbSet Set(Type entityType);
+
+        /// <summary>
+        /// Saves all changes made in <see langword="this" /> context to the
+        /// underlying database.
+        /// </summary>
+        /// <returns>The number of state entries written to the underlying database. This
+        /// can include state entries for entities and/or relationships.
+        /// Relationship state entries are created for many-to-many
+        /// relationships and relationships where there is no foreign key
+        /// property included in the entity class (often referred to as
+        /// independent associations).</returns>
+        /// <exception cref="System.Data.Entity.Infrastructure.DbUpdateException">An error occurred sending updates to the database.</exception>
+        /// <exception cref="System.Data.Entity.Infrastructure.DbUpdateConcurrencyException">A database command did not affect the expected number of rows. This
+        /// usually indicates an optimistic concurrency violation; that is, a
+        /// row has been changed in the database since it was queried.</exception>
+        /// <exception cref="System.Data.Entity.Validation.DbEntityValidationException">The save was aborted because validation of entity property values
+        /// failed.</exception>
+        /// <exception cref="System.NotSupportedException">An attempt was made to use unsupported behavior such as executing
+        /// multiple asynchronous commands concurrently on the same context
+        /// instance.</exception>
+        /// <exception cref="System.ObjectDisposedException">The context or connection have been disposed.</exception>
+        /// <exception cref="System.InvalidOperationException">Some error occurred attempting to process entities in the context
+        /// either before or after sending commands to the database.</exception>
+        int SaveChanges();
+
+        /// <summary>
+        /// <para>
+        /// Asynchronously saves all changes made in <see langword="this" /></para>
+        /// <para>context to the underlying database.</para>
+        /// </summary>
+        /// <returns>A task that represents the asynchronous save operation. The task
+        /// result contains the number of state entries written to the
+        /// underlying database. This can include state entries for entities
+        /// and/or relationships. Relationship state entries are created for
+        /// many-to-many relationships and relationships where there is no
+        /// foreign key property included in the entity class (often referred to
+        /// as independent associations).</returns>
+        /// <exception cref="System.Data.Entity.Infrastructure.DbUpdateException">An error occurred sending updates to the database.</exception>
+        /// <exception cref="System.Data.Entity.Infrastructure.DbUpdateConcurrencyException">A database command did not affect the expected number of rows. This
+        /// usually indicates an optimistic concurrency violation; that is, a
+        /// row has been changed in the database since it was queried.</exception>
+        /// <exception cref="System.Data.Entity.Validation.DbEntityValidationException">The save was aborted because validation of entity property values
+        /// failed.</exception>
+        /// <exception cref="System.NotSupportedException">An attempt was made to use unsupported behavior such as executing
+        /// multiple asynchronous commands concurrently on the same context
+        /// instance.</exception>
+        /// <exception cref="System.ObjectDisposedException">The context or connection have been disposed.</exception>
+        /// <exception cref="System.InvalidOperationException">Some error occurred attempting to process entities in the context
+        /// either before or after sending commands to the database.</exception>
+        /// <remarks>Multiple active operations on the same context instance are not
+        /// supported. Use 'await' to ensure that any asynchronous operations
+        /// have completed before calling another method on
+        /// <see langword="this" /> context.</remarks>
+        Task<int> SaveChangesAsync();
+
+        /// <summary>
+        /// <para>
+        /// Asynchronously saves all changes made in <see langword="this" /></para>
+        /// <para>context to the underlying database.</para>
+        /// </summary>
+        /// <param name="cancellationToken">A <see cref="System.Threading.CancellationToken" /> to observe while
+        /// waiting for the task to complete.</param>
+        /// <returns>A task that represents the asynchronous save operation. The task
+        /// result contains the number of state entries written to the
+        /// underlying database. This can include state entries for entities
+        /// and/or relationships. Relationship state entries are created for
+        /// many-to-many relationships and relationships where there is no
+        /// foreign key property included in the entity class (often referred to
+        /// as independent associations).</returns>
+        /// <exception cref="System.InvalidOperationException">Thrown if the context has been disposed.</exception>
+        /// <remarks>Multiple active operations on the same context instance are not
+        /// supported. Use 'await' to ensure that any asynchronous operations
+        /// have completed before calling another method on
+        /// <see langword="this" /> context.</remarks>
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+
+        /// <summary>
+        /// <para>
+        /// Validates tracked entities and returns a Collection of
+        /// <see cref="System.Data.Entity.Validation.DbEntityValidationResult" /></para>
+        /// <para>containing validation results.</para>
+        /// </summary>
+        /// <returns>Collection of validation results for invalid entities. The
+        /// collection is never <see langword="null" /> and must not contain
+        /// <see langword="null" /> values or results for valid entities.</returns>
+        /// <remarks><list type="number">
+        ///   <item>
+        ///     <description></description>
+        ///   </item>
+        ///   <item>
+        ///     <description></description>
+        ///   </item>
+        ///   <item>
+        ///     <description></description>
+        ///   </item>
+        ///   <item>
+        ///     <description>
+        /// This method calls DetectChanges() to determine states of the tracked
+        /// entities unless DbContextConfiguration.AutoDetectChangesEnabled is
+        /// set to false.
+        /// </description>
+        ///   </item>
+        ///   <item>
+        ///     <description></description>
+        ///   </item>
+        ///   <item>
+        ///     <description></description>
+        ///   </item>
+        ///   <item>
+        ///     <description></description>
+        ///   </item>
+        ///   <item>
+        ///     <description>
+        /// By default only Added on Modified entities are validated. The user
+        /// is able to change this behavior by overriding ShouldValidateEntity
+        /// method.
+        /// </description>
+        ///   </item>
+        ///   <item>
+        ///     <description></description>
+        ///   </item>
+        ///   <item>
+        ///     <description></description>
+        ///   </item>
+        ///   <item>
+        ///     <description></description>
+        ///   </item>
+        /// </list></remarks>
+        IEnumerable<DbEntityValidationResult> GetValidationErrors();
+
+        /// <summary>
+        /// <para>
+        /// Gets a
+        /// <see cref="System.Data.Entity.Infrastructure.DbEntityEntry" /></para>
+        /// <para>
+        /// object for the given <paramref name="entity" /> providing access to
+        /// information about the <paramref name="entity" /> and the ability to
+        /// perform actions on the entity.
+        /// </para>
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <param name="entity">The entity.</param>
+        /// <returns>An entry for the entity.</returns>
+        DbEntityEntry<TEntity> Entry<TEntity>(TEntity entity)
+            where TEntity : class;
+
+        /// <summary>
+        /// <para>
+        /// Gets a
+        /// <see cref="System.Data.Entity.Infrastructure.DbEntityEntry" /></para>
+        /// <para>
+        /// object for the given <paramref name="entity" /> providing access to
+        /// information about the <paramref name="entity" /> and the ability to
+        /// perform actions on the entity.
+        /// </para>
+        /// </summary>
+        /// <param name="entity">The entity.</param>
+        /// <returns>An entry for the entity.</returns>
+        DbEntityEntry Entry(object entity);
+    }
+}
