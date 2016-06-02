@@ -71,11 +71,15 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Database NorthwindSqlCe40.tt</DependentUpon>
     </Compile>
-    <Compile Include="Database.cs">
+    <Compile Include="Database.generated.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Database.tt</DependentUpon>
     </Compile>
+    <Content Include="IDbContext.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>IDbContext1.cs</LastGenOutput>
+    </Content>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Database NorthwindSqlCe40.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -87,7 +91,7 @@
     </None>
     <None Include="Database.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Database.cs</LastGenOutput>
+      <LastGenOutput>Database.generated.cs</LastGenOutput>
     </None>
     <None Include="EF.Reverse.POCO.Core.ttinclude" />
     <None Include="EF.Reverse.POCO.ttinclude" />

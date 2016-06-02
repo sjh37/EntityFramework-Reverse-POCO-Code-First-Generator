@@ -85,10 +85,10 @@ else
 { #>
         <#=s #>
 <# } #>
-        int SaveChanges();
+        ////int SaveChanges();
 <# if (IsSupportedFrameworkVersion("4.5")) { #>
-        System.Threading.Tasks.Task<int> SaveChangesAsync();
-        System.Threading.Tasks.Task<int> SaveChangesAsync(System.Threading.CancellationToken cancellationToken);
+        ////System.Threading.Tasks.Task<int> SaveChangesAsync();
+        ////System.Threading.Tasks.Task<int> SaveChangesAsync(System.Threading.CancellationToken cancellationToken);
 <# } #>
 <# if (storedProcs.Any()) { #>
         
@@ -463,7 +463,19 @@ if (IncludeTableValuedFunctions)
 
     // ************************************************************************
     // Fake Database context
+<# }
+else 
+{ #>    using System.Collections.Generic;
+    using System.Data.Entity;
+    using System.Data.Entity.Core.Objects;
+	using System.Data.Entity.Infrastructure;
+    using System.Data.Entity.Validation;
 <# } #>
+
+    /// <summary>
+    /// The Fake<#=DbContextName #> class.
+    /// </summary>
+    /// <seealso cref="I<#=DbContextName #>" />
     <#= CodeGeneratedAttribute #>
     public <# if(MakeClassesPartial) { #>partial <# } #>class Fake<#=DbContextName #> : I<#=DbContextName #>
     {
@@ -471,9 +483,16 @@ if (IncludeTableValuedFunctions)
 foreach (Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKey).OrderBy(x => x.NameHumanCase) select t)
 {
 #>
+        /// <summary>
+        /// Gets or sets the <#=tbl.NameHumanCase #>.
+        /// </summary>
+        /// <value>The <#=tbl.NameHumanCase #>.</value>
         public System.Data.Entity.DbSet<<#=tbl.NameHumanCase #>> <#=Inflector.MakePlural(tbl.NameHumanCase) #> { get; set; }
 <# } #>
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Fake<#=DbContextName #>"/> class.
+        /// </summary>
         public Fake<#=DbContextName #>()
         {
 <#
@@ -486,8 +505,49 @@ foreach (Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKe
 
             InitializePartial();
 <#}#>        }
+        
+        /// <summary>
+        /// Gets a <see cref="IDbContext.Database" /> instance for
+        /// this context that allows for creation/deletion/existence
+        /// checks for the underlying database.
+        /// </summary>
+        /// <value>The database.</value>
+        public Database Database { get; }
 
+        /// <summary>
+        /// Gets access to features of the context that deal with change
+        /// tracking of entities.
+        /// </summary>
+        /// <value>An <see langword="object" /> used to access features that deal with
+        /// change tracking.</value>
+        public DbChangeTracker ChangeTracker { get; }
+
+        /// <summary>
+        /// Gets access to configuration options for the context.
+        /// </summary>
+        /// <value>An <see langword="object" /> used to access configuration options.</value>
+        public DbContextConfiguration Configuration { get; }
+
+		/// <summary>Gets the object context.</summary>
+        /// <value> The object context. </value>
+        public ObjectContext ObjectContext { get; }
+
+        /// <summary>
+        /// Gets the save changes count.
+        /// </summary>
+        /// <value>The save changes count.</value>
         public int SaveChangesCount { get; private set; }
+        
+        /// <summary>
+        /// Saves all changes made in <see langword="this" /> context to the
+        /// underlying database.
+        /// </summary>
+        /// <returns>The number of state entries written to the underlying database. This
+        /// can include state entries for entities and/or relationships.
+        /// Relationship state entries are created for many-to-many
+        /// relationships and relationships where there is no foreign key
+        /// property included in the entity class (often referred to as
+        /// independent associations).</returns>
         public int SaveChanges()
         {
             ++SaveChangesCount;
@@ -495,27 +555,206 @@ foreach (Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKe
         }
 <# if (IsSupportedFrameworkVersion("4.5")) { #>
 
+        /// <summary>
+        /// <para>
+        /// Asynchronously saves all changes made in <see langword="this" /></para>
+        /// <para>context to the underlying database.</para>
+        /// </summary>
+        /// <returns>A task that represents the asynchronous save operation. The task
+        /// result contains the number of state entries written to the
+        /// underlying database. This can include state entries for entities
+        /// and/or relationships. Relationship state entries are created for
+        /// many-to-many relationships and relationships where there is no
+        /// foreign key property included in the entity class (often referred to
+        /// as independent associations).</returns>
+        /// <remarks>Multiple active operations on the same context instance are not
+        /// supported. Use 'await' to ensure that any asynchronous operations
+        /// have completed before calling another method on
+        /// <see langword="this" /> context.</remarks>
         public System.Threading.Tasks.Task<int> SaveChangesAsync()
         {
             ++SaveChangesCount;
             return System.Threading.Tasks.Task<int>.Factory.StartNew(() => 1);
         }
 
+        /// <summary>
+        /// <para>
+        /// Asynchronously saves all changes made in <see langword="this" /></para>
+        /// <para>context to the underlying database.</para>
+        /// </summary>
+        /// <param name="cancellationToken">A <see cref="System.Threading.CancellationToken" /> to observe while
+        /// waiting for the task to complete.</param>
+        /// <returns>A task that represents the asynchronous save operation. The task
+        /// result contains the number of state entries written to the
+        /// underlying database. This can include state entries for entities
+        /// and/or relationships. Relationship state entries are created for
+        /// many-to-many relationships and relationships where there is no
+        /// foreign key property included in the entity class (often referred to
+        /// as independent associations).</returns>
+        /// <remarks>Multiple active operations on the same context instance are not
+        /// supported. Use 'await' to ensure that any asynchronous operations
+        /// have completed before calling another method on
+        /// <see langword="this" /> context.</remarks>
         public System.Threading.Tasks.Task<int> SaveChangesAsync(System.Threading.CancellationToken cancellationToken)
         {
             ++SaveChangesCount;
             return System.Threading.Tasks.Task<int>.Factory.StartNew(() => 1, cancellationToken);
         }
+
 <# } #>
+        /// <summary>
+        /// Returns a <see cref="System.Data.Entity.DbSet" /> instance for
+        /// access to entities of the given type in the context and the
+        /// underlying store.
+        /// </summary>
+        /// <typeparam name="TEntity">The type entity for which a set should be returned.</typeparam>
+        /// <returns>A set for the given entity type.</returns>
+        /// <remarks>Note that Entity Framework requires that this method return the same
+        /// instance each time that it is called for a given context instance
+        /// and entity type. Also, the non-generic
+        /// <see cref="System.Data.Entity.DbSet" /> returned by the
+        /// <see cref="System.Data.Entity.DbContext" /> method must wrap the
+        /// same underlying query and set of entities. These invariants must be
+        /// maintained if this method is overridden for anything other than
+        /// creating test doubles for unit testing. See the
+        /// <see cref="System.Data.Entity.DbSet" /> class for more details.</remarks>
+        public DbSet<TEntity> Set<TEntity>() where TEntity : class
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// <para>
+        /// Returns a non-generic <see cref="System.Data.Entity.DbSet" /></para>
+        /// <para>
+        /// instance for access to entities of the given type in the context and
+        /// the underlying store.
+        /// </para>
+        /// </summary>
+        /// <param name="entityType">The type of entity for which a set should be returned.</param>
+        /// <returns>A set for the given entity type.</returns>
+        /// <remarks>Note that Entity Framework requires that this method return the same
+        /// instance each time that it is called for a given context instance
+        /// and entity type. Also, the generic
+        /// <see cref="System.Data.Entity.DbSet" /> returned by the
+        /// <see cref="System.Data.Entity.DbContext" /> method must wrap the
+        /// same underlying query and set of entities. These invariants must be
+        /// maintained if this method is overridden for anything other than
+        /// creating test doubles for unit testing. See the
+        /// <see cref="System.Data.Entity.DbSet" /> class for more details.</remarks>
+        public DbSet Set(Type entityType)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// <para>
+        /// Validates tracked entities and returns a Collection of
+        /// <see cref="System.Data.Entity.Validation.DbEntityValidationResult" /></para>
+        /// <para>containing validation results.</para>
+        /// </summary>
+        /// <returns>Collection of validation results for invalid entities. The
+        /// collection is never <see langword="null" /> and must not contain
+        /// <see langword="null" /> values or results for valid entities.</returns>
+        /// <remarks><list type="number">
+        ///   <item>
+        ///     <description></description>
+        ///   </item>
+        ///   <item>
+        ///     <description></description>
+        ///   </item>
+        ///   <item>
+        ///     <description></description>
+        ///   </item>
+        ///   <item>
+        ///     <description>
+        /// This method calls DetectChanges() to determine states of the tracked
+        /// entities unless DbContextConfiguration.AutoDetectChangesEnabled is
+        /// set to false.
+        /// </description>
+        ///   </item>
+        ///   <item>
+        ///     <description></description>
+        ///   </item>
+        ///   <item>
+        ///     <description></description>
+        ///   </item>
+        ///   <item>
+        ///     <description></description>
+        ///   </item>
+        ///   <item>
+        ///     <description>
+        /// By default only Added on Modified entities are validated. The user
+        /// is able to change this behavior by overriding ShouldValidateEntity
+        /// method.
+        /// </description>
+        ///   </item>
+        ///   <item>
+        ///     <description></description>
+        ///   </item>
+        ///   <item>
+        ///     <description></description>
+        ///   </item>
+        ///   <item>
+        ///     <description></description>
+        ///   </item>
+        /// </list></remarks>
+        public IEnumerable<DbEntityValidationResult> GetValidationErrors()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// <para>
+        /// Gets a
+        /// <see cref="System.Data.Entity.Infrastructure.DbEntityEntry" /></para>
+        /// <para>
+        /// object for the given <paramref name="entity" /> providing access to
+        /// information about the <paramref name="entity" /> and the ability to
+        /// perform actions on the entity.
+        /// </para>
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <param name="entity">The entity.</param>
+        /// <returns>An entry for the entity.</returns>
+        public DbEntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// <para>
+        /// Gets a
+        /// <see cref="System.Data.Entity.Infrastructure.DbEntityEntry" /></para>
+        /// <para>
+        /// object for the given <paramref name="entity" /> providing access to
+        /// information about the <paramref name="entity" /> and the ability to
+        /// perform actions on the entity.
+        /// </para>
+        /// </summary>
+        /// <param name="entity">The entity.</param>
+        /// <returns>An entry for the entity.</returns>
+        public DbEntityEntry Entry(object entity)
+        {
+            throw new NotImplementedException();
+        }
+
 <#if(MakeClassesPartial) {#>
 
         partial void InitializePartial();
 <#}#>
 
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
         {
         }
-
+        
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);
@@ -713,17 +952,17 @@ if (IncludeTableValuedFunctions)
             get { return _data; }
         }
 
-        System.Type IQueryable.ElementType
+        public System.Type ElementType
         {
             get { return _query.ElementType; }
         }
 
-        System.Linq.Expressions.Expression IQueryable.Expression
+        public System.Linq.Expressions.Expression Expression 
         {
             get { return _query.Expression; }
         }
 
-        IQueryProvider IQueryable.Provider
+        public IQueryProvider Provider 
         {
 <# if (IsSupportedFrameworkVersion("4.5")) { #>
             get { return new FakeDbAsyncQueryProvider<TEntity>(_query.Provider); }
@@ -732,7 +971,7 @@ if (IncludeTableValuedFunctions)
 <# } #>
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        public System.Collections.IEnumerator GetEnumerator() 
         {
             return _data.GetEnumerator();
         }
@@ -743,7 +982,7 @@ if (IncludeTableValuedFunctions)
         }
 <# if (IsSupportedFrameworkVersion("4.5")) { #>
 
-        System.Data.Entity.Infrastructure.IDbAsyncEnumerator<TEntity> System.Data.Entity.Infrastructure.IDbAsyncEnumerable<TEntity>.GetAsyncEnumerator()
+        System.Data.Entity.Infrastructure.IDbAsyncEnumerator<TEntity> GetAsyncEnumerator() 
         {
             return new FakeDbAsyncEnumerator<TEntity>(_data.GetEnumerator());
         }
@@ -817,7 +1056,7 @@ if (IncludeTableValuedFunctions)
             return GetAsyncEnumerator();
         }
 
-        IQueryProvider IQueryable.Provider
+        public IQueryProvider Provider 
         {
             get { return new FakeDbAsyncQueryProvider<T>(this); }
         }

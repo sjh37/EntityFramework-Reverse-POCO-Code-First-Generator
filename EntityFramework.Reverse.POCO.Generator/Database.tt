@@ -11,14 +11,14 @@
     // Namespace = ""; // Override the default namespace here
     DbContextName = "MyDbContext";
     //DbContextInterfaceName = "IMyDbContext"; //Defaults to "I" + DbContextName
-    DbContextInterfaceBaseClasses = "System.IDisposable";    // Specify what the base classes are for your database context interface
+    DbContextInterfaceBaseClasses = "IDbContext";    // Specify what the base classes are for your database context interface
     DbContextBaseClass = "System.Data.Entity.DbContext";   // Specify what the base class is for your DbContext. For ASP.NET Identity use "IdentityDbContext<ApplicationUser>"
     //DefaultConstructorArgument = "EnvironmentConnectionStrings.MyDbContext"; //defaults to "Name=" + ConnectionStringName
     TargetFrameworkVersion = "4.51"; // Please set this to your .NET framework version, 4.0, 4.5, 4.51, etc.
     ConfigurationClassName = "Configuration"; // Configuration, Mapping, Map, etc. This is appended to the Poco class name to configure the mappings.
     ConfigFilenameSearchOrder = new[] { "app.config", "web.config", "app.config.transform", "web.config.transform" }; // Add more here if required. The config files are searched for in the local project first, then the whole solution second.
-    MakeClassesPartial = false;
-    MakeDbContextInterfacePartial = false;
+    MakeClassesPartial = true;
+    MakeDbContextInterfacePartial = true;
     GenerateSeparateFiles = false;
     UseMappingTables = true; // If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
     UseCamelCase = true;    // This will rename the tables & fields to use CamelCase. If false table & field names will be left alone.
@@ -32,7 +32,7 @@
     NullableShortHand = true; //true => T?, false => Nullable<T>
     AddUnitTestingDbContext = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing
     IncludeQueryTraceOn9481Flag = false; // If SqlServer 2014 appears frozen / take a long time when this file is saved, try setting this to true (you will also need elevated privileges).
-    AdditionalNamespaces = new[] { "" };  // To include extra namespaces, include them here. i.e. "Microsoft.AspNet.Identity.EntityFramework"
+    AdditionalNamespaces = new[] { "System", "Newtonsoft.Json" };  // To include extra namespaces, include them here. i.e. "Microsoft.AspNet.Identity.EntityFramework"
     AdditionalContextInterfaceItems = new[] // To include extra db context interface items, include them here. Also set MakeClassesPartial=true, and implement the partial DbContext class functions.
     {
         ""  //  example: "void SetAutoDetectChangesEnabled(bool flag);"
@@ -54,7 +54,7 @@
     MigrationStrategy = "MigrateDatabaseToLatestVersion"; // MigrateDatabaseToLatestVersion, CreateDatabaseIfNotExists or DropCreateDatabaseIfModelChanges
     ContextKey = ""; // Sets the string used to distinguish migrations belonging to this configuration from migrations belonging to other configurations using the same database. This property enables migrations from multiple different models to be applied to applied to a single database.
     AutomaticMigrationsEnabled = true;
-    AutomaticMigrationDataLossAllowed = true; // if true, can drop fields and lose data during automatic migration
+    AutomaticMigrationDataLossAllowed = false; // if true, can drop fields and lose data during automatic migration
 
     // Pluralization **********************************************************************************************************************
     // To turn off pluralization, use:
@@ -66,15 +66,14 @@
     //      2. Add the following to the top of this file and adjust path, and remove the space between the angle bracket and # at the beginning and end.
     //         < #@ assembly name="your full path to \EntityFramework.Contrib.dll" # >
     //      3. Change the line below to: Inflector.PluralizationService = new SpanishPluralizationService();
-    Inflector.PluralizationService = new EnglishPluralizationService(new[]
+    Inflector.PluralizationService = new EnglishPluralizationService(new CustomPluralizationEntry[]
     {
         // Create custom ("Singular", "Plural") forms for one-off words as needed
-        new CustomPluralizationEntry("LiveQuiz", "LiveQuizzes"),
-        new CustomPluralizationEntry("Course", "Courses"),
-        new CustomPluralizationEntry("CustomerStatus", "CustomerStatus"), // Use same value to prevent pluralisation
-        new CustomPluralizationEntry("EmployeeStatus", "EmployeeStatus")
+        ////new CustomPluralizationEntry("LiveQuiz", "LiveQuizzes"),
+        ////new CustomPluralizationEntry("Course", "Courses"),
+        ////new CustomPluralizationEntry("CustomerStatus", "CustomerStatus"), // Use same value to prevent pluralisation
+        ////new CustomPluralizationEntry("EmployeeStatus", "EmployeeStatus")
     });
-
 
     // Elements to generate ***************************************************************************************************************
     // Add the elements that should be generated when the template is executed.
@@ -98,13 +97,11 @@
     UnitOfWorkNamespace = "";
     PocoConfigurationNamespace = "";
 
-
     // Schema *****************************************************************************************************************************
     // If there are multiple schemas, then the table name is prefixed with the schema, except for dbo.
     // Ie. dbo.hello will be Hello.
     //     abc.hello will be AbcHello.
     PrependSchemaName = true;   // Control if the schema name is prepended to the table name
-
 
     // Filtering **************************************************************************************************************************
     // Use the following table/view name regex filters to include or exclude tables/views
@@ -120,7 +117,7 @@
     //              ColumnFilterExclude = new Regex("^FK_.*$");
     SchemaFilterExclude = null;
     SchemaFilterInclude = null;
-    TableFilterExclude = null;
+    TableFilterExclude = new Regex("^sysdiagrams$");
     TableFilterInclude = null;
     ColumnFilterExclude = null;
 
@@ -128,7 +125,6 @@
     // Use the following regex filters to include or exclude stored procedures
     StoredProcedureFilterExclude = null;
     StoredProcedureFilterInclude = null;
-
 
     // Table renaming *********************************************************************************************************************
     // Use the following function to rename tables such as tblOrders to Orders, Shipments_AB to Shipments, etc.
@@ -189,7 +185,6 @@
     // Example:                       Proc name      Return this entity type instead
     //StoredProcedureReturnTypes.Add("SalesByYear", "SummaryOfSalesByYear");
 
-
     // WCF ********************************************************************************************************************************
     // This is only intended as a helper, to get you started creating WCF contracts, and to save a lot of typing.
     AddWcfDataAttributes = false;
@@ -197,7 +192,6 @@
     // Example: "";                                           = [DataContract]
     //          "(Namespace = \"http://www.contoso.com\")";   = [DataContract(Namespace = "http://www.contoso.com")]
     //          "(Namespace = Constants.ServiceNamespace)";   = [DataContract(Namespace = Constants.ServiceNamespace)]
-
 
     // Callbacks **********************************************************************************************************************
     // This method will be called right before we write the POCO header.
@@ -244,7 +238,7 @@
             case 1:
                 // Try without appending foreign key name
                 return tableName;
-            
+
             case 2:
                 // Only called if foreign key name ends with "id"
                 // Use foreign key name without "id" at end of string
@@ -261,7 +255,7 @@
             case 5:
                 // Used in for loop 1 to 99 to append a number to the end
                 return tableName;
-            
+
             default:
                 // Give up
                 return tableName;
@@ -270,12 +264,11 @@
 
     // That's it, nothing else to configure ***********************************************************************************************
 
-
     // ***********************************************************************
     // ** Experienced developers only below this point
 
     Func<StoredProcedure, string> WriteStoredProcFunctionName = sp => sp.NameHumanCase;
-    
+
     Func<StoredProcedure, bool> StoredProcHasOutParams = (sp) =>
     {
         return sp.Parameters.Any(x => x.Mode != StoredProcedureParameterMode.In);
@@ -446,9 +439,6 @@
         var spReturnClassName = WriteStoredProcReturnModelName(sp);
         return (returnModelCount == 1) ? string.Format("System.Collections.Generic.List<{0}>", spReturnClassName) : spReturnClassName;
     };
-
-
-
 
     // Read schema
     var factory = GetDbProviderFactory();
