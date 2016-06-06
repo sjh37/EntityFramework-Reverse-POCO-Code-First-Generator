@@ -1139,7 +1139,7 @@
             /// <returns></returns>
             public static string ToTitleCase(string word)
             {
-                string s = Regex.Replace(ToHumanCase(AddUnderscores(word)), @"\b([a-z])", match => match.Captures[0].Value.ToUpper());
+                string s = Regex.Replace(ToHumanCase(AddUnderscores(word)), @"\b([a-z])", match => match.Captures[0].Value.ToUpperInvariant());
                 bool digit = false;
                 string a = string.Empty;
                 foreach(char c in s)
@@ -1152,7 +1152,7 @@
                     else
                     {
                         if(digit && Char.IsLower(c))
-                            a = a + Char.ToUpper(c);
+                            a = a + Char.ToUpperInvariant(c);
                         else
                             a = a + c;
                         digit = false;
@@ -1180,7 +1180,7 @@
             public static string AddUnderscores(string pascalCasedWord)
             {
                 return
-                    Regex.Replace(Regex.Replace(Regex.Replace(pascalCasedWord, @"([A-Z]+)([A-Z][a-z])", "$1_$2"), @"([a-z\d])([A-Z])", "$1_$2"), @"[-\s]", "_").ToLower();
+                    Regex.Replace(Regex.Replace(Regex.Replace(pascalCasedWord, @"([A-Z]+)([A-Z][a-z])", "$1_$2"), @"([a-z\d])([A-Z])", "$1_$2"), @"[-\s]", "_").ToLowerInvariant();
             }
 
             /// <summary>
@@ -1190,7 +1190,7 @@
             /// <returns></returns>
             public static string MakeInitialCaps(string word)
             {
-                return String.Concat(word.Substring(0, 1).ToUpper(), word.Substring(1).ToLower());
+                return String.Concat(word.Substring(0, 1).ToUpperInvariant(), word.Substring(1).ToLowerInvariant());
             }
 
             /// <summary>
@@ -1200,7 +1200,7 @@
             /// <returns></returns>
             public static string MakeInitialLower(string word)
             {
-                return String.Concat(word.Substring(0, 1).ToLower(), word.Substring(1));
+                return String.Concat(word.Substring(0, 1).ToLowerInvariant(), word.Substring(1));
             }
         }
 
