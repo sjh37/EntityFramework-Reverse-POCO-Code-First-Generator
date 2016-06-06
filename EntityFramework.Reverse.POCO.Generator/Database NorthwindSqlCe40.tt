@@ -140,11 +140,19 @@
     
     // Use the following function if you need to apply additional modifications to a column
     // eg. normalise names etc.
-    UpdateColumn = (Column column, Table table) => 
+    UpdateColumn = (Column column, Table table) =>
     {
         // Example
-        //if (column.NameHumanCase == "PkId")
+        //if (column.IsPrimaryKey && column.NameHumanCase == "PkId")
         //    column.NameHumanCase = "Id";
+
+        // Remove table name from primary key
+        //if (column.IsPrimaryKey && column.NameHumanCase.Equals(table.NameHumanCase + "Id", StringComparison.InvariantCultureIgnoreCase))
+        //    column.NameHumanCase = "Id";
+
+        // Remove column from poco class as it will be inherited from a base class
+        //if (column.IsPrimaryKey && table.NameHumanCase.Equals("SomeTable", StringComparison.InvariantCultureIgnoreCase))
+        //    column.Hidden = true;
 
         // Perform Enum property type replacement
         var enumDefinition = EnumsDefinitions.FirstOrDefault(e =>
@@ -154,7 +162,7 @@
 
         if (enumDefinition != null)
             column.PropertyType = enumDefinition.EnumType;
-        
+
         return column;
     };
 
