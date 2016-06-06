@@ -1535,7 +1535,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.Country).HasColumnName(@"Country").IsOptional().HasColumnType("nvarchar").HasMaxLength(15);
             Property(x => x.Phone).HasColumnName(@"Phone").IsOptional().HasColumnType("nvarchar").HasMaxLength(24);
             Property(x => x.Fax).HasColumnName(@"Fax").IsOptional().HasColumnType("nvarchar").HasMaxLength(24);
-            HasMany(t => t.CustomerDemographics).WithMany(t => t.Customers).Map(m => 
+            HasMany(t => t.CustomerDemographics).WithMany(t => t.Customers).Map(m =>
             {
                 m.ToTable("CustomerCustomerDemo", "dbo");
                 m.MapLeftKey("CustomerID");
@@ -1619,7 +1619,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
             // Foreign keys
             HasOptional(a => a.Employee_ReportsTo).WithMany(b => b.Employees).HasForeignKey(c => c.ReportsTo).WillCascadeOnDelete(false); // FK_Employees_Employees
-            HasMany(t => t.Territories).WithMany(t => t.Employees).Map(m => 
+            HasMany(t => t.Territories).WithMany(t => t.Employees).Map(m =>
             {
                 m.ToTable("EmployeeTerritories", "dbo");
                 m.MapLeftKey("EmployeeID");
