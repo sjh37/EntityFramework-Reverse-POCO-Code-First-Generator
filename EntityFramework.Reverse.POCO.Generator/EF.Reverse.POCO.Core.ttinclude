@@ -2,7 +2,7 @@
 // Copyright (C) Simon Hughes 2012
 // v2.20.0
 #>
-<#@ template hostspecific="true" language="C#" #>
+<#@ template debug="true" hostspecific="true" language="C#" #>
 <#@ include file="EF6.Utility.CS.ttinclude"#>
 <#@ assembly name="System.Configuration" #>
 <#@ assembly name="System.Windows.Forms" #>
