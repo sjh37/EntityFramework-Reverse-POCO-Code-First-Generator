@@ -486,13 +486,13 @@ foreach (Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKe
 
             InitializePartial();
 <#}#>        }
-
 <#foreach (string s in AdditionalContextInterfaceItems.Where(x => !string.IsNullOrEmpty(x)))
 { #>
-		public <#=s.TrimEnd(';') #>
+        public <#=s.TrimEnd(';') #>
         {
             throw new System.NotImplementedException();
         }
+
 <# } #>
 
         public int SaveChangesCount { get; private set; }
