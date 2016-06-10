@@ -19,7 +19,7 @@
 <#@ output extension=".cs"#>
 <#
         var code = new CodeGenerationTools(this);
-        string Namespace = code.VsNamespaceSuggestion();
+        string Namespace = code.VsNamespaceSuggestion() ?? "DebugMode";
         var fileManager = EntityFrameworkTemplateFileManager.Create(this);
 #>
 <#+

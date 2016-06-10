@@ -17,7 +17,7 @@ fileManager.StartHeader();
 // TargetFrameworkVersion = <#=TargetFrameworkVersion #>
 #pragma warning disable 1591    //  Ignore "Missing XML Comment" warning
 
-namespace <#= Namespace #>
+namespace <#=Namespace#>
 {
 <#
 var usingsContext = new List<string>();
