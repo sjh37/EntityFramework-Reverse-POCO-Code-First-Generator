@@ -526,25 +526,9 @@
                     if(IsSqlCe)
                         PrependSchemaName = false;
 
-
                     var reader = new SqlServerSchemaReader(conn, factory, IncludeQueryTraceOn9481Flag) { Outer = this };
-                    var tables = reader.ReadSchema(SchemaFilterExclude, TableFilterExclude, ColumnFilterExclude, UseCamelCase, PrependSchemaName, IncludeComments, IncludeViews, IncludeExtendedPropertyComments, TableRename, UpdateColumn);
+                    var tables = reader.ReadSchema(SchemaFilterExclude, SchemaFilterInclude, TableFilterExclude, TableFilterInclude, ColumnFilterExclude, UseCamelCase, PrependSchemaName, IncludeComments, IncludeViews, IncludeExtendedPropertyComments, TableRename, UpdateColumn);
                     tables.SetPrimaryKeys();
-
-                    // Remove unrequired tables/views
-                    for(int i = tables.Count - 1; i >= 0; i--)
-                    {
-                        if(SchemaFilterInclude != null && !SchemaFilterInclude.IsMatch(tables[i].Schema))
-                        {
-                            tables.RemoveAt(i);
-                            continue;
-                        }
-                        if(TableFilterInclude != null && !TableFilterInclude.IsMatch(tables[i].Name))
-                        {
-                            tables.RemoveAt(i);
-                            continue;
-                        }
-                    }
 
                     // Must be done in this order
                     var fkList = reader.ReadForeignKeys(TableRename, ForeignKeyFilter);
@@ -1220,7 +1204,7 @@
             }
 
             public GeneratedTextTransformation Outer;
-            public abstract Tables ReadSchema(Regex schemaFilterExclude, Regex tableFilterExclude, Regex columnFilterExclude, bool useCamelCase, bool prependSchemaName, CommentsStyle includeComments, bool includeViews, CommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, Func<Column, Table, Column> updateColumn);
+            public abstract Tables ReadSchema(Regex schemaFilterExclude, Regex SchemaFilterInclude, Regex tableFilterExclude, Regex TableFilterInclude, Regex columnFilterExclude, bool useCamelCase, bool prependSchemaName, CommentsStyle includeComments, bool includeViews, CommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, Func<Column, Table, Column> updateColumn);
             public abstract List<StoredProcedure> ReadStoredProcs(Regex SchemaFilterExclude, Regex storedProcedureFilterExclude, bool useCamelCase, bool prependSchemaName , Func<string, string, string> StoredProcedureRename, bool includeTableValuedFunctions);
             public abstract List<ForeignKey> ReadForeignKeys(Func<string, string, string> tableRename, Func<ForeignKey, ForeignKey> foreignKeyFilter);
             public abstract void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool useCamelCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments, Func<string, string, short, string> ForeignKeyName);
@@ -1231,6 +1215,17 @@
             protected void WriteLine(string o)
             {
                 Outer.WriteLine(o);
+            }
+
+            protected bool IsFilterExcluded(Regex filterExclude, Regex filterInclude, string name)
+            {
+                if(filterExclude != null && filterExclude.IsMatch(name))
+                    return true;
+                if(filterInclude != null && !filterInclude.IsMatch(name))
+                    return true;
+                if (name.Contains('.'))    // EF does not allow tables to contain a period character
+                    return true;
+                return false;
             }
         }
 
@@ -1634,7 +1629,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 return SqlDatabaseEngineEdition == "Azure";
             }
 
-            public override Tables ReadSchema(Regex schemaFilterExclude, Regex tableFilterExclude, Regex columnFilterExclude, bool useCamelCase, bool prependSchemaName, CommentsStyle includeComments, bool includeViews, CommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, Func<Column, Table, Column> updateColumn)
+            public override Tables ReadSchema(Regex schemaFilterExclude, Regex schemaFilterInclude, Regex tableFilterExclude, Regex tableFilterInclude, Regex columnFilterExclude, bool useCamelCase, bool prependSchemaName, CommentsStyle includeComments, bool includeViews, CommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, Func<Column, Table, Column> updateColumn)
             {
                 var result = new Tables();
                 if(Cmd == null)
@@ -1654,13 +1649,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     while(rdr.Read())
                     {
                         string schema = rdr["SchemaName"].ToString().Trim();
-                        if(schemaFilterExclude != null && schemaFilterExclude.IsMatch(schema))
+                        if(IsFilterExcluded(schemaFilterExclude, schemaFilterInclude, schema))
                             continue;
 
                         string tableName = rdr["TableName"].ToString().Trim();
-                        if(tableFilterExclude != null && tableFilterExclude.IsMatch(tableName))
-                            continue;
-                        if (tableName.Contains('.'))    // EF does not allow tables to contain a period character
+                        if(IsFilterExcluded(tableFilterExclude, tableFilterInclude, tableName))
                             continue;
 
                         if(lastTable != tableName || table == null)
@@ -1684,9 +1677,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                                     continue;
 
                                 tableName = tableRename(tableName, schema);
-                                if(tableFilterExclude != null && tableFilterExclude.IsMatch(tableName))
-                                    continue;
-                                if (tableName.Contains('.'))    // EF does not allow tables to contain a period character
+                                if (IsFilterExcluded(tableFilterExclude, tableFilterInclude, tableName)) // Retest after table rename
                                     continue;
 
                                 // Handle table names with underscores - singularise just the last word
