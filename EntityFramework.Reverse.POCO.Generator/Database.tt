@@ -133,13 +133,15 @@
     // Table renaming *********************************************************************************************************************
     // Use the following function to rename tables such as tblOrders to Orders, Shipments_AB to Shipments, etc.
     // Example:
-    /*TableRename = (name, schema) =>
+    TableRename = (name, schema) =>
     {
-        if (name.StartsWith("tbl"))
-            name = name.Remove(0, 3);
-        return name.Replace("_AB", "");
-    };*/
-    TableRename = (name, schema) => name;   // Do nothing by default
+        // Example
+        //if (name.StartsWith("tbl"))
+        //    name = name.Remove(0, 3);
+        //name = name.Replace("_AB", "");
+
+        return Inflector.ToTitleCase(name);
+    };
 
     // Column modification*****************************************************************************************************************
     // Use the following list to replace column byte types with Enums.
