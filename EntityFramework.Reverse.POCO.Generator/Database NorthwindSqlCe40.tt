@@ -1,6 +1,6 @@
 ﻿<#@ include file="EF.Reverse.POCO.Core.ttinclude" #>
 <#
-    // v2.20.0
+    // v2.20.1
     // Please make changes to the settings below.
     // All you have to do is save this file, and the output file(s) is/are generated. Compiling does not regenerate the file(s).
 
@@ -17,6 +17,7 @@
     ConfigurationClassName = "Configuration"; // Configuration, Mapping, Map, etc. This is appended to the Poco class name to configure the mappings.
     ConfigFilenameSearchOrder = new[] { "app.config", "web.config", "app.config.transform", "web.config.transform" }; // Add more here if required. The config files are searched for in the local project first, then the whole solution second.
     MakeClassesPartial = false;
+    MakeDbContextInterfacePartial = false;
     GenerateSeparateFiles = false;
     UseMappingTables = true; // If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
     UseCamelCase = true;    // This will rename the tables & fields to use CamelCase. If false table & field names will be left alone.
@@ -25,7 +26,7 @@
     IncludeViews = true;
     DisableGeographyTypes = false; // Turns off use of System.Data.Entity.Spatial.DbGeography and System.Data.Entity.Spatial.DbGeometry as OData doesn't support entities with geometry/geography types.
     CollectionType = "System.Collections.Generic.List";  // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example. Add "System.Collections.ObjectModel" to AdditionalNamespaces if setting the CollectionType = "ObservableCollection".
-    NullableShortHand = false; //true => T?, false => Nullable<T>
+    NullableShortHand = true; //true => T?, false => Nullable<T>
     AddUnitTestingDbContext = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing
     AdditionalNamespaces = new[] { "" };  // To include extra namespaces, include them here. i.e. "Microsoft.AspNet.Identity.EntityFramework"
     AdditionalContextInterfaceItems = new[] // To include extra db context interface items, include them here. Also set MakeClassesPartial=true, and implement the partial DbContext class functions.
@@ -78,7 +79,6 @@
 
     // Use these namespaces to specify where the different elements now live. These may even be in different assemblies.
     // Please note this does not create the files in these locations, it only adds a using statement to say where they are.
-    // I show how this works on the video from 26:08 onwards.
     // The way to do this is to add the "EntityFramework Reverse POCO Code First Generator" into each of these folders.
     // Then set the .tt to only generate the relevant section you need by setting
     //      ElementsToGenerate = Elements.Poco; in your Entity folder,
