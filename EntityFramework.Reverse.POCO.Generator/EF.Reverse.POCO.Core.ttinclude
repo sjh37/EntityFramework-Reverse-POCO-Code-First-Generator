@@ -1677,7 +1677,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                                     continue;
 
                                 tableName = tableRename(tableName, schema);
-                                if (IsFilterExcluded(tableFilterExclude, tableFilterInclude, tableName)) // Retest after table rename
+                                if (IsFilterExcluded(tableFilterExclude, null, tableName)) // Retest exclusion filter after table rename
                                     continue;
 
                                 // Handle table names with underscores - singularise just the last word
