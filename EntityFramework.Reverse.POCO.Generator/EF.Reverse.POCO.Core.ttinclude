@@ -785,7 +785,7 @@
                         inlineComments += ". " + ExtendedProperty;
                 }
 
-                Entity = string.Format("public {0} {1} {2}{3}", WrapIfNullable(PropertyType, this), NameHumanCase, "{ get; set; }", inlineComments);
+                Entity = string.Format("public {0} {1} {{ get; {2}set; }}{3}", WrapIfNullable(PropertyType, this), NameHumanCase, IsComputed() ? "private " : string.Empty, inlineComments);
             }
 
             private string WrapIfNullable(string propType, Column col) {
@@ -794,12 +794,17 @@
                 return String.Format(NullableShortHand ? "{0}?" : "System.Nullable<{0}>",propType);
             }
 
+            private bool IsComputed()
+            {
+                return IsStoreGenerated && !IsIdentity;
+            }
+
             private void SetupConfig()
             {
                 string databaseGeneratedOption = string.Empty;
                 if(IsIdentity)
                     databaseGeneratedOption = ".HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity)";
-                if(IsStoreGenerated && !IsIdentity)
+                if(IsComputed())
                     databaseGeneratedOption = ".HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Computed)";
                 if(IsPrimaryKey && !IsIdentity && !IsStoreGenerated)
                     databaseGeneratedOption = ".HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None)";
