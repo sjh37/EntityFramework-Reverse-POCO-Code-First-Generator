@@ -1128,26 +1128,26 @@
             /// <returns></returns>
             public static string ToTitleCase(string word)
             {
-                string s = Regex.Replace(ToHumanCase(AddUnderscores(word)), @"\b([a-z])", match => match.Captures[0].Value.ToUpperInvariant());
-                bool digit = false;
-                string a = string.Empty;
-                foreach(char c in s)
+                var s = Regex.Replace(ToHumanCase(AddUnderscores(word)), @"\b([a-z])", match => match.Captures[0].Value.ToUpperInvariant());
+                var digit = false;
+                var sb = new StringBuilder();
+                foreach (var c in s)
                 {
-                    if(Char.IsDigit(c))
+                    if (char.IsDigit(c))
                     {
                         digit = true;
-                        a = a + c;
+                        sb.Append(c);
                     }
                     else
                     {
-                        if(digit && Char.IsLower(c))
-                            a = a + Char.ToUpperInvariant(c);
+                        if (digit && char.IsLower(c))
+                            sb.Append(char.ToUpperInvariant(c));
                         else
-                            a = a + c;
+                            sb.Append(c);
                         digit = false;
                     }
                 }
-                return a;
+                return sb.ToString();
             }
 
             /// <summary>
@@ -1168,8 +1168,7 @@
             /// <returns></returns>
             public static string AddUnderscores(string pascalCasedWord)
             {
-                return
-                    Regex.Replace(Regex.Replace(Regex.Replace(pascalCasedWord, @"([A-Z]+)([A-Z][a-z])", "$1_$2"), @"([a-z\d])([A-Z])", "$1_$2"), @"[-\s]", "_").ToLowerInvariant();
+                return Regex.Replace(Regex.Replace(Regex.Replace(pascalCasedWord, @"([A-Z]+)([A-Z][a-z])", "$1_$2"), @"([a-z\d])([A-Z])", "$1_$2"), @"[-\s]", "_").ToLowerInvariant();
             }
 
             /// <summary>
@@ -1179,7 +1178,7 @@
             /// <returns></returns>
             public static string MakeInitialCaps(string word)
             {
-                return String.Concat(word.Substring(0, 1).ToUpperInvariant(), word.Substring(1).ToLowerInvariant());
+                return string.Concat(word.Substring(0, 1).ToUpperInvariant(), word.Substring(1).ToLowerInvariant());
             }
 
             /// <summary>
@@ -1189,7 +1188,17 @@
             /// <returns></returns>
             public static string MakeInitialLower(string word)
             {
-                return String.Concat(word.Substring(0, 1).ToLowerInvariant(), word.Substring(1));
+                return string.Concat(word.Substring(0, 1).ToLowerInvariant(), word.Substring(1));
+            }
+
+            public static string MakeLowerIfAllCaps(string word)
+            {
+                return IsAllCaps(word) ? word.ToLowerInvariant() : word;
+            }
+
+            public static bool IsAllCaps(string word)
+            {
+                return word.All(char.IsUpper);
             }
         }
 
@@ -1687,8 +1696,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
                                 // Handle table names with underscores - singularise just the last word
                                 table.ClassName = Inflector.MakeSingular(CleanUp(tableName));
-                                string singular = Inflector.MakeSingular(tableName);
-                                table.NameHumanCase = (useCamelCase ? Inflector.ToTitleCase(singular) : singular).Replace(" ", "").Replace("$", "").Replace(".", "");
+                                var titleCase = (useCamelCase ? Inflector.ToTitleCase(tableName) : tableName).Replace(" ", "").Replace("$", "").Replace(".", "");
+                                var singular = Inflector.MakeSingular(titleCase);
+                                table.NameHumanCase = singular;
+
+
                                 if((string.Compare(table.Schema, "dbo", StringComparison.OrdinalIgnoreCase) != 0) && prependSchemaName)
                                     table.NameHumanCase = table.Schema + "_" + table.NameHumanCase;
 
