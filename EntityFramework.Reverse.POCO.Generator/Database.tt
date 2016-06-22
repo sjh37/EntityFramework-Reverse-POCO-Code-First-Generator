@@ -386,12 +386,11 @@
         var sb = new StringBuilder();
         foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
         {
-            var getValueOrDefault = NotNullable.Contains(p.PropertyType.ToLower()) ? string.Empty : ".GetValueOrDefault()";
-
-            sb.AppendLine(string.Format("            var {0}Param = new System.Data.Entity.Core.Objects.ObjectParameter(\"{1}\", {2});",
+            sb.AppendLine(string.Format("            var {0}Param = new System.Data.Entity.Core.Objects.ObjectParameter(\"{1}\", typeof({2})) {{ Value = {3} }};",
                 p.NameHumanCase,
                 p.Name.Substring(1),
-                p.Mode == StoredProcedureParameterMode.In ? p.NameHumanCase + getValueOrDefault : string.Empty));
+                p.PropertyType,
+                p.NameHumanCase + (p.Mode == StoredProcedureParameterMode.In && NotNullable.Contains(p.PropertyType.ToLowerInvariant()) ? string.Empty : ".GetValueOrDefault()" )));
         }
         return sb.ToString();
     };
