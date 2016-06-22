@@ -114,7 +114,11 @@
     // Include filters are checked second.
     //  * If left null, all are included.
     //  * If not null, only the tables matching the regex are included.
-    //  Example:    TableFilterExclude = new Regex(".*auto.*");
+    // For clarity: if you want to include all the customer tables, but not the customer billing tables.
+    //      TableFilterInclude = new Regex("^[Cc]ustomer.*"); // This includes all the customer and customer billing tables
+    //      TableFilterExclude = new Regex(".*[Bb]illing.*"); // This excludes all the billing tables
+    //
+    // Example:     TableFilterExclude = new Regex(".*auto.*");
     //              TableFilterInclude = new Regex("(.*_FR_.*)|(data_.*)");
     //              TableFilterInclude = new Regex("^table_name1$|^table_name2$|etc");
     //              ColumnFilterExclude = new Regex("^FK_.*$");
