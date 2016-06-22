@@ -725,6 +725,7 @@
             public bool IsPrimaryKeyViaUniqueIndex;
             public bool IsStoreGenerated;
             public bool IsRowVersion;
+            public bool IsConcurrencyToken; //  Manually set via callback
             public bool IsFixedLength;
             public bool IsUnicode;
             public bool IsMaxLength;
@@ -809,7 +810,7 @@
                 if(IsPrimaryKey && !IsIdentity && !IsStoreGenerated)
                     databaseGeneratedOption = ".HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None)";
 
-                Config = string.Format("Property(x => x.{0}).HasColumnName(@\"{1}\"){2}{3}{4}{5}{6}{7}{8}{9}{10};", NameHumanCase, Name,
+                Config = string.Format("Property(x => x.{0}).HasColumnName(@\"{1}\"){2}{3}{4}{5}{6}{7}{8}{9}{10}{11};", NameHumanCase, Name,
                                             (IsNullable) ? ".IsOptional()" : ".IsRequired()",
                                             (IsFixedLength || IsRowVersion) ? ".IsFixedLength()" : "",
                                             (IsUnicode) ? string.Empty : ".IsUnicode(false)",
@@ -818,6 +819,7 @@
                                             (IsMaxLength) ? ".IsMaxLength()" : string.Empty,
                                             (Scale > 0) ? ".HasPrecision(" + Precision + "," + Scale + ")" : string.Empty,
                                             (IsRowVersion) ? ".IsRowVersion()" : string.Empty,
+                                            (IsConcurrencyToken) ? ".IsConcurrencyToken()" : string.Empty,
                                             databaseGeneratedOption);
             }
 

@@ -162,6 +162,10 @@
         //if (column.IsPrimaryKey && column.NameHumanCase == "PkId")
         //    column.NameHumanCase = "Id";
 
+        // .IsConcurrencyToken() must be manually configured. However .IsRowVersion() can be automatically detected.
+        //if (table.NameHumanCase.Equals("SomeTable", StringComparison.InvariantCultureIgnoreCase) && column.NameHumanCase.Equals("SomeColumn", StringComparison.InvariantCultureIgnoreCase))
+        //    column.IsConcurrencyToken = true;
+
         // Remove table name from primary key
         //if (column.IsPrimaryKey && column.NameHumanCase.Equals(table.NameHumanCase + "Id", StringComparison.InvariantCultureIgnoreCase))
         //    column.NameHumanCase = "Id";
