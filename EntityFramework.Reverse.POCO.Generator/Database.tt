@@ -244,7 +244,14 @@
         // WriteLine("        // " + t.ClassName);
     };
 
-    Func<Column, string> WritePocoColumn = c => c.Entity;
+    Func<Column, string> WritePocoColumn = c =>
+    {
+        // Example of adding a [Required] data annotation attribute to all non-null fields
+        //if (!c.IsNullable)
+        //    return "[System.ComponentModel.DataAnnotations.Required] " + c.Entity;
+        
+        return c.Entity;
+    };
 
     ForeignKeyFilter = (ForeignKey fk) =>
     {
