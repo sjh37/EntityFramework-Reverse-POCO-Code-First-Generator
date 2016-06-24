@@ -127,7 +127,7 @@
     TableFilterExclude = null;
     TableFilterInclude = null;
     ColumnFilterExclude = null;
-    
+
     // Filtering of tables using a function. This can be used in conjunction with the Regex's above.
     // Regex are used first to filter the list down, then this function is run last.
     // Return true to include the table, return false to exclude it.
