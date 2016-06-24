@@ -27,8 +27,8 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
 {
     using System.Linq;
 
-    // ************************************************************************
-    // Unit of work
+    #region Unit of work
+
     public interface IMyDbContextSqlCE4 : System.IDisposable
     {
         System.Data.Entity.DbSet<Category> Categories { get; set; } // Categories
@@ -45,8 +45,10 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         System.Threading.Tasks.Task<int> SaveChangesAsync(System.Threading.CancellationToken cancellationToken);
     }
 
-    // ************************************************************************
-    // Database context
+    #endregion
+
+    #region Database context
+
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.20.2.0")]
     public class MyDbContextSqlCE4 : System.Data.Entity.DbContext, IMyDbContextSqlCE4
     {
@@ -121,9 +123,10 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
             return modelBuilder;
         }
     }
+    #endregion
 
-    // ************************************************************************
-    // Fake Database context
+    #region Fake Database context
+
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.20.2.0")]
     public class FakeMyDbContextSqlCE4 : IMyDbContextSqlCE4
     {
@@ -418,8 +421,9 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         }
     }
 
-    // ************************************************************************
-    // POCO classes
+    #endregion
+
+    #region POCO classes
 
     // Categories
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.20.2.0")]
@@ -612,9 +616,9 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         }
     }
 
+    #endregion
 
-    // ************************************************************************
-    // POCO Configuration
+    #region POCO Configuration
 
     // Categories
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.20.2.0")]
@@ -838,6 +842,8 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
             Property(x => x.Fax).HasColumnName(@"Fax").IsOptional().HasColumnType("nvarchar").HasMaxLength(24);
         }
     }
+
+    #endregion
 
 }
 // </auto-generated>

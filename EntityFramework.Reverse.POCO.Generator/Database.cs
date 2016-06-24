@@ -30,8 +30,8 @@ namespace EntityFramework_Reverse_POCO_Generator
 {
     using System.Linq;
 
-    // ************************************************************************
-    // Unit of work
+    #region Unit of work
+
     public interface IMyDbContext : System.IDisposable
     {
         System.Data.Entity.DbSet<AlphabeticalListOfProduct> AlphabeticalListOfProducts { get; set; } // Alphabetical list of products
@@ -97,8 +97,10 @@ namespace EntityFramework_Reverse_POCO_Generator
 
     }
 
-    // ************************************************************************
-    // Database context
+    #endregion
+
+    #region Database context
+
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.20.2.0")]
     public class MyDbContext : System.Data.Entity.DbContext, IMyDbContext
     {
@@ -467,9 +469,10 @@ namespace EntityFramework_Reverse_POCO_Generator
         }
 
     }
+    #endregion
 
-    // ************************************************************************
-    // Fake Database context
+    #region Fake Database context
+
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.20.2.0")]
     public class FakeMyDbContext : IMyDbContext
     {
@@ -937,8 +940,9 @@ namespace EntityFramework_Reverse_POCO_Generator
         }
     }
 
-    // ************************************************************************
-    // POCO classes
+    #endregion
+
+    #region POCO classes
 
     // Alphabetical list of products
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.20.2.0")]
@@ -1419,9 +1423,9 @@ namespace EntityFramework_Reverse_POCO_Generator
         }
     }
 
+    #endregion
 
-    // ************************************************************************
-    // POCO Configuration
+    #region POCO Configuration
 
     // Alphabetical list of products
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.20.2.0")]
@@ -2100,9 +2104,9 @@ namespace EntityFramework_Reverse_POCO_Generator
         }
     }
 
+    #endregion
 
-    // ************************************************************************
-    // Stored procedure return models
+    #region Stored procedure return models
 
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.20.2.0")]
     public class CustOrderHistReturnModel
@@ -2163,6 +2167,8 @@ namespace EntityFramework_Reverse_POCO_Generator
         public System.String TenMostExpensiveProducts { get; set; }
         public System.Decimal? UnitPrice { get; set; }
     }
+
+    #endregion
 
 }
 // </auto-generated>

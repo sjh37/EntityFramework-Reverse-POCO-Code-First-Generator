@@ -63,8 +63,8 @@ foreach(var usingStatement in usingsAll.Distinct().OrderBy(x => x)) { #>
     fileManager.StartNewFile(DbContextInterfaceName + FileExtension);
     if (!GenerateSeparateFiles)
     { #>
-    // ************************************************************************
-    // Unit of work
+    #region Unit of work
+
 <# }#>
     public <# if(MakeDbContextInterfacePartial) { #>partial <# } #>interface <#=DbContextInterfaceName #> : <#= DbContextInterfaceBaseClasses #>
     {
@@ -171,11 +171,15 @@ if (IncludeTableValuedFunctions)
     }
 
 <# }
+if(!GenerateSeparateFiles) { #>
+    #endregion
+
+<# }
     if(ElementsToGenerate.HasFlag(Elements.Context)){ 
     fileManager.StartNewFile(DbContextName + FileExtension); #>
 <# if(!GenerateSeparateFiles) { #>
-    // ************************************************************************
-    // Database context
+    #region Database context
+
 <# } else {
 foreach(var usingStatement in usingsContext.Distinct().OrderBy(x => x)) { #>
     using <#= usingStatement #>;
@@ -455,14 +459,17 @@ if (IncludeTableValuedFunctions)
 <# } } }
 /**/#>    }
 <# }
+if(!GenerateSeparateFiles) { #>
+    #endregion
+
+<# }
     if (ElementsToGenerate.HasFlag(Elements.Context) && AddUnitTestingDbContext)
     {
         fileManager.StartNewFile("Fake" + DbContextName + FileExtension); #>
 <# if (!GenerateSeparateFiles)
 { #>
+    #region Fake Database context
 
-    // ************************************************************************
-    // Fake Database context
 <# } else {
 foreach(var usingStatement in usingsContext.Distinct().OrderBy(x => x)) { #>
     using <#= usingStatement #>;
@@ -868,11 +875,14 @@ if (IncludeTableValuedFunctions)
     }
 <# } #>
 <# }
- if(ElementsToGenerate.HasFlag(Elements.Poco)){
  if(!GenerateSeparateFiles) { #>
 
-    // ************************************************************************
-    // POCO classes
+    #endregion
+
+<# }
+ if(ElementsToGenerate.HasFlag(Elements.Poco)){
+ if(!GenerateSeparateFiles) { #>
+    #region POCO classes
 
 <# } #>
 <#
@@ -965,11 +975,13 @@ if(MakeClassesPartial) {#>
     }
 
 <# } }
+if(!GenerateSeparateFiles) { #>
+    #endregion
+
+<# }
 if(ElementsToGenerate.HasFlag(Elements.PocoConfiguration)){
 if(!GenerateSeparateFiles) { #>
-
-    // ************************************************************************
-    // POCO Configuration
+    #region POCO Configuration
 
 <# } #>
 <#
@@ -1026,11 +1038,13 @@ foreach (string s in tbl.MappingConfiguration)
 <#}#>    }
 
 <# } }
+if(!GenerateSeparateFiles) { #>
+    #endregion
+
+<# }
 if(storedProcs.Any() && ElementsToGenerate.HasFlag(Elements.Poco)){
 if(!GenerateSeparateFiles) { #>
-
-    // ************************************************************************
-    // Stored procedure return models
+    #region Stored procedure return models
 
 <# } #>
 <#
@@ -1078,6 +1092,10 @@ if(returnModelCount < 2)
 <#  } #>
 <# } #>
     }
+
+<# }
+if(!GenerateSeparateFiles) { #>
+    #endregion
 
 <# } } #>
 <# fileManager.StartFooter(); #>
