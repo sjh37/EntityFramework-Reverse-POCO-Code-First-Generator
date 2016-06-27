@@ -49,7 +49,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
 
     #region Database context
 
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.0.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.1.0")]
     public class MyDbContextSqlCE4 : System.Data.Entity.DbContext, IMyDbContextSqlCE4
     {
         public System.Data.Entity.DbSet<Category> Categories { get; set; } // Categories
@@ -127,7 +127,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
 
     #region Fake Database context
 
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.0.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.1.0")]
     public class FakeMyDbContextSqlCE4 : IMyDbContextSqlCE4
     {
         public System.Data.Entity.DbSet<Category> Categories { get; set; }
@@ -197,7 +197,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     //          }
     //      }
     //      Read more about it here: https://msdn.microsoft.com/en-us/data/dn314431.aspx
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.0.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.1.0")]
     public class FakeDbSet<TEntity> : System.Data.Entity.DbSet<TEntity>, IQueryable, System.Collections.Generic.IEnumerable<TEntity>, System.Data.Entity.Infrastructure.IDbAsyncEnumerable<TEntity> where TEntity : class
     {
         private readonly System.Reflection.PropertyInfo[] _primaryKeys;
@@ -322,7 +322,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         }
     }
 
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.0.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.1.0")]
     public class FakeDbAsyncQueryProvider<TEntity> : System.Data.Entity.Infrastructure.IDbAsyncQueryProvider
     {
         private readonly IQueryProvider _inner;
@@ -363,7 +363,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         }
     }
 
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.0.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.1.0")]
     public class FakeDbAsyncEnumerable<T> : EnumerableQuery<T>, System.Data.Entity.Infrastructure.IDbAsyncEnumerable<T>, IQueryable<T>
     {
         public FakeDbAsyncEnumerable(System.Collections.Generic.IEnumerable<T> enumerable)
@@ -390,7 +390,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         }
     }
 
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.0.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.1.0")]
     public class FakeDbAsyncEnumerator<T> : System.Data.Entity.Infrastructure.IDbAsyncEnumerator<T>
     {
         private readonly System.Collections.Generic.IEnumerator<T> _inner;
@@ -426,7 +426,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     #region POCO classes
 
     // Categories
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.0.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.1.0")]
     public class Category
     {
         public int CategoryId { get; set; } // Category ID (Primary key)
@@ -444,7 +444,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     }
 
     // Customers
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.0.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.1.0")]
     public class Customer
     {
         public string CustomerId { get; set; } // Customer ID (Primary key) (length: 5)
@@ -469,7 +469,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     }
 
     // Employees
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.0.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.1.0")]
     public class Employee
     {
         public int EmployeeId { get; set; } // Employee ID (Primary key)
@@ -499,7 +499,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     }
 
     // Orders
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.0.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.1.0")]
     public class Order
     {
         public int OrderId { get; set; } // Order ID (Primary key)
@@ -532,7 +532,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     }
 
     // Order Details
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.0.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.1.0")]
     public class OrderDetail
     {
         public int OrderId { get; set; } // Order ID (Primary key)
@@ -547,7 +547,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     }
 
     // Products
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.0.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.1.0")]
     public class Product
     {
         public int ProductId { get; set; } // Product ID (Primary key)
@@ -576,7 +576,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     }
 
     // Shippers
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.0.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.1.0")]
     public class Shipper
     {
         public int ShipperId { get; set; } // Shipper ID (Primary key)
@@ -592,7 +592,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     }
 
     // Suppliers
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.0.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.1.0")]
     public class Supplier
     {
         public int SupplierId { get; set; } // Supplier ID (Primary key)
@@ -621,7 +621,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     #region POCO Configuration
 
     // Categories
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.0.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.1.0")]
     public class CategoryConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<Category>
     {
         public CategoryConfiguration()
@@ -642,7 +642,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     }
 
     // Customers
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.0.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.1.0")]
     public class CustomerConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<Customer>
     {
         public CustomerConfiguration()
@@ -670,7 +670,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     }
 
     // Employees
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.0.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.1.0")]
     public class EmployeeConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<Employee>
     {
         public EmployeeConfiguration()
@@ -703,7 +703,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     }
 
     // Orders
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.0.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.1.0")]
     public class OrderConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<Order>
     {
         public OrderConfiguration()
@@ -739,7 +739,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     }
 
     // Order Details
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.0.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.1.0")]
     public class OrderDetailConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<OrderDetail>
     {
         public OrderDetailConfiguration()
@@ -765,7 +765,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     }
 
     // Products
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.0.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.1.0")]
     public class ProductConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<Product>
     {
         public ProductConfiguration()
@@ -797,7 +797,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     }
 
     // Shippers
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.0.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.1.0")]
     public class ShipperConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<Shipper>
     {
         public ShipperConfiguration()
@@ -816,7 +816,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     }
 
     // Suppliers
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.0.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.21.1.0")]
     public class SupplierConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<Supplier>
     {
         public SupplierConfiguration()
