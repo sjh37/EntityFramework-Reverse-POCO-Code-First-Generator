@@ -171,7 +171,7 @@ if (IncludeTableValuedFunctions)
     }
 
 <# }
-if(!GenerateSeparateFiles) { #>
+if(ElementsToGenerate.HasFlag(Elements.UnitOfWork) && !GenerateSeparateFiles) { #>
     #endregion
 
 <# }
@@ -459,7 +459,7 @@ if (IncludeTableValuedFunctions)
 <# } } }
 /**/#>    }
 <# }
-if(!GenerateSeparateFiles) { #>
+if(ElementsToGenerate.HasFlag(Elements.Context) && !GenerateSeparateFiles) { #>
     #endregion
 
 <# }
@@ -875,7 +875,7 @@ if (IncludeTableValuedFunctions)
     }
 <# } #>
 <# }
- if(!GenerateSeparateFiles) { #>
+ if(ElementsToGenerate.HasFlag(Elements.Context) && AddUnitTestingDbContext && !GenerateSeparateFiles) { #>
 
     #endregion
 
@@ -975,7 +975,7 @@ if(MakeClassesPartial) {#>
     }
 
 <# } }
-if(!GenerateSeparateFiles) { #>
+if(ElementsToGenerate.HasFlag(Elements.Poco) && !GenerateSeparateFiles) { #>
     #endregion
 
 <# }
@@ -1038,7 +1038,7 @@ foreach (string s in tbl.MappingConfiguration)
 <#}#>    }
 
 <# } }
-if(!GenerateSeparateFiles) { #>
+if(ElementsToGenerate.HasFlag(Elements.PocoConfiguration) && !GenerateSeparateFiles) { #>
     #endregion
 
 <# }
@@ -1094,7 +1094,7 @@ if(returnModelCount < 2)
     }
 
 <# }
-if(!GenerateSeparateFiles) { #>
+if(storedProcs.Any() && ElementsToGenerate.HasFlag(Elements.Poco) && !GenerateSeparateFiles) { #>
     #endregion
 
 <# } } #>
