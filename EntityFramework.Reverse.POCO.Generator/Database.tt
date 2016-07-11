@@ -262,7 +262,7 @@
         // Example of adding a [Required] data annotation attribute to all non-null fields
         //if (!c.IsNullable)
         //    return "[System.ComponentModel.DataAnnotations.Required] " + c.Entity;
-        
+
         return c.Entity;
     };
 
@@ -283,7 +283,7 @@
             case 1:
                 // Try without appending foreign key name
                 return tableName;
-            
+
             case 2:
                 // Only called if foreign key name ends with "id"
                 // Use foreign key name without "id" at end of string
@@ -300,7 +300,7 @@
             case 5:
                 // Used in for loop 1 to 99 to append a number to the end
                 return tableName;
-            
+
             default:
                 // Give up
                 return tableName;
@@ -314,7 +314,7 @@
     // ** Experienced developers only below this point
 
     Func<StoredProcedure, string> WriteStoredProcFunctionName = sp => sp.NameHumanCase;
-    
+
     Func<StoredProcedure, bool> StoredProcHasOutParams = (sp) =>
     {
         return sp.Parameters.Any(x => x.Mode != StoredProcedureParameterMode.In);
