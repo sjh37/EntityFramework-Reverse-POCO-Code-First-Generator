@@ -1319,7 +1319,79 @@ FROM    INFORMATION_SCHEMA.COLUMNS c
         INNER JOIN INFORMATION_SCHEMA.TABLES t
             ON c.TABLE_SCHEMA = t.TABLE_SCHEMA
                AND c.TABLE_NAME = t.TABLE_NAME
-WHERE c.TABLE_NAME NOT IN ('EdmMetadata', '__MigrationHistory')";
+WHERE c.TABLE_NAME NOT IN ('EdmMetadata', '__MigrationHistory')
+UNION ALL
+-- Synonyms
+SELECT  sc.name AS SchemaName,
+        sn.name AS TableName,
+        'SN' AS TableType,
+        COLUMNPROPERTY(c.object_id, c.name, 'ordinal') AS Ordinal,
+        c.name AS ColumnName,
+        c.is_nullable AS IsNullable,
+        ISNULL(TYPE_NAME(c.system_type_id), t.name) AS TypeName,
+        ISNULL(COLUMNPROPERTY(c.object_id, c.name, 'charmaxlen'), 0) AS [MaxLength],
+        CAST(ISNULL(CONVERT(TINYINT, CASE WHEN c.system_type_id IN (48, 52, 56, 59, 60, 62, 106, 108, 122, 127) THEN c.precision
+                                     END), 0) AS INT) AS [Precision],
+        ISNULL(CONVERT(NVARCHAR(4000), OBJECT_DEFINITION(c.default_object_id)), '') AS [Default],
+        CAST(ISNULL(CONVERT(SMALLINT, CASE WHEN c.system_type_id IN (40, 41, 42, 43, 58, 61) THEN ODBCSCALE(c.system_type_id, c.scale)
+                                      END), 0) AS INT) AS DateTimePrecision,
+        ISNULL(CONVERT(INT, CASE WHEN c.system_type_id IN (40, 41, 42, 43, 58, 61) THEN NULL
+                                 ELSE ODBCSCALE(c.system_type_id, c.scale)
+                            END), 0) AS Scale,
+        CAST(COLUMNPROPERTY(OBJECT_ID(sn.base_object_name), c.name, 'IsIdentity') AS BIT) AS IsIdentity,
+        CAST(CASE WHEN COLUMNPROPERTY(OBJECT_ID(QUOTENAME(sc.NAME) + '.' + QUOTENAME(o.NAME)), c.NAME, 'IsIdentity') = 1 THEN 1
+                  WHEN COLUMNPROPERTY(OBJECT_ID(QUOTENAME(sc.NAME) + '.' + QUOTENAME(o.NAME)), c.NAME, 'IsComputed') = 1 THEN 1
+                  WHEN ISNULL(TYPE_NAME(c.system_type_id), t.NAME) = 'TIMESTAMP' THEN 1
+                  WHEN ISNULL(TYPE_NAME(c.system_type_id), t.NAME) = 'UNIQUEIDENTIFIER'
+                       AND LOWER(ISNULL(CONVERT(NVARCHAR(4000), OBJECT_DEFINITION(c.default_object_id)), '')) LIKE '%newsequentialid%' THEN 1
+                  ELSE 0
+             END AS BIT) AS IsStoreGenerated,
+        CAST(CASE WHEN pk.ORDINAL_POSITION IS NULL THEN 0
+                  ELSE 1
+             END AS BIT) AS PrimaryKey,
+        ISNULL(pk.ORDINAL_POSITION, 0) PrimaryKeyOrdinal,
+        CAST(CASE WHEN fk.COLUMN_NAME IS NULL THEN 0
+                  ELSE 1
+             END AS BIT) AS IsForeignKey
+FROM    sys.synonyms sn
+        INNER JOIN sys.columns c
+            ON c.[object_id] = OBJECT_ID(sn.base_object_name)
+        INNER JOIN sys.schemas sc
+            ON sc.[schema_id] = sn.[schema_id]
+        LEFT JOIN sys.types t
+            ON c.user_type_id = t.user_type_id
+        INNER JOIN sys.objects o
+            ON c.[object_id] = o.[object_id]
+        LEFT OUTER JOIN (
+                         SELECT u.TABLE_SCHEMA,
+                                u.TABLE_NAME,
+                                u.COLUMN_NAME,
+                                u.ORDINAL_POSITION
+                         FROM   INFORMATION_SCHEMA.KEY_COLUMN_USAGE u
+                                INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc
+                                    ON u.TABLE_SCHEMA = tc.CONSTRAINT_SCHEMA
+                                       AND u.TABLE_NAME = tc.TABLE_NAME
+                                       AND u.CONSTRAINT_NAME = tc.CONSTRAINT_NAME
+                         WHERE  CONSTRAINT_TYPE = 'PRIMARY KEY'
+                        ) pk
+            ON sc.name = pk.TABLE_SCHEMA
+               AND sn.name = pk.TABLE_NAME
+               AND c.name = pk.COLUMN_NAME
+        LEFT OUTER JOIN (
+                         SELECT DISTINCT
+                                u.TABLE_SCHEMA,
+                                u.TABLE_NAME,
+                                u.COLUMN_NAME
+                         FROM   INFORMATION_SCHEMA.KEY_COLUMN_USAGE u
+                                INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc
+                                    ON u.TABLE_SCHEMA = tc.CONSTRAINT_SCHEMA
+                                       AND u.TABLE_NAME = tc.TABLE_NAME
+                                       AND u.CONSTRAINT_NAME = tc.CONSTRAINT_NAME
+                         WHERE  CONSTRAINT_TYPE = 'FOREIGN KEY'
+                        ) fk
+            ON sc.name = fk.TABLE_SCHEMA
+               AND sn.name = fk.TABLE_NAME
+               AND c.name = fk.COLUMN_NAME;";
 
             private const string ForeignKeySQL = @"
 SELECT  FK.name AS FK_Table,
