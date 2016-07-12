@@ -271,7 +271,7 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKey
 <# } } #>
 
 <#
-foreach(Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKey).OrderBy(x => x.NameHumanCase) select t)
+foreach(Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKey).Where(ConfigurationFilter).OrderBy(x => x.NameHumanCase) select t)
 {
 #>
             modelBuilder.Configurations.Add(new <#=tbl.NameHumanCase + ConfigurationClassName#>());
@@ -285,7 +285,7 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKey
         public static System.Data.Entity.DbModelBuilder CreateModel(System.Data.Entity.DbModelBuilder modelBuilder, string schema)
         {
 <#
-foreach(Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKey).OrderBy(x => x.NameHumanCase) select t)
+foreach(Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKey).Where(ConfigurationFilter).OrderBy(x => x.NameHumanCase) select t)
 {
 #>
             modelBuilder.Configurations.Add(new <#=tbl.NameHumanCase + ConfigurationClassName#>(schema));
