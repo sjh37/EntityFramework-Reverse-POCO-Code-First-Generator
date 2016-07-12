@@ -787,7 +787,7 @@
                         inlineComments += ". " + ExtendedProperty;
                 }
 
-                Entity = string.Format("public {0} {1} {{ get; {2}set; }}{3}", WrapIfNullable(PropertyType, this), NameHumanCase, IsComputed() ? "private " : string.Empty, inlineComments);
+                Entity = string.Format("public {0} {1} {{ get; set; }}{2}", WrapIfNullable(PropertyType, this), NameHumanCase, inlineComments);
             }
 
             private string WrapIfNullable(string propType, Column col) {
