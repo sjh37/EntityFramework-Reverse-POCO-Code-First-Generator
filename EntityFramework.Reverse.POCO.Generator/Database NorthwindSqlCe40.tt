@@ -1,30 +1,33 @@
 ﻿<#@ include file="EF.Reverse.POCO.Core.ttinclude" #>
 <#
-    // v2.19.0
+    // v2.21.1
     // Please make changes to the settings below.
     // All you have to do is save this file, and the output file(s) is/are generated. Compiling does not regenerate the file(s).
+    // A course for this generator is available on Pluralsight at https://www.pluralsight.com/courses/code-first-entity-framework-legacy-databases
 
     // Main settings **********************************************************************************************************************
+    ConnectionStringName = "MyDbContextSqlCE4";   // Searches for this connection string in config files listed below in the ConfigFilenameSearchOrder setting
+    //ConnectionStringName is the only required setting
     Namespace = "EntityFramework_Reverse_POCO_Generator.SqlCe4"; // Override the default namespace here
     DbContextName = "MyDbContextSqlCE4";
     //DbContextInterfaceName = "IMyDbContext"; //Defaults to "I" + DbContextName
     DbContextInterfaceBaseClasses = "System.IDisposable";    // Specify what the base classes are for your database context interface
     DbContextBaseClass = "System.Data.Entity.DbContext";   // Specify what the base class is for your DbContext. For ASP.NET Identity use "IdentityDbContext<ApplicationUser>"
-    ConnectionStringName = "MyDbContextSqlCE4";  // Searches for this connection string in config files listed below
     //DefaultConstructorArgument = "EnvironmentConnectionStrings.MyDbContext"; //defaults to "Name=" + ConnectionStringName
     TargetFrameworkVersion = "4.51"; // Please set this to your .NET framework version, 4.0, 4.5, 4.51, etc.
     ConfigurationClassName = "Configuration"; // Configuration, Mapping, Map, etc. This is appended to the Poco class name to configure the mappings.
     ConfigFilenameSearchOrder = new[] { "app.config", "web.config", "app.config.transform", "web.config.transform" }; // Add more here if required. The config files are searched for in the local project first, then the whole solution second.
     MakeClassesPartial = false;
+    MakeDbContextInterfacePartial = false;
     GenerateSeparateFiles = false;
     UseMappingTables = true; // If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
     UseCamelCase = true;    // This will rename the tables & fields to use CamelCase. If false table & field names will be left alone.
-    IncludeComments = true; // Adds comments to the generated code
-    IncludeExtendedPropertyComments = ExtendedPropertyCommentsStyle.InSummaryBlock; // Adds extended properties as comments to the generated code
+    IncludeComments = CommentsStyle.AtEndOfField; // Adds comments to the generated code
+    IncludeExtendedPropertyComments = CommentsStyle.InSummaryBlock; // Adds extended properties as comments to the generated code
     IncludeViews = true;
     DisableGeographyTypes = false; // Turns off use of System.Data.Entity.Spatial.DbGeography and System.Data.Entity.Spatial.DbGeometry as OData doesn't support entities with geometry/geography types.
     CollectionType = "System.Collections.Generic.List";  // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example. Add "System.Collections.ObjectModel" to AdditionalNamespaces if setting the CollectionType = "ObservableCollection".
-    NullableShortHand = false; //true => T?, false => Nullable<T>
+    NullableShortHand = true; //true => T?, false => Nullable<T>
     AddUnitTestingDbContext = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing
     AdditionalNamespaces = new[] { "" };  // To include extra namespaces, include them here. i.e. "Microsoft.AspNet.Identity.EntityFramework"
     AdditionalContextInterfaceItems = new[] // To include extra db context interface items, include them here. Also set MakeClassesPartial=true, and implement the partial DbContext class functions.
@@ -60,14 +63,14 @@
     //      2. Add the following to the top of this file and adjust path, and remove the space between the angle bracket and # at the beginning and end.
     //         < #@ assembly name="your full path to \EntityFramework.Contrib.dll" # >
     //      3. Change the line below to: Inflector.PluralizationService = new SpanishPluralizationService();
-    Inflector.PluralizationService = new EnglishPluralizationService(new[]
-    {
-        // Create custom ("Singular", "Plural") forms for one-off words as needed
-        new CustomPluralizationEntry("LiveQuiz", "LiveQuizzes"),
-        new CustomPluralizationEntry("Course", "Courses"),
-        new CustomPluralizationEntry("CustomerStatus", "CustomerStatus"), // Use same value to prevent pluralisation
-        new CustomPluralizationEntry("EmployeeStatus", "EmployeeStatus")
-    });
+    Inflector.PluralizationService = new EnglishPluralizationService();
+    // If pluralisation does not do the right thing, override it here by adding in a custom entry.
+    //Inflector.PluralizationService = new EnglishPluralizationService(new[]
+    //{
+    //    // Create custom ("Singular", "Plural") forms for one-off words as needed.
+    //    new CustomPluralizationEntry("Course", "Courses"),
+    //    new CustomPluralizationEntry("Status", "Status") // Use same value to prevent pluralisation
+    //});
     
     
     // Elements to generate ***************************************************************************************************************
@@ -77,7 +80,6 @@
 
     // Use these namespaces to specify where the different elements now live. These may even be in different assemblies.
     // Please note this does not create the files in these locations, it only adds a using statement to say where they are.
-    // I show how this works on the video from 26:08 onwards.
     // The way to do this is to add the "EntityFramework Reverse POCO Code First Generator" into each of these folders.
     // Then set the .tt to only generate the relevant section you need by setting
     //      ElementsToGenerate = Elements.Poco; in your Entity folder,
@@ -109,6 +111,10 @@
     // Include filters are checked second.
     //  * If left null, all are included.
     //  * If not null, only the tables matching the regex are included.
+    // For clarity: if you want to include all the customer tables, but not the customer billing tables.
+    //      TableFilterInclude = new Regex("^[Cc]ustomer.*"); // This includes all the customer and customer billing tables
+    //      TableFilterExclude = new Regex(".*[Bb]illing.*"); // This excludes all the billing tables
+    //
     //  Example:    TableFilterExclude = new Regex(".*auto.*");
     //              TableFilterInclude = new Regex("(.*_FR_.*)|(data_.*)");
     //              TableFilterInclude = new Regex("^table_name1$|^table_name2$|etc");
@@ -119,17 +125,36 @@
     TableFilterInclude = null;
     ColumnFilterExclude = null;
 
+    // Filtering of tables using a function. This can be used in conjunction with the Regex's above.
+    // Regex are used first to filter the list down, then this function is run last.
+    // Return true to include the table, return false to exclude it.
+    TableFilter = (Table t) =>
+    {
+        // Example: Exclude any table in dbo schema with "order" in its name.
+        //if(t.Schema.Equals("dbo", StringComparison.InvariantCultureIgnoreCase) && t.NameHumanCase.ToLowerInvariant().Contains("order"))
+        //    return false;
+
+        return true;
+    };
+
 
     // Table renaming *********************************************************************************************************************
     // Use the following function to rename tables such as tblOrders to Orders, Shipments_AB to Shipments, etc.
     // Example:
-    /*TableRename = (name, schema) =>
+    TableRename = (name, schema) =>
     {
-        if (name.StartsWith("tbl"))
-            name = name.Remove(0, 3);
-        return name.Replace("_AB", "");
-    };*/
-    TableRename = (name, schema) => name;   // Do nothing by default
+        // Example
+        //if (name.StartsWith("tbl"))
+        //    name = name.Remove(0, 3);
+        //name = name.Replace("_AB", "");
+
+        // If you turn camel casing off (UseCamelCase = false), and use the pluralisation service, and some of your
+        // tables names are all UPPERCASE, some words ending in IES such as CATEGORIES get singularised as CATEGORy.
+        // Therefore you can make them lowercase by using the following
+        // return Inflector.MakeLowerIfAllCaps(name);
+
+        return name;
+    };
 
     // Column modification*****************************************************************************************************************
     // Use the following list to replace column byte types with Enums.
@@ -139,11 +164,23 @@
     
     // Use the following function if you need to apply additional modifications to a column
     // eg. normalise names etc.
-    UpdateColumn = (Column column, Table table) => 
+    UpdateColumn = (Column column, Table table) =>
     {
         // Example
-        //if (column.NameHumanCase == "PkId")
+        //if (column.IsPrimaryKey && column.NameHumanCase == "PkId")
         //    column.NameHumanCase = "Id";
+
+        // .IsConcurrencyToken() must be manually configured. However .IsRowVersion() can be automatically detected.
+        //if (table.NameHumanCase.Equals("SomeTable", StringComparison.InvariantCultureIgnoreCase) && column.NameHumanCase.Equals("SomeColumn", StringComparison.InvariantCultureIgnoreCase))
+        //    column.IsConcurrencyToken = true;
+
+        // Remove table name from primary key
+        //if (column.IsPrimaryKey && column.NameHumanCase.Equals(table.NameHumanCase + "Id", StringComparison.InvariantCultureIgnoreCase))
+        //    column.NameHumanCase = "Id";
+
+        // Remove column from poco class as it will be inherited from a base class
+        //if (column.IsPrimaryKey && table.NameHumanCase.Equals("SomeTable", StringComparison.InvariantCultureIgnoreCase))
+        //    column.Hidden = true;
 
         // Perform Enum property type replacement
         var enumDefinition = EnumsDefinitions.FirstOrDefault(e =>
@@ -153,7 +190,7 @@
 
         if (enumDefinition != null)
             column.PropertyType = enumDefinition.EnumType;
-        
+
         return column;
     };
 
@@ -204,18 +241,51 @@
         return fk;
     };
 
+    ForeignKeyName = (tableName, foreignKeyName, attempt) =>
+    {
+        // 5 Attempts to correctly name the foreign key
+        switch (attempt)
+        {
+            case 1:
+                // Try without appending foreign key name
+                return tableName;
+            
+            case 2:
+                // Only called if foreign key name ends with "id"
+                // Use foreign key name without "id" at end of string
+                return foreignKeyName.Remove(foreignKeyName.Length-2, 2);
+
+            case 3:
+                // Use foreign key name only
+                return foreignKeyName;
+
+            case 4:
+                // Use table name and foreign key name
+                return tableName + "_" + foreignKeyName;
+
+            case 5:
+                // Used in for loop 1 to 99 to append a number to the end
+                return tableName;
+            
+            default:
+                // Give up
+                return tableName;
+        }
+    };
+
     // That's it, nothing else to configure ***********************************************************************************************
     
     // Stored procedure are not supported in SqlCE - create dummy functions
     StoredProcedureRename = (name, schema) => name;
     Func<StoredProcedure, string> WriteStoredProcFunctionName = null;
+    Func<StoredProcedure, bool> StoredProcHasOutParams = null;
     Func<StoredProcedure, bool, string> WriteStoredProcFunctionParams = null;
     Func<StoredProcedure, string> WriteStoredProcFunctionOverloadCall = null;
     Func<StoredProcedure, string> WriteStoredProcFunctionSqlAtParams = null;
     Func<StoredProcedureParameter, string> WriteStoredProcSqlParameterName = null;
-    Func<StoredProcedure, string> WriteStoredProcFunctionDeclareSqlParameter = null;
+    Func<StoredProcedure, bool, string> WriteStoredProcFunctionDeclareSqlParameter = null;
     Func<StoredProcedure, string> WriteTableValuedFunctionDeclareSqlParameter = null;
-    Func<StoredProcedure, string> WriteStoredProcFunctionSqlParameterAnonymousArray = null;
+    Func<StoredProcedure, bool, string> WriteStoredProcFunctionSqlParameterAnonymousArray = null;
     Func<StoredProcedure, string> WriteTableValuedFunctionSqlParameterAnonymousArray = null;
     Func<StoredProcedure, bool, string> WriteStoredProcFunctionSetSqlParameters = null;
     Func<StoredProcedure, string> WriteStoredProcReturnModelName = null;
