@@ -35,6 +35,7 @@
         // Settings - edit these in the main <name>.tt file *******************************************************************************
         string ConnectionStringName = "";
         bool IncludeViews = true;
+        bool IncludeSynonyms = false;
         bool IncludeStoredProcedures = false;
         bool IncludeTableValuedFunctions = false;
         bool AddUnitTestingDbContext = true;
@@ -529,7 +530,7 @@
                         PrependSchemaName = false;
 
                     var reader = new SqlServerSchemaReader(conn, factory, IncludeQueryTraceOn9481Flag) { Outer = this };
-                    var tables = reader.ReadSchema(SchemaFilterExclude, SchemaFilterInclude, TableFilterExclude, TableFilterInclude, ColumnFilterExclude, TableFilter, UseCamelCase, PrependSchemaName, IncludeComments, IncludeViews, IncludeExtendedPropertyComments, TableRename, UpdateColumn, UsePrivateSetterForComputedColumns);
+                    var tables = reader.ReadSchema(SchemaFilterExclude, SchemaFilterInclude, TableFilterExclude, TableFilterInclude, ColumnFilterExclude, TableFilter, UseCamelCase, PrependSchemaName, IncludeComments, IncludeViews, IncludeExtendedPropertyComments, TableRename, UpdateColumn, UsePrivateSetterForComputedColumns, IncludeSynonyms);
                     tables.SetPrimaryKeys();
 
                     // Must be done in this order
@@ -1230,7 +1231,7 @@
             }
 
             public GeneratedTextTransformation Outer;
-            public abstract Tables ReadSchema(Regex schemaFilterExclude, Regex schemaFilterInclude, Regex tableFilterExclude, Regex tableFilterInclude, Regex columnFilterExclude, Func<Table, bool> tableFilter, bool useCamelCase, bool prependSchemaName, CommentsStyle includeComments, bool includeViews, CommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, Func<Column, Table, Column> updateColumn, bool usePrivateSetterForComputedColumns);
+            public abstract Tables ReadSchema(Regex schemaFilterExclude, Regex schemaFilterInclude, Regex tableFilterExclude, Regex tableFilterInclude, Regex columnFilterExclude, Func<Table, bool> tableFilter, bool useCamelCase, bool prependSchemaName, CommentsStyle includeComments, bool includeViews, CommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, Func<Column, Table, Column> updateColumn, bool usePrivateSetterForComputedColumns, bool includeSynonyms);
             public abstract List<StoredProcedure> ReadStoredProcs(Regex SchemaFilterExclude, Regex storedProcedureFilterExclude, bool useCamelCase, bool prependSchemaName , Func<string, string, string> StoredProcedureRename, bool includeTableValuedFunctions);
             public abstract List<ForeignKey> ReadForeignKeys(Func<string, string, string> tableRename, Func<ForeignKey, ForeignKey> foreignKeyFilter);
             public abstract void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool useCamelCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments, Func<string, string, short, string> ForeignKeyName);
@@ -1320,7 +1321,9 @@ FROM    INFORMATION_SCHEMA.COLUMNS c
         INNER JOIN INFORMATION_SCHEMA.TABLES t
             ON c.TABLE_SCHEMA = t.TABLE_SCHEMA
                AND c.TABLE_NAME = t.TABLE_NAME
-WHERE c.TABLE_NAME NOT IN ('EdmMetadata', '__MigrationHistory')
+WHERE c.TABLE_NAME NOT IN ('EdmMetadata', '__MigrationHistory')";
+
+            private const string SynonymTableSQL = @"
 UNION ALL
 -- Synonyms
 SELECT  sc.name AS SchemaName,
@@ -1727,13 +1730,17 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 return SqlDatabaseEngineEdition == "Azure";
             }
 
-            public override Tables ReadSchema(Regex schemaFilterExclude, Regex schemaFilterInclude, Regex tableFilterExclude, Regex tableFilterInclude, Regex columnFilterExclude, Func<Table, bool> tableFilter, bool useCamelCase, bool prependSchemaName, CommentsStyle includeComments, bool includeViews, CommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, Func<Column, Table, Column> updateColumn, bool usePrivateSetterForComputedColumns)
+            public override Tables ReadSchema(Regex schemaFilterExclude, Regex schemaFilterInclude, Regex tableFilterExclude, Regex tableFilterInclude, Regex columnFilterExclude, Func<Table, bool> tableFilter, bool useCamelCase, bool prependSchemaName, CommentsStyle includeComments, bool includeViews, CommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, Func<Column, Table, Column> updateColumn, bool usePrivateSetterForComputedColumns, bool includeSynonyms)
             {
                 var result = new Tables();
                 if(Cmd == null)
                     return result;
 
-                Cmd.CommandText = TableSQL + IncludeQueryTraceOn9481();
+                if(includeSynonyms)
+                    Cmd.CommandText = TableSQL + SynonymTableSQL + IncludeQueryTraceOn9481();
+                else
+                    Cmd.CommandText = TableSQL + IncludeQueryTraceOn9481();
+
                 if (Cmd.GetType().Name == "SqlCeCommand")
                     Cmd.CommandText = TableSQLCE;
                 else
