@@ -29,6 +29,7 @@
     CollectionType = "System.Collections.Generic.List";  // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example. Add "System.Collections.ObjectModel" to AdditionalNamespaces if setting the CollectionType = "ObservableCollection".
     NullableShortHand = true; //true => T?, false => Nullable<T>
     AddUnitTestingDbContext = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing
+    UsePrivateSetterForComputedColumns = true; // If the columns is computed, use a private setter.
     AdditionalNamespaces = new[] { "" };  // To include extra namespaces, include them here. i.e. "Microsoft.AspNet.Identity.EntityFramework"
     AdditionalContextInterfaceItems = new[] // To include extra db context interface items, include them here. Also set MakeClassesPartial=true, and implement the partial DbContext class functions.
     {
@@ -40,12 +41,12 @@
     AdditionalReverseNavigationsDataAnnotations = new string[] // Data Annotations for ReverseNavigationProperty.
     {
         // "JsonIgnore"
-    };  
+    };
     AdditionalForeignKeysDataAnnotations = new string[] // Data Annotations for ForeignKeys.
     {
         // "JsonIgnore"
-    };  
-    
+    };
+
     // Migrations *************************************************************************************************************************
     MigrationConfigurationFileName = ""; // null or empty to not create migrations
     MigrationStrategy = "MigrateDatabaseToLatestVersion"; // MigrateDatabaseToLatestVersion, CreateDatabaseIfNotExists or DropCreateDatabaseIfModelChanges
@@ -71,8 +72,8 @@
     //    new CustomPluralizationEntry("Course", "Courses"),
     //    new CustomPluralizationEntry("Status", "Status") // Use same value to prevent pluralisation
     //});
-    
-    
+
+
     // Elements to generate ***************************************************************************************************************
     // Add the elements that should be generated when the template is executed.
     // Multiple projects can now be used that separate the different concerns.
@@ -87,15 +88,15 @@
     //      ElementsToGenerate = Elements.PocoConfiguration; in your Maps folder.
     //      PocoNamespace = "YourProject.Entities";
     //      ContextNamespace = "YourProject.Context";
-    //      UnitOfWorkNamespace = "YourProject.Context";	
+    //      UnitOfWorkNamespace = "YourProject.Context";
     //      PocoConfigurationNamespace = "YourProject.Maps";
     // You also need to set the following to the namespace where they now live:
     PocoNamespace = "";
     ContextNamespace = "";
-    UnitOfWorkNamespace = "";	
+    UnitOfWorkNamespace = "";
     PocoConfigurationNamespace = "";
 
-    
+
     // Schema *****************************************************************************************************************************
     // If there are multiple schemas, then the table name is prefixed with the schema, except for dbo.
     // Ie. dbo.hello will be Hello.
@@ -161,7 +162,7 @@
     // As long as the type can be mapped to your new type, all is well.
     //EnumsDefinitions.Add(new EnumDefinition { Schema = "dbo", Table = "match_table_name", Column = "match_column_name", EnumType = "name_of_enum" });
     //EnumsDefinitions.Add(new EnumDefinition { Schema = "dbo", Table = "OrderHeader", Column = "OrderStatus", EnumType = "OrderStatusType" }); // This will replace OrderHeader.OrderStatus type to be an OrderStatusType enum
-    
+
     // Use the following function if you need to apply additional modifications to a column
     // eg. normalise names etc.
     UpdateColumn = (Column column, Table table) =>
@@ -184,9 +185,9 @@
 
         // Perform Enum property type replacement
         var enumDefinition = EnumsDefinitions.FirstOrDefault(e =>
-            (e.Schema.ToLowerInvariant() == table.Schema.ToLowerInvariant()) &&
-            (e.Table == table.Name || e.Table == table.NameHumanCase) &&
-            (e.Column == column.Name || e.Column == column.NameHumanCase));
+            (e.Schema.Equals(table.Schema, StringComparison.InvariantCultureIgnoreCase)) &&
+            (e.Table.Equals(table.Name, StringComparison.InvariantCultureIgnoreCase) || e.Table.Equals(table.NameHumanCase, StringComparison.InvariantCultureIgnoreCase)) &&
+            (e.Column.Equals(column.Name, StringComparison.InvariantCultureIgnoreCase) || e.Column.Equals(column.NameHumanCase, StringComparison.InvariantCultureIgnoreCase)));
 
         if (enumDefinition != null)
             column.PropertyType = enumDefinition.EnumType;
@@ -202,7 +203,7 @@
     // Example: "";                                           = [DataContract]
     //          "(Namespace = \"http://www.contoso.com\")";   = [DataContract(Namespace = "http://www.contoso.com")]
     //          "(Namespace = Constants.ServiceNamespace)";   = [DataContract(Namespace = Constants.ServiceNamespace)]
-    
+
 
     // Callbacks **********************************************************************************************************************
     // This method will be called right before we write the POCO header.
@@ -249,7 +250,7 @@
             case 1:
                 // Try without appending foreign key name
                 return tableName;
-            
+
             case 2:
                 // Only called if foreign key name ends with "id"
                 // Use foreign key name without "id" at end of string
@@ -266,7 +267,7 @@
             case 5:
                 // Used in for loop 1 to 99 to append a number to the end
                 return tableName;
-            
+
             default:
                 // Give up
                 return tableName;
@@ -274,7 +275,7 @@
     };
 
     // That's it, nothing else to configure ***********************************************************************************************
-    
+
     // Stored procedure are not supported in SqlCE - create dummy functions
     StoredProcedureRename = (name, schema) => name;
     Func<StoredProcedure, string> WriteStoredProcFunctionName = null;
@@ -291,12 +292,12 @@
     Func<StoredProcedure, string> WriteStoredProcReturnModelName = null;
     Func<StoredProcedure, string> WriteStoredProcReturnType = null;
     Func<DataColumn, string> WriteStoredProcReturnColumn = null;
-    
+
     // Read schema
     IsSqlCe = true;
     var tables = LoadTables(GetDbProviderFactory());
     var storedProcs = new List<StoredProcedure>();
-    
+
     // Generate output
     if (tables.Count > 0)
     {
