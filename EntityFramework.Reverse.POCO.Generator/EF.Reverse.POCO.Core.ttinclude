@@ -1324,13 +1324,13 @@ FROM    INFORMATION_SCHEMA.COLUMNS c
 WHERE c.TABLE_NAME NOT IN ('EdmMetadata', '__MigrationHistory')";
 
             private const string SynonymTableSQLSetup = @"
-SET NOCOUNT ON
-IF OBJECT_ID('tempdb..#SynonymDetails') IS NOT NULL DROP TABLE #SynonymDetails
-IF OBJECT_ID('tempdb..#SynonymTargets') IS NOT NULL DROP TABLE #SynonymTargets
+SET NOCOUNT ON;
+IF OBJECT_ID('tempdb..#SynonymDetails') IS NOT NULL DROP TABLE #SynonymDetails;
+IF OBJECT_ID('tempdb..#SynonymTargets') IS NOT NULL DROP TABLE #SynonymTargets;
 
 -- Synonyms
 -- Create the #SynonymDetails temp table structure for later use
-SELECT TOP 0 sc.name AS SchemaName,
+SELECT TOP (0) sc.name AS SchemaName,
         sn.name AS TableName,
         'SN' AS TableType,
         COLUMNPROPERTY(c.object_id, c.name, 'ordinal') AS Ordinal,
@@ -1403,7 +1403,8 @@ FROM    sys.synonyms sn
                AND c.name = fk.COLUMN_NAME;
 
 DECLARE @synonymDetailsQueryTemplate nvarchar(max) = 'USE [@synonmymDatabaseName];
-INSERT INTO #SynonymDetails
+INSERT INTO #SynonymDetails (SchemaName, TableName, TableType, Ordinal, ColumnName, IsNullable, TypeName, [MaxLength], [Precision],
+                             [Default], DateTimePrecision, Scale, IsIdentity, IsStoreGenerated, PrimaryKey, PrimaryKeyOrdinal, IsForeignKey)
 SELECT st.SynonymSchemaName AS SchemaName,
         st.SynonymName AS TableName,
         ''SN'' AS TableType,
@@ -1488,25 +1489,27 @@ INTO #SynonymTargets
 FROM sys.synonyms sn
 INNER JOIN sys.schemas sc
     ON sc.[schema_id] = sn.[schema_id]
-WHERE ISNULL(PARSENAME(sn.base_object_name, 4), @@SERVERNAME) = @@SERVERNAME -- Probably only populate info from current server?
+WHERE ISNULL(PARSENAME(sn.base_object_name, 4), @@SERVERNAME) = @@SERVERNAME -- Only populate info from current server
 
 -- Loop through synonyms and populate #SynonymDetails
-DECLARE @synonmymDatabaseName sysname = (SELECT TOP 1 DatabaseName FROM #SynonymTargets)
+DECLARE @synonmymDatabaseName sysname = (SELECT TOP (1) DatabaseName FROM #SynonymTargets)
 DECLARE @synonmymDetailsSelect nvarchar(max)
-WHILE (@synonmymDatabaseName IS NOT NULL) BEGIN
+WHILE (@synonmymDatabaseName IS NOT NULL)
+BEGIN
 	SET @synonmymDetailsSelect = REPLACE(@synonymDetailsQueryTemplate, '[@synonmymDatabaseName]', '[' + @synonmymDatabaseName + ']')
 	--SELECT @synonmymDetailsSelect
 	EXEC sp_executesql @stmt=@synonmymDetailsSelect, @params=N'@synonmymDatabaseName sysname', @synonmymDatabaseName=@synonmymDatabaseName
 	DELETE FROM #SynonymTargets WHERE DatabaseName = @synonmymDatabaseName
-	SET @synonmymDatabaseName = (SELECT TOP 1 DatabaseName FROM #SynonymTargets)
+	SET @synonmymDatabaseName = (SELECT TOP (1) DatabaseName FROM #SynonymTargets)
 END
-SET NOCOUNT OFF
+SET NOCOUNT OFF;
 ";
 
             private const string SynonymTableSQL = @"
 UNION ALL
 -- Synonyms
-SELECT * FROM #SynonymDetails";
+SELECT SchemaName, TableName, TableType, Ordinal, ColumnName, IsNullable, TypeName, [MaxLength], [Precision],
+       [Default], DateTimePrecision, Scale, IsIdentity, IsStoreGenerated, PrimaryKey, PrimaryKeyOrdinal, IsForeignKey FROM #SynonymDetails";
 
             private const string ForeignKeySQL = @"
 SELECT  FK.name AS FK_Table,
