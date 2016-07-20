@@ -1323,10 +1323,14 @@ FROM    INFORMATION_SCHEMA.COLUMNS c
                AND c.TABLE_NAME = t.TABLE_NAME
 WHERE c.TABLE_NAME NOT IN ('EdmMetadata', '__MigrationHistory')";
 
-            private const string SynonymTableSQL = @"
-UNION ALL
+            private const string SynonymTableSQLSetup = @"
+SET NOCOUNT ON
+IF OBJECT_ID('tempdb..#SynonymDetails') IS NOT NULL DROP TABLE #SynonymDetails
+IF OBJECT_ID('tempdb..#SynonymTargets') IS NOT NULL DROP TABLE #SynonymTargets
+
 -- Synonyms
-SELECT  sc.name AS SchemaName,
+-- Create the #SynonymDetails temp table structure for later use
+SELECT TOP 0 sc.name AS SchemaName,
         sn.name AS TableName,
         'SN' AS TableType,
         COLUMNPROPERTY(c.object_id, c.name, 'ordinal') AS Ordinal,
@@ -1357,6 +1361,7 @@ SELECT  sc.name AS SchemaName,
         CAST(CASE WHEN fk.COLUMN_NAME IS NULL THEN 0
                   ELSE 1
              END AS BIT) AS IsForeignKey
+INTO #SynonymDetails
 FROM    sys.synonyms sn
         INNER JOIN sys.columns c
             ON c.[object_id] = OBJECT_ID(sn.base_object_name)
@@ -1395,7 +1400,113 @@ FROM    sys.synonyms sn
                         ) fk
             ON sc.name = fk.TABLE_SCHEMA
                AND sn.name = fk.TABLE_NAME
-               AND c.name = fk.COLUMN_NAME;";
+               AND c.name = fk.COLUMN_NAME;
+
+DECLARE @synonymDetailsQueryTemplate nvarchar(max) = 'USE [@synonmymDatabaseName];
+INSERT INTO #SynonymDetails
+SELECT st.SynonymSchemaName AS SchemaName,
+        st.SynonymName AS TableName,
+        ''SN'' AS TableType,
+        COLUMNPROPERTY(c.object_id, c.name, ''ordinal'') AS Ordinal,
+        c.name AS ColumnName,
+        c.is_nullable AS IsNullable,
+        ISNULL(TYPE_NAME(c.system_type_id), t.name) AS TypeName,
+        ISNULL(COLUMNPROPERTY(c.object_id, c.name, ''charmaxlen''), 0) AS [MaxLength],
+        CAST(ISNULL(CONVERT(TINYINT, CASE WHEN c.system_type_id IN (48, 52, 56, 59, 60, 62, 106, 108, 122, 127) THEN c.precision
+                                     END), 0) AS INT) AS [Precision],
+        ISNULL(CONVERT(NVARCHAR(4000), OBJECT_DEFINITION(c.default_object_id)), '''') AS [Default],
+        CAST(ISNULL(CONVERT(SMALLINT, CASE WHEN c.system_type_id IN (40, 41, 42, 43, 58, 61) THEN ODBCSCALE(c.system_type_id, c.scale)
+                                      END), 0) AS INT) AS DateTimePrecision,
+        ISNULL(CONVERT(INT, CASE WHEN c.system_type_id IN (40, 41, 42, 43, 58, 61) THEN NULL
+                                 ELSE ODBCSCALE(c.system_type_id, c.scale)
+                            END), 0) AS Scale,
+        CAST(COLUMNPROPERTY(st.base_object_id, c.name, ''IsIdentity'') AS BIT) AS IsIdentity,
+        CAST(CASE WHEN COLUMNPROPERTY(st.base_object_id, c.NAME, ''IsIdentity'') = 1 THEN 1
+                  WHEN COLUMNPROPERTY(st.base_object_id, c.NAME, ''IsComputed'') = 1 THEN 1
+                  WHEN ISNULL(TYPE_NAME(c.system_type_id), t.NAME) = ''TIMESTAMP'' THEN 1
+                  WHEN ISNULL(TYPE_NAME(c.system_type_id), t.NAME) = ''UNIQUEIDENTIFIER''
+                       AND LOWER(ISNULL(CONVERT(NVARCHAR(4000), OBJECT_DEFINITION(c.default_object_id)), '''')) LIKE ''%newsequentialid%'' THEN 1
+                  ELSE 0
+             END AS BIT) AS IsStoreGenerated,
+        CAST(CASE WHEN pk.ORDINAL_POSITION IS NULL THEN 0
+                  ELSE 1
+             END AS BIT) AS PrimaryKey,
+        ISNULL(pk.ORDINAL_POSITION, 0) PrimaryKeyOrdinal,
+        CAST(CASE WHEN fk.COLUMN_NAME IS NULL THEN 0
+                  ELSE 1
+             END AS BIT) AS IsForeignKey
+FROM    #SynonymTargets st
+        INNER JOIN sys.columns c
+            ON c.[object_id] = st.base_object_id
+        LEFT JOIN sys.types t
+            ON c.user_type_id = t.user_type_id
+        INNER JOIN sys.objects o
+            ON c.[object_id] = o.[object_id]
+        LEFT OUTER JOIN (
+                         SELECT u.TABLE_SCHEMA,
+                                u.TABLE_NAME,
+                                u.COLUMN_NAME,
+                                u.ORDINAL_POSITION
+                         FROM   INFORMATION_SCHEMA.KEY_COLUMN_USAGE u
+                                INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc
+                                    ON u.TABLE_SCHEMA = tc.CONSTRAINT_SCHEMA
+                                       AND u.TABLE_NAME = tc.TABLE_NAME
+                                       AND u.CONSTRAINT_NAME = tc.CONSTRAINT_NAME
+                         WHERE  CONSTRAINT_TYPE = ''PRIMARY KEY''
+                        ) pk
+            ON st.SchemaName = pk.TABLE_SCHEMA
+               AND st.ObjectName = pk.TABLE_NAME
+               AND c.name = pk.COLUMN_NAME
+        LEFT OUTER JOIN (
+                         SELECT DISTINCT
+                                u.TABLE_SCHEMA,
+                                u.TABLE_NAME,
+                                u.COLUMN_NAME
+                         FROM   INFORMATION_SCHEMA.KEY_COLUMN_USAGE u
+                                INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc
+                                    ON u.TABLE_SCHEMA = tc.CONSTRAINT_SCHEMA
+                                       AND u.TABLE_NAME = tc.TABLE_NAME
+                                       AND u.CONSTRAINT_NAME = tc.CONSTRAINT_NAME
+                         WHERE  CONSTRAINT_TYPE = ''FOREIGN KEY''
+                        ) fk
+            ON st.SchemaName = fk.TABLE_SCHEMA
+               AND st.ObjectName = fk.TABLE_NAME
+               AND c.name = fk.COLUMN_NAME
+WHERE st.DatabaseName = @synonmymDatabaseName;
+'
+
+-- Pull details about the synonym target from each database being referenced
+SELECT sc.name AS SynonymSchemaName, sn.name as SynonymName
+	, sn.[object_id]
+	, sn.base_object_name
+	, OBJECT_ID(sn.base_object_name) as base_object_id
+	, PARSENAME(sn.base_object_name, 1) as ObjectName
+	, ISNULL(PARSENAME(sn.base_object_name, 2), sc.name) as SchemaName
+	, ISNULL(PARSENAME(sn.base_object_name, 3), '') as DatabaseName
+	, PARSENAME(sn.base_object_name, 4) as ServerName
+INTO #SynonymTargets
+FROM sys.synonyms sn
+INNER JOIN sys.schemas sc
+    ON sc.[schema_id] = sn.[schema_id]
+WHERE ISNULL(PARSENAME(sn.base_object_name, 4), @@SERVERNAME) = @@SERVERNAME -- Probably only populate info from current server?
+
+-- Loop through synonyms and populate #SynonymDetails
+DECLARE @synonmymDatabaseName sysname = (SELECT TOP 1 DatabaseName FROM #SynonymTargets)
+DECLARE @synonmymDetailsSelect nvarchar(max)
+WHILE (@synonmymDatabaseName IS NOT NULL) BEGIN
+	SET @synonmymDetailsSelect = REPLACE(@synonymDetailsQueryTemplate, '[@synonmymDatabaseName]', '[' + @synonmymDatabaseName + ']')
+	--SELECT @synonmymDetailsSelect
+	EXEC sp_executesql @stmt=@synonmymDetailsSelect, @params=N'@synonmymDatabaseName sysname', @synonmymDatabaseName=@synonmymDatabaseName
+	DELETE FROM #SynonymTargets WHERE DatabaseName = @synonmymDatabaseName
+	SET @synonmymDatabaseName = (SELECT TOP 1 DatabaseName FROM #SynonymTargets)
+END
+SET NOCOUNT OFF
+";
+
+            private const string SynonymTableSQL = @"
+UNION ALL
+-- Synonyms
+SELECT * FROM #SynonymDetails";
 
             private const string ForeignKeySQL = @"
 SELECT  FK.name AS FK_Table,
@@ -1737,7 +1848,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     return result;
 
                 if(includeSynonyms)
-                    Cmd.CommandText = TableSQL + SynonymTableSQL + IncludeQueryTraceOn9481();
+                    Cmd.CommandText = SynonymTableSQLSetup + TableSQL + SynonymTableSQL + IncludeQueryTraceOn9481();
                 else
                     Cmd.CommandText = TableSQL + IncludeQueryTraceOn9481();
 
