@@ -1438,7 +1438,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public AlphabeticalListOfProductConfiguration(string schema)
         {
-            ToTable(schema + ".Alphabetical list of products");
+            ToTable("Alphabetical list of products", schema);
             HasKey(x => new { x.ProductId, x.ProductName, x.Discontinued, x.CategoryName });
 
             Property(x => x.ProductId).HasColumnName(@"ProductID").IsRequired().HasColumnType("int");
@@ -1466,7 +1466,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public CategoryConfiguration(string schema)
         {
-            ToTable(schema + ".Categories");
+            ToTable("Categories", schema);
             HasKey(x => x.CategoryId);
 
             Property(x => x.CategoryId).HasColumnName(@"CategoryID").IsRequired().HasColumnType("int").HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity);
@@ -1487,7 +1487,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public CategorySalesFor1997Configuration(string schema)
         {
-            ToTable(schema + ".Category Sales for 1997");
+            ToTable("Category Sales for 1997", schema);
             HasKey(x => x.CategoryName);
 
             Property(x => x.CategoryName).HasColumnName(@"CategoryName").IsRequired().HasColumnType("nvarchar").HasMaxLength(15);
@@ -1506,7 +1506,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public CurrentProductListConfiguration(string schema)
         {
-            ToTable(schema + ".Current Product List");
+            ToTable("Current Product List", schema);
             HasKey(x => new { x.ProductId, x.ProductName });
 
             Property(x => x.ProductId).HasColumnName(@"ProductID").IsRequired().HasColumnType("int").HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity);
@@ -1525,7 +1525,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public CustomerConfiguration(string schema)
         {
-            ToTable(schema + ".Customers");
+            ToTable("Customers", schema);
             HasKey(x => x.CustomerId);
 
             Property(x => x.CustomerId).HasColumnName(@"CustomerID").IsRequired().IsFixedLength().HasColumnType("nchar").HasMaxLength(5).HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None);
@@ -1559,7 +1559,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public CustomerAndSuppliersByCityConfiguration(string schema)
         {
-            ToTable(schema + ".Customer and Suppliers by City");
+            ToTable("Customer and Suppliers by City", schema);
             HasKey(x => new { x.CompanyName, x.Relationship });
 
             Property(x => x.City).HasColumnName(@"City").IsOptional().HasColumnType("nvarchar").HasMaxLength(15);
@@ -1580,7 +1580,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public CustomerDemographicConfiguration(string schema)
         {
-            ToTable(schema + ".CustomerDemographics");
+            ToTable("CustomerDemographics", schema);
             HasKey(x => x.CustomerTypeId);
 
             Property(x => x.CustomerTypeId).HasColumnName(@"CustomerTypeID").IsRequired().IsFixedLength().HasColumnType("nchar").HasMaxLength(10).HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None);
@@ -1599,7 +1599,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public EmployeeConfiguration(string schema)
         {
-            ToTable(schema + ".Employees");
+            ToTable("Employees", schema);
             HasKey(x => x.EmployeeId);
 
             Property(x => x.EmployeeId).HasColumnName(@"EmployeeID").IsRequired().HasColumnType("int").HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity);
@@ -1643,7 +1643,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public InvoiceConfiguration(string schema)
         {
-            ToTable(schema + ".Invoices");
+            ToTable("Invoices", schema);
             HasKey(x => new { x.CustomerName, x.Salesperson, x.OrderId, x.ShipperName, x.ProductId, x.ProductName, x.UnitPrice, x.Quantity, x.Discount });
 
             Property(x => x.ShipName).HasColumnName(@"ShipName").IsOptional().HasColumnType("nvarchar").HasMaxLength(40);
@@ -1686,7 +1686,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public OrderConfiguration(string schema)
         {
-            ToTable(schema + ".Orders");
+            ToTable("Orders", schema);
             HasKey(x => x.OrderId);
 
             Property(x => x.OrderId).HasColumnName(@"OrderID").IsRequired().HasColumnType("int").HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity);
@@ -1722,7 +1722,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public OrderDetailConfiguration(string schema)
         {
-            ToTable(schema + ".Order Details");
+            ToTable("Order Details", schema);
             HasKey(x => new { x.OrderId, x.ProductId });
 
             Property(x => x.OrderId).HasColumnName(@"OrderID").IsRequired().HasColumnType("int").HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None);
@@ -1748,7 +1748,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public OrderDetailsExtendedConfiguration(string schema)
         {
-            ToTable(schema + ".Order Details Extended");
+            ToTable("Order Details Extended", schema);
             HasKey(x => new { x.OrderId, x.ProductId, x.ProductName, x.UnitPrice, x.Quantity, x.Discount });
 
             Property(x => x.OrderId).HasColumnName(@"OrderID").IsRequired().HasColumnType("int");
@@ -1772,7 +1772,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public OrdersQryConfiguration(string schema)
         {
-            ToTable(schema + ".Orders Qry");
+            ToTable("Orders Qry", schema);
             HasKey(x => new { x.OrderId, x.CompanyName });
 
             Property(x => x.OrderId).HasColumnName(@"OrderID").IsRequired().HasColumnType("int");
@@ -1809,7 +1809,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public OrderSubtotalConfiguration(string schema)
         {
-            ToTable(schema + ".Order Subtotals");
+            ToTable("Order Subtotals", schema);
             HasKey(x => x.OrderId);
 
             Property(x => x.OrderId).HasColumnName(@"OrderID").IsRequired().HasColumnType("int");
@@ -1828,7 +1828,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public ProductConfiguration(string schema)
         {
-            ToTable(schema + ".Products");
+            ToTable("Products", schema);
             HasKey(x => x.ProductId);
 
             Property(x => x.ProductId).HasColumnName(@"ProductID").IsRequired().HasColumnType("int").HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity);
@@ -1859,7 +1859,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public ProductsAboveAveragePriceConfiguration(string schema)
         {
-            ToTable(schema + ".Products Above Average Price");
+            ToTable("Products Above Average Price", schema);
             HasKey(x => x.ProductName);
 
             Property(x => x.ProductName).HasColumnName(@"ProductName").IsRequired().HasColumnType("nvarchar").HasMaxLength(40);
@@ -1878,7 +1878,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public ProductSalesFor1997Configuration(string schema)
         {
-            ToTable(schema + ".Product Sales for 1997");
+            ToTable("Product Sales for 1997", schema);
             HasKey(x => new { x.CategoryName, x.ProductName });
 
             Property(x => x.CategoryName).HasColumnName(@"CategoryName").IsRequired().HasColumnType("nvarchar").HasMaxLength(15);
@@ -1898,7 +1898,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public ProductsByCategoryConfiguration(string schema)
         {
-            ToTable(schema + ".Products by Category");
+            ToTable("Products by Category", schema);
             HasKey(x => new { x.CategoryName, x.ProductName, x.Discontinued });
 
             Property(x => x.CategoryName).HasColumnName(@"CategoryName").IsRequired().HasColumnType("nvarchar").HasMaxLength(15);
@@ -1920,7 +1920,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public RegionConfiguration(string schema)
         {
-            ToTable(schema + ".Region");
+            ToTable("Region", schema);
             HasKey(x => x.RegionId);
 
             Property(x => x.RegionId).HasColumnName(@"RegionID").IsRequired().HasColumnType("int").HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None);
@@ -1939,7 +1939,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public SalesByCategoryConfiguration(string schema)
         {
-            ToTable(schema + ".Sales by Category");
+            ToTable("Sales by Category", schema);
             HasKey(x => new { x.CategoryId, x.CategoryName, x.ProductName });
 
             Property(x => x.CategoryId).HasColumnName(@"CategoryID").IsRequired().HasColumnType("int");
@@ -1960,7 +1960,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public SalesTotalsByAmountConfiguration(string schema)
         {
-            ToTable(schema + ".Sales Totals by Amount");
+            ToTable("Sales Totals by Amount", schema);
             HasKey(x => new { x.OrderId, x.CompanyName });
 
             Property(x => x.SaleAmount).HasColumnName(@"SaleAmount").IsOptional().HasColumnType("money").HasPrecision(19,4);
@@ -1981,7 +1981,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public ShipperConfiguration(string schema)
         {
-            ToTable(schema + ".Shippers");
+            ToTable("Shippers", schema);
             HasKey(x => x.ShipperId);
 
             Property(x => x.ShipperId).HasColumnName(@"ShipperID").IsRequired().HasColumnType("int").HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity);
@@ -2001,7 +2001,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public SummaryOfSalesByQuarterConfiguration(string schema)
         {
-            ToTable(schema + ".Summary of Sales by Quarter");
+            ToTable("Summary of Sales by Quarter", schema);
             HasKey(x => x.OrderId);
 
             Property(x => x.ShippedDate).HasColumnName(@"ShippedDate").IsOptional().HasColumnType("datetime");
@@ -2021,7 +2021,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public SummaryOfSalesByYearConfiguration(string schema)
         {
-            ToTable(schema + ".Summary of Sales by Year");
+            ToTable("Summary of Sales by Year", schema);
             HasKey(x => x.OrderId);
 
             Property(x => x.ShippedDate).HasColumnName(@"ShippedDate").IsOptional().HasColumnType("datetime");
@@ -2041,7 +2041,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public SupplierConfiguration(string schema)
         {
-            ToTable(schema + ".Suppliers");
+            ToTable("Suppliers", schema);
             HasKey(x => x.SupplierId);
 
             Property(x => x.SupplierId).HasColumnName(@"SupplierID").IsRequired().HasColumnType("int").HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity);
@@ -2070,7 +2070,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public SysdiagramConfiguration(string schema)
         {
-            ToTable(schema + ".sysdiagrams");
+            ToTable("sysdiagrams", schema);
             HasKey(x => x.DiagramId);
 
             Property(x => x.Name).HasColumnName(@"name").IsRequired().HasColumnType("nvarchar").HasMaxLength(128);
@@ -2092,7 +2092,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public TerritoryConfiguration(string schema)
         {
-            ToTable(schema + ".Territories");
+            ToTable("Territories", schema);
             HasKey(x => x.TerritoryId);
 
             Property(x => x.TerritoryId).HasColumnName(@"TerritoryID").IsRequired().HasColumnType("nvarchar").HasMaxLength(20).HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None);

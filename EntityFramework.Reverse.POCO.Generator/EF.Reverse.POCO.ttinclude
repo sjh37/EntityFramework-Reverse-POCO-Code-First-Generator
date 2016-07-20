@@ -1002,7 +1002,7 @@ if(IncludeComments != CommentsStyle.None){#>    // <#=tbl.Name#>
         public <#=tbl.NameHumanCase + ConfigurationClassName#>(string schema)
         {
 <# if (!string.IsNullOrEmpty(tbl.Schema)) { #>
-            ToTable(schema + ".<#=tbl.Name#>");
+            ToTable("<#=tbl.Name#>", schema);
 <# } else { #>
             ToTable("<#=tbl.Name#>");
 <# } #>
