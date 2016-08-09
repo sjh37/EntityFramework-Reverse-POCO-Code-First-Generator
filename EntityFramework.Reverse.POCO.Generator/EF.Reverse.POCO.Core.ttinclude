@@ -2156,10 +2156,9 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                             continue;
 
                         string spName = rdr["SPECIFIC_NAME"].ToString().Trim();
-                        if(storedProcedureFilterExclude != null && storedProcedureFilterExclude.IsMatch(spName))
-                            continue;
-
                         var fullname = schema + "." + spName;
+                        if(storedProcedureFilterExclude != null && (storedProcedureFilterExclude.IsMatch(spName) || storedProcedureFilterExclude.IsMatch(fullname)))
+                            continue;
 
                         if (lastSp != fullname || sp == null)
                         {
@@ -2175,6 +2174,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                                 sp.NameHumanCase = schema + "_" + sp.NameHumanCase;
 
                             sp.NameHumanCase = StoredProcedureRename(sp.NameHumanCase, schema);
+                            if(storedProcedureFilterExclude != null && (storedProcedureFilterExclude.IsMatch(sp.NameHumanCase)))
+                                continue;
 
                             result.Add(sp);
                         }
