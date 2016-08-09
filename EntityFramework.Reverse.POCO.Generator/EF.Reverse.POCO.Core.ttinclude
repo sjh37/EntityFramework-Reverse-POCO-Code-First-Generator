@@ -2327,8 +2327,9 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     string manyToManyMapping, mapKey;
                     if(foreignKeys.Count > 1)
                     {
-                        manyToManyMapping = string.Format("c => new {{ {0} }}", string.Join(", ", fkCols.OrderBy(o => o.fkOrdinal).Select(x => "c." + x.col.NameHumanCase).ToArray()));
-                        mapKey = string.Format("{0}", string.Join(",", fkCols.OrderBy(o => o.fkOrdinal).Select(x => "\"" + x.col.Name + "\"").ToArray()));
+                        var cols = fkCols.OrderBy(o => o.fkOrdinal).Distinct().ToList();
+                        manyToManyMapping = string.Format("c => new {{ {0} }}", string.Join(", ", cols.Select(x => "c." + x.col.NameHumanCase).ToArray()));
+                        mapKey = string.Format("{0}", string.Join(",", cols.Select(x => "\"" + x.col.Name + "\"").ToArray()));
                     } else {
                         manyToManyMapping = string.Format("c => c.{0}", fkCol.col.NameHumanCase);
                         mapKey = string.Format("\"{0}\"", fkCol.col.Name);
