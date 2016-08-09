@@ -2174,7 +2174,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                                 sp.NameHumanCase = schema + "_" + sp.NameHumanCase;
 
                             sp.NameHumanCase = StoredProcedureRename(sp.NameHumanCase, schema);
-                            if(storedProcedureFilterExclude != null && (storedProcedureFilterExclude.IsMatch(sp.NameHumanCase)))
+                            if(storedProcedureFilterExclude != null && storedProcedureFilterExclude.IsMatch(sp.NameHumanCase))
                                 continue;
 
                             result.Add(sp);
