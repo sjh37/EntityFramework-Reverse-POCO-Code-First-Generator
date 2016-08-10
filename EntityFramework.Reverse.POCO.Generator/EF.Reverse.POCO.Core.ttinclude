@@ -2297,7 +2297,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                             fkOrdinal = x.Ordinal,
                             col = fkTable.Columns.Find(n => string.Equals(n.Name, x.FkColumn, StringComparison.InvariantCultureIgnoreCase))
                         })
-                        .Where(x => x != null)
+                        .Where(x => x != null && x.col != null)
+                        .OrderBy(o => o.fkOrdinal)
                         .ToList();
 
                     if (!fkCols.Any())
@@ -2314,7 +2315,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     var fkCol = fkCols.First();
                     var pkCol = pkCols.First();
 
-                    var relationship = CalcRelationship(pkTable, fkTable, fkCols.OrderBy(o => o.fkOrdinal).Select(c => c.col).ToList(), pkCols);
+                    var relationship = CalcRelationship(pkTable, fkTable, fkCols.Select(c => c.col).ToList(), pkCols);
                     if (relationship == Relationship.DoNotUse)
                         continue;
 
@@ -2328,9 +2329,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     string manyToManyMapping, mapKey;
                     if(foreignKeys.Count > 1)
                     {
-                        var cols = fkCols.OrderBy(o => o.fkOrdinal).Distinct().ToList();
-                        manyToManyMapping = string.Format("c => new {{ {0} }}", string.Join(", ", cols.Select(x => "c." + x.col.NameHumanCase).ToArray()));
-                        mapKey = string.Format("{0}", string.Join(",", cols.Select(x => "\"" + x.col.Name + "\"").ToArray()));
+                        manyToManyMapping = string.Format("c => new {{ {0} }}", string.Join(", ", fkCols.Select(x => "c." + x.col.NameHumanCase).Distinct().ToArray()));
+                        mapKey = string.Format("{0}", string.Join(",", fkCols.Select(x => "\"" + x.col.Name + "\"").Distinct().ToArray()));
                     } else {
                         manyToManyMapping = string.Format("c => c.{0}", fkCol.col.NameHumanCase);
                         mapKey = string.Format("\"{0}\"", fkCol.col.Name);
@@ -3023,8 +3023,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             public Table GetTable(string tableName, string schema)
             {
                 return this.SingleOrDefault(x =>
-                    String.Compare(x.Name, tableName, StringComparison.OrdinalIgnoreCase) == 0 &&
-                    String.Compare(x.Schema, schema, StringComparison.OrdinalIgnoreCase) == 0);
+                    string.Compare(x.Name, tableName, StringComparison.OrdinalIgnoreCase) == 0 &&
+                    string.Compare(x.Schema, schema, StringComparison.OrdinalIgnoreCase) == 0);
             }
 
             public void SetPrimaryKeys()
