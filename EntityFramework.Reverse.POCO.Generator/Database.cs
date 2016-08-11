@@ -781,9 +781,9 @@ namespace EntityFramework_Reverse_POCO_Generator
             return item;
         }
 
-        public override IEnumerable<TEntity> RemoveRange(IEnumerable<TEntity> entities)
+        public override System.Collections.Generic.IEnumerable<TEntity> RemoveRange(System.Collections.Generic.IEnumerable<TEntity> entities)
         {
-            if (entities == null) throw new ArgumentNullException("entities");
+            if (entities == null) throw new System.ArgumentNullException("entities");
             var items = entities.ToList();
             foreach (var entity in items)
             {
