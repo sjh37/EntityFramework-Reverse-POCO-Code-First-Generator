@@ -791,7 +791,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             }
             return items;
         }
-        
+
         public override TEntity Remove(TEntity item)
         {
             if (item == null) throw new System.ArgumentNullException("item");
