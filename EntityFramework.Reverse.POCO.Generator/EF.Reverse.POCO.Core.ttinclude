@@ -2277,11 +2277,13 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
             public override void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool useCamelCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments, Func<string, string, short, string> ForeignKeyName)
             {
-                var constraints = fkList.Select(x => x.ConstraintName).Distinct();
+                var constraints = fkList.Select(x => x.FkSchema + "." + x.ConstraintName).Distinct();
                 foreach (var constraint in constraints)
                 {
-                    var localConstraint = constraint;
-                    var foreignKeys = fkList.Where(x => x.ConstraintName == localConstraint).ToList();
+                    var foreignKeys = fkList
+                        .Where(x => string.Format("{0}.{1}", x.FkSchema, x.ConstraintName).Equals(constraint, StringComparison.InvariantCultureIgnoreCase))
+                        .ToList();
+
                     var foreignKey = foreignKeys.First();
 
                     Table fkTable = tables.GetTable(foreignKey.FkTableName, foreignKey.FkSchema);
