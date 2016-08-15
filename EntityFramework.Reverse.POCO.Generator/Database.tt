@@ -313,6 +313,12 @@
         }
     };
 
+
+    ConfigurationFilter = (Table t) =>
+    {
+        return true;
+    };
+
     // That's it, nothing else to configure ***********************************************************************************************
 
 

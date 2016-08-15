@@ -274,6 +274,12 @@
         }
     };
 
+
+    ConfigurationFilter = (Table t) =>
+    {
+        return true;
+    };
+
     // That's it, nothing else to configure ***********************************************************************************************
 
     // Stored procedure are not supported in SqlCE - create dummy functions
