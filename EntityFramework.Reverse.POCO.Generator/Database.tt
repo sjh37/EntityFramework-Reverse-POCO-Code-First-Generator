@@ -395,7 +395,7 @@
                 p.SqlDbType,
                 p.Mode == StoredProcedureParameterMode.In ? "Input" : "Output",
                 p.Mode == StoredProcedureParameterMode.In ? ", Value = " + p.NameHumanCase + getValueOrDefault : string.Empty,
-                p.MaxLength > 0 ? ", Size = " + p.MaxLength : string.Empty,
+                p.MaxLength != 0 ? ", Size = " + p.MaxLength : string.Empty,
                 (p.Precision > 0 || p.Scale > 0) ? ", Precision = " + p.Precision + ", Scale = " + p.Scale : string.Empty,
                 p.PropertyType.ToLower().Contains("datatable") ? ", TypeName = \"" + p.UserDefinedTypeName + "\"" : string.Empty));
 
