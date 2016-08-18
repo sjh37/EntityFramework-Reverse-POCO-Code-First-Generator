@@ -2221,14 +2221,18 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             {
                 try
                 {
+                    const string structured = "Structured";
                     var sb = new StringBuilder();
                     sb.AppendLine();
                     sb.AppendLine("SET FMTONLY OFF; SET FMTONLY ON;");
                     if (proc.IsTVF)
                     {
+                        foreach (var param in proc.Parameters.Where(x => x.SqlDbType.Equals(structured, StringComparison.InvariantCultureIgnoreCase)))
+                            sb.AppendLine(String.Format("DECLARE {0} {1};", param.Name, param.UserDefinedTypeName));
+
                         sb.Append(String.Format("SELECT * FROM [{0}].[{1}](", proc.Schema, proc.Name));
                         foreach (var param in proc.Parameters)
-                            sb.Append("null, ");
+                            sb.Append(String.Format("{0}, ", param.SqlDbType.Equals(structured, StringComparison.InvariantCultureIgnoreCase) ? param.Name : "null"));
 
                         if(proc.Parameters.Count > 0)
                             sb.Length -= 2;
@@ -2238,7 +2242,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     else
                     {
                         foreach (var param in proc.Parameters)
-                            sb.AppendLine(String.Format("DECLARE {0} {1};", param.Name, param.SqlDbType == "Structured" ? param.UserDefinedTypeName : param.SqlDbType));
+                            sb.AppendLine(String.Format("DECLARE {0} {1};", param.Name, param.SqlDbType.Equals(structured, StringComparison.InvariantCultureIgnoreCase) ? param.UserDefinedTypeName : param.SqlDbType));
 
                         sb.Append(String.Format("exec [{0}].[{1}] ", proc.Schema, proc.Name));
                         foreach (var param in proc.Parameters)
