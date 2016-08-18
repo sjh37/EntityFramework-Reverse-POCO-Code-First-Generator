@@ -312,8 +312,8 @@
                 return tableName;
         }
     };
-    // Return true to include this table in the db context
 
+    // Return true to include this table in the db context
     ConfigurationFilter = (Table t) =>
     {
         return true;
