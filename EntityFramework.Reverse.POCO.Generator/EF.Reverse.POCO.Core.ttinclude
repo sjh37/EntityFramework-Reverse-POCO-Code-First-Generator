@@ -2454,6 +2454,9 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     ParentTable = table
                 };
 
+                if (col.MaxLength == -1 && col.SqlPropertyType.EndsWith("varchar", StringComparison.InvariantCultureIgnoreCase))
+                    col.SqlPropertyType += "(max)";
+
                 if (col.IsPrimaryKey && !col.IsIdentity && col.IsStoreGenerated && typename == "uniqueidentifier")
                 {
                     col.IsStoreGenerated = false;
