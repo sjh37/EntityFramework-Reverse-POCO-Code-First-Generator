@@ -2045,7 +2045,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     if (t == null || t.PrimaryKeys.Any())
                         continue; // Already has a primary key, ignore this unique constraint
 
-                    // Find unique indexes for tabve
+                    // Find unique indexes for table
                     var uniqueIndexKeys =
                         list.Where(x => x.Schema == indexTable.Schema && x.TableName == indexTable.TableName)
                             .Select(x => new { x.IndexName, x.KeyOrdinal, x.Column, x.ColumnCount })
