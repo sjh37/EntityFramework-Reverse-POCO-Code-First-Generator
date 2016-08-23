@@ -477,7 +477,7 @@ foreach(var usingStatement in usingsContext.Distinct().OrderBy(x => x)) { #>
 
 <# } #>
     <#= CodeGeneratedAttribute #>
-    public <# if(MakeClassesPartial) { #>partial <# } #>class Fake<#=DbContextName #> : I<#=DbContextInterfaceName #>
+    public <# if(MakeClassesPartial) { #>partial <# } #>class Fake<#=DbContextName #> : <#=DbContextInterfaceName #>
     {
 <#
 foreach (Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKey).OrderBy(x => x.NameHumanCase) select t)
