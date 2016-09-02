@@ -1,0 +1,171 @@
+<#@ template debug="true" hostspecific="true" language="C#" #>
+<#@ import namespace="System.Data.Entity.Infrastructure.Pluralization" #>
+
+<#+
+
+public sealed class DictionaryPluralizationService : IPluralizationService
+{
+    private readonly Dictionary<string, CustomPluralizationEntry> _userDictionarySingular;
+    private readonly Dictionary<string, CustomPluralizationEntry> _userDictionaryPlural;
+
+    public DictionaryPluralizationService(IEnumerable<CustomPluralizationEntry> userEntries)
+    {
+        _userDictionarySingular = new Dictionary<string, CustomPluralizationEntry>();
+        _userDictionaryPlural = new Dictionary<string, CustomPluralizationEntry>();
+
+        if (userEntries != null)
+        {
+            foreach (var entry in userEntries)
+            {
+                _userDictionarySingular[entry.Singular] = entry;
+                _userDictionaryPlural[entry.Plural] = entry;
+            }
+        }
+    }
+
+    public string Pluralize(string word)
+    {
+        CustomPluralizationEntry result;
+
+        if (_userDictionarySingular.TryGetValue(word, out result))
+        {
+            return result.Plural;
+        }
+
+        return word;
+    }
+
+    public string Singularize(string word)
+    {
+        CustomPluralizationEntry result;
+
+        if (_userDictionaryPlural.TryGetValue(word, out result))
+        {
+            return result.Singular;
+        }
+
+        return word;
+    }
+}
+
+public sealed class TransformationPluralizationService : IPluralizationService
+{
+    private readonly Func<string, string> _toSingular;
+    private readonly Func<string, string> _toPlural;
+
+    public TransformationPluralizationService(Func<string, string> toPlural, Func<string, string> toSingular)
+    {
+        _toSingular = toSingular;
+        _toPlural = toPlural;
+    }
+
+    public TransformationPluralizationService(Func<string, string> toPlural)
+    {
+        _toPlural = toPlural;
+    }
+
+    public string Pluralize(string word)
+    {
+        if (_toPlural != null)
+        {
+            var result = _toPlural(word);
+            if (result != null)
+                return result;
+        }
+
+        return word;
+    }
+
+    public string Singularize(string word)
+    {
+        if (_toSingular != null)
+        {
+            var result = _toSingular(word);
+            if (result != null)
+                return result;
+        }
+
+        return word;
+    }
+}
+
+public class CombinedPluralizationService : IPluralizationService
+{
+    private readonly Dictionary<string, CustomPluralizationEntry> _userDictionarySingular;
+    private readonly Dictionary<string, CustomPluralizationEntry> _userDictionaryPlural;
+    private Func<string, string> _toPlural;
+    private Func<string, string> _toSingular;
+
+    public CombinedPluralizationService(IEnumerable<CustomPluralizationEntry> userEntries, Func<string, string> toPlural, Func<string, string> toSingular)
+    {
+        _userDictionarySingular = new Dictionary<string, CustomPluralizationEntry>();
+        _userDictionaryPlural = new Dictionary<string, CustomPluralizationEntry>();
+
+        Add(userEntries);
+        SetTransform(toPlural, toSingular);
+    }
+
+    public CombinedPluralizationService()
+    {
+        _userDictionarySingular = new Dictionary<string, CustomPluralizationEntry>();
+        _userDictionaryPlural = new Dictionary<string, CustomPluralizationEntry>();
+    }
+
+    protected void Add(IEnumerable<CustomPluralizationEntry> userEntries)
+    {
+        if (userEntries != null)
+        {
+            foreach (var entry in userEntries)
+            {
+                _userDictionarySingular[entry.Singular] = entry;
+                _userDictionaryPlural[entry.Plural] = entry;
+            }
+        }
+    }
+
+    protected void SetTransform(Func<string, string> toPlural, Func<string, string> toSingular)
+    {
+        _toPlural = toPlural;
+        _toSingular = toSingular;
+    }
+
+    public string Pluralize(string word)
+    {
+        CustomPluralizationEntry result;
+
+        if (_userDictionarySingular.TryGetValue(word, out result))
+        {
+            return result.Plural;
+        }
+
+        if (_toPlural != null)
+        {
+            var converted = _toPlural(word);
+            if (converted != null)
+                return converted;
+        }
+
+        return word;
+    }
+
+    public string Singularize(string word)
+    {
+        CustomPluralizationEntry result;
+
+        if (_userDictionaryPlural.TryGetValue(word, out result))
+        {
+            return result.Singular;
+        }
+
+        if (_toSingular != null)
+        {
+            var converted = _toSingular(word);
+            if (converted != null)
+                return converted;
+        }
+
+        return word;
+    }
+}
+
+#>

@@ -1,4 +1,5 @@
 ﻿<#@ include file="EF.Reverse.POCO.Core.ttinclude" #>
+<#@ include file="EF.Reverse.POCO.Pluralization.ttinclude" #>
 <#
     // v2.24.0
     // Please make changes to the settings below.
@@ -76,7 +77,23 @@
     //    new CustomPluralizationEntry("Course", "Courses"),
     //    new CustomPluralizationEntry("Status", "Status") // Use same value to prevent pluralisation
     //});
+    /*
+    Inflector.PluralizationService = new TransformationPluralizationService(
+        name =>
+        {
+            if (name.EndsWith("Set"))
+                return name.Substring(0, name.Length - 3) + "Qry";
 
+            return null;
+        },
+        name =>
+        {
+            if (name.EndsWith("Qry"))
+                return name.Substring(0, name.Length - 3) + "Set";
+
+            return null;
+        });
+    */
 
     // Elements to generate ***************************************************************************************************************
     // Add the elements that should be generated when the template is executed.
@@ -218,6 +235,7 @@
             name = name.Remove(0, 3);
         return name.Replace("my_sp_", "");
     };*/
+    //StoredProcedureRename = (name, schema) => name == "SalesByCategory" ? "SalesByCategoryProc" : name;
     StoredProcedureRename = (name, schema) => name;   // Do nothing by default
 
     // Use the following function to rename the return model automatically generated for stored procedure.

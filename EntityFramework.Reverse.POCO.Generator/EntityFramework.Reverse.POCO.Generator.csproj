@@ -81,6 +81,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Database NorthwindSqlCe40.cs</LastGenOutput>
     </None>
+    <None Include="EF.Reverse.POCO.Pluralization.ttinclude" />
     <None Include="EF.Reverse.POCO.Generator.pfx" />
     <None Include="App.config">
       <SubType>Designer</SubType>
