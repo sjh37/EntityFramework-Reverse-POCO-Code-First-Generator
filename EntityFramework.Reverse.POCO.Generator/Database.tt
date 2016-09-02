@@ -313,6 +313,17 @@
         }
     };
 
+    // Apply totally custom renaming rule after performing `ForeignKeyName` defined above.
+    // It can be useful in applying pluralization.
+    /*ForeignKeyRename = (tableName, name) =>
+    {
+        if (tableName == "Employee" && name == "Employee_ReportsTo")
+            return "Manager";
+
+        return name;
+    };*/
+    ForeignKeyRename = (tableName, foreignKeyName) => foreignKeyName;
+
     // Return true to include this table in the db context
     ConfigurationFilter = (Table t) =>
     {
