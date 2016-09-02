@@ -2892,7 +2892,23 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
 
                 // Attempt 3
-                col = ForeignKeyName(tableNameHumanCase, fkName, 3);
+                if (fkName.ToLowerInvariant().StartsWith("id"))
+                {
+                    col = ForeignKeyName(tableNameHumanCase, fkName, 3);
+                    if (checkForFkNameClashes && ReverseNavigationUniquePropName.Contains(col) &&
+                        !ReverseNavigationUniquePropNameClashes.Contains(col))
+                        ReverseNavigationUniquePropNameClashes.Add(col); // Name clash
+
+                    if (!ReverseNavigationUniquePropNameClashes.Contains(col) &&
+                        !ReverseNavigationUniquePropName.Contains(col))
+                    {
+                        ReverseNavigationUniquePropName.Add(col);
+                        return col;
+                    }
+                }
+
+                // Attempt 4
+                col = ForeignKeyName(tableNameHumanCase, fkName, 4);
                 if (checkForFkNameClashes && ReverseNavigationUniquePropName.Contains(col) &&
                     !ReverseNavigationUniquePropNameClashes.Contains(col))
                     ReverseNavigationUniquePropNameClashes.Add(col); // Name clash
@@ -2904,8 +2920,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     return col;
                 }
 
-                // Attempt 4
-                col = ForeignKeyName(tableNameHumanCase, fkName, 4);
+                // Attempt 5
+                col = ForeignKeyName(tableNameHumanCase, fkName, 5);
                 if (checkForFkNameClashes && ReverseNavigationUniquePropName.Contains(col) && !ReverseNavigationUniquePropNameClashes.Contains(col))
                     ReverseNavigationUniquePropNameClashes.Add(col); // Name clash
 
@@ -2915,10 +2931,10 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     return col;
                 }
 
-                // Attempt 5
+                // Attempt 6
                 for (int n = 1; n < 99; ++n)
                 {
-                    col = ForeignKeyName(tableNameHumanCase, fkName, 5) + n;
+                    col = ForeignKeyName(tableNameHumanCase, fkName, 6) + n;
 
                     if (ReverseNavigationUniquePropName.Contains(col))
                         continue;
@@ -2928,7 +2944,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
 
                 // Give up
-                return ForeignKeyName(tableNameHumanCase, fkName, 6);
+                return ForeignKeyName(tableNameHumanCase, fkName, 7);
             }
 
             public void AddReverseNavigation(Relationship relationship, string fkName, Table fkTable, string propName, string constraint, string collectionType, CommentsStyle includeComments)
