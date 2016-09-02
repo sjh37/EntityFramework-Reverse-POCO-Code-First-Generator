@@ -84,6 +84,7 @@
         private string _configFilePath = "";
         Func<string, string, string> TableRename;
         Func<string, string, string> StoredProcedureRename;
+        static Func<string, StoredProcedure, string> StoredProcedureReturnModelRename;
         Func<Column, Table, Column> UpdateColumn;
         Func<ForeignKey, ForeignKey> ForeignKeyFilter;
         Func<string, string, short, string> ForeignKeyName;
@@ -3218,11 +3219,22 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         };
 
         public static readonly Func<StoredProcedure, string> WriteStoredProcReturnModelName = sp =>
-            StoredProcedureReturnTypes.ContainsKey(sp.NameHumanCase)
-                ? StoredProcedureReturnTypes[sp.NameHumanCase]
-                : StoredProcedureReturnTypes.ContainsKey(sp.Name)
-                    ? StoredProcedureReturnTypes[sp.Name]
-                    : string.Format("{0}ReturnModel", sp.NameHumanCase);
+        {
+            if (StoredProcedureReturnTypes.ContainsKey(sp.NameHumanCase))
+                return StoredProcedureReturnTypes[sp.NameHumanCase];
+            if (StoredProcedureReturnTypes.ContainsKey(sp.Name))
+                return StoredProcedureReturnTypes[sp.Name];
+
+            var name = string.Format("{0}ReturnModel", sp.NameHumanCase);
+            if (StoredProcedureReturnModelRename != null)
+            {
+                var customName = StoredProcedureReturnModelRename(name, sp);
+                if (!string.IsNullOrEmpty(customName))
+                    name = customName;
+            }
+
+            return name;
+        };
 
         public static readonly Func<DataColumn, string> WriteStoredProcReturnColumn = col =>
             string.Format("public {0} {1} {{ get; set; }}",
