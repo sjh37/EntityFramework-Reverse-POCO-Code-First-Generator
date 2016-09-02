@@ -220,6 +220,20 @@
     };*/
     StoredProcedureRename = (name, schema) => name;   // Do nothing by default
 
+    // Use the following function to rename the return model automatically generated for stored procedure.
+    // By default it's <proc_name>ReturnModel.
+    // Example:
+    /*StoredProcedureReturnModelRename = (name, sp) =>
+    {
+        if (sp.NameHumanCase.Equals("ComputeValuesForDate", StringComparison.InvariantCultureIgnoreCase))
+            return "ValueSet";
+        if (sp.NameHumanCase.Equals("SalesByYear", StringComparison.InvariantCultureIgnoreCase))
+            return "SalesSet";
+
+        return name;
+    };*/
+    StoredProcedureReturnModelRename = (name, sp) => name; // Do nothing by default
+
     // StoredProcedure return types *******************************************************************************************************
     // Override generation of return models for stored procedures that return entities.
     // If a stored procedure returns an entity, add it to the list below.
