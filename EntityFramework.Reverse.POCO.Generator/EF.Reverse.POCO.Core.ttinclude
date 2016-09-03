@@ -88,7 +88,7 @@
         Func<Column, Table, Column> UpdateColumn;
         Func<ForeignKey, ForeignKey> ForeignKeyFilter;
         Func<string, string, short, string> ForeignKeyName;
-        static Func<string, string, string> ForeignKeyRename;
+        static Func<string, ForeignKey, string, string> ForeignKeyRename;
         string MigrationConfigurationFileName = null;
         string MigrationStrategy = "MigrateDatabaseToLatestVersion";
         string ContextKey = null;
@@ -2852,9 +2852,9 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 return Columns.SingleOrDefault(x => String.Compare(x.Name, columnName, StringComparison.OrdinalIgnoreCase) == 0);
             }
 
-            public string GetForeignKeyRenamed(string tableNameHumanCase, string fkName)
+            public string GetForeignKeyRenamed(string tableNameHumanCase, ForeignKey foreignKey, string fkName)
             {
-                return ForeignKeyRename != null ? ForeignKeyRename(tableNameHumanCase, fkName) : fkName;
+                return ForeignKeyRename != null ? ForeignKeyRename(tableNameHumanCase, foreignKey, fkName) : fkName;
             }
 
             public string GetUniqueColumnName(string tableNameHumanCase, ForeignKey foreignKey, bool useCamelCase, bool checkForFkNameClashes, bool makeSingular, Func<string, string, short, string> ForeignKeyName)
@@ -2873,7 +2873,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
                 // Attempt 1
                 string fkName = (useCamelCase ? Inflector.ToTitleCase(foreignKey.FkColumn) : foreignKey.FkColumn).Replace(" ", "").Replace("$", "");
-                string name = GetForeignKeyRenamed(tableNameHumanCase, ForeignKeyName(tableNameHumanCase, fkName, 1));
+                string name = GetForeignKeyRenamed(tableNameHumanCase, foreignKey, ForeignKeyName(tableNameHumanCase, fkName, 1));
                 string col;
                 if (!ReverseNavigationUniquePropNameClashes.Contains(name) && !ReverseNavigationUniquePropName.Contains(name))
                 {
@@ -2884,7 +2884,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 // Attempt 2
                 if (fkName.ToLowerInvariant().EndsWith("id"))
                 {
-                    col = GetForeignKeyRenamed(tableNameHumanCase, ForeignKeyName(tableNameHumanCase, fkName, 2));
+                    col = GetForeignKeyRenamed(tableNameHumanCase, foreignKey, ForeignKeyName(tableNameHumanCase, fkName, 2));
                     if (checkForFkNameClashes && ReverseNavigationUniquePropName.Contains(col) &&
                         !ReverseNavigationUniquePropNameClashes.Contains(col))
                         ReverseNavigationUniquePropNameClashes.Add(col); // Name clash
@@ -2900,7 +2900,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 // Attempt 3
                 if (fkName.ToLowerInvariant().StartsWith("id"))
                 {
-                    col = GetForeignKeyRenamed(tableNameHumanCase, ForeignKeyName(tableNameHumanCase, fkName, 3));
+                    col = GetForeignKeyRenamed(tableNameHumanCase, foreignKey, ForeignKeyName(tableNameHumanCase, fkName, 3));
                     if (checkForFkNameClashes && ReverseNavigationUniquePropName.Contains(col) &&
                         !ReverseNavigationUniquePropNameClashes.Contains(col))
                         ReverseNavigationUniquePropNameClashes.Add(col); // Name clash
@@ -2914,7 +2914,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
 
                 // Attempt 4
-                col = GetForeignKeyRenamed(tableNameHumanCase, ForeignKeyName(tableNameHumanCase, fkName, 4));
+                col = GetForeignKeyRenamed(tableNameHumanCase, foreignKey, ForeignKeyName(tableNameHumanCase, fkName, 4));
                 if (checkForFkNameClashes && ReverseNavigationUniquePropName.Contains(col) &&
                     !ReverseNavigationUniquePropNameClashes.Contains(col))
                     ReverseNavigationUniquePropNameClashes.Add(col); // Name clash
@@ -2927,7 +2927,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
 
                 // Attempt 5
-                col = GetForeignKeyRenamed(tableNameHumanCase, ForeignKeyName(tableNameHumanCase, fkName, 5));
+                col = GetForeignKeyRenamed(tableNameHumanCase, foreignKey, ForeignKeyName(tableNameHumanCase, fkName, 5));
                 if (checkForFkNameClashes && ReverseNavigationUniquePropName.Contains(col) && !ReverseNavigationUniquePropNameClashes.Contains(col))
                     ReverseNavigationUniquePropNameClashes.Add(col); // Name clash
 
@@ -2940,7 +2940,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 // Attempt 6
                 for (int n = 1; n < 99; ++n)
                 {
-                    col = GetForeignKeyRenamed(tableNameHumanCase, ForeignKeyName(tableNameHumanCase, fkName, 6) + n);
+                    col = GetForeignKeyRenamed(tableNameHumanCase, foreignKey, ForeignKeyName(tableNameHumanCase, fkName, 6) + n);
 
                     if (ReverseNavigationUniquePropName.Contains(col))
                         continue;
@@ -2950,7 +2950,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
 
                 // Give up
-                return GetForeignKeyRenamed(tableNameHumanCase, ForeignKeyName(tableNameHumanCase, fkName, 7));
+                return GetForeignKeyRenamed(tableNameHumanCase, foreignKey, ForeignKeyName(tableNameHumanCase, fkName, 7));
             }
 
             public void AddReverseNavigation(Relationship relationship, string fkName, Table fkTable, string propName, string constraint, string collectionType, CommentsStyle includeComments)
