@@ -315,14 +315,22 @@
 
     // Apply totally custom renaming rule after performing `ForeignKeyName` defined above.
     // It can be useful in applying pluralization.
-    /*ForeignKeyRename = (tableName, name) =>
+    /*ForeignKeyRename = (tableName, foreignKey, name) =>
     {
-        if (tableName == "Employee" && name == "Employee_ReportsTo")
+        if (tableName == "Employee" && foreignKey.FkColumn == "ReportsTo")
             return "Manager";
+
+        if (tableName == "Territories" && foreignKey.FkTableName == "EmployeeTerritories")
+            return "Locations";
+
+        if (tableName == "Employee" && foreignKey.FkTableName == "Orders" && foreignKey.FkColumn == "EmployeeID")
+        {
+            return "ContactPerson";
+        }
 
         return name;
     };*/
-    ForeignKeyRename = (tableName, foreignKeyName) => foreignKeyName;
+    ForeignKeyRename = (tableName, foreignKey, foreignKeyName) => foreignKeyName;
 
     // Return true to include this table in the db context
     ConfigurationFilter = (Table t) =>
