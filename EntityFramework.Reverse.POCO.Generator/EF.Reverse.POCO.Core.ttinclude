@@ -84,9 +84,11 @@
         private string _configFilePath = "";
         Func<string, string, string> TableRename;
         Func<string, string, string> StoredProcedureRename;
+        static Func<string, StoredProcedure, string> StoredProcedureReturnModelRename;
         Func<Column, Table, Column> UpdateColumn;
         Func<ForeignKey, ForeignKey> ForeignKeyFilter;
         Func<string, string, short, string> ForeignKeyName;
+        static Func<string, ForeignKey, string, string> ForeignKeyRename;
         string MigrationConfigurationFileName = null;
         string MigrationStrategy = "MigrateDatabaseToLatestVersion";
         string ContextKey = null;
@@ -2850,6 +2852,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 return Columns.SingleOrDefault(x => String.Compare(x.Name, columnName, StringComparison.OrdinalIgnoreCase) == 0);
             }
 
+            public string GetForeignKeyRenamed(string tableNameHumanCase, ForeignKey foreignKey, string fkName)
+            {
+                return ForeignKeyRename != null ? ForeignKeyRename(tableNameHumanCase, foreignKey, fkName) : fkName;
+            }
+
             public string GetUniqueColumnName(string tableNameHumanCase, ForeignKey foreignKey, bool useCamelCase, bool checkForFkNameClashes, bool makeSingular, Func<string, string, short, string> ForeignKeyName)
             {
                 if (ReverseNavigationUniquePropName.Count == 0)
@@ -2866,7 +2873,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
                 // Attempt 1
                 string fkName = (useCamelCase ? Inflector.ToTitleCase(foreignKey.FkColumn) : foreignKey.FkColumn).Replace(" ", "").Replace("$", "");
-                string name = ForeignKeyName(tableNameHumanCase, fkName, 1);
+                string name = GetForeignKeyRenamed(tableNameHumanCase, foreignKey, ForeignKeyName(tableNameHumanCase, fkName, 1));
                 string col;
                 if (!ReverseNavigationUniquePropNameClashes.Contains(name) && !ReverseNavigationUniquePropName.Contains(name))
                 {
@@ -2877,7 +2884,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 // Attempt 2
                 if (fkName.ToLowerInvariant().EndsWith("id"))
                 {
-                    col = ForeignKeyName(tableNameHumanCase, fkName, 2);
+                    col = GetForeignKeyRenamed(tableNameHumanCase, foreignKey, ForeignKeyName(tableNameHumanCase, fkName, 2));
                     if (checkForFkNameClashes && ReverseNavigationUniquePropName.Contains(col) &&
                         !ReverseNavigationUniquePropNameClashes.Contains(col))
                         ReverseNavigationUniquePropNameClashes.Add(col); // Name clash
@@ -2891,7 +2898,23 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
 
                 // Attempt 3
-                col = ForeignKeyName(tableNameHumanCase, fkName, 3);
+                if (fkName.ToLowerInvariant().StartsWith("id"))
+                {
+                    col = GetForeignKeyRenamed(tableNameHumanCase, foreignKey, ForeignKeyName(tableNameHumanCase, fkName, 3));
+                    if (checkForFkNameClashes && ReverseNavigationUniquePropName.Contains(col) &&
+                        !ReverseNavigationUniquePropNameClashes.Contains(col))
+                        ReverseNavigationUniquePropNameClashes.Add(col); // Name clash
+
+                    if (!ReverseNavigationUniquePropNameClashes.Contains(col) &&
+                        !ReverseNavigationUniquePropName.Contains(col))
+                    {
+                        ReverseNavigationUniquePropName.Add(col);
+                        return col;
+                    }
+                }
+
+                // Attempt 4
+                col = GetForeignKeyRenamed(tableNameHumanCase, foreignKey, ForeignKeyName(tableNameHumanCase, fkName, 4));
                 if (checkForFkNameClashes && ReverseNavigationUniquePropName.Contains(col) &&
                     !ReverseNavigationUniquePropNameClashes.Contains(col))
                     ReverseNavigationUniquePropNameClashes.Add(col); // Name clash
@@ -2903,8 +2926,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     return col;
                 }
 
-                // Attempt 4
-                col = ForeignKeyName(tableNameHumanCase, fkName, 4);
+                // Attempt 5
+                col = GetForeignKeyRenamed(tableNameHumanCase, foreignKey, ForeignKeyName(tableNameHumanCase, fkName, 5));
                 if (checkForFkNameClashes && ReverseNavigationUniquePropName.Contains(col) && !ReverseNavigationUniquePropNameClashes.Contains(col))
                     ReverseNavigationUniquePropNameClashes.Add(col); // Name clash
 
@@ -2914,10 +2937,10 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     return col;
                 }
 
-                // Attempt 5
+                // Attempt 6
                 for (int n = 1; n < 99; ++n)
                 {
-                    col = ForeignKeyName(tableNameHumanCase, fkName, 5) + n;
+                    col = GetForeignKeyRenamed(tableNameHumanCase, foreignKey, ForeignKeyName(tableNameHumanCase, fkName, 6) + n);
 
                     if (ReverseNavigationUniquePropName.Contains(col))
                         continue;
@@ -2927,7 +2950,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
 
                 // Give up
-                return ForeignKeyName(tableNameHumanCase, fkName, 6);
+                return GetForeignKeyRenamed(tableNameHumanCase, foreignKey, ForeignKeyName(tableNameHumanCase, fkName, 7));
             }
 
             public void AddReverseNavigation(Relationship relationship, string fkName, Table fkTable, string propName, string constraint, string collectionType, CommentsStyle includeComments)
@@ -3218,11 +3241,22 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         };
 
         public static readonly Func<StoredProcedure, string> WriteStoredProcReturnModelName = sp =>
-            StoredProcedureReturnTypes.ContainsKey(sp.NameHumanCase)
-                ? StoredProcedureReturnTypes[sp.NameHumanCase]
-                : StoredProcedureReturnTypes.ContainsKey(sp.Name)
-                    ? StoredProcedureReturnTypes[sp.Name]
-                    : string.Format("{0}ReturnModel", sp.NameHumanCase);
+        {
+            if (StoredProcedureReturnTypes.ContainsKey(sp.NameHumanCase))
+                return StoredProcedureReturnTypes[sp.NameHumanCase];
+            if (StoredProcedureReturnTypes.ContainsKey(sp.Name))
+                return StoredProcedureReturnTypes[sp.Name];
+
+            var name = string.Format("{0}ReturnModel", sp.NameHumanCase);
+            if (StoredProcedureReturnModelRename != null)
+            {
+                var customName = StoredProcedureReturnModelRename(name, sp);
+                if (!string.IsNullOrEmpty(customName))
+                    name = customName;
+            }
+
+            return name;
+        };
 
         public static readonly Func<DataColumn, string> WriteStoredProcReturnColumn = col =>
             string.Format("public {0} {1} {{ get; set; }}",

@@ -1,4 +1,5 @@
 ﻿<#@ include file="EF.Reverse.POCO.Core.ttinclude" #>
+<#@ include file="EF.Reverse.POCO.Pluralization.ttinclude" #>
 <#
     // v2.24.0
     // Please make changes to the settings below.
@@ -76,7 +77,23 @@
     //    new CustomPluralizationEntry("Course", "Courses"),
     //    new CustomPluralizationEntry("Status", "Status") // Use same value to prevent pluralisation
     //});
+    /*
+    Inflector.PluralizationService = new TransformationPluralizationService(
+        name =>
+        {
+            if (name.EndsWith("Set"))
+                return name.Substring(0, name.Length - 3) + "Qry";
 
+            return null;
+        },
+        name =>
+        {
+            if (name.EndsWith("Qry"))
+                return name.Substring(0, name.Length - 3) + "Set";
+
+            return null;
+        });
+    */
 
     // Elements to generate ***************************************************************************************************************
     // Add the elements that should be generated when the template is executed.
@@ -218,7 +235,22 @@
             name = name.Remove(0, 3);
         return name.Replace("my_sp_", "");
     };*/
+    //StoredProcedureRename = (name, schema) => name == "SalesByCategory" ? "SalesByCategoryProc" : name;
     StoredProcedureRename = (name, schema) => name;   // Do nothing by default
+
+    // Use the following function to rename the return model automatically generated for stored procedure.
+    // By default it's <proc_name>ReturnModel.
+    // Example:
+    /*StoredProcedureReturnModelRename = (name, sp) =>
+    {
+        if (sp.NameHumanCase.Equals("ComputeValuesForDate", StringComparison.InvariantCultureIgnoreCase))
+            return "ValueSet";
+        if (sp.NameHumanCase.Equals("SalesByYear", StringComparison.InvariantCultureIgnoreCase))
+            return "SalesSet";
+
+        return name;
+    };*/
+    StoredProcedureReturnModelRename = (name, sp) => name; // Do nothing by default
 
     // StoredProcedure return types *******************************************************************************************************
     // Override generation of return models for stored procedures that return entities.
@@ -283,7 +315,7 @@
 
     ForeignKeyName = (tableName, foreignKeyName, attempt) =>
     {
-        // 5 Attempts to correctly name the foreign key
+        // 6 Attempts to correctly name the foreign key
         switch (attempt)
         {
             case 1:
@@ -296,14 +328,19 @@
                 return foreignKeyName.Remove(foreignKeyName.Length-2, 2);
 
             case 3:
+                // Only called if foreign key name starts with "id"
+                // Use foreign key name without "id" at end of string
+                return foreignKeyName.Substring(2);
+
+            case 4:
                 // Use foreign key name only
                 return foreignKeyName;
 
-            case 4:
+            case 5:
                 // Use table name and foreign key name
                 return tableName + "_" + foreignKeyName;
 
-            case 5:
+            case 6:
                 // Used in for loop 1 to 99 to append a number to the end
                 return tableName;
 
@@ -312,6 +349,25 @@
                 return tableName;
         }
     };
+
+    // Apply totally custom renaming rule after performing `ForeignKeyName` defined above.
+    // It can be useful in applying pluralization.
+    /*ForeignKeyRename = (tableName, foreignKey, name) =>
+    {
+        if (tableName == "Employee" && foreignKey.FkColumn == "ReportsTo")
+            return "Manager";
+
+        if (tableName == "Territories" && foreignKey.FkTableName == "EmployeeTerritories")
+            return "Locations";
+
+        if (tableName == "Employee" && foreignKey.FkTableName == "Orders" && foreignKey.FkColumn == "EmployeeID")
+        {
+            return "ContactPerson";
+        }
+
+        return name;
+    };*/
+    ForeignKeyRename = (tableName, foreignKey, foreignKeyName) => foreignKeyName;
 
     // Return true to include this table in the db context
     ConfigurationFilter = (Table t) =>
