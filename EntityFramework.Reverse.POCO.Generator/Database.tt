@@ -1,8 +1,9 @@
 ﻿<#@ include file="EF.Reverse.POCO.Core.ttinclude" #>
 <#
-    // v2.19.3
+    // v2.24.0
     // Please make changes to the settings below.
     // All you have to do is save this file, and the output file(s) is/are generated. Compiling does not regenerate the file(s).
+    // A course for this generator is available on Pluralsight at https://www.pluralsight.com/courses/code-first-entity-framework-legacy-databases
 
     // Main settings **********************************************************************************************************************
     ConnectionStringName = "MyDbContext";   // Searches for this connection string in config files listed below in the ConfigFilenameSearchOrder setting
@@ -24,6 +25,7 @@
     IncludeComments = CommentsStyle.AtEndOfField; // Adds comments to the generated code
     IncludeExtendedPropertyComments = CommentsStyle.InSummaryBlock; // Adds extended properties as comments to the generated code
     IncludeViews = true;
+    IncludeSynonyms = false;
     IncludeStoredProcedures = true;
     IncludeTableValuedFunctions = false; // If true, you must set IncludeStoredProcedures = true, and install the "EntityFramework.CodeFirstStoreFunctions" Nuget Package.
     DisableGeographyTypes = false; // Turns off use of System.Data.Entity.Spatial.DbGeography and System.Data.Entity.Spatial.DbGeometry as OData doesn't support entities with geometry/geography types.
@@ -31,6 +33,7 @@
     NullableShortHand = true; //true => T?, false => Nullable<T>
     AddUnitTestingDbContext = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing
     IncludeQueryTraceOn9481Flag = false; // If SqlServer 2014 appears frozen / take a long time when this file is saved, try setting this to true (you will also need elevated privileges).
+    UsePrivateSetterForComputedColumns = true; // If the columns is computed, use a private setter.
     AdditionalNamespaces = new[] { "" };  // To include extra namespaces, include them here. i.e. "Microsoft.AspNet.Identity.EntityFramework"
     AdditionalContextInterfaceItems = new[] // To include extra db context interface items, include them here. Also set MakeClassesPartial=true, and implement the partial DbContext class functions.
     {
@@ -65,14 +68,14 @@
     //      2. Add the following to the top of this file and adjust path, and remove the space between the angle bracket and # at the beginning and end.
     //         < #@ assembly name="your full path to \EntityFramework.Contrib.dll" # >
     //      3. Change the line below to: Inflector.PluralizationService = new SpanishPluralizationService();
-    Inflector.PluralizationService = new EnglishPluralizationService(new[]
-    {
-        // Create custom ("Singular", "Plural") forms for one-off words as needed
-        new CustomPluralizationEntry("LiveQuiz", "LiveQuizzes"),
-        new CustomPluralizationEntry("Course", "Courses"),
-        new CustomPluralizationEntry("CustomerStatus", "CustomerStatus"), // Use same value to prevent pluralisation
-        new CustomPluralizationEntry("EmployeeStatus", "EmployeeStatus")
-    });
+    Inflector.PluralizationService = new EnglishPluralizationService();
+    // If pluralisation does not do the right thing, override it here by adding in a custom entry.
+    //Inflector.PluralizationService = new EnglishPluralizationService(new[]
+    //{
+    //    // Create custom ("Singular", "Plural") forms for one-off words as needed.
+    //    new CustomPluralizationEntry("Course", "Courses"),
+    //    new CustomPluralizationEntry("Status", "Status") // Use same value to prevent pluralisation
+    //});
 
 
     // Elements to generate ***************************************************************************************************************
@@ -82,7 +85,6 @@
 
     // Use these namespaces to specify where the different elements now live. These may even be in different assemblies.
     // Please note this does not create the files in these locations, it only adds a using statement to say where they are.
-    // I show how this works on the video from 26:08 onwards.
     // The way to do this is to add the "EntityFramework Reverse POCO Code First Generator" into each of these folders.
     // Then set the .tt to only generate the relevant section you need by setting
     //      ElementsToGenerate = Elements.Poco; in your Entity folder,
@@ -114,7 +116,11 @@
     // Include filters are checked second.
     //  * If left null, all are included.
     //  * If not null, only the tables matching the regex are included.
-    //  Example:    TableFilterExclude = new Regex(".*auto.*");
+    // For clarity: if you want to include all the customer tables, but not the customer billing tables.
+    //      TableFilterInclude = new Regex("^[Cc]ustomer.*"); // This includes all the customer and customer billing tables
+    //      TableFilterExclude = new Regex(".*[Bb]illing.*"); // This excludes all the billing tables
+    //
+    // Example:     TableFilterExclude = new Regex(".*auto.*");
     //              TableFilterInclude = new Regex("(.*_FR_.*)|(data_.*)");
     //              TableFilterInclude = new Regex("^table_name1$|^table_name2$|etc");
     //              ColumnFilterExclude = new Regex("^FK_.*$");
@@ -123,6 +129,19 @@
     TableFilterExclude = null;
     TableFilterInclude = null;
     ColumnFilterExclude = null;
+
+    // Filtering of tables using a function. This can be used in conjunction with the Regex's above.
+    // Regex are used first to filter the list down, then this function is run last.
+    // Return true to include the table, return false to exclude it.
+    TableFilter = (Table t) =>
+    {
+        // Example: Exclude any table in dbo schema with "order" in its name.
+        //if(t.Schema.Equals("dbo", StringComparison.InvariantCultureIgnoreCase) && t.NameHumanCase.ToLowerInvariant().Contains("order"))
+        //    return false;
+
+        return true;
+    };
+
 
     // Stored Procedures ******************************************************************************************************************
     // Use the following regex filters to include or exclude stored procedures
@@ -133,13 +152,20 @@
     // Table renaming *********************************************************************************************************************
     // Use the following function to rename tables such as tblOrders to Orders, Shipments_AB to Shipments, etc.
     // Example:
-    /*TableRename = (name, schema) =>
+    TableRename = (name, schema) =>
     {
-        if (name.StartsWith("tbl"))
-            name = name.Remove(0, 3);
-        return name.Replace("_AB", "");
-    };*/
-    TableRename = (name, schema) => name;   // Do nothing by default
+        // Example
+        //if (name.StartsWith("tbl"))
+        //    name = name.Remove(0, 3);
+        //name = name.Replace("_AB", "");
+
+        // If you turn camel casing off (UseCamelCase = false), and use the pluralisation service, and some of your
+        // tables names are all UPPERCASE, some words ending in IES such as CATEGORIES get singularised as CATEGORy.
+        // Therefore you can make them lowercase by using the following
+        // return Inflector.MakeLowerIfAllCaps(name);
+
+        return name;
+    };
 
     // Column modification*****************************************************************************************************************
     // Use the following list to replace column byte types with Enums.
@@ -155,18 +181,30 @@
         //if (column.IsPrimaryKey && column.NameHumanCase == "PkId")
         //    column.NameHumanCase = "Id";
 
+        // .IsConcurrencyToken() must be manually configured. However .IsRowVersion() can be automatically detected.
+        //if (table.NameHumanCase.Equals("SomeTable", StringComparison.InvariantCultureIgnoreCase) && column.NameHumanCase.Equals("SomeColumn", StringComparison.InvariantCultureIgnoreCase))
+        //    column.IsConcurrencyToken = true;
+
         // Remove table name from primary key
         //if (column.IsPrimaryKey && column.NameHumanCase.Equals(table.NameHumanCase + "Id", StringComparison.InvariantCultureIgnoreCase))
         //    column.NameHumanCase = "Id";
 
+        // Remove column from poco class as it will be inherited from a base class
+        //if (column.IsPrimaryKey && table.NameHumanCase.Equals("SomeTable", StringComparison.InvariantCultureIgnoreCase))
+        //    column.Hidden = true;
+
         // Perform Enum property type replacement
         var enumDefinition = EnumsDefinitions.FirstOrDefault(e =>
-            (e.Schema.ToLowerInvariant() == table.Schema.ToLowerInvariant()) &&
-            (e.Table == table.Name || e.Table == table.NameHumanCase) &&
-            (e.Column == column.Name || e.Column == column.NameHumanCase));
+            (e.Schema.Equals(table.Schema, StringComparison.InvariantCultureIgnoreCase)) &&
+            (e.Table.Equals(table.Name, StringComparison.InvariantCultureIgnoreCase) || e.Table.Equals(table.NameHumanCase, StringComparison.InvariantCultureIgnoreCase)) &&
+            (e.Column.Equals(column.Name, StringComparison.InvariantCultureIgnoreCase) || e.Column.Equals(column.NameHumanCase, StringComparison.InvariantCultureIgnoreCase)));
 
         if (enumDefinition != null)
+        {
             column.PropertyType = enumDefinition.EnumType;
+            if(!string.IsNullOrEmpty(column.Default))
+                column.Default = "(" + enumDefinition.EnumType + ") " + column.Default;
+        }
 
         return column;
     };
@@ -181,6 +219,20 @@
         return name.Replace("my_sp_", "");
     };*/
     StoredProcedureRename = (name, schema) => name;   // Do nothing by default
+
+    // Use the following function to rename the return model automatically generated for stored procedure.
+    // By default it's <proc_name>ReturnModel.
+    // Example:
+    /*StoredProcedureReturnModelRename = (name, sp) =>
+    {
+        if (sp.NameHumanCase.Equals("ComputeValuesForDate", StringComparison.InvariantCultureIgnoreCase))
+            return "ValueSet";
+        if (sp.NameHumanCase.Equals("SalesByYear", StringComparison.InvariantCultureIgnoreCase))
+            return "SalesSet";
+
+        return name;
+    };*/
+    StoredProcedureReturnModelRename = (name, sp) => name; // Do nothing by default
 
     // StoredProcedure return types *******************************************************************************************************
     // Override generation of return models for stored procedures that return entities.
@@ -225,7 +277,14 @@
         // WriteLine("        // " + t.ClassName);
     };
 
-    Func<Column, string> WritePocoColumn = c => c.Entity;
+    Func<Column, string> WritePocoColumn = c =>
+    {
+        // Example of adding a [Required] data annotation attribute to all non-null fields
+        //if (!c.IsNullable)
+        //    return "[System.ComponentModel.DataAnnotations.Required] " + c.Entity;
+
+        return c.Entity;
+    };
 
     ForeignKeyFilter = (ForeignKey fk) =>
     {
@@ -236,177 +295,45 @@
         return fk;
     };
 
-
-
-    // ***********************************************************************
-    // ** Experienced developers only below this point
-
-    Func<StoredProcedure, string> WriteStoredProcFunctionName = sp => sp.NameHumanCase;
-
-    Func<StoredProcedure, bool, string> WriteStoredProcFunctionParams = (sp, includeProcResult) =>
+    ForeignKeyName = (tableName, foreignKeyName, attempt) =>
     {
-        var sb = new StringBuilder();
-        int n = 1;
-        int count = sp.Parameters.Count;
-        foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
+        // 5 Attempts to correctly name the foreign key
+        switch (attempt)
         {
-            sb.AppendFormat("{0}{1}{2} {3}{4}",
-                p.Mode == StoredProcedureParameterMode.In ? "" : "out ",
-                p.PropertyType,
-                NotNullable.Contains(p.PropertyType.ToLower()) ? string.Empty : "?",
-                p.NameHumanCase,
-                (n++ < count) ? ", " : string.Empty);
+            case 1:
+                // Try without appending foreign key name
+                return tableName;
+
+            case 2:
+                // Only called if foreign key name ends with "id"
+                // Use foreign key name without "id" at end of string
+                return foreignKeyName.Remove(foreignKeyName.Length-2, 2);
+
+            case 3:
+                // Use foreign key name only
+                return foreignKeyName;
+
+            case 4:
+                // Use table name and foreign key name
+                return tableName + "_" + foreignKeyName;
+
+            case 5:
+                // Used in for loop 1 to 99 to append a number to the end
+                return tableName;
+
+            default:
+                // Give up
+                return tableName;
         }
-        if (includeProcResult && sp.ReturnModels.Count > 0 && sp.ReturnModels.First().Count > 0)
-            sb.AppendFormat((sp.Parameters.Count > 0 ?  ", " : "") + "out int procResult");
-        return sb.ToString();
     };
 
-    Func<StoredProcedure, string> WriteStoredProcFunctionOverloadCall = (sp) =>
+    // Return true to include this table in the db context
+    ConfigurationFilter = (Table t) =>
     {
-        var sb = new StringBuilder();
-        foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
-        {
-            sb.AppendFormat("{0}{1}, ",
-                p.Mode == StoredProcedureParameterMode.In ? "" : "out ",
-                p.NameHumanCase);
-        }
-        sb.Append("out procResult");
-        return sb.ToString();
+        return true;
     };
-
-    Func<StoredProcedure, string> WriteStoredProcFunctionSqlAtParams = sp =>
-    {
-        var sb = new StringBuilder();
-        int n = 1;
-        int count = sp.Parameters.Count;
-        foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
-        {
-            sb.AppendFormat("{0}{1}{2}",
-                p.Name,
-                p.Mode == StoredProcedureParameterMode.In ? string.Empty : " OUTPUT",
-                (n++ < count) ? ", " : string.Empty);
-        }
-        return sb.ToString();
-    };
-
-    Func<StoredProcedureParameter, string> WriteStoredProcSqlParameterName = p => p.NameHumanCase + "Param";
-
-    Func<StoredProcedure, string> WriteStoredProcFunctionDeclareSqlParameter = sp =>
-    {
-        var sb = new StringBuilder();
-        foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
-        {
-            bool isNullable = !NotNullable.Contains(p.PropertyType.ToLower());
-            var getValueOrDefault = isNullable ? ".GetValueOrDefault()" : string.Empty;
-
-            sb.AppendLine(string.Format("            var {0} = new System.Data.SqlClient.SqlParameter {{ ParameterName = \"{1}\", SqlDbType = System.Data.SqlDbType.{2}, Direction = System.Data.ParameterDirection.{3}{4}{5}{6}{7} }};",
-                WriteStoredProcSqlParameterName(p),
-                p.Name,
-                p.SqlDbType,
-                p.Mode == StoredProcedureParameterMode.In ? "Input" : "Output",
-                p.Mode == StoredProcedureParameterMode.In ? ", Value = " + p.NameHumanCase + getValueOrDefault : string.Empty,
-                p.MaxLength > 0 ? ", Size = " + p.MaxLength : string.Empty,
-                (p.Precision > 0 || p.Scale > 0) ? ", Precision = " + p.Precision + ", Scale = " + p.Scale : string.Empty,
-                p.PropertyType.ToLower().Contains("datatable") ? ", TypeName = \"" + p.UserDefinedTypeName + "\"" : string.Empty));
-
-                if (p.Mode == StoredProcedureParameterMode.In)
-                {
-                    sb.AppendFormat(
-                        isNullable
-                            ? "            if (!{0}.HasValue){1}                {0}Param.Value = System.DBNull.Value;{1}{1}"
-                            : "            if ({0}Param.Value == null){1}                {0}Param.Value = System.DBNull.Value;{1}{1}",
-                        p.NameHumanCase, Environment.NewLine);
-                }
-        }
-        if(sp.ReturnModels.Count < 2)
-            sb.AppendLine("            var procResultParam = new System.Data.SqlClient.SqlParameter { ParameterName = \"@procResult\", SqlDbType = System.Data.SqlDbType.Int, Direction = System.Data.ParameterDirection.Output };");
-        return sb.ToString();
-    };
-
-    Func<StoredProcedure, string> WriteTableValuedFunctionDeclareSqlParameter = sp =>
-    {
-        var sb = new StringBuilder();
-        foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
-        {
-            var getValueOrDefault = NotNullable.Contains(p.PropertyType.ToLower()) ? string.Empty : ".GetValueOrDefault()";
-
-            sb.AppendLine(string.Format("            var {0}Param = new System.Data.Entity.Core.Objects.ObjectParameter(\"{1}\", {2});",
-                p.NameHumanCase,
-                p.Name.Substring(1),
-                p.Mode == StoredProcedureParameterMode.In ? p.NameHumanCase + getValueOrDefault : string.Empty));
-        }
-        return sb.ToString();
-    };
-
-    Func<StoredProcedure, string> WriteStoredProcFunctionSqlParameterAnonymousArray = sp =>
-    {
-        var sb = new StringBuilder();
-        foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
-        {
-            sb.Append(string.Format("{0}Param, ", p.NameHumanCase));
-        }
-        sb.Append("procResultParam");
-        return sb.ToString();
-    };
-
-    Func<StoredProcedure, string> WriteTableValuedFunctionSqlParameterAnonymousArray = sp =>
-    {
-        if (sp.Parameters.Count == 0)
-            return "new System.Data.Entity.Core.Objects.ObjectParameter[] { }";
-        var sb = new StringBuilder();
-        foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
-        {
-            sb.Append(string.Format("{0}Param, ", p.NameHumanCase));
-        }
-        return sb.ToString().Substring(0, sb.Length - 2);
-    };
-
-    Func<StoredProcedure, bool, string> WriteStoredProcFunctionSetSqlParameters = (sp, isFake) =>
-    {
-        var sb = new StringBuilder();
-        foreach (var p in sp.Parameters.Where(x => x.Mode != StoredProcedureParameterMode.In).OrderBy(x => x.Ordinal))
-        {
-            string Default = string.Format("default({0})", p.PropertyType);
-            bool notNullable = NotNullable.Contains(p.PropertyType.ToLower());
-
-            if(isFake)
-                sb.AppendLine(string.Format("            {0} = {1};", p.NameHumanCase, Default));
-            else
-            {
-                sb.AppendLine(string.Format("            if (IsSqlParameterNull({0}Param))", p.NameHumanCase));
-                sb.AppendLine(string.Format("                {0} = {1};", p.NameHumanCase, notNullable ? Default : "null"));
-                sb.AppendLine("            else");
-                sb.AppendLine(string.Format("                {0} = ({1}) {2}Param.Value;", p.NameHumanCase, p.PropertyType, p.NameHumanCase));
-            }
-        }
-        return sb.ToString();
-    };
-
-    Func<StoredProcedure, string> WriteStoredProcReturnModelName = sp =>
-        StoredProcedureReturnTypes.ContainsKey(sp.NameHumanCase)
-            ? StoredProcedureReturnTypes[sp.NameHumanCase]
-            : StoredProcedureReturnTypes.ContainsKey(sp.Name)
-                ? StoredProcedureReturnTypes[sp.Name]
-                : string.Format("{0}ReturnModel", sp.NameHumanCase);
-
-    Func<DataColumn, string> WriteStoredProcReturnColumn = col =>
-        string.Format("public {0} {1} {{ get; set; }}",
-            StoredProcedure.WrapTypeIfNullable("System." + col.DataType.Name,col), col.ColumnName);
-
-    Func<StoredProcedure, string> WriteStoredProcReturnType = (sp) =>
-    {
-        var returnModelCount = sp.ReturnModels.Count;
-        if (returnModelCount == 0)
-            return "int";
-
-        var spReturnClassName = WriteStoredProcReturnModelName(sp);
-        return (returnModelCount == 1) ? string.Format("System.Collections.Generic.List<{0}>", spReturnClassName) : spReturnClassName;
-    };
-
 
     // That's it, nothing else to configure ***********************************************************************************************
-
 
 
     // Read schema
