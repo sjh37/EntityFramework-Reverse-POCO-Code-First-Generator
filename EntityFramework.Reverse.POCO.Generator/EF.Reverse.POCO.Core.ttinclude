@@ -49,6 +49,8 @@
         string ConfigurationClassName = "Configuration";
         string CollectionType = "System.Collections.Generic.List";
         static bool NullableShortHand = true;
+        bool UseDataAnnotations = false;
+        bool UseDataAnnotationsSchema = false;
         bool MakeClassesPartial = true;
         bool MakeDbContextInterfacePartial = false;
         bool GenerateSeparateFiles = false;
@@ -533,7 +535,7 @@
                         PrependSchemaName = false;
 
                     var reader = new SqlServerSchemaReader(conn, factory, IncludeQueryTraceOn9481Flag) { Outer = this };
-                    var tables = reader.ReadSchema(SchemaFilterExclude, SchemaFilterInclude, TableFilterExclude, TableFilterInclude, ColumnFilterExclude, TableFilter, UseCamelCase, PrependSchemaName, IncludeComments, IncludeViews, IncludeExtendedPropertyComments, TableRename, UpdateColumn, UsePrivateSetterForComputedColumns, IncludeSynonyms);
+                    var tables = reader.ReadSchema(SchemaFilterExclude, SchemaFilterInclude, TableFilterExclude, TableFilterInclude, ColumnFilterExclude, TableFilter, UseCamelCase, PrependSchemaName, IncludeComments, IncludeViews, IncludeExtendedPropertyComments, TableRename, UpdateColumn, UsePrivateSetterForComputedColumns, IncludeSynonyms, UseDataAnnotations, UseDataAnnotationsSchema);
                     tables.SetPrimaryKeys();
 
                     // Must be done in this order
@@ -550,8 +552,10 @@
                     if(UseMappingTables)
                         tables.IdentifyMappingTables(fkList, UseCamelCase, CollectionType, false, IncludeComments, IsSqlCe, ForeignKeyName);
 
-                    foreach(var t in tables)
+                    foreach (var t in tables)
+                    {
                         t.SetHasPrimaryKey();
+                    }
 
                     conn.Close();
                     return tables;
@@ -743,6 +747,8 @@
             public string Entity;
             public List<string> EntityFk = new List<string>();
 
+            public List<string> DataAnnotations;
+
             public Table ParentTable;
 
             public void ResetNavigationProperties()
@@ -795,7 +801,8 @@
                 Entity = string.Format("public {0} {1} {{ get; {2}set; }}{3}", WrapIfNullable(PropertyType, this), NameHumanCase, usePrivateSetterForComputedColumns && IsComputed() ? "private " : string.Empty, inlineComments);
             }
 
-            private string WrapIfNullable(string propType, Column col) {
+            private string WrapIfNullable(string propType, Column col)
+            {
                 if(!IsNullable(col))
                     return propType;
                 return String.Format(NullableShortHand ? "{0}?" : "System.Nullable<{0}>",propType);
@@ -806,15 +813,34 @@
                 return IsStoreGenerated && !IsIdentity;
             }
 
-            private void SetupConfig()
+            private void SetupConfig(bool dataAnnotations, bool dataAnnotationsSchema)
             {
-                string databaseGeneratedOption = string.Empty;
-                if(IsIdentity)
+                DataAnnotations = new List<string>();
+                var databaseGeneratedOption = string.Empty;
+
+                if(dataAnnotationsSchema)
+                    DataAnnotations.Add(string.Format("System.ComponentModel.DataAnnotations.Schema.Column(\"{0}\", Order = {1}, TypeName = \"{2}\")", Name, Ordinal, SqlPropertyType));
+
+                if (IsIdentity)
+                {
                     databaseGeneratedOption = ".HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity)";
+                    if(dataAnnotationsSchema)
+                        DataAnnotations.Add("System.ComponentModel.DataAnnotations.Schema.DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity)");
+                }
+
                 if(IsComputed())
+                {
                     databaseGeneratedOption = ".HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Computed)";
-                if(IsPrimaryKey && !IsIdentity && !IsStoreGenerated)
+                    if(dataAnnotationsSchema)
+                        DataAnnotations.Add("System.ComponentModel.DataAnnotations.Schema.DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Computed)");
+                }
+
+                if (IsPrimaryKey && !IsIdentity && !IsStoreGenerated)
+                {
                     databaseGeneratedOption = ".HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None)";
+                    if(dataAnnotationsSchema)
+                        DataAnnotations.Add("System.ComponentModel.DataAnnotations.Schema.DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None)");
+                }
 
                 Config = string.Format("Property(x => x.{0}).HasColumnName(@\"{1}\"){2}{3}{4}{5}{6}{7}{8}{9}{10}{11};", NameHumanCase, Name,
                                             (IsNullable) ? ".IsOptional()" : ".IsRequired()",
@@ -827,12 +853,48 @@
                                             (IsRowVersion) ? ".IsRowVersion()" : string.Empty,
                                             (IsConcurrencyToken) ? ".IsConcurrencyToken()" : string.Empty,
                                             databaseGeneratedOption);
+
+                if (dataAnnotations)
+                {
+                    if (IsPrimaryKey)
+                        DataAnnotations.Add("System.ComponentModel.DataAnnotations.Key");
+
+                    if (!IsNullable)
+                        DataAnnotations.Add("System.ComponentModel.DataAnnotations.Required");
+
+                    //if(IsFixedLength || IsRowVersion)
+                    //    DataAnnotations.Add("System.ComponentModel.DataAnnotations.????");
+
+                    //if(!IsUnicode)
+                    //    DataAnnotations.Add("System.ComponentModel.DataAnnotations.????");
+
+                    if (!IsMaxLength && MaxLength > 0)
+                    {
+                        DataAnnotations.Add(string.Format("System.ComponentModel.DataAnnotations.MaxLength({0})",
+                            MaxLength));
+                        if (PropertyType.Equals("string", StringComparison.InvariantCultureIgnoreCase))
+                            DataAnnotations.Add(string.Format(
+                                "System.ComponentModel.DataAnnotations.StringLength({0})", MaxLength));
+                    }
+
+                    if (IsMaxLength)
+                        DataAnnotations.Add("System.ComponentModel.DataAnnotations.MaxLength");
+
+                    //if(Scale > 0)
+                    //    DataAnnotations.Add("System.ComponentModel.DataAnnotations.????");
+
+                    if (IsRowVersion)
+                        DataAnnotations.Add("System.ComponentModel.DataAnnotationsTimestamp");
+
+                    //if(IsConcurrencyToken)
+                    //    DataAnnotations.Add("System.ComponentModel.DataAnnotations.????");
+                }
             }
 
-            public void SetupEntityAndConfig(CommentsStyle includeComments, CommentsStyle includeExtendedPropertyComments, bool usePrivateSetterForComputedColumns)
+            public void SetupEntityAndConfig(CommentsStyle includeComments, CommentsStyle includeExtendedPropertyComments, bool usePrivateSetterForComputedColumns, bool dataAnnotations, bool dataAnnotationsSchema)
             {
                 SetupEntity(includeComments, includeExtendedPropertyComments, usePrivateSetterForComputedColumns);
-                SetupConfig();
+                SetupConfig(dataAnnotations, dataAnnotationsSchema);
             }
 
             public void CleanUpDefault()
@@ -1238,7 +1300,7 @@
             }
 
             public GeneratedTextTransformation Outer;
-            public abstract Tables ReadSchema(Regex schemaFilterExclude, Regex schemaFilterInclude, Regex tableFilterExclude, Regex tableFilterInclude, Regex columnFilterExclude, Func<Table, bool> tableFilter, bool useCamelCase, bool prependSchemaName, CommentsStyle includeComments, bool includeViews, CommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, Func<Column, Table, Column> updateColumn, bool usePrivateSetterForComputedColumns, bool includeSynonyms);
+            public abstract Tables ReadSchema(Regex schemaFilterExclude, Regex schemaFilterInclude, Regex tableFilterExclude, Regex tableFilterInclude, Regex columnFilterExclude, Func<Table, bool> tableFilter, bool useCamelCase, bool prependSchemaName, CommentsStyle includeComments, bool includeViews, CommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, Func<Column, Table, Column> updateColumn, bool usePrivateSetterForComputedColumns, bool includeSynonyms, bool dataAnnotations, bool dataAnnotationsSchema);
             public abstract List<StoredProcedure> ReadStoredProcs(Regex SchemaFilterExclude, Regex storedProcedureFilterExclude, bool useCamelCase, bool prependSchemaName , Func<string, string, string> StoredProcedureRename, bool includeTableValuedFunctions);
             public abstract List<ForeignKey> ReadForeignKeys(Func<string, string, string> tableRename, Func<ForeignKey, ForeignKey> foreignKeyFilter);
             public abstract void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool useCamelCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments, Func<string, string, short, string> ForeignKeyName);
@@ -1851,7 +1913,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 return SqlDatabaseEngineEdition == "Azure";
             }
 
-            public override Tables ReadSchema(Regex schemaFilterExclude, Regex schemaFilterInclude, Regex tableFilterExclude, Regex tableFilterInclude, Regex columnFilterExclude, Func<Table, bool> tableFilter, bool useCamelCase, bool prependSchemaName, CommentsStyle includeComments, bool includeViews, CommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, Func<Column, Table, Column> updateColumn, bool usePrivateSetterForComputedColumns, bool includeSynonyms)
+            public override Tables ReadSchema(Regex schemaFilterExclude, Regex schemaFilterInclude, Regex tableFilterExclude, Regex tableFilterInclude, Regex columnFilterExclude, Func<Table, bool> tableFilter, bool useCamelCase, bool prependSchemaName, CommentsStyle includeComments, bool includeViews, CommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, Func<Column, Table, Column> updateColumn, bool usePrivateSetterForComputedColumns, bool includeSynonyms, bool dataAnnotations, bool dataAnnotationsSchema)
             {
                 var result = new Tables();
                 if(Cmd == null)
@@ -1954,7 +2016,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
                 foreach(Table tbl in result)
                 {
-                    tbl.Columns.ForEach(x => x.SetupEntityAndConfig(includeComments, includeExtendedPropertyComments, usePrivateSetterForComputedColumns));
+                    tbl.Columns.ForEach(x => x.SetupEntityAndConfig(includeComments, includeExtendedPropertyComments, usePrivateSetterForComputedColumns, dataAnnotations, dataAnnotationsSchema));
                 }
 
                 return result;
@@ -2795,12 +2857,14 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             public List<string> ReverseNavigationCtor;
             public List<string> ReverseNavigationUniquePropName;
             public List<string> ReverseNavigationUniquePropNameClashes;
+            public List<string> DataAnnotations;
 
             public Table()
             {
                 Columns = new List<Column>();
                 ResetNavigationProperties();
                 ReverseNavigationUniquePropNameClashes = new List<string>();
+                DataAnnotations = new List<string>();
             }
 
             public void ResetNavigationProperties()

@@ -50,6 +50,13 @@ if (ElementsToGenerate.HasFlag(Elements.Context))
         usingsContext.Add("System.Linq");
     }
 }
+if (ElementsToGenerate.HasFlag(Elements.Poco))
+{
+    if(UseDataAnnotations)
+        usingsContext.Add("System.ComponentModel.DataAnnotations");
+    if(UseDataAnnotationsSchema)
+        usingsContext.Add("System.ComponentModel.DataAnnotations.Schema");
+}
 if (!GenerateSeparateFiles)
 {
     usingsAll.AddRange(usingsContext);
@@ -926,7 +933,7 @@ foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal).Where(x => !x.Hidden))
 <# } #>
 <# if(AddWcfDataAttributes) { #>        [System.Runtime.Serialization.DataMember(Order = <#=DataMemberOrder++#>, IsRequired = <#=col.IsNullable ? "false" : "true"#>)]
 <# } #>
-        <#= WritePocoColumn(col) #>
+<#= WritePocoColumn(col) #>
 <# if(AddWcfDataAttributes) { #>
 
 <# } } #>

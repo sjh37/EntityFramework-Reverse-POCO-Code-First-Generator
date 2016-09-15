@@ -28,6 +28,8 @@
 
 namespace EntityFramework_Reverse_POCO_Generator
 {
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
     using System.Linq;
 
     #region Unit of work
@@ -959,16 +961,47 @@ namespace EntityFramework_Reverse_POCO_Generator
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.24.0.0")]
     public class AlphabeticalListOfProduct
     {
+        [System.ComponentModel.DataAnnotations.Schema.Column("ProductID", Order = 1, TypeName = "int")]
+        [System.ComponentModel.DataAnnotations.Required]
         public int ProductId { get; set; } // ProductID
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ProductName", Order = 2, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.MaxLength(40)]
+        [System.ComponentModel.DataAnnotations.StringLength(40)]
         public string ProductName { get; set; } // ProductName (length: 40)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("SupplierID", Order = 3, TypeName = "int")]
         public int? SupplierId { get; set; } // SupplierID
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("CategoryID", Order = 4, TypeName = "int")]
         public int? CategoryId { get; set; } // CategoryID
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("QuantityPerUnit", Order = 5, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(20)]
+        [System.ComponentModel.DataAnnotations.StringLength(20)]
         public string QuantityPerUnit { get; set; } // QuantityPerUnit (length: 20)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("UnitPrice", Order = 6, TypeName = "money")]
         public decimal? UnitPrice { get; set; } // UnitPrice
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("UnitsInStock", Order = 7, TypeName = "smallint")]
         public short? UnitsInStock { get; set; } // UnitsInStock
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("UnitsOnOrder", Order = 8, TypeName = "smallint")]
         public short? UnitsOnOrder { get; set; } // UnitsOnOrder
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ReorderLevel", Order = 9, TypeName = "smallint")]
         public short? ReorderLevel { get; set; } // ReorderLevel
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Discontinued", Order = 10, TypeName = "bit")]
+        [System.ComponentModel.DataAnnotations.Required]
         public bool Discontinued { get; set; } // Discontinued
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("CategoryName", Order = 11, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.MaxLength(15)]
+        [System.ComponentModel.DataAnnotations.StringLength(15)]
         public string CategoryName { get; set; } // CategoryName (length: 15)
     }
 
@@ -976,9 +1009,24 @@ namespace EntityFramework_Reverse_POCO_Generator
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.24.0.0")]
     public class Category
     {
+        [System.ComponentModel.DataAnnotations.Schema.Column("CategoryID", Order = 1, TypeName = "int")]
+        [System.ComponentModel.DataAnnotations.Schema.DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity)]
+        [System.ComponentModel.DataAnnotations.Key]
+        [System.ComponentModel.DataAnnotations.Required]
         public int CategoryId { get; set; } // CategoryID (Primary key)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("CategoryName", Order = 2, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.MaxLength(15)]
+        [System.ComponentModel.DataAnnotations.StringLength(15)]
         public string CategoryName { get; set; } // CategoryName (length: 15)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Description", Order = 3, TypeName = "ntext")]
+        [System.ComponentModel.DataAnnotations.MaxLength]
         public string Description { get; set; } // Description (length: 1073741823)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Picture", Order = 4, TypeName = "image")]
+        [System.ComponentModel.DataAnnotations.MaxLength(2147483647)]
         public byte[] Picture { get; set; } // Picture (length: 2147483647)
 
         // Reverse navigation
@@ -994,7 +1042,13 @@ namespace EntityFramework_Reverse_POCO_Generator
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.24.0.0")]
     public class CategorySalesFor1997
     {
+        [System.ComponentModel.DataAnnotations.Schema.Column("CategoryName", Order = 1, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.MaxLength(15)]
+        [System.ComponentModel.DataAnnotations.StringLength(15)]
         public string CategoryName { get; set; } // CategoryName (length: 15)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("CategorySales", Order = 2, TypeName = "money")]
         public decimal? CategorySales { get; set; } // CategorySales
     }
 
@@ -1002,7 +1056,15 @@ namespace EntityFramework_Reverse_POCO_Generator
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.24.0.0")]
     public class CurrentProductList
     {
+        [System.ComponentModel.DataAnnotations.Schema.Column("ProductID", Order = 1, TypeName = "int")]
+        [System.ComponentModel.DataAnnotations.Schema.DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity)]
+        [System.ComponentModel.DataAnnotations.Required]
         public int ProductId { get; set; } // ProductID
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ProductName", Order = 2, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.MaxLength(40)]
+        [System.ComponentModel.DataAnnotations.StringLength(40)]
         public string ProductName { get; set; } // ProductName (length: 40)
     }
 
@@ -1010,16 +1072,63 @@ namespace EntityFramework_Reverse_POCO_Generator
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.24.0.0")]
     public class Customer
     {
+        [System.ComponentModel.DataAnnotations.Schema.Column("CustomerID", Order = 1, TypeName = "nchar")]
+        [System.ComponentModel.DataAnnotations.Schema.DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None)]
+        [System.ComponentModel.DataAnnotations.Key]
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.MaxLength(5)]
+        [System.ComponentModel.DataAnnotations.StringLength(5)]
         public string CustomerId { get; set; } // CustomerID (Primary key) (length: 5)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("CompanyName", Order = 2, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.MaxLength(40)]
+        [System.ComponentModel.DataAnnotations.StringLength(40)]
         public string CompanyName { get; set; } // CompanyName (length: 40)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ContactName", Order = 3, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(30)]
+        [System.ComponentModel.DataAnnotations.StringLength(30)]
         public string ContactName { get; set; } // ContactName (length: 30)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ContactTitle", Order = 4, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(30)]
+        [System.ComponentModel.DataAnnotations.StringLength(30)]
         public string ContactTitle { get; set; } // ContactTitle (length: 30)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Address", Order = 5, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(60)]
+        [System.ComponentModel.DataAnnotations.StringLength(60)]
         public string Address { get; set; } // Address (length: 60)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("City", Order = 6, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(15)]
+        [System.ComponentModel.DataAnnotations.StringLength(15)]
         public string City { get; set; } // City (length: 15)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Region", Order = 7, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(15)]
+        [System.ComponentModel.DataAnnotations.StringLength(15)]
         public string Region { get; set; } // Region (length: 15)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("PostalCode", Order = 8, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(10)]
+        [System.ComponentModel.DataAnnotations.StringLength(10)]
         public string PostalCode { get; set; } // PostalCode (length: 10)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Country", Order = 9, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(15)]
+        [System.ComponentModel.DataAnnotations.StringLength(15)]
         public string Country { get; set; } // Country (length: 15)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Phone", Order = 10, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(24)]
+        [System.ComponentModel.DataAnnotations.StringLength(24)]
         public string Phone { get; set; } // Phone (length: 24)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Fax", Order = 11, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(24)]
+        [System.ComponentModel.DataAnnotations.StringLength(24)]
         public string Fax { get; set; } // Fax (length: 24)
 
         // Reverse navigation
@@ -1037,9 +1146,26 @@ namespace EntityFramework_Reverse_POCO_Generator
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.24.0.0")]
     public class CustomerAndSuppliersByCity
     {
+        [System.ComponentModel.DataAnnotations.Schema.Column("City", Order = 1, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(15)]
+        [System.ComponentModel.DataAnnotations.StringLength(15)]
         public string City { get; set; } // City (length: 15)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("CompanyName", Order = 2, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.MaxLength(40)]
+        [System.ComponentModel.DataAnnotations.StringLength(40)]
         public string CompanyName { get; set; } // CompanyName (length: 40)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ContactName", Order = 3, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(30)]
+        [System.ComponentModel.DataAnnotations.StringLength(30)]
         public string ContactName { get; set; } // ContactName (length: 30)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Relationship", Order = 4, TypeName = "varchar")]
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.MaxLength(9)]
+        [System.ComponentModel.DataAnnotations.StringLength(9)]
         public string Relationship { get; set; } // Relationship (length: 9)
     }
 
@@ -1047,7 +1173,16 @@ namespace EntityFramework_Reverse_POCO_Generator
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.24.0.0")]
     public class CustomerDemographic
     {
+        [System.ComponentModel.DataAnnotations.Schema.Column("CustomerTypeID", Order = 1, TypeName = "nchar")]
+        [System.ComponentModel.DataAnnotations.Schema.DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None)]
+        [System.ComponentModel.DataAnnotations.Key]
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.MaxLength(10)]
+        [System.ComponentModel.DataAnnotations.StringLength(10)]
         public string CustomerTypeId { get; set; } // CustomerTypeID (Primary key) (length: 10)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("CustomerDesc", Order = 2, TypeName = "ntext")]
+        [System.ComponentModel.DataAnnotations.MaxLength]
         public string CustomerDesc { get; set; } // CustomerDesc (length: 1073741823)
 
         // Reverse navigation
@@ -1063,23 +1198,89 @@ namespace EntityFramework_Reverse_POCO_Generator
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.24.0.0")]
     public class Employee
     {
+        [System.ComponentModel.DataAnnotations.Schema.Column("EmployeeID", Order = 1, TypeName = "int")]
+        [System.ComponentModel.DataAnnotations.Schema.DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity)]
+        [System.ComponentModel.DataAnnotations.Key]
+        [System.ComponentModel.DataAnnotations.Required]
         public int EmployeeId { get; set; } // EmployeeID (Primary key)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("LastName", Order = 2, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.MaxLength(20)]
+        [System.ComponentModel.DataAnnotations.StringLength(20)]
         public string LastName { get; set; } // LastName (length: 20)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("FirstName", Order = 3, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.MaxLength(10)]
+        [System.ComponentModel.DataAnnotations.StringLength(10)]
         public string FirstName { get; set; } // FirstName (length: 10)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Title", Order = 4, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(30)]
+        [System.ComponentModel.DataAnnotations.StringLength(30)]
         public string Title { get; set; } // Title (length: 30)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("TitleOfCourtesy", Order = 5, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(25)]
+        [System.ComponentModel.DataAnnotations.StringLength(25)]
         public string TitleOfCourtesy { get; set; } // TitleOfCourtesy (length: 25)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("BirthDate", Order = 6, TypeName = "datetime")]
         public System.DateTime? BirthDate { get; set; } // BirthDate
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("HireDate", Order = 7, TypeName = "datetime")]
         public System.DateTime? HireDate { get; set; } // HireDate
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Address", Order = 8, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(60)]
+        [System.ComponentModel.DataAnnotations.StringLength(60)]
         public string Address { get; set; } // Address (length: 60)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("City", Order = 9, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(15)]
+        [System.ComponentModel.DataAnnotations.StringLength(15)]
         public string City { get; set; } // City (length: 15)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Region", Order = 10, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(15)]
+        [System.ComponentModel.DataAnnotations.StringLength(15)]
         public string Region { get; set; } // Region (length: 15)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("PostalCode", Order = 11, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(10)]
+        [System.ComponentModel.DataAnnotations.StringLength(10)]
         public string PostalCode { get; set; } // PostalCode (length: 10)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Country", Order = 12, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(15)]
+        [System.ComponentModel.DataAnnotations.StringLength(15)]
         public string Country { get; set; } // Country (length: 15)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("HomePhone", Order = 13, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(24)]
+        [System.ComponentModel.DataAnnotations.StringLength(24)]
         public string HomePhone { get; set; } // HomePhone (length: 24)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Extension", Order = 14, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(4)]
+        [System.ComponentModel.DataAnnotations.StringLength(4)]
         public string Extension { get; set; } // Extension (length: 4)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Photo", Order = 15, TypeName = "image")]
+        [System.ComponentModel.DataAnnotations.MaxLength(2147483647)]
         public byte[] Photo { get; set; } // Photo (length: 2147483647)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Notes", Order = 16, TypeName = "ntext")]
+        [System.ComponentModel.DataAnnotations.MaxLength]
         public string Notes { get; set; } // Notes (length: 1073741823)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ReportsTo", Order = 17, TypeName = "int")]
         public int? ReportsTo { get; set; } // ReportsTo
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("PhotoPath", Order = 18, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(255)]
+        [System.ComponentModel.DataAnnotations.StringLength(255)]
         public string PhotoPath { get; set; } // PhotoPath (length: 255)
 
         // Reverse navigation
@@ -1102,31 +1303,123 @@ namespace EntityFramework_Reverse_POCO_Generator
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.24.0.0")]
     public class Invoice
     {
+        [System.ComponentModel.DataAnnotations.Schema.Column("ShipName", Order = 1, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(40)]
+        [System.ComponentModel.DataAnnotations.StringLength(40)]
         public string ShipName { get; set; } // ShipName (length: 40)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ShipAddress", Order = 2, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(60)]
+        [System.ComponentModel.DataAnnotations.StringLength(60)]
         public string ShipAddress { get; set; } // ShipAddress (length: 60)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ShipCity", Order = 3, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(15)]
+        [System.ComponentModel.DataAnnotations.StringLength(15)]
         public string ShipCity { get; set; } // ShipCity (length: 15)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ShipRegion", Order = 4, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(15)]
+        [System.ComponentModel.DataAnnotations.StringLength(15)]
         public string ShipRegion { get; set; } // ShipRegion (length: 15)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ShipPostalCode", Order = 5, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(10)]
+        [System.ComponentModel.DataAnnotations.StringLength(10)]
         public string ShipPostalCode { get; set; } // ShipPostalCode (length: 10)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ShipCountry", Order = 6, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(15)]
+        [System.ComponentModel.DataAnnotations.StringLength(15)]
         public string ShipCountry { get; set; } // ShipCountry (length: 15)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("CustomerID", Order = 7, TypeName = "nchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(5)]
+        [System.ComponentModel.DataAnnotations.StringLength(5)]
         public string CustomerId { get; set; } // CustomerID (length: 5)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("CustomerName", Order = 8, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.MaxLength(40)]
+        [System.ComponentModel.DataAnnotations.StringLength(40)]
         public string CustomerName { get; set; } // CustomerName (length: 40)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Address", Order = 9, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(60)]
+        [System.ComponentModel.DataAnnotations.StringLength(60)]
         public string Address { get; set; } // Address (length: 60)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("City", Order = 10, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(15)]
+        [System.ComponentModel.DataAnnotations.StringLength(15)]
         public string City { get; set; } // City (length: 15)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Region", Order = 11, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(15)]
+        [System.ComponentModel.DataAnnotations.StringLength(15)]
         public string Region { get; set; } // Region (length: 15)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("PostalCode", Order = 12, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(10)]
+        [System.ComponentModel.DataAnnotations.StringLength(10)]
         public string PostalCode { get; set; } // PostalCode (length: 10)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Country", Order = 13, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(15)]
+        [System.ComponentModel.DataAnnotations.StringLength(15)]
         public string Country { get; set; } // Country (length: 15)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Salesperson", Order = 14, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.MaxLength(31)]
+        [System.ComponentModel.DataAnnotations.StringLength(31)]
         public string Salesperson { get; set; } // Salesperson (length: 31)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("OrderID", Order = 15, TypeName = "int")]
+        [System.ComponentModel.DataAnnotations.Required]
         public int OrderId { get; set; } // OrderID
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("OrderDate", Order = 16, TypeName = "datetime")]
         public System.DateTime? OrderDate { get; set; } // OrderDate
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("RequiredDate", Order = 17, TypeName = "datetime")]
         public System.DateTime? RequiredDate { get; set; } // RequiredDate
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ShippedDate", Order = 18, TypeName = "datetime")]
         public System.DateTime? ShippedDate { get; set; } // ShippedDate
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ShipperName", Order = 19, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.MaxLength(40)]
+        [System.ComponentModel.DataAnnotations.StringLength(40)]
         public string ShipperName { get; set; } // ShipperName (length: 40)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ProductID", Order = 20, TypeName = "int")]
+        [System.ComponentModel.DataAnnotations.Required]
         public int ProductId { get; set; } // ProductID
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ProductName", Order = 21, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.MaxLength(40)]
+        [System.ComponentModel.DataAnnotations.StringLength(40)]
         public string ProductName { get; set; } // ProductName (length: 40)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("UnitPrice", Order = 22, TypeName = "money")]
+        [System.ComponentModel.DataAnnotations.Required]
         public decimal UnitPrice { get; set; } // UnitPrice
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Quantity", Order = 23, TypeName = "smallint")]
+        [System.ComponentModel.DataAnnotations.Required]
         public short Quantity { get; set; } // Quantity
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Discount", Order = 24, TypeName = "real")]
+        [System.ComponentModel.DataAnnotations.Required]
         public float Discount { get; set; } // Discount
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ExtendedPrice", Order = 25, TypeName = "money")]
         public decimal? ExtendedPrice { get; set; } // ExtendedPrice
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Freight", Order = 26, TypeName = "money")]
         public decimal? Freight { get; set; } // Freight
     }
 
@@ -1134,19 +1427,63 @@ namespace EntityFramework_Reverse_POCO_Generator
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.24.0.0")]
     public class Order
     {
+        [System.ComponentModel.DataAnnotations.Schema.Column("OrderID", Order = 1, TypeName = "int")]
+        [System.ComponentModel.DataAnnotations.Schema.DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity)]
+        [System.ComponentModel.DataAnnotations.Key]
+        [System.ComponentModel.DataAnnotations.Required]
         public int OrderId { get; set; } // OrderID (Primary key)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("CustomerID", Order = 2, TypeName = "nchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(5)]
+        [System.ComponentModel.DataAnnotations.StringLength(5)]
         public string CustomerId { get; set; } // CustomerID (length: 5)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("EmployeeID", Order = 3, TypeName = "int")]
         public int? EmployeeId { get; set; } // EmployeeID
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("OrderDate", Order = 4, TypeName = "datetime")]
         public System.DateTime? OrderDate { get; set; } // OrderDate
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("RequiredDate", Order = 5, TypeName = "datetime")]
         public System.DateTime? RequiredDate { get; set; } // RequiredDate
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ShippedDate", Order = 6, TypeName = "datetime")]
         public System.DateTime? ShippedDate { get; set; } // ShippedDate
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ShipVia", Order = 7, TypeName = "int")]
         public int? ShipVia { get; set; } // ShipVia
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Freight", Order = 8, TypeName = "money")]
         public decimal? Freight { get; set; } // Freight
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ShipName", Order = 9, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(40)]
+        [System.ComponentModel.DataAnnotations.StringLength(40)]
         public string ShipName { get; set; } // ShipName (length: 40)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ShipAddress", Order = 10, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(60)]
+        [System.ComponentModel.DataAnnotations.StringLength(60)]
         public string ShipAddress { get; set; } // ShipAddress (length: 60)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ShipCity", Order = 11, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(15)]
+        [System.ComponentModel.DataAnnotations.StringLength(15)]
         public string ShipCity { get; set; } // ShipCity (length: 15)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ShipRegion", Order = 12, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(15)]
+        [System.ComponentModel.DataAnnotations.StringLength(15)]
         public string ShipRegion { get; set; } // ShipRegion (length: 15)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ShipPostalCode", Order = 13, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(10)]
+        [System.ComponentModel.DataAnnotations.StringLength(10)]
         public string ShipPostalCode { get; set; } // ShipPostalCode (length: 10)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ShipCountry", Order = 14, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(15)]
+        [System.ComponentModel.DataAnnotations.StringLength(15)]
         public string ShipCountry { get; set; } // ShipCountry (length: 15)
 
         // Reverse navigation
@@ -1168,10 +1505,28 @@ namespace EntityFramework_Reverse_POCO_Generator
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.24.0.0")]
     public class OrderDetail
     {
+        [System.ComponentModel.DataAnnotations.Schema.Column("OrderID", Order = 1, TypeName = "int")]
+        [System.ComponentModel.DataAnnotations.Schema.DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None)]
+        [System.ComponentModel.DataAnnotations.Key]
+        [System.ComponentModel.DataAnnotations.Required]
         public int OrderId { get; set; } // OrderID (Primary key)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ProductID", Order = 2, TypeName = "int")]
+        [System.ComponentModel.DataAnnotations.Schema.DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None)]
+        [System.ComponentModel.DataAnnotations.Key]
+        [System.ComponentModel.DataAnnotations.Required]
         public int ProductId { get; set; } // ProductID (Primary key)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("UnitPrice", Order = 3, TypeName = "money")]
+        [System.ComponentModel.DataAnnotations.Required]
         public decimal UnitPrice { get; set; } // UnitPrice
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Quantity", Order = 4, TypeName = "smallint")]
+        [System.ComponentModel.DataAnnotations.Required]
         public short Quantity { get; set; } // Quantity
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Discount", Order = 5, TypeName = "real")]
+        [System.ComponentModel.DataAnnotations.Required]
         public float Discount { get; set; } // Discount
 
         // Foreign keys
@@ -1190,12 +1545,33 @@ namespace EntityFramework_Reverse_POCO_Generator
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.24.0.0")]
     public class OrderDetailsExtended
     {
+        [System.ComponentModel.DataAnnotations.Schema.Column("OrderID", Order = 1, TypeName = "int")]
+        [System.ComponentModel.DataAnnotations.Required]
         public int OrderId { get; set; } // OrderID
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ProductID", Order = 2, TypeName = "int")]
+        [System.ComponentModel.DataAnnotations.Required]
         public int ProductId { get; set; } // ProductID
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ProductName", Order = 3, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.MaxLength(40)]
+        [System.ComponentModel.DataAnnotations.StringLength(40)]
         public string ProductName { get; set; } // ProductName (length: 40)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("UnitPrice", Order = 4, TypeName = "money")]
+        [System.ComponentModel.DataAnnotations.Required]
         public decimal UnitPrice { get; set; } // UnitPrice
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Quantity", Order = 5, TypeName = "smallint")]
+        [System.ComponentModel.DataAnnotations.Required]
         public short Quantity { get; set; } // Quantity
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Discount", Order = 6, TypeName = "real")]
+        [System.ComponentModel.DataAnnotations.Required]
         public float Discount { get; set; } // Discount
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ExtendedPrice", Order = 7, TypeName = "money")]
         public decimal? ExtendedPrice { get; set; } // ExtendedPrice
     }
 
@@ -1203,25 +1579,92 @@ namespace EntityFramework_Reverse_POCO_Generator
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.24.0.0")]
     public class OrdersQry
     {
+        [System.ComponentModel.DataAnnotations.Schema.Column("OrderID", Order = 1, TypeName = "int")]
+        [System.ComponentModel.DataAnnotations.Required]
         public int OrderId { get; set; } // OrderID
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("CustomerID", Order = 2, TypeName = "nchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(5)]
+        [System.ComponentModel.DataAnnotations.StringLength(5)]
         public string CustomerId { get; set; } // CustomerID (length: 5)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("EmployeeID", Order = 3, TypeName = "int")]
         public int? EmployeeId { get; set; } // EmployeeID
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("OrderDate", Order = 4, TypeName = "datetime")]
         public System.DateTime? OrderDate { get; set; } // OrderDate
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("RequiredDate", Order = 5, TypeName = "datetime")]
         public System.DateTime? RequiredDate { get; set; } // RequiredDate
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ShippedDate", Order = 6, TypeName = "datetime")]
         public System.DateTime? ShippedDate { get; set; } // ShippedDate
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ShipVia", Order = 7, TypeName = "int")]
         public int? ShipVia { get; set; } // ShipVia
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Freight", Order = 8, TypeName = "money")]
         public decimal? Freight { get; set; } // Freight
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ShipName", Order = 9, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(40)]
+        [System.ComponentModel.DataAnnotations.StringLength(40)]
         public string ShipName { get; set; } // ShipName (length: 40)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ShipAddress", Order = 10, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(60)]
+        [System.ComponentModel.DataAnnotations.StringLength(60)]
         public string ShipAddress { get; set; } // ShipAddress (length: 60)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ShipCity", Order = 11, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(15)]
+        [System.ComponentModel.DataAnnotations.StringLength(15)]
         public string ShipCity { get; set; } // ShipCity (length: 15)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ShipRegion", Order = 12, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(15)]
+        [System.ComponentModel.DataAnnotations.StringLength(15)]
         public string ShipRegion { get; set; } // ShipRegion (length: 15)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ShipPostalCode", Order = 13, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(10)]
+        [System.ComponentModel.DataAnnotations.StringLength(10)]
         public string ShipPostalCode { get; set; } // ShipPostalCode (length: 10)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ShipCountry", Order = 14, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(15)]
+        [System.ComponentModel.DataAnnotations.StringLength(15)]
         public string ShipCountry { get; set; } // ShipCountry (length: 15)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("CompanyName", Order = 15, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.MaxLength(40)]
+        [System.ComponentModel.DataAnnotations.StringLength(40)]
         public string CompanyName { get; set; } // CompanyName (length: 40)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Address", Order = 16, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(60)]
+        [System.ComponentModel.DataAnnotations.StringLength(60)]
         public string Address { get; set; } // Address (length: 60)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("City", Order = 17, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(15)]
+        [System.ComponentModel.DataAnnotations.StringLength(15)]
         public string City { get; set; } // City (length: 15)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Region", Order = 18, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(15)]
+        [System.ComponentModel.DataAnnotations.StringLength(15)]
         public string Region { get; set; } // Region (length: 15)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("PostalCode", Order = 19, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(10)]
+        [System.ComponentModel.DataAnnotations.StringLength(10)]
         public string PostalCode { get; set; } // PostalCode (length: 10)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Country", Order = 20, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(15)]
+        [System.ComponentModel.DataAnnotations.StringLength(15)]
         public string Country { get; set; } // Country (length: 15)
     }
 
@@ -1229,7 +1672,11 @@ namespace EntityFramework_Reverse_POCO_Generator
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.24.0.0")]
     public class OrderSubtotal
     {
+        [System.ComponentModel.DataAnnotations.Schema.Column("OrderID", Order = 1, TypeName = "int")]
+        [System.ComponentModel.DataAnnotations.Required]
         public int OrderId { get; set; } // OrderID
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Subtotal", Order = 2, TypeName = "money")]
         public decimal? Subtotal { get; set; } // Subtotal
     }
 
@@ -1237,15 +1684,43 @@ namespace EntityFramework_Reverse_POCO_Generator
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.24.0.0")]
     public class Product
     {
+        [System.ComponentModel.DataAnnotations.Schema.Column("ProductID", Order = 1, TypeName = "int")]
+        [System.ComponentModel.DataAnnotations.Schema.DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity)]
+        [System.ComponentModel.DataAnnotations.Key]
+        [System.ComponentModel.DataAnnotations.Required]
         public int ProductId { get; set; } // ProductID (Primary key)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ProductName", Order = 2, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.MaxLength(40)]
+        [System.ComponentModel.DataAnnotations.StringLength(40)]
         public string ProductName { get; set; } // ProductName (length: 40)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("SupplierID", Order = 3, TypeName = "int")]
         public int? SupplierId { get; set; } // SupplierID
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("CategoryID", Order = 4, TypeName = "int")]
         public int? CategoryId { get; set; } // CategoryID
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("QuantityPerUnit", Order = 5, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(20)]
+        [System.ComponentModel.DataAnnotations.StringLength(20)]
         public string QuantityPerUnit { get; set; } // QuantityPerUnit (length: 20)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("UnitPrice", Order = 6, TypeName = "money")]
         public decimal? UnitPrice { get; set; } // UnitPrice
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("UnitsInStock", Order = 7, TypeName = "smallint")]
         public short? UnitsInStock { get; set; } // UnitsInStock
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("UnitsOnOrder", Order = 8, TypeName = "smallint")]
         public short? UnitsOnOrder { get; set; } // UnitsOnOrder
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ReorderLevel", Order = 9, TypeName = "smallint")]
         public short? ReorderLevel { get; set; } // ReorderLevel
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Discontinued", Order = 10, TypeName = "bit")]
+        [System.ComponentModel.DataAnnotations.Required]
         public bool Discontinued { get; set; } // Discontinued
 
         // Reverse navigation
@@ -1270,7 +1745,13 @@ namespace EntityFramework_Reverse_POCO_Generator
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.24.0.0")]
     public class ProductsAboveAveragePrice
     {
+        [System.ComponentModel.DataAnnotations.Schema.Column("ProductName", Order = 1, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.MaxLength(40)]
+        [System.ComponentModel.DataAnnotations.StringLength(40)]
         public string ProductName { get; set; } // ProductName (length: 40)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("UnitPrice", Order = 2, TypeName = "money")]
         public decimal? UnitPrice { get; set; } // UnitPrice
     }
 
@@ -1278,8 +1759,19 @@ namespace EntityFramework_Reverse_POCO_Generator
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.24.0.0")]
     public class ProductSalesFor1997
     {
+        [System.ComponentModel.DataAnnotations.Schema.Column("CategoryName", Order = 1, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.MaxLength(15)]
+        [System.ComponentModel.DataAnnotations.StringLength(15)]
         public string CategoryName { get; set; } // CategoryName (length: 15)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ProductName", Order = 2, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.MaxLength(40)]
+        [System.ComponentModel.DataAnnotations.StringLength(40)]
         public string ProductName { get; set; } // ProductName (length: 40)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ProductSales", Order = 3, TypeName = "money")]
         public decimal? ProductSales { get; set; } // ProductSales
     }
 
@@ -1287,10 +1779,28 @@ namespace EntityFramework_Reverse_POCO_Generator
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.24.0.0")]
     public class ProductsByCategory
     {
+        [System.ComponentModel.DataAnnotations.Schema.Column("CategoryName", Order = 1, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.MaxLength(15)]
+        [System.ComponentModel.DataAnnotations.StringLength(15)]
         public string CategoryName { get; set; } // CategoryName (length: 15)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ProductName", Order = 2, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.MaxLength(40)]
+        [System.ComponentModel.DataAnnotations.StringLength(40)]
         public string ProductName { get; set; } // ProductName (length: 40)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("QuantityPerUnit", Order = 3, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(20)]
+        [System.ComponentModel.DataAnnotations.StringLength(20)]
         public string QuantityPerUnit { get; set; } // QuantityPerUnit (length: 20)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("UnitsInStock", Order = 4, TypeName = "smallint")]
         public short? UnitsInStock { get; set; } // UnitsInStock
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Discontinued", Order = 5, TypeName = "bit")]
+        [System.ComponentModel.DataAnnotations.Required]
         public bool Discontinued { get; set; } // Discontinued
     }
 
@@ -1300,9 +1810,24 @@ namespace EntityFramework_Reverse_POCO_Generator
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.24.0.0")]
     public class QuarterlyOrder
     {
+        [System.ComponentModel.DataAnnotations.Schema.Column("CustomerID", Order = 1, TypeName = "nchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(5)]
+        [System.ComponentModel.DataAnnotations.StringLength(5)]
         public string CustomerId { get; set; } // CustomerID (length: 5)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("CompanyName", Order = 2, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(40)]
+        [System.ComponentModel.DataAnnotations.StringLength(40)]
         public string CompanyName { get; set; } // CompanyName (length: 40)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("City", Order = 3, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(15)]
+        [System.ComponentModel.DataAnnotations.StringLength(15)]
         public string City { get; set; } // City (length: 15)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Country", Order = 4, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(15)]
+        [System.ComponentModel.DataAnnotations.StringLength(15)]
         public string Country { get; set; } // Country (length: 15)
     }
 
@@ -1310,7 +1835,16 @@ namespace EntityFramework_Reverse_POCO_Generator
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.24.0.0")]
     public class Region
     {
+        [System.ComponentModel.DataAnnotations.Schema.Column("RegionID", Order = 1, TypeName = "int")]
+        [System.ComponentModel.DataAnnotations.Schema.DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None)]
+        [System.ComponentModel.DataAnnotations.Key]
+        [System.ComponentModel.DataAnnotations.Required]
         public int RegionId { get; set; } // RegionID (Primary key)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("RegionDescription", Order = 2, TypeName = "nchar")]
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.MaxLength(50)]
+        [System.ComponentModel.DataAnnotations.StringLength(50)]
         public string RegionDescription { get; set; } // RegionDescription (length: 50)
 
         // Reverse navigation
@@ -1326,9 +1860,23 @@ namespace EntityFramework_Reverse_POCO_Generator
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.24.0.0")]
     public class SalesByCategory
     {
+        [System.ComponentModel.DataAnnotations.Schema.Column("CategoryID", Order = 1, TypeName = "int")]
+        [System.ComponentModel.DataAnnotations.Required]
         public int CategoryId { get; set; } // CategoryID
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("CategoryName", Order = 2, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.MaxLength(15)]
+        [System.ComponentModel.DataAnnotations.StringLength(15)]
         public string CategoryName { get; set; } // CategoryName (length: 15)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ProductName", Order = 3, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.MaxLength(40)]
+        [System.ComponentModel.DataAnnotations.StringLength(40)]
         public string ProductName { get; set; } // ProductName (length: 40)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ProductSales", Order = 4, TypeName = "money")]
         public decimal? ProductSales { get; set; } // ProductSales
     }
 
@@ -1336,9 +1884,20 @@ namespace EntityFramework_Reverse_POCO_Generator
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.24.0.0")]
     public class SalesTotalsByAmount
     {
+        [System.ComponentModel.DataAnnotations.Schema.Column("SaleAmount", Order = 1, TypeName = "money")]
         public decimal? SaleAmount { get; set; } // SaleAmount
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("OrderID", Order = 2, TypeName = "int")]
+        [System.ComponentModel.DataAnnotations.Required]
         public int OrderId { get; set; } // OrderID
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("CompanyName", Order = 3, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.MaxLength(40)]
+        [System.ComponentModel.DataAnnotations.StringLength(40)]
         public string CompanyName { get; set; } // CompanyName (length: 40)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ShippedDate", Order = 4, TypeName = "datetime")]
         public System.DateTime? ShippedDate { get; set; } // ShippedDate
     }
 
@@ -1346,8 +1905,21 @@ namespace EntityFramework_Reverse_POCO_Generator
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.24.0.0")]
     public class Shipper
     {
+        [System.ComponentModel.DataAnnotations.Schema.Column("ShipperID", Order = 1, TypeName = "int")]
+        [System.ComponentModel.DataAnnotations.Schema.DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity)]
+        [System.ComponentModel.DataAnnotations.Key]
+        [System.ComponentModel.DataAnnotations.Required]
         public int ShipperId { get; set; } // ShipperID (Primary key)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("CompanyName", Order = 2, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.MaxLength(40)]
+        [System.ComponentModel.DataAnnotations.StringLength(40)]
         public string CompanyName { get; set; } // CompanyName (length: 40)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Phone", Order = 3, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(24)]
+        [System.ComponentModel.DataAnnotations.StringLength(24)]
         public string Phone { get; set; } // Phone (length: 24)
 
         // Reverse navigation
@@ -1363,8 +1935,14 @@ namespace EntityFramework_Reverse_POCO_Generator
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.24.0.0")]
     public class SummaryOfSalesByQuarter
     {
+        [System.ComponentModel.DataAnnotations.Schema.Column("ShippedDate", Order = 1, TypeName = "datetime")]
         public System.DateTime? ShippedDate { get; set; } // ShippedDate
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("OrderID", Order = 2, TypeName = "int")]
+        [System.ComponentModel.DataAnnotations.Required]
         public int OrderId { get; set; } // OrderID
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Subtotal", Order = 3, TypeName = "money")]
         public decimal? Subtotal { get; set; } // Subtotal
     }
 
@@ -1372,8 +1950,14 @@ namespace EntityFramework_Reverse_POCO_Generator
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.24.0.0")]
     public class SummaryOfSalesByYear
     {
+        [System.ComponentModel.DataAnnotations.Schema.Column("ShippedDate", Order = 1, TypeName = "datetime")]
         public System.DateTime? ShippedDate { get; set; } // ShippedDate
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("OrderID", Order = 2, TypeName = "int")]
+        [System.ComponentModel.DataAnnotations.Required]
         public int OrderId { get; set; } // OrderID
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Subtotal", Order = 3, TypeName = "money")]
         public decimal? Subtotal { get; set; } // Subtotal
     }
 
@@ -1381,17 +1965,65 @@ namespace EntityFramework_Reverse_POCO_Generator
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.24.0.0")]
     public class Supplier
     {
+        [System.ComponentModel.DataAnnotations.Schema.Column("SupplierID", Order = 1, TypeName = "int")]
+        [System.ComponentModel.DataAnnotations.Schema.DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity)]
+        [System.ComponentModel.DataAnnotations.Key]
+        [System.ComponentModel.DataAnnotations.Required]
         public int SupplierId { get; set; } // SupplierID (Primary key)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("CompanyName", Order = 2, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.MaxLength(40)]
+        [System.ComponentModel.DataAnnotations.StringLength(40)]
         public string CompanyName { get; set; } // CompanyName (length: 40)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ContactName", Order = 3, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(30)]
+        [System.ComponentModel.DataAnnotations.StringLength(30)]
         public string ContactName { get; set; } // ContactName (length: 30)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("ContactTitle", Order = 4, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(30)]
+        [System.ComponentModel.DataAnnotations.StringLength(30)]
         public string ContactTitle { get; set; } // ContactTitle (length: 30)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Address", Order = 5, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(60)]
+        [System.ComponentModel.DataAnnotations.StringLength(60)]
         public string Address { get; set; } // Address (length: 60)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("City", Order = 6, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(15)]
+        [System.ComponentModel.DataAnnotations.StringLength(15)]
         public string City { get; set; } // City (length: 15)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Region", Order = 7, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(15)]
+        [System.ComponentModel.DataAnnotations.StringLength(15)]
         public string Region { get; set; } // Region (length: 15)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("PostalCode", Order = 8, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(10)]
+        [System.ComponentModel.DataAnnotations.StringLength(10)]
         public string PostalCode { get; set; } // PostalCode (length: 10)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Country", Order = 9, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(15)]
+        [System.ComponentModel.DataAnnotations.StringLength(15)]
         public string Country { get; set; } // Country (length: 15)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Phone", Order = 10, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(24)]
+        [System.ComponentModel.DataAnnotations.StringLength(24)]
         public string Phone { get; set; } // Phone (length: 24)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("Fax", Order = 11, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.MaxLength(24)]
+        [System.ComponentModel.DataAnnotations.StringLength(24)]
         public string Fax { get; set; } // Fax (length: 24)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("HomePage", Order = 12, TypeName = "ntext")]
+        [System.ComponentModel.DataAnnotations.MaxLength]
         public string HomePage { get; set; } // HomePage (length: 1073741823)
 
         // Reverse navigation
@@ -1407,10 +2039,26 @@ namespace EntityFramework_Reverse_POCO_Generator
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.24.0.0")]
     public class Sysdiagram
     {
+        [System.ComponentModel.DataAnnotations.Schema.Column("name", Order = 1, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.MaxLength(128)]
+        [System.ComponentModel.DataAnnotations.StringLength(128)]
         public string Name { get; set; } // name (length: 128)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("principal_id", Order = 2, TypeName = "int")]
+        [System.ComponentModel.DataAnnotations.Required]
         public int PrincipalId { get; set; } // principal_id
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("diagram_id", Order = 3, TypeName = "int")]
+        [System.ComponentModel.DataAnnotations.Schema.DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity)]
+        [System.ComponentModel.DataAnnotations.Key]
+        [System.ComponentModel.DataAnnotations.Required]
         public int DiagramId { get; set; } // diagram_id (Primary key)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("version", Order = 4, TypeName = "int")]
         public int? Version { get; set; } // version
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("definition", Order = 5, TypeName = "varbinary")]
         public byte[] Definition { get; set; } // definition
     }
 
@@ -1418,8 +2066,22 @@ namespace EntityFramework_Reverse_POCO_Generator
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.24.0.0")]
     public class Territory
     {
+        [System.ComponentModel.DataAnnotations.Schema.Column("TerritoryID", Order = 1, TypeName = "nvarchar")]
+        [System.ComponentModel.DataAnnotations.Schema.DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None)]
+        [System.ComponentModel.DataAnnotations.Key]
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.MaxLength(20)]
+        [System.ComponentModel.DataAnnotations.StringLength(20)]
         public string TerritoryId { get; set; } // TerritoryID (Primary key) (length: 20)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("TerritoryDescription", Order = 2, TypeName = "nchar")]
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.MaxLength(50)]
+        [System.ComponentModel.DataAnnotations.StringLength(50)]
         public string TerritoryDescription { get; set; } // TerritoryDescription (length: 50)
+
+        [System.ComponentModel.DataAnnotations.Schema.Column("RegionID", Order = 3, TypeName = "int")]
+        [System.ComponentModel.DataAnnotations.Required]
         public int RegionId { get; set; } // RegionID
 
         // Reverse navigation

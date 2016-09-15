@@ -22,6 +22,8 @@
     GenerateSeparateFiles = false;
     UseMappingTables = true; // If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
     UseCamelCase = true;    // This will rename the tables & fields to use CamelCase. If false table & field names will be left alone.
+    UseDataAnnotations = true; // If false, will use configuration classes, if true, will use data annotations.
+    UseDataAnnotationsSchema = true; // If false, will use configuration classes, if true, will use data annotations.
     IncludeComments = CommentsStyle.AtEndOfField; // Adds comments to the generated code
     IncludeExtendedPropertyComments = CommentsStyle.InSummaryBlock; // Adds extended properties as comments to the generated code
     IncludeViews = true;
@@ -255,8 +257,14 @@
     // This method will be called right before we write the POCO header.
     Action<Table> WritePocoClassAttributes = t =>
     {
-        // Do nothing by default
-        // Example:
+        if (UseDataAnnotations)
+        {
+            foreach (var dataAnnotation in t.DataAnnotations)
+            {
+                WriteLine("    [" + dataAnnotation + "]");
+            }
+        }
+
         // if(t.ClassName.StartsWith("Order"))
         //     WriteLine("    [SomeAttribute]");
     };
@@ -279,11 +287,22 @@
 
     Func<Column, string> WritePocoColumn = c =>
     {
+        if (UseDataAnnotations)
+        {
+            if(c.Ordinal > 1)
+                WriteLine(string.Empty);    // Leave a blank line before the next property
+
+            foreach (var dataAnnotation in c.DataAnnotations)
+            {
+                WriteLine("        [" + dataAnnotation + "]");
+            }
+        }
+
         // Example of adding a [Required] data annotation attribute to all non-null fields
         //if (!c.IsNullable)
-        //    return "[System.ComponentModel.DataAnnotations.Required] " + c.Entity;
+        //    return "        [System.ComponentModel.DataAnnotations.Required] " + c.Entity;
 
-        return c.Entity;
+        return "        " + c.Entity;
     };
 
     ForeignKeyFilter = (ForeignKey fk) =>
