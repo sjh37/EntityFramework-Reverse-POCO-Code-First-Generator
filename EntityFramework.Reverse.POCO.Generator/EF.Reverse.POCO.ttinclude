@@ -215,7 +215,10 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKey
 <#} else {#>
             System.Data.Entity.Database.SetInitializer(new System.Data.Entity.<#=MigrationStrategy#><<#=DbContextName#><#if (MigrationStrategy == "MigrateDatabaseToLatestVersion"){#>, <#=MigrationConfigurationFileName#><#}#>>());
 <#}#>
+            <#=DbContextName#>StaticPartial();
         }
+
+        static partial void <#=DbContextName#>StaticPartial();
 
         public <#=DbContextName#>()
             : base(<#=DefaultConstructorArgument#>)
