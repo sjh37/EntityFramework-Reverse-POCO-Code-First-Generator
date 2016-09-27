@@ -943,7 +943,7 @@
                 }
 
                 // Remove unicode prefix
-                if (IsUnicode && Default.StartsWith("N"))
+                if (IsUnicode && Default.StartsWith("N") && !Default.Equals("NULL", StringComparison.InvariantCultureIgnoreCase))
                     Default = Default.Substring(1, Default.Length - 1);
 
                 if(Default.First() == '\'' && Default.Last() == '\'' && Default.Length >= 2)
