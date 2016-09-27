@@ -555,6 +555,9 @@
                     foreach (var t in tables)
                     {
                         t.SetHasPrimaryKey();
+
+                        if(UseDataAnnotationsSchema)
+                            t.SetupDataAnnotations();
                     }
 
                     conn.Close();
@@ -819,27 +822,27 @@
                 var databaseGeneratedOption = string.Empty;
 
                 if(dataAnnotationsSchema)
-                    DataAnnotations.Add(string.Format("System.ComponentModel.DataAnnotations.Schema.Column(\"{0}\", Order = {1}, TypeName = \"{2}\")", Name, Ordinal, SqlPropertyType));
+                    DataAnnotations.Add(string.Format("Column(\"{0}\", Order = {1}, TypeName = \"{2}\")", Name, Ordinal, SqlPropertyType));
 
                 if (IsIdentity)
                 {
                     databaseGeneratedOption = ".HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity)";
                     if(dataAnnotationsSchema)
-                        DataAnnotations.Add("System.ComponentModel.DataAnnotations.Schema.DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity)");
+                        DataAnnotations.Add("DatabaseGenerated(DatabaseGeneratedOption.Identity)");
                 }
 
                 if(IsComputed())
                 {
                     databaseGeneratedOption = ".HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Computed)";
                     if(dataAnnotationsSchema)
-                        DataAnnotations.Add("System.ComponentModel.DataAnnotations.Schema.DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Computed)");
+                        DataAnnotations.Add("DatabaseGenerated(DatabaseGeneratedOption.Computed)");
                 }
 
                 if (IsPrimaryKey && !IsIdentity && !IsStoreGenerated)
                 {
                     databaseGeneratedOption = ".HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None)";
                     if(dataAnnotationsSchema)
-                        DataAnnotations.Add("System.ComponentModel.DataAnnotations.Schema.DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None)");
+                        DataAnnotations.Add("DatabaseGenerated(DatabaseGeneratedOption.None)");
                 }
 
                 Config = string.Format("Property(x => x.{0}).HasColumnName(@\"{1}\"){2}{3}{4}{5}{6}{7}{8}{9}{10}{11};", NameHumanCase, Name,
@@ -854,41 +857,69 @@
                                             (IsConcurrencyToken) ? ".IsConcurrencyToken()" : string.Empty,
                                             databaseGeneratedOption);
 
-                if (dataAnnotations)
+                if (!dataAnnotations)
+                    return;
+
+                if (IsPrimaryKey)
+                    DataAnnotations.Add("Key");
+
+                if (!IsNullable)
+                    DataAnnotations.Add("Required");
+
+                //if(IsFixedLength || IsRowVersion)
+                //    DataAnnotations.Add("????");
+
+                //if(!IsUnicode)
+                //    DataAnnotations.Add("????");
+
+                if (!IsMaxLength && MaxLength > 0)
                 {
-                    if (IsPrimaryKey)
-                        DataAnnotations.Add("System.ComponentModel.DataAnnotations.Key");
+                    DataAnnotations.Add(string.Format("MaxLength({0})", MaxLength));
 
-                    if (!IsNullable)
-                        DataAnnotations.Add("System.ComponentModel.DataAnnotations.Required");
-
-                    //if(IsFixedLength || IsRowVersion)
-                    //    DataAnnotations.Add("System.ComponentModel.DataAnnotations.????");
-
-                    //if(!IsUnicode)
-                    //    DataAnnotations.Add("System.ComponentModel.DataAnnotations.????");
-
-                    if (!IsMaxLength && MaxLength > 0)
-                    {
-                        DataAnnotations.Add(string.Format("System.ComponentModel.DataAnnotations.MaxLength({0})",
-                            MaxLength));
-                        if (PropertyType.Equals("string", StringComparison.InvariantCultureIgnoreCase))
-                            DataAnnotations.Add(string.Format(
-                                "System.ComponentModel.DataAnnotations.StringLength({0})", MaxLength));
-                    }
-
-                    if (IsMaxLength)
-                        DataAnnotations.Add("System.ComponentModel.DataAnnotations.MaxLength");
-
-                    //if(Scale > 0)
-                    //    DataAnnotations.Add("System.ComponentModel.DataAnnotations.????");
-
-                    if (IsRowVersion)
-                        DataAnnotations.Add("System.ComponentModel.DataAnnotationsTimestamp");
-
-                    //if(IsConcurrencyToken)
-                    //    DataAnnotations.Add("System.ComponentModel.DataAnnotations.????");
+                    if (PropertyType.Equals("string", StringComparison.InvariantCultureIgnoreCase))
+                        DataAnnotations.Add(string.Format("StringLength({0})", MaxLength));
                 }
+
+                if (IsMaxLength)
+                    DataAnnotations.Add("MaxLength");
+
+                //if(Scale > 0)
+                //    DataAnnotations.Add("????");
+
+                if (IsRowVersion)
+                    DataAnnotations.Add("Timestamp");
+
+                //if(IsConcurrencyToken)
+                //    DataAnnotations.Add("????");
+
+                if(NameHumanCase.Equals("CreditCard", StringComparison.InvariantCultureIgnoreCase))
+                    DataAnnotations.Add("CreditCard");
+
+                if (NameHumanCase.Equals("Email", StringComparison.InvariantCultureIgnoreCase) ||
+                    NameHumanCase.Equals("EmailAddress", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    DataAnnotations.Add("Display(Name = \"Email\")");
+                    DataAnnotations.Add("EmailAddress");
+                }
+
+                if(NameHumanCase.Equals("Url", StringComparison.InvariantCultureIgnoreCase))
+                    DataAnnotations.Add("Url");
+
+                if(NameHumanCase.Equals("Phone", StringComparison.InvariantCultureIgnoreCase) ||
+                   NameHumanCase.Equals("PhoneNumber", StringComparison.InvariantCultureIgnoreCase) ||
+                   NameHumanCase.Equals("Mobile", StringComparison.InvariantCultureIgnoreCase) ||
+                   NameHumanCase.Equals("MobileNumber", StringComparison.InvariantCultureIgnoreCase) ||
+                   NameHumanCase.Equals("Telephone", StringComparison.InvariantCultureIgnoreCase) ||
+                   NameHumanCase.Equals("TelephoneNumber", StringComparison.InvariantCultureIgnoreCase))
+                    DataAnnotations.Add("Phone");
+
+                if(Name.ToLowerInvariant().Contains("password"))
+                    DataAnnotations.Add("DataType(DataType.Password)");
+
+                if(Name.Equals("Username", StringComparison.InvariantCultureIgnoreCase))
+                    DataAnnotations.Add("DataType(DataType.Text)");
+
+                DataAnnotations.Add(string.Format("Display(Name = \"{0}\")", NameHumanCase));
             }
 
             public void SetupEntityAndConfig(CommentsStyle includeComments, CommentsStyle includeExtendedPropertyComments, bool usePrivateSetterForComputedColumns, bool dataAnnotations, bool dataAnnotationsSchema)
@@ -3091,6 +3122,15 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 IsMapping = true;
                 rightTable.AddReverseNavigation(Relationship.ManyToMany, rightTable.NameHumanCase, leftTable, rightPropName, null, collectionType, includeComments);
                 leftTable .AddReverseNavigation(Relationship.ManyToMany, leftTable.NameHumanCase, rightTable, leftPropName, null, collectionType, includeComments);
+            }
+
+            public void SetupDataAnnotations()
+            {
+                DataAnnotations = new List<string>();
+
+                DataAnnotations.Add(HasPrimaryKey
+                    ? string.Format("Table(\"{0}\", Schema = \"{1}\")", Name, Schema)
+                    : "NotMapped");
             }
         }
 

@@ -17,6 +17,17 @@ fileManager.StartHeader();
 // TargetFrameworkVersion = <#=TargetFrameworkVersion #>
 #pragma warning disable 1591    //  Ignore "Missing XML Comment" warning
 
+<#if (ElementsToGenerate.HasFlag(Elements.Poco))
+{
+    if (UseDataAnnotations) {#>
+using System.ComponentModel.DataAnnotations;
+<#  }
+    if (UseDataAnnotationsSchema) {#>
+using System.ComponentModel.DataAnnotations.Schema;
+<#  }
+}
+#>
+
 namespace <#=Namespace#>
 {
 <#
@@ -49,13 +60,6 @@ if (ElementsToGenerate.HasFlag(Elements.Context))
     {
         usingsContext.Add("System.Linq");
     }
-}
-if (ElementsToGenerate.HasFlag(Elements.Poco))
-{
-    if(UseDataAnnotations)
-        usingsContext.Add("System.ComponentModel.DataAnnotations");
-    if(UseDataAnnotationsSchema)
-        usingsContext.Add("System.ComponentModel.DataAnnotations.Schema");
 }
 if (!GenerateSeparateFiles)
 {
