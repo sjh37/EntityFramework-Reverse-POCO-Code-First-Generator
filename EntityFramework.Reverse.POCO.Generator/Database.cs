@@ -66,6 +66,15 @@ namespace EntityFramework_Reverse_POCO_Generator
         int SaveChanges();
         System.Threading.Tasks.Task<int> SaveChangesAsync();
         System.Threading.Tasks.Task<int> SaveChangesAsync(System.Threading.CancellationToken cancellationToken);
+        System.Data.Entity.Infrastructure.DbChangeTracker ChangeTracker { get; }
+        System.Data.Entity.Infrastructure.DbContextConfiguration Configuration { get; }
+        System.Data.Entity.Database Database { get; }        
+        System.Data.Entity.Infrastructure.DbEntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class;        
+        System.Data.Entity.Infrastructure.DbEntityEntry Entry(object entity);
+        System.Collections.Generic.IEnumerable<System.Data.Entity.Validation.DbEntityValidationResult> GetValidationErrors();
+        System.Data.Entity.DbSet Set(System.Type entityType);
+        System.Data.Entity.DbSet<TEntity> Set<TEntity>() where TEntity : class;        
+        string ToString();
 
         // Stored Procedures
         System.Collections.Generic.List<CustOrderHistReturnModel> CustOrderHist(string customerId);
@@ -136,7 +145,10 @@ namespace EntityFramework_Reverse_POCO_Generator
         static MyDbContext()
         {
             System.Data.Entity.Database.SetInitializer<MyDbContext>(null);
+            MyDbContextStaticPartial();
         }
+
+        static partial void MyDbContextStaticPartial();
 
         public MyDbContext()
             : base("Name=MyDbContext")
@@ -563,6 +575,34 @@ namespace EntityFramework_Reverse_POCO_Generator
         {
             Dispose(true);
         }
+
+        public System.Data.Entity.Infrastructure.DbChangeTracker ChangeTracker { get; }
+        public System.Data.Entity.Infrastructure.DbContextConfiguration Configuration { get; }
+        public System.Data.Entity.Database Database { get; }
+        public System.Data.Entity.Infrastructure.DbEntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class
+        {
+            throw new System.NotImplementedException();
+        }
+        public System.Data.Entity.Infrastructure.DbEntityEntry Entry(object entity)
+        {
+            throw new System.NotImplementedException();
+        }
+        public System.Collections.Generic.IEnumerable<System.Data.Entity.Validation.DbEntityValidationResult> GetValidationErrors() {
+            throw new System.NotImplementedException();
+        }
+        public System.Data.Entity.DbSet Set(System.Type entityType)
+        {
+            throw new System.NotImplementedException();
+        }
+        public System.Data.Entity.DbSet<TEntity> Set<TEntity>() where TEntity : class
+        {
+            throw new System.NotImplementedException();
+        }
+        public override string ToString()
+        {
+            throw new System.NotImplementedException();
+        }
+
 
         // Stored Procedures
         public System.Collections.Generic.List<CustOrderHistReturnModel> CustOrderHist(string customerId)
