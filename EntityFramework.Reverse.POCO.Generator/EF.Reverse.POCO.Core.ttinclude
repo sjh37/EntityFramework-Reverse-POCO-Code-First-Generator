@@ -90,6 +90,7 @@
         Func<Column, Table, Column> UpdateColumn;
         Func<ForeignKey, ForeignKey> ForeignKeyFilter;
         Func<string, string, short, string> ForeignKeyName;
+        static Func<string, ForeignKey, string, string> ForeignKeyRename;
         string MigrationConfigurationFileName = null;
         string MigrationStrategy = "MigrateDatabaseToLatestVersion";
         string ContextKey = null;
@@ -2946,6 +2947,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 return Columns.SingleOrDefault(x => String.Compare(x.Name, columnName, StringComparison.OrdinalIgnoreCase) == 0);
             }
 
+            public string GetForeignKeyRenamed(string tableNameHumanCase, ForeignKey foreignKey, string fkName)
+            {
+                return ForeignKeyRename != null ? ForeignKeyRename(tableNameHumanCase, foreignKey, fkName) : fkName;
+            }
+
             public string GetUniqueColumnName(string tableNameHumanCase, ForeignKey foreignKey, bool useCamelCase, bool checkForFkNameClashes, bool makeSingular, Func<string, string, short, string> ForeignKeyName)
             {
                 if (ReverseNavigationUniquePropName.Count == 0)
@@ -2962,7 +2968,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
                 // Attempt 1
                 string fkName = (useCamelCase ? Inflector.ToTitleCase(foreignKey.FkColumn) : foreignKey.FkColumn).Replace(" ", "").Replace("$", "");
-                string name = ForeignKeyName(tableNameHumanCase, fkName, 1);
+                string name = GetForeignKeyRenamed(tableNameHumanCase, foreignKey, ForeignKeyName(tableNameHumanCase, fkName, 1));
                 string col;
                 if (!ReverseNavigationUniquePropNameClashes.Contains(name) && !ReverseNavigationUniquePropName.Contains(name))
                 {
@@ -2973,7 +2979,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 // Attempt 2
                 if (fkName.ToLowerInvariant().EndsWith("id"))
                 {
-                    col = ForeignKeyName(tableNameHumanCase, fkName, 2);
+                    col = GetForeignKeyRenamed(tableNameHumanCase, foreignKey, ForeignKeyName(tableNameHumanCase, fkName, 2));
                     if (checkForFkNameClashes && ReverseNavigationUniquePropName.Contains(col) &&
                         !ReverseNavigationUniquePropNameClashes.Contains(col))
                         ReverseNavigationUniquePropNameClashes.Add(col); // Name clash
@@ -2987,7 +2993,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
 
                 // Attempt 3
-                col = ForeignKeyName(tableNameHumanCase, fkName, 3);
+                col = GetForeignKeyRenamed(tableNameHumanCase, foreignKey, ForeignKeyName(tableNameHumanCase, fkName, 3));
                 if (checkForFkNameClashes && ReverseNavigationUniquePropName.Contains(col) &&
                     !ReverseNavigationUniquePropNameClashes.Contains(col))
                     ReverseNavigationUniquePropNameClashes.Add(col); // Name clash
@@ -3000,7 +3006,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
 
                 // Attempt 4
-                col = ForeignKeyName(tableNameHumanCase, fkName, 4);
+                col = GetForeignKeyRenamed(tableNameHumanCase, foreignKey, ForeignKeyName(tableNameHumanCase, fkName, 4));
                 if (checkForFkNameClashes && ReverseNavigationUniquePropName.Contains(col) && !ReverseNavigationUniquePropNameClashes.Contains(col))
                     ReverseNavigationUniquePropNameClashes.Add(col); // Name clash
 
@@ -3013,7 +3019,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 // Attempt 5
                 for (int n = 1; n < 99; ++n)
                 {
-                    col = ForeignKeyName(tableNameHumanCase, fkName, 5) + n;
+                    col = GetForeignKeyRenamed(tableNameHumanCase, foreignKey, ForeignKeyName(tableNameHumanCase, fkName, 5) + n);
 
                     if (ReverseNavigationUniquePropName.Contains(col))
                         continue;
@@ -3023,7 +3029,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
 
                 // Give up
-                return ForeignKeyName(tableNameHumanCase, fkName, 6);
+                return GetForeignKeyRenamed(tableNameHumanCase, foreignKey, ForeignKeyName(tableNameHumanCase, fkName, 6));
             }
 
             public void AddReverseNavigation(Relationship relationship, string fkName, Table fkTable, string propName, string constraint, string collectionType, CommentsStyle includeComments)
