@@ -207,7 +207,8 @@ foreach(var usingStatement in usingsContext.Distinct().OrderBy(x => x)) { #>
 
 <# } #>
     <#= CodeGeneratedAttribute #>
-    public <# if(MakeClassesPartial) { #>partial <# } #>class <#=DbContextName#> : <#=DbContextBaseClass#>, <#=DbContextInterfaceName#>
+    public <# if(MakeClassesPartial) { #>partial <# } #>class <#=DbContextName#> : <#=DbContextBaseClass#><# if(ElementsToGenerate.HasFlag(Elements.UnitOfWork)) { #>, <#=DbContextInterfaceName#><# } #>
+
     {
 <#
 foreach(Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKey).OrderBy(x => x.NameHumanCase) select t)
@@ -321,7 +322,7 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKey
 <#}#>
 <# if (storedProcs.Any())
 { #>
-        
+
         // Stored Procedures
 <#      // Database context
 foreach (StoredProcedure sp in storedProcs.Where(s => !s.IsTVF))
@@ -397,9 +398,9 @@ foreach (StoredProcedure sp in storedProcs.Where(s => !s.IsTVF))
             { #>
         public int <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp, true) #>)
         {
-<#= WriteStoredProcFunctionDeclareSqlParameter(sp, true) #> 
+<#= WriteStoredProcFunctionDeclareSqlParameter(sp, true) #>
             Database.ExecuteSqlCommand("EXEC @procResult = [<#=sp.Schema #>].[<#= sp.Name #>] <#= WriteStoredProcFunctionSqlAtParams(sp) #>", <#= WriteStoredProcFunctionSqlParameterAnonymousArray(sp, true) #>);
-<#= WriteStoredProcFunctionSetSqlParameters(sp, false) #> 
+<#= WriteStoredProcFunctionSetSqlParameters(sp, false) #>
             return (int) procResultParam.Value;
         }
 
@@ -499,7 +500,8 @@ foreach(var usingStatement in usingsContext.Distinct().OrderBy(x => x)) { #>
 
 <# } #>
     <#= CodeGeneratedAttribute #>
-    public <# if(MakeClassesPartial) { #>partial <# } #>class Fake<#=DbContextName #> : <#=DbContextInterfaceName #>
+    public <# if(MakeClassesPartial) { #>partial <# } #>class Fake<#=DbContextName #><# if (ElementsToGenerate.HasFlag(Elements.UnitOfWork)) { #> : <#=DbContextInterfaceName #><# } #>
+
     {
 <#
 foreach (Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKey).OrderBy(x => x.NameHumanCase) select t)
