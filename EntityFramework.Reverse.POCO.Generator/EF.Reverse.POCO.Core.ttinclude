@@ -1421,7 +1421,8 @@ FROM    INFORMATION_SCHEMA.COLUMNS c
         INNER JOIN INFORMATION_SCHEMA.TABLES t
             ON c.TABLE_SCHEMA = t.TABLE_SCHEMA
                AND c.TABLE_NAME = t.TABLE_NAME
-WHERE c.TABLE_NAME NOT IN ('EdmMetadata', '__MigrationHistory')";
+WHERE c.TABLE_NAME NOT IN ('EdmMetadata', '__MigrationHistory')
+      AND c.TABLE_NAME NOT LIKE 'sysdiagram%'";
 
             private const string SynonymTableSQLSetup = @"
 SET NOCOUNT ON;
