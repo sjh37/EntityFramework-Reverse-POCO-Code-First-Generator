@@ -21,7 +21,7 @@
     MakeDbContextInterfacePartial = false;
     GenerateSeparateFiles = false;
     UseMappingTables = true; // If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
-    UseCamelCase = true;    // This will rename the tables & fields to use CamelCase. If false table & field names will be left alone.
+    UsePascalCase = true;    // This will rename the generated C# tables & properties to use PascalCase. If false table & property names will be left alone.
     UseDataAnnotations = false; // If true, will add data annotations to the poco classes.
     UseDataAnnotationsSchema = false; // UseDataAnnotations must also be true. If true, will add data annotations schema to the poco classes.
     IncludeComments = CommentsStyle.AtEndOfField; // Adds comments to the generated code
@@ -161,7 +161,7 @@
         //    name = name.Remove(0, 3);
         //name = name.Replace("_AB", "");
 
-        // If you turn camel casing off (UseCamelCase = false), and use the pluralisation service, and some of your
+        // If you turn pascal casing off (UsePascalCase = false), and use the pluralisation service, and some of your
         // tables names are all UPPERCASE, some words ending in IES such as CATEGORIES get singularised as CATEGORy.
         // Therefore you can make them lowercase by using the following
         // return Inflector.MakeLowerIfAllCaps(name);
