@@ -852,7 +852,7 @@
                                             ".HasColumnType(\"" + SqlPropertyType + "\")",
                                             (!IsMaxLength && MaxLength > 0) ? ".HasMaxLength(" + MaxLength + ")" : string.Empty,
                                             (IsMaxLength) ? ".IsMaxLength()" : string.Empty,
-                                            (Precision > 0 || Scale > 0) ? ".HasPrecision(" + Precision + "," + Scale + ")" : string.Empty,
+                                            ((Precision > 0 || Scale > 0) && PropertyType == "decimal") ? ".HasPrecision(" + Precision + "," + Scale + ")" : string.Empty,
                                             (IsRowVersion) ? ".IsRowVersion()" : string.Empty,
                                             (IsConcurrencyToken) ? ".IsConcurrencyToken()" : string.Empty,
                                             databaseGeneratedOption);
