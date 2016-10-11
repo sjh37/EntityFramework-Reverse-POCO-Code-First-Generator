@@ -718,6 +718,7 @@
         {
             public string Name; // Raw name of the column as obtained from the database
             public string NameHumanCase; // Name adjusted for C# output
+            public string DisplayName;  // Name used in the data annotation [Display(Name = "<DisplayName> goes here")]
 
             public int DateTimePrecision;
             public string Default;
@@ -919,7 +920,7 @@
                 if(Name.Equals("Username", StringComparison.InvariantCultureIgnoreCase))
                     DataAnnotations.Add("DataType(DataType.Text)");
 
-                DataAnnotations.Add(string.Format("Display(Name = \"{0}\")", NameHumanCase));
+                DataAnnotations.Add(string.Format("Display(Name = \"{0}\")", DisplayName));
             }
 
             public void SetupEntityAndConfig(CommentsStyle includeComments, CommentsStyle includeExtendedPropertyComments, bool usePrivateSetterForComputedColumns, bool dataAnnotations, bool dataAnnotationsSchema)
@@ -1181,6 +1182,8 @@
             {
                 try
                 {
+                    if (string.IsNullOrEmpty(word))
+                        return string.Empty;
                     if(PluralizationService == null)
                         return word;
 
@@ -1198,6 +1201,8 @@
 
             private static string MakePluralHelper(string word, char split)
             {
+                if (string.IsNullOrEmpty(word))
+                    return string.Empty;
                 var parts = word.Split(split);
                 parts[parts.Length - 1] = PluralizationService.Pluralize(parts[parts.Length - 1]); // Pluralize just the last word
                 return string.Join(split.ToString(), parts);
@@ -1212,6 +1217,9 @@
             {
                 try
                 {
+                    if (string.IsNullOrEmpty(word))
+                        return string.Empty;
+
                     if(PluralizationService == null)
                         return word;
 
@@ -1229,6 +1237,8 @@
 
             private static string MakeSingularHelper(string word, char split)
             {
+                if (string.IsNullOrEmpty(word))
+                    return string.Empty;
                 var parts = word.Split(split);
                 parts[parts.Length - 1] = PluralizationService.Singularize(parts[parts.Length - 1]); // Pluralize just the last word
                 return string.Join(split.ToString(), parts);
@@ -1241,6 +1251,9 @@
             /// <returns></returns>
             public static string ToTitleCase(string word)
             {
+                if (string.IsNullOrEmpty(word))
+                    return string.Empty;
+
                 var s = Regex.Replace(ToHumanCase(AddUnderscores(word)), @"\b([a-z])", match => match.Captures[0].Value.ToUpperInvariant());
                 var digit = false;
                 var sb = new StringBuilder();
@@ -1270,6 +1283,8 @@
             /// <returns></returns>
             public static string ToHumanCase(string lowercaseAndUnderscoredWord)
             {
+                if (string.IsNullOrEmpty(lowercaseAndUnderscoredWord))
+                    return string.Empty;
                 return MakeInitialCaps(Regex.Replace(lowercaseAndUnderscoredWord, @"_", " "));
             }
 
@@ -1281,6 +1296,8 @@
             /// <returns></returns>
             public static string AddUnderscores(string pascalCasedWord)
             {
+                if (string.IsNullOrEmpty(pascalCasedWord))
+                    return string.Empty;
                 return Regex.Replace(Regex.Replace(Regex.Replace(pascalCasedWord, @"([A-Z]+)([A-Z][a-z])", "$1_$2"), @"([a-z\d])([A-Z])", "$1_$2"), @"[-\s]", "_").ToLowerInvariant();
             }
 
@@ -1291,6 +1308,8 @@
             /// <returns></returns>
             public static string MakeInitialCaps(string word)
             {
+                if (string.IsNullOrEmpty(word))
+                    return string.Empty;
                 return string.Concat(word.Substring(0, 1).ToUpperInvariant(), word.Substring(1).ToLowerInvariant());
             }
 
@@ -1301,16 +1320,22 @@
             /// <returns></returns>
             public static string MakeInitialLower(string word)
             {
+                if (string.IsNullOrEmpty(word))
+                    return string.Empty;
                 return string.Concat(word.Substring(0, 1).ToLowerInvariant(), word.Substring(1));
             }
 
             public static string MakeLowerIfAllCaps(string word)
             {
+                if (string.IsNullOrEmpty(word))
+                    return string.Empty;
                 return IsAllCaps(word) ? word.ToLowerInvariant() : word;
             }
 
             public static bool IsAllCaps(string word)
             {
+                if (string.IsNullOrEmpty(word))
+                    return false;
                 return word.All(char.IsUpper);
             }
         }
@@ -2002,6 +2027,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
                                 // Handle table names with underscores - singularise just the last word
                                 table.ClassName = Inflector.MakeSingular(CleanUp(tableName));
+                                var titleCase = (usePascalCase ? Inflector.ToTitleCase(table.ClassName) : table.ClassName).Replace(" ", "").Replace("$", "").Replace(".", "");
                                 table.NameHumanCase = titleCase;
 
                                 if((string.Compare(table.Schema, "dbo", StringComparison.OrdinalIgnoreCase) != 0) && prependSchemaName)
@@ -2009,6 +2035,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
                                 // Check for table or C# name clashes
                                 if (ReservedKeywords.Contains(table.NameHumanCase) ||
+                                    (usePascalCase && result.Find(x => x.NameHumanCase == table.NameHumanCase) != null))
                                 {
                                     table.NameHumanCase += "1";
                                 }
@@ -2296,14 +2323,15 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                             };
 
                             var clean = CleanUp(param.Name.Replace("@", ""));
-                            param.NameHumanCase =
-                                Inflector.MakeInitialLower(
-                                    (usePascalCase ? Inflector.ToTitleCase(clean) : clean).Replace(" ", ""));
+                            if (!string.IsNullOrEmpty(clean))
+                            {
+                                param.NameHumanCase = Inflector.MakeInitialLower((usePascalCase ? Inflector.ToTitleCase(clean) : clean).Replace(" ", ""));
 
-                            if (ReservedKeywords.Contains(param.NameHumanCase))
-                                param.NameHumanCase = "@" + param.NameHumanCase;
+                                if (ReservedKeywords.Contains(param.NameHumanCase))
+                                    param.NameHumanCase = "@" + param.NameHumanCase;
 
-                            sp.Parameters.Add(param);
+                                sp.Parameters.Add(param);
+                            }
                         }
                     }
                 }
@@ -2582,6 +2610,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 if (ReservedKeywords.Contains(col.NameHumanCase))
                     col.NameHumanCase = "@" + col.NameHumanCase;
 
+                col.DisplayName = string.Concat(col.Name.Substring(0, 1).ToUpperInvariant(), col.Name.Substring(1).ToLowerInvariant()); // MakeInitialCaps
+                col.DisplayName = Regex.Replace(Regex.Replace(Regex.Replace(col.DisplayName, @"([A-Z]+)([A-Z][a-z])", "$1 $2"), @"([a-z\d])([A-Z])", "$1 $2"), @"\W", "");
 
                 var titleCase = (usePascalCase ? Inflector.ToTitleCase(col.NameHumanCase) : col.NameHumanCase).Replace(" ", "");
                 if (titleCase != string.Empty)

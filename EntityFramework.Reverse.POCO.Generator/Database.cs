@@ -60,7 +60,6 @@ namespace EntityFramework_Reverse_POCO_Generator
         System.Data.Entity.DbSet<SummaryOfSalesByQuarter> SummaryOfSalesByQuarters { get; set; } // Summary of Sales by Quarter
         System.Data.Entity.DbSet<SummaryOfSalesByYear> SummaryOfSalesByYears { get; set; } // Summary of Sales by Year
         System.Data.Entity.DbSet<Supplier> Suppliers { get; set; } // Suppliers
-        System.Data.Entity.DbSet<Sysdiagram> Sysdiagrams { get; set; } // sysdiagrams
         System.Data.Entity.DbSet<Territory> Territories { get; set; } // Territories
 
         int SaveChanges();
@@ -139,16 +138,12 @@ namespace EntityFramework_Reverse_POCO_Generator
         public System.Data.Entity.DbSet<SummaryOfSalesByQuarter> SummaryOfSalesByQuarters { get; set; } // Summary of Sales by Quarter
         public System.Data.Entity.DbSet<SummaryOfSalesByYear> SummaryOfSalesByYears { get; set; } // Summary of Sales by Year
         public System.Data.Entity.DbSet<Supplier> Suppliers { get; set; } // Suppliers
-        public System.Data.Entity.DbSet<Sysdiagram> Sysdiagrams { get; set; } // sysdiagrams
         public System.Data.Entity.DbSet<Territory> Territories { get; set; } // Territories
 
         static MyDbContext()
         {
             System.Data.Entity.Database.SetInitializer<MyDbContext>(null);
-            MyDbContextStaticPartial();
         }
-
-        static partial void MyDbContextStaticPartial();
 
         public MyDbContext()
             : base("Name=MyDbContext")
@@ -218,7 +213,6 @@ namespace EntityFramework_Reverse_POCO_Generator
             modelBuilder.Configurations.Add(new SummaryOfSalesByQuarterConfiguration());
             modelBuilder.Configurations.Add(new SummaryOfSalesByYearConfiguration());
             modelBuilder.Configurations.Add(new SupplierConfiguration());
-            modelBuilder.Configurations.Add(new SysdiagramConfiguration());
             modelBuilder.Configurations.Add(new TerritoryConfiguration());
         }
 
@@ -249,7 +243,6 @@ namespace EntityFramework_Reverse_POCO_Generator
             modelBuilder.Configurations.Add(new SummaryOfSalesByQuarterConfiguration(schema));
             modelBuilder.Configurations.Add(new SummaryOfSalesByYearConfiguration(schema));
             modelBuilder.Configurations.Add(new SupplierConfiguration(schema));
-            modelBuilder.Configurations.Add(new SysdiagramConfiguration(schema));
             modelBuilder.Configurations.Add(new TerritoryConfiguration(schema));
             return modelBuilder;
         }
@@ -514,7 +507,6 @@ namespace EntityFramework_Reverse_POCO_Generator
         public System.Data.Entity.DbSet<SummaryOfSalesByQuarter> SummaryOfSalesByQuarters { get; set; }
         public System.Data.Entity.DbSet<SummaryOfSalesByYear> SummaryOfSalesByYears { get; set; }
         public System.Data.Entity.DbSet<Supplier> Suppliers { get; set; }
-        public System.Data.Entity.DbSet<Sysdiagram> Sysdiagrams { get; set; }
         public System.Data.Entity.DbSet<Territory> Territories { get; set; }
 
         public FakeMyDbContext()
@@ -544,7 +536,6 @@ namespace EntityFramework_Reverse_POCO_Generator
             SummaryOfSalesByQuarters = new FakeDbSet<SummaryOfSalesByQuarter>("OrderId");
             SummaryOfSalesByYears = new FakeDbSet<SummaryOfSalesByYear>("OrderId");
             Suppliers = new FakeDbSet<Supplier>("SupplierId");
-            Sysdiagrams = new FakeDbSet<Sysdiagram>("DiagramId");
             Territories = new FakeDbSet<Territory>("TerritoryId");
         }
 
@@ -1444,17 +1435,6 @@ namespace EntityFramework_Reverse_POCO_Generator
         }
     }
 
-    // sysdiagrams
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.24.0.0")]
-    public class Sysdiagram
-    {
-        public string Name { get; set; } // name (length: 128)
-        public int PrincipalId { get; set; } // principal_id
-        public int DiagramId { get; set; } // diagram_id (Primary key)
-        public int? Version { get; set; } // version
-        public byte[] Definition { get; set; } // definition
-    }
-
     // Territories
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.24.0.0")]
     public class Territory
@@ -2108,28 +2088,6 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.Phone).HasColumnName(@"Phone").IsOptional().HasColumnType("nvarchar").HasMaxLength(24);
             Property(x => x.Fax).HasColumnName(@"Fax").IsOptional().HasColumnType("nvarchar").HasMaxLength(24);
             Property(x => x.HomePage).HasColumnName(@"HomePage").IsOptional().HasColumnType("ntext").IsMaxLength();
-        }
-    }
-
-    // sysdiagrams
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.24.0.0")]
-    public class SysdiagramConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<Sysdiagram>
-    {
-        public SysdiagramConfiguration()
-            : this("dbo")
-        {
-        }
-
-        public SysdiagramConfiguration(string schema)
-        {
-            ToTable("sysdiagrams", schema);
-            HasKey(x => x.DiagramId);
-
-            Property(x => x.Name).HasColumnName(@"name").IsRequired().HasColumnType("nvarchar").HasMaxLength(128);
-            Property(x => x.PrincipalId).HasColumnName(@"principal_id").IsRequired().HasColumnType("int");
-            Property(x => x.DiagramId).HasColumnName(@"diagram_id").IsRequired().HasColumnType("int").HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity);
-            Property(x => x.Version).HasColumnName(@"version").IsOptional().HasColumnType("int");
-            Property(x => x.Definition).HasColumnName(@"definition").IsOptional().HasColumnType("varbinary");
         }
     }
 
