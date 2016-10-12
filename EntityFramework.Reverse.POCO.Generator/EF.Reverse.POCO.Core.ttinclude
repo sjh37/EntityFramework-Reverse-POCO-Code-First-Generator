@@ -899,7 +899,6 @@
                 if (NameHumanCase.Equals("Email", StringComparison.InvariantCultureIgnoreCase) ||
                     NameHumanCase.Equals("EmailAddress", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    DataAnnotations.Add("Display(Name = \"Email\")");
                     DataAnnotations.Add("EmailAddress");
                 }
 
