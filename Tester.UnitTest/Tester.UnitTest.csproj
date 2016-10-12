@@ -55,6 +55,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CustomersRepositoryTests.cs" />
+    <Compile Include="Inflector.cs" />
+    <Compile Include="CleanUpTests.cs" />
     <Compile Include="IRepository.cs" />
     <Compile Include="MockRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
