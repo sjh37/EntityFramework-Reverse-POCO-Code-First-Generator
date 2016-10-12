@@ -823,7 +823,7 @@
                 var databaseGeneratedOption = string.Empty;
 
                 if(dataAnnotationsSchema)
-                    DataAnnotations.Add(string.Format("Column(\"{0}\", Order = {1}, TypeName = \"{2}\")", Name, Ordinal, SqlPropertyType));
+                    DataAnnotations.Add(string.Format("Column(@\"{0}\", Order = {1}, TypeName = \"{2}\")", Name, Ordinal, SqlPropertyType));
 
                 if (IsIdentity)
                 {
