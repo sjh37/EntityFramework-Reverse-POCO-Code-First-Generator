@@ -287,9 +287,18 @@
 
     Func<Column, string> WritePocoColumn = c =>
     {
+        bool commentWritten = false;
+        if((IncludeExtendedPropertyComments == CommentsStyle.InSummaryBlock || IncludeComments == CommentsStyle.InSummaryBlock) && !string.IsNullOrEmpty(c.SummaryComments))
+        {
+            WriteLine(string.Empty);
+            WriteLine("        ///<summary>");
+            WriteLine("        /// {0}", c.SummaryComments);
+            WriteLine("        ///</summary>");
+            commentWritten = true;
+        }
         if (UseDataAnnotations)
         {
-            if(c.Ordinal > 1)
+            if(c.Ordinal > 1 && !commentWritten)
                 WriteLine(string.Empty);    // Leave a blank line before the next property
 
             foreach (var dataAnnotation in c.DataAnnotations)
