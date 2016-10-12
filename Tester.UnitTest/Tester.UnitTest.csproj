@@ -59,6 +59,7 @@
     <Compile Include="MockRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MockRepositoryTest.cs" />
+    <Compile Include="ToDisplayNameTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

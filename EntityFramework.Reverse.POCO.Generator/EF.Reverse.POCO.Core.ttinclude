@@ -188,6 +188,56 @@
             return str;
         };
 
+        private static readonly Func<string, string> ToDisplayName = (str) =>
+        {
+            if (string.IsNullOrEmpty(str))
+                return string.Empty;
+
+            var sb = new StringBuilder();
+            str = Regex.Replace(str, @"[^a-zA-Z0-9]", " "); // Anything that is not a letter or digit, convert to a space
+            str = Regex.Replace(str, @"[A-Z]{2,}", " $+ "); // Any word that is upper case
+
+            var hasUpperCased = false;
+            var lastChar = '\0';
+            foreach (var original in str.Trim())
+            {
+                var c = original;
+                if (lastChar == '\0')
+                {
+                    c = char.ToUpperInvariant(original);
+                }
+                else
+                {
+                    var isLetter = char.IsLetter(original);
+                    var isDigit = char.IsDigit(original);
+                    var isWhiteSpace = !isLetter && !isDigit;
+
+                    // Is this char is different to last time
+                    var isDifferent = false;
+                    if (isLetter && !char.IsLetter(lastChar))
+                        isDifferent = true;
+                    else if (isDigit && !char.IsDigit(lastChar))
+                        isDifferent = true;
+                    else if (char.IsUpper(original) && !char.IsUpper(lastChar))
+                        isDifferent = true;
+
+                    if (isDifferent || isWhiteSpace)
+                        sb.Append(' '); // Add a space
+
+                    if (hasUpperCased && isLetter)
+                        c = char.ToLowerInvariant(original);
+                }
+                lastChar = original;
+                if (!hasUpperCased && char.IsUpper(c))
+                    hasUpperCased = true;
+                sb.Append(c);
+            }
+            str = sb.ToString();
+            str = Regex.Replace(str, @"\s+", " ").Trim(); // Multiple white space to one space
+            str = Regex.Replace(str, @"\bid\b", "ID"); //  Make ID word uppercase
+            return str;
+        };
+
         public string ConnectionString
         {
             get
@@ -1170,7 +1220,7 @@
         /// </summary>
         public static class Inflector
         {
-            static public IPluralizationService PluralizationService = null;
+            public static IPluralizationService PluralizationService = null;
 
             /// <summary>
             /// Makes the plural.
@@ -2609,8 +2659,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 if (ReservedKeywords.Contains(col.NameHumanCase))
                     col.NameHumanCase = "@" + col.NameHumanCase;
 
-                col.DisplayName = string.Concat(col.Name.Substring(0, 1).ToUpperInvariant(), col.Name.Substring(1).ToLowerInvariant()); // MakeInitialCaps
-                col.DisplayName = Regex.Replace(Regex.Replace(Regex.Replace(col.DisplayName, @"([A-Z]+)([A-Z][a-z])", "$1 $2"), @"([a-z\d])([A-Z])", "$1 $2"), @"\W", "");
+                col.DisplayName = ToDisplayName(col.Name);
 
                 var titleCase = (usePascalCase ? Inflector.ToTitleCase(col.NameHumanCase) : col.NameHumanCase).Replace(" ", "");
                 if (titleCase != string.Empty)
