@@ -1063,7 +1063,7 @@ if(IncludeComments != CommentsStyle.None){#>    // <#=tbl.Name#>
             HasKey(<#=tbl.PrimaryKeyNameHumanCase()#>);
 
 <#
-foreach(Column col in tbl.Columns.Where(x => !x.Hidden).OrderBy(x => x.Ordinal))
+foreach(Column col in tbl.Columns.Where(x => !x.Hidden && !string.IsNullOrEmpty(x.Config)).OrderBy(x => x.Ordinal))
 {
 #>
             <#=col.Config #>
