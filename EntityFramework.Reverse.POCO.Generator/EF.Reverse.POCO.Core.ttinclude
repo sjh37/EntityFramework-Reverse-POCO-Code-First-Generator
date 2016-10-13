@@ -870,34 +870,38 @@
             private void SetupConfig(bool dataAnnotations, bool dataAnnotationsSchema)
             {
                 DataAnnotations = new List<string>();
-                var databaseGeneratedOption = string.Empty;
-
-                if(dataAnnotationsSchema)
-                    DataAnnotations.Add(string.Format("Column(@\"{0}\", Order = {1}, TypeName = \"{2}\")", Name, Ordinal, SqlPropertyType));
+                string databaseGeneratedOption = null;
 
                 if (IsIdentity)
                 {
-                    databaseGeneratedOption = ".HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity)";
                     if(dataAnnotationsSchema)
                         DataAnnotations.Add("DatabaseGenerated(DatabaseGeneratedOption.Identity)");
+                    else
+                        databaseGeneratedOption = ".HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity)";
                 }
 
                 if(IsComputed())
                 {
-                    databaseGeneratedOption = ".HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Computed)";
                     if(dataAnnotationsSchema)
                         DataAnnotations.Add("DatabaseGenerated(DatabaseGeneratedOption.Computed)");
+                    else
+                        databaseGeneratedOption = ".HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Computed)";
                 }
 
                 if (IsPrimaryKey && !IsIdentity && !IsStoreGenerated)
                 {
-                    databaseGeneratedOption = ".HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None)";
                     if(dataAnnotationsSchema)
                         DataAnnotations.Add("DatabaseGenerated(DatabaseGeneratedOption.None)");
+                    else
+                        databaseGeneratedOption = ".HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None)";
                 }
 
                 var sb = new StringBuilder();
-                sb.AppendFormat("Property(x => x.{0}).HasColumnName(@\"{1}\").HasColumnType(\"{2}\")", NameHumanCase, Name, SqlPropertyType);
+
+                if(dataAnnotationsSchema)
+                    DataAnnotations.Add(string.Format("Column(@\"{0}\", Order = {1}, TypeName = \"{2}\")", Name, Ordinal, SqlPropertyType));
+                else
+                    sb.AppendFormat(".HasColumnName(@\"{0}\").HasColumnType(\"{1}\")", Name, SqlPropertyType);
 
                 if (IsNullable)
                 {
@@ -905,9 +909,10 @@
                 }
                 else
                 {
-                    sb.Append(".IsRequired()");
                     if(dataAnnotations)
                         DataAnnotations.Add("Required");
+                    else
+                        sb.Append(".IsRequired()");
                 }
 
                 if (IsFixedLength || IsRowVersion)
@@ -924,21 +929,22 @@
 
                 if (!IsMaxLength && MaxLength > 0)
                 {
-                    sb.AppendFormat(".HasMaxLength({0})", MaxLength);
                     if (dataAnnotations)
                     {
                         DataAnnotations.Add(string.Format("MaxLength({0})", MaxLength));
 
                         if (PropertyType.Equals("string", StringComparison.InvariantCultureIgnoreCase))
                             DataAnnotations.Add(string.Format("StringLength({0})", MaxLength));
-                    }
+                    } else
+                        sb.AppendFormat(".HasMaxLength({0})", MaxLength);
                 }
 
                 if (IsMaxLength)
                 {
-                    sb.Append(".IsMaxLength()");
                     if (dataAnnotations)
                         DataAnnotations.Add("MaxLength");
+                    else
+                        sb.Append(".IsMaxLength()");
                 }
 
                 if ((Precision > 0 || Scale > 0) && PropertyType == "decimal")
@@ -949,9 +955,10 @@
 
                 if (IsRowVersion)
                 {
-                    sb.Append(".IsRowVersion()");
                     if (dataAnnotations)
                         DataAnnotations.Add("Timestamp");
+                    else
+                        sb.Append(".IsRowVersion()");
                 }
 
                 if (IsConcurrencyToken)
@@ -960,10 +967,12 @@
                     // DataAnnotations.Add("????");
                 }
 
-                sb.Append(databaseGeneratedOption);
-                sb.Append(";");
+                if(databaseGeneratedOption != null)
+                    sb.Append(databaseGeneratedOption);
 
-                Config = sb.ToString();
+                var config = sb.ToString();
+                if(!string.IsNullOrEmpty(config))
+                    Config = string.Format("Property(x => x.{0}){1};", NameHumanCase, config);
 
                 if (!dataAnnotations)
                     return; // Only data annotations below this point
