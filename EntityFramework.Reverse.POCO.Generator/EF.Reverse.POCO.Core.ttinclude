@@ -896,52 +896,80 @@
                         DataAnnotations.Add("DatabaseGenerated(DatabaseGeneratedOption.None)");
                 }
 
-                Config = string.Format("Property(x => x.{0}).HasColumnName(@\"{1}\"){2}{3}{4}{5}{6}{7}{8}{9}{10}{11};", NameHumanCase, Name,
-                                            (IsNullable) ? ".IsOptional()" : ".IsRequired()",
-                                            (IsFixedLength || IsRowVersion) ? ".IsFixedLength()" : "",
-                                            (IsUnicode) ? string.Empty : ".IsUnicode(false)",
-                                            ".HasColumnType(\"" + SqlPropertyType + "\")",
-                                            (!IsMaxLength && MaxLength > 0) ? ".HasMaxLength(" + MaxLength + ")" : string.Empty,
-                                            (IsMaxLength) ? ".IsMaxLength()" : string.Empty,
-                                            ((Precision > 0 || Scale > 0) && PropertyType == "decimal") ? ".HasPrecision(" + Precision + "," + Scale + ")" : string.Empty,
-                                            (IsRowVersion) ? ".IsRowVersion()" : string.Empty,
-                                            (IsConcurrencyToken) ? ".IsConcurrencyToken()" : string.Empty,
-                                            databaseGeneratedOption);
+                var sb = new StringBuilder();
+                sb.AppendFormat("Property(x => x.{0}).HasColumnName(@\"{1}\").HasColumnType(\"{2}\")", NameHumanCase, Name, SqlPropertyType);
 
-                if (!dataAnnotations)
-                    return;
+                if (IsNullable)
+                {
+                    sb.Append(".IsOptional()");
+                }
+                else
+                {
+                    sb.Append(".IsRequired()");
+                    if(dataAnnotations)
+                        DataAnnotations.Add("Required");
+                }
 
-                if (IsPrimaryKey)
-                    DataAnnotations.Add("Key");
+                if (IsFixedLength || IsRowVersion)
+                {
+                    sb.Append(".IsFixedLength()");
+                    // DataAnnotations.Add("????");
+                }
 
-                if (!IsNullable)
-                    DataAnnotations.Add("Required");
-
-                //if(IsFixedLength || IsRowVersion)
-                //    DataAnnotations.Add("????");
-
-                //if(!IsUnicode)
-                //    DataAnnotations.Add("????");
+                if (!IsUnicode)
+                {
+                    sb.Append(".IsUnicode(false)");
+                    // DataAnnotations.Add("????");
+                }
 
                 if (!IsMaxLength && MaxLength > 0)
                 {
-                    DataAnnotations.Add(string.Format("MaxLength({0})", MaxLength));
+                    sb.AppendFormat(".HasMaxLength({0})", MaxLength);
+                    if (dataAnnotations)
+                    {
+                        DataAnnotations.Add(string.Format("MaxLength({0})", MaxLength));
 
-                    if (PropertyType.Equals("string", StringComparison.InvariantCultureIgnoreCase))
-                        DataAnnotations.Add(string.Format("StringLength({0})", MaxLength));
+                        if (PropertyType.Equals("string", StringComparison.InvariantCultureIgnoreCase))
+                            DataAnnotations.Add(string.Format("StringLength({0})", MaxLength));
+                    }
                 }
 
                 if (IsMaxLength)
-                    DataAnnotations.Add("MaxLength");
+                {
+                    sb.Append(".IsMaxLength()");
+                    if (dataAnnotations)
+                        DataAnnotations.Add("MaxLength");
+                }
 
-                //if(Scale > 0)
-                //    DataAnnotations.Add("????");
+                if ((Precision > 0 || Scale > 0) && PropertyType == "decimal")
+                {
+                    sb.AppendFormat(".HasPrecision({0},{1})", Precision, Scale);
+                    // DataAnnotations.Add("????");
+                }
 
                 if (IsRowVersion)
-                    DataAnnotations.Add("Timestamp");
+                {
+                    sb.Append(".IsRowVersion()");
+                    if (dataAnnotations)
+                        DataAnnotations.Add("Timestamp");
+                }
 
-                //if(IsConcurrencyToken)
-                //    DataAnnotations.Add("????");
+                if (IsConcurrencyToken)
+                {
+                    sb.Append(".IsConcurrencyToken()");
+                    // DataAnnotations.Add("????");
+                }
+
+                sb.Append(databaseGeneratedOption);
+                sb.Append(";");
+
+                Config = sb.ToString();
+
+                if (!dataAnnotations)
+                    return; // Only data annotations below this point
+
+                if (IsPrimaryKey)
+                    DataAnnotations.Add("Key");
 
                 if(NameHumanCase.Equals("CreditCard", StringComparison.InvariantCultureIgnoreCase))
                     DataAnnotations.Add("CreditCard");
@@ -3203,11 +3231,13 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
             public void SetupDataAnnotations()
             {
-                DataAnnotations = new List<string>();
+                DataAnnotations = new List<string>
+                {
+                    HasPrimaryKey
+                        ? string.Format("Table(\"{0}\", Schema = \"{1}\")", Name, Schema)
+                        : "NotMapped"
+                };
 
-                DataAnnotations.Add(HasPrimaryKey
-                    ? string.Format("Table(\"{0}\", Schema = \"{1}\")", Name, Schema)
-                    : "NotMapped");
             }
         }
 
