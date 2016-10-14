@@ -67,12 +67,12 @@ namespace EntityFramework_Reverse_POCO_Generator
         System.Threading.Tasks.Task<int> SaveChangesAsync(System.Threading.CancellationToken cancellationToken);
         System.Data.Entity.Infrastructure.DbChangeTracker ChangeTracker { get; }
         System.Data.Entity.Infrastructure.DbContextConfiguration Configuration { get; }
-        System.Data.Entity.Database Database { get; }        
-        System.Data.Entity.Infrastructure.DbEntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class;        
+        System.Data.Entity.Database Database { get; }
+        System.Data.Entity.Infrastructure.DbEntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class;
         System.Data.Entity.Infrastructure.DbEntityEntry Entry(object entity);
         System.Collections.Generic.IEnumerable<System.Data.Entity.Validation.DbEntityValidationResult> GetValidationErrors();
         System.Data.Entity.DbSet Set(System.Type entityType);
-        System.Data.Entity.DbSet<TEntity> Set<TEntity>() where TEntity : class;        
+        System.Data.Entity.DbSet<TEntity> Set<TEntity>() where TEntity : class;
         string ToString();
 
         // Stored Procedures
@@ -246,7 +246,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             modelBuilder.Configurations.Add(new TerritoryConfiguration(schema));
             return modelBuilder;
         }
-        
+
         // Stored Procedures
         public System.Collections.Generic.List<CustOrderHistReturnModel> CustOrderHist(string customerId)
         {
