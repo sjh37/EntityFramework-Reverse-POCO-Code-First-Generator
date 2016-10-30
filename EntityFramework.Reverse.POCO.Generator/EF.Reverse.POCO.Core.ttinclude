@@ -98,7 +98,7 @@
         List<EnumDefinition> EnumsDefinitions = new List<EnumDefinition>();
 
         string CodeGeneratedAttribute = "[System.CodeDom.Compiler.GeneratedCode(\"EF.Reverse.POCO.Generator\", \"2.24.0.0\")]";
-
+        bool HasCodeGeneratedAttribute = !string.IsNullOrEmpty(CodeGeneratedAttribute);
         // Settings to allow selective code generation
         [Flags]
         private enum Elements
