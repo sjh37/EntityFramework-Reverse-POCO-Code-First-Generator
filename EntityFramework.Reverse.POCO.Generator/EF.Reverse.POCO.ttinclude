@@ -160,7 +160,8 @@ if (IncludeTableValuedFunctions)
     // ************************************************************************
     // Db Migration Configuration
 <# } #>
-    <#if(HasCodeGeneratedAttribute){#><#=CodeGeneratedAttribute#><#}#>
+<#if(IncludeCodeGeneratedAttribute){#>    <#=CodeGeneratedAttribute#>
+<#}#>
     internal sealed <# if(MakeClassesPartial) { #>partial <# } #>class <#=MigrationConfigurationFileName#> : System.Data.Entity.Migrations.DbMigrationsConfiguration<<#=DbContextName#>>
     {
         public <#=MigrationConfigurationFileName#>()
@@ -206,7 +207,8 @@ foreach(var usingStatement in usingsContext.Distinct().OrderBy(x => x)) { #>
 <# } #>
 
 <# } #>
-    <#if(HasCodeGeneratedAttribute){#><#=CodeGeneratedAttribute#><#}#>
+<#if(IncludeCodeGeneratedAttribute){#>    <#=CodeGeneratedAttribute#>
+<#}#>
     public <# if(MakeClassesPartial) { #>partial <# } #>class <#=DbContextName#> : <#=DbContextBaseClass#>, <#=DbContextInterfaceName#>
     {
 <#
@@ -500,7 +502,8 @@ foreach(var usingStatement in usingsContext.Distinct().OrderBy(x => x)) { #>
 <# } #>
 
 <# } #>
-    <#if(HasCodeGeneratedAttribute){#><#=CodeGeneratedAttribute#><#}#>
+<#if(IncludeCodeGeneratedAttribute){#>    <#=CodeGeneratedAttribute#>
+<#}#>
     public <# if(MakeClassesPartial) { #>partial <# } #>class Fake<#=DbContextName #> : <#=DbContextInterfaceName #>
     {
 <#
@@ -683,7 +686,8 @@ if (IncludeTableValuedFunctions)
     //          }
     //      }
     //      Read more about it here: https://msdn.microsoft.com/en-us/data/dn314431.aspx
-    <#if(HasCodeGeneratedAttribute){#><#=CodeGeneratedAttribute#><#}#>
+<#if(IncludeCodeGeneratedAttribute){#>    <#=CodeGeneratedAttribute#>
+<#}#>
     public <# if(MakeClassesPartial) { #>partial <# } #>class FakeDbSet<TEntity> : System.Data.Entity.DbSet<TEntity>, IQueryable, System.Collections.Generic.IEnumerable<TEntity><# if (IsSupportedFrameworkVersion("4.5")) { #>, System.Data.Entity.Infrastructure.IDbAsyncEnumerable<TEntity><# } #> where TEntity : class
     {
         private readonly System.Reflection.PropertyInfo[] _primaryKeys;
@@ -838,7 +842,8 @@ if (IncludeTableValuedFunctions)
 <# if (IsSupportedFrameworkVersion("4.5"))
 { #>
 
-    <#if(HasCodeGeneratedAttribute){#><#=CodeGeneratedAttribute#><#}#>
+<#if(IncludeCodeGeneratedAttribute){#>    <#=CodeGeneratedAttribute#>
+<#}#>
     public class FakeDbAsyncQueryProvider<TEntity> : System.Data.Entity.Infrastructure.IDbAsyncQueryProvider
     {
         private readonly IQueryProvider _inner;
@@ -879,7 +884,8 @@ if (IncludeTableValuedFunctions)
         }
     }
 
-    <#if(HasCodeGeneratedAttribute){#><#=CodeGeneratedAttribute#><#}#>
+<#if(IncludeCodeGeneratedAttribute){#>    <#=CodeGeneratedAttribute#>
+<#}#>
     public class FakeDbAsyncEnumerable<T> : EnumerableQuery<T>, System.Data.Entity.Infrastructure.IDbAsyncEnumerable<T>, IQueryable<T>
     {
         public FakeDbAsyncEnumerable(System.Collections.Generic.IEnumerable<T> enumerable)
@@ -906,7 +912,8 @@ if (IncludeTableValuedFunctions)
         }
     }
 
-    <#if(HasCodeGeneratedAttribute){#><#=CodeGeneratedAttribute#><#}#>
+<#if(IncludeCodeGeneratedAttribute){#>    <#=CodeGeneratedAttribute#>
+<#}#>
     public class FakeDbAsyncEnumerator<T> : System.Data.Entity.Infrastructure.IDbAsyncEnumerator<T>
     {
         private readonly System.Collections.Generic.IEnumerator<T> _inner;
@@ -962,7 +969,8 @@ if(!tbl.HasPrimaryKey) { #>
 <# if(AddWcfDataAttributes) { #>    [System.Runtime.Serialization.DataContract<#=ExtraWcfDataContractAttributes#>]
 <# } 
     WritePocoClassAttributes(tbl);#>
-    <#if(HasCodeGeneratedAttribute){#><#=CodeGeneratedAttribute#><#}#>
+<#if(IncludeCodeGeneratedAttribute){#>    <#=CodeGeneratedAttribute#>
+<#}#>
     public <# if(MakeClassesPartial) { #>partial <# } #>class <#=tbl.NameHumanCase#><#=WritePocoBaseClasses != null ? WritePocoBaseClasses(tbl) : "" #>
     {
 <# WritePocoBaseClassBody(tbl); #>
@@ -1054,7 +1062,8 @@ foreach(Table tbl in tables.Where(t => !t.IsMapping && t.HasPrimaryKey).OrderBy(
 <# fileManager.StartNewFile(tbl.NameHumanCase + ConfigurationClassName + FileExtension);
 if(IncludeComments != CommentsStyle.None){#>    // <#=tbl.Name#>
 <# } #>
-    <#if(HasCodeGeneratedAttribute){#><#=CodeGeneratedAttribute#><#}#>
+<#if(IncludeCodeGeneratedAttribute){#>    <#=CodeGeneratedAttribute#>
+<#}#>
     public <# if(MakeClassesPartial) { #>partial <# } #>class <#=tbl.NameHumanCase + ConfigurationClassName#> : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<<#=tbl.NameHumanCase#>>
     {
         public <#=tbl.NameHumanCase + ConfigurationClassName#>()
@@ -1118,7 +1127,8 @@ foreach(StoredProcedure sp in storedProcs.Where(x => x.ReturnModels.Count > 0 &&
 <# fileManager.StartNewFile(spReturnClassName + FileExtension);#>
 <# if(AddWcfDataAttributes) { #>    [System.Runtime.Serialization.DataContract<#=ExtraWcfDataContractAttributes#>]
 <# } #>
-    <#if(HasCodeGeneratedAttribute){#><#=CodeGeneratedAttribute#><#}#>
+<#if(IncludeCodeGeneratedAttribute){#>    <#=CodeGeneratedAttribute#>
+<#}#>
     public <# if(MakeClassesPartial) { #>partial <# } #>class <#= spReturnClassName #>
     {
 <#
@@ -1138,7 +1148,8 @@ if(returnModelCount < 2)
     {
         int SubDataMemberOrder = 1;
         model++;#>
-        <#if(HasCodeGeneratedAttribute){#><#=CodeGeneratedAttribute#><#}#>
+<#if(IncludeCodeGeneratedAttribute){#>    <#=CodeGeneratedAttribute#>
+<#}#>
         public class ResultSetModel<#= model #>
         {
 <#      foreach (var returnColumn in returnModel)
