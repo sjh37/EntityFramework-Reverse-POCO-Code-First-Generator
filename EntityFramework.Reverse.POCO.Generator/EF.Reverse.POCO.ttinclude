@@ -1067,13 +1067,15 @@ if(IncludeComments != CommentsStyle.None){#>    // <#=tbl.Name#>
 
         public <#=tbl.NameHumanCase + ConfigurationClassName#>(string schema)
         {
-<# if (!string.IsNullOrEmpty(tbl.Schema)) { #>
+<#if(!UseDataAnnotationsSchema){ if (!string.IsNullOrEmpty(tbl.Schema)) { #>
             ToTable("<#=tbl.Name#>", schema);
 <# } else { #>
             ToTable("<#=tbl.Name#>");
-<# } #>
+<# }} 
+if(!UseDataAnnotations){#>
             HasKey(<#=tbl.PrimaryKeyNameHumanCase()#>);
 
+<# } #>
 <#
 foreach(Column col in tbl.Columns.Where(x => !x.Hidden && !string.IsNullOrEmpty(x.Config)).OrderBy(x => x.Ordinal))
 {
