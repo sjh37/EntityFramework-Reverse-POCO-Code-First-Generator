@@ -402,7 +402,7 @@ foreach (StoredProcedure sp in storedProcs.Where(s => !s.IsTVF))
         public int <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp, true) #>)
         {
 <#= WriteStoredProcFunctionDeclareSqlParameter(sp, true) #>
-            Database.ExecuteSqlCommand("EXEC @procResult = [<#=sp.Schema #>].[<#= sp.Name #>] <#= WriteStoredProcFunctionSqlAtParams(sp) #>", <#= WriteStoredProcFunctionSqlParameterAnonymousArray(sp, true) #>);
+            Database.ExecuteSqlCommand(System.Data.Entity.TransactionalBehavior.DoNotEnsureTransaction, "EXEC @procResult = [<#=sp.Schema #>].[<#= sp.Name #>] <#= WriteStoredProcFunctionSqlAtParams(sp) #>", <#= WriteStoredProcFunctionSqlParameterAnonymousArray(sp, true) #>);
 <#= WriteStoredProcFunctionSetSqlParameters(sp, false) #>
             return (int) procResultParam.Value;
         }
