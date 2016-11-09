@@ -587,7 +587,6 @@
 
                     var reader = new SqlServerSchemaReader(conn, factory, IncludeQueryTraceOn9481Flag) { Outer = this };
                     var tables = reader.ReadSchema(SchemaFilterExclude, SchemaFilterInclude, TableFilterExclude, TableFilterInclude, ColumnFilterExclude, TableFilter, UsePascalCase, PrependSchemaName, IncludeComments, IncludeViews, IncludeExtendedPropertyComments, TableRename, UpdateColumn, UsePrivateSetterForComputedColumns, IncludeSynonyms, UseDataAnnotations, UseDataAnnotationsSchema);
-                    tables.SetPrimaryKeys();
 
                     // Must be done in this order
                     var fkList = reader.ReadForeignKeys(TableRename, ForeignKeyFilter);
@@ -605,8 +604,6 @@
 
                     foreach (var t in tables)
                     {
-                        t.SetHasPrimaryKey();
-
                         if(UseDataAnnotationsSchema)
                             t.SetupDataAnnotations();
                     }
@@ -803,6 +800,7 @@
             public List<string> EntityFk = new List<string>();
 
             public List<string> DataAnnotations;
+            public List<Index> Indexes = new List<Index>();
 
             public Table ParentTable;
 
@@ -903,6 +901,18 @@
                     DataAnnotations.Add(string.Format("Column(@\"{0}\", Order = {1}, TypeName = \"{2}\")", Name, Ordinal, SqlPropertyType));
                 else
                     sb.AppendFormat(".HasColumnName(@\"{0}\").HasColumnType(\"{1}\")", Name, SqlPropertyType);
+
+                if (dataAnnotationsSchema && Indexes.Any())
+                {
+                    foreach (var index in Indexes)
+                    {
+                        DataAnnotations.Add(string.Format("Index(@\"{0}\", {1}, IsUnique = {2}, IsClustered = {3})",
+                            index.IndexName,
+                            index.KeyOrdinal,
+                            index.IsUnique ? "true" : "false",
+                            index.IsClustered ? "true" : "false"));
+                    }
+                }
 
                 if (IsNullable)
                 {
@@ -1448,7 +1458,7 @@
             public abstract List<ForeignKey> ReadForeignKeys(Func<string, string, string> tableRename, Func<ForeignKey, ForeignKey> foreignKeyFilter);
             public abstract void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool usePascalCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments, Func<string, string, short, string> ForeignKeyName);
             public abstract void IdentifyForeignKeys(List<ForeignKey> fkList, Tables tables);
-            public abstract void ReadUniqueIndexes(Tables tables);
+            public abstract void ReadIndexes(Tables tables);
             public abstract void ReadExtendedProperties(Tables tables);
 
             protected void WriteLine(string o)
@@ -1978,16 +1988,22 @@ ORDER BY R.SPECIFIC_SCHEMA,
         R.SPECIFIC_NAME,
         P.ORDINAL_POSITION";
 
-            private const string UniqueIndexSQL = @"
+            private const string IndexSQL = @"
 SELECT  SCHEMA_NAME(t.schema_id) AS TableSchema,
         t.name AS TableName,
         ind.name AS IndexName,
         ic.key_ordinal AS KeyOrdinal,
         col.name AS ColumnName,
-        (SELECT COUNT(1)
+        ind.is_unique AS IsUnique,
+        ind.is_primary_key AS IsPrimaryKey,
+        ind.is_unique_constraint AS IsUniqueConstraint,
+        CASE WHEN ind.[type] = 1 AND ind.is_primary_key = 1 THEN 1 ELSE 0 END AS IsClustered,
+        (
+         SELECT COUNT(1)
          FROM   sys.index_columns i
          WHERE  i.object_id = ind.object_id
-                AND i.index_id = ind.index_id) AS ColumnCount
+                AND i.index_id = ind.index_id
+        ) AS ColumnCount
 FROM    sys.tables t
         INNER JOIN sys.indexes ind
             ON ind.object_id = t.object_id
@@ -1998,12 +2014,9 @@ FROM    sys.tables t
             ON ic.object_id = col.object_id
                AND ic.column_id = col.column_id
 WHERE   t.is_ms_shipped = 0
-        AND (
-             ind.is_unique = 1
-             OR ind.is_primary_key = 1
-             OR ind.is_unique_constraint = 1
-            )
-        AND ind.ignore_dup_key = 0";
+        AND ind.ignore_dup_key = 0
+        AND ic.key_ordinal > 0
+        AND t.name NOT LIKE 'sysdiagram%'";
 
             private bool IncludeQueryTraceOn9481Flag;
 
@@ -2155,11 +2168,12 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 if (includeExtendedPropertyComments != CommentsStyle.None)
                     ReadExtendedProperties(result);
 
-                ReadUniqueIndexes(result);
+                ReadIndexes(result);
 
                 foreach(Table tbl in result)
                 {
                     tbl.Columns.ForEach(x => x.SetupEntityAndConfig(includeComments, includeExtendedPropertyComments, usePrivateSetterForComputedColumns, dataAnnotations, dataAnnotationsSchema));
+                    tbl.SetPrimaryKeys();
                 }
 
                 return result;
@@ -2208,7 +2222,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
             // When a table has no primary keys, all the NOT NULL columns are set as being the primary key.
             // This function reads the unique indexes for a table, and correctly sets the columns being used as primary keys.
-            public override void ReadUniqueIndexes(Tables tables)
+            public override void ReadIndexes(Tables tables)
             {
                 if (Cmd == null)
                     return;
@@ -2216,24 +2230,28 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 if (Cmd.GetType().Name == "SqlCeCommand")
                     return;
 
-                Cmd.CommandText = UniqueIndexSQL + IncludeQueryTraceOn9481();
+                Cmd.CommandText = IndexSQL + IncludeQueryTraceOn9481();
                 Cmd.CommandTimeout = 600;
 
-                var list = new List<UniqueIndex>();
+                var list = new List<Index>();
                 using (DbDataReader rdr = Cmd.ExecuteReader())
                 {
                     while (rdr.Read())
                     {
-                        var uniqueIndex = new UniqueIndex();
+                        var index = new Index();
 
-                        uniqueIndex.Schema      = rdr["TableSchema"].ToString().Trim();
-                        uniqueIndex.TableName   = rdr["TableName"].ToString().Trim();
-                        uniqueIndex.IndexName   = rdr["IndexName"].ToString().Trim();
-                        uniqueIndex.KeyOrdinal  = (byte) rdr["KeyOrdinal"];
-                        uniqueIndex.Column      = rdr["ColumnName"].ToString().Trim();
-                        uniqueIndex.ColumnCount = (int) rdr["ColumnCount"];
+                        index.Schema             = rdr["TableSchema"].ToString().Trim();
+                        index.TableName          = rdr["TableName"].ToString().Trim();
+                        index.IndexName          = rdr["IndexName"].ToString().Trim();
+                        index.KeyOrdinal         = (byte) rdr["KeyOrdinal"];
+                        index.ColumnName         = rdr["ColumnName"].ToString().Trim();
+                        index.ColumnCount        = (int) rdr["ColumnCount"];
+                        index.IsUnique           = (bool) rdr["IsUnique"];
+                        index.IsPrimaryKey       = (bool) rdr["IsPrimaryKey"];
+                        index.IsUniqueConstraint = (bool) rdr["IsUniqueConstraint"];
+                        index.IsClustered        = ((int) rdr["IsClustered"]) == 1;
 
-                        list.Add(uniqueIndex);
+                        list.Add(index);
                     }
                 }
 
@@ -2248,14 +2266,34 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     if (t == null || t.Name != indexTable.TableName || t.Schema != indexTable.Schema)
                         t = tables.Find(x => x.Name == indexTable.TableName && x.Schema == indexTable.Schema);
 
-                    // Check if table has no primary keys
-                    if (t == null || t.PrimaryKeys.Any())
-                        continue; // Already has a primary key, ignore this unique constraint
+                    if (t == null)
+                        continue;
+
+                    // Find indexes for table
+                    var indexes =
+                        list.Where(x => x.Schema == indexTable.Schema && x.TableName == indexTable.TableName)
+                            .OrderBy(o => o.ColumnCount)
+                            .ThenBy(o => o.KeyOrdinal);
+
+                    // Set index on column
+                    foreach (var index in indexes)
+                    {
+                        var col = t.Columns.Find(x => x.Name == index.ColumnName);
+                        if (col != null && !col.Hidden)
+                        {
+                            col.Indexes.Add(index);
+                            if (!col.IsPrimaryKey && index.IsPrimaryKey)
+                                col.IsPrimaryKey = true;
+                        }
+                    }
+
+                    // Check if table has any primary keys
+                    if (t.PrimaryKeys.Any())
+                        continue; // Already has a primary key, ignore this unique index / constraint
 
                     // Find unique indexes for table
                     var uniqueIndexKeys =
-                        list.Where(x => x.Schema == indexTable.Schema && x.TableName == indexTable.TableName)
-                            .Select(x => new { x.IndexName, x.KeyOrdinal, x.Column, x.ColumnCount })
+                        indexes.Where(x => x.IsUnique || x.IsPrimaryKey || x.IsUniqueConstraint)
                             .OrderBy(o => o.ColumnCount)
                             .ThenBy(o => o.KeyOrdinal);
 
@@ -2269,8 +2307,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         if (indexName != key.IndexName)
                             break; // First unique index with lowest column count has been processed, exit.
 
-                        var col = t.Columns.Find(x => x.Name == key.Column);
-                        if (col != null && !col.IsNullable && !col.Hidden)
+                        var col = t.Columns.Find(x => x.Name == key.ColumnName);
+                        if (col != null && !col.IsNullable && !col.Hidden && !col.IsPrimaryKey)
                         {
                             col.IsPrimaryKey = true;
                             col.IsPrimaryKeyViaUniqueIndex = true;
@@ -2974,14 +3012,18 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             }
         }
 
-        public class UniqueIndex
+        public class Index
         {
             public string Schema;
             public string TableName;
             public string IndexName;
             public byte KeyOrdinal;
-            public string Column;
+            public string ColumnName;
             public int ColumnCount;
+            public bool IsUnique;
+            public bool IsPrimaryKey;
+            public bool IsUniqueConstraint;
+            public bool IsClustered;
         }
 
         public class Table
@@ -3023,16 +3065,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     col.ResetNavigationProperties();
             }
 
-            public void SetHasPrimaryKey()
-            {
-                HasPrimaryKey = Columns.Any(x => x.IsPrimaryKey);
-            }
-
             public IEnumerable<Column> PrimaryKeys
             {
                 get
                 {
-                    return Columns.Where(x => x.IsPrimaryKey)
+                    return Columns.Where(x => x.IsPrimaryKey && !x.Hidden)
                                   .OrderBy(x => x.PrimaryKeyOrdinal)
                                   .ThenBy(x => x.Ordinal)
                                   .ToList();
@@ -3180,7 +3217,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
             public void SetPrimaryKeys()
             {
-                if(PrimaryKeys.Any())
+                HasPrimaryKey = Columns.Any(x => x.IsPrimaryKey && !x.Hidden);
+                if(HasPrimaryKey)
                     return; // Table has at least one primary key
 
                 // This table is not allowed in EntityFramework as it does not have a primary key.
@@ -3188,6 +3226,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 foreach(var col in Columns.Where(x => !x.IsNullable && !x.Hidden))
                 {
                     col.IsPrimaryKey = true;
+                    HasPrimaryKey = true;
                 }
             }
 
