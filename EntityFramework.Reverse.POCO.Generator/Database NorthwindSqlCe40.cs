@@ -200,7 +200,8 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         {
             throw new System.NotImplementedException();
         }
-        public System.Collections.Generic.IEnumerable<System.Data.Entity.Validation.DbEntityValidationResult> GetValidationErrors() {
+        public System.Collections.Generic.IEnumerable<System.Data.Entity.Validation.DbEntityValidationResult> GetValidationErrors()
+        {
             throw new System.NotImplementedException();
         }
         public System.Data.Entity.DbSet Set(System.Type entityType)

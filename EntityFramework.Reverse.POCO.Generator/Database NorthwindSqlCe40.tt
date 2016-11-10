@@ -22,8 +22,6 @@
     GenerateSeparateFiles = false;
     UseMappingTables = true; // If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
     UsePascalCase = true;    // This will rename the generated C# tables & properties to use PascalCase. If false table & property names will be left alone.
-    UseDataAnnotations = false; // If false, will use configuration classes, if true, will use data annotations.
-    UseDataAnnotationsSchema = false; // If false, will use configuration classes, if true, will use data annotations.
     IncludeComments = CommentsStyle.AtEndOfField; // Adds comments to the generated code
     IncludeExtendedPropertyComments = CommentsStyle.InSummaryBlock; // Adds extended properties as comments to the generated code
     IncludeViews = true;
@@ -31,6 +29,7 @@
     CollectionType = "System.Collections.Generic.List";  // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example. Add "System.Collections.ObjectModel" to AdditionalNamespaces if setting the CollectionType = "ObservableCollection".
     NullableShortHand = true; //true => T?, false => Nullable<T>
     AddUnitTestingDbContext = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing
+    IncludeCodeGeneratedAttribute = true; // If true, will include the GeneratedCode attribute, false to remove it.
     UsePrivateSetterForComputedColumns = true; // If the columns is computed, use a private setter.
     AdditionalNamespaces = new[] { "" };  // To include extra namespaces, include them here. i.e. "Microsoft.AspNet.Identity.EntityFramework"
     AdditionalContextInterfaceItems = new[] // To include extra db context interface items, include them here. Also set MakeClassesPartial=true, and implement the partial DbContext class functions.
@@ -40,11 +39,11 @@
     // If you need to serialize your entities with the JsonSerializer from Newtonsoft, this would serialize
     // all properties including the Reverse Navigation and Foreign Keys. The simplest way to exclude them is
     // to use the data annotation [JsonIgnore] on reverse navigation and foreign keys.
-    AdditionalReverseNavigationsDataAnnotations = new string[] // Data Annotations for ReverseNavigationProperty.
+    AdditionalReverseNavigationsDataAnnotations = new string[] // Data Annotations for all ReverseNavigationProperty.
     {
         // "JsonIgnore" // Also add "Newtonsoft.Json" to the AdditionalNamespaces array above
     };
-    AdditionalForeignKeysDataAnnotations = new string[] // Data Annotations for ForeignKeys.
+    AdditionalForeignKeysDataAnnotations = new string[] // Data Annotations for all ForeignKeys.
     {
         // "JsonIgnore" // Also add "Newtonsoft.Json" to the AdditionalNamespaces array above
     };
@@ -245,9 +244,18 @@
 
     Func<Column, string> WritePocoColumn = c =>
     {
+        bool commentWritten = false;
+        if((IncludeExtendedPropertyComments == CommentsStyle.InSummaryBlock || IncludeComments == CommentsStyle.InSummaryBlock) && !string.IsNullOrEmpty(c.SummaryComments))
+        {
+            WriteLine(string.Empty);
+            WriteLine("        ///<summary>");
+            WriteLine("        /// {0}", c.SummaryComments);
+            WriteLine("        ///</summary>");
+            commentWritten = true;
+        }
         if (UseDataAnnotations)
         {
-            if(c.Ordinal > 1)
+            if(c.Ordinal > 1 && !commentWritten)
                 WriteLine(string.Empty);    // Leave a blank line before the next property
 
             foreach (var dataAnnotation in c.DataAnnotations)
@@ -328,6 +336,7 @@
     Func<StoredProcedure, string> WriteStoredProcReturnModelName = null;
     Func<StoredProcedure, string> WriteStoredProcReturnType = null;
     Func<DataColumn, string> WriteStoredProcReturnColumn = null;
+    StoredProcedureReturnModelRename = (name, sp) => name;
 
     // Read schema
     IsSqlCe = true;
