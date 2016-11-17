@@ -317,10 +317,15 @@
 
     ForeignKeyFilter = (ForeignKey fk) =>
     {
-        // Return null to exclude this foreign key
+        // Return null to exclude this foreign key, or set IncludeReverseNavigationProperty = false
+        // to include the foeriegn key but not generate reverse navigation properties.
         // Example, to exclude all foreign keys for the Categories table, use:
         // if (fk.PkTableName == "Categories")
         //    return null;
+        // Example, to exclude reverse navigation properties for tables ending with Type, use:
+        // if (fk.PkTableName.EndsWith("Type"))
+        //    fk.IncludeReverseNavigationProperty = false;
+
         return fk;
     };
 

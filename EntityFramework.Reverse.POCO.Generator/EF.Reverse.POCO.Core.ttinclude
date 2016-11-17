@@ -799,6 +799,7 @@
             public List<string> ConfigFk = new List<string>();
             public string Entity;
             public List<string> EntityFk = new List<string>();
+            public bool IncludeReverseNavigation;
 
             public List<string> DataAnnotations;
             public List<Index> Indexes = new List<Index>();
@@ -809,6 +810,7 @@
             {
                 ConfigFk = new List<string>();
                 EntityFk = new List<string>();
+                IncludeReverseNavigation = false;
             }
 
             private void SetupEntity(CommentsStyle includeComments, CommentsStyle includeExtendedPropertyComments, bool usePrivateSetterForComputedColumns)
@@ -2594,8 +2596,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         mapKey = string.Format("\"{0}\"", fkCol.col.Name);
                     }
 
-                    fkCol.col.ConfigFk.Add(string.Format("{0};{1}", GetRelationship(relationship, fkCol.col, pkCol, pkPropName, fkPropName, manyToManyMapping, mapKey, foreignKey.CascadeOnDelete), includeComments != CommentsStyle.None ? " // " + foreignKey.ConstraintName : string.Empty));
-                    pkTable.AddReverseNavigation(relationship, pkTableHumanCase, fkTable, fkPropName, string.Format("{0}.{1}", fkTable.Name, foreignKey.ConstraintName), collectionType, includeComments);
+                    fkCol.col.ConfigFk.Add(string.Format("{0};{1}", GetRelationship(relationship, fkCol.col, pkCol, pkPropName, fkPropName, manyToManyMapping, mapKey, foreignKey.CascadeOnDelete, foreignKey.IncludeReverseNavigationProperty), includeComments != CommentsStyle.None ? " // " + foreignKey.ConstraintName : string.Empty));
+                    if(foreignKey.IncludeReverseNavigationProperty)
+                    {
+                        pkTable.AddReverseNavigation(relationship, pkTableHumanCase, fkTable, fkPropName, string.Format("{0}.{1}", fkTable.Name, foreignKey.ConstraintName), collectionType, includeComments);
+                    }
                 }
             }
 
@@ -2623,12 +2628,12 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
             }
 
-            private static string GetRelationship(Relationship relationship, Column fkCol, Column pkCol, string pkPropName, string fkPropName, string manyToManyMapping, string mapKey, bool cascadeOnDelete)
+            private static string GetRelationship(Relationship relationship, Column fkCol, Column pkCol, string pkPropName, string fkPropName, string manyToManyMapping, string mapKey, bool cascadeOnDelete, bool hasReverseNavProp)
             {
                 return string.Format("Has{0}(a => a.{1}){2}{3}",
                     GetHasMethod(relationship, fkCol, pkCol),
                     pkPropName,
-                    GetWithMethod(relationship, fkCol, fkPropName, manyToManyMapping, mapKey),
+                    GetWithMethod(relationship, fkCol, fkPropName, manyToManyMapping, mapKey, hasReverseNavProp),
                     cascadeOnDelete ? string.Empty: ".WillCascadeOnDelete(false)");
             }
 
@@ -2657,23 +2662,24 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             // WithMany
             // WithRequiredPrincipal
             // WithRequiredDependent
-            private static string GetWithMethod(Relationship relationship, Column fkCol, string fkPropName, string manyToManyMapping, string mapKey)
+            private static string GetWithMethod(Relationship relationship, Column fkCol, string fkPropName, string manyToManyMapping, string mapKey, bool hasReverseNavProp)
             {
+                string withParam = hasReverseNavProp ? string.Format("b => b.{0}", fkPropName) : string.Empty;
                 switch (relationship)
                 {
                     case Relationship.OneToOne:
-                        return string.Format(".WithOptional(b => b.{0})", fkPropName);
+                        return string.Format(".WithOptional({0})", withParam);
 
                     case Relationship.OneToMany:
-                        return string.Format(".WithRequiredDependent(b => b.{0})", fkPropName);
+                        return string.Format(".WithRequiredDependent({0})", withParam);
 
                     case Relationship.ManyToOne:
                         if (!fkCol.Hidden)
-                            return string.Format(".WithMany(b => b.{0}).HasForeignKey({1})", fkPropName, manyToManyMapping);   // Foreign Key Association
-                        return string.Format(".WithMany(b => b.{0}).Map(c => c.MapKey({1}))", fkPropName, mapKey);  // Independent Association
+                            return string.Format(".WithMany({0}).HasForeignKey({1})", withParam, manyToManyMapping);   // Foreign Key Association
+                        return string.Format(".WithMany({0}).Map(c => c.MapKey({1}))", withParam, mapKey);  // Independent Association
 
                     case Relationship.ManyToMany:
-                        return string.Format(".WithMany(b => b.{0}).HasForeignKey({1})", fkPropName, manyToManyMapping);
+                        return string.Format(".WithMany({0}).HasForeignKey({1})", withParam, manyToManyMapping);
 
                     default:
                         throw new ArgumentOutOfRangeException("relationship");
@@ -2991,6 +2997,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             public string ConstraintName { get; private set; }
             public int Ordinal { get; private set; }
             public bool CascadeOnDelete { get; private set; }
+            public bool IncludeReverseNavigationProperty { get; set; }
 
             public ForeignKey(string fkTableName, string fkSchema, string pkTableName, string pkSchema, string fkColumn, string pkColumn, string constraintName, string fkTableNameFiltered, string pkTableNameFiltered, int ordinal, bool cascadeOnDelete)
             {
@@ -3005,6 +3012,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 PkTableNameFiltered = pkTableNameFiltered;
                 Ordinal = ordinal;
                 CascadeOnDelete = cascadeOnDelete;
+                IncludeReverseNavigationProperty = true;
             }
 
             public string PkTableHumanCase(bool usePascalCase, bool prependSchemaName)
