@@ -587,26 +587,27 @@
 
                     var reader = new SqlServerSchemaReader(conn, factory, IncludeQueryTraceOn9481Flag) { Outer = this };
                     var tables = reader.ReadSchema(SchemaFilterExclude, SchemaFilterInclude, TableFilterExclude, TableFilterInclude, ColumnFilterExclude, TableFilter, UsePascalCase, PrependSchemaName, IncludeComments, IncludeViews, IncludeExtendedPropertyComments, TableRename, UpdateColumn, UsePrivateSetterForComputedColumns, IncludeSynonyms, UseDataAnnotations, UseDataAnnotationsSchema);
-
-                    // Must be done in this order
                     var fkList = reader.ReadForeignKeys(TableRename, ForeignKeyFilter);
                     reader.IdentifyForeignKeys(fkList, tables);
-                    reader.ProcessForeignKeys(fkList, tables, UsePascalCase, PrependSchemaName, CollectionType, true, IncludeComments, ForeignKeyName);
-
-                    if(UseMappingTables)
-                        tables.IdentifyMappingTables(fkList, UsePascalCase, CollectionType, true, IncludeComments, IsSqlCe, ForeignKeyName);
-
-                    tables.ResetNavigationProperties();
-
-                    reader.ProcessForeignKeys(fkList, tables, UsePascalCase, PrependSchemaName, CollectionType, false, IncludeComments, ForeignKeyName);
-                    if(UseMappingTables)
-                        tables.IdentifyMappingTables(fkList, UsePascalCase, CollectionType, false, IncludeComments, IsSqlCe, ForeignKeyName);
 
                     foreach (var t in tables)
                     {
                         if(UseDataAnnotationsSchema)
                             t.SetupDataAnnotations();
                     }
+
+                    // Work out if there are any foreign key relationship naming clashes
+                    reader.ProcessForeignKeys(fkList, tables, UsePascalCase, PrependSchemaName, CollectionType, true, IncludeComments, ForeignKeyName, UseDataAnnotationsSchema);
+                    if(UseMappingTables)
+                        tables.IdentifyMappingTables(fkList, UsePascalCase, CollectionType, true, IncludeComments, IsSqlCe, ForeignKeyName);
+
+                    // Now we know our foreign key relationships and have worked out if there are any name clashes,
+                    // re-map again with intelligently named relationships.
+                    tables.ResetNavigationProperties();
+
+                    reader.ProcessForeignKeys(fkList, tables, UsePascalCase, PrependSchemaName, CollectionType, false, IncludeComments, ForeignKeyName, UseDataAnnotationsSchema);
+                    if(UseMappingTables)
+                        tables.IdentifyMappingTables(fkList, UsePascalCase, CollectionType, false, IncludeComments, IsSqlCe, ForeignKeyName);
 
                     conn.Close();
                     return tables;
@@ -1456,7 +1457,7 @@
             public abstract Tables ReadSchema(Regex schemaFilterExclude, Regex schemaFilterInclude, Regex tableFilterExclude, Regex tableFilterInclude, Regex columnFilterExclude, Func<Table, bool> tableFilter, bool usePascalCase, bool prependSchemaName, CommentsStyle includeComments, bool includeViews, CommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, Func<Column, Table, Column> updateColumn, bool usePrivateSetterForComputedColumns, bool includeSynonyms, bool dataAnnotations, bool dataAnnotationsSchema);
             public abstract List<StoredProcedure> ReadStoredProcs(Regex SchemaFilterExclude, Regex storedProcedureFilterExclude, bool usePascalCase, bool prependSchemaName , Func<string, string, string> StoredProcedureRename, bool includeTableValuedFunctions);
             public abstract List<ForeignKey> ReadForeignKeys(Func<string, string, string> tableRename, Func<ForeignKey, ForeignKey> foreignKeyFilter);
-            public abstract void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool usePascalCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments, Func<string, string, short, string> ForeignKeyName);
+            public abstract void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool usePascalCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments, Func<string, string, short, string> ForeignKeyName, bool dataAnnotationsSchema);
             public abstract void IdentifyForeignKeys(List<ForeignKey> fkList, Tables tables);
             public abstract void ReadIndexes(Tables tables);
             public abstract void ReadExtendedProperties(Tables tables);
@@ -2526,7 +2527,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
             }
 
-            public override void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool usePascalCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments, Func<string, string, short, string> ForeignKeyName)
+            public override void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool usePascalCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments, Func<string, string, short, string> ForeignKeyName, bool dataAnnotationsSchema)
             {
                 var constraints = fkList.Select(x => x.FkSchema + "." + x.ConstraintName).Distinct();
                 foreach (var constraint in constraints)
@@ -2577,7 +2578,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     bool fkMakePropNameSingular = (relationship == Relationship.OneToOne);
                     string fkPropName = pkTable.GetUniqueColumnName(fkTable.NameHumanCase, foreignKey, usePascalCase, checkForFkNameClashes, fkMakePropNameSingular, ForeignKeyName);
 
-                    fkCol.col.EntityFk.Add(string.Format("public virtual {0} {1} {2}{3}", pkTableHumanCase, pkPropName, "{ get; set; }", includeComments != CommentsStyle.None ? " // " + foreignKey.ConstraintName : string.Empty));
+                    var dataAnnotation = string.Empty;
+                    if (dataAnnotationsSchema)
+                        dataAnnotation = string.Format("[ForeignKey(\"{0}\")] ", string.Join(", ", fkCols.Select(x => x.col.NameHumanCase).Distinct().ToArray()));
+
+                    fkCol.col.EntityFk.Add(string.Format("{0}public virtual {1} {2} {3}{4}", dataAnnotation, pkTableHumanCase, pkPropName, "{ get; set; }", includeComments != CommentsStyle.None ? " // " + foreignKey.ConstraintName : string.Empty));
 
                     string manyToManyMapping, mapKey;
                     if(foreignKeys.Count > 1)
