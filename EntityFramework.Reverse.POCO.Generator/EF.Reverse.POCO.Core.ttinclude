@@ -2594,8 +2594,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         mapKey = string.Format("\"{0}\"", fkCol.col.Name);
                     }
 
-                    fkCol.col.ConfigFk.Add(string.Format("{0};{1}", GetRelationship(relationship, fkCol.col, pkCol, pkPropName, fkPropName, manyToManyMapping, mapKey, foreignKey.CascadeOnDelete, foreignKey.IncludeReverseNavigation),
-                                                                    includeComments != CommentsStyle.None ? " // " + foreignKey.ConstraintName : string.Empty));
+                    if (!dataAnnotationsSchema)
+                    {
+                        fkCol.col.ConfigFk.Add(string.Format("{0};{1}", GetRelationship(relationship, fkCol.col, pkCol, pkPropName, fkPropName, manyToManyMapping, mapKey, foreignKey.CascadeOnDelete, foreignKey.IncludeReverseNavigation),
+                                                                        includeComments != CommentsStyle.None ? " // " + foreignKey.ConstraintName : string.Empty));
+                    }
 
                     if(foreignKey.IncludeReverseNavigation)
                         pkTable.AddReverseNavigation(relationship, pkTableHumanCase, fkTable, fkPropName, string.Format("{0}.{1}", fkTable.Name, foreignKey.ConstraintName), collectionType, includeComments);

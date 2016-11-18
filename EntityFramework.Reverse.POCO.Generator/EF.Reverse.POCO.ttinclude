@@ -1001,7 +1001,7 @@ foreach(string s in tbl.ReverseNavigationProperty.OrderBy(x => x))
 <# } } #>
 <# if(tbl.HasForeignKey) { #>
 
-<#if(IncludeComments != CommentsStyle.None){#>        // Foreign keys
+<#if(IncludeComments != CommentsStyle.None && tbl.Columns.SelectMany(x => x.EntityFk).Any()){#>        // Foreign keys
 <# } #>
 <#
 foreach(var entityFk in tbl.Columns.SelectMany(x => x.EntityFk).OrderBy(o => o))
@@ -1084,7 +1084,7 @@ foreach(Column col in tbl.Columns.Where(x => !x.Hidden && !string.IsNullOrEmpty(
 <# } #>
 <# if(tbl.HasForeignKey) { #>
 
-<#if(IncludeComments != CommentsStyle.None){#>            // Foreign keys
+<#if(IncludeComments != CommentsStyle.None && tbl.Columns.SelectMany(x => x.ConfigFk).Any()){#>            // Foreign keys
 <# } #>
 <#
 foreach(var configFk in tbl.Columns.SelectMany(x => x.ConfigFk).OrderBy(o => o))
