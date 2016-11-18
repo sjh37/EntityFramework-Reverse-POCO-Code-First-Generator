@@ -70,8 +70,19 @@ A simple UI for the generator is available at
 [efreversepocoui.codeplex.com](https://efreversepocoui.codeplex.com/) which helps you
 to create a regex to filter your tables.
 
-## Editing TT (T4) Files
+### Editing TT (T4) Files
 To have full syntax highlighting and intellisense when editing TT files, I use the Resharper plugin ForTea. I can't imagine editing TT files without it.
+
+### Getting a pull request accepted
+Have a read of [https://github.com/blog/1943-how-to-write-the-perfect-pull-request](How to write the perfect pull request)
+
+My requirements are simple:
+
+1. Always keep the changes to a **minimum**, so I can see **exactly** what's changed in regard to the pull request. I.e. No whitespace tidy up, etc.
+2. No tabs, only spaces (4).
+3. Don't move functions about, please leave them where they are.
+4. No new files. This will always get rejected. Add any new code/classes into the two existing .ttinclude files.
+5. Don't be tempted to do a few different enhancements in one pull request. Have **one** pull request for **one** bug fix / enhancement.
 
 Regards,
 Simon Hughes
