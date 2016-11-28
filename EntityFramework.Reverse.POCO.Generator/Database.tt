@@ -45,11 +45,11 @@
     // If you need to serialize your entities with the JsonSerializer from Newtonsoft, this would serialize
     // all properties including the Reverse Navigation and Foreign Keys. The simplest way to exclude them is
     // to use the data annotation [JsonIgnore] on reverse navigation and foreign keys.
-    AdditionalReverseNavigationsDataAnnotations = new string[] // Data Annotations for ReverseNavigationProperty.
+    AdditionalReverseNavigationsDataAnnotations = new string[] // Data Annotations for all ReverseNavigationProperty.
     {
         // "JsonIgnore" // Also add "Newtonsoft.Json" to the AdditionalNamespaces array above
     };
-    AdditionalForeignKeysDataAnnotations = new string[] // Data Annotations for ForeignKeys.
+    AdditionalForeignKeysDataAnnotations = new string[] // Data Annotations for all ForeignKeys.
     {
         // "JsonIgnore" // Also add "Newtonsoft.Json" to the AdditionalNamespaces array above
     };
@@ -288,9 +288,18 @@
 
     Func<Column, string> WritePocoColumn = c =>
     {
+        bool commentWritten = false;
+        if((IncludeExtendedPropertyComments == CommentsStyle.InSummaryBlock || IncludeComments == CommentsStyle.InSummaryBlock) && !string.IsNullOrEmpty(c.SummaryComments))
+        {
+            WriteLine(string.Empty);
+            WriteLine("        ///<summary>");
+            WriteLine("        /// {0}", c.SummaryComments);
+            WriteLine("        ///</summary>");
+            commentWritten = true;
+        }
         if (UseDataAnnotations)
         {
-            if(c.Ordinal > 1)
+            if(c.Ordinal > 1 && !commentWritten)
                 WriteLine(string.Empty);    // Leave a blank line before the next property
 
             foreach (var dataAnnotation in c.DataAnnotations)
@@ -308,14 +317,15 @@
 
     ForeignKeyFilter = (ForeignKey fk) =>
     {
-        // Return null to exclude this foreign key, or set IncludeReverseNavigationProperty = false
+        // Return null to exclude this foreign key, or set IncludeReverseNavigation = false
         // to include the foeriegn key but not generate reverse navigation properties.
         // Example, to exclude all foreign keys for the Categories table, use:
         // if (fk.PkTableName == "Categories")
         //    return null;
+
         // Example, to exclude reverse navigation properties for tables ending with Type, use:
         // if (fk.PkTableName.EndsWith("Type"))
-        //    fk.IncludeReverseNavigationProperty = false;
+        //    fk.IncludeReverseNavigation = false;
 
         return fk;
     };

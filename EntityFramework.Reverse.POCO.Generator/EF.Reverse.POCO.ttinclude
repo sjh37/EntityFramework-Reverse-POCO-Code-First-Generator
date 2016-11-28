@@ -50,7 +50,7 @@ if (ElementsToGenerate.HasFlag(Elements.Context) &&
     (!ElementsToGenerate.HasFlag(Elements.UnitOfWork) && !string.IsNullOrWhiteSpace(UnitOfWorkNamespace)))
     usingsAll.Add(UnitOfWorkNamespace);
 
-if (ElementsToGenerate.HasFlag(Elements.Context) && 
+if (ElementsToGenerate.HasFlag(Elements.Context) &&
     (!ElementsToGenerate.HasFlag(Elements.PocoConfiguration) && !string.IsNullOrWhiteSpace(PocoConfigurationNamespace)))
         usingsAll.Add(PocoConfigurationNamespace);
 
@@ -103,12 +103,12 @@ else
 <# } #>
         System.Data.Entity.Infrastructure.DbChangeTracker ChangeTracker { get; }
         System.Data.Entity.Infrastructure.DbContextConfiguration Configuration { get; }
-        System.Data.Entity.Database Database { get; }        
-        System.Data.Entity.Infrastructure.DbEntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class;        
+        System.Data.Entity.Database Database { get; }
+        System.Data.Entity.Infrastructure.DbEntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class;
         System.Data.Entity.Infrastructure.DbEntityEntry Entry(object entity);
         System.Collections.Generic.IEnumerable<System.Data.Entity.Validation.DbEntityValidationResult> GetValidationErrors();
         System.Data.Entity.DbSet Set(System.Type entityType);
-        System.Data.Entity.DbSet<TEntity> Set<TEntity>() where TEntity : class;        
+        System.Data.Entity.DbSet<TEntity> Set<TEntity>() where TEntity : class;
         string ToString();
 <# if (storedProcs.Any()) { #>
 
@@ -175,10 +175,10 @@ if (IncludeTableValuedFunctions)
 
         //protected override void Seed(<#=DbContextName#> context)
         //{
-           
+
             // This method will be called after migrating to the latest version.
 
-            // You can use the DbSet<T>.AddOrUpdate() helper extension method 
+            // You can use the DbSet<T>.AddOrUpdate() helper extension method
             // to avoid creating duplicate seed data. E.g.
             //
             //   context.People.AddOrUpdate(
@@ -196,7 +196,7 @@ if(ElementsToGenerate.HasFlag(Elements.UnitOfWork) && !GenerateSeparateFiles) { 
     #endregion
 
 <# }
-    if(ElementsToGenerate.HasFlag(Elements.Context)){ 
+    if(ElementsToGenerate.HasFlag(Elements.Context)){
     fileManager.StartNewFile(DbContextName + FileExtension); #>
 <# if(!GenerateSeparateFiles) { #>
     #region Database context
@@ -323,7 +323,7 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKey
 <#}#>
 <# if (storedProcs.Any())
 { #>
-        
+
         // Stored Procedures
 <#      // Database context
 foreach (StoredProcedure sp in storedProcs.Where(s => !s.IsTVF))
@@ -401,9 +401,9 @@ foreach (StoredProcedure sp in storedProcs.Where(s => !s.IsTVF))
             { #>
         public int <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp, true) #>)
         {
-<#= WriteStoredProcFunctionDeclareSqlParameter(sp, true) #> 
-            Database.ExecuteSqlCommand("EXEC @procResult = [<#=sp.Schema #>].[<#= sp.Name #>] <#= WriteStoredProcFunctionSqlAtParams(sp) #>", <#= WriteStoredProcFunctionSqlParameterAnonymousArray(sp, true) #>);
-<#= WriteStoredProcFunctionSetSqlParameters(sp, false) #> 
+<#= WriteStoredProcFunctionDeclareSqlParameter(sp, true) #>
+            Database.ExecuteSqlCommand(System.Data.Entity.TransactionalBehavior.DoNotEnsureTransaction, "EXEC @procResult = [<#=sp.Schema #>].[<#= sp.Name #>] <#= WriteStoredProcFunctionSqlAtParams(sp) #>", <#= WriteStoredProcFunctionSqlParameterAnonymousArray(sp, true) #>);
+<#= WriteStoredProcFunctionSetSqlParameters(sp, false) #>
             return (int) procResultParam.Value;
         }
 
@@ -478,7 +478,7 @@ if (IncludeTableValuedFunctions)
         [CodeFirstStoreFunctions.DbFunctionDetails(DatabaseSchema = "<#=sp.Schema#>")]
         public IQueryable<<#= spReturnClassName #>> <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp, false)#>)
         {
-<#= WriteTableValuedFunctionDeclareSqlParameter(sp) #> 
+<#= WriteTableValuedFunctionDeclareSqlParameter(sp) #>
             return ((System.Data.Entity.Infrastructure.IObjectContextAdapter)this).ObjectContext.CreateQuery<<#=spReturnClassName#>>("[<#=DbContextName#>].[<#=sp.Name#>](<#= WriteStoredProcFunctionSqlAtParams(sp) #>)", <#= WriteTableValuedFunctionSqlParameterAnonymousArray(sp) #>);
         }
 
@@ -579,7 +579,8 @@ foreach (Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKe
         {
             throw new System.NotImplementedException();
         }
-        public System.Collections.Generic.IEnumerable<System.Data.Entity.Validation.DbEntityValidationResult> GetValidationErrors() {
+        public System.Collections.Generic.IEnumerable<System.Data.Entity.Validation.DbEntityValidationResult> GetValidationErrors()
+        {
             throw new System.NotImplementedException();
         }
         public System.Data.Entity.DbSet Set(System.Type entityType)
@@ -631,14 +632,14 @@ foreach (StoredProcedure sp in storedProcs.Where(s => !s.IsTVF))
 <#  } else { #>
         public int <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp, true)#>)
         {
-<#= WriteStoredProcFunctionSetSqlParameters(sp, true) #> 
+<#= WriteStoredProcFunctionSetSqlParameters(sp, true) #>
             return 0;
         }
 <# if (IsSupportedFrameworkVersion("4.5") && !StoredProcHasOutParams(sp) && returnModelsCount > 0) { #>
 
         public System.Threading.Tasks.Task<int> <#= spExecName #>Async(<#=WriteStoredProcFunctionParams(sp, false)#>)
         {
-<#= WriteStoredProcFunctionSetSqlParameters(sp, true) #> 
+<#= WriteStoredProcFunctionSetSqlParameters(sp, true) #>
             return System.Threading.Tasks.Task.FromResult(0);
         }
 <# } #>
@@ -967,7 +968,7 @@ if(!tbl.HasPrimaryKey) { #>
 <#if(IncludeComments != CommentsStyle.None){#>    // <#=tbl.Name#>
 <# } #>
 <# if(AddWcfDataAttributes) { #>    [System.Runtime.Serialization.DataContract<#=ExtraWcfDataContractAttributes#>]
-<# } 
+<# }
     WritePocoClassAttributes(tbl);#>
 <#if(IncludeCodeGeneratedAttribute){#>    <#=CodeGeneratedAttribute#>
 <#}#>
@@ -977,14 +978,7 @@ if(!tbl.HasPrimaryKey) { #>
 <# int DataMemberOrder = 1;
 foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal).Where(x => !x.Hidden))
 {
-#>
-<#if((IncludeExtendedPropertyComments == CommentsStyle.InSummaryBlock || IncludeComments == CommentsStyle.InSummaryBlock) && !string.IsNullOrEmpty(col.SummaryComments)){#>
-
-        ///<summary>
-        /// <#=col.SummaryComments#>
-        ///</summary>
-<# } #>
-<# if(AddWcfDataAttributes) { #>        [System.Runtime.Serialization.DataMember(Order = <#=DataMemberOrder++#>, IsRequired = <#=col.IsNullable ? "false" : "true"#>)]
+if(AddWcfDataAttributes) { #>        [System.Runtime.Serialization.DataMember(Order = <#=DataMemberOrder++#>, IsRequired = <#=col.IsNullable ? "false" : "true"#>)]
 <# } #>
 <#= WritePocoColumn(col) #>
 <# if(AddWcfDataAttributes) { #>
@@ -1007,7 +1001,7 @@ foreach(string s in tbl.ReverseNavigationProperty.OrderBy(x => x))
 <# } } #>
 <# if(tbl.HasForeignKey) { #>
 
-<#if(IncludeComments != CommentsStyle.None){#>        // Foreign keys
+<#if(IncludeComments != CommentsStyle.None && tbl.Columns.SelectMany(x => x.EntityFk).Any()){#>        // Foreign keys
 <# } #>
 <#
 foreach(var entityFk in tbl.Columns.SelectMany(x => x.EntityFk).OrderBy(o => o))
@@ -1017,9 +1011,9 @@ foreach(var entityFk in tbl.Columns.SelectMany(x => x.EntityFk).OrderBy(o => o))
 <# } #>
         <#=entityFk #>
 <# } } #>
-<# 
-if(tbl.Columns.Where(c => c.Default != string.Empty && !c.Hidden).Count() > 0 || tbl.ReverseNavigationCtor.Count() > 0 || MakeClassesPartial) 
-{ 
+<#
+if(tbl.Columns.Where(c => c.Default != string.Empty && !c.Hidden).Count() > 0 || tbl.ReverseNavigationCtor.Count() > 0 || MakeClassesPartial)
+{
 #>
 
         public <#=tbl.NameHumanCase#>()
@@ -1035,7 +1029,7 @@ foreach(string s in tbl.ReverseNavigationCtor)
 {
 #>
             <#=s #>
-<# } 
+<# }
 if(MakeClassesPartial) {#>
             InitializePartial();
 <#}#>        }
@@ -1073,22 +1067,24 @@ if(IncludeComments != CommentsStyle.None){#>    // <#=tbl.Name#>
 
         public <#=tbl.NameHumanCase + ConfigurationClassName#>(string schema)
         {
-<# if (!string.IsNullOrEmpty(tbl.Schema)) { #>
+<#if(!UseDataAnnotationsSchema){ if (!string.IsNullOrEmpty(tbl.Schema)) { #>
             ToTable("<#=tbl.Name#>", schema);
 <# } else { #>
             ToTable("<#=tbl.Name#>");
-<# } #>
+<# }} 
+if(!UseDataAnnotations){#>
             HasKey(<#=tbl.PrimaryKeyNameHumanCase()#>);
 
+<# } #>
 <#
-foreach(Column col in tbl.Columns.Where(x => !x.Hidden).OrderBy(x => x.Ordinal))
+foreach(Column col in tbl.Columns.Where(x => !x.Hidden && !string.IsNullOrEmpty(x.Config)).OrderBy(x => x.Ordinal))
 {
 #>
             <#=col.Config #>
 <# } #>
 <# if(tbl.HasForeignKey) { #>
 
-<#if(IncludeComments != CommentsStyle.None){#>            // Foreign keys
+<#if(IncludeComments != CommentsStyle.None && tbl.Columns.SelectMany(x => x.ConfigFk).Any()){#>            // Foreign keys
 <# } #>
 <#
 foreach(var configFk in tbl.Columns.SelectMany(x => x.ConfigFk).OrderBy(o => o))
