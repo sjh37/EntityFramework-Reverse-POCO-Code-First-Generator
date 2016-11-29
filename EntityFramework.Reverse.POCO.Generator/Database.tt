@@ -332,7 +332,7 @@
 
     ForeignKeyName = (tableName, foreignKeyName, attempt) =>
     {
-        // 5 Attempts to correctly name the foreign key
+        // 6 Attempts to correctly name the foreign key
         switch (attempt)
         {
             case 1:
@@ -345,14 +345,19 @@
                 return foreignKeyName.Remove(foreignKeyName.Length-2, 2);
 
             case 3:
+                // Only called if foreign key name starts with "id"
+                // Use foreign key name without "id" at end of string
+                return foreignKeyName.Substring(2);
+
+            case 4:
                 // Use foreign key name only
                 return foreignKeyName;
 
-            case 4:
+            case 5:
                 // Use table name and foreign key name
                 return tableName + "_" + foreignKeyName;
 
-            case 5:
+            case 6:
                 // Used in for loop 1 to 99 to append a number to the end
                 return tableName;
 
