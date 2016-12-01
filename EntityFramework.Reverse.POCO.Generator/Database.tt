@@ -8,6 +8,9 @@
     // Main settings **********************************************************************************************************************
     ConnectionStringName = "MyDbContext";   // Searches for this connection string in config files listed below in the ConfigFilenameSearchOrder setting
     //ConnectionStringName is the only required setting
+    //ConnectionString = "data source=SERVER;initial catalog=DATABASE;";
+    //ProviderName = "System.Data.SqlClient";
+    //As an alternative to ConnectionStringName specify the ConnectionString and ProviderName
     // Namespace = ""; // Override the default namespace here
     DbContextName = "MyDbContext";
     //DbContextInterfaceName = "IMyDbContext"; //Defaults to "I" + DbContextName
