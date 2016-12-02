@@ -330,36 +330,58 @@
         return fk;
     };
 
-    ForeignKeyName = (tableName, foreignKeyName, attempt) =>
+    ForeignKeyName = (tableName, foreignKey, foreignKeyName, attempt) =>
     {
+        string fkName;
+
         // 5 Attempts to correctly name the foreign key
         switch (attempt)
         {
             case 1:
                 // Try without appending foreign key name
-                return tableName;
+                fkName = tableName;
+                break;
 
             case 2:
                 // Only called if foreign key name ends with "id"
                 // Use foreign key name without "id" at end of string
-                return foreignKeyName.Remove(foreignKeyName.Length-2, 2);
+                fkName = foreignKeyName.Remove(foreignKeyName.Length-2, 2);
+                break;
 
             case 3:
                 // Use foreign key name only
-                return foreignKeyName;
+                fkName = foreignKeyName;
+                break;
 
             case 4:
                 // Use table name and foreign key name
-                return tableName + "_" + foreignKeyName;
+                fkName = tableName + "_" + foreignKeyName;
+                break;
 
             case 5:
                 // Used in for loop 1 to 99 to append a number to the end
-                return tableName;
+                fkName = tableName;
+                break;
 
             default:
                 // Give up
-                return tableName;
+                fkName = tableName;
+                break;
         }
+
+        // Apply custom foreign key renaming rules. Can be useful in applying pluralization.
+        // For example:
+        /*if (tableName == "Employee" && foreignKey.FkColumn == "ReportsTo")
+            return "Manager";
+
+        if (tableName == "Territories" && foreignKey.FkTableName == "EmployeeTerritories")
+            return "Locations";
+
+        if (tableName == "Employee" && foreignKey.FkTableName == "Orders" && foreignKey.FkColumn == "EmployeeID")
+            return "ContactPerson";
+        */
+
+        return fkName;
     };
 
     // Return true to include this table in the db context
