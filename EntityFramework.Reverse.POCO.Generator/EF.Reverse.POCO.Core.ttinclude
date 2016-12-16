@@ -73,6 +73,7 @@
         Regex StoredProcedureFilterExclude = null;
         Regex StoredProcedureFilterInclude = null;
         Func<Table, bool> TableFilter;
+        Func<StoredProcedure, bool> StoredProcedureFilter;
         Func<Table, bool> ConfigurationFilter;
         static Dictionary<string, string> StoredProcedureReturnTypes = new Dictionary<string, string>();
         Regex ColumnFilterExclude = null;
@@ -655,6 +656,11 @@
                             continue;
                         }
                         if(StoredProcedureFilterInclude != null && !StoredProcedureFilterInclude.IsMatch(storedProcs[i].Name))
+                        {
+                            storedProcs.RemoveAt(i);
+                            continue;
+                        }
+                        if(!StoredProcedureFilter(storedProcs[i]))
                         {
                             storedProcs.RemoveAt(i);
                             continue;

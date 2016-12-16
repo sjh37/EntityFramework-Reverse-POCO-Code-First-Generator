@@ -151,6 +151,18 @@
     StoredProcedureFilterExclude = null;
     StoredProcedureFilterInclude = null;
 
+    // Filtering of stored procedures using a function. This can be used in conjunction with the Regex's above.
+    // Regex are used first to filter the list down, then this function is run last.
+    // Return true to include the stored procedure, return false to exclude it.
+    StoredProcedureFilter = (StoredProcedure sp) =>
+    {
+        // Example: Exclude any stored procedure in dbo schema with "order" in its name.
+        //if(sp.Schema.Equals("dbo", StringComparison.InvariantCultureIgnoreCase) && sp.NameHumanCase.ToLowerInvariant().Contains("order"))
+        //    return false;
+
+        return true;
+    };
+
 
     // Table renaming *********************************************************************************************************************
     // Use the following function to rename tables such as tblOrders to Orders, Shipments_AB to Shipments, etc.
