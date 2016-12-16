@@ -1,6 +1,6 @@
 ﻿<#@ include file="EF.Reverse.POCO.Core.ttinclude" #>
 <#
-    // v2.25.0
+    // v2.26.0
     // Please make changes to the settings below.
     // All you have to do is save this file, and the output file(s) is/are generated. Compiling does not regenerate the file(s).
     // A course for this generator is available on Pluralsight at https://www.pluralsight.com/courses/code-first-entity-framework-legacy-databases
@@ -365,6 +365,7 @@
     Func<StoredProcedure, bool, string> WriteStoredProcFunctionSetSqlParameters = null;
     Func<StoredProcedure, string> WriteStoredProcReturnModelName = null;
     Func<StoredProcedure, string> WriteStoredProcReturnType = null;
+    Func<StoredProcedure, bool> StoredProcedureFilter = null;
     Func<DataColumn, string> WriteStoredProcReturnColumn = null;
     StoredProcedureReturnModelRename = (name, sp) => name;
 
