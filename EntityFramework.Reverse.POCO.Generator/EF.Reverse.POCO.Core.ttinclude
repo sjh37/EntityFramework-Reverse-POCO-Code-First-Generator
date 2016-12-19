@@ -2286,7 +2286,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     foreach (var index in indexes)
                     {
                         var col = t.Columns.Find(x => x.Name == index.ColumnName);
-                        if (col != null && !col.Hidden)
+                        if (col != null)
                         {
                             col.Indexes.Add(index);
                             if (!col.IsPrimaryKey && index.IsPrimaryKey)
@@ -3088,11 +3088,26 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     col.ResetNavigationProperties();
             }
 
+            public void SetPrimaryKeys()
+            {
+                HasPrimaryKey = Columns.Any(x => x.IsPrimaryKey);
+                if(HasPrimaryKey)
+                    return; // Table has at least one primary key
+
+                // This table is not allowed in EntityFramework as it does not have a primary key.
+                // Therefore generate a composite key from all non-null fields.
+                foreach(var col in Columns.Where(x => !x.IsNullable && !x.Hidden))
+                {
+                    col.IsPrimaryKey = true;
+                    HasPrimaryKey = true;
+                }
+            }
+
             public IEnumerable<Column> PrimaryKeys
             {
                 get
                 {
-                    return Columns.Where(x => x.IsPrimaryKey && !x.Hidden)
+                    return Columns.Where(x => x.IsPrimaryKey)
                                   .OrderBy(x => x.PrimaryKeyOrdinal)
                                   .ThenBy(x => x.Ordinal)
                                   .ToList();
@@ -3236,21 +3251,6 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 m.MapLeftKey(""{3}"");
                 m.MapRightKey(""{4}"");
             }});", leftPropName, rightPropName, left.FkTableName, left.FkColumn, right.FkColumn, isSqlCE ? string.Empty : ", \"" + left.FkSchema + "\""));
-            }
-
-            public void SetPrimaryKeys()
-            {
-                HasPrimaryKey = Columns.Any(x => x.IsPrimaryKey && !x.Hidden);
-                if(HasPrimaryKey)
-                    return; // Table has at least one primary key
-
-                // This table is not allowed in EntityFramework as it does not have a primary key.
-                // Therefore generate a composite key from all non-null fields.
-                foreach(var col in Columns.Where(x => !x.IsNullable && !x.Hidden))
-                {
-                    col.IsPrimaryKey = true;
-                    HasPrimaryKey = true;
-                }
             }
 
             public void IdentifyMappingTable(List<ForeignKey> fkList, Tables tables, bool usePascalCase, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments, bool isSqlCE, Func<string, ForeignKey, string, short, string> ForeignKeyName)
