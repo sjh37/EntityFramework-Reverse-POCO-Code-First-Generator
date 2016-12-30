@@ -410,7 +410,6 @@
 
     // Read schema
     var factory = GetDbProviderFactory();
-    IsSqlCe = IsSqlCeConnection(factory);
     var tables = LoadTables(factory);
     var storedProcs = LoadStoredProcs(factory);
 

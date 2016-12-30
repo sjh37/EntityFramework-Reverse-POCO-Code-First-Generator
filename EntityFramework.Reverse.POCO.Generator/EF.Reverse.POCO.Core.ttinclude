@@ -537,21 +537,24 @@
             WriteLine("//     Connection String:      \"{0}\"", ZapPassword(ConnectionString));
             WriteLine("// ------------------------------------------------------------------------------------------------");
 
-            try
+            if (!string.IsNullOrEmpty(ProviderName))
             {
-                return DbProviderFactories.GetFactory(ProviderName);
+                try
+                {
+                    return DbProviderFactories.GetFactory(ProviderName);
+                }
+                catch (Exception x)
+                {
+                    string error = x.Message.Replace("\r\n", "\n").Replace("\n", " ");
+                    Warning(string.Format("Failed to load provider \"{0}\" - {1}", ProviderName, error));
+                    WriteLine("");
+                    WriteLine("// ------------------------------------------------------------------------------------------------");
+                    WriteLine("// Failed to load provider \"{0}\" - {1}", ProviderName, error);
+                    WriteLine("// ------------------------------------------------------------------------------------------------");
+                    WriteLine("");
+                }
             }
-            catch (Exception x)
-            {
-                string error = x.Message.Replace("\r\n", "\n").Replace("\n", " ");
-                Warning(string.Format("Failed to load provider \"{0}\" - {1}", ProviderName, error));
-                WriteLine("");
-                WriteLine("// ------------------------------------------------------------------------------------------------");
-                WriteLine("// Failed to load provider \"{0}\" - {1}", ProviderName, error);
-                WriteLine("// ------------------------------------------------------------------------------------------------");
-                WriteLine("");
-                return null;
-            }
+            return null;
         }
 
         private DbProviderFactory TryGetDbProviderFactory()
@@ -566,16 +569,10 @@
             }
         }
 
-        private bool IsSqlCeConnection(DbProviderFactory factory)
+        private bool IsSqlCeConnection(DbConnection connection)
         {
-            using (DbConnection conn = factory.CreateConnection())
-            {
-                conn.ConnectionString = ConnectionString;
-                conn.Open();
-
-                if(conn.GetType().Name.ToLower() == "sqlceconnection")
-                    return true;
-            }
+            if(connection.GetType().Name.ToLower() == "sqlceconnection")
+                return true;
             return false;
         }
 
@@ -593,6 +590,8 @@
                 {
                     conn.ConnectionString = ConnectionString;
                     conn.Open();
+
+                    IsSqlCe = IsSqlCeConnection(conn);
 
                     if(IsSqlCe)
                         PrependSchemaName = false;
