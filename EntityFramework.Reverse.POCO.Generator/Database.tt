@@ -182,6 +182,12 @@
         // Therefore you can make them lowercase by using the following
         // return Inflector.MakeLowerIfAllCaps(name);
 
+        // If you are using the pluralisation service and you want to rename a table, make sure you rename the table to the plural form.
+        // For example, if the table is called Treez (with a z), and your pluralisation entry is
+        //     new CustomPluralizationEntry("Tree", "Trees")
+        // Use this TableRename function to rename Treez to the plural (not singular) form, Trees:
+        // if (name == "Treez") return "Trees";
+
         return name;
     };
 
