@@ -371,7 +371,6 @@
     Func<StoredProcedure, bool, string> WriteStoredProcFunctionSetSqlParameters = null;
     Func<StoredProcedure, string> WriteStoredProcReturnModelName = null;
     Func<StoredProcedure, string> WriteStoredProcReturnType = null;
-    Func<StoredProcedure, bool> StoredProcedureFilter = null;
     Func<DataColumn, string> WriteStoredProcReturnColumn = null;
     StoredProcedureReturnModelRename = (name, sp) => name;
 

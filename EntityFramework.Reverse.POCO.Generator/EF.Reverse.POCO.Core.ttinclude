@@ -73,7 +73,7 @@
         Regex StoredProcedureFilterExclude = null;
         Regex StoredProcedureFilterInclude = null;
         Func<Table, bool> TableFilter;
-        Func<StoredProcedure, bool> StoredProcedureFilter;
+        Func<StoredProcedure, bool> StoredProcedureFilter = null;
         Func<Table, bool> ConfigurationFilter;
         static Dictionary<string, string> StoredProcedureReturnTypes = new Dictionary<string, string>();
         Regex ColumnFilterExclude = null;
