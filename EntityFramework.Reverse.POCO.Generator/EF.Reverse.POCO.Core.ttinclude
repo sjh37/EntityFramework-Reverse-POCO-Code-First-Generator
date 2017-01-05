@@ -1,6 +1,6 @@
 <#
 // Copyright (C) Simon Hughes 2012
-// v2.26.0
+// v2.27.0
 #>
 <#@ template debug="true" hostspecific="true" language="C#" #>
 <#@ include file="EF6.Utility.CS.ttinclude"#>
@@ -98,7 +98,7 @@
         bool AutomaticMigrationDataLossAllowed = true;
         List<EnumDefinition> EnumsDefinitions = new List<EnumDefinition>();
 
-        public static string CodeGeneratedAttribute = "[System.CodeDom.Compiler.GeneratedCode(\"EF.Reverse.POCO.Generator\", \"2.26.0.0\")]";
+        public static string CodeGeneratedAttribute = "[System.CodeDom.Compiler.GeneratedCode(\"EF.Reverse.POCO.Generator\", \"2.27.0.0\")]";
         bool IncludeCodeGeneratedAttribute = true;
 
         // Settings to allow selective code generation
