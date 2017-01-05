@@ -7,7 +7,11 @@
 
     // Main settings **********************************************************************************************************************
     ConnectionStringName = "MyDbContextSqlCE4";   // Searches for this connection string in config files listed below in the ConfigFilenameSearchOrder setting
-    //ConnectionStringName is the only required setting
+    // ConnectionStringName is the only required setting.
+    // As an alternative to ConnectionStringName above, which must match your app/web.config connection string name, you can override them below
+    //ConnectionString = @"Data Source=C:\MyApplication\App_Data\NorthwindSqlCe40.sdf";
+    //ProviderName = "System.Data.SqlServerCe.4.0";
+
     Namespace = "EntityFramework_Reverse_POCO_Generator.SqlCe4"; // Override the default namespace here
     DbContextName = "MyDbContextSqlCE4";
     //DbContextInterfaceName = "IMyDbContext"; //Defaults to "I" + DbContextName

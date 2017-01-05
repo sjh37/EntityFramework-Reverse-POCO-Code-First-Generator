@@ -7,10 +7,11 @@
 
     // Main settings **********************************************************************************************************************
     ConnectionStringName = "MyDbContext";   // Searches for this connection string in config files listed below in the ConfigFilenameSearchOrder setting
-    //ConnectionStringName is the only required setting
-    //ConnectionString = "data source=SERVER;initial catalog=DATABASE;";
+    // ConnectionStringName is the only required setting.
+    // As an alternative to ConnectionStringName above, which must match your app/web.config connection string name, you can override them below
+    //ConnectionString = "Data Source=(local);Initial Catalog=Northwind;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";
     //ProviderName = "System.Data.SqlClient";
-    //As an alternative to ConnectionStringName specify the ConnectionString and ProviderName
+
     // Namespace = ""; // Override the default namespace here
     DbContextName = "MyDbContext";
     //DbContextInterfaceName = "IMyDbContext"; //Defaults to "I" + DbContextName
