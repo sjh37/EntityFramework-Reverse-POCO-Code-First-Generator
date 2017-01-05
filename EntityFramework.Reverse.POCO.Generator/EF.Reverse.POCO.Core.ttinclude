@@ -597,7 +597,7 @@
                         PrependSchemaName = false;
 
                     var reader = new SqlServerSchemaReader(conn, factory, IncludeQueryTraceOn9481Flag) { Outer = this };
-                    var tables = reader.ReadSchema(SchemaFilterExclude, SchemaFilterInclude, TableFilterExclude, TableFilterInclude, ColumnFilterExclude, TableFilter, UsePascalCase, PrependSchemaName, IncludeComments, IncludeViews, IncludeExtendedPropertyComments, TableRename, UpdateColumn, UsePrivateSetterForComputedColumns, IncludeSynonyms, UseDataAnnotations, UseDataAnnotationsSchema);
+                    var tables = reader.ReadSchema(SchemaFilterExclude, SchemaFilterInclude, TableFilterExclude, TableFilterInclude, ColumnFilterExclude, TableFilter, UsePascalCase, PrependSchemaName, IncludeComments, IncludeViews, IncludeExtendedPropertyComments, TableRename, UpdateColumn, UsePrivateSetterForComputedColumns, IncludeSynonyms, UseDataAnnotations, UseDataAnnotationsSchema, IsSqlCe);
                     var fkList = reader.ReadForeignKeys(TableRename, ForeignKeyFilter);
                     reader.IdentifyForeignKeys(fkList, tables);
 
@@ -883,7 +883,7 @@
                 return IsStoreGenerated && !IsIdentity;
             }
 
-            private void SetupConfig(bool dataAnnotations, bool dataAnnotationsSchema)
+            private void SetupConfig(bool dataAnnotations, bool dataAnnotationsSchema, bool isSqlCe)
             {
                 DataAnnotations = new List<string>();
                 string databaseGeneratedOption = null;
@@ -957,14 +957,22 @@
 
                 if (!IsMaxLength && MaxLength > 0)
                 {
+                    var doNotSpecifySize = (isSqlCe && MaxLength > 4000); // Issue #179
+
                     if (dataAnnotations)
                     {
-                        DataAnnotations.Add(string.Format("MaxLength({0})", MaxLength));
+                        DataAnnotations.Add(doNotSpecifySize ? "MaxLength" : string.Format("MaxLength({0})", MaxLength));
 
                         if (PropertyType.Equals("string", StringComparison.InvariantCultureIgnoreCase))
                             DataAnnotations.Add(string.Format("StringLength({0})", MaxLength));
-                    } else
-                        sb.AppendFormat(".HasMaxLength({0})", MaxLength);
+                    }
+                    else
+                    {
+                        if (doNotSpecifySize)
+                            sb.Append(".HasMaxLength(null)");
+                        else
+                            sb.AppendFormat(".HasMaxLength({0})", MaxLength);
+                    }
                 }
 
                 if (IsMaxLength)
@@ -1037,10 +1045,10 @@
                 DataAnnotations.Add(string.Format("Display(Name = \"{0}\")", DisplayName));
             }
 
-            public void SetupEntityAndConfig(CommentsStyle includeComments, CommentsStyle includeExtendedPropertyComments, bool usePrivateSetterForComputedColumns, bool dataAnnotations, bool dataAnnotationsSchema)
+            public void SetupEntityAndConfig(CommentsStyle includeComments, CommentsStyle includeExtendedPropertyComments, bool usePrivateSetterForComputedColumns, bool dataAnnotations, bool dataAnnotationsSchema, bool isSqlCe)
             {
                 SetupEntity(includeComments, includeExtendedPropertyComments, usePrivateSetterForComputedColumns);
-                SetupConfig(dataAnnotations, dataAnnotationsSchema);
+                SetupConfig(dataAnnotations, dataAnnotationsSchema, isSqlCe);
             }
 
             public void CleanUpDefault()
@@ -1470,7 +1478,7 @@
             }
 
             public GeneratedTextTransformation Outer;
-            public abstract Tables ReadSchema(Regex schemaFilterExclude, Regex schemaFilterInclude, Regex tableFilterExclude, Regex tableFilterInclude, Regex columnFilterExclude, Func<Table, bool> tableFilter, bool usePascalCase, bool prependSchemaName, CommentsStyle includeComments, bool includeViews, CommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, Func<Column, Table, Column> updateColumn, bool usePrivateSetterForComputedColumns, bool includeSynonyms, bool dataAnnotations, bool dataAnnotationsSchema);
+            public abstract Tables ReadSchema(Regex schemaFilterExclude, Regex schemaFilterInclude, Regex tableFilterExclude, Regex tableFilterInclude, Regex columnFilterExclude, Func<Table, bool> tableFilter, bool usePascalCase, bool prependSchemaName, CommentsStyle includeComments, bool includeViews, CommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, Func<Column, Table, Column> updateColumn, bool usePrivateSetterForComputedColumns, bool includeSynonyms, bool dataAnnotations, bool dataAnnotationsSchema, bool isSqlCe);
             public abstract List<StoredProcedure> ReadStoredProcs(Regex SchemaFilterExclude, Regex storedProcedureFilterExclude, bool usePascalCase, bool prependSchemaName , Func<string, string, string> StoredProcedureRename, bool includeTableValuedFunctions);
             public abstract List<ForeignKey> ReadForeignKeys(Func<string, string, string> tableRename, Func<ForeignKey, ForeignKey> foreignKeyFilter);
             public abstract void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool usePascalCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments, Func<string, ForeignKey, string, short, string> ForeignKeyName, bool dataAnnotationsSchema);
@@ -2087,7 +2095,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 return SqlDatabaseEngineEdition == "Azure";
             }
 
-            public override Tables ReadSchema(Regex schemaFilterExclude, Regex schemaFilterInclude, Regex tableFilterExclude, Regex tableFilterInclude, Regex columnFilterExclude, Func<Table, bool> tableFilter, bool usePascalCase, bool prependSchemaName, CommentsStyle includeComments, bool includeViews, CommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, Func<Column, Table, Column> updateColumn, bool usePrivateSetterForComputedColumns, bool includeSynonyms, bool dataAnnotations, bool dataAnnotationsSchema)
+            public override Tables ReadSchema(Regex schemaFilterExclude, Regex schemaFilterInclude, Regex tableFilterExclude, Regex tableFilterInclude, Regex columnFilterExclude, Func<Table, bool> tableFilter, bool usePascalCase, bool prependSchemaName, CommentsStyle includeComments, bool includeViews, CommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, Func<Column, Table, Column> updateColumn, bool usePrivateSetterForComputedColumns, bool includeSynonyms, bool dataAnnotations, bool dataAnnotationsSchema, bool isSqlCe)
             {
                 var result = new Tables();
                 if(Cmd == null)
@@ -2098,7 +2106,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 else
                     Cmd.CommandText = TableSQL + IncludeQueryTraceOn9481();
 
-                if (Cmd.GetType().Name == "SqlCeCommand")
+                if (isSqlCe)
                     Cmd.CommandText = TableSQLCE;
                 else
                     Cmd.CommandTimeout = 600;
@@ -2169,7 +2177,6 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                             table.Columns.Add(col);
                     }
                 }
-
                 // Check for property name clashes in columns
                 foreach(Column c in result.SelectMany(tbl => tbl.Columns.Where(c => tbl.Columns.FindAll(x => x.NameHumanCase == c.NameHumanCase).Count > 1)))
                 {
@@ -2190,7 +2197,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 foreach(Table tbl in result)
                 {
                     tbl.SetPrimaryKeys();
-                    tbl.Columns.ForEach(x => x.SetupEntityAndConfig(includeComments, includeExtendedPropertyComments, usePrivateSetterForComputedColumns, dataAnnotations, dataAnnotationsSchema));
+                    tbl.Columns.ForEach(x => x.SetupEntityAndConfig(includeComments, includeExtendedPropertyComments, usePrivateSetterForComputedColumns, dataAnnotations, dataAnnotationsSchema, isSqlCe));
                 }
 
                 return result;
@@ -3253,17 +3260,17 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
             }
 
-            public void AddMappingConfiguration(ForeignKey left, ForeignKey right, bool usePascalCase, string leftPropName, string rightPropName, bool isSqlCE)
+            public void AddMappingConfiguration(ForeignKey left, ForeignKey right, bool usePascalCase, string leftPropName, string rightPropName, bool isSqlCe)
             {
                 MappingConfiguration.Add(string.Format(@"HasMany(t => t.{0}).WithMany(t => t.{1}).Map(m =>
             {{
                 m.ToTable(""{2}""{5});
                 m.MapLeftKey(""{3}"");
                 m.MapRightKey(""{4}"");
-            }});", leftPropName, rightPropName, left.FkTableName, left.FkColumn, right.FkColumn, isSqlCE ? string.Empty : ", \"" + left.FkSchema + "\""));
+            }});", leftPropName, rightPropName, left.FkTableName, left.FkColumn, right.FkColumn, isSqlCe ? string.Empty : ", \"" + left.FkSchema + "\""));
             }
 
-            public void IdentifyMappingTable(List<ForeignKey> fkList, Tables tables, bool usePascalCase, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments, bool isSqlCE, Func<string, ForeignKey, string, short, string> ForeignKeyName)
+            public void IdentifyMappingTable(List<ForeignKey> fkList, Tables tables, bool usePascalCase, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments, bool isSqlCe, Func<string, ForeignKey, string, short, string> ForeignKeyName)
             {
                 IsMapping = false;
 
@@ -3306,7 +3313,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
                 var leftPropName  = leftTable.GetUniqueColumnName(rightTable.NameHumanCase, right, usePascalCase, checkForFkNameClashes, false, ForeignKeyName);
                 var rightPropName = rightTable.GetUniqueColumnName(leftTable.NameHumanCase, left, usePascalCase, checkForFkNameClashes, false, ForeignKeyName);
-                leftTable.AddMappingConfiguration(left, right, usePascalCase, leftPropName, rightPropName, isSqlCE);
+                leftTable.AddMappingConfiguration(left, right, usePascalCase, leftPropName, rightPropName, isSqlCe);
 
                 IsMapping = true;
                 rightTable.AddReverseNavigation(Relationship.ManyToMany, rightTable.NameHumanCase, leftTable, rightPropName, null, collectionType, includeComments);
@@ -3342,11 +3349,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
             }
 
-            public void IdentifyMappingTables(List<ForeignKey> fkList, bool usePascalCase, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments, bool isSqlCE, Func<string, ForeignKey, string, short, string> ForeignKeyName)
+            public void IdentifyMappingTables(List<ForeignKey> fkList, bool usePascalCase, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments, bool isSqlCe, Func<string, ForeignKey, string, short, string> ForeignKeyName)
             {
                 foreach(var tbl in this.Where(x => x.HasForeignKey))
                 {
-                    tbl.IdentifyMappingTable(fkList, this, usePascalCase, collectionType, checkForFkNameClashes, includeComments, isSqlCE, ForeignKeyName);
+                    tbl.IdentifyMappingTable(fkList, this, usePascalCase, collectionType, checkForFkNameClashes, includeComments, isSqlCe, ForeignKeyName);
                 }
             }
 

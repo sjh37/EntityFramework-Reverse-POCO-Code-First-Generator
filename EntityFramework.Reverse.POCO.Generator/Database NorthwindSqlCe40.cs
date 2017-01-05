@@ -687,7 +687,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
             Property(x => x.CategoryId).HasColumnName(@"Category ID").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity);
             Property(x => x.CategoryName).HasColumnName(@"Category Name").HasColumnType("nvarchar").IsRequired().HasMaxLength(15);
             Property(x => x.Description).HasColumnName(@"Description").HasColumnType("ntext").IsOptional().IsMaxLength();
-            Property(x => x.Picture).HasColumnName(@"Picture").HasColumnType("image").IsOptional().HasMaxLength(1073741823);
+            Property(x => x.Picture).HasColumnName(@"Picture").HasColumnType("image").IsOptional().HasMaxLength(null);
         }
     }
 
@@ -746,7 +746,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
             Property(x => x.Country).HasColumnName(@"Country").HasColumnType("nvarchar").IsOptional().HasMaxLength(15);
             Property(x => x.HomePhone).HasColumnName(@"Home Phone").HasColumnType("nvarchar").IsOptional().HasMaxLength(24);
             Property(x => x.Extension).HasColumnName(@"Extension").HasColumnType("nvarchar").IsOptional().HasMaxLength(4);
-            Property(x => x.Photo).HasColumnName(@"Photo").HasColumnType("image").IsOptional().HasMaxLength(1073741823);
+            Property(x => x.Photo).HasColumnName(@"Photo").HasColumnType("image").IsOptional().HasMaxLength(null);
             Property(x => x.Notes).HasColumnName(@"Notes").HasColumnType("ntext").IsOptional().IsMaxLength();
             Property(x => x.ReportsTo).HasColumnName(@"Reports To").HasColumnType("int").IsOptional();
         }
