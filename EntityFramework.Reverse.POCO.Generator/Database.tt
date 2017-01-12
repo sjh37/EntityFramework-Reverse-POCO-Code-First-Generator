@@ -217,6 +217,10 @@
         // Remove column from poco class as it will be inherited from a base class
         //if (column.IsPrimaryKey && table.NameHumanCase.Equals("SomeTable", StringComparison.InvariantCultureIgnoreCase))
         //    column.Hidden = true;
+        
+        // Apply the "override" access modifier to a specific column.
+	//if (column.NameHumanCase == "id")
+	//	column.OverrideModifier = true;  // public override long id { get; set; }
 
         // Perform Enum property type replacement
         var enumDefinition = EnumsDefinitions.FirstOrDefault(e =>
