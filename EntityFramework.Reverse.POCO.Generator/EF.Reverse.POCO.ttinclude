@@ -209,7 +209,7 @@ foreach(var usingStatement in usingsContext.Distinct().OrderBy(x => x)) { #>
 <# } #>
 <#if(IncludeCodeGeneratedAttribute){#>    <#=CodeGeneratedAttribute#>
 <#}#>
-    public <# if(MakeClassesPartial) { #>partial <# } #>class <#=DbContextName#> : <#=DbContextBaseClass#>, <#=DbContextInterfaceName#>
+    public <# if(MakeClassesPartial) { #>partial <# } #>class <#=DbContextName#> : <#=DbContextBaseClass#><#= (string.IsNullOrEmpty (DbContextInterfaceName)?"": ", " + DbContextInterfaceName)#>
     {
 <#
 foreach(Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKey).OrderBy(x => x.NameHumanCase) select t)
@@ -504,7 +504,7 @@ foreach(var usingStatement in usingsContext.Distinct().OrderBy(x => x)) { #>
 <# } #>
 <#if(IncludeCodeGeneratedAttribute){#>    <#=CodeGeneratedAttribute#>
 <#}#>
-    public <# if(MakeClassesPartial) { #>partial <# } #>class Fake<#=DbContextName #> : <#=DbContextInterfaceName #>
+    public <# if(MakeClassesPartial) { #>partial <# } #>class Fake<#=DbContextName #><#= (string.IsNullOrEmpty (DbContextInterfaceName)? "" : " : " + DbContextInterfaceName)#>
     {
 <#
 foreach (Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKey).OrderBy(x => x.NameHumanCase) select t)
