@@ -23,7 +23,7 @@
 // ReSharper disable RedundantNameQualifier
 // ReSharper disable RedundantOverridenMember
 // ReSharper disable UseNameofExpression
-// TargetFrameworkVersion = 4.51
+// TargetFrameworkVersion = 4.5
 #pragma warning disable 1591    //  Ignore "Missing XML Comment" warning
 
 

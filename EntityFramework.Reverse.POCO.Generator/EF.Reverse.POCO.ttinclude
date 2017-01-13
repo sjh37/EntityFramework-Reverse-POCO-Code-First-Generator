@@ -14,7 +14,7 @@ fileManager.StartHeader();
 // ReSharper disable RedundantNameQualifier
 // ReSharper disable RedundantOverridenMember
 // ReSharper disable UseNameofExpression
-// TargetFrameworkVersion = <#=TargetFrameworkVersion #>
+// TargetFrameworkVersion = <#= _targetFrameworkVersion #>
 #pragma warning disable 1591    //  Ignore "Missing XML Comment" warning
 
 <#if (ElementsToGenerate.HasFlag(Elements.Poco))

@@ -115,17 +115,12 @@
         string PocoNamespace, ContextNamespace, UnitOfWorkNamespace, PocoConfigurationNamespace = "";
 
         // Settings to allow TargetFramework checks
-        private static string TargetFrameworkVersion;
+        private static float _targetFrameworkVersion;
         Func<string,bool> IsSupportedFrameworkVersion = (string frameworkVersion) =>
         {
-            if (!string.IsNullOrEmpty(TargetFrameworkVersion))
-            {
-                var nfi = CultureInfo.InvariantCulture.NumberFormat;
-                float target = float.Parse(TargetFrameworkVersion, nfi);
-                float isSupported = float.Parse(frameworkVersion, nfi);
-                return isSupported <= target;
-            }
-            return true;
+            var nfi = CultureInfo.InvariantCulture.NumberFormat;
+            var isSupported = float.Parse(frameworkVersion, nfi);
+            return isSupported <= _targetFrameworkVersion;
         };
 
 
@@ -312,7 +307,7 @@
 
         private void InitConnectionString()
         {
-            if(!String.IsNullOrEmpty(_connectionString))
+            if(!string.IsNullOrEmpty(_connectionString))
                 return;
 
             _connectionString = GetConnectionString(ref ConnectionStringName, out _providerName, out _configFilePath);
@@ -519,6 +514,14 @@
 
         private DbProviderFactory GetDbProviderFactory()
         {
+            if (_targetFrameworkVersion < 1.0f)
+            {
+                var project = GetCurrentProject();
+                var targetFrameworkMoniker = project.Properties.Item("TargetFrameworkMoniker").Value.ToString();
+                var targetFramework = new System.Runtime.Versioning.FrameworkName(targetFrameworkMoniker).Version;
+                _targetFrameworkVersion = targetFramework.Major + (targetFramework.Minor * 0.1f);
+            }
+
             InitConnectionString();
 
             WriteLine("// ------------------------------------------------------------------------------------------------");
