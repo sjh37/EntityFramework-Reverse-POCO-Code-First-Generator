@@ -86,7 +86,7 @@
         private string _providerName = "";
         private string _configFilePath = "";
         Func<string, string, string> TableRename;
-        Func<string, string, string> StoredProcedureRename;
+        Func<StoredProcedure, string> StoredProcedureRename;
         static Func<string, StoredProcedure, string> StoredProcedureReturnModelRename;
         Func<Column, Table, Column> UpdateColumn;
         Func<ForeignKey, ForeignKey> ForeignKeyFilter;
@@ -1483,7 +1483,7 @@
 
             public GeneratedTextTransformation Outer;
             public abstract Tables ReadSchema(Regex schemaFilterExclude, Regex schemaFilterInclude, Regex tableFilterExclude, Regex tableFilterInclude, Regex columnFilterExclude, Func<Table, bool> tableFilter, bool usePascalCase, bool prependSchemaName, CommentsStyle includeComments, bool includeViews, CommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, Func<Column, Table, Column> updateColumn, bool usePrivateSetterForComputedColumns, bool includeSynonyms, bool dataAnnotations, bool dataAnnotationsSchema, bool isSqlCe);
-            public abstract List<StoredProcedure> ReadStoredProcs(Regex SchemaFilterExclude, Regex storedProcedureFilterExclude, bool usePascalCase, bool prependSchemaName , Func<string, string, string> StoredProcedureRename, bool includeTableValuedFunctions);
+            public abstract List<StoredProcedure> ReadStoredProcs(Regex SchemaFilterExclude, Regex storedProcedureFilterExclude, bool usePascalCase, bool prependSchemaName , Func<StoredProcedure, string> StoredProcedureRename, bool includeTableValuedFunctions);
             public abstract List<ForeignKey> ReadForeignKeys(Func<string, string, string> tableRename, Func<ForeignKey, ForeignKey> foreignKeyFilter);
             public abstract void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool usePascalCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments, Func<string, ForeignKey, string, short, string> ForeignKeyName, bool dataAnnotationsSchema);
             public abstract void IdentifyForeignKeys(List<ForeignKey> fkList, Tables tables);
@@ -2398,7 +2398,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
             }
 
-            public override List<StoredProcedure> ReadStoredProcs(Regex schemaFilterExclude, Regex storedProcedureFilterExclude, bool usePascalCase, bool prependSchemaName , Func<string, string, string> StoredProcedureRename, bool includeTableValuedFunctions)
+            public override List<StoredProcedure> ReadStoredProcs(Regex schemaFilterExclude, Regex storedProcedureFilterExclude, bool usePascalCase, bool prependSchemaName , Func<StoredProcedure, string> StoredProcedureRename, bool includeTableValuedFunctions)
             {
                 var result = new List<StoredProcedure>();
                 if(Cmd == null)
@@ -2447,7 +2447,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                             if((string.Compare(schema, "dbo", StringComparison.OrdinalIgnoreCase) != 0) && prependSchemaName)
                                 sp.NameHumanCase = schema + "_" + sp.NameHumanCase;
 
-                            sp.NameHumanCase = StoredProcedureRename(sp.NameHumanCase, schema);
+                            sp.NameHumanCase = StoredProcedureRename(sp);
                             if(storedProcedureFilterExclude != null && (storedProcedureFilterExclude.IsMatch(sp.NameHumanCase) || storedProcedureFilterExclude.IsMatch(schema + "." + sp.NameHumanCase)))
                                 continue;
 
