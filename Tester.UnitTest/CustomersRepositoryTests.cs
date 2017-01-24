@@ -41,7 +41,7 @@ namespace Tester.UnitTest
         {
             // Act
             int count = _customersRepository.Count();
-            
+
             // Assert
             Assert.AreEqual(2, count);
         }
@@ -79,7 +79,7 @@ namespace Tester.UnitTest
             Assert.AreEqual("abc", abc.CompanyName);
             Assert.AreEqual("def", def.CompanyName);
         }
-        
+
         [Test]
         public void FindById_ShouldFail()
         {
@@ -109,6 +109,6 @@ namespace Tester.UnitTest
             Assert.AreEqual(2, customers.Count);
             Assert.AreEqual("abc", customers[0].CompanyName);
             Assert.AreEqual("def", customers[1].CompanyName);
-        } 
+        }
     }
 }
