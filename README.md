@@ -17,7 +17,7 @@ the generated code to my liking.
 
 ### What's new
 
-[Click here](https://github.com/sjh37/efreversepoco/wiki/What's-New) to see what's new in this release.
+[Click here](https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/releases) to see what's new in this release.
 
 ### Donation
 
