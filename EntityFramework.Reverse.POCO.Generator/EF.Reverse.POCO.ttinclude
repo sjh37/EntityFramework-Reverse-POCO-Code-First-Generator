@@ -988,7 +988,7 @@ foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal).Where(x => !x.Hidden))
 <# }
 if(AddWcfDataAttributes) { #>        [System.Runtime.Serialization.DataMember(Order = <#=DataMemberOrder++#>, IsRequired = <#=col.IsNullable ? "false" : "true"#>)]
 <# } #>
-<#= WritePocoColumn(col) #>
+        <#= WritePocoColumn(col) #>
 <# if(AddWcfDataAttributes) { #>
 
 <# } } #>
