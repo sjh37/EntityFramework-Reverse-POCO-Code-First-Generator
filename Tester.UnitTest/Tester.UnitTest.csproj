@@ -59,6 +59,7 @@
     <Compile Include="CleanUpTests.cs" />
     <Compile Include="IRepository.cs" />
     <Compile Include="MockRepository.cs" />
+    <Compile Include="PluralisationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MockRepositoryTest.cs" />
     <Compile Include="ToDisplayNameTests.cs" />
