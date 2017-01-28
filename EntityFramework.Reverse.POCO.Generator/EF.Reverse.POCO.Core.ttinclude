@@ -90,7 +90,7 @@
         static Func<string, StoredProcedure, string> StoredProcedureReturnModelRename;
         Func<Column, Table, Column> UpdateColumn;
         Func<ForeignKey, ForeignKey> ForeignKeyFilter;
-        Func<string, ForeignKey, string, short, string> ForeignKeyName;
+        Func<string, ForeignKey, string, short, bool, string> ForeignKeyName;
         string MigrationConfigurationFileName = null;
         string MigrationStrategy = "MigrateDatabaseToLatestVersion";
         string ContextKey = null;
@@ -1485,7 +1485,7 @@
             public abstract Tables ReadSchema(Regex schemaFilterExclude, Regex schemaFilterInclude, Regex tableFilterExclude, Regex tableFilterInclude, Regex columnFilterExclude, Func<Table, bool> tableFilter, bool usePascalCase, bool prependSchemaName, CommentsStyle includeComments, bool includeViews, CommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, Func<Column, Table, Column> updateColumn, bool usePrivateSetterForComputedColumns, bool includeSynonyms, bool dataAnnotations, bool dataAnnotationsSchema, bool isSqlCe);
             public abstract List<StoredProcedure> ReadStoredProcs(Regex SchemaFilterExclude, Regex storedProcedureFilterExclude, bool usePascalCase, bool prependSchemaName , Func<StoredProcedure, string> StoredProcedureRename, bool includeTableValuedFunctions);
             public abstract List<ForeignKey> ReadForeignKeys(Func<string, string, string> tableRename, Func<ForeignKey, ForeignKey> foreignKeyFilter);
-            public abstract void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool usePascalCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments, Func<string, ForeignKey, string, short, string> ForeignKeyName, bool dataAnnotationsSchema);
+            public abstract void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool usePascalCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments, Func<string, ForeignKey, string, short, bool, string> ForeignKeyName, bool dataAnnotationsSchema);
             public abstract void IdentifyForeignKeys(List<ForeignKey> fkList, Tables tables);
             public abstract void ReadIndexes(Tables tables);
             public abstract void ReadExtendedProperties(Tables tables);
@@ -2554,7 +2554,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
             }
 
-            public override void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool usePascalCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments, Func<string, ForeignKey, string, short, string> ForeignKeyName, bool dataAnnotationsSchema)
+            public override void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool usePascalCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments, Func<string, ForeignKey, string, short, bool, string> ForeignKeyName, bool dataAnnotationsSchema)
             {
                 var constraints = fkList.Select(x => x.FkSchema + "." + x.ConstraintName).Distinct();
                 foreach (var constraint in constraints)
@@ -2601,9 +2601,9 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         continue;
 
                     string pkTableHumanCase = foreignKey.PkTableHumanCase(usePascalCase, prependSchemaName);
-                    string pkPropName = fkTable.GetUniqueColumnName(pkTableHumanCase, foreignKey, usePascalCase, checkForFkNameClashes, true, ForeignKeyName);
+                    string pkPropName = fkTable.GetUniqueColumnName(pkTableHumanCase, foreignKey, usePascalCase, checkForFkNameClashes, true, ForeignKeyName, false); // many-to-one
                     bool fkMakePropNameSingular = (relationship == Relationship.OneToOne);
-                    string fkPropName = pkTable.GetUniqueColumnName(fkTable.NameHumanCase, foreignKey, usePascalCase, checkForFkNameClashes, fkMakePropNameSingular, ForeignKeyName);
+                    string fkPropName = pkTable.GetUniqueColumnName(fkTable.NameHumanCase, foreignKey, usePascalCase, checkForFkNameClashes, fkMakePropNameSingular, ForeignKeyName, true); // one-to-many
 
                     var dataAnnotation = string.Empty;
                     if (dataAnnotationsSchema)
@@ -3157,7 +3157,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 return Columns.SingleOrDefault(x => String.Compare(x.Name, columnName, StringComparison.OrdinalIgnoreCase) == 0);
             }
 
-            public string GetUniqueColumnName(string tableNameHumanCase, ForeignKey foreignKey, bool usePascalCase, bool checkForFkNameClashes, bool makeSingular, Func<string, ForeignKey, string, short, string> ForeignKeyName)
+            public string GetUniqueColumnName(string tableNameHumanCase, ForeignKey foreignKey, bool usePascalCase, bool checkForFkNameClashes, bool makeSingular, Func<string, ForeignKey, string, short, bool, string> ForeignKeyName, bool oneToMany)
             {
                 if (ReverseNavigationUniquePropName.Count == 0)
                 {
@@ -3171,10 +3171,13 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 if (checkForFkNameClashes && ReverseNavigationUniquePropName.Contains(tableNameHumanCase) && !ReverseNavigationUniquePropNameClashes.Contains(tableNameHumanCase))
                     ReverseNavigationUniquePropNameClashes.Add(tableNameHumanCase); // Name clash
 
-                // Attempt 1
-                string fkName = (usePascalCase ? Inflector.ToTitleCase(foreignKey.FkColumn) : foreignKey.FkColumn).Replace(" ", "").Replace("$", "");
-                string name = ForeignKeyName(tableNameHumanCase, foreignKey, fkName, 1);
+                string fkName;
+                string name;
                 string col;
+
+                // Attempt 1
+                fkName = (usePascalCase ? Inflector.ToTitleCase(foreignKey.FkColumn) : foreignKey.FkColumn).Replace(" ", "").Replace("$", "");
+                name = ForeignKeyName(tableNameHumanCase, foreignKey, fkName, 1, oneToMany);
                 if (!ReverseNavigationUniquePropNameClashes.Contains(name) && !ReverseNavigationUniquePropName.Contains(name))
                 {
                     ReverseNavigationUniquePropName.Add(name);
@@ -3184,7 +3187,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 // Attempt 2
                 if (fkName.ToLowerInvariant().EndsWith("id"))
                 {
-                    col = ForeignKeyName(tableNameHumanCase, foreignKey, fkName, 2);
+                    col = ForeignKeyName(tableNameHumanCase, foreignKey, fkName, 2, oneToMany);
                     if (checkForFkNameClashes && ReverseNavigationUniquePropName.Contains(col) &&
                         !ReverseNavigationUniquePropNameClashes.Contains(col))
                         ReverseNavigationUniquePropNameClashes.Add(col); // Name clash
@@ -3198,7 +3201,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
 
                 // Attempt 3
-                col = ForeignKeyName(tableNameHumanCase, foreignKey, fkName, 3);
+                col = ForeignKeyName(tableNameHumanCase, foreignKey, fkName, 3, oneToMany);
                 if (checkForFkNameClashes && ReverseNavigationUniquePropName.Contains(col) &&
                     !ReverseNavigationUniquePropNameClashes.Contains(col))
                     ReverseNavigationUniquePropNameClashes.Add(col); // Name clash
@@ -3211,7 +3214,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
 
                 // Attempt 4
-                col = ForeignKeyName(tableNameHumanCase, foreignKey, fkName, 4);
+                col = ForeignKeyName(tableNameHumanCase, foreignKey, fkName, 4, oneToMany);
                 if (checkForFkNameClashes && ReverseNavigationUniquePropName.Contains(col) && !ReverseNavigationUniquePropNameClashes.Contains(col))
                     ReverseNavigationUniquePropNameClashes.Add(col); // Name clash
 
@@ -3224,7 +3227,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 // Attempt 5
                 for (int n = 1; n < 99; ++n)
                 {
-                    col = ForeignKeyName(tableNameHumanCase, foreignKey, fkName, 5) + n;
+                    col = ForeignKeyName(tableNameHumanCase, foreignKey, fkName, 5, oneToMany) + n;
 
                     if (ReverseNavigationUniquePropName.Contains(col))
                         continue;
@@ -3234,7 +3237,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
 
                 // Give up
-                return ForeignKeyName(tableNameHumanCase, foreignKey, fkName, 6);
+                return ForeignKeyName(tableNameHumanCase, foreignKey, fkName, 6, oneToMany);
             }
 
             public void AddReverseNavigation(Relationship relationship, string fkName, Table fkTable, string propName, string constraint, string collectionType, CommentsStyle includeComments)
@@ -3274,7 +3277,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             }});", leftPropName, rightPropName, left.FkTableName, left.FkColumn, right.FkColumn, isSqlCe ? string.Empty : ", \"" + left.FkSchema + "\""));
             }
 
-            public void IdentifyMappingTable(List<ForeignKey> fkList, Tables tables, bool usePascalCase, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments, bool isSqlCe, Func<string, ForeignKey, string, short, string> ForeignKeyName)
+            public void IdentifyMappingTable(List<ForeignKey> fkList, Tables tables, bool usePascalCase, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments, bool isSqlCe, Func<string, ForeignKey, string, short, bool, string> ForeignKeyName)
             {
                 IsMapping = false;
 
@@ -3315,8 +3318,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 if (rightTable == null)
                     return;
 
-                var leftPropName  = leftTable.GetUniqueColumnName(rightTable.NameHumanCase, right, usePascalCase, checkForFkNameClashes, false, ForeignKeyName);
-                var rightPropName = rightTable.GetUniqueColumnName(leftTable.NameHumanCase, left, usePascalCase, checkForFkNameClashes, false, ForeignKeyName);
+                var leftPropName  = leftTable.GetUniqueColumnName(rightTable.NameHumanCase, right, usePascalCase, checkForFkNameClashes, false, ForeignKeyName, true); // both sides are one-to-many
+                var rightPropName = rightTable.GetUniqueColumnName(leftTable.NameHumanCase, left, usePascalCase, checkForFkNameClashes, false, ForeignKeyName, true); // both sides are one-to-many
                 leftTable.AddMappingConfiguration(left, right, usePascalCase, leftPropName, rightPropName, isSqlCe);
 
                 IsMapping = true;
@@ -3353,7 +3356,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
             }
 
-            public void IdentifyMappingTables(List<ForeignKey> fkList, bool usePascalCase, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments, bool isSqlCe, Func<string, ForeignKey, string, short, string> ForeignKeyName)
+            public void IdentifyMappingTables(List<ForeignKey> fkList, bool usePascalCase, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments, bool isSqlCe, Func<string, ForeignKey, string, short, bool, string> ForeignKeyName)
             {
                 foreach(var tbl in this.Where(x => x.HasForeignKey))
                 {
