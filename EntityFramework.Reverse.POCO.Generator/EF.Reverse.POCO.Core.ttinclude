@@ -3542,9 +3542,9 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             return name;
         };
 
-        public static readonly Func<DataColumn, string> WriteStoredProcReturnColumn = col =>
-            string.Format("public {0} {1} {{ get; set; }}",
-                StoredProcedure.WrapTypeIfNullable("System." + col.DataType.Name,col), col.ColumnName);
+    public static readonly Func<DataColumn, string> WriteStoredProcReturnColumn = col =>
+        string.Format("public {0} {1} {{ get; set; }}",
+            StoredProcedure.WrapTypeIfNullable((col.DataType.Name.Equals("SqlHierarchyId") ? "Microsoft.SqlServer.Types." : "System.") + col.DataType.Name, col), col.ColumnName);
 
         public static readonly Func<StoredProcedure, string> WriteStoredProcReturnType = (sp) =>
         {
