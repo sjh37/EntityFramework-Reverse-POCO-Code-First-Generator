@@ -1014,32 +1014,6 @@ foreach(var entityFk in tbl.Columns.SelectMany(x => x.EntityFk).OrderBy(o => o))
 <# } #>
         <#=entityFk #>
 <# } } #>
-<#
-if(tbl.Columns.Where(c => c.Default != string.Empty && !c.Hidden).Count() > 0 || tbl.ReverseNavigationCtor.Count() > 0 || MakeClassesPartial)
-{
-#>
-
-        public <#=tbl.NameHumanCase#>()
-        {
-<#
-foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal).Where(c => c.Default != string.Empty && !c.Hidden))
-{
-#>
-            <#=col.NameHumanCase #> = <#=col.Default #>;
-<# } #>
-<#
-foreach(string s in tbl.ReverseNavigationCtor)
-{
-#>
-            <#=s #>
-<# }
-if(MakeClassesPartial) {#>
-            InitializePartial();
-<#}#>        }
-<#if(MakeClassesPartial) {#>
-
-        partial void InitializePartial();
-<#} }#>
     }
 
 <# } }
