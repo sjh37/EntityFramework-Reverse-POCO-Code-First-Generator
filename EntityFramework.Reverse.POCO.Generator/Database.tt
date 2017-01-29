@@ -113,6 +113,11 @@
     //     abc.hello will be AbcHello.
     PrependSchemaName = true;   // Control if the schema name is prepended to the table name
 
+    // Table Suffix ***********************************************************************************************************************
+    // Prepends the suffix to the generated classes names
+    // Ie. If TableSuffix is "Dto" then Order will be OrderDto
+    //     If TableSuffix is "Entity" then Order will be OrderEntity
+    TableSuffix = null; 
 
     // Filtering **************************************************************************************************************************
     // Use the following table/view name regex filters to include or exclude tables/views
