@@ -383,7 +383,7 @@
             var currentProject = projectItem.ContainingProject;
             if (currentProject != null)
                 return currentProject;
-                
+
             // this returns SELECTED (active) project(s) - it may be a different project than the T4 template. Looping over dte.Solution works, but why can't we get their FullName (csproj path)?
             var activeSolutionProjects = (Array)dte.ActiveSolutionProjects;
             if(activeSolutionProjects == null)
