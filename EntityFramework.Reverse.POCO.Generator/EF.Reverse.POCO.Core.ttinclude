@@ -66,6 +66,7 @@
         string ExtraWcfDataContractAttributes = "";
         static bool DisableGeographyTypes = false;
         bool PrependSchemaName = true;
+        string TableSuffix = null;
         Regex SchemaFilterExclude = null;
         Regex SchemaFilterInclude = null;
         Regex TableFilterExclude = null;
@@ -617,6 +618,7 @@
                     {
                         if(UseDataAnnotationsSchema)
                             t.SetupDataAnnotations();
+                        t.Suffix = TableSuffix;
                     }
 
                     // Work out if there are any foreign key relationship naming clashes
@@ -2609,7 +2611,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     if (relationship == Relationship.DoNotUse)
                         continue;
 
-                    string pkTableHumanCase = foreignKey.PkTableHumanCase(usePascalCase, prependSchemaName);
+                    string pkTableHumanCaseWithSuffix = foreignKey.PkTableHumanCase(usePascalCase, prependSchemaName, pkTable.Suffix);                    
+                    string pkTableHumanCase = foreignKey.PkTableHumanCase(usePascalCase, prependSchemaName, null);
                     string pkPropName = fkTable.GetUniqueColumnName(pkTableHumanCase, foreignKey, usePascalCase, checkForFkNameClashes, true, ForeignKeyName);
                     bool fkMakePropNameSingular = (relationship == Relationship.OneToOne);
                     string fkPropName = pkTable.GetUniqueColumnName(fkTable.NameHumanCase, foreignKey, usePascalCase, checkForFkNameClashes, fkMakePropNameSingular, ForeignKeyName);
@@ -2618,7 +2621,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     if (dataAnnotationsSchema)
                         dataAnnotation = string.Format("[ForeignKey(\"{0}\")] ", string.Join(", ", fkCols.Select(x => x.col.NameHumanCase).Distinct().ToArray()));
 
-                    fkCol.col.EntityFk.Add(string.Format("{0}public virtual {1} {2} {3}{4}", dataAnnotation, pkTableHumanCase, pkPropName, "{ get; set; }", includeComments != CommentsStyle.None ? " // " + foreignKey.ConstraintName : string.Empty));
+                    fkCol.col.EntityFk.Add(string.Format("{0}public virtual {1} {2} {3}{4}", dataAnnotation, pkTableHumanCaseWithSuffix, pkPropName, "{ get; set; }", includeComments != CommentsStyle.None ? " // " + foreignKey.ConstraintName : string.Empty));
 
                     string manyToManyMapping, mapKey;
                     if(foreignKeys.Count > 1)
@@ -3055,12 +3058,13 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 IncludeReverseNavigation = true;
             }
 
-            public string PkTableHumanCase(bool usePascalCase, bool prependSchemaName)
+            public string PkTableHumanCase(bool usePascalCase, bool prependSchemaName, string suffix)
             {
                 string singular = Inflector.MakeSingular(PkTableNameFiltered);
                 string pkTableHumanCase = (usePascalCase ? Inflector.ToTitleCase(singular) : singular).Replace(" ", "").Replace("$", "");
                 if (string.Compare(PkSchema, "dbo", StringComparison.OrdinalIgnoreCase) != 0 && prependSchemaName)
                     pkTableHumanCase = PkSchema + "_" + pkTableHumanCase;
+                pkTableHumanCase += suffix;
                 return pkTableHumanCase;
             }
         }
@@ -3086,6 +3090,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             public string Schema;
             public string Type;
             public string ClassName;
+            public string Suffix;
             public bool IsMapping;
             public bool IsView;
             public bool HasForeignKey;
@@ -3108,6 +3113,13 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 DataAnnotations = new List<string>();
             }
 
+            public string NameHumanCaseWithSuffix
+            {
+                get
+                {
+                    return NameHumanCase + Suffix;
+                }
+            }
             public void ResetNavigationProperties()
             {
                 MappingConfiguration = new List<string>();
@@ -3251,21 +3263,21 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 switch (relationship)
                 {
                     case Relationship.OneToOne:
-                        ReverseNavigationProperty.Add(string.Format("public virtual {0} {1} {{ get; set; }}{2}", fkTable.NameHumanCase, propName, includeComments != CommentsStyle.None ? " // " + constraint : string.Empty));
+                        ReverseNavigationProperty.Add(string.Format("public virtual {0} {1} {{ get; set; }}{2}", fkTable.NameHumanCaseWithSuffix, propName, includeComments != CommentsStyle.None ? " // " + constraint : string.Empty));
                         break;
 
                     case Relationship.OneToMany:
-                        ReverseNavigationProperty.Add(string.Format("public virtual {0} {1} {{ get; set; }}{2}", fkTable.NameHumanCase, propName, includeComments != CommentsStyle.None ? " // " + constraint : string.Empty));
+                        ReverseNavigationProperty.Add(string.Format("public virtual {0} {1} {{ get; set; }}{2}", fkTable.NameHumanCaseWithSuffix, propName, includeComments != CommentsStyle.None ? " // " + constraint : string.Empty));
                         break;
 
                     case Relationship.ManyToOne:
-                        ReverseNavigationProperty.Add(string.Format("public virtual System.Collections.Generic.ICollection<{0}> {1} {{ get; set; }}{2}", fkTable.NameHumanCase, propName, includeComments != CommentsStyle.None ? " // " + constraint : string.Empty));
-                        ReverseNavigationCtor.Add(string.Format("{0} = new {1}<{2}>();", propName, collectionType, fkTable.NameHumanCase));
+                        ReverseNavigationProperty.Add(string.Format("public virtual System.Collections.Generic.ICollection<{0}> {1} {{ get; set; }}{2}", fkTable.NameHumanCaseWithSuffix, propName, includeComments != CommentsStyle.None ? " // " + constraint : string.Empty));
+                        ReverseNavigationCtor.Add(string.Format("{0} = new {1}<{2}>();", propName, collectionType, fkTable.NameHumanCaseWithSuffix));
                         break;
 
                     case Relationship.ManyToMany:
-                        ReverseNavigationProperty.Add(string.Format("public virtual System.Collections.Generic.ICollection<{0}> {1} {{ get; set; }}{2}", fkTable.NameHumanCase, propName, includeComments != CommentsStyle.None ? " // Many to many mapping" : string.Empty));
-                        ReverseNavigationCtor.Add(string.Format("{0} = new {1}<{2}>();", propName, collectionType, fkTable.NameHumanCase));
+                        ReverseNavigationProperty.Add(string.Format("public virtual System.Collections.Generic.ICollection<{0}> {1} {{ get; set; }}{2}", fkTable.NameHumanCaseWithSuffix, propName, includeComments != CommentsStyle.None ? " // Many to many mapping" : string.Empty));
+                        ReverseNavigationCtor.Add(string.Format("{0} = new {1}<{2}>();", propName, collectionType, fkTable.NameHumanCaseWithSuffix));
                         break;
 
                     default:

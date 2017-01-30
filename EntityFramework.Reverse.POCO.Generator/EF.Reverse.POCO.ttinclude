@@ -83,7 +83,7 @@ foreach(var usingStatement in usingsAll.Distinct().OrderBy(x => x)) { #>
 foreach (Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKey).OrderBy(x => x.NameHumanCase) select t)
 {
 #>
-        System.Data.Entity.DbSet<<#=tbl.NameHumanCase #>> <#=Inflector.MakePlural(tbl.NameHumanCase) #> { get; set; }<#if (IncludeComments != CommentsStyle.None)
+        System.Data.Entity.DbSet<<#=tbl.NameHumanCaseWithSuffix #>> <#=Inflector.MakePlural(tbl.NameHumanCase) #> { get; set; }<#if (IncludeComments != CommentsStyle.None)
 { #> // <#=tbl.Name #>
 <# }
 else
@@ -215,7 +215,7 @@ foreach(var usingStatement in usingsContext.Distinct().OrderBy(x => x)) { #>
 foreach(Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKey).OrderBy(x => x.NameHumanCase) select t)
 {
 #>
-        public System.Data.Entity.DbSet<<#=tbl.NameHumanCase#>> <#=Inflector.MakePlural(tbl.NameHumanCase)#> { get; set; }<#if(IncludeComments != CommentsStyle.None){#> // <#=tbl.Name#>
+        public System.Data.Entity.DbSet<<#=tbl.NameHumanCaseWithSuffix#>> <#=Inflector.MakePlural(tbl.NameHumanCase)#> { get; set; }<#if(IncludeComments != CommentsStyle.None){#> // <#=tbl.Name#>
 <# } else { #>
 
 <# } #>
@@ -298,7 +298,7 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKey
 foreach(Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKey).Where(ConfigurationFilter).OrderBy(x => x.NameHumanCase) select t)
 {
 #>
-            modelBuilder.Configurations.Add(new <#=tbl.NameHumanCase + ConfigurationClassName#>());
+            modelBuilder.Configurations.Add(new <#=tbl.NameHumanCaseWithSuffix + ConfigurationClassName#>());
 <# } #>
 <#if(MakeClassesPartial) {#>
 
@@ -312,7 +312,7 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKey
 foreach(Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKey).Where(ConfigurationFilter).OrderBy(x => x.NameHumanCase) select t)
 {
 #>
-            modelBuilder.Configurations.Add(new <#=tbl.NameHumanCase + ConfigurationClassName#>(schema));
+            modelBuilder.Configurations.Add(new <#=tbl.NameHumanCaseWithSuffix + ConfigurationClassName#>(schema));
 <# } #>
             return modelBuilder;
         }
@@ -510,7 +510,7 @@ foreach(var usingStatement in usingsContext.Distinct().OrderBy(x => x)) { #>
 foreach (Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKey).OrderBy(x => x.NameHumanCase) select t)
 {
 #>
-        public System.Data.Entity.DbSet<<#=tbl.NameHumanCase #>> <#=Inflector.MakePlural(tbl.NameHumanCase) #> { get; set; }
+        public System.Data.Entity.DbSet<<#=tbl.NameHumanCaseWithSuffix #>> <#=Inflector.MakePlural(tbl.NameHumanCase) #> { get; set; }
 <# } #>
 
         public Fake<#=DbContextName #>()
@@ -519,7 +519,7 @@ foreach (Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKe
 foreach (Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKey).OrderBy(x => x.NameHumanCase) select t)
 {
 #>
-            <#=Inflector.MakePlural(tbl.NameHumanCase) #> = new FakeDbSet<<#=tbl.NameHumanCase #>>(<#= string.Join(", ", tbl.PrimaryKeys.Select(x => "\"" + x.NameHumanCase + "\"")) #>);
+            <#=Inflector.MakePlural(tbl.NameHumanCase) #> = new FakeDbSet<<#=tbl.NameHumanCaseWithSuffix #>>(<#= string.Join(", ", tbl.PrimaryKeys.Select(x => "\"" + x.NameHumanCase + "\"")) #>);
 <# } #>
 <#if(MakeClassesPartial) {#>
 
@@ -963,7 +963,7 @@ if (IncludeTableValuedFunctions)
 foreach(Table tbl in from t in tables.Where(t => !t.IsMapping).OrderBy(x => x.NameHumanCase) select t)
 {
 #>
-<# fileManager.StartNewFile(tbl.NameHumanCase + FileExtension);
+<# fileManager.StartNewFile(tbl.NameHumanCaseWithSuffix + FileExtension);
 if(!tbl.HasPrimaryKey) { #>
     // The table '<#=tbl.Name#>' is not usable by entity framework because it
     // does not have a primary key. It is listed here for completeness.
@@ -975,7 +975,7 @@ if(!tbl.HasPrimaryKey) { #>
     WritePocoClassAttributes(tbl);#>
 <#if(IncludeCodeGeneratedAttribute){#>    <#=CodeGeneratedAttribute#>
 <#}#>
-    public <# if(MakeClassesPartial) { #>partial <# } #>class <#=tbl.NameHumanCase#><#=WritePocoBaseClasses != null ? WritePocoBaseClasses(tbl) : "" #>
+    public <# if(MakeClassesPartial) { #>partial <# } #>class <#=tbl.NameHumanCaseWithSuffix#><#=WritePocoBaseClasses != null ? WritePocoBaseClasses(tbl) : "" #>
     {
 <# WritePocoBaseClassBody(tbl); #>
 <# int DataMemberOrder = 1;
@@ -1019,7 +1019,7 @@ if(tbl.Columns.Where(c => c.Default != string.Empty && !c.Hidden).Count() > 0 ||
 {
 #>
 
-        public <#=tbl.NameHumanCase#>()
+        public <#=tbl.NameHumanCaseWithSuffix#>()
         {
 <#
 foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal).Where(c => c.Default != string.Empty && !c.Hidden))
@@ -1056,19 +1056,19 @@ if(!GenerateSeparateFiles) { #>
 foreach(Table tbl in tables.Where(t => !t.IsMapping && t.HasPrimaryKey).OrderBy(x => x.NameHumanCase))
 {
 #>
-<# fileManager.StartNewFile(tbl.NameHumanCase + ConfigurationClassName + FileExtension);
+<# fileManager.StartNewFile(tbl.NameHumanCaseWithSuffix + ConfigurationClassName + FileExtension);
 if(IncludeComments != CommentsStyle.None){#>    // <#=tbl.Name#>
 <# } #>
 <#if(IncludeCodeGeneratedAttribute){#>    <#=CodeGeneratedAttribute#>
 <#}#>
-    public <# if(MakeClassesPartial) { #>partial <# } #>class <#=tbl.NameHumanCase + ConfigurationClassName#> : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<<#=tbl.NameHumanCase#>>
+    public <# if(MakeClassesPartial) { #>partial <# } #>class <#=tbl.NameHumanCaseWithSuffix + ConfigurationClassName#> : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<<#=tbl.NameHumanCaseWithSuffix#>>
     {
-        public <#=tbl.NameHumanCase + ConfigurationClassName#>()
+        public <#=tbl.NameHumanCaseWithSuffix + ConfigurationClassName#>()
             : this(<# if (string.IsNullOrEmpty(tbl.Schema)) { #>""<# } else { #>"<#=tbl.Schema#>"<# } #>)
         {
         }
 
-        public <#=tbl.NameHumanCase + ConfigurationClassName#>(string schema)
+        public <#=tbl.NameHumanCaseWithSuffix + ConfigurationClassName#>(string schema)
         {
 <#if(!UseDataAnnotationsSchema){ if (!string.IsNullOrEmpty(tbl.Schema)) { #>
             ToTable("<#=tbl.Name#>", schema);
