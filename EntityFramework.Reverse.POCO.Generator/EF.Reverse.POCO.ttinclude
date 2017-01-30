@@ -1074,7 +1074,7 @@ if(IncludeComments != CommentsStyle.None){#>    // <#=tbl.Name#>
             ToTable("<#=tbl.Name#>", schema);
 <# } else { #>
             ToTable("<#=tbl.Name#>");
-<# }} 
+<# }}
 if(!UseDataAnnotations){#>
             HasKey(<#=tbl.PrimaryKeyNameHumanCase()#>);
 

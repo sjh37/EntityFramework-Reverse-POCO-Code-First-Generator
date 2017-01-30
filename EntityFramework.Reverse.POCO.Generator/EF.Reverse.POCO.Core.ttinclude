@@ -2611,7 +2611,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     if (relationship == Relationship.DoNotUse)
                         continue;
 
-                    string pkTableHumanCaseWithSuffix = foreignKey.PkTableHumanCase(usePascalCase, prependSchemaName, pkTable.Suffix);                    
+                    string pkTableHumanCaseWithSuffix = foreignKey.PkTableHumanCase(usePascalCase, prependSchemaName, pkTable.Suffix);
                     string pkTableHumanCase = foreignKey.PkTableHumanCase(usePascalCase, prependSchemaName, null);
                     string pkPropName = fkTable.GetUniqueColumnName(pkTableHumanCase, foreignKey, usePascalCase, checkForFkNameClashes, true, ForeignKeyName);
                     bool fkMakePropNameSingular = (relationship == Relationship.OneToOne);
