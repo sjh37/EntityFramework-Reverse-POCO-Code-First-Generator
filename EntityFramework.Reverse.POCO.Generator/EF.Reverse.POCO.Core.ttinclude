@@ -376,6 +376,15 @@
         public EnvDTE.Project GetCurrentProject()
         {
             var dte = GetDTE();
+
+            // Get the project item
+            var projectItem = dte.Solution.FindProjectItem(this.Host.TemplateFile);
+            // Get the project
+            var currentProject = projectItem.ContainingProject;
+            if (currentProject != null)
+                return currentProject;
+                
+            // this returns SELECTED (active) project(s) - it may be a different project than the T4 template. Looping over dte.Solution works, but why can't we get their FullName (csproj path)?
             var activeSolutionProjects = (Array)dte.ActiveSolutionProjects;
             if(activeSolutionProjects == null)
                 throw new Exception("DTE.ActiveSolutionProjects returned null");
