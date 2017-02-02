@@ -1124,8 +1124,8 @@
                         break;
 
                     case "byte[]":
-                    case "System.Data.Entity.Spatial.DbGeography":
-                    case "System.Data.Entity.Spatial.DbGeometry":
+                    case "system.data.entity.spatial.dbgeography":
+                    case "system.data.entity.spatial.dbgeometry":
                         Default = string.Empty;
                         break;
                 }
