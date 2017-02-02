@@ -1099,6 +1099,7 @@
 
                     case "string":
                     case "datetime":
+		    case "datetime2":
                     case "system.datetime":
                     case "timespan":
                     case "system.timespan":
