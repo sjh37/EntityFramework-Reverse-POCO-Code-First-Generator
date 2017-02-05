@@ -794,6 +794,12 @@
 
         #region Nested type: Column
 
+        public class PropertyAndComments
+        {
+            public string Definition;
+            public string Comments;
+        }
+
         public class Column
         {
             public string Name; // Raw name of the column as obtained from the database
@@ -830,7 +836,7 @@
             public string Config;
             public List<string> ConfigFk = new List<string>();
             public string Entity;
-            public List<string> EntityFk = new List<string>();
+            public List<PropertyAndComments> EntityFk = new List<PropertyAndComments>();
 
             public List<string> DataAnnotations;
             public List<Index> Indexes = new List<Index>();
@@ -840,7 +846,7 @@
             public void ResetNavigationProperties()
             {
                 ConfigFk = new List<string>();
-                EntityFk = new List<string>();
+                EntityFk = new List<PropertyAndComments>();
             }
 
             private void SetupEntity(CommentsStyle includeComments, CommentsStyle includeExtendedPropertyComments, bool usePrivateSetterForComputedColumns)
@@ -2624,7 +2630,10 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     if (dataAnnotationsSchema)
                         dataAnnotation = string.Format("[ForeignKey(\"{0}\")] ", string.Join(", ", fkCols.Select(x => x.col.NameHumanCase).Distinct().ToArray()));
 
-                    fkCol.col.EntityFk.Add(string.Format("{0}public virtual {1} {2} {3}{4}", dataAnnotation, pkTableHumanCaseWithSuffix, pkPropName, "{ get; set; }", includeComments != CommentsStyle.None ? " // " + foreignKey.ConstraintName : string.Empty));
+                    var fkd = new PropertyAndComments();
+                    fkd.Definition = string.Format("{0}public virtual {1} {2} {3}{4}", dataAnnotation, pkTableHumanCaseWithSuffix, pkPropName, "{ get; set; }", includeComments != CommentsStyle.None ? " // " + foreignKey.ConstraintName : string.Empty);
+                    fkd.Comments = string.Format("Parent {0} pointed by [{1}].({2}) ({3})", pkTableHumanCase, fkTable.Name, string.Join(", ", fkCols.Select(x => "[" + x.col.NameHumanCase + "]").Distinct().ToArray()), foreignKey.ConstraintName);
+                    fkCol.col.EntityFk.Add(fkd);
 
                     string manyToManyMapping, mapKey;
                     if(foreignKeys.Count > 1)
@@ -2643,7 +2652,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     }
 
                     if(foreignKey.IncludeReverseNavigation)
-                        pkTable.AddReverseNavigation(relationship, pkTableHumanCase, fkTable, fkPropName, string.Format("{0}.{1}", fkTable.Name, foreignKey.ConstraintName), collectionType, includeComments);
+                        pkTable.AddReverseNavigation(relationship, pkTableHumanCase, fkTable, fkPropName, string.Format("{0}.{1}", fkTable.Name, foreignKey.ConstraintName), collectionType, includeComments, foreignKeys);
                 }
             }
 
@@ -2671,7 +2680,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
             }
 
-            private static string GetRelationship(Relationship relationship, Column fkCol, Column pkCol, string pkPropName, string fkPropName, string manyToManyMapping, string mapKey, bool cascadeOnDelete, bool includeReverseNavigation)
+            public static string GetRelationship(Relationship relationship, Column fkCol, Column pkCol, string pkPropName, string fkPropName, string manyToManyMapping, string mapKey, bool cascadeOnDelete, bool includeReverseNavigation)
             {
                 return string.Format("Has{0}(a => a.{1}){2}{3}",
                     GetHasMethod(relationship, fkCol, pkCol),
@@ -3101,7 +3110,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             public bool HasPrimaryKey;
 
             public List<Column> Columns;
-            public List<string> ReverseNavigationProperty;
+            public List<PropertyAndComments> ReverseNavigationProperty;
             public List<string> MappingConfiguration;
             public List<string> ReverseNavigationCtor;
             public List<string> ReverseNavigationUniquePropName;
@@ -3126,7 +3135,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             public void ResetNavigationProperties()
             {
                 MappingConfiguration = new List<string>();
-                ReverseNavigationProperty = new List<string>();
+                ReverseNavigationProperty = new List<PropertyAndComments>();
                 ReverseNavigationCtor = new List<string>();
                 ReverseNavigationUniquePropName = new List<string>();
                 foreach (var col in Columns)
@@ -3261,27 +3270,68 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 return ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 6);
             }
 
-            public void AddReverseNavigation(Relationship relationship, string fkName, Table fkTable, string propName, string constraint, string collectionType, CommentsStyle includeComments)
+            public void AddReverseNavigation(Relationship relationship, string fkName, Table fkTable, string propName, string constraint, string collectionType, CommentsStyle includeComments, List<ForeignKey> fks, Table mappingTable=null)
             {
+                string fkNames = "";
                 switch (relationship)
                 {
                     case Relationship.OneToOne:
-                        ReverseNavigationProperty.Add(string.Format("public virtual {0} {1} {{ get; set; }}{2}", fkTable.NameHumanCaseWithSuffix, propName, includeComments != CommentsStyle.None ? " // " + constraint : string.Empty));
+                    case Relationship.OneToMany:
+                    case Relationship.ManyToOne:
+                        fkNames = string.Join(", ", fks.Select(x => "[" + x.FkColumn + "]").Distinct().ToArray());
+                        if (fks.Count>1)
+                            fkNames = "\"" + fkNames + "\"";
+                        break;
+                    case Relationship.ManyToMany:
+                        break;
+
+                    default:
+                        break;
+                }
+                switch (relationship)
+                {
+                    case Relationship.OneToOne:
+                        ReverseNavigationProperty.Add(
+                            new PropertyAndComments() 
+                            {
+                                Definition = string.Format("public virtual {0} {1} {{ get; set; }}{2}", fkTable.NameHumanCaseWithSuffix, propName, includeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
+                                Comments = string.Format("Parent (One-to-One) {0} pointed by [{1}].({2}) ({3})", this.NameHumanCaseWithSuffix, fkTable.Name, fkNames, fks.First().ConstraintName)
+                            }
+                        );
                         break;
 
                     case Relationship.OneToMany:
-                        ReverseNavigationProperty.Add(string.Format("public virtual {0} {1} {{ get; set; }}{2}", fkTable.NameHumanCaseWithSuffix, propName, includeComments != CommentsStyle.None ? " // " + constraint : string.Empty));
+                        ReverseNavigationProperty.Add(
+                            new PropertyAndComments() 
+                            {
+                                Definition = string.Format("public virtual {0} {1} {{ get; set; }}{2}", fkTable.NameHumanCaseWithSuffix, propName, includeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
+                                Comments = string.Format("Parent {0} pointed by [{1}].({2}) ({3})", this.NameHumanCaseWithSuffix, fkTable.Name, fkNames, fks.First().ConstraintName)
+                            }
+                        );
                         break;
 
                     case Relationship.ManyToOne:
-                        var initialization1 = UsePropertyInitializers ? (string.Format(" = new {0}<{1}>();", collectionType, fkTable.NameHumanCase)) : "";
-                        ReverseNavigationProperty.Add(string.Format("public virtual System.Collections.Generic.ICollection<{0}> {1} {{ get; set; }}{2}{3}", fkTable.NameHumanCaseWithSuffix, propName, initialization1, includeComments != CommentsStyle.None ? " // " + constraint : string.Empty));
+                        var initialization1 = string.Format(" = new {0}<{1}>();", collectionType, fkTable.NameHumanCaseWithSuffix);
+                        ReverseNavigationProperty.Add(
+                            new PropertyAndComments() 
+                            {
+                                Definition = string.Format("public virtual System.Collections.Generic.ICollection<{0}> {1} {{ get; set; }}{2}{3}", fkTable.NameHumanCaseWithSuffix, propName, initialization1, includeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
+                                Comments = string.Format("{0} children where {1}.{2} point to this entity ({3})", fkTable.NameHumanCaseWithSuffix, fkTable.Name, fkNames, fks.First().ConstraintName)
+                            }
+                        );
                         ReverseNavigationCtor.Add(string.Format("{0} = new {1}<{2}>();", propName, collectionType, fkTable.NameHumanCaseWithSuffix));
                         break;
 
                     case Relationship.ManyToMany:
-                        var initialization2 = UsePropertyInitializers ? (string.Format(" = new {0}<{1}>();", collectionType, fkTable.NameHumanCase)) : "";
-                        ReverseNavigationProperty.Add(string.Format("public virtual System.Collections.Generic.ICollection<{0}> {1} {{ get; set; }}{2}", fkTable.NameHumanCaseWithSuffix, propName, initialization2, includeComments != CommentsStyle.None ? " // Many to many mapping" : string.Empty));
+                        var initialization2 = string.Format(" = new {0}<{1}>();", collectionType, fkTable.NameHumanCaseWithSuffix);
+                        ReverseNavigationProperty.Add(
+                            new PropertyAndComments() 
+                            {
+                                Definition = string.Format("public virtual System.Collections.Generic.ICollection<{0}> {1} {{ get; set; }}{2}{3}", fkTable.NameHumanCaseWithSuffix, propName, initialization2, includeComments != CommentsStyle.None ? " // Many to many mapping" : string.Empty),
+                                Comments = string.Format("{0} children (Many-to-Many) mapped by table {1}", fkTable.NameHumanCaseWithSuffix, mappingTable.Name)
+                            }
+                        );
+
                         ReverseNavigationCtor.Add(string.Format("{0} = new {1}<{2}>();", propName, collectionType, fkTable.NameHumanCaseWithSuffix));
                         break;
 
@@ -3346,8 +3396,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 leftTable.AddMappingConfiguration(left, right, usePascalCase, leftPropName, rightPropName, isSqlCe);
 
                 IsMapping = true;
-                rightTable.AddReverseNavigation(Relationship.ManyToMany, rightTable.NameHumanCase, leftTable, rightPropName, null, collectionType, includeComments);
-                leftTable .AddReverseNavigation(Relationship.ManyToMany, leftTable.NameHumanCase, rightTable, leftPropName, null, collectionType, includeComments);
+                rightTable.AddReverseNavigation(Relationship.ManyToMany, rightTable.NameHumanCase, leftTable, rightPropName, null, collectionType, includeComments, null, mappingTable: this);
+                leftTable .AddReverseNavigation(Relationship.ManyToMany, leftTable.NameHumanCase, rightTable, leftPropName, null, collectionType, includeComments, null, mappingTable: this);
             }
 
             public void SetupDataAnnotations()
