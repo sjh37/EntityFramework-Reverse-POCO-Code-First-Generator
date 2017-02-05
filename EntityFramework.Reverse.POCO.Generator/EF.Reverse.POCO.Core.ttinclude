@@ -3315,7 +3315,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                             new PropertyAndComments() 
                             {
                                 Definition = string.Format("public virtual System.Collections.Generic.ICollection<{0}> {1} {{ get; set; }}{2}{3}", fkTable.NameHumanCaseWithSuffix, propName, initialization1, includeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
-                                Comments = string.Format("{0} childs where {1}.{2} point to this entity ({3})", fkTable.NameHumanCaseWithSuffix, fkTable.Name, fkNames, fks.First().ConstraintName)
+                                Comments = string.Format("{0} children where {1}.{2} point to this entity ({3})", fkTable.NameHumanCaseWithSuffix, fkTable.Name, fkNames, fks.First().ConstraintName)
                             }
                         );
                         ReverseNavigationCtor.Add(string.Format("{0} = new {1}<{2}>();", propName, collectionType, fkTable.NameHumanCaseWithSuffix));
@@ -3327,7 +3327,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                             new PropertyAndComments() 
                             {
                                 Definition = string.Format("public virtual System.Collections.Generic.ICollection<{0}> {1} {{ get; set; }}{2}{3}", fkTable.NameHumanCaseWithSuffix, propName, initialization2, includeComments != CommentsStyle.None ? " // Many to many mapping" : string.Empty),
-                                Comments = string.Format("{0} childs (Many-to-Many) mapped by Table {1}", fkTable.NameHumanCaseWithSuffix, mappingTable.Name)
+                                Comments = string.Format("{0} children (Many-to-Many) mapped by table {1}", fkTable.NameHumanCaseWithSuffix, mappingTable.Name)
                             }
                         );
                         ReverseNavigationCtor.Add(string.Format("{0} = new {1}<{2}>();", propName, collectionType, fkTable.NameHumanCaseWithSuffix));
