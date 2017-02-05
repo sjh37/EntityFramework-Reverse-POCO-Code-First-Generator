@@ -1023,6 +1023,7 @@ foreach(var entityFk in tbl.Columns.SelectMany(x => x.EntityFk).OrderBy(o => o.D
         <#=entityFk.Definition #>
 <# } } #>
 <#
+if (!UsePropertyInitializers){
 if(tbl.Columns.Where(c => c.Default != string.Empty && !c.Hidden).Count() > 0 || tbl.ReverseNavigationCtor.Count() > 0 || MakeClassesPartial)
 {
 #>
@@ -1047,7 +1048,8 @@ if(MakeClassesPartial) {#>
 <#if(MakeClassesPartial) {#>
 
         partial void InitializePartial();
-<#} }#>
+<#} }
+}#>
     }
 
 <# } }
