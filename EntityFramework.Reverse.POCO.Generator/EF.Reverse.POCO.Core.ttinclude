@@ -735,53 +735,38 @@
             DoNotUse
         }
 
-        public static Relationship CalcRelationship(Table pkTable, Table fkTable, List<Column> fkCols, List<Column> pkCols)
+        // Calculates the relationship between a child table and it's parent table.
+		public static Relationship CalcRelationship(Table parentTable, Table childTable, List<Column> childTableCols, List<Column> parentTableCols)
         {
-            if (fkCols.Count() == 1 && pkCols.Count() == 1)
-                return CalcRelationshipSingle(pkTable, fkTable, fkCols.First(), pkCols.First());
+            if (childTableCols.Count() == 1 && parentTableCols.Count() == 1)
+                return CalcRelationshipSingle(parentTable, childTable, childTableCols.First(), parentTableCols.First());
 
             // This relationship has multiple composite keys
 
-            bool fkTableAllPrimaryKeys = (fkTable.PrimaryKeys.Count() == fkCols.Count());
-            bool pkTableAllPrimaryKeys = (pkTable.PrimaryKeys.Count() == pkCols.Count());
-            bool fkColumnsAllPrimaryKeys = (fkCols.Count(x => x.IsPrimaryKey) == fkCols.Count());
-            bool pkColumnsAllPrimaryKeys = (pkCols.Count(x => x.IsPrimaryKey) == pkCols.Count());
+			// childTable FK columns are exactly the primary key (they are part of primary key, and no other columns are primary keys) //TODO: we could also check if they are an unique index
+            bool childTableColumnsAllPrimaryKeys = (childTableCols.Count() == childTableCols.Count(x => x.IsPrimaryKey)) && (childTableCols.Count() == childTable.PrimaryKeys.Count());
+            
+			// parentTable columns are exactly the primary key (they are part of primary key, and no other columns are primary keys) //TODO: we could also check if they are an unique index
+			bool parentTableColumnsAllPrimaryKeys = (parentTableCols.Count() == parentTableCols.Count(x => x.IsPrimaryKey)) && (parentTableCols.Count() == parentTable.PrimaryKeys.Count());
 
-            // 1:1
-            if(fkColumnsAllPrimaryKeys && pkColumnsAllPrimaryKeys && fkTableAllPrimaryKeys && pkTableAllPrimaryKeys)
+            // childTable FK columns are not only FK but also the whole PK (not only part of PK); parentTable columns are the whole PK (not only part of PK) - so it's 1:1
+            if(childTableColumnsAllPrimaryKeys && parentTableColumnsAllPrimaryKeys)
                 return Relationship.OneToOne;
 
-            // 1:n
-            if(fkColumnsAllPrimaryKeys && !pkColumnsAllPrimaryKeys && fkTableAllPrimaryKeys)
-                return Relationship.OneToMany;
-
-            // n:1
-            if(!fkColumnsAllPrimaryKeys && pkColumnsAllPrimaryKeys && pkTableAllPrimaryKeys)
-                return Relationship.ManyToOne;
-
-            // n:n
-            return Relationship.ManyToMany;
+			return Relationship.ManyToOne;
         }
 
-        public static Relationship CalcRelationshipSingle(Table pkTable, Table fkTable, Column fkCol, Column pkCol)
+        // Calculates the relationship between a child table and it's parent table.
+		public static Relationship CalcRelationshipSingle(Table parentTable, Table childTable, Column childTableCol, Column parentTableCol)
         {
-            bool fkTableSinglePrimaryKey = (fkTable.PrimaryKeys.Count() == 1);
-            bool pkTableSinglePrimaryKey = (pkTable.PrimaryKeys.Count() == 1);
+            bool childTableSinglePrimaryKey = (childTable.PrimaryKeys.Count() == 1);
+            bool parentTableSinglePrimaryKey = (parentTable.PrimaryKeys.Count() == 1);
 
             // 1:1
-            if(fkCol.IsPrimaryKey && pkCol.IsPrimaryKey && fkTableSinglePrimaryKey && pkTableSinglePrimaryKey)
+            if(childTableCol.IsPrimaryKey && parentTableCol.IsPrimaryKey && childTableSinglePrimaryKey && parentTableSinglePrimaryKey)
                 return Relationship.OneToOne;
 
-            // 1:n
-            if(fkCol.IsPrimaryKey && !pkCol.IsPrimaryKey && fkTableSinglePrimaryKey)
-                return Relationship.OneToMany;
-
-            // n:1
-            if(!fkCol.IsPrimaryKey && pkCol.IsPrimaryKey && pkTableSinglePrimaryKey)
-                return Relationship.ManyToOne;
-
-            // n:n
-            return Relationship.ManyToMany;
+            return Relationship.ManyToOne;
         }
 
         public class EnumDefinition
