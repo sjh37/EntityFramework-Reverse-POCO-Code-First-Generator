@@ -415,17 +415,18 @@
 
         // FK_TableName_FromThisToParentRelationshipName_FromParentToThisChildsRelationshipName
         // (e.g. FK_CustomerAddress_Customer_Addresses will extract navigation properties "address.Customer" and "customer.Addresses")
-        if (foreignKey.ConstraintName.StartsWith("FK_") && foreignKey.ConstraintName.Count(x => x == '_') == 3)
+        // Feel free to use and change the following
+        /*if (foreignKey.ConstraintName.StartsWith("FK_") && foreignKey.ConstraintName.Count(x => x == '_') == 3)
         {
             var parts = foreignKey.ConstraintName.Split('_');
-            if (!string.IsNullOrWhiteSpace(parts[2]) && !string.IsNullOrWhiteSpace(parts[3]))
+            if (!string.IsNullOrWhiteSpace(parts[2]) && !string.IsNullOrWhiteSpace(parts[3]) && parts[1] == foreignKey.FkTableName)
             {
                 if (relationship == Relationship.OneToMany)
                     fkName = parts[3];
                 else if (relationship == Relationship.ManyToOne)
                     fkName = parts[2];
             }
-        }
+        }*/
 
         return fkName;
     };

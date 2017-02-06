@@ -1219,7 +1219,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         /// <summary>
         /// Child OrderDetails where [Order Details].[OrderID] point to this entity (FK_Order_Details_Orders)
         /// </summary>
-        public virtual System.Collections.Generic.ICollection<OrderDetail> Orders { get; set; } = new System.Collections.Generic.List<OrderDetail>(); // Order Details.FK_Order_Details_Orders
+        public virtual System.Collections.Generic.ICollection<OrderDetail> OrderDetails { get; set; } = new System.Collections.Generic.List<OrderDetail>(); // Order Details.FK_Order_Details_Orders
 
         // Foreign keys
 
@@ -1239,7 +1239,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public Order()
         {
             Freight = 0m;
-            Orders = new System.Collections.Generic.List<OrderDetail>();
+            OrderDetails = new System.Collections.Generic.List<OrderDetail>();
         }
     }
 
@@ -1258,11 +1258,11 @@ namespace EntityFramework_Reverse_POCO_Generator
         /// <summary>
         /// Parent Order pointed by [Order Details].([OrderId]) (FK_Order_Details_Orders)
         /// </summary>
-        public virtual Order Details1 { get; set; } // FK_Order_Details_Orders
+        public virtual Order Order { get; set; } // FK_Order_Details_Orders
         /// <summary>
         /// Parent Product pointed by [Order Details].([ProductId]) (FK_Order_Details_Products)
         /// </summary>
-        public virtual Product Details2 { get; set; } // FK_Order_Details_Products
+        public virtual Product Product { get; set; } // FK_Order_Details_Products
 
         public OrderDetail()
         {
@@ -1339,7 +1339,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         /// <summary>
         /// Child OrderDetails where [Order Details].[ProductID] point to this entity (FK_Order_Details_Products)
         /// </summary>
-        public virtual System.Collections.Generic.ICollection<OrderDetail> Products { get; set; } = new System.Collections.Generic.List<OrderDetail>(); // Order Details.FK_Order_Details_Products
+        public virtual System.Collections.Generic.ICollection<OrderDetail> OrderDetails { get; set; } = new System.Collections.Generic.List<OrderDetail>(); // Order Details.FK_Order_Details_Products
 
         // Foreign keys
 
@@ -1359,7 +1359,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             UnitsOnOrder = 0;
             ReorderLevel = 0;
             Discontinued = false;
-            Products = new System.Collections.Generic.List<OrderDetail>();
+            OrderDetails = new System.Collections.Generic.List<OrderDetail>();
         }
     }
 
@@ -1849,8 +1849,8 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.Discount).HasColumnName(@"Discount").HasColumnType("real").IsRequired();
 
             // Foreign keys
-            HasRequired(a => a.Details1).WithMany(b => b.Orders).HasForeignKey(c => c.OrderId).WillCascadeOnDelete(false); // FK_Order_Details_Orders
-            HasRequired(a => a.Details2).WithMany(b => b.Products).HasForeignKey(c => c.ProductId).WillCascadeOnDelete(false); // FK_Order_Details_Products
+            HasRequired(a => a.Order).WithMany(b => b.OrderDetails).HasForeignKey(c => c.OrderId).WillCascadeOnDelete(false); // FK_Order_Details_Orders
+            HasRequired(a => a.Product).WithMany(b => b.OrderDetails).HasForeignKey(c => c.ProductId).WillCascadeOnDelete(false); // FK_Order_Details_Products
         }
     }
 
