@@ -1018,7 +1018,11 @@ namespace EntityFramework_Reverse_POCO_Generator
         public byte[] Picture { get; set; } // Picture (length: 2147483647)
 
         // Reverse navigation
-        public virtual System.Collections.Generic.ICollection<Product> Products { get; set; } // Products.FK_Products_Categories
+
+        /// <summary>
+        /// Child Products where [Products].[CategoryID] point to this entity (FK_Products_Categories)
+        /// </summary>
+        public virtual System.Collections.Generic.ICollection<Product> Products { get; set; } = new System.Collections.Generic.List<Product>(); // Products.FK_Products_Categories
 
         public Category()
         {
@@ -1059,8 +1063,15 @@ namespace EntityFramework_Reverse_POCO_Generator
         public string Fax { get; set; } // Fax (length: 24)
 
         // Reverse navigation
-        public virtual System.Collections.Generic.ICollection<CustomerDemographic> CustomerDemographics { get; set; } // Many to many mapping
-        public virtual System.Collections.Generic.ICollection<Order> Orders { get; set; } // Orders.FK_Orders_Customers
+
+        /// <summary>
+        /// Child CustomerDemographics (Many-to-Many) mapped by table [CustomerCustomerDemo]
+        /// </summary>
+        public virtual System.Collections.Generic.ICollection<CustomerDemographic> CustomerDemographics { get; set; } = new System.Collections.Generic.List<CustomerDemographic>(); // Many to many mapping
+        /// <summary>
+        /// Child Orders where [Orders].[CustomerID] point to this entity (FK_Orders_Customers)
+        /// </summary>
+        public virtual System.Collections.Generic.ICollection<Order> Orders { get; set; } = new System.Collections.Generic.List<Order>(); // Orders.FK_Orders_Customers
 
         public Customer()
         {
@@ -1087,7 +1098,11 @@ namespace EntityFramework_Reverse_POCO_Generator
         public string CustomerDesc { get; set; } // CustomerDesc (length: 1073741823)
 
         // Reverse navigation
-        public virtual System.Collections.Generic.ICollection<Customer> Customers { get; set; } // Many to many mapping
+
+        /// <summary>
+        /// Child Customers (Many-to-Many) mapped by table [CustomerCustomerDemo]
+        /// </summary>
+        public virtual System.Collections.Generic.ICollection<Customer> Customers { get; set; } = new System.Collections.Generic.List<Customer>(); // Many to many mapping
 
         public CustomerDemographic()
         {
@@ -1119,11 +1134,25 @@ namespace EntityFramework_Reverse_POCO_Generator
         public string PhotoPath { get; set; } // PhotoPath (length: 255)
 
         // Reverse navigation
-        public virtual System.Collections.Generic.ICollection<Employee> Employees { get; set; } // Employees.FK_Employees_Employees
-        public virtual System.Collections.Generic.ICollection<Order> Orders { get; set; } // Orders.FK_Orders_Employees
-        public virtual System.Collections.Generic.ICollection<Territory> Territories { get; set; } // Many to many mapping
+
+        /// <summary>
+        /// Child Employees where [Employees].[ReportsTo] point to this entity (FK_Employees_Employees)
+        /// </summary>
+        public virtual System.Collections.Generic.ICollection<Employee> Employees { get; set; } = new System.Collections.Generic.List<Employee>(); // Employees.FK_Employees_Employees
+        /// <summary>
+        /// Child Orders where [Orders].[EmployeeID] point to this entity (FK_Orders_Employees)
+        /// </summary>
+        public virtual System.Collections.Generic.ICollection<Order> Orders { get; set; } = new System.Collections.Generic.List<Order>(); // Orders.FK_Orders_Employees
+        /// <summary>
+        /// Child Territories (Many-to-Many) mapped by table [EmployeeTerritories]
+        /// </summary>
+        public virtual System.Collections.Generic.ICollection<Territory> Territories { get; set; } = new System.Collections.Generic.List<Territory>(); // Many to many mapping
 
         // Foreign keys
+
+        /// <summary>
+        /// Parent Employee pointed by [Employees].([ReportsTo]) (FK_Employees_Employees)
+        /// </summary>
         public virtual Employee Employee_ReportsTo { get; set; } // FK_Employees_Employees
 
         public Employee()
@@ -1186,17 +1215,31 @@ namespace EntityFramework_Reverse_POCO_Generator
         public string ShipCountry { get; set; } // ShipCountry (length: 15)
 
         // Reverse navigation
-        public virtual System.Collections.Generic.ICollection<OrderDetail> OrderDetails { get; set; } // Many to many mapping
+
+        /// <summary>
+        /// Child OrderDetails where [Order Details].[OrderID] point to this entity (FK_Order_Details_Orders)
+        /// </summary>
+        public virtual System.Collections.Generic.ICollection<OrderDetail> Orders { get; set; } = new System.Collections.Generic.List<OrderDetail>(); // Order Details.FK_Order_Details_Orders
 
         // Foreign keys
+
+        /// <summary>
+        /// Parent Customer pointed by [Orders].([CustomerId]) (FK_Orders_Customers)
+        /// </summary>
         public virtual Customer Customer { get; set; } // FK_Orders_Customers
+        /// <summary>
+        /// Parent Employee pointed by [Orders].([EmployeeId]) (FK_Orders_Employees)
+        /// </summary>
         public virtual Employee Employee { get; set; } // FK_Orders_Employees
+        /// <summary>
+        /// Parent Shipper pointed by [Orders].([ShipVia]) (FK_Orders_Shippers)
+        /// </summary>
         public virtual Shipper Shipper { get; set; } // FK_Orders_Shippers
 
         public Order()
         {
             Freight = 0m;
-            OrderDetails = new System.Collections.Generic.List<OrderDetail>();
+            Orders = new System.Collections.Generic.List<OrderDetail>();
         }
     }
 
@@ -1211,8 +1254,15 @@ namespace EntityFramework_Reverse_POCO_Generator
         public float Discount { get; set; } // Discount
 
         // Foreign keys
-        public virtual Order Order { get; set; } // FK_Order_Details_Orders
-        public virtual Product Product { get; set; } // FK_Order_Details_Products
+
+        /// <summary>
+        /// Parent Order pointed by [Order Details].([OrderId]) (FK_Order_Details_Orders)
+        /// </summary>
+        public virtual Order Details1 { get; set; } // FK_Order_Details_Orders
+        /// <summary>
+        /// Parent Product pointed by [Order Details].([ProductId]) (FK_Order_Details_Products)
+        /// </summary>
+        public virtual Product Details2 { get; set; } // FK_Order_Details_Products
 
         public OrderDetail()
         {
@@ -1285,10 +1335,21 @@ namespace EntityFramework_Reverse_POCO_Generator
         public bool Discontinued { get; set; } // Discontinued
 
         // Reverse navigation
-        public virtual System.Collections.Generic.ICollection<OrderDetail> OrderDetails { get; set; } // Many to many mapping
+
+        /// <summary>
+        /// Child OrderDetails where [Order Details].[ProductID] point to this entity (FK_Order_Details_Products)
+        /// </summary>
+        public virtual System.Collections.Generic.ICollection<OrderDetail> Products { get; set; } = new System.Collections.Generic.List<OrderDetail>(); // Order Details.FK_Order_Details_Products
 
         // Foreign keys
+
+        /// <summary>
+        /// Parent Category pointed by [Products].([CategoryId]) (FK_Products_Categories)
+        /// </summary>
         public virtual Category Category { get; set; } // FK_Products_Categories
+        /// <summary>
+        /// Parent Supplier pointed by [Products].([SupplierId]) (FK_Products_Suppliers)
+        /// </summary>
         public virtual Supplier Supplier { get; set; } // FK_Products_Suppliers
 
         public Product()
@@ -1298,7 +1359,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             UnitsOnOrder = 0;
             ReorderLevel = 0;
             Discontinued = false;
-            OrderDetails = new System.Collections.Generic.List<OrderDetail>();
+            Products = new System.Collections.Generic.List<OrderDetail>();
         }
     }
 
@@ -1350,7 +1411,11 @@ namespace EntityFramework_Reverse_POCO_Generator
         public string RegionDescription { get; set; } // RegionDescription (length: 50)
 
         // Reverse navigation
-        public virtual System.Collections.Generic.ICollection<Territory> Territories { get; set; } // Territories.FK_Territories_Region
+
+        /// <summary>
+        /// Child Territories where [Territories].[RegionID] point to this entity (FK_Territories_Region)
+        /// </summary>
+        public virtual System.Collections.Generic.ICollection<Territory> Territories { get; set; } = new System.Collections.Generic.List<Territory>(); // Territories.FK_Territories_Region
 
         public Region()
         {
@@ -1387,7 +1452,11 @@ namespace EntityFramework_Reverse_POCO_Generator
         public string Phone { get; set; } // Phone (length: 24)
 
         // Reverse navigation
-        public virtual System.Collections.Generic.ICollection<Order> Orders { get; set; } // Orders.FK_Orders_Shippers
+
+        /// <summary>
+        /// Child Orders where [Orders].[ShipVia] point to this entity (FK_Orders_Shippers)
+        /// </summary>
+        public virtual System.Collections.Generic.ICollection<Order> Orders { get; set; } = new System.Collections.Generic.List<Order>(); // Orders.FK_Orders_Shippers
 
         public Shipper()
         {
@@ -1431,7 +1500,11 @@ namespace EntityFramework_Reverse_POCO_Generator
         public string HomePage { get; set; } // HomePage (length: 1073741823)
 
         // Reverse navigation
-        public virtual System.Collections.Generic.ICollection<Product> Products { get; set; } // Products.FK_Products_Suppliers
+
+        /// <summary>
+        /// Child Products where [Products].[SupplierID] point to this entity (FK_Products_Suppliers)
+        /// </summary>
+        public virtual System.Collections.Generic.ICollection<Product> Products { get; set; } = new System.Collections.Generic.List<Product>(); // Products.FK_Products_Suppliers
 
         public Supplier()
         {
@@ -1448,9 +1521,17 @@ namespace EntityFramework_Reverse_POCO_Generator
         public int RegionId { get; set; } // RegionID
 
         // Reverse navigation
-        public virtual System.Collections.Generic.ICollection<Employee> Employees { get; set; } // Many to many mapping
+
+        /// <summary>
+        /// Child Employees (Many-to-Many) mapped by table [EmployeeTerritories]
+        /// </summary>
+        public virtual System.Collections.Generic.ICollection<Employee> Employees { get; set; } = new System.Collections.Generic.List<Employee>(); // Many to many mapping
 
         // Foreign keys
+
+        /// <summary>
+        /// Parent Region pointed by [Territories].([RegionId]) (FK_Territories_Region)
+        /// </summary>
         public virtual Region Region { get; set; } // FK_Territories_Region
 
         public Territory()
@@ -1768,8 +1849,8 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.Discount).HasColumnName(@"Discount").HasColumnType("real").IsRequired();
 
             // Foreign keys
-            HasRequired(a => a.Order).WithMany(b => b.OrderDetails).HasForeignKey(c => c.OrderId).WillCascadeOnDelete(false); // FK_Order_Details_Orders
-            HasRequired(a => a.Product).WithMany(b => b.OrderDetails).HasForeignKey(c => c.ProductId).WillCascadeOnDelete(false); // FK_Order_Details_Products
+            HasRequired(a => a.Details1).WithMany(b => b.Orders).HasForeignKey(c => c.OrderId).WillCascadeOnDelete(false); // FK_Order_Details_Orders
+            HasRequired(a => a.Details2).WithMany(b => b.Products).HasForeignKey(c => c.ProductId).WillCascadeOnDelete(false); // FK_Order_Details_Products
         }
     }
 

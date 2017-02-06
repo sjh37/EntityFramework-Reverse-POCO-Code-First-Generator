@@ -736,28 +736,28 @@
         }
 
         // Calculates the relationship between a child table and it's parent table.
-		public static Relationship CalcRelationship(Table parentTable, Table childTable, List<Column> childTableCols, List<Column> parentTableCols)
+        public static Relationship CalcRelationship(Table parentTable, Table childTable, List<Column> childTableCols, List<Column> parentTableCols)
         {
             if (childTableCols.Count() == 1 && parentTableCols.Count() == 1)
                 return CalcRelationshipSingle(parentTable, childTable, childTableCols.First(), parentTableCols.First());
 
             // This relationship has multiple composite keys
 
-			// childTable FK columns are exactly the primary key (they are part of primary key, and no other columns are primary keys) //TODO: we could also check if they are an unique index
+            // childTable FK columns are exactly the primary key (they are part of primary key, and no other columns are primary keys) //TODO: we could also check if they are an unique index
             bool childTableColumnsAllPrimaryKeys = (childTableCols.Count() == childTableCols.Count(x => x.IsPrimaryKey)) && (childTableCols.Count() == childTable.PrimaryKeys.Count());
 
-			// parentTable columns are exactly the primary key (they are part of primary key, and no other columns are primary keys) //TODO: we could also check if they are an unique index
-			bool parentTableColumnsAllPrimaryKeys = (parentTableCols.Count() == parentTableCols.Count(x => x.IsPrimaryKey)) && (parentTableCols.Count() == parentTable.PrimaryKeys.Count());
+            // parentTable columns are exactly the primary key (they are part of primary key, and no other columns are primary keys) //TODO: we could also check if they are an unique index
+            bool parentTableColumnsAllPrimaryKeys = (parentTableCols.Count() == parentTableCols.Count(x => x.IsPrimaryKey)) && (parentTableCols.Count() == parentTable.PrimaryKeys.Count());
 
             // childTable FK columns are not only FK but also the whole PK (not only part of PK); parentTable columns are the whole PK (not only part of PK) - so it's 1:1
             if(childTableColumnsAllPrimaryKeys && parentTableColumnsAllPrimaryKeys)
                 return Relationship.OneToOne;
 
-			return Relationship.ManyToOne;
+            return Relationship.ManyToOne;
         }
 
         // Calculates the relationship between a child table and it's parent table.
-		public static Relationship CalcRelationshipSingle(Table parentTable, Table childTable, Column childTableCol, Column parentTableCol)
+        public static Relationship CalcRelationshipSingle(Table parentTable, Table childTable, Column childTableCol, Column parentTableCol)
         {
             bool childTableSinglePrimaryKey = (childTable.PrimaryKeys.Count() == 1);
             bool parentTableSinglePrimaryKey = (parentTable.PrimaryKeys.Count() == 1);
@@ -874,7 +874,7 @@
                     else
                         inlineComments += ". " + ExtendedProperty;
                 }
-				var initialization = UsePropertyInitializers ? ((this.Default == string.Empty)?"" : string.Format(" = {0};", this.Default)) : "";
+                var initialization = UsePropertyInitializers ? ((this.Default == string.Empty)?"" : string.Format(" = {0};", this.Default)) : "";
                 Entity = string.Format("public {0}{1} {2} {{ get; {3}set; }}{4}{5}", (OverrideModifier ? "override " : ""), WrapIfNullable(PropertyType, this), NameHumanCase, usePrivateSetterForComputedColumns && IsComputed() ? "private " : string.Empty, initialization, inlineComments);
             }
 
@@ -1735,13 +1735,13 @@ WHERE st.DatabaseName = @synonmymDatabaseName;
 
 -- Pull details about the synonym target from each database being referenced
 SELECT sc.name AS SynonymSchemaName, sn.name as SynonymName
-	, sn.[object_id]
-	, sn.base_object_name
-	, OBJECT_ID(sn.base_object_name) as base_object_id
-	, PARSENAME(sn.base_object_name, 1) as ObjectName
-	, ISNULL(PARSENAME(sn.base_object_name, 2), sc.name) as SchemaName
-	, ISNULL(PARSENAME(sn.base_object_name, 3), DB_NAME()) as DatabaseName
-	, PARSENAME(sn.base_object_name, 4) as ServerName
+    , sn.[object_id]
+    , sn.base_object_name
+    , OBJECT_ID(sn.base_object_name) as base_object_id
+    , PARSENAME(sn.base_object_name, 1) as ObjectName
+    , ISNULL(PARSENAME(sn.base_object_name, 2), sc.name) as SchemaName
+    , ISNULL(PARSENAME(sn.base_object_name, 3), DB_NAME()) as DatabaseName
+    , PARSENAME(sn.base_object_name, 4) as ServerName
 INTO #SynonymTargets
 FROM sys.synonyms sn
 INNER JOIN sys.schemas sc
@@ -1753,11 +1753,11 @@ DECLARE @synonmymDatabaseName sysname = (SELECT TOP (1) DatabaseName FROM #Synon
 DECLARE @synonmymDetailsSelect nvarchar(max)
 WHILE (@synonmymDatabaseName IS NOT NULL)
 BEGIN
-	SET @synonmymDetailsSelect = REPLACE(@synonymDetailsQueryTemplate, '[@synonmymDatabaseName]', '[' + @synonmymDatabaseName + ']')
-	--SELECT @synonmymDetailsSelect
-	EXEC sp_executesql @stmt=@synonmymDetailsSelect, @params=N'@synonmymDatabaseName sysname', @synonmymDatabaseName=@synonmymDatabaseName
-	DELETE FROM #SynonymTargets WHERE DatabaseName = @synonmymDatabaseName
-	SET @synonmymDatabaseName = (SELECT TOP (1) DatabaseName FROM #SynonymTargets)
+    SET @synonmymDetailsSelect = REPLACE(@synonymDetailsQueryTemplate, '[@synonmymDatabaseName]', '[' + @synonmymDatabaseName + ']')
+    --SELECT @synonmymDetailsSelect
+    EXEC sp_executesql @stmt=@synonmymDetailsSelect, @params=N'@synonmymDatabaseName sysname', @synonmymDatabaseName=@synonmymDatabaseName
+    DELETE FROM #SynonymTargets WHERE DatabaseName = @synonmymDatabaseName
+    SET @synonmymDatabaseName = (SELECT TOP (1) DatabaseName FROM #SynonymTargets)
 END
 SET NOCOUNT OFF;
 ";

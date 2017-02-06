@@ -488,7 +488,11 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         public byte[] Picture { get; set; } // Picture (length: 1073741823)
 
         // Reverse navigation
-        public virtual System.Collections.Generic.ICollection<Product> Products { get; set; } // Products.Products_FK01
+
+        /// <summary>
+        /// Child Products where [Products].[Category ID] point to this entity (Products_FK01)
+        /// </summary>
+        public virtual System.Collections.Generic.ICollection<Product> Products { get; set; } = new System.Collections.Generic.List<Product>(); // Products.Products_FK01
 
         public Category()
         {
@@ -513,7 +517,11 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         public string Fax { get; set; } // Fax (length: 24)
 
         // Reverse navigation
-        public virtual System.Collections.Generic.ICollection<Order> Orders { get; set; } // Orders.Orders_FK00
+
+        /// <summary>
+        /// Child Orders where [Orders].[Customer ID] point to this entity (Orders_FK00)
+        /// </summary>
+        public virtual System.Collections.Generic.ICollection<Order> Orders { get; set; } = new System.Collections.Generic.List<Order>(); // Orders.Orders_FK00
 
         public Customer()
         {
@@ -543,7 +551,11 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         public int? ReportsTo { get; set; } // Reports To
 
         // Reverse navigation
-        public virtual System.Collections.Generic.ICollection<Order> Orders { get; set; } // Orders.Orders_FK02
+
+        /// <summary>
+        /// Child Orders where [Orders].[Employee ID] point to this entity (Orders_FK02)
+        /// </summary>
+        public virtual System.Collections.Generic.ICollection<Order> Orders { get; set; } = new System.Collections.Generic.List<Order>(); // Orders.Orders_FK02
 
         public Employee()
         {
@@ -571,11 +583,25 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         public decimal? Freight { get; set; } // Freight
 
         // Reverse navigation
-        public virtual System.Collections.Generic.ICollection<OrderDetail> OrderDetails { get; set; } // Many to many mapping
+
+        /// <summary>
+        /// Child OrderDetails where [Order Details].[Order ID] point to this entity (Order Details_FK01)
+        /// </summary>
+        public virtual System.Collections.Generic.ICollection<OrderDetail> OrderDetails { get; set; } = new System.Collections.Generic.List<OrderDetail>(); // Order Details.Order Details_FK01
 
         // Foreign keys
+
+        /// <summary>
+        /// Parent Customer pointed by [Orders].([CustomerId]) (Orders_FK00)
+        /// </summary>
         public virtual Customer Customer { get; set; } // Orders_FK00
+        /// <summary>
+        /// Parent Employee pointed by [Orders].([EmployeeId]) (Orders_FK02)
+        /// </summary>
         public virtual Employee Employee { get; set; } // Orders_FK02
+        /// <summary>
+        /// Parent Shipper pointed by [Orders].([ShipVia]) (Orders_FK01)
+        /// </summary>
         public virtual Shipper Shipper { get; set; } // Orders_FK01
 
         public Order()
@@ -595,7 +621,14 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         public float Discount { get; set; } // Discount
 
         // Foreign keys
+
+        /// <summary>
+        /// Parent Order pointed by [Order Details].([OrderId]) (Order Details_FK01)
+        /// </summary>
         public virtual Order Order { get; set; } // Order Details_FK01
+        /// <summary>
+        /// Parent Product pointed by [Order Details].([ProductId]) (Order Details_FK00)
+        /// </summary>
         public virtual Product Product { get; set; } // Order Details_FK00
     }
 
@@ -616,10 +649,21 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         public bool Discontinued { get; set; } // Discontinued
 
         // Reverse navigation
-        public virtual System.Collections.Generic.ICollection<OrderDetail> OrderDetails { get; set; } // Many to many mapping
+
+        /// <summary>
+        /// Child OrderDetails where [Order Details].[Product ID] point to this entity (Order Details_FK00)
+        /// </summary>
+        public virtual System.Collections.Generic.ICollection<OrderDetail> OrderDetails { get; set; } = new System.Collections.Generic.List<OrderDetail>(); // Order Details.Order Details_FK00
 
         // Foreign keys
+
+        /// <summary>
+        /// Parent Category pointed by [Products].([CategoryId]) (Products_FK01)
+        /// </summary>
         public virtual Category Category { get; set; } // Products_FK01
+        /// <summary>
+        /// Parent Supplier pointed by [Products].([SupplierId]) (Products_FK00)
+        /// </summary>
         public virtual Supplier Supplier { get; set; } // Products_FK00
 
         public Product()
@@ -636,7 +680,11 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         public string CompanyName { get; set; } // Company Name (length: 40)
 
         // Reverse navigation
-        public virtual System.Collections.Generic.ICollection<Order> Orders { get; set; } // Orders.Orders_FK01
+
+        /// <summary>
+        /// Child Orders where [Orders].[Ship Via] point to this entity (Orders_FK01)
+        /// </summary>
+        public virtual System.Collections.Generic.ICollection<Order> Orders { get; set; } = new System.Collections.Generic.List<Order>(); // Orders.Orders_FK01
 
         public Shipper()
         {
@@ -661,7 +709,11 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         public string Fax { get; set; } // Fax (length: 24)
 
         // Reverse navigation
-        public virtual System.Collections.Generic.ICollection<Product> Products { get; set; } // Products.Products_FK00
+
+        /// <summary>
+        /// Child Products where [Products].[Supplier ID] point to this entity (Products_FK00)
+        /// </summary>
+        public virtual System.Collections.Generic.ICollection<Product> Products { get; set; } = new System.Collections.Generic.List<Product>(); // Products.Products_FK00
 
         public Supplier()
         {

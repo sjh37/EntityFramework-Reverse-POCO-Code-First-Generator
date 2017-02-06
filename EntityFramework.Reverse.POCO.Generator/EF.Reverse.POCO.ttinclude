@@ -1018,8 +1018,8 @@ foreach(var entityFk in tbl.Columns.SelectMany(x => x.EntityFk).OrderBy(o => o.D
         [<#=fkda #>]
 <# } #>
         /// <summary>
-		/// <#=entityFk.Comments #>
-		/// </summary>
+        /// <#=entityFk.Comments #>
+        /// </summary>
         <#=entityFk.Definition #>
 <# } } #>
 <#
