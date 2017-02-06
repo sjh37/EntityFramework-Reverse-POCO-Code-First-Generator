@@ -55,7 +55,7 @@
         bool MakeDbContextInterfacePartial = false;
         bool GenerateSeparateFiles = false;
         bool UseMappingTables = true;
-        bool UsePropertyInitializers = false;
+        static bool UsePropertyInitializers = false;
         bool IsSqlCe = false;
         string FileExtension = ".cs";
         bool UsePascalCase = true;
@@ -745,7 +745,7 @@
 
 			// childTable FK columns are exactly the primary key (they are part of primary key, and no other columns are primary keys) //TODO: we could also check if they are an unique index
             bool childTableColumnsAllPrimaryKeys = (childTableCols.Count() == childTableCols.Count(x => x.IsPrimaryKey)) && (childTableCols.Count() == childTable.PrimaryKeys.Count());
-            
+
 			// parentTable columns are exactly the primary key (they are part of primary key, and no other columns are primary keys) //TODO: we could also check if they are an unique index
 			bool parentTableColumnsAllPrimaryKeys = (parentTableCols.Count() == parentTableCols.Count(x => x.IsPrimaryKey)) && (parentTableCols.Count() == parentTable.PrimaryKeys.Count());
 
