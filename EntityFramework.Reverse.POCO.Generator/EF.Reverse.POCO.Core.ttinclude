@@ -699,6 +699,7 @@
                     }
 
                     // Remove stored procs where the return model type contains spaces and cannot be mapped
+                    // Also need to remove any TVF functions with parameters that are non scalar types, such as DataTable
                     var validStoredProcedures = new List<StoredProcedure>();
                     foreach (var sp in storedProcs)
                     {
@@ -707,8 +708,14 @@
                             validStoredProcedures.Add(sp);
                             continue;
                         }
-                        if(!sp.ReturnModels.Any(returnColumns => returnColumns.Any(c => c.ColumnName.Contains(" "))))
-                            validStoredProcedures.Add(sp);
+
+                        if (sp.ReturnModels.Any(returnColumns => returnColumns.Any(c => c.ColumnName.Contains(" "))))
+                            continue;
+
+                        if (sp.IsTVF && sp.ReturnModels.Any(returnColumns => returnColumns.Any(c => c.DataType.IsClass)))
+                            continue;
+
+                        validStoredProcedures.Add(sp);
                     }
                     return validStoredProcedures;
                 }
