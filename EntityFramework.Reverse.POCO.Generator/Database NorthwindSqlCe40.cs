@@ -492,7 +492,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         /// <summary>
         /// Child Products where [Products].[Category ID] point to this entity (Products_FK01)
         /// </summary>
-        public virtual System.Collections.Generic.ICollection<Product> Products { get; set; } = new System.Collections.Generic.List<Product>(); // Products.Products_FK01
+        public virtual System.Collections.Generic.ICollection<Product> Products { get; set; } // Products.Products_FK01
 
         public Category()
         {
@@ -521,7 +521,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         /// <summary>
         /// Child Orders where [Orders].[Customer ID] point to this entity (Orders_FK00)
         /// </summary>
-        public virtual System.Collections.Generic.ICollection<Order> Orders { get; set; } = new System.Collections.Generic.List<Order>(); // Orders.Orders_FK00
+        public virtual System.Collections.Generic.ICollection<Order> Orders { get; set; } // Orders.Orders_FK00
 
         public Customer()
         {
@@ -555,7 +555,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         /// <summary>
         /// Child Orders where [Orders].[Employee ID] point to this entity (Orders_FK02)
         /// </summary>
-        public virtual System.Collections.Generic.ICollection<Order> Orders { get; set; } = new System.Collections.Generic.List<Order>(); // Orders.Orders_FK02
+        public virtual System.Collections.Generic.ICollection<Order> Orders { get; set; } // Orders.Orders_FK02
 
         public Employee()
         {
@@ -587,7 +587,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         /// <summary>
         /// Child OrderDetails where [Order Details].[Order ID] point to this entity (Order Details_FK01)
         /// </summary>
-        public virtual System.Collections.Generic.ICollection<OrderDetail> OrderDetails { get; set; } = new System.Collections.Generic.List<OrderDetail>(); // Order Details.Order Details_FK01
+        public virtual System.Collections.Generic.ICollection<OrderDetail> OrderDetails { get; set; } // Order Details.Order Details_FK01
 
         // Foreign keys
 
@@ -653,7 +653,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         /// <summary>
         /// Child OrderDetails where [Order Details].[Product ID] point to this entity (Order Details_FK00)
         /// </summary>
-        public virtual System.Collections.Generic.ICollection<OrderDetail> OrderDetails { get; set; } = new System.Collections.Generic.List<OrderDetail>(); // Order Details.Order Details_FK00
+        public virtual System.Collections.Generic.ICollection<OrderDetail> OrderDetails { get; set; } // Order Details.Order Details_FK00
 
         // Foreign keys
 
@@ -684,7 +684,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         /// <summary>
         /// Child Orders where [Orders].[Ship Via] point to this entity (Orders_FK01)
         /// </summary>
-        public virtual System.Collections.Generic.ICollection<Order> Orders { get; set; } = new System.Collections.Generic.List<Order>(); // Orders.Orders_FK01
+        public virtual System.Collections.Generic.ICollection<Order> Orders { get; set; } // Orders.Orders_FK01
 
         public Shipper()
         {
@@ -713,7 +713,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         /// <summary>
         /// Child Products where [Products].[Supplier ID] point to this entity (Products_FK00)
         /// </summary>
-        public virtual System.Collections.Generic.ICollection<Product> Products { get; set; } = new System.Collections.Generic.List<Product>(); // Products.Products_FK00
+        public virtual System.Collections.Generic.ICollection<Product> Products { get; set; } // Products.Products_FK00
 
         public Supplier()
         {
