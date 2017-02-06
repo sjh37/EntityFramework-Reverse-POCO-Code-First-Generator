@@ -307,7 +307,7 @@
         return fk;
     };
 
-    ForeignKeyName = (tableName, foreignKey, foreignKeyName, attempt) =>
+    ForeignKeyName = (tableName, foreignKey, foreignKeyName, relationship, attempt) =>
     {
         string fkName;
 

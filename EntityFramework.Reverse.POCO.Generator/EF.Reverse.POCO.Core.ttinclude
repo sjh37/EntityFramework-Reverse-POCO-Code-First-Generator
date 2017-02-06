@@ -3278,9 +3278,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     case Relationship.OneToOne:
                     case Relationship.OneToMany:
                     case Relationship.ManyToOne:
-                        fkNames = string.Join(", ", fks.Select(x => "[" + x.FkColumn + "]").Distinct().ToArray());
-                        if (fks.Count>1)
-                            fkNames = "\"" + fkNames + "\"";
+                        fkNames = (fks.Count>1 ? "(" : "") + string.Join(", ", fks.Select(x => "[" + x.FkColumn + "]").Distinct().ToArray()) + (fks.Count>1 ? ")" : "");
                         break;
                     case Relationship.ManyToMany:
                         break;
@@ -3295,7 +3293,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                             new PropertyAndComments() 
                             {
                                 Definition = string.Format("public virtual {0} {1} {{ get; set; }}{2}", fkTable.NameHumanCaseWithSuffix, propName, includeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
-                                Comments = string.Format("Parent (One-to-One) {0} pointed by [{1}].({2}) ({3})", this.NameHumanCaseWithSuffix, fkTable.Name, fkNames, fks.First().ConstraintName)
+                                Comments = string.Format("Parent (One-to-One) {0} pointed by [{1}].{2} ({3})", this.NameHumanCaseWithSuffix, fkTable.Name, fkNames, fks.First().ConstraintName)
                             }
                         );
                         break;
@@ -3305,7 +3303,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                             new PropertyAndComments() 
                             {
                                 Definition = string.Format("public virtual {0} {1} {{ get; set; }}{2}", fkTable.NameHumanCaseWithSuffix, propName, includeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
-                                Comments = string.Format("Parent {0} pointed by [{1}].({2}) ({3})", this.NameHumanCaseWithSuffix, fkTable.Name, fkNames, fks.First().ConstraintName)
+                                Comments = string.Format("Parent {0} pointed by [{1}].{2} ({3})", this.NameHumanCaseWithSuffix, fkTable.Name, fkNames, fks.First().ConstraintName)
                             }
                         );
                         break;
@@ -3316,7 +3314,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                             new PropertyAndComments() 
                             {
                                 Definition = string.Format("public virtual System.Collections.Generic.ICollection<{0}> {1} {{ get; set; }}{2}{3}", fkTable.NameHumanCaseWithSuffix, propName, initialization1, includeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
-                                Comments = string.Format("{0} children where {1}.{2} point to this entity ({3})", fkTable.NameHumanCaseWithSuffix, fkTable.Name, fkNames, fks.First().ConstraintName)
+                                Comments = string.Format("Child {0} where [{1}].{2} point to this entity ({3})", Inflector.MakePlural(fkTable.NameHumanCase), fkTable.Name, fkNames, fks.First().ConstraintName)
                             }
                         );
                         ReverseNavigationCtor.Add(string.Format("{0} = new {1}<{2}>();", propName, collectionType, fkTable.NameHumanCaseWithSuffix));
@@ -3328,7 +3326,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                             new PropertyAndComments() 
                             {
                                 Definition = string.Format("public virtual System.Collections.Generic.ICollection<{0}> {1} {{ get; set; }}{2}{3}", fkTable.NameHumanCaseWithSuffix, propName, initialization2, includeComments != CommentsStyle.None ? " // Many to many mapping" : string.Empty),
-                                Comments = string.Format("{0} children (Many-to-Many) mapped by table {1}", fkTable.NameHumanCaseWithSuffix, mappingTable.Name)
+                                Comments = string.Format("Child {0} (Many-to-Many) mapped by table [{1}]", Inflector.MakePlural(fkTable.NameHumanCase), mappingTable.Name)
                             }
                         );
 
