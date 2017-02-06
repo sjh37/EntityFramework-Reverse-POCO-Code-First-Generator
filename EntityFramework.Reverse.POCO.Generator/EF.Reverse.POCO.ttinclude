@@ -1002,8 +1002,8 @@ foreach(var s in tbl.ReverseNavigationProperty.OrderBy(x => x.Definition))
         [<#=rnpda #>]
 <# } #>
         /// <summary>
-		/// <#=s.Comments??"" #>
-		/// </summary>
+        /// <#=s.Comments??"" #>
+        /// </summary>
         <#=s.Definition #>
 <# } } #>
 <# if(tbl.HasForeignKey) { #>
