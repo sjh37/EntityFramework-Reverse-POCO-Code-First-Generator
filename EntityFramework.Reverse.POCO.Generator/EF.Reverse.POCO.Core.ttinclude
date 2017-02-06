@@ -55,7 +55,7 @@
         bool MakeDbContextInterfacePartial = false;
         bool GenerateSeparateFiles = false;
         bool UseMappingTables = true;
-        static bool UsePropertyInitializers = false;
+        bool UsePropertyInitializers = false;
         bool IsSqlCe = false;
         string FileExtension = ".cs";
         bool UsePascalCase = true;
@@ -3275,7 +3275,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 {
                     case Relationship.OneToOne:
                         ReverseNavigationProperty.Add(
-                            new PropertyAndComments() 
+                            new PropertyAndComments()
                             {
                                 Definition = string.Format("public virtual {0} {1} {{ get; set; }}{2}", fkTable.NameHumanCaseWithSuffix, propName, includeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
                                 Comments = string.Format("Parent (One-to-One) {0} pointed by [{1}].{2} ({3})", this.NameHumanCaseWithSuffix, fkTable.Name, fkNames, fks.First().ConstraintName)
@@ -3285,7 +3285,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
                     case Relationship.OneToMany:
                         ReverseNavigationProperty.Add(
-                            new PropertyAndComments() 
+                            new PropertyAndComments()
                             {
                                 Definition = string.Format("public virtual {0} {1} {{ get; set; }}{2}", fkTable.NameHumanCaseWithSuffix, propName, includeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
                                 Comments = string.Format("Parent {0} pointed by [{1}].{2} ({3})", this.NameHumanCaseWithSuffix, fkTable.Name, fkNames, fks.First().ConstraintName)
@@ -3296,7 +3296,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     case Relationship.ManyToOne:
                         var initialization1 = string.Format(" = new {0}<{1}>();", collectionType, fkTable.NameHumanCaseWithSuffix);
                         ReverseNavigationProperty.Add(
-                            new PropertyAndComments() 
+                            new PropertyAndComments()
                             {
                                 Definition = string.Format("public virtual System.Collections.Generic.ICollection<{0}> {1} {{ get; set; }}{2}{3}", fkTable.NameHumanCaseWithSuffix, propName, initialization1, includeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
                                 Comments = string.Format("Child {0} where [{1}].{2} point to this entity ({3})", Inflector.MakePlural(fkTable.NameHumanCase), fkTable.Name, fkNames, fks.First().ConstraintName)
@@ -3308,7 +3308,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     case Relationship.ManyToMany:
                         var initialization2 = string.Format(" = new {0}<{1}>();", collectionType, fkTable.NameHumanCaseWithSuffix);
                         ReverseNavigationProperty.Add(
-                            new PropertyAndComments() 
+                            new PropertyAndComments()
                             {
                                 Definition = string.Format("public virtual System.Collections.Generic.ICollection<{0}> {1} {{ get; set; }}{2}{3}", fkTable.NameHumanCaseWithSuffix, propName, initialization2, includeComments != CommentsStyle.None ? " // Many to many mapping" : string.Empty),
                                 Comments = string.Format("Child {0} (Many-to-Many) mapped by table [{1}]", Inflector.MakePlural(fkTable.NameHumanCase), mappingTable.Name)

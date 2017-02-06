@@ -27,6 +27,7 @@
     UsePascalCase = true;    // This will rename the generated C# tables & properties to use PascalCase. If false table & property names will be left alone.
     UseDataAnnotations = false; // If true, will add data annotations to the poco classes.
     UseDataAnnotationsSchema = false; // UseDataAnnotations must also be true. If true, will add data annotations schema to the poco classes.
+    UsePropertyInitializers = false; // C# 6 feature
     IncludeComments = CommentsStyle.AtEndOfField; // Adds comments to the generated code
     IncludeExtendedPropertyComments = CommentsStyle.InSummaryBlock; // Adds extended properties as comments to the generated code
     IncludeViews = true;
@@ -357,6 +358,20 @@
         if (tableName == "Employee" && foreignKey.FkTableName == "Orders" && foreignKey.FkColumn == "EmployeeID")
             return "ContactPerson";
         */
+
+        // FK_TableName_FromThisToParentRelationshipName_FromParentToThisChildsRelationshipName
+        // (e.g. FK_CustomerAddress_Customer_Addresses will extract navigation properties "address.Customer" and "customer.Addresses")
+        if (foreignKey.ConstraintName.StartsWith("FK_") && foreignKey.ConstraintName.Count(x => x == '_') == 3)
+        {
+            var parts = foreignKey.ConstraintName.Split('_');
+            if (!string.IsNullOrWhiteSpace(parts[2]) && !string.IsNullOrWhiteSpace(parts[3]))
+            {
+                if (relationship == Relationship.OneToMany)
+                    fkName = parts[3];
+                else if (relationship == Relationship.ManyToOne)
+                    fkName = parts[2];
+            }
+        }
 
         return fkName;
     };
