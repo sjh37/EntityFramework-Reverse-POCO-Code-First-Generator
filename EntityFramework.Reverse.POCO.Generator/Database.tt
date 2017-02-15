@@ -325,7 +325,7 @@
         {
             WriteLine(string.Empty);
             WriteLine("        ///<summary>");
-            WriteLine("        /// {0}", c.SummaryComments);
+            WriteLine("        /// {0}", System.Security.SecurityElement.Escape(c.SummaryComments));
             WriteLine("        ///</summary>");
             commentWritten = true;
         }
