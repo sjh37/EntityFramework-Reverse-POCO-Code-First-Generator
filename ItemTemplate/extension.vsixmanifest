@@ -12,34 +12,6 @@
         <Icon>TemplateIcon.ico</Icon>
         <PreviewImage>PreviewImage.png</PreviewImage>
         <SupportedProducts>
-            <VisualStudio Version="10.0">
-                <Edition>Ultimate</Edition>
-                <Edition>Premium</Edition>
-                <Edition>Pro</Edition>
-                <Edition>VCSExpress</Edition>
-                <Edition>VWDExpress</Edition>
-            </VisualStudio>
-            <VisualStudio Version="11.0">
-                <Edition>Ultimate</Edition>
-                <Edition>Premium</Edition>
-                <Edition>Pro</Edition>
-                <Edition>VCSExpress</Edition>
-                <Edition>VWDExpress</Edition>
-            </VisualStudio>
-            <VisualStudio Version="12.0">
-                <Edition>Ultimate</Edition>
-                <Edition>Premium</Edition>
-                <Edition>Pro</Edition>
-                <Edition>VCSExpress</Edition>
-                <Edition>VWDExpress</Edition>
-            </VisualStudio>
-            <VisualStudio Version="13.0">
-                <Edition>Ultimate</Edition>
-                <Edition>Premium</Edition>
-                <Edition>Pro</Edition>
-                <Edition>VCSExpress</Edition>
-                <Edition>VWDExpress</Edition>
-            </VisualStudio>
             <VisualStudio Version="14.0">
                 <Edition>Ultimate</Edition>
                 <Edition>Premium</Edition>
@@ -48,10 +20,11 @@
                 <Edition>VWDExpress</Edition>
             </VisualStudio>
             <VisualStudio Version="15.0">
-                <Edition>Ultimate</Edition>
-                <Edition>Premium</Edition>
+                <Edition>Enterprise</Edition>
+                <Edition>Community</Edition>
                 <Edition>Pro</Edition>
-                <Edition>VCSExpress</Edition>
+                <Edition>VSWinExpress</Edition>
+                <Edition>VSWinDesktopExpress</Edition>
                 <Edition>VWDExpress</Edition>
             </VisualStudio>
         </SupportedProducts>
