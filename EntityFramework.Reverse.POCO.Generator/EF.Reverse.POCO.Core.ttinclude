@@ -712,7 +712,7 @@
                         if (sp.ReturnModels.Any(returnColumns => returnColumns.Any(c => c.ColumnName.Contains(" "))))
                             continue;
 
-                        if (sp.IsTVF && sp.ReturnModels.Any(returnColumns => returnColumns.Any(c => c.DataType.IsClass)))
+                        if (sp.IsTVF && sp.Parameters.Any(c => c.PropertyType == "System.Data.DataTable"))
                             continue;
 
                         validStoredProcedures.Add(sp);
