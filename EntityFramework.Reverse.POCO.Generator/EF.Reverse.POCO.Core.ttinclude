@@ -901,13 +901,16 @@
             {
                 DataAnnotations = new List<string>();
                 string databaseGeneratedOption = null;
+                var schemaReference = dataAnnotations
+                    ? string.Empty
+                    : "System.ComponentModel.DataAnnotations.Schema.";
 
                 if (IsIdentity)
                 {
                     if(dataAnnotationsSchema)
                         DataAnnotations.Add("DatabaseGenerated(DatabaseGeneratedOption.Identity)");
                     else
-                        databaseGeneratedOption = ".HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity)";
+                        databaseGeneratedOption = string.Format(".HasDatabaseGeneratedOption({0}DatabaseGeneratedOption.Identity)", schemaReference);
                 }
 
                 if(IsComputed())
@@ -915,7 +918,7 @@
                     if(dataAnnotationsSchema)
                         DataAnnotations.Add("DatabaseGenerated(DatabaseGeneratedOption.Computed)");
                     else
-                        databaseGeneratedOption = ".HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Computed)";
+                        databaseGeneratedOption = string.Format(".HasDatabaseGeneratedOption({0}DatabaseGeneratedOption.Computed)", schemaReference);
                 }
 
                 if (IsPrimaryKey && !IsIdentity && !IsStoreGenerated)
@@ -923,12 +926,12 @@
                     if(dataAnnotationsSchema)
                         DataAnnotations.Add("DatabaseGenerated(DatabaseGeneratedOption.None)");
                     else
-                        databaseGeneratedOption = ".HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None)";
+                        databaseGeneratedOption = string.Format(".HasDatabaseGeneratedOption({0}DatabaseGeneratedOption.None)", schemaReference);
                 }
 
                 var sb = new StringBuilder();
 
-                if(dataAnnotationsSchema)
+                if(dataAnnotationsSchema || (IsPrimaryKey && dataAnnotations))
                     DataAnnotations.Add(string.Format("Column(@\"{0}\", Order = {1}, TypeName = \"{2}\")", Name, Ordinal, SqlPropertyType));
                 else
                     sb.AppendFormat(".HasColumnName(@\"{0}\").HasColumnType(\"{1}\")", Name, SqlPropertyType);

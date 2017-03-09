@@ -21,8 +21,6 @@ fileManager.StartHeader();
 {
     if (UseDataAnnotations) {#>
 using System.ComponentModel.DataAnnotations;
-<#  }
-    if (UseDataAnnotationsSchema) {#>
 using System.ComponentModel.DataAnnotations.Schema;
 <#  }
 }
