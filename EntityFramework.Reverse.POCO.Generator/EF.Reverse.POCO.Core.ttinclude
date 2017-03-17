@@ -568,6 +568,15 @@
                     WriteLine("");
                 }
             }
+            else
+            {
+                Warning("Failed to find providerName in the connection string");
+                WriteLine("");
+                WriteLine("// ------------------------------------------------------------------------------------------------");
+                WriteLine("//  Failed to find providerName in the connection string");
+                WriteLine("// ------------------------------------------------------------------------------------------------");
+                WriteLine("");
+            }
             return null;
         }
 
