@@ -95,7 +95,7 @@ namespace Tester
         }
 
         [Test]
-        public void Insert_and_delete_TEST_record_succesfully_via_FindById()
+        public void Insert_and_delete_TEST_record_successfully_via_FindById()
         {
             // Arrange
             var db2 = new MyDbContext();
@@ -123,7 +123,7 @@ namespace Tester
         }
 
         [Test]
-        public void Insert_and_delete_TEST_record_succesfully_via_Find()
+        public void Insert_and_delete_TEST_record_successfully_via_Find()
         {
             // Arrange
             var db2 = new MyDbContext();
