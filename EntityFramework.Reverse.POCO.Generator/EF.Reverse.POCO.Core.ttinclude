@@ -3548,7 +3548,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             var sb = new StringBuilder();
             foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
             {
-                sb.AppendLine(string.Format("            var {0}Param = new System.Data.Entity.Core.Objects.ObjectParameter(\"{1}\", typeof({2})) {{ Value = {3} }};",
+                sb.AppendLine(string.Format("            var {0}Param = new System.Data.Entity.Core.Objects.ObjectParameter(\"{1}\" + guid, typeof({2})) {{ Value = {3} }};",
                     p.NameHumanCase,
                     p.Name.Substring(1),
                     p.PropertyType,
