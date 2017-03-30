@@ -2632,12 +2632,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
                     var dataAnnotation = string.Empty;
                     if (dataAnnotationsSchema)
-                    {
-                        dataAnnotation = string.Format("[ForeignKey(\"{0}\"){1}] ",
-                            string.Join(", ", fkCols.Select(x => x.col.NameHumanCase).Distinct().ToArray()),
-                            fkCols.Any(x => x.col.IsNullable) ? string.Empty : ", Required"
-                            );
-}
+                        dataAnnotation = string.Format("[ForeignKey(\"{0}\")] ", string.Join(", ", fkCols.Select(x => x.col.NameHumanCase).Distinct().ToArray()));
 
                     var fkd = new PropertyAndComments();
                     fkd.Definition = string.Format("{0}public virtual {1} {2} {3}{4}", dataAnnotation, pkTableHumanCaseWithSuffix, pkPropName, "{ get; set; }", includeComments != CommentsStyle.None ? " // " + foreignKey.ConstraintName : string.Empty);
