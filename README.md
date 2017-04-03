@@ -27,6 +27,7 @@ To make a donation via PayPal, [please click here](https://www.paypal.me/SJH37).
 
 * SQL Server
 * SQL Server Compact 4.0
+* SQL Server Compact 3.5
 
 ### Highly customisable output
 
