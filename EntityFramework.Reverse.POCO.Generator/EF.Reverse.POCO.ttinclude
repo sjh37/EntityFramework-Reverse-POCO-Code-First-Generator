@@ -288,7 +288,7 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKey
 { #>
 
             modelBuilder.Conventions.Add(new CodeFirstStoreFunctions.FunctionsConvention<<#=DbContextName#>>("dbo"));
-<#      foreach (StoredProcedure sp in storedProcs.Where(s => s.IsTVF)){#>
+<#      foreach (StoredProcedure sp in storedProcs.Where(s => s.IsTVF && !StoredProcedureReturnTypes.ContainsKey(s.NameHumanCase) && !StoredProcedureReturnTypes.ContainsKey(s.Name))){#>
             modelBuilder.ComplexType<<#=WriteStoredProcReturnModelName(sp)#>>();
 <# } } #>
 
