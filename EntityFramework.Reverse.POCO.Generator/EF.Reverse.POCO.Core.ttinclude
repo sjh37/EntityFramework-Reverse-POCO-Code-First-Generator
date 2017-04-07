@@ -79,6 +79,7 @@
         Func<Table, bool> ConfigurationFilter;
         static Dictionary<string, string> StoredProcedureReturnTypes = new Dictionary<string, string>();
         Regex ColumnFilterExclude = null;
+        static bool UseLazyLoading = true;
         string[] ConfigFilenameSearchOrder = null;
         string[] AdditionalNamespaces = null;
         string[] AdditionalContextInterfaceItems = null;
@@ -2635,7 +2636,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         dataAnnotation = string.Format("[ForeignKey(\"{0}\")] ", string.Join(", ", fkCols.Select(x => x.col.NameHumanCase).Distinct().ToArray()));
 
                     var fkd = new PropertyAndComments();
-                    fkd.Definition = string.Format("{0}public virtual {1} {2} {3}{4}", dataAnnotation, pkTableHumanCaseWithSuffix, pkPropName, "{ get; set; }", includeComments != CommentsStyle.None ? " // " + foreignKey.ConstraintName : string.Empty);
+                    fkd.Definition = string.Format("{0}public {1}{2} {3} {4}{5}", dataAnnotation, Table.GetLazyLoadingMarker(), pkTableHumanCaseWithSuffix, pkPropName, "{ get; set; }", includeComments != CommentsStyle.None ? " // " + foreignKey.ConstraintName : string.Empty);
                     fkd.Comments = string.Format("Parent {0} pointed by [{1}].({2}) ({3})", pkTableHumanCase, fkTable.Name, string.Join(", ", fkCols.Select(x => "[" + x.col.NameHumanCase + "]").Distinct().ToArray()), foreignKey.ConstraintName);
                     fkCol.col.EntityFk.Add(fkd);
 
@@ -3129,6 +3130,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 DataAnnotations = new List<string>();
             }
 
+            internal static string GetLazyLoadingMarker()
+            {
+                return UseLazyLoading ? "virtual " : string.Empty;
+            }
+
             public string NameHumanCaseWithSuffix
             {
                 get
@@ -3296,7 +3302,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         ReverseNavigationProperty.Add(
                             new PropertyAndComments()
                             {
-                                Definition = string.Format("public virtual {0} {1} {{ get; set; }}{2}", fkTable.NameHumanCaseWithSuffix, propName, includeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
+                                Definition = string.Format("public {0}{1} {2} {{ get; set; }}{3}", GetLazyLoadingMarker(), fkTable.NameHumanCaseWithSuffix, propName, includeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
                                 Comments = string.Format("Parent (One-to-One) {0} pointed by [{1}].{2} ({3})", this.NameHumanCaseWithSuffix, fkTable.Name, fkNames, fks.First().ConstraintName)
                             }
                         );
@@ -3306,7 +3312,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         ReverseNavigationProperty.Add(
                             new PropertyAndComments()
                             {
-                                Definition = string.Format("public virtual {0} {1} {{ get; set; }}{2}", fkTable.NameHumanCaseWithSuffix, propName, includeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
+                                Definition = string.Format("public {0}{1} {2} {{ get; set; }}{3}", GetLazyLoadingMarker(), fkTable.NameHumanCaseWithSuffix, propName, includeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
                                 Comments = string.Format("Parent {0} pointed by [{1}].{2} ({3})", NameHumanCaseWithSuffix, fkTable.Name, fkNames, fks.First().ConstraintName)
                             }
                         );
@@ -3319,7 +3325,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         ReverseNavigationProperty.Add(
                             new PropertyAndComments()
                             {
-                                Definition = string.Format("public virtual System.Collections.Generic.ICollection<{0}> {1} {{ get; set; }}{2}{3}", fkTable.NameHumanCaseWithSuffix, propName, initialization1, includeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
+                                Definition = string.Format("public {0}System.Collections.Generic.ICollection<{1}> {2} {{ get; set; }}{3}{4}", GetLazyLoadingMarker(), fkTable.NameHumanCaseWithSuffix, propName, initialization1, includeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
                                 Comments = string.Format("Child {0} where [{1}].{2} point to this entity ({3})", Inflector.MakePlural(fkTable.NameHumanCase), fkTable.Name, fkNames, fks.First().ConstraintName)
                             }
                         );
@@ -3333,7 +3339,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         ReverseNavigationProperty.Add(
                             new PropertyAndComments()
                             {
-                                Definition = string.Format("public virtual System.Collections.Generic.ICollection<{0}> {1} {{ get; set; }}{2}{3}", fkTable.NameHumanCaseWithSuffix, propName, initialization2, includeComments != CommentsStyle.None ? " // Many to many mapping" : string.Empty),
+                                Definition = string.Format("public {0}System.Collections.Generic.ICollection<{1}> {2} {{ get; set; }}{3}{4}", GetLazyLoadingMarker(), fkTable.NameHumanCaseWithSuffix, propName, initialization2, includeComments != CommentsStyle.None ? " // Many to many mapping" : string.Empty),
                                 Comments = string.Format("Child {0} (Many-to-Many) mapped by table [{1}]", Inflector.MakePlural(fkTable.NameHumanCase), mappingTable == null ? string.Empty : mappingTable.Name)
                             }
                         );
