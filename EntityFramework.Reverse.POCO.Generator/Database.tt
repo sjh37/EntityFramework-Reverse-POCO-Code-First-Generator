@@ -351,7 +351,7 @@
     ForeignKeyFilter = (ForeignKey fk) =>
     {
         // Return null to exclude this foreign key, or set IncludeReverseNavigation = false
-        // to include the foeriegn key but not generate reverse navigation properties.
+        // to include the foreign key but not generate reverse navigation properties.
         // Example, to exclude all foreign keys for the Categories table, use:
         // if (fk.PkTableName == "Categories")
         //    return null;
@@ -361,6 +361,17 @@
         //    fk.IncludeReverseNavigation = false;
 
         return fk;
+    };
+
+    ForeignKeyProcessing = (foreignKeys, fkTable, pkTable, anyNullableColumnInForeignKey) =>
+    {
+        var foreignKey = foreignKeys.First();
+
+        // If using data annotations and to include the [Required] attribute in the foreign key, enable the following
+        //if (!anyNullableColumnInForeignKey)
+        //   foreignKey.IncludeRequiredAttribute = true;
+
+        return foreignKey;
     };
 
     ForeignKeyName = (tableName, foreignKey, foreignKeyName, relationship, attempt) =>
