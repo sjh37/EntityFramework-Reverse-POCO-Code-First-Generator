@@ -3060,7 +3060,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
             // User settable via ForeignKeyFilter callback
             public bool IncludeReverseNavigation { get; set; }
-			public bool IncludeRequiredAttribute { get; set; }
+            public bool IncludeRequiredAttribute { get; set; }
 
             public ForeignKey(string fkTableName, string fkSchema, string pkTableName, string pkSchema, string fkColumn, string pkColumn, string constraintName, string fkTableNameFiltered, string pkTableNameFiltered, int ordinal, bool cascadeOnDelete)
             {
