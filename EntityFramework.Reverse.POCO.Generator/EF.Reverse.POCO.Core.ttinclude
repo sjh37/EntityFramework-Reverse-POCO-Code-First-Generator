@@ -2633,7 +2633,10 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
                     var dataAnnotation = string.Empty;
                     if (dataAnnotationsSchema)
-                        dataAnnotation = string.Format("[ForeignKey(\"{0}\")] ", string.Join(", ", fkCols.Select(x => x.col.NameHumanCase).Distinct().ToArray()));
+                        dataAnnotation = string.Format("[ForeignKey(\"{0}\"){1}] ",
+                            string.Join(", ", fkCols.Select(x => x.col.NameHumanCase).Distinct().ToArray()),
+                            foreignKey.IncludeRequiredAttribute ? ", Required" : string.Empty
+                            );
 
                     var fkd = new PropertyAndComments();
                     fkd.Definition = string.Format("{0}public {1}{2} {3} {4}{5}", dataAnnotation, Table.GetLazyLoadingMarker(), pkTableHumanCaseWithSuffix, pkPropName, "{ get; set; }", includeComments != CommentsStyle.None ? " // " + foreignKey.ConstraintName : string.Empty);
@@ -3057,6 +3060,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
             // User settable via ForeignKeyFilter callback
             public bool IncludeReverseNavigation { get; set; }
+			public bool IncludeRequiredAttribute { get; set; }
 
             public ForeignKey(string fkTableName, string fkSchema, string pkTableName, string pkSchema, string fkColumn, string pkColumn, string constraintName, string fkTableNameFiltered, string pkTableNameFiltered, int ordinal, bool cascadeOnDelete)
             {
