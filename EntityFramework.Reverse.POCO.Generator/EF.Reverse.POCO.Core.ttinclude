@@ -88,7 +88,7 @@
         private string _connectionString = "";
         private string _providerName = "";
         private string _configFilePath = "";
-        Func<string, string, string> TableRename;
+        Func<string, string, bool, string> TableRename;
         Func<StoredProcedure, string> StoredProcedureRename;
         static Func<string, StoredProcedure, string> StoredProcedureReturnModelRename;
         Func<Column, Table, Column> UpdateColumn;
@@ -1508,9 +1508,9 @@
             }
 
             public GeneratedTextTransformation Outer;
-            public abstract Tables ReadSchema(Regex schemaFilterExclude, Regex schemaFilterInclude, Regex tableFilterExclude, Regex tableFilterInclude, Regex columnFilterExclude, Func<Table, bool> tableFilter, bool usePascalCase, bool prependSchemaName, CommentsStyle includeComments, bool includeViews, CommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, Func<Column, Table, Column> updateColumn, bool usePrivateSetterForComputedColumns, bool includeSynonyms, bool dataAnnotations, bool dataAnnotationsSchema, bool isSqlCe);
+            public abstract Tables ReadSchema(Regex schemaFilterExclude, Regex schemaFilterInclude, Regex tableFilterExclude, Regex tableFilterInclude, Regex columnFilterExclude, Func<Table, bool> tableFilter, bool usePascalCase, bool prependSchemaName, CommentsStyle includeComments, bool includeViews, CommentsStyle includeExtendedPropertyComments, Func<string, string, bool, string> tableRename, Func<Column, Table, Column> updateColumn, bool usePrivateSetterForComputedColumns, bool includeSynonyms, bool dataAnnotations, bool dataAnnotationsSchema, bool isSqlCe);
             public abstract List<StoredProcedure> ReadStoredProcs(Regex SchemaFilterExclude, Regex storedProcedureFilterExclude, bool usePascalCase, bool prependSchemaName , Func<StoredProcedure, string> StoredProcedureRename, bool includeTableValuedFunctions);
-            public abstract List<ForeignKey> ReadForeignKeys(Func<string, string, string> tableRename, Func<ForeignKey, ForeignKey> foreignKeyFilter);
+            public abstract List<ForeignKey> ReadForeignKeys(Func<string, string, bool, string> tableRename, Func<ForeignKey, ForeignKey> foreignKeyFilter);
             public abstract void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool usePascalCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments, Func<string, ForeignKey, string, Relationship, short, string> ForeignKeyName, bool dataAnnotationsSchema, Func<IList<ForeignKey>, Table, Table, bool, ForeignKey> foreignKeyProcessing);
             public abstract void IdentifyForeignKeys(List<ForeignKey> fkList, Tables tables);
             public abstract void ReadIndexes(Tables tables);
@@ -2125,7 +2125,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 return SqlDatabaseEngineEdition == "Azure";
             }
 
-            public override Tables ReadSchema(Regex schemaFilterExclude, Regex schemaFilterInclude, Regex tableFilterExclude, Regex tableFilterInclude, Regex columnFilterExclude, Func<Table, bool> tableFilter, bool usePascalCase, bool prependSchemaName, CommentsStyle includeComments, bool includeViews, CommentsStyle includeExtendedPropertyComments, Func<string, string, string> tableRename, Func<Column, Table, Column> updateColumn, bool usePrivateSetterForComputedColumns, bool includeSynonyms, bool dataAnnotations, bool dataAnnotationsSchema, bool isSqlCe)
+            public override Tables ReadSchema(Regex schemaFilterExclude, Regex schemaFilterInclude, Regex tableFilterExclude, Regex tableFilterInclude, Regex columnFilterExclude, Func<Table, bool> tableFilter, bool usePascalCase, bool prependSchemaName, CommentsStyle includeComments, bool includeViews, CommentsStyle includeExtendedPropertyComments, Func<string, string, bool, string> tableRename, Func<Column, Table, Column> updateColumn, bool usePrivateSetterForComputedColumns, bool includeSynonyms, bool dataAnnotations, bool dataAnnotationsSchema, bool isSqlCe)
             {
                 var result = new Tables();
                 if(Cmd == null)
@@ -2176,7 +2176,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                                 if (!includeViews && table.IsView)
                                     continue;
 
-                                tableName = tableRename(tableName, schema);
+                                tableName = tableRename(tableName, schema, table.IsView);
                                 if (IsFilterExcluded(tableFilterExclude, null, tableName)) // Retest exclusion filter after table rename
                                     continue;
 
@@ -2233,7 +2233,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 return result;
             }
 
-            public override List<ForeignKey> ReadForeignKeys(Func<string, string, string> tableRename, Func<ForeignKey, ForeignKey> foreignKeyFilter)
+            public override List<ForeignKey> ReadForeignKeys(Func<string, string, bool, string> tableRename, Func<ForeignKey, ForeignKey> foreignKeyFilter)
             {
                 var fkList = new List<ForeignKey>();
                 if(Cmd == null)
@@ -2259,8 +2259,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         int ordinal = (int) rdr["ORDINAL_POSITION"];
                         bool cascadeOnDelete = ((int) rdr["CascadeOnDelete"]) == 1;
 
-                        string fkTableNameFiltered = tableRename(fkTableName, fkSchema);
-                        string pkTableNameFiltered = tableRename(pkTableName, pkSchema);
+                        string fkTableNameFiltered = tableRename(fkTableName, fkSchema, false);
+                        string pkTableNameFiltered = tableRename(pkTableName, pkSchema, false);
 
                         var fk = new ForeignKey(fkTableName, fkSchema, pkTableName, pkSchema, fkColumn, pkColumn,
                             constraintName, fkTableNameFiltered, pkTableNameFiltered, ordinal, cascadeOnDelete);
