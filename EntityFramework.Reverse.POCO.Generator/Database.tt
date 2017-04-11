@@ -177,12 +177,15 @@
     // Table renaming *********************************************************************************************************************
     // Use the following function to rename tables such as tblOrders to Orders, Shipments_AB to Shipments, etc.
     // Example:
-    TableRename = (name, schema) =>
+    TableRename = (string name, string schema, bool isView) =>
     {
         // Example
         //if (name.StartsWith("tbl"))
         //    name = name.Remove(0, 3);
         //name = name.Replace("_AB", "");
+
+        //if(isView)
+        //    name = name + "View";
 
         // If you turn pascal casing off (UsePascalCase = false), and use the pluralisation service, and some of your
         // tables names are all UPPERCASE, some words ending in IES such as CATEGORIES get singularised as CATEGORy.
