@@ -999,11 +999,11 @@ foreach(var s in tbl.ReverseNavigationProperty.OrderBy(x => x.Definition))
     foreach (var rnpda in AdditionalReverseNavigationsDataAnnotations) {#>
         [<#=rnpda #>]
 <# } #>
-        /// <summary>
-        /// <#=s.Comments??"" #>
+<#if(IncludeComments != CommentsStyle.None){#>        /// <summary>
+        /// <#=s.Comments ?? "" #>
         /// </summary>
         <#=s.Definition #>
-<# } } #>
+<# } } } #>
 <# if(tbl.HasForeignKey) { #>
 
 <#if(IncludeComments != CommentsStyle.None && tbl.Columns.SelectMany(x => x.EntityFk).Any()){#>        // Foreign keys
@@ -1015,11 +1015,11 @@ foreach(var entityFk in tbl.Columns.SelectMany(x => x.EntityFk).OrderBy(o => o.D
     foreach (var fkda in AdditionalForeignKeysDataAnnotations) {#>
         [<#=fkda #>]
 <# } #>
-        /// <summary>
+<#if(IncludeComments != CommentsStyle.None){#>        /// <summary>
         /// <#=entityFk.Comments #>
         /// </summary>
         <#=entityFk.Definition #>
-<# } } #>
+<# } } } #>
 <#
 if (!UsePropertyInitializers){
 if(tbl.Columns.Where(c => c.Default != string.Empty && !c.Hidden).Count() > 0 || tbl.ReverseNavigationCtor.Count() > 0 || MakeClassesPartial)
