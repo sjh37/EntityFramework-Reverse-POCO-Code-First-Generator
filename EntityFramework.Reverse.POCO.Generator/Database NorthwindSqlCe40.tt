@@ -28,6 +28,7 @@
     UseDataAnnotations = false; // If true, will add data annotations to the poco classes.
     UseDataAnnotationsSchema = false; // UseDataAnnotations must also be true. If true, will add data annotations schema to the poco classes.
     UsePropertyInitializers = false; // Removes POCO constructor and instead uses C# 6 property initialisers to set defaults
+    UseLazyLoading = true; // Marks all navigation properties as virtual or not, to support or disable EF Lazy Loading feature
     IncludeComments = CommentsStyle.AtEndOfField; // Adds comments to the generated code
     IncludeExtendedPropertyComments = CommentsStyle.InSummaryBlock; // Adds extended properties as comments to the generated code
     IncludeViews = true;
@@ -154,12 +155,15 @@
     // Table renaming *********************************************************************************************************************
     // Use the following function to rename tables such as tblOrders to Orders, Shipments_AB to Shipments, etc.
     // Example:
-    TableRename = (name, schema) =>
+    TableRename = (string name, string schema, bool isView) =>
     {
         // Example
         //if (name.StartsWith("tbl"))
         //    name = name.Remove(0, 3);
         //name = name.Replace("_AB", "");
+
+        //if(isView)
+        //    name = name + "View";
 
         // If you turn pascal casing off (UsePascalCase = false), and use the pluralisation service, and some of your
         // tables names are all UPPERCASE, some words ending in IES such as CATEGORIES get singularised as CATEGORy.
@@ -296,7 +300,7 @@
     ForeignKeyFilter = (ForeignKey fk) =>
     {
         // Return null to exclude this foreign key, or set IncludeReverseNavigation = false
-        // to include the foeriegn key but not generate reverse navigation properties.
+        // to include the foreign key but not generate reverse navigation properties.
         // Example, to exclude all foreign keys for the Categories table, use:
         // if (fk.PkTableName == "Categories")
         //    return null;
@@ -306,6 +310,17 @@
         //    fk.IncludeReverseNavigation = false;
 
         return fk;
+    };
+
+    ForeignKeyProcessing = (foreignKeys, fkTable, pkTable, anyNullableColumnInForeignKey) =>
+    {
+        var foreignKey = foreignKeys.First();
+
+        // If using data annotations and to include the [Required] attribute in the foreign key, enable the following
+        //if (!anyNullableColumnInForeignKey)
+        //   foreignKey.IncludeRequiredAttribute = true;
+
+        return foreignKey;
     };
 
     ForeignKeyName = (tableName, foreignKey, foreignKeyName, relationship, attempt) =>

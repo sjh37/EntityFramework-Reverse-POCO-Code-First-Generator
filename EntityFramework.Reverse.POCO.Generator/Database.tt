@@ -28,7 +28,7 @@
     UseDataAnnotations = false; // If true, will add data annotations to the poco classes.
     UseDataAnnotationsSchema = false; // UseDataAnnotations must also be true. If true, will add data annotations schema to the poco classes.
     UsePropertyInitializers = false; // Removes POCO constructor and instead uses C# 6 property initialisers to set defaults
-    UseLazyLoading = true; // Marks all navigation properties as virtual or not to support or disable EF Lazy Loading feature
+    UseLazyLoading = true; // Marks all navigation properties as virtual or not, to support or disable EF Lazy Loading feature
     IncludeComments = CommentsStyle.AtEndOfField; // Adds comments to the generated code
     IncludeExtendedPropertyComments = CommentsStyle.InSummaryBlock; // Adds extended properties as comments to the generated code
     IncludeViews = true;
