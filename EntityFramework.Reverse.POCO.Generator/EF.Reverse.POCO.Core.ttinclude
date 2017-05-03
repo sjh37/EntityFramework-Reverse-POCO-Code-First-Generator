@@ -1540,6 +1540,55 @@
             private static string SqlDatabaseEdition, SqlDatabaseEngineEdition;
 
             private const string TableSQL = @"
+SET NOCOUNT ON;
+IF OBJECT_ID('tempdb..#Columns')     IS NOT NULL DROP TABLE #Columns;
+IF OBJECT_ID('tempdb..#PrimaryKeys') IS NOT NULL DROP TABLE #PrimaryKeys;
+IF OBJECT_ID('tempdb..#ForeignKeys') IS NOT NULL DROP TABLE #ForeignKeys;
+
+SELECT  C.TABLE_SCHEMA,
+        C.TABLE_NAME,
+        C.COLUMN_NAME,
+        C.ORDINAL_POSITION,
+        C.COLUMN_DEFAULT,
+        C.IS_NULLABLE,
+        C.DATA_TYPE,
+        C.CHARACTER_MAXIMUM_LENGTH,
+        C.NUMERIC_PRECISION,
+        C.NUMERIC_SCALE,
+        C.DATETIME_PRECISION
+INTO    #Columns
+FROM    INFORMATION_SCHEMA.COLUMNS C
+WHERE   C.TABLE_NAME NOT IN ('EdmMetadata', '__MigrationHistory')
+        AND C.TABLE_NAME NOT LIKE 'sysdiagram%';
+
+CREATE NONCLUSTERED INDEX IX_EfPoco_Columns
+ON dbo.#Columns (TABLE_NAME)
+INCLUDE (TABLE_SCHEMA,COLUMN_NAME,ORDINAL_POSITION,COLUMN_DEFAULT,IS_NULLABLE,DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION,NUMERIC_SCALE,DATETIME_PRECISION);
+
+SELECT  u.TABLE_SCHEMA,
+        u.TABLE_NAME,
+        u.COLUMN_NAME,
+        u.ORDINAL_POSITION
+INTO    #PrimaryKeys
+FROM    INFORMATION_SCHEMA.KEY_COLUMN_USAGE u
+        INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc
+            ON u.TABLE_SCHEMA COLLATE DATABASE_DEFAULT = tc.CONSTRAINT_SCHEMA COLLATE DATABASE_DEFAULT
+               AND u.TABLE_NAME = tc.TABLE_NAME
+               AND u.CONSTRAINT_NAME = tc.CONSTRAINT_NAME
+WHERE   CONSTRAINT_TYPE = 'PRIMARY KEY';
+
+SELECT DISTINCT
+        u.TABLE_SCHEMA,
+        u.TABLE_NAME,
+        u.COLUMN_NAME
+INTO    #ForeignKeys
+FROM    INFORMATION_SCHEMA.KEY_COLUMN_USAGE u
+        INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc
+            ON u.TABLE_SCHEMA COLLATE DATABASE_DEFAULT = tc.CONSTRAINT_SCHEMA COLLATE DATABASE_DEFAULT
+               AND u.TABLE_NAME = tc.TABLE_NAME
+               AND u.CONSTRAINT_NAME = tc.CONSTRAINT_NAME
+WHERE   CONSTRAINT_TYPE = 'FOREIGN KEY';
+
 SELECT  c.TABLE_SCHEMA AS SchemaName,
         c.TABLE_NAME AS TableName,
         t.TABLE_TYPE AS TableType,
@@ -1549,8 +1598,8 @@ SELECT  c.TABLE_SCHEMA AS SchemaName,
                   ELSE 0
              END AS BIT) AS IsNullable,
         DATA_TYPE AS TypeName,
-        ISNULL(CHARACTER_MAXIMUM_LENGTH, 0) AS [MaxLength],
-        CAST(ISNULL(NUMERIC_PRECISION, 0) AS INT) AS [Precision],
+        ISNULL(CHARACTER_MAXIMUM_LENGTH, 0) AS MaxLength,
+        CAST(ISNULL(NUMERIC_PRECISION, 0) AS INT) AS Precision,
         ISNULL(COLUMN_DEFAULT, '') AS [Default],
         CAST(ISNULL(DATETIME_PRECISION, 0) AS INT) AS DateTimePrecision,
         ISNULL(NUMERIC_SCALE, 0) AS Scale,
@@ -1558,7 +1607,8 @@ SELECT  c.TABLE_SCHEMA AS SchemaName,
         CAST(CASE WHEN COLUMNPROPERTY(OBJECT_ID(QUOTENAME(c.TABLE_SCHEMA) + '.' + QUOTENAME(c.TABLE_NAME)), c.COLUMN_NAME, 'IsIdentity') = 1 THEN 1
                   WHEN COLUMNPROPERTY(OBJECT_ID(QUOTENAME(c.TABLE_SCHEMA) + '.' + QUOTENAME(c.TABLE_NAME)), c.COLUMN_NAME, 'IsComputed') = 1 THEN 1
                   WHEN DATA_TYPE = 'TIMESTAMP' THEN 1
-                  WHEN DATA_TYPE = 'UNIQUEIDENTIFIER' AND LOWER(ISNULL(COLUMN_DEFAULT, '')) LIKE '%newsequentialid%' THEN 1
+                  WHEN DATA_TYPE = 'UNIQUEIDENTIFIER'
+                       AND LOWER(ISNULL(COLUMN_DEFAULT, '')) LIKE '%newsequentialid%' THEN 1
                   ELSE 0
              END AS BIT) AS IsStoreGenerated,
         CAST(CASE WHEN pk.ORDINAL_POSITION IS NULL THEN 0
@@ -1568,38 +1618,20 @@ SELECT  c.TABLE_SCHEMA AS SchemaName,
         CAST(CASE WHEN fk.COLUMN_NAME IS NULL THEN 0
                   ELSE 1
              END AS BIT) AS IsForeignKey
-FROM    INFORMATION_SCHEMA.COLUMNS c
-        LEFT OUTER JOIN (SELECT u.TABLE_SCHEMA,
-                                u.TABLE_NAME,
-                                u.COLUMN_NAME,
-                                u.ORDINAL_POSITION
-                         FROM   INFORMATION_SCHEMA.KEY_COLUMN_USAGE u
-                                INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc
-                                    ON u.TABLE_SCHEMA = tc.CONSTRAINT_SCHEMA
-                                       AND u.TABLE_NAME = tc.TABLE_NAME
-                                       AND u.CONSTRAINT_NAME = tc.CONSTRAINT_NAME
-                         WHERE  CONSTRAINT_TYPE = 'PRIMARY KEY') pk
+FROM    #Columns c
+        LEFT OUTER JOIN #PrimaryKeys pk
             ON c.TABLE_SCHEMA = pk.TABLE_SCHEMA
                AND c.TABLE_NAME = pk.TABLE_NAME
                AND c.COLUMN_NAME = pk.COLUMN_NAME
-        LEFT OUTER JOIN (SELECT DISTINCT
-                                u.TABLE_SCHEMA,
-                                u.TABLE_NAME,
-                                u.COLUMN_NAME
-                         FROM   INFORMATION_SCHEMA.KEY_COLUMN_USAGE u
-                                INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc
-                                    ON u.TABLE_SCHEMA = tc.CONSTRAINT_SCHEMA
-                                       AND u.TABLE_NAME = tc.TABLE_NAME
-                                       AND u.CONSTRAINT_NAME = tc.CONSTRAINT_NAME
-                         WHERE  CONSTRAINT_TYPE = 'FOREIGN KEY') fk
+        LEFT OUTER JOIN #ForeignKeys fk
             ON c.TABLE_SCHEMA = fk.TABLE_SCHEMA
                AND c.TABLE_NAME = fk.TABLE_NAME
                AND c.COLUMN_NAME = fk.COLUMN_NAME
         INNER JOIN INFORMATION_SCHEMA.TABLES t
-            ON c.TABLE_SCHEMA = t.TABLE_SCHEMA
-               AND c.TABLE_NAME = t.TABLE_NAME
-WHERE c.TABLE_NAME NOT IN ('EdmMetadata', '__MigrationHistory')
-      AND c.TABLE_NAME NOT LIKE 'sysdiagram%'";
+            ON c.TABLE_SCHEMA COLLATE DATABASE_DEFAULT = t.TABLE_SCHEMA COLLATE DATABASE_DEFAULT
+               AND c.TABLE_NAME COLLATE DATABASE_DEFAULT = t.TABLE_NAME COLLATE DATABASE_DEFAULT
+WHERE   c.TABLE_NAME NOT IN ('EdmMetadata', '__MigrationHistory')
+        AND c.TABLE_NAME NOT LIKE 'sysdiagram%';";
 
             private const string SynonymTableSQLSetup = @"
 SET NOCOUNT ON;
