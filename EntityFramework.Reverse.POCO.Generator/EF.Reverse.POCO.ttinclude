@@ -368,6 +368,7 @@ foreach (StoredProcedure sp in storedProcs.Where(s => !s.IsTVF))
             try
             {
                 Database.Connection.Open();
+                System.Data.Entity.Infrastructure.Interception.DbInterception.Dispatch.Connection.Open(Database.Connection, new System.Data.Entity.Infrastructure.Interception.DbInterceptionContext());
                 var reader = cmd.ExecuteReader();
                 var objectContext = ((System.Data.Entity.Infrastructure.IObjectContextAdapter) this).ObjectContext;
 
@@ -388,6 +389,7 @@ foreach (StoredProcedure sp in storedProcs.Where(s => !s.IsTVF))
             }
             finally
             {
+                System.Data.Entity.Infrastructure.Interception.DbInterception.Dispatch.Connection.Close(Database.Connection, new System.Data.Entity.Infrastructure.Interception.DbInterceptionContext());
                 Database.Connection.Close();
             }
 <# } #>
@@ -437,6 +439,7 @@ foreach (StoredProcedure sp in storedProcs.Where(s => !s.IsTVF))
             try
             {
                 await Database.Connection.OpenAsync().ConfigureAwait(false);
+                System.Data.Entity.Infrastructure.Interception.DbInterception.Dispatch.Connection.Open(Database.Connection, new System.Data.Entity.Infrastructure.Interception.DbInterceptionContext());
                 var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
                 var objectContext = ((System.Data.Entity.Infrastructure.IObjectContextAdapter) this).ObjectContext;
 
@@ -455,6 +458,7 @@ foreach (StoredProcedure sp in storedProcs.Where(s => !s.IsTVF))
             }
             finally
             {
+                System.Data.Entity.Infrastructure.Interception.DbInterception.Dispatch.Connection.Close(Database.Connection, new System.Data.Entity.Infrastructure.Interception.DbInterceptionContext());
                 Database.Connection.Close();
             }
 <# } #>
