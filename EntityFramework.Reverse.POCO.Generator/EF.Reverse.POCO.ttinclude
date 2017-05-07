@@ -1002,8 +1002,9 @@ foreach(var s in tbl.ReverseNavigationProperty.OrderBy(x => x.Definition))
 <#if(IncludeComments != CommentsStyle.None){#>        /// <summary>
         /// <#=s.Comments ?? "" #>
         /// </summary>
+<# } #>
         <#=s.Definition #>
-<# } } } #>
+<# } } #>
 <# if(tbl.HasForeignKey) { #>
 
 <#if(IncludeComments != CommentsStyle.None && tbl.Columns.SelectMany(x => x.EntityFk).Any()){#>        // Foreign keys
@@ -1018,8 +1019,9 @@ foreach(var entityFk in tbl.Columns.SelectMany(x => x.EntityFk).OrderBy(o => o.D
 <#if(IncludeComments != CommentsStyle.None){#>        /// <summary>
         /// <#=entityFk.Comments #>
         /// </summary>
+<# } #>
         <#=entityFk.Definition #>
-<# } } } #>
+<# } } #>
 <#
 if (!UsePropertyInitializers){
 if(tbl.Columns.Where(c => c.Default != string.Empty && !c.Hidden).Count() > 0 || tbl.ReverseNavigationCtor.Count() > 0 || MakeClassesPartial)
