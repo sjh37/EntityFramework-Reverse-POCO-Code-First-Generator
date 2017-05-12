@@ -101,6 +101,7 @@
         bool AutomaticMigrationsEnabled = true;
         bool AutomaticMigrationDataLossAllowed = true;
         List<EnumDefinition> EnumsDefinitions = new List<EnumDefinition>();
+        Dictionary<string, string> ColumnNameToDataAnnotation;
 
         public static string CodeGeneratedAttribute = "[System.CodeDom.Compiler.GeneratedCode(\"EF.Reverse.POCO.Generator\", \"2.30.0.0\")]";
         bool IncludeCodeGeneratedAttribute = true;
@@ -622,7 +623,7 @@
                         PrependSchemaName = false;
 
                     var reader = new SqlServerSchemaReader(conn, factory, IncludeQueryTraceOn9481Flag) { Outer = this };
-                    var tables = reader.ReadSchema(SchemaFilterExclude, SchemaFilterInclude, TableFilterExclude, TableFilterInclude, ColumnFilterExclude, TableFilter, UsePascalCase, PrependSchemaName, IncludeComments, IncludeViews, IncludeExtendedPropertyComments, TableRename, UpdateColumn, UsePrivateSetterForComputedColumns, IncludeSynonyms, UseDataAnnotations, UseDataAnnotationsSchema, IsSqlCe);
+                    var tables = reader.ReadSchema(SchemaFilterExclude, SchemaFilterInclude, TableFilterExclude, TableFilterInclude, ColumnFilterExclude, TableFilter, UsePascalCase, PrependSchemaName, IncludeComments, IncludeViews, IncludeExtendedPropertyComments, TableRename, UpdateColumn, UsePrivateSetterForComputedColumns, IncludeSynonyms, UseDataAnnotations, UseDataAnnotationsSchema, IsSqlCe, ColumnNameToDataAnnotation);
                     var fkList = reader.ReadForeignKeys(TableRename, ForeignKeyFilter);
                     reader.IdentifyForeignKeys(fkList, tables);
 
@@ -908,7 +909,7 @@
                 return IsStoreGenerated && !IsIdentity;
             }
 
-            private void SetupConfig(bool dataAnnotations, bool dataAnnotationsSchema, bool isSqlCe)
+            private void SetupConfig(bool dataAnnotations, bool dataAnnotationsSchema, bool isSqlCe, Dictionary<string, string> columnNameToDataAnnotation)
             {
                 DataAnnotations = new List<string>();
                 string databaseGeneratedOption = null;
@@ -1044,39 +1045,17 @@
                 if (IsPrimaryKey)
                     DataAnnotations.Add("Key");
 
-                if(NameHumanCase.Equals("CreditCard", StringComparison.InvariantCultureIgnoreCase))
-                    DataAnnotations.Add("CreditCard");
-
-                if (NameHumanCase.Equals("Email", StringComparison.InvariantCultureIgnoreCase) ||
-                    NameHumanCase.Equals("EmailAddress", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    DataAnnotations.Add("EmailAddress");
-                }
-
-                if(NameHumanCase.Equals("Url", StringComparison.InvariantCultureIgnoreCase))
-                    DataAnnotations.Add("Url");
-
-                if(NameHumanCase.Equals("Phone", StringComparison.InvariantCultureIgnoreCase) ||
-                   NameHumanCase.Equals("PhoneNumber", StringComparison.InvariantCultureIgnoreCase) ||
-                   NameHumanCase.Equals("Mobile", StringComparison.InvariantCultureIgnoreCase) ||
-                   NameHumanCase.Equals("MobileNumber", StringComparison.InvariantCultureIgnoreCase) ||
-                   NameHumanCase.Equals("Telephone", StringComparison.InvariantCultureIgnoreCase) ||
-                   NameHumanCase.Equals("TelephoneNumber", StringComparison.InvariantCultureIgnoreCase))
-                    DataAnnotations.Add("Phone");
-
-                if(Name.ToLowerInvariant().Contains("password"))
-                    DataAnnotations.Add("DataType(DataType.Password)");
-
-                if(Name.Equals("Username", StringComparison.InvariantCultureIgnoreCase))
-                    DataAnnotations.Add("DataType(DataType.Text)");
+                string value;
+                if(columnNameToDataAnnotation.TryGetValue(NameHumanCase.ToLowerInvariant(), out value))
+                    DataAnnotations.Add(value);
 
                 DataAnnotations.Add(string.Format("Display(Name = \"{0}\")", DisplayName));
             }
 
-            public void SetupEntityAndConfig(CommentsStyle includeComments, CommentsStyle includeExtendedPropertyComments, bool usePrivateSetterForComputedColumns, bool dataAnnotations, bool dataAnnotationsSchema, bool isSqlCe)
+            public void SetupEntityAndConfig(CommentsStyle includeComments, CommentsStyle includeExtendedPropertyComments, bool usePrivateSetterForComputedColumns, bool dataAnnotations, bool dataAnnotationsSchema, bool isSqlCe, Dictionary<string, string> columnNameToDataAnnotation)
             {
                 SetupEntity(includeComments, includeExtendedPropertyComments, usePrivateSetterForComputedColumns);
-                SetupConfig(dataAnnotations, dataAnnotationsSchema, isSqlCe);
+                SetupConfig(dataAnnotations, dataAnnotationsSchema, isSqlCe, columnNameToDataAnnotation);
             }
 
             public void CleanUpDefault()
@@ -1508,7 +1487,7 @@
             }
 
             public GeneratedTextTransformation Outer;
-            public abstract Tables ReadSchema(Regex schemaFilterExclude, Regex schemaFilterInclude, Regex tableFilterExclude, Regex tableFilterInclude, Regex columnFilterExclude, Func<Table, bool> tableFilter, bool usePascalCase, bool prependSchemaName, CommentsStyle includeComments, bool includeViews, CommentsStyle includeExtendedPropertyComments, Func<string, string, bool, string> tableRename, Func<Column, Table, Column> updateColumn, bool usePrivateSetterForComputedColumns, bool includeSynonyms, bool dataAnnotations, bool dataAnnotationsSchema, bool isSqlCe);
+            public abstract Tables ReadSchema(Regex schemaFilterExclude, Regex schemaFilterInclude, Regex tableFilterExclude, Regex tableFilterInclude, Regex columnFilterExclude, Func<Table, bool> tableFilter, bool usePascalCase, bool prependSchemaName, CommentsStyle includeComments, bool includeViews, CommentsStyle includeExtendedPropertyComments, Func<string, string, bool, string> tableRename, Func<Column, Table, Column> updateColumn, bool usePrivateSetterForComputedColumns, bool includeSynonyms, bool dataAnnotations, bool dataAnnotationsSchema, bool isSqlCe, Dictionary<string, string> columnNameToDataAnnotation);
             public abstract List<StoredProcedure> ReadStoredProcs(Regex SchemaFilterExclude, Regex storedProcedureFilterExclude, bool usePascalCase, bool prependSchemaName , Func<StoredProcedure, string> StoredProcedureRename, bool includeTableValuedFunctions);
             public abstract List<ForeignKey> ReadForeignKeys(Func<string, string, bool, string> tableRename, Func<ForeignKey, ForeignKey> foreignKeyFilter);
             public abstract void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool usePascalCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments, Func<string, ForeignKey, string, Relationship, short, string> ForeignKeyName, bool dataAnnotationsSchema, Func<IList<ForeignKey>, Table, Table, bool, ForeignKey> foreignKeyProcessing);
@@ -2157,7 +2136,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 return SqlDatabaseEngineEdition == "Azure";
             }
 
-            public override Tables ReadSchema(Regex schemaFilterExclude, Regex schemaFilterInclude, Regex tableFilterExclude, Regex tableFilterInclude, Regex columnFilterExclude, Func<Table, bool> tableFilter, bool usePascalCase, bool prependSchemaName, CommentsStyle includeComments, bool includeViews, CommentsStyle includeExtendedPropertyComments, Func<string, string, bool, string> tableRename, Func<Column, Table, Column> updateColumn, bool usePrivateSetterForComputedColumns, bool includeSynonyms, bool dataAnnotations, bool dataAnnotationsSchema, bool isSqlCe)
+            public override Tables ReadSchema(Regex schemaFilterExclude, Regex schemaFilterInclude, Regex tableFilterExclude, Regex tableFilterInclude, Regex columnFilterExclude, Func<Table, bool> tableFilter, bool usePascalCase, bool prependSchemaName, CommentsStyle includeComments, bool includeViews, CommentsStyle includeExtendedPropertyComments, Func<string, string, bool, string> tableRename, Func<Column, Table, Column> updateColumn, bool usePrivateSetterForComputedColumns, bool includeSynonyms, bool dataAnnotations, bool dataAnnotationsSchema, bool isSqlCe, Dictionary<string, string> columnNameToDataAnnotation)
             {
                 var result = new Tables();
                 if(Cmd == null)
@@ -2259,7 +2238,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 foreach(Table tbl in result)
                 {
                     tbl.SetPrimaryKeys();
-                    tbl.Columns.ForEach(x => x.SetupEntityAndConfig(includeComments, includeExtendedPropertyComments, usePrivateSetterForComputedColumns, dataAnnotations, dataAnnotationsSchema, isSqlCe));
+                    tbl.Columns.ForEach(x => x.SetupEntityAndConfig(includeComments, includeExtendedPropertyComments, usePrivateSetterForComputedColumns, dataAnnotations, dataAnnotationsSchema, isSqlCe, columnNameToDataAnnotation));
                 }
 
                 return result;

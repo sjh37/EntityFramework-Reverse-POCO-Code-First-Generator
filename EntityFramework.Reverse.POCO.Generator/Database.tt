@@ -58,6 +58,25 @@
     {
         // "JsonIgnore" // Also add "Newtonsoft.Json" to the AdditionalNamespaces array above
     };
+    ColumnNameToDataAnnotation = new Dictionary<string, string>
+    {
+        // This is used when UseDataAnnotations = true;
+        // It is used to set a data annotation on a column based on the columns name.
+        // Make sure the column name is lowercase in the following array, regardless of how it is in the database
+        // Column name       DataAnnotation to add
+        { "email",           "EmailAddress" },
+        { "emailaddress",    "EmailAddress" },
+        { "creditcard",      "CreditCard" },
+        { "url",             "Url" },
+        { "phone",           "Phone" },
+        { "phonenumber",     "Phone" },
+        { "mobile",          "Phone" },
+        { "mobilenumber",    "Phone" },
+        { "telephone",       "Phone" },
+        { "telephonenumber", "Phone" },
+        { "password",        "DataType(DataType.Password)" },
+        { "username",        "DataType(DataType.Text)" }
+    };
 
     // Migrations *************************************************************************************************************************
     MigrationConfigurationFileName = ""; // null or empty to not create migrations
