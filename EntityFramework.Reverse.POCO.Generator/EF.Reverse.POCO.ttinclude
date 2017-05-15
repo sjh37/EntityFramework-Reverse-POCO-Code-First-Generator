@@ -979,9 +979,14 @@ if(!tbl.HasPrimaryKey) { #>
 <# int DataMemberOrder = 1;
 foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal).Where(x => !x.Hidden))
 {
+    if((IncludeExtendedPropertyComments == CommentsStyle.InSummaryBlock || IncludeComments == CommentsStyle.InSummaryBlock) && !string.IsNullOrEmpty(col.SummaryComments)){#>
+        ///<summary>
+        /// <#=col.SummaryComments#>
+        ///</summary>
+<# }
 if(AddWcfDataAttributes) { #>        [System.Runtime.Serialization.DataMember(Order = <#=DataMemberOrder++#>, IsRequired = <#=col.IsNullable ? "false" : "true"#>)]
 <# } #>
-<#= WritePocoColumn(col) #>
+        <#= WritePocoColumn(col) #>
 <# if(AddWcfDataAttributes) { #>
 
 <# } } #>
