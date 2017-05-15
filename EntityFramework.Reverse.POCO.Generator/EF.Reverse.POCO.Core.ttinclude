@@ -52,7 +52,7 @@
         bool UseDataAnnotations = false;
         bool UseDataAnnotationsSchema = false;
         bool MakeClassesPartial = true;
-		bool MakeClassesInternal = false;
+        bool MakeClassesInternal = false;
         bool MakeDbContextInterfacePartial = false;
         bool GenerateSeparateFiles = false;
         bool UseMappingTables = true;
