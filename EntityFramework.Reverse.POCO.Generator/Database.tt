@@ -32,6 +32,7 @@
     UseLazyLoading = true; // Marks all navigation properties as virtual or not, to support or disable EF Lazy Loading feature
     IncludeComments = CommentsStyle.AtEndOfField; // Adds comments to the generated code
     IncludeExtendedPropertyComments = CommentsStyle.InSummaryBlock; // Adds extended properties as comments to the generated code
+    IncludeConnectionSettingComments = true; // Add comments describing connection settings used to generate file
     IncludeViews = true;
     IncludeSynonyms = false;
     IncludeStoredProcedures = true;

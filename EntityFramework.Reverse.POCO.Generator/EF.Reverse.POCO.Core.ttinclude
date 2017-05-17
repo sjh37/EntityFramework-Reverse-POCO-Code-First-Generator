@@ -64,6 +64,7 @@
         CommentsStyle IncludeComments = CommentsStyle.AtEndOfField;
         bool IncludeQueryTraceOn9481Flag = false;
         CommentsStyle IncludeExtendedPropertyComments = CommentsStyle.InSummaryBlock;
+        bool IncludeConnectionSettingComments = true;
         bool AddWcfDataAttributes = false;
         string ExtraWcfDataContractAttributes = "";
         static bool DisableGeographyTypes = false;
@@ -545,15 +546,18 @@
             WriteLine("//");
             WriteLine("// Do not make changes directly to this file - edit the template instead.");
             WriteLine("//");
-            WriteLine("// The following connection settings were used to generate this file:");
-            if (!string.IsNullOrEmpty(ConnectionStringName))
+            if (IncludeConnectionSettingComments)
             {
-                string solutionPath = Path.GetDirectoryName(GetSolution().FileName) + "\\";
-                WriteLine("//     Configuration file:     \"{0}\"", _configFilePath.Replace(solutionPath, String.Empty));
-                WriteLine("//     Connection String Name: \"{0}\"", ConnectionStringName);
+                WriteLine("// The following connection settings were used to generate this file:");
+                if (!string.IsNullOrEmpty(ConnectionStringName))
+                {
+                    string solutionPath = Path.GetDirectoryName(GetSolution().FileName) + "\\";
+                    WriteLine("//     Configuration file:     \"{0}\"", _configFilePath.Replace(solutionPath, String.Empty));
+                    WriteLine("//     Connection String Name: \"{0}\"", ConnectionStringName);
+                }
+                WriteLine("//     Connection String:      \"{0}\"", ZapPassword(ConnectionString));
+                WriteLine("// ------------------------------------------------------------------------------------------------");
             }
-            WriteLine("//     Connection String:      \"{0}\"", ZapPassword(ConnectionString));
-            WriteLine("// ------------------------------------------------------------------------------------------------");
 
             if (!string.IsNullOrEmpty(ProviderName))
             {
@@ -624,7 +628,7 @@
                         PrependSchemaName = false;
 
                     var reader = new SqlServerSchemaReader(conn, factory, IncludeQueryTraceOn9481Flag) { Outer = this };
-                    var tables = reader.ReadSchema(SchemaFilterExclude, SchemaFilterInclude, TableFilterExclude, TableFilterInclude, ColumnFilterExclude, TableFilter, UsePascalCase, PrependSchemaName, IncludeComments, IncludeViews, IncludeExtendedPropertyComments, TableRename, UpdateColumn, UsePrivateSetterForComputedColumns, IncludeSynonyms, UseDataAnnotations, UseDataAnnotationsSchema, IsSqlCe, ColumnNameToDataAnnotation);
+                    var tables = reader.ReadSchema(SchemaFilterExclude, SchemaFilterInclude, TableFilterExclude, TableFilterInclude, ColumnFilterExclude, TableFilter, UsePascalCase, PrependSchemaName, IncludeComments, IncludeViews, IncludeExtendedPropertyComments, TableRename, UpdateColumn, UsePrivateSetterForComputedColumns, IncludeSynonyms, UseDataAnnotations, UseDataAnnotationsSchema, IsSqlCe, ColumnNameToDataAnnotation, IncludeConnectionSettingComments);
                     var fkList = reader.ReadForeignKeys(TableRename, ForeignKeyFilter);
                     reader.IdentifyForeignKeys(fkList, tables);
 
@@ -682,7 +686,7 @@
                        return new List<StoredProcedure>();
 
                     var reader = new SqlServerSchemaReader(conn, factory, IncludeQueryTraceOn9481Flag) { Outer = this };
-                    var storedProcs = reader.ReadStoredProcs(SchemaFilterExclude, StoredProcedureFilterExclude, UsePascalCase, PrependSchemaName, StoredProcedureRename, IncludeTableValuedFunctions);
+                    var storedProcs = reader.ReadStoredProcs(SchemaFilterExclude, StoredProcedureFilterExclude, UsePascalCase, PrependSchemaName, StoredProcedureRename, IncludeTableValuedFunctions, IncludeConnectionSettingComments);
                     conn.Close();
 
                     // Remove unrequired stored procs
@@ -1488,13 +1492,13 @@
             }
 
             public GeneratedTextTransformation Outer;
-            public abstract Tables ReadSchema(Regex schemaFilterExclude, Regex schemaFilterInclude, Regex tableFilterExclude, Regex tableFilterInclude, Regex columnFilterExclude, Func<Table, bool> tableFilter, bool usePascalCase, bool prependSchemaName, CommentsStyle includeComments, bool includeViews, CommentsStyle includeExtendedPropertyComments, Func<string, string, bool, string> tableRename, Func<Column, Table, Column> updateColumn, bool usePrivateSetterForComputedColumns, bool includeSynonyms, bool dataAnnotations, bool dataAnnotationsSchema, bool isSqlCe, Dictionary<string, string> columnNameToDataAnnotation);
-            public abstract List<StoredProcedure> ReadStoredProcs(Regex SchemaFilterExclude, Regex storedProcedureFilterExclude, bool usePascalCase, bool prependSchemaName , Func<StoredProcedure, string> StoredProcedureRename, bool includeTableValuedFunctions);
+            public abstract Tables ReadSchema(Regex schemaFilterExclude, Regex schemaFilterInclude, Regex tableFilterExclude, Regex tableFilterInclude, Regex columnFilterExclude, Func<Table, bool> tableFilter, bool usePascalCase, bool prependSchemaName, CommentsStyle includeComments, bool includeViews, CommentsStyle includeExtendedPropertyComments, Func<string, string, bool, string> tableRename, Func<Column, Table, Column> updateColumn, bool usePrivateSetterForComputedColumns, bool includeSynonyms, bool dataAnnotations, bool dataAnnotationsSchema, bool isSqlCe, Dictionary<string, string> columnNameToDataAnnotation, bool includeConnectionSettingComments);
+            public abstract List<StoredProcedure> ReadStoredProcs(Regex SchemaFilterExclude, Regex storedProcedureFilterExclude, bool usePascalCase, bool prependSchemaName , Func<StoredProcedure, string> StoredProcedureRename, bool includeTableValuedFunctions, bool includeConnectionSettingComments);
             public abstract List<ForeignKey> ReadForeignKeys(Func<string, string, bool, string> tableRename, Func<ForeignKey, ForeignKey> foreignKeyFilter);
             public abstract void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool usePascalCase, bool prependSchemaName, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments, Func<string, ForeignKey, string, Relationship, short, string> ForeignKeyName, bool dataAnnotationsSchema, Func<IList<ForeignKey>, Table, Table, bool, ForeignKey> foreignKeyProcessing);
             public abstract void IdentifyForeignKeys(List<ForeignKey> fkList, Tables tables);
             public abstract void ReadIndexes(Tables tables);
-            public abstract void ReadExtendedProperties(Tables tables);
+            public abstract void ReadExtendedProperties(Tables tables, bool includeConnectionSettingComments);
 
             protected void WriteLine(string o)
             {
@@ -2101,7 +2105,7 @@ OPTION (QUERYTRACEON 9481)";
                 return string.Empty;
             }
 
-            private bool IsAzure()
+            private bool IsAzure(bool includeConnectionSettingComments)
             {
                 if (string.IsNullOrEmpty(SqlDatabaseEdition))
                 {
@@ -2127,9 +2131,12 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         {
                             SqlDatabaseEdition = rdr["Edition"].ToString();
                             SqlDatabaseEngineEdition = rdr["EngineEdition"].ToString();
-                            WriteLine("// Database Edition       : " + SqlDatabaseEdition);
-                            WriteLine("// Database Engine Edition: " + SqlDatabaseEngineEdition);
-                            WriteLine("");
+                            if (includeConnectionSettingComments)
+                            {
+                                WriteLine("// Database Edition       : " + SqlDatabaseEdition);
+                                WriteLine("// Database Engine Edition: " + SqlDatabaseEngineEdition);
+                                WriteLine("");
+                            }
                         }
                     }
                 }
@@ -2137,7 +2144,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 return SqlDatabaseEngineEdition == "Azure";
             }
 
-            public override Tables ReadSchema(Regex schemaFilterExclude, Regex schemaFilterInclude, Regex tableFilterExclude, Regex tableFilterInclude, Regex columnFilterExclude, Func<Table, bool> tableFilter, bool usePascalCase, bool prependSchemaName, CommentsStyle includeComments, bool includeViews, CommentsStyle includeExtendedPropertyComments, Func<string, string, bool, string> tableRename, Func<Column, Table, Column> updateColumn, bool usePrivateSetterForComputedColumns, bool includeSynonyms, bool dataAnnotations, bool dataAnnotationsSchema, bool isSqlCe, Dictionary<string, string> columnNameToDataAnnotation)
+            public override Tables ReadSchema(Regex schemaFilterExclude, Regex schemaFilterInclude, Regex tableFilterExclude, Regex tableFilterInclude, Regex columnFilterExclude, Func<Table, bool> tableFilter, bool usePascalCase, bool prependSchemaName, CommentsStyle includeComments, bool includeViews, CommentsStyle includeExtendedPropertyComments, Func<string, string, bool, string> tableRename, Func<Column, Table, Column> updateColumn, bool usePrivateSetterForComputedColumns, bool includeSynonyms, bool dataAnnotations, bool dataAnnotationsSchema, bool isSqlCe, Dictionary<string, string> columnNameToDataAnnotation, bool includeConnectionSettingComments)
             {
                 var result = new Tables();
                 if(Cmd == null)
@@ -2232,7 +2239,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
 
                 if (includeExtendedPropertyComments != CommentsStyle.None)
-                    ReadExtendedProperties(result);
+                    ReadExtendedProperties(result, includeConnectionSettingComments);
 
                 ReadIndexes(result);
 
@@ -2384,7 +2391,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
             }
 
-            public override void ReadExtendedProperties(Tables tables)
+            public override void ReadExtendedProperties(Tables tables, bool includeConnectionSettingComments)
             {
                 if(Cmd == null)
                     return;
@@ -2400,7 +2407,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
                 else
                 {
-                    if (IsAzure())
+                    if (IsAzure(includeConnectionSettingComments))
                         return;
 
                     Cmd.CommandText = ExtendedPropertySQL + IncludeQueryTraceOn9481();
@@ -2436,7 +2443,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
             }
 
-            public override List<StoredProcedure> ReadStoredProcs(Regex schemaFilterExclude, Regex storedProcedureFilterExclude, bool usePascalCase, bool prependSchemaName , Func<StoredProcedure, string> StoredProcedureRename, bool includeTableValuedFunctions)
+            public override List<StoredProcedure> ReadStoredProcs(Regex schemaFilterExclude, Regex storedProcedureFilterExclude, bool usePascalCase, bool prependSchemaName , Func<StoredProcedure, string> StoredProcedureRename, bool includeTableValuedFunctions, bool includeConnectionSettingComments)
             {
                 var result = new List<StoredProcedure>();
                 if(Cmd == null)
@@ -2445,7 +2452,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 if (Cmd.GetType().Name == "SqlCeCommand")
                     return result;
 
-                if (IsAzure())
+                if (IsAzure(includeConnectionSettingComments))
                     Cmd.CommandText = StoredProcedureSQLAzure + IncludeQueryTraceOn9481();
                 else
                     Cmd.CommandText = StoredProcedureSQL + IncludeQueryTraceOn9481();
