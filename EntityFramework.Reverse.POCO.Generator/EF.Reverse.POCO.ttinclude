@@ -226,8 +226,6 @@ foreach(Table tbl in from t in tables.Where(t => !t.IsMapping && t.HasPrimaryKey
 <#} else {#>
             System.Data.Entity.Database.SetInitializer(new System.Data.Entity.<#=MigrationStrategy#><<#=DbContextName#><#if (MigrationStrategy == "MigrateDatabaseToLatestVersion"){#>, <#=MigrationConfigurationFileName#><#}#>>());
 <#}#>
-<#if(MakeClassesPartial) {#>            <#=DbContextName#>StaticPartial(); // Create the following method in your partial class: private static void <#=DbContextName#>StaticPartial() { }
-<#}#>
         }
 
         <# if(MakeClassesInternal) { #>internal<# } else { #>public<# } #> <#=DbContextName#>()
