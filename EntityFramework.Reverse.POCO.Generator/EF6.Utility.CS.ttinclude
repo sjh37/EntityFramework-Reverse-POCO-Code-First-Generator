@@ -1868,6 +1868,58 @@ public class EntityFrameworkTemplateFileManager
             checkOutAction.EndInvoke(checkOutAction.BeginInvoke(fileName, null, null));
         }
     }
+
+    private sealed class Vs2017EntityFrameworkTemplateFileManager : EntityFrameworkTemplateFileManager
+    {
+        private EnvDTE.ProjectItem templateProjectItem;
+        private EnvDTE.DTE dte;
+        private Action<string> checkOutAction;
+
+        /// <summary>
+        /// Creates an instance of the Vs2017EntityFrameworkTemplateFileManager class with the IDynamicHost instance
+        /// </summary>
+        public Vs2017EntityFrameworkTemplateFileManager(object textTemplating)
+            : base(textTemplating)
+        {
+            var hostServiceProvider = _textTransformation.Host.AsIServiceProvider();
+            if (hostServiceProvider == null)
+            {
+                throw new ArgumentNullException("Could not obtain hostServiceProvider");
+            }
+
+            dte = (EnvDTE.DTE) hostServiceProvider.GetService(typeof(EnvDTE.DTE));
+            if (dte == null)
+            {
+                throw new ArgumentNullException("Could not obtain DTE from host");
+            }
+
+            templateProjectItem = dte.Solution.FindProjectItem(_textTransformation.Host.TemplateFile);
+
+            checkOutAction = fileName => dte.SourceControl.CheckOutItem(fileName);
+        }
+
+        protected override void CreateFile(string fileName, string content)
+        {
+            if (IsFileContentDifferent(fileName, content))
+            {
+                CheckoutFileIfRequired(fileName);
+                File.WriteAllText(fileName, content);
+            }
+        }
+
+        private void CheckoutFileIfRequired(string fileName)
+        {
+            if (dte.SourceControl == null
+                || !dte.SourceControl.IsItemUnderSCC(fileName)
+                    || dte.SourceControl.IsItemCheckedOut(fileName))
+            {
+                return;
+            }
+
+            // run on worker thread to prevent T4 calling back into VS
+            checkOutAction.EndInvoke(checkOutAction.BeginInvoke(fileName, null, null));
+        }
+    }
 #endif
 }
 
