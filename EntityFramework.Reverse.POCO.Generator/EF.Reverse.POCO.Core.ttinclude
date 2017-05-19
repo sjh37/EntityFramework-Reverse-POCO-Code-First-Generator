@@ -20,7 +20,6 @@
 <#
         var code = new CodeGenerationTools(this);
         string Namespace = code.VsNamespaceSuggestion() ?? "DebugMode";
-        var fileManager = EntityFrameworkTemplateFileManager.Create(this);
 #>
 <#+
 
@@ -54,6 +53,7 @@
         bool MakeClassesPartial = true;
         bool MakeDbContextInterfacePartial = false;
         bool GenerateSeparateFiles = false;
+        bool IsVs2017Project = false;
         bool UseMappingTables = true;
         static bool UsePropertyInitializers = false;
         bool IsSqlCe = false;

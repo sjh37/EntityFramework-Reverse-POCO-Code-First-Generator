@@ -1612,7 +1612,7 @@ public class EntityFrameworkTemplateFileManager
     /// Creates the VsEntityFrameworkTemplateFileManager if VS is detected, otherwise
     /// creates the file system version.
     /// </summary>
-    public static EntityFrameworkTemplateFileManager Create(object textTransformation)
+    public static EntityFrameworkTemplateFileManager Create(object textTransformation, bool isVs2017Project)
     {
         DynamicTextTransformation transformation = DynamicTextTransformation.Create(textTransformation);
         IDynamicHost host = transformation.Host;
@@ -1626,7 +1626,7 @@ public class EntityFrameworkTemplateFileManager
 
             if (dte != null)
             {
-                if (double.Parse(dte.Version, System.Globalization.NumberFormatInfo.InvariantInfo) > 14)
+                if (isVs2017Project)
                 {
                     return new Vs2017EntityFrameworkTemplateFileManager(transformation);
                 }

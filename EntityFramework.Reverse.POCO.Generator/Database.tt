@@ -23,6 +23,7 @@
     MakeClassesPartial = false;
     MakeDbContextInterfacePartial = false;
     GenerateSeparateFiles = false;
+    IsVs2017Project = false;
     UseMappingTables = true; // If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
     UsePascalCase = true;    // This will rename the generated C# tables & properties to use PascalCase. If false table & property names will be left alone.
     UseDataAnnotations = false; // If true, will add data annotations to the poco classes.

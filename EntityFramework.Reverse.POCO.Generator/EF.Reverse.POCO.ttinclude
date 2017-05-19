@@ -1,6 +1,7 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="System.Security.Cryptography.X509Certificates" #>
 <#
+var fileManager = EntityFrameworkTemplateFileManager.Create(this, IsVs2017Project);
 fileManager.StartHeader();
 // Copyright (C) Simon Hughes 2012
 // v2.30.0
