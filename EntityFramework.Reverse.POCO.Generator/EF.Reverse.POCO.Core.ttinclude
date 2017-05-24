@@ -2491,6 +2491,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                                 NameHumanCase = (usePascalCase ? Inflector.ToTitleCase(spName) : spName).Replace(" ", "").Replace("$", ""),
                                 Schema = schema
                             };
+                            sp.NameHumanCase = CleanUp(sp.NameHumanCase);
                             if((string.Compare(schema, "dbo", StringComparison.OrdinalIgnoreCase) != 0) && prependSchemaName)
                                 sp.NameHumanCase = schema + "_" + sp.NameHumanCase;
 
