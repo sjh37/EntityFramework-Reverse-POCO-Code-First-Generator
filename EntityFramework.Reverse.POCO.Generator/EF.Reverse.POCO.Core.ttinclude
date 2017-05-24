@@ -2589,7 +2589,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
                     // Tidy up parameters
                     foreach (var p in proc.Parameters)
-                        p.NameHumanCase = Regex.Replace(p.NameHumanCase, @"[^A-Za-z0-9@\s]*", "");
+                        p.NameHumanCase = CleanUp(Regex.Replace(p.NameHumanCase, @"[^A-Za-z0-9@\s]*", ""));
 
                     for(var count = 0; count < ds.Tables.Count; count++)
                     {
@@ -3660,9 +3660,16 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             return name;
         };
 
-    public static readonly Func<DataColumn, string> WriteStoredProcReturnColumn = col =>
-        string.Format("public {0} {1} {{ get; set; }}",
-            StoredProcedure.WrapTypeIfNullable((col.DataType.Name.Equals("SqlHierarchyId") ? "Microsoft.SqlServer.Types." : "System.") + col.DataType.Name, col), col.ColumnName);
+        public static readonly Func<DataColumn, string> WriteStoredProcReturnColumn = col =>
+        {
+            var columnName = ReservedKeywords.Contains(col.ColumnName) ? "@" + col.ColumnName : col.ColumnName;
+
+            return string.Format("public {0} {1} {{ get; set; }}",
+                StoredProcedure.WrapTypeIfNullable(
+                    (col.DataType.Name.Equals("SqlHierarchyId") ? "Microsoft.SqlServer.Types." : "System.") +
+                    col.DataType.Name, col),
+                columnName);
+        };
 
         public static readonly Func<StoredProcedure, string> WriteStoredProcReturnType = (sp) =>
         {
