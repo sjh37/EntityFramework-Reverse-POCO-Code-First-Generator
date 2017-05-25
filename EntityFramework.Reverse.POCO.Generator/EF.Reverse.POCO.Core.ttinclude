@@ -1617,7 +1617,7 @@ FROM    #Columns c
             ON c.TABLE_SCHEMA COLLATE DATABASE_DEFAULT = t.TABLE_SCHEMA COLLATE DATABASE_DEFAULT
                AND c.TABLE_NAME COLLATE DATABASE_DEFAULT = t.TABLE_NAME COLLATE DATABASE_DEFAULT
 WHERE   c.TABLE_NAME NOT IN ('EdmMetadata', '__MigrationHistory')
-        AND c.TABLE_NAME NOT LIKE 'sysdiagram%';";
+        AND c.TABLE_NAME NOT LIKE 'sysdiagram%'";
 
             private const string SynonymTableSQLSetup = @"
 SET NOCOUNT ON;
@@ -2589,7 +2589,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
                     // Tidy up parameters
                     foreach (var p in proc.Parameters)
-                        p.NameHumanCase = CleanUp(Regex.Replace(p.NameHumanCase, @"[^A-Za-z0-9@\s]*", ""));
+                        p.NameHumanCase = Regex.Replace(p.NameHumanCase, @"[^A-Za-z0-9@\s]*", "");
 
                     for(var count = 0; count < ds.Tables.Count; count++)
                     {
