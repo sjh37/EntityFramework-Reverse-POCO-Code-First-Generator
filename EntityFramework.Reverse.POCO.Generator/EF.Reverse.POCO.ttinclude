@@ -190,7 +190,7 @@ if (IncludeTableValuedFunctions)
     }
 
 <# }
-if(ElementsToGenerate.HasFlag(Elements.UnitOfWork) && !string.IsNullOrWhiteSpace(DbContextInterfaceName)) { #>
+if(ElementsToGenerate.HasFlag(Elements.UnitOfWork) && !string.IsNullOrWhiteSpace(DbContextInterfaceName) && !GenerateSeparateFiles) { #>
     #endregion
 
 <# }
