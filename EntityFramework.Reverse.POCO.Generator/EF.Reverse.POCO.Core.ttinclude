@@ -1202,6 +1202,8 @@
                         float f;
                         if(!float.TryParse(Default, out f))
                             Default = string.Empty;
+                        if (!Default.ToLowerInvariant().EndsWith("f"))
+                            Default += "f";
                         break;
 
                     case "decimal":
