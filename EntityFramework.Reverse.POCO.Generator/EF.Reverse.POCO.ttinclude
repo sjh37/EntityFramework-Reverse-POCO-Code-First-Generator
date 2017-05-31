@@ -966,23 +966,17 @@ if(!tbl.HasPrimaryKey) { #>
 <# } #>
 <#if(IncludeComments != CommentsStyle.None){#>    // <#=tbl.Name#>
 <# } #>
-<# if(AddWcfDataAttributes) { #>    [System.Runtime.Serialization.DataContract<#=ExtraWcfDataContractAttributes#>]
-<# }
-    WritePocoClassAttributes(tbl);#>
+<# WritePocoClassAttributes(tbl);#>
 <#if(IncludeCodeGeneratedAttribute){#>    <#=CodeGeneratedAttribute#>
 <#}#>
     <# if(MakeClassesInternal) { #>internal<# } else { #>public<# } #> <# if(MakeClassesPartial) { #>partial <# } #>class <#=tbl.NameHumanCaseWithSuffix#><#=WritePocoBaseClasses != null ? WritePocoBaseClasses(tbl) : "" #>
     {
 <# WritePocoBaseClassBody(tbl); #>
-<# int DataMemberOrder = 1;
-foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal).Where(x => !x.Hidden))
+<# foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal).Where(x => !x.Hidden))
 {
-if(AddWcfDataAttributes) { #>        [System.Runtime.Serialization.DataMember(Order = <#=DataMemberOrder++#>, IsRequired = <#=col.IsNullable ? "false" : "true"#>)]
-<# } #>
+#>
 <#= WritePocoColumn(col) #>
-<# if(AddWcfDataAttributes) { #>
-
-<# } } #>
+<# } #>
 <#
 if(tbl.ReverseNavigationProperty.Count() > 0)
 {
@@ -1132,28 +1126,22 @@ foreach(StoredProcedure sp in storedProcs.Where(x => x.ReturnModels.Count > 0 &&
     string spReturnClassName = WriteStoredProcReturnModelName(sp);
 #>
 <# fileManager.StartNewFile(spReturnClassName + FileExtension);#>
-<# if(AddWcfDataAttributes) { #>    [System.Runtime.Serialization.DataContract<#=ExtraWcfDataContractAttributes#>]
-<# } #>
 <#if(IncludeCodeGeneratedAttribute){#>    <#=CodeGeneratedAttribute#>
 <#}#>
     public <# if(MakeClassesPartial) { #>partial <# } #>class <#= spReturnClassName #>
     {
 <#
-int DataMemberOrder = 1;
 var returnModelCount = sp.ReturnModels.Count;
 if(returnModelCount < 2)
 {
     foreach (var returnColumn in sp.ReturnModels.First())
     { #>
-<# if(AddWcfDataAttributes) { #>        [System.Runtime.Serialization.DataMember(Order = <#=DataMemberOrder++#>, IsRequired = <#=StoredProcedure.IsNullable(returnColumn) ? "false" : "true"#>)]
-<# } #>
         <#= WriteStoredProcReturnColumn(returnColumn) #>
 <#  }
 } else {
     int model = 0;
     foreach (var returnModel in sp.ReturnModels)
     {
-        int SubDataMemberOrder = 1;
         model++;#>
 <#if(IncludeCodeGeneratedAttribute){#>    <#=CodeGeneratedAttribute#>
 <#}#>
@@ -1161,13 +1149,9 @@ if(returnModelCount < 2)
         {
 <#      foreach (var returnColumn in returnModel)
         { #>
-<# if(AddWcfDataAttributes) { #>            [System.Runtime.Serialization.DataMember(Order = <#=SubDataMemberOrder++#>, IsRequired = <#=StoredProcedure.IsNullable(returnColumn) ? "false" : "true"#>)]
-<# } #>
             <#= WriteStoredProcReturnColumn(returnColumn) #>
 <#      }#>
         }
-<# if(AddWcfDataAttributes) { #>        [System.Runtime.Serialization.DataMember(Order = <#=DataMemberOrder++#>, IsRequired = true)]
-<# } #>
         public System.Collections.Generic.List<ResultSetModel<#= model #>> ResultSet<#= model #>;
 
 <#  } #>

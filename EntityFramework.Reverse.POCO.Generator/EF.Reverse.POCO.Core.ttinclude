@@ -65,8 +65,6 @@
         bool IncludeQueryTraceOn9481Flag = false;
         CommentsStyle IncludeExtendedPropertyComments = CommentsStyle.InSummaryBlock;
         bool IncludeConnectionSettingComments = true;
-        bool AddWcfDataAttributes = false;
-        string ExtraWcfDataContractAttributes = "";
         static bool DisableGeographyTypes = false;
         bool PrependSchemaName = true;
         string TableSuffix = null;

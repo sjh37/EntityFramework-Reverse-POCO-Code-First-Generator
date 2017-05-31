@@ -302,15 +302,6 @@
     //StoredProcedureReturnTypes.Add("SalesByYear", "SummaryOfSalesByYear");
 
 
-    // WCF ********************************************************************************************************************************
-    // This is only intended as a helper, to get you started creating WCF contracts, and to save a lot of typing.
-    AddWcfDataAttributes = false;
-    ExtraWcfDataContractAttributes = "";    // This string is inserted into the  [DataContract] attribute, before the closing square bracket.
-    // Example: "";                                           = [DataContract]
-    //          "(Namespace = \"http://www.contoso.com\")";   = [DataContract(Namespace = "http://www.contoso.com")]
-    //          "(Namespace = Constants.ServiceNamespace)";   = [DataContract(Namespace = Constants.ServiceNamespace)]
-
-
     // Callbacks **********************************************************************************************************************
     // This method will be called right before we write the POCO header.
     Action<Table> WritePocoClassAttributes = t =>
