@@ -1268,7 +1268,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         {
             UnitPrice = 0m;
             Quantity = 1;
-            Discount = 0;
+            Discount = 0f;
         }
     }
 
