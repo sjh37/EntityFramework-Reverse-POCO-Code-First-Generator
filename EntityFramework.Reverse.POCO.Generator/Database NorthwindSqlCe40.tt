@@ -210,7 +210,7 @@
     // eg. normalise names etc.
     UpdateColumn = (Column column, Table table) =>
     {
-        // Example
+        // Rename column
         //if (column.IsPrimaryKey && column.NameHumanCase == "PkId")
         //    column.NameHumanCase = "Id";
 
