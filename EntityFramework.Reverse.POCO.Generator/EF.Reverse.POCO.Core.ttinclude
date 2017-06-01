@@ -1194,6 +1194,8 @@
                         double d;
                         if(!double.TryParse(Default, out d))
                             Default = string.Empty;
+                        if (Default.ToLowerInvariant().EndsWith("."))
+                            Default += "0";
                         break;
 
                     case "float":
