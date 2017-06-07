@@ -6,6 +6,8 @@
 <#@ include file="EF6.Utility.CS.ttinclude"#>
 <#@ assembly name="System.Configuration" #>
 <#@ assembly name="System.Windows.Forms" #>
+<#@ assembly name="Microsoft.VisualStudio.Shell" #>
+<#@ assembly name="Microsoft.VisualStudio.Shell.Interop" #>
 <#@ import namespace="System.Data" #>
 <#@ import namespace="System.Data.SqlClient" #>
 <#@ import namespace="System.Data.Common" #>
@@ -16,11 +18,25 @@
 <#@ import namespace="System.Configuration" #>
 <#@ import namespace="System.Windows.Forms" #>
 <#@ import namespace="EnvDTE" #>
+<#@ import namespace="Microsoft.VisualStudio.Shell.Interop" #>
+<#@ import namespace="System.Runtime.InteropServices" #>
 <#@ output extension=".cs"#>
 <#
         var code = new CodeGenerationTools(this);
         string Namespace = code.VsNamespaceSuggestion() ?? "DebugMode";
         var fileManager = EntityFrameworkTemplateFileManager.Create(this);
+
+        hostServiceProvider = (IServiceProvider)Host;
+        if (hostServiceProvider == null)
+            throw new Exception("Host property returned unexpected value (null)");
+        dte = (EnvDTE.DTE)hostServiceProvider.GetService(typeof(EnvDTE.DTE));
+        try { dte = (EnvDTE.DTE) Marshal.GetObjectForIUnknown(Marshal.GetIUnknownForObject(dte)); } //http://stackoverflow.com/questions/7710580/t4-templates-refreshing-solution-explorer-in-visual-studio-2010-from-one-appli
+        catch (Exception) {}
+        if (dte != null)
+        {
+            var window = dte.Windows.Item(EnvDTE.Constants.vsWindowKindOutput);
+            outputWindow = (OutputWindow) window.Object;
+        }
 #>
 <#+
 
@@ -189,6 +205,17 @@
 
             return str;
         };
+
+        static IServiceProvider hostServiceProvider;
+        static EnvDTE.DTE dte;
+        static OutputWindow outputWindow;
+        private static void WriteToOutput(string output)
+        {
+          outputWindow.ActivePane.Activate();
+          outputWindow.ActivePane.OutputString(output);
+          outputWindow.ActivePane.OutputString("\n");
+        }
+
 
         private static readonly Func<string, string> ToDisplayName = (str) =>
         {
