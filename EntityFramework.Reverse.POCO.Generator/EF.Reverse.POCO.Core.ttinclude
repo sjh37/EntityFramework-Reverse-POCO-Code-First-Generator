@@ -1,6 +1,6 @@
 <#
 // Copyright (C) Simon Hughes 2012
-// v2.31.0
+// v2.31.1
 #>
 <#@ template debug="true" hostspecific="true" language="C#" #>
 <#@ include file="EF6.Utility.CS.ttinclude"#>
@@ -103,7 +103,7 @@
         List<EnumDefinition> EnumsDefinitions = new List<EnumDefinition>();
         Dictionary<string, string> ColumnNameToDataAnnotation;
 
-        public static string CodeGeneratedAttribute = "[System.CodeDom.Compiler.GeneratedCode(\"EF.Reverse.POCO.Generator\", \"2.31.0.0\")]";
+        public static string CodeGeneratedAttribute = "[System.CodeDom.Compiler.GeneratedCode(\"EF.Reverse.POCO.Generator\", \"2.31.1.0\")]";
         bool IncludeCodeGeneratedAttribute = true;
 
         // Settings to allow selective code generation
