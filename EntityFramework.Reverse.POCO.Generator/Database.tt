@@ -458,6 +458,21 @@
         return fkName;
     };
 
+    /*
+    ForeignKeyAnnotationsProcessing = (Table fkTable, Table pkTable, string propName) =>
+    {
+        // each navigation property that is a reference to User are left intact
+        if (pkTable.NameHumanCase.Equals("User"))
+        {
+            if (propName.Equals("User"))
+                return null;
+        }
+
+        // all the others are marked with this attribute
+        return new[] { "System.Runtime.Serialization.IgnoreDataMember" };
+    };
+    */
+
     // Return true to include this table in the db context
     ConfigurationFilter = (Table t) =>
     {
