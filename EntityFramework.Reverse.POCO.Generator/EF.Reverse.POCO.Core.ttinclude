@@ -1819,7 +1819,8 @@ SELECT  FK.name AS FK_Table,
         SCHEMA_NAME(PK.schema_id) AS pkSchema,
         PkCol.name AS primarykey,
         k.constraint_column_id AS ORDINAL_POSITION,
-        CASE WHEN f.delete_referential_action = 1 THEN 1 ELSE 0 END as CascadeOnDelete
+        CASE WHEN f.delete_referential_action = 1 THEN 1 ELSE 0 END as CascadeOnDelete,
+        f.is_disabled AS IsNotEnforced
 FROM    sys.objects AS PK
         INNER JOIN sys.foreign_keys AS f
             INNER JOIN sys.foreign_key_columns AS k
@@ -1929,7 +1930,8 @@ SELECT DISTINCT
         '' AS pkSchema,
         PT.COLUMN_NAME AS primarykey,
         FK.ORDINAL_POSITION,
-        CASE WHEN C.DELETE_RULE = 'CASCADE' THEN 1 ELSE 0 END AS CascadeOnDelete
+        CASE WHEN C.DELETE_RULE = 'CASCADE' THEN 1 ELSE 0 END AS CascadeOnDelete,
+        CAST(0 AS BIT) AS IsNotEnforced
 FROM    INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS AS C
         INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS FK
             ON FK.CONSTRAINT_NAME = C.CONSTRAINT_NAME
@@ -2281,12 +2283,13 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         string constraintName = rdr["Constraint_Name"].ToString();
                         int ordinal = (int) rdr["ORDINAL_POSITION"];
                         bool cascadeOnDelete = ((int) rdr["CascadeOnDelete"]) == 1;
+                        bool isNotEnforced = (bool) rdr["IsNotEnforced"];
 
                         string fkTableNameFiltered = tableRename(fkTableName, fkSchema, false);
                         string pkTableNameFiltered = tableRename(pkTableName, pkSchema, false);
 
                         var fk = new ForeignKey(fkTableName, fkSchema, pkTableName, pkSchema, fkColumn, pkColumn,
-                            constraintName, fkTableNameFiltered, pkTableNameFiltered, ordinal, cascadeOnDelete);
+                            constraintName, fkTableNameFiltered, pkTableNameFiltered, ordinal, cascadeOnDelete, isNotEnforced);
 
                         var filteredFk = foreignKeyFilter(fk);
                         if(filteredFk != null)
@@ -2683,7 +2686,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
                     if (!dataAnnotationsSchema)
                     {
-                        fkCol.col.ConfigFk.Add(string.Format("{0};{1}", GetRelationship(relationship, fkCol.col, pkCol, pkPropName, fkPropName, manyToManyMapping, mapKey, foreignKey.CascadeOnDelete, foreignKey.IncludeReverseNavigation),
+                        fkCol.col.ConfigFk.Add(string.Format("{0};{1}", GetRelationship(relationship, fkCol.col, pkCol, pkPropName, fkPropName, manyToManyMapping, mapKey, foreignKey.CascadeOnDelete, foreignKey.IncludeReverseNavigation, foreignKey.IsNotEnforced),
                                                                         includeComments != CommentsStyle.None ? " // " + foreignKey.ConstraintName : string.Empty));
                     }
 
@@ -2716,10 +2719,10 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
             }
 
-            public static string GetRelationship(Relationship relationship, Column fkCol, Column pkCol, string pkPropName, string fkPropName, string manyToManyMapping, string mapKey, bool cascadeOnDelete, bool includeReverseNavigation)
+            private static string GetRelationship(Relationship relationship, Column fkCol, Column pkCol, string pkPropName, string fkPropName, string manyToManyMapping, string mapKey, bool cascadeOnDelete, bool includeReverseNavigation, bool isNotEnforced)
             {
                 return string.Format("Has{0}(a => a.{1}){2}{3}",
-                    GetHasMethod(relationship, fkCol, pkCol),
+                    GetHasMethod(relationship, fkCol, pkCol, isNotEnforced),
                     pkPropName,
                     GetWithMethod(relationship, fkCol, fkPropName, manyToManyMapping, mapKey, includeReverseNavigation),
                     cascadeOnDelete ? string.Empty: ".WillCascadeOnDelete(false)");
@@ -2728,7 +2731,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             // HasOptional
             // HasRequired
             // HasMany
-            private static string GetHasMethod(Relationship relationship, Column fkCol, Column pkCol)
+            private static string GetHasMethod(Relationship relationship, Column fkCol, Column pkCol, bool isNotEnforced)
             {
                 bool withMany = false;
                 switch (relationship)
@@ -2740,7 +2743,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
 
                 if (withMany || pkCol.IsPrimaryKey)
-                    return fkCol.IsNullable ? "Optional" : "Required";
+                    return fkCol.IsNullable || isNotEnforced ? "Optional" : "Required";
 
                 return "Many";
             }
@@ -3085,12 +3088,13 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             public string ConstraintName { get; private set; }
             public int Ordinal { get; private set; }
             public bool CascadeOnDelete { get; private set; }
+            public bool IsNotEnforced { get; private set; }
 
             // User settable via ForeignKeyFilter callback
             public bool IncludeReverseNavigation { get; set; }
             public bool IncludeRequiredAttribute { get; set; }
 
-            public ForeignKey(string fkTableName, string fkSchema, string pkTableName, string pkSchema, string fkColumn, string pkColumn, string constraintName, string fkTableNameFiltered, string pkTableNameFiltered, int ordinal, bool cascadeOnDelete)
+            public ForeignKey(string fkTableName, string fkSchema, string pkTableName, string pkSchema, string fkColumn, string pkColumn, string constraintName, string fkTableNameFiltered, string pkTableNameFiltered, int ordinal, bool cascadeOnDelete, bool isNotEnforced)
             {
                 ConstraintName = constraintName;
                 PkColumn = pkColumn;
@@ -3103,6 +3107,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 PkTableNameFiltered = pkTableNameFiltered;
                 Ordinal = ordinal;
                 CascadeOnDelete = cascadeOnDelete;
+                IsNotEnforced = isNotEnforced;
 
                 IncludeReverseNavigation = true;
             }
