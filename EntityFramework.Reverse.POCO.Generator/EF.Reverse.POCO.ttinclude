@@ -987,31 +987,41 @@ if(tbl.ReverseNavigationProperty.Count() > 0)
 <# } #>
 <#
 foreach(var s in tbl.ReverseNavigationProperty.OrderBy(x => x.Definition))
-{
-    foreach (var rnpda in AdditionalReverseNavigationsDataAnnotations) {#>
-        [<#=rnpda #>]
-<# } #>
-<#if(IncludeComments != CommentsStyle.None){#>        /// <summary>
+{ #>
+<# if(IncludeComments != CommentsStyle.None){#>        /// <summary>
         /// <#=s.Comments ?? "" #>
         /// </summary>
-<# } #>
+<# }
+   foreach (var rnpda in AdditionalReverseNavigationsDataAnnotations) {#>
+        [<#=rnpda #>]
+<# }
+   if (s.AdditionalDataAnnotations != null) {
+     foreach (var fkda in s.AdditionalDataAnnotations) {#>
+        [<#=fkda #>]
+<#   }
+   } #>
         <#=s.Definition #>
 <# } } #>
 <# if(tbl.HasForeignKey) { #>
 
 <#if(IncludeComments != CommentsStyle.None && tbl.Columns.SelectMany(x => x.EntityFk).Any()){#>        // Foreign keys
-
 <# } #>
 <#
 foreach(var entityFk in tbl.Columns.SelectMany(x => x.EntityFk).OrderBy(o => o.Definition))
-{
-    foreach (var fkda in AdditionalForeignKeysDataAnnotations) {#>
-        [<#=fkda #>]
-<# } #>
-<#if(IncludeComments != CommentsStyle.None){#>        /// <summary>
+{ #>
+
+<# if(IncludeComments != CommentsStyle.None){#>        /// <summary>
         /// <#=entityFk.Comments #>
         /// </summary>
-<# } #>
+<# }
+   foreach (var fkda in AdditionalForeignKeysDataAnnotations) {#>
+        [<#=fkda #>]
+<# }
+   if (entityFk.AdditionalDataAnnotations != null) {
+     foreach (var fkda in entityFk.AdditionalDataAnnotations) {#>
+        [<#=fkda #>]
+<#   }
+   } #>
         <#=entityFk.Definition #>
 <# } } #>
 <#

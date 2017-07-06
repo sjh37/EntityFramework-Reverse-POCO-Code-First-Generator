@@ -94,6 +94,7 @@
         static Func<string, StoredProcedure, string> StoredProcedureReturnModelRename;
         Func<Column, Table, Column> UpdateColumn;
         Func<IList<ForeignKey>, Table, Table, bool, ForeignKey> ForeignKeyProcessing;
+        Func<Table, Table, string, string[]> ForeignKeyAnnotationsProcessing;
         Func<ForeignKey, ForeignKey> ForeignKeyFilter;
         Func<string, ForeignKey, string, Relationship, short, string> ForeignKeyName;
         string MigrationConfigurationFileName = null;
@@ -639,17 +640,17 @@
                     }
 
                     // Work out if there are any foreign key relationship naming clashes
-                    reader.ProcessForeignKeys(fkList, tables, UsePascalCase, PrependSchemaName, CollectionInterfaceType, CollectionType, true, IncludeComments, ForeignKeyName, UseDataAnnotationsSchema, ForeignKeyProcessing);
+                    reader.ProcessForeignKeys(fkList, tables, UsePascalCase, PrependSchemaName, CollectionType, CollectionInterfaceType, true, IncludeComments, ForeignKeyName, UseDataAnnotationsSchema, ForeignKeyProcessing, ForeignKeyAnnotationsProcessing);
                     if(UseMappingTables)
-                        tables.IdentifyMappingTables(fkList, UsePascalCase, CollectionInterfaceType, CollectionType, true, IncludeComments, IsSqlCe, ForeignKeyName);
+                        tables.IdentifyMappingTables(fkList, UsePascalCase, CollectionInterfaceType, CollectionType, true, IncludeComments, IsSqlCe, ForeignKeyName, ForeignKeyAnnotationsProcessing);
 
                     // Now we know our foreign key relationships and have worked out if there are any name clashes,
                     // re-map again with intelligently named relationships.
                     tables.ResetNavigationProperties();
 
-                    reader.ProcessForeignKeys(fkList, tables, UsePascalCase, PrependSchemaName, CollectionInterfaceType, CollectionType, false, IncludeComments, ForeignKeyName, UseDataAnnotationsSchema, ForeignKeyProcessing);
+                    reader.ProcessForeignKeys(fkList, tables, UsePascalCase, PrependSchemaName, CollectionInterfaceType, CollectionType, false, IncludeComments, ForeignKeyName, UseDataAnnotationsSchema, ForeignKeyProcessing, ForeignKeyAnnotationsProcessing);
                     if(UseMappingTables)
-                        tables.IdentifyMappingTables(fkList, UsePascalCase, CollectionInterfaceType, CollectionType, false, IncludeComments, IsSqlCe, ForeignKeyName);
+                        tables.IdentifyMappingTables(fkList, UsePascalCase, CollectionInterfaceType, CollectionType, false, IncludeComments, IsSqlCe, ForeignKeyName, ForeignKeyAnnotationsProcessing);
 
                     conn.Close();
                     return tables;
@@ -806,6 +807,7 @@
         {
             public string Definition;
             public string Comments;
+            public string[] AdditionalDataAnnotations;
         }
 
         public class Column
@@ -1500,7 +1502,7 @@
             public abstract Tables ReadSchema(Regex schemaFilterExclude, Regex schemaFilterInclude, Regex tableFilterExclude, Regex tableFilterInclude, Regex columnFilterExclude, Func<Table, bool> tableFilter, bool usePascalCase, bool prependSchemaName, CommentsStyle includeComments, bool includeViews, CommentsStyle includeExtendedPropertyComments, Func<string, string, bool, string> tableRename, Func<Column, Table, Column> updateColumn, bool usePrivateSetterForComputedColumns, bool includeSynonyms, bool dataAnnotations, bool dataAnnotationsSchema, bool isSqlCe, Dictionary<string, string> columnNameToDataAnnotation, bool includeConnectionSettingComments);
             public abstract List<StoredProcedure> ReadStoredProcs(Regex SchemaFilterExclude, Regex storedProcedureFilterExclude, bool usePascalCase, bool prependSchemaName , Func<StoredProcedure, string> StoredProcedureRename, bool includeTableValuedFunctions, bool includeConnectionSettingComments);
             public abstract List<ForeignKey> ReadForeignKeys(Func<string, string, bool, string> tableRename, Func<ForeignKey, ForeignKey> foreignKeyFilter);
-            public abstract void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool usePascalCase, bool prependSchemaName, string collectionInterfaceType, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments, Func<string, ForeignKey, string, Relationship, short, string> ForeignKeyName, bool dataAnnotationsSchema, Func<IList<ForeignKey>, Table, Table, bool, ForeignKey> foreignKeyProcessing);
+            public abstract void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool usePascalCase, bool prependSchemaName, string collectionInterfaceType, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments, Func<string, ForeignKey, string, Relationship, short, string> ForeignKeyName, bool dataAnnotationsSchema, Func<IList<ForeignKey>, Table, Table, bool, ForeignKey> foreignKeyProcessing, Func<Table, Table, string, string[]> foreignKeyAnnotationsProcessing);
             public abstract void IdentifyForeignKeys(List<ForeignKey> fkList, Tables tables);
             public abstract void ReadIndexes(Tables tables);
             public abstract void ReadExtendedProperties(Tables tables, bool includeConnectionSettingComments);
@@ -2608,7 +2610,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
             }
 
-            public override void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool usePascalCase, bool prependSchemaName, string collectionInterfaceType, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments, Func<string, ForeignKey, string, Relationship, short, string> ForeignKeyName, bool dataAnnotationsSchema, Func<IList<ForeignKey>, Table, Table, bool, ForeignKey> foreignKeyProcessing)
+            public override void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool usePascalCase, bool prependSchemaName, string collectionInterfaceType, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments, Func<string, ForeignKey, string, Relationship, short, string> ForeignKeyName, bool dataAnnotationsSchema, Func<IList<ForeignKey>, Table, Table, bool, ForeignKey> foreignKeyProcessing, Func<Table, Table, string, string[]> foreignKeyAnnotationsProcessing)
             {
                 var constraints = fkList.Select(x => x.FkSchema + "." + x.ConstraintName).Distinct();
                 foreach (var constraint in constraints)
@@ -2671,6 +2673,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     }
 
                     var fkd = new PropertyAndComments();
+                    fkd.AdditionalDataAnnotations = foreignKeyAnnotationsProcessing(fkTable, pkTable, pkPropName);
                     fkd.Definition = string.Format("{0}public {1}{2} {3} {4}{5}", dataAnnotation, Table.GetLazyLoadingMarker(), pkTableHumanCaseWithSuffix, pkPropName, "{ get; set; }", includeComments != CommentsStyle.None ? " // " + foreignKey.ConstraintName : string.Empty);
                     fkd.Comments = string.Format("Parent {0} pointed by [{1}].({2}) ({3})", pkTableHumanCase, fkTable.Name, string.Join(", ", fkCols.Select(x => "[" + x.col.NameHumanCase + "]").Distinct().ToArray()), foreignKey.ConstraintName);
                     fkCol.col.EntityFk.Add(fkd);
@@ -2692,7 +2695,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     }
 
                     if(foreignKey.IncludeReverseNavigation)
-                        pkTable.AddReverseNavigation(relationship, pkTableHumanCase, fkTable, fkPropName, string.Format("{0}.{1}", fkTable.Name, foreignKey.ConstraintName), collectionInterfaceType, collectionType, includeComments, foreignKeys);
+                        pkTable.AddReverseNavigation(relationship, pkTableHumanCase, fkTable, fkPropName, string.Format("{0}.{1}", fkTable.Name, foreignKey.ConstraintName), collectionInterfaceType, collectionType, includeComments, foreignKeys, foreignKeyAnnotationsProcessing);
                 }
             }
 
@@ -2856,7 +2859,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 col = updateColumn(col, table);
 
                 // If PropertyType is empty, return null. Most likely ignoring a column due to legacy (such as OData not supporting spatial types)
-                if(string.IsNullOrEmpty(col.PropertyType))
+                if (col != null && string.IsNullOrEmpty(col.PropertyType))
                     return null;
 
                 return col;
@@ -3318,7 +3321,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 return ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 6);
             }
 
-            public void AddReverseNavigation(Relationship relationship, string fkName, Table fkTable, string propName, string constraint, string collectionInterfaceType, string collectionType, CommentsStyle includeComments, List<ForeignKey> fks, Table mappingTable = null)
+            public void AddReverseNavigation(Relationship relationship, string fkName, Table fkTable, string propName, string constraint, string collectionInterfaceType, string collectionType, CommentsStyle includeComments, List<ForeignKey> fks, Func<Table, Table, string, string[]> foreignKeyAnnotationsProcessing = null, Table mappingTable = null)
             {
                 string fkNames = "";
                 switch (relationship)
@@ -3340,6 +3343,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         ReverseNavigationProperty.Add(
                             new PropertyAndComments()
                             {
+                                AdditionalDataAnnotations = foreignKeyAnnotationsProcessing(fkTable, this, propName),
                                 Definition = string.Format("public {0}{1} {2} {{ get; set; }}{3}", GetLazyLoadingMarker(), fkTable.NameHumanCaseWithSuffix, propName, includeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
                                 Comments = string.Format("Parent (One-to-One) {0} pointed by [{1}].{2} ({3})", this.NameHumanCaseWithSuffix, fkTable.Name, fkNames, fks.First().ConstraintName)
                             }
@@ -3350,6 +3354,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         ReverseNavigationProperty.Add(
                             new PropertyAndComments()
                             {
+                                AdditionalDataAnnotations = foreignKeyAnnotationsProcessing(fkTable, this, propName),
                                 Definition = string.Format("public {0}{1} {2} {{ get; set; }}{3}", GetLazyLoadingMarker(), fkTable.NameHumanCaseWithSuffix, propName, includeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
                                 Comments = string.Format("Parent {0} pointed by [{1}].{2} ({3})", NameHumanCaseWithSuffix, fkTable.Name, fkNames, fks.First().ConstraintName)
                             }
@@ -3363,6 +3368,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         ReverseNavigationProperty.Add(
                             new PropertyAndComments()
                             {
+                                AdditionalDataAnnotations = foreignKeyAnnotationsProcessing(fkTable, this, propName),
                                 Definition = string.Format("public {0}{1}<{2}> {3} {{ get; set; }}{4}{5}", GetLazyLoadingMarker(), collectionInterfaceType, fkTable.NameHumanCaseWithSuffix, propName, initialization1, includeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
                                 Comments = string.Format("Child {0} where [{1}].{2} point to this entity ({3})", Inflector.MakePlural(fkTable.NameHumanCase), fkTable.Name, fkNames, fks.First().ConstraintName)
                             }
@@ -3377,6 +3383,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         ReverseNavigationProperty.Add(
                             new PropertyAndComments()
                             {
+                                AdditionalDataAnnotations = foreignKeyAnnotationsProcessing(fkTable, this, propName),
                                 Definition = string.Format("public {0}{1}<{2}> {3} {{ get; set; }}{4}{5}", GetLazyLoadingMarker(), collectionInterfaceType, fkTable.NameHumanCaseWithSuffix, propName, initialization2, includeComments != CommentsStyle.None ? " // Many to many mapping" : string.Empty),
                                 Comments = string.Format("Child {0} (Many-to-Many) mapped by table [{1}]", Inflector.MakePlural(fkTable.NameHumanCase), mappingTable == null ? string.Empty : mappingTable.Name)
                             }
@@ -3400,7 +3407,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             }});", leftPropName, rightPropName, left.FkTableName, left.FkColumn, right.FkColumn, isSqlCe ? string.Empty : ", \"" + left.FkSchema + "\""));
             }
 
-            public void IdentifyMappingTable(List<ForeignKey> fkList, Tables tables, bool usePascalCase, string collectionInterfaceType, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments, bool isSqlCe, Func<string, ForeignKey, string, Relationship, short, string> ForeignKeyName)
+            public void IdentifyMappingTable(List<ForeignKey> fkList, Tables tables, bool usePascalCase, string collectionInterfaceType, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments, bool isSqlCe, Func<string, ForeignKey, string, Relationship, short, string> foreignKeyName, Func<Table, Table, string, string[]> foreignKeyAnnotationsProcessing)
             {
                 IsMapping = false;
 
@@ -3441,13 +3448,13 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 if (rightTable == null)
                     return;
 
-                var leftPropName  = leftTable.GetUniqueColumnName(rightTable.NameHumanCase, right, usePascalCase, checkForFkNameClashes, false, ForeignKeyName, Relationship.ManyToOne); // relationship from the mapping table to each side is Many-to-One
-                var rightPropName = rightTable.GetUniqueColumnName(leftTable.NameHumanCase, left, usePascalCase, checkForFkNameClashes, false, ForeignKeyName, Relationship.ManyToOne); // relationship from the mapping table to each side is Many-to-One
+                var leftPropName  = leftTable.GetUniqueColumnName(rightTable.NameHumanCase, right, usePascalCase, checkForFkNameClashes, false, foreignKeyName, Relationship.ManyToOne); // relationship from the mapping table to each side is Many-to-One
+                var rightPropName = rightTable.GetUniqueColumnName(leftTable.NameHumanCase, left, usePascalCase, checkForFkNameClashes, false, foreignKeyName, Relationship.ManyToOne); // relationship from the mapping table to each side is Many-to-One
                 leftTable.AddMappingConfiguration(left, right, usePascalCase, leftPropName, rightPropName, isSqlCe);
 
                 IsMapping = true;
-                rightTable.AddReverseNavigation(Relationship.ManyToMany, rightTable.NameHumanCase, leftTable, rightPropName, null, collectionInterfaceType, collectionType, includeComments, null, this);
-                leftTable .AddReverseNavigation(Relationship.ManyToMany, leftTable.NameHumanCase, rightTable, leftPropName, null, collectionInterfaceType, collectionType, includeComments, null, this);
+                rightTable.AddReverseNavigation(Relationship.ManyToMany, rightTable.NameHumanCase, leftTable, rightPropName, null, collectionInterfaceType, collectionType, includeComments, null, foreignKeyAnnotationsProcessing, this);
+                leftTable.AddReverseNavigation(Relationship.ManyToMany, leftTable.NameHumanCase, rightTable, leftPropName, null, collectionInterfaceType, collectionType, includeComments, null, foreignKeyAnnotationsProcessing, this);
             }
 
             public void SetupDataAnnotations()
@@ -3479,11 +3486,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
             }
 
-            public void IdentifyMappingTables(List<ForeignKey> fkList, bool usePascalCase, string collectionInterfaceType, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments, bool isSqlCe, Func<string, ForeignKey, string, Relationship, short, string> ForeignKeyName)
+            public void IdentifyMappingTables(List<ForeignKey> fkList, bool usePascalCase, string collectionInterfaceType, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments, bool isSqlCe, Func<string, ForeignKey, string, Relationship, short, string> foreignKeyName, Func<Table, Table, string, string[]> foreignKeyAnnotationsProcessing)
             {
                 foreach(var tbl in this.Where(x => x.HasForeignKey))
                 {
-                    tbl.IdentifyMappingTable(fkList, this, usePascalCase, collectionInterfaceType, collectionType, checkForFkNameClashes, includeComments, isSqlCe, ForeignKeyName);
+                    tbl.IdentifyMappingTable(fkList, this, usePascalCase, collectionInterfaceType, collectionType, checkForFkNameClashes, includeComments, isSqlCe, foreignKeyName, foreignKeyAnnotationsProcessing);
                 }
             }
 
@@ -3688,4 +3695,76 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             var spReturnClassName = WriteStoredProcReturnModelName(sp);
             return (returnModelCount == 1) ? string.Format("System.Collections.Generic.List<{0}>", spReturnClassName) : spReturnClassName;
         };
+
+/// <summary>
+/// Helper class in making dynamic class definitions easier.
+/// </summary>
+public sealed class BaseClassMaker
+{
+    private string _typeName;
+    private System.Text.StringBuilder _interfaces;
+
+    public BaseClassMaker(string baseClassName = null)
+    {
+        SetBaseClassName(baseClassName);
+    }
+
+    /// <summary>
+    /// Sets the base-class name.
+    /// </summary>
+    public void SetBaseClassName(string typeName)
+    {
+        _typeName = typeName;
+    }
+
+    /// <summary>
+    /// Appends additional implemented interface.
+    /// </summary>
+    public bool AddInterface(string typeName)
+    {
+        if (string.IsNullOrEmpty(typeName))
+            return false;
+
+        if (_interfaces == null)
+        {
+            _interfaces = new System.Text.StringBuilder();
+        }
+        else
+        {
+            if (_interfaces.Length > 0)
+            {
+                _interfaces.Append(", ");
+            }
+        }
+
+        _interfaces.Append(typeName);
+        return true;
+    }
+
+    /// <summary>
+    /// Conditionally appends additional implemented interface.
+    /// </summary>
+    public bool AddInterface(string interfaceName, bool condition)
+    {
+        if (condition)
+        {
+            return AddInterface(interfaceName);
+        }
+
+        return false;
+    }
+
+    public override string ToString()
+    {
+        var hasInterfaces = _interfaces != null && _interfaces.Length > 0;
+
+        if (string.IsNullOrEmpty(_typeName))
+        {
+            return hasInterfaces ? " : " + _interfaces : string.Empty;
+        }
+
+        return hasInterfaces ? string.Concat(" : ", _typeName, ", ", _interfaces) : " : " + _typeName;
+    }
+}
+
 #>

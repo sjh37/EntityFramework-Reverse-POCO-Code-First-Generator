@@ -595,10 +595,12 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         /// Parent Customer pointed by [Orders].([CustomerId]) (Orders_FK00)
         /// </summary>
         public virtual Customer Customer { get; set; } // Orders_FK00
+
         /// <summary>
         /// Parent Employee pointed by [Orders].([EmployeeId]) (Orders_FK02)
         /// </summary>
         public virtual Employee Employee { get; set; } // Orders_FK02
+
         /// <summary>
         /// Parent Shipper pointed by [Orders].([ShipVia]) (Orders_FK01)
         /// </summary>
@@ -626,6 +628,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         /// Parent Order pointed by [Order Details].([OrderId]) (Order Details_FK01)
         /// </summary>
         public virtual Order Order { get; set; } // Order Details_FK01
+
         /// <summary>
         /// Parent Product pointed by [Order Details].([ProductId]) (Order Details_FK00)
         /// </summary>
@@ -661,6 +664,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         /// Parent Category pointed by [Products].([CategoryId]) (Products_FK01)
         /// </summary>
         public virtual Category Category { get; set; } // Products_FK01
+
         /// <summary>
         /// Parent Supplier pointed by [Products].([SupplierId]) (Products_FK00)
         /// </summary>

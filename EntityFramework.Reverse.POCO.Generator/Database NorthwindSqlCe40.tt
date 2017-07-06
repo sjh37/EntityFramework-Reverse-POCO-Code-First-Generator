@@ -13,7 +13,7 @@
     //ProviderName = "System.Data.SqlServerCe.4.0";
 
     Namespace = "EntityFramework_Reverse_POCO_Generator.SqlCe4"; // Override the default namespace here
-    DbContextName = "MyDbContextSqlCE4";
+    DbContextName = "MyDbContextSqlCE4"; // Note: If generating separate files, please give the db context a different name from this tt filename.
     //DbContextInterfaceName = "IMyDbContextSqlCE4"; // Defaults to "I" + DbContextName or set string empty to not implement any interface.
     DbContextInterfaceBaseClasses = "System.IDisposable";    // Specify what the base classes are for your database context interface
     DbContextBaseClass = "System.Data.Entity.DbContext";   // Specify what the base class is for your DbContext. For ASP.NET Identity use "IdentityDbContext<ApplicationUser>"
@@ -48,6 +48,7 @@
     // If you need to serialize your entities with the JsonSerializer from Newtonsoft, this would serialize
     // all properties including the Reverse Navigation and Foreign Keys. The simplest way to exclude them is
     // to use the data annotation [JsonIgnore] on reverse navigation and foreign keys.
+    // For more control, take a look at ForeignKeyAnnotationsProcessing() further down
     AdditionalReverseNavigationsDataAnnotations = new string[] // Data Annotations for all ReverseNavigationProperty.
     {
         // "JsonIgnore" // Also add "Newtonsoft.Json" to the AdditionalNamespaces array above
@@ -269,6 +270,18 @@
     {
         //if (t.ClassName == "User")
         //    return ": IdentityUser<int, CustomUserLogin, CustomUserRole, CustomUserClaim>";
+
+        // Or use the maker class to dynamically build more complex definitions
+        /* Example:
+        var r = new BaseClassMaker("POCO.Sample.Data.MetaModelObject");
+        r.AddInterface("POCO.Sample.Data.IObjectWithTableName");
+        r.AddInterface("POCO.Sample.Data.IObjectWithId",
+            t.Columns.Any(x => x.IsPrimaryKey && !x.IsNullable && x.NameHumanCase.Equals("Id", StringComparison.InvariantCultureIgnoreCase) && x.PropertyType == "long"));
+        r.AddInterface("POCO.Sample.Data.IObjectWithUserId",
+            t.Columns.Any(x => !x.IsPrimaryKey && !x.IsNullable && x.NameHumanCase.Equals("UserId", StringComparison.InvariantCultureIgnoreCase) && x.PropertyType == "long"));
+        return r.ToString();
+        */
+
         return "";
     };
 
@@ -402,6 +415,20 @@
         }*/
 
         return fkName;
+    };
+
+    ForeignKeyAnnotationsProcessing = (Table fkTable, Table pkTable, string propName) =>
+    {
+        /* Example:
+        // Each navigation property that is a reference to User are left intact
+        if (pkTable.NameHumanCase.Equals("User") && propName.Equals("User"))
+            return null;
+
+        // all the others are marked with this attribute
+        return new[] { "System.Runtime.Serialization.IgnoreDataMember" };
+        */
+
+        return null;
     };
 
     // Return true to include this table in the db context
