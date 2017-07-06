@@ -270,6 +270,18 @@
     {
         //if (t.ClassName == "User")
         //    return ": IdentityUser<int, CustomUserLogin, CustomUserRole, CustomUserClaim>";
+
+        // Or use the maker class to dynamically build more complex definitions
+        /* Example:
+        var r = new BaseClassMaker("POCO.Sample.Data.MetaModelObject");
+        r.AddInterface("POCO.Sample.Data.IObjectWithTableName");
+        r.AddInterface("POCO.Sample.Data.IObjectWithId",
+            t.Columns.Any(x => x.IsPrimaryKey && !x.IsNullable && x.NameHumanCase.Equals("Id", StringComparison.InvariantCultureIgnoreCase) && x.PropertyType == "long"));
+        r.AddInterface("POCO.Sample.Data.IObjectWithUserId",
+            t.Columns.Any(x => !x.IsPrimaryKey && !x.IsNullable && x.NameHumanCase.Equals("UserId", StringComparison.InvariantCultureIgnoreCase) && x.PropertyType == "long"));
+        return r.ToString();
+        */
+
         return "";
     };
 
