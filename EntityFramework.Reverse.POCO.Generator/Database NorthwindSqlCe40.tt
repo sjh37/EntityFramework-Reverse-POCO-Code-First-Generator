@@ -13,7 +13,7 @@
     //ProviderName = "System.Data.SqlServerCe.4.0";
 
     Namespace = "EntityFramework_Reverse_POCO_Generator.SqlCe4"; // Override the default namespace here
-    DbContextName = "MyDbContextSqlCE4";
+    DbContextName = "MyDbContextSqlCE4"; // Note: If generating separate files, please give the db context a different name from this tt filename.
     //DbContextInterfaceName = "IMyDbContextSqlCE4"; // Defaults to "I" + DbContextName or set string empty to not implement any interface.
     DbContextInterfaceBaseClasses = "System.IDisposable";    // Specify what the base classes are for your database context interface
     DbContextBaseClass = "System.Data.Entity.DbContext";   // Specify what the base class is for your DbContext. For ASP.NET Identity use "IdentityDbContext<ApplicationUser>"
