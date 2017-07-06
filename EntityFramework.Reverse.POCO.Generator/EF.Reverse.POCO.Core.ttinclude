@@ -2672,7 +2672,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     }
 
                     var fkd = new PropertyAndComments();
-                    fkd.AdditionalDataAnnotations = foreignKeyAnnotationsProcessing != null ? foreignKeyAnnotationsProcessing(fkTable, pkTable, pkPropName) : null;
+                    fkd.AdditionalDataAnnotations = foreignKeyAnnotationsProcessing(fkTable, pkTable, pkPropName);
                     fkd.Definition = string.Format("{0}public {1}{2} {3} {4}{5}", dataAnnotation, Table.GetLazyLoadingMarker(), pkTableHumanCaseWithSuffix, pkPropName, "{ get; set; }", includeComments != CommentsStyle.None ? " // " + foreignKey.ConstraintName : string.Empty);
                     fkd.Comments = string.Format("Parent {0} pointed by [{1}].({2}) ({3})", pkTableHumanCase, fkTable.Name, string.Join(", ", fkCols.Select(x => "[" + x.col.NameHumanCase + "]").Distinct().ToArray()), foreignKey.ConstraintName);
                     fkCol.col.EntityFk.Add(fkd);
@@ -3342,7 +3342,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         ReverseNavigationProperty.Add(
                             new PropertyAndComments()
                             {
-                                AdditionalDataAnnotations = foreignKeyAnnotationsProcessing != null ? foreignKeyAnnotationsProcessing(fkTable, this, propName) : null,
+                                AdditionalDataAnnotations = foreignKeyAnnotationsProcessing(fkTable, this, propName),
                                 Definition = string.Format("public {0}{1} {2} {{ get; set; }}{3}", GetLazyLoadingMarker(), fkTable.NameHumanCaseWithSuffix, propName, includeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
                                 Comments = string.Format("Parent (One-to-One) {0} pointed by [{1}].{2} ({3})", this.NameHumanCaseWithSuffix, fkTable.Name, fkNames, fks.First().ConstraintName)
                             }
@@ -3353,7 +3353,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         ReverseNavigationProperty.Add(
                             new PropertyAndComments()
                             {
-                                AdditionalDataAnnotations = foreignKeyAnnotationsProcessing != null ? foreignKeyAnnotationsProcessing(fkTable, this, propName) : null,
+                                AdditionalDataAnnotations = foreignKeyAnnotationsProcessing(fkTable, this, propName),
                                 Definition = string.Format("public {0}{1} {2} {{ get; set; }}{3}", GetLazyLoadingMarker(), fkTable.NameHumanCaseWithSuffix, propName, includeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
                                 Comments = string.Format("Parent {0} pointed by [{1}].{2} ({3})", NameHumanCaseWithSuffix, fkTable.Name, fkNames, fks.First().ConstraintName)
                             }
@@ -3367,7 +3367,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         ReverseNavigationProperty.Add(
                             new PropertyAndComments()
                             {
-                                AdditionalDataAnnotations = foreignKeyAnnotationsProcessing != null ? foreignKeyAnnotationsProcessing(fkTable, this, propName) : null,
+                                AdditionalDataAnnotations = foreignKeyAnnotationsProcessing(fkTable, this, propName),
                                 Definition = string.Format("public {0}System.Collections.Generic.ICollection<{1}> {2} {{ get; set; }}{3}{4}", GetLazyLoadingMarker(), fkTable.NameHumanCaseWithSuffix, propName, initialization1, includeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
                                 Comments = string.Format("Child {0} where [{1}].{2} point to this entity ({3})", Inflector.MakePlural(fkTable.NameHumanCase), fkTable.Name, fkNames, fks.First().ConstraintName)
                             }
@@ -3382,7 +3382,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         ReverseNavigationProperty.Add(
                             new PropertyAndComments()
                             {
-                                AdditionalDataAnnotations = foreignKeyAnnotationsProcessing != null ? foreignKeyAnnotationsProcessing(fkTable, this, propName) : null,
+                                AdditionalDataAnnotations = foreignKeyAnnotationsProcessing(fkTable, this, propName),
                                 Definition = string.Format("public {0}System.Collections.Generic.ICollection<{1}> {2} {{ get; set; }}{3}{4}", GetLazyLoadingMarker(), fkTable.NameHumanCaseWithSuffix, propName, initialization2, includeComments != CommentsStyle.None ? " // Many to many mapping" : string.Empty),
                                 Comments = string.Format("Child {0} (Many-to-Many) mapped by table [{1}]", Inflector.MakePlural(fkTable.NameHumanCase), mappingTable == null ? string.Empty : mappingTable.Name)
                             }

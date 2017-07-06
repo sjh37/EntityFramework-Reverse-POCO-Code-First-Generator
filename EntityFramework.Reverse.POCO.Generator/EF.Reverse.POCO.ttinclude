@@ -988,7 +988,6 @@ if(tbl.ReverseNavigationProperty.Count() > 0)
 <#
 foreach(var s in tbl.ReverseNavigationProperty.OrderBy(x => x.Definition))
 { #>
-
 <# if(IncludeComments != CommentsStyle.None){#>        /// <summary>
         /// <#=s.Comments ?? "" #>
         /// </summary>
