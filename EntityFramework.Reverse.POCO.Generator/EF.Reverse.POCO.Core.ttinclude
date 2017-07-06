@@ -2855,7 +2855,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 col = updateColumn(col, table);
 
                 // If PropertyType is empty, return null. Most likely ignoring a column due to legacy (such as OData not supporting spatial types)
-                if(string.IsNullOrEmpty(col.PropertyType))
+                if (col != null && string.IsNullOrEmpty(col.PropertyType))
                     return null;
 
                 return col;
