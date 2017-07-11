@@ -38,6 +38,7 @@
         bool IncludeSynonyms = false;
         bool IncludeStoredProcedures = false;
         bool IncludeTableValuedFunctions = false;
+        bool AddIDbContextFactory = true;
         bool AddUnitTestingDbContext = true;
         string DbContextName = "MyDbContext";
         string _dbContextInterfaceName = null;

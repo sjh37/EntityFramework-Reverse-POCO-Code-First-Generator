@@ -477,6 +477,18 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
     #endregion
 
+    #region Database context factory
+
+    public class MyDbContextFactory : System.Data.Entity.Infrastructure.IDbContextFactory<MyDbContext>
+    {
+        public MyDbContext Create()
+        {
+            return new MyDbContext();
+        }
+    }
+
+    #endregion
+
     #region Fake Database context
 
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.32.0.0")]

@@ -135,6 +135,18 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
     }
     #endregion
 
+    #region Database context factory
+
+    public class MyDbContextSqlCE4Factory : System.Data.Entity.Infrastructure.IDbContextFactory<MyDbContextSqlCE4>
+    {
+        public MyDbContextSqlCE4 Create()
+        {
+            return new MyDbContextSqlCE4();
+        }
+    }
+
+    #endregion
+
     #region Fake Database context
 
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.32.0.0")]

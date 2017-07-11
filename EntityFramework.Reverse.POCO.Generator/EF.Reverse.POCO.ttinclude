@@ -485,6 +485,27 @@ if(ElementsToGenerate.HasFlag(Elements.Context) && !GenerateSeparateFiles) { #>
     #endregion
 
 <# }
+    if (ElementsToGenerate.HasFlag(Elements.Context) && AddIDbContextFactory)
+    {
+        fileManager.StartNewFile(DbContextName + "Factory" + FileExtension); #>
+<# if (!GenerateSeparateFiles)
+{ #>
+    #region Database context factory
+
+<# } #>
+    <# if(MakeClassesInternal) { #>internal<# } else { #>public<# } #> class <#= DbContextName + "Factory" #> : System.Data.Entity.Infrastructure.IDbContextFactory<<#= DbContextName #>>
+    {
+        public <#= DbContextName #> Create()
+        {
+            return new <#= DbContextName #>();
+        }
+    }
+<# if(ElementsToGenerate.HasFlag(Elements.Context) && AddIDbContextFactory && !GenerateSeparateFiles) { #>
+
+    #endregion
+
+<# } #>
+<# }
     if (ElementsToGenerate.HasFlag(Elements.Context) && AddUnitTestingDbContext)
     {
         fileManager.StartNewFile("Fake" + DbContextName + FileExtension); #>
