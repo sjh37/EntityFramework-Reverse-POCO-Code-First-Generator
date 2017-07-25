@@ -500,7 +500,7 @@ if(ElementsToGenerate.HasFlag(Elements.Context) && !GenerateSeparateFiles) { #>
             return new <#= DbContextName #>();
         }
     }
-<# if(ElementsToGenerate.HasFlag(Elements.Context) && AddIDbContextFactory && !GenerateSeparateFiles) { #>
+<# if(!GenerateSeparateFiles) { #>
 
     #endregion
 
