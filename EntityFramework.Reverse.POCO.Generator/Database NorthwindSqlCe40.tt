@@ -38,6 +38,7 @@
     //CollectionInterfaceType = "System.Collections.Generic.List"; // Determines the declaration type of collections for the Navigation Properties. ICollection is used if not set.
     CollectionType = "System.Collections.Generic.List";  // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example. Add "System.Collections.ObjectModel" to AdditionalNamespaces if setting the CollectionType = "ObservableCollection".
     NullableShortHand = true; //true => T?, false => Nullable<T>
+    AddIDbContextFactory = true; // Will add a default IDbContextFactory<DbContextName> implementation for easy dependency injection
     AddUnitTestingDbContext = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing
     IncludeCodeGeneratedAttribute = true; // If true, will include the GeneratedCode attribute, false to remove it.
     UsePrivateSetterForComputedColumns = true; // If the columns is computed, use a private setter.
