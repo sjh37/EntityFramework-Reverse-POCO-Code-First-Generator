@@ -263,8 +263,20 @@
             }
         }
 
+        // Example:
         // if(t.ClassName.StartsWith("Order"))
         //     WriteLine("    [SomeAttribute]");
+    };
+
+    // This method will be called right before we write the POCO header.
+    Action<Table> WritePocoClassExtendedComments = t =>
+    {
+        if (IncludeExtendedPropertyComments != CommentsStyle.None && !string.IsNullOrEmpty(t.ExtendedProperty))
+        {
+            WriteLine("    ///<summary>");
+            WriteLine("    /// {0}", System.Security.SecurityElement.Escape(t.ExtendedProperty));
+            WriteLine("    ///</summary>");
+        }
     };
 
     // Writes optional base classes
@@ -287,7 +299,7 @@
         return "";
     };
 
-    // Writes any boilerplate stuff
+    // Writes any boilerplate stuff inside the POCO class
     Action<Table> WritePocoBaseClassBody = t =>
     {
         // Do nothing by default

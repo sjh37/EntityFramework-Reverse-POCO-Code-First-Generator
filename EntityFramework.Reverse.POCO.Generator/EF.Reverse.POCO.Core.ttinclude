@@ -1853,7 +1853,7 @@ FROM    sys.extended_properties AS ep
             ON ep.major_id = t.object_id
         INNER JOIN sys.schemas AS s
             ON s.schema_id = t.schema_id
-        INNER JOIN sys.columns AS c
+        LEFT JOIN sys.columns AS c
             ON ep.major_id = c.object_id
                AND ep.minor_id = c.column_id
 WHERE   class = 1
@@ -2435,7 +2435,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         string column           = rdr["column"].ToString().Trim();
                         string extendedProperty = rdr["property"].ToString().Trim();
 
-                        if (extendedProperty == string.Empty)
+                        if (string.IsNullOrEmpty(extendedProperty))
                             continue;
 
                         if(t == null || t.Name != tableName || t.Schema != schema)
@@ -2443,11 +2443,19 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
                         if (t != null)
                         {
-                            var col = t.Columns.Find(x => x.Name == column);
-                            if (col != null)
+                            if (string.IsNullOrEmpty(column))
                             {
-                                extendedProperty = extendedProperty.Replace("\n", " ").Replace("\r", " ");
-                                col.ExtendedProperty = extendedProperty;
+                                // Table level extended comment
+                                t.ExtendedProperty = extendedProperty;
+                            }
+                            else
+                            {
+                                var col = t.Columns.Find(x => x.Name == column);
+                                if (col != null)
+                                {
+                                    extendedProperty = extendedProperty.Replace("\n", " ").Replace("\r", " ");
+                                    col.ExtendedProperty = extendedProperty;
+                                }
                             }
                         }
                     }
@@ -3150,6 +3158,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             public string Type;
             public string ClassName;
             public string Suffix;
+            public string ExtendedProperty;
             public bool IsMapping;
             public bool IsView;
             public bool HasForeignKey;
