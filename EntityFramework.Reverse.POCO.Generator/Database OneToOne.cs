@@ -507,6 +507,7 @@ namespace EntityFramework_Reverse_POCO_Generator.OneToOne
         [Required]
         [Key]
         [Display(Name = "Id")]
+        [ForeignKey("Boo")]
         public int Id { get; set; } // id (Primary key)
 
         [Column(@"name", Order = 2, TypeName = "nchar")]
