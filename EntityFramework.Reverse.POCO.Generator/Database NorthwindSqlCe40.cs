@@ -201,11 +201,11 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
             Dispose(true);
         }
 
-        public System.Data.Entity.Infrastructure.DbChangeTracker _changeTracker;
+        private System.Data.Entity.Infrastructure.DbChangeTracker _changeTracker;
         public System.Data.Entity.Infrastructure.DbChangeTracker ChangeTracker { get { return _changeTracker; } }
-        public System.Data.Entity.Infrastructure.DbContextConfiguration _configuration;
+        private System.Data.Entity.Infrastructure.DbContextConfiguration _configuration;
         public System.Data.Entity.Infrastructure.DbContextConfiguration Configuration { get { return _configuration; } }
-        public System.Data.Entity.Database _database;
+        private System.Data.Entity.Database _database;
         public System.Data.Entity.Database Database { get { return _database; } }
         public System.Data.Entity.Infrastructure.DbEntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class
         {
