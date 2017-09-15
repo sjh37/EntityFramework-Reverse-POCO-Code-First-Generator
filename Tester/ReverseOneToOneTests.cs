@@ -16,13 +16,13 @@ namespace Tester
             _db = new MyDbContext();
             _foo = _db.Foos.Add(new Foo { Name = "Foo", Boo = new Boo { Name = "Boo" } });
             _db.SaveChanges();
-            _db = new MyDbContext();
         }
 
 
         [Test]
         public void NormalNavigation()
         {
+            _db = new MyDbContext();
             var foo = _db.Foos.First(f => f.Id == _foo.Id);
             Assert.IsNotNull(foo.Boo);
         }
@@ -30,6 +30,7 @@ namespace Tester
         [Test]
         public void ReverseNavigation()
         {
+            _db = new MyDbContext();
             var boo = _db.Boos.First(b => b.Id == _foo.Boo.Id);
             Assert.IsNotNull(boo.Foo);
         }
