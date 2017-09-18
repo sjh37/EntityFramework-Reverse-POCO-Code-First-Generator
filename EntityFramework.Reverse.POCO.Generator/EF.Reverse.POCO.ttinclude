@@ -1175,8 +1175,6 @@ if(returnModelCount < 2)
     foreach (var returnModel in sp.ReturnModels)
     {
         model++;#>
-<#if(IncludeCodeGeneratedAttribute){#>    <#=CodeGeneratedAttribute#>
-<#}#>
         public class ResultSetModel<#= model #>
         {
 <#      foreach (var returnColumn in returnModel)
