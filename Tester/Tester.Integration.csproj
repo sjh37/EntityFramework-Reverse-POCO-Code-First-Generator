@@ -62,7 +62,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ReverseOneToOneTests.cs" />
+    <Compile Include="StaffordTests.cs" />
     <Compile Include="StoredProcedureAsyncTests.cs" />
     <Compile Include="CustomersRepositoryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

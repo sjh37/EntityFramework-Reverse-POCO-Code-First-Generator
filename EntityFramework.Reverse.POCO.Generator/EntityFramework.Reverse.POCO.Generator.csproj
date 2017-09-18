@@ -66,8 +66,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Database OneToOne.cs">
-      <DependentUpon>Database OneToOne.tt</DependentUpon>
+    <Compile Include="TestDatabase_NoDataAnnotation.cs">
+      <DependentUpon>TestDatabase_NoDataAnnotation.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="TestDatabase_DataAnnotation.cs">
+      <DependentUpon>TestDatabase_DataAnnotation.tt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
@@ -106,10 +111,14 @@
     <Content Include="App_Data\NorthwindSqlCe40.sdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="OneToOneDatabase.sql" />
-    <None Include="Database OneToOne.tt">
+    <None Include="TestDatabase_NoDataAnnotation.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Database OneToOne.cs</LastGenOutput>
+      <LastGenOutput>TestDatabase_NoDataAnnotation.cs</LastGenOutput>
+    </None>
+    <Content Include="TestDatabase.sql" />
+    <None Include="TestDatabase_DataAnnotation.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>TestDatabase_DataAnnotation.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

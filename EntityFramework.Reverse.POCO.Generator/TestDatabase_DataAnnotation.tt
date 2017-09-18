@@ -6,14 +6,14 @@
     // A course for this generator is available on Pluralsight at https://www.pluralsight.com/courses/code-first-entity-framework-legacy-databases
 
     // Main settings **********************************************************************************************************************
-    ConnectionStringName = "MyDbContextOneToOne";   // Searches for this connection string in config files listed below in the ConfigFilenameSearchOrder setting
+    ConnectionStringName = "TestDatabase";   // Searches for this connection string in config files listed below in the ConfigFilenameSearchOrder setting
     // ConnectionStringName is the only required setting.
     // As an alternative to ConnectionStringName above, which must match your app/web.config connection string name, you can override them below
     //ConnectionString = "Data Source=(local);Initial Catalog=Northwind;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";
     //ProviderName = "System.Data.SqlClient";
 
-    Namespace = "EntityFramework_Reverse_POCO_Generator.OneToOne"; // Override the default namespace here
-    DbContextName = "MyDbContext"; // Note: If generating separate files, please give the db context a different name from this tt filename.
+    Namespace = "TestDatabaseDataAnnotation"; // Override the default namespace here
+    DbContextName = "TestDbContext"; // Note: If generating separate files, please give the db context a different name from this tt filename.
     //DbContextInterfaceName = "IMyDbContext"; // Defaults to "I" + DbContextName or set string empty to not implement any interface.
     DbContextInterfaceBaseClasses = "System.IDisposable";    // Specify what the base classes are for your database context interface
     DbContextBaseClass = "System.Data.Entity.DbContext";   // Specify what the base class is for your DbContext. For ASP.NET Identity use "IdentityDbContext<ApplicationUser>"
@@ -401,7 +401,6 @@
         // Example, to exclude reverse navigation properties for tables ending with Type, use:
         // if (fk.PkTableName.EndsWith("Type"))
         //    fk.IncludeReverseNavigation = false;
-
 
         return fk;
     };
