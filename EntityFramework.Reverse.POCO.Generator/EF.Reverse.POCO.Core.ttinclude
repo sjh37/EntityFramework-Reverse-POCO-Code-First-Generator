@@ -2679,6 +2679,13 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                             string.Join(", ", fkCols.Select(x => x.col.NameHumanCase).Distinct().ToArray()),
                             foreignKey.IncludeRequiredAttribute ? ", Required" : string.Empty
                         );
+						
+						if (relationship == Relationship.OneToOne && foreignKey.IncludeReverseNavigation && fkCol.col.IsPrimaryKey) 
+						{
+							var principalEndAttribute = string.Format("ForeignKey(\"{0}\")", pkTableHumanCaseWithSuffix);
+							if (!fkCol.col.DataAnnotations.Contains(principalEndAttribute))
+								fkCol.col.DataAnnotations.Add(principalEndAttribute);
+                        }
                     }
 
                     var fkd = new PropertyAndComments();
