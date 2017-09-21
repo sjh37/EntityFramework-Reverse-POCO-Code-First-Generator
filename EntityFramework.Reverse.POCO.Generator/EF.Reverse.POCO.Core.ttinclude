@@ -2232,7 +2232,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                             }
                         }
 
-                        var col = CreateColumn(rdr, rxClean, table, usePascalCase, columnFilterExclude, updateColumn);
+                        var col = CreateColumn(rdr, rxClean, table, usePascalCase, columnFilterExclude);
                         if(col != null)
                             table.Columns.Add(col);
                     }
@@ -2257,6 +2257,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 foreach(Table tbl in result)
                 {
                     tbl.SetPrimaryKeys();
+                    foreach (Column c in tbl.Columns)
+                        updateColumn(c, tbl);
                     tbl.Columns.ForEach(x => x.SetupEntityAndConfig(includeComments, includeExtendedPropertyComments, usePrivateSetterForComputedColumns, dataAnnotations, dataAnnotationsSchema, isSqlCe, columnNameToDataAnnotation));
                 }
 
@@ -2799,7 +2801,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
             }
 
-            private static Column CreateColumn(IDataRecord rdr, Regex rxClean, Table table, bool usePascalCase, Regex columnFilterExclude, Func<Column, Table, Column> updateColumn)
+            private static Column CreateColumn(IDataRecord rdr, Regex rxClean, Table table, bool usePascalCase, Regex columnFilterExclude)
             {
                 if(rdr == null)
                     throw new ArgumentNullException("rdr");
@@ -2873,8 +2875,6 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     col.NameHumanCase = "_" + col.NameHumanCase;
 
                 table.HasNullableColumns = IsNullable(col);
-
-                col = updateColumn(col, table);
 
                 // If PropertyType is empty, return null. Most likely ignoring a column due to legacy (such as OData not supporting spatial types)
                 if (col != null && string.IsNullOrEmpty(col.PropertyType))
