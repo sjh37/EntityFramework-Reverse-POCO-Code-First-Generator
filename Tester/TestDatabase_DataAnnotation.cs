@@ -7,7 +7,7 @@
 // Do not make changes directly to this file - edit the template instead.
 //
 // The following connection settings were used to generate this file:
-//     Configuration file:     "EntityFramework.Reverse.POCO.Generator\App.config"
+//     Configuration file:     "Tester\App.config"
 //     Connection String Name: "TestDatabase"
 //     Connection String:      "Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator"
 // ------------------------------------------------------------------------------------------------

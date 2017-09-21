@@ -1,4 +1,4 @@
-﻿<#@ include file="EF.Reverse.POCO.Core.ttinclude" #>
+﻿<#@ include file="..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.Core.ttinclude" #>
 <#
     // v2.32.0
     // Please make changes to the settings below.
@@ -517,6 +517,6 @@
     if (tables.Count > 0 || storedProcs.Count > 0)
     {
 #>
-<#@ include file="EF.Reverse.POCO.ttinclude" #>
+<#@ include file="..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.ttinclude" #>
 <#@ import namespace="System.Xml.Schema" #>
 <# } #>
