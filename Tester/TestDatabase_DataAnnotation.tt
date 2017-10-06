@@ -519,4 +519,6 @@
 #>
 <#@ include file="..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.ttinclude" #>
 <#@ import namespace="System.Xml.Schema" #>
-<# } #>
+<#  }
+    if(GenerateSeparateFiles)
+        GenerationEnvironment.Clear();#>

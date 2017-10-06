@@ -481,4 +481,6 @@
     {
 #>
 <#@ include file="EF.Reverse.POCO.ttinclude" #>
-<# } #>
+<#  }
+    if(GenerateSeparateFiles)
+        GenerationEnvironment.Clear();#>
