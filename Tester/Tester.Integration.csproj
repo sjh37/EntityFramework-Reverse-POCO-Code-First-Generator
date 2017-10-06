@@ -72,9 +72,9 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="TestDatabase_NoDataAnnotation.cs">
-      <DependentUpon>TestDatabase_NoDataAnnotation.tt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+      <DependentUpon>TestDatabase_NoDataAnnotation.tt</DependentUpon>
     </Compile>
     <Compile Include="TvfTests.cs" />
   </ItemGroup>
