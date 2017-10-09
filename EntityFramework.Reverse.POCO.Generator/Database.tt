@@ -251,6 +251,10 @@
         //if (column.IsPrimaryKey && table.NameHumanCase.Equals("SomeTable", StringComparison.InvariantCultureIgnoreCase))
         //    column.Hidden = true;
 
+        // Use the extended properties to perform tasks to column
+        //if (column.ExtendedProperty == "HIDE")
+        //    column.Hidden = true;
+
         // Apply the "override" access modifier to a specific column.
         // if (column.NameHumanCase == "id")
         //    column.OverrideModifier = true;
