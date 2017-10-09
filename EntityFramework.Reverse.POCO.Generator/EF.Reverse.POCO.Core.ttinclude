@@ -2570,11 +2570,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     if (proc.IsTVF)
                     {
                         foreach (var param in proc.Parameters.Where(x => x.SqlDbType.Equals(structured, StringComparison.InvariantCultureIgnoreCase)))
-                            sb.AppendLine(String.Format("DECLARE {0} {1};", param.Name, param.UserDefinedTypeName));
+                            sb.AppendLine(string.Format("DECLARE {0} {1};", param.Name, param.UserDefinedTypeName));
 
-                        sb.Append(String.Format("SELECT * FROM [{0}].[{1}](", proc.Schema, proc.Name));
+                        sb.Append(string.Format("SELECT * FROM [{0}].[{1}](", proc.Schema, proc.Name));
                         foreach (var param in proc.Parameters)
-                            sb.Append(String.Format("{0}, ", param.SqlDbType.Equals(structured, StringComparison.InvariantCultureIgnoreCase) ? param.Name : "null"));
+                            sb.Append(string.Format("{0}, ", param.SqlDbType.Equals(structured, StringComparison.InvariantCultureIgnoreCase) ? param.Name : "null"));
 
                         if(proc.Parameters.Count > 0)
                             sb.Length -= 2;
@@ -2584,11 +2584,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     else
                     {
                         foreach (var param in proc.Parameters)
-                            sb.AppendLine(String.Format("DECLARE {0} {1};", param.Name, param.SqlDbType.Equals(structured, StringComparison.InvariantCultureIgnoreCase) ? param.UserDefinedTypeName : param.SqlDbType));
+                            sb.AppendLine(string.Format("DECLARE {0} {1};", param.Name, param.SqlDbType.Equals(structured, StringComparison.InvariantCultureIgnoreCase) ? param.UserDefinedTypeName : param.SqlDbType));
 
-                        sb.Append(String.Format("exec [{0}].[{1}] ", proc.Schema, proc.Name));
+                        sb.Append(string.Format("exec [{0}].[{1}] ", proc.Schema, proc.Name));
                         foreach (var param in proc.Parameters)
-                            sb.Append(String.Format("{0}, ", param.Name));
+                            sb.Append(string.Format("{0}, ", param.Name));
 
                         if(proc.Parameters.Count > 0)
                             sb.Length -= 2;
