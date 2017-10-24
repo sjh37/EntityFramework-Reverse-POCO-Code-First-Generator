@@ -3284,10 +3284,26 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     return name;
                 }
 
-                // Attempt 2
-                if (fkName.ToLowerInvariant().EndsWith("id"))
+                if(Name == foreignKey.FkTableName)
                 {
-                    col = ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 2);
+                    // Attempt 2
+                    if (fkName.ToLowerInvariant().EndsWith("id"))
+                    {
+                        col = ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 2);
+                        if (checkForFkNameClashes && ReverseNavigationUniquePropName.Contains(col) &&
+                            !ReverseNavigationUniquePropNameClashes.Contains(col))
+                            ReverseNavigationUniquePropNameClashes.Add(col); // Name clash
+
+                        if (!ReverseNavigationUniquePropNameClashes.Contains(col) &&
+                            !ReverseNavigationUniquePropName.Contains(col))
+                        {
+                            ReverseNavigationUniquePropName.Add(col);
+                            return col;
+                        }
+                    }
+
+                    // Attempt 3
+                    col = ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 3);
                     if (checkForFkNameClashes && ReverseNavigationUniquePropName.Contains(col) &&
                         !ReverseNavigationUniquePropNameClashes.Contains(col))
                         ReverseNavigationUniquePropNameClashes.Add(col); // Name clash
@@ -3298,19 +3314,6 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         ReverseNavigationUniquePropName.Add(col);
                         return col;
                     }
-                }
-
-                // Attempt 3
-                col = ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 3);
-                if (checkForFkNameClashes && ReverseNavigationUniquePropName.Contains(col) &&
-                    !ReverseNavigationUniquePropNameClashes.Contains(col))
-                    ReverseNavigationUniquePropNameClashes.Add(col); // Name clash
-
-                if (!ReverseNavigationUniquePropNameClashes.Contains(col) &&
-                    !ReverseNavigationUniquePropName.Contains(col))
-                {
-                    ReverseNavigationUniquePropName.Add(col);
-                    return col;
                 }
 
                 // Attempt 4
