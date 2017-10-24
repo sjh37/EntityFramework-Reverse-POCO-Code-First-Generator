@@ -3284,7 +3284,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     return name;
                 }
 
-                if(Name == foreignKey.FkTableName){
+                if(Name == foreignKey.FkTableName)
+                {
                     // Attempt 2
                     if (fkName.ToLowerInvariant().EndsWith("id"))
                     {
