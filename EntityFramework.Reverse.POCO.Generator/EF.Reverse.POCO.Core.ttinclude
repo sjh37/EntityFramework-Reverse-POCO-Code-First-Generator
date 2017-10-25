@@ -3262,6 +3262,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
             public string GetUniqueColumnName(string tableNameHumanCase, ForeignKey foreignKey, bool usePascalCase, bool checkForFkNameClashes, bool makeSingular, Func<string, ForeignKey, string, Relationship, short, string> ForeignKeyName, Relationship relationship)
             {
+                var addReverseNavigationUniquePropName = (Name == foreignKey.FkTableName || (Name == foreignKey.PkTableName && foreignKey.IncludeReverseNavigation));
                 if (ReverseNavigationUniquePropName.Count == 0)
                 {
                     ReverseNavigationUniquePropName.Add(NameHumanCase);
@@ -3280,7 +3281,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 string col;
                 if (!ReverseNavigationUniquePropNameClashes.Contains(name) && !ReverseNavigationUniquePropName.Contains(name))
                 {
-                    ReverseNavigationUniquePropName.Add(name);
+                    if(addReverseNavigationUniquePropName)
+                    {
+                        ReverseNavigationUniquePropName.Add(name);
+                    }
+
                     return name;
                 }
 
@@ -3297,7 +3302,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         if (!ReverseNavigationUniquePropNameClashes.Contains(col) &&
                             !ReverseNavigationUniquePropName.Contains(col))
                         {
-                            ReverseNavigationUniquePropName.Add(col);
+                            if(addReverseNavigationUniquePropName)
+                            {
+                                ReverseNavigationUniquePropName.Add(col);
+                            }
+
                             return col;
                         }
                     }
@@ -3311,7 +3320,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     if (!ReverseNavigationUniquePropNameClashes.Contains(col) &&
                         !ReverseNavigationUniquePropName.Contains(col))
                     {
-                        ReverseNavigationUniquePropName.Add(col);
+                        if(addReverseNavigationUniquePropName)
+                        {
+                            ReverseNavigationUniquePropName.Add(col);
+                        }
+                        
                         return col;
                     }
                 }
@@ -3323,7 +3336,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
                 if (!ReverseNavigationUniquePropNameClashes.Contains(col) && !ReverseNavigationUniquePropName.Contains(col))
                 {
-                    ReverseNavigationUniquePropName.Add(col);
+                    if(addReverseNavigationUniquePropName)
+                    {
+                        ReverseNavigationUniquePropName.Add(col);
+                    }
+                    
                     return col;
                 }
 
@@ -3335,7 +3352,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     if (ReverseNavigationUniquePropName.Contains(col))
                         continue;
 
-                    ReverseNavigationUniquePropName.Add(col);
+                    if(addReverseNavigationUniquePropName)
+                    {
+                        ReverseNavigationUniquePropName.Add(col);
+                    }
+                    
                     return col;
                 }
 
