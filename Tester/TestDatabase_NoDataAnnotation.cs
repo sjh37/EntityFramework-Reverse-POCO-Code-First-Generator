@@ -53,6 +53,11 @@ namespace TestDatabaseStandard
         System.Data.Entity.DbSet Set(System.Type entityType);
         System.Data.Entity.DbSet<TEntity> Set<TEntity>() where TEntity : class;
         string ToString();
+
+        // Stored Procedures
+
+        // Table Valued Functions
+        System.Linq.IQueryable<CsvToIntReturnModel> CsvToInt(string array, string array2);
     }
 
     #endregion
@@ -113,6 +118,9 @@ namespace TestDatabaseStandard
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Conventions.Add(new CodeFirstStoreFunctions.FunctionsConvention<TestDbContext>("dbo"));
+            modelBuilder.ComplexType<CsvToIntReturnModel>();
+
             modelBuilder.Configurations.Add(new Stafford_BooConfiguration());
             modelBuilder.Configurations.Add(new Stafford_FooConfiguration());
         }
@@ -123,6 +131,19 @@ namespace TestDatabaseStandard
             modelBuilder.Configurations.Add(new Stafford_FooConfiguration(schema));
             return modelBuilder;
         }
+
+        // Stored Procedures
+        // Table Valued Functions
+        [System.Data.Entity.DbFunction("TestDbContext", "CsvToInt")]
+        [CodeFirstStoreFunctions.DbFunctionDetails(DatabaseSchema = "dbo", ResultColumnName = "IntValue")]
+        public IQueryable<CsvToIntReturnModel> CsvToInt(string array, string array2)
+        {
+            var arrayParam = new System.Data.Entity.Core.Objects.ObjectParameter("array", typeof(string)) { Value = array };
+            var array2Param = new System.Data.Entity.Core.Objects.ObjectParameter("array2", typeof(string)) { Value = array2 };
+
+            return ((System.Data.Entity.Infrastructure.IObjectContextAdapter)this).ObjectContext.CreateQuery<CsvToIntReturnModel>("[TestDbContext].[CsvToInt](@array, @array2)", arrayParam, array2Param);
+        }
+
     }
     #endregion
 
@@ -209,6 +230,15 @@ namespace TestDatabaseStandard
         public override string ToString()
         {
             throw new System.NotImplementedException();
+        }
+
+
+        // Stored Procedures
+        // Table Valued Functions
+        [System.Data.Entity.DbFunction("TestDbContext", "CsvToInt")]
+        public IQueryable<CsvToIntReturnModel> CsvToInt(string array, string array2)
+        {
+            return new System.Collections.Generic.List<CsvToIntReturnModel>().AsQueryable();
         }
 
     }
@@ -559,6 +589,16 @@ namespace TestDatabaseStandard
             Property(x => x.Name).IsFixedLength();
 
         }
+    }
+
+    #endregion
+
+    #region Stored procedure return models
+
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.33.0.0")]
+    public class CsvToIntReturnModel
+    {
+        public System.Int32? IntValue { get; set; }
     }
 
     #endregion
