@@ -915,7 +915,6 @@
             {
                 return IsStoreGenerated && !IsIdentity;
             }
-
             private void SetupConfig(bool dataAnnotations, bool dataAnnotationsSchema, bool isSqlCe, Dictionary<string, string> columnNameToDataAnnotation)
             {
                 DataAnnotations = new List<string>();
@@ -924,23 +923,23 @@
                     ? string.Empty
                     : "System.ComponentModel.DataAnnotations.Schema.";
 
-                if (IsIdentity)
+				bool isNewSequentialId = !string.IsNullOrEmpty(Default)  && Default.ToLower().Contains("newsequentialid");
+
+                if (IsIdentity || isNewSequentialId)
                 {
-                    if(dataAnnotationsSchema)
+                    if(dataAnnotationsSchema || isNewSequentialId)
                         DataAnnotations.Add("DatabaseGenerated(DatabaseGeneratedOption.Identity)");
                     else
                         databaseGeneratedOption = string.Format(".HasDatabaseGeneratedOption({0}DatabaseGeneratedOption.Identity)", schemaReference);
-                }
-
-                if(IsComputed())
+                } 
+                else if(IsComputed())
                 {
                     if(dataAnnotationsSchema)
                         DataAnnotations.Add("DatabaseGenerated(DatabaseGeneratedOption.Computed)");
                     else
                         databaseGeneratedOption = string.Format(".HasDatabaseGeneratedOption({0}DatabaseGeneratedOption.Computed)", schemaReference);
                 }
-
-                if (IsPrimaryKey && !IsIdentity && !IsStoreGenerated)
+                else if (IsPrimaryKey)
                 {
                     if(dataAnnotationsSchema)
                         DataAnnotations.Add("DatabaseGenerated(DatabaseGeneratedOption.None)");
@@ -1058,7 +1057,7 @@
 
                 DataAnnotations.Add(string.Format("Display(Name = \"{0}\")", DisplayName));
             }
-
+            
             public void SetupEntityAndConfig(CommentsStyle includeComments, CommentsStyle includeExtendedPropertyComments, bool usePrivateSetterForComputedColumns, bool dataAnnotations, bool dataAnnotationsSchema, bool isSqlCe, Dictionary<string, string> columnNameToDataAnnotation)
             {
                 SetupEntity(includeComments, includeExtendedPropertyComments, usePrivateSetterForComputedColumns);
