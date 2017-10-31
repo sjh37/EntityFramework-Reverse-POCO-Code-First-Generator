@@ -931,7 +931,7 @@
                         DataAnnotations.Add("DatabaseGenerated(DatabaseGeneratedOption.Identity)");
                     else
                         databaseGeneratedOption = string.Format(".HasDatabaseGeneratedOption({0}DatabaseGeneratedOption.Identity)", schemaReference);
-                } 
+                }
                 else if(IsComputed())
                 {
                     if(dataAnnotationsSchema)
@@ -1057,7 +1057,7 @@
 
                 DataAnnotations.Add(string.Format("Display(Name = \"{0}\")", DisplayName));
             }
-            
+
             public void SetupEntityAndConfig(CommentsStyle includeComments, CommentsStyle includeExtendedPropertyComments, bool usePrivateSetterForComputedColumns, bool dataAnnotations, bool dataAnnotationsSchema, bool isSqlCe, Dictionary<string, string> columnNameToDataAnnotation)
             {
                 SetupEntity(includeComments, includeExtendedPropertyComments, usePrivateSetterForComputedColumns);
@@ -1505,7 +1505,7 @@
             public abstract void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool usePascalCase, bool prependSchemaName, string collectionInterfaceType, string collectionType, bool checkForFkNameClashes, CommentsStyle includeComments, Func<string, ForeignKey, string, Relationship, short, string> ForeignKeyName, bool dataAnnotationsSchema, Func<IList<ForeignKey>, Table, Table, bool, ForeignKey> foreignKeyProcessing, Func<Table, Table, string, string[]> foreignKeyAnnotationsProcessing);
             public abstract void IdentifyForeignKeys(List<ForeignKey> fkList, Tables tables);
             public abstract void ReadIndexes(Tables tables);
-            public abstract void ReadExtendedProperties(Tables tables, bool includeConnectionSettingComments);
+            public abstract void ReadExtendedProperties(Tables tables, bool includeConnectionSettingComments, bool commentsInSummaryBlock);
 
             protected void WriteLine(string o)
             {
@@ -2249,7 +2249,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
 
                 if (includeExtendedPropertyComments != CommentsStyle.None)
-                    ReadExtendedProperties(result, includeConnectionSettingComments);
+                    ReadExtendedProperties(result, includeConnectionSettingComments, includeExtendedPropertyComments == CommentsStyle.InSummaryBlock);
 
                 ReadIndexes(result);
 
@@ -2404,7 +2404,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
             }
 
-            public override void ReadExtendedProperties(Tables tables, bool includeConnectionSettingComments)
+            public override void ReadExtendedProperties(Tables tables, bool includeConnectionSettingComments, bool commentsInSummaryBlock)
             {
                 if(Cmd == null)
                     return;
@@ -2448,15 +2448,18 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                             if (string.IsNullOrEmpty(column))
                             {
                                 // Table level extended comment
-                                t.ExtendedProperty = extendedProperty;
+                                t.ExtendedProperty = Regex.Replace(extendedProperty, "[\r\n]+", "\r\n    /// ");
                             }
                             else
                             {
                                 var col = t.Columns.Find(x => x.Name == column);
                                 if (col != null)
                                 {
-                                    extendedProperty = extendedProperty.Replace("\n", " ").Replace("\r", " ");
-                                    col.ExtendedProperty = extendedProperty;
+                                    // Column level extended comment
+                                    if(commentsInSummaryBlock)
+                                        col.ExtendedProperty = Regex.Replace(extendedProperty, "[\r\n]+", "\r\n        /// ");
+                                    else
+                                        col.ExtendedProperty = Regex.Replace(Regex.Replace(extendedProperty, "[\r\n]+", " "), "\\s+", " ");
                                 }
                             }
                         }
@@ -3323,7 +3326,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         {
                             ReverseNavigationUniquePropName.Add(col);
                         }
-                        
+
                         return col;
                     }
                 }
@@ -3339,7 +3342,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     {
                         ReverseNavigationUniquePropName.Add(col);
                     }
-                    
+
                     return col;
                 }
 
@@ -3355,7 +3358,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     {
                         ReverseNavigationUniquePropName.Add(col);
                     }
-                    
+
                     return col;
                 }
 

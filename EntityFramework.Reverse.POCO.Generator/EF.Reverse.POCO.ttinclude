@@ -988,8 +988,8 @@ if(!tbl.HasPrimaryKey) { #>
 <# } #>
 <#if(IncludeComments != CommentsStyle.None){#>    // <#=tbl.Name#>
 <# } #>
-<# WritePocoClassAttributes(tbl);
-   WritePocoClassExtendedComments(tbl);#>
+<# WritePocoClassExtendedComments(tbl);
+    WritePocoClassAttributes(tbl);#>
 <#if(IncludeCodeGeneratedAttribute){#>    <#=CodeGeneratedAttribute#>
 <#}#>
     <# if(MakeClassesInternal) { #>internal<# } else { #>public<# } #> <# if(MakeClassesPartial) { #>partial <# } #>class <#=tbl.NameHumanCaseWithSuffix#><#=WritePocoBaseClasses != null ? WritePocoBaseClasses(tbl) : "" #>
