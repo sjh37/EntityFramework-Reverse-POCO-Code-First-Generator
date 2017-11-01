@@ -64,6 +64,16 @@ ALTER TABLE Stafford.Foo CHECK CONSTRAINT FK_Foo_Boo;
 GO
 
 
+
+CREATE TABLE Stafford.ComputedColumns
+(
+    Id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+	MyColumn varchar(10) NOT NULL,
+	MyComputedColumn AS MyColumn
+);
+GO
+
+
 CREATE FUNCTION [dbo].[CsvToInt]
 (
 	@array varchar(8000),

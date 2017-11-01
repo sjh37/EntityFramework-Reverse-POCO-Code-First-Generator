@@ -53,5 +53,29 @@ namespace Tester
             var boo = db.Stafford_Boos.First(b => b.Id == _fooDa.Stafford_Boo.Id);
             Assert.IsNotNull(boo.Stafford_Foo);
         }
+
+        [Test]
+        public void Validation_WhenEntityHasComputedColumn_ShouldValidate_Standard()
+        {
+            var db = new TestDatabaseStandard.TestDbContext();
+            var entity = new TestDatabaseStandard.Stafford_ComputedColumn { MyColumn = "something" };
+            db.Stafford_ComputedColumns.Add(entity);
+            var validationErrors = db.GetValidationErrors()
+                .SelectMany(p => p.ValidationErrors)
+                .Select(p => $"{p.PropertyName} - ${p.ErrorMessage})");
+            Assert.IsEmpty(validationErrors);
+        }
+
+        [Test]
+        public void Validation_WhenEntityHasComputedColumn_ShouldValidate_DataAnnotation()
+        {
+            var db = new TestDatabaseDataAnnotation.TestDbContext();
+            var entity = new TestDatabaseDataAnnotation.Stafford_ComputedColumn { MyColumn = "something" };
+            db.Stafford_ComputedColumns.Add(entity);
+            var validationErrors = db.GetValidationErrors()
+                .SelectMany(p => p.ValidationErrors)
+                .Select(p => $"{p.PropertyName} - ${p.ErrorMessage})");
+            Assert.IsEmpty(validationErrors);
+        }
     }
 }

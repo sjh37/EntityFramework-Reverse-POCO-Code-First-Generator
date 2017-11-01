@@ -915,6 +915,7 @@
             {
                 return IsStoreGenerated && !IsIdentity;
             }
+
             private void SetupConfig(bool dataAnnotations, bool dataAnnotationsSchema, bool isSqlCe, Dictionary<string, string> columnNameToDataAnnotation)
             {
                 DataAnnotations = new List<string>();
@@ -972,8 +973,11 @@
                 }
                 else
                 {
-                    if(dataAnnotations)
-                        DataAnnotations.Add("Required");
+                    if (dataAnnotations)
+                    {
+                        if(!IsComputed())
+                            DataAnnotations.Add("Required");
+                    }
                     else
                         sb.Append(".IsRequired()");
                 }

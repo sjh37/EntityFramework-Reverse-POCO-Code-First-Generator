@@ -40,6 +40,7 @@ namespace TestDatabaseDataAnnotation
     {
         System.Data.Entity.DbSet<ColumnName> ColumnNames { get; set; } // ColumnNames
         System.Data.Entity.DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
+        System.Data.Entity.DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; } // ComputedColumns
         System.Data.Entity.DbSet<Stafford_Foo> Stafford_Foos { get; set; } // Foo
 
         int SaveChanges();
@@ -70,6 +71,7 @@ namespace TestDatabaseDataAnnotation
     {
         public System.Data.Entity.DbSet<ColumnName> ColumnNames { get; set; } // ColumnNames
         public System.Data.Entity.DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
+        public System.Data.Entity.DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; } // ComputedColumns
         public System.Data.Entity.DbSet<Stafford_Foo> Stafford_Foos { get; set; } // Foo
 
         static TestDbContext()
@@ -125,6 +127,7 @@ namespace TestDatabaseDataAnnotation
 
             modelBuilder.Configurations.Add(new ColumnNameConfiguration());
             modelBuilder.Configurations.Add(new Stafford_BooConfiguration());
+            modelBuilder.Configurations.Add(new Stafford_ComputedColumnConfiguration());
             modelBuilder.Configurations.Add(new Stafford_FooConfiguration());
         }
 
@@ -132,6 +135,7 @@ namespace TestDatabaseDataAnnotation
         {
             modelBuilder.Configurations.Add(new ColumnNameConfiguration(schema));
             modelBuilder.Configurations.Add(new Stafford_BooConfiguration(schema));
+            modelBuilder.Configurations.Add(new Stafford_ComputedColumnConfiguration(schema));
             modelBuilder.Configurations.Add(new Stafford_FooConfiguration(schema));
             return modelBuilder;
         }
@@ -170,12 +174,14 @@ namespace TestDatabaseDataAnnotation
     {
         public System.Data.Entity.DbSet<ColumnName> ColumnNames { get; set; }
         public System.Data.Entity.DbSet<Stafford_Boo> Stafford_Boos { get; set; }
+        public System.Data.Entity.DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; }
         public System.Data.Entity.DbSet<Stafford_Foo> Stafford_Foos { get; set; }
 
         public FakeTestDbContext()
         {
             ColumnNames = new FakeDbSet<ColumnName>("C36");
             Stafford_Boos = new FakeDbSet<Stafford_Boo>("Id");
+            Stafford_ComputedColumns = new FakeDbSet<Stafford_ComputedColumn>("Id");
             Stafford_Foos = new FakeDbSet<Stafford_Foo>("Id");
         }
 
@@ -648,6 +654,34 @@ namespace TestDatabaseDataAnnotation
         public virtual Stafford_Foo Stafford_Foo { get; set; } // Foo.FK_Foo_Boo
     }
 
+    // ComputedColumns
+    [Table("ComputedColumns", Schema = "Stafford")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.33.0.0")]
+    public class Stafford_ComputedColumn
+    {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Column(@"Id", Order = 1, TypeName = "int")]
+        [Index(@"PK__Computed__3214EC07D1C457B3", 1, IsUnique = true, IsClustered = true)]
+        [Required]
+        [Key]
+        [Display(Name = "Id")]
+        public int Id { get; set; } // Id (Primary key)
+
+        [Column(@"MyColumn", Order = 2, TypeName = "varchar")]
+        [Required]
+        [MaxLength(10)]
+        [StringLength(10)]
+        [Display(Name = "My column")]
+        public string MyColumn { get; set; } // MyColumn (length: 10)
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        [Column(@"MyComputedColumn", Order = 3, TypeName = "varchar")]
+        [MaxLength(10)]
+        [StringLength(10)]
+        [Display(Name = "My computed column")]
+        public string MyComputedColumn { get; private set; } // MyComputedColumn (length: 10)
+    }
+
     // Foo
     [Table("Foo", Schema = "Stafford")]
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.33.0.0")]
@@ -723,6 +757,22 @@ namespace TestDatabaseDataAnnotation
         public Stafford_BooConfiguration(string schema)
         {
             Property(x => x.Name).IsFixedLength();
+        }
+    }
+
+    // ComputedColumns
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.33.0.0")]
+    public class Stafford_ComputedColumnConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<Stafford_ComputedColumn>
+    {
+        public Stafford_ComputedColumnConfiguration()
+            : this("Stafford")
+        {
+        }
+
+        public Stafford_ComputedColumnConfiguration(string schema)
+        {
+            Property(x => x.MyColumn).IsUnicode(false);
+            Property(x => x.MyComputedColumn).IsUnicode(false);
         }
     }
 

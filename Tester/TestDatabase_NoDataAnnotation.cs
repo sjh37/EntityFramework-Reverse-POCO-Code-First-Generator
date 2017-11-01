@@ -27,8 +27,6 @@
 // TargetFrameworkVersion = 4.5
 #pragma warning disable 1591    //  Ignore "Missing XML Comment" warning
 
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TestDatabaseStandard
 {
@@ -40,6 +38,7 @@ namespace TestDatabaseStandard
     {
         System.Data.Entity.DbSet<ColumnName> ColumnNames { get; set; } // ColumnNames
         System.Data.Entity.DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
+        System.Data.Entity.DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; } // ComputedColumns
         System.Data.Entity.DbSet<Stafford_Foo> Stafford_Foos { get; set; } // Foo
 
         int SaveChanges();
@@ -70,6 +69,7 @@ namespace TestDatabaseStandard
     {
         public System.Data.Entity.DbSet<ColumnName> ColumnNames { get; set; } // ColumnNames
         public System.Data.Entity.DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
+        public System.Data.Entity.DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; } // ComputedColumns
         public System.Data.Entity.DbSet<Stafford_Foo> Stafford_Foos { get; set; } // Foo
 
         static TestDbContext()
@@ -125,6 +125,7 @@ namespace TestDatabaseStandard
 
             modelBuilder.Configurations.Add(new ColumnNameConfiguration());
             modelBuilder.Configurations.Add(new Stafford_BooConfiguration());
+            modelBuilder.Configurations.Add(new Stafford_ComputedColumnConfiguration());
             modelBuilder.Configurations.Add(new Stafford_FooConfiguration());
         }
 
@@ -132,6 +133,7 @@ namespace TestDatabaseStandard
         {
             modelBuilder.Configurations.Add(new ColumnNameConfiguration(schema));
             modelBuilder.Configurations.Add(new Stafford_BooConfiguration(schema));
+            modelBuilder.Configurations.Add(new Stafford_ComputedColumnConfiguration(schema));
             modelBuilder.Configurations.Add(new Stafford_FooConfiguration(schema));
             return modelBuilder;
         }
@@ -170,12 +172,14 @@ namespace TestDatabaseStandard
     {
         public System.Data.Entity.DbSet<ColumnName> ColumnNames { get; set; }
         public System.Data.Entity.DbSet<Stafford_Boo> Stafford_Boos { get; set; }
+        public System.Data.Entity.DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; }
         public System.Data.Entity.DbSet<Stafford_Foo> Stafford_Foos { get; set; }
 
         public FakeTestDbContext()
         {
             ColumnNames = new FakeDbSet<ColumnName>("C36");
             Stafford_Boos = new FakeDbSet<Stafford_Boo>("Id");
+            Stafford_ComputedColumns = new FakeDbSet<Stafford_ComputedColumn>("Id");
             Stafford_Foos = new FakeDbSet<Stafford_Foo>("Id");
         }
 
@@ -510,96 +514,26 @@ namespace TestDatabaseStandard
     /// This is to document the
     ///     table with poor column name choices
     ///</summary>
-    [Table("ColumnNames", Schema = "dbo")]
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.33.0.0")]
     public class ColumnName
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        [Column(@"$", Order = 1, TypeName = "int")]
-        [Index(@"PK__ColumnNa__3BD01849ADDA95D5", 1, IsUnique = true, IsClustered = true)]
-        [Required]
-        [Key]
-        [Display(Name = "")]
         public int C36 { get; set; } // $ (Primary key)
-
-        [Column(@"%", Order = 2, TypeName = "int")]
-        [Display(Name = "")]
         public int? C37 { get; set; } // %
-
-        [Column(@"£", Order = 3, TypeName = "int")]
-        [Display(Name = "")]
         public int? C163 { get; set; } // £
-
-        [Column(@"&test$", Order = 4, TypeName = "int")]
-        [Display(Name = "Test")]
         public int? C38Test36 { get; set; } // &test$. Multi Line Comment
-
-        [Column(@"abc/\", Order = 5, TypeName = "int")]
-        [Display(Name = "Abc")]
         public int? Abc4792 { get; set; } // abc/\
-
-        [Column(@"joe.bloggs", Order = 6, TypeName = "int")]
-        [Display(Name = "Joe bloggs")]
         public int? Joe46Bloggs { get; set; } // joe.bloggs
-
-        [Column(@"snake-case", Order = 7, TypeName = "int")]
-        [Display(Name = "Snake case")]
         public int? SnakeCase { get; set; } // snake-case
-
-        [Column(@"default_test", Order = 8, TypeName = "varchar")]
-        [Required]
-        [MaxLength(20)]
-        [StringLength(20)]
-        [Display(Name = "Default test")]
         public string DefaultTest { get; set; } // default_test (length: 20)
-
-        [Column(@"someDate", Order = 9, TypeName = "datetime2")]
-        [Required]
-        [Display(Name = "Some date")]
         public System.DateTime SomeDate { get; set; } // someDate
-
-        [Column(@"Obs", Order = 10, TypeName = "varchar")]
-        [MaxLength(20)]
-        [StringLength(20)]
-        [Display(Name = "Obs")]
         public string Obs { get; set; } // Obs (length: 20)
-
-        [Column(@"Slash1", Order = 11, TypeName = "varchar")]
-        [MaxLength(20)]
-        [StringLength(20)]
-        [Display(Name = "Slash 1")]
         public string Slash1 { get; set; } // Slash1 (length: 20)
-
-        [Column(@"Slash2", Order = 12, TypeName = "varchar")]
-        [MaxLength(20)]
-        [StringLength(20)]
-        [Display(Name = "Slash 2")]
         public string Slash2 { get; set; } // Slash2 (length: 20)
-
-        [Column(@"Slash3", Order = 13, TypeName = "varchar")]
-        [MaxLength(20)]
-        [StringLength(20)]
-        [Display(Name = "Slash 3")]
         public string Slash3 { get; set; } // Slash3 (length: 20)
-
-        [Column(@"static", Order = 14, TypeName = "int")]
-        [Display(Name = "Static")]
         public int? @Static { get; set; } // static
-
-        [Column(@"readonly", Order = 15, TypeName = "int")]
-        [Display(Name = "Readonly")]
         public int? @Readonly { get; set; } // readonly
-
-        [Column(@"123Hi", Order = 16, TypeName = "int")]
-        [Display(Name = "123 Hi")]
         public int? C123Hi { get; set; } // 123Hi
-
-        [Column(@"afloat", Order = 17, TypeName = "real")]
-        [Display(Name = "Afloat")]
         public float? Afloat { get; set; } // afloat
-
-        [Column(@"adouble", Order = 18, TypeName = "float")]
-        [Display(Name = "Adouble")]
         public double? Adouble { get; set; } // adouble
 
         public ColumnName()
@@ -616,23 +550,10 @@ namespace TestDatabaseStandard
     }
 
     // Boo
-    [Table("Boo", Schema = "Stafford")]
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.33.0.0")]
     public class Stafford_Boo
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column(@"id", Order = 1, TypeName = "int")]
-        [Index(@"PK_Boo", 1, IsUnique = true, IsClustered = true)]
-        [Required]
-        [Key]
-        [Display(Name = "Id")]
         public int Id { get; set; } // id (Primary key)
-
-        [Column(@"name", Order = 2, TypeName = "nchar")]
-        [Required]
-        [MaxLength(10)]
-        [StringLength(10)]
-        [Display(Name = "Name")]
         public string Name { get; set; } // name (length: 10)
 
         // Reverse navigation
@@ -643,25 +564,20 @@ namespace TestDatabaseStandard
         public virtual Stafford_Foo Stafford_Foo { get; set; } // Foo.FK_Foo_Boo
     }
 
+    // ComputedColumns
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.33.0.0")]
+    public class Stafford_ComputedColumn
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public string MyColumn { get; set; } // MyColumn (length: 10)
+        public string MyComputedColumn { get; private set; } // MyComputedColumn (length: 10)
+    }
+
     // Foo
-    [Table("Foo", Schema = "Stafford")]
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.33.0.0")]
     public class Stafford_Foo
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        [Column(@"id", Order = 1, TypeName = "int")]
-        [Index(@"PK_Foo", 1, IsUnique = true, IsClustered = true)]
-        [Required]
-        [Key]
-        [Display(Name = "Id")]
-        [ForeignKey("Stafford_Boo")]
         public int Id { get; set; } // id (Primary key)
-
-        [Column(@"name", Order = 2, TypeName = "nchar")]
-        [Required]
-        [MaxLength(10)]
-        [StringLength(10)]
-        [Display(Name = "Name")]
         public string Name { get; set; } // name (length: 10)
 
         // Foreign keys
@@ -669,7 +585,7 @@ namespace TestDatabaseStandard
         /// <summary>
         /// Parent Stafford_Boo pointed by [Foo].([Id]) (FK_Foo_Boo)
         /// </summary>
-        [ForeignKey("Id")] public virtual Stafford_Boo Stafford_Boo { get; set; } // FK_Foo_Boo
+        public virtual Stafford_Boo Stafford_Boo { get; set; } // FK_Foo_Boo
     }
 
     #endregion
@@ -687,22 +603,27 @@ namespace TestDatabaseStandard
 
         public ColumnNameConfiguration(string schema)
         {
-            Property(x => x.C37).IsOptional();
-            Property(x => x.C163).IsOptional();
-            Property(x => x.C38Test36).IsOptional();
-            Property(x => x.Abc4792).IsOptional();
-            Property(x => x.Joe46Bloggs).IsOptional();
-            Property(x => x.SnakeCase).IsOptional();
-            Property(x => x.DefaultTest).IsUnicode(false);
-            Property(x => x.Obs).IsOptional().IsUnicode(false);
-            Property(x => x.Slash1).IsOptional().IsUnicode(false);
-            Property(x => x.Slash2).IsOptional().IsUnicode(false);
-            Property(x => x.Slash3).IsOptional().IsUnicode(false);
-            Property(x => x.@Static).IsOptional();
-            Property(x => x.@Readonly).IsOptional();
-            Property(x => x.C123Hi).IsOptional();
-            Property(x => x.Afloat).IsOptional();
-            Property(x => x.Adouble).IsOptional();
+            ToTable("ColumnNames", schema);
+            HasKey(x => x.C36);
+
+            Property(x => x.C36).HasColumnName(@"$").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None);
+            Property(x => x.C37).HasColumnName(@"%").HasColumnType("int").IsOptional();
+            Property(x => x.C163).HasColumnName(@"£").HasColumnType("int").IsOptional();
+            Property(x => x.C38Test36).HasColumnName(@"&test$").HasColumnType("int").IsOptional();
+            Property(x => x.Abc4792).HasColumnName(@"abc/\").HasColumnType("int").IsOptional();
+            Property(x => x.Joe46Bloggs).HasColumnName(@"joe.bloggs").HasColumnType("int").IsOptional();
+            Property(x => x.SnakeCase).HasColumnName(@"snake-case").HasColumnType("int").IsOptional();
+            Property(x => x.DefaultTest).HasColumnName(@"default_test").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(20);
+            Property(x => x.SomeDate).HasColumnName(@"someDate").HasColumnType("datetime2").IsRequired();
+            Property(x => x.Obs).HasColumnName(@"Obs").HasColumnType("varchar").IsOptional().IsUnicode(false).HasMaxLength(20);
+            Property(x => x.Slash1).HasColumnName(@"Slash1").HasColumnType("varchar").IsOptional().IsUnicode(false).HasMaxLength(20);
+            Property(x => x.Slash2).HasColumnName(@"Slash2").HasColumnType("varchar").IsOptional().IsUnicode(false).HasMaxLength(20);
+            Property(x => x.Slash3).HasColumnName(@"Slash3").HasColumnType("varchar").IsOptional().IsUnicode(false).HasMaxLength(20);
+            Property(x => x.@Static).HasColumnName(@"static").HasColumnType("int").IsOptional();
+            Property(x => x.@Readonly).HasColumnName(@"readonly").HasColumnType("int").IsOptional();
+            Property(x => x.C123Hi).HasColumnName(@"123Hi").HasColumnType("int").IsOptional();
+            Property(x => x.Afloat).HasColumnName(@"afloat").HasColumnType("real").IsOptional();
+            Property(x => x.Adouble).HasColumnName(@"adouble").HasColumnType("float").IsOptional();
         }
     }
 
@@ -717,7 +638,31 @@ namespace TestDatabaseStandard
 
         public Stafford_BooConfiguration(string schema)
         {
-            Property(x => x.Name).IsFixedLength();
+            ToTable("Boo", schema);
+            HasKey(x => x.Id);
+
+            Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity);
+            Property(x => x.Name).HasColumnName(@"name").HasColumnType("nchar").IsRequired().IsFixedLength().HasMaxLength(10);
+        }
+    }
+
+    // ComputedColumns
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.33.0.0")]
+    public class Stafford_ComputedColumnConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<Stafford_ComputedColumn>
+    {
+        public Stafford_ComputedColumnConfiguration()
+            : this("Stafford")
+        {
+        }
+
+        public Stafford_ComputedColumnConfiguration(string schema)
+        {
+            ToTable("ComputedColumns", schema);
+            HasKey(x => x.Id);
+
+            Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity);
+            Property(x => x.MyColumn).HasColumnName(@"MyColumn").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(10);
+            Property(x => x.MyComputedColumn).HasColumnName(@"MyComputedColumn").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(10).HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Computed);
         }
     }
 
@@ -732,8 +677,14 @@ namespace TestDatabaseStandard
 
         public Stafford_FooConfiguration(string schema)
         {
-            Property(x => x.Name).IsFixedLength();
+            ToTable("Foo", schema);
+            HasKey(x => x.Id);
 
+            Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None);
+            Property(x => x.Name).HasColumnName(@"name").HasColumnType("nchar").IsRequired().IsFixedLength().HasMaxLength(10);
+
+            // Foreign keys
+            HasRequired(a => a.Stafford_Boo).WithOptional(b => b.Stafford_Foo).WillCascadeOnDelete(false); // FK_Foo_Boo
         }
     }
 

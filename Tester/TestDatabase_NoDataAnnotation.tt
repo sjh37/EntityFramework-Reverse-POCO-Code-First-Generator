@@ -26,8 +26,8 @@
     MakeDbContextInterfacePartial = false;
     UseMappingTables = true; // If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
     UsePascalCase = true;    // This will rename the generated C# tables & properties to use PascalCase. If false table & property names will be left alone.
-    UseDataAnnotations = true; // If true, will add data annotations to the poco classes.
-    UseDataAnnotationsSchema = true; // UseDataAnnotations must also be true. If true, will add data annotations schema to the poco classes.
+    UseDataAnnotations = false; // If true, will add data annotations to the poco classes.
+    UseDataAnnotationsSchema = false; // UseDataAnnotations must also be true. If true, will add data annotations schema to the poco classes.
     UsePropertyInitializers = false; // Removes POCO constructor and instead uses C# 6 property initialisers to set defaults
     UseLazyLoading = true; // Marks all navigation properties as virtual or not, to support or disable EF Lazy Loading feature
     IncludeComments = CommentsStyle.AtEndOfField; // Adds comments to the generated code
