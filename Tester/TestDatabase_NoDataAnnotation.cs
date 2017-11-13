@@ -549,6 +549,16 @@ namespace TestDatabaseStandard
         }
     }
 
+    // The table 'NoPrimaryKeys' is not usable by entity framework because it
+    // does not have a primary key. It is listed here for completeness.
+    // NoPrimaryKeys
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.33.0.0")]
+    public class NoPrimaryKey
+    {
+        public int? Id { get; set; } // Id
+        public string Description { get; set; } // Description (length: 10)
+    }
+
     // Boo
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.33.0.0")]
     public class Stafford_Boo

@@ -147,3 +147,12 @@ SET @v = N'Multi
    Comment';
 EXECUTE sp_addextendedproperty N'MS_Description', @v, N'SCHEMA', N'dbo', N'TABLE', N'ColumnNames', N'COLUMN', N'&test$';
 GO
+
+-- This table is unusable by EF as all the columns are NULL.
+-- We should see this table generated inside a comment, but with a comment that it is unusable
+CREATE TABLE NoPrimaryKeys
+(
+    Id INT NULL,
+    [Description] VARCHAR(10) NULL
+)
+GO

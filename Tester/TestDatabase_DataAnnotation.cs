@@ -626,6 +626,24 @@ namespace TestDatabaseDataAnnotation
         }
     }
 
+    // The table 'NoPrimaryKeys' is not usable by entity framework because it
+    // does not have a primary key. It is listed here for completeness.
+    // NoPrimaryKeys
+    [NotMapped]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.33.0.0")]
+    public class NoPrimaryKey
+    {
+        [Column(@"Id", Order = 1, TypeName = "int")]
+        [Display(Name = "Id")]
+        public int? Id { get; set; } // Id
+
+        [Column(@"Description", Order = 2, TypeName = "varchar")]
+        [MaxLength(10)]
+        [StringLength(10)]
+        [Display(Name = "Description")]
+        public string Description { get; set; } // Description (length: 10)
+    }
+
     // Boo
     [Table("Boo", Schema = "Stafford")]
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.33.0.0")]
