@@ -272,7 +272,7 @@
     private string GetConnectionString(ref string connectionStringName, out string providerName, out string configFilePath)
     {
         providerName = null;
-        configFilePath = String.Empty;
+        configFilePath = string.Empty;
         var result = "";
         var paths = GetConfigPaths();
 
@@ -317,32 +317,32 @@
         Settings.ConnectionString = Settings.ConnectionString.Replace(DataDirectory, dataFilePath);
     }
 
-    public EnvDTE.DTE GetDTE()
+    public DTE GetDTE()
     {
         var serviceProvider = (IServiceProvider)Host;
         if(serviceProvider == null)
             throw new Exception("Host property returned unexpected value (null)");
 
-        var dte = (EnvDTE.DTE)serviceProvider.GetService(typeof(EnvDTE.DTE));
+        var dte = (DTE)serviceProvider.GetService(typeof(DTE));
         if(dte == null)
             throw new Exception("Unable to retrieve EnvDTE.DTE");
 
         return dte;
     }
 
-    public EnvDTE.Solution GetSolution()
+    public Solution GetSolution()
     {
         return GetDTE().Solution;
     }
 
-    public IEnumerable<EnvDTE.Project> GetAllProjects()
+    public IEnumerable<Project> GetAllProjects()
     {
         foreach(var projectObj in GetSolution().Projects)
         {
-            var project = projectObj as EnvDTE.Project;
+            var project = projectObj as Project;
             if(project == null)
                 continue;
-            if(project.Kind == EnvDTE.Constants.vsProjectKindSolutionItems)
+            if(project.Kind == Constants.vsProjectKindSolutionItems)
                 foreach(var p in RecurseSolutionFolder(project))
                     yield return p;
             else
@@ -350,17 +350,17 @@
         }
     }
 
-    private IEnumerable<EnvDTE.Project> RecurseSolutionFolder(EnvDTE.Project project)
+    private IEnumerable<Project> RecurseSolutionFolder(Project project)
     {
         if (project.ProjectItems == null)
             yield break;
 
-        foreach (EnvDTE.ProjectItem projectItem in project.ProjectItems)
+        foreach (ProjectItem projectItem in project.ProjectItems)
         {
             var subProject = projectItem.SubProject;
             if (subProject == null)
                 continue;
-            if (subProject.Kind == EnvDTE.Constants.vsProjectKindSolutionItems)
+            if (subProject.Kind == Constants.vsProjectKindSolutionItems)
             {
                 foreach (var p in RecurseSolutionFolder(subProject))
                     yield return p;
@@ -370,12 +370,12 @@
         }
     }
 
-    public EnvDTE.Project GetCurrentProject()
+    public Project GetCurrentProject()
     {
         var dte = GetDTE();
 
         // Get the project item
-        var projectItem = dte.Solution.FindProjectItem(this.Host.TemplateFile);
+        var projectItem = dte.Solution.FindProjectItem(Host.TemplateFile);
         // Get the project
         var currentProject = projectItem.ContainingProject;
         if (currentProject != null)
@@ -388,7 +388,7 @@
 
         if (activeSolutionProjects.Length > 0)
         {
-            var dteProject = (EnvDTE.Project) activeSolutionProjects.GetValue(0);
+            var dteProject = (Project) activeSolutionProjects.GetValue(0);
             if (dteProject != null)
                 return dteProject;
         }
@@ -400,7 +400,7 @@
         throw new InvalidOperationException("Error in GetCurrentProject(). Unable to find project.");
     }
 
-    private string GetProjectPath(EnvDTE.Project project)
+    private string GetProjectPath(Project project)
     {
         var fullProjectName = project.FullName;
 
@@ -423,12 +423,12 @@
         var paths = new List<string>();
 
         // Local project first
-        EnvDTE.Project project = GetCurrentProject();
+        Project project = GetCurrentProject();
         paths.AddRange(GetConfigPathsInProject(project));
 
         // Then other projects next
         var projects = GetAllProjects();
-        foreach (EnvDTE.Project dteProject in projects)
+        foreach (Project dteProject in projects)
         {
             paths.AddRange(GetConfigPathsInProject(dteProject));
         }
@@ -446,7 +446,7 @@
         return paths;
     }
 
-    private List<string> GetConfigPathsInProject(EnvDTE.Project project)
+    private List<string> GetConfigPathsInProject(Project project)
     {
         var paths = new List<string>();
         if (Settings.FilenameSearchOrder == null || project == null)
@@ -458,11 +458,11 @@
         return paths;
     }
 
-    private List<string> GetConfigPathsInProjectForFile(EnvDTE.Project project, string filename)
+    private List<string> GetConfigPathsInProjectForFile(Project project, string filename)
     {
         try
         {
-            if (project == null || project.Kind == EnvDTE.Constants.vsProjectKindUnmodeled)
+            if (project == null || project.Kind == Constants.vsProjectKindUnmodeled)
             {
                 // Project is 'unloaded'
                 return new List<string>();
@@ -487,21 +487,24 @@
         {
             var paths = GetConfigPaths();
             paths.Add(GetSolution().FullName);
-            using (DbConnection conn = factory.CreateConnection())
+            using (var conn = factory.CreateConnection())
             {
-                foreach (var path in paths)
+                if(conn != null)
                 {
-                    try
+                    foreach (var path in paths)
                     {
-                        var directory = Path.GetDirectoryName(path) + "\\";
-                        var connStr = Settings.ConnectionString.Replace(DataDirectory, directory);
-                        conn.ConnectionString = connStr;
-                        conn.Open();
-                        return directory;   // Successfully opened the database. Return the datapath where we found it
-                    }
-                    catch (Exception)
-                    {
-                        // Could not open the database. Eat error, and try next path
+                        try
+                        {
+                            var directory = Path.GetDirectoryName(path) + "\\";
+                            var connStr = Settings.ConnectionString.Replace(DataDirectory, directory);
+                            conn.ConnectionString = connStr;
+                            conn.Open();
+                            return directory; // Successfully opened the database. Return the datapath where we found it
+                        }
+                        catch (Exception)
+                        {
+                            // Could not open the database. Eat error, and try next path
+                        }
                     }
                 }
             }
@@ -512,10 +515,10 @@
         return Path.GetDirectoryName(project.FileName) + "\\App_Data\\";
     }
 
-    private static string ZapPassword(string connectionString)
+    private static string ZapPassword()
     {
         var rx = new Regex("password=[^\";]*", RegexOptions.Singleline | RegexOptions.Multiline | RegexOptions.IgnoreCase);
-        return rx.Replace(connectionString, "password=**zapped**;");
+        return rx.Replace(Settings.ConnectionString, "password=**zapped**;");
     }
 
     private DbProviderFactory GetDbProviderFactory()
@@ -542,10 +545,10 @@
             if (!string.IsNullOrEmpty(Settings.ConnectionStringName))
             {
                 var solutionPath = Path.GetDirectoryName(GetSolution().FileName) + "\\";
-                WriteLine("//     Configuration file:     \"{0}\"", Settings.ConfigFilePath.Replace(solutionPath, String.Empty));
+                WriteLine("//     Configuration file:     \"{0}\"", Settings.ConfigFilePath.Replace(solutionPath, string.Empty));
                 WriteLine("//     Connection String Name: \"{0}\"", Settings.ConnectionStringName);
             }
-            WriteLine("//     Connection String:      \"{0}\"", ZapPassword(Settings.ConnectionString));
+            WriteLine("//     Connection String:      \"{0}\"", ZapPassword());
             WriteLine("// ------------------------------------------------------------------------------------------------");
         }
 
@@ -607,8 +610,11 @@
 
         try
         {
-            using(DbConnection conn = factory.CreateConnection())
+            using(var conn = factory.CreateConnection())
             {
+                if(conn == null)
+                    return new Tables();
+
                 conn.ConnectionString = Settings.ConnectionString;
                 conn.Open();
 
@@ -617,7 +623,7 @@
                 if(Settings.IsSqlCe)
                     Settings.PrependSchemaName = false;
 
-                var reader = new SqlServerSchemaReader(conn, factory, Settings.IncludeQueryTraceOn9481Flag) { Outer = this };
+                var reader = new SqlServerSchemaReader(conn, factory) { Outer = this };
                 var tables = reader.ReadSchema();
                 var fkList = reader.ReadForeignKeys();
                 reader.IdentifyForeignKeys(fkList, tables);
@@ -667,15 +673,18 @@
 
         try
         {
-            using(DbConnection conn = factory.CreateConnection())
+            using(var conn = factory.CreateConnection())
             {
+                if(conn == null)
+                    return new List<StoredProcedure>();
+
                 conn.ConnectionString = Settings.ConnectionString;
                 conn.Open();
 
                 if (Settings.IsSqlCe)
                     return new List<StoredProcedure>();
 
-                var reader = new SqlServerSchemaReader(conn, factory, Settings.IncludeQueryTraceOn9481Flag) { Outer = this };
+                var reader = new SqlServerSchemaReader(conn, factory) { Outer = this };
                 var storedProcs = reader.ReadStoredProcs();
                 conn.Close();
 
@@ -752,16 +761,16 @@
     // Calculates the relationship between a child table and it's parent table.
     public static Relationship CalcRelationship(Table parentTable, Table childTable, List<Column> childTableCols, List<Column> parentTableCols)
     {
-        if (childTableCols.Count() == 1 && parentTableCols.Count() == 1)
+        if (childTableCols.Count == 1 && parentTableCols.Count == 1)
             return CalcRelationshipSingle(parentTable, childTable, childTableCols.First(), parentTableCols.First());
 
         // This relationship has multiple composite keys
 
         // childTable FK columns are exactly the primary key (they are part of primary key, and no other columns are primary keys) //TODO: we could also check if they are an unique index
-        bool childTableColumnsAllPrimaryKeys = (childTableCols.Count() == childTableCols.Count(x => x.IsPrimaryKey)) && (childTableCols.Count() == childTable.PrimaryKeys.Count());
+        bool childTableColumnsAllPrimaryKeys = (childTableCols.Count == childTableCols.Count(x => x.IsPrimaryKey)) && (childTableCols.Count == childTable.PrimaryKeys.Count());
 
         // parentTable columns are exactly the primary key (they are part of primary key, and no other columns are primary keys) //TODO: we could also check if they are an unique index
-        bool parentTableColumnsAllPrimaryKeys = (parentTableCols.Count() == parentTableCols.Count(x => x.IsPrimaryKey)) && (parentTableCols.Count() == parentTable.PrimaryKeys.Count());
+        bool parentTableColumnsAllPrimaryKeys = (parentTableCols.Count == parentTableCols.Count(x => x.IsPrimaryKey)) && (parentTableCols.Count == parentTable.PrimaryKeys.Count());
 
         // childTable FK columns are not only FK but also the whole PK (not only part of PK); parentTable columns are the whole PK (not only part of PK) - so it's 1:1
         if(childTableColumnsAllPrimaryKeys && parentTableColumnsAllPrimaryKeys)
@@ -889,7 +898,7 @@
                 else
                     inlineComments += ". " + ExtendedProperty;
             }
-            var initialization = Settings.UsePropertyInitializers ? ((this.Default == string.Empty)?"" : string.Format(" = {0};", this.Default)) : "";
+            var initialization = Settings.UsePropertyInitializers ? (Default == string.Empty ? "" : string.Format(" = {0};", Default)) : "";
             Entity = string.Format("public {0}{1} {2} {{ get; {3}set; }}{4}{5}", (OverrideModifier ? "override " : ""), WrapIfNullable(PropertyType, this), NameHumanCase, Settings.UsePrivateSetterForComputedColumns && IsComputed() ? "private " : string.Empty, initialization, inlineComments);
         }
 
@@ -1180,10 +1189,7 @@
                 case "timespan":
                 case "system.timespan":
                     TimeSpan ts;
-                    if(!TimeSpan.TryParse(Default, out ts))
-                        Default = string.Empty;
-                    else
-                        Default = string.Format("System.TimeSpan.Parse({0})", Default);
+                    Default = TimeSpan.TryParse(Default, out ts) ? string.Format("System.TimeSpan.Parse({0})", Default) : string.Empty;
                     break;
 
                 case "double":
@@ -1271,7 +1277,7 @@
         public static string WrapTypeIfNullable(string propertyType, DataColumn col) {
             if(!IsNullable(col))
                 return propertyType;
-            return String.Format(Settings.NullableShortHand ? "{0}?" : "System.Nullable<{0}>",propertyType);
+            return string.Format(Settings.NullableShortHand ? "{0}?" : "System.Nullable<{0}>",propertyType);
         }
 
     }
@@ -1517,7 +1523,7 @@
 
     private class SqlServerSchemaReader : SchemaReader
     {
-        private static string SqlDatabaseEdition, SqlDatabaseEngineEdition;
+        private static string _sqlDatabaseEdition, _sqlDatabaseEngineEdition;
 
         private const string TableSQL = @"
 SET NOCOUNT ON;
@@ -2088,17 +2094,14 @@ WHERE   t.is_ms_shipped = 0
     AND ic.key_ordinal > 0
     AND t.name NOT LIKE 'sysdiagram%'";
 
-        private bool IncludeQueryTraceOn9481Flag;
-
-        public SqlServerSchemaReader(DbConnection connection, DbProviderFactory factory, bool includeQueryTraceOn9481Flag)
+        public SqlServerSchemaReader(DbConnection connection, DbProviderFactory factory)
             : base(connection, factory)
         {
-            IncludeQueryTraceOn9481Flag = includeQueryTraceOn9481Flag;
         }
 
-        private string IncludeQueryTraceOn9481()
+        private static string IncludeQueryTraceOn9481()
         {
-            if (IncludeQueryTraceOn9481Flag)
+            if (Settings.IncludeQueryTraceOn9481Flag)
                 return @"
 OPTION (QUERYTRACEON 9481)";
             return string.Empty;
@@ -2106,7 +2109,7 @@ OPTION (QUERYTRACEON 9481)";
 
         private bool IsAzure(bool includeConnectionSettingComments)
         {
-            if (string.IsNullOrEmpty(SqlDatabaseEdition))
+            if (string.IsNullOrEmpty(_sqlDatabaseEdition))
             {
                 if (Cmd == null)
                     return false;
@@ -2128,19 +2131,19 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 {
                     if (rdr.Read())
                     {
-                        SqlDatabaseEdition = rdr["Edition"].ToString();
-                        SqlDatabaseEngineEdition = rdr["EngineEdition"].ToString();
+                        _sqlDatabaseEdition = rdr["Edition"].ToString();
+                        _sqlDatabaseEngineEdition = rdr["EngineEdition"].ToString();
                         if (includeConnectionSettingComments)
                         {
-                            WriteLine("// Database Edition       : " + SqlDatabaseEdition);
-                            WriteLine("// Database Engine Edition: " + SqlDatabaseEngineEdition);
+                            WriteLine("// Database Edition       : " + _sqlDatabaseEdition);
+                            WriteLine("// Database Engine Edition: " + _sqlDatabaseEngineEdition);
                             WriteLine("");
                         }
                     }
                 }
             }
 
-            return SqlDatabaseEngineEdition == "Azure";
+            return _sqlDatabaseEngineEdition == "Azure";
         }
 
         public override Tables ReadSchema()
@@ -2184,7 +2187,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                             {
                                 Name = tableName,
                                 Schema = schema,
-                                IsView = String.Compare(rdr["TableType"].ToString().Trim(), "View", StringComparison.OrdinalIgnoreCase) == 0,
+                                IsView = string.Compare(rdr["TableType"].ToString().Trim(), "View", StringComparison.OrdinalIgnoreCase) == 0,
 
                                 // Will be set later
                                 HasForeignKey = false,
@@ -2313,18 +2316,19 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             {
                 while (rdr.Read())
                 {
-                    var index = new Index();
-
-                    index.Schema             = rdr["TableSchema"].ToString().Trim();
-                    index.TableName          = rdr["TableName"].ToString().Trim();
-                    index.IndexName          = rdr["IndexName"].ToString().Trim();
-                    index.KeyOrdinal         = (byte) rdr["KeyOrdinal"];
-                    index.ColumnName         = rdr["ColumnName"].ToString().Trim();
-                    index.ColumnCount        = (int) rdr["ColumnCount"];
-                    index.IsUnique           = (bool) rdr["IsUnique"];
-                    index.IsPrimaryKey       = (bool) rdr["IsPrimaryKey"];
-                    index.IsUniqueConstraint = (bool) rdr["IsUniqueConstraint"];
-                    index.IsClustered        = ((int) rdr["IsClustered"]) == 1;
+                    var index = new Index
+                    {
+                        Schema             = rdr["TableSchema"].ToString().Trim(),
+                        TableName          = rdr["TableName"].ToString().Trim(),
+                        IndexName          = rdr["IndexName"].ToString().Trim(),
+                        KeyOrdinal         = (byte) rdr["KeyOrdinal"],
+                        ColumnName         = rdr["ColumnName"].ToString().Trim(),
+                        ColumnCount        = (int) rdr["ColumnCount"],
+                        IsUnique           = (bool) rdr["IsUnique"],
+                        IsPrimaryKey       = (bool) rdr["IsPrimaryKey"],
+                        IsUniqueConstraint = (bool) rdr["IsUniqueConstraint"],
+                        IsClustered        = ((int) rdr["IsClustered"]) == 1
+                    };
 
                     list.Add(index);
                 }
@@ -2515,22 +2519,22 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
                     if (rdr["DATA_TYPE"] != null && rdr["DATA_TYPE"] != DBNull.Value)
                     {
-                        string typename = rdr["DATA_TYPE"].ToString().Trim().ToLower();
+                        var typename = rdr["DATA_TYPE"].ToString().Trim().ToLower();
                         var scale = (int) rdr["NUMERIC_SCALE"];
                         var precision = (int) ((byte) rdr["NUMERIC_PRECISION"]);
                         var parameterMode = rdr["PARAMETER_MODE"].ToString().Trim().ToUpper();
 
                         var param = new StoredProcedureParameter
                         {
-                            Ordinal = (int) rdr["ORDINAL_POSITION"],
-                            Mode = (parameterMode == "IN") ? StoredProcedureParameterMode.In : StoredProcedureParameterMode.InOut,
-                            Name = rdr["PARAMETER_NAME"].ToString().Trim(),
-                            SqlDbType = GetSqlDbType(typename, scale, precision),
-                            PropertyType = GetPropertyType(typename, scale, precision),
-                            DateTimePrecision = (Int16) rdr["DATETIME_PRECISION"],
-                            MaxLength = (int) rdr["CHARACTER_MAXIMUM_LENGTH"],
-                            Precision = precision,
-                            Scale = scale,
+                            Ordinal             = (int) rdr["ORDINAL_POSITION"],
+                            Mode                = parameterMode == "IN" ? StoredProcedureParameterMode.In : StoredProcedureParameterMode.InOut,
+                            Name                = rdr["PARAMETER_NAME"].ToString().Trim(),
+                            SqlDbType           = GetSqlDbType(typename),
+                            PropertyType        = GetPropertyType(typename),
+                            DateTimePrecision   = (short) rdr["DATETIME_PRECISION"],
+                            MaxLength           = (int) rdr["CHARACTER_MAXIMUM_LENGTH"],
+                            Precision           = precision,
+                            Scale               = scale,
                             UserDefinedTypeName = rdr["USER_DEFINED_TYPE"].ToString().Trim()
                         };
 
@@ -2676,17 +2680,27 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
                     if (relationship == Relationship.OneToOne && foreignKey.IncludeReverseNavigation && fkCol.col.IsPrimaryKey)
                     {
-                        var principalEndAttribute =
-                            string.Format("ForeignKey(\"{0}\")", pkTableHumanCaseWithSuffix);
+                        var principalEndAttribute = string.Format("ForeignKey(\"{0}\")", pkTableHumanCaseWithSuffix);
                         if (!fkCol.col.DataAnnotations.Contains(principalEndAttribute))
                             fkCol.col.DataAnnotations.Add(principalEndAttribute);
                     }
                 }
 
-                var fkd = new PropertyAndComments();
-                fkd.AdditionalDataAnnotations = Settings.ForeignKeyAnnotationsProcessing(fkTable, pkTable, pkPropName);
-                fkd.Definition = string.Format("{0}public {1}{2} {3} {4}{5}", dataAnnotation, Table.GetLazyLoadingMarker(), pkTableHumanCaseWithSuffix, pkPropName, "{ get; set; }", Settings.IncludeComments != CommentsStyle.None ? " // " + foreignKey.ConstraintName : string.Empty);
-                fkd.Comments = string.Format("Parent {0} pointed by [{1}].({2}) ({3})", pkTableHumanCase, fkTable.Name, string.Join(", ", fkCols.Select(x => "[" + x.col.NameHumanCase + "]").Distinct().ToArray()), foreignKey.ConstraintName);
+                var fkd = new PropertyAndComments
+                {
+                    AdditionalDataAnnotations = Settings.ForeignKeyAnnotationsProcessing(fkTable, pkTable, pkPropName),
+                    Definition = string.Format("{0}public {1}{2} {3} {4}{5}", dataAnnotation,
+                        Table.GetLazyLoadingMarker(),
+                        pkTableHumanCaseWithSuffix,
+                        pkPropName,
+                        "{ get; set; }",
+                        Settings.IncludeComments != CommentsStyle.None ? " // " + foreignKey.ConstraintName : string.Empty),
+                    Comments = string.Format("Parent {0} pointed by [{1}].({2}) ({3})",
+                        pkTableHumanCase,
+                        fkTable.Name,
+                        string.Join(", ", fkCols.Select(x => "[" + x.col.NameHumanCase + "]").Distinct().ToArray()),
+                        foreignKey.ConstraintName)
+                };
                 fkCol.col.EntityFk.Add(fkd);
 
                 string manyToManyMapping, mapKey;
@@ -2788,14 +2802,14 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     return string.Format(".WithMany({0}).HasForeignKey({1})", withParam, manyToManyMapping);
 
                 default:
-                    throw new ArgumentOutOfRangeException("relationship");
+                    throw new ArgumentOutOfRangeException(nameof(relationship));
             }
         }
 
         private static Column CreateColumn(IDataRecord rdr, Regex rxClean, Table table, Regex columnFilterExclude)
         {
             if(rdr == null)
-                throw new ArgumentNullException("rdr");
+                throw new ArgumentNullException(nameof(rdr));
 
             string typename = rdr["TypeName"].ToString().Trim().ToLower();
             var scale = (int) rdr["Scale"];
@@ -2805,7 +2819,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             {
                 Name = rdr["ColumnName"].ToString().Trim(),
                 SqlPropertyType = typename,
-                PropertyType = GetPropertyType(typename, scale, precision),
+                PropertyType = GetPropertyType(typename),
                 MaxLength = (int)rdr["MaxLength"],
                 Precision = precision,
                 Default = rdr["Default"].ToString().Trim(),
@@ -2868,15 +2882,15 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             table.HasNullableColumns = IsNullable(col);
 
             // If PropertyType is empty, return null. Most likely ignoring a column due to legacy (such as OData not supporting spatial types)
-            if (col != null && string.IsNullOrEmpty(col.PropertyType))
+            if (string.IsNullOrEmpty(col.PropertyType))
                 return null;
 
             return col;
         }
 
-        private static string GetSqlDbType(string sqlType, int scale, int precision)
+        private static string GetSqlDbType(string sqlType)
         {
-            string sysType = "VarChar";
+            var sysType = "VarChar";
             switch(sqlType)
             {
                 case "hierarchyid":
@@ -3011,9 +3025,9 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             return sysType;
         }
 
-        private static string GetPropertyType(string sqlType, int scale, int precision)
+        private static string GetPropertyType(string sqlType)
         {
-            string sysType = "string";
+            var sysType = "string";
             switch(sqlType)
             {
                 case "hierarchyid":
@@ -3072,16 +3086,10 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     sysType = "byte[]";
                     break;
                 case "geography":
-                    if (Settings.DisableGeographyTypes)
-                        sysType = "";
-                    else
-                        sysType = "System.Data.Entity.Spatial.DbGeography";
+                    sysType = Settings.DisableGeographyTypes ? "" : "System.Data.Entity.Spatial.DbGeography";
                     break;
                 case "geometry":
-                    if (Settings.DisableGeographyTypes)
-                        sysType = "";
-                    else
-                        sysType = "System.Data.Entity.Spatial.DbGeometry";
+                    sysType = Settings.DisableGeographyTypes ? "" : "System.Data.Entity.Spatial.DbGeometry";
                     break;
             }
             return sysType;
@@ -3090,18 +3098,18 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
     public class ForeignKey
     {
-        public string FkTableName { get; private set; }
-        public string FkTableNameFiltered { get; private set; }
-        public string FkSchema { get; private set; }
-        public string PkTableName { get; private set; }
-        public string PkTableNameFiltered { get; private set; }
-        public string PkSchema { get; private set; }
-        public string FkColumn { get; private set; }
-        public string PkColumn { get; private set; }
-        public string ConstraintName { get; private set; }
-        public int Ordinal { get; private set; }
-        public bool CascadeOnDelete { get; private set; }
-        public bool IsNotEnforced { get; private set; }
+        public string FkTableName { get; }
+        public string FkTableNameFiltered { get; }
+        public string FkSchema { get; }
+        public string PkTableName { get; }
+        public string PkTableNameFiltered { get; }
+        public string PkSchema { get; }
+        public string FkColumn { get; }
+        public string PkColumn { get; }
+        public string ConstraintName { get; }
+        public int Ordinal { get; }
+        public bool CascadeOnDelete { get; }
+        public bool IsNotEnforced { get; }
 
         // User settable via ForeignKeyFilter callback
         public bool IncludeReverseNavigation { get; set; }
@@ -3186,13 +3194,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             return Settings.UseLazyLoading ? "virtual " : string.Empty;
         }
 
-        public string NameHumanCaseWithSuffix
-        {
-            get
-            {
-                return NameHumanCase + Suffix;
-            }
-        }
+        public string NameHumanCaseWithSuffix => NameHumanCase + Suffix;
+
         public void ResetNavigationProperties()
         {
             MappingConfiguration = new List<string>();
@@ -3232,7 +3235,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public string PrimaryKeyNameHumanCase()
         {
             var data = PrimaryKeys.Select(x => "x." + x.NameHumanCase).ToList();
-            int n = data.Count();
+            var n = data.Count;
             if(n == 0)
                 return string.Empty;
             if(n == 1)
@@ -3241,14 +3244,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             return string.Format("x => new {{ {0} }}", string.Join(", ", data));
         }
 
-        public Column this[string columnName]
-        {
-            get { return GetColumn(columnName); }
-        }
+        public Column this[string columnName] => GetColumn(columnName);
 
         public Column GetColumn(string columnName)
         {
-            return Columns.SingleOrDefault(x => String.Compare(x.Name, columnName, StringComparison.OrdinalIgnoreCase) == 0);
+            return Columns.SingleOrDefault(x => string.Compare(x.Name, columnName, StringComparison.OrdinalIgnoreCase) == 0);
         }
 
         public string GetUniqueColumnName(string tableNameHumanCase, ForeignKey foreignKey, bool checkForFkNameClashes, bool makeSingular, Relationship relationship)
@@ -3376,7 +3376,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         {
                             AdditionalDataAnnotations = Settings.ForeignKeyAnnotationsProcessing(fkTable, this, propName),
                             Definition = string.Format("public {0}{1} {2} {{ get; set; }}{3}", GetLazyLoadingMarker(), fkTable.NameHumanCaseWithSuffix, propName, Settings.IncludeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
-                            Comments = string.Format("Parent (One-to-One) {0} pointed by [{1}].{2} ({3})", this.NameHumanCaseWithSuffix, fkTable.Name, fkNames, fks.First().ConstraintName)
+                            Comments = string.Format("Parent (One-to-One) {0} pointed by [{1}].{2} ({3})", NameHumanCaseWithSuffix, fkTable.Name, fkNames, fks.First().ConstraintName)
                         }
                     );
                     break;
@@ -3424,7 +3424,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException("relationship");
+                    throw new ArgumentOutOfRangeException(nameof(relationship));
             }
         }
 
@@ -3458,8 +3458,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
             // Find the foreign keys for this table
             var foreignKeys = fkList.Where(x =>
-                                            String.Compare(x.FkTableName, Name, StringComparison.OrdinalIgnoreCase) == 0 &&
-                                            String.Compare(x.FkSchema, Schema, StringComparison.OrdinalIgnoreCase) == 0)
+                                            string.Compare(x.FkTableName, Name, StringComparison.OrdinalIgnoreCase) == 0 &&
+                                            string.Compare(x.FkSchema, Schema, StringComparison.OrdinalIgnoreCase) == 0)
                                     .ToList();
 
             // Each column must have a foreign key, therefore check column and foreign key counts match
@@ -3598,7 +3598,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         var sb = new StringBuilder();
         foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
         {
-            bool isNullable = !NotNullable.Contains(p.PropertyType.ToLower());
+            var isNullable = !NotNullable.Contains(p.PropertyType.ToLower());
             var getValueOrDefault = isNullable ? ".GetValueOrDefault()" : string.Empty;
 
             sb.AppendLine(string.Format("            var {0} = new System.Data.SqlClient.SqlParameter {{ ParameterName = \"{1}\", SqlDbType = System.Data.SqlDbType.{2}, Direction = System.Data.ParameterDirection.{3}{4}{5}{6}{7} }};",
@@ -3672,8 +3672,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         var sb = new StringBuilder();
         foreach (var p in sp.Parameters.Where(x => x.Mode != StoredProcedureParameterMode.In).OrderBy(x => x.Ordinal))
         {
-            string Default = string.Format("default({0})", p.PropertyType);
-            bool notNullable = NotNullable.Contains(p.PropertyType.ToLower());
+            var Default = string.Format("default({0})", p.PropertyType);
+            var notNullable = NotNullable.Contains(p.PropertyType.ToLower());
 
             if(isFake)
                 sb.AppendLine(string.Format("            {0} = {1};", p.NameHumanCase, Default));
@@ -3733,7 +3733,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
     public sealed class BaseClassMaker
     {
         private string _typeName;
-        private System.Text.StringBuilder _interfaces;
+        private StringBuilder _interfaces;
 
         public BaseClassMaker(string baseClassName = null)
         {
@@ -3758,7 +3758,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
             if (_interfaces == null)
             {
-                _interfaces = new System.Text.StringBuilder();
+                _interfaces = new StringBuilder();
             }
             else
             {
