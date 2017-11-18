@@ -1,5 +1,4 @@
 <#@ import namespace="System.Collections.Generic" #>
-<#@ import namespace="System.Security.Cryptography.X509Certificates" #>
 <#
 fileManager.StartHeader();
 // Copyright (C) Simon Hughes 2012
