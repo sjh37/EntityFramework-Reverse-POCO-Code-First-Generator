@@ -6,48 +6,48 @@
     // A course for this generator is available on Pluralsight at https://www.pluralsight.com/courses/code-first-entity-framework-legacy-databases
 
     // Main settings **********************************************************************************************************************
-    ConnectionStringName = "TestDatabase";   // Searches for this connection string in config files listed below in the ConfigFilenameSearchOrder setting
+    Settings.ConnectionStringName = "TestDatabase";   // Searches for this connection string in config files listed below in the ConfigFilenameSearchOrder setting
     // ConnectionStringName is the only required setting.
     // As an alternative to ConnectionStringName above, which must match your app/web.config connection string name, you can override them below
-    //ConnectionString = "Data Source=(local);Initial Catalog=Northwind;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";
-    //ProviderName = "System.Data.SqlClient";
+    // Settings.ConnectionString = "Data Source=(local);Initial Catalog=Northwind;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";
+    // Settings.ProviderName = "System.Data.SqlClient";
 
-    Namespace = "TestDatabaseStandard"; // Override the default namespace here
-    DbContextName = "TestDbContext"; // Note: If generating separate files, please give the db context a different name from this tt filename.
-    //DbContextInterfaceName = "IMyDbContext"; // Defaults to "I" + DbContextName or set string empty to not implement any interface.
-    DbContextInterfaceBaseClasses = "System.IDisposable";    // Specify what the base classes are for your database context interface
-    DbContextBaseClass = "System.Data.Entity.DbContext";   // Specify what the base class is for your DbContext. For ASP.NET Identity use "IdentityDbContext<ApplicationUser>"
-    //DefaultConstructorArgument = "EnvironmentConnectionStrings.MyDbContext"; //defaults to "Name=" + ConnectionStringName
-    ConfigurationClassName = "Configuration"; // Configuration, Mapping, Map, etc. This is appended to the Poco class name to configure the mappings.
-    ConfigFilenameSearchOrder = new[] { "app.config", "web.config" }; // Add more here if required. The config files are searched for in the local project first, then the whole solution second.
-    GenerateSeparateFiles = false;
-    MakeClassesInternal = false;
-    MakeClassesPartial = false;
-    MakeDbContextInterfacePartial = false;
-    UseMappingTables = true; // If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
-    UsePascalCase = true;    // This will rename the generated C# tables & properties to use PascalCase. If false table & property names will be left alone.
-    UseDataAnnotations = false; // If true, will add data annotations to the poco classes.
-    UseDataAnnotationsSchema = false; // UseDataAnnotations must also be true. If true, will add data annotations schema to the poco classes.
-    UsePropertyInitializers = false; // Removes POCO constructor and instead uses C# 6 property initialisers to set defaults
-    UseLazyLoading = true; // Marks all navigation properties as virtual or not, to support or disable EF Lazy Loading feature
-    IncludeComments = CommentsStyle.AtEndOfField; // Adds comments to the generated code
-    IncludeExtendedPropertyComments = CommentsStyle.AtEndOfField; // Adds extended properties as comments to the generated code
-    IncludeConnectionSettingComments = true; // Add comments describing connection settings used to generate file
-    IncludeViews = true;
-    IncludeSynonyms = false;
-    IncludeStoredProcedures = true;
-    IncludeTableValuedFunctions = true; // If true, you must set IncludeStoredProcedures = true, and install the "EntityFramework.CodeFirstStoreFunctions" Nuget Package.
-    DisableGeographyTypes = false; // Turns off use of System.Data.Entity.Spatial.DbGeography and System.Data.Entity.Spatial.DbGeometry as OData doesn't support entities with geometry/geography types.
-    //CollectionInterfaceType = "System.Collections.Generic.List"; // Determines the declaration type of collections for the Navigation Properties. ICollection is used if not set.
-    CollectionType = "System.Collections.Generic.List";  // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example. Add "System.Collections.ObjectModel" to AdditionalNamespaces if setting the CollectionType = "ObservableCollection".
-    NullableShortHand = true; //true => T?, false => Nullable<T>
-    AddIDbContextFactory = true; // Will add a default IDbContextFactory<DbContextName> implementation for easy dependency injection
-    AddUnitTestingDbContext = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing
-    IncludeQueryTraceOn9481Flag = false; // If SqlServer 2014 appears frozen / take a long time when this file is saved, try setting this to true (you will also need elevated privileges).
-    IncludeCodeGeneratedAttribute = true; // If true, will include the GeneratedCode attribute, false to remove it.
-    UsePrivateSetterForComputedColumns = true; // If the columns is computed, use a private setter.
-    AdditionalNamespaces = new[] { "" };  // To include extra namespaces, include them here. i.e. "Microsoft.AspNet.Identity.EntityFramework"
-    AdditionalContextInterfaceItems = new[] // To include extra db context interface items, include them here. Also set MakeClassesPartial=true, and implement the partial DbContext class functions.
+    Settings.Namespace = "TestDatabaseStandard"; // Override the default namespace here
+    Settings.DbContextName = "TestDbContext"; // Note: If generating separate files, please give the db context a different name from this tt filename.
+    //Settings.DbContextInterfaceName = "IMyDbContext"; // Defaults to "I" + DbContextName or set string empty to not implement any interface.
+    Settings.DbContextInterfaceBaseClasses = "System.IDisposable";    // Specify what the base classes are for your database context interface
+    Settings.DbContextBaseClass = "System.Data.Entity.DbContext";   // Specify what the base class is for your DbContext. For ASP.NET Identity use "IdentityDbContext<ApplicationUser>"
+    //Settings.DefaultConstructorArgument = "EnvironmentConnectionStrings.MyDbContext"; //defaults to "Name=" + ConnectionStringName
+    Settings.ConfigurationClassName = "Configuration"; // Configuration, Mapping, Map, etc. This is appended to the Poco class name to configure the mappings.
+    Settings.FilenameSearchOrder = new[] { "app.config", "web.config" }; // Add more here if required. The config files are searched for in the local project first, then the whole solution second.
+    Settings.GenerateSeparateFiles = false;
+    Settings.MakeClassesInternal = false;
+    Settings.MakeClassesPartial = false;
+    Settings.MakeDbContextInterfacePartial = false;
+    Settings.UseMappingTables = true; // If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
+    Settings.UsePascalCase = true;    // This will rename the generated C# tables & properties to use PascalCase. If false table & property names will be left alone.
+    Settings.UseDataAnnotations = false; // If true, will add data annotations to the poco classes.
+    Settings.UseDataAnnotationsSchema = false; // UseDataAnnotations must also be true. If true, will add data annotations schema to the poco classes.
+    Settings.UsePropertyInitializers = false; // Removes POCO constructor and instead uses C# 6 property initialisers to set defaults
+    Settings.UseLazyLoading = true; // Marks all navigation properties as virtual or not, to support or disable EF Lazy Loading feature
+    Settings.IncludeComments = CommentsStyle.AtEndOfField; // Adds comments to the generated code
+    Settings.IncludeExtendedPropertyComments = CommentsStyle.AtEndOfField; // Adds extended properties as comments to the generated code
+    Settings.IncludeConnectionSettingComments = true; // Add comments describing connection settings used to generate file
+    Settings.IncludeViews = true;
+    Settings.IncludeSynonyms = false;
+    Settings.IncludeStoredProcedures = true;
+    Settings.IncludeTableValuedFunctions = true; // If true, you must set IncludeStoredProcedures = true, and install the "EntityFramework.CodeFirstStoreFunctions" Nuget Package.
+    Settings.DisableGeographyTypes = false; // Turns off use of System.Data.Entity.Spatial.DbGeography and System.Data.Entity.Spatial.DbGeometry as OData doesn't support entities with geometry/geography types.
+    //Settings.CollectionInterfaceType = "System.Collections.Generic.List"; // Determines the declaration type of collections for the Navigation Properties. ICollection is used if not set.
+    Settings.CollectionType = "System.Collections.Generic.List";  // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example. Add "System.Collections.ObjectModel" to AdditionalNamespaces if setting the CollectionType = "ObservableCollection".
+    Settings.NullableShortHand = true; //true => T?, false => Nullable<T>
+    Settings.AddIDbContextFactory = true; // Will add a default IDbContextFactory<DbContextName> implementation for easy dependency injection
+    Settings.AddUnitTestingDbContext = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing
+    Settings.IncludeQueryTraceOn9481Flag = false; // If SqlServer 2014 appears frozen / take a long time when this file is saved, try setting this to true (you will also need elevated privileges).
+    Settings.IncludeCodeGeneratedAttribute = true; // If true, will include the GeneratedCode attribute, false to remove it.
+    Settings.UsePrivateSetterForComputedColumns = true; // If the columns is computed, use a private setter.
+    Settings.AdditionalNamespaces = new[] { "" };  // To include extra namespaces, include them here. i.e. "Microsoft.AspNet.Identity.EntityFramework"
+    Settings.AdditionalContextInterfaceItems = new[] // To include extra db context interface items, include them here. Also set MakeClassesPartial=true, and implement the partial DbContext class functions.
     {
         ""  //  example: "void SetAutoDetectChangesEnabled(bool flag);"
     };
@@ -55,15 +55,15 @@
     // all properties including the Reverse Navigation and Foreign Keys. The simplest way to exclude them is
     // to use the data annotation [JsonIgnore] on reverse navigation and foreign keys.
     // For more control, take a look at ForeignKeyAnnotationsProcessing() further down
-    AdditionalReverseNavigationsDataAnnotations = new string[] // Data Annotations for all ReverseNavigationProperty.
+    Settings.AdditionalReverseNavigationsDataAnnotations = new string[] // Data Annotations for all ReverseNavigationProperty.
     {
         // "JsonIgnore" // Also add "Newtonsoft.Json" to the AdditionalNamespaces array above
     };
-    AdditionalForeignKeysDataAnnotations = new string[] // Data Annotations for all ForeignKeys.
+    Settings.AdditionalForeignKeysDataAnnotations = new string[] // Data Annotations for all ForeignKeys.
     {
         // "JsonIgnore" // Also add "Newtonsoft.Json" to the AdditionalNamespaces array above
     };
-    ColumnNameToDataAnnotation = new Dictionary<string, string>
+    Settings.ColumnNameToDataAnnotation = new Dictionary<string, string>
     {
         // This is used when UseDataAnnotations = true;
         // It is used to set a data annotation on a column based on the columns name.
@@ -84,11 +84,11 @@
     };
 
     // Migrations *************************************************************************************************************************
-    MigrationConfigurationFileName = ""; // null or empty to not create migrations
-    MigrationStrategy = "MigrateDatabaseToLatestVersion"; // MigrateDatabaseToLatestVersion, CreateDatabaseIfNotExists or DropCreateDatabaseIfModelChanges
-    ContextKey = ""; // Sets the string used to distinguish migrations belonging to this configuration from migrations belonging to other configurations using the same database. This property enables migrations from multiple different models to be applied to applied to a single database.
-    AutomaticMigrationsEnabled = true;
-    AutomaticMigrationDataLossAllowed = true; // if true, can drop fields and lose data during automatic migration
+    Settings.MigrationConfigurationFileName = ""; // null or empty to not create migrations
+    Settings.MigrationStrategy = "MigrateDatabaseToLatestVersion"; // MigrateDatabaseToLatestVersion, CreateDatabaseIfNotExists or DropCreateDatabaseIfModelChanges
+    Settings.ContextKey = ""; // Sets the string used to distinguish migrations belonging to this configuration from migrations belonging to other configurations using the same database. This property enables migrations from multiple different models to be applied to applied to a single database.
+    Settings.AutomaticMigrationsEnabled = true;
+    Settings.AutomaticMigrationDataLossAllowed = true; // if true, can drop fields and lose data during automatic migration
 
     // Pluralization **********************************************************************************************************************
     // To turn off pluralization, use:
@@ -113,7 +113,7 @@
     // Elements to generate ***************************************************************************************************************
     // Add the elements that should be generated when the template is executed.
     // Multiple projects can now be used that separate the different concerns.
-    ElementsToGenerate = Elements.Poco | Elements.Context | Elements.UnitOfWork | Elements.PocoConfiguration;
+    Settings.ElementsToGenerate = Elements.Poco | Elements.Context | Elements.UnitOfWork | Elements.PocoConfiguration;
 
     // Use these namespaces to specify where the different elements now live. These may even be in different assemblies.
     // Please note this does not create the files in these locations, it only adds a using statement to say where they are.
@@ -127,23 +127,23 @@
     //      UnitOfWorkNamespace = "YourProject.Context";
     //      PocoConfigurationNamespace = "YourProject.Maps";
     // You also need to set the following to the namespace where they now live:
-    PocoNamespace = "";
-    ContextNamespace = "";
-    UnitOfWorkNamespace = "";
-    PocoConfigurationNamespace = "";
+    Settings.PocoNamespace = "";
+    Settings.ContextNamespace = "";
+    Settings.UnitOfWorkNamespace = "";
+    Settings.PocoConfigurationNamespace = "";
 
 
     // Schema *****************************************************************************************************************************
     // If there are multiple schemas, then the table name is prefixed with the schema, except for dbo.
     // Ie. dbo.hello will be Hello.
     //     abc.hello will be AbcHello.
-    PrependSchemaName = true;   // Control if the schema name is prepended to the table name
+    Settings.PrependSchemaName = true;   // Control if the schema name is prepended to the table name
 
     // Table Suffix ***********************************************************************************************************************
     // Prepends the suffix to the generated classes names
     // Ie. If TableSuffix is "Dto" then Order will be OrderDto
     //     If TableSuffix is "Entity" then Order will be OrderEntity
-    TableSuffix = null;
+    Settings.TableSuffix = null;
 
     // Filtering **************************************************************************************************************************
     // Use the following table/view name regex filters to include or exclude tables/views
@@ -161,16 +161,16 @@
     //              TableFilterInclude = new Regex("(.*_FR_.*)|(data_.*)");
     //              TableFilterInclude = new Regex("^table_name1$|^table_name2$|etc");
     //              ColumnFilterExclude = new Regex("^FK_.*$");
-    SchemaFilterExclude = null;
-    SchemaFilterInclude = null;
-    TableFilterExclude = null;
-    TableFilterInclude = null;
-    ColumnFilterExclude = null;
+    Settings.SchemaFilterExclude = null;
+    Settings.SchemaFilterInclude = null;
+    Settings.TableFilterExclude = null;
+    Settings.TableFilterInclude = null;
+    Settings.ColumnFilterExclude = null;
 
     // Filtering of tables using a function. This can be used in conjunction with the Regex's above.
     // Regex are used first to filter the list down, then this function is run last.
     // Return true to include the table, return false to exclude it.
-    TableFilter = (Table t) =>
+    Settings.TableFilter = (Table t) =>
     {
         // Example: Exclude any table in dbo schema with "order" in its name.
         //if(t.Schema.Equals("dbo", StringComparison.InvariantCultureIgnoreCase) && t.NameHumanCase.ToLowerInvariant().Contains("order"))
@@ -182,13 +182,13 @@
 
     // Stored Procedures ******************************************************************************************************************
     // Use the following regex filters to include or exclude stored procedures
-    StoredProcedureFilterExclude = null;
-    StoredProcedureFilterInclude = null;
+    Settings.StoredProcedureFilterExclude = null;
+    Settings.StoredProcedureFilterInclude = null;
 
     // Filtering of stored procedures using a function. This can be used in conjunction with the Regex's above.
     // Regex are used first to filter the list down, then this function is run last.
     // Return true to include the stored procedure, return false to exclude it.
-    StoredProcedureFilter = (StoredProcedure sp) =>
+    Settings.StoredProcedureFilter = (StoredProcedure sp) =>
     {
         // Example: Exclude any stored procedure in dbo schema with "order" in its name.
         //if(sp.Schema.Equals("dbo", StringComparison.InvariantCultureIgnoreCase) && sp.NameHumanCase.ToLowerInvariant().Contains("order"))
@@ -201,7 +201,7 @@
     // Table renaming *********************************************************************************************************************
     // Use the following function to rename tables such as tblOrders to Orders, Shipments_AB to Shipments, etc.
     // Example:
-    TableRename = (string name, string schema, bool isView) =>
+    Settings.TableRename = (string name, string schema, bool isView) =>
     {
         // Example
         //if (name.StartsWith("tbl"))
@@ -233,7 +233,7 @@
 
     // Use the following function if you need to apply additional modifications to a column
     // eg. normalise names etc.
-    UpdateColumn = (Column column, Table table) =>
+    Settings.UpdateColumn = (Column column, Table table) =>
     {
         // Rename column
         //if (column.IsPrimaryKey && column.NameHumanCase == "PkId")
@@ -261,7 +261,7 @@
         // This will create: public override long id { get; set; }
 
         // Perform Enum property type replacement
-        var enumDefinition = EnumsDefinitions.FirstOrDefault(e =>
+        var enumDefinition = Settings.EnumsDefinitions.FirstOrDefault(e =>
             (e.Schema.Equals(table.Schema, StringComparison.InvariantCultureIgnoreCase)) &&
             (e.Table.Equals(table.Name, StringComparison.InvariantCultureIgnoreCase) || e.Table.Equals(table.NameHumanCase, StringComparison.InvariantCultureIgnoreCase)) &&
             (e.Column.Equals(column.Name, StringComparison.InvariantCultureIgnoreCase) || e.Column.Equals(column.NameHumanCase, StringComparison.InvariantCultureIgnoreCase)));
@@ -279,18 +279,18 @@
     // StoredProcedure renaming ************************************************************************************************************
     // Use the following function to rename stored procs such as sp_CreateOrderHistory to CreateOrderHistory, my_sp_shipments to Shipments, etc.
     // Example:
-    /*StoredProcedureRename = (sp) =>
+    /*Settings.StoredProcedureRename = (sp) =>
     {
         if (sp.NameHumanCase.StartsWith("sp_"))
             return sp.NameHumanCase.Remove(0, 3);
         return sp.NameHumanCase.Replace("my_sp_", "");
     };*/
-    StoredProcedureRename = (sp) => sp.NameHumanCase;   // Do nothing by default
+    Settings.StoredProcedureRename = (sp) => sp.NameHumanCase;   // Do nothing by default
 
     // Use the following function to rename the return model automatically generated for stored procedure.
     // By default it's <proc_name>ReturnModel.
     // Example:
-    /*StoredProcedureReturnModelRename = (name, sp) =>
+    /*Settings.StoredProcedureReturnModelRename = (name, sp) =>
     {
         if (sp.NameHumanCase.Equals("ComputeValuesForDate", StringComparison.InvariantCultureIgnoreCase))
             return "ValueSet";
@@ -299,7 +299,7 @@
 
         return name;
     };*/
-    StoredProcedureReturnModelRename = (name, sp) => name; // Do nothing by default
+    Settings.StoredProcedureReturnModelRename = (name, sp) => name; // Do nothing by default
 
     // StoredProcedure return types *******************************************************************************************************
     // Override generation of return models for stored procedures that return entities.
@@ -313,7 +313,7 @@
     // This method will be called right before we write the POCO header.
     Action<Table> WritePocoClassAttributes = t =>
     {
-        if (UseDataAnnotations)
+        if (Settings.UseDataAnnotations)
         {
             foreach (var dataAnnotation in t.DataAnnotations)
             {
@@ -329,7 +329,7 @@
     // This method will be called right before we write the POCO header.
     Action<Table> WritePocoClassExtendedComments = t =>
     {
-        if (IncludeExtendedPropertyComments != CommentsStyle.None && !string.IsNullOrEmpty(t.ExtendedProperty))
+        if (Settings.IncludeExtendedPropertyComments != CommentsStyle.None && !string.IsNullOrEmpty(t.ExtendedProperty))
         {
             WriteLine("    ///<summary>");
             WriteLine("    /// {0}", System.Security.SecurityElement.Escape(t.ExtendedProperty));
@@ -368,7 +368,9 @@
     Func<Column, string> WritePocoColumn = c =>
     {
         bool commentWritten = false;
-        if((IncludeExtendedPropertyComments == CommentsStyle.InSummaryBlock || IncludeComments == CommentsStyle.InSummaryBlock) && !string.IsNullOrEmpty(c.SummaryComments))
+        if ((Settings.IncludeExtendedPropertyComments == CommentsStyle.InSummaryBlock ||
+             Settings.IncludeComments == CommentsStyle.InSummaryBlock) &&
+            !string.IsNullOrEmpty(c.SummaryComments))
         {
             WriteLine(string.Empty);
             WriteLine("        ///<summary>");
@@ -376,7 +378,7 @@
             WriteLine("        ///</summary>");
             commentWritten = true;
         }
-        if (UseDataAnnotations)
+        if (Settings.UseDataAnnotations)
         {
             if(c.Ordinal > 1 && !commentWritten)
                 WriteLine(string.Empty);    // Leave a blank line before the next property
@@ -394,7 +396,7 @@
         return "        " + c.Entity;
     };
 
-    ForeignKeyFilter = (ForeignKey fk) =>
+    Settings.ForeignKeyFilter = (ForeignKey fk) =>
     {
         // Return null to exclude this foreign key, or set IncludeReverseNavigation = false
         // to include the foreign key but not generate reverse navigation properties.
@@ -409,7 +411,7 @@
         return fk;
     };
 
-    ForeignKeyProcessing = (foreignKeys, fkTable, pkTable, anyNullableColumnInForeignKey) =>
+    Settings.ForeignKeyProcessing = (foreignKeys, fkTable, pkTable, anyNullableColumnInForeignKey) =>
     {
         var foreignKey = foreignKeys.First();
 
@@ -420,7 +422,7 @@
         return foreignKey;
     };
 
-    ForeignKeyName = (tableName, foreignKey, foreignKeyName, relationship, attempt) =>
+    Settings.ForeignKeyName = (tableName, foreignKey, foreignKeyName, relationship, attempt) =>
     {
         string fkName;
 
@@ -489,7 +491,7 @@
         return fkName;
     };
 
-    ForeignKeyAnnotationsProcessing = (Table fkTable, Table pkTable, string propName) =>
+    Settings.ForeignKeyAnnotationsProcessing = (Table fkTable, Table pkTable, string propName) =>
     {
         /* Example:
         // Each navigation property that is a reference to User are left intact
@@ -504,7 +506,7 @@
     };
 
     // Return true to include this table in the db context
-    ConfigurationFilter = (Table t) =>
+    Settings.ConfigurationFilter = (Table t) =>
     {
         return true;
     };
@@ -514,15 +516,15 @@
 
     // Read schema
     var factory = GetDbProviderFactory();
-    var tables = LoadTables(factory);
-    var storedProcs = LoadStoredProcs(factory);
+    Settings.Tables = LoadTables(factory);
+    Settings.StoredProcs = LoadStoredProcs(factory);
 
     // Generate output
-    if (tables.Count > 0 || storedProcs.Count > 0)
+    if (Settings.Tables.Count > 0 || Settings.StoredProcs.Count > 0)
     {
 #>
 <#@ include file="..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.ttinclude" #>
 <#@ import namespace="System.Xml.Schema" #>
 <#  }
-    if(GenerateSeparateFiles)
+    if(Settings.GenerateSeparateFiles)
         GenerationEnvironment.Clear();#>
