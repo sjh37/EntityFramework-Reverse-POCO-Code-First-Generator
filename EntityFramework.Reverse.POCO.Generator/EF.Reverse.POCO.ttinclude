@@ -542,14 +542,6 @@ foreach (Table tbl in from t in Settings.Tables.Where(t => !t.IsMapping && t.Has
 
             InitializePartial();
 <#}#>        }
-<#foreach (string s in Settings.AdditionalContextInterfaceItems.Where(x => !string.IsNullOrEmpty(x)))
-{ #>
-        public <#=s.TrimEnd(';') #>
-        {
-            throw new System.NotImplementedException();
-        }
-
-<# } #>
 
         public int SaveChangesCount { get; private set; }
         public int SaveChanges()
