@@ -331,8 +331,14 @@
     {
         if (Settings.IncludeExtendedPropertyComments != CommentsStyle.None && !string.IsNullOrEmpty(t.ExtendedProperty))
         {
+            var lines = t.ExtendedProperty
+                .Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
+                .ToList();
             WriteLine("    ///<summary>");
-            WriteLine("    /// {0}", System.Security.SecurityElement.Escape(t.ExtendedProperty));
+			foreach(var line in lines)
+			{
+				WriteLine("    /// {0}", System.Security.SecurityElement.Escape(line));
+			}
             WriteLine("    ///</summary>");
         }
     };
