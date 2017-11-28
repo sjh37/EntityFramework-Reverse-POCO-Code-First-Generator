@@ -2671,7 +2671,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 string fkPropName = pkTable.GetUniqueColumnName(fkTable.NameHumanCase, foreignKey, checkForFkNameClashes, fkMakePropNameSingular, Relationship.OneToMany);
 
                 var dataAnnotation = string.Empty;
-                if (Settings.UseDataAnnotationsSchema)
+                if (Settings.UseDataAnnotations && Settings.UseDataAnnotationsSchema)
                 {
                     dataAnnotation = string.Format("[ForeignKey(\"{0}\"){1}] ",
                         string.Join(", ", fkCols.Select(x => x.col.NameHumanCase).Distinct().ToArray()),

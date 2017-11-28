@@ -515,6 +515,8 @@
 
 
     // Read schema
+    if (!Settings.UseDataAnnotations)
+        Settings.UseDataAnnotationsSchema = false;
     var factory = GetDbProviderFactory();
     Settings.Tables = LoadTables(factory);
     Settings.StoredProcs = LoadStoredProcs(factory);
