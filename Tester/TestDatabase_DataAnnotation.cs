@@ -66,7 +66,7 @@ namespace TestDatabaseDataAnnotation
 
     #region Database context
 
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.33.0.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.0.0")]
     public class TestDbContext : System.Data.Entity.DbContext, ITestDbContext
     {
         public System.Data.Entity.DbSet<ColumnName> ColumnNames { get; set; } // ColumnNames
@@ -169,7 +169,7 @@ namespace TestDatabaseDataAnnotation
 
     #region Fake Database context
 
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.33.0.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.0.0")]
     public class FakeTestDbContext : ITestDbContext
     {
         public System.Data.Entity.DbSet<ColumnName> ColumnNames { get; set; }
@@ -272,7 +272,7 @@ namespace TestDatabaseDataAnnotation
     //          }
     //      }
     //      Read more about it here: https://msdn.microsoft.com/en-us/data/dn314431.aspx
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.33.0.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.0.0")]
     public class FakeDbSet<TEntity> : System.Data.Entity.DbSet<TEntity>, IQueryable, System.Collections.Generic.IEnumerable<TEntity>, System.Data.Entity.Infrastructure.IDbAsyncEnumerable<TEntity> where TEntity : class
     {
         private readonly System.Reflection.PropertyInfo[] _primaryKeys;
@@ -408,7 +408,7 @@ namespace TestDatabaseDataAnnotation
         }
     }
 
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.33.0.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.0.0")]
     public class FakeDbAsyncQueryProvider<TEntity> : System.Data.Entity.Infrastructure.IDbAsyncQueryProvider
     {
         private readonly IQueryProvider _inner;
@@ -449,7 +449,7 @@ namespace TestDatabaseDataAnnotation
         }
     }
 
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.33.0.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.0.0")]
     public class FakeDbAsyncEnumerable<T> : EnumerableQuery<T>, System.Data.Entity.Infrastructure.IDbAsyncEnumerable<T>, IQueryable<T>
     {
         public FakeDbAsyncEnumerable(System.Collections.Generic.IEnumerable<T> enumerable)
@@ -476,7 +476,7 @@ namespace TestDatabaseDataAnnotation
         }
     }
 
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.33.0.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.0.0")]
     public class FakeDbAsyncEnumerator<T> : System.Data.Entity.Infrastructure.IDbAsyncEnumerator<T>
     {
         private readonly System.Collections.Generic.IEnumerator<T> _inner;
@@ -517,7 +517,7 @@ namespace TestDatabaseDataAnnotation
     ///     table with poor column name choices
     ///</summary>
     [Table("ColumnNames", Schema = "dbo")]
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.33.0.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.0.0")]
     public class ColumnName
     {
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
@@ -630,7 +630,7 @@ namespace TestDatabaseDataAnnotation
     // does not have a primary key. It is listed here for completeness.
     // NoPrimaryKeys
     [NotMapped]
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.33.0.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.0.0")]
     public class NoPrimaryKey
     {
         [Column(@"Id", Order = 1, TypeName = "int")]
@@ -646,7 +646,7 @@ namespace TestDatabaseDataAnnotation
 
     // Boo
     [Table("Boo", Schema = "Stafford")]
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.33.0.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.0.0")]
     public class Stafford_Boo
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -674,7 +674,7 @@ namespace TestDatabaseDataAnnotation
 
     // ComputedColumns
     [Table("ComputedColumns", Schema = "Stafford")]
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.33.0.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.0.0")]
     public class Stafford_ComputedColumn
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -702,7 +702,7 @@ namespace TestDatabaseDataAnnotation
 
     // Foo
     [Table("Foo", Schema = "Stafford")]
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.33.0.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.0.0")]
     public class Stafford_Foo
     {
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
@@ -734,7 +734,7 @@ namespace TestDatabaseDataAnnotation
     #region POCO Configuration
 
     // ColumnNames
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.33.0.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.0.0")]
     public class ColumnNameConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<ColumnName>
     {
         public ColumnNameConfiguration()
@@ -764,7 +764,7 @@ namespace TestDatabaseDataAnnotation
     }
 
     // Boo
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.33.0.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.0.0")]
     public class Stafford_BooConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<Stafford_Boo>
     {
         public Stafford_BooConfiguration()
@@ -779,7 +779,7 @@ namespace TestDatabaseDataAnnotation
     }
 
     // ComputedColumns
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.33.0.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.0.0")]
     public class Stafford_ComputedColumnConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<Stafford_ComputedColumn>
     {
         public Stafford_ComputedColumnConfiguration()
@@ -795,7 +795,7 @@ namespace TestDatabaseDataAnnotation
     }
 
     // Foo
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.33.0.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.0.0")]
     public class Stafford_FooConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<Stafford_Foo>
     {
         public Stafford_FooConfiguration()
@@ -814,7 +814,7 @@ namespace TestDatabaseDataAnnotation
 
     #region Stored procedure return models
 
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.33.0.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.0.0")]
     public class CsvToIntReturnModel
     {
         public System.Int32? IntValue { get; set; }

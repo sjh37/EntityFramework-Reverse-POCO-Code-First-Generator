@@ -1,6 +1,6 @@
 <#
 // Copyright (C) Simon Hughes 2012
-// v2.33.0
+// v2.34.0
 #>
 <#@ template debug="true" hostspecific="true" language="C#" #>
 <#@ include file="EF6.Utility.CS.ttinclude"#>
@@ -144,7 +144,7 @@
         };
     };
 
-    const string CodeGeneratedAttribute = "[System.CodeDom.Compiler.GeneratedCode(\"EF.Reverse.POCO.Generator\", \"2.33.0.0\")]";
+    const string CodeGeneratedAttribute = "[System.CodeDom.Compiler.GeneratedCode(\"EF.Reverse.POCO.Generator\", \"2.34.0.0\")]";
     const string DataDirectory = "|DataDirectory|";
 
     static readonly List<string> NotNullable = new List<string>
@@ -2678,9 +2678,9 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         foreignKey.IncludeRequiredAttribute ? ", Required" : string.Empty
                     );
 
-                    if (relationship == Relationship.OneToOne && foreignKey.IncludeReverseNavigation && fkCol.col.IsPrimaryKey)
+                    if (!checkForFkNameClashes && relationship == Relationship.OneToOne && foreignKey.IncludeReverseNavigation && fkCol.col.IsPrimaryKey)
                     {
-                        var principalEndAttribute = string.Format("ForeignKey(\"{0}\")", pkTableHumanCaseWithSuffix);
+                        var principalEndAttribute = string.Format("ForeignKey(\"{0}\")", pkPropName);
                         if (!fkCol.col.DataAnnotations.Contains(principalEndAttribute))
                             fkCol.col.DataAnnotations.Add(principalEndAttribute);
                     }
