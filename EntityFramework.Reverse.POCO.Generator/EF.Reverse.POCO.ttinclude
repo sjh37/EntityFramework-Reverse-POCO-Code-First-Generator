@@ -17,7 +17,7 @@ fileManager.StartHeader();
 // TargetFrameworkVersion = <#= Settings.TargetFrameworkVersion #>
 #pragma warning disable 1591    //  Ignore "Missing XML Comment" warning
 
-<#if (Settings.ElementsToGenerate.HasFlag(Elements.Poco))
+<#if (Settings.ElementsToGenerate.HasFlag(Elements.Poco) || Settings.ElementsToGenerate.HasFlag(Elements.PocoConfiguration))
 {
     if (Settings.UseDataAnnotations) {#>
 using System.ComponentModel.DataAnnotations;
