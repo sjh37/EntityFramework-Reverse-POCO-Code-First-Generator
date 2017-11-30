@@ -1,6 +1,6 @@
 <#
 // Copyright (C) Simon Hughes 2012
-// v2.34.0
+// v2.34.1
 #>
 <#@ template debug="true" hostspecific="true" language="C#" #>
 <#@ include file="EF6.Utility.CS.ttinclude"#>
@@ -144,7 +144,7 @@
         };
     };
 
-    const string CodeGeneratedAttribute = "[System.CodeDom.Compiler.GeneratedCode(\"EF.Reverse.POCO.Generator\", \"2.34.0.0\")]";
+    const string CodeGeneratedAttribute = "[System.CodeDom.Compiler.GeneratedCode(\"EF.Reverse.POCO.Generator\", \"2.34.1.0\")]";
     const string DataDirectory = "|DataDirectory|";
 
     static readonly List<string> NotNullable = new List<string>
