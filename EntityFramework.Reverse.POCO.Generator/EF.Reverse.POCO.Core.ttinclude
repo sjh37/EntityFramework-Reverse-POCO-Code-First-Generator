@@ -58,8 +58,8 @@
         private static string _dbContextInterfaceName;
         public static string DbContextInterfaceName
         {
-            get => _dbContextInterfaceName ?? ("I" + DbContextName);
-            set => _dbContextInterfaceName = value;
+            get { return _dbContextInterfaceName ?? ("I" + DbContextName); }
+            set { _dbContextInterfaceName = value; }
         }
 
         public static string DbContextInterfaceBaseClasses;
@@ -68,8 +68,8 @@
         private static string _defaultConstructorArgument;
         public static string DefaultConstructorArgument
         {
-            get => _defaultConstructorArgument ?? string.Format('"' + "Name={0}" + '"', ConnectionStringName);
-            set => _defaultConstructorArgument = value;
+            get { return _defaultConstructorArgument ?? string.Format('"' + "Name={0}" + '"', ConnectionStringName); }
+            set { _defaultConstructorArgument = value; }
         }
 
         public static string ConfigurationClassName = "Configuration";
