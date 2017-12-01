@@ -69,6 +69,12 @@
     <Compile Include="StoredProcedureAsyncTests.cs" />
     <Compile Include="CustomersRepositoryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SynonymTests.cs" />
+    <Compile Include="TestSynonymsDatabase.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TestSynonymsDatabase.tt</DependentUpon>
+    </Compile>
     <Compile Include="TestDatabase_DataAnnotation.cs">
       <DependentUpon>TestDatabase_DataAnnotation.tt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -111,6 +117,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="TestDatabase.sql" />
+    <Content Include="TestSynonymsDatabase.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>TestSynonymsDatabase.cs</LastGenOutput>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

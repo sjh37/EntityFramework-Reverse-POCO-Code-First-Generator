@@ -36,6 +36,43 @@ IF NOT EXISTS (SELECT name FROM sys.filegroups WHERE is_default=1 AND name = N'P
 GO
 */
 
+/*
+CREATE DATABASE [EfrpgTest_Synonyms] ON PRIMARY
+       ( NAME = N'EfrpgTest_Synonyms',     FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL13.MSSQLSERVER\MSSQL\DATA\EfrpgTest_Synonyms.mdf' , SIZE = 5Mb , FILEGROWTH = 1024KB )
+LOG ON ( NAME = N'EfrpgTest_Synonyms_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL13.MSSQLSERVER\MSSQL\DATA\EfrpgTest_Synonyms.ldf' , SIZE = 1024KB , FILEGROWTH = 10%);
+GO
+ALTER DATABASE [EfrpgTest_Synonyms] SET COMPATIBILITY_LEVEL = 100
+ALTER DATABASE [EfrpgTest_Synonyms] SET ANSI_NULL_DEFAULT OFF
+ALTER DATABASE [EfrpgTest_Synonyms] SET ANSI_NULLS OFF
+ALTER DATABASE [EfrpgTest_Synonyms] SET ANSI_PADDING OFF
+ALTER DATABASE [EfrpgTest_Synonyms] SET ANSI_WARNINGS OFF
+ALTER DATABASE [EfrpgTest_Synonyms] SET ARITHABORT OFF
+ALTER DATABASE [EfrpgTest_Synonyms] SET AUTO_CLOSE OFF
+ALTER DATABASE [EfrpgTest_Synonyms] SET AUTO_CREATE_STATISTICS ON
+ALTER DATABASE [EfrpgTest_Synonyms] SET AUTO_SHRINK OFF
+ALTER DATABASE [EfrpgTest_Synonyms] SET AUTO_UPDATE_STATISTICS ON
+ALTER DATABASE [EfrpgTest_Synonyms] SET CURSOR_CLOSE_ON_COMMIT OFF
+ALTER DATABASE [EfrpgTest_Synonyms] SET CURSOR_DEFAULT  GLOBAL
+ALTER DATABASE [EfrpgTest_Synonyms] SET CONCAT_NULL_YIELDS_NULL OFF
+ALTER DATABASE [EfrpgTest_Synonyms] SET NUMERIC_ROUNDABORT OFF
+ALTER DATABASE [EfrpgTest_Synonyms] SET QUOTED_IDENTIFIER OFF
+ALTER DATABASE [EfrpgTest_Synonyms] SET RECURSIVE_TRIGGERS OFF
+ALTER DATABASE [EfrpgTest_Synonyms] SET  DISABLE_BROKER
+ALTER DATABASE [EfrpgTest_Synonyms] SET AUTO_UPDATE_STATISTICS_ASYNC OFF
+ALTER DATABASE [EfrpgTest_Synonyms] SET DATE_CORRELATION_OPTIMIZATION OFF
+ALTER DATABASE [EfrpgTest_Synonyms] SET PARAMETERIZATION SIMPLE
+ALTER DATABASE [EfrpgTest_Synonyms] SET  READ_WRITE
+ALTER DATABASE [EfrpgTest_Synonyms] SET RECOVERY SIMPLE
+ALTER DATABASE [EfrpgTest_Synonyms] SET  MULTI_USER
+ALTER DATABASE [EfrpgTest_Synonyms] SET PAGE_VERIFY CHECKSUM
+GO
+USE [EfrpgTest_Synonyms]
+GO
+IF NOT EXISTS (SELECT name FROM sys.filegroups WHERE is_default=1 AND name = N'PRIMARY')
+	ALTER DATABASE [EfrpgTest_Synonyms] MODIFY FILEGROUP [PRIMARY] DEFAULT
+GO
+*/
+
 USE [EfrpgTest]
 GO
 
@@ -156,3 +193,46 @@ CREATE TABLE NoPrimaryKeys
     [Description] VARCHAR(10) NULL
 )
 GO
+
+-- Create objects that will be linked to via synonyms from another database
+CREATE SCHEMA Synonyms
+GO
+
+CREATE TABLE [Synonyms].[Parent](
+	[ParentId] [int] NOT NULL,
+	[ParentName] [varchar](100) NOT NULL,
+ CONSTRAINT [PK_Parent] PRIMARY KEY CLUSTERED 
+(
+	[ParentId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+INSERT INTO [Synonyms].[Parent] ([ParentId], [ParentName]) VALUES (1 ,'Parent 1')
+
+CREATE TABLE [Synonyms].[Child](
+	[ChildId] [int] NOT NULL,
+	[ParentId] [int] NOT NULL,
+	[ChildName] [varchar](100) NULL,
+ CONSTRAINT [PK_Child] PRIMARY KEY CLUSTERED 
+(
+	[ChildId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [Synonyms].[Child]  WITH CHECK ADD  CONSTRAINT [FK_Child_Parent] FOREIGN KEY([ParentId])
+REFERENCES [Synonyms].[Parent] ([ParentId])
+GO
+
+ALTER TABLE [Synonyms].[Child] CHECK CONSTRAINT [FK_Child_Parent]
+GO
+
+INSERT INTO [Synonyms].[Child] ([ChildId],[ParentId],[ChildName]) VALUES (1, 1, 'Child 1')
+
+-- Create synonyms pointing to main test dabase
+USE [EfrpgTest_Synonyms]
+GO
+
+CREATE SYNONYM [dbo].[ParentSynonym] FOR [EfrpgTest].[Synonyms].[Parent]
+CREATE SYNONYM [dbo].[ChildSynonym] FOR [EfrpgTest].[Synonyms].[Child]
