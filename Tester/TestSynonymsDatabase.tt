@@ -137,7 +137,7 @@
     // If there are multiple schemas, then the table name is prefixed with the schema, except for dbo.
     // Ie. dbo.hello will be Hello.
     //     abc.hello will be AbcHello.
-    Settings.PrependSchemaName = true;   // Control if the schema name is prepended to the table name
+    Settings.PrependSchemaName = false;   // Control if the schema name is prepended to the table name
 
     // Table Suffix ***********************************************************************************************************************
     // Prepends the suffix to the generated classes names

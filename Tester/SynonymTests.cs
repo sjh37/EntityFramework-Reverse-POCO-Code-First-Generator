@@ -12,9 +12,21 @@ namespace Tester
         {
             var db = new TestSynonymsDatabase.TestDbContext();
 
-            var parent = db.ParentSynonyms.First(p => p.ParentId == 1);
+            var parent = db.Parents.First(p => p.ParentId == 1);
 
             Assert.IsNotNull(parent);
+        }
+
+        [Test]
+        public void SynonymTable_HasForeignKeyNavigationProperties()
+        {
+            var db = new TestSynonymsDatabase.TestDbContext();
+
+            var parent = db.Parents.First(p => p.ParentId == 1);
+            var child = db.Children.First(p => p.ParentId == 1);
+
+            Assert.IsNotNull(parent.Children);
+            Assert.IsNotNull(child.Parent);
         }
     }
 }

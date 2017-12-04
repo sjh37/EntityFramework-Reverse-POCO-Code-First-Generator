@@ -36,8 +36,8 @@ namespace TestSynonymsDatabase
 
     public interface ITestDbContext : System.IDisposable
     {
-        System.Data.Entity.DbSet<ChildSynonym> ChildSynonyms { get; set; } // ChildSynonym
-        System.Data.Entity.DbSet<ParentSynonym> ParentSynonyms { get; set; } // ParentSynonym
+        System.Data.Entity.DbSet<Child> Children { get; set; } // Child
+        System.Data.Entity.DbSet<Parent> Parents { get; set; } // Parent
 
         int SaveChanges();
         System.Threading.Tasks.Task<int> SaveChangesAsync();
@@ -60,8 +60,8 @@ namespace TestSynonymsDatabase
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
     public class TestDbContext : System.Data.Entity.DbContext, ITestDbContext
     {
-        public System.Data.Entity.DbSet<ChildSynonym> ChildSynonyms { get; set; } // ChildSynonym
-        public System.Data.Entity.DbSet<ParentSynonym> ParentSynonyms { get; set; } // ParentSynonym
+        public System.Data.Entity.DbSet<Child> Children { get; set; } // Child
+        public System.Data.Entity.DbSet<Parent> Parents { get; set; } // Parent
 
         static TestDbContext()
         {
@@ -111,14 +111,14 @@ namespace TestSynonymsDatabase
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Configurations.Add(new ChildSynonymConfiguration());
-            modelBuilder.Configurations.Add(new ParentSynonymConfiguration());
+            modelBuilder.Configurations.Add(new ChildConfiguration());
+            modelBuilder.Configurations.Add(new ParentConfiguration());
         }
 
         public static System.Data.Entity.DbModelBuilder CreateModel(System.Data.Entity.DbModelBuilder modelBuilder, string schema)
         {
-            modelBuilder.Configurations.Add(new ChildSynonymConfiguration(schema));
-            modelBuilder.Configurations.Add(new ParentSynonymConfiguration(schema));
+            modelBuilder.Configurations.Add(new ChildConfiguration(schema));
+            modelBuilder.Configurations.Add(new ParentConfiguration(schema));
             return modelBuilder;
         }
     }
@@ -141,13 +141,13 @@ namespace TestSynonymsDatabase
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
     public class FakeTestDbContext : ITestDbContext
     {
-        public System.Data.Entity.DbSet<ChildSynonym> ChildSynonyms { get; set; }
-        public System.Data.Entity.DbSet<ParentSynonym> ParentSynonyms { get; set; }
+        public System.Data.Entity.DbSet<Child> Children { get; set; }
+        public System.Data.Entity.DbSet<Parent> Parents { get; set; }
 
         public FakeTestDbContext()
         {
-            ChildSynonyms = new FakeDbSet<ChildSynonym>("ChildId");
-            ParentSynonyms = new FakeDbSet<ParentSynonym>("ParentId");
+            Children = new FakeDbSet<Child>("ChildId");
+            Parents = new FakeDbSet<Parent>("ParentId");
         }
 
         public int SaveChangesCount { get; private set; }
@@ -467,59 +467,81 @@ namespace TestSynonymsDatabase
 
     #region POCO classes
 
-    // ChildSynonym
+    // Child
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
-    public class ChildSynonym
+    public class Child
     {
         public int ChildId { get; set; } // ChildId (Primary key)
         public int ParentId { get; set; } // ParentId
         public string ChildName { get; set; } // ChildName (length: 100)
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent Parent pointed by [Child].([ParentId]) (FK_Child_Parent)
+        /// </summary>
+        public virtual Parent Parent { get; set; } // FK_Child_Parent
     }
 
-    // ParentSynonym
+    // Parent
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
-    public class ParentSynonym
+    public class Parent
     {
         public int ParentId { get; set; } // ParentId (Primary key)
         public string ParentName { get; set; } // ParentName (length: 100)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child Children where [Child].[ParentId] point to this entity (FK_Child_Parent)
+        /// </summary>
+        public virtual System.Collections.Generic.ICollection<Child> Children { get; set; } // Child.FK_Child_Parent
+
+        public Parent()
+        {
+            Children = new System.Collections.Generic.List<Child>();
+        }
     }
 
     #endregion
 
     #region POCO Configuration
 
-    // ChildSynonym
+    // Child
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
-    public class ChildSynonymConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<ChildSynonym>
+    public class ChildConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<Child>
     {
-        public ChildSynonymConfiguration()
-            : this("dbo")
+        public ChildConfiguration()
+            : this("Synonyms")
         {
         }
 
-        public ChildSynonymConfiguration(string schema)
+        public ChildConfiguration(string schema)
         {
-            ToTable("ChildSynonym", schema);
+            ToTable("Child", schema);
             HasKey(x => x.ChildId);
 
             Property(x => x.ChildId).HasColumnName(@"ChildId").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None);
             Property(x => x.ParentId).HasColumnName(@"ParentId").HasColumnType("int").IsRequired();
             Property(x => x.ChildName).HasColumnName(@"ChildName").HasColumnType("varchar").IsOptional().IsUnicode(false).HasMaxLength(100);
+
+            // Foreign keys
+            HasRequired(a => a.Parent).WithMany(b => b.Children).HasForeignKey(c => c.ParentId).WillCascadeOnDelete(false); // FK_Child_Parent
         }
     }
 
-    // ParentSynonym
+    // Parent
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
-    public class ParentSynonymConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<ParentSynonym>
+    public class ParentConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<Parent>
     {
-        public ParentSynonymConfiguration()
-            : this("dbo")
+        public ParentConfiguration()
+            : this("Synonyms")
         {
         }
 
-        public ParentSynonymConfiguration(string schema)
+        public ParentConfiguration(string schema)
         {
-            ToTable("ParentSynonym", schema);
+            ToTable("Parent", schema);
             HasKey(x => x.ParentId);
 
             Property(x => x.ParentId).HasColumnName(@"ParentId").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None);

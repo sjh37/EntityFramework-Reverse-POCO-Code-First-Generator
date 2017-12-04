@@ -922,7 +922,7 @@
                 ? string.Empty
                 : "System.ComponentModel.DataAnnotations.Schema.";
 
-			bool isNewSequentialId = !string.IsNullOrEmpty(Default)  && Default.ToLower().Contains("newsequentialid");
+            bool isNewSequentialId = !string.IsNullOrEmpty(Default)  && Default.ToLower().Contains("newsequentialid");
 
             if (IsIdentity || isNewSequentialId)
             {
@@ -1808,35 +1808,133 @@ UNION ALL
 SELECT SchemaName, TableName, TableType, Ordinal, ColumnName, IsNullable, TypeName, [MaxLength], [Precision],
     [Default], DateTimePrecision, Scale, IsIdentity, IsStoreGenerated, PrimaryKey, PrimaryKeyOrdinal, IsForeignKey FROM #SynonymDetails";
 
-        private const string ForeignKeySQL = @"
+            private const string ForeignKeySQL = @"
 SELECT  FK.name AS FK_Table,
-    FkCol.name AS FK_Column,
-    PK.name AS PK_Table,
-    PkCol.name AS PK_Column,
-    OBJECT_NAME(f.object_id) AS Constraint_Name,
-    SCHEMA_NAME(FK.schema_id) AS fkSchema,
-    SCHEMA_NAME(PK.schema_id) AS pkSchema,
-    PkCol.name AS primarykey,
-    k.constraint_column_id AS ORDINAL_POSITION,
-    CASE WHEN f.delete_referential_action = 1 THEN 1 ELSE 0 END as CascadeOnDelete,
-    f.is_disabled AS IsNotEnforced
+        FkCol.name AS FK_Column,
+        PK.name AS PK_Table,
+        PkCol.name AS PK_Column,
+        OBJECT_NAME(f.object_id) AS Constraint_Name,
+        SCHEMA_NAME(FK.schema_id) AS fkSchema,
+        SCHEMA_NAME(PK.schema_id) AS pkSchema,
+        PkCol.name AS primarykey,
+        k.constraint_column_id AS ORDINAL_POSITION,
+        CASE WHEN f.delete_referential_action = 1 THEN 1 ELSE 0 END as CascadeOnDelete,
+        f.is_disabled AS IsNotEnforced
 FROM    sys.objects AS PK
-    INNER JOIN sys.foreign_keys AS f
-        INNER JOIN sys.foreign_key_columns AS k
-            ON k.constraint_object_id = f.object_id
-        INNER JOIN sys.indexes AS i
-            ON f.referenced_object_id = i.object_id
-                AND f.key_index_id = i.index_id
-        ON PK.object_id = f.referenced_object_id
-    INNER JOIN sys.objects AS FK
-        ON f.parent_object_id = FK.object_id
-    INNER JOIN sys.columns AS PkCol
-        ON f.referenced_object_id = PkCol.object_id
-            AND k.referenced_column_id = PkCol.column_id
-    INNER JOIN sys.columns AS FkCol
-        ON f.parent_object_id = FkCol.object_id
-            AND k.parent_column_id = FkCol.column_id
-ORDER BY FK_Table, FK_Column";
+        INNER JOIN sys.foreign_keys AS f
+            INNER JOIN sys.foreign_key_columns AS k
+                ON k.constraint_object_id = f.object_id
+            INNER JOIN sys.indexes AS i
+                ON f.referenced_object_id = i.object_id
+                   AND f.key_index_id = i.index_id
+            ON PK.object_id = f.referenced_object_id
+        INNER JOIN sys.objects AS FK
+            ON f.parent_object_id = FK.object_id
+        INNER JOIN sys.columns AS PkCol
+            ON f.referenced_object_id = PkCol.object_id
+               AND k.referenced_column_id = PkCol.column_id
+        INNER JOIN sys.columns AS FkCol
+            ON f.parent_object_id = FkCol.object_id
+               AND k.parent_column_id = FkCol.column_id";
+
+            private const string SynonymForeignKeySQLSetup = @"
+SET NOCOUNT ON;
+IF OBJECT_ID('tempdb..#SynonymFkDetails') IS NOT NULL DROP TABLE #SynonymFkDetails;
+IF OBJECT_ID('tempdb..#SynonymTargets') IS NOT NULL DROP TABLE #SynonymTargets;
+
+-- Create the #SynonymFkDetails temp table structure for later use
+SELECT  FK.name AS FK_Table,
+        FkCol.name AS FK_Column,
+        PK.name AS PK_Table,
+        PkCol.name AS PK_Column,
+        OBJECT_NAME(f.object_id) AS Constraint_Name,
+        SCHEMA_NAME(FK.schema_id) AS fkSchema,
+        SCHEMA_NAME(PK.schema_id) AS pkSchema,
+        PkCol.name AS primarykey,
+        k.constraint_column_id AS ORDINAL_POSITION,
+        CASE WHEN f.delete_referential_action = 1 THEN 1 ELSE 0 END as CascadeOnDelete,
+        f.is_disabled AS IsNotEnforced
+INTO	#SynonymFkDetails
+FROM    sys.objects AS PK
+        INNER JOIN sys.foreign_keys AS f
+            INNER JOIN sys.foreign_key_columns AS k
+                ON k.constraint_object_id = f.object_id
+            INNER JOIN sys.indexes AS i
+                ON f.referenced_object_id = i.object_id
+                   AND f.key_index_id = i.index_id
+            ON PK.object_id = f.referenced_object_id
+        INNER JOIN sys.objects AS FK
+            ON f.parent_object_id = FK.object_id
+        INNER JOIN sys.columns AS PkCol
+            ON f.referenced_object_id = PkCol.object_id
+               AND k.referenced_column_id = PkCol.column_id
+        INNER JOIN sys.columns AS FkCol
+            ON f.parent_object_id = FkCol.object_id
+               AND k.parent_column_id = FkCol.column_id
+ORDER BY FK_Table, FK_Column
+
+-- Get all databases referenced by synonyms.
+SELECT DISTINCT PARSENAME(sn.base_object_name, 3) AS DatabaseName
+INTO #SynonymTargets
+FROM sys.synonyms sn
+WHERE PARSENAME(sn.base_object_name, 3) != DB_NAME()
+AND ISNULL(PARSENAME(sn.base_object_name, 4), @@SERVERNAME) = @@SERVERNAME -- Only populate info from current server
+ORDER BY PARSENAME(sn.base_object_name, 3)
+
+-- Create a query to execute for each referenced database
+DECLARE @synonymFkDetailsQuery nvarchar(max) =
+'
+INSERT INTO #SynonymFkDetails (FK_Table, FK_Column, PK_Table, PK_Column, Constraint_Name, fkSchema, pkSchema, primarykey, ORDINAL_POSITION,
+                             CascadeOnDelete, IsNotEnforced)
+SELECT  FK.name AS FK_Table,
+        FkCol.name AS FK_Column,
+        PK.name AS PK_Table,
+        PkCol.name AS PK_Column,
+        OBJECT_NAME(f.object_id) AS Constraint_Name,
+        SCHEMA_NAME(FK.schema_id) AS fkSchema,
+        SCHEMA_NAME(PK.schema_id) AS pkSchema,
+        PkCol.name AS primarykey,
+        k.constraint_column_id AS ORDINAL_POSITION,
+        CASE WHEN f.delete_referential_action = 1 THEN 1 ELSE 0 END as CascadeOnDelete,
+        f.is_disabled AS IsNotEnforced
+FROM    sys.objects AS PK
+        INNER JOIN sys.foreign_keys AS f
+            INNER JOIN sys.foreign_key_columns AS k
+                ON k.constraint_object_id = f.object_id
+            INNER JOIN sys.indexes AS i
+                ON f.referenced_object_id = i.object_id
+                   AND f.key_index_id = i.index_id
+            ON PK.object_id = f.referenced_object_id
+        INNER JOIN sys.objects AS FK
+            ON f.parent_object_id = FK.object_id
+        INNER JOIN sys.columns AS PkCol
+            ON f.referenced_object_id = PkCol.object_id
+               AND k.referenced_column_id = PkCol.column_id
+        INNER JOIN sys.columns AS FkCol
+            ON f.parent_object_id = FkCol.object_id
+               AND k.parent_column_id = FkCol.column_id
+ORDER BY FK_Table, FK_Column;
+'
+
+-- Loop through referenced databases and populate #SynonymFkDetails
+DECLARE @synonmymDatabaseName sysname = (SELECT TOP (1) DatabaseName FROM #SynonymTargets)
+DECLARE @synonymFkDetailsQueryWithDb nvarchar(max)
+WHILE (@synonmymDatabaseName IS NOT NULL)
+BEGIN
+	SET @synonymFkDetailsQueryWithDb = 'USE [' + @synonmymDatabaseName + '] ' + @synonymFkDetailsQuery
+    EXEC sp_executesql @stmt=@synonymFkDetailsQueryWithDb
+    DELETE FROM #SynonymTargets WHERE DatabaseName = @synonmymDatabaseName
+    SET @synonmymDatabaseName = (SELECT TOP (1) DatabaseName FROM #SynonymTargets)
+END
+
+SET NOCOUNT OFF;
+";
+
+            private const string SynonymForeignKeySQL = @"
+UNION ALL
+-- Synonyms
+SELECT FK_Table, FK_Column, PK_Table, PK_Column, Constraint_Name, fkSchema, pkSchema, primarykey, ORDINAL_POSITION,
+       CascadeOnDelete, IsNotEnforced FROM #SynonymFkDetails";
 
     private const string ExtendedPropertySQL = @"
 SELECT  s.name AS [schema],
@@ -2263,6 +2361,10 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 return fkList;
 
             Cmd.CommandText = ForeignKeySQL + IncludeQueryTraceOn9481();
+
+            if (Settings.IncludeSynonyms)
+                Cmd.CommandText = SynonymForeignKeySQLSetup + ForeignKeySQL + SynonymForeignKeySQL + IncludeQueryTraceOn9481();
+
             if (Cmd.GetType().Name == "SqlCeCommand")
                 Cmd.CommandText = ForeignKeySQLCE;
             else

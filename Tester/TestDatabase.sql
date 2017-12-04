@@ -234,5 +234,8 @@ INSERT INTO [Synonyms].[Child] ([ChildId],[ParentId],[ChildName]) VALUES (1, 1, 
 USE [EfrpgTest_Synonyms]
 GO
 
-CREATE SYNONYM [dbo].[ParentSynonym] FOR [EfrpgTest].[Synonyms].[Parent]
-CREATE SYNONYM [dbo].[ChildSynonym] FOR [EfrpgTest].[Synonyms].[Child]
+CREATE SCHEMA Synonyms
+GO
+
+CREATE SYNONYM [Synonyms].[Parent] FOR [EfrpgTest].[Synonyms].[Parent]
+CREATE SYNONYM [Synonyms].[Child] FOR [EfrpgTest].[Synonyms].[Child]
