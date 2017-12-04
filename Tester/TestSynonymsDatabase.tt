@@ -137,7 +137,7 @@
     // If there are multiple schemas, then the table name is prefixed with the schema, except for dbo.
     // Ie. dbo.hello will be Hello.
     //     abc.hello will be AbcHello.
-    Settings.PrependSchemaName = true;   // Control if the schema name is prepended to the table name
+    Settings.PrependSchemaName = false;   // Control if the schema name is prepended to the table name
 
     // Table Suffix ***********************************************************************************************************************
     // Prepends the suffix to the generated classes names
@@ -183,7 +183,7 @@
     // Stored Procedures ******************************************************************************************************************
     // Use the following regex filters to include or exclude stored procedures
     Settings.StoredProcedureFilterExclude = null;
-    Settings.StoredProcedureFilterInclude = null;
+    Settings.StoredProcedureFilterInclude = new Regex("SimpleStoredProc");
 
     // Filtering of stored procedures using a function. This can be used in conjunction with the Regex's above.
     // Regex are used first to filter the list down, then this function is run last.

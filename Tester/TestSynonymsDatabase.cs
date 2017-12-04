@@ -36,8 +36,8 @@ namespace TestSynonymsDatabase
 
     public interface ITestDbContext : System.IDisposable
     {
-        System.Data.Entity.DbSet<ChildSynonym> ChildSynonyms { get; set; } // ChildSynonym
-        System.Data.Entity.DbSet<ParentSynonym> ParentSynonyms { get; set; } // ParentSynonym
+        System.Data.Entity.DbSet<Child> Children { get; set; } // Child
+        System.Data.Entity.DbSet<Parent> Parents { get; set; } // Parent
 
         int SaveChanges();
         System.Threading.Tasks.Task<int> SaveChangesAsync();
@@ -51,6 +51,14 @@ namespace TestSynonymsDatabase
         System.Data.Entity.DbSet Set(System.Type entityType);
         System.Data.Entity.DbSet<TEntity> Set<TEntity>() where TEntity : class;
         string ToString();
+
+        // Stored Procedures
+        System.Collections.Generic.List<SimpleStoredProcReturnModel> SimpleStoredProc(int? inputInt);
+        System.Collections.Generic.List<SimpleStoredProcReturnModel> SimpleStoredProc(int? inputInt, out int procResult);
+        System.Threading.Tasks.Task<System.Collections.Generic.List<SimpleStoredProcReturnModel>> SimpleStoredProcAsync(int? inputInt);
+
+
+        // Table Valued Functions
     }
 
     #endregion
@@ -60,8 +68,8 @@ namespace TestSynonymsDatabase
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
     public class TestDbContext : System.Data.Entity.DbContext, ITestDbContext
     {
-        public System.Data.Entity.DbSet<ChildSynonym> ChildSynonyms { get; set; } // ChildSynonym
-        public System.Data.Entity.DbSet<ParentSynonym> ParentSynonyms { get; set; } // ParentSynonym
+        public System.Data.Entity.DbSet<Child> Children { get; set; } // Child
+        public System.Data.Entity.DbSet<Parent> Parents { get; set; } // Parent
 
         static TestDbContext()
         {
@@ -111,16 +119,51 @@ namespace TestSynonymsDatabase
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Configurations.Add(new ChildSynonymConfiguration());
-            modelBuilder.Configurations.Add(new ParentSynonymConfiguration());
+            modelBuilder.Conventions.Add(new CodeFirstStoreFunctions.FunctionsConvention<TestDbContext>("dbo"));
+
+            modelBuilder.Configurations.Add(new ChildConfiguration());
+            modelBuilder.Configurations.Add(new ParentConfiguration());
         }
 
         public static System.Data.Entity.DbModelBuilder CreateModel(System.Data.Entity.DbModelBuilder modelBuilder, string schema)
         {
-            modelBuilder.Configurations.Add(new ChildSynonymConfiguration(schema));
-            modelBuilder.Configurations.Add(new ParentSynonymConfiguration(schema));
+            modelBuilder.Configurations.Add(new ChildConfiguration(schema));
+            modelBuilder.Configurations.Add(new ParentConfiguration(schema));
             return modelBuilder;
         }
+
+        // Stored Procedures
+        public System.Collections.Generic.List<SimpleStoredProcReturnModel> SimpleStoredProc(int? inputInt)
+        {
+            int procResult;
+            return SimpleStoredProc(inputInt, out procResult);
+        }
+
+        public System.Collections.Generic.List<SimpleStoredProcReturnModel> SimpleStoredProc(int? inputInt, out int procResult)
+        {
+            var inputIntParam = new System.Data.SqlClient.SqlParameter { ParameterName = "@InputInt", SqlDbType = System.Data.SqlDbType.Int, Direction = System.Data.ParameterDirection.Input, Value = inputInt.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!inputInt.HasValue)
+                inputIntParam.Value = System.DBNull.Value;
+
+            var procResultParam = new System.Data.SqlClient.SqlParameter { ParameterName = "@procResult", SqlDbType = System.Data.SqlDbType.Int, Direction = System.Data.ParameterDirection.Output };
+            var procResultData = Database.SqlQuery<SimpleStoredProcReturnModel>("EXEC @procResult = [Synonyms].[SimpleStoredProc] @InputInt", inputIntParam, procResultParam).ToList();
+
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SimpleStoredProcReturnModel>> SimpleStoredProcAsync(int? inputInt)
+        {
+            var inputIntParam = new System.Data.SqlClient.SqlParameter { ParameterName = "@InputInt", SqlDbType = System.Data.SqlDbType.Int, Direction = System.Data.ParameterDirection.Input, Value = inputInt.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!inputInt.HasValue)
+                inputIntParam.Value = System.DBNull.Value;
+
+            var procResultData = await Database.SqlQuery<SimpleStoredProcReturnModel>("EXEC [Synonyms].[SimpleStoredProc] @InputInt", inputIntParam).ToListAsync();
+
+            return procResultData;
+        }
+
+        // Table Valued Functions
     }
     #endregion
 
@@ -141,13 +184,13 @@ namespace TestSynonymsDatabase
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
     public class FakeTestDbContext : ITestDbContext
     {
-        public System.Data.Entity.DbSet<ChildSynonym> ChildSynonyms { get; set; }
-        public System.Data.Entity.DbSet<ParentSynonym> ParentSynonyms { get; set; }
+        public System.Data.Entity.DbSet<Child> Children { get; set; }
+        public System.Data.Entity.DbSet<Parent> Parents { get; set; }
 
         public FakeTestDbContext()
         {
-            ChildSynonyms = new FakeDbSet<ChildSynonym>("ChildId");
-            ParentSynonyms = new FakeDbSet<ParentSynonym>("ParentId");
+            Children = new FakeDbSet<Child>("ChildId");
+            Parents = new FakeDbSet<Parent>("ParentId");
         }
 
         public int SaveChangesCount { get; private set; }
@@ -209,6 +252,28 @@ namespace TestSynonymsDatabase
             throw new System.NotImplementedException();
         }
 
+
+        // Stored Procedures
+        public System.Collections.Generic.List<SimpleStoredProcReturnModel> SimpleStoredProc(int? inputInt)
+        {
+            int procResult;
+            return SimpleStoredProc(inputInt, out procResult);
+        }
+
+        public System.Collections.Generic.List<SimpleStoredProcReturnModel> SimpleStoredProc(int? inputInt, out int procResult)
+        {
+
+            procResult = 0;
+            return new System.Collections.Generic.List<SimpleStoredProcReturnModel>();
+        }
+
+        public System.Threading.Tasks.Task<System.Collections.Generic.List<SimpleStoredProcReturnModel>> SimpleStoredProcAsync(int? inputInt)
+        {
+            int procResult;
+            return System.Threading.Tasks.Task.FromResult(SimpleStoredProc(inputInt, out procResult));
+        }
+
+        // Table Valued Functions
     }
 
     // ************************************************************************
@@ -467,64 +532,96 @@ namespace TestSynonymsDatabase
 
     #region POCO classes
 
-    // ChildSynonym
+    // Child
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
-    public class ChildSynonym
+    public class Child
     {
         public int ChildId { get; set; } // ChildId (Primary key)
         public int ParentId { get; set; } // ParentId
         public string ChildName { get; set; } // ChildName (length: 100)
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent Parent pointed by [Child].([ParentId]) (FK_Child_Parent)
+        /// </summary>
+        public virtual Parent Parent { get; set; } // FK_Child_Parent
     }
 
-    // ParentSynonym
+    // Parent
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
-    public class ParentSynonym
+    public class Parent
     {
         public int ParentId { get; set; } // ParentId (Primary key)
         public string ParentName { get; set; } // ParentName (length: 100)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child Children where [Child].[ParentId] point to this entity (FK_Child_Parent)
+        /// </summary>
+        public virtual System.Collections.Generic.ICollection<Child> Children { get; set; } // Child.FK_Child_Parent
+
+        public Parent()
+        {
+            Children = new System.Collections.Generic.List<Child>();
+        }
     }
 
     #endregion
 
     #region POCO Configuration
 
-    // ChildSynonym
+    // Child
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
-    public class ChildSynonymConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<ChildSynonym>
+    public class ChildConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<Child>
     {
-        public ChildSynonymConfiguration()
-            : this("dbo")
+        public ChildConfiguration()
+            : this("Synonyms")
         {
         }
 
-        public ChildSynonymConfiguration(string schema)
+        public ChildConfiguration(string schema)
         {
-            ToTable("ChildSynonym", schema);
+            ToTable("Child", schema);
             HasKey(x => x.ChildId);
 
             Property(x => x.ChildId).HasColumnName(@"ChildId").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None);
             Property(x => x.ParentId).HasColumnName(@"ParentId").HasColumnType("int").IsRequired();
             Property(x => x.ChildName).HasColumnName(@"ChildName").HasColumnType("varchar").IsOptional().IsUnicode(false).HasMaxLength(100);
+
+            // Foreign keys
+            HasRequired(a => a.Parent).WithMany(b => b.Children).HasForeignKey(c => c.ParentId).WillCascadeOnDelete(false); // FK_Child_Parent
         }
     }
 
-    // ParentSynonym
+    // Parent
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
-    public class ParentSynonymConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<ParentSynonym>
+    public class ParentConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<Parent>
     {
-        public ParentSynonymConfiguration()
-            : this("dbo")
+        public ParentConfiguration()
+            : this("Synonyms")
         {
         }
 
-        public ParentSynonymConfiguration(string schema)
+        public ParentConfiguration(string schema)
         {
-            ToTable("ParentSynonym", schema);
+            ToTable("Parent", schema);
             HasKey(x => x.ParentId);
 
             Property(x => x.ParentId).HasColumnName(@"ParentId").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None);
             Property(x => x.ParentName).HasColumnName(@"ParentName").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(100);
         }
+    }
+
+    #endregion
+
+    #region Stored procedure return models
+
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
+    public class SimpleStoredProcReturnModel
+    {
+        public System.String ReturnValue { get; set; }
     }
 
     #endregion

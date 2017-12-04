@@ -922,7 +922,7 @@
                 ? string.Empty
                 : "System.ComponentModel.DataAnnotations.Schema.";
 
-			bool isNewSequentialId = !string.IsNullOrEmpty(Default)  && Default.ToLower().Contains("newsequentialid");
+            bool isNewSequentialId = !string.IsNullOrEmpty(Default)  && Default.ToLower().Contains("newsequentialid");
 
             if (IsIdentity || isNewSequentialId)
             {
@@ -1808,35 +1808,133 @@ UNION ALL
 SELECT SchemaName, TableName, TableType, Ordinal, ColumnName, IsNullable, TypeName, [MaxLength], [Precision],
     [Default], DateTimePrecision, Scale, IsIdentity, IsStoreGenerated, PrimaryKey, PrimaryKeyOrdinal, IsForeignKey FROM #SynonymDetails";
 
-        private const string ForeignKeySQL = @"
+            private const string ForeignKeySQL = @"
 SELECT  FK.name AS FK_Table,
-    FkCol.name AS FK_Column,
-    PK.name AS PK_Table,
-    PkCol.name AS PK_Column,
-    OBJECT_NAME(f.object_id) AS Constraint_Name,
-    SCHEMA_NAME(FK.schema_id) AS fkSchema,
-    SCHEMA_NAME(PK.schema_id) AS pkSchema,
-    PkCol.name AS primarykey,
-    k.constraint_column_id AS ORDINAL_POSITION,
-    CASE WHEN f.delete_referential_action = 1 THEN 1 ELSE 0 END as CascadeOnDelete,
-    f.is_disabled AS IsNotEnforced
+        FkCol.name AS FK_Column,
+        PK.name AS PK_Table,
+        PkCol.name AS PK_Column,
+        OBJECT_NAME(f.object_id) AS Constraint_Name,
+        SCHEMA_NAME(FK.schema_id) AS fkSchema,
+        SCHEMA_NAME(PK.schema_id) AS pkSchema,
+        PkCol.name AS primarykey,
+        k.constraint_column_id AS ORDINAL_POSITION,
+        CASE WHEN f.delete_referential_action = 1 THEN 1 ELSE 0 END as CascadeOnDelete,
+        f.is_disabled AS IsNotEnforced
 FROM    sys.objects AS PK
-    INNER JOIN sys.foreign_keys AS f
-        INNER JOIN sys.foreign_key_columns AS k
-            ON k.constraint_object_id = f.object_id
-        INNER JOIN sys.indexes AS i
-            ON f.referenced_object_id = i.object_id
-                AND f.key_index_id = i.index_id
-        ON PK.object_id = f.referenced_object_id
-    INNER JOIN sys.objects AS FK
-        ON f.parent_object_id = FK.object_id
-    INNER JOIN sys.columns AS PkCol
-        ON f.referenced_object_id = PkCol.object_id
-            AND k.referenced_column_id = PkCol.column_id
-    INNER JOIN sys.columns AS FkCol
-        ON f.parent_object_id = FkCol.object_id
-            AND k.parent_column_id = FkCol.column_id
-ORDER BY FK_Table, FK_Column";
+        INNER JOIN sys.foreign_keys AS f
+            INNER JOIN sys.foreign_key_columns AS k
+                ON k.constraint_object_id = f.object_id
+            INNER JOIN sys.indexes AS i
+                ON f.referenced_object_id = i.object_id
+                   AND f.key_index_id = i.index_id
+            ON PK.object_id = f.referenced_object_id
+        INNER JOIN sys.objects AS FK
+            ON f.parent_object_id = FK.object_id
+        INNER JOIN sys.columns AS PkCol
+            ON f.referenced_object_id = PkCol.object_id
+               AND k.referenced_column_id = PkCol.column_id
+        INNER JOIN sys.columns AS FkCol
+            ON f.parent_object_id = FkCol.object_id
+               AND k.parent_column_id = FkCol.column_id";
+
+            private const string SynonymForeignKeySQLSetup = @"
+SET NOCOUNT ON;
+IF OBJECT_ID('tempdb..#SynonymFkDetails') IS NOT NULL DROP TABLE #SynonymFkDetails;
+IF OBJECT_ID('tempdb..#SynonymTargets') IS NOT NULL DROP TABLE #SynonymTargets;
+
+-- Create the #SynonymFkDetails temp table structure for later use
+SELECT  FK.name AS FK_Table,
+        FkCol.name AS FK_Column,
+        PK.name AS PK_Table,
+        PkCol.name AS PK_Column,
+        OBJECT_NAME(f.object_id) AS Constraint_Name,
+        SCHEMA_NAME(FK.schema_id) AS fkSchema,
+        SCHEMA_NAME(PK.schema_id) AS pkSchema,
+        PkCol.name AS primarykey,
+        k.constraint_column_id AS ORDINAL_POSITION,
+        CASE WHEN f.delete_referential_action = 1 THEN 1 ELSE 0 END as CascadeOnDelete,
+        f.is_disabled AS IsNotEnforced
+INTO	#SynonymFkDetails
+FROM    sys.objects AS PK
+        INNER JOIN sys.foreign_keys AS f
+            INNER JOIN sys.foreign_key_columns AS k
+                ON k.constraint_object_id = f.object_id
+            INNER JOIN sys.indexes AS i
+                ON f.referenced_object_id = i.object_id
+                   AND f.key_index_id = i.index_id
+            ON PK.object_id = f.referenced_object_id
+        INNER JOIN sys.objects AS FK
+            ON f.parent_object_id = FK.object_id
+        INNER JOIN sys.columns AS PkCol
+            ON f.referenced_object_id = PkCol.object_id
+               AND k.referenced_column_id = PkCol.column_id
+        INNER JOIN sys.columns AS FkCol
+            ON f.parent_object_id = FkCol.object_id
+               AND k.parent_column_id = FkCol.column_id
+ORDER BY FK_Table, FK_Column
+
+-- Get all databases referenced by synonyms.
+SELECT DISTINCT PARSENAME(sn.base_object_name, 3) AS DatabaseName
+INTO #SynonymTargets
+FROM sys.synonyms sn
+WHERE PARSENAME(sn.base_object_name, 3) != DB_NAME()
+AND ISNULL(PARSENAME(sn.base_object_name, 4), @@SERVERNAME) = @@SERVERNAME -- Only populate info from current server
+ORDER BY PARSENAME(sn.base_object_name, 3)
+
+-- Create a query to execute for each referenced database
+DECLARE @synonymFkDetailsQuery nvarchar(max) =
+'
+INSERT INTO #SynonymFkDetails (FK_Table, FK_Column, PK_Table, PK_Column, Constraint_Name, fkSchema, pkSchema, primarykey, ORDINAL_POSITION,
+                             CascadeOnDelete, IsNotEnforced)
+SELECT  FK.name AS FK_Table,
+        FkCol.name AS FK_Column,
+        PK.name AS PK_Table,
+        PkCol.name AS PK_Column,
+        OBJECT_NAME(f.object_id) AS Constraint_Name,
+        SCHEMA_NAME(FK.schema_id) AS fkSchema,
+        SCHEMA_NAME(PK.schema_id) AS pkSchema,
+        PkCol.name AS primarykey,
+        k.constraint_column_id AS ORDINAL_POSITION,
+        CASE WHEN f.delete_referential_action = 1 THEN 1 ELSE 0 END as CascadeOnDelete,
+        f.is_disabled AS IsNotEnforced
+FROM    sys.objects AS PK
+        INNER JOIN sys.foreign_keys AS f
+            INNER JOIN sys.foreign_key_columns AS k
+                ON k.constraint_object_id = f.object_id
+            INNER JOIN sys.indexes AS i
+                ON f.referenced_object_id = i.object_id
+                   AND f.key_index_id = i.index_id
+            ON PK.object_id = f.referenced_object_id
+        INNER JOIN sys.objects AS FK
+            ON f.parent_object_id = FK.object_id
+        INNER JOIN sys.columns AS PkCol
+            ON f.referenced_object_id = PkCol.object_id
+               AND k.referenced_column_id = PkCol.column_id
+        INNER JOIN sys.columns AS FkCol
+            ON f.parent_object_id = FkCol.object_id
+               AND k.parent_column_id = FkCol.column_id
+ORDER BY FK_Table, FK_Column;
+'
+
+-- Loop through referenced databases and populate #SynonymFkDetails
+DECLARE @synonmymDatabaseName sysname = (SELECT TOP (1) DatabaseName FROM #SynonymTargets)
+DECLARE @synonymFkDetailsQueryWithDb nvarchar(max)
+WHILE (@synonmymDatabaseName IS NOT NULL)
+BEGIN
+	SET @synonymFkDetailsQueryWithDb = 'USE [' + @synonmymDatabaseName + '] ' + @synonymFkDetailsQuery
+    EXEC sp_executesql @stmt=@synonymFkDetailsQueryWithDb
+    DELETE FROM #SynonymTargets WHERE DatabaseName = @synonmymDatabaseName
+    SET @synonmymDatabaseName = (SELECT TOP (1) DatabaseName FROM #SynonymTargets)
+END
+
+SET NOCOUNT OFF;
+";
+
+            private const string SynonymForeignKeySQL = @"
+UNION ALL
+-- Synonyms
+SELECT FK_Table, FK_Column, PK_Table, PK_Column, Constraint_Name, fkSchema, pkSchema, primarykey, ORDINAL_POSITION,
+       CascadeOnDelete, IsNotEnforced FROM #SynonymFkDetails";
 
     private const string ExtendedPropertySQL = @"
 SELECT  s.name AS [schema],
@@ -1949,120 +2047,259 @@ FROM    INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS AS C
 WHERE   PT.COLUMN_NAME = PK.COLUMN_NAME
 ORDER BY FK.TABLE_NAME, FK.COLUMN_NAME";
 
-        private const string StoredProcedureSQL = @"
+            private const string StoredProcedureSQL = @"
 SELECT  R.SPECIFIC_SCHEMA,
-    R.SPECIFIC_NAME,
-    R.ROUTINE_TYPE,
-    P.ORDINAL_POSITION,
-    P.PARAMETER_MODE,
-    P.PARAMETER_NAME,
-    P.DATA_TYPE,
-    ISNULL(P.CHARACTER_MAXIMUM_LENGTH, 0) AS CHARACTER_MAXIMUM_LENGTH,
-    ISNULL(P.NUMERIC_PRECISION, 0) AS NUMERIC_PRECISION,
-    ISNULL(P.NUMERIC_SCALE, 0) AS NUMERIC_SCALE,
-    ISNULL(P.DATETIME_PRECISION, 0) AS DATETIME_PRECISION,
-    P.USER_DEFINED_TYPE_SCHEMA + '.' + P.USER_DEFINED_TYPE_NAME AS USER_DEFINED_TYPE
+        R.SPECIFIC_NAME,
+        R.ROUTINE_TYPE,
+        P.ORDINAL_POSITION,
+        P.PARAMETER_MODE,
+        P.PARAMETER_NAME,
+        P.DATA_TYPE,
+        ISNULL(P.CHARACTER_MAXIMUM_LENGTH, 0) AS CHARACTER_MAXIMUM_LENGTH,
+        ISNULL(P.NUMERIC_PRECISION, 0) AS NUMERIC_PRECISION,
+        ISNULL(P.NUMERIC_SCALE, 0) AS NUMERIC_SCALE,
+        ISNULL(P.DATETIME_PRECISION, 0) AS DATETIME_PRECISION,
+        P.USER_DEFINED_TYPE_SCHEMA + '.' + P.USER_DEFINED_TYPE_NAME AS USER_DEFINED_TYPE
 FROM    INFORMATION_SCHEMA.ROUTINES R
-    LEFT OUTER JOIN INFORMATION_SCHEMA.PARAMETERS P
-        ON P.SPECIFIC_SCHEMA = R.SPECIFIC_SCHEMA
-            AND P.SPECIFIC_NAME = R.SPECIFIC_NAME
+        LEFT OUTER JOIN INFORMATION_SCHEMA.PARAMETERS P
+            ON P.SPECIFIC_SCHEMA = R.SPECIFIC_SCHEMA
+               AND P.SPECIFIC_NAME = R.SPECIFIC_NAME
 WHERE   R.ROUTINE_TYPE = 'PROCEDURE'
-    AND (
-            P.IS_RESULT = 'NO'
-            OR P.IS_RESULT IS NULL
-        )
-    AND R.SPECIFIC_SCHEMA + R.SPECIFIC_NAME IN (
-        SELECT  SCHEMA_NAME(sp.schema_id) + sp.name
-        FROM    sys.all_objects AS sp
-                LEFT OUTER JOIN sys.all_sql_modules AS sm
-                    ON sm.object_id = sp.object_id
-        WHERE   sp.type = 'P'
-                AND (CAST(CASE WHEN sp.is_ms_shipped = 1 THEN 1
-                                WHEN (
-                                        SELECT major_id
-                                        FROM   sys.extended_properties
-                                        WHERE  major_id = sp.object_id
-                                            AND minor_id = 0
-                                            AND class = 1
-                                            AND name = N'microsoft_database_tools_support'
-                                    ) IS NOT NULL THEN 1
-                                ELSE 0
-                            END AS BIT) = 0))
+        AND (
+             P.IS_RESULT = 'NO'
+             OR P.IS_RESULT IS NULL
+            )
+        AND R.SPECIFIC_SCHEMA + R.SPECIFIC_NAME IN (
+            SELECT  SCHEMA_NAME(sp.schema_id) + sp.name
+            FROM    sys.all_objects AS sp
+                    LEFT OUTER JOIN sys.all_sql_modules AS sm
+                        ON sm.object_id = sp.object_id
+            WHERE   sp.type = 'P'
+                    AND (CAST(CASE WHEN sp.is_ms_shipped = 1 THEN 1
+                                   WHEN (
+                                         SELECT major_id
+                                         FROM   sys.extended_properties
+                                         WHERE  major_id = sp.object_id
+                                                AND minor_id = 0
+                                                AND class = 1
+                                                AND name = N'microsoft_database_tools_support'
+                                        ) IS NOT NULL THEN 1
+                                   ELSE 0
+                              END AS BIT) = 0))
 
 UNION ALL
 SELECT  R.SPECIFIC_SCHEMA,
-    R.SPECIFIC_NAME,
-    R.ROUTINE_TYPE,
-    P.ORDINAL_POSITION,
-    P.PARAMETER_MODE,
-    P.PARAMETER_NAME,
-    P.DATA_TYPE,
-    ISNULL(P.CHARACTER_MAXIMUM_LENGTH, 0) AS CHARACTER_MAXIMUM_LENGTH,
-    ISNULL(P.NUMERIC_PRECISION, 0) AS NUMERIC_PRECISION,
-    ISNULL(P.NUMERIC_SCALE, 0) AS NUMERIC_SCALE,
-    ISNULL(P.DATETIME_PRECISION, 0) AS DATETIME_PRECISION,
-    P.USER_DEFINED_TYPE_SCHEMA + '.' + P.USER_DEFINED_TYPE_NAME AS USER_DEFINED_TYPE
+        R.SPECIFIC_NAME,
+        R.ROUTINE_TYPE,
+        P.ORDINAL_POSITION,
+        P.PARAMETER_MODE,
+        P.PARAMETER_NAME,
+        P.DATA_TYPE,
+        ISNULL(P.CHARACTER_MAXIMUM_LENGTH, 0) AS CHARACTER_MAXIMUM_LENGTH,
+        ISNULL(P.NUMERIC_PRECISION, 0) AS NUMERIC_PRECISION,
+        ISNULL(P.NUMERIC_SCALE, 0) AS NUMERIC_SCALE,
+        ISNULL(P.DATETIME_PRECISION, 0) AS DATETIME_PRECISION,
+        P.USER_DEFINED_TYPE_SCHEMA + '.' + P.USER_DEFINED_TYPE_NAME AS USER_DEFINED_TYPE
 FROM    INFORMATION_SCHEMA.ROUTINES R
-    LEFT OUTER JOIN INFORMATION_SCHEMA.PARAMETERS P
-        ON P.SPECIFIC_SCHEMA = R.SPECIFIC_SCHEMA
-            AND P.SPECIFIC_NAME = R.SPECIFIC_NAME
+        LEFT OUTER JOIN INFORMATION_SCHEMA.PARAMETERS P
+            ON P.SPECIFIC_SCHEMA = R.SPECIFIC_SCHEMA
+               AND P.SPECIFIC_NAME = R.SPECIFIC_NAME
 WHERE   R.ROUTINE_TYPE = 'FUNCTION'
-    AND R.DATA_TYPE = 'TABLE'
-ORDER BY R.SPECIFIC_SCHEMA,
-    R.SPECIFIC_NAME,
-    P.ORDINAL_POSITION";
+        AND R.DATA_TYPE = 'TABLE'";
 
-        private const string StoredProcedureSQLAzure = @"
+            private const string StoredProcedureSQLAzure = @"
 SELECT  R.SPECIFIC_SCHEMA,
-    R.SPECIFIC_NAME,
-    R.ROUTINE_TYPE,
-    P.ORDINAL_POSITION,
-    P.PARAMETER_MODE,
-    P.PARAMETER_NAME,
-    P.DATA_TYPE,
-    ISNULL(P.CHARACTER_MAXIMUM_LENGTH, 0) AS CHARACTER_MAXIMUM_LENGTH,
-    ISNULL(P.NUMERIC_PRECISION, 0) AS NUMERIC_PRECISION,
-    ISNULL(P.NUMERIC_SCALE, 0) AS NUMERIC_SCALE,
-    ISNULL(P.DATETIME_PRECISION, 0) AS DATETIME_PRECISION,
-    P.USER_DEFINED_TYPE_SCHEMA + '.' + P.USER_DEFINED_TYPE_NAME AS USER_DEFINED_TYPE
+        R.SPECIFIC_NAME,
+        R.ROUTINE_TYPE,
+        P.ORDINAL_POSITION,
+        P.PARAMETER_MODE,
+        P.PARAMETER_NAME,
+        P.DATA_TYPE,
+        ISNULL(P.CHARACTER_MAXIMUM_LENGTH, 0) AS CHARACTER_MAXIMUM_LENGTH,
+        ISNULL(P.NUMERIC_PRECISION, 0) AS NUMERIC_PRECISION,
+        ISNULL(P.NUMERIC_SCALE, 0) AS NUMERIC_SCALE,
+        ISNULL(P.DATETIME_PRECISION, 0) AS DATETIME_PRECISION,
+        P.USER_DEFINED_TYPE_SCHEMA + '.' + P.USER_DEFINED_TYPE_NAME AS USER_DEFINED_TYPE
 FROM    INFORMATION_SCHEMA.ROUTINES R
-    LEFT OUTER JOIN INFORMATION_SCHEMA.PARAMETERS P
-        ON P.SPECIFIC_SCHEMA = R.SPECIFIC_SCHEMA
-            AND P.SPECIFIC_NAME = R.SPECIFIC_NAME
+        LEFT OUTER JOIN INFORMATION_SCHEMA.PARAMETERS P
+            ON P.SPECIFIC_SCHEMA = R.SPECIFIC_SCHEMA
+               AND P.SPECIFIC_NAME = R.SPECIFIC_NAME
 WHERE   R.ROUTINE_TYPE = 'PROCEDURE'
-    AND (
-            P.IS_RESULT = 'NO'
-            OR P.IS_RESULT IS NULL
-        )
-    AND R.SPECIFIC_SCHEMA + R.SPECIFIC_NAME IN (
-        SELECT  SCHEMA_NAME(sp.schema_id) + sp.name
-        FROM    sys.all_objects AS sp
-                LEFT OUTER JOIN sys.all_sql_modules AS sm
-                    ON sm.object_id = sp.object_id
-        WHERE   sp.type = 'P'
-                AND sp.is_ms_shipped = 0)
+        AND (
+             P.IS_RESULT = 'NO'
+             OR P.IS_RESULT IS NULL
+            )
+        AND R.SPECIFIC_SCHEMA + R.SPECIFIC_NAME IN (
+            SELECT  SCHEMA_NAME(sp.schema_id) + sp.name
+            FROM    sys.all_objects AS sp
+                    LEFT OUTER JOIN sys.all_sql_modules AS sm
+                        ON sm.object_id = sp.object_id
+            WHERE   sp.type = 'P'
+                    AND sp.is_ms_shipped = 0)
 UNION ALL
 SELECT  R.SPECIFIC_SCHEMA,
-    R.SPECIFIC_NAME,
-    R.ROUTINE_TYPE,
-    P.ORDINAL_POSITION,
-    P.PARAMETER_MODE,
-    P.PARAMETER_NAME,
-    P.DATA_TYPE,
-    ISNULL(P.CHARACTER_MAXIMUM_LENGTH, 0) AS CHARACTER_MAXIMUM_LENGTH,
-    ISNULL(P.NUMERIC_PRECISION, 0) AS NUMERIC_PRECISION,
-    ISNULL(P.NUMERIC_SCALE, 0) AS NUMERIC_SCALE,
-    ISNULL(P.DATETIME_PRECISION, 0) AS DATETIME_PRECISION,
-    P.USER_DEFINED_TYPE_SCHEMA + '.' + P.USER_DEFINED_TYPE_NAME AS USER_DEFINED_TYPE
+        R.SPECIFIC_NAME,
+        R.ROUTINE_TYPE,
+        P.ORDINAL_POSITION,
+        P.PARAMETER_MODE,
+        P.PARAMETER_NAME,
+        P.DATA_TYPE,
+        ISNULL(P.CHARACTER_MAXIMUM_LENGTH, 0) AS CHARACTER_MAXIMUM_LENGTH,
+        ISNULL(P.NUMERIC_PRECISION, 0) AS NUMERIC_PRECISION,
+        ISNULL(P.NUMERIC_SCALE, 0) AS NUMERIC_SCALE,
+        ISNULL(P.DATETIME_PRECISION, 0) AS DATETIME_PRECISION,
+        P.USER_DEFINED_TYPE_SCHEMA + '.' + P.USER_DEFINED_TYPE_NAME AS USER_DEFINED_TYPE
 FROM    INFORMATION_SCHEMA.ROUTINES R
-    LEFT OUTER JOIN INFORMATION_SCHEMA.PARAMETERS P
-        ON P.SPECIFIC_SCHEMA = R.SPECIFIC_SCHEMA
-            AND P.SPECIFIC_NAME = R.SPECIFIC_NAME
+        LEFT OUTER JOIN INFORMATION_SCHEMA.PARAMETERS P
+            ON P.SPECIFIC_SCHEMA = R.SPECIFIC_SCHEMA
+               AND P.SPECIFIC_NAME = R.SPECIFIC_NAME
 WHERE   R.ROUTINE_TYPE = 'FUNCTION'
-    AND R.DATA_TYPE = 'TABLE'
+        AND R.DATA_TYPE = 'TABLE'
 ORDER BY R.SPECIFIC_SCHEMA,
-    R.SPECIFIC_NAME,
-    P.ORDINAL_POSITION";
+        R.SPECIFIC_NAME,
+        P.ORDINAL_POSITION";
+
+            private const string SynonymStoredProcedureSQLSetup = @"
+SET NOCOUNT ON;
+IF OBJECT_ID('tempdb..#SynonymStoredProcedureDetails') IS NOT NULL DROP TABLE #SynonymStoredProcedureDetails;
+IF OBJECT_ID('tempdb..#SynonymTargets') IS NOT NULL DROP TABLE #SynonymTargets;
+
+-- Create the ##SynonymStoredProcedureDetails temp table structure for later use
+SELECT  TOP (0) R.SPECIFIC_SCHEMA,
+        R.SPECIFIC_NAME,
+        R.ROUTINE_TYPE,
+        P.ORDINAL_POSITION,
+        P.PARAMETER_MODE,
+        P.PARAMETER_NAME,
+        P.DATA_TYPE,
+        ISNULL(P.CHARACTER_MAXIMUM_LENGTH, 0) AS CHARACTER_MAXIMUM_LENGTH,
+        ISNULL(P.NUMERIC_PRECISION, 0) AS NUMERIC_PRECISION,
+        ISNULL(P.NUMERIC_SCALE, 0) AS NUMERIC_SCALE,
+        ISNULL(P.DATETIME_PRECISION, 0) AS DATETIME_PRECISION,
+        P.USER_DEFINED_TYPE_SCHEMA + '.' + P.USER_DEFINED_TYPE_NAME AS USER_DEFINED_TYPE
+INTO	#SynonymStoredProcedureDetails
+FROM    INFORMATION_SCHEMA.ROUTINES R
+        LEFT OUTER JOIN INFORMATION_SCHEMA.PARAMETERS P
+            ON P.SPECIFIC_SCHEMA = R.SPECIFIC_SCHEMA
+               AND P.SPECIFIC_NAME = R.SPECIFIC_NAME
+WHERE   R.ROUTINE_TYPE = 'PROCEDURE'
+        AND (
+             P.IS_RESULT = 'NO'
+             OR P.IS_RESULT IS NULL
+            )
+        AND R.SPECIFIC_SCHEMA + R.SPECIFIC_NAME IN (
+            SELECT  SCHEMA_NAME(sp.schema_id) + sp.name
+            FROM    sys.all_objects AS sp
+                    LEFT OUTER JOIN sys.all_sql_modules AS sm
+                        ON sm.object_id = sp.object_id
+            WHERE   sp.type = 'P'
+                    AND (CAST(CASE WHEN sp.is_ms_shipped = 1 THEN 1
+                                   WHEN (
+                                         SELECT major_id
+                                         FROM   sys.extended_properties
+                                         WHERE  major_id = sp.object_id
+                                                AND minor_id = 0
+                                                AND class = 1
+                                                AND name = N'microsoft_database_tools_support'
+                                        ) IS NOT NULL THEN 1
+                                   ELSE 0
+                              END AS BIT) = 0))
+
+-- Get all databases referenced by synonyms.
+SELECT DISTINCT PARSENAME(sn.base_object_name, 3) AS DatabaseName
+INTO #SynonymTargets
+FROM sys.synonyms sn
+WHERE PARSENAME(sn.base_object_name, 3) != DB_NAME()
+AND ISNULL(PARSENAME(sn.base_object_name, 4), @@SERVERNAME) = @@SERVERNAME -- Only populate info from current server
+ORDER BY PARSENAME(sn.base_object_name, 3)
+
+-- Create a query to execute for each referenced database
+DECLARE @synonymStoredProcedureDetailsQuery nvarchar(max) =
+'
+INSERT INTO #SynonymStoredProcedureDetails (SPECIFIC_SCHEMA, SPECIFIC_NAME, ROUTINE_TYPE, ORDINAL_POSITION, PARAMETER_MODE, PARAMETER_NAME, DATA_TYPE
+											, CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, NUMERIC_SCALE, DATETIME_PRECISION, USER_DEFINED_TYPE)
+SELECT  R.SPECIFIC_SCHEMA,
+        R.SPECIFIC_NAME,
+        R.ROUTINE_TYPE,
+        P.ORDINAL_POSITION,
+        P.PARAMETER_MODE,
+        P.PARAMETER_NAME,
+        P.DATA_TYPE,
+        ISNULL(P.CHARACTER_MAXIMUM_LENGTH, 0) AS CHARACTER_MAXIMUM_LENGTH,
+        ISNULL(P.NUMERIC_PRECISION, 0) AS NUMERIC_PRECISION,
+        ISNULL(P.NUMERIC_SCALE, 0) AS NUMERIC_SCALE,
+        ISNULL(P.DATETIME_PRECISION, 0) AS DATETIME_PRECISION,
+        P.USER_DEFINED_TYPE_SCHEMA + ''.'' + P.USER_DEFINED_TYPE_NAME AS USER_DEFINED_TYPE
+FROM    INFORMATION_SCHEMA.ROUTINES R
+        LEFT OUTER JOIN INFORMATION_SCHEMA.PARAMETERS P
+            ON P.SPECIFIC_SCHEMA = R.SPECIFIC_SCHEMA
+               AND P.SPECIFIC_NAME = R.SPECIFIC_NAME
+WHERE   R.ROUTINE_TYPE = ''PROCEDURE''
+        AND (
+             P.IS_RESULT = ''NO''
+             OR P.IS_RESULT IS NULL
+            )
+        AND R.SPECIFIC_SCHEMA + R.SPECIFIC_NAME IN (
+            SELECT  SCHEMA_NAME(sp.schema_id) + sp.name
+            FROM    sys.all_objects AS sp
+                    LEFT OUTER JOIN sys.all_sql_modules AS sm
+                        ON sm.object_id = sp.object_id
+            WHERE   sp.type = ''P''
+                    AND (CAST(CASE WHEN sp.is_ms_shipped = 1 THEN 1
+                                   WHEN (
+                                         SELECT major_id
+                                         FROM   sys.extended_properties
+                                         WHERE  major_id = sp.object_id
+                                                AND minor_id = 0
+                                                AND class = 1
+                                                AND name = N''microsoft_database_tools_support''
+                                        ) IS NOT NULL THEN 1
+                                   ELSE 0
+                              END AS BIT) = 0))
+
+UNION ALL
+SELECT  R.SPECIFIC_SCHEMA,
+        R.SPECIFIC_NAME,
+        R.ROUTINE_TYPE,
+        P.ORDINAL_POSITION,
+        P.PARAMETER_MODE,
+        P.PARAMETER_NAME,
+        P.DATA_TYPE,
+        ISNULL(P.CHARACTER_MAXIMUM_LENGTH, 0) AS CHARACTER_MAXIMUM_LENGTH,
+        ISNULL(P.NUMERIC_PRECISION, 0) AS NUMERIC_PRECISION,
+        ISNULL(P.NUMERIC_SCALE, 0) AS NUMERIC_SCALE,
+        ISNULL(P.DATETIME_PRECISION, 0) AS DATETIME_PRECISION,
+        P.USER_DEFINED_TYPE_SCHEMA + ''.'' + P.USER_DEFINED_TYPE_NAME AS USER_DEFINED_TYPE
+FROM    INFORMATION_SCHEMA.ROUTINES R
+        LEFT OUTER JOIN INFORMATION_SCHEMA.PARAMETERS P
+            ON P.SPECIFIC_SCHEMA = R.SPECIFIC_SCHEMA
+               AND P.SPECIFIC_NAME = R.SPECIFIC_NAME
+WHERE   R.ROUTINE_TYPE = ''FUNCTION''
+        AND R.DATA_TYPE = ''TABLE''
+ORDER BY R.SPECIFIC_SCHEMA,
+        R.SPECIFIC_NAME,
+        P.ORDINAL_POSITION
+'
+
+-- Loop through referenced databases and populate #SynonymStoredProcedureDetails
+DECLARE @synonmymDatabaseName sysname = (SELECT TOP (1) DatabaseName FROM #SynonymTargets)
+DECLARE @synonymStoredProcedureDetailsQueryWithDb nvarchar(max)
+WHILE (@synonmymDatabaseName IS NOT NULL)
+BEGIN
+	SET @synonymStoredProcedureDetailsQueryWithDb = 'USE [' + @synonmymDatabaseName + '] ' + @synonymStoredProcedureDetailsQuery
+    EXEC sp_executesql @stmt=@synonymStoredProcedureDetailsQueryWithDb
+    DELETE FROM #SynonymTargets WHERE DatabaseName = @synonmymDatabaseName
+    SET @synonmymDatabaseName = (SELECT TOP (1) DatabaseName FROM #SynonymTargets)
+END
+
+SET NOCOUNT OFF;
+";
+
+            private const string SynonymStoredProcedureSQL = @"
+UNION ALL
+-- Synonyms
+SELECT SPECIFIC_SCHEMA, SPECIFIC_NAME, ROUTINE_TYPE, ORDINAL_POSITION, PARAMETER_MODE, PARAMETER_NAME, DATA_TYPE
+	, CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, NUMERIC_SCALE, DATETIME_PRECISION, USER_DEFINED_TYPE FROM #SynonymStoredProcedureDetails";
 
         private const string IndexSQL = @"
 SELECT  SCHEMA_NAME(t.schema_id) AS TableSchema,
@@ -2263,6 +2500,10 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 return fkList;
 
             Cmd.CommandText = ForeignKeySQL + IncludeQueryTraceOn9481();
+
+            if (Settings.IncludeSynonyms)
+                Cmd.CommandText = SynonymForeignKeySQLSetup + ForeignKeySQL + SynonymForeignKeySQL + IncludeQueryTraceOn9481();
+
             if (Cmd.GetType().Name == "SqlCeCommand")
                 Cmd.CommandText = ForeignKeySQLCE;
             else
@@ -2471,6 +2712,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
             if (IsAzure(Settings.IncludeConnectionSettingComments))
                 Cmd.CommandText = StoredProcedureSQLAzure + IncludeQueryTraceOn9481();
+            else if (Settings.IncludeSynonyms)
+                Cmd.CommandText = SynonymStoredProcedureSQLSetup + StoredProcedureSQL + SynonymStoredProcedureSQL + IncludeQueryTraceOn9481();
             else
                 Cmd.CommandText = StoredProcedureSQL + IncludeQueryTraceOn9481();
 
