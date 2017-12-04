@@ -40,6 +40,8 @@ namespace TestDatabaseStandard
         System.Data.Entity.DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
         System.Data.Entity.DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; } // ComputedColumns
         System.Data.Entity.DbSet<Stafford_Foo> Stafford_Foos { get; set; } // Foo
+        System.Data.Entity.DbSet<Synonyms_Child> Synonyms_Children { get; set; } // Child
+        System.Data.Entity.DbSet<Synonyms_Parent> Synonyms_Parents { get; set; } // Parent
 
         int SaveChanges();
         System.Threading.Tasks.Task<int> SaveChangesAsync();
@@ -55,6 +57,10 @@ namespace TestDatabaseStandard
         string ToString();
 
         // Stored Procedures
+        System.Collections.Generic.List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt);
+        System.Collections.Generic.List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt, out int procResult);
+        System.Threading.Tasks.Task<System.Collections.Generic.List<Synonyms_SimpleStoredProcReturnModel>> Synonyms_SimpleStoredProcAsync(int? inputInt);
+
 
         // Table Valued Functions
         System.Linq.IQueryable<CsvToIntReturnModel> CsvToInt(string array, string array2);
@@ -71,6 +77,8 @@ namespace TestDatabaseStandard
         public System.Data.Entity.DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
         public System.Data.Entity.DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; } // ComputedColumns
         public System.Data.Entity.DbSet<Stafford_Foo> Stafford_Foos { get; set; } // Foo
+        public System.Data.Entity.DbSet<Synonyms_Child> Synonyms_Children { get; set; } // Child
+        public System.Data.Entity.DbSet<Synonyms_Parent> Synonyms_Parents { get; set; } // Parent
 
         static TestDbContext()
         {
@@ -127,6 +135,8 @@ namespace TestDatabaseStandard
             modelBuilder.Configurations.Add(new Stafford_BooConfiguration());
             modelBuilder.Configurations.Add(new Stafford_ComputedColumnConfiguration());
             modelBuilder.Configurations.Add(new Stafford_FooConfiguration());
+            modelBuilder.Configurations.Add(new Synonyms_ChildConfiguration());
+            modelBuilder.Configurations.Add(new Synonyms_ParentConfiguration());
         }
 
         public static System.Data.Entity.DbModelBuilder CreateModel(System.Data.Entity.DbModelBuilder modelBuilder, string schema)
@@ -135,10 +145,42 @@ namespace TestDatabaseStandard
             modelBuilder.Configurations.Add(new Stafford_BooConfiguration(schema));
             modelBuilder.Configurations.Add(new Stafford_ComputedColumnConfiguration(schema));
             modelBuilder.Configurations.Add(new Stafford_FooConfiguration(schema));
+            modelBuilder.Configurations.Add(new Synonyms_ChildConfiguration(schema));
+            modelBuilder.Configurations.Add(new Synonyms_ParentConfiguration(schema));
             return modelBuilder;
         }
 
         // Stored Procedures
+        public System.Collections.Generic.List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt)
+        {
+            int procResult;
+            return Synonyms_SimpleStoredProc(inputInt, out procResult);
+        }
+
+        public System.Collections.Generic.List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt, out int procResult)
+        {
+            var inputIntParam = new System.Data.SqlClient.SqlParameter { ParameterName = "@InputInt", SqlDbType = System.Data.SqlDbType.Int, Direction = System.Data.ParameterDirection.Input, Value = inputInt.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!inputInt.HasValue)
+                inputIntParam.Value = System.DBNull.Value;
+
+            var procResultParam = new System.Data.SqlClient.SqlParameter { ParameterName = "@procResult", SqlDbType = System.Data.SqlDbType.Int, Direction = System.Data.ParameterDirection.Output };
+            var procResultData = Database.SqlQuery<Synonyms_SimpleStoredProcReturnModel>("EXEC @procResult = [Synonyms].[SimpleStoredProc] @InputInt", inputIntParam, procResultParam).ToList();
+
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async System.Threading.Tasks.Task<System.Collections.Generic.List<Synonyms_SimpleStoredProcReturnModel>> Synonyms_SimpleStoredProcAsync(int? inputInt)
+        {
+            var inputIntParam = new System.Data.SqlClient.SqlParameter { ParameterName = "@InputInt", SqlDbType = System.Data.SqlDbType.Int, Direction = System.Data.ParameterDirection.Input, Value = inputInt.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!inputInt.HasValue)
+                inputIntParam.Value = System.DBNull.Value;
+
+            var procResultData = await Database.SqlQuery<Synonyms_SimpleStoredProcReturnModel>("EXEC [Synonyms].[SimpleStoredProc] @InputInt", inputIntParam).ToListAsync();
+
+            return procResultData;
+        }
+
         // Table Valued Functions
         [System.Data.Entity.DbFunction("TestDbContext", "CsvToInt")]
         [CodeFirstStoreFunctions.DbFunctionDetails(DatabaseSchema = "dbo", ResultColumnName = "IntValue")]
@@ -174,6 +216,8 @@ namespace TestDatabaseStandard
         public System.Data.Entity.DbSet<Stafford_Boo> Stafford_Boos { get; set; }
         public System.Data.Entity.DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; }
         public System.Data.Entity.DbSet<Stafford_Foo> Stafford_Foos { get; set; }
+        public System.Data.Entity.DbSet<Synonyms_Child> Synonyms_Children { get; set; }
+        public System.Data.Entity.DbSet<Synonyms_Parent> Synonyms_Parents { get; set; }
 
         public FakeTestDbContext()
         {
@@ -181,6 +225,8 @@ namespace TestDatabaseStandard
             Stafford_Boos = new FakeDbSet<Stafford_Boo>("Id");
             Stafford_ComputedColumns = new FakeDbSet<Stafford_ComputedColumn>("Id");
             Stafford_Foos = new FakeDbSet<Stafford_Foo>("Id");
+            Synonyms_Children = new FakeDbSet<Synonyms_Child>("ChildId");
+            Synonyms_Parents = new FakeDbSet<Synonyms_Parent>("ParentId");
         }
 
         public int SaveChangesCount { get; private set; }
@@ -244,6 +290,25 @@ namespace TestDatabaseStandard
 
 
         // Stored Procedures
+        public System.Collections.Generic.List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt)
+        {
+            int procResult;
+            return Synonyms_SimpleStoredProc(inputInt, out procResult);
+        }
+
+        public System.Collections.Generic.List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt, out int procResult)
+        {
+
+            procResult = 0;
+            return new System.Collections.Generic.List<Synonyms_SimpleStoredProcReturnModel>();
+        }
+
+        public System.Threading.Tasks.Task<System.Collections.Generic.List<Synonyms_SimpleStoredProcReturnModel>> Synonyms_SimpleStoredProcAsync(int? inputInt)
+        {
+            int procResult;
+            return System.Threading.Tasks.Task.FromResult(Synonyms_SimpleStoredProc(inputInt, out procResult));
+        }
+
         // Table Valued Functions
         [System.Data.Entity.DbFunction("TestDbContext", "CsvToInt")]
         public IQueryable<CsvToIntReturnModel> CsvToInt(string array, string array2)
@@ -598,6 +663,42 @@ namespace TestDatabaseStandard
         public virtual Stafford_Boo Stafford_Boo { get; set; } // FK_Foo_Boo
     }
 
+    // Child
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
+    public class Synonyms_Child
+    {
+        public int ChildId { get; set; } // ChildId (Primary key)
+        public int ParentId { get; set; } // ParentId
+        public string ChildName { get; set; } // ChildName (length: 100)
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent Synonyms_Parent pointed by [Child].([ParentId]) (FK_Child_Parent)
+        /// </summary>
+        public virtual Synonyms_Parent Synonyms_Parent { get; set; } // FK_Child_Parent
+    }
+
+    // Parent
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
+    public class Synonyms_Parent
+    {
+        public int ParentId { get; set; } // ParentId (Primary key)
+        public string ParentName { get; set; } // ParentName (length: 100)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child Synonyms_Children where [Child].[ParentId] point to this entity (FK_Child_Parent)
+        /// </summary>
+        public virtual System.Collections.Generic.ICollection<Synonyms_Child> Synonyms_Children { get; set; } // Child.FK_Child_Parent
+
+        public Synonyms_Parent()
+        {
+            Synonyms_Children = new System.Collections.Generic.List<Synonyms_Child>();
+        }
+    }
+
     #endregion
 
     #region POCO Configuration
@@ -698,6 +799,48 @@ namespace TestDatabaseStandard
         }
     }
 
+    // Child
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
+    public class Synonyms_ChildConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<Synonyms_Child>
+    {
+        public Synonyms_ChildConfiguration()
+            : this("Synonyms")
+        {
+        }
+
+        public Synonyms_ChildConfiguration(string schema)
+        {
+            ToTable("Child", schema);
+            HasKey(x => x.ChildId);
+
+            Property(x => x.ChildId).HasColumnName(@"ChildId").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None);
+            Property(x => x.ParentId).HasColumnName(@"ParentId").HasColumnType("int").IsRequired();
+            Property(x => x.ChildName).HasColumnName(@"ChildName").HasColumnType("varchar").IsOptional().IsUnicode(false).HasMaxLength(100);
+
+            // Foreign keys
+            HasRequired(a => a.Synonyms_Parent).WithMany(b => b.Synonyms_Children).HasForeignKey(c => c.ParentId).WillCascadeOnDelete(false); // FK_Child_Parent
+        }
+    }
+
+    // Parent
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
+    public class Synonyms_ParentConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<Synonyms_Parent>
+    {
+        public Synonyms_ParentConfiguration()
+            : this("Synonyms")
+        {
+        }
+
+        public Synonyms_ParentConfiguration(string schema)
+        {
+            ToTable("Parent", schema);
+            HasKey(x => x.ParentId);
+
+            Property(x => x.ParentId).HasColumnName(@"ParentId").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None);
+            Property(x => x.ParentName).HasColumnName(@"ParentName").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(100);
+        }
+    }
+
     #endregion
 
     #region Stored procedure return models
@@ -706,6 +849,12 @@ namespace TestDatabaseStandard
     public class CsvToIntReturnModel
     {
         public System.Int32? IntValue { get; set; }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
+    public class Synonyms_SimpleStoredProcReturnModel
+    {
+        public System.String ReturnValue { get; set; }
     }
 
     #endregion
