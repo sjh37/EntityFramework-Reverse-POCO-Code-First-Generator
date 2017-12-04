@@ -93,13 +93,13 @@ namespace EntityFramework_Reverse_POCO_Generator
         System.Collections.Generic.List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(System.DateTime? beginningDate, System.DateTime? endingDate, out int procResult);
         System.Threading.Tasks.Task<System.Collections.Generic.List<EmployeeSalesByCountryReturnModel>> EmployeeSalesByCountryAsync(System.DateTime? beginningDate, System.DateTime? endingDate);
 
-        System.Collections.Generic.List<SalesByYearReturnModel> SalesByYear(System.DateTime? beginningDate, System.DateTime? endingDate);
-        System.Collections.Generic.List<SalesByYearReturnModel> SalesByYear(System.DateTime? beginningDate, System.DateTime? endingDate, out int procResult);
-        System.Threading.Tasks.Task<System.Collections.Generic.List<SalesByYearReturnModel>> SalesByYearAsync(System.DateTime? beginningDate, System.DateTime? endingDate);
-
         System.Collections.Generic.List<SalesByCategoryReturnModel> SalesByCategory(string categoryName, string ordYear);
         System.Collections.Generic.List<SalesByCategoryReturnModel> SalesByCategory(string categoryName, string ordYear, out int procResult);
         System.Threading.Tasks.Task<System.Collections.Generic.List<SalesByCategoryReturnModel>> SalesByCategoryAsync(string categoryName, string ordYear);
+
+        System.Collections.Generic.List<SalesByYearReturnModel> SalesByYear(System.DateTime? beginningDate, System.DateTime? endingDate);
+        System.Collections.Generic.List<SalesByYearReturnModel> SalesByYear(System.DateTime? beginningDate, System.DateTime? endingDate, out int procResult);
+        System.Threading.Tasks.Task<System.Collections.Generic.List<SalesByYearReturnModel>> SalesByYearAsync(System.DateTime? beginningDate, System.DateTime? endingDate);
 
         System.Collections.Generic.List<TenMostExpensiveProductsReturnModel> TenMostExpensiveProducts();
         System.Collections.Generic.List<TenMostExpensiveProductsReturnModel> TenMostExpensiveProducts(out int procResult);
@@ -377,44 +377,6 @@ namespace EntityFramework_Reverse_POCO_Generator
             return procResultData;
         }
 
-        public System.Collections.Generic.List<SalesByYearReturnModel> SalesByYear(System.DateTime? beginningDate, System.DateTime? endingDate)
-        {
-            int procResult;
-            return SalesByYear(beginningDate, endingDate, out procResult);
-        }
-
-        public System.Collections.Generic.List<SalesByYearReturnModel> SalesByYear(System.DateTime? beginningDate, System.DateTime? endingDate, out int procResult)
-        {
-            var beginningDateParam = new System.Data.SqlClient.SqlParameter { ParameterName = "@Beginning_Date", SqlDbType = System.Data.SqlDbType.DateTime, Direction = System.Data.ParameterDirection.Input, Value = beginningDate.GetValueOrDefault() };
-            if (!beginningDate.HasValue)
-                beginningDateParam.Value = System.DBNull.Value;
-
-            var endingDateParam = new System.Data.SqlClient.SqlParameter { ParameterName = "@Ending_Date", SqlDbType = System.Data.SqlDbType.DateTime, Direction = System.Data.ParameterDirection.Input, Value = endingDate.GetValueOrDefault() };
-            if (!endingDate.HasValue)
-                endingDateParam.Value = System.DBNull.Value;
-
-            var procResultParam = new System.Data.SqlClient.SqlParameter { ParameterName = "@procResult", SqlDbType = System.Data.SqlDbType.Int, Direction = System.Data.ParameterDirection.Output };
-            var procResultData = Database.SqlQuery<SalesByYearReturnModel>("EXEC @procResult = [dbo].[Sales by Year] @Beginning_Date, @Ending_Date", beginningDateParam, endingDateParam, procResultParam).ToList();
-
-            procResult = (int) procResultParam.Value;
-            return procResultData;
-        }
-
-        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SalesByYearReturnModel>> SalesByYearAsync(System.DateTime? beginningDate, System.DateTime? endingDate)
-        {
-            var beginningDateParam = new System.Data.SqlClient.SqlParameter { ParameterName = "@Beginning_Date", SqlDbType = System.Data.SqlDbType.DateTime, Direction = System.Data.ParameterDirection.Input, Value = beginningDate.GetValueOrDefault() };
-            if (!beginningDate.HasValue)
-                beginningDateParam.Value = System.DBNull.Value;
-
-            var endingDateParam = new System.Data.SqlClient.SqlParameter { ParameterName = "@Ending_Date", SqlDbType = System.Data.SqlDbType.DateTime, Direction = System.Data.ParameterDirection.Input, Value = endingDate.GetValueOrDefault() };
-            if (!endingDate.HasValue)
-                endingDateParam.Value = System.DBNull.Value;
-
-            var procResultData = await Database.SqlQuery<SalesByYearReturnModel>("EXEC [dbo].[Sales by Year] @Beginning_Date, @Ending_Date", beginningDateParam, endingDateParam).ToListAsync();
-
-            return procResultData;
-        }
-
         public System.Collections.Generic.List<SalesByCategoryReturnModel> SalesByCategory(string categoryName, string ordYear)
         {
             int procResult;
@@ -449,6 +411,44 @@ namespace EntityFramework_Reverse_POCO_Generator
                 ordYearParam.Value = System.DBNull.Value;
 
             var procResultData = await Database.SqlQuery<SalesByCategoryReturnModel>("EXEC [dbo].[SalesByCategory] @CategoryName, @OrdYear", categoryNameParam, ordYearParam).ToListAsync();
+
+            return procResultData;
+        }
+
+        public System.Collections.Generic.List<SalesByYearReturnModel> SalesByYear(System.DateTime? beginningDate, System.DateTime? endingDate)
+        {
+            int procResult;
+            return SalesByYear(beginningDate, endingDate, out procResult);
+        }
+
+        public System.Collections.Generic.List<SalesByYearReturnModel> SalesByYear(System.DateTime? beginningDate, System.DateTime? endingDate, out int procResult)
+        {
+            var beginningDateParam = new System.Data.SqlClient.SqlParameter { ParameterName = "@Beginning_Date", SqlDbType = System.Data.SqlDbType.DateTime, Direction = System.Data.ParameterDirection.Input, Value = beginningDate.GetValueOrDefault() };
+            if (!beginningDate.HasValue)
+                beginningDateParam.Value = System.DBNull.Value;
+
+            var endingDateParam = new System.Data.SqlClient.SqlParameter { ParameterName = "@Ending_Date", SqlDbType = System.Data.SqlDbType.DateTime, Direction = System.Data.ParameterDirection.Input, Value = endingDate.GetValueOrDefault() };
+            if (!endingDate.HasValue)
+                endingDateParam.Value = System.DBNull.Value;
+
+            var procResultParam = new System.Data.SqlClient.SqlParameter { ParameterName = "@procResult", SqlDbType = System.Data.SqlDbType.Int, Direction = System.Data.ParameterDirection.Output };
+            var procResultData = Database.SqlQuery<SalesByYearReturnModel>("EXEC @procResult = [dbo].[Sales by Year] @Beginning_Date, @Ending_Date", beginningDateParam, endingDateParam, procResultParam).ToList();
+
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SalesByYearReturnModel>> SalesByYearAsync(System.DateTime? beginningDate, System.DateTime? endingDate)
+        {
+            var beginningDateParam = new System.Data.SqlClient.SqlParameter { ParameterName = "@Beginning_Date", SqlDbType = System.Data.SqlDbType.DateTime, Direction = System.Data.ParameterDirection.Input, Value = beginningDate.GetValueOrDefault() };
+            if (!beginningDate.HasValue)
+                beginningDateParam.Value = System.DBNull.Value;
+
+            var endingDateParam = new System.Data.SqlClient.SqlParameter { ParameterName = "@Ending_Date", SqlDbType = System.Data.SqlDbType.DateTime, Direction = System.Data.ParameterDirection.Input, Value = endingDate.GetValueOrDefault() };
+            if (!endingDate.HasValue)
+                endingDateParam.Value = System.DBNull.Value;
+
+            var procResultData = await Database.SqlQuery<SalesByYearReturnModel>("EXEC [dbo].[Sales by Year] @Beginning_Date, @Ending_Date", beginningDateParam, endingDateParam).ToListAsync();
 
             return procResultData;
         }
@@ -689,25 +689,6 @@ namespace EntityFramework_Reverse_POCO_Generator
             return System.Threading.Tasks.Task.FromResult(EmployeeSalesByCountry(beginningDate, endingDate, out procResult));
         }
 
-        public System.Collections.Generic.List<SalesByYearReturnModel> SalesByYear(System.DateTime? beginningDate, System.DateTime? endingDate)
-        {
-            int procResult;
-            return SalesByYear(beginningDate, endingDate, out procResult);
-        }
-
-        public System.Collections.Generic.List<SalesByYearReturnModel> SalesByYear(System.DateTime? beginningDate, System.DateTime? endingDate, out int procResult)
-        {
-
-            procResult = 0;
-            return new System.Collections.Generic.List<SalesByYearReturnModel>();
-        }
-
-        public System.Threading.Tasks.Task<System.Collections.Generic.List<SalesByYearReturnModel>> SalesByYearAsync(System.DateTime? beginningDate, System.DateTime? endingDate)
-        {
-            int procResult;
-            return System.Threading.Tasks.Task.FromResult(SalesByYear(beginningDate, endingDate, out procResult));
-        }
-
         public System.Collections.Generic.List<SalesByCategoryReturnModel> SalesByCategory(string categoryName, string ordYear)
         {
             int procResult;
@@ -725,6 +706,25 @@ namespace EntityFramework_Reverse_POCO_Generator
         {
             int procResult;
             return System.Threading.Tasks.Task.FromResult(SalesByCategory(categoryName, ordYear, out procResult));
+        }
+
+        public System.Collections.Generic.List<SalesByYearReturnModel> SalesByYear(System.DateTime? beginningDate, System.DateTime? endingDate)
+        {
+            int procResult;
+            return SalesByYear(beginningDate, endingDate, out procResult);
+        }
+
+        public System.Collections.Generic.List<SalesByYearReturnModel> SalesByYear(System.DateTime? beginningDate, System.DateTime? endingDate, out int procResult)
+        {
+
+            procResult = 0;
+            return new System.Collections.Generic.List<SalesByYearReturnModel>();
+        }
+
+        public System.Threading.Tasks.Task<System.Collections.Generic.List<SalesByYearReturnModel>> SalesByYearAsync(System.DateTime? beginningDate, System.DateTime? endingDate)
+        {
+            int procResult;
+            return System.Threading.Tasks.Task.FromResult(SalesByYear(beginningDate, endingDate, out procResult));
         }
 
         public System.Collections.Generic.List<TenMostExpensiveProductsReturnModel> TenMostExpensiveProducts()
@@ -1170,8 +1170,8 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public Employee()
         {
-            Employees = new System.Collections.Generic.List<Employee>();
             Orders = new System.Collections.Generic.List<Order>();
+            Employees = new System.Collections.Generic.List<Employee>();
             Territories = new System.Collections.Generic.List<Territory>();
         }
     }
@@ -1673,12 +1673,6 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.Country).HasColumnName(@"Country").HasColumnType("nvarchar").IsOptional().HasMaxLength(15);
             Property(x => x.Phone).HasColumnName(@"Phone").HasColumnType("nvarchar").IsOptional().HasMaxLength(24);
             Property(x => x.Fax).HasColumnName(@"Fax").HasColumnType("nvarchar").IsOptional().HasMaxLength(24);
-            HasMany(t => t.CustomerDemographics).WithMany(t => t.Customers).Map(m =>
-            {
-                m.ToTable("CustomerCustomerDemo", "dbo");
-                m.MapLeftKey("CustomerID");
-                m.MapRightKey("CustomerTypeID");
-            });
         }
     }
 
@@ -1719,6 +1713,12 @@ namespace EntityFramework_Reverse_POCO_Generator
 
             Property(x => x.CustomerTypeId).HasColumnName(@"CustomerTypeID").HasColumnType("nchar").IsRequired().IsFixedLength().HasMaxLength(10).HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None);
             Property(x => x.CustomerDesc).HasColumnName(@"CustomerDesc").HasColumnType("ntext").IsOptional().IsMaxLength();
+            HasMany(t => t.Customers).WithMany(t => t.CustomerDemographics).Map(m =>
+            {
+                m.ToTable("CustomerCustomerDemo", "dbo");
+                m.MapLeftKey("CustomerTypeID");
+                m.MapRightKey("CustomerID");
+            });
         }
     }
 
@@ -1757,12 +1757,6 @@ namespace EntityFramework_Reverse_POCO_Generator
 
             // Foreign keys
             HasOptional(a => a.Employee_ReportsTo).WithMany(b => b.Employees).HasForeignKey(c => c.ReportsTo).WillCascadeOnDelete(false); // FK_Employees_Employees
-            HasMany(t => t.Territories).WithMany(t => t.Employees).Map(m =>
-            {
-                m.ToTable("EmployeeTerritories", "dbo");
-                m.MapLeftKey("EmployeeID");
-                m.MapRightKey("TerritoryID");
-            });
         }
     }
 
@@ -2213,6 +2207,12 @@ namespace EntityFramework_Reverse_POCO_Generator
 
             // Foreign keys
             HasRequired(a => a.Region).WithMany(b => b.Territories).HasForeignKey(c => c.RegionId).WillCascadeOnDelete(false); // FK_Territories_Region
+            HasMany(t => t.Employees).WithMany(t => t.Territories).Map(m =>
+            {
+                m.ToTable("EmployeeTerritories", "dbo");
+                m.MapLeftKey("TerritoryID");
+                m.MapRightKey("EmployeeID");
+            });
         }
     }
 
@@ -2258,19 +2258,19 @@ namespace EntityFramework_Reverse_POCO_Generator
     }
 
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
+    public class SalesByCategoryReturnModel
+    {
+        public System.String ProductName { get; set; }
+        public System.Decimal? TotalPurchase { get; set; }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
     public class SalesByYearReturnModel
     {
         public System.DateTime? ShippedDate { get; set; }
         public System.Int32 OrderID { get; set; }
         public System.Decimal? Subtotal { get; set; }
         public System.String Year { get; set; }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
-    public class SalesByCategoryReturnModel
-    {
-        public System.String ProductName { get; set; }
-        public System.Decimal? TotalPurchase { get; set; }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]

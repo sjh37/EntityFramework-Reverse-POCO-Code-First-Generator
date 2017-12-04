@@ -112,7 +112,7 @@ else
 
         // Stored Procedures
 <#      // Interface
-foreach (StoredProcedure sp in Settings.StoredProcs.Where(s => !s.IsTVF))
+foreach (StoredProcedure sp in Settings.StoredProcs.Where(s => !s.IsTVF).OrderBy(x => x.NameHumanCase))
 {
     int returnModelsCount = sp.ReturnModels.Count;
     if (returnModelsCount == 1)
@@ -138,7 +138,7 @@ if (Settings.IncludeTableValuedFunctions)
 { #>
 
         // Table Valued Functions
-<#      foreach (StoredProcedure sp in Settings.StoredProcs.Where(s => s.IsTVF))
+<#      foreach (StoredProcedure sp in Settings.StoredProcs.Where(s => s.IsTVF).OrderBy(x => x.NameHumanCase))
         {
             string spExecName = WriteStoredProcFunctionName(sp);
             string spReturnClassName = WriteStoredProcReturnModelName(sp);
@@ -286,7 +286,7 @@ foreach(Table tbl in from t in Settings.Tables.Where(t => !t.IsMapping && t.HasP
 { #>
 
             modelBuilder.Conventions.Add(new CodeFirstStoreFunctions.FunctionsConvention<<#=Settings.DbContextName#>>("dbo"));
-<#      foreach (var sp in Settings.StoredProcs.Where(s => s.IsTVF && !Settings.StoredProcedureReturnTypes.ContainsKey(s.NameHumanCase) && !Settings.StoredProcedureReturnTypes.ContainsKey(s.Name))){#>
+<#      foreach (var sp in Settings.StoredProcs.Where(s => s.IsTVF && !Settings.StoredProcedureReturnTypes.ContainsKey(s.NameHumanCase) && !Settings.StoredProcedureReturnTypes.ContainsKey(s.Name)).OrderBy(x => x.NameHumanCase)){#>
             modelBuilder.ComplexType<<#=WriteStoredProcReturnModelName(sp)#>>();
 <# } } #>
 
@@ -322,7 +322,7 @@ foreach(var tbl in from t in Settings.Tables.Where(t => !t.IsMapping && t.HasPri
 
         // Stored Procedures
 <#      // Database context
-foreach (var sp in Settings.StoredProcs.Where(s => !s.IsTVF))
+foreach (var sp in Settings.StoredProcs.Where(s => !s.IsTVF).OrderBy(x => x.NameHumanCase))
 {
     string spReturnClassName = WriteStoredProcReturnModelName(sp);
     string spExecName = WriteStoredProcFunctionName(sp);
@@ -465,7 +465,7 @@ if (Settings.IncludeTableValuedFunctions)
 { #>
         // Table Valued Functions
 <#
-        foreach (var sp in Settings.StoredProcs.Where(s => s.IsTVF))
+        foreach (var sp in Settings.StoredProcs.Where(s => s.IsTVF).OrderBy(x => x.NameHumanCase))
         {
             string spExecName = WriteStoredProcFunctionName(sp);
             string spReturnClassName = WriteStoredProcReturnModelName(sp);
@@ -613,7 +613,7 @@ foreach (Table tbl in from t in Settings.Tables.Where(t => !t.IsMapping && t.Has
 
         // Stored Procedures
 <#      // Fake
-foreach (StoredProcedure sp in Settings.StoredProcs.Where(s => !s.IsTVF))
+foreach (StoredProcedure sp in Settings.StoredProcs.Where(s => !s.IsTVF).OrderBy(x => x.NameHumanCase))
 {
     string spReturnClassName = WriteStoredProcReturnModelName(sp);
     string spExecName = WriteStoredProcFunctionName(sp);
@@ -661,7 +661,7 @@ if (Settings.IncludeTableValuedFunctions)
 { #>
         // Table Valued Functions
 <#
-    foreach (StoredProcedure spTvf in Settings.StoredProcs.Where(s => s.IsTVF))
+    foreach (StoredProcedure spTvf in Settings.StoredProcs.Where(s => s.IsTVF).OrderBy(x => x.NameHumanCase))
     {
         string spExecNamespTvf = WriteStoredProcFunctionName(spTvf);
         string spReturnClassName = WriteStoredProcReturnModelName(spTvf);
@@ -1145,7 +1145,7 @@ if(!Settings.GenerateSeparateFiles) { #>
 
 <# } #>
 <#
-foreach(var sp in Settings.StoredProcs.Where(x => x.ReturnModels.Count > 0 && x.ReturnModels.Any(returnColumns => returnColumns.Any()) && !Settings.StoredProcedureReturnTypes.ContainsKey(x.NameHumanCase) && !Settings.StoredProcedureReturnTypes.ContainsKey(x.Name)))
+foreach(var sp in Settings.StoredProcs.Where(x => x.ReturnModels.Count > 0 && x.ReturnModels.Any(returnColumns => returnColumns.Any()) && !Settings.StoredProcedureReturnTypes.ContainsKey(x.NameHumanCase) && !Settings.StoredProcedureReturnTypes.ContainsKey(x.Name)).OrderBy(x => x.NameHumanCase))
 {
     string spReturnClassName = WriteStoredProcReturnModelName(sp);
 #>
