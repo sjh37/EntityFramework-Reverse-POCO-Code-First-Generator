@@ -46,6 +46,7 @@
         public static string ConnectionString;
         public static string ProviderName;
         public static string Namespace;
+        public static int CommandTimeout = 0;
 
         public static bool IncludeViews;
         public static bool IncludeSynonyms;
@@ -2362,7 +2363,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         ELSE 'Unknown'
     END AS EngineEdition";
 
-                Cmd.CommandTimeout = 600;
+                Cmd.CommandTimeout = Settings.CommandTimeout;
 
                 using (DbDataReader rdr = Cmd.ExecuteReader())
                 {
@@ -2397,7 +2398,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             if (Settings.IsSqlCe)
                 Cmd.CommandText = TableSQLCE;
             else
-                Cmd.CommandTimeout = 600;
+                Cmd.CommandTimeout = Settings.CommandTimeout;
 
             using(var rdr = Cmd.ExecuteReader())
             {
@@ -2507,7 +2508,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             if (Cmd.GetType().Name == "SqlCeCommand")
                 Cmd.CommandText = ForeignKeySQLCE;
             else
-                Cmd.CommandTimeout = 600;
+                Cmd.CommandTimeout = Settings.CommandTimeout;
 
             using(DbDataReader rdr = Cmd.ExecuteReader())
             {
@@ -2550,7 +2551,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 return;
 
             Cmd.CommandText = IndexSQL + IncludeQueryTraceOn9481();
-            Cmd.CommandTimeout = 600;
+            Cmd.CommandTimeout = Settings.CommandTimeout;
 
             var list = new List<Index>();
             using (DbDataReader rdr = Cmd.ExecuteReader())
@@ -2658,7 +2659,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     return;
 
                 Cmd.CommandText = ExtendedPropertySQL + IncludeQueryTraceOn9481();
-                Cmd.CommandTimeout = 600;
+                Cmd.CommandTimeout = Settings.CommandTimeout;
             }
 
             using(DbDataReader rdr = Cmd.ExecuteReader())
@@ -2717,7 +2718,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             else
                 Cmd.CommandText = StoredProcedureSQL + IncludeQueryTraceOn9481();
 
-            Cmd.CommandTimeout = 600;
+            Cmd.CommandTimeout = Settings.CommandTimeout;
 
             using(DbDataReader rdr = Cmd.ExecuteReader())
             {

@@ -8,6 +8,7 @@
     // Main settings **********************************************************************************************************************
     Settings.ConnectionStringName = "TestDatabase";   // Searches for this connection string in config files listed below in the ConfigFilenameSearchOrder setting
     // ConnectionStringName is the only required setting.
+    Settings.CommandTimeout = 600; // SQL Command timeout in seconds. 600 is 10 minutes, 0 will wait indefinately. Some databases can be slow retrieving schema information.
     // As an alternative to ConnectionStringName above, which must match your app/web.config connection string name, you can override them below
     // Settings.ConnectionString = "Data Source=(local);Initial Catalog=Northwind;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";
     // Settings.ProviderName = "System.Data.SqlClient";
