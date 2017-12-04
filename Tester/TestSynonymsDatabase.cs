@@ -51,6 +51,14 @@ namespace TestSynonymsDatabase
         System.Data.Entity.DbSet Set(System.Type entityType);
         System.Data.Entity.DbSet<TEntity> Set<TEntity>() where TEntity : class;
         string ToString();
+
+        // Stored Procedures
+        System.Collections.Generic.List<SimpleStoredProcReturnModel> SimpleStoredProc(int? inputInt);
+        System.Collections.Generic.List<SimpleStoredProcReturnModel> SimpleStoredProc(int? inputInt, out int procResult);
+        System.Threading.Tasks.Task<System.Collections.Generic.List<SimpleStoredProcReturnModel>> SimpleStoredProcAsync(int? inputInt);
+
+
+        // Table Valued Functions
     }
 
     #endregion
@@ -111,6 +119,8 @@ namespace TestSynonymsDatabase
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Conventions.Add(new CodeFirstStoreFunctions.FunctionsConvention<TestDbContext>("dbo"));
+
             modelBuilder.Configurations.Add(new ChildConfiguration());
             modelBuilder.Configurations.Add(new ParentConfiguration());
         }
@@ -121,6 +131,39 @@ namespace TestSynonymsDatabase
             modelBuilder.Configurations.Add(new ParentConfiguration(schema));
             return modelBuilder;
         }
+
+        // Stored Procedures
+        public System.Collections.Generic.List<SimpleStoredProcReturnModel> SimpleStoredProc(int? inputInt)
+        {
+            int procResult;
+            return SimpleStoredProc(inputInt, out procResult);
+        }
+
+        public System.Collections.Generic.List<SimpleStoredProcReturnModel> SimpleStoredProc(int? inputInt, out int procResult)
+        {
+            var inputIntParam = new System.Data.SqlClient.SqlParameter { ParameterName = "@InputInt", SqlDbType = System.Data.SqlDbType.Int, Direction = System.Data.ParameterDirection.Input, Value = inputInt.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!inputInt.HasValue)
+                inputIntParam.Value = System.DBNull.Value;
+
+            var procResultParam = new System.Data.SqlClient.SqlParameter { ParameterName = "@procResult", SqlDbType = System.Data.SqlDbType.Int, Direction = System.Data.ParameterDirection.Output };
+            var procResultData = Database.SqlQuery<SimpleStoredProcReturnModel>("EXEC @procResult = [Synonyms].[SimpleStoredProc] @InputInt", inputIntParam, procResultParam).ToList();
+
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SimpleStoredProcReturnModel>> SimpleStoredProcAsync(int? inputInt)
+        {
+            var inputIntParam = new System.Data.SqlClient.SqlParameter { ParameterName = "@InputInt", SqlDbType = System.Data.SqlDbType.Int, Direction = System.Data.ParameterDirection.Input, Value = inputInt.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!inputInt.HasValue)
+                inputIntParam.Value = System.DBNull.Value;
+
+            var procResultData = await Database.SqlQuery<SimpleStoredProcReturnModel>("EXEC [Synonyms].[SimpleStoredProc] @InputInt", inputIntParam).ToListAsync();
+
+            return procResultData;
+        }
+
+        // Table Valued Functions
     }
     #endregion
 
@@ -209,6 +252,28 @@ namespace TestSynonymsDatabase
             throw new System.NotImplementedException();
         }
 
+
+        // Stored Procedures
+        public System.Collections.Generic.List<SimpleStoredProcReturnModel> SimpleStoredProc(int? inputInt)
+        {
+            int procResult;
+            return SimpleStoredProc(inputInt, out procResult);
+        }
+
+        public System.Collections.Generic.List<SimpleStoredProcReturnModel> SimpleStoredProc(int? inputInt, out int procResult)
+        {
+
+            procResult = 0;
+            return new System.Collections.Generic.List<SimpleStoredProcReturnModel>();
+        }
+
+        public System.Threading.Tasks.Task<System.Collections.Generic.List<SimpleStoredProcReturnModel>> SimpleStoredProcAsync(int? inputInt)
+        {
+            int procResult;
+            return System.Threading.Tasks.Task.FromResult(SimpleStoredProc(inputInt, out procResult));
+        }
+
+        // Table Valued Functions
     }
 
     // ************************************************************************
@@ -547,6 +612,16 @@ namespace TestSynonymsDatabase
             Property(x => x.ParentId).HasColumnName(@"ParentId").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None);
             Property(x => x.ParentName).HasColumnName(@"ParentName").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(100);
         }
+    }
+
+    #endregion
+
+    #region Stored procedure return models
+
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
+    public class SimpleStoredProcReturnModel
+    {
+        public System.String ReturnValue { get; set; }
     }
 
     #endregion

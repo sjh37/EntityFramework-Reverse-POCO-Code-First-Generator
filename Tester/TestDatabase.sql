@@ -209,6 +209,7 @@ CREATE TABLE [Synonyms].[Parent](
 GO
 
 INSERT INTO [Synonyms].[Parent] ([ParentId], [ParentName]) VALUES (1 ,'Parent 1')
+GO
 
 CREATE TABLE [Synonyms].[Child](
 	[ChildId] [int] NOT NULL,
@@ -229,6 +230,17 @@ ALTER TABLE [Synonyms].[Child] CHECK CONSTRAINT [FK_Child_Parent]
 GO
 
 INSERT INTO [Synonyms].[Child] ([ChildId],[ParentId],[ChildName]) VALUES (1, 1, 'Child 1')
+GO
+
+CREATE PROCEDURE [Synonyms].[SimpleStoredProc]
+	@InputInt int
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+    SELECT 'Return' AS ReturnValue
+END
+GO
 
 -- Create synonyms pointing to main test dabase
 USE [EfrpgTest_Synonyms]
@@ -239,3 +251,4 @@ GO
 
 CREATE SYNONYM [Synonyms].[Parent] FOR [EfrpgTest].[Synonyms].[Parent]
 CREATE SYNONYM [Synonyms].[Child] FOR [EfrpgTest].[Synonyms].[Child]
+CREATE SYNONYM [Synonyms].[SimpleStoredProc] FOR [EfrpgTest].[Synonyms].[SimpleStoredProc]

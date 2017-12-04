@@ -28,5 +28,15 @@ namespace Tester
             Assert.IsNotNull(parent.Children);
             Assert.IsNotNull(child.Parent);
         }
+
+        [Test]
+        public void SynonymStoredProcedure_CanBeCalled()
+        {
+            var db = new TestSynonymsDatabase.TestDbContext();
+
+            var result = db.SimpleStoredProc(0);
+
+            Assert.IsNotNull(result);
+        }
     }
 }

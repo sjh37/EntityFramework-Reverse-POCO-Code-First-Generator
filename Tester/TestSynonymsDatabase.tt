@@ -183,7 +183,7 @@
     // Stored Procedures ******************************************************************************************************************
     // Use the following regex filters to include or exclude stored procedures
     Settings.StoredProcedureFilterExclude = null;
-    Settings.StoredProcedureFilterInclude = null;
+    Settings.StoredProcedureFilterInclude = new Regex("SimpleStoredProc");
 
     // Filtering of stored procedures using a function. This can be used in conjunction with the Regex's above.
     // Regex are used first to filter the list down, then this function is run last.
