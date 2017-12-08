@@ -493,7 +493,7 @@ if(Settings.ElementsToGenerate.HasFlag(Elements.Context) && !Settings.GenerateSe
     #region Database context factory
 
 <# } #>
-    <# if(Settings.MakeClassesInternal) { #>internal<# } else { #>public<# } #> class <#= Settings.DbContextName + "Factory" #> : System.Data.Entity.Infrastructure.IDbContextFactory<<#= Settings.DbContextName #>>
+    <# if(Settings.MakeClassesInternal) { #>internal<# } else { #>public<# } #> <# if(Settings.MakeClassesPartial) { #>partial <# } #>class <#= Settings.DbContextName + "Factory" #> : System.Data.Entity.Infrastructure.IDbContextFactory<<#= Settings.DbContextName #>>
     {
         public <#= Settings.DbContextName #> Create()
         {
