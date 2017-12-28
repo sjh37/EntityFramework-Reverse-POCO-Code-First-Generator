@@ -543,7 +543,7 @@
         if (Settings.IncludeConnectionSettingComments)
         {
             WriteLine("// The following connection settings were used to generate this file:");
-            if (!string.IsNullOrEmpty(Settings.ConnectionStringName))
+            if (!string.IsNullOrEmpty(Settings.ConnectionStringName) && !string.IsNullOrEmpty(Settings.ConfigFilePath))
             {
                 var solutionPath = Path.GetDirectoryName(GetSolution().FileName) + "\\";
                 WriteLine("//     Configuration file:     \"{0}\"", Settings.ConfigFilePath.Replace(solutionPath, string.Empty));
