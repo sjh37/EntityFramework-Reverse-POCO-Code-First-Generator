@@ -37,6 +37,8 @@ namespace TestDatabaseStandard
     public interface ITestDbContext : System.IDisposable
     {
         System.Data.Entity.DbSet<ColumnName> ColumnNames { get; set; } // ColumnNames
+        System.Data.Entity.DbSet<ForeignKeyChild> ForeignKeyChilds { get; set; } // ForeignKeyChild
+        System.Data.Entity.DbSet<ForeignKeyParent> ForeignKeyParents { get; set; } // ForeignKeyParent
         System.Data.Entity.DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
         System.Data.Entity.DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; } // ComputedColumns
         System.Data.Entity.DbSet<Stafford_Foo> Stafford_Foos { get; set; } // Foo
@@ -70,10 +72,12 @@ namespace TestDatabaseStandard
 
     #region Database context
 
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.35.0.0")]
     public class TestDbContext : System.Data.Entity.DbContext, ITestDbContext
     {
         public System.Data.Entity.DbSet<ColumnName> ColumnNames { get; set; } // ColumnNames
+        public System.Data.Entity.DbSet<ForeignKeyChild> ForeignKeyChilds { get; set; } // ForeignKeyChild
+        public System.Data.Entity.DbSet<ForeignKeyParent> ForeignKeyParents { get; set; } // ForeignKeyParent
         public System.Data.Entity.DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
         public System.Data.Entity.DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; } // ComputedColumns
         public System.Data.Entity.DbSet<Stafford_Foo> Stafford_Foos { get; set; } // Foo
@@ -132,6 +136,8 @@ namespace TestDatabaseStandard
             modelBuilder.ComplexType<CsvToIntReturnModel>();
 
             modelBuilder.Configurations.Add(new ColumnNameConfiguration());
+            modelBuilder.Configurations.Add(new ForeignKeyChildConfiguration());
+            modelBuilder.Configurations.Add(new ForeignKeyParentConfiguration());
             modelBuilder.Configurations.Add(new Stafford_BooConfiguration());
             modelBuilder.Configurations.Add(new Stafford_ComputedColumnConfiguration());
             modelBuilder.Configurations.Add(new Stafford_FooConfiguration());
@@ -142,6 +148,8 @@ namespace TestDatabaseStandard
         public static System.Data.Entity.DbModelBuilder CreateModel(System.Data.Entity.DbModelBuilder modelBuilder, string schema)
         {
             modelBuilder.Configurations.Add(new ColumnNameConfiguration(schema));
+            modelBuilder.Configurations.Add(new ForeignKeyChildConfiguration(schema));
+            modelBuilder.Configurations.Add(new ForeignKeyParentConfiguration(schema));
             modelBuilder.Configurations.Add(new Stafford_BooConfiguration(schema));
             modelBuilder.Configurations.Add(new Stafford_ComputedColumnConfiguration(schema));
             modelBuilder.Configurations.Add(new Stafford_FooConfiguration(schema));
@@ -209,10 +217,12 @@ namespace TestDatabaseStandard
 
     #region Fake Database context
 
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.35.0.0")]
     public class FakeTestDbContext : ITestDbContext
     {
         public System.Data.Entity.DbSet<ColumnName> ColumnNames { get; set; }
+        public System.Data.Entity.DbSet<ForeignKeyChild> ForeignKeyChilds { get; set; }
+        public System.Data.Entity.DbSet<ForeignKeyParent> ForeignKeyParents { get; set; }
         public System.Data.Entity.DbSet<Stafford_Boo> Stafford_Boos { get; set; }
         public System.Data.Entity.DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; }
         public System.Data.Entity.DbSet<Stafford_Foo> Stafford_Foos { get; set; }
@@ -222,6 +232,8 @@ namespace TestDatabaseStandard
         public FakeTestDbContext()
         {
             ColumnNames = new FakeDbSet<ColumnName>("C36");
+            ForeignKeyChilds = new FakeDbSet<ForeignKeyChild>("ChildId");
+            ForeignKeyParents = new FakeDbSet<ForeignKeyParent>("ParentId");
             Stafford_Boos = new FakeDbSet<Stafford_Boo>("Id");
             Stafford_ComputedColumns = new FakeDbSet<Stafford_ComputedColumn>("Id");
             Stafford_Foos = new FakeDbSet<Stafford_Foo>("Id");
@@ -335,7 +347,7 @@ namespace TestDatabaseStandard
     //          }
     //      }
     //      Read more about it here: https://msdn.microsoft.com/en-us/data/dn314431.aspx
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.35.0.0")]
     public class FakeDbSet<TEntity> : System.Data.Entity.DbSet<TEntity>, IQueryable, System.Collections.Generic.IEnumerable<TEntity>, System.Data.Entity.Infrastructure.IDbAsyncEnumerable<TEntity> where TEntity : class
     {
         private readonly System.Reflection.PropertyInfo[] _primaryKeys;
@@ -471,7 +483,7 @@ namespace TestDatabaseStandard
         }
     }
 
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.35.0.0")]
     public class FakeDbAsyncQueryProvider<TEntity> : System.Data.Entity.Infrastructure.IDbAsyncQueryProvider
     {
         private readonly IQueryProvider _inner;
@@ -512,7 +524,7 @@ namespace TestDatabaseStandard
         }
     }
 
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.35.0.0")]
     public class FakeDbAsyncEnumerable<T> : EnumerableQuery<T>, System.Data.Entity.Infrastructure.IDbAsyncEnumerable<T>, IQueryable<T>
     {
         public FakeDbAsyncEnumerable(System.Collections.Generic.IEnumerable<T> enumerable)
@@ -539,7 +551,7 @@ namespace TestDatabaseStandard
         }
     }
 
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.35.0.0")]
     public class FakeDbAsyncEnumerator<T> : System.Data.Entity.Infrastructure.IDbAsyncEnumerator<T>
     {
         private readonly System.Collections.Generic.IEnumerator<T> _inner;
@@ -579,7 +591,7 @@ namespace TestDatabaseStandard
     /// This is to document the
     ///     table with poor column name choices
     ///</summary>
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.35.0.0")]
     public class ColumnName
     {
         public int C36 { get; set; } // $ (Primary key)
@@ -614,10 +626,55 @@ namespace TestDatabaseStandard
         }
     }
 
+    // ForeignKeyChild
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.35.0.0")]
+    public class ForeignKeyChild
+    {
+        public int ChildId { get; set; } // ChildId (Primary key)
+        public string ParentIdNotNull { get; set; } // ParentIdNotNull (length: 20)
+        public string ParentIdNull { get; set; } // ParentIdNull (length: 20)
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent ForeignKeyParent pointed by [ForeignKeyChild].([ParentIdNotNull]) (FK_ForeignKeyChild_NotNull)
+        /// </summary>
+        public virtual ForeignKeyParent ForeignKeyParent_ParentIdNotNull { get; set; } // FK_ForeignKeyChild_NotNull
+
+        /// <summary>
+        /// Parent ForeignKeyParent pointed by [ForeignKeyChild].([ParentIdNull]) (FK_ForeignKeyChild_Null)
+        /// </summary>
+        public virtual ForeignKeyParent ForeignKeyParent_ParentIdNull { get; set; } // FK_ForeignKeyChild_Null
+    }
+
+    // ForeignKeyParent
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.35.0.0")]
+    public class ForeignKeyParent
+    {
+        public string ParentId { get; set; } // ParentId (Primary key) (length: 20)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child ForeignKeyChilds where [ForeignKeyChild].[ParentIdNotNull] point to this entity (FK_ForeignKeyChild_NotNull)
+        /// </summary>
+        public virtual System.Collections.Generic.ICollection<ForeignKeyChild> ForeignKeyChilds_ParentIdNotNull { get; set; } // ForeignKeyChild.FK_ForeignKeyChild_NotNull
+        /// <summary>
+        /// Child ForeignKeyChilds where [ForeignKeyChild].[ParentIdNull] point to this entity (FK_ForeignKeyChild_Null)
+        /// </summary>
+        public virtual System.Collections.Generic.ICollection<ForeignKeyChild> ForeignKeyChilds_ParentIdNull { get; set; } // ForeignKeyChild.FK_ForeignKeyChild_Null
+
+        public ForeignKeyParent()
+        {
+            ForeignKeyChilds_ParentIdNotNull = new System.Collections.Generic.List<ForeignKeyChild>();
+            ForeignKeyChilds_ParentIdNull = new System.Collections.Generic.List<ForeignKeyChild>();
+        }
+    }
+
     // The table 'NoPrimaryKeys' is not usable by entity framework because it
     // does not have a primary key. It is listed here for completeness.
     // NoPrimaryKeys
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.35.0.0")]
     public class NoPrimaryKey
     {
         public int? Id { get; set; } // Id
@@ -625,7 +682,7 @@ namespace TestDatabaseStandard
     }
 
     // Boo
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.35.0.0")]
     public class Stafford_Boo
     {
         public int Id { get; set; } // id (Primary key)
@@ -640,7 +697,7 @@ namespace TestDatabaseStandard
     }
 
     // ComputedColumns
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.35.0.0")]
     public class Stafford_ComputedColumn
     {
         public int Id { get; set; } // Id (Primary key)
@@ -649,7 +706,7 @@ namespace TestDatabaseStandard
     }
 
     // Foo
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.35.0.0")]
     public class Stafford_Foo
     {
         public int Id { get; set; } // id (Primary key)
@@ -664,7 +721,7 @@ namespace TestDatabaseStandard
     }
 
     // Child
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.35.0.0")]
     public class Synonyms_Child
     {
         public int ChildId { get; set; } // ChildId (Primary key)
@@ -680,7 +737,7 @@ namespace TestDatabaseStandard
     }
 
     // Parent
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.35.0.0")]
     public class Synonyms_Parent
     {
         public int ParentId { get; set; } // ParentId (Primary key)
@@ -704,7 +761,7 @@ namespace TestDatabaseStandard
     #region POCO Configuration
 
     // ColumnNames
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.35.0.0")]
     public class ColumnNameConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<ColumnName>
     {
         public ColumnNameConfiguration()
@@ -738,8 +795,50 @@ namespace TestDatabaseStandard
         }
     }
 
+    // ForeignKeyChild
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.35.0.0")]
+    public class ForeignKeyChildConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<ForeignKeyChild>
+    {
+        public ForeignKeyChildConfiguration()
+            : this("dbo")
+        {
+        }
+
+        public ForeignKeyChildConfiguration(string schema)
+        {
+            ToTable("ForeignKeyChild", schema);
+            HasKey(x => x.ChildId);
+
+            Property(x => x.ChildId).HasColumnName(@"ChildId").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity);
+            Property(x => x.ParentIdNotNull).HasColumnName(@"ParentIdNotNull").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(20);
+            Property(x => x.ParentIdNull).HasColumnName(@"ParentIdNull").HasColumnType("varchar").IsOptional().IsUnicode(false).HasMaxLength(20);
+
+            // Foreign keys
+            HasOptional(a => a.ForeignKeyParent_ParentIdNull).WithMany(b => b.ForeignKeyChilds_ParentIdNull).HasForeignKey(c => c.ParentIdNull).WillCascadeOnDelete(false); // FK_ForeignKeyChild_Null
+            HasRequired(a => a.ForeignKeyParent_ParentIdNotNull).WithMany(b => b.ForeignKeyChilds_ParentIdNotNull).HasForeignKey(c => c.ParentIdNotNull).WillCascadeOnDelete(false); // FK_ForeignKeyChild_NotNull
+        }
+    }
+
+    // ForeignKeyParent
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.35.0.0")]
+    public class ForeignKeyParentConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<ForeignKeyParent>
+    {
+        public ForeignKeyParentConfiguration()
+            : this("dbo")
+        {
+        }
+
+        public ForeignKeyParentConfiguration(string schema)
+        {
+            ToTable("ForeignKeyParent", schema);
+            HasKey(x => x.ParentId);
+
+            Property(x => x.ParentId).HasColumnName(@"ParentId").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(20).HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None);
+        }
+    }
+
     // Boo
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.35.0.0")]
     public class Stafford_BooConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<Stafford_Boo>
     {
         public Stafford_BooConfiguration()
@@ -758,7 +857,7 @@ namespace TestDatabaseStandard
     }
 
     // ComputedColumns
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.35.0.0")]
     public class Stafford_ComputedColumnConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<Stafford_ComputedColumn>
     {
         public Stafford_ComputedColumnConfiguration()
@@ -778,7 +877,7 @@ namespace TestDatabaseStandard
     }
 
     // Foo
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.35.0.0")]
     public class Stafford_FooConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<Stafford_Foo>
     {
         public Stafford_FooConfiguration()
@@ -800,7 +899,7 @@ namespace TestDatabaseStandard
     }
 
     // Child
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.35.0.0")]
     public class Synonyms_ChildConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<Synonyms_Child>
     {
         public Synonyms_ChildConfiguration()
@@ -823,7 +922,7 @@ namespace TestDatabaseStandard
     }
 
     // Parent
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.35.0.0")]
     public class Synonyms_ParentConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<Synonyms_Parent>
     {
         public Synonyms_ParentConfiguration()
@@ -845,13 +944,13 @@ namespace TestDatabaseStandard
 
     #region Stored procedure return models
 
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.35.0.0")]
     public class CsvToIntReturnModel
     {
         public System.Int32? IntValue { get; set; }
     }
 
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.34.1.0")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.35.0.0")]
     public class Synonyms_SimpleStoredProcReturnModel
     {
         public System.String ReturnValue { get; set; }
