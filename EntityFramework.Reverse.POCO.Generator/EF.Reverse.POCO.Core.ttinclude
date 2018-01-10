@@ -2957,11 +2957,9 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     mapKey = string.Format("\"{0}\"", fkCol.col.Name);
                 }
 
-                if (!Settings.UseDataAnnotationsSchema)
-                {
-                    fkCol.col.ConfigFk.Add(string.Format("{0};{1}", GetRelationship(relationship, fkCol.col, pkCol, pkPropName, fkPropName, manyToManyMapping, mapKey, foreignKey.CascadeOnDelete, foreignKey.IncludeReverseNavigation, foreignKey.IsNotEnforced),
-                        Settings.IncludeComments != CommentsStyle.None ? " // " + foreignKey.ConstraintName : string.Empty));
-                }
+                // Always include fluent FK mapping even if only using data annotations
+                fkCol.col.ConfigFk.Add(string.Format("{0};{1}", GetRelationship(relationship, fkCol.col, pkCol, pkPropName, fkPropName, manyToManyMapping, mapKey, foreignKey.CascadeOnDelete, foreignKey.IncludeReverseNavigation, foreignKey.IsNotEnforced),
+                    Settings.IncludeComments != CommentsStyle.None ? " // " + foreignKey.ConstraintName : string.Empty));
 
                 if(foreignKey.IncludeReverseNavigation)
                     pkTable.AddReverseNavigation(relationship, pkTableHumanCase, fkTable, fkPropName, string.Format("{0}.{1}", fkTable.Name, foreignKey.ConstraintName), foreignKeys);
