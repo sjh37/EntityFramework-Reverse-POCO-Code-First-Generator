@@ -39,8 +39,6 @@ namespace TestDatabaseDataAnnotation
     public interface ITestDbContext : System.IDisposable
     {
         System.Data.Entity.DbSet<ColumnName> ColumnNames { get; set; } // ColumnNames
-        System.Data.Entity.DbSet<ForeignKeyChild> ForeignKeyChilds { get; set; } // ForeignKeyChild
-        System.Data.Entity.DbSet<ForeignKeyParent> ForeignKeyParents { get; set; } // ForeignKeyParent
         System.Data.Entity.DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
         System.Data.Entity.DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; } // ComputedColumns
         System.Data.Entity.DbSet<Stafford_Foo> Stafford_Foos { get; set; } // Foo
@@ -67,6 +65,8 @@ namespace TestDatabaseDataAnnotation
 
 
         // Table Valued Functions
+        [System.Data.Entity.DbFunction("TestDbContext", "CsvToInt")]
+        [CodeFirstStoreFunctions.DbFunctionDetails(DatabaseSchema = "dbo", ResultColumnName = "IntValue")]
         System.Linq.IQueryable<CsvToIntReturnModel> CsvToInt(string array, string array2);
     }
 
@@ -78,8 +78,6 @@ namespace TestDatabaseDataAnnotation
     public class TestDbContext : System.Data.Entity.DbContext, ITestDbContext
     {
         public System.Data.Entity.DbSet<ColumnName> ColumnNames { get; set; } // ColumnNames
-        public System.Data.Entity.DbSet<ForeignKeyChild> ForeignKeyChilds { get; set; } // ForeignKeyChild
-        public System.Data.Entity.DbSet<ForeignKeyParent> ForeignKeyParents { get; set; } // ForeignKeyParent
         public System.Data.Entity.DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
         public System.Data.Entity.DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; } // ComputedColumns
         public System.Data.Entity.DbSet<Stafford_Foo> Stafford_Foos { get; set; } // Foo
@@ -138,8 +136,6 @@ namespace TestDatabaseDataAnnotation
             modelBuilder.ComplexType<CsvToIntReturnModel>();
 
             modelBuilder.Configurations.Add(new ColumnNameConfiguration());
-            modelBuilder.Configurations.Add(new ForeignKeyChildConfiguration());
-            modelBuilder.Configurations.Add(new ForeignKeyParentConfiguration());
             modelBuilder.Configurations.Add(new Stafford_BooConfiguration());
             modelBuilder.Configurations.Add(new Stafford_ComputedColumnConfiguration());
             modelBuilder.Configurations.Add(new Stafford_FooConfiguration());
@@ -150,8 +146,6 @@ namespace TestDatabaseDataAnnotation
         public static System.Data.Entity.DbModelBuilder CreateModel(System.Data.Entity.DbModelBuilder modelBuilder, string schema)
         {
             modelBuilder.Configurations.Add(new ColumnNameConfiguration(schema));
-            modelBuilder.Configurations.Add(new ForeignKeyChildConfiguration(schema));
-            modelBuilder.Configurations.Add(new ForeignKeyParentConfiguration(schema));
             modelBuilder.Configurations.Add(new Stafford_BooConfiguration(schema));
             modelBuilder.Configurations.Add(new Stafford_ComputedColumnConfiguration(schema));
             modelBuilder.Configurations.Add(new Stafford_FooConfiguration(schema));
@@ -223,8 +217,6 @@ namespace TestDatabaseDataAnnotation
     public class FakeTestDbContext : ITestDbContext
     {
         public System.Data.Entity.DbSet<ColumnName> ColumnNames { get; set; }
-        public System.Data.Entity.DbSet<ForeignKeyChild> ForeignKeyChilds { get; set; }
-        public System.Data.Entity.DbSet<ForeignKeyParent> ForeignKeyParents { get; set; }
         public System.Data.Entity.DbSet<Stafford_Boo> Stafford_Boos { get; set; }
         public System.Data.Entity.DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; }
         public System.Data.Entity.DbSet<Stafford_Foo> Stafford_Foos { get; set; }
@@ -234,8 +226,6 @@ namespace TestDatabaseDataAnnotation
         public FakeTestDbContext()
         {
             ColumnNames = new FakeDbSet<ColumnName>("C36");
-            ForeignKeyChilds = new FakeDbSet<ForeignKeyChild>("ChildId");
-            ForeignKeyParents = new FakeDbSet<ForeignKeyParent>("ParentId");
             Stafford_Boos = new FakeDbSet<Stafford_Boo>("Id");
             Stafford_ComputedColumns = new FakeDbSet<Stafford_ComputedColumn>("Id");
             Stafford_Foos = new FakeDbSet<Stafford_Foo>("Id");
@@ -599,7 +589,7 @@ namespace TestDatabaseDataAnnotation
     {
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column(@"$", Order = 1, TypeName = "int")]
-        [Index(@"PK__ColumnNa__3BD01849ADDA95D5", 1, IsUnique = true, IsClustered = true)]
+        [Index(@"PK__ColumnNa__3BD01849E45114C5", 1, IsUnique = true, IsClustered = true)]
         [Required]
         [Key]
         [Display(Name = "")]
@@ -703,78 +693,6 @@ namespace TestDatabaseDataAnnotation
         }
     }
 
-    // ForeignKeyChild
-    [Table("ForeignKeyChild", Schema = "dbo")]
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.35.0.0")]
-    public class ForeignKeyChild
-    {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column(@"ChildId", Order = 1, TypeName = "int")]
-        [Index(@"PK_ForeignKeyChild", 1, IsUnique = true, IsClustered = true)]
-        [Required]
-        [Key]
-        [Display(Name = "Child ID")]
-        public int ChildId { get; set; } // ChildId (Primary key)
-
-        [Column(@"ParentIdNotNull", Order = 2, TypeName = "varchar")]
-        [Required]
-        [MaxLength(20)]
-        [StringLength(20)]
-        [Display(Name = "Parent ID not null")]
-        public string ParentIdNotNull { get; set; } // ParentIdNotNull (length: 20)
-
-        [Column(@"ParentIdNull", Order = 3, TypeName = "varchar")]
-        [MaxLength(20)]
-        [StringLength(20)]
-        [Display(Name = "Parent ID null")]
-        public string ParentIdNull { get; set; } // ParentIdNull (length: 20)
-
-        // Foreign keys
-
-        /// <summary>
-        /// Parent ForeignKeyParent pointed by [ForeignKeyChild].([ParentIdNotNull]) (FK_ForeignKeyChild_NotNull)
-        /// </summary>
-        [ForeignKey("ParentIdNotNull")] public virtual ForeignKeyParent ForeignKeyParent_ParentIdNotNull { get; set; } // FK_ForeignKeyChild_NotNull
-
-        /// <summary>
-        /// Parent ForeignKeyParent pointed by [ForeignKeyChild].([ParentIdNull]) (FK_ForeignKeyChild_Null)
-        /// </summary>
-        [ForeignKey("ParentIdNull")] public virtual ForeignKeyParent ForeignKeyParent_ParentIdNull { get; set; } // FK_ForeignKeyChild_Null
-    }
-
-    // ForeignKeyParent
-    [Table("ForeignKeyParent", Schema = "dbo")]
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.35.0.0")]
-    public class ForeignKeyParent
-    {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        [Column(@"ParentId", Order = 1, TypeName = "varchar")]
-        [Index(@"PK_ForeignKeyParent", 1, IsUnique = true, IsClustered = true)]
-        [Required]
-        [MaxLength(20)]
-        [StringLength(20)]
-        [Key]
-        [Display(Name = "Parent ID")]
-        public string ParentId { get; set; } // ParentId (Primary key) (length: 20)
-
-        // Reverse navigation
-
-        /// <summary>
-        /// Child ForeignKeyChilds where [ForeignKeyChild].[ParentIdNotNull] point to this entity (FK_ForeignKeyChild_NotNull)
-        /// </summary>
-        public virtual System.Collections.Generic.ICollection<ForeignKeyChild> ForeignKeyChilds_ParentIdNotNull { get; set; } // ForeignKeyChild.FK_ForeignKeyChild_NotNull
-        /// <summary>
-        /// Child ForeignKeyChilds where [ForeignKeyChild].[ParentIdNull] point to this entity (FK_ForeignKeyChild_Null)
-        /// </summary>
-        public virtual System.Collections.Generic.ICollection<ForeignKeyChild> ForeignKeyChilds_ParentIdNull { get; set; } // ForeignKeyChild.FK_ForeignKeyChild_Null
-
-        public ForeignKeyParent()
-        {
-            ForeignKeyChilds_ParentIdNotNull = new System.Collections.Generic.List<ForeignKeyChild>();
-            ForeignKeyChilds_ParentIdNull = new System.Collections.Generic.List<ForeignKeyChild>();
-        }
-    }
-
     // The table 'NoPrimaryKeys' is not usable by entity framework because it
     // does not have a primary key. It is listed here for completeness.
     // NoPrimaryKeys
@@ -828,7 +746,7 @@ namespace TestDatabaseDataAnnotation
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column(@"Id", Order = 1, TypeName = "int")]
-        [Index(@"PK__Computed__3214EC07D1C457B3", 1, IsUnique = true, IsClustered = true)]
+        [Index(@"PK__Computed__3214EC07FD999E8B", 1, IsUnique = true, IsClustered = true)]
         [Required]
         [Key]
         [Display(Name = "Id")]
@@ -974,41 +892,6 @@ namespace TestDatabaseDataAnnotation
             Property(x => x.C123Hi).IsOptional();
             Property(x => x.Afloat).IsOptional();
             Property(x => x.Adouble).IsOptional();
-        }
-    }
-
-    // ForeignKeyChild
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.35.0.0")]
-    public class ForeignKeyChildConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<ForeignKeyChild>
-    {
-        public ForeignKeyChildConfiguration()
-            : this("dbo")
-        {
-        }
-
-        public ForeignKeyChildConfiguration(string schema)
-        {
-            Property(x => x.ParentIdNotNull).IsUnicode(false);
-            Property(x => x.ParentIdNull).IsOptional().IsUnicode(false);
-
-            // Foreign keys
-            HasOptional(a => a.ForeignKeyParent_ParentIdNull).WithMany(b => b.ForeignKeyChilds_ParentIdNull).HasForeignKey(c => c.ParentIdNull).WillCascadeOnDelete(false); // FK_ForeignKeyChild_Null
-            HasRequired(a => a.ForeignKeyParent_ParentIdNotNull).WithMany(b => b.ForeignKeyChilds_ParentIdNotNull).HasForeignKey(c => c.ParentIdNotNull).WillCascadeOnDelete(false); // FK_ForeignKeyChild_NotNull
-        }
-    }
-
-    // ForeignKeyParent
-    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.35.0.0")]
-    public class ForeignKeyParentConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<ForeignKeyParent>
-    {
-        public ForeignKeyParentConfiguration()
-            : this("dbo")
-        {
-        }
-
-        public ForeignKeyParentConfiguration(string schema)
-        {
-            Property(x => x.ParentId).IsUnicode(false);
         }
     }
 

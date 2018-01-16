@@ -143,6 +143,8 @@ if (Settings.IncludeTableValuedFunctions)
             string spExecName = WriteStoredProcFunctionName(sp);
             string spReturnClassName = WriteStoredProcReturnModelName(sp);
 #>
+        [System.Data.Entity.DbFunction("<#=Settings.DbContextName#>", "<#=sp.Name#>")]
+        [CodeFirstStoreFunctions.DbFunctionDetails(DatabaseSchema = "<#=sp.Schema#>"<#if (sp.ReturnModels.Count == 1 && sp.ReturnModels[0].Count == 1) {#>, ResultColumnName = "<#=sp.ReturnModels[0][0].ColumnName#>"<#}#>)]
         System.Linq.IQueryable<<#= spReturnClassName #>> <#= spExecName #>(<#=WriteStoredProcFunctionParams(sp, false)#>);
 <#
     }
