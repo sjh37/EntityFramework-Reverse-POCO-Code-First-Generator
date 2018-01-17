@@ -3434,7 +3434,10 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             return Settings.UseLazyLoading ? "virtual " : string.Empty;
         }
 
-        public string NameHumanCaseWithSuffix => NameHumanCase + Suffix;
+        public string NameHumanCaseWithSuffix()
+        {
+            return NameHumanCase + Suffix;
+        }
 
         public void ResetNavigationProperties()
         {
