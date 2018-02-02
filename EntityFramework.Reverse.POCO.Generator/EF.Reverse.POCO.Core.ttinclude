@@ -127,7 +127,7 @@
         public static string ContextKey;
         public static bool AutomaticMigrationsEnabled;
         public static bool AutomaticMigrationDataLossAllowed;
-        public static List<EnumDefinition> EnumsDefinitions = new List<EnumDefinition>();
+        public static List<EnumDefinition> EnumDefinitions = new List<EnumDefinition>();
         public static Dictionary<string, string> ColumnNameToDataAnnotation;
         public static bool IncludeCodeGeneratedAttribute;
         public static Tables Tables;
