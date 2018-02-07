@@ -3873,11 +3873,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         var sb = new StringBuilder();
         foreach (var p in sp.Parameters.OrderBy(x => x.Ordinal))
         {
-            sb.AppendLine(string.Format("            var {0}Param = new System.Data.Entity.Core.Objects.ObjectParameter(\"{1}\", typeof({2})) {{ Value = {3} }};",
+            sb.AppendLine(string.Format("            var {0}Param = new System.Data.Entity.Core.Objects.ObjectParameter(\"{1}\", typeof({2})) {{ Value = (object){3} }};",
                 p.NameHumanCase,
                 p.Name.Substring(1),
                 p.PropertyType,
-                p.NameHumanCase + (p.Mode == StoredProcedureParameterMode.In && NotNullable.Contains(p.PropertyType.ToLowerInvariant()) ? string.Empty : ".GetValueOrDefault()" )));
+                p.NameHumanCase + (p.Mode == StoredProcedureParameterMode.In && NotNullable.Contains(p.PropertyType.ToLowerInvariant()) ? string.Empty : " ?? System.DBNull.Value" )));
         }
         return sb.ToString();
     };

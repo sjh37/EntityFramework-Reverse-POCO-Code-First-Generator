@@ -188,8 +188,8 @@ namespace TestDatabaseStandard
         [CodeFirstStoreFunctions.DbFunctionDetails(DatabaseSchema = "dbo", ResultColumnName = "IntValue")]
         public IQueryable<CsvToIntReturnModel> CsvToInt(string array, string array2)
         {
-            var arrayParam = new System.Data.Entity.Core.Objects.ObjectParameter("array", typeof(string)) { Value = array };
-            var array2Param = new System.Data.Entity.Core.Objects.ObjectParameter("array2", typeof(string)) { Value = array2 };
+            var arrayParam = new System.Data.Entity.Core.Objects.ObjectParameter("array", typeof(string)) { Value = (object)array };
+            var array2Param = new System.Data.Entity.Core.Objects.ObjectParameter("array2", typeof(string)) { Value = (object)array2 };
 
             return ((System.Data.Entity.Infrastructure.IObjectContextAdapter)this).ObjectContext.CreateQuery<CsvToIntReturnModel>("[TestDbContext].[CsvToInt](@array, @array2)", arrayParam, array2Param);
         }
