@@ -589,7 +589,7 @@ namespace TestDatabaseDataAnnotation
     {
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column(@"$", Order = 1, TypeName = "int")]
-        [Index(@"PK__ColumnNa__3BD01849E45114C5", 1, IsUnique = true, IsClustered = true)]
+        [Index(@"PK_ColumnNames", 1, IsUnique = true, IsClustered = true)]
         [Required]
         [Key]
         [Display(Name = "")]
@@ -746,7 +746,7 @@ namespace TestDatabaseDataAnnotation
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column(@"Id", Order = 1, TypeName = "int")]
-        [Index(@"PK__Computed__3214EC07FD999E8B", 1, IsUnique = true, IsClustered = true)]
+        [Index(@"PK_Stafford_ComputedColumns", 1, IsUnique = true, IsClustered = true)]
         [Required]
         [Key]
         [Display(Name = "Id")]

@@ -104,9 +104,10 @@ GO
 
 CREATE TABLE Stafford.ComputedColumns
 (
-    Id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    Id INT NOT NULL IDENTITY(1,1),
 	MyColumn varchar(10) NOT NULL,
-	MyComputedColumn AS MyColumn
+	MyComputedColumn AS MyColumn,
+    CONSTRAINT PK_Stafford_ComputedColumns PRIMARY KEY CLUSTERED (id ASC)
 );
 GO
 
@@ -146,10 +147,11 @@ BEGIN
 END
 GO
 
-
 CREATE TABLE ColumnNames
 (
-    [$] INT NOT null PRIMARY KEY,
+    [$] INT NOT null,
+    CONSTRAINT PK_ColumnNames PRIMARY KEY CLUSTERED ([$] ASC),
+
     [%] INT null,
     [£] INT null,
     [&test$] INT null,
@@ -201,7 +203,7 @@ GO
 CREATE TABLE [Synonyms].[Parent](
 	[ParentId] [int] NOT NULL,
 	[ParentName] [varchar](100) NOT NULL,
- CONSTRAINT [PK_Parent] PRIMARY KEY CLUSTERED 
+ CONSTRAINT [PK_Parent] PRIMARY KEY CLUSTERED
 (
 	[ParentId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
@@ -215,7 +217,7 @@ CREATE TABLE [Synonyms].[Child](
 	[ChildId] [int] NOT NULL,
 	[ParentId] [int] NOT NULL,
 	[ChildName] [varchar](100) NULL,
- CONSTRAINT [PK_Child] PRIMARY KEY CLUSTERED 
+ CONSTRAINT [PK_Child] PRIMARY KEY CLUSTERED
 (
 	[ChildId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
