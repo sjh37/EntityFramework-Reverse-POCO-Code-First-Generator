@@ -267,6 +267,8 @@ foreach(Table tbl in from t in Settings.Tables.Where(t => !t.IsMapping && t.HasP
 
         protected override void Dispose(bool disposing)
         {
+<#if(Settings.MakeClassesPartial) {#>            DisposePartial(disposing);
+<#}#>
             base.Dispose(disposing);
         }
 
@@ -317,6 +319,7 @@ foreach(var tbl in from t in Settings.Tables.Where(t => !t.IsMapping && t.HasPri
 <#if(Settings.MakeClassesPartial) {#>
 
         partial void InitializePartial();
+        partial void DisposePartial(bool disposing);
         partial void OnModelCreatingPartial(System.Data.Entity.DbModelBuilder modelBuilder);
 <#}#>
 <# if (Settings.StoredProcs.Any())
