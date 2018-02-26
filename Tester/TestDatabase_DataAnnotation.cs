@@ -793,7 +793,7 @@ namespace TestDatabaseDataAnnotation
         /// <summary>
         /// Parent Stafford_Boo pointed by [Foo].([Id]) (FK_Foo_Boo)
         /// </summary>
-        [ForeignKey("Id")] public virtual Stafford_Boo Stafford_Boo { get; set; } // FK_Foo_Boo
+        [ForeignKey("Id"), Required] public virtual Stafford_Boo Stafford_Boo { get; set; } // FK_Foo_Boo
     }
 
     // Child
@@ -825,7 +825,7 @@ namespace TestDatabaseDataAnnotation
         /// <summary>
         /// Parent Synonyms_Parent pointed by [Child].([ParentId]) (FK_Child_Parent)
         /// </summary>
-        [ForeignKey("ParentId")] public virtual Synonyms_Parent Synonyms_Parent { get; set; } // FK_Child_Parent
+        [ForeignKey("ParentId"), Required] public virtual Synonyms_Parent Synonyms_Parent { get; set; } // FK_Child_Parent
     }
 
     // Parent
@@ -939,8 +939,6 @@ namespace TestDatabaseDataAnnotation
         {
             Property(x => x.Name).IsFixedLength();
 
-            // Foreign keys
-            HasRequired(a => a.Stafford_Boo).WithOptional(b => b.Stafford_Foo).WillCascadeOnDelete(false); // FK_Foo_Boo
         }
     }
 
@@ -957,8 +955,6 @@ namespace TestDatabaseDataAnnotation
         {
             Property(x => x.ChildName).IsOptional().IsUnicode(false);
 
-            // Foreign keys
-            HasRequired(a => a.Synonyms_Parent).WithMany(b => b.Synonyms_Children).HasForeignKey(c => c.ParentId).WillCascadeOnDelete(false); // FK_Child_Parent
         }
     }
 

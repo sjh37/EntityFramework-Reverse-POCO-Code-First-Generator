@@ -12,6 +12,7 @@
 <#@ import namespace="System.Data.Entity.Infrastructure.Pluralization" #>
 <#@ import namespace="System.Text.RegularExpressions" #>
 <#@ import namespace="System.Configuration" #>
+<#@ import namespace="System.Runtime.CompilerServices" #>
 <#@ import namespace="EnvDTE" #>
 <#@ output extension=".cs"#>
 <#
@@ -782,14 +783,19 @@
     // Calculates the relationship between a child table and it's parent table.
     public static Relationship CalcRelationshipSingle(Table parentTable, Table childTable, Column childTableCol, Column parentTableCol)
     {
-        bool childTableSinglePrimaryKey = (childTable.PrimaryKeys.Count() == 1);
-        bool parentTableSinglePrimaryKey = (parentTable.PrimaryKeys.Count() == 1);
+        if(!childTableCol.IsPrimaryKey && !childTableCol.IsUniqueConstraint)
+            return Relationship.ManyToOne;
 
-        // 1:1
-        if(childTableCol.IsPrimaryKey && parentTableCol.IsPrimaryKey && childTableSinglePrimaryKey && parentTableSinglePrimaryKey)
-            return Relationship.OneToOne;
+        if(!parentTableCol.IsPrimaryKey && !parentTableCol.IsUniqueConstraint)
+            return Relationship.ManyToOne;
 
-        return Relationship.ManyToOne;
+        if (childTable.PrimaryKeys.Count() != 1)
+            return Relationship.ManyToOne;
+
+        if (parentTable.PrimaryKeys.Count() != 1)
+            return Relationship.ManyToOne;
+
+        return Relationship.OneToOne;
     }
 
     public class EnumDefinition
@@ -832,7 +838,8 @@
         public bool IsIdentity;
         public bool IsNullable;
         public bool IsPrimaryKey;
-        public bool IsPrimaryKeyViaUniqueIndex;
+        public bool IsUniqueConstraint;
+        public bool IsUnique;
         public bool IsStoreGenerated;
         public bool IsRowVersion;
         public bool IsConcurrencyToken; //  Manually set via callback
@@ -866,7 +873,7 @@
                 comments = Name;
                 if (IsPrimaryKey)
                 {
-                    if (IsPrimaryKeyViaUniqueIndex)
+                    if (IsUniqueConstraint)
                         comments += " (Primary key via unique index " + UniqueIndexName + ")";
                     else
                         comments += " (Primary key)";
@@ -2591,18 +2598,21 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 var indexes =
                     list.Where(x => x.Schema == indexTable.Schema && x.TableName == indexTable.TableName)
                         .OrderBy(o => o.ColumnCount)
-                        .ThenBy(o => o.KeyOrdinal);
+                        .ThenBy(o => o.KeyOrdinal)
+                        .ToList();
 
                 // Set index on column
                 foreach (var index in indexes)
                 {
                     var col = t.Columns.Find(x => x.Name == index.ColumnName);
-                    if (col != null)
-                    {
-                        col.Indexes.Add(index);
-                        if (!col.IsPrimaryKey && index.IsPrimaryKey)
-                            col.IsPrimaryKey = true;
-                    }
+                    if (col == null)
+                        continue;
+
+                    col.Indexes.Add(index);
+
+                    col.IsPrimaryKey = col.IsPrimaryKey || index.IsPrimaryKey;
+                    col.IsUniqueConstraint = col.IsUniqueConstraint || (index.IsUniqueConstraint && index.ColumnCount == 1);
+                    col.IsUnique = col.IsUnique || (index.IsUnique && index.ColumnCount == 1);
                 }
 
                 // Check if table has any primary keys
@@ -2610,10 +2620,10 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     continue; // Already has a primary key, ignore this unique index / constraint
 
                 // Find unique indexes for table
-                var uniqueIndexKeys =
-                    indexes.Where(x => x.IsUnique || x.IsPrimaryKey || x.IsUniqueConstraint)
-                        .OrderBy(o => o.ColumnCount)
-                        .ThenBy(o => o.KeyOrdinal);
+                var uniqueIndexKeys = indexes
+                    .Where(x => x.IsUnique || x.IsPrimaryKey || x.IsUniqueConstraint)
+                    .OrderBy(o => o.ColumnCount)
+                    .ThenBy(o => o.KeyOrdinal);
 
                 // Process only the first index with the lowest unique column count
                 string indexName = null;
@@ -2629,7 +2639,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     if (col != null && !col.IsNullable && !col.Hidden && !col.IsPrimaryKey)
                     {
                         col.IsPrimaryKey = true;
-                        col.IsPrimaryKeyViaUniqueIndex = true;
+                        col.IsUniqueConstraint = true;
+                        col.IsUnique = true;
                         col.UniqueIndexName = indexName;
                     }
                 }
@@ -2878,30 +2889,49 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
                 var fkCols = foreignKeys.Select(x => new
                     {
-                        fkOrdinal = x.Ordinal,
+                        fk = x,
                         col = fkTable.Columns.Find(n => string.Equals(n.Name, x.FkColumn, StringComparison.InvariantCultureIgnoreCase))
                     })
                     .Where(x => x.col != null)
-                    .OrderBy(o => o.fkOrdinal)
+                    .OrderBy(o => o.fk.Ordinal)
                     .ToList();
 
                 if (!fkCols.Any())
                     continue;
 
+                //if(EF6)
+                {
+                    // Check FK has same number of columns as the primary key it points to
+                    var pks = pkTable.PrimaryKeys.OrderBy(x => x.PropertyType).ThenBy(y => y.Name).ToArray();
+                    var cols = fkCols.Select(x => x.col).OrderBy(x => x.PropertyType).ThenBy(y => y.Name).ToArray();
+                    if (pks.Length != cols.Length)
+                        continue;
+
+                    // EF6 - Cannot have a FK to a non-primary key
+                    if(pks.Where((pk, ef6Check) => pk.PropertyType != cols[ef6Check].PropertyType).Any())
+                        continue;
+                }
+
                 var pkCols = foreignKeys.Select(x => pkTable.Columns.Find(n => string.Equals(n.Name, x.PkColumn, StringComparison.InvariantCultureIgnoreCase)))
-                                        .Where(x => x != null && x.IsPrimaryKey)
+                                        .Where(x => x != null)
                                         .OrderBy(o => o.Ordinal)
                                         .ToList();
 
                 if (!pkCols.Any())
                     continue;
 
-                var fkCol = fkCols.First();
-                var pkCol = pkCols.First();
-
                 var relationship = CalcRelationship(pkTable, fkTable, fkCols.Select(c => c.col).ToList(), pkCols);
                 if (relationship == Relationship.DoNotUse)
                     continue;
+
+                if(fkCols.All(x => !x.col.IsNullable && !x.col.Hidden) && pkCols.All(x => x.IsPrimaryKey || x.IsUnique))
+                {
+                    foreach (var fk in fkCols)
+                        fk.fk.IncludeRequiredAttribute = true;
+                }
+
+                var fkCol = fkCols.First();
+                var pkCol = pkCols.First();
 
                 foreignKey = Settings.ForeignKeyProcessing(foreignKeys, fkTable, pkTable, fkCols.Any(x => x.col.IsNullable));
 
@@ -2919,11 +2949,17 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         foreignKey.IncludeRequiredAttribute ? ", Required" : string.Empty
                     );
 
-                    if (!checkForFkNameClashes && relationship == Relationship.OneToOne && foreignKey.IncludeReverseNavigation && fkCol.col.IsPrimaryKey)
+                    if (!checkForFkNameClashes &&
+                        relationship == Relationship.OneToOne &&
+                        foreignKey.IncludeReverseNavigation &&
+                        fkCols.All(x => x.col.IsPrimaryKey))
                     {
                         var principalEndAttribute = string.Format("ForeignKey(\"{0}\")", pkPropName);
-                        if (!fkCol.col.DataAnnotations.Contains(principalEndAttribute))
-                            fkCol.col.DataAnnotations.Add(principalEndAttribute);
+                        foreach (var fk in fkCols)
+                        {
+                            if (!fk.col.DataAnnotations.Contains(principalEndAttribute))
+                                fk.col.DataAnnotations.Add(principalEndAttribute);
+                        }
                     }
                 }
 
@@ -2954,9 +2990,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     mapKey = string.Format("\"{0}\"", fkCol.col.Name);
                 }
 
-                // Always include fluent FK mapping even if only using data annotations
-                fkCol.col.ConfigFk.Add(string.Format("{0};{1}", GetRelationship(relationship, fkCol.col, pkCol, pkPropName, fkPropName, manyToManyMapping, mapKey, foreignKey.CascadeOnDelete, foreignKey.IncludeReverseNavigation, foreignKey.IsNotEnforced),
-                    Settings.IncludeComments != CommentsStyle.None ? " // " + foreignKey.ConstraintName : string.Empty));
+                if (!Settings.UseDataAnnotations)
+                {
+                    fkCol.col.ConfigFk.Add(string.Format("{0};{1}", GetRelationship(relationship, fkCol.col, pkCol, pkPropName, fkPropName, manyToManyMapping, mapKey, foreignKey.CascadeOnDelete, foreignKey.IncludeReverseNavigation, foreignKey.IsNotEnforced),
+                        Settings.IncludeComments != CommentsStyle.None ? " // " + foreignKey.ConstraintName : string.Empty));
+                }
 
                 if(foreignKey.IncludeReverseNavigation)
                     pkTable.AddReverseNavigation(relationship, pkTableHumanCase, fkTable, fkPropName, string.Format("{0}.{1}", fkTable.Name, foreignKey.ConstraintName), foreignKeys);
@@ -3010,7 +3048,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     break;
             }
 
-            if (withMany || pkCol.IsPrimaryKey)
+            if (withMany || pkCol.IsPrimaryKey || pkCol.IsUniqueConstraint || pkCol.IsUnique)
                 return fkCol.IsNullable || isNotEnforced ? "Optional" : "Required";
 
             return "Many";
@@ -3467,10 +3505,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         {
             get
             {
-                return Columns.Where(x => x.IsPrimaryKey)
-                                .OrderBy(x => x.PrimaryKeyOrdinal)
-                                .ThenBy(x => x.Ordinal)
-                                .ToList();
+                return Columns
+                    .Where(x => x.IsPrimaryKey)
+                    .OrderBy(x => x.PrimaryKeyOrdinal)
+                    .ThenBy(x => x.Ordinal)
+                    .ToList();
             }
         }
 
