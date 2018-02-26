@@ -78,7 +78,6 @@
         public static string CollectionType = "System.Collections.Generic.List";
         public static bool NullableShortHand;
         public static bool UseDataAnnotations;
-        public static bool UseDataAnnotationsSchema;
         public static bool MakeClassesPartial;
         public static bool MakeClassesInternal;
         public static bool MakeDbContextInterfacePartial;
@@ -631,7 +630,7 @@
 
                 foreach (var t in tables)
                 {
-                    if(Settings.UseDataAnnotationsSchema)
+                    if(Settings.UseDataAnnotations)
                         t.SetupDataAnnotations();
                     t.Suffix = Settings.TableSuffix;
                 }
@@ -927,21 +926,21 @@
 
             if (IsIdentity || isNewSequentialId)
             {
-                if(Settings.UseDataAnnotationsSchema || isNewSequentialId)
+                if(Settings.UseDataAnnotations || isNewSequentialId)
                     DataAnnotations.Add("DatabaseGenerated(DatabaseGeneratedOption.Identity)");
                 else
                     databaseGeneratedOption = string.Format(".HasDatabaseGeneratedOption({0}DatabaseGeneratedOption.Identity)", schemaReference);
             }
             else if(IsComputed())
             {
-                if(Settings.UseDataAnnotationsSchema)
+                if(Settings.UseDataAnnotations)
                     DataAnnotations.Add("DatabaseGenerated(DatabaseGeneratedOption.Computed)");
                 else
                     databaseGeneratedOption = string.Format(".HasDatabaseGeneratedOption({0}DatabaseGeneratedOption.Computed)", schemaReference);
             }
             else if (IsPrimaryKey)
             {
-                if(Settings.UseDataAnnotationsSchema)
+                if(Settings.UseDataAnnotations)
                     DataAnnotations.Add("DatabaseGenerated(DatabaseGeneratedOption.None)");
                 else
                     databaseGeneratedOption = string.Format(".HasDatabaseGeneratedOption({0}DatabaseGeneratedOption.None)", schemaReference);
@@ -949,12 +948,12 @@
 
             var sb = new StringBuilder();
 
-            if(Settings.UseDataAnnotationsSchema || (IsPrimaryKey && Settings.UseDataAnnotations))
+            if(Settings.UseDataAnnotations)
                 DataAnnotations.Add(string.Format("Column(@\"{0}\", Order = {1}, TypeName = \"{2}\")", Name, Ordinal, SqlPropertyType));
             else
                 sb.AppendFormat(".HasColumnName(@\"{0}\").HasColumnType(\"{1}\")", Name, SqlPropertyType);
 
-            if (Settings.UseDataAnnotationsSchema && Indexes.Any())
+            if (Settings.UseDataAnnotations && Indexes.Any())
             {
                 foreach (var index in Indexes)
                 {
@@ -2913,7 +2912,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 string fkPropName = pkTable.GetUniqueColumnName(fkTable.NameHumanCase, foreignKey, checkForFkNameClashes, fkMakePropNameSingular, Relationship.OneToMany);
 
                 var dataAnnotation = string.Empty;
-                if (Settings.UseDataAnnotations && Settings.UseDataAnnotationsSchema)
+                if (Settings.UseDataAnnotations)
                 {
                     dataAnnotation = string.Format("[ForeignKey(\"{0}\"){1}] ",
                         string.Join(", ", fkCols.Select(x => x.col.NameHumanCase).Distinct().ToArray()),

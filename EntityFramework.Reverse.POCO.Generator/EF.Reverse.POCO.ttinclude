@@ -1101,7 +1101,7 @@ if(Settings.IncludeComments != CommentsStyle.None){#>    // <#=tbl.Name#>
 
         public <#=tbl.NameHumanCaseWithSuffix() + Settings.ConfigurationClassName#>(string schema)
         {
-<#if(!Settings.UseDataAnnotationsSchema){ if (!string.IsNullOrEmpty(tbl.Schema)) { #>
+<#if(!Settings.UseDataAnnotations){ if (!string.IsNullOrEmpty(tbl.Schema)) { #>
             ToTable("<#=tbl.Name#>", schema);
 <# } else { #>
             ToTable("<#=tbl.Name#>");
