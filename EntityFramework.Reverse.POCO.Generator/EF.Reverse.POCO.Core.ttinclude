@@ -3525,7 +3525,10 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             return string.Format("x => new {{ {0} }}", string.Join(", ", data));
         }
 
-        public Column this[string columnName] => GetColumn(columnName);
+        public Column this[string columnName]
+        {
+            get { return GetColumn(columnName); }
+        }
 
         public Column GetColumn(string columnName)
         {
