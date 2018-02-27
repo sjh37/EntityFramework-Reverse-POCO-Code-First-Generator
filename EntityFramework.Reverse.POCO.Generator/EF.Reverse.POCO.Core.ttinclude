@@ -3079,14 +3079,14 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     return string.Format(".WithMany({0}).HasForeignKey({1})", withParam, manyToManyMapping);
 
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(relationship));
+                    throw new ArgumentOutOfRangeException("relationship");
             }
         }
 
         private static Column CreateColumn(IDataRecord rdr, Regex rxClean, Table table, Regex columnFilterExclude)
         {
             if(rdr == null)
-                throw new ArgumentNullException(nameof(rdr));
+                throw new ArgumentNullException("rdr");
 
             string typename = rdr["TypeName"].ToString().Trim().ToLower();
             var scale = (int) rdr["Scale"];
@@ -3375,18 +3375,18 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
     public class ForeignKey
     {
-        public string FkTableName { get; }
-        public string FkTableNameFiltered { get; }
-        public string FkSchema { get; }
-        public string PkTableName { get; }
-        public string PkTableNameFiltered { get; }
-        public string PkSchema { get; }
-        public string FkColumn { get; }
-        public string PkColumn { get; }
-        public string ConstraintName { get; }
-        public int Ordinal { get; }
-        public bool CascadeOnDelete { get; }
-        public bool IsNotEnforced { get; }
+        public string FkTableName { get; private set; }
+        public string FkTableNameFiltered { get; private set; }
+        public string FkSchema { get; private set; }
+        public string PkTableName { get; private set; }
+        public string PkTableNameFiltered { get; private set; }
+        public string PkSchema { get; private set; }
+        public string FkColumn { get; private set; }
+        public string PkColumn { get; private set; }
+        public string ConstraintName { get; private set; }
+        public int Ordinal { get; private set; }
+        public bool CascadeOnDelete { get; private set; }
+        public bool IsNotEnforced { get; private set; }
 
         // User settable via ForeignKeyFilter callback
         public bool IncludeReverseNavigation { get; set; }
@@ -3708,7 +3708,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(relationship));
+                    throw new ArgumentOutOfRangeException("relationship");
             }
         }
 
