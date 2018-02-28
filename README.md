@@ -26,8 +26,7 @@ To make a donation via PayPal, [please click here](https://www.paypal.me/SJH37).
 ### Supported databases
 
 * SQL Server
-* SQL Server Compact 4.0
-* SQL Server Compact 3.5
+* SQL Server Compact 3.5 and 4.0
 
 ### Highly customisable output
 
