@@ -254,3 +254,24 @@ GO
 CREATE SYNONYM [Synonyms].[Parent] FOR [EfrpgTest].[Synonyms].[Parent]
 CREATE SYNONYM [Synonyms].[Child] FOR [EfrpgTest].[Synonyms].[Child]
 CREATE SYNONYM [Synonyms].[SimpleStoredProc] FOR [EfrpgTest].[Synonyms].[SimpleStoredProc]
+GO
+
+-- Create table with multiple FK's
+CREATE TABLE dbo.UserInfo
+(
+    Id INT IDENTITY(1, 1) NOT NULL,
+    CONSTRAINT PK_UserInfo PRIMARY KEY CLUSTERED ([Id] ASC),
+)
+CREATE TABLE dbo.UserInfoAttributes
+(
+    Id INT IDENTITY(1, 1) NOT NULL,
+    CONSTRAINT PK_UserInfoAttributes PRIMARY KEY CLUSTERED ([Id] ASC),
+    PrimaryId INT NOT NULL,
+    SecondaryId INT NOT NULL
+)
+GO
+ALTER TABLE dbo.UserInfoAttributes WITH CHECK ADD CONSTRAINT FK_UserInfoAttributes_PrimaryUserInfo FOREIGN KEY(PrimaryId) REFERENCES dbo.UserInfo (id);
+ALTER TABLE dbo.UserInfoAttributes WITH CHECK ADD CONSTRAINT FK_UserInfoAttributes_SecondaryUserInfo FOREIGN KEY(SecondaryId) REFERENCES dbo.UserInfo (id);
+ALTER TABLE dbo.UserInfoAttributes CHECK CONSTRAINT FK_UserInfoAttributes_PrimaryUserInfo;
+ALTER TABLE dbo.UserInfoAttributes CHECK CONSTRAINT FK_UserInfoAttributes_SecondaryUserInfo;
+GO

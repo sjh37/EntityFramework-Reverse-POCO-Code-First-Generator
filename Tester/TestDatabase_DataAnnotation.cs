@@ -44,6 +44,8 @@ namespace TestDatabaseDataAnnotation
         System.Data.Entity.DbSet<Stafford_Foo> Stafford_Foos { get; set; } // Foo
         System.Data.Entity.DbSet<Synonyms_Child> Synonyms_Children { get; set; } // Child
         System.Data.Entity.DbSet<Synonyms_Parent> Synonyms_Parents { get; set; } // Parent
+        System.Data.Entity.DbSet<UserInfo> UserInfoes { get; set; } // UserInfo
+        System.Data.Entity.DbSet<UserInfoAttribute> UserInfoAttributes { get; set; } // UserInfoAttributes
 
         int SaveChanges();
         System.Threading.Tasks.Task<int> SaveChangesAsync();
@@ -83,6 +85,8 @@ namespace TestDatabaseDataAnnotation
         public System.Data.Entity.DbSet<Stafford_Foo> Stafford_Foos { get; set; } // Foo
         public System.Data.Entity.DbSet<Synonyms_Child> Synonyms_Children { get; set; } // Child
         public System.Data.Entity.DbSet<Synonyms_Parent> Synonyms_Parents { get; set; } // Parent
+        public System.Data.Entity.DbSet<UserInfo> UserInfoes { get; set; } // UserInfo
+        public System.Data.Entity.DbSet<UserInfoAttribute> UserInfoAttributes { get; set; } // UserInfoAttributes
 
         static TestDbContext()
         {
@@ -141,6 +145,8 @@ namespace TestDatabaseDataAnnotation
             modelBuilder.Configurations.Add(new Stafford_FooConfiguration());
             modelBuilder.Configurations.Add(new Synonyms_ChildConfiguration());
             modelBuilder.Configurations.Add(new Synonyms_ParentConfiguration());
+            modelBuilder.Configurations.Add(new UserInfoConfiguration());
+            modelBuilder.Configurations.Add(new UserInfoAttributeConfiguration());
         }
 
         public static System.Data.Entity.DbModelBuilder CreateModel(System.Data.Entity.DbModelBuilder modelBuilder, string schema)
@@ -151,6 +157,8 @@ namespace TestDatabaseDataAnnotation
             modelBuilder.Configurations.Add(new Stafford_FooConfiguration(schema));
             modelBuilder.Configurations.Add(new Synonyms_ChildConfiguration(schema));
             modelBuilder.Configurations.Add(new Synonyms_ParentConfiguration(schema));
+            modelBuilder.Configurations.Add(new UserInfoConfiguration(schema));
+            modelBuilder.Configurations.Add(new UserInfoAttributeConfiguration(schema));
             return modelBuilder;
         }
 
@@ -222,6 +230,8 @@ namespace TestDatabaseDataAnnotation
         public System.Data.Entity.DbSet<Stafford_Foo> Stafford_Foos { get; set; }
         public System.Data.Entity.DbSet<Synonyms_Child> Synonyms_Children { get; set; }
         public System.Data.Entity.DbSet<Synonyms_Parent> Synonyms_Parents { get; set; }
+        public System.Data.Entity.DbSet<UserInfo> UserInfoes { get; set; }
+        public System.Data.Entity.DbSet<UserInfoAttribute> UserInfoAttributes { get; set; }
 
         public FakeTestDbContext()
         {
@@ -231,6 +241,8 @@ namespace TestDatabaseDataAnnotation
             Stafford_Foos = new FakeDbSet<Stafford_Foo>("Id");
             Synonyms_Children = new FakeDbSet<Synonyms_Child>("ChildId");
             Synonyms_Parents = new FakeDbSet<Synonyms_Parent>("ParentId");
+            UserInfoes = new FakeDbSet<UserInfo>("Id");
+            UserInfoAttributes = new FakeDbSet<UserInfoAttribute>("Id");
         }
 
         public int SaveChangesCount { get; private set; }
@@ -861,6 +873,73 @@ namespace TestDatabaseDataAnnotation
         }
     }
 
+    // UserInfo
+    [Table("UserInfo", Schema = "dbo")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.36.1.0")]
+    public class UserInfo
+    {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Column(@"Id", Order = 1, TypeName = "int")]
+        [Index(@"PK_UserInfo", 1, IsUnique = true, IsClustered = true)]
+        [Required]
+        [Key]
+        [Display(Name = "Id")]
+        public int Id { get; set; } // Id (Primary key)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child UserInfoAttributes where [UserInfoAttributes].[PrimaryId] point to this entity (FK_UserInfoAttributes_PrimaryUserInfo)
+        /// </summary>
+        public virtual System.Collections.Generic.ICollection<UserInfoAttribute> UserInfoAttributes_PrimaryId { get; set; } // UserInfoAttributes.FK_UserInfoAttributes_PrimaryUserInfo
+        /// <summary>
+        /// Child UserInfoAttributes where [UserInfoAttributes].[SecondaryId] point to this entity (FK_UserInfoAttributes_SecondaryUserInfo)
+        /// </summary>
+        public virtual System.Collections.Generic.ICollection<UserInfoAttribute> UserInfoAttributes_SecondaryId { get; set; } // UserInfoAttributes.FK_UserInfoAttributes_SecondaryUserInfo
+
+        public UserInfo()
+        {
+            UserInfoAttributes_PrimaryId = new System.Collections.Generic.List<UserInfoAttribute>();
+            UserInfoAttributes_SecondaryId = new System.Collections.Generic.List<UserInfoAttribute>();
+        }
+    }
+
+    // UserInfoAttributes
+    [Table("UserInfoAttributes", Schema = "dbo")]
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.36.1.0")]
+    public class UserInfoAttribute
+    {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Column(@"Id", Order = 1, TypeName = "int")]
+        [Index(@"PK_UserInfoAttributes", 1, IsUnique = true, IsClustered = true)]
+        [Required]
+        [Key]
+        [Display(Name = "Id")]
+        public int Id { get; set; } // Id (Primary key)
+
+        [Column(@"PrimaryId", Order = 2, TypeName = "int")]
+        [Required]
+        [Display(Name = "Primary ID")]
+        public int PrimaryId { get; set; } // PrimaryId
+
+        [Column(@"SecondaryId", Order = 3, TypeName = "int")]
+        [Required]
+        [Display(Name = "Secondary ID")]
+        public int SecondaryId { get; set; } // SecondaryId
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent UserInfo pointed by [UserInfoAttributes].([PrimaryId]) (FK_UserInfoAttributes_PrimaryUserInfo)
+        /// </summary>
+        [ForeignKey("PrimaryId"), Required] public virtual UserInfo Primary { get; set; } // FK_UserInfoAttributes_PrimaryUserInfo
+
+        /// <summary>
+        /// Parent UserInfo pointed by [UserInfoAttributes].([SecondaryId]) (FK_UserInfoAttributes_SecondaryUserInfo)
+        /// </summary>
+        [ForeignKey("SecondaryId"), Required] public virtual UserInfo Secondary { get; set; } // FK_UserInfoAttributes_SecondaryUserInfo
+    }
+
     #endregion
 
     #region POCO Configuration
@@ -970,6 +1049,35 @@ namespace TestDatabaseDataAnnotation
         public Synonyms_ParentConfiguration(string schema)
         {
             Property(x => x.ParentName).IsUnicode(false);
+        }
+    }
+
+    // UserInfo
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.36.1.0")]
+    public class UserInfoConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<UserInfo>
+    {
+        public UserInfoConfiguration()
+            : this("dbo")
+        {
+        }
+
+        public UserInfoConfiguration(string schema)
+        {
+        }
+    }
+
+    // UserInfoAttributes
+    [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.36.1.0")]
+    public class UserInfoAttributeConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<UserInfoAttribute>
+    {
+        public UserInfoAttributeConfiguration()
+            : this("dbo")
+        {
+        }
+
+        public UserInfoAttributeConfiguration(string schema)
+        {
+
         }
     }
 
