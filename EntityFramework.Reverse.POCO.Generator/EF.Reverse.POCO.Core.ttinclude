@@ -3774,10 +3774,13 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
         public void SetupDataAnnotations()
         {
+            var schema = String.Empty;
+            if(!Settings.IsSqlCe)
+                schema = String.Format(", Schema = \"{0}\"", Schema);
             DataAnnotations = new List<string>
             {
                 HasPrimaryKey
-                    ? string.Format("Table(\"{0}\", Schema = \"{1}\")", Name, Schema)
+                    ? string.Format("Table(\"{0}\"{1})", Name, schema)
                     : "NotMapped"
             };
 
