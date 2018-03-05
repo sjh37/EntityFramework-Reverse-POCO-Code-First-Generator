@@ -166,10 +166,10 @@ if (Settings.IncludeTableValuedFunctions)
     {
         <# if(Settings.MakeClassesInternal) { #>internal<# } else { #>public<# } #> <#=Settings.MigrationConfigurationFileName#>()
         {
-            Settings.AutomaticMigrationsEnabled = <# if (Settings.AutomaticMigrationsEnabled) { #>true<# } else { #>false<# } #>;
-            Settings.AutomaticMigrationDataLossAllowed = <# if (Settings.AutomaticMigrationDataLossAllowed) { #>true<# } else { #>false<# } #>;
+            AutomaticMigrationsEnabled = <# if (Settings.AutomaticMigrationsEnabled) { #>true<# } else { #>false<# } #>;
+            AutomaticMigrationDataLossAllowed = <# if (Settings.AutomaticMigrationDataLossAllowed) { #>true<# } else { #>false<# } #>;
 <# if (!string.IsNullOrEmpty(Settings.ContextKey)) { #>
-            Settings.ContextKey = "<#= Settings.ContextKey #>";
+            ContextKey = "<#= Settings.ContextKey #>";
 <# } #>
         }
 
