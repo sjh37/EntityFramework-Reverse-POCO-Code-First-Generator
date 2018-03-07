@@ -400,12 +400,21 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
 
         public IQueryable CreateQuery(System.Linq.Expressions.Expression expression)
         {
+            var m = expression as System.Linq.Expressions.MethodCallExpression;
+            if (m != null)
+            {
+                var resultType = m.Method.ReturnType; // it shoud be IQueryable<T>
+                var tElement = resultType.GetGenericArguments()[0];
+                var queryType = typeof(FakeDbAsyncEnumerable<>).MakeGenericType(tElement);
+                return (IQueryable) System.Activator.CreateInstance(queryType, expression);
+            }
             return new FakeDbAsyncEnumerable<TEntity>(expression);
         }
 
         public IQueryable<TElement> CreateQuery<TElement>(System.Linq.Expressions.Expression expression)
         {
-            return new FakeDbAsyncEnumerable<TElement>(expression);
+            var queryType = typeof(FakeDbAsyncEnumerable<>).MakeGenericType(typeof(TElement));
+            return (IQueryable<TElement>)System.Activator.CreateInstance(queryType, expression);
         }
 
         public object Execute(System.Linq.Expressions.Expression expression)
