@@ -230,7 +230,7 @@ foreach(Table tbl in from t in Settings.Tables.Where(t => !t.IsMapping && t.HasP
 <#}#>
         }
 
-        <# if(Settings.MakeClassesInternal) { #>internal<# } else { #>public<# } #> <#=Settings.DbContextName#>()
+        public <#=Settings.DbContextName#>()
             : base(<#=Settings.DefaultConstructorArgument#>)
         {
 <#if(Settings.MakeClassesPartial) {#>            InitializePartial();
