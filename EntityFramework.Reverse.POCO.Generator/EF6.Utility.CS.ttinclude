@@ -1626,10 +1626,6 @@ public class EntityFrameworkTemplateFileManager
 
             if (dte != null)
             {
-                if (dte.Edition.StartsWith("VisualStudio.DTE.15.0", StringComparison.OrdinalIgnoreCase))
-                {
-                    return new Vs2017EntityFrameworkTemplateFileManager(transformation);
-                }
                 return new VsEntityFrameworkTemplateFileManager(transformation);
             }
         }
