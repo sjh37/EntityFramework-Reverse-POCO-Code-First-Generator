@@ -1,4 +1,4 @@
-﻿<#@ include file="EF.Reverse.POCO.Core.ttinclude" #>
+﻿<#@ include file="..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.Core.ttinclude" #>
 <#
     // v2.36.1
     // Please make changes to the settings below.
@@ -6,16 +6,16 @@
     // A course for this generator is available on Pluralsight at https://www.pluralsight.com/courses/code-first-entity-framework-legacy-databases
 
     // Main settings **********************************************************************************************************************
-    Settings.ConnectionStringName = "MyDbContextSqlCE4";   // Searches for this connection string in config files listed below in the ConfigFilenameSearchOrder setting
+    Settings.ConnectionStringName = "TestSynonymsDatabase";   // Searches for this connection string in config files listed below in the ConfigFilenameSearchOrder setting
     // ConnectionStringName is the only required setting.
     Settings.CommandTimeout = 600; // SQL Command timeout in seconds. 600 is 10 minutes, 0 will wait indefinately. Some databases can be slow retrieving schema information.
     // As an alternative to ConnectionStringName above, which must match your app/web.config connection string name, you can override them below
-    // Settings.ConnectionString = @"Data Source=C:\MyApplication\App_Data\NorthwindSqlCe40.sdf";
-    // Settings.ProviderName = "System.Data.SqlServerCe.4.0";
+    // Settings.ConnectionString = "Data Source=(local);Initial Catalog=Northwind;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";
+    // Settings.ProviderName = "System.Data.SqlClient";
 
-    Settings.Namespace = "EntityFramework_Reverse_POCO_Generator.SqlCe4"; // Override the default namespace here
-    Settings.DbContextName = "MyDbContextSqlCE4"; // Note: If generating separate files, please give the db context a different name from this tt filename.
-    //Settings.DbContextInterfaceName = "IMyDbContextSqlCE4"; // Defaults to "I" + DbContextName or set string empty to not implement any interface.
+    Settings.Namespace = "TestSynonymsDatabase"; // Override the default namespace here
+    Settings.DbContextName = "TestDbContext"; // Note: If generating separate files, please give the db context a different name from this tt filename.
+    //Settings.DbContextInterfaceName = "IMyDbContext"; // Defaults to "I" + DbContextName or set string empty to not implement any interface.
     Settings.DbContextInterfaceBaseClasses = "System.IDisposable";    // Specify what the base classes are for your database context interface
     Settings.DbContextBaseClass = "System.Data.Entity.DbContext";   // Specify what the base class is for your DbContext. For ASP.NET Identity use "IdentityDbContext<ApplicationUser>"
     //Settings.DefaultConstructorArgument = "EnvironmentConnectionStrings.MyDbContext"; //defaults to "Name=" + ConnectionStringName
@@ -31,15 +31,19 @@
     Settings.UsePropertyInitializers = false; // Removes POCO constructor and instead uses C# 6 property initialisers to set defaults
     Settings.UseLazyLoading = true; // Marks all navigation properties as virtual or not, to support or disable EF Lazy Loading feature
     Settings.IncludeComments = CommentsStyle.AtEndOfField; // Adds comments to the generated code
-    Settings.IncludeExtendedPropertyComments = CommentsStyle.InSummaryBlock; // Adds extended properties as comments to the generated code
+    Settings.IncludeExtendedPropertyComments = CommentsStyle.AtEndOfField; // Adds extended properties as comments to the generated code
     Settings.IncludeConnectionSettingComments = true; // Add comments describing connection settings used to generate file
     Settings.IncludeViews = true;
+    Settings.IncludeSynonyms = true;
+    Settings.IncludeStoredProcedures = true;
+    Settings.IncludeTableValuedFunctions = true; // If true, you must set IncludeStoredProcedures = true, and install the "EntityFramework.CodeFirstStoreFunctions" Nuget Package.
     Settings.DisableGeographyTypes = false; // Turns off use of System.Data.Entity.Spatial.DbGeography and System.Data.Entity.Spatial.DbGeometry as OData doesn't support entities with geometry/geography types.
     //Settings.CollectionInterfaceType = "System.Collections.Generic.List"; // Determines the declaration type of collections for the Navigation Properties. ICollection is used if not set.
     Settings.CollectionType = "System.Collections.Generic.List";  // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example. Add "System.Collections.ObjectModel" to AdditionalNamespaces if setting the CollectionType = "ObservableCollection".
     Settings.NullableShortHand = true; //true => T?, false => Nullable<T>
     Settings.AddIDbContextFactory = true; // Will add a default IDbContextFactory<DbContextName> implementation for easy dependency injection
     Settings.AddUnitTestingDbContext = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing
+    Settings.IncludeQueryTraceOn9481Flag = false; // If SqlServer 2014 appears frozen / take a long time when this file is saved, try setting this to true (you will also need elevated privileges).
     Settings.IncludeCodeGeneratedAttribute = true; // If true, will include the GeneratedCode attribute, false to remove it.
     Settings.UsePrivateSetterForComputedColumns = true; // If the columns is computed, use a private setter.
     Settings.AdditionalNamespaces = new[] { "" };  // To include extra namespaces, include them here. i.e. "Microsoft.AspNet.Identity.EntityFramework"
@@ -133,7 +137,7 @@
     // If there are multiple schemas, then the table name is prefixed with the schema, except for dbo.
     // Ie. dbo.hello will be Hello.
     //     abc.hello will be AbcHello.
-    Settings.PrependSchemaName = true;   // Control if the schema name is prepended to the table name
+    Settings.PrependSchemaName = false;   // Control if the schema name is prepended to the table name
 
     // Table Suffix ***********************************************************************************************************************
     // Prepends the suffix to the generated classes names
@@ -153,7 +157,7 @@
     //      TableFilterInclude = new Regex("^[Cc]ustomer.*"); // This includes all the customer and customer billing tables
     //      TableFilterExclude = new Regex(".*[Bb]illing.*"); // This excludes all the billing tables
     //
-    //  Example:    TableFilterExclude = new Regex(".*auto.*");
+    // Example:     TableFilterExclude = new Regex(".*auto.*");
     //              TableFilterInclude = new Regex("(.*_FR_.*)|(data_.*)");
     //              TableFilterInclude = new Regex("^table_name1$|^table_name2$|etc");
     //              ColumnFilterExclude = new Regex("^FK_.*$");
@@ -170,6 +174,24 @@
     {
         // Example: Exclude any table in dbo schema with "order" in its name.
         //if(t.Schema.Equals("dbo", StringComparison.InvariantCultureIgnoreCase) && t.NameHumanCase.ToLowerInvariant().Contains("order"))
+        //    return false;
+
+        return true;
+    };
+
+
+    // Stored Procedures ******************************************************************************************************************
+    // Use the following regex filters to include or exclude stored procedures
+    Settings.StoredProcedureFilterExclude = null;
+    Settings.StoredProcedureFilterInclude = new Regex("SimpleStoredProc");
+
+    // Filtering of stored procedures using a function. This can be used in conjunction with the Regex's above.
+    // Regex are used first to filter the list down, then this function is run last.
+    // Return true to include the stored procedure, return false to exclude it.
+    Settings.StoredProcedureFilter = (StoredProcedure sp) =>
+    {
+        // Example: Exclude any stored procedure in dbo schema with "order" in its name.
+        //if(sp.Schema.Equals("dbo", StringComparison.InvariantCultureIgnoreCase) && sp.NameHumanCase.ToLowerInvariant().Contains("order"))
         //    return false;
 
         return true;
@@ -206,8 +228,8 @@
     // Column modification*****************************************************************************************************************
     // Use the following list to replace column byte types with Enums.
     // As long as the type can be mapped to your new type, all is well.
-    //Settings.EnumDefinitions.Add(new EnumDefinition { Schema = "dbo", Table = "match_table_name", Column = "match_column_name", EnumType = "name_of_enum" });
-    //Settings.EnumDefinitions.Add(new EnumDefinition { Schema = "dbo", Table = "OrderHeader", Column = "OrderStatus", EnumType = "OrderStatusType" }); // This will replace OrderHeader.OrderStatus type to be an OrderStatusType enum
+    //EnumDefinitions.Add(new EnumDefinition { Schema = "dbo", Table = "match_table_name", Column = "match_column_name", EnumType = "name_of_enum" });
+    //EnumDefinitions.Add(new EnumDefinition { Schema = "dbo", Table = "OrderHeader", Column = "OrderStatus", EnumType = "OrderStatusType" }); // This will replace OrderHeader.OrderStatus type to be an OrderStatusType enum
 
     // Use the following function if you need to apply additional modifications to a column
     // eg. normalise names etc.
@@ -254,6 +276,38 @@
         return column;
     };
 
+    // StoredProcedure renaming ************************************************************************************************************
+    // Use the following function to rename stored procs such as sp_CreateOrderHistory to CreateOrderHistory, my_sp_shipments to Shipments, etc.
+    // Example:
+    /*Settings.StoredProcedureRename = (sp) =>
+    {
+        if (sp.NameHumanCase.StartsWith("sp_"))
+            return sp.NameHumanCase.Remove(0, 3);
+        return sp.NameHumanCase.Replace("my_sp_", "");
+    };*/
+    Settings.StoredProcedureRename = (sp) => sp.NameHumanCase;   // Do nothing by default
+
+    // Use the following function to rename the return model automatically generated for stored procedure.
+    // By default it's <proc_name>ReturnModel.
+    // Example:
+    /*Settings.StoredProcedureReturnModelRename = (name, sp) =>
+    {
+        if (sp.NameHumanCase.Equals("ComputeValuesForDate", StringComparison.InvariantCultureIgnoreCase))
+            return "ValueSet";
+        if (sp.NameHumanCase.Equals("SalesByYear", StringComparison.InvariantCultureIgnoreCase))
+            return "SalesSet";
+
+        return name;
+    };*/
+    Settings.StoredProcedureReturnModelRename = (name, sp) => name; // Do nothing by default
+
+    // StoredProcedure return types *******************************************************************************************************
+    // Override generation of return models for stored procedures that return entities.
+    // If a stored procedure returns an entity, add it to the list below.
+    // This will suppress the generation of the return model, and instead return the entity.
+    // Example:                       Proc name      Return this entity type instead
+    //StoredProcedureReturnTypes.Add("SalesByYear", "SummaryOfSalesByYear");
+
 
     // Callbacks **********************************************************************************************************************
     // This method will be called right before we write the POCO header.
@@ -277,14 +331,8 @@
     {
         if (Settings.IncludeExtendedPropertyComments != CommentsStyle.None && !string.IsNullOrEmpty(t.ExtendedProperty))
         {
-            var lines = t.ExtendedProperty
-                .Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
-                .ToList();
             WriteLine("    ///<summary>");
-			foreach(var line in lines)
-			{
-				WriteLine("    /// {0}", System.Security.SecurityElement.Escape(line));
-			}
+            WriteLine("    /// {0}", System.Security.SecurityElement.Escape(t.ExtendedProperty));
             WriteLine("    ///</summary>");
         }
     };
@@ -475,7 +523,7 @@
     if (Settings.Tables.Count > 0 || Settings.StoredProcs.Count > 0)
     {
 #>
-<#@ include file="EF.Reverse.POCO.ttinclude" #>
+<#@ include file="..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.ttinclude" #>
 <#  }
     if(Settings.GenerateSeparateFiles)
         GenerationEnvironment.Clear();#>

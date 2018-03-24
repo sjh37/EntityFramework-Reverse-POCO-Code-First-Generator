@@ -8,7 +8,7 @@
 ### Project Description
 
 Reverse engineers an existing database and generates Entity Framework Code
-First Poco classes, Configuration mappings and DbContext. Includes support for WCF.
+First Poco classes, Configuration mappings and DbContext.
 
 Please note, this is not the Microsoft reverse generator.
 This is one I created to generate beautiful code-first code, as if I
@@ -26,8 +26,7 @@ To make a donation via PayPal, [please click here](https://www.paypal.me/SJH37).
 ### Supported databases
 
 * SQL Server
-* SQL Server Compact 4.0
-* SQL Server Compact 3.5
+* SQL Server Compact 3.5 and 4.0
 
 ### Highly customisable output
 

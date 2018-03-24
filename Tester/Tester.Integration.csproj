@@ -39,6 +39,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CodeFirstStoreFunctions, Version=1.1.0.0, Culture=neutral, PublicKeyToken=46c4868af4307d2c, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.CodeFirstStoreFunctions.1.1.0\lib\net45\CodeFirstStoreFunctions.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
@@ -62,10 +65,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="StaffordTests.cs" />
     <Compile Include="StoredProcedureAsyncTests.cs" />
     <Compile Include="CustomersRepositoryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TvfTests.cs" />
+    <Compile Include="SynonymTests.cs" />
+    <Compile Include="TestSynonymsDatabase.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TestSynonymsDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TestDatabase_DataAnnotation.cs">
+      <DependentUpon>TestDatabase_DataAnnotation.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="TestDatabase_NoDataAnnotation.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TestDatabase_NoDataAnnotation.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TableValuedFunctionTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\EntityFramework.Reverse.POCO.Generator\EntityFramework.Reverse.POCO.Generator.csproj">
@@ -82,6 +102,28 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TestDatabase_DataAnnotation.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>TestDatabase_DataAnnotation.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TestDatabase_NoDataAnnotation.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>TestDatabase_NoDataAnnotation.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="TestDatabase.sql" />
+    <Content Include="TestSynonymsDatabase.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>TestSynonymsDatabase.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
