@@ -91,7 +91,6 @@
     </None>
     <None Include="EF.Reverse.POCO.Core.ttinclude" />
     <None Include="EF.Reverse.POCO.ttinclude" />
-    <None Include="EF6.Utility.CS.ttinclude" />
     <None Include="packages.config" />
     <Compile Include="Properties\VersionInfo.cs" />
   </ItemGroup>
