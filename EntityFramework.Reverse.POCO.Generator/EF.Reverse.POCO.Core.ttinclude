@@ -1814,33 +1814,48 @@ SELECT SchemaName, TableName, TableType, Ordinal, ColumnName, IsNullable, TypeNa
     [Default], DateTimePrecision, Scale, IsIdentity, IsStoreGenerated, PrimaryKey, PrimaryKeyOrdinal, IsForeignKey FROM #SynonymDetails";
 
             private const string ForeignKeySQL = @"
-SELECT  FK.name AS FK_Table,
-        FkCol.name AS FK_Column,
-        PK.name AS PK_Table,
-        PkCol.name AS PK_Column,
-        OBJECT_NAME(f.object_id) AS Constraint_Name,
-        SCHEMA_NAME(FK.schema_id) AS fkSchema,
-        SCHEMA_NAME(PK.schema_id) AS pkSchema,
-        PkCol.name AS primarykey,
-        k.constraint_column_id AS ORDINAL_POSITION,
-        CASE WHEN f.delete_referential_action = 1 THEN 1 ELSE 0 END as CascadeOnDelete,
-        f.is_disabled AS IsNotEnforced
-FROM    sys.objects AS PK
-        INNER JOIN sys.foreign_keys AS f
-            INNER JOIN sys.foreign_key_columns AS k
-                ON k.constraint_object_id = f.object_id
-            INNER JOIN sys.indexes AS i
-                ON f.referenced_object_id = i.object_id
-                   AND f.key_index_id = i.index_id
-            ON PK.object_id = f.referenced_object_id
-        INNER JOIN sys.objects AS FK
-            ON f.parent_object_id = FK.object_id
-        INNER JOIN sys.columns AS PkCol
-            ON f.referenced_object_id = PkCol.object_id
-               AND k.referenced_column_id = PkCol.column_id
-        INNER JOIN sys.columns AS FkCol
-            ON f.parent_object_id = FkCol.object_id
-               AND k.parent_column_id = FkCol.column_id";
+SELECT  fkData.FK_Table,
+        fkData.FK_Column,
+        fkData.PK_Table,
+        fkData.PK_Column,
+        fkData.Constraint_Name,
+        fkData.fkSchema,
+        fkData.pkSchema,
+        fkData.primarykey,
+        fkData.ORDINAL_POSITION,
+        fkData.CascadeOnDelete,
+        fkData.IsNotEnforced
+FROM    (SELECT FK.name AS FK_Table,
+                FkCol.name AS FK_Column,
+                PK.name AS PK_Table,
+                PkCol.name AS PK_Column,
+                OBJECT_NAME(f.object_id) AS Constraint_Name,
+                SCHEMA_NAME(FK.schema_id) AS fkSchema,
+                SCHEMA_NAME(PK.schema_id) AS pkSchema,
+                PkCol.name AS primarykey,
+                k.constraint_column_id AS ORDINAL_POSITION,
+                CASE WHEN f.delete_referential_action = 1 THEN 1
+                     ELSE 0
+                END AS CascadeOnDelete,
+                f.is_disabled AS IsNotEnforced,
+                ROW_NUMBER() OVER (PARTITION BY FK.name, FkCol.name, PK.name, PkCol.name, SCHEMA_NAME(FK.schema_id), SCHEMA_NAME(PK.schema_id) ORDER BY f.object_id) AS n
+         FROM   sys.objects AS PK
+                INNER JOIN sys.foreign_keys AS f
+                    INNER JOIN sys.foreign_key_columns AS k
+                        ON k.constraint_object_id = f.object_id
+                    INNER JOIN sys.indexes AS i
+                        ON f.referenced_object_id = i.object_id
+                           AND f.key_index_id = i.index_id
+                    ON PK.object_id = f.referenced_object_id
+                INNER JOIN sys.objects AS FK
+                    ON f.parent_object_id = FK.object_id
+                INNER JOIN sys.columns AS PkCol
+                    ON f.referenced_object_id = PkCol.object_id
+                       AND k.referenced_column_id = PkCol.column_id
+                INNER JOIN sys.columns AS FkCol
+                    ON f.parent_object_id = FkCol.object_id
+                       AND k.parent_column_id = FkCol.column_id) fkData
+WHERE   fkData.n = 1 -- Remove duplicate FK's";
 
             private const string SynonymForeignKeySQLSetup = @"
 SET NOCOUNT ON;
