@@ -3902,16 +3902,23 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         {
             var isNullable = !NotNullable.Contains(p.PropertyType.ToLower());
             var getValueOrDefault = isNullable ? ".GetValueOrDefault()" : string.Empty;
+            var isGeography = p.PropertyType == "System.Data.Entity.Spatial.DbGeography";
 
-            sb.AppendLine(string.Format("            var {0} = new System.Data.SqlClient.SqlParameter {{ ParameterName = \"{1}\", SqlDbType = System.Data.SqlDbType.{2}, Direction = System.Data.ParameterDirection.{3}{4}{5}{6}{7} }};",
-                WriteStoredProcSqlParameterName(p),
-                p.Name,
-                p.SqlDbType,
-                p.Mode == StoredProcedureParameterMode.In ? "Input" : "Output",
-                p.Mode == StoredProcedureParameterMode.In ? ", Value = " + p.NameHumanCase + getValueOrDefault : string.Empty,
-                p.MaxLength != 0 ? ", Size = " + p.MaxLength : string.Empty,
-                (p.Precision > 0 || p.Scale > 0) ? ", Precision = " + p.Precision + ", Scale = " + p.Scale : string.Empty,
-                p.PropertyType.ToLower().Contains("datatable") ? ", TypeName = \"" + p.UserDefinedTypeName + "\"" : string.Empty));
+            sb.AppendLine(
+                $"            var {WriteStoredProcSqlParameterName(p)} = new System.Data.SqlClient.SqlParameter"
+                + $" {{ ParameterName = \"{p.Name}\", "
+                + (isGeography ? "UdtTypeName = \"geography\"" : $"SqlDbType = System.Data.SqlDbType.{p.SqlDbType}")
+                + ", Direction = System.Data.ParameterDirection."
+                + (p.Mode == StoredProcedureParameterMode.In ? "Input" : "Output")
+                + (p.Mode == StoredProcedureParameterMode.In
+                    ? ", Value = " + (isGeography
+                        ? $"Microsoft.SqlServer.Types.SqlGeography.Parse({p.NameHumanCase}.AsText())"
+                        : p.NameHumanCase + getValueOrDefault)
+                    : string.Empty)
+                + (p.MaxLength != 0 ? ", Size = " + p.MaxLength : string.Empty)
+                + ((p.Precision > 0 || p.Scale > 0) ? ", Precision = " + p.Precision + ", Scale = " + p.Scale : string.Empty)
+                + (p.PropertyType.ToLower().Contains("datatable") ? ", TypeName = \"" + p.UserDefinedTypeName + "\"" : string.Empty)
+                + " };");
 
                 if (p.Mode == StoredProcedureParameterMode.In)
                 {
