@@ -1334,7 +1334,9 @@
 
         public static bool IsNullable(DataColumn col)
         {
-            return col.AllowDBNull && !NotNullable.Contains(col.DataType.Name.ToLower());
+            return col.AllowDBNull &&
+                   !(NotNullable.Contains(col.DataType.Name.ToLower())
+                   || NotNullable.Contains(col.DataType.Namespace.ToLower() + "." + col.DataType.Name.ToLower()));
         }
 
         public static string WrapTypeIfNullable(string propertyType, DataColumn col) {
@@ -4077,7 +4079,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
         return string.Format("public {0} {1} {{ get; set; }}",
             StoredProcedure.WrapTypeIfNullable(
-                (col.DataType.Name.Equals("SqlHierarchyId") ? "Microsoft.SqlServer.Types." : "System.") +
+                (col.DataType.Name.Equals("SqlHierarchyId") ? "Microsoft.SqlServer.Types." : col.DataType.Namespace + ".") +
                 col.DataType.Name, col),
             columnName);
     };
