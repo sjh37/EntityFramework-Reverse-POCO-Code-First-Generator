@@ -318,11 +318,67 @@
         Settings.ConnectionString = Settings.ConnectionString.Replace(DataDirectory, dataFilePath);
     }
 
-    public DTE GetDTE()
+    public new void WriteLine(string format, params object[] args)
     {
-        var serviceProvider = (IServiceProvider)Host;
-        if(serviceProvider == null)
+        WriteLine(string.Format(CultureInfo.CurrentCulture, format, args));
+    }
+
+    public new void WriteLine(string message)
+    {
+        LogToOutput(message);
+        base.WriteLine(message);
+    }
+	
+    public new void Warning(string message)
+    {
+        LogToOutput(string.Format(CultureInfo.CurrentCulture, "Warning: {0}", message));
+        base.Warning(message);
+    }
+    public new void Error(string message)
+    {
+        LogToOutput(string.Format(CultureInfo.CurrentCulture, "Error: {0}", message));
+        base.Error(message);
+    }
+    private object GetCOMService(IServiceProvider provider, Type type)
+    {
+        object result = provider.GetService(type);
+        if (result == null)
+        {
+            return result;
+        }
+        try
+        {
+            return System.Runtime.InteropServices.Marshal.GetObjectForIUnknown(
+                System.Runtime.InteropServices.Marshal.GetIUnknownForObject(result));
+        }
+        catch (Exception)
+        {
+            return result;
+        }
+    }
+
+    private void LogToOutput(string message)
+    {
+        var serviceProvider = GetServiceProvider();
+        var dte = (DTE)GetCOMService(serviceProvider, typeof(DTE));
+        var window = dte.Windows.Item(Constants.vsWindowKindOutput);
+        var outputWindow = (OutputWindow) window.Object;
+        outputWindow.ActivePane.Activate();
+        outputWindow.ActivePane.OutputString(message);		
+        outputWindow.ActivePane.OutputString("\n");
+    }
+
+    private IServiceProvider GetServiceProvider()
+    {
+        var serviceProvider = (IServiceProvider) Host;
+        if (serviceProvider == null)
             throw new Exception("Host property returned unexpected value (null)");
+        return serviceProvider;
+    }
+
+    public DTE GetDTE()
+	{
+		var serviceProvider = GetServiceProvider();
 
         var dte = (DTE)serviceProvider.GetService(typeof(DTE));
         if(dte == null)
