@@ -328,7 +328,7 @@
         LogToOutput(message);
         base.WriteLine(message);
     }
-	
+
     public new void Warning(string message)
     {
         LogToOutput(string.Format(CultureInfo.CurrentCulture, "Warning: {0}", message));
@@ -364,7 +364,7 @@
         var window = dte.Windows.Item(Constants.vsWindowKindOutput);
         var outputWindow = (OutputWindow) window.Object;
         outputWindow.ActivePane.Activate();
-        outputWindow.ActivePane.OutputString(message);		
+        outputWindow.ActivePane.OutputString(message);
         outputWindow.ActivePane.OutputString("\n");
     }
 
@@ -2894,7 +2894,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
                     sb.Append(string.Format("SELECT * FROM [{0}].[{1}](", proc.Schema, proc.Name));
                     foreach (var param in proc.Parameters)
-                        sb.Append(string.Format("{0}, ", param.SqlDbType.Equals(structured, StringComparison.InvariantCultureIgnoreCase) ? param.Name : "null"));
+                        sb.Append(string.Format("{0}, ", param.SqlDbType.Equals(structured, StringComparison.InvariantCultureIgnoreCase) ? param.Name : "default"));
 
                     if(proc.Parameters.Count > 0)
                         sb.Length -= 2;
