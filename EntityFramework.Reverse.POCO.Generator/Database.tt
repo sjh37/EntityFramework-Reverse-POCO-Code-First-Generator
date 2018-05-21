@@ -414,6 +414,9 @@
         // if (fk.PkTableName.EndsWith("Type"))
         //    fk.IncludeReverseNavigation = false;
 
+        // You can also change the access modifier of the foreign-key's navigation property:
+        // if(fk.PkTableName == "Categories") fk.AccessModifier = "internal";
+
         return fk;
     };
 
