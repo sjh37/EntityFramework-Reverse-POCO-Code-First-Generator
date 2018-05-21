@@ -377,8 +377,8 @@
     }
 
     public DTE GetDTE()
-	{
-		var serviceProvider = GetServiceProvider();
+    {
+        var serviceProvider = GetServiceProvider();
 
         var dte = (DTE)serviceProvider.GetService(typeof(DTE));
         if(dte == null)
@@ -1932,7 +1932,7 @@ SELECT  FK.name AS FK_Table,
         k.constraint_column_id AS ORDINAL_POSITION,
         CASE WHEN f.delete_referential_action = 1 THEN 1 ELSE 0 END as CascadeOnDelete,
         f.is_disabled AS IsNotEnforced
-INTO	#SynonymFkDetails
+INTO    #SynonymFkDetails
 FROM    sys.objects AS PK
         INNER JOIN sys.foreign_keys AS f
             INNER JOIN sys.foreign_key_columns AS k
@@ -1999,7 +1999,7 @@ DECLARE @synonmymDatabaseName sysname = (SELECT TOP (1) DatabaseName FROM #Synon
 DECLARE @synonymFkDetailsQueryWithDb nvarchar(max)
 WHILE (@synonmymDatabaseName IS NOT NULL)
 BEGIN
-	SET @synonymFkDetailsQueryWithDb = 'USE [' + @synonmymDatabaseName + '] ' + @synonymFkDetailsQuery
+    SET @synonymFkDetailsQueryWithDb = 'USE [' + @synonmymDatabaseName + '] ' + @synonymFkDetailsQuery
     EXEC sp_executesql @stmt=@synonymFkDetailsQueryWithDb
     DELETE FROM #SynonymTargets WHERE DatabaseName = @synonmymDatabaseName
     SET @synonmymDatabaseName = (SELECT TOP (1) DatabaseName FROM #SynonymTargets)
@@ -2255,7 +2255,7 @@ SELECT  TOP (0) R.SPECIFIC_SCHEMA,
         ISNULL(P.NUMERIC_SCALE, 0) AS NUMERIC_SCALE,
         ISNULL(P.DATETIME_PRECISION, 0) AS DATETIME_PRECISION,
         P.USER_DEFINED_TYPE_SCHEMA + '.' + P.USER_DEFINED_TYPE_NAME AS USER_DEFINED_TYPE
-INTO	#SynonymStoredProcedureDetails
+INTO    #SynonymStoredProcedureDetails
 FROM    INFORMATION_SCHEMA.ROUTINES R
         LEFT OUTER JOIN INFORMATION_SCHEMA.PARAMETERS P
             ON P.SPECIFIC_SCHEMA = R.SPECIFIC_SCHEMA
@@ -2295,7 +2295,7 @@ ORDER BY PARSENAME(sn.base_object_name, 3)
 DECLARE @synonymStoredProcedureDetailsQuery nvarchar(max) =
 '
 INSERT INTO #SynonymStoredProcedureDetails (SPECIFIC_SCHEMA, SPECIFIC_NAME, ROUTINE_TYPE, ORDINAL_POSITION, PARAMETER_MODE, PARAMETER_NAME, DATA_TYPE
-											, CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, NUMERIC_SCALE, DATETIME_PRECISION, USER_DEFINED_TYPE)
+                                            , CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, NUMERIC_SCALE, DATETIME_PRECISION, USER_DEFINED_TYPE)
 SELECT  R.SPECIFIC_SCHEMA,
         R.SPECIFIC_NAME,
         R.ROUTINE_TYPE,
@@ -2364,7 +2364,7 @@ DECLARE @synonmymDatabaseName sysname = (SELECT TOP (1) DatabaseName FROM #Synon
 DECLARE @synonymStoredProcedureDetailsQueryWithDb nvarchar(max)
 WHILE (@synonmymDatabaseName IS NOT NULL)
 BEGIN
-	SET @synonymStoredProcedureDetailsQueryWithDb = 'USE [' + @synonmymDatabaseName + '] ' + @synonymStoredProcedureDetailsQuery
+    SET @synonymStoredProcedureDetailsQueryWithDb = 'USE [' + @synonmymDatabaseName + '] ' + @synonymStoredProcedureDetailsQuery
     EXEC sp_executesql @stmt=@synonymStoredProcedureDetailsQueryWithDb
     DELETE FROM #SynonymTargets WHERE DatabaseName = @synonmymDatabaseName
     SET @synonmymDatabaseName = (SELECT TOP (1) DatabaseName FROM #SynonymTargets)
@@ -2377,7 +2377,7 @@ SET NOCOUNT OFF;
 UNION
 -- Synonyms
 SELECT SPECIFIC_SCHEMA, SPECIFIC_NAME, ROUTINE_TYPE, ORDINAL_POSITION, PARAMETER_MODE, PARAMETER_NAME, DATA_TYPE
-	, CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, NUMERIC_SCALE, DATETIME_PRECISION, USER_DEFINED_TYPE FROM #SynonymStoredProcedureDetails";
+    , CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, NUMERIC_SCALE, DATETIME_PRECISION, USER_DEFINED_TYPE FROM #SynonymStoredProcedureDetails";
 
         private const string IndexSQL = @"
 SELECT  SCHEMA_NAME(t.schema_id) AS TableSchema,
