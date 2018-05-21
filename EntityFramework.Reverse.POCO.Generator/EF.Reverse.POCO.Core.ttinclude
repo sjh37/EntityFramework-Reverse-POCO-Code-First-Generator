@@ -67,6 +67,7 @@
         public static string DbContextInterfaceBaseClasses;
         public static string DbContextBaseClass;
 
+        public static bool UseDefaultConstructor = true;
         private static string _defaultConstructorArgument;
         public static string DefaultConstructorArgument
         {
