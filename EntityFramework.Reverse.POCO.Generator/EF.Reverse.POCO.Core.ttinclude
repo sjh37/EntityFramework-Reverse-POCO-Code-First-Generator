@@ -3727,7 +3727,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 case Relationship.ManyToMany:
                     break;
             }
-            string accessModifier = fks.FirstOrDefault()?.AccessModifier ?? "public";
+            string accessModifier = fks?.FirstOrDefault()?.AccessModifier ?? "public";
             switch (relationship)
             {
                 case Relationship.OneToOne:
