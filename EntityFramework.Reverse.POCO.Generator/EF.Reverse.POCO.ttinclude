@@ -230,6 +230,7 @@ foreach(Table tbl in from t in Settings.Tables.Where(t => !t.IsMapping && t.HasP
 <#}#>
         }
 
+<#if(Settings.UseDefaultConstructor) {#>
         public <#=Settings.DbContextName#>()
             : base(<#=Settings.DefaultConstructorArgument#>)
         {
@@ -237,6 +238,7 @@ foreach(Table tbl in from t in Settings.Tables.Where(t => !t.IsMapping && t.HasP
 <#}#>
         }
 
+<#}#>
         <# if(Settings.MakeClassesInternal) { #>internal<# } else { #>public<# } #> <#=Settings.DbContextName#>(string connectionString)
             : base(connectionString)
         {
