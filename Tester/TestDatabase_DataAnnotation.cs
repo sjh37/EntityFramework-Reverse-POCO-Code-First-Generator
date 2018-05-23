@@ -235,6 +235,10 @@ namespace TestDatabaseDataAnnotation
 
         public FakeTestDbContext()
         {
+            _changeTracker = null;
+            _configuration = null;
+            _database = null;
+
             ColumnNames = new FakeDbSet<ColumnName>("C36");
             Stafford_Boos = new FakeDbSet<Stafford_Boo>("Id");
             Stafford_ComputedColumns = new FakeDbSet<Stafford_ComputedColumn>("Id");

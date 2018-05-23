@@ -189,6 +189,10 @@ namespace TestSynonymsDatabase
 
         public FakeTestDbContext()
         {
+            _changeTracker = null;
+            _configuration = null;
+            _database = null;
+
             Children = new FakeDbSet<Child>("ChildId");
             Parents = new FakeDbSet<Parent>("ParentId");
         }

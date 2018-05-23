@@ -537,6 +537,10 @@ foreach (var tbl in from t in Settings.Tables.Where(t => !t.IsMapping && t.HasPr
 
         public Fake<#=Settings.DbContextName #>()
         {
+            _changeTracker = null;
+            _configuration = null;
+            _database = null;
+
 <#
 foreach (Table tbl in from t in Settings.Tables.Where(t => !t.IsMapping && t.HasPrimaryKey).OrderBy(x => x.NameHumanCase) select t)
 {

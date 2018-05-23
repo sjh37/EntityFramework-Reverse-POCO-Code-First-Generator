@@ -524,6 +524,10 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public FakeMyDbContext()
         {
+            _changeTracker = null;
+            _configuration = null;
+            _database = null;
+
             AlphabeticalListOfProducts = new FakeDbSet<AlphabeticalListOfProduct>("ProductId", "ProductName", "Discontinued", "CategoryName");
             Categories = new FakeDbSet<Category>("CategoryId");
             CategorySalesFor1997 = new FakeDbSet<CategorySalesFor1997>("CategoryName");
@@ -1179,8 +1183,8 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public Employee()
         {
-            Orders = new System.Collections.Generic.List<Order>();
             Employees = new System.Collections.Generic.List<Employee>();
+            Orders = new System.Collections.Generic.List<Order>();
             Territories = new System.Collections.Generic.List<Territory>();
         }
     }
@@ -1682,6 +1686,12 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.Country).HasColumnName(@"Country").HasColumnType("nvarchar").IsOptional().HasMaxLength(15);
             Property(x => x.Phone).HasColumnName(@"Phone").HasColumnType("nvarchar").IsOptional().HasMaxLength(24);
             Property(x => x.Fax).HasColumnName(@"Fax").HasColumnType("nvarchar").IsOptional().HasMaxLength(24);
+            HasMany(t => t.CustomerDemographics).WithMany(t => t.Customers).Map(m =>
+            {
+                m.ToTable("CustomerCustomerDemo", "dbo");
+                m.MapLeftKey("CustomerID");
+                m.MapRightKey("CustomerTypeID");
+            });
         }
     }
 
@@ -1722,12 +1732,6 @@ namespace EntityFramework_Reverse_POCO_Generator
 
             Property(x => x.CustomerTypeId).HasColumnName(@"CustomerTypeID").HasColumnType("nchar").IsRequired().IsFixedLength().HasMaxLength(10).HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None);
             Property(x => x.CustomerDesc).HasColumnName(@"CustomerDesc").HasColumnType("ntext").IsOptional().IsMaxLength();
-            HasMany(t => t.Customers).WithMany(t => t.CustomerDemographics).Map(m =>
-            {
-                m.ToTable("CustomerCustomerDemo", "dbo");
-                m.MapLeftKey("CustomerTypeID");
-                m.MapRightKey("CustomerID");
-            });
         }
     }
 
@@ -1766,6 +1770,12 @@ namespace EntityFramework_Reverse_POCO_Generator
 
             // Foreign keys
             HasOptional(a => a.Employee_ReportsTo).WithMany(b => b.Employees).HasForeignKey(c => c.ReportsTo).WillCascadeOnDelete(false); // FK_Employees_Employees
+            HasMany(t => t.Territories).WithMany(t => t.Employees).Map(m =>
+            {
+                m.ToTable("EmployeeTerritories", "dbo");
+                m.MapLeftKey("EmployeeID");
+                m.MapRightKey("TerritoryID");
+            });
         }
     }
 
@@ -2216,12 +2226,6 @@ namespace EntityFramework_Reverse_POCO_Generator
 
             // Foreign keys
             HasRequired(a => a.Region).WithMany(b => b.Territories).HasForeignKey(c => c.RegionId).WillCascadeOnDelete(false); // FK_Territories_Region
-            HasMany(t => t.Employees).WithMany(t => t.Territories).Map(m =>
-            {
-                m.ToTable("EmployeeTerritories", "dbo");
-                m.MapLeftKey("TerritoryID");
-                m.MapRightKey("EmployeeID");
-            });
         }
     }
 

@@ -164,6 +164,10 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
 
         public FakeMyDbContextSqlCE4()
         {
+            _changeTracker = null;
+            _configuration = null;
+            _database = null;
+
             Categories = new FakeDbSet<Category>("CategoryId");
             Customers = new FakeDbSet<Customer>("CustomerId");
             Employees = new FakeDbSet<Employee>("EmployeeId");
