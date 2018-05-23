@@ -230,7 +230,7 @@ foreach(Table tbl in from t in Settings.Tables.Where(t => !t.IsMapping && t.HasP
 <#}#>
         }
 
-<#if(Settings.UseDefaultConstructor) {#>
+<#if(Settings.AddParameterlessConstructorToDbContext) {#>
         public <#=Settings.DbContextName#>()
             : base(<#=Settings.DefaultConstructorArgument#>)
         {
