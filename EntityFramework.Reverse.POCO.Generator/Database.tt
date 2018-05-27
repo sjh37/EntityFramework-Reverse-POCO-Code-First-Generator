@@ -277,6 +277,17 @@
         return column;
     };
 
+    Settings.ViewProcessing = (Table table) =>
+    {
+        if( table.Name == "Orders Qry" || table.Name == "OrdersQry" )
+        {
+            foreach( Column col in table.Columns )
+            {
+                if( col.Name == "OrderId" || col.Name == "OrderID" ) col.IsPrimaryKey = true;
+            }
+        }
+    };
+
     // StoredProcedure renaming ************************************************************************************************************
     // Use the following function to rename stored procs such as sp_CreateOrderHistory to CreateOrderHistory, my_sp_shipments to Shipments, etc.
     // Example:

@@ -123,6 +123,7 @@
         public static Func<Table, Table, string, string[]> ForeignKeyAnnotationsProcessing;
         public static Func<ForeignKey, ForeignKey> ForeignKeyFilter;
         public static Func<string, ForeignKey, string, Relationship, short, string> ForeignKeyName;
+        public static Action<Table> ViewProcessing;
         public static string MigrationConfigurationFileName;
         public static string MigrationStrategy = "MigrateDatabaseToLatestVersion";
         public static string ContextKey;
@@ -2563,6 +2564,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
             foreach(Table tbl in result)
             {
+                if(tbl.IsView) Settings.ViewProcessing(tbl);
                 tbl.SetPrimaryKeys();
                 foreach (Column c in tbl.Columns)
                     Settings.UpdateColumn(c, tbl);
