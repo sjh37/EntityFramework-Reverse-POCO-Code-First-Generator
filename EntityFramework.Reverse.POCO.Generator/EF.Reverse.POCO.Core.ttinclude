@@ -1610,7 +1610,7 @@ SELECT  C.TABLE_SCHEMA,
         C.DATETIME_PRECISION
 INTO    #Columns
 FROM    INFORMATION_SCHEMA.COLUMNS C
-WHERE   C.TABLE_NAME NOT IN ('EdmMetadata', '__MigrationHistory')
+WHERE   C.TABLE_NAME NOT IN ('EdmMetadata', '__MigrationHistory', '__RefactorLog')
         AND C.TABLE_NAME NOT LIKE 'sysdiagram%';
 
 CREATE NONCLUSTERED INDEX IX_EfPoco_Columns
@@ -1682,7 +1682,7 @@ FROM    #Columns c
         INNER JOIN INFORMATION_SCHEMA.TABLES t
             ON c.TABLE_SCHEMA COLLATE DATABASE_DEFAULT = t.TABLE_SCHEMA COLLATE DATABASE_DEFAULT
                AND c.TABLE_NAME COLLATE DATABASE_DEFAULT = t.TABLE_NAME COLLATE DATABASE_DEFAULT
-WHERE   c.TABLE_NAME NOT IN ('EdmMetadata', '__MigrationHistory')
+WHERE   c.TABLE_NAME NOT IN ('EdmMetadata', '__MigrationHistory', '__RefactorLog')
         AND c.TABLE_NAME NOT LIKE 'sysdiagram%' ";
 
         private const string SynonymTableSQLSetup = @"
