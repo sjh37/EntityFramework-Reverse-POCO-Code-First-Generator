@@ -18,6 +18,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Northwind", "Northwind\Northwind.sqlproj", "{F36D34E5-2087-4A27-8974-EBBAD4DB6D96}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -72,6 +74,24 @@ Global
 		{14C1FD62-34DB-49B9-B35A-B363398D0914}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{14C1FD62-34DB-49B9-B35A-B363398D0914}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{14C1FD62-34DB-49B9-B35A-B363398D0914}.Release|x86.ActiveCfg = Release|Any CPU
+		{F36D34E5-2087-4A27-8974-EBBAD4DB6D96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F36D34E5-2087-4A27-8974-EBBAD4DB6D96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F36D34E5-2087-4A27-8974-EBBAD4DB6D96}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{F36D34E5-2087-4A27-8974-EBBAD4DB6D96}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{F36D34E5-2087-4A27-8974-EBBAD4DB6D96}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{F36D34E5-2087-4A27-8974-EBBAD4DB6D96}.Debug|Mixed Platforms.Deploy.0 = Debug|Any CPU
+		{F36D34E5-2087-4A27-8974-EBBAD4DB6D96}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F36D34E5-2087-4A27-8974-EBBAD4DB6D96}.Debug|x86.Build.0 = Debug|Any CPU
+		{F36D34E5-2087-4A27-8974-EBBAD4DB6D96}.Debug|x86.Deploy.0 = Debug|Any CPU
+		{F36D34E5-2087-4A27-8974-EBBAD4DB6D96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F36D34E5-2087-4A27-8974-EBBAD4DB6D96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F36D34E5-2087-4A27-8974-EBBAD4DB6D96}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{F36D34E5-2087-4A27-8974-EBBAD4DB6D96}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{F36D34E5-2087-4A27-8974-EBBAD4DB6D96}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{F36D34E5-2087-4A27-8974-EBBAD4DB6D96}.Release|Mixed Platforms.Deploy.0 = Release|Any CPU
+		{F36D34E5-2087-4A27-8974-EBBAD4DB6D96}.Release|x86.ActiveCfg = Release|Any CPU
+		{F36D34E5-2087-4A27-8974-EBBAD4DB6D96}.Release|x86.Build.0 = Release|Any CPU
+		{F36D34E5-2087-4A27-8974-EBBAD4DB6D96}.Release|x86.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
