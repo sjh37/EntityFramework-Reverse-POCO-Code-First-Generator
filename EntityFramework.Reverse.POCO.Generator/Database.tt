@@ -177,6 +177,8 @@
         //if(t.Schema.Equals("dbo", StringComparison.InvariantCultureIgnoreCase) && t.NameHumanCase.ToLowerInvariant().Contains("order"))
         //    return false;
 
+        if( t.Name == "Orders Qry2" ) return false;
+
         return true;
     };
 
@@ -277,14 +279,123 @@
         return column;
     };
 
+    Settings.AddForeignKeys = (List<ForeignKey> foreignKeys, List<Table> tables) =>
+    {
+        // [Orders] (Table) to [Invoices] (View) is one-to-many
+        // [Order Details] (Table) to [Invoices] (View) is one-to-zeroOrOne - but uses a composite-key
+        // [Orders] (Table) to [Orders Qry] (View) is one-to-zeroOrOne
+
+        {
+            ForeignKey ordersToInvoices = new ForeignKey()
+            {
+                FkTableName = "Invoices",
+                FkTableNameFiltered = "Invoices",
+                FkSchema = "dbo",
+                PkTableName = "Orders",
+                PkTableNameFiltered = "Orders",
+                PkSchema = "dbo",
+                FkColumn = "OrderID",
+                PkColumn = "OrderID",
+                ConstraintName = "fake_Orders_to_Invoices",
+                Ordinal = 0,
+                CascadeOnDelete = false,
+                IsNotEnforced = false,
+                IncludeReverseNavigation = true
+            };
+            foreignKeys.Add( ordersToInvoices );
+            tables.Single( t => t.Name == "Invoices" ).HasForeignKey = true;
+        }
+
+        {
+            // Q: How to represent a composite key?
+            // A: EFRPG uses `class ForeignKey` to represent a single column that participates in a foreign-key, so for a composite-foreign-key then there would be multiple `ForeignKey` instances that share the same ConstraintName property.
+            ForeignKey orderDetailsToInvoices1 = new ForeignKey()
+            {
+                FkTableName = "Invoices",
+                FkTableNameFiltered = "Invoices",
+                FkSchema = "dbo",
+                PkTableName = "Order Details",
+                PkTableNameFiltered = "Order Details",
+                PkSchema = "dbo",
+                FkColumn = "OrderID",
+                PkColumn = "OrderID",
+                ConstraintName = "fake_OrderDetails_to_Invoices",
+                Ordinal = 0,
+                CascadeOnDelete = false,
+                IsNotEnforced = false,
+                IncludeReverseNavigation = true
+            };
+            foreignKeys.Add( orderDetailsToInvoices1 );
+
+            // This object represents the second column in the composite key
+            ForeignKey orderDetailsToInvoices2 = new ForeignKey()
+            {
+                FkTableName = "Invoices",
+                FkTableNameFiltered = "Invoices",
+                FkSchema = "dbo",
+                PkTableName = "Order Details",
+                PkTableNameFiltered = "Order Details",
+                PkSchema = "dbo",
+                FkColumn = "ProductID",
+                PkColumn = "ProductID",
+                ConstraintName = "fake_OrderDetails_to_Invoices",
+                Ordinal = 0,
+                CascadeOnDelete = false,
+                IsNotEnforced = false,
+                IncludeReverseNavigation = true
+            };
+            foreignKeys.Add( orderDetailsToInvoices2 );
+
+            tables.Single( t => t.Name == "Invoices" ).HasForeignKey = true;
+        }
+
+        {
+            ForeignKey ordersToOrdersQry = new ForeignKey()
+            {
+                FkTableName = "Orders Qry",
+                FkTableNameFiltered = "Orders Qry", // `FkTableNameFiltered == Settings.TableRename( FkTableName )`
+                FkSchema = "dbo",
+                PkTableName = "Orders",
+                PkTableNameFiltered = "Orders", // Same as PkTableName unless renamed in Settings.TableRename
+                PkSchema = "dbo",
+                FkColumn = "OrderID", // TODO: What abut composite-keys?
+                PkColumn = "OrderID",
+                ConstraintName = "fake_Orders_To_OrdersQry",
+                Ordinal = 0,
+                CascadeOnDelete = false,
+                IsNotEnforced = false, // This controls the 'HasRequired' (false)/'HasOptional' (true)
+                IncludeReverseNavigation = true
+            };
+            foreignKeys.Add( ordersToOrdersQry );
+            tables.Single( t => t.Name == "Orders Qry" ).HasForeignKey = true; // for some reason this is necessary...
+        }
+    };
+
     Settings.ViewProcessing = (Table table) =>
     {
         if( table.Name == "Orders Qry" || table.Name == "OrdersQry" )
         {
             foreach( Column col in table.Columns )
             {
-                if( col.Name == "OrderId" || col.Name == "OrderID" ) col.IsPrimaryKey = true;
+                if( col.Name == "OrderId" || col.Name == "OrderID" )
+                {
+                    col.IsPrimaryKey = true;
+                    col.IsForeignKey = true; // ...but this isn't.
+                }
             }
+        }
+
+        if( table.Name == "Invoices" || table.Name == "Invoice" )
+        {
+            // The Invoices view has a composite key: OrderId+ProductId
+
+            Column orderIdColumn = table.Columns.Where( c => c.Name == "OrderId"  || c.Name == "OrderID" ).Single();
+            orderIdColumn.IsPrimaryKey = true;
+            orderIdColumn.IsForeignKey = true;
+
+            Column productIdColumn = table.Columns.Where( c => c.Name == "ProductId"  || c.Name == "ProductID" ).Single();
+            productIdColumn.IsPrimaryKey = true;
+            productIdColumn.IsForeignKey = true;
         }
     };
 
