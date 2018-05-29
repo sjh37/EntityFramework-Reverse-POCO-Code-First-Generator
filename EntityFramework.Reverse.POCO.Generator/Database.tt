@@ -279,29 +279,30 @@
         return column;
     };
 
-    Settings.AddForeignKeys = (List<ForeignKey> foreignKeys, List<Table> tables) =>
-    {
-        // [Orders] (Table) to [Invoices] (View) is one-to-many
-        // [Order Details] (Table) to [Invoices] (View) is one-to-zeroOrOne - but uses a composite-key
-        // [Orders] (Table) to [Orders Qry] (View) is one-to-zeroOrOne
-
-        AddRelationship( foreignKeys, tables, "orders_to_invoices"      , "dbo", "Orders"       , "OrderID"                       , "dbo", "Invoices", "OrderID" );
-
-        AddRelationship( foreignKeys, tables, "orderDetails_to_invoices", "dbo", "Order Details", new[] { "OrderID", "ProductID" }, "dbo", "Invoices",  new[] { "OrderID", "ProductID" } );
-
-        AddRelationship( foreignKeys, tables, "orders_to_ordersQry"     , "dbo", "Orders"       , "OrderID"                       , "dbo", "Orders Qry", "OrderID" );
-    };
-
     Settings.ViewProcessing = (Table table) =>
     {
         // To support working with VIEW queries as though they're tables you need to declare which columns in the view serve as primary-keys. (SQL Server does not support the DDL declaration of primary-keys in a VIEW)
-        // To declare which columns in a VIEW are foreign-keys to other entities use the `AddForeignKeys` function.
+        // To declare which columns in a VIEW are foreign-keys to other entities use the `AddForeignKeys` function below.
 
         // e.g. in the Northwind database, the VIEW [Orders Qry] uniquely identifies rows with the `OrderID` column:
         if( table.Name == "Orders Qry" ) table.Columns.Single( col => col.Name == "OrderID" ).IsPrimaryKey = true;
 
         // The Northwind database has another VIEW [Invoices] which has a composite key (OrderID+ProductID), so both columns must be marked as a Primary Key:
         if( table.Name == "Invoices" ) foreach( Column col in table.Columns.Where( c => c.Name == "OrderID" || c.Name == "ProductID" ) ) col.IsPrimaryKey = true;
+    };
+
+    Settings.AddForeignKeys = (List<ForeignKey> foreignKeys, List<Table> tables) =>
+    {
+        // [Orders] (Table) to [Invoices] (View) is one-to-many
+        // [Order Details] (Table) to [Invoices] (View) is one-to-zeroOrOne - but uses a composite-key
+        // [Orders] (Table) to [Orders Qry] (View) is one-to-zeroOrOne
+
+        // AddRelationship is a helper function that creates ForeignKey objects and adds them to the foreignKeys list:
+        AddRelationship( foreignKeys, tables, "orders_to_invoices"      , "dbo", "Orders"       , "OrderID"                       , "dbo", "Invoices", "OrderID" );
+
+        AddRelationship( foreignKeys, tables, "orderDetails_to_invoices", "dbo", "Order Details", new[] { "OrderID", "ProductID" }, "dbo", "Invoices",  new[] { "OrderID", "ProductID" } );
+
+        AddRelationship( foreignKeys, tables, "orders_to_ordersQry"     , "dbo", "Orders"       , "OrderID"                       , "dbo", "Orders Qry", "OrderID" );
     };
 
     // StoredProcedure renaming ************************************************************************************************************
