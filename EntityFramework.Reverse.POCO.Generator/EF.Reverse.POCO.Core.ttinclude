@@ -750,8 +750,8 @@
         
         //////////////////
 
-        Table pkTable = tables.Single( t => t.Schema == pkSchema && t.Name == pkTableName );
-        Table fkTable = tables.Single( t => t.Schema == fkSchema && t.Name == fkTableName );
+        Table pkTable = tables.Single(t => t.Schema == pkSchema && t.Name == pkTableName);
+        Table fkTable = tables.Single(t => t.Schema == fkSchema && t.Name == fkTableName);
 
         for( int i = 0; i < pkColumns.Length; i++ )
         {
@@ -3509,23 +3509,23 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
     public class ForeignKey
     {
-        public string FkTableName { get; set; }
-        public string FkTableNameFiltered { get; set; }
-        public string FkSchema { get; set; }
-        public string PkTableName { get; set; }
-        public string PkTableNameFiltered { get; set; }
-        public string PkSchema { get; set; }
-        public string FkColumn { get; set; }
-        public string PkColumn { get; set; }
-        public string ConstraintName { get; set; }
-        public int Ordinal { get; set; }
-        public bool CascadeOnDelete { get; set; }
-        public bool IsNotEnforced { get; set; }
+        public string FkTableName         { get; private set; }
+        public string FkTableNameFiltered { get; private set; }
+        public string FkSchema            { get; private set; }
+        public string PkTableName         { get; private set; }
+        public string PkTableNameFiltered { get; private set; }
+        public string PkSchema            { get; private set; }
+        public string FkColumn            { get; private set; }
+        public string PkColumn            { get; private set; }
+        public string ConstraintName      { get; private set; }
+        public int    Ordinal             { get; private set; }
+        public bool   CascadeOnDelete     { get; private set; }
+        public bool   IsNotEnforced       { get; private set; }
 
         // User settable via ForeignKeyFilter callback
-        public string AccessModifier { get; set; }
-        public bool IncludeReverseNavigation { get; set; }
-        public bool IncludeRequiredAttribute { get; set; }
+        public string AccessModifier           { get; set; }
+        public bool   IncludeReverseNavigation { get; set; }
+        public bool   IncludeRequiredAttribute { get; set; }
 
         public ForeignKey(string fkTableName, string fkSchema, string pkTableName, string pkSchema, string fkColumn, string pkColumn, string constraintName, string fkTableNameFiltered, string pkTableNameFiltered, int ordinal, bool cascadeOnDelete, bool isNotEnforced)
         {
