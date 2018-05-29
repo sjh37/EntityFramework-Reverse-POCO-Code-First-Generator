@@ -1223,9 +1223,9 @@ namespace EntityFramework_Reverse_POCO_Generator
         // Foreign keys
 
         /// <summary>
-        /// Parent Order pointed by [Invoices].([OrderId]) (fake_Orders_to_Invoices)
+        /// Parent Order pointed by [Invoices].([OrderId]) (AddRelationship: orders_to_invoices)
         /// </summary>
-        public virtual Order Order { get; set; } // fake_Orders_to_Invoices
+        public virtual Order Order { get; set; } // AddRelationship: orders_to_invoices
     }
 
     // Orders
@@ -1250,9 +1250,9 @@ namespace EntityFramework_Reverse_POCO_Generator
         // Reverse navigation
 
         /// <summary>
-        /// Child Invoices where [Invoices].[OrderID] point to this entity (fake_Orders_to_Invoices)
+        /// Child Invoices where [Invoices].[OrderID] point to this entity (AddRelationship: orders_to_invoices)
         /// </summary>
-        public virtual System.Collections.Generic.ICollection<Invoice> Invoices { get; set; } // Invoices.fake_Orders_to_Invoices
+        public virtual System.Collections.Generic.ICollection<Invoice> Invoices { get; set; } // Invoices.AddRelationship: orders_to_invoices
         /// <summary>
         /// Child OrderDetails where [Order Details].[OrderID] point to this entity (FK_Order_Details_Orders)
         /// </summary>
@@ -1833,7 +1833,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.Freight).HasColumnName(@"Freight").HasColumnType("money").IsOptional().HasPrecision(19,4);
 
             // Foreign keys
-            HasRequired(a => a.Order).WithMany(b => b.Invoices).HasForeignKey(c => c.OrderId).WillCascadeOnDelete(false); // fake_Orders_to_Invoices
+            HasRequired(a => a.Order).WithMany(b => b.Invoices).HasForeignKey(c => c.OrderId).WillCascadeOnDelete(false); // AddRelationship: orders_to_invoices
         }
     }
 

@@ -285,13 +285,13 @@
         // [Order Details] (Table) to [Invoices] (View) is one-to-zeroOrOne - but uses a composite-key
         // [Orders] (Table) to [Orders Qry] (View) is one-to-zeroOrOne
 
-//        AddRelationship( foreignKeys, tables, "orders_to_invoices"      , "dbo", "Orders"       , "OrderID"                              , "dbo", "Invoices", "OrderID" );
+        AddRelationship( foreignKeys, tables, "orders_to_invoices"      , "dbo", "Orders"       , "OrderID"                              , "dbo", "Invoices", "OrderID" );
 
 //        AddRelationship( foreignKeys, tables, "orderDetails_to_invoices", "dbo", "Order Details", new String[] { "OrderID", "ProductID" }, "dbo", "Invoices",  new String[] { "OrderID", "ProductID" } );
 
 //        AddRelationship( foreignKeys, tables, "orders_to_ordersQry"     , "dbo", "Orders"       , "OrderID"                              , "dbo", "Orders Qry", "OrderID" );
         
-        {
+/*        {
             ForeignKey ordersToInvoices = new ForeignKey()
             {
                 FkTableName = "Invoices",
@@ -314,7 +314,7 @@
             };
             foreignKeys.Add( ordersToInvoices );
             tables.Single( t => t.Name == "Invoices" ).HasForeignKey = true;
-        }
+        }*/
 
 /*        {
             // Q: How to represent a composite key?

@@ -727,46 +727,59 @@
         }
     }
 
-	public static void AddRelationship(List<ForeignKey> fkList, List<Table> tables, String name, String pkSchema, String pkTable, String pkColumn, String fkSchema, String fkTable, String fkColumn)
-	{
-		AddRelationship( fkList, tables, name, pkSchema, pkTable, new String[] { pkColumn }, fkSchema, fkTable, new String[] { fkColumn } );
-	}
+    public static void AddRelationship(List<ForeignKey> fkList, List<Table> tables, String name, String pkSchema, String pkTable, String pkColumn, String fkSchema, String fkTable, String fkColumn)
+    {
+        AddRelationship( fkList, tables, name, pkSchema, pkTable, new String[] { pkColumn }, fkSchema, fkTable, new String[] { fkColumn } );
+    }
 
-	public static void AddRelationship(List<ForeignKey> fkList, List<Table> tables, String relationshipName, String pkSchema, String pkTableName, String[] pkColumns, String fkSchema, String fkTableName, String[] fkColumns)
-	{
-		// Argument validation:
-		if( fkList == null ) throw new ArgumentNullException(nameof(fkList));
-		if( tables == null ) throw new ArgumentNullException(nameof(tables));
-		if( String.IsNullOrEmpty(relationshipName) ) throw new ArgumentNullException(nameof(relationshipName));
-		if( String.IsNullOrEmpty(pkSchema) ) throw new ArgumentNullException(nameof(pkSchema));
-		if( String.IsNullOrEmpty(pkTableName) ) throw new ArgumentNullException(nameof(pkTableName));
-		if( pkColumns == null ) throw new ArgumentNullException(nameof(pkColumns));
-		if( pkColumns.Length == 0 || pkColumns.Any( s => String.IsNullOrEmpty(s) ) ) throw new ArgumentException(nameof(pkColumns));
-		if( String.IsNullOrEmpty(fkSchema) ) throw new ArgumentNullException(nameof(fkSchema));
-		if( String.IsNullOrEmpty(fkTableName) ) throw new ArgumentNullException(nameof(fkTableName));
-		if( fkColumns == null ) throw new ArgumentNullException(nameof(fkColumns));
-		if( fkColumns.Length != pkColumns.Length || fkColumns.Any( s => String.IsNullOrEmpty(s) ) ) throw new ArgumentException(nameof(fkColumns));
-		
-		//////////////////
+    public static void AddRelationship(List<ForeignKey> fkList, List<Table> tables, String relationshipName, String pkSchema, String pkTableName, String[] pkColumns, String fkSchema, String fkTableName, String[] fkColumns)
+    {
+        // Argument validation:
+        if( fkList == null ) throw new ArgumentNullException(nameof(fkList));
+        if( tables == null ) throw new ArgumentNullException(nameof(tables));
+        if( String.IsNullOrEmpty(relationshipName) ) throw new ArgumentNullException(nameof(relationshipName));
+        if( String.IsNullOrEmpty(pkSchema) ) throw new ArgumentNullException(nameof(pkSchema));
+        if( String.IsNullOrEmpty(pkTableName) ) throw new ArgumentNullException(nameof(pkTableName));
+        if( pkColumns == null ) throw new ArgumentNullException(nameof(pkColumns));
+        if( pkColumns.Length == 0 || pkColumns.Any( s => String.IsNullOrEmpty(s) ) ) throw new ArgumentException(nameof(pkColumns));
+        if( String.IsNullOrEmpty(fkSchema) ) throw new ArgumentNullException(nameof(fkSchema));
+        if( String.IsNullOrEmpty(fkTableName) ) throw new ArgumentNullException(nameof(fkTableName));
+        if( fkColumns == null ) throw new ArgumentNullException(nameof(fkColumns));
+        if( fkColumns.Length != pkColumns.Length || fkColumns.Any( s => String.IsNullOrEmpty(s) ) ) throw new ArgumentException(nameof(fkColumns));
+        
+        //////////////////
 
-		Table pkTable = tables.Single( t => t.Name == pkTableName );
-		Table fkTable = tables.Single( t => t.Name == fkTableName );
+        Table pkTable = tables.Single( t => t.Name == pkTableName );
+        Table fkTable = tables.Single( t => t.Name == fkTableName );
 
-		for( int i = 0; i < pkColumns.Length; i++ )
-		{
-			String pkc = pkColumns[i];
-			String fkc = fkColumns[i];
+        for( int i = 0; i < pkColumns.Length; i++ )
+        {
+            String pkc = pkColumns[i];
+            String fkc = fkColumns[i];
 
-			String pkTableNameFiltered = Settings.TableRename( pkTableName, pkSchema, pkTable.IsView ); // TODO: This can probably be done-away with. Is `AddRelationship` called before or after table.NameFiltered is set?
-			String fkTableNameFiltered = Settings.TableRename( fkTableName, fkSchema, fkTable.IsView );
+            String pkTableNameFiltered = Settings.TableRename( pkTableName, pkSchema, pkTable.IsView ); // TODO: This can probably be done-away with. Is `AddRelationship` called before or after table.NameFiltered is set?
+            String fkTableNameFiltered = Settings.TableRename( fkTableName, fkSchema, fkTable.IsView );
 
-			ForeignKey fk = new ForeignKey( fkTable.Name, fkSchema, pkTable.Name, pkSchema, fkc, pkc, "AddRelationship_" + relationshipName, pkTableNameFiltered, fkTableNameFiltered, Int32.MaxValue, false, false );
-			fk.IncludeReverseNavigation = true;
+            ForeignKey fk = new ForeignKey(
+                fkTableName        : fkTable.Name,
+                fkSchema           : fkSchema,
+                pkTableName        : pkTable.Name,
+                pkSchema           : pkSchema,
+                fkColumn           : fkc,
+                pkColumn           : pkc,
+                constraintName     : "AddRelationship: " + relationshipName,
+                fkTableNameFiltered: fkTableNameFiltered,
+                pkTableNameFiltered: pkTableNameFiltered,
+                ordinal            : Int32.MaxValue,
+                cascadeOnDelete    : false,
+                isNotEnforced      : false
+            );
+            fk.IncludeReverseNavigation = true;
 
-			fkList.Add( fk );
-			fkTable.HasForeignKey = true;
-		}
-	}
+            fkList.Add( fk );
+            fkTable.HasForeignKey = true;
+        }
+    }
 
     private List<StoredProcedure> LoadStoredProcs(DbProviderFactory factory)
     {
@@ -3512,8 +3525,6 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public string AccessModifier { get; set; }
         public bool IncludeReverseNavigation { get; set; }
         public bool IncludeRequiredAttribute { get; set; }
-
-        public ForeignKey(){} // TODO, change AddForeignKeys consumer to use full constructor.
 
         public ForeignKey(string fkTableName, string fkSchema, string pkTableName, string pkSchema, string fkColumn, string pkColumn, string constraintName, string fkTableNameFiltered, string pkTableNameFiltered, int ordinal, bool cascadeOnDelete, bool isNotEnforced)
         {
