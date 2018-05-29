@@ -124,7 +124,7 @@
         public static Func<ForeignKey, ForeignKey> ForeignKeyFilter;
         public static Func<string, ForeignKey, string, Relationship, short, string> ForeignKeyName;
         public static Action<Table> ViewProcessing;
-        public static Action<List<ForeignKey>, List<Table>> AddForeignKeys;
+        public static Action<List<ForeignKey>, Tables> AddForeignKeys;
         public static string MigrationConfigurationFileName;
         public static string MigrationStrategy = "MigrateDatabaseToLatestVersion";
         public static string ContextKey;
@@ -728,16 +728,16 @@
     }
 
     /// <summary>AddRelationship overload for single-column foreign-keys.</summary>
-    public static void AddRelationship(List<ForeignKey> fkList, List<Table> tables, String name, String pkSchema, String pkTable, String pkColumn, String fkSchema, String fkTable, String fkColumn)
+    public static void AddRelationship(List<ForeignKey> fkList, Tables tablesAndViews, String name, String pkSchema, String pkTable, String pkColumn, String fkSchema, String fkTable, String fkColumn)
     {
-        AddRelationship( fkList, tables, name, pkSchema, pkTable, new String[] { pkColumn }, fkSchema, fkTable, new String[] { fkColumn } );
+        AddRelationship( fkList, tablesAndViews, name, pkSchema, pkTable, new String[] { pkColumn }, fkSchema, fkTable, new String[] { fkColumn } );
     }
 
-    public static void AddRelationship(List<ForeignKey> fkList, List<Table> tables, String relationshipName, String pkSchema, String pkTableName, String[] pkColumns, String fkSchema, String fkTableName, String[] fkColumns)
+    public static void AddRelationship(List<ForeignKey> fkList, Tables tablesAndViews, String relationshipName, String pkSchema, String pkTableName, String[] pkColumns, String fkSchema, String fkTableName, String[] fkColumns)
     {
         // Argument validation:
         if( fkList == null ) throw new ArgumentNullException(nameof(fkList));
-        if( tables == null ) throw new ArgumentNullException(nameof(tables));
+        if( tablesAndViews == null ) throw new ArgumentNullException(nameof(tablesAndViews));
         if( String.IsNullOrEmpty(relationshipName) ) throw new ArgumentNullException(nameof(relationshipName));
         if( String.IsNullOrEmpty(pkSchema) ) throw new ArgumentNullException(nameof(pkSchema));
         if( String.IsNullOrEmpty(pkTableName) ) throw new ArgumentNullException(nameof(pkTableName));
@@ -750,8 +750,8 @@
         
         //////////////////
 
-        Table pkTable = tables.Single(t => t.Schema == pkSchema && t.Name == pkTableName);
-        Table fkTable = tables.Single(t => t.Schema == fkSchema && t.Name == fkTableName);
+        Table pkTable = tablesAndViews.GetTable(pkTableName, pkSchema);
+        Table fkTable = tablesAndViews.GetTable(fkTableName, fkSchema);
 
         for( int i = 0; i < pkColumns.Length; i++ )
         {

@@ -301,18 +301,19 @@
         }
     };
 
-    Settings.AddForeignKeys = (List<ForeignKey> foreignKeys, List<Table> tables) =>
+    Settings.AddForeignKeys = (List<ForeignKey> foreignKeys, Tables tablesAndViews) =>
     {
+        // In Northwind:
         // [Orders] (Table) to [Invoices] (View) is one-to-many
         // [Order Details] (Table) to [Invoices] (View) is one-to-zeroOrOne - but uses a composite-key
         // [Orders] (Table) to [Orders Qry] (View) is one-to-zeroOrOne
 
         // AddRelationship is a helper function that creates ForeignKey objects and adds them to the foreignKeys list:
-        AddRelationship( foreignKeys, tables, "orders_to_invoices"      , "dbo", "Orders"       , "OrderID"                       , "dbo", "Invoices", "OrderID" );
+        AddRelationship( foreignKeys, tablesAndViews, "orders_to_invoices"      , "dbo", "Orders"       , "OrderID"                       , "dbo", "Invoices", "OrderID" );
 
-        AddRelationship( foreignKeys, tables, "orderDetails_to_invoices", "dbo", "Order Details", new[] { "OrderID", "ProductID" }, "dbo", "Invoices",  new[] { "OrderID", "ProductID" } );
+        AddRelationship( foreignKeys, tablesAndViews, "orderDetails_to_invoices", "dbo", "Order Details", new[] { "OrderID", "ProductID" }, "dbo", "Invoices",  new[] { "OrderID", "ProductID" } );
 
-        AddRelationship( foreignKeys, tables, "orders_to_ordersQry"     , "dbo", "Orders"       , "OrderID"                       , "dbo", "Orders Qry", "OrderID" );
+        AddRelationship( foreignKeys, tablesAndViews, "orders_to_ordersQry"     , "dbo", "Orders"       , "OrderID"                       , "dbo", "Orders Qry", "OrderID" );
     };
 
     // StoredProcedure renaming ************************************************************************************************************
