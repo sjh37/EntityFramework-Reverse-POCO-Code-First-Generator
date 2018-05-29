@@ -759,7 +759,6 @@
             String fkc = fkColumns[i];
 
             String pkTableNameFiltered = Settings.TableRename( pkTableName, pkSchema, pkTable.IsView ); // TODO: This can probably be done-away with. Is `AddRelationship` called before or after table.NameFiltered is set?
-            String fkTableNameFiltered = Settings.TableRename( fkTableName, fkSchema, fkTable.IsView );
 
             ForeignKey fk = new ForeignKey(
                 fkTableName        : fkTable.Name,
@@ -769,7 +768,6 @@
                 fkColumn           : fkc,
                 pkColumn           : pkc,
                 constraintName     : "AddRelationship: " + relationshipName,
-                fkTableNameFiltered: fkTableNameFiltered,
                 pkTableNameFiltered: pkTableNameFiltered,
                 ordinal            : Int32.MaxValue,
                 cascadeOnDelete    : false,
@@ -2662,11 +2660,9 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     bool cascadeOnDelete = ((int) rdr["CascadeOnDelete"]) == 1;
                     bool isNotEnforced = (bool) rdr["IsNotEnforced"];
 
-                    string fkTableNameFiltered = Settings.TableRename(fkTableName, fkSchema, false);
                     string pkTableNameFiltered = Settings.TableRename(pkTableName, pkSchema, false);
 
-                    var fk = new ForeignKey(fkTableName, fkSchema, pkTableName, pkSchema, fkColumn, pkColumn,
-                        constraintName, fkTableNameFiltered, pkTableNameFiltered, ordinal, cascadeOnDelete, isNotEnforced);
+                    var fk = new ForeignKey(fkTableName, fkSchema, pkTableName, pkSchema, fkColumn, pkColumn, constraintName, pkTableNameFiltered, ordinal, cascadeOnDelete, isNotEnforced);
 
                     var filteredFk = Settings.ForeignKeyFilter(fk);
                     if(filteredFk != null)
@@ -3510,7 +3506,6 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
     public class ForeignKey
     {
         public string FkTableName         { get; private set; }
-        public string FkTableNameFiltered { get; private set; }
         public string FkSchema            { get; private set; }
         public string PkTableName         { get; private set; }
         public string PkTableNameFiltered { get; private set; }
@@ -3527,7 +3522,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public bool   IncludeReverseNavigation { get; set; }
         public bool   IncludeRequiredAttribute { get; set; }
 
-        public ForeignKey(string fkTableName, string fkSchema, string pkTableName, string pkSchema, string fkColumn, string pkColumn, string constraintName, string fkTableNameFiltered, string pkTableNameFiltered, int ordinal, bool cascadeOnDelete, bool isNotEnforced)
+        public ForeignKey(string fkTableName, string fkSchema, string pkTableName, string pkSchema, string fkColumn, string pkColumn, string constraintName, string pkTableNameFiltered, int ordinal, bool cascadeOnDelete, bool isNotEnforced)
         {
             ConstraintName = constraintName;
             PkColumn = pkColumn;
@@ -3536,7 +3531,6 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             PkTableName = pkTableName;
             FkSchema = fkSchema;
             FkTableName = fkTableName;
-            FkTableNameFiltered = fkTableNameFiltered;
             PkTableNameFiltered = pkTableNameFiltered;
             Ordinal = ordinal;
             CascadeOnDelete = cascadeOnDelete;
