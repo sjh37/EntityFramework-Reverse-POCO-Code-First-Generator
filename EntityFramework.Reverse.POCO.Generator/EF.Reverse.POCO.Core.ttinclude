@@ -727,6 +727,7 @@
         }
     }
 
+    /// <summary>AddRelationship overload for single-column foreign-keys.</summary>
     public static void AddRelationship(List<ForeignKey> fkList, List<Table> tables, String name, String pkSchema, String pkTable, String pkColumn, String fkSchema, String fkTable, String fkColumn)
     {
         AddRelationship( fkList, tables, name, pkSchema, pkTable, new String[] { pkColumn }, fkSchema, fkTable, new String[] { fkColumn } );
@@ -749,8 +750,8 @@
         
         //////////////////
 
-        Table pkTable = tables.Single( t => t.Name == pkTableName );
-        Table fkTable = tables.Single( t => t.Name == fkTableName );
+        Table pkTable = tables.Single( t => t.Schema == pkSchema && t.Name == pkTableName );
+        Table fkTable = tables.Single( t => t.Schema == fkSchema && t.Name == fkTableName );
 
         for( int i = 0; i < pkColumns.Length; i++ )
         {
@@ -2620,7 +2621,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
             foreach(Table tbl in result)
             {
-                if(tbl.IsView) Settings.ViewProcessing(tbl);
+                if (tbl.IsView && Settings.ViewProcessing != null) Settings.ViewProcessing(tbl);
                 tbl.SetPrimaryKeys();
                 foreach (Column c in tbl.Columns)
                     Settings.UpdateColumn(c, tbl);
