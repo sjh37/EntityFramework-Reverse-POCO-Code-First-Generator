@@ -1226,11 +1226,6 @@ namespace EntityFramework_Reverse_POCO_Generator
         /// Parent Order pointed by [Invoices].([OrderId]) (fake_Orders_to_Invoices)
         /// </summary>
         public virtual Order Order { get; set; } // fake_Orders_to_Invoices
-
-        /// <summary>
-        /// Parent OrderDetail pointed by [Invoices].([OrderId], [ProductId]) (fake_OrderDetails_to_Invoices)
-        /// </summary>
-        public virtual OrderDetail OrderDetail { get; set; } // fake_OrderDetails_to_Invoices
     }
 
     // Orders
@@ -1254,10 +1249,6 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         // Reverse navigation
 
-        /// <summary>
-        /// Parent (One-to-One) Order pointed by [Orders Qry].[OrderID] (fake_Orders_To_OrdersQry)
-        /// </summary>
-        public virtual OrdersQry OrdersQry { get; set; } // Orders Qry.fake_Orders_To_OrdersQry
         /// <summary>
         /// Child Invoices where [Invoices].[OrderID] point to this entity (fake_Orders_to_Invoices)
         /// </summary>
@@ -1301,13 +1292,6 @@ namespace EntityFramework_Reverse_POCO_Generator
         public decimal UnitPrice { get; set; } // UnitPrice
         public short Quantity { get; set; } // Quantity
         public float Discount { get; set; } // Discount
-
-        // Reverse navigation
-
-        /// <summary>
-        /// Parent (One-to-One) OrderDetail pointed by [Invoices].([OrderID], [ProductID]) (fake_OrderDetails_to_Invoices)
-        /// </summary>
-        public virtual Invoice Invoice { get; set; } // Invoices.fake_OrderDetails_to_Invoices
 
         // Foreign keys
 
@@ -1366,13 +1350,6 @@ namespace EntityFramework_Reverse_POCO_Generator
         public string Region { get; set; } // Region (length: 15)
         public string PostalCode { get; set; } // PostalCode (length: 10)
         public string Country { get; set; } // Country (length: 15)
-
-        // Foreign keys
-
-        /// <summary>
-        /// Parent Order pointed by [Orders Qry].([OrderId]) (fake_Orders_To_OrdersQry)
-        /// </summary>
-        public virtual Order Order { get; set; } // fake_Orders_To_OrdersQry
     }
 
     // Order Subtotals
@@ -1857,7 +1834,6 @@ namespace EntityFramework_Reverse_POCO_Generator
 
             // Foreign keys
             HasRequired(a => a.Order).WithMany(b => b.Invoices).HasForeignKey(c => c.OrderId).WillCascadeOnDelete(false); // fake_Orders_to_Invoices
-            HasRequired(a => a.OrderDetail).WithOptional(b => b.Invoice).WillCascadeOnDelete(false); // fake_OrderDetails_to_Invoices
         }
     }
 
@@ -1981,9 +1957,6 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.Region).HasColumnName(@"Region").HasColumnType("nvarchar").IsOptional().HasMaxLength(15);
             Property(x => x.PostalCode).HasColumnName(@"PostalCode").HasColumnType("nvarchar").IsOptional().HasMaxLength(10);
             Property(x => x.Country).HasColumnName(@"Country").HasColumnType("nvarchar").IsOptional().HasMaxLength(15);
-
-            // Foreign keys
-            HasRequired(a => a.Order).WithOptional(b => b.OrdersQry).WillCascadeOnDelete(false); // fake_Orders_To_OrdersQry
         }
     }
 

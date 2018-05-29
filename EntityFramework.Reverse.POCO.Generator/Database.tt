@@ -285,18 +285,28 @@
         // [Order Details] (Table) to [Invoices] (View) is one-to-zeroOrOne - but uses a composite-key
         // [Orders] (Table) to [Orders Qry] (View) is one-to-zeroOrOne
 
+//        AddRelationship( foreignKeys, tables, "orders_to_invoices"      , "dbo", "Orders"       , "OrderID"                              , "dbo", "Invoices", "OrderID" );
+
+//        AddRelationship( foreignKeys, tables, "orderDetails_to_invoices", "dbo", "Order Details", new String[] { "OrderID", "ProductID" }, "dbo", "Invoices",  new String[] { "OrderID", "ProductID" } );
+
+//        AddRelationship( foreignKeys, tables, "orders_to_ordersQry"     , "dbo", "Orders"       , "OrderID"                              , "dbo", "Orders Qry", "OrderID" );
+        
         {
             ForeignKey ordersToInvoices = new ForeignKey()
             {
                 FkTableName = "Invoices",
                 FkTableNameFiltered = "Invoices",
                 FkSchema = "dbo",
+                
                 PkTableName = "Orders",
                 PkTableNameFiltered = "Orders",
                 PkSchema = "dbo",
+                
                 FkColumn = "OrderID",
                 PkColumn = "OrderID",
+                
                 ConstraintName = "fake_Orders_to_Invoices",
+                
                 Ordinal = 0,
                 CascadeOnDelete = false,
                 IsNotEnforced = false,
@@ -306,7 +316,7 @@
             tables.Single( t => t.Name == "Invoices" ).HasForeignKey = true;
         }
 
-        {
+/*        {
             // Q: How to represent a composite key?
             // A: EFRPG uses `class ForeignKey` to represent a single column that participates in a foreign-key, so for a composite-foreign-key then there would be multiple `ForeignKey` instances that share the same ConstraintName property.
             ForeignKey orderDetailsToInvoices1 = new ForeignKey()
@@ -368,7 +378,7 @@
             };
             foreignKeys.Add( ordersToOrdersQry );
             tables.Single( t => t.Name == "Orders Qry" ).HasForeignKey = true; // for some reason this is necessary...
-        }
+        }*/
     };
 
     Settings.ViewProcessing = (Table table) =>
