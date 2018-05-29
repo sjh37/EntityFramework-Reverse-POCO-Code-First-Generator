@@ -1226,6 +1226,11 @@ namespace EntityFramework_Reverse_POCO_Generator
         /// Parent Order pointed by [Invoices].([OrderId]) (AddRelationship: orders_to_invoices)
         /// </summary>
         public virtual Order Order { get; set; } // AddRelationship: orders_to_invoices
+
+        /// <summary>
+        /// Parent OrderDetail pointed by [Invoices].([OrderId], [ProductId]) (AddRelationship: orderDetails_to_invoices)
+        /// </summary>
+        public virtual OrderDetail OrderDetail { get; set; } // AddRelationship: orderDetails_to_invoices
     }
 
     // Orders
@@ -1249,6 +1254,10 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         // Reverse navigation
 
+        /// <summary>
+        /// Parent (One-to-One) Order pointed by [Orders Qry].[OrderID] (AddRelationship: orders_to_ordersQry)
+        /// </summary>
+        public virtual OrdersQry OrdersQry { get; set; } // Orders Qry.AddRelationship: orders_to_ordersQry
         /// <summary>
         /// Child Invoices where [Invoices].[OrderID] point to this entity (AddRelationship: orders_to_invoices)
         /// </summary>
@@ -1292,6 +1301,13 @@ namespace EntityFramework_Reverse_POCO_Generator
         public decimal UnitPrice { get; set; } // UnitPrice
         public short Quantity { get; set; } // Quantity
         public float Discount { get; set; } // Discount
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Parent (One-to-One) OrderDetail pointed by [Invoices].([OrderID], [ProductID]) (AddRelationship: orderDetails_to_invoices)
+        /// </summary>
+        public virtual Invoice Invoice { get; set; } // Invoices.AddRelationship: orderDetails_to_invoices
 
         // Foreign keys
 
@@ -1350,6 +1366,13 @@ namespace EntityFramework_Reverse_POCO_Generator
         public string Region { get; set; } // Region (length: 15)
         public string PostalCode { get; set; } // PostalCode (length: 10)
         public string Country { get; set; } // Country (length: 15)
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent Order pointed by [Orders Qry].([OrderId]) (AddRelationship: orders_to_ordersQry)
+        /// </summary>
+        public virtual Order Order { get; set; } // AddRelationship: orders_to_ordersQry
     }
 
     // Order Subtotals
@@ -1834,6 +1857,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
             // Foreign keys
             HasRequired(a => a.Order).WithMany(b => b.Invoices).HasForeignKey(c => c.OrderId).WillCascadeOnDelete(false); // AddRelationship: orders_to_invoices
+            HasRequired(a => a.OrderDetail).WithOptional(b => b.Invoice).WillCascadeOnDelete(false); // AddRelationship: orderDetails_to_invoices
         }
     }
 
@@ -1957,6 +1981,9 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.Region).HasColumnName(@"Region").HasColumnType("nvarchar").IsOptional().HasMaxLength(15);
             Property(x => x.PostalCode).HasColumnName(@"PostalCode").HasColumnType("nvarchar").IsOptional().HasMaxLength(10);
             Property(x => x.Country).HasColumnName(@"Country").HasColumnType("nvarchar").IsOptional().HasMaxLength(15);
+
+            // Foreign keys
+            HasRequired(a => a.Order).WithOptional(b => b.OrdersQry).WillCascadeOnDelete(false); // AddRelationship: orders_to_ordersQry
         }
     }
 
