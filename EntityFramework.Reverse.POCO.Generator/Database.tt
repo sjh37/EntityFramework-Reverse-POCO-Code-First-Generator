@@ -288,17 +288,17 @@
     Settings.ViewProcessing = (Table view) =>
     {
         // Below is example code for the Northwind database that configures the `VIEW [Orders Qry]` and `VIEW [Invoices]`
-        switch(view.Name)
-        {
-        case "Orders Qry":
-            // VIEW [Orders Qry] uniquely identifies rows with the `OrderID` column:
-            view.Columns.Single( col => col.Name == "OrderID" ).IsPrimaryKey = true;
-            break;
-        case "Invoices":
-            // VIEW [Invoices] has a composite primary key (OrderID+ProductID), so both columns must be marked as a Primary Key:
-            foreach( Column col in view.Columns.Where( c => c.Name == "OrderID" || c.Name == "ProductID" ) ) col.IsPrimaryKey = true;
-            break;
-        }
+        //switch(view.Name)
+        //{
+        //case "Orders Qry":
+        //    // VIEW [Orders Qry] uniquely identifies rows with the `OrderID` column:
+        //    view.Columns.Single( col => col.Name == "OrderID" ).IsPrimaryKey = true;
+        //    break;
+        //case "Invoices":
+        //    // VIEW [Invoices] has a composite primary key (OrderID+ProductID), so both columns must be marked as a Primary Key:
+        //    foreach( Column col in view.Columns.Where( c => c.Name == "OrderID" || c.Name == "ProductID" ) ) col.IsPrimaryKey = true;
+        //   break;
+        //}
     };
 
     Settings.AddForeignKeys = (List<ForeignKey> foreignKeys, Tables tablesAndViews) =>
@@ -309,11 +309,9 @@
         // [Orders] (Table) to [Orders Qry] (View) is one-to-zeroOrOne
 
         // AddRelationship is a helper function that creates ForeignKey objects and adds them to the foreignKeys list:
-        AddRelationship( foreignKeys, tablesAndViews, "orders_to_invoices"      , "dbo", "Orders"       , "OrderID"                       , "dbo", "Invoices", "OrderID" );
-
-        AddRelationship( foreignKeys, tablesAndViews, "orderDetails_to_invoices", "dbo", "Order Details", new[] { "OrderID", "ProductID" }, "dbo", "Invoices",  new[] { "OrderID", "ProductID" } );
-
-        AddRelationship( foreignKeys, tablesAndViews, "orders_to_ordersQry"     , "dbo", "Orders"       , "OrderID"                       , "dbo", "Orders Qry", "OrderID" );
+        //AddRelationship( foreignKeys, tablesAndViews, "orders_to_invoices"      , "dbo", "Orders"       , "OrderID"                       , "dbo", "Invoices", "OrderID" );
+        //AddRelationship( foreignKeys, tablesAndViews, "orderDetails_to_invoices", "dbo", "Order Details", new[] { "OrderID", "ProductID" }, "dbo", "Invoices",  new[] { "OrderID", "ProductID" } );
+        //AddRelationship( foreignKeys, tablesAndViews, "orders_to_ordersQry"     , "dbo", "Orders"       , "OrderID"                       , "dbo", "Orders Qry", "OrderID" );
     };
 
     // StoredProcedure renaming ************************************************************************************************************

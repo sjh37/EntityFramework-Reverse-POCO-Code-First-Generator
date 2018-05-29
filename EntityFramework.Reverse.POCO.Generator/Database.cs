@@ -536,11 +536,11 @@ namespace EntityFramework_Reverse_POCO_Generator
             CustomerAndSuppliersByCities = new FakeDbSet<CustomerAndSuppliersByCity>("CompanyName", "Relationship");
             CustomerDemographics = new FakeDbSet<CustomerDemographic>("CustomerTypeId");
             Employees = new FakeDbSet<Employee>("EmployeeId");
-            Invoices = new FakeDbSet<Invoice>("OrderId", "ProductId");
+            Invoices = new FakeDbSet<Invoice>("CustomerName", "Salesperson", "OrderId", "ShipperName", "ProductId", "ProductName", "UnitPrice", "Quantity", "Discount");
             Orders = new FakeDbSet<Order>("OrderId");
             OrderDetails = new FakeDbSet<OrderDetail>("OrderId", "ProductId");
             OrderDetailsExtendeds = new FakeDbSet<OrderDetailsExtended>("OrderId", "ProductId", "ProductName", "UnitPrice", "Quantity", "Discount");
-            OrdersQries = new FakeDbSet<OrdersQry>("OrderId");
+            OrdersQries = new FakeDbSet<OrdersQry>("OrderId", "CompanyName");
             OrderSubtotals = new FakeDbSet<OrderSubtotal>("OrderId");
             Products = new FakeDbSet<Product>("ProductId");
             ProductsAboveAveragePrices = new FakeDbSet<ProductsAboveAveragePrice>("ProductName");
@@ -1200,37 +1200,25 @@ namespace EntityFramework_Reverse_POCO_Generator
         public string ShipPostalCode { get; set; } // ShipPostalCode (length: 10)
         public string ShipCountry { get; set; } // ShipCountry (length: 15)
         public string CustomerId { get; set; } // CustomerID (length: 5)
-        public string CustomerName { get; set; } // CustomerName (length: 40)
+        public string CustomerName { get; set; } // CustomerName (Primary key) (length: 40)
         public string Address { get; set; } // Address (length: 60)
         public string City { get; set; } // City (length: 15)
         public string Region { get; set; } // Region (length: 15)
         public string PostalCode { get; set; } // PostalCode (length: 10)
         public string Country { get; set; } // Country (length: 15)
-        public string Salesperson { get; set; } // Salesperson (length: 31)
+        public string Salesperson { get; set; } // Salesperson (Primary key) (length: 31)
         public int OrderId { get; set; } // OrderID (Primary key)
         public System.DateTime? OrderDate { get; set; } // OrderDate
         public System.DateTime? RequiredDate { get; set; } // RequiredDate
         public System.DateTime? ShippedDate { get; set; } // ShippedDate
-        public string ShipperName { get; set; } // ShipperName (length: 40)
+        public string ShipperName { get; set; } // ShipperName (Primary key) (length: 40)
         public int ProductId { get; set; } // ProductID (Primary key)
-        public string ProductName { get; set; } // ProductName (length: 40)
-        public decimal UnitPrice { get; set; } // UnitPrice
-        public short Quantity { get; set; } // Quantity
-        public float Discount { get; set; } // Discount
+        public string ProductName { get; set; } // ProductName (Primary key) (length: 40)
+        public decimal UnitPrice { get; set; } // UnitPrice (Primary key)
+        public short Quantity { get; set; } // Quantity (Primary key)
+        public float Discount { get; set; } // Discount (Primary key)
         public decimal? ExtendedPrice { get; set; } // ExtendedPrice
         public decimal? Freight { get; set; } // Freight
-
-        // Foreign keys
-
-        /// <summary>
-        /// Parent Order pointed by [Invoices].([OrderId]) (AddRelationship: orders_to_invoices)
-        /// </summary>
-        public virtual Order Order { get; set; } // AddRelationship: orders_to_invoices
-
-        /// <summary>
-        /// Parent OrderDetail pointed by [Invoices].([OrderId], [ProductId]) (AddRelationship: orderDetails_to_invoices)
-        /// </summary>
-        public virtual OrderDetail OrderDetail { get; set; } // AddRelationship: orderDetails_to_invoices
     }
 
     // Orders
@@ -1254,14 +1242,6 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         // Reverse navigation
 
-        /// <summary>
-        /// Parent (One-to-One) Order pointed by [Orders Qry].[OrderID] (AddRelationship: orders_to_ordersQry)
-        /// </summary>
-        public virtual OrdersQry OrdersQry { get; set; } // Orders Qry.AddRelationship: orders_to_ordersQry
-        /// <summary>
-        /// Child Invoices where [Invoices].[OrderID] point to this entity (AddRelationship: orders_to_invoices)
-        /// </summary>
-        public virtual System.Collections.Generic.ICollection<Invoice> Invoices { get; set; } // Invoices.AddRelationship: orders_to_invoices
         /// <summary>
         /// Child OrderDetails where [Order Details].[OrderID] point to this entity (FK_Order_Details_Orders)
         /// </summary>
@@ -1288,7 +1268,6 @@ namespace EntityFramework_Reverse_POCO_Generator
         {
             Freight = 0m;
             OrderDetails = new System.Collections.Generic.List<OrderDetail>();
-            Invoices = new System.Collections.Generic.List<Invoice>();
         }
     }
 
@@ -1301,13 +1280,6 @@ namespace EntityFramework_Reverse_POCO_Generator
         public decimal UnitPrice { get; set; } // UnitPrice
         public short Quantity { get; set; } // Quantity
         public float Discount { get; set; } // Discount
-
-        // Reverse navigation
-
-        /// <summary>
-        /// Parent (One-to-One) OrderDetail pointed by [Invoices].([OrderID], [ProductID]) (AddRelationship: orderDetails_to_invoices)
-        /// </summary>
-        public virtual Invoice Invoice { get; set; } // Invoices.AddRelationship: orderDetails_to_invoices
 
         // Foreign keys
 
@@ -1360,19 +1332,12 @@ namespace EntityFramework_Reverse_POCO_Generator
         public string ShipRegion { get; set; } // ShipRegion (length: 15)
         public string ShipPostalCode { get; set; } // ShipPostalCode (length: 10)
         public string ShipCountry { get; set; } // ShipCountry (length: 15)
-        public string CompanyName { get; set; } // CompanyName (length: 40)
+        public string CompanyName { get; set; } // CompanyName (Primary key) (length: 40)
         public string Address { get; set; } // Address (length: 60)
         public string City { get; set; } // City (length: 15)
         public string Region { get; set; } // Region (length: 15)
         public string PostalCode { get; set; } // PostalCode (length: 10)
         public string Country { get; set; } // Country (length: 15)
-
-        // Foreign keys
-
-        /// <summary>
-        /// Parent Order pointed by [Orders Qry].([OrderId]) (AddRelationship: orders_to_ordersQry)
-        /// </summary>
-        public virtual Order Order { get; set; } // AddRelationship: orders_to_ordersQry
     }
 
     // Order Subtotals
@@ -1826,7 +1791,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public InvoiceConfiguration(string schema)
         {
             ToTable("Invoices", schema);
-            HasKey(x => new { x.OrderId, x.ProductId });
+            HasKey(x => new { x.CustomerName, x.Salesperson, x.OrderId, x.ShipperName, x.ProductId, x.ProductName, x.UnitPrice, x.Quantity, x.Discount });
 
             Property(x => x.ShipName).HasColumnName(@"ShipName").HasColumnType("nvarchar").IsOptional().HasMaxLength(40);
             Property(x => x.ShipAddress).HasColumnName(@"ShipAddress").HasColumnType("nvarchar").IsOptional().HasMaxLength(60);
@@ -1835,29 +1800,25 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.ShipPostalCode).HasColumnName(@"ShipPostalCode").HasColumnType("nvarchar").IsOptional().HasMaxLength(10);
             Property(x => x.ShipCountry).HasColumnName(@"ShipCountry").HasColumnType("nvarchar").IsOptional().HasMaxLength(15);
             Property(x => x.CustomerId).HasColumnName(@"CustomerID").HasColumnType("nchar").IsOptional().IsFixedLength().HasMaxLength(5);
-            Property(x => x.CustomerName).HasColumnName(@"CustomerName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40);
+            Property(x => x.CustomerName).HasColumnName(@"CustomerName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40).HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None);
             Property(x => x.Address).HasColumnName(@"Address").HasColumnType("nvarchar").IsOptional().HasMaxLength(60);
             Property(x => x.City).HasColumnName(@"City").HasColumnType("nvarchar").IsOptional().HasMaxLength(15);
             Property(x => x.Region).HasColumnName(@"Region").HasColumnType("nvarchar").IsOptional().HasMaxLength(15);
             Property(x => x.PostalCode).HasColumnName(@"PostalCode").HasColumnType("nvarchar").IsOptional().HasMaxLength(10);
             Property(x => x.Country).HasColumnName(@"Country").HasColumnType("nvarchar").IsOptional().HasMaxLength(15);
-            Property(x => x.Salesperson).HasColumnName(@"Salesperson").HasColumnType("nvarchar").IsRequired().HasMaxLength(31);
+            Property(x => x.Salesperson).HasColumnName(@"Salesperson").HasColumnType("nvarchar").IsRequired().HasMaxLength(31).HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None);
             Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None);
             Property(x => x.OrderDate).HasColumnName(@"OrderDate").HasColumnType("datetime").IsOptional();
             Property(x => x.RequiredDate).HasColumnName(@"RequiredDate").HasColumnType("datetime").IsOptional();
             Property(x => x.ShippedDate).HasColumnName(@"ShippedDate").HasColumnType("datetime").IsOptional();
-            Property(x => x.ShipperName).HasColumnName(@"ShipperName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40);
+            Property(x => x.ShipperName).HasColumnName(@"ShipperName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40).HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None);
             Property(x => x.ProductId).HasColumnName(@"ProductID").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None);
-            Property(x => x.ProductName).HasColumnName(@"ProductName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40);
-            Property(x => x.UnitPrice).HasColumnName(@"UnitPrice").HasColumnType("money").IsRequired().HasPrecision(19,4);
-            Property(x => x.Quantity).HasColumnName(@"Quantity").HasColumnType("smallint").IsRequired();
-            Property(x => x.Discount).HasColumnName(@"Discount").HasColumnType("real").IsRequired();
+            Property(x => x.ProductName).HasColumnName(@"ProductName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40).HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None);
+            Property(x => x.UnitPrice).HasColumnName(@"UnitPrice").HasColumnType("money").IsRequired().HasPrecision(19,4).HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None);
+            Property(x => x.Quantity).HasColumnName(@"Quantity").HasColumnType("smallint").IsRequired().HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None);
+            Property(x => x.Discount).HasColumnName(@"Discount").HasColumnType("real").IsRequired().HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None);
             Property(x => x.ExtendedPrice).HasColumnName(@"ExtendedPrice").HasColumnType("money").IsOptional().HasPrecision(19,4);
             Property(x => x.Freight).HasColumnName(@"Freight").HasColumnType("money").IsOptional().HasPrecision(19,4);
-
-            // Foreign keys
-            HasRequired(a => a.Order).WithMany(b => b.Invoices).HasForeignKey(c => c.OrderId).WillCascadeOnDelete(false); // AddRelationship: orders_to_invoices
-            HasRequired(a => a.OrderDetail).WithOptional(b => b.Invoice).WillCascadeOnDelete(false); // AddRelationship: orderDetails_to_invoices
         }
     }
 
@@ -1959,7 +1920,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public OrdersQryConfiguration(string schema)
         {
             ToTable("Orders Qry", schema);
-            HasKey(x => x.OrderId);
+            HasKey(x => new { x.OrderId, x.CompanyName });
 
             Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None);
             Property(x => x.CustomerId).HasColumnName(@"CustomerID").HasColumnType("nchar").IsOptional().IsFixedLength().HasMaxLength(5);
@@ -1975,15 +1936,12 @@ namespace EntityFramework_Reverse_POCO_Generator
             Property(x => x.ShipRegion).HasColumnName(@"ShipRegion").HasColumnType("nvarchar").IsOptional().HasMaxLength(15);
             Property(x => x.ShipPostalCode).HasColumnName(@"ShipPostalCode").HasColumnType("nvarchar").IsOptional().HasMaxLength(10);
             Property(x => x.ShipCountry).HasColumnName(@"ShipCountry").HasColumnType("nvarchar").IsOptional().HasMaxLength(15);
-            Property(x => x.CompanyName).HasColumnName(@"CompanyName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40);
+            Property(x => x.CompanyName).HasColumnName(@"CompanyName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40).HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None);
             Property(x => x.Address).HasColumnName(@"Address").HasColumnType("nvarchar").IsOptional().HasMaxLength(60);
             Property(x => x.City).HasColumnName(@"City").HasColumnType("nvarchar").IsOptional().HasMaxLength(15);
             Property(x => x.Region).HasColumnName(@"Region").HasColumnType("nvarchar").IsOptional().HasMaxLength(15);
             Property(x => x.PostalCode).HasColumnName(@"PostalCode").HasColumnType("nvarchar").IsOptional().HasMaxLength(10);
             Property(x => x.Country).HasColumnName(@"Country").HasColumnType("nvarchar").IsOptional().HasMaxLength(15);
-
-            // Foreign keys
-            HasRequired(a => a.Order).WithOptional(b => b.OrdersQry).WillCascadeOnDelete(false); // AddRelationship: orders_to_ordersQry
         }
     }
 
