@@ -177,8 +177,6 @@
         //if(t.Schema.Equals("dbo", StringComparison.InvariantCultureIgnoreCase) && t.NameHumanCase.ToLowerInvariant().Contains("order"))
         //    return false;
 
-        if( t.Name == "Orders Qry2" ) return false;
-
         return true;
     };
 
@@ -297,16 +295,16 @@
         //case "Invoices":
         //    // VIEW [Invoices] has a composite primary key (OrderID+ProductID), so both columns must be marked as a Primary Key:
         //    foreach( Column col in view.Columns.Where( c => c.Name == "OrderID" || c.Name == "ProductID" ) ) col.IsPrimaryKey = true;
-        //   break;
+        //    break;
         //}
     };
 
     Settings.AddForeignKeys = (List<ForeignKey> foreignKeys, Tables tablesAndViews) =>
     {
         // In Northwind:
-        // [Orders] (Table) to [Invoices] (View) is one-to-many
-        // [Order Details] (Table) to [Invoices] (View) is one-to-zeroOrOne - but uses a composite-key
-        // [Orders] (Table) to [Orders Qry] (View) is one-to-zeroOrOne
+        // [Orders] (Table) to [Invoices] (View) is one-to-many using Orders.OrderID = Invoices.OrderID
+        // [Order Details] (Table) to [Invoices] (View) is one-to-zeroOrOne - but uses a composite-key: ( [Order Details].OrderID,ProductID = [Invoices].OrderID,ProductID )
+        // [Orders] (Table) to [Orders Qry] (View) is one-to-zeroOrOne ( [Orders].OrderID = [Orders Qry].OrderID )
 
         // AddRelationship is a helper function that creates ForeignKey objects and adds them to the foreignKeys list:
         //AddRelationship( foreignKeys, tablesAndViews, "orders_to_invoices"      , "dbo", "Orders"       , "OrderID"                       , "dbo", "Invoices", "OrderID" );
