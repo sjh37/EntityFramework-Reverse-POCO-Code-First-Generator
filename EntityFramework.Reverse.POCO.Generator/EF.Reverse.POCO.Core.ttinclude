@@ -123,6 +123,8 @@
         public static Func<Table, Table, string, string[]> ForeignKeyAnnotationsProcessing;
         public static Func<ForeignKey, ForeignKey> ForeignKeyFilter;
         public static Func<string, ForeignKey, string, Relationship, short, string> ForeignKeyName;
+        public static Action<Table> ViewProcessing;
+        public static Action<List<ForeignKey>, Tables> AddForeignKeys;
         public static string MigrationConfigurationFileName;
         public static string MigrationStrategy = "MigrateDatabaseToLatestVersion";
         public static string ContextKey;
@@ -693,6 +695,8 @@
                     t.Suffix = Settings.TableSuffix;
                 }
 
+                if(Settings.AddForeignKeys != null) Settings.AddForeignKeys(fkList, tables);
+
                 // Work out if there are any foreign key relationship naming clashes
                 reader.ProcessForeignKeys(fkList, tables, true);
                 if(Settings.UseMappingTables)
@@ -723,6 +727,58 @@
         }
     }
 
+    /// <summary>AddRelationship overload for single-column foreign-keys.</summary>
+    public static void AddRelationship(List<ForeignKey> fkList, Tables tablesAndViews, String name, String pkSchema, String pkTable, String pkColumn, String fkSchema, String fkTable, String fkColumn)
+    {
+        AddRelationship( fkList, tablesAndViews, name, pkSchema, pkTable, new String[] { pkColumn }, fkSchema, fkTable, new String[] { fkColumn } );
+    }
+
+    public static void AddRelationship(List<ForeignKey> fkList, Tables tablesAndViews, String relationshipName, String pkSchema, String pkTableName, String[] pkColumns, String fkSchema, String fkTableName, String[] fkColumns)
+    {
+        // Argument validation:
+        if( fkList == null ) throw new ArgumentNullException(nameof(fkList));
+        if( tablesAndViews == null ) throw new ArgumentNullException(nameof(tablesAndViews));
+        if( String.IsNullOrEmpty(relationshipName) ) throw new ArgumentNullException(nameof(relationshipName));
+        if( String.IsNullOrEmpty(pkSchema) ) throw new ArgumentNullException(nameof(pkSchema));
+        if( String.IsNullOrEmpty(pkTableName) ) throw new ArgumentNullException(nameof(pkTableName));
+        if( pkColumns == null ) throw new ArgumentNullException(nameof(pkColumns));
+        if( pkColumns.Length == 0 || pkColumns.Any( s => String.IsNullOrEmpty(s) ) ) throw new ArgumentException(nameof(pkColumns));
+        if( String.IsNullOrEmpty(fkSchema) ) throw new ArgumentNullException(nameof(fkSchema));
+        if( String.IsNullOrEmpty(fkTableName) ) throw new ArgumentNullException(nameof(fkTableName));
+        if( fkColumns == null ) throw new ArgumentNullException(nameof(fkColumns));
+        if( fkColumns.Length != pkColumns.Length || fkColumns.Any( s => String.IsNullOrEmpty(s) ) ) throw new ArgumentException(nameof(fkColumns));
+        
+        //////////////////
+
+        Table pkTable = tablesAndViews.GetTable(pkTableName, pkSchema);
+        Table fkTable = tablesAndViews.GetTable(fkTableName, fkSchema);
+
+        for( int i = 0; i < pkColumns.Length; i++ )
+        {
+            String pkc = pkColumns[i];
+            String fkc = fkColumns[i];
+
+            String pkTableNameFiltered = Settings.TableRename( pkTableName, pkSchema, pkTable.IsView ); // TODO: This can probably be done-away with. Is `AddRelationship` called before or after table.NameFiltered is set?
+
+            ForeignKey fk = new ForeignKey(
+                fkTableName        : fkTable.Name,
+                fkSchema           : fkSchema,
+                pkTableName        : pkTable.Name,
+                pkSchema           : pkSchema,
+                fkColumn           : fkc,
+                pkColumn           : pkc,
+                constraintName     : "AddRelationship: " + relationshipName,
+                pkTableNameFiltered: pkTableNameFiltered,
+                ordinal            : Int32.MaxValue,
+                cascadeOnDelete    : false,
+                isNotEnforced      : false
+            );
+            fk.IncludeReverseNavigation = true;
+
+            fkList.Add( fk );
+            fkTable.HasForeignKey = true;
+        }
+    }
 
     private List<StoredProcedure> LoadStoredProcs(DbProviderFactory factory)
     {
@@ -1610,7 +1666,7 @@ SELECT  C.TABLE_SCHEMA,
         C.DATETIME_PRECISION
 INTO    #Columns
 FROM    INFORMATION_SCHEMA.COLUMNS C
-WHERE   C.TABLE_NAME NOT IN ('EdmMetadata', '__MigrationHistory')
+WHERE   C.TABLE_NAME NOT IN ('EdmMetadata', '__MigrationHistory', '__RefactorLog')
         AND C.TABLE_NAME NOT LIKE 'sysdiagram%';
 
 CREATE NONCLUSTERED INDEX IX_EfPoco_Columns
@@ -1682,7 +1738,7 @@ FROM    #Columns c
         INNER JOIN INFORMATION_SCHEMA.TABLES t
             ON c.TABLE_SCHEMA COLLATE DATABASE_DEFAULT = t.TABLE_SCHEMA COLLATE DATABASE_DEFAULT
                AND c.TABLE_NAME COLLATE DATABASE_DEFAULT = t.TABLE_NAME COLLATE DATABASE_DEFAULT
-WHERE   c.TABLE_NAME NOT IN ('EdmMetadata', '__MigrationHistory')
+WHERE   c.TABLE_NAME NOT IN ('EdmMetadata', '__MigrationHistory', '__RefactorLog')
         AND c.TABLE_NAME NOT LIKE 'sysdiagram%' ";
 
         private const string SynonymTableSQLSetup = @"
@@ -2563,6 +2619,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
             foreach(Table tbl in result)
             {
+                if (tbl.IsView && Settings.ViewProcessing != null) Settings.ViewProcessing(tbl);
                 tbl.SetPrimaryKeys();
                 foreach (Column c in tbl.Columns)
                     Settings.UpdateColumn(c, tbl);
@@ -2603,11 +2660,9 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     bool cascadeOnDelete = ((int) rdr["CascadeOnDelete"]) == 1;
                     bool isNotEnforced = (bool) rdr["IsNotEnforced"];
 
-                    string fkTableNameFiltered = Settings.TableRename(fkTableName, fkSchema, false);
                     string pkTableNameFiltered = Settings.TableRename(pkTableName, pkSchema, false);
 
-                    var fk = new ForeignKey(fkTableName, fkSchema, pkTableName, pkSchema, fkColumn, pkColumn,
-                        constraintName, fkTableNameFiltered, pkTableNameFiltered, ordinal, cascadeOnDelete, isNotEnforced);
+                    var fk = new ForeignKey(fkTableName, fkSchema, pkTableName, pkSchema, fkColumn, pkColumn, constraintName, pkTableNameFiltered, ordinal, cascadeOnDelete, isNotEnforced);
 
                     var filteredFk = Settings.ForeignKeyFilter(fk);
                     if(filteredFk != null)
@@ -3450,25 +3505,24 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
     public class ForeignKey
     {
-        public string FkTableName { get; private set; }
-        public string FkTableNameFiltered { get; private set; }
-        public string FkSchema { get; private set; }
-        public string PkTableName { get; private set; }
+        public string FkTableName         { get; private set; }
+        public string FkSchema            { get; private set; }
+        public string PkTableName         { get; private set; }
         public string PkTableNameFiltered { get; private set; }
-        public string PkSchema { get; private set; }
-        public string FkColumn { get; private set; }
-        public string PkColumn { get; private set; }
-        public string ConstraintName { get; private set; }
-        public int Ordinal { get; private set; }
-        public bool CascadeOnDelete { get; private set; }
-        public bool IsNotEnforced { get; private set; }
+        public string PkSchema            { get; private set; }
+        public string FkColumn            { get; private set; }
+        public string PkColumn            { get; private set; }
+        public string ConstraintName      { get; private set; }
+        public int    Ordinal             { get; private set; }
+        public bool   CascadeOnDelete     { get; private set; }
+        public bool   IsNotEnforced       { get; private set; }
 
         // User settable via ForeignKeyFilter callback
-        public string AccessModifier { get; set; }
-        public bool IncludeReverseNavigation { get; set; }
-        public bool IncludeRequiredAttribute { get; set; }
+        public string AccessModifier           { get; set; }
+        public bool   IncludeReverseNavigation { get; set; }
+        public bool   IncludeRequiredAttribute { get; set; }
 
-        public ForeignKey(string fkTableName, string fkSchema, string pkTableName, string pkSchema, string fkColumn, string pkColumn, string constraintName, string fkTableNameFiltered, string pkTableNameFiltered, int ordinal, bool cascadeOnDelete, bool isNotEnforced)
+        public ForeignKey(string fkTableName, string fkSchema, string pkTableName, string pkSchema, string fkColumn, string pkColumn, string constraintName, string pkTableNameFiltered, int ordinal, bool cascadeOnDelete, bool isNotEnforced)
         {
             ConstraintName = constraintName;
             PkColumn = pkColumn;
@@ -3477,7 +3531,6 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             PkTableName = pkTableName;
             FkSchema = fkSchema;
             FkTableName = fkTableName;
-            FkTableNameFiltered = fkTableNameFiltered;
             PkTableNameFiltered = pkTableNameFiltered;
             Ordinal = ordinal;
             CascadeOnDelete = cascadeOnDelete;
