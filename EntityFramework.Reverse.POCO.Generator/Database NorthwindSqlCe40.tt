@@ -276,17 +276,19 @@
 
 
     // Using Views *****************************************************************************************************************
-    // SQL Server does not support the declaration of primary-keys in VIEWs. Entity Framework's EDMX designer (and this T4 template) assume that all non-null columns in a VIEW are primary-key columns, this will be incorrect for most non-trivial applications.
-    // This callback will be invoked for each VIEW found in the database. Use it to declare which columns participate in that VIEW's primary-key by setting `IsPrimaryKey = true`.
-    // If no columns are marked with `IsPrimaryKey = true` then this T4 template defaults to marking all non-NULL columns as primary key columns.
-    // To set-up Foreign-Key relationships between VIEWs and Tables (or even other VIEWs) use the `AddForeignKeys` callback below.
+    // SQL Server does not support the declaration of primary-keys in VIEWs. Entity Framework's EDMX designer (and this T4 template)
+    // assume that all non-null columns in a VIEW are primary-key columns, this will be incorrect for most non-trivial applications.
+    // This callback will be invoked for each VIEW found in the database. Use it to declare which columns participate in that VIEW's
+    // primary-key by setting 'IsPrimaryKey = true'.
+    // If no columns are marked with 'IsPrimaryKey = true' then this T4 template defaults to marking all non-NULL columns as primary key columns.
+    // To set-up Foreign-Key relationships between VIEWs and Tables (or even other VIEWs) use the 'AddForeignKeys' callback below.
     Settings.ViewProcessing = (Table view) =>
     {
-        // Below is example code for the Northwind database that configures the `VIEW [Orders Qry]` and `VIEW [Invoices]`
+        // Below is example code for the Northwind database that configures the 'VIEW [Orders Qry]' and 'VIEW [Invoices]'
         //switch(view.Name)
         //{
         //case "Orders Qry":
-        //    // VIEW [Orders Qry] uniquely identifies rows with the `OrderID` column:
+        //    // VIEW [Orders Qry] uniquely identifies rows with the 'OrderID' column:
         //    view.Columns.Single( col => col.Name == "OrderID" ).IsPrimaryKey = true;
         //    break;
         //case "Invoices":
