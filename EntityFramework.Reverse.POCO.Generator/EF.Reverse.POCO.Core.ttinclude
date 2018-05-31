@@ -80,6 +80,7 @@
         public static string CollectionType = "System.Collections.Generic.List";
         public static bool NullableShortHand;
         public static bool UseDataAnnotations;
+        public static bool UseDataAnnotationsWithFluent;
         public static bool MakeClassesPartial;
         public static bool MakeClassesInternal;
         public static bool MakeDbContextInterfacePartial;
@@ -690,7 +691,7 @@
 
                 foreach (var t in tables)
                 {
-                    if(Settings.UseDataAnnotations)
+                    if(Settings.UseDataAnnotations || Settings.UseDataAnnotationsWithFluent)
                         t.SetupDataAnnotations();
                     t.Suffix = Settings.TableSuffix;
                 }
@@ -1091,13 +1092,16 @@
             }
             else
             {
-                if (Settings.UseDataAnnotations)
+                if (Settings.UseDataAnnotations || Settings.UseDataAnnotationsWithFluent)
                 {
                     if(!IsComputed())
                         DataAnnotations.Add("Required");
                 }
-                else
+                
+                if (!Settings.UseDataAnnotations)
+                {
                     sb.Append(".IsRequired()");
+                }
             }
 
             if (IsFixedLength || IsRowVersion)
@@ -1116,28 +1120,38 @@
             {
                 var doNotSpecifySize = (Settings.IsSqlCe && MaxLength > 4000); // Issue #179
 
-                if (Settings.UseDataAnnotations)
+                if (Settings.UseDataAnnotations || Settings.UseDataAnnotationsWithFluent)
                 {
                     DataAnnotations.Add(doNotSpecifySize ? "MaxLength" : string.Format("MaxLength({0})", MaxLength));
 
                     if (PropertyType.Equals("string", StringComparison.InvariantCultureIgnoreCase))
                         DataAnnotations.Add(string.Format("StringLength({0})", MaxLength));
                 }
-                else
+                
+                if (!Settings.UseDataAnnotations)
                 {
                     if (doNotSpecifySize)
+                    {
                         sb.Append(".HasMaxLength(null)");
+                    }
                     else
+                    {
                         sb.AppendFormat(".HasMaxLength({0})", MaxLength);
+                    }
                 }
             }
 
             if (IsMaxLength)
             {
-                if (Settings.UseDataAnnotations)
+                if (Settings.UseDataAnnotations || Settings.UseDataAnnotationsWithFluent)
+                {
                     DataAnnotations.Add("MaxLength");
-                else
+                }
+
+                if (!Settings.UseDataAnnotations)
+                {
                     sb.Append(".IsMaxLength()");
+                }
             }
 
             if ((Precision > 0 || Scale > 0) && PropertyType == "decimal")
