@@ -133,6 +133,7 @@
         public static bool AutomaticMigrationDataLossAllowed;
         public static List<EnumDefinition> EnumDefinitions = new List<EnumDefinition>();
         public static Dictionary<string, string> ColumnNameToDataAnnotation;
+        public static Dictionary<string, string> ColumnTypeToDataAnnotation;
         public static bool IncludeCodeGeneratedAttribute;
         public static Tables Tables;
         public static List<StoredProcedure> StoredProcs;
@@ -1184,9 +1185,14 @@
             if (IsPrimaryKey && Settings.UseDataAnnotations)
                 DataAnnotations.Add("Key");
 
-            string value;
-            if(Settings.ColumnNameToDataAnnotation.TryGetValue(NameHumanCase.ToLowerInvariant(), out value))
-                DataAnnotations.Add(value);
+            if (Settings.ColumnNameToDataAnnotation.TryGetValue(NameHumanCase.ToLowerInvariant(), out string valueFromName))
+            {
+                DataAnnotations.Add(valueFromName);
+            }
+            else if (Settings.ColumnTypeToDataAnnotation.TryGetValue(SqlPropertyType.ToLowerInvariant(), out string valueFromType))
+            {
+                DataAnnotations.Add(valueFromType);
+            }
 
             DataAnnotations.Add(string.Format("Display(Name = \"{0}\")", DisplayName));
         }
@@ -3140,8 +3146,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 if(foreignKey.IncludeReverseNavigation)
                 {
                     pkTable.AddReverseNavigation(relationship, pkTableHumanCase, fkTable, fkPropName, string.Format("{0}.{1}", fkTable.Name, foreignKey.ConstraintName), foreignKeys);
+                }
             }
-        }
         }
 
         public override void IdentifyForeignKeys(List<ForeignKey> fkList, Tables tables)

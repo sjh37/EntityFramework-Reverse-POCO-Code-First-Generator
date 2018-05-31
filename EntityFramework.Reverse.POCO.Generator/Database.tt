@@ -75,6 +75,7 @@
         { "emailaddress",    "EmailAddress" },
         { "creditcard",      "CreditCard" },
         { "url",             "Url" },
+        { "fax",             "Phone" },
         { "phone",           "Phone" },
         { "phonenumber",     "Phone" },
         { "mobile",          "Phone" },
@@ -82,7 +83,24 @@
         { "telephone",       "Phone" },
         { "telephonenumber", "Phone" },
         { "password",        "DataType(DataType.Password)" },
-        { "username",        "DataType(DataType.Text)" }
+        { "username",        "DataType(DataType.Text)" },
+        { "postcode",        "DataType(DataType.PostalCode)" },
+        { "postalcode",      "DataType(DataType.PostalCode)" },
+        { "zip",             "DataType(DataType.PostalCode)" },
+        { "zipcode",         "DataType(DataType.PostalCode)" }
+    };
+    Settings.ColumnTypeToDataAnnotation = new Dictionary<string, string>
+    {
+        // This is used when UseDataAnnotations == true or UseDataAnnotationsWithFluent == true;
+        // It is used to set a data annotation on a column based on the columns's MS SQL type.
+        // Make sure the column name is lowercase in the following array, regardless of how it is in the database
+        // Column name       DataAnnotation to add
+        { "date",            "DataType(DataType.Date)" },
+        { "datetime",        "DataType(DataType.DateTime)" },
+        { "datetime2",       "DataType(DataType.DateTime)" },
+        { "datetimeoffset",  "DataType(DataType.DateTime)" },
+        { "smallmoney",      "DataType(DataType.Currency)" },
+        { "money",           "DataType(DataType.Currency)" }
     };
 
     // Migrations *************************************************************************************************************************
