@@ -749,7 +749,7 @@
         if( String.IsNullOrEmpty(fkTableName) ) throw new ArgumentNullException(nameof(fkTableName));
         if( fkColumns == null ) throw new ArgumentNullException(nameof(fkColumns));
         if( fkColumns.Length != pkColumns.Length || fkColumns.Any( s => String.IsNullOrEmpty(s) ) ) throw new ArgumentException(nameof(fkColumns));
-        
+
         //////////////////
 
         Table pkTable = tablesAndViews.GetTable(pkTableName, pkSchema);
@@ -1098,7 +1098,7 @@
                     if(!IsComputed())
                         DataAnnotations.Add("Required");
                 }
-                
+
                 if (!Settings.UseDataAnnotations)
                 {
                     sb.Append(".IsRequired()");
@@ -1128,7 +1128,7 @@
                     if (PropertyType.Equals("string", StringComparison.InvariantCultureIgnoreCase))
                         DataAnnotations.Add(string.Format("StringLength({0})", MaxLength));
                 }
-                
+
                 if (!Settings.UseDataAnnotations)
                 {
                     if (doNotSpecifySize)

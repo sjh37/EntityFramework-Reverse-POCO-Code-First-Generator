@@ -606,7 +606,7 @@ namespace TestDatabaseDataAnnotation
     // ColumnNames
     ///<summary>
     /// This is to document the
-    ///     table with poor column name choices
+    /// table with poor column name choices
     ///</summary>
     [Table("ColumnNames", Schema = "dbo")]
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.36.1.0")]
@@ -658,6 +658,7 @@ namespace TestDatabaseDataAnnotation
 
         [Column(@"someDate", Order = 9, TypeName = "datetime2")]
         [Required]
+        [DataType(DataType.DateTime)]
         [Display(Name = "Some date")]
         public System.DateTime SomeDate { get; set; } // someDate
 

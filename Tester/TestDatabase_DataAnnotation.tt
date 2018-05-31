@@ -29,6 +29,7 @@
     Settings.UseMappingTables = true; // If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
     Settings.UsePascalCase = true;    // This will rename the generated C# tables & properties to use PascalCase. If false table & property names will be left alone.
     Settings.UseDataAnnotations = true; // If true, will add data annotations to the poco classes.
+    Settings.UseDataAnnotationsWithFluent = false; // If true, then non-Entity Framework-specific DataAnnotations (like [Required] and [StringLength]) will be applied to Entities even if UseDataAnnotations is false.
     Settings.UsePropertyInitializers = false; // Removes POCO constructor and instead uses C# 6 property initialisers to set defaults
     Settings.UseLazyLoading = true; // Marks all navigation properties as virtual or not, to support or disable EF Lazy Loading feature
     Settings.IncludeComments = CommentsStyle.AtEndOfField; // Adds comments to the generated code
@@ -66,7 +67,7 @@
     };
     Settings.ColumnNameToDataAnnotation = new Dictionary<string, string>
     {
-        // This is used when UseDataAnnotations = true;
+        // This is used when UseDataAnnotations == true or UseDataAnnotationsWithFluent == true;
         // It is used to set a data annotation on a column based on the columns name.
         // Make sure the column name is lowercase in the following array, regardless of how it is in the database
         // Column name       DataAnnotation to add
@@ -74,6 +75,7 @@
         { "emailaddress",    "EmailAddress" },
         { "creditcard",      "CreditCard" },
         { "url",             "Url" },
+        { "fax",             "Phone" },
         { "phone",           "Phone" },
         { "phonenumber",     "Phone" },
         { "mobile",          "Phone" },
@@ -81,7 +83,24 @@
         { "telephone",       "Phone" },
         { "telephonenumber", "Phone" },
         { "password",        "DataType(DataType.Password)" },
-        { "username",        "DataType(DataType.Text)" }
+        { "username",        "DataType(DataType.Text)" },
+        { "postcode",        "DataType(DataType.PostalCode)" },
+        { "postalcode",      "DataType(DataType.PostalCode)" },
+        { "zip",             "DataType(DataType.PostalCode)" },
+        { "zipcode",         "DataType(DataType.PostalCode)" }
+    };
+    Settings.ColumnTypeToDataAnnotation = new Dictionary<string, string>
+    {
+        // This is used when UseDataAnnotations == true or UseDataAnnotationsWithFluent == true;
+        // It is used to set a data annotation on a column based on the columns's MS SQL type.
+        // Make sure the column name is lowercase in the following array, regardless of how it is in the database
+        // Column name       DataAnnotation to add
+        { "date",            "DataType(DataType.Date)" },
+        { "datetime",        "DataType(DataType.DateTime)" },
+        { "datetime2",       "DataType(DataType.DateTime)" },
+        { "datetimeoffset",  "DataType(DataType.DateTime)" },
+        { "smallmoney",      "DataType(DataType.Currency)" },
+        { "money",           "DataType(DataType.Currency)" }
     };
 
     // Migrations *************************************************************************************************************************
@@ -229,8 +248,8 @@
     // Column modification*****************************************************************************************************************
     // Use the following list to replace column byte types with Enums.
     // As long as the type can be mapped to your new type, all is well.
-    //EnumDefinitions.Add(new EnumDefinition { Schema = "dbo", Table = "match_table_name", Column = "match_column_name", EnumType = "name_of_enum" });
-    //EnumDefinitions.Add(new EnumDefinition { Schema = "dbo", Table = "OrderHeader", Column = "OrderStatus", EnumType = "OrderStatusType" }); // This will replace OrderHeader.OrderStatus type to be an OrderStatusType enum
+    //Settings.EnumDefinitions.Add(new EnumDefinition { Schema = "dbo", Table = "match_table_name", Column = "match_column_name", EnumType = "name_of_enum" });
+    //Settings.EnumDefinitions.Add(new EnumDefinition { Schema = "dbo", Table = "OrderHeader", Column = "OrderStatus", EnumType = "OrderStatusType" }); // This will replace OrderHeader.OrderStatus type to be an OrderStatusType enum
 
     // Use the following function if you need to apply additional modifications to a column
     // eg. normalise names etc.
@@ -275,6 +294,41 @@
         }
 
         return column;
+    };
+
+
+    // Using Views *****************************************************************************************************************
+    // SQL Server does not support the declaration of primary-keys in VIEWs. Entity Framework's EDMX designer (and this T4 template) assume that all non-null columns in a VIEW are primary-key columns, this will be incorrect for most non-trivial applications.
+    // This callback will be invoked for each VIEW found in the database. Use it to declare which columns participate in that VIEW's primary-key by setting `IsPrimaryKey = true`.
+    // If no columns are marked with `IsPrimaryKey = true` then this T4 template defaults to marking all non-NULL columns as primary key columns.
+    // To set-up Foreign-Key relationships between VIEWs and Tables (or even other VIEWs) use the `AddForeignKeys` callback below.
+    Settings.ViewProcessing = (Table view) =>
+    {
+        // Below is example code for the Northwind database that configures the `VIEW [Orders Qry]` and `VIEW [Invoices]`
+        //switch(view.Name)
+        //{
+        //case "Orders Qry":
+        //    // VIEW [Orders Qry] uniquely identifies rows with the `OrderID` column:
+        //    view.Columns.Single( col => col.Name == "OrderID" ).IsPrimaryKey = true;
+        //    break;
+        //case "Invoices":
+        //    // VIEW [Invoices] has a composite primary key (OrderID+ProductID), so both columns must be marked as a Primary Key:
+        //    foreach( Column col in view.Columns.Where( c => c.Name == "OrderID" || c.Name == "ProductID" ) ) col.IsPrimaryKey = true;
+        //    break;
+        //}
+    };
+
+    Settings.AddForeignKeys = (List<ForeignKey> foreignKeys, Tables tablesAndViews) =>
+    {
+        // In Northwind:
+        // [Orders] (Table) to [Invoices] (View) is one-to-many using Orders.OrderID = Invoices.OrderID
+        // [Order Details] (Table) to [Invoices] (View) is one-to-zeroOrOne - but uses a composite-key: ( [Order Details].OrderID,ProductID = [Invoices].OrderID,ProductID )
+        // [Orders] (Table) to [Orders Qry] (View) is one-to-zeroOrOne ( [Orders].OrderID = [Orders Qry].OrderID )
+
+        // AddRelationship is a helper function that creates ForeignKey objects and adds them to the foreignKeys list:
+        //AddRelationship( foreignKeys, tablesAndViews, "orders_to_invoices"      , "dbo", "Orders"       , "OrderID"                       , "dbo", "Invoices", "OrderID" );
+        //AddRelationship( foreignKeys, tablesAndViews, "orderDetails_to_invoices", "dbo", "Order Details", new[] { "OrderID", "ProductID" }, "dbo", "Invoices",  new[] { "OrderID", "ProductID" } );
+        //AddRelationship( foreignKeys, tablesAndViews, "orders_to_ordersQry"     , "dbo", "Orders"       , "OrderID"                       , "dbo", "Orders Qry", "OrderID" );
     };
 
     // StoredProcedure renaming ************************************************************************************************************
@@ -332,8 +386,14 @@
     {
         if (Settings.IncludeExtendedPropertyComments != CommentsStyle.None && !string.IsNullOrEmpty(t.ExtendedProperty))
         {
+            var lines = t.ExtendedProperty
+                .Split(new string[] { Environment.NewLine, "\r" }, StringSplitOptions.RemoveEmptyEntries)
+                .ToList();
             WriteLine("    ///<summary>");
-            WriteLine("    /// {0}", System.Security.SecurityElement.Escape(t.ExtendedProperty));
+            foreach(var line in lines.Select(x => x.Replace("///", string.Empty).Trim()))
+            {
+                WriteLine("    /// {0}", System.Security.SecurityElement.Escape(line));
+            }
             WriteLine("    ///</summary>");
         }
     };
@@ -379,7 +439,7 @@
             WriteLine("        ///</summary>");
             commentWritten = true;
         }
-        if (Settings.UseDataAnnotations)
+        if (Settings.UseDataAnnotations || Settings.UseDataAnnotationsWithFluent)
         {
             if(c.Ordinal > 1 && !commentWritten)
                 WriteLine(string.Empty);    // Leave a blank line before the next property
@@ -408,6 +468,9 @@
         // Example, to exclude reverse navigation properties for tables ending with Type, use:
         // if (fk.PkTableName.EndsWith("Type"))
         //    fk.IncludeReverseNavigation = false;
+
+        // You can also change the access modifier of the foreign-key's navigation property:
+        // if(fk.PkTableName == "Categories") fk.AccessModifier = "internal";
 
         return fk;
     };

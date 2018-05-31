@@ -335,7 +335,7 @@
                 .Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
                 .ToList();
             WriteLine("    ///<summary>");
-			foreach(var line in lines)
+            foreach(var line in lines.Select(x => x.Replace("///", string.Empty).Trim()))
 			{
 				WriteLine("    /// {0}", System.Security.SecurityElement.Escape(line));
 			}

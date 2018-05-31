@@ -604,7 +604,7 @@ namespace TestDatabaseStandard
     // ColumnNames
     ///<summary>
     /// This is to document the
-    ///     table with poor column name choices
+    /// table with poor column name choices
     ///</summary>
     [System.CodeDom.Compiler.GeneratedCode("EF.Reverse.POCO.Generator", "2.36.1.0")]
     public class ColumnName
