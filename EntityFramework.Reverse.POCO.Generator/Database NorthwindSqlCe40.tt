@@ -331,7 +331,7 @@
             WriteLine("        ///</summary>");
             commentWritten = true;
         }
-        if (Settings.UseDataAnnotations)
+        if (Settings.UseDataAnnotations || Settings.UseDataAnnotationsWithFluent)
         {
             if(c.Ordinal > 1 && !commentWritten)
                 WriteLine(string.Empty);    // Leave a blank line before the next property

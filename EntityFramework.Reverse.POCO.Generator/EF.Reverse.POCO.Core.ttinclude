@@ -80,6 +80,7 @@
         public static string CollectionType = "System.Collections.Generic.List";
         public static bool NullableShortHand;
         public static bool UseDataAnnotations;
+        public static bool UseDataAnnotationsWithFluent;
         public static bool MakeClassesPartial;
         public static bool MakeClassesInternal;
         public static bool MakeDbContextInterfacePartial;
@@ -132,6 +133,7 @@
         public static bool AutomaticMigrationDataLossAllowed;
         public static List<EnumDefinition> EnumDefinitions = new List<EnumDefinition>();
         public static Dictionary<string, string> ColumnNameToDataAnnotation;
+        public static Dictionary<string, string> ColumnTypeToDataAnnotation;
         public static bool IncludeCodeGeneratedAttribute;
         public static Tables Tables;
         public static List<StoredProcedure> StoredProcs;
@@ -690,7 +692,7 @@
 
                 foreach (var t in tables)
                 {
-                    if(Settings.UseDataAnnotations)
+                    if(Settings.UseDataAnnotations || Settings.UseDataAnnotationsWithFluent)
                         t.SetupDataAnnotations();
                     t.Suffix = Settings.TableSuffix;
                 }
@@ -1091,13 +1093,16 @@
             }
             else
             {
-                if (Settings.UseDataAnnotations)
+                if (Settings.UseDataAnnotations || Settings.UseDataAnnotationsWithFluent)
                 {
                     if(!IsComputed())
                         DataAnnotations.Add("Required");
                 }
-                else
+                
+                if (!Settings.UseDataAnnotations)
+                {
                     sb.Append(".IsRequired()");
+                }
             }
 
             if (IsFixedLength || IsRowVersion)
@@ -1116,28 +1121,38 @@
             {
                 var doNotSpecifySize = (Settings.IsSqlCe && MaxLength > 4000); // Issue #179
 
-                if (Settings.UseDataAnnotations)
+                if (Settings.UseDataAnnotations || Settings.UseDataAnnotationsWithFluent)
                 {
                     DataAnnotations.Add(doNotSpecifySize ? "MaxLength" : string.Format("MaxLength({0})", MaxLength));
 
                     if (PropertyType.Equals("string", StringComparison.InvariantCultureIgnoreCase))
                         DataAnnotations.Add(string.Format("StringLength({0})", MaxLength));
                 }
-                else
+                
+                if (!Settings.UseDataAnnotations)
                 {
                     if (doNotSpecifySize)
+                    {
                         sb.Append(".HasMaxLength(null)");
+                    }
                     else
+                    {
                         sb.AppendFormat(".HasMaxLength({0})", MaxLength);
+                    }
                 }
             }
 
             if (IsMaxLength)
             {
-                if (Settings.UseDataAnnotations)
+                if (Settings.UseDataAnnotations || Settings.UseDataAnnotationsWithFluent)
+                {
                     DataAnnotations.Add("MaxLength");
-                else
+                }
+
+                if (!Settings.UseDataAnnotations)
+                {
                     sb.Append(".IsMaxLength()");
+                }
             }
 
             if ((Precision > 0 || Scale > 0) && PropertyType == "decimal")
@@ -1167,15 +1182,17 @@
             if(!string.IsNullOrEmpty(config))
                 Config = string.Format("Property(x => x.{0}){1};", NameHumanCase, config);
 
-            if (!Settings.UseDataAnnotations)
-                return; // Only data annotations below this point
-
-            if (IsPrimaryKey)
+            if (IsPrimaryKey && Settings.UseDataAnnotations)
                 DataAnnotations.Add("Key");
 
-            string value;
-            if(Settings.ColumnNameToDataAnnotation.TryGetValue(NameHumanCase.ToLowerInvariant(), out value))
-                DataAnnotations.Add(value);
+            if (Settings.ColumnNameToDataAnnotation.TryGetValue(NameHumanCase.ToLowerInvariant(), out string valueFromName))
+            {
+                DataAnnotations.Add(valueFromName);
+            }
+            else if (Settings.ColumnTypeToDataAnnotation.TryGetValue(SqlPropertyType.ToLowerInvariant(), out string valueFromType))
+            {
+                DataAnnotations.Add(valueFromType);
+            }
 
             DataAnnotations.Add(string.Format("Display(Name = \"{0}\")", DisplayName));
         }
@@ -3121,12 +3138,15 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
                 if (!Settings.UseDataAnnotations)
                 {
-                    fkCol.col.ConfigFk.Add(string.Format("{0};{1}", GetRelationship(relationship, fkCol.col, pkCol, pkPropName, fkPropName, manyToManyMapping, mapKey, foreignKey.CascadeOnDelete, foreignKey.IncludeReverseNavigation, foreignKey.IsNotEnforced),
-                        Settings.IncludeComments != CommentsStyle.None ? " // " + foreignKey.ConstraintName : string.Empty));
+                    string rel = GetRelationship(relationship, fkCol.col, pkCol, pkPropName, fkPropName, manyToManyMapping, mapKey, foreignKey.CascadeOnDelete, foreignKey.IncludeReverseNavigation, foreignKey.IsNotEnforced);
+                    string com = Settings.IncludeComments != CommentsStyle.None ? " // " + foreignKey.ConstraintName : string.Empty;
+                    fkCol.col.ConfigFk.Add(string.Format("{0};{1}", rel, com));
                 }
 
                 if(foreignKey.IncludeReverseNavigation)
+                {
                     pkTable.AddReverseNavigation(relationship, pkTableHumanCase, fkTable, fkPropName, string.Format("{0}.{1}", fkTable.Name, foreignKey.ConstraintName), foreignKeys);
+                }
             }
         }
 

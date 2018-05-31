@@ -19,8 +19,10 @@ fileManager.StartHeader();
 
 <#if (Settings.ElementsToGenerate.HasFlag(Elements.Poco) || Settings.ElementsToGenerate.HasFlag(Elements.PocoConfiguration))
 {
-    if (Settings.UseDataAnnotations) {#>
+    if (Settings.UseDataAnnotations || Settings.UseDataAnnotationsWithFluent) { #>
 using System.ComponentModel.DataAnnotations;
+<# }
+    if (Settings.UseDataAnnotations) {#>
 using System.ComponentModel.DataAnnotations.Schema;
 <#  }
 }
