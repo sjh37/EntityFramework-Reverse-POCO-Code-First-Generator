@@ -387,7 +387,7 @@
         if (Settings.IncludeExtendedPropertyComments != CommentsStyle.None && !string.IsNullOrEmpty(t.ExtendedProperty))
         {
             var lines = t.ExtendedProperty
-                .Split(new string[] { Environment.NewLine, "\r" }, StringSplitOptions.RemoveEmptyEntries)
+                .Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
                 .ToList();
             WriteLine("    ///<summary>");
             foreach(var line in lines.Select(x => x.Replace("///", string.Empty).Trim()))
