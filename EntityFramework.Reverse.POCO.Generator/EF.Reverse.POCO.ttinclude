@@ -77,7 +77,7 @@ foreach(var usingStatement in usingsAll.Distinct().OrderBy(x => x)) { #>
     #region Unit of work
 
 <# }#>
-    <# if(Settings.MakeClassesInternal) { #>internal<# } else { #>public<# } #> <# if(Settings.MakeDbContextInterfacePartial) { #>partial <# } #>interface <#=Settings.DbContextInterfaceName #> : <#= Settings.DbContextInterfaceBaseClasses #>
+    <#= Settings.DbContextInterfaceModifiers ?? "public partial" #> interface <#=Settings.DbContextInterfaceName #> : <#= Settings.DbContextInterfaceBaseClasses #>
     {
 <#
 foreach (Table tbl in from t in Settings.Tables.Where(t => !t.IsMapping && t.HasPrimaryKey).OrderBy(x => x.NameHumanCase) select t)
@@ -164,9 +164,9 @@ if (Settings.IncludeTableValuedFunctions)
 <# } #>
 <#if(Settings.IncludeCodeGeneratedAttribute){#>    <#=CodeGeneratedAttribute#>
 <#}#>
-    internal sealed <# if(Settings.MakeClassesPartial) { #>partial <# } #>class <#=Settings.MigrationConfigurationFileName#> : System.Data.Entity.Migrations.DbMigrationsConfiguration<<#=Settings.DbContextName#>>
+    <#= Settings.MigrationClassModifiers #> class <#=Settings.MigrationConfigurationFileName#> : System.Data.Entity.Migrations.DbMigrationsConfiguration<<#=Settings.DbContextName#>>
     {
-        <# if(Settings.MakeClassesInternal) { #>internal<# } else { #>public<# } #> <#=Settings.MigrationConfigurationFileName#>()
+        public <#=Settings.MigrationConfigurationFileName#>()
         {
             AutomaticMigrationsEnabled = <# if (Settings.AutomaticMigrationsEnabled) { #>true<# } else { #>false<# } #>;
             AutomaticMigrationDataLossAllowed = <# if (Settings.AutomaticMigrationDataLossAllowed) { #>true<# } else { #>false<# } #>;
@@ -211,7 +211,7 @@ foreach(var usingStatement in usingsContext.Distinct().OrderBy(x => x)) { #>
 <# } #>
 <#if(Settings.IncludeCodeGeneratedAttribute){#>    <#=CodeGeneratedAttribute#>
 <#}#>
-    <# if(Settings.MakeClassesInternal) { #>internal<# } else { #>public<# } #> <# if(Settings.MakeClassesPartial) { #>partial <# } #>class <#=Settings.DbContextName#> : <#=Settings.DbContextBaseClass#><#= (string.IsNullOrWhiteSpace(Settings.DbContextInterfaceName) ? "" : ", " + Settings.DbContextInterfaceName)#>
+    <#= Settings.DbContextClassModifiers #> class <#=Settings.DbContextName#> : <#=Settings.DbContextBaseClass#><#= (string.IsNullOrWhiteSpace(Settings.DbContextInterfaceName) ? "" : ", " + Settings.DbContextInterfaceName)#>
     {
 <#
 foreach(Table tbl in from t in Settings.Tables.Where(t => !t.IsMapping && t.HasPrimaryKey).OrderBy(x => x.NameHumanCase) select t)
@@ -236,42 +236,42 @@ foreach(Table tbl in from t in Settings.Tables.Where(t => !t.IsMapping && t.HasP
         public <#=Settings.DbContextName#>()
             : base(<#=Settings.DefaultConstructorArgument#>)
         {
-<#if(Settings.MakeClassesPartial) {#>            InitializePartial();
+<#if(Settings.DbContextClassIsPartial) {#>            InitializePartial();
 <#}#>
         }
 
 <#}#>
-        <# if(Settings.MakeClassesInternal) { #>internal<# } else { #>public<# } #> <#=Settings.DbContextName#>(string connectionString)
+        public <#=Settings.DbContextName#>(string connectionString)
             : base(connectionString)
         {
-<#if(Settings.MakeClassesPartial) {#>            InitializePartial();
+<#if(Settings.DbContextClassIsPartial) {#>            InitializePartial();
 <#}#>
         }
 
-        <# if(Settings.MakeClassesInternal) { #>internal<# } else { #>public<# } #> <#=Settings.DbContextName#>(string connectionString, System.Data.Entity.Infrastructure.DbCompiledModel model)
+        public <#=Settings.DbContextName#>(string connectionString, System.Data.Entity.Infrastructure.DbCompiledModel model)
             : base(connectionString, model)
         {
-<#if(Settings.MakeClassesPartial) {#>            InitializePartial();
+<#if(Settings.DbContextClassIsPartial) {#>            InitializePartial();
 <#}#>
         }
 
-        <# if(Settings.MakeClassesInternal) { #>internal<# } else { #>public<# } #> <#=Settings.DbContextName#>(System.Data.Common.DbConnection existingConnection, bool contextOwnsConnection)
+        public <#=Settings.DbContextName#>(System.Data.Common.DbConnection existingConnection, bool contextOwnsConnection)
             : base(existingConnection, contextOwnsConnection)
         {
-<#if(Settings.MakeClassesPartial) {#>            InitializePartial();
+<#if(Settings.DbContextClassIsPartial) {#>            InitializePartial();
 <#}#>
         }
 
-        <# if(Settings.MakeClassesInternal) { #>internal<# } else { #>public<# } #> <#=Settings.DbContextName#>(System.Data.Common.DbConnection existingConnection, System.Data.Entity.Infrastructure.DbCompiledModel model, bool contextOwnsConnection)
+        public <#=Settings.DbContextName#>(System.Data.Common.DbConnection existingConnection, System.Data.Entity.Infrastructure.DbCompiledModel model, bool contextOwnsConnection)
             : base(existingConnection, model, contextOwnsConnection)
         {
-<#if(Settings.MakeClassesPartial) {#>            InitializePartial();
+<#if(Settings.DbContextClassIsPartial) {#>            InitializePartial();
 <#}#>
         }
 
         protected override void Dispose(bool disposing)
         {
-<#if(Settings.MakeClassesPartial) {#>            DisposePartial(disposing);
+<#if(Settings.DbContextClassIsPartial) {#>            DisposePartial(disposing);
 <#}#>
             base.Dispose(disposing);
         }
@@ -304,7 +304,7 @@ foreach(var tbl in from t in Settings.Tables.Where(t => !t.IsMapping && t.HasPri
 #>
             modelBuilder.Configurations.Add(new <#=tbl.NameHumanCaseWithSuffix() + Settings.ConfigurationClassName#>());
 <# } #>
-<#if(Settings.MakeClassesPartial) {#>
+<#if(Settings.DbContextClassIsPartial) {#>
 
             OnModelCreatingPartial(modelBuilder);
 <#}#>
@@ -320,7 +320,7 @@ foreach(var tbl in from t in Settings.Tables.Where(t => !t.IsMapping && t.HasPri
 <# } #>
             return modelBuilder;
         }
-<#if(Settings.MakeClassesPartial) {#>
+<#if(Settings.DbContextClassIsPartial) {#>
 
         partial void InitializePartial();
         partial void DisposePartial(bool disposing);
@@ -502,7 +502,7 @@ if(Settings.ElementsToGenerate.HasFlag(Elements.Context) && !Settings.GenerateSe
     #region Database context factory
 
 <# } #>
-    <# if(Settings.MakeClassesInternal) { #>internal<# } else { #>public<# } #> <# if(Settings.MakeClassesPartial) { #>partial <# } #>class <#= Settings.DbContextName + "Factory" #> : System.Data.Entity.Infrastructure.IDbContextFactory<<#= Settings.DbContextName #>>
+    <#= Settings.DbContextClassModifiers #> class <#= Settings.DbContextName + "Factory" #> : System.Data.Entity.Infrastructure.IDbContextFactory<<#= Settings.DbContextName #>>
     {
         public <#= Settings.DbContextName #> Create()
         {
@@ -530,7 +530,7 @@ foreach(var usingStatement in usingsContext.Distinct().OrderBy(x => x)) { #>
 <# } #>
 <#if(Settings.IncludeCodeGeneratedAttribute){#>    <#=CodeGeneratedAttribute#>
 <#}#>
-    <# if(Settings.MakeClassesInternal) { #>internal<# } else { #>public<# } #> <# if(Settings.MakeClassesPartial) { #>partial <# } #>class Fake<#=Settings.DbContextName #><#= (string.IsNullOrWhiteSpace(Settings.DbContextInterfaceName) ? "" : " : " + Settings.DbContextInterfaceName)#>
+    <#= Settings.DbContextClassModifiers #> class Fake<#=Settings.DbContextName #><#= (string.IsNullOrWhiteSpace(Settings.DbContextInterfaceName) ? "" : " : " + Settings.DbContextInterfaceName)#>
     {
 <#
 foreach (var tbl in from t in Settings.Tables.Where(t => !t.IsMapping && t.HasPrimaryKey).OrderBy(x => x.NameHumanCase) select t)
@@ -551,7 +551,7 @@ foreach (Table tbl in from t in Settings.Tables.Where(t => !t.IsMapping && t.Has
 #>
             <#=Inflector.MakePlural(tbl.NameHumanCase) #> = new FakeDbSet<<#=tbl.NameHumanCaseWithSuffix() #>>(<#= string.Join(", ", tbl.PrimaryKeys.Select(x => "\"" + x.NameHumanCase + "\"")) #>);
 <# } #>
-<#if(Settings.MakeClassesPartial) {#>
+<#if(Settings.DbContextClassIsPartial) {#>
 
             InitializePartial();
 <#}#>        }
@@ -576,7 +576,7 @@ foreach (Table tbl in from t in Settings.Tables.Where(t => !t.IsMapping && t.Has
             return System.Threading.Tasks.Task<int>.Factory.StartNew(() => 1, cancellationToken);
         }
 <# } #>
-<#if(Settings.MakeClassesPartial) {#>
+<#if(Settings.DbContextClassIsPartial) {#>
 
         partial void InitializePartial();
 <#}#>
@@ -714,7 +714,7 @@ if (Settings.IncludeTableValuedFunctions)
     //      Read more about it here: https://msdn.microsoft.com/en-us/data/dn314431.aspx
 <#if(Settings.IncludeCodeGeneratedAttribute){#>    <#=CodeGeneratedAttribute#>
 <#}#>
-    <# if(Settings.MakeClassesInternal) { #>internal<# } else { #>public<# } #> <# if(Settings.MakeClassesPartial) { #>partial <# } #>class FakeDbSet<TEntity> : System.Data.Entity.DbSet<TEntity>, IQueryable, System.Collections.Generic.IEnumerable<TEntity><# if (Settings.IsSupportedFrameworkVersion("4.5")) { #>, System.Data.Entity.Infrastructure.IDbAsyncEnumerable<TEntity><# } #> where TEntity : class
+    <#= Settings.DbContextClassModifiers #> class FakeDbSet<TEntity> : System.Data.Entity.DbSet<TEntity>, IQueryable, System.Collections.Generic.IEnumerable<TEntity><# if (Settings.IsSupportedFrameworkVersion("4.5")) { #>, System.Data.Entity.Infrastructure.IDbAsyncEnumerable<TEntity><# } #> where TEntity : class
     {
         private readonly System.Reflection.PropertyInfo[] _primaryKeys;
         private readonly System.Collections.ObjectModel.ObservableCollection<TEntity> _data;
@@ -724,7 +724,7 @@ if (Settings.IncludeTableValuedFunctions)
         {
             _data = new System.Collections.ObjectModel.ObservableCollection<TEntity>();
             _query = _data.AsQueryable();
-<#if(Settings.MakeClassesPartial) {#>
+<#if(Settings.DbContextClassIsPartial) {#>
 
             InitializePartial();
 <#}#>        }
@@ -734,7 +734,7 @@ if (Settings.IncludeTableValuedFunctions)
             _primaryKeys = typeof(TEntity).GetProperties().Where(x => primaryKeys.Contains(x.Name)).ToArray();
             _data = new System.Collections.ObjectModel.ObservableCollection<TEntity>();
             _query = _data.AsQueryable();
-<#if(Settings.MakeClassesPartial) {#>
+<#if(Settings.DbContextClassIsPartial) {#>
 
             InitializePartial();
 <#}#>        }
@@ -861,7 +861,7 @@ if (Settings.IncludeTableValuedFunctions)
             return new FakeDbAsyncEnumerator<TEntity>(_data.GetEnumerator());
         }
 <# } #>
-<#if(Settings.MakeClassesPartial) {#>
+<#if(Settings.DbContextClassIsPartial) {#>
 
         partial void InitializePartial();
 <#}#>    }
@@ -870,7 +870,7 @@ if (Settings.IncludeTableValuedFunctions)
 
 <#if(Settings.IncludeCodeGeneratedAttribute){#>    <#=CodeGeneratedAttribute#>
 <#}#>
-    <# if(Settings.MakeClassesInternal) { #>internal<# } else { #>public<# } #> class FakeDbAsyncQueryProvider<TEntity> : System.Data.Entity.Infrastructure.IDbAsyncQueryProvider
+    <#= Settings.DbContextClassModifiers #> class FakeDbAsyncQueryProvider<TEntity> : System.Data.Entity.Infrastructure.IDbAsyncQueryProvider
     {
         private readonly IQueryProvider _inner;
 
@@ -921,7 +921,7 @@ if (Settings.IncludeTableValuedFunctions)
 
 <#if(Settings.IncludeCodeGeneratedAttribute){#>    <#=CodeGeneratedAttribute#>
 <#}#>
-    <# if(Settings.MakeClassesInternal) { #>internal<# } else { #>public<# } #> class FakeDbAsyncEnumerable<T> : EnumerableQuery<T>, System.Data.Entity.Infrastructure.IDbAsyncEnumerable<T>, IQueryable<T>
+    <#= Settings.DbContextClassModifiers #> class FakeDbAsyncEnumerable<T> : EnumerableQuery<T>, System.Data.Entity.Infrastructure.IDbAsyncEnumerable<T>, IQueryable<T>
     {
         public FakeDbAsyncEnumerable(System.Collections.Generic.IEnumerable<T> enumerable)
             : base(enumerable)
@@ -949,7 +949,7 @@ if (Settings.IncludeTableValuedFunctions)
 
 <#if(Settings.IncludeCodeGeneratedAttribute){#>    <#=CodeGeneratedAttribute#>
 <#}#>
-    <# if(Settings.MakeClassesInternal) { #>internal<# } else { #>public<# } #> class FakeDbAsyncEnumerator<T> : System.Data.Entity.Infrastructure.IDbAsyncEnumerator<T>
+    <#= Settings.DbContextClassModifiers #> class FakeDbAsyncEnumerator<T> : System.Data.Entity.Infrastructure.IDbAsyncEnumerator<T>
     {
         private readonly System.Collections.Generic.IEnumerator<T> _inner;
 
@@ -1005,7 +1005,7 @@ if(!tbl.HasPrimaryKey) { #>
     WritePocoClassAttributes(tbl);#>
 <#if(Settings.IncludeCodeGeneratedAttribute){#>    <#=CodeGeneratedAttribute#>
 <#}#>
-    <# if(Settings.MakeClassesInternal) { #>internal<# } else { #>public<# } #> <# if(Settings.MakeClassesPartial) { #>partial <# } #>class <#=tbl.NameHumanCaseWithSuffix()#><#=WritePocoBaseClasses != null ? WritePocoBaseClasses(tbl) : "" #>
+    <#= Settings.EntityClassesModifiers #> class <#=tbl.NameHumanCaseWithSuffix()#><#=WritePocoBaseClasses != null ? WritePocoBaseClasses(tbl) : "" #>
     {
 <# WritePocoBaseClassBody(tbl); #>
 <# foreach(Column col in tbl.Columns.OrderBy(x => x.Ordinal).Where(x => !x.Hidden))
@@ -1062,7 +1062,7 @@ foreach(var entityFk in tbl.Columns.SelectMany(x => x.EntityFk).OrderBy(o => o.D
 <# } } #>
 <#
 if (!Settings.UsePropertyInitializers){
-if(tbl.Columns.Where(c => c.Default != string.Empty && !c.Hidden).Count() > 0 || tbl.ReverseNavigationCtor.Count() > 0 || Settings.MakeClassesPartial)
+if(tbl.Columns.Where(c => c.Default != string.Empty && !c.Hidden).Count() > 0 || tbl.ReverseNavigationCtor.Count() > 0 || Settings.EntityClassesArePartial)
 {
 #>
 
@@ -1080,10 +1080,10 @@ foreach(string s in tbl.ReverseNavigationCtor)
 #>
             <#=s #>
 <# }
-if(Settings.MakeClassesPartial) {#>
+if(Settings.EntityClassesArePartial) {#>
             InitializePartial();
 <#}#>        }
-<#if(Settings.MakeClassesPartial) {#>
+<#if(Settings.EntityClassesArePartial) {#>
 
         partial void InitializePartial();
 <#} }
@@ -1109,7 +1109,7 @@ if(Settings.IncludeComments != CommentsStyle.None){#>    // <#=tbl.Name#>
 <# } #>
 <#if(Settings.IncludeCodeGeneratedAttribute){#>    <#=CodeGeneratedAttribute#>
 <#}#>
-    <# if(Settings.MakeClassesInternal) { #>internal<# } else { #>public<# } #> <# if(Settings.MakeClassesPartial) { #>partial <# } #>class <#=tbl.NameHumanCaseWithSuffix() + Settings.ConfigurationClassName#> : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<<#=tbl.NameHumanCaseWithSuffix()#>>
+    <#= Settings.ConfigurationClassesModifiers #> class <#=tbl.NameHumanCaseWithSuffix() + Settings.ConfigurationClassName#> : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<<#=tbl.NameHumanCaseWithSuffix()#>>
     {
         public <#=tbl.NameHumanCaseWithSuffix() + Settings.ConfigurationClassName#>()
             : this(<# if (string.IsNullOrEmpty(tbl.Schema)) { #>""<# } else { #>"<#=tbl.Schema#>"<# } #>)
@@ -1149,10 +1149,10 @@ foreach (string s in tbl.MappingConfiguration)
 #>
             <#=s#>
 <# } #>
-<#if(Settings.MakeClassesPartial) {#>
+<#if(Settings.ConfigurationClassesArePartial) {#>
             InitializePartial();
 <#}#>        }
-<#if(Settings.MakeClassesPartial) {#>
+<#if(Settings.ConfigurationClassesArePartial) {#>
         partial void InitializePartial();
 <#}#>    }
 
@@ -1174,7 +1174,7 @@ foreach(var sp in Settings.StoredProcs.Where(x => x.ReturnModels.Count > 0 && x.
 <# fileManager.StartNewFile(spReturnClassName + Settings.FileExtension);#>
 <#if(Settings.IncludeCodeGeneratedAttribute){#>    <#=CodeGeneratedAttribute#>
 <#}#>
-    public <# if(Settings.MakeClassesPartial) { #>partial <# } #>class <#= spReturnClassName #>
+    <#= Settings.ResultClassModifiers #> class <#= spReturnClassName #>
     {
 <#
 var returnModelCount = sp.ReturnModels.Count;

@@ -22,10 +22,13 @@
     //Settings.DefaultConstructorArgument = "EnvironmentConnectionStrings.MyDbContext"; //defaults to "Name=" + ConnectionStringName
     Settings.ConfigurationClassName = "Configuration"; // Configuration, Mapping, Map, etc. This is appended to the Poco class name to configure the mappings.
     Settings.FilenameSearchOrder = new[] { "app.config", "web.config" }; // Add more here if required. The config files are searched for in the local project first, then the whole solution second.
-    Settings.GenerateSeparateFiles = false;
-    Settings.MakeClassesInternal = false;
-    Settings.MakeClassesPartial = false;
-    Settings.MakeDbContextInterfacePartial = false;
+    Settings.GenerateSeparateFiles = false;    
+    Settings.EntityClassesModifiers        = "public";
+    Settings.ConfigurationClassesModifiers = "public";
+    Settings.DbContextClassModifiers       = "public";
+    Settings.DbContextInterfaceModifiers   = "public";
+    Settings.MigrationClassModifiers       = "internal sealed";
+    Settings.ResultClassModifiers          = "public";
     Settings.UseMappingTables = true; // If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
     Settings.UsePascalCase = true;    // This will rename the generated C# tables & properties to use PascalCase. If false table & property names will be left alone.
     Settings.UseDataAnnotations = false; // If true, will add data annotations to the poco classes.
