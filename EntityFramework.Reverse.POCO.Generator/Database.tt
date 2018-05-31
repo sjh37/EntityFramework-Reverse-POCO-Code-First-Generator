@@ -67,7 +67,7 @@
     };
     Settings.ColumnNameToDataAnnotation = new Dictionary<string, string>
     {
-        // This is used when UseDataAnnotations = true;
+        // This is used when UseDataAnnotations == true or UseDataAnnotationsWithFluent == true;
         // It is used to set a data annotation on a column based on the columns name.
         // Make sure the column name is lowercase in the following array, regardless of how it is in the database
         // Column name       DataAnnotation to add
@@ -421,7 +421,7 @@
             WriteLine("        ///</summary>");
             commentWritten = true;
         }
-        if (Settings.UseDataAnnotations)
+        if (Settings.UseDataAnnotations || Settings.UseDataAnnotationsWithFluent)
         {
             if(c.Ordinal > 1 && !commentWritten)
                 WriteLine(string.Empty);    // Leave a blank line before the next property

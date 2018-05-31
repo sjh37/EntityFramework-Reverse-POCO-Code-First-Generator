@@ -1181,10 +1181,7 @@
             if(!string.IsNullOrEmpty(config))
                 Config = string.Format("Property(x => x.{0}){1};", NameHumanCase, config);
 
-            if (!Settings.UseDataAnnotations)
-                return; // Only data annotations below this point
-
-            if (IsPrimaryKey)
+            if (IsPrimaryKey && Settings.UseDataAnnotations)
                 DataAnnotations.Add("Key");
 
             string value;
@@ -3135,13 +3132,16 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
                 if (!Settings.UseDataAnnotations)
                 {
-                    fkCol.col.ConfigFk.Add(string.Format("{0};{1}", GetRelationship(relationship, fkCol.col, pkCol, pkPropName, fkPropName, manyToManyMapping, mapKey, foreignKey.CascadeOnDelete, foreignKey.IncludeReverseNavigation, foreignKey.IsNotEnforced),
-                        Settings.IncludeComments != CommentsStyle.None ? " // " + foreignKey.ConstraintName : string.Empty));
+                    string rel = GetRelationship(relationship, fkCol.col, pkCol, pkPropName, fkPropName, manyToManyMapping, mapKey, foreignKey.CascadeOnDelete, foreignKey.IncludeReverseNavigation, foreignKey.IsNotEnforced);
+                    string com = Settings.IncludeComments != CommentsStyle.None ? " // " + foreignKey.ConstraintName : string.Empty;
+                    fkCol.col.ConfigFk.Add(string.Format("{0};{1}", rel, com));
                 }
 
                 if(foreignKey.IncludeReverseNavigation)
+                {
                     pkTable.AddReverseNavigation(relationship, pkTableHumanCase, fkTable, fkPropName, string.Format("{0}.{1}", fkTable.Name, foreignKey.ConstraintName), foreignKeys);
             }
+        }
         }
 
         public override void IdentifyForeignKeys(List<ForeignKey> fkList, Tables tables)
