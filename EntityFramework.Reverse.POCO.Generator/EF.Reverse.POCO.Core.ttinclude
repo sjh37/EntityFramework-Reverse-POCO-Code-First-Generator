@@ -87,9 +87,20 @@
         public static string DbContextInterfaceModifiers = "public partial";
         public static string MigrationClassModifiers = "internal sealed";
         public static string ResultClassModifiers = "public partial";
-        public static bool DbContextClassIsPartial => DbContextClassModifiers?.Contains("partial") ?? false;
-        public static bool EntityClassesArePartial => EntityClassesModifiers?.Contains("partial") ?? false;
-        public static bool ConfigurationClassesArePartial => ConfigurationClassesModifiers?.Contains("partial") ?? false;
+        public static bool DbContextClassIsPartial()
+        {
+            return DbContextClassModifiers != null && DbContextClassModifiers.Contains("partial");
+        }
+
+        public static bool EntityClassesArePartial()
+        {
+            return EntityClassesModifiers != null && EntityClassesModifiers.Contains("partial");
+        }
+
+        public static bool ConfigurationClassesArePartial()
+        {
+            return ConfigurationClassesModifiers != null && ConfigurationClassesModifiers.Contains("partial");
+        }
         public static bool GenerateSeparateFiles;
         public static bool UseMappingTables;
         public static bool UsePropertyInitializers;
@@ -3807,7 +3818,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 case Relationship.ManyToMany:
                     break;
             }
-            string accessModifier = fks?.FirstOrDefault()?.AccessModifier ?? "public";
+            string accessModifier = fks != null && fks.FirstOrDefault() != null ? (fks.FirstOrDefault().AccessModifier ?? "public") : "public";
             switch (relationship)
             {
                 case Relationship.OneToOne:

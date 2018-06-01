@@ -236,7 +236,7 @@ foreach(Table tbl in from t in Settings.Tables.Where(t => !t.IsMapping && t.HasP
         public <#=Settings.DbContextName#>()
             : base(<#=Settings.DefaultConstructorArgument#>)
         {
-<#if(Settings.DbContextClassIsPartial) {#>            InitializePartial();
+<#if(Settings.DbContextClassIsPartial()) {#>            InitializePartial();
 <#}#>
         }
 
@@ -244,34 +244,34 @@ foreach(Table tbl in from t in Settings.Tables.Where(t => !t.IsMapping && t.HasP
         public <#=Settings.DbContextName#>(string connectionString)
             : base(connectionString)
         {
-<#if(Settings.DbContextClassIsPartial) {#>            InitializePartial();
+<#if(Settings.DbContextClassIsPartial()) {#>            InitializePartial();
 <#}#>
         }
 
         public <#=Settings.DbContextName#>(string connectionString, System.Data.Entity.Infrastructure.DbCompiledModel model)
             : base(connectionString, model)
         {
-<#if(Settings.DbContextClassIsPartial) {#>            InitializePartial();
+<#if(Settings.DbContextClassIsPartial()) {#>            InitializePartial();
 <#}#>
         }
 
         public <#=Settings.DbContextName#>(System.Data.Common.DbConnection existingConnection, bool contextOwnsConnection)
             : base(existingConnection, contextOwnsConnection)
         {
-<#if(Settings.DbContextClassIsPartial) {#>            InitializePartial();
+<#if(Settings.DbContextClassIsPartial()) {#>            InitializePartial();
 <#}#>
         }
 
         public <#=Settings.DbContextName#>(System.Data.Common.DbConnection existingConnection, System.Data.Entity.Infrastructure.DbCompiledModel model, bool contextOwnsConnection)
             : base(existingConnection, model, contextOwnsConnection)
         {
-<#if(Settings.DbContextClassIsPartial) {#>            InitializePartial();
+<#if(Settings.DbContextClassIsPartial()) {#>            InitializePartial();
 <#}#>
         }
 
         protected override void Dispose(bool disposing)
         {
-<#if(Settings.DbContextClassIsPartial) {#>            DisposePartial(disposing);
+<#if(Settings.DbContextClassIsPartial()) {#>            DisposePartial(disposing);
 <#}#>
             base.Dispose(disposing);
         }
@@ -304,7 +304,7 @@ foreach(var tbl in from t in Settings.Tables.Where(t => !t.IsMapping && t.HasPri
 #>
             modelBuilder.Configurations.Add(new <#=tbl.NameHumanCaseWithSuffix() + Settings.ConfigurationClassName#>());
 <# } #>
-<#if(Settings.DbContextClassIsPartial) {#>
+<#if(Settings.DbContextClassIsPartial()) {#>
 
             OnModelCreatingPartial(modelBuilder);
 <#}#>
@@ -320,7 +320,7 @@ foreach(var tbl in from t in Settings.Tables.Where(t => !t.IsMapping && t.HasPri
 <# } #>
             return modelBuilder;
         }
-<#if(Settings.DbContextClassIsPartial) {#>
+<#if(Settings.DbContextClassIsPartial()) {#>
 
         partial void InitializePartial();
         partial void DisposePartial(bool disposing);
@@ -551,7 +551,7 @@ foreach (Table tbl in from t in Settings.Tables.Where(t => !t.IsMapping && t.Has
 #>
             <#=Inflector.MakePlural(tbl.NameHumanCase) #> = new FakeDbSet<<#=tbl.NameHumanCaseWithSuffix() #>>(<#= string.Join(", ", tbl.PrimaryKeys.Select(x => "\"" + x.NameHumanCase + "\"")) #>);
 <# } #>
-<#if(Settings.DbContextClassIsPartial) {#>
+<#if(Settings.DbContextClassIsPartial()) {#>
 
             InitializePartial();
 <#}#>        }
@@ -576,7 +576,7 @@ foreach (Table tbl in from t in Settings.Tables.Where(t => !t.IsMapping && t.Has
             return System.Threading.Tasks.Task<int>.Factory.StartNew(() => 1, cancellationToken);
         }
 <# } #>
-<#if(Settings.DbContextClassIsPartial) {#>
+<#if(Settings.DbContextClassIsPartial()) {#>
 
         partial void InitializePartial();
 <#}#>
@@ -724,7 +724,7 @@ if (Settings.IncludeTableValuedFunctions)
         {
             _data = new System.Collections.ObjectModel.ObservableCollection<TEntity>();
             _query = _data.AsQueryable();
-<#if(Settings.DbContextClassIsPartial) {#>
+<#if(Settings.DbContextClassIsPartial()) {#>
 
             InitializePartial();
 <#}#>        }
@@ -734,7 +734,7 @@ if (Settings.IncludeTableValuedFunctions)
             _primaryKeys = typeof(TEntity).GetProperties().Where(x => primaryKeys.Contains(x.Name)).ToArray();
             _data = new System.Collections.ObjectModel.ObservableCollection<TEntity>();
             _query = _data.AsQueryable();
-<#if(Settings.DbContextClassIsPartial) {#>
+<#if(Settings.DbContextClassIsPartial()) {#>
 
             InitializePartial();
 <#}#>        }
@@ -861,7 +861,7 @@ if (Settings.IncludeTableValuedFunctions)
             return new FakeDbAsyncEnumerator<TEntity>(_data.GetEnumerator());
         }
 <# } #>
-<#if(Settings.DbContextClassIsPartial) {#>
+<#if(Settings.DbContextClassIsPartial()) {#>
 
         partial void InitializePartial();
 <#}#>    }
@@ -1062,7 +1062,7 @@ foreach(var entityFk in tbl.Columns.SelectMany(x => x.EntityFk).OrderBy(o => o.D
 <# } } #>
 <#
 if (!Settings.UsePropertyInitializers){
-if(tbl.Columns.Where(c => c.Default != string.Empty && !c.Hidden).Count() > 0 || tbl.ReverseNavigationCtor.Count() > 0 || Settings.EntityClassesArePartial)
+if(tbl.Columns.Where(c => c.Default != string.Empty && !c.Hidden).Count() > 0 || tbl.ReverseNavigationCtor.Count() > 0 || Settings.EntityClassesArePartial())
 {
 #>
 
@@ -1080,10 +1080,10 @@ foreach(string s in tbl.ReverseNavigationCtor)
 #>
             <#=s #>
 <# }
-if(Settings.EntityClassesArePartial) {#>
+if(Settings.EntityClassesArePartial()) {#>
             InitializePartial();
 <#}#>        }
-<#if(Settings.EntityClassesArePartial) {#>
+<#if(Settings.EntityClassesArePartial()) {#>
 
         partial void InitializePartial();
 <#} }
@@ -1149,10 +1149,10 @@ foreach (string s in tbl.MappingConfiguration)
 #>
             <#=s#>
 <# } #>
-<#if(Settings.ConfigurationClassesArePartial) {#>
+<#if(Settings.ConfigurationClassesArePartial()) {#>
             InitializePartial();
 <#}#>        }
-<#if(Settings.ConfigurationClassesArePartial) {#>
+<#if(Settings.ConfigurationClassesArePartial()) {#>
         partial void InitializePartial();
 <#}#>    }
 

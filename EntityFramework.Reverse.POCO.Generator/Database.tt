@@ -22,7 +22,7 @@
     //Settings.DefaultConstructorArgument = "EnvironmentConnectionStrings.MyDbContext"; //defaults to "Name=" + ConnectionStringName
     Settings.ConfigurationClassName = "Configuration"; // Configuration, Mapping, Map, etc. This is appended to the Poco class name to configure the mappings.
     Settings.FilenameSearchOrder = new[] { "app.config", "web.config" }; // Add more here if required. The config files are searched for in the local project first, then the whole solution second.
-    Settings.GenerateSeparateFiles = false;    
+    Settings.GenerateSeparateFiles = false;
     Settings.EntityClassesModifiers        = "public";
     Settings.ConfigurationClassesModifiers = "public";
     Settings.DbContextClassModifiers       = "public";
