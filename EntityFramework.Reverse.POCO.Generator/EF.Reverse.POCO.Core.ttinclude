@@ -81,9 +81,15 @@
         public static bool NullableShortHand;
         public static bool UseDataAnnotations;
         public static bool UseDataAnnotationsWithFluent;
-        public static bool MakeClassesPartial;
-        public static bool MakeClassesInternal;
-        public static bool MakeDbContextInterfacePartial;
+        public static string EntityClassesModifiers = "public partial";
+        public static string ConfigurationClassesModifiers = "internal";
+        public static string DbContextClassModifiers = "public partial";
+        public static string DbContextInterfaceModifiers = "public partial";
+        public static string MigrationClassModifiers = "internal sealed";
+        public static string ResultClassModifiers = "public partial";
+        public static bool DbContextClassIsPartial => DbContextClassModifiers?.Contains("partial") ?? false;
+        public static bool EntityClassesArePartial => EntityClassesModifiers?.Contains("partial") ?? false;
+        public static bool ConfigurationClassesArePartial => ConfigurationClassesModifiers?.Contains("partial") ?? false;
         public static bool GenerateSeparateFiles;
         public static bool UseMappingTables;
         public static bool UsePropertyInitializers;
