@@ -966,6 +966,7 @@
         public string ExtendedProperty;
         public string SummaryComments;
         public string UniqueIndexName;
+        public bool AllowEmptyStrings = true;
 
         public bool IsIdentity;
         public bool IsNullable;
@@ -1112,7 +1113,7 @@
             {
                 if (!IsComputed() && (Settings.UseDataAnnotations || Settings.UseDataAnnotationsWithFluent))
                 {
-                    if (PropertyType.Equals("string", StringComparison.InvariantCultureIgnoreCase))
+                    if (PropertyType.Equals("string", StringComparison.InvariantCultureIgnoreCase) && this.AllowEmptyStrings)
                     {
                         DataAnnotations.Add("Required(AllowEmptyStrings = true)");
                     }
