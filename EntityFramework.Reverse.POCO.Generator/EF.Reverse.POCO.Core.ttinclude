@@ -600,6 +600,28 @@
         return rx.Replace(Settings.ConnectionString, "password=**zapped**;");
     }
 
+	public void PrintError(String message, Exception ex)
+	{
+		StringBuilder sb = new StringBuilder();
+		while( ex != null )
+		{
+			sb.AppendLine( ex.Message );
+			sb.AppendLine( ex.GetType().FullName );
+			sb.AppendLine( ex.StackTrace );
+			sb.AppendLine();
+			ex = ex.InnerException;
+		}
+		String report = sb.ToString();
+
+        Warning( message + " " + report );
+        WriteLine("");
+        WriteLine("// -----------------------------------------------------------------------------------------");
+        WriteLine("// " + message );
+        WriteLine("// -----------------------------------------------------------------------------------------");
+		WriteLine( report );
+        WriteLine("");
+	}
+
     private DbProviderFactory GetDbProviderFactory()
     {
         if (Settings.TargetFrameworkVersion < 1.0f)
@@ -639,13 +661,7 @@
             }
             catch (Exception x)
             {
-                var error = x.Message.Replace("\r\n", "\n").Replace("\n", " ");
-                Warning(string.Format("Failed to load provider \"{0}\" - {1}", Settings.ProviderName, error));
-                WriteLine("");
-                WriteLine("// ------------------------------------------------------------------------------------------------");
-                WriteLine("// Failed to load provider \"{0}\" - {1}", Settings.ProviderName, error);
-                WriteLine("// ------------------------------------------------------------------------------------------------");
-                WriteLine("");
+				PrintError( "Failed to load provider \"" + Settings.ProviderName + "\".", x );
             }
         }
         else
@@ -735,13 +751,7 @@
         }
         catch(Exception x)
         {
-            string error = x.Message.Replace("\r\n", "\n").Replace("\n", " ");
-            Warning(string.Format("Failed to read database schema - {0}", error));
-            WriteLine("");
-            WriteLine("// -----------------------------------------------------------------------------------------");
-            WriteLine("// Failed to read database schema in LoadTables() - {0}", error);
-            WriteLine("// -----------------------------------------------------------------------------------------");
-            WriteLine("");
+			PrintError( "Failed to read database schema in LoadTables().", x );
             return new Tables();
         }
     }
@@ -869,15 +879,9 @@
                 return validStoredProcedures;
             }
         }
-        catch(Exception x)
+        catch(Exception ex)
         {
-            var error = x.Message.Replace("\r\n", "\n").Replace("\n", " ");
-            Warning(string.Format("Failed to read database schema for stored procedures - {0}", error));
-            WriteLine("");
-            WriteLine("// -----------------------------------------------------------------------------------------");
-            WriteLine("// Failed to read database schema for stored procedures - {0}", error);
-            WriteLine("// -----------------------------------------------------------------------------------------");
-            WriteLine("");
+			PrintError( "Failed to read database schema for stored procedures.", ex );
             return new List<StoredProcedure>();
         }
     }
