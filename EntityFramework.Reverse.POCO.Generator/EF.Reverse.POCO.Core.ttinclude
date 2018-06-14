@@ -1069,8 +1069,9 @@
                 : "System.ComponentModel.DataAnnotations.Schema.";
 
             bool isNewSequentialId = !string.IsNullOrEmpty(Default)  && Default.ToLower().Contains("newsequentialid");
+            bool isTemporalColumn = this.GeneratedAlwaysType != ColumnGeneratedAlwaysType.NotApplicable; 
 
-            if (IsIdentity || isNewSequentialId)
+            if (IsIdentity || isNewSequentialId || isTemporalColumn) // Identity, instead of Computed, seems the best for Temporal `GENERATED ALWAYS` columns: https://stackoverflow.com/questions/40742142/entity-framework-not-working-with-temporal-table
             {
                 if(Settings.UseDataAnnotations || isNewSequentialId)
                     DataAnnotations.Add("DatabaseGenerated(DatabaseGeneratedOption.Identity)");
