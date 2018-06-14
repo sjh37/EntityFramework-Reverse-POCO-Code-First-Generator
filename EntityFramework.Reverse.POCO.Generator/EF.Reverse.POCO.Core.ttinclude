@@ -1973,7 +1973,7 @@ FROM
     INNER JOIN sys.columns c ON c.[object_id] = st.base_object_id
     
     LEFT JOIN sys.types t ON c.user_type_id = t.user_type_id
-    
+
     LEFT OUTER JOIN sys.default_constraints sd ON c.default_object_id = sd.object_id
     
     INNER JOIN sys.objects o ON c.[object_id] = o.[object_id]
@@ -2049,13 +2049,13 @@ WHERE
 -- Loop through synonyms and populate #SynonymDetails
 DECLARE @synonmymDatabaseName sysname = (SELECT TOP (1) DatabaseName FROM #SynonymTargets)
 DECLARE @synonmymDetailsSelect nvarchar(max)
-WHILE (@synonmymDatabaseName IS NOT NULL)
+WHILE ( @synonmymDatabaseName IS NOT NULL)
 BEGIN
-SET @synonmymDetailsSelect = REPLACE(@synonymDetailsQueryTemplate, '[@synonmymDatabaseName]', '[' + @synonmymDatabaseName + ']')
---SELECT @synonmymDetailsSelect
-EXEC sp_executesql @stmt=@synonmymDetailsSelect, @params=N'@synonmymDatabaseName sysname', @synonmymDatabaseName=@synonmymDatabaseName
-DELETE FROM #SynonymTargets WHERE DatabaseName = @synonmymDatabaseName
-SET @synonmymDatabaseName = (SELECT TOP (1) DatabaseName FROM #SynonymTargets)
+    SET @synonmymDetailsSelect = REPLACE(@synonymDetailsQueryTemplate, '[@synonmymDatabaseName]', '[' + @synonmymDatabaseName + ']')
+    --SELECT @synonmymDetailsSelect
+    EXEC sp_executesql @stmt=@synonmymDetailsSelect, @params=N'@synonmymDatabaseName sysname', @synonmymDatabaseName=@synonmymDatabaseName
+    DELETE FROM #SynonymTargets WHERE DatabaseName = @synonmymDatabaseName
+    SET @synonmymDatabaseName = (SELECT TOP (1) DatabaseName FROM #SynonymTargets)
 END
 SET NOCOUNT OFF;
 ";
@@ -2668,29 +2668,44 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             return _sqlDatabaseEngineEdition == "Azure";
         }
 
-        public override Tables ReadSchema()
+        private String GetReadSchemaSql()
         {
-            var result = new Tables();
-            if(Cmd == null)
-                return result;
-
-            if(Settings.IncludeSynonyms)
-                Cmd.CommandText = SynonymTableSQLSetup + TableSQL + SynonymTableSQL + IncludeQueryTraceOn9481();
+            if( Settings.IsSqlCe )
+            {
+                return TableSQLCE;
+            }
+            
+            String sql;
+            if( Settings.IncludeSynonyms )
+            {
+                sql = SynonymTableSQLSetup + TableSQL + SynonymTableSQL + IncludeQueryTraceOn9481();
+            }
             else
-                Cmd.CommandText = TableSQL + IncludeQueryTraceOn9481();
-
-            if (Settings.IsSqlCe)
-                Cmd.CommandText = TableSQLCE;
-            else
-                Cmd.CommandTimeout = Settings.CommandTimeout;
+            {
+                sql = TableSQL + IncludeQueryTraceOn9481();
+            }
 
             if (!Settings.TemporalTableSupport)
             {
-                Cmd.CommandText = Cmd.CommandText
+                // Replace the column names (only present in SQL Server 2016 or later) with literal constants so the query works with older versions of SQL Server.
+                sql = sql
                     .Replace("[sc].[generated_always_type]", "0" )
                     .Replace("[c].[generated_always_type]", "0" )
                     .Replace("[st].[temporal_type]", "0" );
             }
+
+            return sql;
+        }
+
+        public override Tables ReadSchema()
+        {
+            var result = new Tables();
+            if (Cmd == null)
+                return result;
+
+            Cmd.CommandText = this.GetReadSchemaSql();
+
+            if (!Settings.IsSqlCe) Cmd.CommandTimeout = Settings.CommandTimeout;
 
             using(var rdr = Cmd.ExecuteReader())
             {
@@ -2713,12 +2728,15 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         table = result.Find(x => x.Name == tableName && x.Schema == schema);
                         if(table == null)
                         {
+                            String tableType = ((String)rdr["TableType"]).Trim();
+                            TableTemporalType tableTemporalType = (TableTemporalType)(Byte)rdr["TableTemporalType"];
+
                             table = new Table
                             {
                                 Name = tableName,
                                 Schema = schema,
-                                IsView = string.Compare(rdr["TableType"].ToString().Trim(), "View", StringComparison.OrdinalIgnoreCase) == 0,
-                                TemporalType = (TableTemporalType)(Byte)rdr["TableTemporalType"],
+                                IsView = string.Compare(tableType, "View", StringComparison.OrdinalIgnoreCase) == 0,
+                                TemporalType = tableTemporalType,
 
                                 // Will be set later
                                 HasForeignKey = false,
