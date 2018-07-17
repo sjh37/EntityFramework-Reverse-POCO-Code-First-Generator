@@ -105,7 +105,6 @@
         public static bool UseMappingTables;
         public static bool UsePropertyInitializers;
         public static bool IsSqlCe;
-        public static bool TemporalTableSupport;
         public static string FileExtension = ".cs";
         public static bool UsePascalCase;
         public static bool UsePrivateSetterForComputedColumns;
@@ -1069,7 +1068,7 @@
                 : "System.ComponentModel.DataAnnotations.Schema.";
 
             bool isNewSequentialId = !string.IsNullOrEmpty(Default)  && Default.ToLower().Contains("newsequentialid");
-            bool isTemporalColumn = this.GeneratedAlwaysType != ColumnGeneratedAlwaysType.NotApplicable; 
+            bool isTemporalColumn = this.GeneratedAlwaysType != ColumnGeneratedAlwaysType.NotApplicable;
 
             if (IsIdentity || isNewSequentialId || isTemporalColumn) // Identity, instead of Computed, seems the best for Temporal `GENERATED ALWAYS` columns: https://stackoverflow.com/questions/40742142/entity-framework-not-working-with-temporal-table
             {
@@ -1672,7 +1671,7 @@
         public abstract void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool checkForFkNameClashes);
         public abstract void IdentifyForeignKeys(List<ForeignKey> fkList, Tables tables);
         public abstract void ReadIndexes(Tables tables);
-        public abstract void ReadExtendedProperties(Tables tables, bool includeConnectionSettingComments, bool commentsInSummaryBlock);
+        public abstract void ReadExtendedProperties(Tables tables, bool commentsInSummaryBlock);
 
         protected void WriteLine(string o)
         {
@@ -1693,7 +1692,8 @@
 
     private class SqlServerSchemaReader : SchemaReader
     {
-        private static string _sqlDatabaseEdition, _sqlDatabaseEngineEdition;
+        private static string _sqlDatabaseEdition, _sqlDatabaseEngineEdition, _sqlDatabaseProductVersion;
+        private static int _sqlDatabaseProductMajorVersion;
 
         private const string TableSQL = @"
 SET NOCOUNT ON;
@@ -1717,12 +1717,12 @@ SELECT
     ss.schema_id,
     st.object_id AS table_object_id,
     sv.object_id AS view_object_id,
-    
+
     sc.is_identity,
     sc.is_rowguidcol,
     sc.is_computed, -- Computed columns are read-only, do not confuse it with a column with a DEFAULT expression (which can be re-assigned). See the IsStoreGenerated attribute.
     CONVERT( tinyint, [sc].[generated_always_type] ) AS generated_always_type -- SQL Server 2016 (13.x) or later. 0 = Not generated, 1 = AS_ROW_START, 2 = AS_ROW_END
-    
+
 INTO
     #Columns
 FROM
@@ -1744,7 +1744,7 @@ CREATE NONCLUSTERED INDEX IX_EfPoco_Columns
         schema_id, table_object_id, view_object_id,
         is_identity,is_rowguidcol,is_computed,generated_always_type
     );
-    
+
 -----------
 
 SELECT
@@ -1818,15 +1818,14 @@ SELECT
             0
         END
     ) AS IsStoreGenerated,
-    
+
     CONVERT( bit, ISNULL( pk.ORDINAL_POSITION, 0 ) ) AS PrimaryKey,
     ISNULL(pk.ORDINAL_POSITION, 0) PrimaryKeyOrdinal,
     CONVERT( bit, CASE WHEN fk.COLUMN_NAME IS NOT NULL THEN 1 ELSE 0 END ) AS IsForeignKey
 
 FROM
-    
     #Columns c
-    
+
     LEFT OUTER JOIN #PrimaryKeys pk ON
         c.TABLE_SCHEMA = pk.TABLE_SCHEMA AND
         c.TABLE_NAME   = pk.TABLE_NAME AND
@@ -1836,7 +1835,7 @@ FROM
         c.TABLE_SCHEMA = fk.TABLE_SCHEMA AND
         c.TABLE_NAME   = fk.TABLE_NAME AND
         c.COLUMN_NAME  = fk.COLUMN_NAME
-    
+
     INNER JOIN INFORMATION_SCHEMA.TABLES t ON
         c.TABLE_SCHEMA COLLATE DATABASE_DEFAULT = t.TABLE_SCHEMA COLLATE DATABASE_DEFAULT AND
         c.TABLE_NAME   COLLATE DATABASE_DEFAULT = t.TABLE_NAME   COLLATE DATABASE_DEFAULT
@@ -1902,14 +1901,14 @@ FROM
             u.TABLE_NAME,
             u.COLUMN_NAME,
             u.ORDINAL_POSITION
-        FROM 
+        FROM
             INFORMATION_SCHEMA.KEY_COLUMN_USAGE u
             INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc ON u.TABLE_SCHEMA = tc.CONSTRAINT_SCHEMA AND u.TABLE_NAME = tc.TABLE_NAME AND u.CONSTRAINT_NAME = tc.CONSTRAINT_NAME
         WHERE
             CONSTRAINT_TYPE = 'PRIMARY KEY'
     ) pk
         ON sc.NAME = pk.TABLE_SCHEMA AND sn.name = pk.TABLE_NAME AND c.name = pk.COLUMN_NAME
-    
+
     LEFT OUTER JOIN
     (
         SELECT DISTINCT
@@ -1950,7 +1949,7 @@ SELECT
     c.is_computed AS IsComputed,
     CONVERT( tinyint, [c].[generated_always_type] ) AS GeneratedAlwaysType,
 
-    CONVERT( bit, 
+    CONVERT( bit,
         CASE
             WHEN
                 c.is_identity = 1 OR
@@ -2278,12 +2277,12 @@ SELECT  '' AS SchemaName,
     CASE WHEN c.DATA_TYPE = N'datetime' THEN 0 WHEN c.NUMERIC_SCALE IS NOT NULL THEN c.NUMERIC_SCALE ELSE 0 END AS Scale,
 
     CAST(CASE WHEN c.AUTOINC_INCREMENT > 0 THEN 1 ELSE 0 END AS BIT) AS IsIdentity,
-    0 AS IsRowGuid,
-    0 AS IsComputed,
+    CONVERT( bit, 0 ) as IsComputed,
+    CONVERT( bit, 0 ) as IsRowGuid,
     CONVERT( tinyint, 0 ) AS GeneratedAlwaysType,
     CAST(CASE WHEN c.DATA_TYPE = N'rowversion' THEN 1 ELSE 0 END AS BIT) AS IsStoreGenerated,
-    CAST(CASE WHEN u.TABLE_NAME IS NULL THEN 0 ELSE 1 END AS BIT) AS PrimaryKey,
     0 AS PrimaryKeyOrdinal,
+    CAST(CASE WHEN u.TABLE_NAME IS NULL THEN 0 ELSE 1 END AS BIT) AS PrimaryKey,
     CONVERT( bit, 0 ) as IsForeignKey
 FROM
     INFORMATION_SCHEMA.COLUMNS c
@@ -2629,42 +2628,57 @@ OPTION (QUERYTRACEON 9481)";
             return string.Empty;
         }
 
-        private bool IsAzure(bool includeConnectionSettingComments)
+        private void ReadDatabaseEdition()
         {
-            if (string.IsNullOrEmpty(_sqlDatabaseEdition))
-            {
-                if (Cmd == null)
-                    return false;
+            if (Settings.IsSqlCe || !string.IsNullOrEmpty(_sqlDatabaseEdition))
+                return;
 
-                Cmd.CommandText = @"
+            if (Cmd == null)
+                return;
+
+            Cmd.CommandText = @"
 SELECT  SERVERPROPERTY('Edition') AS Edition,
-    CASE SERVERPROPERTY('EngineEdition')
-        WHEN 1 THEN 'Personal'
-        WHEN 2 THEN 'Standard'
-        WHEN 3 THEN 'Enterprise'
-        WHEN 4 THEN 'Express'
-        WHEN 5 THEN 'Azure'
-        ELSE 'Unknown'
-    END AS EngineEdition";
+        CASE SERVERPROPERTY('EngineEdition')
+          WHEN 1 THEN 'Personal'
+          WHEN 2 THEN 'Standard'
+          WHEN 3 THEN 'Enterprise'
+          WHEN 4 THEN 'Express'
+          WHEN 5 THEN 'Azure'
+          ELSE 'Unknown'
+        END AS EngineEdition,
+        SERVERPROPERTY('productversion') AS ProductVersion;";
 
-                Cmd.CommandTimeout = Settings.CommandTimeout;
+            Cmd.CommandTimeout = Settings.CommandTimeout;
 
-                using (DbDataReader rdr = Cmd.ExecuteReader())
+            using (DbDataReader rdr = Cmd.ExecuteReader())
+            {
+                if (rdr.Read())
                 {
-                    if (rdr.Read())
-                    {
-                        _sqlDatabaseEdition = rdr["Edition"].ToString();
-                        _sqlDatabaseEngineEdition = rdr["EngineEdition"].ToString();
-                        if (includeConnectionSettingComments)
-                        {
-                            WriteLine("// Database Edition       : " + _sqlDatabaseEdition);
-                            WriteLine("// Database Engine Edition: " + _sqlDatabaseEngineEdition);
-                            WriteLine("");
-                        }
-                    }
+                    _sqlDatabaseEdition = rdr["Edition"].ToString();
+                    _sqlDatabaseEngineEdition = rdr["EngineEdition"].ToString();
+                    _sqlDatabaseProductVersion = rdr["ProductVersion"].ToString();
+                    _sqlDatabaseProductMajorVersion = int.Parse(_sqlDatabaseProductVersion.Substring(0, 2).Replace(".",string.Empty));
                 }
             }
+        }
 
+        private void WriteConnectionSettingComments()
+        {
+            if (Settings.IsSqlCe)
+            {
+                WriteLine("// Database Edition : SqlCE");
+            }
+            else
+            {
+                WriteLine("// Database Edition        : " + _sqlDatabaseEdition);
+                WriteLine("// Database Engine Edition : " + _sqlDatabaseEngineEdition);
+                WriteLine("// Database Version        : " + _sqlDatabaseProductVersion);
+            }
+            WriteLine("");
+        }
+
+        private bool IsAzure()
+        {
             return _sqlDatabaseEngineEdition == "Azure";
         }
 
@@ -2674,7 +2688,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             {
                 return TableSQLCE;
             }
-            
+
             String sql;
             if( Settings.IncludeSynonyms )
             {
@@ -2685,7 +2699,9 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 sql = TableSQL + IncludeQueryTraceOn9481();
             }
 
-            if (!Settings.TemporalTableSupport)
+            ReadDatabaseEdition();
+            var temporalTableSupport = _sqlDatabaseProductMajorVersion >= 13;
+            if (!temporalTableSupport)
             {
                 // Replace the column names (only present in SQL Server 2016 or later) with literal constants so the query works with older versions of SQL Server.
                 sql = sql
@@ -2699,6 +2715,9 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
         public override Tables ReadSchema()
         {
+            ReadDatabaseEdition();
+            WriteConnectionSettingComments();
+
             var result = new Tables();
             if (Cmd == null)
                 return result;
@@ -2790,7 +2809,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             }
 
             if (Settings.IncludeExtendedPropertyComments != CommentsStyle.None)
-                ReadExtendedProperties(result, Settings.IncludeConnectionSettingComments, Settings.IncludeExtendedPropertyComments == CommentsStyle.InSummaryBlock);
+                ReadExtendedProperties(result, Settings.IncludeExtendedPropertyComments == CommentsStyle.InSummaryBlock);
 
             ReadIndexes(result);
 
@@ -2953,7 +2972,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             }
         }
 
-        public override void ReadExtendedProperties(Tables tables, bool includeConnectionSettingComments, bool commentsInSummaryBlock)
+        public override void ReadExtendedProperties(Tables tables, bool commentsInSummaryBlock)
         {
             if(Cmd == null)
                 return;
@@ -2969,7 +2988,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             }
             else
             {
-                if (IsAzure(includeConnectionSettingComments))
+                if (IsAzure())
                     return;
 
                 Cmd.CommandText = ExtendedPropertySQL + IncludeQueryTraceOn9481();
@@ -3025,7 +3044,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             if (Cmd.GetType().Name == "SqlCeCommand")
                 return result;
 
-            if (IsAzure(Settings.IncludeConnectionSettingComments))
+            if (IsAzure())
                 Cmd.CommandText = StoredProcedureSQLAzure + IncludeQueryTraceOn9481();
             else if (Settings.IncludeSynonyms)
                 Cmd.CommandText = SynonymStoredProcedureSQLSetup + StoredProcedureSQL + SynonymStoredProcedureSQL + IncludeQueryTraceOn9481();
@@ -3397,21 +3416,20 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             if(rdr == null)
                 throw new ArgumentNullException("rdr");
 
-            string  typename      = rdr["TypeName"].ToString().Trim().ToLower();
-            Int32   rdrScale      = (int)rdr["Scale"];
-
-            Boolean rdrIsNullable = (Boolean)rdr["IsNullable"];
-            Int32   rdrMaxLength  = (int)rdr["MaxLength"];
-            Int32   rdrDtp        = (int)rdr["DateTimePrecision"];
-            Int32   rdrPrecision  = (int)rdr["Precision"];
-            Boolean rdrIsIdentity = (Boolean)rdr["IsIdentity"];
-            Boolean rdrIsComputed = (Boolean)rdr["IsComputed"];
-            Boolean rdrIsRowGuid  = (Boolean)rdr["IsRowGuid"];
-            Byte    rdrGat        = (Byte)rdr["GeneratedAlwaysType"];
-            Boolean rdrIsg        = (Boolean)rdr["IsStoreGenerated"];
-            Int32   rdrPko        = (int)rdr["PrimaryKeyOrdinal"];
-            Boolean rdrIsPk       = (Boolean)rdr["PrimaryKey"];
-            Boolean rdrIsFk       = (Boolean)rdr["IsForeignKey"];
+            string typename    = rdr["TypeName"].ToString().Trim().ToLower();
+            int  rdrScale      = (int)rdr["Scale"];
+            bool rdrIsNullable = (bool)rdr["IsNullable"];
+            int  rdrMaxLength  = (int)rdr["MaxLength"];
+            int  rdrDtp        = (int)rdr["DateTimePrecision"];
+            int  rdrPrecision  = (int)rdr["Precision"];
+            bool rdrIsIdentity = (bool)rdr["IsIdentity"];
+            bool rdrIsComputed = (bool)rdr["IsComputed"];
+            bool rdrIsRowGuid  = (bool)rdr["IsRowGuid"];
+            byte rdrGat        = (byte)rdr["GeneratedAlwaysType"];
+            bool rdrIsg        = (bool)rdr["IsStoreGenerated"];
+            int  rdrPko        = (int)rdr["PrimaryKeyOrdinal"];
+            bool rdrIsPk       = (bool)rdr["PrimaryKey"];
+            bool rdrIsFk       = (bool)rdr["IsForeignKey"];
 
             var col = new Column
             {
