@@ -2664,17 +2664,20 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
         private void WriteConnectionSettingComments()
         {
-            if (Settings.IsSqlCe)
+            if (Settings.IncludeConnectionSettingComments)
             {
-                WriteLine("// Database Edition : SqlCE");
+                if (Settings.IsSqlCe)
+                {
+                    WriteLine("// Database Edition : SqlCE");
+                }
+                else
+                {
+                    WriteLine("// Database Edition        : " + _sqlDatabaseEdition);
+                    WriteLine("// Database Engine Edition : " + _sqlDatabaseEngineEdition);
+                    WriteLine("// Database Version        : " + _sqlDatabaseProductVersion);
+                }
+                WriteLine("");
             }
-            else
-            {
-                WriteLine("// Database Edition        : " + _sqlDatabaseEdition);
-                WriteLine("// Database Engine Edition : " + _sqlDatabaseEngineEdition);
-                WriteLine("// Database Version        : " + _sqlDatabaseProductVersion);
-            }
-            WriteLine("");
         }
 
         private bool IsAzure()
