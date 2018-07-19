@@ -128,6 +128,7 @@
         public static Dictionary<string, string> StoredProcedureReturnTypes = new Dictionary<string, string>();
         public static Regex ColumnFilterExclude;
         public static bool UseLazyLoading;
+        public static bool UseInheritedBaseInterfaceFunctions = false;
         public static string[] FilenameSearchOrder;
         public static string[] AdditionalNamespaces;
         public static string[] AdditionalContextInterfaceItems;
