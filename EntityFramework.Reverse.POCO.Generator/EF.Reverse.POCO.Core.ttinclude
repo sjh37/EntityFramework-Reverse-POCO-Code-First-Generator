@@ -1,6 +1,6 @@
 <#
 // Copyright (C) Simon Hughes 2012
-// v2.37.0
+// v2.37.1
 #>
 <#@ template debug="true" hostspecific="true" language="C#" #>
 <#@ include file="EF6.Utility.CS.ttinclude"#>
@@ -167,7 +167,7 @@
         };
     };
 
-    const string CodeGeneratedAttribute = "[System.CodeDom.Compiler.GeneratedCode(\"EF.Reverse.POCO.Generator\", \"2.37.0.0\")]";
+    const string CodeGeneratedAttribute = "[System.CodeDom.Compiler.GeneratedCode(\"EF.Reverse.POCO.Generator\", \"2.37.1.0\")]";
     const string DataDirectory = "|DataDirectory|";
 
     static readonly List<string> NotNullable = new List<string>
@@ -1215,11 +1215,12 @@
             if (IsPrimaryKey && Settings.UseDataAnnotations)
                 DataAnnotations.Add("Key");
 
-            if (Settings.ColumnNameToDataAnnotation.TryGetValue(NameHumanCase.ToLowerInvariant(), out string valueFromName))
+            string valueFromName, valueFromType;
+            if (Settings.ColumnNameToDataAnnotation.TryGetValue(NameHumanCase.ToLowerInvariant(), out valueFromName))
             {
                 DataAnnotations.Add(valueFromName);
             }
-            else if (Settings.ColumnTypeToDataAnnotation.TryGetValue(SqlPropertyType.ToLowerInvariant(), out string valueFromType))
+            else if (Settings.ColumnTypeToDataAnnotation.TryGetValue(SqlPropertyType.ToLowerInvariant(), out valueFromType))
             {
                 DataAnnotations.Add(valueFromType);
             }
