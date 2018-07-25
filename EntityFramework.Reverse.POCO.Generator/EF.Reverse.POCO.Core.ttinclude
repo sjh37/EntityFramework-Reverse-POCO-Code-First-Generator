@@ -1718,6 +1718,7 @@ SELECT
     ss.schema_id,
     st.object_id AS table_object_id,
     sv.object_id AS view_object_id,
+	HAS_PERMS_BY_NAME('['+c.TABLE_SCHEMA+'].'+c.TABLE_NAME, 'OBJECT', 'SELECT', c.COLUMN_NAME, 'COLUMN') as COLUMN_CAN_SELECT,
 
     sc.is_identity,
     sc.is_rowguidcol,
@@ -1800,6 +1801,7 @@ SELECT
     ISNULL(COLUMN_DEFAULT, '') AS [Default],
     CAST(ISNULL(DATETIME_PRECISION, 0) AS INT) AS DateTimePrecision,
     ISNULL(NUMERIC_SCALE, 0) AS Scale,
+	c.COLUMN_CAN_SELECT,
 
     c.is_identity AS IsIdentity,
     c.is_rowguidcol AS IsRowGuid,
@@ -3434,6 +3436,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             int  rdrPko        = (int)rdr["PrimaryKeyOrdinal"];
             bool rdrIsPk       = (bool)rdr["PrimaryKey"];
             bool rdrIsFk       = (bool)rdr["IsForeignKey"];
+			//if(Settings.RemovePermissionColumns && (bool)rdr["COLUMN_CAN_SELECT"])
+			if((int)rdr["COLUMN_CAN_SELECT"] == 0)
+			{
+				return null;
+			}
 
             var col = new Column
             {
