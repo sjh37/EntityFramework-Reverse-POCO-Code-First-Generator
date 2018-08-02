@@ -1349,7 +1349,7 @@
                 case "system.datetimeoffset":
                     DateTimeOffset dto;
                     if(!DateTimeOffset.TryParse(Default, out dto))
-                        Default = lower.Contains("sysdatetimeoffset") ? "System.DateTimeOffset.Now" : lower.Contains("sysutcdatetime") ? "System.DateTimeOffset.UtcNow" : string.Empty;
+                        Default = (lower.Contains("getdate()") || lower.Contains("sysdatetimeoffset")) ? "System.DateTimeOffset.Now" : (lower.Contains("getutcdate()") || lower.Contains("sysutcdatetime")) ? "System.DateTimeOffset.UtcNow" : string.Empty;
                     else
                         Default = string.Format("System.DateTimeOffset.Parse({0})", Default);
                     break;
