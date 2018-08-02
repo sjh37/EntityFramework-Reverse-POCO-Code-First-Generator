@@ -318,6 +318,9 @@ foreach(var tbl in from t in Settings.Tables.Where(t => !t.IsMapping && t.HasPri
 #>
             modelBuilder.Configurations.Add(new <#=tbl.NameHumanCaseWithSuffix() + Settings.ConfigurationClassName#>(schema));
 <# } #>
+<#if(Settings.DbContextClassIsPartial()) {#>
+            OnCreateModelPartial(modelBuilder, schema);
+<#}#>
             return modelBuilder;
         }
 <#if(Settings.DbContextClassIsPartial()) {#>
@@ -325,6 +328,7 @@ foreach(var tbl in from t in Settings.Tables.Where(t => !t.IsMapping && t.HasPri
         partial void InitializePartial();
         partial void DisposePartial(bool disposing);
         partial void OnModelCreatingPartial(System.Data.Entity.DbModelBuilder modelBuilder);
+		static partial void OnCreateModelPartial(System.Data.Entity.DbModelBuilder modelBuilder, string schema);        
 <#}#>
 <# if (Settings.StoredProcs.Any())
 { #>
