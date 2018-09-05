@@ -560,7 +560,7 @@
         return fkName;
     };
 
-    Settings.ForeignKeyAnnotationsProcessing = (Table fkTable, Table pkTable, string propName) =>
+    Settings.ForeignKeyAnnotationsProcessing = (Table fkTable, Table pkTable, string propName, string fkPropName) =>
     {
         /* Example:
         // Each navigation property that is a reference to User are left intact
@@ -570,6 +570,10 @@
         // all the others are marked with this attribute
         return new[] { "System.Runtime.Serialization.IgnoreDataMember" };
         */
+
+        // Example, to include Inverse Property when using Data Annotations, use:
+        // if (Settings.UseDataAnnotations && fkPropName != string.Empty)
+        //     return new[] { "InverseProperty(\"" + fkPropName + "\")" };
 
         return null;
     };
