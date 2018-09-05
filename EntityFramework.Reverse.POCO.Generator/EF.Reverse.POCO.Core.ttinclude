@@ -1219,10 +1219,14 @@
             if (Settings.ColumnNameToDataAnnotation.TryGetValue(NameHumanCase.ToLowerInvariant(), out valueFromName))
             {
                 DataAnnotations.Add(valueFromName);
+                if (valueFromName.StartsWith("Display(Name", StringComparison.InvariantCultureIgnoreCase))
+                    return; // Skip adding Display(Name = "") below
             }
             else if (Settings.ColumnTypeToDataAnnotation.TryGetValue(SqlPropertyType.ToLowerInvariant(), out valueFromType))
             {
                 DataAnnotations.Add(valueFromType);
+                if (valueFromType.StartsWith("Display(Name", StringComparison.InvariantCultureIgnoreCase))
+                    return; // Skip adding Display(Name = "") below
             }
 
             DataAnnotations.Add(string.Format("Display(Name = \"{0}\")", DisplayName));
