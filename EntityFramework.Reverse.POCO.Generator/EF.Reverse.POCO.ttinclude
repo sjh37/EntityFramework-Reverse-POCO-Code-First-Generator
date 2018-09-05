@@ -96,6 +96,7 @@ else
 { #>
         <#=s #>
 <# } #>
+<# if (!Settings.UseInheritedBaseInterfaceFunctions) { #>
         int SaveChanges();
 <# if (Settings.IsSupportedFrameworkVersion("4.5")) { #>
         System.Threading.Tasks.Task<int> SaveChangesAsync();
@@ -110,6 +111,7 @@ else
         System.Data.Entity.DbSet Set(System.Type entityType);
         System.Data.Entity.DbSet<TEntity> Set<TEntity>() where TEntity : class;
         string ToString();
+<# } #>
 <# if (Settings.StoredProcs.Any()) { #>
 
         // Stored Procedures
