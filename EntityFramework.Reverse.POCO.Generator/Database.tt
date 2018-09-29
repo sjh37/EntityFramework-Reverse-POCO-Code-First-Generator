@@ -249,6 +249,25 @@
         return name;
     };
 
+    // Mapping Table renaming *********************************************************************************************************************
+    // By default, name of the properties created relate to the table the foreign key points to and not the mapping table.
+    // Use the following function to rename the properties created by ManytoMany relationship tables especially if you have 2 relationships between the same tables.
+    // Example:
+    Settings.MappingTableRename = (string mappingtable, string tablename, string entityname) =>
+    {
+
+       // Examples:
+       // If you have two mapping tables such as one being UserRequiredSkills snd one being UserOptionalSkills, this would change the name of one property
+       // if (mappingtable == "UserRequiredSkills" and tablename == "User")
+       //    return "RequiredSkills";
+
+       // or if you want to give the same property name on both classes
+       // if (mappingtable == "UserRequiredSkills")
+       //    return "UserRequiredSkills";
+
+        return entityname;
+    };
+
     // Column modification*****************************************************************************************************************
     // Use the following list to replace column byte types with Enums.
     // As long as the type can be mapped to your new type, all is well.
