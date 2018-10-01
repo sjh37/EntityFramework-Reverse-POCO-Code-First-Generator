@@ -3264,9 +3264,6 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         fk.fk.IncludeRequiredAttribute = true;
                 }
 
-                var fkCol = fkCols.First();
-                var pkCol = pkCols.First();
-
                 foreignKey = Settings.ForeignKeyProcessing(foreignKeys, fkTable, pkTable, fkCols.Any(x => x.col.IsNullable));
 
                 string pkTableHumanCaseWithSuffix = foreignKey.PkTableHumanCase(pkTable.Suffix);
@@ -3312,7 +3309,9 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         string.Join(", ", fkCols.Select(x => "[" + x.col.NameHumanCase + "]").Distinct().ToArray()),
                         foreignKey.ConstraintName)
                 };
-                fkCol.col.EntityFk.Add(fkd);
+
+                var firstFKCol = fkCols.First();
+                firstFKCol.col.EntityFk.Add(fkd);
 
                 string manyToManyMapping, mapKey;
                 if(foreignKeys.Count > 1)
@@ -3326,9 +3325,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
                 if (!Settings.UseDataAnnotations)
                 {
-                    string rel = GetRelationship(relationship, fkCol.col, pkCol, pkPropName, fkPropName, manyToManyMapping, mapKey, foreignKey.CascadeOnDelete, foreignKey.IncludeReverseNavigation, foreignKey.IsNotEnforced);
+                    List<Column> fkCols2 = fkCols.Select( c => c.col ).ToList();
+
+                    string rel = GetRelationship(relationship, fkCols2, pkCols, pkPropName, fkPropName, manyToManyMapping, mapKey, foreignKey.CascadeOnDelete, foreignKey.IncludeReverseNavigation, foreignKey.IsNotEnforced);
                     string com = Settings.IncludeComments != CommentsStyle.None ? " // " + foreignKey.ConstraintName : string.Empty;
-                    fkCol.col.ConfigFk.Add(string.Format("{0};{1}", rel, com));
+                    firstFKCol.col.ConfigFk.Add(string.Format("{0};{1}", rel, com));
                 }
 
                 if(foreignKey.IncludeReverseNavigation)
@@ -3362,33 +3363,43 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             }
         }
 
-        private static string GetRelationship(Relationship relationship, Column fkCol, Column pkCol, string pkPropName, string fkPropName, string manyToManyMapping, string mapKey, bool cascadeOnDelete, bool includeReverseNavigation, bool isNotEnforced)
+        private static string GetRelationship(Relationship relationship, IList<Column> fkCols, IList<Column> pkCols, string pkPropName, string fkPropName, string manyToManyMapping, string mapKey, bool cascadeOnDelete, bool includeReverseNavigation, bool isNotEnforced)
         {
-            return string.Format("Has{0}(a => a.{1}){2}{3}",
-                GetHasMethod(relationship, fkCol, pkCol, isNotEnforced),
+            string hasMethod  = GetHasMethod(relationship, fkCosl, pkCols, isNotEnforced);
+            string withMethod = GetWithMethod(relationship, fkCols, fkPropName, manyToManyMapping, mapKey, includeReverseNavigation);
+
+            return string.Format("{0}(a => a.{1}){2}{3}",
+                hasMethod,
                 pkPropName,
-                GetWithMethod(relationship, fkCol, fkPropName, manyToManyMapping, mapKey, includeReverseNavigation),
+                withMethod,
                 cascadeOnDelete ? string.Empty: ".WillCascadeOnDelete(false)");
         }
 
         // HasOptional
         // HasRequired
         // HasMany
-        private static string GetHasMethod(Relationship relationship, Column fkCol, Column pkCol, bool isNotEnforced)
+        private static string GetHasMethod(Relationship relationship, IList<Column> fkCols, IList<Column> pkCols, bool isNotEnforced)
         {
-            bool withMany = false;
-            switch (relationship)
-            {
-                case Relationship.ManyToOne:
-                case Relationship.ManyToMany:
-                    withMany = true;
-                    break;
-            }
+            bool withMany     = ( relationship == Relationship.ManyToOne || relationship == Relationship.ManyToMany );
+            bool fkIsNullable = fkCols.Any( c => c.IsNullable );
+			bool pkIsUnique   = pkCols.Any( c => c.IsUnique || c.IsUniqueConstraint || c.IsPrimaryKey );
 
-            if (withMany || pkCol.IsPrimaryKey || pkCol.IsUniqueConstraint || pkCol.IsUnique)
-                return fkCol.IsNullable || isNotEnforced ? "Optional" : "Required";
+            if ( withMany || pkIsUnique )
+			{
+                if( fkIsNullable || isNotEnforced )
+				{
+                    return "HasOptional";
+				}
+                else
+				{
+                    return "HasRequired";
+				}
+			}
+            else
+			{
+                return "HasMany";
+			}
 
-            return "Many";
         }
 
         // WithOptional
@@ -3396,7 +3407,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         // WithMany
         // WithRequiredPrincipal
         // WithRequiredDependent
-        private static string GetWithMethod(Relationship relationship, Column fkCol, string fkPropName, string manyToManyMapping, string mapKey, bool includeReverseNavigation)
+        private static string GetWithMethod(Relationship relationship, IList<Column> fkCols, string fkPropName, string manyToManyMapping, string mapKey, bool includeReverseNavigation)
         {
             string withParam = includeReverseNavigation ? string.Format("b => b.{0}", fkPropName) : string.Empty;
             switch (relationship)
@@ -3408,7 +3419,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     return string.Format(".WithRequiredDependent({0})", withParam);
 
                 case Relationship.ManyToOne:
-                    if (!fkCol.Hidden)
+                    if (!fkCols.Any( c => c.Hidden ))
                         return string.Format(".WithMany({0}).HasForeignKey({1})", withParam, manyToManyMapping);   // Foreign Key Association
                     return string.Format(".WithMany({0}).Map(c => c.MapKey({1}))", withParam, mapKey);  // Independent Association
 
