@@ -3319,8 +3319,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     manyToManyMapping = string.Format("c => new {{ {0} }}", string.Join(", ", fkCols.Select(x => "c." + x.col.NameHumanCase).Distinct().ToArray()));
                     mapKey = string.Format("{0}", string.Join(",", fkCols.Select(x => "\"" + x.col.Name + "\"").Distinct().ToArray()));
                 } else {
-                    manyToManyMapping = string.Format("c => c.{0}", fkCol.col.NameHumanCase);
-                    mapKey = string.Format("\"{0}\"", fkCol.col.Name);
+                    manyToManyMapping = string.Format("c => c.{0}", firstFKCol.col.NameHumanCase);
+                    mapKey = string.Format("\"{0}\"", firstFKCol.col.Name);
                 }
 
                 if (!Settings.UseDataAnnotations)
@@ -3365,7 +3365,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
         private static string GetRelationship(Relationship relationship, IList<Column> fkCols, IList<Column> pkCols, string pkPropName, string fkPropName, string manyToManyMapping, string mapKey, bool cascadeOnDelete, bool includeReverseNavigation, bool isNotEnforced)
         {
-            string hasMethod  = GetHasMethod(relationship, fkCosl, pkCols, isNotEnforced);
+            string hasMethod  = GetHasMethod(relationship, fkCols, pkCols, isNotEnforced);
             string withMethod = GetWithMethod(relationship, fkCols, fkPropName, manyToManyMapping, mapKey, includeReverseNavigation);
 
             return string.Format("{0}(a => a.{1}){2}{3}",
