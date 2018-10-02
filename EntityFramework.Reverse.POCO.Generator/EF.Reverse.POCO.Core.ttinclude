@@ -135,6 +135,7 @@
         public static string[] AdditionalForeignKeysDataAnnotations;
         public static string ConfigFilePath;
         public static Func<string, string, bool, string> TableRename;
+        public static Func<string, string, string, string> MappingTableRename;
         public static Func<StoredProcedure, string> StoredProcedureRename;
         public static Func<string, StoredProcedure, string> StoredProcedureReturnModelRename;
         public static Func<Column, Table, Column> UpdateColumn;
@@ -4133,7 +4134,9 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 return;
 
             var leftPropName  = leftTable.GetUniqueColumnName(rightTable.NameHumanCase, right, checkForFkNameClashes, false, Relationship.ManyToOne); // relationship from the mapping table to each side is Many-to-One
+            leftPropName = Settings.MappingTableRename(Name, leftTable.NameHumanCase, leftPropName);
             var rightPropName = rightTable.GetUniqueColumnName(leftTable.NameHumanCase, left, checkForFkNameClashes, false, Relationship.ManyToOne); // relationship from the mapping table to each side is Many-to-One
+            rightPropName = Settings.MappingTableRename(Name, rightTable.NameHumanCase, rightPropName);
             leftTable.AddMappingConfiguration(left, right, leftPropName, rightPropName);
 
             IsMapping = true;
