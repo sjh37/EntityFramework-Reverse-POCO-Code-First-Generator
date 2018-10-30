@@ -384,12 +384,28 @@
     private void LogToOutput(string message)
     {
         var serviceProvider = GetServiceProvider();
+        if (serviceProvider == null)
+            return;
+
         var dte = (DTE)GetCOMService(serviceProvider, typeof(DTE));
-        var window = dte.Windows.Item(Constants.vsWindowKindOutput);
-        var outputWindow = (OutputWindow) window.Object;
-        outputWindow.ActivePane.Activate();
-        outputWindow.ActivePane.OutputString(message);
-        outputWindow.ActivePane.OutputString("\n");
+        var window = dte?.Windows.Item(Constants.vsWindowKindOutput);
+        var outputWindow = (OutputWindow) window?.Object;
+        if (outputWindow == null)
+            return;
+
+        OutputWindowPane pane;
+        const string paneName = "EF Reverse POCO Generator";
+        try
+        {
+            pane = outputWindow.OutputWindowPanes.Item(paneName);
+        }
+        catch
+        {
+            pane = outputWindow.OutputWindowPanes.Add(paneName);
+        }
+        pane.Activate();
+        pane.OutputString(message);
+        pane.OutputString("\n");
     }
 
     private IServiceProvider GetServiceProvider()
