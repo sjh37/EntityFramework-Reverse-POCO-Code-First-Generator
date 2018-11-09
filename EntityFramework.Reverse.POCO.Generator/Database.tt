@@ -303,6 +303,12 @@
         //    column.OverrideModifier = true;
         // This will create: public override long id { get; set; }
 
+        // Apply the "new" override access modifier to a specific column
+        // Use when overriding the Id when the base type is object
+        // if (column.NamehumanCase == "Id")
+        //    column.NewOverrideModifier = true;
+        // This will create: public new long id { get; set; }
+
         // Perform Enum property type replacement
         var enumDefinition = Settings.EnumDefinitions.FirstOrDefault(e =>
             (e.Schema.Equals(table.Schema, StringComparison.InvariantCultureIgnoreCase)) &&

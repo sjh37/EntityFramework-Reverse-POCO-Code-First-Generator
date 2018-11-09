@@ -974,7 +974,8 @@
         public string Name; // Raw name of the column as obtained from the database
         public string NameHumanCase; // Name adjusted for C# output
         public string DisplayName;  // Name used in the data annotation [Display(Name = "<DisplayName> goes here")]
-        public bool  OverrideModifier = false; // Adds 'override' to the property declaration
+        public bool OverrideModifier = false; // Adds 'override' to the property declaration
+        public bool NewOverrideModifier = false; // Adds 'new' to the property declaration to override a base type of object
 
         public int DateTimePrecision;
         public string Default;
@@ -1067,6 +1068,10 @@
             Entity = string.Format(
                 "public {0}{1} {2} {{ get; {3}set; }}{4}{5}",
                 (OverrideModifier ? "override " : ""), WrapIfNullable(PropertyType, this), NameHumanCase, Settings.UsePrivateSetterForComputedColumns && IsComputed ? "private " : string.Empty, initialization, inlineComments
+
+            Entity = string.Format(
+            "public {0}{1} {2} {{ get; {3}set; }}{4}{5}",
+            (NewOverrideModifier ? "new " : ""), WrapIfNullable(PropertyType, this), NameHumanCase, Settings.UsePrivateSetterForComputedColumns && IsComputed ? "private " : string.Empty, initialization, inlineComments
             );
         }
 

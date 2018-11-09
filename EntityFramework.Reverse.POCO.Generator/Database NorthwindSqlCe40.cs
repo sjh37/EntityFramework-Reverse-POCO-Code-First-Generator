@@ -9,7 +9,7 @@
 // The following connection settings were used to generate this file:
 //     Configuration file:     "EntityFramework.Reverse.POCO.Generator\App.config"
 //     Connection String Name: "MyDbContextSqlCE4"
-//     Connection String:      "Data Source=C:\S\Source (open source)\EntityFramework Reverse POCO Code Generator\EntityFramework.Reverse.POCO.Generator\App_Data\NorthwindSqlCe40.sdf"
+//     Connection String:      "Data Source=C:\git\EntityFramework-Reverse-POCO-Code-First-Generator\EntityFramework.Reverse.POCO.Generator\App_Data\NorthwindSqlCe40.sdf"
 // ------------------------------------------------------------------------------------------------
 // Database Edition : SqlCE
 
