@@ -271,6 +271,13 @@ foreach(Table tbl in from t in Settings.Tables.Where(t => !t.IsMapping && t.HasP
 <#}#>
         }
 
+        public <#=Settings.DbContextName#>(System.Data.Entity.Core.Objects.ObjectContext objectContext, bool dbContextOwnsObjectContext)
+            : base(objectContext, dbContextOwnsObjectContext)
+        {
+<#if(Settings.DbContextClassIsPartial()) {#>            InitializePartial();
+<#}#>
+        }
+
         protected override void Dispose(bool disposing)
         {
 <#if(Settings.DbContextClassIsPartial()) {#>            DisposePartial(disposing);

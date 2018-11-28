@@ -104,6 +104,11 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         {
         }
 
+        public MyDbContextSqlCE4(System.Data.Entity.Core.Objects.ObjectContext objectContext, bool dbContextOwnsObjectContext)
+            : base(objectContext, dbContextOwnsObjectContext)
+        {
+        }
+
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);

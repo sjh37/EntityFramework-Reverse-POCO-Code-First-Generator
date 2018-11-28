@@ -117,6 +117,11 @@ namespace TestDatabaseStandard
         {
         }
 
+        public TestDbContext(System.Data.Entity.Core.Objects.ObjectContext objectContext, bool dbContextOwnsObjectContext)
+            : base(objectContext, dbContextOwnsObjectContext)
+        {
+        }
+
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);

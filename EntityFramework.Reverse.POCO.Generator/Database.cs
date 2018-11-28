@@ -172,6 +172,11 @@ namespace EntityFramework_Reverse_POCO_Generator
         {
         }
 
+        public MyDbContext(System.Data.Entity.Core.Objects.ObjectContext objectContext, bool dbContextOwnsObjectContext)
+            : base(objectContext, dbContextOwnsObjectContext)
+        {
+        }
+
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
