@@ -4289,15 +4289,15 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             var isGeography = p.PropertyType == "System.Data.Entity.Spatial.DbGeography";
 
             sb.AppendLine(
-                $"            var {WriteStoredProcSqlParameterName(p)} = new System.Data.SqlClient.SqlParameter"
-                + $" {{ ParameterName = \"{p.Name}\", "
-                + (isGeography ? "UdtTypeName = \"geography\"" : $"SqlDbType = System.Data.SqlDbType.{p.SqlDbType}")
+                string.Format("            var {0} = new System.Data.SqlClient.SqlParameter", WriteStoredProcSqlParameterName(p))
+                + string.Format(" {{ ParameterName = \"{0}\", ", p.Name)
+                + (isGeography ? "UdtTypeName = \"geography\"" : string.Format("SqlDbType = System.Data.SqlDbType.{0}", p.SqlDbType))
                 + ", Direction = System.Data.ParameterDirection."
                 + (p.Mode == StoredProcedureParameterMode.In ? "Input" : "Output")
                 + (p.Mode == StoredProcedureParameterMode.In
                     ? ", Value = " + (isGeography
-                        ? $"Microsoft.SqlServer.Types.SqlGeography.Parse({p.NameHumanCase}.AsText())"
-                        : p.NameHumanCase + getValueOrDefault)
+                        ? string.Format("Microsoft.SqlServer.Types.SqlGeography.Parse({0}.AsText())", p.NameHumanCase)
+                          : p.NameHumanCase + getValueOrDefault)
                     : string.Empty)
                 + (p.MaxLength != 0 ? ", Size = " + p.MaxLength : string.Empty)
                 + ((p.Precision > 0 || p.Scale > 0) ? ", Precision = " + p.Precision + ", Scale = " + p.Scale : string.Empty)
