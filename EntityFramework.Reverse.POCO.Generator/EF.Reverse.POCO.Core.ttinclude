@@ -783,17 +783,17 @@
     public static void AddRelationship(List<ForeignKey> fkList, Tables tablesAndViews, String relationshipName, String pkSchema, String pkTableName, String[] pkColumns, String fkSchema, String fkTableName, String[] fkColumns)
     {
         // Argument validation:
-        if( fkList == null ) throw new ArgumentNullException(nameof(fkList));
-        if( tablesAndViews == null ) throw new ArgumentNullException(nameof(tablesAndViews));
-        if( String.IsNullOrEmpty(relationshipName) ) throw new ArgumentNullException(nameof(relationshipName));
-        if( String.IsNullOrEmpty(pkSchema) ) throw new ArgumentNullException(nameof(pkSchema));
-        if( String.IsNullOrEmpty(pkTableName) ) throw new ArgumentNullException(nameof(pkTableName));
-        if( pkColumns == null ) throw new ArgumentNullException(nameof(pkColumns));
-        if( pkColumns.Length == 0 || pkColumns.Any( s => String.IsNullOrEmpty(s) ) ) throw new ArgumentException(nameof(pkColumns));
-        if( String.IsNullOrEmpty(fkSchema) ) throw new ArgumentNullException(nameof(fkSchema));
-        if( String.IsNullOrEmpty(fkTableName) ) throw new ArgumentNullException(nameof(fkTableName));
-        if( fkColumns == null ) throw new ArgumentNullException(nameof(fkColumns));
-        if( fkColumns.Length != pkColumns.Length || fkColumns.Any( s => String.IsNullOrEmpty(s) ) ) throw new ArgumentException(nameof(fkColumns));
+        if( fkList == null ) throw new ArgumentNullException("fkList");
+        if( tablesAndViews == null ) throw new ArgumentNullException("tablesAndViews");
+        if( string.IsNullOrEmpty(relationshipName) ) throw new ArgumentNullException("relationshipName");
+        if( string.IsNullOrEmpty(pkSchema) ) throw new ArgumentNullException("pkSchema");
+        if( string.IsNullOrEmpty(pkTableName) ) throw new ArgumentNullException("pkTableName");
+        if( pkColumns == null ) throw new ArgumentNullException("pkColumns");
+        if( pkColumns.Length == 0 || pkColumns.Any( s => string.IsNullOrEmpty(s) ) ) throw new ArgumentException("pkColumns");
+        if( string.IsNullOrEmpty(fkSchema) ) throw new ArgumentNullException("fkSchema");
+        if( string.IsNullOrEmpty(fkTableName) ) throw new ArgumentNullException("fkTableName");
+        if( fkColumns == null ) throw new ArgumentNullException("fkColumns");
+        if( fkColumns.Length != pkColumns.Length || fkColumns.Any( s => string.IsNullOrEmpty(s) ) ) throw new ArgumentException("fkColumns");
 
         //////////////////
 
