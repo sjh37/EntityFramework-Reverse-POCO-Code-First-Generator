@@ -3290,7 +3290,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 string fkPropName = pkTable.GetUniqueColumnName(fkTable.NameHumanCase, foreignKey, checkForFkNameClashes, fkMakePropNameSingular, Relationship.OneToMany);
 
                 var dataAnnotation = string.Empty;
-                if (Settings.UseDataAnnotations)
+                if (Settings.UseDataAnnotationsWithFluent && !Settings.UseDataAnnotations)
+                {
+                    dataAnnotation = foreignKey.IncludeRequiredAttribute ? "[Required] " : string.Empty;
+                }
+                else if (Settings.UseDataAnnotations)
                 {
                     dataAnnotation = string.Format("[ForeignKey(\"{0}\"){1}] ",
                         string.Join(", ", fkCols.Select(x => x.col.NameHumanCase).Distinct().ToArray()),
