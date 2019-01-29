@@ -3771,12 +3771,12 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public string ConstraintName      { get; private set; }
         public int    Ordinal             { get; private set; }
         public bool   CascadeOnDelete     { get; private set; }
-        public bool   IsNotEnforced       { get; private set; }
 
         // User settable via ForeignKeyFilter callback
         public string AccessModifier           { get; set; }
         public bool   IncludeReverseNavigation { get; set; }
         public bool   IncludeRequiredAttribute { get; set; }
+        public bool   IsNotEnforced            { get; set; }
 
         public ForeignKey(string fkTableName, string fkSchema, string pkTableName, string pkSchema, string fkColumn, string pkColumn, string constraintName, string pkTableNameFiltered, int ordinal, bool cascadeOnDelete, bool isNotEnforced)
         {
