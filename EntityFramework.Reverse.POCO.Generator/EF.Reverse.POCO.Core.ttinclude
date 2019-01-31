@@ -4120,8 +4120,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             MappingConfiguration.Add(string.Format(@"HasMany(t => t.{0}).WithMany(t => t.{1}).Map(m =>
             {{
                 m.ToTable(""{2}""{5});
-                m.MapLeftKey(""{3}"");
-                m.MapRightKey(""{4}"");
+                m.MapLeftKey({3});
+                m.MapRightKey({4});
             }});", leftPropName, rightPropName, left.FkTableName, leftColumnName, rightColumnName, Settings.IsSqlCe ? string.Empty : ", \"" + left.FkSchema + "\""));
         }
 
