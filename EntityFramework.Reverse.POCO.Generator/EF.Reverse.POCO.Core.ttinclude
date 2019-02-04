@@ -3271,6 +3271,10 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 if (!pkCols.Any())
                     continue;
 
+                // EF6 - Cannot have a FK to a non-primary key
+                if (!pkCols.All(c => c.IsPrimaryKey))
+                    continue;
+
                 var relationship = CalcRelationship(pkTable, fkTable, fkCols.Select(c => c.col).ToList(), pkCols);
                 if (relationship == Relationship.DoNotUse)
                     continue;
