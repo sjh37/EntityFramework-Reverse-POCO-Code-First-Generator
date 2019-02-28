@@ -780,7 +780,7 @@
         AddRelationship( fkList, tablesAndViews, name, pkSchema, pkTable, new String[] { pkColumn }, fkSchema, fkTable, new String[] { fkColumn } );
     }
 
-    public static void AddRelationship(List<ForeignKey> fkList, Tables tablesAndViews, String relationshipName, String pkSchema, String pkTableName, String[] pkColumns, String fkSchema, String fkTableName, String[] fkColumns, Boolean includeReverseNavigation = true)
+    public static void AddRelationship(List<ForeignKey> fkList, Tables tablesAndViews, String relationshipName, String pkSchema, String pkTableName, String[] pkColumns, String fkSchema, String fkTableName, String[] fkColumns)
     {
         // Argument validation:
         if( fkList == null ) throw new ArgumentNullException("fkList");
@@ -833,7 +833,7 @@
                 cascadeOnDelete    : false,
                 isNotEnforced      : false
             );
-            fk.IncludeReverseNavigation = includeReverseNavigation;
+            fk.IncludeReverseNavigation = true;
 
             fkList.Add( fk );
             fkTable.HasForeignKey = true;
