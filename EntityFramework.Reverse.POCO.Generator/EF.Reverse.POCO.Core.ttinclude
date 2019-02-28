@@ -780,7 +780,7 @@
         AddRelationship( fkList, tablesAndViews, name, pkSchema, pkTable, new String[] { pkColumn }, fkSchema, fkTable, new String[] { fkColumn } );
     }
 
-    public static void AddRelationship(List<ForeignKey> fkList, Tables tablesAndViews, String relationshipName, String pkSchema, String pkTableName, String[] pkColumns, String fkSchema, String fkTableName, String[] fkColumns)
+    public static void AddRelationship(List<ForeignKey> fkList, Tables tablesAndViews, String relationshipName, String pkSchema, String pkTableName, String[] pkColumns, String fkSchema, String fkTableName, String[] fkColumns, Boolean includeReverseNavigation = true)
     {
         // Argument validation:
         if( fkList == null ) throw new ArgumentNullException("fkList");
@@ -789,16 +789,29 @@
         if( string.IsNullOrEmpty(pkSchema) ) throw new ArgumentNullException("pkSchema");
         if( string.IsNullOrEmpty(pkTableName) ) throw new ArgumentNullException("pkTableName");
         if( pkColumns == null ) throw new ArgumentNullException("pkColumns");
-        if( pkColumns.Length == 0 || pkColumns.Any( s => string.IsNullOrEmpty(s) ) ) throw new ArgumentException("pkColumns");
+        if( pkColumns.Length == 0 || pkColumns.Any( s => string.IsNullOrEmpty(s) ) ) throw new ArgumentException( "Invalid primary-key columns: No primary-key column names are specified, or at least one primary-key column name is empty.", "pkColumns" );
         if( string.IsNullOrEmpty(fkSchema) ) throw new ArgumentNullException("fkSchema");
         if( string.IsNullOrEmpty(fkTableName) ) throw new ArgumentNullException("fkTableName");
         if( fkColumns == null ) throw new ArgumentNullException("fkColumns");
-        if( fkColumns.Length != pkColumns.Length || fkColumns.Any( s => string.IsNullOrEmpty(s) ) ) throw new ArgumentException("fkColumns");
+        if( fkColumns.Length != pkColumns.Length || fkColumns.Any( s => string.IsNullOrEmpty(s) ) ) throw new ArgumentException("Invalid foreign-key columns:Foreign-key column list has a different number of columns than the primary-key column list, or at least one foreign-key column name is empty.", "pkColumns" );
 
         //////////////////
 
         Table pkTable = tablesAndViews.GetTable(pkTableName, pkSchema);
+        if( pkTable == null ) throw new ArgumentException( "Couldn't find table " + pkSchema + "." + pkTableName );
+
         Table fkTable = tablesAndViews.GetTable(fkTableName, fkSchema);
+        if( fkTable == null ) throw new ArgumentException( "Couldn't find table " + fkSchema + "." + fkTableName );
+
+        // Ensure all columns exist:
+        foreach( String pkCol in pkColumns )
+        {
+            if( pkTable.Columns.SingleOrDefault( c => c.Name == pkCol ) == null ) throw new ArgumentException( "The relationship primary-key column \"" + pkCol + "\" does not exist in table or view " + pkSchema + "." + pkTableName );
+        }
+        foreach( String fkCol in fkColumns )
+        {
+            if( fkTable.Columns.SingleOrDefault( c => c.Name == fkCol ) == null ) throw new ArgumentException( "The relationship foreign-key column \"" + fkCol + "\" does not exist in table or view " + fkSchema + "." + fkTableName );
+        }
 
         for( int i = 0; i < pkColumns.Length; i++ )
         {
@@ -820,7 +833,7 @@
                 cascadeOnDelete    : false,
                 isNotEnforced      : false
             );
-            fk.IncludeReverseNavigation = true;
+            fk.IncludeReverseNavigation = includeReverseNavigation;
 
             fkList.Add( fk );
             fkTable.HasForeignKey = true;
