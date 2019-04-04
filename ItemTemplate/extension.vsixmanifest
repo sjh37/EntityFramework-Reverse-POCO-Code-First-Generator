@@ -41,6 +41,22 @@
                 <Edition>VSWinDesktopExpress</Edition>
                 <Edition>VWDExpress</Edition>
             </VisualStudio>
+            <VisualStudio Version="16.0">
+                <Edition>Enterprise</Edition>
+                <Edition>Community</Edition>
+                <Edition>Pro</Edition>
+                <Edition>VSWinExpress</Edition>
+                <Edition>VSWinDesktopExpress</Edition>
+                <Edition>VWDExpress</Edition>
+            </VisualStudio>
+            <VisualStudio Version="17.0">
+                <Edition>Enterprise</Edition>
+                <Edition>Community</Edition>
+                <Edition>Pro</Edition>
+                <Edition>VSWinExpress</Edition>
+                <Edition>VSWinDesktopExpress</Edition>
+                <Edition>VWDExpress</Edition>
+            </VisualStudio>
         </SupportedProducts>
         <SupportedFrameworkRuntimeEdition MinVersion="4.0" MaxVersion="4.9" />
     </Identifier>
