@@ -236,7 +236,9 @@ foreach(Table tbl in from t in Settings.Tables.Where(t => !t.IsMapping && t.HasP
 
 <#if(Settings.AddParameterlessConstructorToDbContext) {#>
         public <#=Settings.DbContextName#>()
+<#if(Settings.DefaultConstructorArgument != null) {#>
             : base(<#=Settings.DefaultConstructorArgument#>)
+<#}#>
         {
 <#if(Settings.DbContextClassIsPartial()) {#>            InitializePartial();
 <#}#>
