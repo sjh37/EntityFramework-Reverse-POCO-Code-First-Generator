@@ -50,7 +50,7 @@ If your database changes, simply re-save the `<database>.tt` file. That's it.
 <connectionStrings>
   <add name="MyDbContext"
        providerName="System.Data.SqlClient"
-       connectionString="Data Source=(local);Initial Catalog=MyDatabase;Integrated Security=True; />
+       connectionString="Data Source=(local);Initial Catalog=MyDatabase;Integrated Security=True;" />
 </connectionStrings>
 ```
 * The connection string you use must have at least these privileges: `ddladmin`, `datareader` and `datawriter`.
