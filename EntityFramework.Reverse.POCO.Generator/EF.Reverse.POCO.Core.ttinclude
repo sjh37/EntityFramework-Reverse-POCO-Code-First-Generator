@@ -68,11 +68,12 @@
         public static string DbContextBaseClass;
 
         public static bool AddParameterlessConstructorToDbContext = true;
+        private static bool _explicitDefaultConstructorArgument;
         private static string _defaultConstructorArgument;
         public static string DefaultConstructorArgument
         {
-            get { return _defaultConstructorArgument ?? string.Format('"' + "Name={0}" + '"', ConnectionStringName); }
-            set { _defaultConstructorArgument = value; }
+            get { return _explicitDefaultConstructorArgument ? _defaultConstructorArgument : string.Format('"' + "Name={0}" + '"', ConnectionStringName); }
+            set { _explicitDefaultConstructorArgument = true; _defaultConstructorArgument = value; }
         }
 
         public static string ConfigurationClassName = "Configuration";
