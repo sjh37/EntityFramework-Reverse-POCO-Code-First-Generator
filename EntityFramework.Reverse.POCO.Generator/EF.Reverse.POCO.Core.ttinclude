@@ -3955,7 +3955,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
         public string GetUniqueColumnName(string tableNameHumanCase, ForeignKey foreignKey, bool checkForFkNameClashes, bool makeSingular, Relationship relationship)
         {
-            var addReverseNavigationUniquePropName = (checkForFkNameClashes || Name == foreignKey.FkTableName || (Name == foreignKey.PkTableName && foreignKey.IncludeReverseNavigation));
+            var addReverseNavigationUniquePropName = checkForFkNameClashes && (Name == foreignKey.FkTableName || (Name == foreignKey.PkTableName && foreignKey.IncludeReverseNavigation));          
             if (ReverseNavigationUniquePropName.Count == 0)
             {
                 ReverseNavigationUniquePropName.Add(NameHumanCase);
