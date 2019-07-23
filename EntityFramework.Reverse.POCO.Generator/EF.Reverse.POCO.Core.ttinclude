@@ -3974,7 +3974,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             string col;
             if (!ReverseNavigationUniquePropNameClashes.Contains(name) && !ReverseNavigationUniquePropName.Contains(name))
             {
-                if(addReverseNavigationUniquePropName)
+                if(addReverseNavigationUniquePropName || !checkForFkNameClashes)
                 {
                     ReverseNavigationUniquePropName.Add(name);
                 }
@@ -3995,7 +3995,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     if (!ReverseNavigationUniquePropNameClashes.Contains(col) &&
                         !ReverseNavigationUniquePropName.Contains(col))
                     {
-                        if(addReverseNavigationUniquePropName)
+                        if(addReverseNavigationUniquePropName|| !checkForFkNameClashes)
                         {
                             ReverseNavigationUniquePropName.Add(col);
                         }
@@ -4013,7 +4013,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 if (!ReverseNavigationUniquePropNameClashes.Contains(col) &&
                     !ReverseNavigationUniquePropName.Contains(col))
                 {
-                    if(addReverseNavigationUniquePropName)
+                    if(addReverseNavigationUniquePropName || !checkForFkNameClashes)
                     {
                         ReverseNavigationUniquePropName.Add(col);
                     }
@@ -4029,7 +4029,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
             if (!ReverseNavigationUniquePropNameClashes.Contains(col) && !ReverseNavigationUniquePropName.Contains(col))
             {
-                if(addReverseNavigationUniquePropName)
+                if(addReverseNavigationUniquePropName || !checkForFkNameClashes)
                 {
                     ReverseNavigationUniquePropName.Add(col);
                 }
@@ -4045,7 +4045,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 if (ReverseNavigationUniquePropName.Contains(col))
                     continue;
 
-                if(addReverseNavigationUniquePropName)
+                if(addReverseNavigationUniquePropName || !checkForFkNameClashes)
                 {
                     ReverseNavigationUniquePropName.Add(col);
                 }
