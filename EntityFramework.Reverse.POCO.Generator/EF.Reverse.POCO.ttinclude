@@ -341,7 +341,7 @@ foreach(var tbl in from t in Settings.Tables.Where(t => !t.IsMapping && t.HasPri
         partial void InitializePartial();
         partial void DisposePartial(bool disposing);
         partial void OnModelCreatingPartial(System.Data.Entity.DbModelBuilder modelBuilder);
-		static partial void OnCreateModelPartial(System.Data.Entity.DbModelBuilder modelBuilder, string schema);        
+        static partial void OnCreateModelPartial(System.Data.Entity.DbModelBuilder modelBuilder, string schema);
 <#}#>
 <# if (Settings.StoredProcs.Any())
 { #>
