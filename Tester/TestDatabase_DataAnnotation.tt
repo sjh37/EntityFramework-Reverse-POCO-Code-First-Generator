@@ -98,12 +98,12 @@
         // It is used to set a data annotation on a column based on the columns's MS SQL type.
         // Make sure the column name is lowercase in the following array, regardless of how it is in the database
         // Column name       DataAnnotation to add
-        { "date",            "DataType(DataType.Date)" },
-        { "datetime",        "DataType(DataType.DateTime)" },
-        { "datetime2",       "DataType(DataType.DateTime)" },
-        { "datetimeoffset",  "DataType(DataType.DateTime)" },
-        { "smallmoney",      "DataType(DataType.Currency)" },
-        { "money",           "DataType(DataType.Currency)" }
+        { "date",            "DataType(System.ComponentModel.DataAnnotations.DataType.Date)"     },
+        { "datetime",        "DataType(System.ComponentModel.DataAnnotations.DataType.DateTime)" },
+        { "datetime2",       "DataType(System.ComponentModel.DataAnnotations.DataType.DateTime)" },
+        { "datetimeoffset",  "DataType(System.ComponentModel.DataAnnotations.DataType.DateTime)" },
+        { "smallmoney",      "DataType(System.ComponentModel.DataAnnotations.DataType.Currency)" },
+        { "money",           "DataType(System.ComponentModel.DataAnnotations.DataType.Currency)" }
     };
 
     // Migrations *************************************************************************************************************************

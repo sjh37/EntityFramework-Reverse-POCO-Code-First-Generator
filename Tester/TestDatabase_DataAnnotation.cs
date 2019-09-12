@@ -676,7 +676,7 @@ namespace TestDatabaseDataAnnotation
 
         [Column(@"someDate", Order = 9, TypeName = "datetime2")]
         [Required]
-        [DataType(DataType.DateTime)]
+        [DataType(System.ComponentModel.DataAnnotations.DataType.DateTime)]
         [Display(Name = "Some date")]
         public System.DateTime SomeDate { get; set; } // someDate
 
