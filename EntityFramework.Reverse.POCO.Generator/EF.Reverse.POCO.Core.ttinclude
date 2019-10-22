@@ -3237,7 +3237,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public override void ProcessForeignKeys(List<ForeignKey> fkList, Tables tables, bool checkForFkNameClashes)
         {
             var constraints = fkList.Select(x => x.FkSchema + "." + x.ConstraintName).Distinct();
-			var doubleForeignTableRefcontraints = fkList.GroupBy(x => new { x.FkTableName, x.PkTableName }).Where(g => g.Count() > 1).SelectMany(g => g.Select(x => string.Format("{0}.{1}", x.FkSchema, x.ConstraintName))).Distinct();
+            var doubleForeignTableRefcontraints = fkList.GroupBy(x => new { x.FkTableName, x.PkTableName }).Where(g => g.Count() > 1).SelectMany(g => g.Select(x => string.Format("{0}.{1}", x.FkSchema, x.ConstraintName))).Distinct();
             foreach (var constraint in constraints)
             {
                 var foreignKeys = fkList
