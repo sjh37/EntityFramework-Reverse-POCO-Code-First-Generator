@@ -4132,14 +4132,22 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             }
         }
 
-        public void AddMappingConfiguration(ForeignKey left, ForeignKey right, string leftPropName, string rightPropName)
+        public void AddMappingConfiguration(ForeignKey left, ForeignKey right, string leftPropName, string rightPropName, List<ForeignKey> fkList)
         {
+            var leftColumnName = GetMapKeyName(fkList, left);
+            var rightColumnName = GetMapKeyName(fkList, right);
             MappingConfiguration.Add(string.Format(@"HasMany(t => t.{0}).WithMany(t => t.{1}).Map(m =>
             {{
                 m.ToTable(""{2}""{5});
-                m.MapLeftKey(""{3}"");
-                m.MapRightKey(""{4}"");
-            }});", leftPropName, rightPropName, left.FkTableName, left.FkColumn, right.FkColumn, Settings.IsSqlCe ? string.Empty : ", \"" + left.FkSchema + "\""));
+                m.MapLeftKey({3});
+                m.MapRightKey({4});
+            }});", leftPropName, rightPropName, left.FkTableName, leftColumnName, rightColumnName, Settings.IsSqlCe ? string.Empty : ", \"" + left.FkSchema + "\""));
+        }
+
+        public string GetMapKeyName(List<ForeignKey> fkList, ForeignKey fk)
+        {
+            var fks = fkList.FindAll(f => f.ConstraintName == fk.ConstraintName).Select(f => $"\"{f.FkColumn}\"").ToList() as List<string>;
+            return string.Join(", ", fks);
         }
 
         public void IdentifyMappingTable(List<ForeignKey> fkList, Tables tables, bool checkForFkNameClashes)
@@ -4148,12 +4156,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
             var nonReadOnlyColumns = Columns.Where(c => !c.IsIdentity && !c.IsRowVersion && !c.IsStoreGenerated && !c.Hidden).ToList();
 
-            // Ignoring read-only columns, it must have only 2 columns to be a mapping table
-            if (nonReadOnlyColumns.Count != 2)
-                return;
-
-            // Must have 2 primary keys
-            if (nonReadOnlyColumns.Count(x => x.IsPrimaryKey) != 2)
+            // In mapping tables between tables with composite keys there are more than 2 columns
+            if (nonReadOnlyColumns.Count(x => x.IsPrimaryKey) != nonReadOnlyColumns.Count)
                 return;
 
             // No columns should be nullable
@@ -4167,11 +4171,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                                     .ToList();
 
             // Each column must have a foreign key, therefore check column and foreign key counts match
-            if (foreignKeys.Select(x => x.FkColumn).Distinct().Count() != 2)
+            if (foreignKeys.Select(x => x.ConstraintName).Distinct().Count() != 2)
                 return;
 
             ForeignKey left  = foreignKeys[0];
-            ForeignKey right = foreignKeys[1];
+            ForeignKey right = foreignKeys.Find(f => f.ConstraintName != left.ConstraintName);
             if (!left.IncludeReverseNavigation || !right.IncludeReverseNavigation)
                 return;
 
@@ -4187,7 +4191,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             leftPropName = Settings.MappingTableRename(Name, leftTable.NameHumanCase, leftPropName);
             var rightPropName = rightTable.GetUniqueColumnName(leftTable.NameHumanCase, left, checkForFkNameClashes, false, Relationship.ManyToOne); // relationship from the mapping table to each side is Many-to-One
             rightPropName = Settings.MappingTableRename(Name, rightTable.NameHumanCase, rightPropName);
-            leftTable.AddMappingConfiguration(left, right, leftPropName, rightPropName);
+            leftTable.AddMappingConfiguration(left, right, leftPropName, rightPropName, foreignKeys);
 
             IsMapping = true;
             rightTable.AddReverseNavigation(Relationship.ManyToMany, rightTable.NameHumanCase, leftTable, rightPropName, null, null, this);
