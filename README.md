@@ -23,7 +23,7 @@ the generated code to my liking.
 
 * SQL Server
 * SQL Server Compact 3.5 and 4.0
-* Comming soon: Oracle, PostgreSQL, MySQL
+* Coming soon: Oracle, PostgreSQL, MySQL
 
 ### Highly customisable output
 
@@ -52,7 +52,7 @@ If your database changes, simply re-save the `<database>.tt` file. That's it.
 </connectionStrings>
 ```
 - .NET Core
-  * Use Nuget and install the relevant nuget package for your datbase, such as `Microsoft.EntityFrameworkCore.SqlServer`
+  * Use Nuget and install the relevant nuget package for your database, such as `Microsoft.EntityFrameworkCore.SqlServer`
 
 * The connection string you use must have at least these privileges: `ddladmin`, `datareader` and `datawriter`.
   `ddladmin` is required for reading the default constraints.
