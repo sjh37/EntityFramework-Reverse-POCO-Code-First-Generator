@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("EntityFramework.Reverse.POCO.CodeFirst.Generator")]
 [assembly: AssemblyDescription("Reverse engineers an existing database and generates EntityFramework Code First POCO classes, Configuration mappings and DbContext")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Simon Hughes (www.hicrest.net)")]
-[assembly: AssemblyProduct("EntityFramework Reverse POCO code first Generator")]
-[assembly: AssemblyCopyright("Copyright (C) Simon Hughes 2012")]
+[assembly: AssemblyCompany("Simon Hughes (www.ReversePoco.com)")]
+[assembly: AssemblyProduct("EntityFramework Reverse POCO Generator")]
+[assembly: AssemblyCopyright("Copyright © Simon Hughes 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -16,6 +16,7 @@
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
+Generator/[Tt]ools/
 x64/
 x86/
 bld/

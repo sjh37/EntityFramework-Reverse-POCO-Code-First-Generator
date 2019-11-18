@@ -1,0 +1,244 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7638DEA9-A4EF-46DD-ADE2-81D967246751}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Efrpg</RootNamespace>
+    <AssemblyName>EF.Reverse.POCO.Generator</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="envdte100, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="envdte80, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="EnvDTE90, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyHelper.cs" />
+    <Compile Include="EfrpgVersion.cs" />
+    <Compile Include="FileManagement\VisualStudioFileManager.cs" />
+    <Compile Include="FileManagement\CustomFileManager.cs" />
+    <Compile Include="FileManagement\EntityFrameworkTemplateFileManager.cs" />
+    <Compile Include="FileManagement\FileManagementService.cs" />
+    <Compile Include="FileManagement\FileManagerFactory.cs" />
+    <Compile Include="FileManagement\NullFileManager.cs" />
+    <Compile Include="FileManagement\IFileManager.cs" />
+    <Compile Include="FileManagerType.cs" />
+    <Compile Include="Filtering\ColumnFilter.cs" />
+    <Compile Include="Filtering\DbContextFilter.cs" />
+    <Compile Include="Filtering\DbContextFilterList.cs" />
+    <Compile Include="Filtering\FilterSettings.cs" />
+    <Compile Include="Filtering\FilterType.cs" />
+    <Compile Include="Filtering\IDbContextFilterList.cs" />
+    <Compile Include="Filtering\IFilter.cs" />
+    <Compile Include="Filtering\MultiContextFilter.cs" />
+    <Compile Include="Filtering\MultiContextNameNormalisation.cs" />
+    <Compile Include="Generators\ScalarValuedFunctionsTemplateData.cs" />
+    <Compile Include="LanguageMapping\DatabaseToPropertyTypeFactory.cs" />
+    <Compile Include="LanguageMapping\GenerationLanguage.cs" />
+    <Compile Include="LanguageMapping\LanguageFactories\IDatabaseLanguageFactory.cs" />
+    <Compile Include="LanguageMapping\LanguageFactories\MySqlLanguageFactory.cs" />
+    <Compile Include="LanguageMapping\MySqlToCSharp.cs" />
+    <Compile Include="LanguageMapping\LanguageFactories\OracleLanguageFactory.cs" />
+    <Compile Include="LanguageMapping\OracleToCSharp.cs" />
+    <Compile Include="LanguageMapping\LanguageFactories\PluginLanguageFactory.cs" />
+    <Compile Include="LanguageMapping\LanguageFactories\PostgresLanguageFactory.cs" />
+    <Compile Include="LanguageMapping\PostgresToCSharp.cs" />
+    <Compile Include="LanguageMapping\LanguageFactories\SqlServerLanguageFactory.cs" />
+    <Compile Include="LanguageMapping\SqlServerToJavascript.cs" />
+    <Compile Include="Licensing\LicenceType.cs" />
+    <Compile Include="LanguageMapping\SqlServerToCSharp.cs" />
+    <Compile Include="LanguageMapping\IDatabaseToPropertyType.cs" />
+    <Compile Include="Util\MultiContextSettingsCopy.cs" />
+    <Compile Include="Filtering\PeriodFilter.cs" />
+    <Compile Include="Filtering\RegexExcludeFilter.cs" />
+    <Compile Include="Filtering\RegexIncludeFilter.cs" />
+    <Compile Include="Filtering\HasNameFilter.cs" />
+    <Compile Include="Filtering\IDbContextFilter.cs" />
+    <Compile Include="Filtering\MultiContextSettings.cs" />
+    <Compile Include="Filtering\SchemaAndName.cs" />
+    <Compile Include="Filtering\SchemaFilter.cs" />
+    <Compile Include="Filtering\SingleContextFilter.cs" />
+    <Compile Include="Filtering\StoredProcedureFilter.cs" />
+    <Compile Include="Filtering\TableFilter.cs" />
+    <Compile Include="Generators\GeneratorCustom.cs" />
+    <Compile Include="Generators\MultipleModelReturnColumns.cs" />
+    <Compile Include="Generators\ResultSetResultReaderCommand.cs" />
+    <Compile Include="Generators\StoredProcTemplateData.cs" />
+    <Compile Include="Generators\TableTemplateData.cs" />
+    <Compile Include="Generators\TableValuedFunctionsTemplateData.cs" />
+    <Compile Include="EntityName.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Readers\DatabaseProvider.cs" />
+    <Compile Include="Readers\IMultiDbContextSettingsPlugin.cs" />
+    <Compile Include="Readers\PluginDatabaseReader.cs" />
+    <Compile Include="Readers\IDatabaseReaderPlugin.cs" />
+    <Compile Include="Enumeration.cs" />
+    <Compile Include="Readers\RawExtendedProperty.cs" />
+    <Compile Include="Readers\RawForeignKey.cs" />
+    <Compile Include="Readers\RawTable.cs" />
+    <Compile Include="Readers\RawStoredProcedure.cs" />
+    <Compile Include="Schema.cs" />
+    <Compile Include="TemplateModels\StoredProcReturnModel.cs" />
+    <Compile Include="TemplateModels\PocoConfigurationModel.cs" />
+    <Compile Include="TemplateModels\PocoModel.cs" />
+    <Compile Include="TemplateModels\FactoryModel.cs" />
+    <Compile Include="TemplateModels\FakeDbSetModel.cs" />
+    <Compile Include="TemplateModels\FakeContextModel.cs" />
+    <Compile Include="TemplateModels\ContextModel.cs" />
+    <Compile Include="TemplateModels\InterfaceModel.cs" />
+    <Compile Include="Licensing\DigitalSignaturePublic.cs" />
+    <Compile Include="Licensing\Hex.cs" />
+    <Compile Include="Licensing\Licence.cs" />
+    <Compile Include="Licensing\LicenceConstants.cs" />
+    <Compile Include="Licensing\LicenceValidator.cs" />
+    <Compile Include="Mustache\ArgumentCollection.cs" />
+    <Compile Include="Mustache\CompoundMustacheGenerator.cs" />
+    <Compile Include="Mustache\ConditionTagDefinition.cs" />
+    <Compile Include="Mustache\Constants.cs" />
+    <Compile Include="Mustache\ContentTagDefinition.cs" />
+    <Compile Include="Mustache\Context.cs" />
+    <Compile Include="Mustache\ContextParameter.cs" />
+    <Compile Include="Mustache\EachTagDefinition.cs" />
+    <Compile Include="Mustache\ElifTagDefinition.cs" />
+    <Compile Include="Mustache\ElseTagDefinition.cs" />
+    <Compile Include="Mustache\FormatCompiler.cs" />
+    <Compile Include="Mustache\MustacheGenerator.cs" />
+    <Compile Include="Mustache\HtmlFormatCompiler.cs" />
+    <Compile Include="Mustache\IArgument.cs" />
+    <Compile Include="Mustache\IfTagDefinition.cs" />
+    <Compile Include="Mustache\IMustacheGenerator.cs" />
+    <Compile Include="Mustache\IndexTagDefinition.cs" />
+    <Compile Include="Mustache\InlineMustacheGenerator.cs" />
+    <Compile Include="Mustache\InlineTagDefinition.cs" />
+    <Compile Include="Mustache\KeyFoundEventArgs.cs" />
+    <Compile Include="Mustache\KeyMustacheGenerator.cs" />
+    <Compile Include="Mustache\KeyNotFoundEventArgs.cs" />
+    <Compile Include="Mustache\MasterTagDefinition.cs" />
+    <Compile Include="Mustache\NestedContext.cs" />
+    <Compile Include="Mustache\NewlineTagDefinition.cs" />
+    <Compile Include="Mustache\NumberArgument.cs" />
+    <Compile Include="Mustache\PartialCallTagDefinition.cs" />
+    <Compile Include="Mustache\PlaceholderArgument.cs" />
+    <Compile Include="Mustache\PlaceholderFoundEventArgs.cs" />
+    <Compile Include="Mustache\PropertyDictionary.cs" />
+    <Compile Include="Mustache\RegexHelper.cs" />
+    <Compile Include="Mustache\Resources.cs" />
+    <Compile Include="Mustache\Scope.cs" />
+    <Compile Include="Mustache\SetTagDefinition.cs" />
+    <Compile Include="Mustache\StaticMustacheGenerator.cs" />
+    <Compile Include="Mustache\StringArgument.cs" />
+    <Compile Include="Mustache\Substitution.cs" />
+    <Compile Include="Mustache\TagDefinition.cs" />
+    <Compile Include="Mustache\TagFormattedEventArgs.cs" />
+    <Compile Include="Mustache\TagParameter.cs" />
+    <Compile Include="Mustache\UpcastDictionary.cs" />
+    <Compile Include="Mustache\ValueRequestEventArgs.cs" />
+    <Compile Include="Mustache\VariableArgument.cs" />
+    <Compile Include="Mustache\VariableFoundEventArgs.cs" />
+    <Compile Include="Mustache\WithTagDefinition.cs" />
+    <Compile Include="Templates\GeneratorType.cs" />
+    <Compile Include="Templates\TemplateEf6.cs" />
+    <Compile Include="Templates\TemplateEfCore.cs" />
+    <Compile Include="Templates\Template.cs" />
+    <Compile Include="Column.cs" />
+    <Compile Include="ColumnGeneratedAlwaysType.cs" />
+    <Compile Include="CommentsStyle.cs" />
+    <Compile Include="DatabaseType.cs" />
+    <Compile Include="Elements.cs" />
+    <Compile Include="EnumDefinition.cs" />
+    <Compile Include="ForeignKey.cs" />
+    <Compile Include="GeneratedTextTransformation.cs" />
+    <Compile Include="Generators\Generator.cs" />
+    <Compile Include="Generators\GeneratorEf6.cs" />
+    <Compile Include="Generators\GeneratorEfCore.cs" />
+    <Compile Include="Generators\GeneratorFactory.cs" />
+    <Compile Include="Templates\TemplateType.cs" />
+    <Compile Include="Index.cs" />
+    <Compile Include="Inflector.cs" />
+    <Compile Include="Pluralization\BidirectionalDictionary.cs" />
+    <Compile Include="Pluralization\CustomPluralizationEntry.cs" />
+    <Compile Include="Pluralization\DebugCheck.cs" />
+    <Compile Include="Pluralization\EnglishPluralizationService.cs" />
+    <Compile Include="Pluralization\IPluralizationService.cs" />
+    <Compile Include="Pluralization\PluralizationServiceUtil.cs" />
+    <Compile Include="Pluralization\StringBidirectionalDictionary.cs" />
+    <Compile Include="Readers\MySqlDatabaseReader.cs" />
+    <Compile Include="Readers\OracleDatabaseReader.cs" />
+    <Compile Include="Readers\PostgreSqlDatabaseReader.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PropertyAndComments.cs" />
+    <Compile Include="Relationship.cs" />
+    <Compile Include="Readers\DatabaseReader.cs" />
+    <Compile Include="Readers\DatabaseReaderFactory.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="Readers\SqlServerCeDatabaseReader.cs" />
+    <Compile Include="Readers\SqlServerDatabaseReader.cs" />
+    <Compile Include="StoredProcedure.cs" />
+    <Compile Include="StoredProcedureParameter.cs" />
+    <Compile Include="StoredProcedureParameterMode.cs" />
+    <Compile Include="Table.cs" />
+    <Compile Include="Tables.cs" />
+    <Compile Include="Generators\CodeOutputList.cs" />
+    <Compile Include="Generators\CodeGenerator.cs" />
+    <Compile Include="Templates\TemplateFactory.cs" />
+    <Compile Include="Generators\FileHeaderFooter.cs" />
+    <Compile Include="Generators\CodeOutput.cs" />
+    <Compile Include="Templates\TemplateFileBased.cs" />
+    <Compile Include="Util\StringExtensions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Generators\DatabaseContextInterfaceUsings.txt" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

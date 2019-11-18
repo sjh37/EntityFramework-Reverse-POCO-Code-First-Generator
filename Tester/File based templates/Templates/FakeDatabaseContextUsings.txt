@@ -1,0 +1,16 @@
+﻿System
+System.Collections.Generic
+System.Data
+System.Data.Common
+System.Data.Entity
+System.Data.Entity.Core.Objects
+System.Data.Entity.Infrastructure
+System.Data.Entity.Infrastructure.Annotations
+System.Data.Entity.Infrastructure.Interception
+System.Data.Entity.Spatial
+System.Data.Entity.Validation
+System.Data.SqlClient
+System.Data.SqlTypes
+System.Linq
+System.Threading
+System.Threading.Tasks

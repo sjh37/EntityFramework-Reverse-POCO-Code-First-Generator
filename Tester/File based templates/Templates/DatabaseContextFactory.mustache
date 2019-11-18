@@ -1,0 +1,7 @@
+﻿{{classModifier}} class {{contextName}}Factory : IDbContextFactory<{{contextName}}>{{#newline}}
+{{{#newline}}
+    public {{contextName}} Create(){{#newline}}
+    {{{#newline}}
+        return new {{contextName}}();{{#newline}}
+    }{{#newline}}
+}

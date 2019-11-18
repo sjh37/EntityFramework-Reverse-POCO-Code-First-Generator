@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using EntityFramework_Reverse_POCO_Generator;
 using NUnit.Framework;
 using Tester.BusinessLogic;
@@ -12,8 +13,8 @@ namespace Tester
         private MyDbContext _db;
         private Dictionary<string, string> _dictionary;
 
-        [TestFixtureSetUp]
-        public void TestFixtureSetUp()
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
         {
             _dictionary = new Dictionary<string, string>
             {
@@ -30,8 +31,8 @@ namespace Tester
             };
         }
 
-        [TestFixtureTearDown]
-        public void TestFixtureTearDown()
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
         {
             var customer = _db.Customers.FirstOrDefault(x => x.CustomerId == "TEST.");
             if (customer == null)
@@ -47,7 +48,7 @@ namespace Tester
         }
 
         [Test]
-        public void use_EF_directly()
+        public void UseEfDirectly()
         {
             // Arrange
 
@@ -59,7 +60,7 @@ namespace Tester
         }
 
         [Test]
-        public void use_EF_via_repository()
+        public void UseEfViaRepository()
         {
             // Arrange
             var customersRepository = new CustomersRepository(_db);
@@ -72,7 +73,7 @@ namespace Tester
         }
 
         [Test]
-        public async void use_EF_via_repository_async()
+        public async Task UseEfViaRepositoryAsync()
         {
             // Arrange
             var customersRepository = new CustomersRepository(_db);
@@ -95,7 +96,7 @@ namespace Tester
         }
 
         [Test]
-        public void Insert_and_delete_TEST_record_successfully_via_FindById()
+        public void InsertAndDeleteTestRecordSuccessfullyViaFindById()
         {
             // Arrange
             var db2 = new MyDbContext();
@@ -123,7 +124,7 @@ namespace Tester
         }
 
         [Test]
-        public void Insert_and_delete_TEST_record_successfully_via_Find()
+        public void InsertAndDeleteTestRecordSuccessfullyViaFind()
         {
             // Arrange
             var db2 = new MyDbContext();

@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("EntityFramework_Reverse_POCO_Generator")]
 [assembly: AssemblyDescription("Reverse engineers an existing database and generates EntityFramework Code First POCO classes, Configuration mappings and DbContext")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Simon Hughes (www.hicrest.net)")]
+[assembly: AssemblyCompany("Simon Hughes (www.ReversePoco.com)")]
 [assembly: AssemblyProduct("EntityFramework_Reverse_POCO_Generator")]
-[assembly: AssemblyCopyright("Copyright (C) Simon Hughes 2012")]
+[assembly: AssemblyCopyright("Copyright © Simon Hughes 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -30,5 +30,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.37.5.0")]
-[assembly: AssemblyFileVersion("2.37.5.0")]
+[assembly: AssemblyVersion("3.0.8.0")]
+[assembly: AssemblyFileVersion("3.0.8.0")]

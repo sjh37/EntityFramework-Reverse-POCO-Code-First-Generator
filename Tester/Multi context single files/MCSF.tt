@@ -1,0 +1,31 @@
+﻿<#@ include file                     ="..\..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v3.ttinclude" #>
+<#
+    // Multi context single files
+    Settings.DatabaseType            = DatabaseType.SqlServer; // SqlCe, Plugin. Coming next: PostgreSQL, MySql, Oracle
+    Settings.TemplateType            = TemplateType.Ef6; // TemplateType.EfCore2, TemplateType.EfCore3, TemplateType.FileBased (specify folder using Settings.TemplateFolder)
+    Settings.FileManagerType         = FileManagerType.VisualStudio; // VisualStudio = .NET project; Custom = .NET Core project; Null = No output, testing only.
+    Settings.ConnectionString        = "Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True";
+    Settings.ConnectionStringName    = "McsfMultiDatabase"; // ConnectionString key as specified in your app.config/web.config/appsettings.json
+    Settings.GenerateSeparateFiles   = false;
+    Settings.Namespace               = DefaultNamespace; // Override the default namespace here
+    Settings.AddUnitTestingDbContext = false;
+
+    Settings.GenerateSingleDbContext = false;
+    Settings.MultiContextSettingsConnectionString = "Data Source=(local);Initial Catalog=EfrpgTest_Settings;Integrated Security=True";
+
+    FilterSettings.Reset();
+    FilterSettings.AddDefaults();
+    FilterSettings.IncludeTableValuedFunctions = true;
+    FilterSettings.IncludeScalarValuedFunctions = true;
+    FilterSettings.CheckSettings();
+
+    Inflector.PluralisationService = new EnglishPluralizationService();
+    var outer = (GeneratedTextTransformation) this;
+    var fileManagement = new FileManagementService(outer);
+    var generator = GeneratorFactory.Create(fileManagement, FileManagerFactory.GetFileManagerType());
+    if (generator.InitialisationOk)
+    {
+        generator.ReadDatabase();
+        generator.GenerateCode();
+    }
+    fileManagement.Process(true);#>

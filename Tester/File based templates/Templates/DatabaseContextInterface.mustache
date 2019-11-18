@@ -1,0 +1,70 @@
+﻿{{interfaceModifier}} interface {{DbContextInterfaceName}} : {{DbContextInterfaceBaseClasses}}{{#newline}}
+{{{#newline}}
+
+{{#each tables}}
+    DbSet<{{DbSetName}}> {{PluralTableName}} { get; set; }{{Comment}}{{#newline}}
+{{/each}}
+
+
+{{#if AdditionalContextInterfaceItems}}
+{{#newline}}
+    // Additional interface items{{#newline}}
+{{/if}}
+{{#each AdditionalContextInterfaceItems}}
+    {{this}}{{#newline}}
+{{/each}}
+
+
+{{#if addSaveChanges}}
+{{#newline}}
+    int SaveChanges();{{#newline}}
+    Task<int> SaveChangesAsync();{{#newline}}
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken);{{#newline}}
+    DbChangeTracker ChangeTracker { get; }{{#newline}}
+    DbContextConfiguration Configuration { get; }{{#newline}}
+    Database Database { get; }{{#newline}}
+    DbEntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class;{{#newline}}
+    DbEntityEntry Entry(object entity);{{#newline}}
+    IEnumerable<DbEntityValidationResult> GetValidationErrors();{{#newline}}
+    DbSet Set(Type entityType);{{#newline}}
+    DbSet<TEntity> Set<TEntity>() where TEntity : class;{{#newline}}
+    string ToString();{{#newline}}
+{{/if}}
+
+
+{{#if hasStoredProcs}}
+{{#newline}}
+    // Stored Procedures{{#newline}}
+{{#each storedProcs}}
+    {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalse}});{{#newline}}
+{{#if SingleReturnModel}}
+    {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsTrue}});{{#newline}}
+{{/if}}
+{{#if AsyncFunctionCannotBeCreated}}
+    // {{FunctionName}}Async() cannot be created due to having out parameters, or is relying on the procedure result ({{ReturnType}}){{#newline}}
+{{#else}}
+    Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalse}});{{#newline}}
+{{/if}}
+{{#newline}}
+{{/each}}
+{{/if}}
+
+{{#if hasTableValuedFunctions}}
+{{#newline}}
+    // Table Valued Functions{{#newline}}
+{{#each tableValuedFunctions}}
+    [DbFunction("{{DbContextName}}", "{{Name}}")]{{#newline}}
+    [CodeFirstStoreFunctions.DbFunctionDetails(DatabaseSchema = "{{Schema}}"{{#if SingleReturnModel}}, ResultColumnName = "{{SingleReturnColumnName}}"{{/if}})]{{#newline}}
+    IQueryable<{{ReturnClassName}}> {{ExecName}}({{WriteStoredProcFunctionParamsFalse}});{{#newline}}
+{{/each}}
+{{/if}}
+
+{{#if hasScalarValuedFunctions}}
+{{#newline}}
+    // Scalar Valued Functions{{#newline}}
+{{#each scalarValuedFunctions}}
+    {{ReturnType}} {{ExecName}}({{WriteStoredProcFunctionParamsFalse}}); // {{Schema}}.{{Name}}{{#newline}}
+{{/each}}
+{{/if}}
+
+}

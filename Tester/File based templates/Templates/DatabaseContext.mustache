@@ -1,0 +1,294 @@
+﻿{{DbContextClassModifiers}} class {{DbContextName}} : {{DbContextBaseClass}}{{contextInterface}}{{#newline}}
+{{{#newline}}
+
+{{#each tables}}
+    {{DbSetModifier}} DbSet<{{DbSetName}}> {{PluralTableName}} { get; set; }{{Comment}}{{#newline}}
+{{/each}}
+{{#newline}}
+
+
+    static {{DbContextName}}(){{#newline}}
+    {{{#newline}}
+        System.Data.Entity.Database.SetInitializer{{setInitializer}}{{#newline}}
+    }{{#newline}}{{#newline}}
+
+
+{{#if AddParameterlessConstructorToDbContext}}
+    /// <inheritdoc />{{#newline}}
+    public {{DbContextName}}(){{#newline}}
+{{#if HasDefaultConstructorArgument}}
+        : base({{DefaultConstructorArgument}}){{#newline}}
+{{/if}}
+    {{{#newline}}
+{{#if DbContextClassIsPartial}}
+        InitializePartial();{{#newline}}
+{{/if}}
+    }{{#newline}}{{#newline}}
+{{/if}}
+
+
+    /// <inheritdoc />{{#newline}}
+    public {{DbContextName}}(string connectionString){{#newline}}
+            : base(connectionString){{#newline}}
+    {{{#newline}}
+{{#if DbContextClassIsPartial}}
+        InitializePartial();{{#newline}}
+{{/if}}
+    }{{#newline}}{{#newline}}
+
+    /// <inheritdoc />{{#newline}}
+    public {{DbContextName}}(string connectionString, DbCompiledModel model){{#newline}}
+            : base(connectionString, model){{#newline}}
+    {{{#newline}}
+{{#if DbContextClassIsPartial}}
+        InitializePartial();{{#newline}}
+{{/if}}
+    }{{#newline}}{{#newline}}
+
+    /// <inheritdoc />{{#newline}}
+    public {{DbContextName}}(DbConnection existingConnection, bool contextOwnsConnection){{#newline}}
+        : base(existingConnection, contextOwnsConnection){{#newline}}
+    {{{#newline}}
+{{#if DbContextClassIsPartial}}
+        InitializePartial();{{#newline}}
+{{/if}}
+    }{{#newline}}{{#newline}}
+
+    /// <inheritdoc />{{#newline}}
+    public {{DbContextName}}(DbConnection existingConnection, DbCompiledModel model, bool contextOwnsConnection){{#newline}}
+        : base(existingConnection, model, contextOwnsConnection){{#newline}}
+    {{{#newline}}
+{{#if DbContextClassIsPartial}}
+        InitializePartial();{{#newline}}
+{{/if}}
+    }{{#newline}}{{#newline}}
+
+{{#if IncludeObjectContextConstructor}}
+    /// <inheritdoc />{{#newline}}
+    public {{DbContextName}}(ObjectContext objectContext, bool dbContextOwnsObjectContext){{#newline}}
+        : base(objectContext, dbContextOwnsObjectContext){{#newline}}
+    {{{#newline}}
+{{#if DbContextClassIsPartial}}
+        InitializePartial();{{#newline}}
+{{/if}}
+    }{{#newline}}{{#newline}}
+{{/if}}
+
+
+    protected override void Dispose(bool disposing){{#newline}}
+    {{{#newline}}
+{{#if DbContextClassIsPartial}}
+        DisposePartial(disposing);{{#newline}}
+{{/if}}
+        base.Dispose(disposing);{{#newline}}
+    }{{#newline}}
+{{#newline}}
+
+
+    public bool IsSqlParameterNull(SqlParameter param){{#newline}}
+    {{{#newline}}
+        var sqlValue = param.SqlValue;{{#newline}}
+        var nullableValue = sqlValue as INullable;{{#newline}}
+        if (nullableValue != null){{#newline}}
+            return nullableValue.IsNull;{{#newline}}
+        return (sqlValue == null || sqlValue == DBNull.Value);{{#newline}}
+    }{{#newline}}{{#newline}}
+
+
+    protected override void OnModelCreating(DbModelBuilder modelBuilder){{#newline}}
+    {{{#newline}}
+        base.OnModelCreating(modelBuilder);{{#newline}}
+{{#if hasTableValuedFunctions}}
+{{#newline}}
+        modelBuilder.Conventions.Add(new CodeFirstStoreFunctions.FunctionsConvention<{{DbContextName}}>("dbo"));{{#newline}}
+{{#if hasTableValuedFunctionComplexTypes}}
+{{#newline}}
+{{#each tableValuedFunctionComplexTypes}}
+        modelBuilder.ComplexType<{{this}}>();{{#newline}}
+{{/each}}
+{{/if}}
+{{/if}}
+
+{{#if hasTables}}
+{{#newline}}
+{{#each tables}}
+        modelBuilder.Configurations.Add(new {{DbSetConfigName}}());{{#newline}}
+{{/each}}
+{{/if}}
+
+{{#if hasIndexes}}
+{{#newline}}
+        // Indexes
+{{#each indexes}}
+        {{this}}{{#newline}}
+{{/each}}
+{{/if}}
+
+{{#if DbContextClassIsPartial}}
+{{#newline}}
+        OnModelCreatingPartial(modelBuilder);{{#newline}}
+{{/if}}
+
+    }{{#newline}}
+{{#newline}}
+
+
+
+    public static DbModelBuilder CreateModel(DbModelBuilder modelBuilder, string schema){{#newline}}
+    {{{#newline}}
+{{#each tables}}
+        modelBuilder.Configurations.Add(new {{DbSetConfigName}}(schema));{{#newline}}
+{{/each}}
+{{#newline}}
+{{#if DbContextClassIsPartial}}
+        OnCreateModelPartial(modelBuilder, schema);{{#newline}}
+{{#newline}}
+{{/if}}
+        return modelBuilder;{{#newline}}
+    }{{#newline}}
+
+
+{{#if DbContextClassIsPartial}}
+{{#newline}}
+    partial void InitializePartial();{{#newline}}
+    partial void DisposePartial(bool disposing);{{#newline}}
+    partial void OnModelCreatingPartial(DbModelBuilder modelBuilder);{{#newline}}
+    static partial void OnCreateModelPartial(DbModelBuilder modelBuilder, string schema);{{#newline}}
+{{/if}}
+
+
+{{#if hasStoredProcs}}
+{{#newline}}
+    // Stored Procedures{{#newline}}
+{{#each storedProcs}}
+{{#if HasReturnModels}}
+    public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+{{#if SingleReturnModel}}
+    {{{#newline}}
+        int procResult;{{#newline}}
+        return {{FunctionName}}({{WriteStoredProcFunctionOverloadCall}});{{#newline}}
+    }{{#newline}}
+{{#newline}}
+    public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsTrue}}){{#newline}}
+{{/if}}
+    {{{#newline}}
+{{WriteStoredProcFunctionDeclareSqlParameterTrue}}
+{{#if SingleReturnModel}}
+        var procResultData = Database.SqlQuery<{{WriteStoredProcReturnModelName}}>("{{Exec}}"{{WriteStoredProcFunctionSqlParameterAnonymousArrayTrue}}).ToList();{{#newline}}
+{{WriteStoredProcFunctionSetSqlParametersFalse}}
+        procResult = (int) procResultParam.Value;{{#newline}}
+{{#else}}
+{{WriteStoredProcFunctionSetSqlParametersFalse}}
+        var procResultData = new {{WriteStoredProcReturnModelName}}();{{#newline}}
+        var cmd = Database.Connection.CreateCommand();{{#newline}}
+        cmd.CommandType = CommandType.StoredProcedure;{{#newline}}
+        cmd.CommandText = "{{Exec}}";{{#newline}}
+{{#each Parameters}}
+        cmd.Parameters.Add({{this}});{{#newline}}
+{{/each}}
+{{#newline}}
+        try{{#newline}}
+        {{{#newline}}
+            DbInterception.Dispatch.Connection.Open(Database.Connection, new DbInterceptionContext());{{#newline}}
+            var reader = cmd.ExecuteReader();{{#newline}}
+            var objectContext = ((IObjectContextAdapter) this).ObjectContext;{{#newline}}
+{{#each ReturnModelResultSetReaderCommand}}
+{{#newline}}
+            procResultData.ResultSet{{Index}} = objectContext.Translate<{{WriteStoredProcReturnModelName}}.ResultSetModel{{Index}}>(reader).ToList();{{#newline}}
+            reader.{{ReaderCommand}}();{{#newline}}
+{{/each}}
+        }{{#newline}}
+        finally{{#newline}}
+        {{{#newline}}
+            DbInterception.Dispatch.Connection.Close(Database.Connection, new DbInterceptionContext());{{#newline}}
+        }{{#newline}}
+{{#newline}}
+{{/if}}
+        return procResultData;{{#newline}}
+    }{{#newline}}
+
+{{#else}}
+    public int {{FunctionName}}({{WriteStoredProcFunctionParamsTrue}}){{#newline}}
+    {{{#newline}}
+{{WriteStoredProcFunctionDeclareSqlParameterTrue}}{{#newline}}
+        Database.ExecuteSqlCommand(TransactionalBehavior.DoNotEnsureTransaction, "{{ExecWithNoReturnModel}}"{{WriteStoredProcFunctionSqlParameterAnonymousArrayTrue}});{{#newline}}
+{{#newline}}
+{{WriteStoredProcFunctionSetSqlParametersFalse}}
+        return (int)procResultParam.Value;{{#newline}}
+    }{{#newline}}
+{{/if}}
+{{#newline}}
+{{#if AsyncFunctionCannotBeCreated}}
+    // {{FunctionName}}Async() cannot be created due to having out parameters, or is relying on the procedure result ({{ReturnType}}){{#newline}}
+{{#newline}}
+{{#else}}
+    public async Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    {{{#newline}}
+{{WriteStoredProcFunctionDeclareSqlParameterFalse}}
+{{WriteStoredProcFunctionSetSqlParametersFalse}}
+{{#if SingleReturnModel}}
+        var procResultData = await Database.SqlQuery<{{WriteStoredProcReturnModelName}}>("{{AsyncExec}}"{{WriteStoredProcFunctionSqlParameterAnonymousArrayFalse}}).ToListAsync();{{#newline}}
+{{#else}}
+        var procResultData = new {{WriteStoredProcReturnModelName}}();{{#newline}}
+        var cmd = Database.Connection.CreateCommand();{{#newline}}
+        cmd.CommandType = CommandType.StoredProcedure;{{#newline}}
+        cmd.CommandText = "{{Exec}}";{{#newline}}
+{{#each Parameters}}
+        cmd.Parameters.Add({{this}});{{#newline}}
+{{/each}}
+{{#newline}}
+        try{{#newline}}
+        {{{#newline}}
+            await DbInterception.Dispatch.Connection.OpenAsync(Database.Connection, new DbInterceptionContext(), new CancellationToken()).ConfigureAwait(false);{{#newline}}
+            var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);{{#newline}}
+            var objectContext = ((IObjectContextAdapter) this).ObjectContext;{{#newline}}
+{{#each ReturnModelResultSetReaderCommand}}
+{{#newline}}
+            procResultData.ResultSet{{Index}} = objectContext.Translate<{{WriteStoredProcReturnModelName}}.ResultSetModel{{Index}}>(reader).ToList();{{#newline}}
+{{#if NotLastRecord}}
+            await reader.NextResultAsync().ConfigureAwait(false);{{#newline}}
+{{/if}}
+{{/each}}
+        }{{#newline}}
+        finally{{#newline}}
+        {{{#newline}}
+            DbInterception.Dispatch.Connection.Close(Database.Connection, new DbInterceptionContext());{{#newline}}
+        }{{#newline}}
+
+{{/if}}
+        return procResultData;{{#newline}}
+    }{{#newline}}
+{{#newline}}
+{{/if}}
+{{/each}}
+{{/if}}
+
+{{#if hasTableValuedFunctions}}
+{{#newline}}
+    // Table Valued Functions{{#newline}}
+{{#each tableValuedFunctions}}
+{{#newline}}
+    [DbFunction("{{DbContextName}}", "{{Name}}")]{{#newline}}
+    [CodeFirstStoreFunctions.DbFunctionDetails(DatabaseSchema = "{{Schema}}"{{#if SingleReturnModel}}, ResultColumnName = "{{SingleReturnColumnName}}"{{/if}})]{{#newline}}
+    public IQueryable<{{ReturnClassName}}> {{ExecName}}({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    {{{#newline}}
+{{WriteTableValuedFunctionDeclareSqlParameter}}
+{{#newline}}
+        return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<{{ReturnClassName}}>("[{{DbContextName}}].[{{Name}}]({{WriteStoredProcFunctionSqlAtParams}})", {{WriteTableValuedFunctionSqlParameterAnonymousArray}});{{#newline}}
+    }{{#newline}}
+{{/each}}
+{{/if}}
+
+{{#if hasScalarValuedFunctions}}
+{{#newline}}
+    // Scalar Valued Functions{{#newline}}
+{{#each scalarValuedFunctions}}
+{{#newline}}
+    [DbFunction("CodeFirstDatabaseSchema", "{{Name}}")]{{#newline}}
+    public {{ReturnType}} {{ExecName}}({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    {{{#newline}}
+        throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");{{#newline}}
+    }{{#newline}}
+{{/each}}
+{{/if}}
+}

@@ -1,0 +1,50 @@
+﻿<#@ include file="..\..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v3.ttinclude" #>
+<#
+    // Single context file based template
+    Settings.DatabaseType           = DatabaseType.SqlServer; // SqlCe, Plugin. Coming next: PostgreSQL, MySql, Oracle
+    Settings.TemplateType           = TemplateType.FileBased; // TemplateType.EfCore2, TemplateType.EfCore3, TemplateType.FileBased (specify folder using Settings.TemplateFolder)
+    Settings.FileManagerType        = FileManagerType.VisualStudio; // VisualStudio = .NET project; Custom = .NET Core project; Null = No output, testing only.
+    Settings.ConnectionString       = "Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";
+    Settings.ConnectionStringName   = "Ef6Database"; // ConnectionString key as specified in your app.config/web.config/appsettings.json
+    Settings.DbContextName          = "Ef6DbContext"; // Class name for the DbContext to be generated. Note: If generating separate files, please give the db context a different name from this tt filename.
+    Settings.GenerateSeparateFiles  = false;
+    Settings.Namespace              = DefaultNamespace; // Override the default namespace here
+    Settings.TemplateFolder         = Path.Combine(Settings.Root, "Templates"); // Only used if Settings.TemplateType = TemplateType.FileBased;
+    
+    FilterSettings.Reset();
+    FilterSettings.AddDefaults();
+    FilterSettings.IncludeTableValuedFunctions = true;
+    FilterSettings.IncludeScalarValuedFunctions = true;
+    FilterSettings.SchemaFilters.Add(new RegexExcludeFilter("Enum"));
+    FilterSettings.TableFilters.Add(new RegexExcludeFilter("Enum"));
+    FilterSettings.CheckSettings();
+
+    Settings.Enumerations = new List<EnumerationSettings>
+    {
+        // Example
+        new EnumerationSettings
+        {
+            Name       = "DaysOfWeek",          // Enum to generate. e.g. "DaysOfWeek" would result in "public enum DaysOfWeek {...}"
+            Table      = "EnumTest.DaysOfWeek", // Database table containing enum values. e.g. "DaysOfWeek"
+            NameField  = "TypeName",            // Column containing the name for the enum. e.g. "TypeName"
+            ValueField = "TypeId"               // Column containing the values for the enum. e.g. "TypeId"
+        },
+        new EnumerationSettings
+        {
+            Name       = "CarOptions",
+            Table      = "EnumsWithStringAsValue",
+            NameField  = "enum_name",
+            ValueField = "value"
+        }
+    };
+
+    Inflector.PluralisationService = new EnglishPluralizationService();
+    var outer = (GeneratedTextTransformation) this;
+    var fileManagement = new FileManagementService(outer);
+    var generator = GeneratorFactory.Create(fileManagement, FileManagerFactory.GetFileManagerType());
+    if (generator.InitialisationOk)
+    {
+        generator.ReadDatabase();
+        generator.GenerateCode();
+    }
+    fileManagement.Process(true);#>

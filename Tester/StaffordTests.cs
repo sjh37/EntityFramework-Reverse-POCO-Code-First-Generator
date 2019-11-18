@@ -7,7 +7,6 @@ namespace Tester
     public class StaffordTests
     {
         private TestDatabaseStandard.Stafford_Foo _fooStd;
-        private TestDatabaseDataAnnotation.Stafford_Foo _fooDa;
 
         [SetUp]
         public void SetUp()
@@ -16,10 +15,6 @@ namespace Tester
             std.Database.ExecuteSqlCommand("DELETE FROM Stafford.Foo; DELETE FROM Stafford.Boo;");
             _fooStd = std.Stafford_Foos.Add(new TestDatabaseStandard.Stafford_Foo { Name = "Foo", Stafford_Boo = new TestDatabaseStandard.Stafford_Boo { Name = "Boo" } });
             std.SaveChanges();
-
-            var da = new TestDatabaseDataAnnotation.TestDbContext();
-            _fooDa = da.Stafford_Foos.Add(new TestDatabaseDataAnnotation.Stafford_Foo { Name = "Foo", Stafford_Boo = new TestDatabaseDataAnnotation.Stafford_Boo { Name = "Boo" } });
-            da.SaveChanges();
         }
 
         [Test]
@@ -39,38 +34,10 @@ namespace Tester
         }
 
         [Test]
-        public void NormalNavigation_DataAnnotation()
-        {
-            var db = new TestDatabaseDataAnnotation.TestDbContext();
-            var foo = db.Stafford_Foos.First(f => f.Id == _fooDa.Id);
-            Assert.IsNotNull(foo.Stafford_Boo);
-        }
-
-        [Test]
-        public void ReverseNavigation_DataAnnotation()
-        {
-            var db = new TestDatabaseDataAnnotation.TestDbContext();
-            var boo = db.Stafford_Boos.First(b => b.Id == _fooDa.Stafford_Boo.Id);
-            Assert.IsNotNull(boo.Stafford_Foo);
-        }
-
-        [Test]
         public void Validation_WhenEntityHasComputedColumn_ShouldValidate_Standard()
         {
             var db = new TestDatabaseStandard.TestDbContext();
             var entity = new TestDatabaseStandard.Stafford_ComputedColumn { MyColumn = "something" };
-            db.Stafford_ComputedColumns.Add(entity);
-            var validationErrors = db.GetValidationErrors()
-                .SelectMany(p => p.ValidationErrors)
-                .Select(p => $"{p.PropertyName} - ${p.ErrorMessage})");
-            Assert.IsEmpty(validationErrors);
-        }
-
-        [Test]
-        public void Validation_WhenEntityHasComputedColumn_ShouldValidate_DataAnnotation()
-        {
-            var db = new TestDatabaseDataAnnotation.TestDbContext();
-            var entity = new TestDatabaseDataAnnotation.Stafford_ComputedColumn { MyColumn = "something" };
             db.Stafford_ComputedColumns.Add(entity);
             var validationErrors = db.GetValidationErrors()
                 .SelectMany(p => p.ValidationErrors)

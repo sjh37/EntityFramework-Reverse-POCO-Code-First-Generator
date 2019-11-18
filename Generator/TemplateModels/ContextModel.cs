@@ -1,0 +1,41 @@
+﻿using System.Collections.Generic;
+using Efrpg.Generators;
+
+namespace Efrpg.TemplateModels
+{
+    public class ContextModel
+    {
+        public string DbContextClassModifiers                                { get; set; }
+        public string DbContextName                                          { get; set; }
+        public string DbContextBaseClass                                     { get; set; }
+        public bool AddParameterlessConstructorToDbContext                   { get; set; }
+        public bool HasDefaultConstructorArgument                            { get; set; }
+        public string DefaultConstructorArgument                             { get; set; }
+        public string ConfigurationClassName                                 { get; set; }
+        public string contextInterface                                       { get; set; }
+        public string setInitializer                                         { get; set; }
+        public bool DbContextClassIsPartial                                  { get; set; }
+        public bool SqlCe                                                    { get; set; }
+        public List<TableTemplateData> tables                                { get; set; }
+        public bool hasTables                                                { get; set; }
+        public List<string> indexes                                          { get; set; }
+        public bool hasIndexes                                               { get; set; }
+        public List<StoredProcTemplateData> storedProcs                      { get; set; }
+        public bool hasStoredProcs                                           { get; set; }
+        public List<string> tableValuedFunctionComplexTypes                  { get; set; }
+        public bool hasTableValuedFunctionComplexTypes                       { get; set; }
+        public List<string> AdditionalContextInterfaceItems                  { get; set; }
+        public bool addSaveChanges                                           { get; set; }
+        public List<TableValuedFunctionsTemplateData> tableValuedFunctions   { get; set; }
+        public List<ScalarValuedFunctionsTemplateData> scalarValuedFunctions { get; set; }
+        public bool hasTableValuedFunctions                                  { get; set; }
+        public bool hasScalarValuedFunctions                                 { get; set; }
+        public string ConnectionString                                       { get; set; }
+        public bool IncludeObjectContextConstructor                          { get; set; }
+        public string QueryString                                            { get; set; }
+        public string FromSql                                                { get; set; }
+        public string ExecuteSqlCommand                                      { get; set; }
+        public string StoredProcModelBuilderCommand                          { get; set; }
+        public string StoredProcModelBuilderPostCommand                      { get; set; }
+    }
+}

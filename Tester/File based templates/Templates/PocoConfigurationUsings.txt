@@ -1,0 +1,3 @@
+﻿System
+System.ComponentModel.DataAnnotations.Schema
+System.Data.Entity.ModelConfiguration

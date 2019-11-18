@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\NUnit.3.11.0\build\NUnit.props" Condition="Exists('..\packages\NUnit.3.11.0\build\NUnit.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
@@ -16,6 +17,8 @@
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -49,9 +52,8 @@
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="nunit.framework, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="nunit.framework, Version=3.11.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.3.11.0\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -63,25 +65,235 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomRequiredAttribute.cs" />
+    <Compile Include="File based templates\AppleDbContext.cs">
+      <DependentUpon>MCFBT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="File based templates\BananaDbContext.cs">
+      <DependentUpon>MCFBT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="File based templates\CherryDatabaseContext.cs">
+      <DependentUpon>MCFBT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="File based templates\DamsonDbContext.cs">
+      <DependentUpon>MCFBT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="File based templates\EnumerationDbContext.cs">
+      <DependentUpon>MCFBT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="File based templates\MCFBT.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MCFBT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="File based templates\SCFBT.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SCFBT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CustomSecurityAttribute.cs" />
+    <Compile Include="ExampleForTestingAttribute.cs" />
+    <Compile Include="Multi context many files\AppleDbContext.cs">
+      <DependentUpon>MCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Multi context many files\AppleDbContextFactory.cs">
+      <DependentUpon>MCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Multi context many files\BananaDbContext.cs">
+      <DependentUpon>MCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Multi context many files\BananaDbContextFactory.cs">
+      <DependentUpon>MCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Multi context many files\CarOptions.cs">
+      <DependentUpon>MCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Multi context many files\CherryDbContext.cs">
+      <DependentUpon>MCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Multi context many files\CherryDbContextFactory.cs">
+      <DependentUpon>MCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Multi context many files\ColumnName.cs">
+      <DependentUpon>MCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Multi context many files\ColumnNameConfiguration.cs">
+      <DependentUpon>MCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Multi context many files\DamsonDbContext.cs">
+      <DependentUpon>MCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Multi context many files\DamsonDbContextFactory.cs">
+      <DependentUpon>MCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Multi context many files\DaysOfWeek.cs">
+      <DependentUpon>MCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Multi context many files\IAppleDbContext.cs">
+      <DependentUpon>MCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Multi context many files\IBananaDbContext.cs">
+      <DependentUpon>MCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Multi context many files\ICherryDbContext.cs">
+      <DependentUpon>MCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Multi context many files\IDamsonDbContext.cs">
+      <DependentUpon>MCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Multi context many files\MCMF.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Multi context many files\NoPrimaryKey.cs">
+      <DependentUpon>MCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Multi context many files\NoPrimaryKeyConfiguration.cs">
+      <DependentUpon>MCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Multi context many files\Stafford_Boo.cs">
+      <DependentUpon>MCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Multi context many files\Stafford_BooConfiguration.cs">
+      <DependentUpon>MCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Multi context many files\Stafford_ComputedColumn.cs">
+      <DependentUpon>MCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Multi context many files\Stafford_ComputedColumnConfiguration.cs">
+      <DependentUpon>MCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Multi context many files\Stafford_Foo.cs">
+      <DependentUpon>MCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Multi context many files\Stafford_FooConfiguration.cs">
+      <DependentUpon>MCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Multi context many files\Synonyms_Parent.cs">
+      <DependentUpon>MCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Multi context many files\Synonyms_ParentConfiguration.cs">
+      <DependentUpon>MCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Multi context single files\AppleDbContext.cs">
+      <DependentUpon>MCSF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Multi context single files\BananaDbContext.cs">
+      <DependentUpon>MCSF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Multi context single files\CherryDatabaseContext.cs">
+      <DependentUpon>MCSF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Multi context single files\DamsonDbContext.cs">
+      <DependentUpon>MCSF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Multi context single files\MCSF.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MCSF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Multi context single files\EnumerationDbContext.cs">
+      <DependentUpon>MCSF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ScalarValuedFunctionTests.cs" />
+    <Compile Include="Single context many files\CarOptions.cs">
+      <DependentUpon>SCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Single context many files\ColumnName.cs">
+      <DependentUpon>SCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Single context many files\ColumnNameConfiguration.cs">
+      <DependentUpon>SCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Single context many files\CsvToIntReturnModel.cs">
+      <DependentUpon>SCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Single context many files\DaysOfWeek.cs">
+      <DependentUpon>SCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Single context many files\Ef6DbContext.cs">
+      <DependentUpon>SCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Single context many files\Ef6DbContextFactory.cs">
+      <DependentUpon>SCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Single context many files\FakeDbSet.cs">
+      <DependentUpon>SCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Single context many files\FakeEf6DbContext.cs">
+      <DependentUpon>SCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Single context many files\IEf6DbContext.cs">
+      <DependentUpon>SCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Single context many files\NoPrimaryKey.cs">
+      <DependentUpon>SCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Single context many files\SCMF.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Single context many files\Stafford_Boo.cs">
+      <DependentUpon>SCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Single context many files\Stafford_BooConfiguration.cs">
+      <DependentUpon>SCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Single context many files\Stafford_ComputedColumn.cs">
+      <DependentUpon>SCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Single context many files\Stafford_ComputedColumnConfiguration.cs">
+      <DependentUpon>SCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Single context many files\Stafford_Foo.cs">
+      <DependentUpon>SCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Single context many files\Stafford_FooConfiguration.cs">
+      <DependentUpon>SCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Single context many files\Synonyms_Child.cs">
+      <DependentUpon>SCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Single context many files\Synonyms_ChildConfiguration.cs">
+      <DependentUpon>SCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Single context many files\Synonyms_Parent.cs">
+      <DependentUpon>SCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Single context many files\Synonyms_ParentConfiguration.cs">
+      <DependentUpon>SCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Single context many files\Synonyms_SimpleStoredProcReturnModel.cs">
+      <DependentUpon>SCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Single context many files\UserInfo.cs">
+      <DependentUpon>SCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Single context many files\UserInfoAttribute.cs">
+      <DependentUpon>SCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Single context many files\UserInfoAttributeConfiguration.cs">
+      <DependentUpon>SCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Single context many files\UserInfoConfiguration.cs">
+      <DependentUpon>SCMF.tt</DependentUpon>
+    </Compile>
     <Compile Include="StaffordTests.cs" />
     <Compile Include="StoredProcedureAsyncTests.cs" />
     <Compile Include="CustomersRepositoryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SynonymTests.cs" />
+    <Compile Include="TestDatabase.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TestDatabase.tt</DependentUpon>
+    </Compile>
     <Compile Include="TestSynonymsDatabase.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>TestSynonymsDatabase.tt</DependentUpon>
-    </Compile>
-    <Compile Include="TestDatabase_DataAnnotation.cs">
-      <DependentUpon>TestDatabase_DataAnnotation.tt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="TestDatabase_NoDataAnnotation.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>TestDatabase_NoDataAnnotation.tt</DependentUpon>
     </Compile>
     <Compile Include="TableValuedFunctionTests.cs" />
   </ItemGroup>
@@ -99,21 +311,53 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="File based templates\Templates\Usings.mustache" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="TestDatabase_DataAnnotation.tt">
+    <None Include="TestDatabase.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>TestDatabase_DataAnnotation.cs</LastGenOutput>
+      <LastGenOutput>TestDatabase.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="TestDatabase_NoDataAnnotation.tt">
+    <None Include="Single context many files\SCMF.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>TestDatabase_NoDataAnnotation.cs</LastGenOutput>
+      <LastGenOutput>SCMF.cs</LastGenOutput>
     </None>
-  </ItemGroup>
-  <ItemGroup>
+    <None Include="Multi context many files\MCMF.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>MCMF.cs</LastGenOutput>
+    </None>
+    <None Include="Multi context single files\MCSF.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>MCSF.cs</LastGenOutput>
+    </None>
+    <None Include="File based templates\SCFBT.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>SCFBT.cs</LastGenOutput>
+    </None>
+    <None Include="File based templates\Templates\DatabaseContextInterfaceUsings.txt" />
+    <None Include="File based templates\Templates\Enums.mustache" />
+    <None Include="File based templates\Templates\DatabaseContext.mustache" />
+    <None Include="File based templates\Templates\DatabaseContextUsings.txt" />
+    <None Include="File based templates\Templates\DatabaseContextInterface.mustache" />
+    <None Include="File based templates\Templates\FakeDatabaseContext.mustache" />
+    <None Include="File based templates\Templates\FakeDatabaseContextUsings.txt" />
+    <None Include="File based templates\Templates\DatabaseContextFactory.mustache" />
+    <None Include="File based templates\Templates\DatabaseContextFactoryUsings.txt" />
+    <None Include="File based templates\Templates\FakeDbSet.mustache" />
+    <None Include="File based templates\Templates\FakeDbSetUsings.txt" />
+    <None Include="File based templates\Templates\PocoConfigurationUsings.txt" />
+    <None Include="File based templates\Templates\Poco.mustache" />
+    <None Include="File based templates\Templates\PocoUsings.txt" />
+    <None Include="File based templates\Templates\StoredProcReturnModels.mustache" />
+    <None Include="File based templates\Templates\StoredProcReturnModelUsings.txt" />
+    <None Include="File based templates\Templates\PocoConfiguration.mustache" />
+    <None Include="File based templates\MCFBT.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>MCFBT.cs</LastGenOutput>
+    </None>
     <Content Include="TestDatabase.sql" />
     <Content Include="TestSynonymsDatabase.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -124,7 +368,14 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\NUnit.3.11.0\build\NUnit.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit.3.11.0\build\NUnit.props'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -1,0 +1,47 @@
+﻿{{ClassComment}}
+{{ClassModifier}} class {{ConfigurationClassName}} : EntityTypeConfiguration<{{NameHumanCaseWithSuffix}}>{{#newline}}
+{{{#newline}}
+
+    public {{ConfigurationClassName}}(){{#newline}}
+        : this("{{Schema}}"){{#newline}}
+    {{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public {{ConfigurationClassName}}(string schema){{#newline}}
+    {{{#newline}}
+{{#if HasSchema}}
+        ToTable("{{Name}}", schema);{{#newline}}
+{{#else}}
+        ToTable("{{Name}}");{{#newline}}
+{{/if}}
+        HasKey({{PrimaryKeyNameHumanCase}});{{#newline}}{{#newline}}
+
+{{#each Columns}}
+        {{this}}{{#newline}}
+{{/each}}
+
+{{#if HasForeignKey}}
+{{#newline}}
+        // Foreign keys{{#newline}}
+{{#each ForeignKeys}}
+        {{this}}{{#newline}}
+{{/each}}
+{{/if}}
+
+{{#each MappingConfiguration}}
+        {{this}}{{#newline}}
+{{/each}}
+
+{{#if ConfigurationClassesArePartial}}
+{{#newline}}
+        InitializePartial();{{#newline}}
+{{/if}}
+
+    }{{#newline}}
+
+{{#if ConfigurationClassesArePartial}}
+{{#newline}}
+    partial void InitializePartial();{{#newline}}
+{{/if}}
+
+}{{#newline}}
