@@ -270,6 +270,11 @@
         //    column.OverrideModifier = true;
         // This will create: public override long id { get; set; }
 
+        // Adding custom data annotations (include your extra namespaces in Settings.AdditionalNamespaces above)
+        //column.Attributes.Add($"[Display(Name = \"{column.DisplayName}\")]");
+        //if (column.IsPrimaryKey)
+        //    column.Attributes.Add("[Key]");
+
         // Perform Enum property type replacement
         var enumDefinition = enumDefinitions.FirstOrDefault(e =>
             (e.Schema.Equals(table.Schema.DbName, StringComparison.InvariantCultureIgnoreCase)) && 

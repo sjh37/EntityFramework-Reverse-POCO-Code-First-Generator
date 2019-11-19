@@ -3,10 +3,10 @@
 // Created by Simon Hughes (https://about.me/simon.hughes).
 //
 // Registered to: Simon Hughes
-// Company      : Reverse POCO
+// Company      : Reverse POCO Limited
 // Licence Type : Commercial
 // Licences     : 1
-// Valid until  : 03 NOV 2020
+// Valid until  : 20 NOV 2020
 //
 // Do not make changes directly to this file - edit the template instead.
 //
