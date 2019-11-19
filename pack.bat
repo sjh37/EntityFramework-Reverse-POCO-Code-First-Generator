@@ -1,4 +1,5 @@
 @echo off
+copy LICENCE ItemTemplate\license.txt
 copy "EntityFramework.Reverse.POCO.Generator\*.ttinclude" ItemTemplate\ItemTemplates\
 copy "EntityFramework.Reverse.POCO.Generator\Database.tt" ItemTemplate\ItemTemplates\
 copy "ItemTemplate\*.png" ItemTemplate\ItemTemplates\
