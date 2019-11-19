@@ -11,9 +11,8 @@ Reverse engineers an existing database and generates Entity Framework Code
 First Poco classes, Configuration mappings and DbContext.
 
 Please note, this is not the Microsoft reverse generator.
-This is one I created to generate beautiful code-first code, as if I
-had hand-crafted the code-first code myself. It also allows me to customise
-the generated code to my liking.
+This generator creates code as if you reverse engineered a database and lovingly created the code by hand. 
+It also allows you to customise the generated code to your liking.
 
 ### What's new
 
