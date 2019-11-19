@@ -4,8 +4,8 @@ namespace BuildTT
     {
         static void Main()
         {
-            const string generatorRoot = "..\\..\\..\\..\\Generator\\Generator";
-            const string ttRoot = "..\\..\\..\\..\\Generator\\EntityFramework.Reverse.POCO.Generator";
+            const string generatorRoot = "..\\..\\..\\Generator";
+            const string ttRoot        = "..\\..\\..\\EntityFramework.Reverse.POCO.Generator";
 
             BuildTT.Create(generatorRoot, ttRoot);
         }

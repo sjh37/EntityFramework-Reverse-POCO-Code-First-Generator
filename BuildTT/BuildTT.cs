@@ -65,10 +65,10 @@ namespace BuildTT
     //FilterSettings.IncludeScalarValuedFunctions = false;
 
     // To include all the customer tables, but not the customer billing tables
-    FilterSettings.TableFilters.Add(new RegexExcludeFilter(""AspNet.*"")); // This excludes all tables starting with 'AspNet'
-    FilterSettings.TableFilters.Add(new RegexExcludeFilter(""__EFMigrationsHistory"")); // This excludes all tables starting with 'AspNet'
     //FilterSettings.TableFilters.Add(new RegexExcludeFilter("".*[Bb]illing.*"")); // This excludes all tables with 'billing' anywhere in the name
     //FilterSettings.TableFilters.Add(new RegexIncludeFilter(""^[Cc]ustomer.*"")); // This includes any remaining tables with names beginning with 'customer'
+    FilterSettings.TableFilters.Add(new RegexExcludeFilter(""AspNet.*"")); // This excludes all tables starting with 'AspNet'
+    FilterSettings.TableFilters.Add(new RegexExcludeFilter(""__EFMigrationsHistory"")); // This excludes all tables starting with 'AspNet'
 
     // Other settings *********************************************************************************************************************
     Settings.CommandTimeout                         = 600; // SQL Command timeout in seconds. 600 is 10 minutes, 0 will wait indefinitely. Some databases can be slow retrieving schema information.
