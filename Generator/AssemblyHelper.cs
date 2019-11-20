@@ -23,7 +23,7 @@ namespace Efrpg
         /// <summary>
         /// Load a plugin
         /// </summary>
-        /// <param name="assemblyFile">Full path including DLL name. i.e. "C:\\S\\ReversePocoWebsite\\Generator\\Generator.Tests.Unit\\bin\\Debug\\Generator.Tests.Unit.dll"</param>
+        /// <param name="assemblyFile">Full path including DLL name. i.e. "C:\\S\\Source (open source)\\EntityFramework Reverse POCO Code Generator\\Generator.Tests.Unit\\\bin\\Debug\\Generator.Tests.Unit.dll"</param>
         /// <param name="typeName">Fully qualified class name, including any namespaces. i.e. "Generator.Tests.Unit.MultiContextSettingsPlugin"</param>
         /// <returns></returns>
         public static object LoadPlugin(string assemblyFile, string typeName)

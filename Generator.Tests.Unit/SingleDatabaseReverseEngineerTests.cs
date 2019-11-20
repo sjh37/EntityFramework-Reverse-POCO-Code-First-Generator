@@ -33,7 +33,7 @@ namespace Generator.Tests.Unit
         {
             Settings.TemplateType               = templateType;
             Settings.GeneratorType              = generatorType;
-            Settings.ConnectionString           = @"Data Source=C:\S\ReversePocoWebsite\Generator\EntityFramework.Reverse.POCO.Generator\App_Data\" + database;
+            Settings.ConnectionString           = @"Data Source=C:\S\Source (open source)\EntityFramework Reverse POCO Code Generator\EntityFramework.Reverse.POCO.Generator\App_Data\" + database;
             Settings.DatabaseType               = DatabaseType.SqlCe;
             Settings.ConnectionStringName       = connectionStringName;
             Settings.DbContextName              = dbContextName;

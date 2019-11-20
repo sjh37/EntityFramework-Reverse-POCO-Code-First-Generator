@@ -1,4 +1,4 @@
-﻿<#@ include file                     ="..\..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v3.ttinclude" #>
+﻿<#@ include file="..\..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v3.ttinclude" #>
 <#
     // Multi context file based template
     Settings.DatabaseType            = DatabaseType.SqlServer; // SqlCe, Plugin. Coming next: PostgreSQL, MySql, Oracle
