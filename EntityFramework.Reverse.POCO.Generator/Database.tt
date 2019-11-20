@@ -49,11 +49,15 @@
     //FilterSettings.IncludeTableValuedFunctions  = false; // If true, for EF6 install the "EntityFramework.CodeFirstStoreFunctions" NuGet Package.
     //FilterSettings.IncludeScalarValuedFunctions = false;
 
-    // To include all the customer tables, but not the customer billing tables
+     // Examples:
+    //FilterSettings.SchemaFilters.Add(new RegexExcludeFilter("[Ff]inance.*")); // This excludes the Finance schema
+    //FilterSettings.SchemaFilters.Add(new RegexIncludeFilter("dbo.*")); // This includes only dbo schema
     //FilterSettings.TableFilters.Add(new RegexExcludeFilter(".*[Bb]illing.*")); // This excludes all tables with 'billing' anywhere in the name
     //FilterSettings.TableFilters.Add(new RegexIncludeFilter("^[Cc]ustomer.*")); // This includes any remaining tables with names beginning with 'customer'
     FilterSettings.TableFilters.Add(new RegexExcludeFilter("AspNet.*")); // This excludes all tables starting with 'AspNet'
     FilterSettings.TableFilters.Add(new RegexExcludeFilter("__EFMigrationsHistory")); // This excludes all tables starting with 'AspNet'
+    //FilterSettings.ColumnFilters.Add(new RegexExcludeFilter("[Cc]reated[Aa]t.*")); // This excludes all columns starting with 'CreatedAt' e.g CreatedAtUtc
+    //FilterSettings.ColumnFilters.Add(new RegexIncludeFilter(".*")); // Rarely used as it would only include columns with names listed here
 
     // Other settings *********************************************************************************************************************
     Settings.CommandTimeout                         = 600; // SQL Command timeout in seconds. 600 is 10 minutes, 0 will wait indefinitely. Some databases can be slow retrieving schema information.
