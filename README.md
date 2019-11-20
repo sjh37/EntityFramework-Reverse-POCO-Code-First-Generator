@@ -5,6 +5,9 @@
 * Watch the v2 in-depth course at [pluralsight](https://app.pluralsight.com/library/courses/code-first-entity-framework-legacy-databases/table-of-contents) ![logo](http://www.simonhughes.co.uk/pluralsight-logo-tiny.png) I cover everything the v2 generator can do, and show you step-by-step how to reverse engineer your database properly.
 * A v3 course will be coming in 2020.
 
+### You will need a licence key
+Go to the [ReversePOCO](https://www.reversepoco.co.uk) website to obtain your licence key.
+
 ### Project Description
 
 Reverse engineers an existing database and generates Entity Framework Code
