@@ -39,6 +39,7 @@ namespace Efrpg.Generators
 
         private DbProviderFactory _factory;
         public bool HasAcademicLicence;
+        public bool HasTrialLicence;
         private readonly StringBuilder _preHeaderInfo;
         private readonly string _codeGeneratedAttribute;
         private readonly FileManagementService _fileManagementService;
@@ -91,6 +92,7 @@ namespace Efrpg.Generators
                     _preHeaderInfo.Append(DatabaseDetails());
 
                 HasAcademicLicence = licence.LicenceType == LicenceType.Academic;
+                HasTrialLicence    = licence.LicenceType == LicenceType.Trial;
                 InitialisationOk = FilterList.ReadDbContextSettings(DatabaseReader, singleDbContextSubNamespace);
                 _fileManagementService.Init(FilterList.GetFilters(), _fileManagerType);
             }
@@ -551,6 +553,8 @@ namespace Efrpg.Generators
 
                 if (HasAcademicLicence)
                     filter.Tables.TrimForAcademicLicence();
+                if (HasTrialLicence)
+                    filter.Tables.TrimForTrialLicence();
             }
         }
 
@@ -655,10 +659,16 @@ namespace Efrpg.Generators
                     {
                         if (!filter.IsExcluded(sp))
                         {
-                            if(HasAcademicLicence)
+                            if (HasAcademicLicence)
                             {
                                 const int n = 2 * 2;
-                                if(filter.StoredProcs.Count < n)
+                                if (filter.StoredProcs.Count < n)
+                                    filter.StoredProcs.Add(sp);
+                            }
+                            else if (HasTrialLicence)
+                            {
+                                const int n = 1;
+                                if (filter.StoredProcs.Count < n)
                                     filter.StoredProcs.Add(sp);
                             }
                             else

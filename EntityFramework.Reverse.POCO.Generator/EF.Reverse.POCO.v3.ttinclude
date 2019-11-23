@@ -3378,6 +3378,7 @@
 
         private DbProviderFactory _factory;
         public bool HasAcademicLicence;
+        public bool HasTrialLicence;
         private readonly StringBuilder _preHeaderInfo;
         private readonly string _codeGeneratedAttribute;
         private readonly FileManagementService _fileManagementService;
@@ -3430,6 +3431,7 @@
                     _preHeaderInfo.Append(DatabaseDetails());
 
                 HasAcademicLicence = licence.LicenceType == LicenceType.Academic;
+                HasTrialLicence    = licence.LicenceType == LicenceType.Trial;
                 InitialisationOk = FilterList.ReadDbContextSettings(DatabaseReader, singleDbContextSubNamespace);
                 _fileManagementService.Init(FilterList.GetFilters(), _fileManagerType);
             }
@@ -3890,6 +3892,8 @@
 
                 if (HasAcademicLicence)
                     filter.Tables.TrimForAcademicLicence();
+                if (HasTrialLicence)
+                    filter.Tables.TrimForTrialLicence();
             }
         }
 
@@ -3994,10 +3998,16 @@
                     {
                         if (!filter.IsExcluded(sp))
                         {
-                            if(HasAcademicLicence)
+                            if (HasAcademicLicence)
                             {
                                 const int n = 2 * 2;
-                                if(filter.StoredProcs.Count < n)
+                                if (filter.StoredProcs.Count < n)
+                                    filter.StoredProcs.Add(sp);
+                            }
+                            else if (HasTrialLicence)
+                            {
+                                const int n = 1;
+                                if (filter.StoredProcs.Count < n)
                                     filter.StoredProcs.Add(sp);
                             }
                             else
@@ -14591,12 +14601,24 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         {
             // Mapping tables do not count
             const int n = 2 * 2 * 2 * 2;
+            TrimForLicence(n);
+        }
+
+        public void TrimForTrialLicence()
+        {
+            // Mapping tables do not count
+            const int n = 1 + 1 + 1 + 1 + 1;
+            TrimForLicence(n);
+        }
+
+        private void TrimForLicence(int n)
+        {
             if (this.Count(x => !x.IsMapping) <= n)
                 return;
 
             RemoveAll(x => !x.HasPrimaryKey);
 
-            while(this.Count(x => !x.IsMapping) > n)
+            while (this.Count(x => !x.IsMapping) > n)
             {
                 try
                 {
