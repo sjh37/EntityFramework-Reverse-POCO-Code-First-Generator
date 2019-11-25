@@ -136,14 +136,12 @@ namespace Generator.Tests.Unit
                 Console.WriteLine(str);
 
             // Assert
-            Assert.AreEqual(6, list.Count);
+            Assert.AreEqual(4, list.Count);
 
-            Assert.AreEqual(@"builder.HasIndex(x => new { x.OrderID, x.ProductID }).HasName(""PK_Order_Details"").IsUnique().ForSqlServerIsClustered();", list[0]);
-            Assert.AreEqual(@"builder.HasIndex(x => x.OrderID).HasName(""OrderID"");",                                                                    list[1]);
-            Assert.AreEqual(@"builder.HasIndex(x => x.OrderID).HasName(""OrdersOrder_Details"");",                                                        list[2]);
-            Assert.AreEqual(@"builder.HasIndex(x => x.ProductID).HasName(""ProductID"");",                                                                list[3]);
-            Assert.AreEqual(@"builder.HasIndex(x => x.ProductID).HasName(""ProductsOrder_Details"");",                                                    list[4]);
-            Assert.AreEqual(@"builder.HasIndex(x => x.test).HasName(""PK_test"").IsUnique().ForSqlServerIsClustered();",                                   list[5]);
+            Assert.AreEqual(@"builder.HasIndex(x => x.OrderID).HasName(""OrderID"");",                                                                    list[0]);
+            Assert.AreEqual(@"builder.HasIndex(x => x.OrderID).HasName(""OrdersOrder_Details"");",                                                        list[1]);
+            Assert.AreEqual(@"builder.HasIndex(x => x.ProductID).HasName(""ProductID"");",                                                                list[2]);
+            Assert.AreEqual(@"builder.HasIndex(x => x.ProductID).HasName(""ProductsOrder_Details"");",                                                    list[3]);
         }
     }
 }

@@ -130,7 +130,17 @@ namespace Efrpg.Generators
                 c.Config = string.Format("Property(x => x.{0}){1};", c.NameHumanCase, config);
         }
 
+        public override string PrimaryKeyModelBuilder(Table table)
+        {
+            return null;
+        }
+
         public override List<string> IndexModelBuilder(Table t)
+        {
+            return null;
+        }
+
+        public override List<string> AlternateKeyModelBuilder(Table table)
         {
             return null;
         }

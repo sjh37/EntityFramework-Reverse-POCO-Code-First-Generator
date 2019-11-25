@@ -1629,14 +1629,13 @@ namespace Efrpg.V3TestE
         public void Configure(EntityTypeBuilder<Category> builder)
         {
             builder.ToTable("Categories", "dbo");
-            builder.HasKey(x => x.CategoryId);
+            builder.HasKey(x => x.CategoryId).HasName("PK_Categories").ForSqlServerIsClustered();
 
             builder.Property(x => x.CategoryId).HasColumnName(@"CategoryID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseSqlServerIdentityColumn();
             builder.Property(x => x.CategoryName).HasColumnName(@"CategoryName").HasColumnType("nvarchar").IsRequired().HasMaxLength(15);
             builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("ntext").IsRequired(false);
             builder.Property(x => x.Picture).HasColumnName(@"Picture").HasColumnType("image").IsRequired(false).HasMaxLength(2147483647);
 
-            builder.HasIndex(x => x.CategoryId).HasName("PK_Categories").IsUnique().ForSqlServerIsClustered();
             builder.HasIndex(x => x.CategoryName).HasName("CategoryName");
         }
     }
@@ -1673,7 +1672,7 @@ namespace Efrpg.V3TestE
         public void Configure(EntityTypeBuilder<Customer> builder)
         {
             builder.ToTable("Customers", "dbo");
-            builder.HasKey(x => x.CustomerId);
+            builder.HasKey(x => x.CustomerId).HasName("PK_Customers").ForSqlServerIsClustered();
 
             builder.Property(x => x.CustomerId).HasColumnName(@"CustomerID").HasColumnType("nchar").IsRequired().IsFixedLength().HasMaxLength(5).ValueGeneratedNever();
             builder.Property(x => x.CompanyName).HasColumnName(@"CompanyName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40);
@@ -1687,7 +1686,6 @@ namespace Efrpg.V3TestE
             builder.Property(x => x.Phone).HasColumnName(@"Phone").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(24);
             builder.Property(x => x.Fax).HasColumnName(@"Fax").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(24);
 
-            builder.HasIndex(x => x.CustomerId).HasName("PK_Customers").IsUnique().ForSqlServerIsClustered();
             builder.HasIndex(x => x.City).HasName("City");
             builder.HasIndex(x => x.CompanyName).HasName("CompanyName");
             builder.HasIndex(x => x.PostalCode).HasName("PostalCode");
@@ -1716,7 +1714,7 @@ namespace Efrpg.V3TestE
         public void Configure(EntityTypeBuilder<CustomerCustomerDemo> builder)
         {
             builder.ToTable("CustomerCustomerDemo", "dbo");
-            builder.HasKey(x => new { x.CustomerId, x.CustomerTypeId });
+            builder.HasKey(x => new { x.CustomerId, x.CustomerTypeId }).HasName("PK_CustomerCustomerDemo");
 
             builder.Property(x => x.CustomerId).HasColumnName(@"CustomerID").HasColumnType("nchar").IsRequired().IsFixedLength().HasMaxLength(5).ValueGeneratedNever();
             builder.Property(x => x.CustomerTypeId).HasColumnName(@"CustomerTypeID").HasColumnType("nchar").IsRequired().IsFixedLength().HasMaxLength(10).ValueGeneratedNever();
@@ -1724,8 +1722,6 @@ namespace Efrpg.V3TestE
             // Foreign keys
             builder.HasOne(a => a.Customer).WithMany(b => b.CustomerCustomerDemoes).HasForeignKey(c => c.CustomerId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_CustomerCustomerDemo_Customers");
             builder.HasOne(a => a.CustomerDemographic).WithMany(b => b.CustomerCustomerDemoes).HasForeignKey(c => c.CustomerTypeId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_CustomerCustomerDemo");
-
-            builder.HasIndex(x => new { x.CustomerId, x.CustomerTypeId }).HasName("PK_CustomerCustomerDemo").IsUnique();
         }
     }
 
@@ -1735,12 +1731,10 @@ namespace Efrpg.V3TestE
         public void Configure(EntityTypeBuilder<CustomerDemographic> builder)
         {
             builder.ToTable("CustomerDemographics", "dbo");
-            builder.HasKey(x => x.CustomerTypeId);
+            builder.HasKey(x => x.CustomerTypeId).HasName("PK_CustomerDemographics");
 
             builder.Property(x => x.CustomerTypeId).HasColumnName(@"CustomerTypeID").HasColumnType("nchar").IsRequired().IsFixedLength().HasMaxLength(10).ValueGeneratedNever();
             builder.Property(x => x.CustomerDesc).HasColumnName(@"CustomerDesc").HasColumnType("ntext").IsRequired(false);
-
-            builder.HasIndex(x => x.CustomerTypeId).HasName("PK_CustomerDemographics").IsUnique();
         }
     }
 
@@ -1750,7 +1744,7 @@ namespace Efrpg.V3TestE
         public void Configure(EntityTypeBuilder<Employee> builder)
         {
             builder.ToTable("Employees", "dbo");
-            builder.HasKey(x => x.EmployeeId);
+            builder.HasKey(x => x.EmployeeId).HasName("PK_Employees").ForSqlServerIsClustered();
 
             builder.Property(x => x.EmployeeId).HasColumnName(@"EmployeeID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseSqlServerIdentityColumn();
             builder.Property(x => x.LastName).HasColumnName(@"LastName").HasColumnType("nvarchar").IsRequired().HasMaxLength(20);
@@ -1774,7 +1768,6 @@ namespace Efrpg.V3TestE
             // Foreign keys
             builder.HasOne(a => a.Employee_ReportsTo).WithMany(b => b.Employees).HasForeignKey(c => c.ReportsTo).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Employees_Employees");
 
-            builder.HasIndex(x => x.EmployeeId).HasName("PK_Employees").IsUnique().ForSqlServerIsClustered();
             builder.HasIndex(x => x.LastName).HasName("LastName");
             builder.HasIndex(x => x.PostalCode).HasName("PostalCode");
         }
@@ -1786,7 +1779,7 @@ namespace Efrpg.V3TestE
         public void Configure(EntityTypeBuilder<EmployeeTerritory> builder)
         {
             builder.ToTable("EmployeeTerritories", "dbo");
-            builder.HasKey(x => new { x.EmployeeId, x.TerritoryId });
+            builder.HasKey(x => new { x.EmployeeId, x.TerritoryId }).HasName("PK_EmployeeTerritories");
 
             builder.Property(x => x.EmployeeId).HasColumnName(@"EmployeeID").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.TerritoryId).HasColumnName(@"TerritoryID").HasColumnType("nvarchar").IsRequired().HasMaxLength(20).ValueGeneratedNever();
@@ -1794,8 +1787,6 @@ namespace Efrpg.V3TestE
             // Foreign keys
             builder.HasOne(a => a.Employee).WithMany(b => b.EmployeeTerritories).HasForeignKey(c => c.EmployeeId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_EmployeeTerritories_Employees");
             builder.HasOne(a => a.Territory).WithMany(b => b.EmployeeTerritories).HasForeignKey(c => c.TerritoryId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_EmployeeTerritories_Territories");
-
-            builder.HasIndex(x => new { x.EmployeeId, x.TerritoryId }).HasName("PK_EmployeeTerritories").IsUnique();
         }
     }
 
@@ -1842,7 +1833,7 @@ namespace Efrpg.V3TestE
         public void Configure(EntityTypeBuilder<Order> builder)
         {
             builder.ToTable("Orders", "dbo");
-            builder.HasKey(x => x.OrderId);
+            builder.HasKey(x => x.OrderId).HasName("PK_Orders").ForSqlServerIsClustered();
 
             builder.Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseSqlServerIdentityColumn();
             builder.Property(x => x.CustomerId).HasColumnName(@"CustomerID").HasColumnType("nchar").IsRequired(false).IsFixedLength().HasMaxLength(5);
@@ -1864,7 +1855,6 @@ namespace Efrpg.V3TestE
             builder.HasOne(a => a.Employee).WithMany(b => b.Orders).HasForeignKey(c => c.EmployeeId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Orders_Employees");
             builder.HasOne(a => a.Shipper).WithMany(b => b.Orders).HasForeignKey(c => c.ShipVia).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Orders_Shippers");
 
-            builder.HasIndex(x => x.OrderId).HasName("PK_Orders").IsUnique().ForSqlServerIsClustered();
             builder.HasIndex(x => x.CustomerId).HasName("CustomerID");
             builder.HasIndex(x => x.CustomerId).HasName("CustomersOrders");
             builder.HasIndex(x => x.EmployeeId).HasName("EmployeeID");
@@ -1882,7 +1872,7 @@ namespace Efrpg.V3TestE
         public void Configure(EntityTypeBuilder<OrderDetail> builder)
         {
             builder.ToTable("Order Details", "dbo");
-            builder.HasKey(x => new { x.OrderId, x.ProductId });
+            builder.HasKey(x => new { x.OrderId, x.ProductId }).HasName("PK_Order_Details").ForSqlServerIsClustered();
 
             builder.Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.ProductId).HasColumnName(@"ProductID").HasColumnType("int").IsRequired().ValueGeneratedNever();
@@ -1898,7 +1888,6 @@ namespace Efrpg.V3TestE
             builder.HasIndex(x => x.OrderId).HasName("OrdersOrder_Details");
             builder.HasIndex(x => x.ProductId).HasName("ProductID");
             builder.HasIndex(x => x.ProductId).HasName("ProductsOrder_Details");
-            builder.HasIndex(x => new { x.OrderId, x.ProductId }).HasName("PK_Order_Details").IsUnique().ForSqlServerIsClustered();
         }
     }
 
@@ -1970,7 +1959,7 @@ namespace Efrpg.V3TestE
         public void Configure(EntityTypeBuilder<Product> builder)
         {
             builder.ToTable("Products", "dbo");
-            builder.HasKey(x => x.ProductId);
+            builder.HasKey(x => x.ProductId).HasName("PK_Products").ForSqlServerIsClustered();
 
             builder.Property(x => x.ProductId).HasColumnName(@"ProductID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseSqlServerIdentityColumn();
             builder.Property(x => x.ProductName).HasColumnName(@"ProductName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40);
@@ -1987,7 +1976,6 @@ namespace Efrpg.V3TestE
             builder.HasOne(a => a.Category).WithMany(b => b.Products).HasForeignKey(c => c.CategoryId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Products_Categories");
             builder.HasOne(a => a.Supplier).WithMany(b => b.Products).HasForeignKey(c => c.SupplierId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Products_Suppliers");
 
-            builder.HasIndex(x => x.ProductId).HasName("PK_Products").IsUnique().ForSqlServerIsClustered();
             builder.HasIndex(x => x.CategoryId).HasName("CategoriesProducts");
             builder.HasIndex(x => x.CategoryId).HasName("CategoryID");
             builder.HasIndex(x => x.ProductName).HasName("ProductName");
@@ -2045,12 +2033,10 @@ namespace Efrpg.V3TestE
         public void Configure(EntityTypeBuilder<Region> builder)
         {
             builder.ToTable("Region", "dbo");
-            builder.HasKey(x => x.RegionId);
+            builder.HasKey(x => x.RegionId).HasName("PK_Region");
 
             builder.Property(x => x.RegionId).HasColumnName(@"RegionID").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.RegionDescription).HasColumnName(@"RegionDescription").HasColumnType("nchar").IsRequired().IsFixedLength().HasMaxLength(50);
-
-            builder.HasIndex(x => x.RegionId).HasName("PK_Region").IsUnique();
         }
     }
 
@@ -2090,13 +2076,11 @@ namespace Efrpg.V3TestE
         public void Configure(EntityTypeBuilder<Shipper> builder)
         {
             builder.ToTable("Shippers", "dbo");
-            builder.HasKey(x => x.ShipperId);
+            builder.HasKey(x => x.ShipperId).HasName("PK_Shippers").ForSqlServerIsClustered();
 
             builder.Property(x => x.ShipperId).HasColumnName(@"ShipperID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseSqlServerIdentityColumn();
             builder.Property(x => x.CompanyName).HasColumnName(@"CompanyName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40);
             builder.Property(x => x.Phone).HasColumnName(@"Phone").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(24);
-
-            builder.HasIndex(x => x.ShipperId).HasName("PK_Shippers").IsUnique().ForSqlServerIsClustered();
         }
     }
 
@@ -2134,7 +2118,7 @@ namespace Efrpg.V3TestE
         public void Configure(EntityTypeBuilder<Supplier> builder)
         {
             builder.ToTable("Suppliers", "dbo");
-            builder.HasKey(x => x.SupplierId);
+            builder.HasKey(x => x.SupplierId).HasName("PK_Suppliers").ForSqlServerIsClustered();
 
             builder.Property(x => x.SupplierId).HasColumnName(@"SupplierID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseSqlServerIdentityColumn();
             builder.Property(x => x.CompanyName).HasColumnName(@"CompanyName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40);
@@ -2149,7 +2133,6 @@ namespace Efrpg.V3TestE
             builder.Property(x => x.Fax).HasColumnName(@"Fax").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(24);
             builder.Property(x => x.HomePage).HasColumnName(@"HomePage").HasColumnType("ntext").IsRequired(false);
 
-            builder.HasIndex(x => x.SupplierId).HasName("PK_Suppliers").IsUnique().ForSqlServerIsClustered();
             builder.HasIndex(x => x.CompanyName).HasName("CompanyName");
             builder.HasIndex(x => x.PostalCode).HasName("PostalCode");
         }
@@ -2161,7 +2144,7 @@ namespace Efrpg.V3TestE
         public void Configure(EntityTypeBuilder<Territory> builder)
         {
             builder.ToTable("Territories", "dbo");
-            builder.HasKey(x => x.TerritoryId);
+            builder.HasKey(x => x.TerritoryId).HasName("PK_Territories");
 
             builder.Property(x => x.TerritoryId).HasColumnName(@"TerritoryID").HasColumnType("nvarchar").IsRequired().HasMaxLength(20).ValueGeneratedNever();
             builder.Property(x => x.TerritoryDescription).HasColumnName(@"TerritoryDescription").HasColumnType("nchar").IsRequired().IsFixedLength().HasMaxLength(50);
@@ -2169,8 +2152,6 @@ namespace Efrpg.V3TestE
 
             // Foreign keys
             builder.HasOne(a => a.Region).WithMany(b => b.Territories).HasForeignKey(c => c.RegionId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Territories_Region");
-
-            builder.HasIndex(x => x.TerritoryId).HasName("PK_Territories").IsUnique();
         }
     }
 

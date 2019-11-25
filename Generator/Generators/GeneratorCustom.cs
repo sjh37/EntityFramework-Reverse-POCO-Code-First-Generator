@@ -32,7 +32,17 @@ namespace Efrpg.Generators
             c.Config = string.Empty;
         }
 
+        public override string PrimaryKeyModelBuilder(Table table)
+        {
+            return null;
+        }
+
         public override List<string> IndexModelBuilder(Table t)
+        {
+            return null;
+        }
+
+        public override List<string> AlternateKeyModelBuilder(Table table)
         {
             return null;
         }

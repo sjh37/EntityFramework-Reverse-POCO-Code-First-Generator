@@ -472,7 +472,11 @@ namespace Efrpg.Generators
 
             var foreignKeys = columns.SelectMany(x => x.ConfigFk).OrderBy(o => o).ToList();
 
-            var indexes = _generator.IndexModelBuilder(table);
+            var primaryKey       = _generator.PrimaryKeyModelBuilder(table);
+            var alternateKeys    = _generator.AlternateKeyModelBuilder(table);
+            var hasAlternateKeys = alternateKeys != null && alternateKeys.Any();
+
+            var indexes    = _generator.IndexModelBuilder(table);
             var hasIndexes = indexes != null && indexes.Any();
 
             var data = new PocoConfigurationModel
@@ -481,7 +485,7 @@ namespace Efrpg.Generators
                 ConfigurationClassName    = table.NameHumanCaseWithSuffix() + Settings.ConfigurationClassName,
                 NameHumanCaseWithSuffix   = table.NameHumanCaseWithSuffix(),
                 Schema                    = table.Schema.DbName,
-                PrimaryKeyNameHumanCase   = table.PrimaryKeyNameHumanCase(),
+                PrimaryKeyNameHumanCase   = primaryKey ?? table.PrimaryKeyNameHumanCase(),
                 HasSchema                 = !string.IsNullOrEmpty(table.Schema.DbName),
                 ClassModifier             = Settings.EntityClassesModifiers,
                 ClassComment              = table.WriteComments(),
@@ -504,7 +508,9 @@ namespace Efrpg.Generators
                 MappingConfiguration           = table.MappingConfiguration,
                 ConfigurationClassesArePartial = Settings.ConfigurationClassesArePartial(),
                 Indexes                        = indexes,
-                HasIndexes                     = hasIndexes
+                HasIndexes                     = hasIndexes,
+                AlternateKeys                  = alternateKeys,
+                HasAlternateKeys               = hasAlternateKeys
             };
 
             var co = new CodeOutput(table.NameHumanCaseWithSuffix() + Settings.ConfigurationClassName + Settings.FileExtension, null, GlobalUsings);

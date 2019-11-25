@@ -21,5 +21,7 @@ namespace Efrpg.TemplateModels
         public List<string> Indexes                                               { get; set; }
         public bool HasIndexes                                                    { get; set; }
         public bool ConfigurationClassesArePartial                                { get; set; }
+        public List<string> AlternateKeys                                         { get; set; }
+        public bool HasAlternateKeys                                              { get; set; }
     }
 }

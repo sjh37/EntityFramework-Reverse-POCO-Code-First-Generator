@@ -135,6 +135,38 @@ namespace Efrpg.Generators
                 c.Config = string.Format("builder.Property(x => x.{0}){1};", c.NameHumanCase, config);
         }
 
+        public override string PrimaryKeyModelBuilder(Table t)
+        {
+            var defaultKey = $"builder.HasKey({t.PrimaryKeyNameHumanCase()})";
+            if (t.Indexes == null || !t.Indexes.Any())
+                return defaultKey + ";";
+
+            var isEfCore3 = Settings.TemplateType == TemplateType.EfCore3;
+            var indexName = t.Indexes.Where(x => x.IsPrimaryKey).Select(x => x.IndexName).Distinct().FirstOrDefault();
+            if(string.IsNullOrEmpty(indexName))
+                return defaultKey + ";";
+
+            var indexesForName = t.Indexes
+                .Where(x => x.IndexName == indexName)
+                .OrderBy(x => x.KeyOrdinal)
+                .ThenBy(x => x.ColumnName)
+                .ToList();
+
+            var sb = new StringBuilder(255);
+            sb.Append(defaultKey);
+
+            sb.Append(".HasName(\"");
+            sb.Append(indexName);
+            sb.Append("\")");
+
+            if (indexesForName.All(x => x.IsClustered))
+                sb.Append(isEfCore3 ? ".IsClustered()" : ".ForSqlServerIsClustered()");
+
+            sb.Append(";");
+
+            return sb.ToString();
+        }
+
         public override List<string> IndexModelBuilder(Table t)
         {
             var indexes = new List<string>();
@@ -142,7 +174,7 @@ namespace Efrpg.Generators
                 return indexes;
 
             var isEfCore3 = Settings.TemplateType == TemplateType.EfCore3;
-            var indexNames = t.Indexes.Select(x => x.IndexName).Distinct();
+            var indexNames = t.Indexes.Where(x => !(x.IsUnique || x.IsUniqueConstraint) && !x.IsPrimaryKey).Select(x => x.IndexName).Distinct();
             foreach (var indexName in indexNames)
             {
                 var indexesForName = t.Indexes
@@ -151,13 +183,9 @@ namespace Efrpg.Generators
                     .ThenBy(x => x.ColumnName)
                     .ToList();
 
-                // var wouldForceColumnToBeNotNull = indexesForName.Any(x => x.WouldForceColumnToBeNotNull);
-                var wouldForceColumnToBeNotNull = false;
                 var sb = new StringBuilder(255);
                 var ok = true;
                 var count = 0;
-                if (wouldForceColumnToBeNotNull)
-                    sb.Append("// ");
                 sb.Append("builder.HasIndex(x => ");
                 if (indexesForName.Count > 1)
                     sb.Append("new { ");
@@ -199,13 +227,74 @@ namespace Efrpg.Generators
 
                 sb.Append(";");
 
-                if (wouldForceColumnToBeNotNull)
-                    sb.Append(" // Index cannot be used as a column it references would be forced not null");
-
                 indexes.Add(sb.ToString());
             }
 
             return indexes;
+        }
+
+        public override List<string> AlternateKeyModelBuilder(Table t)
+        {
+            var alternateKey = new List<string>();
+            if (t.Indexes == null || !t.Indexes.Any())
+                return alternateKey;
+
+            var isEfCore3 = Settings.TemplateType == TemplateType.EfCore3;
+            var indexNames = t.Indexes.Where(x => (x.IsUnique || x.IsUniqueConstraint) && !x.IsPrimaryKey).Select(x => x.IndexName).Distinct();
+            foreach (var indexName in indexNames)
+            {
+                var indexesForName = t.Indexes
+                    .Where(x => x.IndexName == indexName)
+                    .OrderBy(x => x.KeyOrdinal)
+                    .ThenBy(x => x.ColumnName)
+                    .ToList();
+
+                // var wouldForceColumnToBeNotNull = indexesForName.Any(x => x.WouldForceColumnToBeNotNull);
+                var sb = new StringBuilder(255);
+                var ok = true;
+                var count = 0;
+                sb.Append("builder.HasAlternateKey(x => ");
+                if (indexesForName.Count > 1)
+                    sb.Append("new { ");
+
+                foreach (var index in indexesForName)
+                {
+                    var col = t.Columns.Find(x => x.DbName == index.ColumnName);
+                    if (col == null || col.Hidden || string.IsNullOrEmpty(col.Config))
+                    {
+                        ok = false;
+                        break; // Cannot use index, as one of the columns is invalid
+                    }
+
+                    if (count > 0)
+                        sb.Append(", ");
+
+                    sb.Append("x.");
+                    sb.Append(col.NameHumanCase);
+                    ++count;
+                }
+
+                if (!ok)
+                    continue;
+
+                if (indexesForName.Count > 1)
+                    sb.Append(" }");
+
+                sb.Append(")"); // Close bracket for HasIndex()
+
+                sb.Append(".HasName(\"");
+                sb.Append(indexName);
+                sb.Append("\")");
+
+                if (indexesForName.All(x => x.IsClustered))
+                    sb.Append(isEfCore3 ? ".IsClustered()" : ".ForSqlServerIsClustered()");
+
+                sb.Append(";");
+
+                alternateKey.Add(sb.ToString());
+            }
+
+            return alternateKey;
         }
 
         public override string IndexModelBuilder(Column c)

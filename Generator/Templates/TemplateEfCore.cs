@@ -1071,7 +1071,13 @@ using {{this}};{{#newline}}
 {{#else}}
         builder.ToTable(""{{Name}}"");{{#newline}}
 {{/if}}
-        builder.HasKey({{PrimaryKeyNameHumanCase}});{{#newline}}{{#newline}}
+        {{PrimaryKeyNameHumanCase}}{{#newline}}
+{{#if HasAlternateKeys}}
+{{#each AlternateKeys}}
+        {{this}}{{#newline}}
+{{/each}}
+{{/if}}
+{{#newline}}
 
 {{#each Columns}}
         {{this}}{{#newline}}

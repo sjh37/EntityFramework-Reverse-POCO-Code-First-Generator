@@ -7,7 +7,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Efrpg.FileManagement;
 using Efrpg.Filtering;
-using Efrpg.LanguageMapping;
 using Efrpg.Licensing;
 using Efrpg.Readers;
 using Efrpg.Templates;
@@ -28,7 +27,9 @@ namespace Efrpg.Generators
         protected abstract bool FkMustHaveSameNumberOfColumnsAsPrimaryKey();
         protected abstract void SetupEntity(Column c);
         protected abstract void SetupConfig(Column c);
+        public abstract string PrimaryKeyModelBuilder(Table table);
         public abstract List<string> IndexModelBuilder(Table t);
+        public abstract List<string> AlternateKeyModelBuilder(Table table);
         public abstract string IndexModelBuilder(Column c);
         protected abstract string GetHasMethod(Relationship relationship, IList<Column> fkCols, IList<Column> pkCols, bool isNotEnforced);
         protected abstract string GetWithMethod(Relationship relationship, IList<Column> fkCols, string fkPropName, string manyToManyMapping, string mapKey,
