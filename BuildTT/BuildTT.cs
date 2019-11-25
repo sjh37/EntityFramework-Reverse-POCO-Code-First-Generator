@@ -258,6 +258,10 @@ namespace BuildTT
         // Add an extra comment
         //if (table.NameHumanCase.Equals(""SomeTable"", StringComparison.InvariantCultureIgnoreCase))
         //    table.AdditionalComment = ""Example comment"";
+
+        // To add a base class to a table
+        //if (table.NameHumanCase == ""User"")
+        //    table.BaseClasses = "" : IdentityUser<int, CustomUserLogin, CustomUserRole, CustomUserClaim>"";
     };
 
     // Use the following function if you need to apply additional modifications to a column
