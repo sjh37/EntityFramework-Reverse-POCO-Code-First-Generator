@@ -157,7 +157,7 @@ namespace Efrpg.Generators
                         cannotUseAdded = true;
                     }
 
-                    sb.AppendLine($"        modelBuilder.Entity<{c.ParentTable.NameHumanCase}>()");
+                    sb.AppendLine($"        modelBuilder.Entity<{c.ParentTable.NameHumanCaseWithSuffix()}>()");
                     sb.AppendLine($"            .Property(e => e.{c.NameHumanCase})");
                     sb.AppendLine("            .HasColumnAnnotation(");
                     sb.AppendLine("                IndexAnnotation.AnnotationName,");

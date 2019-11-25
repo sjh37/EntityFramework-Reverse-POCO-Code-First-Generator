@@ -155,7 +155,7 @@
         public static bool PrependSchemaName = true; // Control if the schema name is prepended to the table name
 
         // Table Suffix ***********************************************************************************************************************
-        // Prepends the suffix to the generated classes names
+        // Appends the suffix to the generated classes names
         // Ie. If TableSuffix is "Dto" then Order will be OrderDto
         //     If TableSuffix is "Entity" then Order will be OrderEntity
         public static string TableSuffix = null;
@@ -4819,7 +4819,7 @@
                         cannotUseAdded = true;
                     }
 
-                    sb.AppendLine($"        modelBuilder.Entity<{c.ParentTable.NameHumanCase}>()");
+                    sb.AppendLine($"        modelBuilder.Entity<{c.ParentTable.NameHumanCaseWithSuffix()}>()");
                     sb.AppendLine($"            .Property(e => e.{c.NameHumanCase})");
                     sb.AppendLine("            .HasColumnAnnotation(");
                     sb.AppendLine("                IndexAnnotation.AnnotationName,");

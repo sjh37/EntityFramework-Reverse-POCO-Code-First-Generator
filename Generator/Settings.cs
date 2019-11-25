@@ -132,7 +132,7 @@ namespace Efrpg
         public static bool PrependSchemaName = true; // Control if the schema name is prepended to the table name
 
         // Table Suffix ***********************************************************************************************************************
-        // Prepends the suffix to the generated classes names
+        // Appends the suffix to the generated classes names
         // Ie. If TableSuffix is "Dto" then Order will be OrderDto
         //     If TableSuffix is "Entity" then Order will be OrderEntity
         public static string TableSuffix = null;
