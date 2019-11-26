@@ -51,6 +51,7 @@ namespace Generator.Tests.Unit
                 DbName = "ProductID",
                 NameHumanCase = "ProductID",
                 Config = "test",
+                IsNullable = true,
                 Indexes = new List<RawIndex>
                 {
                     _orderDetails.Indexes[3],//new RawIndex("dbo", "Order Details", "PK_Order_Details",      2, "ProductID", 2, true,  true,  false, true),
@@ -65,6 +66,7 @@ namespace Generator.Tests.Unit
                 ParentTable = _orderDetails,
                 DbName = "xxx",
                 NameHumanCase = "test",
+                IsNullable = true,
                 Config = "test",
                 Indexes = new List<RawIndex>
                 {
@@ -138,10 +140,10 @@ namespace Generator.Tests.Unit
             // Assert
             Assert.AreEqual(4, list.Count);
 
-            Assert.AreEqual(@"builder.HasIndex(x => x.OrderID).HasName(""OrderID"");",                                                                    list[0]);
-            Assert.AreEqual(@"builder.HasIndex(x => x.OrderID).HasName(""OrdersOrder_Details"");",                                                        list[1]);
-            Assert.AreEqual(@"builder.HasIndex(x => x.ProductID).HasName(""ProductID"");",                                                                list[2]);
-            Assert.AreEqual(@"builder.HasIndex(x => x.ProductID).HasName(""ProductsOrder_Details"");",                                                    list[3]);
+            Assert.AreEqual(@"builder.HasAlternateKey(x => x.OrderID).HasName(""OrderID"");",             list[0]);
+            Assert.AreEqual(@"builder.HasAlternateKey(x => x.OrderID).HasName(""OrdersOrder_Details"");", list[1]);
+            Assert.AreEqual(@"builder.HasIndex(x => x.ProductID).HasName(""ProductID"");",                list[2]);
+            Assert.AreEqual(@"builder.HasIndex(x => x.ProductID).HasName(""ProductsOrder_Details"");",    list[3]);
         }
     }
 }

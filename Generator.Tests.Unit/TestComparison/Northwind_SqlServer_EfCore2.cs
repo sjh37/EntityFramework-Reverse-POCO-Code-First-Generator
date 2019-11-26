@@ -1630,13 +1630,12 @@ namespace Efrpg.V3TestE
         {
             builder.ToTable("Categories", "dbo");
             builder.HasKey(x => x.CategoryId).HasName("PK_Categories").ForSqlServerIsClustered();
+            builder.HasAlternateKey(x => x.CategoryName).HasName("CategoryName");
 
             builder.Property(x => x.CategoryId).HasColumnName(@"CategoryID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseSqlServerIdentityColumn();
             builder.Property(x => x.CategoryName).HasColumnName(@"CategoryName").HasColumnType("nvarchar").IsRequired().HasMaxLength(15);
             builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("ntext").IsRequired(false);
             builder.Property(x => x.Picture).HasColumnName(@"Picture").HasColumnType("image").IsRequired(false).HasMaxLength(2147483647);
-
-            builder.HasIndex(x => x.CategoryName).HasName("CategoryName");
         }
     }
 
@@ -1673,6 +1672,7 @@ namespace Efrpg.V3TestE
         {
             builder.ToTable("Customers", "dbo");
             builder.HasKey(x => x.CustomerId).HasName("PK_Customers").ForSqlServerIsClustered();
+            builder.HasAlternateKey(x => x.CompanyName).HasName("CompanyName");
 
             builder.Property(x => x.CustomerId).HasColumnName(@"CustomerID").HasColumnType("nchar").IsRequired().IsFixedLength().HasMaxLength(5).ValueGeneratedNever();
             builder.Property(x => x.CompanyName).HasColumnName(@"CompanyName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40);
@@ -1687,7 +1687,6 @@ namespace Efrpg.V3TestE
             builder.Property(x => x.Fax).HasColumnName(@"Fax").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(24);
 
             builder.HasIndex(x => x.City).HasName("City");
-            builder.HasIndex(x => x.CompanyName).HasName("CompanyName");
             builder.HasIndex(x => x.PostalCode).HasName("PostalCode");
             builder.HasIndex(x => x.Region).HasName("Region");
         }
@@ -1745,6 +1744,7 @@ namespace Efrpg.V3TestE
         {
             builder.ToTable("Employees", "dbo");
             builder.HasKey(x => x.EmployeeId).HasName("PK_Employees").ForSqlServerIsClustered();
+            builder.HasAlternateKey(x => x.LastName).HasName("LastName");
 
             builder.Property(x => x.EmployeeId).HasColumnName(@"EmployeeID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseSqlServerIdentityColumn();
             builder.Property(x => x.LastName).HasColumnName(@"LastName").HasColumnType("nvarchar").IsRequired().HasMaxLength(20);
@@ -1768,7 +1768,6 @@ namespace Efrpg.V3TestE
             // Foreign keys
             builder.HasOne(a => a.Employee_ReportsTo).WithMany(b => b.Employees).HasForeignKey(c => c.ReportsTo).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Employees_Employees");
 
-            builder.HasIndex(x => x.LastName).HasName("LastName");
             builder.HasIndex(x => x.PostalCode).HasName("PostalCode");
         }
     }
@@ -1873,6 +1872,10 @@ namespace Efrpg.V3TestE
         {
             builder.ToTable("Order Details", "dbo");
             builder.HasKey(x => new { x.OrderId, x.ProductId }).HasName("PK_Order_Details").ForSqlServerIsClustered();
+            builder.HasAlternateKey(x => x.OrderId).HasName("OrderID");
+            builder.HasAlternateKey(x => x.OrderId).HasName("OrdersOrder_Details");
+            builder.HasAlternateKey(x => x.ProductId).HasName("ProductID");
+            builder.HasAlternateKey(x => x.ProductId).HasName("ProductsOrder_Details");
 
             builder.Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.ProductId).HasColumnName(@"ProductID").HasColumnType("int").IsRequired().ValueGeneratedNever();
@@ -1883,11 +1886,6 @@ namespace Efrpg.V3TestE
             // Foreign keys
             builder.HasOne(a => a.Order).WithMany(b => b.OrderDetails).HasForeignKey(c => c.OrderId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Order_Details_Orders");
             builder.HasOne(a => a.Product).WithMany(b => b.OrderDetails).HasForeignKey(c => c.ProductId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Order_Details_Products");
-
-            builder.HasIndex(x => x.OrderId).HasName("OrderID");
-            builder.HasIndex(x => x.OrderId).HasName("OrdersOrder_Details");
-            builder.HasIndex(x => x.ProductId).HasName("ProductID");
-            builder.HasIndex(x => x.ProductId).HasName("ProductsOrder_Details");
         }
     }
 
@@ -1960,6 +1958,7 @@ namespace Efrpg.V3TestE
         {
             builder.ToTable("Products", "dbo");
             builder.HasKey(x => x.ProductId).HasName("PK_Products").ForSqlServerIsClustered();
+            builder.HasAlternateKey(x => x.ProductName).HasName("ProductName");
 
             builder.Property(x => x.ProductId).HasColumnName(@"ProductID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseSqlServerIdentityColumn();
             builder.Property(x => x.ProductName).HasColumnName(@"ProductName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40);
@@ -1978,7 +1977,6 @@ namespace Efrpg.V3TestE
 
             builder.HasIndex(x => x.CategoryId).HasName("CategoriesProducts");
             builder.HasIndex(x => x.CategoryId).HasName("CategoryID");
-            builder.HasIndex(x => x.ProductName).HasName("ProductName");
             builder.HasIndex(x => x.SupplierId).HasName("SupplierID");
             builder.HasIndex(x => x.SupplierId).HasName("SuppliersProducts");
         }
@@ -2119,6 +2117,7 @@ namespace Efrpg.V3TestE
         {
             builder.ToTable("Suppliers", "dbo");
             builder.HasKey(x => x.SupplierId).HasName("PK_Suppliers").ForSqlServerIsClustered();
+            builder.HasAlternateKey(x => x.CompanyName).HasName("CompanyName");
 
             builder.Property(x => x.SupplierId).HasColumnName(@"SupplierID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseSqlServerIdentityColumn();
             builder.Property(x => x.CompanyName).HasColumnName(@"CompanyName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40);
@@ -2133,7 +2132,6 @@ namespace Efrpg.V3TestE
             builder.Property(x => x.Fax).HasColumnName(@"Fax").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(24);
             builder.Property(x => x.HomePage).HasColumnName(@"HomePage").HasColumnType("ntext").IsRequired(false);
 
-            builder.HasIndex(x => x.CompanyName).HasName("CompanyName");
             builder.HasIndex(x => x.PostalCode).HasName("PostalCode");
         }
     }

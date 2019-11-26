@@ -42,11 +42,6 @@ namespace Efrpg.Generators
             return null;
         }
 
-        public override List<string> AlternateKeyModelBuilder(Table table)
-        {
-            return null;
-        }
-
         public override string IndexModelBuilder(Column c)
         {
             return null;
