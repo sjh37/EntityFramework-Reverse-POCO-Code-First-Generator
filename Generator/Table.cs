@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Efrpg.Filtering;
+using Efrpg.Templates;
 
 namespace Efrpg
 {
@@ -72,7 +73,10 @@ namespace Efrpg
             if (HasPrimaryKey)
                 return; // Table has at least one primary key
 
-            // This table is not allowed in EntityFramework as it does not have a primary key.
+            if (IsView && Settings.TemplateType == TemplateType.EfCore3)
+                return; // EfCore 3 supports views by use of .HasNoKey() and .ToView("view name");
+
+            // This table is not allowed in EntityFramework v6 / EfCore 2 as it does not have a primary key.
             // Therefore generate a composite key from all non-null fields.
             foreach (var col in Columns.Where(x => !x.IsNullable && !x.Hidden))
             {

@@ -1039,6 +1039,8 @@ namespace Efrpg.Generators
             codeOutputList.Add(contextFakeClass, codeGenerator.GenerateFakeContext());
             codeOutputList.Add(contextFakeDbSet, codeGenerator.GenerateFakeDbSet());
 
+            var isEfCore3 = Settings.TemplateType == TemplateType.EfCore3;
+
             foreach (var table in filter.Tables
                 .Where(t => !t.IsMapping)
                 .OrderBy(x => x.NameHumanCase))
@@ -1047,7 +1049,7 @@ namespace Efrpg.Generators
                 codeOutputList.Add(pocoClass + table.NameHumanCase, codeGenerator.GeneratePoco(table));
 
                 // Only write the config if it has a primary key
-                if (table.HasPrimaryKey)
+                if (table.HasPrimaryKey || (table.IsView && isEfCore3))
                     codeOutputList.Add(pocoConfiguration + table.NameHumanCase, codeGenerator.GeneratePocoConfiguration(table, this));
             }
 

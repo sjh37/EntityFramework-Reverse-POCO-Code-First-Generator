@@ -2719,7 +2719,7 @@
             _filter    = filter;
 
             _tables = filter.Tables
-                .Where(t => !t.IsMapping && t.HasPrimaryKey)
+                .Where(t => !t.IsMapping && (t.HasPrimaryKey || (t.IsView && isEfCore3)))
                 .OrderBy(x => x.NameHumanCase)
                 .Select(tbl => new TableTemplateData(tbl))
                 .ToList();
@@ -3067,8 +3067,11 @@
             if (!CanWritePoco())
                 return null;
 
+            var isEfCore3 = Settings.TemplateType == TemplateType.EfCore3;
+
             var data = new PocoModel
             {
+                UseHasNoKey             = isEfCore3 && table.IsView && !table.HasPrimaryKey,
                 HasNoPrimaryKey         = !table.HasPrimaryKey,
                 Name                    = table.DbName,
                 NameHumanCaseWithSuffix = table.NameHumanCaseWithSuffix(),
@@ -3152,6 +3155,8 @@
                 .OrderBy(x => x.Ordinal)
                 .ToList();
 
+            var isEfCore3 = Settings.TemplateType == TemplateType.EfCore3;
+
             var foreignKeys = columns.SelectMany(x => x.ConfigFk).OrderBy(o => o).ToList();
             var primaryKey  = _generator.PrimaryKeyModelBuilder(table);
 
@@ -3164,7 +3169,9 @@
 
             var data = new PocoConfigurationModel
             {
+                UseHasNoKey               = isEfCore3 && table.IsView && !table.HasPrimaryKey,
                 Name                      = table.DbName,
+                ToTableOrView             = (isEfCore3 && table.IsView && !table.HasPrimaryKey) ? "ToView" : "ToTable",
                 ConfigurationClassName    = table.NameHumanCaseWithSuffix() + Settings.ConfigurationClassName,
                 NameHumanCaseWithSuffix   = table.NameHumanCaseWithSuffix(),
                 Schema                    = table.Schema.DbName,
@@ -4386,6 +4393,8 @@
             codeOutputList.Add(contextFakeClass, codeGenerator.GenerateFakeContext());
             codeOutputList.Add(contextFakeDbSet, codeGenerator.GenerateFakeDbSet());
 
+            var isEfCore3 = Settings.TemplateType == TemplateType.EfCore3;
+
             foreach (var table in filter.Tables
                 .Where(t => !t.IsMapping)
                 .OrderBy(x => x.NameHumanCase))
@@ -4394,7 +4403,7 @@
                 codeOutputList.Add(pocoClass + table.NameHumanCase, codeGenerator.GeneratePoco(table));
 
                 // Only write the config if it has a primary key
-                if (table.HasPrimaryKey)
+                if (table.HasPrimaryKey || (table.IsView && isEfCore3))
                     codeOutputList.Add(pocoConfiguration + table.NameHumanCase, codeGenerator.GeneratePocoConfiguration(table, this));
             }
 
@@ -5092,11 +5101,14 @@
 
         public override string PrimaryKeyModelBuilder(Table t)
         {
+            var isEfCore3 = Settings.TemplateType == TemplateType.EfCore3;
+            if (isEfCore3 && t.IsView && !t.HasPrimaryKey)
+                return "builder.HasNoKey();";
+
             var defaultKey = $"builder.HasKey({t.PrimaryKeyNameHumanCase()})";
             if (t.Indexes == null || !t.Indexes.Any())
                 return defaultKey + ";";
 
-            var isEfCore3 = Settings.TemplateType == TemplateType.EfCore3;
             var indexName = t.Indexes.Where(x => x.IsPrimaryKey).Select(x => x.IndexName).Distinct().FirstOrDefault();
             if(string.IsNullOrEmpty(indexName))
                 return defaultKey + ";";
@@ -14253,7 +14265,10 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             if (HasPrimaryKey)
                 return; // Table has at least one primary key
 
-            // This table is not allowed in EntityFramework as it does not have a primary key.
+            if (IsView && Settings.TemplateType == TemplateType.EfCore3)
+                return; // EfCore 3 supports views by use of .HasNoKey() and .ToView("view name");
+
+            // This table is not allowed in EntityFramework v6 / EfCore 2 as it does not have a primary key.
             // Therefore generate a composite key from all non-null fields.
             foreach (var col in Columns.Where(x => !x.IsNullable && !x.Hidden))
             {
@@ -14783,10 +14798,13 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public bool ConfigurationClassesArePartial                                { get; set; }
         public List<string> AlternateKeys                                         { get; set; }
         public bool HasAlternateKeys                                              { get; set; }
+        public bool UseHasNoKey                                                   { get; set; }
+        public string ToTableOrView                                               { get; set; }
     }
 
     public class PocoModel
     {
+        public bool UseHasNoKey                                                   { get; set; }
         public bool HasNoPrimaryKey                                               { get; set; }
         public string Name                                                        { get; set; }
         public string NameHumanCaseWithSuffix                                     { get; set; }
@@ -17118,9 +17136,12 @@ using {{this}};{{#newline}}
         public override string Poco()
         {
             return @"
+{{#if UseHasNoKey}}
+{{#else}}
 {{#if HasNoPrimaryKey}}
 // The table '{{Name}}' is not usable by entity framework because it{{#newline}}
 // does not have a primary key. It is listed here for completeness.{{#newline}}
+{{/if}}
 {{/if}}
 
 {{ClassComment}}
@@ -17248,9 +17269,9 @@ using {{this}};{{#newline}}
     public void Configure(EntityTypeBuilder<{{NameHumanCaseWithSuffix}}> builder){{#newline}}
     {{{#newline}}
 {{#if HasSchema}}
-        builder.ToTable(""{{Name}}"", ""{{Schema}}"");{{#newline}}
+        builder.{{ToTableOrView}}(""{{Name}}"", ""{{Schema}}"");{{#newline}}
 {{#else}}
-        builder.ToTable(""{{Name}}"");{{#newline}}
+        builder.{{ToTableOrView}}(""{{Name}}"");{{#newline}}
 {{/if}}
         {{PrimaryKeyNameHumanCase}}{{#newline}}
 {{#if HasAlternateKeys}}

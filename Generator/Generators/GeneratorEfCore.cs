@@ -137,11 +137,14 @@ namespace Efrpg.Generators
 
         public override string PrimaryKeyModelBuilder(Table t)
         {
+            var isEfCore3 = Settings.TemplateType == TemplateType.EfCore3;
+            if (isEfCore3 && t.IsView && !t.HasPrimaryKey)
+                return "builder.HasNoKey();";
+
             var defaultKey = $"builder.HasKey({t.PrimaryKeyNameHumanCase()})";
             if (t.Indexes == null || !t.Indexes.Any())
                 return defaultKey + ";";
 
-            var isEfCore3 = Settings.TemplateType == TemplateType.EfCore3;
             var indexName = t.Indexes.Where(x => x.IsPrimaryKey).Select(x => x.IndexName).Distinct().FirstOrDefault();
             if(string.IsNullOrEmpty(indexName))
                 return defaultKey + ";";

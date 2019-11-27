@@ -4,6 +4,7 @@ namespace Efrpg.TemplateModels
 {
     public class PocoModel
     {
+        public bool UseHasNoKey                                                   { get; set; }
         public bool HasNoPrimaryKey                                               { get; set; }
         public string Name                                                        { get; set; }
         public string NameHumanCaseWithSuffix                                     { get; set; }

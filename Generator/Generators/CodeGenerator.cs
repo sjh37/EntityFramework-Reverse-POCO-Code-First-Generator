@@ -5,7 +5,6 @@ using System.Security;
 using Efrpg.Filtering;
 using Efrpg.TemplateModels;
 using Efrpg.Templates;
-using Efrpg.Util;
 
 namespace Efrpg.Generators
 {
@@ -37,7 +36,7 @@ namespace Efrpg.Generators
             _filter    = filter;
 
             _tables = filter.Tables
-                .Where(t => !t.IsMapping && t.HasPrimaryKey)
+                .Where(t => !t.IsMapping && (t.HasPrimaryKey || (t.IsView && isEfCore3)))
                 .OrderBy(x => x.NameHumanCase)
                 .Select(tbl => new TableTemplateData(tbl))
                 .ToList();
@@ -385,8 +384,11 @@ namespace Efrpg.Generators
             if (!CanWritePoco())
                 return null;
 
+            var isEfCore3 = Settings.TemplateType == TemplateType.EfCore3;
+
             var data = new PocoModel
             {
+                UseHasNoKey             = isEfCore3 && table.IsView && !table.HasPrimaryKey,
                 HasNoPrimaryKey         = !table.HasPrimaryKey,
                 Name                    = table.DbName,
                 NameHumanCaseWithSuffix = table.NameHumanCaseWithSuffix(),
@@ -470,6 +472,8 @@ namespace Efrpg.Generators
                 .OrderBy(x => x.Ordinal)
                 .ToList();
 
+            var isEfCore3 = Settings.TemplateType == TemplateType.EfCore3;
+
             var foreignKeys = columns.SelectMany(x => x.ConfigFk).OrderBy(o => o).ToList();
             var primaryKey  = _generator.PrimaryKeyModelBuilder(table);
 
@@ -482,7 +486,9 @@ namespace Efrpg.Generators
 
             var data = new PocoConfigurationModel
             {
+                UseHasNoKey               = isEfCore3 && table.IsView && !table.HasPrimaryKey,
                 Name                      = table.DbName,
+                ToTableOrView             = (isEfCore3 && table.IsView && !table.HasPrimaryKey) ? "ToView" : "ToTable",
                 ConfigurationClassName    = table.NameHumanCaseWithSuffix() + Settings.ConfigurationClassName,
                 NameHumanCaseWithSuffix   = table.NameHumanCaseWithSuffix(),
                 Schema                    = table.Schema.DbName,

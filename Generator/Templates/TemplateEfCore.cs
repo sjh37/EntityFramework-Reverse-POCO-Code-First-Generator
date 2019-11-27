@@ -937,9 +937,12 @@ using {{this}};{{#newline}}
         public override string Poco()
         {
             return @"
+{{#if UseHasNoKey}}
+{{#else}}
 {{#if HasNoPrimaryKey}}
 // The table '{{Name}}' is not usable by entity framework because it{{#newline}}
 // does not have a primary key. It is listed here for completeness.{{#newline}}
+{{/if}}
 {{/if}}
 
 {{ClassComment}}
@@ -1067,9 +1070,9 @@ using {{this}};{{#newline}}
     public void Configure(EntityTypeBuilder<{{NameHumanCaseWithSuffix}}> builder){{#newline}}
     {{{#newline}}
 {{#if HasSchema}}
-        builder.ToTable(""{{Name}}"", ""{{Schema}}"");{{#newline}}
+        builder.{{ToTableOrView}}(""{{Name}}"", ""{{Schema}}"");{{#newline}}
 {{#else}}
-        builder.ToTable(""{{Name}}"");{{#newline}}
+        builder.{{ToTableOrView}}(""{{Name}}"");{{#newline}}
 {{/if}}
         {{PrimaryKeyNameHumanCase}}{{#newline}}
 {{#if HasAlternateKeys}}
