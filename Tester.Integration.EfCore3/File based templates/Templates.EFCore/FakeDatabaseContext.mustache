@@ -1,0 +1,167 @@
+﻿{{DbContextClassModifiers}} class Fake{{DbContextName}}{{contextInterface}}{{#newline}}
+{{{#newline}}
+
+{{#each tables}}
+    {{DbSetModifier}} DbSet<{{DbSetName}}> {{PluralTableName}} { get; set; }{{Comment}}{{#newline}}
+{{/each}}
+{{#newline}}
+
+    public Fake{{DbContextName}}(){{#newline}}
+    {{{#newline}}
+        _database = null;{{#newline}}
+{{#newline}}
+
+{{#each tables}}
+        {{PluralTableName}} = new FakeDbSet<{{DbSetName}}>({{DbSetPrimaryKeys}});{{#newline}}
+{{/each}}
+{{#newline}}
+
+{{#if DbContextClassIsPartial}}
+        InitializePartial();{{#newline}}
+{{/if}}
+    }{{#newline}}
+
+{{#newline}}
+    public int SaveChangesCount { get; private set; }{{#newline}}
+    public virtual int SaveChanges(){{#newline}}
+    {{{#newline}}
+        ++SaveChangesCount;{{#newline}}
+        return 1;{{#newline}}
+    }{{#newline}}
+{{#newline}}
+
+    public virtual int SaveChanges(bool acceptAllChangesOnSuccess){{#newline}}
+    {{{#newline}}
+        return SaveChanges();{{#newline}}
+    }{{#newline}}
+{{#newline}}
+
+    public virtual Task<int> SaveChangesAsync(CancellationToken cancellationToken){{#newline}}
+    {{{#newline}}
+        ++SaveChangesCount;{{#newline}}
+        return Task<int>.Factory.StartNew(() => 1, cancellationToken);{{#newline}}
+    }{{#newline}}
+
+    public virtual Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken){{#newline}}
+    {{{#newline}}
+        ++SaveChangesCount;{{#newline}}
+        return Task<int>.Factory.StartNew(x => 1, acceptAllChangesOnSuccess, cancellationToken);{{#newline}}
+    }{{#newline}}
+{{#newline}}
+
+
+
+{{#if DbContextClassIsPartial}}
+    partial void InitializePartial();{{#newline}}
+{{#newline}}
+{{/if}}
+
+    protected virtual void Dispose(bool disposing){{#newline}}
+    {{{#newline}}
+    }{{#newline}}
+{{#newline}}
+
+    public void Dispose(){{#newline}}
+    {{{#newline}}
+        Dispose(true);{{#newline}}
+    }{{#newline}}
+{{#newline}}
+
+    private DatabaseFacade _database;{{#newline}}
+    public DatabaseFacade Database { get { return _database; } }{{#newline}}
+{{#newline}}
+
+    public DbSet<TEntity> Set<TEntity>() where TEntity : class{{#newline}}
+    {{{#newline}}
+        throw new NotImplementedException();{{#newline}}
+    }{{#newline}}
+{{#newline}}
+
+    public override string ToString(){{#newline}}
+    {{{#newline}}
+        throw new NotImplementedException();{{#newline}}
+    }{{#newline}}
+
+
+{{#if hasStoredProcs}}
+{{#newline}}
+    // Stored Procedures{{#newline}}
+{{#each storedProcs}}
+
+{{#if HasReturnModels}}
+{{#newline}}
+    public DbSet<{{ReturnModelName}}> {{ReturnModelName}} { get; set; }{{#newline}}
+    public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    {{{#newline}}
+        int procResult;{{#newline}}
+        return {{FunctionName}}({{WriteStoredProcFunctionOverloadCall}});{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsTrue}}){{#newline}}
+    {{{#newline}}
+{{WriteStoredProcFunctionSetSqlParametersTrue}}
+        procResult = 0;{{#newline}}
+        return new {{ReturnType}}();{{#newline}}
+    }{{#newline}}
+
+{{#newline}}
+{{#if AsyncFunctionCannotBeCreated}}
+    // {{FunctionName}}Async() cannot be created due to having out parameters, or is relying on the procedure result ({{ReturnType}}){{#newline}}
+{{#newline}}
+{{#else}}
+    public Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    {{{#newline}}
+        int procResult;{{#newline}}
+        return Task.FromResult({{FunctionName}}({{WriteStoredProcFunctionOverloadCall}}));{{#newline}}
+    }{{#newline}}
+{{/if}}
+
+{{#else}}
+{{#newline}}
+    public int {{FunctionName}}({{WriteStoredProcFunctionParamsTrue}}){{#newline}}
+    {{{#newline}}
+{{WriteStoredProcFunctionSetSqlParametersTrue}}
+        return 0;{{#newline}}
+    }{{#newline}}
+{{#newline}}
+{{#if AsyncFunctionCannotBeCreated}}
+    // {{FunctionName}}Async() cannot be created due to having out parameters, or is relying on the procedure result ({{ReturnType}}){{#newline}}
+{{#else}}
+    public Task<int> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    {{{#newline}}
+{{WriteStoredProcFunctionSetSqlParametersTrue}}
+        return Task.FromResult(0);{{#newline}}
+    }{{#newline}}
+{{/if}}
+{{/if}}
+{{/each}}
+{{/if}}
+
+
+
+{{#if hasTableValuedFunctions}}
+{{#newline}}
+    // Table Valued Functions{{#newline}}
+{{#each tableValuedFunctions}}
+{{#newline}}
+    // {{Schema}}.{{Name}}{{#newline}}
+    public IQueryable<{{ReturnClassName}}> {{ExecName}}({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    {{{#newline}}
+        return new List<{{ReturnClassName}}>().AsQueryable();{{#newline}}
+    }{{#newline}}
+{{/each}}
+{{/if}}
+
+{{#if hasScalarValuedFunctions}}
+{{#newline}}
+    // Scalar Valued Functions{{#newline}}
+{{#each scalarValuedFunctions}}
+{{#newline}}
+    // {{Schema}}.{{Name}}{{#newline}}
+    public {{ReturnType}} {{ExecName}}({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    {{{#newline}}
+        return default({{ReturnType}});{{#newline}}
+    }{{#newline}}
+{{/each}}
+{{/if}}
+}

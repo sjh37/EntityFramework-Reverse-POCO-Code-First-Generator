@@ -4,7 +4,6 @@ using System.Linq;
 using Efrpg.Filtering;
 using Efrpg.Generators;
 using Efrpg.LanguageMapping;
-using Efrpg.Readers;
 using Efrpg.Templates;
 
 namespace Efrpg
@@ -13,12 +12,12 @@ namespace Efrpg
     {
         // Main settings **********************************************************************************************************************
         // The following entries are the only required settings.
-        public static DatabaseType DatabaseType       = DatabaseType.SqlServer; // SqlCe, Plugin. Coming next: PostgreSQL, MySql, Oracle
-        public static TemplateType TemplateType       = TemplateType.Ef6; // TemplateType.EfCore2, TemplateType.EfCore3, TemplateType.FileBased (specify folder using Settings.TemplateFolder)
-        public static GeneratorType GeneratorType     = GeneratorType.Ef6; // GeneratorType.EfCore, GeneratorType.Custom (edit GeneratorCustom class)
-        public static bool UseMappingTables           = true; // Set to false for EfCore. EFCore will add support for this in v3 at some point, so please set this to false. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
-        public static FileManagerType FileManagerType = FileManagerType.VisualStudio; // .NET project = VisualStudio; .NET Core project = Custom; No output (testing only) = Null
-        public static string ConnectionString         = "Data Source=(local);Initial Catalog=Northwind;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";
+        public static DatabaseType DatabaseType       = DatabaseType.SqlServer; // SqlServer, SqlCe. Coming next: PostgreSQL, MySql, Oracle
+        public static TemplateType TemplateType       = TemplateType.EfCore3; // Ef6, EfCore2, EfCore3, FileBasedCore2, FileBasedCore3. FileBased specify folder using Settings.TemplateFolder
+        public static GeneratorType GeneratorType     = GeneratorType.EfCore; // Ef6, EfCore, Custom. Custom edit GeneratorCustom class to provide your own implementation
+        public static bool UseMappingTables           = false; // Set to false for EfCore. EFCore will add support for this in v3 at some point, so please set this to false. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
+        public static FileManagerType FileManagerType = FileManagerType.Custom; // .NET project = VisualStudio; .NET Core project = Custom; No output (testing only) = Null
+        public static string ConnectionString         = ""; // This is used by the generator to reverse engineer your database
         public static string ConnectionStringName     = "MyDbContext"; // ConnectionString key as specified in your app.config/web.config/appsettings.json
         public static string DbContextName            = "MyDbContext"; // Class name for the DbContext to be generated. Note: If generating separate files, please give the db context a different name from this tt filename. Ignored if using multi-context generation
         public static bool GenerateSeparateFiles      = false;
@@ -536,6 +535,9 @@ namespace Efrpg
 
         // Don't forget to take a look at SingleContextFilter and FilterSettings classes!
         // That's it, nothing else to configure ***********************************************************************************************
+
+        public static bool IsEfCore2() => TemplateType == TemplateType.EfCore2 || TemplateType == TemplateType.FileBasedCore2;
+        public static bool IsEfCore3() => TemplateType == TemplateType.EfCore3 || TemplateType == TemplateType.FileBasedCore3;
 
         public static string Root;
         public static int FilterCount;

@@ -806,7 +806,7 @@ namespace Efrpg.V3TestE
     //          }
     //      }
     //      Read more about it here: https://msdn.microsoft.com/en-us/data/dn314431.aspx
-    public class FakeDbSet<TEntity> : DbSet<TEntity>, IEnumerable<TEntity>, IQueryable, IListSource where TEntity : class
+    public class FakeDbSet<TEntity> : DbSet<TEntity>, IQueryable<TEntity>, IListSource where TEntity : class
     {
         private readonly PropertyInfo[] _primaryKeys;
         private readonly ObservableCollection<TEntity> _data;
@@ -907,6 +907,11 @@ namespace Efrpg.V3TestE
             return _data;
         }
 
+        IList IListSource.GetList()
+        {
+            return _data;
+        }
+
         Type IQueryable.ElementType
         {
             get { return _query.ElementType; }
@@ -930,6 +935,11 @@ namespace Efrpg.V3TestE
         IEnumerator<TEntity> IEnumerable<TEntity>.GetEnumerator()
         {
             return _data.GetEnumerator();
+        }
+
+        IAsyncEnumerator<TEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return new FakeDbAsyncEnumerator<TEntity>(this.AsEnumerable().GetEnumerator());
         }
 
     }
@@ -998,6 +1008,11 @@ namespace Efrpg.V3TestE
         public IAsyncEnumerator<T> GetEnumerator()
         {
             return new FakeDbAsyncEnumerator<T>(this.AsEnumerable().GetEnumerator());
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.AsEnumerable().GetEnumerator();
         }
     }
 

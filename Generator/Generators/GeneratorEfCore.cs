@@ -73,7 +73,7 @@ namespace Efrpg.Generators
         {
             string databaseGeneratedOption = null;
 
-            var isEfCore3 = Settings.TemplateType == TemplateType.EfCore3;
+            var isEfCore3 = Settings.IsEfCore3();
             var isNewSequentialId = !string.IsNullOrEmpty(c.Default) && c.Default.ToLower().Contains("newsequentialid");
             var isTemporalColumn = c.GeneratedAlwaysType != ColumnGeneratedAlwaysType.NotApplicable;
 
@@ -137,7 +137,7 @@ namespace Efrpg.Generators
 
         public override string PrimaryKeyModelBuilder(Table t)
         {
-            var isEfCore3 = Settings.TemplateType == TemplateType.EfCore3;
+            var isEfCore3 = Settings.IsEfCore3();
             if (isEfCore3 && t.IsView && !t.HasPrimaryKey)
                 return "builder.HasNoKey();";
 
@@ -176,7 +176,7 @@ namespace Efrpg.Generators
             if (t.Indexes == null || !t.Indexes.Any())
                 return indexes;
 
-            var isEfCore3 = Settings.TemplateType == TemplateType.EfCore3;
+            var isEfCore3 = Settings.IsEfCore3();
             var indexNames = t.Indexes.Where(x => !x.IsPrimaryKey).Select(x => x.IndexName).Distinct();
             foreach (var indexName in indexNames)
             {

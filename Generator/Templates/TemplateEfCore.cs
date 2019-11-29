@@ -136,7 +136,7 @@ using {{this}};{{#newline}}
             {
                 "System",
                 "System.Data",
-                Settings.TemplateType == TemplateType.EfCore3 ? "Microsoft.Data.SqlClient" : "System.Data.SqlClient",
+                Settings.IsEfCore3() ? "Microsoft.Data.SqlClient" : "System.Data.SqlClient",
                 "System.Data.SqlTypes",
                 "Microsoft.EntityFrameworkCore",
                 "System.Threading.Tasks",
@@ -407,7 +407,7 @@ using {{this}};{{#newline}}
 
             if (Settings.DatabaseType == DatabaseType.SqlCe)
             {
-                usings.Add(Settings.TemplateType == TemplateType.EfCore3 ? "Microsoft.Data.SqlClient" : "System.Data.SqlClient");
+                usings.Add(Settings.IsEfCore3() ? "Microsoft.Data.SqlClient" : "System.Data.SqlClient");
                 //usings.Add("System.DBNull");
                 usings.Add("System.Data.SqlTypes");
             }
@@ -633,7 +633,11 @@ using {{this}};{{#newline}}
 //          }{{#newline}}
 //      }{{#newline}}
 //      Read more about it here: https://msdn.microsoft.com/en-us/data/dn314431.aspx{{#newline}}
-{{DbContextClassModifiers}} class FakeDbSet<TEntity> : DbSet<TEntity>, IEnumerable<TEntity>, IQueryable, IListSource where TEntity : class
+{{DbContextClassModifiers}} class FakeDbSet<TEntity> : DbSet<TEntity>, IQueryable<TEntity>, 
+{{#if IsEfCore3}}
+IAsyncEnumerable<TEntity>, 
+{{/if}}
+IListSource where TEntity : class
 {{#newline}}
 {{{#newline}}
     private readonly PropertyInfo[] _primaryKeys;{{#newline}}
@@ -700,6 +704,11 @@ using {{this}};{{#newline}}
     {{{#newline}}
         return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues)));{{#newline}}
     }{{#newline}}{{#newline}}
+
+    IAsyncEnumerator<TEntity> IAsyncEnumerable<TEntity>.GetAsyncEnumerator(CancellationToken cancellationToken){{#newline}}
+    {{{#newline}}
+        return GetAsyncEnumerator(cancellationToken);{{#newline}}
+    }{{#newline}}{{#newline}}
 {{/if}}
 
     public override EntityEntry<TEntity> Add(TEntity entity){{#newline}}
@@ -756,6 +765,11 @@ using {{this}};{{#newline}}
         return _data;{{#newline}}
     }{{#newline}}{{#newline}}
 
+    IList IListSource.GetList(){{#newline}}
+    {{{#newline}}
+        return _data;{{#newline}}
+    }{{#newline}}{{#newline}}
+
     Type IQueryable.ElementType{{#newline}}
     {{{#newline}}
         get { return _query.ElementType; }{{#newline}}
@@ -779,6 +793,11 @@ using {{this}};{{#newline}}
     IEnumerator<TEntity> IEnumerable<TEntity>.GetEnumerator(){{#newline}}
     {{{#newline}}
         return _data.GetEnumerator();{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    IAsyncEnumerator<TEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default(CancellationToken)){{#newline}}
+    {{{#newline}}
+        return new FakeDbAsyncEnumerator<TEntity>(this.AsEnumerable().GetEnumerator());{{#newline}}
     }{{#newline}}{{#newline}}
 
 {{#if DbContextClassIsPartial}}
@@ -864,16 +883,30 @@ using {{this}};{{#newline}}
     public IAsyncEnumerator<T> GetEnumerator(){{#newline}}
     {{{#newline}}
         return new FakeDbAsyncEnumerator<T>(this.AsEnumerable().GetEnumerator());{{#newline}}
-    }{{#newline}}
+    }{{#newline}}{{#newline}}
 {{/if}}
 
 {{#if IsEfCore3}}
     public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = new CancellationToken()){{#newline}}
     {{{#newline}}
         return new FakeDbAsyncEnumerator<T>(this.AsEnumerable().GetEnumerator());{{#newline}}
-    }{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    IAsyncEnumerator<T> IAsyncEnumerable<T>.GetAsyncEnumerator(CancellationToken cancellationToken){{#newline}}
+    {{{#newline}}
+        return GetAsyncEnumerator(cancellationToken);{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public IEnumerator<T> GetEnumerator(){{#newline}}
+    {{{#newline}}
+        return this.AsEnumerable().GetEnumerator();{{#newline}}
+    }{{#newline}}{{#newline}}
 {{/if}}
 
+    IEnumerator IEnumerable.GetEnumerator(){{#newline}}
+    {{{#newline}}
+        return this.AsEnumerable().GetEnumerator();{{#newline}}
+    }{{#newline}}
 }{{#newline}}{{#newline}}
 
 

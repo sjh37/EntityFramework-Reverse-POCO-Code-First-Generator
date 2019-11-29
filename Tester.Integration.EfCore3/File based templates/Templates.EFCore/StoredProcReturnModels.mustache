@@ -1,0 +1,18 @@
+﻿{{ResultClassModifiers}} class {{WriteStoredProcReturnModelName}}{{#newline}}
+{{{#newline}}
+{{#if SingleModel}}
+{{#each SingleModelReturnColumns}}
+    {{this}}{{#newline}}
+{{/each}}
+{{#else}}
+{{#each MultipleModelReturnColumns}}
+    public class ResultSetModel{{Model}}{{#newline}}
+    {{{#newline}}
+{{#each ReturnColumns}}
+        {{this}}{{#newline}}
+{{/each}}
+    }{{#newline}}
+    public List<ResultSetModel{{Model}}> ResultSet{{Model}};{{#newline}}
+{{/each}}
+{{/if}}
+}{{#newline}}

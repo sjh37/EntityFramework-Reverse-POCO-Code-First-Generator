@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Efrpg.Filtering;
-using Efrpg.Templates;
 
 namespace Efrpg
 {
@@ -73,7 +72,7 @@ namespace Efrpg
             if (HasPrimaryKey)
                 return; // Table has at least one primary key
 
-            if (IsView && Settings.TemplateType == TemplateType.EfCore3)
+            if (IsView && Settings.IsEfCore3())
                 return; // EfCore 3 supports views by use of .HasNoKey() and .ToView("view name");
 
             // This table is not allowed in EntityFramework v6 / EfCore 2 as it does not have a primary key.
@@ -236,7 +235,7 @@ namespace Efrpg
             return Settings.ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 6);
         }
 
-        public void AddReverseNavigation(Relationship relationship, string fkName, Table fkTable, string propName,
+        public void AddReverseNavigation(Relationship relationship, Table fkTable, string propName,
             string constraint, List<ForeignKey> fks, Table mappingTable = null)
         {
             var fkNames = "";
@@ -362,8 +361,8 @@ namespace Efrpg
             leftTable.AddMappingConfiguration(left, right, leftPropName, rightPropName, includeSchema);
 
             IsMapping = true;
-            rightTable.AddReverseNavigation(Relationship.ManyToMany, rightTable.NameHumanCase, leftTable, rightPropName, null, null, this);
-            leftTable.AddReverseNavigation(Relationship.ManyToMany, leftTable.NameHumanCase, rightTable, leftPropName, null, null, this);
+            rightTable.AddReverseNavigation(Relationship.ManyToMany, leftTable,  rightPropName, null, null, this);
+            leftTable.AddReverseNavigation (Relationship.ManyToMany, rightTable, leftPropName,  null, null, this);
         }
 
         private void AddMappingConfiguration(ForeignKey left, ForeignKey right, string leftPropName, string rightPropName, bool includeSchema)

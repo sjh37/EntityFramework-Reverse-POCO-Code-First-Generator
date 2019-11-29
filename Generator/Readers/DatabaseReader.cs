@@ -890,7 +890,7 @@ namespace Efrpg.Readers
 
             // Make sure property name doesn't clash with class name
             if (col.NameHumanCase == table.NameHumanCase)
-                col.NameHumanCase = col.NameHumanCase + "_";
+                col.NameHumanCase += "_";
 
             if (char.IsDigit(col.NameHumanCase[0]))
                 col.NameHumanCase = "_" + col.NameHumanCase;

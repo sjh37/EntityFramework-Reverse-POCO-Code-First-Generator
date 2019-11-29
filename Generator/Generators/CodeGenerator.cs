@@ -30,7 +30,7 @@ namespace Efrpg.Generators
 #pragma warning restore IDE0016 // Use 'throw' expression
 
             var isEfCore  = Settings.GeneratorType == GeneratorType.EfCore;
-            var isEfCore3 = Settings.TemplateType  == TemplateType.EfCore3;
+            var isEfCore3 = Settings.IsEfCore3();
 
             _generator = generator;
             _filter    = filter;
@@ -271,7 +271,7 @@ namespace Efrpg.Generators
                     .Where(x => !string.IsNullOrEmpty(x)));
             }
 
-            var isEfCore3 = Settings.TemplateType == TemplateType.EfCore3;
+            var isEfCore3 = Settings.IsEfCore3();
 
             var data = new ContextModel
             {
@@ -351,8 +351,8 @@ namespace Efrpg.Generators
             {
                 DbContextClassModifiers = Settings.DbContextClassModifiers,
                 DbContextClassIsPartial = Settings.DbContextClassIsPartial(),
-                IsEfCore2               = Settings.TemplateType == TemplateType.EfCore2,
-                IsEfCore3               = Settings.TemplateType == TemplateType.EfCore3
+                IsEfCore2               = Settings.IsEfCore2(),
+                IsEfCore3               = Settings.IsEfCore3()
             };
 
             var co = new CodeOutput("FakeDbSet" + Settings.FileExtension, "Fake DbSet", GlobalUsings);
@@ -384,7 +384,7 @@ namespace Efrpg.Generators
             if (!CanWritePoco())
                 return null;
 
-            var isEfCore3 = Settings.TemplateType == TemplateType.EfCore3;
+            var isEfCore3 = Settings.IsEfCore3();
 
             var data = new PocoModel
             {
@@ -462,7 +462,7 @@ namespace Efrpg.Generators
             return co;
         }
 
-        public CodeOutput GeneratePocoConfiguration(Table table, Generator generator)
+        public CodeOutput GeneratePocoConfiguration(Table table)
         {
             if (!CanWritePocoConfiguration())
                 return null;
@@ -472,7 +472,7 @@ namespace Efrpg.Generators
                 .OrderBy(x => x.Ordinal)
                 .ToList();
 
-            var isEfCore3 = Settings.TemplateType == TemplateType.EfCore3;
+            var isEfCore3 = Settings.IsEfCore3();
 
             var foreignKeys = columns.SelectMany(x => x.ConfigFk).OrderBy(o => o).ToList();
             var primaryKey  = _generator.PrimaryKeyModelBuilder(table);

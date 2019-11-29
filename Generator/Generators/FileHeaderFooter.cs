@@ -32,7 +32,8 @@ namespace Efrpg.Generators
             header = new StringBuilder(500);
             if (Settings.UseNamespace)
             {
-                header.AppendLine("namespace " + Settings.Namespace + subNamespace);
+                var name = Settings.Namespace + subNamespace;
+                header.AppendLine("namespace " + name.Trim().Replace(' ', '_'));
                 header.Append("{");
             }
 

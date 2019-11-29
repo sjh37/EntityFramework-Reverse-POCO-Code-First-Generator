@@ -1,0 +1,9 @@
+﻿System
+System.Data
+System.Threading.Tasks
+System.Threading
+System.CodeDom.Compiler
+Microsoft.EntityFrameworkCore
+Microsoft.EntityFrameworkCore.Infrastructure
+System.Linq
+System.Collections.Generic

@@ -36,12 +36,12 @@
     {
         // Main settings **********************************************************************************************************************
         // The following entries are the only required settings.
-        public static DatabaseType DatabaseType       = DatabaseType.SqlServer; // SqlCe, Plugin. Coming next: PostgreSQL, MySql, Oracle
-        public static TemplateType TemplateType       = TemplateType.Ef6; // TemplateType.EfCore2, TemplateType.EfCore3, TemplateType.FileBased (specify folder using Settings.TemplateFolder)
-        public static GeneratorType GeneratorType     = GeneratorType.Ef6; // GeneratorType.EfCore, GeneratorType.Custom (edit GeneratorCustom class)
-        public static bool UseMappingTables           = true; // Set to false for EfCore. EFCore will add support for this in v3 at some point, so please set this to false. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
-        public static FileManagerType FileManagerType = FileManagerType.VisualStudio; // .NET project = VisualStudio; .NET Core project = Custom; No output (testing only) = Null
-        public static string ConnectionString         = "Data Source=(local);Initial Catalog=Northwind;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";
+        public static DatabaseType DatabaseType       = DatabaseType.SqlServer; // SqlServer, SqlCe. Coming next: PostgreSQL, MySql, Oracle
+        public static TemplateType TemplateType       = TemplateType.EfCore3; // Ef6, EfCore2, EfCore3, FileBasedCore2, FileBasedCore3. FileBased specify folder using Settings.TemplateFolder
+        public static GeneratorType GeneratorType     = GeneratorType.EfCore; // Ef6, EfCore, Custom. Custom edit GeneratorCustom class to provide your own implementation
+        public static bool UseMappingTables           = false; // Set to false for EfCore. EFCore will add support for this in v3 at some point, so please set this to false. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
+        public static FileManagerType FileManagerType = FileManagerType.Custom; // .NET project = VisualStudio; .NET Core project = Custom; No output (testing only) = Null
+        public static string ConnectionString         = ""; // This is used by the generator to reverse engineer your database
         public static string ConnectionStringName     = "MyDbContext"; // ConnectionString key as specified in your app.config/web.config/appsettings.json
         public static string DbContextName            = "MyDbContext"; // Class name for the DbContext to be generated. Note: If generating separate files, please give the db context a different name from this tt filename. Ignored if using multi-context generation
         public static bool GenerateSeparateFiles      = false;
@@ -559,6 +559,9 @@
 
         // Don't forget to take a look at SingleContextFilter and FilterSettings classes!
         // That's it, nothing else to configure ***********************************************************************************************
+
+        public static bool IsEfCore2() => TemplateType == TemplateType.EfCore2 || TemplateType == TemplateType.FileBasedCore2;
+        public static bool IsEfCore3() => TemplateType == TemplateType.EfCore3 || TemplateType == TemplateType.FileBasedCore3;
 
         public static string Root;
         public static int FilterCount;
@@ -2713,7 +2716,7 @@
 #pragma warning restore IDE0016 // Use 'throw' expression
 
             var isEfCore  = Settings.GeneratorType == GeneratorType.EfCore;
-            var isEfCore3 = Settings.TemplateType  == TemplateType.EfCore3;
+            var isEfCore3 = Settings.IsEfCore3();
 
             _generator = generator;
             _filter    = filter;
@@ -2954,7 +2957,7 @@
                     .Where(x => !string.IsNullOrEmpty(x)));
             }
 
-            var isEfCore3 = Settings.TemplateType == TemplateType.EfCore3;
+            var isEfCore3 = Settings.IsEfCore3();
 
             var data = new ContextModel
             {
@@ -3034,8 +3037,8 @@
             {
                 DbContextClassModifiers = Settings.DbContextClassModifiers,
                 DbContextClassIsPartial = Settings.DbContextClassIsPartial(),
-                IsEfCore2               = Settings.TemplateType == TemplateType.EfCore2,
-                IsEfCore3               = Settings.TemplateType == TemplateType.EfCore3
+                IsEfCore2               = Settings.IsEfCore2(),
+                IsEfCore3               = Settings.IsEfCore3()
             };
 
             var co = new CodeOutput("FakeDbSet" + Settings.FileExtension, "Fake DbSet", GlobalUsings);
@@ -3067,7 +3070,7 @@
             if (!CanWritePoco())
                 return null;
 
-            var isEfCore3 = Settings.TemplateType == TemplateType.EfCore3;
+            var isEfCore3 = Settings.IsEfCore3();
 
             var data = new PocoModel
             {
@@ -3145,7 +3148,7 @@
             return co;
         }
 
-        public CodeOutput GeneratePocoConfiguration(Table table, Generator generator)
+        public CodeOutput GeneratePocoConfiguration(Table table)
         {
             if (!CanWritePocoConfiguration())
                 return null;
@@ -3155,7 +3158,7 @@
                 .OrderBy(x => x.Ordinal)
                 .ToList();
 
-            var isEfCore3 = Settings.TemplateType == TemplateType.EfCore3;
+            var isEfCore3 = Settings.IsEfCore3();
 
             var foreignKeys = columns.SelectMany(x => x.ConfigFk).OrderBy(o => o).ToList();
             var primaryKey  = _generator.PrimaryKeyModelBuilder(table);
@@ -3352,7 +3355,8 @@
             header = new StringBuilder(500);
             if (Settings.UseNamespace)
             {
-                header.AppendLine("namespace " + Settings.Namespace + subNamespace);
+                var name = Settings.Namespace + subNamespace;
+                header.AppendLine("namespace " + name.Trim().Replace(' ', '_'));
                 header.Append("{");
             }
 
@@ -4240,7 +4244,7 @@
                 firstFkCol.col.ConfigFk.Add(string.Format("{0};{1}", rel, com));
 
                 if (foreignKey.IncludeReverseNavigation)
-                    pkTable.AddReverseNavigation(relationship, pkTableHumanCase, fkTable, fkPropName, string.Format("{0}.{1}", fkTable.DbName, foreignKey.ConstraintName), foreignKeys);
+                    pkTable.AddReverseNavigation(relationship, fkTable, fkPropName, string.Format("{0}.{1}", fkTable.DbName, foreignKey.ConstraintName), foreignKeys);
             }
         }
 
@@ -4347,7 +4351,7 @@
                         Settings.DbContextInterfaceName = null;
                         Settings.DbContextName = ((MultiContextFilter) filter.Value).GetSettings().Name ?? filter.Key;
 
-                        if (Settings.TemplateType == TemplateType.FileBased)
+                        if (Settings.TemplateType == TemplateType.FileBasedCore3)
                         {
                             // Use file based templates, set the path
                             var multiContextSetting = ((MultiContextFilter) filter.Value).GetSettings();
@@ -4393,7 +4397,7 @@
             codeOutputList.Add(contextFakeClass, codeGenerator.GenerateFakeContext());
             codeOutputList.Add(contextFakeDbSet, codeGenerator.GenerateFakeDbSet());
 
-            var isEfCore3 = Settings.TemplateType == TemplateType.EfCore3;
+            var isEfCore3 = Settings.IsEfCore3();
 
             foreach (var table in filter.Tables
                 .Where(t => !t.IsMapping)
@@ -4404,7 +4408,7 @@
 
                 // Only write the config if it has a primary key
                 if (table.HasPrimaryKey || (table.IsView && isEfCore3))
-                    codeOutputList.Add(pocoConfiguration + table.NameHumanCase, codeGenerator.GeneratePocoConfiguration(table, this));
+                    codeOutputList.Add(pocoConfiguration + table.NameHumanCase, codeGenerator.GeneratePocoConfiguration(table));
             }
 
             foreach (var sp in filter.StoredProcs
@@ -5037,7 +5041,7 @@
         {
             string databaseGeneratedOption = null;
 
-            var isEfCore3 = Settings.TemplateType == TemplateType.EfCore3;
+            var isEfCore3 = Settings.IsEfCore3();
             var isNewSequentialId = !string.IsNullOrEmpty(c.Default) && c.Default.ToLower().Contains("newsequentialid");
             var isTemporalColumn = c.GeneratedAlwaysType != ColumnGeneratedAlwaysType.NotApplicable;
 
@@ -5101,7 +5105,7 @@
 
         public override string PrimaryKeyModelBuilder(Table t)
         {
-            var isEfCore3 = Settings.TemplateType == TemplateType.EfCore3;
+            var isEfCore3 = Settings.IsEfCore3();
             if (isEfCore3 && t.IsView && !t.HasPrimaryKey)
                 return "builder.HasNoKey();";
 
@@ -5140,7 +5144,7 @@
             if (t.Indexes == null || !t.Indexes.Any())
                 return indexes;
 
-            var isEfCore3 = Settings.TemplateType == TemplateType.EfCore3;
+            var isEfCore3 = Settings.IsEfCore3();
             var indexNames = t.Indexes.Where(x => !x.IsPrimaryKey).Select(x => x.IndexName).Distinct();
             foreach (var indexName in indexNames)
             {
@@ -11873,7 +11877,7 @@ and limitations under the License.
 
             // Make sure property name doesn't clash with class name
             if (col.NameHumanCase == table.NameHumanCase)
-                col.NameHumanCase = col.NameHumanCase + "_";
+                col.NameHumanCase += "_";
 
             if (char.IsDigit(col.NameHumanCase[0]))
                 col.NameHumanCase = "_" + col.NameHumanCase;
@@ -14265,7 +14269,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             if (HasPrimaryKey)
                 return; // Table has at least one primary key
 
-            if (IsView && Settings.TemplateType == TemplateType.EfCore3)
+            if (IsView && Settings.IsEfCore3())
                 return; // EfCore 3 supports views by use of .HasNoKey() and .ToView("view name");
 
             // This table is not allowed in EntityFramework v6 / EfCore 2 as it does not have a primary key.
@@ -14428,7 +14432,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             return Settings.ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 6);
         }
 
-        public void AddReverseNavigation(Relationship relationship, string fkName, Table fkTable, string propName,
+        public void AddReverseNavigation(Relationship relationship, Table fkTable, string propName,
             string constraint, List<ForeignKey> fks, Table mappingTable = null)
         {
             var fkNames = "";
@@ -14554,8 +14558,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             leftTable.AddMappingConfiguration(left, right, leftPropName, rightPropName, includeSchema);
 
             IsMapping = true;
-            rightTable.AddReverseNavigation(Relationship.ManyToMany, rightTable.NameHumanCase, leftTable, rightPropName, null, null, this);
-            leftTable.AddReverseNavigation(Relationship.ManyToMany, leftTable.NameHumanCase, rightTable, leftPropName, null, null, this);
+            rightTable.AddReverseNavigation(Relationship.ManyToMany, leftTable,  rightPropName, null, null, this);
+            leftTable.AddReverseNavigation (Relationship.ManyToMany, rightTable, leftPropName,  null, null, this);
         }
 
         private void AddMappingConfiguration(ForeignKey left, ForeignKey right, string leftPropName, string rightPropName, bool includeSchema)
@@ -16335,7 +16339,7 @@ using {{this}};{{#newline}}
             {
                 "System",
                 "System.Data",
-                Settings.TemplateType == TemplateType.EfCore3 ? "Microsoft.Data.SqlClient" : "System.Data.SqlClient",
+                Settings.IsEfCore3() ? "Microsoft.Data.SqlClient" : "System.Data.SqlClient",
                 "System.Data.SqlTypes",
                 "Microsoft.EntityFrameworkCore",
                 "System.Threading.Tasks",
@@ -16606,7 +16610,7 @@ using {{this}};{{#newline}}
 
             if (Settings.DatabaseType == DatabaseType.SqlCe)
             {
-                usings.Add(Settings.TemplateType == TemplateType.EfCore3 ? "Microsoft.Data.SqlClient" : "System.Data.SqlClient");
+                usings.Add(Settings.IsEfCore3() ? "Microsoft.Data.SqlClient" : "System.Data.SqlClient");
                 //usings.Add("System.DBNull");
                 usings.Add("System.Data.SqlTypes");
             }
@@ -16832,7 +16836,11 @@ using {{this}};{{#newline}}
 //          }{{#newline}}
 //      }{{#newline}}
 //      Read more about it here: https://msdn.microsoft.com/en-us/data/dn314431.aspx{{#newline}}
-{{DbContextClassModifiers}} class FakeDbSet<TEntity> : DbSet<TEntity>, IEnumerable<TEntity>, IQueryable, IListSource where TEntity : class
+{{DbContextClassModifiers}} class FakeDbSet<TEntity> : DbSet<TEntity>, IQueryable<TEntity>, 
+{{#if IsEfCore3}}
+IAsyncEnumerable<TEntity>, 
+{{/if}}
+IListSource where TEntity : class
 {{#newline}}
 {{{#newline}}
     private readonly PropertyInfo[] _primaryKeys;{{#newline}}
@@ -16899,6 +16907,11 @@ using {{this}};{{#newline}}
     {{{#newline}}
         return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues)));{{#newline}}
     }{{#newline}}{{#newline}}
+
+    IAsyncEnumerator<TEntity> IAsyncEnumerable<TEntity>.GetAsyncEnumerator(CancellationToken cancellationToken){{#newline}}
+    {{{#newline}}
+        return GetAsyncEnumerator(cancellationToken);{{#newline}}
+    }{{#newline}}{{#newline}}
 {{/if}}
 
     public override EntityEntry<TEntity> Add(TEntity entity){{#newline}}
@@ -16955,6 +16968,11 @@ using {{this}};{{#newline}}
         return _data;{{#newline}}
     }{{#newline}}{{#newline}}
 
+    IList IListSource.GetList(){{#newline}}
+    {{{#newline}}
+        return _data;{{#newline}}
+    }{{#newline}}{{#newline}}
+
     Type IQueryable.ElementType{{#newline}}
     {{{#newline}}
         get { return _query.ElementType; }{{#newline}}
@@ -16978,6 +16996,11 @@ using {{this}};{{#newline}}
     IEnumerator<TEntity> IEnumerable<TEntity>.GetEnumerator(){{#newline}}
     {{{#newline}}
         return _data.GetEnumerator();{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    IAsyncEnumerator<TEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default(CancellationToken)){{#newline}}
+    {{{#newline}}
+        return new FakeDbAsyncEnumerator<TEntity>(this.AsEnumerable().GetEnumerator());{{#newline}}
     }{{#newline}}{{#newline}}
 
 {{#if DbContextClassIsPartial}}
@@ -17063,16 +17086,30 @@ using {{this}};{{#newline}}
     public IAsyncEnumerator<T> GetEnumerator(){{#newline}}
     {{{#newline}}
         return new FakeDbAsyncEnumerator<T>(this.AsEnumerable().GetEnumerator());{{#newline}}
-    }{{#newline}}
+    }{{#newline}}{{#newline}}
 {{/if}}
 
 {{#if IsEfCore3}}
     public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = new CancellationToken()){{#newline}}
     {{{#newline}}
         return new FakeDbAsyncEnumerator<T>(this.AsEnumerable().GetEnumerator());{{#newline}}
-    }{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    IAsyncEnumerator<T> IAsyncEnumerable<T>.GetAsyncEnumerator(CancellationToken cancellationToken){{#newline}}
+    {{{#newline}}
+        return GetAsyncEnumerator(cancellationToken);{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public IEnumerator<T> GetEnumerator(){{#newline}}
+    {{{#newline}}
+        return this.AsEnumerable().GetEnumerator();{{#newline}}
+    }{{#newline}}{{#newline}}
 {{/if}}
 
+    IEnumerator IEnumerable.GetEnumerator(){{#newline}}
+    {{{#newline}}
+        return this.AsEnumerable().GetEnumerator();{{#newline}}
+    }{{#newline}}
 }{{#newline}}{{#newline}}
 
 
@@ -17383,7 +17420,7 @@ public enum {{EnumName}}{{#newline}}
                 case TemplateType.EfCore3:
                     return new TemplateEfCore();
 
-                case TemplateType.FileBased:
+                case TemplateType.FileBasedCore3:
                     return new TemplateFileBased();
 
                 default:
@@ -17510,7 +17547,8 @@ public enum {{EnumName}}{{#newline}}
         Ef6,
         EfCore2,
         EfCore3,
-        FileBased
+        FileBasedCore2,
+        FileBasedCore3
     }
 
     /// <summary>

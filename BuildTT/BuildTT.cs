@@ -27,18 +27,18 @@ namespace BuildTT
     // For help on the various Types below, please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Common-Settings.*Types-explained
     // The following entries are the only required settings.
     Settings.DatabaseType            = DatabaseType.SqlServer; // SqlServer, SqlCe. Coming next: PostgreSQL, MySql, Oracle
-    Settings.TemplateType            = TemplateType.Ef6; // Ef6, EfCore2, EfCore3, FileBased. FileBased specify folder using Settings.TemplateFolder
-    Settings.GeneratorType           = GeneratorType.Ef6; // Ef6, EfCore, Custom. Custom edit GeneratorCustom class to provide your own implementation
-    Settings.UseMappingTables        = true; // Set to false for EfCore. EFCore will add support for this in v3 at some point, so please set this to false. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
-    Settings.FileManagerType         = FileManagerType.VisualStudio; // .NET project = VisualStudio; .NET Core project = Custom; No output (testing only) = Null
-    Settings.ConnectionString        = ""Data Source=(local);Initial Catalog=Northwind;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator"";
-    Settings.ConnectionStringName    = ""MyDbContext""; // ConnectionString key as specified in your app.config/web.config/appsettings.json
+    Settings.TemplateType            = TemplateType.EfCore3; // Ef6, EfCore2, EfCore3, FileBasedCore2, FileBasedCore3. FileBased specify folder using Settings.TemplateFolder
+    Settings.GeneratorType           = GeneratorType.EfCore; // Ef6, EfCore, Custom. Custom edit GeneratorCustom class to provide your own implementation
+    Settings.UseMappingTables        = false; // Set to false for EfCore. EFCore will add support for this in v3 at some point, so please set this to false. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
+    Settings.FileManagerType         = FileManagerType.Custom; // .NET project = VisualStudio; .NET Core project = Custom; No output (testing only) = Null
+    Settings.ConnectionString        = ""Data Source=(local);Initial Catalog=Northwind;Integrated Security=True""; // This is used by the generator to reverse engineer your database
+    Settings.ConnectionStringName    = ""MyDbContext""; // ConnectionString key as specified in your app.config/web.config/appsettings.json. Not used by the generator, but is placed into the generated DbContext constructor.
     Settings.DbContextName           = ""MyDbContext""; // Class name for the DbContext to be generated. Note: If generating separate files, please give the db context a different name from this tt filename.
     //Settings.DbContextInterfaceName= ""IMyDbContext""; // Defaults to ""I"" + DbContextName or set string empty to not implement any interface.
     Settings.GenerateSeparateFiles   = false;
     Settings.Namespace               = DefaultNamespace; // Override the default namespace here. Please use double quotes, example: ""Accounts.Billing""
     Settings.TemplateFolder          = Path.Combine(Settings.Root, ""Templates""); // Only used if Settings.TemplateType = TemplateType.FileBased. Specify folder name where the mustache folders can be found. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Custom-file-based-templates
-    Settings.AddUnitTestingDbContext = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing
+    Settings.AddUnitTestingDbContext = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing. Read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/FakeDbContext
 
     // Elements to generate ***************************************************************************************************************
     // Add the elements that should be generated when the template is executed.

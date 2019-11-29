@@ -1,0 +1,11 @@
+﻿System
+System.Data
+System.Threading.Tasks
+System.Threading
+Microsoft.EntityFrameworkCore.Infrastructure
+System.CodeDom.Compiler
+System.Linq
+Microsoft.EntityFrameworkCore
+System.Collections.Generic
+Microsoft.Data.SqlClient
+System.Data.SqlTypes

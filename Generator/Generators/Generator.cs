@@ -886,7 +886,7 @@ namespace Efrpg.Generators
                 firstFkCol.col.ConfigFk.Add(string.Format("{0};{1}", rel, com));
 
                 if (foreignKey.IncludeReverseNavigation)
-                    pkTable.AddReverseNavigation(relationship, pkTableHumanCase, fkTable, fkPropName, string.Format("{0}.{1}", fkTable.DbName, foreignKey.ConstraintName), foreignKeys);
+                    pkTable.AddReverseNavigation(relationship, fkTable, fkPropName, string.Format("{0}.{1}", fkTable.DbName, foreignKey.ConstraintName), foreignKeys);
             }
         }
 
@@ -993,7 +993,7 @@ namespace Efrpg.Generators
                         Settings.DbContextInterfaceName = null;
                         Settings.DbContextName = ((MultiContextFilter) filter.Value).GetSettings().Name ?? filter.Key;
 
-                        if (Settings.TemplateType == TemplateType.FileBased)
+                        if (Settings.TemplateType == TemplateType.FileBasedCore3)
                         {
                             // Use file based templates, set the path
                             var multiContextSetting = ((MultiContextFilter) filter.Value).GetSettings();
@@ -1039,7 +1039,7 @@ namespace Efrpg.Generators
             codeOutputList.Add(contextFakeClass, codeGenerator.GenerateFakeContext());
             codeOutputList.Add(contextFakeDbSet, codeGenerator.GenerateFakeDbSet());
 
-            var isEfCore3 = Settings.TemplateType == TemplateType.EfCore3;
+            var isEfCore3 = Settings.IsEfCore3();
 
             foreach (var table in filter.Tables
                 .Where(t => !t.IsMapping)
@@ -1050,7 +1050,7 @@ namespace Efrpg.Generators
 
                 // Only write the config if it has a primary key
                 if (table.HasPrimaryKey || (table.IsView && isEfCore3))
-                    codeOutputList.Add(pocoConfiguration + table.NameHumanCase, codeGenerator.GeneratePocoConfiguration(table, this));
+                    codeOutputList.Add(pocoConfiguration + table.NameHumanCase, codeGenerator.GeneratePocoConfiguration(table));
             }
 
             foreach (var sp in filter.StoredProcs

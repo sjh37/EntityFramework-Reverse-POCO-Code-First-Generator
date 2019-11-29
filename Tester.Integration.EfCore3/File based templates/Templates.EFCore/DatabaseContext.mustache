@@ -1,0 +1,184 @@
+﻿{{DbContextClassModifiers}} class {{DbContextName}} : {{DbContextBaseClass}}{{contextInterface}}{{#newline}}
+{{{#newline}}
+    public {{DbContextName}}(){{#newline}}
+    {{{#newline}}
+{{#if DbContextClassIsPartial}}
+        InitializePartial();{{#newline}}
+{{/if}}
+    }{{#newline}}
+{{#newline}}
+
+    public {{DbContextName}}(DbContextOptions<{{DbContextName}}> options){{#newline}}
+        : base(options){{#newline}}
+    {{{#newline}}
+{{#if DbContextClassIsPartial}}
+        InitializePartial();{{#newline}}
+{{/if}}
+    }{{#newline}}
+{{#newline}}
+
+{{#each tables}}
+    {{DbSetModifier}} DbSet<{{DbSetName}}> {{PluralTableName}} { get; set; }{{Comment}}{{#newline}}
+{{/each}}
+{{#newline}}
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder){{#newline}}
+    {{{#newline}}
+        if (!optionsBuilder.IsConfigured){{#newline}}
+        {{{#newline}}
+            optionsBuilder.UseSqlServer(@"{{ConnectionString}}");{{#newline}}
+        }{{#newline}}
+    }{{#newline}}{{#newline}}
+
+
+    public bool IsSqlParameterNull(SqlParameter param){{#newline}}
+    {{{#newline}}
+        var sqlValue = param.SqlValue;{{#newline}}
+        var nullableValue = sqlValue as INullable;{{#newline}}
+        if (nullableValue != null){{#newline}}
+            return nullableValue.IsNull;{{#newline}}
+        return (sqlValue == null || sqlValue == DBNull.Value);{{#newline}}
+    }{{#newline}}{{#newline}}
+
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder){{#newline}}
+    {{{#newline}}
+        base.OnModelCreating(modelBuilder);{{#newline}}
+
+{{#if hasTables}}
+{{#newline}}
+{{#each tables}}
+        modelBuilder.ApplyConfiguration(new {{DbSetConfigName}}());{{#newline}}
+{{/each}}
+{{/if}}
+
+{{#if hasStoredProcs}}
+{{#newline}}
+{{#each storedProcs}}
+{{#if SingleReturnModel}}
+        modelBuilder.{{StoredProcModelBuilderCommand}}<{{ReturnModelName}}>(){{StoredProcModelBuilderPostCommand}};{{#newline}}
+{{/if}}
+{{/each}}
+{{/if}}
+
+{{#if hasTableValuedFunctions}}
+{{#newline}}
+        // Table Valued Functions{{#newline}}
+{{#each tableValuedFunctions}}
+        modelBuilder.{{ModelBuilderCommand}}<{{ReturnClassName}}>(){{ModelBuilderPostCommand}};{{#newline}}
+{{/each}}
+{{/if}}
+
+{{#if DbContextClassIsPartial}}
+{{#newline}}
+        OnModelCreatingPartial(modelBuilder);{{#newline}}
+{{/if}}
+
+    }{{#newline}}
+{{#newline}}
+
+
+
+{{#if DbContextClassIsPartial}}
+{{#newline}}
+    partial void InitializePartial();{{#newline}}
+    partial void DisposePartial(bool disposing);{{#newline}}
+    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);{{#newline}}
+    static partial void OnCreateModelPartial(ModelBuilder modelBuilder, string schema);{{#newline}}
+{{/if}}
+
+
+{{#if hasStoredProcs}}
+{{#newline}}
+    // Stored Procedures{{#newline}}
+{{#each storedProcs}}
+{{#if HasReturnModels}}
+
+{{#if MultipleReturnModels}}
+    // public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalse}}) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.{{#newline}}
+{{#else}}
+    public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    {{{#newline}}
+        int procResult;{{#newline}}
+        return {{FunctionName}}({{WriteStoredProcFunctionOverloadCall}});{{#newline}}
+    }{{#newline}}{{#newline}}
+{{/if}}
+
+{{#if SingleReturnModel}}
+    public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsTrue}}){{#newline}}
+    {{{#newline}}
+{{WriteStoredProcFunctionDeclareSqlParameterTrue}}
+        const string sqlCommand = "{{Exec}}";{{#newline}}
+        var procResultData = {{QueryString}}<{{ReturnModelName}}>(){{#newline}}
+            .{{FromSql}}(sqlCommand{{WriteStoredProcFunctionSqlParameterAnonymousArrayTrue}}){{#newline}}
+            .ToList();{{#newline}}{{#newline}}
+{{WriteStoredProcFunctionSetSqlParametersFalse}}
+        procResult = (int) procResultParam.Value;{{#newline}}
+        return procResultData;{{#newline}}
+    }{{#newline}}
+{{/if}}
+
+{{#else}}
+    public int {{FunctionName}}({{WriteStoredProcFunctionParamsTrue}}){{#newline}}
+    {{{#newline}}
+{{WriteStoredProcFunctionDeclareSqlParameterTrue}}{{#newline}}
+        Database.{{ExecuteSqlCommand}}("{{ExecWithNoReturnModel}}"{{WriteStoredProcFunctionSqlParameterAnonymousArrayTrue}});{{#newline}}
+{{#newline}}
+{{WriteStoredProcFunctionSetSqlParametersFalse}}
+        return (int)procResultParam.Value;{{#newline}}
+    }{{#newline}}
+{{/if}}
+{{#newline}}
+
+{{#if AsyncFunctionCannotBeCreated}}
+    // {{FunctionName}}Async() cannot be created due to having out parameters, or is relying on the procedure result ({{ReturnType}}){{#newline}}
+{{#newline}}
+{{#else}}
+{{#if MultipleReturnModels}}
+    // public async Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalse}}) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.{{#newline}}
+{{#else}}
+    public async Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    {{{#newline}}
+{{WriteStoredProcFunctionDeclareSqlParameterFalse}}
+{{WriteStoredProcFunctionSetSqlParametersFalse}}
+        const string sqlCommand = "{{AsyncExec}}";{{#newline}}
+        var procResultData = await {{QueryString}}<{{ReturnModelName}}>(){{#newline}}
+            .{{FromSql}}(sqlCommand{{WriteStoredProcFunctionSqlParameterAnonymousArrayFalse}}){{#newline}}
+            .ToListAsync();{{#newline}}{{#newline}}
+
+        return procResultData;{{#newline}}
+    }{{#newline}}
+{{/if}}
+{{#newline}}
+{{/if}}
+{{/each}}
+{{/if}}
+
+{{#if hasTableValuedFunctions}}
+{{#newline}}
+    // Table Valued Functions{{#newline}}
+{{#each tableValuedFunctions}}
+{{#newline}}
+    // {{Schema}}.{{Name}}{{#newline}}
+    public IQueryable<{{ReturnClassName}}> {{ExecName}}({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    {{{#newline}}
+        return {{QueryString}}<{{ReturnClassName}}>(){{#newline}}
+            .{{FromSql}}("SELECT * FROM [{{Name}}]({{WriteStoredProcFunctionSqlAtParams}})"{{WriteTableValuedFunctionSqlParameterAnonymousArray}}){{#newline}}
+            .AsNoTracking();{{#newline}}
+    }{{#newline}}
+{{/each}}
+{{/if}}
+
+{{#if hasScalarValuedFunctions}}
+{{#newline}}
+    // Scalar Valued Functions{{#newline}}
+{{#each scalarValuedFunctions}}
+{{#newline}}
+    [DbFunction("{{Name}}", "{{Schema}}")]{{#newline}}
+    public {{ReturnType}} {{ExecName}}({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    {{{#newline}}
+        throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");{{#newline}}
+    }{{#newline}}
+{{/each}}
+{{/if}}
+}

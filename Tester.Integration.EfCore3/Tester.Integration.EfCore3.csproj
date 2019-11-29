@@ -1,0 +1,105 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="TestDatabase.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="TestDatabase.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.0.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
+    <PackageReference Include="NUnit" Version="3.12.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.15.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EntityFramework.Reverse.POCO.Generator\EntityFramework.Reverse.POCO.Generator.csproj" />
+    <ProjectReference Include="..\Tester.BusinessLogic.EfCore\Tester.BusinessLogic.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="File based templates\MCFBT.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>MCFBT.cs</LastGenOutput>
+    </None>
+    <None Update="File based templates\SCFBT.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>SCFBT.cs</LastGenOutput>
+    </None>
+    <None Update="Multi context many files\MCMF.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>MCMF.cs</LastGenOutput>
+    </None>
+    <None Update="Multi context single files\MCSF.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>MCSF.cs</LastGenOutput>
+    </None>
+    <None Update="Single context many files\SCMF.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>SCMF.cs</LastGenOutput>
+    </None>
+    <None Update="TestDatabase.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>TestDatabase.cs</LastGenOutput>
+    </None>
+    <None Update="TestSynonymsDatabase.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>TestSynonymsDatabase.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="File based templates\MCFBT.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MCFBT.tt</DependentUpon>
+    </Compile>
+    <Compile Update="File based templates\SCFBT.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SCFBT.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Multi context many files\MCMF.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Multi context single files\MCSF.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MCSF.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Single context many files\SCMF.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SCMF.tt</DependentUpon>
+    </Compile>
+    <Compile Update="TestDatabase.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TestDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Update="TestSynonymsDatabase.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TestSynonymsDatabase.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="File based templates\Templates.EFCore\" />
+    <Folder Include="File based templates\Templates.EF6\" />
+  </ItemGroup>
+
+</Project>

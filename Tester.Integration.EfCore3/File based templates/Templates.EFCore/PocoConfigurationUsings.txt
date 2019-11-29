@@ -1,0 +1,3 @@
+﻿Microsoft.EntityFrameworkCore
+Microsoft.EntityFrameworkCore.Metadata.Builders
+System.CodeDom.Compiler

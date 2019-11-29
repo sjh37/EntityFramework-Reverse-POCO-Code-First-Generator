@@ -1,0 +1,76 @@
+﻿{{interfaceModifier}} interface {{DbContextInterfaceName}} : {{DbContextInterfaceBaseClasses}}{{#newline}}
+{{{#newline}}
+
+{{#each tables}}
+    DbSet<{{DbSetName}}> {{PluralTableName}} { get; set; }{{Comment}}{{#newline}}
+{{/each}}
+
+{{#if AdditionalContextInterfaceItems}}
+{{#newline}}
+    // Additional interface items{{#newline}}
+{{/if}}
+{{#each AdditionalContextInterfaceItems}}
+    {{this}}{{#newline}}
+{{/each}}
+
+
+{{#if addSaveChanges}}
+{{#newline}}
+    int SaveChanges();{{#newline}}
+    int SaveChanges(bool acceptAllChangesOnSuccess);{{#newline}}
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));{{#newline}}
+    Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken));{{#newline}}
+    DatabaseFacade Database { get; }{{#newline}}
+    DbSet<TEntity> Set<TEntity>() where TEntity : class;{{#newline}}
+    string ToString();{{#newline}}
+{{/if}}
+
+
+{{#if hasStoredProcs}}
+{{#newline}}
+    // Stored Procedures{{#newline}}
+{{#each storedProcs}}
+{{#if HasReturnModels}}
+
+{{#if MultipleReturnModels}}
+    // {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalse}}); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.{{#newline}}
+{{#else}}
+    {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalse}});{{#newline}}
+{{/if}}
+{{#if SingleReturnModel}}
+    {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsTrue}});{{#newline}}
+{{/if}}
+{{#else}}
+    int {{FunctionName}}({{WriteStoredProcFunctionParamsTrue}});{{#newline}}
+{{/if}}
+
+{{#if AsyncFunctionCannotBeCreated}}
+    // {{FunctionName}}Async() cannot be created due to having out parameters, or is relying on the procedure result ({{ReturnType}}){{#newline}}
+{{#else}}
+{{#if MultipleReturnModels}}
+    // Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalse}}); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.{{#newline}}
+{{#else}}
+    Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalse}});{{#newline}}
+{{/if}}
+{{/if}}
+{{#newline}}
+{{/each}}
+{{/if}}
+
+{{#if hasTableValuedFunctions}}
+{{#newline}}
+    // Table Valued Functions{{#newline}}
+{{#each tableValuedFunctions}}
+    IQueryable<{{ReturnClassName}}> {{ExecName}}({{WriteStoredProcFunctionParamsFalse}}); // {{Schema}}.{{Name}}{{#newline}}
+{{/each}}
+{{/if}}
+
+{{#if hasScalarValuedFunctions}}
+{{#newline}}
+    // Scalar Valued Functions{{#newline}}
+{{#each scalarValuedFunctions}}
+    {{ReturnType}} {{ExecName}}({{WriteStoredProcFunctionParamsFalse}}); // {{Schema}}.{{Name}}{{#newline}}
+{{/each}}
+{{/if}}
+
+}

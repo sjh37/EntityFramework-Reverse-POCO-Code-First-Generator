@@ -1,4 +1,4 @@
-﻿<#@ include file="EF.Reverse.POCO.v3.ttinclude" #>
+<#@ include file="EF.Reverse.POCO.v3.ttinclude" #>
 <#
     // v3.0.8
     // Please make changes to the settings below.
@@ -12,10 +12,10 @@
     // For help on the various Types below, please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Common-Settings.*Types-explained
     // The following entries are the only required settings.
     Settings.DatabaseType            = DatabaseType.SqlCe; // SqlServer, SqlCe. Coming next: PostgreSQL, MySql, Oracle
-    Settings.TemplateType            = TemplateType.Ef6; // Ef6, EfCore2, EfCore3, FileBased. FileBased specify folder using Settings.TemplateFolder
-    Settings.GeneratorType           = GeneratorType.Ef6; // Ef6, EfCore, Custom. Custom edit GeneratorCustom class to provide your own implementation
-    Settings.UseMappingTables        = true; // Set to false for EfCore. EFCore will add support for this in v3 at some point, so please set this to false. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
-    Settings.FileManagerType         = FileManagerType.VisualStudio; // .NET project = VisualStudio; .NET Core project = Custom; No output (testing only) = Null
+    Settings.TemplateType            = TemplateType.EfCore3; // Ef6, EfCore2, EfCore3, FileBased. FileBased specify folder using Settings.TemplateFolder
+    Settings.GeneratorType           = GeneratorType.EfCore; // Ef6, EfCore, Custom. Custom edit GeneratorCustom class to provide your own implementation
+    Settings.UseMappingTables        = false; // Set to false for EfCore. EFCore will add support for this in v3 at some point, so please set this to false. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
+    Settings.FileManagerType         = FileManagerType.Custom; // .NET project = VisualStudio; .NET Core project = Custom; No output (testing only) = Null
     Settings.ConnectionString        = @"Data Source=C:\S\Source (open source)\EntityFramework Reverse POCO Code Generator\EntityFramework.Reverse.POCO.Generator\App_Data\NorthwindSqlCe40.sdf";
     Settings.ConnectionStringName    = "MyDbContextSqlCE4"; // ConnectionString key as specified in your app.config/web.config/appsettings.json
     Settings.DbContextName           = "MyDbContextSqlCE4"; // Class name for the DbContext to be generated. Note: If generating separate files, please give the db context a different name from this tt filename.

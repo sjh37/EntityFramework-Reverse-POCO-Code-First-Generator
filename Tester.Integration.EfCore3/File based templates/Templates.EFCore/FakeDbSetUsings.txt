@@ -1,0 +1,15 @@
+﻿System
+System.Collections
+System.ComponentModel
+System.Linq
+System.Linq.Expressions
+System.Reflection
+System.Collections.ObjectModel
+System.Collections.Generic
+System.Threading
+System.Threading.Tasks
+Microsoft.EntityFrameworkCore
+Microsoft.EntityFrameworkCore.Query.Internal
+Microsoft.EntityFrameworkCore.Infrastructure
+Microsoft.EntityFrameworkCore.ChangeTracking
+System.CodeDom.Compiler

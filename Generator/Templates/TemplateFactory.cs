@@ -15,7 +15,7 @@ namespace Efrpg.Templates
                 case TemplateType.EfCore3:
                     return new TemplateEfCore();
 
-                case TemplateType.FileBased:
+                case TemplateType.FileBasedCore3:
                     return new TemplateFileBased();
 
                 default:
