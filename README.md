@@ -59,6 +59,28 @@ If your database changes, simply re-save the `<database>.tt` file. That's it.
 * Save the `Database.tt` file, which will now generate the `Database.cs` file. Every time you save your `Database.tt` file, the generator will run and reverse engineer your database.
 * There are many options you can use to customise the generated code. All of these settings are in the `Database.tt` files.
 
+### Connection strings and how they are used
+`Settings.ConnectionString` is mandatory in version 3. It is used by the generator to read your database schema. It's also placed into the generated code:
+
+```c#
+protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder){{#newline}}
+{{{#newline}}
+    if (!optionsBuilder.IsConfigured){{#newline}}
+    {{{#newline}}
+        optionsBuilder.UseSqlServer(@""{{ConnectionString}}"");{{#newline}}
+    }{{#newline}}
+}{{#newline}}{{#newline}}
+```
+
+`Settings.ConnectionStringName` Not used by the generator, but is placed into the generated DbContext constructor via a call to `Settings.DefaultConstructorArgument`.
+
+```c#
+public {{DbContextName}}(){{#newline}}
+{{#if HasDefaultConstructorArgument}}
+    : base({{DefaultConstructorArgument}}){{#newline}}
+{{/if}}
+```
+
 ### UI
 
 A simple UI for the generator is available at
