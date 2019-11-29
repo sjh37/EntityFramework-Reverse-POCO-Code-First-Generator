@@ -8,6 +8,9 @@
 ### You will need a licence key
 Go to the [ReversePOCO](https://www.reversepoco.co.uk) website to obtain your licence key.
 
+### Upgrading v2 to v3
+Please read the [Upgrading documentation](https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Upgrading-from-v2-to-v3)
+
 ### Project Description
 
 Reverse engineers an existing database and generates Entity Framework Code
@@ -38,37 +41,21 @@ If your database changes, simply re-save the `<database>.tt` file. That's it.
 [Click here](https://github.com/sjh37/efreversepoco/wiki/Full-control-over-the-generated-code) to see a full list of features.
 
 ### To install and use this project:
+* Use Nuget and install the relevant nuget package for your database.
+  - .Net Core: `install-package Microsoft.EntityFrameworkCore.SqlServer`
+  - EF 6: `install-package EntityFramework`
+* `Settings.ConnectionString` is mandatory in v3, so you need to provide the connection string from your app.config/web.config/appsettings.json file. This connection string is used by the generator to reverse engineer your database. It no longer opens reads your connection strings from *.config files.
 
-- EF 6
-  * For Visual Studio 2012 & 2013, install Entity Framework 6 Tools
-  [available here](http://www.microsoft.com/en-us/download/details.aspx?id=40762)
-  This installs the required EF6.Utility.CS.ttinclude which is used for pluralisation
-  You only need to do this once.
-  * Use Nuget and install EntityFramework.
-  * Add a connect string to your app.config. Something like:
-```xml
-<connectionStrings>
-  <add name="MyDbContext"
-       providerName="System.Data.SqlClient"
-       connectionString="Data Source=(local);Initial Catalog=MyDatabase;Integrated Security=True;" />
-</connectionStrings>
-```
-- .NET Core
-  * Use Nuget and install the relevant nuget package for your database, such as `Microsoft.EntityFrameworkCore.SqlServer`
+   For example:
 
-* The connection string you use must have at least these privileges: `ddladmin`, `datareader` and `datawriter`.
-  `ddladmin` is required for reading the default constraints.
+   Settings.ConnectionString = "Data Source=(local);Initial Catalog=Northwind;Integrated Security=True";
+* The `Settings.ConnectionString` string you use must have at least these privileges: `ddladmin`, `datareader` and `datawriter`. `ddladmin` is required for reading the default constraints.
 * In Visual Studio, right click project and select "add - new item".
 * Select Online, and search for **reverse poco**.
 * Select **EntityFramework Reverse POCO Generator**.
 * Give the file a name, such as `Database.tt` and click Add.
-
-- .NET Core
-  * Edit the `Database.tt` file and specify the full connection string in `Settings.ConnectionString`. This is used by the generater to read your database schema and reverse engineer it.
-  * Edit the `Database.tt` file and specify the connection string in `Settings.ConnectionStringName` which matches the ConnectionString key as specified in your `appsettings.json`, `app.config` or `web.config`.
-- EF 6
-  * Edit the `Database.tt` file and specify the connection string as "**MyDbContext**" which matches your name in `app.config`.
-
+* Edit the `Database.tt` file and specify the full connection string in `Settings.ConnectionString`. This is used by the generater to read your database schema and reverse engineer it.
+* Edit the `Database.tt` file and specify the connection string in `Settings.ConnectionStringName` which matches the ConnectionString key as specified in your `appsettings.json`, `app.config` or `web.config`.
 * Save the `Database.tt` file, which will now generate the `Database.cs` file. Every time you save your `Database.tt` file, the generator will run and reverse engineer your database.
 * There are many options you can use to customise the generated code. All of these settings are in the `Database.tt` files.
 
