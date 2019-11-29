@@ -44,7 +44,7 @@ If your database changes, simply re-save the `<database>.tt` file. That's it.
 * Use Nuget and install the relevant nuget package for your database.
   - .Net Core: `install-package Microsoft.EntityFrameworkCore.SqlServer`
   - EF 6: `install-package EntityFramework`
-* `Settings.ConnectionString` is mandatory in v3, so you need to provide the connection string from your app.config/web.config/appsettings.json file. This connection string is used by the generator to reverse engineer your database. It no longer opens reads your connection strings from *.config files.
+* `Settings.ConnectionString` is mandatory in v3, so you need to provide the connection string from your app.config/web.config/appsettings.json file. This connection string is used by the generator to reverse engineer your database. It no longer reads your connection strings from *.config files.
 
    For example:
 
