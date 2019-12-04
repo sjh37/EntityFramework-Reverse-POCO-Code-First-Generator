@@ -11,6 +11,19 @@ namespace Tester.Integration.EfCore3
         [SetUp]
         public void SetUp()
         {
+            //var optionsBuilder = new DbContextOptionsBuilder<MyDbContext>();
+            //optionsBuilder.UseSqlServer("Data Source=(local);Initial Catalog=Northwind;Integrated Security=True");
+            //_db = new MyDbContext(optionsBuilder.Options);
+
+
+
+            //var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            //var configuration = new ConfigurationBuilder()
+            //    .AddJsonFile("appsettings.json", false, true)
+            //    .AddJsonFile($"appsettings.{environment}.json", true, true)
+            //    .Build();
+            //_db = new MyDbContext(configuration);
+
             _db = new MyDbContext();
         }
 
