@@ -7,6 +7,7 @@
     Settings.FileManagerType         = FileManagerType.Custom; // VisualStudio = .NET project; Custom = .NET Core project; Null = No output (testing only)
     Settings.ConnectionString        = "Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True";
     Settings.ConnectionStringName    = "McsfMultiDatabase"; // ConnectionString key as specified in your app.config/web.config/appsettings.json
+    Settings.OnConfiguration         = OnConfiguration.Omit; // EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/OnConfiguration    Settings.GenerateSeparateFiles   = false;
     Settings.GenerateSeparateFiles   = false;
     Settings.Namespace               = DefaultNamespace; // Override the default namespace here
     Settings.AddUnitTestingDbContext = false;

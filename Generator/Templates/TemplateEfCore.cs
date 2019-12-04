@@ -154,14 +154,14 @@ using {{this}};{{#newline}}
             if (data.hasStoredProcs)
                 usings.Add("System.Collections.Generic");
 
+            if(Settings.OnConfiguration == OnConfiguration.Configuration)
+                usings.Add("Microsoft.Extensions.Configuration");
+
             if (!Settings.UseInheritedBaseInterfaceFunctions)
             {
                 usings.Add("System.Collections.Generic");
             }
 
-            if (Settings.DatabaseType == DatabaseType.SqlCe)
-            {
-            }
             return usings;
         }
 
@@ -170,13 +170,16 @@ using {{this}};{{#newline}}
             return @"
 {{DbContextClassModifiers}} class {{DbContextName}} : {{DbContextBaseClass}}{{contextInterface}}{{#newline}}
 {{{#newline}}
+{{#if OnConfigurationUsesConfiguration}}
+    private readonly IConfiguration _configuration;{{#newline}}{{#newline}}
+{{/if}}
+
     public {{DbContextName}}(){{#newline}}
     {{{#newline}}
 {{#if DbContextClassIsPartial}}
         InitializePartial();{{#newline}}
 {{/if}}
-    }{{#newline}}
-{{#newline}}
+    }{{#newline}}{{#newline}}
 
     public {{DbContextName}}(DbContextOptions<{{DbContextName}}> options){{#newline}}
         : base(options){{#newline}}
@@ -184,14 +187,34 @@ using {{this}};{{#newline}}
 {{#if DbContextClassIsPartial}}
         InitializePartial();{{#newline}}
 {{/if}}
-    }{{#newline}}
-{{#newline}}
+    }{{#newline}}{{#newline}}
+
+{{#if OnConfigurationUsesConfiguration}}
+    public {{DbContextName}}(IConfiguration configuration){{#newline}}
+    {{{#newline}}
+        _configuration = configuration;{{#newline}}
+{{#if DbContextClassIsPartial}}
+        InitializePartial();{{#newline}}
+{{/if}}
+    }{{#newline}}{{#newline}}
+{{/if}}
 
 {{#each tables}}
     {{DbSetModifier}} DbSet<{{DbSetName}}> {{PluralTableName}} { get; set; }{{Comment}}{{#newline}}
 {{/each}}
 {{#newline}}
 
+{{#if OnConfigurationUsesConfiguration}}
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder){{#newline}}
+    {{{#newline}}
+        if (!optionsBuilder.IsConfigured && _configuration != null){{#newline}}
+        {{{#newline}}
+            optionsBuilder.UseSqlServer(_configuration.GetConnectionString(@""{{ConnectionStringName}}""));{{#newline}}
+        }{{#newline}}
+    }{{#newline}}{{#newline}}
+{{/if}}
+
+{{#if OnConfigurationUsesConnectionString}}
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder){{#newline}}
     {{{#newline}}
         if (!optionsBuilder.IsConfigured){{#newline}}
@@ -199,6 +222,7 @@ using {{this}};{{#newline}}
             optionsBuilder.UseSqlServer(@""{{ConnectionString}}"");{{#newline}}
         }{{#newline}}
     }{{#newline}}{{#newline}}
+{{/if}}
 
 
     public bool IsSqlParameterNull(SqlParameter param){{#newline}}

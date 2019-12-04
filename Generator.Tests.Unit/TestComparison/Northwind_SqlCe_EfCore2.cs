@@ -37,6 +37,7 @@ using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Query.Internal;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -81,6 +82,8 @@ namespace Efrpg.SqlCE
 
     public class MyDbContext : DbContext, IMyDbContext
     {
+        private readonly IConfiguration _configuration;
+
         public MyDbContext()
         {
         }
@@ -88,6 +91,11 @@ namespace Efrpg.SqlCE
         public MyDbContext(DbContextOptions<MyDbContext> options)
             : base(options)
         {
+        }
+
+        public MyDbContext(IConfiguration configuration)
+        {
+            _configuration = configuration;
         }
 
         public DbSet<Category> Categories { get; set; } // Categories
@@ -101,9 +109,9 @@ namespace Efrpg.SqlCE
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
+            if (!optionsBuilder.IsConfigured && _configuration != null)
             {
-                optionsBuilder.UseSqlServer(@"Data Source=C:\S\Source (open source)\EntityFramework Reverse POCO Code Generator\EntityFramework.Reverse.POCO.Generator\App_Data\NorthwindSqlCe40.sdf");
+                optionsBuilder.UseSqlServer(_configuration.GetConnectionString(@"MyDbContext"));
             }
         }
 

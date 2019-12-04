@@ -94,6 +94,7 @@
     <Compile Include="Licensing\LicenceType.cs" />
     <Compile Include="LanguageMapping\SqlServerToCSharp.cs" />
     <Compile Include="LanguageMapping\IDatabaseToPropertyType.cs" />
+    <Compile Include="OnConfiguration.cs" />
     <Compile Include="Util\MultiContextSettingsCopy.cs" />
     <Compile Include="Filtering\PeriodFilter.cs" />
     <Compile Include="Filtering\RegexExcludeFilter.cs" />

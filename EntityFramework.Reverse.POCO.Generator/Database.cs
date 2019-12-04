@@ -41,6 +41,7 @@ using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Query.Internal;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -135,6 +136,8 @@ namespace EntityFramework_Reverse_POCO_Generator
 
     public class MyDbContext : DbContext, IMyDbContext
     {
+        private readonly IConfiguration _configuration;
+
         public MyDbContext()
         {
         }
@@ -142,6 +145,11 @@ namespace EntityFramework_Reverse_POCO_Generator
         public MyDbContext(DbContextOptions<MyDbContext> options)
             : base(options)
         {
+        }
+
+        public MyDbContext(IConfiguration configuration)
+        {
+            _configuration = configuration;
         }
 
         public DbSet<AlphabeticalListOfProduct> AlphabeticalListOfProducts { get; set; } // Alphabetical list of products
@@ -176,9 +184,9 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
+            if (!optionsBuilder.IsConfigured && _configuration != null)
             {
-                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=Northwind;Integrated Security=True");
+                optionsBuilder.UseSqlServer(_configuration.GetConnectionString(@"MyDbContext"));
             }
         }
 

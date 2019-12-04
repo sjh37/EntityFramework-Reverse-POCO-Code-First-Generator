@@ -82,14 +82,6 @@ namespace Tester.Integration.EfCore3.Multi_context_single_filesBananaDbContext
 
         public DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; } // ComputedColumns
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True");
-            }
-        }
-
         public bool IsSqlParameterNull(SqlParameter param)
         {
             var sqlValue = param.SqlValue;

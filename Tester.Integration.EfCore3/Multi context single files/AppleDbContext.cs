@@ -84,14 +84,6 @@ namespace Tester.Integration.EfCore3.Multi_context_single_filesAppleDbContext
         public DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
         public DbSet<Stafford_Foo> Stafford_Foos { get; set; } // Foo
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True");
-            }
-        }
-
         public bool IsSqlParameterNull(SqlParameter param)
         {
             var sqlValue = param.SqlValue;

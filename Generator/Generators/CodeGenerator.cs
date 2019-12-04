@@ -283,6 +283,7 @@ namespace Efrpg.Generators
                 DefaultConstructorArgument             = Settings.DefaultConstructorArgument,
                 ConfigurationClassName                 = Settings.ConfigurationClassName,
                 ConnectionString                       = Settings.ConnectionString,
+                ConnectionStringName                   = Settings.ConnectionStringName,
                 contextInterface                       = string.IsNullOrWhiteSpace(Settings.DbContextInterfaceName) ? "" : ", " + Settings.DbContextInterfaceName,
                 setInitializer                         = string.Format("<{0}>(null);", Settings.DbContextName),
                 DbContextClassIsPartial                = Settings.DbContextClassIsPartial(),
@@ -306,7 +307,9 @@ namespace Efrpg.Generators
                 FromSql                                = isEfCore3 ? "FromSqlRaw"    : "FromSql",
                 ExecuteSqlCommand                      = isEfCore3 ? "ExecuteSqlRaw" : "ExecuteSqlCommand",
                 StoredProcModelBuilderCommand          = isEfCore3 ? "Entity"        : "Query",
-                StoredProcModelBuilderPostCommand      = isEfCore3 ? ".HasNoKey()"   : string.Empty
+                StoredProcModelBuilderPostCommand      = isEfCore3 ? ".HasNoKey()"   : string.Empty,
+                OnConfigurationUsesConfiguration       = Settings.OnConfiguration == OnConfiguration.Configuration,
+                OnConfigurationUsesConnectionString    = Settings.OnConfiguration == OnConfiguration.ConnectionString
             };
 
             var co = new CodeOutput(Settings.DbContextName + Settings.FileExtension, "Database context", GlobalUsings);

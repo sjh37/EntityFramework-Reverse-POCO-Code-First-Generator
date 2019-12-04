@@ -84,14 +84,6 @@ namespace Tester.Integration.EfCore3.Multi_context_single_filesPlum
         public DbSet<NoPrimaryKey> NoPrimaryKeys { get; set; } // NoPrimaryKeys
         public DbSet<Synonyms_Parent> Synonyms_Parents { get; set; } // Parent
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True");
-            }
-        }
-
         public bool IsSqlParameterNull(SqlParameter param)
         {
             var sqlValue = param.SqlValue;

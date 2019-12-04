@@ -82,14 +82,6 @@ namespace Tester.Integration.EfCore3.Multi_context_single_filesCherry
 
         public DbSet<ColumnName> ColumnNames { get; set; } // ColumnNames
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True");
-            }
-        }
-
         public bool IsSqlParameterNull(SqlParameter param)
         {
             var sqlValue = param.SqlValue;

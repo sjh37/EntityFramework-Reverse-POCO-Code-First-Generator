@@ -7,6 +7,7 @@
     Settings.ConnectionString       = "Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True";
     Settings.ConnectionStringName   = "TestDatabase"; // ConnectionString key as specified in your app.config/web.config/appsettings.json
     Settings.DbContextName          = "TestDbContext"; // Class name for the DbContext to be generated. Note: If generating separate files, please give the db context a different name from this tt filename.
+    Settings.OnConfiguration        = OnConfiguration.Omit; // EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/OnConfiguration    Settings.GenerateSeparateFiles   = false;
     Settings.GenerateSeparateFiles  = false;
     Settings.Namespace              = DefaultNamespace; // Override the default namespace here
     Settings.TemplateFolder         = Path.Combine(Settings.Root, "Templates.EFCore"); // Only used if Settings.TemplateType = TemplateType.FileBased;

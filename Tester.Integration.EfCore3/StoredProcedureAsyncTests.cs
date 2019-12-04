@@ -1,4 +1,6 @@
-﻿using EntityFramework_Reverse_POCO_Generator;
+﻿using System;
+using EntityFramework_Reverse_POCO_Generator;
+using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 
 namespace Tester.Integration.EfCore3
@@ -11,22 +13,12 @@ namespace Tester.Integration.EfCore3
         [SetUp]
         public void SetUp()
         {
-            //var optionsBuilder = new DbContextOptionsBuilder<MyDbContext>();
-            //optionsBuilder.UseSqlServer("Data Source=(local);Initial Catalog=Northwind;Integrated Security=True");
-            //_db = new MyDbContext(optionsBuilder.Options);
+            var configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", false, false)
+                .Build();
 
-
-
-            //var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-            //var configuration = new ConfigurationBuilder()
-            //    .AddJsonFile("appsettings.json", false, true)
-            //    .AddJsonFile($"appsettings.{environment}.json", true, true)
-            //    .Build();
-            //_db = new MyDbContext(configuration);
-
-            _db = new MyDbContext();
+            _db = new MyDbContext(configuration);
         }
-
 
         [Test]
         [TestCase("ALFKI")]

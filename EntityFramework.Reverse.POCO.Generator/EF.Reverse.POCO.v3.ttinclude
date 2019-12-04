@@ -44,6 +44,7 @@
         public static string ConnectionString         = ""; // This is used by the generator to reverse engineer your database
         public static string ConnectionStringName     = "MyDbContext"; // ConnectionString key as specified in your app.config/web.config/appsettings.json
         public static string DbContextName            = "MyDbContext"; // Class name for the DbContext to be generated. Note: If generating separate files, please give the db context a different name from this tt filename. Ignored if using multi-context generation
+        public static OnConfiguration OnConfiguration = OnConfiguration.Configuration; // EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/OnConfiguration
         public static bool GenerateSeparateFiles      = false;
         public static string Namespace                = typeof(Settings).Namespace; // Override the default namespace here. Example: Namespace = "CustomNamespace";
         public static string TemplateFolder           = ""; // Only used if Settings.TemplateType = TemplateType.FileBased. Specify folder name where the mustache folders can be found. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Custom-file-based-templates
@@ -2969,6 +2970,7 @@
                 DefaultConstructorArgument             = Settings.DefaultConstructorArgument,
                 ConfigurationClassName                 = Settings.ConfigurationClassName,
                 ConnectionString                       = Settings.ConnectionString,
+                ConnectionStringName                   = Settings.ConnectionStringName,
                 contextInterface                       = string.IsNullOrWhiteSpace(Settings.DbContextInterfaceName) ? "" : ", " + Settings.DbContextInterfaceName,
                 setInitializer                         = string.Format("<{0}>(null);", Settings.DbContextName),
                 DbContextClassIsPartial                = Settings.DbContextClassIsPartial(),
@@ -2992,7 +2994,9 @@
                 FromSql                                = isEfCore3 ? "FromSqlRaw"    : "FromSql",
                 ExecuteSqlCommand                      = isEfCore3 ? "ExecuteSqlRaw" : "ExecuteSqlCommand",
                 StoredProcModelBuilderCommand          = isEfCore3 ? "Entity"        : "Query",
-                StoredProcModelBuilderPostCommand      = isEfCore3 ? ".HasNoKey()"   : string.Empty
+                StoredProcModelBuilderPostCommand      = isEfCore3 ? ".HasNoKey()"   : string.Empty,
+                OnConfigurationUsesConfiguration       = Settings.OnConfiguration == OnConfiguration.Configuration,
+                OnConfigurationUsesConnectionString    = Settings.OnConfiguration == OnConfiguration.ConnectionString
             };
 
             var co = new CodeOutput(Settings.DbContextName + Settings.FileExtension, "Database context", GlobalUsings);
@@ -9277,6 +9281,12 @@
             yield return context;
         }
     }
+    public enum OnConfiguration
+    {
+        Configuration,
+        ConnectionString,
+        Omit
+    }
 /* BidirectionalDictionary
 Copyright (c) Microsoft Open Technologies, Inc.  All rights reserved.
 Microsoft Open Technologies would like to thank its contributors, a list of whom
@@ -14728,12 +14738,15 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public bool hasTableValuedFunctions                                  { get; set; }
         public bool hasScalarValuedFunctions                                 { get; set; }
         public string ConnectionString                                       { get; set; }
+        public string ConnectionStringName                                   { get; set; }
         public bool IncludeObjectContextConstructor                          { get; set; }
         public string QueryString                                            { get; set; }
         public string FromSql                                                { get; set; }
         public string ExecuteSqlCommand                                      { get; set; }
         public string StoredProcModelBuilderCommand                          { get; set; }
         public string StoredProcModelBuilderPostCommand                      { get; set; }
+        public bool OnConfigurationUsesConfiguration                         { get; set; }
+        public bool OnConfigurationUsesConnectionString                      { get; set; }
     }
     public class FactoryModel
     {
@@ -16357,14 +16370,14 @@ using {{this}};{{#newline}}
             if (data.hasStoredProcs)
                 usings.Add("System.Collections.Generic");
 
+            if(Settings.OnConfiguration == OnConfiguration.Configuration)
+                usings.Add("Microsoft.Extensions.Configuration");
+
             if (!Settings.UseInheritedBaseInterfaceFunctions)
             {
                 usings.Add("System.Collections.Generic");
             }
 
-            if (Settings.DatabaseType == DatabaseType.SqlCe)
-            {
-            }
             return usings;
         }
 
@@ -16373,13 +16386,16 @@ using {{this}};{{#newline}}
             return @"
 {{DbContextClassModifiers}} class {{DbContextName}} : {{DbContextBaseClass}}{{contextInterface}}{{#newline}}
 {{{#newline}}
+{{#if OnConfigurationUsesConfiguration}}
+    private readonly IConfiguration _configuration;{{#newline}}{{#newline}}
+{{/if}}
+
     public {{DbContextName}}(){{#newline}}
     {{{#newline}}
 {{#if DbContextClassIsPartial}}
         InitializePartial();{{#newline}}
 {{/if}}
-    }{{#newline}}
-{{#newline}}
+    }{{#newline}}{{#newline}}
 
     public {{DbContextName}}(DbContextOptions<{{DbContextName}}> options){{#newline}}
         : base(options){{#newline}}
@@ -16387,14 +16403,34 @@ using {{this}};{{#newline}}
 {{#if DbContextClassIsPartial}}
         InitializePartial();{{#newline}}
 {{/if}}
-    }{{#newline}}
-{{#newline}}
+    }{{#newline}}{{#newline}}
+
+{{#if OnConfigurationUsesConfiguration}}
+    public {{DbContextName}}(IConfiguration configuration){{#newline}}
+    {{{#newline}}
+        _configuration = configuration;{{#newline}}
+{{#if DbContextClassIsPartial}}
+        InitializePartial();{{#newline}}
+{{/if}}
+    }{{#newline}}{{#newline}}
+{{/if}}
 
 {{#each tables}}
     {{DbSetModifier}} DbSet<{{DbSetName}}> {{PluralTableName}} { get; set; }{{Comment}}{{#newline}}
 {{/each}}
 {{#newline}}
 
+{{#if OnConfigurationUsesConfiguration}}
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder){{#newline}}
+    {{{#newline}}
+        if (!optionsBuilder.IsConfigured && _configuration != null){{#newline}}
+        {{{#newline}}
+            optionsBuilder.UseSqlServer(_configuration.GetConnectionString(@""{{ConnectionStringName}}""));{{#newline}}
+        }{{#newline}}
+    }{{#newline}}{{#newline}}
+{{/if}}
+
+{{#if OnConfigurationUsesConnectionString}}
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder){{#newline}}
     {{{#newline}}
         if (!optionsBuilder.IsConfigured){{#newline}}
@@ -16402,6 +16438,7 @@ using {{this}};{{#newline}}
             optionsBuilder.UseSqlServer(@""{{ConnectionString}}"");{{#newline}}
         }{{#newline}}
     }{{#newline}}{{#newline}}
+{{/if}}
 
 
     public bool IsSqlParameterNull(SqlParameter param){{#newline}}

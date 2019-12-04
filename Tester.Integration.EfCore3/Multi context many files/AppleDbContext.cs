@@ -37,6 +37,7 @@
 
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -49,6 +50,8 @@ namespace Tester.Integration.EfCore3.Multi_context_many_filesAppleDbContext
 {
     public class AppleDbContext : DbContext, IAppleDbContext
     {
+        private readonly IConfiguration _configuration;
+
         public AppleDbContext()
         {
         }
@@ -58,14 +61,19 @@ namespace Tester.Integration.EfCore3.Multi_context_many_filesAppleDbContext
         {
         }
 
+        public AppleDbContext(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         public DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
         public DbSet<Stafford_Foo> Stafford_Foos { get; set; } // Foo
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
+            if (!optionsBuilder.IsConfigured && _configuration != null)
             {
-                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True");
+                optionsBuilder.UseSqlServer(_configuration.GetConnectionString(@"McmfMultiDatabase"));
             }
         }
 

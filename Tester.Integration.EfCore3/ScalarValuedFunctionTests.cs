@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using EntityFramework_Reverse_POCO_Generator;
+using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 using Tester.Integration.EfCore3.Single_context_many_files;
 
@@ -13,7 +15,11 @@ namespace Tester.Integration.EfCore3
         [SetUp]
         public void SetUp()
         {
-            _db = new EfCoreDbContext();
+            var configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", false, false)
+                .Build();
+
+            _db = new EfCoreDbContext(configuration);
         }
 
         [Test]

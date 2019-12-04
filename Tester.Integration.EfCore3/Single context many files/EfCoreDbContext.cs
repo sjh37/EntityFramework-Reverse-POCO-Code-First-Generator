@@ -36,6 +36,7 @@
 
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -48,6 +49,8 @@ namespace Tester.Integration.EfCore3.Single_context_many_files
 {
     public class EfCoreDbContext : DbContext, IEfCoreDbContext
     {
+        private readonly IConfiguration _configuration;
+
         public EfCoreDbContext()
         {
         }
@@ -55,6 +58,11 @@ namespace Tester.Integration.EfCore3.Single_context_many_files
         public EfCoreDbContext(DbContextOptions<EfCoreDbContext> options)
             : base(options)
         {
+        }
+
+        public EfCoreDbContext(IConfiguration configuration)
+        {
+            _configuration = configuration;
         }
 
         public DbSet<ColumnName> ColumnNames { get; set; } // ColumnNames
@@ -68,9 +76,9 @@ namespace Tester.Integration.EfCore3.Single_context_many_files
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
+            if (!optionsBuilder.IsConfigured && _configuration != null)
             {
-                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True");
+                optionsBuilder.UseSqlServer(_configuration.GetConnectionString(@"EfCoreDatabase"));
             }
         }
 

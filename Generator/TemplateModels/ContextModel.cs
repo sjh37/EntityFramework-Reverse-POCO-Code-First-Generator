@@ -31,11 +31,14 @@ namespace Efrpg.TemplateModels
         public bool hasTableValuedFunctions                                  { get; set; }
         public bool hasScalarValuedFunctions                                 { get; set; }
         public string ConnectionString                                       { get; set; }
+        public string ConnectionStringName                                   { get; set; }
         public bool IncludeObjectContextConstructor                          { get; set; }
         public string QueryString                                            { get; set; }
         public string FromSql                                                { get; set; }
         public string ExecuteSqlCommand                                      { get; set; }
         public string StoredProcModelBuilderCommand                          { get; set; }
         public string StoredProcModelBuilderPostCommand                      { get; set; }
+        public bool OnConfigurationUsesConfiguration                         { get; set; }
+        public bool OnConfigurationUsesConnectionString                      { get; set; }
     }
 }

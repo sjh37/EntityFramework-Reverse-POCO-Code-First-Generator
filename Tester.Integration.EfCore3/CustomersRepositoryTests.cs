@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using EntityFramework_Reverse_POCO_Generator;
+using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 using Tester.BusinessLogic;
 
@@ -12,6 +13,7 @@ namespace Tester.Integration.EfCore3
     {
         private MyDbContext _db;
         private Dictionary<string, string> _dictionary;
+        private IConfiguration _configuration;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -44,7 +46,11 @@ namespace Tester.Integration.EfCore3
         [SetUp]
         public void SetUp()
         {
-            _db = new MyDbContext();
+            _configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", false, false)
+                .Build();
+
+            _db = new MyDbContext(_configuration);
         }
 
         [Test]
@@ -86,8 +92,8 @@ namespace Tester.Integration.EfCore3
         public void InsertAndDeleteTestRecordSuccessfullyViaFindById()
         {
             // Arrange
-            var db2 = new MyDbContext();
-            var db3 = new MyDbContext();
+            var db2 = new MyDbContext(_configuration);
+            var db3 = new MyDbContext(_configuration);
             var customersRepository1 = new CustomersRepository(_db);
             var customersRepository2 = new CustomersRepository(db2);
             var customersRepository3 = new CustomersRepository(db3);
@@ -114,8 +120,8 @@ namespace Tester.Integration.EfCore3
         public void InsertAndDeleteTestRecordSuccessfullyViaFind()
         {
             // Arrange
-            var db2 = new MyDbContext();
-            var db3 = new MyDbContext();
+            var db2 = new MyDbContext(_configuration);
+            var db3 = new MyDbContext(_configuration);
             var customersRepository1 = new CustomersRepository(_db);
             var customersRepository2 = new CustomersRepository(db2);
             var customersRepository3 = new CustomersRepository(db3);

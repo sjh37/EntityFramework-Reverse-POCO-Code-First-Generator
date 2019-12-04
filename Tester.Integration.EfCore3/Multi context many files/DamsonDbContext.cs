@@ -37,6 +37,7 @@
 
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -49,6 +50,8 @@ namespace Tester.Integration.EfCore3.Multi_context_many_filesPlum
 {
     public class DamsonDbContext : DbContext, IDamsonDbContext
     {
+        private readonly IConfiguration _configuration;
+
         public DamsonDbContext()
         {
         }
@@ -58,14 +61,19 @@ namespace Tester.Integration.EfCore3.Multi_context_many_filesPlum
         {
         }
 
+        public DamsonDbContext(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         public DbSet<NoPrimaryKey> NoPrimaryKeys { get; set; } // NoPrimaryKeys
         public DbSet<Synonyms_Parent> Synonyms_Parents { get; set; } // Parent
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
+            if (!optionsBuilder.IsConfigured && _configuration != null)
             {
-                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True");
+                optionsBuilder.UseSqlServer(_configuration.GetConnectionString(@"McmfMultiDatabase"));
             }
         }
 

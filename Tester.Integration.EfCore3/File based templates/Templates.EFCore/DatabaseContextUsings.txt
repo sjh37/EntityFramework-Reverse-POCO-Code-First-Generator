@@ -1,6 +1,7 @@
 ﻿System
 System.Data
 Microsoft.Data.SqlClient
+Microsoft.Extensions.Configuration
 System.Data.SqlTypes
 Microsoft.EntityFrameworkCore
 System.Threading.Tasks

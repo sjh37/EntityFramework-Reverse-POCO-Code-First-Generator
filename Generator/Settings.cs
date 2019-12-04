@@ -20,6 +20,7 @@ namespace Efrpg
         public static string ConnectionString         = ""; // This is used by the generator to reverse engineer your database
         public static string ConnectionStringName     = "MyDbContext"; // ConnectionString key as specified in your app.config/web.config/appsettings.json
         public static string DbContextName            = "MyDbContext"; // Class name for the DbContext to be generated. Note: If generating separate files, please give the db context a different name from this tt filename. Ignored if using multi-context generation
+        public static OnConfiguration OnConfiguration = OnConfiguration.Configuration; // EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/OnConfiguration
         public static bool GenerateSeparateFiles      = false;
         public static string Namespace                = typeof(Settings).Namespace; // Override the default namespace here. Example: Namespace = "CustomNamespace";
         public static string TemplateFolder           = ""; // Only used if Settings.TemplateType = TemplateType.FileBased. Specify folder name where the mustache folders can be found. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Custom-file-based-templates
