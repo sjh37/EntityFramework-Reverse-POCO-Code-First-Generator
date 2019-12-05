@@ -231,7 +231,6 @@
     <Compile Include="Generators\FileHeaderFooter.cs" />
     <Compile Include="Generators\CodeOutput.cs" />
     <Compile Include="Templates\TemplateFileBased.cs" />
-    <Compile Include="Util\StringExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

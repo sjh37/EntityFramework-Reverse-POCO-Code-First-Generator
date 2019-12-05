@@ -40,11 +40,16 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.Extensions.Configuration;
 using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlTypes;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Tester;
 
 namespace Tester.Integration.EfCore3.File_based_templatesPlum
 {
