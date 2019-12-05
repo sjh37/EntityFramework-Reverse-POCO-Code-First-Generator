@@ -379,19 +379,13 @@ namespace Efrpg
         // This method will be called right before we write the POCO class
         public string WriteClassAttributes()
         {
+            if (Attributes == null)
+                return string.Empty;
+
             var sb = new StringBuilder();
 
-            // Example:
-            //if (ClassName.StartsWith("Order"))
-            //    sb.AppendLine("[YourAttribute]");
-
-            if (Attributes != null && Attributes.Any())
-            {
-                foreach (var attribute in Attributes)
-                {
-                    sb.AppendLine(attribute);
-                }
-            }
+            foreach (var attribute in Attributes.Distinct())
+                sb.AppendLine(attribute);
 
             return sb.ToString();
         }

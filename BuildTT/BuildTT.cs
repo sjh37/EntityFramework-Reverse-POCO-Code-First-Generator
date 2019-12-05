@@ -262,6 +262,9 @@ namespace BuildTT
         // To add a base class to a table
         //if (table.NameHumanCase == ""User"")
         //    table.BaseClasses = "" : IdentityUser<int, CustomUserLogin, CustomUserRole, CustomUserClaim>"";
+
+        // To add attributes
+        //table.Attributes.Add(""[Serializable]"");
     };
 
     // Use the following function if you need to apply additional modifications to a column
