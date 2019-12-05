@@ -44,7 +44,6 @@
         public static string ConnectionString         = ""; // This is used by the generator to reverse engineer your database
         public static string ConnectionStringName     = "MyDbContext"; // ConnectionString key as specified in your app.config/web.config/appsettings.json
         public static string DbContextName            = "MyDbContext"; // Class name for the DbContext to be generated. Note: If generating separate files, please give the db context a different name from this tt filename. Ignored if using multi-context generation
-        public static OnConfiguration OnConfiguration = OnConfiguration.Configuration; // EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/OnConfiguration
         public static bool GenerateSeparateFiles      = false;
         public static string Namespace                = typeof(Settings).Namespace; // Override the default namespace here. Example: Namespace = "CustomNamespace";
         public static string TemplateFolder           = ""; // Only used if Settings.TemplateType = TemplateType.FileBased. Specify folder name where the mustache folders can be found. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Custom-file-based-templates
@@ -58,6 +57,7 @@
         public static int    CommandTimeout                         = 600; // SQL Command timeout in seconds. 600 is 10 minutes, 0 will wait indefinitely. Some databases can be slow retrieving schema information.
         public static string DbContextInterfaceBaseClasses          = "IDisposable"; // Specify what the base classes are for your database context interface
         public static string DbContextBaseClass                     = "DbContext"; // Specify what the base class is for your DbContext. For ASP.NET Identity use "IdentityDbContext<ApplicationUser>";
+        public static OnConfiguration OnConfiguration               = OnConfiguration.Configuration; // EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/OnConfiguration
         public static bool   AddParameterlessConstructorToDbContext = true; // If true, then DbContext will have a default (parameter-less) constructor which automatically passes in the connection string name, if false then no parameter-less constructor will be created.
         public static string ConfigurationClassName                 = "Configuration"; // Configuration, Mapping, Map, etc. This is appended to the Poco class name to configure the mappings.
         public static string DatabaseReaderPlugin                   = ""; // Eg, "c:\\Path\\YourDatabaseReader.dll,Full.Name.Of.Class.Including.Namespace". See #501. This will allow you to specify a pluggable provider for reading your database.
@@ -1370,6 +1370,19 @@
             _fileManagers   = new Dictionary<string, IFileManager>();
             _fileManager    = null;
             _visualStudioFileManager = null;
+        }
+
+        public static void DeleteFile(string filename)
+        {
+            try
+            {
+                var path = Path.Combine(Settings.Root, filename);
+                File.Delete(path);
+            }
+            catch
+            {
+                // ignored
+            }
         }
 
         public void Init(Dictionary<string, IDbContextFilter> filters, Type fileManagerType)
@@ -2913,8 +2926,12 @@
 
         public CodeOutput GenerateInterface()
         {
+            var filename = Settings.DbContextInterfaceName + Settings.FileExtension;
             if (!CanWriteInterface())
+            {
+                FileManagementService.DeleteFile(filename);
                 return null;
+            }
 
             var data = new InterfaceModel
             {
@@ -2933,7 +2950,7 @@
                 hasScalarValuedFunctions        = _hasScalarValuedFunctions && _filter.IncludeScalarValuedFunctions
             };
 
-            var co = new CodeOutput(Settings.DbContextInterfaceName + Settings.FileExtension, "Database context interface", GlobalUsings);
+            var co = new CodeOutput(filename, "Database context interface", GlobalUsings);
             co.AddUsings(Template.DatabaseContextInterfaceUsings(data));
             co.AddCode(Template.Transform(Template.DatabaseContextInterface(), data));
 
@@ -2942,8 +2959,12 @@
 
         public CodeOutput GenerateContext()
         {
+            var filename = Settings.DbContextName + Settings.FileExtension;
             if (!CanWriteContext())
+            {
+                FileManagementService.DeleteFile(filename);
                 return null;
+            }
 
             var indexes = new List<string>();
             foreach (var table in _tables)
@@ -2999,7 +3020,7 @@
                 OnConfigurationUsesConnectionString    = Settings.OnConfiguration == OnConfiguration.ConnectionString
             };
 
-            var co = new CodeOutput(Settings.DbContextName + Settings.FileExtension, "Database context", GlobalUsings);
+            var co = new CodeOutput(filename, "Database context", GlobalUsings);
             co.AddUsings(Template.DatabaseContextUsings(data));
             co.AddCode(Template.Transform(Template.DatabaseContext(), data));
 
@@ -3008,8 +3029,12 @@
 
         public CodeOutput GenerateFakeContext()
         {
+            var filename = "Fake" + Settings.DbContextName + Settings.FileExtension;
             if (!CanWriteFakeContext())
+            {
+                FileManagementService.DeleteFile(filename);
                 return null;
+            }
 
             var data = new FakeContextModel
             {
@@ -3025,7 +3050,7 @@
                 hasScalarValuedFunctions = _hasScalarValuedFunctions && _filter.IncludeScalarValuedFunctions
             };
 
-            var co = new CodeOutput("Fake" + Settings.DbContextName + Settings.FileExtension, "Fake Database context", GlobalUsings);
+            var co = new CodeOutput(filename, "Fake Database context", GlobalUsings);
             co.AddUsings(Template.FakeDatabaseContextUsings(data, _filter));
             co.AddCode(Template.Transform(Template.FakeDatabaseContext(), data));
 
@@ -3034,8 +3059,12 @@
 
         public CodeOutput GenerateFakeDbSet()
         {
+            var filename = "FakeDbSet" + Settings.FileExtension;
             if (!CanWriteFakeContext())
+            {
+                FileManagementService.DeleteFile(filename);
                 return null;
+            }
 
             var data = new FakeDbSetModel
             {
@@ -3045,7 +3074,7 @@
                 IsEfCore3               = Settings.IsEfCore3()
             };
 
-            var co = new CodeOutput("FakeDbSet" + Settings.FileExtension, "Fake DbSet", GlobalUsings);
+            var co = new CodeOutput(filename, "Fake DbSet", GlobalUsings);
             co.AddUsings(Template.FakeDbSetUsings(data));
             co.AddCode(Template.Transform(Template.FakeDbSet(), data));
 
@@ -3054,8 +3083,12 @@
 
         public CodeOutput GenerateFactory()
         {
+            var filename = Settings.DbContextName + "Factory" + Settings.FileExtension;
             if (!CanWriteFactory())
+            {
+                FileManagementService.DeleteFile(filename);
                 return null;
+            }
 
             var data = new FactoryModel
             {
@@ -3063,7 +3096,7 @@
                 contextName = Settings.DbContextName
             };
 
-            var co = new CodeOutput(Settings.DbContextName + "Factory" + Settings.FileExtension, "Database context factory", GlobalUsings);
+            var co = new CodeOutput(filename, "Database context factory", GlobalUsings);
             co.AddUsings(Template.DatabaseContextFactoryUsings(data));
             co.AddCode(Template.Transform(Template.DatabaseContextFactory(), data));
             return co;
@@ -3071,8 +3104,12 @@
 
         public CodeOutput GeneratePoco(Table table)
         {
+            var filename = table.NameHumanCaseWithSuffix() + Settings.FileExtension;
             if (!CanWritePoco())
+            {
+                FileManagementService.DeleteFile(filename);
                 return null;
+            }
 
             var isEfCore3 = Settings.IsEfCore3();
 
@@ -3146,7 +3183,7 @@
                 EntityClassesArePartial = Settings.EntityClassesArePartial()
             };
 
-            var co = new CodeOutput(table.NameHumanCaseWithSuffix() + Settings.FileExtension, null, GlobalUsings);
+            var co = new CodeOutput(filename, null, GlobalUsings);
             co.AddUsings(Template.PocoUsings(data));
             co.AddCode(Template.Transform(Template.Poco(), data));
             return co;
@@ -3154,8 +3191,12 @@
 
         public CodeOutput GeneratePocoConfiguration(Table table)
         {
+            var filename = table.NameHumanCaseWithSuffix() + Settings.ConfigurationClassName + Settings.FileExtension;
             if (!CanWritePocoConfiguration())
+            {
+                FileManagementService.DeleteFile(filename);
                 return null;
+            }
 
             var columns = table.Columns
                 .Where(x => !x.Hidden && !string.IsNullOrEmpty(x.Config))
@@ -3210,7 +3251,7 @@
                 HasAlternateKeys               = hasAlternateKeys
             };
 
-            var co = new CodeOutput(table.NameHumanCaseWithSuffix() + Settings.ConfigurationClassName + Settings.FileExtension, null, GlobalUsings);
+            var co = new CodeOutput(filename, null, GlobalUsings);
             co.AddUsings(Template.PocoConfigurationUsings(data));
             co.AddCode(Template.Transform(Template.PocoConfiguration(), data));
             return co;
@@ -3218,8 +3259,12 @@
 
         public CodeOutput GenerateStoredProcReturnModel(StoredProcedure sp)
         {
+            var filename = sp.WriteStoredProcReturnModelName(_filter) + Settings.FileExtension;
             if (!CanWriteStoredProcReturnModel())
+            {
+                FileManagementService.DeleteFile(filename);
                 return null;
+            }
 
             var multipleModelReturnColumns = new List<MultipleModelReturnColumns>();
             var model = 0;
@@ -3240,7 +3285,7 @@
                 MultipleModelReturnColumns     = multipleModelReturnColumns
             };
 
-            var co = new CodeOutput(sp.WriteStoredProcReturnModelName(_filter) + Settings.FileExtension, null, GlobalUsings);
+            var co = new CodeOutput(filename, null, GlobalUsings);
             co.AddUsings(Template.StoredProcReturnModelUsings());
             co.AddCode(Template.Transform(Template.StoredProcReturnModels(), data));
             return co;
@@ -3248,10 +3293,14 @@
 
         public CodeOutput GenerateEnum(Enumeration enumeration)
         {
+            var filename = enumeration.EnumName + Settings.FileExtension;
             if (!CanWriteEnums())
+            {
+                FileManagementService.DeleteFile(filename);
                 return null;
+            }
 
-            var co = new CodeOutput(enumeration.EnumName + Settings.FileExtension, null, null);
+            var co = new CodeOutput(filename, null, null);
             co.AddCode(Template.Transform(Template.Enums(), enumeration));
 
             return co;
@@ -3629,24 +3678,35 @@
                 .ThenBy(x => x.TableName)
                 .ToList();
 
+            var deleteFilteredOutFiles = Settings.FileManagerType == FileManagerType.Custom && Settings.GenerateSeparateFiles;
+
             foreach (var filterKeyValuePair in FilterList.GetFilters())
             {
                 var filter = filterKeyValuePair.Value;
 
                 foreach (var tn in tablesNames)
                 {
-                    if (tn.IsView && !filter.IncludeViews)
+                    var exclude = tn.IsView && !filter.IncludeViews;
+                    if(exclude && !deleteFilteredOutFiles)
                         continue;
 
                     // Check if schema is excluded
                     var schema = new Schema(tn.SchemaName);
                     if (filter.IsExcluded(schema))
-                        continue;
+                    {
+                        exclude = true;
+                        if (!deleteFilteredOutFiles)
+                            continue;
+                    }
 
                     // Check if table is excluded
                     var table = new Table(filter, schema, tn.TableName, tn.IsView);
                     if (filter.IsExcluded(table))
-                        continue;
+                    {
+                        exclude = true;
+                        if (!deleteFilteredOutFiles)
+                            continue;
+                    }
 
                     // Handle table names with underscores - singularise just the last word
                     var tableName = filter.TableRename(tn.TableName, tn.SchemaName, tn.IsView);
@@ -3657,7 +3717,18 @@
                         table.NameHumanCase = table.Schema.DbName + "_" + table.NameHumanCase;
 
                     if (filter.IsExcluded(table)) // Retest exclusion after table rename
+                    {
+                        exclude = true;
+                        if (!deleteFilteredOutFiles)
+                            continue;
+                    }
+
+                    if(exclude)
+                    {
+                        FileManagementService.DeleteFile(table.NameHumanCaseWithSuffix() + Settings.FileExtension); // Poco
+                        FileManagementService.DeleteFile(table.NameHumanCaseWithSuffix() + Settings.ConfigurationClassName + Settings.FileExtension); // Poco config
                         continue;
+                    }
 
                     // Check for table or C# name clashes
                     if (DatabaseReader.ReservedKeywords.Contains(table.NameHumanCase) ||
@@ -3939,6 +4010,8 @@
 
             try
             {
+                var deleteFilteredOutFiles = Settings.FileManagerType == FileManagerType.Custom && Settings.GenerateSeparateFiles;
+
                 var spFilters = FilterList
                     .GetFilters()
                     .Where(x => x.Value.IncludeStoredProcedures || x.Value.IncludeTableValuedFunctions || x.Value.IncludeScalarValuedFunctions)
@@ -3982,7 +4055,12 @@
 
                     // Check to see if this stored proc is to be kept by any of the filters
                     if (spFilters.All(x => x.Value.IsExcluded(sp)))
+                    {
+                        if(deleteFilteredOutFiles)
+                            FileManagementService.DeleteFile(sp.WriteStoredProcReturnModelName(spFilters[0].Value) + Settings.FileExtension);
+
                         continue; // All Db Context exclude this stored proc, ignore it as nobody wants it
+                    }
 
                     storedProcs.Add(sp);
                 }
@@ -4035,6 +4113,11 @@
                             }
                             else
                                 filter.StoredProcs.Add(sp);
+                        }
+                        else
+                        {
+                            if (deleteFilteredOutFiles)
+                                FileManagementService.DeleteFile(sp.WriteStoredProcReturnModelName(filter) + Settings.FileExtension);
                         }
                     }
                 }
@@ -17733,78 +17816,6 @@ public enum {{EnumName}}{{#newline}}
             }
         }
     }
-
-    /*public static class StringExtensions
-    {
-        public static string ToLiteral(this string input)
-        {
-            if (string.IsNullOrEmpty(input))
-                return input;
-
-            using (var writer = new StringWriter())
-            {
-                using (var provider = CodeDomProvider.CreateProvider("CSharp"))
-                {
-                    provider.GenerateCodeFromExpression(new CodePrimitiveExpression(input), writer,
-                        new CodeGeneratorOptions
-                        {
-                            BlankLinesBetweenMembers     = false,
-                            ElseOnClosing                = false,
-                            IndentString                 = string.Empty
-                        });
-                    var result                           = writer.ToString();
-                    if (result.StartsWith("\"") && result.EndsWith("\""))
-                        return result.Substring(1, result.Length - 2);
-                    return result;
-                }
-            }
-        }
-    }*/
-
-    /*public static class ReplaceString
-    {
-        static readonly IDictionary<string, string> m_replaceDict = new Dictionary<string, string>();
-
-        const string ms_regexEscapes = @"[\a\b\f\n\r\t\v\\""]";
-
-        static ReplaceString()
-        {
-            m_replaceDict.Add("\a", @"\a");
-            m_replaceDict.Add("\b", @"\b");
-            m_replaceDict.Add("\f", @"\f");
-            m_replaceDict.Add("\n", @"\n");
-            m_replaceDict.Add("\r", @"\r");
-            m_replaceDict.Add("\t", @"\t");
-            m_replaceDict.Add("\v", @"\v");
-
-            m_replaceDict.Add("\\", @"\\");
-            m_replaceDict.Add("\0", @"\0");
-
-            // The SO parser gets fooled by the verbatim version 
-            // of the string to replace - @"\"""
-            // so use the 'regular' version
-            m_replaceDict.Add("\"", "\\\"");
-        }
-
-        public static string StringLiteral(this string input)
-        {
-            return Regex.Replace(input, ms_regexEscapes, Match);
-        }
-
-        public static string CharLiteral(this char c)
-        {
-            return c == '\'' ? @"'\''" : string.Format("'{0}'", c);
-        }
-
-        private static string Match(Match m)
-        {
-            var match = m.ToString();
-            if (m_replaceDict.ContainsKey(match))
-                return m_replaceDict[match];
-
-            return match;
-        }
-    }*/
 
     public static void ArgumentNotNull<T>(T arg, string name) where T : class
     {

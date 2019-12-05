@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using Efrpg.Filtering;
 
 namespace Efrpg.FileManagement
@@ -21,6 +21,19 @@ namespace Efrpg.FileManagement
             _fileManagers   = new Dictionary<string, IFileManager>();
             _fileManager    = null;
             _visualStudioFileManager = null;
+        }
+
+        public static void DeleteFile(string filename)
+        {
+            try
+            {
+                var path = Path.Combine(Settings.Root, filename);
+                File.Delete(path);
+            }
+            catch
+            {
+                // ignored
+            }
         }
 
         public void Init(Dictionary<string, IDbContextFilter> filters, Type fileManagerType)

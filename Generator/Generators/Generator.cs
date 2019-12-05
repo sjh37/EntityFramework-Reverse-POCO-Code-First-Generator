@@ -267,24 +267,35 @@ namespace Efrpg.Generators
                 .ThenBy(x => x.TableName)
                 .ToList();
 
+            var deleteFilteredOutFiles = Settings.FileManagerType == FileManagerType.Custom && Settings.GenerateSeparateFiles;
+
             foreach (var filterKeyValuePair in FilterList.GetFilters())
             {
                 var filter = filterKeyValuePair.Value;
 
                 foreach (var tn in tablesNames)
                 {
-                    if (tn.IsView && !filter.IncludeViews)
+                    var exclude = tn.IsView && !filter.IncludeViews;
+                    if(exclude && !deleteFilteredOutFiles)
                         continue;
 
                     // Check if schema is excluded
                     var schema = new Schema(tn.SchemaName);
                     if (filter.IsExcluded(schema))
-                        continue;
+                    {
+                        exclude = true;
+                        if (!deleteFilteredOutFiles)
+                            continue;
+                    }
 
                     // Check if table is excluded
                     var table = new Table(filter, schema, tn.TableName, tn.IsView);
                     if (filter.IsExcluded(table))
-                        continue;
+                    {
+                        exclude = true;
+                        if (!deleteFilteredOutFiles)
+                            continue;
+                    }
 
                     // Handle table names with underscores - singularise just the last word
                     var tableName = filter.TableRename(tn.TableName, tn.SchemaName, tn.IsView);
@@ -295,7 +306,18 @@ namespace Efrpg.Generators
                         table.NameHumanCase = table.Schema.DbName + "_" + table.NameHumanCase;
 
                     if (filter.IsExcluded(table)) // Retest exclusion after table rename
+                    {
+                        exclude = true;
+                        if (!deleteFilteredOutFiles)
+                            continue;
+                    }
+
+                    if(exclude)
+                    {
+                        FileManagementService.DeleteFile(table.NameHumanCaseWithSuffix() + Settings.FileExtension); // Poco
+                        FileManagementService.DeleteFile(table.NameHumanCaseWithSuffix() + Settings.ConfigurationClassName + Settings.FileExtension); // Poco config
                         continue;
+                    }
 
                     // Check for table or C# name clashes
                     if (DatabaseReader.ReservedKeywords.Contains(table.NameHumanCase) ||
@@ -577,6 +599,8 @@ namespace Efrpg.Generators
 
             try
             {
+                var deleteFilteredOutFiles = Settings.FileManagerType == FileManagerType.Custom && Settings.GenerateSeparateFiles;
+
                 var spFilters = FilterList
                     .GetFilters()
                     .Where(x => x.Value.IncludeStoredProcedures || x.Value.IncludeTableValuedFunctions || x.Value.IncludeScalarValuedFunctions)
@@ -620,7 +644,12 @@ namespace Efrpg.Generators
 
                     // Check to see if this stored proc is to be kept by any of the filters
                     if (spFilters.All(x => x.Value.IsExcluded(sp)))
+                    {
+                        if(deleteFilteredOutFiles)
+                            FileManagementService.DeleteFile(sp.WriteStoredProcReturnModelName(spFilters[0].Value) + Settings.FileExtension);
+
                         continue; // All Db Context exclude this stored proc, ignore it as nobody wants it
+                    }
 
                     storedProcs.Add(sp);
                 }
@@ -673,6 +702,11 @@ namespace Efrpg.Generators
                             }
                             else
                                 filter.StoredProcs.Add(sp);
+                        }
+                        else
+                        {
+                            if (deleteFilteredOutFiles)
+                                FileManagementService.DeleteFile(sp.WriteStoredProcReturnModelName(filter) + Settings.FileExtension);
                         }
                     }
                 }

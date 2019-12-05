@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security;
+using Efrpg.FileManagement;
 using Efrpg.Filtering;
 using Efrpg.TemplateModels;
 using Efrpg.Templates;
@@ -226,8 +227,12 @@ namespace Efrpg.Generators
 
         public CodeOutput GenerateInterface()
         {
+            var filename = Settings.DbContextInterfaceName + Settings.FileExtension;
             if (!CanWriteInterface())
+            {
+                FileManagementService.DeleteFile(filename);
                 return null;
+            }
 
             var data = new InterfaceModel
             {
@@ -246,7 +251,7 @@ namespace Efrpg.Generators
                 hasScalarValuedFunctions        = _hasScalarValuedFunctions && _filter.IncludeScalarValuedFunctions
             };
 
-            var co = new CodeOutput(Settings.DbContextInterfaceName + Settings.FileExtension, "Database context interface", GlobalUsings);
+            var co = new CodeOutput(filename, "Database context interface", GlobalUsings);
             co.AddUsings(Template.DatabaseContextInterfaceUsings(data));
             co.AddCode(Template.Transform(Template.DatabaseContextInterface(), data));
 
@@ -255,8 +260,12 @@ namespace Efrpg.Generators
 
         public CodeOutput GenerateContext()
         {
+            var filename = Settings.DbContextName + Settings.FileExtension;
             if (!CanWriteContext())
+            {
+                FileManagementService.DeleteFile(filename);
                 return null;
+            }
 
             var indexes = new List<string>();
             foreach (var table in _tables)
@@ -312,7 +321,7 @@ namespace Efrpg.Generators
                 OnConfigurationUsesConnectionString    = Settings.OnConfiguration == OnConfiguration.ConnectionString
             };
 
-            var co = new CodeOutput(Settings.DbContextName + Settings.FileExtension, "Database context", GlobalUsings);
+            var co = new CodeOutput(filename, "Database context", GlobalUsings);
             co.AddUsings(Template.DatabaseContextUsings(data));
             co.AddCode(Template.Transform(Template.DatabaseContext(), data));
 
@@ -321,8 +330,12 @@ namespace Efrpg.Generators
 
         public CodeOutput GenerateFakeContext()
         {
+            var filename = "Fake" + Settings.DbContextName + Settings.FileExtension;
             if (!CanWriteFakeContext())
+            {
+                FileManagementService.DeleteFile(filename);
                 return null;
+            }
 
             var data = new FakeContextModel
             {
@@ -338,7 +351,7 @@ namespace Efrpg.Generators
                 hasScalarValuedFunctions = _hasScalarValuedFunctions && _filter.IncludeScalarValuedFunctions
             };
 
-            var co = new CodeOutput("Fake" + Settings.DbContextName + Settings.FileExtension, "Fake Database context", GlobalUsings);
+            var co = new CodeOutput(filename, "Fake Database context", GlobalUsings);
             co.AddUsings(Template.FakeDatabaseContextUsings(data, _filter));
             co.AddCode(Template.Transform(Template.FakeDatabaseContext(), data));
 
@@ -347,8 +360,12 @@ namespace Efrpg.Generators
 
         public CodeOutput GenerateFakeDbSet()
         {
+            var filename = "FakeDbSet" + Settings.FileExtension;
             if (!CanWriteFakeContext())
+            {
+                FileManagementService.DeleteFile(filename);
                 return null;
+            }
 
             var data = new FakeDbSetModel
             {
@@ -358,7 +375,7 @@ namespace Efrpg.Generators
                 IsEfCore3               = Settings.IsEfCore3()
             };
 
-            var co = new CodeOutput("FakeDbSet" + Settings.FileExtension, "Fake DbSet", GlobalUsings);
+            var co = new CodeOutput(filename, "Fake DbSet", GlobalUsings);
             co.AddUsings(Template.FakeDbSetUsings(data));
             co.AddCode(Template.Transform(Template.FakeDbSet(), data));
 
@@ -367,8 +384,12 @@ namespace Efrpg.Generators
 
         public CodeOutput GenerateFactory()
         {
+            var filename = Settings.DbContextName + "Factory" + Settings.FileExtension;
             if (!CanWriteFactory())
+            {
+                FileManagementService.DeleteFile(filename);
                 return null;
+            }
 
             var data = new FactoryModel
             {
@@ -376,7 +397,7 @@ namespace Efrpg.Generators
                 contextName = Settings.DbContextName
             };
 
-            var co = new CodeOutput(Settings.DbContextName + "Factory" + Settings.FileExtension, "Database context factory", GlobalUsings);
+            var co = new CodeOutput(filename, "Database context factory", GlobalUsings);
             co.AddUsings(Template.DatabaseContextFactoryUsings(data));
             co.AddCode(Template.Transform(Template.DatabaseContextFactory(), data));
             return co;
@@ -384,8 +405,12 @@ namespace Efrpg.Generators
 
         public CodeOutput GeneratePoco(Table table)
         {
+            var filename = table.NameHumanCaseWithSuffix() + Settings.FileExtension;
             if (!CanWritePoco())
+            {
+                FileManagementService.DeleteFile(filename);
                 return null;
+            }
 
             var isEfCore3 = Settings.IsEfCore3();
 
@@ -459,7 +484,7 @@ namespace Efrpg.Generators
                 EntityClassesArePartial = Settings.EntityClassesArePartial()
             };
 
-            var co = new CodeOutput(table.NameHumanCaseWithSuffix() + Settings.FileExtension, null, GlobalUsings);
+            var co = new CodeOutput(filename, null, GlobalUsings);
             co.AddUsings(Template.PocoUsings(data));
             co.AddCode(Template.Transform(Template.Poco(), data));
             return co;
@@ -467,8 +492,12 @@ namespace Efrpg.Generators
 
         public CodeOutput GeneratePocoConfiguration(Table table)
         {
+            var filename = table.NameHumanCaseWithSuffix() + Settings.ConfigurationClassName + Settings.FileExtension;
             if (!CanWritePocoConfiguration())
+            {
+                FileManagementService.DeleteFile(filename);
                 return null;
+            }
 
             var columns = table.Columns
                 .Where(x => !x.Hidden && !string.IsNullOrEmpty(x.Config))
@@ -523,7 +552,7 @@ namespace Efrpg.Generators
                 HasAlternateKeys               = hasAlternateKeys
             };
 
-            var co = new CodeOutput(table.NameHumanCaseWithSuffix() + Settings.ConfigurationClassName + Settings.FileExtension, null, GlobalUsings);
+            var co = new CodeOutput(filename, null, GlobalUsings);
             co.AddUsings(Template.PocoConfigurationUsings(data));
             co.AddCode(Template.Transform(Template.PocoConfiguration(), data));
             return co;
@@ -531,8 +560,12 @@ namespace Efrpg.Generators
 
         public CodeOutput GenerateStoredProcReturnModel(StoredProcedure sp)
         {
+            var filename = sp.WriteStoredProcReturnModelName(_filter) + Settings.FileExtension;
             if (!CanWriteStoredProcReturnModel())
+            {
+                FileManagementService.DeleteFile(filename);
                 return null;
+            }
 
             var multipleModelReturnColumns = new List<MultipleModelReturnColumns>();
             var model = 0;
@@ -553,7 +586,7 @@ namespace Efrpg.Generators
                 MultipleModelReturnColumns     = multipleModelReturnColumns
             };
 
-            var co = new CodeOutput(sp.WriteStoredProcReturnModelName(_filter) + Settings.FileExtension, null, GlobalUsings);
+            var co = new CodeOutput(filename, null, GlobalUsings);
             co.AddUsings(Template.StoredProcReturnModelUsings());
             co.AddCode(Template.Transform(Template.StoredProcReturnModels(), data));
             return co;
@@ -561,10 +594,14 @@ namespace Efrpg.Generators
 
         public CodeOutput GenerateEnum(Enumeration enumeration)
         {
+            var filename = enumeration.EnumName + Settings.FileExtension;
             if (!CanWriteEnums())
+            {
+                FileManagementService.DeleteFile(filename);
                 return null;
+            }
 
-            var co = new CodeOutput(enumeration.EnumName + Settings.FileExtension, null, null);
+            var co = new CodeOutput(filename, null, null);
             co.AddCode(Template.Transform(Template.Enums(), enumeration));
 
             return co;
