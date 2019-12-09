@@ -91,6 +91,9 @@ namespace Efrpg.Generators
                 if (Settings.IncludeConnectionSettingComments)
                     _preHeaderInfo.Append(DatabaseDetails());
 
+                if (Settings.UseDataAnnotations)
+                    Settings.AdditionalNamespaces.Add("System.ComponentModel.DataAnnotations");
+
                 HasAcademicLicence = licence.LicenceType == LicenceType.Academic;
                 HasTrialLicence    = licence.LicenceType == LicenceType.Trial;
                 InitialisationOk = FilterList.ReadDbContextSettings(DatabaseReader, singleDbContextSubNamespace);

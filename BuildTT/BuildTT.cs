@@ -589,9 +589,6 @@ namespace BuildTT
     // Don't forget to take a look at SingleContextFilter and FilterSettings classes!
     // That's it, nothing else to configure ***********************************************************************************************
 
-    if(Settings.UseDataAnnotations)
-        Settings.AdditionalNamespaces.Add(""System.ComponentModel.DataAnnotations"");
-
     FilterSettings.CheckSettings();
     Inflector.PluralisationService = new EnglishPluralizationService();
     var outer = (GeneratedTextTransformation) this;
