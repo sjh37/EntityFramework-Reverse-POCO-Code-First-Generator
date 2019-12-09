@@ -294,8 +294,9 @@
         //if (column.IsRowVersion)
         //    column.Attributes.Add("[Timestamp]");
         //if (!column.IsMaxLength && column.MaxLength > 0)
-        //{
-        //    column.Attributes.Add(string.Format("[MaxLength({0})]", column.MaxLength));
+        //{ 
+        //    var doNotSpecifySize = (Settings.DatabaseType == DatabaseType.SqlCe && column.MaxLength > 4000);
+        //    column.Attributes.Add(doNotSpecifySize ? "[MaxLength]" : string.Format("[MaxLength({0})]", column.MaxLength));
         //    if (column.PropertyType.Equals("string", StringComparison.InvariantCultureIgnoreCase))
         //        column.Attributes.Add(string.Format("[StringLength({0})]", column.MaxLength));
         //}
