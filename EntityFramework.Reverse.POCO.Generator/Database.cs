@@ -47,6 +47,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Data.SqlTypes;
 using System.Linq;
@@ -1052,25 +1053,70 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Alphabetical list of products
     public class AlphabeticalListOfProduct
     {
+        [Display(Name = "Product ID")]
+        [Required]
         public int ProductId { get; set; } // ProductID
+
+        [Display(Name = "Product name")]
+        [MaxLength(40)]
+        [StringLength(40)]
+        [Required(AllowEmptyStrings = true)]
         public string ProductName { get; set; } // ProductName (length: 40)
+
+        [Display(Name = "Supplier ID")]
         public int? SupplierId { get; set; } // SupplierID
+
+        [Display(Name = "Category ID")]
         public int? CategoryId { get; set; } // CategoryID
+
+        [Display(Name = "Quantity per unit")]
+        [MaxLength(20)]
+        [StringLength(20)]
         public string QuantityPerUnit { get; set; } // QuantityPerUnit (length: 20)
+
+        [Display(Name = "Unit price")]
         public decimal? UnitPrice { get; set; } // UnitPrice
+
+        [Display(Name = "Units in stock")]
         public short? UnitsInStock { get; set; } // UnitsInStock
+
+        [Display(Name = "Units on order")]
         public short? UnitsOnOrder { get; set; } // UnitsOnOrder
+
+        [Display(Name = "Reorder level")]
         public short? ReorderLevel { get; set; } // ReorderLevel
+
+        [Display(Name = "Discontinued")]
+        [Required]
         public bool Discontinued { get; set; } // Discontinued
+
+        [Display(Name = "Category name")]
+        [MaxLength(15)]
+        [StringLength(15)]
+        [Required(AllowEmptyStrings = true)]
         public string CategoryName { get; set; } // CategoryName (length: 15)
     }
 
     // Categories
     public class Category
     {
+        [Display(Name = "Category ID")]
+        [Key]
+        [Required]
         public int CategoryId { get; set; } // CategoryID (Primary key)
+
+        [Display(Name = "Category name")]
+        [MaxLength(15)]
+        [StringLength(15)]
+        [Required(AllowEmptyStrings = true)]
         public string CategoryName { get; set; } // CategoryName (length: 15)
+
+        [Display(Name = "Description")]
+        [MaxLength]
         public string Description { get; set; } // Description (length: 1073741823)
+
+        [Display(Name = "Picture")]
+        [MaxLength(2147483647)]
         public byte[] Picture { get; set; } // Picture (length: 2147483647)
 
         // Reverse navigation
@@ -1089,30 +1135,89 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Category Sales for 1997
     public class CategorySalesFor1997
     {
+        [Display(Name = "Category name")]
+        [MaxLength(15)]
+        [StringLength(15)]
+        [Required(AllowEmptyStrings = true)]
         public string CategoryName { get; set; } // CategoryName (length: 15)
+
+        [Display(Name = "Category sales")]
         public decimal? CategorySales { get; set; } // CategorySales
     }
 
     // Current Product List
     public class CurrentProductList
     {
+        [Display(Name = "Product ID")]
+        [Required]
         public int ProductId { get; set; } // ProductID
+
+        [Display(Name = "Product name")]
+        [MaxLength(40)]
+        [StringLength(40)]
+        [Required(AllowEmptyStrings = true)]
         public string ProductName { get; set; } // ProductName (length: 40)
     }
 
     // Customers
     public class Customer
     {
+        [Display(Name = "Customer ID")]
+        [Key]
+        [MaxLength(5)]
+        [StringLength(5)]
+        [Required(AllowEmptyStrings = true)]
         public string CustomerId { get; set; } // CustomerID (Primary key) (length: 5)
+
+        [Display(Name = "Company name")]
+        [MaxLength(40)]
+        [StringLength(40)]
+        [Required(AllowEmptyStrings = true)]
         public string CompanyName { get; set; } // CompanyName (length: 40)
+
+        [Display(Name = "Contact name")]
+        [MaxLength(30)]
+        [StringLength(30)]
         public string ContactName { get; set; } // ContactName (length: 30)
+
+        [Display(Name = "Contact title")]
+        [MaxLength(30)]
+        [StringLength(30)]
         public string ContactTitle { get; set; } // ContactTitle (length: 30)
+
+        [Display(Name = "Address")]
+        [MaxLength(60)]
+        [StringLength(60)]
         public string Address { get; set; } // Address (length: 60)
+
+        [Display(Name = "City")]
+        [MaxLength(15)]
+        [StringLength(15)]
         public string City { get; set; } // City (length: 15)
+
+        [Display(Name = "Region")]
+        [MaxLength(15)]
+        [StringLength(15)]
         public string Region { get; set; } // Region (length: 15)
+
+        [Display(Name = "Postal code")]
+        [MaxLength(10)]
+        [StringLength(10)]
         public string PostalCode { get; set; } // PostalCode (length: 10)
+
+        [Display(Name = "Country")]
+        [MaxLength(15)]
+        [StringLength(15)]
         public string Country { get; set; } // Country (length: 15)
+
+        [Display(Name = "Phone")]
+        [MaxLength(24)]
+        [StringLength(24)]
         public string Phone { get; set; } // Phone (length: 24)
+
+        [Display(Name = "Fax")]
+        [MaxLength(24)]
+        [StringLength(24)]
         public string Fax { get; set; } // Fax (length: 24)
 
         // Reverse navigation
@@ -1137,16 +1242,44 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Customer and Suppliers by City
     public class CustomerAndSuppliersByCity
     {
+        [Display(Name = "City")]
+        [MaxLength(15)]
+        [StringLength(15)]
         public string City { get; set; } // City (length: 15)
+
+        [Display(Name = "Company name")]
+        [MaxLength(40)]
+        [StringLength(40)]
+        [Required(AllowEmptyStrings = true)]
         public string CompanyName { get; set; } // CompanyName (length: 40)
+
+        [Display(Name = "Contact name")]
+        [MaxLength(30)]
+        [StringLength(30)]
         public string ContactName { get; set; } // ContactName (length: 30)
+
+        [Display(Name = "Relationship")]
+        [MaxLength(9)]
+        [StringLength(9)]
+        [Required(AllowEmptyStrings = true)]
         public string Relationship { get; set; } // Relationship (length: 9)
     }
 
     // CustomerCustomerDemo
     public class CustomerCustomerDemo
     {
+        [Display(Name = "Customer ID")]
+        [Key]
+        [MaxLength(5)]
+        [StringLength(5)]
+        [Required(AllowEmptyStrings = true)]
         public string CustomerId { get; set; } // CustomerID (Primary key) (length: 5)
+
+        [Display(Name = "Customer type ID")]
+        [Key]
+        [MaxLength(10)]
+        [StringLength(10)]
+        [Required(AllowEmptyStrings = true)]
         public string CustomerTypeId { get; set; } // CustomerTypeID (Primary key) (length: 10)
 
         // Foreign keys
@@ -1165,7 +1298,15 @@ namespace EntityFramework_Reverse_POCO_Generator
     // CustomerDemographics
     public class CustomerDemographic
     {
+        [Display(Name = "Customer type ID")]
+        [Key]
+        [MaxLength(10)]
+        [StringLength(10)]
+        [Required(AllowEmptyStrings = true)]
         public string CustomerTypeId { get; set; } // CustomerTypeID (Primary key) (length: 10)
+
+        [Display(Name = "Customer desc")]
+        [MaxLength]
         public string CustomerDesc { get; set; } // CustomerDesc (length: 1073741823)
 
         // Reverse navigation
@@ -1184,23 +1325,88 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Employees
     public class Employee
     {
+        [Display(Name = "Employee ID")]
+        [Key]
+        [Required]
         public int EmployeeId { get; set; } // EmployeeID (Primary key)
+
+        [Display(Name = "Last name")]
+        [MaxLength(20)]
+        [StringLength(20)]
+        [Required(AllowEmptyStrings = true)]
         public string LastName { get; set; } // LastName (length: 20)
+
+        [Display(Name = "First name")]
+        [MaxLength(10)]
+        [StringLength(10)]
+        [Required(AllowEmptyStrings = true)]
         public string FirstName { get; set; } // FirstName (length: 10)
+
+        [Display(Name = "Title")]
+        [MaxLength(30)]
+        [StringLength(30)]
         public string Title { get; set; } // Title (length: 30)
+
+        [Display(Name = "Title of courtesy")]
+        [MaxLength(25)]
+        [StringLength(25)]
         public string TitleOfCourtesy { get; set; } // TitleOfCourtesy (length: 25)
+
+        [Display(Name = "Birth date")]
         public DateTime? BirthDate { get; set; } // BirthDate
+
+        [Display(Name = "Hire date")]
         public DateTime? HireDate { get; set; } // HireDate
+
+        [Display(Name = "Address")]
+        [MaxLength(60)]
+        [StringLength(60)]
         public string Address { get; set; } // Address (length: 60)
+
+        [Display(Name = "City")]
+        [MaxLength(15)]
+        [StringLength(15)]
         public string City { get; set; } // City (length: 15)
+
+        [Display(Name = "Region")]
+        [MaxLength(15)]
+        [StringLength(15)]
         public string Region { get; set; } // Region (length: 15)
+
+        [Display(Name = "Postal code")]
+        [MaxLength(10)]
+        [StringLength(10)]
         public string PostalCode { get; set; } // PostalCode (length: 10)
+
+        [Display(Name = "Country")]
+        [MaxLength(15)]
+        [StringLength(15)]
         public string Country { get; set; } // Country (length: 15)
+
+        [Display(Name = "Home phone")]
+        [MaxLength(24)]
+        [StringLength(24)]
         public string HomePhone { get; set; } // HomePhone (length: 24)
+
+        [Display(Name = "Extension")]
+        [MaxLength(4)]
+        [StringLength(4)]
         public string Extension { get; set; } // Extension (length: 4)
+
+        [Display(Name = "Photo")]
+        [MaxLength(2147483647)]
         public byte[] Photo { get; set; } // Photo (length: 2147483647)
+
+        [Display(Name = "Notes")]
+        [MaxLength]
         public string Notes { get; set; } // Notes (length: 1073741823)
+
+        [Display(Name = "Reports to")]
         public int? ReportsTo { get; set; } // ReportsTo
+
+        [Display(Name = "Photo path")]
+        [MaxLength(255)]
+        [StringLength(255)]
         public string PhotoPath { get; set; } // PhotoPath (length: 255)
 
         // Reverse navigation
@@ -1238,7 +1444,16 @@ namespace EntityFramework_Reverse_POCO_Generator
     // EmployeeTerritories
     public class EmployeeTerritory
     {
+        [Display(Name = "Employee ID")]
+        [Key]
+        [Required]
         public int EmployeeId { get; set; } // EmployeeID (Primary key)
+
+        [Display(Name = "Territory ID")]
+        [Key]
+        [MaxLength(20)]
+        [StringLength(20)]
+        [Required(AllowEmptyStrings = true)]
         public string TerritoryId { get; set; } // TerritoryID (Primary key) (length: 20)
 
         // Foreign keys
@@ -1257,50 +1472,185 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Invoices
     public class Invoice
     {
+        [Display(Name = "Ship name")]
+        [MaxLength(40)]
+        [StringLength(40)]
         public string ShipName { get; set; } // ShipName (length: 40)
+
+        [Display(Name = "Ship address")]
+        [MaxLength(60)]
+        [StringLength(60)]
         public string ShipAddress { get; set; } // ShipAddress (length: 60)
+
+        [Display(Name = "Ship city")]
+        [MaxLength(15)]
+        [StringLength(15)]
         public string ShipCity { get; set; } // ShipCity (length: 15)
+
+        [Display(Name = "Ship region")]
+        [MaxLength(15)]
+        [StringLength(15)]
         public string ShipRegion { get; set; } // ShipRegion (length: 15)
+
+        [Display(Name = "Ship postal code")]
+        [MaxLength(10)]
+        [StringLength(10)]
         public string ShipPostalCode { get; set; } // ShipPostalCode (length: 10)
+
+        [Display(Name = "Ship country")]
+        [MaxLength(15)]
+        [StringLength(15)]
         public string ShipCountry { get; set; } // ShipCountry (length: 15)
+
+        [Display(Name = "Customer ID")]
+        [MaxLength(5)]
+        [StringLength(5)]
         public string CustomerId { get; set; } // CustomerID (length: 5)
+
+        [Display(Name = "Customer name")]
+        [MaxLength(40)]
+        [StringLength(40)]
+        [Required(AllowEmptyStrings = true)]
         public string CustomerName { get; set; } // CustomerName (length: 40)
+
+        [Display(Name = "Address")]
+        [MaxLength(60)]
+        [StringLength(60)]
         public string Address { get; set; } // Address (length: 60)
+
+        [Display(Name = "City")]
+        [MaxLength(15)]
+        [StringLength(15)]
         public string City { get; set; } // City (length: 15)
+
+        [Display(Name = "Region")]
+        [MaxLength(15)]
+        [StringLength(15)]
         public string Region { get; set; } // Region (length: 15)
+
+        [Display(Name = "Postal code")]
+        [MaxLength(10)]
+        [StringLength(10)]
         public string PostalCode { get; set; } // PostalCode (length: 10)
+
+        [Display(Name = "Country")]
+        [MaxLength(15)]
+        [StringLength(15)]
         public string Country { get; set; } // Country (length: 15)
+
+        [Display(Name = "Salesperson")]
+        [MaxLength(31)]
+        [StringLength(31)]
+        [Required(AllowEmptyStrings = true)]
         public string Salesperson { get; set; } // Salesperson (length: 31)
+
+        [Display(Name = "Order ID")]
+        [Required]
         public int OrderId { get; set; } // OrderID
+
+        [Display(Name = "Order date")]
         public DateTime? OrderDate { get; set; } // OrderDate
+
+        [Display(Name = "Required date")]
         public DateTime? RequiredDate { get; set; } // RequiredDate
+
+        [Display(Name = "Shipped date")]
         public DateTime? ShippedDate { get; set; } // ShippedDate
+
+        [Display(Name = "Shipper name")]
+        [MaxLength(40)]
+        [StringLength(40)]
+        [Required(AllowEmptyStrings = true)]
         public string ShipperName { get; set; } // ShipperName (length: 40)
+
+        [Display(Name = "Product ID")]
+        [Required]
         public int ProductId { get; set; } // ProductID
+
+        [Display(Name = "Product name")]
+        [MaxLength(40)]
+        [StringLength(40)]
+        [Required(AllowEmptyStrings = true)]
         public string ProductName { get; set; } // ProductName (length: 40)
+
+        [Display(Name = "Unit price")]
+        [Required]
         public decimal UnitPrice { get; set; } // UnitPrice
+
+        [Display(Name = "Quantity")]
+        [Required]
         public short Quantity { get; set; } // Quantity
+
+        [Display(Name = "Discount")]
+        [Required]
         public float Discount { get; set; } // Discount
+
+        [Display(Name = "Extended price")]
         public decimal? ExtendedPrice { get; set; } // ExtendedPrice
+
+        [Display(Name = "Freight")]
         public decimal? Freight { get; set; } // Freight
     }
 
     // Orders
     public class Order
     {
+        [Display(Name = "Order ID")]
+        [Key]
+        [Required]
         public int OrderId { get; set; } // OrderID (Primary key)
+
+        [Display(Name = "Customer ID")]
+        [MaxLength(5)]
+        [StringLength(5)]
         public string CustomerId { get; set; } // CustomerID (length: 5)
+
+        [Display(Name = "Employee ID")]
         public int? EmployeeId { get; set; } // EmployeeID
+
+        [Display(Name = "Order date")]
         public DateTime? OrderDate { get; set; } // OrderDate
+
+        [Display(Name = "Required date")]
         public DateTime? RequiredDate { get; set; } // RequiredDate
+
+        [Display(Name = "Shipped date")]
         public DateTime? ShippedDate { get; set; } // ShippedDate
+
+        [Display(Name = "Ship via")]
         public int? ShipVia { get; set; } // ShipVia
+
+        [Display(Name = "Freight")]
         public decimal? Freight { get; set; } // Freight
+
+        [Display(Name = "Ship name")]
+        [MaxLength(40)]
+        [StringLength(40)]
         public string ShipName { get; set; } // ShipName (length: 40)
+
+        [Display(Name = "Ship address")]
+        [MaxLength(60)]
+        [StringLength(60)]
         public string ShipAddress { get; set; } // ShipAddress (length: 60)
+
+        [Display(Name = "Ship city")]
+        [MaxLength(15)]
+        [StringLength(15)]
         public string ShipCity { get; set; } // ShipCity (length: 15)
+
+        [Display(Name = "Ship region")]
+        [MaxLength(15)]
+        [StringLength(15)]
         public string ShipRegion { get; set; } // ShipRegion (length: 15)
+
+        [Display(Name = "Ship postal code")]
+        [MaxLength(10)]
+        [StringLength(10)]
         public string ShipPostalCode { get; set; } // ShipPostalCode (length: 10)
+
+        [Display(Name = "Ship country")]
+        [MaxLength(15)]
+        [StringLength(15)]
         public string ShipCountry { get; set; } // ShipCountry (length: 15)
 
         // Reverse navigation
@@ -1337,10 +1687,26 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Order Details
     public class OrderDetail
     {
+        [Display(Name = "Order ID")]
+        [Key]
+        [Required]
         public int OrderId { get; set; } // OrderID (Primary key)
+
+        [Display(Name = "Product ID")]
+        [Key]
+        [Required]
         public int ProductId { get; set; } // ProductID (Primary key)
+
+        [Display(Name = "Unit price")]
+        [Required]
         public decimal UnitPrice { get; set; } // UnitPrice
+
+        [Display(Name = "Quantity")]
+        [Required]
         public short Quantity { get; set; } // Quantity
+
+        [Display(Name = "Discount")]
+        [Required]
         public float Discount { get; set; } // Discount
 
         // Foreign keys
@@ -1366,59 +1732,178 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Order Details Extended
     public class OrderDetailsExtended
     {
+        [Display(Name = "Order ID")]
+        [Required]
         public int OrderId { get; set; } // OrderID
+
+        [Display(Name = "Product ID")]
+        [Required]
         public int ProductId { get; set; } // ProductID
+
+        [Display(Name = "Product name")]
+        [MaxLength(40)]
+        [StringLength(40)]
+        [Required(AllowEmptyStrings = true)]
         public string ProductName { get; set; } // ProductName (length: 40)
+
+        [Display(Name = "Unit price")]
+        [Required]
         public decimal UnitPrice { get; set; } // UnitPrice
+
+        [Display(Name = "Quantity")]
+        [Required]
         public short Quantity { get; set; } // Quantity
+
+        [Display(Name = "Discount")]
+        [Required]
         public float Discount { get; set; } // Discount
+
+        [Display(Name = "Extended price")]
         public decimal? ExtendedPrice { get; set; } // ExtendedPrice
     }
 
     // Orders Qry
     public class OrdersQry
     {
+        [Display(Name = "Order ID")]
+        [Required]
         public int OrderId { get; set; } // OrderID
+
+        [Display(Name = "Customer ID")]
+        [MaxLength(5)]
+        [StringLength(5)]
         public string CustomerId { get; set; } // CustomerID (length: 5)
+
+        [Display(Name = "Employee ID")]
         public int? EmployeeId { get; set; } // EmployeeID
+
+        [Display(Name = "Order date")]
         public DateTime? OrderDate { get; set; } // OrderDate
+
+        [Display(Name = "Required date")]
         public DateTime? RequiredDate { get; set; } // RequiredDate
+
+        [Display(Name = "Shipped date")]
         public DateTime? ShippedDate { get; set; } // ShippedDate
+
+        [Display(Name = "Ship via")]
         public int? ShipVia { get; set; } // ShipVia
+
+        [Display(Name = "Freight")]
         public decimal? Freight { get; set; } // Freight
+
+        [Display(Name = "Ship name")]
+        [MaxLength(40)]
+        [StringLength(40)]
         public string ShipName { get; set; } // ShipName (length: 40)
+
+        [Display(Name = "Ship address")]
+        [MaxLength(60)]
+        [StringLength(60)]
         public string ShipAddress { get; set; } // ShipAddress (length: 60)
+
+        [Display(Name = "Ship city")]
+        [MaxLength(15)]
+        [StringLength(15)]
         public string ShipCity { get; set; } // ShipCity (length: 15)
+
+        [Display(Name = "Ship region")]
+        [MaxLength(15)]
+        [StringLength(15)]
         public string ShipRegion { get; set; } // ShipRegion (length: 15)
+
+        [Display(Name = "Ship postal code")]
+        [MaxLength(10)]
+        [StringLength(10)]
         public string ShipPostalCode { get; set; } // ShipPostalCode (length: 10)
+
+        [Display(Name = "Ship country")]
+        [MaxLength(15)]
+        [StringLength(15)]
         public string ShipCountry { get; set; } // ShipCountry (length: 15)
+
+        [Display(Name = "Company name")]
+        [MaxLength(40)]
+        [StringLength(40)]
+        [Required(AllowEmptyStrings = true)]
         public string CompanyName { get; set; } // CompanyName (length: 40)
+
+        [Display(Name = "Address")]
+        [MaxLength(60)]
+        [StringLength(60)]
         public string Address { get; set; } // Address (length: 60)
+
+        [Display(Name = "City")]
+        [MaxLength(15)]
+        [StringLength(15)]
         public string City { get; set; } // City (length: 15)
+
+        [Display(Name = "Region")]
+        [MaxLength(15)]
+        [StringLength(15)]
         public string Region { get; set; } // Region (length: 15)
+
+        [Display(Name = "Postal code")]
+        [MaxLength(10)]
+        [StringLength(10)]
         public string PostalCode { get; set; } // PostalCode (length: 10)
+
+        [Display(Name = "Country")]
+        [MaxLength(15)]
+        [StringLength(15)]
         public string Country { get; set; } // Country (length: 15)
     }
 
     // Order Subtotals
     public class OrderSubtotal
     {
+        [Display(Name = "Order ID")]
+        [Required]
         public int OrderId { get; set; } // OrderID
+
+        [Display(Name = "Subtotal")]
         public decimal? Subtotal { get; set; } // Subtotal
     }
 
     // Products
     public class Product
     {
+        [Display(Name = "Product ID")]
+        [Key]
+        [Required]
         public int ProductId { get; set; } // ProductID (Primary key)
+
+        [Display(Name = "Product name")]
+        [MaxLength(40)]
+        [StringLength(40)]
+        [Required(AllowEmptyStrings = true)]
         public string ProductName { get; set; } // ProductName (length: 40)
+
+        [Display(Name = "Supplier ID")]
         public int? SupplierId { get; set; } // SupplierID
+
+        [Display(Name = "Category ID")]
         public int? CategoryId { get; set; } // CategoryID
+
+        [Display(Name = "Quantity per unit")]
+        [MaxLength(20)]
+        [StringLength(20)]
         public string QuantityPerUnit { get; set; } // QuantityPerUnit (length: 20)
+
+        [Display(Name = "Unit price")]
         public decimal? UnitPrice { get; set; } // UnitPrice
+
+        [Display(Name = "Units in stock")]
         public short? UnitsInStock { get; set; } // UnitsInStock
+
+        [Display(Name = "Units on order")]
         public short? UnitsOnOrder { get; set; } // UnitsOnOrder
+
+        [Display(Name = "Reorder level")]
         public short? ReorderLevel { get; set; } // ReorderLevel
+
+        [Display(Name = "Discontinued")]
+        [Required]
         public bool Discontinued { get; set; } // Discontinued
 
         // Reverse navigation
@@ -1454,41 +1939,99 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Products Above Average Price
     public class ProductsAboveAveragePrice
     {
+        [Display(Name = "Product name")]
+        [MaxLength(40)]
+        [StringLength(40)]
+        [Required(AllowEmptyStrings = true)]
         public string ProductName { get; set; } // ProductName (length: 40)
+
+        [Display(Name = "Unit price")]
         public decimal? UnitPrice { get; set; } // UnitPrice
     }
 
     // Product Sales for 1997
     public class ProductSalesFor1997
     {
+        [Display(Name = "Category name")]
+        [MaxLength(15)]
+        [StringLength(15)]
+        [Required(AllowEmptyStrings = true)]
         public string CategoryName { get; set; } // CategoryName (length: 15)
+
+        [Display(Name = "Product name")]
+        [MaxLength(40)]
+        [StringLength(40)]
+        [Required(AllowEmptyStrings = true)]
         public string ProductName { get; set; } // ProductName (length: 40)
+
+        [Display(Name = "Product sales")]
         public decimal? ProductSales { get; set; } // ProductSales
     }
 
     // Products by Category
     public class ProductsByCategory
     {
+        [Display(Name = "Category name")]
+        [MaxLength(15)]
+        [StringLength(15)]
+        [Required(AllowEmptyStrings = true)]
         public string CategoryName { get; set; } // CategoryName (length: 15)
+
+        [Display(Name = "Product name")]
+        [MaxLength(40)]
+        [StringLength(40)]
+        [Required(AllowEmptyStrings = true)]
         public string ProductName { get; set; } // ProductName (length: 40)
+
+        [Display(Name = "Quantity per unit")]
+        [MaxLength(20)]
+        [StringLength(20)]
         public string QuantityPerUnit { get; set; } // QuantityPerUnit (length: 20)
+
+        [Display(Name = "Units in stock")]
         public short? UnitsInStock { get; set; } // UnitsInStock
+
+        [Display(Name = "Discontinued")]
+        [Required]
         public bool Discontinued { get; set; } // Discontinued
     }
 
     // Quarterly Orders
     public class QuarterlyOrder
     {
+        [Display(Name = "Customer ID")]
+        [MaxLength(5)]
+        [StringLength(5)]
         public string CustomerId { get; set; } // CustomerID (length: 5)
+
+        [Display(Name = "Company name")]
+        [MaxLength(40)]
+        [StringLength(40)]
         public string CompanyName { get; set; } // CompanyName (length: 40)
+
+        [Display(Name = "City")]
+        [MaxLength(15)]
+        [StringLength(15)]
         public string City { get; set; } // City (length: 15)
+
+        [Display(Name = "Country")]
+        [MaxLength(15)]
+        [StringLength(15)]
         public string Country { get; set; } // Country (length: 15)
     }
 
     // Region
     public class Region
     {
+        [Display(Name = "Region ID")]
+        [Key]
+        [Required]
         public int RegionId { get; set; } // RegionID (Primary key)
+
+        [Display(Name = "Region description")]
+        [MaxLength(50)]
+        [StringLength(50)]
+        [Required(AllowEmptyStrings = true)]
         public string RegionDescription { get; set; } // RegionDescription (length: 50)
 
         // Reverse navigation
@@ -1507,26 +2050,63 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Sales by Category
     public class SalesByCategory
     {
+        [Display(Name = "Category ID")]
+        [Required]
         public int CategoryId { get; set; } // CategoryID
+
+        [Display(Name = "Category name")]
+        [MaxLength(15)]
+        [StringLength(15)]
+        [Required(AllowEmptyStrings = true)]
         public string CategoryName { get; set; } // CategoryName (length: 15)
+
+        [Display(Name = "Product name")]
+        [MaxLength(40)]
+        [StringLength(40)]
+        [Required(AllowEmptyStrings = true)]
         public string ProductName { get; set; } // ProductName (length: 40)
+
+        [Display(Name = "Product sales")]
         public decimal? ProductSales { get; set; } // ProductSales
     }
 
     // Sales Totals by Amount
     public class SalesTotalsByAmount
     {
+        [Display(Name = "Sale amount")]
         public decimal? SaleAmount { get; set; } // SaleAmount
+
+        [Display(Name = "Order ID")]
+        [Required]
         public int OrderId { get; set; } // OrderID
+
+        [Display(Name = "Company name")]
+        [MaxLength(40)]
+        [StringLength(40)]
+        [Required(AllowEmptyStrings = true)]
         public string CompanyName { get; set; } // CompanyName (length: 40)
+
+        [Display(Name = "Shipped date")]
         public DateTime? ShippedDate { get; set; } // ShippedDate
     }
 
     // Shippers
     public class Shipper
     {
+        [Display(Name = "Shipper ID")]
+        [Key]
+        [Required]
         public int ShipperId { get; set; } // ShipperID (Primary key)
+
+        [Display(Name = "Company name")]
+        [MaxLength(40)]
+        [StringLength(40)]
+        [Required(AllowEmptyStrings = true)]
         public string CompanyName { get; set; } // CompanyName (length: 40)
+
+        [Display(Name = "Phone")]
+        [MaxLength(24)]
+        [StringLength(24)]
         public string Phone { get; set; } // Phone (length: 24)
 
         // Reverse navigation
@@ -1545,33 +2125,92 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Summary of Sales by Quarter
     public class SummaryOfSalesByQuarter
     {
+        [Display(Name = "Shipped date")]
         public DateTime? ShippedDate { get; set; } // ShippedDate
+
+        [Display(Name = "Order ID")]
+        [Required]
         public int OrderId { get; set; } // OrderID
+
+        [Display(Name = "Subtotal")]
         public decimal? Subtotal { get; set; } // Subtotal
     }
 
     // Summary of Sales by Year
     public class SummaryOfSalesByYear
     {
+        [Display(Name = "Shipped date")]
         public DateTime? ShippedDate { get; set; } // ShippedDate
+
+        [Display(Name = "Order ID")]
+        [Required]
         public int OrderId { get; set; } // OrderID
+
+        [Display(Name = "Subtotal")]
         public decimal? Subtotal { get; set; } // Subtotal
     }
 
     // Suppliers
     public class Supplier
     {
+        [Display(Name = "Supplier ID")]
+        [Key]
+        [Required]
         public int SupplierId { get; set; } // SupplierID (Primary key)
+
+        [Display(Name = "Company name")]
+        [MaxLength(40)]
+        [StringLength(40)]
+        [Required(AllowEmptyStrings = true)]
         public string CompanyName { get; set; } // CompanyName (length: 40)
+
+        [Display(Name = "Contact name")]
+        [MaxLength(30)]
+        [StringLength(30)]
         public string ContactName { get; set; } // ContactName (length: 30)
+
+        [Display(Name = "Contact title")]
+        [MaxLength(30)]
+        [StringLength(30)]
         public string ContactTitle { get; set; } // ContactTitle (length: 30)
+
+        [Display(Name = "Address")]
+        [MaxLength(60)]
+        [StringLength(60)]
         public string Address { get; set; } // Address (length: 60)
+
+        [Display(Name = "City")]
+        [MaxLength(15)]
+        [StringLength(15)]
         public string City { get; set; } // City (length: 15)
+
+        [Display(Name = "Region")]
+        [MaxLength(15)]
+        [StringLength(15)]
         public string Region { get; set; } // Region (length: 15)
+
+        [Display(Name = "Postal code")]
+        [MaxLength(10)]
+        [StringLength(10)]
         public string PostalCode { get; set; } // PostalCode (length: 10)
+
+        [Display(Name = "Country")]
+        [MaxLength(15)]
+        [StringLength(15)]
         public string Country { get; set; } // Country (length: 15)
+
+        [Display(Name = "Phone")]
+        [MaxLength(24)]
+        [StringLength(24)]
         public string Phone { get; set; } // Phone (length: 24)
+
+        [Display(Name = "Fax")]
+        [MaxLength(24)]
+        [StringLength(24)]
         public string Fax { get; set; } // Fax (length: 24)
+
+        [Display(Name = "Home page")]
+        [MaxLength]
         public string HomePage { get; set; } // HomePage (length: 1073741823)
 
         // Reverse navigation
@@ -1590,8 +2229,21 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Territories
     public class Territory
     {
+        [Display(Name = "Territory ID")]
+        [Key]
+        [MaxLength(20)]
+        [StringLength(20)]
+        [Required(AllowEmptyStrings = true)]
         public string TerritoryId { get; set; } // TerritoryID (Primary key) (length: 20)
+
+        [Display(Name = "Territory description")]
+        [MaxLength(50)]
+        [StringLength(50)]
+        [Required(AllowEmptyStrings = true)]
         public string TerritoryDescription { get; set; } // TerritoryDescription (length: 50)
+
+        [Display(Name = "Region ID")]
+        [Required]
         public int RegionId { get; set; } // RegionID
 
         // Reverse navigation

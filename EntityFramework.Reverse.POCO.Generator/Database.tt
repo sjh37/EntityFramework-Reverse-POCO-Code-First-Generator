@@ -88,7 +88,7 @@
     Settings.IncludeQueryTraceOn9481Flag        = false; // If SqlServer 2014 appears frozen / take a long time when this file is saved, try setting this to true (you will also need elevated privileges).
     Settings.IncludeCodeGeneratedAttribute      = false; // If true, will include the GeneratedCode attribute, false to remove it.
     Settings.UsePrivateSetterForComputedColumns = true; // If the columns is computed, use a private setter.
-    Settings.AdditionalNamespaces               = new []{ "" }; // To include extra namespaces, include them here. i.e. "Microsoft.AspNet.Identity.EntityFramework"
+    Settings.AdditionalNamespaces               = new []{ "" }; // To include extra namespaces, include them here. i.e. "Microsoft.AspNet.Identity.EntityFramework", "System.ComponentModel.DataAnnotations"
     Settings.AdditionalContextInterfaceItems    = new []{ "" }; //  example: "void SetAutoDetectChangesEnabled(bool flag);"
 
     // Language choices
@@ -281,10 +281,33 @@
         //    column.OverrideModifier = true;
         // This will create: public override long id { get; set; }
 
+
+
         // Adding custom data annotations (include your extra namespaces in Settings.AdditionalNamespaces above)
+        // e.g.    Settings.AdditionalNamespaces = new []{ "System.ComponentModel.DataAnnotations" };
+        // Uncomment the following to add data annotations
         //column.Attributes.Add($"[Display(Name = \"{column.DisplayName}\")]");
         //if (column.IsPrimaryKey)
         //    column.Attributes.Add("[Key]");
+        //if (column.IsMaxLength) 
+        //    column.Attributes.Add("[MaxLength]");
+        //if (column.IsRowVersion)
+        //    column.Attributes.Add("[Timestamp]");
+        //if (!column.IsMaxLength && column.MaxLength > 0)
+        //{
+        //    column.Attributes.Add(string.Format("[MaxLength({0})]", column.MaxLength));
+        //    if (column.PropertyType.Equals("string", StringComparison.InvariantCultureIgnoreCase))
+        //        column.Attributes.Add(string.Format("[StringLength({0})]", column.MaxLength));
+        //}
+        //if (!column.IsNullable && !column.IsComputed)
+        //{
+        //    if (column.PropertyType.Equals("string", StringComparison.InvariantCultureIgnoreCase) && column.AllowEmptyStrings)
+        //        column.Attributes.Add("[Required(AllowEmptyStrings = true)]");
+        //    else
+        //        column.Attributes.Add("[Required]");
+        //}
+
+
 
         // Perform Enum property type replacement
         var enumDefinition = enumDefinitions.FirstOrDefault(e =>
