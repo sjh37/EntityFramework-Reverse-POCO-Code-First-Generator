@@ -45,6 +45,7 @@ namespace Efrpg
         public static string ResultClassModifiers          = "public"; // "public partial";
 
         public static bool UsePascalCase                            = true; // This will rename the generated C# tables & properties to use PascalCase. If false table & property names will be left alone.
+        public static bool UseDataAnnotations                       = false; // If true, will add data annotations to the poco classes.
         public static bool UsePropertyInitialisers                  = false; // Removes POCO constructor and instead uses C# 6 property initialisers to set defaults
         public static bool UseLazyLoading                           = true; // Marks all navigation properties as virtual or not, to support or disable EF Lazy Loading feature
         public static bool UseInheritedBaseInterfaceFunctions       = false; // If true, the main DBContext interface functions will come from the DBContextInterfaceBaseClasses and not generated. If false, the functions will be generated.
@@ -59,8 +60,8 @@ namespace Efrpg
         public static bool IncludeQueryTraceOn9481Flag              = false; // If SqlServer 2014 appears frozen / take a long time when this file is saved, try setting this to true (you will also need elevated privileges).
         public static bool IncludeCodeGeneratedAttribute            = false; // If true, will include the GeneratedCode attribute, false to remove it.
         public static bool UsePrivateSetterForComputedColumns       = true; // If the columns is computed, use a private setter.
-        public static string[] AdditionalNamespaces                 = { "" }; // To include extra namespaces, include them here. i.e. "Microsoft.AspNet.Identity.EntityFramework"
-        public static string[] AdditionalContextInterfaceItems      = { "" }; //  example: "void SetAutoDetectChangesEnabled(bool flag);"
+        public static List<string> AdditionalNamespaces             = new List<string>(); // To include extra namespaces, include them here. i.e. "Microsoft.AspNet.Identity.EntityFramework"
+        public static List<string> AdditionalContextInterfaceItems  = new List<string>(); //  example: "void SetAutoDetectChangesEnabled(bool flag);"
 
         // Language choices
         public static GenerationLanguage GenerationLanguage = GenerationLanguage.CSharp;

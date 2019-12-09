@@ -15,7 +15,7 @@
     Settings.GenerateSingleDbContext = false;
     Settings.MultiContextSettingsConnectionString = "Data Source=(local);Initial Catalog=EfrpgTest_Settings;Integrated Security=True";
 
-    Settings.AdditionalNamespaces = new[] { "Tester" };
+    Settings.AdditionalNamespaces.Add("Tester");
     
     FilterSettings.Reset();
     FilterSettings.AddDefaults();

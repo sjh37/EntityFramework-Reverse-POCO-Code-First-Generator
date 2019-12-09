@@ -152,7 +152,7 @@ namespace Efrpg.Generators
 
         protected void CalcGlobalUsings()
         {
-            GlobalUsings.AddRange(Settings.AdditionalNamespaces.Where(x => !string.IsNullOrEmpty(x)));
+            GlobalUsings.AddRange(Settings.AdditionalNamespaces.Where(x => !string.IsNullOrEmpty(x)).Distinct());
 
             if ((Settings.ElementsToGenerate.HasFlag(Elements.PocoConfiguration) ||
                  Settings.ElementsToGenerate.HasFlag(Elements.Context) ||
@@ -241,7 +241,7 @@ namespace Efrpg.Generators
                 DbContextInterfaceBaseClasses   = Settings.DbContextInterfaceBaseClasses,
                 DbContextName                   = Settings.DbContextName,
                 tables                          = _tables.Where(x => x.DbSetModifier == "public").ToList(),
-                AdditionalContextInterfaceItems = Settings.AdditionalContextInterfaceItems.Where(x => !string.IsNullOrEmpty(x)).ToList(),
+                AdditionalContextInterfaceItems = Settings.AdditionalContextInterfaceItems.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList(),
                 addSaveChanges                  = !Settings.UseInheritedBaseInterfaceFunctions,
                 storedProcs                     = _storedProcs,
                 hasStoredProcs                  = _hasStoredProcs,
@@ -305,7 +305,7 @@ namespace Efrpg.Generators
                 hasStoredProcs                         = _hasStoredProcs,
                 tableValuedFunctionComplexTypes        = _tableValuedFunctionComplexTypes,
                 hasTableValuedFunctionComplexTypes     = _hasTableValuedFunctionComplexTypes,
-                AdditionalContextInterfaceItems        = Settings.AdditionalContextInterfaceItems.Where(x => !string.IsNullOrEmpty(x)).ToList(),
+                AdditionalContextInterfaceItems        = Settings.AdditionalContextInterfaceItems.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList(),
                 addSaveChanges                         = !Settings.UseInheritedBaseInterfaceFunctions,
                 tableValuedFunctions                   = _tableValuedFunctions,
                 scalarValuedFunctions                  = _scalarValuedFunctions,

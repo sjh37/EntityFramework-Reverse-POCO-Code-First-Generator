@@ -35,6 +35,7 @@ namespace BuildTT
     Settings.ConnectionStringName    = ""MyDbContext""; // ConnectionString key as specified in your app.config/web.config/appsettings.json. Not used by the generator, but is placed into the generated DbContext constructor.
     Settings.DbContextName           = ""MyDbContext""; // Class name for the DbContext to be generated. Note: If generating separate files, please give the db context a different name from this tt filename.
     //Settings.DbContextInterfaceName= ""IMyDbContext""; // Defaults to ""I"" + DbContextName or set string empty to not implement any interface.
+    Settings.GenerateSeparateFiles   = false;
     Settings.Namespace               = DefaultNamespace; // Override the default namespace here. Please use double quotes, example: ""Accounts.Billing""
     Settings.TemplateFolder          = Path.Combine(Settings.Root, ""Templates""); // Only used if Settings.TemplateType = TemplateType.FileBased. Specify folder name where the mustache folders can be found. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Custom-file-based-templates
     Settings.AddUnitTestingDbContext = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing. Read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/FakeDbContext
@@ -77,7 +78,7 @@ namespace BuildTT
     Settings.CommandTimeout                         = 600; // SQL Command timeout in seconds. 600 is 10 minutes, 0 will wait indefinitely. Some databases can be slow retrieving schema information.
     Settings.DbContextInterfaceBaseClasses          = ""IDisposable""; // Specify what the base classes are for your database context interface
     Settings.DbContextBaseClass                     = ""DbContext""; // Specify what the base class is for your DbContext. For ASP.NET Identity use ""IdentityDbContext<ApplicationUser>"";
-    Settings.OnConfiguration                        = OnConfiguration.Configuration; // EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/OnConfiguration    Settings.GenerateSeparateFiles   = false;
+    Settings.OnConfiguration                        = OnConfiguration.Configuration; // EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/OnConfiguration
     Settings.AddParameterlessConstructorToDbContext = true; // EF6 only. If true, then DbContext will have a default (parameter-less) constructor which automatically passes in the connection string name, if false then no parameter-less constructor will be created.
     Settings.ConfigurationClassName                 = ""Configuration""; // Configuration, Mapping, Map, etc. This is appended to the Poco class name to configure the mappings.
     Settings.DatabaseReaderPlugin                   = """"; // Eg, ""c:\\Path\\YourDatabaseReader.dll,Full.Name.Of.Class.Including.Namespace"". See #501. This will allow you to specify a pluggable provider for reading your database.
@@ -89,6 +90,7 @@ namespace BuildTT
     Settings.ResultClassModifiers          = ""public""; // ""public partial"";
 
     Settings.UsePascalCase                      = true; // This will rename the generated C# tables & properties to use PascalCase. If false table & property names will be left alone.
+    Settings.UseDataAnnotations                 = false; // If true, will add data annotations to the poco classes.
     Settings.UsePropertyInitialisers            = false; // Removes POCO constructor and instead uses C# 6 property initialisers to set defaults
     Settings.UseLazyLoading                     = true; // Marks all navigation properties as virtual or not, to support or disable EF Lazy Loading feature
     Settings.UseInheritedBaseInterfaceFunctions = false; // If true, the main DBContext interface functions will come from the DBContextInterfaceBaseClasses and not generated. If false, the functions will be generated.
@@ -103,8 +105,8 @@ namespace BuildTT
     Settings.IncludeQueryTraceOn9481Flag        = false; // If SqlServer 2014 appears frozen / take a long time when this file is saved, try setting this to true (you will also need elevated privileges).
     Settings.IncludeCodeGeneratedAttribute      = false; // If true, will include the GeneratedCode attribute, false to remove it.
     Settings.UsePrivateSetterForComputedColumns = true; // If the columns is computed, use a private setter.
-    Settings.AdditionalNamespaces               = new []{ """" }; // To include extra namespaces, include them here. i.e. ""Microsoft.AspNet.Identity.EntityFramework"", ""System.ComponentModel.DataAnnotations""
-    Settings.AdditionalContextInterfaceItems    = new []{ """" }; //  example: ""void SetAutoDetectChangesEnabled(bool flag);""
+    Settings.AdditionalNamespaces               = new List<string>(); // To include extra namespaces, include them here. i.e. ""Microsoft.AspNet.Identity.EntityFramework"", ""System.ComponentModel.DataAnnotations""
+    Settings.AdditionalContextInterfaceItems    = new List<string>(); //  example: ""void SetAutoDetectChangesEnabled(bool flag);""
 
     // Language choices
     Settings.GenerationLanguage = GenerationLanguage.CSharp;
@@ -296,34 +298,35 @@ namespace BuildTT
         //    column.OverrideModifier = true;
         // This will create: public override long id { get; set; }
 
+        if(Settings.UseDataAnnotations)
+        {
+            if (column.IsPrimaryKey)
+                column.Attributes.Add(""[Key]"");
 
+            if (column.IsMaxLength) 
+                column.Attributes.Add(""[MaxLength]"");
 
-        // Adding custom data annotations (include your extra namespaces in Settings.AdditionalNamespaces above)
-        // e.g.    Settings.AdditionalNamespaces = new []{ ""System.ComponentModel.DataAnnotations"" };
-        // Uncomment the following to add data annotations
-        //column.Attributes.Add($""[Display(Name = \""{column.DisplayName}\"")]"");
-        //if (column.IsPrimaryKey)
-        //    column.Attributes.Add(""[Key]"");
-        //if (column.IsMaxLength) 
-        //    column.Attributes.Add(""[MaxLength]"");
-        //if (column.IsRowVersion)
-        //    column.Attributes.Add(""[Timestamp]"");
-        //if (!column.IsMaxLength && column.MaxLength > 0)
-        //{ 
-        //    var doNotSpecifySize = (Settings.DatabaseType == DatabaseType.SqlCe && column.MaxLength > 4000);
-        //    column.Attributes.Add(doNotSpecifySize ? ""[MaxLength]"" : string.Format(""[MaxLength({0})]"", column.MaxLength));
-        //    if (column.PropertyType.Equals(""string"", StringComparison.InvariantCultureIgnoreCase))
-        //        column.Attributes.Add(string.Format(""[StringLength({0})]"", column.MaxLength));
-        //}
-        //if (!column.IsNullable && !column.IsComputed)
-        //{
-        //    if (column.PropertyType.Equals(""string"", StringComparison.InvariantCultureIgnoreCase) && column.AllowEmptyStrings)
-        //        column.Attributes.Add(""[Required(AllowEmptyStrings = true)]"");
-        //    else
-        //        column.Attributes.Add(""[Required]"");
-        //}
+            if (column.IsRowVersion)
+                column.Attributes.Add(""[Timestamp]"");
 
+            if (!column.IsMaxLength && column.MaxLength > 0)
+            { 
+                var doNotSpecifySize = (Settings.DatabaseType == DatabaseType.SqlCe && column.MaxLength > 4000);
+                column.Attributes.Add(doNotSpecifySize ? ""[MaxLength]"" : string.Format(""[MaxLength({0})]"", column.MaxLength));
+                if (column.PropertyType.Equals(""string"", StringComparison.InvariantCultureIgnoreCase))
+                    column.Attributes.Add(string.Format(""[StringLength({0})]"", column.MaxLength));
+            }
 
+            if (!column.IsNullable && !column.IsComputed)
+            {
+                if (column.PropertyType.Equals(""string"", StringComparison.InvariantCultureIgnoreCase) && column.AllowEmptyStrings)
+                    column.Attributes.Add(""[Required(AllowEmptyStrings = true)]"");
+                else
+                    column.Attributes.Add(""[Required]"");
+            }
+
+            column.Attributes.Add($""[Display(Name = \""{column.DisplayName}\"")]"");
+        }
 
         // Perform Enum property type replacement
         var enumDefinition = enumDefinitions.FirstOrDefault(e =>
@@ -586,6 +589,8 @@ namespace BuildTT
     // Don't forget to take a look at SingleContextFilter and FilterSettings classes!
     // That's it, nothing else to configure ***********************************************************************************************
 
+    if(Settings.UseDataAnnotations)
+        Settings.AdditionalNamespaces.Add(""System.ComponentModel.DataAnnotations"");
 
     FilterSettings.CheckSettings();
     Inflector.PluralisationService = new EnglishPluralizationService();
