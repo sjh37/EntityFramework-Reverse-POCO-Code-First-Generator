@@ -105,11 +105,11 @@ namespace BuildTT
     Settings.IncludeQueryTraceOn9481Flag        = false; // If SqlServer 2014 appears frozen / take a long time when this file is saved, try setting this to true (you will also need elevated privileges).
     Settings.IncludeCodeGeneratedAttribute      = false; // If true, will include the GeneratedCode attribute, false to remove it.
     Settings.UsePrivateSetterForComputedColumns = true; // If the columns is computed, use a private setter.
-    Settings.AdditionalNamespaces               = new List<string>(); // To include extra namespaces, include them here. i.e. ""Microsoft.AspNet.Identity.EntityFramework"", ""System.ComponentModel.DataAnnotations""
-    Settings.AdditionalContextInterfaceItems    = new List<string>(); //  example: ""void SetAutoDetectChangesEnabled(bool flag);""
+    Settings.AdditionalNamespaces               = new List<string>(); // To include extra namespaces, include them here. i.e. new List<string> { ""Microsoft.AspNetCore.Identity.EntityFrameworkCore"", ""System.ComponentModel.DataAnnotations"" };
+    Settings.AdditionalContextInterfaceItems    = new List<string>(); // example: new List<string> { ""void SetAutoDetectChangesEnabled(bool flag);"" };
 
     // Language choices
-    Settings.GenerationLanguage = GenerationLanguage.CSharp;
+            Settings.GenerationLanguage = GenerationLanguage.CSharp;
     Settings.FileExtension      = "".cs"";
 
     // Code suppression (useful for non C# file generation) *******************************************************************************
