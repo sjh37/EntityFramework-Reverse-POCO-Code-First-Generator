@@ -3,20 +3,23 @@ IF SCHEMA_ID(N'MultiContext') IS NULL
     EXEC (N'CREATE SCHEMA [MultiContext];');
 GO
 
+SET ANSI_NULLS ON;
+SET QUOTED_IDENTIFIER ON;
+GO
+
 -- You can add extra fields to this table. All columns will be read in and stored in a Dictionary<string,object>() for you to access and process.
 CREATE TABLE MultiContext.Context
 (
     Id           INT           NOT NULL IDENTITY(1, 1),
-    Name         NVARCHAR(128) NOT NULL,
+    Name         NVARCHAR(255) NOT NULL,
     Namespace    NVARCHAR(128) NULL,
-    Description  NVARCHAR(128) NULL,
-    BaseSchema   NVARCHAR(128) NULL,    -- Default to use if not specified for an object
+    Description  NVARCHAR(255) NULL,
+    BaseSchema   NVARCHAR(255) NULL,    -- Default to use if not specified for an object
     TemplatePath NVARCHAR(500) NULL,
+    Filename     NVARCHAR(128) NULL,    -- If Filename == NULL, then use Name, else use Filename as the name of the file
     CONSTRAINT PK_Context PRIMARY KEY CLUSTERED (Id)
 );
 GO
-
-ALTER TABLE MultiContext.Context DROP COLUMN BaseDatabase
 
 /* Create enumeration from database table
 public enum Name
@@ -28,10 +31,10 @@ public enum Name
 CREATE TABLE MultiContext.Enumeration
 (
     Id         INT           NOT NULL IDENTITY(1, 1),
-    Name       NVARCHAR(128) NOT NULL,  -- Enum to generate. e.g. "DaysOfWeek" would result in "public enum DaysOfWeek {...}"
-    [Table]    NVARCHAR(128) NOT NULL,  -- Database table containing enum values. e.g. "DaysOfWeek"
-    NameField  NVARCHAR(128) NOT NULL,  -- Column containing the name for the enum. e.g. "TypeName"
-    ValueField NVARCHAR(128) NOT NULL,  -- Column containing the values for the enum. e.g. "TypeId"
+    Name       NVARCHAR(255) NOT NULL,  -- Enum to generate. e.g. "DaysOfWeek" would result in "public enum DaysOfWeek {...}"
+    [Table]    NVARCHAR(255) NOT NULL,  -- Database table containing enum values. e.g. "DaysOfWeek"
+    NameField  NVARCHAR(255) NOT NULL,  -- Column containing the name for the enum. e.g. "TypeName"
+    ValueField NVARCHAR(255) NOT NULL,  -- Column containing the values for the enum. e.g. "TypeId"
     ContextId  INT           NOT NULL,
     CONSTRAINT PK_Enumeration PRIMARY KEY CLUSTERED (Id),
     CONSTRAINT FK_Enumeration_Context_ContextId FOREIGN KEY (ContextId) REFERENCES MultiContext.Context (Id) ON DELETE NO ACTION
@@ -42,8 +45,8 @@ GO
 CREATE TABLE MultiContext.[Function]
 (
     Id        INT           NOT NULL IDENTITY(1, 1),
-    Name      NVARCHAR(128) NOT NULL,
-    DbName    NVARCHAR(128) NULL,   -- [optional] Name of function in database. Specify only if the db function name is different from the "Name" property.
+    Name      NVARCHAR(255) NOT NULL,
+    DbName    NVARCHAR(255) NULL,   -- [optional] Name of function in database. Specify only if the db function name is different from the "Name" property.
     ContextId INT           NOT NULL,
     CONSTRAINT PK_Function PRIMARY KEY CLUSTERED (Id),
     CONSTRAINT FK_Function_Context_ContextId FOREIGN KEY (ContextId) REFERENCES MultiContext.Context (Id) ON DELETE NO ACTION
@@ -54,9 +57,9 @@ GO
 CREATE TABLE MultiContext.StoredProcedure
 (
     Id          INT           NOT NULL IDENTITY(1, 1),
-    Name        NVARCHAR(128) NOT NULL,
-    DbName      NVARCHAR(128) NULL, -- [optional] Name of stored proc in database. Specify only if the db stored proc name is different from the "Name" property.
-    ReturnModel NVARCHAR(128) NULL, -- [optional] Specify a return model for stored proc
+    Name        NVARCHAR(255) NOT NULL,
+    DbName      NVARCHAR(255) NULL, -- [optional] Name of stored proc in database. Specify only if the db stored proc name is different from the "Name" property.
+    ReturnModel NVARCHAR(255) NULL, -- [optional] Specify a return model for stored proc
     ContextId   INT           NOT NULL,
     CONSTRAINT PK_StoredProcedure PRIMARY KEY CLUSTERED (Id),
     CONSTRAINT FK_StoredProcedure_Context_ContextId FOREIGN KEY (ContextId) REFERENCES MultiContext.Context (Id) ON DELETE NO ACTION
@@ -67,10 +70,10 @@ GO
 CREATE TABLE MultiContext.[Table]
 (
     Id            INT           NOT NULL IDENTITY(1, 1),
-    Name          NVARCHAR(128) NOT NULL,
-    Description   NVARCHAR(128) NULL,    -- [optional] Comment added to table class
-    PluralName    NVARCHAR(128) NULL,    -- [optional] Override auto-plural name
-    DbName        NVARCHAR(128) NULL,    -- [optional] Name of table in database. Specify only if the db table name is different from the "Name" property.
+    Name          NVARCHAR(255) NOT NULL,
+    Description   NVARCHAR(255) NULL,   -- [optional] Comment added to table class
+    PluralName    NVARCHAR(255) NULL,   -- [optional] Override auto-plural name
+    DbName        NVARCHAR(255) NULL,   -- [optional] Name of table in database. Specify only if the db table name is different from the "Name" property.
     ContextId     INT           NOT NULL,
     Attributes    NVARCHAR(500) NULL,    -- [optional] Use a tilda ~ delimited list of attributes to add to this table property. e.g. [CustomSecurity(Security.ReadOnly)]~[AnotherAttribute]~[Etc]
                                          --            The tilda ~ delimiter used in Attributes can be changed if you set Settings.MultiContextAttributeDelimiter = '~'; to something else.
@@ -85,14 +88,14 @@ GO
 CREATE TABLE MultiContext.[Column]
 (
     Id               INT           NOT NULL IDENTITY(1, 1),
-    Name             NVARCHAR(128) NOT NULL,
-    DbName           NVARCHAR(128) NULL,    -- [optional] Name of column in database. Specify only if the db column name is different from the "Name" property.
+    Name             NVARCHAR(255) NOT NULL,
+    DbName           NVARCHAR(255) NULL,    -- [optional] Name of column in database. Specify only if the db column name is different from the "Name" property.
     IsPrimaryKey     BIT           NULL,    -- [optional] Useful for views as views don't have primary keys.
     OverrideModifier BIT           NULL,    -- [optional] Adds "override" modifier.
-    EnumType         NVARCHAR(128) NULL,    -- [optional] Use enum type instead of data type
+    EnumType         NVARCHAR(255) NULL,    -- [optional] Use enum type instead of data type
     TableId          INT           NOT NULL,
     Attributes       NVARCHAR(500) NULL,    -- [optional] Use a tilda ~ delimited list of attributes to add to a poco property. e.g. [CustomSecurity(Security.ReadOnly)]~[Required]
-											--            The tilda ~ delimiter used in Attributes can be changed if you set Settings.MultiContextAttributeDelimiter = '~'; to something else.
+                                            --            The tilda ~ delimiter used in Attributes can be changed if you set Settings.MultiContextAttributeDelimiter = '~'; to something else.
     PropertyType     NVARCHAR(128) NULL,    -- [optional] Will override setting of column.PropertyType
     IsNullable       BIT           NULL,    -- [optional] Will override setting of column.IsNullable
 
@@ -142,9 +145,7 @@ CREATE UNIQUE NONCLUSTERED INDEX UX_Table_Name           ON MultiContext.[Table]
 CREATE UNIQUE NONCLUSTERED INDEX UX_Column_Name          ON MultiContext.[Column]        (TableId, [Name]);
 GO
 
-
-/*
--- If you need to reset the data
+/* If you need to reset the data
 TRUNCATE TABLE MultiContext.ForeignKey
 TRUNCATE TABLE MultiContext.Enumeration
 TRUNCATE TABLE MultiContext.[Column]
