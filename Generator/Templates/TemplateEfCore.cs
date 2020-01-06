@@ -1131,13 +1131,7 @@ IListSource where TEntity : class
 {{#else}}
         builder.{{ToTableOrView}}(""{{Name}}"");{{#newline}}
 {{/if}}
-        {{PrimaryKeyNameHumanCase}}{{#newline}}
-{{#if HasAlternateKeys}}
-{{#each AlternateKeys}}
-        {{this}}{{#newline}}
-{{/each}}
-{{/if}}
-{{#newline}}
+        {{PrimaryKeyNameHumanCase}}{{#newline}}{{#newline}}
 
 {{#each Columns}}
         {{this}}{{#newline}}

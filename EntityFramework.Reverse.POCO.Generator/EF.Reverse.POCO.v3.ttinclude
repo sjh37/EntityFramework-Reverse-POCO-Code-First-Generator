@@ -3208,12 +3208,8 @@
             var foreignKeys = columns.SelectMany(x => x.ConfigFk).OrderBy(o => o).ToList();
             var primaryKey  = _generator.PrimaryKeyModelBuilder(table);
 
-            var indexData     = _generator.IndexModelBuilder(table);
-            var indexes       = indexData?.Where(x => !x.Contains("HasAlternateKey")).ToList();
-            var alternateKeys = indexData?.Where(x => x.Contains("HasAlternateKey")).ToList();
-
-            var hasIndexes       = indexes != null && indexes.Any();
-            var hasAlternateKeys = alternateKeys != null && alternateKeys.Any();
+            var indexes    = _generator.IndexModelBuilder(table);
+            var hasIndexes = indexes != null && indexes.Any();
 
             var data = new PocoConfigurationModel
             {
@@ -3246,9 +3242,7 @@
                 MappingConfiguration           = table.MappingConfiguration,
                 ConfigurationClassesArePartial = Settings.ConfigurationClassesArePartial(),
                 Indexes                        = indexes,
-                HasIndexes                     = hasIndexes,
-                AlternateKeys                  = alternateKeys,
-                HasAlternateKeys               = hasAlternateKeys
+                HasIndexes                     = hasIndexes
             };
 
             var co = new CodeOutput(filename, null, GlobalUsings);
@@ -5291,8 +5285,7 @@
                     sb.Append(isEfCore3 ? ".IsClustered()" : ".ForSqlServerIsClustered()");
 
                 sb.Append(";");
-                var indexString = sb.ToString();
-                indexes.Add(nullable ? indexString : indexString.Replace("builder.HasIndex(", "builder.HasAlternateKey("));
+                indexes.Add(sb.ToString());
             }
 
             return indexes;
@@ -14893,8 +14886,6 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public List<string> Indexes                                               { get; set; }
         public bool HasIndexes                                                    { get; set; }
         public bool ConfigurationClassesArePartial                                { get; set; }
-        public List<string> AlternateKeys                                         { get; set; }
-        public bool HasAlternateKeys                                              { get; set; }
         public bool UseHasNoKey                                                   { get; set; }
         public string ToTableOrView                                               { get; set; }
     }
@@ -17427,13 +17418,7 @@ IListSource where TEntity : class
 {{#else}}
         builder.{{ToTableOrView}}(""{{Name}}"");{{#newline}}
 {{/if}}
-        {{PrimaryKeyNameHumanCase}}{{#newline}}
-{{#if HasAlternateKeys}}
-{{#each AlternateKeys}}
-        {{this}}{{#newline}}
-{{/each}}
-{{/if}}
-{{#newline}}
+        {{PrimaryKeyNameHumanCase}}{{#newline}}{{#newline}}
 
 {{#each Columns}}
         {{this}}{{#newline}}

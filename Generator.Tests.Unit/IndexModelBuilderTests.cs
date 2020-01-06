@@ -140,10 +140,10 @@ namespace Generator.Tests.Unit
             // Assert
             Assert.AreEqual(4, list.Count);
 
-            Assert.AreEqual(@"builder.HasAlternateKey(x => x.OrderID).HasName(""OrderID"");",             list[0]);
-            Assert.AreEqual(@"builder.HasAlternateKey(x => x.OrderID).HasName(""OrdersOrder_Details"");", list[1]);
-            Assert.AreEqual(@"builder.HasIndex(x => x.ProductID).HasName(""ProductID"");",                list[2]);
-            Assert.AreEqual(@"builder.HasIndex(x => x.ProductID).HasName(""ProductsOrder_Details"");",    list[3]);
+            Assert.AreEqual(@"builder.HasIndex(x => x.OrderID).HasName(""OrderID"");",                 list[0]);
+            Assert.AreEqual(@"builder.HasIndex(x => x.OrderID).HasName(""OrdersOrder_Details"");",     list[1]);
+            Assert.AreEqual(@"builder.HasIndex(x => x.ProductID).HasName(""ProductID"");",             list[2]);
+            Assert.AreEqual(@"builder.HasIndex(x => x.ProductID).HasName(""ProductsOrder_Details"");", list[3]);
         }
     }
 }

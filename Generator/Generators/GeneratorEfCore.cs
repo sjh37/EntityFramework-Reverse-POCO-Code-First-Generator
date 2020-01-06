@@ -233,8 +233,7 @@ namespace Efrpg.Generators
                     sb.Append(isEfCore3 ? ".IsClustered()" : ".ForSqlServerIsClustered()");
 
                 sb.Append(";");
-                var indexString = sb.ToString();
-                indexes.Add(nullable ? indexString : indexString.Replace("builder.HasIndex(", "builder.HasAlternateKey("));
+                indexes.Add(sb.ToString());
             }
 
             return indexes;
