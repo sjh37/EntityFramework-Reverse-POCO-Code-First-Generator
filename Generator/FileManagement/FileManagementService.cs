@@ -40,8 +40,7 @@ namespace Efrpg.FileManagement
         {
             Settings.FilterCount = filters.Count;
 
-            // If true, it's a single file, write everything to primary output cs file
-            _writeToOuter = Settings.FilterCount == 1 && !Settings.GenerateSeparateFiles;
+            _writeToOuter = Settings.GenerateSingleDbContext && !Settings.GenerateSeparateFiles;
 
             // For debug
             /*var a = _writeToOuter;
