@@ -28,7 +28,7 @@ namespace Generator.Tests.Unit
 
         private bool ShouldWriteToOuter(int filterCount, bool generateSeparateFiles, TemplateType type, bool generateSingleDbContext, string fileManagerType, string key)
         {
-            return filterCount == 1 && !generateSeparateFiles;
+            return generateSingleDbContext && !generateSeparateFiles;
         }
     }
 }
