@@ -17208,11 +17208,6 @@ IListSource where TEntity : class
     {{{#newline}}
         return GetAsyncEnumerator(cancellationToken);{{#newline}}
     }{{#newline}}{{#newline}}
-
-    public IEnumerator<T> GetEnumerator(){{#newline}}
-    {{{#newline}}
-        return this.AsEnumerable().GetEnumerator();{{#newline}}
-    }{{#newline}}{{#newline}}
 {{/if}}
 
     IEnumerator IEnumerable.GetEnumerator(){{#newline}}

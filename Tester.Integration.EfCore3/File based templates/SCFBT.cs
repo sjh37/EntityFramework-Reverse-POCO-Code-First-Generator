@@ -356,7 +356,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
     //          }
     //      }
     //      Read more about it here: https://msdn.microsoft.com/en-us/data/dn314431.aspx
-    public class FakeDbSet<TEntity> : DbSet<TEntity>, IQueryable<TEntity>, IAsyncEnumerable<TEntity>, IInfrastructure<IServiceProvider>, IListSource where TEntity : class
+    public class FakeDbSet<TEntity> : DbSet<TEntity>, IQueryable<TEntity>, IAsyncEnumerable<TEntity>, IListSource where TEntity : class
     {
         private readonly PropertyInfo[] _primaryKeys;
         private readonly ObservableCollection<TEntity> _data;
@@ -401,6 +401,11 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public override ValueTask<TEntity> FindAsync(params object[] keyValues)
         {
             return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues)));
+        }
+
+        IAsyncEnumerator<TEntity> IAsyncEnumerable<TEntity>.GetAsyncEnumerator(CancellationToken cancellationToken)
+        {
+            return GetAsyncEnumerator(cancellationToken);
         }
 
         public override EntityEntry<TEntity> Add(TEntity entity)
@@ -492,11 +497,6 @@ namespace Tester.Integration.EfCore3.File_based_templates
             return new FakeDbAsyncEnumerator<TEntity>(this.AsEnumerable().GetEnumerator());
         }
 
-        IAsyncEnumerator<TEntity> IAsyncEnumerable<TEntity>.GetAsyncEnumerator(CancellationToken cancellationToken)
-        {
-            return GetAsyncEnumerator(cancellationToken);
-        }
-
     }
 
     public class FakeDbAsyncQueryProvider<TEntity> : IAsyncQueryProvider
@@ -558,6 +558,16 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = new CancellationToken())
         {
             return new FakeDbAsyncEnumerator<T>(this.AsEnumerable().GetEnumerator());
+        }
+
+        IAsyncEnumerator<T> IAsyncEnumerable<T>.GetAsyncEnumerator(CancellationToken cancellationToken)
+        {
+            return GetAsyncEnumerator(cancellationToken);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.AsEnumerable().GetEnumerator();
         }
     }
 

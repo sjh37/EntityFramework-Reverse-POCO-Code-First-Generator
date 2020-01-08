@@ -450,11 +450,6 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
             return GetAsyncEnumerator(cancellationToken);
         }
 
-        public IEnumerator<T> GetEnumerator()
-        {
-            return this.AsEnumerable().GetEnumerator();
-        }
-
         IEnumerator IEnumerable.GetEnumerator()
         {
             return this.AsEnumerable().GetEnumerator();

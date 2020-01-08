@@ -514,11 +514,6 @@ namespace TestSynonymsDatabase
             return GetAsyncEnumerator(cancellationToken);
         }
 
-        public IEnumerator<T> GetEnumerator()
-        {
-            return this.AsEnumerable().GetEnumerator();
-        }
-
         IEnumerator IEnumerable.GetEnumerator()
         {
             return this.AsEnumerable().GetEnumerator();

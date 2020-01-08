@@ -277,11 +277,6 @@ namespace Tester.Integration.EfCore3.Single_context_many_files
             return GetAsyncEnumerator(cancellationToken);
         }
 
-        public IEnumerator<T> GetEnumerator()
-        {
-            return this.AsEnumerable().GetEnumerator();
-        }
-
         IEnumerator IEnumerable.GetEnumerator()
         {
             return this.AsEnumerable().GetEnumerator();
