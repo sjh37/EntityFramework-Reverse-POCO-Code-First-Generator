@@ -53,7 +53,7 @@ namespace Efrpg.Generators
                         sp.ReturnModels.Count > 1,
                         sp.WriteStoredProcReturnType(_filter),
                         sp.WriteStoredProcReturnModelName(filter),
-                        sp.WriteStoredProcFunctionName(),
+                        sp.WriteStoredProcFunctionName(filter),
                         sp.WriteStoredProcFunctionParams(false),
                         sp.WriteStoredProcFunctionParams(true),
                         sp.StoredProcHasOutParams() || sp.ReturnModels.Count == 0,
@@ -89,7 +89,7 @@ namespace Efrpg.Generators
                     .Select(tvf => new TableValuedFunctionsTemplateData(
                         tvf.ReturnModels.Count == 1 && tvf.ReturnModels[0].Count == 1,
                         tvf.ReturnModels.Count == 1 && tvf.ReturnModels[0].Count == 1 ? tvf.ReturnModels[0][0].ColumnName : null,
-                        tvf.WriteStoredProcFunctionName(),
+                        tvf.WriteStoredProcFunctionName(_filter),
                         tvf.WriteStoredProcReturnModelName(_filter),
                         tvf.WriteStoredProcFunctionParams(false),
                         tvf.DbName,
@@ -127,7 +127,7 @@ namespace Efrpg.Generators
                                 s.Parameters.Any(x => x.Mode == StoredProcedureParameterMode.Out))
                     .OrderBy(x => x.NameHumanCase)
                     .Select(svf => new ScalarValuedFunctionsTemplateData(
-                        svf.WriteStoredProcFunctionName(),
+                        svf.WriteStoredProcFunctionName(_filter),
                         svf.Parameters.Where(x => x.Mode == StoredProcedureParameterMode.Out).OrderBy(x => x.Ordinal).FirstOrDefault()?.PropertyType,
                         svf.WriteStoredProcFunctionParams(false),
                         svf.DbName,

@@ -38,9 +38,10 @@ namespace Efrpg
             return !IsNullable(col) ? propertyType : string.Format(Settings.NullableShortHand ? "{0}?" : "Nullable<{0}>", propertyType);
         }
 
-        public string WriteStoredProcFunctionName()
+        public string WriteStoredProcFunctionName(IDbContextFilter filter)
         {
-            return NameHumanCase;
+            var name = filter.StoredProcedureRename(this);
+            return !string.IsNullOrEmpty(name) ? name : NameHumanCase;
         }
 
         public bool StoredProcHasOutParams()
@@ -325,7 +326,7 @@ namespace Efrpg
             }
 
             if (isArray)
-                typeName = typeName + "[]";
+                typeName += "[]";
 
             return typeNamespace + typeName;
         }
