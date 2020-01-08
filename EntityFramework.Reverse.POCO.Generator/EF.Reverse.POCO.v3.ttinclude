@@ -895,6 +895,7 @@
         public bool IsUnicode;
         public bool IsMaxLength;
         public bool IsForeignKey;
+        public bool IsSpatial;
 
         public string Config;
         public List<string> ConfigFk = new List<string>();
@@ -916,7 +917,9 @@
             "microsoft.sqlserver.types.sqlgeometry",
             "system.data.entity.spatial.dbgeography",
             "system.data.entity.spatial.dbgeometry",
-            "system.data.entity.hierarchy.hierarchyid"
+            "system.data.entity.hierarchy.hierarchyid",
+            "nettopologysuite.geometries.point",
+            "nettopologysuite.geometries.geometry"
         };
 
         public static readonly List<string> CanUseSqlServerIdentityColumn = new List<string>
@@ -1005,6 +1008,8 @@
                 case "byte[]":
                 case "system.data.entity.spatial.dbgeography":
                 case "system.data.entity.spatial.dbgeometry":
+                case "nettopologysuite.geometries.point":
+                case "nettopologysuite.geometries.geometry":
                     Default = string.Empty;
                     break;
             }
@@ -2967,12 +2972,16 @@
             }
 
             var indexes = new List<string>();
+            var hasSpatialTypes = false;
             foreach (var table in _tables)
             {
                 var columns = table.Table.Columns
                     .Where(x => !x.Hidden && !string.IsNullOrEmpty(x.Config))
                     .OrderBy(x => x.Ordinal)
                     .ToList();
+
+                if (!Settings.DisableGeographyTypes && !hasSpatialTypes)
+                    hasSpatialTypes = columns.Any(x => x.IsSpatial);
 
                 indexes.AddRange(columns
                     .Select(_generator.IndexModelBuilder)
@@ -2992,6 +3001,7 @@
                 ConfigurationClassName                 = Settings.ConfigurationClassName,
                 ConnectionString                       = Settings.ConnectionString,
                 ConnectionStringName                   = Settings.ConnectionStringName,
+                ConnectionStringActions                = hasSpatialTypes && Settings.TemplateType != TemplateType.Ef6 ? ", x => x.UseNetTopologySuite()" : "",
                 contextInterface                       = string.IsNullOrWhiteSpace(Settings.DbContextInterfaceName) ? "" : ", " + Settings.DbContextInterfaceName,
                 setInitializer                         = string.Format("<{0}>(null);", Settings.DbContextName),
                 DbContextClassIsPartial                = Settings.DbContextClassIsPartial(),
@@ -5928,6 +5938,9 @@
     {
         public Dictionary<string, string> GetMapping()
         {
+            var geographyType = Settings.TemplateType == TemplateType.Ef6 ? "Spatial.DbGeography" : "NetTopologySuite.Geometries.Point";
+            var geometryType = Settings.TemplateType == TemplateType.Ef6 ? "Spatial.DbGeometry" : "NetTopologySuite.Geometries.Geometry";
+
             // [Database type] = Language type
             return new Dictionary<string, string>
             {
@@ -5954,8 +5967,8 @@
                 { "fixed",             "decimal" },
                 { "float unsigned",    "decimal" },
                 { "float",             "double" },
-                { "geography",         Settings.DisableGeographyTypes ? string.Empty : "Spatial.DbGeography" },
-                { "geometry",          Settings.DisableGeographyTypes ? string.Empty : "Spatial.DbGeometry" },
+                { "geography",         Settings.DisableGeographyTypes ? string.Empty : geographyType },
+                { "geometry",          Settings.DisableGeographyTypes ? string.Empty : geometryType },
                 { "int unsigned",      "long" },
                 { "int",               "int" },
                 { "integer unsigned",  "long" },
@@ -6094,6 +6107,9 @@
         // [Database type] = Language type
         public Dictionary<string, string> GetMapping()
         {
+            var geographyType = Settings.TemplateType == TemplateType.Ef6 ? "Spatial.DbGeography" : "NetTopologySuite.Geometries.Point";
+            var geometryType  = Settings.TemplateType == TemplateType.Ef6 ? "Spatial.DbGeometry"  : "NetTopologySuite.Geometries.Geometry";
+
             return new Dictionary<string, string>
             {
                 { string.Empty,       "string" }, // default
@@ -6106,8 +6122,8 @@
                 { "datetimeoffset",   "DateTimeOffset" },
                 { "decimal",          "decimal" },
                 { "float",            "double" },
-                { "geography",        Settings.DisableGeographyTypes ? string.Empty : "Spatial.DbGeography" },
-                { "geometry",         Settings.DisableGeographyTypes ? string.Empty : "Spatial.DbGeometry" },
+                { "geography",        Settings.DisableGeographyTypes ? string.Empty : geographyType },
+                { "geometry",         Settings.DisableGeographyTypes ? string.Empty : geometryType },
                 { "hierarchyid",      "Hierarchy.HierarchyId" },
                 { "image",            "byte[]" },
                 { "int",              "int" },
@@ -11919,8 +11935,9 @@ and limitations under the License.
                 PrimaryKeyOrdinal   = rt.PrimaryKeyOrdinal,
                 IsPrimaryKey        = rt.PrimaryKey,
                 IsForeignKey        = rt.IsForeignKey,
+                IsSpatial           = rt.TypeName == "geography" || rt.TypeName == "geometry",
                 Ordinal             = rt.Ordinal,
-                DbName                = rt.ColumnName,
+                DbName              = rt.ColumnName,
                 Default             = rt.Default,
                 ParentTable         = table
             };
@@ -14813,6 +14830,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public bool hasScalarValuedFunctions                                 { get; set; }
         public string ConnectionString                                       { get; set; }
         public string ConnectionStringName                                   { get; set; }
+        public string ConnectionStringActions                                { get; set; }
         public bool IncludeObjectContextConstructor                          { get; set; }
         public string QueryString                                            { get; set; }
         public string FromSql                                                { get; set; }
@@ -16497,7 +16515,7 @@ using {{this}};{{#newline}}
     {{{#newline}}
         if (!optionsBuilder.IsConfigured && _configuration != null){{#newline}}
         {{{#newline}}
-            optionsBuilder.UseSqlServer(_configuration.GetConnectionString(@""{{ConnectionStringName}}""));{{#newline}}
+            optionsBuilder.UseSqlServer(_configuration.GetConnectionString(@""{{ConnectionStringName}}""){{ConnectionStringActions}});{{#newline}}
         }{{#newline}}
     }{{#newline}}{{#newline}}
 {{/if}}
@@ -16507,7 +16525,7 @@ using {{this}};{{#newline}}
     {{{#newline}}
         if (!optionsBuilder.IsConfigured){{#newline}}
         {{{#newline}}
-            optionsBuilder.UseSqlServer(@""{{ConnectionString}}"");{{#newline}}
+            optionsBuilder.UseSqlServer(@""{{ConnectionString}}""{{ConnectionStringActions}});{{#newline}}
         }{{#newline}}
     }{{#newline}}{{#newline}}
 {{/if}}

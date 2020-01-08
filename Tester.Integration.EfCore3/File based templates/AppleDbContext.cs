@@ -75,6 +75,8 @@ namespace Tester.Integration.EfCore3.File_based_templatesAppleDbContext
 
     public class AppleDbContext : DbContext, IAppleDbContext
     {
+        private readonly IConfiguration _configuration;
+
         public AppleDbContext()
         {
         }
@@ -84,14 +86,19 @@ namespace Tester.Integration.EfCore3.File_based_templatesAppleDbContext
         {
         }
 
+        public AppleDbContext(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         public DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
         public DbSet<Stafford_Foo> Stafford_Foos { get; set; } // Foo
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
+            if (!optionsBuilder.IsConfigured && _configuration != null)
             {
-                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True");
+                optionsBuilder.UseSqlServer(_configuration.GetConnectionString(@"McsfMultiDatabase"));
             }
         }
 

@@ -97,7 +97,7 @@ namespace BuildTT
     Settings.IncludeComments                    = CommentsStyle.AtEndOfField; // Adds comments to the generated code
     Settings.IncludeExtendedPropertyComments    = CommentsStyle.InSummaryBlock; // Adds extended properties as comments to the generated code
     Settings.IncludeConnectionSettingComments   = true; // Add comments describing connection settings used to generate file
-    Settings.DisableGeographyTypes              = false; // Turns off use of System.Data.Entity.Spatial.DbGeography and System.Data.Entity.Spatial.DbGeometry as OData doesn't support entities with geometry/geography types.
+    Settings.DisableGeographyTypes              = true; // Turns off use of spatial types: Geography, Geometry. More info: https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Spatial-Types
     Settings.CollectionInterfaceType            = ""ICollection""; //  = ""System.Collections.Generic.List""; // Determines the declaration type of collections for the Navigation Properties. ICollection is used if not set.
     Settings.CollectionType                     = ""List""; // Determines the type of collection for the Navigation Properties. ""ObservableCollection"" for example. Add ""System.Collections.ObjectModel"" to AdditionalNamespaces if setting the CollectionType = ""ObservableCollection"".
     Settings.NullableShortHand                  = true; // true => T?, false => Nullable<T>

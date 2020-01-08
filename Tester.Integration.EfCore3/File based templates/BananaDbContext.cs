@@ -74,6 +74,8 @@ namespace Tester.Integration.EfCore3.File_based_templatesBananaDbContext
 
     public class BananaDbContext : DbContext, IBananaDbContext
     {
+        private readonly IConfiguration _configuration;
+
         public BananaDbContext()
         {
         }
@@ -83,13 +85,18 @@ namespace Tester.Integration.EfCore3.File_based_templatesBananaDbContext
         {
         }
 
+        public BananaDbContext(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         public DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; } // ComputedColumns
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
+            if (!optionsBuilder.IsConfigured && _configuration != null)
             {
-                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True");
+                optionsBuilder.UseSqlServer(_configuration.GetConnectionString(@"McsfMultiDatabase"));
             }
         }
 

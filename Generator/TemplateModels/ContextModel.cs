@@ -32,6 +32,7 @@ namespace Efrpg.TemplateModels
         public bool hasScalarValuedFunctions                                 { get; set; }
         public string ConnectionString                                       { get; set; }
         public string ConnectionStringName                                   { get; set; }
+        public string ConnectionStringActions                                { get; set; }
         public bool IncludeObjectContextConstructor                          { get; set; }
         public string QueryString                                            { get; set; }
         public string FromSql                                                { get; set; }

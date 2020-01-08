@@ -1,12 +1,15 @@
 ﻿{{DbContextClassModifiers}} class {{DbContextName}} : {{DbContextBaseClass}}{{contextInterface}}{{#newline}}
 {{{#newline}}
+{{#if OnConfigurationUsesConfiguration}}
+    private readonly IConfiguration _configuration;{{#newline}}{{#newline}}
+{{/if}}
+
     public {{DbContextName}}(){{#newline}}
     {{{#newline}}
 {{#if DbContextClassIsPartial}}
         InitializePartial();{{#newline}}
 {{/if}}
-    }{{#newline}}
-{{#newline}}
+    }{{#newline}}{{#newline}}
 
     public {{DbContextName}}(DbContextOptions<{{DbContextName}}> options){{#newline}}
         : base(options){{#newline}}
@@ -14,21 +17,42 @@
 {{#if DbContextClassIsPartial}}
         InitializePartial();{{#newline}}
 {{/if}}
-    }{{#newline}}
-{{#newline}}
+    }{{#newline}}{{#newline}}
+
+{{#if OnConfigurationUsesConfiguration}}
+    public {{DbContextName}}(IConfiguration configuration){{#newline}}
+    {{{#newline}}
+        _configuration = configuration;{{#newline}}
+{{#if DbContextClassIsPartial}}
+        InitializePartial();{{#newline}}
+{{/if}}
+    }{{#newline}}{{#newline}}
+{{/if}}
 
 {{#each tables}}
     {{DbSetModifier}} DbSet<{{DbSetName}}> {{PluralTableName}} { get; set; }{{Comment}}{{#newline}}
 {{/each}}
 {{#newline}}
 
+{{#if OnConfigurationUsesConfiguration}}
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder){{#newline}}
+    {{{#newline}}
+        if (!optionsBuilder.IsConfigured && _configuration != null){{#newline}}
+        {{{#newline}}
+            optionsBuilder.UseSqlServer(_configuration.GetConnectionString(@"{{ConnectionStringName}}"){{ConnectionStringActions}});{{#newline}}
+        }{{#newline}}
+    }{{#newline}}{{#newline}}
+{{/if}}
+
+{{#if OnConfigurationUsesConnectionString}}
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder){{#newline}}
     {{{#newline}}
         if (!optionsBuilder.IsConfigured){{#newline}}
         {{{#newline}}
-            optionsBuilder.UseSqlServer(@"{{ConnectionString}}");{{#newline}}
+            optionsBuilder.UseSqlServer(@"{{ConnectionString}}"{{ConnectionStringActions}});{{#newline}}
         }{{#newline}}
     }{{#newline}}{{#newline}}
+{{/if}}
 
 
     public bool IsSqlParameterNull(SqlParameter param){{#newline}}

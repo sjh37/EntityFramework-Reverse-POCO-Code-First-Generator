@@ -75,6 +75,8 @@ namespace Tester.Integration.EfCore3.File_based_templatesPlum
 
     public class DamsonDbContext : DbContext, IDamsonDbContext
     {
+        private readonly IConfiguration _configuration;
+
         public DamsonDbContext()
         {
         }
@@ -84,14 +86,19 @@ namespace Tester.Integration.EfCore3.File_based_templatesPlum
         {
         }
 
+        public DamsonDbContext(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         public DbSet<NoPrimaryKey> NoPrimaryKeys { get; set; } // NoPrimaryKeys
         public DbSet<Synonyms_Parent> Synonyms_Parents { get; set; } // Parent
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
+            if (!optionsBuilder.IsConfigured && _configuration != null)
             {
-                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True");
+                optionsBuilder.UseSqlServer(_configuration.GetConnectionString(@"McsfMultiDatabase"));
             }
         }
 

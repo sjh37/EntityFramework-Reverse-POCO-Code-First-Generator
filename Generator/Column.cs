@@ -44,6 +44,7 @@ namespace Efrpg
         public bool IsUnicode;
         public bool IsMaxLength;
         public bool IsForeignKey;
+        public bool IsSpatial;
 
         public string Config;
         public List<string> ConfigFk = new List<string>();
@@ -65,7 +66,9 @@ namespace Efrpg
             "microsoft.sqlserver.types.sqlgeometry",
             "system.data.entity.spatial.dbgeography",
             "system.data.entity.spatial.dbgeometry",
-            "system.data.entity.hierarchy.hierarchyid"
+            "system.data.entity.hierarchy.hierarchyid",
+            "nettopologysuite.geometries.point",
+            "nettopologysuite.geometries.geometry"
         };
 
         public static readonly List<string> CanUseSqlServerIdentityColumn = new List<string>
@@ -154,6 +157,8 @@ namespace Efrpg
                 case "byte[]":
                 case "system.data.entity.spatial.dbgeography":
                 case "system.data.entity.spatial.dbgeometry":
+                case "nettopologysuite.geometries.point":
+                case "nettopologysuite.geometries.geometry":
                     Default = string.Empty;
                     break;
             }

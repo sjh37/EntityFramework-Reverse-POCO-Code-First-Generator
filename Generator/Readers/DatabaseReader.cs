@@ -843,8 +843,9 @@ namespace Efrpg.Readers
                 PrimaryKeyOrdinal   = rt.PrimaryKeyOrdinal,
                 IsPrimaryKey        = rt.PrimaryKey,
                 IsForeignKey        = rt.IsForeignKey,
+                IsSpatial           = rt.TypeName == "geography" || rt.TypeName == "geometry",
                 Ordinal             = rt.Ordinal,
-                DbName                = rt.ColumnName,
+                DbName              = rt.ColumnName,
                 Default             = rt.Default,
                 ParentTable         = table
             };

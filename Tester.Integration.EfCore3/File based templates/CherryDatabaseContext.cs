@@ -74,6 +74,8 @@ namespace Tester.Integration.EfCore3.File_based_templatesCherry
 
     public class CherryDbContext : DbContext, ICherryDbContext
     {
+        private readonly IConfiguration _configuration;
+
         public CherryDbContext()
         {
         }
@@ -83,13 +85,18 @@ namespace Tester.Integration.EfCore3.File_based_templatesCherry
         {
         }
 
+        public CherryDbContext(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         public DbSet<ColumnName> ColumnNames { get; set; } // ColumnNames
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
+            if (!optionsBuilder.IsConfigured && _configuration != null)
             {
-                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True");
+                optionsBuilder.UseSqlServer(_configuration.GetConnectionString(@"McsfMultiDatabase"));
             }
         }
 

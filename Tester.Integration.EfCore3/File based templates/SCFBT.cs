@@ -116,14 +116,6 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public DbSet<UserInfo> UserInfoes { get; set; } // UserInfo
         public DbSet<UserInfoAttribute> UserInfoAttributes { get; set; } // UserInfoAttributes
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True");
-            }
-        }
-
         public bool IsSqlParameterNull(SqlParameter param)
         {
             var sqlValue = param.SqlValue;

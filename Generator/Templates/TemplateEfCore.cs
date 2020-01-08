@@ -209,7 +209,7 @@ using {{this}};{{#newline}}
     {{{#newline}}
         if (!optionsBuilder.IsConfigured && _configuration != null){{#newline}}
         {{{#newline}}
-            optionsBuilder.UseSqlServer(_configuration.GetConnectionString(@""{{ConnectionStringName}}""));{{#newline}}
+            optionsBuilder.UseSqlServer(_configuration.GetConnectionString(@""{{ConnectionStringName}}""){{ConnectionStringActions}});{{#newline}}
         }{{#newline}}
     }{{#newline}}{{#newline}}
 {{/if}}
@@ -219,7 +219,7 @@ using {{this}};{{#newline}}
     {{{#newline}}
         if (!optionsBuilder.IsConfigured){{#newline}}
         {{{#newline}}
-            optionsBuilder.UseSqlServer(@""{{ConnectionString}}"");{{#newline}}
+            optionsBuilder.UseSqlServer(@""{{ConnectionString}}""{{ConnectionStringActions}});{{#newline}}
         }{{#newline}}
     }{{#newline}}{{#newline}}
 {{/if}}
