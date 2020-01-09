@@ -1,6 +1,5 @@
 <#@ include file ="..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v3.ttinclude" #>
 <#
-    // v3.1.0
     // Please make changes to the settings below.
     // All you have to do is save this file, and the output file(s) are generated. Compiling does not regenerate the file(s).
     // A course for the older v2 generator is available on Pluralsight at https://www.pluralsight.com/courses/code-first-entity-framework-legacy-databases
