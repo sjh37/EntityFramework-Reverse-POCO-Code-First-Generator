@@ -1,6 +1,6 @@
 <#
 // Copyright (C) Simon Hughes 2012
-// v3.1.1
+// v3.1.2
 // If you want to submit a pull request, please modify the Generator C# project as this file
 // is automatically constructed from the C# Generator project during the build process.
 #>
@@ -1225,7 +1225,7 @@
     {
         public static string Version()
         {
-            return "v3.1.1";
+            return "v3.1.2";
         }
     }
 
@@ -5240,7 +5240,7 @@
 
             var isEfCore3 = Settings.IsEfCore3();
             var indexNames = t.Indexes.Where(x => !x.IsPrimaryKey).Select(x => x.IndexName).Distinct();
-            foreach (var indexName in indexNames)
+            foreach (var indexName in indexNames.OrderBy(x => x))
             {
                 var indexesForName = t.Indexes
                     .Where(x => x.IndexName == indexName)
@@ -5256,7 +5256,7 @@
                 if (indexesForName.Count > 1)
                     sb.Append("new { ");
 
-                foreach (var index in indexesForName)
+                foreach (var index in indexesForName.OrderBy(x => x.KeyOrdinal).ThenBy(x => x.ColumnName))
                 {
                     var col = t.Columns.Find(x => x.DbName == index.ColumnName);
                     if (col == null || col.Hidden || string.IsNullOrEmpty(col.Config))

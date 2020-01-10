@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Efrpg.FileManagement;
-using Efrpg.Templates;
 
 namespace Efrpg.Generators
 {
@@ -178,7 +177,7 @@ namespace Efrpg.Generators
 
             var isEfCore3 = Settings.IsEfCore3();
             var indexNames = t.Indexes.Where(x => !x.IsPrimaryKey).Select(x => x.IndexName).Distinct();
-            foreach (var indexName in indexNames)
+            foreach (var indexName in indexNames.OrderBy(x => x))
             {
                 var indexesForName = t.Indexes
                     .Where(x => x.IndexName == indexName)
@@ -194,7 +193,7 @@ namespace Efrpg.Generators
                 if (indexesForName.Count > 1)
                     sb.Append("new { ");
 
-                foreach (var index in indexesForName)
+                foreach (var index in indexesForName.OrderBy(x => x.KeyOrdinal).ThenBy(x => x.ColumnName))
                 {
                     var col = t.Columns.Find(x => x.DbName == index.ColumnName);
                     if (col == null || col.Hidden || string.IsNullOrEmpty(col.Config))
