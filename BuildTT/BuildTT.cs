@@ -78,7 +78,7 @@ namespace BuildTT
     Settings.CommandTimeout                         = 600; // SQL Command timeout in seconds. 600 is 10 minutes, 0 will wait indefinitely. Some databases can be slow retrieving schema information.
     Settings.DbContextInterfaceBaseClasses          = ""IDisposable""; // Specify what the base classes are for your database context interface
     Settings.DbContextBaseClass                     = ""DbContext""; // Specify what the base class is for your DbContext. For ASP.NET Identity use ""IdentityDbContext<ApplicationUser>"";
-    Settings.OnConfiguration                        = OnConfiguration.Configuration; // EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/OnConfiguration
+    Settings.OnConfiguration                        = OnConfiguration.ConnectionString; // EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Settings.OnConfiguration
     Settings.AddParameterlessConstructorToDbContext = true; // EF6 only. If true, then DbContext will have a default (parameter-less) constructor which automatically passes in the connection string name, if false then no parameter-less constructor will be created.
     Settings.ConfigurationClassName                 = ""Configuration""; // Configuration, Mapping, Map, etc. This is appended to the Poco class name to configure the mappings.
     Settings.DatabaseReaderPlugin                   = """"; // Eg, ""c:\\Path\\YourDatabaseReader.dll,Full.Name.Of.Class.Including.Namespace"". See #501. This will allow you to specify a pluggable provider for reading your database.
@@ -109,7 +109,7 @@ namespace BuildTT
     Settings.AdditionalContextInterfaceItems    = new List<string>(); // example: new List<string> { ""void SetAutoDetectChangesEnabled(bool flag);"" };
 
     // Language choices
-            Settings.GenerationLanguage = GenerationLanguage.CSharp;
+    Settings.GenerationLanguage = GenerationLanguage.CSharp;
     Settings.FileExtension      = "".cs"";
 
     // Code suppression (useful for non C# file generation) *******************************************************************************
