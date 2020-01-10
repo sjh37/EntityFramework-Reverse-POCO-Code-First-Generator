@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Linq;
 using EntityFramework_Reverse_POCO_Generator;
-using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 
 namespace Tester.Integration.EfCore3
@@ -13,11 +14,7 @@ namespace Tester.Integration.EfCore3
         [SetUp]
         public void SetUp()
         {
-            var configuration = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", false, false)
-                .Build();
-
-            _db = new MyDbContext(configuration);
+            _db = new MyDbContext();
         }
 
         [Test]
@@ -26,6 +23,7 @@ namespace Tester.Integration.EfCore3
         [TestCase("WOLZA")]
         public void CustOrderHist(string customerId)
         {
+            Assert.IsNotNull(_db);
             var data = _db.CustOrderHist(customerId);
             var asyncData = _db.CustOrderHistAsync(customerId).Result;
 
