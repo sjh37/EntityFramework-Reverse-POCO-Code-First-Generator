@@ -95,8 +95,21 @@ namespace Efrpg.Generators
             var sb = new StringBuilder(255);
             sb.AppendFormat(".HasColumnName(@\"{0}\")", c.DbName);
 
+            var doNotSpecifySize = false;
+            if (!c.IsMaxLength && c.MaxLength > 0)
+                doNotSpecifySize = (DatabaseReader.DoNotSpecifySizeForMaxLength && c.MaxLength > 4000); // Issue #179
+
             if (!string.IsNullOrEmpty(c.SqlPropertyType))
-                sb.AppendFormat(".HasColumnType(\"{0}\")", c.SqlPropertyType);
+            {
+                var columnTypeParameters = string.Empty;
+                
+                if ((c.Precision > 0 || c.Scale > 0) && (c.SqlPropertyType == "decimal" || c.SqlPropertyType == "numeric"))
+                    columnTypeParameters = $"({c.Precision},{c.Scale})";
+                else if (!c.IsMaxLength && c.MaxLength > 0 && !doNotSpecifySize)
+                    columnTypeParameters = $"({c.MaxLength})";
+
+                sb.AppendFormat(".HasColumnType(\"{0}{1}\")", c.SqlPropertyType, columnTypeParameters);
+            }
 
             sb.Append(c.IsNullable ? ".IsRequired(false)" : ".IsRequired()");
 
@@ -106,13 +119,8 @@ namespace Efrpg.Generators
             if (!c.IsUnicode)
                 sb.Append(".IsUnicode(false)");
 
-            if (!c.IsMaxLength && c.MaxLength > 0)
-            {
-                var doNotSpecifySize = (DatabaseReader.DoNotSpecifySizeForMaxLength && c.MaxLength > 4000); // Issue #179
-
-                if (!doNotSpecifySize)
-                    sb.AppendFormat(".HasMaxLength({0})", c.MaxLength);
-            }
+            if (!c.IsMaxLength && c.MaxLength > 0 && !doNotSpecifySize)
+                sb.AppendFormat(".HasMaxLength({0})", c.MaxLength);
 
             //if (c.IsMaxLength)
             //    sb.Append(".IsMaxLength()");

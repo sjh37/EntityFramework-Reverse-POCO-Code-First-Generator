@@ -598,7 +598,7 @@ namespace TestSynonymsDatabase
 
             builder.Property(x => x.ChildId).HasColumnName(@"ChildId").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.ParentId).HasColumnName(@"ParentId").HasColumnType("int").IsRequired();
-            builder.Property(x => x.ChildName).HasColumnName(@"ChildName").HasColumnType("varchar").IsRequired(false).IsUnicode(false).HasMaxLength(100);
+            builder.Property(x => x.ChildName).HasColumnName(@"ChildName").HasColumnType("varchar(100)").IsRequired(false).IsUnicode(false).HasMaxLength(100);
 
             // Foreign keys
             builder.HasOne(a => a.Parent).WithMany(b => b.Children).HasForeignKey(c => c.ParentId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Child_Parent");
@@ -614,7 +614,7 @@ namespace TestSynonymsDatabase
             builder.HasKey(x => x.ParentId);
 
             builder.Property(x => x.ParentId).HasColumnName(@"ParentId").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.ParentName).HasColumnName(@"ParentName").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(100);
+            builder.Property(x => x.ParentName).HasColumnName(@"ParentName").HasColumnType("varchar(100)").IsRequired().IsUnicode(false).HasMaxLength(100);
         }
     }
 

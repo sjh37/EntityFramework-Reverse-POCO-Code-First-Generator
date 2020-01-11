@@ -17,6 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="dotMorten.Microsoft.SqlServer.Types" Version="1.1.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
@@ -37,6 +38,10 @@
         <None Update="File based templates\SCFBT.tt">
             <Generator>TextTemplatingFileGenerator</Generator>
             <LastGenOutput>SCFBT.cs</LastGenOutput>
+        </None>
+        <None Update="Fred.tt">
+          <Generator>TextTemplatingFileGenerator</Generator>
+          <LastGenOutput>Fred.cs</LastGenOutput>
         </None>
         <None Update="Multi context many files\MCMF.tt">
             <Generator>TextTemplatingFileGenerator</Generator>
@@ -74,6 +79,11 @@
             <DesignTime>True</DesignTime>
             <AutoGen>True</AutoGen>
             <DependentUpon>SCFBT.tt</DependentUpon>
+        </Compile>
+        <Compile Update="Fred.cs">
+          <DesignTime>True</DesignTime>
+          <AutoGen>True</AutoGen>
+          <DependentUpon>Fred.tt</DependentUpon>
         </Compile>
         <Compile Update="Multi context many files\MCMF.cs">
             <DesignTime>True</DesignTime>

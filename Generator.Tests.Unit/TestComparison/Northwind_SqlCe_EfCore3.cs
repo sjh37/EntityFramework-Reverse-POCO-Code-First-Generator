@@ -738,7 +738,7 @@ namespace Efrpg.SqlCE
             builder.HasKey(x => x.CategoryId);
 
             builder.Property(x => x.CategoryId).HasColumnName(@"Category ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.CategoryName).HasColumnName(@"Category Name").HasColumnType("nvarchar").IsRequired().HasMaxLength(15);
+            builder.Property(x => x.CategoryName).HasColumnName(@"Category Name").HasColumnType("nvarchar(15)").IsRequired().HasMaxLength(15);
             builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("ntext").IsRequired(false);
             builder.Property(x => x.Picture).HasColumnName(@"Picture").HasColumnType("image").IsRequired(false);
         }
@@ -752,17 +752,17 @@ namespace Efrpg.SqlCE
             builder.ToTable("Customers");
             builder.HasKey(x => x.CustomerId);
 
-            builder.Property(x => x.CustomerId).HasColumnName(@"Customer ID").HasColumnType("nvarchar").IsRequired().HasMaxLength(5).ValueGeneratedNever();
-            builder.Property(x => x.CompanyName).HasColumnName(@"Company Name").HasColumnType("nvarchar").IsRequired().HasMaxLength(40);
-            builder.Property(x => x.ContactName).HasColumnName(@"Contact Name").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(30);
-            builder.Property(x => x.ContactTitle).HasColumnName(@"Contact Title").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(30);
-            builder.Property(x => x.Address).HasColumnName(@"Address").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(60);
-            builder.Property(x => x.City).HasColumnName(@"City").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(15);
-            builder.Property(x => x.Region).HasColumnName(@"Region").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(15);
-            builder.Property(x => x.PostalCode).HasColumnName(@"Postal Code").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(10);
-            builder.Property(x => x.Country).HasColumnName(@"Country").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(15);
-            builder.Property(x => x.Phone).HasColumnName(@"Phone").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(24);
-            builder.Property(x => x.Fax).HasColumnName(@"Fax").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(24);
+            builder.Property(x => x.CustomerId).HasColumnName(@"Customer ID").HasColumnType("nvarchar(5)").IsRequired().HasMaxLength(5).ValueGeneratedNever();
+            builder.Property(x => x.CompanyName).HasColumnName(@"Company Name").HasColumnType("nvarchar(40)").IsRequired().HasMaxLength(40);
+            builder.Property(x => x.ContactName).HasColumnName(@"Contact Name").HasColumnType("nvarchar(30)").IsRequired(false).HasMaxLength(30);
+            builder.Property(x => x.ContactTitle).HasColumnName(@"Contact Title").HasColumnType("nvarchar(30)").IsRequired(false).HasMaxLength(30);
+            builder.Property(x => x.Address).HasColumnName(@"Address").HasColumnType("nvarchar(60)").IsRequired(false).HasMaxLength(60);
+            builder.Property(x => x.City).HasColumnName(@"City").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
+            builder.Property(x => x.Region).HasColumnName(@"Region").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
+            builder.Property(x => x.PostalCode).HasColumnName(@"Postal Code").HasColumnType("nvarchar(10)").IsRequired(false).HasMaxLength(10);
+            builder.Property(x => x.Country).HasColumnName(@"Country").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
+            builder.Property(x => x.Phone).HasColumnName(@"Phone").HasColumnType("nvarchar(24)").IsRequired(false).HasMaxLength(24);
+            builder.Property(x => x.Fax).HasColumnName(@"Fax").HasColumnType("nvarchar(24)").IsRequired(false).HasMaxLength(24);
         }
     }
 
@@ -775,18 +775,18 @@ namespace Efrpg.SqlCE
             builder.HasKey(x => x.EmployeeId);
 
             builder.Property(x => x.EmployeeId).HasColumnName(@"Employee ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.LastName).HasColumnName(@"Last Name").HasColumnType("nvarchar").IsRequired().HasMaxLength(20);
-            builder.Property(x => x.FirstName).HasColumnName(@"First Name").HasColumnType("nvarchar").IsRequired().HasMaxLength(10);
-            builder.Property(x => x.Title).HasColumnName(@"Title").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(30);
+            builder.Property(x => x.LastName).HasColumnName(@"Last Name").HasColumnType("nvarchar(20)").IsRequired().HasMaxLength(20);
+            builder.Property(x => x.FirstName).HasColumnName(@"First Name").HasColumnType("nvarchar(10)").IsRequired().HasMaxLength(10);
+            builder.Property(x => x.Title).HasColumnName(@"Title").HasColumnType("nvarchar(30)").IsRequired(false).HasMaxLength(30);
             builder.Property(x => x.BirthDate).HasColumnName(@"Birth Date").HasColumnType("datetime").IsRequired(false);
             builder.Property(x => x.HireDate).HasColumnName(@"Hire Date").HasColumnType("datetime").IsRequired(false);
-            builder.Property(x => x.Address).HasColumnName(@"Address").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(60);
-            builder.Property(x => x.City).HasColumnName(@"City").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(15);
-            builder.Property(x => x.Region).HasColumnName(@"Region").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(15);
-            builder.Property(x => x.PostalCode).HasColumnName(@"Postal Code").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(10);
-            builder.Property(x => x.Country).HasColumnName(@"Country").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(15);
-            builder.Property(x => x.HomePhone).HasColumnName(@"Home Phone").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(24);
-            builder.Property(x => x.Extension).HasColumnName(@"Extension").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(4);
+            builder.Property(x => x.Address).HasColumnName(@"Address").HasColumnType("nvarchar(60)").IsRequired(false).HasMaxLength(60);
+            builder.Property(x => x.City).HasColumnName(@"City").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
+            builder.Property(x => x.Region).HasColumnName(@"Region").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
+            builder.Property(x => x.PostalCode).HasColumnName(@"Postal Code").HasColumnType("nvarchar(10)").IsRequired(false).HasMaxLength(10);
+            builder.Property(x => x.Country).HasColumnName(@"Country").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
+            builder.Property(x => x.HomePhone).HasColumnName(@"Home Phone").HasColumnType("nvarchar(24)").IsRequired(false).HasMaxLength(24);
+            builder.Property(x => x.Extension).HasColumnName(@"Extension").HasColumnType("nvarchar(4)").IsRequired(false).HasMaxLength(4);
             builder.Property(x => x.Photo).HasColumnName(@"Photo").HasColumnType("image").IsRequired(false);
             builder.Property(x => x.Notes).HasColumnName(@"Notes").HasColumnType("ntext").IsRequired(false);
             builder.Property(x => x.ReportsTo).HasColumnName(@"Reports To").HasColumnType("int").IsRequired(false);
@@ -802,14 +802,14 @@ namespace Efrpg.SqlCE
             builder.HasKey(x => x.OrderId);
 
             builder.Property(x => x.OrderId).HasColumnName(@"Order ID").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.CustomerId).HasColumnName(@"Customer ID").HasColumnType("nvarchar").IsRequired().HasMaxLength(5);
+            builder.Property(x => x.CustomerId).HasColumnName(@"Customer ID").HasColumnType("nvarchar(5)").IsRequired().HasMaxLength(5);
             builder.Property(x => x.EmployeeId).HasColumnName(@"Employee ID").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.ShipName).HasColumnName(@"Ship Name").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(40);
-            builder.Property(x => x.ShipAddress).HasColumnName(@"Ship Address").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(60);
-            builder.Property(x => x.ShipCity).HasColumnName(@"Ship City").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(15);
-            builder.Property(x => x.ShipRegion).HasColumnName(@"Ship Region").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(15);
-            builder.Property(x => x.ShipPostalCode).HasColumnName(@"Ship Postal Code").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(10);
-            builder.Property(x => x.ShipCountry).HasColumnName(@"Ship Country").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(15);
+            builder.Property(x => x.ShipName).HasColumnName(@"Ship Name").HasColumnType("nvarchar(40)").IsRequired(false).HasMaxLength(40);
+            builder.Property(x => x.ShipAddress).HasColumnName(@"Ship Address").HasColumnType("nvarchar(60)").IsRequired(false).HasMaxLength(60);
+            builder.Property(x => x.ShipCity).HasColumnName(@"Ship City").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
+            builder.Property(x => x.ShipRegion).HasColumnName(@"Ship Region").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
+            builder.Property(x => x.ShipPostalCode).HasColumnName(@"Ship Postal Code").HasColumnType("nvarchar(10)").IsRequired(false).HasMaxLength(10);
+            builder.Property(x => x.ShipCountry).HasColumnName(@"Ship Country").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
             builder.Property(x => x.ShipVia).HasColumnName(@"Ship Via").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.OrderDate).HasColumnName(@"Order Date").HasColumnType("datetime").IsRequired(false);
             builder.Property(x => x.RequiredDate).HasColumnName(@"Required Date").HasColumnType("datetime").IsRequired(false);
@@ -854,9 +854,9 @@ namespace Efrpg.SqlCE
             builder.Property(x => x.ProductId).HasColumnName(@"Product ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.SupplierId).HasColumnName(@"Supplier ID").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.CategoryId).HasColumnName(@"Category ID").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.ProductName).HasColumnName(@"Product Name").HasColumnType("nvarchar").IsRequired().HasMaxLength(40);
-            builder.Property(x => x.EnglishName).HasColumnName(@"English Name").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(40);
-            builder.Property(x => x.QuantityPerUnit).HasColumnName(@"Quantity Per Unit").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(20);
+            builder.Property(x => x.ProductName).HasColumnName(@"Product Name").HasColumnType("nvarchar(40)").IsRequired().HasMaxLength(40);
+            builder.Property(x => x.EnglishName).HasColumnName(@"English Name").HasColumnType("nvarchar(40)").IsRequired(false).HasMaxLength(40);
+            builder.Property(x => x.QuantityPerUnit).HasColumnName(@"Quantity Per Unit").HasColumnType("nvarchar(20)").IsRequired(false).HasMaxLength(20);
             builder.Property(x => x.UnitPrice).HasColumnName(@"Unit Price").HasColumnType("money").IsRequired(false);
             builder.Property(x => x.UnitsInStock).HasColumnName(@"Units In Stock").HasColumnType("smallint").IsRequired(false);
             builder.Property(x => x.UnitsOnOrder).HasColumnName(@"Units On Order").HasColumnType("smallint").IsRequired(false);
@@ -878,7 +878,7 @@ namespace Efrpg.SqlCE
             builder.HasKey(x => x.ShipperId);
 
             builder.Property(x => x.ShipperId).HasColumnName(@"Shipper ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.CompanyName).HasColumnName(@"Company Name").HasColumnType("nvarchar").IsRequired().HasMaxLength(40);
+            builder.Property(x => x.CompanyName).HasColumnName(@"Company Name").HasColumnType("nvarchar(40)").IsRequired().HasMaxLength(40);
         }
     }
 
@@ -891,16 +891,16 @@ namespace Efrpg.SqlCE
             builder.HasKey(x => x.SupplierId);
 
             builder.Property(x => x.SupplierId).HasColumnName(@"Supplier ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.CompanyName).HasColumnName(@"Company Name").HasColumnType("nvarchar").IsRequired().HasMaxLength(40);
-            builder.Property(x => x.ContactName).HasColumnName(@"Contact Name").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(30);
-            builder.Property(x => x.ContactTitle).HasColumnName(@"Contact Title").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(30);
-            builder.Property(x => x.Address).HasColumnName(@"Address").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(60);
-            builder.Property(x => x.City).HasColumnName(@"City").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(15);
-            builder.Property(x => x.Region).HasColumnName(@"Region").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(15);
-            builder.Property(x => x.PostalCode).HasColumnName(@"Postal Code").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(10);
-            builder.Property(x => x.Country).HasColumnName(@"Country").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(15);
-            builder.Property(x => x.Phone).HasColumnName(@"Phone").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(24);
-            builder.Property(x => x.Fax).HasColumnName(@"Fax").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(24);
+            builder.Property(x => x.CompanyName).HasColumnName(@"Company Name").HasColumnType("nvarchar(40)").IsRequired().HasMaxLength(40);
+            builder.Property(x => x.ContactName).HasColumnName(@"Contact Name").HasColumnType("nvarchar(30)").IsRequired(false).HasMaxLength(30);
+            builder.Property(x => x.ContactTitle).HasColumnName(@"Contact Title").HasColumnType("nvarchar(30)").IsRequired(false).HasMaxLength(30);
+            builder.Property(x => x.Address).HasColumnName(@"Address").HasColumnType("nvarchar(60)").IsRequired(false).HasMaxLength(60);
+            builder.Property(x => x.City).HasColumnName(@"City").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
+            builder.Property(x => x.Region).HasColumnName(@"Region").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
+            builder.Property(x => x.PostalCode).HasColumnName(@"Postal Code").HasColumnType("nvarchar(10)").IsRequired(false).HasMaxLength(10);
+            builder.Property(x => x.Country).HasColumnName(@"Country").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
+            builder.Property(x => x.Phone).HasColumnName(@"Phone").HasColumnType("nvarchar(24)").IsRequired(false).HasMaxLength(24);
+            builder.Property(x => x.Fax).HasColumnName(@"Fax").HasColumnType("nvarchar(24)").IsRequired(false).HasMaxLength(24);
         }
     }
 

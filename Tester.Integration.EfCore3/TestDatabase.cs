@@ -787,18 +787,18 @@ namespace TestDatabaseStandard
             builder.Property(x => x.Abc4792).HasColumnName(@"abc/\").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.Joe46Bloggs).HasColumnName(@"joe.bloggs").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.SnakeCase).HasColumnName(@"snake-case").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.DefaultTest).HasColumnName(@"default_test").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(20);
+            builder.Property(x => x.DefaultTest).HasColumnName(@"default_test").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
             builder.Property(x => x.SomeDate).HasColumnName(@"someDate").HasColumnType("datetime2").IsRequired();
-            builder.Property(x => x.Obs).HasColumnName(@"Obs").HasColumnType("varchar").IsRequired(false).IsUnicode(false).HasMaxLength(20);
-            builder.Property(x => x.Slash1).HasColumnName(@"Slash1").HasColumnType("varchar").IsRequired(false).IsUnicode(false).HasMaxLength(20);
-            builder.Property(x => x.Slash2).HasColumnName(@"Slash2").HasColumnType("varchar").IsRequired(false).IsUnicode(false).HasMaxLength(20);
-            builder.Property(x => x.Slash3).HasColumnName(@"Slash3").HasColumnType("varchar").IsRequired(false).IsUnicode(false).HasMaxLength(20);
+            builder.Property(x => x.Obs).HasColumnName(@"Obs").HasColumnType("varchar(20)").IsRequired(false).IsUnicode(false).HasMaxLength(20);
+            builder.Property(x => x.Slash1).HasColumnName(@"Slash1").HasColumnType("varchar(20)").IsRequired(false).IsUnicode(false).HasMaxLength(20);
+            builder.Property(x => x.Slash2).HasColumnName(@"Slash2").HasColumnType("varchar(20)").IsRequired(false).IsUnicode(false).HasMaxLength(20);
+            builder.Property(x => x.Slash3).HasColumnName(@"Slash3").HasColumnType("varchar(20)").IsRequired(false).IsUnicode(false).HasMaxLength(20);
             builder.Property(x => x.@Static).HasColumnName(@"static").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.@Readonly).HasColumnName(@"readonly").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.C123Hi).HasColumnName(@"123Hi").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.Afloat).HasColumnName(@"afloat").HasColumnType("real").IsRequired(false);
             builder.Property(x => x.Adouble).HasColumnName(@"adouble").HasColumnType("float").IsRequired(false);
-            builder.Property(x => x.Adecimal).HasColumnName(@"adecimal").HasColumnType("decimal").IsRequired(false);
+            builder.Property(x => x.Adecimal).HasColumnName(@"adecimal").HasColumnType("decimal(19,4)").IsRequired(false);
         }
     }
 
@@ -811,7 +811,7 @@ namespace TestDatabaseStandard
             builder.HasKey(x => x.Id).HasName("PK_Boo").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Name).HasColumnName(@"name").HasColumnType("nchar").IsRequired().IsFixedLength().HasMaxLength(10);
+            builder.Property(x => x.Name).HasColumnName(@"name").HasColumnType("nchar(10)").IsRequired().IsFixedLength().HasMaxLength(10);
         }
     }
 
@@ -824,8 +824,8 @@ namespace TestDatabaseStandard
             builder.HasKey(x => x.Id).HasName("PK_Stafford_ComputedColumns").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.MyColumn).HasColumnName(@"MyColumn").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(10);
-            builder.Property(x => x.MyComputedColumn).HasColumnName(@"MyComputedColumn").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(10).ValueGeneratedOnAddOrUpdate();
+            builder.Property(x => x.MyColumn).HasColumnName(@"MyColumn").HasColumnType("varchar(10)").IsRequired().IsUnicode(false).HasMaxLength(10);
+            builder.Property(x => x.MyComputedColumn).HasColumnName(@"MyComputedColumn").HasColumnType("varchar(10)").IsRequired().IsUnicode(false).HasMaxLength(10).ValueGeneratedOnAddOrUpdate();
         }
     }
 
@@ -838,7 +838,7 @@ namespace TestDatabaseStandard
             builder.HasKey(x => x.Id).HasName("PK_Foo").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.Name).HasColumnName(@"name").HasColumnType("nchar").IsRequired().IsFixedLength().HasMaxLength(10);
+            builder.Property(x => x.Name).HasColumnName(@"name").HasColumnType("nchar(10)").IsRequired().IsFixedLength().HasMaxLength(10);
 
             // Foreign keys
             builder.HasOne(a => a.Stafford_Boo).WithOne(b => b.Stafford_Foo).HasForeignKey<Stafford_Foo>(c => c.Id).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Foo_Boo");
@@ -855,7 +855,7 @@ namespace TestDatabaseStandard
 
             builder.Property(x => x.ChildId).HasColumnName(@"ChildId").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.ParentId).HasColumnName(@"ParentId").HasColumnType("int").IsRequired();
-            builder.Property(x => x.ChildName).HasColumnName(@"ChildName").HasColumnType("varchar").IsRequired(false).IsUnicode(false).HasMaxLength(100);
+            builder.Property(x => x.ChildName).HasColumnName(@"ChildName").HasColumnType("varchar(100)").IsRequired(false).IsUnicode(false).HasMaxLength(100);
 
             // Foreign keys
             builder.HasOne(a => a.Synonyms_Parent).WithMany(b => b.Synonyms_Children).HasForeignKey(c => c.ParentId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Child_Parent");
@@ -871,7 +871,7 @@ namespace TestDatabaseStandard
             builder.HasKey(x => x.ParentId).HasName("PK_Parent").IsClustered();
 
             builder.Property(x => x.ParentId).HasColumnName(@"ParentId").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.ParentName).HasColumnName(@"ParentName").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(100);
+            builder.Property(x => x.ParentName).HasColumnName(@"ParentName").HasColumnType("varchar(100)").IsRequired().IsUnicode(false).HasMaxLength(100);
         }
     }
 

@@ -590,7 +590,7 @@ namespace EfrpgPlum
             ToTable("NoPrimaryKeys", schema);
             HasKey(x => x.Description);
 
-            Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar").IsOptional().IsUnicode(false).HasMaxLength(10).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(10)").IsOptional().IsUnicode(false).HasMaxLength(10).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
         }
     }
 
@@ -608,7 +608,7 @@ namespace EfrpgPlum
             HasKey(x => x.ParentId);
 
             Property(x => x.ParentId).HasColumnName(@"ParentId").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
-            Property(x => x.ParentName).HasColumnName(@"ParentName").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(100);
+            Property(x => x.ParentName).HasColumnName(@"ParentName").HasColumnType("varchar(100)").IsRequired().IsUnicode(false).HasMaxLength(100);
 
             // Foreign keys
             HasRequired(a => a.ParentFkName).WithMany(b => b.ChildFkName).HasForeignKey(c => c.ParentName).WillCascadeOnDelete(false); // CustomNameForForeignKey
