@@ -325,7 +325,7 @@ namespace BuildTT
                     column.Attributes.Add(""[Required]"");
             }
 
-            column.Attributes.Add($""[Display(Name = \""{column.DisplayName}\"")]"");
+            column.Attributes.Add(string.Format(""[Display(Name = \""{0}\"")]"", column.DisplayName));
         }
 
         // Perform Enum property type replacement
