@@ -540,6 +540,7 @@ namespace Efrpg
 
         public static bool IsEfCore2() => TemplateType == TemplateType.EfCore2 || TemplateType == TemplateType.FileBasedCore2;
         public static bool IsEfCore3() => TemplateType == TemplateType.EfCore3 || TemplateType == TemplateType.FileBasedCore3;
+        public static bool IsEfCore() => IsEfCore2() || IsEfCore3();
 
         public static string Root;
         public static int FilterCount;
