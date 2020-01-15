@@ -26,7 +26,7 @@ namespace Efrpg.LanguageMapping
                 { "citext",            "string" },
                 { "date",              "DateTime" },
                 { "double precision",  "double" },
-                { "geometry",          Settings.DisableGeographyTypes ? string.Empty : "PostgisGeometry" },
+                { "geometry",          "PostgisGeometry" },
                 { "hstore",            "Dictionary<string, string>" },
                 { "inet",              "NpgsqlInet" },
                 { "integer",           "int" },
@@ -61,6 +61,11 @@ namespace Efrpg.LanguageMapping
                 //{ "enum types", "TEnum" },
                 //{ "array types",        "Array (of element type)" },
             };
+        }
+
+        public List<string> SpatialTypes()
+        {
+            return new List<string> { "geometry", "point", "line", "lseg", "box", "path", "polygon", "circle" };
         }
     }
 }

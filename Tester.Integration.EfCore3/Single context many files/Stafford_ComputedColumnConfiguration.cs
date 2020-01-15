@@ -48,8 +48,8 @@ namespace Tester.Integration.EfCore3.Single_context_many_files
             builder.HasKey(x => x.Id).HasName("PK_Stafford_ComputedColumns").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.MyColumn).HasColumnName(@"MyColumn").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(10);
-            builder.Property(x => x.MyComputedColumn).HasColumnName(@"MyComputedColumn").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(10).ValueGeneratedOnAddOrUpdate();
+            builder.Property(x => x.MyColumn).HasColumnName(@"MyColumn").HasColumnType("varchar(10)").IsRequired().IsUnicode(false).HasMaxLength(10);
+            builder.Property(x => x.MyComputedColumn).HasColumnName(@"MyComputedColumn").HasColumnType("varchar(10)").IsRequired().IsUnicode(false).HasMaxLength(10).ValueGeneratedOnAddOrUpdate();
         }
     }
 

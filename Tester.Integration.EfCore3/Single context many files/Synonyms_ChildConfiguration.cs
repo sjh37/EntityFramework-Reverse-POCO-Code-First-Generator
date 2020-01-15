@@ -49,7 +49,7 @@ namespace Tester.Integration.EfCore3.Single_context_many_files
 
             builder.Property(x => x.ChildId).HasColumnName(@"ChildId").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.ParentId).HasColumnName(@"ParentId").HasColumnType("int").IsRequired();
-            builder.Property(x => x.ChildName).HasColumnName(@"ChildName").HasColumnType("varchar").IsRequired(false).IsUnicode(false).HasMaxLength(100);
+            builder.Property(x => x.ChildName).HasColumnName(@"ChildName").HasColumnType("varchar(100)").IsRequired(false).IsUnicode(false).HasMaxLength(100);
 
             // Foreign keys
             builder.HasOne(a => a.Synonyms_Parent).WithMany(b => b.Synonyms_Children).HasForeignKey(c => c.ParentId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Child_Parent");

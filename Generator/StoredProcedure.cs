@@ -16,6 +16,8 @@ namespace Efrpg
         public bool IsTableValuedFunction;
         public bool IsScalarValuedFunction;
         public bool IsStoredProcedure;
+        public bool HasSpatialParameter;
+        public bool HasSpatialReturnModel;
 
         public StoredProcedure()
         {

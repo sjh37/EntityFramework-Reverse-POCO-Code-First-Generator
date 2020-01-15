@@ -48,7 +48,7 @@ namespace Tester.Integration.EfCore3.Single_context_many_files
             builder.HasKey(x => x.ParentId).HasName("PK_Parent").IsClustered();
 
             builder.Property(x => x.ParentId).HasColumnName(@"ParentId").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.ParentName).HasColumnName(@"ParentName").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(100);
+            builder.Property(x => x.ParentName).HasColumnName(@"ParentName").HasColumnType("varchar(100)").IsRequired().IsUnicode(false).HasMaxLength(100);
         }
     }
 

@@ -595,7 +595,7 @@ namespace EfrpgAppleDbContext
             HasKey(x => x.id);
 
             Property(x => x.id).HasColumnName(@"id").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
-            Property(x => x.Name).HasColumnName(@"name").HasColumnType("nchar(10)").IsRequired().IsFixedLength().HasMaxLength(10);
+            Property(x => x.Name).HasColumnName(@"name").HasColumnType("nchar").IsRequired().IsFixedLength().HasMaxLength(10);
         }
     }
 

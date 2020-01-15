@@ -583,8 +583,8 @@ namespace EfrpgNorthwindTest2
             ToTable("Quarterly Orders", schema);
             HasKey(x => x.CustomerId);
 
-            Property(x => x.CustomerId).HasColumnName(@"CustomerID").HasColumnType("nchar(5)").IsRequired().IsFixedLength().HasMaxLength(5).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
-            Property(x => x.City).HasColumnName(@"City").HasColumnType("nvarchar(15)").IsOptional().HasMaxLength(15);
+            Property(x => x.CustomerId).HasColumnName(@"CustomerID").HasColumnType("nchar").IsRequired().IsFixedLength().HasMaxLength(5).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.City).HasColumnName(@"City").HasColumnType("nvarchar").IsOptional().HasMaxLength(15);
         }
     }
 

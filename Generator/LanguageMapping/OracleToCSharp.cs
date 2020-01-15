@@ -38,5 +38,10 @@ namespace Efrpg.LanguageMapping
                 { "xmltype",                        "string" }
             };
         }
+
+        public List<string> SpatialTypes()
+        {
+            return new List<string> { "sdo_geometry" };
+        }
     }
 }

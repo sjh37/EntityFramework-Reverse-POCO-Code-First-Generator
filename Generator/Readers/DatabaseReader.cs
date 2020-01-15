@@ -16,6 +16,7 @@ namespace Efrpg.Readers
         protected readonly StringBuilder DatabaseDetails;
         protected Dictionary<string, string> StoredProcedureParameterDbType; // [SQL Data Type] = SqlDbType. (For consistent naming)
         protected Dictionary<string, string> DbTypeToPropertyType; // [SQL Data Type] = Language type.
+        protected List<string> SpatialTypes;
 
         protected string DatabaseEdition, DatabaseEngineEdition, DatabaseProductVersion;
         protected int DatabaseProductMajorVersion;
@@ -54,6 +55,7 @@ namespace Efrpg.Readers
                 databaseToPropertyType = new SqlServerToCSharp(); // Default. Can be overridden in PluginDatabaseReader
 
             DbTypeToPropertyType         = databaseToPropertyType.GetMapping();
+            SpatialTypes                 = databaseToPropertyType.SpatialTypes();
             DatabaseEdition              = null;
             DatabaseEngineEdition        = null;
             DatabaseProductVersion       = null;
@@ -447,7 +449,8 @@ namespace Efrpg.Readers
                                 MaxLength           = (int) rdr["CHARACTER_MAXIMUM_LENGTH"],
                                 Precision           = (byte) rdr["NUMERIC_PRECISION"],
                                 Scale               = (int) rdr["NUMERIC_SCALE"],
-                                UserDefinedTypeName = rdr["USER_DEFINED_TYPE"].ToString().Trim()
+                                UserDefinedTypeName = rdr["USER_DEFINED_TYPE"].ToString().Trim(),
+                                IsSpatial           = SpatialTypes.Contains(dataType)
                             };
 
                             switch (parameterMode)

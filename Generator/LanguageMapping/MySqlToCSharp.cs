@@ -7,9 +7,6 @@ namespace Efrpg.LanguageMapping
     {
         public Dictionary<string, string> GetMapping()
         {
-            var geographyType = Settings.TemplateType == TemplateType.Ef6 ? "Spatial.DbGeography" : "NetTopologySuite.Geometries.Point";
-            var geometryType = Settings.TemplateType == TemplateType.Ef6 ? "Spatial.DbGeometry" : "NetTopologySuite.Geometries.Geometry";
-
             // [Database type] = Language type
             return new Dictionary<string, string>
             {
@@ -36,8 +33,8 @@ namespace Efrpg.LanguageMapping
                 { "fixed",             "decimal" },
                 { "float unsigned",    "decimal" },
                 { "float",             "double" },
-                { "geography",         Settings.DisableGeographyTypes ? string.Empty : geographyType },
-                { "geometry",          Settings.DisableGeographyTypes ? string.Empty : geometryType },
+                { "geography",         Settings.TemplateType == TemplateType.Ef6 ? "Spatial.DbGeography" : "NetTopologySuite.Geometries.Point" },
+                { "geometry",          Settings.TemplateType == TemplateType.Ef6 ? "Spatial.DbGeometry" : "NetTopologySuite.Geometries.Geometry" },
                 { "int unsigned",      "long" },
                 { "int",               "int" },
                 { "integer unsigned",  "long" },
@@ -67,6 +64,14 @@ namespace Efrpg.LanguageMapping
                 { "varbinary",         "byte[]" },
                 { "varchar",           "string" },
                 { "year",              "short" }
+            };
+        }
+
+        public List<string> SpatialTypes()
+        {
+            return new List<string>
+            {
+                "geography", "geometry", "point", "linestring", "polygon", "multipoint", "multilinestring", "multipolygon", "geometrycollection"
             };
         }
     }

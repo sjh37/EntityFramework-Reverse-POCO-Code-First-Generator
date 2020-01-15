@@ -70,6 +70,7 @@ namespace Tester.Integration.EfCore3
         DbSet<App_UserFacilityServiceRole> App_UserFacilityServiceRoles { get; set; } // UserFacilityServiceRole
         DbSet<AppUser> AppUsers { get; set; } // AppUser
         DbSet<Attendee> Attendees { get; set; } // Attendee
+        DbSet<BatchTest> BatchTests { get; set; } // BatchTest
         DbSet<Beta_Harish3485> Beta_Harish3485 { get; set; } // Harish3485
         DbSet<Beta_ToAlpha> Beta_ToAlphas { get; set; } // ToAlpha
         DbSet<Beta_Workflow> Beta_Workflows { get; set; } // workflow
@@ -242,6 +243,10 @@ namespace Tester.Integration.EfCore3
         int ProcTestDecimalOutputV3Default(out decimal? perfectNumber);
         // ProcTestDecimalOutputV3DefaultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
+        List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams();
+        List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams(out int procResult);
+        Task<List<SpatialTypesNoParamsReturnModel>> SpatialTypesNoParamsAsync();
+
         // StpMultipleMultipleResultsWithParamsReturnModel StpMultipleMultipleResultsWithParams(int? firstVal, int? secondVal, int? thirdVal); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
         // Task<StpMultipleMultipleResultsWithParamsReturnModel> StpMultipleMultipleResultsWithParamsAsync(int? firstVal, int? secondVal, int? thirdVal); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
@@ -317,6 +322,7 @@ namespace Tester.Integration.EfCore3
         public DbSet<App_UserFacilityServiceRole> App_UserFacilityServiceRoles { get; set; } // UserFacilityServiceRole
         public DbSet<AppUser> AppUsers { get; set; } // AppUser
         public DbSet<Attendee> Attendees { get; set; } // Attendee
+        public DbSet<BatchTest> BatchTests { get; set; } // BatchTest
         public DbSet<Beta_Harish3485> Beta_Harish3485 { get; set; } // Harish3485
         public DbSet<Beta_ToAlpha> Beta_ToAlphas { get; set; } // ToAlpha
         public DbSet<Beta_Workflow> Beta_Workflows { get; set; } // workflow
@@ -425,6 +431,7 @@ namespace Tester.Integration.EfCore3
             modelBuilder.ApplyConfiguration(new App_UserFacilityServiceRoleConfiguration());
             modelBuilder.ApplyConfiguration(new AppUserConfiguration());
             modelBuilder.ApplyConfiguration(new AttendeeConfiguration());
+            modelBuilder.ApplyConfiguration(new BatchTestConfiguration());
             modelBuilder.ApplyConfiguration(new Beta_Harish3485Configuration());
             modelBuilder.ApplyConfiguration(new Beta_ToAlphaConfiguration());
             modelBuilder.ApplyConfiguration(new Beta_WorkflowConfiguration());
@@ -510,6 +517,7 @@ namespace Tester.Integration.EfCore3
             modelBuilder.Entity<FFRS_DataFromDboAndFfrsReturnModel>().HasNoKey();
             modelBuilder.Entity<GetScreamAndShoutReturnModel>().HasNoKey();
             modelBuilder.Entity<Kate_HelloReturnModel>().HasNoKey();
+            modelBuilder.Entity<SpatialTypesNoParamsReturnModel>().HasNoKey();
             modelBuilder.Entity<StpNoParamsTestReturnModel>().HasNoKey();
             modelBuilder.Entity<StpNullableParamsTestReturnModel>().HasNoKey();
             modelBuilder.Entity<StpTestReturnModel>().HasNoKey();
@@ -1107,6 +1115,34 @@ namespace Tester.Integration.EfCore3
 
         // ProcTestDecimalOutputV3DefaultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
+        public List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams()
+        {
+            int procResult;
+            return SpatialTypesNoParams(out procResult);
+        }
+
+        public List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams(out int procResult)
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [dbo].[SpatialTypesNoParams]";
+            var procResultData = Set<SpatialTypesNoParamsReturnModel>()
+                .FromSqlRaw(sqlCommand, procResultParam)
+                .ToList();
+
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<SpatialTypesNoParamsReturnModel>> SpatialTypesNoParamsAsync()
+        {
+            const string sqlCommand = "EXEC [dbo].[SpatialTypesNoParams]";
+            var procResultData = await Set<SpatialTypesNoParamsReturnModel>()
+                .FromSqlRaw(sqlCommand)
+                .ToListAsync();
+
+            return procResultData;
+        }
+
         // public StpMultipleMultipleResultsWithParamsReturnModel StpMultipleMultipleResultsWithParams(int? firstVal, int? secondVal, int? thirdVal) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
         // public async Task<StpMultipleMultipleResultsWithParamsReturnModel> StpMultipleMultipleResultsWithParamsAsync(int? firstVal, int? secondVal, int? thirdVal) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
@@ -1454,6 +1490,7 @@ namespace Tester.Integration.EfCore3
         public DbSet<App_UserFacilityServiceRole> App_UserFacilityServiceRoles { get; set; } // UserFacilityServiceRole
         public DbSet<AppUser> AppUsers { get; set; } // AppUser
         public DbSet<Attendee> Attendees { get; set; } // Attendee
+        public DbSet<BatchTest> BatchTests { get; set; } // BatchTest
         public DbSet<Beta_Harish3485> Beta_Harish3485 { get; set; } // Harish3485
         public DbSet<Beta_ToAlpha> Beta_ToAlphas { get; set; } // ToAlpha
         public DbSet<Beta_Workflow> Beta_Workflows { get; set; } // workflow
@@ -1545,6 +1582,7 @@ namespace Tester.Integration.EfCore3
             App_UserFacilityServiceRoles = new FakeDbSet<App_UserFacilityServiceRole>("UserId", "AppId", "FsrId");
             AppUsers = new FakeDbSet<AppUser>("Id");
             Attendees = new FakeDbSet<Attendee>("AttendeeId");
+            BatchTests = new FakeDbSet<BatchTest>("Code");
             Beta_Harish3485 = new FakeDbSet<Beta_Harish3485>("Id");
             Beta_ToAlphas = new FakeDbSet<Beta_ToAlpha>("Id");
             Beta_Workflows = new FakeDbSet<Beta_Workflow>("Id");
@@ -1974,6 +2012,25 @@ namespace Tester.Integration.EfCore3
         }
 
         // ProcTestDecimalOutputV3DefaultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public DbSet<SpatialTypesNoParamsReturnModel> SpatialTypesNoParamsReturnModel { get; set; }
+        public List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams()
+        {
+            int procResult;
+            return SpatialTypesNoParams(out procResult);
+        }
+
+        public List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams(out int procResult)
+        {
+            procResult = 0;
+            return new List<SpatialTypesNoParamsReturnModel>();
+        }
+
+        public Task<List<SpatialTypesNoParamsReturnModel>> SpatialTypesNoParamsAsync()
+        {
+            int procResult;
+            return Task.FromResult(SpatialTypesNoParams(out procResult));
+        }
 
         public DbSet<StpMultipleMultipleResultsWithParamsReturnModel> StpMultipleMultipleResultsWithParamsReturnModel { get; set; }
         public StpMultipleMultipleResultsWithParamsReturnModel StpMultipleMultipleResultsWithParams(int? firstVal, int? secondVal, int? thirdVal)
@@ -2613,6 +2670,12 @@ namespace Tester.Integration.EfCore3
         public virtual Country Country { get; set; } // FK_Attendee_PhoneCountry
     }
 
+    // BatchTest
+    public class BatchTest
+    {
+        public string Code { get; set; } // code (Primary key) (length: 8)
+    }
+
     // Harish3485
     public class Beta_Harish3485
     {
@@ -2866,6 +2929,8 @@ namespace Tester.Integration.EfCore3
         public decimal? Amoney { get; set; } // amoney
         public decimal? Asmallmoney { get; set; } // asmallmoney
         public int? Brandon { get; set; } // brandon
+        public NetTopologySuite.Geometries.Point GeographyType { get; set; } // GeographyType
+        public NetTopologySuite.Geometries.Geometry GeometryType { get; set; } // GeometryType
 
         public BringTheAction()
         {
@@ -4163,6 +4228,18 @@ namespace Tester.Integration.EfCore3
         }
     }
 
+    // BatchTest
+    public class BatchTestConfiguration : IEntityTypeConfiguration<BatchTest>
+    {
+        public void Configure(EntityTypeBuilder<BatchTest> builder)
+        {
+            builder.ToTable("BatchTest", "dbo");
+            builder.HasKey(x => x.Code).HasName("PK__BatchTes__357D4CF8F557E292").IsClustered();
+
+            builder.Property(x => x.Code).HasColumnName(@"code").HasColumnType("nvarchar(8)").IsRequired().HasMaxLength(8).ValueGeneratedNever();
+        }
+    }
+
     // Harish3485
     public class Beta_Harish3485Configuration : IEntityTypeConfiguration<Beta_Harish3485>
     {
@@ -4381,6 +4458,8 @@ namespace Tester.Integration.EfCore3
             builder.Property(x => x.Amoney).HasColumnName(@"amoney").HasColumnType("money").IsRequired(false);
             builder.Property(x => x.Asmallmoney).HasColumnName(@"asmallmoney").HasColumnType("smallmoney").IsRequired(false);
             builder.Property(x => x.Brandon).HasColumnName(@"brandon").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.GeographyType).HasColumnName(@"GeographyType").HasColumnType("geography").IsRequired(false);
+            builder.Property(x => x.GeometryType).HasColumnName(@"GeometryType").HasColumnType("geometry").IsRequired(false);
         }
     }
 
@@ -5512,6 +5591,14 @@ namespace Tester.Integration.EfCore3
     {
         public int? @static { get; set; }
         public int? @readonly { get; set; }
+    }
+
+    public class SpatialTypesNoParamsReturnModel
+    {
+        public int Dollar { get; set; }
+        public DateTime someDate { get; set; }
+        public Microsoft.SqlServer.Types.SqlGeography GeographyType { get; set; }
+        public Microsoft.SqlServer.Types.SqlGeometry GeometryType { get; set; }
     }
 
     public class StpMultipleMultipleResultsWithParamsReturnModel

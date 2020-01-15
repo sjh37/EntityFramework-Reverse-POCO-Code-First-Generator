@@ -54,18 +54,18 @@ namespace Tester.Integration.EfCore3.Single_context_many_files
             builder.Property(x => x.Abc4792).HasColumnName(@"abc/\").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.Joe46Bloggs).HasColumnName(@"joe.bloggs").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.SnakeCase).HasColumnName(@"snake-case").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.DefaultTest).HasColumnName(@"default_test").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(20);
+            builder.Property(x => x.DefaultTest).HasColumnName(@"default_test").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
             builder.Property(x => x.SomeDate).HasColumnName(@"someDate").HasColumnType("datetime2").IsRequired();
-            builder.Property(x => x.Obs).HasColumnName(@"Obs").HasColumnType("varchar").IsRequired(false).IsUnicode(false).HasMaxLength(20);
-            builder.Property(x => x.Slash1).HasColumnName(@"Slash1").HasColumnType("varchar").IsRequired(false).IsUnicode(false).HasMaxLength(20);
-            builder.Property(x => x.Slash2).HasColumnName(@"Slash2").HasColumnType("varchar").IsRequired(false).IsUnicode(false).HasMaxLength(20);
-            builder.Property(x => x.Slash3).HasColumnName(@"Slash3").HasColumnType("varchar").IsRequired(false).IsUnicode(false).HasMaxLength(20);
+            builder.Property(x => x.Obs).HasColumnName(@"Obs").HasColumnType("varchar(20)").IsRequired(false).IsUnicode(false).HasMaxLength(20);
+            builder.Property(x => x.Slash1).HasColumnName(@"Slash1").HasColumnType("varchar(20)").IsRequired(false).IsUnicode(false).HasMaxLength(20);
+            builder.Property(x => x.Slash2).HasColumnName(@"Slash2").HasColumnType("varchar(20)").IsRequired(false).IsUnicode(false).HasMaxLength(20);
+            builder.Property(x => x.Slash3).HasColumnName(@"Slash3").HasColumnType("varchar(20)").IsRequired(false).IsUnicode(false).HasMaxLength(20);
             builder.Property(x => x.@Static).HasColumnName(@"static").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.@Readonly).HasColumnName(@"readonly").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.C123Hi).HasColumnName(@"123Hi").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.Afloat).HasColumnName(@"afloat").HasColumnType("real").IsRequired(false);
             builder.Property(x => x.Adouble).HasColumnName(@"adouble").HasColumnType("float").IsRequired(false);
-            builder.Property(x => x.Adecimal).HasColumnName(@"adecimal").HasColumnType("decimal").IsRequired(false);
+            builder.Property(x => x.Adecimal).HasColumnName(@"adecimal").HasColumnType("decimal(19,4)").IsRequired(false);
         }
     }
 

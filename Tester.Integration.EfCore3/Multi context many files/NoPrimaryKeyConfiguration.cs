@@ -48,7 +48,7 @@ namespace Tester.Integration.EfCore3.Multi_context_many_filesPlum
             builder.ToTable("NoPrimaryKeys", "dbo");
             builder.HasKey(x => x.Description);
 
-            builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar").IsRequired(false).IsUnicode(false).HasMaxLength(10).ValueGeneratedNever();
+            builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10).ValueGeneratedNever();
         }
     }
 

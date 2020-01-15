@@ -161,7 +161,7 @@ namespace Tester.Integration.EfCore3.Multi_context_single_filesAppleDbContext
             builder.HasKey(x => x.id).HasName("PK_Boo").IsClustered();
 
             builder.Property(x => x.id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Name).HasColumnName(@"name").HasColumnType("nchar").IsRequired().IsFixedLength().HasMaxLength(10);
+            builder.Property(x => x.Name).HasColumnName(@"name").HasColumnType("nchar(10)").IsRequired().IsFixedLength().HasMaxLength(10);
         }
     }
 

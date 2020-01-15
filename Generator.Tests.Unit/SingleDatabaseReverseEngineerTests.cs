@@ -27,6 +27,7 @@ namespace Generator.Tests.Unit
             Settings.MultiContextSettingsPlugin = null;
             Settings.Enumerations               = null;
             Settings.PrependSchemaName          = true;
+            Settings.DisableGeographyTypes      = false;
         }
 
         public void SetupSqlCe(string database, string connectionStringName, string dbContextName, TemplateType templateType, GeneratorType generatorType)
@@ -41,6 +42,7 @@ namespace Generator.Tests.Unit
             Settings.MultiContextSettingsPlugin = null;
             Settings.Enumerations               = null;
             Settings.PrependSchemaName          = true;
+            Settings.DisableGeographyTypes      = false;
         }
 
         public void Run(string filename, string singleDbContextSubNamespace, Type fileManagerType, string subFolder)
@@ -125,6 +127,7 @@ namespace Generator.Tests.Unit
             Settings.GenerateSeparateFiles = false;
             Settings.UseMappingTables = (templateType != TemplateType.EfCore2 && templateType != TemplateType.EfCore3);
             SetupSqlServer(database, connectionStringName, dbContextName, templateType, templateType == TemplateType.Ef6 ? GeneratorType.Ef6 : GeneratorType.EfCore);
+            //Settings.DisableGeographyTypes = true;
 
             Settings.Enumerations = new List<EnumerationSettings>
             {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data.Common;
 using System.IO;
 using System.Linq;
@@ -645,6 +646,11 @@ namespace Efrpg.Generators
                                     x.Name == proc.Name)
                         .Select(x => x.Parameter));
 
+                    sp.HasSpatialParameter = sp.Parameters.Any(x => x.IsSpatial);
+
+                    if (Settings.DisableGeographyTypes && sp.HasSpatialParameter)
+                        continue; // Ignore stored procedure due to spatial parameter
+
                     // Check to see if this stored proc is to be kept by any of the filters
                     if (spFilters.All(x => x.Value.IsExcluded(sp)))
                     {
@@ -662,6 +668,15 @@ namespace Efrpg.Generators
 
                 // Read in the return objects for the wanted stored proc
                 DatabaseReader.ReadStoredProcReturnObjects(storedProcs);
+
+                // Check if any of the stored proc return models have spatial types
+                /*foreach (var sp in storedProcs)
+                {
+                    if(sp.ReturnModels.Any())
+                    {
+                        // todo
+                    }
+                }*/
 
                 // Remove stored procs where the return model type contains spaces and cannot be mapped
                 // Also need to remove any TVF functions with parameters that are non scalar types, such as DataTable

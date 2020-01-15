@@ -4061,6 +4061,11 @@
                                     x.Name == proc.Name)
                         .Select(x => x.Parameter));
 
+                    sp.HasSpatialParameter = sp.Parameters.Any(x => x.IsSpatial);
+
+                    if (Settings.DisableGeographyTypes && sp.HasSpatialParameter)
+                        continue; // Ignore stored procedure due to spatial parameter
+
                     // Check to see if this stored proc is to be kept by any of the filters
                     if (spFilters.All(x => x.Value.IsExcluded(sp)))
                     {
@@ -4078,6 +4083,15 @@
 
                 // Read in the return objects for the wanted stored proc
                 DatabaseReader.ReadStoredProcReturnObjects(storedProcs);
+
+                // Check if any of the stored proc return models have spatial types
+                /*foreach (var sp in storedProcs)
+                {
+                    if(sp.ReturnModels.Any())
+                    {
+                        // todo
+                    }
+                }*/
 
                 // Remove stored procs where the return model type contains spaces and cannot be mapped
                 // Also need to remove any TVF functions with parameters that are non scalar types, such as DataTable
@@ -5866,6 +5880,7 @@
     public interface IDatabaseToPropertyType
     {
         Dictionary<string, string> GetMapping(); // [Database type] = Language type
+        List<string> SpatialTypes();
     }
     public interface IDatabaseLanguageFactory
     {
@@ -6011,6 +6026,14 @@
                 { "year",              "short" }
             };
         }
+
+        public List<string> SpatialTypes()
+        {
+            return new List<string>
+            {
+                "geography", "geometry", "point", "linestring", "polygon", "multipoint", "multilinestring", "multipolygon", "geometrycollection"
+            };
+        }
     }
 
     public class OracleToCSharp : IDatabaseToPropertyType
@@ -6048,6 +6071,11 @@
                 { "varchar2",                       "string" },
                 { "xmltype",                        "string" }
             };
+        }
+
+        public List<string> SpatialTypes()
+        {
+            return new List<string> { "sdo_geometry" };
         }
     }
 
@@ -6111,6 +6139,11 @@
                 //{ "array types",        "Array (of element type)" },
             };
         }
+
+        public List<string> SpatialTypes()
+        {
+            return new List<string> { "geometry", "point", "line", "lseg", "box", "path", "polygon", "circle" };
+        }
     }
 
     public class SqlServerToCSharp : IDatabaseToPropertyType
@@ -6150,6 +6183,11 @@
                 { "varbinary(max)",   "byte[]" }
             };
         }
+
+        public List<string> SpatialTypes()
+        {
+            return new List<string> { "geography", "geometry" };
+        }
     }
 
     public class SqlServerToJavascript : IDatabaseToPropertyType
@@ -6188,6 +6226,11 @@
                 { "varbinary",        "string" },
                 { "varbinary(max)",   "string" }
             };
+        }
+
+        public List<string> SpatialTypes()
+        {
+            return new List<string> { "geography", "geometry" };
         }
     }
 
@@ -11116,6 +11159,7 @@ and limitations under the License.
         protected readonly StringBuilder DatabaseDetails;
         protected Dictionary<string, string> StoredProcedureParameterDbType; // [SQL Data Type] = SqlDbType. (For consistent naming)
         protected Dictionary<string, string> DbTypeToPropertyType; // [SQL Data Type] = Language type.
+        protected List<string> SpatialTypes;
 
         protected string DatabaseEdition, DatabaseEngineEdition, DatabaseProductVersion;
         protected int DatabaseProductMajorVersion;
@@ -11154,6 +11198,7 @@ and limitations under the License.
                 databaseToPropertyType = new SqlServerToCSharp(); // Default. Can be overridden in PluginDatabaseReader
 
             DbTypeToPropertyType         = databaseToPropertyType.GetMapping();
+            SpatialTypes                 = databaseToPropertyType.SpatialTypes();
             DatabaseEdition              = null;
             DatabaseEngineEdition        = null;
             DatabaseProductVersion       = null;
@@ -11547,7 +11592,8 @@ and limitations under the License.
                                 MaxLength           = (int) rdr["CHARACTER_MAXIMUM_LENGTH"],
                                 Precision           = (byte) rdr["NUMERIC_PRECISION"],
                                 Scale               = (int) rdr["NUMERIC_SCALE"],
-                                UserDefinedTypeName = rdr["USER_DEFINED_TYPE"].ToString().Trim()
+                                UserDefinedTypeName = rdr["USER_DEFINED_TYPE"].ToString().Trim(),
+                                IsSpatial           = SpatialTypes.Contains(dataType)
                             };
 
                             switch (parameterMode)
@@ -13968,6 +14014,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public bool IsTableValuedFunction;
         public bool IsScalarValuedFunction;
         public bool IsStoredProcedure;
+        public bool HasSpatialParameter;
+        public bool HasSpatialReturnModel;
 
         public StoredProcedure()
         {
@@ -14310,6 +14358,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public int MaxLength;
         public int Precision;
         public int Scale;
+        public bool IsSpatial;
     }
     public enum StoredProcedureParameterMode
     {

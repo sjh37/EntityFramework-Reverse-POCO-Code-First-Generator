@@ -19,8 +19,8 @@ namespace Efrpg.LanguageMapping
                 { "datetimeoffset",   "string" },
                 { "decimal",          "Number" },
                 { "float",            "Number" },
-                { "geography",        Settings.DisableGeographyTypes ? string.Empty : "string" },
-                { "geometry",         Settings.DisableGeographyTypes ? string.Empty : "string" },
+                { "geography",        "string" },
+                { "geometry",         "string" },
                 { "hierarchyid",      "string" },
                 { "image",            "string" },
                 { "int",              "Number" },
@@ -38,6 +38,11 @@ namespace Efrpg.LanguageMapping
                 { "varbinary",        "string" },
                 { "varbinary(max)",   "string" }
             };
+        }
+
+        public List<string> SpatialTypes()
+        {
+            return new List<string> { "geography", "geometry" };
         }
     }
 }

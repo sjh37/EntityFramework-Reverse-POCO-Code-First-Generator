@@ -15,5 +15,6 @@
         public int MaxLength;
         public int Precision;
         public int Scale;
+        public bool IsSpatial;
     }
 }

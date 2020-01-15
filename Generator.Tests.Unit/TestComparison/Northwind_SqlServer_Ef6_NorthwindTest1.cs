@@ -632,7 +632,7 @@ namespace EfrpgNorthwindTest1
             HasKey(x => x.ProductKEY);
 
             Property(x => x.ProductKEY).HasColumnName(@"ProductID").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
-            Property(x => x.ProductName).HasColumnName(@"ProductName").HasColumnType("nvarchar(40)").IsRequired().HasMaxLength(40);
+            Property(x => x.ProductName).HasColumnName(@"ProductName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40);
             Property(x => x.Price).HasColumnName(@"UnitPrice").HasColumnType("money").IsOptional().HasPrecision(19,4);
         }
     }
@@ -651,7 +651,7 @@ namespace EfrpgNorthwindTest1
             HasKey(x => x.CategoryID);
 
             Property(x => x.CategoryID).HasColumnName(@"CategoryID").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
-            Property(x => x.CategoryName).HasColumnName(@"CategoryName").HasColumnType("nvarchar(15)").IsRequired().HasMaxLength(15);
+            Property(x => x.CategoryName).HasColumnName(@"CategoryName").HasColumnType("nvarchar").IsRequired().HasMaxLength(15);
         }
     }
 
@@ -669,7 +669,7 @@ namespace EfrpgNorthwindTest1
             HasKey(x => x.ProductId);
 
             Property(x => x.ProductId).HasColumnName(@"ProductID").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
-            Property(x => x.ProductName).HasColumnName(@"ProductName").HasColumnType("nvarchar(40)").IsRequired().HasMaxLength(40);
+            Property(x => x.ProductName).HasColumnName(@"ProductName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40);
         }
     }
 

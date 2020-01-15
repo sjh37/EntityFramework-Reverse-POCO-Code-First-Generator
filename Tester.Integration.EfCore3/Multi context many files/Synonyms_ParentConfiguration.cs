@@ -49,7 +49,7 @@ namespace Tester.Integration.EfCore3.Multi_context_many_filesPlum
             builder.HasKey(x => x.ParentId).HasName("PK_Parent").IsClustered();
 
             builder.Property(x => x.ParentId).HasColumnName(@"ParentId").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.ParentName).HasColumnName(@"ParentName").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(100);
+            builder.Property(x => x.ParentName).HasColumnName(@"ParentName").HasColumnType("varchar(100)").IsRequired().IsUnicode(false).HasMaxLength(100);
 
             // Foreign keys
             builder.HasOne(a => a.ParentFkName).WithMany(b => b.ChildFkName).HasForeignKey(c => c.ParentName).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("CustomNameForForeignKey");

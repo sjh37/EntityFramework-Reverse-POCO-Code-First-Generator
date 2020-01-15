@@ -821,7 +821,7 @@ namespace Efrpg.SqlCE
             HasKey(x => x.CategoryId);
 
             Property(x => x.CategoryId).HasColumnName(@"Category ID").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
-            Property(x => x.CategoryName).HasColumnName(@"Category Name").HasColumnType("nvarchar(15)").IsRequired().HasMaxLength(15);
+            Property(x => x.CategoryName).HasColumnName(@"Category Name").HasColumnType("nvarchar").IsRequired().HasMaxLength(15);
             Property(x => x.Description).HasColumnName(@"Description").HasColumnType("ntext").IsOptional().IsMaxLength();
             Property(x => x.Picture).HasColumnName(@"Picture").HasColumnType("image").IsOptional().HasMaxLength(null);
         }
@@ -840,17 +840,17 @@ namespace Efrpg.SqlCE
             ToTable("Customers");
             HasKey(x => x.CustomerId);
 
-            Property(x => x.CustomerId).HasColumnName(@"Customer ID").HasColumnType("nvarchar(5)").IsRequired().HasMaxLength(5).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
-            Property(x => x.CompanyName).HasColumnName(@"Company Name").HasColumnType("nvarchar(40)").IsRequired().HasMaxLength(40);
-            Property(x => x.ContactName).HasColumnName(@"Contact Name").HasColumnType("nvarchar(30)").IsOptional().HasMaxLength(30);
-            Property(x => x.ContactTitle).HasColumnName(@"Contact Title").HasColumnType("nvarchar(30)").IsOptional().HasMaxLength(30);
-            Property(x => x.Address).HasColumnName(@"Address").HasColumnType("nvarchar(60)").IsOptional().HasMaxLength(60);
-            Property(x => x.City).HasColumnName(@"City").HasColumnType("nvarchar(15)").IsOptional().HasMaxLength(15);
-            Property(x => x.Region).HasColumnName(@"Region").HasColumnType("nvarchar(15)").IsOptional().HasMaxLength(15);
-            Property(x => x.PostalCode).HasColumnName(@"Postal Code").HasColumnType("nvarchar(10)").IsOptional().HasMaxLength(10);
-            Property(x => x.Country).HasColumnName(@"Country").HasColumnType("nvarchar(15)").IsOptional().HasMaxLength(15);
-            Property(x => x.Phone).HasColumnName(@"Phone").HasColumnType("nvarchar(24)").IsOptional().HasMaxLength(24);
-            Property(x => x.Fax).HasColumnName(@"Fax").HasColumnType("nvarchar(24)").IsOptional().HasMaxLength(24);
+            Property(x => x.CustomerId).HasColumnName(@"Customer ID").HasColumnType("nvarchar").IsRequired().HasMaxLength(5).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.CompanyName).HasColumnName(@"Company Name").HasColumnType("nvarchar").IsRequired().HasMaxLength(40);
+            Property(x => x.ContactName).HasColumnName(@"Contact Name").HasColumnType("nvarchar").IsOptional().HasMaxLength(30);
+            Property(x => x.ContactTitle).HasColumnName(@"Contact Title").HasColumnType("nvarchar").IsOptional().HasMaxLength(30);
+            Property(x => x.Address).HasColumnName(@"Address").HasColumnType("nvarchar").IsOptional().HasMaxLength(60);
+            Property(x => x.City).HasColumnName(@"City").HasColumnType("nvarchar").IsOptional().HasMaxLength(15);
+            Property(x => x.Region).HasColumnName(@"Region").HasColumnType("nvarchar").IsOptional().HasMaxLength(15);
+            Property(x => x.PostalCode).HasColumnName(@"Postal Code").HasColumnType("nvarchar").IsOptional().HasMaxLength(10);
+            Property(x => x.Country).HasColumnName(@"Country").HasColumnType("nvarchar").IsOptional().HasMaxLength(15);
+            Property(x => x.Phone).HasColumnName(@"Phone").HasColumnType("nvarchar").IsOptional().HasMaxLength(24);
+            Property(x => x.Fax).HasColumnName(@"Fax").HasColumnType("nvarchar").IsOptional().HasMaxLength(24);
         }
     }
 
@@ -868,18 +868,18 @@ namespace Efrpg.SqlCE
             HasKey(x => x.EmployeeId);
 
             Property(x => x.EmployeeId).HasColumnName(@"Employee ID").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
-            Property(x => x.LastName).HasColumnName(@"Last Name").HasColumnType("nvarchar(20)").IsRequired().HasMaxLength(20);
-            Property(x => x.FirstName).HasColumnName(@"First Name").HasColumnType("nvarchar(10)").IsRequired().HasMaxLength(10);
-            Property(x => x.Title).HasColumnName(@"Title").HasColumnType("nvarchar(30)").IsOptional().HasMaxLength(30);
+            Property(x => x.LastName).HasColumnName(@"Last Name").HasColumnType("nvarchar").IsRequired().HasMaxLength(20);
+            Property(x => x.FirstName).HasColumnName(@"First Name").HasColumnType("nvarchar").IsRequired().HasMaxLength(10);
+            Property(x => x.Title).HasColumnName(@"Title").HasColumnType("nvarchar").IsOptional().HasMaxLength(30);
             Property(x => x.BirthDate).HasColumnName(@"Birth Date").HasColumnType("datetime").IsOptional();
             Property(x => x.HireDate).HasColumnName(@"Hire Date").HasColumnType("datetime").IsOptional();
-            Property(x => x.Address).HasColumnName(@"Address").HasColumnType("nvarchar(60)").IsOptional().HasMaxLength(60);
-            Property(x => x.City).HasColumnName(@"City").HasColumnType("nvarchar(15)").IsOptional().HasMaxLength(15);
-            Property(x => x.Region).HasColumnName(@"Region").HasColumnType("nvarchar(15)").IsOptional().HasMaxLength(15);
-            Property(x => x.PostalCode).HasColumnName(@"Postal Code").HasColumnType("nvarchar(10)").IsOptional().HasMaxLength(10);
-            Property(x => x.Country).HasColumnName(@"Country").HasColumnType("nvarchar(15)").IsOptional().HasMaxLength(15);
-            Property(x => x.HomePhone).HasColumnName(@"Home Phone").HasColumnType("nvarchar(24)").IsOptional().HasMaxLength(24);
-            Property(x => x.Extension).HasColumnName(@"Extension").HasColumnType("nvarchar(4)").IsOptional().HasMaxLength(4);
+            Property(x => x.Address).HasColumnName(@"Address").HasColumnType("nvarchar").IsOptional().HasMaxLength(60);
+            Property(x => x.City).HasColumnName(@"City").HasColumnType("nvarchar").IsOptional().HasMaxLength(15);
+            Property(x => x.Region).HasColumnName(@"Region").HasColumnType("nvarchar").IsOptional().HasMaxLength(15);
+            Property(x => x.PostalCode).HasColumnName(@"Postal Code").HasColumnType("nvarchar").IsOptional().HasMaxLength(10);
+            Property(x => x.Country).HasColumnName(@"Country").HasColumnType("nvarchar").IsOptional().HasMaxLength(15);
+            Property(x => x.HomePhone).HasColumnName(@"Home Phone").HasColumnType("nvarchar").IsOptional().HasMaxLength(24);
+            Property(x => x.Extension).HasColumnName(@"Extension").HasColumnType("nvarchar").IsOptional().HasMaxLength(4);
             Property(x => x.Photo).HasColumnName(@"Photo").HasColumnType("image").IsOptional().HasMaxLength(null);
             Property(x => x.Notes).HasColumnName(@"Notes").HasColumnType("ntext").IsOptional().IsMaxLength();
             Property(x => x.ReportsTo).HasColumnName(@"Reports To").HasColumnType("int").IsOptional();
@@ -900,14 +900,14 @@ namespace Efrpg.SqlCE
             HasKey(x => x.OrderId);
 
             Property(x => x.OrderId).HasColumnName(@"Order ID").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
-            Property(x => x.CustomerId).HasColumnName(@"Customer ID").HasColumnType("nvarchar(5)").IsRequired().HasMaxLength(5);
+            Property(x => x.CustomerId).HasColumnName(@"Customer ID").HasColumnType("nvarchar").IsRequired().HasMaxLength(5);
             Property(x => x.EmployeeId).HasColumnName(@"Employee ID").HasColumnType("int").IsOptional();
-            Property(x => x.ShipName).HasColumnName(@"Ship Name").HasColumnType("nvarchar(40)").IsOptional().HasMaxLength(40);
-            Property(x => x.ShipAddress).HasColumnName(@"Ship Address").HasColumnType("nvarchar(60)").IsOptional().HasMaxLength(60);
-            Property(x => x.ShipCity).HasColumnName(@"Ship City").HasColumnType("nvarchar(15)").IsOptional().HasMaxLength(15);
-            Property(x => x.ShipRegion).HasColumnName(@"Ship Region").HasColumnType("nvarchar(15)").IsOptional().HasMaxLength(15);
-            Property(x => x.ShipPostalCode).HasColumnName(@"Ship Postal Code").HasColumnType("nvarchar(10)").IsOptional().HasMaxLength(10);
-            Property(x => x.ShipCountry).HasColumnName(@"Ship Country").HasColumnType("nvarchar(15)").IsOptional().HasMaxLength(15);
+            Property(x => x.ShipName).HasColumnName(@"Ship Name").HasColumnType("nvarchar").IsOptional().HasMaxLength(40);
+            Property(x => x.ShipAddress).HasColumnName(@"Ship Address").HasColumnType("nvarchar").IsOptional().HasMaxLength(60);
+            Property(x => x.ShipCity).HasColumnName(@"Ship City").HasColumnType("nvarchar").IsOptional().HasMaxLength(15);
+            Property(x => x.ShipRegion).HasColumnName(@"Ship Region").HasColumnType("nvarchar").IsOptional().HasMaxLength(15);
+            Property(x => x.ShipPostalCode).HasColumnName(@"Ship Postal Code").HasColumnType("nvarchar").IsOptional().HasMaxLength(10);
+            Property(x => x.ShipCountry).HasColumnName(@"Ship Country").HasColumnType("nvarchar").IsOptional().HasMaxLength(15);
             Property(x => x.ShipVia).HasColumnName(@"Ship Via").HasColumnType("int").IsOptional();
             Property(x => x.OrderDate).HasColumnName(@"Order Date").HasColumnType("datetime").IsOptional();
             Property(x => x.RequiredDate).HasColumnName(@"Required Date").HasColumnType("datetime").IsOptional();
@@ -962,9 +962,9 @@ namespace Efrpg.SqlCE
             Property(x => x.ProductId).HasColumnName(@"Product ID").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
             Property(x => x.SupplierId).HasColumnName(@"Supplier ID").HasColumnType("int").IsOptional();
             Property(x => x.CategoryId).HasColumnName(@"Category ID").HasColumnType("int").IsOptional();
-            Property(x => x.ProductName).HasColumnName(@"Product Name").HasColumnType("nvarchar(40)").IsRequired().HasMaxLength(40);
-            Property(x => x.EnglishName).HasColumnName(@"English Name").HasColumnType("nvarchar(40)").IsOptional().HasMaxLength(40);
-            Property(x => x.QuantityPerUnit).HasColumnName(@"Quantity Per Unit").HasColumnType("nvarchar(20)").IsOptional().HasMaxLength(20);
+            Property(x => x.ProductName).HasColumnName(@"Product Name").HasColumnType("nvarchar").IsRequired().HasMaxLength(40);
+            Property(x => x.EnglishName).HasColumnName(@"English Name").HasColumnType("nvarchar").IsOptional().HasMaxLength(40);
+            Property(x => x.QuantityPerUnit).HasColumnName(@"Quantity Per Unit").HasColumnType("nvarchar").IsOptional().HasMaxLength(20);
             Property(x => x.UnitPrice).HasColumnName(@"Unit Price").HasColumnType("money").IsOptional().HasPrecision(19,4);
             Property(x => x.UnitsInStock).HasColumnName(@"Units In Stock").HasColumnType("smallint").IsOptional();
             Property(x => x.UnitsOnOrder).HasColumnName(@"Units On Order").HasColumnType("smallint").IsOptional();
@@ -991,7 +991,7 @@ namespace Efrpg.SqlCE
             HasKey(x => x.ShipperId);
 
             Property(x => x.ShipperId).HasColumnName(@"Shipper ID").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
-            Property(x => x.CompanyName).HasColumnName(@"Company Name").HasColumnType("nvarchar(40)").IsRequired().HasMaxLength(40);
+            Property(x => x.CompanyName).HasColumnName(@"Company Name").HasColumnType("nvarchar").IsRequired().HasMaxLength(40);
         }
     }
 
@@ -1009,16 +1009,16 @@ namespace Efrpg.SqlCE
             HasKey(x => x.SupplierId);
 
             Property(x => x.SupplierId).HasColumnName(@"Supplier ID").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
-            Property(x => x.CompanyName).HasColumnName(@"Company Name").HasColumnType("nvarchar(40)").IsRequired().HasMaxLength(40);
-            Property(x => x.ContactName).HasColumnName(@"Contact Name").HasColumnType("nvarchar(30)").IsOptional().HasMaxLength(30);
-            Property(x => x.ContactTitle).HasColumnName(@"Contact Title").HasColumnType("nvarchar(30)").IsOptional().HasMaxLength(30);
-            Property(x => x.Address).HasColumnName(@"Address").HasColumnType("nvarchar(60)").IsOptional().HasMaxLength(60);
-            Property(x => x.City).HasColumnName(@"City").HasColumnType("nvarchar(15)").IsOptional().HasMaxLength(15);
-            Property(x => x.Region).HasColumnName(@"Region").HasColumnType("nvarchar(15)").IsOptional().HasMaxLength(15);
-            Property(x => x.PostalCode).HasColumnName(@"Postal Code").HasColumnType("nvarchar(10)").IsOptional().HasMaxLength(10);
-            Property(x => x.Country).HasColumnName(@"Country").HasColumnType("nvarchar(15)").IsOptional().HasMaxLength(15);
-            Property(x => x.Phone).HasColumnName(@"Phone").HasColumnType("nvarchar(24)").IsOptional().HasMaxLength(24);
-            Property(x => x.Fax).HasColumnName(@"Fax").HasColumnType("nvarchar(24)").IsOptional().HasMaxLength(24);
+            Property(x => x.CompanyName).HasColumnName(@"Company Name").HasColumnType("nvarchar").IsRequired().HasMaxLength(40);
+            Property(x => x.ContactName).HasColumnName(@"Contact Name").HasColumnType("nvarchar").IsOptional().HasMaxLength(30);
+            Property(x => x.ContactTitle).HasColumnName(@"Contact Title").HasColumnType("nvarchar").IsOptional().HasMaxLength(30);
+            Property(x => x.Address).HasColumnName(@"Address").HasColumnType("nvarchar").IsOptional().HasMaxLength(60);
+            Property(x => x.City).HasColumnName(@"City").HasColumnType("nvarchar").IsOptional().HasMaxLength(15);
+            Property(x => x.Region).HasColumnName(@"Region").HasColumnType("nvarchar").IsOptional().HasMaxLength(15);
+            Property(x => x.PostalCode).HasColumnName(@"Postal Code").HasColumnType("nvarchar").IsOptional().HasMaxLength(10);
+            Property(x => x.Country).HasColumnName(@"Country").HasColumnType("nvarchar").IsOptional().HasMaxLength(15);
+            Property(x => x.Phone).HasColumnName(@"Phone").HasColumnType("nvarchar").IsOptional().HasMaxLength(24);
+            Property(x => x.Fax).HasColumnName(@"Fax").HasColumnType("nvarchar").IsOptional().HasMaxLength(24);
         }
     }
 
