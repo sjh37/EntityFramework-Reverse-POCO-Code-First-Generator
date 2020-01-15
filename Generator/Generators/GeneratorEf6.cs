@@ -25,6 +25,9 @@ namespace Efrpg.Generators
 
         protected override void SetupEntity(Column c)
         {
+            if (c.PropertyType == "Hierarchy.HierarchyId")
+                c.PropertyType = "System.Data.Entity.Hierarchy.HierarchyId";
+
             var comments = string.Empty;
             if (Settings.IncludeComments != CommentsStyle.None)
             {
@@ -94,16 +97,7 @@ namespace Efrpg.Generators
                 doNotSpecifySize = (DatabaseReader.DoNotSpecifySizeForMaxLength && c.MaxLength > 4000); // Issue #179
 
             if (!string.IsNullOrEmpty(c.SqlPropertyType))
-            {
-                var columnTypeParameters = string.Empty;
-
-                if ((c.Precision > 0 || c.Scale > 0) && (c.SqlPropertyType == "decimal" || c.SqlPropertyType == "numeric"))
-                    columnTypeParameters = $"({c.Precision},{c.Scale})";
-                else if (!c.IsMaxLength && c.MaxLength > 0 && !doNotSpecifySize)
-                    columnTypeParameters = $"({c.MaxLength})";
-
-                sb.AppendFormat(".HasColumnType(\"{0}{1}\")", c.SqlPropertyType, columnTypeParameters);
-            }
+                sb.AppendFormat(".HasColumnType(\"{0}\")", c.SqlPropertyType);
 
             sb.Append(c.IsNullable ? ".IsOptional()" : ".IsRequired()");
 
