@@ -139,7 +139,7 @@ namespace Efrpg
                     + (p.Mode == StoredProcedureParameterMode.In ? "Input" : "Output")
                     + (p.Mode == StoredProcedureParameterMode.In
                         ? ", Value = " + (isGeography
-                            ? string.Format("SqlGeography.Parse({0}.AsText())", p.NameHumanCase)
+                            ? string.Format("Microsoft.SqlServer.Types.SqlGeography.Parse({0}.AsText())", p.NameHumanCase)
                               : p.NameHumanCase + getValueOrDefault)
                         : string.Empty)
                     + (p.MaxLength != 0 ? ", Size = " + p.MaxLength : string.Empty)
