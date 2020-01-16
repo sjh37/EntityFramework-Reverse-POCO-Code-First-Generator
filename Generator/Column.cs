@@ -64,9 +64,14 @@ namespace Efrpg
             "object",
             "microsoft.sqlserver.types.sqlgeography",
             "microsoft.sqlserver.types.sqlgeometry",
+            "sqlgeography",
+            "sqlgeometry",
             "system.data.entity.spatial.dbgeography",
             "system.data.entity.spatial.dbgeometry",
+            "dbgeography",
+            "dbgeometry",
             "system.data.entity.hierarchy.hierarchyid",
+            "hierarchyid",
             "nettopologysuite.geometries.point",
             "nettopologysuite.geometries.geometry"
         };
@@ -93,7 +98,7 @@ namespace Efrpg
 
         public void CleanUpDefault()
         {
-            if (string.IsNullOrWhiteSpace(Default))
+            if (string.IsNullOrWhiteSpace(Default) || IsSpatial)
             {
                 Default = string.Empty;
                 return;
