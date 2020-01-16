@@ -73,6 +73,8 @@ namespace BuildTT
     FilterSettings.TableFilters.Add(new RegexExcludeFilter(""__EFMigrationsHistory"")); // This excludes all tables starting with 'AspNet'
     //FilterSettings.ColumnFilters.Add(new RegexExcludeFilter(""[Cc]reated[Aa]t.*"")); // This excludes all columns starting with 'CreatedAt' e.g CreatedAtUtc
     //FilterSettings.ColumnFilters.Add(new RegexIncludeFilter("".*"")); // Rarely used as it would only include columns with names listed here
+    //FilterSettings.StoredProcedureFilters.Add(new RegexExcludeFilter(""Calc"")); // This excludes all stored procedures 'Calc' in the name
+    //FilterSettings.StoredProcedureFilters.Add(new RegexIncludeFilter(""Pricing.*"")); // This includes all stored procedures starting with 'Pricing'
 
     // Other settings *********************************************************************************************************************
     Settings.CommandTimeout                         = 600; // SQL Command timeout in seconds. 600 is 10 minutes, 0 will wait indefinitely. Some databases can be slow retrieving schema information.
