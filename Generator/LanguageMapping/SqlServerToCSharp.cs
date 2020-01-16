@@ -8,6 +8,9 @@ namespace Efrpg.LanguageMapping
         // [Database type] = Language type
         public Dictionary<string, string> GetMapping()
         {
+            var geographyType = Settings.TemplateType == TemplateType.Ef6 ? "DbGeography" : "NetTopologySuite.Geometries.Point";
+            var geometryType  = Settings.TemplateType == TemplateType.Ef6 ? "DbGeometry"  : "NetTopologySuite.Geometries.Geometry";
+
             return new Dictionary<string, string>
             {
                 { string.Empty,       "string" }, // default
@@ -20,8 +23,8 @@ namespace Efrpg.LanguageMapping
                 { "datetimeoffset",   "DateTimeOffset" },
                 { "decimal",          "decimal" },
                 { "float",            "double" },
-                { "geography",        Settings.TemplateType == TemplateType.Ef6 ? "Spatial.DbGeography" : "NetTopologySuite.Geometries.Point" },
-                { "geometry",         Settings.TemplateType == TemplateType.Ef6 ? "Spatial.DbGeometry"  : "NetTopologySuite.Geometries.Geometry" },
+                { "geography",        Settings.DisableGeographyTypes ? string.Empty : geographyType },
+                { "geometry",         Settings.DisableGeographyTypes ? string.Empty : geometryType },
                 { "hierarchyid",      "Hierarchy.HierarchyId" },
                 { "image",            "byte[]" },
                 { "int",              "int" },

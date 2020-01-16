@@ -26,7 +26,7 @@ namespace Efrpg.LanguageMapping
                 { "citext",            "string" },
                 { "date",              "DateTime" },
                 { "double precision",  "double" },
-                { "geometry",          "PostgisGeometry" },
+                { "geometry",          Settings.DisableGeographyTypes ? string.Empty : "PostgisGeometry" },
                 { "hstore",            "Dictionary<string, string>" },
                 { "inet",              "NpgsqlInet" },
                 { "integer",           "int" },
