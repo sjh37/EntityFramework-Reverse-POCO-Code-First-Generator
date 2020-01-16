@@ -108,6 +108,7 @@ using {{this}};{{#newline}}
 {{#newline}}
     // Table Valued Functions{{#newline}}
 {{#each tableValuedFunctions}}
+{{#newline}}
     [DbFunction(""{{DbContextName}}"", ""{{Name}}"")]{{#newline}}
     [CodeFirstStoreFunctions.DbFunctionDetails(DatabaseSchema = ""{{Schema}}""{{#if SingleReturnModel}}, ResultColumnName = ""{{SingleReturnColumnName}}""{{/if}})]{{#newline}}
     IQueryable<{{ReturnClassName}}> {{ExecName}}({{WriteStoredProcFunctionParamsFalse}});{{#newline}}
@@ -155,7 +156,9 @@ using {{this}};{{#newline}}
             }
 
             if (data.hasStoredProcs)
+            {
                 usings.Add("System.Collections.Generic");
+            }
 
             if (!Settings.UseInheritedBaseInterfaceFunctions)
             {
