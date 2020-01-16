@@ -2929,8 +2929,6 @@ namespace Tester.Integration.EfCore3
         public decimal? Amoney { get; set; } // amoney
         public decimal? Asmallmoney { get; set; } // asmallmoney
         public int? Brandon { get; set; } // brandon
-        public NetTopologySuite.Geometries.Point GeographyType { get; set; } // GeographyType
-        public NetTopologySuite.Geometries.Geometry GeometryType { get; set; } // GeometryType
 
         public BringTheAction()
         {
@@ -4458,8 +4456,6 @@ namespace Tester.Integration.EfCore3
             builder.Property(x => x.Amoney).HasColumnName(@"amoney").HasColumnType("money").IsRequired(false);
             builder.Property(x => x.Asmallmoney).HasColumnName(@"asmallmoney").HasColumnType("smallmoney").IsRequired(false);
             builder.Property(x => x.Brandon).HasColumnName(@"brandon").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.GeographyType).HasColumnName(@"GeographyType").HasColumnType("geography").IsRequired(false);
-            builder.Property(x => x.GeometryType).HasColumnName(@"GeometryType").HasColumnType("geometry").IsRequired(false);
         }
     }
 

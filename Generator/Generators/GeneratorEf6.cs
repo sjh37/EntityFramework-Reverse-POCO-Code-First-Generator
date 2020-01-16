@@ -92,10 +92,6 @@ namespace Efrpg.Generators
             var sb = new StringBuilder(255);
             sb.AppendFormat(".HasColumnName(@\"{0}\")", c.DbName);
 
-            var doNotSpecifySize = false;
-            if (!c.IsMaxLength && c.MaxLength > 0)
-                doNotSpecifySize = (DatabaseReader.DoNotSpecifySizeForMaxLength && c.MaxLength > 4000); // Issue #179
-
             if (!string.IsNullOrEmpty(c.SqlPropertyType))
                 sb.AppendFormat(".HasColumnType(\"{0}\")", c.SqlPropertyType);
 
@@ -109,6 +105,8 @@ namespace Efrpg.Generators
 
             if (!c.IsMaxLength && c.MaxLength > 0)
             {
+                var doNotSpecifySize = (DatabaseReader.DoNotSpecifySizeForMaxLength && c.MaxLength > 4000); // Issue #179
+
                 if (doNotSpecifySize)
                     sb.Append(".HasMaxLength(null)");
                 else
