@@ -12,7 +12,7 @@
 //
 // The following connection settings were used to generate this file:
 //     Connection String Name: "MyDbContext"
-//     Connection String:      "Data Source=(local);Initial Catalog=Northwind;Integrated Security=True"
+//     Connection String:      "Data Source=(local);Initial Catalog=Northwind;Integrated Security=True;MultipleActiveResultSets=True"
 // ------------------------------------------------------------------------------------------------
 // Database Edition       : Developer Edition (64-bit)
 // Database Engine Edition: Enterprise
@@ -178,7 +178,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=Northwind;Integrated Security=True");
+                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=Northwind;Integrated Security=True;MultipleActiveResultSets=True");
             }
         }
 

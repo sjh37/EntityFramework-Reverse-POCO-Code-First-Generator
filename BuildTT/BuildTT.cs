@@ -31,7 +31,7 @@ namespace BuildTT
     Settings.GeneratorType           = GeneratorType.EfCore; // Ef6, EfCore, Custom. Custom edit GeneratorCustom class to provide your own implementation
     Settings.UseMappingTables        = false; // Set to false for EfCore. EFCore will add support for this in v3 at some point, so please set this to false. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
     Settings.FileManagerType         = FileManagerType.Custom; // .NET project = VisualStudio; .NET Core project = Custom; No output (testing only) = Null
-    Settings.ConnectionString        = ""Data Source=(local);Initial Catalog=Northwind;Integrated Security=True""; // This is used by the generator to reverse engineer your database
+    Settings.ConnectionString        = ""Data Source=(local);Initial Catalog=Northwind;Integrated Security=True;MultipleActiveResultSets=True""; // This is used by the generator to reverse engineer your database
     Settings.ConnectionStringName    = ""MyDbContext""; // ConnectionString key as specified in your app.config/web.config/appsettings.json. Not used by the generator, but is placed into the generated DbContext constructor.
     Settings.DbContextName           = ""MyDbContext""; // Class name for the DbContext to be generated. Note: If generating separate files, please give the db context a different name from this tt filename.
     //Settings.DbContextInterfaceName= ""IMyDbContext""; // Defaults to ""I"" + DbContextName or set string empty to not implement any interface.
