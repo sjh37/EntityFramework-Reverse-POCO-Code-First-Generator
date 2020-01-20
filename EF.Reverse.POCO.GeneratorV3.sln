@@ -12,12 +12,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{69BEE662-119F-459F-B4B4-8C14F725258C}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
-		build.cake = build.cake
 		LICENSE = LICENSE
-		pack.bat = pack.bat
 		README.md = README.md
-		utils.cake = utils.cake
-		version.txt = version.txt
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Generator", "Generator\Generator.csproj", "{7638DEA9-A4EF-46DD-ADE2-81D967246751}"
@@ -34,7 +30,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tester.BusinessLogic", "Tes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tester.Integration.EfCore3", "Tester.Integration.EfCore3\Tester.Integration.EfCore3.csproj", "{21AD71C3-92C9-47E6-B06E-53DC79ACE822}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tester.Integration.EfCore2", "Tester.Integration.EfCore2\Tester.Integration.EfCore2.csproj", "{B29867E7-DFE8-45ED-8DC8-2D13931C9447}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tester.Integration.EfCore2", "Tester.Integration.EfCore2\Tester.Integration.EfCore2.csproj", "{B29867E7-DFE8-45ED-8DC8-2D13931C9447}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -10,10 +10,9 @@ namespace BuildTT
     {
         private static string _version;
 
-        public static void Create(string generatorRoot, string ttRoot)
+        public static void Create(string generatorRoot, string ttRoot, string version)
         {
-            _version = File.ReadAllText("version.txt").Trim();
-
+            _version = version;
             CreateTT(generatorRoot, ttRoot);
             CreateCoreTTInclude(generatorRoot, ttRoot);
         }
