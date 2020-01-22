@@ -4554,10 +4554,10 @@
             }
 
             // Write the pre header info with the database context and it's interface
-            if(codeOutputList.Files.ContainsKey(contextInterface)) WriteCodeOutput(codeGenerator, codeOutputList.Files[contextInterface], true);
-            if(codeOutputList.Files.ContainsKey(contextClass))     WriteCodeOutput(codeGenerator, codeOutputList.Files[contextClass], true);
+            if(codeOutputList.Files.ContainsKey(contextInterface)) WriteCodeOutput(codeGenerator, codeOutputList.Files[contextInterface], true, firstInGroup: true);
+            if(codeOutputList.Files.ContainsKey(contextClass))     WriteCodeOutput(codeGenerator, codeOutputList.Files[contextClass], true, firstInGroup: true);
             if(codeOutputList.Files.ContainsKey(contextFactory))   WriteCodeOutput(codeGenerator, codeOutputList.Files[contextFactory], true);
-            if(codeOutputList.Files.ContainsKey(contextFakeClass)) WriteCodeOutput(codeGenerator, codeOutputList.Files[contextFakeClass], true);
+            if(codeOutputList.Files.ContainsKey(contextFakeClass)) WriteCodeOutput(codeGenerator, codeOutputList.Files[contextFakeClass], true, firstInGroup: true);
             if(codeOutputList.Files.ContainsKey(contextFakeDbSet)) WriteCodeOutput(codeGenerator, codeOutputList.Files[contextFakeDbSet], true);
 
             WriteCodeOutputForGroup(codeGenerator, "POCO classes", true,
@@ -4649,6 +4649,14 @@
                     lines.Add(IndentedStringBuilder(indentNum, "#region " + regionNameForGroup));
                     lines.Add(null); // Add blank line after the region group
                 }
+            }
+
+            if (firstInGroup && (HasAcademicLicence || HasTrialLicence))
+            {
+                lines.Add(IndentedStringBuilder(indentNum, "// ****************************************************************************************************"));
+                lines.Add(IndentedStringBuilder(indentNum, "// This is not a commercial licence, therefore only a few tables/views/stored procedures are generated."));
+                lines.Add(IndentedStringBuilder(indentNum, "// ****************************************************************************************************"));
+                lines.Add(null);
             }
 
             if (Settings.IncludeCodeGeneratedAttribute)
