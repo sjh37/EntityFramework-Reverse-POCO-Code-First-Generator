@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using BuildTT.Application;
 using BuildTT.Infrastructure;
 
@@ -13,6 +14,7 @@ namespace BuildTT
         public static void Create(string generatorRoot, string ttRoot, string version)
         {
             _version = version;
+            UpdateEfrpgVersion(Path.Combine(generatorRoot, "EfrpgVersion.cs"));
             CreateTT(generatorRoot, ttRoot);
             CreateCoreTTInclude(generatorRoot, ttRoot);
         }
@@ -106,6 +108,7 @@ namespace BuildTT
     Settings.IncludeQueryTraceOn9481Flag        = false; // If SqlServer 2014 appears frozen / take a long time when this file is saved, try setting this to true (you will also need elevated privileges).
     Settings.IncludeCodeGeneratedAttribute      = false; // If true, will include the GeneratedCode attribute, false to remove it.
     Settings.UsePrivateSetterForComputedColumns = true; // If the columns is computed, use a private setter.
+    Settings.IncludeGeneratorVersionInCode      = false; // If true, will include the version number of the generator in the generated code
     Settings.AdditionalNamespaces               = new List<string>(); // To include extra namespaces, include them here. i.e. new List<string> { ""Microsoft.AspNetCore.Identity.EntityFrameworkCore"", ""System.ComponentModel.DataAnnotations"" };
     Settings.AdditionalContextInterfaceItems    = new List<string>(); // example: new List<string> { ""void SetAutoDetectChangesEnabled(bool flag);"" };
 
@@ -620,6 +623,22 @@ namespace BuildTT
 
                 tt.WriteLine(footer);
             }
+        }
+
+        private static void UpdateEfrpgVersion(string filename)
+        {
+            var body = $@"namespace Efrpg
+{{
+    public static class EfrpgVersion
+    {{
+        public static string Version()
+        {{
+            return ""v{_version}"";
+        }}
+    }}
+}}";
+            // C:\S\Source (open source)\EntityFramework Reverse POCO Code Generator\Generator\EfrpgVersion.cs
+            File.WriteAllText(filename, body, Encoding.UTF8);
         }
 
         private static void CreateCoreTTInclude(string generatorRoot, string ttRoot)

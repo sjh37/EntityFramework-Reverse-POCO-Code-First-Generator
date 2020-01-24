@@ -60,6 +60,7 @@ namespace Efrpg
         public static bool IncludeQueryTraceOn9481Flag              = false; // If SqlServer 2014 appears frozen / take a long time when this file is saved, try setting this to true (you will also need elevated privileges).
         public static bool IncludeCodeGeneratedAttribute            = false; // If true, will include the GeneratedCode attribute, false to remove it.
         public static bool UsePrivateSetterForComputedColumns       = true; // If the columns is computed, use a private setter.
+        public static bool IncludeGeneratorVersionInCode            = false; // If true, will include the version number of the generator in the generated code
         public static List<string> AdditionalNamespaces             = new List<string>(); // To include extra namespaces, include them here. i.e. "Microsoft.AspNet.Identity.EntityFramework"
         public static List<string> AdditionalContextInterfaceItems  = new List<string>(); //  example: "void SetAutoDetectChangesEnabled(bool flag);"
 
