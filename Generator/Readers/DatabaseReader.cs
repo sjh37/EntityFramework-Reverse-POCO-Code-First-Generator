@@ -881,6 +881,11 @@ namespace Efrpg.Readers
 
             col.CleanUpDefault();
             col.NameHumanCase = CleanUp(col.DbName);
+            if (string.IsNullOrWhiteSpace(col.NameHumanCase))
+            {
+                col.NameHumanCase = "Unknown";
+                col.Hidden = true;
+            }
             col.NameHumanCase = ReservedColumnNames.Replace(col.NameHumanCase, "_$1");
 
             if (ReservedKeywords.Contains(col.NameHumanCase))
