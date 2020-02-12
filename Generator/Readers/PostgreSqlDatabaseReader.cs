@@ -9,6 +9,7 @@ namespace Efrpg.Readers
         public PostgreSqlDatabaseReader(DbProviderFactory factory, IDatabaseToPropertyType databaseToPropertyType)
             : base(factory, databaseToPropertyType)
         {
+            StoredProcedureParameterDbType = null;
         }
 
         protected override string TableSQL()

@@ -137,7 +137,7 @@ namespace Efrpg.Readers
         public string GetStoredProcedureParameterDbType(string sqlType)
         {
             if (StoredProcedureParameterDbType == null)
-                return string.Empty;
+                return sqlType;
 
             string parameterDbType;
             if (StoredProcedureParameterDbType.TryGetValue(sqlType, out parameterDbType))
