@@ -12,6 +12,7 @@ namespace Efrpg
         public bool OverrideModifier = false; // Adds 'override' to the property declaration
         public List<string> Attributes = new List<string>(); // List of attributes to add to this columns poco property
         public bool Hidden; // If true, does not generate any code for this column.
+        public bool ExistsInBaseClass; // If true, does not generate the property for this column as it will exist in a base class
 
         public int Scale;
         public string PropertyType;

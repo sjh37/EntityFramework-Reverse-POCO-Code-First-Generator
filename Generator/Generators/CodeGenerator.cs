@@ -432,7 +432,7 @@ namespace Efrpg.Generators
                 BaseClasses             = table.BaseClasses,
                 InsideClassBody         = table.WriteInsideClassBody(),
                 Columns = table.Columns
-                    .Where(x => !x.Hidden)
+                    .Where(x => !x.Hidden && !x.ExistsInBaseClass)
                     .OrderBy(x => x.Ordinal)
                     .Select((col, index) => new PocoColumnModel
                     {

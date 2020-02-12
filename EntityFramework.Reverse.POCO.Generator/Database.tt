@@ -252,6 +252,8 @@
         // To add a base class to a table
         //if (table.NameHumanCase == "User")
         //    table.BaseClasses = " : IdentityUser<int, CustomUserLogin, CustomUserRole, CustomUserClaim>";
+        //if (table.NameHumanCase == "LogData" || table.NameHumanCase == "ReturnData" || table.NameHumanCase == "DataBlob")            
+	    //    table.BaseClasses = " : ReportData";
 
         // To add attributes
         //table.Attributes.Add("[Serializable]");
@@ -274,19 +276,24 @@
         //    column.NameHumanCase = "Id";
 
         // Remove column from poco class as it will be inherited from a base class
-        //if (column.IsPrimaryKey && table.NameHumanCase.Equals("SomeTable", StringComparison.InvariantCultureIgnoreCase))
-        //    column.Hidden = true;
+        //if (column.IsPrimaryKey &&
+        //    (
+        //        table.NameHumanCase.Equals("LogData", StringComparison.InvariantCultureIgnoreCase) ||
+        //        table.NameHumanCase.Equals("ReturnData", StringComparison.InvariantCultureIgnoreCase) ||
+        //        table.NameHumanCase.Equals("DataBlob", StringComparison.InvariantCultureIgnoreCase)
+        //    ))
+        //    column.ExistsInBaseClass = true; // If true, does not generate the property for this column as it will exist in a base class
 
         // Use the extended properties to perform tasks to column
         //if (column.ExtendedProperty == "HIDE")
-        //    column.Hidden = true;
+        //    column.Hidden = true; // Hidden means the generator does not generate any code for this column at all.
 
         // Apply the "override" access modifier to a specific column.
         //if (column.NameHumanCase == "id")
         //    column.OverrideModifier = true;
         // This will create: public override long id { get; set; }
 
-        if(Settings.UseDataAnnotations)
+        if (Settings.UseDataAnnotations)
         {
             if (column.IsPrimaryKey)
                 column.Attributes.Add("[Key]");

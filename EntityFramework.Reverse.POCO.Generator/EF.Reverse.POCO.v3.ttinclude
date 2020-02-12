@@ -226,6 +226,11 @@
             // To add a base class to a table
             //if (table.NameHumanCase == "User")
             //    table.BaseClasses = " : IdentityUser<int, CustomUserLogin, CustomUserRole, CustomUserClaim>";
+            //if (table.NameHumanCase == "LogData" || table.NameHumanCase == "ReturnData" || table.NameHumanCase == "DataBlob")            
+            //    table.BaseClasses = " : ReportData";
+
+            // To add attributes
+            //table.Attributes.Add("[Serializable]");
         };
 
         // Use the following function if you need to apply additional modifications to a column
@@ -245,12 +250,17 @@
             //    column.NameHumanCase = "Id";
 
             // Remove column from poco class as it will be inherited from a base class
-            //if (column.IsPrimaryKey && table.NameHumanCase.Equals("SomeTable", StringComparison.InvariantCultureIgnoreCase))
-            //    column.Hidden = true;
+            //if (column.IsPrimaryKey &&
+            //    (
+            //        table.NameHumanCase.Equals("LogData", StringComparison.InvariantCultureIgnoreCase) ||
+            //        table.NameHumanCase.Equals("ReturnData", StringComparison.InvariantCultureIgnoreCase) ||
+            //        table.NameHumanCase.Equals("DataBlob", StringComparison.InvariantCultureIgnoreCase)
+            //    ))
+            //    column.ExistsInBaseClass = true; // If true, does not generate the property for this column as it will exist in a base class
 
             // Use the extended properties to perform tasks to column
             //if (column.ExtendedProperty == "HIDE")
-            //    column.Hidden = true;
+            //    column.Hidden = true; // Hidden means the generator does not generate any code for this column at all.
 
             // Apply the "override" access modifier to a specific column.
             //if (column.NameHumanCase == "id")
@@ -865,6 +875,7 @@
         public bool OverrideModifier = false; // Adds 'override' to the property declaration
         public List<string> Attributes = new List<string>(); // List of attributes to add to this columns poco property
         public bool Hidden; // If true, does not generate any code for this column.
+        public bool ExistsInBaseClass; // If true, does not generate the property for this column as it will exist in a base class
 
         public int Scale;
         public string PropertyType;
@@ -3143,7 +3154,7 @@
                 BaseClasses             = table.BaseClasses,
                 InsideClassBody         = table.WriteInsideClassBody(),
                 Columns = table.Columns
-                    .Where(x => !x.Hidden)
+                    .Where(x => !x.Hidden && !x.ExistsInBaseClass)
                     .OrderBy(x => x.Ordinal)
                     .Select((col, index) => new PocoColumnModel
                     {
@@ -12039,7 +12050,8 @@ and limitations under the License.
                 Ordinal             = rt.Ordinal,
                 DbName              = rt.ColumnName,
                 Default             = rt.Default,
-                ParentTable         = table
+                ParentTable         = table,
+                ExistsInBaseClass   = false
             };
 
             if (col.MaxLength == -1 && (col.SqlPropertyType.EndsWith("varchar", StringComparison.InvariantCultureIgnoreCase) ||

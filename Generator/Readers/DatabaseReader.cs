@@ -850,7 +850,8 @@ namespace Efrpg.Readers
                 Ordinal             = rt.Ordinal,
                 DbName              = rt.ColumnName,
                 Default             = rt.Default,
-                ParentTable         = table
+                ParentTable         = table,
+                ExistsInBaseClass   = false
             };
 
             if (col.MaxLength == -1 && (col.SqlPropertyType.EndsWith("varchar", StringComparison.InvariantCultureIgnoreCase) ||
