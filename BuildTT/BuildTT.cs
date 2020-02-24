@@ -270,7 +270,7 @@ namespace BuildTT
         //if (table.NameHumanCase == ""User"")
         //    table.BaseClasses = "" : IdentityUser<int, CustomUserLogin, CustomUserRole, CustomUserClaim>"";
         //if (table.NameHumanCase == ""LogData"" || table.NameHumanCase == ""ReturnData"" || table.NameHumanCase == ""DataBlob"")            
-	    //    table.BaseClasses = "" : ReportData"";
+        //    table.BaseClasses = "" : ReportData"";
 
         // To add attributes
         //table.Attributes.Add(""[Serializable]"");
