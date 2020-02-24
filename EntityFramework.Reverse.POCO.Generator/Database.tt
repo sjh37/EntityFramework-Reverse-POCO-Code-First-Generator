@@ -101,9 +101,10 @@
     Settings.FileExtension      = ".cs";
 
     // Code suppression (useful for non C# file generation) *******************************************************************************
-    Settings.UseRegions   = true; // If false, suppresses the use of #region
-    Settings.UseNamespace = true; // If false, suppresses the writing of a namespace
-    Settings.UsePragma    = true; // If false, suppresses the writing of #pragma
+    Settings.UseRegions       = true;  // If false, suppresses the use of #region
+    Settings.UseNamespace     = true;  // If false, suppresses the writing of a namespace
+    Settings.UsePragma        = true;  // If false, suppresses the writing of #pragma
+    Settings.AllowNullStrings = false; // If true, will allow string? properties and will add '#nullable enable' to the top of each file
 
     // Enumerations ***********************************************************************************************************************
     // Create enumerations from database tables

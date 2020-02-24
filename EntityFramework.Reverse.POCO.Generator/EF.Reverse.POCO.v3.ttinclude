@@ -93,9 +93,10 @@
         public static string FileExtension                  = ".cs";
 
         // Code suppression (useful for non C# file generation) *******************************************************************************
-        public static bool UseRegions   = true; // If false, suppresses the use of #region
-        public static bool UseNamespace = true; // If false, suppresses the writing of a namespace
-        public static bool UsePragma    = true; // If false, suppresses the writing of #pragma
+        public static bool UseRegions       = true;  // If false, suppresses the use of #region
+        public static bool UseNamespace     = true;  // If false, suppresses the writing of a namespace
+        public static bool UsePragma        = true;  // If false, suppresses the writing of #pragma
+        public static bool AllowNullStrings = false; // If true, will allow string? properties and will add '#nullable enable' to the top of each file
 
         // Create enumerations from database tables
         // List the enumeration tables you want read and generated for
@@ -920,6 +921,27 @@
         public Table ParentTable;
 
         public static readonly List<string> NotNullable = new List<string>
+        {
+            Settings.AllowNullStrings ? "" : "string",
+            "byte[]",
+            "datatable",
+            "system.data.datatable",
+            "object",
+            "microsoft.sqlserver.types.sqlgeography",
+            "microsoft.sqlserver.types.sqlgeometry",
+            "sqlgeography",
+            "sqlgeometry",
+            "system.data.entity.spatial.dbgeography",
+            "system.data.entity.spatial.dbgeometry",
+            "dbgeography",
+            "dbgeometry",
+            "system.data.entity.hierarchy.hierarchyid",
+            "hierarchyid",
+            "nettopologysuite.geometries.point",
+            "nettopologysuite.geometries.geometry"
+        };
+        
+        public static readonly List<string> StoredProcedureNotNullable = new List<string>
         {
             "string",
             "byte[]",
@@ -3423,7 +3445,9 @@
             header.AppendLine("// ReSharper disable RedundantOverridenMember");
             header.AppendLine("// ReSharper disable UseNameofExpression");
             header.AppendLine("// ReSharper disable UsePatternMatching");
-            if(Settings.UsePragma)
+            if (Settings.AllowNullStrings)
+                header.AppendLine("#nullable enable");
+            if (Settings.UsePragma)
                 header.AppendLine("#pragma warning disable 1591    //  Ignore \"Missing XML Comment\" warning");
             Header = header.ToString();
 
@@ -14092,8 +14116,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             return col.DataType.Namespace != null &&
                    col.AllowDBNull &&
                    !(
-                       Column.NotNullable.Contains(col.DataType.Name.ToLower()) ||
-                       Column.NotNullable.Contains(col.DataType.Namespace.ToLower() + "." + col.DataType.Name.ToLower())
+                       Column.StoredProcedureNotNullable.Contains(col.DataType.Name.ToLower()) ||
+                       Column.StoredProcedureNotNullable.Contains(col.DataType.Namespace.ToLower() + "." + col.DataType.Name.ToLower())
                      );
         }
 
@@ -14124,7 +14148,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 sb.AppendFormat("{0}{1}{2} {3}{4}",
                     p.Mode == StoredProcedureParameterMode.In ? string.Empty : "out ",
                     p.PropertyType,
-                    Column.NotNullable.Contains(p.PropertyType.ToLower()) ? string.Empty : "?",
+                    Column.StoredProcedureNotNullable.Contains(p.PropertyType.ToLower()) ? string.Empty : "?",
                     p.NameHumanCase,
                     n++ < count ? ", " : string.Empty);
             }
@@ -14189,7 +14213,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             var sb = new StringBuilder(1024);
             foreach (var p in Parameters.OrderBy(x => x.Ordinal))
             {
-                var isNullable = !Column.NotNullable.Contains(p.PropertyType.ToLower());
+                var isNullable = !Column.StoredProcedureNotNullable.Contains(p.PropertyType.ToLower());
                 var getValueOrDefault = isNullable ? ".GetValueOrDefault()" : string.Empty;
                 var isGeography = p.PropertyType == "DbGeography";
 
@@ -14240,7 +14264,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     p.PropertyType,
                     p.NameHumanCase +
                     (p.Mode == StoredProcedureParameterMode.In &&
-                     Column.NotNullable.Contains(p.PropertyType.ToLowerInvariant())
+                     Column.StoredProcedureNotNullable.Contains(p.PropertyType.ToLowerInvariant())
                         ? string.Empty
                         : " ?? DBNull.Value")));
             }
@@ -14292,7 +14316,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 .OrderBy(x => x.Ordinal))
             {
                 var Default = string.Format("default({0})", p.PropertyType);
-                var notNullable = Column.NotNullable.Contains(p.PropertyType.ToLower());
+                var notNullable = Column.StoredProcedureNotNullable.Contains(p.PropertyType.ToLower());
 
                 if (isFake)
                 {

@@ -30,8 +30,8 @@ namespace Efrpg
             return col.DataType.Namespace != null &&
                    col.AllowDBNull &&
                    !(
-                       Column.NotNullable.Contains(col.DataType.Name.ToLower()) ||
-                       Column.NotNullable.Contains(col.DataType.Namespace.ToLower() + "." + col.DataType.Name.ToLower())
+                       Column.StoredProcedureNotNullable.Contains(col.DataType.Name.ToLower()) ||
+                       Column.StoredProcedureNotNullable.Contains(col.DataType.Namespace.ToLower() + "." + col.DataType.Name.ToLower())
                      );
         }
 
@@ -62,7 +62,7 @@ namespace Efrpg
                 sb.AppendFormat("{0}{1}{2} {3}{4}",
                     p.Mode == StoredProcedureParameterMode.In ? string.Empty : "out ",
                     p.PropertyType,
-                    Column.NotNullable.Contains(p.PropertyType.ToLower()) ? string.Empty : "?",
+                    Column.StoredProcedureNotNullable.Contains(p.PropertyType.ToLower()) ? string.Empty : "?",
                     p.NameHumanCase,
                     n++ < count ? ", " : string.Empty);
             }
@@ -127,7 +127,7 @@ namespace Efrpg
             var sb = new StringBuilder(1024);
             foreach (var p in Parameters.OrderBy(x => x.Ordinal))
             {
-                var isNullable = !Column.NotNullable.Contains(p.PropertyType.ToLower());
+                var isNullable = !Column.StoredProcedureNotNullable.Contains(p.PropertyType.ToLower());
                 var getValueOrDefault = isNullable ? ".GetValueOrDefault()" : string.Empty;
                 var isGeography = p.PropertyType == "DbGeography";
 
@@ -178,7 +178,7 @@ namespace Efrpg
                     p.PropertyType,
                     p.NameHumanCase +
                     (p.Mode == StoredProcedureParameterMode.In &&
-                     Column.NotNullable.Contains(p.PropertyType.ToLowerInvariant())
+                     Column.StoredProcedureNotNullable.Contains(p.PropertyType.ToLowerInvariant())
                         ? string.Empty
                         : " ?? DBNull.Value")));
             }
@@ -230,7 +230,7 @@ namespace Efrpg
                 .OrderBy(x => x.Ordinal))
             {
                 var Default = string.Format("default({0})", p.PropertyType);
-                var notNullable = Column.NotNullable.Contains(p.PropertyType.ToLower());
+                var notNullable = Column.StoredProcedureNotNullable.Contains(p.PropertyType.ToLower());
 
                 if (isFake)
                 {

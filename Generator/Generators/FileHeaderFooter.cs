@@ -25,7 +25,9 @@ namespace Efrpg.Generators
             header.AppendLine("// ReSharper disable RedundantOverridenMember");
             header.AppendLine("// ReSharper disable UseNameofExpression");
             header.AppendLine("// ReSharper disable UsePatternMatching");
-            if(Settings.UsePragma)
+            if (Settings.AllowNullStrings)
+                header.AppendLine("#nullable enable");
+            if (Settings.UsePragma)
                 header.AppendLine("#pragma warning disable 1591    //  Ignore \"Missing XML Comment\" warning");
             Header = header.ToString();
 

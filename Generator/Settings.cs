@@ -69,9 +69,10 @@ namespace Efrpg
         public static string FileExtension                  = ".cs";
 
         // Code suppression (useful for non C# file generation) *******************************************************************************
-        public static bool UseRegions   = true; // If false, suppresses the use of #region
-        public static bool UseNamespace = true; // If false, suppresses the writing of a namespace
-        public static bool UsePragma    = true; // If false, suppresses the writing of #pragma
+        public static bool UseRegions       = true;  // If false, suppresses the use of #region
+        public static bool UseNamespace     = true;  // If false, suppresses the writing of a namespace
+        public static bool UsePragma        = true;  // If false, suppresses the writing of #pragma
+        public static bool AllowNullStrings = false; // If true, will allow string? properties and will add '#nullable enable' to the top of each file
 
         // Create enumerations from database tables
         // List the enumeration tables you want read and generated for
