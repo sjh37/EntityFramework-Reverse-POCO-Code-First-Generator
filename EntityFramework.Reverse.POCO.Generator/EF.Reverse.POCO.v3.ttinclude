@@ -2881,6 +2881,14 @@
             } else
                 _scalarValuedFunctions = new List<ScalarValuedFunctionsTemplateData>();
 
+            var returnModelsUsed = new List<string>();
+            foreach(var sp in _storedProcs)
+            {
+                if(returnModelsUsed.Contains(sp.ReturnModelName))
+                    sp.CreateDbSetForReturnModel = false;
+                else
+                    returnModelsUsed.Add(sp.ReturnModelName);
+            }
 
             _hasTables                          = _tables.Any();
             _hasStoredProcs                     = _storedProcs.Any();
@@ -5546,6 +5554,7 @@
         public int ReturnModelsCount { get; }
         public string ExecWithNoReturnModel { get; }
         public List<ResultSetResultReaderCommand> ReturnModelResultSetReaderCommand { get; }
+        public bool CreateDbSetForReturnModel { get; set; }
 
         public StoredProcTemplateData(
             bool hasReturnModels,
@@ -5593,6 +5602,8 @@
             Parameters                                             = parameters;
             ReturnModelsCount                                      = returnModelsCount;
             ExecWithNoReturnModel                                  = execWithNoReturnModel;
+
+            CreateDbSetForReturnModel = true;
 
             ReturnModelResultSetReaderCommand = new List<ResultSetResultReaderCommand>(returnModelsCount);
             for (var n = 1; n <= returnModelsCount; ++n)
@@ -16988,7 +16999,9 @@ using {{this}};{{#newline}}
 
 {{#if HasReturnModels}}
 {{#newline}}
+{{#if CreateDbSetForReturnModel}}
     public DbSet<{{ReturnModelName}}> {{ReturnModelName}} { get; set; }{{#newline}}
+{{/if}}
     public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
     {{{#newline}}
         int procResult;{{#newline}}

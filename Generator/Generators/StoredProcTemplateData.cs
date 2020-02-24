@@ -27,6 +27,7 @@ namespace Efrpg.Generators
         public int ReturnModelsCount { get; }
         public string ExecWithNoReturnModel { get; }
         public List<ResultSetResultReaderCommand> ReturnModelResultSetReaderCommand { get; }
+        public bool CreateDbSetForReturnModel { get; set; }
 
         public StoredProcTemplateData(
             bool hasReturnModels,
@@ -74,6 +75,8 @@ namespace Efrpg.Generators
             Parameters                                             = parameters;
             ReturnModelsCount                                      = returnModelsCount;
             ExecWithNoReturnModel                                  = execWithNoReturnModel;
+
+            CreateDbSetForReturnModel = true;
 
             ReturnModelResultSetReaderCommand = new List<ResultSetResultReaderCommand>(returnModelsCount);
             for (var n = 1; n <= returnModelsCount; ++n)

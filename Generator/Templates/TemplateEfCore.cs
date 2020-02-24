@@ -534,7 +534,9 @@ using {{this}};{{#newline}}
 
 {{#if HasReturnModels}}
 {{#newline}}
+{{#if CreateDbSetForReturnModel}}
     public DbSet<{{ReturnModelName}}> {{ReturnModelName}} { get; set; }{{#newline}}
+{{/if}}
     public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
     {{{#newline}}
         int procResult;{{#newline}}

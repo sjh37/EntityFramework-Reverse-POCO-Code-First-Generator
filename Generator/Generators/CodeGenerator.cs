@@ -137,6 +137,14 @@ namespace Efrpg.Generators
             } else
                 _scalarValuedFunctions = new List<ScalarValuedFunctionsTemplateData>();
 
+            var returnModelsUsed = new List<string>();
+            foreach(var sp in _storedProcs)
+            {
+                if(returnModelsUsed.Contains(sp.ReturnModelName))
+                    sp.CreateDbSetForReturnModel = false;
+                else
+                    returnModelsUsed.Add(sp.ReturnModelName);
+            }
 
             _hasTables                          = _tables.Any();
             _hasStoredProcs                     = _storedProcs.Any();
