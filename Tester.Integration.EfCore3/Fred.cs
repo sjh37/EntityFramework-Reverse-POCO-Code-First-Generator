@@ -4621,7 +4621,7 @@ namespace Tester.Integration.EfCore3
             builder.Property(x => x.DateCreated).HasColumnName(@"DateCreated").HasColumnType("datetime").IsRequired();
             builder.Property(x => x.DateChanged).HasColumnName(@"DateChanged").HasColumnType("datetime").IsRequired(false);
 
-            builder.HasIndex(x => x.Code).HasName("UK_CODE_PARAM_MeetingTopicDetailSource");
+            builder.HasIndex(x => x.Code).HasName("UK_CODE_PARAM_MeetingTopicDetailSource").IsUnique();
         }
     }
 
@@ -4830,7 +4830,7 @@ namespace Tester.Integration.EfCore3
             // Foreign keys
             builder.HasOne(a => a.EventProcessor).WithMany(b => b.EventProcessorEventFilters).HasForeignKey(c => c.EventProcessorId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_EventProcessorEventFilter__EventProcessor");
 
-            builder.HasIndex(x => new { x.EventProcessorId, x.WantedEventId }).HasName("IX_EventProcessorEventFilter");
+            builder.HasIndex(x => new { x.EventProcessorId, x.WantedEventId }).HasName("IX_EventProcessorEventFilter").IsUnique();
         }
     }
 
@@ -4893,7 +4893,7 @@ namespace Tester.Integration.EfCore3
             builder.Property(x => x.NullValue).HasColumnName(@"null_value").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.NotNullValue).HasColumnName(@"not_null_value").HasColumnType("int").IsRequired();
 
-            builder.HasIndex(x => x.NotNullValue).HasName("UQ_ForeignKeyIsNotEnforced_not_null_value");
+            builder.HasIndex(x => x.NotNullValue).HasName("UQ_ForeignKeyIsNotEnforced_not_null_value").IsUnique();
             builder.HasIndex(x => x.NullValue).HasName("UQ_ForeignKeyIsNotEnforced_null_value").IsUnique();
         }
     }
@@ -4916,7 +4916,7 @@ namespace Tester.Integration.EfCore3
             builder.HasOne(a => a.ForeignKeyIsNotEnforced2).WithOne(b => b.ForeignKeyIsNotEnforcedItem2).HasPrincipalKey<ForeignKeyIsNotEnforced>(p => p.NotNullValue).HasForeignKey<ForeignKeyIsNotEnforcedItem>(c => c.NullValue).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_ForeignKeyIsNotEnforcedItem_null_notnull");
             builder.HasOne(a => a.ForeignKeyIsNotEnforced3).WithOne(b => b.ForeignKeyIsNotEnforcedItem3).HasPrincipalKey<ForeignKeyIsNotEnforced>(p => p.NullValue).HasForeignKey<ForeignKeyIsNotEnforcedItem>(c => c.NullValue).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_ForeignKeyIsNotEnforcedItem_null_null");
 
-            builder.HasIndex(x => x.NotNullValue).HasName("UQ_ForeignKeyIsNotEnforcedItem_not_null_value");
+            builder.HasIndex(x => x.NotNullValue).HasName("UQ_ForeignKeyIsNotEnforcedItem_not_null_value").IsUnique();
             builder.HasIndex(x => x.NullValue).HasName("UQ_ForeignKeyIsNotEnforcedItem_null_value").IsUnique();
         }
     }
@@ -4951,7 +4951,7 @@ namespace Tester.Integration.EfCore3
             builder.Property(x => x.C).HasColumnName(@"C").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.D).HasColumnName(@"D").HasColumnType("int").IsRequired(false);
 
-            builder.HasIndex(x => new { x.A, x.B }).HasName("UQ_HasPrincipalKeyTestParent_AB");
+            builder.HasIndex(x => new { x.A, x.B }).HasName("UQ_HasPrincipalKeyTestParent_AB").IsUnique();
             builder.HasIndex(x => new { x.A, x.C }).HasName("UQ_HasPrincipalKeyTestParent_AC").IsUnique();
             builder.HasIndex(x => new { x.C, x.D }).HasName("UQ_HasPrincipalKeyTestParent_CD").IsUnique();
         }
@@ -5072,8 +5072,8 @@ namespace Tester.Integration.EfCore3
             builder.Property(x => x.CarId).HasColumnName(@"CarId").HasColumnType("int").IsRequired();
 
             builder.HasIndex(x => x.BestHolidayTypeId).HasName("IX_MultipleKeys_BestHolidayType");
-            builder.HasIndex(x => new { x.BestHolidayTypeId, x.BankId }).HasName("IX_MultipleKeys_Holiday_Bank");
-            builder.HasIndex(x => x.FavouriteColourId).HasName("UC_MultipleKeys_FavouriteColour");
+            builder.HasIndex(x => new { x.BestHolidayTypeId, x.BankId }).HasName("IX_MultipleKeys_Holiday_Bank").IsUnique();
+            builder.HasIndex(x => x.FavouriteColourId).HasName("UC_MultipleKeys_FavouriteColour").IsUnique();
         }
     }
 

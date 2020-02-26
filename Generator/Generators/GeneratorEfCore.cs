@@ -196,7 +196,6 @@ namespace Efrpg.Generators
                 var sb = new StringBuilder(255);
                 var ok = true;
                 var count = 0;
-                var nullable = false;
                 sb.Append("builder.HasIndex(x => ");
                 if (indexesForName.Count > 1)
                     sb.Append("new { ");
@@ -209,9 +208,6 @@ namespace Efrpg.Generators
                         ok = false;
                         break; // Cannot use index, as one of the columns is invalid
                     }
-
-                    if (col.IsNullable)
-                        nullable = true;
 
                     if (count > 0)
                         sb.Append(", ");
@@ -233,7 +229,7 @@ namespace Efrpg.Generators
                 sb.Append(indexName);
                 sb.Append("\")");
 
-                if (nullable && (indexesForName.All(x => x.IsPrimaryKey) || indexesForName.All(x => x.IsUnique) || indexesForName.All(x => x.IsUniqueConstraint)))
+                if (indexesForName.All(x => x.IsUnique) || indexesForName.All(x => x.IsUniqueConstraint))
                     sb.Append(".IsUnique()");
 
                 if (indexesForName.All(x => x.IsClustered))
