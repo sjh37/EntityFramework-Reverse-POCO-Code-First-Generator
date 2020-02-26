@@ -57,12 +57,14 @@
     FilterSettings.TableFilters.Add(new RegexExcludeFilter("__EFMigrationsHistory")); // This excludes all tables starting with 'AspNet'
     //FilterSettings.ColumnFilters.Add(new RegexExcludeFilter("[Cc]reated[Aa]t.*")); // This excludes all columns starting with 'CreatedAt' e.g CreatedAtUtc
     //FilterSettings.ColumnFilters.Add(new RegexIncludeFilter(".*")); // Rarely used as it would only include columns with names listed here
+    //FilterSettings.StoredProcedureFilters.Add(new RegexExcludeFilter("Calc")); // This excludes all stored procedures 'Calc' in the name
+    //FilterSettings.StoredProcedureFilters.Add(new RegexIncludeFilter("Pricing.*")); // This includes all stored procedures starting with 'Pricing'
 
     // Other settings *********************************************************************************************************************
     Settings.CommandTimeout                         = 600; // SQL Command timeout in seconds. 600 is 10 minutes, 0 will wait indefinitely. Some databases can be slow retrieving schema information.
     Settings.DbContextInterfaceBaseClasses          = "IDisposable"; // Specify what the base classes are for your database context interface
     Settings.DbContextBaseClass                     = "DbContext"; // Specify what the base class is for your DbContext. For ASP.NET Identity use "IdentityDbContext<ApplicationUser>";
-    Settings.OnConfiguration                        = OnConfiguration.ConnectionString; // EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/OnConfiguration    Settings.GenerateSeparateFiles   = false;
+    Settings.OnConfiguration                        = OnConfiguration.ConnectionString; // EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Settings.OnConfiguration
     Settings.AddParameterlessConstructorToDbContext = true; // EF6 only. If true, then DbContext will have a default (parameter-less) constructor which automatically passes in the connection string name, if false then no parameter-less constructor will be created.
     Settings.ConfigurationClassName                 = "Configuration"; // Configuration, Mapping, Map, etc. This is appended to the Poco class name to configure the mappings.
     Settings.DatabaseReaderPlugin                   = ""; // Eg, "c:\\Path\\YourDatabaseReader.dll,Full.Name.Of.Class.Including.Namespace". See #501. This will allow you to specify a pluggable provider for reading your database.
@@ -81,7 +83,7 @@
     Settings.IncludeComments                    = CommentsStyle.AtEndOfField; // Adds comments to the generated code
     Settings.IncludeExtendedPropertyComments    = CommentsStyle.InSummaryBlock; // Adds extended properties as comments to the generated code
     Settings.IncludeConnectionSettingComments   = true; // Add comments describing connection settings used to generate file
-    Settings.DisableGeographyTypes              = false; // Turns off use of spatial types: Geography, Geometry. More info: https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Spatial-Types
+    Settings.DisableGeographyTypes              = true; // Turns off use of spatial types: Geography, Geometry. More info: https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Spatial-Types
     Settings.CollectionInterfaceType            = "ICollection"; //  = "System.Collections.Generic.List"; // Determines the declaration type of collections for the Navigation Properties. ICollection is used if not set.
     Settings.CollectionType                     = "List"; // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example. Add "System.Collections.ObjectModel" to AdditionalNamespaces if setting the CollectionType = "ObservableCollection".
     Settings.NullableShortHand                  = true; // true => T?, false => Nullable<T>
@@ -89,17 +91,19 @@
     Settings.IncludeQueryTraceOn9481Flag        = false; // If SqlServer 2014 appears frozen / take a long time when this file is saved, try setting this to true (you will also need elevated privileges).
     Settings.IncludeCodeGeneratedAttribute      = false; // If true, will include the GeneratedCode attribute, false to remove it.
     Settings.UsePrivateSetterForComputedColumns = true; // If the columns is computed, use a private setter.
-    Settings.AdditionalNamespaces               = new List<string>(); // To include extra namespaces, include them here. i.e. "Microsoft.AspNet.Identity.EntityFramework", "System.ComponentModel.DataAnnotations"
-    Settings.AdditionalContextInterfaceItems    = new List<string>(); //  example: "void SetAutoDetectChangesEnabled(bool flag);"
+    Settings.IncludeGeneratorVersionInCode      = false; // If true, will include the version number of the generator in the generated code
+    Settings.AdditionalNamespaces               = new List<string>(); // To include extra namespaces, include them here. i.e. new List<string> { "Microsoft.AspNetCore.Identity.EntityFrameworkCore", "System.ComponentModel.DataAnnotations" };
+    Settings.AdditionalContextInterfaceItems    = new List<string>(); // example: new List<string> { "void SetAutoDetectChangesEnabled(bool flag);" };
 
     // Language choices
     Settings.GenerationLanguage = GenerationLanguage.CSharp;
     Settings.FileExtension      = ".cs";
 
     // Code suppression (useful for non C# file generation) *******************************************************************************
-    Settings.UseRegions   = true; // If false, suppresses the use of #region
-    Settings.UseNamespace = true; // If false, suppresses the writing of a namespace
-    Settings.UsePragma    = true; // If false, suppresses the writing of #pragma
+    Settings.UseRegions       = true;  // If false, suppresses the use of #region
+    Settings.UseNamespace     = true;  // If false, suppresses the writing of a namespace
+    Settings.UsePragma        = true;  // If false, suppresses the writing of #pragma
+    Settings.AllowNullStrings = false; // If true, will allow string? properties and will add '#nullable enable' to the top of each file
 
     // Enumerations ***********************************************************************************************************************
     // Create enumerations from database tables
@@ -248,6 +252,8 @@
         // To add a base class to a table
         //if (table.NameHumanCase == "User")
         //    table.BaseClasses = " : IdentityUser<int, CustomUserLogin, CustomUserRole, CustomUserClaim>";
+        //if (table.NameHumanCase == "LogData" || table.NameHumanCase == "ReturnData" || table.NameHumanCase == "DataBlob")            
+        //    table.BaseClasses = " : ReportData";
 
         // To add attributes
         //table.Attributes.Add("[Serializable]");
@@ -270,19 +276,24 @@
         //    column.NameHumanCase = "Id";
 
         // Remove column from poco class as it will be inherited from a base class
-        //if (column.IsPrimaryKey && table.NameHumanCase.Equals("SomeTable", StringComparison.InvariantCultureIgnoreCase))
-        //    column.Hidden = true;
+        //if (column.IsPrimaryKey &&
+        //    (
+        //        table.NameHumanCase.Equals("LogData", StringComparison.InvariantCultureIgnoreCase) ||
+        //        table.NameHumanCase.Equals("ReturnData", StringComparison.InvariantCultureIgnoreCase) ||
+        //        table.NameHumanCase.Equals("DataBlob", StringComparison.InvariantCultureIgnoreCase)
+        //    ))
+        //    column.ExistsInBaseClass = true; // If true, does not generate the property for this column as it will exist in a base class
 
         // Use the extended properties to perform tasks to column
         //if (column.ExtendedProperty == "HIDE")
-        //    column.Hidden = true;
+        //    column.Hidden = true; // Hidden means the generator does not generate any code for this column at all.
 
         // Apply the "override" access modifier to a specific column.
         //if (column.NameHumanCase == "id")
         //    column.OverrideModifier = true;
         // This will create: public override long id { get; set; }
 
-        if(Settings.UseDataAnnotations)
+        if (Settings.UseDataAnnotations)
         {
             if (column.IsPrimaryKey)
                 column.Attributes.Add("[Key]");
