@@ -300,7 +300,7 @@ using {{this}};{{#newline}}
 
 {{#if hasIndexes}}
 {{#newline}}
-        // Indexes
+        // Indexes{{#newline}}
 {{#each indexes}}
         {{this}}{{#newline}}
 {{/each}}

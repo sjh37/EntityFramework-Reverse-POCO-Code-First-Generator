@@ -360,7 +360,6 @@ namespace BuildTT
     // This callback will be invoked for each VIEW found in the database. Use it to declare which columns participate in that VIEW's
     // primary-key by setting 'IsPrimaryKey = true'.
     // If no columns are marked with 'IsPrimaryKey = true' then this T4 template defaults to marking all non-NULL columns as primary key columns.
-    // To set-up Foreign-Key relationships between VIEWs and Tables (or even other VIEWs) use the 'AddForeignKeys' callback below.
     Settings.ViewProcessing = delegate(Table view)
     {
         // Below is example code for the Northwind database that configures the 'VIEW [Orders Qry]' and 'VIEW [Invoices]'

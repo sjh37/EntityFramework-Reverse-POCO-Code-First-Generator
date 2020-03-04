@@ -5009,25 +5009,16 @@
         {
             var sb = new StringBuilder(1024);
             var count = c.Indexes.Count;
-            //var wouldForceColumnToBeNotNull = c.Indexes.Any(x => x.WouldForceColumnToBeNotNull);
-            var wouldForceColumnToBeNotNull = false; // EF6 correctly takes care of unique indexes and nullable/optional columns
             var first = true;
             var cannotUseAdded = false;
             var closeBrackets = false;
             var n = count;
-            foreach (var index in c.Indexes.OrderBy(x => x.IndexName).ThenBy(x => x.KeyOrdinal))
+            foreach (var index in c.Indexes.Where(x => !x.IsPrimaryKey).OrderBy(x => x.IndexName).ThenBy(x => x.KeyOrdinal))
             {
                 --n;
                 if (first)
                 {
-                    sb.AppendLine();
-                    if (wouldForceColumnToBeNotNull)
-                    {
-                        sb.AppendLine("        /* Cannot use index as this would force the column to be not nullable");
-                        cannotUseAdded = true;
-                    }
-
-                    sb.AppendLine($"        modelBuilder.Entity<{c.ParentTable.NameHumanCaseWithSuffix()}>()");
+                    sb.AppendLine($"modelBuilder.Entity<{c.ParentTable.NameHumanCaseWithSuffix()}>()");
                     sb.AppendLine($"            .Property(e => e.{c.NameHumanCase})");
                     sb.AppendLine("            .HasColumnAnnotation(");
                     sb.AppendLine("                IndexAnnotation.AnnotationName,");
@@ -15478,7 +15469,7 @@ using {{this}};{{#newline}}
 
 {{#if hasIndexes}}
 {{#newline}}
-        // Indexes
+        // Indexes{{#newline}}
 {{#each indexes}}
         {{this}}{{#newline}}
 {{/each}}
