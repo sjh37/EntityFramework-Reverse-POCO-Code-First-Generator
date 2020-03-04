@@ -151,15 +151,6 @@ namespace EfrpgPlum
 
             modelBuilder.Configurations.Add(new NoPrimaryKeyConfiguration());
             modelBuilder.Configurations.Add(new Synonyms_ParentConfiguration());
-
-            // Indexes        
-            modelBuilder.Entity<Synonyms_Parent>()
-                .Property(e => e.ParentId)
-                .HasColumnAnnotation(
-                    IndexAnnotation.AnnotationName,
-                    new IndexAnnotation(new IndexAttribute("PK_Parent", 1) { IsUnique = true, IsClustered = true })
-                );
-
         }
 
         public static DbModelBuilder CreateModel(DbModelBuilder modelBuilder, string schema)

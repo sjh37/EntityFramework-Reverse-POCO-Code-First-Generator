@@ -88,12 +88,13 @@ namespace Generator.Tests.Unit
             foreach (var column in _orderDetails.Columns)
             {
                 var s = sut.IndexModelBuilder(column);
-                list.Add(s);
+                if(!string.IsNullOrWhiteSpace(s))
+                    list.Add(s);
                 Console.WriteLine(s);
             }
 
             // Assert
-            Assert.AreEqual(3, list.Count);
+            Assert.AreEqual(2, list.Count);
 
             Assert.AreEqual(@"modelBuilder.Entity<OrderDetails>()
             .Property(e => e.OrderID)
@@ -102,8 +103,7 @@ namespace Generator.Tests.Unit
                 new IndexAnnotation(new[]
                 {
                     new IndexAttribute(""OrderID"", 1),
-                    new IndexAttribute(""OrdersOrder_Details"", 1),
-                    new IndexAttribute(""PK_Order_Details"", 1) { IsUnique = true, IsClustered = true }
+                    new IndexAttribute(""OrdersOrder_Details"", 1)
                 }));", list[0].Trim());
 
             Assert.AreEqual(@"modelBuilder.Entity<OrderDetails>()
@@ -112,17 +112,9 @@ namespace Generator.Tests.Unit
                 IndexAnnotation.AnnotationName,
                 new IndexAnnotation(new[]
                 {
-                    new IndexAttribute(""PK_Order_Details"", 2) { IsUnique = true, IsClustered = true },
                     new IndexAttribute(""ProductID"", 1),
                     new IndexAttribute(""ProductsOrder_Details"", 1)
                 }));", list[1].Trim());
-
-            Assert.AreEqual(@"modelBuilder.Entity<OrderDetails>()
-            .Property(e => e.test)
-            .HasColumnAnnotation(
-                IndexAnnotation.AnnotationName,
-                new IndexAnnotation(new IndexAttribute(""PK_test"", 1) { IsUnique = true, IsClustered = true })
-            );", list[2].Trim());
         }
 
         [Test]

@@ -289,7 +289,7 @@ namespace Efrpg.Generators
 
                 indexes.AddRange(columns
                     .Select(_generator.IndexModelBuilder)
-                    .Where(x => !string.IsNullOrEmpty(x)));
+                    .Where(x => !string.IsNullOrWhiteSpace(x)));
             }
 
             var isEfCore3 = Settings.IsEfCore3();

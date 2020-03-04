@@ -148,15 +148,6 @@ namespace EfrpgBananaDbContext
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Configurations.Add(new Stafford_ComputedColumnConfiguration());
-
-            // Indexes        
-            modelBuilder.Entity<Stafford_ComputedColumn>()
-                .Property(e => e.id)
-                .HasColumnAnnotation(
-                    IndexAnnotation.AnnotationName,
-                    new IndexAnnotation(new IndexAttribute("PK_Stafford_ComputedColumns", 1) { IsUnique = true, IsClustered = true })
-                );
-
         }
 
         public static DbModelBuilder CreateModel(DbModelBuilder modelBuilder, string schema)

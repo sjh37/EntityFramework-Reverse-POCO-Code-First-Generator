@@ -155,30 +155,13 @@ namespace EfrpgNorthwindTest1
             modelBuilder.Configurations.Add(new CategoryConfiguration());
             modelBuilder.Configurations.Add(new ProductConfiguration());
 
-            // Indexes        
-            modelBuilder.Entity<Category>()
-                .Property(e => e.CategoryID)
-                .HasColumnAnnotation(
-                    IndexAnnotation.AnnotationName,
-                    new IndexAnnotation(new IndexAttribute("PK_Categories", 1) { IsUnique = true, IsClustered = true })
-                );
-
-
+            // Indexes
             modelBuilder.Entity<Category>()
                 .Property(e => e.CategoryName)
                 .HasColumnAnnotation(
                     IndexAnnotation.AnnotationName,
                     new IndexAnnotation(new IndexAttribute("CategoryName", 1))
                 );
-
-
-            modelBuilder.Entity<Product>()
-                .Property(e => e.ProductId)
-                .HasColumnAnnotation(
-                    IndexAnnotation.AnnotationName,
-                    new IndexAnnotation(new IndexAttribute("PK_Products", 1) { IsUnique = true, IsClustered = true })
-                );
-
 
             modelBuilder.Entity<Product>()
                 .Property(e => e.ProductName)

@@ -148,15 +148,6 @@ namespace EfrpgCherry
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Configurations.Add(new ColumnNameConfiguration());
-
-            // Indexes        
-            modelBuilder.Entity<ColumnName>()
-                .Property(e => e.Dollar)
-                .HasColumnAnnotation(
-                    IndexAnnotation.AnnotationName,
-                    new IndexAnnotation(new IndexAttribute("PK_ColumnNames", 1) { IsUnique = true, IsClustered = true })
-                );
-
         }
 
         public static DbModelBuilder CreateModel(DbModelBuilder modelBuilder, string schema)

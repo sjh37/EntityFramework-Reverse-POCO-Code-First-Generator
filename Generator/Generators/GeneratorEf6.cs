@@ -146,12 +146,13 @@ namespace Efrpg.Generators
         public override string IndexModelBuilder(Column c)
         {
             var sb = new StringBuilder(1024);
-            var count = c.Indexes.Count;
+            var indexes = c.Indexes.Where(x => !x.IsPrimaryKey).OrderBy(x => x.IndexName).ThenBy(x => x.KeyOrdinal).ToList();
+            var count = indexes.Count;
             var first = true;
             var cannotUseAdded = false;
             var closeBrackets = false;
             var n = count;
-            foreach (var index in c.Indexes.Where(x => !x.IsPrimaryKey).OrderBy(x => x.IndexName).ThenBy(x => x.KeyOrdinal))
+            foreach (var index in indexes)
             {
                 --n;
                 if (first)

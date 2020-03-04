@@ -256,30 +256,13 @@ namespace Efrpg.V3TestA
             modelBuilder.Configurations.Add(new SupplierConfiguration());
             modelBuilder.Configurations.Add(new TerritoryConfiguration());
 
-            // Indexes        
-            modelBuilder.Entity<Category>()
-                .Property(e => e.CategoryId)
-                .HasColumnAnnotation(
-                    IndexAnnotation.AnnotationName,
-                    new IndexAnnotation(new IndexAttribute("PK_Categories", 1) { IsUnique = true, IsClustered = true })
-                );
-
-
+            // Indexes
             modelBuilder.Entity<Category>()
                 .Property(e => e.CategoryName)
                 .HasColumnAnnotation(
                     IndexAnnotation.AnnotationName,
                     new IndexAnnotation(new IndexAttribute("CategoryName", 1))
                 );
-
-
-            modelBuilder.Entity<Customer>()
-                .Property(e => e.CustomerId)
-                .HasColumnAnnotation(
-                    IndexAnnotation.AnnotationName,
-                    new IndexAnnotation(new IndexAttribute("PK_Customers", 1) { IsUnique = true, IsClustered = true })
-                );
-
 
             modelBuilder.Entity<Customer>()
                 .Property(e => e.CompanyName)
@@ -288,14 +271,12 @@ namespace Efrpg.V3TestA
                     new IndexAnnotation(new IndexAttribute("CompanyName", 1))
                 );
 
-
             modelBuilder.Entity<Customer>()
                 .Property(e => e.City)
                 .HasColumnAnnotation(
                     IndexAnnotation.AnnotationName,
                     new IndexAnnotation(new IndexAttribute("City", 1))
                 );
-
 
             modelBuilder.Entity<Customer>()
                 .Property(e => e.Region)
@@ -304,30 +285,12 @@ namespace Efrpg.V3TestA
                     new IndexAnnotation(new IndexAttribute("Region", 1))
                 );
 
-
             modelBuilder.Entity<Customer>()
                 .Property(e => e.PostalCode)
                 .HasColumnAnnotation(
                     IndexAnnotation.AnnotationName,
                     new IndexAnnotation(new IndexAttribute("PostalCode", 1))
                 );
-
-
-            modelBuilder.Entity<CustomerDemographic>()
-                .Property(e => e.CustomerTypeId)
-                .HasColumnAnnotation(
-                    IndexAnnotation.AnnotationName,
-                    new IndexAnnotation(new IndexAttribute("PK_CustomerDemographics", 1) { IsUnique = true })
-                );
-
-
-            modelBuilder.Entity<Employee>()
-                .Property(e => e.EmployeeId)
-                .HasColumnAnnotation(
-                    IndexAnnotation.AnnotationName,
-                    new IndexAnnotation(new IndexAttribute("PK_Employees", 1) { IsUnique = true, IsClustered = true })
-                );
-
 
             modelBuilder.Entity<Employee>()
                 .Property(e => e.LastName)
@@ -336,22 +299,12 @@ namespace Efrpg.V3TestA
                     new IndexAnnotation(new IndexAttribute("LastName", 1))
                 );
 
-
             modelBuilder.Entity<Employee>()
                 .Property(e => e.PostalCode)
                 .HasColumnAnnotation(
                     IndexAnnotation.AnnotationName,
                     new IndexAnnotation(new IndexAttribute("PostalCode", 1))
                 );
-
-
-            modelBuilder.Entity<Order>()
-                .Property(e => e.OrderId)
-                .HasColumnAnnotation(
-                    IndexAnnotation.AnnotationName,
-                    new IndexAnnotation(new IndexAttribute("PK_Orders", 1) { IsUnique = true, IsClustered = true })
-                );
-
 
             modelBuilder.Entity<Order>()
                 .Property(e => e.CustomerId)
@@ -363,7 +316,6 @@ namespace Efrpg.V3TestA
                         new IndexAttribute("CustomersOrders", 1)
                     }));
 
-
             modelBuilder.Entity<Order>()
                 .Property(e => e.EmployeeId)
                 .HasColumnAnnotation(
@@ -374,14 +326,12 @@ namespace Efrpg.V3TestA
                         new IndexAttribute("EmployeesOrders", 1)
                     }));
 
-
             modelBuilder.Entity<Order>()
                 .Property(e => e.OrderDate)
                 .HasColumnAnnotation(
                     IndexAnnotation.AnnotationName,
                     new IndexAnnotation(new IndexAttribute("OrderDate", 1))
                 );
-
 
             modelBuilder.Entity<Order>()
                 .Property(e => e.ShippedDate)
@@ -390,14 +340,12 @@ namespace Efrpg.V3TestA
                     new IndexAnnotation(new IndexAttribute("ShippedDate", 1))
                 );
 
-
             modelBuilder.Entity<Order>()
                 .Property(e => e.ShipVia)
                 .HasColumnAnnotation(
                     IndexAnnotation.AnnotationName,
                     new IndexAnnotation(new IndexAttribute("ShippersOrders", 1))
                 );
-
 
             modelBuilder.Entity<Order>()
                 .Property(e => e.ShipPostalCode)
@@ -406,7 +354,6 @@ namespace Efrpg.V3TestA
                     new IndexAnnotation(new IndexAttribute("ShipPostalCode", 1))
                 );
 
-
             modelBuilder.Entity<OrderDetail>()
                 .Property(e => e.OrderId)
                 .HasColumnAnnotation(
@@ -414,10 +361,8 @@ namespace Efrpg.V3TestA
                     new IndexAnnotation(new[]
                     {
                         new IndexAttribute("OrderID", 1),
-                        new IndexAttribute("OrdersOrder_Details", 1),
-                        new IndexAttribute("PK_Order_Details", 1) { IsUnique = true, IsClustered = true }
+                        new IndexAttribute("OrdersOrder_Details", 1)
                     }));
-
 
             modelBuilder.Entity<OrderDetail>()
                 .Property(e => e.ProductId)
@@ -425,19 +370,9 @@ namespace Efrpg.V3TestA
                     IndexAnnotation.AnnotationName,
                     new IndexAnnotation(new[]
                     {
-                        new IndexAttribute("PK_Order_Details", 2) { IsUnique = true, IsClustered = true },
                         new IndexAttribute("ProductID", 1),
                         new IndexAttribute("ProductsOrder_Details", 1)
                     }));
-
-
-            modelBuilder.Entity<Product>()
-                .Property(e => e.ProductId)
-                .HasColumnAnnotation(
-                    IndexAnnotation.AnnotationName,
-                    new IndexAnnotation(new IndexAttribute("PK_Products", 1) { IsUnique = true, IsClustered = true })
-                );
-
 
             modelBuilder.Entity<Product>()
                 .Property(e => e.ProductName)
@@ -445,7 +380,6 @@ namespace Efrpg.V3TestA
                     IndexAnnotation.AnnotationName,
                     new IndexAnnotation(new IndexAttribute("ProductName", 1))
                 );
-
 
             modelBuilder.Entity<Product>()
                 .Property(e => e.SupplierId)
@@ -457,7 +391,6 @@ namespace Efrpg.V3TestA
                         new IndexAttribute("SuppliersProducts", 1)
                     }));
 
-
             modelBuilder.Entity<Product>()
                 .Property(e => e.CategoryId)
                 .HasColumnAnnotation(
@@ -468,31 +401,6 @@ namespace Efrpg.V3TestA
                         new IndexAttribute("CategoryID", 1)
                     }));
 
-
-            modelBuilder.Entity<Region>()
-                .Property(e => e.RegionId)
-                .HasColumnAnnotation(
-                    IndexAnnotation.AnnotationName,
-                    new IndexAnnotation(new IndexAttribute("PK_Region", 1) { IsUnique = true })
-                );
-
-
-            modelBuilder.Entity<Shipper>()
-                .Property(e => e.ShipperId)
-                .HasColumnAnnotation(
-                    IndexAnnotation.AnnotationName,
-                    new IndexAnnotation(new IndexAttribute("PK_Shippers", 1) { IsUnique = true, IsClustered = true })
-                );
-
-
-            modelBuilder.Entity<Supplier>()
-                .Property(e => e.SupplierId)
-                .HasColumnAnnotation(
-                    IndexAnnotation.AnnotationName,
-                    new IndexAnnotation(new IndexAttribute("PK_Suppliers", 1) { IsUnique = true, IsClustered = true })
-                );
-
-
             modelBuilder.Entity<Supplier>()
                 .Property(e => e.CompanyName)
                 .HasColumnAnnotation(
@@ -500,20 +408,11 @@ namespace Efrpg.V3TestA
                     new IndexAnnotation(new IndexAttribute("CompanyName", 1))
                 );
 
-
             modelBuilder.Entity<Supplier>()
                 .Property(e => e.PostalCode)
                 .HasColumnAnnotation(
                     IndexAnnotation.AnnotationName,
                     new IndexAnnotation(new IndexAttribute("PostalCode", 1))
-                );
-
-
-            modelBuilder.Entity<Territory>()
-                .Property(e => e.TerritoryId)
-                .HasColumnAnnotation(
-                    IndexAnnotation.AnnotationName,
-                    new IndexAnnotation(new IndexAttribute("PK_Territories", 1) { IsUnique = true })
                 );
 
         }

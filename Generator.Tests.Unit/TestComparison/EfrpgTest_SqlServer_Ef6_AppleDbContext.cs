@@ -151,23 +151,6 @@ namespace EfrpgAppleDbContext
 
             modelBuilder.Configurations.Add(new Stafford_BooConfiguration());
             modelBuilder.Configurations.Add(new Stafford_FooConfiguration());
-
-            // Indexes        
-            modelBuilder.Entity<Stafford_Boo>()
-                .Property(e => e.id)
-                .HasColumnAnnotation(
-                    IndexAnnotation.AnnotationName,
-                    new IndexAnnotation(new IndexAttribute("PK_Boo", 1) { IsUnique = true, IsClustered = true })
-                );
-
-
-            modelBuilder.Entity<Stafford_Foo>()
-                .Property(e => e.id)
-                .HasColumnAnnotation(
-                    IndexAnnotation.AnnotationName,
-                    new IndexAnnotation(new IndexAttribute("PK_Foo", 1) { IsUnique = true, IsClustered = true })
-                );
-
         }
 
         public static DbModelBuilder CreateModel(DbModelBuilder modelBuilder, string schema)
