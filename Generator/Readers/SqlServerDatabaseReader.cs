@@ -97,7 +97,7 @@ FROM
     INNER JOIN sys.all_columns AS sc ON sc.object_id = COALESCE( st.object_id, sv.object_id ) AND c.COLUMN_NAME = sc.[name]
 
 WHERE
-    c.TABLE_NAME NOT IN ('EdmMetadata', '__MigrationHistory', '__RefactorLog', 'sysdiagrams')
+    c.TABLE_NAME NOT IN ('EdmMetadata', '__MigrationHistory', '__EFMigrationsHistory', '__RefactorLog', 'sysdiagrams')
 
 
 CREATE NONCLUSTERED INDEX IX_EfPoco_Columns
