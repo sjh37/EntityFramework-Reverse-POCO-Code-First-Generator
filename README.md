@@ -6,6 +6,8 @@
 * A v3 course will be coming in 2020.
 
 ### You will need a licence key
+Free to academics (you need a .edu or a .ac email address), not free for commercial use.
+
 Go to the [ReversePOCO](https://www.reversepoco.co.uk) website to obtain/purchase your licence key.
 
 ### Upgrading v2 to v3
