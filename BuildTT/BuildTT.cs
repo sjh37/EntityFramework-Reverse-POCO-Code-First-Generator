@@ -601,7 +601,16 @@ namespace BuildTT
     // That's it, nothing else to configure ***********************************************************************************************
 
     FilterSettings.CheckSettings();
+
+    // How to add custom pluralisation entries
+    /*var customPluralisationEntries = new List<CustomPluralizationEntry>
+    {
+        new CustomPluralizationEntry(""Tree"", ""Trees""),
+        new CustomPluralizationEntry(""Order"", ""Orders"")
+    };
+    Inflector.PluralisationService = new EnglishPluralizationService(customPluralisationEntries);*/
     Inflector.PluralisationService = new EnglishPluralizationService(); // To disable pluralisation, set this to null
+
     var outer = (GeneratedTextTransformation) this;
     var fileManagement = new FileManagementService(outer);
     var generator = GeneratorFactory.Create(fileManagement, FileManagerFactory.GetFileManagerType());
