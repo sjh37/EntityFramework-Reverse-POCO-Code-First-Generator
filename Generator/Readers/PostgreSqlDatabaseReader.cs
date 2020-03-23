@@ -14,7 +14,8 @@ namespace Efrpg.Readers
 
         protected override string TableSQL()
         {
-            return @"SELECT  T.TABLE_SCHEMA AS ""SchemaName"",
+            return @"
+SELECT  T.TABLE_SCHEMA AS ""SchemaName"",
         T.TABLE_NAME AS ""TableName"",
         T.TABLE_TYPE AS ""TableType"",
         CAST(0 AS SMALLINT) AS ""TableTemporalType"",
@@ -66,12 +67,48 @@ ORDER BY C.TABLE_NAME, C.COLUMN_NAME, C.ORDINAL_POSITION;";
 
         protected override string ForeignKeySQL()
         {
-            return string.Empty;
+            return @"
+SELECT  tc.TABLE_NAME AS ""FK_Table"",
+        kcu.COLUMN_NAME AS ""FK_Column"",
+        ccu.TABLE_NAME AS ""PK_Table"",
+        ccu.COLUMN_NAME AS ""PK_Column"",
+        tc.CONSTRAINT_NAME AS ""Constraint_Name"",
+        ccu.TABLE_SCHEMA AS ""fkSchema"",
+        tc.TABLE_SCHEMA AS ""pkSchema"",
+		ccu.COLUMN_NAME as ""primarykey"",
+        kcu.ORDINAL_POSITION AS ""ORDINAL_POSITION"",
+        CASE WHEN fk.DELETE_RULE = 'CASCADE' THEN 1 ELSE 0 END AS ""CascadeOnDelete"",
+        CAST(0 AS BIT) AS ""IsNotEnforced""
+FROM    INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc
+        INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE kcu
+            ON tc.CONSTRAINT_NAME       = kcu.CONSTRAINT_NAME
+               AND tc.TABLE_SCHEMA      = kcu.TABLE_SCHEMA
+        INNER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE ccu
+            ON ccu.CONSTRAINT_NAME      = tc.CONSTRAINT_NAME
+               AND ccu.TABLE_SCHEMA     = tc.TABLE_SCHEMA
+        INNER JOIN INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS fk
+            ON fk.CONSTRAINT_CATALOG    = ccu.CONSTRAINT_CATALOG
+               AND fk.CONSTRAINT_SCHEMA = ccu.CONSTRAINT_SCHEMA
+               AND fk.CONSTRAINT_NAME   = ccu.CONSTRAINT_NAME
+WHERE   tc.CONSTRAINT_TYPE = 'FOREIGN KEY'";
         }
 
         protected override string ExtendedPropertySQL()
         {
-            return string.Empty;
+            return @"
+SELECT  c.TABLE_SCHEMA as ""schema"",
+        c.TABLE_NAME as ""table"",
+        c.COLUMN_NAME as ""column"",
+        pgd.description as ""property""
+FROM    pg_catalog.pg_statio_all_tables st
+        INNER JOIN pg_catalog.pg_description pgd
+            ON (pgd.objoid = st.relid)
+        INNER JOIN INFORMATION_SCHEMA.COLUMNS c
+            ON (
+                   pgd.objsubid       = c.ORDINAL_POSITION
+                   AND c.TABLE_SCHEMA = st.schemaname
+                   AND c.TABLE_NAME   = st.relname
+               );";
         }
 
         protected override string DoesExtendedPropertyTableExistSQL()
@@ -81,17 +118,62 @@ ORDER BY C.TABLE_NAME, C.COLUMN_NAME, C.ORDINAL_POSITION;";
 
         protected override string IndexSQL()
         {
-            return string.Empty;
+            return @"
+SELECT n.nspname AS ""TableSchema"",
+    t.relname AS ""TableName"",
+    i.relname AS ""IndexName"",
+	a.attnum AS ""KeyOrdinal"",
+    a.attname AS ""ColumnName"",
+	ix.indisunique AS ""IsUnique"",
+	ix.indisprimary AS ""IsPrimaryKey"",
+	0 AS ""IsUniqueConstraint"",
+	ix.indisclustered AS ""IsClustered"",
+	ix.indnatts AS ""ColumnCount""
+FROM
+	pg_index ix
+    INNER JOIN pg_class t
+		ON t.oid = ix.indrelid AND t.relkind = 'r'
+	INNER JOIN pg_class i
+		ON i.oid = ix.indexrelid
+    INNER JOIN pg_attribute a
+		ON a.attrelid = t.oid AND a.attnum = ANY(ix.indkey)
+    INNER JOIN pg_namespace n
+		ON n.oid = t.relnamespace
+WHERE n.nspname NOT IN ('pg_catalog', 'information_schema')
+      AND t.relname NOT IN ('EdmMetadata', '__MigrationHistory', '__EFMigrationsHistory', '__RefactorLog')
+	  AND ix.indcheckxmin = false
+	  AND ix.indisvalid = true
+ORDER BY t.relname, i.relname;";
         }
 
         public override bool CanReadStoredProcedures()
         {
-            return false;
+            return true;
         }
 
         protected override string StoredProcedureSQL()
         {
-            return string.Empty;
+            return @"
+select R.specific_schema as ""SPECIFIC_SCHEMA"",
+       R.routine_name as ""SPECIFIC_NAME"",
+	   R.routine_type as ""ROUTINE_TYPE"",
+	   R.data_type as ""RETURN_DATA_TYPE"",
+	   P.ordinal_position as ""ORDINAL_POSITION"",
+       P.parameter_mode as ""PARAMETER_MODE"",
+       P.parameter_name as ""PARAMETER_NAME"",
+       P.data_type as ""DATA_TYPE"",
+	   COALESCE(P.character_maximum_length, 0) AS ""CHARACTER_MAXIMUM_LENGTH"",
+	   COALESCE(P.numeric_precision, 0) AS ""NUMERIC_PRECISION"",
+       COALESCE(P.numeric_scale, 0) AS ""NUMERIC_SCALE"",
+       COALESCE(P.datetime_precision, 0) AS ""DATETIME_PRECISION"",
+	   P.udt_schema || '.' || P.udt_name AS ""USER_DEFINED_TYPE""
+from information_schema.routines R
+	left join information_schema.parameters P
+          on R.specific_schema = P.specific_schema
+             and R.specific_name = P.specific_name
+where R.routine_schema not in ('pg_catalog', 'information_schema')
+      and R.routine_type IN ('PROCEDURE','FUNCTION')
+order by R.specific_schema, R.routine_name, R.routine_type;";
         }
 
         protected override string ReadDatabaseEditionSQL()
