@@ -43,8 +43,9 @@ namespace Efrpg.Readers
         protected abstract string SynonymStoredProcedureSQLSetup();
         protected abstract string SynonymStoredProcedureSQL();
 
-        // Database specific flags
+        // Database specific
         protected abstract string SpecialQueryFlags();
+        protected abstract bool HasTemporalTableSupport();
 
         // Stored proc return objects
         public abstract void ReadStoredProcReturnObjects(List<StoredProcedure> procs);
@@ -96,11 +97,24 @@ namespace Efrpg.Readers
                         DatabaseEdition             = rdr["Edition"].ToString();
                         DatabaseEngineEdition       = rdr["EngineEdition"].ToString();
                         DatabaseProductVersion      = rdr["ProductVersion"].ToString();
-                        DatabaseProductMajorVersion = int.Parse(DatabaseProductVersion.Substring(0, 2).Replace(".", string.Empty));
+                        DatabaseProductMajorVersion = 0;
 
-                        DatabaseDetails.AppendLine("// Database Edition       : " + DatabaseEdition);
-                        DatabaseDetails.AppendLine("// Database Engine Edition: " + DatabaseEngineEdition);
-                        DatabaseDetails.AppendLine("// Database Version       : " + DatabaseProductVersion);
+                        if(!string.IsNullOrEmpty(DatabaseEdition))
+                            DatabaseDetails.AppendLine("// Database Edition       : " + DatabaseEdition);
+        
+                        if(!string.IsNullOrEmpty(DatabaseEngineEdition))
+                            DatabaseDetails.AppendLine("// Database Engine Edition: " + DatabaseEngineEdition);
+
+                        if (!string.IsNullOrEmpty(DatabaseProductVersion))
+                        {
+                            DatabaseDetails.AppendLine("// Database Version       : " + DatabaseProductVersion);
+
+                            var version = DatabaseProductVersion;
+                            if (version.Contains('.'))
+                                version = version.Substring(0, version.IndexOf('.'));
+
+                            DatabaseProductMajorVersion = int.Parse(version);
+                        }
                     }
                 }
             }
@@ -186,8 +200,7 @@ namespace Efrpg.Readers
                 else
                     sql = TableSQL() + SpecialQueryFlags();
 
-                var temporalTableSupport = DatabaseProductMajorVersion >= 13;
-                if (!temporalTableSupport)
+                if (!HasTemporalTableSupport())
                 {
                     // Replace the column names (only present in SQL Server 2016 or later) with literal constants so the query works with older versions of SQL Server.
                     sql = sql

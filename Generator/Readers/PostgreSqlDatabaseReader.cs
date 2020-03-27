@@ -34,9 +34,9 @@ SELECT  T.TABLE_SCHEMA AS ""SchemaName"",
         END AS ""IsComputed"",
         CAST(0 AS SMALLINT) AS ""GeneratedAlwaysType"",
         CAST(CASE WHEN C.is_identity = 'YES' OR C.is_generated <> 'NEVER' THEN 1 ELSE 0 END AS BIT) AS IsStoreGenerated,
-		CAST(CASE WHEN pk.ordinal_position > 0 THEN 1 ELSE 0 END AS bit) as ""PrimaryKey"",
+        CAST(CASE WHEN pk.ordinal_position > 0 THEN 1 ELSE 0 END AS bit) as ""PrimaryKey"",
         COALESCE(pk.ordinal_position, 0) ""PrimaryKeyOrdinal"",
-		CAST(CASE WHEN fk.COLUMN_NAME IS NOT NULL THEN 1 ELSE 0 END AS bit) AS ""IsForeignKey""
+        CAST(CASE WHEN fk.COLUMN_NAME IS NOT NULL THEN 1 ELSE 0 END AS bit) AS ""IsForeignKey""
 FROM    INFORMATION_SCHEMA.TABLES T
         INNER JOIN INFORMATION_SCHEMA.COLUMNS C
             ON T.TABLE_SCHEMA   = C.TABLE_SCHEMA
@@ -75,7 +75,7 @@ SELECT  tc.TABLE_NAME AS ""FK_Table"",
         tc.CONSTRAINT_NAME AS ""Constraint_Name"",
         ccu.TABLE_SCHEMA AS ""fkSchema"",
         tc.TABLE_SCHEMA AS ""pkSchema"",
-		ccu.COLUMN_NAME as ""primarykey"",
+        ccu.COLUMN_NAME as ""primarykey"",
         kcu.ORDINAL_POSITION AS ""ORDINAL_POSITION"",
         CASE WHEN fk.DELETE_RULE = 'CASCADE' THEN 1 ELSE 0 END AS ""CascadeOnDelete"",
         CAST(0 AS BIT) AS ""IsNotEnforced""
@@ -122,27 +122,27 @@ FROM    pg_catalog.pg_statio_all_tables st
 SELECT n.nspname AS ""TableSchema"",
     t.relname AS ""TableName"",
     i.relname AS ""IndexName"",
-	a.attnum AS ""KeyOrdinal"",
+    a.attnum AS ""KeyOrdinal"",
     a.attname AS ""ColumnName"",
-	ix.indisunique AS ""IsUnique"",
-	ix.indisprimary AS ""IsPrimaryKey"",
-	0 AS ""IsUniqueConstraint"",
-	ix.indisclustered AS ""IsClustered"",
-	ix.indnatts AS ""ColumnCount""
+    ix.indisunique AS ""IsUnique"",
+    ix.indisprimary AS ""IsPrimaryKey"",
+    0 AS ""IsUniqueConstraint"",
+    ix.indisclustered AS ""IsClustered"",
+    ix.indnatts AS ""ColumnCount""
 FROM
-	pg_index ix
+    pg_index ix
     INNER JOIN pg_class t
-		ON t.oid = ix.indrelid AND t.relkind = 'r'
-	INNER JOIN pg_class i
-		ON i.oid = ix.indexrelid
+        ON t.oid = ix.indrelid AND t.relkind = 'r'
+    INNER JOIN pg_class i
+        ON i.oid = ix.indexrelid
     INNER JOIN pg_attribute a
-		ON a.attrelid = t.oid AND a.attnum = ANY(ix.indkey)
+        ON a.attrelid = t.oid AND a.attnum = ANY(ix.indkey)
     INNER JOIN pg_namespace n
-		ON n.oid = t.relnamespace
+        ON n.oid = t.relnamespace
 WHERE n.nspname NOT IN ('pg_catalog', 'information_schema')
       AND t.relname NOT IN ('EdmMetadata', '__MigrationHistory', '__EFMigrationsHistory', '__RefactorLog')
-	  AND ix.indcheckxmin = false
-	  AND ix.indisvalid = true
+      AND ix.indcheckxmin = false
+      AND ix.indisvalid = true
 ORDER BY t.relname, i.relname;";
         }
 
@@ -154,31 +154,31 @@ ORDER BY t.relname, i.relname;";
         protected override string StoredProcedureSQL()
         {
             return @"
-select R.specific_schema as ""SPECIFIC_SCHEMA"",
-       R.routine_name as ""SPECIFIC_NAME"",
-	   R.routine_type as ""ROUTINE_TYPE"",
-	   R.data_type as ""RETURN_DATA_TYPE"",
-	   P.ordinal_position as ""ORDINAL_POSITION"",
-       P.parameter_mode as ""PARAMETER_MODE"",
-       P.parameter_name as ""PARAMETER_NAME"",
-       P.data_type as ""DATA_TYPE"",
-	   COALESCE(P.character_maximum_length, 0) AS ""CHARACTER_MAXIMUM_LENGTH"",
-	   COALESCE(P.numeric_precision, 0) AS ""NUMERIC_PRECISION"",
+SELECT R.specific_schema AS ""SPECIFIC_SCHEMA"",
+       R.routine_name AS ""SPECIFIC_NAME"",
+       R.routine_type AS ""ROUTINE_TYPE"",
+       R.data_type AS ""RETURN_DATA_TYPE"",
+       P.ordinal_position AS ""ORDINAL_POSITION"",
+       P.parameter_mode AS ""PARAMETER_MODE"",
+       P.parameter_name AS ""PARAMETER_NAME"",
+       P.data_type AS ""DATA_TYPE"",
+       COALESCE(P.character_maximum_length, 0) AS ""CHARACTER_MAXIMUM_LENGTH"",
+       COALESCE(P.numeric_precision, 0) AS ""NUMERIC_PRECISION"",
        COALESCE(P.numeric_scale, 0) AS ""NUMERIC_SCALE"",
        COALESCE(P.datetime_precision, 0) AS ""DATETIME_PRECISION"",
-	   P.udt_schema || '.' || P.udt_name AS ""USER_DEFINED_TYPE""
-from information_schema.routines R
-	left join information_schema.parameters P
-          on R.specific_schema = P.specific_schema
-             and R.specific_name = P.specific_name
-where R.routine_schema not in ('pg_catalog', 'information_schema')
-      and R.routine_type IN ('PROCEDURE','FUNCTION')
-order by R.specific_schema, R.routine_name, R.routine_type;";
+       CASE WHEN P.udt_schema <> 'pg_catalog' THEN P.udt_schema || '.' || P.udt_name ELSE P.udt_name END AS ""USER_DEFINED_TYPE""
+FROM information_schema.routines R
+    LEFT JOIN information_schema.parameters P
+          ON R.specific_schema = P.specific_schema
+             AND R.specific_name = P.specific_name
+WHERE R.routine_schema NOT IN ('pg_catalog', 'information_schema')
+      AND R.routine_type IN ('PROCEDURE','FUNCTION')
+ORDER BY R.specific_schema, R.routine_name, R.routine_type;";
         }
 
         protected override string ReadDatabaseEditionSQL()
         {
-            return string.Empty;
+            return @"SELECT version() as ""Edition"", '' as ""EngineEdition"", '' as ""ProductVersion"";";
         }
 
         protected override string MultiContextSQL()
@@ -188,7 +188,7 @@ order by R.specific_schema, R.routine_name, R.routine_type;";
 
         protected override string EnumSQL(string table, string nameField, string valueField)
         {
-            return string.Empty;
+            return string.Format(@"SELECT ""{0}"" as ""NameField"", ""{1}"" as ""ValueField"" FROM ""{2}"";", nameField, valueField, table);
         }
 
         protected override string SynonymTableSQLSetup()
@@ -224,6 +224,11 @@ order by R.specific_schema, R.routine_name, R.routine_type;";
         protected override string SpecialQueryFlags()
         {
             return string.Empty;
+        }
+
+        protected override bool HasTemporalTableSupport()
+        {
+            return false;
         }
 
         public override void ReadStoredProcReturnObjects(List<StoredProcedure> procs)

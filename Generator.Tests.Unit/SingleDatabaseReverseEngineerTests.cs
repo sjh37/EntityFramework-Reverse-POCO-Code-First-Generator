@@ -45,6 +45,21 @@ namespace Generator.Tests.Unit
             Settings.DisableGeographyTypes      = false;
         }
 
+        public void SetupPostgreSQL(string database, string connectionStringName, string dbContextName, TemplateType templateType, GeneratorType generatorType)
+        {
+            Settings.TemplateType               = templateType;
+            Settings.GeneratorType              = generatorType;
+            Settings.ConnectionString           = $"Server = localhost; Port = 5432; Database = {database}; Integrated Security = true;";
+            Settings.DatabaseType               = DatabaseType.PostgreSQL;
+            Settings.ConnectionStringName       = connectionStringName;
+            Settings.DbContextName              = dbContextName;
+            Settings.GenerateSingleDbContext    = true;
+            Settings.MultiContextSettingsPlugin = null;
+            Settings.Enumerations               = null;
+            Settings.PrependSchemaName          = true;
+            Settings.DisableGeographyTypes      = false;
+        }
+
         public void Run(string filename, string singleDbContextSubNamespace, Type fileManagerType, string subFolder)
         {
             Inflector.PluralisationService   = new EnglishPluralizationService();
@@ -199,6 +214,22 @@ namespace Generator.Tests.Unit
                 CompareAgainstFolderTestComparison(subFolder);
             else
                 CompareAgainstTestComparison(filename, true);
+        }
+
+        [Test, NonParallelizable]
+        public void ReverseEngineerPostgreSQL()
+        {
+            // Arrange
+            Settings.GenerateSeparateFiles = false;
+            Settings.UseMappingTables = false;
+            SetupPostgreSQL("Northwind", "MyDbContext", "MyDbContext", TemplateType.EfCore3, GeneratorType.EfCore);
+
+            // Act
+            var filename = "Northwind";
+            Run(filename, ".PostgreSQL", typeof(CustomFileManager), null);
+
+            // Assert
+            CompareAgainstTestComparison(filename, true);
         }
 
         private static void CompareAgainstFolderTestComparison(string subFolder)

@@ -972,6 +972,11 @@ OPTION (QUERYTRACEON 9481)";
             return string.Empty;
         }
 
+        protected override bool HasTemporalTableSupport()
+        {
+            return DatabaseProductMajorVersion >= 13;
+        }
+
         protected override string ReadDatabaseEditionSQL()
         {
             return @"

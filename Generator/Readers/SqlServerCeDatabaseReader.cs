@@ -217,6 +217,11 @@ SELECT * FROM MultiContext.ForeignKey;";
             return string.Empty;
         }
 
+        protected override bool HasTemporalTableSupport()
+        {
+            return false;
+        }
+
         public override void ReadStoredProcReturnObjects(List<StoredProcedure> procs)
         {
             throw new System.NotImplementedException();
