@@ -228,7 +228,7 @@ using {{this}};{{#newline}}
     public bool IsSqlParameterNull(SqlParameter param){{#newline}}
     {{{#newline}}
         var sqlValue = param.SqlValue;{{#newline}}
-        var nullableValue = sqlValue as INullable;{{#newline}}
+        var nullableValue = sqlValue as System.Data.SqlTypes.INullable;{{#newline}}
         if (nullableValue != null){{#newline}}
             return nullableValue.IsNull;{{#newline}}
         return (sqlValue == null || sqlValue == DBNull.Value);{{#newline}}
