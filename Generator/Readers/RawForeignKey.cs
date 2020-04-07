@@ -16,6 +16,7 @@
         public readonly bool   IsNotEnforced;
 
         public bool HasUniqueConstraint; // Can also be changed later
+        //public byte SortOrder;
 
         public RawForeignKey(
             string constraintName, string parentName, string childName,

@@ -463,12 +463,14 @@ namespace Efrpg.Generators
 
             if (rawForeignKeys == null)
                 rawForeignKeys = new List<RawForeignKey>();
+            //else
+                //SortForeignKeys(rawForeignKeys);
 
             foreach (var filterKeyValuePair in FilterList.GetFilters())
             {
                 var filter = filterKeyValuePair.Value;
                 var fks = new List<RawForeignKey>();
-                fks.AddRange(rawForeignKeys);
+                fks.AddRange(rawForeignKeys/*.OrderBy(x => x.SortOrder).ThenBy(x => x.FkTableName).ThenBy(x => x.PkTableName)*/);
 
                 if (!Settings.GenerateSingleDbContext)
                 {
@@ -522,6 +524,38 @@ namespace Efrpg.Generators
                     filter.Tables.IdentifyMappingTables(foreignKeys, false, DatabaseReader.IncludeSchema);
             }
         }
+
+        /*private void SortForeignKeys(List<RawForeignKey> rawForeignKeys)
+        {
+            foreach (var fk in rawForeignKeys)
+            {
+                fk.SortOrder = 10;
+                
+                var fkColumn = fk.FkColumn.ToLowerInvariant();
+                var pkTable = fk.PkTableName.ToLowerInvariant();
+                
+                // Matches exactly
+                if (fkColumn == pkTable)
+                {
+                    fk.SortOrder = 1;
+                    continue;
+                }
+
+                // Matches without 'id'
+                if(fkColumn.EndsWith("id") && fkColumn.Remove(fkColumn.Length - 2, 2) == pkTable)
+                {
+                    fk.SortOrder = 2;
+                    continue;
+                }
+
+                // Matches if trimmed
+                if(fkColumn.Length > pkTable.Length && fkColumn.Substring(0, pkTable.Length) == pkTable)
+                {
+                    fk.SortOrder = 3;
+                    continue;
+                }
+            }
+        }*/
 
         private void AddExtendedPropertiesToFilters(List<RawExtendedProperty> extendedProperties)
         {
