@@ -535,7 +535,7 @@ namespace Efrpg.Generators
                 Schema                    = table.Schema.DbName,
                 PrimaryKeyNameHumanCase   = primaryKey ?? table.PrimaryKeyNameHumanCase(),
                 HasSchema                 = !string.IsNullOrEmpty(table.Schema.DbName),
-                ClassModifier             = Settings.EntityClassesModifiers,
+                ClassModifier             = Settings.ConfigurationClassesModifiers,
                 ClassComment              = table.WriteComments(),
                 Columns                   = columns.Select(x => x.Config).ToList(),
                 HasReverseNavigation      = table.ReverseNavigationProperty.Count > 0,
