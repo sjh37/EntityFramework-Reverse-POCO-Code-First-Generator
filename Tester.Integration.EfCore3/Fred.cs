@@ -123,6 +123,7 @@ namespace Tester.Integration.EfCore3
         DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
         DbSet<OneEightSix_IssueUploadedFile> OneEightSix_IssueUploadedFiles { get; set; } // IssueUploadedFile
         DbSet<OneEightSix_UploadedFile> OneEightSix_UploadedFiles { get; set; } // UploadedFile
+        DbSet<PeriodTestTable> PeriodTestTables { get; set; } // PeriodTestTable
         DbSet<Person> People { get; set; } // Person
         DbSet<PersonPost> PersonPosts { get; set; } // PersonPosts
         DbSet<PkOrdinalTest> PkOrdinalTests { get; set; } // pk_ordinal_test
@@ -145,6 +146,8 @@ namespace Tester.Integration.EfCore3
         DbSet<Ticket> Tickets { get; set; } // Ticket
         DbSet<Token> Tokens { get; set; } // Token
         DbSet<User> Users { get; set; } // User
+        DbSet<User309> User309 { get; set; } // User309
+        DbSet<UserDocument> UserDocuments { get; set; } // User_Document
         DbSet<ViewWithSpace> ViewWithSpaces { get; set; } // view with space
         DbSet<Брендытовара> Брендытовара { get; set; } // Бренды товара
 
@@ -375,6 +378,7 @@ namespace Tester.Integration.EfCore3
         public DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
         public DbSet<OneEightSix_IssueUploadedFile> OneEightSix_IssueUploadedFiles { get; set; } // IssueUploadedFile
         public DbSet<OneEightSix_UploadedFile> OneEightSix_UploadedFiles { get; set; } // UploadedFile
+        public DbSet<PeriodTestTable> PeriodTestTables { get; set; } // PeriodTestTable
         public DbSet<Person> People { get; set; } // Person
         public DbSet<PersonPost> PersonPosts { get; set; } // PersonPosts
         public DbSet<PkOrdinalTest> PkOrdinalTests { get; set; } // pk_ordinal_test
@@ -397,6 +401,8 @@ namespace Tester.Integration.EfCore3
         public DbSet<Ticket> Tickets { get; set; } // Ticket
         public DbSet<Token> Tokens { get; set; } // Token
         public DbSet<User> Users { get; set; } // User
+        public DbSet<User309> User309 { get; set; } // User309
+        public DbSet<UserDocument> UserDocuments { get; set; } // User_Document
         public DbSet<ViewWithSpace> ViewWithSpaces { get; set; } // view with space
         public DbSet<Брендытовара> Брендытовара { get; set; } // Бренды товара
 
@@ -484,6 +490,7 @@ namespace Tester.Integration.EfCore3
             modelBuilder.ApplyConfiguration(new OneEightSix_IssueConfiguration());
             modelBuilder.ApplyConfiguration(new OneEightSix_IssueUploadedFileConfiguration());
             modelBuilder.ApplyConfiguration(new OneEightSix_UploadedFileConfiguration());
+            modelBuilder.ApplyConfiguration(new PeriodTestTableConfiguration());
             modelBuilder.ApplyConfiguration(new PersonConfiguration());
             modelBuilder.ApplyConfiguration(new PersonPostConfiguration());
             modelBuilder.ApplyConfiguration(new PkOrdinalTestConfiguration());
@@ -506,6 +513,8 @@ namespace Tester.Integration.EfCore3
             modelBuilder.ApplyConfiguration(new TicketConfiguration());
             modelBuilder.ApplyConfiguration(new TokenConfiguration());
             modelBuilder.ApplyConfiguration(new UserConfiguration());
+            modelBuilder.ApplyConfiguration(new User309Configuration());
+            modelBuilder.ApplyConfiguration(new UserDocumentConfiguration());
             modelBuilder.ApplyConfiguration(new ViewWithSpaceConfiguration());
             modelBuilder.ApplyConfiguration(new БрендытовараConfiguration());
 
@@ -1543,6 +1552,7 @@ namespace Tester.Integration.EfCore3
         public DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
         public DbSet<OneEightSix_IssueUploadedFile> OneEightSix_IssueUploadedFiles { get; set; } // IssueUploadedFile
         public DbSet<OneEightSix_UploadedFile> OneEightSix_UploadedFiles { get; set; } // UploadedFile
+        public DbSet<PeriodTestTable> PeriodTestTables { get; set; } // PeriodTestTable
         public DbSet<Person> People { get; set; } // Person
         public DbSet<PersonPost> PersonPosts { get; set; } // PersonPosts
         public DbSet<PkOrdinalTest> PkOrdinalTests { get; set; } // pk_ordinal_test
@@ -1565,6 +1575,8 @@ namespace Tester.Integration.EfCore3
         public DbSet<Ticket> Tickets { get; set; } // Ticket
         public DbSet<Token> Tokens { get; set; } // Token
         public DbSet<User> Users { get; set; } // User
+        public DbSet<User309> User309 { get; set; } // User309
+        public DbSet<UserDocument> UserDocuments { get; set; } // User_Document
         public DbSet<ViewWithSpace> ViewWithSpaces { get; set; } // view with space
         public DbSet<Брендытовара> Брендытовара { get; set; } // Бренды товара
 
@@ -1635,6 +1647,7 @@ namespace Tester.Integration.EfCore3
             OneEightSix_Issues = new FakeDbSet<OneEightSix_Issue>("Id");
             OneEightSix_IssueUploadedFiles = new FakeDbSet<OneEightSix_IssueUploadedFile>("UploadedFileId", "IssueId");
             OneEightSix_UploadedFiles = new FakeDbSet<OneEightSix_UploadedFile>("Id");
+            PeriodTestTables = new FakeDbSet<PeriodTestTable>("Id");
             People = new FakeDbSet<Person>("Id");
             PersonPosts = new FakeDbSet<PersonPost>("Id");
             PkOrdinalTests = new FakeDbSet<PkOrdinalTest>("C3", "C1");
@@ -1656,7 +1669,9 @@ namespace Tester.Integration.EfCore3
             TblOrderLines = new FakeDbSet<TblOrderLine>("Id");
             Tickets = new FakeDbSet<Ticket>("Id");
             Tokens = new FakeDbSet<Token>("Id");
-            Users = new FakeDbSet<User>("UserId");
+            Users = new FakeDbSet<User>("Id");
+            User309 = new FakeDbSet<User309>("UserId");
+            UserDocuments = new FakeDbSet<UserDocument>("Id");
             ViewWithSpaces = new FakeDbSet<ViewWithSpace>();
             Брендытовара = new FakeDbSet<Брендытовара>("Кодбренда");
 
@@ -3234,14 +3249,14 @@ namespace Tester.Integration.EfCore3
         public virtual ICollection<Attendee> Attendees { get; set; } // Attendee.FK_Attendee_PhoneCountry
 
         /// <summary>
-        /// Child Users where [User].[PhoneCountryID] point to this entity (FK_User_PhoneCountry)
+        /// Child User309 where [User309].[PhoneCountryID] point to this entity (FK_User309_PhoneCountry)
         /// </summary>
-        public virtual ICollection<User> Users { get; set; } // User.FK_User_PhoneCountry
+        public virtual ICollection<User309> User309 { get; set; } // User309.FK_User309_PhoneCountry
 
         public Country()
         {
             Attendees = new List<Attendee>();
-            Users = new List<User>();
+            User309 = new List<User309>();
         }
     }
 
@@ -3713,6 +3728,13 @@ namespace Tester.Integration.EfCore3
         }
     }
 
+    // PeriodTestTable
+    public class PeriodTestTable
+    {
+        public int Id { get; set; } // id (Primary key)
+        public int? Joe46Bloggs { get; set; } // joe.bloggs
+    }
+
     // Person
     public class Person
     {
@@ -4036,6 +4058,31 @@ namespace Tester.Integration.EfCore3
     // User
     public class User
     {
+        public int Id { get; set; } // ID (Primary key)
+        public string ExternalUserId { get; set; } // ExternalUserID (length: 50)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child UserDocuments where [User_Document].[CreatedByUserID] point to this entity (FK_User_Document_User1)
+        /// </summary>
+        public virtual ICollection<UserDocument> UserDocuments_CreatedByUserId { get; set; } // User_Document.FK_User_Document_User1
+
+        /// <summary>
+        /// Child UserDocuments where [User_Document].[UserID] point to this entity (FK_User_Document_User)
+        /// </summary>
+        public virtual ICollection<UserDocument> UserDocuments_UserId { get; set; } // User_Document.FK_User_Document_User
+
+        public User()
+        {
+            UserDocuments_CreatedByUserId = new List<UserDocument>();
+            UserDocuments_UserId = new List<UserDocument>();
+        }
+    }
+
+    // User309
+    public class User309
+    {
         public long UserId { get; set; } // UserID (Primary key)
         public string Lastname { get; set; } // Lastname (length: 100)
         public string Firstname { get; set; } // Firstname (length: 100)
@@ -4044,9 +4091,29 @@ namespace Tester.Integration.EfCore3
         // Foreign keys
 
         /// <summary>
-        /// Parent Country pointed by [User].([PhoneCountryId]) (FK_User_PhoneCountry)
+        /// Parent Country pointed by [User309].([PhoneCountryId]) (FK_User309_PhoneCountry)
         /// </summary>
-        public virtual Country Country { get; set; } // FK_User_PhoneCountry
+        public virtual Country Country { get; set; } // FK_User309_PhoneCountry
+    }
+
+    // User_Document
+    public class UserDocument
+    {
+        public int Id { get; set; } // ID (Primary key)
+        public int UserId { get; set; } // UserID
+        public int CreatedByUserId { get; set; } // CreatedByUserID
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent User pointed by [User_Document].([CreatedByUserId]) (FK_User_Document_User1)
+        /// </summary>
+        public virtual User CreatedByUser { get; set; } // FK_User_Document_User1
+
+        /// <summary>
+        /// Parent User pointed by [User_Document].([UserId]) (FK_User_Document_User)
+        /// </summary>
+        public virtual User User_UserId { get; set; } // FK_User_Document_User
     }
 
     // view with space
@@ -5125,6 +5192,19 @@ namespace Tester.Integration.EfCore3
         }
     }
 
+    // PeriodTestTable
+    public class PeriodTestTableConfiguration : IEntityTypeConfiguration<PeriodTestTable>
+    {
+        public void Configure(EntityTypeBuilder<PeriodTestTable> builder)
+        {
+            builder.ToTable("PeriodTestTable", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK__PeriodTe__3213E83F590BD2DE").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.Joe46Bloggs).HasColumnName(@"joe.bloggs").HasColumnType("int").IsRequired(false);
+        }
+    }
+
     // Person
     public class PersonConfiguration : IEntityTypeConfiguration<Person>
     {
@@ -5442,7 +5522,20 @@ namespace Tester.Integration.EfCore3
         public void Configure(EntityTypeBuilder<User> builder)
         {
             builder.ToTable("User", "dbo");
-            builder.HasKey(x => x.UserId).HasName("PK_User").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_Contacts").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.ExternalUserId).HasColumnName(@"ExternalUserID").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);
+        }
+    }
+
+    // User309
+    public class User309Configuration : IEntityTypeConfiguration<User309>
+    {
+        public void Configure(EntityTypeBuilder<User309> builder)
+        {
+            builder.ToTable("User309", "dbo");
+            builder.HasKey(x => x.UserId).HasName("PK_User309").IsClustered();
 
             builder.Property(x => x.UserId).HasColumnName(@"UserID").HasColumnType("bigint").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.Lastname).HasColumnName(@"Lastname").HasColumnType("nvarchar(100)").IsRequired().HasMaxLength(100);
@@ -5450,7 +5543,25 @@ namespace Tester.Integration.EfCore3
             builder.Property(x => x.PhoneCountryId).HasColumnName(@"PhoneCountryID").HasColumnType("int").IsRequired(false);
 
             // Foreign keys
-            builder.HasOne(a => a.Country).WithMany(b => b.Users).HasForeignKey(c => c.PhoneCountryId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_User_PhoneCountry");
+            builder.HasOne(a => a.Country).WithMany(b => b.User309).HasForeignKey(c => c.PhoneCountryId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_User309_PhoneCountry");
+        }
+    }
+
+    // User_Document
+    public class UserDocumentConfiguration : IEntityTypeConfiguration<UserDocument>
+    {
+        public void Configure(EntityTypeBuilder<UserDocument> builder)
+        {
+            builder.ToTable("User_Document", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK_User_Document").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.UserId).HasColumnName(@"UserID").HasColumnType("int").IsRequired();
+            builder.Property(x => x.CreatedByUserId).HasColumnName(@"CreatedByUserID").HasColumnType("int").IsRequired();
+
+            // Foreign keys
+            builder.HasOne(a => a.CreatedByUser).WithMany(b => b.UserDocuments_CreatedByUserId).HasForeignKey(c => c.CreatedByUserId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_User_Document_User1");
+            builder.HasOne(a => a.User_UserId).WithMany(b => b.UserDocuments_UserId).HasForeignKey(c => c.UserId).HasConstraintName("FK_User_Document_User");
         }
     }
 
