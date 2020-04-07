@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.IO;
 using System.Linq;
@@ -108,6 +109,13 @@ namespace Efrpg.Generators
                 _fileManagementService.Error(string.Empty);
                 _fileManagementService.Error("// ------------------------------------------------------------------------------------------------");
                 _fileManagementService.Error(string.Format("// WARNING: Failed to load provider \"{0}\" - {1}", providerName, error));
+                _fileManagementService.Error("// Allowed providers:");
+                foreach (DataRow fc in DbProviderFactories.GetFactoryClasses().Rows)
+                {
+                    var s = string.Format("//    \"{0}\"", fc[2]);
+                    _fileManagementService.Error(s);
+                }
+                _fileManagementService.Error(string.Empty);
                 _fileManagementService.Error("/*" + x.StackTrace + "*/");
                 _fileManagementService.Error("// ------------------------------------------------------------------------------------------------");
                 _fileManagementService.Error(string.Empty);
