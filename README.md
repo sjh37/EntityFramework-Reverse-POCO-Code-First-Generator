@@ -8,7 +8,7 @@
 ### You will need a licence key
 Free to academics (you need a .edu or a .ac email address), not free for commercial use.
 
-Go to the [ReversePOCO](https://www.reversepoco.co.uk) website to obtain/purchase your licence key.
+Go to the [ReversePOCO](https://www.reversepoco.co.uk) website to obtain your licence key.
 
 ### Upgrading v2 to v3
 Please read the [Upgrading documentation](https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Upgrading-from-v2-to-v3)
