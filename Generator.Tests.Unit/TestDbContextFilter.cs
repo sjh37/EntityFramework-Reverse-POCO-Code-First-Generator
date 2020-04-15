@@ -10,7 +10,9 @@ namespace Generator.Tests.Unit
         {
             SchemaFilters.AddRange(new List<IFilterType<Schema>>
             {
-                new RegexIncludeFilter("^dbo$|^events$"), // Only include the schemas 'dbo' and 'events'
+                // Only include the schemas 'dbo' and 'events'
+                new RegexIncludeFilter("^dbo$"),
+                new RegexIncludeFilter("^events$")
             });
 
             TableFilters.AddRange(new List<IFilterType<Table>>
@@ -21,6 +23,7 @@ namespace Generator.Tests.Unit
 
                 // Include filters
                 new RegexIncludeFilter("^[Cc]ustomer.*"), // This includes any remaining tables with names beginning with 'customer'
+                new RegexIncludeFilter("^Order.*"), // This includes any remaining tables with names beginning with 'customer'
             });
 
             ColumnFilters.AddRange(new List<IFilterType<Column>>

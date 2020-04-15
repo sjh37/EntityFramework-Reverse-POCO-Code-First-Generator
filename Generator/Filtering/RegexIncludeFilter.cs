@@ -29,5 +29,10 @@ namespace Efrpg.Filtering
         {
             return !_filter.IsMatch(item.DbName);
         }
+
+        public string Pattern()
+        {
+            return _filter.ToString();
+        }
     }
 }

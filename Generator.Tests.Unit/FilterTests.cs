@@ -32,21 +32,27 @@ namespace Generator.Tests.Unit
         [TestCase("dbox",    FilterType.Schema, true)]
         [TestCase("event",   FilterType.Schema, true)]
         [TestCase("eventsx", FilterType.Schema, true)]
-        [TestCase("ab", FilterType.Schema, true)]
+        [TestCase("ab",      FilterType.Schema, true)]
 
         // Table regex
-        [TestCase("Customerbilling", FilterType.Table, true)]
-        [TestCase("CustomerBilling", FilterType.Table, true)]
-        [TestCase("CustomerBillingTable", FilterType.Table, true)]
-        [TestCase("TestBilling", FilterType.Table, true)]
-        [TestCase("Test Billing", FilterType.Table, true)]
-        [TestCase("Customer", FilterType.Table, false)]
-        [TestCase("Test Customer", FilterType.Table, true)]
-        [TestCase("data_properties", FilterType.Table, true)]
-        [TestCase("Customer_data_properties", FilterType.Table, false)]
-        [TestCase("Customer_FR_table", FilterType.Table, true)]
-        [TestCase("Customer_FR_table_data_properties", FilterType.Table, true)]
-        [TestCase("ab", FilterType.Table, true)]
+        [TestCase("dbo.Customerbilling",                   FilterType.Table, true)]
+        [TestCase("dbo.CustomerBilling",                   FilterType.Table, true)]
+        [TestCase("dbo.CustomerBillingTable",              FilterType.Table, true)]
+        [TestCase("dbo.TestBilling",                       FilterType.Table, true)]
+        [TestCase("dbo.Test Billing",                      FilterType.Table, true)]
+        [TestCase("dbo.Customer",                          FilterType.Table, false)]
+        [TestCase("reports.Customer",                      FilterType.Table, true)]
+        [TestCase("dbo.Test Customer",                     FilterType.Table, true)]
+        [TestCase("reports.Test Customer",                 FilterType.Table, true)]
+        [TestCase("dbo.data_properties",                   FilterType.Table, true)]
+        [TestCase("dbo.Customer_data_properties",          FilterType.Table, false)]
+        [TestCase("dbo.Customer_FR_table",                 FilterType.Table, true)]
+        [TestCase("dbo.Customer_FR_table_data_properties", FilterType.Table, true)]
+        [TestCase("dbo.Order",                             FilterType.Table, false)]
+        [TestCase("events.OrderThing",                     FilterType.Table, false)]
+        [TestCase("reports.OrderReport",                   FilterType.Table, true)]
+        [TestCase("dbo.OrderItem",                         FilterType.Table, false)]
+        [TestCase("dbo.ab",                                FilterType.Table, true)]
 
         // Column
         [TestCase("ab", FilterType.Column, false)]
@@ -67,7 +73,8 @@ namespace Generator.Tests.Unit
                 case FilterType.Schema:
                     return new Schema(name);
                 case FilterType.Table:
-                    return new Table(null, new Schema("dbo"), name, false);
+                    var split = name.Split('.');
+                    return new Table(null, new Schema(split[0]), split[1], false);
                 case FilterType.Column:
                     return new Column { DbName = name };
                 case FilterType.StoredProcedure:
