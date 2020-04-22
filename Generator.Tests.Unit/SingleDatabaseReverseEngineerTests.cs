@@ -89,7 +89,11 @@ namespace Generator.Tests.Unit
             var generator      = GeneratorFactory.Create(fileManagement, fileManagerType, singleDbContextSubNamespace);
 
             // Turn on everything for testing
-            foreach (var filter in generator.FilterList.GetFilters())
+            Assert.IsNotNull(generator);
+            Assert.IsNotNull(generator.FilterList);
+            var filters = generator.FilterList.GetFilters();
+            Assert.IsNotNull(filters);
+            foreach (var filter in filters)
             {
                 filter.Value.IncludeViews                 = true;
                 filter.Value.IncludeSynonyms              = true;
