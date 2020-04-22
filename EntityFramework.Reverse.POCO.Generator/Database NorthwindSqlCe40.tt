@@ -12,16 +12,17 @@
     // For help on the various Types below, please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Common-Settings.*Types-explained
     // The following entries are the only required settings.
     Settings.DatabaseType            = DatabaseType.SqlCe; // SqlServer, SqlCe. Coming next: PostgreSQL, MySql, Oracle
-    Settings.TemplateType            = TemplateType.EfCore3; // Ef6, EfCore2, EfCore3, FileBased. FileBased specify folder using Settings.TemplateFolder
+    Settings.TemplateType            = TemplateType.EfCore3; // Ef6, EfCore2, EfCore3, FileBasedCore2, FileBasedCore3. FileBased specify folder using Settings.TemplateFolder
     Settings.GeneratorType           = GeneratorType.EfCore; // Ef6, EfCore, Custom. Custom edit GeneratorCustom class to provide your own implementation
     Settings.UseMappingTables        = false; // Set to false for EfCore. EFCore will add support for this in v3 at some point, so please set this to false. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
     Settings.FileManagerType         = FileManagerType.Custom; // .NET project = VisualStudio; .NET Core project = Custom; No output (testing only) = Null
     Settings.ConnectionString        = @"Data Source=C:\S\Source (open source)\EntityFramework Reverse POCO Code Generator\EntityFramework.Reverse.POCO.Generator\App_Data\NorthwindSqlCe40.sdf";
     Settings.ConnectionStringName    = "MyDbContextSqlCE4"; // ConnectionString key as specified in your app.config/web.config/appsettings.json
     Settings.DbContextName           = "MyDbContextSqlCE4"; // Class name for the DbContext to be generated. Note: If generating separate files, please give the db context a different name from this tt filename.
+    //Settings.DbContextInterfaceName= "IMyDbContextSqlCE4"; // Defaults to "I" + DbContextName or set string empty to not implement any interface.
     Settings.GenerateSeparateFiles   = false;
     Settings.Namespace               = "EntityFramework_Reverse_POCO_Generator.SqlCe4"; // Override the default namespace here. Please use double quotes, example: "Accounts.Billing"
-    Settings.TemplateFolder          = Path.Combine(Settings.Root, "Templates"); // Only used if Settings.TemplateType = TemplateType.FileBased; Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Custom-file-based-templates
+    Settings.TemplateFolder          = Path.Combine(Settings.Root, "Templates"); // Only used if Settings.TemplateType = TemplateType.FileBased. Specify folder name where the mustache folders can be found. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Custom-file-based-templates
     Settings.AddUnitTestingDbContext = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing. Read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/FakeDbContext
 
     // Elements to generate ***************************************************************************************************************
@@ -249,11 +250,13 @@
         //if (table.NameHumanCase.Equals("SomeTable", StringComparison.InvariantCultureIgnoreCase))
         //    table.AdditionalComment = "Example comment";
 
-        // To add a base class to a table
-        //if (table.NameHumanCase == "User")
-        //    table.BaseClasses = " : IdentityUser<int, CustomUserLogin, CustomUserRole, CustomUserClaim>";
-        //if (table.NameHumanCase == "LogData" || table.NameHumanCase == "ReturnData" || table.NameHumanCase == "DataBlob")            
-        //    table.BaseClasses = " : ReportData";
+        // To add a base class to a table based on column names. Also see Settings.UpdateColumn below.
+        //var tracking  = new List<string> { "createdby", "createdon", "modifiedby", "modifiedon" };
+        //var replicate = new List<string> { "uniqueid", "hrid"};
+        //if (table.Columns.Any(x => tracking.Contains(x.NameHumanCase)))
+        //    table.BaseClasses = " : TrackingEntity";
+        //if (table.Columns.Any(x => replicate.Contains(x.NameHumanCase)))
+        //    table.BaseClasses = " : ReplicateEntity";
 
         // To add attributes
         //table.Attributes.Add("[Serializable]");
@@ -275,14 +278,14 @@
         //if (column.IsPrimaryKey && column.NameHumanCase.Equals(table.NameHumanCase + "Id", StringComparison.InvariantCultureIgnoreCase))
         //    column.NameHumanCase = "Id";
 
-        // Remove column from poco class as it will be inherited from a base class
-        //if (column.IsPrimaryKey &&
-        //    (
-        //        table.NameHumanCase.Equals("LogData", StringComparison.InvariantCultureIgnoreCase) ||
-        //        table.NameHumanCase.Equals("ReturnData", StringComparison.InvariantCultureIgnoreCase) ||
-        //        table.NameHumanCase.Equals("DataBlob", StringComparison.InvariantCultureIgnoreCase)
-        //    ))
+        // Remove column from poco class as it will be inherited from a base class. Also see Settings.UpdateTable above.
+        //var tracking  = new List<string> { "createdby", "createdon", "modifiedby", "modifiedon" };
+        //var replicate = new List<string> { "uniqueid", "hrid"};
+        //if (tracking .Contains(column.NameHumanCase.ToLower()) ||
+        //    replicate.Contains(column.NameHumanCase.ToLower()))
+        //{
         //    column.ExistsInBaseClass = true; // If true, does not generate the property for this column as it will exist in a base class
+        //}
 
         // Use the extended properties to perform tasks to column
         //if (column.ExtendedProperty == "HIDE")
@@ -343,7 +346,6 @@
     // This callback will be invoked for each VIEW found in the database. Use it to declare which columns participate in that VIEW's
     // primary-key by setting 'IsPrimaryKey = true'.
     // If no columns are marked with 'IsPrimaryKey = true' then this T4 template defaults to marking all non-NULL columns as primary key columns.
-    // To set-up Foreign-Key relationships between VIEWs and Tables (or even other VIEWs) use the 'AddForeignKeys' callback below.
     Settings.ViewProcessing = delegate(Table view)
     {
         // Below is example code for the Northwind database that configures the 'VIEW [Orders Qry]' and 'VIEW [Invoices]'

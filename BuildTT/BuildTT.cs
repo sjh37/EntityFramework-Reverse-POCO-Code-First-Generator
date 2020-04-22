@@ -266,11 +266,13 @@ namespace BuildTT
         //if (table.NameHumanCase.Equals(""SomeTable"", StringComparison.InvariantCultureIgnoreCase))
         //    table.AdditionalComment = ""Example comment"";
 
-        // To add a base class to a table
-        //if (table.NameHumanCase == ""User"")
-        //    table.BaseClasses = "" : IdentityUser<int, CustomUserLogin, CustomUserRole, CustomUserClaim>"";
-        //if (table.NameHumanCase == ""LogData"" || table.NameHumanCase == ""ReturnData"" || table.NameHumanCase == ""DataBlob"")            
-        //    table.BaseClasses = "" : ReportData"";
+        // To add a base class to a table based on column names. Also see Settings.UpdateColumn below.
+        //var tracking  = new List<string> { ""createdby"", ""createdon"", ""modifiedby"", ""modifiedon"" };
+        //var replicate = new List<string> { ""uniqueid"", ""hrid""};
+        //if (table.Columns.Any(x => tracking.Contains(x.NameHumanCase)))
+        //    table.BaseClasses = "" : TrackingEntity"";
+        //if (table.Columns.Any(x => replicate.Contains(x.NameHumanCase)))
+        //    table.BaseClasses = "" : ReplicateEntity"";
 
         // To add attributes
         //table.Attributes.Add(""[Serializable]"");
@@ -292,14 +294,14 @@ namespace BuildTT
         //if (column.IsPrimaryKey && column.NameHumanCase.Equals(table.NameHumanCase + ""Id"", StringComparison.InvariantCultureIgnoreCase))
         //    column.NameHumanCase = ""Id"";
 
-        // Remove column from poco class as it will be inherited from a base class
-        //if (column.IsPrimaryKey &&
-        //    (
-        //        table.NameHumanCase.Equals(""LogData"", StringComparison.InvariantCultureIgnoreCase) ||
-        //        table.NameHumanCase.Equals(""ReturnData"", StringComparison.InvariantCultureIgnoreCase) ||
-        //        table.NameHumanCase.Equals(""DataBlob"", StringComparison.InvariantCultureIgnoreCase)
-        //    ))
+        // Remove column from poco class as it will be inherited from a base class. Also see Settings.UpdateTable above.
+        //var tracking  = new List<string> { ""createdby"", ""createdon"", ""modifiedby"", ""modifiedon"" };
+        //var replicate = new List<string> { ""uniqueid"", ""hrid""};
+        //if (tracking .Contains(column.NameHumanCase.ToLower()) ||
+        //    replicate.Contains(column.NameHumanCase.ToLower()))
+        //{
         //    column.ExistsInBaseClass = true; // If true, does not generate the property for this column as it will exist in a base class
+        //}
 
         // Use the extended properties to perform tasks to column
         //if (column.ExtendedProperty == ""HIDE"")
