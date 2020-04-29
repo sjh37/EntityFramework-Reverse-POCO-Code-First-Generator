@@ -618,6 +618,9 @@ namespace BuildTT
     var generator = GeneratorFactory.Create(fileManagement, FileManagerFactory.GetFileManagerType());
     if (generator.InitialisationOk)
     {
+        // Show where the machine.config file is
+        // fileManagement.WriteLine(""// "" + System.Runtime.InteropServices.RuntimeEnvironment.SystemConfigurationFile);
+
         generator.ReadDatabase();
         generator.GenerateCode();
     }
