@@ -963,6 +963,11 @@ SELECT SPECIFIC_SCHEMA, SPECIFIC_NAME, ROUTINE_TYPE, RETURN_DATA_TYPE, ORDINAL_P
     , CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, NUMERIC_SCALE, DATETIME_PRECISION, USER_DEFINED_TYPE FROM #SynonymStoredProcedureDetails";
         }
 
+        protected override string DefaultSchema(DbConnection conn)
+        {
+            return "dbo";
+        }
+
         protected override string SpecialQueryFlags()
         {
             if (Settings.IncludeQueryTraceOn9481Flag)

@@ -91,6 +91,23 @@ namespace Efrpg.Readers
             return string.Empty;
         }
 
+        protected override string DefaultSchema(DbConnection conn)
+        {
+            var cmd = GetCmd(conn);
+            if (cmd != null)
+            {
+                cmd.CommandText = "SELECT SYS_CONTEXT('USERENV','CURRENT_SCHEMA') FROM DUAL";
+                using (var rdr = cmd.ExecuteReader())
+                {
+                    if (rdr.Read())
+                    {
+                        return rdr[0].ToString();
+                    }
+                }
+            }
+            return "system";
+        }
+
         protected override string SpecialQueryFlags()
         {
             return string.Empty;

@@ -34,7 +34,9 @@
 // ReSharper disable UsePatternMatching
 #pragma warning disable 1591    //  Ignore "Missing XML Comment" warning
 
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -45,7 +47,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
-using System.Data.SqlClient;
 using System.Data.SqlTypes;
 using System.Linq;
 using System.Linq.Expressions;
@@ -53,7 +54,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Efrpg.V3TestE
+namespace Efrpg.V3TestK
 {
     #region Database context interface
 
@@ -79,6 +80,7 @@ namespace Efrpg.V3TestE
         DbSet<ProductsAboveAveragePrice> ProductsAboveAveragePrices { get; set; } // Products Above Average Price
         DbSet<ProductSalesFor1997> ProductSalesFor1997 { get; set; } // Product Sales for 1997
         DbSet<ProductsByCategory> ProductsByCategories { get; set; } // Products by Category
+        DbSet<QuarterlyOrder> QuarterlyOrders { get; set; } // Quarterly Orders
         DbSet<Region> Regions { get; set; } // Region
         DbSet<SalesByCategory> SalesByCategories { get; set; } // Sales by Category
         DbSet<SalesTotalsByAmount> SalesTotalsByAmounts { get; set; } // Sales Totals by Amount
@@ -125,6 +127,9 @@ namespace Efrpg.V3TestE
         List<TenMostExpensiveProductsReturnModel> TenMostExpensiveProducts(out int procResult);
         Task<List<TenMostExpensiveProductsReturnModel>> TenMostExpensiveProductsAsync();
 
+
+        // Scalar Valued Functions
+        int FnDiagramobjects(); // dbo.fn_diagramobjects
     }
 
     #endregion
@@ -162,6 +167,7 @@ namespace Efrpg.V3TestE
         public DbSet<ProductsAboveAveragePrice> ProductsAboveAveragePrices { get; set; } // Products Above Average Price
         public DbSet<ProductSalesFor1997> ProductSalesFor1997 { get; set; } // Product Sales for 1997
         public DbSet<ProductsByCategory> ProductsByCategories { get; set; } // Products by Category
+        public DbSet<QuarterlyOrder> QuarterlyOrders { get; set; } // Quarterly Orders
         public DbSet<Region> Regions { get; set; } // Region
         public DbSet<SalesByCategory> SalesByCategories { get; set; } // Sales by Category
         public DbSet<SalesTotalsByAmount> SalesTotalsByAmounts { get; set; } // Sales Totals by Amount
@@ -212,6 +218,7 @@ namespace Efrpg.V3TestE
             modelBuilder.ApplyConfiguration(new ProductsAboveAveragePriceConfiguration());
             modelBuilder.ApplyConfiguration(new ProductSalesFor1997Configuration());
             modelBuilder.ApplyConfiguration(new ProductsByCategoryConfiguration());
+            modelBuilder.ApplyConfiguration(new QuarterlyOrderConfiguration());
             modelBuilder.ApplyConfiguration(new RegionConfiguration());
             modelBuilder.ApplyConfiguration(new SalesByCategoryConfiguration());
             modelBuilder.ApplyConfiguration(new SalesTotalsByAmountConfiguration());
@@ -221,13 +228,13 @@ namespace Efrpg.V3TestE
             modelBuilder.ApplyConfiguration(new SupplierConfiguration());
             modelBuilder.ApplyConfiguration(new TerritoryConfiguration());
 
-            modelBuilder.Query<CustOrderHistReturnModel>();
-            modelBuilder.Query<CustOrdersDetailReturnModel>();
-            modelBuilder.Query<CustOrdersOrdersReturnModel>();
-            modelBuilder.Query<EmployeeSalesByCountryReturnModel>();
-            modelBuilder.Query<SalesByCategoryReturnModel>();
-            modelBuilder.Query<SalesByYearReturnModel>();
-            modelBuilder.Query<TenMostExpensiveProductsReturnModel>();
+            modelBuilder.Entity<CustOrderHistReturnModel>().HasNoKey();
+            modelBuilder.Entity<CustOrdersDetailReturnModel>().HasNoKey();
+            modelBuilder.Entity<CustOrdersOrdersReturnModel>().HasNoKey();
+            modelBuilder.Entity<EmployeeSalesByCountryReturnModel>().HasNoKey();
+            modelBuilder.Entity<SalesByCategoryReturnModel>().HasNoKey();
+            modelBuilder.Entity<SalesByYearReturnModel>().HasNoKey();
+            modelBuilder.Entity<TenMostExpensiveProductsReturnModel>().HasNoKey();
         }
 
 
@@ -249,6 +256,7 @@ namespace Efrpg.V3TestE
             var procResultData = Set<CustOrderHistReturnModel>()
                 .FromSqlRaw(sqlCommand, customerIdParam, procResultParam)
                 .ToList();
+
             procResult = (int) procResultParam.Value;
             return procResultData;
         }
@@ -263,6 +271,7 @@ namespace Efrpg.V3TestE
             var procResultData = await Set<CustOrderHistReturnModel>()
                 .FromSqlRaw(sqlCommand, customerIdParam)
                 .ToListAsync();
+
             return procResultData;
         }
 
@@ -283,6 +292,7 @@ namespace Efrpg.V3TestE
             var procResultData = Set<CustOrdersDetailReturnModel>()
                 .FromSqlRaw(sqlCommand, orderIdParam, procResultParam)
                 .ToList();
+
             procResult = (int) procResultParam.Value;
             return procResultData;
         }
@@ -297,6 +307,7 @@ namespace Efrpg.V3TestE
             var procResultData = await Set<CustOrdersDetailReturnModel>()
                 .FromSqlRaw(sqlCommand, orderIdParam)
                 .ToListAsync();
+
             return procResultData;
         }
 
@@ -317,6 +328,7 @@ namespace Efrpg.V3TestE
             var procResultData = Set<CustOrdersOrdersReturnModel>()
                 .FromSqlRaw(sqlCommand, customerIdParam, procResultParam)
                 .ToList();
+
             procResult = (int) procResultParam.Value;
             return procResultData;
         }
@@ -331,6 +343,7 @@ namespace Efrpg.V3TestE
             var procResultData = await Set<CustOrdersOrdersReturnModel>()
                 .FromSqlRaw(sqlCommand, customerIdParam)
                 .ToListAsync();
+
             return procResultData;
         }
 
@@ -355,6 +368,7 @@ namespace Efrpg.V3TestE
             var procResultData = Set<EmployeeSalesByCountryReturnModel>()
                 .FromSqlRaw(sqlCommand, beginningDateParam, endingDateParam, procResultParam)
                 .ToList();
+
             procResult = (int) procResultParam.Value;
             return procResultData;
         }
@@ -373,6 +387,7 @@ namespace Efrpg.V3TestE
             var procResultData = await Set<EmployeeSalesByCountryReturnModel>()
                 .FromSqlRaw(sqlCommand, beginningDateParam, endingDateParam)
                 .ToListAsync();
+
             return procResultData;
         }
 
@@ -397,6 +412,7 @@ namespace Efrpg.V3TestE
             var procResultData = Set<SalesByCategoryReturnModel>()
                 .FromSqlRaw(sqlCommand, categoryNameParam, ordYearParam, procResultParam)
                 .ToList();
+
             procResult = (int) procResultParam.Value;
             return procResultData;
         }
@@ -415,6 +431,7 @@ namespace Efrpg.V3TestE
             var procResultData = await Set<SalesByCategoryReturnModel>()
                 .FromSqlRaw(sqlCommand, categoryNameParam, ordYearParam)
                 .ToListAsync();
+
             return procResultData;
         }
 
@@ -439,6 +456,7 @@ namespace Efrpg.V3TestE
             var procResultData = Set<SalesByYearReturnModel>()
                 .FromSqlRaw(sqlCommand, beginningDateParam, endingDateParam, procResultParam)
                 .ToList();
+
             procResult = (int) procResultParam.Value;
             return procResultData;
         }
@@ -457,6 +475,7 @@ namespace Efrpg.V3TestE
             var procResultData = await Set<SalesByYearReturnModel>()
                 .FromSqlRaw(sqlCommand, beginningDateParam, endingDateParam)
                 .ToListAsync();
+
             return procResultData;
         }
 
@@ -473,6 +492,7 @@ namespace Efrpg.V3TestE
             var procResultData = Set<TenMostExpensiveProductsReturnModel>()
                 .FromSqlRaw(sqlCommand, procResultParam)
                 .ToList();
+
             procResult = (int) procResultParam.Value;
             return procResultData;
         }
@@ -483,9 +503,18 @@ namespace Efrpg.V3TestE
             var procResultData = await Set<TenMostExpensiveProductsReturnModel>()
                 .FromSqlRaw(sqlCommand)
                 .ToListAsync();
+
             return procResultData;
         }
 
+
+        // Scalar Valued Functions
+
+        [DbFunction("fn_diagramobjects", "dbo")]
+        public int FnDiagramobjects()
+        {
+            throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
+        }
     }
 
     #endregion
@@ -526,6 +555,7 @@ namespace Efrpg.V3TestE
         public DbSet<ProductsAboveAveragePrice> ProductsAboveAveragePrices { get; set; } // Products Above Average Price
         public DbSet<ProductSalesFor1997> ProductSalesFor1997 { get; set; } // Product Sales for 1997
         public DbSet<ProductsByCategory> ProductsByCategories { get; set; } // Products by Category
+        public DbSet<QuarterlyOrder> QuarterlyOrders { get; set; } // Quarterly Orders
         public DbSet<Region> Regions { get; set; } // Region
         public DbSet<SalesByCategory> SalesByCategories { get; set; } // Sales by Category
         public DbSet<SalesTotalsByAmount> SalesTotalsByAmounts { get; set; } // Sales Totals by Amount
@@ -539,32 +569,33 @@ namespace Efrpg.V3TestE
         {
             _database = null;
 
-            AlphabeticalListOfProducts = new FakeDbSet<AlphabeticalListOfProduct>("ProductId", "ProductName", "Discontinued", "CategoryName");
+            AlphabeticalListOfProducts = new FakeDbSet<AlphabeticalListOfProduct>();
             Categories = new FakeDbSet<Category>("CategoryId");
-            CategorySalesFor1997 = new FakeDbSet<CategorySalesFor1997>("CategoryName");
-            CurrentProductLists = new FakeDbSet<CurrentProductList>("ProductId", "ProductName");
+            CategorySalesFor1997 = new FakeDbSet<CategorySalesFor1997>();
+            CurrentProductLists = new FakeDbSet<CurrentProductList>();
             Customers = new FakeDbSet<Customer>("CustomerId");
-            CustomerAndSuppliersByCities = new FakeDbSet<CustomerAndSuppliersByCity>("CompanyName", "Relationship");
+            CustomerAndSuppliersByCities = new FakeDbSet<CustomerAndSuppliersByCity>();
             CustomerCustomerDemoes = new FakeDbSet<CustomerCustomerDemo>("CustomerId", "CustomerTypeId");
             CustomerDemographics = new FakeDbSet<CustomerDemographic>("CustomerTypeId");
             Employees = new FakeDbSet<Employee>("EmployeeId");
             EmployeeTerritories = new FakeDbSet<EmployeeTerritory>("EmployeeId", "TerritoryId");
-            Invoices = new FakeDbSet<Invoice>("CustomerName", "Salesperson", "OrderId", "ShipperName", "ProductId", "ProductName", "UnitPrice", "Quantity", "Discount");
+            Invoices = new FakeDbSet<Invoice>();
             Orders = new FakeDbSet<Order>("OrderId");
             OrderDetails = new FakeDbSet<OrderDetail>("OrderId", "ProductId");
-            OrderDetailsExtendeds = new FakeDbSet<OrderDetailsExtended>("OrderId", "ProductId", "ProductName", "UnitPrice", "Quantity", "Discount");
-            OrdersQries = new FakeDbSet<OrdersQry>("OrderId", "CompanyName");
-            OrderSubtotals = new FakeDbSet<OrderSubtotal>("OrderId");
+            OrderDetailsExtendeds = new FakeDbSet<OrderDetailsExtended>();
+            OrdersQries = new FakeDbSet<OrdersQry>();
+            OrderSubtotals = new FakeDbSet<OrderSubtotal>();
             Products = new FakeDbSet<Product>("ProductId");
-            ProductsAboveAveragePrices = new FakeDbSet<ProductsAboveAveragePrice>("ProductName");
-            ProductSalesFor1997 = new FakeDbSet<ProductSalesFor1997>("CategoryName", "ProductName");
-            ProductsByCategories = new FakeDbSet<ProductsByCategory>("CategoryName", "ProductName", "Discontinued");
+            ProductsAboveAveragePrices = new FakeDbSet<ProductsAboveAveragePrice>();
+            ProductSalesFor1997 = new FakeDbSet<ProductSalesFor1997>();
+            ProductsByCategories = new FakeDbSet<ProductsByCategory>();
+            QuarterlyOrders = new FakeDbSet<QuarterlyOrder>();
             Regions = new FakeDbSet<Region>("RegionId");
-            SalesByCategories = new FakeDbSet<SalesByCategory>("CategoryId", "CategoryName", "ProductName");
-            SalesTotalsByAmounts = new FakeDbSet<SalesTotalsByAmount>("OrderId", "CompanyName");
+            SalesByCategories = new FakeDbSet<SalesByCategory>();
+            SalesTotalsByAmounts = new FakeDbSet<SalesTotalsByAmount>();
             Shippers = new FakeDbSet<Shipper>("ShipperId");
-            SummaryOfSalesByQuarters = new FakeDbSet<SummaryOfSalesByQuarter>("OrderId");
-            SummaryOfSalesByYears = new FakeDbSet<SummaryOfSalesByYear>("OrderId");
+            SummaryOfSalesByQuarters = new FakeDbSet<SummaryOfSalesByQuarter>();
+            SummaryOfSalesByYears = new FakeDbSet<SummaryOfSalesByYear>();
             Suppliers = new FakeDbSet<Supplier>("SupplierId");
             Territories = new FakeDbSet<Territory>("TerritoryId");
 
@@ -606,11 +637,6 @@ namespace Efrpg.V3TestE
         public DatabaseFacade Database { get { return _database; } }
 
         public DbSet<TEntity> Set<TEntity>() where TEntity : class
-        {
-            throw new NotImplementedException();
-        }
-
-        public virtual DbQuery<TQuery> Query<TQuery>() where TQuery : class
         {
             throw new NotImplementedException();
         }
@@ -754,6 +780,14 @@ namespace Efrpg.V3TestE
             int procResult;
             return Task.FromResult(TenMostExpensiveProducts(out procResult));
         }
+
+        // Scalar Valued Functions
+
+        // dbo.fn_diagramobjects
+        public int FnDiagramobjects()
+        {
+            return default(int);
+        }
     }
 
     #endregion
@@ -777,7 +811,7 @@ namespace Efrpg.V3TestE
     //          }
     //      }
     //      Read more about it here: https://msdn.microsoft.com/en-us/data/dn314431.aspx
-    public class FakeDbSet<TEntity> : DbSet<TEntity>, IQueryable<TEntity>, IEnumerable<TEntity>, IEnumerable, IQueryable, IAsyncEnumerableAccessor<TEntity>, IInfrastructure<IServiceProvider>, IListSource where TEntity : class
+    public class FakeDbSet<TEntity> : DbSet<TEntity>, IQueryable<TEntity>, IAsyncEnumerable<TEntity>, IListSource where TEntity : class
     {
         private readonly PropertyInfo[] _primaryKeys;
         private readonly ObservableCollection<TEntity> _data;
@@ -785,15 +819,16 @@ namespace Efrpg.V3TestE
 
         public FakeDbSet()
         {
-            _data = new ObservableCollection<TEntity>();
-            _query = _data.AsQueryable();
+            _primaryKeys = null;
+            _data        = new ObservableCollection<TEntity>();
+            _query       = _data.AsQueryable();
         }
 
         public FakeDbSet(params string[] primaryKeys)
         {
             _primaryKeys = typeof(TEntity).GetProperties().Where(x => primaryKeys.Contains(x.Name)).ToArray();
-            _data = new ObservableCollection<TEntity>();
-            _query = _data.AsQueryable();
+            _data        = new ObservableCollection<TEntity>();
+            _query       = _data.AsQueryable();
         }
 
         public override TEntity Find(params object[] keyValues)
@@ -813,14 +848,25 @@ namespace Efrpg.V3TestE
             return keyQuery.SingleOrDefault();
         }
 
-        public override Task<TEntity> FindAsync(object[] keyValues, CancellationToken cancellationToken)
+        public override ValueTask<TEntity> FindAsync(object[] keyValues, CancellationToken cancellationToken)
         {
-            return Task<TEntity>.Factory.StartNew(() => Find(keyValues), cancellationToken);
+            return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues), cancellationToken));
         }
 
-        public override Task<TEntity> FindAsync(params object[] keyValues)
+        public override ValueTask<TEntity> FindAsync(params object[] keyValues)
         {
-            return Task<TEntity>.Factory.StartNew(() => Find(keyValues));
+            return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues)));
+        }
+
+        IAsyncEnumerator<TEntity> IAsyncEnumerable<TEntity>.GetAsyncEnumerator(CancellationToken cancellationToken)
+        {
+            return GetAsyncEnumerator(cancellationToken);
+        }
+
+        public override EntityEntry<TEntity> Add(TEntity entity)
+        {
+            _data.Add(entity);
+            return null;
         }
 
         public override void AddRange(params TEntity[] entities)
@@ -870,6 +916,12 @@ namespace Efrpg.V3TestE
         {
             return _data;
         }
+
+        IList IListSource.GetList()
+        {
+            return _data;
+        }
+
         Type IQueryable.ElementType
         {
             get { return _query.ElementType; }
@@ -895,9 +947,9 @@ namespace Efrpg.V3TestE
             return _data.GetEnumerator();
         }
 
-        IAsyncEnumerable<TEntity> AsyncEnumerable
+        IAsyncEnumerator<TEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default(CancellationToken))
         {
-            get { return new FakeDbAsyncEnumerable<TEntity>(_data); }
+            return new FakeDbAsyncEnumerator<TEntity>(this.AsEnumerable().GetEnumerator());
         }
 
     }
@@ -940,58 +992,38 @@ namespace Efrpg.V3TestE
             return _inner.Execute<TResult>(expression);
         }
 
-        public Task<object> ExecuteAsync(Expression expression, CancellationToken cancellationToken)
+        public TResult ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken = new CancellationToken())
         {
-            return Task.FromResult(Execute(expression));
-        }
-
-        public Task<TResult> ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken)
-        {
-            return Task.FromResult(Execute<TResult>(expression));
-        }
-
-        public IAsyncEnumerable<TResult> ExecuteAsync<TResult>(Expression expression)
-        {
-            return new FakeDbAsyncEnumerable<TResult>(expression);
+            return _inner.Execute<TResult>(expression);
         }
     }
 
     public class FakeDbAsyncEnumerable<T> : EnumerableQuery<T>, IAsyncEnumerable<T>, IQueryable<T>
     {
         public FakeDbAsyncEnumerable(IEnumerable<T> enumerable)
-                : base(enumerable)
-            {
-            }
+            : base(enumerable)
+        {
+        }
 
-            public FakeDbAsyncEnumerable(Expression expression)
-                : base(expression)
-            {
-            }
+        public FakeDbAsyncEnumerable(Expression expression)
+            : base(expression)
+        {
+        }
 
-            IEnumerator<T> IEnumerable<T>.GetEnumerator()
-            {
-                return this.AsEnumerable().GetEnumerator();
-            }
+        public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = new CancellationToken())
+        {
+            return new FakeDbAsyncEnumerator<T>(this.AsEnumerable().GetEnumerator());
+        }
 
-            public IAsyncEnumerator<T> GetEnumerator()
-            {
-                return new FakeDbAsyncEnumerator<T>(this.AsEnumerable().GetEnumerator());
-            }
+        IAsyncEnumerator<T> IAsyncEnumerable<T>.GetAsyncEnumerator(CancellationToken cancellationToken)
+        {
+            return GetAsyncEnumerator(cancellationToken);
+        }
 
-            IEnumerator IEnumerable.GetEnumerator()
-            {
-                return this.AsEnumerable().GetEnumerator();
-            }
-
-            IQueryProvider IQueryable.Provider
-            {
-                get { return new FakeDbAsyncQueryProvider<T>(this); }
-            }
-
-            IAsyncEnumerator<T> IAsyncEnumerable<T>.GetEnumerator()
-            {
-                return GetEnumerator();
-            }
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.AsEnumerable().GetEnumerator();
+        }
     }
 
     public class FakeDbAsyncEnumerator<T> : IAsyncEnumerator<T>
@@ -1003,24 +1035,19 @@ namespace Efrpg.V3TestE
             _inner = inner;
         }
 
-        public void Dispose()
-        {
-            _inner.Dispose();
-        }
-
-        T IAsyncEnumerator<T>.Current
-        {
-            get { return Current; }
-        }
-
-        public Task<bool> MoveNext(CancellationToken cancellationToken)
-        {
-            return Task.FromResult(_inner.MoveNext());
-        }
-
         public T Current
         {
             get { return _inner.Current; }
+        }
+        public ValueTask<bool> MoveNextAsync()
+        {
+            return new ValueTask<bool>(_inner.MoveNext());
+        }
+
+        public ValueTask DisposeAsync()
+        {
+            _inner.Dispose();
+            return new ValueTask(Task.CompletedTask);
         }
     }
 
@@ -1031,8 +1058,8 @@ namespace Efrpg.V3TestE
     // Alphabetical list of products
     public class AlphabeticalListOfProduct
     {
-        public int ProductId { get; set; } // ProductID (Primary key)
-        public string ProductName { get; set; } // ProductName (Primary key) (length: 40)
+        public int ProductId { get; set; } // ProductID
+        public string ProductName { get; set; } // ProductName (length: 40)
         public int? SupplierId { get; set; } // SupplierID
         public int? CategoryId { get; set; } // CategoryID
         public string QuantityPerUnit { get; set; } // QuantityPerUnit (length: 20)
@@ -1040,8 +1067,8 @@ namespace Efrpg.V3TestE
         public short? UnitsInStock { get; set; } // UnitsInStock
         public short? UnitsOnOrder { get; set; } // UnitsOnOrder
         public short? ReorderLevel { get; set; } // ReorderLevel
-        public bool Discontinued { get; set; } // Discontinued (Primary key)
-        public string CategoryName { get; set; } // CategoryName (Primary key) (length: 15)
+        public bool Discontinued { get; set; } // Discontinued
+        public string CategoryName { get; set; } // CategoryName (length: 15)
     }
 
     // Categories
@@ -1068,15 +1095,15 @@ namespace Efrpg.V3TestE
     // Category Sales for 1997
     public class CategorySalesFor1997
     {
-        public string CategoryName { get; set; } // CategoryName (Primary key) (length: 15)
+        public string CategoryName { get; set; } // CategoryName (length: 15)
         public decimal? CategorySales { get; set; } // CategorySales
     }
 
     // Current Product List
     public class CurrentProductList
     {
-        public int ProductId { get; set; } // ProductID (Primary key)
-        public string ProductName { get; set; } // ProductName (Primary key) (length: 40)
+        public int ProductId { get; set; } // ProductID
+        public string ProductName { get; set; } // ProductName (length: 40)
     }
 
     // Customers
@@ -1117,9 +1144,9 @@ namespace Efrpg.V3TestE
     public class CustomerAndSuppliersByCity
     {
         public string City { get; set; } // City (length: 15)
-        public string CompanyName { get; set; } // CompanyName (Primary key) (length: 40)
+        public string CompanyName { get; set; } // CompanyName (length: 40)
         public string ContactName { get; set; } // ContactName (length: 30)
-        public string Relationship { get; set; } // Relationship (Primary key) (length: 9)
+        public string Relationship { get; set; } // Relationship (length: 9)
     }
 
     // CustomerCustomerDemo
@@ -1243,23 +1270,23 @@ namespace Efrpg.V3TestE
         public string ShipPostalCode { get; set; } // ShipPostalCode (length: 10)
         public string ShipCountry { get; set; } // ShipCountry (length: 15)
         public string CustomerId { get; set; } // CustomerID (length: 5)
-        public string CustomerName { get; set; } // CustomerName (Primary key) (length: 40)
+        public string CustomerName { get; set; } // CustomerName (length: 40)
         public string Address { get; set; } // Address (length: 60)
         public string City { get; set; } // City (length: 15)
         public string Region { get; set; } // Region (length: 15)
         public string PostalCode { get; set; } // PostalCode (length: 10)
         public string Country { get; set; } // Country (length: 15)
-        public string Salesperson { get; set; } // Salesperson (Primary key) (length: 31)
-        public int OrderId { get; set; } // OrderID (Primary key)
+        public string Salesperson { get; set; } // Salesperson (length: 31)
+        public int OrderId { get; set; } // OrderID
         public DateTime? OrderDate { get; set; } // OrderDate
         public DateTime? RequiredDate { get; set; } // RequiredDate
         public DateTime? ShippedDate { get; set; } // ShippedDate
-        public string ShipperName { get; set; } // ShipperName (Primary key) (length: 40)
-        public int ProductId { get; set; } // ProductID (Primary key)
-        public string ProductName { get; set; } // ProductName (Primary key) (length: 40)
-        public decimal UnitPrice { get; set; } // UnitPrice (Primary key)
-        public short Quantity { get; set; } // Quantity (Primary key)
-        public float Discount { get; set; } // Discount (Primary key)
+        public string ShipperName { get; set; } // ShipperName (length: 40)
+        public int ProductId { get; set; } // ProductID
+        public string ProductName { get; set; } // ProductName (length: 40)
+        public decimal UnitPrice { get; set; } // UnitPrice
+        public short Quantity { get; set; } // Quantity
+        public float Discount { get; set; } // Discount
         public decimal? ExtendedPrice { get; set; } // ExtendedPrice
         public decimal? Freight { get; set; } // Freight
     }
@@ -1345,19 +1372,19 @@ namespace Efrpg.V3TestE
     // Order Details Extended
     public class OrderDetailsExtended
     {
-        public int OrderId { get; set; } // OrderID (Primary key)
-        public int ProductId { get; set; } // ProductID (Primary key)
-        public string ProductName { get; set; } // ProductName (Primary key) (length: 40)
-        public decimal UnitPrice { get; set; } // UnitPrice (Primary key)
-        public short Quantity { get; set; } // Quantity (Primary key)
-        public float Discount { get; set; } // Discount (Primary key)
+        public int OrderId { get; set; } // OrderID
+        public int ProductId { get; set; } // ProductID
+        public string ProductName { get; set; } // ProductName (length: 40)
+        public decimal UnitPrice { get; set; } // UnitPrice
+        public short Quantity { get; set; } // Quantity
+        public float Discount { get; set; } // Discount
         public decimal? ExtendedPrice { get; set; } // ExtendedPrice
     }
 
     // Orders Qry
     public class OrdersQry
     {
-        public int OrderId { get; set; } // OrderID (Primary key)
+        public int OrderId { get; set; } // OrderID
         public string CustomerId { get; set; } // CustomerID (length: 5)
         public int? EmployeeId { get; set; } // EmployeeID
         public DateTime? OrderDate { get; set; } // OrderDate
@@ -1371,7 +1398,7 @@ namespace Efrpg.V3TestE
         public string ShipRegion { get; set; } // ShipRegion (length: 15)
         public string ShipPostalCode { get; set; } // ShipPostalCode (length: 10)
         public string ShipCountry { get; set; } // ShipCountry (length: 15)
-        public string CompanyName { get; set; } // CompanyName (Primary key) (length: 40)
+        public string CompanyName { get; set; } // CompanyName (length: 40)
         public string Address { get; set; } // Address (length: 60)
         public string City { get; set; } // City (length: 15)
         public string Region { get; set; } // Region (length: 15)
@@ -1382,7 +1409,7 @@ namespace Efrpg.V3TestE
     // Order Subtotals
     public class OrderSubtotal
     {
-        public int OrderId { get; set; } // OrderID (Primary key)
+        public int OrderId { get; set; } // OrderID
         public decimal? Subtotal { get; set; } // Subtotal
     }
 
@@ -1433,30 +1460,28 @@ namespace Efrpg.V3TestE
     // Products Above Average Price
     public class ProductsAboveAveragePrice
     {
-        public string ProductName { get; set; } // ProductName (Primary key) (length: 40)
+        public string ProductName { get; set; } // ProductName (length: 40)
         public decimal? UnitPrice { get; set; } // UnitPrice
     }
 
     // Product Sales for 1997
     public class ProductSalesFor1997
     {
-        public string CategoryName { get; set; } // CategoryName (Primary key) (length: 15)
-        public string ProductName { get; set; } // ProductName (Primary key) (length: 40)
+        public string CategoryName { get; set; } // CategoryName (length: 15)
+        public string ProductName { get; set; } // ProductName (length: 40)
         public decimal? ProductSales { get; set; } // ProductSales
     }
 
     // Products by Category
     public class ProductsByCategory
     {
-        public string CategoryName { get; set; } // CategoryName (Primary key) (length: 15)
-        public string ProductName { get; set; } // ProductName (Primary key) (length: 40)
+        public string CategoryName { get; set; } // CategoryName (length: 15)
+        public string ProductName { get; set; } // ProductName (length: 40)
         public string QuantityPerUnit { get; set; } // QuantityPerUnit (length: 20)
         public short? UnitsInStock { get; set; } // UnitsInStock
-        public bool Discontinued { get; set; } // Discontinued (Primary key)
+        public bool Discontinued { get; set; } // Discontinued
     }
 
-    // The table 'Quarterly Orders' is not usable by entity framework because it
-    // does not have a primary key. It is listed here for completeness.
     // Quarterly Orders
     public class QuarterlyOrder
     {
@@ -1488,9 +1513,9 @@ namespace Efrpg.V3TestE
     // Sales by Category
     public class SalesByCategory
     {
-        public int CategoryId { get; set; } // CategoryID (Primary key)
-        public string CategoryName { get; set; } // CategoryName (Primary key) (length: 15)
-        public string ProductName { get; set; } // ProductName (Primary key) (length: 40)
+        public int CategoryId { get; set; } // CategoryID
+        public string CategoryName { get; set; } // CategoryName (length: 15)
+        public string ProductName { get; set; } // ProductName (length: 40)
         public decimal? ProductSales { get; set; } // ProductSales
     }
 
@@ -1498,8 +1523,8 @@ namespace Efrpg.V3TestE
     public class SalesTotalsByAmount
     {
         public decimal? SaleAmount { get; set; } // SaleAmount
-        public int OrderId { get; set; } // OrderID (Primary key)
-        public string CompanyName { get; set; } // CompanyName (Primary key) (length: 40)
+        public int OrderId { get; set; } // OrderID
+        public string CompanyName { get; set; } // CompanyName (length: 40)
         public DateTime? ShippedDate { get; set; } // ShippedDate
     }
 
@@ -1527,7 +1552,7 @@ namespace Efrpg.V3TestE
     public class SummaryOfSalesByQuarter
     {
         public DateTime? ShippedDate { get; set; } // ShippedDate
-        public int OrderId { get; set; } // OrderID (Primary key)
+        public int OrderId { get; set; } // OrderID
         public decimal? Subtotal { get; set; } // Subtotal
     }
 
@@ -1535,7 +1560,7 @@ namespace Efrpg.V3TestE
     public class SummaryOfSalesByYear
     {
         public DateTime? ShippedDate { get; set; } // ShippedDate
-        public int OrderId { get; set; } // OrderID (Primary key)
+        public int OrderId { get; set; } // OrderID
         public decimal? Subtotal { get; set; } // Subtotal
     }
 
@@ -1605,20 +1630,20 @@ namespace Efrpg.V3TestE
     {
         public void Configure(EntityTypeBuilder<AlphabeticalListOfProduct> builder)
         {
-            builder.ToTable("Alphabetical list of products", "dbo");
-            builder.HasKey(x => new { x.ProductId, x.ProductName, x.Discontinued, x.CategoryName });
+            builder.ToView("Alphabetical list of products", "dbo");
+            builder.HasNoKey();
 
-            builder.Property(x => x.ProductId).HasColumnName(@"ProductID").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.ProductName).HasColumnName(@"ProductName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40).ValueGeneratedNever();
+            builder.Property(x => x.ProductId).HasColumnName(@"ProductID").HasColumnType("int").IsRequired();
+            builder.Property(x => x.ProductName).HasColumnName(@"ProductName").HasColumnType("nvarchar(40)").IsRequired().HasMaxLength(40);
             builder.Property(x => x.SupplierId).HasColumnName(@"SupplierID").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.CategoryId).HasColumnName(@"CategoryID").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.QuantityPerUnit).HasColumnName(@"QuantityPerUnit").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(20);
+            builder.Property(x => x.QuantityPerUnit).HasColumnName(@"QuantityPerUnit").HasColumnType("nvarchar(20)").IsRequired(false).HasMaxLength(20);
             builder.Property(x => x.UnitPrice).HasColumnName(@"UnitPrice").HasColumnType("money").IsRequired(false);
             builder.Property(x => x.UnitsInStock).HasColumnName(@"UnitsInStock").HasColumnType("smallint").IsRequired(false);
             builder.Property(x => x.UnitsOnOrder).HasColumnName(@"UnitsOnOrder").HasColumnType("smallint").IsRequired(false);
             builder.Property(x => x.ReorderLevel).HasColumnName(@"ReorderLevel").HasColumnType("smallint").IsRequired(false);
-            builder.Property(x => x.Discontinued).HasColumnName(@"Discontinued").HasColumnType("bit").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.CategoryName).HasColumnName(@"CategoryName").HasColumnType("nvarchar").IsRequired().HasMaxLength(15).ValueGeneratedNever();
+            builder.Property(x => x.Discontinued).HasColumnName(@"Discontinued").HasColumnType("bit").IsRequired();
+            builder.Property(x => x.CategoryName).HasColumnName(@"CategoryName").HasColumnType("nvarchar(15)").IsRequired().HasMaxLength(15);
         }
     }
 
@@ -1628,14 +1653,13 @@ namespace Efrpg.V3TestE
         public void Configure(EntityTypeBuilder<Category> builder)
         {
             builder.ToTable("Categories", "dbo");
-            builder.HasKey(x => x.CategoryId);
+            builder.HasKey(x => x.CategoryId).HasName("PK_Categories").IsClustered();
 
-            builder.Property(x => x.CategoryId).HasColumnName(@"CategoryID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseSqlServerIdentityColumn();
-            builder.Property(x => x.CategoryName).HasColumnName(@"CategoryName").HasColumnType("nvarchar").IsRequired().HasMaxLength(15);
+            builder.Property(x => x.CategoryId).HasColumnName(@"CategoryID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.CategoryName).HasColumnName(@"CategoryName").HasColumnType("nvarchar(15)").IsRequired().HasMaxLength(15);
             builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("ntext").IsRequired(false);
-            builder.Property(x => x.Picture).HasColumnName(@"Picture").HasColumnType("image").IsRequired(false).HasMaxLength(2147483647);
+            builder.Property(x => x.Picture).HasColumnName(@"Picture").HasColumnType("image(2147483647)").IsRequired(false).HasMaxLength(2147483647);
 
-            builder.HasIndex(x => x.CategoryId).HasName("PK_Categories").IsUnique().ForSqlServerIsClustered();
             builder.HasIndex(x => x.CategoryName).HasName("CategoryName");
         }
     }
@@ -1645,10 +1669,10 @@ namespace Efrpg.V3TestE
     {
         public void Configure(EntityTypeBuilder<CategorySalesFor1997> builder)
         {
-            builder.ToTable("Category Sales for 1997", "dbo");
-            builder.HasKey(x => x.CategoryName);
+            builder.ToView("Category Sales for 1997", "dbo");
+            builder.HasNoKey();
 
-            builder.Property(x => x.CategoryName).HasColumnName(@"CategoryName").HasColumnType("nvarchar").IsRequired().HasMaxLength(15).ValueGeneratedNever();
+            builder.Property(x => x.CategoryName).HasColumnName(@"CategoryName").HasColumnType("nvarchar(15)").IsRequired().HasMaxLength(15);
             builder.Property(x => x.CategorySales).HasColumnName(@"CategorySales").HasColumnType("money").IsRequired(false);
         }
     }
@@ -1658,11 +1682,11 @@ namespace Efrpg.V3TestE
     {
         public void Configure(EntityTypeBuilder<CurrentProductList> builder)
         {
-            builder.ToTable("Current Product List", "dbo");
-            builder.HasKey(x => new { x.ProductId, x.ProductName });
+            builder.ToView("Current Product List", "dbo");
+            builder.HasNoKey();
 
-            builder.Property(x => x.ProductId).HasColumnName(@"ProductID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseSqlServerIdentityColumn();
-            builder.Property(x => x.ProductName).HasColumnName(@"ProductName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40).ValueGeneratedNever();
+            builder.Property(x => x.ProductId).HasColumnName(@"ProductID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.ProductName).HasColumnName(@"ProductName").HasColumnType("nvarchar(40)").IsRequired().HasMaxLength(40);
         }
     }
 
@@ -1672,21 +1696,20 @@ namespace Efrpg.V3TestE
         public void Configure(EntityTypeBuilder<Customer> builder)
         {
             builder.ToTable("Customers", "dbo");
-            builder.HasKey(x => x.CustomerId);
+            builder.HasKey(x => x.CustomerId).HasName("PK_Customers").IsClustered();
 
-            builder.Property(x => x.CustomerId).HasColumnName(@"CustomerID").HasColumnType("nchar").IsRequired().IsFixedLength().HasMaxLength(5).ValueGeneratedNever();
-            builder.Property(x => x.CompanyName).HasColumnName(@"CompanyName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40);
-            builder.Property(x => x.ContactName).HasColumnName(@"ContactName").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(30);
-            builder.Property(x => x.ContactTitle).HasColumnName(@"ContactTitle").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(30);
-            builder.Property(x => x.Address).HasColumnName(@"Address").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(60);
-            builder.Property(x => x.City).HasColumnName(@"City").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(15);
-            builder.Property(x => x.Region).HasColumnName(@"Region").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(15);
-            builder.Property(x => x.PostalCode).HasColumnName(@"PostalCode").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(10);
-            builder.Property(x => x.Country).HasColumnName(@"Country").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(15);
-            builder.Property(x => x.Phone).HasColumnName(@"Phone").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(24);
-            builder.Property(x => x.Fax).HasColumnName(@"Fax").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(24);
+            builder.Property(x => x.CustomerId).HasColumnName(@"CustomerID").HasColumnType("nchar(5)").IsRequired().IsFixedLength().HasMaxLength(5).ValueGeneratedNever();
+            builder.Property(x => x.CompanyName).HasColumnName(@"CompanyName").HasColumnType("nvarchar(40)").IsRequired().HasMaxLength(40);
+            builder.Property(x => x.ContactName).HasColumnName(@"ContactName").HasColumnType("nvarchar(30)").IsRequired(false).HasMaxLength(30);
+            builder.Property(x => x.ContactTitle).HasColumnName(@"ContactTitle").HasColumnType("nvarchar(30)").IsRequired(false).HasMaxLength(30);
+            builder.Property(x => x.Address).HasColumnName(@"Address").HasColumnType("nvarchar(60)").IsRequired(false).HasMaxLength(60);
+            builder.Property(x => x.City).HasColumnName(@"City").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
+            builder.Property(x => x.Region).HasColumnName(@"Region").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
+            builder.Property(x => x.PostalCode).HasColumnName(@"PostalCode").HasColumnType("nvarchar(10)").IsRequired(false).HasMaxLength(10);
+            builder.Property(x => x.Country).HasColumnName(@"Country").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
+            builder.Property(x => x.Phone).HasColumnName(@"Phone").HasColumnType("nvarchar(24)").IsRequired(false).HasMaxLength(24);
+            builder.Property(x => x.Fax).HasColumnName(@"Fax").HasColumnType("nvarchar(24)").IsRequired(false).HasMaxLength(24);
 
-            builder.HasIndex(x => x.CustomerId).HasName("PK_Customers").IsUnique().ForSqlServerIsClustered();
             builder.HasIndex(x => x.City).HasName("City");
             builder.HasIndex(x => x.CompanyName).HasName("CompanyName");
             builder.HasIndex(x => x.PostalCode).HasName("PostalCode");
@@ -1699,13 +1722,13 @@ namespace Efrpg.V3TestE
     {
         public void Configure(EntityTypeBuilder<CustomerAndSuppliersByCity> builder)
         {
-            builder.ToTable("Customer and Suppliers by City", "dbo");
-            builder.HasKey(x => new { x.CompanyName, x.Relationship });
+            builder.ToView("Customer and Suppliers by City", "dbo");
+            builder.HasNoKey();
 
-            builder.Property(x => x.City).HasColumnName(@"City").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(15);
-            builder.Property(x => x.CompanyName).HasColumnName(@"CompanyName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40).ValueGeneratedNever();
-            builder.Property(x => x.ContactName).HasColumnName(@"ContactName").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(30);
-            builder.Property(x => x.Relationship).HasColumnName(@"Relationship").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(9).ValueGeneratedNever();
+            builder.Property(x => x.City).HasColumnName(@"City").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
+            builder.Property(x => x.CompanyName).HasColumnName(@"CompanyName").HasColumnType("nvarchar(40)").IsRequired().HasMaxLength(40);
+            builder.Property(x => x.ContactName).HasColumnName(@"ContactName").HasColumnType("nvarchar(30)").IsRequired(false).HasMaxLength(30);
+            builder.Property(x => x.Relationship).HasColumnName(@"Relationship").HasColumnType("varchar(9)").IsRequired().IsUnicode(false).HasMaxLength(9);
         }
     }
 
@@ -1715,16 +1738,14 @@ namespace Efrpg.V3TestE
         public void Configure(EntityTypeBuilder<CustomerCustomerDemo> builder)
         {
             builder.ToTable("CustomerCustomerDemo", "dbo");
-            builder.HasKey(x => new { x.CustomerId, x.CustomerTypeId });
+            builder.HasKey(x => new { x.CustomerId, x.CustomerTypeId }).HasName("PK_CustomerCustomerDemo");
 
-            builder.Property(x => x.CustomerId).HasColumnName(@"CustomerID").HasColumnType("nchar").IsRequired().IsFixedLength().HasMaxLength(5).ValueGeneratedNever();
-            builder.Property(x => x.CustomerTypeId).HasColumnName(@"CustomerTypeID").HasColumnType("nchar").IsRequired().IsFixedLength().HasMaxLength(10).ValueGeneratedNever();
+            builder.Property(x => x.CustomerId).HasColumnName(@"CustomerID").HasColumnType("nchar(5)").IsRequired().IsFixedLength().HasMaxLength(5).ValueGeneratedNever();
+            builder.Property(x => x.CustomerTypeId).HasColumnName(@"CustomerTypeID").HasColumnType("nchar(10)").IsRequired().IsFixedLength().HasMaxLength(10).ValueGeneratedNever();
 
             // Foreign keys
             builder.HasOne(a => a.Customer).WithMany(b => b.CustomerCustomerDemoes).HasForeignKey(c => c.CustomerId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_CustomerCustomerDemo_Customers");
             builder.HasOne(a => a.CustomerDemographic).WithMany(b => b.CustomerCustomerDemoes).HasForeignKey(c => c.CustomerTypeId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_CustomerCustomerDemo");
-
-            builder.HasIndex(x => new { x.CustomerId, x.CustomerTypeId }).HasName("PK_CustomerCustomerDemo").IsUnique();
         }
     }
 
@@ -1734,12 +1755,10 @@ namespace Efrpg.V3TestE
         public void Configure(EntityTypeBuilder<CustomerDemographic> builder)
         {
             builder.ToTable("CustomerDemographics", "dbo");
-            builder.HasKey(x => x.CustomerTypeId);
+            builder.HasKey(x => x.CustomerTypeId).HasName("PK_CustomerDemographics");
 
-            builder.Property(x => x.CustomerTypeId).HasColumnName(@"CustomerTypeID").HasColumnType("nchar").IsRequired().IsFixedLength().HasMaxLength(10).ValueGeneratedNever();
+            builder.Property(x => x.CustomerTypeId).HasColumnName(@"CustomerTypeID").HasColumnType("nchar(10)").IsRequired().IsFixedLength().HasMaxLength(10).ValueGeneratedNever();
             builder.Property(x => x.CustomerDesc).HasColumnName(@"CustomerDesc").HasColumnType("ntext").IsRequired(false);
-
-            builder.HasIndex(x => x.CustomerTypeId).HasName("PK_CustomerDemographics").IsUnique();
         }
     }
 
@@ -1749,31 +1768,30 @@ namespace Efrpg.V3TestE
         public void Configure(EntityTypeBuilder<Employee> builder)
         {
             builder.ToTable("Employees", "dbo");
-            builder.HasKey(x => x.EmployeeId);
+            builder.HasKey(x => x.EmployeeId).HasName("PK_Employees").IsClustered();
 
-            builder.Property(x => x.EmployeeId).HasColumnName(@"EmployeeID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseSqlServerIdentityColumn();
-            builder.Property(x => x.LastName).HasColumnName(@"LastName").HasColumnType("nvarchar").IsRequired().HasMaxLength(20);
-            builder.Property(x => x.FirstName).HasColumnName(@"FirstName").HasColumnType("nvarchar").IsRequired().HasMaxLength(10);
-            builder.Property(x => x.Title).HasColumnName(@"Title").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(30);
-            builder.Property(x => x.TitleOfCourtesy).HasColumnName(@"TitleOfCourtesy").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(25);
+            builder.Property(x => x.EmployeeId).HasColumnName(@"EmployeeID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.LastName).HasColumnName(@"LastName").HasColumnType("nvarchar(20)").IsRequired().HasMaxLength(20);
+            builder.Property(x => x.FirstName).HasColumnName(@"FirstName").HasColumnType("nvarchar(10)").IsRequired().HasMaxLength(10);
+            builder.Property(x => x.Title).HasColumnName(@"Title").HasColumnType("nvarchar(30)").IsRequired(false).HasMaxLength(30);
+            builder.Property(x => x.TitleOfCourtesy).HasColumnName(@"TitleOfCourtesy").HasColumnType("nvarchar(25)").IsRequired(false).HasMaxLength(25);
             builder.Property(x => x.BirthDate).HasColumnName(@"BirthDate").HasColumnType("datetime").IsRequired(false);
             builder.Property(x => x.HireDate).HasColumnName(@"HireDate").HasColumnType("datetime").IsRequired(false);
-            builder.Property(x => x.Address).HasColumnName(@"Address").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(60);
-            builder.Property(x => x.City).HasColumnName(@"City").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(15);
-            builder.Property(x => x.Region).HasColumnName(@"Region").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(15);
-            builder.Property(x => x.PostalCode).HasColumnName(@"PostalCode").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(10);
-            builder.Property(x => x.Country).HasColumnName(@"Country").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(15);
-            builder.Property(x => x.HomePhone).HasColumnName(@"HomePhone").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(24);
-            builder.Property(x => x.Extension).HasColumnName(@"Extension").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(4);
-            builder.Property(x => x.Photo).HasColumnName(@"Photo").HasColumnType("image").IsRequired(false).HasMaxLength(2147483647);
+            builder.Property(x => x.Address).HasColumnName(@"Address").HasColumnType("nvarchar(60)").IsRequired(false).HasMaxLength(60);
+            builder.Property(x => x.City).HasColumnName(@"City").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
+            builder.Property(x => x.Region).HasColumnName(@"Region").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
+            builder.Property(x => x.PostalCode).HasColumnName(@"PostalCode").HasColumnType("nvarchar(10)").IsRequired(false).HasMaxLength(10);
+            builder.Property(x => x.Country).HasColumnName(@"Country").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
+            builder.Property(x => x.HomePhone).HasColumnName(@"HomePhone").HasColumnType("nvarchar(24)").IsRequired(false).HasMaxLength(24);
+            builder.Property(x => x.Extension).HasColumnName(@"Extension").HasColumnType("nvarchar(4)").IsRequired(false).HasMaxLength(4);
+            builder.Property(x => x.Photo).HasColumnName(@"Photo").HasColumnType("image(2147483647)").IsRequired(false).HasMaxLength(2147483647);
             builder.Property(x => x.Notes).HasColumnName(@"Notes").HasColumnType("ntext").IsRequired(false);
             builder.Property(x => x.ReportsTo).HasColumnName(@"ReportsTo").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.PhotoPath).HasColumnName(@"PhotoPath").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(255);
+            builder.Property(x => x.PhotoPath).HasColumnName(@"PhotoPath").HasColumnType("nvarchar(255)").IsRequired(false).HasMaxLength(255);
 
             // Foreign keys
             builder.HasOne(a => a.Employee_ReportsTo).WithMany(b => b.Employees).HasForeignKey(c => c.ReportsTo).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Employees_Employees");
 
-            builder.HasIndex(x => x.EmployeeId).HasName("PK_Employees").IsUnique().ForSqlServerIsClustered();
             builder.HasIndex(x => x.LastName).HasName("LastName");
             builder.HasIndex(x => x.PostalCode).HasName("PostalCode");
         }
@@ -1785,16 +1803,14 @@ namespace Efrpg.V3TestE
         public void Configure(EntityTypeBuilder<EmployeeTerritory> builder)
         {
             builder.ToTable("EmployeeTerritories", "dbo");
-            builder.HasKey(x => new { x.EmployeeId, x.TerritoryId });
+            builder.HasKey(x => new { x.EmployeeId, x.TerritoryId }).HasName("PK_EmployeeTerritories");
 
             builder.Property(x => x.EmployeeId).HasColumnName(@"EmployeeID").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.TerritoryId).HasColumnName(@"TerritoryID").HasColumnType("nvarchar").IsRequired().HasMaxLength(20).ValueGeneratedNever();
+            builder.Property(x => x.TerritoryId).HasColumnName(@"TerritoryID").HasColumnType("nvarchar(20)").IsRequired().HasMaxLength(20).ValueGeneratedNever();
 
             // Foreign keys
             builder.HasOne(a => a.Employee).WithMany(b => b.EmployeeTerritories).HasForeignKey(c => c.EmployeeId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_EmployeeTerritories_Employees");
             builder.HasOne(a => a.Territory).WithMany(b => b.EmployeeTerritories).HasForeignKey(c => c.TerritoryId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_EmployeeTerritories_Territories");
-
-            builder.HasIndex(x => new { x.EmployeeId, x.TerritoryId }).HasName("PK_EmployeeTerritories").IsUnique();
         }
     }
 
@@ -1803,33 +1819,33 @@ namespace Efrpg.V3TestE
     {
         public void Configure(EntityTypeBuilder<Invoice> builder)
         {
-            builder.ToTable("Invoices", "dbo");
-            builder.HasKey(x => new { x.CustomerName, x.Salesperson, x.OrderId, x.ShipperName, x.ProductId, x.ProductName, x.UnitPrice, x.Quantity, x.Discount });
+            builder.ToView("Invoices", "dbo");
+            builder.HasNoKey();
 
-            builder.Property(x => x.ShipName).HasColumnName(@"ShipName").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(40);
-            builder.Property(x => x.ShipAddress).HasColumnName(@"ShipAddress").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(60);
-            builder.Property(x => x.ShipCity).HasColumnName(@"ShipCity").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(15);
-            builder.Property(x => x.ShipRegion).HasColumnName(@"ShipRegion").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(15);
-            builder.Property(x => x.ShipPostalCode).HasColumnName(@"ShipPostalCode").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(10);
-            builder.Property(x => x.ShipCountry).HasColumnName(@"ShipCountry").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(15);
-            builder.Property(x => x.CustomerId).HasColumnName(@"CustomerID").HasColumnType("nchar").IsRequired(false).IsFixedLength().HasMaxLength(5);
-            builder.Property(x => x.CustomerName).HasColumnName(@"CustomerName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40).ValueGeneratedNever();
-            builder.Property(x => x.Address).HasColumnName(@"Address").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(60);
-            builder.Property(x => x.City).HasColumnName(@"City").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(15);
-            builder.Property(x => x.Region).HasColumnName(@"Region").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(15);
-            builder.Property(x => x.PostalCode).HasColumnName(@"PostalCode").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(10);
-            builder.Property(x => x.Country).HasColumnName(@"Country").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(15);
-            builder.Property(x => x.Salesperson).HasColumnName(@"Salesperson").HasColumnType("nvarchar").IsRequired().HasMaxLength(31).ValueGeneratedNever();
-            builder.Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.ShipName).HasColumnName(@"ShipName").HasColumnType("nvarchar(40)").IsRequired(false).HasMaxLength(40);
+            builder.Property(x => x.ShipAddress).HasColumnName(@"ShipAddress").HasColumnType("nvarchar(60)").IsRequired(false).HasMaxLength(60);
+            builder.Property(x => x.ShipCity).HasColumnName(@"ShipCity").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
+            builder.Property(x => x.ShipRegion).HasColumnName(@"ShipRegion").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
+            builder.Property(x => x.ShipPostalCode).HasColumnName(@"ShipPostalCode").HasColumnType("nvarchar(10)").IsRequired(false).HasMaxLength(10);
+            builder.Property(x => x.ShipCountry).HasColumnName(@"ShipCountry").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
+            builder.Property(x => x.CustomerId).HasColumnName(@"CustomerID").HasColumnType("nchar(5)").IsRequired(false).IsFixedLength().HasMaxLength(5);
+            builder.Property(x => x.CustomerName).HasColumnName(@"CustomerName").HasColumnType("nvarchar(40)").IsRequired().HasMaxLength(40);
+            builder.Property(x => x.Address).HasColumnName(@"Address").HasColumnType("nvarchar(60)").IsRequired(false).HasMaxLength(60);
+            builder.Property(x => x.City).HasColumnName(@"City").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
+            builder.Property(x => x.Region).HasColumnName(@"Region").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
+            builder.Property(x => x.PostalCode).HasColumnName(@"PostalCode").HasColumnType("nvarchar(10)").IsRequired(false).HasMaxLength(10);
+            builder.Property(x => x.Country).HasColumnName(@"Country").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
+            builder.Property(x => x.Salesperson).HasColumnName(@"Salesperson").HasColumnType("nvarchar(31)").IsRequired().HasMaxLength(31);
+            builder.Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired();
             builder.Property(x => x.OrderDate).HasColumnName(@"OrderDate").HasColumnType("datetime").IsRequired(false);
             builder.Property(x => x.RequiredDate).HasColumnName(@"RequiredDate").HasColumnType("datetime").IsRequired(false);
             builder.Property(x => x.ShippedDate).HasColumnName(@"ShippedDate").HasColumnType("datetime").IsRequired(false);
-            builder.Property(x => x.ShipperName).HasColumnName(@"ShipperName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40).ValueGeneratedNever();
-            builder.Property(x => x.ProductId).HasColumnName(@"ProductID").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.ProductName).HasColumnName(@"ProductName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40).ValueGeneratedNever();
-            builder.Property(x => x.UnitPrice).HasColumnName(@"UnitPrice").HasColumnType("money").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.Quantity).HasColumnName(@"Quantity").HasColumnType("smallint").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.Discount).HasColumnName(@"Discount").HasColumnType("real").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.ShipperName).HasColumnName(@"ShipperName").HasColumnType("nvarchar(40)").IsRequired().HasMaxLength(40);
+            builder.Property(x => x.ProductId).HasColumnName(@"ProductID").HasColumnType("int").IsRequired();
+            builder.Property(x => x.ProductName).HasColumnName(@"ProductName").HasColumnType("nvarchar(40)").IsRequired().HasMaxLength(40);
+            builder.Property(x => x.UnitPrice).HasColumnName(@"UnitPrice").HasColumnType("money").IsRequired();
+            builder.Property(x => x.Quantity).HasColumnName(@"Quantity").HasColumnType("smallint").IsRequired();
+            builder.Property(x => x.Discount).HasColumnName(@"Discount").HasColumnType("real").IsRequired();
             builder.Property(x => x.ExtendedPrice).HasColumnName(@"ExtendedPrice").HasColumnType("money").IsRequired(false);
             builder.Property(x => x.Freight).HasColumnName(@"Freight").HasColumnType("money").IsRequired(false);
         }
@@ -1841,29 +1857,28 @@ namespace Efrpg.V3TestE
         public void Configure(EntityTypeBuilder<Order> builder)
         {
             builder.ToTable("Orders", "dbo");
-            builder.HasKey(x => x.OrderId);
+            builder.HasKey(x => x.OrderId).HasName("PK_Orders").IsClustered();
 
-            builder.Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseSqlServerIdentityColumn();
-            builder.Property(x => x.CustomerId).HasColumnName(@"CustomerID").HasColumnType("nchar").IsRequired(false).IsFixedLength().HasMaxLength(5);
+            builder.Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.CustomerId).HasColumnName(@"CustomerID").HasColumnType("nchar(5)").IsRequired(false).IsFixedLength().HasMaxLength(5);
             builder.Property(x => x.EmployeeId).HasColumnName(@"EmployeeID").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.OrderDate).HasColumnName(@"OrderDate").HasColumnType("datetime").IsRequired(false);
             builder.Property(x => x.RequiredDate).HasColumnName(@"RequiredDate").HasColumnType("datetime").IsRequired(false);
             builder.Property(x => x.ShippedDate).HasColumnName(@"ShippedDate").HasColumnType("datetime").IsRequired(false);
             builder.Property(x => x.ShipVia).HasColumnName(@"ShipVia").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.Freight).HasColumnName(@"Freight").HasColumnType("money").IsRequired(false);
-            builder.Property(x => x.ShipName).HasColumnName(@"ShipName").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(40);
-            builder.Property(x => x.ShipAddress).HasColumnName(@"ShipAddress").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(60);
-            builder.Property(x => x.ShipCity).HasColumnName(@"ShipCity").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(15);
-            builder.Property(x => x.ShipRegion).HasColumnName(@"ShipRegion").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(15);
-            builder.Property(x => x.ShipPostalCode).HasColumnName(@"ShipPostalCode").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(10);
-            builder.Property(x => x.ShipCountry).HasColumnName(@"ShipCountry").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(15);
+            builder.Property(x => x.ShipName).HasColumnName(@"ShipName").HasColumnType("nvarchar(40)").IsRequired(false).HasMaxLength(40);
+            builder.Property(x => x.ShipAddress).HasColumnName(@"ShipAddress").HasColumnType("nvarchar(60)").IsRequired(false).HasMaxLength(60);
+            builder.Property(x => x.ShipCity).HasColumnName(@"ShipCity").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
+            builder.Property(x => x.ShipRegion).HasColumnName(@"ShipRegion").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
+            builder.Property(x => x.ShipPostalCode).HasColumnName(@"ShipPostalCode").HasColumnType("nvarchar(10)").IsRequired(false).HasMaxLength(10);
+            builder.Property(x => x.ShipCountry).HasColumnName(@"ShipCountry").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
 
             // Foreign keys
             builder.HasOne(a => a.Customer).WithMany(b => b.Orders).HasForeignKey(c => c.CustomerId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Orders_Customers");
             builder.HasOne(a => a.Employee).WithMany(b => b.Orders).HasForeignKey(c => c.EmployeeId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Orders_Employees");
             builder.HasOne(a => a.Shipper).WithMany(b => b.Orders).HasForeignKey(c => c.ShipVia).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Orders_Shippers");
 
-            builder.HasIndex(x => x.OrderId).HasName("PK_Orders").IsUnique().ForSqlServerIsClustered();
             builder.HasIndex(x => x.CustomerId).HasName("CustomerID");
             builder.HasIndex(x => x.CustomerId).HasName("CustomersOrders");
             builder.HasIndex(x => x.EmployeeId).HasName("EmployeeID");
@@ -1881,7 +1896,7 @@ namespace Efrpg.V3TestE
         public void Configure(EntityTypeBuilder<OrderDetail> builder)
         {
             builder.ToTable("Order Details", "dbo");
-            builder.HasKey(x => new { x.OrderId, x.ProductId });
+            builder.HasKey(x => new { x.OrderId, x.ProductId }).HasName("PK_Order_Details").IsClustered();
 
             builder.Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.ProductId).HasColumnName(@"ProductID").HasColumnType("int").IsRequired().ValueGeneratedNever();
@@ -1897,7 +1912,6 @@ namespace Efrpg.V3TestE
             builder.HasIndex(x => x.OrderId).HasName("OrdersOrder_Details");
             builder.HasIndex(x => x.ProductId).HasName("ProductID");
             builder.HasIndex(x => x.ProductId).HasName("ProductsOrder_Details");
-            builder.HasIndex(x => new { x.OrderId, x.ProductId }).HasName("PK_Order_Details").IsUnique().ForSqlServerIsClustered();
         }
     }
 
@@ -1906,15 +1920,15 @@ namespace Efrpg.V3TestE
     {
         public void Configure(EntityTypeBuilder<OrderDetailsExtended> builder)
         {
-            builder.ToTable("Order Details Extended", "dbo");
-            builder.HasKey(x => new { x.OrderId, x.ProductId, x.ProductName, x.UnitPrice, x.Quantity, x.Discount });
+            builder.ToView("Order Details Extended", "dbo");
+            builder.HasNoKey();
 
-            builder.Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.ProductId).HasColumnName(@"ProductID").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.ProductName).HasColumnName(@"ProductName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40).ValueGeneratedNever();
-            builder.Property(x => x.UnitPrice).HasColumnName(@"UnitPrice").HasColumnType("money").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.Quantity).HasColumnName(@"Quantity").HasColumnType("smallint").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.Discount).HasColumnName(@"Discount").HasColumnType("real").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired();
+            builder.Property(x => x.ProductId).HasColumnName(@"ProductID").HasColumnType("int").IsRequired();
+            builder.Property(x => x.ProductName).HasColumnName(@"ProductName").HasColumnType("nvarchar(40)").IsRequired().HasMaxLength(40);
+            builder.Property(x => x.UnitPrice).HasColumnName(@"UnitPrice").HasColumnType("money").IsRequired();
+            builder.Property(x => x.Quantity).HasColumnName(@"Quantity").HasColumnType("smallint").IsRequired();
+            builder.Property(x => x.Discount).HasColumnName(@"Discount").HasColumnType("real").IsRequired();
             builder.Property(x => x.ExtendedPrice).HasColumnName(@"ExtendedPrice").HasColumnType("money").IsRequired(false);
         }
     }
@@ -1924,29 +1938,29 @@ namespace Efrpg.V3TestE
     {
         public void Configure(EntityTypeBuilder<OrdersQry> builder)
         {
-            builder.ToTable("Orders Qry", "dbo");
-            builder.HasKey(x => new { x.OrderId, x.CompanyName });
+            builder.ToView("Orders Qry", "dbo");
+            builder.HasNoKey();
 
-            builder.Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.CustomerId).HasColumnName(@"CustomerID").HasColumnType("nchar").IsRequired(false).IsFixedLength().HasMaxLength(5);
+            builder.Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired();
+            builder.Property(x => x.CustomerId).HasColumnName(@"CustomerID").HasColumnType("nchar(5)").IsRequired(false).IsFixedLength().HasMaxLength(5);
             builder.Property(x => x.EmployeeId).HasColumnName(@"EmployeeID").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.OrderDate).HasColumnName(@"OrderDate").HasColumnType("datetime").IsRequired(false);
             builder.Property(x => x.RequiredDate).HasColumnName(@"RequiredDate").HasColumnType("datetime").IsRequired(false);
             builder.Property(x => x.ShippedDate).HasColumnName(@"ShippedDate").HasColumnType("datetime").IsRequired(false);
             builder.Property(x => x.ShipVia).HasColumnName(@"ShipVia").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.Freight).HasColumnName(@"Freight").HasColumnType("money").IsRequired(false);
-            builder.Property(x => x.ShipName).HasColumnName(@"ShipName").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(40);
-            builder.Property(x => x.ShipAddress).HasColumnName(@"ShipAddress").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(60);
-            builder.Property(x => x.ShipCity).HasColumnName(@"ShipCity").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(15);
-            builder.Property(x => x.ShipRegion).HasColumnName(@"ShipRegion").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(15);
-            builder.Property(x => x.ShipPostalCode).HasColumnName(@"ShipPostalCode").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(10);
-            builder.Property(x => x.ShipCountry).HasColumnName(@"ShipCountry").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(15);
-            builder.Property(x => x.CompanyName).HasColumnName(@"CompanyName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40).ValueGeneratedNever();
-            builder.Property(x => x.Address).HasColumnName(@"Address").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(60);
-            builder.Property(x => x.City).HasColumnName(@"City").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(15);
-            builder.Property(x => x.Region).HasColumnName(@"Region").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(15);
-            builder.Property(x => x.PostalCode).HasColumnName(@"PostalCode").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(10);
-            builder.Property(x => x.Country).HasColumnName(@"Country").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(15);
+            builder.Property(x => x.ShipName).HasColumnName(@"ShipName").HasColumnType("nvarchar(40)").IsRequired(false).HasMaxLength(40);
+            builder.Property(x => x.ShipAddress).HasColumnName(@"ShipAddress").HasColumnType("nvarchar(60)").IsRequired(false).HasMaxLength(60);
+            builder.Property(x => x.ShipCity).HasColumnName(@"ShipCity").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
+            builder.Property(x => x.ShipRegion).HasColumnName(@"ShipRegion").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
+            builder.Property(x => x.ShipPostalCode).HasColumnName(@"ShipPostalCode").HasColumnType("nvarchar(10)").IsRequired(false).HasMaxLength(10);
+            builder.Property(x => x.ShipCountry).HasColumnName(@"ShipCountry").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
+            builder.Property(x => x.CompanyName).HasColumnName(@"CompanyName").HasColumnType("nvarchar(40)").IsRequired().HasMaxLength(40);
+            builder.Property(x => x.Address).HasColumnName(@"Address").HasColumnType("nvarchar(60)").IsRequired(false).HasMaxLength(60);
+            builder.Property(x => x.City).HasColumnName(@"City").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
+            builder.Property(x => x.Region).HasColumnName(@"Region").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
+            builder.Property(x => x.PostalCode).HasColumnName(@"PostalCode").HasColumnType("nvarchar(10)").IsRequired(false).HasMaxLength(10);
+            builder.Property(x => x.Country).HasColumnName(@"Country").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
         }
     }
 
@@ -1955,10 +1969,10 @@ namespace Efrpg.V3TestE
     {
         public void Configure(EntityTypeBuilder<OrderSubtotal> builder)
         {
-            builder.ToTable("Order Subtotals", "dbo");
-            builder.HasKey(x => x.OrderId);
+            builder.ToView("Order Subtotals", "dbo");
+            builder.HasNoKey();
 
-            builder.Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired();
             builder.Property(x => x.Subtotal).HasColumnName(@"Subtotal").HasColumnType("money").IsRequired(false);
         }
     }
@@ -1969,13 +1983,13 @@ namespace Efrpg.V3TestE
         public void Configure(EntityTypeBuilder<Product> builder)
         {
             builder.ToTable("Products", "dbo");
-            builder.HasKey(x => x.ProductId);
+            builder.HasKey(x => x.ProductId).HasName("PK_Products").IsClustered();
 
-            builder.Property(x => x.ProductId).HasColumnName(@"ProductID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseSqlServerIdentityColumn();
-            builder.Property(x => x.ProductName).HasColumnName(@"ProductName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40);
+            builder.Property(x => x.ProductId).HasColumnName(@"ProductID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.ProductName).HasColumnName(@"ProductName").HasColumnType("nvarchar(40)").IsRequired().HasMaxLength(40);
             builder.Property(x => x.SupplierId).HasColumnName(@"SupplierID").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.CategoryId).HasColumnName(@"CategoryID").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.QuantityPerUnit).HasColumnName(@"QuantityPerUnit").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(20);
+            builder.Property(x => x.QuantityPerUnit).HasColumnName(@"QuantityPerUnit").HasColumnType("nvarchar(20)").IsRequired(false).HasMaxLength(20);
             builder.Property(x => x.UnitPrice).HasColumnName(@"UnitPrice").HasColumnType("money").IsRequired(false);
             builder.Property(x => x.UnitsInStock).HasColumnName(@"UnitsInStock").HasColumnType("smallint").IsRequired(false);
             builder.Property(x => x.UnitsOnOrder).HasColumnName(@"UnitsOnOrder").HasColumnType("smallint").IsRequired(false);
@@ -1986,7 +2000,6 @@ namespace Efrpg.V3TestE
             builder.HasOne(a => a.Category).WithMany(b => b.Products).HasForeignKey(c => c.CategoryId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Products_Categories");
             builder.HasOne(a => a.Supplier).WithMany(b => b.Products).HasForeignKey(c => c.SupplierId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Products_Suppliers");
 
-            builder.HasIndex(x => x.ProductId).HasName("PK_Products").IsUnique().ForSqlServerIsClustered();
             builder.HasIndex(x => x.CategoryId).HasName("CategoriesProducts");
             builder.HasIndex(x => x.CategoryId).HasName("CategoryID");
             builder.HasIndex(x => x.ProductName).HasName("ProductName");
@@ -2000,10 +2013,10 @@ namespace Efrpg.V3TestE
     {
         public void Configure(EntityTypeBuilder<ProductsAboveAveragePrice> builder)
         {
-            builder.ToTable("Products Above Average Price", "dbo");
-            builder.HasKey(x => x.ProductName);
+            builder.ToView("Products Above Average Price", "dbo");
+            builder.HasNoKey();
 
-            builder.Property(x => x.ProductName).HasColumnName(@"ProductName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40).ValueGeneratedNever();
+            builder.Property(x => x.ProductName).HasColumnName(@"ProductName").HasColumnType("nvarchar(40)").IsRequired().HasMaxLength(40);
             builder.Property(x => x.UnitPrice).HasColumnName(@"UnitPrice").HasColumnType("money").IsRequired(false);
         }
     }
@@ -2013,11 +2026,11 @@ namespace Efrpg.V3TestE
     {
         public void Configure(EntityTypeBuilder<ProductSalesFor1997> builder)
         {
-            builder.ToTable("Product Sales for 1997", "dbo");
-            builder.HasKey(x => new { x.CategoryName, x.ProductName });
+            builder.ToView("Product Sales for 1997", "dbo");
+            builder.HasNoKey();
 
-            builder.Property(x => x.CategoryName).HasColumnName(@"CategoryName").HasColumnType("nvarchar").IsRequired().HasMaxLength(15).ValueGeneratedNever();
-            builder.Property(x => x.ProductName).HasColumnName(@"ProductName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40).ValueGeneratedNever();
+            builder.Property(x => x.CategoryName).HasColumnName(@"CategoryName").HasColumnType("nvarchar(15)").IsRequired().HasMaxLength(15);
+            builder.Property(x => x.ProductName).HasColumnName(@"ProductName").HasColumnType("nvarchar(40)").IsRequired().HasMaxLength(40);
             builder.Property(x => x.ProductSales).HasColumnName(@"ProductSales").HasColumnType("money").IsRequired(false);
         }
     }
@@ -2027,14 +2040,29 @@ namespace Efrpg.V3TestE
     {
         public void Configure(EntityTypeBuilder<ProductsByCategory> builder)
         {
-            builder.ToTable("Products by Category", "dbo");
-            builder.HasKey(x => new { x.CategoryName, x.ProductName, x.Discontinued });
+            builder.ToView("Products by Category", "dbo");
+            builder.HasNoKey();
 
-            builder.Property(x => x.CategoryName).HasColumnName(@"CategoryName").HasColumnType("nvarchar").IsRequired().HasMaxLength(15).ValueGeneratedNever();
-            builder.Property(x => x.ProductName).HasColumnName(@"ProductName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40).ValueGeneratedNever();
-            builder.Property(x => x.QuantityPerUnit).HasColumnName(@"QuantityPerUnit").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(20);
+            builder.Property(x => x.CategoryName).HasColumnName(@"CategoryName").HasColumnType("nvarchar(15)").IsRequired().HasMaxLength(15);
+            builder.Property(x => x.ProductName).HasColumnName(@"ProductName").HasColumnType("nvarchar(40)").IsRequired().HasMaxLength(40);
+            builder.Property(x => x.QuantityPerUnit).HasColumnName(@"QuantityPerUnit").HasColumnType("nvarchar(20)").IsRequired(false).HasMaxLength(20);
             builder.Property(x => x.UnitsInStock).HasColumnName(@"UnitsInStock").HasColumnType("smallint").IsRequired(false);
-            builder.Property(x => x.Discontinued).HasColumnName(@"Discontinued").HasColumnType("bit").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.Discontinued).HasColumnName(@"Discontinued").HasColumnType("bit").IsRequired();
+        }
+    }
+
+    // Quarterly Orders
+    public class QuarterlyOrderConfiguration : IEntityTypeConfiguration<QuarterlyOrder>
+    {
+        public void Configure(EntityTypeBuilder<QuarterlyOrder> builder)
+        {
+            builder.ToView("Quarterly Orders", "dbo");
+            builder.HasNoKey();
+
+            builder.Property(x => x.CustomerId).HasColumnName(@"CustomerID").HasColumnType("nchar(5)").IsRequired(false).IsFixedLength().HasMaxLength(5);
+            builder.Property(x => x.CompanyName).HasColumnName(@"CompanyName").HasColumnType("nvarchar(40)").IsRequired(false).HasMaxLength(40);
+            builder.Property(x => x.City).HasColumnName(@"City").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
+            builder.Property(x => x.Country).HasColumnName(@"Country").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
         }
     }
 
@@ -2044,12 +2072,10 @@ namespace Efrpg.V3TestE
         public void Configure(EntityTypeBuilder<Region> builder)
         {
             builder.ToTable("Region", "dbo");
-            builder.HasKey(x => x.RegionId);
+            builder.HasKey(x => x.RegionId).HasName("PK_Region");
 
             builder.Property(x => x.RegionId).HasColumnName(@"RegionID").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.RegionDescription).HasColumnName(@"RegionDescription").HasColumnType("nchar").IsRequired().IsFixedLength().HasMaxLength(50);
-
-            builder.HasIndex(x => x.RegionId).HasName("PK_Region").IsUnique();
+            builder.Property(x => x.RegionDescription).HasColumnName(@"RegionDescription").HasColumnType("nchar(50)").IsRequired().IsFixedLength().HasMaxLength(50);
         }
     }
 
@@ -2058,12 +2084,12 @@ namespace Efrpg.V3TestE
     {
         public void Configure(EntityTypeBuilder<SalesByCategory> builder)
         {
-            builder.ToTable("Sales by Category", "dbo");
-            builder.HasKey(x => new { x.CategoryId, x.CategoryName, x.ProductName });
+            builder.ToView("Sales by Category", "dbo");
+            builder.HasNoKey();
 
-            builder.Property(x => x.CategoryId).HasColumnName(@"CategoryID").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.CategoryName).HasColumnName(@"CategoryName").HasColumnType("nvarchar").IsRequired().HasMaxLength(15).ValueGeneratedNever();
-            builder.Property(x => x.ProductName).HasColumnName(@"ProductName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40).ValueGeneratedNever();
+            builder.Property(x => x.CategoryId).HasColumnName(@"CategoryID").HasColumnType("int").IsRequired();
+            builder.Property(x => x.CategoryName).HasColumnName(@"CategoryName").HasColumnType("nvarchar(15)").IsRequired().HasMaxLength(15);
+            builder.Property(x => x.ProductName).HasColumnName(@"ProductName").HasColumnType("nvarchar(40)").IsRequired().HasMaxLength(40);
             builder.Property(x => x.ProductSales).HasColumnName(@"ProductSales").HasColumnType("money").IsRequired(false);
         }
     }
@@ -2073,12 +2099,12 @@ namespace Efrpg.V3TestE
     {
         public void Configure(EntityTypeBuilder<SalesTotalsByAmount> builder)
         {
-            builder.ToTable("Sales Totals by Amount", "dbo");
-            builder.HasKey(x => new { x.OrderId, x.CompanyName });
+            builder.ToView("Sales Totals by Amount", "dbo");
+            builder.HasNoKey();
 
             builder.Property(x => x.SaleAmount).HasColumnName(@"SaleAmount").HasColumnType("money").IsRequired(false);
-            builder.Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.CompanyName).HasColumnName(@"CompanyName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40).ValueGeneratedNever();
+            builder.Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired();
+            builder.Property(x => x.CompanyName).HasColumnName(@"CompanyName").HasColumnType("nvarchar(40)").IsRequired().HasMaxLength(40);
             builder.Property(x => x.ShippedDate).HasColumnName(@"ShippedDate").HasColumnType("datetime").IsRequired(false);
         }
     }
@@ -2089,13 +2115,11 @@ namespace Efrpg.V3TestE
         public void Configure(EntityTypeBuilder<Shipper> builder)
         {
             builder.ToTable("Shippers", "dbo");
-            builder.HasKey(x => x.ShipperId);
+            builder.HasKey(x => x.ShipperId).HasName("PK_Shippers").IsClustered();
 
-            builder.Property(x => x.ShipperId).HasColumnName(@"ShipperID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseSqlServerIdentityColumn();
-            builder.Property(x => x.CompanyName).HasColumnName(@"CompanyName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40);
-            builder.Property(x => x.Phone).HasColumnName(@"Phone").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(24);
-
-            builder.HasIndex(x => x.ShipperId).HasName("PK_Shippers").IsUnique().ForSqlServerIsClustered();
+            builder.Property(x => x.ShipperId).HasColumnName(@"ShipperID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.CompanyName).HasColumnName(@"CompanyName").HasColumnType("nvarchar(40)").IsRequired().HasMaxLength(40);
+            builder.Property(x => x.Phone).HasColumnName(@"Phone").HasColumnType("nvarchar(24)").IsRequired(false).HasMaxLength(24);
         }
     }
 
@@ -2104,11 +2128,11 @@ namespace Efrpg.V3TestE
     {
         public void Configure(EntityTypeBuilder<SummaryOfSalesByQuarter> builder)
         {
-            builder.ToTable("Summary of Sales by Quarter", "dbo");
-            builder.HasKey(x => x.OrderId);
+            builder.ToView("Summary of Sales by Quarter", "dbo");
+            builder.HasNoKey();
 
             builder.Property(x => x.ShippedDate).HasColumnName(@"ShippedDate").HasColumnType("datetime").IsRequired(false);
-            builder.Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired();
             builder.Property(x => x.Subtotal).HasColumnName(@"Subtotal").HasColumnType("money").IsRequired(false);
         }
     }
@@ -2118,11 +2142,11 @@ namespace Efrpg.V3TestE
     {
         public void Configure(EntityTypeBuilder<SummaryOfSalesByYear> builder)
         {
-            builder.ToTable("Summary of Sales by Year", "dbo");
-            builder.HasKey(x => x.OrderId);
+            builder.ToView("Summary of Sales by Year", "dbo");
+            builder.HasNoKey();
 
             builder.Property(x => x.ShippedDate).HasColumnName(@"ShippedDate").HasColumnType("datetime").IsRequired(false);
-            builder.Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired();
             builder.Property(x => x.Subtotal).HasColumnName(@"Subtotal").HasColumnType("money").IsRequired(false);
         }
     }
@@ -2133,22 +2157,21 @@ namespace Efrpg.V3TestE
         public void Configure(EntityTypeBuilder<Supplier> builder)
         {
             builder.ToTable("Suppliers", "dbo");
-            builder.HasKey(x => x.SupplierId);
+            builder.HasKey(x => x.SupplierId).HasName("PK_Suppliers").IsClustered();
 
-            builder.Property(x => x.SupplierId).HasColumnName(@"SupplierID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseSqlServerIdentityColumn();
-            builder.Property(x => x.CompanyName).HasColumnName(@"CompanyName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40);
-            builder.Property(x => x.ContactName).HasColumnName(@"ContactName").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(30);
-            builder.Property(x => x.ContactTitle).HasColumnName(@"ContactTitle").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(30);
-            builder.Property(x => x.Address).HasColumnName(@"Address").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(60);
-            builder.Property(x => x.City).HasColumnName(@"City").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(15);
-            builder.Property(x => x.Region).HasColumnName(@"Region").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(15);
-            builder.Property(x => x.PostalCode).HasColumnName(@"PostalCode").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(10);
-            builder.Property(x => x.Country).HasColumnName(@"Country").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(15);
-            builder.Property(x => x.Phone).HasColumnName(@"Phone").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(24);
-            builder.Property(x => x.Fax).HasColumnName(@"Fax").HasColumnType("nvarchar").IsRequired(false).HasMaxLength(24);
+            builder.Property(x => x.SupplierId).HasColumnName(@"SupplierID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.CompanyName).HasColumnName(@"CompanyName").HasColumnType("nvarchar(40)").IsRequired().HasMaxLength(40);
+            builder.Property(x => x.ContactName).HasColumnName(@"ContactName").HasColumnType("nvarchar(30)").IsRequired(false).HasMaxLength(30);
+            builder.Property(x => x.ContactTitle).HasColumnName(@"ContactTitle").HasColumnType("nvarchar(30)").IsRequired(false).HasMaxLength(30);
+            builder.Property(x => x.Address).HasColumnName(@"Address").HasColumnType("nvarchar(60)").IsRequired(false).HasMaxLength(60);
+            builder.Property(x => x.City).HasColumnName(@"City").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
+            builder.Property(x => x.Region).HasColumnName(@"Region").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
+            builder.Property(x => x.PostalCode).HasColumnName(@"PostalCode").HasColumnType("nvarchar(10)").IsRequired(false).HasMaxLength(10);
+            builder.Property(x => x.Country).HasColumnName(@"Country").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
+            builder.Property(x => x.Phone).HasColumnName(@"Phone").HasColumnType("nvarchar(24)").IsRequired(false).HasMaxLength(24);
+            builder.Property(x => x.Fax).HasColumnName(@"Fax").HasColumnType("nvarchar(24)").IsRequired(false).HasMaxLength(24);
             builder.Property(x => x.HomePage).HasColumnName(@"HomePage").HasColumnType("ntext").IsRequired(false);
 
-            builder.HasIndex(x => x.SupplierId).HasName("PK_Suppliers").IsUnique().ForSqlServerIsClustered();
             builder.HasIndex(x => x.CompanyName).HasName("CompanyName");
             builder.HasIndex(x => x.PostalCode).HasName("PostalCode");
         }
@@ -2160,16 +2183,14 @@ namespace Efrpg.V3TestE
         public void Configure(EntityTypeBuilder<Territory> builder)
         {
             builder.ToTable("Territories", "dbo");
-            builder.HasKey(x => x.TerritoryId);
+            builder.HasKey(x => x.TerritoryId).HasName("PK_Territories");
 
-            builder.Property(x => x.TerritoryId).HasColumnName(@"TerritoryID").HasColumnType("nvarchar").IsRequired().HasMaxLength(20).ValueGeneratedNever();
-            builder.Property(x => x.TerritoryDescription).HasColumnName(@"TerritoryDescription").HasColumnType("nchar").IsRequired().IsFixedLength().HasMaxLength(50);
+            builder.Property(x => x.TerritoryId).HasColumnName(@"TerritoryID").HasColumnType("nvarchar(20)").IsRequired().HasMaxLength(20).ValueGeneratedNever();
+            builder.Property(x => x.TerritoryDescription).HasColumnName(@"TerritoryDescription").HasColumnType("nchar(50)").IsRequired().IsFixedLength().HasMaxLength(50);
             builder.Property(x => x.RegionId).HasColumnName(@"RegionID").HasColumnType("int").IsRequired();
 
             // Foreign keys
             builder.HasOne(a => a.Region).WithMany(b => b.Territories).HasForeignKey(c => c.RegionId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Territories_Region");
-
-            builder.HasIndex(x => x.TerritoryId).HasName("PK_Territories").IsUnique();
         }
     }
 
@@ -2236,3 +2257,4 @@ namespace Efrpg.V3TestE
 
 }
 // </auto-generated>
+

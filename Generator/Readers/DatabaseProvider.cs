@@ -29,7 +29,7 @@ namespace Efrpg.Readers
                     return "Npgsql";
 
                 case DatabaseType.Oracle:
-                    return "Oracle.DataAccess.Client";
+                    return "System.Data.OracleClient";
 
                 default:
                     throw new ArgumentOutOfRangeException();

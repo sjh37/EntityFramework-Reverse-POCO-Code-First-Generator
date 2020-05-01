@@ -30,8 +30,7 @@ SELECT  T.TABLE_SCHEMA AS ""SchemaName"",
         COALESCE(C.NUMERIC_SCALE, 0) AS ""Scale"",
         CASE WHEN C.is_identity = 'YES' THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT)END AS ""IsIdentity"",
         CAST(0 AS BIT) AS ""IsRowGuid"",
-        CASE WHEN C.is_generated = 'NEVER' THEN CAST(0 AS BIT) ELSE CAST(1 AS BIT)
-        END AS ""IsComputed"",
+        CASE WHEN C.is_generated = 'NEVER' THEN CAST(0 AS BIT) ELSE CAST(1 AS BIT) END AS ""IsComputed"",
         CAST(0 AS SMALLINT) AS ""GeneratedAlwaysType"",
         CAST(CASE WHEN C.is_identity = 'YES' OR C.is_generated <> 'NEVER' THEN 1 ELSE 0 END AS BIT) AS IsStoreGenerated,
         CAST(CASE WHEN pk.ordinal_position > 0 THEN 1 ELSE 0 END AS bit) as ""PrimaryKey"",
@@ -219,6 +218,11 @@ ORDER BY R.specific_schema, R.routine_name, R.routine_type;";
         protected override string SynonymStoredProcedureSQL()
         {
             return string.Empty;
+        }
+
+        protected override string DefaultSchema(DbConnection conn)
+        {
+            return "public";
         }
 
         protected override string SpecialQueryFlags()

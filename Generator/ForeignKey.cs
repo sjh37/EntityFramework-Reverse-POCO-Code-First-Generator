@@ -77,7 +77,7 @@ namespace Efrpg
                 .Replace(" ", string.Empty)
                 .Replace("$", string.Empty);
 
-            if (string.Compare(PkSchema, "dbo", StringComparison.OrdinalIgnoreCase) != 0 && Settings.PrependSchemaName)
+            if (string.Compare(PkSchema, Settings.DefaultSchema, StringComparison.OrdinalIgnoreCase) != 0 && Settings.PrependSchemaName)
                 pkTableHumanCase = PkSchema + "_" + pkTableHumanCase;
 
             pkTableHumanCase += suffix;

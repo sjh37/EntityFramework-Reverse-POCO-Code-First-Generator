@@ -6,7 +6,7 @@
 
         public MultiContextNameNormalisation(string defaultSchema)
         {
-            DefaultSchema = string.IsNullOrWhiteSpace(defaultSchema) ? "dbo" : defaultSchema.Trim().ToLowerInvariant();
+            DefaultSchema = string.IsNullOrWhiteSpace(defaultSchema) ? Settings.DefaultSchema.Trim().ToLowerInvariant() : defaultSchema.Trim().ToLowerInvariant();
         }
 
         public SchemaAndName Normalise(string name)

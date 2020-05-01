@@ -44,6 +44,7 @@ namespace Efrpg.Readers
         protected abstract string SynonymStoredProcedureSQL();
 
         // Database specific
+        protected abstract string DefaultSchema(DbConnection conn);
         protected abstract string SpecialQueryFlags();
         protected abstract bool HasTemporalTableSupport();
 
@@ -117,6 +118,8 @@ namespace Efrpg.Readers
                         }
                     }
                 }
+
+                Settings.DefaultSchema = DefaultSchema(conn);
             }
         }
 
@@ -165,11 +168,7 @@ namespace Efrpg.Readers
             if (connection == null)
                 return null;
 
-            var cmd = _factory.CreateCommand();
-            if (cmd == null)
-                return null;
-
-            cmd.Connection = connection;
+            var cmd = connection.CreateCommand();
             if(Settings.DatabaseType != DatabaseType.SqlCe)
                 cmd.CommandTimeout = Settings.CommandTimeout;
 
@@ -219,21 +218,21 @@ namespace Efrpg.Readers
                             rdr["SchemaName"].ToString().Trim(),
                             rdr["TableName"].ToString().Trim(),
                             string.Compare(rdr["TableType"].ToString().Trim(), "View", StringComparison.OrdinalIgnoreCase) == 0,
-                            (int) rdr["Scale"],
+                            ChangeType<int>(rdr["Scale"]),
                             rdr["TypeName"].ToString().Trim().ToLower(),
-                            (bool) rdr["IsNullable"],
-                            (int) rdr["MaxLength"],
-                            (int) rdr["DateTimePrecision"],
-                            (int) rdr["Precision"],
-                            (bool) rdr["IsIdentity"],
-                            (bool) rdr["IsComputed"],
-                            (bool) rdr["IsRowGuid"],
-                            (byte) rdr["GeneratedAlwaysType"],
-                            (bool) rdr["IsStoreGenerated"],
-                            (int) rdr["PrimaryKeyOrdinal"],
-                            (bool) rdr["PrimaryKey"],
-                            (bool) rdr["IsForeignKey"],
-                            (int) rdr["Ordinal"],
+                            ChangeType<bool>(rdr["IsNullable"]),
+                            ChangeType<int>(rdr["MaxLength"]),
+                            ChangeType<int>(rdr["DateTimePrecision"]),
+                            ChangeType<int>(rdr["Precision"]),
+                            ChangeType<bool>(rdr["IsIdentity"]),
+                            ChangeType<bool>(rdr["IsComputed"]),
+                            ChangeType<bool>(rdr["IsRowGuid"]),
+                            ChangeType<byte>(rdr["GeneratedAlwaysType"]),
+                            ChangeType<bool>(rdr["IsStoreGenerated"]),
+                            ChangeType<int>(rdr["PrimaryKeyOrdinal"]),
+                            ChangeType<bool>(rdr["PrimaryKey"]),
+                            ChangeType<bool>(rdr["IsForeignKey"]),
+                            ChangeType<int>(rdr["Ordinal"]),
                             rdr["ColumnName"].ToString().Trim(),
                             rdr["Default"].ToString().Trim()
                         );
@@ -283,9 +282,9 @@ namespace Efrpg.Readers
                             rdr["PK_Table"].ToString(),
                             rdr["fkSchema"].ToString(),
                             rdr["FK_Table"].ToString(),
-                            (int) rdr["ORDINAL_POSITION"],
-                            ((int) rdr["CascadeOnDelete"]) == 1,
-                            (bool) rdr["IsNotEnforced"],
+                            ChangeType<int>(rdr["ORDINAL_POSITION"]),
+                            ChangeType<int>(rdr["CascadeOnDelete"]) == 1,
+                            ChangeType<bool>(rdr["IsNotEnforced"]),
                             false
                         );
 
@@ -330,13 +329,13 @@ namespace Efrpg.Readers
                             rdr["TableSchema"].ToString().Trim(),
                             rdr["TableName"].ToString().Trim(),
                             rdr["IndexName"].ToString().Trim(),
-                            (byte) rdr["KeyOrdinal"],
+                            ChangeType<byte>(rdr["KeyOrdinal"]),
                             rdr["ColumnName"].ToString().Trim(),
-                            (int) rdr["ColumnCount"],
-                            (bool) rdr["IsUnique"],
-                            (bool) rdr["IsPrimaryKey"],
-                            (bool) rdr["IsUniqueConstraint"],
-                            ((int) rdr["IsClustered"]) == 1
+                            ChangeType<int>(rdr["ColumnCount"]),
+                            ChangeType<bool>(rdr["IsUnique"]),
+                            ChangeType<bool>(rdr["IsPrimaryKey"]),
+                            ChangeType<bool>(rdr["IsUniqueConstraint"]),
+                            ChangeType<int>(rdr["IsClustered"]) == 1
                         );
 
                         result.Add(index);
@@ -345,6 +344,14 @@ namespace Efrpg.Readers
             }
 
             return result;
+        }
+
+        // Use this on non-string types to guarantee type correctness between different databases
+        private T ChangeType<T>(object o)
+        {
+            if (o.GetType() != typeof(T))
+                return (T) Convert.ChangeType(o, typeof(T));
+            return (T) o;
         }
 
         public List<RawExtendedProperty> ReadExtendedProperties()
@@ -436,11 +443,12 @@ namespace Efrpg.Readers
                 {
                     while (rdr.Read())
                     {
+                        var rawDataType    = rdr["DATA_TYPE"];
                         var schema         = rdr["SPECIFIC_SCHEMA"] .ToString().Trim();
                         var name           = rdr["SPECIFIC_NAME"]   .ToString().Trim();
                         var routineType    = rdr["ROUTINE_TYPE"]    .ToString().Trim().ToLower();
                         var returnDataType = rdr["RETURN_DATA_TYPE"].ToString().Trim().ToLower();
-                        var dataType       = rdr["DATA_TYPE"]       .ToString().Trim().ToLower();
+                        var dataType       = rawDataType            .ToString().Trim().ToLower();
                         var parameterMode  = rdr["PARAMETER_MODE"]  .ToString().Trim().ToLower();
 
                         var isTableValuedFunction  = (routineType == "function" && returnDataType == "table");
@@ -448,20 +456,20 @@ namespace Efrpg.Readers
                         var isStoredProcedure      = (routineType == "procedure");
 
                         StoredProcedureParameter parameter = null;
-                        if (rdr["DATA_TYPE"] != null && rdr["DATA_TYPE"] != DBNull.Value)
+                        if (rawDataType != DBNull.Value)
                         {
                             parameter = new StoredProcedureParameter
                             {
-                                Ordinal             = (int) rdr["ORDINAL_POSITION"],
+                                Ordinal             = ChangeType<int>(rdr["ORDINAL_POSITION"]),
                                 Name                = rdr["PARAMETER_NAME"].ToString().Trim(),
                                 SqlDbType           = GetStoredProcedureParameterDbType(dataType),
                                 ReturnSqlDbType     = GetStoredProcedureParameterDbType(returnDataType),
                                 PropertyType        = GetPropertyType(dataType),
                                 ReturnPropertyType  = GetPropertyType(returnDataType),
-                                DateTimePrecision   = (short) rdr["DATETIME_PRECISION"],
-                                MaxLength           = (int) rdr["CHARACTER_MAXIMUM_LENGTH"],
-                                Precision           = (byte) rdr["NUMERIC_PRECISION"],
-                                Scale               = (int) rdr["NUMERIC_SCALE"],
+                                DateTimePrecision   = ChangeType<short>(rdr["DATETIME_PRECISION"]),
+                                MaxLength           = ChangeType<int>(rdr["CHARACTER_MAXIMUM_LENGTH"]),
+                                Precision           = ChangeType<byte>(rdr["NUMERIC_PRECISION"]),
+                                Scale               = ChangeType<int>(rdr["NUMERIC_SCALE"]),
                                 UserDefinedTypeName = rdr["USER_DEFINED_TYPE"].ToString().Trim(),
                                 IsSpatial           = SpatialTypes.Contains(dataType)
                             };

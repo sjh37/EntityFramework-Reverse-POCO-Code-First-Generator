@@ -133,6 +133,7 @@ namespace Efrpg
         // Ie. dbo.hello will be Hello.
         //     abc.hello will be AbcHello.
         public static bool PrependSchemaName = true; // Control if the schema name is prepended to the table name
+        public static string DefaultSchema = null; // Set via DatabaseReader.DefaultSchema()
 
         // Table Suffix ***********************************************************************************************************************
         // Appends the suffix to the generated classes names
@@ -146,13 +147,13 @@ namespace Efrpg
             // Northwind example:
 
             // [Orders] (Table) to [Invoices] (View) is one-to-many using Orders.OrderID = Invoices.OrderID
-            // gen.AddRelationship(filter, foreignKeys, tablesAndViews, "orders_to_invoices", "dbo", "Orders", "OrderID", "dbo", "Invoices", "OrderID", null, null, true);
+            // gen.AddRelationship(filter, foreignKeys, tablesAndViews, "orders_to_invoices", Settings.DefaultSchema, "Orders", "OrderID", "dbo", "Invoices", "OrderID", null, null, true);
 
             // [Orders] (Table) to [Orders Qry] (View) is one-to-zeroOrOne ( [Orders].OrderID = [Orders Qry].OrderID )
-            // gen.AddRelationship(filter, foreignKeys, tablesAndViews, "orders_to_ordersQry", "dbo", "Orders", "OrderID", "dbo", "Orders Qry", "OrderID", "ParentFkName", "ChildFkName", true);
+            // gen.AddRelationship(filter, foreignKeys, tablesAndViews, "orders_to_ordersQry", Settings.DefaultSchema, "Orders", "OrderID", "dbo", "Orders Qry", "OrderID", "ParentFkName", "ChildFkName", true);
 
             // [Order Details] (Table) to [Invoices] (View) is one-to-zeroOrOne - but uses a composite-key: ( [Order Details].OrderID,ProductID = [Invoices].OrderID,ProductID )
-            // gen.AddRelationship(filter, foreignKeys, tablesAndViews, "orderDetails_to_invoices", "dbo", "Order Details", new[] { "OrderID", "ProductID" }, "dbo", "Invoices", new[] { "OrderID", "ProductID" }, null, null, true);
+            // gen.AddRelationship(filter, foreignKeys, tablesAndViews, "orderDetails_to_invoices", Settings.DefaultSchema, "Order Details", new[] { "OrderID", "ProductID" }, "dbo", "Invoices", new[] { "OrderID", "ProductID" }, null, null, true);
         };
 
         // StoredProcedure return types *******************************************************************************************************
@@ -434,13 +435,13 @@ namespace Efrpg
         public static Action<List<EnumDefinition>> AddEnumDefinitions = delegate (List<EnumDefinition> enumDefinitions)
         {
             // Examples:
-            //enumDefinitions.Add(new EnumDefinition { Schema = "dbo", Table = "match_table_name", Column = "match_column_name", EnumType = "name_of_enum" });
+            //enumDefinitions.Add(new EnumDefinition { Schema = Settings.DefaultSchema, Table = "match_table_name", Column = "match_column_name", EnumType = "name_of_enum" });
 
             // This will replace OrderHeader.OrderStatus type to be an OrderStatusType enum
-            //enumDefinitions.Add(new EnumDefinition { Schema = "dbo", Table = "OrderHeader", Column = "OrderStatus", EnumType = "OrderStatusType" }); 
+            //enumDefinitions.Add(new EnumDefinition { Schema = Settings.DefaultSchema, Table = "OrderHeader", Column = "OrderStatus", EnumType = "OrderStatusType" }); 
 
             // This will replace any table *.OrderStatus type to be an OrderStatusType enum
-            //enumDefinitions.Add(new EnumDefinition { Schema = "dbo", Table = "*", Column = "OrderStatus", EnumType = "OrderStatusType" });
+            //enumDefinitions.Add(new EnumDefinition { Schema = Settings.DefaultSchema, Table = "*", Column = "OrderStatus", EnumType = "OrderStatusType" });
         };
 
         // Generate multiple db contexts in a single go ***************************************************************************************

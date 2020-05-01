@@ -331,7 +331,8 @@ namespace Efrpg.Generators
                 StoredProcModelBuilderCommand          = isEfCore3 ? "Entity"        : "Query",
                 StoredProcModelBuilderPostCommand      = isEfCore3 ? ".HasNoKey()"   : string.Empty,
                 OnConfigurationUsesConfiguration       = Settings.OnConfiguration == OnConfiguration.Configuration,
-                OnConfigurationUsesConnectionString    = Settings.OnConfiguration == OnConfiguration.ConnectionString
+                OnConfigurationUsesConnectionString    = Settings.OnConfiguration == OnConfiguration.ConnectionString,
+                DefaultSchema                          = Settings.DefaultSchema
             };
 
             var co = new CodeOutput(filename, "Database context", GlobalUsings);

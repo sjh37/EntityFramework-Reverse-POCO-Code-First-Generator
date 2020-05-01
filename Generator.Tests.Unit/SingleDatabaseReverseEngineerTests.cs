@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Diagnostics;
 using System.IO;
 using Efrpg;
@@ -49,7 +50,7 @@ namespace Generator.Tests.Unit
         {
             Settings.TemplateType               = templateType;
             Settings.GeneratorType              = generatorType;
-            Settings.ConnectionString           = $"Server = localhost; Port = 5432; Database = {database}; Integrated Security = true;";
+            Settings.ConnectionString           = $"Server=127.0.0.1;Port=5432;Database={database};User Id=testuser;Password=testtesttest;";
             Settings.DatabaseType               = DatabaseType.PostgreSQL;
             Settings.ConnectionStringName       = connectionStringName;
             Settings.DbContextName              = dbContextName;
@@ -135,6 +136,7 @@ namespace Generator.Tests.Unit
         [TestCase("EfrpgTestLarge", ".V3TestC", "MyLargeDbContext", "EfrpgTestLargeDbContext", false, TemplateType.Ef6)]
         [TestCase("fred",           ".V3TestD", "fred",             "FredDbContext",           false, TemplateType.Ef6)]
         [TestCase("Northwind",      ".V3TestE", "MyDbContext",      "MyDbContext",             true,  TemplateType.EfCore2)]
+        [TestCase("Northwind",      ".V3TestK", "MyDbContext",      "MyDbContext",             true,  TemplateType.EfCore3)]
         [TestCase("EfrpgTest",      ".V3TestF", "MyDbContext",      "EfrpgTestDbContext",      false, TemplateType.EfCore2)]
         [TestCase("EfrpgTest",      ".V3TestG", "MyDbContext",      "EfrpgTestDbContext",      false, TemplateType.EfCore3)] // ef core 3
         [TestCase("EfrpgTestLarge", ".V3TestH", "MyLargeDbContext", "EfrpgTestLargeDbContext", false, TemplateType.EfCore2)]
@@ -234,6 +236,28 @@ namespace Generator.Tests.Unit
 
             // Assert
             CompareAgainstTestComparison(filename, true);
+        }
+
+        [Test]
+        public void CheckPostgreSQLConnection()
+        {
+            var factory = DbProviderFactories.GetFactory("Npgsql");
+            Assert.IsNotNull(factory);
+
+            using (var conn = factory.CreateConnection())
+            {
+                Assert.IsNotNull(conn);
+                conn.ConnectionString = "Server=127.0.0.1;Port=5432;Database=Northwind;User Id=testuser;Password=testtesttest;";
+                conn.Open();
+
+                var cmd = conn.CreateCommand();
+                Assert.IsNotNull(cmd);
+
+                cmd.CommandText = "select count(*) from products";
+                var result = cmd.ExecuteScalar();
+                Assert.IsNotNull(result);
+                Assert.IsTrue((long)result > 1);
+            }
         }
 
         private static void CompareAgainstFolderTestComparison(string subFolder)

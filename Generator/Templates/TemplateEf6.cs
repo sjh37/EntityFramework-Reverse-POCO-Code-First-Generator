@@ -282,7 +282,7 @@ using {{this}};{{#newline}}
         base.OnModelCreating(modelBuilder);{{#newline}}
 {{#if hasTableValuedFunctions}}
 {{#newline}}
-        modelBuilder.Conventions.Add(new CodeFirstStoreFunctions.FunctionsConvention<{{DbContextName}}>(""dbo""));{{#newline}}
+        modelBuilder.Conventions.Add(new CodeFirstStoreFunctions.FunctionsConvention<{{DbContextName}}>(""{{DefaultSchema}}""));{{#newline}}
 {{#if hasTableValuedFunctionComplexTypes}}
 {{#newline}}
 {{#each tableValuedFunctionComplexTypes}}

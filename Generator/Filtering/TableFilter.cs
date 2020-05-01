@@ -1,4 +1,6 @@
-﻿namespace Efrpg.Filtering
+﻿using System;
+
+namespace Efrpg.Filtering
 {
     public class TableFilter : IFilterType<Table>
     {

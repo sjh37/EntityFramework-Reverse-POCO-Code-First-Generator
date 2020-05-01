@@ -1,4 +1,6 @@
-﻿namespace Efrpg.Filtering
+﻿using System;
+
+namespace Efrpg.Filtering
 {
     public class ColumnFilter : IFilterType<Column>
     {
@@ -7,7 +9,7 @@
         public bool IsExcluded(Column c)
         {
             // Example: Exclude any columns whose table is in 'dbo' schema and column name starts with 'bank'
-            //if(c.ParentTable.Schema.Equals("dbo", StringComparison.InvariantCultureIgnoreCase) &&
+            //if(c.ParentTable.Schema.DbName.Equals(Settings.DefaultSchema, StringComparison.InvariantCultureIgnoreCase) &&
             //   c.NameHumanCase.ToLowerInvariant().StartsWith("bank"))
             //    return true;
 

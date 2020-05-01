@@ -313,7 +313,7 @@ namespace Efrpg.Generators
                     var singularCleanTableName = Inflector.MakeSingular(DatabaseReader.CleanUp(tableName));
                     table.NameHumanCase = (Settings.UsePascalCase ? Inflector.ToTitleCase(singularCleanTableName) : singularCleanTableName).Replace(" ", "").Replace("$", "").Replace(".", "");
 
-                    if (Settings.PrependSchemaName && string.Compare(table.Schema.DbName, "dbo", StringComparison.OrdinalIgnoreCase) != 0)
+                    if (Settings.PrependSchemaName && string.Compare(table.Schema.DbName, Settings.DefaultSchema, StringComparison.OrdinalIgnoreCase) != 0)
                         table.NameHumanCase = table.Schema.DbName + "_" + table.NameHumanCase;
 
                     if (filter.IsExcluded(table)) // Retest exclusion after table rename
@@ -678,7 +678,7 @@ namespace Efrpg.Generators
                         IsStoredProcedure      = proc.IsStoredProcedure
                     };
                     sp.NameHumanCase = DatabaseReader.CleanUp(sp.NameHumanCase);
-                    if (Settings.PrependSchemaName && (string.Compare(proc.Schema, "dbo", StringComparison.OrdinalIgnoreCase) != 0))
+                    if (Settings.PrependSchemaName && (string.Compare(proc.Schema, Settings.DefaultSchema, StringComparison.OrdinalIgnoreCase) != 0))
                         sp.NameHumanCase = proc.Schema + "_" + sp.NameHumanCase;
 
                     sp.Parameters.AddRange(rawStoredProcs

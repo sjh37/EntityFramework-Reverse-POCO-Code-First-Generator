@@ -212,6 +212,11 @@ SELECT * FROM MultiContext.ForeignKey;";
             return string.Empty;
         }
 
+        protected override string DefaultSchema(DbConnection conn)
+        {
+            return "dbo";
+        }
+
         protected override string SpecialQueryFlags()
         {
             return string.Empty;

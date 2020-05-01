@@ -41,5 +41,6 @@ namespace Efrpg.TemplateModels
         public string StoredProcModelBuilderPostCommand                      { get; set; }
         public bool OnConfigurationUsesConfiguration                         { get; set; }
         public bool OnConfigurationUsesConnectionString                      { get; set; }
+        public string DefaultSchema                                          { get; set; }
     }
 }

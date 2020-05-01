@@ -91,6 +91,11 @@ namespace Efrpg.Readers
             return string.Empty;
         }
 
+        protected override string DefaultSchema(DbConnection conn)
+        {
+            return "mydb";
+        }
+
         protected override string SpecialQueryFlags()
         {
             return string.Empty;
