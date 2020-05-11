@@ -441,6 +441,8 @@ namespace Efrpg.Readers
 
                 using (var rdr = cmd.ExecuteReader())
                 {
+                    var lastName = string.Empty;
+                    var emptyParamNumber = 1;
                     while (rdr.Read())
                     {
                         var rawDataType    = rdr["DATA_TYPE"];
@@ -450,6 +452,12 @@ namespace Efrpg.Readers
                         var returnDataType = rdr["RETURN_DATA_TYPE"].ToString().Trim().ToLower();
                         var dataType       = rawDataType            .ToString().Trim().ToLower();
                         var parameterMode  = rdr["PARAMETER_MODE"]  .ToString().Trim().ToLower();
+
+                        if(name != lastName)
+                        {
+                            lastName = name;
+                            emptyParamNumber = 1;
+                        }
 
                         var isTableValuedFunction  = (routineType == "function" && returnDataType == "table");
                         var isScalarValuedFunction = (routineType == "function" && returnDataType != "table");
@@ -473,6 +481,9 @@ namespace Efrpg.Readers
                                 UserDefinedTypeName = rdr["USER_DEFINED_TYPE"].ToString().Trim(),
                                 IsSpatial           = SpatialTypes.Contains(dataType)
                             };
+
+                            if (string.IsNullOrEmpty(parameter.Name))
+                                parameter.Name = "p" + emptyParamNumber++;
 
                             switch (parameterMode)
                             {
