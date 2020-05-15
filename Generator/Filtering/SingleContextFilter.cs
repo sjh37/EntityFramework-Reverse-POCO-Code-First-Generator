@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Efrpg.Filtering
 {
@@ -15,7 +14,7 @@ namespace Efrpg.Filtering
         protected readonly List<IFilterType<Table>>           TableFilters;
         protected readonly List<IFilterType<Column>>          ColumnFilters;
         protected readonly List<IFilterType<StoredProcedure>> StoredProcedureFilters;
-        private bool HasMergedIncludeFilters;
+        private bool _hasMergedIncludeFilters;
 
         public SingleContextFilter()
         {
@@ -29,7 +28,7 @@ namespace Efrpg.Filtering
             TableFilters            = FilterSettings.TableFilters;
             ColumnFilters           = FilterSettings.ColumnFilters;
             StoredProcedureFilters  = FilterSettings.StoredProcedureFilters;
-            HasMergedIncludeFilters = false;
+            _hasMergedIncludeFilters = false;
 
             EnumDefinitions = new List<EnumDefinition>();
             Settings.AddEnumDefinitions?.Invoke(EnumDefinitions);
@@ -37,10 +36,10 @@ namespace Efrpg.Filtering
 
         public override bool IsExcluded(EntityName item)
         {
-            if(!HasMergedIncludeFilters)
+            if(!_hasMergedIncludeFilters)
             {
-                HasMergedIncludeFilters = true;
                 MergeIncludeFilters();
+                _hasMergedIncludeFilters = true;
             }
 
             var schema = item as Schema;
@@ -155,7 +154,7 @@ namespace Efrpg.Filtering
             MergeIncludeFilters(StoredProcedureFilters);
         }
 
-        private void MergeIncludeFilters<T>(List<IFilterType<T>> filters)
+        private static void MergeIncludeFilters<T>(List<IFilterType<T>> filters)
         {
             var list = filters
                 .Where(x => x.GetType() == typeof(RegexIncludeFilter))
@@ -165,20 +164,9 @@ namespace Efrpg.Filtering
             if (list.Count < 2)
                 return; // Nothing to merge
 
-            var sb = new StringBuilder();
-            var first = true;
-            foreach (var item in list)
-            {
-                if (!first)
-                    sb.Append("|");
-                else
-                    first = false;
-
-                sb.Append(item.Pattern());
-            }
-
+            var singleRegex = string.Join("|", list.Select(x => x.Pattern()));
             filters.RemoveAll(filter => filter.GetType() == typeof(RegexIncludeFilter));
-            var singleIncludeFilter = (IFilterType<T>) new RegexIncludeFilter(sb.ToString());
+            var singleIncludeFilter = (IFilterType<T>) new RegexIncludeFilter(singleRegex);
             filters.Add(singleIncludeFilter);
         }
     }

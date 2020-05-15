@@ -29,6 +29,10 @@ namespace Generator.Tests.Unit
             Settings.Enumerations               = null;
             Settings.PrependSchemaName          = true;
             Settings.DisableGeographyTypes      = false;
+
+            FilterSettings.Reset();
+            FilterSettings.AddDefaults();
+            FilterSettings.CheckSettings();
         }
 
         public void SetupSqlCe(string database, string connectionStringName, string dbContextName, TemplateType templateType, GeneratorType generatorType)
@@ -44,6 +48,10 @@ namespace Generator.Tests.Unit
             Settings.Enumerations               = null;
             Settings.PrependSchemaName          = true;
             Settings.DisableGeographyTypes      = false;
+
+            FilterSettings.Reset();
+            FilterSettings.AddDefaults();
+            FilterSettings.CheckSettings();
         }
 
         public void SetupPostgreSQL(string database, string connectionStringName, string dbContextName, TemplateType templateType, GeneratorType generatorType)
@@ -59,16 +67,16 @@ namespace Generator.Tests.Unit
             Settings.Enumerations               = null;
             Settings.PrependSchemaName          = true;
             Settings.DisableGeographyTypes      = false;
+
+            FilterSettings.Reset();
+            FilterSettings.AddDefaults();
+            FilterSettings.CheckSettings();
         }
 
         public void Run(string filename, string singleDbContextSubNamespace, Type fileManagerType, string subFolder)
         {
             Inflector.PluralisationService   = new EnglishPluralizationService();
             Settings.GenerateSingleDbContext = true;
-
-            FilterSettings.Reset();
-            FilterSettings.AddDefaults();
-            FilterSettings.CheckSettings();
 
             var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             if (!string.IsNullOrEmpty(subFolder))
@@ -236,6 +244,30 @@ namespace Generator.Tests.Unit
 
             // Assert
             CompareAgainstTestComparison(filename, true);
+        }
+
+        [Test, NonParallelizable]
+        [TestCase("fred", ".V3FilterTest1", "fred", "FredDbContext", false, TemplateType.EfCore3)] // ef core 3
+        public void MultipleIncludeFilters(string database, string singleDbContextSubNamespace, string connectionStringName, string dbContextName, bool publicTestComparison, TemplateType templateType)
+        {
+            // Arrange
+            Settings.GenerateSeparateFiles = false;
+            Settings.UseMappingTables = (templateType != TemplateType.EfCore2 && templateType != TemplateType.EfCore3);
+            SetupSqlServer(database, connectionStringName, dbContextName, templateType, templateType == TemplateType.Ef6 ? GeneratorType.Ef6 : GeneratorType.EfCore);
+            
+            FilterSettings.SchemaFilters.Add(new RegexIncludeFilter("dbo.*"));
+            FilterSettings.SchemaFilters.Add(new RegexIncludeFilter("Beta.*"));
+            
+            FilterSettings.TableFilters.Add(new RegexIncludeFilter("^[Cc]ar.*"));
+            FilterSettings.TableFilters.Add(new RegexIncludeFilter("Rebel.*"));
+            FilterSettings.TableFilters.Add(new RegexIncludeFilter("Harish.*"));
+
+            // Act
+            var filename = database + "IncludeFilter";
+            Run(filename, singleDbContextSubNamespace, typeof(NullFileManager), null);
+
+            // Assert
+            CompareAgainstTestComparison(filename, publicTestComparison);
         }
 
         [Test]
