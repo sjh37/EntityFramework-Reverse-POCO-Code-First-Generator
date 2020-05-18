@@ -5,7 +5,8 @@
 // is automatically constructed from the C# Generator project during the build process.
 #>
 <#@ template debug="true" hostspecific="true" language="C#" #>
-<#@ include file="EF6.Utility.CS.ttinclude"#><#@ assembly name="System.Configuration" #>
+<#@ include file="EF6.Utility.CS.ttinclude"#>
+<#@ assembly name="System.Configuration" #>
 <#@ assembly name="System.Windows.Forms" #>
 <#@ import namespace="System.Data.Entity.Infrastructure.Pluralization" #>
 <#@ import namespace="System" #>
