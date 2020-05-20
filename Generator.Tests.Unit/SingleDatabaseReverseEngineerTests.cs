@@ -29,6 +29,7 @@ namespace Generator.Tests.Unit
             Settings.Enumerations               = null;
             Settings.PrependSchemaName          = true;
             Settings.DisableGeographyTypes      = false;
+            Settings.AddUnitTestingDbContext    = true;
 
             FilterSettings.Reset();
             FilterSettings.AddDefaults();
@@ -48,6 +49,7 @@ namespace Generator.Tests.Unit
             Settings.Enumerations               = null;
             Settings.PrependSchemaName          = true;
             Settings.DisableGeographyTypes      = false;
+            Settings.AddUnitTestingDbContext    = true;
 
             FilterSettings.Reset();
             FilterSettings.AddDefaults();
@@ -67,6 +69,7 @@ namespace Generator.Tests.Unit
             Settings.Enumerations               = null;
             Settings.PrependSchemaName          = true;
             Settings.DisableGeographyTypes      = false;
+            Settings.AddUnitTestingDbContext    = true;
 
             FilterSettings.Reset();
             FilterSettings.AddDefaults();
@@ -254,6 +257,7 @@ namespace Generator.Tests.Unit
             Settings.GenerateSeparateFiles = false;
             Settings.UseMappingTables = (templateType != TemplateType.EfCore2 && templateType != TemplateType.EfCore3);
             SetupSqlServer(database, connectionStringName, dbContextName, templateType, templateType == TemplateType.Ef6 ? GeneratorType.Ef6 : GeneratorType.EfCore);
+            Settings.AddUnitTestingDbContext = false;
             
             FilterSettings.SchemaFilters.Add(new RegexIncludeFilter("dbo.*"));
             FilterSettings.SchemaFilters.Add(new RegexIncludeFilter("Beta.*"));
