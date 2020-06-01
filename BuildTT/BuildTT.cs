@@ -199,7 +199,7 @@ namespace BuildTT
     // You also need to set the following to the namespace where they now live:
     Settings.PocoNamespace              = """"; // ""YourProject.Entities"";
     Settings.ContextNamespace           = """"; // ""YourProject.Context"";
-    Settings.InterfaceNamespace         = """"; // ""YourProject.Context"";
+    Settings.InterfaceNamespace         = """"; // ""YourProject.Interfaces"";
     Settings.PocoConfigurationNamespace = """"; // ""YourProject.Configuration"";
 
     // Schema *****************************************************************************************************************************
