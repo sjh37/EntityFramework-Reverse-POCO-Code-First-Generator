@@ -5,6 +5,9 @@
 * Watch the v2 in-depth course at [pluralsight](https://app.pluralsight.com/library/courses/code-first-entity-framework-legacy-databases/table-of-contents) ![logo](http://www.simonhughes.co.uk/pluralsight-logo-tiny.png) I cover everything the v2 generator can do, and show you step-by-step how to reverse engineer your database properly.
 * A v3 course will be coming in 2020.
 
+### Watch a short video clip (no audio)
+[https://reversepocostorage.blob.core.windows.net/public-file-share/efcore-first-run.mp4](https://reversepocostorage.blob.core.windows.net/public-file-share/efcore-first-run.mp4)
+
 ### You will need a licence key
 Free to academics (you need a .edu or a .ac email address), not free for commercial use.
 
