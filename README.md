@@ -6,7 +6,7 @@
 * A v3 course will be coming in 2020.
 
 ### Watch a short video clip (no audio)
-[https://reversepocostorage.blob.core.windows.net/public-file-share/efcore-first-run.mp4](https://reversepocostorage.blob.core.windows.net/public-file-share/efcore-first-run.mp4)
+[efcore-first-run.mp4](https://reversepocostorage.blob.core.windows.net/public-file-share/efcore-first-run.mp4)
 
 ### You will need a licence key
 Free to academics (you need a .edu or a .ac email address), not free for commercial use.
