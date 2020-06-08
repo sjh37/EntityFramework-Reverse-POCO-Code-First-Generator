@@ -3042,7 +3042,7 @@
                 hasScalarValuedFunctions        = _hasScalarValuedFunctions && _filter.IncludeScalarValuedFunctions
             };
 
-            var co = new CodeOutput(filename, "Database context interface", GlobalUsings);
+            var co = new CodeOutput(string.Empty, filename, "Database context interface", GlobalUsings);
             co.AddUsings(Template.DatabaseContextInterfaceUsings(data));
             co.AddCode(Template.Transform(Template.DatabaseContextInterface(), data));
 
@@ -3118,7 +3118,7 @@
                 DefaultSchema                          = Settings.DefaultSchema
             };
 
-            var co = new CodeOutput(filename, "Database context", GlobalUsings);
+            var co = new CodeOutput(string.Empty, filename, "Database context", GlobalUsings);
             co.AddUsings(Template.DatabaseContextUsings(data));
             co.AddCode(Template.Transform(Template.DatabaseContext(), data));
 
@@ -3148,7 +3148,7 @@
                 hasScalarValuedFunctions = _hasScalarValuedFunctions && _filter.IncludeScalarValuedFunctions
             };
 
-            var co = new CodeOutput(filename, "Fake Database context", GlobalUsings);
+            var co = new CodeOutput(string.Empty, filename, "Fake Database context", GlobalUsings);
             co.AddUsings(Template.FakeDatabaseContextUsings(data, _filter));
             co.AddCode(Template.Transform(Template.FakeDatabaseContext(), data));
 
@@ -3172,7 +3172,7 @@
                 IsEfCore3               = Settings.IsEfCore3()
             };
 
-            var co = new CodeOutput(filename, "Fake DbSet", GlobalUsings);
+            var co = new CodeOutput(string.Empty, filename, "Fake DbSet", GlobalUsings);
             co.AddUsings(Template.FakeDbSetUsings(data));
             co.AddCode(Template.Transform(Template.FakeDbSet(), data));
 
@@ -3194,7 +3194,7 @@
                 contextName = Settings.DbContextName
             };
 
-            var co = new CodeOutput(filename, "Database context factory", GlobalUsings);
+            var co = new CodeOutput(string.Empty, filename, "Database context factory", GlobalUsings);
             co.AddUsings(Template.DatabaseContextFactoryUsings(data));
             co.AddCode(Template.Transform(Template.DatabaseContextFactory(), data));
             return co;
@@ -3281,7 +3281,7 @@
                 EntityClassesArePartial = Settings.EntityClassesArePartial()
             };
 
-            var co = new CodeOutput(filename, null, GlobalUsings);
+            var co = new CodeOutput(table.DbName, filename, null, GlobalUsings);
             co.AddUsings(Template.PocoUsings(data));
             co.AddCode(Template.Transform(Template.Poco(), data));
             return co;
@@ -3343,7 +3343,7 @@
                 HasIndexes                     = hasIndexes
             };
 
-            var co = new CodeOutput(filename, null, GlobalUsings);
+            var co = new CodeOutput(table.DbName, filename, null, GlobalUsings);
             co.AddUsings(Template.PocoConfigurationUsings(data));
             co.AddCode(Template.Transform(Template.PocoConfiguration(), data));
             return co;
@@ -3377,7 +3377,7 @@
                 MultipleModelReturnColumns     = multipleModelReturnColumns
             };
 
-            var co = new CodeOutput(filename, null, GlobalUsings);
+            var co = new CodeOutput(sp.DbName, filename, null, GlobalUsings);
             co.AddUsings(Template.StoredProcReturnModelUsings());
             co.AddCode(Template.Transform(Template.StoredProcReturnModels(), data));
             return co;
@@ -3392,7 +3392,7 @@
                 return null;
             }
 
-            var co = new CodeOutput(filename, null, null);
+            var co = new CodeOutput(enumeration.EnumName, filename, null, null);
             co.AddCode(Template.Transform(Template.Enums(), enumeration));
 
             return co;
@@ -3401,17 +3401,19 @@
 
     public class CodeOutput
     {
+        public string DbName { get; private set; }
         public string Filename { get; private set; }
         public string Region { get; private set; }
         public List<string> Usings { get; private set; }
         public List<string> Code { get; private set; }
 
-        public CodeOutput(string filename, string region, List<string> usings)
+        public CodeOutput(string dbName, string filename, string region, List<string> usings)
         {
+            DbName   = dbName;
             Filename = filename;
-            Region = region;
-            Usings = new List<string>();
-            Code = new List<string>();
+            Region   = region;
+            Usings   = new List<string>();
+            Code     = new List<string>();
 
             AddUsings(usings);
         }
@@ -3451,8 +3453,16 @@
 
         public void Add(string key, CodeOutput code)
         {
-            if(code != null)
+            if (code != null)
+            {
+                if (Files.ContainsKey(key))
+                {
+                    var error = string.Format("{0} already exists in the code output list. {1} and {2} both resolve to the same C# name. Filter one of them out.", key, Files[key].DbName, code.DbName);
+                    throw new Exception(error);
+                }
+
                 Files.Add(key, code);
+            }
         }
 
         public List<string> GetUsings()
@@ -14960,6 +14970,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public string GetUniqueColumnName(bool isParent, string tableNameHumanCase, ForeignKey foreignKey, bool checkForFkNameClashes,
             bool makeSingular, Relationship relationship)
         {
+            // todo: delete me
             // User specified name
             if (isParent && !string.IsNullOrEmpty(foreignKey.ParentName))
                 return foreignKey.ParentName;
@@ -14969,9 +14980,9 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 return foreignKey.ChildName;
 
             // Generate name
-            var addReverseNavigationUniquePropName = checkForFkNameClashes && (DbName == foreignKey.FkTableName || (DbName == foreignKey.PkTableName && foreignKey.IncludeReverseNavigation));
             if (ReverseNavigationUniquePropName.Count == 0)
             {
+                // Reserve table name and all column names
                 ReverseNavigationUniquePropName.Add(NameHumanCase);
                 ReverseNavigationUniquePropName.AddRange(Columns.Select(c => c.NameHumanCase));
             }
@@ -14979,19 +14990,20 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             if (!makeSingular)
                 tableNameHumanCase = Inflector.MakePlural(tableNameHumanCase);
 
-            if (checkForFkNameClashes && ReverseNavigationUniquePropName.Contains(tableNameHumanCase) &&
                 !ReverseNavigationUniquePropNameClashes.Contains(tableNameHumanCase))
+            {
                 ReverseNavigationUniquePropNameClashes.Add(tableNameHumanCase); // Name clash
+            }
 
             // Attempt 1
             var fkName = (Settings.UsePascalCase ? Inflector.ToTitleCase(foreignKey.FkColumn) : foreignKey.FkColumn).Replace(" ", string.Empty).Replace("$", string.Empty);
             var name = Settings.ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 1);
             string col;
-            if (!ReverseNavigationUniquePropNameClashes.Contains(name) && !ReverseNavigationUniquePropName.Contains(name))
             {
                 if (addReverseNavigationUniquePropName || !checkForFkNameClashes)
                 {
                     ReverseNavigationUniquePropName.Add(name);
+                    foreignKey.UniqueName = name;
                 }
 
                 return name;
@@ -15003,11 +15015,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 if (fkName.ToLowerInvariant().EndsWith("id"))
                 {
                     col = Settings.ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 2);
-                    if (checkForFkNameClashes && ReverseNavigationUniquePropName.Contains(col) &&
                         !ReverseNavigationUniquePropNameClashes.Contains(col))
+                    {
                         ReverseNavigationUniquePropNameClashes.Add(col); // Name clash
+                    }
 
-                    if (!ReverseNavigationUniquePropNameClashes.Contains(col) &&
                         !ReverseNavigationUniquePropName.Contains(col))
                     {
                         if (addReverseNavigationUniquePropName || !checkForFkNameClashes)
@@ -15021,11 +15033,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
                 // Attempt 3
                 col = Settings.ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 3);
-                if (checkForFkNameClashes && ReverseNavigationUniquePropName.Contains(col) &&
                     !ReverseNavigationUniquePropNameClashes.Contains(col))
+                {
                     ReverseNavigationUniquePropNameClashes.Add(col); // Name clash
+                }
 
-                if (!ReverseNavigationUniquePropNameClashes.Contains(col) &&
                     !ReverseNavigationUniquePropName.Contains(col))
                 {
                     if (addReverseNavigationUniquePropName || !checkForFkNameClashes)
@@ -15039,11 +15051,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
             // Attempt 4
             col = Settings.ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 4);
-            if (checkForFkNameClashes && ReverseNavigationUniquePropName.Contains(col) &&
                 !ReverseNavigationUniquePropNameClashes.Contains(col))
+            {
                 ReverseNavigationUniquePropNameClashes.Add(col); // Name clash
+            }
 
-            if (!ReverseNavigationUniquePropNameClashes.Contains(col) && !ReverseNavigationUniquePropName.Contains(col))
             {
                 if (addReverseNavigationUniquePropName || !checkForFkNameClashes)
                 {
@@ -15054,7 +15066,6 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             }
 
             // Attempt 5
-            for (int n = 1; n < 99; ++n)
             {
                 col = Settings.ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 5) + n;
 

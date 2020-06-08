@@ -1115,15 +1115,15 @@ namespace Efrpg.Generators
         {
             var codeGenerator = new CodeGenerator(this, filter);
 
-            const string contextInterface = "contextInterface";
-            const string contextFactory   = "contextFactory";
-            const string contextClass     = "contextClass";
-            const string contextFakeClass = "contextFakeClass";
-            const string contextFakeDbSet = "contextFakeDbSet";
-            const string pocoClass        = "pocoClass";
-            const string pocoConfiguration= "pocoConfiguration";
-            const string spReturnModels   = "spReturnModels";
-            const string enumType         = "enumType";
+            const string contextInterface = "contextInterface:";
+            const string contextFactory   = "contextFactory:";
+            const string contextClass     = "contextClass:";
+            const string contextFakeClass = "contextFakeClass:";
+            const string contextFakeDbSet = "contextFakeDbSet:";
+            const string pocoClass        = "pocoClass:";
+            const string pocoConfiguration= "pocoConfiguration:";
+            const string spReturnModels   = "spReturnModel:";
+            const string enumType         = "enumType:";
 
             var codeOutputList = new CodeOutputList();
             codeOutputList.Add(contextInterface, codeGenerator.GenerateInterface());
@@ -1153,7 +1153,8 @@ namespace Efrpg.Generators
                             !Settings.StoredProcedureReturnTypes.ContainsKey(x.DbName))
                 .OrderBy(x => x.NameHumanCase))
             {
-                codeOutputList.Add(spReturnModels + sp.WriteStoredProcReturnModelName(filter), codeGenerator.GenerateStoredProcReturnModel(sp));
+                var key = spReturnModels + sp.WriteStoredProcReturnModelName(filter);
+                codeOutputList.Add(key, codeGenerator.GenerateStoredProcReturnModel(sp));
             }
 
             FileHeaderFooter = new FileHeaderFooter(filter.SubNamespace);

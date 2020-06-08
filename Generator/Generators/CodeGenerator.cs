@@ -259,7 +259,7 @@ namespace Efrpg.Generators
                 hasScalarValuedFunctions        = _hasScalarValuedFunctions && _filter.IncludeScalarValuedFunctions
             };
 
-            var co = new CodeOutput(filename, "Database context interface", GlobalUsings);
+            var co = new CodeOutput(string.Empty, filename, "Database context interface", GlobalUsings);
             co.AddUsings(Template.DatabaseContextInterfaceUsings(data));
             co.AddCode(Template.Transform(Template.DatabaseContextInterface(), data));
 
@@ -335,7 +335,7 @@ namespace Efrpg.Generators
                 DefaultSchema                          = Settings.DefaultSchema
             };
 
-            var co = new CodeOutput(filename, "Database context", GlobalUsings);
+            var co = new CodeOutput(string.Empty, filename, "Database context", GlobalUsings);
             co.AddUsings(Template.DatabaseContextUsings(data));
             co.AddCode(Template.Transform(Template.DatabaseContext(), data));
 
@@ -365,7 +365,7 @@ namespace Efrpg.Generators
                 hasScalarValuedFunctions = _hasScalarValuedFunctions && _filter.IncludeScalarValuedFunctions
             };
 
-            var co = new CodeOutput(filename, "Fake Database context", GlobalUsings);
+            var co = new CodeOutput(string.Empty, filename, "Fake Database context", GlobalUsings);
             co.AddUsings(Template.FakeDatabaseContextUsings(data, _filter));
             co.AddCode(Template.Transform(Template.FakeDatabaseContext(), data));
 
@@ -389,7 +389,7 @@ namespace Efrpg.Generators
                 IsEfCore3               = Settings.IsEfCore3()
             };
 
-            var co = new CodeOutput(filename, "Fake DbSet", GlobalUsings);
+            var co = new CodeOutput(string.Empty, filename, "Fake DbSet", GlobalUsings);
             co.AddUsings(Template.FakeDbSetUsings(data));
             co.AddCode(Template.Transform(Template.FakeDbSet(), data));
 
@@ -411,7 +411,7 @@ namespace Efrpg.Generators
                 contextName = Settings.DbContextName
             };
 
-            var co = new CodeOutput(filename, "Database context factory", GlobalUsings);
+            var co = new CodeOutput(string.Empty, filename, "Database context factory", GlobalUsings);
             co.AddUsings(Template.DatabaseContextFactoryUsings(data));
             co.AddCode(Template.Transform(Template.DatabaseContextFactory(), data));
             return co;
@@ -498,7 +498,7 @@ namespace Efrpg.Generators
                 EntityClassesArePartial = Settings.EntityClassesArePartial()
             };
 
-            var co = new CodeOutput(filename, null, GlobalUsings);
+            var co = new CodeOutput(table.DbName, filename, null, GlobalUsings);
             co.AddUsings(Template.PocoUsings(data));
             co.AddCode(Template.Transform(Template.Poco(), data));
             return co;
@@ -560,7 +560,7 @@ namespace Efrpg.Generators
                 HasIndexes                     = hasIndexes
             };
 
-            var co = new CodeOutput(filename, null, GlobalUsings);
+            var co = new CodeOutput(table.DbName, filename, null, GlobalUsings);
             co.AddUsings(Template.PocoConfigurationUsings(data));
             co.AddCode(Template.Transform(Template.PocoConfiguration(), data));
             return co;
@@ -594,7 +594,7 @@ namespace Efrpg.Generators
                 MultipleModelReturnColumns     = multipleModelReturnColumns
             };
 
-            var co = new CodeOutput(filename, null, GlobalUsings);
+            var co = new CodeOutput(sp.DbName, filename, null, GlobalUsings);
             co.AddUsings(Template.StoredProcReturnModelUsings());
             co.AddCode(Template.Transform(Template.StoredProcReturnModels(), data));
             return co;
@@ -609,7 +609,7 @@ namespace Efrpg.Generators
                 return null;
             }
 
-            var co = new CodeOutput(filename, null, null);
+            var co = new CodeOutput(enumeration.EnumName, filename, null, null);
             co.AddCode(Template.Transform(Template.Enums(), enumeration));
 
             return co;
