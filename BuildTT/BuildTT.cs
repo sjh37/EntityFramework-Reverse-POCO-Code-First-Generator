@@ -233,7 +233,6 @@ namespace BuildTT
 
     // Table renaming (single context generation only) ************************************************************************************
     // Use the following function to rename tables such as tblOrders to Orders, Shipments_AB to Shipments, etc.
-    // Example:
     Settings.TableRename = delegate(string name, string schema, bool isView)
     {
         // Example
