@@ -121,6 +121,7 @@ namespace BuildTT
     Settings.UseNamespace     = true;  // If false, suppresses the writing of a namespace
     Settings.UsePragma        = true;  // If false, suppresses the writing of #pragma
     Settings.AllowNullStrings = false; // If true, will allow string? properties and will add '#nullable enable' to the top of each file
+    Settings.UseResharper     = false; // If true, will add a list of // ReSharper disable ... comments to the top of each file
 
     // Enumerations ***********************************************************************************************************************
     // Create enumerations from database tables

@@ -73,6 +73,7 @@ namespace Efrpg
         public static bool UseNamespace     = true;  // If false, suppresses the writing of a namespace
         public static bool UsePragma        = true;  // If false, suppresses the writing of #pragma
         public static bool AllowNullStrings = false; // If true, will allow string? properties and will add '#nullable enable' to the top of each file
+        public static bool UseResharper     = false; // If true, will add a list of // ReSharper disable ... comments to the top of each file
 
         // Create enumerations from database tables
         // List the enumeration tables you want read and generated for
