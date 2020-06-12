@@ -116,6 +116,7 @@ namespace Efrpg.Readers
 
                             DatabaseProductMajorVersion = int.Parse(version);
                         }
+                        DatabaseDetails.AppendLine("//");
                     }
                 }
 

@@ -51,14 +51,12 @@ namespace Efrpg
         public static bool UseInheritedBaseInterfaceFunctions       = false; // If true, the main DBContext interface functions will come from the DBContextInterfaceBaseClasses and not generated. If false, the functions will be generated.
         public static CommentsStyle IncludeComments                 = CommentsStyle.AtEndOfField; // Adds comments to the generated code
         public static CommentsStyle IncludeExtendedPropertyComments = CommentsStyle.InSummaryBlock; // Adds extended properties as comments to the generated code
-        public static bool IncludeConnectionSettingComments         = true; // Add comments describing connection settings used to generate file
         public static bool DisableGeographyTypes                    = false; // Turns off use of System.Data.Entity.Spatial.DbGeography and System.Data.Entity.Spatial.DbGeometry as OData doesn't support entities with geometry/geography types.
         public static string CollectionInterfaceType                = "ICollection"; //  = "System.Collections.Generic.List"; // Determines the declaration type of collections for the Navigation Properties. ICollection is used if not set.
         public static string CollectionType                         = "List"; // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example. Add "System.Collections.ObjectModel" to AdditionalNamespaces if setting the CollectionType = "ObservableCollection".
         public static bool NullableShortHand                        = true; // true => T?, false => Nullable<T>
         public static bool AddIDbContextFactory                     = true; // Will add a default IDbContextFactory<DbContextName> implementation for easy dependency injection
         public static bool IncludeQueryTraceOn9481Flag              = false; // If SqlServer 2014 appears frozen / take a long time when this file is saved, try setting this to true (you will also need elevated privileges).
-        public static bool IncludeCodeGeneratedAttribute            = false; // If true, will include the GeneratedCode attribute, false to remove it.
         public static bool UsePrivateSetterForComputedColumns       = true; // If the columns is computed, use a private setter.
         public static bool IncludeGeneratorVersionInCode            = false; // If true, will include the version number of the generator in the generated code
         public static List<string> AdditionalNamespaces             = new List<string>(); // To include extra namespaces, include them here. i.e. "Microsoft.AspNet.Identity.EntityFramework"
@@ -68,12 +66,15 @@ namespace Efrpg
         public static GenerationLanguage GenerationLanguage = GenerationLanguage.CSharp;
         public static string FileExtension                  = ".cs";
 
-        // Code suppression (useful for non C# file generation) *******************************************************************************
-        public static bool UseRegions       = true;  // If false, suppresses the use of #region
-        public static bool UseNamespace     = true;  // If false, suppresses the writing of a namespace
-        public static bool UsePragma        = true;  // If false, suppresses the writing of #pragma
-        public static bool AllowNullStrings = false; // If true, will allow string? properties and will add '#nullable enable' to the top of each file
-        public static bool UseResharper     = false; // If true, will add a list of // ReSharper disable ... comments to the top of each file
+        // Code suppression *******************************************************************************
+        public static bool UseRegions                       = true;  // If false, suppresses the use of #region
+        public static bool UseNamespace                     = true;  // If false, suppresses the writing of a namespace
+        public static bool UsePragma                        = false;  // If false, suppresses the writing of #pragma
+        public static bool AllowNullStrings                 = false; // If true, will allow string? properties and will add '#nullable enable' to the top of each file
+        public static bool UseResharper                     = false; // If true, will add a list of 'ReSharper disable' comments to the top of each file
+        public static bool ShowLicenseInfo                  = false; // If true, will add the licence info comment to the top of each file
+        public static bool IncludeConnectionSettingComments = false; // Add comments describing connection settings used to generate file
+        public static bool IncludeCodeGeneratedAttribute    = false; // If true, will include the [GeneratedCode] attribute before classes, false to remove it.
 
         // Create enumerations from database tables
         // List the enumeration tables you want read and generated for

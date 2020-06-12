@@ -99,14 +99,12 @@ namespace BuildTT
     Settings.UseInheritedBaseInterfaceFunctions = false; // If true, the main DBContext interface functions will come from the DBContextInterfaceBaseClasses and not generated. If false, the functions will be generated.
     Settings.IncludeComments                    = CommentsStyle.AtEndOfField; // Adds comments to the generated code
     Settings.IncludeExtendedPropertyComments    = CommentsStyle.InSummaryBlock; // Adds extended properties as comments to the generated code
-    Settings.IncludeConnectionSettingComments   = false; // Add comments describing connection settings used to generate file
     Settings.DisableGeographyTypes              = true; // Turns off use of spatial types: Geography, Geometry. More info: https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Spatial-Types
     Settings.CollectionInterfaceType            = ""ICollection""; //  = ""System.Collections.Generic.List""; // Determines the declaration type of collections for the Navigation Properties. ICollection is used if not set.
     Settings.CollectionType                     = ""List""; // Determines the type of collection for the Navigation Properties. ""ObservableCollection"" for example. Add ""System.Collections.ObjectModel"" to AdditionalNamespaces if setting the CollectionType = ""ObservableCollection"".
     Settings.NullableShortHand                  = true; // true => T?, false => Nullable<T>
     Settings.AddIDbContextFactory               = true; // Will add a default IDbContextFactory<DbContextName> implementation for easy dependency injection
     Settings.IncludeQueryTraceOn9481Flag        = false; // If SqlServer 2014 appears frozen / take a long time when this file is saved, try setting this to true (you will also need elevated privileges).
-    Settings.IncludeCodeGeneratedAttribute      = false; // If true, will include the GeneratedCode attribute, false to remove it.
     Settings.UsePrivateSetterForComputedColumns = true; // If the columns is computed, use a private setter.
     Settings.IncludeGeneratorVersionInCode      = false; // If true, will include the version number of the generator in the generated code
     Settings.AdditionalNamespaces               = new List<string>(); // To include extra namespaces, include them here. i.e. new List<string> { ""Microsoft.AspNetCore.Identity.EntityFrameworkCore"", ""System.ComponentModel.DataAnnotations"" };
@@ -116,12 +114,15 @@ namespace BuildTT
     Settings.GenerationLanguage = GenerationLanguage.CSharp;
     Settings.FileExtension      = "".cs"";
 
-    // Code suppression (useful for non C# file generation) *******************************************************************************
-    Settings.UseRegions       = true;  // If false, suppresses the use of #region
-    Settings.UseNamespace     = true;  // If false, suppresses the writing of a namespace
-    Settings.UsePragma        = true;  // If false, suppresses the writing of #pragma
-    Settings.AllowNullStrings = false; // If true, will allow string? properties and will add '#nullable enable' to the top of each file
-    Settings.UseResharper     = false; // If true, will add a list of // ReSharper disable ... comments to the top of each file
+    // Code suppression *******************************************************************************
+    Settings.UseRegions                       = true;  // If false, suppresses the use of #region
+    Settings.UseNamespace                     = true;  // If false, suppresses the writing of a namespace
+    Settings.UsePragma                        = false; // If false, suppresses the writing of #pragma
+    Settings.AllowNullStrings                 = false; // If true, will allow string? properties and will add '#nullable enable' to the top of each file
+    Settings.UseResharper                     = true;  // If true, will add a list of 'ReSharper disable' comments to the top of each file
+    Settings.ShowLicenseInfo                  = false; // If true, will add the licence info comment to the top of each file
+    Settings.IncludeConnectionSettingComments = false; // Add comments describing connection settings used to generate file
+    Settings.IncludeCodeGeneratedAttribute    = false; // If true, will include the [GeneratedCode] attribute before classes, false to remove it.
 
     // Enumerations ***********************************************************************************************************************
     // Create enumerations from database tables
