@@ -32,5 +32,12 @@
 
             WouldForceColumnToBeNotNull = false;
         }
+
+        public string Dump()
+        {
+            return string.Format("new RawIndex(\"{0}\", \"{1}\", \"{2}\", {3}, \"{4}\", {5}, {6}, {7}, {8}, {9}),",
+                Schema, TableName, IndexName, KeyOrdinal, ColumnName, ColumnCount, IsUnique ? "true" : "false", IsPrimaryKey ? "true" : "false",
+                IsUniqueConstraint ? "true" : "false", IsClustered ? "true" : "false");
+        }
     }
 }

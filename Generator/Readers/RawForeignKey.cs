@@ -38,5 +38,20 @@
             IsNotEnforced       = isNotEnforced;
             HasUniqueConstraint = hasUniqueConstraint;
         }
+
+        public string Dump()
+        {
+            var parentName = "null";
+            if(!string.IsNullOrWhiteSpace(ParentName))
+                parentName = string.Format("\"{0}\"", ParentName);
+            
+            var childName = "null";
+            if(!string.IsNullOrWhiteSpace(ChildName))
+                childName = string.Format("\"{0}\"", ChildName);
+
+            return string.Format("new RawForeignKey(\"{0}\", {1}, {2}, \"{3}\", \"{4}\", \"{5}\", \"{6}\", \"{7}\", \"{8}\", {9}, {10}, {11}, {12}),",
+                ConstraintName, parentName, childName, PkColumn, FkColumn, PkSchema, PkTableName,
+                FkSchema, FkTableName, Ordinal, CascadeOnDelete ? "true" : "false", IsNotEnforced ? "true" : "false", HasUniqueConstraint ? "true" : "false");
+        }
     }
 }
