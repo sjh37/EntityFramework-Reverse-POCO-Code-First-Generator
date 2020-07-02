@@ -1,7 +1,7 @@
 ## EntityFramework Reverse POCO Code First Generator
 
 **Beautifully generated code first code that is fully customisable**
-* Downloadable VSIX installer from the [visual studio gallery](https://visualstudiogallery.msdn.microsoft.com/ee4fcff9-0c4c-4179-afd9-7a2fb90f5838).
+* Downloadable VSIX installer from the [visual studio gallery](https://marketplace.visualstudio.com/items?itemName=SimonHughes.EntityFrameworkReversePOCOGenerator).
 * Watch the v2 in-depth course at [pluralsight](https://app.pluralsight.com/library/courses/code-first-entity-framework-legacy-databases/table-of-contents) ![logo](http://www.simonhughes.co.uk/pluralsight-logo-tiny.png) I cover everything the v2 generator can do, and show you step-by-step how to reverse engineer your database properly.
 * A v3 course will be coming in 2020.
 
