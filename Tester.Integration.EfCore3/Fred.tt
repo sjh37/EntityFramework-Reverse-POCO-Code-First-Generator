@@ -93,13 +93,18 @@
     Settings.AdditionalContextInterfaceItems    = new List<string>(); // example: new List<string> { "void SetAutoDetectChangesEnabled(bool flag);" };
 
     // Language choices
-            Settings.GenerationLanguage = GenerationLanguage.CSharp;
+    Settings.GenerationLanguage = GenerationLanguage.CSharp;
     Settings.FileExtension      = ".cs";
 
     // Code suppression (useful for non C# file generation) *******************************************************************************
-    Settings.UseRegions   = true; // If false, suppresses the use of #region
-    Settings.UseNamespace = true; // If false, suppresses the writing of a namespace
-    Settings.UsePragma    = true; // If false, suppresses the writing of #pragma
+    Settings.UseRegions                       = true;  // If false, suppresses the use of #region
+    Settings.UseNamespace                     = true;  // If false, suppresses the writing of a namespace
+    Settings.UsePragma                        = false; // If false, suppresses the writing of #pragma
+    Settings.AllowNullStrings                 = false; // If true, will allow string? properties and will add '#nullable enable' to the top of each file
+    Settings.UseResharper                     = true;  // If true, will add a list of 'ReSharper disable' comments to the top of each file
+    Settings.ShowLicenseInfo                  = true; // If true, will add the licence info comment to the top of each file
+    Settings.IncludeConnectionSettingComments = true; // Add comments describing connection settings used to generate file
+    Settings.IncludeCodeGeneratedAttribute    = false; // If true, will include the [GeneratedCode] attribute before classes, false to remove it.
 
     // Enumerations ***********************************************************************************************************************
     // Create enumerations from database tables

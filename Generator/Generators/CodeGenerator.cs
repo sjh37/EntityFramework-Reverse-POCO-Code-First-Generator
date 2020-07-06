@@ -230,7 +230,7 @@ namespace Efrpg.Generators
 
         public string GenerateUsings(List<string> usings)
         {
-            return !usings.Any() ? null : Template.Transform(Template.Usings(), usings);
+            return !usings.Any() ? null : Template.Transform(Template.Usings(), usings).Trim();
         }
 
         public CodeOutput GenerateInterface()

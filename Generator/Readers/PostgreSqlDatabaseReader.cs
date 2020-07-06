@@ -243,84 +243,26 @@ ORDER BY R.specific_schema, R.routine_name, R.routine_type;";
 
         public override void ReadStoredProcReturnObjects(List<StoredProcedure> procs)
         {
-            using (var sqlConnection = new SqlConnection(Settings.ConnectionString))
+            /*using (var conn = _factory.CreateConnection())
             {
+                if (conn == null)
+                    return;
+
+                conn.ConnectionString = Settings.ConnectionString;
+                conn.Open();
+
+                var cmd = GetCmd(conn);
+                if (cmd == null)
+                    return;
+
                 foreach (var sp in procs.Where(x => !x.IsScalarValuedFunction))
-                    ReadStoredProcReturnObject(sqlConnection, sp);
-            }
+                    ReadStoredProcReturnObject(cmd, sp);
+            }*/
         }
 
-        private void ReadStoredProcReturnObject(SqlConnection sqlConnection, StoredProcedure proc)
+        /*private void ReadStoredProcReturnObject(DbCommand sqlConnection, StoredProcedure proc)
         {
-            try
-            {
-                const string structured = "Structured";
-                var sb = new StringBuilder(255);
-                if (proc.IsTableValuedFunction)
-                {
-                    foreach (var param in proc.Parameters.Where(x => x.SqlDbType.Equals(structured, StringComparison.InvariantCultureIgnoreCase)))
-                    {
-                        sb.AppendLine(string.Format("DECLARE {0} {1};", param.Name, param.UserDefinedTypeName));
-                    }
-
-                    sb.Append(string.Format("SELECT * FROM [{0}].[{1}](", proc.Schema.DbName, proc.DbName));
-                    foreach (var param in proc.Parameters)
-                    {
-                        sb.Append(string.Format("{0}, ",
-                            param.SqlDbType.Equals(structured, StringComparison.InvariantCultureIgnoreCase)
-                                ? param.Name
-                                : "default"));
-                    }
-
-                    if (proc.Parameters.Count > 0)
-                        sb.Length -= 2;
-
-                    sb.AppendLine(") LIMIT 0;");
-                }
-                else
-                {
-                    foreach (var param in proc.Parameters)
-                    {
-                        sb.AppendLine(string.Format("DECLARE {0} {1};", param.Name,
-                            param.SqlDbType.Equals(structured, StringComparison.InvariantCultureIgnoreCase)
-                                ? param.UserDefinedTypeName
-                                : param.SqlDbType));
-                    }
-
-                    sb.Append(string.Format("exec {0}.\"{1}\" ", proc.Schema.DbName, proc.DbName));
-                    foreach (var param in proc.Parameters)
-                        sb.Append(string.Format("{0}, ", param.Name));
-
-                    if (proc.Parameters.Count > 0)
-                        sb.Length -= 2;
-
-                    sb.AppendLine(";");
-                }
-
-                var ds = new DataSet();
-                using (var sqlAdapter = new SqlDataAdapter(sb.ToString(), sqlConnection))
-                {
-                    if (sqlConnection.State != ConnectionState.Open)
-                        sqlConnection.Open();
-                    sqlAdapter.SelectCommand.ExecuteReader(CommandBehavior.SchemaOnly | CommandBehavior.KeyInfo);
-                    sqlConnection.Close();
-                    sqlAdapter.FillSchema(ds, SchemaType.Source, "MyTable");
-                }
-
-                // Tidy up parameters
-                foreach (var p in proc.Parameters)
-                    p.NameHumanCase = Regex.Replace(p.NameHumanCase, @"[^A-Za-z0-9@\s]*", string.Empty);
-
-                for (var count = 0; count < ds.Tables.Count; count++)
-                {
-                    proc.ReturnModels.Add(ds.Tables[count].Columns.Cast<DataColumn>().ToList());
-                }
-            }
-            catch (Exception)
-            {
-                // Stored procedure does not have a return type
-            }
-        }
+        }*/
 
         public override void Init()
         {

@@ -19,6 +19,9 @@ namespace Efrpg
         public readonly string ParentName;
         public readonly string ChildName;
         public readonly bool   HasUniqueConstraint;
+        
+        // Record unique name for this foreign key
+        public string UniqueName;
 
         // User settable via ForeignKeyFilter callback
         public string AccessModifier           { get; set; }
@@ -45,6 +48,7 @@ namespace Efrpg
             IsNotEnforced       = isNotEnforced;
             HasUniqueConstraint = hasUniqueConstraint;
 
+            UniqueName               = string.Empty;
             IncludeReverseNavigation = true;
         }
 
@@ -66,6 +70,7 @@ namespace Efrpg
             IsNotEnforced       = rfk.IsNotEnforced;
             HasUniqueConstraint = rfk.HasUniqueConstraint;
 
+            UniqueName               = string.Empty;
             IncludeReverseNavigation = true;
         }
 

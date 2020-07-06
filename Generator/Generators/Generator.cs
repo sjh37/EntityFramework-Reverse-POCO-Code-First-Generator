@@ -227,6 +227,10 @@ namespace Efrpg.Generators
                 var rawIndexes     = DatabaseReader.ReadIndexes();
                 var rawForeignKeys = DatabaseReader.ReadForeignKeys(includeSynonyms);
 
+                // For unit testing
+                //foreach (var ri in rawIndexes.OrderBy(x => x.TableName).ThenBy(x => x.IndexName)) Console.WriteLine(ri.Dump());
+                //foreach (var rfk in rawForeignKeys) Console.WriteLine(rfk.Dump());
+
                 AddTablesToFilters(rawTables);
                 IdentifyUniqueForeignKeys(rawIndexes, rawForeignKeys);
                 AddIndexesToFilters(rawIndexes);
@@ -719,6 +723,12 @@ namespace Efrpg.Generators
                     }
                 }*/
 
+                // Force generation of Async stored procs
+                /*foreach (var sp in storedProcs.Where(x => !x.IsTableValuedFunction && !x.ReturnModels.Any()))
+                {
+                    sp.ReturnModels.Add(new List<DataColumn> { new DataColumn("result", typeof(int)) });
+                }*/
+
                 // Remove stored procs where the return model type contains spaces and cannot be mapped
                 // Also need to remove any TVF functions with parameters that are non scalar types, such as DataTable
                 var validStoredProcs = new List<StoredProcedure>();
@@ -878,13 +888,13 @@ namespace Efrpg.Generators
                 if (pkTable == null || pkTable.IsMapping)
                     continue;
 
-                var fkCols = foreignKeys.Select(x => new
+                var fkCols = foreignKeys.Select(x => new ColumnAndForeignKey
                     {
-                        fk = x,
-                        col = fkTable.Columns.Find(n => string.Equals(n.DbName, x.FkColumn, StringComparison.InvariantCultureIgnoreCase))
+                        ForeignKey = x,
+                        Column = fkTable.Columns.Find(n => string.Equals(n.DbName, x.FkColumn, StringComparison.InvariantCultureIgnoreCase))
                     })
-                    .Where(x => x.col != null)
-                    .OrderBy(o => o.fk.Ordinal)
+                    .Where(x => x.Column != null)
+                    .OrderBy(o => o.ForeignKey.Ordinal)
                     .ToList();
 
                 if (!fkCols.Any())
@@ -893,40 +903,50 @@ namespace Efrpg.Generators
                 if (FkMustHaveSameNumberOfColumnsAsPrimaryKey() || AllowFkToNonPrimaryKey())
                 {
                     // Check FK has same number of columns as the primary key it points to
-                    var pks = pkTable.PrimaryKeys.OrderBy(x => x.PropertyType).ThenBy(y => y.DbName).ToArray();
-                    var cols = fkCols.Select(x => x.col).OrderBy(x => x.PropertyType).ThenBy(y => y.DbName).ToArray();
-                    if (FkMustHaveSameNumberOfColumnsAsPrimaryKey() && pks.Length != cols.Length)
-                        continue;
+                    var pks  = pkTable.PrimaryKeys.OrderBy(x => x.PropertyType).ThenBy(y => y.DbName).ToArray();
+                    var cols = fkCols.Select(x => x.Column).OrderBy(x => x.PropertyType).ThenBy(y => y.DbName).ToArray();
 
-                    if (!AllowFkToNonPrimaryKey() && pks.Where((pk, ef6Check) => pk.PropertyType != cols[ef6Check].PropertyType).Any())
+                    if (FkMustHaveSameNumberOfColumnsAsPrimaryKey() && pks.Length != cols.Length)
+                    {
+                        // Also check unique constraints
+                        if (!AllowFkToNonPrimaryKey())
+                            continue;
+
+                        if(!fkCols.All(x => x.ForeignKey.HasUniqueConstraint))
+                            continue;
+                    }
+
+                    if (!AllowFkToNonPrimaryKey() && pks.Where((pk, n) => pk.PropertyType != cols[n].PropertyType).Any())
                         continue;
                 }
 
-                var pkCols = foreignKeys.Select(x => new
+                var pkCols = foreignKeys.Select(x => new ColumnAndForeignKey
                     {
-                        pk = x,
-                        col = pkTable.Columns.Find(n => string.Equals(n.DbName, x.PkColumn, StringComparison.InvariantCultureIgnoreCase))
+                        ForeignKey = x,
+                        Column = pkTable.Columns.Find(n => string.Equals(n.DbName, x.PkColumn, StringComparison.InvariantCultureIgnoreCase))
                     })
-                    .Where(x => x.col != null)
-                    .OrderBy(o => o.pk.Ordinal)
+                    .Where(x => x.Column != null)
+                    .OrderBy(o => o.ForeignKey.Ordinal)
                     .ToList();
 
                 if (!pkCols.Any())
                     continue;
 
-                var allPkColsArePrimaryKeys = pkCols.All(c => c.col.IsPrimaryKey);
+                var allPkColsArePrimaryKeys = pkCols.All(c => c.Column.IsPrimaryKey);
                 if (!AllowFkToNonPrimaryKey() && !allPkColsArePrimaryKeys)
                     continue; // Cannot have a FK to a non-primary key
 
-                var relationship = CalcRelationship(pkTable, fkTable, fkCols.Select(c => c.col).ToList(), pkCols.Select(c => c.col).ToList());
+                var relationship = CalcRelationship(pkTable, fkTable, fkCols, pkCols);
                 if (relationship == Relationship.DoNotUse)
                     continue;
 
                 var pkTableHumanCaseWithSuffix = foreignKey.PkTableHumanCase(pkTable.Suffix);
                 var pkTableHumanCase           = foreignKey.PkTableHumanCase(null);
-                var pkPropName                 = fkTable.GetUniqueColumnName(true, pkTableHumanCase, foreignKey, checkForFkNameClashes, true, Relationship.ManyToOne);
-                var fkMakePropNameSingular     = (relationship == Relationship.OneToOne);
-                var fkPropName                 = pkTable.GetUniqueColumnName(false, fkTable.NameHumanCase, foreignKey, checkForFkNameClashes, fkMakePropNameSingular, Relationship.OneToMany);
+
+                var flipRelationship       = FlipRelationship(relationship);
+                var fkMakePropNameSingular = relationship == Relationship.OneToOne;
+                var pkPropName             = fkTable.GetUniqueColumnName(true,  pkTableHumanCase,      foreignKey, checkForFkNameClashes, true,                   relationship);
+                var fkPropName             = pkTable.GetUniqueColumnName(false, fkTable.NameHumanCase, foreignKey, checkForFkNameClashes, fkMakePropNameSingular, flipRelationship);
 
                 var fkd = new PropertyAndComments
                 {
@@ -942,41 +962,41 @@ namespace Efrpg.Generators
                     Comments = string.Format("Parent {0} pointed by [{1}].({2}) ({3})",
                         pkTableHumanCase,
                         fkTable.DbName,
-                        string.Join(", ", fkCols.Select(x => "[" + x.col.NameHumanCase + "]").Distinct().ToArray()),
+                        string.Join(", ", fkCols.Select(x => "[" + x.Column.NameHumanCase + "]").Distinct().ToArray()),
                         foreignKey.ConstraintName)
                 };
 
                 var firstFkCol = fkCols.First();
-                firstFkCol.col.EntityFk.Add(fkd);
+                firstFkCol.Column.EntityFk.Add(fkd);
 
                 string manyToManyMapping, mapKey;
                 if (foreignKeys.Count > 1)
                 {
-                    manyToManyMapping = string.Format("c => new {{ {0} }}", string.Join(", ", fkCols.Select(x => "c." + x.col.NameHumanCase).Distinct().ToArray()));
-                    mapKey = string.Format("{0}", string.Join(",", fkCols.Select(x => "\"" + x.col.DbName + "\"").Distinct().ToArray()));
+                    manyToManyMapping = string.Format("c => new {{ {0} }}", string.Join(", ", fkCols.Select(x => "c." + x.Column.NameHumanCase).Distinct().ToArray()));
+                    mapKey = string.Format("{0}", string.Join(",", fkCols.Select(x => "\"" + x.Column.DbName + "\"").Distinct().ToArray()));
                 }
                 else
                 {
-                    manyToManyMapping = string.Format("c => c.{0}", firstFkCol.col.NameHumanCase);
-                    mapKey = string.Format("\"{0}\"", firstFkCol.col.DbName);
+                    manyToManyMapping = string.Format("c => c.{0}", firstFkCol.Column.NameHumanCase);
+                    mapKey = string.Format("\"{0}\"", firstFkCol.Column.DbName);
                 }
 
-                var fkHasUniqueConstraint = pkCols.All(x => x.pk.HasUniqueConstraint) && relationship == Relationship.OneToOne;
+                var fkHasUniqueConstraint = pkCols.All(x => x.ForeignKey.HasUniqueConstraint) && relationship == Relationship.OneToOne;
                 var primaryKeyColumns = string.Empty;
                 if (!allPkColsArePrimaryKeys)
                 { 
                     if (pkCols.Count > 1)
-                        primaryKeyColumns = string.Format("p => new {{ {0} }}", string.Join(", ", pkCols.Select(x => "p." + x.col.NameHumanCase).Distinct().ToArray()));
+                        primaryKeyColumns = string.Format("p => new {{ {0} }}", string.Join(", ", pkCols.Select(x => "p." + x.Column.NameHumanCase).Distinct().ToArray()));
                     else
-                        primaryKeyColumns = string.Format("p => p.{0}", pkCols.First().col.NameHumanCase);
+                        primaryKeyColumns = string.Format("p => p.{0}", pkCols.First().Column.NameHumanCase);
                 }
 
-                var fkCols2 = fkCols.Select(c => c.col).ToList();
-                var pkCols2 = pkCols.Select(c => c.col).ToList();
+                var fkCols2 = fkCols.Select(c => c.Column).ToList();
+                var pkCols2 = pkCols.Select(c => c.Column).ToList();
 
                 var rel = GetRelationship(relationship, fkCols2, pkCols2, pkPropName, fkPropName, manyToManyMapping, mapKey, foreignKey.CascadeOnDelete, foreignKey.IncludeReverseNavigation, foreignKey.IsNotEnforced, foreignKey.ConstraintName, pkTableHumanCase, fkTable.NameHumanCase, primaryKeyColumns, fkHasUniqueConstraint);
                 var com = Settings.IncludeComments != CommentsStyle.None && string.IsNullOrEmpty(GetForeignKeyConstraintName("x")) ? " // " + foreignKey.ConstraintName : string.Empty;
-                firstFkCol.col.ConfigFk.Add(string.Format("{0};{1}", rel, com));
+                firstFkCol.Column.ConfigFk.Add(string.Format("{0};{1}", rel, com));
 
                 if (foreignKey.IncludeReverseNavigation)
                     pkTable.AddReverseNavigation(relationship, fkTable, fkPropName, string.Format("{0}.{1}", fkTable.DbName, foreignKey.ConstraintName), foreignKeys);
@@ -1026,8 +1046,11 @@ namespace Efrpg.Generators
         }
 
         // Calculates the relationship between a child table and it's parent table.
-        public static Relationship CalcRelationship(Table parentTable, Table childTable, List<Column> childTableCols, List<Column> parentTableCols)
+        public static Relationship CalcRelationship(Table parentTable, Table childTable, List<ColumnAndForeignKey> fkCols, List<ColumnAndForeignKey> pkCols)
         {
+            var childTableCols  = fkCols.Select(c => c.Column).ToList();
+            var parentTableCols = pkCols.Select(c => c.Column).ToList();
+
             if (childTableCols.Count == 1 && parentTableCols.Count == 1)
                 return CalcRelationshipSingle(parentTable, childTable, childTableCols.First(), parentTableCols.First());
 
@@ -1035,14 +1058,24 @@ namespace Efrpg.Generators
 
             // childTable FK columns are exactly the primary key (they are part of primary key, and no other columns are primary keys)
             // TODO: we could also check if they are a unique index
-            var childTableColumnsAllPrimaryKeys = (childTableCols.Count == childTableCols.Count(x => x.IsPrimaryKey)) && (childTableCols.Count == childTable.PrimaryKeys.Count());
+            var childTableColumnsAllPrimaryKeys = (childTableCols.Count == childTableCols.Count(x => x.IsPrimaryKey)) && 
+                                                  (childTableCols.Count == childTable.PrimaryKeys.Count());
 
             // parentTable columns are exactly the primary key (they are part of primary key, and no other columns are primary keys)
             // TODO: we could also check if they are a unique index
-            var parentTableColumnsAllPrimaryKeys = (parentTableCols.Count == parentTableCols.Count(x => x.IsPrimaryKey)) && (parentTableCols.Count == parentTable.PrimaryKeys.Count());
+            var parentTableColumnsAllPrimaryKeys = (parentTableCols.Count == parentTableCols.Count(x => x.IsPrimaryKey)) && 
+                                                   (parentTableCols.Count == parentTable.PrimaryKeys.Count());
 
             // childTable FK columns are not only FK but also the whole PK (not only part of PK); parentTable columns are the whole PK (not only part of PK) - so it's 1:1
             if (childTableColumnsAllPrimaryKeys && parentTableColumnsAllPrimaryKeys)
+                return Relationship.OneToOne;
+
+            // Check if covered by a unique constraint
+            if(fkCols.All(x => x.ForeignKey.HasUniqueConstraint))
+                return Relationship.OneToOne;
+
+            // Check if covered by a unique index on PK table
+            if (parentTableCols.All(x => x.IsUnique))
                 return Relationship.OneToOne;
 
             return Relationship.ManyToOne;
@@ -1065,6 +1098,22 @@ namespace Efrpg.Generators
 
             return Relationship.OneToOne;
         }
+
+        public static Relationship FlipRelationship(Relationship relationship)
+        {
+            switch (relationship)
+            {
+                case Relationship.OneToOne:   return Relationship.OneToOne;
+                case Relationship.OneToMany:  return Relationship.ManyToOne;
+                case Relationship.ManyToOne:  return Relationship.OneToMany;
+                case Relationship.ManyToMany: return Relationship.ManyToMany;
+                case Relationship.DoNotUse:   return Relationship.DoNotUse;
+                
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(relationship), relationship, null);
+            }
+        }
+
 
         public void SetupEntityAndConfig(Column c)
         {
@@ -1160,14 +1209,27 @@ namespace Efrpg.Generators
             FileHeaderFooter = new FileHeaderFooter(filter.SubNamespace);
             if (!Settings.GenerateSeparateFiles)
             {
-                _fileManagementService.WriteLine(_preHeaderInfo.ToString());
-                _fileManagementService.WriteLine(FileHeaderFooter.Header);
+                var preHeader = _preHeaderInfo.ToString();
+                if(!string.IsNullOrWhiteSpace(preHeader))
+                    _fileManagementService.WriteLine(preHeader.Trim());
+
+                var header = FileHeaderFooter.Header;
+                if (!string.IsNullOrWhiteSpace(header))
+                    _fileManagementService.WriteLine(header.Trim());
 
                 var usings = codeGenerator.GenerateUsings(codeOutputList.GetUsings());
-                if(!string.IsNullOrWhiteSpace(usings))
-                    _fileManagementService.WriteLine(usings);
+                if (!string.IsNullOrWhiteSpace(usings))
+                {
+                    _fileManagementService.WriteLine("");
+                    _fileManagementService.WriteLine(usings.Trim());
+                }
 
-                _fileManagementService.WriteLine(FileHeaderFooter.Namespace);
+                var ns = FileHeaderFooter.Namespace;
+                if (!string.IsNullOrWhiteSpace(ns))
+                {
+                    _fileManagementService.WriteLine("");
+                    _fileManagementService.WriteLine(ns.Trim());
+                }
             }
 
             foreach (var enumeration in filter.Enums)
@@ -1233,15 +1295,29 @@ namespace Efrpg.Generators
                 _fileManagementService.StartNewFile(code.Filename);
 
                 if (writePreHeaderInfo)
-                    _fileManagementService.WriteLine(_preHeaderInfo.ToString());
+                {
+                    var preHeader = _preHeaderInfo.ToString();
+                    if (!string.IsNullOrWhiteSpace(preHeader))
+                        _fileManagementService.WriteLine(preHeader.Trim());
+                }
 
-                _fileManagementService.WriteLine(FileHeaderFooter.Header);
+                var header = FileHeaderFooter.Header;
+                if (!string.IsNullOrWhiteSpace(header))
+                    _fileManagementService.WriteLine(header.Trim());
 
                 var usings = codeGenerator.GenerateUsings(code.GetUsings());
                 if (!string.IsNullOrWhiteSpace(usings))
-                    _fileManagementService.WriteLine(usings);
+                {
+                    _fileManagementService.WriteLine("");
+                    _fileManagementService.WriteLine(usings.Trim());
+                }
 
-                _fileManagementService.WriteLine(FileHeaderFooter.Namespace);
+                var ns = FileHeaderFooter.Namespace;
+                if (!string.IsNullOrWhiteSpace(ns))
+                {
+                    _fileManagementService.WriteLine("");
+                    _fileManagementService.WriteLine(ns.Trim());
+                }
             }
 
             WriteLines(IndentCode(code, regionNameForGroup, firstInGroup, lastInGroup));
@@ -1334,30 +1410,30 @@ namespace Efrpg.Generators
 
         private void BuildPreHeaderInfo(Licence licence)
         {
-            _preHeaderInfo.AppendLine("// ------------------------------------------------------------------------------------------------");
-            
-            _preHeaderInfo.Append("// This code was generated by EntityFramework Reverse POCO Generator");
-            if (Settings.IncludeGeneratorVersionInCode)
+            if (Settings.ShowLicenseInfo)
             {
-                _preHeaderInfo.Append(" ");
-                _preHeaderInfo.Append(EfrpgVersion.Version());
-            }
+                _preHeaderInfo.Append("// This code was generated by EntityFramework Reverse POCO Generator");
+                if (Settings.IncludeGeneratorVersionInCode)
+                {
+                    _preHeaderInfo.Append(" ");
+                    _preHeaderInfo.Append(EfrpgVersion.Version());
+                }
 
-            _preHeaderInfo.AppendLine(" (http://www.reversepoco.co.uk/).");
-            
-            _preHeaderInfo.AppendLine("// Created by Simon Hughes (https://about.me/simon.hughes).");
-            _preHeaderInfo.AppendLine("//");
-            _preHeaderInfo.AppendLine(string.Format("// {0}{1}", LicenceConstants.RegisteredTo, licence.RegisteredTo));
-            _preHeaderInfo.AppendLine(string.Format("// {0}{1}", LicenceConstants.Company,      licence.Company));
-            _preHeaderInfo.AppendLine(string.Format("// {0}{1}", LicenceConstants.LicenceType,  licence.GetLicenceType()));
-            _preHeaderInfo.AppendLine(string.Format("// {0}{1}", LicenceConstants.NumLicences,  licence.NumLicences));
-            _preHeaderInfo.AppendLine(string.Format("// {0}{1}", LicenceConstants.ValidUntil,   licence.ValidUntil.ToString(LicenceConstants.ExpiryFormat).ToUpperInvariant()));
-            _preHeaderInfo.AppendLine("//");
-            _preHeaderInfo.AppendLine("// Do not make changes directly to this file - edit the template instead.");
+                _preHeaderInfo.AppendLine(" (http://www.reversepoco.co.uk/).");
+
+                _preHeaderInfo.AppendLine("// Created by Simon Hughes (https://about.me/simon.hughes).");
+                _preHeaderInfo.AppendLine("//");
+                _preHeaderInfo.AppendLine(string.Format("// {0}{1}", LicenceConstants.RegisteredTo, licence.RegisteredTo));
+                _preHeaderInfo.AppendLine(string.Format("// {0}{1}", LicenceConstants.Company, licence.Company));
+                _preHeaderInfo.AppendLine(string.Format("// {0}{1}", LicenceConstants.LicenceType, licence.GetLicenceType()));
+                _preHeaderInfo.AppendLine(string.Format("// {0}{1}", LicenceConstants.NumLicences, licence.NumLicences));
+                _preHeaderInfo.AppendLine(string.Format("// {0}{1}", LicenceConstants.ValidUntil,
+                    licence.ValidUntil.ToString(LicenceConstants.ExpiryFormat).ToUpperInvariant()));
+                _preHeaderInfo.AppendLine("//");
+            }
 
             if (Settings.IncludeConnectionSettingComments)
             {
-                _preHeaderInfo.AppendLine("//");
                 _preHeaderInfo.AppendLine("// The following connection settings were used to generate this file:");
 
                 if (!string.IsNullOrEmpty(Settings.ConnectionStringName))
@@ -1370,9 +1446,8 @@ namespace Efrpg.Generators
                     var conn = string.IsNullOrWhiteSpace(Settings.MultiContextSettingsConnectionString) ? Settings.ConnectionString : Settings.MultiContextSettingsConnectionString;
                     _preHeaderInfo.AppendLine(string.Format("//     Multi-context settings: \"{0}\"", ZapPassword(conn)));
                 }
+                _preHeaderInfo.AppendLine("//");
             }
-
-            _preHeaderInfo.AppendLine("// ------------------------------------------------------------------------------------------------");
         }
 
         private string ZapPassword(string conn)

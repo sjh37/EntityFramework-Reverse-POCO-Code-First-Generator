@@ -11,7 +11,7 @@ namespace Efrpg.Readers
 {
     public abstract class DatabaseReader
     {
-        private readonly DbProviderFactory _factory;
+        protected readonly DbProviderFactory _factory;
         protected IDatabaseReaderPlugin DatabaseReaderPlugin;
         protected readonly StringBuilder DatabaseDetails;
         protected Dictionary<string, string> StoredProcedureParameterDbType; // [SQL Data Type] = SqlDbType. (For consistent naming)

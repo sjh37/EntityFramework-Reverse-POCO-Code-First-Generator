@@ -78,6 +78,7 @@
     <Compile Include="Filtering\IFilter.cs" />
     <Compile Include="Filtering\MultiContextFilter.cs" />
     <Compile Include="Filtering\MultiContextNameNormalisation.cs" />
+    <Compile Include="Generators\ColumnAndForeignKey.cs" />
     <Compile Include="Generators\ScalarValuedFunctionsTemplateData.cs" />
     <Compile Include="LanguageMapping\DatabaseToPropertyTypeFactory.cs" />
     <Compile Include="LanguageMapping\GenerationLanguage.cs" />

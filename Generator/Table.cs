@@ -122,6 +122,13 @@ namespace Efrpg
         public string GetUniqueColumnName(bool isParent, string tableNameHumanCase, ForeignKey foreignKey, bool checkForFkNameClashes,
             bool makeSingular, Relationship relationship)
         {
+            // For unit testing
+            //if (tableNameHumanCase.StartsWith("Burak") || tableNameHumanCase.StartsWith("Car") || tableNameHumanCase.StartsWith("User"))
+            //{
+            //    var s = $"[TestCase(\"00\", \"{foreignKey.FkTableName}\",  \"{NameHumanCase}\", \"{string.Join("|",Columns.Select(c => c.NameHumanCase))}\", {isParent}, \"{tableNameHumanCase}\", {checkForFkNameClashes}, {makeSingular}, Relationship.{relationship}, \"{foreignKey.FkTableName}\", \"{foreignKey.PkTableName}\", {foreignKey.IncludeReverseNavigation}, \"{foreignKey.FkColumn}\")]{Environment.NewLine}";
+            //    System.IO.File.AppendAllText("c:/temp/unit.txt", s);
+            //}
+
             // User specified name
             if (isParent && !string.IsNullOrEmpty(foreignKey.ParentName))
                 return foreignKey.ParentName;
@@ -131,9 +138,13 @@ namespace Efrpg
                 return foreignKey.ChildName;
 
             // Generate name
-            var addReverseNavigationUniquePropName = checkForFkNameClashes && (DbName == foreignKey.FkTableName || (DbName == foreignKey.PkTableName && foreignKey.IncludeReverseNavigation));
+            var addReverseNavigationUniquePropName = checkForFkNameClashes &&
+                                                     (DbName == foreignKey.FkTableName ||
+                                                     (DbName == foreignKey.PkTableName && foreignKey.IncludeReverseNavigation));
+            
             if (ReverseNavigationUniquePropName.Count == 0)
             {
+                // Reserve table name and all column names
                 ReverseNavigationUniquePropName.Add(NameHumanCase);
                 ReverseNavigationUniquePropName.AddRange(Columns.Select(c => c.NameHumanCase));
             }
@@ -141,19 +152,24 @@ namespace Efrpg
             if (!makeSingular)
                 tableNameHumanCase = Inflector.MakePlural(tableNameHumanCase);
 
-            if (checkForFkNameClashes && ReverseNavigationUniquePropName.Contains(tableNameHumanCase) &&
+            if (checkForFkNameClashes &&
+                ReverseNavigationUniquePropName.Contains(tableNameHumanCase) &&
                 !ReverseNavigationUniquePropNameClashes.Contains(tableNameHumanCase))
+            {
                 ReverseNavigationUniquePropNameClashes.Add(tableNameHumanCase); // Name clash
+            }
 
             // Attempt 1
             var fkName = (Settings.UsePascalCase ? Inflector.ToTitleCase(foreignKey.FkColumn) : foreignKey.FkColumn).Replace(" ", string.Empty).Replace("$", string.Empty);
             var name = Settings.ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 1);
             string col;
-            if (!ReverseNavigationUniquePropNameClashes.Contains(name) && !ReverseNavigationUniquePropName.Contains(name))
+            if (!ReverseNavigationUniquePropName.Contains(name) &&
+                !ReverseNavigationUniquePropNameClashes.Contains(name))
             {
                 if (addReverseNavigationUniquePropName || !checkForFkNameClashes)
                 {
                     ReverseNavigationUniquePropName.Add(name);
+                    foreignKey.UniqueName = name;
                 }
 
                 return name;
@@ -165,12 +181,16 @@ namespace Efrpg
                 if (fkName.ToLowerInvariant().EndsWith("id"))
                 {
                     col = Settings.ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 2);
-                    if (checkForFkNameClashes && ReverseNavigationUniquePropName.Contains(col) &&
-                        !ReverseNavigationUniquePropNameClashes.Contains(col))
-                        ReverseNavigationUniquePropNameClashes.Add(col); // Name clash
 
-                    if (!ReverseNavigationUniquePropNameClashes.Contains(col) &&
-                        !ReverseNavigationUniquePropName.Contains(col))
+                    if (checkForFkNameClashes &&
+                        ReverseNavigationUniquePropName.Contains(col) &&
+                        !ReverseNavigationUniquePropNameClashes.Contains(col))
+                    {
+                        ReverseNavigationUniquePropNameClashes.Add(col); // Name clash
+                    }
+
+                    if (!ReverseNavigationUniquePropName.Contains(col) &&
+                        !ReverseNavigationUniquePropNameClashes.Contains(col))
                     {
                         if (addReverseNavigationUniquePropName || !checkForFkNameClashes)
                         {
@@ -183,12 +203,15 @@ namespace Efrpg
 
                 // Attempt 3
                 col = Settings.ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 3);
-                if (checkForFkNameClashes && ReverseNavigationUniquePropName.Contains(col) &&
+                if (checkForFkNameClashes && 
+                    ReverseNavigationUniquePropName.Contains(col) &&
                     !ReverseNavigationUniquePropNameClashes.Contains(col))
+                {
                     ReverseNavigationUniquePropNameClashes.Add(col); // Name clash
+                }
 
-                if (!ReverseNavigationUniquePropNameClashes.Contains(col) &&
-                    !ReverseNavigationUniquePropName.Contains(col))
+                if (!ReverseNavigationUniquePropName.Contains(col) &&
+                    !ReverseNavigationUniquePropNameClashes.Contains(col))
                 {
                     if (addReverseNavigationUniquePropName || !checkForFkNameClashes)
                     {
@@ -201,11 +224,15 @@ namespace Efrpg
 
             // Attempt 4
             col = Settings.ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 4);
-            if (checkForFkNameClashes && ReverseNavigationUniquePropName.Contains(col) &&
+            if (checkForFkNameClashes && 
+                ReverseNavigationUniquePropName.Contains(col) &&
                 !ReverseNavigationUniquePropNameClashes.Contains(col))
+            {
                 ReverseNavigationUniquePropNameClashes.Add(col); // Name clash
+            }
 
-            if (!ReverseNavigationUniquePropNameClashes.Contains(col) && !ReverseNavigationUniquePropName.Contains(col))
+            if (!ReverseNavigationUniquePropName.Contains(col) &&
+                !ReverseNavigationUniquePropNameClashes.Contains(col))
             {
                 if (addReverseNavigationUniquePropName || !checkForFkNameClashes)
                 {
@@ -216,7 +243,7 @@ namespace Efrpg
             }
 
             // Attempt 5
-            for (int n = 1; n < 99; ++n)
+            for (var n = 1; n < 99; ++n)
             {
                 col = Settings.ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 5) + n;
 
