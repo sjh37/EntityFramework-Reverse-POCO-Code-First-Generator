@@ -9,7 +9,7 @@ namespace Efrpg.Filtering
         public bool IsExcluded(Table t)
         {
             // Example: Exclude any table in 'dbo' schema and with 'order' anywhere in its name.
-            //if(t.Schema.DbName.Equals("dbo", StringComparison.InvariantCultureIgnoreCase) && t.NameHumanCase.ToLowerInvariant().Contains("order"))
+            //if(t.Schema.DbName.Equals("dbo", StringComparison.InvariantCultureIgnoreCase) && t.DbName.ToLowerInvariant().Contains("order"))
             //    return true;
 
             return false;
