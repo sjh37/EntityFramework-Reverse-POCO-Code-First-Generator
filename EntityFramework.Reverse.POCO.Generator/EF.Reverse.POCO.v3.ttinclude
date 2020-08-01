@@ -13021,6 +13021,7 @@ ORDER BY R.specific_schema, R.routine_name, R.routine_type;";
 
         public override void ReadStoredProcReturnObjects(List<StoredProcedure> procs)
         {
+            return;
             /*using (var conn = _factory.CreateConnection())
             {
                 if (conn == null)
@@ -13038,9 +13039,96 @@ ORDER BY R.specific_schema, R.routine_name, R.routine_type;";
             }*/
         }
 
-        /*private void ReadStoredProcReturnObject(DbCommand sqlConnection, StoredProcedure proc)
+        private void ReadStoredProcReturnObject(DbCommand cmd, StoredProcedure proc)
         {
-        }*/
+            try
+            {
+                const string structured = "Structured";
+                var sb = new StringBuilder(255);
+                sb.AppendLine("DO $$");
+
+                if (proc.IsTableValuedFunction)
+                {
+                    foreach (var param in proc.Parameters.Where(x => x.SqlDbType.Equals(structured, StringComparison.InvariantCultureIgnoreCase)))
+                    {
+                        sb.AppendLine(string.Format("DECLARE {0} {1};", param.Name, param.UserDefinedTypeName));
+                    }
+
+                    sb.Append(string.Format("SELECT * FROM \"{0}\".\"{1}\"(", proc.Schema.DbName, proc.DbName));
+                    foreach (var param in proc.Parameters)
+                    {
+                        sb.Append(string.Format("{0}, ",
+                            param.SqlDbType.Equals(structured, StringComparison.InvariantCultureIgnoreCase)
+                                ? param.Name
+                                : "default"));
+                    }
+
+                    if (proc.Parameters.Count > 0)
+                        sb.Length -= 2;
+
+                    sb.AppendLine(");");
+                }
+                else
+                {
+                    /*
+DO $$
+DECLARE myvar integer := 10250;
+BEGIN
+	DROP TABLE IF EXISTS tmp_table; 
+	CREATE TABLE tmp_table AS
+    select * from orders where "OrderID" = myvar;
+END $$;
+SELECT * FROM tmp_table;
+                     */
+                    foreach (var param in proc.Parameters)
+                    {
+                        sb.AppendLine(string.Format("DECLARE {0} {1};", param.Name,
+                            param.SqlDbType.Equals(structured, StringComparison.InvariantCultureIgnoreCase)
+                                ? param.UserDefinedTypeName
+                                : param.SqlDbType));
+                    }
+
+                    sb.Append(string.Format("CALL \"{0}\".\"{1}\" ", proc.Schema.DbName, proc.DbName));
+                    foreach (var param in proc.Parameters)
+                        sb.Append(string.Format("{0}, ", param.Name));
+
+                    if (proc.Parameters.Count > 0)
+                        sb.Length -= 2;
+
+                    sb.AppendLine(";");
+                }
+                sb.AppendLine("END $$;");
+                sb.AppendLine("SELECT * FROM tmp_table;");
+
+                var ds = new DataSet();
+                using (var sqlAdapter = _factory.CreateDataAdapter())
+                {
+                    if (sqlAdapter == null)
+                        return;
+
+                    cmd.CommandText = sb.ToString();
+                    sqlAdapter.SelectCommand = cmd;
+                    if(cmd.Connection.State != ConnectionState.Open)
+                        cmd.Connection.Open();
+                    sqlAdapter.SelectCommand.ExecuteReader(CommandBehavior.SchemaOnly | CommandBehavior.KeyInfo);
+                    cmd.Connection.Close();
+                    sqlAdapter.FillSchema(ds, SchemaType.Source, "MyTable");
+                }
+
+                // Tidy up parameters
+                foreach (var p in proc.Parameters)
+                    p.NameHumanCase = Regex.Replace(p.NameHumanCase, @"[^A-Za-z0-9@\s]*", string.Empty);
+
+                for (var count = 0; count < ds.Tables.Count; count++)
+                {
+                    proc.ReturnModels.Add(ds.Tables[count].Columns.Cast<DataColumn>().ToList());
+                }
+            }
+            catch (Exception)
+            {
+                // Stored procedure does not have a return type
+            }
+        }
 
         public override void Init()
         {
