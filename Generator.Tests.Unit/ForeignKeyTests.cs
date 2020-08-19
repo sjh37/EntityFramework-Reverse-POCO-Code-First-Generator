@@ -7,6 +7,7 @@ using NUnit.Framework;
 
 namespace Generator.Tests.Unit
 {
+    [TestFixture, NonParallelizable]
     public class ForeignKeyTests
     {
         private List<RawForeignKey> rawForeignKeys;
@@ -192,7 +193,11 @@ namespace Generator.Tests.Unit
                 new RawIndex("Beta", "workflow", "PK__workflow__3214EC07906CBEB9", 1, "Id", 1, true, true, false, true),
                 new RawIndex("dbo", "Бренды товара", "PK_Бренды", 1, "Код бренда", 1, true, true, false, true)
             };
+        }
 
+        [SetUp]
+        public void SetUp()
+        {
             tables = new List<Table>(10);
         }
 
@@ -212,31 +217,31 @@ namespace Generator.Tests.Unit
 
             var expected = new[]
             {
-                new { Fk = "A",              Pk = "A",              Constraint = "FK_HasPrincipalKey_AB",                                           Ordinal = 1 },
-                new { Fk = "A",              Pk = "A",              Constraint = "FK_HasPrincipalKey_AC",                                           Ordinal = 1 },
-                new { Fk = "B",              Pk = "B",              Constraint = "FK_HasPrincipalKey_AB",                                           Ordinal = 2 },
-                new { Fk = "C",              Pk = "C",              Constraint = "FK_HasPrincipalKey_CD",                                           Ordinal = 1 },
-                new { Fk = "C",              Pk = "C",              Constraint = "FK_HasPrincipalKey_AC",                                           Ordinal = 2 },
-                new { Fk = "D",              Pk = "D",              Constraint = "FK_HasPrincipalKey_CD",                                           Ordinal = 2 },
-                new { Fk = "id",             Pk = "id",             Constraint = "FK_Burak_Test2",                                                  Ordinal = 1 },
-                new { Fk = "id_t",           Pk = "id",             Constraint = "FK_Burak1_Burak2",                                                Ordinal = 1 },
-                new { Fk = "not_null_value", Pk = "not_null_value", Constraint = "FK_ForeignKeyIsNotEnforcedItem_notnull_notnull",                  Ordinal = 1 },
-                new { Fk = "not_null_value", Pk = "null_value",     Constraint = "FK_ForeignKeyIsNotEnforcedItem_notnull_null",                     Ordinal = 1 },
-                new { Fk = "null_value",     Pk = "not_null_value", Constraint = "FK_ForeignKeyIsNotEnforcedItem_null_notnull",                     Ordinal = 1 },
-                new { Fk = "null_value",     Pk = "null_value",     Constraint = "FK_ForeignKeyIsNotEnforcedItem_null_null",                        Ordinal = 1 },
-                new { Fk = "num",            Pk = "num",            Constraint = "FK_Burak_Test2",                                                  Ordinal = 2 },
-                new { Fk = "num",            Pk = "num",            Constraint = "FK_Burak1_Burak2",                                                Ordinal = 2 },
-                new { Fk = "origem",         Pk = "Code",           Constraint = "FK_CODE_MeetingTopicDetails_CODE_PARAM_MeetingTopicDetailSource", Ordinal = 1 },
+                new { Fk = "A", Pk = "A", Constraint = "FK_HasPrincipalKey_AB", Ordinal = 1 },
+                new { Fk = "A", Pk = "A", Constraint = "FK_HasPrincipalKey_AC", Ordinal = 1 },
+                new { Fk = "B", Pk = "B", Constraint = "FK_HasPrincipalKey_AB", Ordinal = 2 },
+                new { Fk = "C", Pk = "C", Constraint = "FK_HasPrincipalKey_CD", Ordinal = 1 },
+                new { Fk = "C", Pk = "C", Constraint = "FK_HasPrincipalKey_AC", Ordinal = 2 },
+                new { Fk = "D", Pk = "D", Constraint = "FK_HasPrincipalKey_CD", Ordinal = 2 },
+                new { Fk = "id", Pk = "id", Constraint = "FK_Burak_Test2", Ordinal = 1 },
+                new { Fk = "id_t", Pk = "id", Constraint = "FK_Burak1_Burak2", Ordinal = 1 },
+                new { Fk = "not_null_value", Pk = "not_null_value", Constraint = "FK_ForeignKeyIsNotEnforcedItem_notnull_notnull", Ordinal = 1 },
+                new { Fk = "not_null_value", Pk = "null_value", Constraint = "FK_ForeignKeyIsNotEnforcedItem_notnull_null", Ordinal = 1 },
+                new { Fk = "null_value", Pk = "not_null_value", Constraint = "FK_ForeignKeyIsNotEnforcedItem_null_notnull", Ordinal = 1 },
+                new { Fk = "null_value", Pk = "null_value", Constraint = "FK_ForeignKeyIsNotEnforcedItem_null_null", Ordinal = 1 },
+                new { Fk = "num", Pk = "num", Constraint = "FK_Burak_Test2", Ordinal = 2 },
+                new { Fk = "num", Pk = "num", Constraint = "FK_Burak1_Burak2", Ordinal = 2 },
+                new { Fk = "origem", Pk = "Code", Constraint = "FK_CODE_MeetingTopicDetails_CODE_PARAM_MeetingTopicDetailSource", Ordinal = 1 },
             };
 
             //Assert.AreEqual(expected.Length, set.Length);
 
             for (var n = 0; n < expected.Length; n++)
             {
-                Assert.AreEqual(expected[n].Fk,         set[n].FkColumn);
-                Assert.AreEqual(expected[n].Pk,         set[n].PkColumn);
+                Assert.AreEqual(expected[n].Fk, set[n].FkColumn);
+                Assert.AreEqual(expected[n].Pk, set[n].PkColumn);
                 Assert.AreEqual(expected[n].Constraint, set[n].ConstraintName);
-                Assert.AreEqual(expected[n].Ordinal,    set[n].Ordinal);
+                Assert.AreEqual(expected[n].Ordinal, set[n].Ordinal);
             }
         }
 
@@ -267,7 +272,7 @@ namespace Generator.Tests.Unit
         [TestCase("22", "User_Document", "User", "Id|ExternalUserId", false, "UserDocument", false, false, Relationship.OneToMany, "User_Document", "User", true, "CreatedByUserID")]
         [TestCase("23", "User_Document", "UserDocument", "Id|UserId|CreatedByUserId", true, "User", false, true, Relationship.ManyToOne, "User_Document", "User", true, "UserID")]
         [TestCase("24", "User_Document", "User", "Id|ExternalUserId", false, "UserDocument", false, false, Relationship.OneToMany, "User_Document", "User", true, "UserID")]
-        public void ForeignKeyNames(string testOrder, string expected, string NameHumanCase, string columns, bool isParent, string tableNameHumanCase, bool checkForFkNameClashes,
+        public void LegacyForeignKeyNames(string testOrder, string expected, string NameHumanCase, string columns, bool isParent, string tableNameHumanCase, bool checkForFkNameClashes,
             bool makeSingular, Relationship relationship, string fkTableName, string pkTableName, bool includeReverseNavigation, string fkColumn)
         {
             Console.WriteLine(testOrder); // Keep this field to make sure test cases run in order as it's important
@@ -276,6 +281,69 @@ namespace Generator.Tests.Unit
             var table = tables.FirstOrDefault(x => x.NameHumanCase == NameHumanCase);
             if (table == null)
             {
+                Settings.ForeignKeyNamingStrategy = ForeignKeyNamingStrategy.Legacy;
+                table = new Table(null, new Schema("dbo"), NameHumanCase, false)
+                {
+                    NameHumanCase = NameHumanCase
+                };
+                foreach (var col in columns.Split('|'))
+                {
+                    table.Columns.Add(new Column { NameHumanCase = col });
+                }
+
+                tables.Add(table);
+            }
+
+            var foreignKey = new ForeignKey(fkTableName, "dbo", pkTableName, "dbo", fkColumn, "", "", "", "", 1, false, false, "", "", true)
+            {
+                IncludeReverseNavigation = includeReverseNavigation
+            };
+
+            // Act
+            var result = table.GetUniqueForeignKeyName(isParent, tableNameHumanCase, foreignKey, checkForFkNameClashes, makeSingular, relationship);
+
+            // Assert
+            Assert.AreEqual(expected, result);
+        }
+        
+        [Test] // Always run all cases together as they build up ReverseNavigationUniquePropName
+        // checkForFkNameClashes = true
+        [TestCase("01", "Burak1", "Burak1", "Id|IdT|Num", true, "Burak2", true, true, Relationship.OneToOne, "Burak1", "Burak2", true, "id")]
+        [TestCase("02", "Burak1", "Burak2", "Id|Num", false, "Burak1", true, true, Relationship.OneToOne, "Burak1", "Burak2", true, "id")]
+        [TestCase("03", "Burak1", "Burak1", "Id|IdT|Num", true, "Burak2", true, true, Relationship.OneToOne, "Burak1", "Burak2", true, "id_t")]
+        [TestCase("04", "Burak1", "Burak2", "Id|Num", false, "Burak1", true, true, Relationship.OneToOne, "Burak1", "Burak2", true, "id_t")]
+        [TestCase("05", "Car", "Colour", "Id|Name", false, "Car", true, false, Relationship.OneToMany, "Car", "Colour", true, "PrimaryColourId")]
+        [TestCase("06", "CarToColour", "CarToColour", "CarId|ColourId", true, "Car", true, true, Relationship.ManyToOne, "CarToColour", "Car", true, "CarId")]
+        [TestCase("07", "CarToColour", "Car", "Id|PrimaryColourId|CarMake|ComputedColumn|ComputedColumnPersisted", false, "CarToColour", true, false, Relationship.OneToMany, "CarToColour", "Car", true, "CarId")]
+        [TestCase("08", "CarToColour", "Colour", "Id|Name", false, "CarToColour", true, false, Relationship.OneToMany, "CarToColour", "Colour", true, "ColourId")]
+        [TestCase("09", "User_Document", "UserDocument", "Id|UserId|CreatedByUserId", true, "User", true, true, Relationship.ManyToOne, "User_Document", "User", true, "CreatedByUserID")]
+        [TestCase("10", "User_Document", "User", "Id|ExternalUserId", false, "UserDocument", true, false, Relationship.OneToMany, "User_Document", "User", true, "CreatedByUserID")]
+        [TestCase("11", "User_Document", "UserDocument", "Id|UserId|CreatedByUserId", true, "User", true, true, Relationship.ManyToOne, "User_Document", "User", true, "UserID")]
+        [TestCase("12", "User_Document", "User", "Id|ExternalUserId", false, "UserDocument", true, false, Relationship.OneToMany, "User_Document", "User", true, "UserID")]
+        // checkForFkNameClashes = false
+        [TestCase("13", "Burak1", "Burak1", "Id|IdT|Num", true, "Burak2", false, true, Relationship.OneToOne, "Burak1", "Burak2", true, "id")]
+        [TestCase("14", "Burak1", "Burak2", "Id|Num", false, "Burak1", false, true, Relationship.OneToOne, "Burak1", "Burak2", true, "id")]
+        [TestCase("15", "Burak1", "Burak1", "Id|IdT|Num", true, "Burak2", false, true, Relationship.OneToOne, "Burak1", "Burak2", true, "id_t")]
+        [TestCase("16", "Burak1", "Burak2", "Id|Num", false, "Burak1", false, true, Relationship.OneToOne, "Burak1", "Burak2", true, "id_t")]
+        [TestCase("17", "Car", "Colour", "Id|Name", false, "Car", false, false, Relationship.OneToMany, "Car", "Colour", true, "PrimaryColourId")]
+        [TestCase("18", "CarToColour", "CarToColour", "CarId|ColourId", true, "Car", false, true, Relationship.ManyToOne, "CarToColour", "Car", true, "CarId")]
+        [TestCase("19", "CarToColour", "Car", "Id|PrimaryColourId|CarMake|ComputedColumn|ComputedColumnPersisted", false, "CarToColour", false, false, Relationship.OneToMany, "CarToColour", "Car", true, "CarId")]
+        [TestCase("20", "CarToColour", "Colour", "Id|Name", false, "CarToColour", false, false, Relationship.OneToMany, "CarToColour", "Colour", true, "ColourId")]
+        [TestCase("21", "User_Document", "UserDocument", "Id|UserId|CreatedByUserId", true, "User", false, true, Relationship.ManyToOne, "User_Document", "User", true, "CreatedByUserID")]
+        [TestCase("22", "User_Document", "User", "Id|ExternalUserId", false, "UserDocument", false, false, Relationship.OneToMany, "User_Document", "User", true, "CreatedByUserID")]
+        [TestCase("23", "User_Document", "UserDocument", "Id|UserId|CreatedByUserId", true, "User", false, true, Relationship.ManyToOne, "User_Document", "User", true, "UserID")]
+        [TestCase("24", "User_Document", "User", "Id|ExternalUserId", false, "UserDocument", false, false, Relationship.OneToMany, "User_Document", "User", true, "UserID")]
+        public void LatestForeignKeyNames(string testOrder, string expected, string NameHumanCase, string columns, bool isParent, string tableNameHumanCase, bool checkForFkNameClashes,
+            bool makeSingular, Relationship relationship, string fkTableName, string pkTableName, bool includeReverseNavigation, string fkColumn)
+        {
+            Console.WriteLine(testOrder); // Keep this field to make sure test cases run in order as it's important
+
+            // Arrange
+            var table = tables.FirstOrDefault(x => x.NameHumanCase == NameHumanCase);
+            if (table == null)
+            {
+                Settings.ForeignKeyNamingStrategy = ForeignKeyNamingStrategy.Latest;
+
                 table = new Table(null, new Schema("dbo"), NameHumanCase, false)
                 {
                     NameHumanCase = NameHumanCase
