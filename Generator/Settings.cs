@@ -12,18 +12,19 @@ namespace Efrpg
     {
         // Main settings **********************************************************************************************************************
         // The following entries are the only required settings.
-        public static DatabaseType DatabaseType       = DatabaseType.SqlServer; // SqlServer, SqlCe. Coming next: PostgreSQL, MySql, Oracle
-        public static TemplateType TemplateType       = TemplateType.EfCore3; // Ef6, EfCore2, EfCore3, FileBasedCore2, FileBasedCore3. FileBased specify folder using Settings.TemplateFolder
-        public static GeneratorType GeneratorType     = GeneratorType.EfCore; // Ef6, EfCore, Custom. Custom edit GeneratorCustom class to provide your own implementation
-        public static bool UseMappingTables           = false; // Set to false for EfCore. EFCore will add support for this in v3 at some point, so please set this to false. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
-        public static FileManagerType FileManagerType = FileManagerType.Custom; // .NET project = VisualStudio; .NET Core project = Custom; No output (testing only) = Null
-        public static string ConnectionString         = ""; // This is used by the generator to reverse engineer your database
-        public static string ConnectionStringName     = "MyDbContext"; // ConnectionString key as specified in your app.config/web.config/appsettings.json
-        public static string DbContextName            = "MyDbContext"; // Class name for the DbContext to be generated. Note: If generating separate files, please give the db context a different name from this tt filename. Ignored if using multi-context generation
-        public static bool GenerateSeparateFiles      = false;
-        public static string Namespace                = typeof(Settings).Namespace; // Override the default namespace here. Example: Namespace = "CustomNamespace";
-        public static string TemplateFolder           = ""; // Only used if Settings.TemplateType = TemplateType.FileBased. Specify folder name where the mustache folders can be found. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Custom-file-based-templates
-        public static bool AddUnitTestingDbContext    = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing
+        public static DatabaseType DatabaseType                         = DatabaseType.SqlServer; // SqlServer, SqlCe. Coming next: PostgreSQL, MySql, Oracle
+        public static TemplateType TemplateType                         = TemplateType.EfCore3; // Ef6, EfCore2, EfCore3, FileBasedCore2, FileBasedCore3. FileBased specify folder using Settings.TemplateFolder
+        public static GeneratorType GeneratorType                       = GeneratorType.EfCore; // Ef6, EfCore, Custom. Custom edit GeneratorCustom class to provide your own implementation
+        public static ForeignKeyNamingStrategy ForeignKeyNamingStrategy = ForeignKeyNamingStrategy.Latest; // Legacy (same as versions <= v3.1.3), Latest
+        public static bool UseMappingTables                             = false; // Set to false for EfCore. EFCore will add support for this in v3 at some point, so please set this to false. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
+        public static FileManagerType FileManagerType                   = FileManagerType.Custom; // .NET project = VisualStudio; .NET Core project = Custom; No output (testing only) = Null
+        public static string ConnectionString                           = ""; // This is used by the generator to reverse engineer your database
+        public static string ConnectionStringName                       = "MyDbContext"; // ConnectionString key as specified in your app.config/web.config/appsettings.json
+        public static string DbContextName                              = "MyDbContext"; // Class name for the DbContext to be generated. Note: If generating separate files, please give the db context a different name from this tt filename. Ignored if using multi-context generation
+        public static bool GenerateSeparateFiles                        = false;
+        public static string Namespace                                  = typeof(Settings).Namespace; // Override the default namespace here. Example: Namespace = "CustomNamespace";
+        public static string TemplateFolder                             = ""; // Only used if Settings.TemplateType = TemplateType.FileBased. Specify folder name where the mustache folders can be found. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Custom-file-based-templates
+        public static bool AddUnitTestingDbContext                      = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing
 
         // Elements to generate ***************************************************************************************************************
         // Add the elements that should be generated when the template is executed.

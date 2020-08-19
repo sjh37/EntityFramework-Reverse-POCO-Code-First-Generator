@@ -294,7 +294,7 @@ namespace Generator.Tests.Unit
             };
 
             // Act
-            var result = table.GetUniqueColumnName(isParent, tableNameHumanCase, foreignKey, checkForFkNameClashes, makeSingular, relationship);
+            var result = table.GetUniqueForeignKeyName(isParent, tableNameHumanCase, foreignKey, checkForFkNameClashes, makeSingular, relationship);
 
             // Assert
             Assert.AreEqual(expected, result);

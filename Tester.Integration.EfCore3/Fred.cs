@@ -4675,7 +4675,6 @@ namespace Tester.Integration.EfCore3
             builder.Property(x => x.Num).HasColumnName(@"num").HasColumnType("bigint").IsRequired();
 
             // Foreign keys
-            builder.HasOne(a => a.).WithOne(b => b.Burak1_Id).HasForeignKey<Burak1>(c => c.Id).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Burak_Test2");
             builder.HasOne(a => a.Burak2_IdT).WithOne(b => b.Burak1_IdT).HasPrincipalKey<Burak2>(p => new { p.Id, p.Num }).HasForeignKey<Burak1>(c => new { c.IdT, c.Num }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Burak_Test1");
         }
     }
@@ -5172,8 +5171,6 @@ namespace Tester.Integration.EfCore3
             builder.Property(x => x.D).HasColumnName(@"D").HasColumnType("int").IsRequired(false);
 
             // Foreign keys
-            builder.HasMany(a => a.HasPrincipalKeyTestParent_A).WithOne(b => b.HasPrincipalKeyTestChild_A).HasPrincipalKey<HasPrincipalKeyTestParent>(p => new { p.A, p.B }).HasForeignKey<HasPrincipalKeyTestChild>(c => new { c.A, c.B }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_HasPrincipalKey_AB");
-            builder.HasMany(a => a.HasPrincipalKeyTestParent_C).WithOne(b => b.HasPrincipalKeyTestChild_C).HasPrincipalKey<HasPrincipalKeyTestParent>(p => new { p.C, p.D }).HasForeignKey<HasPrincipalKeyTestChild>(c => new { c.C, c.D }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_HasPrincipalKey_CD");
         }
     }
 

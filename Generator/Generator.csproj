@@ -78,6 +78,12 @@
     <Compile Include="Filtering\IFilter.cs" />
     <Compile Include="Filtering\MultiContextFilter.cs" />
     <Compile Include="Filtering\MultiContextNameNormalisation.cs" />
+    <Compile Include="ForeignKeyNamingStrategy.cs" />
+    <Compile Include="ForeignKeyStrategies\BaseForeignKeyNamingStrategy.cs" />
+    <Compile Include="ForeignKeyStrategies\ForeignKeyNamingStrategyFactory.cs" />
+    <Compile Include="ForeignKeyStrategies\IForeignKeyNamingStrategy.cs" />
+    <Compile Include="ForeignKeyStrategies\LatestForeignKeyNamingStrategy.cs" />
+    <Compile Include="ForeignKeyStrategies\LegacyForeignKeyNamingStrategy.cs" />
     <Compile Include="Generators\ColumnAndForeignKey.cs" />
     <Compile Include="Generators\ScalarValuedFunctionsTemplateData.cs" />
     <Compile Include="LanguageMapping\DatabaseToPropertyTypeFactory.cs" />

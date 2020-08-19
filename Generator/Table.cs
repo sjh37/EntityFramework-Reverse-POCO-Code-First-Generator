@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Efrpg.Filtering;
+using Efrpg.ForeignKeyStrategies;
 
 namespace Efrpg
 {
@@ -26,12 +27,11 @@ namespace Efrpg
         public List<PropertyAndComments> ReverseNavigationProperty;
         public List<string> MappingConfiguration;
         public List<string> ReverseNavigationCtor;
-        public List<string> ReverseNavigationUniquePropName;
-        public List<string> ReverseNavigationUniquePropNameClashes;
         public List<RawIndex> Indexes;
         public List<string> Attributes = new List<string>(); // List of attributes to add to this table
 
         private readonly IDbContextFilter _filter;
+        private readonly IForeignKeyNamingStrategy _foreignKeyNamingStrategy;
 
         public Table(IDbContextFilter filter, Schema schema, string dbName, bool isView)
         {
@@ -41,8 +41,9 @@ namespace Efrpg
             IsView  = isView;
             Columns = new List<Column>();
 
+            _foreignKeyNamingStrategy = ForeignKeyNamingStrategyFactory.Create(filter, this);
+
             ResetNavigationProperties();
-            ReverseNavigationUniquePropNameClashes = new List<string>();
             ExtendedProperty = new List<string>();
         }
 
@@ -58,10 +59,12 @@ namespace Efrpg
 
         public void ResetNavigationProperties()
         {
-            MappingConfiguration = new List<string>();
+            _foreignKeyNamingStrategy.ResetNavigationProperties();
+
+            MappingConfiguration      = new List<string>();
             ReverseNavigationProperty = new List<PropertyAndComments>();
-            ReverseNavigationCtor = new List<string>();
-            ReverseNavigationUniquePropName = new List<string>();
+            ReverseNavigationCtor     = new List<string>();
+
             foreach (var col in Columns)
                 col.ResetNavigationProperties();
         }
@@ -119,147 +122,11 @@ namespace Efrpg
                 string.Compare(x.DbName, columnName, StringComparison.OrdinalIgnoreCase) == 0);
         }
 
-        public string GetUniqueColumnName(bool isParent, string tableNameHumanCase, ForeignKey foreignKey, bool checkForFkNameClashes,
+        public string GetUniqueForeignKeyName(bool isParent, string tableNameHumanCase, ForeignKey foreignKey, bool checkForFkNameClashes,
             bool makeSingular, Relationship relationship)
         {
-            // For unit testing
-            //if (tableNameHumanCase.StartsWith("Burak") || tableNameHumanCase.StartsWith("Car") || tableNameHumanCase.StartsWith("User"))
-            //{
-            //    var s = $"[TestCase(\"00\", \"{foreignKey.FkTableName}\",  \"{NameHumanCase}\", \"{string.Join("|",Columns.Select(c => c.NameHumanCase))}\", {isParent}, \"{tableNameHumanCase}\", {checkForFkNameClashes}, {makeSingular}, Relationship.{relationship}, \"{foreignKey.FkTableName}\", \"{foreignKey.PkTableName}\", {foreignKey.IncludeReverseNavigation}, \"{foreignKey.FkColumn}\")]{Environment.NewLine}";
-            //    System.IO.File.AppendAllText("c:/temp/unit.txt", s);
-            //}
-
-            // User specified name
-            if (isParent && !string.IsNullOrEmpty(foreignKey.ParentName))
-                return foreignKey.ParentName;
-
-            // User specified name
-            if (!isParent && !string.IsNullOrEmpty(foreignKey.ChildName))
-                return foreignKey.ChildName;
-
-            // Generate name
-            var addReverseNavigationUniquePropName = checkForFkNameClashes &&
-                                                     (DbName == foreignKey.FkTableName ||
-                                                     (DbName == foreignKey.PkTableName && foreignKey.IncludeReverseNavigation));
-            
-            if (ReverseNavigationUniquePropName.Count == 0)
-            {
-                // Reserve table name and all column names
-                ReverseNavigationUniquePropName.Add(NameHumanCase);
-                ReverseNavigationUniquePropName.AddRange(Columns.Select(c => c.NameHumanCase));
-            }
-
-            if (!makeSingular)
-                tableNameHumanCase = Inflector.MakePlural(tableNameHumanCase);
-
-            if (checkForFkNameClashes &&
-                ReverseNavigationUniquePropName.Contains(tableNameHumanCase) &&
-                !ReverseNavigationUniquePropNameClashes.Contains(tableNameHumanCase))
-            {
-                ReverseNavigationUniquePropNameClashes.Add(tableNameHumanCase); // Name clash
-            }
-
-            // Attempt 1
-            var fkName = (Settings.UsePascalCase ? Inflector.ToTitleCase(foreignKey.FkColumn) : foreignKey.FkColumn).Replace(" ", string.Empty).Replace("$", string.Empty);
-            var name = Settings.ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 1);
-            string col;
-            if (!ReverseNavigationUniquePropName.Contains(name) &&
-                !ReverseNavigationUniquePropNameClashes.Contains(name))
-            {
-                if (addReverseNavigationUniquePropName || !checkForFkNameClashes)
-                {
-                    ReverseNavigationUniquePropName.Add(name);
-                    foreignKey.UniqueName = name;
-                }
-
-                return name;
-            }
-
-            if (DbName == foreignKey.FkTableName)
-            {
-                // Attempt 2
-                if (fkName.ToLowerInvariant().EndsWith("id"))
-                {
-                    col = Settings.ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 2);
-
-                    if (checkForFkNameClashes &&
-                        ReverseNavigationUniquePropName.Contains(col) &&
-                        !ReverseNavigationUniquePropNameClashes.Contains(col))
-                    {
-                        ReverseNavigationUniquePropNameClashes.Add(col); // Name clash
-                    }
-
-                    if (!ReverseNavigationUniquePropName.Contains(col) &&
-                        !ReverseNavigationUniquePropNameClashes.Contains(col))
-                    {
-                        if (addReverseNavigationUniquePropName || !checkForFkNameClashes)
-                        {
-                            ReverseNavigationUniquePropName.Add(col);
-                        }
-
-                        return col;
-                    }
-                }
-
-                // Attempt 3
-                col = Settings.ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 3);
-                if (checkForFkNameClashes && 
-                    ReverseNavigationUniquePropName.Contains(col) &&
-                    !ReverseNavigationUniquePropNameClashes.Contains(col))
-                {
-                    ReverseNavigationUniquePropNameClashes.Add(col); // Name clash
-                }
-
-                if (!ReverseNavigationUniquePropName.Contains(col) &&
-                    !ReverseNavigationUniquePropNameClashes.Contains(col))
-                {
-                    if (addReverseNavigationUniquePropName || !checkForFkNameClashes)
-                    {
-                        ReverseNavigationUniquePropName.Add(col);
-                    }
-
-                    return col;
-                }
-            }
-
-            // Attempt 4
-            col = Settings.ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 4);
-            if (checkForFkNameClashes && 
-                ReverseNavigationUniquePropName.Contains(col) &&
-                !ReverseNavigationUniquePropNameClashes.Contains(col))
-            {
-                ReverseNavigationUniquePropNameClashes.Add(col); // Name clash
-            }
-
-            if (!ReverseNavigationUniquePropName.Contains(col) &&
-                !ReverseNavigationUniquePropNameClashes.Contains(col))
-            {
-                if (addReverseNavigationUniquePropName || !checkForFkNameClashes)
-                {
-                    ReverseNavigationUniquePropName.Add(col);
-                }
-
-                return col;
-            }
-
-            // Attempt 5
-            for (var n = 1; n < 99; ++n)
-            {
-                col = Settings.ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 5) + n;
-
-                if (ReverseNavigationUniquePropName.Contains(col))
-                    continue;
-
-                if (addReverseNavigationUniquePropName || !checkForFkNameClashes)
-                {
-                    ReverseNavigationUniquePropName.Add(col);
-                }
-
-                return col;
-            }
-
-            // Give up
-            return Settings.ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 6);
+            return _foreignKeyNamingStrategy.GetUniqueForeignKeyName(isParent, tableNameHumanCase, foreignKey, checkForFkNameClashes,
+                makeSingular, relationship);
         }
 
         public void AddReverseNavigation(Relationship relationship, Table fkTable, string propName,
@@ -380,9 +247,9 @@ namespace Efrpg
             if (rightTable == null)
                 return;
 
-            var leftPropName = leftTable.GetUniqueColumnName(true, rightTable.NameHumanCase, right, checkForFkNameClashes, false, Relationship.ManyToOne); // relationship from the mapping table to each side is Many-to-One
+            var leftPropName = leftTable.GetUniqueForeignKeyName(true, rightTable.NameHumanCase, right, checkForFkNameClashes, false, Relationship.ManyToOne); // relationship from the mapping table to each side is Many-to-One
             leftPropName = _filter.MappingTableRename(DbName, leftTable.NameHumanCase, leftPropName);
-            var rightPropName = rightTable.GetUniqueColumnName(false, leftTable.NameHumanCase, left, checkForFkNameClashes, false, Relationship.ManyToOne); // relationship from the mapping table to each side is Many-to-One
+            var rightPropName = rightTable.GetUniqueForeignKeyName(false, leftTable.NameHumanCase, left, checkForFkNameClashes, false, Relationship.ManyToOne); // relationship from the mapping table to each side is Many-to-One
             rightPropName = _filter.MappingTableRename(DbName, rightTable.NameHumanCase, rightPropName);
 
             leftTable.AddMappingConfiguration(left, right, leftPropName, rightPropName, includeSchema);

@@ -951,8 +951,8 @@ namespace Efrpg.Generators
 
                 var flipRelationship       = FlipRelationship(relationship);
                 var fkMakePropNameSingular = relationship == Relationship.OneToOne;
-                var pkPropName             = fkTable.GetUniqueColumnName(true,  pkTableHumanCase,      foreignKey, checkForFkNameClashes, true,                   relationship);
-                var fkPropName             = pkTable.GetUniqueColumnName(false, fkTable.NameHumanCase, foreignKey, checkForFkNameClashes, fkMakePropNameSingular, flipRelationship);
+                var pkPropName             = fkTable.GetUniqueForeignKeyName(true,  pkTableHumanCase,      foreignKey, checkForFkNameClashes, true,                   relationship);
+                var fkPropName             = pkTable.GetUniqueForeignKeyName(false, fkTable.NameHumanCase, foreignKey, checkForFkNameClashes, fkMakePropNameSingular, flipRelationship);
 
                 var fkd = new PropertyAndComments
                 {

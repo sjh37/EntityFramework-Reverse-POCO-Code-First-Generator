@@ -36,18 +36,19 @@
     {
         // Main settings **********************************************************************************************************************
         // The following entries are the only required settings.
-        public static DatabaseType DatabaseType       = DatabaseType.SqlServer; // SqlServer, SqlCe. Coming next: PostgreSQL, MySql, Oracle
-        public static TemplateType TemplateType       = TemplateType.EfCore3; // Ef6, EfCore2, EfCore3, FileBasedCore2, FileBasedCore3. FileBased specify folder using Settings.TemplateFolder
-        public static GeneratorType GeneratorType     = GeneratorType.EfCore; // Ef6, EfCore, Custom. Custom edit GeneratorCustom class to provide your own implementation
-        public static bool UseMappingTables           = false; // Set to false for EfCore. EFCore will add support for this in v3 at some point, so please set this to false. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
-        public static FileManagerType FileManagerType = FileManagerType.Custom; // .NET project = VisualStudio; .NET Core project = Custom; No output (testing only) = Null
-        public static string ConnectionString         = ""; // This is used by the generator to reverse engineer your database
-        public static string ConnectionStringName     = "MyDbContext"; // ConnectionString key as specified in your app.config/web.config/appsettings.json
-        public static string DbContextName            = "MyDbContext"; // Class name for the DbContext to be generated. Note: If generating separate files, please give the db context a different name from this tt filename. Ignored if using multi-context generation
-        public static bool GenerateSeparateFiles      = false;
-        public static string Namespace                = typeof(Settings).Namespace; // Override the default namespace here. Example: Namespace = "CustomNamespace";
-        public static string TemplateFolder           = ""; // Only used if Settings.TemplateType = TemplateType.FileBased. Specify folder name where the mustache folders can be found. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Custom-file-based-templates
-        public static bool AddUnitTestingDbContext    = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing
+        public static DatabaseType DatabaseType                         = DatabaseType.SqlServer; // SqlServer, SqlCe. Coming next: PostgreSQL, MySql, Oracle
+        public static TemplateType TemplateType                         = TemplateType.EfCore3; // Ef6, EfCore2, EfCore3, FileBasedCore2, FileBasedCore3. FileBased specify folder using Settings.TemplateFolder
+        public static GeneratorType GeneratorType                       = GeneratorType.EfCore; // Ef6, EfCore, Custom. Custom edit GeneratorCustom class to provide your own implementation
+        public static ForeignKeyNamingStrategy ForeignKeyNamingStrategy = ForeignKeyNamingStrategy.Latest; // Legacy (same as versions <= v3.1.3), Latest
+        public static bool UseMappingTables                             = false; // Set to false for EfCore. EFCore will add support for this in v3 at some point, so please set this to false. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
+        public static FileManagerType FileManagerType                   = FileManagerType.Custom; // .NET project = VisualStudio; .NET Core project = Custom; No output (testing only) = Null
+        public static string ConnectionString                           = ""; // This is used by the generator to reverse engineer your database
+        public static string ConnectionStringName                       = "MyDbContext"; // ConnectionString key as specified in your app.config/web.config/appsettings.json
+        public static string DbContextName                              = "MyDbContext"; // Class name for the DbContext to be generated. Note: If generating separate files, please give the db context a different name from this tt filename. Ignored if using multi-context generation
+        public static bool GenerateSeparateFiles                        = false;
+        public static string Namespace                                  = typeof(Settings).Namespace; // Override the default namespace here. Example: Namespace = "CustomNamespace";
+        public static string TemplateFolder                             = ""; // Only used if Settings.TemplateType = TemplateType.FileBased. Specify folder name where the mustache folders can be found. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Custom-file-based-templates
+        public static bool AddUnitTestingDbContext                      = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing
 
         // Elements to generate ***************************************************************************************************************
         // Add the elements that should be generated when the template is executed.
@@ -2798,6 +2799,225 @@
             return pkTableHumanCase;
         }
     }
+    public enum ForeignKeyNamingStrategy
+    {
+        Legacy, // Same as versions <= v3.1.3
+        Latest
+    }
+
+    public class BaseForeignKeyNamingStrategy
+    {
+        protected readonly Table _table;
+        protected readonly IDbContextFilter _filter;
+
+        public BaseForeignKeyNamingStrategy(IDbContextFilter filter, Table table)
+        {
+            _filter = filter;
+            _table  = table;
+        }
+    }
+
+    public static class ForeignKeyNamingStrategyFactory
+    {
+        public static IForeignKeyNamingStrategy Create(IDbContextFilter filter, Table table)
+        {
+            switch (Settings.ForeignKeyNamingStrategy)
+            {
+                case ForeignKeyNamingStrategy.Legacy:
+                    return new LegacyForeignKeyNamingStrategy(filter, table);
+
+                default:
+                    return new LatestForeignKeyNamingStrategy(filter, table);
+            }
+        }
+    }
+    public interface IForeignKeyNamingStrategy
+    {
+        string GetUniqueForeignKeyName(bool isParent, string tableNameHumanCase, ForeignKey foreignKey, bool checkForFkNameClashes,
+            bool makeSingular, Relationship relationship);
+
+        void ResetNavigationProperties();
+    }
+
+    public class LatestForeignKeyNamingStrategy : BaseForeignKeyNamingStrategy, IForeignKeyNamingStrategy
+    {
+        public LatestForeignKeyNamingStrategy(IDbContextFilter filter, Table table)
+            : base(filter, table)
+        {
+        }
+
+        public string GetUniqueForeignKeyName(bool isParent, string tableNameHumanCase, ForeignKey foreignKey, bool checkForFkNameClashes, bool makeSingular,
+            Relationship relationship)
+        {
+            // todo
+            return "todo";
+        }
+
+        public void ResetNavigationProperties()
+        {
+            // todo
+        }
+    }
+
+    public class LegacyForeignKeyNamingStrategy : BaseForeignKeyNamingStrategy, IForeignKeyNamingStrategy
+    {
+        public List<string> ReverseNavigationUniquePropName;
+        public List<string> ReverseNavigationUniquePropNameClashes;
+
+        public LegacyForeignKeyNamingStrategy(IDbContextFilter filter, Table table)
+            : base(filter, table)
+        {
+            ReverseNavigationUniquePropNameClashes = new List<string>();
+        }
+
+        public string GetUniqueForeignKeyName(bool isParent, string tableNameHumanCase, ForeignKey foreignKey, bool checkForFkNameClashes, bool makeSingular,
+            Relationship relationship)
+        {
+            // For unit testing
+            //if (tableNameHumanCase.StartsWith("Burak") || tableNameHumanCase.StartsWith("Car") || tableNameHumanCase.StartsWith("User"))
+            //{
+            //    var s = $"[TestCase(\"00\", \"{foreignKey.FkTableName}\",  \"{NameHumanCase}\", \"{string.Join("|",Columns.Select(c => c.NameHumanCase))}\", {isParent}, \"{tableNameHumanCase}\", {checkForFkNameClashes}, {makeSingular}, Relationship.{relationship}, \"{foreignKey.FkTableName}\", \"{foreignKey.PkTableName}\", {foreignKey.IncludeReverseNavigation}, \"{foreignKey.FkColumn}\")]{Environment.NewLine}";
+            //    System.IO.File.AppendAllText("c:/temp/unit.txt", s);
+            //}
+
+            // User specified name
+            if (isParent && !string.IsNullOrEmpty(foreignKey.ParentName))
+                return foreignKey.ParentName;
+
+            // User specified name
+            if (!isParent && !string.IsNullOrEmpty(foreignKey.ChildName))
+                return foreignKey.ChildName;
+
+            // Generate name
+            var addReverseNavigationUniquePropName = checkForFkNameClashes &&
+                                                     (_table.DbName == foreignKey.FkTableName ||
+                                                      (_table.DbName == foreignKey.PkTableName && foreignKey.IncludeReverseNavigation));
+
+            if (ReverseNavigationUniquePropName.Count == 0)
+            {
+                // Reserve table name and all column names
+                ReverseNavigationUniquePropName.Add(_table.NameHumanCase);
+                ReverseNavigationUniquePropName.AddRange(_table.Columns.Select(c => c.NameHumanCase));
+            }
+
+            if (!makeSingular)
+                tableNameHumanCase = Inflector.MakePlural(tableNameHumanCase);
+
+            if (checkForFkNameClashes &&
+                ReverseNavigationUniquePropName.Contains(tableNameHumanCase) &&
+                !ReverseNavigationUniquePropNameClashes.Contains(tableNameHumanCase))
+            {
+                ReverseNavigationUniquePropNameClashes.Add(tableNameHumanCase); // Name clash
+            }
+
+            // Attempt 1
+            var fkName = (Settings.UsePascalCase ? Inflector.ToTitleCase(foreignKey.FkColumn) : foreignKey.FkColumn).Replace(" ", string.Empty).Replace("$", string.Empty);
+            var name = Settings.ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 1);
+            string col;
+            if (!ReverseNavigationUniquePropName.Contains(name) &&
+                !ReverseNavigationUniquePropNameClashes.Contains(name))
+            {
+                if (addReverseNavigationUniquePropName || !checkForFkNameClashes)
+                {
+                    ReverseNavigationUniquePropName.Add(name);
+                    foreignKey.UniqueName = name;
+                }
+
+                return name;
+            }
+
+            if (_table.DbName == foreignKey.FkTableName)
+            {
+                // Attempt 2
+                if (fkName.ToLowerInvariant().EndsWith("id"))
+                {
+                    col = Settings.ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 2);
+
+                    if (checkForFkNameClashes &&
+                        ReverseNavigationUniquePropName.Contains(col) &&
+                        !ReverseNavigationUniquePropNameClashes.Contains(col))
+                    {
+                        ReverseNavigationUniquePropNameClashes.Add(col); // Name clash
+                    }
+
+                    if (!ReverseNavigationUniquePropName.Contains(col) &&
+                        !ReverseNavigationUniquePropNameClashes.Contains(col))
+                    {
+                        if (addReverseNavigationUniquePropName || !checkForFkNameClashes)
+                        {
+                            ReverseNavigationUniquePropName.Add(col);
+                        }
+
+                        return col;
+                    }
+                }
+
+                // Attempt 3
+                col = Settings.ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 3);
+                if (checkForFkNameClashes &&
+                    ReverseNavigationUniquePropName.Contains(col) &&
+                    !ReverseNavigationUniquePropNameClashes.Contains(col))
+                {
+                    ReverseNavigationUniquePropNameClashes.Add(col); // Name clash
+                }
+
+                if (!ReverseNavigationUniquePropName.Contains(col) &&
+                    !ReverseNavigationUniquePropNameClashes.Contains(col))
+                {
+                    if (addReverseNavigationUniquePropName || !checkForFkNameClashes)
+                    {
+                        ReverseNavigationUniquePropName.Add(col);
+                    }
+
+                    return col;
+                }
+            }
+
+            // Attempt 4
+            col = Settings.ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 4);
+            if (checkForFkNameClashes &&
+                ReverseNavigationUniquePropName.Contains(col) &&
+                !ReverseNavigationUniquePropNameClashes.Contains(col))
+            {
+                ReverseNavigationUniquePropNameClashes.Add(col); // Name clash
+            }
+
+            if (!ReverseNavigationUniquePropName.Contains(col) &&
+                !ReverseNavigationUniquePropNameClashes.Contains(col))
+            {
+                if (addReverseNavigationUniquePropName || !checkForFkNameClashes)
+                {
+                    ReverseNavigationUniquePropName.Add(col);
+                }
+
+                return col;
+            }
+
+            // Attempt 5
+            for (var n = 1; n < 99; ++n)
+            {
+                col = Settings.ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 5) + n;
+
+                if (ReverseNavigationUniquePropName.Contains(col))
+                    continue;
+
+                if (addReverseNavigationUniquePropName || !checkForFkNameClashes)
+                {
+                    ReverseNavigationUniquePropName.Add(col);
+                }
+
+                return col;
+            }
+
+            // Give up
+            return Settings.ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 6);
+        }
+
+        public void ResetNavigationProperties()
+        {
+            ReverseNavigationUniquePropName = new List<string>();
+        }
+    }
 
     public class CodeGenerator
     {
@@ -4469,8 +4689,8 @@
 
                 var flipRelationship       = FlipRelationship(relationship);
                 var fkMakePropNameSingular = relationship == Relationship.OneToOne;
-                var pkPropName             = fkTable.GetUniqueColumnName(true,  pkTableHumanCase,      foreignKey, checkForFkNameClashes, true,                   relationship);
-                var fkPropName             = pkTable.GetUniqueColumnName(false, fkTable.NameHumanCase, foreignKey, checkForFkNameClashes, fkMakePropNameSingular, flipRelationship);
+                var pkPropName             = fkTable.GetUniqueForeignKeyName(true,  pkTableHumanCase,      foreignKey, checkForFkNameClashes, true,                   relationship);
+                var fkPropName             = pkTable.GetUniqueForeignKeyName(false, fkTable.NameHumanCase, foreignKey, checkForFkNameClashes, fkMakePropNameSingular, flipRelationship);
 
                 var fkd = new PropertyAndComments
                 {
@@ -14992,12 +15212,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public List<PropertyAndComments> ReverseNavigationProperty;
         public List<string> MappingConfiguration;
         public List<string> ReverseNavigationCtor;
-        public List<string> ReverseNavigationUniquePropName;
-        public List<string> ReverseNavigationUniquePropNameClashes;
         public List<RawIndex> Indexes;
         public List<string> Attributes = new List<string>(); // List of attributes to add to this table
 
         private readonly IDbContextFilter _filter;
+        private readonly IForeignKeyNamingStrategy _foreignKeyNamingStrategy;
 
         public Table(IDbContextFilter filter, Schema schema, string dbName, bool isView)
         {
@@ -15007,8 +15226,9 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             IsView  = isView;
             Columns = new List<Column>();
 
+            _foreignKeyNamingStrategy = ForeignKeyNamingStrategyFactory.Create(filter, this);
+
             ResetNavigationProperties();
-            ReverseNavigationUniquePropNameClashes = new List<string>();
             ExtendedProperty = new List<string>();
         }
 
@@ -15024,10 +15244,12 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
         public void ResetNavigationProperties()
         {
-            MappingConfiguration = new List<string>();
+            _foreignKeyNamingStrategy.ResetNavigationProperties();
+
+            MappingConfiguration      = new List<string>();
             ReverseNavigationProperty = new List<PropertyAndComments>();
-            ReverseNavigationCtor = new List<string>();
-            ReverseNavigationUniquePropName = new List<string>();
+            ReverseNavigationCtor     = new List<string>();
+
             foreach (var col in Columns)
                 col.ResetNavigationProperties();
         }
@@ -15085,147 +15307,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 string.Compare(x.DbName, columnName, StringComparison.OrdinalIgnoreCase) == 0);
         }
 
-        public string GetUniqueColumnName(bool isParent, string tableNameHumanCase, ForeignKey foreignKey, bool checkForFkNameClashes,
+        public string GetUniqueForeignKeyName(bool isParent, string tableNameHumanCase, ForeignKey foreignKey, bool checkForFkNameClashes,
             bool makeSingular, Relationship relationship)
         {
-            // For unit testing
-            //if (tableNameHumanCase.StartsWith("Burak") || tableNameHumanCase.StartsWith("Car") || tableNameHumanCase.StartsWith("User"))
-            //{
-            //    var s = $"[TestCase(\"00\", \"{foreignKey.FkTableName}\",  \"{NameHumanCase}\", \"{string.Join("|",Columns.Select(c => c.NameHumanCase))}\", {isParent}, \"{tableNameHumanCase}\", {checkForFkNameClashes}, {makeSingular}, Relationship.{relationship}, \"{foreignKey.FkTableName}\", \"{foreignKey.PkTableName}\", {foreignKey.IncludeReverseNavigation}, \"{foreignKey.FkColumn}\")]{Environment.NewLine}";
-            //    System.IO.File.AppendAllText("c:/temp/unit.txt", s);
-            //}
-
-            // User specified name
-            if (isParent && !string.IsNullOrEmpty(foreignKey.ParentName))
-                return foreignKey.ParentName;
-
-            // User specified name
-            if (!isParent && !string.IsNullOrEmpty(foreignKey.ChildName))
-                return foreignKey.ChildName;
-
-            // Generate name
-            var addReverseNavigationUniquePropName = checkForFkNameClashes &&
-                                                     (DbName == foreignKey.FkTableName ||
-                                                     (DbName == foreignKey.PkTableName && foreignKey.IncludeReverseNavigation));
-            
-            if (ReverseNavigationUniquePropName.Count == 0)
-            {
-                // Reserve table name and all column names
-                ReverseNavigationUniquePropName.Add(NameHumanCase);
-                ReverseNavigationUniquePropName.AddRange(Columns.Select(c => c.NameHumanCase));
-            }
-
-            if (!makeSingular)
-                tableNameHumanCase = Inflector.MakePlural(tableNameHumanCase);
-
-            if (checkForFkNameClashes &&
-                ReverseNavigationUniquePropName.Contains(tableNameHumanCase) &&
-                !ReverseNavigationUniquePropNameClashes.Contains(tableNameHumanCase))
-            {
-                ReverseNavigationUniquePropNameClashes.Add(tableNameHumanCase); // Name clash
-            }
-
-            // Attempt 1
-            var fkName = (Settings.UsePascalCase ? Inflector.ToTitleCase(foreignKey.FkColumn) : foreignKey.FkColumn).Replace(" ", string.Empty).Replace("$", string.Empty);
-            var name = Settings.ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 1);
-            string col;
-            if (!ReverseNavigationUniquePropName.Contains(name) &&
-                !ReverseNavigationUniquePropNameClashes.Contains(name))
-            {
-                if (addReverseNavigationUniquePropName || !checkForFkNameClashes)
-                {
-                    ReverseNavigationUniquePropName.Add(name);
-                    foreignKey.UniqueName = name;
-                }
-
-                return name;
-            }
-
-            if (DbName == foreignKey.FkTableName)
-            {
-                // Attempt 2
-                if (fkName.ToLowerInvariant().EndsWith("id"))
-                {
-                    col = Settings.ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 2);
-
-                    if (checkForFkNameClashes &&
-                        ReverseNavigationUniquePropName.Contains(col) &&
-                        !ReverseNavigationUniquePropNameClashes.Contains(col))
-                    {
-                        ReverseNavigationUniquePropNameClashes.Add(col); // Name clash
-                    }
-
-                    if (!ReverseNavigationUniquePropName.Contains(col) &&
-                        !ReverseNavigationUniquePropNameClashes.Contains(col))
-                    {
-                        if (addReverseNavigationUniquePropName || !checkForFkNameClashes)
-                        {
-                            ReverseNavigationUniquePropName.Add(col);
-                        }
-
-                        return col;
-                    }
-                }
-
-                // Attempt 3
-                col = Settings.ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 3);
-                if (checkForFkNameClashes && 
-                    ReverseNavigationUniquePropName.Contains(col) &&
-                    !ReverseNavigationUniquePropNameClashes.Contains(col))
-                {
-                    ReverseNavigationUniquePropNameClashes.Add(col); // Name clash
-                }
-
-                if (!ReverseNavigationUniquePropName.Contains(col) &&
-                    !ReverseNavigationUniquePropNameClashes.Contains(col))
-                {
-                    if (addReverseNavigationUniquePropName || !checkForFkNameClashes)
-                    {
-                        ReverseNavigationUniquePropName.Add(col);
-                    }
-
-                    return col;
-                }
-            }
-
-            // Attempt 4
-            col = Settings.ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 4);
-            if (checkForFkNameClashes && 
-                ReverseNavigationUniquePropName.Contains(col) &&
-                !ReverseNavigationUniquePropNameClashes.Contains(col))
-            {
-                ReverseNavigationUniquePropNameClashes.Add(col); // Name clash
-            }
-
-            if (!ReverseNavigationUniquePropName.Contains(col) &&
-                !ReverseNavigationUniquePropNameClashes.Contains(col))
-            {
-                if (addReverseNavigationUniquePropName || !checkForFkNameClashes)
-                {
-                    ReverseNavigationUniquePropName.Add(col);
-                }
-
-                return col;
-            }
-
-            // Attempt 5
-            for (var n = 1; n < 99; ++n)
-            {
-                col = Settings.ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 5) + n;
-
-                if (ReverseNavigationUniquePropName.Contains(col))
-                    continue;
-
-                if (addReverseNavigationUniquePropName || !checkForFkNameClashes)
-                {
-                    ReverseNavigationUniquePropName.Add(col);
-                }
-
-                return col;
-            }
-
-            // Give up
-            return Settings.ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 6);
+            return _foreignKeyNamingStrategy.GetUniqueForeignKeyName(isParent, tableNameHumanCase, foreignKey, checkForFkNameClashes,
+                makeSingular, relationship);
         }
 
         public void AddReverseNavigation(Relationship relationship, Table fkTable, string propName,
@@ -15346,9 +15432,9 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             if (rightTable == null)
                 return;
 
-            var leftPropName = leftTable.GetUniqueColumnName(true, rightTable.NameHumanCase, right, checkForFkNameClashes, false, Relationship.ManyToOne); // relationship from the mapping table to each side is Many-to-One
+            var leftPropName = leftTable.GetUniqueForeignKeyName(true, rightTable.NameHumanCase, right, checkForFkNameClashes, false, Relationship.ManyToOne); // relationship from the mapping table to each side is Many-to-One
             leftPropName = _filter.MappingTableRename(DbName, leftTable.NameHumanCase, leftPropName);
-            var rightPropName = rightTable.GetUniqueColumnName(false, leftTable.NameHumanCase, left, checkForFkNameClashes, false, Relationship.ManyToOne); // relationship from the mapping table to each side is Many-to-One
+            var rightPropName = rightTable.GetUniqueForeignKeyName(false, leftTable.NameHumanCase, left, checkForFkNameClashes, false, Relationship.ManyToOne); // relationship from the mapping table to each side is Many-to-One
             rightPropName = _filter.MappingTableRename(DbName, rightTable.NameHumanCase, rightPropName);
 
             leftTable.AddMappingConfiguration(left, right, leftPropName, rightPropName, includeSchema);
