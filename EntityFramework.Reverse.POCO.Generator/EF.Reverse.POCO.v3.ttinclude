@@ -3650,7 +3650,7 @@
             {
                 _fileManagementService.Error(string.Format("// Licence file {0} not found.", file));
                 _fileManagementService.Error(obtainAt);
-                return null;
+                return TrialLicenceFallback();
             }
 
             var validator = new LicenceValidator();
@@ -3661,10 +3661,16 @@
                     : string.Format("// Your licence file {0} is not valid.", file));
 
                 _fileManagementService.Error(obtainAt);
-                return null;
+                return TrialLicenceFallback();
             }
 
             return validator.Licence; // Thank you for having a valid licence and supporting this product :-)
+        }
+
+        private Licence TrialLicenceFallback()
+        {
+            _fileManagementService.Error("// Defaulting to Trial version.");
+            return new Licence(string.Empty, string.Empty, LicenceType.Trial, "1", DateTime.MaxValue);
         }
 
         public string DatabaseDetails()
@@ -13021,8 +13027,7 @@ ORDER BY R.specific_schema, R.routine_name, R.routine_type;";
 
         public override void ReadStoredProcReturnObjects(List<StoredProcedure> procs)
         {
-            return;
-            /*using (var conn = _factory.CreateConnection())
+            using (var conn = _factory.CreateConnection())
             {
                 if (conn == null)
                     return;
@@ -13034,12 +13039,20 @@ ORDER BY R.specific_schema, R.routine_name, R.routine_type;";
                 if (cmd == null)
                     return;
 
-                foreach (var sp in procs.Where(x => !x.IsScalarValuedFunction))
-                    ReadStoredProcReturnObject(cmd, sp);
-            }*/
+                // Only functions return result sets in PostgreSQL
+                foreach (var sp in procs.Where(x => !x.IsStoredProcedure && !x.IsScalarValuedFunction))
+                    ReadFunctionReturnObject(cmd, sp);
+
+                // Tidy up
+                cmd.CommandText = "DROP TABLE IF EXISTS efrpg_temp_table;";
+                if (cmd.Connection.State != ConnectionState.Open)
+                    cmd.Connection.Open();
+                cmd.ExecuteNonQuery();
+                cmd.Connection.Close();
+            }
         }
 
-        private void ReadStoredProcReturnObject(DbCommand cmd, StoredProcedure proc)
+        private void ReadFunctionReturnObject(DbCommand cmd, StoredProcedure proc)
         {
             try
             {
@@ -13047,58 +13060,30 @@ ORDER BY R.specific_schema, R.routine_name, R.routine_type;";
                 var sb = new StringBuilder(255);
                 sb.AppendLine("DO $$");
 
-                if (proc.IsTableValuedFunction)
+                foreach (var param in proc.Parameters.Where(x => x.SqlDbType.Equals(structured, StringComparison.InvariantCultureIgnoreCase)))
                 {
-                    foreach (var param in proc.Parameters.Where(x => x.SqlDbType.Equals(structured, StringComparison.InvariantCultureIgnoreCase)))
-                    {
-                        sb.AppendLine(string.Format("DECLARE {0} {1};", param.Name, param.UserDefinedTypeName));
-                    }
-
-                    sb.Append(string.Format("SELECT * FROM \"{0}\".\"{1}\"(", proc.Schema.DbName, proc.DbName));
-                    foreach (var param in proc.Parameters)
-                    {
-                        sb.Append(string.Format("{0}, ",
-                            param.SqlDbType.Equals(structured, StringComparison.InvariantCultureIgnoreCase)
-                                ? param.Name
-                                : "default"));
-                    }
-
-                    if (proc.Parameters.Count > 0)
-                        sb.Length -= 2;
-
-                    sb.AppendLine(");");
+                    sb.AppendLine(string.Format("DECLARE {0} {1};", param.Name, param.UserDefinedTypeName));
                 }
-                else
+
+                sb.AppendLine("BEGIN");
+                sb.AppendLine("  DROP TABLE IF EXISTS efrpg_temp_table;");
+                sb.AppendLine("  CREATE TEMPORARY TABLE efrpg_temp_table AS");
+                sb.Append(string.Format("  SELECT * FROM \"{0}\".\"{1}\"(", proc.Schema.DbName, proc.DbName));
+
+                foreach (var param in proc.Parameters)
                 {
-                    /*
-DO $$
-DECLARE myvar integer := 10250;
-BEGIN
-	DROP TABLE IF EXISTS tmp_table; 
-	CREATE TABLE tmp_table AS
-    select * from orders where "OrderID" = myvar;
-END $$;
-SELECT * FROM tmp_table;
-                     */
-                    foreach (var param in proc.Parameters)
-                    {
-                        sb.AppendLine(string.Format("DECLARE {0} {1};", param.Name,
-                            param.SqlDbType.Equals(structured, StringComparison.InvariantCultureIgnoreCase)
-                                ? param.UserDefinedTypeName
-                                : param.SqlDbType));
-                    }
-
-                    sb.Append(string.Format("CALL \"{0}\".\"{1}\" ", proc.Schema.DbName, proc.DbName));
-                    foreach (var param in proc.Parameters)
-                        sb.Append(string.Format("{0}, ", param.Name));
-
-                    if (proc.Parameters.Count > 0)
-                        sb.Length -= 2;
-
-                    sb.AppendLine(";");
+                    sb.Append(string.Format("{0}, ",
+                        param.SqlDbType.Equals(structured, StringComparison.InvariantCultureIgnoreCase)
+                            ? param.Name
+                            : "default"));
                 }
+
+                if (proc.Parameters.Count > 0)
+                    sb.Length -= 2;
+
+                sb.AppendLine(");");
                 sb.AppendLine("END $$;");
-                sb.AppendLine("SELECT * FROM tmp_table;");
+                sb.AppendLine("SELECT * FROM efrpg_temp_table;");
 
                 var ds = new DataSet();
                 using (var sqlAdapter = _factory.CreateDataAdapter())
@@ -13126,7 +13111,7 @@ SELECT * FROM tmp_table;
             }
             catch (Exception)
             {
-                // Stored procedure does not have a return type
+                // Function does not have a return type
             }
         }
 

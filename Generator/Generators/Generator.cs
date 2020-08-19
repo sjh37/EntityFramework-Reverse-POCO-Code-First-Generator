@@ -132,7 +132,7 @@ namespace Efrpg.Generators
             {
                 _fileManagementService.Error(string.Format("// Licence file {0} not found.", file));
                 _fileManagementService.Error(obtainAt);
-                return null;
+                return TrialLicenceFallback();
             }
 
             var validator = new LicenceValidator();
@@ -143,10 +143,16 @@ namespace Efrpg.Generators
                     : string.Format("// Your licence file {0} is not valid.", file));
 
                 _fileManagementService.Error(obtainAt);
-                return null;
+                return TrialLicenceFallback();
             }
 
             return validator.Licence; // Thank you for having a valid licence and supporting this product :-)
+        }
+
+        private Licence TrialLicenceFallback()
+        {
+            _fileManagementService.Error("// Defaulting to Trial version.");
+            return new Licence(string.Empty, string.Empty, LicenceType.Trial, "1", DateTime.MaxValue);
         }
 
         public string DatabaseDetails()
