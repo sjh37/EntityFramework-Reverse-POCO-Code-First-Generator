@@ -16,8 +16,9 @@ namespace Generator.Tests.Unit
     [TestFixture, NonParallelizable]
     public class SingleDatabaseReverseEngineerTests
     {
-        public void SetupSqlServer(string database, string connectionStringName, string dbContextName, TemplateType templateType, GeneratorType generatorType)
+        public void SetupSqlServer(string database, string connectionStringName, string dbContextName, TemplateType templateType, GeneratorType generatorType, ForeignKeyNamingStrategy foreignKeyNamingStrategy)
         {
+            Settings.ForeignKeyNamingStrategy   = foreignKeyNamingStrategy;
             Settings.TemplateType               = templateType;
             Settings.GeneratorType              = generatorType;
             Settings.ConnectionString           = $"Data Source=(local);Initial Catalog={database};Integrated Security=True;Application Name=Generator";
@@ -33,11 +34,14 @@ namespace Generator.Tests.Unit
 
             FilterSettings.Reset();
             FilterSettings.AddDefaults();
+            FilterSettings.IncludeScalarValuedFunctions = true;
+            FilterSettings.IncludeTableValuedFunctions = true;
             FilterSettings.CheckSettings();
         }
 
-        public void SetupSqlCe(string database, string connectionStringName, string dbContextName, TemplateType templateType, GeneratorType generatorType)
+        public void SetupSqlCe(string database, string connectionStringName, string dbContextName, TemplateType templateType, GeneratorType generatorType, ForeignKeyNamingStrategy foreignKeyNamingStrategy)
         {
+            Settings.ForeignKeyNamingStrategy   = foreignKeyNamingStrategy;
             Settings.TemplateType               = templateType;
             Settings.GeneratorType              = generatorType;
             Settings.ConnectionString           = @"Data Source=C:\S\Source (open source)\EntityFramework Reverse POCO Code Generator\EntityFramework.Reverse.POCO.Generator\App_Data\" + database;
@@ -53,11 +57,14 @@ namespace Generator.Tests.Unit
 
             FilterSettings.Reset();
             FilterSettings.AddDefaults();
+            FilterSettings.IncludeScalarValuedFunctions = true;
+            FilterSettings.IncludeTableValuedFunctions = true;
             FilterSettings.CheckSettings();
         }
 
-        public void SetupPostgreSQL(string database, string connectionStringName, string dbContextName, TemplateType templateType, GeneratorType generatorType)
+        public void SetupPostgreSQL(string database, string connectionStringName, string dbContextName, TemplateType templateType, GeneratorType generatorType, ForeignKeyNamingStrategy foreignKeyNamingStrategy)
         {
+            Settings.ForeignKeyNamingStrategy   = foreignKeyNamingStrategy;
             Settings.TemplateType               = templateType;
             Settings.GeneratorType              = generatorType;
             Settings.ConnectionString           = $"Server=127.0.0.1;Port=5432;Database={database};User Id=testuser;Password=testtesttest;";
@@ -73,6 +80,8 @@ namespace Generator.Tests.Unit
 
             FilterSettings.Reset();
             FilterSettings.AddDefaults();
+            FilterSettings.IncludeScalarValuedFunctions = true;
+            FilterSettings.IncludeTableValuedFunctions = true;
             FilterSettings.CheckSettings();
         }
 
@@ -142,23 +151,36 @@ namespace Generator.Tests.Unit
         }
 
         [Test, NonParallelizable]
-        [TestCase("Northwind",      ".V3TestA", "MyDbContext",      "MyDbContext",             true,  TemplateType.Ef6)]
-        [TestCase("EfrpgTest",      ".V3TestB", "MyDbContext",      "EfrpgTestDbContext",      false, TemplateType.Ef6)]
-        [TestCase("EfrpgTestLarge", ".V3TestC", "MyLargeDbContext", "EfrpgTestLargeDbContext", false, TemplateType.Ef6)]
-        [TestCase("fred",           ".V3TestD", "fred",             "FredDbContext",           false, TemplateType.Ef6)]
-        [TestCase("Northwind",      ".V3TestE", "MyDbContext",      "MyDbContext",             true,  TemplateType.EfCore2)]
-        [TestCase("Northwind",      ".V3TestK", "MyDbContext",      "MyDbContext",             true,  TemplateType.EfCore3)]
-        [TestCase("EfrpgTest",      ".V3TestF", "MyDbContext",      "EfrpgTestDbContext",      false, TemplateType.EfCore2)]
-        [TestCase("EfrpgTest",      ".V3TestG", "MyDbContext",      "EfrpgTestDbContext",      false, TemplateType.EfCore3)] // ef core 3
-        [TestCase("EfrpgTestLarge", ".V3TestH", "MyLargeDbContext", "EfrpgTestLargeDbContext", false, TemplateType.EfCore2)]
-        [TestCase("fred",           ".V3TestI", "fred",             "FredDbContext",           false, TemplateType.EfCore2)]
-        [TestCase("fred",           ".V3TestJ", "fred",             "FredDbContext",           false, TemplateType.EfCore3)] // ef core 3
-        public void ReverseEngineerSqlServer(string database, string singleDbContextSubNamespace, string connectionStringName, string dbContextName, bool publicTestComparison, TemplateType templateType)
+        // Legacy
+        [TestCase("Northwind",      ".V3TestA", "MyDbContext",      "MyDbContext",              true,  TemplateType.Ef6,     ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("EfrpgTest",      ".V3TestB", "MyDbContext",      "EfrpgTestDbContext",       false, TemplateType.Ef6,     ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("EfrpgTestLarge", ".V3TestC", "MyLargeDbContext", "EfrpgTestLargeDbContext",  false, TemplateType.Ef6,     ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("fred",           ".V3TestD", "fred",             "FredDbContext",            false, TemplateType.Ef6,     ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("Northwind",      ".V3TestE", "MyDbContext",      "MyDbContext",              true,  TemplateType.EfCore2, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("Northwind",      ".V3TestK", "MyDbContext",      "MyDbContext",              true,  TemplateType.EfCore3, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("EfrpgTest",      ".V3TestF", "MyDbContext",      "EfrpgTestDbContext",       false, TemplateType.EfCore2, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("EfrpgTest",      ".V3TestG", "MyDbContext",      "EfrpgTestDbContext",       false, TemplateType.EfCore3, ForeignKeyNamingStrategy.Legacy)] // ef core 3
+        [TestCase("EfrpgTestLarge", ".V3TestH", "MyLargeDbContext", "EfrpgTestLargeDbContext",  false, TemplateType.EfCore2, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("fred",           ".V3TestI", "fred",             "FredDbContext",            false, TemplateType.EfCore2, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("fred",           ".V3TestJ", "fred",             "FredDbContext",            false, TemplateType.EfCore3, ForeignKeyNamingStrategy.Legacy)] // ef core 3
+        // Latest
+        [TestCase("Northwind",      ".V3TestA2", "MyDbContext",      "MyDbContext",             true,  TemplateType.Ef6,     ForeignKeyNamingStrategy.Latest)]
+        [TestCase("EfrpgTest",      ".V3TestB2", "MyDbContext",      "EfrpgTestDbContext",      false, TemplateType.Ef6,     ForeignKeyNamingStrategy.Latest)]
+        [TestCase("EfrpgTestLarge", ".V3TestC2", "MyLargeDbContext", "EfrpgTestLargeDbContext", false, TemplateType.Ef6,     ForeignKeyNamingStrategy.Latest)]
+        [TestCase("fred",           ".V3TestD2", "fred",             "FredDbContext",           false, TemplateType.Ef6,     ForeignKeyNamingStrategy.Latest)]
+        [TestCase("Northwind",      ".V3TestE2", "MyDbContext",      "MyDbContext",             true,  TemplateType.EfCore2, ForeignKeyNamingStrategy.Latest)]
+        [TestCase("Northwind",      ".V3TestK2", "MyDbContext",      "MyDbContext",             true,  TemplateType.EfCore3, ForeignKeyNamingStrategy.Latest)]
+        [TestCase("EfrpgTest",      ".V3TestF2", "MyDbContext",      "EfrpgTestDbContext",      false, TemplateType.EfCore2, ForeignKeyNamingStrategy.Latest)]
+        [TestCase("EfrpgTest",      ".V3TestG2", "MyDbContext",      "EfrpgTestDbContext",      false, TemplateType.EfCore3, ForeignKeyNamingStrategy.Latest)] // ef core 3
+        [TestCase("EfrpgTestLarge", ".V3TestH2", "MyLargeDbContext", "EfrpgTestLargeDbContext", false, TemplateType.EfCore2, ForeignKeyNamingStrategy.Latest)]
+        [TestCase("fred",           ".V3TestI2", "fred",             "FredDbContext",           false, TemplateType.EfCore2, ForeignKeyNamingStrategy.Latest)]
+        [TestCase("fred",           ".V3TestJ2", "fred",             "FredDbContext",           false, TemplateType.EfCore3, ForeignKeyNamingStrategy.Latest)] // ef core 3
+        public void ReverseEngineerSqlServer(string database, string singleDbContextSubNamespace, string connectionStringName, string dbContextName, bool publicTestComparison, TemplateType templateType, ForeignKeyNamingStrategy foreignKeyNamingStrategy)
         {
             // Arrange
             Settings.GenerateSeparateFiles = false;
             Settings.UseMappingTables = (templateType != TemplateType.EfCore2 && templateType != TemplateType.EfCore3);
-            SetupSqlServer(database, connectionStringName, dbContextName, templateType, templateType == TemplateType.Ef6 ? GeneratorType.Ef6 : GeneratorType.EfCore);
+            SetupSqlServer(database, connectionStringName, dbContextName, templateType, templateType == TemplateType.Ef6 ? GeneratorType.Ef6 : GeneratorType.EfCore, foreignKeyNamingStrategy);
             //Settings.DisableGeographyTypes = true;
 
             Settings.Enumerations = new List<EnumerationSettings>
@@ -194,12 +216,14 @@ namespace Generator.Tests.Unit
         }
 
         [Test, NonParallelizable]
-        public void ReverseEngineerSqlCe()
+        [TestCase(ForeignKeyNamingStrategy.Legacy)]
+        [TestCase(ForeignKeyNamingStrategy.Latest)]
+        public void ReverseEngineerSqlCe(ForeignKeyNamingStrategy foreignKeyNamingStrategy)
         {
             // Arrange
             Settings.GenerateSeparateFiles = false;
             Settings.UseMappingTables = true;
-            SetupSqlCe("NorthwindSqlCe40.sdf", "MyDbContext", "MyDbContext", TemplateType.Ef6, GeneratorType.Ef6);
+            SetupSqlCe("NorthwindSqlCe40.sdf", "MyDbContext", "MyDbContext", TemplateType.Ef6, GeneratorType.Ef6, foreignKeyNamingStrategy);
 
             // Act
             var filename = "Northwind";
@@ -210,16 +234,22 @@ namespace Generator.Tests.Unit
         }
 
         [Test, NonParallelizable]
-        [TestCase(false, TemplateType.EfCore2)]
-        [TestCase(false, TemplateType.EfCore3)]
-        [TestCase(true, TemplateType.EfCore2)]
-        [TestCase(true, TemplateType.EfCore3)]
-        public void ReverseEngineerSqlCe_EfCore(bool separateFiles, TemplateType templateType)
+        // Legacy
+        [TestCase(false, TemplateType.EfCore2, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase(false, TemplateType.EfCore3, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase(true, TemplateType.EfCore2, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase(true, TemplateType.EfCore3, ForeignKeyNamingStrategy.Legacy)]
+        // Latest
+        [TestCase(false, TemplateType.EfCore2, ForeignKeyNamingStrategy.Latest)]
+        [TestCase(false, TemplateType.EfCore3, ForeignKeyNamingStrategy.Latest)]
+        [TestCase(true, TemplateType.EfCore2, ForeignKeyNamingStrategy.Latest)]
+        [TestCase(true, TemplateType.EfCore3, ForeignKeyNamingStrategy.Latest)]
+        public void ReverseEngineerSqlCe_EfCore(bool separateFiles, TemplateType templateType, ForeignKeyNamingStrategy foreignKeyNamingStrategy)
         {
             // Arrange
             Settings.GenerateSeparateFiles = separateFiles;
             Settings.UseMappingTables = false;
-            SetupSqlCe("NorthwindSqlCe40.sdf", "MyDbContext", "MyDbContext", templateType, GeneratorType.EfCore);
+            SetupSqlCe("NorthwindSqlCe40.sdf", "MyDbContext", "MyDbContext", templateType, GeneratorType.EfCore, foreignKeyNamingStrategy);
 
             // Act
             var filename = "Northwind";
@@ -234,12 +264,14 @@ namespace Generator.Tests.Unit
         }
 
         [Test, NonParallelizable]
-        public void ReverseEngineerPostgreSQL()
+        [TestCase(ForeignKeyNamingStrategy.Legacy)]
+        [TestCase(ForeignKeyNamingStrategy.Latest)]
+        public void ReverseEngineerPostgreSQL(ForeignKeyNamingStrategy foreignKeyNamingStrategy)
         {
             // Arrange
             Settings.GenerateSeparateFiles = false;
             Settings.UseMappingTables = false;
-            SetupPostgreSQL("Northwind", "MyDbContext", "MyDbContext", TemplateType.EfCore3, GeneratorType.EfCore);
+            SetupPostgreSQL("Northwind", "MyDbContext", "MyDbContext", TemplateType.EfCore3, GeneratorType.EfCore, foreignKeyNamingStrategy);
 
             // Act
             var filename = "Northwind";
@@ -250,13 +282,14 @@ namespace Generator.Tests.Unit
         }
 
         [Test, NonParallelizable]
-        [TestCase("fred", ".V3FilterTest1", "fred", "FredDbContext", false, TemplateType.EfCore3)] // ef core 3
-        public void MultipleIncludeFilters(string database, string singleDbContextSubNamespace, string connectionStringName, string dbContextName, bool publicTestComparison, TemplateType templateType)
+        [TestCase("fred", ".V3FilterTest1", "fred", "FredDbContext", false, TemplateType.EfCore3, ForeignKeyNamingStrategy.Legacy)] // ef core 3
+        [TestCase("fred", ".V3FilterTest1", "fred", "FredDbContext", false, TemplateType.EfCore3, ForeignKeyNamingStrategy.Latest)] // ef core 3
+        public void MultipleIncludeFilters(string database, string singleDbContextSubNamespace, string connectionStringName, string dbContextName, bool publicTestComparison, TemplateType templateType, ForeignKeyNamingStrategy foreignKeyNamingStrategy)
         {
             // Arrange
             Settings.GenerateSeparateFiles = false;
             Settings.UseMappingTables = (templateType != TemplateType.EfCore2 && templateType != TemplateType.EfCore3);
-            SetupSqlServer(database, connectionStringName, dbContextName, templateType, templateType == TemplateType.Ef6 ? GeneratorType.Ef6 : GeneratorType.EfCore);
+            SetupSqlServer(database, connectionStringName, dbContextName, templateType, templateType == TemplateType.Ef6 ? GeneratorType.Ef6 : GeneratorType.EfCore, foreignKeyNamingStrategy);
             Settings.AddUnitTestingDbContext = false;
             
             FilterSettings.SchemaFilters.Add(new RegexIncludeFilter("dbo.*"));

@@ -224,17 +224,20 @@ namespace Generator.Tests.Unit
                 new { Fk = "C", Pk = "C", Constraint = "FK_HasPrincipalKey_AC", Ordinal = 2 },
                 new { Fk = "D", Pk = "D", Constraint = "FK_HasPrincipalKey_CD", Ordinal = 2 },
                 new { Fk = "id", Pk = "id", Constraint = "FK_Burak_Test2", Ordinal = 1 },
-                new { Fk = "id_t", Pk = "id", Constraint = "FK_Burak1_Burak2", Ordinal = 1 },
+                new { Fk = "id_t", Pk = "id", Constraint = "FK_Burak_Test1", Ordinal = 1 },
                 new { Fk = "not_null_value", Pk = "not_null_value", Constraint = "FK_ForeignKeyIsNotEnforcedItem_notnull_notnull", Ordinal = 1 },
                 new { Fk = "not_null_value", Pk = "null_value", Constraint = "FK_ForeignKeyIsNotEnforcedItem_notnull_null", Ordinal = 1 },
                 new { Fk = "null_value", Pk = "not_null_value", Constraint = "FK_ForeignKeyIsNotEnforcedItem_null_notnull", Ordinal = 1 },
                 new { Fk = "null_value", Pk = "null_value", Constraint = "FK_ForeignKeyIsNotEnforcedItem_null_null", Ordinal = 1 },
+                new { Fk = "num", Pk = "num", Constraint = "FK_Burak_Test1", Ordinal = 2 },
                 new { Fk = "num", Pk = "num", Constraint = "FK_Burak_Test2", Ordinal = 2 },
-                new { Fk = "num", Pk = "num", Constraint = "FK_Burak1_Burak2", Ordinal = 2 },
                 new { Fk = "origem", Pk = "Code", Constraint = "FK_CODE_MeetingTopicDetails_CODE_PARAM_MeetingTopicDetailSource", Ordinal = 1 },
             };
 
-            //Assert.AreEqual(expected.Length, set.Length);
+            for (var n = 0; n < expected.Length; n++)
+                Console.WriteLine($"{set[n].FkColumn}\t{set[n].PkColumn}\t{set[n].ConstraintName}\t{set[n].Ordinal}");
+
+            Assert.AreEqual(expected.Length, set.Length);
 
             for (var n = 0; n < expected.Length; n++)
             {
@@ -247,31 +250,31 @@ namespace Generator.Tests.Unit
 
         [Test] // Always run all cases together as they build up ReverseNavigationUniquePropName
         // checkForFkNameClashes = true
-        [TestCase("01", "Burak1", "Burak1", "Id|IdT|Num", true, "Burak2", true, true, Relationship.OneToOne, "Burak1", "Burak2", true, "id")]
+        [TestCase("01", "Burak2", "Burak1", "Id|IdT|Num", true, "Burak2", true, true, Relationship.OneToOne, "Burak1", "Burak2", true, "id")]
         [TestCase("02", "Burak1", "Burak2", "Id|Num", false, "Burak1", true, true, Relationship.OneToOne, "Burak1", "Burak2", true, "id")]
-        [TestCase("03", "Burak1", "Burak1", "Id|IdT|Num", true, "Burak2", true, true, Relationship.OneToOne, "Burak1", "Burak2", true, "id_t")]
+        [TestCase("03", "Burak2", "Burak1", "Id|IdT|Num", true, "Burak2", true, true, Relationship.OneToOne, "Burak1", "Burak2", true, "id_t")]
         [TestCase("04", "Burak1", "Burak2", "Id|Num", false, "Burak1", true, true, Relationship.OneToOne, "Burak1", "Burak2", true, "id_t")]
         [TestCase("05", "Car", "Colour", "Id|Name", false, "Car", true, false, Relationship.OneToMany, "Car", "Colour", true, "PrimaryColourId")]
-        [TestCase("06", "CarToColour", "CarToColour", "CarId|ColourId", true, "Car", true, true, Relationship.ManyToOne, "CarToColour", "Car", true, "CarId")]
+        [TestCase("06", "Car", "CarToColour", "CarId|ColourId", true, "Car", true, true, Relationship.ManyToOne, "CarToColour", "Car", true, "CarId")]
         [TestCase("07", "CarToColour", "Car", "Id|PrimaryColourId|CarMake|ComputedColumn|ComputedColumnPersisted", false, "CarToColour", true, false, Relationship.OneToMany, "CarToColour", "Car", true, "CarId")]
         [TestCase("08", "CarToColour", "Colour", "Id|Name", false, "CarToColour", true, false, Relationship.OneToMany, "CarToColour", "Colour", true, "ColourId")]
-        [TestCase("09", "User_Document", "UserDocument", "Id|UserId|CreatedByUserId", true, "User", true, true, Relationship.ManyToOne, "User_Document", "User", true, "CreatedByUserID")]
-        [TestCase("10", "User_Document", "User", "Id|ExternalUserId", false, "UserDocument", true, false, Relationship.OneToMany, "User_Document", "User", true, "CreatedByUserID")]
-        [TestCase("11", "User_Document", "UserDocument", "Id|UserId|CreatedByUserId", true, "User", true, true, Relationship.ManyToOne, "User_Document", "User", true, "UserID")]
-        [TestCase("12", "User_Document", "User", "Id|ExternalUserId", false, "UserDocument", true, false, Relationship.OneToMany, "User_Document", "User", true, "UserID")]
+        [TestCase("09", "User", "UserDocument", "Id|UserId|CreatedByUserId", true, "User", true, true, Relationship.ManyToOne, "User_Document", "User", true, "CreatedByUserID")]
+        [TestCase("10", "UserDocument", "User", "Id|ExternalUserId", false, "UserDocument", true, false, Relationship.OneToMany, "User_Document", "User", true, "CreatedByUserID")]
+        [TestCase("11", "User", "UserDocument", "Id|UserId|CreatedByUserId", true, "User", true, true, Relationship.ManyToOne, "User_Document", "User", true, "UserID")]
+        [TestCase("12", "UserDocument", "User", "Id|ExternalUserId", false, "UserDocument", true, false, Relationship.OneToMany, "User_Document", "User", true, "UserID")]
         // checkForFkNameClashes = false
-        [TestCase("13", "Burak1", "Burak1", "Id|IdT|Num", true, "Burak2", false, true, Relationship.OneToOne, "Burak1", "Burak2", true, "id")]
+        [TestCase("13", "Burak2", "Burak1", "Id|IdT|Num", true, "Burak2", false, true, Relationship.OneToOne, "Burak1", "Burak2", true, "id")]
         [TestCase("14", "Burak1", "Burak2", "Id|Num", false, "Burak1", false, true, Relationship.OneToOne, "Burak1", "Burak2", true, "id")]
-        [TestCase("15", "Burak1", "Burak1", "Id|IdT|Num", true, "Burak2", false, true, Relationship.OneToOne, "Burak1", "Burak2", true, "id_t")]
+        [TestCase("15", "Burak2", "Burak1", "Id|IdT|Num", true, "Burak2", false, true, Relationship.OneToOne, "Burak1", "Burak2", true, "id_t")]
         [TestCase("16", "Burak1", "Burak2", "Id|Num", false, "Burak1", false, true, Relationship.OneToOne, "Burak1", "Burak2", true, "id_t")]
         [TestCase("17", "Car", "Colour", "Id|Name", false, "Car", false, false, Relationship.OneToMany, "Car", "Colour", true, "PrimaryColourId")]
-        [TestCase("18", "CarToColour", "CarToColour", "CarId|ColourId", true, "Car", false, true, Relationship.ManyToOne, "CarToColour", "Car", true, "CarId")]
+        [TestCase("18", "Car", "CarToColour", "CarId|ColourId", true, "Car", false, true, Relationship.ManyToOne, "CarToColour", "Car", true, "CarId")]
         [TestCase("19", "CarToColour", "Car", "Id|PrimaryColourId|CarMake|ComputedColumn|ComputedColumnPersisted", false, "CarToColour", false, false, Relationship.OneToMany, "CarToColour", "Car", true, "CarId")]
         [TestCase("20", "CarToColour", "Colour", "Id|Name", false, "CarToColour", false, false, Relationship.OneToMany, "CarToColour", "Colour", true, "ColourId")]
-        [TestCase("21", "User_Document", "UserDocument", "Id|UserId|CreatedByUserId", true, "User", false, true, Relationship.ManyToOne, "User_Document", "User", true, "CreatedByUserID")]
-        [TestCase("22", "User_Document", "User", "Id|ExternalUserId", false, "UserDocument", false, false, Relationship.OneToMany, "User_Document", "User", true, "CreatedByUserID")]
-        [TestCase("23", "User_Document", "UserDocument", "Id|UserId|CreatedByUserId", true, "User", false, true, Relationship.ManyToOne, "User_Document", "User", true, "UserID")]
-        [TestCase("24", "User_Document", "User", "Id|ExternalUserId", false, "UserDocument", false, false, Relationship.OneToMany, "User_Document", "User", true, "UserID")]
+        [TestCase("21", "User", "UserDocument", "Id|UserId|CreatedByUserId", true, "User", false, true, Relationship.ManyToOne, "User_Document", "User", true, "CreatedByUserID")]
+        [TestCase("22", "UserDocument", "User", "Id|ExternalUserId", false, "UserDocument", false, false, Relationship.OneToMany, "User_Document", "User", true, "CreatedByUserID")]
+        [TestCase("23", "User", "UserDocument", "Id|UserId|CreatedByUserId", true, "User", false, true, Relationship.ManyToOne, "User_Document", "User", true, "UserID")]
+        [TestCase("24", "UserDocument", "User", "Id|ExternalUserId", false, "UserDocument", false, false, Relationship.OneToMany, "User_Document", "User", true, "UserID")]
         public void LegacyForeignKeyNames(string testOrder, string expected, string NameHumanCase, string columns, bool isParent, string tableNameHumanCase, bool checkForFkNameClashes,
             bool makeSingular, Relationship relationship, string fkTableName, string pkTableName, bool includeReverseNavigation, string fkColumn)
         {

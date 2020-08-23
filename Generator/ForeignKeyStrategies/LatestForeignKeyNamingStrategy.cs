@@ -13,7 +13,7 @@ namespace Efrpg.ForeignKeyStrategies
             Relationship relationship)
         {
             // todo
-            return "todo";
+            return "LatestForeignKeyNamingStrategy_todo";
         }
 
         public void ResetNavigationProperties()

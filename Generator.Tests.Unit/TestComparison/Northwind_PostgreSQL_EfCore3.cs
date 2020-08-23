@@ -67,12 +67,6 @@ namespace Efrpg.PostgreSQL
         string ToString();
 
         // Stored Procedures
-        int CustOrderHist(string customerId);
-        // CustOrderHistAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
-
-        int CustOrdersDetail(int? p1);
-        // CustOrdersDetailAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
-
         int CustOrdersOrders(string p1);
         // CustOrdersOrdersAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
@@ -82,12 +76,16 @@ namespace Efrpg.PostgreSQL
         int SalesByCategory(string cn, string ordYear);
         // SalesByCategoryAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        int SalesByYear(DateTime? p2, DateTime? p1);
+        int SalesByYear(DateTime? p1, DateTime? p2);
         // SalesByYearAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         int TenMostExpensiveProducts();
         // TenMostExpensiveProductsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
+
+        // Scalar Valued Functions
+        string CustOrderHist(string customerId); // public.CustOrderHist
+        string CustOrdersDetail(int? p1); // public.CustOrdersDetail
     }
 
     #endregion
@@ -194,36 +192,6 @@ namespace Efrpg.PostgreSQL
 
 
         // Stored Procedures
-        public int CustOrderHist(string customerId)
-        {
-            var customerIdParam = new SqlParameter { ParameterName = "customer_id", SqlDbType = SqlDbType.character varying, Direction = ParameterDirection.Input, Value = customerId };
-            if (customerIdParam.Value == null)
-                customerIdParam.Value = DBNull.Value;
-
-            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
-
-            Database.ExecuteSqlRaw("EXEC @procResult = [public].[CustOrderHist] customer_id", customerIdParam, procResultParam);
-
-            return (int)procResultParam.Value;
-        }
-
-        // CustOrderHistAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
-
-        public int CustOrdersDetail(int? p1)
-        {
-            var p1Param = new SqlParameter { ParameterName = "p1", SqlDbType = SqlDbType.integer, Direction = ParameterDirection.Input, Value = p1.GetValueOrDefault() };
-            if (!p1.HasValue)
-                p1Param.Value = DBNull.Value;
-
-            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
-
-            Database.ExecuteSqlRaw("EXEC @procResult = [public].[CustOrdersDetail] p1", p1Param, procResultParam);
-
-            return (int)procResultParam.Value;
-        }
-
-        // CustOrdersDetailAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
-
         public int CustOrdersOrders(string p1)
         {
             var p1Param = new SqlParameter { ParameterName = "p1", SqlDbType = SqlDbType.character, Direction = ParameterDirection.Input, Value = p1 };
@@ -277,19 +245,19 @@ namespace Efrpg.PostgreSQL
 
         // SalesByCategoryAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int SalesByYear(DateTime? p2, DateTime? p1)
+        public int SalesByYear(DateTime? p1, DateTime? p2)
         {
-            var p2Param = new SqlParameter { ParameterName = "p2", SqlDbType = SqlDbType.date, Direction = ParameterDirection.Input, Value = p2.GetValueOrDefault() };
-            if (!p2.HasValue)
-                p2Param.Value = DBNull.Value;
-
             var p1Param = new SqlParameter { ParameterName = "p1", SqlDbType = SqlDbType.date, Direction = ParameterDirection.Input, Value = p1.GetValueOrDefault() };
             if (!p1.HasValue)
                 p1Param.Value = DBNull.Value;
 
+            var p2Param = new SqlParameter { ParameterName = "p2", SqlDbType = SqlDbType.date, Direction = ParameterDirection.Input, Value = p2.GetValueOrDefault() };
+            if (!p2.HasValue)
+                p2Param.Value = DBNull.Value;
+
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-            Database.ExecuteSqlRaw("EXEC @procResult = [public].[Sales by Year] p2, p1", p2Param, p1Param, procResultParam);
+            Database.ExecuteSqlRaw("EXEC @procResult = [public].[Sales by Year] p1, p2", p1Param, p2Param, procResultParam);
 
             return (int)procResultParam.Value;
         }
@@ -307,6 +275,20 @@ namespace Efrpg.PostgreSQL
 
         // TenMostExpensiveProductsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
+
+        // Scalar Valued Functions
+
+        [DbFunction("CustOrderHist", "public")]
+        public string CustOrderHist(string customerId)
+        {
+            throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
+        }
+
+        [DbFunction("CustOrdersDetail", "public")]
+        public string CustOrdersDetail(int? p1)
+        {
+            throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
+        }
     }
 
     #endregion
@@ -444,20 +426,6 @@ namespace Efrpg.PostgreSQL
 
         // Stored Procedures
 
-        public int CustOrderHist(string customerId)
-        {
-            return 0;
-        }
-
-        // CustOrderHistAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
-
-        public int CustOrdersDetail(int? p1)
-        {
-            return 0;
-        }
-
-        // CustOrdersDetailAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
-
         public int CustOrdersOrders(string p1)
         {
             return 0;
@@ -479,7 +447,7 @@ namespace Efrpg.PostgreSQL
 
         // SalesByCategoryAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int SalesByYear(DateTime? p2, DateTime? p1)
+        public int SalesByYear(DateTime? p1, DateTime? p2)
         {
             return 0;
         }
@@ -492,6 +460,20 @@ namespace Efrpg.PostgreSQL
         }
 
         // TenMostExpensiveProductsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        // Scalar Valued Functions
+
+        // public.CustOrderHist
+        public string CustOrderHist(string customerId)
+        {
+            return default(string);
+        }
+
+        // public.CustOrdersDetail
+        public string CustOrdersDetail(int? p1)
+        {
+            return default(string);
+        }
     }
 
     #endregion
