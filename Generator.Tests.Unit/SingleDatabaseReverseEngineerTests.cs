@@ -34,8 +34,6 @@ namespace Generator.Tests.Unit
 
             FilterSettings.Reset();
             FilterSettings.AddDefaults();
-            FilterSettings.IncludeScalarValuedFunctions = true;
-            FilterSettings.IncludeTableValuedFunctions = true;
             FilterSettings.CheckSettings();
         }
 
@@ -57,8 +55,6 @@ namespace Generator.Tests.Unit
 
             FilterSettings.Reset();
             FilterSettings.AddDefaults();
-            FilterSettings.IncludeScalarValuedFunctions = true;
-            FilterSettings.IncludeTableValuedFunctions = true;
             FilterSettings.CheckSettings();
         }
 
@@ -80,8 +76,6 @@ namespace Generator.Tests.Unit
 
             FilterSettings.Reset();
             FilterSettings.AddDefaults();
-            FilterSettings.IncludeScalarValuedFunctions = true;
-            FilterSettings.IncludeTableValuedFunctions = true;
             FilterSettings.CheckSettings();
         }
 
@@ -94,7 +88,7 @@ namespace Generator.Tests.Unit
             if (!string.IsNullOrEmpty(subFolder))
                 path = Path.Combine(path, subFolder);
             Settings.Root = path;
-            var fullPath = Path.Combine(path, $"{filename}_{Settings.DatabaseType}_{Settings.TemplateType}.cs");
+            var fullPath = Path.Combine(path, $"{filename}_{Settings.DatabaseType}_{Settings.TemplateType}_Fk{Settings.ForeignKeyNamingStrategy}.cs");
             
             // Delete old generated files
             if (File.Exists(fullPath))
@@ -360,7 +354,7 @@ namespace Generator.Tests.Unit
 
         private static void CompareAgainstTestComparison(string database, bool publicTestComparison)
         {
-            var comparisonFile     = $"{database}_{Settings.DatabaseType}_{Settings.TemplateType}.cs";
+            var comparisonFile     = $"{database}_{Settings.DatabaseType}_{Settings.TemplateType}_Fk{Settings.ForeignKeyNamingStrategy}.cs";
             var testRootPath       = publicTestComparison ? AppDomain.CurrentDomain.BaseDirectory : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "OneDrive\\Documents");
             var testComparisonPath = Path.Combine(testRootPath, $"TestComparison\\{comparisonFile}");
             var testComparison     = File.ReadAllText(testComparisonPath);

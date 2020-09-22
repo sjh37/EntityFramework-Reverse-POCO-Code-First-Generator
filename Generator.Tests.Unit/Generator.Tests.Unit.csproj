@@ -101,28 +101,52 @@
     <None Include="TestComparison\EfrpgTest_SqlServer_Ef6_DamsonDbContext.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="TestComparison\Northwind_SqlServer_EfCore2.cs">
+    <None Include="TestComparison\Northwind_SqlServer_EfCore2_FkLatest.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <Compile Include="MustacheUtfTest.cs" />
-    <None Include="TestComparison\Northwind_SqlCe_EfCore3.cs">
+    <None Include="TestComparison\Northwind_SqlCe_EfCore3_FkLegacy.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="TestComparison\Northwind_SqlServer_EfCore3.cs">
+    <None Include="TestComparison\Northwind_SqlServer_EfCore3_FkLatest.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="TestComparison\Northwind_SqlServer_Ef6_NorthwindTest1Copy.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <Compile Include="StringExtensionTests.cs" />
-    <None Include="TestComparison\Northwind_PostgreSQL_EfCore3.cs">
+    <None Include="TestComparison\Northwind_PostgreSQL_EfCore3_FkLegacy.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestComparison\Northwind_SqlCe_Ef6_FkLatest.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestComparison\Northwind_SqlCe_Ef6_FkLegacy.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestComparison\Northwind_PostgreSQL_EfCore3_FkLatest.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestComparison\Northwind_SqlCe_EfCore2_FkLegacy.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestComparison\Northwind_SqlCe_EfCore3_FkLatest.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestComparison\Northwind_SqlServer_EfCore2_FkLegacy.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestComparison\Northwind_SqlServer_EfCore3_FkLegacy.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestComparison\Northwind_SqlServer_Ef6_FkLegacy.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <Compile Include="WriteToOuterTests.cs" />
     <None Include="TestComparison\Northwind_SqlServer_Ef6_NorthwindTest1.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="TestComparison\Northwind_SqlCe_EfCore2.cs">
+    <None Include="TestComparison\Northwind_SqlCe_EfCore2_FkLatest.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="TestComparison\EfrpgTest_SqlServer_Ef6_EnumerationDbContext.cs">
@@ -132,10 +156,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <Compile Include="TestDbContextFilter.cs" />
-    <None Include="TestComparison\Northwind_SqlServer_Ef6.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="TestComparison\Northwind_SqlCe_Ef6.cs">
+    <None Include="TestComparison\Northwind_SqlServer_Ef6_FkLatest.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <Compile Include="FilterTests.cs" />
