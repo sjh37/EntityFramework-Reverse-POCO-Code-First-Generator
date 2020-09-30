@@ -30,7 +30,7 @@ namespace BuildTT
     Settings.DatabaseType             = DatabaseType.SqlServer; // SqlServer, SqlCe. Coming next: PostgreSQL, MySql, Oracle
     Settings.TemplateType             = TemplateType.EfCore3; // Ef6, EfCore2, EfCore3, FileBasedCore2, FileBasedCore3. FileBased specify folder using Settings.TemplateFolder
     Settings.GeneratorType            = GeneratorType.EfCore; // Ef6, EfCore, Custom. Custom edit GeneratorCustom class to provide your own implementation
-    Settings.ForeignKeyNamingStrategy = ForeignKeyNamingStrategy.Latest; // Legacy (same as versions <= v3.1.3), Latest
+    Settings.ForeignKeyNamingStrategy = ForeignKeyNamingStrategy.Legacy; // Legacy (same as versions <= v3.1.3), Latest
 
     Settings.UseMappingTables        = false; // Set to false for EfCore. EFCore will add support for this in v3 at some point, so please set this to false. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
     Settings.FileManagerType         = FileManagerType.Custom; // .NET project = VisualStudio; .NET Core project = Custom; No output (testing only) = Null
