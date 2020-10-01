@@ -4,6 +4,7 @@ using Efrpg.Filtering;
 
 namespace Efrpg.ForeignKeyStrategies
 {
+    // v0.0.0 <= v3.1.3
     public class LegacyForeignKeyNamingStrategy : BaseForeignKeyNamingStrategy, IForeignKeyNamingStrategy
     {
         public List<string> ReverseNavigationUniquePropName;
@@ -18,26 +19,15 @@ namespace Efrpg.ForeignKeyStrategies
         public string GetUniqueForeignKeyName(bool isParent, string tableNameHumanCase, ForeignKey foreignKey, bool checkForFkNameClashes, bool makeSingular,
             Relationship relationship)
         {
-            // For unit testing
-            //if (tableNameHumanCase.StartsWith("Burak") || tableNameHumanCase.StartsWith("Car") || tableNameHumanCase.StartsWith("User"))
-            //{
-            //    var s = $"[TestCase(\"00\", \"{foreignKey.FkTableName}\",  \"{NameHumanCase}\", \"{string.Join("|",Columns.Select(c => c.NameHumanCase))}\", {isParent}, \"{tableNameHumanCase}\", {checkForFkNameClashes}, {makeSingular}, Relationship.{relationship}, \"{foreignKey.FkTableName}\", \"{foreignKey.PkTableName}\", {foreignKey.IncludeReverseNavigation}, \"{foreignKey.FkColumn}\")]{Environment.NewLine}";
-            //    System.IO.File.AppendAllText("c:/temp/unit.txt", s);
-            //}
+            var userSpecifiedName = CheckForUserSpecifiedName(isParent, foreignKey);
+            if (!string.IsNullOrEmpty(userSpecifiedName))
+                return userSpecifiedName;
 
-            // User specified name
-            if (isParent && !string.IsNullOrEmpty(foreignKey.ParentName))
-                return foreignKey.ParentName;
-
-            // User specified name
-            if (!isParent && !string.IsNullOrEmpty(foreignKey.ChildName))
-                return foreignKey.ChildName;
-
-            // Generate name
             var addReverseNavigationUniquePropName = checkForFkNameClashes &&
                                                      (_table.DbName == foreignKey.FkTableName ||
                                                       (_table.DbName == foreignKey.PkTableName && foreignKey.IncludeReverseNavigation));
 
+            // Generate name
             if (ReverseNavigationUniquePropName.Count == 0)
             {
                 // Reserve table name and all column names

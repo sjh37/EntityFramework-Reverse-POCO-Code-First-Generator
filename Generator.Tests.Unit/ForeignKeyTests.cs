@@ -281,26 +281,7 @@ namespace Generator.Tests.Unit
             Console.WriteLine(testOrder); // Keep this field to make sure test cases run in order as it's important
 
             // Arrange
-            var table = tables.FirstOrDefault(x => x.NameHumanCase == NameHumanCase);
-            if (table == null)
-            {
-                Settings.ForeignKeyNamingStrategy = ForeignKeyNamingStrategy.Legacy;
-                table = new Table(null, new Schema("dbo"), NameHumanCase, false)
-                {
-                    NameHumanCase = NameHumanCase
-                };
-                foreach (var col in columns.Split('|'))
-                {
-                    table.Columns.Add(new Column { NameHumanCase = col });
-                }
-
-                tables.Add(table);
-            }
-
-            var foreignKey = new ForeignKey(fkTableName, "dbo", pkTableName, "dbo", fkColumn, "", "", "", "", 1, false, false, "", "", true)
-            {
-                IncludeReverseNavigation = includeReverseNavigation
-            };
+            var (table, foreignKey) = PrepareTest(NameHumanCase, columns, fkTableName, pkTableName, includeReverseNavigation, fkColumn);
 
             // Act
             var result = table.GetUniqueForeignKeyName(isParent, tableNameHumanCase, foreignKey, checkForFkNameClashes, makeSingular, relationship);
@@ -308,7 +289,7 @@ namespace Generator.Tests.Unit
             // Assert
             Assert.AreEqual(expected, result);
         }
-        
+
         [Test] // Always run all cases together as they build up ReverseNavigationUniquePropName
         // checkForFkNameClashes = true
         [TestCase("01", "Burak1", "Burak1", "Id|IdT|Num", true, "Burak2", true, true, Relationship.OneToOne, "Burak1", "Burak2", true, "id")]
@@ -342,11 +323,21 @@ namespace Generator.Tests.Unit
             Console.WriteLine(testOrder); // Keep this field to make sure test cases run in order as it's important
 
             // Arrange
+            var (table, foreignKey) = PrepareTest(NameHumanCase, columns, fkTableName, pkTableName, includeReverseNavigation, fkColumn);
+
+            // Act
+            var result = table.GetUniqueForeignKeyName(isParent, tableNameHumanCase, foreignKey, checkForFkNameClashes, makeSingular, relationship);
+
+            // Assert
+            Assert.AreEqual(expected, result);
+        }
+
+        private (Table table, ForeignKey foreignKey) PrepareTest(string NameHumanCase, string columns, string fkTableName, string pkTableName, bool includeReverseNavigation, string fkColumn)
+        {
             var table = tables.FirstOrDefault(x => x.NameHumanCase == NameHumanCase);
             if (table == null)
             {
-                Settings.ForeignKeyNamingStrategy = ForeignKeyNamingStrategy.Latest;
-
+                Settings.ForeignKeyNamingStrategy = ForeignKeyNamingStrategy.Legacy;
                 table = new Table(null, new Schema("dbo"), NameHumanCase, false)
                 {
                     NameHumanCase = NameHumanCase
@@ -363,12 +354,7 @@ namespace Generator.Tests.Unit
             {
                 IncludeReverseNavigation = includeReverseNavigation
             };
-
-            // Act
-            var result = table.GetUniqueForeignKeyName(isParent, tableNameHumanCase, foreignKey, checkForFkNameClashes, makeSingular, relationship);
-
-            // Assert
-            Assert.AreEqual(expected, result);
+            return (table, foreignKey);
         }
     }
 }
