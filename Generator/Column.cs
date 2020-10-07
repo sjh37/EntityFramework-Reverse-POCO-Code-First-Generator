@@ -30,6 +30,9 @@ namespace Efrpg
         public string UniqueIndexName;
         public bool AllowEmptyStrings = true;
 
+        public bool ForcedRequired = false;
+        public string ForcedByFk;
+
         public bool IsIdentity;
         public bool IsRowGuid;
         public bool IsComputed;

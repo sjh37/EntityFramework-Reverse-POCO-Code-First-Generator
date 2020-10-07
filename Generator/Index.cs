@@ -13,8 +13,6 @@
         public readonly bool   IsUniqueConstraint;
         public readonly bool   IsClustered;
 
-        public bool WouldForceColumnToBeNotNull;
-
         public RawIndex(string schema, string tableName, string indexName, byte keyOrdinal,
             string columnName, int columnCount, bool isUnique, bool isPrimaryKey,
             bool isUniqueConstraint, bool isClustered)
@@ -29,8 +27,6 @@
             IsPrimaryKey       = isPrimaryKey;
             IsUniqueConstraint = isUniqueConstraint;
             IsClustered        = isClustered;
-
-            WouldForceColumnToBeNotNull = false;
         }
 
         public string Dump()

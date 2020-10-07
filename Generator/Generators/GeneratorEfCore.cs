@@ -44,6 +44,13 @@ namespace Efrpg.Generators
                     comments += string.Format(" (length: {0})", c.MaxLength);
             }
 
+            if (c.ForcedRequired && c.IsNullable)
+            {
+                if(!string.IsNullOrEmpty(comments))
+                    comments += ". ";
+                comments += string.Format("(Forced NOT NULL due to foreign key {0} having a unique constraint)", c.ForcedByFk);
+            }
+
             c.InlineComments = Settings.IncludeComments == CommentsStyle.AtEndOfField ? " // " + comments : string.Empty;
 
             c.SummaryComments = string.Empty;
@@ -111,7 +118,7 @@ namespace Efrpg.Generators
                 sb.AppendFormat(".HasColumnType(\"{0}{1}\")", c.SqlPropertyType, columnTypeParameters);
             }
 
-            sb.Append(c.IsNullable && !c.Indexes.Any(x => x.WouldForceColumnToBeNotNull) ? ".IsRequired(false)" : ".IsRequired()");
+            sb.Append(c.IsNullable && !c.ForcedRequired ? ".IsRequired(false)" : ".IsRequired()");
 
             if (c.IsFixedLength || c.IsRowVersion)
                 sb.Append(".IsFixedLength()");

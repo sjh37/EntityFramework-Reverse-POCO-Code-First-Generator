@@ -431,14 +431,6 @@ namespace Efrpg.Generators
                         col.IsPrimaryKey       = col.IsPrimaryKey       || index.IsPrimaryKey;
                         col.IsUniqueConstraint = col.IsUniqueConstraint || (index.IsUniqueConstraint && index.ColumnCount == 1);
                         col.IsUnique           = col.IsUnique           || (index.IsUnique           && index.ColumnCount == 1);
-
-                        if (col.IsNullable && (col.IsPrimaryKey || index.IsUniqueConstraint || index.IsUnique))
-                        {
-                            // Cannot be marked as nullable/optional due to being a primary key, or included as part of a unique index/constraint
-                            // Rather than mark the column as required, which could cause problems when reading data, mark the index as having columns
-                            // which would be forced to be not null (required)
-                            index.WouldForceColumnToBeNotNull = true;
-                        }
                     }
 
                     // Check if table has any primary keys
@@ -909,7 +901,7 @@ namespace Efrpg.Generators
                 if (FkMustHaveSameNumberOfColumnsAsPrimaryKey() || AllowFkToNonPrimaryKey())
                 {
                     // Check FK has same number of columns as the primary key it points to
-                    var pks  = pkTable.PrimaryKeys.OrderBy(x => x.PropertyType).ThenBy(y => y.DbName).ToArray();
+                    var pks  = pkTable.PrimaryKeys         .OrderBy(x => x.PropertyType).ThenBy(y => y.DbName).ToArray();
                     var cols = fkCols.Select(x => x.Column).OrderBy(x => x.PropertyType).ThenBy(y => y.DbName).ToArray();
 
                     if (FkMustHaveSameNumberOfColumnsAsPrimaryKey() && pks.Length != cols.Length)
@@ -948,6 +940,16 @@ namespace Efrpg.Generators
 
                 var pkTableHumanCaseWithSuffix = foreignKey.PkTableHumanCase(pkTable.Suffix);
                 var pkTableHumanCase           = foreignKey.PkTableHumanCase(null);
+                var fkHasUniqueConstraint      = pkCols.All(x => x.ForeignKey.HasUniqueConstraint) && relationship == Relationship.OneToOne;
+
+                if(fkHasUniqueConstraint)
+                {
+                    foreach (var columnAndForeignKey in pkCols)
+                    {
+                        columnAndForeignKey.Column.ForcedRequired = true;
+                        columnAndForeignKey.Column.ForcedByFk = columnAndForeignKey.ForeignKey.ConstraintName;
+                    }
+                }
 
                 var flipRelationship       = FlipRelationship(relationship);
                 var fkMakePropNameSingular = relationship == Relationship.OneToOne;
@@ -987,7 +989,6 @@ namespace Efrpg.Generators
                     mapKey = string.Format("\"{0}\"", firstFkCol.Column.DbName);
                 }
 
-                var fkHasUniqueConstraint = pkCols.All(x => x.ForeignKey.HasUniqueConstraint) && relationship == Relationship.OneToOne;
                 var primaryKeyColumns = string.Empty;
                 if (!allPkColsArePrimaryKeys)
                 { 
