@@ -64,7 +64,7 @@ namespace Efrpg.ForeignKeyStrategies
             if (_table.DbName == foreignKey.FkTableName)
             {
                 // Attempt 2
-                if (fkName.ToLowerInvariant().EndsWith("id"))
+                if (fkName.Length > 2 && fkName.ToLowerInvariant().EndsWith("id"))
                 {
                     col = Settings.ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 2);
 
