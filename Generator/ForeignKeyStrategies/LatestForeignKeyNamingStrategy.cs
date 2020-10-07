@@ -2,6 +2,7 @@
 
 namespace Efrpg.ForeignKeyStrategies
 {
+    // Not complete. Please use LegacyForeignKeyNamingStrategy
     public class LatestForeignKeyNamingStrategy : BaseForeignKeyNamingStrategy, IForeignKeyNamingStrategy
     {
         public LatestForeignKeyNamingStrategy(IDbContextFilter filter, Table table)
@@ -28,10 +29,8 @@ namespace Efrpg.ForeignKeyStrategies
                 foreignKey.UniqueName = name;
             }
 
-            return name;
-
             // todo
-            return "LatestForeignKeyNamingStrategy_todo";
+            return name;
         }
 
         public void ResetNavigationProperties()

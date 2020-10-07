@@ -111,7 +111,7 @@ namespace Efrpg.Generators
                 sb.AppendFormat(".HasColumnType(\"{0}{1}\")", c.SqlPropertyType, columnTypeParameters);
             }
 
-            sb.Append(c.IsNullable ? ".IsRequired(false)" : ".IsRequired()");
+            sb.Append(c.IsNullable && !c.Indexes.Any(x => x.WouldForceColumnToBeNotNull) ? ".IsRequired(false)" : ".IsRequired()");
 
             if (c.IsFixedLength || c.IsRowVersion)
                 sb.Append(".IsFixedLength()");
@@ -249,15 +249,15 @@ namespace Efrpg.Generators
 
         // HasOne
         // HasMany
-        protected override string GetHasMethod(Relationship relationship, IList<Column> fkCols, IList<Column> pkCols, bool isNotEnforced)
+        protected override string GetHasMethod(Relationship relationship, IList<Column> fkCols, IList<Column> pkCols, bool isNotEnforced, bool fkHasUniqueConstraint)
         {
             if (relationship == Relationship.ManyToMany)
-                return null; // Not supported in EF.Core v2.
+                return null; // Not supported in EF.Core2 or EF.Core3
 
             var withMany = relationship == Relationship.ManyToOne || relationship == Relationship.ManyToMany;
             var pkIsUnique = pkCols.Any(c => c.IsUnique || c.IsUniqueConstraint || c.IsPrimaryKey);
 
-            if (withMany || pkIsUnique)
+            if (withMany || pkIsUnique || fkHasUniqueConstraint)
                 return "builder.HasOne";
 
             return "builder.HasMany";

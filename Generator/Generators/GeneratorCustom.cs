@@ -47,7 +47,7 @@ namespace Efrpg.Generators
             return null;
         }
 
-        protected override string GetHasMethod(Relationship relationship, IList<Column> fkCols, IList<Column> pkCols, bool isNotEnforced)
+        protected override string GetHasMethod(Relationship relationship, IList<Column> fkCols, IList<Column> pkCols, bool isNotEnforced, bool fkHasUniqueConstraint)
         {
             return null;
         }

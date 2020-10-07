@@ -95,7 +95,7 @@ namespace Efrpg.Generators
             if (!string.IsNullOrEmpty(c.SqlPropertyType))
                 sb.AppendFormat(".HasColumnType(\"{0}\")", c.SqlPropertyType);
 
-            sb.Append(c.IsNullable ? ".IsOptional()" : ".IsRequired()");
+            sb.Append(c.IsNullable && !c.Indexes.Any(x => x.WouldForceColumnToBeNotNull) ? ".IsOptional()" : ".IsRequired()");
 
             if (c.IsFixedLength || c.IsRowVersion)
                 sb.Append(".IsFixedLength()");
@@ -221,13 +221,13 @@ namespace Efrpg.Generators
         // HasOptional
         // HasRequired
         // HasMany
-        protected override string GetHasMethod(Relationship relationship, IList<Column> fkCols, IList<Column> pkCols, bool isNotEnforced)
+        protected override string GetHasMethod(Relationship relationship, IList<Column> fkCols, IList<Column> pkCols, bool isNotEnforced, bool fkHasUniqueConstraint)
         {
             var withMany = relationship == Relationship.ManyToOne || relationship == Relationship.ManyToMany;
             var fkIsNullable = fkCols.Any(c => c.IsNullable);
             var pkIsUnique = pkCols.Any(c => c.IsUnique || c.IsUniqueConstraint || c.IsPrimaryKey);
 
-            if (withMany || pkIsUnique)
+            if (withMany || pkIsUnique || fkHasUniqueConstraint)
             {
                 if (fkIsNullable || isNotEnforced)
                     return "HasOptional";

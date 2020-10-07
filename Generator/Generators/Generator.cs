@@ -31,7 +31,7 @@ namespace Efrpg.Generators
         public abstract string PrimaryKeyModelBuilder(Table table);
         public abstract List<string> IndexModelBuilder(Table t);
         public abstract string IndexModelBuilder(Column c);
-        protected abstract string GetHasMethod(Relationship relationship, IList<Column> fkCols, IList<Column> pkCols, bool isNotEnforced);
+        protected abstract string GetHasMethod(Relationship relationship, IList<Column> fkCols, IList<Column> pkCols, bool isNotEnforced, bool fkHasUniqueConstraint);
         protected abstract string GetWithMethod(Relationship relationship, IList<Column> fkCols, string fkPropName, string manyToManyMapping, string mapKey,
             bool includeReverseNavigation, string hasMethod, string pkTableNameHumanCase, string fkTableNameHumanCase, string primaryKeyColumns, bool fkHasUniqueConstraint);
         protected abstract string GetCascadeOnDelete(bool cascadeOnDelete);
@@ -765,13 +765,13 @@ namespace Efrpg.Generators
                         {
                             if (HasAcademicLicence)
                             {
-                                const int n = 2 * 2;
+                                /*const int n = 2 * 2;
                                 if (filter.StoredProcs.Count < n)
-                                    filter.StoredProcs.Add(sp);
+                                    filter.StoredProcs.Add(sp);*/
                             }
                             else if (HasTrialLicence)
                             {
-                                const int n = 1;
+                                const int n = 1 + 2 + 3 + 4;
                                 if (filter.StoredProcs.Count < n)
                                     filter.StoredProcs.Add(sp);
                             }
@@ -1037,7 +1037,7 @@ namespace Efrpg.Generators
             string manyToManyMapping, string mapKey, bool cascadeOnDelete, bool includeReverseNavigation, bool isNotEnforced, string foreignKeyConstraintName,
             string pkTableNameHumanCase, string fkTableNameHumanCase, string primaryKeyColumns, bool fkHasUniqueConstraint)
         {
-            var hasMethod = GetHasMethod(relationship, fkCols, pkCols, isNotEnforced);
+            var hasMethod = GetHasMethod(relationship, fkCols, pkCols, isNotEnforced, fkHasUniqueConstraint);
             if (hasMethod == null)
                 return string.Empty; // Relationship not supported
 
