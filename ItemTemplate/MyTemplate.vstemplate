@@ -2,13 +2,13 @@
     <TemplateData>
         <DefaultName>Database.tt</DefaultName>
         <Name>EntityFramework Reverse POCO Code First Generator</Name>
-        <Description>Reverse engineers an existing database and generates EntityFramework Code First POCO classes, Configuration mappings and DbContext. It is free to academics (you need a .edu or a .ac email address), not free for commercial use.</Description>
+        <Description>Reverse engineers an existing database and generates EntityFramework Code First POCO classes, Configuration mappings and DbContext.</Description>
         <ProjectType>CSharp</ProjectType>
         <SortOrder>10</SortOrder>
         <Icon>TemplateIcon.ico</Icon>
         <PreviewImage>PreviewImage.png</PreviewImage>
         <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
-        <Version>3.1.3</Version>
+        <Version>3.2.0</Version>
     </TemplateData>
     <TemplateContent>
         <ProjectItem SubType="" TargetFileName="$fileinputname$.tt" ReplaceParameters="false">Database.tt</ProjectItem>

@@ -1,6 +1,6 @@
 <#
 // Copyright (C) Simon Hughes 2012
-// v3.1.3
+// v3.2.0
 // If you want to submit a pull request, please modify the Generator C# project as this file
 // is automatically constructed from the C# Generator project during the build process.
 #>
@@ -39,7 +39,7 @@
         public static DatabaseType DatabaseType                         = DatabaseType.SqlServer; // SqlServer, SqlCe. Coming next: PostgreSQL, MySql, Oracle
         public static TemplateType TemplateType                         = TemplateType.EfCore3; // Ef6, EfCore2, EfCore3, FileBasedCore2, FileBasedCore3. FileBased specify folder using Settings.TemplateFolder
         public static GeneratorType GeneratorType                       = GeneratorType.EfCore; // Ef6, EfCore, Custom. Custom edit GeneratorCustom class to provide your own implementation
-        public static ForeignKeyNamingStrategy ForeignKeyNamingStrategy = ForeignKeyNamingStrategy.Legacy; // Legacy (same as versions <= v3.1.3), Latest
+        public static ForeignKeyNamingStrategy ForeignKeyNamingStrategy = ForeignKeyNamingStrategy.Legacy; // Please use Legacy for now (same as versions <= v3.2.0), Latest (not yet ready)
         public static bool UseMappingTables                             = false; // Set to false for EfCore. EFCore will add support for this in v3 at some point, so please set this to false. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
         public static FileManagerType FileManagerType                   = FileManagerType.Custom; // .NET project = VisualStudio; .NET Core project = Custom; No output (testing only) = Null
         public static string ConnectionString                           = ""; // This is used by the generator to reverse engineer your database
@@ -1301,7 +1301,7 @@
     {
         public static string Version()
         {
-            return "v3.1.3";
+            return "v3.2.0";
         }
     }
 
@@ -2801,7 +2801,7 @@
     }
     public enum ForeignKeyNamingStrategy
     {
-        Legacy, // Same as versions <= v3.1.3
+        Legacy, // Same as versions <= v3.2.0
         Latest
     }
 
@@ -2814,6 +2814,19 @@
         {
             _filter = filter;
             _table  = table;
+        }
+
+        protected static string CheckForUserSpecifiedName(bool isParent, ForeignKey foreignKey)
+        {
+            // User specified name via AddRelationship
+            if (isParent && !string.IsNullOrEmpty(foreignKey.ParentName))
+                return foreignKey.ParentName;
+
+            // User specified name via AddRelationship
+            if (!isParent && !string.IsNullOrEmpty(foreignKey.ChildName))
+                return foreignKey.ChildName;
+
+            return null;
         }
     }
 
@@ -2839,6 +2852,7 @@
         void ResetNavigationProperties();
     }
 
+    // Not complete. Please use LegacyForeignKeyNamingStrategy
     public class LatestForeignKeyNamingStrategy : BaseForeignKeyNamingStrategy, IForeignKeyNamingStrategy
     {
         public LatestForeignKeyNamingStrategy(IDbContextFilter filter, Table table)
@@ -2849,8 +2863,24 @@
         public string GetUniqueForeignKeyName(bool isParent, string tableNameHumanCase, ForeignKey foreignKey, bool checkForFkNameClashes, bool makeSingular,
             Relationship relationship)
         {
+            var userSpecifiedName = CheckForUserSpecifiedName(isParent, foreignKey);
+            if (!string.IsNullOrEmpty(userSpecifiedName))
+                return userSpecifiedName;
+
+            var addReverseNavigationUniquePropName = checkForFkNameClashes &&
+                                                     (_table.DbName == foreignKey.FkTableName ||
+                                                      (_table.DbName == foreignKey.PkTableName && foreignKey.IncludeReverseNavigation));
+
+            // Attempt 1
+            var fkName = (Settings.UsePascalCase ? Inflector.ToTitleCase(foreignKey.FkColumn) : foreignKey.FkColumn).Replace(" ", string.Empty).Replace("$", string.Empty);
+            var name = Settings.ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 1);
+            if (addReverseNavigationUniquePropName || !checkForFkNameClashes)
+            {
+                foreignKey.UniqueName = name;
+            }
+
             // todo
-            return "LatestForeignKeyNamingStrategy_todo";
+            return name;
         }
 
         public void ResetNavigationProperties()
@@ -2859,6 +2889,7 @@
         }
     }
 
+    // v0.0.0 <= v3.2.0
     public class LegacyForeignKeyNamingStrategy : BaseForeignKeyNamingStrategy, IForeignKeyNamingStrategy
     {
         public List<string> ReverseNavigationUniquePropName;
@@ -2873,26 +2904,15 @@
         public string GetUniqueForeignKeyName(bool isParent, string tableNameHumanCase, ForeignKey foreignKey, bool checkForFkNameClashes, bool makeSingular,
             Relationship relationship)
         {
-            // For unit testing
-            //if (tableNameHumanCase.StartsWith("Burak") || tableNameHumanCase.StartsWith("Car") || tableNameHumanCase.StartsWith("User"))
-            //{
-            //    var s = $"[TestCase(\"00\", \"{foreignKey.FkTableName}\",  \"{NameHumanCase}\", \"{string.Join("|",Columns.Select(c => c.NameHumanCase))}\", {isParent}, \"{tableNameHumanCase}\", {checkForFkNameClashes}, {makeSingular}, Relationship.{relationship}, \"{foreignKey.FkTableName}\", \"{foreignKey.PkTableName}\", {foreignKey.IncludeReverseNavigation}, \"{foreignKey.FkColumn}\")]{Environment.NewLine}";
-            //    System.IO.File.AppendAllText("c:/temp/unit.txt", s);
-            //}
+            var userSpecifiedName = CheckForUserSpecifiedName(isParent, foreignKey);
+            if (!string.IsNullOrEmpty(userSpecifiedName))
+                return userSpecifiedName;
 
-            // User specified name
-            if (isParent && !string.IsNullOrEmpty(foreignKey.ParentName))
-                return foreignKey.ParentName;
-
-            // User specified name
-            if (!isParent && !string.IsNullOrEmpty(foreignKey.ChildName))
-                return foreignKey.ChildName;
-
-            // Generate name
             var addReverseNavigationUniquePropName = checkForFkNameClashes &&
                                                      (_table.DbName == foreignKey.FkTableName ||
                                                       (_table.DbName == foreignKey.PkTableName && foreignKey.IncludeReverseNavigation));
 
+            // Generate name
             if (ReverseNavigationUniquePropName.Count == 0)
             {
                 // Reserve table name and all column names
@@ -2929,7 +2949,7 @@
             if (_table.DbName == foreignKey.FkTableName)
             {
                 // Attempt 2
-                if (fkName.ToLowerInvariant().EndsWith("id"))
+                if (fkName.Length > 2 && fkName.ToLowerInvariant().EndsWith("id"))
                 {
                     col = Settings.ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 2);
 
@@ -3769,7 +3789,7 @@
         public abstract string PrimaryKeyModelBuilder(Table table);
         public abstract List<string> IndexModelBuilder(Table t);
         public abstract string IndexModelBuilder(Column c);
-        protected abstract string GetHasMethod(Relationship relationship, IList<Column> fkCols, IList<Column> pkCols, bool isNotEnforced);
+        protected abstract string GetHasMethod(Relationship relationship, IList<Column> fkCols, IList<Column> pkCols, bool isNotEnforced, bool fkHasUniqueConstraint);
         protected abstract string GetWithMethod(Relationship relationship, IList<Column> fkCols, string fkPropName, string manyToManyMapping, string mapKey,
             bool includeReverseNavigation, string hasMethod, string pkTableNameHumanCase, string fkTableNameHumanCase, string primaryKeyColumns, bool fkHasUniqueConstraint);
         protected abstract string GetCascadeOnDelete(bool cascadeOnDelete);
@@ -4169,14 +4189,6 @@
                         col.IsPrimaryKey       = col.IsPrimaryKey       || index.IsPrimaryKey;
                         col.IsUniqueConstraint = col.IsUniqueConstraint || (index.IsUniqueConstraint && index.ColumnCount == 1);
                         col.IsUnique           = col.IsUnique           || (index.IsUnique           && index.ColumnCount == 1);
-
-                        if (col.IsNullable && (col.IsPrimaryKey || index.IsUniqueConstraint || index.IsUnique))
-                        {
-                            // Cannot be marked as nullable/optional due to being a primary key, or included as part of a unique index/constraint
-                            // Rather than mark the column as required, which could cause problems when reading data, mark the index as having columns
-                            // which would be forced to be not null (required)
-                            index.WouldForceColumnToBeNotNull = true;
-                        }
                     }
 
                     // Check if table has any primary keys
@@ -4503,13 +4515,13 @@
                         {
                             if (HasAcademicLicence)
                             {
-                                const int n = 2 * 2;
+                                /*const int n = 2 * 2;
                                 if (filter.StoredProcs.Count < n)
-                                    filter.StoredProcs.Add(sp);
+                                    filter.StoredProcs.Add(sp);*/
                             }
                             else if (HasTrialLicence)
                             {
-                                const int n = 1;
+                                const int n = 1 + 2 + 3 + 4;
                                 if (filter.StoredProcs.Count < n)
                                     filter.StoredProcs.Add(sp);
                             }
@@ -4647,7 +4659,7 @@
                 if (FkMustHaveSameNumberOfColumnsAsPrimaryKey() || AllowFkToNonPrimaryKey())
                 {
                     // Check FK has same number of columns as the primary key it points to
-                    var pks  = pkTable.PrimaryKeys.OrderBy(x => x.PropertyType).ThenBy(y => y.DbName).ToArray();
+                    var pks  = pkTable.PrimaryKeys         .OrderBy(x => x.PropertyType).ThenBy(y => y.DbName).ToArray();
                     var cols = fkCols.Select(x => x.Column).OrderBy(x => x.PropertyType).ThenBy(y => y.DbName).ToArray();
 
                     if (FkMustHaveSameNumberOfColumnsAsPrimaryKey() && pks.Length != cols.Length)
@@ -4686,6 +4698,10 @@
 
                 var pkTableHumanCaseWithSuffix = foreignKey.PkTableHumanCase(pkTable.Suffix);
                 var pkTableHumanCase           = foreignKey.PkTableHumanCase(null);
+                var fkHasUniqueConstraint      = pkCols.All(x => x.ForeignKey.HasUniqueConstraint) && relationship == Relationship.OneToOne;
+
+                if (fkHasUniqueConstraint && pkCols.Any(x => x.Column.IsNullable))
+                    continue; // This would force the column to be not null
 
                 var flipRelationship       = FlipRelationship(relationship);
                 var fkMakePropNameSingular = relationship == Relationship.OneToOne;
@@ -4725,7 +4741,6 @@
                     mapKey = string.Format("\"{0}\"", firstFkCol.Column.DbName);
                 }
 
-                var fkHasUniqueConstraint = pkCols.All(x => x.ForeignKey.HasUniqueConstraint) && relationship == Relationship.OneToOne;
                 var primaryKeyColumns = string.Empty;
                 if (!allPkColsArePrimaryKeys)
                 { 
@@ -4775,7 +4790,7 @@
             string manyToManyMapping, string mapKey, bool cascadeOnDelete, bool includeReverseNavigation, bool isNotEnforced, string foreignKeyConstraintName,
             string pkTableNameHumanCase, string fkTableNameHumanCase, string primaryKeyColumns, bool fkHasUniqueConstraint)
         {
-            var hasMethod = GetHasMethod(relationship, fkCols, pkCols, isNotEnforced);
+            var hasMethod = GetHasMethod(relationship, fkCols, pkCols, isNotEnforced, fkHasUniqueConstraint);
             if (hasMethod == null)
                 return string.Empty; // Relationship not supported
 
@@ -5244,7 +5259,7 @@
             return null;
         }
 
-        protected override string GetHasMethod(Relationship relationship, IList<Column> fkCols, IList<Column> pkCols, bool isNotEnforced)
+        protected override string GetHasMethod(Relationship relationship, IList<Column> fkCols, IList<Column> pkCols, bool isNotEnforced, bool fkHasUniqueConstraint)
         {
             return null;
         }
@@ -5481,13 +5496,13 @@
         // HasOptional
         // HasRequired
         // HasMany
-        protected override string GetHasMethod(Relationship relationship, IList<Column> fkCols, IList<Column> pkCols, bool isNotEnforced)
+        protected override string GetHasMethod(Relationship relationship, IList<Column> fkCols, IList<Column> pkCols, bool isNotEnforced, bool fkHasUniqueConstraint)
         {
             var withMany = relationship == Relationship.ManyToOne || relationship == Relationship.ManyToMany;
             var fkIsNullable = fkCols.Any(c => c.IsNullable);
             var pkIsUnique = pkCols.Any(c => c.IsUnique || c.IsUniqueConstraint || c.IsPrimaryKey);
 
-            if (withMany || pkIsUnique)
+            if (withMany || pkIsUnique || fkHasUniqueConstraint)
             {
                 if (fkIsNullable || isNotEnforced)
                     return "HasOptional";
@@ -5785,15 +5800,15 @@
 
         // HasOne
         // HasMany
-        protected override string GetHasMethod(Relationship relationship, IList<Column> fkCols, IList<Column> pkCols, bool isNotEnforced)
+        protected override string GetHasMethod(Relationship relationship, IList<Column> fkCols, IList<Column> pkCols, bool isNotEnforced, bool fkHasUniqueConstraint)
         {
             if (relationship == Relationship.ManyToMany)
-                return null; // Not supported in EF.Core v2.
+                return null; // Not supported in EF.Core2 or EF.Core3
 
             var withMany = relationship == Relationship.ManyToOne || relationship == Relationship.ManyToMany;
             var pkIsUnique = pkCols.Any(c => c.IsUnique || c.IsUniqueConstraint || c.IsPrimaryKey);
 
-            if (withMany || pkIsUnique)
+            if (withMany || pkIsUnique || fkHasUniqueConstraint)
                 return "builder.HasOne";
 
             return "builder.HasMany";
@@ -6083,8 +6098,6 @@
         public readonly bool   IsUniqueConstraint;
         public readonly bool   IsClustered;
 
-        public bool WouldForceColumnToBeNotNull;
-
         public RawIndex(string schema, string tableName, string indexName, byte keyOrdinal,
             string columnName, int columnCount, bool isUnique, bool isPrimaryKey,
             bool isUniqueConstraint, bool isClustered)
@@ -6099,8 +6112,6 @@
             IsPrimaryKey       = isPrimaryKey;
             IsUniqueConstraint = isUniqueConstraint;
             IsClustered        = isClustered;
-
-            WouldForceColumnToBeNotNull = false;
         }
 
         public string Dump()
@@ -15310,6 +15321,13 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public string GetUniqueForeignKeyName(bool isParent, string tableNameHumanCase, ForeignKey foreignKey, bool checkForFkNameClashes,
             bool makeSingular, Relationship relationship)
         {
+            // For unit testing
+            /*if (tableNameHumanCase.StartsWith("Burak") || tableNameHumanCase.StartsWith("Car") || tableNameHumanCase.StartsWith("User"))
+            {
+                var s = $"[TestCase(\"00\", \"{foreignKey.FkTableName}\",  \"{NameHumanCase}\", \"{string.Join("|", Columns.Select(c => c.NameHumanCase))}\", {isParent}, \"{tableNameHumanCase}\", {checkForFkNameClashes}, {makeSingular}, Relationship.{relationship}, \"{foreignKey.FkTableName}\", \"{foreignKey.PkTableName}\", {foreignKey.IncludeReverseNavigation}, \"{foreignKey.FkColumn}\")]{Environment.NewLine}";
+                System.IO.File.AppendAllText("c:/temp/unit.txt", s);
+            }*/
+
             return _foreignKeyNamingStrategy.GetUniqueForeignKeyName(isParent, tableNameHumanCase, foreignKey, checkForFkNameClashes,
                 makeSingular, relationship);
         }
@@ -15542,14 +15560,14 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public void TrimForAcademicLicence()
         {
             // Mapping tables do not count
-            const int n = 2 * 2 * 2 * 2;
-            TrimForLicence(n);
+            //const int n = 2 * 2 * 2 * 2;
+            //TrimForLicence(n);
         }
 
         public void TrimForTrialLicence()
         {
             // Mapping tables do not count
-            const int n = 1 + 1 + 1 + 1 + 1;
+            const int n = 1 + 2 + 3 + 4;
             TrimForLicence(n);
         }
 
