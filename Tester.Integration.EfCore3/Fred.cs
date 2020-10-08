@@ -3531,7 +3531,7 @@ namespace Tester.Integration.EfCore3
     public class ForeignKeyIsNotEnforced
     {
         public int Id { get; set; } // id (Primary key)
-        public int? NullValue { get; set; } // null_value. (Forced NOT NULL due to foreign key FK_ForeignKeyIsNotEnforcedItem_null_null having a unique constraint)
+        public int? NullValue { get; set; } // null_value
         public int NotNullValue { get; set; } // not_null_value
 
         // Reverse navigation
@@ -3542,19 +3542,9 @@ namespace Tester.Integration.EfCore3
         public virtual ForeignKeyIsNotEnforcedItem ForeignKeyIsNotEnforcedItem_NotNullValue { get; set; } // ForeignKeyIsNotEnforcedItem.FK_ForeignKeyIsNotEnforcedItem_notnull_notnull
 
         /// <summary>
-        /// Parent (One-to-One) ForeignKeyIsNotEnforced pointed by [ForeignKeyIsNotEnforcedItem].[not_null_value] (FK_ForeignKeyIsNotEnforcedItem_notnull_null)
-        /// </summary>
-        public virtual ForeignKeyIsNotEnforcedItem ForeignKeyIsNotEnforcedItem1 { get; set; } // ForeignKeyIsNotEnforcedItem.FK_ForeignKeyIsNotEnforcedItem_notnull_null
-
-        /// <summary>
         /// Parent (One-to-One) ForeignKeyIsNotEnforced pointed by [ForeignKeyIsNotEnforcedItem].[null_value] (FK_ForeignKeyIsNotEnforcedItem_null_notnull)
         /// </summary>
-        public virtual ForeignKeyIsNotEnforcedItem ForeignKeyIsNotEnforcedItem2 { get; set; } // ForeignKeyIsNotEnforcedItem.FK_ForeignKeyIsNotEnforcedItem_null_notnull
-
-        /// <summary>
-        /// Parent (One-to-One) ForeignKeyIsNotEnforced pointed by [ForeignKeyIsNotEnforcedItem].[null_value] (FK_ForeignKeyIsNotEnforcedItem_null_null)
-        /// </summary>
-        public virtual ForeignKeyIsNotEnforcedItem ForeignKeyIsNotEnforcedItem3 { get; set; } // ForeignKeyIsNotEnforcedItem.FK_ForeignKeyIsNotEnforcedItem_null_null
+        public virtual ForeignKeyIsNotEnforcedItem ForeignKeyIsNotEnforcedItem_NullValue { get; set; } // ForeignKeyIsNotEnforcedItem.FK_ForeignKeyIsNotEnforcedItem_null_notnull
     }
 
     // ForeignKeyIsNotEnforcedItem
@@ -3572,19 +3562,9 @@ namespace Tester.Integration.EfCore3
         public virtual ForeignKeyIsNotEnforced ForeignKeyIsNotEnforced_NotNullValue { get; set; } // FK_ForeignKeyIsNotEnforcedItem_notnull_notnull
 
         /// <summary>
-        /// Parent ForeignKeyIsNotEnforced pointed by [ForeignKeyIsNotEnforcedItem].([NotNullValue]) (FK_ForeignKeyIsNotEnforcedItem_notnull_null)
-        /// </summary>
-        public virtual ForeignKeyIsNotEnforced ForeignKeyIsNotEnforced1 { get; set; } // FK_ForeignKeyIsNotEnforcedItem_notnull_null
-
-        /// <summary>
         /// Parent ForeignKeyIsNotEnforced pointed by [ForeignKeyIsNotEnforcedItem].([NullValue]) (FK_ForeignKeyIsNotEnforcedItem_null_notnull)
         /// </summary>
-        public virtual ForeignKeyIsNotEnforced ForeignKeyIsNotEnforced2 { get; set; } // FK_ForeignKeyIsNotEnforcedItem_null_notnull
-
-        /// <summary>
-        /// Parent ForeignKeyIsNotEnforced pointed by [ForeignKeyIsNotEnforcedItem].([NullValue]) (FK_ForeignKeyIsNotEnforcedItem_null_null)
-        /// </summary>
-        public virtual ForeignKeyIsNotEnforced ForeignKeyIsNotEnforced3 { get; set; } // FK_ForeignKeyIsNotEnforcedItem_null_null
+        public virtual ForeignKeyIsNotEnforced ForeignKeyIsNotEnforced_NullValue { get; set; } // FK_ForeignKeyIsNotEnforcedItem_null_notnull
     }
 
     // HasPrincipalKeyTestChild
@@ -3601,12 +3581,7 @@ namespace Tester.Integration.EfCore3
         /// <summary>
         /// Parent HasPrincipalKeyTestParent pointed by [HasPrincipalKeyTestChild].([A], [B]) (FK_HasPrincipalKey_AB)
         /// </summary>
-        public virtual HasPrincipalKeyTestParent HasPrincipalKeyTestParent_A { get; set; } // FK_HasPrincipalKey_AB
-
-        /// <summary>
-        /// Parent HasPrincipalKeyTestParent pointed by [HasPrincipalKeyTestChild].([C], [D]) (FK_HasPrincipalKey_CD)
-        /// </summary>
-        public virtual HasPrincipalKeyTestParent HasPrincipalKeyTestParent_C { get; set; } // FK_HasPrincipalKey_CD
+        public virtual HasPrincipalKeyTestParent HasPrincipalKeyTestParent { get; set; } // FK_HasPrincipalKey_AB
     }
 
     // HasPrincipalKeyTestParent
@@ -3615,20 +3590,15 @@ namespace Tester.Integration.EfCore3
         public int Id { get; set; } // Id (Primary key)
         public int Aa { get; set; } // AA
         public int Bb { get; set; } // BB
-        public int? Cc { get; set; } // CC. (Forced NOT NULL due to foreign key FK_HasPrincipalKey_CD having a unique constraint)
-        public int? Dd { get; set; } // DD. (Forced NOT NULL due to foreign key FK_HasPrincipalKey_CD having a unique constraint)
+        public int? Cc { get; set; } // CC
+        public int? Dd { get; set; } // DD
 
         // Reverse navigation
 
         /// <summary>
         /// Parent (One-to-One) HasPrincipalKeyTestParent pointed by [HasPrincipalKeyTestChild].([A], [B]) (FK_HasPrincipalKey_AB)
         /// </summary>
-        public virtual HasPrincipalKeyTestChild HasPrincipalKeyTestChild_A { get; set; } // HasPrincipalKeyTestChild.FK_HasPrincipalKey_AB
-
-        /// <summary>
-        /// Parent (One-to-One) HasPrincipalKeyTestParent pointed by [HasPrincipalKeyTestChild].([C], [D]) (FK_HasPrincipalKey_CD)
-        /// </summary>
-        public virtual HasPrincipalKeyTestChild HasPrincipalKeyTestChild_C { get; set; } // HasPrincipalKeyTestChild.FK_HasPrincipalKey_CD
+        public virtual HasPrincipalKeyTestChild HasPrincipalKeyTestChild { get; set; } // HasPrincipalKeyTestChild.FK_HasPrincipalKey_AB
     }
 
     // header
@@ -5126,7 +5096,7 @@ namespace Tester.Integration.EfCore3
             builder.HasKey(x => x.Id).HasName("PK__ForeignK__3213E83F7A9FD04F").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.NullValue).HasColumnName(@"null_value").HasColumnType("int").IsRequired();
+            builder.Property(x => x.NullValue).HasColumnName(@"null_value").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.NotNullValue).HasColumnName(@"not_null_value").HasColumnType("int").IsRequired();
 
             builder.HasIndex(x => x.NotNullValue).HasName("UQ_ForeignKeyIsNotEnforced_not_null_value").IsUnique();
@@ -5148,9 +5118,7 @@ namespace Tester.Integration.EfCore3
 
             // Foreign keys
             builder.HasOne(a => a.ForeignKeyIsNotEnforced_NotNullValue).WithOne(b => b.ForeignKeyIsNotEnforcedItem_NotNullValue).HasPrincipalKey<ForeignKeyIsNotEnforced>(p => p.NotNullValue).HasForeignKey<ForeignKeyIsNotEnforcedItem>(c => c.NotNullValue).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_ForeignKeyIsNotEnforcedItem_notnull_notnull");
-            builder.HasOne(a => a.ForeignKeyIsNotEnforced1).WithOne(b => b.ForeignKeyIsNotEnforcedItem1).HasPrincipalKey<ForeignKeyIsNotEnforced>(p => p.NullValue).HasForeignKey<ForeignKeyIsNotEnforcedItem>(c => c.NotNullValue).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_ForeignKeyIsNotEnforcedItem_notnull_null");
-            builder.HasOne(a => a.ForeignKeyIsNotEnforced2).WithOne(b => b.ForeignKeyIsNotEnforcedItem2).HasPrincipalKey<ForeignKeyIsNotEnforced>(p => p.NotNullValue).HasForeignKey<ForeignKeyIsNotEnforcedItem>(c => c.NullValue).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_ForeignKeyIsNotEnforcedItem_null_notnull");
-            builder.HasOne(a => a.ForeignKeyIsNotEnforced3).WithOne(b => b.ForeignKeyIsNotEnforcedItem3).HasPrincipalKey<ForeignKeyIsNotEnforced>(p => p.NullValue).HasForeignKey<ForeignKeyIsNotEnforcedItem>(c => c.NullValue).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_ForeignKeyIsNotEnforcedItem_null_null");
+            builder.HasOne(a => a.ForeignKeyIsNotEnforced_NullValue).WithOne(b => b.ForeignKeyIsNotEnforcedItem_NullValue).HasPrincipalKey<ForeignKeyIsNotEnforced>(p => p.NotNullValue).HasForeignKey<ForeignKeyIsNotEnforcedItem>(c => c.NullValue).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_ForeignKeyIsNotEnforcedItem_null_notnull");
 
             builder.HasIndex(x => x.NotNullValue).HasName("UQ_ForeignKeyIsNotEnforcedItem_not_null_value").IsUnique();
             builder.HasIndex(x => x.NullValue).HasName("UQ_ForeignKeyIsNotEnforcedItem_null_value").IsUnique();
@@ -5172,8 +5140,7 @@ namespace Tester.Integration.EfCore3
             builder.Property(x => x.D).HasColumnName(@"D").HasColumnType("int").IsRequired(false);
 
             // Foreign keys
-            builder.HasOne(a => a.HasPrincipalKeyTestParent_A).WithOne(b => b.HasPrincipalKeyTestChild_A).HasPrincipalKey<HasPrincipalKeyTestParent>(p => new { p.Aa, p.Bb }).HasForeignKey<HasPrincipalKeyTestChild>(c => new { c.A, c.B }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_HasPrincipalKey_AB");
-            builder.HasOne(a => a.HasPrincipalKeyTestParent_C).WithOne(b => b.HasPrincipalKeyTestChild_C).HasPrincipalKey<HasPrincipalKeyTestParent>(p => new { p.Cc, p.Dd }).HasForeignKey<HasPrincipalKeyTestChild>(c => new { c.C, c.D }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_HasPrincipalKey_CD");
+            builder.HasOne(a => a.HasPrincipalKeyTestParent).WithOne(b => b.HasPrincipalKeyTestChild).HasPrincipalKey<HasPrincipalKeyTestParent>(p => new { p.Aa, p.Bb }).HasForeignKey<HasPrincipalKeyTestChild>(c => new { c.A, c.B }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_HasPrincipalKey_AB");
         }
     }
 
@@ -5188,8 +5155,8 @@ namespace Tester.Integration.EfCore3
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Aa).HasColumnName(@"AA").HasColumnType("int").IsRequired();
             builder.Property(x => x.Bb).HasColumnName(@"BB").HasColumnType("int").IsRequired();
-            builder.Property(x => x.Cc).HasColumnName(@"CC").HasColumnType("int").IsRequired();
-            builder.Property(x => x.Dd).HasColumnName(@"DD").HasColumnType("int").IsRequired();
+            builder.Property(x => x.Cc).HasColumnName(@"CC").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.Dd).HasColumnName(@"DD").HasColumnType("int").IsRequired(false);
 
             builder.HasIndex(x => new { x.Aa, x.Bb }).HasName("UQ_HasPrincipalKeyTestParent_AB").IsUnique();
             builder.HasIndex(x => new { x.Aa, x.Cc }).HasName("UQ_HasPrincipalKeyTestParent_AC").IsUnique();

@@ -942,14 +942,8 @@ namespace Efrpg.Generators
                 var pkTableHumanCase           = foreignKey.PkTableHumanCase(null);
                 var fkHasUniqueConstraint      = pkCols.All(x => x.ForeignKey.HasUniqueConstraint) && relationship == Relationship.OneToOne;
 
-                if(fkHasUniqueConstraint)
-                {
-                    foreach (var columnAndForeignKey in pkCols)
-                    {
-                        columnAndForeignKey.Column.ForcedRequired = true;
-                        columnAndForeignKey.Column.ForcedByFk = columnAndForeignKey.ForeignKey.ConstraintName;
-                    }
-                }
+                if (fkHasUniqueConstraint && pkCols.Any(x => x.Column.IsNullable))
+                    continue; // This would force the column to be not null
 
                 var flipRelationship       = FlipRelationship(relationship);
                 var fkMakePropNameSingular = relationship == Relationship.OneToOne;
