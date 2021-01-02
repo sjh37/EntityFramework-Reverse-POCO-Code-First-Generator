@@ -268,7 +268,7 @@ namespace Efrpg
         {
             var columnName = DatabaseReader.ReservedKeywords.Contains(col.ColumnName) ? "@" + col.ColumnName : col.ColumnName;
 
-            // replace return column name that start with either JSON_ or XML_ with a GUID
+            // Replace return column name that start with either JSON_ or XML_ with a GUID
             // This does not change the <columnName> if the regex does not match
             columnName = Regex.Replace(columnName, "^(?<prefix>JSON|XML)_([0-9A-F]{8}-([0-9A-F]{4}-){3}[0-9A-F]{12})", "${prefix}_Value", RegexOptions.IgnoreCase);
 

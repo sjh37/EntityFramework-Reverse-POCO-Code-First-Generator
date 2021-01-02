@@ -1,6 +1,6 @@
 <#@ include file ="..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v3.ttinclude" #>
 <#
-    // v3.2.0
+    // v3.3.0
     // Please make changes to the settings below.
     // All you have to do is save this file, and the output file(s) are generated. Compiling does not regenerate the file(s).
     // A course for the older v2 generator is available on Pluralsight at https://www.pluralsight.com/courses/code-first-entity-framework-legacy-databases
@@ -11,11 +11,11 @@
     
     // For help on the various Types below, please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Common-Settings.*Types-explained
     // The following entries are the only required settings.
-    Settings.DatabaseType             = DatabaseType.SqlServer;
-    Settings.TemplateType             = TemplateType.EfCore5;
-    Settings.GeneratorType            = GeneratorType.EfCore; // Ef6, EfCore, Custom. Custom edit GeneratorCustom class to provide your own implementation
+    Settings.DatabaseType             = DatabaseType.SqlServer; // SqlServer, SqlCe, PostgreSQL. Coming next: MySql, Oracle
+    Settings.TemplateType             = TemplateType.EfCore5; // EfCore5, EfCore3, EfCore2, Ef6, FileBasedCore2, FileBasedCore3, FileBasedCore5. FileBased specify folder using Settings.TemplateFolder
+    Settings.GeneratorType            = GeneratorType.EfCore; // EfCore, Ef6, Custom. Custom edit GeneratorCustom class to provide your own implementation
 
-    Settings.UseMappingTables        = true;
+    Settings.UseMappingTables        = false; // Can only be true for Ef6. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
     Settings.FileManagerType         = FileManagerType.Custom; // .NET Core project = Custom; .NET project = VisualStudio; No output (testing only) = Null
     Settings.ConnectionString        = "Data Source=(local);Initial Catalog=Northwind;Integrated Security=True;MultipleActiveResultSets=True"; // This is used by the generator to reverse engineer your database
     Settings.ConnectionStringName    = "MyDbContext"; // ConnectionString key as specified in your app.config/web.config/appsettings.json. Not used by the generator, but is placed into the generated DbContext constructor.
