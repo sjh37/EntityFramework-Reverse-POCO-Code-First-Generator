@@ -114,6 +114,7 @@
     <None Include="TestComparison\Northwind_SqlServer_Ef6_NorthwindTest1Copy.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Compile Include="StoredProcedureTests.cs" />
     <Compile Include="StringExtensionTests.cs" />
     <None Include="TestComparison\Northwind_PostgreSQL_EfCore3_FkLegacy.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
