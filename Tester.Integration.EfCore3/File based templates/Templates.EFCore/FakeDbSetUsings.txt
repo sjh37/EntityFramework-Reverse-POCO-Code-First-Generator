@@ -9,6 +9,7 @@ System.Collections.Generic
 System.Threading
 System.Threading.Tasks
 Microsoft.EntityFrameworkCore
+Microsoft.EntityFrameworkCore.Query
 Microsoft.EntityFrameworkCore.Query.Internal
 Microsoft.EntityFrameworkCore.Infrastructure
 Microsoft.EntityFrameworkCore.ChangeTracking
