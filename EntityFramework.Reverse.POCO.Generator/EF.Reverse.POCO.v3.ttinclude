@@ -36,12 +36,12 @@
     {
         // Main settings **********************************************************************************************************************
         // The following entries are the only required settings.
-        public static DatabaseType DatabaseType                         = DatabaseType.SqlServer; // SqlServer, SqlCe. Coming next: PostgreSQL, MySql, Oracle
-        public static TemplateType TemplateType                         = TemplateType.EfCore3; // Ef6, EfCore2, EfCore3, FileBasedCore2, FileBasedCore3. FileBased specify folder using Settings.TemplateFolder
-        public static GeneratorType GeneratorType                       = GeneratorType.EfCore; // Ef6, EfCore, Custom. Custom edit GeneratorCustom class to provide your own implementation
+        public static DatabaseType DatabaseType                         = DatabaseType.SqlServer; // SqlServer, SqlCe, PostgreSQL. Coming next: MySql, Oracle
+        public static TemplateType TemplateType                         = TemplateType.EfCore3; // EfCore5, EfCore3, EfCore2, Ef6, FileBasedCore2, FileBasedCore3. FileBased specify folder using Settings.TemplateFolder
+        public static GeneratorType GeneratorType                       = GeneratorType.EfCore; // EfCore, Ef6, Custom. Custom edit GeneratorCustom class to provide your own implementation
         public static ForeignKeyNamingStrategy ForeignKeyNamingStrategy = ForeignKeyNamingStrategy.Legacy; // Please use Legacy for now (same as versions <= v3.2.0), Latest (not yet ready)
-        public static bool UseMappingTables                             = false; // Set to false for EfCore. EFCore will add support for this in v3 at some point, so please set this to false. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
-        public static FileManagerType FileManagerType                   = FileManagerType.Custom; // .NET project = VisualStudio; .NET Core project = Custom; No output (testing only) = Null
+        public static bool UseMappingTables                             = false; // Can only be set to true for EF6. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
+        public static FileManagerType FileManagerType                   = FileManagerType.Custom; // .NET Core project = Custom; .NET project = VisualStudio; No output (testing only) = Null
         public static string ConnectionString                           = ""; // This is used by the generator to reverse engineer your database
         public static string ConnectionStringName                       = "MyDbContext"; // ConnectionString key as specified in your app.config/web.config/appsettings.json
         public static string DbContextName                              = "MyDbContext"; // Class name for the DbContext to be generated. Note: If generating separate files, please give the db context a different name from this tt filename. Ignored if using multi-context generation
@@ -159,8 +159,9 @@
         // If there are multiple schemas, then the table name is prefixed with the schema, except for dbo.
         // Ie. dbo.hello will be Hello.
         //     abc.hello will be AbcHello.
-        public static bool PrependSchemaName = true; // Control if the schema name is prepended to the table name
-        public static string DefaultSchema = null; // Set via DatabaseReader.DefaultSchema()
+        public static bool   PrependSchemaName = true; // Control if the schema name is prepended to the table name
+        public static string DefaultSchema     = null; // Set via DatabaseReader.DefaultSchema()
+        public static string DefaultCollation  = null; // Set via DatabaseReader.DefaultCollation()
 
         // Table Suffix ***********************************************************************************************************************
         // Appends the suffix to the generated classes names
@@ -578,9 +579,33 @@
         // Don't forget to take a look at SingleContextFilter and FilterSettings classes!
         // That's it, nothing else to configure ***********************************************************************************************
 
+        public static bool IsEf6()     => TemplateType == TemplateType.Ef6;
         public static bool IsEfCore2() => TemplateType == TemplateType.EfCore2 || TemplateType == TemplateType.FileBasedCore2;
         public static bool IsEfCore3() => TemplateType == TemplateType.EfCore3 || TemplateType == TemplateType.FileBasedCore3;
-        public static bool IsEfCore() => IsEfCore2() || IsEfCore3();
+        public static bool IsEfCore5() => TemplateType == TemplateType.EfCore5 || TemplateType == TemplateType.FileBasedCore5;
+        public static bool IsEfCore3Plus() => EfCoreVersion() >= 3;
+        public static bool IsEfCore5Plus() => EfCoreVersion() >= 5;
+        private static int EfCoreVersion()
+        {
+            switch (TemplateType)
+            {
+                case TemplateType.EfCore2:
+                case TemplateType.FileBasedCore2:
+                    return 2;
+
+                case TemplateType.EfCore3:
+                case TemplateType.FileBasedCore3:
+                    return 3;
+                
+                case TemplateType.EfCore5:
+                case TemplateType.FileBasedCore5:
+                    return 5;
+                
+                case TemplateType.Ef6:
+                default:
+                    return 0;
+            }
+        }
 
         public static string Root;
         public static int FilterCount;
@@ -949,7 +974,6 @@
 
         public string Config;
         public List<string> ConfigFk = new List<string>();
-        //public string Entity;
         public List<PropertyAndComments> EntityFk = new List<PropertyAndComments>();
 
         public List<RawIndex> Indexes = new List<RawIndex>();
@@ -1293,8 +1317,8 @@
         SqlServer,
         SqlCe,
         Plugin,     // See Settings.DatabaseReaderPlugin
+        PostgreSQL,
         MySql,      // Not yet implemented
-        PostgreSQL, // Not yet implemented
         Oracle      // Not yet implemented
     }
     public static class EfrpgVersion
@@ -3060,14 +3084,14 @@
             if (filter == null)      throw new ArgumentNullException(nameof(filter));
 #pragma warning restore IDE0016 // Use 'throw' expression
 
-            var isEfCore  = Settings.GeneratorType == GeneratorType.EfCore;
-            var isEfCore3 = Settings.IsEfCore3();
+            var isEfCore      = Settings.GeneratorType == GeneratorType.EfCore;
+            var isEfCore3Plus = Settings.IsEfCore3Plus();
 
             _generator = generator;
             _filter    = filter;
 
             _tables = filter.Tables
-                .Where(t => !t.IsMapping && (t.HasPrimaryKey || (t.IsView && isEfCore3)))
+                .Where(t => !t.IsMapping && (t.HasPrimaryKey || (t.IsView && isEfCore3Plus)))
                 .OrderBy(x => x.NameHumanCase)
                 .Select(tbl => new TableTemplateData(tbl))
                 .ToList();
@@ -3129,10 +3153,10 @@
                             ? tvf.WriteStoredProcFunctionSqlParameterAnonymousArray(false, false)
                             : tvf.WriteTableValuedFunctionSqlParameterAnonymousArray(),
                         isEfCore ? tvf.WriteNetCoreTableValuedFunctionsSqlAtParams() : tvf.WriteStoredProcFunctionSqlAtParams(),
-                        isEfCore3 ? "FromSqlRaw" : "FromSql",
-                        isEfCore3 ? "Set" : "Query",
-                        isEfCore3 ? "Entity" : "Query",
-                        isEfCore3 ? ".HasNoKey()" : string.Empty
+                        isEfCore3Plus ? "FromSqlRaw"  : "FromSql",
+                        isEfCore3Plus ? "Set"         : "Query",
+                        isEfCore3Plus ? "Entity"      : "Query",
+                        isEfCore3Plus ? ".HasNoKey()" : string.Empty
                     ))
                     .ToList();
 
@@ -3322,7 +3346,7 @@
                     .Where(x => !string.IsNullOrWhiteSpace(x)));
             }
 
-            var isEfCore3 = Settings.IsEfCore3();
+            var isEfCore3Plus = Settings.IsEfCore3Plus();
 
             var data = new ContextModel
             {
@@ -3355,11 +3379,11 @@
                 hasTableValuedFunctions                = _hasTableValuedFunctions && _filter.IncludeTableValuedFunctions,
                 hasScalarValuedFunctions               = _hasScalarValuedFunctions && _filter.IncludeScalarValuedFunctions,
                 IncludeObjectContextConstructor        = !Settings.DbContextBaseClass.Contains("IdentityDbContext"),
-                QueryString                            = isEfCore3 ? "Set"           : "Query",
-                FromSql                                = isEfCore3 ? "FromSqlRaw"    : "FromSql",
-                ExecuteSqlCommand                      = isEfCore3 ? "ExecuteSqlRaw" : "ExecuteSqlCommand",
-                StoredProcModelBuilderCommand          = isEfCore3 ? "Entity"        : "Query",
-                StoredProcModelBuilderPostCommand      = isEfCore3 ? ".HasNoKey()"   : string.Empty,
+                QueryString                            = isEfCore3Plus ? "Set"           : "Query",
+                FromSql                                = isEfCore3Plus ? "FromSqlRaw"    : "FromSql",
+                ExecuteSqlCommand                      = isEfCore3Plus ? "ExecuteSqlRaw" : "ExecuteSqlCommand",
+                StoredProcModelBuilderCommand          = isEfCore3Plus ? "Entity"        : "Query",
+                StoredProcModelBuilderPostCommand      = isEfCore3Plus ? ".HasNoKey()"   : string.Empty,
                 OnConfigurationUsesConfiguration       = Settings.OnConfiguration == OnConfiguration.Configuration,
                 OnConfigurationUsesConnectionString    = Settings.OnConfiguration == OnConfiguration.ConnectionString,
                 DefaultSchema                          = Settings.DefaultSchema
@@ -3416,7 +3440,8 @@
                 DbContextClassModifiers = Settings.DbContextClassModifiers,
                 DbContextClassIsPartial = Settings.DbContextClassIsPartial(),
                 IsEfCore2               = Settings.IsEfCore2(),
-                IsEfCore3               = Settings.IsEfCore3()
+                IsEfCore3               = Settings.IsEfCore3(),
+                IsEfCore5               = Settings.IsEfCore5()
             };
 
             var co = new CodeOutput(string.Empty, filename, "Fake DbSet", GlobalUsings);
@@ -3456,11 +3481,11 @@
                 return null;
             }
 
-            var isEfCore3 = Settings.IsEfCore3();
+            var isEfCore3Plus = Settings.IsEfCore3Plus();
 
             var data = new PocoModel
             {
-                UseHasNoKey             = isEfCore3 && table.IsView && !table.HasPrimaryKey,
+                UseHasNoKey             = isEfCore3Plus && table.IsView && !table.HasPrimaryKey,
                 HasNoPrimaryKey         = !table.HasPrimaryKey,
                 Name                    = table.DbName,
                 NameHumanCaseWithSuffix = table.NameHumanCaseWithSuffix(),
@@ -3548,7 +3573,7 @@
                 .OrderBy(x => x.Ordinal)
                 .ToList();
 
-            var isEfCore3 = Settings.IsEfCore3();
+            var isEfCore3Plus = Settings.IsEfCore3Plus();
 
             var foreignKeys = columns.SelectMany(x => x.ConfigFk).OrderBy(o => o).ToList();
             var primaryKey  = _generator.PrimaryKeyModelBuilder(table);
@@ -3558,9 +3583,9 @@
 
             var data = new PocoConfigurationModel
             {
-                UseHasNoKey               = isEfCore3 && table.IsView && !table.HasPrimaryKey,
+                UseHasNoKey               = isEfCore3Plus && table.IsView && !table.HasPrimaryKey,
                 Name                      = table.DbName,
-                ToTableOrView             = (isEfCore3 && table.IsView && !table.HasPrimaryKey) ? "ToView" : "ToTable",
+                ToTableOrView             = (isEfCore3Plus && table.IsView && !table.HasPrimaryKey) ? "ToView" : "ToTable",
                 ConfigurationClassName    = table.NameHumanCaseWithSuffix() + Settings.ConfigurationClassName,
                 NameHumanCaseWithSuffix   = table.NameHumanCaseWithSuffix(),
                 Schema                    = table.Schema.DbName,
@@ -4280,6 +4305,11 @@
 
                 // Work out if there are any foreign key relationship naming clashes
                 ProcessForeignKeys(foreignKeys, true, filter);
+
+                // Mappings tables can only be true for Ef6
+                if (Settings.UseMappingTables && !Settings.IsEf6())
+                    Settings.UseMappingTables = false;
+                
                 if (Settings.UseMappingTables)
                     filter.Tables.IdentifyMappingTables(foreignKeys, true, DatabaseReader.IncludeSchema);
 
@@ -4711,6 +4741,8 @@
                 var fkd = new PropertyAndComments
                 {
                     AdditionalDataAnnotations = filter.ForeignKeyAnnotationsProcessing(fkTable, pkTable, pkPropName, fkPropName),
+                    
+                    PropertyName = pkPropName,
 
                     Definition = string.Format("public {0}{1} {2} {3}{4}", 
                         Table.GetLazyLoadingMarker(),
@@ -4873,7 +4905,6 @@
             }
         }
 
-
         public void SetupEntityAndConfig(Column c)
         {
             SetupEntity(c);
@@ -4894,7 +4925,8 @@
                         Settings.DbContextInterfaceName = null;
                         Settings.DbContextName = ((MultiContextFilter) filter.Value).GetSettings().Name ?? filter.Key;
 
-                        if (Settings.TemplateType == TemplateType.FileBasedCore3)
+                        if (Settings.TemplateType == TemplateType.FileBasedCore3 ||
+                            Settings.TemplateType == TemplateType.FileBasedCore5)
                         {
                             // Use file based templates, set the path
                             var multiContextSetting = ((MultiContextFilter) filter.Value).GetSettings();
@@ -4940,7 +4972,7 @@
             codeOutputList.Add(contextFakeClass, codeGenerator.GenerateFakeContext());
             codeOutputList.Add(contextFakeDbSet, codeGenerator.GenerateFakeDbSet());
 
-            var isEfCore3 = Settings.IsEfCore3();
+            var isEfCore3Plus = Settings.IsEfCore3Plus();
 
             foreach (var table in filter.Tables
                 .Where(t => !t.IsMapping)
@@ -4950,7 +4982,7 @@
                 codeOutputList.Add(pocoClass + table.NameHumanCase, codeGenerator.GeneratePoco(table));
 
                 // Only write the config if it has a primary key
-                if (table.HasPrimaryKey || (table.IsView && isEfCore3))
+                if (table.HasPrimaryKey || (table.IsView && isEfCore3Plus))
                     codeOutputList.Add(pocoConfiguration + table.NameHumanCase, codeGenerator.GeneratePocoConfiguration(table));
             }
 
@@ -5623,16 +5655,16 @@
         {
             string databaseGeneratedOption = null;
 
-            var isEfCore3 = Settings.IsEfCore3();
+            var isEfCore3Plus = Settings.IsEfCore3Plus();
             var isNewSequentialId = !string.IsNullOrEmpty(c.Default) && c.Default.ToLower().Contains("newsequentialid");
             var isTemporalColumn = c.GeneratedAlwaysType != ColumnGeneratedAlwaysType.NotApplicable;
 
-            // Identity, instead of Computed, seems the best for Temporal `GENERATED ALWAYS` columns: https://stackoverflow.com/questions/40742142/entity-framework-not-working-with-temporal-table
+            // Identity, instead of Computed, seems the best for Temporal 'GENERATED ALWAYS' columns: https://stackoverflow.com/questions/40742142/entity-framework-not-working-with-temporal-table
             if (c.IsIdentity || isNewSequentialId || isTemporalColumn)
             {
                 databaseGeneratedOption = ".ValueGeneratedOnAdd()";
                 if (c.IsIdentity && Column.CanUseSqlServerIdentityColumn.Contains(c.PropertyType))
-                    databaseGeneratedOption += isEfCore3 ? ".UseIdentityColumn()" : ".UseSqlServerIdentityColumn()";
+                    databaseGeneratedOption += isEfCore3Plus ? ".UseIdentityColumn()" : ".UseSqlServerIdentityColumn()";
             }
             else if (c.IsComputed)
             {
@@ -5695,8 +5727,8 @@
 
         public override string PrimaryKeyModelBuilder(Table t)
         {
-            var isEfCore3 = Settings.IsEfCore3();
-            if (isEfCore3 && t.IsView && !t.HasPrimaryKey)
+            var isEfCore3Plus = Settings.IsEfCore3Plus();
+            if (isEfCore3Plus && t.IsView && !t.HasPrimaryKey)
                 return "builder.HasNoKey();";
 
             var defaultKey = $"builder.HasKey({t.PrimaryKeyNameHumanCase()})";
@@ -5721,7 +5753,7 @@
             sb.Append("\")");
 
             if (indexesForName.All(x => x.IsClustered))
-                sb.Append(isEfCore3 ? ".IsClustered()" : ".ForSqlServerIsClustered()");
+                sb.Append(isEfCore3Plus ? ".IsClustered()" : ".ForSqlServerIsClustered()");
 
             sb.Append(";");
 
@@ -5734,7 +5766,8 @@
             if (t.Indexes == null || !t.Indexes.Any())
                 return indexes;
 
-            var isEfCore3 = Settings.IsEfCore3();
+            var isEfCore3Plus = Settings.IsEfCore3Plus();
+            var isEfCore5Plus = Settings.IsEfCore5Plus();
             var indexNames = t.Indexes.Where(x => !x.IsPrimaryKey).Select(x => x.IndexName).Distinct();
             foreach (var indexName in indexNames.OrderBy(x => x))
             {
@@ -5776,7 +5809,8 @@
 
                 sb.Append(")"); // Close bracket for HasIndex()
 
-                sb.Append(".HasName(\"");
+                
+                sb.Append(isEfCore5Plus ? ".HasDatabaseName(\"" : ".HasName(\"");
                 sb.Append(indexName);
                 sb.Append("\")");
 
@@ -5784,7 +5818,7 @@
                     sb.Append(".IsUnique()");
 
                 if (indexesForName.All(x => x.IsClustered))
-                    sb.Append(isEfCore3 ? ".IsClustered()" : ".ForSqlServerIsClustered()");
+                    sb.Append(isEfCore3Plus ? ".IsClustered()" : ".ForSqlServerIsClustered()");
 
                 sb.Append(";");
                 indexes.Add(sb.ToString());
@@ -11609,6 +11643,7 @@ and limitations under the License.
     {
         public string Definition;
         public string Comments;
+        public string PropertyName;
         public string[] AdditionalDataAnnotations;
     }
 
@@ -11656,7 +11691,7 @@ and limitations under the License.
         protected Dictionary<string, string> DbTypeToPropertyType; // [SQL Data Type] = Language type.
         protected List<string> SpatialTypes;
 
-        protected string DatabaseEdition, DatabaseEngineEdition, DatabaseProductVersion;
+        protected string DatabaseEdition, DatabaseEngineEdition, DatabaseProductVersion, DatabaseName;
         protected int DatabaseProductMajorVersion;
 
         public bool IncludeSchema { get; protected set; }
@@ -11683,6 +11718,7 @@ and limitations under the License.
 
         // Database specific
         protected abstract string DefaultSchema(DbConnection conn);
+        protected abstract string DefaultCollation(DbConnection conn);
         protected abstract string SpecialQueryFlags();
         protected abstract bool HasTemporalTableSupport();
 
@@ -11759,6 +11795,7 @@ and limitations under the License.
                 }
 
                 Settings.DefaultSchema = DefaultSchema(conn);
+                Settings.DefaultCollation = DefaultCollation(conn);
             }
         }
 
@@ -12761,6 +12798,11 @@ and limitations under the License.
             return "mydb";
         }
 
+        protected override string DefaultCollation(DbConnection conn)
+        {
+            return null;
+        }
+
         protected override string SpecialQueryFlags()
         {
             return string.Empty;
@@ -12886,6 +12928,11 @@ and limitations under the License.
             return "system";
         }
 
+        protected override string DefaultCollation(DbConnection conn)
+        {
+            return null;
+        }
+
         protected override string SpecialQueryFlags()
         {
             return string.Empty;
@@ -13003,6 +13050,11 @@ and limitations under the License.
         protected override string DefaultSchema(DbConnection conn)
         {
             return "dbo";
+        }
+
+        protected override string DefaultCollation(DbConnection conn)
+        {
+            return null;
         }
 
         protected override string SpecialQueryFlags()
@@ -13244,6 +13296,11 @@ ORDER BY R.specific_schema, R.routine_name, R.routine_type;";
         protected override string DefaultSchema(DbConnection conn)
         {
             return "public";
+        }
+
+        protected override string DefaultCollation(DbConnection conn)
+        {
+            return null;
         }
 
         protected override string SpecialQueryFlags()
@@ -13717,6 +13774,11 @@ SELECT * FROM MultiContext.ForeignKey;";
         protected override string DefaultSchema(DbConnection conn)
         {
             return "dbo";
+        }
+
+        protected override string DefaultCollation(DbConnection conn)
+        {
+            return null;
         }
 
         protected override string SpecialQueryFlags()
@@ -14698,7 +14760,52 @@ SELECT SPECIFIC_SCHEMA, SPECIFIC_NAME, ROUTINE_TYPE, RETURN_DATA_TYPE, ORDINAL_P
 
         protected override string DefaultSchema(DbConnection conn)
         {
+            try
+            {
+                var cmd = GetCmd(conn);
+                if (cmd != null)
+                {
+                    cmd.CommandText = "SELECT SCHEMA_NAME()";
+                    using (var rdr = cmd.ExecuteReader())
+                    {
+                        if (rdr.Read())
+                        {
+                            return rdr[0].ToString();
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // Ignored
+            }
+
             return "dbo";
+        }
+
+        protected override string DefaultCollation(DbConnection conn)
+        {
+            try
+            {
+                var cmd = GetCmd(conn);
+                if (cmd != null)
+                {
+                    cmd.CommandText = string.Format("SELECT collation_name FROM sys.databases WHERE name = '{0}'", conn.Database);
+                    using (var rdr = cmd.ExecuteReader())
+                    {
+                        if (rdr.Read())
+                        {
+                            return rdr[0].ToString();
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // Ignored
+            }
+
+            return null;
         }
 
         protected override string SpecialQueryFlags()
@@ -15275,7 +15382,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             if (HasPrimaryKey)
                 return; // Table has at least one primary key
 
-            if (IsView && Settings.IsEfCore3())
+            if (IsView && Settings.IsEfCore3Plus())
                 return; // EfCore 3 supports views by use of .HasNoKey() and .ToView("view name");
 
             // This table is not allowed in EntityFramework v6 / EfCore 2 as it does not have a primary key.
@@ -15355,9 +15462,10 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             {
                 case Relationship.OneToOne:
                     ReverseNavigationProperty.Add(
-                        new PropertyAndComments()
+                        new PropertyAndComments
                         {
                             AdditionalDataAnnotations = _filter.ForeignKeyAnnotationsProcessing(fkTable, this, propName, string.Empty),
+                            PropertyName = propName,
                             Definition = string.Format("{0} {1}{2} {3} {{ get; set; }}{4}", accessModifier, GetLazyLoadingMarker(), fkTable.NameHumanCaseWithSuffix(), propName, Settings.IncludeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
                             Comments = string.Format("Parent (One-to-One) {0} pointed by [{1}].{2} ({3})", NameHumanCaseWithSuffix(), fkTable.DbName, fkNames, fks.First().ConstraintName)
                         }
@@ -15366,9 +15474,10 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
                 case Relationship.OneToMany:
                     ReverseNavigationProperty.Add(
-                        new PropertyAndComments()
+                        new PropertyAndComments
                         {
                             AdditionalDataAnnotations = _filter.ForeignKeyAnnotationsProcessing(fkTable, this, propName, string.Empty),
+                            PropertyName = propName,
                             Definition = string.Format("{0} {1}{2} {3} {{ get; set; }}{4}", accessModifier, GetLazyLoadingMarker(), fkTable.NameHumanCaseWithSuffix(), propName, Settings.IncludeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
                             Comments = string.Format("Parent {0} pointed by [{1}].{2} ({3})", NameHumanCaseWithSuffix(), fkTable.DbName, fkNames, fks.First().ConstraintName)
                         }
@@ -15380,9 +15489,10 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     if (Settings.UsePropertyInitialisers)
                         initialisation1 = string.Format(" = new {0}<{1}>();", Settings.CollectionType, fkTable.NameHumanCaseWithSuffix());
                     ReverseNavigationProperty.Add(
-                        new PropertyAndComments()
+                        new PropertyAndComments
                         {
                             AdditionalDataAnnotations = _filter.ForeignKeyAnnotationsProcessing(fkTable, this, propName, string.Empty),
+                            PropertyName = propName,
                             Definition = string.Format("{0} {1}{2}<{3}> {4} {{ get; set; }}{5}{6}", accessModifier, GetLazyLoadingMarker(), Settings.CollectionInterfaceType, fkTable.NameHumanCaseWithSuffix(), propName, initialisation1, Settings.IncludeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
                             Comments = string.Format("Child {0} where [{1}].{2} point to this entity ({3})", Inflector.MakePlural(fkTable.NameHumanCase), fkTable.DbName, fkNames, fks.First().ConstraintName)
                         }
@@ -15395,9 +15505,10 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     if (Settings.UsePropertyInitialisers)
                         initialisation2 = string.Format(" = new {0}<{1}>();", Settings.CollectionType, fkTable.NameHumanCaseWithSuffix());
                     ReverseNavigationProperty.Add(
-                        new PropertyAndComments()
+                        new PropertyAndComments
                         {
                             AdditionalDataAnnotations = _filter.ForeignKeyAnnotationsProcessing(fkTable, this, propName, string.Empty),
+                            PropertyName = propName,
                             Definition = string.Format("{0} {1}{2}<{3}> {4} {{ get; set; }}{5}{6}", accessModifier, GetLazyLoadingMarker(), Settings.CollectionInterfaceType, fkTable.NameHumanCaseWithSuffix(), propName, initialisation2, Settings.IncludeComments != CommentsStyle.None ? " // Many to many mapping" : string.Empty),
                             Comments = string.Format("Child {0} (Many-to-Many) mapped by table [{1}]", Inflector.MakePlural(fkTable.NameHumanCase), mappingTable == null ? string.Empty : mappingTable.DbName)
                         }
@@ -15468,13 +15579,35 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
         private void AddMappingConfiguration(ForeignKey left, ForeignKey right, string leftPropName, string rightPropName, bool includeSchema)
         {
-            MappingConfiguration.Add(string.Format(@"HasMany(t => t.{0}).WithMany(t => t.{1}).Map(m =>
+            if (Settings.IsEf6())
+            {
+                MappingConfiguration.Add(string.Format(@"HasMany(t => t.{0}).WithMany(t => t.{1}).Map(m =>
         {{
             m.ToTable(""{2}""{5});
             m.MapLeftKey(""{3}"");
             m.MapRightKey(""{4}"");
         }});", leftPropName, rightPropName, left.FkTableName, left.FkColumn, right.FkColumn,
-                !includeSchema ? string.Empty : ", \"" + left.FkSchema + "\""));
+                    !includeSchema ? string.Empty : ", \"" + left.FkSchema + "\""));
+                
+                return;
+            }
+            
+            /*if(Settings.IsEfCore5())
+            {
+                MappingConfiguration.Add(string.Format(@"HasMany(t => t.{0}).WithMany(t => t.{1}).UsingEntity<{2}>(
+            j => j
+                .HasOne(m => m.{5})
+                .WithMany()
+                .HasForeignKey(m => m.{4}),
+            j => j
+                .HasOne(m => m.{6})
+                .WithMany()
+                .HasForeignKey(m => m.{3}),
+            j =>
+            {{
+                j.HasKey(t => new {{ t.{3}, t.{4} }});
+            }});", leftPropName, rightPropName, right.FkTableName, left.FkColumn, right.FkColumn, right.FkTableName, left.FkTableName));
+            }*/
         }
 
         // This method will be called right before we write the POCO class
@@ -15665,6 +15798,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public bool DbContextClassIsPartial   { get; set; }
         public bool IsEfCore2                 { get; set; }
         public bool IsEfCore3                 { get; set; }
+        public bool IsEfCore5                 { get; set; }
     }
 
     public class InterfaceModel
@@ -17243,7 +17377,7 @@ using {{this}};{{#newline}}
             {
                 "System",
                 "System.Data",
-                Settings.IsEfCore3() ? "Microsoft.Data.SqlClient" : "System.Data.SqlClient",
+                Settings.IsEfCore3Plus() ? "Microsoft.Data.SqlClient" : "System.Data.SqlClient",
                 "System.Data.SqlTypes",
                 "Microsoft.EntityFrameworkCore",
                 "System.Threading.Tasks",
@@ -17538,7 +17672,7 @@ using {{this}};{{#newline}}
 
             if (Settings.DatabaseType == DatabaseType.SqlCe)
             {
-                usings.Add(Settings.IsEfCore3() ? "Microsoft.Data.SqlClient" : "System.Data.SqlClient");
+                usings.Add(Settings.IsEfCore3Plus() ? "Microsoft.Data.SqlClient" : "System.Data.SqlClient");
                 //usings.Add("System.DBNull");
                 usings.Add("System.Data.SqlTypes");
             }
@@ -17735,6 +17869,7 @@ using {{this}};{{#newline}}
                 "System.Threading",
                 "System.Threading.Tasks",
                 "Microsoft.EntityFrameworkCore",
+                "Microsoft.EntityFrameworkCore.Query",
                 "Microsoft.EntityFrameworkCore.Query.Internal",
                 "Microsoft.EntityFrameworkCore.Infrastructure",
                 "Microsoft.EntityFrameworkCore.ChangeTracking"
@@ -17768,6 +17903,9 @@ using {{this}};{{#newline}}
 //      Read more about it here: https://msdn.microsoft.com/en-us/data/dn314431.aspx{{#newline}}
 {{DbContextClassModifiers}} class FakeDbSet<TEntity> : DbSet<TEntity>, IQueryable<TEntity>, 
 {{#if IsEfCore3}}
+IAsyncEnumerable<TEntity>, 
+{{/if}}
+{{#if IsEfCore5}}
 IAsyncEnumerable<TEntity>, 
 {{/if}}
 IListSource where TEntity : class
@@ -17828,6 +17966,23 @@ IListSource where TEntity : class
 {{/if}}
 
 {{#if IsEfCore3}}
+    public override ValueTask<TEntity> FindAsync(object[] keyValues, CancellationToken cancellationToken){{#newline}}
+    {{{#newline}}
+        return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues), cancellationToken));{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public override ValueTask<TEntity> FindAsync(params object[] keyValues){{#newline}}
+    {{{#newline}}
+        return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues)));{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    IAsyncEnumerator<TEntity> IAsyncEnumerable<TEntity>.GetAsyncEnumerator(CancellationToken cancellationToken){{#newline}}
+    {{{#newline}}
+        return GetAsyncEnumerator(cancellationToken);{{#newline}}
+    }{{#newline}}{{#newline}}
+{{/if}}
+
+{{#if IsEfCore5}}
     public override ValueTask<TEntity> FindAsync(object[] keyValues, CancellationToken cancellationToken){{#newline}}
     {{{#newline}}
         return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues), cancellationToken));{{#newline}}
@@ -17997,6 +18152,13 @@ IListSource where TEntity : class
     }{{#newline}}
 {{/if}}
 
+{{#if IsEfCore5}}
+    public TResult ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken = new CancellationToken()){{#newline}}
+    {{{#newline}}
+        return _inner.Execute<TResult>(expression);{{#newline}}
+    }{{#newline}}
+{{/if}}
+
 }{{#newline}}{{#newline}}
 
 
@@ -18020,6 +18182,18 @@ IListSource where TEntity : class
 {{/if}}
 
 {{#if IsEfCore3}}
+    public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = new CancellationToken()){{#newline}}
+    {{{#newline}}
+        return new FakeDbAsyncEnumerator<T>(this.AsEnumerable().GetEnumerator());{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    IAsyncEnumerator<T> IAsyncEnumerable<T>.GetAsyncEnumerator(CancellationToken cancellationToken){{#newline}}
+    {{{#newline}}
+        return GetAsyncEnumerator(cancellationToken);{{#newline}}
+    }{{#newline}}{{#newline}}
+{{/if}}
+
+{{#if IsEfCore5}}
     public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = new CancellationToken()){{#newline}}
     {{{#newline}}
         return new FakeDbAsyncEnumerator<T>(this.AsEnumerable().GetEnumerator());{{#newline}}
@@ -18065,6 +18239,19 @@ IListSource where TEntity : class
 {{/if}}
 
 {{#if IsEfCore3}}
+    public ValueTask<bool> MoveNextAsync(){{#newline}}
+    {{{#newline}}
+        return new ValueTask<bool>(_inner.MoveNext());{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public ValueTask DisposeAsync(){{#newline}}
+    {{{#newline}}
+        _inner.Dispose();{{#newline}}
+        return new ValueTask(Task.CompletedTask);{{#newline}}
+    }{{#newline}}
+{{/if}}
+
+{{#if IsEfCore5}}
     public ValueTask<bool> MoveNextAsync(){{#newline}}
     {{{#newline}}
         return new ValueTask<bool>(_inner.MoveNext());{{#newline}}
@@ -18337,9 +18524,12 @@ public enum {{EnumName}}{{#newline}}
 
                 case TemplateType.EfCore2:
                 case TemplateType.EfCore3:
+                case TemplateType.EfCore5:
                     return new TemplateEfCore();
 
+                case TemplateType.FileBasedCore2:
                 case TemplateType.FileBasedCore3:
+                case TemplateType.FileBasedCore5:
                     return new TemplateFileBased();
 
                 default:
@@ -18466,8 +18656,10 @@ public enum {{EnumName}}{{#newline}}
         Ef6,
         EfCore2,
         EfCore3,
+        EfCore5,
         FileBasedCore2,
-        FileBasedCore3
+        FileBasedCore3,
+        FileBasedCore5
     }
 
     /// <summary>

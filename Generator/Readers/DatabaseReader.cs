@@ -18,7 +18,7 @@ namespace Efrpg.Readers
         protected Dictionary<string, string> DbTypeToPropertyType; // [SQL Data Type] = Language type.
         protected List<string> SpatialTypes;
 
-        protected string DatabaseEdition, DatabaseEngineEdition, DatabaseProductVersion;
+        protected string DatabaseEdition, DatabaseEngineEdition, DatabaseProductVersion, DatabaseName;
         protected int DatabaseProductMajorVersion;
 
         public bool IncludeSchema { get; protected set; }
@@ -45,6 +45,7 @@ namespace Efrpg.Readers
 
         // Database specific
         protected abstract string DefaultSchema(DbConnection conn);
+        protected abstract string DefaultCollation(DbConnection conn);
         protected abstract string SpecialQueryFlags();
         protected abstract bool HasTemporalTableSupport();
 
@@ -121,6 +122,7 @@ namespace Efrpg.Readers
                 }
 
                 Settings.DefaultSchema = DefaultSchema(conn);
+                Settings.DefaultCollation = DefaultCollation(conn);
             }
         }
 

@@ -136,7 +136,7 @@ using {{this}};{{#newline}}
             {
                 "System",
                 "System.Data",
-                Settings.IsEfCore3() ? "Microsoft.Data.SqlClient" : "System.Data.SqlClient",
+                Settings.IsEfCore3Plus() ? "Microsoft.Data.SqlClient" : "System.Data.SqlClient",
                 "System.Data.SqlTypes",
                 "Microsoft.EntityFrameworkCore",
                 "System.Threading.Tasks",
@@ -431,7 +431,7 @@ using {{this}};{{#newline}}
 
             if (Settings.DatabaseType == DatabaseType.SqlCe)
             {
-                usings.Add(Settings.IsEfCore3() ? "Microsoft.Data.SqlClient" : "System.Data.SqlClient");
+                usings.Add(Settings.IsEfCore3Plus() ? "Microsoft.Data.SqlClient" : "System.Data.SqlClient");
                 //usings.Add("System.DBNull");
                 usings.Add("System.Data.SqlTypes");
             }
@@ -628,6 +628,7 @@ using {{this}};{{#newline}}
                 "System.Threading",
                 "System.Threading.Tasks",
                 "Microsoft.EntityFrameworkCore",
+                "Microsoft.EntityFrameworkCore.Query",
                 "Microsoft.EntityFrameworkCore.Query.Internal",
                 "Microsoft.EntityFrameworkCore.Infrastructure",
                 "Microsoft.EntityFrameworkCore.ChangeTracking"
@@ -661,6 +662,9 @@ using {{this}};{{#newline}}
 //      Read more about it here: https://msdn.microsoft.com/en-us/data/dn314431.aspx{{#newline}}
 {{DbContextClassModifiers}} class FakeDbSet<TEntity> : DbSet<TEntity>, IQueryable<TEntity>, 
 {{#if IsEfCore3}}
+IAsyncEnumerable<TEntity>, 
+{{/if}}
+{{#if IsEfCore5}}
 IAsyncEnumerable<TEntity>, 
 {{/if}}
 IListSource where TEntity : class
@@ -721,6 +725,23 @@ IListSource where TEntity : class
 {{/if}}
 
 {{#if IsEfCore3}}
+    public override ValueTask<TEntity> FindAsync(object[] keyValues, CancellationToken cancellationToken){{#newline}}
+    {{{#newline}}
+        return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues), cancellationToken));{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public override ValueTask<TEntity> FindAsync(params object[] keyValues){{#newline}}
+    {{{#newline}}
+        return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues)));{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    IAsyncEnumerator<TEntity> IAsyncEnumerable<TEntity>.GetAsyncEnumerator(CancellationToken cancellationToken){{#newline}}
+    {{{#newline}}
+        return GetAsyncEnumerator(cancellationToken);{{#newline}}
+    }{{#newline}}{{#newline}}
+{{/if}}
+
+{{#if IsEfCore5}}
     public override ValueTask<TEntity> FindAsync(object[] keyValues, CancellationToken cancellationToken){{#newline}}
     {{{#newline}}
         return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues), cancellationToken));{{#newline}}
@@ -890,6 +911,13 @@ IListSource where TEntity : class
     }{{#newline}}
 {{/if}}
 
+{{#if IsEfCore5}}
+    public TResult ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken = new CancellationToken()){{#newline}}
+    {{{#newline}}
+        return _inner.Execute<TResult>(expression);{{#newline}}
+    }{{#newline}}
+{{/if}}
+
 }{{#newline}}{{#newline}}
 
 
@@ -913,6 +941,18 @@ IListSource where TEntity : class
 {{/if}}
 
 {{#if IsEfCore3}}
+    public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = new CancellationToken()){{#newline}}
+    {{{#newline}}
+        return new FakeDbAsyncEnumerator<T>(this.AsEnumerable().GetEnumerator());{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    IAsyncEnumerator<T> IAsyncEnumerable<T>.GetAsyncEnumerator(CancellationToken cancellationToken){{#newline}}
+    {{{#newline}}
+        return GetAsyncEnumerator(cancellationToken);{{#newline}}
+    }{{#newline}}{{#newline}}
+{{/if}}
+
+{{#if IsEfCore5}}
     public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = new CancellationToken()){{#newline}}
     {{{#newline}}
         return new FakeDbAsyncEnumerator<T>(this.AsEnumerable().GetEnumerator());{{#newline}}
@@ -958,6 +998,19 @@ IListSource where TEntity : class
 {{/if}}
 
 {{#if IsEfCore3}}
+    public ValueTask<bool> MoveNextAsync(){{#newline}}
+    {{{#newline}}
+        return new ValueTask<bool>(_inner.MoveNext());{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public ValueTask DisposeAsync(){{#newline}}
+    {{{#newline}}
+        _inner.Dispose();{{#newline}}
+        return new ValueTask(Task.CompletedTask);{{#newline}}
+    }{{#newline}}
+{{/if}}
+
+{{#if IsEfCore5}}
     public ValueTask<bool> MoveNextAsync(){{#newline}}
     {{{#newline}}
         return new ValueTask<bool>(_inner.MoveNext());{{#newline}}

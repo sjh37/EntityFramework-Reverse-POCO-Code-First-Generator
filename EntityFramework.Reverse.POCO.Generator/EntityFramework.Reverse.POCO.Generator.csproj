@@ -39,7 +39,7 @@
         <Compile Update="Database.cs">
             <DesignTime>True</DesignTime>
             <AutoGen>True</AutoGen>
-            <DependentUpon>Database NorthwindSqlCe40.tt</DependentUpon>
+            <DependentUpon>Database.tt</DependentUpon>
         </Compile>
     </ItemGroup>
 

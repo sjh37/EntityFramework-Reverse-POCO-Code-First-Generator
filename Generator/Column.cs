@@ -49,7 +49,6 @@ namespace Efrpg
 
         public string Config;
         public List<string> ConfigFk = new List<string>();
-        //public string Entity;
         public List<PropertyAndComments> EntityFk = new List<PropertyAndComments>();
 
         public List<RawIndex> Indexes = new List<RawIndex>();

@@ -75,7 +75,7 @@ namespace Efrpg
             if (HasPrimaryKey)
                 return; // Table has at least one primary key
 
-            if (IsView && Settings.IsEfCore3())
+            if (IsView && Settings.IsEfCore3Plus())
                 return; // EfCore 3 supports views by use of .HasNoKey() and .ToView("view name");
 
             // This table is not allowed in EntityFramework v6 / EfCore 2 as it does not have a primary key.
@@ -155,9 +155,10 @@ namespace Efrpg
             {
                 case Relationship.OneToOne:
                     ReverseNavigationProperty.Add(
-                        new PropertyAndComments()
+                        new PropertyAndComments
                         {
                             AdditionalDataAnnotations = _filter.ForeignKeyAnnotationsProcessing(fkTable, this, propName, string.Empty),
+                            PropertyName = propName,
                             Definition = string.Format("{0} {1}{2} {3} {{ get; set; }}{4}", accessModifier, GetLazyLoadingMarker(), fkTable.NameHumanCaseWithSuffix(), propName, Settings.IncludeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
                             Comments = string.Format("Parent (One-to-One) {0} pointed by [{1}].{2} ({3})", NameHumanCaseWithSuffix(), fkTable.DbName, fkNames, fks.First().ConstraintName)
                         }
@@ -166,9 +167,10 @@ namespace Efrpg
 
                 case Relationship.OneToMany:
                     ReverseNavigationProperty.Add(
-                        new PropertyAndComments()
+                        new PropertyAndComments
                         {
                             AdditionalDataAnnotations = _filter.ForeignKeyAnnotationsProcessing(fkTable, this, propName, string.Empty),
+                            PropertyName = propName,
                             Definition = string.Format("{0} {1}{2} {3} {{ get; set; }}{4}", accessModifier, GetLazyLoadingMarker(), fkTable.NameHumanCaseWithSuffix(), propName, Settings.IncludeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
                             Comments = string.Format("Parent {0} pointed by [{1}].{2} ({3})", NameHumanCaseWithSuffix(), fkTable.DbName, fkNames, fks.First().ConstraintName)
                         }
@@ -180,9 +182,10 @@ namespace Efrpg
                     if (Settings.UsePropertyInitialisers)
                         initialisation1 = string.Format(" = new {0}<{1}>();", Settings.CollectionType, fkTable.NameHumanCaseWithSuffix());
                     ReverseNavigationProperty.Add(
-                        new PropertyAndComments()
+                        new PropertyAndComments
                         {
                             AdditionalDataAnnotations = _filter.ForeignKeyAnnotationsProcessing(fkTable, this, propName, string.Empty),
+                            PropertyName = propName,
                             Definition = string.Format("{0} {1}{2}<{3}> {4} {{ get; set; }}{5}{6}", accessModifier, GetLazyLoadingMarker(), Settings.CollectionInterfaceType, fkTable.NameHumanCaseWithSuffix(), propName, initialisation1, Settings.IncludeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
                             Comments = string.Format("Child {0} where [{1}].{2} point to this entity ({3})", Inflector.MakePlural(fkTable.NameHumanCase), fkTable.DbName, fkNames, fks.First().ConstraintName)
                         }
@@ -195,9 +198,10 @@ namespace Efrpg
                     if (Settings.UsePropertyInitialisers)
                         initialisation2 = string.Format(" = new {0}<{1}>();", Settings.CollectionType, fkTable.NameHumanCaseWithSuffix());
                     ReverseNavigationProperty.Add(
-                        new PropertyAndComments()
+                        new PropertyAndComments
                         {
                             AdditionalDataAnnotations = _filter.ForeignKeyAnnotationsProcessing(fkTable, this, propName, string.Empty),
+                            PropertyName = propName,
                             Definition = string.Format("{0} {1}{2}<{3}> {4} {{ get; set; }}{5}{6}", accessModifier, GetLazyLoadingMarker(), Settings.CollectionInterfaceType, fkTable.NameHumanCaseWithSuffix(), propName, initialisation2, Settings.IncludeComments != CommentsStyle.None ? " // Many to many mapping" : string.Empty),
                             Comments = string.Format("Child {0} (Many-to-Many) mapped by table [{1}]", Inflector.MakePlural(fkTable.NameHumanCase), mappingTable == null ? string.Empty : mappingTable.DbName)
                         }
@@ -268,13 +272,35 @@ namespace Efrpg
 
         private void AddMappingConfiguration(ForeignKey left, ForeignKey right, string leftPropName, string rightPropName, bool includeSchema)
         {
-            MappingConfiguration.Add(string.Format(@"HasMany(t => t.{0}).WithMany(t => t.{1}).Map(m =>
+            if (Settings.IsEf6())
+            {
+                MappingConfiguration.Add(string.Format(@"HasMany(t => t.{0}).WithMany(t => t.{1}).Map(m =>
         {{
             m.ToTable(""{2}""{5});
             m.MapLeftKey(""{3}"");
             m.MapRightKey(""{4}"");
         }});", leftPropName, rightPropName, left.FkTableName, left.FkColumn, right.FkColumn,
-                !includeSchema ? string.Empty : ", \"" + left.FkSchema + "\""));
+                    !includeSchema ? string.Empty : ", \"" + left.FkSchema + "\""));
+                
+                return;
+            }
+            
+            /*if(Settings.IsEfCore5())
+            {
+                MappingConfiguration.Add(string.Format(@"HasMany(t => t.{0}).WithMany(t => t.{1}).UsingEntity<{2}>(
+            j => j
+                .HasOne(m => m.{5})
+                .WithMany()
+                .HasForeignKey(m => m.{4}),
+            j => j
+                .HasOne(m => m.{6})
+                .WithMany()
+                .HasForeignKey(m => m.{3}),
+            j =>
+            {{
+                j.HasKey(t => new {{ t.{3}, t.{4} }});
+            }});", leftPropName, rightPropName, right.FkTableName, left.FkColumn, right.FkColumn, right.FkTableName, left.FkTableName));
+            }*/
         }
 
         // This method will be called right before we write the POCO class

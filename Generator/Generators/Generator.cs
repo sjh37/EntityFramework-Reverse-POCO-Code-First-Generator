@@ -522,6 +522,11 @@ namespace Efrpg.Generators
 
                 // Work out if there are any foreign key relationship naming clashes
                 ProcessForeignKeys(foreignKeys, true, filter);
+
+                // Mappings tables can only be true for Ef6
+                if (Settings.UseMappingTables && !Settings.IsEf6())
+                    Settings.UseMappingTables = false;
+                
                 if (Settings.UseMappingTables)
                     filter.Tables.IdentifyMappingTables(foreignKeys, true, DatabaseReader.IncludeSchema);
 
@@ -953,6 +958,8 @@ namespace Efrpg.Generators
                 var fkd = new PropertyAndComments
                 {
                     AdditionalDataAnnotations = filter.ForeignKeyAnnotationsProcessing(fkTable, pkTable, pkPropName, fkPropName),
+                    
+                    PropertyName = pkPropName,
 
                     Definition = string.Format("public {0}{1} {2} {3}{4}", 
                         Table.GetLazyLoadingMarker(),
@@ -1115,7 +1122,6 @@ namespace Efrpg.Generators
             }
         }
 
-
         public void SetupEntityAndConfig(Column c)
         {
             SetupEntity(c);
@@ -1136,7 +1142,8 @@ namespace Efrpg.Generators
                         Settings.DbContextInterfaceName = null;
                         Settings.DbContextName = ((MultiContextFilter) filter.Value).GetSettings().Name ?? filter.Key;
 
-                        if (Settings.TemplateType == TemplateType.FileBasedCore3)
+                        if (Settings.TemplateType == TemplateType.FileBasedCore3 ||
+                            Settings.TemplateType == TemplateType.FileBasedCore5)
                         {
                             // Use file based templates, set the path
                             var multiContextSetting = ((MultiContextFilter) filter.Value).GetSettings();
@@ -1182,7 +1189,7 @@ namespace Efrpg.Generators
             codeOutputList.Add(contextFakeClass, codeGenerator.GenerateFakeContext());
             codeOutputList.Add(contextFakeDbSet, codeGenerator.GenerateFakeDbSet());
 
-            var isEfCore3 = Settings.IsEfCore3();
+            var isEfCore3Plus = Settings.IsEfCore3Plus();
 
             foreach (var table in filter.Tables
                 .Where(t => !t.IsMapping)
@@ -1192,7 +1199,7 @@ namespace Efrpg.Generators
                 codeOutputList.Add(pocoClass + table.NameHumanCase, codeGenerator.GeneratePoco(table));
 
                 // Only write the config if it has a primary key
-                if (table.HasPrimaryKey || (table.IsView && isEfCore3))
+                if (table.HasPrimaryKey || (table.IsView && isEfCore3Plus))
                     codeOutputList.Add(pocoConfiguration + table.NameHumanCase, codeGenerator.GeneratePocoConfiguration(table));
             }
 

@@ -30,14 +30,14 @@ namespace Efrpg.Generators
             if (filter == null)      throw new ArgumentNullException(nameof(filter));
 #pragma warning restore IDE0016 // Use 'throw' expression
 
-            var isEfCore  = Settings.GeneratorType == GeneratorType.EfCore;
-            var isEfCore3 = Settings.IsEfCore3();
+            var isEfCore      = Settings.GeneratorType == GeneratorType.EfCore;
+            var isEfCore3Plus = Settings.IsEfCore3Plus();
 
             _generator = generator;
             _filter    = filter;
 
             _tables = filter.Tables
-                .Where(t => !t.IsMapping && (t.HasPrimaryKey || (t.IsView && isEfCore3)))
+                .Where(t => !t.IsMapping && (t.HasPrimaryKey || (t.IsView && isEfCore3Plus)))
                 .OrderBy(x => x.NameHumanCase)
                 .Select(tbl => new TableTemplateData(tbl))
                 .ToList();
@@ -99,10 +99,10 @@ namespace Efrpg.Generators
                             ? tvf.WriteStoredProcFunctionSqlParameterAnonymousArray(false, false)
                             : tvf.WriteTableValuedFunctionSqlParameterAnonymousArray(),
                         isEfCore ? tvf.WriteNetCoreTableValuedFunctionsSqlAtParams() : tvf.WriteStoredProcFunctionSqlAtParams(),
-                        isEfCore3 ? "FromSqlRaw" : "FromSql",
-                        isEfCore3 ? "Set" : "Query",
-                        isEfCore3 ? "Entity" : "Query",
-                        isEfCore3 ? ".HasNoKey()" : string.Empty
+                        isEfCore3Plus ? "FromSqlRaw"  : "FromSql",
+                        isEfCore3Plus ? "Set"         : "Query",
+                        isEfCore3Plus ? "Entity"      : "Query",
+                        isEfCore3Plus ? ".HasNoKey()" : string.Empty
                     ))
                     .ToList();
 
@@ -292,7 +292,7 @@ namespace Efrpg.Generators
                     .Where(x => !string.IsNullOrWhiteSpace(x)));
             }
 
-            var isEfCore3 = Settings.IsEfCore3();
+            var isEfCore3Plus = Settings.IsEfCore3Plus();
 
             var data = new ContextModel
             {
@@ -325,11 +325,11 @@ namespace Efrpg.Generators
                 hasTableValuedFunctions                = _hasTableValuedFunctions && _filter.IncludeTableValuedFunctions,
                 hasScalarValuedFunctions               = _hasScalarValuedFunctions && _filter.IncludeScalarValuedFunctions,
                 IncludeObjectContextConstructor        = !Settings.DbContextBaseClass.Contains("IdentityDbContext"),
-                QueryString                            = isEfCore3 ? "Set"           : "Query",
-                FromSql                                = isEfCore3 ? "FromSqlRaw"    : "FromSql",
-                ExecuteSqlCommand                      = isEfCore3 ? "ExecuteSqlRaw" : "ExecuteSqlCommand",
-                StoredProcModelBuilderCommand          = isEfCore3 ? "Entity"        : "Query",
-                StoredProcModelBuilderPostCommand      = isEfCore3 ? ".HasNoKey()"   : string.Empty,
+                QueryString                            = isEfCore3Plus ? "Set"           : "Query",
+                FromSql                                = isEfCore3Plus ? "FromSqlRaw"    : "FromSql",
+                ExecuteSqlCommand                      = isEfCore3Plus ? "ExecuteSqlRaw" : "ExecuteSqlCommand",
+                StoredProcModelBuilderCommand          = isEfCore3Plus ? "Entity"        : "Query",
+                StoredProcModelBuilderPostCommand      = isEfCore3Plus ? ".HasNoKey()"   : string.Empty,
                 OnConfigurationUsesConfiguration       = Settings.OnConfiguration == OnConfiguration.Configuration,
                 OnConfigurationUsesConnectionString    = Settings.OnConfiguration == OnConfiguration.ConnectionString,
                 DefaultSchema                          = Settings.DefaultSchema
@@ -386,7 +386,8 @@ namespace Efrpg.Generators
                 DbContextClassModifiers = Settings.DbContextClassModifiers,
                 DbContextClassIsPartial = Settings.DbContextClassIsPartial(),
                 IsEfCore2               = Settings.IsEfCore2(),
-                IsEfCore3               = Settings.IsEfCore3()
+                IsEfCore3               = Settings.IsEfCore3(),
+                IsEfCore5               = Settings.IsEfCore5()
             };
 
             var co = new CodeOutput(string.Empty, filename, "Fake DbSet", GlobalUsings);
@@ -426,11 +427,11 @@ namespace Efrpg.Generators
                 return null;
             }
 
-            var isEfCore3 = Settings.IsEfCore3();
+            var isEfCore3Plus = Settings.IsEfCore3Plus();
 
             var data = new PocoModel
             {
-                UseHasNoKey             = isEfCore3 && table.IsView && !table.HasPrimaryKey,
+                UseHasNoKey             = isEfCore3Plus && table.IsView && !table.HasPrimaryKey,
                 HasNoPrimaryKey         = !table.HasPrimaryKey,
                 Name                    = table.DbName,
                 NameHumanCaseWithSuffix = table.NameHumanCaseWithSuffix(),
@@ -518,7 +519,7 @@ namespace Efrpg.Generators
                 .OrderBy(x => x.Ordinal)
                 .ToList();
 
-            var isEfCore3 = Settings.IsEfCore3();
+            var isEfCore3Plus = Settings.IsEfCore3Plus();
 
             var foreignKeys = columns.SelectMany(x => x.ConfigFk).OrderBy(o => o).ToList();
             var primaryKey  = _generator.PrimaryKeyModelBuilder(table);
@@ -528,9 +529,9 @@ namespace Efrpg.Generators
 
             var data = new PocoConfigurationModel
             {
-                UseHasNoKey               = isEfCore3 && table.IsView && !table.HasPrimaryKey,
+                UseHasNoKey               = isEfCore3Plus && table.IsView && !table.HasPrimaryKey,
                 Name                      = table.DbName,
-                ToTableOrView             = (isEfCore3 && table.IsView && !table.HasPrimaryKey) ? "ToView" : "ToTable",
+                ToTableOrView             = (isEfCore3Plus && table.IsView && !table.HasPrimaryKey) ? "ToView" : "ToTable",
                 ConfigurationClassName    = table.NameHumanCaseWithSuffix() + Settings.ConfigurationClassName,
                 NameHumanCaseWithSuffix   = table.NameHumanCaseWithSuffix(),
                 Schema                    = table.Schema.DbName,

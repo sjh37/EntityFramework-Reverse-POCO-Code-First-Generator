@@ -5,8 +5,8 @@
         SqlServer,
         SqlCe,
         Plugin,     // See Settings.DatabaseReaderPlugin
+        PostgreSQL,
         MySql,      // Not yet implemented
-        PostgreSQL, // Not yet implemented
         Oracle      // Not yet implemented
     }
 }

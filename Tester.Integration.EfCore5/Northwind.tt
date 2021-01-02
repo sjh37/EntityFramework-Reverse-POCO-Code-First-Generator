@@ -1,45 +1,29 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using BuildTT.Application;
-using BuildTT.Infrastructure;
+<#@ include file ="..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v3.ttinclude" #>
+<#
+    // v3.2.0
+    // Please make changes to the settings below.
+    // All you have to do is save this file, and the output file(s) are generated. Compiling does not regenerate the file(s).
+    // A course for the older v2 generator is available on Pluralsight at https://www.pluralsight.com/courses/code-first-entity-framework-legacy-databases
 
-namespace BuildTT
-{
-    public static class BuildTT
-    {
-        private static string _version;
-
-        public static void Create(string generatorRoot, string ttRoot, string version)
-        {
-            _version = version;
-            UpdateEfrpgVersion(Path.Combine(generatorRoot, "EfrpgVersion.cs"));
-            CreateTT(generatorRoot, ttRoot);
-            CreateCoreTTInclude(generatorRoot, ttRoot);
-        }
-
-        private static void CreateTT(string generatorRoot, string ttRoot)
-        {
-            const string footer = @"    // Settings ***************************************************************************************************************************
+    // Settings ***************************************************************************************************************************
     // Only the most popular settings are listed below.
     // Either override Settings.* here, or edit the Settings, FilterSettings and SingleContextFilter classes located at the top of EF.Reverse.POCO.v3.ttinclude
     
     // For help on the various Types below, please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Common-Settings.*Types-explained
     // The following entries are the only required settings.
-    Settings.DatabaseType             = DatabaseType.SqlServer; // SqlServer, SqlCe, PostgreSQL. Coming next: MySql, Oracle
-    Settings.TemplateType             = TemplateType.EfCore3; // EfCore5, EfCore3, EfCore2, Ef6, FileBasedCore2, FileBasedCore3, FileBasedCore5. FileBased specify folder using Settings.TemplateFolder
-    Settings.GeneratorType            = GeneratorType.EfCore; // EfCore, Ef6, Custom. Custom edit GeneratorCustom class to provide your own implementation
+    Settings.DatabaseType             = DatabaseType.SqlServer;
+    Settings.TemplateType             = TemplateType.EfCore5;
+    Settings.GeneratorType            = GeneratorType.EfCore; // Ef6, EfCore, Custom. Custom edit GeneratorCustom class to provide your own implementation
 
-    Settings.UseMappingTables        = false; // Can only be true for Ef6. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
+    Settings.UseMappingTables        = true;
     Settings.FileManagerType         = FileManagerType.Custom; // .NET Core project = Custom; .NET project = VisualStudio; No output (testing only) = Null
-    Settings.ConnectionString        = ""Data Source=(local);Initial Catalog=Northwind;Integrated Security=True;MultipleActiveResultSets=True""; // This is used by the generator to reverse engineer your database
-    Settings.ConnectionStringName    = ""MyDbContext""; // ConnectionString key as specified in your app.config/web.config/appsettings.json. Not used by the generator, but is placed into the generated DbContext constructor.
-    Settings.DbContextName           = ""MyDbContext""; // Class name for the DbContext to be generated. Note: If generating separate files, please give the db context a different name from this tt filename.
-    //Settings.DbContextInterfaceName= ""IMyDbContext""; // Defaults to ""I"" + DbContextName or set string empty to not implement any interface.
+    Settings.ConnectionString        = "Data Source=(local);Initial Catalog=Northwind;Integrated Security=True;MultipleActiveResultSets=True"; // This is used by the generator to reverse engineer your database
+    Settings.ConnectionStringName    = "MyDbContext"; // ConnectionString key as specified in your app.config/web.config/appsettings.json. Not used by the generator, but is placed into the generated DbContext constructor.
+    Settings.DbContextName           = "MyDbContext"; // Class name for the DbContext to be generated. Note: If generating separate files, please give the db context a different name from this tt filename.
+    //Settings.DbContextInterfaceName= "IMyDbContext"; // Defaults to "I" + DbContextName or set string empty to not implement any interface.
     Settings.GenerateSeparateFiles   = false;
-    Settings.Namespace               = DefaultNamespace; // Override the default namespace here. Please use double quotes, example: ""Accounts.Billing""
-    Settings.TemplateFolder          = Path.Combine(Settings.Root, ""Templates""); // Only used if Settings.TemplateType = TemplateType.FileBased. Specify folder name where the mustache folders can be found. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Custom-file-based-templates
+    Settings.Namespace               = DefaultNamespace; // Override the default namespace here. Please use double quotes, example: "Accounts.Billing"
+    Settings.TemplateFolder          = Path.Combine(Settings.Root, "Templates"); // Only used if Settings.TemplateType = TemplateType.FileBased. Specify folder name where the mustache folders can be found. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Custom-file-based-templates
     Settings.AddUnitTestingDbContext = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing. Read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/FakeDbContext
 
     // Elements to generate ***************************************************************************************************************
@@ -63,35 +47,35 @@ namespace BuildTT
     //FilterSettings.IncludeViews                 = true;
     //FilterSettings.IncludeSynonyms              = false;
     //FilterSettings.IncludeStoredProcedures      = true;
-    //FilterSettings.IncludeTableValuedFunctions  = false; // If true, for EF6 install the ""EntityFramework.CodeFirstStoreFunctions"" NuGet Package.
+    //FilterSettings.IncludeTableValuedFunctions  = false; // If true, for EF6 install the "EntityFramework.CodeFirstStoreFunctions" NuGet Package.
     //FilterSettings.IncludeScalarValuedFunctions = false;
 
      // Examples:
-    //FilterSettings.SchemaFilters.Add(new RegexExcludeFilter(""[Ff]inance.*"")); // This excludes the Finance schema
-    //FilterSettings.SchemaFilters.Add(new RegexIncludeFilter(""dbo.*"")); // This includes only dbo schema
-    //FilterSettings.TableFilters.Add(new RegexExcludeFilter("".*[Bb]illing.*"")); // This excludes all tables with 'billing' anywhere in the name
-    //FilterSettings.TableFilters.Add(new RegexIncludeFilter(""^[Cc]ustomer.*"")); // This includes any remaining tables with names beginning with 'customer'
-    FilterSettings.TableFilters.Add(new RegexExcludeFilter(""AspNet.*"")); // This excludes all tables starting with 'AspNet'
-    FilterSettings.TableFilters.Add(new RegexExcludeFilter(""__EFMigrationsHistory"")); // This excludes a table called '__EFMigrationsHistory'
-    //FilterSettings.ColumnFilters.Add(new RegexExcludeFilter(""[Cc]reated[Aa]t.*"")); // This excludes all columns starting with 'CreatedAt' e.g CreatedAtUtc
-    //FilterSettings.ColumnFilters.Add(new RegexIncludeFilter("".*"")); // Rarely used as it would only include columns with names listed here
-    //FilterSettings.StoredProcedureFilters.Add(new RegexExcludeFilter(""Calc"")); // This excludes all stored procedures 'Calc' in the name
-    //FilterSettings.StoredProcedureFilters.Add(new RegexIncludeFilter(""Pricing.*"")); // This includes all stored procedures starting with 'Pricing'
+    //FilterSettings.SchemaFilters.Add(new RegexExcludeFilter("[Ff]inance.*")); // This excludes the Finance schema
+    //FilterSettings.SchemaFilters.Add(new RegexIncludeFilter("dbo.*")); // This includes only dbo schema
+    //FilterSettings.TableFilters.Add(new RegexExcludeFilter(".*[Bb]illing.*")); // This excludes all tables with 'billing' anywhere in the name
+    //FilterSettings.TableFilters.Add(new RegexIncludeFilter("^[Cc]ustomer.*")); // This includes any remaining tables with names beginning with 'customer'
+    FilterSettings.TableFilters.Add(new RegexExcludeFilter("AspNet.*")); // This excludes all tables starting with 'AspNet'
+    FilterSettings.TableFilters.Add(new RegexExcludeFilter("__EFMigrationsHistory")); // This excludes a table called '__EFMigrationsHistory'
+    //FilterSettings.ColumnFilters.Add(new RegexExcludeFilter("[Cc]reated[Aa]t.*")); // This excludes all columns starting with 'CreatedAt' e.g CreatedAtUtc
+    //FilterSettings.ColumnFilters.Add(new RegexIncludeFilter(".*")); // Rarely used as it would only include columns with names listed here
+    //FilterSettings.StoredProcedureFilters.Add(new RegexExcludeFilter("Calc")); // This excludes all stored procedures 'Calc' in the name
+    //FilterSettings.StoredProcedureFilters.Add(new RegexIncludeFilter("Pricing.*")); // This includes all stored procedures starting with 'Pricing'
 
     // Other settings *********************************************************************************************************************
     Settings.CommandTimeout                         = 600; // SQL Command timeout in seconds. 600 is 10 minutes, 0 will wait indefinitely. Some databases can be slow retrieving schema information.
-    Settings.DbContextInterfaceBaseClasses          = ""IDisposable""; // Specify what the base classes are for your database context interface
-    Settings.DbContextBaseClass                     = ""DbContext""; // Specify what the base class is for your DbContext. For ASP.NET Identity use ""IdentityDbContext<ApplicationUser>"";
+    Settings.DbContextInterfaceBaseClasses          = "IDisposable"; // Specify what the base classes are for your database context interface
+    Settings.DbContextBaseClass                     = "DbContext"; // Specify what the base class is for your DbContext. For ASP.NET Identity use "IdentityDbContext<ApplicationUser>";
     Settings.OnConfiguration                        = OnConfiguration.ConnectionString; // EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Settings.OnConfiguration
     Settings.AddParameterlessConstructorToDbContext = true; // EF6 only. If true, then DbContext will have a default (parameter-less) constructor which automatically passes in the connection string name, if false then no parameter-less constructor will be created.
-    Settings.ConfigurationClassName                 = ""Configuration""; // Configuration, Mapping, Map, etc. This is appended to the Poco class name to configure the mappings.
-    Settings.DatabaseReaderPlugin                   = """"; // Eg, ""c:\\Path\\YourDatabaseReader.dll,Full.Name.Of.Class.Including.Namespace"". See #501. This will allow you to specify a pluggable provider for reading your database.
+    Settings.ConfigurationClassName                 = "Configuration"; // Configuration, Mapping, Map, etc. This is appended to the Poco class name to configure the mappings.
+    Settings.DatabaseReaderPlugin                   = ""; // Eg, "c:\\Path\\YourDatabaseReader.dll,Full.Name.Of.Class.Including.Namespace". See #501. This will allow you to specify a pluggable provider for reading your database.
 
-    Settings.EntityClassesModifiers        = ""public""; // ""public partial"";
-    Settings.ConfigurationClassesModifiers = ""public""; // ""public partial"";
-    Settings.DbContextClassModifiers       = ""public""; // ""public partial"";
-    Settings.DbContextInterfaceModifiers   = ""public""; // ""public partial"";
-    Settings.ResultClassModifiers          = ""public""; // ""public partial"";
+    Settings.EntityClassesModifiers        = "public"; // "public partial";
+    Settings.ConfigurationClassesModifiers = "public"; // "public partial";
+    Settings.DbContextClassModifiers       = "public"; // "public partial";
+    Settings.DbContextInterfaceModifiers   = "public"; // "public partial";
+    Settings.ResultClassModifiers          = "public"; // "public partial";
 
     Settings.UsePascalCase                      = true; // This will rename the generated C# tables & properties to use PascalCase. If false table & property names will be left alone.
     Settings.UseDataAnnotations                 = false; // If true, will add data annotations to the poco classes.
@@ -101,19 +85,19 @@ namespace BuildTT
     Settings.IncludeComments                    = CommentsStyle.AtEndOfField; // Adds comments to the generated code
     Settings.IncludeExtendedPropertyComments    = CommentsStyle.InSummaryBlock; // Adds extended properties as comments to the generated code
     Settings.DisableGeographyTypes              = true; // Turns off use of spatial types: Geography, Geometry. More info: https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Spatial-Types
-    Settings.CollectionInterfaceType            = ""ICollection""; //  = ""System.Collections.Generic.List""; // Determines the declaration type of collections for the Navigation Properties. ICollection is used if not set.
-    Settings.CollectionType                     = ""List""; // Determines the type of collection for the Navigation Properties. ""ObservableCollection"" for example. Add ""System.Collections.ObjectModel"" to AdditionalNamespaces if setting the CollectionType = ""ObservableCollection"".
+    Settings.CollectionInterfaceType            = "ICollection"; //  = "System.Collections.Generic.List"; // Determines the declaration type of collections for the Navigation Properties. ICollection is used if not set.
+    Settings.CollectionType                     = "List"; // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example. Add "System.Collections.ObjectModel" to AdditionalNamespaces if setting the CollectionType = "ObservableCollection".
     Settings.NullableShortHand                  = true; // true => T?, false => Nullable<T>
     Settings.AddIDbContextFactory               = true; // Will add a default IDbContextFactory<DbContextName> implementation for easy dependency injection
     Settings.IncludeQueryTraceOn9481Flag        = false; // If SqlServer 2014 appears frozen / take a long time when this file is saved, try setting this to true (you will also need elevated privileges).
     Settings.UsePrivateSetterForComputedColumns = true; // If the columns is computed, use a private setter.
     Settings.IncludeGeneratorVersionInCode      = false; // If true, will include the version number of the generator in the generated code
-    Settings.AdditionalNamespaces               = new List<string>(); // To include extra namespaces, include them here. i.e. new List<string> { ""Microsoft.AspNetCore.Identity.EntityFrameworkCore"", ""System.ComponentModel.DataAnnotations"" };
-    Settings.AdditionalContextInterfaceItems    = new List<string>(); // example: new List<string> { ""void SetAutoDetectChangesEnabled(bool flag);"" };
+    Settings.AdditionalNamespaces               = new List<string>(); // To include extra namespaces, include them here. i.e. new List<string> { "Microsoft.AspNetCore.Identity.EntityFrameworkCore", "System.ComponentModel.DataAnnotations" };
+    Settings.AdditionalContextInterfaceItems    = new List<string>(); // example: new List<string> { "void SetAutoDetectChangesEnabled(bool flag);" };
 
     // Language choices
     Settings.GenerationLanguage = GenerationLanguage.CSharp;
-    Settings.FileExtension      = "".cs"";
+    Settings.FileExtension      = ".cs";
 
     // Code suppression *******************************************************************************
     Settings.UseRegions                       = true;  // If false, suppresses the use of #region
@@ -133,17 +117,17 @@ namespace BuildTT
         // Example
         /*new EnumerationSettings
         {
-            Name       = ""DaysOfWeek"",          // Enum to generate. e.g. ""DaysOfWeek"" would result in ""public enum DaysOfWeek {...}""
-            Table      = ""EnumTest.DaysOfWeek"", // Database table containing enum values. e.g. ""DaysOfWeek""
-            NameField  = ""TypeName"",            // Column containing the name for the enum. e.g. ""TypeName""
-            ValueField = ""TypeId""               // Column containing the values for the enum. e.g. ""TypeId""
+            Name       = "DaysOfWeek",          // Enum to generate. e.g. "DaysOfWeek" would result in "public enum DaysOfWeek {...}"
+            Table      = "EnumTest.DaysOfWeek", // Database table containing enum values. e.g. "DaysOfWeek"
+            NameField  = "TypeName",            // Column containing the name for the enum. e.g. "TypeName"
+            ValueField = "TypeId"               // Column containing the values for the enum. e.g. "TypeId"
         },
         new EnumerationSettings
         {
-            Name       = ""CarOptions"",
-            Table      = ""car_options"",
-            NameField  = ""enum_name"",
-            ValueField = ""value""
+            Name       = "CarOptions",
+            Table      = "car_options",
+            NameField  = "enum_name",
+            ValueField = "value"
         }*/
         // Code will be generated as:
         // public enum Name
@@ -159,13 +143,13 @@ namespace BuildTT
     Settings.AddEnumDefinitions = delegate(List<EnumDefinition> enumDefinitions)
     {
         // Examples:
-        //enumDefinitions.Add(new EnumDefinition { Schema = Settings.DefaultSchema, Table = ""match_table_name"", Column = ""match_column_name"", EnumType = ""name_of_enum"" });
+        //enumDefinitions.Add(new EnumDefinition { Schema = Settings.DefaultSchema, Table = "match_table_name", Column = "match_column_name", EnumType = "name_of_enum" });
 
         // This will replace OrderHeader.OrderStatus type to be an OrderStatusType enum
-        //enumDefinitions.Add(new EnumDefinition { Schema = Settings.DefaultSchema, Table = ""OrderHeader"", Column = ""OrderStatus"", EnumType = ""OrderStatusType"" }); 
+        //enumDefinitions.Add(new EnumDefinition { Schema = Settings.DefaultSchema, Table = "OrderHeader", Column = "OrderStatus", EnumType = "OrderStatusType" }); 
 
         // This will replace any table *.OrderStatus type to be an OrderStatusType enum
-        //enumDefinitions.Add(new EnumDefinition { Schema = Settings.DefaultSchema, Table = ""*"", Column = ""OrderStatus"", EnumType = ""OrderStatusType"" });
+        //enumDefinitions.Add(new EnumDefinition { Schema = Settings.DefaultSchema, Table = "*", Column = "OrderStatus", EnumType = "OrderStatusType" });
     };
 
     // StoredProcedure return types *******************************************************************************************************
@@ -173,7 +157,7 @@ namespace BuildTT
     // If a stored procedure returns an entity, add it to the list below.
     // This will suppress the generation of the return model, and instead return the entity.
     // Example:                                 Proc name      Return this entity type instead
-    // Settings.StoredProcedureReturnTypes.Add(""SalesByYear"", ""SummaryOfSalesByYear"");
+    // Settings.StoredProcedureReturnTypes.Add("SalesByYear", "SummaryOfSalesByYear");
 
     // Additional attributes on on reverse navigation and foreign key properties **********************************************************
     // If you need to serialise your entities with the JsonSerializer from Newtonsoft, this would serialise
@@ -182,28 +166,28 @@ namespace BuildTT
     // For more control, take a look at ForeignKeyAnnotationsProcessing() further down
     Settings.AdditionalReverseNavigationsDataAnnotations = new string[]
     {
-        // ""JsonIgnore"" // Also add ""Newtonsoft.Json"" to the AdditionalNamespaces array above
+        // "JsonIgnore" // Also add "Newtonsoft.Json" to the AdditionalNamespaces array above
     };
 
     Settings.AdditionalForeignKeysDataAnnotations = new string[]
     {
-        // ""JsonIgnore"" // Also add ""Newtonsoft.Json"" to the AdditionalNamespaces array above
+        // "JsonIgnore" // Also add "Newtonsoft.Json" to the AdditionalNamespaces array above
     };
 
     // Reference other namespaces *********************************************************************************************************
     // Use these namespaces to specify where the different elements now live. These may even be in different assemblies.
     // NOTE: These are only used if ElementsToGenerate is not set to generate everything.
     // Please note this does not create the files in these locations, it only adds a using statement to say where they are.
-    // The way to do this is to add the ""EntityFramework Reverse POCO Code First Generator"" into each of these folders.
+    // The way to do this is to add the "EntityFramework Reverse POCO Code First Generator" into each of these folders.
     // Then set the .tt to only generate the relevant section you need by setting
     //      ElementsToGenerate = Elements.Poco; in your Entity folder,
     //      ElementsToGenerate = Elements.Context | Elements.Interface; in your Context folder,
     //      ElementsToGenerate = Elements.PocoConfiguration; in your Configuration folder.
     // You also need to set the following to the namespace where they now live:
-    Settings.PocoNamespace              = """"; // ""YourProject.Entities"";
-    Settings.ContextNamespace           = """"; // ""YourProject.Context"";
-    Settings.InterfaceNamespace         = """"; // ""YourProject.Interfaces"";
-    Settings.PocoConfigurationNamespace = """"; // ""YourProject.Configuration"";
+    Settings.PocoNamespace              = ""; // "YourProject.Entities";
+    Settings.ContextNamespace           = ""; // "YourProject.Context";
+    Settings.InterfaceNamespace         = ""; // "YourProject.Interfaces";
+    Settings.PocoConfigurationNamespace = ""; // "YourProject.Configuration";
 
     // Schema *****************************************************************************************************************************
     // If there are multiple schemas, then the table name is prefixed with the schema, except for dbo.
@@ -213,8 +197,8 @@ namespace BuildTT
 
     // Table Suffix ***********************************************************************************************************************
     // Appends the suffix to the generated classes names
-    // Ie. If TableSuffix is ""Dto"" then Order will be OrderDto
-    //     If TableSuffix is ""Entity"" then Order will be OrderEntity
+    // Ie. If TableSuffix is "Dto" then Order will be OrderDto
+    //     If TableSuffix is "Entity" then Order will be OrderEntity
     Settings.TableSuffix = null;
 
     // Call-backs *************************************************************************************************************************
@@ -225,13 +209,13 @@ namespace BuildTT
         // Northwind example:
             
         // [Orders] (Table) to [Invoices] (View) is one-to-many using Orders.OrderID = Invoices.OrderID
-        // gen.AddRelationship(filter, foreignKeys, tablesAndViews, ""orders_to_invoices"", Settings.DefaultSchema, ""Orders"", ""OrderID"", ""dbo"", ""Invoices"", ""OrderID"", null, null, true);
+        // gen.AddRelationship(filter, foreignKeys, tablesAndViews, "orders_to_invoices", Settings.DefaultSchema, "Orders", "OrderID", "dbo", "Invoices", "OrderID", null, null, true);
             
         // [Orders] (Table) to [Orders Qry] (View) is one-to-zeroOrOne ( [Orders].OrderID = [Orders Qry].OrderID )
-        // gen.AddRelationship(filter, foreignKeys, tablesAndViews, ""orders_to_ordersQry"", Settings.DefaultSchema, ""Orders"", ""OrderID"", ""dbo"", ""Orders Qry"", ""OrderID"", ""ParentFkName"", ""ChildFkName"", true);
+        // gen.AddRelationship(filter, foreignKeys, tablesAndViews, "orders_to_ordersQry", Settings.DefaultSchema, "Orders", "OrderID", "dbo", "Orders Qry", "OrderID", "ParentFkName", "ChildFkName", true);
             
         // [Order Details] (Table) to [Invoices] (View) is one-to-zeroOrOne - but uses a composite-key: ( [Order Details].OrderID,ProductID = [Invoices].OrderID,ProductID )
-        // gen.AddRelationship(filter, foreignKeys, tablesAndViews, ""orderDetails_to_invoices"", Settings.DefaultSchema, ""Order Details"", new[] { ""OrderID"", ""ProductID"" }, ""dbo"", ""Invoices"", new[] { ""OrderID"", ""ProductID"" }, null, null, true);
+        // gen.AddRelationship(filter, foreignKeys, tablesAndViews, "orderDetails_to_invoices", Settings.DefaultSchema, "Order Details", new[] { "OrderID", "ProductID" }, "dbo", "Invoices", new[] { "OrderID", "ProductID" }, null, null, true);
     };
 
     // Table renaming (single context generation only) ************************************************************************************
@@ -239,12 +223,12 @@ namespace BuildTT
     Settings.TableRename = delegate(string name, string schema, bool isView)
     {
         // Example
-        //if (name.StartsWith(""tbl""))
+        //if (name.StartsWith("tbl"))
         //    name = name.Remove(0, 3);
-        //name = name.Replace(""_AB"", """");
+        //name = name.Replace("_AB", "");
 
         //if(isView)
-        //    name = name + ""View"";
+        //    name = name + "View";
 
         // If you turn pascal casing off (UsePascalCase = false), and use the pluralisation service, and some of your
         // tables names are all UPPERCASE, some words ending in IES such as CATEGORIES get singularised as CATEGORy.
@@ -253,9 +237,9 @@ namespace BuildTT
 
         // If you are using the pluralisation service and you want to rename a table, make sure you rename the table to the plural form.
         // For example, if the table is called Treez (with a z), and your pluralisation entry is
-        //     new CustomPluralizationEntry(""Tree"", ""Trees"")
+        //     new CustomPluralizationEntry("Tree", "Trees")
         // Use this TableRename function to rename Treez to the plural (not singular) form, Trees:
-        //if (name == ""Treez"") return ""Trees"";
+        //if (name == "Treez") return "Trees";
 
         return name;
     };
@@ -265,19 +249,19 @@ namespace BuildTT
     Settings.UpdateTable = delegate(Table table)
     {
         // Add an extra comment
-        //if (table.NameHumanCase.Equals(""SomeTable"", StringComparison.InvariantCultureIgnoreCase))
-        //    table.AdditionalComment = ""Example comment"";
+        //if (table.NameHumanCase.Equals("SomeTable", StringComparison.InvariantCultureIgnoreCase))
+        //    table.AdditionalComment = "Example comment";
 
         // To add a base class to a table based on column names. Also see Settings.UpdateColumn below.
-        //var tracking  = new List<string> { ""createdby"", ""createdon"", ""modifiedby"", ""modifiedon"" };
-        //var replicate = new List<string> { ""uniqueid"", ""hrid""};
+        //var tracking  = new List<string> { "createdby", "createdon", "modifiedby", "modifiedon" };
+        //var replicate = new List<string> { "uniqueid", "hrid"};
         //if (table.Columns.Any(x => tracking.Contains(x.NameHumanCase)))
-        //    table.BaseClasses = "" : TrackingEntity"";
+        //    table.BaseClasses = " : TrackingEntity";
         //if (table.Columns.Any(x => replicate.Contains(x.NameHumanCase)))
-        //    table.BaseClasses = "" : ReplicateEntity"";
+        //    table.BaseClasses = " : ReplicateEntity";
 
         // To add attributes
-        //table.Attributes.Add(""[Serializable]"");
+        //table.Attributes.Add("[Serializable]");
     };
 
     // Use the following function if you need to apply additional modifications to a column
@@ -285,20 +269,20 @@ namespace BuildTT
     Settings.UpdateColumn = delegate(Column column, Table table, List<EnumDefinition> enumDefinitions)
     {
         // Rename column
-        //if (column.IsPrimaryKey && column.NameHumanCase == ""PkId"")
-        //    column.NameHumanCase = ""Id"";
+        //if (column.IsPrimaryKey && column.NameHumanCase == "PkId")
+        //    column.NameHumanCase = "Id";
 
         // .IsConcurrencyToken() must be manually configured. However .IsRowVersion() can be automatically detected.
-        //if (table.NameHumanCase.Equals(""SomeTable"", StringComparison.InvariantCultureIgnoreCase) && column.NameHumanCase.Equals(""SomeColumn"", StringComparison.InvariantCultureIgnoreCase))
+        //if (table.NameHumanCase.Equals("SomeTable", StringComparison.InvariantCultureIgnoreCase) && column.NameHumanCase.Equals("SomeColumn", StringComparison.InvariantCultureIgnoreCase))
         //    column.IsConcurrencyToken = true;
 
         // Remove table name from primary key
-        //if (column.IsPrimaryKey && column.NameHumanCase.Equals(table.NameHumanCase + ""Id"", StringComparison.InvariantCultureIgnoreCase))
-        //    column.NameHumanCase = ""Id"";
+        //if (column.IsPrimaryKey && column.NameHumanCase.Equals(table.NameHumanCase + "Id", StringComparison.InvariantCultureIgnoreCase))
+        //    column.NameHumanCase = "Id";
 
         // Remove column from poco class as it will be inherited from a base class. Also see Settings.UpdateTable above.
-        //var tracking  = new List<string> { ""createdby"", ""createdon"", ""modifiedby"", ""modifiedon"" };
-        //var replicate = new List<string> { ""uniqueid"", ""hrid""};
+        //var tracking  = new List<string> { "createdby", "createdon", "modifiedby", "modifiedon" };
+        //var replicate = new List<string> { "uniqueid", "hrid"};
         //if (tracking .Contains(column.NameHumanCase.ToLower()) ||
         //    replicate.Contains(column.NameHumanCase.ToLower()))
         //{
@@ -306,55 +290,55 @@ namespace BuildTT
         //}
 
         // Use the extended properties to perform tasks to column
-        //if (column.ExtendedProperty == ""HIDE"")
+        //if (column.ExtendedProperty == "HIDE")
         //    column.Hidden = true; // Hidden means the generator does not generate any code for this column at all.
 
-        // Apply the ""override"" access modifier to a specific column.
-        //if (column.NameHumanCase == ""id"")
+        // Apply the "override" access modifier to a specific column.
+        //if (column.NameHumanCase == "id")
         //    column.OverrideModifier = true;
         // This will create: public override long id { get; set; }
 
         if (Settings.UseDataAnnotations)
         {
             if (column.IsPrimaryKey)
-                column.Attributes.Add(""[Key]"");
+                column.Attributes.Add("[Key]");
 
             if (column.IsMaxLength) 
-                column.Attributes.Add(""[MaxLength]"");
+                column.Attributes.Add("[MaxLength]");
 
             if (column.IsRowVersion)
-                column.Attributes.Add(""[Timestamp]"");
+                column.Attributes.Add("[Timestamp]");
 
             if (!column.IsMaxLength && column.MaxLength > 0)
             { 
                 var doNotSpecifySize = (Settings.DatabaseType == DatabaseType.SqlCe && column.MaxLength > 4000);
-                column.Attributes.Add(doNotSpecifySize ? ""[MaxLength]"" : string.Format(""[MaxLength({0})]"", column.MaxLength));
-                if (column.PropertyType.Equals(""string"", StringComparison.InvariantCultureIgnoreCase))
-                    column.Attributes.Add(string.Format(""[StringLength({0})]"", column.MaxLength));
+                column.Attributes.Add(doNotSpecifySize ? "[MaxLength]" : string.Format("[MaxLength({0})]", column.MaxLength));
+                if (column.PropertyType.Equals("string", StringComparison.InvariantCultureIgnoreCase))
+                    column.Attributes.Add(string.Format("[StringLength({0})]", column.MaxLength));
             }
 
             if (!column.IsNullable && !column.IsComputed)
             {
-                if (column.PropertyType.Equals(""string"", StringComparison.InvariantCultureIgnoreCase) && column.AllowEmptyStrings)
-                    column.Attributes.Add(""[Required(AllowEmptyStrings = true)]"");
+                if (column.PropertyType.Equals("string", StringComparison.InvariantCultureIgnoreCase) && column.AllowEmptyStrings)
+                    column.Attributes.Add("[Required(AllowEmptyStrings = true)]");
                 else
-                    column.Attributes.Add(""[Required]"");
+                    column.Attributes.Add("[Required]");
             }
 
-            column.Attributes.Add(string.Format(""[Display(Name = \""{0}\"")]"", column.DisplayName));
+            column.Attributes.Add(string.Format("[Display(Name = \"{0}\")]", column.DisplayName));
         }
 
         // Perform Enum property type replacement
         var enumDefinition = enumDefinitions.FirstOrDefault(e =>
             (e.Schema.Equals(table.Schema.DbName, StringComparison.InvariantCultureIgnoreCase)) && 
-            (e.Table == ""*"" || e.Table.Equals(table.DbName, StringComparison.InvariantCultureIgnoreCase) || e.Table.Equals(table.NameHumanCase, StringComparison.InvariantCultureIgnoreCase)) &&
+            (e.Table == "*" || e.Table.Equals(table.DbName, StringComparison.InvariantCultureIgnoreCase) || e.Table.Equals(table.NameHumanCase, StringComparison.InvariantCultureIgnoreCase)) &&
             (e.Column.Equals(column.DbName, StringComparison.InvariantCultureIgnoreCase) || e.Column.Equals(column.NameHumanCase, StringComparison.InvariantCultureIgnoreCase)));
 
         if (enumDefinition != null)
         {
             column.PropertyType = enumDefinition.EnumType;
             if (!string.IsNullOrEmpty(column.Default))
-                column.Default = ""("" + enumDefinition.EnumType + "") "" + column.Default;
+                column.Default = "(" + enumDefinition.EnumType + ") " + column.Default;
         }
     };
 
@@ -369,14 +353,14 @@ namespace BuildTT
         // Below is example code for the Northwind database that configures the 'VIEW [Orders Qry]' and 'VIEW [Invoices]'
         /*switch (view.DbName)
         {
-            case ""Orders Qry"":
+            case "Orders Qry":
                 // VIEW [Orders Qry] uniquely identifies rows with the 'OrderID' column:
-                view.Columns.Single(col => col.DbName == ""OrderID"").IsPrimaryKey = true;
+                view.Columns.Single(col => col.DbName == "OrderID").IsPrimaryKey = true;
                 break;
 
-            case ""Invoices"":
+            case "Invoices":
                 // VIEW [Invoices] has a composite primary key (OrderID+ProductID), so both columns must be marked as a Primary Key:
-                foreach (var col in view.Columns.Where(c => c.DbName == ""OrderID"" || c.DbName == ""ProductID""))
+                foreach (var col in view.Columns.Where(c => c.DbName == "OrderID" || c.DbName == "ProductID"))
                     col.IsPrimaryKey = true;
                 break;
         }*/
@@ -387,9 +371,9 @@ namespace BuildTT
     Settings.StoredProcedureRename = delegate(StoredProcedure sp)
     {
         // Example:
-        //if (sp.NameHumanCase.StartsWith(""sp_""))
+        //if (sp.NameHumanCase.StartsWith("sp_"))
         //    return sp.NameHumanCase.Remove(0, 3);
-        //return sp.NameHumanCase.Replace(""my_sp_"", """");
+        //return sp.NameHumanCase.Replace("my_sp_", "");
 
         return sp.NameHumanCase; // Do nothing by default
     };
@@ -399,10 +383,10 @@ namespace BuildTT
     Settings.StoredProcedureReturnModelRename = delegate(string name, StoredProcedure sp)
     {
         // Example:
-        //if (sp.NameHumanCase.Equals(""ComputeValuesForDate"", StringComparison.InvariantCultureIgnoreCase))
-        //    return ""ValueSet"";
-        //if (sp.NameHumanCase.Equals(""SalesByYear"", StringComparison.InvariantCultureIgnoreCase))
-        //    return ""SalesSet"";
+        //if (sp.NameHumanCase.Equals("ComputeValuesForDate", StringComparison.InvariantCultureIgnoreCase))
+        //    return "ValueSet";
+        //if (sp.NameHumanCase.Equals("SalesByYear", StringComparison.InvariantCultureIgnoreCase))
+        //    return "SalesSet";
 
         return name; // Do nothing by default
     };
@@ -414,12 +398,12 @@ namespace BuildTT
     Settings.MappingTableRename = delegate(string mappingTable, string tableName, string entityName)
     {
         // Example: If you have two mapping tables such as one being UserRequiredSkills snd one being UserOptionalSkills, this would change the name of one property
-        //if (mappingTable == ""UserRequiredSkills"" && tableName == ""User"")
-        //    return ""RequiredSkills"";
+        //if (mappingTable == "UserRequiredSkills" && tableName == "User")
+        //    return "RequiredSkills";
 
         // or if you want to give the same property name on both classes
-        //if (mappingTable == ""UserRequiredSkills"")
-        //    return ""UserRequiredSkills"";
+        //if (mappingTable == "UserRequiredSkills")
+        //    return "UserRequiredSkills";
 
         return entityName;
     };
@@ -437,8 +421,8 @@ namespace BuildTT
                 break;
 
             case 2:
-                // Only called if foreign key name ends with ""id""
-                // Use foreign key name without ""id"" at end of string
+                // Only called if foreign key name ends with "id"
+                // Use foreign key name without "id" at end of string
                 fkName = foreignKeyName.Remove(foreignKeyName.Length - 2, 2);
                 break;
 
@@ -449,7 +433,7 @@ namespace BuildTT
 
             case 4:
                 // Use table name and foreign key name
-                fkName = tableName + ""_"" + foreignKeyName;
+                fkName = tableName + "_" + foreignKeyName;
                 break;
 
             case 5:
@@ -465,20 +449,20 @@ namespace BuildTT
 
         // Apply custom foreign key renaming rules. Can be useful in applying pluralization.
         // For example:
-        /*if (tableName == ""Employee"" && foreignKey.FkColumn == ""ReportsTo"")
-            return ""Manager"";
+        /*if (tableName == "Employee" && foreignKey.FkColumn == "ReportsTo")
+            return "Manager";
 
-        if (tableName == ""Territories"" && foreignKey.FkTableName == ""EmployeeTerritories"")
-            return ""Locations"";
+        if (tableName == "Territories" && foreignKey.FkTableName == "EmployeeTerritories")
+            return "Locations";
 
-        if (tableName == ""Employee"" && foreignKey.FkTableName == ""Orders"" && foreignKey.FkColumn == ""EmployeeID"")
-            return ""ContactPerson"";
+        if (tableName == "Employee" && foreignKey.FkTableName == "Orders" && foreignKey.FkColumn == "EmployeeID")
+            return "ContactPerson";
         */
 
         // FK_TableName_FromThisToParentRelationshipName_FromParentToThisChildsRelationshipName
-        // (e.g. FK_CustomerAddress_Customer_Addresses will extract navigation properties ""address.Customer"" and ""customer.Addresses"")
+        // (e.g. FK_CustomerAddress_Customer_Addresses will extract navigation properties "address.Customer" and "customer.Addresses")
         // Feel free to use and change the following
-        /*if (foreignKey.ConstraintName.StartsWith(""FK_"") && foreignKey.ConstraintName.Count(x => x == '_') == 3)
+        /*if (foreignKey.ConstraintName.StartsWith("FK_") && foreignKey.ConstraintName.Count(x => x == '_') == 3)
         {
             var parts = foreignKey.ConstraintName.Split('_');
             if (!string.IsNullOrWhiteSpace(parts[2]) && !string.IsNullOrWhiteSpace(parts[3]) && parts[1] == foreignKey.FkTableName)
@@ -500,16 +484,16 @@ namespace BuildTT
         // Return null to exclude this foreign key, or set IncludeReverseNavigation = false
         // to include the foreign key but not generate reverse navigation properties.
         // Example, to exclude all foreign keys for the Categories table, use:
-        //if (fk.PkTableName == ""Categories"")
+        //if (fk.PkTableName == "Categories")
         //    return null;
 
         // Example, to exclude reverse navigation properties for tables ending with Type, use:
-        //if (fk.PkTableName.EndsWith(""Type""))
+        //if (fk.PkTableName.EndsWith("Type"))
         //    fk.IncludeReverseNavigation = false;
 
         // You can also change the access modifier of the foreign-key's navigation property:
-        //if(fk.PkTableName == ""Categories"")
-        //     fk.AccessModifier = ""internal"";
+        //if(fk.PkTableName == "Categories")
+        //     fk.AccessModifier = "internal";
 
         return fk;
     };
@@ -518,11 +502,11 @@ namespace BuildTT
     {
         // Example:
         // Each navigation property that is a reference to User are left intact
-        //if(pkTable.NameHumanCase.Equals(""User"") && propName.Equals(""User""))
+        //if(pkTable.NameHumanCase.Equals("User") && propName.Equals("User"))
         //    return null;
 
         // all the others are marked with this attribute
-        //return new[] { ""System.Runtime.Serialization.IgnoreDataMember"" };
+        //return new[] { "System.Runtime.Serialization.IgnoreDataMember" };
 
         return null;
     };
@@ -534,33 +518,33 @@ namespace BuildTT
     // If GenerateSingleDbContext = true (default), please modify SingleContextFilter, this is where your previous global settings should go.
     // If GenerateSingleDbContext = false, this will generate multiple db contexts. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Generating-multiple-database-contexts-in-a-single-go
     Settings.GenerateSingleDbContext              = true; // Set this to false to generate multiple db contexts.
-    Settings.MultiContextSettingsConnectionString = """"; // Leave empty to read data from same database in ConnectionString above. If settings are in another database, specify the connection string here.
-    Settings.MultiContextSettingsPlugin           = """"; // Only used for unit testing Generator project as you can't (yet) inherit from IMultiContextSettingsPlugin. ""c:\\Path\\YourMultiDbSettingsReader.dll,Full.Name.Of.Class.Including.Namespace"". This will allow you to specify a pluggable provider for reading your MultiContext settings.
+    Settings.MultiContextSettingsConnectionString = ""; // Leave empty to read data from same database in ConnectionString above. If settings are in another database, specify the connection string here.
+    Settings.MultiContextSettingsPlugin           = ""; // Only used for unit testing Generator project as you can't (yet) inherit from IMultiContextSettingsPlugin. "c:\\Path\\YourMultiDbSettingsReader.dll,Full.Name.Of.Class.Including.Namespace". This will allow you to specify a pluggable provider for reading your MultiContext settings.
     Settings.MultiContextAttributeDelimiter       = '~'; // The delimiter used for splitting MultiContext attributes
 
     Settings.MultiContextAllFieldsColumnProcessing = delegate (Column column, Table table, Dictionary<string, object> allFields)
     {
         // Examples of how to use additional custom fields from the MultiContext.[Column] table
         // INT example
-        /*if (allFields.ContainsKey(""DummyInt""))
+        /*if (allFields.ContainsKey("DummyInt"))
         {
-            var o = allFields[""DummyInt""];
-            column.ExtendedProperty += string.Format("" DummyInt = {0}"", (int) o);
+            var o = allFields["DummyInt"];
+            column.ExtendedProperty += string.Format(" DummyInt = {0}", (int) o);
         }*/
 
         // VARCHAR example
-        /*if (allFields.ContainsKey(""Test""))
+        /*if (allFields.ContainsKey("Test"))
         {
-            var o = allFields[""Test""];
-            column.ExtendedProperty += string.Format("" Test = {0}"", o.ToString());
+            var o = allFields["Test"];
+            column.ExtendedProperty += string.Format(" Test = {0}", o.ToString());
         }*/
 
         // DATETIME example
-        /*if (allFields.ContainsKey(""date_of_birth""))
+        /*if (allFields.ContainsKey("date_of_birth"))
         {
-            var o = allFields[""date_of_birth""];
+            var o = allFields["date_of_birth"];
             var date = Convert.ToDateTime(o);
-            column.ExtendedProperty += string.Format("" date_of_birth = {0}"", date.ToLongDateString());
+            column.ExtendedProperty += string.Format(" date_of_birth = {0}", date.ToLongDateString());
         }*/
     };
 
@@ -568,13 +552,13 @@ namespace BuildTT
     {
         // Examples of how to use additional custom fields from the MultiContext.[Table] table
         // VARCHAR example
-        /*if (allFields.ContainsKey(""Notes""))
+        /*if (allFields.ContainsKey("Notes"))
         {
-            var o = allFields[""Notes""];
+            var o = allFields["Notes"];
             if (string.IsNullOrEmpty(table.AdditionalComment))
                 table.AdditionalComment = string.Empty;
 
-            table.AdditionalComment += string.Format("" Test = {0}"", o.ToString());
+            table.AdditionalComment += string.Format(" Test = {0}", o.ToString());
         }*/
     };
 
@@ -582,9 +566,9 @@ namespace BuildTT
     {
         // Examples of how to use additional custom fields from the MultiContext.[Table] table
         // VARCHAR example
-        /*if (allFields.ContainsKey(""CustomRename""))
+        /*if (allFields.ContainsKey("CustomRename"))
         {
-            var o = allFields[""CustomRename""];
+            var o = allFields["CustomRename"];
             sp.NameHumanCase = o.ToString();
         }*/
     };
@@ -593,9 +577,9 @@ namespace BuildTT
     {
         // Examples of how to use additional custom fields from the MultiContext.[Table] table
         // VARCHAR example
-        /*if (allFields.ContainsKey(""CustomRename""))
+        /*if (allFields.ContainsKey("CustomRename"))
         {
-            var o = allFields[""CustomRename""];
+            var o = allFields["CustomRename"];
             sp.NameHumanCase = o.ToString();
         }*/
     };
@@ -609,8 +593,8 @@ namespace BuildTT
     // How to add custom pluralisation entries
     /*var customPluralisationEntries = new List<CustomPluralizationEntry>
     {
-        new CustomPluralizationEntry(""Tree"", ""Trees""),
-        new CustomPluralizationEntry(""Order"", ""Orders"")
+        new CustomPluralizationEntry("Tree", "Trees"),
+        new CustomPluralizationEntry("Order", "Orders")
     };
     Inflector.PluralisationService = new EnglishPluralizationService(customPluralisationEntries);*/
     Inflector.PluralisationService = new EnglishPluralizationService(); // To disable pluralisation, set this to null
@@ -621,161 +605,9 @@ namespace BuildTT
     if (generator.InitialisationOk)
     {
         // Show where the machine.config file is
-        // fileManagement.WriteLine(""// "" + System.Runtime.InteropServices.RuntimeEnvironment.SystemConfigurationFile);
+        // fileManagement.WriteLine("// " + System.Runtime.InteropServices.RuntimeEnvironment.SystemConfigurationFile);
 
         generator.ReadDatabase();
         generator.GenerateCode();
     }
-    fileManagement.Process(true);#>";
-
-            using (var tt = File.CreateText(Path.Combine(ttRoot, "Database.tt")))
-            {
-                var settings = File.ReadAllText(Path.Combine(generatorRoot, "Settings.cs")).Trim();
-
-                tt.WriteLine("<#@ include file=\"EF.Reverse.POCO.v3.ttinclude\" #>");
-                tt.WriteLine("<#");
-                tt.WriteLine("    // v" + _version);
-                tt.WriteLine("    // Please make changes to the settings below.");
-                tt.WriteLine("    // All you have to do is save this file, and the output file(s) are generated. Compiling does not regenerate the file(s).");
-                tt.WriteLine("    // A course for the older v2 generator is available on Pluralsight at https://www.pluralsight.com/courses/code-first-entity-framework-legacy-databases");
-                tt.WriteLine("");
-
-                settings = settings.Remove(0, settings.IndexOf("    public static class")); // Remove text before class declaration
-                settings = settings.Remove(settings.Length - 1, 1); // Remove closing namespace brace
-                //tt.WriteLine(settings);
-
-                tt.WriteLine(footer);
-            }
-        }
-
-        private static void UpdateEfrpgVersion(string filename)
-        {
-            var body = $@"namespace Efrpg
-{{
-    public static class EfrpgVersion
-    {{
-        public static string Version()
-        {{
-            return ""v{_version}"";
-        }}
-    }}
-}}";
-            // C:\S\Source (open source)\EntityFramework Reverse POCO Code Generator\Generator\EfrpgVersion.cs
-            File.WriteAllText(filename, body, Encoding.UTF8);
-        }
-
-        private static void CreateCoreTTInclude(string generatorRoot, string ttRoot)
-        {
-            string header1 = @"<#
-// Copyright (C) Simon Hughes 2012
-" + "// v" + _version + @"
-// If you want to submit a pull request, please modify the Generator C# project as this file
-// is automatically constructed from the C# Generator project during the build process.
-#>
-<#@ template debug=""true"" hostspecific=""true"" language=""C#"" #>
-<#@ include file=""EF6.Utility.CS.ttinclude""#><#@ assembly name=""System.Configuration"" #>
-<#@ assembly name=""System.Windows.Forms"" #>
-<#@ import namespace=""System.Data.Entity.Infrastructure.Pluralization"" #>";
-
-            const string header2 = @"<#@ import namespace=""EnvDTE"" #>
-<#@ import namespace=""Microsoft.VisualStudio.TextTemplating"" #>
-<#@ output extension="".cs"" encoding=""utf-8"" #>
-<#
-        var DefaultNamespace = new CodeGenerationTools(this).VsNamespaceSuggestion() ?? ""DebugMode"";
-        Settings.Root = Host.ResolvePath(string.Empty);
-#><#+";
-
-            const string footer = @"
-    public static void ArgumentNotNull<T>(T arg, string name) where T : class
-    {
-        if (arg == null)
-        {
-            throw new ArgumentNullException(name);
-        }
-    }
-#>";
-            var fileReaderStrategy = new FileReaderStrategy();
-            string[] ignoreFolders = { "\\bin", "\\obj" };
-            string[] ignoreFiles =
-            {
-                "AssemblyInfo.cs",
-                "EntityFrameworkTemplateFileManager.cs",
-                "GeneratedTextTransformation.cs",
-
-                "GlobalSuppressions.cs", // Resharper
-            };
-            var filesToListFirst = new List<KeyValuePair<int, string>>
-            {
-                new KeyValuePair<int, string>(1, "Settings.cs"),
-                new KeyValuePair<int, string>(2, "FilterSettings.cs"),
-                new KeyValuePair<int, string>(3, "SingleContextFilter.cs")
-            };
-            var files = Directory
-                .GetFiles(generatorRoot, "*.cs", SearchOption.AllDirectories)
-                .OrderBy(x => x)
-                .ToList();
-
-            var filesToListFirstReaders = new List<KeyValuePair<int, IFileReader>>();
-            var remainingFileReaders = new List<IFileReader>();
-
-            foreach (var file in files)
-            {
-                var skip      = false;
-                var listFirst = false;
-                var path      = Path.GetDirectoryName(file);
-                var filename  = Path.GetFileName(file);
-
-                foreach (var ignore in ignoreFolders)
-                {
-                    if (path.Contains(ignore))
-                        skip = true;
-                }
-                if (skip)
-                    continue;
-
-                foreach (var ignore in ignoreFiles)
-                {
-                    if (filename == ignore)
-                        skip = true;
-                }
-                if (skip)
-                    continue;
-
-                var order = 0;
-                foreach (var fileToListFirst in filesToListFirst)
-                {
-                    if (filename == fileToListFirst.Value)
-                    {
-                        listFirst = true;
-                        order = fileToListFirst.Key;
-                    }
-                }
-
-                var fileReader = new FileReader(fileReaderStrategy);
-                if (fileReader.ReadFile(file))
-                {
-                    if (listFirst)
-                        filesToListFirstReaders.Add(new KeyValuePair<int, IFileReader>(order, fileReader));
-                    else
-                        remainingFileReaders.Add(fileReader);
-                }
-            }
-
-            var fileReaders = new List<IFileReader>();
-            fileReaders.AddRange(filesToListFirstReaders.OrderBy(x => x.Key).Select(x => x.Value));
-            fileReaders.AddRange(remainingFileReaders);
-
-            using (var tt = File.CreateText(Path.Combine(ttRoot, "EF.Reverse.POCO.v3.ttinclude")))
-            {
-                var writerStrategy = new TTWriterStrategy();
-                var writer = new FileWriter(tt, writerStrategy, fileReaders);
-
-                tt.WriteLine(header1);
-                writer.WriteUsings();
-                tt.WriteLine(header2);
-                writer.WriteCode();
-                tt.WriteLine(footer);
-            }
-        }
-    }
-}
+    fileManagement.Process(true);#>

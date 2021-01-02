@@ -965,7 +965,52 @@ SELECT SPECIFIC_SCHEMA, SPECIFIC_NAME, ROUTINE_TYPE, RETURN_DATA_TYPE, ORDINAL_P
 
         protected override string DefaultSchema(DbConnection conn)
         {
+            try
+            {
+                var cmd = GetCmd(conn);
+                if (cmd != null)
+                {
+                    cmd.CommandText = "SELECT SCHEMA_NAME()";
+                    using (var rdr = cmd.ExecuteReader())
+                    {
+                        if (rdr.Read())
+                        {
+                            return rdr[0].ToString();
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // Ignored
+            }
+
             return "dbo";
+        }
+
+        protected override string DefaultCollation(DbConnection conn)
+        {
+            try
+            {
+                var cmd = GetCmd(conn);
+                if (cmd != null)
+                {
+                    cmd.CommandText = string.Format("SELECT collation_name FROM sys.databases WHERE name = '{0}'", conn.Database);
+                    using (var rdr = cmd.ExecuteReader())
+                    {
+                        if (rdr.Read())
+                        {
+                            return rdr[0].ToString();
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // Ignored
+            }
+
+            return null;
         }
 
         protected override string SpecialQueryFlags()

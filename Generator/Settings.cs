@@ -12,12 +12,12 @@ namespace Efrpg
     {
         // Main settings **********************************************************************************************************************
         // The following entries are the only required settings.
-        public static DatabaseType DatabaseType                         = DatabaseType.SqlServer; // SqlServer, SqlCe. Coming next: PostgreSQL, MySql, Oracle
-        public static TemplateType TemplateType                         = TemplateType.EfCore3; // Ef6, EfCore2, EfCore3, FileBasedCore2, FileBasedCore3. FileBased specify folder using Settings.TemplateFolder
-        public static GeneratorType GeneratorType                       = GeneratorType.EfCore; // Ef6, EfCore, Custom. Custom edit GeneratorCustom class to provide your own implementation
+        public static DatabaseType DatabaseType                         = DatabaseType.SqlServer; // SqlServer, SqlCe, PostgreSQL. Coming next: MySql, Oracle
+        public static TemplateType TemplateType                         = TemplateType.EfCore3; // EfCore5, EfCore3, EfCore2, Ef6, FileBasedCore2, FileBasedCore3. FileBased specify folder using Settings.TemplateFolder
+        public static GeneratorType GeneratorType                       = GeneratorType.EfCore; // EfCore, Ef6, Custom. Custom edit GeneratorCustom class to provide your own implementation
         public static ForeignKeyNamingStrategy ForeignKeyNamingStrategy = ForeignKeyNamingStrategy.Legacy; // Please use Legacy for now (same as versions <= v3.2.0), Latest (not yet ready)
-        public static bool UseMappingTables                             = false; // Set to false for EfCore. EFCore will add support for this in v3 at some point, so please set this to false. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
-        public static FileManagerType FileManagerType                   = FileManagerType.Custom; // .NET project = VisualStudio; .NET Core project = Custom; No output (testing only) = Null
+        public static bool UseMappingTables                             = false; // Can only be set to true for EF6. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
+        public static FileManagerType FileManagerType                   = FileManagerType.Custom; // .NET Core project = Custom; .NET project = VisualStudio; No output (testing only) = Null
         public static string ConnectionString                           = ""; // This is used by the generator to reverse engineer your database
         public static string ConnectionStringName                       = "MyDbContext"; // ConnectionString key as specified in your app.config/web.config/appsettings.json
         public static string DbContextName                              = "MyDbContext"; // Class name for the DbContext to be generated. Note: If generating separate files, please give the db context a different name from this tt filename. Ignored if using multi-context generation
@@ -135,8 +135,9 @@ namespace Efrpg
         // If there are multiple schemas, then the table name is prefixed with the schema, except for dbo.
         // Ie. dbo.hello will be Hello.
         //     abc.hello will be AbcHello.
-        public static bool PrependSchemaName = true; // Control if the schema name is prepended to the table name
-        public static string DefaultSchema = null; // Set via DatabaseReader.DefaultSchema()
+        public static bool   PrependSchemaName = true; // Control if the schema name is prepended to the table name
+        public static string DefaultSchema     = null; // Set via DatabaseReader.DefaultSchema()
+        public static string DefaultCollation  = null; // Set via DatabaseReader.DefaultCollation()
 
         // Table Suffix ***********************************************************************************************************************
         // Appends the suffix to the generated classes names
@@ -554,9 +555,33 @@ namespace Efrpg
         // Don't forget to take a look at SingleContextFilter and FilterSettings classes!
         // That's it, nothing else to configure ***********************************************************************************************
 
+        public static bool IsEf6()     => TemplateType == TemplateType.Ef6;
         public static bool IsEfCore2() => TemplateType == TemplateType.EfCore2 || TemplateType == TemplateType.FileBasedCore2;
         public static bool IsEfCore3() => TemplateType == TemplateType.EfCore3 || TemplateType == TemplateType.FileBasedCore3;
-        public static bool IsEfCore() => IsEfCore2() || IsEfCore3();
+        public static bool IsEfCore5() => TemplateType == TemplateType.EfCore5 || TemplateType == TemplateType.FileBasedCore5;
+        public static bool IsEfCore3Plus() => EfCoreVersion() >= 3;
+        public static bool IsEfCore5Plus() => EfCoreVersion() >= 5;
+        private static int EfCoreVersion()
+        {
+            switch (TemplateType)
+            {
+                case TemplateType.EfCore2:
+                case TemplateType.FileBasedCore2:
+                    return 2;
+
+                case TemplateType.EfCore3:
+                case TemplateType.FileBasedCore3:
+                    return 3;
+                
+                case TemplateType.EfCore5:
+                case TemplateType.FileBasedCore5:
+                    return 5;
+                
+                case TemplateType.Ef6:
+                default:
+                    return 0;
+            }
+        }
 
         public static string Root;
         public static int FilterCount;

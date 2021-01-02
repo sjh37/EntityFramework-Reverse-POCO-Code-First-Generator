@@ -230,6 +230,11 @@ ORDER BY R.specific_schema, R.routine_name, R.routine_type;";
             return "public";
         }
 
+        protected override string DefaultCollation(DbConnection conn)
+        {
+            return null;
+        }
+
         protected override string SpecialQueryFlags()
         {
             return string.Empty;

@@ -5,7 +5,7 @@
 // Company      : Reverse POCO
 // Licence Type : Commercial
 // Licences     : 1
-// Valid until  : 03 NOV 2020
+// Valid until  : 07 DEC 2021
 //
 // The following connection settings were used to generate this file:
 //     Connection String Name: "FredDbContext"
@@ -24,6 +24,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using System;
 using System.Collections;
@@ -3588,10 +3589,10 @@ namespace Tester.Integration.EfCore3
     public class HasPrincipalKeyTestParent
     {
         public int Id { get; set; } // Id (Primary key)
-        public int Aa { get; set; } // AA
-        public int Bb { get; set; } // BB
-        public int? Cc { get; set; } // CC
-        public int? Dd { get; set; } // DD
+        public int A { get; set; } // A
+        public int B { get; set; } // B
+        public int? C { get; set; } // C
+        public int? D { get; set; } // D
 
         // Reverse navigation
 
@@ -5131,7 +5132,7 @@ namespace Tester.Integration.EfCore3
         public void Configure(EntityTypeBuilder<HasPrincipalKeyTestChild> builder)
         {
             builder.ToTable("HasPrincipalKeyTestChild", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK_HasPrincipalKeyTestChild").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__HasPrinc__3214EC07061FCDAA").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.A).HasColumnName(@"A").HasColumnType("int").IsRequired();
@@ -5140,7 +5141,7 @@ namespace Tester.Integration.EfCore3
             builder.Property(x => x.D).HasColumnName(@"D").HasColumnType("int").IsRequired(false);
 
             // Foreign keys
-            builder.HasOne(a => a.HasPrincipalKeyTestParent).WithOne(b => b.HasPrincipalKeyTestChild).HasPrincipalKey<HasPrincipalKeyTestParent>(p => new { p.Aa, p.Bb }).HasForeignKey<HasPrincipalKeyTestChild>(c => new { c.A, c.B }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_HasPrincipalKey_AB");
+            builder.HasOne(a => a.HasPrincipalKeyTestParent).WithOne(b => b.HasPrincipalKeyTestChild).HasPrincipalKey<HasPrincipalKeyTestParent>(p => new { p.A, p.B }).HasForeignKey<HasPrincipalKeyTestChild>(c => new { c.A, c.B }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_HasPrincipalKey_AB");
         }
     }
 
@@ -5150,17 +5151,17 @@ namespace Tester.Integration.EfCore3
         public void Configure(EntityTypeBuilder<HasPrincipalKeyTestParent> builder)
         {
             builder.ToTable("HasPrincipalKeyTestParent", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK_HasPrincipalKeyTestParent").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__HasPrinc__3214EC07C4D24B68").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Aa).HasColumnName(@"AA").HasColumnType("int").IsRequired();
-            builder.Property(x => x.Bb).HasColumnName(@"BB").HasColumnType("int").IsRequired();
-            builder.Property(x => x.Cc).HasColumnName(@"CC").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.Dd).HasColumnName(@"DD").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.A).HasColumnName(@"A").HasColumnType("int").IsRequired();
+            builder.Property(x => x.B).HasColumnName(@"B").HasColumnType("int").IsRequired();
+            builder.Property(x => x.C).HasColumnName(@"C").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.D).HasColumnName(@"D").HasColumnType("int").IsRequired(false);
 
-            builder.HasIndex(x => new { x.Aa, x.Bb }).HasName("UQ_HasPrincipalKeyTestParent_AB").IsUnique();
-            builder.HasIndex(x => new { x.Aa, x.Cc }).HasName("UQ_HasPrincipalKeyTestParent_AC").IsUnique();
-            builder.HasIndex(x => new { x.Cc, x.Dd }).HasName("UQ_HasPrincipalKeyTestParent_CD").IsUnique();
+            builder.HasIndex(x => new { x.A, x.B }).HasName("UQ_HasPrincipalKeyTestParent_AB").IsUnique();
+            builder.HasIndex(x => new { x.A, x.C }).HasName("UQ_HasPrincipalKeyTestParent_AC").IsUnique();
+            builder.HasIndex(x => new { x.C, x.D }).HasName("UQ_HasPrincipalKeyTestParent_CD").IsUnique();
         }
     }
 

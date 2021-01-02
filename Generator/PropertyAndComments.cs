@@ -4,6 +4,7 @@
     {
         public string Definition;
         public string Comments;
+        public string PropertyName;
         public string[] AdditionalDataAnnotations;
     }
 }

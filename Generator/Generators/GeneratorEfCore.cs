@@ -72,16 +72,16 @@ namespace Efrpg.Generators
         {
             string databaseGeneratedOption = null;
 
-            var isEfCore3 = Settings.IsEfCore3();
+            var isEfCore3Plus = Settings.IsEfCore3Plus();
             var isNewSequentialId = !string.IsNullOrEmpty(c.Default) && c.Default.ToLower().Contains("newsequentialid");
             var isTemporalColumn = c.GeneratedAlwaysType != ColumnGeneratedAlwaysType.NotApplicable;
 
-            // Identity, instead of Computed, seems the best for Temporal `GENERATED ALWAYS` columns: https://stackoverflow.com/questions/40742142/entity-framework-not-working-with-temporal-table
+            // Identity, instead of Computed, seems the best for Temporal 'GENERATED ALWAYS' columns: https://stackoverflow.com/questions/40742142/entity-framework-not-working-with-temporal-table
             if (c.IsIdentity || isNewSequentialId || isTemporalColumn)
             {
                 databaseGeneratedOption = ".ValueGeneratedOnAdd()";
                 if (c.IsIdentity && Column.CanUseSqlServerIdentityColumn.Contains(c.PropertyType))
-                    databaseGeneratedOption += isEfCore3 ? ".UseIdentityColumn()" : ".UseSqlServerIdentityColumn()";
+                    databaseGeneratedOption += isEfCore3Plus ? ".UseIdentityColumn()" : ".UseSqlServerIdentityColumn()";
             }
             else if (c.IsComputed)
             {
@@ -144,8 +144,8 @@ namespace Efrpg.Generators
 
         public override string PrimaryKeyModelBuilder(Table t)
         {
-            var isEfCore3 = Settings.IsEfCore3();
-            if (isEfCore3 && t.IsView && !t.HasPrimaryKey)
+            var isEfCore3Plus = Settings.IsEfCore3Plus();
+            if (isEfCore3Plus && t.IsView && !t.HasPrimaryKey)
                 return "builder.HasNoKey();";
 
             var defaultKey = $"builder.HasKey({t.PrimaryKeyNameHumanCase()})";
@@ -170,7 +170,7 @@ namespace Efrpg.Generators
             sb.Append("\")");
 
             if (indexesForName.All(x => x.IsClustered))
-                sb.Append(isEfCore3 ? ".IsClustered()" : ".ForSqlServerIsClustered()");
+                sb.Append(isEfCore3Plus ? ".IsClustered()" : ".ForSqlServerIsClustered()");
 
             sb.Append(";");
 
@@ -183,7 +183,8 @@ namespace Efrpg.Generators
             if (t.Indexes == null || !t.Indexes.Any())
                 return indexes;
 
-            var isEfCore3 = Settings.IsEfCore3();
+            var isEfCore3Plus = Settings.IsEfCore3Plus();
+            var isEfCore5Plus = Settings.IsEfCore5Plus();
             var indexNames = t.Indexes.Where(x => !x.IsPrimaryKey).Select(x => x.IndexName).Distinct();
             foreach (var indexName in indexNames.OrderBy(x => x))
             {
@@ -225,7 +226,8 @@ namespace Efrpg.Generators
 
                 sb.Append(")"); // Close bracket for HasIndex()
 
-                sb.Append(".HasName(\"");
+                
+                sb.Append(isEfCore5Plus ? ".HasDatabaseName(\"" : ".HasName(\"");
                 sb.Append(indexName);
                 sb.Append("\")");
 
@@ -233,7 +235,7 @@ namespace Efrpg.Generators
                     sb.Append(".IsUnique()");
 
                 if (indexesForName.All(x => x.IsClustered))
-                    sb.Append(isEfCore3 ? ".IsClustered()" : ".ForSqlServerIsClustered()");
+                    sb.Append(isEfCore3Plus ? ".IsClustered()" : ".ForSqlServerIsClustered()");
 
                 sb.Append(";");
                 indexes.Add(sb.ToString());

@@ -96,6 +96,11 @@ namespace Efrpg.Readers
             return "mydb";
         }
 
+        protected override string DefaultCollation(DbConnection conn)
+        {
+            return null;
+        }
+
         protected override string SpecialQueryFlags()
         {
             return string.Empty;
