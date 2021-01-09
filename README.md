@@ -1,8 +1,16 @@
 ## EntityFramework Reverse POCO Code First Generator
 
+Reverse engineers an existing database and generates Entity Framework Code
+First Poco classes, Configuration mappings and DbContext.
+
 **Beautifully generated code first code that is fully customisable**
+
 * Downloadable VSIX installer from the [visual studio gallery](https://marketplace.visualstudio.com/items?itemName=SimonHughes.EntityFrameworkReversePOCOGenerator).
 * Watch the v2 in-depth course at [pluralsight](https://app.pluralsight.com/library/courses/code-first-entity-framework-legacy-databases/table-of-contents) ![logo](http://www.simonhughes.co.uk/pluralsight-logo-tiny.png) I cover everything the v2 generator can do, and show you step-by-step how to reverse engineer your database properly.
+
+Please note, this is not the Microsoft reverse generator.
+This generator creates code as if you reverse engineered a database and lovingly created the code by hand. 
+It also allows you to customise the generated code to your liking.
 
 ### Watch a short video clip (no audio)
 [efcore-first-run.mp4](https://reversepocostorage.blob.core.windows.net/public-file-share/efcore-first-run.mp4)
@@ -14,15 +22,6 @@ Go to the [ReversePOCO](https://www.reversepoco.co.uk) website to obtain your li
 
 ### Upgrading v2 to v3
 Please read the [Upgrading documentation](https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Upgrading-from-v2-to-v3)
-
-### Project Description
-
-Reverse engineers an existing database and generates Entity Framework Code
-First Poco classes, Configuration mappings and DbContext.
-
-Please note, this is not the Microsoft reverse generator.
-This generator creates code as if you reverse engineered a database and lovingly created the code by hand. 
-It also allows you to customise the generated code to your liking.
 
 ### What's new
 
