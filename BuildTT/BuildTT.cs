@@ -31,7 +31,6 @@ namespace BuildTT
     Settings.TemplateType             = TemplateType.EfCore3; // EfCore5, EfCore3, EfCore2, Ef6, FileBasedCore2, FileBasedCore3, FileBasedCore5. FileBased specify folder using Settings.TemplateFolder
     Settings.GeneratorType            = GeneratorType.EfCore; // EfCore, Ef6, Custom. Custom edit GeneratorCustom class to provide your own implementation
 
-    Settings.UseMappingTables        = false; // Can only be true for Ef6. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
     Settings.FileManagerType         = FileManagerType.Custom; // .NET Core project = Custom; .NET project = VisualStudio; No output (testing only) = Null
     Settings.ConnectionString        = ""Data Source=(local);Initial Catalog=Northwind;Integrated Security=True;MultipleActiveResultSets=True""; // This is used by the generator to reverse engineer your database
     Settings.ConnectionStringName    = ""MyDbContext""; // ConnectionString key as specified in your app.config/web.config/appsettings.json. Not used by the generator, but is placed into the generated DbContext constructor.
@@ -86,6 +85,7 @@ namespace BuildTT
     Settings.AddParameterlessConstructorToDbContext = true; // EF6 only. If true, then DbContext will have a default (parameter-less) constructor which automatically passes in the connection string name, if false then no parameter-less constructor will be created.
     Settings.ConfigurationClassName                 = ""Configuration""; // Configuration, Mapping, Map, etc. This is appended to the Poco class name to configure the mappings.
     Settings.DatabaseReaderPlugin                   = """"; // Eg, ""c:\\Path\\YourDatabaseReader.dll,Full.Name.Of.Class.Including.Namespace"". See #501. This will allow you to specify a pluggable provider for reading your database.
+    Settings.UseMappingTables                       = false; // Can only be true for Ef6. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
 
     Settings.EntityClassesModifiers        = ""public""; // ""public partial"";
     Settings.ConfigurationClassesModifiers = ""public""; // ""public partial"";

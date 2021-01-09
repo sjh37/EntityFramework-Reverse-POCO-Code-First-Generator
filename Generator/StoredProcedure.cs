@@ -279,8 +279,10 @@ namespace Efrpg
 
         private string ConvertDataColumnType(Type type)
         {
+            var isEfCore5 = Settings.IsEfCore5();
+            
             if (type.Name.Equals("SqlHierarchyId"))
-                return "Microsoft.SqlServer.Types.SqlHierarchyId";
+                return isEfCore5 ? "HierarchyId" : "Microsoft.SqlServer.Types.SqlHierarchyId";
 
             var typeNamespace = type.Namespace + ".";
             if (type.Namespace?.ToLower() == "system")
@@ -290,6 +292,7 @@ namespace Efrpg
             var isArray = typeName.EndsWith("[]");
             if (isArray)
                 typeName = typeName.Replace("[]", string.Empty);
+            
             switch (typeName.ToLower())
             {
                 case "int16":
@@ -328,8 +331,24 @@ namespace Efrpg
                 case "boolean":
                     typeName = "bool";
                     break;
-                default:
-                    break;
+            }
+
+            if (isEfCore5)
+            {
+                switch (typeName.ToLower())
+                {
+                    case "microsoft.sqlserver.types.sqlgeography":
+                    case "sqlgeography":
+                        typeNamespace = "NetTopologySuite.Geometries.";
+                        typeName = "Point";
+                        break;
+                    
+                    case "microsoft.sqlserver.types.sqlgeometry":
+                    case "sqlgeometry":
+                        typeNamespace = "NetTopologySuite.Geometries.";
+                        typeName = "Geometry";
+                        break;
+                }
             }
 
             if (isArray)

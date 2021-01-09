@@ -5609,7 +5609,7 @@
         protected override void SetupEntity(Column c)
         {
             if (c.PropertyType == "Hierarchy.HierarchyId")
-                c.PropertyType = "Microsoft.SqlServer.Types.SqlHierarchyId";
+                c.PropertyType = Settings.IsEfCore5() ? "HierarchyId" : "Microsoft.SqlServer.Types.SqlHierarchyId";
 
             var comments = string.Empty;
             if (Settings.IncludeComments != CommentsStyle.None)
@@ -15219,8 +15219,10 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
         private string ConvertDataColumnType(Type type)
         {
+            var isEfCore5 = Settings.IsEfCore5();
+            
             if (type.Name.Equals("SqlHierarchyId"))
-                return "Microsoft.SqlServer.Types.SqlHierarchyId";
+                return isEfCore5 ? "HierarchyId" : "Microsoft.SqlServer.Types.SqlHierarchyId";
 
             var typeNamespace = type.Namespace + ".";
             if (type.Namespace?.ToLower() == "system")
@@ -15230,6 +15232,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             var isArray = typeName.EndsWith("[]");
             if (isArray)
                 typeName = typeName.Replace("[]", string.Empty);
+            
             switch (typeName.ToLower())
             {
                 case "int16":
@@ -15268,8 +15271,24 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 case "boolean":
                     typeName = "bool";
                     break;
-                default:
-                    break;
+            }
+
+            if (isEfCore5)
+            {
+                switch (typeName.ToLower())
+                {
+                    case "microsoft.sqlserver.types.sqlgeography":
+                    case "sqlgeography":
+                        typeNamespace = "NetTopologySuite.Geometries.";
+                        typeName = "Point";
+                        break;
+                    
+                    case "microsoft.sqlserver.types.sqlgeometry":
+                    case "sqlgeometry":
+                        typeNamespace = "NetTopologySuite.Geometries.";
+                        typeName = "Geometry";
+                        break;
+                }
             }
 
             if (isArray)

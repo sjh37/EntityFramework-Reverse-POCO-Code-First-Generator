@@ -26,7 +26,7 @@ namespace Efrpg.Generators
         protected override void SetupEntity(Column c)
         {
             if (c.PropertyType == "Hierarchy.HierarchyId")
-                c.PropertyType = "Microsoft.SqlServer.Types.SqlHierarchyId";
+                c.PropertyType = Settings.IsEfCore5() ? "HierarchyId" : "Microsoft.SqlServer.Types.SqlHierarchyId";
 
             var comments = string.Empty;
             if (Settings.IncludeComments != CommentsStyle.None)
