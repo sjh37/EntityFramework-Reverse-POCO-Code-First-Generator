@@ -22,6 +22,11 @@ namespace Efrpg.Generators
             if (Settings.UsePragma)
                 header.AppendLine("#pragma warning disable 1591    //  Ignore \"Missing XML Comment\" warning");
             
+            foreach (var additionalHeader in Settings.AdditionalFileHeaderText)
+            {
+                header.AppendLine(additionalHeader);
+            }
+
             Header = header.ToString();
 
             header = new StringBuilder(500);
@@ -37,6 +42,10 @@ namespace Efrpg.Generators
             var footer = new StringBuilder(30);
             if (Settings.UseNamespace)
                 footer.AppendLine("}");
+            foreach (var additionalHeader in Settings.AdditionalFileFooterText)
+            {
+                footer.AppendLine(additionalHeader);
+            }
             footer.Append("// </auto-generated>");
             Footer = footer.ToString();
         }
