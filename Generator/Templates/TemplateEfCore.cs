@@ -357,7 +357,7 @@ using {{this}};{{#newline}}
     public IQueryable<{{ReturnClassName}}> {{ExecName}}({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
     {{{#newline}}
         return {{QueryString}}<{{ReturnClassName}}>(){{#newline}}
-            .{{FromSql}}(""SELECT * FROM [{{Name}}]({{WriteStoredProcFunctionSqlAtParams}})""{{WriteTableValuedFunctionSqlParameterAnonymousArray}}){{#newline}}
+            .{{FromSql}}(""SELECT * FROM [{{Schema}}].[{{Name}}]({{WriteStoredProcFunctionSqlAtParams}})""{{WriteTableValuedFunctionSqlParameterAnonymousArray}}){{#newline}}
             .AsNoTracking();{{#newline}}
     }{{#newline}}
 {{/each}}
