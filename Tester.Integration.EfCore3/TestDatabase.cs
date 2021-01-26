@@ -52,6 +52,7 @@ namespace TestDatabaseStandard
 
         // Table Valued Functions
         IQueryable<CsvToIntReturnModel> CsvToInt(string array, string array2); // dbo.CsvToInt
+        IQueryable<CustomSchema_CsvToIntWithSchemaReturnModel> CustomSchema_CsvToIntWithSchema(string array, string array2); // CustomSchema.CsvToIntWithSchema
 
         // Scalar Valued Functions
         decimal UdfNetSale(int? quantity, decimal? listPrice, decimal? discount); // dbo.udfNetSale
@@ -115,6 +116,7 @@ namespace TestDatabaseStandard
 
             // Table Valued Functions
             modelBuilder.Entity<CsvToIntReturnModel>().HasNoKey();
+            modelBuilder.Entity<CustomSchema_CsvToIntWithSchemaReturnModel>().HasNoKey();
         }
 
 
@@ -162,7 +164,15 @@ namespace TestDatabaseStandard
         public IQueryable<CsvToIntReturnModel> CsvToInt(string array, string array2)
         {
             return Set<CsvToIntReturnModel>()
-                .FromSqlRaw("SELECT * FROM [CsvToInt]({0}, {1})", array, array2)
+                .FromSqlRaw("SELECT * FROM [dbo].[CsvToInt]({0}, {1})", array, array2)
+                .AsNoTracking();
+        }
+
+        // CustomSchema.CsvToIntWithSchema
+        public IQueryable<CustomSchema_CsvToIntWithSchemaReturnModel> CustomSchema_CsvToIntWithSchema(string array, string array2)
+        {
+            return Set<CustomSchema_CsvToIntWithSchemaReturnModel>()
+                .FromSqlRaw("SELECT * FROM [CustomSchema].[CsvToIntWithSchema]({0}, {1})", array, array2)
                 .AsNoTracking();
         }
 
@@ -289,6 +299,12 @@ namespace TestDatabaseStandard
         public IQueryable<CsvToIntReturnModel> CsvToInt(string array, string array2)
         {
             return new List<CsvToIntReturnModel>().AsQueryable();
+        }
+
+        // CustomSchema.CsvToIntWithSchema
+        public IQueryable<CustomSchema_CsvToIntWithSchemaReturnModel> CustomSchema_CsvToIntWithSchema(string array, string array2)
+        {
+            return new List<CustomSchema_CsvToIntWithSchemaReturnModel>().AsQueryable();
         }
 
         // Scalar Valued Functions
@@ -878,6 +894,11 @@ namespace TestDatabaseStandard
     #region Stored procedure return models
 
     public class CsvToIntReturnModel
+    {
+        public int? IntValue { get; set; }
+    }
+
+    public class CustomSchema_CsvToIntWithSchemaReturnModel
     {
         public int? IntValue { get; set; }
     }

@@ -43,5 +43,20 @@ namespace Tester.Integration.EfCore3
             Assert.AreEqual(123, data[0].IntValue);
             Assert.AreEqual(456, data[1].IntValue);
         }
+
+        [Test]
+        public void Standard_FunctionInNonDefaultSchemaCanBeCalled()
+        {
+            // Arrange
+            using var db = new TestDatabaseStandard.TestDbContext();
+
+            // Act
+            var data = db.CustomSchema_CsvToIntWithSchema("123,456", "").ToList();
+
+            // Assert
+            Assert.AreEqual(2, data.Count);
+            Assert.AreEqual(123, data[0].IntValue);
+            Assert.AreEqual(456, data[1].IntValue);
+        }
     }
 }
