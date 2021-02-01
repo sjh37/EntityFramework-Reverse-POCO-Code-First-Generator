@@ -174,12 +174,14 @@ using {{this}};{{#newline}}
     private readonly IConfiguration _configuration;{{#newline}}{{#newline}}
 {{/if}}
 
+{{#if AddParameterlessConstructorToDbContext}}
     public {{DbContextName}}(){{#newline}}
     {{{#newline}}
 {{#if DbContextClassIsPartial}}
         InitializePartial();{{#newline}}
 {{/if}}
     }{{#newline}}{{#newline}}
+{{/if}}
 
     public {{DbContextName}}(DbContextOptions<{{DbContextName}}> options){{#newline}}
         : base(options){{#newline}}
