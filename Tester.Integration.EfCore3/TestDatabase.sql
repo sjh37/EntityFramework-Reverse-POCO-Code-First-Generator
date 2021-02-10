@@ -275,8 +275,8 @@ INSERT INTO MultiContext.Context ([Name], [Description], BaseSchema, [Namespace]
 VALUES (N'EnumerationDbContext',N'This module is used to extract the enumerations', 'dbo', NULL),
        (N'AppleDbContext', N'Testing apples',  NULL, NULL),
        (N'BananaDbContext', N'Testing bananas', N'dbo', NULL),
-	   (N'CherryDbContext', N'Testing cherries', N'dbo', "Cherry"),
-	   (N'DamsonDbContext', N'Testing Damson plums', NULL, "Plum");
+	   (N'CherryDbContext', N'Testing cherries', N'dbo', 'Cherry'),
+	   (N'DamsonDbContext', N'Testing Damson plums', NULL, 'Plum');
 GO
 UPDATE MultiContext.Context SET filename='CherryDatabaseContext' WHERE Name='CherryDbContext'
 --UPDATE MultiContext.Context SET TemplatePath='C:\path_to_templates\' WHERE [Name]='DamsonDbContext'
