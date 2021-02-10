@@ -325,8 +325,8 @@ INSERT INTO MultiContext.[Column] (Name, DbName, IsPrimaryKey, OverrideModifier,
 VALUES (N'Description', NULL ,1,0, NULL,           (SELECT id FROM MultiContext.[Table] WHERE ContextId=@id AND Name=N'NoPrimaryKeys')),
        (N'ParentId', NULL,NULL,0, NULL,	           (SELECT id FROM MultiContext.[Table] WHERE ContextId=@id AND Name=N'Parent')),
 	   (N'ParentName', N'ParentName',NULL,0, NULL, (SELECT id FROM MultiContext.[Table] WHERE ContextId=@id AND Name=N'Parent'));
-INSERT INTO MultiContext.ForeignKey (ContextId, ConstraintName, ParentName, ChildName, PkSchema, PkTableName, PkColumn, FkSchema, FkTableName, FkColumn, Ordinal, CascadeOnDelete, IsNotEnforced)
-VALUES (@id, N'CustomNameForForeignKey', N'ParentFkName', N'ChildFkName', N'dbo', N'NoPrimaryKeys', N'Description', N'Synonyms', N'Parent', N'ParentName', 1, 0, 0);
+INSERT INTO MultiContext.ForeignKey (ContextId, ConstraintName, ParentName, ChildName, PkSchema, PkTableName, PkColumn, FkSchema, FkTableName, FkColumn, Ordinal, CascadeOnDelete, IsNotEnforced, HasUniqueConstraint)
+VALUES (@id, N'CustomNameForForeignKey', N'ParentFkName', N'ChildFkName', N'dbo', N'NoPrimaryKeys', N'Description', N'Synonyms', N'Parent', N'ParentName', 1, 0, 0, 0);
 GO
 
 UPDATE MultiContext.[Column] SET Attributes=N'[ExampleForTesting("abc")]~[CustomRequired]' WHERE Name=N'Dollar'
