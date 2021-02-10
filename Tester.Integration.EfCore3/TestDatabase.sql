@@ -335,8 +335,11 @@ GO
 
 -- Test to make sure all optional fields are read in and stored in dictionary
 ALTER TABLE MultiContext.[Column] ADD Test VARCHAR(10) NULL;
+GO
 ALTER TABLE MultiContext.[Column] ADD DummyInt int NULL;
+GO
 ALTER TABLE MultiContext.[Column] ADD date_of_birth DATETIME NULL;
+GO
 UPDATE MultiContext.[Column] SET Test = N'Hello', DummyInt = 1234, date_of_birth = '20 June 2019' WHERE Name=N'Dollar'
 UPDATE MultiContext.[Column] SET Test = N'World', DummyInt = 5678, date_of_birth = '21 June 2019' WHERE Name=N'Pound'
 GO
