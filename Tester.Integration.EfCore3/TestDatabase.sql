@@ -275,8 +275,8 @@ INSERT INTO MultiContext.Context ([Name], [Description], BaseSchema, [Namespace]
 VALUES (N'EnumerationDbContext',N'This module is used to extract the enumerations', 'dbo', NULL),
        (N'AppleDbContext', N'Testing apples',  NULL, NULL),
        (N'BananaDbContext', N'Testing bananas', N'dbo', NULL),
-	   (N'CherryDbContext', N'Testing cherries', N'dbo', "Cherry"),
-	   (N'DamsonDbContext', N'Testing Damson plums', NULL, "Plum");
+	   (N'CherryDbContext', N'Testing cherries', N'dbo', 'Cherry'),
+	   (N'DamsonDbContext', N'Testing Damson plums', NULL, 'Plum');
 GO
 UPDATE MultiContext.Context SET filename='CherryDatabaseContext' WHERE Name='CherryDbContext'
 --UPDATE MultiContext.Context SET TemplatePath='C:\path_to_templates\' WHERE [Name]='DamsonDbContext'
@@ -325,8 +325,8 @@ INSERT INTO MultiContext.[Column] (Name, DbName, IsPrimaryKey, OverrideModifier,
 VALUES (N'Description', NULL ,1,0, NULL,           (SELECT id FROM MultiContext.[Table] WHERE ContextId=@id AND Name=N'NoPrimaryKeys')),
        (N'ParentId', NULL,NULL,0, NULL,	           (SELECT id FROM MultiContext.[Table] WHERE ContextId=@id AND Name=N'Parent')),
 	   (N'ParentName', N'ParentName',NULL,0, NULL, (SELECT id FROM MultiContext.[Table] WHERE ContextId=@id AND Name=N'Parent'));
-INSERT INTO MultiContext.ForeignKey (ContextId, ConstraintName, ParentName, ChildName, PkSchema, PkTableName, PkColumn, FkSchema, FkTableName, FkColumn, Ordinal, CascadeOnDelete, IsNotEnforced)
-VALUES (@id, N'CustomNameForForeignKey', N'ParentFkName', N'ChildFkName', N'dbo', N'NoPrimaryKeys', N'Description', N'Synonyms', N'Parent', N'ParentName', 1, 0, 0);
+INSERT INTO MultiContext.ForeignKey (ContextId, ConstraintName, ParentName, ChildName, PkSchema, PkTableName, PkColumn, FkSchema, FkTableName, FkColumn, Ordinal, CascadeOnDelete, IsNotEnforced, HasUniqueConstraint)
+VALUES (@id, N'CustomNameForForeignKey', N'ParentFkName', N'ChildFkName', N'dbo', N'NoPrimaryKeys', N'Description', N'Synonyms', N'Parent', N'ParentName', 1, 0, 0, 0);
 GO
 
 UPDATE MultiContext.[Column] SET Attributes=N'[ExampleForTesting("abc")]~[CustomRequired]' WHERE Name=N'Dollar'
@@ -335,8 +335,11 @@ GO
 
 -- Test to make sure all optional fields are read in and stored in dictionary
 ALTER TABLE MultiContext.[Column] ADD Test VARCHAR(10) NULL;
+GO
 ALTER TABLE MultiContext.[Column] ADD DummyInt int NULL;
+GO
 ALTER TABLE MultiContext.[Column] ADD date_of_birth DATETIME NULL;
+GO
 UPDATE MultiContext.[Column] SET Test = N'Hello', DummyInt = 1234, date_of_birth = '20 June 2019' WHERE Name=N'Dollar'
 UPDATE MultiContext.[Column] SET Test = N'World', DummyInt = 5678, date_of_birth = '21 June 2019' WHERE Name=N'Pound'
 GO
