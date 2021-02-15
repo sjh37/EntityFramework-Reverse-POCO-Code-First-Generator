@@ -121,7 +121,7 @@ namespace Tester.Integration.EfCore3.Single_context_many_files
         public IQueryable<CsvToIntReturnModel> CsvToInt(string array, string array2)
         {
             return Set<CsvToIntReturnModel>()
-                .FromSqlRaw("SELECT * FROM [CsvToInt]({0}, {1})", array, array2)
+                .FromSqlRaw("SELECT * FROM [dbo].[CsvToInt]({0}, {1})", array, array2)
                 .AsNoTracking();
         }
 

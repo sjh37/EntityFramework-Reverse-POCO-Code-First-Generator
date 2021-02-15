@@ -46,6 +46,7 @@ namespace TestSynonymsDatabase
 
         // Table Valued Functions
         IQueryable<CsvToIntReturnModel> CsvToInt(string array, string array2); // dbo.CsvToInt
+        IQueryable<CsvToIntWithSchemaReturnModel> CsvToIntWithSchema(string array, string array2); // CustomSchema.CsvToIntWithSchema
     }
 
     #endregion
@@ -94,6 +95,7 @@ namespace TestSynonymsDatabase
 
             // Table Valued Functions
             modelBuilder.Entity<CsvToIntReturnModel>().HasNoKey();
+            modelBuilder.Entity<CsvToIntWithSchemaReturnModel>().HasNoKey();
         }
 
 
@@ -141,7 +143,15 @@ namespace TestSynonymsDatabase
         public IQueryable<CsvToIntReturnModel> CsvToInt(string array, string array2)
         {
             return Set<CsvToIntReturnModel>()
-                .FromSqlRaw("SELECT * FROM [CsvToInt]({0}, {1})", array, array2)
+                .FromSqlRaw("SELECT * FROM [dbo].[CsvToInt]({0}, {1})", array, array2)
+                .AsNoTracking();
+        }
+
+        // CustomSchema.CsvToIntWithSchema
+        public IQueryable<CsvToIntWithSchemaReturnModel> CsvToIntWithSchema(string array, string array2)
+        {
+            return Set<CsvToIntWithSchemaReturnModel>()
+                .FromSqlRaw("SELECT * FROM [CustomSchema].[CsvToIntWithSchema]({0}, {1})", array, array2)
                 .AsNoTracking();
         }
     }
@@ -248,6 +258,12 @@ namespace TestSynonymsDatabase
         public IQueryable<CsvToIntReturnModel> CsvToInt(string array, string array2)
         {
             return new List<CsvToIntReturnModel>().AsQueryable();
+        }
+
+        // CustomSchema.CsvToIntWithSchema
+        public IQueryable<CsvToIntWithSchemaReturnModel> CsvToIntWithSchema(string array, string array2)
+        {
+            return new List<CsvToIntWithSchemaReturnModel>().AsQueryable();
         }
     }
 
