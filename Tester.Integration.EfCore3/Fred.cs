@@ -119,6 +119,7 @@ namespace Tester.Integration.EfCore3
         DbSet<RebelGalaxyShip> RebelGalaxyShips { get; set; } // RebelGalaxyShips
         DbSet<RebelGalaxyWeapon> RebelGalaxyWeapons { get; set; } // RebelGalaxyWeapons
         DbSet<ScreamAndShout> ScreamAndShouts { get; set; } // ScreamAndShout
+        DbSet<SequenceTest> SequenceTests { get; set; } // SequenceTest
         DbSet<StockPrediction> StockPredictions { get; set; } // StockPrediction
         DbSet<TableMappingWithSpace> TableMappingWithSpaces { get; set; } // table mapping with space
         DbSet<TableWithDuplicateColumnName> TableWithDuplicateColumnNames { get; set; } // table with duplicate column names
@@ -385,6 +386,7 @@ namespace Tester.Integration.EfCore3
         public DbSet<RebelGalaxyShip> RebelGalaxyShips { get; set; } // RebelGalaxyShips
         public DbSet<RebelGalaxyWeapon> RebelGalaxyWeapons { get; set; } // RebelGalaxyWeapons
         public DbSet<ScreamAndShout> ScreamAndShouts { get; set; } // ScreamAndShout
+        public DbSet<SequenceTest> SequenceTests { get; set; } // SequenceTest
         public DbSet<StockPrediction> StockPredictions { get; set; } // StockPrediction
         public DbSet<TableMappingWithSpace> TableMappingWithSpaces { get; set; } // table mapping with space
         public DbSet<TableWithDuplicateColumnName> TableWithDuplicateColumnNames { get; set; } // table with duplicate column names
@@ -499,6 +501,7 @@ namespace Tester.Integration.EfCore3
             modelBuilder.ApplyConfiguration(new RebelGalaxyShipConfiguration());
             modelBuilder.ApplyConfiguration(new RebelGalaxyWeaponConfiguration());
             modelBuilder.ApplyConfiguration(new ScreamAndShoutConfiguration());
+            modelBuilder.ApplyConfiguration(new SequenceTestConfiguration());
             modelBuilder.ApplyConfiguration(new StockPredictionConfiguration());
             modelBuilder.ApplyConfiguration(new TableMappingWithSpaceConfiguration());
             modelBuilder.ApplyConfiguration(new TableWithDuplicateColumnNameConfiguration());
@@ -1601,6 +1604,7 @@ namespace Tester.Integration.EfCore3
         public DbSet<RebelGalaxyShip> RebelGalaxyShips { get; set; } // RebelGalaxyShips
         public DbSet<RebelGalaxyWeapon> RebelGalaxyWeapons { get; set; } // RebelGalaxyWeapons
         public DbSet<ScreamAndShout> ScreamAndShouts { get; set; } // ScreamAndShout
+        public DbSet<SequenceTest> SequenceTests { get; set; } // SequenceTest
         public DbSet<StockPrediction> StockPredictions { get; set; } // StockPrediction
         public DbSet<TableMappingWithSpace> TableMappingWithSpaces { get; set; } // table mapping with space
         public DbSet<TableWithDuplicateColumnName> TableWithDuplicateColumnNames { get; set; } // table with duplicate column names
@@ -1698,6 +1702,7 @@ namespace Tester.Integration.EfCore3
             RebelGalaxyShips = new FakeDbSet<RebelGalaxyShip>("Broadsides", "Turrets", "Cost");
             RebelGalaxyWeapons = new FakeDbSet<RebelGalaxyWeapon>("Damage", "Cost");
             ScreamAndShouts = new FakeDbSet<ScreamAndShout>("Id");
+            SequenceTests = new FakeDbSet<SequenceTest>("Id");
             StockPredictions = new FakeDbSet<StockPrediction>("Id");
             TableMappingWithSpaces = new FakeDbSet<TableMappingWithSpace>("Id", "IdValue");
             TableWithDuplicateColumnNames = new FakeDbSet<TableWithDuplicateColumnName>("Id");
@@ -3976,6 +3981,13 @@ namespace Tester.Integration.EfCore3
         }
     }
 
+    // SequenceTest
+    public class SequenceTest
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public string CarMake { get; set; } // CarMake (length: 20)
+    }
+
     // StockPrediction
     public class StockPrediction
     {
@@ -5461,6 +5473,19 @@ namespace Tester.Integration.EfCore3
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.KoeffVed).HasColumnName(@"KoeffVed").HasColumnType("decimal(4,4)").IsRequired(false);
+        }
+    }
+
+    // SequenceTest
+    public class SequenceTestConfiguration : IEntityTypeConfiguration<SequenceTest>
+    {
+        public void Configure(EntityTypeBuilder<SequenceTest> builder)
+        {
+            builder.ToTable("SequenceTest", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK__Sequence__3214EC07F1340CCD").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountBy1]");
+            builder.Property(x => x.CarMake).HasColumnName(@"CarMake").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
         }
     }
 

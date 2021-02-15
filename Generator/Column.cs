@@ -20,6 +20,7 @@ namespace Efrpg
 
         public int DateTimePrecision;
         public string Default;
+        public string HasDefaultValueSql;
         public int MaxLength;
         public int Precision;
         public int Ordinal;
@@ -131,6 +132,15 @@ namespace Efrpg
                 Default = Default.Substring(1, Default.Length - 2);
             }
 
+            // Check for sequence
+            var lower = Default.ToLower();
+            if (lower.Contains("next value for"))
+            {
+                HasDefaultValueSql = Default.Trim();
+                Default = string.Empty;
+                return;
+            }
+
             // Remove unicode prefix
             if (IsUnicode && Default.StartsWith("N") &&
                 !Default.Equals("NULL", StringComparison.InvariantCultureIgnoreCase))
@@ -139,7 +149,7 @@ namespace Efrpg
             if (Default.First() == '\'' && Default.Last() == '\'' && Default.Length >= 2)
                 Default = string.Format("\"{0}\"", Default.Substring(1, Default.Length - 2));
 
-            var lower = Default.ToLower();
+            lower = Default.ToLower();
             var lowerPropertyType = PropertyType.ToLower();
 
             // Cleanup default

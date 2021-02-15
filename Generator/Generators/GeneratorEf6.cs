@@ -74,19 +74,23 @@ namespace Efrpg.Generators
 
             var isNewSequentialId = !string.IsNullOrEmpty(c.Default) && c.Default.ToLower().Contains("newsequentialid");
             var isTemporalColumn = c.GeneratedAlwaysType != ColumnGeneratedAlwaysType.NotApplicable;
+            var hasDefaultValueSql = !string.IsNullOrEmpty(c.HasDefaultValueSql);
 
             // Identity, instead of Computed, seems the best for Temporal `GENERATED ALWAYS` columns: https://stackoverflow.com/questions/40742142/entity-framework-not-working-with-temporal-table
-            if (c.IsIdentity || isNewSequentialId || isTemporalColumn)
+            if (!hasDefaultValueSql)
             {
-                databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity)";
-            }
-            else if (c.IsComputed)
-            {
-                databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.Computed)";
-            }
-            else if (c.IsPrimaryKey)
-            {
-                databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.None)";
+                if (c.IsIdentity || isNewSequentialId || isTemporalColumn)
+                {
+                    databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity)";
+                }
+                else if (c.IsComputed)
+                {
+                    databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.Computed)";
+                }
+                else if (c.IsPrimaryKey)
+                {
+                    databaseGeneratedOption = ".HasDatabaseGeneratedOption(DatabaseGeneratedOption.None)";
+                }
             }
 
             var sb = new StringBuilder(255);
@@ -127,6 +131,9 @@ namespace Efrpg.Generators
 
             if (databaseGeneratedOption != null)
                 sb.Append(databaseGeneratedOption);
+            
+            if(hasDefaultValueSql)
+                sb.AppendFormat(".HasDefaultValueSql(@\"{0}\")", c.HasDefaultValueSql);
 
             var config = sb.ToString();
             if (!string.IsNullOrEmpty(config))

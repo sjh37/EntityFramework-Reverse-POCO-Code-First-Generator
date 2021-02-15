@@ -75,21 +75,25 @@ namespace Efrpg.Generators
             var isEfCore3Plus = Settings.IsEfCore3Plus();
             var isNewSequentialId = !string.IsNullOrEmpty(c.Default) && c.Default.ToLower().Contains("newsequentialid");
             var isTemporalColumn = c.GeneratedAlwaysType != ColumnGeneratedAlwaysType.NotApplicable;
+            var hasDefaultValueSql = !string.IsNullOrEmpty(c.HasDefaultValueSql);
 
             // Identity, instead of Computed, seems the best for Temporal 'GENERATED ALWAYS' columns: https://stackoverflow.com/questions/40742142/entity-framework-not-working-with-temporal-table
-            if (c.IsIdentity || isNewSequentialId || isTemporalColumn)
+            if (!hasDefaultValueSql)
             {
-                databaseGeneratedOption = ".ValueGeneratedOnAdd()";
-                if (c.IsIdentity && Column.CanUseSqlServerIdentityColumn.Contains(c.PropertyType))
-                    databaseGeneratedOption += isEfCore3Plus ? ".UseIdentityColumn()" : ".UseSqlServerIdentityColumn()";
-            }
-            else if (c.IsComputed)
-            {
-                databaseGeneratedOption = ".ValueGeneratedOnAddOrUpdate()";
-            }
-            else if (c.IsPrimaryKey)
-            {
-                databaseGeneratedOption = ".ValueGeneratedNever()";
+                if (c.IsIdentity || isNewSequentialId || isTemporalColumn)
+                {
+                    databaseGeneratedOption = ".ValueGeneratedOnAdd()";
+                    if (c.IsIdentity && Column.CanUseSqlServerIdentityColumn.Contains(c.PropertyType))
+                        databaseGeneratedOption += isEfCore3Plus ? ".UseIdentityColumn()" : ".UseSqlServerIdentityColumn()";
+                }
+                else if (c.IsComputed)
+                {
+                    databaseGeneratedOption = ".ValueGeneratedOnAddOrUpdate()";
+                }
+                else if (c.IsPrimaryKey)
+                {
+                    databaseGeneratedOption = ".ValueGeneratedNever()";
+                }
             }
 
             var sb = new StringBuilder(255);
@@ -136,6 +140,9 @@ namespace Efrpg.Generators
 
             if (databaseGeneratedOption != null)
                 sb.Append(databaseGeneratedOption);
+
+            if (hasDefaultValueSql)
+                sb.AppendFormat(".HasDefaultValueSql(@\"{0}\")", c.HasDefaultValueSql);
 
             var config = sb.ToString();
             if (!string.IsNullOrEmpty(config))
