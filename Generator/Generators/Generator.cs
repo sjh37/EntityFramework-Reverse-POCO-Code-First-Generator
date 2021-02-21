@@ -625,8 +625,6 @@ namespace Efrpg.Generators
                     table.SetPrimaryKeys();
                 }
 
-                if (HasAcademicLicence)
-                    filter.Tables.TrimForAcademicLicence();
                 if (HasTrialLicence)
                     filter.Tables.TrimForTrialLicence();
             }
@@ -760,13 +758,7 @@ namespace Efrpg.Generators
                     {
                         if (!filter.IsExcluded(sp))
                         {
-                            if (HasAcademicLicence)
-                            {
-                                /*const int n = 2 * 2;
-                                if (filter.StoredProcs.Count < n)
-                                    filter.StoredProcs.Add(sp);*/
-                            }
-                            else if (HasTrialLicence)
+                            if (HasTrialLicence)
                             {
                                 const int n = 1 + 2 + 3 + 4;
                                 if (filter.StoredProcs.Count < n)
