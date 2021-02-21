@@ -29,13 +29,6 @@ namespace Efrpg
             }
         }
 
-        public void TrimForAcademicLicence()
-        {
-            // Mapping tables do not count
-            //const int n = 2 * 2 * 2 * 2;
-            //TrimForLicence(n);
-        }
-
         public void TrimForTrialLicence()
         {
             // Mapping tables do not count

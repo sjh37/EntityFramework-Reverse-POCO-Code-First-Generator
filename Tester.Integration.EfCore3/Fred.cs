@@ -427,6 +427,13 @@ namespace Tester.Integration.EfCore3
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.HasSequence<int>("CountBy1", "dbo").StartsAt(1).IncrementsBy(1).IsCyclic(false);
+            modelBuilder.HasSequence<long>("CountByBigInt", "dbo").StartsAt(22).IncrementsBy(234).IsCyclic(true).HasMin(1).HasMax(9876543);
+            modelBuilder.HasSequence<decimal>("CountByDecimal", "dbo").StartsAt(593).IncrementsBy(82).IsCyclic(false).HasMin(5).HasMax(777777);
+            modelBuilder.HasSequence<decimal>("CountByNumeric", "dbo").StartsAt(789).IncrementsBy(987).IsCyclic(false).HasMin(345).HasMax(999999999999999999);
+            modelBuilder.HasSequence<short>("CountBySmallInt", "dbo").StartsAt(44).IncrementsBy(456).IsCyclic(true);
+            modelBuilder.HasSequence<byte>("CountByTinyInt", "dbo").StartsAt(33).IncrementsBy(3).IsCyclic(false);
+
             modelBuilder.ApplyConfiguration(new AConfiguration());
             modelBuilder.ApplyConfiguration(new AarefConfiguration());
             modelBuilder.ApplyConfiguration(new AbOrderLinesAbConfiguration());
@@ -3985,7 +3992,11 @@ namespace Tester.Integration.EfCore3
     public class SequenceTest
     {
         public int Id { get; set; } // Id (Primary key)
-        public string CarMake { get; set; } // CarMake (length: 20)
+        public long CntByBigInt { get; set; } // CntByBigInt
+        public byte CntByTinyInt { get; set; } // CntByTinyInt
+        public short CntBySmallInt { get; set; } // CntBySmallInt
+        public decimal CntByDecimal { get; set; } // CntByDecimal
+        public decimal CntByNumeric { get; set; } // CntByNumeric
     }
 
     // StockPrediction
@@ -5482,10 +5493,14 @@ namespace Tester.Integration.EfCore3
         public void Configure(EntityTypeBuilder<SequenceTest> builder)
         {
             builder.ToTable("SequenceTest", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__Sequence__3214EC07F1340CCD").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__Sequence__3214EC072BABC879").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountBy1]");
-            builder.Property(x => x.CarMake).HasColumnName(@"CarMake").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
+            builder.Property(x => x.CntByBigInt).HasColumnName(@"CntByBigInt").HasColumnType("bigint").IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountByBigInt]");
+            builder.Property(x => x.CntByTinyInt).HasColumnName(@"CntByTinyInt").HasColumnType("tinyint").IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountByTinyInt]");
+            builder.Property(x => x.CntBySmallInt).HasColumnName(@"CntBySmallInt").HasColumnType("smallint").IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountBySmallInt]");
+            builder.Property(x => x.CntByDecimal).HasColumnName(@"CntByDecimal").HasColumnType("decimal(18,0)").IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountByDecimal]");
+            builder.Property(x => x.CntByNumeric).HasColumnName(@"CntByNumeric").HasColumnType("numeric(18,0)").IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountByNumeric]");
         }
     }
 

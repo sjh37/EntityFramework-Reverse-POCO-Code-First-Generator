@@ -208,12 +208,41 @@ namespace Efrpg.Generators
                 _fileManagementService.Error(string.Empty);
             }
         }
+        
+        public void LoadSequences()
+        {
+            if (_factory == null || DatabaseReader == null || !Settings.ElementsToGenerate.HasFlag(Elements.Context))
+                return;
+
+            try
+            {
+                var sequences = DatabaseReader.ReadSequences();
+                if (sequences.Count <= 0)
+                    return; // No sequences in database
+                
+                foreach (var filterKeyValuePair in FilterList.GetFilters())
+                {
+                    filterKeyValuePair.Value.Sequences.AddRange(sequences);
+                }
+            }
+            catch (Exception x)
+            {
+                var error = FormatError(x);
+                _fileManagementService.Error(string.Empty);
+                _fileManagementService.Error("// -----------------------------------------------------------------------------------------");
+                _fileManagementService.Error(string.Format("// Failed to read sequences in LoadSequences() - {0}", error));
+                _fileManagementService.Error("/*" + x.StackTrace + "*/");
+                _fileManagementService.Error("// -----------------------------------------------------------------------------------------");
+                _fileManagementService.Error(string.Empty);
+            }
+        }
 
         public void ReadDatabase()
         {
             LoadTables();
             LoadStoredProcs();
             LoadEnums();
+            LoadSequences();
         }
 
         public void LoadTables()

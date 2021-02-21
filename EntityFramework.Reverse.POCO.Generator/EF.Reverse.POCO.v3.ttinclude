@@ -20,6 +20,7 @@
 <#@ import namespace="System.IO" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Reflection" #>
+<#@ import namespace="System.Runtime.Remoting.Messaging" #>
 <#@ import namespace="System.Security" #>
 <#@ import namespace="System.Security.Cryptography" #>
 <#@ import namespace="System.Text" #>
@@ -1727,6 +1728,7 @@
         public Tables Tables                     { get; set; }
         public List<StoredProcedure> StoredProcs { get; set; }
         public List<Enumeration> Enums           { get; set; }
+        public List<RawSequence> Sequences       { get; set; }
         public bool IncludeViews                 { get; set; }
         public bool IncludeSynonyms              { get; set; }
         public bool IncludeStoredProcedures      { get; set; }
@@ -1738,6 +1740,7 @@
             Tables       = new Tables();
             StoredProcs  = new List<StoredProcedure>();
             Enums        = new List<Enumeration>();
+            Sequences    = new List<RawSequence>();
             SubNamespace = string.Empty;
         }
 
@@ -1894,6 +1897,7 @@
         Tables Tables                     { get; set; }
         List<StoredProcedure> StoredProcs { get; set; }
         List<Enumeration> Enums           { get; set; }
+        List<RawSequence> Sequences       { get; set; }
         bool IncludeViews                 { get; set; }
         bool IncludeSynonyms              { get; set; }
         bool IncludeStoredProcedures      { get; set; }
@@ -3388,6 +3392,8 @@
                 addSaveChanges                         = !Settings.UseInheritedBaseInterfaceFunctions,
                 tableValuedFunctions                   = _tableValuedFunctions,
                 scalarValuedFunctions                  = _scalarValuedFunctions,
+                Sequences                              = _filter.Sequences,
+                hasSequences                           = _filter.Sequences.Any(),
                 hasTableValuedFunctions                = _hasTableValuedFunctions && _filter.IncludeTableValuedFunctions,
                 hasScalarValuedFunctions               = _hasScalarValuedFunctions && _filter.IncludeScalarValuedFunctions,
                 IncludeObjectContextConstructor        = !Settings.DbContextBaseClass.Contains("IdentityDbContext"),
@@ -4012,12 +4018,41 @@
                 _fileManagementService.Error(string.Empty);
             }
         }
+        
+        public void LoadSequences()
+        {
+            if (_factory == null || DatabaseReader == null || !Settings.ElementsToGenerate.HasFlag(Elements.Context))
+                return;
+
+            try
+            {
+                var sequences = DatabaseReader.ReadSequences();
+                if (sequences.Count <= 0)
+                    return; // No sequences in database
+                
+                foreach (var filterKeyValuePair in FilterList.GetFilters())
+                {
+                    filterKeyValuePair.Value.Sequences.AddRange(sequences);
+                }
+            }
+            catch (Exception x)
+            {
+                var error = FormatError(x);
+                _fileManagementService.Error(string.Empty);
+                _fileManagementService.Error("// -----------------------------------------------------------------------------------------");
+                _fileManagementService.Error(string.Format("// Failed to read sequences in LoadSequences() - {0}", error));
+                _fileManagementService.Error("/*" + x.StackTrace + "*/");
+                _fileManagementService.Error("// -----------------------------------------------------------------------------------------");
+                _fileManagementService.Error(string.Empty);
+            }
+        }
 
         public void ReadDatabase()
         {
             LoadTables();
             LoadStoredProcs();
             LoadEnums();
+            LoadSequences();
         }
 
         public void LoadTables()
@@ -6144,42 +6179,6 @@
             QueryString                                        = queryString;
             ModelBuilderCommand                                = modelBuilderCommand;
             ModelBuilderPostCommand                            = modelBuilderPostCommand;
-        }
-    }
-    public class RawIndex
-    {
-        public readonly string Schema;
-        public readonly string TableName;
-        public readonly string IndexName;
-        public readonly byte   KeyOrdinal;
-        public readonly string ColumnName;
-        public readonly int    ColumnCount;
-        public readonly bool   IsUnique;
-        public readonly bool   IsPrimaryKey;
-        public readonly bool   IsUniqueConstraint;
-        public readonly bool   IsClustered;
-
-        public RawIndex(string schema, string tableName, string indexName, byte keyOrdinal,
-            string columnName, int columnCount, bool isUnique, bool isPrimaryKey,
-            bool isUniqueConstraint, bool isClustered)
-        {
-            Schema             = schema;
-            TableName          = tableName;
-            IndexName          = indexName;
-            KeyOrdinal         = keyOrdinal;
-            ColumnName         = columnName;
-            ColumnCount        = columnCount;
-            IsUnique           = isUnique;
-            IsPrimaryKey       = isPrimaryKey;
-            IsUniqueConstraint = isUniqueConstraint;
-            IsClustered        = isClustered;
-        }
-
-        public string Dump()
-        {
-            return string.Format("new RawIndex(\"{0}\", \"{1}\", \"{2}\", {3}, \"{4}\", {5}, {6}, {7}, {8}, {9}),",
-                Schema, TableName, IndexName, KeyOrdinal, ColumnName, ColumnCount, IsUnique ? "true" : "false", IsPrimaryKey ? "true" : "false",
-                IsUniqueConstraint ? "true" : "false", IsClustered ? "true" : "false");
         }
     }
 
@@ -11734,6 +11733,7 @@ and limitations under the License.
         protected abstract string ReadDatabaseEditionSQL();
         protected abstract string MultiContextSQL();
         protected abstract string EnumSQL(string table, string nameField, string valueField);
+        protected abstract string SequenceSQL();
 
         // Synonym
         protected abstract string SynonymTableSQLSetup();
@@ -12525,6 +12525,55 @@ and limitations under the License.
             }
             return result;
         }
+        
+        public List<RawSequence> ReadSequences()
+        {
+            if (DatabaseReaderPlugin != null)
+                return DatabaseReaderPlugin.ReadSequences();
+
+            var result = new List<RawSequence>();
+            using (var conn = _factory.CreateConnection())
+            {
+                if (conn == null)
+                    return result;
+
+                conn.ConnectionString = Settings.ConnectionString;
+                conn.Open();
+
+                var cmd = GetCmd(conn);
+                if (cmd == null)
+                    return result;
+
+                var sql = SequenceSQL();
+                if (string.IsNullOrWhiteSpace(sql))
+                    return result;
+
+                cmd.CommandText = sql;
+
+                using (var rdr = cmd.ExecuteReader())
+                {
+                    while (rdr.Read())
+                    {
+                        var dataType = rdr["DataType"].ToString().Trim().ToLower();
+                        
+                        var index = new RawSequence
+                        (
+                            rdr["Schema"].ToString().Trim(),
+                            rdr["Name"].ToString().Trim(),
+                            GetPropertyType(dataType),
+                            rdr["StartValue"].ToString(),
+                            rdr["IncrementValue"].ToString(),
+                            rdr["MinValue"].ToString(),
+                            rdr["MaxValue"].ToString(),
+                            GetReaderBool(rdr, "IsCycleEnabled") ?? false
+                        );
+                        result.Add(index);
+                    }
+                }
+            }
+
+            return result;
+        }
 
         private static string GetReaderString(DbDataReader rdr, string name)
         {
@@ -12724,6 +12773,7 @@ and limitations under the License.
         List<RawIndex>            ReadIndexes();
         List<RawExtendedProperty> ReadExtendedProperties();
         List<RawStoredProcedure>  ReadStoredProcs();
+        List<RawSequence>         ReadSequences();
 
         IDatabaseToPropertyType GetDatabaseToPropertyTypeMapping();
     }
@@ -12731,6 +12781,51 @@ and limitations under the License.
     public interface IMultiContextSettingsPlugin
     {
         List<MultiContextSettings> ReadSettings();
+    }
+
+    public static class MinMaxValueCache
+    {
+        private static readonly Dictionary<string, string> minValues = new Dictionary<string, string>
+        {
+            { "sbyte",   sbyte  .MinValue.ToString() },
+            { "byte",    byte   .MinValue.ToString() },
+            { "short",   short  .MinValue.ToString() },
+            { "ushort",  ushort .MinValue.ToString() },
+            { "int",     int    .MinValue.ToString() },
+            { "uint",    uint   .MinValue.ToString() },
+            { "long",    long   .MinValue.ToString() },
+            { "ulong",   ulong  .MinValue.ToString() },
+            { "float",   float  .MinValue.ToString() },
+            { "double",  double .MinValue.ToString() },
+            { "decimal", decimal.MinValue.ToString() }
+        };
+
+        private static readonly Dictionary<string, string> maxValues = new Dictionary<string, string>
+        {
+            { "sbyte",   sbyte  .MaxValue.ToString() },
+            { "byte",    byte   .MaxValue.ToString() },
+            { "short",   short  .MaxValue.ToString() },
+            { "ushort",  ushort .MaxValue.ToString() },
+            { "int",     int    .MaxValue.ToString() },
+            { "uint",    uint   .MaxValue.ToString() },
+            { "long",    long   .MaxValue.ToString() },
+            { "ulong",   ulong  .MaxValue.ToString() },
+            { "float",   float  .MaxValue.ToString() },
+            { "double",  double .MaxValue.ToString() },
+            { "decimal", decimal.MaxValue.ToString() }
+        };
+
+        public static string GetMinValue(string type)
+        {
+            string value;
+            return minValues.TryGetValue(type, out value) ? value : null;
+        }
+
+        public static string GetMaxValue(string type)
+        {
+            string value;
+            return maxValues.TryGetValue(type, out value) ? value : null;
+        }
     }
 
     public class MySqlDatabaseReader : DatabaseReader
@@ -12786,6 +12881,11 @@ and limitations under the License.
         }
 
         protected override string EnumSQL(string table, string nameField, string valueField)
+        {
+            return string.Empty;
+        }
+
+        protected override string SequenceSQL()
         {
             return string.Empty;
         }
@@ -12904,6 +13004,11 @@ and limitations under the License.
         }
 
         protected override string EnumSQL(string table, string nameField, string valueField)
+        {
+            return string.Empty;
+        }
+
+        protected override string SequenceSQL()
         {
             return string.Empty;
         }
@@ -13040,6 +13145,11 @@ and limitations under the License.
         }
 
         protected override string EnumSQL(string table, string nameField, string valueField)
+        {
+            return string.Empty;
+        }
+
+        protected override string SequenceSQL()
         {
             return string.Empty;
         }
@@ -13290,6 +13400,11 @@ ORDER BY R.specific_schema, R.routine_name, R.routine_type;";
             return string.Format(@"SELECT ""{0}"" as ""NameField"", ""{1}"" as ""ValueField"" FROM ""{2}"";", nameField, valueField, table);
         }
 
+        protected override string SequenceSQL()
+        {
+            return string.Empty;
+        }
+
         protected override string SynonymTableSQLSetup()
         {
             return string.Empty;
@@ -13505,6 +13620,72 @@ ORDER BY R.specific_schema, R.routine_name, R.routine_type;";
             return string.Format("new RawForeignKey(\"{0}\", {1}, {2}, \"{3}\", \"{4}\", \"{5}\", \"{6}\", \"{7}\", \"{8}\", {9}, {10}, {11}, {12}),",
                 ConstraintName, parentName, childName, PkColumn, FkColumn, PkSchema, PkTableName,
                 FkSchema, FkTableName, Ordinal, CascadeOnDelete ? "true" : "false", IsNotEnforced ? "true" : "false", HasUniqueConstraint ? "true" : "false");
+        }
+    }
+    public class RawIndex
+    {
+        public readonly string Schema;
+        public readonly string TableName;
+        public readonly string IndexName;
+        public readonly byte   KeyOrdinal;
+        public readonly string ColumnName;
+        public readonly int    ColumnCount;
+        public readonly bool   IsUnique;
+        public readonly bool   IsPrimaryKey;
+        public readonly bool   IsUniqueConstraint;
+        public readonly bool   IsClustered;
+
+        public RawIndex(string schema, string tableName, string indexName, byte keyOrdinal,
+            string columnName, int columnCount, bool isUnique, bool isPrimaryKey,
+            bool isUniqueConstraint, bool isClustered)
+        {
+            Schema             = schema;
+            TableName          = tableName;
+            IndexName          = indexName;
+            KeyOrdinal         = keyOrdinal;
+            ColumnName         = columnName;
+            ColumnCount        = columnCount;
+            IsUnique           = isUnique;
+            IsPrimaryKey       = isPrimaryKey;
+            IsUniqueConstraint = isUniqueConstraint;
+            IsClustered        = isClustered;
+        }
+
+        public string Dump()
+        {
+            return string.Format("new RawIndex(\"{0}\", \"{1}\", \"{2}\", {3}, \"{4}\", {5}, {6}, {7}, {8}, {9}),",
+                Schema, TableName, IndexName, KeyOrdinal, ColumnName, ColumnCount, IsUnique ? "true" : "false", IsPrimaryKey ? "true" : "false",
+                IsUniqueConstraint ? "true" : "false", IsClustered ? "true" : "false");
+        }
+    }
+
+    public class RawSequence
+    {
+        public readonly string Schema;
+        public readonly string Name;
+        public readonly string DataType;
+        public readonly string StartValue;
+        public readonly string IncrementValue;
+        public readonly string MinValue;
+        public readonly string MaxValue;
+        public readonly string IsCycleEnabled;
+
+        public readonly bool hasMinValue;
+        public readonly bool hasMaxValue;
+
+        public RawSequence(string schema, string name, string dataType, string startValue, string incrementValue, string minValue, string maxValue, bool isCycleEnabled)
+        {
+            Schema         = schema;
+            Name           = name;
+            DataType       = dataType;
+            StartValue     = startValue;
+            IncrementValue = incrementValue;
+            MinValue       = minValue;
+            MaxValue       = maxValue;
+            IsCycleEnabled = isCycleEnabled ? "true" : "false";
+
+            hasMinValue = MinMaxValueCache.GetMinValue(dataType) != minValue;
+            hasMaxValue = MinMaxValueCache.GetMaxValue(dataType) != maxValue;
         }
     }
     public class RawStoredProcedure
@@ -13766,6 +13947,11 @@ SELECT * FROM MultiContext.ForeignKey;";
         protected override string EnumSQL(string table, string nameField, string valueField)
         {
             return string.Format("SELECT {0} as NameField, {1} as ValueField FROM {2};", nameField, valueField, table);
+        }
+
+        protected override string SequenceSQL()
+        {
+            return string.Empty;
         }
 
         protected override string SynonymTableSQLSetup()
@@ -14281,6 +14467,24 @@ SELECT * FROM MultiContext.ForeignKey;";
         protected override string EnumSQL(string table, string nameField, string valueField)
         {
             return string.Format("SELECT {0} as NameField, {1} as ValueField FROM {2};", nameField, valueField, table);
+        }
+
+        protected override string SequenceSQL()
+        {
+            return @"
+SELECT  SCHEMA_NAME(seq.schema_id) AS [Schema],
+		seq.name AS [Name],
+        usrt.name AS DataType,
+        ISNULL(seq.start_value, N'') AS StartValue,
+        ISNULL(seq.increment, N'') AS IncrementValue,
+        ISNULL(seq.minimum_value, N'') AS MinValue,
+        ISNULL(seq.maximum_value, N'') AS MaxValue,
+        ISNULL(CAST(seq.is_cycling AS BIT), 0) AS IsCycleEnabled,
+		seq.cache_size AS CacheSize
+FROM    sys.sequences seq
+        LEFT OUTER JOIN sys.types usrt
+            ON usrt.user_type_id = seq.user_type_id
+ORDER BY [Name], [Schema];";
         }
 
         protected override string SynonymTableSQLSetup()
@@ -14974,6 +15178,10 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             DbName        = dbName;
             NameHumanCase = dbName;
         }
+    }
+    public class Sequence
+    {
+        
     }
 
     public class StoredProcedure : EntityName
@@ -15795,6 +16003,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public bool addSaveChanges                                           { get; set; }
         public List<TableValuedFunctionsTemplateData> tableValuedFunctions   { get; set; }
         public List<ScalarValuedFunctionsTemplateData> scalarValuedFunctions { get; set; }
+        public List<RawSequence> Sequences                                   { get; set; }
+        public bool hasSequences                                             { get; set; }
         public bool hasTableValuedFunctions                                  { get; set; }
         public bool hasScalarValuedFunctions                                 { get; set; }
         public string ConnectionString                                       { get; set; }
@@ -17520,6 +17730,20 @@ using {{this}};{{#newline}}
     protected override void OnModelCreating(ModelBuilder modelBuilder){{#newline}}
     {{{#newline}}
         base.OnModelCreating(modelBuilder);{{#newline}}
+
+{{#if hasSequences}}
+{{#newline}}
+{{#each Sequences}}
+        modelBuilder.HasSequence<{{DataType}}>(""{{Name}}"", ""{{Schema}}"").StartsAt({{StartValue}}).IncrementsBy({{IncrementValue}}).IsCyclic({{IsCycleEnabled}})
+{{#if hasMinValue}}
+.HasMin({{MinValue}})
+{{/if}}
+{{#if hasMaxValue}}
+.HasMax({{MaxValue}})
+{{/if}}
+;{{#newline}}
+{{/each}}
+{{/if}}
 
 {{#if hasTables}}
 {{#newline}}

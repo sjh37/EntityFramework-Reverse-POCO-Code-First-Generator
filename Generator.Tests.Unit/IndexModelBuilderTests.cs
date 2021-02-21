@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Efrpg;
 using Efrpg.FileManagement;
 using Efrpg.Generators;
+using Efrpg.Readers;
 using NUnit.Framework;
 
 namespace Generator.Tests.Unit

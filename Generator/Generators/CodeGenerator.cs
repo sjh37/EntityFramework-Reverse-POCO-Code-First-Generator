@@ -322,6 +322,8 @@ namespace Efrpg.Generators
                 addSaveChanges                         = !Settings.UseInheritedBaseInterfaceFunctions,
                 tableValuedFunctions                   = _tableValuedFunctions,
                 scalarValuedFunctions                  = _scalarValuedFunctions,
+                Sequences                              = _filter.Sequences,
+                hasSequences                           = _filter.Sequences.Any(),
                 hasTableValuedFunctions                = _hasTableValuedFunctions && _filter.IncludeTableValuedFunctions,
                 hasScalarValuedFunctions               = _hasScalarValuedFunctions && _filter.IncludeScalarValuedFunctions,
                 IncludeObjectContextConstructor        = !Settings.DbContextBaseClass.Contains("IdentityDbContext"),

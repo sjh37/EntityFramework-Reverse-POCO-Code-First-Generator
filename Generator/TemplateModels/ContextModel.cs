@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Efrpg.Generators;
+using Efrpg.Readers;
 
 namespace Efrpg.TemplateModels
 {
@@ -28,6 +29,8 @@ namespace Efrpg.TemplateModels
         public bool addSaveChanges                                           { get; set; }
         public List<TableValuedFunctionsTemplateData> tableValuedFunctions   { get; set; }
         public List<ScalarValuedFunctionsTemplateData> scalarValuedFunctions { get; set; }
+        public List<RawSequence> Sequences                                   { get; set; }
+        public bool hasSequences                                             { get; set; }
         public bool hasTableValuedFunctions                                  { get; set; }
         public bool hasScalarValuedFunctions                                 { get; set; }
         public string ConnectionString                                       { get; set; }

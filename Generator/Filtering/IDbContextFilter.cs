@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Efrpg.Readers;
 
 namespace Efrpg.Filtering
 {
@@ -8,6 +9,7 @@ namespace Efrpg.Filtering
         Tables Tables                     { get; set; }
         List<StoredProcedure> StoredProcs { get; set; }
         List<Enumeration> Enums           { get; set; }
+        List<RawSequence> Sequences       { get; set; }
         bool IncludeViews                 { get; set; }
         bool IncludeSynonyms              { get; set; }
         bool IncludeStoredProcedures      { get; set; }

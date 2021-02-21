@@ -34,6 +34,7 @@ namespace Efrpg.Readers
         protected abstract string ReadDatabaseEditionSQL();
         protected abstract string MultiContextSQL();
         protected abstract string EnumSQL(string table, string nameField, string valueField);
+        protected abstract string SequenceSQL();
 
         // Synonym
         protected abstract string SynonymTableSQLSetup();
@@ -823,6 +824,55 @@ namespace Efrpg.Readers
                     }
                 }
             }
+            return result;
+        }
+        
+        public List<RawSequence> ReadSequences()
+        {
+            if (DatabaseReaderPlugin != null)
+                return DatabaseReaderPlugin.ReadSequences();
+
+            var result = new List<RawSequence>();
+            using (var conn = _factory.CreateConnection())
+            {
+                if (conn == null)
+                    return result;
+
+                conn.ConnectionString = Settings.ConnectionString;
+                conn.Open();
+
+                var cmd = GetCmd(conn);
+                if (cmd == null)
+                    return result;
+
+                var sql = SequenceSQL();
+                if (string.IsNullOrWhiteSpace(sql))
+                    return result;
+
+                cmd.CommandText = sql;
+
+                using (var rdr = cmd.ExecuteReader())
+                {
+                    while (rdr.Read())
+                    {
+                        var dataType = rdr["DataType"].ToString().Trim().ToLower();
+                        
+                        var index = new RawSequence
+                        (
+                            rdr["Schema"].ToString().Trim(),
+                            rdr["Name"].ToString().Trim(),
+                            GetPropertyType(dataType),
+                            rdr["StartValue"].ToString(),
+                            rdr["IncrementValue"].ToString(),
+                            rdr["MinValue"].ToString(),
+                            rdr["MaxValue"].ToString(),
+                            GetReaderBool(rdr, "IsCycleEnabled") ?? false
+                        );
+                        result.Add(index);
+                    }
+                }
+            }
+
             return result;
         }
 

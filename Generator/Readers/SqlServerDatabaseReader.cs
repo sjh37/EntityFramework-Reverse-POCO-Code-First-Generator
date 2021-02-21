@@ -461,6 +461,24 @@ SELECT * FROM MultiContext.ForeignKey;";
             return string.Format("SELECT {0} as NameField, {1} as ValueField FROM {2};", nameField, valueField, table);
         }
 
+        protected override string SequenceSQL()
+        {
+            return @"
+SELECT  SCHEMA_NAME(seq.schema_id) AS [Schema],
+		seq.name AS [Name],
+        usrt.name AS DataType,
+        ISNULL(seq.start_value, N'') AS StartValue,
+        ISNULL(seq.increment, N'') AS IncrementValue,
+        ISNULL(seq.minimum_value, N'') AS MinValue,
+        ISNULL(seq.maximum_value, N'') AS MaxValue,
+        ISNULL(CAST(seq.is_cycling AS BIT), 0) AS IsCycleEnabled,
+		seq.cache_size AS CacheSize
+FROM    sys.sequences seq
+        LEFT OUTER JOIN sys.types usrt
+            ON usrt.user_type_id = seq.user_type_id
+ORDER BY [Name], [Schema];";
+        }
+
         protected override string SynonymTableSQLSetup()
         {
             return @"

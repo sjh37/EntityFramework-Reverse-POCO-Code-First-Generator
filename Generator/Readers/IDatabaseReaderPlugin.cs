@@ -10,6 +10,7 @@ namespace Efrpg.Readers
         List<RawIndex>            ReadIndexes();
         List<RawExtendedProperty> ReadExtendedProperties();
         List<RawStoredProcedure>  ReadStoredProcs();
+        List<RawSequence>         ReadSequences();
 
         IDatabaseToPropertyType GetDatabaseToPropertyTypeMapping();
     }

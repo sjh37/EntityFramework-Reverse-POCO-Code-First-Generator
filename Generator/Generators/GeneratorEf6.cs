@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Efrpg.FileManagement;
+using Efrpg.Readers;
 
 namespace Efrpg.Generators
 {

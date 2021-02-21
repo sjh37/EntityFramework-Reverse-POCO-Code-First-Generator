@@ -61,6 +61,11 @@ namespace Efrpg.Readers
             return string.Empty;
         }
 
+        protected override string SequenceSQL()
+        {
+            return string.Empty;
+        }
+
         protected override string SynonymTableSQLSetup()
         {
             return string.Empty;

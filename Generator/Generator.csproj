@@ -102,6 +102,9 @@
     <Compile Include="LanguageMapping\SqlServerToCSharp.cs" />
     <Compile Include="LanguageMapping\IDatabaseToPropertyType.cs" />
     <Compile Include="OnConfiguration.cs" />
+    <Compile Include="Readers\MinMaxValueCache.cs" />
+    <Compile Include="Readers\RawSequence.cs" />
+    <Compile Include="Sequence.cs" />
     <Compile Include="Util\MultiContextSettingsCopy.cs" />
     <Compile Include="Filtering\PeriodFilter.cs" />
     <Compile Include="Filtering\RegexExcludeFilter.cs" />
@@ -207,7 +210,7 @@
     <Compile Include="Generators\GeneratorEfCore.cs" />
     <Compile Include="Generators\GeneratorFactory.cs" />
     <Compile Include="Templates\TemplateType.cs" />
-    <Compile Include="Index.cs" />
+    <Compile Include="Readers\RawIndex.cs" />
     <Compile Include="Inflector.cs" />
     <Compile Include="Pluralization\BidirectionalDictionary.cs" />
     <Compile Include="Pluralization\CustomPluralizationEntry.cs" />

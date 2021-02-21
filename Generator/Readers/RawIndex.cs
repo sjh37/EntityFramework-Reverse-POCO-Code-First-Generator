@@ -1,4 +1,4 @@
-﻿namespace Efrpg
+﻿namespace Efrpg.Readers
 {
     public class RawIndex
     {

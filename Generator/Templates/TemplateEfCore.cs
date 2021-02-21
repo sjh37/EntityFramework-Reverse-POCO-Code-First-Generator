@@ -241,6 +241,20 @@ using {{this}};{{#newline}}
     {{{#newline}}
         base.OnModelCreating(modelBuilder);{{#newline}}
 
+{{#if hasSequences}}
+{{#newline}}
+{{#each Sequences}}
+        modelBuilder.HasSequence<{{DataType}}>(""{{Name}}"", ""{{Schema}}"").StartsAt({{StartValue}}).IncrementsBy({{IncrementValue}}).IsCyclic({{IsCycleEnabled}})
+{{#if hasMinValue}}
+.HasMin({{MinValue}})
+{{/if}}
+{{#if hasMaxValue}}
+.HasMax({{MaxValue}})
+{{/if}}
+;{{#newline}}
+{{/each}}
+{{/if}}
+
 {{#if hasTables}}
 {{#newline}}
 {{#each tables}}
