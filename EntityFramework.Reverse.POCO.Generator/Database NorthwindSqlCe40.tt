@@ -330,16 +330,19 @@
         }
 
         // Perform Enum property type replacement
-        var enumDefinition = enumDefinitions.FirstOrDefault(e =>
-            (e.Schema.Equals(table.Schema.DbName, StringComparison.InvariantCultureIgnoreCase)) && 
-            (e.Table == "*" || e.Table.Equals(table.DbName, StringComparison.InvariantCultureIgnoreCase) || e.Table.Equals(table.NameHumanCase, StringComparison.InvariantCultureIgnoreCase)) &&
-            (e.Column.Equals(column.DbName, StringComparison.InvariantCultureIgnoreCase) || e.Column.Equals(column.NameHumanCase, StringComparison.InvariantCultureIgnoreCase)));
-
-        if (enumDefinition != null)
+        if (enumDefinitions != null)
         {
-            column.PropertyType = enumDefinition.EnumType;
-            if (!string.IsNullOrEmpty(column.Default))
-                column.Default = "(" + enumDefinition.EnumType + ") " + column.Default;
+            var enumDefinition = enumDefinitions.FirstOrDefault(e =>
+                (e.Schema.Equals(table.Schema.DbName, StringComparison.InvariantCultureIgnoreCase)) && 
+                (e.Table == "*" || e.Table.Equals(table.DbName, StringComparison.InvariantCultureIgnoreCase) || e.Table.Equals(table.NameHumanCase, StringComparison.InvariantCultureIgnoreCase)) &&
+                (e.Column.Equals(column.DbName, StringComparison.InvariantCultureIgnoreCase) || e.Column.Equals(column.NameHumanCase, StringComparison.InvariantCultureIgnoreCase)));
+
+            if (enumDefinition != null)
+            {
+                column.PropertyType = enumDefinition.EnumType;
+                if (!string.IsNullOrEmpty(column.Default))
+                    column.Default = "(" + enumDefinition.EnumType + ") " + column.Default;
+            }
         }
     };
 
