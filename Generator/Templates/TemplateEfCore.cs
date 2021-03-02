@@ -77,6 +77,7 @@ using {{this}};{{#newline}}
     DatabaseFacade Database { get; }{{#newline}}
     DbSet<TEntity> Set<TEntity>() where TEntity : class;{{#newline}}
     string ToString();{{#newline}}
+    EntityEntry<TEntity> Update<TEntity>(TEntity entity) where TEntity : class;{{#newline}}
 {{/if}}
 
 
@@ -538,6 +539,12 @@ using {{this}};{{#newline}}
 {{#newline}}
 
     public override string ToString(){{#newline}}
+    {{{#newline}}
+        throw new NotImplementedException();{{#newline}}
+    }{{#newline}}
+{{#newline}}
+
+    public EntityEntry<TEntity> Update<TEntity>(TEntity entity) where TEntity : class{{#newline}}
     {{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}

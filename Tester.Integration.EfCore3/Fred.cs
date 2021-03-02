@@ -146,6 +146,7 @@ namespace Tester.Integration.EfCore3
         DatabaseFacade Database { get; }
         DbSet<TEntity> Set<TEntity>() where TEntity : class;
         string ToString();
+        EntityEntry<TEntity> Update<TEntity>(TEntity entity) where TEntity : class;
 
         // Stored Procedures
         int AddTwoValues(int? a, int? b);
@@ -1772,6 +1773,11 @@ namespace Tester.Integration.EfCore3
         }
 
         public override string ToString()
+        {
+            throw new NotImplementedException();
+        }
+
+        public EntityEntry<TEntity> Update<TEntity>(TEntity entity) where TEntity : class
         {
             throw new NotImplementedException();
         }
