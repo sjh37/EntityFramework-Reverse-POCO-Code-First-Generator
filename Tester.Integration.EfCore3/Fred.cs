@@ -127,6 +127,7 @@ namespace Tester.Integration.EfCore3
         DbSet<TableWithSpaceAndInColumn> TableWithSpaceAndInColumns { get; set; } // table with space and in columns
         DbSet<TableWithSpaceInColumnOnly> TableWithSpaceInColumnOnlies { get; set; } // TableWithSpaceInColumnOnly
         DbSet<TadeuszSobol> TadeuszSobols { get; set; } // TadeuszSobol
+        DbSet<Task1> Task1 { get; set; } // Task
         DbSet<TblOrder> TblOrders { get; set; } // tblOrders
         DbSet<TblOrderError> TblOrderErrors { get; set; } // tblOrderErrors
         DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
@@ -395,6 +396,7 @@ namespace Tester.Integration.EfCore3
         public DbSet<TableWithSpaceAndInColumn> TableWithSpaceAndInColumns { get; set; } // table with space and in columns
         public DbSet<TableWithSpaceInColumnOnly> TableWithSpaceInColumnOnlies { get; set; } // TableWithSpaceInColumnOnly
         public DbSet<TadeuszSobol> TadeuszSobols { get; set; } // TadeuszSobol
+        public DbSet<Task1> Task1 { get; set; } // Task
         public DbSet<TblOrder> TblOrders { get; set; } // tblOrders
         public DbSet<TblOrderError> TblOrderErrors { get; set; } // tblOrderErrors
         public DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
@@ -517,6 +519,7 @@ namespace Tester.Integration.EfCore3
             modelBuilder.ApplyConfiguration(new TableWithSpaceAndInColumnConfiguration());
             modelBuilder.ApplyConfiguration(new TableWithSpaceInColumnOnlyConfiguration());
             modelBuilder.ApplyConfiguration(new TadeuszSobolConfiguration());
+            modelBuilder.ApplyConfiguration(new Task1Configuration());
             modelBuilder.ApplyConfiguration(new TblOrderConfiguration());
             modelBuilder.ApplyConfiguration(new TblOrderErrorConfiguration());
             modelBuilder.ApplyConfiguration(new TblOrderErrorsAbConfiguration());
@@ -1620,6 +1623,7 @@ namespace Tester.Integration.EfCore3
         public DbSet<TableWithSpaceAndInColumn> TableWithSpaceAndInColumns { get; set; } // table with space and in columns
         public DbSet<TableWithSpaceInColumnOnly> TableWithSpaceInColumnOnlies { get; set; } // TableWithSpaceInColumnOnly
         public DbSet<TadeuszSobol> TadeuszSobols { get; set; } // TadeuszSobol
+        public DbSet<Task1> Task1 { get; set; } // Task
         public DbSet<TblOrder> TblOrders { get; set; } // tblOrders
         public DbSet<TblOrderError> TblOrderErrors { get; set; } // tblOrderErrors
         public DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
@@ -1718,6 +1722,7 @@ namespace Tester.Integration.EfCore3
             TableWithSpaceAndInColumns = new FakeDbSet<TableWithSpaceAndInColumn>("IdValue");
             TableWithSpaceInColumnOnlies = new FakeDbSet<TableWithSpaceInColumnOnly>("IdValue");
             TadeuszSobols = new FakeDbSet<TadeuszSobol>("Id");
+            Task1 = new FakeDbSet<Task1>("TaskId");
             TblOrders = new FakeDbSet<TblOrder>("Id");
             TblOrderErrors = new FakeDbSet<TblOrderError>("Id");
             TblOrderErrorsAbs = new FakeDbSet<TblOrderErrorsAb>("Id");
@@ -4101,6 +4106,12 @@ namespace Tester.Integration.EfCore3
         public string Name { get; set; } // Name (length: 10)
     }
 
+    // Task
+    public class Task1
+    {
+        public long TaskId { get; set; } // TaskId (Primary key)
+    }
+
     // tblOrders
     public class TblOrder
     {
@@ -5613,6 +5624,18 @@ namespace Tester.Integration.EfCore3
             builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(max)").IsRequired(false).IsUnicode(false);
             builder.Property(x => x.Notes).HasColumnName(@"Notes").HasColumnType("nvarchar(max)").IsRequired(false);
             builder.Property(x => x.Name).HasColumnName(@"Name").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);
+        }
+    }
+
+    // Task
+    public class Task1Configuration : IEntityTypeConfiguration<Task1>
+    {
+        public void Configure(EntityTypeBuilder<Task1> builder)
+        {
+            builder.ToTable("Task", "dbo");
+            builder.HasKey(x => x.TaskId).HasName("PK_Task").IsClustered();
+
+            builder.Property(x => x.TaskId).HasColumnName(@"TaskId").HasColumnType("bigint").IsRequired().ValueGeneratedNever();
         }
     }
 
