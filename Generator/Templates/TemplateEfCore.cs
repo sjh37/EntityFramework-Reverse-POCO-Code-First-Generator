@@ -44,6 +44,7 @@ using {{this}};{{#newline}}
             if (!Settings.UseInheritedBaseInterfaceFunctions)
             {
                 usings.Add("System.Collections.Generic");
+                usings.Add("Microsoft.EntityFrameworkCore.ChangeTracking");
             }
 
             return usings;
@@ -161,6 +162,7 @@ using {{this}};{{#newline}}
             if (!Settings.UseInheritedBaseInterfaceFunctions)
             {
                 usings.Add("System.Collections.Generic");
+                usings.Add("Microsoft.EntityFrameworkCore.ChangeTracking");
             }
 
             return usings;
@@ -444,6 +446,7 @@ using {{this}};{{#newline}}
             if (!Settings.UseInheritedBaseInterfaceFunctions)
             {
                 usings.Add("System.Collections.Generic");
+                usings.Add("Microsoft.EntityFrameworkCore.ChangeTracking");
             }
 
             if (Settings.DatabaseType == DatabaseType.SqlCe)
