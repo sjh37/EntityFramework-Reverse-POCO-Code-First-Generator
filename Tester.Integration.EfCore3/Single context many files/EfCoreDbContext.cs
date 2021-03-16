@@ -2,6 +2,7 @@
 
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -74,6 +75,7 @@ namespace Tester.Integration.EfCore3.Single_context_many_files
 
             // Table Valued Functions
             modelBuilder.Entity<CsvToIntReturnModel>().HasNoKey();
+            modelBuilder.Entity<CustomSchema_CsvToIntWithSchemaReturnModel>().HasNoKey();
         }
 
 
@@ -122,6 +124,14 @@ namespace Tester.Integration.EfCore3.Single_context_many_files
         {
             return Set<CsvToIntReturnModel>()
                 .FromSqlRaw("SELECT * FROM [dbo].[CsvToInt]({0}, {1})", array, array2)
+                .AsNoTracking();
+        }
+
+        // CustomSchema.CsvToIntWithSchema
+        public IQueryable<CustomSchema_CsvToIntWithSchemaReturnModel> CustomSchema_CsvToIntWithSchema(string array, string array2)
+        {
+            return Set<CustomSchema_CsvToIntWithSchemaReturnModel>()
+                .FromSqlRaw("SELECT * FROM [CustomSchema].[CsvToIntWithSchema]({0}, {1})", array, array2)
                 .AsNoTracking();
         }
 

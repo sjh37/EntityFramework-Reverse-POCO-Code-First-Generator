@@ -5,7 +5,9 @@ System.Threading
 Microsoft.EntityFrameworkCore.Infrastructure
 System.CodeDom.Compiler
 System.Linq
+System.Linq.Expressions
 Microsoft.EntityFrameworkCore
 System.Collections.Generic
+Microsoft.EntityFrameworkCore.ChangeTracking
 Microsoft.Data.SqlClient
 System.Data.SqlTypes

@@ -45,5 +45,6 @@ namespace Efrpg.TemplateModels
         public bool OnConfigurationUsesConfiguration                         { get; set; }
         public bool OnConfigurationUsesConnectionString                      { get; set; }
         public string DefaultSchema                                          { get; set; }
+        public bool IsEfCore5Plus                                            { get; set; }
     }
 }

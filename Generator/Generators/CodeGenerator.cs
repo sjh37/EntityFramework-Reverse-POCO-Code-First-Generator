@@ -256,7 +256,9 @@ namespace Efrpg.Generators
                 tableValuedFunctions            = _tableValuedFunctions,
                 scalarValuedFunctions           = _scalarValuedFunctions,
                 hasTableValuedFunctions         = _hasTableValuedFunctions && _filter.IncludeTableValuedFunctions,
-                hasScalarValuedFunctions        = _hasScalarValuedFunctions && _filter.IncludeScalarValuedFunctions
+                hasScalarValuedFunctions        = _hasScalarValuedFunctions && _filter.IncludeScalarValuedFunctions,
+                IsEfCore3Plus                   = Settings.IsEfCore3Plus(),
+                IsEfCore5Plus                   = Settings.IsEfCore5Plus()
             };
 
             var co = new CodeOutput(string.Empty, filename, "Database context interface", GlobalUsings);
@@ -293,6 +295,7 @@ namespace Efrpg.Generators
             }
 
             var isEfCore3Plus = Settings.IsEfCore3Plus();
+            var isEfCore5Plus = Settings.IsEfCore5Plus();
 
             var data = new ContextModel
             {
@@ -334,7 +337,8 @@ namespace Efrpg.Generators
                 StoredProcModelBuilderPostCommand      = isEfCore3Plus ? ".HasNoKey()"   : string.Empty,
                 OnConfigurationUsesConfiguration       = Settings.OnConfiguration == OnConfiguration.Configuration,
                 OnConfigurationUsesConnectionString    = Settings.OnConfiguration == OnConfiguration.ConnectionString,
-                DefaultSchema                          = Settings.DefaultSchema
+                DefaultSchema                          = Settings.DefaultSchema,
+                IsEfCore5Plus                          = isEfCore5Plus
             };
 
             var co = new CodeOutput(string.Empty, filename, "Database context", GlobalUsings);
@@ -364,7 +368,9 @@ namespace Efrpg.Generators
                 tableValuedFunctions     = _tableValuedFunctions,
                 scalarValuedFunctions    = _scalarValuedFunctions,
                 hasTableValuedFunctions  = _hasTableValuedFunctions && _filter.IncludeTableValuedFunctions,
-                hasScalarValuedFunctions = _hasScalarValuedFunctions && _filter.IncludeScalarValuedFunctions
+                hasScalarValuedFunctions = _hasScalarValuedFunctions && _filter.IncludeScalarValuedFunctions,
+                IsEfCore3Plus            = Settings.IsEfCore3Plus(),
+                IsEfCore5Plus            = Settings.IsEfCore5Plus()
             };
 
             var co = new CodeOutput(string.Empty, filename, "Fake Database context", GlobalUsings);

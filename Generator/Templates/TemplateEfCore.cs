@@ -45,6 +45,12 @@ using {{this}};{{#newline}}
             {
                 usings.Add("System.Collections.Generic");
                 usings.Add("Microsoft.EntityFrameworkCore.ChangeTracking");
+                
+                if(Settings.IsEfCore5Plus())
+                {
+                    usings.Add("System.Linq");
+                    usings.Add("System.Linq.Expressions");
+                }
             }
 
             return usings;
@@ -77,8 +83,45 @@ using {{this}};{{#newline}}
     Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken));{{#newline}}
     DatabaseFacade Database { get; }{{#newline}}
     DbSet<TEntity> Set<TEntity>() where TEntity : class;{{#newline}}
-    string ToString();{{#newline}}
+    string ToString();{{#newline}}{{#newline}}
+
+    EntityEntry Add(object entity);{{#newline}}
+    EntityEntry<TEntity> Add<TEntity>(TEntity entity) where TEntity : class;{{#newline}}
+    Task AddRangeAsync(params object[] entities);{{#newline}}
+    Task AddRangeAsync(IEnumerable<object> entities, CancellationToken cancellationToken = default);{{#newline}}
+    {{#if IsEfCore3Plus}}Value{{/if}}Task<EntityEntry<TEntity>> AddAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default) where TEntity : class;{{#newline}}
+    {{#if IsEfCore3Plus}}Value{{/if}}Task<EntityEntry> AddAsync(object entity, CancellationToken cancellationToken = default);{{#newline}}
+    void AddRange(IEnumerable<object> entities);{{#newline}}
+    void AddRange(params object[] entities);{{#newline}}{{#newline}}
+
+    EntityEntry Attach(object entity);{{#newline}}
+    EntityEntry<TEntity> Attach<TEntity>(TEntity entity) where TEntity : class;{{#newline}}
+    void AttachRange(IEnumerable<object> entities);{{#newline}}
+    void AttachRange(params object[] entities);{{#newline}}{{#newline}}
+
+    EntityEntry Entry(object entity);{{#newline}}
+    EntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class;{{#newline}}{{#newline}}
+
+    TEntity Find<TEntity>(params object[] keyValues) where TEntity : class;{{#newline}}
+    {{#if IsEfCore3Plus}}Value{{/if}}Task<TEntity> FindAsync<TEntity>(object[] keyValues, CancellationToken cancellationToken) where TEntity : class;{{#newline}}
+    {{#if IsEfCore3Plus}}Value{{/if}}Task<TEntity> FindAsync<TEntity>(params object[] keyValues) where TEntity : class;{{#newline}}
+    {{#if IsEfCore3Plus}}Value{{/if}}Task<object> FindAsync(Type entityType, object[] keyValues, CancellationToken cancellationToken);{{#newline}}
+    {{#if IsEfCore3Plus}}Value{{/if}}Task<object> FindAsync(Type entityType, params object[] keyValues);{{#newline}}
+    object Find(Type entityType, params object[] keyValues);{{#newline}}{{#newline}}
+
+    EntityEntry Remove(object entity);{{#newline}}
+    EntityEntry<TEntity> Remove<TEntity>(TEntity entity) where TEntity : class;{{#newline}}
+    void RemoveRange(IEnumerable<object> entities);{{#newline}}
+    void RemoveRange(params object[] entities);{{#newline}}{{#newline}}
+
+    EntityEntry Update(object entity);{{#newline}}
     EntityEntry<TEntity> Update<TEntity>(TEntity entity) where TEntity : class;{{#newline}}
+    void UpdateRange(IEnumerable<object> entities);{{#newline}}
+    void UpdateRange(params object[] entities);{{#newline}}{{#newline}}
+
+{{#if IsEfCore5Plus}}
+    IQueryable<TResult> FromExpression<TResult> (Expression<Func<IQueryable<TResult>>> expression);{{#newline}}
+{{/if}}
 {{/if}}
 
 
@@ -447,6 +490,12 @@ using {{this}};{{#newline}}
             {
                 usings.Add("System.Collections.Generic");
                 usings.Add("Microsoft.EntityFrameworkCore.ChangeTracking");
+
+                if (Settings.IsEfCore5Plus())
+                {
+                    usings.Add("System.Linq");
+                    usings.Add("System.Linq.Expressions");
+                }
             }
 
             if (Settings.DatabaseType == DatabaseType.SqlCe)
@@ -491,14 +540,12 @@ using {{this}};{{#newline}}
     {{{#newline}}
         ++SaveChangesCount;{{#newline}}
         return 1;{{#newline}}
-    }{{#newline}}
-{{#newline}}
+    }{{#newline}}{{#newline}}
 
     public virtual int SaveChanges(bool acceptAllChangesOnSuccess){{#newline}}
     {{{#newline}}
         return SaveChanges();{{#newline}}
-    }{{#newline}}
-{{#newline}}
+    }{{#newline}}{{#newline}}
 
     public virtual Task<int> SaveChangesAsync(CancellationToken cancellationToken){{#newline}}
     {{{#newline}}
@@ -510,9 +557,7 @@ using {{this}};{{#newline}}
     {{{#newline}}
         ++SaveChangesCount;{{#newline}}
         return Task<int>.Factory.StartNew(x => 1, acceptAllChangesOnSuccess, cancellationToken);{{#newline}}
-    }{{#newline}}
-{{#newline}}
-
+    }{{#newline}}{{#newline}}
 
 
 {{#if DbContextClassIsPartial}}
@@ -522,36 +567,176 @@ using {{this}};{{#newline}}
 
     protected virtual void Dispose(bool disposing){{#newline}}
     {{{#newline}}
-    }{{#newline}}
-{{#newline}}
+    }{{#newline}}{{#newline}}
 
     public void Dispose(){{#newline}}
     {{{#newline}}
         Dispose(true);{{#newline}}
-    }{{#newline}}
-{{#newline}}
+    }{{#newline}}{{#newline}}
 
     private DatabaseFacade _database;{{#newline}}
-    public DatabaseFacade Database { get { return _database; } }{{#newline}}
-{{#newline}}
+    public DatabaseFacade Database { get { return _database; } }{{#newline}}{{#newline}}
 
     public DbSet<TEntity> Set<TEntity>() where TEntity : class{{#newline}}
     {{{#newline}}
         throw new NotImplementedException();{{#newline}}
-    }{{#newline}}
-{{#newline}}
+    }{{#newline}}{{#newline}}
 
     public override string ToString(){{#newline}}
     {{{#newline}}
         throw new NotImplementedException();{{#newline}}
-    }{{#newline}}
-{{#newline}}
+    }{{#newline}}{{#newline}}
 
-    public EntityEntry<TEntity> Update<TEntity>(TEntity entity) where TEntity : class{{#newline}}
+    public virtual EntityEntry Add(object entity){{#newline}}
+    {{{#newline}}
+        throw new NotImplementedException();{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public virtual EntityEntry<TEntity> Add<TEntity>(TEntity entity) where TEntity : class{{#newline}}
+    {{{#newline}}
+        throw new NotImplementedException();{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public virtual Task AddRangeAsync(params object[] entities){{#newline}}
+    {{{#newline}}
+        throw new NotImplementedException();{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public virtual async Task AddRangeAsync(IEnumerable<object> entities, CancellationToken cancellationToken = default){{#newline}}
+    {{{#newline}}
+        await Task.CompletedTask;{{#newline}}
+        throw new NotImplementedException();{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public virtual async {{#if IsEfCore3Plus}}Value{{/if}}Task<EntityEntry<TEntity>> AddAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default) where TEntity : class{{#newline}}
+    {{{#newline}}
+        await Task.CompletedTask;{{#newline}}
+        throw new NotImplementedException();{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public virtual async {{#if IsEfCore3Plus}}Value{{/if}}Task<EntityEntry> AddAsync(object entity, CancellationToken cancellationToken = default){{#newline}}
+    {{{#newline}}
+        await Task.CompletedTask;{{#newline}}
+        throw new NotImplementedException();{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public virtual void AddRange(IEnumerable<object> entities){{#newline}}
+    {{{#newline}}
+        throw new NotImplementedException();{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public virtual void AddRange(params object[] entities){{#newline}}
+    {{{#newline}}
+        throw new NotImplementedException();{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public virtual EntityEntry Attach(object entity){{#newline}}
+    {{{#newline}}
+        throw new NotImplementedException();{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public virtual EntityEntry<TEntity> Attach<TEntity>(TEntity entity) where TEntity : class{{#newline}}
+    {{{#newline}}
+        throw new NotImplementedException();{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public virtual void AttachRange(IEnumerable<object> entities){{#newline}}
+    {{{#newline}}
+        throw new NotImplementedException();{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public virtual void AttachRange(params object[] entities){{#newline}}
+    {{{#newline}}
+        throw new NotImplementedException();{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public virtual EntityEntry Entry(object entity){{#newline}}
+    {{{#newline}}
+        throw new NotImplementedException();{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public virtual EntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class{{#newline}}
+    {{{#newline}}
+        throw new NotImplementedException();{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public virtual TEntity Find<TEntity>(params object[] keyValues) where TEntity : class{{#newline}}
+    {{{#newline}}
+        throw new NotImplementedException();{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public virtual {{#if IsEfCore3Plus}}Value{{/if}}Task<TEntity> FindAsync<TEntity>(object[] keyValues, CancellationToken cancellationToken) where TEntity : class{{#newline}}
+    {{{#newline}}
+        throw new NotImplementedException();{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public virtual {{#if IsEfCore3Plus}}Value{{/if}}Task<TEntity> FindAsync<TEntity>(params object[] keyValues) where TEntity : class{{#newline}}
+    {{{#newline}}
+        throw new NotImplementedException();{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public virtual {{#if IsEfCore3Plus}}Value{{/if}}Task<object> FindAsync(Type entityType, object[] keyValues, CancellationToken cancellationToken){{#newline}}
+    {{{#newline}}
+        throw new NotImplementedException();{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public virtual {{#if IsEfCore3Plus}}Value{{/if}}Task<object> FindAsync(Type entityType, params object[] keyValues){{#newline}}
+    {{{#newline}}
+        throw new NotImplementedException();{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public virtual object Find(Type entityType, params object[] keyValues){{#newline}}
+    {{{#newline}}
+        throw new NotImplementedException();{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public virtual EntityEntry Remove(object entity){{#newline}}
+    {{{#newline}}
+        throw new NotImplementedException();{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public virtual EntityEntry<TEntity> Remove<TEntity>(TEntity entity) where TEntity : class{{#newline}}
+    {{{#newline}}
+        throw new NotImplementedException();{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public virtual void RemoveRange(IEnumerable<object> entities){{#newline}}
+    {{{#newline}}
+        throw new NotImplementedException();{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public virtual void RemoveRange(params object[] entities){{#newline}}
+    {{{#newline}}
+        throw new NotImplementedException();{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public virtual EntityEntry Update(object entity){{#newline}}
+    {{{#newline}}
+        throw new NotImplementedException();{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public virtual EntityEntry<TEntity> Update<TEntity>(TEntity entity) where TEntity : class{{#newline}}
+    {{{#newline}}
+        throw new NotImplementedException();{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public virtual void UpdateRange(IEnumerable<object> entities){{#newline}}
+    {{{#newline}}
+        throw new NotImplementedException();{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public virtual void UpdateRange(params object[] entities){{#newline}}
+    {{{#newline}}
+        throw new NotImplementedException();{{#newline}}
+    }{{#newline}}{{#newline}}
+
+{{#if IsEfCore5Plus}}
+{{#newline}}
+    public virtual IQueryable<TResult> FromExpression<TResult> (Expression<Func<IQueryable<TResult>>> expression){{#newline}}
     {{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}
-
+{{/if}}
 
 {{#if hasStoredProcs}}
 {{#newline}}

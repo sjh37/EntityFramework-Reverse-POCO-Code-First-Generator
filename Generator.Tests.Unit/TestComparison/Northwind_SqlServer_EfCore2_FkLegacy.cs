@@ -64,6 +64,41 @@ namespace Efrpg.V3TestE
         DbSet<TEntity> Set<TEntity>() where TEntity : class;
         string ToString();
 
+        EntityEntry Add(object entity);
+        EntityEntry<TEntity> Add<TEntity>(TEntity entity) where TEntity : class;
+        Task AddRangeAsync(params object[] entities);
+        Task AddRangeAsync(IEnumerable<object> entities, CancellationToken cancellationToken = default);
+        Task<EntityEntry<TEntity>> AddAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default) where TEntity : class;
+        Task<EntityEntry> AddAsync(object entity, CancellationToken cancellationToken = default);
+        void AddRange(IEnumerable<object> entities);
+        void AddRange(params object[] entities);
+
+        EntityEntry Attach(object entity);
+        EntityEntry<TEntity> Attach<TEntity>(TEntity entity) where TEntity : class;
+        void AttachRange(IEnumerable<object> entities);
+        void AttachRange(params object[] entities);
+
+        EntityEntry Entry(object entity);
+        EntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class;
+
+        TEntity Find<TEntity>(params object[] keyValues) where TEntity : class;
+        Task<TEntity> FindAsync<TEntity>(object[] keyValues, CancellationToken cancellationToken) where TEntity : class;
+        Task<TEntity> FindAsync<TEntity>(params object[] keyValues) where TEntity : class;
+        Task<object> FindAsync(Type entityType, object[] keyValues, CancellationToken cancellationToken);
+        Task<object> FindAsync(Type entityType, params object[] keyValues);
+        object Find(Type entityType, params object[] keyValues);
+
+        EntityEntry Remove(object entity);
+        EntityEntry<TEntity> Remove<TEntity>(TEntity entity) where TEntity : class;
+        void RemoveRange(IEnumerable<object> entities);
+        void RemoveRange(params object[] entities);
+
+        EntityEntry Update(object entity);
+        EntityEntry<TEntity> Update<TEntity>(TEntity entity) where TEntity : class;
+        void UpdateRange(IEnumerable<object> entities);
+        void UpdateRange(params object[] entities);
+
+
         // Stored Procedures
         List<CustOrderHistReturnModel> CustOrderHist(string customerId);
         List<CustOrderHistReturnModel> CustOrderHist(string customerId, out int procResult);
@@ -607,6 +642,150 @@ namespace Efrpg.V3TestE
         {
             throw new NotImplementedException();
         }
+
+        public virtual EntityEntry Add(object entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual EntityEntry<TEntity> Add<TEntity>(TEntity entity) where TEntity : class
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual Task AddRangeAsync(params object[] entities)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual async Task AddRangeAsync(IEnumerable<object> entities, CancellationToken cancellationToken = default)
+        {
+            await Task.CompletedTask;
+            throw new NotImplementedException();
+        }
+
+        public virtual async Task<EntityEntry<TEntity>> AddAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default) where TEntity : class
+        {
+            await Task.CompletedTask;
+            throw new NotImplementedException();
+        }
+
+        public virtual async Task<EntityEntry> AddAsync(object entity, CancellationToken cancellationToken = default)
+        {
+            await Task.CompletedTask;
+            throw new NotImplementedException();
+        }
+
+        public virtual void AddRange(IEnumerable<object> entities)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void AddRange(params object[] entities)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual EntityEntry Attach(object entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual EntityEntry<TEntity> Attach<TEntity>(TEntity entity) where TEntity : class
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void AttachRange(IEnumerable<object> entities)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void AttachRange(params object[] entities)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual EntityEntry Entry(object entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual EntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual TEntity Find<TEntity>(params object[] keyValues) where TEntity : class
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual Task<TEntity> FindAsync<TEntity>(object[] keyValues, CancellationToken cancellationToken) where TEntity : class
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual Task<TEntity> FindAsync<TEntity>(params object[] keyValues) where TEntity : class
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual Task<object> FindAsync(Type entityType, object[] keyValues, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual Task<object> FindAsync(Type entityType, params object[] keyValues)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual object Find(Type entityType, params object[] keyValues)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual EntityEntry Remove(object entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual EntityEntry<TEntity> Remove<TEntity>(TEntity entity) where TEntity : class
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void RemoveRange(IEnumerable<object> entities)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void RemoveRange(params object[] entities)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual EntityEntry Update(object entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual EntityEntry<TEntity> Update<TEntity>(TEntity entity) where TEntity : class
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void UpdateRange(IEnumerable<object> entities)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void UpdateRange(params object[] entities)
+        {
+            throw new NotImplementedException();
+        }
+
 
         // Stored Procedures
 
