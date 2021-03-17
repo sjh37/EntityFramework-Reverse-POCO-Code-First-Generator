@@ -3465,7 +3465,8 @@
                 DbContextClassIsPartial = Settings.DbContextClassIsPartial(),
                 IsEfCore2               = Settings.IsEfCore2(),
                 IsEfCore3               = Settings.IsEfCore3(),
-                IsEfCore5               = Settings.IsEfCore5()
+                IsEfCore5               = Settings.IsEfCore5(),
+                IsEfCore3Plus           = Settings.IsEfCore3Plus()
             };
 
             var co = new CodeOutput(string.Empty, filename, "Fake DbSet", GlobalUsings);
@@ -16054,6 +16055,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public bool IsEfCore2                 { get; set; }
         public bool IsEfCore3                 { get; set; }
         public bool IsEfCore5                 { get; set; }
+        public bool IsEfCore3Plus             { get; set; }
     }
 
     public class InterfaceModel
@@ -18613,17 +18615,21 @@ IListSource where TEntity : class
     }{{#newline}}
 {{/if}}
 
-{{#if IsEfCore3}}
+{{#if IsEfCore3Plus}}
     public TResult ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken = new CancellationToken()){{#newline}}
     {{{#newline}}
-        return _inner.Execute<TResult>(expression);{{#newline}}
-    }{{#newline}}
-{{/if}}
+        var expectedResultType = typeof(TResult).GetGenericArguments()[0];{{#newline}}
+        var executionResult = typeof(IQueryProvider){{#newline}}
+            .GetMethod({{#newline}}
+                name: nameof(IQueryProvider.Execute),{{#newline}}
+                genericParameterCount: 1,{{#newline}}
+                types: new[] { typeof(Expression) }){{#newline}}
+            .MakeGenericMethod(expectedResultType){{#newline}}
+            .Invoke(this, new[] { expression });{{#newline}}{{#newline}}
 
-{{#if IsEfCore5}}
-    public TResult ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken = new CancellationToken()){{#newline}}
-    {{{#newline}}
-        return _inner.Execute<TResult>(expression);{{#newline}}
+        return (TResult) typeof(Task).GetMethod(nameof(Task.FromResult)){{#newline}}
+            ?.MakeGenericMethod(expectedResultType){{#newline}}
+            .Invoke(null, new[] { executionResult });{{#newline}}
     }{{#newline}}
 {{/if}}
 

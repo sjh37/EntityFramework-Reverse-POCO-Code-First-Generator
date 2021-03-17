@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using EntityFramework_Reverse_POCO_Generator;
+using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using Tester.BusinessLogic;
 
@@ -95,6 +97,46 @@ namespace Generator.Tests.Unit.EFCore
         {
             // Act
             var result = _customersRepository.Find("123");
+
+            // Assert
+            Assert.IsNull(result);
+        }
+        
+        [Test]
+        public void FirstOrDefault()
+        {
+            // Act
+            var result = _context.Customers.FirstOrDefault();
+
+            // Assert
+            Assert.IsNotNull(result);
+        }
+        
+        [Test]
+        public async Task FirstOrDefaultAsync()
+        {
+            // Act
+            var result = await _context.Customers.FirstOrDefaultAsync();
+
+            // Assert
+            Assert.IsNotNull(result);
+        }
+        
+        [Test]
+        public void QueryEmptyCollection()
+        {
+            // Act
+            var result = _context.Employees.FirstOrDefault();
+
+            // Assert
+            Assert.IsNull(result);
+        }
+        
+        [Test]
+        public async Task QueryEmptyCollectionAsync()
+        {
+            // Act
+            var result = await _context.Employees.FirstOrDefaultAsync();
 
             // Assert
             Assert.IsNull(result);

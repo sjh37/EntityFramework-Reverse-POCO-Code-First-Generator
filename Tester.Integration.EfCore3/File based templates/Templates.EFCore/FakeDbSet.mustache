@@ -259,17 +259,21 @@ IListSource where TEntity : class
     }{{#newline}}
 {{/if}}
 
-{{#if IsEfCore3}}
+{{#if IsEfCore3Plus}}
     public TResult ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken = new CancellationToken()){{#newline}}
     {{{#newline}}
-        return _inner.Execute<TResult>(expression);{{#newline}}
-    }{{#newline}}
-{{/if}}
+        var expectedResultType = typeof(TResult).GetGenericArguments()[0];{{#newline}}
+        var executionResult = typeof(IQueryProvider){{#newline}}
+            .GetMethod({{#newline}}
+                name: nameof(IQueryProvider.Execute),{{#newline}}
+                genericParameterCount: 1,{{#newline}}
+                types: new[] { typeof(Expression) }){{#newline}}
+            .MakeGenericMethod(expectedResultType){{#newline}}
+            .Invoke(this, new[] { expression });{{#newline}}{{#newline}}
 
-{{#if IsEfCore5}}
-    public TResult ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken = new CancellationToken()){{#newline}}
-    {{{#newline}}
-        return _inner.Execute<TResult>(expression);{{#newline}}
+        return (TResult) typeof(Task).GetMethod(nameof(Task.FromResult)){{#newline}}
+            ?.MakeGenericMethod(expectedResultType){{#newline}}
+            .Invoke(null, new[] { executionResult });{{#newline}}
     }{{#newline}}
 {{/if}}
 

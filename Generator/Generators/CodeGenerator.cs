@@ -395,7 +395,8 @@ namespace Efrpg.Generators
                 DbContextClassIsPartial = Settings.DbContextClassIsPartial(),
                 IsEfCore2               = Settings.IsEfCore2(),
                 IsEfCore3               = Settings.IsEfCore3(),
-                IsEfCore5               = Settings.IsEfCore5()
+                IsEfCore5               = Settings.IsEfCore5(),
+                IsEfCore3Plus           = Settings.IsEfCore3Plus()
             };
 
             var co = new CodeOutput(string.Empty, filename, "Fake DbSet", GlobalUsings);
