@@ -12,6 +12,7 @@ namespace Efrpg.FileManagement
         private IFileManager _fileManager;
         private bool _writeToOuter;
         private VisualStudioFileManager _visualStudioFileManager;
+        public bool ForceWriteToOuter;
 
         public FileManagementService(GeneratedTextTransformation outer)
         {
@@ -82,7 +83,7 @@ namespace Efrpg.FileManagement
 
         public void WriteLine(string text)
         {
-            if (_writeToOuter)
+            if (_writeToOuter || ForceWriteToOuter)
                 _outer.WriteLine(text);
             else
                 _fileManager.WriteLine(text);

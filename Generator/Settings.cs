@@ -20,7 +20,7 @@ namespace Efrpg
         public static FileManagerType FileManagerType                   = FileManagerType.Custom; // .NET Core project = Custom; .NET project = VisualStudio; No output (testing only) = Null
         public static string ConnectionString                           = ""; // This is used by the generator to reverse engineer your database
         public static string ConnectionStringName                       = "MyDbContext"; // ConnectionString key as specified in your app.config/web.config/appsettings.json
-        public static string DbContextName                              = "MyDbContext"; // Class name for the DbContext to be generated. Note: If generating separate files, please give the db context a different name from this tt filename. Ignored if using multi-context generation
+        public static string DbContextName                              = "MyDbContext"; // Class name for the DbContext to be generated.
         public static bool GenerateSeparateFiles                        = false;
         public static string Namespace                                  = typeof(Settings).Namespace; // Override the default namespace here. Example: Namespace = "CustomNamespace";
         public static string TemplateFolder                             = ""; // Only used if Settings.TemplateType = TemplateType.FileBased. Specify folder name where the mustache folders can be found. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Custom-file-based-templates
@@ -78,7 +78,7 @@ namespace Efrpg
         public static bool ShowLicenseInfo                  = false; // If true, will add the licence info comment to the top of each file
         public static bool IncludeConnectionSettingComments = false; // Add comments describing connection settings used to generate file
         public static bool IncludeCodeGeneratedAttribute    = false; // If true, will include the [GeneratedCode] attribute before classes, false to remove it.
-        public static bool IncludeColumnsWithDefaults       = true;  // If true, will set properties to the default value from the database.
+        public static bool IncludeColumnsWithDefaults       = true;  // If true, will set properties to the default value from the database.ro
 
         // Create enumerations from database tables
         // List the enumeration tables you want read and generated for
@@ -587,6 +587,7 @@ namespace Efrpg
         }
 
         public static string Root;
+        public static string TemplateFile;
         public static int FilterCount;
     }
 }

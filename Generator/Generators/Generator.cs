@@ -1323,6 +1323,11 @@ namespace Efrpg.Generators
                 _fileManagementService.EndBlock();
                 _fileManagementService.StartNewFile(code.Filename);
 
+                // If generating separate files, check if the db context is the same name as the tt filename.
+                // If it is the same, force writing to outer.
+                if (Path.GetFileNameWithoutExtension(code.Filename).Equals(Settings.TemplateFile, StringComparison.CurrentCultureIgnoreCase))
+                    _fileManagementService.ForceWriteToOuter = true;
+
                 if (writePreHeaderInfo)
                 {
                     var preHeader = _preHeaderInfo.ToString();
@@ -1353,6 +1358,8 @@ namespace Efrpg.Generators
 
             if (Settings.GenerateSeparateFiles)
                 _fileManagementService.WriteLine(FileHeaderFooter.Footer);
+
+            _fileManagementService.ForceWriteToOuter = false;
         }
 
         private List<string> IndentCode(CodeOutput output, string regionNameForGroup, bool firstInGroup, bool lastInGroup)
