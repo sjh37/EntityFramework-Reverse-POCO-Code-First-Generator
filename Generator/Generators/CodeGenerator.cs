@@ -11,15 +11,15 @@ namespace Efrpg.Generators
 {
     public class CodeGenerator
     {
-        private   readonly Generator                               _generator;
-        private   readonly IDbContextFilter                        _filter;
-        private   readonly List<TableTemplateData>                 _tables;
-        private   readonly List<StoredProcTemplateData>            _storedProcs;
-        protected readonly List<string>                            GlobalUsings;
-        protected readonly Template                                Template;
-        private   readonly List<TableValuedFunctionsTemplateData>  _tableValuedFunctions;
-        private   readonly List<ScalarValuedFunctionsTemplateData> _scalarValuedFunctions;
-        private   readonly List<string>                            _tableValuedFunctionComplexTypes;
+        private readonly Generator                               _generator;
+        private readonly IDbContextFilter                        _filter;
+        private readonly List<TableTemplateData>                 _tables;
+        private readonly List<StoredProcTemplateData>            _storedProcs;
+        private readonly List<string>                            _globalUsings;
+        private readonly Template                                _template;
+        private readonly List<TableValuedFunctionsTemplateData>  _tableValuedFunctions;
+        private readonly List<ScalarValuedFunctionsTemplateData> _scalarValuedFunctions;
+        private readonly List<string>                            _tableValuedFunctionComplexTypes;
 
         private readonly bool _hasTables, _hasStoredProcs, _hasTableValuedFunctions, _hasScalarValuedFunctions, _hasTableValuedFunctionComplexTypes, _hasEnums;
 
@@ -153,84 +153,84 @@ namespace Efrpg.Generators
             _hasTableValuedFunctionComplexTypes = _tableValuedFunctionComplexTypes.Any();
             _hasEnums                           = filter.Enums.Any();
 
-            GlobalUsings = new List<string>();
-            Template = TemplateFactory.Create();
+            _globalUsings = new List<string>();
+            _template = TemplateFactory.Create();
             CalcGlobalUsings();
         }
 
-        protected void CalcGlobalUsings()
+        private void CalcGlobalUsings()
         {
-            GlobalUsings.AddRange(Settings.AdditionalNamespaces.Where(x => !string.IsNullOrEmpty(x)).Distinct());
+            _globalUsings.AddRange(Settings.AdditionalNamespaces.Where(x => !string.IsNullOrEmpty(x)).Distinct());
 
             if ((Settings.ElementsToGenerate.HasFlag(Elements.PocoConfiguration) ||
                  Settings.ElementsToGenerate.HasFlag(Elements.Context) ||
                  Settings.ElementsToGenerate.HasFlag(Elements.Interface)) &&
                 (!Settings.ElementsToGenerate.HasFlag(Elements.Poco) && !string.IsNullOrWhiteSpace(Settings.PocoNamespace)))
-                GlobalUsings.Add(Settings.PocoNamespace);
+                _globalUsings.Add(Settings.PocoNamespace);
 
             if (Settings.ElementsToGenerate.HasFlag(Elements.PocoConfiguration) &&
                 (!Settings.ElementsToGenerate.HasFlag(Elements.Context) && !string.IsNullOrWhiteSpace(Settings.ContextNamespace)))
-                GlobalUsings.Add(Settings.ContextNamespace);
+                _globalUsings.Add(Settings.ContextNamespace);
 
             if (Settings.ElementsToGenerate.HasFlag(Elements.Context) &&
                 (!Settings.ElementsToGenerate.HasFlag(Elements.Interface) && !string.IsNullOrWhiteSpace(Settings.InterfaceNamespace)))
-                GlobalUsings.Add(Settings.InterfaceNamespace);
+                _globalUsings.Add(Settings.InterfaceNamespace);
 
             if (Settings.ElementsToGenerate.HasFlag(Elements.Context) &&
                 (!Settings.ElementsToGenerate.HasFlag(Elements.PocoConfiguration) && !string.IsNullOrWhiteSpace(Settings.PocoConfigurationNamespace)))
-                GlobalUsings.Add(Settings.PocoConfigurationNamespace);
+                _globalUsings.Add(Settings.PocoConfigurationNamespace);
         }
 
-        public bool CanWriteInterface()
+        private bool CanWriteInterface()
         {
             return Settings.ElementsToGenerate.HasFlag(Elements.Interface) &&
                    !string.IsNullOrWhiteSpace(Settings.DbContextInterfaceName) &&
                    (_hasTables || _hasStoredProcs || _hasTableValuedFunctions || _hasScalarValuedFunctions);
         }
 
-        public bool CanWriteFactory()
+        private bool CanWriteFactory()
         {
             return Settings.ElementsToGenerate.HasFlag(Elements.Context) &&
                    Settings.AddIDbContextFactory &&
                    (_hasTables || _hasStoredProcs || _hasTableValuedFunctions || _hasScalarValuedFunctions);
         }
 
-        public bool CanWriteContext()
+        private bool CanWriteContext()
         {
             return Settings.ElementsToGenerate.HasFlag(Elements.Context) &&
                    (_hasTables || _hasStoredProcs || _hasTableValuedFunctions || _hasScalarValuedFunctions);
         }
 
-        public bool CanWriteFakeContext()
+        private bool CanWriteFakeContext()
         {
             return Settings.AddUnitTestingDbContext &&
                    Settings.ElementsToGenerate.HasFlag(Elements.Context) &&
                    (_hasTables || _hasStoredProcs || _hasTableValuedFunctions || _hasScalarValuedFunctions);
         }
 
-        public bool CanWritePoco()
+        private bool CanWritePoco()
         {
             return Settings.ElementsToGenerate.HasFlag(Elements.Poco) && _hasTables;
         }
 
-        public bool CanWritePocoConfiguration()
+        private bool CanWritePocoConfiguration()
         {
             return Settings.ElementsToGenerate.HasFlag(Elements.PocoConfiguration) && _hasTables;
         }
 
-        public bool CanWriteStoredProcReturnModel()
+        private bool CanWriteStoredProcReturnModel()
         {
             return Settings.ElementsToGenerate.HasFlag(Elements.Poco) && (_hasStoredProcs || _hasTableValuedFunctions);
         }
 
-        public bool CanWriteEnums()
+        private bool CanWriteEnums()
         {
             return Settings.ElementsToGenerate.HasFlag(Elements.Enum) && _hasEnums;
         }
 
         public string GenerateUsings(List<string> usings)
         {
-            return !usings.Any() ? null : Template.Transform(Template.Usings(), usings).Trim();
+            return !usings.Any() ? null : Template.Transform(_template.Usings(), usings).Trim();
         }
 
         public CodeOutput GenerateInterface()
@@ -261,9 +261,9 @@ namespace Efrpg.Generators
                 IsEfCore5Plus                   = Settings.IsEfCore5Plus()
             };
 
-            var co = new CodeOutput(string.Empty, filename, "Database context interface", GlobalUsings);
-            co.AddUsings(Template.DatabaseContextInterfaceUsings(data));
-            co.AddCode(Template.Transform(Template.DatabaseContextInterface(), data));
+            var co = new CodeOutput(string.Empty, filename, "Database context interface", _globalUsings);
+            co.AddUsings(_template.DatabaseContextInterfaceUsings(data));
+            co.AddCode(Template.Transform(_template.DatabaseContextInterface(), data));
 
             return co;
         }
@@ -341,9 +341,9 @@ namespace Efrpg.Generators
                 IsEfCore5Plus                          = isEfCore5Plus
             };
 
-            var co = new CodeOutput(string.Empty, filename, "Database context", GlobalUsings);
-            co.AddUsings(Template.DatabaseContextUsings(data));
-            co.AddCode(Template.Transform(Template.DatabaseContext(), data));
+            var co = new CodeOutput(string.Empty, filename, "Database context", _globalUsings);
+            co.AddUsings(_template.DatabaseContextUsings(data));
+            co.AddCode(Template.Transform(_template.DatabaseContext(), data));
 
             return co;
         }
@@ -373,9 +373,9 @@ namespace Efrpg.Generators
                 IsEfCore5Plus            = Settings.IsEfCore5Plus()
             };
 
-            var co = new CodeOutput(string.Empty, filename, "Fake Database context", GlobalUsings);
-            co.AddUsings(Template.FakeDatabaseContextUsings(data, _filter));
-            co.AddCode(Template.Transform(Template.FakeDatabaseContext(), data));
+            var co = new CodeOutput(string.Empty, filename, "Fake Database context", _globalUsings);
+            co.AddUsings(_template.FakeDatabaseContextUsings(data, _filter));
+            co.AddCode(Template.Transform(_template.FakeDatabaseContext(), data));
 
             return co;
         }
@@ -399,9 +399,9 @@ namespace Efrpg.Generators
                 IsEfCore3Plus           = Settings.IsEfCore3Plus()
             };
 
-            var co = new CodeOutput(string.Empty, filename, "Fake DbSet", GlobalUsings);
-            co.AddUsings(Template.FakeDbSetUsings(data));
-            co.AddCode(Template.Transform(Template.FakeDbSet(), data));
+            var co = new CodeOutput(string.Empty, filename, "Fake DbSet", _globalUsings);
+            co.AddUsings(_template.FakeDbSetUsings(data));
+            co.AddCode(Template.Transform(_template.FakeDbSet(), data));
 
             return co;
         }
@@ -421,9 +421,9 @@ namespace Efrpg.Generators
                 contextName = Settings.DbContextName
             };
 
-            var co = new CodeOutput(string.Empty, filename, "Database context factory", GlobalUsings);
-            co.AddUsings(Template.DatabaseContextFactoryUsings(data));
-            co.AddCode(Template.Transform(Template.DatabaseContextFactory(), data));
+            var co = new CodeOutput(string.Empty, filename, "Database context factory", _globalUsings);
+            co.AddUsings(_template.DatabaseContextFactoryUsings(data));
+            co.AddCode(Template.Transform(_template.DatabaseContextFactory(), data));
             return co;
         }
 
@@ -508,9 +508,9 @@ namespace Efrpg.Generators
                 EntityClassesArePartial = Settings.EntityClassesArePartial()
             };
 
-            var co = new CodeOutput(table.DbName, filename, null, GlobalUsings);
-            co.AddUsings(Template.PocoUsings(data));
-            co.AddCode(Template.Transform(Template.Poco(), data));
+            var co = new CodeOutput(table.DbName, filename, null, _globalUsings);
+            co.AddUsings(_template.PocoUsings(data));
+            co.AddCode(Template.Transform(_template.Poco(), data));
             return co;
         }
 
@@ -570,9 +570,9 @@ namespace Efrpg.Generators
                 HasIndexes                     = hasIndexes
             };
 
-            var co = new CodeOutput(table.DbName, filename, null, GlobalUsings);
-            co.AddUsings(Template.PocoConfigurationUsings(data));
-            co.AddCode(Template.Transform(Template.PocoConfiguration(), data));
+            var co = new CodeOutput(table.DbName, filename, null, _globalUsings);
+            co.AddUsings(_template.PocoConfigurationUsings(data));
+            co.AddCode(Template.Transform(_template.PocoConfiguration(), data));
             return co;
         }
 
@@ -604,9 +604,9 @@ namespace Efrpg.Generators
                 MultipleModelReturnColumns     = multipleModelReturnColumns
             };
 
-            var co = new CodeOutput(sp.DbName, filename, null, GlobalUsings);
-            co.AddUsings(Template.StoredProcReturnModelUsings());
-            co.AddCode(Template.Transform(Template.StoredProcReturnModels(), data));
+            var co = new CodeOutput(sp.DbName, filename, null, _globalUsings);
+            co.AddUsings(_template.StoredProcReturnModelUsings());
+            co.AddCode(Template.Transform(_template.StoredProcReturnModels(), data));
             return co;
         }
 
@@ -620,7 +620,7 @@ namespace Efrpg.Generators
             }
 
             var co = new CodeOutput(enumeration.EnumName, filename, null, null);
-            co.AddCode(Template.Transform(Template.Enums(), enumeration));
+            co.AddCode(Template.Transform(_template.Enums(), enumeration));
 
             return co;
         }
