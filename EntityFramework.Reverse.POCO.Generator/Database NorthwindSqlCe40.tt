@@ -101,10 +101,10 @@
     Settings.FileExtension      = ".cs";
 
     // Code suppression *******************************************************************************
-    Settings.UseRegions       = true;  // If false, suppresses the use of #region
-    Settings.UseNamespace     = true;  // If false, suppresses the writing of a namespace
+    Settings.UseRegions                       = true;  // If false, suppresses the use of #region
+    Settings.UseNamespace                     = true;  // If false, suppresses the writing of a namespace
     Settings.UsePragma                        = false; // If false, suppresses the writing of #pragma
-    Settings.AllowNullStrings = false; // If true, will allow string? properties and will add '#nullable enable' to the top of each file
+    Settings.AllowNullStrings                 = false; // If true, will allow string? properties and will add '#nullable enable' to the top of each file
     Settings.UseResharper                     = true;  // If true, will add a list of 'ReSharper disable' comments to the top of each file
     Settings.ShowLicenseInfo                  = false; // If true, will add the licence info comment to the top of each file
     Settings.IncludeConnectionSettingComments = false; // Add comments describing connection settings used to generate file
