@@ -7,7 +7,7 @@
     Settings.FileManagerType       = FileManagerType.Custom; // VisualStudio = .NET project; Custom = .NET Core project; Null = No output (testing only)
     Settings.ConnectionString      = "Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True";
     Settings.ConnectionStringName  = "EfCoreDatabase"; // ConnectionString key as specified in your app.config/web.config/appsettings.json
-    Settings.DbContextName         = "EfCoreDbContext"; // Class name for the DbContext to be generated. Note: If generating separate files, please give the db context a different name from this tt filename.
+    Settings.DbContextName         = "EfCoreDbContext"; // Class name for the DbContext to be generated.
     Settings.OnConfiguration       = OnConfiguration.Configuration; // EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/OnConfiguration    Settings.GenerateSeparateFiles   = false;
     Settings.GenerateSeparateFiles = true;
     Settings.Namespace             = DefaultNamespace; // Override the default namespace here
