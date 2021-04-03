@@ -620,8 +620,8 @@ namespace Efrpg.Generators
             }
 
             var co = new CodeOutput(enumeration.EnumName, filename, null, null);
+            co.AddUsings(_template.EnumUsings());
             co.AddCode(Template.Transform(_template.Enums(), enumeration));
-
             return co;
         }
     }

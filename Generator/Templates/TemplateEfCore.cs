@@ -1474,6 +1474,16 @@ IListSource where TEntity : class
 ";
         }
 
+        public override List<string> EnumUsings()
+        {
+            var usings = new List<string>();
+
+            if (Settings.IncludeCodeGeneratedAttribute)
+                usings.Add("System.CodeDom.Compiler");
+
+            return usings;
+        }
+
         public override string Enums()
         {
             return @"

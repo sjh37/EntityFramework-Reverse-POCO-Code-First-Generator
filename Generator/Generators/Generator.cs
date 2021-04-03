@@ -1235,6 +1235,11 @@ namespace Efrpg.Generators
                 codeOutputList.Add(key, codeGenerator.GenerateStoredProcReturnModel(sp));
             }
 
+            foreach (var enumeration in filter.Enums)
+            {
+                codeOutputList.Add(enumType + enumeration.EnumName, codeGenerator.GenerateEnum(enumeration));
+            }
+
             FileHeaderFooter = new FileHeaderFooter(filter.SubNamespace);
             if (!Settings.GenerateSeparateFiles)
             {
@@ -1259,11 +1264,6 @@ namespace Efrpg.Generators
                     _fileManagementService.WriteLine("");
                     _fileManagementService.WriteLine(ns.Trim());
                 }
-            }
-
-            foreach (var enumeration in filter.Enums)
-            {
-                codeOutputList.Add(enumType + enumeration.EnumName, codeGenerator.GenerateEnum(enumeration));
             }
 
             // Write the pre header info with the database context and it's interface

@@ -131,9 +131,4 @@
         </Compile>
     </ItemGroup>
 
-    <ItemGroup>
-        <Folder Include="File based templates\Templates.EFCore\" />
-        <Folder Include="File based templates\Templates.EF6\" />
-    </ItemGroup>
-
 </Project>

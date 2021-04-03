@@ -36,6 +36,7 @@ namespace Efrpg.Templates
         public abstract List<string> StoredProcReturnModelUsings();
         public abstract string StoredProcReturnModels();
 
+        public abstract List<string> EnumUsings();
         public abstract string Enums();
 
         public static string Transform(string template, object data)

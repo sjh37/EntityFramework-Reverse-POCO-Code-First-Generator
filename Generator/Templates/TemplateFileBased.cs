@@ -113,6 +113,12 @@ namespace Efrpg.Templates
             return File.ReadAllText(file);
         }
 
+        public override List<string> EnumUsings()
+        {
+            var file = Path.Combine(Settings.TemplateFolder, "EnumUsings.txt");
+            return File.ReadLines(file).ToList();
+        }
+
         public override string Enums()
         {
             var file = Path.Combine(Settings.TemplateFolder, "Enums.mustache");

@@ -3694,8 +3694,8 @@
             }
 
             var co = new CodeOutput(enumeration.EnumName, filename, null, null);
+            co.AddUsings(_template.EnumUsings());
             co.AddCode(Template.Transform(_template.Enums(), enumeration));
-
             return co;
         }
     }
@@ -5056,6 +5056,11 @@
                 codeOutputList.Add(key, codeGenerator.GenerateStoredProcReturnModel(sp));
             }
 
+            foreach (var enumeration in filter.Enums)
+            {
+                codeOutputList.Add(enumType + enumeration.EnumName, codeGenerator.GenerateEnum(enumeration));
+            }
+
             FileHeaderFooter = new FileHeaderFooter(filter.SubNamespace);
             if (!Settings.GenerateSeparateFiles)
             {
@@ -5080,11 +5085,6 @@
                     _fileManagementService.WriteLine("");
                     _fileManagementService.WriteLine(ns.Trim());
                 }
-            }
-
-            foreach (var enumeration in filter.Enums)
-            {
-                codeOutputList.Add(enumType + enumeration.EnumName, codeGenerator.GenerateEnum(enumeration));
             }
 
             // Write the pre header info with the database context and it's interface
@@ -16219,6 +16219,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public abstract List<string> StoredProcReturnModelUsings();
         public abstract string StoredProcReturnModels();
 
+        public abstract List<string> EnumUsings();
         public abstract string Enums();
 
         public static string Transform(string template, object data)
@@ -17501,6 +17502,16 @@ using {{this}};{{#newline}}
 {{/if}}
 }{{#newline}}
 ";
+        }
+
+        public override List<string> EnumUsings()
+        {
+            var usings = new List<string>();
+
+            if (Settings.IncludeCodeGeneratedAttribute)
+                usings.Add("System.CodeDom.Compiler");
+
+            return usings;
         }
 
         public override string Enums()
@@ -18985,6 +18996,16 @@ IListSource where TEntity : class
 ";
         }
 
+        public override List<string> EnumUsings()
+        {
+            var usings = new List<string>();
+
+            if (Settings.IncludeCodeGeneratedAttribute)
+                usings.Add("System.CodeDom.Compiler");
+
+            return usings;
+        }
+
         public override string Enums()
         {
             return @"
@@ -19128,6 +19149,12 @@ public enum {{EnumName}}{{#newline}}
         {
             var file = Path.Combine(Settings.TemplateFolder, "StoredProcReturnModels.mustache");
             return File.ReadAllText(file);
+        }
+
+        public override List<string> EnumUsings()
+        {
+            var file = Path.Combine(Settings.TemplateFolder, "EnumUsings.txt");
+            return File.ReadLines(file).ToList();
         }
 
         public override string Enums()

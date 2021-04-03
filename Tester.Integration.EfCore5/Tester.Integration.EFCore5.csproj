@@ -13,6 +13,10 @@
     </ItemGroup>
 
     <ItemGroup>
+      <None Update="EnumOnly.tt">
+        <Generator>TextTemplatingFileGenerator</Generator>
+        <LastGenOutput>EnumOnly.cs</LastGenOutput>
+      </None>
       <None Update="Northwind.tt">
         <Generator>TextTemplatingFileGenerator</Generator>
         <LastGenOutput>Northwind.cs</LastGenOutput>
@@ -24,6 +28,11 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Compile Update="EnumOnly.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>EnumOnly.tt</DependentUpon>
+      </Compile>
       <Compile Update="Northwind.cs">
         <DesignTime>True</DesignTime>
         <AutoGen>True</AutoGen>
