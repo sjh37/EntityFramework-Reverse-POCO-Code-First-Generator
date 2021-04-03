@@ -32,6 +32,14 @@
     </ItemGroup>
 
     <ItemGroup>
+        <None Update="ContextHasSameNameAsDb\Colour.tt">
+          <Generator>TextTemplatingFileGenerator</Generator>
+          <LastGenOutput>Colour.cs</LastGenOutput>
+        </None>
+        <None Update="ContextHasSameNameAsDb\Fred.tt">
+          <Generator>TextTemplatingFileGenerator</Generator>
+          <LastGenOutput>Fred.cs</LastGenOutput>
+        </None>
         <None Update="File based templates\MCFBT.tt">
             <Generator>TextTemplatingFileGenerator</Generator>
             <LastGenOutput>MCFBT.cs</LastGenOutput>
@@ -71,6 +79,16 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Compile Update="ContextHasSameNameAsDb\Colour.cs">
+          <DesignTime>True</DesignTime>
+          <AutoGen>True</AutoGen>
+          <DependentUpon>Colour.tt</DependentUpon>
+        </Compile>
+        <Compile Update="ContextHasSameNameAsDb\Fred.cs">
+          <DesignTime>True</DesignTime>
+          <AutoGen>True</AutoGen>
+          <DependentUpon>Fred.tt</DependentUpon>
+        </Compile>
         <Compile Update="File based templates\MCFBT.cs">
             <DesignTime>True</DesignTime>
             <AutoGen>True</AutoGen>
