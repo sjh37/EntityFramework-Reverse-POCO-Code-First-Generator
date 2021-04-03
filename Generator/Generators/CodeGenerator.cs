@@ -500,7 +500,7 @@ namespace Efrpg.Generators
                                         Settings.EntityClassesArePartial()
                                     ),
                 ColumnsWithDefaults = table.Columns
-                    .Where(c => c.Default != string.Empty && !c.Hidden)
+                    .Where(c => c.Default != string.Empty && !c.Hidden && Settings.IncludeColumnsWithDefaults)
                     .OrderBy(x => x.Ordinal)
                     .Select(x => new PocoColumnsWithDefaultsModel { NameHumanCase = x.NameHumanCase, Default = x.Default })
                     .ToList(),

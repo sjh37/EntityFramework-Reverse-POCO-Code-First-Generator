@@ -109,6 +109,7 @@
     Settings.ShowLicenseInfo                  = false; // If true, will add the licence info comment to the top of each file
     Settings.IncludeConnectionSettingComments = false; // Add comments describing connection settings used to generate file
     Settings.IncludeCodeGeneratedAttribute    = false; // If true, will include the [GeneratedCode] attribute before classes, false to remove it.
+    Settings.IncludeColumnsWithDefaults       = true;  // If true, will set properties to the default value from the database.
 
     // Enumerations ***********************************************************************************************************************
     // Create enumerations from database tables
