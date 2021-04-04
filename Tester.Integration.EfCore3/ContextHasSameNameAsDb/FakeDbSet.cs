@@ -36,27 +36,27 @@ namespace Tester.Integration.EfCore3.ContextHasSameNameAsDb
     //          }
     //      }
     //      Read more about it here: https://msdn.microsoft.com/en-us/data/dn314431.aspx
-    public class FakeDbSet<T> : DbSet<T>, IQueryable<T>, IAsyncEnumerable<T>, IListSource where T : class
+    public class FakeDbSet<TEntity> : DbSet<TEntity>, IQueryable<TEntity>, IAsyncEnumerable<TEntity>, IListSource where TEntity : class
     {
         private readonly PropertyInfo[] _primaryKeys;
-        private readonly ObservableCollection<T> _data;
+        private readonly ObservableCollection<TEntity> _data;
         private readonly IQueryable _query;
 
         public FakeDbSet()
         {
             _primaryKeys = null;
-            _data        = new ObservableCollection<T>();
+            _data        = new ObservableCollection<TEntity>();
             _query       = _data.AsQueryable();
         }
 
         public FakeDbSet(params string[] primaryKeys)
         {
-            _primaryKeys = typeof(T).GetProperties().Where(x => primaryKeys.Contains(x.Name)).ToArray();
-            _data        = new ObservableCollection<T>();
+            _primaryKeys = typeof(TEntity).GetProperties().Where(x => primaryKeys.Contains(x.Name)).ToArray();
+            _data        = new ObservableCollection<TEntity>();
             _query       = _data.AsQueryable();
         }
 
-        public override T Find(params object[] keyValues)
+        public override TEntity Find(params object[] keyValues)
         {
             if (_primaryKeys == null)
                 throw new ArgumentException("No primary keys defined");
@@ -73,64 +73,64 @@ namespace Tester.Integration.EfCore3.ContextHasSameNameAsDb
             return keyQuery.SingleOrDefault();
         }
 
-        public override ValueTask<T> FindAsync(object[] keyValues, CancellationToken cancellationToken)
+        public override ValueTask<TEntity> FindAsync(object[] keyValues, CancellationToken cancellationToken)
         {
-            return new ValueTask<T>(Task<T>.Factory.StartNew(() => Find(keyValues), cancellationToken));
+            return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues), cancellationToken));
         }
 
-        public override ValueTask<T> FindAsync(params object[] keyValues)
+        public override ValueTask<TEntity> FindAsync(params object[] keyValues)
         {
-            return new ValueTask<T>(Task<T>.Factory.StartNew(() => Find(keyValues)));
+            return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues)));
         }
 
-        IAsyncEnumerator<T> IAsyncEnumerable<T>.GetAsyncEnumerator(CancellationToken cancellationToken)
+        IAsyncEnumerator<TEntity> IAsyncEnumerable<TEntity>.GetAsyncEnumerator(CancellationToken cancellationToken)
         {
             return GetAsyncEnumerator(cancellationToken);
         }
 
-        public override EntityEntry<T> Add(T entity)
+        public override EntityEntry<TEntity> Add(TEntity entity)
         {
             _data.Add(entity);
             return null;
         }
 
-        public override void AddRange(params T[] entities)
+        public override void AddRange(params TEntity[] entities)
         {
             if (entities == null) throw new ArgumentNullException("entities");
             foreach (var entity in entities.ToList())
                 _data.Add(entity);
         }
 
-        public override void AddRange(IEnumerable<T> entities)
+        public override void AddRange(IEnumerable<TEntity> entities)
         {
             AddRange(entities.ToArray());
         }
 
-        public override Task AddRangeAsync(params T[] entities)
+        public override Task AddRangeAsync(params TEntity[] entities)
         {
             if (entities == null) throw new ArgumentNullException("entities");
             return Task.Factory.StartNew(() => AddRange(entities));
         }
 
-        public override void AttachRange(params T[] entities)
+        public override void AttachRange(params TEntity[] entities)
         {
             if (entities == null) throw new ArgumentNullException("entities");
             AddRange(entities);
         }
 
-        public override void RemoveRange(params T[] entities)
+        public override void RemoveRange(params TEntity[] entities)
         {
             if (entities == null) throw new ArgumentNullException("entities");
             foreach (var entity in entities.ToList())
                 _data.Remove(entity);
         }
 
-        public override void RemoveRange(IEnumerable<T> entities)
+        public override void RemoveRange(IEnumerable<TEntity> entities)
         {
             RemoveRange(entities.ToArray());
         }
 
-        public override void UpdateRange(params T[] entities)
+        public override void UpdateRange(params TEntity[] entities)
         {
             if (entities == null) throw new ArgumentNullException("entities");
             RemoveRange(entities);
@@ -159,7 +159,7 @@ namespace Tester.Integration.EfCore3.ContextHasSameNameAsDb
 
         IQueryProvider IQueryable.Provider
         {
-            get { return new FakeDbAsyncQueryProvider<T>(_data); }
+            get { return new FakeDbAsyncQueryProvider<TEntity>(_data); }
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -167,27 +167,28 @@ namespace Tester.Integration.EfCore3.ContextHasSameNameAsDb
             return _data.GetEnumerator();
         }
 
-        IEnumerator<T> IEnumerable<T>.GetEnumerator()
+        IEnumerator<TEntity> IEnumerable<TEntity>.GetEnumerator()
         {
             return _data.GetEnumerator();
         }
 
-        IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default(CancellationToken))
+        IAsyncEnumerator<TEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return new FakeDbAsyncEnumerator<T>(this.AsEnumerable().GetEnumerator());
+            return new FakeDbAsyncEnumerator<TEntity>(this.AsEnumerable().GetEnumerator());
         }
 
     }
-    public abstract class TestQueryProvider<T> : IOrderedQueryable<T>, IQueryProvider
+    
+    public abstract class FakeQueryProvider<T> : IOrderedQueryable<T>, IQueryProvider
     {
         private IEnumerable<T> _enumerable;
 
-        protected TestQueryProvider(Expression expression)
+        protected FakeQueryProvider(Expression expression)
         {
             Expression = expression;
         }
 
-        protected TestQueryProvider(IEnumerable<T> enumerable)
+        protected FakeQueryProvider(IEnumerable<T> enumerable)
         {
             _enumerable = enumerable;
             Expression = enumerable.AsQueryable().Expression;
@@ -257,13 +258,13 @@ namespace Tester.Integration.EfCore3.ContextHasSameNameAsDb
     {
     }
 
-    public class FakeDbAsyncQueryProvider<T> : TestQueryProvider<T>, IAsyncEnumerable<T>, IAsyncQueryProvider
+    public class FakeDbAsyncQueryProvider<TEntity> : FakeQueryProvider<TEntity>, IAsyncEnumerable<TEntity>, IAsyncQueryProvider
     {
         public FakeDbAsyncQueryProvider(Expression expression) : base(expression)
         {
         }
 
-        public FakeDbAsyncQueryProvider(IEnumerable<T> enumerable) : base(enumerable)
+        public FakeDbAsyncQueryProvider(IEnumerable<TEntity> enumerable) : base(enumerable)
         {
         }
 
@@ -271,19 +272,21 @@ namespace Tester.Integration.EfCore3.ContextHasSameNameAsDb
         {
             var expectedResultType = typeof(TResult).GetGenericArguments()[0];
             var executionResult = typeof(IQueryProvider)
-                .GetMethods()
-                .First(method => method.Name == nameof(IQueryProvider.Execute) && method.IsGenericMethod)
+                .GetMethod(
+                    name: nameof(IQueryProvider.Execute),
+                    genericParameterCount: 1,
+                    types: new[] { typeof(Expression) })
                 .MakeGenericMethod(expectedResultType)
-                .Invoke(this, new object[] { expression });
+                .Invoke(this, new[] { expression });
 
             return (TResult) typeof(Task).GetMethod(nameof(Task.FromResult))
-                .MakeGenericMethod(expectedResultType)
+                ?.MakeGenericMethod(expectedResultType)
                 .Invoke(null, new[] { executionResult });
         }
 
-        public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+        public IAsyncEnumerator<TEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new FakeDbAsyncEnumerator<T>(this.AsEnumerable().GetEnumerator());
+            return new FakeDbAsyncEnumerator<TEntity>(this.AsEnumerable().GetEnumerator());
         }
     }
 
