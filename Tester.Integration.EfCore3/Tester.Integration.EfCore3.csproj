@@ -32,10 +32,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Update="ContextHasSameNameAsDb\Colour.tt">
-          <Generator>TextTemplatingFileGenerator</Generator>
-          <LastGenOutput>Colour.cs</LastGenOutput>
-        </None>
         <None Update="ContextHasSameNameAsDb\Fred.tt">
           <Generator>TextTemplatingFileGenerator</Generator>
           <LastGenOutput>Fred.cs</LastGenOutput>
