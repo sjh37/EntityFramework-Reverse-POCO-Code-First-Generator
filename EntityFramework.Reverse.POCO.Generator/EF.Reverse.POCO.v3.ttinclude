@@ -18562,7 +18562,7 @@ IListSource where TEntity : class
 
     IQueryProvider IQueryable.Provider{{#newline}}
     {{{#newline}}
-        get { return new FakeDbAsyncQueryProvider<TEntity>(_query.Provider); }{{#newline}}
+        get { return new FakeDbAsyncQueryProvider<TEntity>(_data); }{{#newline}}
     }{{#newline}}{{#newline}}
 
     IEnumerator IEnumerable.GetEnumerator(){{#newline}}
@@ -18578,83 +18578,43 @@ IListSource where TEntity : class
     IAsyncEnumerator<TEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default(CancellationToken)){{#newline}}
     {{{#newline}}
         return new FakeDbAsyncEnumerator<TEntity>(this.AsEnumerable().GetEnumerator());{{#newline}}
-    }{{#newline}}{{#newline}}
+    }{{#newline}}
 
 {{#if DbContextClassIsPartial}}
 {{#newline}}
     partial void InitializePartial();{{#newline}}
 {{/if}}
-}
+}{{#newline}}{{#newline}}
 
-{{#newline}}{{#newline}}
-{{DbContextClassModifiers}} class FakeDbAsyncQueryProvider<TEntity> : IAsyncQueryProvider{{#newline}}
+
+{{DbContextClassModifiers}} class FakeDbAsyncQueryProvider<TEntity> : FakeQueryProvider<TEntity>, IAsyncEnumerable<TEntity>, IAsyncQueryProvider{{#newline}}
 {{{#newline}}
-    private readonly IQueryProvider _inner;{{#newline}}{{#newline}}
-
-    public FakeDbAsyncQueryProvider(IQueryProvider inner){{#newline}}
+    public FakeDbAsyncQueryProvider(Expression expression) : base(expression){{#newline}}
     {{{#newline}}
-        _inner = inner;{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public IQueryable CreateQuery(Expression expression){{#newline}}
+    public FakeDbAsyncQueryProvider(IEnumerable<TEntity> enumerable) : base(enumerable){{#newline}}
     {{{#newline}}
-        var m = expression as MethodCallExpression;{{#newline}}
-        if (m != null){{#newline}}
-        {{{#newline}}
-            var resultType = m.Method.ReturnType; // it should be IQueryable<T>{{#newline}}
-            var tElement = resultType.GetGenericArguments()[0];{{#newline}}
-            var queryType = typeof(FakeDbAsyncEnumerable<>).MakeGenericType(tElement);{{#newline}}
-            return (IQueryable) Activator.CreateInstance(queryType, expression);{{#newline}}
-        }{{#newline}}
-        return new FakeDbAsyncEnumerable<TEntity>(expression);{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public IQueryable<TElement> CreateQuery<TElement>(Expression expression){{#newline}}
-    {{{#newline}}
-        var queryType = typeof(FakeDbAsyncEnumerable<>).MakeGenericType(typeof(TElement));{{#newline}}
-        return (IQueryable<TElement>) Activator.CreateInstance(queryType, expression);{{#newline}}
-    }{{#newline}}{{#newline}}
-
-    public object Execute(Expression expression){{#newline}}
-    {{{#newline}}
-        return _inner.Execute(expression);{{#newline}}
-    }{{#newline}}{{#newline}}
-
-    public TResult Execute<TResult>(Expression expression){{#newline}}
-    {{{#newline}}
-        return _inner.Execute<TResult>(expression);{{#newline}}
-    }{{#newline}}{{#newline}}
-
-{{#if IsEfCore2}}
-    public IAsyncEnumerable<TResult> ExecuteAsync<TResult>(Expression expression){{#newline}}
-    {{{#newline}}
-        return new FakeDbAsyncEnumerable<TResult>(expression);{{#newline}}
-    }{{#newline}}{{#newline}}
-
-    public Task<TResult> ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken){{#newline}}
-    {{{#newline}}
-        return Task.FromResult(Execute<TResult>(expression));{{#newline}}
-    }{{#newline}}
-{{/if}}
-
-{{#if IsEfCore3Plus}}
-    public TResult ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken = new CancellationToken()){{#newline}}
+    public TResult ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken){{#newline}}
     {{{#newline}}
         var expectedResultType = typeof(TResult).GetGenericArguments()[0];{{#newline}}
         var executionResult = typeof(IQueryProvider){{#newline}}
-            .GetMethod({{#newline}}
-                name: nameof(IQueryProvider.Execute),{{#newline}}
-                genericParameterCount: 1,{{#newline}}
-                types: new[] { typeof(Expression) }){{#newline}}
+            .GetMethods(){{#newline}}
+            .First(method => method.Name == nameof(IQueryProvider.Execute) && method.IsGenericMethod){{#newline}}
             .MakeGenericMethod(expectedResultType){{#newline}}
-            .Invoke(this, new[] { expression });{{#newline}}{{#newline}}
+            .Invoke(this, new object[] { expression });{{#newline}}{{#newline}}
 
         return (TResult) typeof(Task).GetMethod(nameof(Task.FromResult)){{#newline}}
             ?.MakeGenericMethod(expectedResultType){{#newline}}
             .Invoke(null, new[] { executionResult });{{#newline}}
-    }{{#newline}}
-{{/if}}
+    }{{#newline}}{{#newline}}
 
+    public IAsyncEnumerator<TEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default){{#newline}}
+    {{{#newline}}
+        return new FakeDbAsyncEnumerator<TEntity>(this.AsEnumerable().GetEnumerator());{{#newline}}
+    }{{#newline}}
 }{{#newline}}{{#newline}}
 
 
@@ -18759,6 +18719,87 @@ IListSource where TEntity : class
         return new ValueTask(Task.CompletedTask);{{#newline}}
     }{{#newline}}
 {{/if}}
+}{{#newline}}{{#newline}}
+
+
+{{DbContextClassModifiers}} abstract class FakeQueryProvider<T> : IOrderedQueryable<T>, IQueryProvider{{#newline}}
+{{{#newline}}
+    private IEnumerable<T> _enumerable;{{#newline}}{{#newline}}
+
+    protected FakeQueryProvider(Expression expression){{#newline}}
+    {{{#newline}}
+        Expression = expression;{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    protected FakeQueryProvider(IEnumerable<T> enumerable){{#newline}}
+    {{{#newline}}
+        _enumerable = enumerable;{{#newline}}
+        Expression = enumerable.AsQueryable().Expression;{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public IQueryable CreateQuery(Expression expression){{#newline}}
+    {{{#newline}}
+        if (expression is MethodCallExpression m){{#newline}}
+        {{{#newline}}
+            var resultType = m.Method.ReturnType; // it should be IQueryable<T>{{#newline}}
+            var tElement = resultType.GetGenericArguments().First();{{#newline}}
+            return (IQueryable) CreateInstance(tElement, expression);{{#newline}}
+        }{{#newline}}{{#newline}}
+
+        return CreateQuery<T>(expression);{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public IQueryable<TEntity> CreateQuery<TEntity>(Expression expression){{#newline}}
+    {{{#newline}}
+        return (IQueryable<TEntity>) CreateInstance(typeof(TEntity), expression);{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    private object CreateInstance(Type tElement, Expression expression){{#newline}}
+    {{{#newline}}
+        var queryType = GetType().GetGenericTypeDefinition().MakeGenericType(tElement);{{#newline}}
+        return Activator.CreateInstance(queryType, expression);{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public object Execute(Expression expression){{#newline}}
+    {{{#newline}}
+        return CompileExpressionItem<object>(expression);{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public TResult Execute<TResult>(Expression expression){{#newline}}
+    {{{#newline}}
+        return CompileExpressionItem<TResult>(expression);{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    IEnumerator<T> IEnumerable<T>.GetEnumerator(){{#newline}}
+    {{{#newline}}
+        if (_enumerable == null) _enumerable = CompileExpressionItem<IEnumerable<T>>(Expression);{{#newline}}
+        return _enumerable.GetEnumerator();{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    IEnumerator IEnumerable.GetEnumerator(){{#newline}}
+    {{{#newline}}
+        if (_enumerable == null) _enumerable = CompileExpressionItem<IEnumerable<T>>(Expression);{{#newline}}
+        return _enumerable.GetEnumerator();{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public Type ElementType => typeof(T);{{#newline}}{{#newline}}
+
+    public Expression Expression { get; }{{#newline}}{{#newline}}
+
+    public IQueryProvider Provider => this;{{#newline}}{{#newline}}
+
+    private static TResult CompileExpressionItem<TResult>(Expression expression){{#newline}}
+    {{{#newline}}
+        var visitor = new FakeExpressionVisitor();{{#newline}}
+        var body = visitor.Visit(expression);{{#newline}}
+        var f = Expression.Lambda<Func<TResult>>(body ?? throw new InvalidOperationException(string.Format(""{0} is null"", nameof(body))), (IEnumerable<ParameterExpression>) null);{{#newline}}
+        return f.Compile()();{{#newline}}
+    }{{#newline}}
+}{{#newline}}{{#newline}}
+
+
+{{DbContextClassModifiers}} class FakeExpressionVisitor : ExpressionVisitor{{#newline}}
+{{{#newline}}
 }";
         }
 

@@ -176,9 +176,8 @@ namespace Tester.Integration.EfCore3.ContextHasSameNameAsDb
         {
             return new FakeDbAsyncEnumerator<TEntity>(this.AsEnumerable().GetEnumerator());
         }
-
     }
-    
+
     public abstract class FakeQueryProvider<T> : IOrderedQueryable<T>, IQueryProvider
     {
         private IEnumerable<T> _enumerable;
@@ -205,7 +204,6 @@ namespace Tester.Integration.EfCore3.ContextHasSameNameAsDb
 
             return CreateQuery<T>(expression);
         }
-
         public IQueryable<TEntity> CreateQuery<TEntity>(Expression expression)
         {
             return (IQueryable<TEntity>) CreateInstance(typeof(TEntity), expression);
@@ -249,7 +247,7 @@ namespace Tester.Integration.EfCore3.ContextHasSameNameAsDb
         {
             var visitor = new FakeExpressionVisitor();
             var body = visitor.Visit(expression);
-            var f = Expression.Lambda<Func<TResult>>(body ?? throw new InvalidOperationException($"{nameof(body)} is null"), (IEnumerable<ParameterExpression>) null);
+            var f = Expression.Lambda<Func<TResult>>(body ?? throw new InvalidOperationException(string.Format("{0} is null", nameof(body))), (IEnumerable<ParameterExpression>) null);
             return f.Compile()();
         }
     }
