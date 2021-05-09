@@ -8,7 +8,7 @@ namespace Efrpg.Templates
     /// <summary>
     /// {{Mustache}} template documentation available at https://github.com/jehugaleahsa/mustache-sharp
     /// </summary>
-    public class TemplateEfCore : Template
+    public class TemplateEfCore3 : Template
     {
         public override string Usings()
         {
@@ -45,12 +45,6 @@ using {{this}};{{#newline}}
             {
                 usings.Add("System.Collections.Generic");
                 usings.Add("Microsoft.EntityFrameworkCore.ChangeTracking");
-                
-                if(Settings.IsEfCore5Plus())
-                {
-                    usings.Add("System.Linq");
-                    usings.Add("System.Linq.Expressions");
-                }
             }
 
             return usings;
@@ -89,8 +83,8 @@ using {{this}};{{#newline}}
     EntityEntry<TEntity> Add<TEntity>(TEntity entity) where TEntity : class;{{#newline}}
     Task AddRangeAsync(params object[] entities);{{#newline}}
     Task AddRangeAsync(IEnumerable<object> entities, CancellationToken cancellationToken = default);{{#newline}}
-    {{#if IsEfCore3Plus}}Value{{/if}}Task<EntityEntry<TEntity>> AddAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default) where TEntity : class;{{#newline}}
-    {{#if IsEfCore3Plus}}Value{{/if}}Task<EntityEntry> AddAsync(object entity, CancellationToken cancellationToken = default);{{#newline}}
+    ValueTask<EntityEntry<TEntity>> AddAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default) where TEntity : class;{{#newline}}
+    ValueTask<EntityEntry> AddAsync(object entity, CancellationToken cancellationToken = default);{{#newline}}
     void AddRange(IEnumerable<object> entities);{{#newline}}
     void AddRange(params object[] entities);{{#newline}}{{#newline}}
 
@@ -103,10 +97,10 @@ using {{this}};{{#newline}}
     EntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class;{{#newline}}{{#newline}}
 
     TEntity Find<TEntity>(params object[] keyValues) where TEntity : class;{{#newline}}
-    {{#if IsEfCore3Plus}}Value{{/if}}Task<TEntity> FindAsync<TEntity>(object[] keyValues, CancellationToken cancellationToken) where TEntity : class;{{#newline}}
-    {{#if IsEfCore3Plus}}Value{{/if}}Task<TEntity> FindAsync<TEntity>(params object[] keyValues) where TEntity : class;{{#newline}}
-    {{#if IsEfCore3Plus}}Value{{/if}}Task<object> FindAsync(Type entityType, object[] keyValues, CancellationToken cancellationToken);{{#newline}}
-    {{#if IsEfCore3Plus}}Value{{/if}}Task<object> FindAsync(Type entityType, params object[] keyValues);{{#newline}}
+    ValueTask<TEntity> FindAsync<TEntity>(object[] keyValues, CancellationToken cancellationToken) where TEntity : class;{{#newline}}
+    ValueTask<TEntity> FindAsync<TEntity>(params object[] keyValues) where TEntity : class;{{#newline}}
+    ValueTask<object> FindAsync(Type entityType, object[] keyValues, CancellationToken cancellationToken);{{#newline}}
+    ValueTask<object> FindAsync(Type entityType, params object[] keyValues);{{#newline}}
     object Find(Type entityType, params object[] keyValues);{{#newline}}{{#newline}}
 
     EntityEntry Remove(object entity);{{#newline}}
@@ -118,10 +112,6 @@ using {{this}};{{#newline}}
     EntityEntry<TEntity> Update<TEntity>(TEntity entity) where TEntity : class;{{#newline}}
     void UpdateRange(IEnumerable<object> entities);{{#newline}}
     void UpdateRange(params object[] entities);{{#newline}}{{#newline}}
-
-{{#if IsEfCore5Plus}}
-    IQueryable<TResult> FromExpression<TResult> (Expression<Func<IQueryable<TResult>>> expression);{{#newline}}
-{{/if}}
 {{/if}}
 
 
@@ -181,7 +171,7 @@ using {{this}};{{#newline}}
             {
                 "System",
                 "System.Data",
-                Settings.IsEfCore3Plus() ? "Microsoft.Data.SqlClient" : "System.Data.SqlClient",
+                "Microsoft.Data.SqlClient",
                 "System.Data.SqlTypes",
                 "Microsoft.EntityFrameworkCore",
                 "System.Threading.Tasks",
@@ -490,17 +480,11 @@ using {{this}};{{#newline}}
             {
                 usings.Add("System.Collections.Generic");
                 usings.Add("Microsoft.EntityFrameworkCore.ChangeTracking");
-
-                if (Settings.IsEfCore5Plus())
-                {
-                    usings.Add("System.Linq");
-                    usings.Add("System.Linq.Expressions");
-                }
             }
 
             if (Settings.DatabaseType == DatabaseType.SqlCe)
             {
-                usings.Add(Settings.IsEfCore3Plus() ? "Microsoft.Data.SqlClient" : "System.Data.SqlClient");
+                usings.Add("Microsoft.Data.SqlClient");
                 //usings.Add("System.DBNull");
                 usings.Add("System.Data.SqlTypes");
             }
@@ -608,13 +592,13 @@ using {{this}};{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public virtual async {{#if IsEfCore3Plus}}Value{{/if}}Task<EntityEntry<TEntity>> AddAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default) where TEntity : class{{#newline}}
+    public virtual async ValueTask<EntityEntry<TEntity>> AddAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default) where TEntity : class{{#newline}}
     {{{#newline}}
         await Task.CompletedTask;{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public virtual async {{#if IsEfCore3Plus}}Value{{/if}}Task<EntityEntry> AddAsync(object entity, CancellationToken cancellationToken = default){{#newline}}
+    public virtual async ValueTask<EntityEntry> AddAsync(object entity, CancellationToken cancellationToken = default){{#newline}}
     {{{#newline}}
         await Task.CompletedTask;{{#newline}}
         throw new NotImplementedException();{{#newline}}
@@ -665,22 +649,22 @@ using {{this}};{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public virtual {{#if IsEfCore3Plus}}Value{{/if}}Task<TEntity> FindAsync<TEntity>(object[] keyValues, CancellationToken cancellationToken) where TEntity : class{{#newline}}
+    public virtual ValueTask<TEntity> FindAsync<TEntity>(object[] keyValues, CancellationToken cancellationToken) where TEntity : class{{#newline}}
     {{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public virtual {{#if IsEfCore3Plus}}Value{{/if}}Task<TEntity> FindAsync<TEntity>(params object[] keyValues) where TEntity : class{{#newline}}
+    public virtual ValueTask<TEntity> FindAsync<TEntity>(params object[] keyValues) where TEntity : class{{#newline}}
     {{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public virtual {{#if IsEfCore3Plus}}Value{{/if}}Task<object> FindAsync(Type entityType, object[] keyValues, CancellationToken cancellationToken){{#newline}}
+    public virtual ValueTask<object> FindAsync(Type entityType, object[] keyValues, CancellationToken cancellationToken){{#newline}}
     {{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public virtual {{#if IsEfCore3Plus}}Value{{/if}}Task<object> FindAsync(Type entityType, params object[] keyValues){{#newline}}
+    public virtual ValueTask<object> FindAsync(Type entityType, params object[] keyValues){{#newline}}
     {{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
@@ -729,14 +713,6 @@ using {{this}};{{#newline}}
     {{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
-
-{{#if IsEfCore5Plus}}
-{{#newline}}
-    public virtual IQueryable<TResult> FromExpression<TResult> (Expression<Func<IQueryable<TResult>>> expression){{#newline}}
-    {{{#newline}}
-        throw new NotImplementedException();{{#newline}}
-    }{{#newline}}
-{{/if}}
 
 {{#if hasStoredProcs}}
 {{#newline}}
@@ -871,15 +847,7 @@ using {{this}};{{#newline}}
 //          }{{#newline}}
 //      }{{#newline}}
 //      Read more about it here: https://msdn.microsoft.com/en-us/data/dn314431.aspx{{#newline}}
-{{DbContextClassModifiers}} class FakeDbSet<TEntity> : DbSet<TEntity>, IQueryable<TEntity>, 
-{{#if IsEfCore3}}
-IAsyncEnumerable<TEntity>, 
-{{/if}}
-{{#if IsEfCore5}}
-IAsyncEnumerable<TEntity>, 
-{{/if}}
-IListSource where TEntity : class
-{{#newline}}
+{{DbContextClassModifiers}} class FakeDbSet<TEntity> : DbSet<TEntity>, IQueryable<TEntity>, IAsyncEnumerable<TEntity>, IListSource where TEntity : class{{#newline}}
 {{{#newline}}
     private readonly PropertyInfo[] _primaryKeys;{{#newline}}
     private readonly ObservableCollection<TEntity> _data;{{#newline}}
@@ -923,19 +891,6 @@ IListSource where TEntity : class
         return keyQuery.SingleOrDefault();{{#newline}}
     }{{#newline}}{{#newline}}
 
-{{#if IsEfCore2}}
-    public override Task<TEntity> FindAsync(object[] keyValues, CancellationToken cancellationToken){{#newline}}
-    {{{#newline}}
-        return Task<TEntity>.Factory.StartNew(() => Find(keyValues), cancellationToken);{{#newline}}
-    }{{#newline}}{{#newline}}
-
-    public override Task<TEntity> FindAsync(params object[] keyValues){{#newline}}
-    {{{#newline}}
-        return Task<TEntity>.Factory.StartNew(() => Find(keyValues));{{#newline}}
-    }{{#newline}}{{#newline}}
-{{/if}}
-
-{{#if IsEfCore3}}
     public override ValueTask<TEntity> FindAsync(object[] keyValues, CancellationToken cancellationToken){{#newline}}
     {{{#newline}}
         return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues), cancellationToken));{{#newline}}
@@ -950,24 +905,6 @@ IListSource where TEntity : class
     {{{#newline}}
         return GetAsyncEnumerator(cancellationToken);{{#newline}}
     }{{#newline}}{{#newline}}
-{{/if}}
-
-{{#if IsEfCore5}}
-    public override ValueTask<TEntity> FindAsync(object[] keyValues, CancellationToken cancellationToken){{#newline}}
-    {{{#newline}}
-        return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues), cancellationToken));{{#newline}}
-    }{{#newline}}{{#newline}}
-
-    public override ValueTask<TEntity> FindAsync(params object[] keyValues){{#newline}}
-    {{{#newline}}
-        return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues)));{{#newline}}
-    }{{#newline}}{{#newline}}
-
-    IAsyncEnumerator<TEntity> IAsyncEnumerable<TEntity>.GetAsyncEnumerator(CancellationToken cancellationToken){{#newline}}
-    {{{#newline}}
-        return GetAsyncEnumerator(cancellationToken);{{#newline}}
-    }{{#newline}}{{#newline}}
-{{/if}}
 
     public override EntityEntry<TEntity> Add(TEntity entity){{#newline}}
     {{{#newline}}
@@ -1108,14 +1045,6 @@ IListSource where TEntity : class
     {{{#newline}}
     }{{#newline}}{{#newline}}
 
-{{#if IsEfCore2}}
-    public IAsyncEnumerator<T> GetEnumerator(){{#newline}}
-    {{{#newline}}
-        return new FakeDbAsyncEnumerator<T>(this.AsEnumerable().GetEnumerator());{{#newline}}
-    }{{#newline}}{{#newline}}
-{{/if}}
-
-{{#if IsEfCore3}}
     public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = new CancellationToken()){{#newline}}
     {{{#newline}}
         return new FakeDbAsyncEnumerator<T>(this.AsEnumerable().GetEnumerator());{{#newline}}
@@ -1125,19 +1054,6 @@ IListSource where TEntity : class
     {{{#newline}}
         return GetAsyncEnumerator(cancellationToken);{{#newline}}
     }{{#newline}}{{#newline}}
-{{/if}}
-
-{{#if IsEfCore5}}
-    public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = new CancellationToken()){{#newline}}
-    {{{#newline}}
-        return new FakeDbAsyncEnumerator<T>(this.AsEnumerable().GetEnumerator());{{#newline}}
-    }{{#newline}}{{#newline}}
-
-    IAsyncEnumerator<T> IAsyncEnumerable<T>.GetAsyncEnumerator(CancellationToken cancellationToken){{#newline}}
-    {{{#newline}}
-        return GetAsyncEnumerator(cancellationToken);{{#newline}}
-    }{{#newline}}{{#newline}}
-{{/if}}
 
     IEnumerator IEnumerable.GetEnumerator(){{#newline}}
     {{{#newline}}
@@ -1160,19 +1076,6 @@ IListSource where TEntity : class
         get { return _inner.Current; }{{#newline}}
     }{{#newline}}
 
-{{#if IsEfCore2}}
-    public Task<bool> MoveNext(CancellationToken cancellationToken){{#newline}}
-    {{{#newline}}
-        return Task.FromResult(_inner.MoveNext());{{#newline}}
-    }{{#newline}}{{#newline}}
-
-    public void Dispose(){{#newline}}
-    {{{#newline}}
-        _inner.Dispose();{{#newline}}
-    }{{#newline}}
-{{/if}}
-
-{{#if IsEfCore3}}
     public ValueTask<bool> MoveNextAsync(){{#newline}}
     {{{#newline}}
         return new ValueTask<bool>(_inner.MoveNext());{{#newline}}
@@ -1183,20 +1086,6 @@ IListSource where TEntity : class
         _inner.Dispose();{{#newline}}
         return new ValueTask(Task.CompletedTask);{{#newline}}
     }{{#newline}}
-{{/if}}
-
-{{#if IsEfCore5}}
-    public ValueTask<bool> MoveNextAsync(){{#newline}}
-    {{{#newline}}
-        return new ValueTask<bool>(_inner.MoveNext());{{#newline}}
-    }{{#newline}}{{#newline}}
-
-    public ValueTask DisposeAsync(){{#newline}}
-    {{{#newline}}
-        _inner.Dispose();{{#newline}}
-        return new ValueTask(Task.CompletedTask);{{#newline}}
-    }{{#newline}}
-{{/if}}
 }{{#newline}}{{#newline}}
 
 

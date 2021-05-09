@@ -39,14 +39,5 @@
             Assert.IsNotNull(result);
             Assert.AreEqual(123, result.QueriedId);
         }
-
-        [Test]
-        public async Task QueryFirstOrDefaultAsync()
-        {
-            var query = from w in _fakeContext.Categories select new { QueriedId = w.CategoryId };
-            var result = await query.FirstOrDefaultAsync();
-            Assert.IsNotNull(result);
-            Assert.AreEqual(123, result.QueriedId);
-        }
     }
 }

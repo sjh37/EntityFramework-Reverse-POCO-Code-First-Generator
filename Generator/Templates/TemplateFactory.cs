@@ -12,9 +12,13 @@ namespace Efrpg.Templates
                     return new TemplateEf6();
 
                 case TemplateType.EfCore2:
+                    return new TemplateEfCore2();
+
                 case TemplateType.EfCore3:
+                    return new TemplateEfCore3();
+                
                 case TemplateType.EfCore5:
-                    return new TemplateEfCore();
+                    return new TemplateEfCore5();
 
                 case TemplateType.FileBasedCore2:
                 case TemplateType.FileBasedCore3:

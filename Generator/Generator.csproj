@@ -105,6 +105,8 @@
     <Compile Include="Readers\MinMaxValueCache.cs" />
     <Compile Include="Readers\RawSequence.cs" />
     <Compile Include="Sequence.cs" />
+    <Compile Include="Templates\TemplateEfCore2.cs" />
+    <Compile Include="Templates\TemplateEfCore3.cs" />
     <Compile Include="Util\MultiContextSettingsCopy.cs" />
     <Compile Include="Filtering\PeriodFilter.cs" />
     <Compile Include="Filtering\RegexExcludeFilter.cs" />
@@ -195,7 +197,7 @@
     <Compile Include="Mustache\WithTagDefinition.cs" />
     <Compile Include="Templates\GeneratorType.cs" />
     <Compile Include="Templates\TemplateEf6.cs" />
-    <Compile Include="Templates\TemplateEfCore.cs" />
+    <Compile Include="Templates\TemplateEfCore5.cs" />
     <Compile Include="Templates\Template.cs" />
     <Compile Include="Column.cs" />
     <Compile Include="ColumnGeneratedAlwaysType.cs" />

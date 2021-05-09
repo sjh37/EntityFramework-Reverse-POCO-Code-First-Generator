@@ -782,11 +782,11 @@ namespace Tester.Integration.EFCore5
             throw new NotImplementedException();
         }
 
-
         public virtual IQueryable<TResult> FromExpression<TResult> (Expression<Func<IQueryable<TResult>>> expression)
         {
             throw new NotImplementedException();
         }
+
 
         // Stored Procedures
 
@@ -1158,6 +1158,7 @@ namespace Tester.Integration.EFCore5
         {
             get { return _inner.Current; }
         }
+
         public ValueTask<bool> MoveNextAsync()
         {
             return new ValueTask<bool>(_inner.MoveNext());

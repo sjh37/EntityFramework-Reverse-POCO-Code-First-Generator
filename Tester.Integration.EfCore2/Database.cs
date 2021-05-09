@@ -959,15 +959,15 @@ namespace Tester.Integration.EfCore2
         public FakeDbSet()
         {
             _primaryKeys = null;
-            _data = new ObservableCollection<TEntity>();
-            _query = _data.AsQueryable();
+            _data        = new ObservableCollection<TEntity>();
+            _query       = _data.AsQueryable();
         }
 
         public FakeDbSet(params string[] primaryKeys)
         {
             _primaryKeys = typeof(TEntity).GetProperties().Where(x => primaryKeys.Contains(x.Name)).ToArray();
-            _data = new ObservableCollection<TEntity>();
-            _query = _data.AsQueryable();
+            _data        = new ObservableCollection<TEntity>();
+            _query       = _data.AsQueryable();
         }
 
         public override TEntity Find(params object[] keyValues)
@@ -1085,7 +1085,6 @@ namespace Tester.Integration.EfCore2
         {
             return new FakeDbAsyncEnumerator<TEntity>(this.AsEnumerable().GetEnumerator());
         }
-
     }
 
     public class FakeDbAsyncQueryProvider<TEntity> : IAsyncQueryProvider
@@ -1183,6 +1182,8 @@ namespace Tester.Integration.EfCore2
             _inner.Dispose();
         }
     }
+
+
 
     #endregion
 

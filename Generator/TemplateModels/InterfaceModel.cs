@@ -18,7 +18,5 @@ namespace Efrpg.TemplateModels
         public List<ScalarValuedFunctionsTemplateData> scalarValuedFunctions { get; set; }
         public bool hasTableValuedFunctions                                  { get; set; }
         public bool hasScalarValuedFunctions                                 { get; set; }
-        public bool IsEfCore3Plus                                            { get; set; }
-        public bool IsEfCore5Plus                                            { get; set; }
     }
 }

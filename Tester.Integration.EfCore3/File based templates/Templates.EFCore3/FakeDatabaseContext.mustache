@@ -95,13 +95,13 @@
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public virtual async {{#if IsEfCore3Plus}}Value{{/if}}Task<EntityEntry<TEntity>> AddAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default) where TEntity : class{{#newline}}
+    public virtual async ValueTask<EntityEntry<TEntity>> AddAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default) where TEntity : class{{#newline}}
     {{{#newline}}
         await Task.CompletedTask;{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public virtual async {{#if IsEfCore3Plus}}Value{{/if}}Task<EntityEntry> AddAsync(object entity, CancellationToken cancellationToken = default){{#newline}}
+    public virtual async ValueTask<EntityEntry> AddAsync(object entity, CancellationToken cancellationToken = default){{#newline}}
     {{{#newline}}
         await Task.CompletedTask;{{#newline}}
         throw new NotImplementedException();{{#newline}}
@@ -152,22 +152,22 @@
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public virtual {{#if IsEfCore3Plus}}Value{{/if}}Task<TEntity> FindAsync<TEntity>(object[] keyValues, CancellationToken cancellationToken) where TEntity : class{{#newline}}
+    public virtual ValueTask<TEntity> FindAsync<TEntity>(object[] keyValues, CancellationToken cancellationToken) where TEntity : class{{#newline}}
     {{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public virtual {{#if IsEfCore3Plus}}Value{{/if}}Task<TEntity> FindAsync<TEntity>(params object[] keyValues) where TEntity : class{{#newline}}
+    public virtual ValueTask<TEntity> FindAsync<TEntity>(params object[] keyValues) where TEntity : class{{#newline}}
     {{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public virtual {{#if IsEfCore3Plus}}Value{{/if}}Task<object> FindAsync(Type entityType, object[] keyValues, CancellationToken cancellationToken){{#newline}}
+    public virtual ValueTask<object> FindAsync(Type entityType, object[] keyValues, CancellationToken cancellationToken){{#newline}}
     {{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public virtual {{#if IsEfCore3Plus}}Value{{/if}}Task<object> FindAsync(Type entityType, params object[] keyValues){{#newline}}
+    public virtual ValueTask<object> FindAsync(Type entityType, params object[] keyValues){{#newline}}
     {{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
@@ -216,14 +216,6 @@
     {{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
-
-{{#if IsEfCore5Plus}}
-{{#newline}}
-    public virtual IQueryable<TResult> FromExpression<TResult> (Expression<Func<IQueryable<TResult>>> expression){{#newline}}
-    {{{#newline}}
-        throw new NotImplementedException();{{#newline}}
-    }{{#newline}}
-{{/if}}
 
 {{#if hasStoredProcs}}
 {{#newline}}

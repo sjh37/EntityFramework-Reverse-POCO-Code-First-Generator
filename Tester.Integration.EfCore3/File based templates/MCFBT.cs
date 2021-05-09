@@ -1,1 +1,15 @@
 ﻿
+// -----------------------------------------------------------------------------------------
+// Failed to generate the code in GenerateCode() - Could not find a part of the path 'C:\S\Source (open source)\EntityFramework Reverse POCO Code Generator\Tester.Integration.EfCore3\File based templates\Templates.EFCore\DatabaseContextInterfaceUsings.txt'.
+/*   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.StreamReader..ctor(String path, Encoding encoding, Boolean detectEncodingFromByteOrderMarks, Int32 bufferSize, Boolean checkHost)
+   at System.IO.StreamReader..ctor(String path, Encoding encoding)
+   at System.IO.File.ReadLines(String path)
+   at Microsoft.VisualStudio.TextTemplating4842B7DCA11E87746F66622E1553FD7EE2BEF25D34A20302A2FBA1087141356D22E9089E29BD0646A2F5DF48163CAB941B92C538E1AB4A8BF1FA1A2341580244.GeneratedTextTransformation.TemplateFileBased.DatabaseContextInterfaceUsings(InterfaceModel data) in C:\S\Source (open source)\EntityFramework Reverse POCO Code Generator\Tester.Integration.EfCore3\File based templates\..\..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v3.ttinclude:line 21760
+   at Microsoft.VisualStudio.TextTemplating4842B7DCA11E87746F66622E1553FD7EE2BEF25D34A20302A2FBA1087141356D22E9089E29BD0646A2F5DF48163CAB941B92C538E1AB4A8BF1FA1A2341580244.GeneratedTextTransformation.CodeGenerator.GenerateInterface() in C:\S\Source (open source)\EntityFramework Reverse POCO Code Generator\Tester.Integration.EfCore3\File based templates\..\..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v3.ttinclude:line 3337
+   at Microsoft.VisualStudio.TextTemplating4842B7DCA11E87746F66622E1553FD7EE2BEF25D34A20302A2FBA1087141356D22E9089E29BD0646A2F5DF48163CAB941B92C538E1AB4A8BF1FA1A2341580244.GeneratedTextTransformation.Generator.GenerateCode(IDbContextFilter filter) in C:\S\Source (open source)\EntityFramework Reverse POCO Code Generator\Tester.Integration.EfCore3\File based templates\..\..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v3.ttinclude:line 5019
+   at Microsoft.VisualStudio.TextTemplating4842B7DCA11E87746F66622E1553FD7EE2BEF25D34A20302A2FBA1087141356D22E9089E29BD0646A2F5DF48163CAB941B92C538E1AB4A8BF1FA1A2341580244.GeneratedTextTransformation.Generator.GenerateCode() in C:\S\Source (open source)\EntityFramework Reverse POCO Code Generator\Tester.Integration.EfCore3\File based templates\..\..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v3.ttinclude:line 4988*/
+// -----------------------------------------------------------------------------------------
+

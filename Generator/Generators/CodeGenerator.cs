@@ -257,8 +257,6 @@ namespace Efrpg.Generators
                 scalarValuedFunctions           = _scalarValuedFunctions,
                 hasTableValuedFunctions         = _hasTableValuedFunctions && _filter.IncludeTableValuedFunctions,
                 hasScalarValuedFunctions        = _hasScalarValuedFunctions && _filter.IncludeScalarValuedFunctions,
-                IsEfCore3Plus                   = Settings.IsEfCore3Plus(),
-                IsEfCore5Plus                   = Settings.IsEfCore5Plus()
             };
 
             var co = new CodeOutput(string.Empty, filename, "Database context interface", _globalUsings);
@@ -338,7 +336,6 @@ namespace Efrpg.Generators
                 OnConfigurationUsesConfiguration       = Settings.OnConfiguration == OnConfiguration.Configuration,
                 OnConfigurationUsesConnectionString    = Settings.OnConfiguration == OnConfiguration.ConnectionString,
                 DefaultSchema                          = Settings.DefaultSchema,
-                IsEfCore5Plus                          = isEfCore5Plus
             };
 
             var co = new CodeOutput(string.Empty, filename, "Database context", _globalUsings);
@@ -369,8 +366,6 @@ namespace Efrpg.Generators
                 scalarValuedFunctions    = _scalarValuedFunctions,
                 hasTableValuedFunctions  = _hasTableValuedFunctions && _filter.IncludeTableValuedFunctions,
                 hasScalarValuedFunctions = _hasScalarValuedFunctions && _filter.IncludeScalarValuedFunctions,
-                IsEfCore3Plus            = Settings.IsEfCore3Plus(),
-                IsEfCore5Plus            = Settings.IsEfCore5Plus()
             };
 
             var co = new CodeOutput(string.Empty, filename, "Fake Database context", _globalUsings);
@@ -393,10 +388,6 @@ namespace Efrpg.Generators
             {
                 DbContextClassModifiers = Settings.DbContextClassModifiers,
                 DbContextClassIsPartial = Settings.DbContextClassIsPartial(),
-                IsEfCore2               = Settings.IsEfCore2(),
-                IsEfCore3               = Settings.IsEfCore3(),
-                IsEfCore5               = Settings.IsEfCore5(),
-                IsEfCore3Plus           = Settings.IsEfCore3Plus()
             };
 
             var co = new CodeOutput(string.Empty, filename, "Fake DbSet", _globalUsings);

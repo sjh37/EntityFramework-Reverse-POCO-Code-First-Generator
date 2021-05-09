@@ -10,7 +10,7 @@
     Settings.GenerateSeparateFiles   = false;
     Settings.Namespace               = DefaultNamespace; // Override the default namespace here
     Settings.AddUnitTestingDbContext = false;
-    Settings.TemplateFolder          = Path.Combine(Settings.Root, "Templates.EFCore"); // Only used if Settings.TemplateType = TemplateType.FileBased;
+    Settings.TemplateFolder          = Path.Combine(Settings.Root, "Templates.EFCore3"); // Only used if Settings.TemplateType = TemplateType.FileBased;
 
     Settings.GenerateSingleDbContext = false;
     Settings.MultiContextSettingsConnectionString = "Data Source=(local);Initial Catalog=EfrpgTest_Settings;Integrated Security=True";
