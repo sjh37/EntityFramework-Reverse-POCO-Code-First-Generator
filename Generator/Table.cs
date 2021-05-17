@@ -264,14 +264,14 @@ namespace Efrpg
             var rightPropName = rightTable.GetUniqueForeignKeyName(false, leftTable.NameHumanCase, left, checkForFkNameClashes, false, Relationship.ManyToOne); // relationship from the mapping table to each side is Many-to-One
             rightPropName = _filter.MappingTableRename(DbName, rightTable.NameHumanCase, rightPropName);
 
-            leftTable.AddMappingConfiguration(left, right, leftPropName, rightPropName, includeSchema);
+            leftTable.AddMappingConfiguration(left, right, leftPropName, rightPropName, includeSchema, leftTable.NameHumanCase, rightTable.NameHumanCase);
 
             IsMapping = true;
             rightTable.AddReverseNavigation(Relationship.ManyToMany, leftTable,  rightPropName, null, null, this);
             leftTable.AddReverseNavigation (Relationship.ManyToMany, rightTable, leftPropName,  null, null, this);
         }
 
-        private void AddMappingConfiguration(ForeignKey left, ForeignKey right, string leftPropName, string rightPropName, bool includeSchema)
+        private void AddMappingConfiguration(ForeignKey left, ForeignKey right, string leftPropName, string rightPropName, bool includeSchema, string leftNameHumanCase, string rightNameHumanCase)
         {
             if (Settings.IsEf6())
             {
@@ -286,22 +286,14 @@ namespace Efrpg
                 return;
             }
             
-            /*if(Settings.IsEfCore5())
+            if(Settings.IsEfCore5Plus())
             {
-                MappingConfiguration.Add(string.Format(@"HasMany(t => t.{0}).WithMany(t => t.{1}).UsingEntity<{2}>(
-            j => j
-                .HasOne(m => m.{5})
-                .WithMany()
-                .HasForeignKey(m => m.{4}),
-            j => j
-                .HasOne(m => m.{6})
-                .WithMany()
-                .HasForeignKey(m => m.{3}),
-            j =>
-            {{
-                j.HasKey(t => new {{ t.{3}, t.{4} }});
-            }});", leftPropName, rightPropName, right.FkTableName, left.FkColumn, right.FkColumn, right.FkTableName, left.FkTableName));
-            }*/
+                MappingConfiguration.Add(string.Format(@"HasMany<{6}>(t => t.{0}).WithMany(t => t.{1}).UsingEntity<Dictionary<string, object>>(""{2}"",
+                j => j.HasOne<{6}>().WithMany().HasForeignKey(""{4}""),
+                j => j.HasOne<{5}>().WithMany().HasForeignKey(""{3}""),
+                j => j.ToTable(""{2}""{7}));", leftPropName, rightPropName, right.FkTableName, left.FkColumn, right.FkColumn,
+                    leftNameHumanCase, rightNameHumanCase, !includeSchema ? string.Empty : ", \"" + left.FkSchema + "\""));
+            }
         }
 
         // This method will be called right before we write the POCO class

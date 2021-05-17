@@ -553,7 +553,7 @@ namespace Efrpg.Generators
                 ProcessForeignKeys(foreignKeys, true, filter);
 
                 // Mappings tables can only be true for Ef6
-                if (Settings.UseMappingTables && !Settings.IsEf6())
+                if (Settings.UseMappingTables && !(Settings.IsEf6() || Settings.IsEfCore5Plus()))
                     Settings.UseMappingTables = false;
                 
                 if (Settings.UseMappingTables)

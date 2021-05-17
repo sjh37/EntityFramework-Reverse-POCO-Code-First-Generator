@@ -13,7 +13,7 @@
     Settings.DatabaseType            = DatabaseType.SqlServer; // SqlServer, SqlCe. Coming next: PostgreSQL, MySql, Oracle
     Settings.TemplateType            = TemplateType.Ef6; // EfCore5, EfCore3, EfCore2, Ef6, FileBasedCore2, FileBasedCore3, FileBasedCore5. FileBased specify folder using Settings.TemplateFolder
     Settings.GeneratorType           = GeneratorType.Ef6; // Ef6, EfCore, Custom. Custom edit GeneratorCustom class to provide your own implementation
-    Settings.UseMappingTables        = false; // Set to false for EfCore. EFCore will add support for this in v3 at some point, so please set this to false. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
+    Settings.UseMappingTables        = true; // Can only be true for TemplateType.Ef6 & TemplateType.EfCore5. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
     Settings.FileManagerType         = FileManagerType.VisualStudio; // .NET Core project = Custom; .NET project = VisualStudio; No output (testing only) = Null
     Settings.ConnectionString        = "Data Source=(local);Initial Catalog=Northwind;Integrated Security=True"; // This is used by the generator to reverse engineer your database
     Settings.ConnectionStringName    = "MyDbContext"; // ConnectionString key as specified in your app.config/web.config/appsettings.json. Not used by the generator, but is placed into the generated DbContext constructor.

@@ -34,10 +34,8 @@ namespace Tester.Integration.EFCore5
         DbSet<CurrentProductList> CurrentProductLists { get; set; } // Current Product List
         DbSet<Customer> Customers { get; set; } // Customers
         DbSet<CustomerAndSuppliersByCity> CustomerAndSuppliersByCities { get; set; } // Customer and Suppliers by City
-        DbSet<CustomerCustomerDemo> CustomerCustomerDemoes { get; set; } // CustomerCustomerDemo
         DbSet<CustomerDemographic> CustomerDemographics { get; set; } // CustomerDemographics
         DbSet<Employee> Employees { get; set; } // Employees
-        DbSet<EmployeeTerritory> EmployeeTerritories { get; set; } // EmployeeTerritories
         DbSet<Invoice> Invoices { get; set; } // Invoices
         DbSet<Order> Orders { get; set; } // Orders
         DbSet<OrderDetail> OrderDetails { get; set; } // Order Details
@@ -154,10 +152,8 @@ namespace Tester.Integration.EFCore5
         public DbSet<CurrentProductList> CurrentProductLists { get; set; } // Current Product List
         public DbSet<Customer> Customers { get; set; } // Customers
         public DbSet<CustomerAndSuppliersByCity> CustomerAndSuppliersByCities { get; set; } // Customer and Suppliers by City
-        public DbSet<CustomerCustomerDemo> CustomerCustomerDemoes { get; set; } // CustomerCustomerDemo
         public DbSet<CustomerDemographic> CustomerDemographics { get; set; } // CustomerDemographics
         public DbSet<Employee> Employees { get; set; } // Employees
-        public DbSet<EmployeeTerritory> EmployeeTerritories { get; set; } // EmployeeTerritories
         public DbSet<Invoice> Invoices { get; set; } // Invoices
         public DbSet<Order> Orders { get; set; } // Orders
         public DbSet<OrderDetail> OrderDetails { get; set; } // Order Details
@@ -205,10 +201,8 @@ namespace Tester.Integration.EFCore5
             modelBuilder.ApplyConfiguration(new CurrentProductListConfiguration());
             modelBuilder.ApplyConfiguration(new CustomerConfiguration());
             modelBuilder.ApplyConfiguration(new CustomerAndSuppliersByCityConfiguration());
-            modelBuilder.ApplyConfiguration(new CustomerCustomerDemoConfiguration());
             modelBuilder.ApplyConfiguration(new CustomerDemographicConfiguration());
             modelBuilder.ApplyConfiguration(new EmployeeConfiguration());
-            modelBuilder.ApplyConfiguration(new EmployeeTerritoryConfiguration());
             modelBuilder.ApplyConfiguration(new InvoiceConfiguration());
             modelBuilder.ApplyConfiguration(new OrderConfiguration());
             modelBuilder.ApplyConfiguration(new OrderDetailConfiguration());
@@ -534,10 +528,8 @@ namespace Tester.Integration.EFCore5
         public DbSet<CurrentProductList> CurrentProductLists { get; set; } // Current Product List
         public DbSet<Customer> Customers { get; set; } // Customers
         public DbSet<CustomerAndSuppliersByCity> CustomerAndSuppliersByCities { get; set; } // Customer and Suppliers by City
-        public DbSet<CustomerCustomerDemo> CustomerCustomerDemoes { get; set; } // CustomerCustomerDemo
         public DbSet<CustomerDemographic> CustomerDemographics { get; set; } // CustomerDemographics
         public DbSet<Employee> Employees { get; set; } // Employees
-        public DbSet<EmployeeTerritory> EmployeeTerritories { get; set; } // EmployeeTerritories
         public DbSet<Invoice> Invoices { get; set; } // Invoices
         public DbSet<Order> Orders { get; set; } // Orders
         public DbSet<OrderDetail> OrderDetails { get; set; } // Order Details
@@ -568,10 +560,8 @@ namespace Tester.Integration.EFCore5
             CurrentProductLists = new FakeDbSet<CurrentProductList>();
             Customers = new FakeDbSet<Customer>("CustomerId");
             CustomerAndSuppliersByCities = new FakeDbSet<CustomerAndSuppliersByCity>();
-            CustomerCustomerDemoes = new FakeDbSet<CustomerCustomerDemo>("CustomerId", "CustomerTypeId");
             CustomerDemographics = new FakeDbSet<CustomerDemographic>("CustomerTypeId");
             Employees = new FakeDbSet<Employee>("EmployeeId");
-            EmployeeTerritories = new FakeDbSet<EmployeeTerritory>("EmployeeId", "TerritoryId");
             Invoices = new FakeDbSet<Invoice>();
             Orders = new FakeDbSet<Order>("OrderId");
             OrderDetails = new FakeDbSet<OrderDetail>("OrderId", "ProductId");
@@ -1323,9 +1313,9 @@ namespace Tester.Integration.EFCore5
         // Reverse navigation
 
         /// <summary>
-        /// Child CustomerCustomerDemoes where [CustomerCustomerDemo].[CustomerID] point to this entity (FK_CustomerCustomerDemo_Customers)
+        /// Child CustomerDemographics (Many-to-Many) mapped by table [CustomerCustomerDemo]
         /// </summary>
-        public virtual ICollection<CustomerCustomerDemo> CustomerCustomerDemoes { get; set; } // CustomerCustomerDemo.FK_CustomerCustomerDemo_Customers
+        public virtual ICollection<CustomerDemographic> CustomerDemographics { get; set; } // Many to many mapping
 
         /// <summary>
         /// Child Orders where [Orders].[CustomerID] point to this entity (FK_Orders_Customers)
@@ -1334,8 +1324,8 @@ namespace Tester.Integration.EFCore5
 
         public Customer()
         {
-            CustomerCustomerDemoes = new List<CustomerCustomerDemo>();
             Orders = new List<Order>();
+            CustomerDemographics = new List<CustomerDemographic>();
         }
     }
 
@@ -1348,25 +1338,6 @@ namespace Tester.Integration.EFCore5
         public string Relationship { get; set; } // Relationship (length: 9)
     }
 
-    // CustomerCustomerDemo
-    public class CustomerCustomerDemo
-    {
-        public string CustomerId { get; set; } // CustomerID (Primary key) (length: 5)
-        public string CustomerTypeId { get; set; } // CustomerTypeID (Primary key) (length: 10)
-
-        // Foreign keys
-
-        /// <summary>
-        /// Parent Customer pointed by [CustomerCustomerDemo].([CustomerId]) (FK_CustomerCustomerDemo_Customers)
-        /// </summary>
-        public virtual Customer Customer { get; set; } // FK_CustomerCustomerDemo_Customers
-
-        /// <summary>
-        /// Parent CustomerDemographic pointed by [CustomerCustomerDemo].([CustomerTypeId]) (FK_CustomerCustomerDemo)
-        /// </summary>
-        public virtual CustomerDemographic CustomerDemographic { get; set; } // FK_CustomerCustomerDemo
-    }
-
     // CustomerDemographics
     public class CustomerDemographic
     {
@@ -1376,13 +1347,13 @@ namespace Tester.Integration.EFCore5
         // Reverse navigation
 
         /// <summary>
-        /// Child CustomerCustomerDemoes where [CustomerCustomerDemo].[CustomerTypeID] point to this entity (FK_CustomerCustomerDemo)
+        /// Child Customers (Many-to-Many) mapped by table [CustomerCustomerDemo]
         /// </summary>
-        public virtual ICollection<CustomerCustomerDemo> CustomerCustomerDemoes { get; set; } // CustomerCustomerDemo.FK_CustomerCustomerDemo
+        public virtual ICollection<Customer> Customers { get; set; } // Many to many mapping
 
         public CustomerDemographic()
         {
-            CustomerCustomerDemoes = new List<CustomerCustomerDemo>();
+            Customers = new List<Customer>();
         }
     }
 
@@ -1416,14 +1387,14 @@ namespace Tester.Integration.EFCore5
         public virtual ICollection<Employee> Employees { get; set; } // Employees.FK_Employees_Employees
 
         /// <summary>
-        /// Child EmployeeTerritories where [EmployeeTerritories].[EmployeeID] point to this entity (FK_EmployeeTerritories_Employees)
-        /// </summary>
-        public virtual ICollection<EmployeeTerritory> EmployeeTerritories { get; set; } // EmployeeTerritories.FK_EmployeeTerritories_Employees
-
-        /// <summary>
         /// Child Orders where [Orders].[EmployeeID] point to this entity (FK_Orders_Employees)
         /// </summary>
         public virtual ICollection<Order> Orders { get; set; } // Orders.FK_Orders_Employees
+
+        /// <summary>
+        /// Child Territories (Many-to-Many) mapped by table [EmployeeTerritories]
+        /// </summary>
+        public virtual ICollection<Territory> Territories { get; set; } // Many to many mapping
 
         // Foreign keys
 
@@ -1435,28 +1406,9 @@ namespace Tester.Integration.EFCore5
         public Employee()
         {
             Employees = new List<Employee>();
-            EmployeeTerritories = new List<EmployeeTerritory>();
             Orders = new List<Order>();
+            Territories = new List<Territory>();
         }
-    }
-
-    // EmployeeTerritories
-    public class EmployeeTerritory
-    {
-        public int EmployeeId { get; set; } // EmployeeID (Primary key)
-        public string TerritoryId { get; set; } // TerritoryID (Primary key) (length: 20)
-
-        // Foreign keys
-
-        /// <summary>
-        /// Parent Employee pointed by [EmployeeTerritories].([EmployeeId]) (FK_EmployeeTerritories_Employees)
-        /// </summary>
-        public virtual Employee Employee { get; set; } // FK_EmployeeTerritories_Employees
-
-        /// <summary>
-        /// Parent Territory pointed by [EmployeeTerritories].([TerritoryId]) (FK_EmployeeTerritories_Territories)
-        /// </summary>
-        public virtual Territory Territory { get; set; } // FK_EmployeeTerritories_Territories
     }
 
     // Invoices
@@ -1802,9 +1754,9 @@ namespace Tester.Integration.EFCore5
         // Reverse navigation
 
         /// <summary>
-        /// Child EmployeeTerritories where [EmployeeTerritories].[TerritoryID] point to this entity (FK_EmployeeTerritories_Territories)
+        /// Child Employees (Many-to-Many) mapped by table [EmployeeTerritories]
         /// </summary>
-        public virtual ICollection<EmployeeTerritory> EmployeeTerritories { get; set; } // EmployeeTerritories.FK_EmployeeTerritories_Territories
+        public virtual ICollection<Employee> Employees { get; set; } // Many to many mapping
 
         // Foreign keys
 
@@ -1815,7 +1767,7 @@ namespace Tester.Integration.EFCore5
 
         public Territory()
         {
-            EmployeeTerritories = new List<EmployeeTerritory>();
+            Employees = new List<Employee>();
         }
     }
 
@@ -1908,6 +1860,10 @@ namespace Tester.Integration.EFCore5
             builder.Property(x => x.Country).HasColumnName(@"Country").HasColumnType("nvarchar(15)").IsRequired(false).HasMaxLength(15);
             builder.Property(x => x.Phone).HasColumnName(@"Phone").HasColumnType("nvarchar(24)").IsRequired(false).HasMaxLength(24);
             builder.Property(x => x.Fax).HasColumnName(@"Fax").HasColumnType("nvarchar(24)").IsRequired(false).HasMaxLength(24);
+            builder.HasMany<CustomerDemographic>(t => t.CustomerDemographics).WithMany(t => t.Customers).UsingEntity<Dictionary<string, object>>("CustomerCustomerDemo",
+                    j => j.HasOne<CustomerDemographic>().WithMany().HasForeignKey("CustomerTypeID"),
+                    j => j.HasOne<Customer>().WithMany().HasForeignKey("CustomerID"),
+                    j => j.ToTable("CustomerCustomerDemo", "dbo"));
 
             builder.HasIndex(x => x.City).HasDatabaseName("City");
             builder.HasIndex(x => x.CompanyName).HasDatabaseName("CompanyName");
@@ -1928,23 +1884,6 @@ namespace Tester.Integration.EFCore5
             builder.Property(x => x.CompanyName).HasColumnName(@"CompanyName").HasColumnType("nvarchar(40)").IsRequired().HasMaxLength(40);
             builder.Property(x => x.ContactName).HasColumnName(@"ContactName").HasColumnType("nvarchar(30)").IsRequired(false).HasMaxLength(30);
             builder.Property(x => x.Relationship).HasColumnName(@"Relationship").HasColumnType("varchar(9)").IsRequired().IsUnicode(false).HasMaxLength(9);
-        }
-    }
-
-    // CustomerCustomerDemo
-    public class CustomerCustomerDemoConfiguration : IEntityTypeConfiguration<CustomerCustomerDemo>
-    {
-        public void Configure(EntityTypeBuilder<CustomerCustomerDemo> builder)
-        {
-            builder.ToTable("CustomerCustomerDemo", "dbo");
-            builder.HasKey(x => new { x.CustomerId, x.CustomerTypeId }).HasName("PK_CustomerCustomerDemo");
-
-            builder.Property(x => x.CustomerId).HasColumnName(@"CustomerID").HasColumnType("nchar(5)").IsRequired().IsFixedLength().HasMaxLength(5).ValueGeneratedNever();
-            builder.Property(x => x.CustomerTypeId).HasColumnName(@"CustomerTypeID").HasColumnType("nchar(10)").IsRequired().IsFixedLength().HasMaxLength(10).ValueGeneratedNever();
-
-            // Foreign keys
-            builder.HasOne(a => a.Customer).WithMany(b => b.CustomerCustomerDemoes).HasForeignKey(c => c.CustomerId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_CustomerCustomerDemo_Customers");
-            builder.HasOne(a => a.CustomerDemographic).WithMany(b => b.CustomerCustomerDemoes).HasForeignKey(c => c.CustomerTypeId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_CustomerCustomerDemo");
         }
     }
 
@@ -1990,26 +1929,13 @@ namespace Tester.Integration.EFCore5
 
             // Foreign keys
             builder.HasOne(a => a.Employee_ReportsTo).WithMany(b => b.Employees).HasForeignKey(c => c.ReportsTo).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Employees_Employees");
+            builder.HasMany<Territory>(t => t.Territories).WithMany(t => t.Employees).UsingEntity<Dictionary<string, object>>("EmployeeTerritories",
+                    j => j.HasOne<Territory>().WithMany().HasForeignKey("TerritoryID"),
+                    j => j.HasOne<Employee>().WithMany().HasForeignKey("EmployeeID"),
+                    j => j.ToTable("EmployeeTerritories", "dbo"));
 
             builder.HasIndex(x => x.LastName).HasDatabaseName("LastName");
             builder.HasIndex(x => x.PostalCode).HasDatabaseName("PostalCode");
-        }
-    }
-
-    // EmployeeTerritories
-    public class EmployeeTerritoryConfiguration : IEntityTypeConfiguration<EmployeeTerritory>
-    {
-        public void Configure(EntityTypeBuilder<EmployeeTerritory> builder)
-        {
-            builder.ToTable("EmployeeTerritories", "dbo");
-            builder.HasKey(x => new { x.EmployeeId, x.TerritoryId }).HasName("PK_EmployeeTerritories");
-
-            builder.Property(x => x.EmployeeId).HasColumnName(@"EmployeeID").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.TerritoryId).HasColumnName(@"TerritoryID").HasColumnType("nvarchar(20)").IsRequired().HasMaxLength(20).ValueGeneratedNever();
-
-            // Foreign keys
-            builder.HasOne(a => a.Employee).WithMany(b => b.EmployeeTerritories).HasForeignKey(c => c.EmployeeId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_EmployeeTerritories_Employees");
-            builder.HasOne(a => a.Territory).WithMany(b => b.EmployeeTerritories).HasForeignKey(c => c.TerritoryId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_EmployeeTerritories_Territories");
         }
     }
 
