@@ -21740,118 +21740,130 @@ public enum {{EnumName}}{{#newline}}
     /// </summary>
     public class TemplateFileBased : Template
     {
+        private readonly Dictionary<string, string> _cacheText;
+        private readonly Dictionary<string, List<string>> _cacheList;
+
+        public TemplateFileBased()
+        {
+            _cacheText = new Dictionary<string, string>();
+            _cacheList = new Dictionary<string, List<string>>();
+        }
+
         public override string Usings()
         {
-            var file = Path.Combine(Settings.TemplateFolder, "Usings.mustache");
-            return File.ReadAllText(file);
+            return CacheText("Usings.mustache");
         }
 
         public override List<string> DatabaseContextInterfaceUsings(InterfaceModel data)
         {
-            var file = Path.Combine(Settings.TemplateFolder, "DatabaseContextInterfaceUsings.txt");
-            return File.ReadLines(file).ToList();
+            return CacheList("DatabaseContextInterfaceUsings.txt");
         }
 
         public override string DatabaseContextInterface()
         {
-            var file = Path.Combine(Settings.TemplateFolder, "DatabaseContextInterface.mustache");
-            return File.ReadAllText(file);
+            return CacheText("DatabaseContextInterface.mustache");
         }
 
         public override List<string> DatabaseContextUsings(ContextModel data)
         {
-            var file = Path.Combine(Settings.TemplateFolder, "DatabaseContextUsings.txt");
-            return File.ReadLines(file).ToList();
+            return CacheList("DatabaseContextUsings.txt");
         }
 
         public override string DatabaseContext()
         {
-            var file = Path.Combine(Settings.TemplateFolder, "DatabaseContext.mustache");
-            return File.ReadAllText(file);
+            return CacheText("DatabaseContext.mustache");
         }
 
         public override List<string> DatabaseContextFactoryUsings(FactoryModel data)
         {
-            var file = Path.Combine(Settings.TemplateFolder, "DatabaseContextFactoryUsings.txt");
-            return File.ReadLines(file).ToList();
+            return CacheList("DatabaseContextFactoryUsings.txt");
         }
 
         public override string DatabaseContextFactory()
         {
-            var file = Path.Combine(Settings.TemplateFolder, "DatabaseContextFactory.mustache");
-            return File.ReadAllText(file);
+            return CacheText("DatabaseContextFactory.mustache");
         }
 
         public override List<string> FakeDatabaseContextUsings(FakeContextModel data, IDbContextFilter filter)
         {
-            var file = Path.Combine(Settings.TemplateFolder, "FakeDatabaseContextUsings.txt");
-            return File.ReadLines(file).ToList();
+            return CacheList("FakeDatabaseContextUsings.txt");
         }
 
         public override string FakeDatabaseContext()
         {
-            var file = Path.Combine(Settings.TemplateFolder, "FakeDatabaseContext.mustache");
-            return File.ReadAllText(file);
+            return CacheText("FakeDatabaseContext.mustache");
         }
 
         public override List<string> FakeDbSetUsings(FakeDbSetModel data)
         {
-            var file = Path.Combine(Settings.TemplateFolder, "FakeDbSetUsings.txt");
-            return File.ReadLines(file).ToList();
+            return CacheList("FakeDbSetUsings.txt");
         }
 
         public override string FakeDbSet()
         {
-            var file = Path.Combine(Settings.TemplateFolder, "FakeDbSet.mustache");
-            return File.ReadAllText(file);
+            return CacheText("FakeDbSet.mustache");
         }
 
         public override List<string> PocoUsings(PocoModel data)
         {
-            var file = Path.Combine(Settings.TemplateFolder, "PocoUsings.txt");
-            return File.ReadLines(file).ToList();
+            return CacheList("PocoUsings.txt");
         }
 
         public override string Poco()
         {
-            var file = Path.Combine(Settings.TemplateFolder, "Poco.mustache");
-            return File.ReadAllText(file);
+            return CacheText("Poco.mustache");
         }
 
         public override List<string> PocoConfigurationUsings(PocoConfigurationModel data)
         {
-            var file = Path.Combine(Settings.TemplateFolder, "PocoConfigurationUsings.txt");
-            return File.ReadLines(file).ToList();
+            return CacheList("PocoConfigurationUsings.txt");
         }
 
         public override string PocoConfiguration()
         {
-            var file = Path.Combine(Settings.TemplateFolder, "PocoConfiguration.mustache");
-            return File.ReadAllText(file);
+            return CacheText("PocoConfiguration.mustache");
         }
 
         public override List<string> StoredProcReturnModelUsings()
         {
-            var file = Path.Combine(Settings.TemplateFolder, "StoredProcReturnModelUsings.txt");
-            return File.ReadLines(file).ToList();
+            return CacheList("StoredProcReturnModelUsings.txt");
         }
 
         public override string StoredProcReturnModels()
         {
-            var file = Path.Combine(Settings.TemplateFolder, "StoredProcReturnModels.mustache");
-            return File.ReadAllText(file);
+            return CacheText("StoredProcReturnModels.mustache");
         }
 
         public override List<string> EnumUsings()
         {
-            var file = Path.Combine(Settings.TemplateFolder, "EnumUsings.txt");
-            return File.ReadLines(file).ToList();
+            return CacheList("EnumUsings.txt");
         }
 
         public override string Enums()
         {
-            var file = Path.Combine(Settings.TemplateFolder, "Enums.mustache");
-            return File.ReadAllText(file);
+            return CacheText("Enums.mustache");
+        }
+
+        private string CacheText(string filename)
+        {
+            if (_cacheText.ContainsKey(filename))
+                return _cacheText[filename];
+
+            var file = Path.Combine(Settings.TemplateFolder, filename);
+            var text = File.ReadAllText(file);
+            _cacheText.Add(filename, text);
+            return text;
+        }
+
+        private List<string> CacheList(string filename)
+        {
+            if (_cacheList.ContainsKey(filename))
+                return _cacheList[filename];
+
+            var file = Path.Combine(Settings.TemplateFolder, filename);
+            var lines = File.ReadLines(file).ToList();
+            _cacheList.Add(filename, lines);
+            return lines;
         }
     }
     public enum TemplateType
