@@ -601,10 +601,13 @@ GO
 
 CREATE SCHEMA Synonyms
 GO
+CREATE SCHEMA [CustomSchema]
+GO
 
 CREATE SYNONYM [Synonyms].[Parent] FOR [EfrpgTest].[Synonyms].[Parent]
 CREATE SYNONYM [Synonyms].[Child] FOR [EfrpgTest].[Synonyms].[Child]
 CREATE SYNONYM [Synonyms].[SimpleStoredProc] FOR [EfrpgTest].[Synonyms].[SimpleStoredProc]
+CREATE SYNONYM [CustomSchema].[CsvToIntWithSchema] FOR [EfrpgTest].[CustomSchema].[CsvToIntWithSchema]
 GO
 
 -- Create table with multiple FK's

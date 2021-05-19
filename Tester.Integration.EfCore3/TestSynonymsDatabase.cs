@@ -29,6 +29,8 @@ namespace TestSynonymsDatabase
     {
         DbSet<Child> Children { get; set; } // Child
         DbSet<Parent> Parents { get; set; } // Parent
+        DbSet<UserInfo> UserInfoes { get; set; } // UserInfo
+        DbSet<UserInfoAttribute> UserInfoAttributes { get; set; } // UserInfoAttributes
 
         int SaveChanges();
         int SaveChanges(bool acceptAllChangesOnSuccess);
@@ -81,6 +83,7 @@ namespace TestSynonymsDatabase
 
         // Table Valued Functions
         IQueryable<CsvToIntReturnModel> CsvToInt(string array, string array2); // dbo.CsvToInt
+        IQueryable<CsvToIntWithSchemaReturnModel> CsvToIntWithSchema(string array, string array2); // CustomSchema.CsvToIntWithSchema
     }
 
     #endregion
@@ -100,6 +103,8 @@ namespace TestSynonymsDatabase
 
         public DbSet<Child> Children { get; set; } // Child
         public DbSet<Parent> Parents { get; set; } // Parent
+        public DbSet<UserInfo> UserInfoes { get; set; } // UserInfo
+        public DbSet<UserInfoAttribute> UserInfoAttributes { get; set; } // UserInfoAttributes
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -124,11 +129,14 @@ namespace TestSynonymsDatabase
 
             modelBuilder.ApplyConfiguration(new ChildConfiguration());
             modelBuilder.ApplyConfiguration(new ParentConfiguration());
+            modelBuilder.ApplyConfiguration(new UserInfoConfiguration());
+            modelBuilder.ApplyConfiguration(new UserInfoAttributeConfiguration());
 
             modelBuilder.Entity<SimpleStoredProcReturnModel>().HasNoKey();
 
             // Table Valued Functions
             modelBuilder.Entity<CsvToIntReturnModel>().HasNoKey();
+            modelBuilder.Entity<CsvToIntWithSchemaReturnModel>().HasNoKey();
         }
 
 
@@ -179,6 +187,14 @@ namespace TestSynonymsDatabase
                 .FromSqlRaw("SELECT * FROM [dbo].[CsvToInt]({0}, {1})", array, array2)
                 .AsNoTracking();
         }
+
+        // CustomSchema.CsvToIntWithSchema
+        public IQueryable<CsvToIntWithSchemaReturnModel> CsvToIntWithSchema(string array, string array2)
+        {
+            return Set<CsvToIntWithSchemaReturnModel>()
+                .FromSqlRaw("SELECT * FROM [CustomSchema].[CsvToIntWithSchema]({0}, {1})", array, array2)
+                .AsNoTracking();
+        }
     }
 
     #endregion
@@ -201,6 +217,8 @@ namespace TestSynonymsDatabase
     {
         public DbSet<Child> Children { get; set; } // Child
         public DbSet<Parent> Parents { get; set; } // Parent
+        public DbSet<UserInfo> UserInfoes { get; set; } // UserInfo
+        public DbSet<UserInfoAttribute> UserInfoAttributes { get; set; } // UserInfoAttributes
 
         public FakeTestDbContext()
         {
@@ -208,6 +226,8 @@ namespace TestSynonymsDatabase
 
             Children = new FakeDbSet<Child>("ChildId");
             Parents = new FakeDbSet<Parent>("ParentId");
+            UserInfoes = new FakeDbSet<UserInfo>("Id");
+            UserInfoAttributes = new FakeDbSet<UserInfoAttribute>("Id");
 
         }
 
@@ -427,6 +447,12 @@ namespace TestSynonymsDatabase
         public IQueryable<CsvToIntReturnModel> CsvToInt(string array, string array2)
         {
             return new List<CsvToIntReturnModel>().AsQueryable();
+        }
+
+        // CustomSchema.CsvToIntWithSchema
+        public IQueryable<CsvToIntWithSchemaReturnModel> CsvToIntWithSchema(string array, string array2)
+        {
+            return new List<CsvToIntWithSchemaReturnModel>().AsQueryable();
         }
     }
 
@@ -774,6 +800,14 @@ namespace TestSynonymsDatabase
         public virtual Parent Parent { get; set; } // FK_Child_Parent
     }
 
+    // The table 'CsvToIntWithSchema' is not usable by entity framework because it
+    // does not have a primary key. It is listed here for completeness.
+    // CsvToIntWithSchema
+    public class CsvToIntWithSchema
+    {
+        public int? IntValue { get; set; } // IntValue
+    }
+
     // Parent
     public class Parent
     {
@@ -791,6 +825,50 @@ namespace TestSynonymsDatabase
         {
             Children = new List<Child>();
         }
+    }
+
+    // UserInfo
+    public class UserInfo
+    {
+        public int Id { get; set; } // Id (Primary key)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child UserInfoAttributes where [UserInfoAttributes].[PrimaryId] point to this entity (FK_UserInfoAttributes_PrimaryUserInfo)
+        /// </summary>
+        public virtual ICollection<UserInfoAttribute> UserInfoAttributes_PrimaryId { get; set; } // UserInfoAttributes.FK_UserInfoAttributes_PrimaryUserInfo
+
+        /// <summary>
+        /// Child UserInfoAttributes where [UserInfoAttributes].[SecondaryId] point to this entity (FK_UserInfoAttributes_SecondaryUserInfo)
+        /// </summary>
+        public virtual ICollection<UserInfoAttribute> UserInfoAttributes_SecondaryId { get; set; } // UserInfoAttributes.FK_UserInfoAttributes_SecondaryUserInfo
+
+        public UserInfo()
+        {
+            UserInfoAttributes_PrimaryId = new List<UserInfoAttribute>();
+            UserInfoAttributes_SecondaryId = new List<UserInfoAttribute>();
+        }
+    }
+
+    // UserInfoAttributes
+    public class UserInfoAttribute
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public int PrimaryId { get; set; } // PrimaryId
+        public int SecondaryId { get; set; } // SecondaryId
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent UserInfo pointed by [UserInfoAttributes].([PrimaryId]) (FK_UserInfoAttributes_PrimaryUserInfo)
+        /// </summary>
+        public virtual UserInfo Primary { get; set; } // FK_UserInfoAttributes_PrimaryUserInfo
+
+        /// <summary>
+        /// Parent UserInfo pointed by [UserInfoAttributes].([SecondaryId]) (FK_UserInfoAttributes_SecondaryUserInfo)
+        /// </summary>
+        public virtual UserInfo Secondary { get; set; } // FK_UserInfoAttributes_SecondaryUserInfo
     }
 
 
@@ -828,12 +906,47 @@ namespace TestSynonymsDatabase
         }
     }
 
+    // UserInfo
+    public class UserInfoConfiguration : IEntityTypeConfiguration<UserInfo>
+    {
+        public void Configure(EntityTypeBuilder<UserInfo> builder)
+        {
+            builder.ToTable("UserInfo", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK_UserInfo").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+        }
+    }
+
+    // UserInfoAttributes
+    public class UserInfoAttributeConfiguration : IEntityTypeConfiguration<UserInfoAttribute>
+    {
+        public void Configure(EntityTypeBuilder<UserInfoAttribute> builder)
+        {
+            builder.ToTable("UserInfoAttributes", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK_UserInfoAttributes").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.PrimaryId).HasColumnName(@"PrimaryId").HasColumnType("int").IsRequired();
+            builder.Property(x => x.SecondaryId).HasColumnName(@"SecondaryId").HasColumnType("int").IsRequired();
+
+            // Foreign keys
+            builder.HasOne(a => a.Primary).WithMany(b => b.UserInfoAttributes_PrimaryId).HasForeignKey(c => c.PrimaryId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_UserInfoAttributes_PrimaryUserInfo");
+            builder.HasOne(a => a.Secondary).WithMany(b => b.UserInfoAttributes_SecondaryId).HasForeignKey(c => c.SecondaryId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_UserInfoAttributes_SecondaryUserInfo");
+        }
+    }
+
 
     #endregion
 
     #region Stored procedure return models
 
     public class CsvToIntReturnModel
+    {
+        public int? IntValue { get; set; }
+    }
+
+    public class CsvToIntWithSchemaReturnModel
     {
         public int? IntValue { get; set; }
     }
