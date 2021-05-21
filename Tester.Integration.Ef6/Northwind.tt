@@ -298,7 +298,7 @@
         if (Settings.UseDataAnnotations)
         {
             if (column.IsPrimaryKey)
-                column.Attributes.Add("[Key]");
+                column.Attributes.Add(string.Format("[Key, Column(Order = {0})]", column.Ordinal));
 
             if (column.IsMaxLength) 
                 column.Attributes.Add("[MaxLength]");

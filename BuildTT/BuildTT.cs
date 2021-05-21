@@ -319,8 +319,8 @@ namespace BuildTT
 
         if (Settings.UseDataAnnotations)
         {
-            if (column.IsPrimaryKey)
-                column.Attributes.Add(""[Key]"");
+             if (column.IsPrimaryKey)
+                column.Attributes.Add(string.Format(""[Key, Column(Order = {0})]"", column.Ordinal));
 
             if (column.IsMaxLength) 
                 column.Attributes.Add(""[MaxLength]"");

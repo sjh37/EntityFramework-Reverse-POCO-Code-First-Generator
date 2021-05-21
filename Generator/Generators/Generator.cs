@@ -93,7 +93,10 @@ namespace Efrpg.Generators
                     _preHeaderInfo.Append(DatabaseDetails());
 
                 if (Settings.UseDataAnnotations)
+                {
                     Settings.AdditionalNamespaces.Add("System.ComponentModel.DataAnnotations");
+                    Settings.AdditionalNamespaces.Add("System.ComponentModel.DataAnnotations.Schema");
+                }
 
                 HasAcademicLicence = licence.LicenceType == LicenceType.Academic;
                 HasTrialLicence    = licence.LicenceType == LicenceType.Trial;
