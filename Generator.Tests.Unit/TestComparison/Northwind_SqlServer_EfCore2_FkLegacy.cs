@@ -1087,7 +1087,6 @@ namespace Efrpg.V3TestE
         {
             return new FakeDbAsyncEnumerator<TEntity>(this.AsEnumerable().GetEnumerator());
         }
-
     }
 
     public class FakeDbAsyncQueryProvider<TEntity> : IAsyncQueryProvider
@@ -1185,6 +1184,8 @@ namespace Efrpg.V3TestE
             _inner.Dispose();
         }
     }
+
+
 
     #endregion
 

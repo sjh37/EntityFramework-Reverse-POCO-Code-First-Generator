@@ -525,7 +525,6 @@ namespace Efrpg.SqlCE
         {
             return new FakeDbAsyncEnumerator<TEntity>(this.AsEnumerable().GetEnumerator());
         }
-
     }
 
     public class FakeDbAsyncQueryProvider<TEntity> : IAsyncQueryProvider
@@ -623,6 +622,8 @@ namespace Efrpg.SqlCE
             _inner.Dispose();
         }
     }
+
+
 
     #endregion
 
