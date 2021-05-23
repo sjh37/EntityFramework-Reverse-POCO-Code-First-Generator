@@ -70,7 +70,7 @@ namespace BuildTT
                 tt.WriteLine("        <License>license.txt</License>");
                 tt.WriteLine("        <Icon>TemplateIcon.ico</Icon>");
                 tt.WriteLine("        <PreviewImage>PreviewImage.png</PreviewImage>");
-                tt.WriteLine("        <Tags>Reverse Poco, Data, Entity Framework, Code Generator, Database, reverse engineering, C#, SQL Server, POCO, Code First, CodeFirst</Tags>");
+                tt.WriteLine("        <Tags>Reverse Poco, Data, Entity Framework, Code Generator, Database, reverse engineering, C#, SQL Server, PostgreSQL, POCO, Code First, CodeFirst</Tags>");
                 tt.WriteLine("    </Metadata>");
                 tt.WriteLine("    <Installation>");
                 tt.WriteLine("        <InstallationTarget Version=\"[14.0,17.0)\" Id=\"Microsoft.VisualStudio.Community\" />");
