@@ -348,7 +348,7 @@ namespace Efrpg
         public string WriteInsideClassBody()
         {
             // Example:
-            //return "    // " + ClassName + Environment.NewLine;
+            //return "    // " + NameHumanCase + Environment.NewLine;
 
             // Do nothing by default
             return string.Empty;
