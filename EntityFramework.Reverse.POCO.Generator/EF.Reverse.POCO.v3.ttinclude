@@ -292,6 +292,16 @@
             }
         };
 
+        // Writes any boilerplate stuff inside the POCO class body
+        public static Func<Table, string> WriteInsideClassBody = delegate (Table t)
+        {
+            // Example:
+            //return "    // " + t.NameHumanCase + Environment.NewLine;
+
+            // Do nothing by default
+            return string.Empty;
+        };
+
         // Using Views *****************************************************************************************************************
         // SQL Server does not support the declaration of primary-keys in VIEWs. Entity Framework's EDMX designer (and this generator)
         // assume that all non-null columns in a VIEW are primary-key columns, this will be incorrect for most non-trivial applications.
@@ -3514,7 +3524,7 @@
                 ExtendedComments        = table.WriteExtendedComments(),
                 ClassAttributes         = table.WriteClassAttributes(),
                 BaseClasses             = table.BaseClasses,
-                InsideClassBody         = table.WriteInsideClassBody(),
+                InsideClassBody         = Settings.WriteInsideClassBody(table),
                 Columns = table.Columns
                     .Where(x => !x.Hidden && !x.ExistsInBaseClass)
                     .OrderBy(x => x.Ordinal)
@@ -15911,16 +15921,6 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             }
             sb.AppendLine("/// </summary>");
             return sb.ToString();
-        }
-        
-        // Writes any boilerplate stuff inside the POCO class body
-        public string WriteInsideClassBody()
-        {
-            // Example:
-            //return "    // " + NameHumanCase + Environment.NewLine;
-
-            // Do nothing by default
-            return string.Empty;
         }
     }
 

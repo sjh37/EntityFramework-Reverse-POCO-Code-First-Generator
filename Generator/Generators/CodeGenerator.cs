@@ -440,7 +440,7 @@ namespace Efrpg.Generators
                 ExtendedComments        = table.WriteExtendedComments(),
                 ClassAttributes         = table.WriteClassAttributes(),
                 BaseClasses             = table.BaseClasses,
-                InsideClassBody         = table.WriteInsideClassBody(),
+                InsideClassBody         = Settings.WriteInsideClassBody(table),
                 Columns = table.Columns
                     .Where(x => !x.Hidden && !x.ExistsInBaseClass)
                     .OrderBy(x => x.Ordinal)

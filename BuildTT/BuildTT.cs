@@ -364,6 +364,16 @@ namespace BuildTT
         }
     };
 
+    // Writes any boilerplate stuff inside the POCO class body
+    Settings.WriteInsideClassBody = delegate(Table t)
+    {
+        // Example:
+        //return ""    // "" + t.NameHumanCase + Environment.NewLine;
+
+        // Do nothing by default
+        return string.Empty;
+    };
+
     // Using Views *****************************************************************************************************************
     // SQL Server does not support the declaration of primary-keys in VIEWs. Entity Framework's EDMX designer (and this generator)
     // assume that all non-null columns in a VIEW are primary-key columns, this will be incorrect for most non-trivial applications.

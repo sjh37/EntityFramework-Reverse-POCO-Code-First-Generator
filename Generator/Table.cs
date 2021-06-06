@@ -343,15 +343,5 @@ namespace Efrpg
             sb.AppendLine("/// </summary>");
             return sb.ToString();
         }
-        
-        // Writes any boilerplate stuff inside the POCO class body
-        public string WriteInsideClassBody()
-        {
-            // Example:
-            //return "    // " + NameHumanCase + Environment.NewLine;
-
-            // Do nothing by default
-            return string.Empty;
-        }
     }
 }
