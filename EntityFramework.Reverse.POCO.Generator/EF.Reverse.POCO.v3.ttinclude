@@ -19761,6 +19761,11 @@ using {{this}};{{#newline}}
         return null;{{#newline}}
     }{{#newline}}{{#newline}}
 
+    public override ValueTask<EntityEntry<TEntity>> AddAsync(TEntity entity, CancellationToken cancellationToken = default){{#newline}}
+    {{{#newline}}
+        return new ValueTask<EntityEntry<TEntity>>(Task<EntityEntry<TEntity>>.Factory.StartNew(() => Add(entity)));{{#newline}}
+    }{{#newline}}{{#newline}}
+
     public override void AddRange(params TEntity[] entities){{#newline}}
     {{{#newline}}
         if (entities == null) throw new ArgumentNullException(""entities"");{{#newline}}
@@ -19773,16 +19778,33 @@ using {{this}};{{#newline}}
         AddRange(entities.ToArray());{{#newline}}
     }{{#newline}}{{#newline}}
 
+    public override Task AddRangeAsync(params TEntity[] entities){{#newline}}
+    {{{#newline}}
+        if (entities == null) throw new ArgumentNullException(""entities"");{{#newline}}
+        return Task.Factory.StartNew(() => AddRange(entities));{{#newline}}
+    }{{#newline}}{{#newline}}
+
     public override Task AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default){{#newline}}
     {{{#newline}}
         if (entities == null) throw new ArgumentNullException(""entities"");{{#newline}}
         return Task.Factory.StartNew(() => AddRange(entities));{{#newline}}
     }{{#newline}}{{#newline}}
 
+    public override void AttachRange(IEnumerable<TEntity> entities){{#newline}}
+    {{{#newline}}
+        AddRange(entities.ToArray());{{#newline}}
+    }{{#newline}}{{#newline}}
+
     public override void AttachRange(params TEntity[] entities){{#newline}}
     {{{#newline}}
         if (entities == null) throw new ArgumentNullException(""entities"");{{#newline}}
         AddRange(entities);{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public override EntityEntry<TEntity> Remove(TEntity entity){{#newline}}
+    {{{#newline}}
+        _data.Remove(entity);{{#newline}}
+        return null;{{#newline}}
     }{{#newline}}{{#newline}}
 
     public override void RemoveRange(params TEntity[] entities){{#newline}}
@@ -19795,6 +19817,18 @@ using {{this}};{{#newline}}
     public override void RemoveRange(IEnumerable<TEntity> entities){{#newline}}
     {{{#newline}}
         RemoveRange(entities.ToArray());{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public override EntityEntry<TEntity> Update(TEntity entity){{#newline}}
+    {{{#newline}}
+        _data.Remove(entity);{{#newline}}
+        _data.Add(entity);{{#newline}}
+        return null;{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public override void UpdateRange(IEnumerable<TEntity> entities)
+    {{{#newline}}
+        UpdateRange(entities.ToArray());{{#newline}}
     }{{#newline}}{{#newline}}
 
     public override void UpdateRange(params TEntity[] entities){{#newline}}

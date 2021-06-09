@@ -574,6 +574,11 @@ namespace TestDatabaseStandard
             return null;
         }
 
+        public override ValueTask<EntityEntry<TEntity>> AddAsync(TEntity entity, CancellationToken cancellationToken = default)
+        {
+            return new ValueTask<EntityEntry<TEntity>>(Task<EntityEntry<TEntity>>.Factory.StartNew(() => Add(entity)));
+        }
+
         public override void AddRange(params TEntity[] entities)
         {
             if (entities == null) throw new ArgumentNullException("entities");
@@ -592,10 +597,27 @@ namespace TestDatabaseStandard
             return Task.Factory.StartNew(() => AddRange(entities));
         }
 
+        public override Task AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
+        {
+            if (entities == null) throw new ArgumentNullException("entities");
+            return Task.Factory.StartNew(() => AddRange(entities));
+        }
+
+        public override void AttachRange(IEnumerable<TEntity> entities)
+        {
+            AddRange(entities.ToArray());
+        }
+
         public override void AttachRange(params TEntity[] entities)
         {
             if (entities == null) throw new ArgumentNullException("entities");
             AddRange(entities);
+        }
+
+        public override EntityEntry<TEntity> Remove(TEntity entity)
+        {
+            _data.Remove(entity);
+            return null;
         }
 
         public override void RemoveRange(params TEntity[] entities)
@@ -608,6 +630,17 @@ namespace TestDatabaseStandard
         public override void RemoveRange(IEnumerable<TEntity> entities)
         {
             RemoveRange(entities.ToArray());
+        }
+
+        public override EntityEntry<TEntity> Update(TEntity entity)
+        {
+            _data.Remove(entity);
+            _data.Add(entity);
+            return null;
+        }
+
+        public override void UpdateRange(IEnumerable<TEntity> entities)    {
+            UpdateRange(entities.ToArray());
         }
 
         public override void UpdateRange(params TEntity[] entities)
