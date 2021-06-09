@@ -2614,7 +2614,7 @@ namespace Tester.Integration.EfCore3
             AddRange(entities.ToArray());
         }
 
-        public override Task AddRangeAsync(params TEntity[] entities)
+        public override Task AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
         {
             if (entities == null) throw new ArgumentNullException("entities");
             return Task.Factory.StartNew(() => AddRange(entities));
