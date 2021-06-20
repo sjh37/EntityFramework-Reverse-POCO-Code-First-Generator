@@ -117,8 +117,10 @@ namespace Efrpg.Generators
             if (c.IsMaxLength)
                 sb.Append(".IsMaxLength()");
 
-            if ((c.Precision > 0 || c.Scale > 0) && c.PropertyType == "decimal")
+            if ((c.Precision > 0 || c.Scale > 0) && DatabaseReader.IsPrecisionAndScaleType(c.SqlPropertyType))
                 sb.AppendFormat(".HasPrecision({0},{1})", c.Precision, c.Scale);
+            else if (c.Precision > 0 && DatabaseReader.IsPrecisionType(c.SqlPropertyType) && c.SqlPropertyType != "float")
+                sb.AppendFormat(".HasPrecision({0})", c.Precision);
 
             if (c.IsRowVersion)
                 sb.Append(".IsRowVersion()");

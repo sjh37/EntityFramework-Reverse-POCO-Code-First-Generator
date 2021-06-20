@@ -48,5 +48,15 @@ namespace Efrpg.LanguageMapping
         {
             return new List<string> { "geography", "geometry" };
         }
+
+        public List<string> PrecisionTypes()
+        {
+            return new List<string> { "float", "datetime2", "datetimeoffset" };
+        }
+
+        public List<string> PrecisionAndScaleTypes()
+        {
+            return new List<string> { "decimal", "numeric" };
+        }
     }
 }

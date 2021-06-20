@@ -77,5 +77,15 @@ namespace Efrpg.LanguageMapping
                 "geography", "geometry", "point", "linestring", "polygon", "multipoint", "multilinestring", "multipolygon", "geometrycollection"
             };
         }
+
+        public List<string> PrecisionTypes()
+        {
+            return new List<string> { "float", "datetime", "time", "timestamp", "year" };
+        }
+
+        public List<string> PrecisionAndScaleTypes()
+        {
+            return new List<string> { "decimal", "numeric" };
+        }
     }
 }

@@ -5493,8 +5493,10 @@
             if (c.IsMaxLength)
                 sb.Append(".IsMaxLength()");
 
-            if ((c.Precision > 0 || c.Scale > 0) && c.PropertyType == "decimal")
+            if ((c.Precision > 0 || c.Scale > 0) && DatabaseReader.IsPrecisionAndScaleType(c.SqlPropertyType))
                 sb.AppendFormat(".HasPrecision({0},{1})", c.Precision, c.Scale);
+            else if (c.Precision > 0 && DatabaseReader.IsPrecisionType(c.SqlPropertyType) && c.SqlPropertyType != "float")
+                sb.AppendFormat(".HasPrecision({0})", c.Precision);
 
             if (c.IsRowVersion)
                 sb.Append(".IsRowVersion()");
@@ -5766,6 +5768,14 @@
                     columnTypeParameters = $"({c.MaxLength})";
 
                 sb.AppendFormat(".HasColumnType(\"{0}{1}\")", c.SqlPropertyType, columnTypeParameters);
+
+                if (Settings.IsEfCore5Plus())
+                {
+                    if ((c.Precision > 0 || c.Scale > 0) && DatabaseReader.IsPrecisionAndScaleType(c.SqlPropertyType))
+                        sb.AppendFormat(".HasPrecision({0},{1})", c.Precision, c.Scale);
+                    else if (c.Precision > 0 && DatabaseReader.IsPrecisionType(c.SqlPropertyType))
+                        sb.AppendFormat(".HasPrecision({0})", c.Precision);
+                }
             }
 
             sb.Append(c.IsNullable ? ".IsRequired(false)" : ".IsRequired()");
@@ -5781,9 +5791,6 @@
 
             //if (c.IsMaxLength)
             //    sb.Append(".IsMaxLength()");
-
-            //if ((c.Precision > 0 || c.Scale > 0) && c.PropertyType == "decimal")
-            //    sb.AppendFormat(".HasPrecision({0},{1})", c.Precision, c.Scale);
 
             if (c.IsRowVersion)
                 sb.Append(".IsRowVersion()");
@@ -6425,7 +6432,21 @@
     public interface IDatabaseToPropertyType
     {
         Dictionary<string, string> GetMapping(); // [Database type] = Language type
+
+        /// <summary>
+        /// A list of the database types that are spatial.
+        /// </summary>
         List<string> SpatialTypes();
+
+        /// <summary>
+        /// A list of the database types that contain precision.
+        /// </summary>
+        List<string> PrecisionTypes();
+
+        /// <summary>
+        /// A list of the database types that contain precision and scale.
+        /// </summary>
+        List<string> PrecisionAndScaleTypes();
     }
     public interface IDatabaseLanguageFactory
     {
@@ -6582,6 +6603,16 @@
                 "geography", "geometry", "point", "linestring", "polygon", "multipoint", "multilinestring", "multipolygon", "geometrycollection"
             };
         }
+
+        public List<string> PrecisionTypes()
+        {
+            return new List<string> { "float", "datetime", "time", "timestamp", "year" };
+        }
+
+        public List<string> PrecisionAndScaleTypes()
+        {
+            return new List<string> { "decimal", "numeric" };
+        }
     }
 
     public class OracleToCSharp : IDatabaseToPropertyType
@@ -6624,6 +6655,16 @@
         public List<string> SpatialTypes()
         {
             return new List<string> { "sdo_geometry" };
+        }
+
+        public List<string> PrecisionTypes()
+        {
+            return new List<string> { "float", "timestamp", "timestamp with time zone", "timestamp with local time zone" };
+        }
+
+        public List<string> PrecisionAndScaleTypes()
+        {
+            return new List<string> { "number" };
         }
     }
 
@@ -6711,6 +6752,16 @@
         {
             return new List<string> { "geometry", "point", "line", "lseg", "box", "path", "polygon", "circle" };
         }
+
+        public List<string> PrecisionTypes()
+        {
+            return new List<string> { "float" };
+        }
+
+        public List<string> PrecisionAndScaleTypes()
+        {
+            return new List<string> { "decimal", "numeric" };
+        }
     }
 
     public class SqlServerToCSharp : IDatabaseToPropertyType
@@ -6758,6 +6809,16 @@
         {
             return new List<string> { "geography", "geometry" };
         }
+
+        public List<string> PrecisionTypes()
+        {
+            return new List<string> { "float", "datetime2", "datetimeoffset" };
+        }
+
+        public List<string> PrecisionAndScaleTypes()
+        {
+            return new List<string> { "decimal", "numeric" };
+        }
     }
 
     public class SqlServerToJavascript : IDatabaseToPropertyType
@@ -6801,6 +6862,16 @@
         public List<string> SpatialTypes()
         {
             return new List<string> { "geography", "geometry" };
+        }
+
+        public List<string> PrecisionTypes()
+        {
+            return new List<string> { "float", "datetime2", "datetimeoffset" };
+        }
+
+        public List<string> PrecisionAndScaleTypes()
+        {
+            return new List<string> { "decimal", "numeric" };
         }
     }
 
@@ -11731,12 +11802,18 @@ and limitations under the License.
         protected Dictionary<string, string> StoredProcedureParameterDbType; // [SQL Data Type] = SqlDbType. (For consistent naming)
         protected Dictionary<string, string> DbTypeToPropertyType; // [SQL Data Type] = Language type.
         protected List<string> SpatialTypes;
+        protected List<string> PrecisionAndScaleTypes;
+        protected List<string> PrecisionTypes;
 
         protected string DatabaseEdition, DatabaseEngineEdition, DatabaseProductVersion, DatabaseName;
         protected int DatabaseProductMajorVersion;
 
         public bool IncludeSchema { get; protected set; }
         public bool DoNotSpecifySizeForMaxLength { get; protected set; }
+
+        public bool IsSpatialType(string propertyType)           => propertyType != null && SpatialTypes != null && SpatialTypes.Contains(propertyType);
+        public bool IsPrecisionAndScaleType(string propertyType) => propertyType != null && PrecisionAndScaleTypes != null && PrecisionAndScaleTypes.Contains(propertyType);
+        public bool IsPrecisionType(string propertyType)         => propertyType != null && PrecisionTypes != null && PrecisionTypes.Contains(propertyType);
 
         protected abstract string TableSQL();
         protected abstract string ForeignKeySQL();
@@ -11774,6 +11851,8 @@ and limitations under the License.
 
             DbTypeToPropertyType         = databaseToPropertyType.GetMapping();
             SpatialTypes                 = databaseToPropertyType.SpatialTypes();
+            PrecisionTypes               = databaseToPropertyType.PrecisionTypes();
+            PrecisionAndScaleTypes       = databaseToPropertyType.PrecisionAndScaleTypes();
             DatabaseEdition              = null;
             DatabaseEngineEdition        = null;
             DatabaseProductVersion       = null;
@@ -12201,7 +12280,7 @@ and limitations under the License.
                                 Precision           = ChangeType<byte>(rdr["NUMERIC_PRECISION"]),
                                 Scale               = ChangeType<int>(rdr["NUMERIC_SCALE"]),
                                 UserDefinedTypeName = rdr["USER_DEFINED_TYPE"].ToString().Trim(),
-                                IsSpatial           = SpatialTypes.Contains(dataType)
+                                IsSpatial           = IsSpatialType(dataType)
                             };
 
                             if (string.IsNullOrEmpty(parameter.Name))

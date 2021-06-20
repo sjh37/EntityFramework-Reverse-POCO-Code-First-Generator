@@ -43,5 +43,15 @@ namespace Efrpg.LanguageMapping
         {
             return new List<string> { "sdo_geometry" };
         }
+
+        public List<string> PrecisionTypes()
+        {
+            return new List<string> { "float", "timestamp", "timestamp with time zone", "timestamp with local time zone" };
+        }
+
+        public List<string> PrecisionAndScaleTypes()
+        {
+            return new List<string> { "number" };
+        }
     }
 }

@@ -113,6 +113,14 @@ namespace Efrpg.Generators
                     columnTypeParameters = $"({c.MaxLength})";
 
                 sb.AppendFormat(".HasColumnType(\"{0}{1}\")", c.SqlPropertyType, columnTypeParameters);
+
+                if (Settings.IsEfCore5Plus())
+                {
+                    if ((c.Precision > 0 || c.Scale > 0) && DatabaseReader.IsPrecisionAndScaleType(c.SqlPropertyType))
+                        sb.AppendFormat(".HasPrecision({0},{1})", c.Precision, c.Scale);
+                    else if (c.Precision > 0 && DatabaseReader.IsPrecisionType(c.SqlPropertyType))
+                        sb.AppendFormat(".HasPrecision({0})", c.Precision);
+                }
             }
 
             sb.Append(c.IsNullable ? ".IsRequired(false)" : ".IsRequired()");
@@ -128,9 +136,6 @@ namespace Efrpg.Generators
 
             //if (c.IsMaxLength)
             //    sb.Append(".IsMaxLength()");
-
-            //if ((c.Precision > 0 || c.Scale > 0) && c.PropertyType == "decimal")
-            //    sb.AppendFormat(".HasPrecision({0},{1})", c.Precision, c.Scale);
 
             if (c.IsRowVersion)
                 sb.Append(".IsRowVersion()");

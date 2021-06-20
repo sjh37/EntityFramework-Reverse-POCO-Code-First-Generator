@@ -881,7 +881,7 @@ namespace Efrpg.SqlCE
             Property(x => x.OrderDate).HasColumnName(@"Order Date").HasColumnType("datetime").IsOptional();
             Property(x => x.RequiredDate).HasColumnName(@"Required Date").HasColumnType("datetime").IsOptional();
             Property(x => x.ShippedDate).HasColumnName(@"Shipped Date").HasColumnType("datetime").IsOptional();
-            Property(x => x.Freight).HasColumnName(@"Freight").HasColumnType("money").IsOptional().HasPrecision(19,4);
+            Property(x => x.Freight).HasColumnName(@"Freight").HasColumnType("money").IsOptional();
 
             // Foreign keys
             HasOptional(a => a.Employee).WithMany(b => b.Orders).HasForeignKey(c => c.EmployeeId).WillCascadeOnDelete(false); // Orders_FK02
@@ -905,7 +905,7 @@ namespace Efrpg.SqlCE
 
             Property(x => x.OrderId).HasColumnName(@"Order ID").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(x => x.ProductId).HasColumnName(@"Product ID").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
-            Property(x => x.UnitPrice).HasColumnName(@"Unit Price").HasColumnType("money").IsRequired().HasPrecision(19,4);
+            Property(x => x.UnitPrice).HasColumnName(@"Unit Price").HasColumnType("money").IsRequired();
             Property(x => x.Quantity).HasColumnName(@"Quantity").HasColumnType("smallint").IsRequired();
             Property(x => x.Discount).HasColumnName(@"Discount").HasColumnType("real").IsRequired();
 
@@ -934,7 +934,7 @@ namespace Efrpg.SqlCE
             Property(x => x.ProductName).HasColumnName(@"Product Name").HasColumnType("nvarchar").IsRequired().HasMaxLength(40);
             Property(x => x.EnglishName).HasColumnName(@"English Name").HasColumnType("nvarchar").IsOptional().HasMaxLength(40);
             Property(x => x.QuantityPerUnit).HasColumnName(@"Quantity Per Unit").HasColumnType("nvarchar").IsOptional().HasMaxLength(20);
-            Property(x => x.UnitPrice).HasColumnName(@"Unit Price").HasColumnType("money").IsOptional().HasPrecision(19,4);
+            Property(x => x.UnitPrice).HasColumnName(@"Unit Price").HasColumnType("money").IsOptional();
             Property(x => x.UnitsInStock).HasColumnName(@"Units In Stock").HasColumnType("smallint").IsOptional();
             Property(x => x.UnitsOnOrder).HasColumnName(@"Units On Order").HasColumnType("smallint").IsOptional();
             Property(x => x.ReorderLevel).HasColumnName(@"Reorder Level").HasColumnType("smallint").IsOptional();

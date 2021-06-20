@@ -581,7 +581,7 @@ namespace EfrpgNorthwindTest1
 
             Property(x => x.ProductKEY).HasColumnName(@"ProductID").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(x => x.ProductName).HasColumnName(@"ProductName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40);
-            Property(x => x.Price).HasColumnName(@"UnitPrice").HasColumnType("money").IsOptional().HasPrecision(19,4);
+            Property(x => x.Price).HasColumnName(@"UnitPrice").HasColumnType("money").IsOptional();
         }
     }
 

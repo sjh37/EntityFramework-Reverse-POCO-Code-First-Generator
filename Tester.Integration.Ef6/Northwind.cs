@@ -1733,7 +1733,7 @@ namespace Tester.Integration.Ef6
             Property(x => x.SupplierId).HasColumnName(@"SupplierID").HasColumnType("int").IsOptional();
             Property(x => x.CategoryId).HasColumnName(@"CategoryID").HasColumnType("int").IsOptional();
             Property(x => x.QuantityPerUnit).HasColumnName(@"QuantityPerUnit").HasColumnType("nvarchar").IsOptional().HasMaxLength(20);
-            Property(x => x.UnitPrice).HasColumnName(@"UnitPrice").HasColumnType("money").IsOptional().HasPrecision(19,4);
+            Property(x => x.UnitPrice).HasColumnName(@"UnitPrice").HasColumnType("money").IsOptional();
             Property(x => x.UnitsInStock).HasColumnName(@"UnitsInStock").HasColumnType("smallint").IsOptional();
             Property(x => x.UnitsOnOrder).HasColumnName(@"UnitsOnOrder").HasColumnType("smallint").IsOptional();
             Property(x => x.ReorderLevel).HasColumnName(@"ReorderLevel").HasColumnType("smallint").IsOptional();
@@ -1776,7 +1776,7 @@ namespace Tester.Integration.Ef6
             HasKey(x => x.CategoryName);
 
             Property(x => x.CategoryName).HasColumnName(@"CategoryName").HasColumnType("nvarchar").IsRequired().HasMaxLength(15).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
-            Property(x => x.CategorySales).HasColumnName(@"CategorySales").HasColumnType("money").IsOptional().HasPrecision(19,4);
+            Property(x => x.CategorySales).HasColumnName(@"CategorySales").HasColumnType("money").IsOptional();
         }
     }
 
@@ -1946,11 +1946,11 @@ namespace Tester.Integration.Ef6
             Property(x => x.ShipperName).HasColumnName(@"ShipperName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(x => x.ProductId).HasColumnName(@"ProductID").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(x => x.ProductName).HasColumnName(@"ProductName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
-            Property(x => x.UnitPrice).HasColumnName(@"UnitPrice").HasColumnType("money").IsRequired().HasPrecision(19,4).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.UnitPrice).HasColumnName(@"UnitPrice").HasColumnType("money").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(x => x.Quantity).HasColumnName(@"Quantity").HasColumnType("smallint").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(x => x.Discount).HasColumnName(@"Discount").HasColumnType("real").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
-            Property(x => x.ExtendedPrice).HasColumnName(@"ExtendedPrice").HasColumnType("money").IsOptional().HasPrecision(19,4);
-            Property(x => x.Freight).HasColumnName(@"Freight").HasColumnType("money").IsOptional().HasPrecision(19,4);
+            Property(x => x.ExtendedPrice).HasColumnName(@"ExtendedPrice").HasColumnType("money").IsOptional();
+            Property(x => x.Freight).HasColumnName(@"Freight").HasColumnType("money").IsOptional();
         }
     }
 
@@ -1974,7 +1974,7 @@ namespace Tester.Integration.Ef6
             Property(x => x.RequiredDate).HasColumnName(@"RequiredDate").HasColumnType("datetime").IsOptional();
             Property(x => x.ShippedDate).HasColumnName(@"ShippedDate").HasColumnType("datetime").IsOptional();
             Property(x => x.ShipVia).HasColumnName(@"ShipVia").HasColumnType("int").IsOptional();
-            Property(x => x.Freight).HasColumnName(@"Freight").HasColumnType("money").IsOptional().HasPrecision(19,4);
+            Property(x => x.Freight).HasColumnName(@"Freight").HasColumnType("money").IsOptional();
             Property(x => x.ShipName).HasColumnName(@"ShipName").HasColumnType("nvarchar").IsOptional().HasMaxLength(40);
             Property(x => x.ShipAddress).HasColumnName(@"ShipAddress").HasColumnType("nvarchar").IsOptional().HasMaxLength(60);
             Property(x => x.ShipCity).HasColumnName(@"ShipCity").HasColumnType("nvarchar").IsOptional().HasMaxLength(15);
@@ -2004,7 +2004,7 @@ namespace Tester.Integration.Ef6
 
             Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(x => x.ProductId).HasColumnName(@"ProductID").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
-            Property(x => x.UnitPrice).HasColumnName(@"UnitPrice").HasColumnType("money").IsRequired().HasPrecision(19,4);
+            Property(x => x.UnitPrice).HasColumnName(@"UnitPrice").HasColumnType("money").IsRequired();
             Property(x => x.Quantity).HasColumnName(@"Quantity").HasColumnType("smallint").IsRequired();
             Property(x => x.Discount).HasColumnName(@"Discount").HasColumnType("real").IsRequired();
 
@@ -2030,10 +2030,10 @@ namespace Tester.Integration.Ef6
             Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(x => x.ProductId).HasColumnName(@"ProductID").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(x => x.ProductName).HasColumnName(@"ProductName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
-            Property(x => x.UnitPrice).HasColumnName(@"UnitPrice").HasColumnType("money").IsRequired().HasPrecision(19,4).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.UnitPrice).HasColumnName(@"UnitPrice").HasColumnType("money").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(x => x.Quantity).HasColumnName(@"Quantity").HasColumnType("smallint").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(x => x.Discount).HasColumnName(@"Discount").HasColumnType("real").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
-            Property(x => x.ExtendedPrice).HasColumnName(@"ExtendedPrice").HasColumnType("money").IsOptional().HasPrecision(19,4);
+            Property(x => x.ExtendedPrice).HasColumnName(@"ExtendedPrice").HasColumnType("money").IsOptional();
         }
     }
 
@@ -2057,7 +2057,7 @@ namespace Tester.Integration.Ef6
             Property(x => x.RequiredDate).HasColumnName(@"RequiredDate").HasColumnType("datetime").IsOptional();
             Property(x => x.ShippedDate).HasColumnName(@"ShippedDate").HasColumnType("datetime").IsOptional();
             Property(x => x.ShipVia).HasColumnName(@"ShipVia").HasColumnType("int").IsOptional();
-            Property(x => x.Freight).HasColumnName(@"Freight").HasColumnType("money").IsOptional().HasPrecision(19,4);
+            Property(x => x.Freight).HasColumnName(@"Freight").HasColumnType("money").IsOptional();
             Property(x => x.ShipName).HasColumnName(@"ShipName").HasColumnType("nvarchar").IsOptional().HasMaxLength(40);
             Property(x => x.ShipAddress).HasColumnName(@"ShipAddress").HasColumnType("nvarchar").IsOptional().HasMaxLength(60);
             Property(x => x.ShipCity).HasColumnName(@"ShipCity").HasColumnType("nvarchar").IsOptional().HasMaxLength(15);
@@ -2087,7 +2087,7 @@ namespace Tester.Integration.Ef6
             HasKey(x => x.OrderId);
 
             Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
-            Property(x => x.Subtotal).HasColumnName(@"Subtotal").HasColumnType("money").IsOptional().HasPrecision(19,4);
+            Property(x => x.Subtotal).HasColumnName(@"Subtotal").HasColumnType("money").IsOptional();
         }
     }
 
@@ -2109,7 +2109,7 @@ namespace Tester.Integration.Ef6
             Property(x => x.SupplierId).HasColumnName(@"SupplierID").HasColumnType("int").IsOptional();
             Property(x => x.CategoryId).HasColumnName(@"CategoryID").HasColumnType("int").IsOptional();
             Property(x => x.QuantityPerUnit).HasColumnName(@"QuantityPerUnit").HasColumnType("nvarchar").IsOptional().HasMaxLength(20);
-            Property(x => x.UnitPrice).HasColumnName(@"UnitPrice").HasColumnType("money").IsOptional().HasPrecision(19,4);
+            Property(x => x.UnitPrice).HasColumnName(@"UnitPrice").HasColumnType("money").IsOptional();
             Property(x => x.UnitsInStock).HasColumnName(@"UnitsInStock").HasColumnType("smallint").IsOptional();
             Property(x => x.UnitsOnOrder).HasColumnName(@"UnitsOnOrder").HasColumnType("smallint").IsOptional();
             Property(x => x.ReorderLevel).HasColumnName(@"ReorderLevel").HasColumnType("smallint").IsOptional();
@@ -2135,7 +2135,7 @@ namespace Tester.Integration.Ef6
             HasKey(x => x.ProductName);
 
             Property(x => x.ProductName).HasColumnName(@"ProductName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
-            Property(x => x.UnitPrice).HasColumnName(@"UnitPrice").HasColumnType("money").IsOptional().HasPrecision(19,4);
+            Property(x => x.UnitPrice).HasColumnName(@"UnitPrice").HasColumnType("money").IsOptional();
         }
     }
 
@@ -2154,7 +2154,7 @@ namespace Tester.Integration.Ef6
 
             Property(x => x.CategoryName).HasColumnName(@"CategoryName").HasColumnType("nvarchar").IsRequired().HasMaxLength(15).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(x => x.ProductName).HasColumnName(@"ProductName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
-            Property(x => x.ProductSales).HasColumnName(@"ProductSales").HasColumnType("money").IsOptional().HasPrecision(19,4);
+            Property(x => x.ProductSales).HasColumnName(@"ProductSales").HasColumnType("money").IsOptional();
         }
     }
 
@@ -2213,7 +2213,7 @@ namespace Tester.Integration.Ef6
             Property(x => x.CategoryId).HasColumnName(@"CategoryID").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(x => x.CategoryName).HasColumnName(@"CategoryName").HasColumnType("nvarchar").IsRequired().HasMaxLength(15).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(x => x.ProductName).HasColumnName(@"ProductName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
-            Property(x => x.ProductSales).HasColumnName(@"ProductSales").HasColumnType("money").IsOptional().HasPrecision(19,4);
+            Property(x => x.ProductSales).HasColumnName(@"ProductSales").HasColumnType("money").IsOptional();
         }
     }
 
@@ -2230,7 +2230,7 @@ namespace Tester.Integration.Ef6
             ToTable("Sales Totals by Amount", schema);
             HasKey(x => new { x.OrderId, x.CompanyName });
 
-            Property(x => x.SaleAmount).HasColumnName(@"SaleAmount").HasColumnType("money").IsOptional().HasPrecision(19,4);
+            Property(x => x.SaleAmount).HasColumnName(@"SaleAmount").HasColumnType("money").IsOptional();
             Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(x => x.CompanyName).HasColumnName(@"CompanyName").HasColumnType("nvarchar").IsRequired().HasMaxLength(40).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(x => x.ShippedDate).HasColumnName(@"ShippedDate").HasColumnType("datetime").IsOptional();
@@ -2271,7 +2271,7 @@ namespace Tester.Integration.Ef6
 
             Property(x => x.ShippedDate).HasColumnName(@"ShippedDate").HasColumnType("datetime").IsOptional();
             Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
-            Property(x => x.Subtotal).HasColumnName(@"Subtotal").HasColumnType("money").IsOptional().HasPrecision(19,4);
+            Property(x => x.Subtotal).HasColumnName(@"Subtotal").HasColumnType("money").IsOptional();
         }
     }
 
@@ -2290,7 +2290,7 @@ namespace Tester.Integration.Ef6
 
             Property(x => x.ShippedDate).HasColumnName(@"ShippedDate").HasColumnType("datetime").IsOptional();
             Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
-            Property(x => x.Subtotal).HasColumnName(@"Subtotal").HasColumnType("money").IsOptional().HasPrecision(19,4);
+            Property(x => x.Subtotal).HasColumnName(@"Subtotal").HasColumnType("money").IsOptional();
         }
     }
 

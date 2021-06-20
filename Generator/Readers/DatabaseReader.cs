@@ -17,12 +17,18 @@ namespace Efrpg.Readers
         protected Dictionary<string, string> StoredProcedureParameterDbType; // [SQL Data Type] = SqlDbType. (For consistent naming)
         protected Dictionary<string, string> DbTypeToPropertyType; // [SQL Data Type] = Language type.
         protected List<string> SpatialTypes;
+        protected List<string> PrecisionAndScaleTypes;
+        protected List<string> PrecisionTypes;
 
         protected string DatabaseEdition, DatabaseEngineEdition, DatabaseProductVersion, DatabaseName;
         protected int DatabaseProductMajorVersion;
 
         public bool IncludeSchema { get; protected set; }
         public bool DoNotSpecifySizeForMaxLength { get; protected set; }
+
+        public bool IsSpatialType(string propertyType)           => propertyType != null && SpatialTypes != null && SpatialTypes.Contains(propertyType);
+        public bool IsPrecisionAndScaleType(string propertyType) => propertyType != null && PrecisionAndScaleTypes != null && PrecisionAndScaleTypes.Contains(propertyType);
+        public bool IsPrecisionType(string propertyType)         => propertyType != null && PrecisionTypes != null && PrecisionTypes.Contains(propertyType);
 
         protected abstract string TableSQL();
         protected abstract string ForeignKeySQL();
@@ -60,6 +66,8 @@ namespace Efrpg.Readers
 
             DbTypeToPropertyType         = databaseToPropertyType.GetMapping();
             SpatialTypes                 = databaseToPropertyType.SpatialTypes();
+            PrecisionTypes               = databaseToPropertyType.PrecisionTypes();
+            PrecisionAndScaleTypes       = databaseToPropertyType.PrecisionAndScaleTypes();
             DatabaseEdition              = null;
             DatabaseEngineEdition        = null;
             DatabaseProductVersion       = null;
@@ -487,7 +495,7 @@ namespace Efrpg.Readers
                                 Precision           = ChangeType<byte>(rdr["NUMERIC_PRECISION"]),
                                 Scale               = ChangeType<int>(rdr["NUMERIC_SCALE"]),
                                 UserDefinedTypeName = rdr["USER_DEFINED_TYPE"].ToString().Trim(),
-                                IsSpatial           = SpatialTypes.Contains(dataType)
+                                IsSpatial           = IsSpatialType(dataType)
                             };
 
                             if (string.IsNullOrEmpty(parameter.Name))

@@ -86,5 +86,15 @@ namespace Efrpg.LanguageMapping
         {
             return new List<string> { "geometry", "point", "line", "lseg", "box", "path", "polygon", "circle" };
         }
+
+        public List<string> PrecisionTypes()
+        {
+            return new List<string> { "float" };
+        }
+
+        public List<string> PrecisionAndScaleTypes()
+        {
+            return new List<string> { "decimal", "numeric" };
+        }
     }
 }
