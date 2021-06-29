@@ -3,8 +3,8 @@
 //
 // Registered to: Simon Hughes
 // Company      : Reverse POCO
-// Licence Type : Commercial
-// Licences     : 1
+// license Type : Commercial
+// licenses     : 1
 // Valid until  : 07 DEC 2021
 //
 // The following connection settings were used to generate this file:

@@ -1,6 +1,6 @@
 ﻿namespace Efrpg.Licensing
 {
-    public enum LicenceType
+    public enum licenseType
     {
         Academic,
         Commercial,

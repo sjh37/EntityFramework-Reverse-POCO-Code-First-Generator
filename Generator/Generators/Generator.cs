@@ -39,8 +39,8 @@ namespace Efrpg.Generators
 
 
         private DbProviderFactory _factory;
-        public bool HasAcademicLicence;
-        public bool HasTrialLicence;
+        public bool HasAcademiclicense;
+        public bool HasTriallicense;
         private readonly StringBuilder _preHeaderInfo;
         private readonly string _codeGeneratedAttribute;
         private readonly FileManagementService _fileManagementService;
@@ -66,12 +66,12 @@ namespace Efrpg.Generators
 
             try
             {
-                var licence = ReadAndValidateLicence();
-                if(licence == null)
+                var license = ReadAndValidatelicense();
+                if(license == null)
                     return;
 
                 providerName = DatabaseProvider.GetProvider(Settings.DatabaseType);
-                BuildPreHeaderInfo(licence);
+                BuildPreHeaderInfo(license);
 
                 _factory = DbProviderFactories.GetFactory(providerName);
                 if (_factory == null)
@@ -98,8 +98,8 @@ namespace Efrpg.Generators
                     Settings.AdditionalNamespaces.Add("System.ComponentModel.DataAnnotations.Schema");
                 }
 
-                HasAcademicLicence = licence.LicenceType == LicenceType.Academic;
-                HasTrialLicence    = licence.LicenceType == LicenceType.Trial;
+                HasAcademiclicense = license.licenseType == licenseType.Academic;
+                HasTriallicense    = license.licenseType == licenseType.Trial;
                 InitialisationOk = FilterList.ReadDbContextSettings(DatabaseReader, singleDbContextSubNamespace);
                 _fileManagementService.Init(FilterList.GetFilters(), _fileManagerType);
             }
@@ -125,37 +125,37 @@ namespace Efrpg.Generators
             }
         }
 
-        private Licence ReadAndValidateLicence()
+        private license ReadAndValidatelicense()
         {
             var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             var file = Path.Combine(path, "ReversePOCO.txt");
-            const string obtainAt = "// Please obtain your licence file at www.ReversePOCO.co.uk, and place it in your documents folder shown above.";
+            const string obtainAt = "// Please obtain your license file at www.ReversePOCO.co.uk, and place it in your documents folder shown above.";
 
             if (!File.Exists(file))
             {
-                _fileManagementService.Error(string.Format("// Licence file {0} not found.", file));
+                _fileManagementService.Error(string.Format("// license file {0} not found.", file));
                 _fileManagementService.Error(obtainAt);
-                return TrialLicenceFallback();
+                return TriallicenseFallback();
             }
 
-            var validator = new LicenceValidator();
+            var validator = new licenseValidator();
             if(!validator.Validate(File.ReadAllText(file)))
             {
                 _fileManagementService.Error(validator.Expired
-                    ? string.Format("// Your licence file {0} has expired.", file)
-                    : string.Format("// Your licence file {0} is not valid.", file));
+                    ? string.Format("// Your license file {0} has expired.", file)
+                    : string.Format("// Your license file {0} is not valid.", file));
 
                 _fileManagementService.Error(obtainAt);
-                return TrialLicenceFallback();
+                return TriallicenseFallback();
             }
 
-            return validator.Licence; // Thank you for having a valid licence and supporting this product :-)
+            return validator.license; // Thank you for having a valid license and supporting this product :-)
         }
 
-        private Licence TrialLicenceFallback()
+        private license TriallicenseFallback()
         {
             _fileManagementService.Error("// Defaulting to Trial version.");
-            return new Licence(string.Empty, string.Empty, LicenceType.Trial, "1", DateTime.MaxValue);
+            return new license(string.Empty, string.Empty, licenseType.Trial, "1", DateTime.MaxValue);
         }
 
         public string DatabaseDetails()
@@ -657,8 +657,8 @@ namespace Efrpg.Generators
                     table.SetPrimaryKeys();
                 }
 
-                if (HasTrialLicence)
-                    filter.Tables.TrimForTrialLicence();
+                if (HasTriallicense)
+                    filter.Tables.TrimForTriallicense();
             }
         }
 
@@ -790,7 +790,7 @@ namespace Efrpg.Generators
                     {
                         if (!filter.IsExcluded(sp))
                         {
-                            if (HasTrialLicence)
+                            if (HasTriallicense)
                             {
                                 const int n = 1 + 2 + 3 + 4;
                                 if (filter.StoredProcs.Count < n)
@@ -1388,10 +1388,10 @@ namespace Efrpg.Generators
                 }
             }
 
-            if (firstInGroup && (HasAcademicLicence || HasTrialLicence))
+            if (firstInGroup && (HasAcademiclicense || HasTriallicense))
             {
                 lines.Add(IndentedStringBuilder(indentNum, "// ****************************************************************************************************"));
-                lines.Add(IndentedStringBuilder(indentNum, "// This is not a commercial licence, therefore only a few tables/views/stored procedures are generated."));
+                lines.Add(IndentedStringBuilder(indentNum, "// This is not a commercial license, therefore only a few tables/views/stored procedures are generated."));
                 lines.Add(IndentedStringBuilder(indentNum, "// ****************************************************************************************************"));
                 lines.Add(null);
             }
@@ -1447,7 +1447,7 @@ namespace Efrpg.Generators
             return ex.Message.Replace("\r\n", "\n").Replace("\n", " ");
         }
 
-        private void BuildPreHeaderInfo(Licence licence)
+        private void BuildPreHeaderInfo(license license)
         {
             if (Settings.ShowLicenseInfo)
             {
@@ -1462,12 +1462,12 @@ namespace Efrpg.Generators
 
                 _preHeaderInfo.AppendLine("// Created by Simon Hughes (https://about.me/simon.hughes).");
                 _preHeaderInfo.AppendLine("//");
-                _preHeaderInfo.AppendLine(string.Format("// {0}{1}", LicenceConstants.RegisteredTo, licence.RegisteredTo));
-                _preHeaderInfo.AppendLine(string.Format("// {0}{1}", LicenceConstants.Company, licence.Company));
-                _preHeaderInfo.AppendLine(string.Format("// {0}{1}", LicenceConstants.LicenceType, licence.GetLicenceType()));
-                _preHeaderInfo.AppendLine(string.Format("// {0}{1}", LicenceConstants.NumLicences, licence.NumLicences));
-                _preHeaderInfo.AppendLine(string.Format("// {0}{1}", LicenceConstants.ValidUntil,
-                    licence.ValidUntil.ToString(LicenceConstants.ExpiryFormat).ToUpperInvariant()));
+                _preHeaderInfo.AppendLine(string.Format("// {0}{1}", licenseConstants.RegisteredTo, license.RegisteredTo));
+                _preHeaderInfo.AppendLine(string.Format("// {0}{1}", licenseConstants.Company, license.Company));
+                _preHeaderInfo.AppendLine(string.Format("// {0}{1}", licenseConstants.licenseType, license.GetlicenseType()));
+                _preHeaderInfo.AppendLine(string.Format("// {0}{1}", licenseConstants.Numlicenses, license.Numlicenses));
+                _preHeaderInfo.AppendLine(string.Format("// {0}{1}", licenseConstants.ValidUntil,
+                    license.ValidUntil.ToString(licenseConstants.ExpiryFormat).ToUpperInvariant()));
                 _preHeaderInfo.AppendLine("//");
             }
 

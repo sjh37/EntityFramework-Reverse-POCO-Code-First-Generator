@@ -29,14 +29,14 @@ namespace Efrpg
             }
         }
 
-        public void TrimForTrialLicence()
+        public void TrimForTriallicense()
         {
             // Mapping tables do not count
             const int n = 1 + 2 + 3 + 4;
-            TrimForLicence(n);
+            TrimForlicense(n);
         }
 
-        private void TrimForLicence(int n)
+        private void TrimForlicense(int n)
         {
             if (this.Count(x => !x.IsMapping) <= n)
                 return;

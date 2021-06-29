@@ -98,7 +98,7 @@
     <Compile Include="LanguageMapping\PostgresToCSharp.cs" />
     <Compile Include="LanguageMapping\LanguageFactories\SqlServerLanguageFactory.cs" />
     <Compile Include="LanguageMapping\SqlServerToJavascript.cs" />
-    <Compile Include="Licensing\LicenceType.cs" />
+    <Compile Include="Licensing\licenseType.cs" />
     <Compile Include="LanguageMapping\SqlServerToCSharp.cs" />
     <Compile Include="LanguageMapping\IDatabaseToPropertyType.cs" />
     <Compile Include="OnConfiguration.cs" />
@@ -147,9 +147,9 @@
     <Compile Include="TemplateModels\InterfaceModel.cs" />
     <Compile Include="Licensing\DigitalSignaturePublic.cs" />
     <Compile Include="Licensing\Hex.cs" />
-    <Compile Include="Licensing\Licence.cs" />
-    <Compile Include="Licensing\LicenceConstants.cs" />
-    <Compile Include="Licensing\LicenceValidator.cs" />
+    <Compile Include="Licensing\license.cs" />
+    <Compile Include="Licensing\licenseConstants.cs" />
+    <Compile Include="Licensing\licenseValidator.cs" />
     <Compile Include="Mustache\ArgumentCollection.cs" />
     <Compile Include="Mustache\CompoundMustacheGenerator.cs" />
     <Compile Include="Mustache\ConditionTagDefinition.cs" />

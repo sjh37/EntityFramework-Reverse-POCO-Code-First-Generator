@@ -75,7 +75,7 @@ namespace Efrpg
         public static bool UsePragma                        = false;  // If false, suppresses the writing of #pragma
         public static bool AllowNullStrings                 = false; // If true, will allow string? properties and will add '#nullable enable' to the top of each file
         public static bool UseResharper                     = false; // If true, will add a list of 'ReSharper disable' comments to the top of each file
-        public static bool ShowLicenseInfo                  = false; // If true, will add the licence info comment to the top of each file
+        public static bool ShowLicenseInfo                  = false; // If true, will add the license info comment to the top of each file
         public static bool IncludeConnectionSettingComments = false; // Add comments describing connection settings used to generate file
         public static bool IncludeCodeGeneratedAttribute    = false; // If true, will include the [GeneratedCode] attribute before classes, false to remove it.
         public static bool IncludeColumnsWithDefaults       = true;  // If true, will set properties to the default value from the database.ro

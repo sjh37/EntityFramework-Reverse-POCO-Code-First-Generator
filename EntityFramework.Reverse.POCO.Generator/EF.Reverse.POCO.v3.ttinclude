@@ -101,7 +101,7 @@
         public static bool UsePragma                        = false;  // If false, suppresses the writing of #pragma
         public static bool AllowNullStrings                 = false; // If true, will allow string? properties and will add '#nullable enable' to the top of each file
         public static bool UseResharper                     = false; // If true, will add a list of 'ReSharper disable' comments to the top of each file
-        public static bool ShowLicenseInfo                  = false; // If true, will add the licence info comment to the top of each file
+        public static bool ShowLicenseInfo                  = false; // If true, will add the license info comment to the top of each file
         public static bool IncludeConnectionSettingComments = false; // Add comments describing connection settings used to generate file
         public static bool IncludeCodeGeneratedAttribute    = false; // If true, will include the [GeneratedCode] attribute before classes, false to remove it.
         public static bool IncludeColumnsWithDefaults       = true;  // If true, will set properties to the default value from the database.ro
@@ -3861,8 +3861,8 @@
 
 
         private DbProviderFactory _factory;
-        public bool HasAcademicLicence;
-        public bool HasTrialLicence;
+        public bool HasAcademiclicense;
+        public bool HasTriallicense;
         private readonly StringBuilder _preHeaderInfo;
         private readonly string _codeGeneratedAttribute;
         private readonly FileManagementService _fileManagementService;
@@ -3888,12 +3888,12 @@
 
             try
             {
-                var licence = ReadAndValidateLicence();
-                if(licence == null)
+                var license = ReadAndValidatelicense();
+                if(license == null)
                     return;
 
                 providerName = DatabaseProvider.GetProvider(Settings.DatabaseType);
-                BuildPreHeaderInfo(licence);
+                BuildPreHeaderInfo(license);
 
                 _factory = DbProviderFactories.GetFactory(providerName);
                 if (_factory == null)
@@ -3920,8 +3920,8 @@
                     Settings.AdditionalNamespaces.Add("System.ComponentModel.DataAnnotations.Schema");
                 }
 
-                HasAcademicLicence = licence.LicenceType == LicenceType.Academic;
-                HasTrialLicence    = licence.LicenceType == LicenceType.Trial;
+                HasAcademiclicense = license.licenseType == licenseType.Academic;
+                HasTriallicense    = license.licenseType == licenseType.Trial;
                 InitialisationOk = FilterList.ReadDbContextSettings(DatabaseReader, singleDbContextSubNamespace);
                 _fileManagementService.Init(FilterList.GetFilters(), _fileManagerType);
             }
@@ -3947,37 +3947,37 @@
             }
         }
 
-        private Licence ReadAndValidateLicence()
+        private license ReadAndValidatelicense()
         {
             var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             var file = Path.Combine(path, "ReversePOCO.txt");
-            const string obtainAt = "// Please obtain your licence file at www.ReversePOCO.co.uk, and place it in your documents folder shown above.";
+            const string obtainAt = "// Please obtain your license file at www.ReversePOCO.co.uk, and place it in your documents folder shown above.";
 
             if (!File.Exists(file))
             {
-                _fileManagementService.Error(string.Format("// Licence file {0} not found.", file));
+                _fileManagementService.Error(string.Format("// license file {0} not found.", file));
                 _fileManagementService.Error(obtainAt);
-                return TrialLicenceFallback();
+                return TriallicenseFallback();
             }
 
-            var validator = new LicenceValidator();
+            var validator = new licenseValidator();
             if(!validator.Validate(File.ReadAllText(file)))
             {
                 _fileManagementService.Error(validator.Expired
-                    ? string.Format("// Your licence file {0} has expired.", file)
-                    : string.Format("// Your licence file {0} is not valid.", file));
+                    ? string.Format("// Your license file {0} has expired.", file)
+                    : string.Format("// Your license file {0} is not valid.", file));
 
                 _fileManagementService.Error(obtainAt);
-                return TrialLicenceFallback();
+                return TriallicenseFallback();
             }
 
-            return validator.Licence; // Thank you for having a valid licence and supporting this product :-)
+            return validator.license; // Thank you for having a valid license and supporting this product :-)
         }
 
-        private Licence TrialLicenceFallback()
+        private license TriallicenseFallback()
         {
             _fileManagementService.Error("// Defaulting to Trial version.");
-            return new Licence(string.Empty, string.Empty, LicenceType.Trial, "1", DateTime.MaxValue);
+            return new license(string.Empty, string.Empty, licenseType.Trial, "1", DateTime.MaxValue);
         }
 
         public string DatabaseDetails()
@@ -4479,8 +4479,8 @@
                     table.SetPrimaryKeys();
                 }
 
-                if (HasTrialLicence)
-                    filter.Tables.TrimForTrialLicence();
+                if (HasTriallicense)
+                    filter.Tables.TrimForTriallicense();
             }
         }
 
@@ -4612,7 +4612,7 @@
                     {
                         if (!filter.IsExcluded(sp))
                         {
-                            if (HasTrialLicence)
+                            if (HasTriallicense)
                             {
                                 const int n = 1 + 2 + 3 + 4;
                                 if (filter.StoredProcs.Count < n)
@@ -5210,10 +5210,10 @@
                 }
             }
 
-            if (firstInGroup && (HasAcademicLicence || HasTrialLicence))
+            if (firstInGroup && (HasAcademiclicense || HasTriallicense))
             {
                 lines.Add(IndentedStringBuilder(indentNum, "// ****************************************************************************************************"));
-                lines.Add(IndentedStringBuilder(indentNum, "// This is not a commercial licence, therefore only a few tables/views/stored procedures are generated."));
+                lines.Add(IndentedStringBuilder(indentNum, "// This is not a commercial license, therefore only a few tables/views/stored procedures are generated."));
                 lines.Add(IndentedStringBuilder(indentNum, "// ****************************************************************************************************"));
                 lines.Add(null);
             }
@@ -5269,7 +5269,7 @@
             return ex.Message.Replace("\r\n", "\n").Replace("\n", " ");
         }
 
-        private void BuildPreHeaderInfo(Licence licence)
+        private void BuildPreHeaderInfo(license license)
         {
             if (Settings.ShowLicenseInfo)
             {
@@ -5284,12 +5284,12 @@
 
                 _preHeaderInfo.AppendLine("// Created by Simon Hughes (https://about.me/simon.hughes).");
                 _preHeaderInfo.AppendLine("//");
-                _preHeaderInfo.AppendLine(string.Format("// {0}{1}", LicenceConstants.RegisteredTo, licence.RegisteredTo));
-                _preHeaderInfo.AppendLine(string.Format("// {0}{1}", LicenceConstants.Company, licence.Company));
-                _preHeaderInfo.AppendLine(string.Format("// {0}{1}", LicenceConstants.LicenceType, licence.GetLicenceType()));
-                _preHeaderInfo.AppendLine(string.Format("// {0}{1}", LicenceConstants.NumLicences, licence.NumLicences));
-                _preHeaderInfo.AppendLine(string.Format("// {0}{1}", LicenceConstants.ValidUntil,
-                    licence.ValidUntil.ToString(LicenceConstants.ExpiryFormat).ToUpperInvariant()));
+                _preHeaderInfo.AppendLine(string.Format("// {0}{1}", licenseConstants.RegisteredTo, license.RegisteredTo));
+                _preHeaderInfo.AppendLine(string.Format("// {0}{1}", licenseConstants.Company, license.Company));
+                _preHeaderInfo.AppendLine(string.Format("// {0}{1}", licenseConstants.licenseType, license.GetlicenseType()));
+                _preHeaderInfo.AppendLine(string.Format("// {0}{1}", licenseConstants.Numlicenses, license.Numlicenses));
+                _preHeaderInfo.AppendLine(string.Format("// {0}{1}", licenseConstants.ValidUntil,
+                    license.ValidUntil.ToString(licenseConstants.ExpiryFormat).ToUpperInvariant()));
                 _preHeaderInfo.AppendLine("//");
             }
 
@@ -6944,39 +6944,39 @@
         }
     }
 
-    public class Licence
+    public class license
     {
         public string      RegisteredTo { get; private set; }
         public string      Company      { get; private set; }
-        public LicenceType LicenceType  { get; private set; }
-        public string      NumLicences  { get; private set; }
+        public licenseType licenseType  { get; private set; }
+        public string      Numlicenses  { get; private set; }
         public DateTime    ValidUntil   { get; private set; }
 
-        public Licence(string registeredTo, string company, LicenceType licenceType, string numLicences, DateTime validUntil)
+        public license(string registeredTo, string company, licenseType licenseType, string numlicenses, DateTime validUntil)
         {
             RegisteredTo = registeredTo;
             Company      = company;
-            LicenceType  = licenceType;
-            NumLicences  = numLicences;
+            licenseType  = licenseType;
+            Numlicenses  = numlicenses;
             ValidUntil   = validUntil;
         }
 
-        public string GetLicenceType()
+        public string GetlicenseType()
         {
-            return GetLicenceType(LicenceType);
+            return GetlicenseType(licenseType);
         }
 
-        public static string GetLicenceType(LicenceType licenceType)
+        public static string GetlicenseType(licenseType licenseType)
         {
-            switch (licenceType)
+            switch (licenseType)
             {
-                case LicenceType.Academic:
+                case licenseType.Academic:
                     return "Academic license - for non-commercial use only";
 
-                case LicenceType.Commercial:
+                case licenseType.Commercial:
                     return "Commercial";
 
-                case LicenceType.Trial:
+                case licenseType.Trial:
                     return "Trial - for non-commercial trial use only";
 
                 default:
@@ -6984,12 +6984,12 @@
             }
         }
 
-        public static LicenceType ParseLicenceType(string licenceType)
+        public static licenseType ParselicenseType(string licenseType)
         {
-            licenceType = licenceType.Substring(0, 5);
-            foreach (var type in Enum.GetValues(typeof(LicenceType)).Cast<LicenceType>())
+            licenseType = licenseType.Substring(0, 5);
+            foreach (var type in Enum.GetValues(typeof(licenseType)).Cast<licenseType>())
             {
-                if (GetLicenceType(type).Substring(0, 5) == licenceType)
+                if (GetlicenseType(type).Substring(0, 5) == licenseType)
                     return type;
             }
             throw new ArgumentOutOfRangeException();
@@ -7000,61 +7000,61 @@
             return string.Format("{0}|{1}|{2}|{3}|{4}",
                 RegisteredTo.ToUpperInvariant().Trim(),
                 Company     .ToUpperInvariant().Trim(),
-                GetLicenceType(),
-                NumLicences .ToUpperInvariant().Trim(),
-                ValidUntil  .ToString(LicenceConstants.ExpiryFormat, CultureInfo.InvariantCulture).ToUpperInvariant());
+                GetlicenseType(),
+                Numlicenses .ToUpperInvariant().Trim(),
+                ValidUntil  .ToString(licenseConstants.ExpiryFormat, CultureInfo.InvariantCulture).ToUpperInvariant());
         }
     }
-    public static class LicenceConstants
+    public static class licenseConstants
     {
         public static string ExpiryFormat  = "dd MMM yyyy";
         public static string RegisteredTo  = "Registered to: ";
         public static string Company       = "Company      : ";
-        public static string LicenceType   = "Licence Type : ";
-        public static string NumLicences   = "Licences     : ";
+        public static string licenseType   = "license Type : ";
+        public static string Numlicenses   = "licenses     : ";
         public static string ValidUntil    = "Valid until  : ";
         public static string Signature     = "Signature:";
     }
-    public enum LicenceType
+    public enum licenseType
     {
         Academic,
         Commercial,
         Trial
     }
 
-    public class LicenceValidator
+    public class licenseValidator
     {
         private readonly DigitalSignaturePublic _ds;
-        public Licence Licence;
+        public license license;
         public bool Expired;
 
-        public LicenceValidator()
+        public licenseValidator()
         {
             _ds = new DigitalSignaturePublic();
         }
 
-        public bool Validate(string licenceInput)
+        public bool Validate(string licenseInput)
         {
             try
             {
-                var array = licenceInput.Replace("\n", "\r").Replace("\r\r", "\r").Trim().Split('\r');
+                var array = licenseInput.Replace("\n", "\r").Replace("\r\r", "\r").Trim().Split('\r');
 
-                var expiryText = ParseString(array, LicenceConstants.ValidUntil);
-                var parsedExpiry = DateTime.ParseExact(expiryText, LicenceConstants.ExpiryFormat, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal);
+                var expiryText = ParseString(array, licenseConstants.ValidUntil);
+                var parsedExpiry = DateTime.ParseExact(expiryText, licenseConstants.ExpiryFormat, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal);
                 var expiryEndOfDay = new DateTime(parsedExpiry.Year, parsedExpiry.Month, parsedExpiry.Day, 23, 59, 59, DateTimeKind.Local);
                 Expired = expiryEndOfDay < DateTime.Now;
                 if (Expired)
                     return false;
 
-                Licence = new Licence(
-                    ParseString(array, LicenceConstants.RegisteredTo),
-                    ParseString(array, LicenceConstants.Company),
-                    Licence.ParseLicenceType(ParseString(array, LicenceConstants.LicenceType)),
-                    ParseString(array, LicenceConstants.NumLicences),
+                license = new license(
+                    ParseString(array, licenseConstants.RegisteredTo),
+                    ParseString(array, licenseConstants.Company),
+                    license.ParselicenseType(ParseString(array, licenseConstants.licenseType)),
+                    ParseString(array, licenseConstants.Numlicenses),
                     expiryEndOfDay);
 
                 var foundSignature = false;
-                var sigUpperCase = LicenceConstants.Signature;
+                var sigUpperCase = licenseConstants.Signature;
                 var signature = new StringBuilder(1024);
                 foreach (var line in array)
                 {
@@ -7065,7 +7065,7 @@
                         foundSignature = true;
                 }
 
-                return _ds.VerifySignature(Licence.ToString(), Hex.HexToByteArray(signature.ToString().Trim()));
+                return _ds.VerifySignature(license.ToString(), Hex.HexToByteArray(signature.ToString().Trim()));
             }
             catch
             {
@@ -16028,14 +16028,14 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             }
         }
 
-        public void TrimForTrialLicence()
+        public void TrimForTriallicense()
         {
             // Mapping tables do not count
             const int n = 1 + 2 + 3 + 4;
-            TrimForLicence(n);
+            TrimForlicense(n);
         }
 
-        private void TrimForLicence(int n)
+        private void TrimForlicense(int n)
         {
             if (this.Count(x => !x.IsMapping) <= n)
                 return;

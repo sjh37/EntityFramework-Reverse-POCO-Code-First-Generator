@@ -4,39 +4,39 @@ using System.Linq;
 
 namespace Efrpg.Licensing
 {
-    public class Licence
+    public class license
     {
         public string      RegisteredTo { get; private set; }
         public string      Company      { get; private set; }
-        public LicenceType LicenceType  { get; private set; }
-        public string      NumLicences  { get; private set; }
+        public licenseType licenseType  { get; private set; }
+        public string      Numlicenses  { get; private set; }
         public DateTime    ValidUntil   { get; private set; }
 
-        public Licence(string registeredTo, string company, LicenceType licenceType, string numLicences, DateTime validUntil)
+        public license(string registeredTo, string company, licenseType licenseType, string numlicenses, DateTime validUntil)
         {
             RegisteredTo = registeredTo;
             Company      = company;
-            LicenceType  = licenceType;
-            NumLicences  = numLicences;
+            licenseType  = licenseType;
+            Numlicenses  = numlicenses;
             ValidUntil   = validUntil;
         }
 
-        public string GetLicenceType()
+        public string GetlicenseType()
         {
-            return GetLicenceType(LicenceType);
+            return GetlicenseType(licenseType);
         }
 
-        public static string GetLicenceType(LicenceType licenceType)
+        public static string GetlicenseType(licenseType licenseType)
         {
-            switch (licenceType)
+            switch (licenseType)
             {
-                case LicenceType.Academic:
+                case licenseType.Academic:
                     return "Academic license - for non-commercial use only";
 
-                case LicenceType.Commercial:
+                case licenseType.Commercial:
                     return "Commercial";
 
-                case LicenceType.Trial:
+                case licenseType.Trial:
                     return "Trial - for non-commercial trial use only";
 
                 default:
@@ -44,12 +44,12 @@ namespace Efrpg.Licensing
             }
         }
 
-        public static LicenceType ParseLicenceType(string licenceType)
+        public static licenseType ParselicenseType(string licenseType)
         {
-            licenceType = licenceType.Substring(0, 5);
-            foreach (var type in Enum.GetValues(typeof(LicenceType)).Cast<LicenceType>())
+            licenseType = licenseType.Substring(0, 5);
+            foreach (var type in Enum.GetValues(typeof(licenseType)).Cast<licenseType>())
             {
-                if (GetLicenceType(type).Substring(0, 5) == licenceType)
+                if (GetlicenseType(type).Substring(0, 5) == licenseType)
                     return type;
             }
             throw new ArgumentOutOfRangeException();
@@ -60,9 +60,9 @@ namespace Efrpg.Licensing
             return string.Format("{0}|{1}|{2}|{3}|{4}",
                 RegisteredTo.ToUpperInvariant().Trim(),
                 Company     .ToUpperInvariant().Trim(),
-                GetLicenceType(),
-                NumLicences .ToUpperInvariant().Trim(),
-                ValidUntil  .ToString(LicenceConstants.ExpiryFormat, CultureInfo.InvariantCulture).ToUpperInvariant());
+                GetlicenseType(),
+                Numlicenses .ToUpperInvariant().Trim(),
+                ValidUntil  .ToString(licenseConstants.ExpiryFormat, CultureInfo.InvariantCulture).ToUpperInvariant());
         }
     }
 }
