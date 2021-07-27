@@ -176,7 +176,10 @@ namespace Generator.Tests.Unit
             Settings.GenerateSeparateFiles = false;
             Settings.UseMappingTables = (templateType != TemplateType.EfCore2 && templateType != TemplateType.EfCore3);
             SetupSqlServer(database, connectionStringName, dbContextName, templateType, templateType == TemplateType.Ef6 ? GeneratorType.Ef6 : GeneratorType.EfCore, foreignKeyNamingStrategy);
-            //Settings.DisableGeographyTypes = true;
+            if(templateType == TemplateType.EfCore5) // Don't do all, as we want a mix of true/false for this field.
+                Settings.TrimCharFields = true;
+            else
+                Settings.TrimCharFields = false;
 
             Settings.Enumerations = new List<EnumerationSettings>
             {
