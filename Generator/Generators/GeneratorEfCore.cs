@@ -121,6 +121,11 @@ namespace Efrpg.Generators
                     else if (c.Precision > 0 && DatabaseReader.IsPrecisionType(c.SqlPropertyType))
                         sb.AppendFormat(".HasPrecision({0})", c.Precision);
                 }
+
+                if (Settings.TrimCharFields && c.MaxLength > 1 && c.SqlPropertyType == "char")
+                {
+                    sb.Append(".HasConversion(new ValueConverter<string, string>(v => v.TrimEnd(), v => v.TrimEnd()))");
+                }
             }
 
             sb.Append(c.IsNullable ? ".IsRequired(false)" : ".IsRequired()");

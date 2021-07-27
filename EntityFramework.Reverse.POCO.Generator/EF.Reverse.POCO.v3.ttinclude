@@ -86,6 +86,7 @@
         public static bool IncludeQueryTraceOn9481Flag              = false; // If SqlServer 2014 appears frozen / take a long time when this file is saved, try setting this to true (you will also need elevated privileges).
         public static bool UsePrivateSetterForComputedColumns       = true; // If the columns is computed, use a private setter.
         public static bool IncludeGeneratorVersionInCode            = false; // If true, will include the version number of the generator in the generated code
+        public static bool TrimCharFields                           = false; // EF Core option only. EF Core option only. If true, will TrimEnd() 'char' fields when read from the database.
         public static List<string> AdditionalNamespaces             = new List<string>(); // To include extra namespaces, include them here. i.e. "Microsoft.AspNet.Identity.EntityFramework"
         public static List<string> AdditionalContextInterfaceItems  = new List<string>(); //  example: "void SetAutoDetectChangesEnabled(bool flag);"
         public static List<string> AdditionalFileHeaderText         = new List<string>(); // This will put additional lines verbatim at the top of each file under the comments, 1 line per entry
@@ -5775,6 +5776,11 @@
                         sb.AppendFormat(".HasPrecision({0},{1})", c.Precision, c.Scale);
                     else if (c.Precision > 0 && DatabaseReader.IsPrecisionType(c.SqlPropertyType))
                         sb.AppendFormat(".HasPrecision({0})", c.Precision);
+                }
+
+                if (Settings.TrimCharFields && c.MaxLength > 1 && c.SqlPropertyType == "char")
+                {
+                    sb.Append(".HasConversion(new ValueConverter<string, string>(v => v.TrimEnd(), v => v.TrimEnd()))");
                 }
             }
 
@@ -18815,6 +18821,9 @@ using {{this}};{{#newline}}
             if (Settings.IncludeCodeGeneratedAttribute)
                 usings.Add("System.CodeDom.Compiler");
 
+            if (Settings.TrimCharFields)
+                usings.Add("Microsoft.EntityFrameworkCore.Storage.ValueConversion");
+
             return usings;
         }
 
@@ -20271,6 +20280,9 @@ using {{this}};{{#newline}}
             if (Settings.IncludeCodeGeneratedAttribute)
                 usings.Add("System.CodeDom.Compiler");
 
+            if (Settings.TrimCharFields)
+                usings.Add("Microsoft.EntityFrameworkCore.Storage.ValueConversion");
+
             return usings;
         }
 
@@ -21703,6 +21715,9 @@ using {{this}};{{#newline}}
 
             if (Settings.IncludeCodeGeneratedAttribute)
                 usings.Add("System.CodeDom.Compiler");
+
+            if (Settings.TrimCharFields)
+                usings.Add("Microsoft.EntityFrameworkCore.Storage.ValueConversion");
 
             return usings;
         }

@@ -26,6 +26,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Query.Internal;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -71,6 +72,7 @@ namespace Tester.Integration.EfCore3
         DbSet<BringTheAction> BringTheActions { get; set; } // BringTheAction
         DbSet<Burak1> Burak1 { get; set; } // Burak1
         DbSet<Burak2> Burak2 { get; set; } // Burak2
+        DbSet<CalculatedColumnNotNull> CalculatedColumnNotNulls { get; set; } // CalculatedColumnNotNull
         DbSet<Car> Cars { get; set; } // Car
         DbSet<CarToColour> CarToColours { get; set; } // CarToColour
         DbSet<ClientCreationState> ClientCreationStates { get; set; } // ClientCreationState
@@ -374,6 +376,7 @@ namespace Tester.Integration.EfCore3
         public DbSet<BringTheAction> BringTheActions { get; set; } // BringTheAction
         public DbSet<Burak1> Burak1 { get; set; } // Burak1
         public DbSet<Burak2> Burak2 { get; set; } // Burak2
+        public DbSet<CalculatedColumnNotNull> CalculatedColumnNotNulls { get; set; } // CalculatedColumnNotNull
         public DbSet<Car> Cars { get; set; } // Car
         public DbSet<CarToColour> CarToColours { get; set; } // CarToColour
         public DbSet<ClientCreationState> ClientCreationStates { get; set; } // ClientCreationState
@@ -497,6 +500,7 @@ namespace Tester.Integration.EfCore3
             modelBuilder.ApplyConfiguration(new BringTheActionConfiguration());
             modelBuilder.ApplyConfiguration(new Burak1Configuration());
             modelBuilder.ApplyConfiguration(new Burak2Configuration());
+            modelBuilder.ApplyConfiguration(new CalculatedColumnNotNullConfiguration());
             modelBuilder.ApplyConfiguration(new CarConfiguration());
             modelBuilder.ApplyConfiguration(new CarToColourConfiguration());
             modelBuilder.ApplyConfiguration(new ClientCreationStateConfiguration());
@@ -1601,6 +1605,7 @@ namespace Tester.Integration.EfCore3
         public DbSet<BringTheAction> BringTheActions { get; set; } // BringTheAction
         public DbSet<Burak1> Burak1 { get; set; } // Burak1
         public DbSet<Burak2> Burak2 { get; set; } // Burak2
+        public DbSet<CalculatedColumnNotNull> CalculatedColumnNotNulls { get; set; } // CalculatedColumnNotNull
         public DbSet<Car> Cars { get; set; } // Car
         public DbSet<CarToColour> CarToColours { get; set; } // CarToColour
         public DbSet<ClientCreationState> ClientCreationStates { get; set; } // ClientCreationState
@@ -1700,6 +1705,7 @@ namespace Tester.Integration.EfCore3
             BringTheActions = new FakeDbSet<BringTheAction>("C36");
             Burak1 = new FakeDbSet<Burak1>("Id");
             Burak2 = new FakeDbSet<Burak2>("Id");
+            CalculatedColumnNotNulls = new FakeDbSet<CalculatedColumnNotNull>("Id");
             Cars = new FakeDbSet<Car>("Id");
             CarToColours = new FakeDbSet<CarToColour>("CarId", "ColourId");
             ClientCreationStates = new FakeDbSet<ClientCreationState>("Id");
@@ -3365,6 +3371,15 @@ namespace Tester.Integration.EfCore3
         public virtual Burak1 Burak1_IdT { get; set; } // Burak1.FK_Burak_Test1
     }
 
+    // CalculatedColumnNotNull
+    public class CalculatedColumnNotNull
+    {
+        public int Id { get; set; } // ID (Primary key)
+        public byte Type { get; set; } // Type
+        public bool IsCalendar { get; private set; } // IsCalendar
+        public bool IsUtilization { get; private set; } // IsUtilization
+    }
+
     // Car
     public class Car
     {
@@ -4976,6 +4991,21 @@ namespace Tester.Integration.EfCore3
         }
     }
 
+    // CalculatedColumnNotNull
+    public class CalculatedColumnNotNullConfiguration : IEntityTypeConfiguration<CalculatedColumnNotNull>
+    {
+        public void Configure(EntityTypeBuilder<CalculatedColumnNotNull> builder)
+        {
+            builder.ToTable("CalculatedColumnNotNull", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK_CalculatedColumnNotNull");
+
+            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Type).HasColumnName(@"Type").HasColumnType("tinyint").IsRequired();
+            builder.Property(x => x.IsCalendar).HasColumnName(@"IsCalendar").HasColumnType("bit").IsRequired().ValueGeneratedOnAddOrUpdate();
+            builder.Property(x => x.IsUtilization).HasColumnName(@"IsUtilization").HasColumnType("bit").IsRequired().ValueGeneratedOnAddOrUpdate();
+        }
+    }
+
     // Car
     public class CarConfiguration : IEntityTypeConfiguration<Car>
     {
@@ -5266,7 +5296,7 @@ namespace Tester.Integration.EfCore3
             builder.Property(x => x.DomainCatalog).HasColumnName(@"DOMAIN_CATALOG").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
             builder.Property(x => x.DomainSchema).HasColumnName(@"DOMAIN_SCHEMA").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
             builder.Property(x => x.DomainName).HasColumnName(@"DOMAIN_NAME").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
-            builder.Property(x => x.Type).HasColumnName(@"TYPE").HasColumnType("char(2)").IsRequired(false).IsFixedLength().IsUnicode(false).HasMaxLength(2);
+            builder.Property(x => x.Type).HasColumnName(@"TYPE").HasColumnType("char(2)").HasConversion(new ValueConverter<string, string>(v => v.TrimEnd(), v => v.TrimEnd())).IsRequired(false).IsFixedLength().IsUnicode(false).HasMaxLength(2);
         }
     }
 

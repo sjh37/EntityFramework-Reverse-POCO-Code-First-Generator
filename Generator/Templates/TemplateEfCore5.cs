@@ -1320,6 +1320,9 @@ using {{this}};{{#newline}}
             if (Settings.IncludeCodeGeneratedAttribute)
                 usings.Add("System.CodeDom.Compiler");
 
+            if (Settings.TrimCharFields)
+                usings.Add("Microsoft.EntityFrameworkCore.Storage.ValueConversion");
+
             return usings;
         }
 
