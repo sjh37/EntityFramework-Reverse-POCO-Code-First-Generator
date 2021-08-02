@@ -138,7 +138,7 @@ namespace Efrpg
         // Schema *****************************************************************************************************************************
         // If there are multiple schemas, then the table name is prefixed with the schema, except for dbo.
         // Ie. dbo.hello will be Hello.
-        //     abc.hello will be AbcHello.
+        //     abc.hello will be Abc_Hello.
         public static bool   PrependSchemaName = true; // Control if the schema name is prepended to the table name
         public static string DefaultSchema     = null; // Set via DatabaseReader.DefaultSchema()
         public static string DefaultCollation  = null; // Set via DatabaseReader.DefaultCollation()
