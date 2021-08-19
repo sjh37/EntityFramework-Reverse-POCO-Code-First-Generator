@@ -17,19 +17,19 @@ namespace Efrpg.TemplateModels
         public string setInitializer                                         { get; set; }
         public bool DbContextClassIsPartial                                  { get; set; }
         public bool SqlCe                                                    { get; set; }
-        public List<TableTemplateData> tables                                { get; set; }
+        public List<TableTemplateData>                                       tables                                { get; set; }
         public bool hasTables                                                { get; set; }
         public List<string> indexes                                          { get; set; }
         public bool hasIndexes                                               { get; set; }
-        public List<StoredProcTemplateData> storedProcs                      { get; set; }
+        public List<StoredProcTemplateData>                                  storedProcs                      { get; set; }
         public bool hasStoredProcs                                           { get; set; }
         public List<string> tableValuedFunctionComplexTypes                  { get; set; }
         public bool hasTableValuedFunctionComplexTypes                       { get; set; }
         public List<string> AdditionalContextInterfaceItems                  { get; set; }
         public bool addSaveChanges                                           { get; set; }
-        public List<TableValuedFunctionsTemplateData> tableValuedFunctions   { get; set; }
-        public List<ScalarValuedFunctionsTemplateData> scalarValuedFunctions { get; set; }
-        public List<RawSequence> Sequences                                   { get; set; }
+        public List<TableValuedFunctionsTemplateData>                        tableValuedFunctions   { get; set; }
+        public List<ScalarValuedFunctionsTemplateData>                       scalarValuedFunctions { get; set; }
+        public List<RawSequence>                                             Sequences                                   { get; set; }
         public bool hasSequences                                             { get; set; }
         public bool hasTableValuedFunctions                                  { get; set; }
         public bool hasScalarValuedFunctions                                 { get; set; }
@@ -45,5 +45,6 @@ namespace Efrpg.TemplateModels
         public bool OnConfigurationUsesConfiguration                         { get; set; }
         public bool OnConfigurationUsesConnectionString                      { get; set; }
         public string DefaultSchema                                          { get; set; }
+        public string UseDatabaseProvider                                    { get; set; }
     }
 }

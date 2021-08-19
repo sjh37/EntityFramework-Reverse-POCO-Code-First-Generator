@@ -336,7 +336,23 @@ namespace Efrpg.Generators
                 OnConfigurationUsesConfiguration       = Settings.OnConfiguration == OnConfiguration.Configuration,
                 OnConfigurationUsesConnectionString    = Settings.OnConfiguration == OnConfiguration.ConnectionString,
                 DefaultSchema                          = Settings.DefaultSchema,
+                UseDatabaseProvider                    = "UseSqlServer",
             };
+
+            switch (Settings.DatabaseType)
+            {
+                case DatabaseType.PostgreSQL:
+                    data.UseDatabaseProvider = "UseNpgsql";
+                    break;
+                
+                case DatabaseType.MySql:
+                    data.UseDatabaseProvider = "UseMySql";
+                    break;
+                
+                case DatabaseType.Oracle:
+                    data.UseDatabaseProvider = "UseOracle";
+                    break;
+            }
 
             var co = new CodeOutput(string.Empty, filename, "Database context", _globalUsings);
             co.AddUsings(_template.DatabaseContextUsings(data));

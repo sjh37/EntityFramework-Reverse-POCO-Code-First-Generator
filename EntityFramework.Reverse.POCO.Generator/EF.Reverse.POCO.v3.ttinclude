@@ -3421,7 +3421,23 @@
                 OnConfigurationUsesConfiguration       = Settings.OnConfiguration == OnConfiguration.Configuration,
                 OnConfigurationUsesConnectionString    = Settings.OnConfiguration == OnConfiguration.ConnectionString,
                 DefaultSchema                          = Settings.DefaultSchema,
+                UseDatabaseProvider                    = "UseSqlServer",
             };
+
+            switch (Settings.DatabaseType)
+            {
+                case DatabaseType.PostgreSQL:
+                    data.UseDatabaseProvider = "UseNpgsql";
+                    break;
+                
+                case DatabaseType.MySql:
+                    data.UseDatabaseProvider = "UseMySql";
+                    break;
+                
+                case DatabaseType.Oracle:
+                    data.UseDatabaseProvider = "UseOracle";
+                    break;
+            }
 
             var co = new CodeOutput(string.Empty, filename, "Database context", _globalUsings);
             co.AddUsings(_template.DatabaseContextUsings(data));
@@ -16077,19 +16093,19 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public string setInitializer                                         { get; set; }
         public bool DbContextClassIsPartial                                  { get; set; }
         public bool SqlCe                                                    { get; set; }
-        public List<TableTemplateData> tables                                { get; set; }
+        public List<TableTemplateData>                                       tables                                { get; set; }
         public bool hasTables                                                { get; set; }
         public List<string> indexes                                          { get; set; }
         public bool hasIndexes                                               { get; set; }
-        public List<StoredProcTemplateData> storedProcs                      { get; set; }
+        public List<StoredProcTemplateData>                                  storedProcs                      { get; set; }
         public bool hasStoredProcs                                           { get; set; }
         public List<string> tableValuedFunctionComplexTypes                  { get; set; }
         public bool hasTableValuedFunctionComplexTypes                       { get; set; }
         public List<string> AdditionalContextInterfaceItems                  { get; set; }
         public bool addSaveChanges                                           { get; set; }
-        public List<TableValuedFunctionsTemplateData> tableValuedFunctions   { get; set; }
-        public List<ScalarValuedFunctionsTemplateData> scalarValuedFunctions { get; set; }
-        public List<RawSequence> Sequences                                   { get; set; }
+        public List<TableValuedFunctionsTemplateData>                        tableValuedFunctions   { get; set; }
+        public List<ScalarValuedFunctionsTemplateData>                       scalarValuedFunctions { get; set; }
+        public List<RawSequence>                                             Sequences                                   { get; set; }
         public bool hasSequences                                             { get; set; }
         public bool hasTableValuedFunctions                                  { get; set; }
         public bool hasScalarValuedFunctions                                 { get; set; }
@@ -16105,6 +16121,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public bool OnConfigurationUsesConfiguration                         { get; set; }
         public bool OnConfigurationUsesConnectionString                      { get; set; }
         public string DefaultSchema                                          { get; set; }
+        public string UseDatabaseProvider                                    { get; set; }
     }
     public class FactoryModel
     {
@@ -17831,7 +17848,7 @@ using {{this}};{{#newline}}
     {{{#newline}}
         if (!optionsBuilder.IsConfigured && _configuration != null){{#newline}}
         {{{#newline}}
-            optionsBuilder.UseSqlServer(_configuration.GetConnectionString(@""{{ConnectionStringName}}""){{ConnectionStringActions}});{{#newline}}
+            optionsBuilder.{{UseDatabaseProvider}}(_configuration.GetConnectionString(@""{{ConnectionStringName}}""){{ConnectionStringActions}});{{#newline}}
         }{{#newline}}
     }{{#newline}}{{#newline}}
 {{/if}}
@@ -18942,6 +18959,8 @@ public enum {{EnumName}}{{#newline}}
         }
     }
 
+    using System;
+
     /// <summary>
     /// {{Mustache}} template documentation available at https://github.com/jehugaleahsa/mustache-sharp
     /// </summary>
@@ -19108,12 +19127,26 @@ using {{this}};{{#newline}}
             {
                 "System",
                 "System.Data",
-                "Microsoft.Data.SqlClient",
                 "System.Data.SqlTypes",
                 "Microsoft.EntityFrameworkCore",
                 "System.Threading.Tasks",
                 "System.Threading"
             };
+            
+            switch(Settings.DatabaseType)
+            {
+                case DatabaseType.SqlServer:
+                case DatabaseType.SqlCe:
+                case DatabaseType.Plugin:
+                    usings.Add("Microsoft.Data.SqlClient");
+                    break;
+                case DatabaseType.PostgreSQL:
+                    break;
+                case DatabaseType.MySql:
+                    break;
+                case DatabaseType.Oracle:
+                    break;
+            }
 
             if (Settings.IncludeCodeGeneratedAttribute)
                 usings.Add("System.CodeDom.Compiler");
@@ -19184,7 +19217,7 @@ using {{this}};{{#newline}}
     {{{#newline}}
         if (!optionsBuilder.IsConfigured && _configuration != null){{#newline}}
         {{{#newline}}
-            optionsBuilder.UseSqlServer(_configuration.GetConnectionString(@""{{ConnectionStringName}}""){{ConnectionStringActions}});{{#newline}}
+            optionsBuilder.{{UseDatabaseProvider}}(_configuration.GetConnectionString(@""{{ConnectionStringName}}""){{ConnectionStringActions}});{{#newline}}
         }{{#newline}}
     }{{#newline}}{{#newline}}
 {{/if}}
@@ -20401,6 +20434,8 @@ public enum {{EnumName}}{{#newline}}
         }
     }
 
+    using System;
+
     /// <summary>
     /// {{Mustache}} template documentation available at https://github.com/jehugaleahsa/mustache-sharp
     /// </summary>
@@ -20571,12 +20606,26 @@ using {{this}};{{#newline}}
             {
                 "System",
                 "System.Data",
-                "Microsoft.Data.SqlClient",
                 "System.Data.SqlTypes",
                 "Microsoft.EntityFrameworkCore",
                 "System.Threading.Tasks",
                 "System.Threading"
             };
+
+            switch (Settings.DatabaseType)
+            {
+                case DatabaseType.SqlServer:
+                case DatabaseType.SqlCe:
+                case DatabaseType.Plugin:
+                    usings.Add("Microsoft.Data.SqlClient");
+                    break;
+                case DatabaseType.PostgreSQL:
+                    break;
+                case DatabaseType.MySql:
+                    break;
+                case DatabaseType.Oracle:
+                    break;
+            }
 
             if (Settings.IncludeCodeGeneratedAttribute)
                 usings.Add("System.CodeDom.Compiler");
@@ -20647,7 +20696,7 @@ using {{this}};{{#newline}}
     {{{#newline}}
         if (!optionsBuilder.IsConfigured && _configuration != null){{#newline}}
         {{{#newline}}
-            optionsBuilder.UseSqlServer(_configuration.GetConnectionString(@""{{ConnectionStringName}}""){{ConnectionStringActions}});{{#newline}}
+            optionsBuilder.{{UseDatabaseProvider}}(_configuration.GetConnectionString(@""{{ConnectionStringName}}""){{ConnectionStringActions}});{{#newline}}
         }{{#newline}}
     }{{#newline}}{{#newline}}
 {{/if}}
