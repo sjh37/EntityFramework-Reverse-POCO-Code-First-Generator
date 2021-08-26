@@ -257,7 +257,7 @@ using {{this}};{{#newline}}
     {{{#newline}}
         if (!optionsBuilder.IsConfigured){{#newline}}
         {{{#newline}}
-            optionsBuilder.UseSqlServer(@""{{ConnectionString}}""{{ConnectionStringActions}});{{#newline}}
+            optionsBuilder.{{UseDatabaseProvider}}(@""{{ConnectionString}}""{{ConnectionStringActions}});{{#newline}}
         }{{#newline}}
     }{{#newline}}{{#newline}}
 {{/if}}

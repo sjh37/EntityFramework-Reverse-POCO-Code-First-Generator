@@ -5,8 +5,6 @@ using Efrpg.TemplateModels;
 
 namespace Efrpg.Templates
 {
-    using System;
-
     /// <summary>
     /// {{Mustache}} template documentation available at https://github.com/jehugaleahsa/mustache-sharp
     /// </summary>
@@ -277,7 +275,7 @@ using {{this}};{{#newline}}
     {{{#newline}}
         if (!optionsBuilder.IsConfigured){{#newline}}
         {{{#newline}}
-            optionsBuilder.UseSqlServer(@""{{ConnectionString}}""{{ConnectionStringActions}});{{#newline}}
+            optionsBuilder.{{UseDatabaseProvider}}(@""{{ConnectionString}}""{{ConnectionStringActions}});{{#newline}}
         }{{#newline}}
     }{{#newline}}{{#newline}}
 {{/if}}
