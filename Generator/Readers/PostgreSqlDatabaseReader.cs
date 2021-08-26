@@ -20,7 +20,8 @@ namespace Efrpg.Readers
         protected override string TableSQL()
         {
             return @"
-SELECT  T.TABLE_SCHEMA AS ""SchemaName"",
+SELECT  DISTINCT
+        T.TABLE_SCHEMA AS ""SchemaName"",
         T.TABLE_NAME AS ""TableName"",
         T.TABLE_TYPE AS ""TableType"",
         CAST(0 AS SMALLINT) AS ""TableTemporalType"",
@@ -66,7 +67,7 @@ FROM    INFORMATION_SCHEMA.TABLES T
 WHERE   (LOWER(T.TABLE_TYPE) = 'base table' OR LOWER(T.TABLE_TYPE) = 'view')
         AND (LOWER(T.TABLE_SCHEMA) NOT IN ('pg_catalog', 'information_schema'))
         AND (LOWER(T.TABLE_NAME) NOT IN ('edmmetadata', '__migrationhistory', '__efmigrationshistory', '__refactorlog'))
-ORDER BY C.TABLE_NAME, C.COLUMN_NAME, C.ORDINAL_POSITION;";
+ORDER BY T.TABLE_NAME, C.COLUMN_NAME, C.ORDINAL_POSITION;";
         }
 
         protected override string ForeignKeySQL()
