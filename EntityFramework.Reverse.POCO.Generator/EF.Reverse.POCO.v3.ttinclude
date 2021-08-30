@@ -623,6 +623,42 @@
             }
         }
 
+        public static string DatabaseProvider()
+        {
+            switch (DatabaseType)
+            {
+                case DatabaseType.PostgreSQL:
+                    return "UseNpgsql";
+
+                case DatabaseType.MySql:
+                    return "UseMySql";
+
+                case DatabaseType.Oracle:
+                    return "UseOracle";
+
+                default:
+                    return "UseSqlServer";
+            }
+        }
+        
+        public static string SqlParameter()
+        {
+            switch (DatabaseType)
+            {
+                case DatabaseType.PostgreSQL:
+                    return "NpgsqlParameter";
+
+                case DatabaseType.MySql:
+                    return "MySqlParameter";
+
+                case DatabaseType.Oracle:
+                    return "OracleParameter";
+
+                default:
+                    return "SqlParameter";
+            }
+        }
+
         public static string Root;
         public static string TemplateFile;
         public static int FilterCount;
@@ -3378,7 +3414,6 @@
             }
 
             var isEfCore3Plus = Settings.IsEfCore3Plus();
-            var isEfCore5Plus = Settings.IsEfCore5Plus();
 
             var data = new ContextModel
             {
@@ -3421,23 +3456,9 @@
                 OnConfigurationUsesConfiguration       = Settings.OnConfiguration == OnConfiguration.Configuration,
                 OnConfigurationUsesConnectionString    = Settings.OnConfiguration == OnConfiguration.ConnectionString,
                 DefaultSchema                          = Settings.DefaultSchema,
-                UseDatabaseProvider                    = "UseSqlServer",
+                UseDatabaseProvider                    = Settings.DatabaseProvider(),
+                SqlParameter                           = Settings.SqlParameter(),
             };
-
-            switch (Settings.DatabaseType)
-            {
-                case DatabaseType.PostgreSQL:
-                    data.UseDatabaseProvider = "UseNpgsql";
-                    break;
-                
-                case DatabaseType.MySql:
-                    data.UseDatabaseProvider = "UseMySql";
-                    break;
-                
-                case DatabaseType.Oracle:
-                    data.UseDatabaseProvider = "UseOracle";
-                    break;
-            }
 
             var co = new CodeOutput(string.Empty, filename, "Database context", _globalUsings);
             co.AddUsings(_template.DatabaseContextUsings(data));
@@ -15429,7 +15450,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 var isGeography = p.PropertyType == "DbGeography";
 
                 sb.AppendLine(
-                    string.Format("        var {0} = new SqlParameter", WriteStoredProcSqlParameterName(p))
+                    string.Format("        var {0} = new {1}", WriteStoredProcSqlParameterName(p), Settings.SqlParameter())
                     + string.Format(" {{ ParameterName = \"{0}\", ", p.Name)
                     + (isGeography ? "UdtTypeName = \"geography\"" : string.Format("SqlDbType = SqlDbType.{0}", p.SqlDbType))
                     + ", Direction = ParameterDirection."
@@ -15456,8 +15477,9 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
             if (includeProcResult && ReturnModels.Count < 2)
             {
-                sb.AppendLine(
-                    "        var procResultParam = new SqlParameter { ParameterName = \"@procResult\", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };");
+                sb.Append("        var procResultParam = new ");
+                sb.Append(Settings.SqlParameter());
+                sb.AppendLine(" { ParameterName = \"@procResult\", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };");
             }
 
             return sb.ToString();
@@ -16123,6 +16145,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public bool OnConfigurationUsesConnectionString                      { get; set; }
         public string DefaultSchema                                          { get; set; }
         public string UseDatabaseProvider                                    { get; set; }
+        public string SqlParameter                                           { get; set; }
     }
     public class FactoryModel
     {
@@ -16577,7 +16600,7 @@ using {{this}};{{#newline}}
 {{#newline}}
 
 
-    public bool IsSqlParameterNull(SqlParameter param){{#newline}}
+    public bool IsSqlParameterNull({{SqlParameter}} param){{#newline}}
     {{{#newline}}
         var sqlValue = param.SqlValue;{{#newline}}
         var nullableValue = sqlValue as INullable;{{#newline}}
@@ -17865,7 +17888,7 @@ using {{this}};{{#newline}}
 {{/if}}
 
 
-    public bool IsSqlParameterNull(SqlParameter param){{#newline}}
+    public bool IsSqlParameterNull({{SqlParameter}} param){{#newline}}
     {{{#newline}}
         var sqlValue = param.SqlValue;{{#newline}}
         var nullableValue = sqlValue as INullable;{{#newline}}
@@ -19232,7 +19255,7 @@ using {{this}};{{#newline}}
 {{/if}}
 
 
-    public bool IsSqlParameterNull(SqlParameter param){{#newline}}
+    public bool IsSqlParameterNull({{SqlParameter}} param){{#newline}}
     {{{#newline}}
         var sqlValue = param.SqlValue;{{#newline}}
         var nullableValue = sqlValue as INullable;{{#newline}}
@@ -20709,7 +20732,7 @@ using {{this}};{{#newline}}
 {{/if}}
 
 
-    public bool IsSqlParameterNull(SqlParameter param){{#newline}}
+    public bool IsSqlParameterNull({{SqlParameter}} param){{#newline}}
     {{{#newline}}
         var sqlValue = param.SqlValue;{{#newline}}
         var nullableValue = sqlValue as INullable;{{#newline}}

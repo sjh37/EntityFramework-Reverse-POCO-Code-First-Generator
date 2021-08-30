@@ -46,5 +46,6 @@ namespace Efrpg.TemplateModels
         public bool OnConfigurationUsesConnectionString                      { get; set; }
         public string DefaultSchema                                          { get; set; }
         public string UseDatabaseProvider                                    { get; set; }
+        public string SqlParameter                                           { get; set; }
     }
 }

@@ -277,7 +277,7 @@ using {{this}};{{#newline}}
 {{/if}}
 
 
-    public bool IsSqlParameterNull(SqlParameter param){{#newline}}
+    public bool IsSqlParameterNull({{SqlParameter}} param){{#newline}}
     {{{#newline}}
         var sqlValue = param.SqlValue;{{#newline}}
         var nullableValue = sqlValue as INullable;{{#newline}}

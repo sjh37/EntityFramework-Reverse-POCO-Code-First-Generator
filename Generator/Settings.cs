@@ -597,6 +597,42 @@ namespace Efrpg
             }
         }
 
+        public static string DatabaseProvider()
+        {
+            switch (DatabaseType)
+            {
+                case DatabaseType.PostgreSQL:
+                    return "UseNpgsql";
+
+                case DatabaseType.MySql:
+                    return "UseMySql";
+
+                case DatabaseType.Oracle:
+                    return "UseOracle";
+
+                default:
+                    return "UseSqlServer";
+            }
+        }
+        
+        public static string SqlParameter()
+        {
+            switch (DatabaseType)
+            {
+                case DatabaseType.PostgreSQL:
+                    return "NpgsqlParameter";
+
+                case DatabaseType.MySql:
+                    return "MySqlParameter";
+
+                case DatabaseType.Oracle:
+                    return "OracleParameter";
+
+                default:
+                    return "SqlParameter";
+            }
+        }
+
         public static string Root;
         public static string TemplateFile;
         public static int FilterCount;
