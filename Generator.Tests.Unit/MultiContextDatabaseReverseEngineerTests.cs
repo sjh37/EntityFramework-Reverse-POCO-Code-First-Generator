@@ -62,6 +62,7 @@ namespace Generator.Tests.Unit
             var outer          = new GeneratedTextTransformation();
             var fileManagement = new FileManagementService(outer);
             var generator      = GeneratorFactory.Create(fileManagement, fileManagerType);
+            Assert.IsNotNull(generator);
 
             List<MultiContextSettings> multiDbSettings;
             if (string.IsNullOrWhiteSpace(Settings.MultiContextSettingsPlugin))
@@ -74,7 +75,9 @@ namespace Generator.Tests.Unit
                 multiDbSettings = plugin.ReadSettings();
             }
 
-            var keys = generator.FilterList.GetFilters().Select(x => x.Key).ToArray();
+            var filters = generator.FilterList.GetFilters();
+            Assert.IsNotNull(filters);
+            var keys = filters.Select(x => x.Key).ToArray();
             _generatedFileNames = keys.Select(x => $"{filename}_{Settings.DatabaseType}_{Settings.TemplateType}_{x}.cs").ToArray();
             _generatedFullPaths = _generatedFileNames.Select(x => Path.Combine(path, x)).ToArray();
 
