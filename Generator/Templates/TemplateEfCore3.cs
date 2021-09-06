@@ -171,12 +171,26 @@ using {{this}};{{#newline}}
             {
                 "System",
                 "System.Data",
-                "Microsoft.Data.SqlClient",
                 "System.Data.SqlTypes",
                 "Microsoft.EntityFrameworkCore",
                 "System.Threading.Tasks",
                 "System.Threading"
             };
+            
+            switch(Settings.DatabaseType)
+            {
+                case DatabaseType.SqlServer:
+                case DatabaseType.SqlCe:
+                case DatabaseType.Plugin:
+                    usings.Add("Microsoft.Data.SqlClient");
+                    break;
+                case DatabaseType.PostgreSQL:
+                    break;
+                case DatabaseType.MySql:
+                    break;
+                case DatabaseType.Oracle:
+                    break;
+            }
 
             if (Settings.IncludeCodeGeneratedAttribute)
                 usings.Add("System.CodeDom.Compiler");
@@ -247,7 +261,7 @@ using {{this}};{{#newline}}
     {{{#newline}}
         if (!optionsBuilder.IsConfigured && _configuration != null){{#newline}}
         {{{#newline}}
-            optionsBuilder.UseSqlServer(_configuration.GetConnectionString(@""{{ConnectionStringName}}""){{ConnectionStringActions}});{{#newline}}
+            optionsBuilder.{{UseDatabaseProvider}}(_configuration.GetConnectionString(@""{{ConnectionStringName}}""){{ConnectionStringActions}});{{#newline}}
         }{{#newline}}
     }{{#newline}}{{#newline}}
 {{/if}}
@@ -257,13 +271,13 @@ using {{this}};{{#newline}}
     {{{#newline}}
         if (!optionsBuilder.IsConfigured){{#newline}}
         {{{#newline}}
-            optionsBuilder.UseSqlServer(@""{{ConnectionString}}""{{ConnectionStringActions}});{{#newline}}
+            optionsBuilder.{{UseDatabaseProvider}}(@""{{ConnectionString}}""{{ConnectionStringActions}});{{#newline}}
         }{{#newline}}
     }{{#newline}}{{#newline}}
 {{/if}}
 
 
-    public bool IsSqlParameterNull(SqlParameter param){{#newline}}
+    public bool IsSqlParameterNull({{SqlParameter}} param){{#newline}}
     {{{#newline}}
         var sqlValue = param.SqlValue;{{#newline}}
         var nullableValue = sqlValue as INullable;{{#newline}}

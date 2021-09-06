@@ -623,6 +623,42 @@
             }
         }
 
+        public static string DatabaseProvider()
+        {
+            switch (DatabaseType)
+            {
+                case DatabaseType.PostgreSQL:
+                    return "UseNpgsql";
+
+                case DatabaseType.MySql:
+                    return "UseMySql";
+
+                case DatabaseType.Oracle:
+                    return "UseOracle";
+
+                default:
+                    return "UseSqlServer";
+            }
+        }
+        
+        public static string SqlParameter()
+        {
+            switch (DatabaseType)
+            {
+                case DatabaseType.PostgreSQL:
+                    return "NpgsqlParameter";
+
+                case DatabaseType.MySql:
+                    return "MySqlParameter";
+
+                case DatabaseType.Oracle:
+                    return "OracleParameter";
+
+                default:
+                    return "SqlParameter";
+            }
+        }
+
         public static string Root;
         public static string TemplateFile;
         public static int FilterCount;
@@ -3378,7 +3414,6 @@
             }
 
             var isEfCore3Plus = Settings.IsEfCore3Plus();
-            var isEfCore5Plus = Settings.IsEfCore5Plus();
 
             var data = new ContextModel
             {
@@ -3421,6 +3456,8 @@
                 OnConfigurationUsesConfiguration       = Settings.OnConfiguration == OnConfiguration.Configuration,
                 OnConfigurationUsesConnectionString    = Settings.OnConfiguration == OnConfiguration.ConnectionString,
                 DefaultSchema                          = Settings.DefaultSchema,
+                UseDatabaseProvider                    = Settings.DatabaseProvider(),
+                SqlParameter                           = Settings.SqlParameter(),
             };
 
             var co = new CodeOutput(string.Empty, filename, "Database context", _globalUsings);
@@ -15413,7 +15450,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 var isGeography = p.PropertyType == "DbGeography";
 
                 sb.AppendLine(
-                    string.Format("        var {0} = new SqlParameter", WriteStoredProcSqlParameterName(p))
+                    string.Format("        var {0} = new {1}", WriteStoredProcSqlParameterName(p), Settings.SqlParameter())
                     + string.Format(" {{ ParameterName = \"{0}\", ", p.Name)
                     + (isGeography ? "UdtTypeName = \"geography\"" : string.Format("SqlDbType = SqlDbType.{0}", p.SqlDbType))
                     + ", Direction = ParameterDirection."
@@ -15440,8 +15477,9 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
             if (includeProcResult && ReturnModels.Count < 2)
             {
-                sb.AppendLine(
-                    "        var procResultParam = new SqlParameter { ParameterName = \"@procResult\", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };");
+                sb.Append("        var procResultParam = new ");
+                sb.Append(Settings.SqlParameter());
+                sb.AppendLine(" { ParameterName = \"@procResult\", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };");
             }
 
             return sb.ToString();
@@ -16106,6 +16144,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public bool OnConfigurationUsesConfiguration                         { get; set; }
         public bool OnConfigurationUsesConnectionString                      { get; set; }
         public string DefaultSchema                                          { get; set; }
+        public string UseDatabaseProvider                                    { get; set; }
+        public string SqlParameter                                           { get; set; }
     }
     public class FactoryModel
     {
@@ -16560,7 +16600,7 @@ using {{this}};{{#newline}}
 {{#newline}}
 
 
-    public bool IsSqlParameterNull(SqlParameter param){{#newline}}
+    public bool IsSqlParameterNull({{SqlParameter}} param){{#newline}}
     {{{#newline}}
         var sqlValue = param.SqlValue;{{#newline}}
         var nullableValue = sqlValue as INullable;{{#newline}}
@@ -17832,7 +17872,7 @@ using {{this}};{{#newline}}
     {{{#newline}}
         if (!optionsBuilder.IsConfigured && _configuration != null){{#newline}}
         {{{#newline}}
-            optionsBuilder.UseSqlServer(_configuration.GetConnectionString(@""{{ConnectionStringName}}""){{ConnectionStringActions}});{{#newline}}
+            optionsBuilder.{{UseDatabaseProvider}}(_configuration.GetConnectionString(@""{{ConnectionStringName}}""){{ConnectionStringActions}});{{#newline}}
         }{{#newline}}
     }{{#newline}}{{#newline}}
 {{/if}}
@@ -17842,13 +17882,13 @@ using {{this}};{{#newline}}
     {{{#newline}}
         if (!optionsBuilder.IsConfigured){{#newline}}
         {{{#newline}}
-            optionsBuilder.UseSqlServer(@""{{ConnectionString}}""{{ConnectionStringActions}});{{#newline}}
+            optionsBuilder.{{UseDatabaseProvider}}(@""{{ConnectionString}}""{{ConnectionStringActions}});{{#newline}}
         }{{#newline}}
     }{{#newline}}{{#newline}}
 {{/if}}
 
 
-    public bool IsSqlParameterNull(SqlParameter param){{#newline}}
+    public bool IsSqlParameterNull({{SqlParameter}} param){{#newline}}
     {{{#newline}}
         var sqlValue = param.SqlValue;{{#newline}}
         var nullableValue = sqlValue as INullable;{{#newline}}
@@ -19109,12 +19149,26 @@ using {{this}};{{#newline}}
             {
                 "System",
                 "System.Data",
-                "Microsoft.Data.SqlClient",
                 "System.Data.SqlTypes",
                 "Microsoft.EntityFrameworkCore",
                 "System.Threading.Tasks",
                 "System.Threading"
             };
+            
+            switch(Settings.DatabaseType)
+            {
+                case DatabaseType.SqlServer:
+                case DatabaseType.SqlCe:
+                case DatabaseType.Plugin:
+                    usings.Add("Microsoft.Data.SqlClient");
+                    break;
+                case DatabaseType.PostgreSQL:
+                    break;
+                case DatabaseType.MySql:
+                    break;
+                case DatabaseType.Oracle:
+                    break;
+            }
 
             if (Settings.IncludeCodeGeneratedAttribute)
                 usings.Add("System.CodeDom.Compiler");
@@ -19185,7 +19239,7 @@ using {{this}};{{#newline}}
     {{{#newline}}
         if (!optionsBuilder.IsConfigured && _configuration != null){{#newline}}
         {{{#newline}}
-            optionsBuilder.UseSqlServer(_configuration.GetConnectionString(@""{{ConnectionStringName}}""){{ConnectionStringActions}});{{#newline}}
+            optionsBuilder.{{UseDatabaseProvider}}(_configuration.GetConnectionString(@""{{ConnectionStringName}}""){{ConnectionStringActions}});{{#newline}}
         }{{#newline}}
     }{{#newline}}{{#newline}}
 {{/if}}
@@ -19195,13 +19249,13 @@ using {{this}};{{#newline}}
     {{{#newline}}
         if (!optionsBuilder.IsConfigured){{#newline}}
         {{{#newline}}
-            optionsBuilder.UseSqlServer(@""{{ConnectionString}}""{{ConnectionStringActions}});{{#newline}}
+            optionsBuilder.{{UseDatabaseProvider}}(@""{{ConnectionString}}""{{ConnectionStringActions}});{{#newline}}
         }{{#newline}}
     }{{#newline}}{{#newline}}
 {{/if}}
 
 
-    public bool IsSqlParameterNull(SqlParameter param){{#newline}}
+    public bool IsSqlParameterNull({{SqlParameter}} param){{#newline}}
     {{{#newline}}
         var sqlValue = param.SqlValue;{{#newline}}
         var nullableValue = sqlValue as INullable;{{#newline}}
@@ -20572,12 +20626,26 @@ using {{this}};{{#newline}}
             {
                 "System",
                 "System.Data",
-                "Microsoft.Data.SqlClient",
                 "System.Data.SqlTypes",
                 "Microsoft.EntityFrameworkCore",
                 "System.Threading.Tasks",
                 "System.Threading"
             };
+
+            switch (Settings.DatabaseType)
+            {
+                case DatabaseType.SqlServer:
+                case DatabaseType.SqlCe:
+                case DatabaseType.Plugin:
+                    usings.Add("Microsoft.Data.SqlClient");
+                    break;
+                case DatabaseType.PostgreSQL:
+                    break;
+                case DatabaseType.MySql:
+                    break;
+                case DatabaseType.Oracle:
+                    break;
+            }
 
             if (Settings.IncludeCodeGeneratedAttribute)
                 usings.Add("System.CodeDom.Compiler");
@@ -20648,7 +20716,7 @@ using {{this}};{{#newline}}
     {{{#newline}}
         if (!optionsBuilder.IsConfigured && _configuration != null){{#newline}}
         {{{#newline}}
-            optionsBuilder.UseSqlServer(_configuration.GetConnectionString(@""{{ConnectionStringName}}""){{ConnectionStringActions}});{{#newline}}
+            optionsBuilder.{{UseDatabaseProvider}}(_configuration.GetConnectionString(@""{{ConnectionStringName}}""){{ConnectionStringActions}});{{#newline}}
         }{{#newline}}
     }{{#newline}}{{#newline}}
 {{/if}}
@@ -20658,13 +20726,13 @@ using {{this}};{{#newline}}
     {{{#newline}}
         if (!optionsBuilder.IsConfigured){{#newline}}
         {{{#newline}}
-            optionsBuilder.UseSqlServer(@""{{ConnectionString}}""{{ConnectionStringActions}});{{#newline}}
+            optionsBuilder.{{UseDatabaseProvider}}(@""{{ConnectionString}}""{{ConnectionStringActions}});{{#newline}}
         }{{#newline}}
     }{{#newline}}{{#newline}}
 {{/if}}
 
 
-    public bool IsSqlParameterNull(SqlParameter param){{#newline}}
+    public bool IsSqlParameterNull({{SqlParameter}} param){{#newline}}
     {{{#newline}}
         var sqlValue = param.SqlValue;{{#newline}}
         var nullableValue = sqlValue as INullable;{{#newline}}

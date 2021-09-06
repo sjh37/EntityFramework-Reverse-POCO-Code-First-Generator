@@ -133,7 +133,7 @@ namespace Efrpg
                 var isGeography = p.PropertyType == "DbGeography";
 
                 sb.AppendLine(
-                    string.Format("        var {0} = new SqlParameter", WriteStoredProcSqlParameterName(p))
+                    string.Format("        var {0} = new {1}", WriteStoredProcSqlParameterName(p), Settings.SqlParameter())
                     + string.Format(" {{ ParameterName = \"{0}\", ", p.Name)
                     + (isGeography ? "UdtTypeName = \"geography\"" : string.Format("SqlDbType = SqlDbType.{0}", p.SqlDbType))
                     + ", Direction = ParameterDirection."
@@ -160,8 +160,9 @@ namespace Efrpg
 
             if (includeProcResult && ReturnModels.Count < 2)
             {
-                sb.AppendLine(
-                    "        var procResultParam = new SqlParameter { ParameterName = \"@procResult\", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };");
+                sb.Append("        var procResultParam = new ");
+                sb.Append(Settings.SqlParameter());
+                sb.AppendLine(" { ParameterName = \"@procResult\", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };");
             }
 
             return sb.ToString();

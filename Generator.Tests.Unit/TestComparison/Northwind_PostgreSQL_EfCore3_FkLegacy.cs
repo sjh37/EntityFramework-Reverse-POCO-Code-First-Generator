@@ -34,6 +34,8 @@ namespace Efrpg.PostgreSQL
         DbSet<CustomerAndSuppliersByCity> CustomerAndSuppliersByCities { get; set; } // Customer and Suppliers by City
         DbSet<Customercustomerdemo> Customercustomerdemoes { get; set; } // customercustomerdemo
         DbSet<Customerdemographic> Customerdemographics { get; set; } // customerdemographics
+        DbSet<dbo_TableA> dbo_TableAs { get; set; } // TableA
+        DbSet<dbo_TableB> dbo_TableBs { get; set; } // TableB
         DbSet<Employee> Employees { get; set; } // employees
         DbSet<Employeeterritory> Employeeterritories { get; set; } // employeeterritories
         DbSet<Invoice> Invoices { get; set; } // Invoices
@@ -146,6 +148,8 @@ namespace Efrpg.PostgreSQL
         public DbSet<CustomerAndSuppliersByCity> CustomerAndSuppliersByCities { get; set; } // Customer and Suppliers by City
         public DbSet<Customercustomerdemo> Customercustomerdemoes { get; set; } // customercustomerdemo
         public DbSet<Customerdemographic> Customerdemographics { get; set; } // customerdemographics
+        public DbSet<dbo_TableA> dbo_TableAs { get; set; } // TableA
+        public DbSet<dbo_TableB> dbo_TableBs { get; set; } // TableB
         public DbSet<Employee> Employees { get; set; } // employees
         public DbSet<Employeeterritory> Employeeterritories { get; set; } // employeeterritories
         public DbSet<Invoice> Invoices { get; set; } // Invoices
@@ -199,6 +203,8 @@ namespace Efrpg.PostgreSQL
             modelBuilder.ApplyConfiguration(new CustomerAndSuppliersByCityConfiguration());
             modelBuilder.ApplyConfiguration(new CustomercustomerdemoConfiguration());
             modelBuilder.ApplyConfiguration(new CustomerdemographicConfiguration());
+            modelBuilder.ApplyConfiguration(new dbo_TableAConfiguration());
+            modelBuilder.ApplyConfiguration(new dbo_TableBConfiguration());
             modelBuilder.ApplyConfiguration(new EmployeeConfiguration());
             modelBuilder.ApplyConfiguration(new EmployeeterritoryConfiguration());
             modelBuilder.ApplyConfiguration(new InvoiceConfiguration());
@@ -352,6 +358,8 @@ namespace Efrpg.PostgreSQL
         public DbSet<CustomerAndSuppliersByCity> CustomerAndSuppliersByCities { get; set; } // Customer and Suppliers by City
         public DbSet<Customercustomerdemo> Customercustomerdemoes { get; set; } // customercustomerdemo
         public DbSet<Customerdemographic> Customerdemographics { get; set; } // customerdemographics
+        public DbSet<dbo_TableA> dbo_TableAs { get; set; } // TableA
+        public DbSet<dbo_TableB> dbo_TableBs { get; set; } // TableB
         public DbSet<Employee> Employees { get; set; } // employees
         public DbSet<Employeeterritory> Employeeterritories { get; set; } // employeeterritories
         public DbSet<Invoice> Invoices { get; set; } // Invoices
@@ -388,6 +396,8 @@ namespace Efrpg.PostgreSQL
             CustomerAndSuppliersByCities = new FakeDbSet<CustomerAndSuppliersByCity>();
             Customercustomerdemoes = new FakeDbSet<Customercustomerdemo>("CustomerId", "CustomerTypeId");
             Customerdemographics = new FakeDbSet<Customerdemographic>("CustomerTypeId");
+            dbo_TableAs = new FakeDbSet<dbo_TableA>("TableAId");
+            dbo_TableBs = new FakeDbSet<dbo_TableB>("TableBId", "TableAId");
             Employees = new FakeDbSet<Employee>("EmployeeId");
             Employeeterritories = new FakeDbSet<Employeeterritory>("EmployeeId", "TerritoryId");
             Invoices = new FakeDbSet<Invoice>();
@@ -1149,6 +1159,41 @@ namespace Efrpg.PostgreSQL
         }
     }
 
+    // TableA
+    public class dbo_TableA
+    {
+        public int TableAId { get; set; } // TableAId (Primary key)
+        public string TableADesc { get; set; } // TableADesc
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child dbo_TableBs where [TableB].[TableAId] point to this entity (FK_TableA_CompositeKey_Req)
+        /// </summary>
+        public virtual ICollection<dbo_TableB> dbo_TableBs { get; set; } // TableB.FK_TableA_CompositeKey_Req
+
+        public dbo_TableA()
+        {
+            dbo_TableBs = new List<dbo_TableB>();
+        }
+    }
+
+    // TableB
+    public class dbo_TableB
+    {
+        public int TableBId { get; set; } // TableBId (Primary key)
+        public int TableAId { get; set; } // TableAId (Primary key)
+        public int? ParentTableAId { get; set; } // ParentTableAId
+        public string TableBDesc { get; set; } // TableBDesc
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent dbo_TableA pointed by [TableB].([TableAId]) (FK_TableA_CompositeKey_Req)
+        /// </summary>
+        public virtual dbo_TableA dbo_TableA { get; set; } // FK_TableA_CompositeKey_Req
+    }
+
     // employees
     public class Employee
     {
@@ -1725,6 +1770,39 @@ namespace Efrpg.PostgreSQL
 
             builder.Property(x => x.CustomerTypeId).HasColumnName(@"CustomerTypeID").HasColumnType("character").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.CustomerDesc).HasColumnName(@"CustomerDesc").HasColumnType("text").IsRequired(false).IsUnicode(false);
+        }
+    }
+
+    // TableA
+    public class dbo_TableAConfiguration : IEntityTypeConfiguration<dbo_TableA>
+    {
+        public void Configure(EntityTypeBuilder<dbo_TableA> builder)
+        {
+            builder.ToTable("TableA", "dbo");
+            builder.HasKey(x => x.TableAId).HasName("TableA_pkey");
+
+            builder.Property(x => x.TableAId).HasColumnName(@"TableAId").HasColumnType("integer").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.TableADesc).HasColumnName(@"TableADesc").HasColumnType("text").IsRequired(false).IsUnicode(false);
+        }
+    }
+
+    // TableB
+    public class dbo_TableBConfiguration : IEntityTypeConfiguration<dbo_TableB>
+    {
+        public void Configure(EntityTypeBuilder<dbo_TableB> builder)
+        {
+            builder.ToTable("TableB", "dbo");
+            builder.HasKey(x => new { x.TableBId, x.TableAId }).HasName("TableB_pkey");
+
+            builder.Property(x => x.TableBId).HasColumnName(@"TableBId").HasColumnType("integer").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.TableAId).HasColumnName(@"TableAId").HasColumnType("integer").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.ParentTableAId).HasColumnName(@"ParentTableAId").HasColumnType("integer").IsRequired(false);
+            builder.Property(x => x.TableBDesc).HasColumnName(@"TableBDesc").HasColumnType("text").IsRequired(false).IsUnicode(false);
+
+            // Foreign keys
+            builder.HasOne(a => a.dbo_TableA).WithMany(b => b.dbo_TableBs).HasForeignKey(c => c.TableAId).HasConstraintName("FK_TableA_CompositeKey_Req");
+
+            builder.HasIndex(x => x.TableAId).HasName("fki_ParentTableA_FK_Constraint");
         }
     }
 

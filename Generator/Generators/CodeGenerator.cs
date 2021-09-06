@@ -293,7 +293,6 @@ namespace Efrpg.Generators
             }
 
             var isEfCore3Plus = Settings.IsEfCore3Plus();
-            var isEfCore5Plus = Settings.IsEfCore5Plus();
 
             var data = new ContextModel
             {
@@ -336,6 +335,8 @@ namespace Efrpg.Generators
                 OnConfigurationUsesConfiguration       = Settings.OnConfiguration == OnConfiguration.Configuration,
                 OnConfigurationUsesConnectionString    = Settings.OnConfiguration == OnConfiguration.ConnectionString,
                 DefaultSchema                          = Settings.DefaultSchema,
+                UseDatabaseProvider                    = Settings.DatabaseProvider(),
+                SqlParameter                           = Settings.SqlParameter(),
             };
 
             var co = new CodeOutput(string.Empty, filename, "Database context", _globalUsings);
