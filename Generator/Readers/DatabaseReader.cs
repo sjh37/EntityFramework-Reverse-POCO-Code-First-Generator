@@ -815,7 +815,7 @@ namespace Efrpg.Readers
                                     continue;
 
                                 name = RemoveNonAlphanumerics.Replace(name, string.Empty);
-                                name = Inflector.ToTitleCase(name).Replace(" ", "").Trim();
+                                name = (Settings.UsePascalCaseForEnumMembers ? Inflector.ToTitleCase(name) : name).Replace(" ", string.Empty).Trim();
                                 if (string.IsNullOrEmpty(name))
                                     continue;
 

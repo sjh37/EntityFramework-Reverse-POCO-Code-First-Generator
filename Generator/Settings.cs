@@ -46,6 +46,7 @@ namespace Efrpg
         public static string ResultClassModifiers          = "public"; // "public partial";
 
         public static bool UsePascalCase                            = true; // This will rename the generated C# tables & properties to use PascalCase. If false table & property names will be left alone.
+        public static bool UsePascalCaseForEnumMembers              = true; // This will rename the generated Enum Members to use PascalCase. If false Enum members will be left alone.
         public static bool UseDataAnnotations                       = false; // If true, will add data annotations to the poco classes.
         public static bool UsePropertyInitialisers                  = false; // Removes POCO constructor and instead uses C# 6 property initialisers to set defaults
         public static bool UseLazyLoading                           = true; // Marks all navigation properties as virtual or not, to support or disable EF Lazy Loading feature
