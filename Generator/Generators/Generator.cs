@@ -199,6 +199,19 @@ namespace Efrpg.Generators
                             filterKeyValuePair.Value.Enums.AddRange(enumerations);
                     }
                 }
+
+                foreach (var filterKeyValuePair in FilterList.GetFilters())
+                {
+                    var filter = filterKeyValuePair.Value;
+                    foreach (var enumeration in filter.Enums)
+                    {
+                        filter.UpdateEnum(enumeration);
+                        foreach (var enumerationMember in enumeration.Items)
+                        {
+                            filter.UpdateEnumMember(enumerationMember);
+                        }
+                    }
+                }
             }
             catch (Exception x)
             {
@@ -415,15 +428,6 @@ namespace Efrpg.Generators
                         filter.UpdateColumn(column, table);
 
                     table.Suffix = Settings.TableSuffix;
-                }
-
-                foreach (var enumeration in filter.Enums)
-                {
-                    filter.UpdateEnum(enumeration);
-                    foreach (var enumerationMember in enumeration.Items)
-                    {
-                        filter.UpdateEnumMember(enumerationMember);
-                    }
                 }
             }
         }

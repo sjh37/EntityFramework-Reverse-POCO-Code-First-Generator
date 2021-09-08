@@ -1349,13 +1349,13 @@ using {{this}};{{#newline}}
         {
             return @"
 {{#each EnumAttributes}}
-    {{this}}{{#newline}}
+{{this}}{{#newline}}
 {{/each}}
 public enum {{EnumName}}{{#newline}}
 {{{#newline}}
 {{#each Items}}
     {{#each Attributes}}
-        {{this}}{{#newline}}
+    {{this}}{{#newline}}
     {{/each}}
     {{Key}} = {{Value}},{{#newline}}
 {{/each}}
