@@ -268,6 +268,16 @@ namespace Efrpg
             }
         };
 
+        public static Action<Enumeration> UpdateEnum = delegate (Enumeration enumeration)
+        {
+
+        };
+
+        public static Action<EnumerationMember> UpdateEnumMember = delegate (EnumerationMember enumerationMember)
+        {
+
+        };
+
         // Writes any boilerplate stuff inside the POCO class body
         public static Func<Table, string> WriteInsideClassBody = delegate (Table t)
         {

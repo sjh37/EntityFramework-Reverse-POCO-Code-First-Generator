@@ -416,6 +416,15 @@ namespace Efrpg.Generators
 
                     table.Suffix = Settings.TableSuffix;
                 }
+
+                foreach (var enumeration in filter.Enums)
+                {
+                    filter.UpdateEnum(enumeration);
+                    foreach (var enumerationMember in enumeration.Items)
+                    {
+                        filter.UpdateEnumMember(enumerationMember);
+                    }
+                }
             }
         }
 

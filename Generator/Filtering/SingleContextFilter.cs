@@ -94,6 +94,16 @@ namespace Efrpg.Filtering
             Settings.UpdateColumn?.Invoke(column, table, EnumDefinitions);
         }
 
+        public override void UpdateEnum(Enumeration enumeration)
+        {
+            Settings.UpdateEnum?.Invoke(enumeration);
+        }
+
+        public override void UpdateEnumMember(EnumerationMember enumerationMember)
+        {
+            Settings.UpdateEnumMember?.Invoke(enumerationMember);
+        }
+
         public override void ViewProcessing(Table view)
         {
             // Callback to Settings, which can be set within <database>.tt

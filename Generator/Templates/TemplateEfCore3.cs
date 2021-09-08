@@ -1468,9 +1468,13 @@ using {{this}};{{#newline}}
         public override string Enums()
         {
             return @"
+{{EnumAttributes}}
 public enum {{EnumName}}{{#newline}}
 {{{#newline}}
 {{#each Items}}
+    {{#each Attributes}}
+        {{this}}{{#newline}}
+    {{/each}}
     {{Key}} = {{Value}},{{#newline}}
 {{/each}}
 }{{#newline}}
