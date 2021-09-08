@@ -1468,7 +1468,9 @@ using {{this}};{{#newline}}
         public override string Enums()
         {
             return @"
-{{EnumAttributes}}
+{{#each EnumAttributes}}
+    {{this}}{{#newline}}
+{{/each}}
 public enum {{EnumName}}{{#newline}}
 {{{#newline}}
 {{#each Items}}
