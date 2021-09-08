@@ -365,6 +365,22 @@ namespace BuildTT
         }
     };
 
+    // Use the following function if you need to apply additional modifications to a enum
+    // Called just before UpdateEnumMember
+    Settings.UpdateEnum = delegate (Enumeration enumeration)
+    {
+        //enumeration.EnumAttributes.Add(""[DataContract]"");
+    };
+
+    // Use the following function if you need to apply additional modifications to a enum member
+    Settings.UpdateEnumMember = delegate (EnumerationMember enumerationMember)
+    {
+        //enumerationMember.Attributes.Add(""[EnumMember]"");
+
+        //enumerationMember.Attributes.Add(""[SomeAttribute(\"""" + enumerationMember.AllValues[""SomeName""] + "" \"")]"");
+    };
+
+
     // Writes any boilerplate stuff inside the POCO class body
     Settings.WriteInsideClassBody = delegate(Table t)
     {
