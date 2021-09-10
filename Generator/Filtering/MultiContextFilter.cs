@@ -346,6 +346,16 @@ namespace Efrpg.Filtering
             Settings.UpdateColumn?.Invoke(column, table, null);
         }
 
+        public override void UpdateEnum(Enumeration enumeration)
+        {
+
+        }
+
+        public override void UpdateEnumMember(EnumerationMember enumerationMember)
+        {
+
+        }
+
         public override void ViewProcessing(Table view)
         {
             // Find the multi-context settings for this view

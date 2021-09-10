@@ -46,6 +46,7 @@ namespace Efrpg
         public static string ResultClassModifiers          = "public"; // "public partial";
 
         public static bool UsePascalCase                            = true; // This will rename the generated C# tables & properties to use PascalCase. If false table & property names will be left alone.
+        public static bool UsePascalCaseForEnumMembers              = true; // This will rename the generated Enum Members to use PascalCase. If false Enum members will be left alone.
         public static bool UseDataAnnotations                       = false; // If true, will add data annotations to the poco classes.
         public static bool UsePropertyInitialisers                  = false; // Removes POCO constructor and instead uses C# 6 property initialisers to set defaults
         public static bool UseLazyLoading                           = true; // Marks all navigation properties as virtual or not, to support or disable EF Lazy Loading feature
@@ -265,6 +266,21 @@ namespace Efrpg
                 if (!string.IsNullOrEmpty(column.Default))
                     column.Default = "(" + enumDefinition.EnumType + ") " + column.Default;
             }
+        };
+
+        // Use the following function if you need to apply additional modifications to a enum
+        // Called just before UpdateEnumMember
+        public static Action<Enumeration> UpdateEnum = delegate (Enumeration enumeration)
+        {
+            //enumeration.EnumAttributes.Add("[DataContract]");
+        };
+
+        // Use the following function if you need to apply additional modifications to a enum member
+        public static Action<EnumerationMember> UpdateEnumMember = delegate (EnumerationMember enumerationMember)
+        {
+            //enumerationMember.Attributes.Add("[EnumMember]");
+
+            //enumerationMember.Attributes.Add("[SomeAttribute(\"" + enumerationMember.AllValues["SomeName"] + " \")]");
         };
 
         // Writes any boilerplate stuff inside the POCO class body

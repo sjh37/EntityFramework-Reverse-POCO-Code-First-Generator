@@ -21,6 +21,8 @@ namespace Efrpg.Filtering
         string     MappingTableRename(string mappingTable, string tableName, string entityName);
         void       UpdateTable(Table table);
         void       UpdateColumn(Column column, Table table);
+        void       UpdateEnum(Enumeration enumeration);
+        void       UpdateEnumMember(EnumerationMember enumerationMember);
         void       ViewProcessing(Table view);
         string     StoredProcedureRename(StoredProcedure sp);
         string     StoredProcedureReturnModelRename(string name, StoredProcedure sp);

@@ -61,6 +61,7 @@
   <ItemGroup>
     <Compile Include="AssemblyHelper.cs" />
     <Compile Include="EfrpgVersion.cs" />
+    <Compile Include="EnumerationMember.cs" />
     <Compile Include="FileManagement\VisualStudioFileManager.cs" />
     <Compile Include="FileManagement\CustomFileManager.cs" />
     <Compile Include="FileManagement\EntityFrameworkTemplateFileManager.cs" />

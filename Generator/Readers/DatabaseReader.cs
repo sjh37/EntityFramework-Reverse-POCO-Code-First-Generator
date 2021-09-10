@@ -807,7 +807,8 @@ namespace Efrpg.Readers
                     {
                         using (var rdr = cmd.ExecuteReader())
                         {
-                            var items = new List<KeyValuePair<string, string>>();
+                            var items = new List<EnumerationMember>();
+
                             while (rdr.Read())
                             {
                                 var name = rdr["NameField"].ToString().Trim();
@@ -815,7 +816,7 @@ namespace Efrpg.Readers
                                     continue;
 
                                 name = RemoveNonAlphanumerics.Replace(name, string.Empty);
-                                name = Inflector.ToTitleCase(name).Replace(" ", "").Trim();
+                                name = (Settings.UsePascalCaseForEnumMembers ? Inflector.ToTitleCase(name) : name).Replace(" ", string.Empty).Trim();
                                 if (string.IsNullOrEmpty(name))
                                     continue;
 
@@ -823,11 +824,20 @@ namespace Efrpg.Readers
                                 if (string.IsNullOrEmpty(value))
                                     continue;
 
-                                items.Add(new KeyValuePair<string, string>(name, value));
+                                var allValues = new Dictionary<string, object>();
+                                for (var n = 2; n < rdr.FieldCount; ++n)
+                                {
+                                    var o = rdr.GetValue(n);
+                                    allValues.Add(rdr.GetName(n), o != DBNull.Value ? o : null);
+                                }
+
+                                items.Add(new EnumerationMember(name, value, allValues));
                             }
 
                             if(items.Any())
+                            {
                                 result.Add(new Enumeration(e.Name, items));
+                            }
                         }
                     }
                     catch (Exception)

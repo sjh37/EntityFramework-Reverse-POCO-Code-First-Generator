@@ -1287,9 +1287,15 @@ using {{this}};{{#newline}}
         public override string Enums()
         {
             return @"
+{{#each EnumAttributes}}
+{{this}}{{#newline}}
+{{/each}}
 public enum {{EnumName}}{{#newline}}
 {{{#newline}}
 {{#each Items}}
+    {{#each Attributes}}
+    {{this}}{{#newline}}
+    {{/each}}
     {{Key}} = {{Value}},{{#newline}}
 {{/each}}
 }{{#newline}}

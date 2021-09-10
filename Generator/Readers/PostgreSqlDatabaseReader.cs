@@ -193,7 +193,7 @@ ORDER BY R.specific_schema, R.routine_name, R.routine_type;";
 
         protected override string EnumSQL(string table, string nameField, string valueField)
         {
-            return string.Format(@"SELECT ""{0}"" as ""NameField"", ""{1}"" as ""ValueField"" FROM ""{2}"";", nameField, valueField, table);
+            return string.Format(@"SELECT ""{0}"" as ""NameField"", ""{1}"" as ""ValueField"", * FROM ""{2}"";", nameField, valueField, table);
         }
 
         protected override string SequenceSQL()
