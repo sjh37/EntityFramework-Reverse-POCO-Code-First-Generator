@@ -13384,7 +13384,7 @@ SELECT  DISTINCT
         CAST(0 AS BIT) AS ""IsRowGuid"",
         CASE WHEN LOWER(C.is_generated) = 'never' THEN CAST(0 AS BIT) ELSE CAST(1 AS BIT) END AS ""IsComputed"",
         CAST(0 AS SMALLINT) AS ""GeneratedAlwaysType"",
-        CAST(CASE WHEN LOWER(C.is_identity) = 'yes' OR LOWER(C.is_generated) <> 'never' THEN 1 ELSE 0 END AS BIT) AS IsStoreGenerated,
+        CAST(CASE WHEN LOWER(C.is_identity) = 'yes' OR LOWER(C.is_generated) <> 'never' THEN 1 ELSE 0 END AS BIT) AS ""IsStoreGenerated"",
         CAST(CASE WHEN pk.ordinal_position > 0 THEN 1 ELSE 0 END AS bit) as ""PrimaryKey"",
         COALESCE(pk.ordinal_position, 0) ""PrimaryKeyOrdinal"",
         CAST(CASE WHEN fk.COLUMN_NAME IS NOT NULL THEN 1 ELSE 0 END AS bit) AS ""IsForeignKey""
