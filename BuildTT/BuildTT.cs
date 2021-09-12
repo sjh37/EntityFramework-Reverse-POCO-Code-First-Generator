@@ -376,7 +376,6 @@ namespace BuildTT
     Settings.UpdateEnumMember = delegate (EnumerationMember enumerationMember)
     {
         //enumerationMember.Attributes.Add(""[EnumMember]"");
-
         //enumerationMember.Attributes.Add(""[SomeAttribute(\"""" + enumerationMember.AllValues[""SomeName""] + "" \"")]"");
     };
 

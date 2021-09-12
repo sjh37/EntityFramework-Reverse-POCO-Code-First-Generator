@@ -72,6 +72,7 @@
         public static string ResultClassModifiers          = "public"; // "public partial";
 
         public static bool UsePascalCase                            = true; // This will rename the generated C# tables & properties to use PascalCase. If false table & property names will be left alone.
+        public static bool UsePascalCaseForEnumMembers              = true; // This will rename the generated Enum Members to use PascalCase. If false Enum members will be left alone.
         public static bool UseDataAnnotations                       = false; // If true, will add data annotations to the poco classes.
         public static bool UsePropertyInitialisers                  = false; // Removes POCO constructor and instead uses C# 6 property initialisers to set defaults
         public static bool UseLazyLoading                           = true; // Marks all navigation properties as virtual or not, to support or disable EF Lazy Loading feature
@@ -291,6 +292,20 @@
                 if (!string.IsNullOrEmpty(column.Default))
                     column.Default = "(" + enumDefinition.EnumType + ") " + column.Default;
             }
+        };
+
+        // Use the following function if you need to apply additional modifications to a enum
+        // Called just before UpdateEnumMember
+        public static Action<Enumeration> UpdateEnum = delegate (Enumeration enumeration)
+        {
+            //enumeration.EnumAttributes.Add("[DataContract]");
+        };
+
+        // Use the following function if you need to apply additional modifications to a enum member
+        public static Action<EnumerationMember> UpdateEnumMember = delegate (EnumerationMember enumerationMember)
+        {
+            //enumerationMember.Attributes.Add("[EnumMember]");
+            //enumerationMember.Attributes.Add("[SomeAttribute(\"" + enumerationMember.AllValues["SomeName"] + " \")]");
         };
 
         // Writes any boilerplate stuff inside the POCO class body
@@ -876,6 +891,16 @@
             Settings.UpdateColumn?.Invoke(column, table, EnumDefinitions);
         }
 
+        public override void UpdateEnum(Enumeration enumeration)
+        {
+            Settings.UpdateEnum?.Invoke(enumeration);
+        }
+
+        public override void UpdateEnumMember(EnumerationMember enumerationMember)
+        {
+            Settings.UpdateEnumMember?.Invoke(enumerationMember);
+        }
+
         public override void ViewProcessing(Table view)
         {
             // Callback to Settings, which can be set within <database>.tt
@@ -1419,12 +1444,30 @@
     public class Enumeration
     {
         public readonly string EnumName;
-        public readonly List<KeyValuePair<string, string>> Items;
+        public readonly List<EnumerationMember> Items;
 
-        public Enumeration(string enumName, List<KeyValuePair<string, string>> items)
+        public List<string> EnumAttributes = new List<string>();
+
+        public Enumeration(string enumName, List<EnumerationMember> items)
         {
             EnumName = enumName;
             Items    = items;
+        }
+    }
+
+    public class EnumerationMember
+    {
+        public readonly string Key;
+        public readonly string Value;
+        public readonly Dictionary<string, object> AllValues;
+
+        public List<string> Attributes = new List<string>();
+
+        public EnumerationMember(string key, string value, Dictionary<string, object> allValues)
+        {
+            Key = key;
+            Value = value;
+            AllValues = allValues;
         }
     }
 
@@ -1800,6 +1843,8 @@
         public abstract string MappingTableRename(string mappingTable, string tableName, string entityName);
         public abstract void UpdateTable(Table table);
         public abstract void UpdateColumn(Column column, Table table);
+        public abstract void UpdateEnum(Enumeration enumeration);
+        public abstract void UpdateEnumMember(EnumerationMember enumerationMember);
         public abstract void ViewProcessing(Table view);
         public abstract string StoredProcedureRename(StoredProcedure sp);
         public abstract string StoredProcedureReturnModelRename(string name, StoredProcedure sp);
@@ -1960,6 +2005,8 @@
         string     MappingTableRename(string mappingTable, string tableName, string entityName);
         void       UpdateTable(Table table);
         void       UpdateColumn(Column column, Table table);
+        void       UpdateEnum(Enumeration enumeration);
+        void       UpdateEnumMember(EnumerationMember enumerationMember);
         void       ViewProcessing(Table view);
         string     StoredProcedureRename(StoredProcedure sp);
         string     StoredProcedureReturnModelRename(string name, StoredProcedure sp);
@@ -2328,6 +2375,16 @@
 
             // Callback to Settings, which can be set within <database>.tt
             Settings.UpdateColumn?.Invoke(column, table, null);
+        }
+
+        public override void UpdateEnum(Enumeration enumeration)
+        {
+
+        }
+
+        public override void UpdateEnumMember(EnumerationMember enumerationMember)
+        {
+
         }
 
         public override void ViewProcessing(Table view)
@@ -4057,6 +4114,19 @@
                         var enumerations = DatabaseReader.ReadEnums(multiContextSetting.Enumerations);
                         if (enumerations.Count > 0)
                             filterKeyValuePair.Value.Enums.AddRange(enumerations);
+                    }
+                }
+
+                foreach (var filterKeyValuePair in FilterList.GetFilters())
+                {
+                    var filter = filterKeyValuePair.Value;
+                    foreach (var enumeration in filter.Enums)
+                    {
+                        filter.UpdateEnum(enumeration);
+                        foreach (var enumerationMember in enumeration.Items)
+                        {
+                            filter.UpdateEnumMember(enumerationMember);
+                        }
                     }
                 }
             }
@@ -12635,7 +12705,8 @@ and limitations under the License.
                     {
                         using (var rdr = cmd.ExecuteReader())
                         {
-                            var items = new List<KeyValuePair<string, string>>();
+                            var items = new List<EnumerationMember>();
+
                             while (rdr.Read())
                             {
                                 var name = rdr["NameField"].ToString().Trim();
@@ -12643,7 +12714,7 @@ and limitations under the License.
                                     continue;
 
                                 name = RemoveNonAlphanumerics.Replace(name, string.Empty);
-                                name = Inflector.ToTitleCase(name).Replace(" ", "").Trim();
+                                name = (Settings.UsePascalCaseForEnumMembers ? Inflector.ToTitleCase(name) : name).Replace(" ", string.Empty).Trim();
                                 if (string.IsNullOrEmpty(name))
                                     continue;
 
@@ -12651,11 +12722,20 @@ and limitations under the License.
                                 if (string.IsNullOrEmpty(value))
                                     continue;
 
-                                items.Add(new KeyValuePair<string, string>(name, value));
+                                var allValues = new Dictionary<string, object>();
+                                for (var n = 2; n < rdr.FieldCount; ++n)
+                                {
+                                    var o = rdr.GetValue(n);
+                                    allValues.Add(rdr.GetName(n), o != DBNull.Value ? o : null);
+                                }
+
+                                items.Add(new EnumerationMember(name, value, allValues));
                             }
 
                             if(items.Any())
+                            {
                                 result.Add(new Enumeration(e.Name, items));
+                            }
                         }
                     }
                     catch (Exception)
@@ -13539,7 +13619,7 @@ ORDER BY R.specific_schema, R.routine_name, R.routine_type;";
 
         protected override string EnumSQL(string table, string nameField, string valueField)
         {
-            return string.Format(@"SELECT ""{0}"" as ""NameField"", ""{1}"" as ""ValueField"" FROM ""{2}"";", nameField, valueField, table);
+            return string.Format(@"SELECT ""{0}"" as ""NameField"", ""{1}"" as ""ValueField"", * FROM ""{2}"";", nameField, valueField, table);
         }
 
         protected override string SequenceSQL()
@@ -14088,7 +14168,7 @@ SELECT * FROM MultiContext.ForeignKey;";
 
         protected override string EnumSQL(string table, string nameField, string valueField)
         {
-            return string.Format("SELECT {0} as NameField, {1} as ValueField FROM {2};", nameField, valueField, table);
+            return string.Format("SELECT {0} as NameField, {1} as ValueField, * FROM {2};", nameField, valueField, table);
         }
 
         protected override string SequenceSQL()
@@ -14608,7 +14688,7 @@ SELECT * FROM MultiContext.ForeignKey;";
 
         protected override string EnumSQL(string table, string nameField, string valueField)
         {
-            return string.Format("SELECT {0} as NameField, {1} as ValueField FROM {2};", nameField, valueField, table);
+            return string.Format("SELECT {0} as NameField, {1} as ValueField, * FROM {2};", nameField, valueField, table);
         }
 
         protected override string SequenceSQL()
@@ -17620,9 +17700,15 @@ using {{this}};{{#newline}}
         public override string Enums()
         {
             return @"
+{{#each EnumAttributes}}
+{{this}}{{#newline}}
+{{/each}}
 public enum {{EnumName}}{{#newline}}
 {{{#newline}}
 {{#each Items}}
+{{#each Attributes}}
+    {{this}}{{#newline}}
+{{/each}}
     {{Key}} = {{Value}},{{#newline}}
 {{/each}}
 }{{#newline}}
@@ -18973,9 +19059,15 @@ using {{this}};{{#newline}}
         public override string Enums()
         {
             return @"
+{{#each EnumAttributes}}
+{{this}}{{#newline}}
+{{/each}}
 public enum {{EnumName}}{{#newline}}
 {{{#newline}}
 {{#each Items}}
+{{#each Attributes}}
+    {{this}}{{#newline}}
+{{/each}}
     {{Key}} = {{Value}},{{#newline}}
 {{/each}}
 }{{#newline}}
@@ -20446,9 +20538,15 @@ using {{this}};{{#newline}}
         public override string Enums()
         {
             return @"
+{{#each EnumAttributes}}
+{{this}}{{#newline}}
+{{/each}}
 public enum {{EnumName}}{{#newline}}
 {{{#newline}}
 {{#each Items}}
+{{#each Attributes}}
+    {{this}}{{#newline}}
+{{/each}}
     {{Key}} = {{Value}},{{#newline}}
 {{/each}}
 }{{#newline}}
@@ -21896,9 +21994,15 @@ using {{this}};{{#newline}}
         public override string Enums()
         {
             return @"
+{{#each EnumAttributes}}
+{{this}}{{#newline}}
+{{/each}}
 public enum {{EnumName}}{{#newline}}
 {{{#newline}}
 {{#each Items}}
+{{#each Attributes}}
+    {{this}}{{#newline}}
+{{/each}}
     {{Key}} = {{Value}},{{#newline}}
 {{/each}}
 }{{#newline}}

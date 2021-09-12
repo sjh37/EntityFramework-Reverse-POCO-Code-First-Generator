@@ -1474,9 +1474,9 @@ using {{this}};{{#newline}}
 public enum {{EnumName}}{{#newline}}
 {{{#newline}}
 {{#each Items}}
-    {{#each Attributes}}
+{{#each Attributes}}
     {{this}}{{#newline}}
-    {{/each}}
+{{/each}}
     {{Key}} = {{Value}},{{#newline}}
 {{/each}}
 }{{#newline}}
