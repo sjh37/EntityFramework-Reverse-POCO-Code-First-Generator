@@ -13446,8 +13446,8 @@ and limitations under the License.
         protected override string TableSQL()
         {
             return @"
-SELECT  DISTINCT
-        T.TABLE_SCHEMA AS ""SchemaName"",
+
+SELECT  T.TABLE_SCHEMA AS ""SchemaName"",
         T.TABLE_NAME AS ""TableName"",
         T.TABLE_TYPE AS ""TableType"",
         CAST(0 AS SMALLINT) AS ""TableTemporalType"",
@@ -13467,11 +13467,20 @@ SELECT  DISTINCT
         CAST(CASE WHEN LOWER(C.is_identity) = 'yes' OR LOWER(C.is_generated) <> 'never' THEN 1 ELSE 0 END AS BIT) AS ""IsStoreGenerated"",
         CAST(CASE WHEN pk.ordinal_position > 0 THEN 1 ELSE 0 END AS bit) as ""PrimaryKey"",
         COALESCE(pk.ordinal_position, 0) ""PrimaryKeyOrdinal"",
-        CAST(CASE WHEN fk.COLUMN_NAME IS NOT NULL THEN 1 ELSE 0 END AS bit) AS ""IsForeignKey""
+        CAST(CASE WHEN EXISTS (select 1 from INFORMATION_SCHEMA.TABLE_CONSTRAINTS tcfk
+            INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE fk
+                ON tcfk.TABLE_SCHEMA        = fk.TABLE_SCHEMA
+                   AND tcfk.TABLE_NAME      = fk.TABLE_NAME
+                   AND tcfk.CONSTRAINT_NAME = fk.CONSTRAINT_NAME
+                   AND tcfk.CONSTRAINT_TYPE = 'FOREIGN KEY'
+				   AND C.TABLE_SCHEMA       = fk.TABLE_SCHEMA
+                   AND C.TABLE_NAME         = fk.TABLE_NAME
+                   AND C.COLUMN_NAME        = fk.COLUMN_NAME) THEN 1 ELSE 0 END AS bit) AS ""IsForeignKey""
 FROM    INFORMATION_SCHEMA.TABLES T
         INNER JOIN INFORMATION_SCHEMA.COLUMNS C
             ON T.TABLE_SCHEMA   = C.TABLE_SCHEMA
                AND C.TABLE_NAME = T.TABLE_NAME
+			   AND C.table_catalog = T.table_catalog
         LEFT OUTER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc
             INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE pk
                 ON tc.CONSTRAINT_SCHEMA   = pk.TABLE_SCHEMA
@@ -13481,15 +13490,6 @@ FROM    INFORMATION_SCHEMA.TABLES T
             ON pk.TABLE_SCHEMA    = C.TABLE_SCHEMA
                AND pk.TABLE_NAME  = C.TABLE_NAME
                AND pk.COLUMN_NAME = C.COLUMN_NAME
-        LEFT OUTER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tcfk
-            INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE fk
-                ON tcfk.CONSTRAINT_SCHEMA   = fk.TABLE_SCHEMA
-                   AND tcfk.TABLE_NAME      = fk.TABLE_NAME
-                   AND tcfk.CONSTRAINT_NAME = fk.CONSTRAINT_NAME
-                   AND LOWER(tcfk.CONSTRAINT_TYPE) = 'foreign key'
-            ON fk.TABLE_SCHEMA    = C.TABLE_SCHEMA
-               AND fk.TABLE_NAME  = C.TABLE_NAME
-               AND fk.COLUMN_NAME = C.COLUMN_NAME
 WHERE   (LOWER(T.TABLE_TYPE) = 'base table' OR LOWER(T.TABLE_TYPE) = 'view')
         AND (LOWER(T.TABLE_SCHEMA) NOT IN ('pg_catalog', 'information_schema'))
         AND (LOWER(T.TABLE_NAME) NOT IN ('edmmetadata', '__migrationhistory', '__efmigrationshistory', '__refactorlog'))
