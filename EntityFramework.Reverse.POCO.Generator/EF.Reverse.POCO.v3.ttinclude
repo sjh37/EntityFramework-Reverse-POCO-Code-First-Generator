@@ -72,6 +72,7 @@
         public static string ResultClassModifiers          = "public"; // "public partial";
 
         public static bool UsePascalCase                            = true; // This will rename the generated C# tables & properties to use PascalCase. If false table & property names will be left alone.
+        public static bool UsePascalCaseForEnumMembers              = true; // This will rename the generated Enum Members to use PascalCase. If false Enum members will be left alone.
         public static bool UseDataAnnotations                       = false; // If true, will add data annotations to the poco classes.
         public static bool UsePropertyInitialisers                  = false; // Removes POCO constructor and instead uses C# 6 property initialisers to set defaults
         public static bool UseLazyLoading                           = true; // Marks all navigation properties as virtual or not, to support or disable EF Lazy Loading feature
@@ -106,6 +107,9 @@
         public static bool IncludeConnectionSettingComments = false; // Add comments describing connection settings used to generate file
         public static bool IncludeCodeGeneratedAttribute    = false; // If true, will include the [GeneratedCode] attribute before classes, false to remove it.
         public static bool IncludeColumnsWithDefaults       = true;  // If true, will set properties to the default value from the database.ro
+
+        public static string EnumNameField                  = "Name";
+        public static string EnumValueField                 = "Id";
 
         // Create enumerations from database tables
         // List the enumeration tables you want read and generated for
@@ -291,6 +295,21 @@
                 if (!string.IsNullOrEmpty(column.Default))
                     column.Default = "(" + enumDefinition.EnumType + ") " + column.Default;
             }
+        };
+
+        // Use the following function if you need to apply additional modifications to a enum
+        // Called just before UpdateEnumMember
+        public static Action<Enumeration> UpdateEnum = delegate (Enumeration enumeration)
+        {
+            //enumeration.EnumAttributes.Add("[DataContract]");
+        };
+
+        // Use the following function if you need to apply additional modifications to a enum member
+        public static Action<EnumerationMember> UpdateEnumMember = delegate (EnumerationMember enumerationMember)
+        {
+            //enumerationMember.Attributes.Add("[EnumMember]");
+
+            //enumerationMember.Attributes.Add("[SomeAttribute(\"" + enumerationMember.AllValues["SomeName"] + " \")]");
         };
 
         // Writes any boilerplate stuff inside the POCO class body
@@ -684,6 +703,8 @@
         public static readonly List<IFilterType<Table>>           TableFilters;
         public static readonly List<IFilterType<Column>>          ColumnFilters;
         public static readonly List<IFilterType<StoredProcedure>> StoredProcedureFilters;
+        public static readonly List<IFilterType<EnumTableSource>> EnumerationTableFilters;
+        public static readonly List<IFilterType<EnumSchemaSource>> EnumerationSchemaFilters;
 
         static FilterSettings()
         {
@@ -691,7 +712,11 @@
             TableFilters           = new List<IFilterType<Table>>();
             ColumnFilters          = new List<IFilterType<Column>>();
             StoredProcedureFilters = new List<IFilterType<StoredProcedure>>();
+            EnumerationTableFilters = new List<IFilterType<EnumTableSource>>();
+            EnumerationSchemaFilters = new List<IFilterType<EnumSchemaSource>>();
         }
+
+
 
         public static void Reset()
         {
@@ -699,6 +724,8 @@
             TableFilters          .RemoveAll(x => true);
             ColumnFilters         .RemoveAll(x => true);
             StoredProcedureFilters.RemoveAll(x => true);
+            EnumerationTableFilters.RemoveAll(x => true);
+            EnumerationSchemaFilters.RemoveAll(x => true);
         }
 
         public static void AddDefaults()
@@ -713,6 +740,8 @@
             AddDefaultTableFilters();
             AddDefaultColumnFilters();
             AddDefaultStoredProcedureFilters();
+            AddDefaultEnumerationTableFilters();
+            AddDefaultEnumerationSchemaFilters();
         }
 
         public static void CheckSettings()
@@ -783,6 +812,24 @@
                 new HasNameFilter(FilterType.StoredProcedure)
             });
         }
+
+        public static void AddDefaultEnumerationTableFilters()
+        {
+            EnumerationTableFilters.AddRange(new List<IFilterType<EnumTableSource>>
+            {
+                // Add your own code to these custom filter classes
+                new EnumerationTableFilter(),
+            });
+        }
+
+        public static void AddDefaultEnumerationSchemaFilters()
+        {
+            EnumerationSchemaFilters.AddRange(new List<IFilterType<EnumSchemaSource>>
+            {
+                // Add your own code to these custom filter classes
+                new EnumerationSchemaFilter(),
+            });
+        }
     }
 
     /// <summary>
@@ -796,6 +843,9 @@
         protected readonly List<IFilterType<Table>>           TableFilters;
         protected readonly List<IFilterType<Column>>          ColumnFilters;
         protected readonly List<IFilterType<StoredProcedure>> StoredProcedureFilters;
+        protected readonly List<IFilterType<EnumTableSource>> EnumerationTableFilters;
+        protected readonly List<IFilterType<EnumSchemaSource>>EnumerationSchemaFilters;
+
         private bool _hasMergedIncludeFilters;
 
         public SingleContextFilter()
@@ -806,10 +856,12 @@
             IncludeScalarValuedFunctions = FilterSettings.IncludeScalarValuedFunctions;
             IncludeStoredProcedures      = IncludeScalarValuedFunctions || IncludeTableValuedFunctions || FilterSettings.IncludeStoredProcedures;
 
-            SchemaFilters           = FilterSettings.SchemaFilters;
-            TableFilters            = FilterSettings.TableFilters;
-            ColumnFilters           = FilterSettings.ColumnFilters;
-            StoredProcedureFilters  = FilterSettings.StoredProcedureFilters;
+            SchemaFilters            = FilterSettings.SchemaFilters;
+            TableFilters             = FilterSettings.TableFilters;
+            ColumnFilters            = FilterSettings.ColumnFilters;
+            StoredProcedureFilters   = FilterSettings.StoredProcedureFilters;
+            EnumerationTableFilters  = FilterSettings.EnumerationTableFilters;
+            EnumerationSchemaFilters = FilterSettings.EnumerationSchemaFilters;
             _hasMergedIncludeFilters = false;
 
             EnumDefinitions = new List<EnumDefinition>();
@@ -828,9 +880,24 @@
             if (schema != null)
                 return SchemaFilters.Any(filter => filter.IsExcluded(schema));
 
+            var enumSchemaSource = item as EnumSchemaSource;
+            if (enumSchemaSource != null)
+            {
+                return EnumerationSchemaFilters.Any(filter => filter.IsExcluded(enumSchemaSource));
+            }
+
+
+            var enumTableSource = item as EnumTableSource;
+            if (enumTableSource != null)
+            {
+                return EnumerationTableFilters.Any(filter => filter.IsExcluded(enumTableSource)) || EnumerationSchemaFilters.Any(filter => filter.IsExcluded(enumTableSource.Schema));
+            }
+
             var table = item as Table;
             if (table != null)
+            {
                 return TableFilters.Any(filter => filter.IsExcluded(table)) || SchemaFilters.Any(filter => filter.IsExcluded(table.Schema));
+            }
 
             var column = item as Column;
             if (column != null)
@@ -874,6 +941,16 @@
         {
             // Callback to Settings, which can be set within <database>.tt
             Settings.UpdateColumn?.Invoke(column, table, EnumDefinitions);
+        }
+
+        public override void UpdateEnum(Enumeration enumeration)
+        {
+            Settings.UpdateEnum?.Invoke(enumeration);
+        }
+
+        public override void UpdateEnumMember(EnumerationMember enumerationMember)
+        {
+            Settings.UpdateEnumMember?.Invoke(enumerationMember);
         }
 
         public override void ViewProcessing(Table view)
@@ -934,6 +1011,9 @@
             MergeIncludeFilters(TableFilters);
             MergeIncludeFilters(ColumnFilters);
             MergeIncludeFilters(StoredProcedureFilters);
+            
+            MergeIncludeFilters(EnumerationSchemaFilters);
+            MergeIncludeFilters(EnumerationTableFilters);
         }
 
         private static void MergeIncludeFilters<T>(List<IFilterType<T>> filters)
@@ -1419,12 +1499,47 @@
     public class Enumeration
     {
         public readonly string EnumName;
-        public readonly List<KeyValuePair<string, string>> Items;
+        public readonly List<EnumerationMember> Items;
 
-        public Enumeration(string enumName, List<KeyValuePair<string, string>> items)
+        public List<string> EnumAttributes = new List<string>();
+
+        public Enumeration(string enumName, List<EnumerationMember> items)
         {
             EnumName = enumName;
             Items    = items;
+        }
+    }
+
+    public class EnumerationMember
+    {
+        public readonly string Key;
+        public readonly string Value;
+        public readonly Dictionary<string, object> AllValues;
+
+        public List<string> Attributes = new List<string>();
+
+        public EnumerationMember(string key, string value, Dictionary<string, object> allValues)
+        {
+            Key = key;
+            Value = value;
+            AllValues = allValues;
+        }
+    }
+    public class EnumSchemaSource : EntityName
+    {
+        public EnumSchemaSource(string dbName)
+        {
+            DbName = dbName;
+        }
+    }
+    public class EnumTableSource : EntityName
+    {
+        public EnumSchemaSource Schema;
+
+        public EnumTableSource(EnumSchemaSource schema, string dbName)
+        {
+            Schema = schema;
+            DbName = dbName;
         }
     }
 
@@ -1800,6 +1915,8 @@
         public abstract string MappingTableRename(string mappingTable, string tableName, string entityName);
         public abstract void UpdateTable(Table table);
         public abstract void UpdateColumn(Column column, Table table);
+        public abstract void UpdateEnum(Enumeration enumeration);
+        public abstract void UpdateEnumMember(EnumerationMember enumerationMember);
         public abstract void ViewProcessing(Table view);
         public abstract string StoredProcedureRename(StoredProcedure sp);
         public abstract string StoredProcedureReturnModelRename(string name, StoredProcedure sp);
@@ -1905,12 +2022,42 @@
             return _filters.Any(x => x.Value.IncludeScalarValuedFunctions);
         }
     }
+
+    public class EnumerationSchemaFilter : IFilterType<EnumSchemaSource>
+    {
+        // Filtering of stored procedures using a function.
+        // Return true to exclude the stored procedure, return false to include it.
+        public bool IsExcluded(EnumSchemaSource enumSchemaSource)
+        {
+            // Example: Exclude any stored procedure in dbo schema with "order" in its name.
+            //if(sp.Schema.DbName.Equals("dbo", StringComparison.InvariantCultureIgnoreCase) && sp.NameHumanCase.ToLowerInvariant().Contains("order"))
+            //   return false;
+
+            return false;
+        }
+    }
+
+    public class EnumerationTableFilter : IFilterType<EnumTableSource>
+    {
+        // Filtering of stored procedures using a function.
+        // Return true to exclude the stored procedure, return false to include it.
+        public bool IsExcluded(EnumTableSource enumTableSource)
+        {
+            // Example: Exclude any stored procedure in dbo schema with "order" in its name.
+            //if(sp.Schema.DbName.Equals("dbo", StringComparison.InvariantCultureIgnoreCase) && sp.NameHumanCase.ToLowerInvariant().Contains("order"))
+            //   return false;
+
+            return false;
+        }
+    }
     public enum FilterType
     {
         Schema,         // Can only be used on Schema
         Table,          // Can only used on Tables
         Column,         // Can only used on Columns
-        StoredProcedure // Can only used on Stored Procedures
+        StoredProcedure,// Can only used on Stored Procedures
+        EnumSchema,     // Can only used on Enums
+        EnumTable       // Can only used on Enums
     }
 
     public class HasNameFilter : IFilterType<EntityName>
@@ -1960,6 +2107,8 @@
         string     MappingTableRename(string mappingTable, string tableName, string entityName);
         void       UpdateTable(Table table);
         void       UpdateColumn(Column column, Table table);
+        void       UpdateEnum(Enumeration enumeration);
+        void       UpdateEnumMember(EnumerationMember enumerationMember);
         void       ViewProcessing(Table view);
         string     StoredProcedureRename(StoredProcedure sp);
         string     StoredProcedureReturnModelRename(string name, StoredProcedure sp);
@@ -2328,6 +2477,16 @@
 
             // Callback to Settings, which can be set within <database>.tt
             Settings.UpdateColumn?.Invoke(column, table, null);
+        }
+
+        public override void UpdateEnum(Enumeration enumeration)
+        {
+
+        }
+
+        public override void UpdateEnumMember(EnumerationMember enumerationMember)
+        {
+
         }
 
         public override void ViewProcessing(Table view)
@@ -4059,6 +4218,19 @@
                             filterKeyValuePair.Value.Enums.AddRange(enumerations);
                     }
                 }
+
+                foreach (var filterKeyValuePair in FilterList.GetFilters())
+                {
+                    var filter = filterKeyValuePair.Value;
+                    foreach (var enumeration in filter.Enums)
+                    {
+                        filter.UpdateEnum(enumeration);
+                        foreach (var enumerationMember in enumeration.Items)
+                        {
+                            filter.UpdateEnumMember(enumerationMember);
+                        }
+                    }
+                }
             }
             catch (Exception x)
             {
@@ -4129,6 +4301,7 @@
                 //foreach (var ri in rawIndexes.OrderBy(x => x.TableName).ThenBy(x => x.IndexName)) Console.WriteLine(ri.Dump());
                 //foreach (var rfk in rawForeignKeys) Console.WriteLine(rfk.Dump());
 
+                AddTablesToEnums(rawTables);
                 AddTablesToFilters(rawTables);
                 IdentifyUniqueForeignKeys(rawIndexes, rawForeignKeys);
                 AddIndexesToFilters(rawIndexes);
@@ -4149,6 +4322,53 @@
                 _fileManagementService.Error("/*" + x.StackTrace + "*/");
                 _fileManagementService.Error("// -----------------------------------------------------------------------------------------");
                 _fileManagementService.Error(string.Empty);
+            }
+        }
+
+        private void AddTablesToEnums(List<RawTable> rawTables)
+        {
+            if (rawTables == null || !rawTables.Any())
+                return;
+
+            var tablesNames = rawTables
+                .Select(x => new { x.SchemaName, x.TableName, x.IsView })
+                .Distinct()
+                .OrderBy(x => x.SchemaName)
+                .ThenBy(x => x.TableName)
+                .ToList();
+
+            foreach (var filterKeyValuePair in FilterList.GetFilters())
+            {
+                var filter = filterKeyValuePair.Value;
+
+                foreach (var tn in tablesNames)
+                {
+                    var exclude = false;
+
+                    var enumSchemaSource = new EnumSchemaSource(tn.SchemaName);
+                    if (filter.IsExcluded(enumSchemaSource))
+                    {
+                        exclude = true;
+                    }
+
+                    var enumTableSource = new EnumTableSource(enumSchemaSource, tn.TableName);
+                    if (filter.IsExcluded(enumTableSource))
+                    {
+                        exclude = true;
+                    }
+
+                    if (exclude)
+                    {
+                        continue;
+                    }
+
+                    var enumeration =  DatabaseReader.ReadEnum(enumTableSource);
+
+                    if (enumeration == null)
+                        return; // No enums in database
+
+                    filterKeyValuePair.Value.Enums.Add(enumeration);
+                }
             }
         }
 
@@ -12608,6 +12828,24 @@ and limitations under the License.
             return result;
         }
 
+        public Enumeration ReadEnum(EnumTableSource enumTableSource)
+        {
+            using (var conn = _factory.CreateConnection())
+            {
+                if (conn == null)
+                    return null;
+
+                conn.ConnectionString = Settings.ConnectionString;
+                conn.Open();
+
+                var cmd = GetCmd(conn);
+                if (cmd == null)
+                    return null;
+
+                return CreateEnumeration(cmd, enumTableSource.NameHumanCase, enumTableSource.NameHumanCase, Settings.EnumNameField, Settings.EnumValueField);
+            }
+        }
+
         public List<Enumeration> ReadEnums(List<EnumerationSettings> enums)
         {
             var result = new List<Enumeration>();
@@ -12623,50 +12861,66 @@ and limitations under the License.
                 if (cmd == null)
                     return result;
 
-                foreach (var e in enums)
-                {
-                    var sql = EnumSQL(e.Table, e.NameField, e.ValueField);
-                    if (string.IsNullOrEmpty(sql))
-                        continue;
-
-                    cmd.CommandText = sql;
-
-                    try
-                    {
-                        using (var rdr = cmd.ExecuteReader())
-                        {
-                            var items = new List<KeyValuePair<string, string>>();
-                            while (rdr.Read())
-                            {
-                                var name = rdr["NameField"].ToString().Trim();
-                                if (string.IsNullOrEmpty(name))
-                                    continue;
-
-                                name = RemoveNonAlphanumerics.Replace(name, string.Empty);
-                                name = Inflector.ToTitleCase(name).Replace(" ", "").Trim();
-                                if (string.IsNullOrEmpty(name))
-                                    continue;
-
-                                var value = rdr["ValueField"].ToString().Trim();
-                                if (string.IsNullOrEmpty(value))
-                                    continue;
-
-                                items.Add(new KeyValuePair<string, string>(name, value));
-                            }
-
-                            if(items.Any())
-                                result.Add(new Enumeration(e.Name, items));
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        // Enum table does not exist in database, skip
-                    }
-                }
+                result.AddRange(enums.Select(e => CreateEnumeration(cmd, e.Name, e.Table, e.NameField, e.ValueField))
+                    .Where(enumeration => enumeration != null));
             }
             return result;
         }
-        
+
+        private Enumeration CreateEnumeration(DbCommand cmd, string enumName, string tableName, string nameField, string valueField)
+        {
+            var sql = EnumSQL(tableName, nameField, valueField);
+            if (string.IsNullOrEmpty(sql))
+                return null;
+
+            cmd.CommandText = sql;
+
+            try
+            {
+                using (var rdr = cmd.ExecuteReader())
+                {
+                    var items = new List<EnumerationMember>();
+
+                    while (rdr.Read())
+                    {
+                        var name = rdr["NameField"].ToString().Trim();
+                        if (string.IsNullOrEmpty(name))
+                            continue;
+
+                        name = RemoveNonAlphanumerics.Replace(name, string.Empty);
+                        name = (Settings.UsePascalCaseForEnumMembers ? Inflector.ToTitleCase(name) : name)
+                            .Replace(" ", string.Empty).Trim();
+                        if (string.IsNullOrEmpty(name))
+                            continue;
+
+                        var value = rdr["ValueField"].ToString().Trim();
+                        if (string.IsNullOrEmpty(value))
+                            continue;
+
+                        var allValues = new Dictionary<string, object>();
+                        for (var n = 2; n < rdr.FieldCount; ++n)
+                        {
+                            var o = rdr.GetValue(n);
+                            allValues.Add(rdr.GetName(n), o != DBNull.Value ? o : null);
+                        }
+
+                        items.Add(new EnumerationMember(name, value, allValues));
+                    }
+
+                    if (items.Any())
+                    {
+                        return new Enumeration(enumName, items);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // Enum table does not exist in database, skip
+            }
+
+            return null;
+        }
+
         public List<RawSequence> ReadSequences()
         {
             if (DatabaseReaderPlugin != null)
@@ -13539,7 +13793,7 @@ ORDER BY R.specific_schema, R.routine_name, R.routine_type;";
 
         protected override string EnumSQL(string table, string nameField, string valueField)
         {
-            return string.Format(@"SELECT ""{0}"" as ""NameField"", ""{1}"" as ""ValueField"" FROM ""{2}"";", nameField, valueField, table);
+            return string.Format(@"SELECT ""{0}"" as ""NameField"", ""{1}"" as ""ValueField"", * FROM ""{2}"";", nameField, valueField, table);
         }
 
         protected override string SequenceSQL()
@@ -14088,7 +14342,7 @@ SELECT * FROM MultiContext.ForeignKey;";
 
         protected override string EnumSQL(string table, string nameField, string valueField)
         {
-            return string.Format("SELECT {0} as NameField, {1} as ValueField FROM {2};", nameField, valueField, table);
+            return string.Format("SELECT {0} as NameField, {1} as ValueField, * FROM {2};", nameField, valueField, table);
         }
 
         protected override string SequenceSQL()
@@ -14608,7 +14862,7 @@ SELECT * FROM MultiContext.ForeignKey;";
 
         protected override string EnumSQL(string table, string nameField, string valueField)
         {
-            return string.Format("SELECT {0} as NameField, {1} as ValueField FROM {2};", nameField, valueField, table);
+            return string.Format("SELECT {0} as NameField, {1} as ValueField, * FROM {2};", nameField, valueField, table);
         }
 
         protected override string SequenceSQL()
@@ -17620,9 +17874,15 @@ using {{this}};{{#newline}}
         public override string Enums()
         {
             return @"
+{{#each EnumAttributes}}
+{{this}}{{#newline}}
+{{/each}}
 public enum {{EnumName}}{{#newline}}
 {{{#newline}}
 {{#each Items}}
+    {{#each Attributes}}
+    {{this}}{{#newline}}
+    {{/each}}
     {{Key}} = {{Value}},{{#newline}}
 {{/each}}
 }{{#newline}}
@@ -18973,9 +19233,15 @@ using {{this}};{{#newline}}
         public override string Enums()
         {
             return @"
+{{#each EnumAttributes}}
+{{this}}{{#newline}}
+{{/each}}
 public enum {{EnumName}}{{#newline}}
 {{{#newline}}
 {{#each Items}}
+    {{#each Attributes}}
+    {{this}}{{#newline}}
+    {{/each}}
     {{Key}} = {{Value}},{{#newline}}
 {{/each}}
 }{{#newline}}
@@ -20446,9 +20712,15 @@ using {{this}};{{#newline}}
         public override string Enums()
         {
             return @"
+{{#each EnumAttributes}}
+{{this}}{{#newline}}
+{{/each}}
 public enum {{EnumName}}{{#newline}}
 {{{#newline}}
 {{#each Items}}
+    {{#each Attributes}}
+    {{this}}{{#newline}}
+    {{/each}}
     {{Key}} = {{Value}},{{#newline}}
 {{/each}}
 }{{#newline}}
@@ -21896,9 +22168,15 @@ using {{this}};{{#newline}}
         public override string Enums()
         {
             return @"
+{{#each EnumAttributes}}
+{{this}}{{#newline}}
+{{/each}}
 public enum {{EnumName}}{{#newline}}
 {{{#newline}}
 {{#each Items}}
+    {{#each Attributes}}
+    {{this}}{{#newline}}
+    {{/each}}
     {{Key}} = {{Value}},{{#newline}}
 {{/each}}
 }{{#newline}}

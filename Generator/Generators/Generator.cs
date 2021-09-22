@@ -282,6 +282,7 @@ namespace Efrpg.Generators
                 //foreach (var ri in rawIndexes.OrderBy(x => x.TableName).ThenBy(x => x.IndexName)) Console.WriteLine(ri.Dump());
                 //foreach (var rfk in rawForeignKeys) Console.WriteLine(rfk.Dump());
 
+                AddTablesToEnums(rawTables);
                 AddTablesToFilters(rawTables);
                 IdentifyUniqueForeignKeys(rawIndexes, rawForeignKeys);
                 AddIndexesToFilters(rawIndexes);
@@ -302,6 +303,53 @@ namespace Efrpg.Generators
                 _fileManagementService.Error("/*" + x.StackTrace + "*/");
                 _fileManagementService.Error("// -----------------------------------------------------------------------------------------");
                 _fileManagementService.Error(string.Empty);
+            }
+        }
+
+        private void AddTablesToEnums(List<RawTable> rawTables)
+        {
+            if (rawTables == null || !rawTables.Any())
+                return;
+
+            var tablesNames = rawTables
+                .Select(x => new { x.SchemaName, x.TableName, x.IsView })
+                .Distinct()
+                .OrderBy(x => x.SchemaName)
+                .ThenBy(x => x.TableName)
+                .ToList();
+
+            foreach (var filterKeyValuePair in FilterList.GetFilters())
+            {
+                var filter = filterKeyValuePair.Value;
+
+                foreach (var tn in tablesNames)
+                {
+                    var exclude = false;
+
+                    var enumSchemaSource = new EnumSchemaSource(tn.SchemaName);
+                    if (filter.IsExcluded(enumSchemaSource))
+                    {
+                        exclude = true;
+                    }
+
+                    var enumTableSource = new EnumTableSource(enumSchemaSource, tn.TableName);
+                    if (filter.IsExcluded(enumTableSource))
+                    {
+                        exclude = true;
+                    }
+
+                    if (exclude)
+                    {
+                        continue;
+                    }
+
+                    var enumeration =  DatabaseReader.ReadEnum(enumTableSource);
+
+                    if (enumeration == null)
+                        return; // No enums in database
+
+                    filterKeyValuePair.Value.Enums.Add(enumeration);
+                }
             }
         }
 

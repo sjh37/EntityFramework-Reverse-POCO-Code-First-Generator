@@ -62,6 +62,9 @@
     <Compile Include="AssemblyHelper.cs" />
     <Compile Include="EfrpgVersion.cs" />
     <Compile Include="EnumerationMember.cs" />
+    <Compile Include="Filtering\EnumerationSchemaFilter.cs" />
+    <Compile Include="EnumSchemaSource.cs" />
+    <Compile Include="EnumTableSource.cs" />
     <Compile Include="FileManagement\VisualStudioFileManager.cs" />
     <Compile Include="FileManagement\CustomFileManager.cs" />
     <Compile Include="FileManagement\EntityFrameworkTemplateFileManager.cs" />
@@ -79,6 +82,7 @@
     <Compile Include="Filtering\IFilter.cs" />
     <Compile Include="Filtering\MultiContextFilter.cs" />
     <Compile Include="Filtering\MultiContextNameNormalisation.cs" />
+    <Compile Include="Filtering\EnumerationTableFilter.cs" />
     <Compile Include="ForeignKeyNamingStrategy.cs" />
     <Compile Include="ForeignKeyStrategies\BaseForeignKeyNamingStrategy.cs" />
     <Compile Include="ForeignKeyStrategies\ForeignKeyNamingStrategyFactory.cs" />

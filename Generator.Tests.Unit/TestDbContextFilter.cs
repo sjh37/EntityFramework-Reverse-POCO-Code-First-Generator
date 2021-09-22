@@ -8,6 +8,16 @@ namespace Generator.Tests.Unit
     {
         public TestContextFilter()
         {
+            EnumerationSchemaFilters.AddRange(new List<IFilterType<EnumSchemaSource>>
+            {
+                new RegexIncludeFilter("^Enum$")
+            });
+
+            EnumerationTableFilters.AddRange(new List<IFilterType<EnumTableSource>>
+            {
+                new RegexExcludeFilter("^ProductType$")
+            });
+
             SchemaFilters.AddRange(new List<IFilterType<Schema>>
             {
                 // Only include the schemas 'dbo' and 'events'

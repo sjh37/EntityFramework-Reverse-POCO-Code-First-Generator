@@ -14,6 +14,9 @@ namespace Efrpg.Filtering
         protected readonly List<IFilterType<Table>>           TableFilters;
         protected readonly List<IFilterType<Column>>          ColumnFilters;
         protected readonly List<IFilterType<StoredProcedure>> StoredProcedureFilters;
+        protected readonly List<IFilterType<EnumTableSource>> EnumerationTableFilters;
+        protected readonly List<IFilterType<EnumSchemaSource>>EnumerationSchemaFilters;
+
         private bool _hasMergedIncludeFilters;
 
         public SingleContextFilter()
@@ -24,10 +27,12 @@ namespace Efrpg.Filtering
             IncludeScalarValuedFunctions = FilterSettings.IncludeScalarValuedFunctions;
             IncludeStoredProcedures      = IncludeScalarValuedFunctions || IncludeTableValuedFunctions || FilterSettings.IncludeStoredProcedures;
 
-            SchemaFilters           = FilterSettings.SchemaFilters;
-            TableFilters            = FilterSettings.TableFilters;
-            ColumnFilters           = FilterSettings.ColumnFilters;
-            StoredProcedureFilters  = FilterSettings.StoredProcedureFilters;
+            SchemaFilters            = FilterSettings.SchemaFilters;
+            TableFilters             = FilterSettings.TableFilters;
+            ColumnFilters            = FilterSettings.ColumnFilters;
+            StoredProcedureFilters   = FilterSettings.StoredProcedureFilters;
+            EnumerationTableFilters  = FilterSettings.EnumerationTableFilters;
+            EnumerationSchemaFilters = FilterSettings.EnumerationSchemaFilters;
             _hasMergedIncludeFilters = false;
 
             EnumDefinitions = new List<EnumDefinition>();
@@ -46,9 +51,24 @@ namespace Efrpg.Filtering
             if (schema != null)
                 return SchemaFilters.Any(filter => filter.IsExcluded(schema));
 
+            var enumSchemaSource = item as EnumSchemaSource;
+            if (enumSchemaSource != null)
+            {
+                return EnumerationSchemaFilters.Any(filter => filter.IsExcluded(enumSchemaSource));
+            }
+
+
+            var enumTableSource = item as EnumTableSource;
+            if (enumTableSource != null)
+            {
+                return EnumerationTableFilters.Any(filter => filter.IsExcluded(enumTableSource)) || EnumerationSchemaFilters.Any(filter => filter.IsExcluded(enumTableSource.Schema));
+            }
+
             var table = item as Table;
             if (table != null)
+            {
                 return TableFilters.Any(filter => filter.IsExcluded(table)) || SchemaFilters.Any(filter => filter.IsExcluded(table.Schema));
+            }
 
             var column = item as Column;
             if (column != null)
@@ -162,6 +182,9 @@ namespace Efrpg.Filtering
             MergeIncludeFilters(TableFilters);
             MergeIncludeFilters(ColumnFilters);
             MergeIncludeFilters(StoredProcedureFilters);
+            
+            MergeIncludeFilters(EnumerationSchemaFilters);
+            MergeIncludeFilters(EnumerationTableFilters);
         }
 
         private static void MergeIncludeFilters<T>(List<IFilterType<T>> filters)

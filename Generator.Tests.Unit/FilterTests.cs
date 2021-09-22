@@ -59,6 +59,10 @@ namespace Generator.Tests.Unit
 
         // Stored procedure
         [TestCase("ab", FilterType.StoredProcedure, false)]
+
+        // Enum
+        [TestCase("Enum.PriceType", FilterType.EnumTable, false)]
+        [TestCase("Enum.ProductType", FilterType.EnumTable, true)]
         public void IsTypeExcluded(string name, FilterType filterType, bool expectedExclusion)
         {
             var item = CreateType(name, filterType);
@@ -66,19 +70,25 @@ namespace Generator.Tests.Unit
             Assert.AreEqual(expectedExclusion, isExcluded);
         }
 
-        private EntityName CreateType(string name, FilterType filterType)
+        private static EntityName CreateType(string name, FilterType filterType)
         {
+            string[] split;
             switch (filterType)
             {
                 case FilterType.Schema:
                     return new Schema(name);
                 case FilterType.Table:
-                    var split = name.Split('.');
+                    split = name.Split('.');
                     return new Table(null, new Schema(split[0]), split[1], false);
                 case FilterType.Column:
                     return new Column { DbName = name };
                 case FilterType.StoredProcedure:
                     return new StoredProcedure { Schema = new Schema("dbo"), DbName = name };
+                case FilterType.EnumSchema:
+                    return new EnumSchemaSource(name);
+                case FilterType.EnumTable:
+                    split = name.Split('.');
+                    return new EnumTableSource(new EnumSchemaSource(split[0]), split[1]);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(filterType), filterType, null);
             }

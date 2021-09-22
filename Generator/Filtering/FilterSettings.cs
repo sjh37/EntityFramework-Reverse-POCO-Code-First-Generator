@@ -22,6 +22,8 @@ namespace Efrpg.Filtering
         public static readonly List<IFilterType<Table>>           TableFilters;
         public static readonly List<IFilterType<Column>>          ColumnFilters;
         public static readonly List<IFilterType<StoredProcedure>> StoredProcedureFilters;
+        public static readonly List<IFilterType<EnumTableSource>> EnumerationTableFilters;
+        public static readonly List<IFilterType<EnumSchemaSource>> EnumerationSchemaFilters;
 
         static FilterSettings()
         {
@@ -29,7 +31,11 @@ namespace Efrpg.Filtering
             TableFilters           = new List<IFilterType<Table>>();
             ColumnFilters          = new List<IFilterType<Column>>();
             StoredProcedureFilters = new List<IFilterType<StoredProcedure>>();
+            EnumerationTableFilters = new List<IFilterType<EnumTableSource>>();
+            EnumerationSchemaFilters = new List<IFilterType<EnumSchemaSource>>();
         }
+
+
 
         public static void Reset()
         {
@@ -37,6 +43,8 @@ namespace Efrpg.Filtering
             TableFilters          .RemoveAll(x => true);
             ColumnFilters         .RemoveAll(x => true);
             StoredProcedureFilters.RemoveAll(x => true);
+            EnumerationTableFilters.RemoveAll(x => true);
+            EnumerationSchemaFilters.RemoveAll(x => true);
         }
 
         public static void AddDefaults()
@@ -51,6 +59,8 @@ namespace Efrpg.Filtering
             AddDefaultTableFilters();
             AddDefaultColumnFilters();
             AddDefaultStoredProcedureFilters();
+            AddDefaultEnumerationTableFilters();
+            AddDefaultEnumerationSchemaFilters();
         }
 
         public static void CheckSettings()
@@ -119,6 +129,24 @@ namespace Efrpg.Filtering
                 // Add your own code to these custom filter classes
                 new StoredProcedureFilter(),
                 new HasNameFilter(FilterType.StoredProcedure)
+            });
+        }
+
+        public static void AddDefaultEnumerationTableFilters()
+        {
+            EnumerationTableFilters.AddRange(new List<IFilterType<EnumTableSource>>
+            {
+                // Add your own code to these custom filter classes
+                new EnumerationTableFilter(),
+            });
+        }
+
+        public static void AddDefaultEnumerationSchemaFilters()
+        {
+            EnumerationSchemaFilters.AddRange(new List<IFilterType<EnumSchemaSource>>
+            {
+                // Add your own code to these custom filter classes
+                new EnumerationSchemaFilter(),
             });
         }
     }

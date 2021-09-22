@@ -82,6 +82,9 @@ namespace Efrpg
         public static bool IncludeCodeGeneratedAttribute    = false; // If true, will include the [GeneratedCode] attribute before classes, false to remove it.
         public static bool IncludeColumnsWithDefaults       = true;  // If true, will set properties to the default value from the database.ro
 
+        public static string EnumNameField                  = "Name";
+        public static string EnumValueField                 = "Id";
+
         // Create enumerations from database tables
         // List the enumeration tables you want read and generated for
         public static List<EnumerationSettings> Enumerations = new List<EnumerationSettings>

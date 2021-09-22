@@ -780,6 +780,24 @@ namespace Efrpg.Readers
             return result;
         }
 
+        public Enumeration ReadEnum(EnumTableSource enumTableSource)
+        {
+            using (var conn = _factory.CreateConnection())
+            {
+                if (conn == null)
+                    return null;
+
+                conn.ConnectionString = Settings.ConnectionString;
+                conn.Open();
+
+                var cmd = GetCmd(conn);
+                if (cmd == null)
+                    return null;
+
+                return CreateEnumeration(cmd, enumTableSource.NameHumanCase, enumTableSource.NameHumanCase, Settings.EnumNameField, Settings.EnumValueField);
+            }
+        }
+
         public List<Enumeration> ReadEnums(List<EnumerationSettings> enums)
         {
             var result = new List<Enumeration>();
@@ -795,60 +813,66 @@ namespace Efrpg.Readers
                 if (cmd == null)
                     return result;
 
-                foreach (var e in enums)
-                {
-                    var sql = EnumSQL(e.Table, e.NameField, e.ValueField);
-                    if (string.IsNullOrEmpty(sql))
-                        continue;
-
-                    cmd.CommandText = sql;
-
-                    try
-                    {
-                        using (var rdr = cmd.ExecuteReader())
-                        {
-                            var items = new List<EnumerationMember>();
-
-                            while (rdr.Read())
-                            {
-                                var name = rdr["NameField"].ToString().Trim();
-                                if (string.IsNullOrEmpty(name))
-                                    continue;
-
-                                name = RemoveNonAlphanumerics.Replace(name, string.Empty);
-                                name = (Settings.UsePascalCaseForEnumMembers ? Inflector.ToTitleCase(name) : name).Replace(" ", string.Empty).Trim();
-                                if (string.IsNullOrEmpty(name))
-                                    continue;
-
-                                var value = rdr["ValueField"].ToString().Trim();
-                                if (string.IsNullOrEmpty(value))
-                                    continue;
-
-                                var allValues = new Dictionary<string, object>();
-                                for (var n = 2; n < rdr.FieldCount; ++n)
-                                {
-                                    var o = rdr.GetValue(n);
-                                    allValues.Add(rdr.GetName(n), o != DBNull.Value ? o : null);
-                                }
-
-                                items.Add(new EnumerationMember(name, value, allValues));
-                            }
-
-                            if(items.Any())
-                            {
-                                result.Add(new Enumeration(e.Name, items));
-                            }
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        // Enum table does not exist in database, skip
-                    }
-                }
+                result.AddRange(enums.Select(e => CreateEnumeration(cmd, e.Name, e.Table, e.NameField, e.ValueField))
+                    .Where(enumeration => enumeration != null));
             }
             return result;
         }
-        
+
+        private Enumeration CreateEnumeration(DbCommand cmd, string enumName, string tableName, string nameField, string valueField)
+        {
+            var sql = EnumSQL(tableName, nameField, valueField);
+            if (string.IsNullOrEmpty(sql))
+                return null;
+
+            cmd.CommandText = sql;
+
+            try
+            {
+                using (var rdr = cmd.ExecuteReader())
+                {
+                    var items = new List<EnumerationMember>();
+
+                    while (rdr.Read())
+                    {
+                        var name = rdr["NameField"].ToString().Trim();
+                        if (string.IsNullOrEmpty(name))
+                            continue;
+
+                        name = RemoveNonAlphanumerics.Replace(name, string.Empty);
+                        name = (Settings.UsePascalCaseForEnumMembers ? Inflector.ToTitleCase(name) : name)
+                            .Replace(" ", string.Empty).Trim();
+                        if (string.IsNullOrEmpty(name))
+                            continue;
+
+                        var value = rdr["ValueField"].ToString().Trim();
+                        if (string.IsNullOrEmpty(value))
+                            continue;
+
+                        var allValues = new Dictionary<string, object>();
+                        for (var n = 2; n < rdr.FieldCount; ++n)
+                        {
+                            var o = rdr.GetValue(n);
+                            allValues.Add(rdr.GetName(n), o != DBNull.Value ? o : null);
+                        }
+
+                        items.Add(new EnumerationMember(name, value, allValues));
+                    }
+
+                    if (items.Any())
+                    {
+                        return new Enumeration(enumName, items);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // Enum table does not exist in database, skip
+            }
+
+            return null;
+        }
+
         public List<RawSequence> ReadSequences()
         {
             if (DatabaseReaderPlugin != null)
