@@ -1114,7 +1114,7 @@ using {{this}};{{#newline}}
 }{{#newline}}{{#newline}}
 
 
-{{DbContextClassModifiers}} abstract class FakeQueryProvider<T> : IOrderedQueryable<T>, IQueryProvider{{#newline}}
+public abstract class FakeQueryProvider<T> : IOrderedQueryable<T>, IQueryProvider{{#newline}}
 {{{#newline}}
     private IEnumerable<T> _enumerable;{{#newline}}{{#newline}}
 
