@@ -84,7 +84,12 @@ namespace Efrpg.Generators
                 {
                     databaseGeneratedOption = ".ValueGeneratedOnAdd()";
                     if (c.IsIdentity && Column.CanUseSqlServerIdentityColumn.Contains(c.PropertyType))
+                    {
+                        // To do - add support for HiLo sequences using a callback
+                        // databaseGeneratedOption += isEfCore3Plus ? ".UseHiLo(\"sequencename\",\"dbo\")" : ".UseSqlServerIdentityColumn()";
+                        
                         databaseGeneratedOption += isEfCore3Plus ? ".UseIdentityColumn()" : ".UseSqlServerIdentityColumn()";
+                    }
                 }
                 else if (c.IsComputed)
                 {
