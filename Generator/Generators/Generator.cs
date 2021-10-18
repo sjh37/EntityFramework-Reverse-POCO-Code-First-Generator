@@ -1039,7 +1039,7 @@ namespace Efrpg.Generators
                 var fkCols2 = fkCols.Select(c => c.Column).ToList();
                 var pkCols2 = pkCols.Select(c => c.Column).ToList();
 
-                var rel = GetRelationship(relationship, fkCols2, pkCols2, pkPropName, fkPropName, manyToManyMapping, mapKey, foreignKey.CascadeOnDelete, foreignKey.IncludeReverseNavigation, foreignKey.IsNotEnforced, foreignKey.ConstraintName, pkTableHumanCase, fkTable.NameHumanCase, primaryKeyColumns, fkHasUniqueConstraint);
+                var rel = GetRelationship(relationship, fkCols2, pkCols2, pkPropName, fkPropName, manyToManyMapping, mapKey, foreignKey.CascadeOnDelete, foreignKey.IncludeReverseNavigation, foreignKey.IsNotEnforced, foreignKey.ConstraintName, pkTableHumanCase, fkTable.NameHumanCaseWithSuffix(), primaryKeyColumns, fkHasUniqueConstraint);
                 var com = Settings.IncludeComments != CommentsStyle.None && string.IsNullOrEmpty(GetForeignKeyConstraintName("x")) ? " // " + foreignKey.ConstraintName : string.Empty;
                 firstFkCol.Column.ConfigFk.Add(string.Format("{0};{1}", rel, com));
 

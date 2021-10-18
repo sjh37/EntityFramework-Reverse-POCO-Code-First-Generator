@@ -123,6 +123,8 @@ namespace Tester.Integration.EfCore3
         DbSet<ScreamAndShout> ScreamAndShouts { get; set; } // ScreamAndShout
         DbSet<SequenceTest> SequenceTests { get; set; } // SequenceTest
         DbSet<StockPrediction> StockPredictions { get; set; } // StockPrediction
+        DbSet<TableA> TableAs { get; set; } // TableA
+        DbSet<TableB> TableBs { get; set; } // TableB
         DbSet<TableMappingWithSpace> TableMappingWithSpaces { get; set; } // table mapping with space
         DbSet<TableWithDuplicateColumnName> TableWithDuplicateColumnNames { get; set; } // table with duplicate column names
         DbSet<TableWithSpace> TableWithSpaces { get; set; } // table with space
@@ -427,6 +429,8 @@ namespace Tester.Integration.EfCore3
         public DbSet<ScreamAndShout> ScreamAndShouts { get; set; } // ScreamAndShout
         public DbSet<SequenceTest> SequenceTests { get; set; } // SequenceTest
         public DbSet<StockPrediction> StockPredictions { get; set; } // StockPrediction
+        public DbSet<TableA> TableAs { get; set; } // TableA
+        public DbSet<TableB> TableBs { get; set; } // TableB
         public DbSet<TableMappingWithSpace> TableMappingWithSpaces { get; set; } // table mapping with space
         public DbSet<TableWithDuplicateColumnName> TableWithDuplicateColumnNames { get; set; } // table with duplicate column names
         public DbSet<TableWithSpace> TableWithSpaces { get; set; } // table with space
@@ -551,6 +555,8 @@ namespace Tester.Integration.EfCore3
             modelBuilder.ApplyConfiguration(new ScreamAndShoutConfiguration());
             modelBuilder.ApplyConfiguration(new SequenceTestConfiguration());
             modelBuilder.ApplyConfiguration(new StockPredictionConfiguration());
+            modelBuilder.ApplyConfiguration(new TableAConfiguration());
+            modelBuilder.ApplyConfiguration(new TableBConfiguration());
             modelBuilder.ApplyConfiguration(new TableMappingWithSpaceConfiguration());
             modelBuilder.ApplyConfiguration(new TableWithDuplicateColumnNameConfiguration());
             modelBuilder.ApplyConfiguration(new TableWithSpaceConfiguration());
@@ -1656,6 +1662,8 @@ namespace Tester.Integration.EfCore3
         public DbSet<ScreamAndShout> ScreamAndShouts { get; set; } // ScreamAndShout
         public DbSet<SequenceTest> SequenceTests { get; set; } // SequenceTest
         public DbSet<StockPrediction> StockPredictions { get; set; } // StockPrediction
+        public DbSet<TableA> TableAs { get; set; } // TableA
+        public DbSet<TableB> TableBs { get; set; } // TableB
         public DbSet<TableMappingWithSpace> TableMappingWithSpaces { get; set; } // table mapping with space
         public DbSet<TableWithDuplicateColumnName> TableWithDuplicateColumnNames { get; set; } // table with duplicate column names
         public DbSet<TableWithSpace> TableWithSpaces { get; set; } // table with space
@@ -1756,6 +1764,8 @@ namespace Tester.Integration.EfCore3
             ScreamAndShouts = new FakeDbSet<ScreamAndShout>("Id");
             SequenceTests = new FakeDbSet<SequenceTest>("Id");
             StockPredictions = new FakeDbSet<StockPrediction>("Id");
+            TableAs = new FakeDbSet<TableA>("TableAId");
+            TableBs = new FakeDbSet<TableB>("TableBId", "TableAId");
             TableMappingWithSpaces = new FakeDbSet<TableMappingWithSpace>("Id", "IdValue");
             TableWithDuplicateColumnNames = new FakeDbSet<TableWithDuplicateColumnName>("Id");
             TableWithSpaces = new FakeDbSet<TableWithSpace>("Id");
@@ -4310,6 +4320,53 @@ namespace Tester.Integration.EfCore3
         public bool? Buy { get; set; } // buy
     }
 
+    // TableA
+    public class TableA
+    {
+        public int TableAId { get; set; } // TableAId (Primary key)
+        public string TableADesc { get; set; } // TableADesc (length: 20)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child TableBs where [TableB].[TableAId] point to this entity (FK_TableA_CompositeKey_Req)
+        /// </summary>
+        public virtual ICollection<TableB> TableBs { get; set; } // TableB.FK_TableA_CompositeKey_Req
+
+        public TableA()
+        {
+            TableBs = new List<TableB>();
+        }
+    }
+
+    // TableB
+    public class TableB
+    {
+        public int TableBId { get; set; } // TableBId (Primary key)
+        public int TableAId { get; set; } // TableAId (Primary key)
+        public int? ParentTableAId { get; set; } // ParentTableAId
+        public string TableBDesc { get; set; } // TableBDesc (length: 20)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Parent (One-to-One) TableB pointed by [TableB].([TableAId], [TableBId]) (ParentTableB_Hierarchy)
+        /// </summary>
+        public virtual TableB TableB2 { get; set; } // TableB.ParentTableB_Hierarchy
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent TableA pointed by [TableB].([TableAId]) (FK_TableA_CompositeKey_Req)
+        /// </summary>
+        public virtual TableA TableA_TableAId { get; set; } // FK_TableA_CompositeKey_Req
+
+        /// <summary>
+        /// Parent TableB pointed by [TableB].([TableAId], [TableBId]) (ParentTableB_Hierarchy)
+        /// </summary>
+        public virtual TableB TableB1 { get; set; } // ParentTableB_Hierarchy
+    }
+
     // table mapping with space
     public class TableMappingWithSpace
     {
@@ -5839,6 +5896,40 @@ namespace Tester.Integration.EfCore3
             builder.Property(x => x.AdjClose).HasColumnName(@"adj_close").HasColumnType("decimal(10,4)").IsRequired();
             builder.Property(x => x.Volume).HasColumnName(@"volume").HasColumnType("int").IsRequired();
             builder.Property(x => x.Buy).HasColumnName(@"buy").HasColumnType("bit").IsRequired(false);
+        }
+    }
+
+    // TableA
+    public class TableAConfiguration : IEntityTypeConfiguration<TableA>
+    {
+        public void Configure(EntityTypeBuilder<TableA> builder)
+        {
+            builder.ToTable("TableA", "dbo");
+            builder.HasKey(x => x.TableAId).HasName("TableA_pkey").IsClustered();
+
+            builder.Property(x => x.TableAId).HasColumnName(@"TableAId").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.TableADesc).HasColumnName(@"TableADesc").HasColumnType("varchar(20)").IsRequired(false).IsUnicode(false).HasMaxLength(20);
+        }
+    }
+
+    // TableB
+    public class TableBConfiguration : IEntityTypeConfiguration<TableB>
+    {
+        public void Configure(EntityTypeBuilder<TableB> builder)
+        {
+            builder.ToTable("TableB", "dbo");
+            builder.HasKey(x => new { x.TableBId, x.TableAId }).HasName("TableB_pkey").IsClustered();
+
+            builder.Property(x => x.TableBId).HasColumnName(@"TableBId").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.TableAId).HasColumnName(@"TableAId").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.ParentTableAId).HasColumnName(@"ParentTableAId").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.TableBDesc).HasColumnName(@"TableBDesc").HasColumnType("varchar(20)").IsRequired(false).IsUnicode(false).HasMaxLength(20);
+
+            // Foreign keys
+            builder.HasOne(a => a.TableA_TableAId).WithMany(b => b.TableBs).HasForeignKey(c => c.TableAId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_TableA_CompositeKey_Req");
+            builder.HasOne(a => a.TableB1).WithOne(b => b.TableB2).HasForeignKey<TableB>(c => new { c.TableAId, c.TableBId }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("ParentTableB_Hierarchy");
+
+            builder.HasIndex(x => x.TableAId).HasName("fki_ParentTableA_FK_Constraint");
         }
     }
 
