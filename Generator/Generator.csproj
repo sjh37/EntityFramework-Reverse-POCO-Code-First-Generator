@@ -87,6 +87,7 @@
     <Compile Include="ForeignKeyStrategies\LegacyForeignKeyNamingStrategy.cs" />
     <Compile Include="Generators\ColumnAndForeignKey.cs" />
     <Compile Include="Generators\ScalarValuedFunctionsTemplateData.cs" />
+    <Compile Include="HiLoSequence.cs" />
     <Compile Include="LanguageMapping\DatabaseToPropertyTypeFactory.cs" />
     <Compile Include="LanguageMapping\GenerationLanguage.cs" />
     <Compile Include="LanguageMapping\LanguageFactories\IDatabaseLanguageFactory.cs" />

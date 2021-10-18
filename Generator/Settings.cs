@@ -109,6 +109,29 @@ namespace Efrpg
             // }
         };
 
+        // Use the following list to add use of HiLo sequences for identity columns
+        public static List<HiLoSequence> HiLoSequences = new List<HiLoSequence>
+        {
+            // Example
+            // For column dbo.match_table_name.match_column_name this will use .UseHiLo("sequence_name", "sequence_schema") instead of .UseSqlServerIdentityColumn()
+            /*new HiLoSequence
+            {
+                Schema         = "dbo",
+                Table          = "match_table_name",
+                Column         = "match_column_name",
+                SequenceName   = "sequence_name",
+                SequenceSchema = "sequence_schema"
+            },
+            new HiLoSequence
+            {
+                Schema         = "dbo",
+                Table          = "Employees",
+                Column         = "EmployeeID",
+                SequenceName   = "EmployeeSequence",
+                SequenceSchema = "dbo"
+            }*/
+        };
+
         // If you need to serialise your entities with the JsonSerializer from Newtonsoft, this would serialise
         // all properties including the Reverse Navigation and Foreign Keys. The simplest way to exclude them is
         // to use the data annotation [JsonIgnore] on reverse navigation and foreign keys.
@@ -266,6 +289,30 @@ namespace Efrpg
                 if (!string.IsNullOrEmpty(column.Default))
                     column.Default = "(" + enumDefinition.EnumType + ") " + column.Default;
             }
+        };
+
+        // Configures the key property to either use IDENTITY or HILO database feature to generate values for new entities.
+        public static Func<Column, string> ColumnIdentity = delegate (Column c)
+        {
+            if(!IsEfCore3Plus())
+                return ".UseSqlServerIdentityColumn()";
+
+            // At this point we are using EFCore 3, 5+ which supports HiLo sequences.
+            // Example of using a HiLo sequence using this function.
+            /*if (c.ParentTable.NameHumanCase.Equals("SomeTable",  StringComparison.InvariantCultureIgnoreCase) &&
+                c.NameHumanCase            .Equals("SomeColumn", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return ".UseHiLo(\"your_sequence_name\",\"your_sequence_schema\")";
+            }*/
+
+            var hiLoSequence = HiLoSequences?.FirstOrDefault(x =>
+                x.Schema.Equals(c.ParentTable.Schema.DbName, StringComparison.InvariantCultureIgnoreCase) &&
+                (x.Table == "*" || x.Table.Equals(c.ParentTable.DbName, StringComparison.InvariantCultureIgnoreCase)));
+
+            if (hiLoSequence != null)
+                return string.Format(".UseHiLo(\"{0}\", \"{1}\")", hiLoSequence.SequenceName, hiLoSequence.SequenceSchema);
+
+            return ".UseIdentityColumn()";
         };
 
         // Use the following function if you need to apply additional modifications to a enum

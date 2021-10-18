@@ -157,6 +157,27 @@ namespace BuildTT
         // }
     };
 
+    // Use the following list to add use of HiLo sequences for identity columns
+    Settings.HiLoSequences = new List<HiLoSequence>
+    {
+        // Example
+        // For column dbo.match_table_name.match_column_name this will use .UseHiLo(""sequence_name"", ""sequence_schema"") instead of .UseSqlServerIdentityColumn()
+        /*new HiLoSequence
+        {
+            Schema         = ""dbo"",
+            Table          = ""match_table_name"", // Use * to match all tables
+            SequenceName   = ""sequence_name"",
+            SequenceSchema = ""sequence_schema""
+        },
+        new HiLoSequence
+        {
+            Schema         = ""dbo"",
+            Table          = ""Employees"",
+            SequenceName   = ""EmployeeSequence"",
+            SequenceSchema = ""dbo""
+        }*/
+    };
+
     // Column modification ****************************************************************************************************************
     // Use the following list to replace column byte types with Enums.
     // As long as the type can be mapped to your new type, all is well.

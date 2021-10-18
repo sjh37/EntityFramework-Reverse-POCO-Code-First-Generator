@@ -72,7 +72,6 @@ namespace Efrpg.Generators
         {
             string databaseGeneratedOption = null;
 
-            var isEfCore3Plus = Settings.IsEfCore3Plus();
             var isNewSequentialId = !string.IsNullOrEmpty(c.Default) && c.Default.ToLower().Contains("newsequentialid");
             var isTemporalColumn = c.GeneratedAlwaysType != ColumnGeneratedAlwaysType.NotApplicable;
             var hasDefaultValueSql = !string.IsNullOrEmpty(c.HasDefaultValueSql);
@@ -83,13 +82,9 @@ namespace Efrpg.Generators
                 if (c.IsIdentity || isNewSequentialId || isTemporalColumn)
                 {
                     databaseGeneratedOption = ".ValueGeneratedOnAdd()";
+                    
                     if (c.IsIdentity && Column.CanUseSqlServerIdentityColumn.Contains(c.PropertyType))
-                    {
-                        // To do - add support for HiLo sequences using a callback
-                        // databaseGeneratedOption += isEfCore3Plus ? ".UseHiLo(\"sequencename\",\"dbo\")" : ".UseSqlServerIdentityColumn()";
-                        
-                        databaseGeneratedOption += isEfCore3Plus ? ".UseIdentityColumn()" : ".UseSqlServerIdentityColumn()";
-                    }
+                        databaseGeneratedOption += Settings.ColumnIdentity(c);
                 }
                 else if (c.IsComputed)
                 {
