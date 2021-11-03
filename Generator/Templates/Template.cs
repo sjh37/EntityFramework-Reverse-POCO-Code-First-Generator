@@ -47,7 +47,7 @@ namespace Efrpg.Templates
             // Thanks to the awesome work by Travis Parks and Keith Williams for the Mustache# for .NET Core library
             // which is available at https://github.com/SunBrandingSolutions/mustache-sharp
             var parser = new FormatCompiler();
-            var mustacheGenerator = parser.Compile(template);
+            var mustacheGenerator = parser.Compile(template.Replace("\n", string.Empty).Replace("\r", string.Empty));
             return mustacheGenerator.Render(data);
         }
     }
