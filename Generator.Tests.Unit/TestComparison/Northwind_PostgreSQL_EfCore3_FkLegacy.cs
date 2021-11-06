@@ -34,8 +34,6 @@ namespace Efrpg.PostgreSQL
         DbSet<CustomerAndSuppliersByCity> CustomerAndSuppliersByCities { get; set; } // Customer and Suppliers by City
         DbSet<Customercustomerdemo> Customercustomerdemoes { get; set; } // customercustomerdemo
         DbSet<Customerdemographic> Customerdemographics { get; set; } // customerdemographics
-        DbSet<dbo_TableA> dbo_TableAs { get; set; } // TableA
-        DbSet<dbo_TableB> dbo_TableBs { get; set; } // TableB
         DbSet<Employee> Employees { get; set; } // employees
         DbSet<Employeeterritory> Employeeterritories { get; set; } // employeeterritories
         DbSet<Invoice> Invoices { get; set; } // Invoices
@@ -104,6 +102,12 @@ namespace Efrpg.PostgreSQL
 
 
         // Stored Procedures
+        int CustOrderHist(string x);
+        // CustOrderHistAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        int CustOrdersDetail(int? p1);
+        // CustOrdersDetailAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
         int CustOrdersOrders(string p1);
         // CustOrdersOrdersAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
@@ -119,10 +123,6 @@ namespace Efrpg.PostgreSQL
         int TenMostExpensiveProducts();
         // TenMostExpensiveProductsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-
-        // Scalar Valued Functions
-        string CustOrderHist(string customerId); // public.CustOrderHist
-        string CustOrdersDetail(int? p1); // public.CustOrdersDetail
     }
 
     #endregion
@@ -148,8 +148,6 @@ namespace Efrpg.PostgreSQL
         public DbSet<CustomerAndSuppliersByCity> CustomerAndSuppliersByCities { get; set; } // Customer and Suppliers by City
         public DbSet<Customercustomerdemo> Customercustomerdemoes { get; set; } // customercustomerdemo
         public DbSet<Customerdemographic> Customerdemographics { get; set; } // customerdemographics
-        public DbSet<dbo_TableA> dbo_TableAs { get; set; } // TableA
-        public DbSet<dbo_TableB> dbo_TableBs { get; set; } // TableB
         public DbSet<Employee> Employees { get; set; } // employees
         public DbSet<Employeeterritory> Employeeterritories { get; set; } // employeeterritories
         public DbSet<Invoice> Invoices { get; set; } // Invoices
@@ -203,8 +201,6 @@ namespace Efrpg.PostgreSQL
             modelBuilder.ApplyConfiguration(new CustomerAndSuppliersByCityConfiguration());
             modelBuilder.ApplyConfiguration(new CustomercustomerdemoConfiguration());
             modelBuilder.ApplyConfiguration(new CustomerdemographicConfiguration());
-            modelBuilder.ApplyConfiguration(new dbo_TableAConfiguration());
-            modelBuilder.ApplyConfiguration(new dbo_TableBConfiguration());
             modelBuilder.ApplyConfiguration(new EmployeeConfiguration());
             modelBuilder.ApplyConfiguration(new EmployeeterritoryConfiguration());
             modelBuilder.ApplyConfiguration(new InvoiceConfiguration());
@@ -233,6 +229,36 @@ namespace Efrpg.PostgreSQL
 
 
         // Stored Procedures
+        public int CustOrderHist(string x)
+        {
+            var xParam = new NpgsqlParameter { ParameterName = "x", SqlDbType = SqlDbType.character, Direction = ParameterDirection.Input, Value = x };
+            if (xParam.Value == null)
+                xParam.Value = DBNull.Value;
+
+            var procResultParam = new NpgsqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            Database.ExecuteSqlRaw("EXEC @procResult = [public].[CustOrderHist] x", xParam, procResultParam);
+
+            return (int)procResultParam.Value;
+        }
+
+        // CustOrderHistAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int CustOrdersDetail(int? p1)
+        {
+            var p1Param = new NpgsqlParameter { ParameterName = "p1", SqlDbType = SqlDbType.integer, Direction = ParameterDirection.Input, Value = p1.GetValueOrDefault() };
+            if (!p1.HasValue)
+                p1Param.Value = DBNull.Value;
+
+            var procResultParam = new NpgsqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            Database.ExecuteSqlRaw("EXEC @procResult = [public].[CustOrdersDetail] p1", p1Param, procResultParam);
+
+            return (int)procResultParam.Value;
+        }
+
+        // CustOrdersDetailAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
         public int CustOrdersOrders(string p1)
         {
             var p1Param = new NpgsqlParameter { ParameterName = "p1", SqlDbType = SqlDbType.character, Direction = ParameterDirection.Input, Value = p1 };
@@ -316,20 +342,6 @@ namespace Efrpg.PostgreSQL
 
         // TenMostExpensiveProductsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-
-        // Scalar Valued Functions
-
-        [DbFunction("CustOrderHist", "public")]
-        public string CustOrderHist(string customerId)
-        {
-            throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
-        }
-
-        [DbFunction("CustOrdersDetail", "public")]
-        public string CustOrdersDetail(int? p1)
-        {
-            throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
-        }
     }
 
     #endregion
@@ -358,8 +370,6 @@ namespace Efrpg.PostgreSQL
         public DbSet<CustomerAndSuppliersByCity> CustomerAndSuppliersByCities { get; set; } // Customer and Suppliers by City
         public DbSet<Customercustomerdemo> Customercustomerdemoes { get; set; } // customercustomerdemo
         public DbSet<Customerdemographic> Customerdemographics { get; set; } // customerdemographics
-        public DbSet<dbo_TableA> dbo_TableAs { get; set; } // TableA
-        public DbSet<dbo_TableB> dbo_TableBs { get; set; } // TableB
         public DbSet<Employee> Employees { get; set; } // employees
         public DbSet<Employeeterritory> Employeeterritories { get; set; } // employeeterritories
         public DbSet<Invoice> Invoices { get; set; } // Invoices
@@ -396,8 +406,6 @@ namespace Efrpg.PostgreSQL
             CustomerAndSuppliersByCities = new FakeDbSet<CustomerAndSuppliersByCity>();
             Customercustomerdemoes = new FakeDbSet<Customercustomerdemo>("CustomerId", "CustomerTypeId");
             Customerdemographics = new FakeDbSet<Customerdemographic>("CustomerTypeId");
-            dbo_TableAs = new FakeDbSet<dbo_TableA>("TableAId");
-            dbo_TableBs = new FakeDbSet<dbo_TableB>("TableBId", "TableAId");
             Employees = new FakeDbSet<Employee>("EmployeeId");
             Employeeterritories = new FakeDbSet<Employeeterritory>("EmployeeId", "TerritoryId");
             Invoices = new FakeDbSet<Invoice>();
@@ -615,6 +623,20 @@ namespace Efrpg.PostgreSQL
 
         // Stored Procedures
 
+        public int CustOrderHist(string x)
+        {
+            return 0;
+        }
+
+        // CustOrderHistAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int CustOrdersDetail(int? p1)
+        {
+            return 0;
+        }
+
+        // CustOrdersDetailAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
         public int CustOrdersOrders(string p1)
         {
             return 0;
@@ -649,20 +671,6 @@ namespace Efrpg.PostgreSQL
         }
 
         // TenMostExpensiveProductsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
-
-        // Scalar Valued Functions
-
-        // public.CustOrderHist
-        public string CustOrderHist(string customerId)
-        {
-            return default(string);
-        }
-
-        // public.CustOrdersDetail
-        public string CustOrdersDetail(int? p1)
-        {
-            return default(string);
-        }
     }
 
     #endregion
@@ -1159,41 +1167,6 @@ namespace Efrpg.PostgreSQL
         }
     }
 
-    // TableA
-    public class dbo_TableA
-    {
-        public int TableAId { get; set; } // TableAId (Primary key)
-        public string TableADesc { get; set; } // TableADesc
-
-        // Reverse navigation
-
-        /// <summary>
-        /// Child dbo_TableBs where [TableB].[TableAId] point to this entity (FK_TableA_CompositeKey_Req)
-        /// </summary>
-        public virtual ICollection<dbo_TableB> dbo_TableBs { get; set; } // TableB.FK_TableA_CompositeKey_Req
-
-        public dbo_TableA()
-        {
-            dbo_TableBs = new List<dbo_TableB>();
-        }
-    }
-
-    // TableB
-    public class dbo_TableB
-    {
-        public int TableBId { get; set; } // TableBId (Primary key)
-        public int TableAId { get; set; } // TableAId (Primary key)
-        public int? ParentTableAId { get; set; } // ParentTableAId
-        public string TableBDesc { get; set; } // TableBDesc
-
-        // Foreign keys
-
-        /// <summary>
-        /// Parent dbo_TableA pointed by [TableB].([TableAId]) (FK_TableA_CompositeKey_Req)
-        /// </summary>
-        public virtual dbo_TableA dbo_TableA { get; set; } // FK_TableA_CompositeKey_Req
-    }
-
     // employees
     public class Employee
     {
@@ -1242,8 +1215,8 @@ namespace Efrpg.PostgreSQL
 
         public Employee()
         {
-            Employees = new List<Employee>();
             Employeeterritories = new List<Employeeterritory>();
+            Employees = new List<Employee>();
             Orders = new List<Order>();
         }
     }
@@ -1770,39 +1743,6 @@ namespace Efrpg.PostgreSQL
 
             builder.Property(x => x.CustomerTypeId).HasColumnName(@"CustomerTypeID").HasColumnType("character").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.CustomerDesc).HasColumnName(@"CustomerDesc").HasColumnType("text").IsRequired(false).IsUnicode(false);
-        }
-    }
-
-    // TableA
-    public class dbo_TableAConfiguration : IEntityTypeConfiguration<dbo_TableA>
-    {
-        public void Configure(EntityTypeBuilder<dbo_TableA> builder)
-        {
-            builder.ToTable("TableA", "dbo");
-            builder.HasKey(x => x.TableAId).HasName("TableA_pkey");
-
-            builder.Property(x => x.TableAId).HasColumnName(@"TableAId").HasColumnType("integer").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.TableADesc).HasColumnName(@"TableADesc").HasColumnType("text").IsRequired(false).IsUnicode(false);
-        }
-    }
-
-    // TableB
-    public class dbo_TableBConfiguration : IEntityTypeConfiguration<dbo_TableB>
-    {
-        public void Configure(EntityTypeBuilder<dbo_TableB> builder)
-        {
-            builder.ToTable("TableB", "dbo");
-            builder.HasKey(x => new { x.TableBId, x.TableAId }).HasName("TableB_pkey");
-
-            builder.Property(x => x.TableBId).HasColumnName(@"TableBId").HasColumnType("integer").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.TableAId).HasColumnName(@"TableAId").HasColumnType("integer").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.ParentTableAId).HasColumnName(@"ParentTableAId").HasColumnType("integer").IsRequired(false);
-            builder.Property(x => x.TableBDesc).HasColumnName(@"TableBDesc").HasColumnType("text").IsRequired(false).IsUnicode(false);
-
-            // Foreign keys
-            builder.HasOne(a => a.dbo_TableA).WithMany(b => b.dbo_TableBs).HasForeignKey(c => c.TableAId).HasConstraintName("FK_TableA_CompositeKey_Req");
-
-            builder.HasIndex(x => x.TableAId).HasName("fki_ParentTableA_FK_Constraint");
         }
     }
 

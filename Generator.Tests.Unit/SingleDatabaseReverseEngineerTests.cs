@@ -329,7 +329,7 @@ namespace Generator.Tests.Unit
 
         private static void CompareAgainstFolderTestComparison(string subFolder)
         {
-            var testRootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "OneDrive\\Documents");
+            var testRootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "OneDrive-Personal\\OneDrive\\Documents");
             if (!string.IsNullOrEmpty(subFolder))
                 testRootPath = Path.Combine(testRootPath, subFolder);
 
@@ -359,7 +359,7 @@ namespace Generator.Tests.Unit
         private static void CompareAgainstTestComparison(string database, bool publicTestComparison)
         {
             var comparisonFile     = $"{database}_{Settings.DatabaseType}_{Settings.TemplateType}_Fk{Settings.ForeignKeyNamingStrategy}.cs";
-            var testRootPath       = publicTestComparison ? AppDomain.CurrentDomain.BaseDirectory : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "OneDrive\\Documents");
+            var testRootPath       = publicTestComparison ? AppDomain.CurrentDomain.BaseDirectory : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "OneDrive-Personal\\OneDrive\\Documents");
             var testComparisonPath = Path.Combine(testRootPath, $"TestComparison\\{comparisonFile}");
             var testComparison     = File.ReadAllText(testComparisonPath);
             var generatedPath      = Path.Combine(Settings.Root, comparisonFile);
