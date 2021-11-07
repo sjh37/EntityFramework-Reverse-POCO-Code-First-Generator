@@ -5,6 +5,7 @@ using NUnit.Framework;
 namespace Generator.Tests.Unit
 {
     [TestFixture]
+    [Category(Constants.CI)]
     public class MultiContextSettingsTests
     {
         [Test]

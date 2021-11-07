@@ -5,20 +5,21 @@
     using Microsoft.EntityFrameworkCore;
     using NUnit.Framework;
 
+    [Category(Constants.CI)]
     public class FakeContextTests
     {
-        private FakeFred _fakeContext;
+        private FakeFred SUT;
         
-        [OneTimeSetUp]
-        public void OneTimeSetUp()
+        [SetUp]
+        public void BeforeEach()
         {
-            _fakeContext = new FakeFred { Cars = { new Car { Id = 123, CarMake = "Red" } } };
+            SUT = new FakeFred { Cars = { new Car { Id = 123, CarMake = "Red" } } };
         }
         
         [Test]
         public void FirstOrDefault()
         {
-            var result = _fakeContext.Cars.FirstOrDefault();
+            var result = SUT.Cars.FirstOrDefault();
             Assert.IsNotNull(result);
             Assert.AreEqual(123, result.Id);
         }
@@ -26,7 +27,7 @@
         [Test]
         public async Task FirstOrDefaultAsync()
         {
-            var result = await _fakeContext.Cars.FirstOrDefaultAsync();
+            var result = await SUT.Cars.FirstOrDefaultAsync();
             Assert.IsNotNull(result);
             Assert.AreEqual(123, result.Id);
         }
@@ -34,7 +35,7 @@
         [Test]
         public void QueryFirstOrDefault()
         {
-            var query = from w in _fakeContext.Cars select new { QueriedId = w.Id };
+            var query = from w in SUT.Cars select new { QueriedId = w.Id };
             var result = query.FirstOrDefault();
             Assert.IsNotNull(result);
             Assert.AreEqual(123, result.QueriedId);
@@ -43,7 +44,7 @@
         [Test]
         public async Task QueryFirstOrDefaultAsync()
         {
-            var query = from w in _fakeContext.Cars select new { QueriedId = w.Id };
+            var query = from w in SUT.Cars select new { QueriedId = w.Id };
             var result = await query.FirstOrDefaultAsync();
             Assert.IsNotNull(result);
             Assert.AreEqual(123, result.QueriedId);

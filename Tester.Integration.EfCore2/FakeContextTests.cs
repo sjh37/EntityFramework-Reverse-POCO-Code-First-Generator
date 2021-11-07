@@ -7,18 +7,18 @@
 
     public class FakeContextTests
     {
-        private FakeMyDbContext _fakeContext;
+        private FakeMyDbContext SUT;
 
-        [OneTimeSetUp]
-        public void OneTimeSetUp()
+        [SetUp]
+        public void BeforeEach()
         {
-            _fakeContext = new FakeMyDbContext { Categories = { new Category { CategoryId = 123, CategoryName = "Flowers" } } };
+            SUT = new FakeMyDbContext { Categories = { new Category { CategoryId = 123, CategoryName = "Flowers" } } };
         }
 
         [Test]
         public void FirstOrDefault()
         {
-            var result = _fakeContext.Categories.FirstOrDefault();
+            var result = SUT.Categories.FirstOrDefault();
             Assert.IsNotNull(result);
             Assert.AreEqual(123, result.CategoryId);
         }
@@ -26,7 +26,7 @@
         [Test]
         public async Task FirstOrDefaultAsync()
         {
-            var result = await _fakeContext.Categories.FirstOrDefaultAsync();
+            var result = await SUT.Categories.FirstOrDefaultAsync();
             Assert.IsNotNull(result);
             Assert.AreEqual(123, result.CategoryId);
         }
@@ -34,7 +34,7 @@
         [Test]
         public void QueryFirstOrDefault()
         {
-            var query = from w in _fakeContext.Categories select new { QueriedId = w.CategoryId };
+            var query = from w in SUT.Categories select new { QueriedId = w.CategoryId };
             var result = query.FirstOrDefault();
             Assert.IsNotNull(result);
             Assert.AreEqual(123, result.QueriedId);

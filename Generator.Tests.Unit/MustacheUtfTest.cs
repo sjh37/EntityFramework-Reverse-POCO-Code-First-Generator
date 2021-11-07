@@ -6,6 +6,7 @@ using NUnit.Framework;
 namespace Generator.Tests.Unit
 {
     [TestFixture]
+    [Category(Constants.CI)]
     public class MustacheUtfTest
     {
         [Test]

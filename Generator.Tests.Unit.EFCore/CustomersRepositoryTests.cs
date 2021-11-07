@@ -9,6 +9,7 @@ using Tester.BusinessLogic;
 namespace Generator.Tests.Unit.EFCore
 {
     [TestFixture]
+    [Category(Constants.CI)]
     public class CustomersRepositoryTests
     {
         private ICustomersRepository _customersRepository;

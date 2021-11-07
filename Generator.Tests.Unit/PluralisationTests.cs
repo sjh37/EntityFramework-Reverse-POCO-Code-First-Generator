@@ -5,10 +5,11 @@ using NUnit.Framework;
 namespace Generator.Tests.Unit
 {
     [TestFixture]
+    [Category(Constants.CI)]
     public class PluralisationTests
     {
         [OneTimeSetUp]
-        public void OneTimeSetUp()
+        public void BeforeAll()
         {
             Inflector.PluralisationService = new EnglishPluralizationService();
         }

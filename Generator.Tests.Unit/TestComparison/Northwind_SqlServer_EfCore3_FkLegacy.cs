@@ -130,8 +130,12 @@ namespace Efrpg.V3TestK
         Task<List<TenMostExpensiveProductsReturnModel>> TenMostExpensiveProductsAsync();
 
 
+        // Table Valued Functions
+        IQueryable<ProductsUnderThisUnitPriceReturnModel> ProductsUnderThisUnitPrice(decimal? price); // dbo.ProductsUnderThisUnitPrice
+
         // Scalar Valued Functions
-        int FnDiagramobjects(); // dbo.fn_diagramobjects
+        decimal MinUnitPriceByCategory(int? categoryId); // dbo.MinUnitPriceByCategory
+        decimal TotalProductUnitPriceByCategory(int? categoryId); // dbo.TotalProductUnitPriceByCategory
     }
 
     #endregion
@@ -237,6 +241,9 @@ namespace Efrpg.V3TestK
             modelBuilder.Entity<SalesByCategoryReturnModel>().HasNoKey();
             modelBuilder.Entity<SalesByYearReturnModel>().HasNoKey();
             modelBuilder.Entity<TenMostExpensiveProductsReturnModel>().HasNoKey();
+
+            // Table Valued Functions
+            modelBuilder.Entity<ProductsUnderThisUnitPriceReturnModel>().HasNoKey();
         }
 
 
@@ -510,10 +517,26 @@ namespace Efrpg.V3TestK
         }
 
 
+        // Table Valued Functions
+
+        // dbo.ProductsUnderThisUnitPrice
+        public IQueryable<ProductsUnderThisUnitPriceReturnModel> ProductsUnderThisUnitPrice(decimal? price)
+        {
+            return Set<ProductsUnderThisUnitPriceReturnModel>()
+                .FromSqlRaw("SELECT * FROM [dbo].[ProductsUnderThisUnitPrice]({0})", price)
+                .AsNoTracking();
+        }
+
         // Scalar Valued Functions
 
-        [DbFunction("fn_diagramobjects", "dbo")]
-        public int FnDiagramobjects()
+        [DbFunction("MinUnitPriceByCategory", "dbo")]
+        public decimal MinUnitPriceByCategory(int? categoryId)
+        {
+            throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
+        }
+
+        [DbFunction("TotalProductUnitPriceByCategory", "dbo")]
+        public decimal TotalProductUnitPriceByCategory(int? categoryId)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
@@ -927,12 +950,26 @@ namespace Efrpg.V3TestK
             return Task.FromResult(TenMostExpensiveProducts(out procResult));
         }
 
+        // Table Valued Functions
+
+        // dbo.ProductsUnderThisUnitPrice
+        public IQueryable<ProductsUnderThisUnitPriceReturnModel> ProductsUnderThisUnitPrice(decimal? price)
+        {
+            return new List<ProductsUnderThisUnitPriceReturnModel>().AsQueryable();
+        }
+
         // Scalar Valued Functions
 
-        // dbo.fn_diagramobjects
-        public int FnDiagramobjects()
+        // dbo.MinUnitPriceByCategory
+        public decimal MinUnitPriceByCategory(int? categoryId)
         {
-            return default(int);
+            return default(decimal);
+        }
+
+        // dbo.TotalProductUnitPriceByCategory
+        public decimal TotalProductUnitPriceByCategory(int? categoryId)
+        {
+            return default(decimal);
         }
     }
 
@@ -2473,6 +2510,20 @@ namespace Efrpg.V3TestK
         public DateTime? ShippedDate { get; set; }
         public int OrderID { get; set; }
         public decimal? SaleAmount { get; set; }
+    }
+
+    public class ProductsUnderThisUnitPriceReturnModel
+    {
+        public int ProductID { get; set; }
+        public string ProductName { get; set; }
+        public int? SupplierID { get; set; }
+        public int? CategoryID { get; set; }
+        public string QuantityPerUnit { get; set; }
+        public decimal? UnitPrice { get; set; }
+        public short? UnitsInStock { get; set; }
+        public short? UnitsOnOrder { get; set; }
+        public short? ReorderLevel { get; set; }
+        public bool Discontinued { get; set; }
     }
 
     public class SalesByCategoryReturnModel

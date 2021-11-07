@@ -1,20 +1,23 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using EntityFramework_Reverse_POCO_Generator;
+﻿using EntityFramework_Reverse_POCO_Generator;
+using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Tester.BusinessLogic;
 
 namespace Tester.Integration.EfCore3
 {
     [TestFixture]
+    [Category(Constants.Integration)]
+    [Category(Constants.DbType.SqlServer)]
     public class CustomersRepositoryTests
     {
-        private MyDbContext _db;
+        private MyDbContext SUT;
         private Dictionary<string, string> _dictionary;
-        //private IConfiguration _configuration;
 
         [OneTimeSetUp]
-        public void OneTimeSetUp()
+        public void BeforeAll()
         {
             _dictionary = new Dictionary<string, string>
             {
@@ -29,16 +32,19 @@ namespace Tester.Integration.EfCore3
                 { "BONAP", "Bon app'" },
                 { "BOTTM", "Bottom-Dollar Markets"}
             };
+
+
+
         }
 
         [OneTimeTearDown]
         public void OneTimeTearDown()
         {
-            var customer = _db.Customers.FirstOrDefault(x => x.CustomerId == "TEST.");
+            var customer = SUT.Customers.FirstOrDefault(x => x.CustomerId == "TEST.");
             if (customer == null)
                 return;
-            _db.Customers.Remove(customer);
-            _db.SaveChanges();
+            SUT.Customers.Remove(customer);
+            SUT.SaveChanges();
         }
 
         [SetUp]
@@ -48,9 +54,13 @@ namespace Tester.Integration.EfCore3
             //    .AddJsonFile("appsettings.json", false, false)
             //    .Build();
 
-            //_db = new MyDbContext(_configuration);
-            _db = new MyDbContext();
+            //SUT = new MyDbContext(_configuration);
+            //SUT = new MyDbContext();
+
+            SUT = ConfigurationExtensions.CreateMyDbContext();
         }
+
+        
 
         [Test]
         public void UseEfDirectly()
@@ -58,7 +68,7 @@ namespace Tester.Integration.EfCore3
             // Arrange
 
             // Act
-            var data = _db.Customers.Take(10).OrderBy(x => x.CustomerId).ToList();
+            var data = SUT.Customers.Take(10).OrderBy(x => x.CustomerId).ToList();
 
             // Assert
             AssertCustomerData(data);
@@ -68,7 +78,7 @@ namespace Tester.Integration.EfCore3
         public void UseEfViaRepository()
         {
             // Arrange
-            var customersRepository = new CustomersRepository(_db);
+            var customersRepository = new CustomersRepository(SUT);
 
             // Act
             var data = customersRepository.GetTop10().ToList();
@@ -91,9 +101,9 @@ namespace Tester.Integration.EfCore3
         public void InsertAndDeleteTestRecordSuccessfullyViaFindById()
         {
             // Arrange
-            var db2 = new MyDbContext();
-            var db3 = new MyDbContext();
-            var customersRepository1 = new CustomersRepository(_db);
+            var db2 = ConfigurationExtensions.CreateMyDbContext();
+            var db3 = ConfigurationExtensions.CreateMyDbContext();
+            var customersRepository1 = new CustomersRepository(SUT);
             var customersRepository2 = new CustomersRepository(db2);
             var customersRepository3 = new CustomersRepository(db3);
             var customer = new Customer
@@ -116,12 +126,14 @@ namespace Tester.Integration.EfCore3
         }
 
         [Test]
+        [Category(Constants.Integration)]
         public void InsertAndDeleteTestRecordSuccessfullyViaFind()
         {
             // Arrange
-            var db2 = new MyDbContext();
-            var db3 = new MyDbContext();
-            var customersRepository1 = new CustomersRepository(_db);
+            var db2 = ConfigurationExtensions.CreateMyDbContext();
+            var db3 = ConfigurationExtensions.CreateMyDbContext();
+
+            var customersRepository1 = new CustomersRepository(SUT);
             var customersRepository2 = new CustomersRepository(db2);
             var customersRepository3 = new CustomersRepository(db3);
             var customer = new Customer
@@ -142,5 +154,28 @@ namespace Tester.Integration.EfCore3
             Assert.AreEqual(customer.CompanyName, customer2.CompanyName);
             Assert.IsNull(customer3);
         }
+
+        #region manually run test
+        [Test]
+        [Ignore("a bug with decimal sequence (see note)")]
+        public void GenerateFredDb()
+        {
+
+            /*NOTE:
+                There seem to be a bug in generation for decimal sequence
+                It generates (18,2) and cause the execution to fail
+                CREATE SEQUENCE [dbo].[CountByDecimal] AS decimal(18,2) START WITH 593 INCREMENT BY 82 MINVALUE 5 MAXVALUE 777777 NO CYCLE;
+
+               Should be generated as decimal or decimal(18,0)
+               CREATE SEQUENCE [dbo].[CountByDecimal] AS decimal START WITH 593 INCREMENT BY 82 MINVALUE 5 MAXVALUE 777777 NO CYCLE;
+
+            */
+            var fredDb = ConfigurationExtensions.CreateFredDbContext();
+            fredDb.Database.EnsureCreated();
+
+            var sql = fredDb.Database.GenerateCreateScript();
+            Console.WriteLine(sql);
+        }
+        #endregion
     }
 }

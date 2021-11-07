@@ -1,20 +1,18 @@
-﻿using System;
-using System.Linq;
-using EntityFramework_Reverse_POCO_Generator;
-using Microsoft.EntityFrameworkCore;
+﻿using EntityFramework_Reverse_POCO_Generator;
 using NUnit.Framework;
 
 namespace Tester.Integration.EfCore3
 {
     [TestFixture]
+    [Category(Constants.DbType.SqlServer)]
     public class StoredProcedureAsyncTests
     {
-        private MyDbContext _db;
+        private MyDbContext SUT;
 
         [SetUp]
         public void SetUp()
         {
-            _db = new MyDbContext();
+            SUT = ConfigurationExtensions.CreateMyDbContext();
         }
 
         [Test]
@@ -23,9 +21,9 @@ namespace Tester.Integration.EfCore3
         [TestCase("WOLZA")]
         public void CustOrderHist(string customerId)
         {
-            Assert.IsNotNull(_db);
-            var data = _db.CustOrderHist(customerId);
-            var asyncData = _db.CustOrderHistAsync(customerId).Result;
+            Assert.IsNotNull(SUT);
+            var data = SUT.CustOrderHist(customerId);
+            var asyncData = SUT.CustOrderHistAsync(customerId).Result;
 
             Assert.IsNotNull(data);
             Assert.IsNotNull(asyncData);
