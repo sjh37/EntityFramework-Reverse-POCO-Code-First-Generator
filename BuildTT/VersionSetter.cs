@@ -73,14 +73,25 @@ namespace BuildTT
                 tt.WriteLine("        <Tags>Reverse Poco, Data, Entity Framework, Code Generator, Database, reverse engineering, C#, SQL Server, PostgreSQL, POCO, Code First, CodeFirst</Tags>");
                 tt.WriteLine("    </Metadata>");
                 tt.WriteLine("    <Installation>");
-                tt.WriteLine("        <InstallationTarget Id=\"Microsoft.VisualStudio.Community\" Version=\"[15.0,18.0)\" />");
+                tt.WriteLine("        <InstallationTarget Version=\"[15.0,17.0)\" Id=\"Microsoft.VisualStudio.Community\" />");
+                tt.WriteLine("        <InstallationTarget Version=\"[17.0,18.0)\" Id=\"Microsoft.VisualStudio.Community\">");
+                tt.WriteLine("            <ProductArchitecture>amd64</ProductArchitecture>");
+                tt.WriteLine("        </InstallationTarget>");
+                tt.WriteLine("        <InstallationTarget Version=\"[15.0,17.0)\" Id=\"Microsoft.VisualStudio.Pro\" />");
+                tt.WriteLine("        <InstallationTarget Version=\"[17.0,18.0)\" Id=\"Microsoft.VisualStudio.Pro\">");
+                tt.WriteLine("            <ProductArchitecture>amd64</ProductArchitecture>");
+                tt.WriteLine("        </InstallationTarget>");
+                tt.WriteLine("        <InstallationTarget Version=\"[15.0,17.0)\" Id=\"Microsoft.VisualStudio.Enterprise\" />");
+                tt.WriteLine("        <InstallationTarget Version=\"[17.0,18.0)\" Id=\"Microsoft.VisualStudio.Enterprise\">");
+                tt.WriteLine("            <ProductArchitecture>amd64</ProductArchitecture>");
+                tt.WriteLine("        </InstallationTarget>");
                 tt.WriteLine("    </Installation>");
                 tt.WriteLine("    <Assets>");
                 tt.WriteLine("        <Asset Type=\"Microsoft.VisualStudio.ItemTemplate\" d:Source=\"File\" Path=\"ItemTemplates\" d:TargetPath=\"ItemTemplates\\efrpoco.zip\" />");
                 tt.WriteLine("    </Assets>");
                 tt.WriteLine("    <Prerequisites>");
-                tt.WriteLine("        <Prerequisite Id=\"Microsoft.VisualStudio.Component.TextTemplating\" Version=\"[14.0,]\" DisplayName=\"Text Template Transformation\" />");
-                tt.WriteLine("        <Prerequisite Id=\"Microsoft.VisualStudio.Component.CoreEditor\" Version=\"[14.0,]\" DisplayName=\"Visual Studio core editor\" />");
+                tt.WriteLine("        <Prerequisite Id=\"Microsoft.VisualStudio.Component.TextTemplating\" Version=\"[15.0,)\" DisplayName=\"Text Template Transformation\" />");
+                tt.WriteLine("        <Prerequisite Id=\"Microsoft.VisualStudio.Component.CoreEditor\" Version=\"[15.0,)\" DisplayName=\"Visual Studio core editor\" />");
                 tt.WriteLine("    </Prerequisites>");
                 tt.Write("</PackageManifest>");
             }
