@@ -7,7 +7,7 @@ namespace EnumOnly
 {
     #region Enumerations
 
-    [GeneratedCode("EF.Reverse.POCO.Generator", "v3.4.1")]
+    [GeneratedCode("EF.Reverse.POCO.Generator", "v3.5.0")]
     public enum DaysOfWeek
     {
         Sun = 0,
