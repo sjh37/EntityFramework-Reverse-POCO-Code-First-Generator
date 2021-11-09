@@ -8,7 +8,6 @@ using NUnit.Framework;
 namespace Generator.Tests.Unit
 {
     [TestFixture, NonParallelizable]
-    [Category(Constants.CI)]
     public class ForeignKeyTests
     {
         private List<RawForeignKey> rawForeignKeys;
@@ -16,7 +15,7 @@ namespace Generator.Tests.Unit
         private List<Table> tables;
 
         [OneTimeSetUp]
-        public void BeforeAll()
+        public void OneTimeSetUp()
         {
             rawForeignKeys = new List<RawForeignKey>
             {

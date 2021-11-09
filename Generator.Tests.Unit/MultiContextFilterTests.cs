@@ -6,13 +6,12 @@ using NUnit.Framework;
 namespace Generator.Tests.Unit
 {
     [TestFixture]
-    [Category(Constants.CI)]
     public class MultiContextFilterTests
     {
-        private MultiContextFilter SUT;
+        private MultiContextFilter _sut;
 
-        [SetUp]
-        public void BeforeEach()
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
         {
             var settings = new MultiContextSettings
             {
@@ -34,11 +33,11 @@ namespace Generator.Tests.Unit
 
                 Columns = new List<MultiContextColumnSettings>
                 {
-                    new() { Name = "null",  DbName = null, IsPrimaryKey = null,  EnumType = null,       OverrideModifier = null  },
-                    new() { Name = "blank", DbName = "",   IsPrimaryKey = false, EnumType = "",         OverrideModifier = false },
-                    new() { Name = "d",     DbName = "dd", IsPrimaryKey = true,  EnumType = "someEnum", OverrideModifier = true  },
-                    new() { Name = "e",     IsPrimaryKey = true },
-                    new() { Name = "f",     IsPrimaryKey = false }
+                    new MultiContextColumnSettings { Name = "null",  DbName = null, IsPrimaryKey = null,  EnumType = null,       OverrideModifier = null  },
+                    new MultiContextColumnSettings { Name = "blank", DbName = "",   IsPrimaryKey = false, EnumType = "",         OverrideModifier = false },
+                    new MultiContextColumnSettings { Name = "d",     DbName = "dd", IsPrimaryKey = true,  EnumType = "someEnum", OverrideModifier = true  },
+                    new MultiContextColumnSettings { Name = "e",     IsPrimaryKey = true },
+                    new MultiContextColumnSettings { Name = "f",     IsPrimaryKey = false }
                 }
             });
 
@@ -51,11 +50,11 @@ namespace Generator.Tests.Unit
 
                 Columns = new List<MultiContextColumnSettings>
                 {
-                    new()  { Name = "null2",  DbName = null,  IsPrimaryKey = null,  EnumType = null,        OverrideModifier = null  },
-                    new()  { Name = "blank2", DbName = "",    IsPrimaryKey = false, EnumType = "",          OverrideModifier = false },
-                    new() { Name = "dd",     DbName = "ddd", IsPrimaryKey = true,  EnumType = "someEnum2", OverrideModifier = true  },
-                    new() { Name = "ee",     IsPrimaryKey = true },
-                    new() { Name = "ff",     IsPrimaryKey = false }
+                    new MultiContextColumnSettings { Name = "null2",  DbName = null,  IsPrimaryKey = null,  EnumType = null,        OverrideModifier = null  },
+                    new MultiContextColumnSettings { Name = "blank2", DbName = "",    IsPrimaryKey = false, EnumType = "",          OverrideModifier = false },
+                    new MultiContextColumnSettings { Name = "dd",     DbName = "ddd", IsPrimaryKey = true,  EnumType = "someEnum2", OverrideModifier = true  },
+                    new MultiContextColumnSettings { Name = "ee",     IsPrimaryKey = true },
+                    new MultiContextColumnSettings { Name = "ff",     IsPrimaryKey = false }
                 }
             });
 
@@ -65,8 +64,8 @@ namespace Generator.Tests.Unit
                 DbName = "Accounting.schema_test",
                 Columns = new List<MultiContextColumnSettings>
                 {
-                    new() { Name = "gg", DbName = null,  IsPrimaryKey = null,  EnumType = null,        OverrideModifier = null  },
-                    new() { Name = "hh", DbName = "h_h", IsPrimaryKey = false, EnumType = "",          OverrideModifier = false }
+                    new MultiContextColumnSettings { Name = "gg", DbName = null,  IsPrimaryKey = null,  EnumType = null,        OverrideModifier = null  },
+                    new MultiContextColumnSettings { Name = "hh", DbName = "h_h", IsPrimaryKey = false, EnumType = "",          OverrideModifier = false }
                 }
             });
 
@@ -76,8 +75,8 @@ namespace Generator.Tests.Unit
                 DbName = "Events.schema_test2",
                 Columns = new List<MultiContextColumnSettings>
                 {
-                    new() { Name = "ii",  DbName = null,  IsPrimaryKey = null,  EnumType = null,        OverrideModifier = null  },
-                    new() { Name = "jj", DbName = "j_j",  IsPrimaryKey = false, EnumType = "",          OverrideModifier = false }
+                    new MultiContextColumnSettings { Name = "ii",  DbName = null,  IsPrimaryKey = null,  EnumType = null,        OverrideModifier = null  },
+                    new MultiContextColumnSettings { Name = "jj", DbName = "j_j",  IsPrimaryKey = false, EnumType = "",          OverrideModifier = false }
                 }
             });
 
@@ -118,7 +117,7 @@ namespace Generator.Tests.Unit
                 NameField  = ""
             });
 
-            SUT = new MultiContextFilter(settings);
+            _sut = new MultiContextFilter(settings);
         }
 
         [TestCase("", true)]
@@ -134,7 +133,7 @@ namespace Generator.Tests.Unit
             var item = new Schema(schema);
             
             // Act
-            var result = SUT.IsExcluded(item);
+            var result = _sut.IsExcluded(item);
             
             // Assert
             Assert.AreEqual(expected, result);
@@ -161,10 +160,10 @@ namespace Generator.Tests.Unit
         public void IsTableExcluded(string schema, string name, string nameHumanCase, bool expected)
         {
             // Arrange
-            var t = new Table(SUT, new Schema(schema), name, false) { NameHumanCase = nameHumanCase };
+            var t = new Table(_sut, new Schema(schema), name, false) { NameHumanCase = nameHumanCase };
             
             // Act
-            var result = SUT.IsExcluded(t);
+            var result = _sut.IsExcluded(t);
             
             // Assert
             Assert.AreEqual(expected, result);
@@ -203,7 +202,7 @@ namespace Generator.Tests.Unit
         public void IsColumnExcluded(string schema, string tableName, string tableNameHumanCase, string columnName, string columnNameHumanCase, bool expected)
         {
             // Arrange
-            var t = new Table(SUT, new Schema(schema), tableName, false) { NameHumanCase = tableNameHumanCase };
+            var t = new Table(_sut, new Schema(schema), tableName, false) { NameHumanCase = tableNameHumanCase };
             var c = new Column
             {
                 ParentTable   = t,
@@ -212,7 +211,7 @@ namespace Generator.Tests.Unit
             };
 
             // Act
-            var result = SUT.IsExcluded(c);
+            var result = _sut.IsExcluded(c);
             
             // Assert
             Assert.AreEqual(expected, result);
@@ -238,7 +237,7 @@ namespace Generator.Tests.Unit
             var sp = new StoredProcedure { Schema = new Schema(schema), DbName = name, NameHumanCase = nameHumanCase, IsStoredProcedure = true };
             
             // Act
-            var result = SUT.IsExcluded(sp);
+            var result = _sut.IsExcluded(sp);
             
             // Assert
             Assert.AreEqual(expected, result);
@@ -258,8 +257,8 @@ namespace Generator.Tests.Unit
         public void TableRename(string name, string schema, string expected)
         {
             // Act
-            var result1 = SUT.TableRename(name, schema, true);
-            var result2 = SUT.TableRename(name, schema, false);
+            var result1 = _sut.TableRename(name, schema, true);
+            var result2 = _sut.TableRename(name, schema, false);
 
             // Assert
             Assert.AreEqual(expected, result1);
@@ -289,7 +288,7 @@ namespace Generator.Tests.Unit
             bool expectedIsPrimaryKey, string expectedPropertyType, bool expectedOverrideModifier, string expectedDefault)
         {
             // Arrange
-            var t = new Table(SUT, new Schema(schema), tableName, false) { NameHumanCase = tableName };
+            var t = new Table(_sut, new Schema(schema), tableName, false) { NameHumanCase = tableName };
             var c = new Column
             {
                 ParentTable      = t,
@@ -302,7 +301,7 @@ namespace Generator.Tests.Unit
             };
 
             // Act
-            SUT.UpdateColumn(c, t);
+            _sut.UpdateColumn(c, t);
 
             // Assert
             Assert.AreEqual(expectedIsPrimaryKey,     c.IsPrimaryKey);

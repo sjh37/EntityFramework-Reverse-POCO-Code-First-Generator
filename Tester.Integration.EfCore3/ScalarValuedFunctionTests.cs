@@ -8,8 +8,6 @@ using Tester.Integration.EfCore3.Single_context_many_files;
 namespace Tester.Integration.EfCore3
 {
     [TestFixture]
-    [Category(Constants.Integration)]
-    [Category(Constants.DbType.SqlServer)]
     public class ScalarValuedFunctionTests
     {
         private EfCoreDbContext _db;
@@ -17,12 +15,11 @@ namespace Tester.Integration.EfCore3
         [SetUp]
         public void SetUp()
         {
-            var config = new ConfigurationBuilder()
+            var configuration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", false, false)
-                .AddUserSecrets<ScalarValuedFunctionTests>()
                 .Build();
 
-            _db = new EfCoreDbContext(config);
+            _db = new EfCoreDbContext(configuration);
         }
 
         [Test]

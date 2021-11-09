@@ -1,34 +1,19 @@
-﻿using NUnit.Framework;
-using System.Linq;
+﻿using System.Linq;
+using NUnit.Framework;
 
 namespace Tester.Integration.EfCore3
 {
     [TestFixture]
-    [Category(Constants.Integration)]
-    [Category(Constants.DbType.SqlServer)]
     public class TableValuedFunctionTests
     {
-        private TestDatabaseStandard.TestDbContext SUT;
-
-        [SetUp]
-        public void SetUp()
-        {
-            SUT = ConfigurationExtensions.CreateTestDbContext();
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            SUT.Dispose();
-        }
-
         [Test]
         public void Standard_test()
         {
             // Arrange
+            using var db = new TestDatabaseStandard.TestDbContext();
 
             // Act
-            var data = SUT.CsvToInt("123,456", "").ToList();
+            var data = db.CsvToInt("123,456", "").ToList();
 
             // Assert
             Assert.AreEqual(2, data.Count);
@@ -40,10 +25,10 @@ namespace Tester.Integration.EfCore3
         public void Standard_FunctionCanBeCalledWithinQueryThroughInterfaceReference()
         {
             // Arrange
-            var sut = (TestDatabaseStandard.ITestDbContext) SUT;
+            using var db = (TestDatabaseStandard.ITestDbContext) new TestDatabaseStandard.TestDbContext();
 
             // Act
-            var data = sut.CsvToInt("123,456", "").ToList();
+            var data = db.CsvToInt("123,456", "").ToList();
             
             /* EF6 test
              var data = (from f in db.Stafford_Foos
@@ -63,9 +48,10 @@ namespace Tester.Integration.EfCore3
         public void Standard_FunctionInNonDefaultSchemaCanBeCalled()
         {
             // Arrange
+            using var db = new TestDatabaseStandard.TestDbContext();
 
             // Act
-            var data = SUT.CustomSchema_CsvToIntWithSchema("123,456", "").ToList();
+            var data = db.CustomSchema_CsvToIntWithSchema("123,456", "").ToList();
 
             // Assert
             Assert.AreEqual(2, data.Count);

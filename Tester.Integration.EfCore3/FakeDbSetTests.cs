@@ -1,5 +1,4 @@
-﻿
-namespace Tester.Integration.EfCore3
+﻿namespace Tester.Integration.EfCore3
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -7,7 +6,6 @@ namespace Tester.Integration.EfCore3
     using NUnit.Framework;
 
     [TestFixture]
-    [Category(Constants.CI)]
     public class FakeDbSetTests
     {
         private FakeDbSet<A> _dbSet;

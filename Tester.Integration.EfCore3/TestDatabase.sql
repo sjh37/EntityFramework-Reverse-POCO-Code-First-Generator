@@ -331,8 +331,6 @@ GO
 
 UPDATE MultiContext.[Column] SET Attributes=N'[ExampleForTesting("abc")]~[CustomRequired]' WHERE Name=N'Dollar'
 UPDATE MultiContext.[Column] SET Attributes=N'[ExampleForTesting("def")]~[CustomSecurity(SecurityEnum.Readonly)]' WHERE Name=N'Pound'
-
-UPDATE MultiContext.[Table] SET Attributes=N'[CustomSecurity(SecurityEnum.Readonly)]' WHERE [Name]=N'Boo'
 GO
 
 -- Test to make sure all optional fields are read in and stored in dictionary

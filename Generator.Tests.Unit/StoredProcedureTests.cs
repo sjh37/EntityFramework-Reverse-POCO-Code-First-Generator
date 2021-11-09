@@ -5,7 +5,6 @@ using System.Data;
 namespace Generator.Tests.Unit
 {
     [TestFixture]
-    [Category(Constants.CI)]
     public class StoredProcedureTests
     {
         public StoredProcedure Sut { get; private set; }

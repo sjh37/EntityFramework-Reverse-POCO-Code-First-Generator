@@ -3,20 +3,16 @@
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <RootNamespace>EntityFramework_Reverse_POCO_Generator</RootNamespace>
-        <SignAssembly>false</SignAssembly>
+        <SignAssembly>true</SignAssembly>
         <AssemblyOriginatorKeyFile>EF.Reverse.POCO.Generator.pfx</AssemblyOriginatorKeyFile>
         <DelaySign>false</DelaySign>
-        <LangVersion>latest</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.11" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.16" />
     </ItemGroup>
 
     <ItemGroup>
-        <None Update="App_Data\NorthwindSqlCe40.sdf">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
         <None Update="Database NorthwindSqlCe40.tt">
             <Generator>TextTemplatingFileGenerator</Generator>
             <LastGenOutput>Database NorthwindSqlCe40.cs</LastGenOutput>

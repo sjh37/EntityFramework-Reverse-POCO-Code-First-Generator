@@ -9,13 +9,12 @@ using NUnit.Framework;
 namespace Generator.Tests.Unit
 {
     [TestFixture]
-    [Category(Constants.CI)]
     public class IndexModelBuilderTests
     {
         private Table _orderDetails;
 
         [OneTimeSetUp]
-        public void BeforeAll()
+        public void SetUp()
         {
             _orderDetails = new Table(null, new Schema("dbo"), "order details", false)
             {

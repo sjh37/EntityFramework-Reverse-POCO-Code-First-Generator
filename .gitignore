@@ -86,6 +86,7 @@ ipch/
 *.ncb
 *.opendb
 *.opensdf
+*.sdf
 *.cachefile
 
 # Visual Studio profiler
@@ -242,4 +243,4 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
-
+*.sdf

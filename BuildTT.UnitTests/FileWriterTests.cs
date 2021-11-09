@@ -13,7 +13,7 @@ namespace BuildTT.UnitTests
         private List<IFileReader> _fileReaders;
 
         [OneTimeSetUp]
-        public void BeforeAll()
+        public void SetUp()
         {
             _fileReaders = new List<IFileReader>();
             string[] data1 =

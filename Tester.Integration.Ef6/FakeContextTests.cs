@@ -5,22 +5,20 @@
     using System.Threading.Tasks;
     using NUnit.Framework;
 
-    [TestFixture]
-    [Category(Constants.CI)]
     public class FakeContextTests
     {
-        private FakeMyDbContext SUT;
+        private FakeMyDbContext _fakeContext;
 
-        [SetUp]
-        public void BeforeEach()
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
         {
-            SUT = new FakeMyDbContext { Categories = { new Category { CategoryId = 123, CategoryName = "Flowers" } } };
+            _fakeContext = new FakeMyDbContext { Categories = { new Category { CategoryId = 123, CategoryName = "Flowers" } } };
         }
 
         [Test]
         public void FirstOrDefault()
         {
-            var result = SUT.Categories.FirstOrDefault();
+            var result = _fakeContext.Categories.FirstOrDefault();
             Assert.IsNotNull(result);
             Assert.AreEqual(123, result.CategoryId);
         }
@@ -28,7 +26,7 @@
         [Test]
         public async Task FirstOrDefaultAsync()
         {
-            var result = await SUT.Categories.FirstOrDefaultAsync();
+            var result = await _fakeContext.Categories.FirstOrDefaultAsync();
             Assert.IsNotNull(result);
             Assert.AreEqual(123, result.CategoryId);
         }
@@ -36,7 +34,7 @@
         [Test]
         public void QueryFirstOrDefault()
         {
-            var query = from w in SUT.Categories select new { QueriedId = w.CategoryId };
+            var query = from w in _fakeContext.Categories select new { QueriedId = w.CategoryId };
             var result = query.FirstOrDefault();
             Assert.IsNotNull(result);
             Assert.AreEqual(123, result.QueriedId);
@@ -45,7 +43,7 @@
         [Test]
         public async Task QueryFirstOrDefaultAsync()
         {
-            var query = from w in SUT.Categories select new { QueriedId = w.CategoryId };
+            var query = from w in _fakeContext.Categories select new { QueriedId = w.CategoryId };
             var result = await query.FirstOrDefaultAsync();
             Assert.IsNotNull(result);
             Assert.AreEqual(123, result.QueriedId);

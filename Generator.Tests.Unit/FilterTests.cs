@@ -6,23 +6,17 @@ using NUnit.Framework;
 namespace Generator.Tests.Unit
 {
     [TestFixture]
-    [Category(Constants.CI)]
     public class FilterTests
     {
-        private TestContextFilter SUT;
+        private TestContextFilter _sut;
 
         [OneTimeSetUp]
-        public void BeforeAll()
+        public void SetUp()
         {
             FilterSettings.Reset();
             FilterSettings.AddDefaults();
             FilterSettings.CheckSettings();
-        }
-
-        [SetUp]
-        public void BeforeEach()
-        {
-            SUT = new TestContextFilter();
+            _sut = new TestContextFilter();
         }
 
         [Test]
@@ -68,7 +62,7 @@ namespace Generator.Tests.Unit
         public void IsTypeExcluded(string name, FilterType filterType, bool expectedExclusion)
         {
             var item = CreateType(name, filterType);
-            var isExcluded = SUT.IsExcluded(item);
+            var isExcluded = _sut.IsExcluded(item);
             Assert.AreEqual(expectedExclusion, isExcluded);
         }
 

@@ -99,15 +99,8 @@ namespace Efrpg.V3TestA
         Task<List<TenMostExpensiveProductsReturnModel>> TenMostExpensiveProductsAsync();
 
 
-        // Table Valued Functions
-
-        [DbFunction("MyDbContext", "ProductsUnderThisUnitPrice")]
-        [CodeFirstStoreFunctions.DbFunctionDetails(DatabaseSchema = "dbo")]
-        IQueryable<ProductsUnderThisUnitPriceReturnModel> ProductsUnderThisUnitPrice(decimal? price);
-
         // Scalar Valued Functions
-        decimal MinUnitPriceByCategory(int? categoryId); // dbo.MinUnitPriceByCategory
-        decimal TotalProductUnitPriceByCategory(int? categoryId); // dbo.TotalProductUnitPriceByCategory
+        int FnDiagramobjects(); // dbo.fn_diagramobjects
     }
 
     #endregion
@@ -201,10 +194,6 @@ namespace Efrpg.V3TestA
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Conventions.Add(new CodeFirstStoreFunctions.FunctionsConvention<MyDbContext>("dbo"));
-
-            modelBuilder.ComplexType<ProductsUnderThisUnitPriceReturnModel>();
 
             modelBuilder.Configurations.Add(new AlphabeticalListOfProductConfiguration());
             modelBuilder.Configurations.Add(new CategoryConfiguration());
@@ -640,27 +629,10 @@ namespace Efrpg.V3TestA
         }
 
 
-        // Table Valued Functions
-
-        [DbFunction("MyDbContext", "ProductsUnderThisUnitPrice")]
-        [CodeFirstStoreFunctions.DbFunctionDetails(DatabaseSchema = "dbo")]
-        public IQueryable<ProductsUnderThisUnitPriceReturnModel> ProductsUnderThisUnitPrice(decimal? price)
-        {
-            var priceParam = new ObjectParameter("price", typeof(decimal)) { Value = (object)price ?? DBNull.Value };
-
-            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<ProductsUnderThisUnitPriceReturnModel>("[MyDbContext].[ProductsUnderThisUnitPrice](@price)", priceParam);
-        }
-
         // Scalar Valued Functions
 
-        [DbFunction("CodeFirstDatabaseSchema", "MinUnitPriceByCategory")]
-        public decimal MinUnitPriceByCategory(int? categoryId)
-        {
-            throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
-        }
-
-        [DbFunction("CodeFirstDatabaseSchema", "TotalProductUnitPriceByCategory")]
-        public decimal TotalProductUnitPriceByCategory(int? categoryId)
+        [DbFunction("CodeFirstDatabaseSchema", "fn_diagramobjects")]
+        public int FnDiagramobjects()
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
@@ -944,26 +916,12 @@ namespace Efrpg.V3TestA
             return Task.FromResult(TenMostExpensiveProducts(out procResult));
         }
 
-        // Table Valued Functions
-
-        [DbFunction("MyDbContext", "ProductsUnderThisUnitPrice")]
-        public IQueryable<ProductsUnderThisUnitPriceReturnModel> ProductsUnderThisUnitPrice(decimal? price)
-        {
-            return new List<ProductsUnderThisUnitPriceReturnModel>().AsQueryable();
-        }
-
         // Scalar Valued Functions
 
-        // dbo.MinUnitPriceByCategory
-        public decimal MinUnitPriceByCategory(int? categoryId)
+        // dbo.fn_diagramobjects
+        public int FnDiagramobjects()
         {
-            return default(decimal);
-        }
-
-        // dbo.TotalProductUnitPriceByCategory
-        public decimal TotalProductUnitPriceByCategory(int? categoryId)
-        {
-            return default(decimal);
+            return default(int);
         }
     }
 
@@ -2432,20 +2390,6 @@ namespace Efrpg.V3TestA
         public DateTime? ShippedDate { get; set; }
         public int OrderID { get; set; }
         public decimal? SaleAmount { get; set; }
-    }
-
-    public class ProductsUnderThisUnitPriceReturnModel
-    {
-        public int ProductID { get; set; }
-        public string ProductName { get; set; }
-        public int? SupplierID { get; set; }
-        public int? CategoryID { get; set; }
-        public string QuantityPerUnit { get; set; }
-        public decimal? UnitPrice { get; set; }
-        public short? UnitsInStock { get; set; }
-        public short? UnitsOnOrder { get; set; }
-        public short? ReorderLevel { get; set; }
-        public bool Discontinued { get; set; }
     }
 
     public class SalesByCategoryReturnModel
