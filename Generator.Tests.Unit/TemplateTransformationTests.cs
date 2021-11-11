@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Efrpg.Mustache;
 using Efrpg.Templates;
 using NUnit.Framework;
+using Generator.Tests.Common;
 
 namespace Generator.Tests.Unit
 {

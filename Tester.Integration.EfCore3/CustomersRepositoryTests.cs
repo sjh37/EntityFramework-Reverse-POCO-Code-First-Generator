@@ -3,6 +3,7 @@ using System.Linq;
 using EntityFramework_Reverse_POCO_Generator;
 using NUnit.Framework;
 using Tester.BusinessLogic;
+using Generator.Tests.Common;
 
 namespace Tester.Integration.EfCore3
 {

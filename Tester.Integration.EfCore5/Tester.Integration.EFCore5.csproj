@@ -15,6 +15,10 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Generator.Tests.Common\Generator.Tests.Common.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
       <None Update="EnumOnly.tt">
         <Generator>TextTemplatingFileGenerator</Generator>
         <LastGenOutput>EnumOnly.cs</LastGenOutput>

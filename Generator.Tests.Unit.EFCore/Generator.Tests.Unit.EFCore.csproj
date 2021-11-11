@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EntityFramework.Reverse.POCO.Generator\EntityFramework.Reverse.POCO.Generator.csproj" />
+    <ProjectReference Include="..\Generator.Tests.Common\Generator.Tests.Common.csproj" />
     <ProjectReference Include="..\Tester.BusinessLogic.EfCore\Tester.BusinessLogic.csproj" />
   </ItemGroup>
 

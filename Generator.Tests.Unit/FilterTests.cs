@@ -1,6 +1,7 @@
 ﻿using System;
 using Efrpg;
 using Efrpg.Filtering;
+using Generator.Tests.Common;
 using NUnit.Framework;
 
 namespace Generator.Tests.Unit
@@ -12,11 +13,16 @@ namespace Generator.Tests.Unit
         private TestContextFilter _sut;
 
         [OneTimeSetUp]
-        public void SetUp()
+        public void OneTimeSetUp()
         {
             FilterSettings.Reset();
             FilterSettings.AddDefaults();
             FilterSettings.CheckSettings();
+        }
+
+        [SetUp]
+        public void SetUp()
+        {
             _sut = new TestContextFilter();
         }
 

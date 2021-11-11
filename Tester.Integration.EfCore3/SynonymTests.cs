@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using NUnit.Framework;
+using Generator.Tests.Common;
 
 namespace Tester.Integration.EfCore3
 {

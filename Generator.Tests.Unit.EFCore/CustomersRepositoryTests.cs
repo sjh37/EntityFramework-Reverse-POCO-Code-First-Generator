@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Generator.Tests.Common;
 using EntityFramework_Reverse_POCO_Generator;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;

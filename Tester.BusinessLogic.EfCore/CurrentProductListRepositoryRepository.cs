@@ -10,10 +10,7 @@ namespace Tester.BusinessLogic
 
         public CurrentProductListRepositoryRepository(IMyDbContext context)
         {
-            if(context == null)
-                throw new ArgumentNullException(nameof(context));
-
-            _context = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public int GetCount()

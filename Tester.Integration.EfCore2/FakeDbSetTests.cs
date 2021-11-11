@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Threading.Tasks;
     using NUnit.Framework;
+    using Generator.Tests.Common;
 
     [TestFixture]
     [Category(Constants.CI)]

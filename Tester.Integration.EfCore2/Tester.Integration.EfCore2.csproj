@@ -11,6 +11,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Generator.Tests.Common\Generator.Tests.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Database.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Database.cs</LastGenOutput>

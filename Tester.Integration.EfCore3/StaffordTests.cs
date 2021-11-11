@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
+using Generator.Tests.Common;
 
 namespace Tester.Integration.EfCore3
 {

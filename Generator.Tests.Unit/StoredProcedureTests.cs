@@ -1,6 +1,7 @@
 ﻿using Efrpg;
 using NUnit.Framework;
 using System.Data;
+using Generator.Tests.Common;
 
 namespace Generator.Tests.Unit
 {

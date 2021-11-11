@@ -55,7 +55,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Constants.cs" />
     <Compile Include="FakeContextTests.cs" />
     <Compile Include="Northwind.cs">
       <AutoGen>True</AutoGen>
@@ -76,6 +75,12 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Generator.Tests.Common\Generator.Tests.Common.csproj">
+      <Project>{8fbbebb8-8e1f-480e-bf95-6658e4f4ef85}</Project>
+      <Name>Generator.Tests.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

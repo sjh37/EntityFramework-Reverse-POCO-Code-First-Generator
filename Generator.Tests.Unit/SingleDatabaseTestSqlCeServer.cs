@@ -1,6 +1,7 @@
 ﻿using Efrpg;
 using Efrpg.FileManagement;
 using Efrpg.Templates;
+using Generator.Tests.Common;
 using NUnit.Framework;
 
 namespace Generator.Tests.Unit

@@ -4,6 +4,7 @@
     using System.Threading.Tasks;
     using Microsoft.EntityFrameworkCore;
     using NUnit.Framework;
+    using Generator.Tests.Common;
 
     [TestFixture]
     [Category(Constants.CI)]

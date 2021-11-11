@@ -84,7 +84,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConfigurationExtensions.cs" />
-    <Compile Include="Constants.cs" />
     <Compile Include="FilterSettingsTests.cs" />
     <Compile Include="ForeignKeyTests.cs" />
     <Compile Include="MinMaxValueCacheTests.cs" />
@@ -181,6 +180,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Generator.Tests.Common\Generator.Tests.Common.csproj">
+      <Project>{8fbbebb8-8e1f-480e-bf95-6658e4f4ef85}</Project>
+      <Name>Generator.Tests.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Generator\Generator.csproj">
       <Project>{7638dea9-a4ef-46dd-ade2-81d967246751}</Project>
       <Name>Generator</Name>

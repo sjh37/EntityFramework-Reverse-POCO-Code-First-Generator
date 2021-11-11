@@ -1,5 +1,6 @@
 ﻿using Efrpg;
 using Efrpg.Pluralization;
+using Generator.Tests.Common;
 using NUnit.Framework;
 
 namespace Generator.Tests.Unit

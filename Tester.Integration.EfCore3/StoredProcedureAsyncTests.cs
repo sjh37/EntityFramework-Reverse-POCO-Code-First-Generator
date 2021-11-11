@@ -1,5 +1,6 @@
 ﻿using EntityFramework_Reverse_POCO_Generator;
 using NUnit.Framework;
+using Generator.Tests.Common;
 
 namespace Tester.Integration.EfCore3
 {

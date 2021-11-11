@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using Efrpg.TemplateModels;
 using Efrpg.Templates;
+using Generator.Tests.Common;
 using NUnit.Framework;
 
 namespace Generator.Tests.Unit

@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using EntityFramework_Reverse_POCO_Generator;
+using Generator.Tests.Common;
 using NUnit.Framework;
 
 namespace Generator.Tests.Unit.EFCore

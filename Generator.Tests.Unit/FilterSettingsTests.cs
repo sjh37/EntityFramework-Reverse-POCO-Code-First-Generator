@@ -1,4 +1,5 @@
 ﻿using Efrpg.Filtering;
+using Generator.Tests.Common;
 using NUnit.Framework;
 
 namespace Generator.Tests.Unit

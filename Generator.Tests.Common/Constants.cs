@@ -1,12 +1,12 @@
-﻿namespace Generator.Tests.Unit
+﻿namespace Generator.Tests.Common
 {
-    internal static class Constants
+    public static class Constants
     {
-        internal const string CI          = nameof(CI);
-        internal const string Integration = nameof(Integration);
-        internal const string Manual      = nameof(Manual);
+        public const string CI          = nameof(CI);
+        public const string Integration = nameof(Integration);
+        public const string Manual      = nameof(Manual);
 
-        internal static class DbType
+        public static class DbType
         {
             public const string PostgreSql = nameof(PostgreSql);
             public const string SqlServer  = nameof(SqlServer);

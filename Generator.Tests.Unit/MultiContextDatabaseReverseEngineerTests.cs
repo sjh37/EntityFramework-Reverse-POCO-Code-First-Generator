@@ -11,6 +11,7 @@ using Efrpg.Generators;
 using Efrpg.Pluralization;
 using Efrpg.Readers;
 using Efrpg.Templates;
+using Generator.Tests.Common;
 using NUnit.Framework;
 
 namespace Generator.Tests.Unit
@@ -173,7 +174,7 @@ namespace Generator.Tests.Unit
             CompareAgainstTestComparison(publicTestComparison);
         }
 
-        private static void CompareAgainstFolderTestComparison(string subFolder)
+        /*private static void CompareAgainstFolderTestComparison(string subFolder)
         {
             var testRootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "OneDrive-Personal\\OneDrive\\Documents");
             if (!string.IsNullOrEmpty(subFolder))
@@ -199,7 +200,7 @@ namespace Generator.Tests.Unit
                 Console.WriteLine("*** OK ***");
                 Console.WriteLine("----------------------");
             }
-        }
+        }*/
 
         private void CompareAgainstTestComparison(bool publicTestComparison)
         {

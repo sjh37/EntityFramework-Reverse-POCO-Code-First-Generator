@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 using Tester.Integration.EfCore3.Single_context_many_files;
+using Generator.Tests.Common;
 
 namespace Tester.Integration.EfCore3
 {

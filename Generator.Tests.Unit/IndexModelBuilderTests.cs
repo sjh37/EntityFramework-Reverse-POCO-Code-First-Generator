@@ -4,6 +4,7 @@ using Efrpg;
 using Efrpg.FileManagement;
 using Efrpg.Generators;
 using Efrpg.Readers;
+using Generator.Tests.Common;
 using NUnit.Framework;
 
 namespace Generator.Tests.Unit
