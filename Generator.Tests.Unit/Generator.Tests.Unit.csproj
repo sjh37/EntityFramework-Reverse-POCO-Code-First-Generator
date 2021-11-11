@@ -120,6 +120,9 @@
     <None Include="TestComparison\Northwind_SqlServer_Ef6_NorthwindTest1Copy.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Compile Include="SingleDatabaseTestBase.cs" />
+    <Compile Include="SingleDatabaseTestPostgreSql.cs" />
+    <Compile Include="SingleDatabaseTestSqlServer.cs" />
     <Compile Include="StoredProcedureTests.cs" />
     <Compile Include="StringExtensionTests.cs" />
     <None Include="TestComparison\Northwind_PostgreSQL_EfCore3_FkLegacy.cs">
@@ -168,7 +171,7 @@
     </None>
     <Compile Include="FilterTests.cs" />
     <Compile Include="IndexModelBuilderTests.cs" />
-    <Compile Include="SingleDatabaseReverseEngineerTests.cs" />
+    <Compile Include="SingleDatabaseTestSqlCeServer.cs" />
     <Compile Include="TemplateTransformationTests.cs" />
     <Compile Include="SchemaReaderTests.cs" />
     <Compile Include="PluralisationTests.cs" />
