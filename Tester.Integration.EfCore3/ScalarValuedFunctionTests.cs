@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using EntityFramework_Reverse_POCO_Generator;
 using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 using Tester.Integration.EfCore3.Single_context_many_files;
@@ -8,6 +7,8 @@ using Tester.Integration.EfCore3.Single_context_many_files;
 namespace Tester.Integration.EfCore3
 {
     [TestFixture]
+    [Category(Constants.Integration)]
+    [Category(Constants.DbType.SqlServer)]
     public class ScalarValuedFunctionTests
     {
         private EfCoreDbContext _db;

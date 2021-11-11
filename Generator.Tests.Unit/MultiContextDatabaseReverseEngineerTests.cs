@@ -16,6 +16,8 @@ using NUnit.Framework;
 namespace Generator.Tests.Unit
 {
     [TestFixture, NonParallelizable]
+    [Category(Constants.Integration)]
+    [Category(Constants.DbType.SqlServer)]
     public class MultiContextDatabaseReverseEngineerTests
     {
         private string[] _generatedFileNames;

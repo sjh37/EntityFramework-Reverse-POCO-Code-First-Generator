@@ -7,6 +7,8 @@ using Tester.BusinessLogic;
 namespace Tester.Integration.EfCore3
 {
     [TestFixture]
+    [Category(Constants.Integration)]
+    [Category(Constants.DbType.SqlServer)]
     public class CustomersRepositoryTests
     {
         private MyDbContext _db;

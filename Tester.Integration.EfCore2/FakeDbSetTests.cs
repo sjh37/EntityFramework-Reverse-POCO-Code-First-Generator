@@ -6,6 +6,7 @@
     using NUnit.Framework;
 
     [TestFixture]
+    [Category(Constants.CI)]
     public class FakeDbSetTests
     {
         private FakeDbSet<Category> _dbSet;

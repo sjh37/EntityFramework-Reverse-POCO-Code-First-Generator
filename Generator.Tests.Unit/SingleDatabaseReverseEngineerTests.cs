@@ -14,6 +14,7 @@ using NUnit.Framework;
 namespace Generator.Tests.Unit
 {
     [TestFixture, NonParallelizable]
+    [Category(Constants.Integration)]
     public class SingleDatabaseReverseEngineerTests
     {
         public void SetupSqlServer(string database, string connectionStringName, string dbContextName, TemplateType templateType, GeneratorType generatorType, ForeignKeyNamingStrategy foreignKeyNamingStrategy)

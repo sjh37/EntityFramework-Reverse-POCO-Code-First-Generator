@@ -5,6 +5,7 @@ using NUnit.Framework;
 namespace Generator.Tests.Unit.EFCore
 {
     [TestFixture]
+    [Category(Constants.CI)]
     public class MockRepositoryTest
     {
         private IRepository<Customer> Customers { get; set; }

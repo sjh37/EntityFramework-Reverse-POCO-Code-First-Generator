@@ -1,12 +1,11 @@
-﻿using System;
-using System.Linq;
-using EntityFramework_Reverse_POCO_Generator;
-using Microsoft.EntityFrameworkCore;
+﻿using EntityFramework_Reverse_POCO_Generator;
 using NUnit.Framework;
 
 namespace Tester.Integration.EfCore3
 {
     [TestFixture]
+    [Category(Constants.Integration)]
+    [Category(Constants.DbType.SqlServer)]
     public class StoredProcedureAsyncTests
     {
         private MyDbContext _db;

@@ -5,6 +5,8 @@
     using System.Threading.Tasks;
     using NUnit.Framework;
 
+    [TestFixture]
+    [Category(Constants.CI)]
     public class FakeContextTests
     {
         private FakeMyDbContext _fakeContext;

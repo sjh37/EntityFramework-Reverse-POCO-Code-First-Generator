@@ -1,4 +1,4 @@
-﻿namespace Tester.Integration.EfCore3
+﻿namespace Tester.Integration.EfCore2
 {
     internal static class Constants
     {

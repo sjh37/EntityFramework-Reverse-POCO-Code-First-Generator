@@ -4,6 +4,8 @@ using NUnit.Framework;
 namespace Tester.Integration.EfCore3
 {
     [TestFixture]
+    [Category(Constants.Integration)]
+    [Category(Constants.DbType.SqlServer)]
     public class SynonymTests
     {
         [Test]

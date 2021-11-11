@@ -5,6 +5,9 @@
     using Microsoft.EntityFrameworkCore;
     using NUnit.Framework;
 
+    [TestFixture]
+    [Category(Constants.Integration)]
+    [Category(Constants.DbType.SqlServer)]
     public class FakeContextTests
     {
         private FakeMyDbContext _fakeContext;

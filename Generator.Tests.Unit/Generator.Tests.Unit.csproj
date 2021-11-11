@@ -83,8 +83,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConfigurationExtensions.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="FilterSettingsTests.cs" />
     <Compile Include="ForeignKeyTests.cs" />
+    <Compile Include="MinMaxValueCacheTests.cs" />
     <Compile Include="MultiContextFilterTests.cs" />
     <Compile Include="MultiContextSettingsTests.cs" />
     <Compile Include="MultiContextNameNormalisationTests.cs" />
