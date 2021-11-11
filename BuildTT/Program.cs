@@ -7,14 +7,14 @@ namespace BuildTT
     {
         static void Main()
         {
-            const string root          = "..\\..\\..\\";
+            //const string root          = "..\\..\\..\\";
             const string generatorRoot = "..\\..\\..\\Generator";
             const string ttRoot        = "..\\..\\..\\EntityFramework.Reverse.POCO.Generator";
             
             var version = File.ReadAllText("version.txt").Trim();
 
             BuildTT.Create(generatorRoot, ttRoot, version);
-            var vs = new VersionSetter(root, version);
+            //var vs = new VersionSetter(root, version);
             //vs.SetVersions();
 
             Console.WriteLine("Version: " + version);
