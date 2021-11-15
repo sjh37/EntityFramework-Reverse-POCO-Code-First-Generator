@@ -36,7 +36,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tester.Integration.EFCore5"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tester.Integration.Ef6", "Tester.Integration.Ef6\Tester.Integration.Ef6.csproj", "{F7622EDE-5CBD-4B9F-BC72-D5B3C4A3A3D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Generator.Tests.Common", "Generator.Tests.Common\Generator.Tests.Common.csproj", "{8FBBEBB8-8E1F-480E-BF95-6658E4F4EF85}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Generator.Tests.Common", "Generator.Tests.Common\Generator.Tests.Common.csproj", "{8FBBEBB8-8E1F-480E-BF95-6658E4F4EF85}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestDatabases", "TestDatabases", "{19926E4E-064A-4FCC-8EC2-DAE3EB0F5317}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL Server", "SQL Server", "{0EE34211-0206-45FC-BC8D-D278FD8AA21E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PostgreSQL", "PostgreSQL", "{1F3EE9B0-A48C-4E75-B215-1CA92DDC63A6}"
+	ProjectSection(SolutionItems) = preProject
+		northwind.sql = northwind.sql
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -213,6 +222,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F36D34E5-2087-4A27-8974-EBBAD4DB6D96} = {0EE34211-0206-45FC-BC8D-D278FD8AA21E}
+		{0EE34211-0206-45FC-BC8D-D278FD8AA21E} = {19926E4E-064A-4FCC-8EC2-DAE3EB0F5317}
+		{1F3EE9B0-A48C-4E75-B215-1CA92DDC63A6} = {19926E4E-064A-4FCC-8EC2-DAE3EB0F5317}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8B825109-96A2-4F13-8192-84BCE9CECF1A}
