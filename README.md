@@ -12,13 +12,13 @@ Please note, this is not the Microsoft reverse generator.
 This generator creates code as if you reverse engineered a database and lovingly created the code by hand. 
 It also allows you to customise the generated code to your liking.
 
-### Watch a short video clip (no audio)
-[![Watch the video](https://reversepocostorage.blob.core.windows.net/public-file-share/efcore-first-run.jpg)](https://reversepocostorage.blob.core.windows.net/public-file-share/efcore-first-run.mp4)
-
 ### Give a Star! :star:
 If you like or are using this project please give it a star. Thanks!
 
-### To remove trial limitations, you will require a licence key
+### Watch a short video clip (no audio)
+[![Watch the video](https://reversepocostorage.blob.core.windows.net/public-file-share/efcore-first-run.jpg)](https://reversepocostorage.blob.core.windows.net/public-file-share/efcore-first-run.mp4)
+
+## To remove trial limitations, you will require a licence key
 Free to academics (you need a .edu or a .ac email address), not free for commercial use.
 
 Go to the [ReversePOCO](https://www.reversepoco.co.uk) website to obtain your licence key.
