@@ -519,7 +519,7 @@ using {{this}};{{#newline}}
 
     public Fake{{DbContextName}}(){{#newline}}
     {{{#newline}}
-        _database = null;{{#newline}}
+        _database = new FakeDatabaseFacade(new {{DbContextName}}());{{#newline}}
 {{#newline}}
 
 {{#each tables}}
@@ -832,7 +832,8 @@ using {{this}};{{#newline}}
                 "Microsoft.EntityFrameworkCore.Query",
                 "Microsoft.EntityFrameworkCore.Query.Internal",
                 "Microsoft.EntityFrameworkCore.Infrastructure",
-                "Microsoft.EntityFrameworkCore.ChangeTracking"
+                "Microsoft.EntityFrameworkCore.ChangeTracking",
+                "Microsoft.EntityFrameworkCore.Storage"
             };
 
             if (Settings.IncludeCodeGeneratedAttribute)
@@ -1212,9 +1213,84 @@ public abstract class FakeQueryProvider<T> : IOrderedQueryable<T>, IQueryProvide
     }{{#newline}}
 }{{#newline}}{{#newline}}
 
-
 {{DbContextClassModifiers}} class FakeExpressionVisitor : ExpressionVisitor{{#newline}}
 {{{#newline}}
+}{{#newline}}{{#newline}}
+
+public class FakeDatabaseFacade : DatabaseFacade{{#newline}}
+{{{#newline}}
+    public FakeDatabaseFacade(DbContext context) : base(context){{#newline}}
+    {{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public override bool EnsureCreated(){{#newline}}
+    {{{#newline}}
+        return true;{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public override Task<bool> EnsureCreatedAsync(CancellationToken cancellationToken = new CancellationToken()){{#newline}}
+    {{{#newline}}
+        return Task.FromResult(EnsureCreated());{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public override bool EnsureDeleted(){{#newline}}
+    {{{#newline}}
+        return true;{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public override Task<bool> EnsureDeletedAsync(CancellationToken cancellationToken = new CancellationToken()){{#newline}}
+    {{{#newline}}
+        return Task.FromResult(EnsureDeleted());{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public override bool CanConnect(){{#newline}}
+    {{{#newline}}
+        return true;{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public override Task<bool> CanConnectAsync(CancellationToken cancellationToken = new CancellationToken()){{#newline}}
+    {{{#newline}}
+        return Task.FromResult(CanConnect());{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public override IDbContextTransaction BeginTransaction(){{#newline}}
+    {{{#newline}}
+        return new FakeDbContextTransaction();{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public override Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = new CancellationToken()){{#newline}}
+    {{{#newline}}
+        return Task.FromResult(BeginTransaction());{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public override void CommitTransaction(){{#newline}}
+    {{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public override void RollbackTransaction(){{#newline}}
+    {{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public override IExecutionStrategy CreateExecutionStrategy(){{#newline}}
+    {{{#newline}}
+        return null;{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public override string ToString(){{#newline}}
+    {{{#newline}}
+        return string.Empty;{{#newline}}
+    }{{#newline}}{{#newline}}
+}{{#newline}}{{#newline}}
+
+public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
+{{{#newline}}
+    public virtual Guid TransactionId => Guid.NewGuid();{{#newline}}
+    public virtual void Commit() { }{{#newline}}
+    public virtual void Rollback() { }{{#newline}}
+    public virtual Task CommitAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;{{#newline}}
+    public virtual Task RollbackAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;{{#newline}}
+    public virtual void Dispose() { }{{#newline}}
+    public virtual ValueTask DisposeAsync() => default;{{#newline}}
 }";
         }
 
