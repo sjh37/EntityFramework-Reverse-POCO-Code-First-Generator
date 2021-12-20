@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Query.Internal;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -552,7 +553,7 @@ namespace Tester.Integration.EFCore5
 
         public FakeMyDbContext()
         {
-            _database = null;
+            _database = new FakeDatabaseFacade(new MyDbContext());
 
             AlphabeticalListOfProducts = new FakeDbSet<AlphabeticalListOfProduct>();
             Categories = new FakeDbSet<Category>("CategoryId");
@@ -1238,6 +1239,92 @@ namespace Tester.Integration.EFCore5
 
     public class FakeExpressionVisitor : ExpressionVisitor
     {
+    }
+
+    public class FakeDatabaseFacade : DatabaseFacade
+    {
+        public FakeDatabaseFacade(DbContext context) : base(context)
+        {
+        }
+
+        public override bool EnsureCreated()
+        {
+            return true;
+        }
+
+        public override Task<bool> EnsureCreatedAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            return Task.FromResult(EnsureCreated());
+        }
+
+        public override bool EnsureDeleted()
+        {
+            return true;
+        }
+
+        public override Task<bool> EnsureDeletedAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            return Task.FromResult(EnsureDeleted());
+        }
+
+        public override bool CanConnect()
+        {
+            return true;
+        }
+
+        public override Task<bool> CanConnectAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            return Task.FromResult(CanConnect());
+        }
+
+        public override IDbContextTransaction BeginTransaction()
+        {
+            return new FakeDbContextTransaction();
+        }
+
+        public override Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            return Task.FromResult(BeginTransaction());
+        }
+
+        public override void CommitTransaction()
+        {
+        }
+
+        public override Task CommitTransactionAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            return Task.CompletedTask;
+        }
+
+        public override void RollbackTransaction()
+        {
+        }
+
+        public override Task RollbackTransactionAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            return Task.CompletedTask;
+        }
+
+        public override IExecutionStrategy CreateExecutionStrategy()
+        {
+            return null;
+        }
+
+        public override string ToString()
+        {
+            return string.Empty;
+        }
+    }
+
+    public class FakeDbContextTransaction : IDbContextTransaction
+    {
+        public Guid TransactionId => Guid.NewGuid();
+        public void Commit() { }
+        public void Rollback() { }
+        public Task CommitAsync(CancellationToken cancellationToken = new CancellationToken()) => Task.CompletedTask;
+        public Task RollbackAsync(CancellationToken cancellationToken = new CancellationToken()) => Task.CompletedTask;
+        public void Dispose() { }
+        public ValueTask DisposeAsync() => default;
     }
 
     #endregion

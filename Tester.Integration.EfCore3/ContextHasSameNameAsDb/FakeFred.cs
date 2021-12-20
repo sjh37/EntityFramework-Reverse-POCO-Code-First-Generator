@@ -19,7 +19,7 @@ namespace Tester.Integration.EfCore3.ContextHasSameNameAsDb
 
         public FakeFred()
         {
-            _database = null;
+            _database = new FakeDatabaseFacade(new Fred());
 
             Cars = new FakeDbSet<Car>("Id");
 
