@@ -3,7 +3,7 @@
     // Multi context file based template
     Settings.DatabaseType            = DatabaseType.SqlServer;
     Settings.TemplateType            = TemplateType.FileBasedCore3;
-    Settings.FileManagerType         = FileManagerType.Custom;
+    Settings.FileManagerType         = FileManagerType.EfCore;
     Settings.ConnectionString        = "Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True";
     Settings.ConnectionStringName    = "McsfMultiDatabase"; // ConnectionString key as specified in your app.config/web.config/appsettings.json
     Settings.OnConfiguration         = OnConfiguration.Configuration; // EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/OnConfiguration    Settings.GenerateSeparateFiles   = false;

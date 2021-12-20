@@ -54,7 +54,7 @@ namespace Generator.Tests.Unit
 
             // Act
             var filename = "Northwind";
-            Run(filename, ".PostgreSQL", typeof(CustomFileManager), null);
+            Run(filename, ".PostgreSQL", typeof(EfCoreFileManager), null);
 
             // Assert
             CompareAgainstTestComparison(filename, true);

@@ -333,7 +333,9 @@ namespace Efrpg.Generators
                 .ThenBy(x => x.TableName)
                 .ToList();
 
-            var deleteFilteredOutFiles = Settings.FileManagerType == FileManagerType.Custom && Settings.GenerateSeparateFiles;
+#pragma warning disable CS0618 // Type or member is obsolete
+            var deleteFilteredOutFiles = (Settings.FileManagerType == FileManagerType.Custom || Settings.FileManagerType == FileManagerType.EfCore) && Settings.GenerateSeparateFiles;
+#pragma warning restore CS0618 // Type or member is obsolete
 
             foreach (var filterKeyValuePair in FilterList.GetFilters())
             {
@@ -694,7 +696,9 @@ namespace Efrpg.Generators
 
             try
             {
-                var deleteFilteredOutFiles = Settings.FileManagerType == FileManagerType.Custom && Settings.GenerateSeparateFiles;
+#pragma warning disable CS0618 // Type or member is obsolete
+                var deleteFilteredOutFiles = (Settings.FileManagerType == FileManagerType.Custom || Settings.FileManagerType == FileManagerType.EfCore) && Settings.GenerateSeparateFiles;
+#pragma warning restore CS0618 // Type or member is obsolete
 
                 var spFilters = FilterList
                     .GetFilters()

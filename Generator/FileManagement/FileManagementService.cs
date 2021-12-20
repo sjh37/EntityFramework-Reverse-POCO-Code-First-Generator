@@ -56,8 +56,8 @@ namespace Efrpg.FileManagement
                 _visualStudioFileManager = (VisualStudioFileManager) Activator.CreateInstance(fileManagerType);
                 _visualStudioFileManager.Init(_outer);
 
-                // Switch to the CustomFileManager for the rest
-                fileManagerType = typeof(CustomFileManager);
+                // Switch to the EfCoreFileManager for the rest
+                fileManagerType = typeof(EfCoreFileManager);
             }
 
             foreach (var filter in filters)
@@ -119,8 +119,8 @@ namespace Efrpg.FileManagement
                     continue;
                 }
 
-                if(fileManager.Value.GetType() == typeof(CustomFileManager))
-                    ((CustomFileManager) fileManager.Value).ProcessToAnotherFileManager(_visualStudioFileManager, _outer);
+                if(fileManager.Value.GetType() == typeof(EfCoreFileManager))
+                    ((EfCoreFileManager) fileManager.Value).ProcessToAnotherFileManager(_visualStudioFileManager, _outer);
                 else
                     fileManager.Value.Process(split);
             }

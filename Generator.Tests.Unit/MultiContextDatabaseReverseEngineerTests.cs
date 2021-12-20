@@ -153,7 +153,7 @@ namespace Generator.Tests.Unit
             SetupSqlServer(database, connectionStringName, dbContextName, plugin, generateSeparateFiles, templateType);
 
             // Act
-            Run(database, typeof(CustomFileManager), null);
+            Run(database, typeof(EfCoreFileManager), null);
 
             // Assert
             CompareAgainstTestComparison(publicTestComparison);
@@ -168,7 +168,7 @@ namespace Generator.Tests.Unit
             Settings.MultiContextSettingsConnectionString = string.IsNullOrWhiteSpace(multiContextDatabase) ? null : $"Data Source=(local);Initial Catalog={multiContextDatabase};Integrated Security=True;Application Name=Generator";
 
             // Act
-            Run(database, typeof(CustomFileManager), null);
+            Run(database, typeof(EfCoreFileManager), null);
 
             // Assert
             CompareAgainstTestComparison(publicTestComparison);

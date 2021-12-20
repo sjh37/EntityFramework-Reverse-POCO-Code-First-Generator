@@ -4,14 +4,14 @@ using System.Text;
 
 namespace Efrpg.FileManagement
 {
-    public class CustomFileManager : IFileManager
+    public class EfCoreFileManager : IFileManager
     {
         private readonly List<FileBlock> _blocks;
         private string _filename;
         private StringBuilder _sb;
         private const int StringBuilderSize = 2048;
 
-        public CustomFileManager()
+        public EfCoreFileManager()
         {
             _blocks   = new List<FileBlock>();
             _filename = null;
