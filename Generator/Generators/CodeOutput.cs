@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Efrpg.Generators
@@ -12,13 +13,16 @@ namespace Efrpg.Generators
         public List<string> Usings { get; private set; }
         public List<string> Code { get; private set; }
 
-        public CodeOutput(string dbName, string filename, string region, List<string> usings)
+        public CodeOutput(string dbName, string filename, string region, string folder, List<string> usings)
         {
             DbName   = dbName;
             Filename = filename;
             Region   = region;
             Usings   = new List<string>();
             Code     = new List<string>();
+
+            if(!string.IsNullOrWhiteSpace(folder))
+                Filename = Path.Combine(folder, filename);
 
             AddUsings(usings);
         }

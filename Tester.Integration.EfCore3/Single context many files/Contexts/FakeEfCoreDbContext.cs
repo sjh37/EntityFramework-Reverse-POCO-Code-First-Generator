@@ -25,7 +25,7 @@ namespace Tester.Integration.EfCore3.Single_context_many_files
 
         public FakeEfCoreDbContext()
         {
-            _database = null;
+            _database = new FakeDatabaseFacade(new EfCoreDbContext());
 
             ColumnNames = new FakeDbSet<ColumnName>("C36");
             Stafford_Boos = new FakeDbSet<Stafford_Boo>("Id");

@@ -1173,6 +1173,7 @@ namespace Efrpg.Generators
         {
             try
             {
+                CreateOutputFolders();
                 var fallback = Settings.TemplateFolder;
                 foreach (var filter in FilterList.GetFilters())
                 {
@@ -1205,6 +1206,37 @@ namespace Efrpg.Generators
                 _fileManagementService.Error(string.Format("// Failed to generate the code in GenerateCode() - {0}", error));
                 _fileManagementService.Error("/*" + x.StackTrace + "*/");
                 _fileManagementService.Error("// -----------------------------------------------------------------------------------------");
+                _fileManagementService.Error(string.Empty);
+            }
+        }
+
+        private void CreateOutputFolders()
+        {
+            if (Settings.FileManagerType != FileManagerType.EfCore || Settings.GenerateSeparateFiles != true)
+                return;
+
+            CreateOutputFolder(Settings.ContextFolder);
+            CreateOutputFolder(Settings.InterfaceFolder);
+            CreateOutputFolder(Settings.PocoFolder);
+            CreateOutputFolder(Settings.PocoConfigurationFolder);
+        }
+
+        private void CreateOutputFolder(string folder)
+        {
+            if (string.IsNullOrEmpty(folder))
+                return;
+
+            var fullPath = Path.Combine(Settings.Root, folder);
+            try
+            {
+                Directory.CreateDirectory(fullPath);
+            }
+            catch (Exception x)
+            {
+                var error = FormatError(x);
+                _fileManagementService.Error(string.Empty);
+                _fileManagementService.Error(string.Format("// Unable to create folder: {0} Error: {1}", fullPath, error));
+                _fileManagementService.Error("/*" + x.StackTrace + "*/");
                 _fileManagementService.Error(string.Empty);
             }
         }

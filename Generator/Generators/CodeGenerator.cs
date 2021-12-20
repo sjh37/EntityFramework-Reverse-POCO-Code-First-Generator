@@ -259,7 +259,7 @@ namespace Efrpg.Generators
                 hasScalarValuedFunctions        = _hasScalarValuedFunctions && _filter.IncludeScalarValuedFunctions,
             };
 
-            var co = new CodeOutput(string.Empty, filename, "Database context interface", _globalUsings);
+            var co = new CodeOutput(string.Empty, filename, "Database context interface", Settings.InterfaceFolder, _globalUsings);
             co.AddUsings(_template.DatabaseContextInterfaceUsings(data));
             co.AddCode(Template.Transform(_template.DatabaseContextInterface(), data));
 
@@ -339,7 +339,7 @@ namespace Efrpg.Generators
                 SqlParameter                           = Settings.SqlParameter(),
             };
 
-            var co = new CodeOutput(string.Empty, filename, "Database context", _globalUsings);
+            var co = new CodeOutput(string.Empty, filename, "Database context", Settings.ContextFolder, _globalUsings);
             co.AddUsings(_template.DatabaseContextUsings(data));
             co.AddCode(Template.Transform(_template.DatabaseContext(), data));
 
@@ -369,7 +369,7 @@ namespace Efrpg.Generators
                 hasScalarValuedFunctions = _hasScalarValuedFunctions && _filter.IncludeScalarValuedFunctions,
             };
 
-            var co = new CodeOutput(string.Empty, filename, "Fake Database context", _globalUsings);
+            var co = new CodeOutput(string.Empty, filename, "Fake Database context", Settings.ContextFolder, _globalUsings);
             co.AddUsings(_template.FakeDatabaseContextUsings(data, _filter));
             co.AddCode(Template.Transform(_template.FakeDatabaseContext(), data));
 
@@ -391,7 +391,7 @@ namespace Efrpg.Generators
                 DbContextClassIsPartial = Settings.DbContextClassIsPartial(),
             };
 
-            var co = new CodeOutput(string.Empty, filename, "Fake DbSet", _globalUsings);
+            var co = new CodeOutput(string.Empty, filename, "Fake DbSet", Settings.ContextFolder, _globalUsings);
             co.AddUsings(_template.FakeDbSetUsings(data));
             co.AddCode(Template.Transform(_template.FakeDbSet(), data));
 
@@ -413,7 +413,7 @@ namespace Efrpg.Generators
                 contextName = Settings.DbContextName
             };
 
-            var co = new CodeOutput(string.Empty, filename, "Database context factory", _globalUsings);
+            var co = new CodeOutput(string.Empty, filename, "Database context factory", Settings.ContextFolder, _globalUsings);
             co.AddUsings(_template.DatabaseContextFactoryUsings(data));
             co.AddCode(Template.Transform(_template.DatabaseContextFactory(), data));
             return co;
@@ -500,7 +500,7 @@ namespace Efrpg.Generators
                 EntityClassesArePartial = Settings.EntityClassesArePartial()
             };
 
-            var co = new CodeOutput(table.DbName, filename, null, _globalUsings);
+            var co = new CodeOutput(table.DbName, filename, null, Settings.PocoFolder, _globalUsings);
             co.AddUsings(_template.PocoUsings(data));
             co.AddCode(Template.Transform(_template.Poco(), data));
             return co;
@@ -562,7 +562,7 @@ namespace Efrpg.Generators
                 HasIndexes                     = hasIndexes
             };
 
-            var co = new CodeOutput(table.DbName, filename, null, _globalUsings);
+            var co = new CodeOutput(table.DbName, filename, null, Settings.PocoConfigurationFolder, _globalUsings);
             co.AddUsings(_template.PocoConfigurationUsings(data));
             co.AddCode(Template.Transform(_template.PocoConfiguration(), data));
             return co;
@@ -596,7 +596,7 @@ namespace Efrpg.Generators
                 MultipleModelReturnColumns     = multipleModelReturnColumns
             };
 
-            var co = new CodeOutput(sp.DbName, filename, null, _globalUsings);
+            var co = new CodeOutput(sp.DbName, filename, null, Settings.PocoFolder, _globalUsings);
             co.AddUsings(_template.StoredProcReturnModelUsings());
             co.AddCode(Template.Transform(_template.StoredProcReturnModels(), data));
             return co;
@@ -611,7 +611,7 @@ namespace Efrpg.Generators
                 return null;
             }
 
-            var co = new CodeOutput(enumeration.EnumName, filename, null, null);
+            var co = new CodeOutput(enumeration.EnumName, filename, null, Settings.PocoFolder, null);
             co.AddUsings(_template.EnumUsings());
             co.AddCode(Template.Transform(_template.Enums(), enumeration));
             return co;

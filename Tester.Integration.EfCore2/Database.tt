@@ -24,11 +24,7 @@
     Settings.TemplateFolder          = Path.Combine(Settings.Root, "Templates"); // Only used if Settings.TemplateType = TemplateType.FileBased. Specify folder name where the mustache folders can be found. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Custom-file-based-templates
     Settings.AddUnitTestingDbContext = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing. Read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/FakeDbContext
 
-    // Elements to generate ***************************************************************************************************************
-    // Add the elements that should be generated when the template is executed.
-    // Multiple projects can be used that separate the different concerns.
-    Settings.ElementsToGenerate = Elements.Poco | Elements.Context | Elements.Interface | Elements.PocoConfiguration | Elements.Enum;
-    
+
     // Filtering **************************************************************************************************************************
     // Filtering can now be done via one or more Regex's and one or more functions.
     // Gone are the days of a single do-it-all regex, you can now split them up into many smaller Regex's.
@@ -89,21 +85,28 @@
     Settings.NullableShortHand                  = true; // true => T?, false => Nullable<T>
     Settings.AddIDbContextFactory               = true; // Will add a default IDbContextFactory<DbContextName> implementation for easy dependency injection
     Settings.IncludeQueryTraceOn9481Flag        = false; // If SqlServer 2014 appears frozen / take a long time when this file is saved, try setting this to true (you will also need elevated privileges).
-    Settings.IncludeCodeGeneratedAttribute      = false; // If true, will include the GeneratedCode attribute, false to remove it.
     Settings.UsePrivateSetterForComputedColumns = true; // If the columns is computed, use a private setter.
     Settings.IncludeGeneratorVersionInCode      = false; // If true, will include the version number of the generator in the generated code
+    Settings.TrimCharFields                     = false; // EF Core option only. If true, will TrimEnd() 'char' fields when read from the database.
     Settings.AdditionalNamespaces               = new List<string>(); // To include extra namespaces, include them here. i.e. new List<string> { "Microsoft.AspNetCore.Identity.EntityFrameworkCore", "System.ComponentModel.DataAnnotations" };
     Settings.AdditionalContextInterfaceItems    = new List<string>(); // example: new List<string> { "void SetAutoDetectChangesEnabled(bool flag);" };
+    Settings.AdditionalFileHeaderText           = new List<string>(); // This will put additional lines verbatim at the top of each file under the comments, 1 line per entry
+    Settings.AdditionalFileFooterText           = new List<string>(); // This will put additional lines verbatim at the end of each file above the // </auto-generated>, 1 line per entry
 
     // Language choices
     Settings.GenerationLanguage = GenerationLanguage.CSharp;
     Settings.FileExtension      = ".cs";
 
-    // Code suppression (useful for non C# file generation) *******************************************************************************
+    // Code suppression *******************************************************************************
     Settings.UseRegions       = true;  // If false, suppresses the use of #region
     Settings.UseNamespace     = true;  // If false, suppresses the writing of a namespace
-    Settings.UsePragma        = true;  // If false, suppresses the writing of #pragma
+    Settings.UsePragma                        = false; // If false, suppresses the writing of #pragma
     Settings.AllowNullStrings = false; // If true, will allow string? properties and will add '#nullable enable' to the top of each file
+    Settings.UseResharper                     = true;  // If true, will add a list of 'ReSharper disable' comments to the top of each file
+    Settings.ShowLicenseInfo                  = false; // If true, will add the licence info comment to the top of each file
+    Settings.IncludeConnectionSettingComments = false; // Add comments describing connection settings used to generate file
+    Settings.IncludeCodeGeneratedAttribute    = false; // If true, will include the [GeneratedCode] attribute before classes, false to remove it.
+    Settings.IncludeColumnsWithDefaults       = true;  // If true, will set properties to the default value from the database.
 
     // Enumerations ***********************************************************************************************************************
     // Create enumerations from database tables
@@ -133,19 +136,40 @@
         // }
     };
 
+    // Use the following list to add use of HiLo sequences for identity columns
+    Settings.HiLoSequences = new List<HiLoSequence>
+    {
+        // Example
+        // For column dbo.match_table_name.match_column_name this will use .UseHiLo("sequence_name", "sequence_schema") instead of .UseSqlServerIdentityColumn()
+        /*new HiLoSequence
+        {
+            Schema         = "dbo",
+            Table          = "match_table_name", // Use * to match all tables
+            SequenceName   = "sequence_name",
+            SequenceSchema = "sequence_schema"
+        },
+        new HiLoSequence
+        {
+            Schema         = "dbo",
+            Table          = "Employees",
+            SequenceName   = "EmployeeSequence",
+            SequenceSchema = "dbo"
+        }*/
+    };
+
     // Column modification ****************************************************************************************************************
     // Use the following list to replace column byte types with Enums.
     // As long as the type can be mapped to your new type, all is well.
     Settings.AddEnumDefinitions = delegate(List<EnumDefinition> enumDefinitions)
     {
         // Examples:
-        //enumDefinitions.Add(new EnumDefinition { Schema = "dbo", Table = "match_table_name", Column = "match_column_name", EnumType = "name_of_enum" });
+        //enumDefinitions.Add(new EnumDefinition { Schema = Settings.DefaultSchema, Table = "match_table_name", Column = "match_column_name", EnumType = "name_of_enum" });
 
         // This will replace OrderHeader.OrderStatus type to be an OrderStatusType enum
-        //enumDefinitions.Add(new EnumDefinition { Schema = "dbo", Table = "OrderHeader", Column = "OrderStatus", EnumType = "OrderStatusType" }); 
+        //enumDefinitions.Add(new EnumDefinition { Schema = Settings.DefaultSchema, Table = "OrderHeader", Column = "OrderStatus", EnumType = "OrderStatusType" }); 
 
         // This will replace any table *.OrderStatus type to be an OrderStatusType enum
-        //enumDefinitions.Add(new EnumDefinition { Schema = "dbo", Table = "*", Column = "OrderStatus", EnumType = "OrderStatusType" });
+        //enumDefinitions.Add(new EnumDefinition { Schema = Settings.DefaultSchema, Table = "*", Column = "OrderStatus", EnumType = "OrderStatusType" });
     };
 
     // StoredProcedure return types *******************************************************************************************************
@@ -170,20 +194,24 @@
         // "JsonIgnore" // Also add "Newtonsoft.Json" to the AdditionalNamespaces array above
     };
 
+ 
     // Reference other namespaces *********************************************************************************************************
     // Use these namespaces to specify where the different elements now live. These may even be in different assemblies.
-    // NOTE: These are only used if ElementsToGenerate is not set to generate everything.
-    // Please note this does not create the files in these locations, it only adds a using statement to say where they are.
-    // The way to do this is to add the "EntityFramework Reverse POCO Code First Generator" into each of these folders.
-    // Then set the .tt to only generate the relevant section you need by setting
+    // NOTE: These are only used if ElementsToGenerate is not set to generate all the elements.
+    // Please note the following does not create the files in these locations, it only adds a using statement to say where they are.
+    // The way to generate files in other folders is to either specify sub-folders above (See Settings.PocoFolder),
+    // or add the "EntityFramework Reverse POCO Code First Generator" into each of the folders you require, then
+    // set your <database>.tt files to only generate the relevant section(s) you need by setting:
+    // Then set the .tt to only generate the relevant section you need by setting:
     //      ElementsToGenerate = Elements.Poco; in your Entity folder,
     //      ElementsToGenerate = Elements.Context | Elements.Interface; in your Context folder,
     //      ElementsToGenerate = Elements.PocoConfiguration; in your Configuration folder.
     // You also need to set the following to the namespace where they now live:
-    Settings.PocoNamespace              = ""; // "YourProject.Entities";
-    Settings.ContextNamespace           = ""; // "YourProject.Context";
-    Settings.InterfaceNamespace         = ""; // "YourProject.Interfaces";
-    Settings.PocoConfigurationNamespace = ""; // "YourProject.Configuration";
+    Settings.ContextNamespace           = ""; // "YourProject.Data";
+    Settings.InterfaceNamespace         = ""; // "YourProject.Data";
+    Settings.PocoNamespace              = ""; // "YourProject.Data.Entities";
+    Settings.PocoConfigurationNamespace = ""; // "YourProject.Data.Configuration";
+
 
     // Schema *****************************************************************************************************************************
     // If there are multiple schemas, then the table name is prefixed with the schema, except for dbo.
@@ -205,18 +233,17 @@
         // Northwind example:
             
         // [Orders] (Table) to [Invoices] (View) is one-to-many using Orders.OrderID = Invoices.OrderID
-        // gen.AddRelationship(filter, foreignKeys, tablesAndViews, "orders_to_invoices", "dbo", "Orders", "OrderID", "dbo", "Invoices", "OrderID", null, null, true);
+        // gen.AddRelationship(filter, foreignKeys, tablesAndViews, "orders_to_invoices", Settings.DefaultSchema, "Orders", "OrderID", "dbo", "Invoices", "OrderID", null, null, true);
             
         // [Orders] (Table) to [Orders Qry] (View) is one-to-zeroOrOne ( [Orders].OrderID = [Orders Qry].OrderID )
-        // gen.AddRelationship(filter, foreignKeys, tablesAndViews, "orders_to_ordersQry", "dbo", "Orders", "OrderID", "dbo", "Orders Qry", "OrderID", "ParentFkName", "ChildFkName", true);
+        // gen.AddRelationship(filter, foreignKeys, tablesAndViews, "orders_to_ordersQry", Settings.DefaultSchema, "Orders", "OrderID", "dbo", "Orders Qry", "OrderID", "ParentFkName", "ChildFkName", true);
             
         // [Order Details] (Table) to [Invoices] (View) is one-to-zeroOrOne - but uses a composite-key: ( [Order Details].OrderID,ProductID = [Invoices].OrderID,ProductID )
-        // gen.AddRelationship(filter, foreignKeys, tablesAndViews, "orderDetails_to_invoices", "dbo", "Order Details", new[] { "OrderID", "ProductID" }, "dbo", "Invoices", new[] { "OrderID", "ProductID" }, null, null, true);
+        // gen.AddRelationship(filter, foreignKeys, tablesAndViews, "orderDetails_to_invoices", Settings.DefaultSchema, "Order Details", new[] { "OrderID", "ProductID" }, "dbo", "Invoices", new[] { "OrderID", "ProductID" }, null, null, true);
     };
 
     // Table renaming (single context generation only) ************************************************************************************
     // Use the following function to rename tables such as tblOrders to Orders, Shipments_AB to Shipments, etc.
-    // Example:
     Settings.TableRename = delegate(string name, string schema, bool isView)
     {
         // Example
@@ -340,6 +367,31 @@
                     column.Default = "(" + enumDefinition.EnumType + ") " + column.Default;
             }
         }
+    };
+
+    // Use the following function if you need to apply additional modifications to a enum
+    // Called just before UpdateEnumMember
+    Settings.UpdateEnum = delegate (Enumeration enumeration)
+    {
+        //enumeration.EnumAttributes.Add("[DataContract]");
+    };
+
+    // Use the following function if you need to apply additional modifications to a enum member
+    Settings.UpdateEnumMember = delegate (EnumerationMember enumerationMember)
+    {
+        //enumerationMember.Attributes.Add("[EnumMember]");
+        //enumerationMember.Attributes.Add("[SomeAttribute(\"" + enumerationMember.AllValues["SomeName"] + " \")]");
+    };
+
+
+    // Writes any boilerplate stuff inside the POCO class body
+    Settings.WriteInsideClassBody = delegate(Table t)
+    {
+        // Example:
+        //return "    // " + t.NameHumanCase + Environment.NewLine;
+
+        // Do nothing by default
+        return string.Empty;
     };
 
     // Using Views *****************************************************************************************************************

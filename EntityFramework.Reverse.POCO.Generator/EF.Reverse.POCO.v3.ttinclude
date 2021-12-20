@@ -57,6 +57,14 @@
         // Multiple projects can now be used that separate the different concerns.
         public static Elements ElementsToGenerate = Elements.Poco | Elements.Context | Elements.Interface | Elements.PocoConfiguration | Elements.Enum;
 
+        // Generate files in sub-folders ******************************************************************************************************
+        // Only activated if Settings.FileManagerType = FileManagerType.EfCore && Settings.GenerateSeparateFiles = true
+        public static string ContextFolder           = ""; // Sub-folder you would like your DbContext to be added to.              e.g. @"Data"
+        public static string InterfaceFolder         = ""; // Sub-folder you would like your Interface to be added to.              e.g. @"Data\Interface"
+        public static string PocoFolder              = ""; // Sub-folder you would like your Poco's to be added to.                 e.g. @"Data\Entities"
+        public static string PocoConfigurationFolder = ""; // Sub-folder you would like your Configuration mappings to be added to. e.g. @"Data\Configuration"
+
+
         public static int    CommandTimeout                         = 600; // SQL Command timeout in seconds. 600 is 10 minutes, 0 will wait indefinitely. Some databases can be slow retrieving schema information.
         public static string DbContextInterfaceBaseClasses          = "IDisposable"; // Specify what the base classes are for your database context interface
         public static string DbContextBaseClass                     = "DbContext"; // Specify what the base class is for your DbContext. For ASP.NET Identity use "IdentityDbContext<ApplicationUser>";
@@ -171,19 +179,22 @@
             // "JsonIgnore" // Also add "Newtonsoft.Json" to the AdditionalNamespaces array above
         };
 
+
+        // Reference other namespaces *********************************************************************************************************
         // Use these namespaces to specify where the different elements now live. These may even be in different assemblies.
-        // NOTE: These are only used if ElementsToGenerate is not set to generate everything.
-        // Please note this does not create the files in these locations, it only adds a using statement to say where they are.
-        // The way to do this is to add the "EntityFramework Reverse POCO Code First Generator" into each of these folders.
-        // Then set the .tt to only generate the relevant section you need by setting
+        // NOTE: These are only used if ElementsToGenerate is not set to generate all the elements.
+        // Please note the following does not create the files in these locations, it only adds a using statement to say where they are.
+        // The way to generate files in other folders is to either specify sub-folders above, or add the "EntityFramework Reverse POCO Code First Generator"
+        // into each of the folders you require, then set your <database>.tt files to only generate the relevant section(s) you need by setting:
         //      ElementsToGenerate = Elements.Poco; in your Entity folder,
         //      ElementsToGenerate = Elements.Context | Elements.Interface; in your Context folder,
         //      ElementsToGenerate = Elements.PocoConfiguration; in your Configuration folder.
         // You also need to set the following to the namespace where they now live:
-        public static string PocoNamespace              = ""; // "YourProject.Entities";
-        public static string ContextNamespace           = ""; // "YourProject.Context";
-        public static string InterfaceNamespace         = ""; // "YourProject.Context";
-        public static string PocoConfigurationNamespace = ""; // "YourProject.Configuration";
+        public static string ContextNamespace           = ""; // "YourProject.Data";
+        public static string InterfaceNamespace         = ""; // "YourProject.Data";
+        public static string PocoNamespace              = ""; // "YourProject.Data.Entities";
+        public static string PocoConfigurationNamespace = ""; // "YourProject.Data.Configuration";
+
 
         // Schema *****************************************************************************************************************************
         // If there are multiple schemas, then the table name is prefixed with the schema, except for dbo.
@@ -1518,14 +1529,14 @@
         }
     }
 
-    public class CustomFileManager : IFileManager
+    public class EfCoreFileManager : IFileManager
     {
         private readonly List<FileBlock> _blocks;
         private string _filename;
         private StringBuilder _sb;
         private const int StringBuilderSize = 2048;
 
-        public CustomFileManager()
+        public EfCoreFileManager()
         {
             _blocks   = new List<FileBlock>();
             _filename = null;
@@ -1664,8 +1675,8 @@
                 _visualStudioFileManager = (VisualStudioFileManager) Activator.CreateInstance(fileManagerType);
                 _visualStudioFileManager.Init(_outer);
 
-                // Switch to the CustomFileManager for the rest
-                fileManagerType = typeof(CustomFileManager);
+                // Switch to the EfCoreFileManager for the rest
+                fileManagerType = typeof(EfCoreFileManager);
             }
 
             foreach (var filter in filters)
@@ -1727,8 +1738,8 @@
                     continue;
                 }
 
-                if(fileManager.Value.GetType() == typeof(CustomFileManager))
-                    ((CustomFileManager) fileManager.Value).ProcessToAnotherFileManager(_visualStudioFileManager, _outer);
+                if(fileManager.Value.GetType() == typeof(EfCoreFileManager))
+                    ((EfCoreFileManager) fileManager.Value).ProcessToAnotherFileManager(_visualStudioFileManager, _outer);
                 else
                     fileManager.Value.Process(split);
             }
@@ -1751,8 +1762,11 @@
                 case FileManagerType.VisualStudio:
                     return typeof(VisualStudioFileManager);
 
+#pragma warning disable CS0618 // Type or member is obsolete
                 case FileManagerType.Custom:
-                    return typeof(CustomFileManager);
+#pragma warning restore CS0618 // Type or member is obsolete
+                case FileManagerType.EfCore:
+                    return typeof(EfCoreFileManager);
 
                 case FileManagerType.Null:
                     return typeof(NullFileManager);
@@ -1841,10 +1855,21 @@
         {
         }
     }
+
     public enum FileManagerType
     {
-        VisualStudio, // Use this for .NET 4.x projects. It will make use of the `EF6.Utility.CS.ttinclude` to add/remove files from the Visual Studio project.
-        Custom, // Use this for .NET Core projects. It will write the files directly. Visual Studio will automatically detect new files and include them in the project.
+        // Use this for .NET 4.x projects.
+        // It will make use of the `EF6.Utility.CS.ttinclude` to add/remove files to the Visual Studio project.
+        VisualStudio,
+
+        // Use this for .NET Core projects.
+        // It will write the files directly.
+        // Visual Studio will automatically detect new files and include them in the project.
+        EfCore,
+        
+        [Obsolete("Please use FileManagerType.EfCore instead")]
+        Custom,
+        
         Null // For testing only. Does nothing.
     }
 
@@ -3484,7 +3509,7 @@
                 hasScalarValuedFunctions        = _hasScalarValuedFunctions && _filter.IncludeScalarValuedFunctions,
             };
 
-            var co = new CodeOutput(string.Empty, filename, "Database context interface", _globalUsings);
+            var co = new CodeOutput(string.Empty, filename, "Database context interface", Settings.InterfaceFolder, _globalUsings);
             co.AddUsings(_template.DatabaseContextInterfaceUsings(data));
             co.AddCode(Template.Transform(_template.DatabaseContextInterface(), data));
 
@@ -3564,7 +3589,7 @@
                 SqlParameter                           = Settings.SqlParameter(),
             };
 
-            var co = new CodeOutput(string.Empty, filename, "Database context", _globalUsings);
+            var co = new CodeOutput(string.Empty, filename, "Database context", Settings.ContextFolder, _globalUsings);
             co.AddUsings(_template.DatabaseContextUsings(data));
             co.AddCode(Template.Transform(_template.DatabaseContext(), data));
 
@@ -3594,7 +3619,7 @@
                 hasScalarValuedFunctions = _hasScalarValuedFunctions && _filter.IncludeScalarValuedFunctions,
             };
 
-            var co = new CodeOutput(string.Empty, filename, "Fake Database context", _globalUsings);
+            var co = new CodeOutput(string.Empty, filename, "Fake Database context", Settings.ContextFolder, _globalUsings);
             co.AddUsings(_template.FakeDatabaseContextUsings(data, _filter));
             co.AddCode(Template.Transform(_template.FakeDatabaseContext(), data));
 
@@ -3616,7 +3641,7 @@
                 DbContextClassIsPartial = Settings.DbContextClassIsPartial(),
             };
 
-            var co = new CodeOutput(string.Empty, filename, "Fake DbSet", _globalUsings);
+            var co = new CodeOutput(string.Empty, filename, "Fake DbSet", Settings.ContextFolder, _globalUsings);
             co.AddUsings(_template.FakeDbSetUsings(data));
             co.AddCode(Template.Transform(_template.FakeDbSet(), data));
 
@@ -3638,7 +3663,7 @@
                 contextName = Settings.DbContextName
             };
 
-            var co = new CodeOutput(string.Empty, filename, "Database context factory", _globalUsings);
+            var co = new CodeOutput(string.Empty, filename, "Database context factory", Settings.ContextFolder, _globalUsings);
             co.AddUsings(_template.DatabaseContextFactoryUsings(data));
             co.AddCode(Template.Transform(_template.DatabaseContextFactory(), data));
             return co;
@@ -3725,7 +3750,7 @@
                 EntityClassesArePartial = Settings.EntityClassesArePartial()
             };
 
-            var co = new CodeOutput(table.DbName, filename, null, _globalUsings);
+            var co = new CodeOutput(table.DbName, filename, null, Settings.PocoFolder, _globalUsings);
             co.AddUsings(_template.PocoUsings(data));
             co.AddCode(Template.Transform(_template.Poco(), data));
             return co;
@@ -3787,7 +3812,7 @@
                 HasIndexes                     = hasIndexes
             };
 
-            var co = new CodeOutput(table.DbName, filename, null, _globalUsings);
+            var co = new CodeOutput(table.DbName, filename, null, Settings.PocoConfigurationFolder, _globalUsings);
             co.AddUsings(_template.PocoConfigurationUsings(data));
             co.AddCode(Template.Transform(_template.PocoConfiguration(), data));
             return co;
@@ -3821,7 +3846,7 @@
                 MultipleModelReturnColumns     = multipleModelReturnColumns
             };
 
-            var co = new CodeOutput(sp.DbName, filename, null, _globalUsings);
+            var co = new CodeOutput(sp.DbName, filename, null, Settings.PocoFolder, _globalUsings);
             co.AddUsings(_template.StoredProcReturnModelUsings());
             co.AddCode(Template.Transform(_template.StoredProcReturnModels(), data));
             return co;
@@ -3836,7 +3861,7 @@
                 return null;
             }
 
-            var co = new CodeOutput(enumeration.EnumName, filename, null, null);
+            var co = new CodeOutput(enumeration.EnumName, filename, null, Settings.PocoFolder, null);
             co.AddUsings(_template.EnumUsings());
             co.AddCode(Template.Transform(_template.Enums(), enumeration));
             return co;
@@ -3851,13 +3876,16 @@
         public List<string> Usings { get; private set; }
         public List<string> Code { get; private set; }
 
-        public CodeOutput(string dbName, string filename, string region, List<string> usings)
+        public CodeOutput(string dbName, string filename, string region, string folder, List<string> usings)
         {
             DbName   = dbName;
             Filename = filename;
             Region   = region;
             Usings   = new List<string>();
             Code     = new List<string>();
+
+            if(!string.IsNullOrWhiteSpace(folder))
+                Filename = Path.Combine(folder, filename);
 
             AddUsings(usings);
         }
@@ -4297,7 +4325,9 @@
                 .ThenBy(x => x.TableName)
                 .ToList();
 
-            var deleteFilteredOutFiles = Settings.FileManagerType == FileManagerType.Custom && Settings.GenerateSeparateFiles;
+#pragma warning disable CS0618 // Type or member is obsolete
+            var deleteFilteredOutFiles = (Settings.FileManagerType == FileManagerType.Custom || Settings.FileManagerType == FileManagerType.EfCore) && Settings.GenerateSeparateFiles;
+#pragma warning restore CS0618 // Type or member is obsolete
 
             foreach (var filterKeyValuePair in FilterList.GetFilters())
             {
@@ -4658,7 +4688,9 @@
 
             try
             {
-                var deleteFilteredOutFiles = Settings.FileManagerType == FileManagerType.Custom && Settings.GenerateSeparateFiles;
+#pragma warning disable CS0618 // Type or member is obsolete
+                var deleteFilteredOutFiles = (Settings.FileManagerType == FileManagerType.Custom || Settings.FileManagerType == FileManagerType.EfCore) && Settings.GenerateSeparateFiles;
+#pragma warning restore CS0618 // Type or member is obsolete
 
                 var spFilters = FilterList
                     .GetFilters()
@@ -5133,6 +5165,7 @@
         {
             try
             {
+                CreateOutputFolders();
                 var fallback = Settings.TemplateFolder;
                 foreach (var filter in FilterList.GetFilters())
                 {
@@ -5165,6 +5198,37 @@
                 _fileManagementService.Error(string.Format("// Failed to generate the code in GenerateCode() - {0}", error));
                 _fileManagementService.Error("/*" + x.StackTrace + "*/");
                 _fileManagementService.Error("// -----------------------------------------------------------------------------------------");
+                _fileManagementService.Error(string.Empty);
+            }
+        }
+
+        private void CreateOutputFolders()
+        {
+            if (Settings.FileManagerType != FileManagerType.EfCore || Settings.GenerateSeparateFiles != true)
+                return;
+
+            CreateOutputFolder(Settings.ContextFolder);
+            CreateOutputFolder(Settings.InterfaceFolder);
+            CreateOutputFolder(Settings.PocoFolder);
+            CreateOutputFolder(Settings.PocoConfigurationFolder);
+        }
+
+        private void CreateOutputFolder(string folder)
+        {
+            if (string.IsNullOrEmpty(folder))
+                return;
+
+            var fullPath = Path.Combine(Settings.Root, folder);
+            try
+            {
+                Directory.CreateDirectory(fullPath);
+            }
+            catch (Exception x)
+            {
+                var error = FormatError(x);
+                _fileManagementService.Error(string.Empty);
+                _fileManagementService.Error(string.Format("// Unable to create folder: {0} Error: {1}", fullPath, error));
+                _fileManagementService.Error("/*" + x.StackTrace + "*/");
                 _fileManagementService.Error(string.Empty);
             }
         }

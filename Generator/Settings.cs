@@ -31,6 +31,14 @@ namespace Efrpg
         // Multiple projects can now be used that separate the different concerns.
         public static Elements ElementsToGenerate = Elements.Poco | Elements.Context | Elements.Interface | Elements.PocoConfiguration | Elements.Enum;
 
+        // Generate files in sub-folders ******************************************************************************************************
+        // Only activated if Settings.FileManagerType = FileManagerType.EfCore && Settings.GenerateSeparateFiles = true
+        public static string ContextFolder           = ""; // Sub-folder you would like your DbContext to be added to.              e.g. @"Data"
+        public static string InterfaceFolder         = ""; // Sub-folder you would like your Interface to be added to.              e.g. @"Data\Interface"
+        public static string PocoFolder              = ""; // Sub-folder you would like your Poco's to be added to.                 e.g. @"Data\Entities"
+        public static string PocoConfigurationFolder = ""; // Sub-folder you would like your Configuration mappings to be added to. e.g. @"Data\Configuration"
+
+
         public static int    CommandTimeout                         = 600; // SQL Command timeout in seconds. 600 is 10 minutes, 0 will wait indefinitely. Some databases can be slow retrieving schema information.
         public static string DbContextInterfaceBaseClasses          = "IDisposable"; // Specify what the base classes are for your database context interface
         public static string DbContextBaseClass                     = "DbContext"; // Specify what the base class is for your DbContext. For ASP.NET Identity use "IdentityDbContext<ApplicationUser>";
@@ -145,19 +153,22 @@ namespace Efrpg
             // "JsonIgnore" // Also add "Newtonsoft.Json" to the AdditionalNamespaces array above
         };
 
+
+        // Reference other namespaces *********************************************************************************************************
         // Use these namespaces to specify where the different elements now live. These may even be in different assemblies.
-        // NOTE: These are only used if ElementsToGenerate is not set to generate everything.
-        // Please note this does not create the files in these locations, it only adds a using statement to say where they are.
-        // The way to do this is to add the "EntityFramework Reverse POCO Code First Generator" into each of these folders.
-        // Then set the .tt to only generate the relevant section you need by setting
+        // NOTE: These are only used if ElementsToGenerate is not set to generate all the elements.
+        // Please note the following does not create the files in these locations, it only adds a using statement to say where they are.
+        // The way to generate files in other folders is to either specify sub-folders above, or add the "EntityFramework Reverse POCO Code First Generator"
+        // into each of the folders you require, then set your <database>.tt files to only generate the relevant section(s) you need by setting:
         //      ElementsToGenerate = Elements.Poco; in your Entity folder,
         //      ElementsToGenerate = Elements.Context | Elements.Interface; in your Context folder,
         //      ElementsToGenerate = Elements.PocoConfiguration; in your Configuration folder.
         // You also need to set the following to the namespace where they now live:
-        public static string PocoNamespace              = ""; // "YourProject.Entities";
-        public static string ContextNamespace           = ""; // "YourProject.Context";
-        public static string InterfaceNamespace         = ""; // "YourProject.Context";
-        public static string PocoConfigurationNamespace = ""; // "YourProject.Configuration";
+        public static string ContextNamespace           = ""; // "YourProject.Data";
+        public static string InterfaceNamespace         = ""; // "YourProject.Data";
+        public static string PocoNamespace              = ""; // "YourProject.Data.Entities";
+        public static string PocoConfigurationNamespace = ""; // "YourProject.Data.Configuration";
+
 
         // Schema *****************************************************************************************************************************
         // If there are multiple schemas, then the table name is prefixed with the schema, except for dbo.

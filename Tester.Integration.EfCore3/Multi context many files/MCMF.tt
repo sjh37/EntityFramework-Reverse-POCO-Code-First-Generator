@@ -21,6 +21,14 @@
     FilterSettings.IncludeScalarValuedFunctions = true;
     FilterSettings.CheckSettings();
 
+    // Generate files in sub-folders ******************************************************************************************************
+    // Only activated if Settings.GenerateSeparateFiles = true && Settings.FileManagerType = FileManagerType.EfCore
+    Settings.ContextFolder           = @"Contexts";      // Sub-folder you would like your DbContext to be added to.              e.g. @"Data"
+    Settings.InterfaceFolder         = @"Interfaces";    // Sub-folder you would like your Interface to be added to.              e.g. @"Data\Interface"
+    Settings.PocoFolder              = @"Entities";      // Sub-folder you would like your Poco's to be added to.                 e.g. @"Data\Entities"
+    Settings.PocoConfigurationFolder = @"Configuration"; // Sub-folder you would like your Configuration mappings to be added to. e.g. @"Data\Configuration"
+
+
     Inflector.PluralisationService = new EnglishPluralizationService();
     var outer = (GeneratedTextTransformation) this;
     var fileManagement = new FileManagementService(outer);

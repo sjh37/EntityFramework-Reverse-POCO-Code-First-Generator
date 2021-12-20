@@ -25,11 +25,7 @@
     Settings.TemplateFolder          = Path.Combine(Settings.Root, "Templates"); // Only used if Settings.TemplateType = TemplateType.FileBased. Specify folder name where the mustache folders can be found. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Custom-file-based-templates
     Settings.AddUnitTestingDbContext = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing. Read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/FakeDbContext
 
-    // Elements to generate ***************************************************************************************************************
-    // Add the elements that should be generated when the template is executed.
-    // Multiple projects can be used that separate the different concerns.
-    Settings.ElementsToGenerate = Elements.Poco | Elements.Context | Elements.Interface | Elements.PocoConfiguration | Elements.Enum;
-    
+
     // Filtering **************************************************************************************************************************
     // Filtering can now be done via one or more Regex's and one or more functions.
     // Gone are the days of a single do-it-all regex, you can now split them up into many smaller Regex's.
@@ -60,6 +56,21 @@
     //FilterSettings.ColumnFilters.Add(new RegexIncludeFilter(".*")); // Rarely used as it would only include columns with names listed here
     //FilterSettings.StoredProcedureFilters.Add(new RegexExcludeFilter("Calc")); // This excludes all stored procedures 'Calc' in the name
     //FilterSettings.StoredProcedureFilters.Add(new RegexIncludeFilter("Pricing.*")); // This includes all stored procedures starting with 'Pricing'
+    
+
+    // Elements to generate ***************************************************************************************************************
+    // Add the elements that should be generated when the template is executed.
+    // Multiple projects can be used that separate the different concerns.
+    Settings.ElementsToGenerate = Elements.Poco | Elements.Context | Elements.Interface | Elements.PocoConfiguration | Elements.Enum;
+
+
+    // Generate files in sub-folders ******************************************************************************************************
+    // Only activated if Settings.GenerateSeparateFiles = true && Settings.FileManagerType = FileManagerType.EfCore
+    Settings.ContextFolder           = @"SqlCE"; // Sub-folder you would like your DbContext to be added to.              e.g. @"Data"
+    Settings.InterfaceFolder         = @"SqlCE"; // Sub-folder you would like your Interface to be added to.              e.g. @"Data\Interface"
+    Settings.PocoFolder              = @"SqlCE"; // Sub-folder you would like your Poco's to be added to.                 e.g. @"Data\Entities"
+    Settings.PocoConfigurationFolder = @"SqlCE"; // Sub-folder you would like your Configuration mappings to be added to. e.g. @"Data\Configuration"
+
 
     // Other settings *********************************************************************************************************************
     Settings.CommandTimeout                         = 600; // SQL Command timeout in seconds. 600 is 10 minutes, 0 will wait indefinitely. Some databases can be slow retrieving schema information.
@@ -141,6 +152,27 @@
         // }
     };
 
+    // Use the following list to add use of HiLo sequences for identity columns
+    Settings.HiLoSequences = new List<HiLoSequence>
+    {
+        // Example
+        // For column dbo.match_table_name.match_column_name this will use .UseHiLo("sequence_name", "sequence_schema") instead of .UseSqlServerIdentityColumn()
+        /*new HiLoSequence
+        {
+            Schema         = "dbo",
+            Table          = "match_table_name", // Use * to match all tables
+            SequenceName   = "sequence_name",
+            SequenceSchema = "sequence_schema"
+        },
+        new HiLoSequence
+        {
+            Schema         = "dbo",
+            Table          = "Employees",
+            SequenceName   = "EmployeeSequence",
+            SequenceSchema = "dbo"
+        }*/
+    };
+
     // Column modification ****************************************************************************************************************
     // Use the following list to replace column byte types with Enums.
     // As long as the type can be mapped to your new type, all is well.
@@ -178,20 +210,24 @@
         // "JsonIgnore" // Also add "Newtonsoft.Json" to the AdditionalNamespaces array above
     };
 
+ 
     // Reference other namespaces *********************************************************************************************************
     // Use these namespaces to specify where the different elements now live. These may even be in different assemblies.
-    // NOTE: These are only used if ElementsToGenerate is not set to generate everything.
-    // Please note this does not create the files in these locations, it only adds a using statement to say where they are.
-    // The way to do this is to add the "EntityFramework Reverse POCO Code First Generator" into each of these folders.
-    // Then set the .tt to only generate the relevant section you need by setting
+    // NOTE: These are only used if ElementsToGenerate is not set to generate all the elements.
+    // Please note the following does not create the files in these locations, it only adds a using statement to say where they are.
+    // The way to generate files in other folders is to either specify sub-folders above (See Settings.PocoFolder),
+    // or add the "EntityFramework Reverse POCO Code First Generator" into each of the folders you require, then
+    // set your <database>.tt files to only generate the relevant section(s) you need by setting:
+    // Then set the .tt to only generate the relevant section you need by setting:
     //      ElementsToGenerate = Elements.Poco; in your Entity folder,
     //      ElementsToGenerate = Elements.Context | Elements.Interface; in your Context folder,
     //      ElementsToGenerate = Elements.PocoConfiguration; in your Configuration folder.
     // You also need to set the following to the namespace where they now live:
-    Settings.PocoNamespace              = ""; // "YourProject.Entities";
-    Settings.ContextNamespace           = ""; // "YourProject.Context";
-    Settings.InterfaceNamespace         = ""; // "YourProject.Interfaces";
-    Settings.PocoConfigurationNamespace = ""; // "YourProject.Configuration";
+    Settings.ContextNamespace           = ""; // "YourProject.Data";
+    Settings.InterfaceNamespace         = ""; // "YourProject.Data";
+    Settings.PocoNamespace              = ""; // "YourProject.Data.Entities";
+    Settings.PocoConfigurationNamespace = ""; // "YourProject.Data.Configuration";
+
 
     // Schema *****************************************************************************************************************************
     // If there are multiple schemas, then the table name is prefixed with the schema, except for dbo.
@@ -348,6 +384,21 @@
             }
         }
     };
+
+    // Use the following function if you need to apply additional modifications to a enum
+    // Called just before UpdateEnumMember
+    Settings.UpdateEnum = delegate (Enumeration enumeration)
+    {
+        //enumeration.EnumAttributes.Add("[DataContract]");
+    };
+
+    // Use the following function if you need to apply additional modifications to a enum member
+    Settings.UpdateEnumMember = delegate (EnumerationMember enumerationMember)
+    {
+        //enumerationMember.Attributes.Add("[EnumMember]");
+        //enumerationMember.Attributes.Add("[SomeAttribute(\"" + enumerationMember.AllValues["SomeName"] + " \")]");
+    };
+
 
     // Writes any boilerplate stuff inside the POCO class body
     Settings.WriteInsideClassBody = delegate(Table t)
