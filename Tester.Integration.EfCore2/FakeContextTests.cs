@@ -15,29 +15,29 @@
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            _fakeContext = new FakeMyDbContext { Categories = { new Category { CategoryId = 123, CategoryName = "Flowers" } } };
+            _fakeContext = new FakeMyDbContext { AppUsers = { new AppUser { Id = 123, Name = "Simon" } } };
         }
 
         [Test]
         public void FirstOrDefault()
         {
-            var result = _fakeContext.Categories.FirstOrDefault();
+            var result = _fakeContext.AppUsers.FirstOrDefault();
             Assert.IsNotNull(result);
-            Assert.AreEqual(123, result.CategoryId);
+            Assert.AreEqual(123, result.Id);
         }
 
         [Test]
         public async Task FirstOrDefaultAsync()
         {
-            var result = await _fakeContext.Categories.FirstOrDefaultAsync();
+            var result = await _fakeContext.AppUsers.FirstOrDefaultAsync();
             Assert.IsNotNull(result);
-            Assert.AreEqual(123, result.CategoryId);
+            Assert.AreEqual(123, result.Id);
         }
 
         [Test]
         public void QueryFirstOrDefault()
         {
-            var query = from w in _fakeContext.Categories select new { QueriedId = w.CategoryId };
+            var query = from w in _fakeContext.AppUsers select new { QueriedId = w.Id };
             var result = query.FirstOrDefault();
             Assert.IsNotNull(result);
             Assert.AreEqual(123, result.QueriedId);

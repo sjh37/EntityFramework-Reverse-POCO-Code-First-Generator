@@ -10,18 +10,18 @@
     [Category(Constants.CI)]
     public class FakeDbSetTests
     {
-        private FakeDbSet<Category> _dbSet;
-        private List<Category> _list;
+        private FakeDbSet<AppUser> _dbSet;
+        private List<AppUser> _list;
 
         [SetUp]
         public void SetUp()
         {
-            _dbSet = new FakeDbSet<Category>();
+            _dbSet = new FakeDbSet<AppUser>();
 
-            _list = new List<Category>
+            _list = new List<AppUser>
             {
-                new Category { CategoryId = 1, CategoryName = "Flowers" },
-                new Category { CategoryId = 2, CategoryName = "Cars" },
+                new AppUser { Id = 1, Name = "Simon" },
+                new AppUser { Id = 2, Name = "Fred" },
             };
         }
 

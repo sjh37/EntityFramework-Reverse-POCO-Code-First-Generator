@@ -80,6 +80,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         void UpdateRange(IEnumerable<object> entities);
         void UpdateRange(params object[] entities);
 
+        IQueryable<TResult> FromExpression<TResult> (Expression<Func<IQueryable<TResult>>> expression);
     }
 
     #endregion
@@ -369,6 +370,11 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
             throw new NotImplementedException();
         }
 
+        public virtual IQueryable<TResult> FromExpression<TResult> (Expression<Func<IQueryable<TResult>>> expression)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 
     #endregion
@@ -450,11 +456,6 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
             return null;
         }
 
-        public override ValueTask<EntityEntry<TEntity>> AddAsync(TEntity entity, CancellationToken cancellationToken = default)
-        {
-            return new ValueTask<EntityEntry<TEntity>>(Task<EntityEntry<TEntity>>.Factory.StartNew(() => Add(entity)));
-        }
-
         public override void AddRange(params TEntity[] entities)
         {
             if (entities == null) throw new ArgumentNullException("entities");
@@ -473,27 +474,10 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
             return Task.Factory.StartNew(() => AddRange(entities));
         }
 
-        public override Task AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
-        {
-            if (entities == null) throw new ArgumentNullException("entities");
-            return Task.Factory.StartNew(() => AddRange(entities));
-        }
-
-        public override void AttachRange(IEnumerable<TEntity> entities)
-        {
-            AddRange(entities.ToArray());
-        }
-
         public override void AttachRange(params TEntity[] entities)
         {
             if (entities == null) throw new ArgumentNullException("entities");
             AddRange(entities);
-        }
-
-        public override EntityEntry<TEntity> Remove(TEntity entity)
-        {
-            _data.Remove(entity);
-            return null;
         }
 
         public override void RemoveRange(params TEntity[] entities)
@@ -506,17 +490,6 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         public override void RemoveRange(IEnumerable<TEntity> entities)
         {
             RemoveRange(entities.ToArray());
-        }
-
-        public override EntityEntry<TEntity> Update(TEntity entity)
-        {
-            _data.Remove(entity);
-            _data.Add(entity);
-            return null;
-        }
-
-        public override void UpdateRange(IEnumerable<TEntity> entities)    {
-            UpdateRange(entities.ToArray());
         }
 
         public override void UpdateRange(params TEntity[] entities)
@@ -638,6 +611,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         {
             get { return _inner.Current; }
         }
+
         public ValueTask<bool> MoveNextAsync()
         {
             return new ValueTask<bool>(_inner.MoveNext());
@@ -779,8 +753,18 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         {
         }
 
+        public override Task CommitTransactionAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            return Task.CompletedTask;
+        }
+
         public override void RollbackTransaction()
         {
+        }
+
+        public override Task RollbackTransactionAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            return Task.CompletedTask;
         }
 
         public override IExecutionStrategy CreateExecutionStrategy()
@@ -792,18 +776,17 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         {
             return string.Empty;
         }
-
     }
 
     public class FakeDbContextTransaction : IDbContextTransaction
     {
-        public virtual Guid TransactionId => Guid.NewGuid();
-        public virtual void Commit() { }
-        public virtual void Rollback() { }
-        public virtual Task CommitAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;
-        public virtual Task RollbackAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;
-        public virtual void Dispose() { }
-        public virtual ValueTask DisposeAsync() => default;
+        public Guid TransactionId => Guid.NewGuid();
+        public void Commit() { }
+        public void Rollback() { }
+        public Task CommitAsync(CancellationToken cancellationToken = new CancellationToken()) => Task.CompletedTask;
+        public Task RollbackAsync(CancellationToken cancellationToken = new CancellationToken()) => Task.CompletedTask;
+        public void Dispose() { }
+        public ValueTask DisposeAsync() => default;
     }
 
     #endregion

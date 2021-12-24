@@ -280,10 +280,10 @@ namespace Efrpg
 
         private string ConvertDataColumnType(Type type)
         {
-            var isEfCore5 = Settings.IsEfCore5();
+            var isEfCore5Plus = Settings.IsEfCore5Plus();
             
             if (type.Name.Equals("SqlHierarchyId"))
-                return isEfCore5 ? "HierarchyId" : "Microsoft.SqlServer.Types.SqlHierarchyId";
+                return isEfCore5Plus ? "HierarchyId" : "Microsoft.SqlServer.Types.SqlHierarchyId";
 
             var typeNamespace = type.Namespace + ".";
             if (type.Namespace?.ToLower() == "system")
@@ -334,7 +334,7 @@ namespace Efrpg
                     break;
             }
 
-            if (isEfCore5)
+            if (isEfCore5Plus)
             {
                 switch (typeName.ToLower())
                 {

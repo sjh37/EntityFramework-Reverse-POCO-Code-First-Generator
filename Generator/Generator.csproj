@@ -109,6 +109,7 @@
     <Compile Include="Sequence.cs" />
     <Compile Include="Templates\TemplateEfCore2.cs" />
     <Compile Include="Templates\TemplateEfCore3.cs" />
+    <Compile Include="Templates\TemplateEfCore6.cs" />
     <Compile Include="Util\MultiContextSettingsCopy.cs" />
     <Compile Include="Filtering\PeriodFilter.cs" />
     <Compile Include="Filtering\RegexExcludeFilter.cs" />

@@ -11,20 +11,26 @@
     // For help on the various Types below, please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Common-Settings.*Types-explained
     // The following entries are the only required settings.
     Settings.DatabaseType            = DatabaseType.SqlServer; // SqlServer, SqlCe, PostgreSQL. Coming next: MySql, Oracle
-    Settings.TemplateType            = TemplateType.EfCore2; // EfCore5, EfCore3, EfCore2, Ef6, FileBasedCore2, FileBasedCore3, FileBasedCore5. FileBased specify folder using Settings.TemplateFolder
+    Settings.TemplateType            = TemplateType.EfCore2; // EfCore6, EfCore5, EfCore3, EfCore2, Ef6, FileBasedCore2, FileBasedCore3, FileBasedCore5, FileBasedCore6. FileBased specify folder using Settings.TemplateFolder
     Settings.GeneratorType           = GeneratorType.EfCore; // EfCore, Ef6, Custom. Custom edit GeneratorCustom class to provide your own implementation
 
     Settings.FileManagerType         = FileManagerType.EfCore; // .NET Core project = EfCore; .NET 4.x project = VisualStudio; No output (testing only) = Null
-    Settings.ConnectionString        = "Data Source=(local);Initial Catalog=Northwind;Integrated Security=True;MultipleActiveResultSets=True"; // This is used by the generator to reverse engineer your database
+    Settings.ConnectionString        = "Data Source=(local);Initial Catalog=Fred;Integrated Security=True;MultipleActiveResultSets=True"; // This is used by the generator to reverse engineer your database
     Settings.ConnectionStringName    = "MyDbContext"; // ConnectionString key as specified in your app.config/web.config/appsettings.json. Not used by the generator, but is placed into the generated DbContext constructor.
     Settings.DbContextName           = "MyDbContext"; // Class name for the DbContext to be generated.
     //Settings.DbContextInterfaceName= "IMyDbContext"; // Defaults to "I" + DbContextName or set string empty to not implement any interface.
-    Settings.GenerateSeparateFiles   = false;
+    Settings.GenerateSeparateFiles   = true;
     Settings.Namespace               = DefaultNamespace; // Override the default namespace here. Please use double quotes, example: "Accounts.Billing"
     Settings.TemplateFolder          = Path.Combine(Settings.Root, "Templates"); // Only used if Settings.TemplateType = TemplateType.FileBased. Specify folder name where the mustache folders can be found. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Custom-file-based-templates
     Settings.AddUnitTestingDbContext = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing. Read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/FakeDbContext
 
-
+    // Generate files in sub-folders ******************************************************************************************************
+    // (Settings.FileManagerType = FileManagerType.EfCore && Settings.GenerateSeparateFiles = true)
+    Settings.ContextFolder           = @"FredData"; // Sub-folder you would like your DbContext to be added to.              e.g. @"Data"
+    Settings.InterfaceFolder         = @"FredData\Interface"; // Sub-folder you would like your Interface to be added to.              e.g. @"Data\Interface"
+    Settings.PocoFolder              = @"FredData\Entities"; // Sub-folder you would like your Poco's to be added to.                 e.g. @"Data\Entities"
+    Settings.PocoConfigurationFolder = @"FredData\Configuration"; // Sub-folder you would like your Configuration mappings to be added to. e.g. @"Data\Configuration"
+    
     // Filtering **************************************************************************************************************************
     // Filtering can now be done via one or more Regex's and one or more functions.
     // Gone are the days of a single do-it-all regex, you can now split them up into many smaller Regex's.

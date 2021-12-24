@@ -23,5 +23,6 @@ namespace Efrpg.TemplateModels
         public bool ConfigurationClassesArePartial                                { get; set; }
         public bool UseHasNoKey                                                   { get; set; }
         public string ToTableOrView                                               { get; set; }
+        public bool UsesDictionary                                                { get; set; }
     }
 }

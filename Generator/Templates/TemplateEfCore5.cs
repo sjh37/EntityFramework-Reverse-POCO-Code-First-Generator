@@ -1295,6 +1295,9 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
             if (Settings.IncludeCodeGeneratedAttribute)
                 usings.Add("System.CodeDom.Compiler");
 
+            if(data.HasHierarchyId)
+                usings.Add("Microsoft.EntityFrameworkCore");
+
             return usings;
         }
 
@@ -1423,6 +1426,9 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
 
             if (Settings.TrimCharFields)
                 usings.Add("Microsoft.EntityFrameworkCore.Storage.ValueConversion");
+
+            if(data.UsesDictionary)
+                usings.Add("System.Collections.Generic");
 
             return usings;
         }

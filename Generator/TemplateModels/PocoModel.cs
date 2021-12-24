@@ -24,6 +24,7 @@ namespace Efrpg.TemplateModels
         public List<PocoColumnsWithDefaultsModel> ColumnsWithDefaults             { get; set; }
         public List<string> ReverseNavigationCtor                                 { get; set; }
         public bool EntityClassesArePartial                                       { get; set; }
+        public bool HasHierarchyId                                                { get; set; }
     }
 
     public class PocoColumnModel

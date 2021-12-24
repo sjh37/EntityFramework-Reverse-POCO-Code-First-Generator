@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Query.Internal;
@@ -101,6 +102,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         void UpdateRange(IEnumerable<object> entities);
         void UpdateRange(params object[] entities);
 
+        IQueryable<TResult> FromExpression<TResult> (Expression<Func<IQueryable<TResult>>> expression);
 
         // Stored Procedures
         List<CustOrderHistReturnModel> CustOrderHist(string customerId);
@@ -782,6 +784,11 @@ namespace EntityFramework_Reverse_POCO_Generator
             throw new NotImplementedException();
         }
 
+        public virtual IQueryable<TResult> FromExpression<TResult> (Expression<Func<IQueryable<TResult>>> expression)
+        {
+            throw new NotImplementedException();
+        }
+
 
         // Stored Procedures
 
@@ -940,179 +947,9 @@ namespace EntityFramework_Reverse_POCO_Generator
     //          }
     //      }
     //      Read more about it here: https://msdn.microsoft.com/en-us/data/dn314431.aspx
-    public class FakeDbSet<TEntity> : DbSet<TEntity>, IQueryable<TEntity>, IAsyncEnumerable<TEntity>, IListSource where TEntity : class
+    public class FakeDbSet<TEntity> : DbSet<TEntity>, IQueryable<TEntity>, IInfrastructure<IServiceProvider>, IListSource where TEntity : class
     {
-        private readonly PropertyInfo[] _primaryKeys;
-        private readonly ObservableCollection<TEntity> _data;
-        private readonly IQueryable _query;
-
-        public FakeDbSet()
-        {
-            _primaryKeys = null;
-            _data        = new ObservableCollection<TEntity>();
-            _query       = _data.AsQueryable();
-        }
-
-        public FakeDbSet(params string[] primaryKeys)
-        {
-            _primaryKeys = typeof(TEntity).GetProperties().Where(x => primaryKeys.Contains(x.Name)).ToArray();
-            _data        = new ObservableCollection<TEntity>();
-            _query       = _data.AsQueryable();
-        }
-
-        public override TEntity Find(params object[] keyValues)
-        {
-            if (_primaryKeys == null)
-                throw new ArgumentException("No primary keys defined");
-            if (keyValues.Length != _primaryKeys.Length)
-                throw new ArgumentException("Incorrect number of keys passed to Find method");
-
-            var keyQuery = this.AsQueryable();
-            keyQuery = keyValues
-                .Select((t, i) => i)
-                .Aggregate(keyQuery,
-                    (current, x) =>
-                        current.Where(entity => _primaryKeys[x].GetValue(entity, null).Equals(keyValues[x])));
-
-            return keyQuery.SingleOrDefault();
-        }
-
-        public override ValueTask<TEntity> FindAsync(object[] keyValues, CancellationToken cancellationToken)
-        {
-            return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues), cancellationToken));
-        }
-
-        public override ValueTask<TEntity> FindAsync(params object[] keyValues)
-        {
-            return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues)));
-        }
-
-        IAsyncEnumerator<TEntity> IAsyncEnumerable<TEntity>.GetAsyncEnumerator(CancellationToken cancellationToken)
-        {
-            return GetAsyncEnumerator(cancellationToken);
-        }
-
-        public override EntityEntry<TEntity> Add(TEntity entity)
-        {
-            _data.Add(entity);
-            return null;
-        }
-
-        public override ValueTask<EntityEntry<TEntity>> AddAsync(TEntity entity, CancellationToken cancellationToken = default)
-        {
-            return new ValueTask<EntityEntry<TEntity>>(Task<EntityEntry<TEntity>>.Factory.StartNew(() => Add(entity)));
-        }
-
-        public override void AddRange(params TEntity[] entities)
-        {
-            if (entities == null) throw new ArgumentNullException("entities");
-            foreach (var entity in entities.ToList())
-                _data.Add(entity);
-        }
-
-        public override void AddRange(IEnumerable<TEntity> entities)
-        {
-            AddRange(entities.ToArray());
-        }
-
-        public override Task AddRangeAsync(params TEntity[] entities)
-        {
-            if (entities == null) throw new ArgumentNullException("entities");
-            return Task.Factory.StartNew(() => AddRange(entities));
-        }
-
-        public override Task AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
-        {
-            if (entities == null) throw new ArgumentNullException("entities");
-            return Task.Factory.StartNew(() => AddRange(entities));
-        }
-
-        public override void AttachRange(IEnumerable<TEntity> entities)
-        {
-            AddRange(entities.ToArray());
-        }
-
-        public override void AttachRange(params TEntity[] entities)
-        {
-            if (entities == null) throw new ArgumentNullException("entities");
-            AddRange(entities);
-        }
-
-        public override EntityEntry<TEntity> Remove(TEntity entity)
-        {
-            _data.Remove(entity);
-            return null;
-        }
-
-        public override void RemoveRange(params TEntity[] entities)
-        {
-            if (entities == null) throw new ArgumentNullException("entities");
-            foreach (var entity in entities.ToList())
-                _data.Remove(entity);
-        }
-
-        public override void RemoveRange(IEnumerable<TEntity> entities)
-        {
-            RemoveRange(entities.ToArray());
-        }
-
-        public override EntityEntry<TEntity> Update(TEntity entity)
-        {
-            _data.Remove(entity);
-            _data.Add(entity);
-            return null;
-        }
-
-        public override void UpdateRange(IEnumerable<TEntity> entities)    {
-            UpdateRange(entities.ToArray());
-        }
-
-        public override void UpdateRange(params TEntity[] entities)
-        {
-            if (entities == null) throw new ArgumentNullException("entities");
-            RemoveRange(entities);
-            AddRange(entities);
-        }
-
-        public IList GetList()
-        {
-            return _data;
-        }
-
-        IList IListSource.GetList()
-        {
-            return _data;
-        }
-
-        Type IQueryable.ElementType
-        {
-            get { return _query.ElementType; }
-        }
-
-        Expression IQueryable.Expression
-        {
-            get { return _query.Expression; }
-        }
-
-        IQueryProvider IQueryable.Provider
-        {
-            get { return new FakeDbAsyncQueryProvider<TEntity>(_data); }
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return _data.GetEnumerator();
-        }
-
-        IEnumerator<TEntity> IEnumerable<TEntity>.GetEnumerator()
-        {
-            return _data.GetEnumerator();
-        }
-
-        IAsyncEnumerator<TEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default(CancellationToken))
-        {
-            return new FakeDbAsyncEnumerator<TEntity>(this.AsEnumerable().GetEnumerator());
-        }
+        public override IEntityType EntityType => throw new NotImplementedException();
     }
 
     public class FakeDbAsyncQueryProvider<TEntity> : FakeQueryProvider<TEntity>, IAsyncEnumerable<TEntity>, IAsyncQueryProvider
@@ -1186,6 +1023,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         {
             get { return _inner.Current; }
         }
+
         public ValueTask<bool> MoveNextAsync()
         {
             return new ValueTask<bool>(_inner.MoveNext());
@@ -1327,8 +1165,18 @@ namespace EntityFramework_Reverse_POCO_Generator
         {
         }
 
+        public override Task CommitTransactionAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            return Task.CompletedTask;
+        }
+
         public override void RollbackTransaction()
         {
+        }
+
+        public override Task RollbackTransactionAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            return Task.CompletedTask;
         }
 
         public override IExecutionStrategy CreateExecutionStrategy()
@@ -1340,18 +1188,17 @@ namespace EntityFramework_Reverse_POCO_Generator
         {
             return string.Empty;
         }
-
     }
 
     public class FakeDbContextTransaction : IDbContextTransaction
     {
-        public virtual Guid TransactionId => Guid.NewGuid();
-        public virtual void Commit() { }
-        public virtual void Rollback() { }
-        public virtual Task CommitAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;
-        public virtual Task RollbackAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;
-        public virtual void Dispose() { }
-        public virtual ValueTask DisposeAsync() => default;
+        public Guid TransactionId => Guid.NewGuid();
+        public void Commit() { }
+        public void Rollback() { }
+        public Task CommitAsync(CancellationToken cancellationToken = new CancellationToken()) => Task.CompletedTask;
+        public Task RollbackAsync(CancellationToken cancellationToken = new CancellationToken()) => Task.CompletedTask;
+        public void Dispose() { }
+        public ValueTask DisposeAsync() => default;
     }
 
     #endregion
@@ -1963,7 +1810,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("ntext").IsRequired(false);
             builder.Property(x => x.Picture).HasColumnName(@"Picture").HasColumnType("image(2147483647)").IsRequired(false).HasMaxLength(2147483647);
 
-            builder.HasIndex(x => x.CategoryName).HasName("CategoryName");
+            builder.HasIndex(x => x.CategoryName).HasDatabaseName("CategoryName");
         }
     }
 
@@ -2013,10 +1860,10 @@ namespace EntityFramework_Reverse_POCO_Generator
             builder.Property(x => x.Phone).HasColumnName(@"Phone").HasColumnType("nvarchar(24)").IsRequired(false).HasMaxLength(24);
             builder.Property(x => x.Fax).HasColumnName(@"Fax").HasColumnType("nvarchar(24)").IsRequired(false).HasMaxLength(24);
 
-            builder.HasIndex(x => x.City).HasName("City");
-            builder.HasIndex(x => x.CompanyName).HasName("CompanyName");
-            builder.HasIndex(x => x.PostalCode).HasName("PostalCode");
-            builder.HasIndex(x => x.Region).HasName("Region");
+            builder.HasIndex(x => x.City).HasDatabaseName("City");
+            builder.HasIndex(x => x.CompanyName).HasDatabaseName("CompanyName");
+            builder.HasIndex(x => x.PostalCode).HasDatabaseName("PostalCode");
+            builder.HasIndex(x => x.Region).HasDatabaseName("Region");
         }
     }
 
@@ -2095,8 +1942,8 @@ namespace EntityFramework_Reverse_POCO_Generator
             // Foreign keys
             builder.HasOne(a => a.Employee_ReportsTo).WithMany(b => b.Employees).HasForeignKey(c => c.ReportsTo).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Employees_Employees");
 
-            builder.HasIndex(x => x.LastName).HasName("LastName");
-            builder.HasIndex(x => x.PostalCode).HasName("PostalCode");
+            builder.HasIndex(x => x.LastName).HasDatabaseName("LastName");
+            builder.HasIndex(x => x.PostalCode).HasDatabaseName("PostalCode");
         }
     }
 
@@ -2182,14 +2029,14 @@ namespace EntityFramework_Reverse_POCO_Generator
             builder.HasOne(a => a.Employee).WithMany(b => b.Orders).HasForeignKey(c => c.EmployeeId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Orders_Employees");
             builder.HasOne(a => a.Shipper).WithMany(b => b.Orders).HasForeignKey(c => c.ShipVia).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Orders_Shippers");
 
-            builder.HasIndex(x => x.CustomerId).HasName("CustomerID");
-            builder.HasIndex(x => x.CustomerId).HasName("CustomersOrders");
-            builder.HasIndex(x => x.EmployeeId).HasName("EmployeeID");
-            builder.HasIndex(x => x.EmployeeId).HasName("EmployeesOrders");
-            builder.HasIndex(x => x.OrderDate).HasName("OrderDate");
-            builder.HasIndex(x => x.ShippedDate).HasName("ShippedDate");
-            builder.HasIndex(x => x.ShipVia).HasName("ShippersOrders");
-            builder.HasIndex(x => x.ShipPostalCode).HasName("ShipPostalCode");
+            builder.HasIndex(x => x.CustomerId).HasDatabaseName("CustomerID");
+            builder.HasIndex(x => x.CustomerId).HasDatabaseName("CustomersOrders");
+            builder.HasIndex(x => x.EmployeeId).HasDatabaseName("EmployeeID");
+            builder.HasIndex(x => x.EmployeeId).HasDatabaseName("EmployeesOrders");
+            builder.HasIndex(x => x.OrderDate).HasDatabaseName("OrderDate");
+            builder.HasIndex(x => x.ShippedDate).HasDatabaseName("ShippedDate");
+            builder.HasIndex(x => x.ShipVia).HasDatabaseName("ShippersOrders");
+            builder.HasIndex(x => x.ShipPostalCode).HasDatabaseName("ShipPostalCode");
         }
     }
 
@@ -2211,10 +2058,10 @@ namespace EntityFramework_Reverse_POCO_Generator
             builder.HasOne(a => a.Order).WithMany(b => b.OrderDetails).HasForeignKey(c => c.OrderId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Order_Details_Orders");
             builder.HasOne(a => a.Product).WithMany(b => b.OrderDetails).HasForeignKey(c => c.ProductId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Order_Details_Products");
 
-            builder.HasIndex(x => x.OrderId).HasName("OrderID");
-            builder.HasIndex(x => x.OrderId).HasName("OrdersOrder_Details");
-            builder.HasIndex(x => x.ProductId).HasName("ProductID");
-            builder.HasIndex(x => x.ProductId).HasName("ProductsOrder_Details");
+            builder.HasIndex(x => x.OrderId).HasDatabaseName("OrderID");
+            builder.HasIndex(x => x.OrderId).HasDatabaseName("OrdersOrder_Details");
+            builder.HasIndex(x => x.ProductId).HasDatabaseName("ProductID");
+            builder.HasIndex(x => x.ProductId).HasDatabaseName("ProductsOrder_Details");
         }
     }
 
@@ -2303,11 +2150,11 @@ namespace EntityFramework_Reverse_POCO_Generator
             builder.HasOne(a => a.Category).WithMany(b => b.Products).HasForeignKey(c => c.CategoryId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Products_Categories");
             builder.HasOne(a => a.Supplier).WithMany(b => b.Products).HasForeignKey(c => c.SupplierId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Products_Suppliers");
 
-            builder.HasIndex(x => x.CategoryId).HasName("CategoriesProducts");
-            builder.HasIndex(x => x.CategoryId).HasName("CategoryID");
-            builder.HasIndex(x => x.ProductName).HasName("ProductName");
-            builder.HasIndex(x => x.SupplierId).HasName("SupplierID");
-            builder.HasIndex(x => x.SupplierId).HasName("SuppliersProducts");
+            builder.HasIndex(x => x.CategoryId).HasDatabaseName("CategoriesProducts");
+            builder.HasIndex(x => x.CategoryId).HasDatabaseName("CategoryID");
+            builder.HasIndex(x => x.ProductName).HasDatabaseName("ProductName");
+            builder.HasIndex(x => x.SupplierId).HasDatabaseName("SupplierID");
+            builder.HasIndex(x => x.SupplierId).HasDatabaseName("SuppliersProducts");
         }
     }
 
@@ -2475,8 +2322,8 @@ namespace EntityFramework_Reverse_POCO_Generator
             builder.Property(x => x.Fax).HasColumnName(@"Fax").HasColumnType("nvarchar(24)").IsRequired(false).HasMaxLength(24);
             builder.Property(x => x.HomePage).HasColumnName(@"HomePage").HasColumnType("ntext").IsRequired(false);
 
-            builder.HasIndex(x => x.CompanyName).HasName("CompanyName");
-            builder.HasIndex(x => x.PostalCode).HasName("PostalCode");
+            builder.HasIndex(x => x.CompanyName).HasDatabaseName("CompanyName");
+            builder.HasIndex(x => x.PostalCode).HasDatabaseName("PostalCode");
         }
     }
 

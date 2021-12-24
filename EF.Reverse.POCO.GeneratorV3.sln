@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29519.87
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EntityFramework.Reverse.POCO.Generator", "EntityFramework.Reverse.POCO.Generator\EntityFramework.Reverse.POCO.Generator.csproj", "{FA93A0BD-8B45-43BA-9C57-1D8FD63CAEAE}"
 EndProject
@@ -41,11 +41,16 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestDatabases", "TestDatabases", "{19926E4E-064A-4FCC-8EC2-DAE3EB0F5317}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL Server", "SQL Server", "{0EE34211-0206-45FC-BC8D-D278FD8AA21E}"
+	ProjectSection(SolutionItems) = preProject
+		fred.sql = fred.sql
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PostgreSQL", "PostgreSQL", "{1F3EE9B0-A48C-4E75-B215-1CA92DDC63A6}"
 	ProjectSection(SolutionItems) = preProject
 		northwind.sql = northwind.sql
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tester.Integration.EFCore6", "Tester.Integration.EFCore6\Tester.Integration.EFCore6.csproj", "{DE44137C-CF16-444B-B13F-7759F09C6783}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -219,6 +224,18 @@ Global
 		{8FBBEBB8-8E1F-480E-BF95-6658E4F4EF85}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{8FBBEBB8-8E1F-480E-BF95-6658E4F4EF85}.Release|x86.ActiveCfg = Release|Any CPU
 		{8FBBEBB8-8E1F-480E-BF95-6658E4F4EF85}.Release|x86.Build.0 = Release|Any CPU
+		{DE44137C-CF16-444B-B13F-7759F09C6783}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE44137C-CF16-444B-B13F-7759F09C6783}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE44137C-CF16-444B-B13F-7759F09C6783}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{DE44137C-CF16-444B-B13F-7759F09C6783}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{DE44137C-CF16-444B-B13F-7759F09C6783}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DE44137C-CF16-444B-B13F-7759F09C6783}.Debug|x86.Build.0 = Debug|Any CPU
+		{DE44137C-CF16-444B-B13F-7759F09C6783}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE44137C-CF16-444B-B13F-7759F09C6783}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE44137C-CF16-444B-B13F-7759F09C6783}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{DE44137C-CF16-444B-B13F-7759F09C6783}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{DE44137C-CF16-444B-B13F-7759F09C6783}.Release|x86.ActiveCfg = Release|Any CPU
+		{DE44137C-CF16-444B-B13F-7759F09C6783}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

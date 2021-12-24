@@ -29,30 +29,26 @@ namespace Generator.Tests.Unit
 
         [Test, NonParallelizable]
         // Legacy
-        [TestCase("Northwind",      ".V3TestA", "MyDbContext",      "MyDbContext",              true,  TemplateType.Ef6,     ForeignKeyNamingStrategy.Legacy)]
-        [TestCase("EfrpgTest",      ".V3TestB", "MyDbContext",      "EfrpgTestDbContext",       false, TemplateType.Ef6,     ForeignKeyNamingStrategy.Legacy)]
-        [TestCase("EfrpgTestLarge", ".V3TestC", "MyLargeDbContext", "EfrpgTestLargeDbContext",  false, TemplateType.Ef6,     ForeignKeyNamingStrategy.Legacy)]
-        [TestCase("fred",           ".V3TestD", "fred",             "FredDbContext",            false, TemplateType.Ef6,     ForeignKeyNamingStrategy.Legacy)]
-        [TestCase("Northwind",      ".V3TestE", "MyDbContext",      "MyDbContext",              true,  TemplateType.EfCore2, ForeignKeyNamingStrategy.Legacy)]
-        [TestCase("Northwind",      ".V3TestK", "MyDbContext",      "MyDbContext",              true,  TemplateType.EfCore3, ForeignKeyNamingStrategy.Legacy)]
-        [TestCase("EfrpgTest",      ".V3TestF", "MyDbContext",      "EfrpgTestDbContext",       false, TemplateType.EfCore2, ForeignKeyNamingStrategy.Legacy)]
-        [TestCase("EfrpgTest",      ".V3TestG", "MyDbContext",      "EfrpgTestDbContext",       false, TemplateType.EfCore3, ForeignKeyNamingStrategy.Legacy)] // ef core 3
-        [TestCase("EfrpgTestLarge", ".V3TestH", "MyLargeDbContext", "EfrpgTestLargeDbContext",  false, TemplateType.EfCore2, ForeignKeyNamingStrategy.Legacy)]
-        [TestCase("fred",           ".V3TestI", "fred",             "FredDbContext",            false, TemplateType.EfCore2, ForeignKeyNamingStrategy.Legacy)]
-        [TestCase("fred",           ".V3TestJ", "fred",             "FredDbContext",            false, TemplateType.EfCore3, ForeignKeyNamingStrategy.Legacy)] // ef core 3
-        [TestCase("fred",           ".V3TestK", "fred",             "FredDbContext",            false, TemplateType.EfCore5, ForeignKeyNamingStrategy.Legacy)] // ef core 5
-        // Latest
-        //[TestCase("Northwind",      ".V3TestA2", "MyDbContext",      "MyDbContext",             true,  TemplateType.Ef6,     ForeignKeyNamingStrategy.Latest)]
-        //[TestCase("EfrpgTest",      ".V3TestB2", "MyDbContext",      "EfrpgTestDbContext",      false, TemplateType.Ef6,     ForeignKeyNamingStrategy.Latest)]
-        //[TestCase("EfrpgTestLarge", ".V3TestC2", "MyLargeDbContext", "EfrpgTestLargeDbContext", false, TemplateType.Ef6,     ForeignKeyNamingStrategy.Latest)]
-        //[TestCase("fred",           ".V3TestD2", "fred",             "FredDbContext",           false, TemplateType.Ef6,     ForeignKeyNamingStrategy.Latest)]
-        //[TestCase("Northwind",      ".V3TestE2", "MyDbContext",      "MyDbContext",             true,  TemplateType.EfCore2, ForeignKeyNamingStrategy.Latest)]
-        //[TestCase("Northwind",      ".V3TestK2", "MyDbContext",      "MyDbContext",             true,  TemplateType.EfCore3, ForeignKeyNamingStrategy.Latest)]
-        //[TestCase("EfrpgTest",      ".V3TestF2", "MyDbContext",      "EfrpgTestDbContext",      false, TemplateType.EfCore2, ForeignKeyNamingStrategy.Latest)]
-        //[TestCase("EfrpgTest",      ".V3TestG2", "MyDbContext",      "EfrpgTestDbContext",      false, TemplateType.EfCore3, ForeignKeyNamingStrategy.Latest)] // ef core 3
-        //[TestCase("EfrpgTestLarge", ".V3TestH2", "MyLargeDbContext", "EfrpgTestLargeDbContext", false, TemplateType.EfCore2, ForeignKeyNamingStrategy.Latest)]
-        //[TestCase("fred",           ".V3TestI2", "fred",             "FredDbContext",           false, TemplateType.EfCore2, ForeignKeyNamingStrategy.Latest)]
-        //[TestCase("fred",           ".V3TestJ2", "fred",             "FredDbContext",           false, TemplateType.EfCore3, ForeignKeyNamingStrategy.Latest)] // ef core 3
+        [TestCase("EfrpgTest",      ".V3TestE1",   "MyDbContext",      "EfrpgTestDbContext",      false, TemplateType.Ef6,     ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("EfrpgTest",      ".V3TestE2",   "MyDbContext",      "EfrpgTestDbContext",      false, TemplateType.EfCore2, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("EfrpgTest",      ".V3TestE3",   "MyDbContext",      "EfrpgTestDbContext",      false, TemplateType.EfCore3, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("EfrpgTest",      ".V3TestE5",   "MyDbContext",      "EfrpgTestDbContext",      false, TemplateType.EfCore3, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("EfrpgTest",      ".V3TestE6",   "MyDbContext",      "EfrpgTestDbContext",      false, TemplateType.EfCore6, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("EfrpgTestLarge", ".V3TestETL1", "MyLargeDbContext", "EfrpgTestLargeDbContext", false, TemplateType.Ef6,     ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("EfrpgTestLarge", ".V3TestETL2", "MyLargeDbContext", "EfrpgTestLargeDbContext", false, TemplateType.EfCore2, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("EfrpgTestLarge", ".V3TestETL3", "MyLargeDbContext", "EfrpgTestLargeDbContext", false, TemplateType.EfCore3, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("EfrpgTestLarge", ".V3TestETL5", "MyLargeDbContext", "EfrpgTestLargeDbContext", false, TemplateType.EfCore5, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("EfrpgTestLarge", ".V3TestETL6", "MyLargeDbContext", "EfrpgTestLargeDbContext", false, TemplateType.EfCore6, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("fred",           ".V3TestF1",   "fred",             "FredDbContext",           false, TemplateType.Ef6,     ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("fred",           ".V3TestF2",   "fred",             "FredDbContext",           false, TemplateType.EfCore2, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("fred",           ".V3TestF3",   "fred",             "FredDbContext",           false, TemplateType.EfCore3, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("fred",           ".V3TestF5",   "fred",             "FredDbContext",           false, TemplateType.EfCore5, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("fred",           ".V3TestF6",   "fred",             "FredDbContext",           false, TemplateType.EfCore6, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("Northwind",      ".V3TestN1",   "MyDbContext",      "MyDbContext",             true,  TemplateType.Ef6,     ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("Northwind",      ".V3TestN2",   "MyDbContext",      "MyDbContext",             true,  TemplateType.EfCore2, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("Northwind",      ".V3TestN3",   "MyDbContext",      "MyDbContext",             true,  TemplateType.EfCore3, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("Northwind",      ".V3TestN5",   "MyDbContext",      "MyDbContext",             true,  TemplateType.EfCore5, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("Northwind",      ".V3TestN6",   "MyDbContext",      "MyDbContext",             true,  TemplateType.EfCore6, ForeignKeyNamingStrategy.Legacy)]
         public void ReverseEngineerSqlServer(string database, string singleDbContextSubNamespace, string connectionStringName, string dbContextName, bool publicTestComparison, TemplateType templateType, ForeignKeyNamingStrategy foreignKeyNamingStrategy)
         {
             // Arrange
@@ -97,8 +93,9 @@ namespace Generator.Tests.Unit
         }
 
         [Test, NonParallelizable]
-        [TestCase("fred", ".V3FilterTest1", "fred", "FredDbContext", false, TemplateType.EfCore3, ForeignKeyNamingStrategy.Legacy)] // ef core 3
-        //[TestCase("fred", ".V3FilterTest1", "fred", "FredDbContext", false, TemplateType.EfCore3, ForeignKeyNamingStrategy.Latest)] // ef core 3
+        [TestCase("fred", ".V3FilterTest3", "fred", "FredDbContext", false, TemplateType.EfCore3, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("fred", ".V3FilterTest5", "fred", "FredDbContext", false, TemplateType.EfCore5, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("fred", ".V3FilterTest6", "fred", "FredDbContext", false, TemplateType.EfCore6, ForeignKeyNamingStrategy.Legacy)]
         public void MultipleIncludeFilters(string database, string singleDbContextSubNamespace, string connectionStringName, string dbContextName, bool publicTestComparison, TemplateType templateType, ForeignKeyNamingStrategy foreignKeyNamingStrategy)
         {
             // Arrange
@@ -121,6 +118,5 @@ namespace Generator.Tests.Unit
             // Assert
             CompareAgainstTestComparison(filename, publicTestComparison);
         }
-
     }
 }

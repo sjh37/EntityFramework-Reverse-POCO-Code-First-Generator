@@ -442,6 +442,7 @@ namespace Efrpg.Generators
                 ClassAttributes         = table.WriteClassAttributes(),
                 BaseClasses             = table.BaseClasses,
                 InsideClassBody         = Settings.WriteInsideClassBody(table),
+                HasHierarchyId          = table.Columns.Any(x => x.PropertyType.EndsWith("hierarchyid", StringComparison.InvariantCultureIgnoreCase)),
                 Columns = table.Columns
                     .Where(x => !x.Hidden && !x.ExistsInBaseClass)
                     .OrderBy(x => x.Ordinal)
@@ -542,6 +543,7 @@ namespace Efrpg.Generators
                 ClassComment              = table.WriteComments(),
                 Columns                   = columns.Select(x => x.Config).ToList(),
                 HasReverseNavigation      = table.ReverseNavigationProperty.Count > 0,
+                UsesDictionary            = table.UsesDictionary,
                 ReverseNavigationProperty = table.ReverseNavigationProperty
                     .OrderBy(x => x.Definition)
                     .Select(x => new PocoReverseNavigationPropertyModel

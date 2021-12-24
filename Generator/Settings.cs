@@ -13,7 +13,7 @@ namespace Efrpg
         // Main settings **********************************************************************************************************************
         // The following entries are the only required settings.
         public static DatabaseType DatabaseType                         = DatabaseType.SqlServer; // SqlServer, SqlCe, PostgreSQL. Coming next: MySql, Oracle
-        public static TemplateType TemplateType                         = TemplateType.EfCore3; // EfCore5, EfCore3, EfCore2, Ef6, FileBasedCore2, FileBasedCore3. FileBased specify folder using Settings.TemplateFolder
+        public static TemplateType TemplateType                         = TemplateType.EfCore6; // EfCore6, EfCore5, EfCore3, EfCore2, Ef6, FileBasedCore2, FileBasedCore3. FileBased specify folder using Settings.TemplateFolder
         public static GeneratorType GeneratorType                       = GeneratorType.EfCore; // EfCore, Ef6, Custom. Custom edit GeneratorCustom class to provide your own implementation
         public static ForeignKeyNamingStrategy ForeignKeyNamingStrategy = ForeignKeyNamingStrategy.Legacy; // Please use Legacy for now (same as versions <= v3.6.0), Latest (not yet ready)
         public static bool UseMappingTables                             = false; // Can only be set to true for EF6. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
@@ -643,9 +643,6 @@ namespace Efrpg
         // That's it, nothing else to configure ***********************************************************************************************
 
         public static bool IsEf6()     => TemplateType == TemplateType.Ef6;
-        public static bool IsEfCore2() => TemplateType == TemplateType.EfCore2 || TemplateType == TemplateType.FileBasedCore2;
-        public static bool IsEfCore3() => TemplateType == TemplateType.EfCore3 || TemplateType == TemplateType.FileBasedCore3;
-        public static bool IsEfCore5() => TemplateType == TemplateType.EfCore5 || TemplateType == TemplateType.FileBasedCore5;
         public static bool IsEfCore3Plus() => EfCoreVersion() >= 3;
         public static bool IsEfCore5Plus() => EfCoreVersion() >= 5;
         private static int EfCoreVersion()
@@ -663,6 +660,10 @@ namespace Efrpg
                 case TemplateType.EfCore5:
                 case TemplateType.FileBasedCore5:
                     return 5;
+                
+                case TemplateType.EfCore6:
+                case TemplateType.FileBasedCore6:
+                    return 6;
                 
                 case TemplateType.Ef6:
                 default:

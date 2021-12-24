@@ -18,6 +18,7 @@ namespace Efrpg
         public bool IsView;
         public bool HasForeignKey;
         public bool HasNullableColumns;
+        public bool UsesDictionary;
         public bool HasPrimaryKey;
         public string AdditionalComment;
         public string PluralNameOverride;
@@ -46,6 +47,7 @@ namespace Efrpg
 
             ResetNavigationProperties();
             ExtendedProperty = new List<string>();
+            UsesDictionary = false;
         }
 
         internal static string GetLazyLoadingMarker()
@@ -288,6 +290,7 @@ namespace Efrpg
             
             if(Settings.IsEfCore5Plus())
             {
+                UsesDictionary = true;
                 MappingConfiguration.Add(string.Format(@"HasMany<{6}>(t => t.{0}).WithMany(t => t.{1}).UsingEntity<Dictionary<string, object>>(""{2}"",
                 j => j.HasOne<{6}>().WithMany().HasForeignKey(""{4}""),
                 j => j.HasOne<{5}>().WithMany().HasForeignKey(""{3}""),
