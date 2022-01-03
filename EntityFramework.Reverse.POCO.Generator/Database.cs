@@ -949,7 +949,140 @@ namespace EntityFramework_Reverse_POCO_Generator
     //      Read more about it here: https://msdn.microsoft.com/en-us/data/dn314431.aspx
     public class FakeDbSet<TEntity> : DbSet<TEntity>, IQueryable<TEntity>, IInfrastructure<IServiceProvider>, IListSource where TEntity : class
     {
-        public override IEntityType EntityType => throw new NotImplementedException();
+        private readonly PropertyInfo[] _primaryKeys;
+        private readonly ObservableCollection<TEntity> _data;
+        private readonly IQueryable _query;
+        public override IEntityType EntityType { get; }
+
+        public FakeDbSet()
+        {
+            _primaryKeys = null;
+            _data        = new ObservableCollection<TEntity>();
+            _query       = _data.AsQueryable();
+        }
+
+        public FakeDbSet(params string[] primaryKeys)
+        {
+            _primaryKeys = typeof(TEntity).GetProperties().Where(x => primaryKeys.Contains(x.Name)).ToArray();
+            _data        = new ObservableCollection<TEntity>();
+            _query       = _data.AsQueryable();
+        }
+
+        public override TEntity Find(params object[] keyValues)
+        {
+            if (_primaryKeys == null)
+                throw new ArgumentException("No primary keys defined");
+            if (keyValues.Length != _primaryKeys.Length)
+                throw new ArgumentException("Incorrect number of keys passed to Find method");
+
+            var keyQuery = this.AsQueryable();
+            keyQuery = keyValues
+                .Select((t, i) => i)
+                .Aggregate(keyQuery,
+                    (current, x) =>
+                        current.Where(entity => _primaryKeys[x].GetValue(entity, null).Equals(keyValues[x])));
+
+            return keyQuery.SingleOrDefault();
+        }
+
+        public override ValueTask<TEntity> FindAsync(object[] keyValues, CancellationToken cancellationToken)
+        {
+            return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues), cancellationToken));
+        }
+
+        public override ValueTask<TEntity> FindAsync(params object[] keyValues)
+        {
+            return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues)));
+        }
+
+        public override EntityEntry<TEntity> Add(TEntity entity)
+        {
+            _data.Add(entity);
+            return null;
+        }
+
+        public override void AddRange(params TEntity[] entities)
+        {
+            if (entities == null) throw new ArgumentNullException("entities");
+            foreach (var entity in entities.ToList())
+                _data.Add(entity);
+        }
+
+        public override void AddRange(IEnumerable<TEntity> entities)
+        {
+            AddRange(entities.ToArray());
+        }
+
+        public override Task AddRangeAsync(params TEntity[] entities)
+        {
+            if (entities == null) throw new ArgumentNullException("entities");
+            return Task.Factory.StartNew(() => AddRange(entities));
+        }
+
+        public override void AttachRange(params TEntity[] entities)
+        {
+            if (entities == null) throw new ArgumentNullException("entities");
+            AddRange(entities);
+        }
+
+        public override void RemoveRange(params TEntity[] entities)
+        {
+            if (entities == null) throw new ArgumentNullException("entities");
+            foreach (var entity in entities.ToList())
+                _data.Remove(entity);
+        }
+
+        public override void RemoveRange(IEnumerable<TEntity> entities)
+        {
+            RemoveRange(entities.ToArray());
+        }
+
+        public override void UpdateRange(params TEntity[] entities)
+        {
+            if (entities == null) throw new ArgumentNullException("entities");
+            RemoveRange(entities);
+            AddRange(entities);
+        }
+
+        public IList GetList()
+        {
+            return _data;
+        }
+
+        IList IListSource.GetList()
+        {
+            return _data;
+        }
+
+        Type IQueryable.ElementType
+        {
+            get { return _query.ElementType; }
+        }
+
+        Expression IQueryable.Expression
+        {
+            get { return _query.Expression; }
+        }
+
+        IQueryProvider IQueryable.Provider
+        {
+            get { return new FakeDbAsyncQueryProvider<TEntity>(_data); }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return _data.GetEnumerator();
+        }
+
+        IEnumerator<TEntity> IEnumerable<TEntity>.GetEnumerator()
+        {
+            return _data.GetEnumerator();
+        }
+
+        public override IAsyncEnumerator<TEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return new FakeDbAsyncEnumerator<TEntity>(this.AsEnumerable().GetEnumerator());
+        }
     }
 
     public class FakeDbAsyncQueryProvider<TEntity> : FakeQueryProvider<TEntity>, IAsyncEnumerable<TEntity>, IAsyncQueryProvider

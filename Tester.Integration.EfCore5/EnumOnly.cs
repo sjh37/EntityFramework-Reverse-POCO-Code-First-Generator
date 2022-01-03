@@ -3,7 +3,7 @@
 
 using System.CodeDom.Compiler;
 
-namespace EnumOnly
+namespace Tester.Integration.EFCore5
 {
     #region Enumerations
 

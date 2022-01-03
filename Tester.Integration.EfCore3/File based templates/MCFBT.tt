@@ -16,6 +16,7 @@
     Settings.MultiContextSettingsConnectionString = "Data Source=(local);Initial Catalog=EfrpgTest_Settings;Integrated Security=True";
 
     Settings.AdditionalNamespaces.Add("Tester");
+    Settings.AdditionalNamespaces.Add("Generator.Tests.Common");
     
     FilterSettings.Reset();
     FilterSettings.AddDefaults();

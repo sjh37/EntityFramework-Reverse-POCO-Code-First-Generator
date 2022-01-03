@@ -9,6 +9,8 @@ using NUnit.Framework;
 
 namespace Generator.Tests.Unit
 {
+    using Efrpg.Templates;
+
     [TestFixture]
     [Category(Constants.CI)]
     public class IndexModelBuilderTests
@@ -121,11 +123,17 @@ namespace Generator.Tests.Unit
         }
 
         [Test]
-        public void EfCoreModelBuilder()
+        [TestCase(TemplateType.Ef6,     "HasName")]
+        [TestCase(TemplateType.EfCore2, "HasName")]
+        [TestCase(TemplateType.EfCore3, "HasName")]
+        [TestCase(TemplateType.EfCore5, "HasDatabaseName")]
+        [TestCase(TemplateType.EfCore6, "HasDatabaseName")]
+        public void EfCoreModelBuilder(TemplateType templateType, string hasName)
         {
             // Arrange
             var fileManagement = new FileManagementService(new GeneratedTextTransformation());
             var sut = new GeneratorEfCore(fileManagement, typeof(NullFileManager));
+            Settings.TemplateType = templateType;
 
             // Act
             var list = sut.IndexModelBuilder(_orderDetails);
@@ -135,10 +143,10 @@ namespace Generator.Tests.Unit
             // Assert
             Assert.AreEqual(4, list.Count);
 
-            Assert.AreEqual(@"builder.HasIndex(x => x.OrderID).HasName(""OrderID"");",                 list[0]);
-            Assert.AreEqual(@"builder.HasIndex(x => x.OrderID).HasName(""OrdersOrder_Details"");",     list[1]);
-            Assert.AreEqual(@"builder.HasIndex(x => x.ProductID).HasName(""ProductID"");",             list[2]);
-            Assert.AreEqual(@"builder.HasIndex(x => x.ProductID).HasName(""ProductsOrder_Details"");", list[3]);
+            Assert.AreEqual($@"builder.HasIndex(x => x.OrderID).{hasName}(""OrderID"");",                 list[0]);
+            Assert.AreEqual($@"builder.HasIndex(x => x.OrderID).{hasName}(""OrdersOrder_Details"");",     list[1]);
+            Assert.AreEqual($@"builder.HasIndex(x => x.ProductID).{hasName}(""ProductID"");",             list[2]);
+            Assert.AreEqual($@"builder.HasIndex(x => x.ProductID).{hasName}(""ProductsOrder_Details"");", list[3]);
         }
     }
 }

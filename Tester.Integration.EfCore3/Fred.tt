@@ -1,4 +1,4 @@
-<#@ include file="..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v3.ttinclude" #>
+<#@ include file ="..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v3.ttinclude" #>
 <#
     // Please make changes to the settings below.
     // All you have to do is save this file, and the output file(s) are generated. Compiling does not regenerate the file(s).
@@ -10,25 +10,20 @@
     
     // For help on the various Types below, please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Common-Settings.*Types-explained
     // The following entries are the only required settings.
-    Settings.DatabaseType            = DatabaseType.SqlServer; // SqlServer, SqlCe. Coming next: PostgreSQL, MySql, Oracle
+    Settings.DatabaseType            = DatabaseType.SqlServer; // SqlServer, SqlCe, PostgreSQL. Coming next: MySql, Oracle
     Settings.TemplateType            = TemplateType.EfCore3; // EfCore6, EfCore5, EfCore3, EfCore2, Ef6, FileBasedCore2, FileBasedCore3, FileBasedCore5, FileBasedCore6. FileBased specify folder using Settings.TemplateFolder
-    Settings.GeneratorType           = GeneratorType.EfCore; // Ef6, EfCore, Custom. Custom edit GeneratorCustom class to provide your own implementation
-    Settings.UseMappingTables        = false; // Can only be true for TemplateType.Ef6 & TemplateType.EfCore5. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
-    Settings.FileManagerType         = FileManagerType.EfCore; // .NET Core project = EfCore; .NET project = VisualStudio; No output (testing only) = Null
-    Settings.ConnectionString        = "Data Source=(local);Initial Catalog=Fred;Integrated Security=True"; // This is used by the generator to reverse engineer your database
-    Settings.ConnectionStringName    = "FredDbContext"; // ConnectionString key as specified in your app.config/web.config/appsettings.json. Not used by the generator, but is placed into the generated DbContext constructor.
-    Settings.DbContextName           = "FredDbContext"; // Class name for the DbContext to be generated.
+    Settings.GeneratorType           = GeneratorType.EfCore; // EfCore, Ef6, Custom. Custom edit GeneratorCustom class to provide your own implementation
+
+    Settings.FileManagerType         = FileManagerType.EfCore; // .NET Core project = EfCore; .NET 4.x project = VisualStudio; No output (testing only) = Null
+    Settings.ConnectionString        = "Data Source=(local);Initial Catalog=Fred;Integrated Security=True;MultipleActiveResultSets=True"; // This is used by the generator to reverse engineer your database
+    Settings.ConnectionStringName    = "MyDbContext"; // ConnectionString key as specified in your app.config/web.config/appsettings.json. Not used by the generator, but is placed into the generated DbContext constructor.
+    Settings.DbContextName           = "MyDbContext"; // Class name for the DbContext to be generated.
     //Settings.DbContextInterfaceName= "IMyDbContext"; // Defaults to "I" + DbContextName or set string empty to not implement any interface.
     Settings.GenerateSeparateFiles   = true;
-    Settings.Namespace               = "V3Fred"; // Override the default namespace here. Please use double quotes, example: "Accounts.Billing"
+    Settings.Namespace               = DefaultNamespace; // Override the default namespace here. Please use double quotes, example: "Accounts.Billing"
     Settings.TemplateFolder          = Path.Combine(Settings.Root, "Templates"); // Only used if Settings.TemplateType = TemplateType.FileBased. Specify folder name where the mustache folders can be found. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Custom-file-based-templates
     Settings.AddUnitTestingDbContext = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing. Read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/FakeDbContext
 
-    // Elements to generate ***************************************************************************************************************
-    // Add the elements that should be generated when the template is executed.
-    // Multiple projects can be used that separate the different concerns.
-    Settings.ElementsToGenerate = Elements.Poco | Elements.Context | Elements.Interface | Elements.PocoConfiguration | Elements.Enum;
-    
     // Generate files in sub-folders ******************************************************************************************************
     // (Settings.FileManagerType = FileManagerType.EfCore && Settings.GenerateSeparateFiles = true)
     Settings.ContextFolder           = @"FredData"; // Sub-folder you would like your DbContext to be added to.              e.g. @"Data"
@@ -64,12 +59,14 @@
     FilterSettings.TableFilters.Add(new RegexExcludeFilter("__EFMigrationsHistory")); // This excludes all tables starting with 'AspNet'
     //FilterSettings.ColumnFilters.Add(new RegexExcludeFilter("[Cc]reated[Aa]t.*")); // This excludes all columns starting with 'CreatedAt' e.g CreatedAtUtc
     //FilterSettings.ColumnFilters.Add(new RegexIncludeFilter(".*")); // Rarely used as it would only include columns with names listed here
+    //FilterSettings.StoredProcedureFilters.Add(new RegexExcludeFilter("Calc")); // This excludes all stored procedures 'Calc' in the name
+    //FilterSettings.StoredProcedureFilters.Add(new RegexIncludeFilter("Pricing.*")); // This includes all stored procedures starting with 'Pricing'
 
     // Other settings *********************************************************************************************************************
     Settings.CommandTimeout                         = 600; // SQL Command timeout in seconds. 600 is 10 minutes, 0 will wait indefinitely. Some databases can be slow retrieving schema information.
     Settings.DbContextInterfaceBaseClasses          = "IDisposable"; // Specify what the base classes are for your database context interface
     Settings.DbContextBaseClass                     = "DbContext"; // Specify what the base class is for your DbContext. For ASP.NET Identity use "IdentityDbContext<ApplicationUser>";
-    Settings.OnConfiguration                        = OnConfiguration.ConnectionString; // EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/OnConfiguration
+    Settings.OnConfiguration                        = OnConfiguration.Configuration; // EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/OnConfiguration
     Settings.AddParameterlessConstructorToDbContext = true; // EF6 only. If true, then DbContext will have a default (parameter-less) constructor which automatically passes in the connection string name, if false then no parameter-less constructor will be created.
     Settings.ConfigurationClassName                 = "Configuration"; // Configuration, Mapping, Map, etc. This is appended to the Poco class name to configure the mappings.
     Settings.DatabaseReaderPlugin                   = ""; // Eg, "c:\\Path\\YourDatabaseReader.dll,Full.Name.Of.Class.Including.Namespace". See #501. This will allow you to specify a pluggable provider for reading your database.
@@ -88,31 +85,34 @@
     Settings.IncludeComments                    = CommentsStyle.AtEndOfField; // Adds comments to the generated code
     Settings.IncludeExtendedPropertyComments    = CommentsStyle.InSummaryBlock; // Adds extended properties as comments to the generated code
     Settings.IncludeConnectionSettingComments   = true; // Add comments describing connection settings used to generate file
-    Settings.DisableGeographyTypes              = true; // Turns off use of spatial types: Geography, Geometry. More info: https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Spatial-Types
+    Settings.DisableGeographyTypes              = false; // Turns off use of System.Data.Entity.Spatial.DbGeography and System.Data.Entity.Spatial.DbGeometry as OData doesn't support entities with geometry/geography types.
     Settings.CollectionInterfaceType            = "ICollection"; //  = "System.Collections.Generic.List"; // Determines the declaration type of collections for the Navigation Properties. ICollection is used if not set.
     Settings.CollectionType                     = "List"; // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example. Add "System.Collections.ObjectModel" to AdditionalNamespaces if setting the CollectionType = "ObservableCollection".
     Settings.NullableShortHand                  = true; // true => T?, false => Nullable<T>
     Settings.AddIDbContextFactory               = true; // Will add a default IDbContextFactory<DbContextName> implementation for easy dependency injection
     Settings.IncludeQueryTraceOn9481Flag        = false; // If SqlServer 2014 appears frozen / take a long time when this file is saved, try setting this to true (you will also need elevated privileges).
-    Settings.IncludeCodeGeneratedAttribute      = false; // If true, will include the GeneratedCode attribute, false to remove it.
     Settings.UsePrivateSetterForComputedColumns = true; // If the columns is computed, use a private setter.
-    Settings.TrimCharFields                     = true; // EF Core option only. If true, will TrimEnd() 'char' fields when read from the database.
+    Settings.IncludeGeneratorVersionInCode      = false; // If true, will include the version number of the generator in the generated code
+    Settings.TrimCharFields                     = false; // EF Core option only. If true, will TrimEnd() 'char' fields when read from the database.
     Settings.AdditionalNamespaces               = new List<string>(); // To include extra namespaces, include them here. i.e. new List<string> { "Microsoft.AspNetCore.Identity.EntityFrameworkCore", "System.ComponentModel.DataAnnotations" };
     Settings.AdditionalContextInterfaceItems    = new List<string>(); // example: new List<string> { "void SetAutoDetectChangesEnabled(bool flag);" };
+    Settings.AdditionalFileHeaderText           = new List<string>(); // This will put additional lines verbatim at the top of each file under the comments, 1 line per entry
+    Settings.AdditionalFileFooterText           = new List<string>(); // This will put additional lines verbatim at the end of each file above the // </auto-generated>, 1 line per entry
 
     // Language choices
     Settings.GenerationLanguage = GenerationLanguage.CSharp;
     Settings.FileExtension      = ".cs";
 
-    // Code suppression (useful for non C# file generation) *******************************************************************************
-    Settings.UseRegions                       = true;  // If false, suppresses the use of #region
-    Settings.UseNamespace                     = true;  // If false, suppresses the writing of a namespace
+    // Code suppression *******************************************************************************
+    Settings.UseRegions       = true;  // If false, suppresses the use of #region
+    Settings.UseNamespace     = true;  // If false, suppresses the writing of a namespace
     Settings.UsePragma                        = false; // If false, suppresses the writing of #pragma
-    Settings.AllowNullStrings                 = false; // If true, will allow string? properties and will add '#nullable enable' to the top of each file
+    Settings.AllowNullStrings = false; // If true, will allow string? properties and will add '#nullable enable' to the top of each file
     Settings.UseResharper                     = true;  // If true, will add a list of 'ReSharper disable' comments to the top of each file
-    Settings.ShowLicenseInfo                  = true; // If true, will add the licence info comment to the top of each file
-    Settings.IncludeConnectionSettingComments = true; // Add comments describing connection settings used to generate file
+    Settings.ShowLicenseInfo                  = false; // If true, will add the licence info comment to the top of each file
+    Settings.IncludeConnectionSettingComments = false; // Add comments describing connection settings used to generate file
     Settings.IncludeCodeGeneratedAttribute    = false; // If true, will include the [GeneratedCode] attribute before classes, false to remove it.
+    Settings.IncludeColumnsWithDefaults       = true;  // If true, will set properties to the default value from the database.
 
     // Enumerations ***********************************************************************************************************************
     // Create enumerations from database tables
@@ -142,19 +142,40 @@
         // }
     };
 
+    // Use the following list to add use of HiLo sequences for identity columns
+    Settings.HiLoSequences = new List<HiLoSequence>
+    {
+        // Example
+        // For column dbo.match_table_name.match_column_name this will use .UseHiLo("sequence_name", "sequence_schema") instead of .UseSqlServerIdentityColumn()
+        /*new HiLoSequence
+        {
+            Schema         = "dbo",
+            Table          = "match_table_name", // Use * to match all tables
+            SequenceName   = "sequence_name",
+            SequenceSchema = "sequence_schema"
+        },
+        new HiLoSequence
+        {
+            Schema         = "dbo",
+            Table          = "Employees",
+            SequenceName   = "EmployeeSequence",
+            SequenceSchema = "dbo"
+        }*/
+    };
+
     // Column modification ****************************************************************************************************************
     // Use the following list to replace column byte types with Enums.
     // As long as the type can be mapped to your new type, all is well.
     Settings.AddEnumDefinitions = delegate(List<EnumDefinition> enumDefinitions)
     {
         // Examples:
-        //enumDefinitions.Add(new EnumDefinition { Schema = "dbo", Table = "match_table_name", Column = "match_column_name", EnumType = "name_of_enum" });
+        //enumDefinitions.Add(new EnumDefinition { Schema = Settings.DefaultSchema, Table = "match_table_name", Column = "match_column_name", EnumType = "name_of_enum" });
 
         // This will replace OrderHeader.OrderStatus type to be an OrderStatusType enum
-        //enumDefinitions.Add(new EnumDefinition { Schema = "dbo", Table = "OrderHeader", Column = "OrderStatus", EnumType = "OrderStatusType" }); 
+        //enumDefinitions.Add(new EnumDefinition { Schema = Settings.DefaultSchema, Table = "OrderHeader", Column = "OrderStatus", EnumType = "OrderStatusType" }); 
 
         // This will replace any table *.OrderStatus type to be an OrderStatusType enum
-        //enumDefinitions.Add(new EnumDefinition { Schema = "dbo", Table = "*", Column = "OrderStatus", EnumType = "OrderStatusType" });
+        //enumDefinitions.Add(new EnumDefinition { Schema = Settings.DefaultSchema, Table = "*", Column = "OrderStatus", EnumType = "OrderStatusType" });
     };
 
     // StoredProcedure return types *******************************************************************************************************
@@ -179,20 +200,24 @@
         // "JsonIgnore" // Also add "Newtonsoft.Json" to the AdditionalNamespaces array above
     };
 
+ 
     // Reference other namespaces *********************************************************************************************************
     // Use these namespaces to specify where the different elements now live. These may even be in different assemblies.
-    // NOTE: These are only used if ElementsToGenerate is not set to generate everything.
-    // Please note this does not create the files in these locations, it only adds a using statement to say where they are.
-    // The way to do this is to add the "EntityFramework Reverse POCO Code First Generator" into each of these folders.
-    // Then set the .tt to only generate the relevant section you need by setting
+    // NOTE: These are only used if ElementsToGenerate is not set to generate all the elements.
+    // Please note the following does not create the files in these locations, it only adds a using statement to say where they are.
+    // The way to generate files in other folders is to either specify sub-folders above (See Settings.PocoFolder),
+    // or add the "EntityFramework Reverse POCO Code First Generator" into each of the folders you require, then
+    // set your <database>.tt files to only generate the relevant section(s) you need by setting:
+    // Then set the .tt to only generate the relevant section you need by setting:
     //      ElementsToGenerate = Elements.Poco; in your Entity folder,
     //      ElementsToGenerate = Elements.Context | Elements.Interface; in your Context folder,
     //      ElementsToGenerate = Elements.PocoConfiguration; in your Configuration folder.
     // You also need to set the following to the namespace where they now live:
-    Settings.PocoNamespace              = ""; // "YourProject.Entities";
-    Settings.ContextNamespace           = ""; // "YourProject.Context";
-    Settings.InterfaceNamespace         = ""; // "YourProject.Interfaces";
-    Settings.PocoConfigurationNamespace = ""; // "YourProject.Configuration";
+    Settings.ContextNamespace           = ""; // "YourProject.Data";
+    Settings.InterfaceNamespace         = ""; // "YourProject.Data";
+    Settings.PocoNamespace              = ""; // "YourProject.Data.Entities";
+    Settings.PocoConfigurationNamespace = ""; // "YourProject.Data.Configuration";
+
 
     // Schema *****************************************************************************************************************************
     // If there are multiple schemas, then the table name is prefixed with the schema, except for dbo.
@@ -214,18 +239,17 @@
         // Northwind example:
             
         // [Orders] (Table) to [Invoices] (View) is one-to-many using Orders.OrderID = Invoices.OrderID
-        // gen.AddRelationship(filter, foreignKeys, tablesAndViews, "orders_to_invoices", "dbo", "Orders", "OrderID", "dbo", "Invoices", "OrderID", null, null, true);
+        // gen.AddRelationship(filter, foreignKeys, tablesAndViews, "orders_to_invoices", Settings.DefaultSchema, "Orders", "OrderID", "dbo", "Invoices", "OrderID", null, null, true);
             
         // [Orders] (Table) to [Orders Qry] (View) is one-to-zeroOrOne ( [Orders].OrderID = [Orders Qry].OrderID )
-        // gen.AddRelationship(filter, foreignKeys, tablesAndViews, "orders_to_ordersQry", "dbo", "Orders", "OrderID", "dbo", "Orders Qry", "OrderID", "ParentFkName", "ChildFkName", true);
+        // gen.AddRelationship(filter, foreignKeys, tablesAndViews, "orders_to_ordersQry", Settings.DefaultSchema, "Orders", "OrderID", "dbo", "Orders Qry", "OrderID", "ParentFkName", "ChildFkName", true);
             
         // [Order Details] (Table) to [Invoices] (View) is one-to-zeroOrOne - but uses a composite-key: ( [Order Details].OrderID,ProductID = [Invoices].OrderID,ProductID )
-        // gen.AddRelationship(filter, foreignKeys, tablesAndViews, "orderDetails_to_invoices", "dbo", "Order Details", new[] { "OrderID", "ProductID" }, "dbo", "Invoices", new[] { "OrderID", "ProductID" }, null, null, true);
+        // gen.AddRelationship(filter, foreignKeys, tablesAndViews, "orderDetails_to_invoices", Settings.DefaultSchema, "Order Details", new[] { "OrderID", "ProductID" }, "dbo", "Invoices", new[] { "OrderID", "ProductID" }, null, null, true);
     };
 
     // Table renaming (single context generation only) ************************************************************************************
     // Use the following function to rename tables such as tblOrders to Orders, Shipments_AB to Shipments, etc.
-    // Example:
     Settings.TableRename = delegate(string name, string schema, bool isView)
     {
         // Example
@@ -258,9 +282,13 @@
         //if (table.NameHumanCase.Equals("SomeTable", StringComparison.InvariantCultureIgnoreCase))
         //    table.AdditionalComment = "Example comment";
 
-        // To add a base class to a table
-        //if (table.NameHumanCase == "User")
-        //    table.BaseClasses = " : IdentityUser<int, CustomUserLogin, CustomUserRole, CustomUserClaim>";
+        // To add a base class to a table based on column names. Also see Settings.UpdateColumn below.
+        //var tracking  = new List<string> { "createdby", "createdon", "modifiedby", "modifiedon" };
+        //var replicate = new List<string> { "uniqueid", "hrid"};
+        //if (table.Columns.Any(x => tracking.Contains(x.NameHumanCase)))
+        //    table.BaseClasses = " : TrackingEntity";
+        //if (table.Columns.Any(x => replicate.Contains(x.NameHumanCase)))
+        //    table.BaseClasses = " : ReplicateEntity";
 
         // To add attributes
         //table.Attributes.Add("[Serializable]");
@@ -282,20 +310,25 @@
         //if (column.IsPrimaryKey && column.NameHumanCase.Equals(table.NameHumanCase + "Id", StringComparison.InvariantCultureIgnoreCase))
         //    column.NameHumanCase = "Id";
 
-        // Remove column from poco class as it will be inherited from a base class
-        //if (column.IsPrimaryKey && table.NameHumanCase.Equals("SomeTable", StringComparison.InvariantCultureIgnoreCase))
-        //    column.Hidden = true;
+        // Remove column from poco class as it will be inherited from a base class. Also see Settings.UpdateTable above.
+        //var tracking  = new List<string> { "createdby", "createdon", "modifiedby", "modifiedon" };
+        //var replicate = new List<string> { "uniqueid", "hrid"};
+        //if (tracking .Contains(column.NameHumanCase.ToLower()) ||
+        //    replicate.Contains(column.NameHumanCase.ToLower()))
+        //{
+        //    column.ExistsInBaseClass = true; // If true, does not generate the property for this column as it will exist in a base class
+        //}
 
         // Use the extended properties to perform tasks to column
         //if (column.ExtendedProperty == "HIDE")
-        //    column.Hidden = true;
+        //    column.Hidden = true; // Hidden means the generator does not generate any code for this column at all.
 
         // Apply the "override" access modifier to a specific column.
         //if (column.NameHumanCase == "id")
         //    column.OverrideModifier = true;
         // This will create: public override long id { get; set; }
 
-        if(Settings.UseDataAnnotations)
+        if (Settings.UseDataAnnotations)
         {
             if (column.IsPrimaryKey)
                 column.Attributes.Add(string.Format("[Key, Column(Order = {0})]", column.Ordinal));
@@ -322,7 +355,7 @@
                     column.Attributes.Add("[Required]");
             }
 
-            column.Attributes.Add($"[Display(Name = \"{column.DisplayName}\")]");
+            column.Attributes.Add(string.Format("[Display(Name = \"{0}\")]", column.DisplayName));
         }
 
         // Perform Enum property type replacement
@@ -342,13 +375,37 @@
         }
     };
 
+    // Use the following function if you need to apply additional modifications to a enum
+    // Called just before UpdateEnumMember
+    Settings.UpdateEnum = delegate (Enumeration enumeration)
+    {
+        //enumeration.EnumAttributes.Add("[DataContract]");
+    };
+
+    // Use the following function if you need to apply additional modifications to a enum member
+    Settings.UpdateEnumMember = delegate (EnumerationMember enumerationMember)
+    {
+        //enumerationMember.Attributes.Add("[EnumMember]");
+        //enumerationMember.Attributes.Add("[SomeAttribute(\"" + enumerationMember.AllValues["SomeName"] + " \")]");
+    };
+
+
+    // Writes any boilerplate stuff inside the POCO class body
+    Settings.WriteInsideClassBody = delegate(Table t)
+    {
+        // Example:
+        //return "    // " + t.NameHumanCase + Environment.NewLine;
+
+        // Do nothing by default
+        return string.Empty;
+    };
+
     // Using Views *****************************************************************************************************************
     // SQL Server does not support the declaration of primary-keys in VIEWs. Entity Framework's EDMX designer (and this generator)
     // assume that all non-null columns in a VIEW are primary-key columns, this will be incorrect for most non-trivial applications.
     // This callback will be invoked for each VIEW found in the database. Use it to declare which columns participate in that VIEW's
     // primary-key by setting 'IsPrimaryKey = true'.
     // If no columns are marked with 'IsPrimaryKey = true' then this T4 template defaults to marking all non-NULL columns as primary key columns.
-    // To set-up Foreign-Key relationships between VIEWs and Tables (or even other VIEWs) use the 'AddForeignKeys' callback below.
     Settings.ViewProcessing = delegate(Table view)
     {
         // Below is example code for the Northwind database that configures the 'VIEW [Orders Qry]' and 'VIEW [Invoices]'
@@ -590,7 +647,16 @@
     // That's it, nothing else to configure ***********************************************************************************************
 
     FilterSettings.CheckSettings();
+
+    // How to add custom pluralisation entries
+    /*var customPluralisationEntries = new List<CustomPluralizationEntry>
+    {
+        new CustomPluralizationEntry("Tree", "Trees"),
+        new CustomPluralizationEntry("Order", "Orders")
+    };
+    Inflector.PluralisationService = new EnglishPluralizationService(customPluralisationEntries);*/
     Inflector.PluralisationService = new EnglishPluralizationService(); // To disable pluralisation, set this to null
+
     var outer = (GeneratedTextTransformation) this;
     var fileManagement = new FileManagementService(outer);
     var generator = GeneratorFactory.Create(fileManagement, FileManagerFactory.GetFileManagerType());

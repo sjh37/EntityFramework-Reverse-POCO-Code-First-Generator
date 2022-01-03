@@ -5,7 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="dotMorten.Microsoft.SqlServer.Types" Version="1.3.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.NetTopologySuite" Version="2.2.6" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
     <PackageReference Include="NUnit" Version="3.13.2" />
   </ItemGroup>
@@ -15,9 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Database.tt">
+    <None Update="Fred.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Database.cs</LastGenOutput>
+      <LastGenOutput>Fred.cs</LastGenOutput>
     </None>
   </ItemGroup>
 
@@ -26,10 +28,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Database.cs">
+    <Compile Update="Fred.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>Database.tt</DependentUpon>
+      <DependentUpon>Fred.tt</DependentUpon>
     </Compile>
   </ItemGroup>
 

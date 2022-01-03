@@ -1,9 +1,9 @@
-﻿using System;
-using System.Linq;
-using EntityFramework_Reverse_POCO_Generator;
-
-namespace Tester.BusinessLogic
+﻿namespace Tester.BusinessLogic
 {
+    using System;
+    using System.Linq;
+    using EntityFramework_Reverse_POCO_Generator;
+
     public class CustomersRepository : ICustomersRepository
     {
         private readonly IMyDbContext _context;

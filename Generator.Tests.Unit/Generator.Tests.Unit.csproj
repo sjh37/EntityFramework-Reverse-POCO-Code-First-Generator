@@ -151,6 +151,12 @@
     <None Include="TestComparison\Northwind_SqlServer_Ef6_FkLegacy.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="TestComparison\Northwind_SqlServer_EfCore5_FkLegacy.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestComparison\Northwind_SqlServer_EfCore6_FkLegacy.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <Compile Include="WriteToOuterTests.cs" />
     <None Include="TestComparison\Northwind_SqlServer_Ef6_NorthwindTest1.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

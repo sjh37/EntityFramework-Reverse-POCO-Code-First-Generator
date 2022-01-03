@@ -1,0 +1,41 @@
+﻿<#@ include file="..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v3.ttinclude" #>
+<#
+    // Please make changes to the settings below.
+    // All you have to do is save this file, and the output file(s) are generated. Compiling does not regenerate the file(s).
+    // A course for the v2 generator is available on Pluralsight at https://www.pluralsight.com/courses/code-first-entity-framework-legacy-databases
+
+    // Settings ***************************************************************************************************************************
+    // Only the most popular settings are listed below.
+    // Either override Settings.* here, or edit the Settings, FilterSettings and SingleContextFilter classes located at the top of EF.Reverse.POCO.v3.ttinclude
+    
+    // For help on the various Types below, please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Common-Settings.*Types-explained
+    // The following entries are the only required settings.
+    Settings.DatabaseType          = DatabaseType.SqlServer; // SqlCe, Plugin. Coming next: PostgreSQL, MySql, Oracle
+    Settings.TemplateType          = TemplateType.EfCore6; // Ef6, EfCore2, EfCore3, FileBased. FileBased specify folder using Settings.TemplateFolder
+    Settings.GeneratorType         = GeneratorType.EfCore; // Ef6, EfCore, Custom. Custom edit GeneratorCustom class to provide your own implementation
+    Settings.FileManagerType       = FileManagerType.EfCore; // VisualStudio = .NET project; EfCore = .NET Core project; Null = No output (testing only)
+    Settings.ConnectionString      = "Data Source=(local);Initial Catalog=EfrpgTest_Synonyms;Integrated Security=True";
+    Settings.ConnectionStringName  = "TestSynonymsDatabase"; // ConnectionString key as specified in your app.config/web.config/appsettings.json
+    Settings.DbContextName         = "TestDbContext"; // Class name for the DbContext to be generated.
+    Settings.OnConfiguration       = OnConfiguration.ConnectionString; // EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/OnConfiguration    Settings.GenerateSeparateFiles   = false;
+    Settings.GenerateSeparateFiles = false;
+    Settings.Namespace             = "TestSynonymsDatabase"; // Override the default namespace here
+    Settings.PrependSchemaName     = false;
+
+    FilterSettings.Reset();
+    FilterSettings.AddDefaults();
+    FilterSettings.IncludeSynonyms              = true;
+    FilterSettings.IncludeTableValuedFunctions  = true;
+    FilterSettings.IncludeScalarValuedFunctions = true;
+    FilterSettings.CheckSettings();
+
+    Inflector.PluralisationService = new EnglishPluralizationService();
+    var outer = (GeneratedTextTransformation) this;
+    var fileManagement = new FileManagementService(outer);
+    var generator = GeneratorFactory.Create(fileManagement, FileManagerFactory.GetFileManagerType());
+    if (generator.InitialisationOk)
+    {
+        generator.ReadDatabase();
+        generator.GenerateCode();
+    }
+    fileManagement.Process(true);#>

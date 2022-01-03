@@ -23,6 +23,7 @@
     Settings.Namespace               = "V5Fred"; // Override the default namespace here
     Settings.AddUnitTestingDbContext = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing. Read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/FakeDbContext
     Settings.TrimCharFields          = true; // EF Core option only. If true, will TrimEnd() 'char' fields when read from the database.
+    Settings.DisableGeographyTypes   = false;
 
     // If GenerateSingleDbContext = false, this will generate multiple db contexts. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Generating-multiple-database-contexts-in-a-single-go
     Settings.GenerateSingleDbContext              = true; // Set this to false to generate multiple db contexts.

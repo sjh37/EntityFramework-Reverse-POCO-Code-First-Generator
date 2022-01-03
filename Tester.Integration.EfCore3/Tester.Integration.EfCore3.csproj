@@ -5,18 +5,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Remove="appsettings.json" />
-        <None Remove="TestDatabase.sql" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Content Include="appsettings.json">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-        <Content Include="TestDatabase.sql" />
-    </ItemGroup>
-
-    <ItemGroup>
         <PackageReference Include="dotMorten.Microsoft.SqlServer.Types" Version="1.3.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.22" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.NetTopologySuite" Version="3.1.22" />
@@ -27,47 +15,25 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\EntityFramework.Reverse.POCO.Generator\EntityFramework.Reverse.POCO.Generator.csproj" />
-        <ProjectReference Include="..\Generator.Tests.Common\Generator.Tests.Common.csproj" />
-        <ProjectReference Include="..\Tester.BusinessLogic.EfCore\Tester.BusinessLogic.csproj" />
+      <ProjectReference Include="..\Generator.Tests.Common\Generator.Tests.Common.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <None Update="ContextHasSameNameAsDb\Fred.tt">
+        <None Update="EnumOnly.tt">
+          <LastGenOutput>EnumOnly.cs</LastGenOutput>
           <Generator>TextTemplatingFileGenerator</Generator>
-          <LastGenOutput>Fred.cs</LastGenOutput>
         </None>
         <None Update="File based templates\MCFBT.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>MCFBT.cs</LastGenOutput>
+          <LastGenOutput>MCFBT.cs</LastGenOutput>
+          <Generator>TextTemplatingFileGenerator</Generator>
         </None>
         <None Update="File based templates\SCFBT.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>SCFBT.cs</LastGenOutput>
+          <LastGenOutput>SCFBT.cs</LastGenOutput>
+          <Generator>TextTemplatingFileGenerator</Generator>
         </None>
         <None Update="Fred.tt">
           <Generator>TextTemplatingFileGenerator</Generator>
           <LastGenOutput>Fred.cs</LastGenOutput>
-        </None>
-        <None Update="Multi context many files\MCMF.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>MCMF.cs</LastGenOutput>
-        </None>
-        <None Update="Multi context single files\MCSF.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>MCSF.cs</LastGenOutput>
-        </None>
-        <None Update="Single context many files\SCMF.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>SCMF.cs</LastGenOutput>
-        </None>
-        <None Update="TestDatabase.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>TestDatabase.cs</LastGenOutput>
-        </None>
-        <None Update="TestSynonymsDatabase.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>TestSynonymsDatabase.cs</LastGenOutput>
         </None>
     </ItemGroup>
 
@@ -76,55 +42,25 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Update="ContextHasSameNameAsDb\Colour.cs">
+        <Compile Update="EnumOnly.cs">
+          <DependentUpon>EnumOnly.tt</DependentUpon>
           <DesignTime>True</DesignTime>
           <AutoGen>True</AutoGen>
-          <DependentUpon>Colour.tt</DependentUpon>
-        </Compile>
-        <Compile Update="ContextHasSameNameAsDb\Fred.cs">
-          <DesignTime>True</DesignTime>
-          <AutoGen>True</AutoGen>
-          <DependentUpon>Fred.tt</DependentUpon>
         </Compile>
         <Compile Update="File based templates\MCFBT.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>MCFBT.tt</DependentUpon>
+          <DependentUpon>MCFBT.tt</DependentUpon>
+          <DesignTime>True</DesignTime>
+          <AutoGen>True</AutoGen>
         </Compile>
         <Compile Update="File based templates\SCFBT.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>SCFBT.tt</DependentUpon>
+          <DependentUpon>SCFBT.tt</DependentUpon>
+          <DesignTime>True</DesignTime>
+          <AutoGen>True</AutoGen>
         </Compile>
         <Compile Update="Fred.cs">
           <DesignTime>True</DesignTime>
           <AutoGen>True</AutoGen>
           <DependentUpon>Fred.tt</DependentUpon>
-        </Compile>
-        <Compile Update="Multi context many files\MCMF.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>MCMF.tt</DependentUpon>
-        </Compile>
-        <Compile Update="Multi context single files\MCSF.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>MCSF.tt</DependentUpon>
-        </Compile>
-        <Compile Update="Single context many files\SCMF.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>SCMF.tt</DependentUpon>
-        </Compile>
-        <Compile Update="TestDatabase.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>TestDatabase.tt</DependentUpon>
-        </Compile>
-        <Compile Update="TestSynonymsDatabase.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>TestSynonymsDatabase.tt</DependentUpon>
         </Compile>
     </ItemGroup>
 

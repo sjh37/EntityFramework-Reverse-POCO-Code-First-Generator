@@ -32,7 +32,7 @@ namespace Generator.Tests.Unit
         [TestCase("EfrpgTest",      ".V3TestE1",   "MyDbContext",      "EfrpgTestDbContext",      false, TemplateType.Ef6,     ForeignKeyNamingStrategy.Legacy)]
         [TestCase("EfrpgTest",      ".V3TestE2",   "MyDbContext",      "EfrpgTestDbContext",      false, TemplateType.EfCore2, ForeignKeyNamingStrategy.Legacy)]
         [TestCase("EfrpgTest",      ".V3TestE3",   "MyDbContext",      "EfrpgTestDbContext",      false, TemplateType.EfCore3, ForeignKeyNamingStrategy.Legacy)]
-        [TestCase("EfrpgTest",      ".V3TestE5",   "MyDbContext",      "EfrpgTestDbContext",      false, TemplateType.EfCore3, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("EfrpgTest",      ".V3TestE5",   "MyDbContext",      "EfrpgTestDbContext",      false, TemplateType.EfCore5, ForeignKeyNamingStrategy.Legacy)]
         [TestCase("EfrpgTest",      ".V3TestE6",   "MyDbContext",      "EfrpgTestDbContext",      false, TemplateType.EfCore6, ForeignKeyNamingStrategy.Legacy)]
         [TestCase("EfrpgTestLarge", ".V3TestETL1", "MyLargeDbContext", "EfrpgTestLargeDbContext", false, TemplateType.Ef6,     ForeignKeyNamingStrategy.Legacy)]
         [TestCase("EfrpgTestLarge", ".V3TestETL2", "MyLargeDbContext", "EfrpgTestLargeDbContext", false, TemplateType.EfCore2, ForeignKeyNamingStrategy.Legacy)]
@@ -93,9 +93,9 @@ namespace Generator.Tests.Unit
         }
 
         [Test, NonParallelizable]
-        [TestCase("fred", ".V3FilterTest3", "fred", "FredDbContext", false, TemplateType.EfCore3, ForeignKeyNamingStrategy.Legacy)]
-        [TestCase("fred", ".V3FilterTest5", "fred", "FredDbContext", false, TemplateType.EfCore5, ForeignKeyNamingStrategy.Legacy)]
-        [TestCase("fred", ".V3FilterTest6", "fred", "FredDbContext", false, TemplateType.EfCore6, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("fred", ".V3FilterTest", "fred", "FredDbContext", false, TemplateType.EfCore3, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("fred", ".V5FilterTest", "fred", "FredDbContext", false, TemplateType.EfCore5, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("fred", ".V6FilterTest", "fred", "FredDbContext", false, TemplateType.EfCore6, ForeignKeyNamingStrategy.Legacy)]
         public void MultipleIncludeFilters(string database, string singleDbContextSubNamespace, string connectionStringName, string dbContextName, bool publicTestComparison, TemplateType templateType, ForeignKeyNamingStrategy foreignKeyNamingStrategy)
         {
             // Arrange
