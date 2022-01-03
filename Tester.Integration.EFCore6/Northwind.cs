@@ -937,7 +937,7 @@ namespace Tester.Integration.EFCore6
     //          }
     //      }
     //      Read more about it here: https://msdn.microsoft.com/en-us/data/dn314431.aspx
-    public class FakeDbSet<TEntity> : DbSet<TEntity>, IQueryable<TEntity>, IInfrastructure<IServiceProvider>, IListSource where TEntity : class
+    public class FakeDbSet<TEntity> : DbSet<TEntity>, IQueryable<TEntity>, IAsyncEnumerable<TEntity>, IListSource where TEntity : class
     {
         private readonly PropertyInfo[] _primaryKeys;
         private readonly ObservableCollection<TEntity> _data;
@@ -983,6 +983,11 @@ namespace Tester.Integration.EFCore6
         public override ValueTask<TEntity> FindAsync(params object[] keyValues)
         {
             return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues)));
+        }
+
+        IAsyncEnumerator<TEntity> IAsyncEnumerable<TEntity>.GetAsyncEnumerator(CancellationToken cancellationToken)
+        {
+            return GetAsyncEnumerator(cancellationToken);
         }
 
         public override EntityEntry<TEntity> Add(TEntity entity)

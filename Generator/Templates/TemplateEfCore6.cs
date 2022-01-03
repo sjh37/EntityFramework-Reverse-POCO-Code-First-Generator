@@ -874,7 +874,7 @@ using {{this}};{{#newline}}
 //          }{{#newline}}
 //      }{{#newline}}
 //      Read more about it here: https://msdn.microsoft.com/en-us/data/dn314431.aspx{{#newline}}
-{{DbContextClassModifiers}} class FakeDbSet<TEntity> : DbSet<TEntity>, IQueryable<TEntity>, IInfrastructure<IServiceProvider>, IListSource where TEntity : class{{#newline}}
+{{DbContextClassModifiers}} class FakeDbSet<TEntity> : DbSet<TEntity>, IQueryable<TEntity>, IAsyncEnumerable<TEntity>, IListSource where TEntity : class{{#newline}}
 {{{#newline}}
     private readonly PropertyInfo[] _primaryKeys;{{#newline}}
     private readonly ObservableCollection<TEntity> _data;{{#newline}}
@@ -927,6 +927,11 @@ using {{this}};{{#newline}}
     public override ValueTask<TEntity> FindAsync(params object[] keyValues){{#newline}}
     {{{#newline}}
         return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues)));{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    IAsyncEnumerator<TEntity> IAsyncEnumerable<TEntity>.GetAsyncEnumerator(CancellationToken cancellationToken){{#newline}}
+    {{{#newline}}
+        return GetAsyncEnumerator(cancellationToken);{{#newline}}
     }{{#newline}}{{#newline}}
 
     public override EntityEntry<TEntity> Add(TEntity entity){{#newline}}
