@@ -32,6 +32,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="ContextHasSameNameAsDb\Fred.tt">
       <LastGenOutput>Fred.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>

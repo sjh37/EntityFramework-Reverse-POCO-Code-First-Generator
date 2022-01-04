@@ -84,11 +84,6 @@ namespace Tester.Integration.EfCore3
             return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues)));
         }
 
-        IAsyncEnumerator<TEntity> IAsyncEnumerable<TEntity>.GetAsyncEnumerator(CancellationToken cancellationToken)
-        {
-            return GetAsyncEnumerator(cancellationToken);
-        }
-
         public override EntityEntry<TEntity> Add(TEntity entity)
         {
             _data.Add(entity);
@@ -204,6 +199,11 @@ namespace Tester.Integration.EfCore3
         IEnumerator<TEntity> IEnumerable<TEntity>.GetEnumerator()
         {
             return _data.GetEnumerator();
+        }
+
+        IAsyncEnumerator<TEntity> IAsyncEnumerable<TEntity>.GetAsyncEnumerator(CancellationToken cancellationToken)
+        {
+            return GetAsyncEnumerator(cancellationToken);
         }
 
         IAsyncEnumerator<TEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default(CancellationToken))

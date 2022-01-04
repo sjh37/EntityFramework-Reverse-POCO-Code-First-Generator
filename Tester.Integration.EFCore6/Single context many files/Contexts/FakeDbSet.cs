@@ -37,11 +37,19 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
     //          }
     //      }
     //      Read more about it here: https://msdn.microsoft.com/en-us/data/dn314431.aspx
-    public class FakeDbSet<TEntity> : DbSet<TEntity>, IQueryable<TEntity>, IAsyncEnumerable<TEntity>, IListSource where TEntity : class
+    public class FakeDbSet<TEntity> :
+        DbSet<TEntity>,
+        IQueryable<TEntity>,
+        IAsyncEnumerable<TEntity>,
+        IListSource,
+        IInfrastructure<IServiceProvider>,
+        IResettableService
+        where TEntity : class
     {
         private readonly PropertyInfo[] _primaryKeys;
-        private readonly ObservableCollection<TEntity> _data;
-        private readonly IQueryable _query;
+        private ObservableCollection<TEntity> _data;
+        private IQueryable _query;
+        private LocalView<TEntity> _localView;
         public override IEntityType EntityType { get; }
 
         public FakeDbSet()
@@ -49,6 +57,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             _primaryKeys = null;
             _data        = new ObservableCollection<TEntity>();
             _query       = _data.AsQueryable();
+            _localView   = null;
         }
 
         public FakeDbSet(params string[] primaryKeys)
@@ -56,6 +65,16 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             _primaryKeys = typeof(TEntity).GetProperties().Where(x => primaryKeys.Contains(x.Name)).ToArray();
             _data        = new ObservableCollection<TEntity>();
             _query       = _data.AsQueryable();
+        }
+
+        public override LocalView<TEntity> Local
+        {
+            get
+            {
+                if (_localView == null)
+                    _localView ??= new LocalView<TEntity>(this);
+                return _localView;
+            }
         }
 
         public override TEntity Find(params object[] keyValues)
@@ -85,15 +104,21 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues)));
         }
 
-        IAsyncEnumerator<TEntity> IAsyncEnumerable<TEntity>.GetAsyncEnumerator(CancellationToken cancellationToken)
-        {
-            return GetAsyncEnumerator(cancellationToken);
-        }
-
         public override EntityEntry<TEntity> Add(TEntity entity)
         {
             _data.Add(entity);
             return null;
+        }
+
+        public override ValueTask<EntityEntry<TEntity>> AddAsync(TEntity entity, CancellationToken cancellationToken = default)
+        {
+            return new ValueTask<EntityEntry<TEntity>>(Task<EntityEntry<TEntity>>.Factory.StartNew(() => Add(entity)));
+        }
+
+        public override EntityEntry<TEntity> Attach(TEntity entity)
+        {
+            if (entity == null) throw new ArgumentNullException("entity");
+            return Add(entity);
         }
 
         public override void AddRange(params TEntity[] entities)
@@ -114,10 +139,28 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             return Task.Factory.StartNew(() => AddRange(entities));
         }
 
+        public override Task AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
+        {
+            if (entities == null) throw new ArgumentNullException("entities");
+            return Task.Factory.StartNew(() => AddRange(entities));
+        }
+
         public override void AttachRange(params TEntity[] entities)
         {
             if (entities == null) throw new ArgumentNullException("entities");
             AddRange(entities);
+        }
+
+        public override void AttachRange(IEnumerable<TEntity> entities)
+        {
+            if (entities == null) throw new ArgumentNullException("entities");
+            AddRange(entities);
+        }
+
+        public override EntityEntry<TEntity> Remove(TEntity entity)
+        {
+            _data.Remove(entity);
+            return null;
         }
 
         public override void RemoveRange(params TEntity[] entities)
@@ -132,12 +175,28 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             RemoveRange(entities.ToArray());
         }
 
+        public override EntityEntry<TEntity> Update(TEntity entity)
+        {
+            _data.Remove(entity);
+            _data.Add(entity);
+            return null;
+        }
+
         public override void UpdateRange(params TEntity[] entities)
         {
             if (entities == null) throw new ArgumentNullException("entities");
             RemoveRange(entities);
             AddRange(entities);
         }
+
+        public override void UpdateRange(IEnumerable<TEntity> entities)
+        {
+            if (entities == null) throw new ArgumentNullException("entities");
+            var array = entities.ToArray();        RemoveRange(array);
+            AddRange(array);
+        }
+
+        bool IListSource.ContainsListCollection => true;
 
         public IList GetList()
         {
@@ -174,9 +233,20 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             return _data.GetEnumerator();
         }
 
-        public override IAsyncEnumerator<TEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default(CancellationToken))
+        public override IAsyncEnumerator<TEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
             return new FakeDbAsyncEnumerator<TEntity>(this.AsEnumerable().GetEnumerator());
+        }
+
+        public void ResetState()
+        {
+            _data  = new ObservableCollection<TEntity>();
+            _query = _data.AsQueryable();
+        }
+
+        public Task ResetStateAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            return Task.Factory.StartNew(() => ResetState());
         }
     }
 

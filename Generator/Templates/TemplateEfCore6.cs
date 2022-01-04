@@ -874,11 +874,17 @@ using {{this}};{{#newline}}
 //          }{{#newline}}
 //      }{{#newline}}
 //      Read more about it here: https://msdn.microsoft.com/en-us/data/dn314431.aspx{{#newline}}
-{{DbContextClassModifiers}} class FakeDbSet<TEntity> : DbSet<TEntity>, IQueryable<TEntity>, IAsyncEnumerable<TEntity>, IListSource where TEntity : class{{#newline}}
+{{DbContextClassModifiers}} class FakeDbSet<TEntity> :{{#newline}}
+    DbSet<TEntity>,{{#newline}}
+    IQueryable<TEntity>,{{#newline}}
+    IAsyncEnumerable<TEntity>,{{#newline}}
+    IListSource,{{#newline}}
+    IResettableService{{#newline}}
+    where TEntity : class{{#newline}}
 {{{#newline}}
     private readonly PropertyInfo[] _primaryKeys;{{#newline}}
-    private readonly ObservableCollection<TEntity> _data;{{#newline}}
-    private readonly IQueryable _query;{{#newline}}
+    private ObservableCollection<TEntity> _data;{{#newline}}
+    private IQueryable _query;{{#newline}}
     public override IEntityType EntityType { get; }{{#newline}}{{#newline}}
 
     public FakeDbSet(){{#newline}}
@@ -886,6 +892,7 @@ using {{this}};{{#newline}}
         _primaryKeys = null;{{#newline}}
         _data        = new ObservableCollection<TEntity>();{{#newline}}
         _query       = _data.AsQueryable();{{#newline}}
+        _localView   = null;{{#newline}}
 
 {{#if DbContextClassIsPartial}}
         InitializePartial();{{#newline}}
@@ -929,15 +936,21 @@ using {{this}};{{#newline}}
         return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues)));{{#newline}}
     }{{#newline}}{{#newline}}
 
-    IAsyncEnumerator<TEntity> IAsyncEnumerable<TEntity>.GetAsyncEnumerator(CancellationToken cancellationToken){{#newline}}
-    {{{#newline}}
-        return GetAsyncEnumerator(cancellationToken);{{#newline}}
-    }{{#newline}}{{#newline}}
-
     public override EntityEntry<TEntity> Add(TEntity entity){{#newline}}
     {{{#newline}}
         _data.Add(entity);{{#newline}}
         return null;{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public override ValueTask<EntityEntry<TEntity>> AddAsync(TEntity entity, CancellationToken cancellationToken = default){{#newline}}
+    {{{#newline}}
+        return new ValueTask<EntityEntry<TEntity>>(Task<EntityEntry<TEntity>>.Factory.StartNew(() => Add(entity)));{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public override EntityEntry<TEntity> Attach(TEntity entity){{#newline}}
+    {{{#newline}}
+        if (entity == null) throw new ArgumentNullException(""entity"");{{#newline}}
+        return Add(entity);{{#newline}}
     }{{#newline}}{{#newline}}
 
     public override void AddRange(params TEntity[] entities){{#newline}}
@@ -958,10 +971,28 @@ using {{this}};{{#newline}}
         return Task.Factory.StartNew(() => AddRange(entities));{{#newline}}
     }{{#newline}}{{#newline}}
 
+    public override Task AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default){{#newline}}
+    {{{#newline}}
+        if (entities == null) throw new ArgumentNullException(""entities"");{{#newline}}
+        return Task.Factory.StartNew(() => AddRange(entities));{{#newline}}
+    }{{#newline}}{{#newline}}
+
     public override void AttachRange(params TEntity[] entities){{#newline}}
     {{{#newline}}
         if (entities == null) throw new ArgumentNullException(""entities"");{{#newline}}
         AddRange(entities);{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public override void AttachRange(IEnumerable<TEntity> entities){{#newline}}
+    {{{#newline}}
+        if (entities == null) throw new ArgumentNullException(""entities"");{{#newline}}
+        AddRange(entities);{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public override EntityEntry<TEntity> Remove(TEntity entity){{#newline}}
+    {{{#newline}}
+        _data.Remove(entity);{{#newline}}
+        return null;{{#newline}}
     }{{#newline}}{{#newline}}
 
     public override void RemoveRange(params TEntity[] entities){{#newline}}
@@ -976,12 +1007,29 @@ using {{this}};{{#newline}}
         RemoveRange(entities.ToArray());{{#newline}}
     }{{#newline}}{{#newline}}
 
+    public override EntityEntry<TEntity> Update(TEntity entity){{#newline}}
+    {{{#newline}}
+        _data.Remove(entity);{{#newline}}
+        _data.Add(entity);{{#newline}}
+        return null;{{#newline}}
+    }{{#newline}}{{#newline}}
+
     public override void UpdateRange(params TEntity[] entities){{#newline}}
     {{{#newline}}
         if (entities == null) throw new ArgumentNullException(""entities"");{{#newline}}
         RemoveRange(entities);{{#newline}}
         AddRange(entities);{{#newline}}
     }{{#newline}}{{#newline}}
+
+    public override void UpdateRange(IEnumerable<TEntity> entities){{#newline}}
+    {{{#newline}}
+        if (entities == null) throw new ArgumentNullException(""entities"");{{#newline}}
+        var array = entities.ToArray();
+        RemoveRange(array);{{#newline}}
+        AddRange(array);{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    bool IListSource.ContainsListCollection => true;{{#newline}}{{#newline}}
 
     public IList GetList(){{#newline}}
     {{{#newline}}
@@ -1018,9 +1066,20 @@ using {{this}};{{#newline}}
         return _data.GetEnumerator();{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public override IAsyncEnumerator<TEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default(CancellationToken)){{#newline}}
+    public override IAsyncEnumerator<TEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default){{#newline}}
     {{{#newline}}
         return new FakeDbAsyncEnumerator<TEntity>(this.AsEnumerable().GetEnumerator());{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public void ResetState(){{#newline}}
+    {{{#newline}}
+        _data  = new ObservableCollection<TEntity>();{{#newline}}
+        _query = _data.AsQueryable();{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public Task ResetStateAsync(CancellationToken cancellationToken = new CancellationToken()){{#newline}}
+    {{{#newline}}
+        return Task.Factory.StartNew(() => ResetState());{{#newline}}
     }{{#newline}}
 
 {{#if DbContextClassIsPartial}}

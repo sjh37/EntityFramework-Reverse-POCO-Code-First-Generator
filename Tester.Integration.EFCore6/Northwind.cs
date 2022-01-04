@@ -937,11 +937,17 @@ namespace Tester.Integration.EFCore6
     //          }
     //      }
     //      Read more about it here: https://msdn.microsoft.com/en-us/data/dn314431.aspx
-    public class FakeDbSet<TEntity> : DbSet<TEntity>, IQueryable<TEntity>, IAsyncEnumerable<TEntity>, IListSource where TEntity : class
+    public class FakeDbSet<TEntity> :
+        DbSet<TEntity>,
+        IQueryable<TEntity>,
+        IAsyncEnumerable<TEntity>,
+        IListSource,
+        IResettableService
+        where TEntity : class
     {
         private readonly PropertyInfo[] _primaryKeys;
-        private readonly ObservableCollection<TEntity> _data;
-        private readonly IQueryable _query;
+        private ObservableCollection<TEntity> _data;
+        private IQueryable _query;
         public override IEntityType EntityType { get; }
 
         public FakeDbSet()
@@ -965,12 +971,19 @@ namespace Tester.Integration.EFCore6
             if (keyValues.Length != _primaryKeys.Length)
                 throw new ArgumentException("Incorrect number of keys passed to Find method");
 
-            var keyQuery = this.AsQueryable();
+            /*var keyQuery = this.AsQueryable();
             keyQuery = keyValues
                 .Select((t, i) => i)
                 .Aggregate(keyQuery,
                     (current, x) =>
-                        current.Where(entity => _primaryKeys[x].GetValue(entity, null).Equals(keyValues[x])));
+                        keyQuery.Where(entity => _primaryKeys[x].GetValue(entity, null).Equals(keyValues[x])));*/
+            
+            var keyQuery = _data.AsQueryable();
+            var a = keyValues
+                .Select((t, i) => i)
+                .Aggregate(keyQuery,
+                    (current, x) =>
+                        keyQuery.Where(entity => _primaryKeys[x].GetValue(entity, null).Equals(keyValues[x])));
 
             return keyQuery.SingleOrDefault();
         }
@@ -985,15 +998,21 @@ namespace Tester.Integration.EFCore6
             return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues)));
         }
 
-        IAsyncEnumerator<TEntity> IAsyncEnumerable<TEntity>.GetAsyncEnumerator(CancellationToken cancellationToken)
-        {
-            return GetAsyncEnumerator(cancellationToken);
-        }
-
         public override EntityEntry<TEntity> Add(TEntity entity)
         {
             _data.Add(entity);
             return null;
+        }
+
+        public override ValueTask<EntityEntry<TEntity>> AddAsync(TEntity entity, CancellationToken cancellationToken = default)
+        {
+            return new ValueTask<EntityEntry<TEntity>>(Task<EntityEntry<TEntity>>.Factory.StartNew(() => Add(entity)));
+        }
+
+        public override EntityEntry<TEntity> Attach(TEntity entity)
+        {
+            if (entity == null) throw new ArgumentNullException("entity");
+            return Add(entity);
         }
 
         public override void AddRange(params TEntity[] entities)
@@ -1014,10 +1033,28 @@ namespace Tester.Integration.EFCore6
             return Task.Factory.StartNew(() => AddRange(entities));
         }
 
+        public override Task AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
+        {
+            if (entities == null) throw new ArgumentNullException("entities");
+            return Task.Factory.StartNew(() => AddRange(entities));
+        }
+
         public override void AttachRange(params TEntity[] entities)
         {
             if (entities == null) throw new ArgumentNullException("entities");
             AddRange(entities);
+        }
+
+        public override void AttachRange(IEnumerable<TEntity> entities)
+        {
+            if (entities == null) throw new ArgumentNullException("entities");
+            AddRange(entities);
+        }
+
+        public override EntityEntry<TEntity> Remove(TEntity entity)
+        {
+            _data.Remove(entity);
+            return null;
         }
 
         public override void RemoveRange(params TEntity[] entities)
@@ -1032,12 +1069,28 @@ namespace Tester.Integration.EFCore6
             RemoveRange(entities.ToArray());
         }
 
+        public override EntityEntry<TEntity> Update(TEntity entity)
+        {
+            _data.Remove(entity);
+            _data.Add(entity);
+            return null;
+        }
+
         public override void UpdateRange(params TEntity[] entities)
         {
             if (entities == null) throw new ArgumentNullException("entities");
             RemoveRange(entities);
             AddRange(entities);
         }
+
+        public override void UpdateRange(IEnumerable<TEntity> entities)
+        {
+            if (entities == null) throw new ArgumentNullException("entities");
+            var array = entities.ToArray();        RemoveRange(array);
+            AddRange(array);
+        }
+
+        bool IListSource.ContainsListCollection => true;
 
         public IList GetList()
         {
@@ -1074,9 +1127,20 @@ namespace Tester.Integration.EFCore6
             return _data.GetEnumerator();
         }
 
-        public override IAsyncEnumerator<TEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default(CancellationToken))
+        public override IAsyncEnumerator<TEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
             return new FakeDbAsyncEnumerator<TEntity>(this.AsEnumerable().GetEnumerator());
+        }
+
+        public void ResetState()
+        {
+            _data  = new ObservableCollection<TEntity>();
+            _query = _data.AsQueryable();
+        }
+
+        public Task ResetStateAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            return Task.Factory.StartNew(() => ResetState());
         }
     }
 
