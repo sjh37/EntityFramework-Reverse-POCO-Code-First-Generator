@@ -892,7 +892,6 @@ using {{this}};{{#newline}}
         _primaryKeys = null;{{#newline}}
         _data        = new ObservableCollection<TEntity>();{{#newline}}
         _query       = _data.AsQueryable();{{#newline}}
-        _localView   = null;{{#newline}}
 
 {{#if DbContextClassIsPartial}}
         InitializePartial();{{#newline}}
@@ -947,22 +946,18 @@ using {{this}};{{#newline}}
         return new ValueTask<EntityEntry<TEntity>>(Task<EntityEntry<TEntity>>.Factory.StartNew(() => Add(entity)));{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public override EntityEntry<TEntity> Attach(TEntity entity){{#newline}}
-    {{{#newline}}
-        if (entity == null) throw new ArgumentNullException(""entity"");{{#newline}}
-        return Add(entity);{{#newline}}
-    }{{#newline}}{{#newline}}
-
     public override void AddRange(params TEntity[] entities){{#newline}}
     {{{#newline}}
         if (entities == null) throw new ArgumentNullException(""entities"");{{#newline}}
-        foreach (var entity in entities.ToList()){{#newline}}
+        foreach (var entity in entities){{#newline}}
             _data.Add(entity);{{#newline}}
     }{{#newline}}{{#newline}}
 
     public override void AddRange(IEnumerable<TEntity> entities){{#newline}}
     {{{#newline}}
-        AddRange(entities.ToArray());{{#newline}}
+        if (entities == null) throw new ArgumentNullException(""entities"");{{#newline}}
+        foreach (var entity in entities){{#newline}}
+            _data.Add(entity);{{#newline}}
     }{{#newline}}{{#newline}}
 
     public override Task AddRangeAsync(params TEntity[] entities){{#newline}}
@@ -975,6 +970,12 @@ using {{this}};{{#newline}}
     {{{#newline}}
         if (entities == null) throw new ArgumentNullException(""entities"");{{#newline}}
         return Task.Factory.StartNew(() => AddRange(entities));{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public override EntityEntry<TEntity> Attach(TEntity entity){{#newline}}
+    {{{#newline}}
+        if (entity == null) throw new ArgumentNullException(""entity"");{{#newline}}
+        return Add(entity);{{#newline}}
     }{{#newline}}{{#newline}}
 
     public override void AttachRange(params TEntity[] entities){{#newline}}

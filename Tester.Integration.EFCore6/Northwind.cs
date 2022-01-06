@@ -971,19 +971,12 @@ namespace Tester.Integration.EFCore6
             if (keyValues.Length != _primaryKeys.Length)
                 throw new ArgumentException("Incorrect number of keys passed to Find method");
 
-            /*var keyQuery = this.AsQueryable();
+            var keyQuery = this.AsQueryable();
             keyQuery = keyValues
                 .Select((t, i) => i)
                 .Aggregate(keyQuery,
                     (current, x) =>
-                        keyQuery.Where(entity => _primaryKeys[x].GetValue(entity, null).Equals(keyValues[x])));*/
-            
-            var keyQuery = _data.AsQueryable();
-            var a = keyValues
-                .Select((t, i) => i)
-                .Aggregate(keyQuery,
-                    (current, x) =>
-                        keyQuery.Where(entity => _primaryKeys[x].GetValue(entity, null).Equals(keyValues[x])));
+                        current.Where(entity => _primaryKeys[x].GetValue(entity, null).Equals(keyValues[x])));
 
             return keyQuery.SingleOrDefault();
         }
@@ -1009,22 +1002,18 @@ namespace Tester.Integration.EFCore6
             return new ValueTask<EntityEntry<TEntity>>(Task<EntityEntry<TEntity>>.Factory.StartNew(() => Add(entity)));
         }
 
-        public override EntityEntry<TEntity> Attach(TEntity entity)
-        {
-            if (entity == null) throw new ArgumentNullException("entity");
-            return Add(entity);
-        }
-
         public override void AddRange(params TEntity[] entities)
         {
             if (entities == null) throw new ArgumentNullException("entities");
-            foreach (var entity in entities.ToList())
+            foreach (var entity in entities)
                 _data.Add(entity);
         }
 
         public override void AddRange(IEnumerable<TEntity> entities)
         {
-            AddRange(entities.ToArray());
+            if (entities == null) throw new ArgumentNullException("entities");
+            foreach (var entity in entities)
+                _data.Add(entity);
         }
 
         public override Task AddRangeAsync(params TEntity[] entities)
@@ -1037,6 +1026,12 @@ namespace Tester.Integration.EFCore6
         {
             if (entities == null) throw new ArgumentNullException("entities");
             return Task.Factory.StartNew(() => AddRange(entities));
+        }
+
+        public override EntityEntry<TEntity> Attach(TEntity entity)
+        {
+            if (entity == null) throw new ArgumentNullException("entity");
+            return Add(entity);
         }
 
         public override void AttachRange(params TEntity[] entities)

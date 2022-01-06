@@ -61,7 +61,7 @@ namespace BuildTT
     //FilterSettings.IncludeTableValuedFunctions  = false; // If true, for EF6 install the ""EntityFramework.CodeFirstStoreFunctions"" NuGet Package.
     //FilterSettings.IncludeScalarValuedFunctions = false;
 
-     // Examples:
+    // Examples:
     //FilterSettings.SchemaFilters.Add(new RegexExcludeFilter(""[Ff]inance.*"")); // This excludes the Finance schema
     //FilterSettings.SchemaFilters.Add(new RegexIncludeFilter(""dbo.*"")); // This includes only dbo schema
     //FilterSettings.TableFilters.Add(new RegexExcludeFilter("".*[Bb]illing.*"")); // This excludes all tables with 'billing' anywhere in the name
