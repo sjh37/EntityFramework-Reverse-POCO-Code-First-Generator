@@ -12,13 +12,13 @@
     [Category(Constants.CI)]
     public class FakeDbSetTests
     {
-        private FakeDbSet<A> _dbSet = null!;
+        private V6Fred.FakeDbSet<A> _dbSet = null!;
         private List<A> _list = null!;
 
         [SetUp]
         public void SetUp()
         {
-            _dbSet = new FakeDbSet<A>("AId");
+            _dbSet = new V6Fred.FakeDbSet<A>("AId");
 
             _list = new List<A>
             {

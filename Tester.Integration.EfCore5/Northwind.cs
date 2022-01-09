@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Query.Internal;
@@ -936,11 +937,18 @@ namespace Tester.Integration.EFCore5
     //          }
     //      }
     //      Read more about it here: https://msdn.microsoft.com/en-us/data/dn314431.aspx
-    public class FakeDbSet<TEntity> : DbSet<TEntity>, IQueryable<TEntity>, IAsyncEnumerable<TEntity>, IListSource where TEntity : class
+    public class FakeDbSet<TEntity> :
+        DbSet<TEntity>,
+        IQueryable<TEntity>,
+        IAsyncEnumerable<TEntity>,
+        IListSource,
+        IResettableService
+        where TEntity : class
     {
         private readonly PropertyInfo[] _primaryKeys;
-        private readonly ObservableCollection<TEntity> _data;
-        private readonly IQueryable _query;
+        private ObservableCollection<TEntity> _data;
+        private IQueryable _query;
+        public override IEntityType EntityType { get; }
 
         public FakeDbSet()
         {
@@ -983,27 +991,29 @@ namespace Tester.Integration.EFCore5
             return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues)));
         }
 
-        IAsyncEnumerator<TEntity> IAsyncEnumerable<TEntity>.GetAsyncEnumerator(CancellationToken cancellationToken)
-        {
-            return GetAsyncEnumerator(cancellationToken);
-        }
-
         public override EntityEntry<TEntity> Add(TEntity entity)
         {
             _data.Add(entity);
             return null;
         }
 
+        public override ValueTask<EntityEntry<TEntity>> AddAsync(TEntity entity, CancellationToken cancellationToken = default)
+        {
+            return new ValueTask<EntityEntry<TEntity>>(Task<EntityEntry<TEntity>>.Factory.StartNew(() => Add(entity)));
+        }
+
         public override void AddRange(params TEntity[] entities)
         {
             if (entities == null) throw new ArgumentNullException("entities");
-            foreach (var entity in entities.ToList())
+            foreach (var entity in entities)
                 _data.Add(entity);
         }
 
         public override void AddRange(IEnumerable<TEntity> entities)
         {
-            AddRange(entities.ToArray());
+            if (entities == null) throw new ArgumentNullException("entities");
+            foreach (var entity in entities)
+                _data.Add(entity);
         }
 
         public override Task AddRangeAsync(params TEntity[] entities)
@@ -1012,10 +1022,34 @@ namespace Tester.Integration.EFCore5
             return Task.Factory.StartNew(() => AddRange(entities));
         }
 
+        public override Task AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
+        {
+            if (entities == null) throw new ArgumentNullException("entities");
+            return Task.Factory.StartNew(() => AddRange(entities));
+        }
+
+        public override EntityEntry<TEntity> Attach(TEntity entity)
+        {
+            if (entity == null) throw new ArgumentNullException("entity");
+            return Add(entity);
+        }
+
         public override void AttachRange(params TEntity[] entities)
         {
             if (entities == null) throw new ArgumentNullException("entities");
             AddRange(entities);
+        }
+
+        public override void AttachRange(IEnumerable<TEntity> entities)
+        {
+            if (entities == null) throw new ArgumentNullException("entities");
+            AddRange(entities);
+        }
+
+        public override EntityEntry<TEntity> Remove(TEntity entity)
+        {
+            _data.Remove(entity);
+            return null;
         }
 
         public override void RemoveRange(params TEntity[] entities)
@@ -1030,12 +1064,28 @@ namespace Tester.Integration.EFCore5
             RemoveRange(entities.ToArray());
         }
 
+        public override EntityEntry<TEntity> Update(TEntity entity)
+        {
+            _data.Remove(entity);
+            _data.Add(entity);
+            return null;
+        }
+
         public override void UpdateRange(params TEntity[] entities)
         {
             if (entities == null) throw new ArgumentNullException("entities");
             RemoveRange(entities);
             AddRange(entities);
         }
+
+        public override void UpdateRange(IEnumerable<TEntity> entities)
+        {
+            if (entities == null) throw new ArgumentNullException("entities");
+            var array = entities.ToArray();        RemoveRange(array);
+            AddRange(array);
+        }
+
+        bool IListSource.ContainsListCollection => true;
 
         public IList GetList()
         {
@@ -1075,6 +1125,17 @@ namespace Tester.Integration.EFCore5
         IAsyncEnumerator<TEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default(CancellationToken))
         {
             return new FakeDbAsyncEnumerator<TEntity>(this.AsEnumerable().GetEnumerator());
+        }
+
+        public void ResetState()
+        {
+            _data  = new ObservableCollection<TEntity>();
+            _query = _data.AsQueryable();
+        }
+
+        public Task ResetStateAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            return Task.Factory.StartNew(() => ResetState());
         }
     }
 
