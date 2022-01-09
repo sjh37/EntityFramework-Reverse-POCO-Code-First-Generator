@@ -935,13 +935,15 @@ using {{this}};{{#newline}}
     public override void AddRange(params TEntity[] entities){{#newline}}
     {{{#newline}}
         if (entities == null) throw new ArgumentNullException(""entities"");{{#newline}}
-        foreach (var entity in entities.ToList()){{#newline}}
+        foreach (var entity in entities){{#newline}}
             _data.Add(entity);{{#newline}}
     }{{#newline}}{{#newline}}
 
     public override void AddRange(IEnumerable<TEntity> entities){{#newline}}
     {{{#newline}}
-        AddRange(entities.ToArray());{{#newline}}
+        if (entities == null) throw new ArgumentNullException(""entities"");{{#newline}}
+        foreach (var entity in entities){{#newline}}
+            _data.Add(entity);{{#newline}}
     }{{#newline}}{{#newline}}
 
     public override Task AddRangeAsync(params TEntity[] entities){{#newline}}
@@ -956,12 +958,19 @@ using {{this}};{{#newline}}
         return Task.Factory.StartNew(() => AddRange(entities));{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public override void AttachRange(IEnumerable<TEntity> entities){{#newline}}
+    public override EntityEntry<TEntity> Attach(TEntity entity){{#newline}}
     {{{#newline}}
-        AddRange(entities.ToArray());{{#newline}}
+        if (entity == null) throw new ArgumentNullException(""entity"");{{#newline}}
+        return Add(entity);{{#newline}}
     }{{#newline}}{{#newline}}
 
     public override void AttachRange(params TEntity[] entities){{#newline}}
+    {{{#newline}}
+        if (entities == null) throw new ArgumentNullException(""entities"");{{#newline}}
+        AddRange(entities);{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public override void AttachRange(IEnumerable<TEntity> entities){{#newline}}
     {{{#newline}}
         if (entities == null) throw new ArgumentNullException(""entities"");{{#newline}}
         AddRange(entities);{{#newline}}
@@ -992,16 +1001,19 @@ using {{this}};{{#newline}}
         return null;{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public override void UpdateRange(IEnumerable<TEntity> entities)
-    {{{#newline}}
-        UpdateRange(entities.ToArray());{{#newline}}
-    }{{#newline}}{{#newline}}
-
     public override void UpdateRange(params TEntity[] entities){{#newline}}
     {{{#newline}}
         if (entities == null) throw new ArgumentNullException(""entities"");{{#newline}}
         RemoveRange(entities);{{#newline}}
         AddRange(entities);{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public override void UpdateRange(IEnumerable<TEntity> entities){{#newline}}
+    {{{#newline}}
+        if (entities == null) throw new ArgumentNullException(""entities"");{{#newline}}
+        var array = entities.ToArray();
+        RemoveRange(array);{{#newline}}
+        AddRange(array);{{#newline}}
     }{{#newline}}{{#newline}}
 
     public IList GetList(){{#newline}}

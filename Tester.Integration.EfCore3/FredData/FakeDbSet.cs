@@ -84,6 +84,11 @@ namespace Tester.Integration.EfCore3
             return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues)));
         }
 
+        IAsyncEnumerator<TEntity> IAsyncEnumerable<TEntity>.GetAsyncEnumerator(CancellationToken cancellationToken)
+        {
+            return GetAsyncEnumerator(cancellationToken);
+        }
+
         public override EntityEntry<TEntity> Add(TEntity entity)
         {
             _data.Add(entity);
@@ -98,13 +103,15 @@ namespace Tester.Integration.EfCore3
         public override void AddRange(params TEntity[] entities)
         {
             if (entities == null) throw new ArgumentNullException("entities");
-            foreach (var entity in entities.ToList())
+            foreach (var entity in entities)
                 _data.Add(entity);
         }
 
         public override void AddRange(IEnumerable<TEntity> entities)
         {
-            AddRange(entities.ToArray());
+            if (entities == null) throw new ArgumentNullException("entities");
+            foreach (var entity in entities)
+                _data.Add(entity);
         }
 
         public override Task AddRangeAsync(params TEntity[] entities)
@@ -119,12 +126,19 @@ namespace Tester.Integration.EfCore3
             return Task.Factory.StartNew(() => AddRange(entities));
         }
 
-        public override void AttachRange(IEnumerable<TEntity> entities)
+        public override EntityEntry<TEntity> Attach(TEntity entity)
         {
-            AddRange(entities.ToArray());
+            if (entity == null) throw new ArgumentNullException("entity");
+            return Add(entity);
         }
 
         public override void AttachRange(params TEntity[] entities)
+        {
+            if (entities == null) throw new ArgumentNullException("entities");
+            AddRange(entities);
+        }
+
+        public override void AttachRange(IEnumerable<TEntity> entities)
         {
             if (entities == null) throw new ArgumentNullException("entities");
             AddRange(entities);
@@ -155,15 +169,18 @@ namespace Tester.Integration.EfCore3
             return null;
         }
 
-        public override void UpdateRange(IEnumerable<TEntity> entities)    {
-            UpdateRange(entities.ToArray());
-        }
-
         public override void UpdateRange(params TEntity[] entities)
         {
             if (entities == null) throw new ArgumentNullException("entities");
             RemoveRange(entities);
             AddRange(entities);
+        }
+
+        public override void UpdateRange(IEnumerable<TEntity> entities)
+        {
+            if (entities == null) throw new ArgumentNullException("entities");
+            var array = entities.ToArray();        RemoveRange(array);
+            AddRange(array);
         }
 
         public IList GetList()
@@ -199,11 +216,6 @@ namespace Tester.Integration.EfCore3
         IEnumerator<TEntity> IEnumerable<TEntity>.GetEnumerator()
         {
             return _data.GetEnumerator();
-        }
-
-        IAsyncEnumerator<TEntity> IAsyncEnumerable<TEntity>.GetAsyncEnumerator(CancellationToken cancellationToken)
-        {
-            return GetAsyncEnumerator(cancellationToken);
         }
 
         IAsyncEnumerator<TEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default(CancellationToken))
