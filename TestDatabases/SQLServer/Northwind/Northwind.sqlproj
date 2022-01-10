@@ -103,6 +103,6 @@
     <Build Include="dbo\Stored Procedures\CustOrderHist.sql" />
     <Build Include="dbo\Stored Procedures\SalesByCategory.sql" />
     <Build Include="Security\FFRS.sql" />
-    <None Include="Scripts\ScriptsIgnoredOnImport.sql" />
+    <None Include="Scripts\InsertData.sql" />
   </ItemGroup>
 </Project>
