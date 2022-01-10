@@ -12,7 +12,7 @@ namespace Tester.Integration.EfCore2
         public void Configure(EntityTypeBuilder<TableWithDuplicateColumnName> builder)
         {
             builder.ToTable("table with duplicate column names", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__table wi__3213E83F7E62FED9").ForSqlServerIsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__table wi__3213E83FD75ED2F9").ForSqlServerIsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseSqlServerIdentityColumn();
             builder.Property(x => x.UserId1).HasColumnName(@"user_id").HasColumnType("int").IsRequired();

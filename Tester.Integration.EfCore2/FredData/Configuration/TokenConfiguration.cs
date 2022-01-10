@@ -12,7 +12,7 @@ namespace Tester.Integration.EfCore2
         public void Configure(EntityTypeBuilder<Token> builder)
         {
             builder.ToTable("Token", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__Token__3214EC0780725089").ForSqlServerIsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__Token__3214EC0760877C4B").ForSqlServerIsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("uniqueidentifier").IsRequired().ValueGeneratedOnAdd();
             builder.Property(x => x.Enabled).HasColumnName(@"Enabled").HasColumnType("bit").IsRequired();

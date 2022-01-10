@@ -12,7 +12,7 @@ namespace Tester.Integration.EfCore3
         public void Configure(EntityTypeBuilder<Bitfiddlerallcap> builder)
         {
             builder.ToTable("BITFIDDLERALLCAPS", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__BITFIDDL__3214EC073CF127E7").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__BITFIDDL__3214EC071E4141BF").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
         }

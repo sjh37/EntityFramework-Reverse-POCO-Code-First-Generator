@@ -12,7 +12,7 @@ namespace Tester.Integration.EfCore3
         public void Configure(EntityTypeBuilder<Alpha_Workflow> builder)
         {
             builder.ToTable("workflow", "Alpha");
-            builder.HasKey(x => x.Id).HasName("PK__workflow__3214EC072804087E").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__workflow__3214EC0781E073BC").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);

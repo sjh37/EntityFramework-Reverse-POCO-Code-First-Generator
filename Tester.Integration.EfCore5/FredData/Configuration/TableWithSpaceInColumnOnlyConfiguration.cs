@@ -12,7 +12,7 @@ namespace V5Fred
         public void Configure(EntityTypeBuilder<TableWithSpaceInColumnOnly> builder)
         {
             builder.ToTable("TableWithSpaceInColumnOnly", "dbo");
-            builder.HasKey(x => x.IdValue).HasName("PK__TableWit__92CF061C3D75F56A").IsClustered();
+            builder.HasKey(x => x.IdValue).HasName("PK__TableWit__92CF061C5A0D0BF4").IsClustered();
 
             builder.Property(x => x.IdValue).HasColumnName(@"id value").HasColumnType("int").IsRequired().ValueGeneratedNever();
         }

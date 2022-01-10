@@ -12,7 +12,7 @@ namespace Tester.Integration.EfCore2
         public void Configure(EntityTypeBuilder<BitFiddlerCategoRy> builder)
         {
             builder.ToTable("BitFiddlerCATEGORIES", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__BitFiddl__3214EC07A08CA919").ForSqlServerIsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__BitFiddl__3214EC07B251396A").ForSqlServerIsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseSqlServerIdentityColumn();
         }

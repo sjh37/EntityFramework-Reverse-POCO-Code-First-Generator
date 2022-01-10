@@ -22,37 +22,30 @@ namespace Tester.Integration.EfCore2
         public List<ResultSetModel2> ResultSet2;
         public class ResultSetModel3
         {
-            public int BlahID { get; set; }
+            public string code { get; set; }
         }
         public List<ResultSetModel3> ResultSet3;
         public class ResultSetModel4
         {
-            public int coID { get; set; }
-            public int? cocogID { get; set; }
-            public int? cocuID { get; set; }
-            public string coName { get; set; }
-            public string coShortName { get; set; }
-            public string coHtmlName { get; set; }
-            public string coEmployerNo { get; set; }
-            public DateTime? coValidFrom { get; set; }
-            public DateTime? coValidTo { get; set; }
-            public string coVatIdNo { get; set; }
-            public string coURL { get; set; }
-            public bool coActive { get; set; }
+            public long id { get; set; }
+            public long id_t { get; set; }
+            public long num { get; set; }
         }
         public List<ResultSetModel4> ResultSet4;
         public class ResultSetModel5
         {
-            public int cogID { get; set; }
-            public string cogCompanyGroupName { get; set; }
-            public DateTime? cogValidFrom { get; set; }
-            public DateTime? cogValidTo { get; set; }
+            public int Id { get; set; }
+            public int PrimaryColourId { get; set; }
+            public string CarMake { get; set; }
+            public int? computed_column { get; set; }
+            public int? computed_column_persisted { get; set; }
         }
         public List<ResultSetModel5> ResultSet5;
         public class ResultSetModel6
         {
-            public int Id { get; set; }
-            public string Name { get; set; }
+            public int ID { get; set; }
+            public int OrderID { get; set; }
+            public string sku { get; set; }
         }
         public List<ResultSetModel6> ResultSet6;
     }

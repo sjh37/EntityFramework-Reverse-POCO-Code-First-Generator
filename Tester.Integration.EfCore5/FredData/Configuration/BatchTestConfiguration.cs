@@ -12,7 +12,7 @@ namespace V5Fred
         public void Configure(EntityTypeBuilder<BatchTest> builder)
         {
             builder.ToTable("BatchTest", "dbo");
-            builder.HasKey(x => x.Code).HasName("PK__BatchTes__357D4CF8F557E292").IsClustered();
+            builder.HasKey(x => x.Code).HasName("PK__BatchTes__357D4CF8B8A16F6F").IsClustered();
 
             builder.Property(x => x.Code).HasColumnName(@"code").HasColumnType("nvarchar(8)").IsRequired().HasMaxLength(8).ValueGeneratedNever();
         }

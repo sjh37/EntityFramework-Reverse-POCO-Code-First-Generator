@@ -12,7 +12,7 @@ namespace V5Fred
         public void Configure(EntityTypeBuilder<BitFiddlerCategoRy> builder)
         {
             builder.ToTable("BitFiddlerCATEGORIES", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__BitFiddl__3214EC07A08CA919").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__BitFiddl__3214EC07B251396A").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
         }

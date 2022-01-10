@@ -12,7 +12,7 @@ namespace V5Fred
         public void Configure(EntityTypeBuilder<TableWithDuplicateColumnName> builder)
         {
             builder.ToTable("table with duplicate column names", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__table wi__3213E83F7E62FED9").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__table wi__3213E83FD75ED2F9").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.UserId1).HasColumnName(@"user_id").HasColumnType("int").IsRequired();

@@ -12,13 +12,13 @@ namespace V5Fred
         public void Configure(EntityTypeBuilder<Alpha_Harish3485> builder)
         {
             builder.ToTable("Harish3485", "Alpha");
-            builder.HasKey(x => x.Id).HasName("PK__Harish34__3213E83F6B711DC1").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__Harish34__3213E83F97A83DAF").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.HarishId).HasColumnName(@"harish_id").HasColumnType("int").IsRequired();
 
             // Foreign keys
-            builder.HasOne(a => a.Kate_ScreamAndShout).WithMany(b => b.Alpha_Harish3485).HasForeignKey(c => c.HarishId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Harish");
+            builder.HasOne(a => a.FkTest_SmallDecimalTestAttribute).WithMany(b => b.Alpha_Harish3485).HasForeignKey(c => c.HarishId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Harish");
         }
     }
 

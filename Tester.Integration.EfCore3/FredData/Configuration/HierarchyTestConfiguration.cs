@@ -12,7 +12,7 @@ namespace Tester.Integration.EfCore3
         public void Configure(EntityTypeBuilder<HierarchyTest> builder)
         {
             builder.ToTable("hierarchy_test", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__hierarch__3214EC27A00D9B63").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__hierarch__3214EC27E80E39ED").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Hid).HasColumnName(@"hid").HasColumnType("hierarchyid").IsRequired();

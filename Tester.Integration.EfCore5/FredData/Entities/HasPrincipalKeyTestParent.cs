@@ -11,10 +11,10 @@ namespace V5Fred
     public class HasPrincipalKeyTestParent
     {
         public int Id { get; set; } // Id (Primary key)
-        public int A { get; set; } // A
-        public int B { get; set; } // B
-        public int? C { get; set; } // C
-        public int? D { get; set; } // D
+        public int Aa { get; set; } // AA
+        public int Bb { get; set; } // BB
+        public int? Cc { get; set; } // CC
+        public int? Dd { get; set; } // DD
 
         // Reverse navigation
 

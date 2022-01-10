@@ -12,7 +12,7 @@ namespace Tester.Integration.EfCore2
         public void Configure(EntityTypeBuilder<SequenceTest> builder)
         {
             builder.ToTable("SequenceTest", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__Sequence__3214EC072BABC879").ForSqlServerIsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__Sequence__3214EC07AFADA315").ForSqlServerIsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountBy1]");
             builder.Property(x => x.CntByBigInt).HasColumnName(@"CntByBigInt").HasColumnType("bigint").IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountByBigInt]");

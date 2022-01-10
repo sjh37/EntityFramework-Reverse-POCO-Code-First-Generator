@@ -12,7 +12,7 @@ namespace Tester.Integration.EfCore2
         public void Configure(EntityTypeBuilder<AbOrdersAb> builder)
         {
             builder.ToTable("AB_OrdersAB_", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__AB_Order__3214EC277606C4E4").ForSqlServerIsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__AB_Order__3214EC27DCF8BE7D").ForSqlServerIsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseSqlServerIdentityColumn();
             builder.Property(x => x.Added).HasColumnName(@"added").HasColumnType("datetime").IsRequired();

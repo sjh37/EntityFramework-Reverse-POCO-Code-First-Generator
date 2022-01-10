@@ -12,7 +12,7 @@ namespace Tester.Integration.EfCore3
         public void Configure(EntityTypeBuilder<Beta_Harish3485> builder)
         {
             builder.ToTable("Harish3485", "Beta");
-            builder.HasKey(x => x.Id).HasName("PK__Harish34__3213E83F1B89ADF0").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__Harish34__3213E83F91382426").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.AnotherId).HasColumnName(@"another_id").HasColumnType("int").IsRequired();

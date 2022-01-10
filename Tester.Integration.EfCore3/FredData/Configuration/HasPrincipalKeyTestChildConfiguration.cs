@@ -12,7 +12,7 @@ namespace Tester.Integration.EfCore3
         public void Configure(EntityTypeBuilder<HasPrincipalKeyTestChild> builder)
         {
             builder.ToTable("HasPrincipalKeyTestChild", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__HasPrinc__3214EC07061FCDAA").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_HasPrincipalKeyTestChild").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.A).HasColumnName(@"A").HasColumnType("int").IsRequired();
@@ -21,7 +21,7 @@ namespace Tester.Integration.EfCore3
             builder.Property(x => x.D).HasColumnName(@"D").HasColumnType("int").IsRequired(false);
 
             // Foreign keys
-            builder.HasOne(a => a.HasPrincipalKeyTestParent).WithOne(b => b.HasPrincipalKeyTestChild).HasPrincipalKey<HasPrincipalKeyTestParent>(p => new { p.A, p.B }).HasForeignKey<HasPrincipalKeyTestChild>(c => new { c.A, c.B }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_HasPrincipalKey_AB");
+            builder.HasOne(a => a.HasPrincipalKeyTestParent).WithOne(b => b.HasPrincipalKeyTestChild).HasPrincipalKey<HasPrincipalKeyTestParent>(p => new { p.Aa, p.Bb }).HasForeignKey<HasPrincipalKeyTestChild>(c => new { c.A, c.B }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_HasPrincipalKey_AB");
         }
     }
 

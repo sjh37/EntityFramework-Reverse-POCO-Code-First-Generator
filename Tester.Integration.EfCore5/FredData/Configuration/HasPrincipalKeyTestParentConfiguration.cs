@@ -12,17 +12,17 @@ namespace V5Fred
         public void Configure(EntityTypeBuilder<HasPrincipalKeyTestParent> builder)
         {
             builder.ToTable("HasPrincipalKeyTestParent", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__HasPrinc__3214EC07C4D24B68").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_HasPrincipalKeyTestParent").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.A).HasColumnName(@"A").HasColumnType("int").IsRequired();
-            builder.Property(x => x.B).HasColumnName(@"B").HasColumnType("int").IsRequired();
-            builder.Property(x => x.C).HasColumnName(@"C").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.D).HasColumnName(@"D").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.Aa).HasColumnName(@"AA").HasColumnType("int").IsRequired();
+            builder.Property(x => x.Bb).HasColumnName(@"BB").HasColumnType("int").IsRequired();
+            builder.Property(x => x.Cc).HasColumnName(@"CC").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.Dd).HasColumnName(@"DD").HasColumnType("int").IsRequired(false);
 
-            builder.HasIndex(x => new { x.A, x.B }).HasDatabaseName("UQ_HasPrincipalKeyTestParent_AB").IsUnique();
-            builder.HasIndex(x => new { x.A, x.C }).HasDatabaseName("UQ_HasPrincipalKeyTestParent_AC").IsUnique();
-            builder.HasIndex(x => new { x.C, x.D }).HasDatabaseName("UQ_HasPrincipalKeyTestParent_CD").IsUnique();
+            builder.HasIndex(x => new { x.Aa, x.Bb }).HasDatabaseName("UQ_HasPrincipalKeyTestParent_AB").IsUnique();
+            builder.HasIndex(x => new { x.Aa, x.Cc }).HasDatabaseName("UQ_HasPrincipalKeyTestParent_AC").IsUnique();
+            builder.HasIndex(x => new { x.Cc, x.Dd }).HasDatabaseName("UQ_HasPrincipalKeyTestParent_CD").IsUnique();
         }
     }
 

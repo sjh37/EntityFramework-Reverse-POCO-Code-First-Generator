@@ -12,7 +12,7 @@ namespace V5Fred
         public void Configure(EntityTypeBuilder<Issue47_UserRole> builder)
         {
             builder.ToTable("UserRoles", "Issue47");
-            builder.HasKey(x => x.UserRoleId).HasName("PK__UserRole__3D978A3528CA58C0").IsClustered();
+            builder.HasKey(x => x.UserRoleId).HasName("PK__UserRole__3D978A3562D2BF0E").IsClustered();
 
             builder.Property(x => x.UserRoleId).HasColumnName(@"UserRoleId").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.UserId).HasColumnName(@"UserId").HasColumnType("int").IsRequired();

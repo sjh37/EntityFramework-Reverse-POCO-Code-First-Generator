@@ -27,17 +27,17 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="ContextHasSameNameAsDb\Fred.tt">
-      <LastGenOutput>Fred.cs</LastGenOutput>
+    <None Update="ContextHasSameNameAsDb\EfrpgTest.tt">
+      <LastGenOutput>EfrpgTest.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="EnumOnly.tt">
       <LastGenOutput>EnumOnly.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
-    <None Update="Fred.tt">
+    <None Update="EfrpgTest.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Fred.cs</LastGenOutput>
+      <LastGenOutput>EfrpgTest.cs</LastGenOutput>
     </None>
     <None Update="Multi context many files\MCMF.tt">
       <LastGenOutput>MCMF.cs</LastGenOutput>
@@ -70,8 +70,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="ContextHasSameNameAsDb\Fred.cs">
-      <DependentUpon>Fred.tt</DependentUpon>
+    <Compile Update="ContextHasSameNameAsDb\EfrpgTest.cs">
+      <DependentUpon>EfrpgTest.tt</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
@@ -80,10 +80,10 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Update="Fred.cs">
+    <Compile Update="EfrpgTest.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>Fred.tt</DependentUpon>
+      <DependentUpon>EfrpgTest.tt</DependentUpon>
     </Compile>
     <Compile Update="Multi context many files\MCMF.cs">
       <DependentUpon>MCMF.tt</DependentUpon>

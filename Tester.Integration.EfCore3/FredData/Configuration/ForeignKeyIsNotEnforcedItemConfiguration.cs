@@ -12,7 +12,7 @@ namespace Tester.Integration.EfCore3
         public void Configure(EntityTypeBuilder<ForeignKeyIsNotEnforcedItem> builder)
         {
             builder.ToTable("ForeignKeyIsNotEnforcedItem", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__ForeignK__3213E83FB7C5760B").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__ForeignK__3213E83F6EE7FE07").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.NullValue).HasColumnName(@"null_value").HasColumnType("int").IsRequired(false);

@@ -45,7 +45,6 @@ namespace V5Fred
         public DbSet<Blah> Blahs { get; set; } // Blah
         public DbSet<BlahBlahLinkV2> BlahBlahLinkV2 { get; set; } // BlahBlahLink_v2
         public DbSet<Blarg> Blargs { get; set; } // Blarg
-        public DbSet<BringTheAction> BringTheActions { get; set; } // BringTheAction
         public DbSet<Burak1> Burak1 { get; set; } // Burak1
         public DbSet<Burak2> Burak2 { get; set; } // Burak2
         public DbSet<CalculatedColumnNotNull> CalculatedColumnNotNulls { get; set; } // CalculatedColumnNotNull
@@ -57,8 +56,7 @@ namespace V5Fred
         public DbSet<CodeObject> CodeObjects { get; set; } // CodeObject
         public DbSet<CodeParamMeetingTopicDetailSource> CodeParamMeetingTopicDetailSources { get; set; } // CODE_PARAM_MeetingTopicDetailSource
         public DbSet<Colour> Colours { get; set; } // Colour
-        public DbSet<Company> Companies { get; set; } // Company
-        public DbSet<CompanyGroup> CompanyGroups { get; set; } // CompanyGroup
+        public DbSet<ColumnNameAndType> ColumnNameAndTypes { get; set; } // ColumnNameAndTypes
         public DbSet<ComplexView> ComplexViews { get; set; } // ComplexView
         public DbSet<Country> Countries { get; set; } // Country
         public DbSet<CrossDatabaseSynonym> CrossDatabaseSynonyms { get; set; } // cross_database_synonym
@@ -66,11 +64,14 @@ namespace V5Fred
         public DbSet<dcg_RovColumnDefinition> dcg_RovColumnDefinitions { get; set; } // rov_ColumnDefinitions
         public DbSet<DefaultCheckForNull> DefaultCheckForNulls { get; set; } // DefaultCheckForNull
         public DbSet<DsOpe> DsOpes { get; set; } // DSOpe
+        public DbSet<EnumsWithStringAsValue> EnumsWithStringAsValues { get; set; } // EnumsWithStringAsValue
+        public DbSet<EnumTest_DaysOfWeek> EnumTest_DaysOfWeeks { get; set; } // DaysOfWeek
         public DbSet<EnumWithDefaultValue> EnumWithDefaultValues { get; set; } // EnumWithDefaultValue
         public DbSet<EventProcessor> EventProcessors { get; set; } // EventProcessor
         public DbSet<EventProcessorEventFilter> EventProcessorEventFilters { get; set; } // EventProcessorEventFilter
         public DbSet<FFRS_Cv> FFRS_Cvs { get; set; } // CV
         public DbSet<FinancialInstitutionOffice> FinancialInstitutionOffices { get; set; } // FinancialInstitutionOffice
+        public DbSet<FkTest_SmallDecimalTestAttribute> FkTest_SmallDecimalTestAttributes { get; set; } // SmallDecimalTestAttribute
         public DbSet<Footer> Footers { get; set; } // footer
         public DbSet<ForeignKeyIsNotEnforced> ForeignKeyIsNotEnforceds { get; set; } // ForeignKeyIsNotEnforced
         public DbSet<ForeignKeyIsNotEnforcedItem> ForeignKeyIsNotEnforcedItems { get; set; } // ForeignKeyIsNotEnforcedItem
@@ -81,8 +82,6 @@ namespace V5Fred
         public DbSet<Issue47_Role> Issue47_Roles { get; set; } // Role
         public DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
-        public DbSet<Kate_ScreamAndShout> Kate_ScreamAndShouts { get; set; } // ScreamAndShout
-        public DbSet<KatieView> KatieViews { get; set; } // KatieView
         public DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
         public DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
         public DbSet<OneEightSix_UploadedFile> OneEightSix_UploadedFiles { get; set; } // UploadedFile
@@ -91,12 +90,14 @@ namespace V5Fred
         public DbSet<PersonPost> PersonPosts { get; set; } // PersonPosts
         public DbSet<PkOrdinalTest> PkOrdinalTests { get; set; } // pk_ordinal_test
         public DbSet<PropertyTypesToAdd> PropertyTypesToAdds { get; set; } // PropertyTypesToAdd
-        public DbSet<RebelGalaxyBroadside> RebelGalaxyBroadsides { get; set; } // RebelGalaxyBroadsides
-        public DbSet<RebelGalaxyShip> RebelGalaxyShips { get; set; } // RebelGalaxyShips
-        public DbSet<RebelGalaxyWeapon> RebelGalaxyWeapons { get; set; } // RebelGalaxyWeapons
-        public DbSet<ScreamAndShout> ScreamAndShouts { get; set; } // ScreamAndShout
         public DbSet<SequenceTest> SequenceTests { get; set; } // SequenceTest
-        public DbSet<StockPrediction> StockPredictions { get; set; } // StockPrediction
+        public DbSet<SmallDecimalTest> SmallDecimalTests { get; set; } // SmallDecimalTest
+        public DbSet<SmallDecimalTestView> SmallDecimalTestViews { get; set; } // SmallDecimalTestView
+        public DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
+        public DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; } // ComputedColumns
+        public DbSet<Stafford_Foo> Stafford_Foos { get; set; } // Foo
+        public DbSet<Synonyms_Child> Synonyms_Children { get; set; } // Child
+        public DbSet<Synonyms_Parent> Synonyms_Parents { get; set; } // Parent
         public DbSet<TableA> TableAs { get; set; } // TableA
         public DbSet<TableB> TableBs { get; set; } // TableB
         public DbSet<TableWithDuplicateColumnName> TableWithDuplicateColumnNames { get; set; } // table with duplicate column names
@@ -115,13 +116,15 @@ namespace V5Fred
         public DbSet<User309> User309 { get; set; } // User309
         public DbSet<UserDocument> UserDocuments { get; set; } // User_Document
         public DbSet<ViewWithSpace> ViewWithSpaces { get; set; } // view with space
+        public DbSet<WVN_Article> WVN_Articles { get; set; } // Articles
+        public DbSet<WVN_VArticle> WVN_VArticles { get; set; } // v_Articles
         public DbSet<Брендытовара> Брендытовара { get; set; } // Бренды товара
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=fred;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator", x => x.UseNetTopologySuite());
+                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator", x => x.UseNetTopologySuite());
             }
         }
 
@@ -166,7 +169,6 @@ namespace V5Fred
             modelBuilder.ApplyConfiguration(new BlahConfiguration());
             modelBuilder.ApplyConfiguration(new BlahBlahLinkV2Configuration());
             modelBuilder.ApplyConfiguration(new BlargConfiguration());
-            modelBuilder.ApplyConfiguration(new BringTheActionConfiguration());
             modelBuilder.ApplyConfiguration(new Burak1Configuration());
             modelBuilder.ApplyConfiguration(new Burak2Configuration());
             modelBuilder.ApplyConfiguration(new CalculatedColumnNotNullConfiguration());
@@ -178,8 +180,7 @@ namespace V5Fred
             modelBuilder.ApplyConfiguration(new CodeObjectConfiguration());
             modelBuilder.ApplyConfiguration(new CodeParamMeetingTopicDetailSourceConfiguration());
             modelBuilder.ApplyConfiguration(new ColourConfiguration());
-            modelBuilder.ApplyConfiguration(new CompanyConfiguration());
-            modelBuilder.ApplyConfiguration(new CompanyGroupConfiguration());
+            modelBuilder.ApplyConfiguration(new ColumnNameAndTypeConfiguration());
             modelBuilder.ApplyConfiguration(new ComplexViewConfiguration());
             modelBuilder.ApplyConfiguration(new CountryConfiguration());
             modelBuilder.ApplyConfiguration(new CrossDatabaseSynonymConfiguration());
@@ -187,11 +188,14 @@ namespace V5Fred
             modelBuilder.ApplyConfiguration(new dcg_RovColumnDefinitionConfiguration());
             modelBuilder.ApplyConfiguration(new DefaultCheckForNullConfiguration());
             modelBuilder.ApplyConfiguration(new DsOpeConfiguration());
+            modelBuilder.ApplyConfiguration(new EnumsWithStringAsValueConfiguration());
+            modelBuilder.ApplyConfiguration(new EnumTest_DaysOfWeekConfiguration());
             modelBuilder.ApplyConfiguration(new EnumWithDefaultValueConfiguration());
             modelBuilder.ApplyConfiguration(new EventProcessorConfiguration());
             modelBuilder.ApplyConfiguration(new EventProcessorEventFilterConfiguration());
             modelBuilder.ApplyConfiguration(new FFRS_CvConfiguration());
             modelBuilder.ApplyConfiguration(new FinancialInstitutionOfficeConfiguration());
+            modelBuilder.ApplyConfiguration(new FkTest_SmallDecimalTestAttributeConfiguration());
             modelBuilder.ApplyConfiguration(new FooterConfiguration());
             modelBuilder.ApplyConfiguration(new ForeignKeyIsNotEnforcedConfiguration());
             modelBuilder.ApplyConfiguration(new ForeignKeyIsNotEnforcedItemConfiguration());
@@ -202,8 +206,6 @@ namespace V5Fred
             modelBuilder.ApplyConfiguration(new Issue47_RoleConfiguration());
             modelBuilder.ApplyConfiguration(new Issue47_UserConfiguration());
             modelBuilder.ApplyConfiguration(new Issue47_UserRoleConfiguration());
-            modelBuilder.ApplyConfiguration(new Kate_ScreamAndShoutConfiguration());
-            modelBuilder.ApplyConfiguration(new KatieViewConfiguration());
             modelBuilder.ApplyConfiguration(new MultipleKeyConfiguration());
             modelBuilder.ApplyConfiguration(new OneEightSix_IssueConfiguration());
             modelBuilder.ApplyConfiguration(new OneEightSix_UploadedFileConfiguration());
@@ -212,12 +214,14 @@ namespace V5Fred
             modelBuilder.ApplyConfiguration(new PersonPostConfiguration());
             modelBuilder.ApplyConfiguration(new PkOrdinalTestConfiguration());
             modelBuilder.ApplyConfiguration(new PropertyTypesToAddConfiguration());
-            modelBuilder.ApplyConfiguration(new RebelGalaxyBroadsideConfiguration());
-            modelBuilder.ApplyConfiguration(new RebelGalaxyShipConfiguration());
-            modelBuilder.ApplyConfiguration(new RebelGalaxyWeaponConfiguration());
-            modelBuilder.ApplyConfiguration(new ScreamAndShoutConfiguration());
             modelBuilder.ApplyConfiguration(new SequenceTestConfiguration());
-            modelBuilder.ApplyConfiguration(new StockPredictionConfiguration());
+            modelBuilder.ApplyConfiguration(new SmallDecimalTestConfiguration());
+            modelBuilder.ApplyConfiguration(new SmallDecimalTestViewConfiguration());
+            modelBuilder.ApplyConfiguration(new Stafford_BooConfiguration());
+            modelBuilder.ApplyConfiguration(new Stafford_ComputedColumnConfiguration());
+            modelBuilder.ApplyConfiguration(new Stafford_FooConfiguration());
+            modelBuilder.ApplyConfiguration(new Synonyms_ChildConfiguration());
+            modelBuilder.ApplyConfiguration(new Synonyms_ParentConfiguration());
             modelBuilder.ApplyConfiguration(new TableAConfiguration());
             modelBuilder.ApplyConfiguration(new TableBConfiguration());
             modelBuilder.ApplyConfiguration(new TableWithDuplicateColumnNameConfiguration());
@@ -236,6 +240,8 @@ namespace V5Fred
             modelBuilder.ApplyConfiguration(new User309Configuration());
             modelBuilder.ApplyConfiguration(new UserDocumentConfiguration());
             modelBuilder.ApplyConfiguration(new ViewWithSpaceConfiguration());
+            modelBuilder.ApplyConfiguration(new WVN_ArticleConfiguration());
+            modelBuilder.ApplyConfiguration(new WVN_VArticleConfiguration());
             modelBuilder.ApplyConfiguration(new БрендытовараConfiguration());
 
             modelBuilder.Entity<DboProcDataFromFfrsReturnModel>().HasNoKey();
@@ -244,20 +250,19 @@ namespace V5Fred
             modelBuilder.Entity<FFRS_CvDataReturnModel>().HasNoKey();
             modelBuilder.Entity<FFRS_DataFromDboReturnModel>().HasNoKey();
             modelBuilder.Entity<FFRS_DataFromDboAndFfrsReturnModel>().HasNoKey();
-            modelBuilder.Entity<GetScreamAndShoutReturnModel>().HasNoKey();
-            modelBuilder.Entity<Kate_HelloReturnModel>().HasNoKey();
-            modelBuilder.Entity<SpatialTypesNoParamsReturnModel>().HasNoKey();
-            modelBuilder.Entity<SpatialTypesWithParamsReturnModel>().HasNoKey();
+            modelBuilder.Entity<GetSmallDecimalTestReturnModel>().HasNoKey();
             modelBuilder.Entity<StpNoParamsTestReturnModel>().HasNoKey();
             modelBuilder.Entity<StpNullableParamsTestReturnModel>().HasNoKey();
             modelBuilder.Entity<StpTestReturnModel>().HasNoKey();
             modelBuilder.Entity<StpTestUnderscoreTestReturnModel>().HasNoKey();
+            modelBuilder.Entity<Synonyms_SimpleStoredProcReturnModel>().HasNoKey();
             modelBuilder.Entity<TestReturnStringReturnModel>().HasNoKey();
             modelBuilder.Entity<XmlDataV1ReturnModel>().HasNoKey();
 
             // Table Valued Functions
             modelBuilder.Entity<C182Test1ReturnModel>().HasNoKey();
             modelBuilder.Entity<CsvToIntReturnModel>().HasNoKey();
+            modelBuilder.Entity<CustomSchema_CsvToIntWithSchemaReturnModel>().HasNoKey();
             modelBuilder.Entity<FFRS_CsvToInt2ReturnModel>().HasNoKey();
         }
 
@@ -468,40 +473,6 @@ namespace V5Fred
             return procResultData;
         }
 
-        public int DeleteItemById(int? binaryId)
-        {
-            var binaryIdParam = new SqlParameter { ParameterName = "@BinaryId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = binaryId.GetValueOrDefault(), Precision = 10, Scale = 0 };
-            if (!binaryId.HasValue)
-                binaryIdParam.Value = DBNull.Value;
-
-            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
-
-            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[DeleteItemById] @BinaryId", binaryIdParam, procResultParam);
-
-            return (int)procResultParam.Value;
-        }
-
-        // DeleteItemByIdAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
-
-        public int DeleteOldestBinary(int? userId, int? itemType)
-        {
-            var userIdParam = new SqlParameter { ParameterName = "@UserId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = userId.GetValueOrDefault(), Precision = 10, Scale = 0 };
-            if (!userId.HasValue)
-                userIdParam.Value = DBNull.Value;
-
-            var itemTypeParam = new SqlParameter { ParameterName = "@ItemType", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = itemType.GetValueOrDefault(), Precision = 10, Scale = 0 };
-            if (!itemType.HasValue)
-                itemTypeParam.Value = DBNull.Value;
-
-            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
-
-            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[DeleteOldestBinary] @UserId, @ItemType", userIdParam, itemTypeParam, procResultParam);
-
-            return (int)procResultParam.Value;
-        }
-
-        // DeleteOldestBinaryAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
-
         public List<DsOpeProcReturnModel> DsOpeProc()
         {
             int procResult;
@@ -622,21 +593,32 @@ namespace V5Fred
             return procResultData;
         }
 
-        public List<GetScreamAndShoutReturnModel> GetScreamAndShout(int? maxId)
+        public int FkTest_Hello()
         {
-            int procResult;
-            return GetScreamAndShout(maxId, out procResult);
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            Database.ExecuteSqlRaw("EXEC @procResult = [FkTest].[Hello] ", procResultParam);
+
+            return (int)procResultParam.Value;
         }
 
-        public List<GetScreamAndShoutReturnModel> GetScreamAndShout(int? maxId, out int procResult)
+        // FkTest_HelloAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId)
+        {
+            int procResult;
+            return GetSmallDecimalTest(maxId, out procResult);
+        }
+
+        public List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId, out int procResult)
         {
             var maxIdParam = new SqlParameter { ParameterName = "@maxId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = maxId.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!maxId.HasValue)
                 maxIdParam.Value = DBNull.Value;
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
-            const string sqlCommand = "EXEC @procResult = [dbo].[GetScreamAndShout] @maxId";
-            var procResultData = Set<GetScreamAndShoutReturnModel>()
+            const string sqlCommand = "EXEC @procResult = [dbo].[GetSmallDecimalTest] @maxId";
+            var procResultData = Set<GetSmallDecimalTestReturnModel>()
                 .FromSqlRaw(sqlCommand, maxIdParam, procResultParam)
                 .ToList();
 
@@ -644,14 +626,14 @@ namespace V5Fred
             return procResultData;
         }
 
-        public async Task<List<GetScreamAndShoutReturnModel>> GetScreamAndShoutAsync(int? maxId)
+        public async Task<List<GetSmallDecimalTestReturnModel>> GetSmallDecimalTestAsync(int? maxId)
         {
             var maxIdParam = new SqlParameter { ParameterName = "@maxId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = maxId.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!maxId.HasValue)
                 maxIdParam.Value = DBNull.Value;
 
-            const string sqlCommand = "EXEC [dbo].[GetScreamAndShout] @maxId";
-            var procResultData = await Set<GetScreamAndShoutReturnModel>()
+            const string sqlCommand = "EXEC [dbo].[GetSmallDecimalTest] @maxId";
+            var procResultData = await Set<GetSmallDecimalTestReturnModel>()
                 .FromSqlRaw(sqlCommand, maxIdParam)
                 .ToListAsync();
 
@@ -736,34 +718,6 @@ namespace V5Fred
         }
 
         // InsertRecordTwoAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
-
-        public List<Kate_HelloReturnModel> Kate_Hello()
-        {
-            int procResult;
-            return Kate_Hello(out procResult);
-        }
-
-        public List<Kate_HelloReturnModel> Kate_Hello(out int procResult)
-        {
-            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
-            const string sqlCommand = "EXEC @procResult = [Kate].[Hello]";
-            var procResultData = Set<Kate_HelloReturnModel>()
-                .FromSqlRaw(sqlCommand, procResultParam)
-                .ToList();
-
-            procResult = (int) procResultParam.Value;
-            return procResultData;
-        }
-
-        public async Task<List<Kate_HelloReturnModel>> Kate_HelloAsync()
-        {
-            const string sqlCommand = "EXEC [Kate].[Hello]";
-            var procResultData = await Set<Kate_HelloReturnModel>()
-                .FromSqlRaw(sqlCommand)
-                .ToListAsync();
-
-            return procResultData;
-        }
 
         public int MinTripSequenceStart(out DateTime? minTripSequenceStartParam)
         {
@@ -884,41 +838,18 @@ namespace V5Fred
 
         // ProcTestDecimalOutputV3DefaultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams()
-        {
-            int procResult;
-            return SpatialTypesNoParams(out procResult);
-        }
-
-        public List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams(out int procResult)
+        public int SpatialTypesNoParams()
         {
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
-            const string sqlCommand = "EXEC @procResult = [dbo].[SpatialTypesNoParams]";
-            var procResultData = Set<SpatialTypesNoParamsReturnModel>()
-                .FromSqlRaw(sqlCommand, procResultParam)
-                .ToList();
 
-            procResult = (int) procResultParam.Value;
-            return procResultData;
+            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[SpatialTypesNoParams] ", procResultParam);
+
+            return (int)procResultParam.Value;
         }
 
-        public async Task<List<SpatialTypesNoParamsReturnModel>> SpatialTypesNoParamsAsync()
-        {
-            const string sqlCommand = "EXEC [dbo].[SpatialTypesNoParams]";
-            var procResultData = await Set<SpatialTypesNoParamsReturnModel>()
-                .FromSqlRaw(sqlCommand)
-                .ToListAsync();
+        // SpatialTypesNoParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-            return procResultData;
-        }
-
-        public List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
-        {
-            int procResult;
-            return SpatialTypesWithParams(geometry, geography, out procResult);
-        }
-
-        public List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, out int procResult)
+        public int SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
         {
             var geometryParam = new SqlParameter { ParameterName = "@geometry", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = geometry, Size = -1 };
             if (geometryParam.Value == null)
@@ -929,32 +860,13 @@ namespace V5Fred
                 geographyParam.Value = DBNull.Value;
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
-            const string sqlCommand = "EXEC @procResult = [dbo].[SpatialTypesWithParams] @geometry, @geography";
-            var procResultData = Set<SpatialTypesWithParamsReturnModel>()
-                .FromSqlRaw(sqlCommand, geometryParam, geographyParam, procResultParam)
-                .ToList();
 
-            procResult = (int) procResultParam.Value;
-            return procResultData;
+            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[SpatialTypesWithParams] @geometry, @geography", geometryParam, geographyParam, procResultParam);
+
+            return (int)procResultParam.Value;
         }
 
-        public async Task<List<SpatialTypesWithParamsReturnModel>> SpatialTypesWithParamsAsync(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
-        {
-            var geometryParam = new SqlParameter { ParameterName = "@geometry", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = geometry, Size = -1 };
-            if (geometryParam.Value == null)
-                geometryParam.Value = DBNull.Value;
-
-            var geographyParam = new SqlParameter { ParameterName = "@geography", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = geography, Size = -1 };
-            if (geographyParam.Value == null)
-                geographyParam.Value = DBNull.Value;
-
-            const string sqlCommand = "EXEC [dbo].[SpatialTypesWithParams] @geometry, @geography";
-            var procResultData = await Set<SpatialTypesWithParamsReturnModel>()
-                .FromSqlRaw(sqlCommand, geometryParam, geographyParam)
-                .ToListAsync();
-
-            return procResultData;
-        }
+        // SpatialTypesWithParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         // public StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
@@ -964,9 +876,16 @@ namespace V5Fred
 
         // public async Task<StpMultipleMultipleResultsWithParamsReturnModel> StpMultipleMultipleResultsWithParamsAsync(int? firstVal, int? secondVal, int? thirdVal) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
-        // public StpMultipleResultsReturnModel StpMultipleResults() Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        public int StpMultipleResults()
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-        // public async Task<StpMultipleResultsReturnModel> StpMultipleResultsAsync() Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[stp_multiple_results] ", procResultParam);
+
+            return (int)procResultParam.Value;
+        }
+
+        // StpMultipleResultsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         // public StpMultipleResultsWithParamsReturnModel StpMultipleResultsWithParams(int? firstVal, int? secondVal) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
@@ -1187,6 +1106,42 @@ namespace V5Fred
 
         // StupidStoredProcedureParams2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
+        public List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt)
+        {
+            int procResult;
+            return Synonyms_SimpleStoredProc(inputInt, out procResult);
+        }
+
+        public List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt, out int procResult)
+        {
+            var inputIntParam = new SqlParameter { ParameterName = "@InputInt", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = inputInt.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!inputInt.HasValue)
+                inputIntParam.Value = DBNull.Value;
+
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [Synonyms].[SimpleStoredProc] @InputInt";
+            var procResultData = Set<Synonyms_SimpleStoredProcReturnModel>()
+                .FromSqlRaw(sqlCommand, inputIntParam, procResultParam)
+                .ToList();
+
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<Synonyms_SimpleStoredProcReturnModel>> Synonyms_SimpleStoredProcAsync(int? inputInt)
+        {
+            var inputIntParam = new SqlParameter { ParameterName = "@InputInt", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = inputInt.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!inputInt.HasValue)
+                inputIntParam.Value = DBNull.Value;
+
+            const string sqlCommand = "EXEC [Synonyms].[SimpleStoredProc] @InputInt";
+            var procResultData = await Set<Synonyms_SimpleStoredProcReturnModel>()
+                .FromSqlRaw(sqlCommand, inputIntParam)
+                .ToListAsync();
+
+            return procResultData;
+        }
+
         public List<TestReturnStringReturnModel> TestReturnString()
         {
             int procResult;
@@ -1293,6 +1248,14 @@ namespace V5Fred
         {
             return Set<CsvToIntReturnModel>()
                 .FromSqlRaw("SELECT * FROM [dbo].[CsvToInt]({0}, {1})", array, array2)
+                .AsNoTracking();
+        }
+
+        // CustomSchema.CsvToIntWithSchema
+        public IQueryable<CustomSchema_CsvToIntWithSchemaReturnModel> CustomSchema_CsvToIntWithSchema(string array, string array2)
+        {
+            return Set<CustomSchema_CsvToIntWithSchemaReturnModel>()
+                .FromSqlRaw("SELECT * FROM [CustomSchema].[CsvToIntWithSchema]({0}, {1})", array, array2)
                 .AsNoTracking();
         }
 

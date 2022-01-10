@@ -17,9 +17,9 @@ namespace Tester.Integration.EfCore2
         // Foreign keys
 
         /// <summary>
-        /// Parent Kate_ScreamAndShout pointed by [Harish3485].([HarishId]) (FK_Harish)
+        /// Parent FkTest_SmallDecimalTestAttribute pointed by [Harish3485].([HarishId]) (FK_Harish)
         /// </summary>
-        public virtual Kate_ScreamAndShout Kate_ScreamAndShout { get; set; } // FK_Harish
+        public virtual FkTest_SmallDecimalTestAttribute FkTest_SmallDecimalTestAttribute { get; set; } // FK_Harish
     }
 
 }

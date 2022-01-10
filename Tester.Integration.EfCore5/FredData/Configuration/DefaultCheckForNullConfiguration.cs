@@ -12,7 +12,7 @@ namespace V5Fred
         public void Configure(EntityTypeBuilder<DefaultCheckForNull> builder)
         {
             builder.ToTable("DefaultCheckForNull", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__DefaultC__3214EC0723541C72").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__DefaultC__3214EC078035685D").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.DescUppercase).HasColumnName(@"DescUppercase").HasColumnType("varchar(5)").IsRequired(false).IsUnicode(false).HasMaxLength(5);

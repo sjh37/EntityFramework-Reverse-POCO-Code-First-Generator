@@ -10,16 +10,12 @@ namespace Tester.Integration.EfCore3
 {
     // CodeObject
     /// <summary>
-    /// this is a test
+    /// This is a test
     /// </summary>
     public class CodeObject
     {
         public int CodeObjectNo { get; set; } // codeObjectNo (Primary key)
         public int? ApplicationNo { get; set; } // applicationNo
-
-        /// <summary>
-        /// The Type is used to describe what type of CodeObject this is. See the enum BusinessLogic.CodeObjectType.
-        /// </summary>
         public int Type { get; set; } // type
         public string EName { get; set; } // eName (length: 250)
         public string AName { get; set; } // aName (length: 250)

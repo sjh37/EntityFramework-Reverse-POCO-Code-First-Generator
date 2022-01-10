@@ -13,7 +13,7 @@ namespace V5Fred
         public void Configure(EntityTypeBuilder<TableWithSpace> builder)
         {
             builder.ToTable("table with space", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__table wi__3213E83F6330D784").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__table wi__3213E83FE3DEDDFD").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.HasMany<TableWithSpaceAndInColumn>(t => t.TableWithSpaceAndInColumns).WithMany(t => t.TableWithSpaces).UsingEntity<Dictionary<string, object>>("table mapping with space",

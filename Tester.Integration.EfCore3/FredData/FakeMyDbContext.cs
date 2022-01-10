@@ -38,7 +38,6 @@ namespace Tester.Integration.EfCore3
         public DbSet<BlahBlahLinkV2> BlahBlahLinkV2 { get; set; } // BlahBlahLink_v2
         public DbSet<BlahBlargLink> BlahBlargLinks { get; set; } // BlahBlargLink
         public DbSet<Blarg> Blargs { get; set; } // Blarg
-        public DbSet<BringTheAction> BringTheActions { get; set; } // BringTheAction
         public DbSet<Burak1> Burak1 { get; set; } // Burak1
         public DbSet<Burak2> Burak2 { get; set; } // Burak2
         public DbSet<CalculatedColumnNotNull> CalculatedColumnNotNulls { get; set; } // CalculatedColumnNotNull
@@ -52,19 +51,21 @@ namespace Tester.Integration.EfCore3
         public DbSet<CodeObject> CodeObjects { get; set; } // CodeObject
         public DbSet<CodeParamMeetingTopicDetailSource> CodeParamMeetingTopicDetailSources { get; set; } // CODE_PARAM_MeetingTopicDetailSource
         public DbSet<Colour> Colours { get; set; } // Colour
-        public DbSet<Company> Companies { get; set; } // Company
-        public DbSet<CompanyGroup> CompanyGroups { get; set; } // CompanyGroup
+        public DbSet<ColumnNameAndType> ColumnNameAndTypes { get; set; } // ColumnNameAndTypes
         public DbSet<ComplexView> ComplexViews { get; set; } // ComplexView
         public DbSet<Country> Countries { get; set; } // Country
         public DbSet<DateTimeDefaultTest> DateTimeDefaultTests { get; set; } // DateTimeDefaultTest
         public DbSet<dcg_RovColumnDefinition> dcg_RovColumnDefinitions { get; set; } // rov_ColumnDefinitions
         public DbSet<DefaultCheckForNull> DefaultCheckForNulls { get; set; } // DefaultCheckForNull
         public DbSet<DsOpe> DsOpes { get; set; } // DSOpe
+        public DbSet<EnumsWithStringAsValue> EnumsWithStringAsValues { get; set; } // EnumsWithStringAsValue
+        public DbSet<EnumTest_DaysOfWeek> EnumTest_DaysOfWeeks { get; set; } // DaysOfWeek
         public DbSet<EnumWithDefaultValue> EnumWithDefaultValues { get; set; } // EnumWithDefaultValue
         public DbSet<EventProcessor> EventProcessors { get; set; } // EventProcessor
         public DbSet<EventProcessorEventFilter> EventProcessorEventFilters { get; set; } // EventProcessorEventFilter
         public DbSet<FFRS_Cv> FFRS_Cvs { get; set; } // CV
         public DbSet<FinancialInstitutionOffice> FinancialInstitutionOffices { get; set; } // FinancialInstitutionOffice
+        public DbSet<FkTest_SmallDecimalTestAttribute> FkTest_SmallDecimalTestAttributes { get; set; } // SmallDecimalTestAttribute
         public DbSet<Footer> Footers { get; set; } // footer
         public DbSet<ForeignKeyIsNotEnforced> ForeignKeyIsNotEnforceds { get; set; } // ForeignKeyIsNotEnforced
         public DbSet<ForeignKeyIsNotEnforcedItem> ForeignKeyIsNotEnforcedItems { get; set; } // ForeignKeyIsNotEnforcedItem
@@ -75,8 +76,6 @@ namespace Tester.Integration.EfCore3
         public DbSet<Issue47_Role> Issue47_Roles { get; set; } // Role
         public DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
-        public DbSet<Kate_ScreamAndShout> Kate_ScreamAndShouts { get; set; } // ScreamAndShout
-        public DbSet<KatieView> KatieViews { get; set; } // KatieView
         public DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
         public DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
         public DbSet<OneEightSix_IssueUploadedFile> OneEightSix_IssueUploadedFiles { get; set; } // IssueUploadedFile
@@ -86,12 +85,14 @@ namespace Tester.Integration.EfCore3
         public DbSet<PersonPost> PersonPosts { get; set; } // PersonPosts
         public DbSet<PkOrdinalTest> PkOrdinalTests { get; set; } // pk_ordinal_test
         public DbSet<PropertyTypesToAdd> PropertyTypesToAdds { get; set; } // PropertyTypesToAdd
-        public DbSet<RebelGalaxyBroadside> RebelGalaxyBroadsides { get; set; } // RebelGalaxyBroadsides
-        public DbSet<RebelGalaxyShip> RebelGalaxyShips { get; set; } // RebelGalaxyShips
-        public DbSet<RebelGalaxyWeapon> RebelGalaxyWeapons { get; set; } // RebelGalaxyWeapons
-        public DbSet<ScreamAndShout> ScreamAndShouts { get; set; } // ScreamAndShout
         public DbSet<SequenceTest> SequenceTests { get; set; } // SequenceTest
-        public DbSet<StockPrediction> StockPredictions { get; set; } // StockPrediction
+        public DbSet<SmallDecimalTest> SmallDecimalTests { get; set; } // SmallDecimalTest
+        public DbSet<SmallDecimalTestView> SmallDecimalTestViews { get; set; } // SmallDecimalTestView
+        public DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
+        public DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; } // ComputedColumns
+        public DbSet<Stafford_Foo> Stafford_Foos { get; set; } // Foo
+        public DbSet<Synonyms_Child> Synonyms_Children { get; set; } // Child
+        public DbSet<Synonyms_Parent> Synonyms_Parents { get; set; } // Parent
         public DbSet<TableA> TableAs { get; set; } // TableA
         public DbSet<TableB> TableBs { get; set; } // TableB
         public DbSet<TableMappingWithSpace> TableMappingWithSpaces { get; set; } // table mapping with space
@@ -111,6 +112,8 @@ namespace Tester.Integration.EfCore3
         public DbSet<User309> User309 { get; set; } // User309
         public DbSet<UserDocument> UserDocuments { get; set; } // User_Document
         public DbSet<ViewWithSpace> ViewWithSpaces { get; set; } // view with space
+        public DbSet<WVN_Article> WVN_Articles { get; set; } // Articles
+        public DbSet<WVN_VArticle> WVN_VArticles { get; set; } // v_Articles
         public DbSet<Брендытовара> Брендытовара { get; set; } // Бренды товара
 
         public FakeMyDbContext()
@@ -140,7 +143,6 @@ namespace Tester.Integration.EfCore3
             BlahBlahLinkV2 = new FakeDbSet<BlahBlahLinkV2>("BlahId", "BlahId2");
             BlahBlargLinks = new FakeDbSet<BlahBlargLink>("BlahId", "BlargId");
             Blargs = new FakeDbSet<Blarg>("BlargId");
-            BringTheActions = new FakeDbSet<BringTheAction>("C36");
             Burak1 = new FakeDbSet<Burak1>("Id");
             Burak2 = new FakeDbSet<Burak2>("Id");
             CalculatedColumnNotNulls = new FakeDbSet<CalculatedColumnNotNull>("Id");
@@ -154,19 +156,21 @@ namespace Tester.Integration.EfCore3
             CodeObjects = new FakeDbSet<CodeObject>("CodeObjectNo");
             CodeParamMeetingTopicDetailSources = new FakeDbSet<CodeParamMeetingTopicDetailSource>("Id");
             Colours = new FakeDbSet<Colour>("Id");
-            Companies = new FakeDbSet<Company>("CoId");
-            CompanyGroups = new FakeDbSet<CompanyGroup>("CogId");
+            ColumnNameAndTypes = new FakeDbSet<ColumnNameAndType>("C36");
             ComplexViews = new FakeDbSet<ComplexView>();
             Countries = new FakeDbSet<Country>("CountryId");
             DateTimeDefaultTests = new FakeDbSet<DateTimeDefaultTest>("Id");
             dcg_RovColumnDefinitions = new FakeDbSet<dcg_RovColumnDefinition>();
             DefaultCheckForNulls = new FakeDbSet<DefaultCheckForNull>("Id");
             DsOpes = new FakeDbSet<DsOpe>("Id");
+            EnumsWithStringAsValues = new FakeDbSet<EnumsWithStringAsValue>("EnumName", "Value");
+            EnumTest_DaysOfWeeks = new FakeDbSet<EnumTest_DaysOfWeek>("TypeName", "TypeId");
             EnumWithDefaultValues = new FakeDbSet<EnumWithDefaultValue>("Id");
             EventProcessors = new FakeDbSet<EventProcessor>("Id");
             EventProcessorEventFilters = new FakeDbSet<EventProcessorEventFilter>("Id");
             FFRS_Cvs = new FakeDbSet<FFRS_Cv>("BatchUid", "Cvid");
             FinancialInstitutionOffices = new FakeDbSet<FinancialInstitutionOffice>("FinancialInstitutionCode");
+            FkTest_SmallDecimalTestAttributes = new FakeDbSet<FkTest_SmallDecimalTestAttribute>("FkId");
             Footers = new FakeDbSet<Footer>("Id");
             ForeignKeyIsNotEnforceds = new FakeDbSet<ForeignKeyIsNotEnforced>("Id");
             ForeignKeyIsNotEnforcedItems = new FakeDbSet<ForeignKeyIsNotEnforcedItem>("Id");
@@ -177,8 +181,6 @@ namespace Tester.Integration.EfCore3
             Issue47_Roles = new FakeDbSet<Issue47_Role>("RoleId");
             Issue47_Users = new FakeDbSet<Issue47_User>("UserId");
             Issue47_UserRoles = new FakeDbSet<Issue47_UserRole>("UserRoleId");
-            Kate_ScreamAndShouts = new FakeDbSet<Kate_ScreamAndShout>("KateId");
-            KatieViews = new FakeDbSet<KatieView>();
             MultipleKeys = new FakeDbSet<MultipleKey>("UserId", "FavouriteColourId", "BestHolidayTypeId");
             OneEightSix_Issues = new FakeDbSet<OneEightSix_Issue>("Id");
             OneEightSix_IssueUploadedFiles = new FakeDbSet<OneEightSix_IssueUploadedFile>("UploadedFileId", "IssueId");
@@ -188,12 +190,14 @@ namespace Tester.Integration.EfCore3
             PersonPosts = new FakeDbSet<PersonPost>("Id");
             PkOrdinalTests = new FakeDbSet<PkOrdinalTest>("C3", "C1");
             PropertyTypesToAdds = new FakeDbSet<PropertyTypesToAdd>("Id");
-            RebelGalaxyBroadsides = new FakeDbSet<RebelGalaxyBroadside>("Damage", "Cost");
-            RebelGalaxyShips = new FakeDbSet<RebelGalaxyShip>("Broadsides", "Turrets", "Cost");
-            RebelGalaxyWeapons = new FakeDbSet<RebelGalaxyWeapon>("Damage", "Cost");
-            ScreamAndShouts = new FakeDbSet<ScreamAndShout>("Id");
             SequenceTests = new FakeDbSet<SequenceTest>("Id");
-            StockPredictions = new FakeDbSet<StockPrediction>("Id");
+            SmallDecimalTests = new FakeDbSet<SmallDecimalTest>("Id");
+            SmallDecimalTestViews = new FakeDbSet<SmallDecimalTestView>();
+            Stafford_Boos = new FakeDbSet<Stafford_Boo>("Id");
+            Stafford_ComputedColumns = new FakeDbSet<Stafford_ComputedColumn>("Id");
+            Stafford_Foos = new FakeDbSet<Stafford_Foo>("Id");
+            Synonyms_Children = new FakeDbSet<Synonyms_Child>("ChildId");
+            Synonyms_Parents = new FakeDbSet<Synonyms_Parent>("ParentId");
             TableAs = new FakeDbSet<TableA>("TableAId");
             TableBs = new FakeDbSet<TableB>("TableBId", "TableAId");
             TableMappingWithSpaces = new FakeDbSet<TableMappingWithSpace>("Id", "IdValue");
@@ -213,6 +217,8 @@ namespace Tester.Integration.EfCore3
             User309 = new FakeDbSet<User309>("UserId");
             UserDocuments = new FakeDbSet<UserDocument>("Id");
             ViewWithSpaces = new FakeDbSet<ViewWithSpace>();
+            WVN_Articles = new FakeDbSet<WVN_Article>("PkArticle");
+            WVN_VArticles = new FakeDbSet<WVN_VArticle>();
             Брендытовара = new FakeDbSet<Брендытовара>("Кодбренда");
 
         }
@@ -518,20 +524,6 @@ namespace Tester.Integration.EfCore3
             return Task.FromResult(DboProcDataFromFfrsAndDbo(out procResult));
         }
 
-        public int DeleteItemById(int? binaryId)
-        {
-            return 0;
-        }
-
-        // DeleteItemByIdAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
-
-        public int DeleteOldestBinary(int? userId, int? itemType)
-        {
-            return 0;
-        }
-
-        // DeleteOldestBinaryAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
-
         public DbSet<DsOpeProcReturnModel> DsOpeProcReturnModel { get; set; }
         public List<DsOpeProcReturnModel> DsOpeProc()
         {
@@ -608,23 +600,30 @@ namespace Tester.Integration.EfCore3
             return Task.FromResult(FFRS_DataFromDboAndFfrs(out procResult));
         }
 
-        public DbSet<GetScreamAndShoutReturnModel> GetScreamAndShoutReturnModel { get; set; }
-        public List<GetScreamAndShoutReturnModel> GetScreamAndShout(int? maxId)
+        public int FkTest_Hello()
         {
-            int procResult;
-            return GetScreamAndShout(maxId, out procResult);
+            return 0;
         }
 
-        public List<GetScreamAndShoutReturnModel> GetScreamAndShout(int? maxId, out int procResult)
+        // FkTest_HelloAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public DbSet<GetSmallDecimalTestReturnModel> GetSmallDecimalTestReturnModel { get; set; }
+        public List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId)
+        {
+            int procResult;
+            return GetSmallDecimalTest(maxId, out procResult);
+        }
+
+        public List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId, out int procResult)
         {
             procResult = 0;
-            return new List<GetScreamAndShoutReturnModel>();
+            return new List<GetSmallDecimalTestReturnModel>();
         }
 
-        public Task<List<GetScreamAndShoutReturnModel>> GetScreamAndShoutAsync(int? maxId)
+        public Task<List<GetSmallDecimalTestReturnModel>> GetSmallDecimalTestAsync(int? maxId)
         {
             int procResult;
-            return Task.FromResult(GetScreamAndShout(maxId, out procResult));
+            return Task.FromResult(GetSmallDecimalTest(maxId, out procResult));
         }
 
         public int InsertRecord(string data, out int? insertedId)
@@ -652,25 +651,6 @@ namespace Tester.Integration.EfCore3
         }
 
         // InsertRecordTwoAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
-
-        public DbSet<Kate_HelloReturnModel> Kate_HelloReturnModel { get; set; }
-        public List<Kate_HelloReturnModel> Kate_Hello()
-        {
-            int procResult;
-            return Kate_Hello(out procResult);
-        }
-
-        public List<Kate_HelloReturnModel> Kate_Hello(out int procResult)
-        {
-            procResult = 0;
-            return new List<Kate_HelloReturnModel>();
-        }
-
-        public Task<List<Kate_HelloReturnModel>> Kate_HelloAsync()
-        {
-            int procResult;
-            return Task.FromResult(Kate_Hello(out procResult));
-        }
 
         public int MinTripSequenceStart(out DateTime? minTripSequenceStartParam)
         {
@@ -726,43 +706,19 @@ namespace Tester.Integration.EfCore3
 
         // ProcTestDecimalOutputV3DefaultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public DbSet<SpatialTypesNoParamsReturnModel> SpatialTypesNoParamsReturnModel { get; set; }
-        public List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams()
+        public int SpatialTypesNoParams()
         {
-            int procResult;
-            return SpatialTypesNoParams(out procResult);
+            return 0;
         }
 
-        public List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams(out int procResult)
+        // SpatialTypesNoParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
         {
-            procResult = 0;
-            return new List<SpatialTypesNoParamsReturnModel>();
+            return 0;
         }
 
-        public Task<List<SpatialTypesNoParamsReturnModel>> SpatialTypesNoParamsAsync()
-        {
-            int procResult;
-            return Task.FromResult(SpatialTypesNoParams(out procResult));
-        }
-
-        public DbSet<SpatialTypesWithParamsReturnModel> SpatialTypesWithParamsReturnModel { get; set; }
-        public List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
-        {
-            int procResult;
-            return SpatialTypesWithParams(geometry, geography, out procResult);
-        }
-
-        public List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, out int procResult)
-        {
-            procResult = 0;
-            return new List<SpatialTypesWithParamsReturnModel>();
-        }
-
-        public Task<List<SpatialTypesWithParamsReturnModel>> SpatialTypesWithParamsAsync(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
-        {
-            int procResult;
-            return Task.FromResult(SpatialTypesWithParams(geometry, geography, out procResult));
-        }
+        // SpatialTypesWithParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         public DbSet<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsReturnModel { get; set; }
         public StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar)
@@ -802,24 +758,12 @@ namespace Tester.Integration.EfCore3
             return Task.FromResult(StpMultipleMultipleResultsWithParams(firstVal, secondVal, thirdVal, out procResult));
         }
 
-        public DbSet<StpMultipleResultsReturnModel> StpMultipleResultsReturnModel { get; set; }
-        public StpMultipleResultsReturnModel StpMultipleResults()
+        public int StpMultipleResults()
         {
-            int procResult;
-            return StpMultipleResults(out procResult);
+            return 0;
         }
 
-        public StpMultipleResultsReturnModel StpMultipleResults(out int procResult)
-        {
-            procResult = 0;
-            return new StpMultipleResultsReturnModel();
-        }
-
-        public Task<StpMultipleResultsReturnModel> StpMultipleResultsAsync()
-        {
-            int procResult;
-            return Task.FromResult(StpMultipleResults(out procResult));
-        }
+        // StpMultipleResultsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         public DbSet<StpMultipleResultsWithParamsReturnModel> StpMultipleResultsWithParamsReturnModel { get; set; }
         public StpMultipleResultsWithParamsReturnModel StpMultipleResultsWithParams(int? firstVal, int? secondVal)
@@ -934,6 +878,25 @@ namespace Tester.Integration.EfCore3
         }
 
         // StupidStoredProcedureParams2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public DbSet<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProcReturnModel { get; set; }
+        public List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt)
+        {
+            int procResult;
+            return Synonyms_SimpleStoredProc(inputInt, out procResult);
+        }
+
+        public List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt, out int procResult)
+        {
+            procResult = 0;
+            return new List<Synonyms_SimpleStoredProcReturnModel>();
+        }
+
+        public Task<List<Synonyms_SimpleStoredProcReturnModel>> Synonyms_SimpleStoredProcAsync(int? inputInt)
+        {
+            int procResult;
+            return Task.FromResult(Synonyms_SimpleStoredProc(inputInt, out procResult));
+        }
 
         public DbSet<TestReturnStringReturnModel> TestReturnStringReturnModel { get; set; }
         public List<TestReturnStringReturnModel> TestReturnString()
