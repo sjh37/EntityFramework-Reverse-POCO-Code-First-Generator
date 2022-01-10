@@ -529,14 +529,12 @@ namespace TestDatabaseStandard
         IQueryable<TEntity>,
         IAsyncEnumerable<TEntity>,
         IListSource,
-        IInfrastructure<IServiceProvider>,
         IResettableService
         where TEntity : class
     {
         private readonly PropertyInfo[] _primaryKeys;
         private ObservableCollection<TEntity> _data;
         private IQueryable _query;
-        private LocalView<TEntity> _localView;
         public override IEntityType EntityType { get; }
 
         public FakeDbSet()
@@ -544,7 +542,6 @@ namespace TestDatabaseStandard
             _primaryKeys = null;
             _data        = new ObservableCollection<TEntity>();
             _query       = _data.AsQueryable();
-            _localView   = null;
         }
 
         public FakeDbSet(params string[] primaryKeys)
@@ -552,16 +549,6 @@ namespace TestDatabaseStandard
             _primaryKeys = typeof(TEntity).GetProperties().Where(x => primaryKeys.Contains(x.Name)).ToArray();
             _data        = new ObservableCollection<TEntity>();
             _query       = _data.AsQueryable();
-        }
-
-        public override LocalView<TEntity> Local
-        {
-            get
-            {
-                if (_localView == null)
-                    _localView ??= new LocalView<TEntity>(this);
-                return _localView;
-            }
         }
 
         public override TEntity Find(params object[] keyValues)
@@ -602,22 +589,18 @@ namespace TestDatabaseStandard
             return new ValueTask<EntityEntry<TEntity>>(Task<EntityEntry<TEntity>>.Factory.StartNew(() => Add(entity)));
         }
 
-        public override EntityEntry<TEntity> Attach(TEntity entity)
-        {
-            if (entity == null) throw new ArgumentNullException("entity");
-            return Add(entity);
-        }
-
         public override void AddRange(params TEntity[] entities)
         {
             if (entities == null) throw new ArgumentNullException("entities");
-            foreach (var entity in entities.ToList())
+            foreach (var entity in entities)
                 _data.Add(entity);
         }
 
         public override void AddRange(IEnumerable<TEntity> entities)
         {
-            AddRange(entities.ToArray());
+            if (entities == null) throw new ArgumentNullException("entities");
+            foreach (var entity in entities)
+                _data.Add(entity);
         }
 
         public override Task AddRangeAsync(params TEntity[] entities)
@@ -630,6 +613,12 @@ namespace TestDatabaseStandard
         {
             if (entities == null) throw new ArgumentNullException("entities");
             return Task.Factory.StartNew(() => AddRange(entities));
+        }
+
+        public override EntityEntry<TEntity> Attach(TEntity entity)
+        {
+            if (entity == null) throw new ArgumentNullException("entity");
+            return Add(entity);
         }
 
         public override void AttachRange(params TEntity[] entities)

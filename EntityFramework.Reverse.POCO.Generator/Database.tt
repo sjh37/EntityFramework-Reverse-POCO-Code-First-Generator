@@ -65,12 +65,13 @@
 
 
     // Generate files in sub-folders ******************************************************************************************************
-    // Only activated if Settings.GenerateSeparateFiles = true && Settings.FileManagerType = FileManagerType.EfCore
-    Settings.ContextFolder           = @"";              // Sub-folder you would like your DbContext to be added to.              e.g. @"Data"
-    Settings.InterfaceFolder         = @"Interface";     // Sub-folder you would like your Interface to be added to.              e.g. @"Data\Interface"
-    Settings.PocoFolder              = @"Entities";      // Sub-folder you would like your Poco's to be added to.                 e.g. @"Data\Entities"
-    Settings.PocoConfigurationFolder = @"Configuration"; // Sub-folder you would like your Configuration mappings to be added to. e.g. @"Data\Configuration"
-
+    if (Settings.GenerateSeparateFiles && Settings.FileManagerType == FileManagerType.EfCore)
+    {
+        Settings.ContextFolder           = @"";              // Sub-folder you would like your DbContext to be added to.              e.g. @"Data"
+        Settings.InterfaceFolder         = @"Interface";     // Sub-folder you would like your Interface to be added to.              e.g. @"Data\Interface"
+        Settings.PocoFolder              = @"Entities";      // Sub-folder you would like your Poco's to be added to.                 e.g. @"Data\Entities"
+        Settings.PocoConfigurationFolder = @"Configuration"; // Sub-folder you would like your Configuration mappings to be added to. e.g. @"Data\Configuration"
+    }
 
     // Other settings *********************************************************************************************************************
     Settings.CommandTimeout                         = 600; // SQL Command timeout in seconds. 600 is 10 minutes, 0 will wait indefinitely. Some databases can be slow retrieving schema information.

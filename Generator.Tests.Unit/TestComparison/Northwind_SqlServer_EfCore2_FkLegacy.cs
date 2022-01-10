@@ -1006,6 +1006,11 @@ namespace Efrpg.V3TestN2
             return null;
         }
 
+        public override Task<EntityEntry<TEntity>> AddAsync(TEntity entity, CancellationToken cancellationToken = default)
+        {
+            return Task.Factory.StartNew(() => Add(entity));
+        }
+
         public override void AddRange(params TEntity[] entities)
         {
             if (entities == null) throw new ArgumentNullException("entities");
@@ -1015,7 +1020,15 @@ namespace Efrpg.V3TestN2
 
         public override void AddRange(IEnumerable<TEntity> entities)
         {
-            AddRange(entities.ToArray());
+            if (entities == null) throw new ArgumentNullException("entities");
+            foreach (var entity in entities)
+                _data.Add(entity);
+        }
+
+        public override Task AddRangeAsync(params TEntity[] entities)
+        {
+            if (entities == null) throw new ArgumentNullException("entities");
+            return Task.Factory.StartNew(() => AddRange(entities));
         }
 
         public override Task AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
@@ -1024,10 +1037,28 @@ namespace Efrpg.V3TestN2
             return Task.Factory.StartNew(() => AddRange(entities));
         }
 
+        public override EntityEntry<TEntity> Attach(TEntity entity)
+        {
+            if (entity == null) throw new ArgumentNullException("entity");
+            return Add(entity);
+        }
+
         public override void AttachRange(params TEntity[] entities)
         {
             if (entities == null) throw new ArgumentNullException("entities");
             AddRange(entities);
+        }
+
+        public override void AttachRange(IEnumerable<TEntity> entities)
+        {
+            if (entities == null) throw new ArgumentNullException("entities");
+            AddRange(entities);
+        }
+
+        public override EntityEntry<TEntity> Remove(TEntity entity)
+        {
+            _data.Remove(entity);
+            return null;
         }
 
         public override void RemoveRange(params TEntity[] entities)
@@ -1042,11 +1073,25 @@ namespace Efrpg.V3TestN2
             RemoveRange(entities.ToArray());
         }
 
+        public override EntityEntry<TEntity> Update(TEntity entity)
+        {
+            _data.Remove(entity);
+            _data.Add(entity);
+            return null;
+        }
+
         public override void UpdateRange(params TEntity[] entities)
         {
             if (entities == null) throw new ArgumentNullException("entities");
             RemoveRange(entities);
             AddRange(entities);
+        }
+
+        public override void UpdateRange(IEnumerable<TEntity> entities)
+        {
+            if (entities == null) throw new ArgumentNullException("entities");
+            var array = entities.ToArray();        RemoveRange(array);
+            AddRange(array);
         }
 
         public IList GetList()
