@@ -1,0 +1,3 @@
+﻿CREATE SCHEMA [Omega]
+    AUTHORIZATION [dbo];
+

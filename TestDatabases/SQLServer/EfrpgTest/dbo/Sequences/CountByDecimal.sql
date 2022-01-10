@@ -1,0 +1,8 @@
+﻿CREATE SEQUENCE [dbo].[CountByDecimal]
+    AS DECIMAL (18)
+    START WITH 593
+    INCREMENT BY 82
+    MINVALUE 5
+    MAXVALUE 777777
+    CACHE 10;
+

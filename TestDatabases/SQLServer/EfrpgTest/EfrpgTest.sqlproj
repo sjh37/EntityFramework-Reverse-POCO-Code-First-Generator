@@ -1,0 +1,295 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Name>EfrpgTest</Name>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>4.1</ProjectVersion>
+    <ProjectGuid>{320a7749-7aee-4fcf-928b-a4da22612a4e}</ProjectGuid>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql130DatabaseSchemaProvider</DSP>
+    <OutputType>Database</OutputType>
+    <RootPath>
+    </RootPath>
+    <RootNamespace>EfrpgTest</RootNamespace>
+    <AssemblyName>EfrpgTest</AssemblyName>
+    <ModelCollation>1033,CI</ModelCollation>
+    <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
+    <DeployToDatabase>True</DeployToDatabase>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetLanguage>CS</TargetLanguage>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <SqlServerVerification>False</SqlServerVerification>
+    <IncludeCompositeObjects>True</IncludeCompositeObjects>
+    <TargetDatabaseSet>True</TargetDatabaseSet>
+    <DefaultCollation>Latin1_General_CI_AS</DefaultCollation>
+    <DefaultFilegroup>PRIMARY</DefaultFilegroup>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <!-- Default to the v11.0 targets path if the targets file for the current VS version is not found -->
+    <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
+    <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Condition="'$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <ItemGroup>
+    <Folder Include="Properties" />
+    <Folder Include="App\" />
+    <Folder Include="App\Tables\" />
+    <Folder Include="Alpha\" />
+    <Folder Include="Alpha\Tables\" />
+    <Folder Include="dbo\" />
+    <Folder Include="dbo\Tables\" />
+    <Folder Include="Beta\" />
+    <Folder Include="Beta\Tables\" />
+    <Folder Include="WVN\" />
+    <Folder Include="WVN\Tables\" />
+    <Folder Include="OneEightSix\" />
+    <Folder Include="OneEightSix\Tables\" />
+    <Folder Include="Issue47\" />
+    <Folder Include="Issue47\Tables\" />
+    <Folder Include="FkTest\" />
+    <Folder Include="FkTest\Tables\" />
+    <Folder Include="FFRS\" />
+    <Folder Include="FFRS\Tables\" />
+    <Folder Include="EnumTest\" />
+    <Folder Include="EnumTest\Tables\" />
+    <Folder Include="Stafford\" />
+    <Folder Include="Stafford\Tables\" />
+    <Folder Include="Omega\" />
+    <Folder Include="Omega\Tables\" />
+    <Folder Include="Synonyms\" />
+    <Folder Include="Synonyms\Tables\" />
+    <Folder Include="dbo\Views\" />
+    <Folder Include="dcg\" />
+    <Folder Include="dcg\Views\" />
+    <Folder Include="WVN\Views\" />
+    <Folder Include="dbo\Defaults\" />
+    <Folder Include="dbo\Functions\" />
+    <Folder Include="FFRS\Functions\" />
+    <Folder Include="CustomSchema\" />
+    <Folder Include="CustomSchema\Functions\" />
+    <Folder Include="FkTest\Stored Procedures\" />
+    <Folder Include="dbo\Stored Procedures\" />
+    <Folder Include="FFRS\Stored Procedures\" />
+    <Folder Include="Alpha\Stored Procedures\" />
+    <Folder Include="Beta\Stored Procedures\" />
+    <Folder Include="Omega\Stored Procedures\" />
+    <Folder Include="App\Stored Procedures\" />
+    <Folder Include="Synonyms\Stored Procedures\" />
+    <Folder Include="dbo\User Defined Types\" />
+    <Folder Include="Security\" />
+    <Folder Include="dbo\Synonyms\" />
+    <Folder Include="dbo\Sequences\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="App\Tables\UserFacilityServiceRole.sql" />
+    <Build Include="Alpha\Tables\workflow.sql" />
+    <Build Include="dbo\Tables\MultipleKeys.sql" />
+    <Build Include="Beta\Tables\workflow.sql" />
+    <Build Include="dbo\Tables\DSOpe.sql" />
+    <Build Include="Beta\Tables\ToAlpha.sql" />
+    <Build Include="WVN\Tables\Articles.sql" />
+    <Build Include="dbo\Tables\header.sql" />
+    <Build Include="dbo\Tables\ColumnNameAndTypes.sql" />
+    <Build Include="dbo\Tables\footer.sql" />
+    <Build Include="dbo\Tables\TadeuszSobol.sql" />
+    <Build Include="dbo\Tables\tblOrders.sql" />
+    <Build Include="dbo\Tables\tblOrderLines.sql" />
+    <Build Include="OneEightSix\Tables\UploadedFile.sql" />
+    <Build Include="dbo\Tables\tblOrderErrors.sql" />
+    <Build Include="OneEightSix\Tables\Issue.sql" />
+    <Build Include="dbo\Tables\AB_OrdersAB_.sql" />
+    <Build Include="OneEightSix\Tables\IssueUploadedFile.sql" />
+    <Build Include="dbo\Tables\BatchTest.sql" />
+    <Build Include="dbo\Tables\AB_OrderLinesAB_.sql" />
+    <Build Include="dbo\Tables\FinancialInstitutionOffice.sql" />
+    <Build Include="dbo\Tables\Period.Table.sql" />
+    <Build Include="dbo\Tables\tblOrderErrorsAB_.sql" />
+    <Build Include="dbo\Tables\CodeObject.sql" />
+    <Build Include="Issue47\Tables\Users.sql" />
+    <Build Include="dbo\Tables\PeriodTestTable.sql" />
+    <Build Include="Issue47\Tables\Role.sql" />
+    <Build Include="dbo\Tables\SmallDecimalTest.sql" />
+    <Build Include="Issue47\Tables\UserRoles.sql" />
+    <Build Include="dbo\Tables\PropertyTypesToAdd.sql" />
+    <Build Include="dbo\Tables\EnumWithDefaultValue.sql" />
+    <Build Include="FkTest\Tables\SmallDecimalTestAttribute.sql" />
+    <Build Include="dbo\Tables\SequenceTest.sql" />
+    <Build Include="dbo\Tables\table.with.multiple.periods.sql" />
+    <Build Include="dbo\Tables\HasPrincipalKeyTestParent.sql" />
+    <Build Include="dbo\Tables\HasPrincipalKeyTestChild.sql" />
+    <Build Include="dbo\Tables\table with space.sql" />
+    <Build Include="dbo\Tables\table with space and in columns.sql" />
+    <Build Include="dbo\Tables\NoPrimaryKeys.sql" />
+    <Build Include="dbo\Tables\TableWithSpaceInColumnOnly.sql" />
+    <Build Include="dbo\Tables\table mapping with space.sql" />
+    <Build Include="FFRS\Tables\CV.sql" />
+    <Build Include="dbo\Tables\CMS_File.sql" />
+    <Build Include="dbo\Tables\CMS_Tag.sql" />
+    <Build Include="dbo\Tables\CMS_FileTag.sql" />
+    <Build Include="dbo\Tables\CalculatedColumnNotNull.sql" />
+    <Build Include="dbo\Tables\Task.sql" />
+    <Build Include="dbo\Tables\Burak2.sql" />
+    <Build Include="dbo\Tables\hierarchy_test.sql" />
+    <Build Include="dbo\Tables\Burak1.sql" />
+    <Build Include="dbo\Tables\ClientCreationState.sql" />
+    <Build Include="dbo\Tables\TableA.sql" />
+    <Build Include="dbo\Tables\TableB.sql" />
+    <Build Include="dbo\Tables\User.sql" />
+    <Build Include="dbo\Tables\User_Document.sql" />
+    <Build Include="dbo\Tables\DateTimeDefaultTest.sql" />
+    <Build Include="dbo\Tables\CODE_MeetingTopicDetails.sql" />
+    <Build Include="dbo\Tables\Blah.sql" />
+    <Build Include="dbo\Tables\CODE_PARAM_MeetingTopicDetailSource.sql" />
+    <Build Include="EnumTest\Tables\DaysOfWeek.sql" />
+    <Build Include="dbo\Tables\Blarg.sql" />
+    <Build Include="dbo\Tables\EnumsWithStringAsValue.sql" />
+    <Build Include="Stafford\Tables\Boo.sql" />
+    <Build Include="dbo\Tables\BlahBlargLink.sql" />
+    <Build Include="dbo\Tables\Бренды товара.sql" />
+    <Build Include="Stafford\Tables\Foo.sql" />
+    <Build Include="dbo\Tables\BlahBlahLink.sql" />
+    <Build Include="Stafford\Tables\ComputedColumns.sql" />
+    <Build Include="dbo\Tables\BlahBlahLink_readonly.sql" />
+    <Build Include="Alpha\Tables\Test.sql" />
+    <Build Include="dbo\Tables\DefaultCheckForNull.sql" />
+    <Build Include="Beta\Tables\Test.sql" />
+    <Build Include="Omega\Tables\Test.sql" />
+    <Build Include="dbo\Tables\Test.sql" />
+    <Build Include="Synonyms\Tables\Parent.sql" />
+    <Build Include="dbo\Tables\BlahBlahLink_v2.sql" />
+    <Build Include="Alpha\Tables\Harish3485.sql" />
+    <Build Include="Synonyms\Tables\Child.sql" />
+    <Build Include="Beta\Tables\Harish3485.sql" />
+    <Build Include="dbo\Tables\Person.sql" />
+    <Build Include="dbo\Tables\BitFiddlerCATEGORIES.sql" />
+    <Build Include="dbo\Tables\PersonPosts.sql" />
+    <Build Include="dbo\Tables\Country.sql" />
+    <Build Include="dbo\Tables\BitFiddlerCURRENCIES.sql" />
+    <Build Include="dbo\Tables\Attendee.sql" />
+    <Build Include="dbo\Tables\BITFIDDLERALLCAPS.sql" />
+    <Build Include="dbo\Tables\AAREF.sql" />
+    <Build Include="dbo\Tables\User309.sql" />
+    <Build Include="dbo\Tables\AppUser.sql" />
+    <Build Include="dbo\Tables\A.sql" />
+    <Build Include="dbo\Tables\Ticket.sql" />
+    <Build Include="dbo\Tables\ForeignKeyIsNotEnforced.sql" />
+    <Build Include="dbo\Tables\table with duplicate column names.sql" />
+    <Build Include="dbo\Tables\ForeignKeyIsNotEnforcedItem.sql" />
+    <Build Include="dbo\Tables\pk_ordinal_test.sql" />
+    <Build Include="dbo\Tables\Token.sql" />
+    <Build Include="dbo\Tables\EventProcessor.sql" />
+    <Build Include="dbo\Tables\Car.sql" />
+    <Build Include="dbo\Tables\EventProcessorEventFilter.sql" />
+    <Build Include="dbo\Tables\Colour.sql" />
+    <Build Include="dbo\Tables\CarToColour.sql" />
+    <Build Include="dbo\Views\SmallDecimalTestView.sql" />
+    <Build Include="dbo\Views\view.with.multiple.periods.sql" />
+    <Build Include="dcg\Views\rov_ColumnDefinitions.sql" />
+    <Build Include="dbo\Views\view with space.sql" />
+    <Build Include="dbo\Views\AllColumnsNull.sql" />
+    <Build Include="dbo\Views\ComplexView.sql" />
+    <Build Include="WVN\Views\v_Articles.sql" />
+    <Build Include="dbo\Defaults\d_t_address_type_domain.sql" />
+    <Build Include="dbo\Functions\udfNetSale.sql" />
+    <Build Include="FFRS\Functions\CsvToInt2.sql" />
+    <Build Include="dbo\Functions\CsvToInt.sql" />
+    <Build Include="dbo\Functions\fnWithCustomTableType.sql" />
+    <Build Include="CustomSchema\Functions\CsvToIntWithSchema.sql" />
+    <Build Include="dbo\Functions\182_test1.sql" />
+    <Build Include="FkTest\Stored Procedures\Hello.sql" />
+    <Build Include="dbo\Stored Procedures\DSOpeProc.sql" />
+    <Build Include="FFRS\Stored Procedures\cv_data.sql" />
+    <Build Include="FFRS\Stored Procedures\data_from_dbo.sql" />
+    <Build Include="FFRS\Stored Procedures\data_from_dbo_and_ffrs.sql" />
+    <Build Include="dbo\Stored Procedures\dbo_proc_data_from_ffrs.sql" />
+    <Build Include="dbo\Stored Procedures\GetSmallDecimalTest.sql" />
+    <Build Include="dbo\Stored Procedures\dbo_proc_data_from_ffrs_and_dbo.sql" />
+    <Build Include="dbo\Stored Procedures\AddTwoValues.sql" />
+    <Build Include="dbo\Stored Procedures\AddTwoValuesWithResult.sql" />
+    <Build Include="dbo\Stored Procedures\MinTripSequenceStart.sql" />
+    <Build Include="dbo\Stored Procedures\MinTripSequenceStartNull.sql" />
+    <Build Include="dbo\Stored Procedures\ConvertToString.sql" />
+    <Build Include="dbo\Stored Procedures\aSimpleExample.sql" />
+    <Build Include="dbo\Stored Procedures\stp_test.sql" />
+    <Build Include="dbo\Stored Procedures\182_test2.sql" />
+    <Build Include="dbo\Stored Procedures\stp_test_underscore_test.sql" />
+    <Build Include="dbo\Stored Procedures\stp test space test.sql" />
+    <Build Include="dbo\Stored Procedures\stp_nullable_params_test.sql" />
+    <Build Include="dbo\Stored Procedures\stp_no_params_test.sql" />
+    <Build Include="dbo\Stored Procedures\stp_no_return_fields.sql" />
+    <Build Include="dbo\Stored Procedures\stp_multiple_results.sql" />
+    <Build Include="dbo\Stored Procedures\stp_multiple_identical_results.sql" />
+    <Build Include="dbo\Stored Procedures\stp_multiple_results_with_params.sql" />
+    <Build Include="dbo\Stored Procedures\stp_multiple_multiple_results_with_params.sql" />
+    <Build Include="dbo\Stored Procedures\InsertRecord.sql" />
+    <Build Include="dbo\Stored Procedures\InsertRecordTwo.sql" />
+    <Build Include="dbo\Stored Procedures\InsertRecordThree.sql" />
+    <Build Include="dbo\Stored Procedures\proc_TestDecimalOutput.sql" />
+    <Build Include="dbo\Stored Procedures\proc_TestDecimalOutputV2.sql" />
+    <Build Include="dbo\Stored Procedures\proc_TestDecimalOutputV3Default.sql" />
+    <Build Include="dbo\Stored Procedures\NvarcharTest.sql" />
+    <Build Include="dbo\Stored Procedures\SpatialTypesWithParams.sql" />
+    <Build Include="dbo\Stored Procedures\SpatialTypesNoParams.sql" />
+    <Build Include="dbo\Stored Procedures\TestReturnString.sql" />
+    <Build Include="Alpha\Stored Procedures\Overclock.sql" />
+    <Build Include="Beta\Stored Procedures\Overclock.sql" />
+    <Build Include="Omega\Stored Procedures\Overclock.sql" />
+    <Build Include="App\Stored Procedures\usp_CMTUserFSRUpdate.sql" />
+    <Build Include="dbo\Stored Procedures\StupidStoredProcedureParams.sql" />
+    <Build Include="dbo\Stored Procedures\StupidStoredProcedureParams2.sql" />
+    <Build Include="Synonyms\Stored Procedures\SimpleStoredProc.sql" />
+    <Build Include="dbo\Stored Procedures\UserDefinedTypeSampleStoredProc.sql" />
+    <Build Include="dbo\Stored Procedures\XmlDataV1.sql" />
+    <Build Include="dbo\Stored Procedures\XmlDataV2.sql" />
+    <Build Include="dbo\User Defined Types\UserDefinedTypeSample.sql" />
+    <Build Include="dbo\User Defined Types\CustomTableType.sql" />
+    <Build Include="Security\Alpha.sql" />
+    <Build Include="Security\App.sql" />
+    <Build Include="Security\Beta.sql" />
+    <Build Include="Security\CustomSchema.sql" />
+    <Build Include="Security\dcg.sql" />
+    <Build Include="Security\EnumTest.sql" />
+    <Build Include="Security\FFRS.sql" />
+    <Build Include="Security\FkTest.sql" />
+    <Build Include="Security\Issue47.sql" />
+    <Build Include="Security\Omega.sql" />
+    <Build Include="Security\OneEightSix.sql" />
+    <Build Include="Security\Stafford.sql" />
+    <Build Include="Security\Synonyms.sql" />
+    <Build Include="Security\WVN.sql" />
+    <Build Include="dbo\Synonyms\alpha_workflow_synonym.sql" />
+    <Build Include="dbo\Synonyms\cross_database_synonym.sql" />
+    <Build Include="dbo\Sequences\CountBy1.sql" />
+    <Build Include="dbo\Sequences\CountByBigInt.sql" />
+    <Build Include="dbo\Sequences\CountByTinyInt.sql" />
+    <Build Include="dbo\Sequences\CountBySmallInt.sql" />
+    <Build Include="dbo\Sequences\CountByDecimal.sql" />
+    <Build Include="dbo\Sequences\CountByNumeric.sql" />
+  </ItemGroup>
+</Project>

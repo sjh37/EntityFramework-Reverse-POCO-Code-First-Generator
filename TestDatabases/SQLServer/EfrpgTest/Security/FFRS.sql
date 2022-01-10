@@ -1,0 +1,3 @@
+﻿CREATE SCHEMA [FFRS]
+    AUTHORIZATION [dbo];
+

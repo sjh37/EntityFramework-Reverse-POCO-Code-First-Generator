@@ -47,74 +47,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PostgreSQL", "PostgreSQL", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQLServer", "SQLServer", "{D303B1E7-49FF-4113-A904-87649C18B835}"
 	ProjectSection(SolutionItems) = preProject
-		TestDatabases\SQLServer\EfrpgTestScript.sql = TestDatabases\SQLServer\EfrpgTestScript.sql
+		TestDatabases\SQLServer\EfrpgTest-single-file.sql = TestDatabases\SQLServer\EfrpgTest-single-file.sql
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Northwind", "Northwind", "{48D46962-CBEE-42DB-8159-847BBC210B1C}"
-	ProjectSection(SolutionItems) = preProject
-		TestDatabases\SQLServer\Northwind\InsertData.sql = TestDatabases\SQLServer\Northwind\InsertData.sql
-		TestDatabases\SQLServer\Northwind\Northwind.dbmdl = TestDatabases\SQLServer\Northwind\Northwind.dbmdl
-		TestDatabases\SQLServer\Northwind\Northwind.jfm = TestDatabases\SQLServer\Northwind\Northwind.jfm
-		TestDatabases\SQLServer\Northwind\Northwind.sqlproj = TestDatabases\SQLServer\Northwind\Northwind.sqlproj
-		TestDatabases\SQLServer\Northwind\Northwind.sqlproj.user = TestDatabases\SQLServer\Northwind\Northwind.sqlproj.user
-	EndProjectSection
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "EfrpgTest", "TestDatabases\SQLServer\EfrpgTest\EfrpgTest.sqlproj", "{320A7749-7AEE-4FCF-928B-A4DA22612A4E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dbo", "dbo", "{5B3970E9-35B3-409B-B0BC-9E968AA7A66F}"
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "EfrpgTest_Synonyms", "TestDatabases\SQLServer\EfrpgTest_Synonyms\EfrpgTest_Synonyms.sqlproj", "{3FC59506-8F09-4E7F-93C1-4FED12927B1D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Functions", "Functions", "{D382E58D-604A-4BD7-AA9E-C17639261FFB}"
-	ProjectSection(SolutionItems) = preProject
-		TestDatabases\SQLServer\Northwind\dbo\Functions\MinUnitPriceByCategory.sql = TestDatabases\SQLServer\Northwind\dbo\Functions\MinUnitPriceByCategory.sql
-		TestDatabases\SQLServer\Northwind\dbo\Functions\ProductsUnderThisUnitPrice.sql = TestDatabases\SQLServer\Northwind\dbo\Functions\ProductsUnderThisUnitPrice.sql
-		TestDatabases\SQLServer\Northwind\dbo\Functions\TotalProductUnitPriceByCategory.sql = TestDatabases\SQLServer\Northwind\dbo\Functions\TotalProductUnitPriceByCategory.sql
-	EndProjectSection
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "EfrpgTest_Settings", "TestDatabases\SQLServer\EfrpgTest_Settings\EfrpgTest_Settings.sqlproj", "{344F4159-C0E1-4EDA-8717-4863939ECE95}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Stored Procedures", "Stored Procedures", "{E79FA4B2-3381-4CF8-B979-33CD14508D90}"
-	ProjectSection(SolutionItems) = preProject
-		TestDatabases\SQLServer\Northwind\dbo\Stored Procedures\CustOrderHist.sql = TestDatabases\SQLServer\Northwind\dbo\Stored Procedures\CustOrderHist.sql
-		TestDatabases\SQLServer\Northwind\dbo\Stored Procedures\CustOrdersDetail.sql = TestDatabases\SQLServer\Northwind\dbo\Stored Procedures\CustOrdersDetail.sql
-		TestDatabases\SQLServer\Northwind\dbo\Stored Procedures\CustOrdersOrders.sql = TestDatabases\SQLServer\Northwind\dbo\Stored Procedures\CustOrdersOrders.sql
-		TestDatabases\SQLServer\Northwind\dbo\Stored Procedures\Employee Sales by Country.sql = TestDatabases\SQLServer\Northwind\dbo\Stored Procedures\Employee Sales by Country.sql
-		TestDatabases\SQLServer\Northwind\dbo\Stored Procedures\Sales by Year.sql = TestDatabases\SQLServer\Northwind\dbo\Stored Procedures\Sales by Year.sql
-		TestDatabases\SQLServer\Northwind\dbo\Stored Procedures\SalesByCategory.sql = TestDatabases\SQLServer\Northwind\dbo\Stored Procedures\SalesByCategory.sql
-		TestDatabases\SQLServer\Northwind\dbo\Stored Procedures\Ten Most Expensive Products.sql = TestDatabases\SQLServer\Northwind\dbo\Stored Procedures\Ten Most Expensive Products.sql
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tables", "Tables", "{3B558218-4BAA-4C5A-82AE-CB3B9A2DFBAC}"
-	ProjectSection(SolutionItems) = preProject
-		TestDatabases\SQLServer\Northwind\dbo\Tables\Categories.sql = TestDatabases\SQLServer\Northwind\dbo\Tables\Categories.sql
-		TestDatabases\SQLServer\Northwind\dbo\Tables\CustomerCustomerDemo.sql = TestDatabases\SQLServer\Northwind\dbo\Tables\CustomerCustomerDemo.sql
-		TestDatabases\SQLServer\Northwind\dbo\Tables\CustomerDemographics.sql = TestDatabases\SQLServer\Northwind\dbo\Tables\CustomerDemographics.sql
-		TestDatabases\SQLServer\Northwind\dbo\Tables\Customers.sql = TestDatabases\SQLServer\Northwind\dbo\Tables\Customers.sql
-		TestDatabases\SQLServer\Northwind\dbo\Tables\Employees.sql = TestDatabases\SQLServer\Northwind\dbo\Tables\Employees.sql
-		TestDatabases\SQLServer\Northwind\dbo\Tables\EmployeeTerritories.sql = TestDatabases\SQLServer\Northwind\dbo\Tables\EmployeeTerritories.sql
-		TestDatabases\SQLServer\Northwind\dbo\Tables\Order Details.sql = TestDatabases\SQLServer\Northwind\dbo\Tables\Order Details.sql
-		TestDatabases\SQLServer\Northwind\dbo\Tables\Orders.sql = TestDatabases\SQLServer\Northwind\dbo\Tables\Orders.sql
-		TestDatabases\SQLServer\Northwind\dbo\Tables\Products.sql = TestDatabases\SQLServer\Northwind\dbo\Tables\Products.sql
-		TestDatabases\SQLServer\Northwind\dbo\Tables\Region.sql = TestDatabases\SQLServer\Northwind\dbo\Tables\Region.sql
-		TestDatabases\SQLServer\Northwind\dbo\Tables\Shippers.sql = TestDatabases\SQLServer\Northwind\dbo\Tables\Shippers.sql
-		TestDatabases\SQLServer\Northwind\dbo\Tables\Suppliers.sql = TestDatabases\SQLServer\Northwind\dbo\Tables\Suppliers.sql
-		TestDatabases\SQLServer\Northwind\dbo\Tables\Territories.sql = TestDatabases\SQLServer\Northwind\dbo\Tables\Territories.sql
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Views", "Views", "{F1F14961-CA0F-4DAC-B7E7-806E9CD7685F}"
-	ProjectSection(SolutionItems) = preProject
-		TestDatabases\SQLServer\Northwind\dbo\Views\Alphabetical list of products.sql = TestDatabases\SQLServer\Northwind\dbo\Views\Alphabetical list of products.sql
-		TestDatabases\SQLServer\Northwind\dbo\Views\Category Sales for 1997.sql = TestDatabases\SQLServer\Northwind\dbo\Views\Category Sales for 1997.sql
-		TestDatabases\SQLServer\Northwind\dbo\Views\Current Product List.sql = TestDatabases\SQLServer\Northwind\dbo\Views\Current Product List.sql
-		TestDatabases\SQLServer\Northwind\dbo\Views\Customer and Suppliers by City.sql = TestDatabases\SQLServer\Northwind\dbo\Views\Customer and Suppliers by City.sql
-		TestDatabases\SQLServer\Northwind\dbo\Views\Invoices.sql = TestDatabases\SQLServer\Northwind\dbo\Views\Invoices.sql
-		TestDatabases\SQLServer\Northwind\dbo\Views\Order Details Extended.sql = TestDatabases\SQLServer\Northwind\dbo\Views\Order Details Extended.sql
-		TestDatabases\SQLServer\Northwind\dbo\Views\Order Subtotals.sql = TestDatabases\SQLServer\Northwind\dbo\Views\Order Subtotals.sql
-		TestDatabases\SQLServer\Northwind\dbo\Views\Orders Qry.sql = TestDatabases\SQLServer\Northwind\dbo\Views\Orders Qry.sql
-		TestDatabases\SQLServer\Northwind\dbo\Views\Product Sales for 1997.sql = TestDatabases\SQLServer\Northwind\dbo\Views\Product Sales for 1997.sql
-		TestDatabases\SQLServer\Northwind\dbo\Views\Products Above Average Price.sql = TestDatabases\SQLServer\Northwind\dbo\Views\Products Above Average Price.sql
-		TestDatabases\SQLServer\Northwind\dbo\Views\Products by Category.sql = TestDatabases\SQLServer\Northwind\dbo\Views\Products by Category.sql
-		TestDatabases\SQLServer\Northwind\dbo\Views\Quarterly Orders.sql = TestDatabases\SQLServer\Northwind\dbo\Views\Quarterly Orders.sql
-		TestDatabases\SQLServer\Northwind\dbo\Views\Sales by Category.sql = TestDatabases\SQLServer\Northwind\dbo\Views\Sales by Category.sql
-		TestDatabases\SQLServer\Northwind\dbo\Views\Sales Totals by Amount.sql = TestDatabases\SQLServer\Northwind\dbo\Views\Sales Totals by Amount.sql
-		TestDatabases\SQLServer\Northwind\dbo\Views\Summary of Sales by Quarter.sql = TestDatabases\SQLServer\Northwind\dbo\Views\Summary of Sales by Quarter.sql
-		TestDatabases\SQLServer\Northwind\dbo\Views\Summary of Sales by Year.sql = TestDatabases\SQLServer\Northwind\dbo\Views\Summary of Sales by Year.sql
-	EndProjectSection
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Northwind", "TestDatabases\SQLServer\Northwind\Northwind.sqlproj", "{6BF9E10E-C67E-44FA-A418-1A9FCD61623C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -284,6 +226,78 @@ Global
 		{DE44137C-CF16-444B-B13F-7759F09C6783}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{DE44137C-CF16-444B-B13F-7759F09C6783}.Release|x86.ActiveCfg = Release|Any CPU
 		{DE44137C-CF16-444B-B13F-7759F09C6783}.Release|x86.Build.0 = Release|Any CPU
+		{320A7749-7AEE-4FCF-928B-A4DA22612A4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{320A7749-7AEE-4FCF-928B-A4DA22612A4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{320A7749-7AEE-4FCF-928B-A4DA22612A4E}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{320A7749-7AEE-4FCF-928B-A4DA22612A4E}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{320A7749-7AEE-4FCF-928B-A4DA22612A4E}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{320A7749-7AEE-4FCF-928B-A4DA22612A4E}.Debug|Mixed Platforms.Deploy.0 = Debug|Any CPU
+		{320A7749-7AEE-4FCF-928B-A4DA22612A4E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{320A7749-7AEE-4FCF-928B-A4DA22612A4E}.Debug|x86.Build.0 = Debug|Any CPU
+		{320A7749-7AEE-4FCF-928B-A4DA22612A4E}.Debug|x86.Deploy.0 = Debug|Any CPU
+		{320A7749-7AEE-4FCF-928B-A4DA22612A4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{320A7749-7AEE-4FCF-928B-A4DA22612A4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{320A7749-7AEE-4FCF-928B-A4DA22612A4E}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{320A7749-7AEE-4FCF-928B-A4DA22612A4E}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{320A7749-7AEE-4FCF-928B-A4DA22612A4E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{320A7749-7AEE-4FCF-928B-A4DA22612A4E}.Release|Mixed Platforms.Deploy.0 = Release|Any CPU
+		{320A7749-7AEE-4FCF-928B-A4DA22612A4E}.Release|x86.ActiveCfg = Release|Any CPU
+		{320A7749-7AEE-4FCF-928B-A4DA22612A4E}.Release|x86.Build.0 = Release|Any CPU
+		{320A7749-7AEE-4FCF-928B-A4DA22612A4E}.Release|x86.Deploy.0 = Release|Any CPU
+		{3FC59506-8F09-4E7F-93C1-4FED12927B1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FC59506-8F09-4E7F-93C1-4FED12927B1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FC59506-8F09-4E7F-93C1-4FED12927B1D}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{3FC59506-8F09-4E7F-93C1-4FED12927B1D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{3FC59506-8F09-4E7F-93C1-4FED12927B1D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{3FC59506-8F09-4E7F-93C1-4FED12927B1D}.Debug|Mixed Platforms.Deploy.0 = Debug|Any CPU
+		{3FC59506-8F09-4E7F-93C1-4FED12927B1D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3FC59506-8F09-4E7F-93C1-4FED12927B1D}.Debug|x86.Build.0 = Debug|Any CPU
+		{3FC59506-8F09-4E7F-93C1-4FED12927B1D}.Debug|x86.Deploy.0 = Debug|Any CPU
+		{3FC59506-8F09-4E7F-93C1-4FED12927B1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FC59506-8F09-4E7F-93C1-4FED12927B1D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FC59506-8F09-4E7F-93C1-4FED12927B1D}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{3FC59506-8F09-4E7F-93C1-4FED12927B1D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{3FC59506-8F09-4E7F-93C1-4FED12927B1D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{3FC59506-8F09-4E7F-93C1-4FED12927B1D}.Release|Mixed Platforms.Deploy.0 = Release|Any CPU
+		{3FC59506-8F09-4E7F-93C1-4FED12927B1D}.Release|x86.ActiveCfg = Release|Any CPU
+		{3FC59506-8F09-4E7F-93C1-4FED12927B1D}.Release|x86.Build.0 = Release|Any CPU
+		{3FC59506-8F09-4E7F-93C1-4FED12927B1D}.Release|x86.Deploy.0 = Release|Any CPU
+		{344F4159-C0E1-4EDA-8717-4863939ECE95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{344F4159-C0E1-4EDA-8717-4863939ECE95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{344F4159-C0E1-4EDA-8717-4863939ECE95}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{344F4159-C0E1-4EDA-8717-4863939ECE95}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{344F4159-C0E1-4EDA-8717-4863939ECE95}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{344F4159-C0E1-4EDA-8717-4863939ECE95}.Debug|Mixed Platforms.Deploy.0 = Debug|Any CPU
+		{344F4159-C0E1-4EDA-8717-4863939ECE95}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{344F4159-C0E1-4EDA-8717-4863939ECE95}.Debug|x86.Build.0 = Debug|Any CPU
+		{344F4159-C0E1-4EDA-8717-4863939ECE95}.Debug|x86.Deploy.0 = Debug|Any CPU
+		{344F4159-C0E1-4EDA-8717-4863939ECE95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{344F4159-C0E1-4EDA-8717-4863939ECE95}.Release|Any CPU.Build.0 = Release|Any CPU
+		{344F4159-C0E1-4EDA-8717-4863939ECE95}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{344F4159-C0E1-4EDA-8717-4863939ECE95}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{344F4159-C0E1-4EDA-8717-4863939ECE95}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{344F4159-C0E1-4EDA-8717-4863939ECE95}.Release|Mixed Platforms.Deploy.0 = Release|Any CPU
+		{344F4159-C0E1-4EDA-8717-4863939ECE95}.Release|x86.ActiveCfg = Release|Any CPU
+		{344F4159-C0E1-4EDA-8717-4863939ECE95}.Release|x86.Build.0 = Release|Any CPU
+		{344F4159-C0E1-4EDA-8717-4863939ECE95}.Release|x86.Deploy.0 = Release|Any CPU
+		{6BF9E10E-C67E-44FA-A418-1A9FCD61623C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BF9E10E-C67E-44FA-A418-1A9FCD61623C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BF9E10E-C67E-44FA-A418-1A9FCD61623C}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{6BF9E10E-C67E-44FA-A418-1A9FCD61623C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{6BF9E10E-C67E-44FA-A418-1A9FCD61623C}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{6BF9E10E-C67E-44FA-A418-1A9FCD61623C}.Debug|Mixed Platforms.Deploy.0 = Debug|Any CPU
+		{6BF9E10E-C67E-44FA-A418-1A9FCD61623C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6BF9E10E-C67E-44FA-A418-1A9FCD61623C}.Debug|x86.Build.0 = Debug|Any CPU
+		{6BF9E10E-C67E-44FA-A418-1A9FCD61623C}.Debug|x86.Deploy.0 = Debug|Any CPU
+		{6BF9E10E-C67E-44FA-A418-1A9FCD61623C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BF9E10E-C67E-44FA-A418-1A9FCD61623C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BF9E10E-C67E-44FA-A418-1A9FCD61623C}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{6BF9E10E-C67E-44FA-A418-1A9FCD61623C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{6BF9E10E-C67E-44FA-A418-1A9FCD61623C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{6BF9E10E-C67E-44FA-A418-1A9FCD61623C}.Release|Mixed Platforms.Deploy.0 = Release|Any CPU
+		{6BF9E10E-C67E-44FA-A418-1A9FCD61623C}.Release|x86.ActiveCfg = Release|Any CPU
+		{6BF9E10E-C67E-44FA-A418-1A9FCD61623C}.Release|x86.Build.0 = Release|Any CPU
+		{6BF9E10E-C67E-44FA-A418-1A9FCD61623C}.Release|x86.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -291,12 +305,10 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{6BCE26F9-95D7-417E-B57E-531B6E12FB12} = {E2D53B2F-4165-464B-8FE3-52BA648A237F}
 		{D303B1E7-49FF-4113-A904-87649C18B835} = {E2D53B2F-4165-464B-8FE3-52BA648A237F}
-		{48D46962-CBEE-42DB-8159-847BBC210B1C} = {D303B1E7-49FF-4113-A904-87649C18B835}
-		{5B3970E9-35B3-409B-B0BC-9E968AA7A66F} = {48D46962-CBEE-42DB-8159-847BBC210B1C}
-		{D382E58D-604A-4BD7-AA9E-C17639261FFB} = {5B3970E9-35B3-409B-B0BC-9E968AA7A66F}
-		{E79FA4B2-3381-4CF8-B979-33CD14508D90} = {5B3970E9-35B3-409B-B0BC-9E968AA7A66F}
-		{3B558218-4BAA-4C5A-82AE-CB3B9A2DFBAC} = {5B3970E9-35B3-409B-B0BC-9E968AA7A66F}
-		{F1F14961-CA0F-4DAC-B7E7-806E9CD7685F} = {5B3970E9-35B3-409B-B0BC-9E968AA7A66F}
+		{320A7749-7AEE-4FCF-928B-A4DA22612A4E} = {D303B1E7-49FF-4113-A904-87649C18B835}
+		{3FC59506-8F09-4E7F-93C1-4FED12927B1D} = {D303B1E7-49FF-4113-A904-87649C18B835}
+		{344F4159-C0E1-4EDA-8717-4863939ECE95} = {D303B1E7-49FF-4113-A904-87649C18B835}
+		{6BF9E10E-C67E-44FA-A418-1A9FCD61623C} = {D303B1E7-49FF-4113-A904-87649C18B835}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8B825109-96A2-4F13-8192-84BCE9CECF1A}

@@ -1,0 +1,3 @@
+﻿CREATE SCHEMA [WVN]
+    AUTHORIZATION [dbo];
+
