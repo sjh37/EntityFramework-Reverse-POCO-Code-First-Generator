@@ -71,5 +71,6 @@
     <Build Include="MultiContext\Tables\Column.sql" />
     <Build Include="MultiContext\Tables\ForeignKey.sql" />
     <Build Include="Security\MultiContext.sql" />
+    <Build Include="InsertData.sql" />
   </ItemGroup>
 </Project>

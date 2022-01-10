@@ -291,5 +291,6 @@
     <Build Include="dbo\Sequences\CountBySmallInt.sql" />
     <Build Include="dbo\Sequences\CountByDecimal.sql" />
     <Build Include="dbo\Sequences\CountByNumeric.sql" />
+    <Build Include="InsertData.sql" />
   </ItemGroup>
 </Project>

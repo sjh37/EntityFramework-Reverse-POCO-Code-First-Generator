@@ -129,10 +129,10 @@ namespace Generator.Tests.Unit
             }
         }
 
-        protected static void CompareAgainstTestComparison(string database, bool publicTestComparison)
+        protected static void CompareAgainstTestComparison(string database)
         {
             var comparisonFile     = $"{database}_{Settings.DatabaseType}_{Settings.TemplateType}_Fk{Settings.ForeignKeyNamingStrategy}.cs";
-            var testRootPath       = publicTestComparison ? AppDomain.CurrentDomain.BaseDirectory : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "OneDrive-Personal\\OneDrive\\Documents");
+            var testRootPath       = AppDomain.CurrentDomain.BaseDirectory;
             var testComparisonPath = Path.Combine(testRootPath, $"TestComparison\\{comparisonFile}");
             var testComparison     = File.ReadAllText(testComparisonPath);
             var generatedPath      = Path.Combine(Settings.Root, comparisonFile);

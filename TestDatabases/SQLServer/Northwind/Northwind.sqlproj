@@ -63,7 +63,6 @@
     <Folder Include="dbo\Views\" />
     <Folder Include="dbo\Stored Procedures\" />
     <Folder Include="Security\" />
-    <Folder Include="Scripts\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\Orders.sql" />
@@ -103,6 +102,6 @@
     <Build Include="dbo\Stored Procedures\CustOrderHist.sql" />
     <Build Include="dbo\Stored Procedures\SalesByCategory.sql" />
     <Build Include="Security\FFRS.sql" />
-    <None Include="Scripts\InsertData.sql" />
+    <Build Include="InsertData.sql" />
   </ItemGroup>
 </Project>
