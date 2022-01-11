@@ -101,7 +101,7 @@ namespace Generator.Tests.Unit
                 new RawIndex("dbo", "BlahBlargLink", "PK_BlahBlargLink", 1, "BlahID", 2, true, true, false, true),
                 new RawIndex("dbo", "BlahBlargLink", "PK_BlahBlargLink", 2, "BlargID", 2, true, true, false, true),
                 new RawIndex("dbo", "Blarg", "PK_Blarg", 1, "BlargID", 1, true, true, false, true),
-                new RawIndex("dbo", "BringTheAction", "PK__BringThe__3BD01849891AAF49", 1, "$", 1, true, true, false, true),
+                new RawIndex("dbo", "ColumnNameAndTypes", "PK__ColumnNa__3BD018490C636E25", 1, "$", 1, true, true, false, true),
                 new RawIndex("dbo", "Burak1", "PK_Burak1", 1, "id", 1, true, true, false, true),
                 new RawIndex("dbo", "Burak2", "PK_Burak2", 1, "id", 1, true, true, false, true),
                 new RawIndex("dbo", "Burak2", "U_Burak2", 1, "id", 2, true, false, true, false),

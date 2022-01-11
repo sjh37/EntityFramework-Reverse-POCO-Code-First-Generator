@@ -6,13 +6,14 @@ BEGIN
 
 	IF @Flag = 1
 	BEGIN
-		SELECT name, type, type_desc
-		FROM sys.objects
+		SELECT Id, [Description] AS DescriptionFlag1
+		FROM NoPrimaryKeys
 	END
 
-	SELECT name, ISNULL(principal_id, 0) AS principal_id
-	FROM sys.objects
+	SELECT Id, ISNULL([Description], '') AS [DescriptionNotNull]
+	FROM NoPrimaryKeys
 
-	SELECT name, object_id
-	FROM sys.objects
+	SELECT Id, [Description]
+	FROM NoPrimaryKeys
 END
+GO

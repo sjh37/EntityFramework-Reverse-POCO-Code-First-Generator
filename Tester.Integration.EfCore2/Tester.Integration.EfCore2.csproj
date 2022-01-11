@@ -17,9 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Fred.tt">
+    <None Update="EfrpgTest.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Fred.cs</LastGenOutput>
+      <LastGenOutput>EfrpgTest.cs</LastGenOutput>
     </None>
   </ItemGroup>
 
@@ -28,10 +28,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Fred.cs">
+    <Compile Update="EfrpgTest.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>Fred.tt</DependentUpon>
+      <DependentUpon>EfrpgTest.tt</DependentUpon>
     </Compile>
   </ItemGroup>
 

@@ -6,6 +6,6 @@ CREATE FUNCTION [dbo].[182_test1]
 )
 RETURNS TABLE AS RETURN
 (
-	SELECT name, ISNULL(principal_id, 0) AS principal_id
-	FROM sys.objects
+	SELECT Id, ISNULL([Description], '') AS [Description]
+	FROM NoPrimaryKeys
 )

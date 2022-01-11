@@ -6,7 +6,7 @@ CREATE PROCEDURE dbo.InsertRecordThree
     @AnotherInsertedId INT OUT
 AS
 BEGIN
-    INSERT INTO DataTable VALUES (@Data)
+    INSERT INTO TableA (TableADesc) VALUES (@Data)
     SET @InsertedId = SCOPE_IDENTITY();
     SET @AnotherInsertedId = @InsertedId + 1;
 END;

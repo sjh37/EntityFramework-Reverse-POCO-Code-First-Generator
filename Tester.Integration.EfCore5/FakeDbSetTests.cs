@@ -6,19 +6,19 @@
     using System.Threading.Tasks;
     using Generator.Tests.Common;
     using NUnit.Framework;
-    using V5Fred;
+    using V5EfrpgTest;
 
     [TestFixture]
     [Category(Constants.CI)]
     public class FakeDbSetTests
     {
-        private V5Fred.FakeDbSet<A> _dbSet = null!;
+        private V5EfrpgTest.FakeDbSet<A> _dbSet = null!;
         private List<A> _list = null!;
 
         [SetUp]
         public void SetUp()
         {
-            _dbSet = new V5Fred.FakeDbSet<A>("AId");
+            _dbSet = new V5EfrpgTest.FakeDbSet<A>("AId");
 
             _list = new List<A>
             {

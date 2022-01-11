@@ -4,4 +4,4 @@
 -- DROP PROCEDURE dbo.SpatialTypesNoParams
 CREATE PROCEDURE dbo.SpatialTypesWithParams (@geometry GEOMETRY, @geography GEOGRAPHY)
 AS
-    SELECT  [$] AS Dollar, GeographyType, GeometryType FROM BringTheAction;
+    SELECT  [$] AS Dollar, GeographyType, GeometryType FROM ColumnNameAndTypes;

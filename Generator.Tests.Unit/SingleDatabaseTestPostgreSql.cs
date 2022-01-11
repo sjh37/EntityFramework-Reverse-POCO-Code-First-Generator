@@ -57,7 +57,7 @@ namespace Generator.Tests.Unit
             Run(filename, ".PostgreSQL", typeof(EfCoreFileManager), null);
 
             // Assert
-            CompareAgainstTestComparison(filename, true);
+            CompareAgainstTestComparison(filename);
         }
     }
 }

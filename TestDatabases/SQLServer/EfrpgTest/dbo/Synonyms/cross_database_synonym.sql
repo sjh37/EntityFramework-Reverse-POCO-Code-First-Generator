@@ -1,2 +1,1 @@
-﻿CREATE SYNONYM [dbo].[cross_database_synonym] FOR [efdemo].[dbo].[engineer_company];
-
+﻿CREATE SYNONYM cross_database_synonym FOR EfrpgTest_Synonyms.dbo.UserInfo
