@@ -1,3 +1,0 @@
-﻿CREATE SCHEMA [OneEightSix]
-    AUTHORIZATION [dbo];
-

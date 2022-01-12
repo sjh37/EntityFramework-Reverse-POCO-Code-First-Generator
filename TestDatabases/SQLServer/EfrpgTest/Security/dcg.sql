@@ -1,3 +1,0 @@
-﻿CREATE SCHEMA [dcg]
-    AUTHORIZATION [dbo];
-

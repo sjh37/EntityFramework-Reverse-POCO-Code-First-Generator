@@ -1,5 +1,0 @@
-﻿CREATE TABLE [dbo].[UserInfo] (
-    [Id] INT IDENTITY (1, 1) NOT NULL,
-    CONSTRAINT [PK_UserInfo] PRIMARY KEY CLUSTERED ([Id] ASC)
-);
-

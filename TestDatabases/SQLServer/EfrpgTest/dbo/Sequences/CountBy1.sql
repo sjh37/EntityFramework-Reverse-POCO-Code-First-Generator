@@ -1,5 +1,0 @@
-﻿CREATE SEQUENCE [dbo].[CountBy1]
-    AS INT
-    START WITH 1
-    INCREMENT BY 1;
-

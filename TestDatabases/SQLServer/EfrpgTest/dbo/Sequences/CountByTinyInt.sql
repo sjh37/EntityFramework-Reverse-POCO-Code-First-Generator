@@ -1,5 +1,0 @@
-﻿CREATE SEQUENCE [dbo].[CountByTinyInt]
-    AS TINYINT
-    START WITH 33
-    INCREMENT BY 3;
-

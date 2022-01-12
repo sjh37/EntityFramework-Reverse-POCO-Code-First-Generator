@@ -1,5 +1,0 @@
-﻿CREATE TABLE [dbo].[Blah] (
-    [BlahID] INT IDENTITY (1, 1) NOT NULL,
-    CONSTRAINT [PK_Blah] PRIMARY KEY CLUSTERED ([BlahID] ASC)
-);
-

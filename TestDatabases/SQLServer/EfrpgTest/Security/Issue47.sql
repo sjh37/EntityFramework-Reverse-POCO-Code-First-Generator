@@ -1,3 +1,0 @@
-﻿CREATE SCHEMA [Issue47]
-    AUTHORIZATION [dbo];
-

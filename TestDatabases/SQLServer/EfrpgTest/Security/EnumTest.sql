@@ -1,3 +1,0 @@
-﻿CREATE SCHEMA [EnumTest]
-    AUTHORIZATION [dbo];
-

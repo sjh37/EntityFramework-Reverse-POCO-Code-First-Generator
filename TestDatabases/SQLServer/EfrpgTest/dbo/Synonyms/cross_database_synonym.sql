@@ -1,1 +1,0 @@
-﻿CREATE SYNONYM cross_database_synonym FOR EfrpgTest_Synonyms.dbo.UserInfo

@@ -1,6 +1,0 @@
-﻿CREATE SEQUENCE [dbo].[CountBySmallInt]
-    AS SMALLINT
-    START WITH 44
-    INCREMENT BY 456
-    CYCLE;
-
