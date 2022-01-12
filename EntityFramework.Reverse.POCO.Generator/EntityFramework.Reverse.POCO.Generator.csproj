@@ -17,12 +17,9 @@
             <Generator>TextTemplatingFileGenerator</Generator>
             <LastGenOutput>Database NorthwindSqlCe40.cs</LastGenOutput>
         </None>
-    </ItemGroup>
-
-    <ItemGroup>
         <None Update="Database.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>Database.cs</LastGenOutput>
+          <Generator>TextTemplatingFileGenerator</Generator>
+          <LastGenOutput>Database.cs</LastGenOutput>
         </None>
     </ItemGroup>
 
@@ -37,17 +34,9 @@
           <DependentUpon>Database NorthwindSqlCe40.tt</DependentUpon>
         </Compile>
         <Compile Update="Database.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>Database.tt</DependentUpon>
-        </Compile>
-    </ItemGroup>
-
-    <ItemGroup>
-        <Compile Update="Database.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>Database.tt</DependentUpon>
+          <DesignTime>True</DesignTime>
+          <AutoGen>True</AutoGen>
+          <DependentUpon>Database.tt</DependentUpon>
         </Compile>
     </ItemGroup>
 

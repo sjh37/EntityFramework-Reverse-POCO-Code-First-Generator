@@ -34,7 +34,7 @@ namespace Generator.Tests.Unit
             Run(filename, ".SqlCE", typeof(NullFileManager), null);
 
             // Assert
-            CompareAgainstTestComparison(filename, true);
+            CompareAgainstTestComparison(filename);
         }
         
         [Test, NonParallelizable]
@@ -64,7 +64,7 @@ namespace Generator.Tests.Unit
             if (separateFiles)
                 CompareAgainstFolderTestComparison(subFolder);
             else
-                CompareAgainstTestComparison(filename, true);
+                CompareAgainstTestComparison(filename);
         }
     }
 }
