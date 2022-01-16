@@ -29,7 +29,7 @@ namespace EfrpgCherry
 
     public interface ICherryDbContext : IDisposable
     {
-        DbSet<ColumnName> ColumnNames { get; set; } // ColumnNames
+        DbSet<ColumnNameAndType> ColumnNameAndTypes { get; set; } // ColumnNameAndTypes
 
         int SaveChanges();
         Task<int> SaveChangesAsync();
@@ -51,7 +51,7 @@ namespace EfrpgCherry
 
     public class CherryDbContext : DbContext, ICherryDbContext
     {
-        public DbSet<ColumnName> ColumnNames { get; set; } // ColumnNames
+        public DbSet<ColumnNameAndType> ColumnNameAndTypes { get; set; } // ColumnNameAndTypes
 
         static CherryDbContext()
         {
@@ -112,12 +112,12 @@ namespace EfrpgCherry
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Configurations.Add(new ColumnNameConfiguration());
+            modelBuilder.Configurations.Add(new ColumnNameAndTypeConfiguration());
         }
 
         public static DbModelBuilder CreateModel(DbModelBuilder modelBuilder, string schema)
         {
-            modelBuilder.Configurations.Add(new ColumnNameConfiguration(schema));
+            modelBuilder.Configurations.Add(new ColumnNameAndTypeConfiguration(schema));
 
             return modelBuilder;
         }
@@ -141,7 +141,7 @@ namespace EfrpgCherry
 
     public class FakeCherryDbContext : ICherryDbContext
     {
-        public DbSet<ColumnName> ColumnNames { get; set; } // ColumnNames
+        public DbSet<ColumnNameAndType> ColumnNameAndTypes { get; set; } // ColumnNameAndTypes
 
         public FakeCherryDbContext()
         {
@@ -149,7 +149,7 @@ namespace EfrpgCherry
             _configuration = null;
             _database = null;
 
-            ColumnNames = new FakeDbSet<ColumnName>("Dollar");
+            ColumnNameAndTypes = new FakeDbSet<ColumnNameAndType>("Dollar");
 
         }
 
@@ -490,12 +490,13 @@ namespace EfrpgCherry
 
     #region POCO classes
 
-    // ColumnNames
+    // ColumnNameAndTypes
     /// <summary>
+    /// This is to document the bring the action table
     /// This is to document the
     /// table with poor column name choices
     /// </summary>
-    public class ColumnName
+    public class ColumnNameAndType
     {
         [ExampleForTesting("abc")]
         [CustomRequired]
@@ -513,17 +514,17 @@ namespace EfrpgCherry
 
     #region POCO Configuration
 
-    // ColumnNames
-    public class ColumnNameConfiguration : EntityTypeConfiguration<ColumnName>
+    // ColumnNameAndTypes
+    public class ColumnNameAndTypeConfiguration : EntityTypeConfiguration<ColumnNameAndType>
     {
-        public ColumnNameConfiguration()
+        public ColumnNameAndTypeConfiguration()
             : this("dbo")
         {
         }
 
-        public ColumnNameConfiguration(string schema)
+        public ColumnNameAndTypeConfiguration(string schema)
         {
-            ToTable("ColumnNames", schema);
+            ToTable("ColumnNameAndTypes", schema);
             HasKey(x => x.Dollar);
 
             Property(x => x.Dollar).HasColumnName(@"$").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);

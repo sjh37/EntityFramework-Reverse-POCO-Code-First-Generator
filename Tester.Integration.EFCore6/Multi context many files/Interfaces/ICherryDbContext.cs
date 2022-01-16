@@ -16,7 +16,7 @@ namespace Tester.Integration.EFCore6.Multi_context_many_filesCherry
 {
     public interface ICherryDbContext : IDisposable
     {
-        DbSet<ColumnName> ColumnNames { get; set; } // ColumnNames
+        DbSet<ColumnNameAndType> ColumnNameAndTypes { get; set; } // ColumnNameAndTypes
 
         int SaveChanges();
         int SaveChanges(bool acceptAllChangesOnSuccess);

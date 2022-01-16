@@ -120,7 +120,7 @@ INTO
 FROM
     INFORMATION_SCHEMA.KEY_COLUMN_USAGE u
     INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc ON
-        u.TABLE_SCHEMA COLLATE DATABASE_DEFAULT = tc.CONSTRAINT_SCHEMA COLLATE DATABASE_DEFAULT
+        u.TABLE_SCHEMA COLLATE SQL_Latin1_General_CP1_CI_AS = tc.CONSTRAINT_SCHEMA COLLATE SQL_Latin1_General_CP1_CI_AS
         AND
         u.TABLE_NAME = tc.TABLE_NAME
         AND
@@ -137,7 +137,7 @@ INTO
 FROM
     INFORMATION_SCHEMA.KEY_COLUMN_USAGE u
     INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc ON
-        u.TABLE_SCHEMA COLLATE DATABASE_DEFAULT = tc.CONSTRAINT_SCHEMA COLLATE DATABASE_DEFAULT
+        u.TABLE_SCHEMA COLLATE SQL_Latin1_General_CP1_CI_AS = tc.CONSTRAINT_SCHEMA COLLATE SQL_Latin1_General_CP1_CI_AS
         AND
         u.TABLE_NAME = tc.TABLE_NAME
         AND
@@ -200,8 +200,8 @@ FROM
         c.COLUMN_NAME  = fk.COLUMN_NAME
 
     INNER JOIN INFORMATION_SCHEMA.TABLES t ON
-        c.TABLE_SCHEMA COLLATE DATABASE_DEFAULT = t.TABLE_SCHEMA COLLATE DATABASE_DEFAULT AND
-        c.TABLE_NAME   COLLATE DATABASE_DEFAULT = t.TABLE_NAME   COLLATE DATABASE_DEFAULT
+        c.TABLE_SCHEMA COLLATE SQL_Latin1_General_CP1_CI_AS = t.TABLE_SCHEMA COLLATE SQL_Latin1_General_CP1_CI_AS AND
+        c.TABLE_NAME   COLLATE SQL_Latin1_General_CP1_CI_AS = t.TABLE_NAME   COLLATE SQL_Latin1_General_CP1_CI_AS
 
     LEFT OUTER JOIN
     (
@@ -621,9 +621,9 @@ FROM
         WHERE
             CONSTRAINT_TYPE = ''PRIMARY KEY''
     ) AS pk ON
-        st.SchemaName = pk.TABLE_SCHEMA AND
-        st.ObjectName = pk.TABLE_NAME AND
-        c.name        = pk.COLUMN_NAME
+        st.SchemaName COLLATE SQL_Latin1_General_CP1_CI_AS = pk.TABLE_SCHEMA COLLATE SQL_Latin1_General_CP1_CI_AS AND
+        st.ObjectName COLLATE SQL_Latin1_General_CP1_CI_AS = pk.TABLE_NAME COLLATE SQL_Latin1_General_CP1_CI_AS AND
+        c.name        COLLATE SQL_Latin1_General_CP1_CI_AS = pk.COLUMN_NAME COLLATE SQL_Latin1_General_CP1_CI_AS
     
     LEFT OUTER JOIN
     (
@@ -640,9 +640,9 @@ FROM
         WHERE
             CONSTRAINT_TYPE = ''FOREIGN KEY''
     ) AS fk ON
-        st.SchemaName = fk.TABLE_SCHEMA AND
-        st.ObjectName = fk.TABLE_NAME AND
-        c.name = fk.COLUMN_NAME
+        st.SchemaName COLLATE SQL_Latin1_General_CP1_CI_AS = fk.TABLE_SCHEMA COLLATE SQL_Latin1_General_CP1_CI_AS AND
+        st.ObjectName COLLATE SQL_Latin1_General_CP1_CI_AS = fk.TABLE_NAME COLLATE SQL_Latin1_General_CP1_CI_AS AND
+        c.name        COLLATE SQL_Latin1_General_CP1_CI_AS = fk.COLUMN_NAME COLLATE SQL_Latin1_General_CP1_CI_AS
 
     LEFT OUTER JOIN
     (
@@ -697,18 +697,18 @@ SET NOCOUNT OFF;
 UNION
 -- Synonyms
 SELECT
-    SchemaName,
-    TableName,
-    TableType,
+    SchemaName COLLATE SQL_Latin1_General_CP1_CI_AS,
+    TableName COLLATE SQL_Latin1_General_CP1_CI_AS,
+    TableType COLLATE SQL_Latin1_General_CP1_CI_AS,
     CONVERT( tinyint, 0 ) AS TableTemporalType,
 
     Ordinal,
-    ColumnName,
+    ColumnName COLLATE SQL_Latin1_General_CP1_CI_AS,
     IsNullable,
-    TypeName,
+    TypeName COLLATE SQL_Latin1_General_CP1_CI_AS,
     [MaxLength],
     [Precision],
-    [Default],
+    [Default] COLLATE SQL_Latin1_General_CP1_CI_AS,
     DateTimePrecision,
     Scale,
 

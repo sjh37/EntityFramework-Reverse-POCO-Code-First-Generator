@@ -11,8 +11,7 @@ namespace V6EfrpgTest
     public class CrossDatabaseSynonym
     {
         public int Id { get; set; } // Id (Primary key)
-        public string Description { get; set; } // description (length: 100)
-        public string PhoneNumber { get; set; } // phone_number (length: 20)
+        public string Forename { get; set; } // Forename (length: 20)
     }
 
 }

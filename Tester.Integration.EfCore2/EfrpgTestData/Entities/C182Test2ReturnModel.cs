@@ -10,21 +10,20 @@ namespace Tester.Integration.EfCore2
     {
         public class ResultSetModel1
         {
-            public string name { get; set; }
-            public string type { get; set; }
-            public string type_desc { get; set; }
+            public int? Id { get; set; }
+            public string DescriptionFlag1 { get; set; }
         }
         public List<ResultSetModel1> ResultSet1;
         public class ResultSetModel2
         {
-            public string name { get; set; }
-            public int? principal_id { get; set; }
+            public int? Id { get; set; }
+            public string DescriptionNotNull { get; set; }
         }
         public List<ResultSetModel2> ResultSet2;
         public class ResultSetModel3
         {
-            public string name { get; set; }
-            public int object_id { get; set; }
+            public int? Id { get; set; }
+            public string Description { get; set; }
         }
         public List<ResultSetModel3> ResultSet3;
     }

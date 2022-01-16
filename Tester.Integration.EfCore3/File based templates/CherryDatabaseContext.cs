@@ -25,7 +25,7 @@ namespace Tester.Integration.EfCore3.File_based_templatesCherry
 
     public interface ICherryDbContext : IDisposable
     {
-        DbSet<ColumnName> ColumnNames { get; set; } // ColumnNames
+        DbSet<ColumnNameAndType> ColumnNameAndTypes { get; set; } // ColumnNameAndTypes
 
         int SaveChanges();
         int SaveChanges(bool acceptAllChangesOnSuccess);
@@ -93,7 +93,7 @@ namespace Tester.Integration.EfCore3.File_based_templatesCherry
             _configuration = configuration;
         }
 
-        public DbSet<ColumnName> ColumnNames { get; set; } // ColumnNames
+        public DbSet<ColumnNameAndType> ColumnNameAndTypes { get; set; } // ColumnNameAndTypes
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -116,7 +116,14 @@ namespace Tester.Integration.EfCore3.File_based_templatesCherry
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.ApplyConfiguration(new ColumnNameConfiguration());
+            modelBuilder.HasSequence<int>("CountBy1", "dbo").StartsAt(1).IncrementsBy(1).IsCyclic(false);
+            modelBuilder.HasSequence<long>("CountByBigInt", "dbo").StartsAt(22).IncrementsBy(234).IsCyclic(true).HasMin(1).HasMax(9876543);
+            modelBuilder.HasSequence<decimal>("CountByDecimal", "dbo").StartsAt(593).IncrementsBy(82).IsCyclic(false).HasMin(5).HasMax(777777);
+            modelBuilder.HasSequence<decimal>("CountByNumeric", "dbo").StartsAt(789).IncrementsBy(987).IsCyclic(false).HasMin(345).HasMax(999999999999999999);
+            modelBuilder.HasSequence<short>("CountBySmallInt", "dbo").StartsAt(44).IncrementsBy(456).IsCyclic(true);
+            modelBuilder.HasSequence<byte>("CountByTinyInt", "dbo").StartsAt(33).IncrementsBy(3).IsCyclic(false);
+
+            modelBuilder.ApplyConfiguration(new ColumnNameAndTypeConfiguration());
         }
 
     }
@@ -137,12 +144,13 @@ namespace Tester.Integration.EfCore3.File_based_templatesCherry
 
     #region POCO classes
 
-    // ColumnNames
+    // ColumnNameAndTypes
     /// <summary>
+    /// This is to document the bring the action table
     /// This is to document the
     /// table with poor column name choices
     /// </summary>
-    public class ColumnName
+    public class ColumnNameAndType
     {
         [ExampleForTesting("abc")]
         [CustomRequired]
@@ -160,13 +168,13 @@ namespace Tester.Integration.EfCore3.File_based_templatesCherry
 
     #region POCO Configuration
 
-    // ColumnNames
-    public class ColumnNameConfiguration : IEntityTypeConfiguration<ColumnName>
+    // ColumnNameAndTypes
+    public class ColumnNameAndTypeConfiguration : IEntityTypeConfiguration<ColumnNameAndType>
     {
-        public void Configure(EntityTypeBuilder<ColumnName> builder)
+        public void Configure(EntityTypeBuilder<ColumnNameAndType> builder)
         {
-            builder.ToTable("ColumnNames", "dbo");
-            builder.HasKey(x => x.Dollar).HasName("PK_ColumnNames").IsClustered();
+            builder.ToTable("ColumnNameAndTypes", "dbo");
+            builder.HasKey(x => x.Dollar).HasName("PK__ColumnNa__3BD018490C636E25").IsClustered();
 
             builder.Property(x => x.Dollar).HasColumnName(@"$").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.Pound).HasColumnName(@"£").HasColumnType("int").IsRequired(false);

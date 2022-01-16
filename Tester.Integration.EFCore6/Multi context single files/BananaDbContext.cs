@@ -99,6 +99,13 @@ namespace Tester.Integration.EFCore6.Multi_context_single_filesBananaDbContext
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.HasSequence<int>("CountBy1", "dbo").StartsAt(1).IncrementsBy(1).IsCyclic(false);
+            modelBuilder.HasSequence<long>("CountByBigInt", "dbo").StartsAt(22).IncrementsBy(234).IsCyclic(true).HasMin(1).HasMax(9876543);
+            modelBuilder.HasSequence<decimal>("CountByDecimal", "dbo").StartsAt(593).IncrementsBy(82).IsCyclic(false).HasMin(5).HasMax(777777);
+            modelBuilder.HasSequence<decimal>("CountByNumeric", "dbo").StartsAt(789).IncrementsBy(987).IsCyclic(false).HasMin(345).HasMax(999999999999999999);
+            modelBuilder.HasSequence<short>("CountBySmallInt", "dbo").StartsAt(44).IncrementsBy(456).IsCyclic(true);
+            modelBuilder.HasSequence<byte>("CountByTinyInt", "dbo").StartsAt(33).IncrementsBy(3).IsCyclic(false);
+
             modelBuilder.ApplyConfiguration(new Stafford_ComputedColumnConfiguration());
         }
 

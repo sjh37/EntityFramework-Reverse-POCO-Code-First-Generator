@@ -8,8 +8,8 @@ namespace Tester.Integration.EfCore3
 {
     public class C182Test1ReturnModel
     {
-        public string name { get; set; }
-        public int? principal_id { get; set; }
+        public int? Id { get; set; }
+        public string Description { get; set; }
     }
 
 }

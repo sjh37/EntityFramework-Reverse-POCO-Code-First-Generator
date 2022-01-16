@@ -38,18 +38,18 @@ namespace Generator.Tests.Unit
         [TestCase("dbo", "dbo.", "")]
         [TestCase("dbo", "hello.", "")]
         [TestCase("dbo", "database.hello.", "")]
-        [TestCase(null, "Fred", "dbo.fred")]
-        [TestCase(null, " Fred ", "dbo.fred")]
-        [TestCase("", "fred", "dbo.fred")]
-        [TestCase("DBO", "fred", "dbo.fred")]
-        [TestCase(" ", "fred", "dbo.fred")]
-        [TestCase(" ", " fred ", "dbo.fred")]
-        [TestCase(" ", " hello.fred ", "hello.fred")]
-        [TestCase("dbo", " hello.fred ", "hello.fred")]
-        [TestCase(" dbo ", " hello.fred ", "hello.fred")]
-        [TestCase(" dbo ", " Hello.Fred ", "hello.fred")]
-        [TestCase(" dbo ", " database.hello.fred ", "hello.fred")]
-        [TestCase(" dbo ", " Database.Dbo.fred ", "dbo.fred")]
+        [TestCase(null, "Test", "dbo.test")]
+        [TestCase(null, " Test ", "dbo.test")]
+        [TestCase("", "test", "dbo.test")]
+        [TestCase("DBO", "test", "dbo.test")]
+        [TestCase(" ", "test", "dbo.test")]
+        [TestCase(" ", " test ", "dbo.test")]
+        [TestCase(" ", " hello.test ", "hello.test")]
+        [TestCase("dbo", " hello.test ", "hello.test")]
+        [TestCase(" dbo ", " hello.test ", "hello.test")]
+        [TestCase(" dbo ", " Hello.Test ", "hello.test")]
+        [TestCase(" dbo ", " database.hello.test ", "hello.test")]
+        [TestCase(" dbo ", " Database.Dbo.test ", "dbo.test")]
         public void Normalise(string defaultSchema, string name, string expected)
         {
             // Arrange
@@ -68,9 +68,9 @@ namespace Generator.Tests.Unit
         [Test]
         [TestCase("", "", null)]
         [TestCase("", null, null)]
-        [TestCase("fred", null, "dbo.fred")]
-        [TestCase("fred", "abc.def", "abc.fred")]
-        [TestCase("Fred", "ABC.DEF", "abc.fred")]
+        [TestCase("test", null, "dbo.test")]
+        [TestCase("test", "abc.def", "abc.test")]
+        [TestCase("Test", "ABC.DEF", "abc.test")]
         public void NormaliseWithDbName(string name, string dbName, string expected)
         {
             // Arrange

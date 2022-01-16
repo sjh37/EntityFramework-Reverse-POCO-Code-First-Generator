@@ -309,12 +309,12 @@ GO
 DECLARE @id INT;
 SELECT @id = Id FROM MultiContext.Context WHERE [Name]='CherryDbContext';
 INSERT INTO MultiContext.[Table] ([Name], [Description], PluralName, DbName, ContextId)
-VALUES (N'ColumnNames', NULL, NULL, NULL, @id);
+VALUES (N'ColumnNameAndTypes', NULL, NULL, NULL, @id);
 INSERT INTO MultiContext.[Column] (Name, DbName, IsPrimaryKey, OverrideModifier, EnumType, TableId)
-VALUES (N'Dollar', N'$' ,NULL,0, NULL,          (SELECT id FROM MultiContext.[Table] WHERE ContextId=@id AND Name=N'ColumnNames')),
-       (N'Pound', N'[£]',NULL,0, NULL,          (SELECT id FROM MultiContext.[Table] WHERE ContextId=@id AND Name=N'ColumnNames')),
-	   (N'StaticField', N'static',NULL,0, NULL, (SELECT id FROM MultiContext.[Table] WHERE ContextId=@id AND Name=N'ColumnNames')),
-	   (N'Day', N'readonly',NULL,0, NULL,       (SELECT id FROM MultiContext.[Table] WHERE ContextId=@id AND Name=N'ColumnNames'));
+VALUES (N'Dollar', N'$' ,NULL,0, NULL,          (SELECT id FROM MultiContext.[Table] WHERE ContextId=@id AND Name=N'ColumnNameAndTypes')),
+       (N'Pound', N'[£]',NULL,0, NULL,          (SELECT id FROM MultiContext.[Table] WHERE ContextId=@id AND Name=N'ColumnNameAndTypes')),
+	   (N'StaticField', N'static',NULL,0, NULL, (SELECT id FROM MultiContext.[Table] WHERE ContextId=@id AND Name=N'ColumnNameAndTypes')),
+	   (N'Day', N'readonly',NULL,0, NULL,       (SELECT id FROM MultiContext.[Table] WHERE ContextId=@id AND Name=N'ColumnNameAndTypes'));
 GO
 DECLARE @id INT;
 SELECT @id = Id FROM MultiContext.Context WHERE [Name]='DamsonDbContext';
@@ -712,7 +712,7 @@ GO
 -- DROP PROC FkTest.Hello;
 CREATE PROC FkTest.Hello AS
     SELECT  [static],[readonly] -- #279 Contains static and readonly, which are illegal in C#
-    FROM    ColumnName
+    FROM    ColumnNameAndTypes
 GO
 CREATE VIEW SmallDecimalTestView
 AS
@@ -1123,11 +1123,11 @@ GO
 -- DROP PROCEDURE dbo.SpatialTypesNoParams
 CREATE PROCEDURE dbo.SpatialTypesWithParams (@geometry GEOMETRY, @geography GEOGRAPHY)
 AS
-    SELECT  [$] AS Dollar, GeographyType, GeometryType FROM BringTheAction;
+    SELECT  [$] AS Dollar, GeographyType, GeometryType FROM ColumnNameAndTypes;
 GO
 CREATE PROCEDURE dbo.SpatialTypesNoParams
 AS
-    SELECT  [$] AS Dollar, someDate, GeographyType, GeometryType FROM BringTheAction;
+    SELECT  [$] AS Dollar, someDate, GeographyType, GeometryType FROM ColumnNameAndTypes;
 GO
 
 
@@ -1657,7 +1657,7 @@ ALTER TABLE footer ADD CONSTRAINT fooderFK FOREIGN KEY (ID,otherID) REFERENCES h
 GO
 
 INSERT INTO SmallDecimalTest (id, KoeffVed) VALUES (1, 0.1),(2, 0.2),(3, 0.3),(4, 0.4)
-INSERT INTO ColumnNames ([$],[default_test],[%],[£],[&test$]) VALUES  (1,'Hello world',5,6,7)
+INSERT INTO ColumnNameAndTypes ([$],[default_test],[%],[£],[&test$]) VALUES  (1,'Hello world',5,6,7)
 INSERT INTO PropertyTypesToAdd (id, dt_default, dt7) VALUES(1, GETDATE(), GETDATE()), (2, GETDATE(), GETDATE()), (3, GETDATE(), GETDATE())
 INSERT INTO FkTest.SmallDecimalTestAttribute (FkID,[description]) VALUES  (1,'tattoo')
 INSERT INTO [FFRS].[CV] ([BatchUID], [CVID], [CVName]) VALUES  (NEWID(),123, N'Hello world')

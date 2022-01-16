@@ -33,7 +33,7 @@
         [Test]
         public void UseWithinQuery()
         {
-            var result = _db.ColumnNames
+            var result = _db.ColumnNameAndTypes
                 .Where(x => x.Adecimal != null)
                 .Select(x => new
                 {

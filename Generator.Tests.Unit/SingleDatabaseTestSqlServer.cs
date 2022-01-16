@@ -83,9 +83,9 @@ namespace Generator.Tests.Unit
         }
 
         [Test, NonParallelizable]
-        [TestCase("fred", ".V3FilterTest", "fred", "FredDbContext", false, TemplateType.EfCore3, ForeignKeyNamingStrategy.Legacy)]
-        [TestCase("fred", ".V5FilterTest", "fred", "FredDbContext", false, TemplateType.EfCore5, ForeignKeyNamingStrategy.Legacy)]
-        [TestCase("fred", ".V6FilterTest", "fred", "FredDbContext", false, TemplateType.EfCore6, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("EfrpgTest", ".V3FilterTest", "EfrpgTest", "EfrpgDbContext", false, TemplateType.EfCore3, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("EfrpgTest", ".V5FilterTest", "EfrpgTest", "EfrpgDbContext", false, TemplateType.EfCore5, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("EfrpgTest", ".V6FilterTest", "EfrpgTest", "EfrpgDbContext", false, TemplateType.EfCore6, ForeignKeyNamingStrategy.Legacy)]
         public void MultipleIncludeFilters(string database, string singleDbContextSubNamespace, string connectionStringName, string dbContextName, bool publicTestComparison, TemplateType templateType, ForeignKeyNamingStrategy foreignKeyNamingStrategy)
         {
             // Arrange

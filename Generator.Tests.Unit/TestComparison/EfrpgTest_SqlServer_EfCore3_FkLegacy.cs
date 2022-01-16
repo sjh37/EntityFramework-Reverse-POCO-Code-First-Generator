@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Query.Internal;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -21,20 +22,114 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Efrpg.V3TestG
+namespace Efrpg.V3TestE3
 {
     #region Database context interface
 
     public interface IEfrpgTestDbContext : IDisposable
     {
-        DbSet<ColumnName> ColumnNames { get; set; } // ColumnNames
+        DbSet<A> A { get; set; } // A
+        DbSet<Aaref> Aarefs { get; set; } // AAREF
+        DbSet<AbOrderLinesAb> AbOrderLinesAbs { get; set; } // AB_OrderLinesAB_
+        DbSet<AbOrdersAb> AbOrdersAbs { get; set; } // AB_OrdersAB_
+        DbSet<AllColumnsNull> AllColumnsNulls { get; set; } // AllColumnsNull
+        DbSet<Alpha_Harish3485> Alpha_Harish3485 { get; set; } // Harish3485
+        DbSet<Alpha_Workflow> Alpha_Workflows { get; set; } // workflow
+        DbSet<AlphaWorkflowSynonym> AlphaWorkflowSynonyms { get; set; } // alpha_workflow_synonym
+        DbSet<App_UserFacilityServiceRole> App_UserFacilityServiceRoles { get; set; } // UserFacilityServiceRole
+        DbSet<AppUser> AppUsers { get; set; } // AppUser
+        DbSet<Attendee> Attendees { get; set; } // Attendee
+        DbSet<BatchTest> BatchTests { get; set; } // BatchTest
+        DbSet<Beta_Harish3485> Beta_Harish3485 { get; set; } // Harish3485
+        DbSet<Beta_ToAlpha> Beta_ToAlphas { get; set; } // ToAlpha
+        DbSet<Beta_Workflow> Beta_Workflows { get; set; } // workflow
+        DbSet<Bitfiddlerallcap> Bitfiddlerallcaps { get; set; } // BITFIDDLERALLCAPS
+        DbSet<BitFiddlerCategoRy> BitFiddlerCategoRies { get; set; } // BitFiddlerCATEGORIES
+        DbSet<BitFiddlerCurrenCy> BitFiddlerCurrenCies { get; set; } // BitFiddlerCURRENCIES
+        DbSet<Blah> Blahs { get; set; } // Blah
+        DbSet<BlahBlahLink> BlahBlahLinks { get; set; } // BlahBlahLink
+        DbSet<BlahBlahLinkReadonly> BlahBlahLinkReadonlies { get; set; } // BlahBlahLink_readonly
+        DbSet<BlahBlahLinkV2> BlahBlahLinkV2 { get; set; } // BlahBlahLink_v2
+        DbSet<BlahBlargLink> BlahBlargLinks { get; set; } // BlahBlargLink
+        DbSet<Blarg> Blargs { get; set; } // Blarg
+        DbSet<Burak1> Burak1 { get; set; } // Burak1
+        DbSet<Burak2> Burak2 { get; set; } // Burak2
+        DbSet<CalculatedColumnNotNull> CalculatedColumnNotNulls { get; set; } // CalculatedColumnNotNull
+        DbSet<Car> Cars { get; set; } // Car
+        DbSet<CarToColour> CarToColours { get; set; } // CarToColour
+        DbSet<ClientCreationState> ClientCreationStates { get; set; } // ClientCreationState
+        DbSet<CmsFile> CmsFiles { get; set; } // CMS_File
+        DbSet<CmsFileTag> CmsFileTags { get; set; } // CMS_FileTag
+        DbSet<CmsTag> CmsTags { get; set; } // CMS_Tag
+        DbSet<CodeMeetingTopicDetail> CodeMeetingTopicDetails { get; set; } // CODE_MeetingTopicDetails
+        DbSet<CodeObject> CodeObjects { get; set; } // CodeObject
+        DbSet<CodeParamMeetingTopicDetailSource> CodeParamMeetingTopicDetailSources { get; set; } // CODE_PARAM_MeetingTopicDetailSource
+        DbSet<Colour> Colours { get; set; } // Colour
+        DbSet<ColumnNameAndType> ColumnNameAndTypes { get; set; } // ColumnNameAndTypes
+        DbSet<ComplexView> ComplexViews { get; set; } // ComplexView
+        DbSet<Country> Countries { get; set; } // Country
+        DbSet<CrossDatabaseSynonym> CrossDatabaseSynonyms { get; set; } // cross_database_synonym
+        DbSet<DateTimeDefaultTest> DateTimeDefaultTests { get; set; } // DateTimeDefaultTest
+        DbSet<dcg_RovColumnDefinition> dcg_RovColumnDefinitions { get; set; } // rov_ColumnDefinitions
+        DbSet<DefaultCheckForNull> DefaultCheckForNulls { get; set; } // DefaultCheckForNull
+        DbSet<DsOpe> DsOpes { get; set; } // DSOpe
         DbSet<EnumsWithStringAsValue> EnumsWithStringAsValues { get; set; } // EnumsWithStringAsValue
         DbSet<EnumTest_DaysOfWeek> EnumTest_DaysOfWeeks { get; set; } // DaysOfWeek
+        DbSet<EnumWithDefaultValue> EnumWithDefaultValues { get; set; } // EnumWithDefaultValue
+        DbSet<EventProcessor> EventProcessors { get; set; } // EventProcessor
+        DbSet<EventProcessorEventFilter> EventProcessorEventFilters { get; set; } // EventProcessorEventFilter
+        DbSet<FFRS_Cv> FFRS_Cvs { get; set; } // CV
+        DbSet<FinancialInstitutionOffice> FinancialInstitutionOffices { get; set; } // FinancialInstitutionOffice
+        DbSet<FkTest_SmallDecimalTestAttribute> FkTest_SmallDecimalTestAttributes { get; set; } // SmallDecimalTestAttribute
+        DbSet<Footer> Footers { get; set; } // footer
+        DbSet<ForeignKeyIsNotEnforced> ForeignKeyIsNotEnforceds { get; set; } // ForeignKeyIsNotEnforced
+        DbSet<ForeignKeyIsNotEnforcedItem> ForeignKeyIsNotEnforcedItems { get; set; } // ForeignKeyIsNotEnforcedItem
+        DbSet<HasPrincipalKeyTestChild> HasPrincipalKeyTestChilds { get; set; } // HasPrincipalKeyTestChild
+        DbSet<HasPrincipalKeyTestParent> HasPrincipalKeyTestParents { get; set; } // HasPrincipalKeyTestParent
+        DbSet<Header> Headers { get; set; } // header
+        DbSet<HierarchyTest> HierarchyTests { get; set; } // hierarchy_test
+        DbSet<Issue47_Role> Issue47_Roles { get; set; } // Role
+        DbSet<Issue47_User> Issue47_Users { get; set; } // Users
+        DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
+        DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
+        DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
+        DbSet<OneEightSix_IssueUploadedFile> OneEightSix_IssueUploadedFiles { get; set; } // IssueUploadedFile
+        DbSet<OneEightSix_UploadedFile> OneEightSix_UploadedFiles { get; set; } // UploadedFile
+        DbSet<PeriodTestTable> PeriodTestTables { get; set; } // PeriodTestTable
+        DbSet<Person> People { get; set; } // Person
+        DbSet<PersonPost> PersonPosts { get; set; } // PersonPosts
+        DbSet<PkOrdinalTest> PkOrdinalTests { get; set; } // pk_ordinal_test
+        DbSet<PropertyTypesToAdd> PropertyTypesToAdds { get; set; } // PropertyTypesToAdd
+        DbSet<SequenceTest> SequenceTests { get; set; } // SequenceTest
+        DbSet<SmallDecimalTest> SmallDecimalTests { get; set; } // SmallDecimalTest
+        DbSet<SmallDecimalTestView> SmallDecimalTestViews { get; set; } // SmallDecimalTestView
         DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
         DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; } // ComputedColumns
         DbSet<Stafford_Foo> Stafford_Foos { get; set; } // Foo
         DbSet<Synonyms_Child> Synonyms_Children { get; set; } // Child
         DbSet<Synonyms_Parent> Synonyms_Parents { get; set; } // Parent
+        DbSet<TableA> TableAs { get; set; } // TableA
+        DbSet<TableB> TableBs { get; set; } // TableB
+        DbSet<TableMappingWithSpace> TableMappingWithSpaces { get; set; } // table mapping with space
+        DbSet<TableWithDuplicateColumnName> TableWithDuplicateColumnNames { get; set; } // table with duplicate column names
+        DbSet<TableWithSpace> TableWithSpaces { get; set; } // table with space
+        DbSet<TableWithSpaceAndInColumn> TableWithSpaceAndInColumns { get; set; } // table with space and in columns
+        DbSet<TableWithSpaceInColumnOnly> TableWithSpaceInColumnOnlies { get; set; } // TableWithSpaceInColumnOnly
+        DbSet<TadeuszSobol> TadeuszSobols { get; set; } // TadeuszSobol
+        DbSet<Task1> Task1 { get; set; } // Task
+        DbSet<TblOrder> TblOrders { get; set; } // tblOrders
+        DbSet<TblOrderError> TblOrderErrors { get; set; } // tblOrderErrors
+        DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
+        DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
+        DbSet<Ticket> Tickets { get; set; } // Ticket
+        DbSet<Token> Tokens { get; set; } // Token
+        DbSet<User> Users { get; set; } // User
+        DbSet<User309> User309 { get; set; } // User309
+        DbSet<UserDocument> UserDocuments { get; set; } // User_Document
+        DbSet<ViewWithSpace> ViewWithSpaces { get; set; } // view with space
+        DbSet<WVN_Article> WVN_Articles { get; set; } // Articles
+        DbSet<WVN_VArticle> WVN_VArticles { get; set; } // v_Articles
+        DbSet<Брендытовара> Брендытовара { get; set; } // Бренды товара
 
         int SaveChanges();
         int SaveChanges(bool acceptAllChangesOnSuccess);
@@ -80,14 +175,159 @@ namespace Efrpg.V3TestG
 
 
         // Stored Procedures
+        int AddTwoValues(int? a, int? b);
+        // AddTwoValuesAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        int AddTwoValuesWithResult(int? a, int? b, out int? result, out int? result2);
+        // AddTwoValuesWithResultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        int Alpha_Overclock(DateTime? parameter);
+        // Alpha_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        int App_UspCmtUserFsrUpdate(int? userId, int? fsrId, out int? ufsrId);
+        // App_UspCmtUserFsrUpdateAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        int ASimpleExample();
+        // ASimpleExampleAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        int Beta_Overclock(DateTime? parameter);
+        // Beta_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        // C182Test2ReturnModel C182Test2(int? flag); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        // Task<C182Test2ReturnModel> C182Test2Async(int? flag); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+
+        int ConvertToString(int? someValue, out string someString);
+        // ConvertToStringAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        List<DboProcDataFromFfrsReturnModel> DboProcDataFromFfrs(int? maxId);
+        List<DboProcDataFromFfrsReturnModel> DboProcDataFromFfrs(int? maxId, out int procResult);
+        Task<List<DboProcDataFromFfrsReturnModel>> DboProcDataFromFfrsAsync(int? maxId);
+
+        List<DboProcDataFromFfrsAndDboReturnModel> DboProcDataFromFfrsAndDbo();
+        List<DboProcDataFromFfrsAndDboReturnModel> DboProcDataFromFfrsAndDbo(out int procResult);
+        Task<List<DboProcDataFromFfrsAndDboReturnModel>> DboProcDataFromFfrsAndDboAsync();
+
+        List<DsOpeProcReturnModel> DsOpeProc();
+        List<DsOpeProcReturnModel> DsOpeProc(out int procResult);
+        Task<List<DsOpeProcReturnModel>> DsOpeProcAsync();
+
+        List<FFRS_CvDataReturnModel> FFRS_CvData(int? maxId);
+        List<FFRS_CvDataReturnModel> FFRS_CvData(int? maxId, out int procResult);
+        Task<List<FFRS_CvDataReturnModel>> FFRS_CvDataAsync(int? maxId);
+
+        List<FFRS_DataFromDboReturnModel> FFRS_DataFromDbo();
+        List<FFRS_DataFromDboReturnModel> FFRS_DataFromDbo(out int procResult);
+        Task<List<FFRS_DataFromDboReturnModel>> FFRS_DataFromDboAsync();
+
+        List<FFRS_DataFromDboAndFfrsReturnModel> FFRS_DataFromDboAndFfrs();
+        List<FFRS_DataFromDboAndFfrsReturnModel> FFRS_DataFromDboAndFfrs(out int procResult);
+        Task<List<FFRS_DataFromDboAndFfrsReturnModel>> FFRS_DataFromDboAndFfrsAsync();
+
+        List<FkTest_HelloReturnModel> FkTest_Hello();
+        List<FkTest_HelloReturnModel> FkTest_Hello(out int procResult);
+        Task<List<FkTest_HelloReturnModel>> FkTest_HelloAsync();
+
+        List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId);
+        List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId, out int procResult);
+        Task<List<GetSmallDecimalTestReturnModel>> GetSmallDecimalTestAsync(int? maxId);
+
+        int InsertRecord(string data, out int? insertedId);
+        // InsertRecordAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        int InsertRecordThree(string data, out int? insertedId, int? someId, out int? anotherInsertedId);
+        // InsertRecordThreeAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        int InsertRecordTwo(string data, out int? insertedId, out int? anotherInsertedId);
+        // InsertRecordTwoAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        int MinTripSequenceStart(out DateTime? minTripSequenceStartParam);
+        // MinTripSequenceStartAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        int MinTripSequenceStartNull(out DateTime? minTripSequenceStartParam);
+        // MinTripSequenceStartNullAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        int NvarcharTest(string maxOutputParam, string normalOutputParam);
+        // NvarcharTestAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        int Omega_Overclock(DateTime? parameter);
+        // Omega_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        int ProcTestDecimalOutput(out decimal? perfectNumber);
+        // ProcTestDecimalOutputAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        int ProcTestDecimalOutputV2(out decimal? perfectNumber);
+        // ProcTestDecimalOutputV2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        int ProcTestDecimalOutputV3Default(out decimal? perfectNumber);
+        // ProcTestDecimalOutputV3DefaultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        int SpatialTypesNoParams();
+        // SpatialTypesNoParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        int SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography);
+        // SpatialTypesWithParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        // StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        // Task<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsAsync(int? someVar); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+
+        // StpMultipleMultipleResultsWithParamsReturnModel StpMultipleMultipleResultsWithParams(int? firstVal, int? secondVal, int? thirdVal); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        // Task<StpMultipleMultipleResultsWithParamsReturnModel> StpMultipleMultipleResultsWithParamsAsync(int? firstVal, int? secondVal, int? thirdVal); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+
+        // StpMultipleResultsReturnModel StpMultipleResults(); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        // Task<StpMultipleResultsReturnModel> StpMultipleResultsAsync(); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+
+        // StpMultipleResultsWithParamsReturnModel StpMultipleResultsWithParams(int? firstVal, int? secondVal); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        // Task<StpMultipleResultsWithParamsReturnModel> StpMultipleResultsWithParamsAsync(int? firstVal, int? secondVal); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+
+        List<StpNoParamsTestReturnModel> StpNoParamsTest();
+        List<StpNoParamsTestReturnModel> StpNoParamsTest(out int procResult);
+        Task<List<StpNoParamsTestReturnModel>> StpNoParamsTestAsync();
+
+        int StpNoReturnFields();
+        // StpNoReturnFieldsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        List<StpNullableParamsTestReturnModel> StpNullableParamsTest(int? aVal, int? bVal);
+        List<StpNullableParamsTestReturnModel> StpNullableParamsTest(int? aVal, int? bVal, out int procResult);
+        Task<List<StpNullableParamsTestReturnModel>> StpNullableParamsTestAsync(int? aVal, int? bVal);
+
+        List<StpTestReturnModel> StpTest(string strDateFrom, string strDateTo, out bool? retBool);
+        List<StpTestReturnModel> StpTest(string strDateFrom, string strDateTo, out bool? retBool, out int procResult);
+        // StpTestAsync() cannot be created due to having out parameters, or is relying on the procedure result (List<StpTestReturnModel>)
+
+        List<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTest(string strDateFrom, string strDateTo);
+        List<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTest(string strDateFrom, string strDateTo, out int procResult);
+        Task<List<StpTestUnderscoreTestReturnModel>> StpTestUnderscoreTestAsync(string strDateFrom, string strDateTo);
+
+        int StupidStoredProcedureParams(string reqType, short? dept, short? @class, short? item);
+        // StupidStoredProcedureParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        int StupidStoredProcedureParams2(string @override, short? @readonly, short? @class, short? @enum);
+        // StupidStoredProcedureParams2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
         List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt);
         List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt, out int procResult);
         Task<List<Synonyms_SimpleStoredProcReturnModel>> Synonyms_SimpleStoredProcAsync(int? inputInt);
 
+        List<TestReturnStringReturnModel> TestReturnString();
+        List<TestReturnStringReturnModel> TestReturnString(out int procResult);
+        Task<List<TestReturnStringReturnModel>> TestReturnStringAsync();
+
+        int UserDefinedTypeSampleStoredProc(int? a, DataTable type, int? b);
+        // UserDefinedTypeSampleStoredProcAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        List<XmlDataV1ReturnModel> XmlDataV1();
+        List<XmlDataV1ReturnModel> XmlDataV1(out int procResult);
+        Task<List<XmlDataV1ReturnModel>> XmlDataV1Async();
+
+        int XmlDataV2();
+        // XmlDataV2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
 
         // Table Valued Functions
+        IQueryable<C182Test1ReturnModel> C182Test1(int? test); // dbo.182_test1
         IQueryable<CsvToIntReturnModel> CsvToInt(string array, string array2); // dbo.CsvToInt
         IQueryable<CustomSchema_CsvToIntWithSchemaReturnModel> CustomSchema_CsvToIntWithSchema(string array, string array2); // CustomSchema.CsvToIntWithSchema
+        IQueryable<FFRS_CsvToInt2ReturnModel> FFRS_CsvToInt2(string array, string array2); // FFRS.CsvToInt2
 
         // Scalar Valued Functions
         decimal UdfNetSale(int? quantity, decimal? listPrice, decimal? discount); // dbo.udfNetSale
@@ -108,20 +348,114 @@ namespace Efrpg.V3TestG
         {
         }
 
-        public DbSet<ColumnName> ColumnNames { get; set; } // ColumnNames
+        public DbSet<A> A { get; set; } // A
+        public DbSet<Aaref> Aarefs { get; set; } // AAREF
+        public DbSet<AbOrderLinesAb> AbOrderLinesAbs { get; set; } // AB_OrderLinesAB_
+        public DbSet<AbOrdersAb> AbOrdersAbs { get; set; } // AB_OrdersAB_
+        public DbSet<AllColumnsNull> AllColumnsNulls { get; set; } // AllColumnsNull
+        public DbSet<Alpha_Harish3485> Alpha_Harish3485 { get; set; } // Harish3485
+        public DbSet<Alpha_Workflow> Alpha_Workflows { get; set; } // workflow
+        public DbSet<AlphaWorkflowSynonym> AlphaWorkflowSynonyms { get; set; } // alpha_workflow_synonym
+        public DbSet<App_UserFacilityServiceRole> App_UserFacilityServiceRoles { get; set; } // UserFacilityServiceRole
+        public DbSet<AppUser> AppUsers { get; set; } // AppUser
+        public DbSet<Attendee> Attendees { get; set; } // Attendee
+        public DbSet<BatchTest> BatchTests { get; set; } // BatchTest
+        public DbSet<Beta_Harish3485> Beta_Harish3485 { get; set; } // Harish3485
+        public DbSet<Beta_ToAlpha> Beta_ToAlphas { get; set; } // ToAlpha
+        public DbSet<Beta_Workflow> Beta_Workflows { get; set; } // workflow
+        public DbSet<Bitfiddlerallcap> Bitfiddlerallcaps { get; set; } // BITFIDDLERALLCAPS
+        public DbSet<BitFiddlerCategoRy> BitFiddlerCategoRies { get; set; } // BitFiddlerCATEGORIES
+        public DbSet<BitFiddlerCurrenCy> BitFiddlerCurrenCies { get; set; } // BitFiddlerCURRENCIES
+        public DbSet<Blah> Blahs { get; set; } // Blah
+        public DbSet<BlahBlahLink> BlahBlahLinks { get; set; } // BlahBlahLink
+        public DbSet<BlahBlahLinkReadonly> BlahBlahLinkReadonlies { get; set; } // BlahBlahLink_readonly
+        public DbSet<BlahBlahLinkV2> BlahBlahLinkV2 { get; set; } // BlahBlahLink_v2
+        public DbSet<BlahBlargLink> BlahBlargLinks { get; set; } // BlahBlargLink
+        public DbSet<Blarg> Blargs { get; set; } // Blarg
+        public DbSet<Burak1> Burak1 { get; set; } // Burak1
+        public DbSet<Burak2> Burak2 { get; set; } // Burak2
+        public DbSet<CalculatedColumnNotNull> CalculatedColumnNotNulls { get; set; } // CalculatedColumnNotNull
+        public DbSet<Car> Cars { get; set; } // Car
+        public DbSet<CarToColour> CarToColours { get; set; } // CarToColour
+        public DbSet<ClientCreationState> ClientCreationStates { get; set; } // ClientCreationState
+        public DbSet<CmsFile> CmsFiles { get; set; } // CMS_File
+        public DbSet<CmsFileTag> CmsFileTags { get; set; } // CMS_FileTag
+        public DbSet<CmsTag> CmsTags { get; set; } // CMS_Tag
+        public DbSet<CodeMeetingTopicDetail> CodeMeetingTopicDetails { get; set; } // CODE_MeetingTopicDetails
+        public DbSet<CodeObject> CodeObjects { get; set; } // CodeObject
+        public DbSet<CodeParamMeetingTopicDetailSource> CodeParamMeetingTopicDetailSources { get; set; } // CODE_PARAM_MeetingTopicDetailSource
+        public DbSet<Colour> Colours { get; set; } // Colour
+        public DbSet<ColumnNameAndType> ColumnNameAndTypes { get; set; } // ColumnNameAndTypes
+        public DbSet<ComplexView> ComplexViews { get; set; } // ComplexView
+        public DbSet<Country> Countries { get; set; } // Country
+        public DbSet<CrossDatabaseSynonym> CrossDatabaseSynonyms { get; set; } // cross_database_synonym
+        public DbSet<DateTimeDefaultTest> DateTimeDefaultTests { get; set; } // DateTimeDefaultTest
+        public DbSet<dcg_RovColumnDefinition> dcg_RovColumnDefinitions { get; set; } // rov_ColumnDefinitions
+        public DbSet<DefaultCheckForNull> DefaultCheckForNulls { get; set; } // DefaultCheckForNull
+        public DbSet<DsOpe> DsOpes { get; set; } // DSOpe
         public DbSet<EnumsWithStringAsValue> EnumsWithStringAsValues { get; set; } // EnumsWithStringAsValue
         public DbSet<EnumTest_DaysOfWeek> EnumTest_DaysOfWeeks { get; set; } // DaysOfWeek
+        public DbSet<EnumWithDefaultValue> EnumWithDefaultValues { get; set; } // EnumWithDefaultValue
+        public DbSet<EventProcessor> EventProcessors { get; set; } // EventProcessor
+        public DbSet<EventProcessorEventFilter> EventProcessorEventFilters { get; set; } // EventProcessorEventFilter
+        public DbSet<FFRS_Cv> FFRS_Cvs { get; set; } // CV
+        public DbSet<FinancialInstitutionOffice> FinancialInstitutionOffices { get; set; } // FinancialInstitutionOffice
+        public DbSet<FkTest_SmallDecimalTestAttribute> FkTest_SmallDecimalTestAttributes { get; set; } // SmallDecimalTestAttribute
+        public DbSet<Footer> Footers { get; set; } // footer
+        public DbSet<ForeignKeyIsNotEnforced> ForeignKeyIsNotEnforceds { get; set; } // ForeignKeyIsNotEnforced
+        public DbSet<ForeignKeyIsNotEnforcedItem> ForeignKeyIsNotEnforcedItems { get; set; } // ForeignKeyIsNotEnforcedItem
+        public DbSet<HasPrincipalKeyTestChild> HasPrincipalKeyTestChilds { get; set; } // HasPrincipalKeyTestChild
+        public DbSet<HasPrincipalKeyTestParent> HasPrincipalKeyTestParents { get; set; } // HasPrincipalKeyTestParent
+        public DbSet<Header> Headers { get; set; } // header
+        public DbSet<HierarchyTest> HierarchyTests { get; set; } // hierarchy_test
+        public DbSet<Issue47_Role> Issue47_Roles { get; set; } // Role
+        public DbSet<Issue47_User> Issue47_Users { get; set; } // Users
+        public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
+        public DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
+        public DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
+        public DbSet<OneEightSix_IssueUploadedFile> OneEightSix_IssueUploadedFiles { get; set; } // IssueUploadedFile
+        public DbSet<OneEightSix_UploadedFile> OneEightSix_UploadedFiles { get; set; } // UploadedFile
+        public DbSet<PeriodTestTable> PeriodTestTables { get; set; } // PeriodTestTable
+        public DbSet<Person> People { get; set; } // Person
+        public DbSet<PersonPost> PersonPosts { get; set; } // PersonPosts
+        public DbSet<PkOrdinalTest> PkOrdinalTests { get; set; } // pk_ordinal_test
+        public DbSet<PropertyTypesToAdd> PropertyTypesToAdds { get; set; } // PropertyTypesToAdd
+        public DbSet<SequenceTest> SequenceTests { get; set; } // SequenceTest
+        public DbSet<SmallDecimalTest> SmallDecimalTests { get; set; } // SmallDecimalTest
+        public DbSet<SmallDecimalTestView> SmallDecimalTestViews { get; set; } // SmallDecimalTestView
         public DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
         public DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; } // ComputedColumns
         public DbSet<Stafford_Foo> Stafford_Foos { get; set; } // Foo
         public DbSet<Synonyms_Child> Synonyms_Children { get; set; } // Child
         public DbSet<Synonyms_Parent> Synonyms_Parents { get; set; } // Parent
+        public DbSet<TableA> TableAs { get; set; } // TableA
+        public DbSet<TableB> TableBs { get; set; } // TableB
+        public DbSet<TableMappingWithSpace> TableMappingWithSpaces { get; set; } // table mapping with space
+        public DbSet<TableWithDuplicateColumnName> TableWithDuplicateColumnNames { get; set; } // table with duplicate column names
+        public DbSet<TableWithSpace> TableWithSpaces { get; set; } // table with space
+        public DbSet<TableWithSpaceAndInColumn> TableWithSpaceAndInColumns { get; set; } // table with space and in columns
+        public DbSet<TableWithSpaceInColumnOnly> TableWithSpaceInColumnOnlies { get; set; } // TableWithSpaceInColumnOnly
+        public DbSet<TadeuszSobol> TadeuszSobols { get; set; } // TadeuszSobol
+        public DbSet<Task1> Task1 { get; set; } // Task
+        public DbSet<TblOrder> TblOrders { get; set; } // tblOrders
+        public DbSet<TblOrderError> TblOrderErrors { get; set; } // tblOrderErrors
+        public DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
+        public DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
+        public DbSet<Ticket> Tickets { get; set; } // Ticket
+        public DbSet<Token> Tokens { get; set; } // Token
+        public DbSet<User> Users { get; set; } // User
+        public DbSet<User309> User309 { get; set; } // User309
+        public DbSet<UserDocument> UserDocuments { get; set; } // User_Document
+        public DbSet<ViewWithSpace> ViewWithSpaces { get; set; } // view with space
+        public DbSet<WVN_Article> WVN_Articles { get; set; } // Articles
+        public DbSet<WVN_VArticle> WVN_VArticles { get; set; } // v_Articles
+        public DbSet<Брендытовара> Брендытовара { get; set; } // Бренды товара
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;Application Name=Generator");
+                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;Application Name=Generator", x => x.UseNetTopologySuite());
             }
         }
 
@@ -138,24 +472,989 @@ namespace Efrpg.V3TestG
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.ApplyConfiguration(new ColumnNameConfiguration());
+            modelBuilder.HasSequence<int>("CountBy1", "dbo").StartsAt(1).IncrementsBy(1).IsCyclic(false);
+            modelBuilder.HasSequence<long>("CountByBigInt", "dbo").StartsAt(22).IncrementsBy(234).IsCyclic(true).HasMin(1).HasMax(9876543);
+            modelBuilder.HasSequence<decimal>("CountByDecimal", "dbo").StartsAt(593).IncrementsBy(82).IsCyclic(false).HasMin(5).HasMax(777777);
+            modelBuilder.HasSequence<decimal>("CountByNumeric", "dbo").StartsAt(789).IncrementsBy(987).IsCyclic(false).HasMin(345).HasMax(999999999999999999);
+            modelBuilder.HasSequence<short>("CountBySmallInt", "dbo").StartsAt(44).IncrementsBy(456).IsCyclic(true);
+            modelBuilder.HasSequence<byte>("CountByTinyInt", "dbo").StartsAt(33).IncrementsBy(3).IsCyclic(false);
+
+            modelBuilder.ApplyConfiguration(new AConfiguration());
+            modelBuilder.ApplyConfiguration(new AarefConfiguration());
+            modelBuilder.ApplyConfiguration(new AbOrderLinesAbConfiguration());
+            modelBuilder.ApplyConfiguration(new AbOrdersAbConfiguration());
+            modelBuilder.ApplyConfiguration(new AllColumnsNullConfiguration());
+            modelBuilder.ApplyConfiguration(new Alpha_Harish3485Configuration());
+            modelBuilder.ApplyConfiguration(new Alpha_WorkflowConfiguration());
+            modelBuilder.ApplyConfiguration(new AlphaWorkflowSynonymConfiguration());
+            modelBuilder.ApplyConfiguration(new App_UserFacilityServiceRoleConfiguration());
+            modelBuilder.ApplyConfiguration(new AppUserConfiguration());
+            modelBuilder.ApplyConfiguration(new AttendeeConfiguration());
+            modelBuilder.ApplyConfiguration(new BatchTestConfiguration());
+            modelBuilder.ApplyConfiguration(new Beta_Harish3485Configuration());
+            modelBuilder.ApplyConfiguration(new Beta_ToAlphaConfiguration());
+            modelBuilder.ApplyConfiguration(new Beta_WorkflowConfiguration());
+            modelBuilder.ApplyConfiguration(new BitfiddlerallcapConfiguration());
+            modelBuilder.ApplyConfiguration(new BitFiddlerCategoRyConfiguration());
+            modelBuilder.ApplyConfiguration(new BitFiddlerCurrenCyConfiguration());
+            modelBuilder.ApplyConfiguration(new BlahConfiguration());
+            modelBuilder.ApplyConfiguration(new BlahBlahLinkConfiguration());
+            modelBuilder.ApplyConfiguration(new BlahBlahLinkReadonlyConfiguration());
+            modelBuilder.ApplyConfiguration(new BlahBlahLinkV2Configuration());
+            modelBuilder.ApplyConfiguration(new BlahBlargLinkConfiguration());
+            modelBuilder.ApplyConfiguration(new BlargConfiguration());
+            modelBuilder.ApplyConfiguration(new Burak1Configuration());
+            modelBuilder.ApplyConfiguration(new Burak2Configuration());
+            modelBuilder.ApplyConfiguration(new CalculatedColumnNotNullConfiguration());
+            modelBuilder.ApplyConfiguration(new CarConfiguration());
+            modelBuilder.ApplyConfiguration(new CarToColourConfiguration());
+            modelBuilder.ApplyConfiguration(new ClientCreationStateConfiguration());
+            modelBuilder.ApplyConfiguration(new CmsFileConfiguration());
+            modelBuilder.ApplyConfiguration(new CmsFileTagConfiguration());
+            modelBuilder.ApplyConfiguration(new CmsTagConfiguration());
+            modelBuilder.ApplyConfiguration(new CodeMeetingTopicDetailConfiguration());
+            modelBuilder.ApplyConfiguration(new CodeObjectConfiguration());
+            modelBuilder.ApplyConfiguration(new CodeParamMeetingTopicDetailSourceConfiguration());
+            modelBuilder.ApplyConfiguration(new ColourConfiguration());
+            modelBuilder.ApplyConfiguration(new ColumnNameAndTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new ComplexViewConfiguration());
+            modelBuilder.ApplyConfiguration(new CountryConfiguration());
+            modelBuilder.ApplyConfiguration(new CrossDatabaseSynonymConfiguration());
+            modelBuilder.ApplyConfiguration(new DateTimeDefaultTestConfiguration());
+            modelBuilder.ApplyConfiguration(new dcg_RovColumnDefinitionConfiguration());
+            modelBuilder.ApplyConfiguration(new DefaultCheckForNullConfiguration());
+            modelBuilder.ApplyConfiguration(new DsOpeConfiguration());
             modelBuilder.ApplyConfiguration(new EnumsWithStringAsValueConfiguration());
             modelBuilder.ApplyConfiguration(new EnumTest_DaysOfWeekConfiguration());
+            modelBuilder.ApplyConfiguration(new EnumWithDefaultValueConfiguration());
+            modelBuilder.ApplyConfiguration(new EventProcessorConfiguration());
+            modelBuilder.ApplyConfiguration(new EventProcessorEventFilterConfiguration());
+            modelBuilder.ApplyConfiguration(new FFRS_CvConfiguration());
+            modelBuilder.ApplyConfiguration(new FinancialInstitutionOfficeConfiguration());
+            modelBuilder.ApplyConfiguration(new FkTest_SmallDecimalTestAttributeConfiguration());
+            modelBuilder.ApplyConfiguration(new FooterConfiguration());
+            modelBuilder.ApplyConfiguration(new ForeignKeyIsNotEnforcedConfiguration());
+            modelBuilder.ApplyConfiguration(new ForeignKeyIsNotEnforcedItemConfiguration());
+            modelBuilder.ApplyConfiguration(new HasPrincipalKeyTestChildConfiguration());
+            modelBuilder.ApplyConfiguration(new HasPrincipalKeyTestParentConfiguration());
+            modelBuilder.ApplyConfiguration(new HeaderConfiguration());
+            modelBuilder.ApplyConfiguration(new HierarchyTestConfiguration());
+            modelBuilder.ApplyConfiguration(new Issue47_RoleConfiguration());
+            modelBuilder.ApplyConfiguration(new Issue47_UserConfiguration());
+            modelBuilder.ApplyConfiguration(new Issue47_UserRoleConfiguration());
+            modelBuilder.ApplyConfiguration(new MultipleKeyConfiguration());
+            modelBuilder.ApplyConfiguration(new OneEightSix_IssueConfiguration());
+            modelBuilder.ApplyConfiguration(new OneEightSix_IssueUploadedFileConfiguration());
+            modelBuilder.ApplyConfiguration(new OneEightSix_UploadedFileConfiguration());
+            modelBuilder.ApplyConfiguration(new PeriodTestTableConfiguration());
+            modelBuilder.ApplyConfiguration(new PersonConfiguration());
+            modelBuilder.ApplyConfiguration(new PersonPostConfiguration());
+            modelBuilder.ApplyConfiguration(new PkOrdinalTestConfiguration());
+            modelBuilder.ApplyConfiguration(new PropertyTypesToAddConfiguration());
+            modelBuilder.ApplyConfiguration(new SequenceTestConfiguration());
+            modelBuilder.ApplyConfiguration(new SmallDecimalTestConfiguration());
+            modelBuilder.ApplyConfiguration(new SmallDecimalTestViewConfiguration());
             modelBuilder.ApplyConfiguration(new Stafford_BooConfiguration());
             modelBuilder.ApplyConfiguration(new Stafford_ComputedColumnConfiguration());
             modelBuilder.ApplyConfiguration(new Stafford_FooConfiguration());
             modelBuilder.ApplyConfiguration(new Synonyms_ChildConfiguration());
             modelBuilder.ApplyConfiguration(new Synonyms_ParentConfiguration());
+            modelBuilder.ApplyConfiguration(new TableAConfiguration());
+            modelBuilder.ApplyConfiguration(new TableBConfiguration());
+            modelBuilder.ApplyConfiguration(new TableMappingWithSpaceConfiguration());
+            modelBuilder.ApplyConfiguration(new TableWithDuplicateColumnNameConfiguration());
+            modelBuilder.ApplyConfiguration(new TableWithSpaceConfiguration());
+            modelBuilder.ApplyConfiguration(new TableWithSpaceAndInColumnConfiguration());
+            modelBuilder.ApplyConfiguration(new TableWithSpaceInColumnOnlyConfiguration());
+            modelBuilder.ApplyConfiguration(new TadeuszSobolConfiguration());
+            modelBuilder.ApplyConfiguration(new Task1Configuration());
+            modelBuilder.ApplyConfiguration(new TblOrderConfiguration());
+            modelBuilder.ApplyConfiguration(new TblOrderErrorConfiguration());
+            modelBuilder.ApplyConfiguration(new TblOrderErrorsAbConfiguration());
+            modelBuilder.ApplyConfiguration(new TblOrderLineConfiguration());
+            modelBuilder.ApplyConfiguration(new TicketConfiguration());
+            modelBuilder.ApplyConfiguration(new TokenConfiguration());
+            modelBuilder.ApplyConfiguration(new UserConfiguration());
+            modelBuilder.ApplyConfiguration(new User309Configuration());
+            modelBuilder.ApplyConfiguration(new UserDocumentConfiguration());
+            modelBuilder.ApplyConfiguration(new ViewWithSpaceConfiguration());
+            modelBuilder.ApplyConfiguration(new WVN_ArticleConfiguration());
+            modelBuilder.ApplyConfiguration(new WVN_VArticleConfiguration());
+            modelBuilder.ApplyConfiguration(new БрендытовараConfiguration());
 
+            modelBuilder.Entity<DboProcDataFromFfrsReturnModel>().HasNoKey();
+            modelBuilder.Entity<DboProcDataFromFfrsAndDboReturnModel>().HasNoKey();
+            modelBuilder.Entity<DsOpeProcReturnModel>().HasNoKey();
+            modelBuilder.Entity<FFRS_CvDataReturnModel>().HasNoKey();
+            modelBuilder.Entity<FFRS_DataFromDboReturnModel>().HasNoKey();
+            modelBuilder.Entity<FFRS_DataFromDboAndFfrsReturnModel>().HasNoKey();
+            modelBuilder.Entity<FkTest_HelloReturnModel>().HasNoKey();
+            modelBuilder.Entity<GetSmallDecimalTestReturnModel>().HasNoKey();
+            modelBuilder.Entity<StpNoParamsTestReturnModel>().HasNoKey();
+            modelBuilder.Entity<StpNullableParamsTestReturnModel>().HasNoKey();
+            modelBuilder.Entity<StpTestReturnModel>().HasNoKey();
+            modelBuilder.Entity<StpTestUnderscoreTestReturnModel>().HasNoKey();
             modelBuilder.Entity<Synonyms_SimpleStoredProcReturnModel>().HasNoKey();
+            modelBuilder.Entity<TestReturnStringReturnModel>().HasNoKey();
+            modelBuilder.Entity<XmlDataV1ReturnModel>().HasNoKey();
 
             // Table Valued Functions
+            modelBuilder.Entity<C182Test1ReturnModel>().HasNoKey();
             modelBuilder.Entity<CsvToIntReturnModel>().HasNoKey();
             modelBuilder.Entity<CustomSchema_CsvToIntWithSchemaReturnModel>().HasNoKey();
+            modelBuilder.Entity<FFRS_CsvToInt2ReturnModel>().HasNoKey();
         }
 
 
         // Stored Procedures
+        public int AddTwoValues(int? a, int? b)
+        {
+            var aParam = new SqlParameter { ParameterName = "@a", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = a.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!a.HasValue)
+                aParam.Value = DBNull.Value;
+
+            var bParam = new SqlParameter { ParameterName = "@b", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = b.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!b.HasValue)
+                bParam.Value = DBNull.Value;
+
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[AddTwoValues] @a, @b", aParam, bParam, procResultParam);
+
+            return (int)procResultParam.Value;
+        }
+
+        // AddTwoValuesAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int AddTwoValuesWithResult(int? a, int? b, out int? result, out int? result2)
+        {
+            var aParam = new SqlParameter { ParameterName = "@a", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = a.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!a.HasValue)
+                aParam.Value = DBNull.Value;
+
+            var bParam = new SqlParameter { ParameterName = "@b", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = b.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!b.HasValue)
+                bParam.Value = DBNull.Value;
+
+            var resultParam = new SqlParameter { ParameterName = "@result", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output, Precision = 10, Scale = 0 };
+            var result2Param = new SqlParameter { ParameterName = "@result2", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output, Precision = 10, Scale = 0 };
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[AddTwoValuesWithResult] @a, @b, @result OUTPUT, @result2 OUTPUT", aParam, bParam, resultParam, result2Param, procResultParam);
+
+            if (IsSqlParameterNull(resultParam))
+                result = null;
+            else
+                result = (int) resultParam.Value;
+
+            if (IsSqlParameterNull(result2Param))
+                result2 = null;
+            else
+                result2 = (int) result2Param.Value;
+
+            return (int)procResultParam.Value;
+        }
+
+        // AddTwoValuesWithResultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int Alpha_Overclock(DateTime? parameter)
+        {
+            var parameterParam = new SqlParameter { ParameterName = "@Parameter", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = parameter.GetValueOrDefault() };
+            if (!parameter.HasValue)
+                parameterParam.Value = DBNull.Value;
+
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            Database.ExecuteSqlRaw("EXEC @procResult = [Alpha].[Overclock] @Parameter", parameterParam, procResultParam);
+
+            return (int)procResultParam.Value;
+        }
+
+        // Alpha_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int App_UspCmtUserFsrUpdate(int? userId, int? fsrId, out int? ufsrId)
+        {
+            var userIdParam = new SqlParameter { ParameterName = "@userId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = userId.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!userId.HasValue)
+                userIdParam.Value = DBNull.Value;
+
+            var fsrIdParam = new SqlParameter { ParameterName = "@fsrId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = fsrId.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!fsrId.HasValue)
+                fsrIdParam.Value = DBNull.Value;
+
+            var ufsrIdParam = new SqlParameter { ParameterName = "@ufsrId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output, Precision = 10, Scale = 0 };
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            Database.ExecuteSqlRaw("EXEC @procResult = [App].[usp_CMTUserFSRUpdate] @userId, @fsrId, @ufsrId OUTPUT", userIdParam, fsrIdParam, ufsrIdParam, procResultParam);
+
+            if (IsSqlParameterNull(ufsrIdParam))
+                ufsrId = null;
+            else
+                ufsrId = (int) ufsrIdParam.Value;
+
+            return (int)procResultParam.Value;
+        }
+
+        // App_UspCmtUserFsrUpdateAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int ASimpleExample()
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[aSimpleExample] ", procResultParam);
+
+            return (int)procResultParam.Value;
+        }
+
+        // ASimpleExampleAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int Beta_Overclock(DateTime? parameter)
+        {
+            var parameterParam = new SqlParameter { ParameterName = "@Parameter", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = parameter.GetValueOrDefault() };
+            if (!parameter.HasValue)
+                parameterParam.Value = DBNull.Value;
+
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            Database.ExecuteSqlRaw("EXEC @procResult = [Beta].[Overclock] @Parameter", parameterParam, procResultParam);
+
+            return (int)procResultParam.Value;
+        }
+
+        // Beta_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        // public C182Test2ReturnModel C182Test2(int? flag) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+
+        // public async Task<C182Test2ReturnModel> C182Test2Async(int? flag) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+
+        public int ConvertToString(int? someValue, out string someString)
+        {
+            var someValueParam = new SqlParameter { ParameterName = "@someValue", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = someValue.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!someValue.HasValue)
+                someValueParam.Value = DBNull.Value;
+
+            var someStringParam = new SqlParameter { ParameterName = "@someString", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Output, Size = 20 };
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[ConvertToString] @someValue, @someString OUTPUT", someValueParam, someStringParam, procResultParam);
+
+            if (IsSqlParameterNull(someStringParam))
+                someString = default(string);
+            else
+                someString = (string) someStringParam.Value;
+
+            return (int)procResultParam.Value;
+        }
+
+        // ConvertToStringAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public List<DboProcDataFromFfrsReturnModel> DboProcDataFromFfrs(int? maxId)
+        {
+            int procResult;
+            return DboProcDataFromFfrs(maxId, out procResult);
+        }
+
+        public List<DboProcDataFromFfrsReturnModel> DboProcDataFromFfrs(int? maxId, out int procResult)
+        {
+            var maxIdParam = new SqlParameter { ParameterName = "@maxId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = maxId.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!maxId.HasValue)
+                maxIdParam.Value = DBNull.Value;
+
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [dbo].[dbo_proc_data_from_ffrs] @maxId";
+            var procResultData = Set<DboProcDataFromFfrsReturnModel>()
+                .FromSqlRaw(sqlCommand, maxIdParam, procResultParam)
+                .ToList();
+
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<DboProcDataFromFfrsReturnModel>> DboProcDataFromFfrsAsync(int? maxId)
+        {
+            var maxIdParam = new SqlParameter { ParameterName = "@maxId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = maxId.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!maxId.HasValue)
+                maxIdParam.Value = DBNull.Value;
+
+            const string sqlCommand = "EXEC [dbo].[dbo_proc_data_from_ffrs] @maxId";
+            var procResultData = await Set<DboProcDataFromFfrsReturnModel>()
+                .FromSqlRaw(sqlCommand, maxIdParam)
+                .ToListAsync();
+
+            return procResultData;
+        }
+
+        public List<DboProcDataFromFfrsAndDboReturnModel> DboProcDataFromFfrsAndDbo()
+        {
+            int procResult;
+            return DboProcDataFromFfrsAndDbo(out procResult);
+        }
+
+        public List<DboProcDataFromFfrsAndDboReturnModel> DboProcDataFromFfrsAndDbo(out int procResult)
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [dbo].[dbo_proc_data_from_ffrs_and_dbo]";
+            var procResultData = Set<DboProcDataFromFfrsAndDboReturnModel>()
+                .FromSqlRaw(sqlCommand, procResultParam)
+                .ToList();
+
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<DboProcDataFromFfrsAndDboReturnModel>> DboProcDataFromFfrsAndDboAsync()
+        {
+            const string sqlCommand = "EXEC [dbo].[dbo_proc_data_from_ffrs_and_dbo]";
+            var procResultData = await Set<DboProcDataFromFfrsAndDboReturnModel>()
+                .FromSqlRaw(sqlCommand)
+                .ToListAsync();
+
+            return procResultData;
+        }
+
+        public List<DsOpeProcReturnModel> DsOpeProc()
+        {
+            int procResult;
+            return DsOpeProc(out procResult);
+        }
+
+        public List<DsOpeProcReturnModel> DsOpeProc(out int procResult)
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [dbo].[DSOpeProc]";
+            var procResultData = Set<DsOpeProcReturnModel>()
+                .FromSqlRaw(sqlCommand, procResultParam)
+                .ToList();
+
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<DsOpeProcReturnModel>> DsOpeProcAsync()
+        {
+            const string sqlCommand = "EXEC [dbo].[DSOpeProc]";
+            var procResultData = await Set<DsOpeProcReturnModel>()
+                .FromSqlRaw(sqlCommand)
+                .ToListAsync();
+
+            return procResultData;
+        }
+
+        public List<FFRS_CvDataReturnModel> FFRS_CvData(int? maxId)
+        {
+            int procResult;
+            return FFRS_CvData(maxId, out procResult);
+        }
+
+        public List<FFRS_CvDataReturnModel> FFRS_CvData(int? maxId, out int procResult)
+        {
+            var maxIdParam = new SqlParameter { ParameterName = "@maxId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = maxId.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!maxId.HasValue)
+                maxIdParam.Value = DBNull.Value;
+
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [FFRS].[cv_data] @maxId";
+            var procResultData = Set<FFRS_CvDataReturnModel>()
+                .FromSqlRaw(sqlCommand, maxIdParam, procResultParam)
+                .ToList();
+
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<FFRS_CvDataReturnModel>> FFRS_CvDataAsync(int? maxId)
+        {
+            var maxIdParam = new SqlParameter { ParameterName = "@maxId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = maxId.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!maxId.HasValue)
+                maxIdParam.Value = DBNull.Value;
+
+            const string sqlCommand = "EXEC [FFRS].[cv_data] @maxId";
+            var procResultData = await Set<FFRS_CvDataReturnModel>()
+                .FromSqlRaw(sqlCommand, maxIdParam)
+                .ToListAsync();
+
+            return procResultData;
+        }
+
+        public List<FFRS_DataFromDboReturnModel> FFRS_DataFromDbo()
+        {
+            int procResult;
+            return FFRS_DataFromDbo(out procResult);
+        }
+
+        public List<FFRS_DataFromDboReturnModel> FFRS_DataFromDbo(out int procResult)
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [FFRS].[data_from_dbo]";
+            var procResultData = Set<FFRS_DataFromDboReturnModel>()
+                .FromSqlRaw(sqlCommand, procResultParam)
+                .ToList();
+
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<FFRS_DataFromDboReturnModel>> FFRS_DataFromDboAsync()
+        {
+            const string sqlCommand = "EXEC [FFRS].[data_from_dbo]";
+            var procResultData = await Set<FFRS_DataFromDboReturnModel>()
+                .FromSqlRaw(sqlCommand)
+                .ToListAsync();
+
+            return procResultData;
+        }
+
+        public List<FFRS_DataFromDboAndFfrsReturnModel> FFRS_DataFromDboAndFfrs()
+        {
+            int procResult;
+            return FFRS_DataFromDboAndFfrs(out procResult);
+        }
+
+        public List<FFRS_DataFromDboAndFfrsReturnModel> FFRS_DataFromDboAndFfrs(out int procResult)
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [FFRS].[data_from_dbo_and_ffrs]";
+            var procResultData = Set<FFRS_DataFromDboAndFfrsReturnModel>()
+                .FromSqlRaw(sqlCommand, procResultParam)
+                .ToList();
+
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<FFRS_DataFromDboAndFfrsReturnModel>> FFRS_DataFromDboAndFfrsAsync()
+        {
+            const string sqlCommand = "EXEC [FFRS].[data_from_dbo_and_ffrs]";
+            var procResultData = await Set<FFRS_DataFromDboAndFfrsReturnModel>()
+                .FromSqlRaw(sqlCommand)
+                .ToListAsync();
+
+            return procResultData;
+        }
+
+        public List<FkTest_HelloReturnModel> FkTest_Hello()
+        {
+            int procResult;
+            return FkTest_Hello(out procResult);
+        }
+
+        public List<FkTest_HelloReturnModel> FkTest_Hello(out int procResult)
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [FkTest].[Hello]";
+            var procResultData = Set<FkTest_HelloReturnModel>()
+                .FromSqlRaw(sqlCommand, procResultParam)
+                .ToList();
+
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<FkTest_HelloReturnModel>> FkTest_HelloAsync()
+        {
+            const string sqlCommand = "EXEC [FkTest].[Hello]";
+            var procResultData = await Set<FkTest_HelloReturnModel>()
+                .FromSqlRaw(sqlCommand)
+                .ToListAsync();
+
+            return procResultData;
+        }
+
+        public List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId)
+        {
+            int procResult;
+            return GetSmallDecimalTest(maxId, out procResult);
+        }
+
+        public List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId, out int procResult)
+        {
+            var maxIdParam = new SqlParameter { ParameterName = "@maxId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = maxId.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!maxId.HasValue)
+                maxIdParam.Value = DBNull.Value;
+
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [dbo].[GetSmallDecimalTest] @maxId";
+            var procResultData = Set<GetSmallDecimalTestReturnModel>()
+                .FromSqlRaw(sqlCommand, maxIdParam, procResultParam)
+                .ToList();
+
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<GetSmallDecimalTestReturnModel>> GetSmallDecimalTestAsync(int? maxId)
+        {
+            var maxIdParam = new SqlParameter { ParameterName = "@maxId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = maxId.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!maxId.HasValue)
+                maxIdParam.Value = DBNull.Value;
+
+            const string sqlCommand = "EXEC [dbo].[GetSmallDecimalTest] @maxId";
+            var procResultData = await Set<GetSmallDecimalTestReturnModel>()
+                .FromSqlRaw(sqlCommand, maxIdParam)
+                .ToListAsync();
+
+            return procResultData;
+        }
+
+        public int InsertRecord(string data, out int? insertedId)
+        {
+            var dataParam = new SqlParameter { ParameterName = "@Data", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = data, Size = 256 };
+            if (dataParam.Value == null)
+                dataParam.Value = DBNull.Value;
+
+            var insertedIdParam = new SqlParameter { ParameterName = "@InsertedId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output, Precision = 10, Scale = 0 };
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[InsertRecord] @Data, @InsertedId OUTPUT", dataParam, insertedIdParam, procResultParam);
+
+            if (IsSqlParameterNull(insertedIdParam))
+                insertedId = null;
+            else
+                insertedId = (int) insertedIdParam.Value;
+
+            return (int)procResultParam.Value;
+        }
+
+        // InsertRecordAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int InsertRecordThree(string data, out int? insertedId, int? someId, out int? anotherInsertedId)
+        {
+            var dataParam = new SqlParameter { ParameterName = "@Data", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = data, Size = 256 };
+            if (dataParam.Value == null)
+                dataParam.Value = DBNull.Value;
+
+            var insertedIdParam = new SqlParameter { ParameterName = "@InsertedId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output, Precision = 10, Scale = 0 };
+            var someIdParam = new SqlParameter { ParameterName = "@SomeId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = someId.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!someId.HasValue)
+                someIdParam.Value = DBNull.Value;
+
+            var anotherInsertedIdParam = new SqlParameter { ParameterName = "@AnotherInsertedId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output, Precision = 10, Scale = 0 };
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[InsertRecordThree] @Data, @InsertedId OUTPUT, @SomeId, @AnotherInsertedId OUTPUT", dataParam, insertedIdParam, someIdParam, anotherInsertedIdParam, procResultParam);
+
+            if (IsSqlParameterNull(insertedIdParam))
+                insertedId = null;
+            else
+                insertedId = (int) insertedIdParam.Value;
+
+            if (IsSqlParameterNull(anotherInsertedIdParam))
+                anotherInsertedId = null;
+            else
+                anotherInsertedId = (int) anotherInsertedIdParam.Value;
+
+            return (int)procResultParam.Value;
+        }
+
+        // InsertRecordThreeAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int InsertRecordTwo(string data, out int? insertedId, out int? anotherInsertedId)
+        {
+            var dataParam = new SqlParameter { ParameterName = "@Data", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = data, Size = 256 };
+            if (dataParam.Value == null)
+                dataParam.Value = DBNull.Value;
+
+            var insertedIdParam = new SqlParameter { ParameterName = "@InsertedId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output, Precision = 10, Scale = 0 };
+            var anotherInsertedIdParam = new SqlParameter { ParameterName = "@AnotherInsertedId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output, Precision = 10, Scale = 0 };
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[InsertRecordTwo] @Data, @InsertedId OUTPUT, @AnotherInsertedId OUTPUT", dataParam, insertedIdParam, anotherInsertedIdParam, procResultParam);
+
+            if (IsSqlParameterNull(insertedIdParam))
+                insertedId = null;
+            else
+                insertedId = (int) insertedIdParam.Value;
+
+            if (IsSqlParameterNull(anotherInsertedIdParam))
+                anotherInsertedId = null;
+            else
+                anotherInsertedId = (int) anotherInsertedIdParam.Value;
+
+            return (int)procResultParam.Value;
+        }
+
+        // InsertRecordTwoAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int MinTripSequenceStart(out DateTime? minTripSequenceStartParam)
+        {
+            var minTripSequenceStartParamParam = new SqlParameter { ParameterName = "@minTripSequenceStartParam", SqlDbType = SqlDbType.DateTime2, Direction = ParameterDirection.Output };
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[MinTripSequenceStart] @minTripSequenceStartParam OUTPUT", minTripSequenceStartParamParam, procResultParam);
+
+            if (IsSqlParameterNull(minTripSequenceStartParamParam))
+                minTripSequenceStartParam = null;
+            else
+                minTripSequenceStartParam = (DateTime) minTripSequenceStartParamParam.Value;
+
+            return (int)procResultParam.Value;
+        }
+
+        // MinTripSequenceStartAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int MinTripSequenceStartNull(out DateTime? minTripSequenceStartParam)
+        {
+            var minTripSequenceStartParamParam = new SqlParameter { ParameterName = "@minTripSequenceStartParam", SqlDbType = SqlDbType.DateTime2, Direction = ParameterDirection.Output };
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[MinTripSequenceStartNull] @minTripSequenceStartParam OUTPUT", minTripSequenceStartParamParam, procResultParam);
+
+            if (IsSqlParameterNull(minTripSequenceStartParamParam))
+                minTripSequenceStartParam = null;
+            else
+                minTripSequenceStartParam = (DateTime) minTripSequenceStartParamParam.Value;
+
+            return (int)procResultParam.Value;
+        }
+
+        // MinTripSequenceStartNullAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int NvarcharTest(string maxOutputParam, string normalOutputParam)
+        {
+            var maxOutputParamParam = new SqlParameter { ParameterName = "@maxOutputParam", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = maxOutputParam, Size = -1 };
+            if (maxOutputParamParam.Value == null)
+                maxOutputParamParam.Value = DBNull.Value;
+
+            var normalOutputParamParam = new SqlParameter { ParameterName = "@normalOutputParam", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = normalOutputParam, Size = 20 };
+            if (normalOutputParamParam.Value == null)
+                normalOutputParamParam.Value = DBNull.Value;
+
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[NvarcharTest] @maxOutputParam, @normalOutputParam", maxOutputParamParam, normalOutputParamParam, procResultParam);
+
+            return (int)procResultParam.Value;
+        }
+
+        // NvarcharTestAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int Omega_Overclock(DateTime? parameter)
+        {
+            var parameterParam = new SqlParameter { ParameterName = "@Parameter", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = parameter.GetValueOrDefault() };
+            if (!parameter.HasValue)
+                parameterParam.Value = DBNull.Value;
+
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            Database.ExecuteSqlRaw("EXEC @procResult = [Omega].[Overclock] @Parameter", parameterParam, procResultParam);
+
+            return (int)procResultParam.Value;
+        }
+
+        // Omega_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int ProcTestDecimalOutput(out decimal? perfectNumber)
+        {
+            var perfectNumberParam = new SqlParameter { ParameterName = "@PerfectNumber", SqlDbType = SqlDbType.Decimal, Direction = ParameterDirection.Output, Precision = 18, Scale = 2 };
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[proc_TestDecimalOutput] @PerfectNumber OUTPUT", perfectNumberParam, procResultParam);
+
+            if (IsSqlParameterNull(perfectNumberParam))
+                perfectNumber = null;
+            else
+                perfectNumber = (decimal) perfectNumberParam.Value;
+
+            return (int)procResultParam.Value;
+        }
+
+        // ProcTestDecimalOutputAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int ProcTestDecimalOutputV2(out decimal? perfectNumber)
+        {
+            var perfectNumberParam = new SqlParameter { ParameterName = "@PerfectNumber", SqlDbType = SqlDbType.Decimal, Direction = ParameterDirection.Output, Precision = 12, Scale = 8 };
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[proc_TestDecimalOutputV2] @PerfectNumber OUTPUT", perfectNumberParam, procResultParam);
+
+            if (IsSqlParameterNull(perfectNumberParam))
+                perfectNumber = null;
+            else
+                perfectNumber = (decimal) perfectNumberParam.Value;
+
+            return (int)procResultParam.Value;
+        }
+
+        // ProcTestDecimalOutputV2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int ProcTestDecimalOutputV3Default(out decimal? perfectNumber)
+        {
+            var perfectNumberParam = new SqlParameter { ParameterName = "@PerfectNumber", SqlDbType = SqlDbType.Decimal, Direction = ParameterDirection.Output, Precision = 18, Scale = 0 };
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[proc_TestDecimalOutputV3Default] @PerfectNumber OUTPUT", perfectNumberParam, procResultParam);
+
+            if (IsSqlParameterNull(perfectNumberParam))
+                perfectNumber = null;
+            else
+                perfectNumber = (decimal) perfectNumberParam.Value;
+
+            return (int)procResultParam.Value;
+        }
+
+        // ProcTestDecimalOutputV3DefaultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int SpatialTypesNoParams()
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[SpatialTypesNoParams] ", procResultParam);
+
+            return (int)procResultParam.Value;
+        }
+
+        // SpatialTypesNoParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
+        {
+            var geometryParam = new SqlParameter { ParameterName = "@geometry", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = geometry, Size = -1 };
+            if (geometryParam.Value == null)
+                geometryParam.Value = DBNull.Value;
+
+            var geographyParam = new SqlParameter { ParameterName = "@geography", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = geography, Size = -1 };
+            if (geographyParam.Value == null)
+                geographyParam.Value = DBNull.Value;
+
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[SpatialTypesWithParams] @geometry, @geography", geometryParam, geographyParam, procResultParam);
+
+            return (int)procResultParam.Value;
+        }
+
+        // SpatialTypesWithParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        // public StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+
+        // public async Task<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsAsync(int? someVar) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+
+        // public StpMultipleMultipleResultsWithParamsReturnModel StpMultipleMultipleResultsWithParams(int? firstVal, int? secondVal, int? thirdVal) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+
+        // public async Task<StpMultipleMultipleResultsWithParamsReturnModel> StpMultipleMultipleResultsWithParamsAsync(int? firstVal, int? secondVal, int? thirdVal) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+
+        // public StpMultipleResultsReturnModel StpMultipleResults() Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+
+        // public async Task<StpMultipleResultsReturnModel> StpMultipleResultsAsync() Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+
+        // public StpMultipleResultsWithParamsReturnModel StpMultipleResultsWithParams(int? firstVal, int? secondVal) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+
+        // public async Task<StpMultipleResultsWithParamsReturnModel> StpMultipleResultsWithParamsAsync(int? firstVal, int? secondVal) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+
+        public List<StpNoParamsTestReturnModel> StpNoParamsTest()
+        {
+            int procResult;
+            return StpNoParamsTest(out procResult);
+        }
+
+        public List<StpNoParamsTestReturnModel> StpNoParamsTest(out int procResult)
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [dbo].[stp_no_params_test]";
+            var procResultData = Set<StpNoParamsTestReturnModel>()
+                .FromSqlRaw(sqlCommand, procResultParam)
+                .ToList();
+
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<StpNoParamsTestReturnModel>> StpNoParamsTestAsync()
+        {
+            const string sqlCommand = "EXEC [dbo].[stp_no_params_test]";
+            var procResultData = await Set<StpNoParamsTestReturnModel>()
+                .FromSqlRaw(sqlCommand)
+                .ToListAsync();
+
+            return procResultData;
+        }
+
+        public int StpNoReturnFields()
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[stp_no_return_fields] ", procResultParam);
+
+            return (int)procResultParam.Value;
+        }
+
+        // StpNoReturnFieldsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public List<StpNullableParamsTestReturnModel> StpNullableParamsTest(int? aVal, int? bVal)
+        {
+            int procResult;
+            return StpNullableParamsTest(aVal, bVal, out procResult);
+        }
+
+        public List<StpNullableParamsTestReturnModel> StpNullableParamsTest(int? aVal, int? bVal, out int procResult)
+        {
+            var aValParam = new SqlParameter { ParameterName = "@a_val", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = aVal.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!aVal.HasValue)
+                aValParam.Value = DBNull.Value;
+
+            var bValParam = new SqlParameter { ParameterName = "@b_val", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = bVal.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!bVal.HasValue)
+                bValParam.Value = DBNull.Value;
+
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [dbo].[stp_nullable_params_test] @a_val, @b_val";
+            var procResultData = Set<StpNullableParamsTestReturnModel>()
+                .FromSqlRaw(sqlCommand, aValParam, bValParam, procResultParam)
+                .ToList();
+
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<StpNullableParamsTestReturnModel>> StpNullableParamsTestAsync(int? aVal, int? bVal)
+        {
+            var aValParam = new SqlParameter { ParameterName = "@a_val", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = aVal.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!aVal.HasValue)
+                aValParam.Value = DBNull.Value;
+
+            var bValParam = new SqlParameter { ParameterName = "@b_val", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = bVal.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!bVal.HasValue)
+                bValParam.Value = DBNull.Value;
+
+            const string sqlCommand = "EXEC [dbo].[stp_nullable_params_test] @a_val, @b_val";
+            var procResultData = await Set<StpNullableParamsTestReturnModel>()
+                .FromSqlRaw(sqlCommand, aValParam, bValParam)
+                .ToListAsync();
+
+            return procResultData;
+        }
+
+        public List<StpTestReturnModel> StpTest(string strDateFrom, string strDateTo, out bool? retBool)
+        {
+            int procResult;
+            return StpTest(strDateFrom, strDateTo, out retBool, out procResult);
+        }
+
+        public List<StpTestReturnModel> StpTest(string strDateFrom, string strDateTo, out bool? retBool, out int procResult)
+        {
+            var strDateFromParam = new SqlParameter { ParameterName = "@strDateFROM", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = strDateFrom, Size = 20 };
+            if (strDateFromParam.Value == null)
+                strDateFromParam.Value = DBNull.Value;
+
+            var strDateToParam = new SqlParameter { ParameterName = "@strDateTo", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = strDateTo, Size = 20 };
+            if (strDateToParam.Value == null)
+                strDateToParam.Value = DBNull.Value;
+
+            var retBoolParam = new SqlParameter { ParameterName = "@retBool", SqlDbType = SqlDbType.Bit, Direction = ParameterDirection.Output };
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [dbo].[stp_test] @strDateFROM, @strDateTo, @retBool OUTPUT";
+            var procResultData = Set<StpTestReturnModel>()
+                .FromSqlRaw(sqlCommand, strDateFromParam, strDateToParam, retBoolParam, procResultParam)
+                .ToList();
+
+            if (IsSqlParameterNull(retBoolParam))
+                retBool = null;
+            else
+                retBool = (bool) retBoolParam.Value;
+
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        // StpTestAsync() cannot be created due to having out parameters, or is relying on the procedure result (List<StpTestReturnModel>)
+
+        public List<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTest(string strDateFrom, string strDateTo)
+        {
+            int procResult;
+            return StpTestUnderscoreTest(strDateFrom, strDateTo, out procResult);
+        }
+
+        public List<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTest(string strDateFrom, string strDateTo, out int procResult)
+        {
+            var strDateFromParam = new SqlParameter { ParameterName = "@str_Date_FROM", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = strDateFrom, Size = 20 };
+            if (strDateFromParam.Value == null)
+                strDateFromParam.Value = DBNull.Value;
+
+            var strDateToParam = new SqlParameter { ParameterName = "@str_date_to", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = strDateTo, Size = 20 };
+            if (strDateToParam.Value == null)
+                strDateToParam.Value = DBNull.Value;
+
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [dbo].[stp_test_underscore_test] @str_Date_FROM, @str_date_to";
+            var procResultData = Set<StpTestUnderscoreTestReturnModel>()
+                .FromSqlRaw(sqlCommand, strDateFromParam, strDateToParam, procResultParam)
+                .ToList();
+
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<StpTestUnderscoreTestReturnModel>> StpTestUnderscoreTestAsync(string strDateFrom, string strDateTo)
+        {
+            var strDateFromParam = new SqlParameter { ParameterName = "@str_Date_FROM", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = strDateFrom, Size = 20 };
+            if (strDateFromParam.Value == null)
+                strDateFromParam.Value = DBNull.Value;
+
+            var strDateToParam = new SqlParameter { ParameterName = "@str_date_to", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = strDateTo, Size = 20 };
+            if (strDateToParam.Value == null)
+                strDateToParam.Value = DBNull.Value;
+
+            const string sqlCommand = "EXEC [dbo].[stp_test_underscore_test] @str_Date_FROM, @str_date_to";
+            var procResultData = await Set<StpTestUnderscoreTestReturnModel>()
+                .FromSqlRaw(sqlCommand, strDateFromParam, strDateToParam)
+                .ToListAsync();
+
+            return procResultData;
+        }
+
+        public int StupidStoredProcedureParams(string reqType, short? dept, short? @class, short? item)
+        {
+            var reqTypeParam = new SqlParameter { ParameterName = "@ReqType", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = reqType, Size = 25 };
+            if (reqTypeParam.Value == null)
+                reqTypeParam.Value = DBNull.Value;
+
+            var deptParam = new SqlParameter { ParameterName = "@Dept", SqlDbType = SqlDbType.SmallInt, Direction = ParameterDirection.Input, Value = dept.GetValueOrDefault(), Precision = 5, Scale = 0 };
+            if (!dept.HasValue)
+                deptParam.Value = DBNull.Value;
+
+            var @classParam = new SqlParameter { ParameterName = "@Class", SqlDbType = SqlDbType.SmallInt, Direction = ParameterDirection.Input, Value = @class.GetValueOrDefault(), Precision = 5, Scale = 0 };
+            if (!@class.HasValue)
+                @classParam.Value = DBNull.Value;
+
+            var itemParam = new SqlParameter { ParameterName = "@Item", SqlDbType = SqlDbType.SmallInt, Direction = ParameterDirection.Input, Value = item.GetValueOrDefault(), Precision = 5, Scale = 0 };
+            if (!item.HasValue)
+                itemParam.Value = DBNull.Value;
+
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[StupidStoredProcedureParams] @ReqType, @Dept, @Class, @Item", reqTypeParam, deptParam, @classParam, itemParam, procResultParam);
+
+            return (int)procResultParam.Value;
+        }
+
+        // StupidStoredProcedureParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int StupidStoredProcedureParams2(string @override, short? @readonly, short? @class, short? @enum)
+        {
+            var @overrideParam = new SqlParameter { ParameterName = "@override", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = @override, Size = 25 };
+            if (@overrideParam.Value == null)
+                @overrideParam.Value = DBNull.Value;
+
+            var @readonlyParam = new SqlParameter { ParameterName = "@readonly", SqlDbType = SqlDbType.SmallInt, Direction = ParameterDirection.Input, Value = @readonly.GetValueOrDefault(), Precision = 5, Scale = 0 };
+            if (!@readonly.HasValue)
+                @readonlyParam.Value = DBNull.Value;
+
+            var @classParam = new SqlParameter { ParameterName = "@class", SqlDbType = SqlDbType.SmallInt, Direction = ParameterDirection.Input, Value = @class.GetValueOrDefault(), Precision = 5, Scale = 0 };
+            if (!@class.HasValue)
+                @classParam.Value = DBNull.Value;
+
+            var @enumParam = new SqlParameter { ParameterName = "@enum", SqlDbType = SqlDbType.SmallInt, Direction = ParameterDirection.Input, Value = @enum.GetValueOrDefault(), Precision = 5, Scale = 0 };
+            if (!@enum.HasValue)
+                @enumParam.Value = DBNull.Value;
+
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[StupidStoredProcedureParams2] @override, @readonly, @class, @enum", @overrideParam, @readonlyParam, @classParam, @enumParam, procResultParam);
+
+            return (int)procResultParam.Value;
+        }
+
+        // StupidStoredProcedureParams2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
         public List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt)
         {
             int procResult;
@@ -192,8 +1491,106 @@ namespace Efrpg.V3TestG
             return procResultData;
         }
 
+        public List<TestReturnStringReturnModel> TestReturnString()
+        {
+            int procResult;
+            return TestReturnString(out procResult);
+        }
+
+        public List<TestReturnStringReturnModel> TestReturnString(out int procResult)
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [dbo].[TestReturnString]";
+            var procResultData = Set<TestReturnStringReturnModel>()
+                .FromSqlRaw(sqlCommand, procResultParam)
+                .ToList();
+
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<TestReturnStringReturnModel>> TestReturnStringAsync()
+        {
+            const string sqlCommand = "EXEC [dbo].[TestReturnString]";
+            var procResultData = await Set<TestReturnStringReturnModel>()
+                .FromSqlRaw(sqlCommand)
+                .ToListAsync();
+
+            return procResultData;
+        }
+
+        public int UserDefinedTypeSampleStoredProc(int? a, DataTable type, int? b)
+        {
+            var aParam = new SqlParameter { ParameterName = "@a", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = a.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!a.HasValue)
+                aParam.Value = DBNull.Value;
+
+            var typeParam = new SqlParameter { ParameterName = "@type", SqlDbType = SqlDbType.Structured, Direction = ParameterDirection.Input, Value = type, TypeName = "dbo.UserDefinedTypeSample" };
+            if (typeParam.Value == null)
+                typeParam.Value = DBNull.Value;
+
+            var bParam = new SqlParameter { ParameterName = "@b", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = b.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!b.HasValue)
+                bParam.Value = DBNull.Value;
+
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[UserDefinedTypeSampleStoredProc] @a, @type, @b", aParam, typeParam, bParam, procResultParam);
+
+            return (int)procResultParam.Value;
+        }
+
+        // UserDefinedTypeSampleStoredProcAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public List<XmlDataV1ReturnModel> XmlDataV1()
+        {
+            int procResult;
+            return XmlDataV1(out procResult);
+        }
+
+        public List<XmlDataV1ReturnModel> XmlDataV1(out int procResult)
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [dbo].[XmlDataV1]";
+            var procResultData = Set<XmlDataV1ReturnModel>()
+                .FromSqlRaw(sqlCommand, procResultParam)
+                .ToList();
+
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<XmlDataV1ReturnModel>> XmlDataV1Async()
+        {
+            const string sqlCommand = "EXEC [dbo].[XmlDataV1]";
+            var procResultData = await Set<XmlDataV1ReturnModel>()
+                .FromSqlRaw(sqlCommand)
+                .ToListAsync();
+
+            return procResultData;
+        }
+
+        public int XmlDataV2()
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[XmlDataV2] ", procResultParam);
+
+            return (int)procResultParam.Value;
+        }
+
+        // XmlDataV2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
 
         // Table Valued Functions
+
+        // dbo.182_test1
+        public IQueryable<C182Test1ReturnModel> C182Test1(int? test)
+        {
+            return Set<C182Test1ReturnModel>()
+                .FromSqlRaw("SELECT * FROM [dbo].[182_test1]({0})", test)
+                .AsNoTracking();
+        }
 
         // dbo.CsvToInt
         public IQueryable<CsvToIntReturnModel> CsvToInt(string array, string array2)
@@ -208,6 +1605,14 @@ namespace Efrpg.V3TestG
         {
             return Set<CustomSchema_CsvToIntWithSchemaReturnModel>()
                 .FromSqlRaw("SELECT * FROM [CustomSchema].[CsvToIntWithSchema]({0}, {1})", array, array2)
+                .AsNoTracking();
+        }
+
+        // FFRS.CsvToInt2
+        public IQueryable<FFRS_CsvToInt2ReturnModel> FFRS_CsvToInt2(string array, string array2)
+        {
+            return Set<FFRS_CsvToInt2ReturnModel>()
+                .FromSqlRaw("SELECT * FROM [FFRS].[CsvToInt2]({0}, {1})", array, array2)
                 .AsNoTracking();
         }
 
@@ -238,27 +1643,215 @@ namespace Efrpg.V3TestG
 
     public class FakeEfrpgTestDbContext : IEfrpgTestDbContext
     {
-        public DbSet<ColumnName> ColumnNames { get; set; } // ColumnNames
+        public DbSet<A> A { get; set; } // A
+        public DbSet<Aaref> Aarefs { get; set; } // AAREF
+        public DbSet<AbOrderLinesAb> AbOrderLinesAbs { get; set; } // AB_OrderLinesAB_
+        public DbSet<AbOrdersAb> AbOrdersAbs { get; set; } // AB_OrdersAB_
+        public DbSet<AllColumnsNull> AllColumnsNulls { get; set; } // AllColumnsNull
+        public DbSet<Alpha_Harish3485> Alpha_Harish3485 { get; set; } // Harish3485
+        public DbSet<Alpha_Workflow> Alpha_Workflows { get; set; } // workflow
+        public DbSet<AlphaWorkflowSynonym> AlphaWorkflowSynonyms { get; set; } // alpha_workflow_synonym
+        public DbSet<App_UserFacilityServiceRole> App_UserFacilityServiceRoles { get; set; } // UserFacilityServiceRole
+        public DbSet<AppUser> AppUsers { get; set; } // AppUser
+        public DbSet<Attendee> Attendees { get; set; } // Attendee
+        public DbSet<BatchTest> BatchTests { get; set; } // BatchTest
+        public DbSet<Beta_Harish3485> Beta_Harish3485 { get; set; } // Harish3485
+        public DbSet<Beta_ToAlpha> Beta_ToAlphas { get; set; } // ToAlpha
+        public DbSet<Beta_Workflow> Beta_Workflows { get; set; } // workflow
+        public DbSet<Bitfiddlerallcap> Bitfiddlerallcaps { get; set; } // BITFIDDLERALLCAPS
+        public DbSet<BitFiddlerCategoRy> BitFiddlerCategoRies { get; set; } // BitFiddlerCATEGORIES
+        public DbSet<BitFiddlerCurrenCy> BitFiddlerCurrenCies { get; set; } // BitFiddlerCURRENCIES
+        public DbSet<Blah> Blahs { get; set; } // Blah
+        public DbSet<BlahBlahLink> BlahBlahLinks { get; set; } // BlahBlahLink
+        public DbSet<BlahBlahLinkReadonly> BlahBlahLinkReadonlies { get; set; } // BlahBlahLink_readonly
+        public DbSet<BlahBlahLinkV2> BlahBlahLinkV2 { get; set; } // BlahBlahLink_v2
+        public DbSet<BlahBlargLink> BlahBlargLinks { get; set; } // BlahBlargLink
+        public DbSet<Blarg> Blargs { get; set; } // Blarg
+        public DbSet<Burak1> Burak1 { get; set; } // Burak1
+        public DbSet<Burak2> Burak2 { get; set; } // Burak2
+        public DbSet<CalculatedColumnNotNull> CalculatedColumnNotNulls { get; set; } // CalculatedColumnNotNull
+        public DbSet<Car> Cars { get; set; } // Car
+        public DbSet<CarToColour> CarToColours { get; set; } // CarToColour
+        public DbSet<ClientCreationState> ClientCreationStates { get; set; } // ClientCreationState
+        public DbSet<CmsFile> CmsFiles { get; set; } // CMS_File
+        public DbSet<CmsFileTag> CmsFileTags { get; set; } // CMS_FileTag
+        public DbSet<CmsTag> CmsTags { get; set; } // CMS_Tag
+        public DbSet<CodeMeetingTopicDetail> CodeMeetingTopicDetails { get; set; } // CODE_MeetingTopicDetails
+        public DbSet<CodeObject> CodeObjects { get; set; } // CodeObject
+        public DbSet<CodeParamMeetingTopicDetailSource> CodeParamMeetingTopicDetailSources { get; set; } // CODE_PARAM_MeetingTopicDetailSource
+        public DbSet<Colour> Colours { get; set; } // Colour
+        public DbSet<ColumnNameAndType> ColumnNameAndTypes { get; set; } // ColumnNameAndTypes
+        public DbSet<ComplexView> ComplexViews { get; set; } // ComplexView
+        public DbSet<Country> Countries { get; set; } // Country
+        public DbSet<CrossDatabaseSynonym> CrossDatabaseSynonyms { get; set; } // cross_database_synonym
+        public DbSet<DateTimeDefaultTest> DateTimeDefaultTests { get; set; } // DateTimeDefaultTest
+        public DbSet<dcg_RovColumnDefinition> dcg_RovColumnDefinitions { get; set; } // rov_ColumnDefinitions
+        public DbSet<DefaultCheckForNull> DefaultCheckForNulls { get; set; } // DefaultCheckForNull
+        public DbSet<DsOpe> DsOpes { get; set; } // DSOpe
         public DbSet<EnumsWithStringAsValue> EnumsWithStringAsValues { get; set; } // EnumsWithStringAsValue
         public DbSet<EnumTest_DaysOfWeek> EnumTest_DaysOfWeeks { get; set; } // DaysOfWeek
+        public DbSet<EnumWithDefaultValue> EnumWithDefaultValues { get; set; } // EnumWithDefaultValue
+        public DbSet<EventProcessor> EventProcessors { get; set; } // EventProcessor
+        public DbSet<EventProcessorEventFilter> EventProcessorEventFilters { get; set; } // EventProcessorEventFilter
+        public DbSet<FFRS_Cv> FFRS_Cvs { get; set; } // CV
+        public DbSet<FinancialInstitutionOffice> FinancialInstitutionOffices { get; set; } // FinancialInstitutionOffice
+        public DbSet<FkTest_SmallDecimalTestAttribute> FkTest_SmallDecimalTestAttributes { get; set; } // SmallDecimalTestAttribute
+        public DbSet<Footer> Footers { get; set; } // footer
+        public DbSet<ForeignKeyIsNotEnforced> ForeignKeyIsNotEnforceds { get; set; } // ForeignKeyIsNotEnforced
+        public DbSet<ForeignKeyIsNotEnforcedItem> ForeignKeyIsNotEnforcedItems { get; set; } // ForeignKeyIsNotEnforcedItem
+        public DbSet<HasPrincipalKeyTestChild> HasPrincipalKeyTestChilds { get; set; } // HasPrincipalKeyTestChild
+        public DbSet<HasPrincipalKeyTestParent> HasPrincipalKeyTestParents { get; set; } // HasPrincipalKeyTestParent
+        public DbSet<Header> Headers { get; set; } // header
+        public DbSet<HierarchyTest> HierarchyTests { get; set; } // hierarchy_test
+        public DbSet<Issue47_Role> Issue47_Roles { get; set; } // Role
+        public DbSet<Issue47_User> Issue47_Users { get; set; } // Users
+        public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
+        public DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
+        public DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
+        public DbSet<OneEightSix_IssueUploadedFile> OneEightSix_IssueUploadedFiles { get; set; } // IssueUploadedFile
+        public DbSet<OneEightSix_UploadedFile> OneEightSix_UploadedFiles { get; set; } // UploadedFile
+        public DbSet<PeriodTestTable> PeriodTestTables { get; set; } // PeriodTestTable
+        public DbSet<Person> People { get; set; } // Person
+        public DbSet<PersonPost> PersonPosts { get; set; } // PersonPosts
+        public DbSet<PkOrdinalTest> PkOrdinalTests { get; set; } // pk_ordinal_test
+        public DbSet<PropertyTypesToAdd> PropertyTypesToAdds { get; set; } // PropertyTypesToAdd
+        public DbSet<SequenceTest> SequenceTests { get; set; } // SequenceTest
+        public DbSet<SmallDecimalTest> SmallDecimalTests { get; set; } // SmallDecimalTest
+        public DbSet<SmallDecimalTestView> SmallDecimalTestViews { get; set; } // SmallDecimalTestView
         public DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
         public DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; } // ComputedColumns
         public DbSet<Stafford_Foo> Stafford_Foos { get; set; } // Foo
         public DbSet<Synonyms_Child> Synonyms_Children { get; set; } // Child
         public DbSet<Synonyms_Parent> Synonyms_Parents { get; set; } // Parent
+        public DbSet<TableA> TableAs { get; set; } // TableA
+        public DbSet<TableB> TableBs { get; set; } // TableB
+        public DbSet<TableMappingWithSpace> TableMappingWithSpaces { get; set; } // table mapping with space
+        public DbSet<TableWithDuplicateColumnName> TableWithDuplicateColumnNames { get; set; } // table with duplicate column names
+        public DbSet<TableWithSpace> TableWithSpaces { get; set; } // table with space
+        public DbSet<TableWithSpaceAndInColumn> TableWithSpaceAndInColumns { get; set; } // table with space and in columns
+        public DbSet<TableWithSpaceInColumnOnly> TableWithSpaceInColumnOnlies { get; set; } // TableWithSpaceInColumnOnly
+        public DbSet<TadeuszSobol> TadeuszSobols { get; set; } // TadeuszSobol
+        public DbSet<Task1> Task1 { get; set; } // Task
+        public DbSet<TblOrder> TblOrders { get; set; } // tblOrders
+        public DbSet<TblOrderError> TblOrderErrors { get; set; } // tblOrderErrors
+        public DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
+        public DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
+        public DbSet<Ticket> Tickets { get; set; } // Ticket
+        public DbSet<Token> Tokens { get; set; } // Token
+        public DbSet<User> Users { get; set; } // User
+        public DbSet<User309> User309 { get; set; } // User309
+        public DbSet<UserDocument> UserDocuments { get; set; } // User_Document
+        public DbSet<ViewWithSpace> ViewWithSpaces { get; set; } // view with space
+        public DbSet<WVN_Article> WVN_Articles { get; set; } // Articles
+        public DbSet<WVN_VArticle> WVN_VArticles { get; set; } // v_Articles
+        public DbSet<Брендытовара> Брендытовара { get; set; } // Бренды товара
 
         public FakeEfrpgTestDbContext()
         {
-            _database = null;
+            _database = new FakeDatabaseFacade(new EfrpgTestDbContext());
 
-            ColumnNames = new FakeDbSet<ColumnName>("C36");
+            A = new FakeDbSet<A>("AId");
+            Aarefs = new FakeDbSet<Aaref>("C1", "C2");
+            AbOrderLinesAbs = new FakeDbSet<AbOrderLinesAb>("Id");
+            AbOrdersAbs = new FakeDbSet<AbOrdersAb>("Id");
+            AllColumnsNulls = new FakeDbSet<AllColumnsNull>();
+            Alpha_Harish3485 = new FakeDbSet<Alpha_Harish3485>("Id");
+            Alpha_Workflows = new FakeDbSet<Alpha_Workflow>("Id");
+            AlphaWorkflowSynonyms = new FakeDbSet<AlphaWorkflowSynonym>("Id");
+            App_UserFacilityServiceRoles = new FakeDbSet<App_UserFacilityServiceRole>("UserId", "AppId", "FsrId");
+            AppUsers = new FakeDbSet<AppUser>("Id");
+            Attendees = new FakeDbSet<Attendee>("AttendeeId");
+            BatchTests = new FakeDbSet<BatchTest>("Code");
+            Beta_Harish3485 = new FakeDbSet<Beta_Harish3485>("Id");
+            Beta_ToAlphas = new FakeDbSet<Beta_ToAlpha>("Id");
+            Beta_Workflows = new FakeDbSet<Beta_Workflow>("Id");
+            Bitfiddlerallcaps = new FakeDbSet<Bitfiddlerallcap>("Id");
+            BitFiddlerCategoRies = new FakeDbSet<BitFiddlerCategoRy>("Id");
+            BitFiddlerCurrenCies = new FakeDbSet<BitFiddlerCurrenCy>("Id");
+            Blahs = new FakeDbSet<Blah>("BlahId");
+            BlahBlahLinks = new FakeDbSet<BlahBlahLink>("BlahId", "BlahId2");
+            BlahBlahLinkReadonlies = new FakeDbSet<BlahBlahLinkReadonly>("BlahId", "BlahId2");
+            BlahBlahLinkV2 = new FakeDbSet<BlahBlahLinkV2>("BlahId", "BlahId2");
+            BlahBlargLinks = new FakeDbSet<BlahBlargLink>("BlahId", "BlargId");
+            Blargs = new FakeDbSet<Blarg>("BlargId");
+            Burak1 = new FakeDbSet<Burak1>("Id");
+            Burak2 = new FakeDbSet<Burak2>("Id");
+            CalculatedColumnNotNulls = new FakeDbSet<CalculatedColumnNotNull>("Id");
+            Cars = new FakeDbSet<Car>("Id");
+            CarToColours = new FakeDbSet<CarToColour>("CarId", "ColourId");
+            ClientCreationStates = new FakeDbSet<ClientCreationState>("Id");
+            CmsFiles = new FakeDbSet<CmsFile>("FileId");
+            CmsFileTags = new FakeDbSet<CmsFileTag>("FileId", "TagId");
+            CmsTags = new FakeDbSet<CmsTag>("TagId");
+            CodeMeetingTopicDetails = new FakeDbSet<CodeMeetingTopicDetail>("Id");
+            CodeObjects = new FakeDbSet<CodeObject>("CodeObjectNo");
+            CodeParamMeetingTopicDetailSources = new FakeDbSet<CodeParamMeetingTopicDetailSource>("Id");
+            Colours = new FakeDbSet<Colour>("Id");
+            ColumnNameAndTypes = new FakeDbSet<ColumnNameAndType>("C36");
+            ComplexViews = new FakeDbSet<ComplexView>();
+            Countries = new FakeDbSet<Country>("CountryId");
+            CrossDatabaseSynonyms = new FakeDbSet<CrossDatabaseSynonym>("Id");
+            DateTimeDefaultTests = new FakeDbSet<DateTimeDefaultTest>("Id");
+            dcg_RovColumnDefinitions = new FakeDbSet<dcg_RovColumnDefinition>();
+            DefaultCheckForNulls = new FakeDbSet<DefaultCheckForNull>("Id");
+            DsOpes = new FakeDbSet<DsOpe>("Id");
             EnumsWithStringAsValues = new FakeDbSet<EnumsWithStringAsValue>("EnumName", "Value");
             EnumTest_DaysOfWeeks = new FakeDbSet<EnumTest_DaysOfWeek>("TypeName", "TypeId");
+            EnumWithDefaultValues = new FakeDbSet<EnumWithDefaultValue>("Id");
+            EventProcessors = new FakeDbSet<EventProcessor>("Id");
+            EventProcessorEventFilters = new FakeDbSet<EventProcessorEventFilter>("Id");
+            FFRS_Cvs = new FakeDbSet<FFRS_Cv>("BatchUid", "Cvid");
+            FinancialInstitutionOffices = new FakeDbSet<FinancialInstitutionOffice>("FinancialInstitutionCode");
+            FkTest_SmallDecimalTestAttributes = new FakeDbSet<FkTest_SmallDecimalTestAttribute>("FkId");
+            Footers = new FakeDbSet<Footer>("Id");
+            ForeignKeyIsNotEnforceds = new FakeDbSet<ForeignKeyIsNotEnforced>("Id");
+            ForeignKeyIsNotEnforcedItems = new FakeDbSet<ForeignKeyIsNotEnforcedItem>("Id");
+            HasPrincipalKeyTestChilds = new FakeDbSet<HasPrincipalKeyTestChild>("Id");
+            HasPrincipalKeyTestParents = new FakeDbSet<HasPrincipalKeyTestParent>("Id");
+            Headers = new FakeDbSet<Header>("Id", "AnotherId");
+            HierarchyTests = new FakeDbSet<HierarchyTest>("Id");
+            Issue47_Roles = new FakeDbSet<Issue47_Role>("RoleId");
+            Issue47_Users = new FakeDbSet<Issue47_User>("UserId");
+            Issue47_UserRoles = new FakeDbSet<Issue47_UserRole>("UserRoleId");
+            MultipleKeys = new FakeDbSet<MultipleKey>("UserId", "FavouriteColourId", "BestHolidayTypeId");
+            OneEightSix_Issues = new FakeDbSet<OneEightSix_Issue>("Id");
+            OneEightSix_IssueUploadedFiles = new FakeDbSet<OneEightSix_IssueUploadedFile>("UploadedFileId", "IssueId");
+            OneEightSix_UploadedFiles = new FakeDbSet<OneEightSix_UploadedFile>("Id");
+            PeriodTestTables = new FakeDbSet<PeriodTestTable>("Id");
+            People = new FakeDbSet<Person>("Id");
+            PersonPosts = new FakeDbSet<PersonPost>("Id");
+            PkOrdinalTests = new FakeDbSet<PkOrdinalTest>("C3", "C1");
+            PropertyTypesToAdds = new FakeDbSet<PropertyTypesToAdd>("Id");
+            SequenceTests = new FakeDbSet<SequenceTest>("Id");
+            SmallDecimalTests = new FakeDbSet<SmallDecimalTest>("Id");
+            SmallDecimalTestViews = new FakeDbSet<SmallDecimalTestView>();
             Stafford_Boos = new FakeDbSet<Stafford_Boo>("Id");
             Stafford_ComputedColumns = new FakeDbSet<Stafford_ComputedColumn>("Id");
             Stafford_Foos = new FakeDbSet<Stafford_Foo>("Id");
             Synonyms_Children = new FakeDbSet<Synonyms_Child>("ChildId");
             Synonyms_Parents = new FakeDbSet<Synonyms_Parent>("ParentId");
+            TableAs = new FakeDbSet<TableA>("TableAId");
+            TableBs = new FakeDbSet<TableB>("TableBId", "TableAId");
+            TableMappingWithSpaces = new FakeDbSet<TableMappingWithSpace>("Id", "IdValue");
+            TableWithDuplicateColumnNames = new FakeDbSet<TableWithDuplicateColumnName>("Id");
+            TableWithSpaces = new FakeDbSet<TableWithSpace>("Id");
+            TableWithSpaceAndInColumns = new FakeDbSet<TableWithSpaceAndInColumn>("IdValue");
+            TableWithSpaceInColumnOnlies = new FakeDbSet<TableWithSpaceInColumnOnly>("IdValue");
+            TadeuszSobols = new FakeDbSet<TadeuszSobol>("Id");
+            Task1 = new FakeDbSet<Task1>("TaskId");
+            TblOrders = new FakeDbSet<TblOrder>("Id");
+            TblOrderErrors = new FakeDbSet<TblOrderError>("Id");
+            TblOrderErrorsAbs = new FakeDbSet<TblOrderErrorsAb>("Id");
+            TblOrderLines = new FakeDbSet<TblOrderLine>("Id");
+            Tickets = new FakeDbSet<Ticket>("Id");
+            Tokens = new FakeDbSet<Token>("Id");
+            Users = new FakeDbSet<User>("Id");
+            User309 = new FakeDbSet<User309>("UserId");
+            UserDocuments = new FakeDbSet<UserDocument>("Id");
+            ViewWithSpaces = new FakeDbSet<ViewWithSpace>();
+            WVN_Articles = new FakeDbSet<WVN_Article>("PkArticle");
+            WVN_VArticles = new FakeDbSet<WVN_VArticle>();
+            Брендытовара = new FakeDbSet<Брендытовара>("Кодбренда");
 
         }
 
@@ -453,6 +2046,495 @@ namespace Efrpg.V3TestG
 
         // Stored Procedures
 
+        public int AddTwoValues(int? a, int? b)
+        {
+            return 0;
+        }
+
+        // AddTwoValuesAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int AddTwoValuesWithResult(int? a, int? b, out int? result, out int? result2)
+        {
+            result = default(int);
+            result2 = default(int);
+            return 0;
+        }
+
+        // AddTwoValuesWithResultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int Alpha_Overclock(DateTime? parameter)
+        {
+            return 0;
+        }
+
+        // Alpha_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int App_UspCmtUserFsrUpdate(int? userId, int? fsrId, out int? ufsrId)
+        {
+            ufsrId = default(int);
+            return 0;
+        }
+
+        // App_UspCmtUserFsrUpdateAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int ASimpleExample()
+        {
+            return 0;
+        }
+
+        // ASimpleExampleAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int Beta_Overclock(DateTime? parameter)
+        {
+            return 0;
+        }
+
+        // Beta_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public DbSet<C182Test2ReturnModel> C182Test2ReturnModel { get; set; }
+        public C182Test2ReturnModel C182Test2(int? flag)
+        {
+            int procResult;
+            return C182Test2(flag, out procResult);
+        }
+
+        public C182Test2ReturnModel C182Test2(int? flag, out int procResult)
+        {
+            procResult = 0;
+            return new C182Test2ReturnModel();
+        }
+
+        public Task<C182Test2ReturnModel> C182Test2Async(int? flag)
+        {
+            int procResult;
+            return Task.FromResult(C182Test2(flag, out procResult));
+        }
+
+        public int ConvertToString(int? someValue, out string someString)
+        {
+            someString = default(string);
+            return 0;
+        }
+
+        // ConvertToStringAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public DbSet<DboProcDataFromFfrsReturnModel> DboProcDataFromFfrsReturnModel { get; set; }
+        public List<DboProcDataFromFfrsReturnModel> DboProcDataFromFfrs(int? maxId)
+        {
+            int procResult;
+            return DboProcDataFromFfrs(maxId, out procResult);
+        }
+
+        public List<DboProcDataFromFfrsReturnModel> DboProcDataFromFfrs(int? maxId, out int procResult)
+        {
+            procResult = 0;
+            return new List<DboProcDataFromFfrsReturnModel>();
+        }
+
+        public Task<List<DboProcDataFromFfrsReturnModel>> DboProcDataFromFfrsAsync(int? maxId)
+        {
+            int procResult;
+            return Task.FromResult(DboProcDataFromFfrs(maxId, out procResult));
+        }
+
+        public DbSet<DboProcDataFromFfrsAndDboReturnModel> DboProcDataFromFfrsAndDboReturnModel { get; set; }
+        public List<DboProcDataFromFfrsAndDboReturnModel> DboProcDataFromFfrsAndDbo()
+        {
+            int procResult;
+            return DboProcDataFromFfrsAndDbo(out procResult);
+        }
+
+        public List<DboProcDataFromFfrsAndDboReturnModel> DboProcDataFromFfrsAndDbo(out int procResult)
+        {
+            procResult = 0;
+            return new List<DboProcDataFromFfrsAndDboReturnModel>();
+        }
+
+        public Task<List<DboProcDataFromFfrsAndDboReturnModel>> DboProcDataFromFfrsAndDboAsync()
+        {
+            int procResult;
+            return Task.FromResult(DboProcDataFromFfrsAndDbo(out procResult));
+        }
+
+        public DbSet<DsOpeProcReturnModel> DsOpeProcReturnModel { get; set; }
+        public List<DsOpeProcReturnModel> DsOpeProc()
+        {
+            int procResult;
+            return DsOpeProc(out procResult);
+        }
+
+        public List<DsOpeProcReturnModel> DsOpeProc(out int procResult)
+        {
+            procResult = 0;
+            return new List<DsOpeProcReturnModel>();
+        }
+
+        public Task<List<DsOpeProcReturnModel>> DsOpeProcAsync()
+        {
+            int procResult;
+            return Task.FromResult(DsOpeProc(out procResult));
+        }
+
+        public DbSet<FFRS_CvDataReturnModel> FFRS_CvDataReturnModel { get; set; }
+        public List<FFRS_CvDataReturnModel> FFRS_CvData(int? maxId)
+        {
+            int procResult;
+            return FFRS_CvData(maxId, out procResult);
+        }
+
+        public List<FFRS_CvDataReturnModel> FFRS_CvData(int? maxId, out int procResult)
+        {
+            procResult = 0;
+            return new List<FFRS_CvDataReturnModel>();
+        }
+
+        public Task<List<FFRS_CvDataReturnModel>> FFRS_CvDataAsync(int? maxId)
+        {
+            int procResult;
+            return Task.FromResult(FFRS_CvData(maxId, out procResult));
+        }
+
+        public DbSet<FFRS_DataFromDboReturnModel> FFRS_DataFromDboReturnModel { get; set; }
+        public List<FFRS_DataFromDboReturnModel> FFRS_DataFromDbo()
+        {
+            int procResult;
+            return FFRS_DataFromDbo(out procResult);
+        }
+
+        public List<FFRS_DataFromDboReturnModel> FFRS_DataFromDbo(out int procResult)
+        {
+            procResult = 0;
+            return new List<FFRS_DataFromDboReturnModel>();
+        }
+
+        public Task<List<FFRS_DataFromDboReturnModel>> FFRS_DataFromDboAsync()
+        {
+            int procResult;
+            return Task.FromResult(FFRS_DataFromDbo(out procResult));
+        }
+
+        public DbSet<FFRS_DataFromDboAndFfrsReturnModel> FFRS_DataFromDboAndFfrsReturnModel { get; set; }
+        public List<FFRS_DataFromDboAndFfrsReturnModel> FFRS_DataFromDboAndFfrs()
+        {
+            int procResult;
+            return FFRS_DataFromDboAndFfrs(out procResult);
+        }
+
+        public List<FFRS_DataFromDboAndFfrsReturnModel> FFRS_DataFromDboAndFfrs(out int procResult)
+        {
+            procResult = 0;
+            return new List<FFRS_DataFromDboAndFfrsReturnModel>();
+        }
+
+        public Task<List<FFRS_DataFromDboAndFfrsReturnModel>> FFRS_DataFromDboAndFfrsAsync()
+        {
+            int procResult;
+            return Task.FromResult(FFRS_DataFromDboAndFfrs(out procResult));
+        }
+
+        public DbSet<FkTest_HelloReturnModel> FkTest_HelloReturnModel { get; set; }
+        public List<FkTest_HelloReturnModel> FkTest_Hello()
+        {
+            int procResult;
+            return FkTest_Hello(out procResult);
+        }
+
+        public List<FkTest_HelloReturnModel> FkTest_Hello(out int procResult)
+        {
+            procResult = 0;
+            return new List<FkTest_HelloReturnModel>();
+        }
+
+        public Task<List<FkTest_HelloReturnModel>> FkTest_HelloAsync()
+        {
+            int procResult;
+            return Task.FromResult(FkTest_Hello(out procResult));
+        }
+
+        public DbSet<GetSmallDecimalTestReturnModel> GetSmallDecimalTestReturnModel { get; set; }
+        public List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId)
+        {
+            int procResult;
+            return GetSmallDecimalTest(maxId, out procResult);
+        }
+
+        public List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId, out int procResult)
+        {
+            procResult = 0;
+            return new List<GetSmallDecimalTestReturnModel>();
+        }
+
+        public Task<List<GetSmallDecimalTestReturnModel>> GetSmallDecimalTestAsync(int? maxId)
+        {
+            int procResult;
+            return Task.FromResult(GetSmallDecimalTest(maxId, out procResult));
+        }
+
+        public int InsertRecord(string data, out int? insertedId)
+        {
+            insertedId = default(int);
+            return 0;
+        }
+
+        // InsertRecordAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int InsertRecordThree(string data, out int? insertedId, int? someId, out int? anotherInsertedId)
+        {
+            insertedId = default(int);
+            anotherInsertedId = default(int);
+            return 0;
+        }
+
+        // InsertRecordThreeAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int InsertRecordTwo(string data, out int? insertedId, out int? anotherInsertedId)
+        {
+            insertedId = default(int);
+            anotherInsertedId = default(int);
+            return 0;
+        }
+
+        // InsertRecordTwoAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int MinTripSequenceStart(out DateTime? minTripSequenceStartParam)
+        {
+            minTripSequenceStartParam = default(DateTime);
+            return 0;
+        }
+
+        // MinTripSequenceStartAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int MinTripSequenceStartNull(out DateTime? minTripSequenceStartParam)
+        {
+            minTripSequenceStartParam = default(DateTime);
+            return 0;
+        }
+
+        // MinTripSequenceStartNullAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int NvarcharTest(string maxOutputParam, string normalOutputParam)
+        {
+            return 0;
+        }
+
+        // NvarcharTestAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int Omega_Overclock(DateTime? parameter)
+        {
+            return 0;
+        }
+
+        // Omega_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int ProcTestDecimalOutput(out decimal? perfectNumber)
+        {
+            perfectNumber = default(decimal);
+            return 0;
+        }
+
+        // ProcTestDecimalOutputAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int ProcTestDecimalOutputV2(out decimal? perfectNumber)
+        {
+            perfectNumber = default(decimal);
+            return 0;
+        }
+
+        // ProcTestDecimalOutputV2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int ProcTestDecimalOutputV3Default(out decimal? perfectNumber)
+        {
+            perfectNumber = default(decimal);
+            return 0;
+        }
+
+        // ProcTestDecimalOutputV3DefaultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int SpatialTypesNoParams()
+        {
+            return 0;
+        }
+
+        // SpatialTypesNoParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
+        {
+            return 0;
+        }
+
+        // SpatialTypesWithParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public DbSet<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsReturnModel { get; set; }
+        public StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar)
+        {
+            int procResult;
+            return StpMultipleIdenticalResults(someVar, out procResult);
+        }
+
+        public StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar, out int procResult)
+        {
+            procResult = 0;
+            return new StpMultipleIdenticalResultsReturnModel();
+        }
+
+        public Task<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsAsync(int? someVar)
+        {
+            int procResult;
+            return Task.FromResult(StpMultipleIdenticalResults(someVar, out procResult));
+        }
+
+        public DbSet<StpMultipleMultipleResultsWithParamsReturnModel> StpMultipleMultipleResultsWithParamsReturnModel { get; set; }
+        public StpMultipleMultipleResultsWithParamsReturnModel StpMultipleMultipleResultsWithParams(int? firstVal, int? secondVal, int? thirdVal)
+        {
+            int procResult;
+            return StpMultipleMultipleResultsWithParams(firstVal, secondVal, thirdVal, out procResult);
+        }
+
+        public StpMultipleMultipleResultsWithParamsReturnModel StpMultipleMultipleResultsWithParams(int? firstVal, int? secondVal, int? thirdVal, out int procResult)
+        {
+            procResult = 0;
+            return new StpMultipleMultipleResultsWithParamsReturnModel();
+        }
+
+        public Task<StpMultipleMultipleResultsWithParamsReturnModel> StpMultipleMultipleResultsWithParamsAsync(int? firstVal, int? secondVal, int? thirdVal)
+        {
+            int procResult;
+            return Task.FromResult(StpMultipleMultipleResultsWithParams(firstVal, secondVal, thirdVal, out procResult));
+        }
+
+        public DbSet<StpMultipleResultsReturnModel> StpMultipleResultsReturnModel { get; set; }
+        public StpMultipleResultsReturnModel StpMultipleResults()
+        {
+            int procResult;
+            return StpMultipleResults(out procResult);
+        }
+
+        public StpMultipleResultsReturnModel StpMultipleResults(out int procResult)
+        {
+            procResult = 0;
+            return new StpMultipleResultsReturnModel();
+        }
+
+        public Task<StpMultipleResultsReturnModel> StpMultipleResultsAsync()
+        {
+            int procResult;
+            return Task.FromResult(StpMultipleResults(out procResult));
+        }
+
+        public DbSet<StpMultipleResultsWithParamsReturnModel> StpMultipleResultsWithParamsReturnModel { get; set; }
+        public StpMultipleResultsWithParamsReturnModel StpMultipleResultsWithParams(int? firstVal, int? secondVal)
+        {
+            int procResult;
+            return StpMultipleResultsWithParams(firstVal, secondVal, out procResult);
+        }
+
+        public StpMultipleResultsWithParamsReturnModel StpMultipleResultsWithParams(int? firstVal, int? secondVal, out int procResult)
+        {
+            procResult = 0;
+            return new StpMultipleResultsWithParamsReturnModel();
+        }
+
+        public Task<StpMultipleResultsWithParamsReturnModel> StpMultipleResultsWithParamsAsync(int? firstVal, int? secondVal)
+        {
+            int procResult;
+            return Task.FromResult(StpMultipleResultsWithParams(firstVal, secondVal, out procResult));
+        }
+
+        public DbSet<StpNoParamsTestReturnModel> StpNoParamsTestReturnModel { get; set; }
+        public List<StpNoParamsTestReturnModel> StpNoParamsTest()
+        {
+            int procResult;
+            return StpNoParamsTest(out procResult);
+        }
+
+        public List<StpNoParamsTestReturnModel> StpNoParamsTest(out int procResult)
+        {
+            procResult = 0;
+            return new List<StpNoParamsTestReturnModel>();
+        }
+
+        public Task<List<StpNoParamsTestReturnModel>> StpNoParamsTestAsync()
+        {
+            int procResult;
+            return Task.FromResult(StpNoParamsTest(out procResult));
+        }
+
+        public int StpNoReturnFields()
+        {
+            return 0;
+        }
+
+        // StpNoReturnFieldsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public DbSet<StpNullableParamsTestReturnModel> StpNullableParamsTestReturnModel { get; set; }
+        public List<StpNullableParamsTestReturnModel> StpNullableParamsTest(int? aVal, int? bVal)
+        {
+            int procResult;
+            return StpNullableParamsTest(aVal, bVal, out procResult);
+        }
+
+        public List<StpNullableParamsTestReturnModel> StpNullableParamsTest(int? aVal, int? bVal, out int procResult)
+        {
+            procResult = 0;
+            return new List<StpNullableParamsTestReturnModel>();
+        }
+
+        public Task<List<StpNullableParamsTestReturnModel>> StpNullableParamsTestAsync(int? aVal, int? bVal)
+        {
+            int procResult;
+            return Task.FromResult(StpNullableParamsTest(aVal, bVal, out procResult));
+        }
+
+        public DbSet<StpTestReturnModel> StpTestReturnModel { get; set; }
+        public List<StpTestReturnModel> StpTest(string strDateFrom, string strDateTo, out bool? retBool)
+        {
+            int procResult;
+            return StpTest(strDateFrom, strDateTo, out retBool, out procResult);
+        }
+
+        public List<StpTestReturnModel> StpTest(string strDateFrom, string strDateTo, out bool? retBool, out int procResult)
+        {
+            retBool = default(bool);
+            procResult = 0;
+            return new List<StpTestReturnModel>();
+        }
+
+        // StpTestAsync() cannot be created due to having out parameters, or is relying on the procedure result (List<StpTestReturnModel>)
+
+
+        public DbSet<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTestReturnModel { get; set; }
+        public List<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTest(string strDateFrom, string strDateTo)
+        {
+            int procResult;
+            return StpTestUnderscoreTest(strDateFrom, strDateTo, out procResult);
+        }
+
+        public List<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTest(string strDateFrom, string strDateTo, out int procResult)
+        {
+            procResult = 0;
+            return new List<StpTestUnderscoreTestReturnModel>();
+        }
+
+        public Task<List<StpTestUnderscoreTestReturnModel>> StpTestUnderscoreTestAsync(string strDateFrom, string strDateTo)
+        {
+            int procResult;
+            return Task.FromResult(StpTestUnderscoreTest(strDateFrom, strDateTo, out procResult));
+        }
+
+        public int StupidStoredProcedureParams(string reqType, short? dept, short? @class, short? item)
+        {
+            return 0;
+        }
+
+        // StupidStoredProcedureParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int StupidStoredProcedureParams2(string @override, short? @readonly, short? @class, short? @enum)
+        {
+            return 0;
+        }
+
+        // StupidStoredProcedureParams2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
         public DbSet<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProcReturnModel { get; set; }
         public List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt)
         {
@@ -472,7 +2554,65 @@ namespace Efrpg.V3TestG
             return Task.FromResult(Synonyms_SimpleStoredProc(inputInt, out procResult));
         }
 
+        public DbSet<TestReturnStringReturnModel> TestReturnStringReturnModel { get; set; }
+        public List<TestReturnStringReturnModel> TestReturnString()
+        {
+            int procResult;
+            return TestReturnString(out procResult);
+        }
+
+        public List<TestReturnStringReturnModel> TestReturnString(out int procResult)
+        {
+            procResult = 0;
+            return new List<TestReturnStringReturnModel>();
+        }
+
+        public Task<List<TestReturnStringReturnModel>> TestReturnStringAsync()
+        {
+            int procResult;
+            return Task.FromResult(TestReturnString(out procResult));
+        }
+
+        public int UserDefinedTypeSampleStoredProc(int? a, DataTable type, int? b)
+        {
+            return 0;
+        }
+
+        // UserDefinedTypeSampleStoredProcAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public DbSet<XmlDataV1ReturnModel> XmlDataV1ReturnModel { get; set; }
+        public List<XmlDataV1ReturnModel> XmlDataV1()
+        {
+            int procResult;
+            return XmlDataV1(out procResult);
+        }
+
+        public List<XmlDataV1ReturnModel> XmlDataV1(out int procResult)
+        {
+            procResult = 0;
+            return new List<XmlDataV1ReturnModel>();
+        }
+
+        public Task<List<XmlDataV1ReturnModel>> XmlDataV1Async()
+        {
+            int procResult;
+            return Task.FromResult(XmlDataV1(out procResult));
+        }
+
+        public int XmlDataV2()
+        {
+            return 0;
+        }
+
+        // XmlDataV2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
         // Table Valued Functions
+
+        // dbo.182_test1
+        public IQueryable<C182Test1ReturnModel> C182Test1(int? test)
+        {
+            return new List<C182Test1ReturnModel>().AsQueryable();
+        }
 
         // dbo.CsvToInt
         public IQueryable<CsvToIntReturnModel> CsvToInt(string array, string array2)
@@ -484,6 +2624,12 @@ namespace Efrpg.V3TestG
         public IQueryable<CustomSchema_CsvToIntWithSchemaReturnModel> CustomSchema_CsvToIntWithSchema(string array, string array2)
         {
             return new List<CustomSchema_CsvToIntWithSchemaReturnModel>().AsQueryable();
+        }
+
+        // FFRS.CsvToInt2
+        public IQueryable<FFRS_CsvToInt2ReturnModel> FFRS_CsvToInt2(string array, string array2)
+        {
+            return new List<FFRS_CsvToInt2ReturnModel>().AsQueryable();
         }
 
         // Scalar Valued Functions
@@ -582,13 +2728,15 @@ namespace Efrpg.V3TestG
         public override void AddRange(params TEntity[] entities)
         {
             if (entities == null) throw new ArgumentNullException("entities");
-            foreach (var entity in entities.ToList())
+            foreach (var entity in entities)
                 _data.Add(entity);
         }
 
         public override void AddRange(IEnumerable<TEntity> entities)
         {
-            AddRange(entities.ToArray());
+            if (entities == null) throw new ArgumentNullException("entities");
+            foreach (var entity in entities)
+                _data.Add(entity);
         }
 
         public override Task AddRangeAsync(params TEntity[] entities)
@@ -603,12 +2751,19 @@ namespace Efrpg.V3TestG
             return Task.Factory.StartNew(() => AddRange(entities));
         }
 
-        public override void AttachRange(IEnumerable<TEntity> entities)
+        public override EntityEntry<TEntity> Attach(TEntity entity)
         {
-            AddRange(entities.ToArray());
+            if (entity == null) throw new ArgumentNullException("entity");
+            return Add(entity);
         }
 
         public override void AttachRange(params TEntity[] entities)
+        {
+            if (entities == null) throw new ArgumentNullException("entities");
+            AddRange(entities);
+        }
+
+        public override void AttachRange(IEnumerable<TEntity> entities)
         {
             if (entities == null) throw new ArgumentNullException("entities");
             AddRange(entities);
@@ -639,15 +2794,18 @@ namespace Efrpg.V3TestG
             return null;
         }
 
-        public override void UpdateRange(IEnumerable<TEntity> entities)    {
-            UpdateRange(entities.ToArray());
-        }
-
         public override void UpdateRange(params TEntity[] entities)
         {
             if (entities == null) throw new ArgumentNullException("entities");
             RemoveRange(entities);
             AddRange(entities);
+        }
+
+        public override void UpdateRange(IEnumerable<TEntity> entities)
+        {
+            if (entities == null) throw new ArgumentNullException("entities");
+            var array = entities.ToArray();        RemoveRange(array);
+            AddRange(array);
         }
 
         public IList GetList()
@@ -853,53 +3011,908 @@ namespace Efrpg.V3TestG
     {
     }
 
+    public class FakeDatabaseFacade : DatabaseFacade
+    {
+        public FakeDatabaseFacade(DbContext context) : base(context)
+        {
+        }
+
+        public override bool EnsureCreated()
+        {
+            return true;
+        }
+
+        public override Task<bool> EnsureCreatedAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            return Task.FromResult(EnsureCreated());
+        }
+
+        public override bool EnsureDeleted()
+        {
+            return true;
+        }
+
+        public override Task<bool> EnsureDeletedAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            return Task.FromResult(EnsureDeleted());
+        }
+
+        public override bool CanConnect()
+        {
+            return true;
+        }
+
+        public override Task<bool> CanConnectAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            return Task.FromResult(CanConnect());
+        }
+
+        public override IDbContextTransaction BeginTransaction()
+        {
+            return new FakeDbContextTransaction();
+        }
+
+        public override Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            return Task.FromResult(BeginTransaction());
+        }
+
+        public override void CommitTransaction()
+        {
+        }
+
+        public override void RollbackTransaction()
+        {
+        }
+
+        public override IExecutionStrategy CreateExecutionStrategy()
+        {
+            return null;
+        }
+
+        public override string ToString()
+        {
+            return string.Empty;
+        }
+
+    }
+
+    public class FakeDbContextTransaction : IDbContextTransaction
+    {
+        public virtual Guid TransactionId => Guid.NewGuid();
+        public virtual void Commit() { }
+        public virtual void Rollback() { }
+        public virtual Task CommitAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;
+        public virtual Task RollbackAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;
+        public virtual void Dispose() { }
+        public virtual ValueTask DisposeAsync() => default;
+    }
+
     #endregion
 
     #region POCO classes
 
-    // ColumnNames
+    // A
+    public class A
+    {
+        public int AId { get; set; } // AId (Primary key)
+        public int C1 { get; set; } // C1
+        public int C2 { get; set; } // C2
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent Aaref pointed by [A].([C1], [C2]) (FK_A_A)
+        /// </summary>
+        public virtual Aaref Aaref { get; set; } // FK_A_A
+    }
+
+    // AAREF
+    public class Aaref
+    {
+        public int C1 { get; set; } // C1 (Primary key)
+        public int C2 { get; set; } // C2 (Primary key)
+        public DateTime CreatedUtc { get; set; } // CreatedUTC
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child A where [A].([C1], [C2]) point to this entity (FK_A_A)
+        /// </summary>
+        public virtual ICollection<A> A { get; set; } // A.FK_A_A
+
+        public Aaref()
+        {
+            A = new List<A>();
+        }
+    }
+
+    // AB_OrderLinesAB_
+    public class AbOrderLinesAb
+    {
+        public int Id { get; set; } // ID (Primary key)
+        public int OrderId { get; set; } // OrderID
+        public string Sku { get; set; } // sku (length: 15)
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent AbOrdersAb pointed by [AB_OrderLinesAB_].([OrderId]) (AB_OrderLinesAB_FK)
+        /// </summary>
+        public virtual AbOrdersAb AbOrdersAb { get; set; } // AB_OrderLinesAB_FK
+    }
+
+    // AB_OrdersAB_
+    public class AbOrdersAb
+    {
+        public int Id { get; set; } // ID (Primary key)
+        public DateTime Added { get; set; } // added
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child AbOrderLinesAbs where [AB_OrderLinesAB_].[OrderID] point to this entity (AB_OrderLinesAB_FK)
+        /// </summary>
+        public virtual ICollection<AbOrderLinesAb> AbOrderLinesAbs { get; set; } // AB_OrderLinesAB_.AB_OrderLinesAB_FK
+
+        public AbOrdersAb()
+        {
+            Added = DateTime.Now;
+            AbOrderLinesAbs = new List<AbOrderLinesAb>();
+        }
+    }
+
+    // AllColumnsNull
+    public class AllColumnsNull
+    {
+        public int? Total { get; set; } // total
+        public string AName { get; set; } // aName (length: 250)
+    }
+
+    // Harish3485
+    public class Alpha_Harish3485
+    {
+        public int Id { get; set; } // id (Primary key)
+        public int HarishId { get; set; } // harish_id
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent FkTest_SmallDecimalTestAttribute pointed by [Harish3485].([HarishId]) (FK_Harish)
+        /// </summary>
+        public virtual FkTest_SmallDecimalTestAttribute FkTest_SmallDecimalTestAttribute { get; set; } // FK_Harish
+    }
+
+    // The table 'Test' is not usable by entity framework because it
+    // does not have a primary key. It is listed here for completeness.
+    // Test
+    public class Alpha_Test
+    {
+        public int? Id { get; set; } // Id
+        public int? ExclusionTest { get; set; } // ExclusionTest
+    }
+
+    // workflow
+    public class Alpha_Workflow
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public string Description { get; set; } // Description (length: 10)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child Beta_ToAlphas where [ToAlpha].[AlphaId] point to this entity (BetaToAlpha_AlphaWorkflow)
+        /// </summary>
+        public virtual ICollection<Beta_ToAlpha> Beta_ToAlphas { get; set; } // ToAlpha.BetaToAlpha_AlphaWorkflow
+
+        public Alpha_Workflow()
+        {
+            Beta_ToAlphas = new List<Beta_ToAlpha>();
+        }
+    }
+
+    // alpha_workflow_synonym
+    public class AlphaWorkflowSynonym
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public string Description { get; set; } // Description (length: 10)
+    }
+
+    // UserFacilityServiceRole
+    public class App_UserFacilityServiceRole
+    {
+        public int UserId { get; set; } // userId (Primary key)
+        public int AppId { get; set; } // appId (Primary key)
+        public int FsrId { get; set; } // fsrId (Primary key)
+    }
+
+    // AppUser
+    public class AppUser
+    {
+        public long Id { get; set; } // Id (Primary key)
+        public string Name { get; set; } // Name (length: 50)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child Tickets where [Ticket].[CreatedById] point to this entity (FK_Ticket_AppUser)
+        /// </summary>
+        public virtual ICollection<Ticket> Tickets_CreatedById { get; set; } // Ticket.FK_Ticket_AppUser
+
+        /// <summary>
+        /// Child Tickets where [Ticket].[ModifiedById] point to this entity (FK_Ticket_AppUser1)
+        /// </summary>
+        public virtual ICollection<Ticket> Tickets_ModifiedById { get; set; } // Ticket.FK_Ticket_AppUser1
+
+        public AppUser()
+        {
+            Tickets_CreatedById = new List<Ticket>();
+            Tickets_ModifiedById = new List<Ticket>();
+        }
+    }
+
+    // Attendee
+    public class Attendee
+    {
+        public long AttendeeId { get; set; } // AttendeeID (Primary key)
+        public string Lastname { get; set; } // Lastname (length: 50)
+        public string Firstname { get; set; } // Firstname (length: 50)
+        public int? PhoneCountryId { get; set; } // PhoneCountryID
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent Country pointed by [Attendee].([PhoneCountryId]) (FK_Attendee_PhoneCountry)
+        /// </summary>
+        public virtual Country Country { get; set; } // FK_Attendee_PhoneCountry
+    }
+
+    // BatchTest
+    public class BatchTest
+    {
+        public string Code { get; set; } // code (Primary key) (length: 8)
+    }
+
+    // Harish3485
+    public class Beta_Harish3485
+    {
+        public int Id { get; set; } // id (Primary key)
+        public int AnotherId { get; set; } // another_id
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent PropertyTypesToAdd pointed by [Harish3485].([AnotherId]) (FK_Harish)
+        /// </summary>
+        public virtual PropertyTypesToAdd PropertyTypesToAdd { get; set; } // FK_Harish
+    }
+
+    // The table 'Test' is not usable by entity framework because it
+    // does not have a primary key. It is listed here for completeness.
+    // Test
+    public class Beta_Test
+    {
+        public int? Id { get; set; } // Id
+        public int? ExclusionTest { get; set; } // ExclusionTest
+    }
+
+    // ToAlpha
+    public class Beta_ToAlpha
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public int AlphaId { get; set; } // AlphaId
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent Alpha_Workflow pointed by [ToAlpha].([AlphaId]) (BetaToAlpha_AlphaWorkflow)
+        /// </summary>
+        public virtual Alpha_Workflow Alpha_Workflow { get; set; } // BetaToAlpha_AlphaWorkflow
+    }
+
+    // workflow
+    public class Beta_Workflow
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public string Description { get; set; } // Description (length: 10)
+    }
+
+    // BITFIDDLERALLCAPS
+    public class Bitfiddlerallcap
+    {
+        public int Id { get; set; } // Id (Primary key)
+    }
+
+    // BitFiddlerCATEGORIES
+    public class BitFiddlerCategoRy
+    {
+        public int Id { get; set; } // Id (Primary key)
+    }
+
+    // BitFiddlerCURRENCIES
+    public class BitFiddlerCurrenCy
+    {
+        public int Id { get; set; } // Id (Primary key)
+    }
+
+    // Blah
+    public class Blah
+    {
+        public int BlahId { get; set; } // BlahID (Primary key)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child BlahBlahLinks where [BlahBlahLink].[BlahID] point to this entity (FK_BlahBlahLink_Blah)
+        /// </summary>
+        public virtual ICollection<BlahBlahLink> BlahBlahLinks_BlahId { get; set; } // BlahBlahLink.FK_BlahBlahLink_Blah
+
+        /// <summary>
+        /// Child BlahBlahLinks where [BlahBlahLink].[BlahID2] point to this entity (FK_BlahBlahLink_Blah2)
+        /// </summary>
+        public virtual ICollection<BlahBlahLink> BlahBlahLinks_BlahId2 { get; set; } // BlahBlahLink.FK_BlahBlahLink_Blah2
+
+        /// <summary>
+        /// Child BlahBlahLinkReadonlies where [BlahBlahLink_readonly].[BlahID] point to this entity (FK_BlahBlahLink_Blah_ro)
+        /// </summary>
+        public virtual ICollection<BlahBlahLinkReadonly> BlahBlahLinkReadonlies_BlahId { get; set; } // BlahBlahLink_readonly.FK_BlahBlahLink_Blah_ro
+
+        /// <summary>
+        /// Child BlahBlahLinkReadonlies where [BlahBlahLink_readonly].[BlahID2] point to this entity (FK_BlahBlahLink_Blah_ro2)
+        /// </summary>
+        public virtual ICollection<BlahBlahLinkReadonly> BlahBlahLinkReadonlies_BlahId2 { get; set; } // BlahBlahLink_readonly.FK_BlahBlahLink_Blah_ro2
+
+        /// <summary>
+        /// Child BlahBlahLinkV2 where [BlahBlahLink_v2].[BlahID] point to this entity (FK_BlahBlahLinkv2_Blah_ro)
+        /// </summary>
+        public virtual ICollection<BlahBlahLinkV2> BlahBlahLinkV2_BlahId { get; set; } // BlahBlahLink_v2.FK_BlahBlahLinkv2_Blah_ro
+
+        /// <summary>
+        /// Child BlahBlahLinkV2 where [BlahBlahLink_v2].[BlahID2] point to this entity (FK_BlahBlahLinkv2_Blah_ro2)
+        /// </summary>
+        public virtual ICollection<BlahBlahLinkV2> BlahBlahLinkV2_BlahId2 { get; set; } // BlahBlahLink_v2.FK_BlahBlahLinkv2_Blah_ro2
+
+        /// <summary>
+        /// Child BlahBlargLinks where [BlahBlargLink].[BlahID] point to this entity (FK_BlahBlargLink_Blah)
+        /// </summary>
+        public virtual ICollection<BlahBlargLink> BlahBlargLinks { get; set; } // BlahBlargLink.FK_BlahBlargLink_Blah
+
+        public Blah()
+        {
+            BlahBlahLinks_BlahId = new List<BlahBlahLink>();
+            BlahBlahLinks_BlahId2 = new List<BlahBlahLink>();
+            BlahBlahLinkReadonlies_BlahId = new List<BlahBlahLinkReadonly>();
+            BlahBlahLinkReadonlies_BlahId2 = new List<BlahBlahLinkReadonly>();
+            BlahBlahLinkV2_BlahId = new List<BlahBlahLinkV2>();
+            BlahBlahLinkV2_BlahId2 = new List<BlahBlahLinkV2>();
+            BlahBlargLinks = new List<BlahBlargLink>();
+        }
+    }
+
+    // BlahBlahLink
+    public class BlahBlahLink
+    {
+        public int BlahId { get; set; } // BlahID (Primary key)
+        public int BlahId2 { get; set; } // BlahID2 (Primary key)
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent Blah pointed by [BlahBlahLink].([BlahId]) (FK_BlahBlahLink_Blah)
+        /// </summary>
+        public virtual Blah Blah_BlahId { get; set; } // FK_BlahBlahLink_Blah
+
+        /// <summary>
+        /// Parent Blah pointed by [BlahBlahLink].([BlahId2]) (FK_BlahBlahLink_Blah2)
+        /// </summary>
+        public virtual Blah Blah_BlahId2 { get; set; } // FK_BlahBlahLink_Blah2
+    }
+
+    // BlahBlahLink_readonly
+    public class BlahBlahLinkReadonly
+    {
+        public int BlahId { get; set; } // BlahID (Primary key)
+        public int BlahId2 { get; set; } // BlahID2 (Primary key)
+        public byte[] RowVersion { get; set; } // RowVersion
+        public int Id { get; set; } // id
+        public int? Id2 { get; private set; } // id2
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent Blah pointed by [BlahBlahLink_readonly].([BlahId]) (FK_BlahBlahLink_Blah_ro)
+        /// </summary>
+        public virtual Blah Blah_BlahId { get; set; } // FK_BlahBlahLink_Blah_ro
+
+        /// <summary>
+        /// Parent Blah pointed by [BlahBlahLink_readonly].([BlahId2]) (FK_BlahBlahLink_Blah_ro2)
+        /// </summary>
+        public virtual Blah Blah_BlahId2 { get; set; } // FK_BlahBlahLink_Blah_ro2
+    }
+
+    // BlahBlahLink_v2
+    public class BlahBlahLinkV2
+    {
+        public int BlahId { get; set; } // BlahID (Primary key)
+        public int BlahId2 { get; set; } // BlahID2 (Primary key)
+        public int? Dummy1 { get; set; } // dummy1
+        public int Dummy2 { get; set; } // dummy2
+        public int Hello { get; set; } // hello
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent Blah pointed by [BlahBlahLink_v2].([BlahId]) (FK_BlahBlahLinkv2_Blah_ro)
+        /// </summary>
+        public virtual Blah Blah_BlahId { get; set; } // FK_BlahBlahLinkv2_Blah_ro
+
+        /// <summary>
+        /// Parent Blah pointed by [BlahBlahLink_v2].([BlahId2]) (FK_BlahBlahLinkv2_Blah_ro2)
+        /// </summary>
+        public virtual Blah Blah_BlahId2 { get; set; } // FK_BlahBlahLinkv2_Blah_ro2
+    }
+
+    // BlahBlargLink
+    public class BlahBlargLink
+    {
+        public int BlahId { get; set; } // BlahID (Primary key)
+        public int BlargId { get; set; } // BlargID (Primary key)
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent Blah pointed by [BlahBlargLink].([BlahId]) (FK_BlahBlargLink_Blah)
+        /// </summary>
+        public virtual Blah Blah { get; set; } // FK_BlahBlargLink_Blah
+
+        /// <summary>
+        /// Parent Blarg pointed by [BlahBlargLink].([BlargId]) (FK_BlahBlargLink_Blarg)
+        /// </summary>
+        public virtual Blarg Blarg { get; set; } // FK_BlahBlargLink_Blarg
+    }
+
+    // Blarg
+    public class Blarg
+    {
+        public int BlargId { get; set; } // BlargID (Primary key)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child BlahBlargLinks where [BlahBlargLink].[BlargID] point to this entity (FK_BlahBlargLink_Blarg)
+        /// </summary>
+        public virtual ICollection<BlahBlargLink> BlahBlargLinks { get; set; } // BlahBlargLink.FK_BlahBlargLink_Blarg
+
+        public Blarg()
+        {
+            BlahBlargLinks = new List<BlahBlargLink>();
+        }
+    }
+
+    // Burak1
+    public class Burak1
+    {
+        public long Id { get; set; } // id (Primary key)
+        public long IdT { get; set; } // id_t
+        public long Num { get; set; } // num
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent Burak2 pointed by [Burak1].([Id], [Num]) (FK_Burak_Test2)
+        /// </summary>
+        public virtual Burak2 Burak2_Id { get; set; } // FK_Burak_Test2
+
+        /// <summary>
+        /// Parent Burak2 pointed by [Burak1].([IdT], [Num]) (FK_Burak_Test1)
+        /// </summary>
+        public virtual Burak2 Burak2_IdT { get; set; } // FK_Burak_Test1
+    }
+
+    // Burak2
+    public class Burak2
+    {
+        public long Id { get; set; } // id (Primary key)
+        public long Num { get; set; } // num
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Parent (One-to-One) Burak2 pointed by [Burak1].([id], [num]) (FK_Burak_Test2)
+        /// </summary>
+        public virtual Burak1 Burak1_Id { get; set; } // Burak1.FK_Burak_Test2
+
+        /// <summary>
+        /// Parent (One-to-One) Burak2 pointed by [Burak1].([id_t], [num]) (FK_Burak_Test1)
+        /// </summary>
+        public virtual Burak1 Burak1_IdT { get; set; } // Burak1.FK_Burak_Test1
+    }
+
+    // CalculatedColumnNotNull
+    public class CalculatedColumnNotNull
+    {
+        public int Id { get; set; } // ID (Primary key)
+        public byte Type { get; set; } // Type
+        public bool IsCalendar { get; private set; } // IsCalendar
+        public bool IsUtilization { get; private set; } // IsUtilization
+    }
+
+    // Car
+    public class Car
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public int PrimaryColourId { get; set; } // PrimaryColourId
+        public string CarMake { get; set; } // CarMake (length: 255)
+        public int? ComputedColumn { get; private set; } // computed_column
+        public int ComputedColumnPersisted { get; private set; } // computed_column_persisted
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child CarToColours where [CarToColour].[CarId] point to this entity (CarToColour_CarId)
+        /// </summary>
+        public virtual ICollection<CarToColour> CarToColours { get; set; } // CarToColour.CarToColour_CarId
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent Colour pointed by [Car].([PrimaryColourId]) (CarPrimaryColourFK)
+        /// </summary>
+        public virtual Colour Colour { get; set; } // CarPrimaryColourFK
+
+        public Car()
+        {
+            CarToColours = new List<CarToColour>();
+        }
+    }
+
+    // CarToColour
+    public class CarToColour
+    {
+        public int CarId { get; set; } // CarId (Primary key)
+        public int ColourId { get; set; } // ColourId (Primary key)
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent Car pointed by [CarToColour].([CarId]) (CarToColour_CarId)
+        /// </summary>
+        public virtual Car Car { get; set; } // CarToColour_CarId
+
+        /// <summary>
+        /// Parent Colour pointed by [CarToColour].([ColourId]) (CarToColour_ColourId)
+        /// </summary>
+        public virtual Colour Colour { get; set; } // CarToColour_ColourId
+    }
+
+    // ClientCreationState
+    public class ClientCreationState
+    {
+        public Guid Id { get; set; } // id (Primary key)
+        public bool WebhookSetup { get; set; } // WebhookSetup
+        public bool AuthSetup { get; set; } // AuthSetup
+        public bool AssignedCarrier { get; set; } // AssignedCarrier
+    }
+
+    // CMS_File
+    public class CmsFile
+    {
+        public int FileId { get; set; } // FileId (Primary key)
+        public string FileName { get; set; } // FileName (length: 100)
+        public string FileDescription { get; set; } // FileDescription (length: 500)
+        public string FileIdentifier { get; set; } // FileIdentifier (length: 100)
+        public DateTime? ValidStartDate { get; set; } // ValidStartDate
+        public DateTime? ValidEndDate { get; set; } // ValidEndDate
+        public bool IsActive { get; set; } // IsActive
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child CmsFileTags where [CMS_FileTag].[FileId] point to this entity (FK_CMS_FileTag_CMS_File)
+        /// </summary>
+        public virtual ICollection<CmsFileTag> CmsFileTags { get; set; } // CMS_FileTag.FK_CMS_FileTag_CMS_File
+
+        public CmsFile()
+        {
+            CmsFileTags = new List<CmsFileTag>();
+        }
+    }
+
+    // CMS_FileTag
+    public class CmsFileTag
+    {
+        public int FileId { get; set; } // FileId (Primary key)
+        public int TagId { get; set; } // TagId (Primary key)
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent CmsFile pointed by [CMS_FileTag].([FileId]) (FK_CMS_FileTag_CMS_File)
+        /// </summary>
+        public virtual CmsFile CmsFile { get; set; } // FK_CMS_FileTag_CMS_File
+
+        /// <summary>
+        /// Parent CmsTag pointed by [CMS_FileTag].([TagId]) (FK_CMS_FileTag_CMS_Tag)
+        /// </summary>
+        public virtual CmsTag CmsTag { get; set; } // FK_CMS_FileTag_CMS_Tag
+    }
+
+    // CMS_Tag
+    public class CmsTag
+    {
+        public int TagId { get; set; } // TagId (Primary key)
+        public string TagName { get; set; } // TagName (length: 100)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child CmsFileTags where [CMS_FileTag].[TagId] point to this entity (FK_CMS_FileTag_CMS_Tag)
+        /// </summary>
+        public virtual ICollection<CmsFileTag> CmsFileTags { get; set; } // CMS_FileTag.FK_CMS_FileTag_CMS_Tag
+
+        public CmsTag()
+        {
+            CmsFileTags = new List<CmsFileTag>();
+        }
+    }
+
+    // CODE_MeetingTopicDetails
+    public class CodeMeetingTopicDetail
+    {
+        public int Id { get; set; } // id (Primary key)
+        public int IdReuniao { get; set; } // id_reuniao
+        public int? OrdTrab { get; set; } // ord_trab
+        public string Assunto { get; set; } // assunto (length: 250)
+        public string Desenvolvimento { get; set; } // desenvolvimento
+        public string Origem { get; set; } // origem (length: 5)
+        public int? IdOrigem { get; set; } // id_origem
+        public int? Estado { get; set; } // Estado
+        public int CompanyId { get; set; } // CompanyID
+        public DateTime DateCreated { get; set; } // DateCreated
+        public DateTime? DateChanged { get; set; } // DateChanged
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent CodeParamMeetingTopicDetailSource pointed by [CODE_MeetingTopicDetails].([Origem]) (FK_CODE_MeetingTopicDetails_CODE_PARAM_MeetingTopicDetailSource)
+        /// </summary>
+        public virtual CodeParamMeetingTopicDetailSource CodeParamMeetingTopicDetailSource { get; set; } // FK_CODE_MeetingTopicDetails_CODE_PARAM_MeetingTopicDetailSource
+    }
+
+    // CodeObject
     /// <summary>
+    /// This is a test
+    /// </summary>
+    public class CodeObject
+    {
+        public int CodeObjectNo { get; set; } // codeObjectNo (Primary key)
+        public int? ApplicationNo { get; set; } // applicationNo
+        public int Type { get; set; } // type
+        public string EName { get; set; } // eName (length: 250)
+        public string AName { get; set; } // aName (length: 250)
+        public string Description { get; set; } // description (length: 250)
+        public string CodeName { get; set; } // codeName (length: 250)
+        public string Note { get; set; } // note (length: 250)
+        public bool IsObject { get; set; } // isObject
+        public byte[] VersionNumber { get; set; } // versionNumber
+
+        public CodeObject()
+        {
+            CodeObjectNo = 0;
+            IsObject = false;
+        }
+    }
+
+    // CODE_PARAM_MeetingTopicDetailSource
+    public class CodeParamMeetingTopicDetailSource
+    {
+        public int Id { get; set; } // ID (Primary key)
+        public string Code { get; set; } // Code (length: 5)
+        public string Label { get; set; } // Label (length: 50)
+        public string LabelEng { get; set; } // LabelENG (length: 50)
+        public string LabelEsp { get; set; } // LabelESP (length: 50)
+        public string LabelFra { get; set; } // LabelFRA (length: 50)
+        public DateTime DateCreated { get; set; } // DateCreated
+        public DateTime? DateChanged { get; set; } // DateChanged
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child CodeMeetingTopicDetails where [CODE_MeetingTopicDetails].[origem] point to this entity (FK_CODE_MeetingTopicDetails_CODE_PARAM_MeetingTopicDetailSource)
+        /// </summary>
+        public virtual ICollection<CodeMeetingTopicDetail> CodeMeetingTopicDetails { get; set; } // CODE_MeetingTopicDetails.FK_CODE_MeetingTopicDetails_CODE_PARAM_MeetingTopicDetailSource
+
+        public CodeParamMeetingTopicDetailSource()
+        {
+            CodeMeetingTopicDetails = new List<CodeMeetingTopicDetail>();
+        }
+    }
+
+    // Colour
+    public class Colour
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public string Name { get; set; } // Name (length: 255)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child Cars where [Car].[PrimaryColourId] point to this entity (CarPrimaryColourFK)
+        /// </summary>
+        public virtual ICollection<Car> Cars { get; set; } // Car.CarPrimaryColourFK
+
+        /// <summary>
+        /// Child CarToColours where [CarToColour].[ColourId] point to this entity (CarToColour_ColourId)
+        /// </summary>
+        public virtual ICollection<CarToColour> CarToColours { get; set; } // CarToColour.CarToColour_ColourId
+
+        public Colour()
+        {
+            Cars = new List<Car>();
+            CarToColours = new List<CarToColour>();
+        }
+    }
+
+    // ColumnNameAndTypes
+    /// <summary>
+    /// This is to document the bring the action table
     /// This is to document the
     /// table with poor column name choices
     /// </summary>
-    public class ColumnName
+    public class ColumnNameAndType
     {
         public int C36 { get; set; } // $ (Primary key)
         public int? C37 { get; set; } // %
         public int? C163 { get; set; } // £
-
-        /// <summary>
-        /// Multi
-            ///        Line
-            ///    Comment
-        /// </summary>
-        public int? C38Test36 { get; set; } // &test$
+        public int? C38Fred36 { get; set; } // &fred$
         public int? Abc4792 { get; set; } // abc/\
         public int? Joe46Bloggs { get; set; } // joe.bloggs
-        public int? SnakeCase { get; set; } // snake-case
-        public string DefaultTest { get; set; } // default_test (length: 20)
+        public int? SimonHughes { get; set; } // simon-hughes
+        public string Description { get; set; } // description (length: 20)
         public DateTime SomeDate { get; set; } // someDate
-        public string Obs { get; set; } // Obs (length: 20)
-        public string Slash1 { get; set; } // Slash1 (length: 20)
-        public string Slash2 { get; set; } // Slash2 (length: 20)
-        public string Slash3 { get; set; } // Slash3 (length: 20)
+        public string Obs { get; set; } // Obs (length: 50)
+        public string Obs1 { get; set; } // Obs1 (length: 50)
+        public string Obs2 { get; set; } // Obs2 (length: 50)
+        public string Obs3 { get; set; } // Obs3 (length: 50)
         public int? @Static { get; set; } // static
         public int? @Readonly { get; set; } // readonly
         public int? C123Hi { get; set; } // 123Hi
-        public float? Afloat { get; set; } // afloat
-        public double? Adouble { get; set; } // adouble
+        public float? Areal { get; set; } // areal
+        public double? Afloat { get; set; } // afloat
+        public float? Afloat8 { get; set; } // afloat8
+        public float? Afloat20 { get; set; } // afloat20
+        public float? Afloat24 { get; set; } // afloat24
+        public double? Afloat53 { get; set; } // afloat53
         public decimal? Adecimal { get; set; } // adecimal
+        public decimal? Adecimal194 { get; set; } // adecimal_19_4
+        public decimal? Adecimal103 { get; set; } // adecimal_10_3
+        public decimal? Anumeric { get; set; } // anumeric
+        public decimal? Anumeric52 { get; set; } // anumeric_5_2
+        public decimal? Anumeric113 { get; set; } // anumeric_11_3
+        public decimal? Amoney { get; set; } // amoney
+        public decimal? Asmallmoney { get; set; } // asmallmoney
+        public int? Brandon { get; set; } // brandon
+        public NetTopologySuite.Geometries.Point GeographyType { get; set; } // GeographyType
+        public NetTopologySuite.Geometries.Geometry GeometryType { get; set; } // GeometryType
 
-        public ColumnName()
+        public ColumnNameAndType()
         {
-            DefaultTest = "";
+            Description = "";
             SomeDate = DateTime.Now;
             Obs = "[{\"k\":\"en\",\"v\":\"\"},{\"k\":\"pt\",\"v\":\"\"}]";
-            Slash1 = @"\";
-            Slash2 = @"\\";
-            Slash3 = @"\\\";
-            Afloat = 1.23f;
-            Adouble = 999.0;
+            Obs1 = @"\";
+            Obs2 = @"\\";
+            Obs3 = @"\\\";
+            Areal = 1.23f;
+            Afloat = 999.0;
+        }
+    }
+
+    // ComplexView
+    public class ComplexView
+    {
+        public string LicenseType { get; set; } // LicenseType (length: 128)
+        public int? Count { get; set; } // Count
+    }
+
+    // Country
+    public class Country
+    {
+        public int CountryId { get; set; } // CountryID (Primary key)
+        public string Code { get; set; } // Code (length: 12)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child Attendees where [Attendee].[PhoneCountryID] point to this entity (FK_Attendee_PhoneCountry)
+        /// </summary>
+        public virtual ICollection<Attendee> Attendees { get; set; } // Attendee.FK_Attendee_PhoneCountry
+
+        /// <summary>
+        /// Child User309 where [User309].[PhoneCountryID] point to this entity (FK_User309_PhoneCountry)
+        /// </summary>
+        public virtual ICollection<User309> User309 { get; set; } // User309.FK_User309_PhoneCountry
+
+        public Country()
+        {
+            Attendees = new List<Attendee>();
+            User309 = new List<User309>();
+        }
+    }
+
+    // cross_database_synonym
+    public class CrossDatabaseSynonym
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public string Forename { get; set; } // Forename (length: 20)
+    }
+
+    // DateTimeDefaultTest
+    public class DateTimeDefaultTest
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public DateTimeOffset? CreatedDate { get; set; } // CreatedDate
+
+        public DateTimeDefaultTest()
+        {
+            CreatedDate = DateTimeOffset.Now;
+        }
+    }
+
+    // rov_ColumnDefinitions
+    public class dcg_RovColumnDefinition
+    {
+        public string TableCatalog { get; set; } // TABLE_CATALOG (length: 128)
+        public string TableSchema { get; set; } // TABLE_SCHEMA (length: 128)
+        public string TableName { get; set; } // TABLE_NAME (length: 128)
+        public string ColumnName { get; set; } // COLUMN_NAME (length: 128)
+        public int? OrdinalPosition { get; set; } // ORDINAL_POSITION
+        public string ColumnDefault { get; set; } // COLUMN_DEFAULT (length: 4000)
+        public string IsNullable { get; set; } // IS_NULLABLE (length: 3)
+        public string DataType { get; set; } // DATA_TYPE (length: 128)
+        public int? CharacterMaximumLength { get; set; } // CHARACTER_MAXIMUM_LENGTH
+        public int? CharacterOctetLength { get; set; } // CHARACTER_OCTET_LENGTH
+        public byte? NumericPrecision { get; set; } // NUMERIC_PRECISION
+        public short? NumericPrecisionRadix { get; set; } // NUMERIC_PRECISION_RADIX
+        public int? NumericScale { get; set; } // NUMERIC_SCALE
+        public short? DatetimePrecision { get; set; } // DATETIME_PRECISION
+        public string CharacterSetCatalog { get; set; } // CHARACTER_SET_CATALOG (length: 128)
+        public string CharacterSetSchema { get; set; } // CHARACTER_SET_SCHEMA (length: 128)
+        public string CharacterSetName { get; set; } // CHARACTER_SET_NAME (length: 128)
+        public string CollationCatalog { get; set; } // COLLATION_CATALOG (length: 128)
+        public string CollationSchema { get; set; } // COLLATION_SCHEMA (length: 128)
+        public string CollationName { get; set; } // COLLATION_NAME (length: 128)
+        public string DomainCatalog { get; set; } // DOMAIN_CATALOG (length: 128)
+        public string DomainSchema { get; set; } // DOMAIN_SCHEMA (length: 128)
+        public string DomainName { get; set; } // DOMAIN_NAME (length: 128)
+        public string Type { get; set; } // TYPE (length: 2)
+    }
+
+    // DefaultCheckForNull
+    public class DefaultCheckForNull
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public string DescUppercase { get; set; } // DescUppercase (length: 5)
+        public string DescLowercase { get; set; } // DescLowercase (length: 5)
+        public string DescMixedCase { get; set; } // DescMixedCase (length: 5)
+        public string DescBrackets { get; set; } // DescBrackets (length: 5)
+        public string X1 { get; set; } // X1 (length: 255)
+    }
+
+    // DSOpe
+    public class DsOpe
+    {
+        public int Id { get; set; } // ID (Primary key)
+        public decimal DecimalDefault { get; set; } // decimal_default
+        public Guid MyGuid { get; set; } // MyGuid
+        public string @Default { get; set; } // default (length: 10)
+        public Guid? MyGuidBadDefault { get; set; } // MyGuidBadDefault
+
+        public DsOpe()
+        {
+            DecimalDefault = 99.99m;
+            MyGuid = Guid.Parse("9B7E1F67-5A81-4277-BC7D-06A3262A5C70");
+            MyGuidBadDefault = null;
         }
     }
 
@@ -917,6 +3930,287 @@ namespace Efrpg.V3TestG
         public int TypeId { get; set; } // TypeId (Primary key)
     }
 
+    // EnumWithDefaultValue
+    public class EnumWithDefaultValue
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public int SomeEnum { get; set; } // SomeEnum
+
+        public EnumWithDefaultValue()
+        {
+            SomeEnum = 1;
+        }
+    }
+
+    // EventProcessor
+    public class EventProcessor
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public string Name { get; set; } // Name (length: 200)
+        public string Description { get; set; } // Description (length: 512)
+        public string EndpointAddress { get; set; } // EndpointAddress (length: 512)
+        public bool Enabled { get; set; } // Enabled
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child EventProcessorEventFilters where [EventProcessorEventFilter].[EventProcessorId] point to this entity (FK_EventProcessorEventFilter__EventProcessor)
+        /// </summary>
+        public virtual ICollection<EventProcessorEventFilter> EventProcessorEventFilters { get; set; } // EventProcessorEventFilter.FK_EventProcessorEventFilter__EventProcessor
+
+        public EventProcessor()
+        {
+            EventProcessorEventFilters = new List<EventProcessorEventFilter>();
+        }
+    }
+
+    // EventProcessorEventFilter
+    public class EventProcessorEventFilter
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public int EventProcessorId { get; set; } // EventProcessorId
+        public int WantedEventId { get; set; } // WantedEventId
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent EventProcessor pointed by [EventProcessorEventFilter].([EventProcessorId]) (FK_EventProcessorEventFilter__EventProcessor)
+        /// </summary>
+        public virtual EventProcessor EventProcessor { get; set; } // FK_EventProcessorEventFilter__EventProcessor
+    }
+
+    // CV
+    public class FFRS_Cv
+    {
+        public Guid BatchUid { get; set; } // BatchUID (Primary key)
+        public int Cvid { get; set; } // CVID (Primary key)
+        public string CvName { get; set; } // CVName (length: 200)
+    }
+
+    // FinancialInstitutionOffice
+    public class FinancialInstitutionOffice
+    {
+        public Guid Code { get; set; } // Code
+        public Guid FinancialInstitutionCode { get; set; } // FinancialInstitutionCode (Primary key via unique index UniqueOfficeName_FinancialInstitutionOffice)
+        public string OfficeName { get; set; } // OfficeName (length: 200)
+    }
+
+    // SmallDecimalTestAttribute
+    public class FkTest_SmallDecimalTestAttribute
+    {
+        public int FkId { get; set; } // FkID (Primary key)
+        public string Description { get; set; } // description (length: 20)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child Alpha_Harish3485 where [Harish3485].[harish_id] point to this entity (FK_Harish)
+        /// </summary>
+        public virtual ICollection<Alpha_Harish3485> Alpha_Harish3485 { get; set; } // Harish3485.FK_Harish
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent SmallDecimalTest pointed by [SmallDecimalTestAttribute].([FkId]) (KateFK)
+        /// </summary>
+        public virtual SmallDecimalTest SmallDecimalTest { get; set; } // KateFK
+
+        public FkTest_SmallDecimalTestAttribute()
+        {
+            Alpha_Harish3485 = new List<Alpha_Harish3485>();
+        }
+    }
+
+    // footer
+    public class Footer
+    {
+        public int Id { get; set; } // ID (Primary key)
+        public int OtherId { get; set; } // otherID
+        public DateTime Added { get; set; } // added
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent Header pointed by [footer].([Id], [OtherId]) (fooderFK)
+        /// </summary>
+        public virtual Header Header { get; set; } // fooderFK
+
+        public Footer()
+        {
+            Added = DateTime.Now;
+        }
+    }
+
+    // ForeignKeyIsNotEnforced
+    public class ForeignKeyIsNotEnforced
+    {
+        public int Id { get; set; } // id (Primary key)
+        public int? NullValue { get; set; } // null_value
+        public int NotNullValue { get; set; } // not_null_value
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Parent (One-to-One) ForeignKeyIsNotEnforced pointed by [ForeignKeyIsNotEnforcedItem].[not_null_value] (FK_ForeignKeyIsNotEnforcedItem_notnull_notnull)
+        /// </summary>
+        public virtual ForeignKeyIsNotEnforcedItem ForeignKeyIsNotEnforcedItem_NotNullValue { get; set; } // ForeignKeyIsNotEnforcedItem.FK_ForeignKeyIsNotEnforcedItem_notnull_notnull
+
+        /// <summary>
+        /// Parent (One-to-One) ForeignKeyIsNotEnforced pointed by [ForeignKeyIsNotEnforcedItem].[null_value] (FK_ForeignKeyIsNotEnforcedItem_null_notnull)
+        /// </summary>
+        public virtual ForeignKeyIsNotEnforcedItem ForeignKeyIsNotEnforcedItem_NullValue { get; set; } // ForeignKeyIsNotEnforcedItem.FK_ForeignKeyIsNotEnforcedItem_null_notnull
+    }
+
+    // ForeignKeyIsNotEnforcedItem
+    public class ForeignKeyIsNotEnforcedItem
+    {
+        public int Id { get; set; } // id (Primary key)
+        public int? NullValue { get; set; } // null_value
+        public int NotNullValue { get; set; } // not_null_value
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent ForeignKeyIsNotEnforced pointed by [ForeignKeyIsNotEnforcedItem].([NotNullValue]) (FK_ForeignKeyIsNotEnforcedItem_notnull_notnull)
+        /// </summary>
+        public virtual ForeignKeyIsNotEnforced ForeignKeyIsNotEnforced_NotNullValue { get; set; } // FK_ForeignKeyIsNotEnforcedItem_notnull_notnull
+
+        /// <summary>
+        /// Parent ForeignKeyIsNotEnforced pointed by [ForeignKeyIsNotEnforcedItem].([NullValue]) (FK_ForeignKeyIsNotEnforcedItem_null_notnull)
+        /// </summary>
+        public virtual ForeignKeyIsNotEnforced ForeignKeyIsNotEnforced_NullValue { get; set; } // FK_ForeignKeyIsNotEnforcedItem_null_notnull
+    }
+
+    // HasPrincipalKeyTestChild
+    public class HasPrincipalKeyTestChild
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public int A { get; set; } // A
+        public int B { get; set; } // B
+        public int? C { get; set; } // C
+        public int? D { get; set; } // D
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent HasPrincipalKeyTestParent pointed by [HasPrincipalKeyTestChild].([A], [B]) (FK_HasPrincipalKey_AB)
+        /// </summary>
+        public virtual HasPrincipalKeyTestParent HasPrincipalKeyTestParent { get; set; } // FK_HasPrincipalKey_AB
+    }
+
+    // HasPrincipalKeyTestParent
+    public class HasPrincipalKeyTestParent
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public int Aa { get; set; } // AA
+        public int Bb { get; set; } // BB
+        public int? Cc { get; set; } // CC
+        public int? Dd { get; set; } // DD
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Parent (One-to-One) HasPrincipalKeyTestParent pointed by [HasPrincipalKeyTestChild].([A], [B]) (FK_HasPrincipalKey_AB)
+        /// </summary>
+        public virtual HasPrincipalKeyTestChild HasPrincipalKeyTestChild { get; set; } // HasPrincipalKeyTestChild.FK_HasPrincipalKey_AB
+    }
+
+    // header
+    public class Header
+    {
+        public int Id { get; set; } // ID (Primary key)
+        public int AnotherId { get; set; } // anotherID (Primary key)
+        public DateTime Added { get; set; } // added
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child Footers where [footer].([ID], [otherID]) point to this entity (fooderFK)
+        /// </summary>
+        public virtual ICollection<Footer> Footers { get; set; } // footer.fooderFK
+
+        public Header()
+        {
+            Added = DateTime.Now;
+            Footers = new List<Footer>();
+        }
+    }
+
+    // hierarchy_test
+    public class HierarchyTest
+    {
+        public int Id { get; set; } // ID (Primary key)
+        public Microsoft.SqlServer.Types.SqlHierarchyId Hid { get; set; } // hid
+    }
+
+    // Role
+    public class Issue47_Role
+    {
+        public int RoleId { get; set; } // RoleId (Primary key)
+        public string Role { get; set; } // Role (length: 10)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child Issue47_UserRoles where [UserRoles].[RoleId] point to this entity (Issue47_UserRoles_roleid)
+        /// </summary>
+        public virtual ICollection<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles.Issue47_UserRoles_roleid
+
+        public Issue47_Role()
+        {
+            Issue47_UserRoles = new List<Issue47_UserRole>();
+        }
+    }
+
+    // Users
+    public class Issue47_User
+    {
+        public int UserId { get; set; } // UserId (Primary key)
+        public string Name { get; set; } // Name (length: 10)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child Issue47_UserRoles where [UserRoles].[UserId] point to this entity (Issue47_UserRoles_userid)
+        /// </summary>
+        public virtual ICollection<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles.Issue47_UserRoles_userid
+
+        public Issue47_User()
+        {
+            Issue47_UserRoles = new List<Issue47_UserRole>();
+        }
+    }
+
+    // UserRoles
+    public class Issue47_UserRole
+    {
+        public int UserRoleId { get; set; } // UserRoleId (Primary key)
+        public int UserId { get; set; } // UserId
+        public int RoleId { get; set; } // RoleId
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent Issue47_Role pointed by [UserRoles].([RoleId]) (Issue47_UserRoles_roleid)
+        /// </summary>
+        public virtual Issue47_Role Issue47_Role { get; set; } // Issue47_UserRoles_roleid
+
+        /// <summary>
+        /// Parent Issue47_User pointed by [UserRoles].([UserId]) (Issue47_UserRoles_userid)
+        /// </summary>
+        public virtual Issue47_User Issue47_User { get; set; } // Issue47_UserRoles_userid
+    }
+
+    // MultipleKeys
+    public class MultipleKey
+    {
+        public int UserId { get; set; } // UserId (Primary key)
+        public int FavouriteColourId { get; set; } // FavouriteColourId (Primary key via unique index )
+        public int BestHolidayTypeId { get; set; } // BestHolidayTypeId (Primary key)
+        public int BankId { get; set; } // BankId
+        public int CarId { get; set; } // CarId
+    }
+
     // The table 'NoPrimaryKeys' is not usable by entity framework because it
     // does not have a primary key. It is listed here for completeness.
     // NoPrimaryKeys
@@ -924,6 +4218,211 @@ namespace Efrpg.V3TestG
     {
         public int? Id { get; set; } // Id
         public string Description { get; set; } // Description (length: 10)
+    }
+
+    // The table 'Test' is not usable by entity framework because it
+    // does not have a primary key. It is listed here for completeness.
+    // Test
+    public class Omega_Test
+    {
+        public int? Id { get; set; } // Id
+        public int? ExclusionTest { get; set; } // ExclusionTest
+    }
+
+    // Issue
+    public class OneEightSix_Issue
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public string Title { get; set; } // Title (length: 100)
+        public string Content { get; set; } // Content
+        public int? ConsentDocumentId { get; set; } // ConsentDocumentId
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child OneEightSix_IssueUploadedFiles where [IssueUploadedFile].[IssueId] point to this entity (FK_IssueUploadedFile_Issue)
+        /// </summary>
+        public virtual ICollection<OneEightSix_IssueUploadedFile> OneEightSix_IssueUploadedFiles { get; set; } // IssueUploadedFile.FK_IssueUploadedFile_Issue
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent OneEightSix_UploadedFile pointed by [Issue].([ConsentDocumentId]) (FK_Issue_UploadedFileConsentDocument)
+        /// </summary>
+        public virtual OneEightSix_UploadedFile OneEightSix_UploadedFile { get; set; } // FK_Issue_UploadedFileConsentDocument
+
+        public OneEightSix_Issue()
+        {
+            OneEightSix_IssueUploadedFiles = new List<OneEightSix_IssueUploadedFile>();
+        }
+    }
+
+    // IssueUploadedFile
+    public class OneEightSix_IssueUploadedFile
+    {
+        public int UploadedFileId { get; set; } // UploadedFileId (Primary key)
+        public int IssueId { get; set; } // IssueId (Primary key)
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent OneEightSix_Issue pointed by [IssueUploadedFile].([IssueId]) (FK_IssueUploadedFile_Issue)
+        /// </summary>
+        public virtual OneEightSix_Issue OneEightSix_Issue { get; set; } // FK_IssueUploadedFile_Issue
+
+        /// <summary>
+        /// Parent OneEightSix_UploadedFile pointed by [IssueUploadedFile].([UploadedFileId]) (FK_IssueUploadedFile_UploadedFile)
+        /// </summary>
+        public virtual OneEightSix_UploadedFile OneEightSix_UploadedFile { get; set; } // FK_IssueUploadedFile_UploadedFile
+    }
+
+    // UploadedFile
+    public class OneEightSix_UploadedFile
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public string FullPath { get; set; } // FullPath
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child OneEightSix_Issues where [Issue].[ConsentDocumentId] point to this entity (FK_Issue_UploadedFileConsentDocument)
+        /// </summary>
+        public virtual ICollection<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue.FK_Issue_UploadedFileConsentDocument
+
+        /// <summary>
+        /// Child OneEightSix_IssueUploadedFiles where [IssueUploadedFile].[UploadedFileId] point to this entity (FK_IssueUploadedFile_UploadedFile)
+        /// </summary>
+        public virtual ICollection<OneEightSix_IssueUploadedFile> OneEightSix_IssueUploadedFiles { get; set; } // IssueUploadedFile.FK_IssueUploadedFile_UploadedFile
+
+        public OneEightSix_UploadedFile()
+        {
+            OneEightSix_Issues = new List<OneEightSix_Issue>();
+            OneEightSix_IssueUploadedFiles = new List<OneEightSix_IssueUploadedFile>();
+        }
+    }
+
+    // PeriodTestTable
+    public class PeriodTestTable
+    {
+        public int Id { get; set; } // id (Primary key)
+        public int? Joe46Bloggs { get; set; } // joe.bloggs
+    }
+
+    // Person
+    public class Person
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public string Name { get; set; } // Name (length: 50)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child PersonPosts where [PersonPosts].[CreatedBy] point to this entity (FK_PersonPosts_CreatedBy)
+        /// </summary>
+        public virtual ICollection<PersonPost> PersonPosts_CreatedBy { get; set; } // PersonPosts.FK_PersonPosts_CreatedBy
+
+        /// <summary>
+        /// Child PersonPosts where [PersonPosts].[UpdatedBy] point to this entity (FK_PersonPosts_UpdatedBy)
+        /// </summary>
+        public virtual ICollection<PersonPost> PersonPosts_UpdatedBy { get; set; } // PersonPosts.FK_PersonPosts_UpdatedBy
+
+        public Person()
+        {
+            PersonPosts_CreatedBy = new List<PersonPost>();
+            PersonPosts_UpdatedBy = new List<PersonPost>();
+        }
+    }
+
+    // PersonPosts
+    public class PersonPost
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public string Title { get; set; } // Title (length: 20)
+        public string Body { get; set; } // Body (length: 100)
+        public int CreatedBy { get; set; } // CreatedBy
+        public int UpdatedBy { get; set; } // UpdatedBy
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent Person pointed by [PersonPosts].([CreatedBy]) (FK_PersonPosts_CreatedBy)
+        /// </summary>
+        public virtual Person Person_CreatedBy { get; set; } // FK_PersonPosts_CreatedBy
+
+        /// <summary>
+        /// Parent Person pointed by [PersonPosts].([UpdatedBy]) (FK_PersonPosts_UpdatedBy)
+        /// </summary>
+        public virtual Person Person_UpdatedBy { get; set; } // FK_PersonPosts_UpdatedBy
+    }
+
+    // pk_ordinal_test
+    public class PkOrdinalTest
+    {
+        public int C1 { get; set; } // C1 (Primary key)
+        public int C2 { get; set; } // C2
+        public int C3 { get; set; } // C3 (Primary key)
+    }
+
+    // PropertyTypesToAdd
+    public class PropertyTypesToAdd
+    {
+        public int Id { get; set; } // id (Primary key)
+        public DateTime? DtDefault { get; set; } // dt_default
+        public DateTime? Dt7 { get; set; } // dt7
+        public string DefaultCheck { get; set; } // defaultCheck (length: 10)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child Beta_Harish3485 where [Harish3485].[another_id] point to this entity (FK_Harish)
+        /// </summary>
+        public virtual ICollection<Beta_Harish3485> Beta_Harish3485 { get; set; } // Harish3485.FK_Harish
+
+        public PropertyTypesToAdd()
+        {
+            DefaultCheck = @"/****** Object:  Default [d_t_address_type_domain]    Script Date: 22/07/2015 14:28:05 ******/
+    CREATE DEFAULT [dbo].[d_t_address_type_domain] 
+    AS
+    'A'";
+            Beta_Harish3485 = new List<Beta_Harish3485>();
+        }
+    }
+
+    // SequenceTest
+    public class SequenceTest
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public long CntByBigInt { get; set; } // CntByBigInt
+        public byte CntByTinyInt { get; set; } // CntByTinyInt
+        public short CntBySmallInt { get; set; } // CntBySmallInt
+        public decimal CntByDecimal { get; set; } // CntByDecimal
+        public decimal CntByNumeric { get; set; } // CntByNumeric
+    }
+
+    // SmallDecimalTest
+    public class SmallDecimalTest
+    {
+        public int Id { get; set; } // id (Primary key)
+        public decimal? KoeffVed { get; set; } // KoeffVed
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Parent (One-to-One) SmallDecimalTest pointed by [SmallDecimalTestAttribute].[FkID] (KateFK)
+        /// </summary>
+        public virtual FkTest_SmallDecimalTestAttribute FkTest_SmallDecimalTestAttribute { get; set; } // SmallDecimalTestAttribute.KateFK
+
+        public SmallDecimalTest()
+        {
+            KoeffVed = 0.5m;
+        }
+    }
+
+    // SmallDecimalTestView
+    public class SmallDecimalTestView
+    {
+        public int FkId { get; set; } // FkID
+        public string Description { get; set; } // description (length: 20)
     }
 
     // Boo
@@ -996,38 +4495,1081 @@ namespace Efrpg.V3TestG
         }
     }
 
+    // TableA
+    public class TableA
+    {
+        public int TableAId { get; set; } // TableAId (Primary key)
+        public string TableADesc { get; set; } // TableADesc (length: 20)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child TableBs where [TableB].[TableAId] point to this entity (FK_TableA_CompositeKey_Req)
+        /// </summary>
+        public virtual ICollection<TableB> TableBs { get; set; } // TableB.FK_TableA_CompositeKey_Req
+
+        public TableA()
+        {
+            TableBs = new List<TableB>();
+        }
+    }
+
+    // TableB
+    public class TableB
+    {
+        public int TableBId { get; set; } // TableBId (Primary key)
+        public int TableAId { get; set; } // TableAId (Primary key)
+        public int? ParentTableAId { get; set; } // ParentTableAId
+        public string TableBDesc { get; set; } // TableBDesc (length: 20)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Parent (One-to-One) TableB pointed by [TableB].([TableAId], [TableBId]) (ParentTableB_Hierarchy)
+        /// </summary>
+        public virtual TableB TableB2 { get; set; } // TableB.ParentTableB_Hierarchy
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent TableA pointed by [TableB].([TableAId]) (FK_TableA_CompositeKey_Req)
+        /// </summary>
+        public virtual TableA TableA_TableAId { get; set; } // FK_TableA_CompositeKey_Req
+
+        /// <summary>
+        /// Parent TableB pointed by [TableB].([TableAId], [TableBId]) (ParentTableB_Hierarchy)
+        /// </summary>
+        public virtual TableB TableB1 { get; set; } // ParentTableB_Hierarchy
+    }
+
+    // table mapping with space
+    public class TableMappingWithSpace
+    {
+        public int Id { get; set; } // id (Primary key)
+        public int IdValue { get; set; } // id value (Primary key)
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent TableWithSpace pointed by [table mapping with space].([Id]) (space1FK)
+        /// </summary>
+        public virtual TableWithSpace TableWithSpace { get; set; } // space1FK
+
+        /// <summary>
+        /// Parent TableWithSpaceAndInColumn pointed by [table mapping with space].([IdValue]) (space2FK)
+        /// </summary>
+        public virtual TableWithSpaceAndInColumn TableWithSpaceAndInColumn { get; set; } // space2FK
+    }
+
+    // table with duplicate column names
+    public class TableWithDuplicateColumnName
+    {
+        public int Id { get; set; } // id (Primary key)
+        public int UserId1 { get; set; } // user_id
+        public int UserId2 { get; set; } // UserId
+        public int UserId3 { get; set; } // User Id
+        public int UserId4 { get; set; } // User  Id
+        public int UserId { get; set; } // user__id
+    }
+
+    // table with space
+    public class TableWithSpace
+    {
+        public int Id { get; set; } // id (Primary key)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child TableMappingWithSpaces where [table mapping with space].[id] point to this entity (space1FK)
+        /// </summary>
+        public virtual ICollection<TableMappingWithSpace> TableMappingWithSpaces { get; set; } // table mapping with space.space1FK
+
+        public TableWithSpace()
+        {
+            TableMappingWithSpaces = new List<TableMappingWithSpace>();
+        }
+    }
+
+    // table with space and in columns
+    public class TableWithSpaceAndInColumn
+    {
+        public int IdValue { get; set; } // id value (Primary key)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child TableMappingWithSpaces where [table mapping with space].[id value] point to this entity (space2FK)
+        /// </summary>
+        public virtual ICollection<TableMappingWithSpace> TableMappingWithSpaces { get; set; } // table mapping with space.space2FK
+
+        public TableWithSpaceAndInColumn()
+        {
+            TableMappingWithSpaces = new List<TableMappingWithSpace>();
+        }
+    }
+
+    // TableWithSpaceInColumnOnly
+    public class TableWithSpaceInColumnOnly
+    {
+        public int IdValue { get; set; } // id value (Primary key)
+    }
+
+    // TadeuszSobol
+    public class TadeuszSobol
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public string Description { get; set; } // Description
+        public string Notes { get; set; } // Notes
+        public string Name { get; set; } // Name (length: 10)
+    }
+
+    // Task
+    public class Task1
+    {
+        public long TaskId { get; set; } // TaskId (Primary key)
+    }
+
+    // tblOrders
+    public class TblOrder
+    {
+        public int Id { get; set; } // ID (Primary key)
+        public DateTime Added { get; set; } // added
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child TblOrderLines where [tblOrderLines].[OrderID] point to this entity (tblOrdersFK)
+        /// </summary>
+        public virtual ICollection<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines.tblOrdersFK
+
+        public TblOrder()
+        {
+            Added = DateTime.Now;
+            TblOrderLines = new List<TblOrderLine>();
+        }
+    }
+
+    // tblOrderErrors
+    public class TblOrderError
+    {
+        public int Id { get; set; } // ID (Primary key)
+        public string Error { get; set; } // error (length: 50)
+    }
+
+    // tblOrderErrorsAB_
+    public class TblOrderErrorsAb
+    {
+        public int Id { get; set; } // ID (Primary key)
+        public string Error { get; set; } // error (length: 50)
+    }
+
+    // tblOrderLines
+    public class TblOrderLine
+    {
+        public int Id { get; set; } // ID (Primary key)
+        public int OrderId { get; set; } // OrderID
+        public string Sku { get; set; } // sku (length: 15)
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent TblOrder pointed by [tblOrderLines].([OrderId]) (tblOrdersFK)
+        /// </summary>
+        public virtual TblOrder TblOrder { get; set; } // tblOrdersFK
+    }
+
+    // The table 'Test' is not usable by entity framework because it
+    // does not have a primary key. It is listed here for completeness.
+    // Test
+    public class Test
+    {
+        public int? Id { get; set; } // Id
+        public int? ExclusionTest { get; set; } // ExclusionTest
+    }
+
+    // Ticket
+    public class Ticket
+    {
+        public long Id { get; set; } // Id (Primary key)
+        public long CreatedById { get; set; } // CreatedById
+        public long? ModifiedById { get; set; } // ModifiedById
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent AppUser pointed by [Ticket].([CreatedById]) (FK_Ticket_AppUser)
+        /// </summary>
+        public virtual AppUser CreatedBy { get; set; } // FK_Ticket_AppUser
+
+        /// <summary>
+        /// Parent AppUser pointed by [Ticket].([ModifiedById]) (FK_Ticket_AppUser1)
+        /// </summary>
+        public virtual AppUser ModifiedBy { get; set; } // FK_Ticket_AppUser1
+    }
+
+    // Token
+    public class Token
+    {
+        public Guid Id { get; set; } // Id (Primary key)
+        public bool Enabled { get; set; } // Enabled
+
+        public Token()
+        {
+            Id = Guid.NewGuid();
+        }
+    }
+
+    // User
+    public class User
+    {
+        public int Id { get; set; } // ID (Primary key)
+        public string ExternalUserId { get; set; } // ExternalUserID (length: 50)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child UserDocuments where [User_Document].[CreatedByUserID] point to this entity (FK_User_Document_User1)
+        /// </summary>
+        public virtual ICollection<UserDocument> UserDocuments_CreatedByUserId { get; set; } // User_Document.FK_User_Document_User1
+
+        /// <summary>
+        /// Child UserDocuments where [User_Document].[UserID] point to this entity (FK_User_Document_User)
+        /// </summary>
+        public virtual ICollection<UserDocument> UserDocuments_UserId { get; set; } // User_Document.FK_User_Document_User
+
+        public User()
+        {
+            UserDocuments_CreatedByUserId = new List<UserDocument>();
+            UserDocuments_UserId = new List<UserDocument>();
+        }
+    }
+
+    // User309
+    public class User309
+    {
+        public long UserId { get; set; } // UserID (Primary key)
+        public string Lastname { get; set; } // Lastname (length: 100)
+        public string Firstname { get; set; } // Firstname (length: 100)
+        public int? PhoneCountryId { get; set; } // PhoneCountryID
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent Country pointed by [User309].([PhoneCountryId]) (FK_User309_PhoneCountry)
+        /// </summary>
+        public virtual Country Country { get; set; } // FK_User309_PhoneCountry
+    }
+
+    // User_Document
+    public class UserDocument
+    {
+        public int Id { get; set; } // ID (Primary key)
+        public int UserId { get; set; } // UserID
+        public int CreatedByUserId { get; set; } // CreatedByUserID
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent User pointed by [User_Document].([CreatedByUserId]) (FK_User_Document_User1)
+        /// </summary>
+        public virtual User CreatedByUser { get; set; } // FK_User_Document_User1
+
+        /// <summary>
+        /// Parent User pointed by [User_Document].([UserId]) (FK_User_Document_User)
+        /// </summary>
+        public virtual User User_UserId { get; set; } // FK_User_Document_User
+    }
+
+    // view with space
+    public class ViewWithSpace
+    {
+        public int CodeObjectNo { get; set; } // codeObjectNo
+        public int? ApplicationNo { get; set; } // applicationNo
+        public int Type { get; set; } // type
+        public string EName { get; set; } // eName (length: 250)
+        public string AName { get; set; } // aName (length: 250)
+        public string Description { get; set; } // description (length: 250)
+        public string CodeName { get; set; } // codeName (length: 250)
+        public string Note { get; set; } // note (length: 250)
+        public bool IsObject { get; set; } // isObject
+        public byte[] VersionNumber { get; set; } // versionNumber
+    }
+
+    // Articles
+    public class WVN_Article
+    {
+        public int PkArticle { get; set; } // PK_Article (Primary key)
+        public Guid FkFactory { get; set; } // FK_Factory
+        public int FkArticleLevel { get; set; } // FK_ArticleLevel
+        public int? FkParentArticle { get; set; } // FK_ParentArticle
+        public string Code { get; set; } // Code (length: 20)
+    }
+
+    // v_Articles
+    public class WVN_VArticle
+    {
+        public int? PkArticle { get; set; } // PK_Article
+        public Guid? FkFactory { get; set; } // FK_Factory
+        public int? FkArticleLevel { get; set; } // FK_ArticleLevel
+        public int? FkParentArticle { get; set; } // FK_ParentArticle
+        public string Code { get; set; } // Code (length: 20)
+        public string FullCode { get; set; } // FullCode (length: 100)
+    }
+
+    // Бренды товара
+    public class Брендытовара
+    {
+        public int Кодбренда { get; set; } // Код бренда (Primary key)
+        public string Наименованиебренда { get; set; } // Наименование бренда (length: 50)
+        public byte[] Логотипбренда { get; set; } // Логотип_бренда (length: 2147483647)
+        public byte[] Логотипбрендавертикальный { get; set; } // Логотип_бренда_вертикальный (length: 2147483647)
+    }
+
 
     #endregion
 
     #region POCO Configuration
 
-    // ColumnNames
-    public class ColumnNameConfiguration : IEntityTypeConfiguration<ColumnName>
+    // A
+    public class AConfiguration : IEntityTypeConfiguration<A>
     {
-        public void Configure(EntityTypeBuilder<ColumnName> builder)
+        public void Configure(EntityTypeBuilder<A> builder)
         {
-            builder.ToTable("ColumnNames", "dbo");
-            builder.HasKey(x => x.C36).HasName("PK_ColumnNames").IsClustered();
+            builder.ToTable("A", "dbo");
+            builder.HasKey(x => x.AId).HasName("PK_A").IsClustered();
+
+            builder.Property(x => x.AId).HasColumnName(@"AId").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.C1).HasColumnName(@"C1").HasColumnType("int").IsRequired();
+            builder.Property(x => x.C2).HasColumnName(@"C2").HasColumnType("int").IsRequired();
+
+            // Foreign keys
+            builder.HasOne(a => a.Aaref).WithMany(b => b.A).HasForeignKey(c => new { c.C1, c.C2 }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_A_A");
+        }
+    }
+
+    // AAREF
+    public class AarefConfiguration : IEntityTypeConfiguration<Aaref>
+    {
+        public void Configure(EntityTypeBuilder<Aaref> builder)
+        {
+            builder.ToTable("AAREF", "dbo");
+            builder.HasKey(x => new { x.C1, x.C2 }).HasName("PK_AREF").IsClustered();
+
+            builder.Property(x => x.C1).HasColumnName(@"C1").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.C2).HasColumnName(@"C2").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.CreatedUtc).HasColumnName(@"CreatedUTC").HasColumnType("datetime2").IsRequired();
+        }
+    }
+
+    // AB_OrderLinesAB_
+    public class AbOrderLinesAbConfiguration : IEntityTypeConfiguration<AbOrderLinesAb>
+    {
+        public void Configure(EntityTypeBuilder<AbOrderLinesAb> builder)
+        {
+            builder.ToTable("AB_OrderLinesAB_", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK__AB_Order__3214EC27399A9063").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired();
+            builder.Property(x => x.Sku).HasColumnName(@"sku").HasColumnType("varchar(15)").IsRequired(false).IsUnicode(false).HasMaxLength(15);
+
+            // Foreign keys
+            builder.HasOne(a => a.AbOrdersAb).WithMany(b => b.AbOrderLinesAbs).HasForeignKey(c => c.OrderId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("AB_OrderLinesAB_FK");
+        }
+    }
+
+    // AB_OrdersAB_
+    public class AbOrdersAbConfiguration : IEntityTypeConfiguration<AbOrdersAb>
+    {
+        public void Configure(EntityTypeBuilder<AbOrdersAb> builder)
+        {
+            builder.ToTable("AB_OrdersAB_", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK__AB_Order__3214EC27DCF8BE7D").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Added).HasColumnName(@"added").HasColumnType("datetime").IsRequired();
+        }
+    }
+
+    // AllColumnsNull
+    public class AllColumnsNullConfiguration : IEntityTypeConfiguration<AllColumnsNull>
+    {
+        public void Configure(EntityTypeBuilder<AllColumnsNull> builder)
+        {
+            builder.ToView("AllColumnsNull", "dbo");
+            builder.HasNoKey();
+
+            builder.Property(x => x.Total).HasColumnName(@"total").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.AName).HasColumnName(@"aName").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
+        }
+    }
+
+    // Harish3485
+    public class Alpha_Harish3485Configuration : IEntityTypeConfiguration<Alpha_Harish3485>
+    {
+        public void Configure(EntityTypeBuilder<Alpha_Harish3485> builder)
+        {
+            builder.ToTable("Harish3485", "Alpha");
+            builder.HasKey(x => x.Id).HasName("PK__Harish34__3213E83F97A83DAF").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.HarishId).HasColumnName(@"harish_id").HasColumnType("int").IsRequired();
+
+            // Foreign keys
+            builder.HasOne(a => a.FkTest_SmallDecimalTestAttribute).WithMany(b => b.Alpha_Harish3485).HasForeignKey(c => c.HarishId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Harish");
+        }
+    }
+
+    // workflow
+    public class Alpha_WorkflowConfiguration : IEntityTypeConfiguration<Alpha_Workflow>
+    {
+        public void Configure(EntityTypeBuilder<Alpha_Workflow> builder)
+        {
+            builder.ToTable("workflow", "Alpha");
+            builder.HasKey(x => x.Id).HasName("PK__workflow__3214EC0781E073BC").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);
+        }
+    }
+
+    // alpha_workflow_synonym
+    public class AlphaWorkflowSynonymConfiguration : IEntityTypeConfiguration<AlphaWorkflowSynonym>
+    {
+        public void Configure(EntityTypeBuilder<AlphaWorkflowSynonym> builder)
+        {
+            builder.ToTable("alpha_workflow_synonym", "dbo");
+            builder.HasKey(x => x.Id);
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);
+        }
+    }
+
+    // UserFacilityServiceRole
+    public class App_UserFacilityServiceRoleConfiguration : IEntityTypeConfiguration<App_UserFacilityServiceRole>
+    {
+        public void Configure(EntityTypeBuilder<App_UserFacilityServiceRole> builder)
+        {
+            builder.ToTable("UserFacilityServiceRole", "App");
+            builder.HasKey(x => new { x.UserId, x.AppId, x.FsrId });
+
+            builder.Property(x => x.UserId).HasColumnName(@"userId").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.AppId).HasColumnName(@"appId").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.FsrId).HasColumnName(@"fsrId").HasColumnType("int").IsRequired().ValueGeneratedNever();
+        }
+    }
+
+    // AppUser
+    public class AppUserConfiguration : IEntityTypeConfiguration<AppUser>
+    {
+        public void Configure(EntityTypeBuilder<AppUser> builder)
+        {
+            builder.ToTable("AppUser", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK__AppUser__3214EC070BCD7337").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("bigint").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Name).HasColumnName(@"Name").HasColumnType("nvarchar(50)").IsRequired().HasMaxLength(50);
+        }
+    }
+
+    // Attendee
+    public class AttendeeConfiguration : IEntityTypeConfiguration<Attendee>
+    {
+        public void Configure(EntityTypeBuilder<Attendee> builder)
+        {
+            builder.ToTable("Attendee", "dbo");
+            builder.HasKey(x => x.AttendeeId).HasName("PK_Attendee").IsClustered();
+
+            builder.Property(x => x.AttendeeId).HasColumnName(@"AttendeeID").HasColumnType("bigint").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.Lastname).HasColumnName(@"Lastname").HasColumnType("nvarchar(50)").IsRequired().HasMaxLength(50);
+            builder.Property(x => x.Firstname).HasColumnName(@"Firstname").HasColumnType("nvarchar(50)").IsRequired().HasMaxLength(50);
+            builder.Property(x => x.PhoneCountryId).HasColumnName(@"PhoneCountryID").HasColumnType("int").IsRequired(false);
+
+            // Foreign keys
+            builder.HasOne(a => a.Country).WithMany(b => b.Attendees).HasForeignKey(c => c.PhoneCountryId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Attendee_PhoneCountry");
+        }
+    }
+
+    // BatchTest
+    public class BatchTestConfiguration : IEntityTypeConfiguration<BatchTest>
+    {
+        public void Configure(EntityTypeBuilder<BatchTest> builder)
+        {
+            builder.ToTable("BatchTest", "dbo");
+            builder.HasKey(x => x.Code).HasName("PK__BatchTes__357D4CF8B8A16F6F").IsClustered();
+
+            builder.Property(x => x.Code).HasColumnName(@"code").HasColumnType("nvarchar(8)").IsRequired().HasMaxLength(8).ValueGeneratedNever();
+        }
+    }
+
+    // Harish3485
+    public class Beta_Harish3485Configuration : IEntityTypeConfiguration<Beta_Harish3485>
+    {
+        public void Configure(EntityTypeBuilder<Beta_Harish3485> builder)
+        {
+            builder.ToTable("Harish3485", "Beta");
+            builder.HasKey(x => x.Id).HasName("PK__Harish34__3213E83F91382426").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.AnotherId).HasColumnName(@"another_id").HasColumnType("int").IsRequired();
+
+            // Foreign keys
+            builder.HasOne(a => a.PropertyTypesToAdd).WithMany(b => b.Beta_Harish3485).HasForeignKey(c => c.AnotherId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Harish");
+        }
+    }
+
+    // ToAlpha
+    public class Beta_ToAlphaConfiguration : IEntityTypeConfiguration<Beta_ToAlpha>
+    {
+        public void Configure(EntityTypeBuilder<Beta_ToAlpha> builder)
+        {
+            builder.ToTable("ToAlpha", "Beta");
+            builder.HasKey(x => x.Id).HasName("PK__ToAlpha__3214EC0759C316D9").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.AlphaId).HasColumnName(@"AlphaId").HasColumnType("int").IsRequired();
+
+            // Foreign keys
+            builder.HasOne(a => a.Alpha_Workflow).WithMany(b => b.Beta_ToAlphas).HasForeignKey(c => c.AlphaId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("BetaToAlpha_AlphaWorkflow");
+        }
+    }
+
+    // workflow
+    public class Beta_WorkflowConfiguration : IEntityTypeConfiguration<Beta_Workflow>
+    {
+        public void Configure(EntityTypeBuilder<Beta_Workflow> builder)
+        {
+            builder.ToTable("workflow", "Beta");
+            builder.HasKey(x => x.Id).HasName("PK__workflow__3214EC074A3BA752").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);
+        }
+    }
+
+    // BITFIDDLERALLCAPS
+    public class BitfiddlerallcapConfiguration : IEntityTypeConfiguration<Bitfiddlerallcap>
+    {
+        public void Configure(EntityTypeBuilder<Bitfiddlerallcap> builder)
+        {
+            builder.ToTable("BITFIDDLERALLCAPS", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK__BITFIDDL__3214EC071E4141BF").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+        }
+    }
+
+    // BitFiddlerCATEGORIES
+    public class BitFiddlerCategoRyConfiguration : IEntityTypeConfiguration<BitFiddlerCategoRy>
+    {
+        public void Configure(EntityTypeBuilder<BitFiddlerCategoRy> builder)
+        {
+            builder.ToTable("BitFiddlerCATEGORIES", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK__BitFiddl__3214EC07B251396A").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+        }
+    }
+
+    // BitFiddlerCURRENCIES
+    public class BitFiddlerCurrenCyConfiguration : IEntityTypeConfiguration<BitFiddlerCurrenCy>
+    {
+        public void Configure(EntityTypeBuilder<BitFiddlerCurrenCy> builder)
+        {
+            builder.ToTable("BitFiddlerCURRENCIES", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK__BitFiddl__3214EC07F1F1CC8A").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+        }
+    }
+
+    // Blah
+    public class BlahConfiguration : IEntityTypeConfiguration<Blah>
+    {
+        public void Configure(EntityTypeBuilder<Blah> builder)
+        {
+            builder.ToTable("Blah", "dbo");
+            builder.HasKey(x => x.BlahId).HasName("PK_Blah").IsClustered();
+
+            builder.Property(x => x.BlahId).HasColumnName(@"BlahID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+        }
+    }
+
+    // BlahBlahLink
+    public class BlahBlahLinkConfiguration : IEntityTypeConfiguration<BlahBlahLink>
+    {
+        public void Configure(EntityTypeBuilder<BlahBlahLink> builder)
+        {
+            builder.ToTable("BlahBlahLink", "dbo");
+            builder.HasKey(x => new { x.BlahId, x.BlahId2 }).HasName("PK_BlahBlahLink").IsClustered();
+
+            builder.Property(x => x.BlahId).HasColumnName(@"BlahID").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.BlahId2).HasColumnName(@"BlahID2").HasColumnType("int").IsRequired().ValueGeneratedNever();
+
+            // Foreign keys
+            builder.HasOne(a => a.Blah_BlahId).WithMany(b => b.BlahBlahLinks_BlahId).HasForeignKey(c => c.BlahId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_BlahBlahLink_Blah");
+            builder.HasOne(a => a.Blah_BlahId2).WithMany(b => b.BlahBlahLinks_BlahId2).HasForeignKey(c => c.BlahId2).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_BlahBlahLink_Blah2");
+        }
+    }
+
+    // BlahBlahLink_readonly
+    public class BlahBlahLinkReadonlyConfiguration : IEntityTypeConfiguration<BlahBlahLinkReadonly>
+    {
+        public void Configure(EntityTypeBuilder<BlahBlahLinkReadonly> builder)
+        {
+            builder.ToTable("BlahBlahLink_readonly", "dbo");
+            builder.HasKey(x => new { x.BlahId, x.BlahId2 }).HasName("PK_BlahBlahLink_ro").IsClustered();
+
+            builder.Property(x => x.BlahId).HasColumnName(@"BlahID").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.BlahId2).HasColumnName(@"BlahID2").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.RowVersion).HasColumnName(@"RowVersion").HasColumnType("timestamp").IsRequired(false);
+            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Id2).HasColumnName(@"id2").HasColumnType("int").IsRequired(false).ValueGeneratedOnAddOrUpdate();
+
+            // Foreign keys
+            builder.HasOne(a => a.Blah_BlahId).WithMany(b => b.BlahBlahLinkReadonlies_BlahId).HasForeignKey(c => c.BlahId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_BlahBlahLink_Blah_ro");
+            builder.HasOne(a => a.Blah_BlahId2).WithMany(b => b.BlahBlahLinkReadonlies_BlahId2).HasForeignKey(c => c.BlahId2).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_BlahBlahLink_Blah_ro2");
+        }
+    }
+
+    // BlahBlahLink_v2
+    public class BlahBlahLinkV2Configuration : IEntityTypeConfiguration<BlahBlahLinkV2>
+    {
+        public void Configure(EntityTypeBuilder<BlahBlahLinkV2> builder)
+        {
+            builder.ToTable("BlahBlahLink_v2", "dbo");
+            builder.HasKey(x => new { x.BlahId, x.BlahId2 }).HasName("PK_BlahBlahLinkv2_ro").IsClustered();
+
+            builder.Property(x => x.BlahId).HasColumnName(@"BlahID").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.BlahId2).HasColumnName(@"BlahID2").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.Dummy1).HasColumnName(@"dummy1").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.Dummy2).HasColumnName(@"dummy2").HasColumnType("int").IsRequired();
+            builder.Property(x => x.Hello).HasColumnName(@"hello").HasColumnType("int").IsRequired();
+
+            // Foreign keys
+            builder.HasOne(a => a.Blah_BlahId).WithMany(b => b.BlahBlahLinkV2_BlahId).HasForeignKey(c => c.BlahId).HasConstraintName("FK_BlahBlahLinkv2_Blah_ro");
+            builder.HasOne(a => a.Blah_BlahId2).WithMany(b => b.BlahBlahLinkV2_BlahId2).HasForeignKey(c => c.BlahId2).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_BlahBlahLinkv2_Blah_ro2");
+        }
+    }
+
+    // BlahBlargLink
+    public class BlahBlargLinkConfiguration : IEntityTypeConfiguration<BlahBlargLink>
+    {
+        public void Configure(EntityTypeBuilder<BlahBlargLink> builder)
+        {
+            builder.ToTable("BlahBlargLink", "dbo");
+            builder.HasKey(x => new { x.BlahId, x.BlargId }).HasName("PK_BlahBlargLink").IsClustered();
+
+            builder.Property(x => x.BlahId).HasColumnName(@"BlahID").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.BlargId).HasColumnName(@"BlargID").HasColumnType("int").IsRequired().ValueGeneratedNever();
+
+            // Foreign keys
+            builder.HasOne(a => a.Blah).WithMany(b => b.BlahBlargLinks).HasForeignKey(c => c.BlahId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_BlahBlargLink_Blah");
+            builder.HasOne(a => a.Blarg).WithMany(b => b.BlahBlargLinks).HasForeignKey(c => c.BlargId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_BlahBlargLink_Blarg");
+        }
+    }
+
+    // Blarg
+    public class BlargConfiguration : IEntityTypeConfiguration<Blarg>
+    {
+        public void Configure(EntityTypeBuilder<Blarg> builder)
+        {
+            builder.ToTable("Blarg", "dbo");
+            builder.HasKey(x => x.BlargId).HasName("PK_Blarg").IsClustered();
+
+            builder.Property(x => x.BlargId).HasColumnName(@"BlargID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+        }
+    }
+
+    // Burak1
+    public class Burak1Configuration : IEntityTypeConfiguration<Burak1>
+    {
+        public void Configure(EntityTypeBuilder<Burak1> builder)
+        {
+            builder.ToTable("Burak1", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK_Burak1").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("bigint").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.IdT).HasColumnName(@"id_t").HasColumnType("bigint").IsRequired();
+            builder.Property(x => x.Num).HasColumnName(@"num").HasColumnType("bigint").IsRequired();
+
+            // Foreign keys
+            builder.HasOne(a => a.Burak2_Id).WithOne(b => b.Burak1_Id).HasPrincipalKey<Burak2>(p => new { p.Id, p.Num }).HasForeignKey<Burak1>(c => new { c.Id, c.Num }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Burak_Test2");
+            builder.HasOne(a => a.Burak2_IdT).WithOne(b => b.Burak1_IdT).HasPrincipalKey<Burak2>(p => new { p.Id, p.Num }).HasForeignKey<Burak1>(c => new { c.IdT, c.Num }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Burak_Test1");
+        }
+    }
+
+    // Burak2
+    public class Burak2Configuration : IEntityTypeConfiguration<Burak2>
+    {
+        public void Configure(EntityTypeBuilder<Burak2> builder)
+        {
+            builder.ToTable("Burak2", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK_Burak2").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("bigint").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Num).HasColumnName(@"num").HasColumnType("bigint").IsRequired();
+
+            builder.HasIndex(x => new { x.Id, x.Num }).HasName("U_Burak2").IsUnique();
+        }
+    }
+
+    // CalculatedColumnNotNull
+    public class CalculatedColumnNotNullConfiguration : IEntityTypeConfiguration<CalculatedColumnNotNull>
+    {
+        public void Configure(EntityTypeBuilder<CalculatedColumnNotNull> builder)
+        {
+            builder.ToTable("CalculatedColumnNotNull", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK_CalculatedColumnNotNull");
+
+            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Type).HasColumnName(@"Type").HasColumnType("tinyint").IsRequired();
+            builder.Property(x => x.IsCalendar).HasColumnName(@"IsCalendar").HasColumnType("bit").IsRequired().ValueGeneratedOnAddOrUpdate();
+            builder.Property(x => x.IsUtilization).HasColumnName(@"IsUtilization").HasColumnType("bit").IsRequired().ValueGeneratedOnAddOrUpdate();
+        }
+    }
+
+    // Car
+    public class CarConfiguration : IEntityTypeConfiguration<Car>
+    {
+        public void Configure(EntityTypeBuilder<Car> builder)
+        {
+            builder.ToTable("Car", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK__Car__3214EC073A7C141B").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.PrimaryColourId).HasColumnName(@"PrimaryColourId").HasColumnType("int").IsRequired();
+            builder.Property(x => x.CarMake).HasColumnName(@"CarMake").HasColumnType("varchar(255)").IsRequired().IsUnicode(false).HasMaxLength(255);
+            builder.Property(x => x.ComputedColumn).HasColumnName(@"computed_column").HasColumnType("int").IsRequired(false).ValueGeneratedOnAddOrUpdate();
+            builder.Property(x => x.ComputedColumnPersisted).HasColumnName(@"computed_column_persisted").HasColumnType("int").IsRequired().ValueGeneratedOnAddOrUpdate();
+
+            // Foreign keys
+            builder.HasOne(a => a.Colour).WithMany(b => b.Cars).HasForeignKey(c => c.PrimaryColourId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("CarPrimaryColourFK");
+        }
+    }
+
+    // CarToColour
+    public class CarToColourConfiguration : IEntityTypeConfiguration<CarToColour>
+    {
+        public void Configure(EntityTypeBuilder<CarToColour> builder)
+        {
+            builder.ToTable("CarToColour", "dbo");
+            builder.HasKey(x => new { x.CarId, x.ColourId }).HasName("PK__CarToCol__8C02E66BA575EE41").IsClustered();
+
+            builder.Property(x => x.CarId).HasColumnName(@"CarId").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.ColourId).HasColumnName(@"ColourId").HasColumnType("int").IsRequired().ValueGeneratedNever();
+
+            // Foreign keys
+            builder.HasOne(a => a.Car).WithMany(b => b.CarToColours).HasForeignKey(c => c.CarId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("CarToColour_CarId");
+            builder.HasOne(a => a.Colour).WithMany(b => b.CarToColours).HasForeignKey(c => c.ColourId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("CarToColour_ColourId");
+        }
+    }
+
+    // ClientCreationState
+    public class ClientCreationStateConfiguration : IEntityTypeConfiguration<ClientCreationState>
+    {
+        public void Configure(EntityTypeBuilder<ClientCreationState> builder)
+        {
+            builder.ToTable("ClientCreationState", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK__ClientCr__3213E83F78F9F567").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("uniqueidentifier").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.WebhookSetup).HasColumnName(@"WebhookSetup").HasColumnType("bit").IsRequired();
+            builder.Property(x => x.AuthSetup).HasColumnName(@"AuthSetup").HasColumnType("bit").IsRequired();
+            builder.Property(x => x.AssignedCarrier).HasColumnName(@"AssignedCarrier").HasColumnType("bit").IsRequired();
+        }
+    }
+
+    // CMS_File
+    public class CmsFileConfiguration : IEntityTypeConfiguration<CmsFile>
+    {
+        public void Configure(EntityTypeBuilder<CmsFile> builder)
+        {
+            builder.ToTable("CMS_File", "dbo");
+            builder.HasKey(x => x.FileId).HasName("PK_CMS_Form").IsClustered();
+
+            builder.Property(x => x.FileId).HasColumnName(@"FileId").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.FileName).HasColumnName(@"FileName").HasColumnType("nvarchar(100)").IsRequired().HasMaxLength(100);
+            builder.Property(x => x.FileDescription).HasColumnName(@"FileDescription").HasColumnType("varchar(500)").IsRequired().IsUnicode(false).HasMaxLength(500);
+            builder.Property(x => x.FileIdentifier).HasColumnName(@"FileIdentifier").HasColumnType("varchar(100)").IsRequired().IsUnicode(false).HasMaxLength(100);
+            builder.Property(x => x.ValidStartDate).HasColumnName(@"ValidStartDate").HasColumnType("datetime").IsRequired(false);
+            builder.Property(x => x.ValidEndDate).HasColumnName(@"ValidEndDate").HasColumnType("datetime").IsRequired(false);
+            builder.Property(x => x.IsActive).HasColumnName(@"IsActive").HasColumnType("bit").IsRequired();
+        }
+    }
+
+    // CMS_FileTag
+    public class CmsFileTagConfiguration : IEntityTypeConfiguration<CmsFileTag>
+    {
+        public void Configure(EntityTypeBuilder<CmsFileTag> builder)
+        {
+            builder.ToTable("CMS_FileTag", "dbo");
+            builder.HasKey(x => new { x.FileId, x.TagId });
+
+            builder.Property(x => x.FileId).HasColumnName(@"FileId").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.TagId).HasColumnName(@"TagId").HasColumnType("int").IsRequired().ValueGeneratedNever();
+
+            // Foreign keys
+            builder.HasOne(a => a.CmsFile).WithMany(b => b.CmsFileTags).HasForeignKey(c => c.FileId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_CMS_FileTag_CMS_File");
+            builder.HasOne(a => a.CmsTag).WithMany(b => b.CmsFileTags).HasForeignKey(c => c.TagId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_CMS_FileTag_CMS_Tag");
+        }
+    }
+
+    // CMS_Tag
+    public class CmsTagConfiguration : IEntityTypeConfiguration<CmsTag>
+    {
+        public void Configure(EntityTypeBuilder<CmsTag> builder)
+        {
+            builder.ToTable("CMS_Tag", "dbo");
+            builder.HasKey(x => x.TagId).HasName("PK_CMS_Tag").IsClustered();
+
+            builder.Property(x => x.TagId).HasColumnName(@"TagId").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.TagName).HasColumnName(@"TagName").HasColumnType("varchar(100)").IsRequired().IsUnicode(false).HasMaxLength(100);
+        }
+    }
+
+    // CODE_MeetingTopicDetails
+    public class CodeMeetingTopicDetailConfiguration : IEntityTypeConfiguration<CodeMeetingTopicDetail>
+    {
+        public void Configure(EntityTypeBuilder<CodeMeetingTopicDetail> builder)
+        {
+            builder.ToTable("CODE_MeetingTopicDetails", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK_CODE_MeetingTopicDetails").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.IdReuniao).HasColumnName(@"id_reuniao").HasColumnType("int").IsRequired();
+            builder.Property(x => x.OrdTrab).HasColumnName(@"ord_trab").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.Assunto).HasColumnName(@"assunto").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
+            builder.Property(x => x.Desenvolvimento).HasColumnName(@"desenvolvimento").HasColumnType("nvarchar(max)").IsRequired(false);
+            builder.Property(x => x.Origem).HasColumnName(@"origem").HasColumnType("nvarchar(5)").IsRequired(false).HasMaxLength(5);
+            builder.Property(x => x.IdOrigem).HasColumnName(@"id_origem").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.Estado).HasColumnName(@"Estado").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.CompanyId).HasColumnName(@"CompanyID").HasColumnType("int").IsRequired();
+            builder.Property(x => x.DateCreated).HasColumnName(@"DateCreated").HasColumnType("datetime").IsRequired();
+            builder.Property(x => x.DateChanged).HasColumnName(@"DateChanged").HasColumnType("datetime").IsRequired(false);
+
+            // Foreign keys
+            builder.HasOne(a => a.CodeParamMeetingTopicDetailSource).WithMany(b => b.CodeMeetingTopicDetails).HasPrincipalKey(p => p.Code).HasForeignKey(c => c.Origem).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_CODE_MeetingTopicDetails_CODE_PARAM_MeetingTopicDetailSource");
+        }
+    }
+
+    // CodeObject
+    public class CodeObjectConfiguration : IEntityTypeConfiguration<CodeObject>
+    {
+        public void Configure(EntityTypeBuilder<CodeObject> builder)
+        {
+            builder.ToTable("CodeObject", "dbo");
+            builder.HasKey(x => x.CodeObjectNo).HasName("aaaaaObject_PK");
+
+            builder.Property(x => x.CodeObjectNo).HasColumnName(@"codeObjectNo").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.ApplicationNo).HasColumnName(@"applicationNo").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.Type).HasColumnName(@"type").HasColumnType("int").IsRequired();
+            builder.Property(x => x.EName).HasColumnName(@"eName").HasColumnType("nvarchar(250)").IsRequired().HasMaxLength(250);
+            builder.Property(x => x.AName).HasColumnName(@"aName").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
+            builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
+            builder.Property(x => x.CodeName).HasColumnName(@"codeName").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
+            builder.Property(x => x.Note).HasColumnName(@"note").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
+            builder.Property(x => x.IsObject).HasColumnName(@"isObject").HasColumnType("bit").IsRequired();
+            builder.Property(x => x.VersionNumber).HasColumnName(@"versionNumber").HasColumnType("timestamp").IsRequired(false);
+        }
+    }
+
+    // CODE_PARAM_MeetingTopicDetailSource
+    public class CodeParamMeetingTopicDetailSourceConfiguration : IEntityTypeConfiguration<CodeParamMeetingTopicDetailSource>
+    {
+        public void Configure(EntityTypeBuilder<CodeParamMeetingTopicDetailSource> builder)
+        {
+            builder.ToTable("CODE_PARAM_MeetingTopicDetailSource", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK_CODE_PARAM_MeetingTopicDetailSource").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Code).HasColumnName(@"Code").HasColumnType("nvarchar(5)").IsRequired().HasMaxLength(5);
+            builder.Property(x => x.Label).HasColumnName(@"Label").HasColumnType("nvarchar(50)").IsRequired(false).HasMaxLength(50);
+            builder.Property(x => x.LabelEng).HasColumnName(@"LabelENG").HasColumnType("nvarchar(50)").IsRequired(false).HasMaxLength(50);
+            builder.Property(x => x.LabelEsp).HasColumnName(@"LabelESP").HasColumnType("nvarchar(50)").IsRequired(false).HasMaxLength(50);
+            builder.Property(x => x.LabelFra).HasColumnName(@"LabelFRA").HasColumnType("nvarchar(50)").IsRequired(false).HasMaxLength(50);
+            builder.Property(x => x.DateCreated).HasColumnName(@"DateCreated").HasColumnType("datetime").IsRequired();
+            builder.Property(x => x.DateChanged).HasColumnName(@"DateChanged").HasColumnType("datetime").IsRequired(false);
+
+            builder.HasIndex(x => x.Code).HasName("UK_CODE_PARAM_MeetingTopicDetailSource").IsUnique();
+        }
+    }
+
+    // Colour
+    public class ColourConfiguration : IEntityTypeConfiguration<Colour>
+    {
+        public void Configure(EntityTypeBuilder<Colour> builder)
+        {
+            builder.ToTable("Colour", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK__Colour__3214EC07184FF66C").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.Name).HasColumnName(@"Name").HasColumnType("varchar(255)").IsRequired().IsUnicode(false).HasMaxLength(255);
+        }
+    }
+
+    // ColumnNameAndTypes
+    public class ColumnNameAndTypeConfiguration : IEntityTypeConfiguration<ColumnNameAndType>
+    {
+        public void Configure(EntityTypeBuilder<ColumnNameAndType> builder)
+        {
+            builder.ToTable("ColumnNameAndTypes", "dbo");
+            builder.HasKey(x => x.C36).HasName("PK__ColumnNa__3BD018490C636E25").IsClustered();
 
             builder.Property(x => x.C36).HasColumnName(@"$").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.C37).HasColumnName(@"%").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.C163).HasColumnName(@"£").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.C38Test36).HasColumnName(@"&test$").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.C38Fred36).HasColumnName(@"&fred$").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.Abc4792).HasColumnName(@"abc/\").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.Joe46Bloggs).HasColumnName(@"joe.bloggs").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.SnakeCase).HasColumnName(@"snake-case").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.DefaultTest).HasColumnName(@"default_test").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
+            builder.Property(x => x.SimonHughes).HasColumnName(@"simon-hughes").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
             builder.Property(x => x.SomeDate).HasColumnName(@"someDate").HasColumnType("datetime2").IsRequired();
-            builder.Property(x => x.Obs).HasColumnName(@"Obs").HasColumnType("varchar(20)").IsRequired(false).IsUnicode(false).HasMaxLength(20);
-            builder.Property(x => x.Slash1).HasColumnName(@"Slash1").HasColumnType("varchar(20)").IsRequired(false).IsUnicode(false).HasMaxLength(20);
-            builder.Property(x => x.Slash2).HasColumnName(@"Slash2").HasColumnType("varchar(20)").IsRequired(false).IsUnicode(false).HasMaxLength(20);
-            builder.Property(x => x.Slash3).HasColumnName(@"Slash3").HasColumnType("varchar(20)").IsRequired(false).IsUnicode(false).HasMaxLength(20);
+            builder.Property(x => x.Obs).HasColumnName(@"Obs").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);
+            builder.Property(x => x.Obs1).HasColumnName(@"Obs1").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);
+            builder.Property(x => x.Obs2).HasColumnName(@"Obs2").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);
+            builder.Property(x => x.Obs3).HasColumnName(@"Obs3").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);
             builder.Property(x => x.@Static).HasColumnName(@"static").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.@Readonly).HasColumnName(@"readonly").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.C123Hi).HasColumnName(@"123Hi").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.Afloat).HasColumnName(@"afloat").HasColumnType("real").IsRequired(false);
-            builder.Property(x => x.Adouble).HasColumnName(@"adouble").HasColumnType("float").IsRequired(false);
-            builder.Property(x => x.Adecimal).HasColumnName(@"adecimal").HasColumnType("decimal(19,4)").IsRequired(false);
+            builder.Property(x => x.Areal).HasColumnName(@"areal").HasColumnType("real").IsRequired(false);
+            builder.Property(x => x.Afloat).HasColumnName(@"afloat").HasColumnType("float").IsRequired(false);
+            builder.Property(x => x.Afloat8).HasColumnName(@"afloat8").HasColumnType("real").IsRequired(false);
+            builder.Property(x => x.Afloat20).HasColumnName(@"afloat20").HasColumnType("real").IsRequired(false);
+            builder.Property(x => x.Afloat24).HasColumnName(@"afloat24").HasColumnType("real").IsRequired(false);
+            builder.Property(x => x.Afloat53).HasColumnName(@"afloat53").HasColumnType("float").IsRequired(false);
+            builder.Property(x => x.Adecimal).HasColumnName(@"adecimal").HasColumnType("decimal(18,0)").IsRequired(false);
+            builder.Property(x => x.Adecimal194).HasColumnName(@"adecimal_19_4").HasColumnType("decimal(19,4)").IsRequired(false);
+            builder.Property(x => x.Adecimal103).HasColumnName(@"adecimal_10_3").HasColumnType("decimal(10,3)").IsRequired(false);
+            builder.Property(x => x.Anumeric).HasColumnName(@"anumeric").HasColumnType("numeric(18,0)").IsRequired(false);
+            builder.Property(x => x.Anumeric52).HasColumnName(@"anumeric_5_2").HasColumnType("numeric(5,2)").IsRequired(false);
+            builder.Property(x => x.Anumeric113).HasColumnName(@"anumeric_11_3").HasColumnType("numeric(11,3)").IsRequired(false);
+            builder.Property(x => x.Amoney).HasColumnName(@"amoney").HasColumnType("money").IsRequired(false);
+            builder.Property(x => x.Asmallmoney).HasColumnName(@"asmallmoney").HasColumnType("smallmoney").IsRequired(false);
+            builder.Property(x => x.Brandon).HasColumnName(@"brandon").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.GeographyType).HasColumnName(@"GeographyType").HasColumnType("geography").IsRequired(false);
+            builder.Property(x => x.GeometryType).HasColumnName(@"GeometryType").HasColumnType("geometry").IsRequired(false);
+        }
+    }
+
+    // ComplexView
+    public class ComplexViewConfiguration : IEntityTypeConfiguration<ComplexView>
+    {
+        public void Configure(EntityTypeBuilder<ComplexView> builder)
+        {
+            builder.ToView("ComplexView", "dbo");
+            builder.HasNoKey();
+
+            builder.Property(x => x.LicenseType).HasColumnName(@"LicenseType").HasColumnType("nvarchar(128)").IsRequired().HasMaxLength(128);
+            builder.Property(x => x.Count).HasColumnName(@"Count").HasColumnType("int").IsRequired(false);
+        }
+    }
+
+    // Country
+    public class CountryConfiguration : IEntityTypeConfiguration<Country>
+    {
+        public void Configure(EntityTypeBuilder<Country> builder)
+        {
+            builder.ToTable("Country", "dbo");
+            builder.HasKey(x => x.CountryId).HasName("PK_Country").IsClustered();
+
+            builder.Property(x => x.CountryId).HasColumnName(@"CountryID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Code).HasColumnName(@"Code").HasColumnType("varchar(12)").IsRequired(false).IsUnicode(false).HasMaxLength(12);
+        }
+    }
+
+    // cross_database_synonym
+    public class CrossDatabaseSynonymConfiguration : IEntityTypeConfiguration<CrossDatabaseSynonym>
+    {
+        public void Configure(EntityTypeBuilder<CrossDatabaseSynonym> builder)
+        {
+            builder.ToTable("cross_database_synonym", "dbo");
+            builder.HasKey(x => x.Id);
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Forename).HasColumnName(@"Forename").HasColumnType("varchar(20)").IsRequired(false).IsUnicode(false).HasMaxLength(20);
+        }
+    }
+
+    // DateTimeDefaultTest
+    public class DateTimeDefaultTestConfiguration : IEntityTypeConfiguration<DateTimeDefaultTest>
+    {
+        public void Configure(EntityTypeBuilder<DateTimeDefaultTest> builder)
+        {
+            builder.ToTable("DateTimeDefaultTest", "dbo");
+            builder.HasKey(x => x.Id);
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.CreatedDate).HasColumnName(@"CreatedDate").HasColumnType("datetimeoffset").IsRequired(false);
+        }
+    }
+
+    // rov_ColumnDefinitions
+    public class dcg_RovColumnDefinitionConfiguration : IEntityTypeConfiguration<dcg_RovColumnDefinition>
+    {
+        public void Configure(EntityTypeBuilder<dcg_RovColumnDefinition> builder)
+        {
+            builder.ToView("rov_ColumnDefinitions", "dcg");
+            builder.HasNoKey();
+
+            builder.Property(x => x.TableCatalog).HasColumnName(@"TABLE_CATALOG").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
+            builder.Property(x => x.TableSchema).HasColumnName(@"TABLE_SCHEMA").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
+            builder.Property(x => x.TableName).HasColumnName(@"TABLE_NAME").HasColumnType("nvarchar(128)").IsRequired().HasMaxLength(128);
+            builder.Property(x => x.ColumnName).HasColumnName(@"COLUMN_NAME").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
+            builder.Property(x => x.OrdinalPosition).HasColumnName(@"ORDINAL_POSITION").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.ColumnDefault).HasColumnName(@"COLUMN_DEFAULT").HasColumnType("nvarchar(4000)").IsRequired(false).HasMaxLength(4000);
+            builder.Property(x => x.IsNullable).HasColumnName(@"IS_NULLABLE").HasColumnType("varchar(3)").IsRequired(false).IsUnicode(false).HasMaxLength(3);
+            builder.Property(x => x.DataType).HasColumnName(@"DATA_TYPE").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
+            builder.Property(x => x.CharacterMaximumLength).HasColumnName(@"CHARACTER_MAXIMUM_LENGTH").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.CharacterOctetLength).HasColumnName(@"CHARACTER_OCTET_LENGTH").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.NumericPrecision).HasColumnName(@"NUMERIC_PRECISION").HasColumnType("tinyint").IsRequired(false);
+            builder.Property(x => x.NumericPrecisionRadix).HasColumnName(@"NUMERIC_PRECISION_RADIX").HasColumnType("smallint").IsRequired(false);
+            builder.Property(x => x.NumericScale).HasColumnName(@"NUMERIC_SCALE").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.DatetimePrecision).HasColumnName(@"DATETIME_PRECISION").HasColumnType("smallint").IsRequired(false);
+            builder.Property(x => x.CharacterSetCatalog).HasColumnName(@"CHARACTER_SET_CATALOG").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
+            builder.Property(x => x.CharacterSetSchema).HasColumnName(@"CHARACTER_SET_SCHEMA").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
+            builder.Property(x => x.CharacterSetName).HasColumnName(@"CHARACTER_SET_NAME").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
+            builder.Property(x => x.CollationCatalog).HasColumnName(@"COLLATION_CATALOG").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
+            builder.Property(x => x.CollationSchema).HasColumnName(@"COLLATION_SCHEMA").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
+            builder.Property(x => x.CollationName).HasColumnName(@"COLLATION_NAME").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
+            builder.Property(x => x.DomainCatalog).HasColumnName(@"DOMAIN_CATALOG").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
+            builder.Property(x => x.DomainSchema).HasColumnName(@"DOMAIN_SCHEMA").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
+            builder.Property(x => x.DomainName).HasColumnName(@"DOMAIN_NAME").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
+            builder.Property(x => x.Type).HasColumnName(@"TYPE").HasColumnType("char(2)").IsRequired(false).IsFixedLength().IsUnicode(false).HasMaxLength(2);
+        }
+    }
+
+    // DefaultCheckForNull
+    public class DefaultCheckForNullConfiguration : IEntityTypeConfiguration<DefaultCheckForNull>
+    {
+        public void Configure(EntityTypeBuilder<DefaultCheckForNull> builder)
+        {
+            builder.ToTable("DefaultCheckForNull", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK__DefaultC__3214EC078035685D").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.DescUppercase).HasColumnName(@"DescUppercase").HasColumnType("varchar(5)").IsRequired(false).IsUnicode(false).HasMaxLength(5);
+            builder.Property(x => x.DescLowercase).HasColumnName(@"DescLowercase").HasColumnType("varchar(5)").IsRequired(false).IsUnicode(false).HasMaxLength(5);
+            builder.Property(x => x.DescMixedCase).HasColumnName(@"DescMixedCase").HasColumnType("varchar(5)").IsRequired(false).IsUnicode(false).HasMaxLength(5);
+            builder.Property(x => x.DescBrackets).HasColumnName(@"DescBrackets").HasColumnType("varchar(5)").IsRequired(false).IsUnicode(false).HasMaxLength(5);
+            builder.Property(x => x.X1).HasColumnName(@"X1").HasColumnType("varchar(255)").IsRequired(false).IsUnicode(false).HasMaxLength(255);
+        }
+    }
+
+    // DSOpe
+    public class DsOpeConfiguration : IEntityTypeConfiguration<DsOpe>
+    {
+        public void Configure(EntityTypeBuilder<DsOpe> builder)
+        {
+            builder.ToTable("DSOpe", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK__DSOpe__3214EC278F3CC6A6").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.DecimalDefault).HasColumnName(@"decimal_default").HasColumnType("decimal(15,2)").IsRequired();
+            builder.Property(x => x.MyGuid).HasColumnName(@"MyGuid").HasColumnType("uniqueidentifier").IsRequired();
+            builder.Property(x => x.@Default).HasColumnName(@"default").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);
+            builder.Property(x => x.MyGuidBadDefault).HasColumnName(@"MyGuidBadDefault").HasColumnType("uniqueidentifier").IsRequired(false);
         }
     }
 
@@ -1054,6 +5596,451 @@ namespace Efrpg.V3TestG
 
             builder.Property(x => x.TypeName).HasColumnName(@"TypeName").HasColumnType("varchar(50)").IsRequired().IsUnicode(false).HasMaxLength(50).ValueGeneratedNever();
             builder.Property(x => x.TypeId).HasColumnName(@"TypeId").HasColumnType("int").IsRequired().ValueGeneratedNever();
+        }
+    }
+
+    // EnumWithDefaultValue
+    public class EnumWithDefaultValueConfiguration : IEntityTypeConfiguration<EnumWithDefaultValue>
+    {
+        public void Configure(EntityTypeBuilder<EnumWithDefaultValue> builder)
+        {
+            builder.ToTable("EnumWithDefaultValue", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK__EnumWith__3214EC07C0E96CE9").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.SomeEnum).HasColumnName(@"SomeEnum").HasColumnType("int").IsRequired();
+        }
+    }
+
+    // EventProcessor
+    public class EventProcessorConfiguration : IEntityTypeConfiguration<EventProcessor>
+    {
+        public void Configure(EntityTypeBuilder<EventProcessor> builder)
+        {
+            builder.ToTable("EventProcessor", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK_EventProcessor").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Name).HasColumnName(@"Name").HasColumnType("varchar(200)").IsRequired().IsUnicode(false).HasMaxLength(200);
+            builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(512)").IsRequired(false).IsUnicode(false).HasMaxLength(512);
+            builder.Property(x => x.EndpointAddress).HasColumnName(@"EndpointAddress").HasColumnType("varchar(512)").IsRequired(false).IsUnicode(false).HasMaxLength(512);
+            builder.Property(x => x.Enabled).HasColumnName(@"Enabled").HasColumnType("bit").IsRequired();
+        }
+    }
+
+    // EventProcessorEventFilter
+    public class EventProcessorEventFilterConfiguration : IEntityTypeConfiguration<EventProcessorEventFilter>
+    {
+        public void Configure(EntityTypeBuilder<EventProcessorEventFilter> builder)
+        {
+            builder.ToTable("EventProcessorEventFilter", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK_EventProcessorEventFilter").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.EventProcessorId).HasColumnName(@"EventProcessorId").HasColumnType("int").IsRequired();
+            builder.Property(x => x.WantedEventId).HasColumnName(@"WantedEventId").HasColumnType("int").IsRequired();
+
+            // Foreign keys
+            builder.HasOne(a => a.EventProcessor).WithMany(b => b.EventProcessorEventFilters).HasForeignKey(c => c.EventProcessorId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_EventProcessorEventFilter__EventProcessor");
+
+            builder.HasIndex(x => new { x.EventProcessorId, x.WantedEventId }).HasName("IX_EventProcessorEventFilter").IsUnique();
+        }
+    }
+
+    // CV
+    public class FFRS_CvConfiguration : IEntityTypeConfiguration<FFRS_Cv>
+    {
+        public void Configure(EntityTypeBuilder<FFRS_Cv> builder)
+        {
+            builder.ToTable("CV", "FFRS");
+            builder.HasKey(x => new { x.BatchUid, x.Cvid });
+
+            builder.Property(x => x.BatchUid).HasColumnName(@"BatchUID").HasColumnType("uniqueidentifier").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.Cvid).HasColumnName(@"CVID").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.CvName).HasColumnName(@"CVName").HasColumnType("nvarchar(200)").IsRequired(false).HasMaxLength(200);
+        }
+    }
+
+    // FinancialInstitutionOffice
+    public class FinancialInstitutionOfficeConfiguration : IEntityTypeConfiguration<FinancialInstitutionOffice>
+    {
+        public void Configure(EntityTypeBuilder<FinancialInstitutionOffice> builder)
+        {
+            builder.ToTable("FinancialInstitutionOffice", "dbo");
+            builder.HasKey(x => x.FinancialInstitutionCode);
+
+            builder.Property(x => x.Code).HasColumnName(@"Code").HasColumnType("uniqueidentifier").IsRequired();
+            builder.Property(x => x.FinancialInstitutionCode).HasColumnName(@"FinancialInstitutionCode").HasColumnType("uniqueidentifier").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.OfficeName).HasColumnName(@"OfficeName").HasColumnType("nvarchar(200)").IsRequired(false).HasMaxLength(200);
+
+            builder.HasIndex(x => new { x.FinancialInstitutionCode, x.OfficeName }).HasName("UniqueOfficeName_FinancialInstitutionOffice").IsUnique();
+        }
+    }
+
+    // SmallDecimalTestAttribute
+    public class FkTest_SmallDecimalTestAttributeConfiguration : IEntityTypeConfiguration<FkTest_SmallDecimalTestAttribute>
+    {
+        public void Configure(EntityTypeBuilder<FkTest_SmallDecimalTestAttribute> builder)
+        {
+            builder.ToTable("SmallDecimalTestAttribute", "FkTest");
+            builder.HasKey(x => x.FkId).HasName("PK__SmallDec__354CCD0BF1B0EFB2").IsClustered();
+
+            builder.Property(x => x.FkId).HasColumnName(@"FkID").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
+
+            // Foreign keys
+            builder.HasOne(a => a.SmallDecimalTest).WithOne(b => b.FkTest_SmallDecimalTestAttribute).HasForeignKey<FkTest_SmallDecimalTestAttribute>(c => c.FkId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("KateFK");
+        }
+    }
+
+    // footer
+    public class FooterConfiguration : IEntityTypeConfiguration<Footer>
+    {
+        public void Configure(EntityTypeBuilder<Footer> builder)
+        {
+            builder.ToTable("footer", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK__footer__3214EC27593C0B83").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.OtherId).HasColumnName(@"otherID").HasColumnType("int").IsRequired();
+            builder.Property(x => x.Added).HasColumnName(@"added").HasColumnType("datetime").IsRequired();
+
+            // Foreign keys
+            builder.HasOne(a => a.Header).WithMany(b => b.Footers).HasForeignKey(c => new { c.Id, c.OtherId }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("fooderFK");
+        }
+    }
+
+    // ForeignKeyIsNotEnforced
+    public class ForeignKeyIsNotEnforcedConfiguration : IEntityTypeConfiguration<ForeignKeyIsNotEnforced>
+    {
+        public void Configure(EntityTypeBuilder<ForeignKeyIsNotEnforced> builder)
+        {
+            builder.ToTable("ForeignKeyIsNotEnforced", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK__ForeignK__3213E83FF0A32C89").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.NullValue).HasColumnName(@"null_value").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.NotNullValue).HasColumnName(@"not_null_value").HasColumnType("int").IsRequired();
+
+            builder.HasIndex(x => x.NotNullValue).HasName("UQ_ForeignKeyIsNotEnforced_not_null_value").IsUnique();
+            builder.HasIndex(x => x.NullValue).HasName("UQ_ForeignKeyIsNotEnforced_null_value").IsUnique();
+        }
+    }
+
+    // ForeignKeyIsNotEnforcedItem
+    public class ForeignKeyIsNotEnforcedItemConfiguration : IEntityTypeConfiguration<ForeignKeyIsNotEnforcedItem>
+    {
+        public void Configure(EntityTypeBuilder<ForeignKeyIsNotEnforcedItem> builder)
+        {
+            builder.ToTable("ForeignKeyIsNotEnforcedItem", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK__ForeignK__3213E83F6EE7FE07").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.NullValue).HasColumnName(@"null_value").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.NotNullValue).HasColumnName(@"not_null_value").HasColumnType("int").IsRequired();
+
+            // Foreign keys
+            builder.HasOne(a => a.ForeignKeyIsNotEnforced_NotNullValue).WithOne(b => b.ForeignKeyIsNotEnforcedItem_NotNullValue).HasPrincipalKey<ForeignKeyIsNotEnforced>(p => p.NotNullValue).HasForeignKey<ForeignKeyIsNotEnforcedItem>(c => c.NotNullValue).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_ForeignKeyIsNotEnforcedItem_notnull_notnull");
+            builder.HasOne(a => a.ForeignKeyIsNotEnforced_NullValue).WithOne(b => b.ForeignKeyIsNotEnforcedItem_NullValue).HasPrincipalKey<ForeignKeyIsNotEnforced>(p => p.NotNullValue).HasForeignKey<ForeignKeyIsNotEnforcedItem>(c => c.NullValue).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_ForeignKeyIsNotEnforcedItem_null_notnull");
+
+            builder.HasIndex(x => x.NotNullValue).HasName("UQ_ForeignKeyIsNotEnforcedItem_not_null_value").IsUnique();
+            builder.HasIndex(x => x.NullValue).HasName("UQ_ForeignKeyIsNotEnforcedItem_null_value").IsUnique();
+        }
+    }
+
+    // HasPrincipalKeyTestChild
+    public class HasPrincipalKeyTestChildConfiguration : IEntityTypeConfiguration<HasPrincipalKeyTestChild>
+    {
+        public void Configure(EntityTypeBuilder<HasPrincipalKeyTestChild> builder)
+        {
+            builder.ToTable("HasPrincipalKeyTestChild", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK_HasPrincipalKeyTestChild").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.A).HasColumnName(@"A").HasColumnType("int").IsRequired();
+            builder.Property(x => x.B).HasColumnName(@"B").HasColumnType("int").IsRequired();
+            builder.Property(x => x.C).HasColumnName(@"C").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.D).HasColumnName(@"D").HasColumnType("int").IsRequired(false);
+
+            // Foreign keys
+            builder.HasOne(a => a.HasPrincipalKeyTestParent).WithOne(b => b.HasPrincipalKeyTestChild).HasPrincipalKey<HasPrincipalKeyTestParent>(p => new { p.Aa, p.Bb }).HasForeignKey<HasPrincipalKeyTestChild>(c => new { c.A, c.B }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_HasPrincipalKey_AB");
+        }
+    }
+
+    // HasPrincipalKeyTestParent
+    public class HasPrincipalKeyTestParentConfiguration : IEntityTypeConfiguration<HasPrincipalKeyTestParent>
+    {
+        public void Configure(EntityTypeBuilder<HasPrincipalKeyTestParent> builder)
+        {
+            builder.ToTable("HasPrincipalKeyTestParent", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK_HasPrincipalKeyTestParent").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Aa).HasColumnName(@"AA").HasColumnType("int").IsRequired();
+            builder.Property(x => x.Bb).HasColumnName(@"BB").HasColumnType("int").IsRequired();
+            builder.Property(x => x.Cc).HasColumnName(@"CC").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.Dd).HasColumnName(@"DD").HasColumnType("int").IsRequired(false);
+
+            builder.HasIndex(x => new { x.Aa, x.Bb }).HasName("UQ_HasPrincipalKeyTestParent_AB").IsUnique();
+            builder.HasIndex(x => new { x.Aa, x.Cc }).HasName("UQ_HasPrincipalKeyTestParent_AC").IsUnique();
+            builder.HasIndex(x => new { x.Cc, x.Dd }).HasName("UQ_HasPrincipalKeyTestParent_CD").IsUnique();
+        }
+    }
+
+    // header
+    public class HeaderConfiguration : IEntityTypeConfiguration<Header>
+    {
+        public void Configure(EntityTypeBuilder<Header> builder)
+        {
+            builder.ToTable("header", "dbo");
+            builder.HasKey(x => new { x.Id, x.AnotherId }).HasName("PK__header__FAB049E7090D2116").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.AnotherId).HasColumnName(@"anotherID").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.Added).HasColumnName(@"added").HasColumnType("datetime").IsRequired();
+        }
+    }
+
+    // hierarchy_test
+    public class HierarchyTestConfiguration : IEntityTypeConfiguration<HierarchyTest>
+    {
+        public void Configure(EntityTypeBuilder<HierarchyTest> builder)
+        {
+            builder.ToTable("hierarchy_test", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK__hierarch__3214EC27E80E39ED").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Hid).HasColumnName(@"hid").HasColumnType("hierarchyid").IsRequired();
+        }
+    }
+
+    // Role
+    public class Issue47_RoleConfiguration : IEntityTypeConfiguration<Issue47_Role>
+    {
+        public void Configure(EntityTypeBuilder<Issue47_Role> builder)
+        {
+            builder.ToTable("Role", "Issue47");
+            builder.HasKey(x => x.RoleId).HasName("PK__Role__8AFACE1A7B067CE8").IsClustered();
+
+            builder.Property(x => x.RoleId).HasColumnName(@"RoleId").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Role).HasColumnName(@"Role").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);
+        }
+    }
+
+    // Users
+    public class Issue47_UserConfiguration : IEntityTypeConfiguration<Issue47_User>
+    {
+        public void Configure(EntityTypeBuilder<Issue47_User> builder)
+        {
+            builder.ToTable("Users", "Issue47");
+            builder.HasKey(x => x.UserId).HasName("PK__Users__1788CC4CEA43CD48").IsClustered();
+
+            builder.Property(x => x.UserId).HasColumnName(@"UserId").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Name).HasColumnName(@"Name").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);
+        }
+    }
+
+    // UserRoles
+    public class Issue47_UserRoleConfiguration : IEntityTypeConfiguration<Issue47_UserRole>
+    {
+        public void Configure(EntityTypeBuilder<Issue47_UserRole> builder)
+        {
+            builder.ToTable("UserRoles", "Issue47");
+            builder.HasKey(x => x.UserRoleId).HasName("PK__UserRole__3D978A3562D2BF0E").IsClustered();
+
+            builder.Property(x => x.UserRoleId).HasColumnName(@"UserRoleId").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.UserId).HasColumnName(@"UserId").HasColumnType("int").IsRequired();
+            builder.Property(x => x.RoleId).HasColumnName(@"RoleId").HasColumnType("int").IsRequired();
+
+            // Foreign keys
+            builder.HasOne(a => a.Issue47_Role).WithMany(b => b.Issue47_UserRoles).HasForeignKey(c => c.RoleId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("Issue47_UserRoles_roleid");
+            builder.HasOne(a => a.Issue47_User).WithMany(b => b.Issue47_UserRoles).HasForeignKey(c => c.UserId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("Issue47_UserRoles_userid");
+        }
+    }
+
+    // MultipleKeys
+    public class MultipleKeyConfiguration : IEntityTypeConfiguration<MultipleKey>
+    {
+        public void Configure(EntityTypeBuilder<MultipleKey> builder)
+        {
+            builder.ToTable("MultipleKeys", "dbo");
+            builder.HasKey(x => new { x.UserId, x.FavouriteColourId, x.BestHolidayTypeId }).HasName("PK_MultipleKeys").IsClustered();
+
+            builder.Property(x => x.UserId).HasColumnName(@"UserId").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.FavouriteColourId).HasColumnName(@"FavouriteColourId").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.BestHolidayTypeId).HasColumnName(@"BestHolidayTypeId").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.BankId).HasColumnName(@"BankId").HasColumnType("int").IsRequired();
+            builder.Property(x => x.CarId).HasColumnName(@"CarId").HasColumnType("int").IsRequired();
+
+            builder.HasIndex(x => x.BestHolidayTypeId).HasName("IX_MultipleKeys_BestHolidayType");
+            builder.HasIndex(x => new { x.BestHolidayTypeId, x.BankId }).HasName("IX_MultipleKeys_Holiday_Bank").IsUnique();
+            builder.HasIndex(x => x.FavouriteColourId).HasName("UC_MultipleKeys_FavouriteColour").IsUnique();
+        }
+    }
+
+    // Issue
+    public class OneEightSix_IssueConfiguration : IEntityTypeConfiguration<OneEightSix_Issue>
+    {
+        public void Configure(EntityTypeBuilder<OneEightSix_Issue> builder)
+        {
+            builder.ToTable("Issue", "OneEightSix");
+            builder.HasKey(x => x.Id).HasName("PK_Issue").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Title).HasColumnName(@"Title").HasColumnType("nvarchar(100)").IsRequired().HasMaxLength(100);
+            builder.Property(x => x.Content).HasColumnName(@"Content").HasColumnType("nvarchar(max)").IsRequired(false);
+            builder.Property(x => x.ConsentDocumentId).HasColumnName(@"ConsentDocumentId").HasColumnType("int").IsRequired(false);
+
+            // Foreign keys
+            builder.HasOne(a => a.OneEightSix_UploadedFile).WithMany(b => b.OneEightSix_Issues).HasForeignKey(c => c.ConsentDocumentId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Issue_UploadedFileConsentDocument");
+        }
+    }
+
+    // IssueUploadedFile
+    public class OneEightSix_IssueUploadedFileConfiguration : IEntityTypeConfiguration<OneEightSix_IssueUploadedFile>
+    {
+        public void Configure(EntityTypeBuilder<OneEightSix_IssueUploadedFile> builder)
+        {
+            builder.ToTable("IssueUploadedFile", "OneEightSix");
+            builder.HasKey(x => new { x.UploadedFileId, x.IssueId }).HasName("PK_IssueUploadedFile").IsClustered();
+
+            builder.Property(x => x.UploadedFileId).HasColumnName(@"UploadedFileId").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.IssueId).HasColumnName(@"IssueId").HasColumnType("int").IsRequired().ValueGeneratedNever();
+
+            // Foreign keys
+            builder.HasOne(a => a.OneEightSix_Issue).WithMany(b => b.OneEightSix_IssueUploadedFiles).HasForeignKey(c => c.IssueId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_IssueUploadedFile_Issue");
+            builder.HasOne(a => a.OneEightSix_UploadedFile).WithMany(b => b.OneEightSix_IssueUploadedFiles).HasForeignKey(c => c.UploadedFileId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_IssueUploadedFile_UploadedFile");
+        }
+    }
+
+    // UploadedFile
+    public class OneEightSix_UploadedFileConfiguration : IEntityTypeConfiguration<OneEightSix_UploadedFile>
+    {
+        public void Configure(EntityTypeBuilder<OneEightSix_UploadedFile> builder)
+        {
+            builder.ToTable("UploadedFile", "OneEightSix");
+            builder.HasKey(x => x.Id).HasName("PK_UploadedFile").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.FullPath).HasColumnName(@"FullPath").HasColumnType("nvarchar(max)").IsRequired();
+        }
+    }
+
+    // PeriodTestTable
+    public class PeriodTestTableConfiguration : IEntityTypeConfiguration<PeriodTestTable>
+    {
+        public void Configure(EntityTypeBuilder<PeriodTestTable> builder)
+        {
+            builder.ToTable("PeriodTestTable", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK__PeriodTe__3213E83F66E9CFC5").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.Joe46Bloggs).HasColumnName(@"joe.bloggs").HasColumnType("int").IsRequired(false);
+        }
+    }
+
+    // Person
+    public class PersonConfiguration : IEntityTypeConfiguration<Person>
+    {
+        public void Configure(EntityTypeBuilder<Person> builder)
+        {
+            builder.ToTable("Person", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK__Person__3214EC07301AB64C").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Name).HasColumnName(@"Name").HasColumnType("varchar(50)").IsRequired().IsUnicode(false).HasMaxLength(50);
+        }
+    }
+
+    // PersonPosts
+    public class PersonPostConfiguration : IEntityTypeConfiguration<PersonPost>
+    {
+        public void Configure(EntityTypeBuilder<PersonPost> builder)
+        {
+            builder.ToTable("PersonPosts", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK__PersonPo__3214EC07D07EBB7D").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Title).HasColumnName(@"Title").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
+            builder.Property(x => x.Body).HasColumnName(@"Body").HasColumnType("varchar(100)").IsRequired().IsUnicode(false).HasMaxLength(100);
+            builder.Property(x => x.CreatedBy).HasColumnName(@"CreatedBy").HasColumnType("int").IsRequired();
+            builder.Property(x => x.UpdatedBy).HasColumnName(@"UpdatedBy").HasColumnType("int").IsRequired();
+
+            // Foreign keys
+            builder.HasOne(a => a.Person_CreatedBy).WithMany(b => b.PersonPosts_CreatedBy).HasForeignKey(c => c.CreatedBy).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_PersonPosts_CreatedBy");
+            builder.HasOne(a => a.Person_UpdatedBy).WithMany(b => b.PersonPosts_UpdatedBy).HasForeignKey(c => c.UpdatedBy).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_PersonPosts_UpdatedBy");
+        }
+    }
+
+    // pk_ordinal_test
+    public class PkOrdinalTestConfiguration : IEntityTypeConfiguration<PkOrdinalTest>
+    {
+        public void Configure(EntityTypeBuilder<PkOrdinalTest> builder)
+        {
+            builder.ToTable("pk_ordinal_test", "dbo");
+            builder.HasKey(x => new { x.C3, x.C1 }).HasName("PK__pk_ordin__1135D3B42499460A").IsClustered();
+
+            builder.Property(x => x.C1).HasColumnName(@"C1").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.C2).HasColumnName(@"C2").HasColumnType("int").IsRequired();
+            builder.Property(x => x.C3).HasColumnName(@"C3").HasColumnType("int").IsRequired().ValueGeneratedNever();
+        }
+    }
+
+    // PropertyTypesToAdd
+    public class PropertyTypesToAddConfiguration : IEntityTypeConfiguration<PropertyTypesToAdd>
+    {
+        public void Configure(EntityTypeBuilder<PropertyTypesToAdd> builder)
+        {
+            builder.ToTable("PropertyTypesToAdd", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK__Property__3213E83F77C039D2").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.DtDefault).HasColumnName(@"dt_default").HasColumnType("datetime2").IsRequired(false);
+            builder.Property(x => x.Dt7).HasColumnName(@"dt7").HasColumnType("datetime2").IsRequired(false);
+            builder.Property(x => x.DefaultCheck).HasColumnName(@"defaultCheck").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);
+        }
+    }
+
+    // SequenceTest
+    public class SequenceTestConfiguration : IEntityTypeConfiguration<SequenceTest>
+    {
+        public void Configure(EntityTypeBuilder<SequenceTest> builder)
+        {
+            builder.ToTable("SequenceTest", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK__Sequence__3214EC07AFADA315").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountBy1]");
+            builder.Property(x => x.CntByBigInt).HasColumnName(@"CntByBigInt").HasColumnType("bigint").IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountByBigInt]");
+            builder.Property(x => x.CntByTinyInt).HasColumnName(@"CntByTinyInt").HasColumnType("tinyint").IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountByTinyInt]");
+            builder.Property(x => x.CntBySmallInt).HasColumnName(@"CntBySmallInt").HasColumnType("smallint").IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountBySmallInt]");
+            builder.Property(x => x.CntByDecimal).HasColumnName(@"CntByDecimal").HasColumnType("decimal(18,0)").IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountByDecimal]");
+            builder.Property(x => x.CntByNumeric).HasColumnName(@"CntByNumeric").HasColumnType("numeric(18,0)").IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountByNumeric]");
+        }
+    }
+
+    // SmallDecimalTest
+    public class SmallDecimalTestConfiguration : IEntityTypeConfiguration<SmallDecimalTest>
+    {
+        public void Configure(EntityTypeBuilder<SmallDecimalTest> builder)
+        {
+            builder.ToTable("SmallDecimalTest", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK__SmallDec__3213E83F0DAD85EF").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.KoeffVed).HasColumnName(@"KoeffVed").HasColumnType("decimal(4,4)").IsRequired(false);
+        }
+    }
+
+    // SmallDecimalTestView
+    public class SmallDecimalTestViewConfiguration : IEntityTypeConfiguration<SmallDecimalTestView>
+    {
+        public void Configure(EntityTypeBuilder<SmallDecimalTestView> builder)
+        {
+            builder.ToView("SmallDecimalTestView", "dbo");
+            builder.HasNoKey();
+
+            builder.Property(x => x.FkId).HasColumnName(@"FkID").HasColumnType("int").IsRequired();
+            builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
         }
     }
 
@@ -1130,6 +6117,344 @@ namespace Efrpg.V3TestG
         }
     }
 
+    // TableA
+    public class TableAConfiguration : IEntityTypeConfiguration<TableA>
+    {
+        public void Configure(EntityTypeBuilder<TableA> builder)
+        {
+            builder.ToTable("TableA", "dbo");
+            builder.HasKey(x => x.TableAId).HasName("TableA_pkey").IsClustered();
+
+            builder.Property(x => x.TableAId).HasColumnName(@"TableAId").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.TableADesc).HasColumnName(@"TableADesc").HasColumnType("varchar(20)").IsRequired(false).IsUnicode(false).HasMaxLength(20);
+        }
+    }
+
+    // TableB
+    public class TableBConfiguration : IEntityTypeConfiguration<TableB>
+    {
+        public void Configure(EntityTypeBuilder<TableB> builder)
+        {
+            builder.ToTable("TableB", "dbo");
+            builder.HasKey(x => new { x.TableBId, x.TableAId }).HasName("TableB_pkey").IsClustered();
+
+            builder.Property(x => x.TableBId).HasColumnName(@"TableBId").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.TableAId).HasColumnName(@"TableAId").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.ParentTableAId).HasColumnName(@"ParentTableAId").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.TableBDesc).HasColumnName(@"TableBDesc").HasColumnType("varchar(20)").IsRequired(false).IsUnicode(false).HasMaxLength(20);
+
+            // Foreign keys
+            builder.HasOne(a => a.TableA_TableAId).WithMany(b => b.TableBs).HasForeignKey(c => c.TableAId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_TableA_CompositeKey_Req");
+            builder.HasOne(a => a.TableB1).WithOne(b => b.TableB2).HasForeignKey<TableB>(c => new { c.TableAId, c.TableBId }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("ParentTableB_Hierarchy");
+
+            builder.HasIndex(x => x.TableAId).HasName("fki_ParentTableA_FK_Constraint");
+        }
+    }
+
+    // table mapping with space
+    public class TableMappingWithSpaceConfiguration : IEntityTypeConfiguration<TableMappingWithSpace>
+    {
+        public void Configure(EntityTypeBuilder<TableMappingWithSpace> builder)
+        {
+            builder.ToTable("table mapping with space", "dbo");
+            builder.HasKey(x => new { x.Id, x.IdValue }).HasName("map_with_space").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.IdValue).HasColumnName(@"id value").HasColumnType("int").IsRequired().ValueGeneratedNever();
+
+            // Foreign keys
+            builder.HasOne(a => a.TableWithSpace).WithMany(b => b.TableMappingWithSpaces).HasForeignKey(c => c.Id).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("space1FK");
+            builder.HasOne(a => a.TableWithSpaceAndInColumn).WithMany(b => b.TableMappingWithSpaces).HasForeignKey(c => c.IdValue).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("space2FK");
+        }
+    }
+
+    // table with duplicate column names
+    public class TableWithDuplicateColumnNameConfiguration : IEntityTypeConfiguration<TableWithDuplicateColumnName>
+    {
+        public void Configure(EntityTypeBuilder<TableWithDuplicateColumnName> builder)
+        {
+            builder.ToTable("table with duplicate column names", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK__table wi__3213E83FD75ED2F9").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.UserId1).HasColumnName(@"user_id").HasColumnType("int").IsRequired();
+            builder.Property(x => x.UserId2).HasColumnName(@"UserId").HasColumnType("int").IsRequired();
+            builder.Property(x => x.UserId3).HasColumnName(@"User Id").HasColumnType("int").IsRequired();
+            builder.Property(x => x.UserId4).HasColumnName(@"User  Id").HasColumnType("int").IsRequired();
+            builder.Property(x => x.UserId).HasColumnName(@"user__id").HasColumnType("int").IsRequired();
+        }
+    }
+
+    // table with space
+    public class TableWithSpaceConfiguration : IEntityTypeConfiguration<TableWithSpace>
+    {
+        public void Configure(EntityTypeBuilder<TableWithSpace> builder)
+        {
+            builder.ToTable("table with space", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK__table wi__3213E83FE3DEDDFD").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
+        }
+    }
+
+    // table with space and in columns
+    public class TableWithSpaceAndInColumnConfiguration : IEntityTypeConfiguration<TableWithSpaceAndInColumn>
+    {
+        public void Configure(EntityTypeBuilder<TableWithSpaceAndInColumn> builder)
+        {
+            builder.ToTable("table with space and in columns", "dbo");
+            builder.HasKey(x => x.IdValue).HasName("PK__table wi__92CF061C2DBA9525").IsClustered();
+
+            builder.Property(x => x.IdValue).HasColumnName(@"id value").HasColumnType("int").IsRequired().ValueGeneratedNever();
+        }
+    }
+
+    // TableWithSpaceInColumnOnly
+    public class TableWithSpaceInColumnOnlyConfiguration : IEntityTypeConfiguration<TableWithSpaceInColumnOnly>
+    {
+        public void Configure(EntityTypeBuilder<TableWithSpaceInColumnOnly> builder)
+        {
+            builder.ToTable("TableWithSpaceInColumnOnly", "dbo");
+            builder.HasKey(x => x.IdValue).HasName("PK__TableWit__92CF061C5A0D0BF4").IsClustered();
+
+            builder.Property(x => x.IdValue).HasColumnName(@"id value").HasColumnType("int").IsRequired().ValueGeneratedNever();
+        }
+    }
+
+    // TadeuszSobol
+    public class TadeuszSobolConfiguration : IEntityTypeConfiguration<TadeuszSobol>
+    {
+        public void Configure(EntityTypeBuilder<TadeuszSobol> builder)
+        {
+            builder.ToTable("TadeuszSobol", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK__TadeuszS__3214EC07A9D17117").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(max)").IsRequired(false).IsUnicode(false);
+            builder.Property(x => x.Notes).HasColumnName(@"Notes").HasColumnType("nvarchar(max)").IsRequired(false);
+            builder.Property(x => x.Name).HasColumnName(@"Name").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);
+        }
+    }
+
+    // Task
+    public class Task1Configuration : IEntityTypeConfiguration<Task1>
+    {
+        public void Configure(EntityTypeBuilder<Task1> builder)
+        {
+            builder.ToTable("Task", "dbo");
+            builder.HasKey(x => x.TaskId).HasName("PK_Task").IsClustered();
+
+            builder.Property(x => x.TaskId).HasColumnName(@"TaskId").HasColumnType("bigint").IsRequired().ValueGeneratedNever();
+        }
+    }
+
+    // tblOrders
+    public class TblOrderConfiguration : IEntityTypeConfiguration<TblOrder>
+    {
+        public void Configure(EntityTypeBuilder<TblOrder> builder)
+        {
+            builder.ToTable("tblOrders", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK__tblOrder__3214EC27B6AA23DF").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Added).HasColumnName(@"added").HasColumnType("datetime").IsRequired();
+        }
+    }
+
+    // tblOrderErrors
+    public class TblOrderErrorConfiguration : IEntityTypeConfiguration<TblOrderError>
+    {
+        public void Configure(EntityTypeBuilder<TblOrderError> builder)
+        {
+            builder.ToTable("tblOrderErrors", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK__tblOrder__3214EC2732EAC74E").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Error).HasColumnName(@"error").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);
+        }
+    }
+
+    // tblOrderErrorsAB_
+    public class TblOrderErrorsAbConfiguration : IEntityTypeConfiguration<TblOrderErrorsAb>
+    {
+        public void Configure(EntityTypeBuilder<TblOrderErrorsAb> builder)
+        {
+            builder.ToTable("tblOrderErrorsAB_", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK__tblOrder__3214EC27B5A2C145").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Error).HasColumnName(@"error").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);
+        }
+    }
+
+    // tblOrderLines
+    public class TblOrderLineConfiguration : IEntityTypeConfiguration<TblOrderLine>
+    {
+        public void Configure(EntityTypeBuilder<TblOrderLine> builder)
+        {
+            builder.ToTable("tblOrderLines", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK__tblOrder__3214EC27FF01DF09").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired();
+            builder.Property(x => x.Sku).HasColumnName(@"sku").HasColumnType("varchar(15)").IsRequired(false).IsUnicode(false).HasMaxLength(15);
+
+            // Foreign keys
+            builder.HasOne(a => a.TblOrder).WithMany(b => b.TblOrderLines).HasForeignKey(c => c.OrderId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("tblOrdersFK");
+        }
+    }
+
+    // Ticket
+    public class TicketConfiguration : IEntityTypeConfiguration<Ticket>
+    {
+        public void Configure(EntityTypeBuilder<Ticket> builder)
+        {
+            builder.ToTable("Ticket", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK_Ticket").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("bigint").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.CreatedById).HasColumnName(@"CreatedById").HasColumnType("bigint").IsRequired();
+            builder.Property(x => x.ModifiedById).HasColumnName(@"ModifiedById").HasColumnType("bigint").IsRequired(false);
+
+            // Foreign keys
+            builder.HasOne(a => a.CreatedBy).WithMany(b => b.Tickets_CreatedById).HasForeignKey(c => c.CreatedById).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Ticket_AppUser");
+            builder.HasOne(a => a.ModifiedBy).WithMany(b => b.Tickets_ModifiedById).HasForeignKey(c => c.ModifiedById).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Ticket_AppUser1");
+        }
+    }
+
+    // Token
+    public class TokenConfiguration : IEntityTypeConfiguration<Token>
+    {
+        public void Configure(EntityTypeBuilder<Token> builder)
+        {
+            builder.ToTable("Token", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK__Token__3214EC0760877C4B").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("uniqueidentifier").IsRequired().ValueGeneratedOnAdd();
+            builder.Property(x => x.Enabled).HasColumnName(@"Enabled").HasColumnType("bit").IsRequired();
+        }
+    }
+
+    // User
+    public class UserConfiguration : IEntityTypeConfiguration<User>
+    {
+        public void Configure(EntityTypeBuilder<User> builder)
+        {
+            builder.ToTable("User", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK_Contacts").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.ExternalUserId).HasColumnName(@"ExternalUserID").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);
+        }
+    }
+
+    // User309
+    public class User309Configuration : IEntityTypeConfiguration<User309>
+    {
+        public void Configure(EntityTypeBuilder<User309> builder)
+        {
+            builder.ToTable("User309", "dbo");
+            builder.HasKey(x => x.UserId).HasName("PK_User309").IsClustered();
+
+            builder.Property(x => x.UserId).HasColumnName(@"UserID").HasColumnType("bigint").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.Lastname).HasColumnName(@"Lastname").HasColumnType("nvarchar(100)").IsRequired().HasMaxLength(100);
+            builder.Property(x => x.Firstname).HasColumnName(@"Firstname").HasColumnType("nvarchar(100)").IsRequired().HasMaxLength(100);
+            builder.Property(x => x.PhoneCountryId).HasColumnName(@"PhoneCountryID").HasColumnType("int").IsRequired(false);
+
+            // Foreign keys
+            builder.HasOne(a => a.Country).WithMany(b => b.User309).HasForeignKey(c => c.PhoneCountryId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_User309_PhoneCountry");
+        }
+    }
+
+    // User_Document
+    public class UserDocumentConfiguration : IEntityTypeConfiguration<UserDocument>
+    {
+        public void Configure(EntityTypeBuilder<UserDocument> builder)
+        {
+            builder.ToTable("User_Document", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK_User_Document").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.UserId).HasColumnName(@"UserID").HasColumnType("int").IsRequired();
+            builder.Property(x => x.CreatedByUserId).HasColumnName(@"CreatedByUserID").HasColumnType("int").IsRequired();
+
+            // Foreign keys
+            builder.HasOne(a => a.CreatedByUser).WithMany(b => b.UserDocuments_CreatedByUserId).HasForeignKey(c => c.CreatedByUserId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_User_Document_User1");
+            builder.HasOne(a => a.User_UserId).WithMany(b => b.UserDocuments_UserId).HasForeignKey(c => c.UserId).HasConstraintName("FK_User_Document_User");
+        }
+    }
+
+    // view with space
+    public class ViewWithSpaceConfiguration : IEntityTypeConfiguration<ViewWithSpace>
+    {
+        public void Configure(EntityTypeBuilder<ViewWithSpace> builder)
+        {
+            builder.ToView("view with space", "dbo");
+            builder.HasNoKey();
+
+            builder.Property(x => x.CodeObjectNo).HasColumnName(@"codeObjectNo").HasColumnType("int").IsRequired();
+            builder.Property(x => x.ApplicationNo).HasColumnName(@"applicationNo").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.Type).HasColumnName(@"type").HasColumnType("int").IsRequired();
+            builder.Property(x => x.EName).HasColumnName(@"eName").HasColumnType("nvarchar(250)").IsRequired().HasMaxLength(250);
+            builder.Property(x => x.AName).HasColumnName(@"aName").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
+            builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
+            builder.Property(x => x.CodeName).HasColumnName(@"codeName").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
+            builder.Property(x => x.Note).HasColumnName(@"note").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
+            builder.Property(x => x.IsObject).HasColumnName(@"isObject").HasColumnType("bit").IsRequired();
+            builder.Property(x => x.VersionNumber).HasColumnName(@"versionNumber").HasColumnType("timestamp").IsRequired(false);
+        }
+    }
+
+    // Articles
+    public class WVN_ArticleConfiguration : IEntityTypeConfiguration<WVN_Article>
+    {
+        public void Configure(EntityTypeBuilder<WVN_Article> builder)
+        {
+            builder.ToTable("Articles", "WVN");
+            builder.HasKey(x => x.PkArticle).HasName("PK_Articles").IsClustered();
+
+            builder.Property(x => x.PkArticle).HasColumnName(@"PK_Article").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.FkFactory).HasColumnName(@"FK_Factory").HasColumnType("uniqueidentifier").IsRequired();
+            builder.Property(x => x.FkArticleLevel).HasColumnName(@"FK_ArticleLevel").HasColumnType("int").IsRequired();
+            builder.Property(x => x.FkParentArticle).HasColumnName(@"FK_ParentArticle").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.Code).HasColumnName(@"Code").HasColumnType("nvarchar(20)").IsRequired().HasMaxLength(20);
+
+            builder.HasIndex(x => new { x.FkFactory, x.FkArticleLevel, x.Code }).HasName("UK_Articles").IsUnique();
+        }
+    }
+
+    // v_Articles
+    public class WVN_VArticleConfiguration : IEntityTypeConfiguration<WVN_VArticle>
+    {
+        public void Configure(EntityTypeBuilder<WVN_VArticle> builder)
+        {
+            builder.ToView("v_Articles", "WVN");
+            builder.HasNoKey();
+
+            builder.Property(x => x.PkArticle).HasColumnName(@"PK_Article").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.FkFactory).HasColumnName(@"FK_Factory").HasColumnType("uniqueidentifier").IsRequired(false);
+            builder.Property(x => x.FkArticleLevel).HasColumnName(@"FK_ArticleLevel").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.FkParentArticle).HasColumnName(@"FK_ParentArticle").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.Code).HasColumnName(@"Code").HasColumnType("nvarchar(20)").IsRequired(false).HasMaxLength(20);
+            builder.Property(x => x.FullCode).HasColumnName(@"FullCode").HasColumnType("nvarchar(100)").IsRequired(false).HasMaxLength(100);
+        }
+    }
+
+    // Бренды товара
+    public class БрендытовараConfiguration : IEntityTypeConfiguration<Брендытовара>
+    {
+        public void Configure(EntityTypeBuilder<Брендытовара> builder)
+        {
+            builder.ToTable("Бренды товара", "dbo");
+            builder.HasKey(x => x.Кодбренда).HasName("PK_Бренды").IsClustered();
+
+            builder.Property(x => x.Кодбренда).HasColumnName(@"Код бренда").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Наименованиебренда).HasColumnName(@"Наименование бренда").HasColumnType("varchar(50)").IsRequired().IsUnicode(false).HasMaxLength(50);
+            builder.Property(x => x.Логотипбренда).HasColumnName(@"Логотип_бренда").HasColumnType("image(2147483647)").IsRequired(false).HasMaxLength(2147483647);
+            builder.Property(x => x.Логотипбрендавертикальный).HasColumnName(@"Логотип_бренда_вертикальный").HasColumnType("image(2147483647)").IsRequired(false).HasMaxLength(2147483647);
+        }
+    }
+
 
     #endregion
 
@@ -1159,9 +6484,251 @@ namespace Efrpg.V3TestG
 
     #region Stored procedure return models
 
+    public class C182Test1ReturnModel
+    {
+        public int? Id { get; set; }
+        public string Description { get; set; }
+    }
+
+    public class C182Test2ReturnModel
+    {
+        public class ResultSetModel1
+        {
+            public int? Id { get; set; }
+            public string DescriptionFlag1 { get; set; }
+        }
+        public List<ResultSetModel1> ResultSet1;
+        public class ResultSetModel2
+        {
+            public int? Id { get; set; }
+            public string DescriptionNotNull { get; set; }
+        }
+        public List<ResultSetModel2> ResultSet2;
+        public class ResultSetModel3
+        {
+            public int? Id { get; set; }
+            public string Description { get; set; }
+        }
+        public List<ResultSetModel3> ResultSet3;
+    }
+
+    public class CsvToIntReturnModel
+    {
+        public int? IntValue { get; set; }
+    }
+
+    public class CustomSchema_CsvToIntWithSchemaReturnModel
+    {
+        public int? IntValue { get; set; }
+    }
+
+    public class DboProcDataFromFfrsAndDboReturnModel
+    {
+        public int Id { get; set; }
+        public int PrimaryColourId { get; set; }
+        public string CarMake { get; set; }
+        public string CVName { get; set; }
+    }
+
+    public class DboProcDataFromFfrsReturnModel
+    {
+        public Guid BatchUID { get; set; }
+        public int CVID { get; set; }
+        public string CVName { get; set; }
+    }
+
+    public class DsOpeProcReturnModel
+    {
+        public int ID { get; set; }
+        public bool? Selected { get; set; }
+    }
+
+    public class FFRS_CsvToInt2ReturnModel
+    {
+        public int? IntValue { get; set; }
+    }
+
+    public class FFRS_CvDataReturnModel
+    {
+        public Guid BatchUID { get; set; }
+        public int CVID { get; set; }
+        public string CVName { get; set; }
+    }
+
+    public class FFRS_DataFromDboAndFfrsReturnModel
+    {
+        public int Id { get; set; }
+        public int PrimaryColourId { get; set; }
+        public string CarMake { get; set; }
+        public string CVName { get; set; }
+    }
+
+    public class FFRS_DataFromDboReturnModel
+    {
+        public int Id { get; set; }
+        public int PrimaryColourId { get; set; }
+        public string CarMake { get; set; }
+    }
+
+    public class FkTest_HelloReturnModel
+    {
+        public int? @static { get; set; }
+        public int? @readonly { get; set; }
+    }
+
+    public class GetSmallDecimalTestReturnModel
+    {
+        public int id { get; set; }
+        public decimal? KoeffVed { get; set; }
+    }
+
+    public class StpMultipleIdenticalResultsReturnModel
+    {
+        public class ResultSetModel1
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+        }
+        public List<ResultSetModel1> ResultSet1;
+        public class ResultSetModel2
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+        }
+        public List<ResultSetModel2> ResultSet2;
+    }
+
+    public class StpMultipleMultipleResultsWithParamsReturnModel
+    {
+        public class ResultSetModel1
+        {
+            public int codeObjectNo { get; set; }
+            public int? applicationNo { get; set; }
+        }
+        public List<ResultSetModel1> ResultSet1;
+        public class ResultSetModel2
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+        }
+        public List<ResultSetModel2> ResultSet2;
+        public class ResultSetModel3
+        {
+            public string code { get; set; }
+        }
+        public List<ResultSetModel3> ResultSet3;
+        public class ResultSetModel4
+        {
+            public long id { get; set; }
+            public long id_t { get; set; }
+            public long num { get; set; }
+        }
+        public List<ResultSetModel4> ResultSet4;
+        public class ResultSetModel5
+        {
+            public int Id { get; set; }
+            public int PrimaryColourId { get; set; }
+            public string CarMake { get; set; }
+            public int? computed_column { get; set; }
+            public int? computed_column_persisted { get; set; }
+        }
+        public List<ResultSetModel5> ResultSet5;
+        public class ResultSetModel6
+        {
+            public int ID { get; set; }
+            public int OrderID { get; set; }
+            public string sku { get; set; }
+        }
+        public List<ResultSetModel6> ResultSet6;
+    }
+
+    public class StpMultipleResultsReturnModel
+    {
+        public class ResultSetModel1
+        {
+            public int codeObjectNo { get; set; }
+            public int? applicationNo { get; set; }
+        }
+        public List<ResultSetModel1> ResultSet1;
+        public class ResultSetModel2
+        {
+            public int Id { get; set; }
+            public int PrimaryColourId { get; set; }
+            public string CarMake { get; set; }
+            public int? computed_column { get; set; }
+            public int? computed_column_persisted { get; set; }
+        }
+        public List<ResultSetModel2> ResultSet2;
+        public class ResultSetModel3
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+        }
+        public List<ResultSetModel3> ResultSet3;
+    }
+
+    public class StpMultipleResultsWithParamsReturnModel
+    {
+        public class ResultSetModel1
+        {
+            public int codeObjectNo { get; set; }
+            public int? applicationNo { get; set; }
+        }
+        public List<ResultSetModel1> ResultSet1;
+        public class ResultSetModel2
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+        }
+        public List<ResultSetModel2> ResultSet2;
+    }
+
+    public class StpNoParamsTestReturnModel
+    {
+        public int codeObjectNo { get; set; }
+        public int? applicationNo { get; set; }
+    }
+
+    public class StpNullableParamsTestReturnModel
+    {
+        public int codeObjectNo { get; set; }
+        public int? applicationNo { get; set; }
+    }
+
+    public class StpTestReturnModel
+    {
+        public int codeObjectNo { get; set; }
+        public int? applicationNo { get; set; }
+        public int type { get; set; }
+        public string eName { get; set; }
+        public string aName { get; set; }
+        public string description { get; set; }
+        public string codeName { get; set; }
+        public string note { get; set; }
+        public bool isObject { get; set; }
+        public byte[] versionNumber { get; set; }
+    }
+
+    public class StpTestUnderscoreTestReturnModel
+    {
+        public int code_object_no { get; set; }
+        public int? application_no { get; set; }
+    }
+
     public class Synonyms_SimpleStoredProcReturnModel
     {
         public string ReturnValue { get; set; }
+    }
+
+    public class TestReturnStringReturnModel
+    {
+        public string error { get; set; }
+    }
+
+    public class XmlDataV1ReturnModel
+    {
+        public DateTime? Column1 { get; set; }
+        public string Column2 { get; set; }
     }
 
 

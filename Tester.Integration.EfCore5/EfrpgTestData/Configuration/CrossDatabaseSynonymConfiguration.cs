@@ -15,8 +15,7 @@ namespace V5EfrpgTest
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("varchar(100)").IsRequired(false).IsUnicode(false).HasMaxLength(100);
-            builder.Property(x => x.PhoneNumber).HasColumnName(@"phone_number").HasColumnType("nvarchar(20)").IsRequired(false).HasMaxLength(20);
+            builder.Property(x => x.Forename).HasColumnName(@"Forename").HasColumnType("varchar(20)").IsRequired(false).IsUnicode(false).HasMaxLength(20);
         }
     }
 
