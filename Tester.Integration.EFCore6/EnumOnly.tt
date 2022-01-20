@@ -124,10 +124,10 @@
         },
         new EnumerationSettings
         {
-            Name       = "CarOptions",
-            Table      = "car_options",
-            NameField  = "enum_name",
-            ValueField = "value"
+            Name       = "Colour",
+            Table      = "Colour",
+            NameField  = "Name",
+            ValueField = "Id"
         }
         // Code will be generated as:
         // public enum Name
