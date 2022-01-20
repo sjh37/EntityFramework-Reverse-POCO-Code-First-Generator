@@ -973,7 +973,7 @@ namespace Efrpg.Readers
                 col.IsIdentity = true;
             }
 
-             if (!col.IsPrimaryKey && filter.IsExcluded(col))
+            if (!col.IsPrimaryKey && filter.IsExcluded(col))
                 col.Hidden = true;
 
             col.IsFixedLength = (rt.TypeName == "char" || rt.TypeName == "nchar");

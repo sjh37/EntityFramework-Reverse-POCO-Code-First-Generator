@@ -687,7 +687,7 @@ namespace BuildTT
     var outer = (GeneratedTextTransformation) this;
     var fileManagement = new FileManagementService(outer);
     var generator = GeneratorFactory.Create(fileManagement, FileManagerFactory.GetFileManagerType());
-    if (generator.InitialisationOk)
+    if (generator != null && generator.InitialisationOk)
     {
         // Show where the machine.config file is
         // fileManagement.WriteLine(""// "" + System.Runtime.InteropServices.RuntimeEnvironment.SystemConfigurationFile);

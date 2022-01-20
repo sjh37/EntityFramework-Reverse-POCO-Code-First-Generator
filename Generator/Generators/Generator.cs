@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.Common;
 using System.IO;
 using System.Linq;
@@ -21,7 +20,6 @@ namespace Efrpg.Generators
         public bool InitialisationOk { get; private set; }
 
         protected DatabaseReader DatabaseReader;
-        protected FileHeaderFooter FileHeaderFooter;
         public readonly IDbContextFilterList FilterList;
 
         protected abstract bool AllowFkToNonPrimaryKey();
@@ -37,10 +35,9 @@ namespace Efrpg.Generators
         protected abstract string GetCascadeOnDelete(bool cascadeOnDelete);
         protected abstract string GetForeignKeyConstraintName(string foreignKeyConstraintName);
 
-
-        private DbProviderFactory _factory;
-        public bool HasAcademicLicence;
-        public bool HasTrialLicence;
+        private bool _hasAcademicLicence;
+        private bool _hasTrialLicence;
+        private FileHeaderFooter _fileHeaderFooter;
         private readonly StringBuilder _preHeaderInfo;
         private readonly string _codeGeneratedAttribute;
         private readonly FileManagementService _fileManagementService;
@@ -52,77 +49,48 @@ namespace Efrpg.Generators
             _fileManagementService  = fileManagementService;
             _fileManagerType        = fileManagerType;
             InitialisationOk        = false;
-            _factory                = null;
             DatabaseReader          = null;
-            FileHeaderFooter        = null;
+            _fileHeaderFooter        = null;
             _preHeaderInfo          = new StringBuilder(1024);
             _codeGeneratedAttribute = string.Format("[GeneratedCode(\"EF.Reverse.POCO.Generator\", \"{0}\")]", EfrpgVersion.Version());
             FilterList              = new DbContextFilterList();
         }
 
-        public void Init(string singleDbContextSubNamespace)
+        public void Init(DatabaseReader databaseReader, string singleDbContextSubNamespace)
         {
-            var providerName = "unknown";
+            var licence = ReadAndValidateLicence();
+            if(licence == null)
+                return;
 
-            try
+            BuildPreHeaderInfo(licence);
+
+            DatabaseReader = databaseReader;
+            if (DatabaseReader == null)
             {
-                var licence = ReadAndValidateLicence();
-                if(licence == null)
-                    return;
-
-                providerName = DatabaseProvider.GetProvider(Settings.DatabaseType);
-                BuildPreHeaderInfo(licence);
-
-                _factory = DbProviderFactories.GetFactory(providerName);
-                if (_factory == null)
-                {
-                    _fileManagementService.Error("Database factory is null, cannot continue");
-                    return;
-                }
-
-                DatabaseReader = DatabaseReaderFactory.Create(_factory);
-                if (DatabaseReader == null)
-                {
-                    _fileManagementService.Error("Cannot create a database reader due to unknown database type.");
-                    return;
-                }
-
-                DatabaseReader.Init();
-
-                if (Settings.IncludeConnectionSettingComments)
-                    _preHeaderInfo.Append(DatabaseDetails());
-
-                if (Settings.UseDataAnnotations)
-                {
-                    Settings.AdditionalNamespaces.Add("System.ComponentModel.DataAnnotations");
-                    Settings.AdditionalNamespaces.Add("System.ComponentModel.DataAnnotations.Schema");
-                }
-
-                HasAcademicLicence = licence.LicenceType == LicenceType.Academic;
-                HasTrialLicence    = licence.LicenceType == LicenceType.Trial;
-                InitialisationOk = FilterList.ReadDbContextSettings(DatabaseReader, singleDbContextSubNamespace);
-                _fileManagementService.Init(FilterList.GetFilters(), _fileManagerType);
+                _fileManagementService.Error("Cannot create a database reader due to unknown database type.");
+                return;
             }
-            catch (Exception x)
+
+            DatabaseReader.Init();
+
+            if (Settings.IncludeConnectionSettingComments)
+                _preHeaderInfo.Append(DatabaseDetails());
+
+            if (Settings.UseDataAnnotations)
             {
-                var error = FormatError(x);
-                Console.WriteLine(error);
-
-                _fileManagementService.Error(_preHeaderInfo.ToString());
-                _fileManagementService.Error(string.Empty);
-                _fileManagementService.Error("// ------------------------------------------------------------------------------------------------");
-                _fileManagementService.Error(string.Format("// WARNING: Failed to load provider \"{0}\" - {1}", providerName, error));
-                _fileManagementService.Error("// Allowed providers:");
-                foreach (DataRow fc in DbProviderFactories.GetFactoryClasses().Rows)
-                {
-                    var s = string.Format("//    \"{0}\"", fc[2]);
-                    _fileManagementService.Error(s);
-                }
-                _fileManagementService.Error(string.Empty);
-                _fileManagementService.Error("/*" + x.StackTrace + "*/");
-                _fileManagementService.Error("// ------------------------------------------------------------------------------------------------");
-                _fileManagementService.Error(string.Empty);
+                Settings.AdditionalNamespaces.Add("System.ComponentModel.DataAnnotations");
+                Settings.AdditionalNamespaces.Add("System.ComponentModel.DataAnnotations.Schema");
             }
+
+            _hasAcademicLicence = licence.LicenceType == LicenceType.Academic;
+            _hasTrialLicence    = licence.LicenceType == LicenceType.Trial;
+            InitialisationOk = FilterList.ReadDbContextSettings(DatabaseReader, singleDbContextSubNamespace);
+            _fileManagementService.Init(FilterList.GetFilters(), _fileManagerType);
+        }
+
+        public string GetPreHeaderInfo()
+        {
+            return _preHeaderInfo.ToString();
         }
 
         private Licence ReadAndValidateLicence()
@@ -165,7 +133,7 @@ namespace Efrpg.Generators
 
         public void LoadEnums()
         {
-            if (_factory == null || DatabaseReader == null || !Settings.ElementsToGenerate.HasFlag(Elements.Enum))
+            if (DatabaseReader == null || !Settings.ElementsToGenerate.HasFlag(Elements.Enum))
                 return;
 
             try
@@ -215,7 +183,7 @@ namespace Efrpg.Generators
             }
             catch (Exception x)
             {
-                var error = FormatError(x);
+                var error = x.FormatError();
                 _fileManagementService.Error(string.Empty);
                 _fileManagementService.Error("// -----------------------------------------------------------------------------------------");
                 _fileManagementService.Error(string.Format("// Failed to read enumeration tables in LoadEnums() - {0}", error));
@@ -227,7 +195,7 @@ namespace Efrpg.Generators
         
         public void LoadSequences()
         {
-            if (_factory == null || DatabaseReader == null || !Settings.ElementsToGenerate.HasFlag(Elements.Context))
+            if (DatabaseReader == null || !Settings.ElementsToGenerate.HasFlag(Elements.Context))
                 return;
 
             try
@@ -243,7 +211,7 @@ namespace Efrpg.Generators
             }
             catch (Exception x)
             {
-                var error = FormatError(x);
+                var error = x.FormatError();
                 _fileManagementService.Error(string.Empty);
                 _fileManagementService.Error("// -----------------------------------------------------------------------------------------");
                 _fileManagementService.Error(string.Format("// Failed to read sequences in LoadSequences() - {0}", error));
@@ -263,7 +231,7 @@ namespace Efrpg.Generators
 
         public void LoadTables()
         {
-            if (_factory == null || DatabaseReader == null ||
+            if (DatabaseReader == null ||
                 !(Settings.ElementsToGenerate.HasFlag(Elements.Poco) ||
                   Settings.ElementsToGenerate.HasFlag(Elements.Context) ||
                   Settings.ElementsToGenerate.HasFlag(Elements.Interface) ||
@@ -295,7 +263,7 @@ namespace Efrpg.Generators
             }
             catch (Exception x)
             {
-                var error = FormatError(x);
+                var error = x.FormatError();
                 _fileManagementService.Error(string.Empty);
                 _fileManagementService.Error("// -----------------------------------------------------------------------------------------");
                 _fileManagementService.Error(string.Format("// Failed to read database schema in LoadTables() - {0}", error));
@@ -672,7 +640,7 @@ namespace Efrpg.Generators
                     table.SetPrimaryKeys();
                 }
 
-                if (HasTrialLicence)
+                if (_hasTrialLicence)
                     filter.Tables.TrimForTrialLicence();
             }
         }
@@ -691,7 +659,7 @@ namespace Efrpg.Generators
 
         public void LoadStoredProcs()
         {
-            if (_factory == null || DatabaseReader == null || !DatabaseReader.CanReadStoredProcedures())
+            if (DatabaseReader == null || !DatabaseReader.CanReadStoredProcedures())
                 return;
 
             try
@@ -807,7 +775,7 @@ namespace Efrpg.Generators
                     {
                         if (!filter.IsExcluded(sp))
                         {
-                            if (HasTrialLicence)
+                            if (_hasTrialLicence)
                             {
                                 const int n = 1 + 2 + 3 + 4;
                                 if (filter.StoredProcs.Count < n)
@@ -826,7 +794,7 @@ namespace Efrpg.Generators
             }
             catch (Exception x)
             {
-                var error = FormatError(x);
+                var error = x.FormatError();
                 _fileManagementService.Error(string.Empty);
                 _fileManagementService.Error("// -----------------------------------------------------------------------------------------");
                 _fileManagementService.Error(string.Format("// Failed to read database schema for stored procedures - {0}", error));
@@ -1201,7 +1169,7 @@ namespace Efrpg.Generators
             }
             catch (Exception x)
             {
-                var error = FormatError(x);
+                var error = x.FormatError();
                 _fileManagementService.Error(string.Empty);
                 _fileManagementService.Error("// -----------------------------------------------------------------------------------------");
                 _fileManagementService.Error(string.Format("// Failed to generate the code in GenerateCode() - {0}", error));
@@ -1234,7 +1202,7 @@ namespace Efrpg.Generators
             }
             catch (Exception x)
             {
-                var error = FormatError(x);
+                var error = x.FormatError();
                 _fileManagementService.Error(string.Empty);
                 _fileManagementService.Error(string.Format("// Unable to create folder: {0} Error: {1}", fullPath, error));
                 _fileManagementService.Error("/*" + x.StackTrace + "*/");
@@ -1293,14 +1261,14 @@ namespace Efrpg.Generators
                 codeOutputList.Add(enumType + enumeration.EnumName, codeGenerator.GenerateEnum(enumeration));
             }
 
-            FileHeaderFooter = new FileHeaderFooter(filter.SubNamespace);
+            _fileHeaderFooter = new FileHeaderFooter(filter.SubNamespace);
             if (!Settings.GenerateSeparateFiles)
             {
                 var preHeader = _preHeaderInfo.ToString();
                 if(!string.IsNullOrWhiteSpace(preHeader))
                     _fileManagementService.WriteLine(preHeader.Trim());
 
-                var header = FileHeaderFooter.Header;
+                var header = _fileHeaderFooter.Header;
                 if (!string.IsNullOrWhiteSpace(header))
                     _fileManagementService.WriteLine(header.Trim());
 
@@ -1311,7 +1279,7 @@ namespace Efrpg.Generators
                     _fileManagementService.WriteLine(usings.Trim());
                 }
 
-                var ns = FileHeaderFooter.Namespace;
+                var ns = _fileHeaderFooter.Namespace;
                 if (!string.IsNullOrWhiteSpace(ns))
                 {
                     _fileManagementService.WriteLine("");
@@ -1355,7 +1323,7 @@ namespace Efrpg.Generators
                     .ToList());
 
             if (!Settings.GenerateSeparateFiles)
-                _fileManagementService.WriteLine(FileHeaderFooter.Footer);
+                _fileManagementService.WriteLine(_fileHeaderFooter.Footer);
         }
 
         private void WriteCodeOutputForGroup(CodeGenerator codeGenerator, string regionNameForGroup, bool writePreHeaderInfo, List<CodeOutput> list)
@@ -1388,7 +1356,7 @@ namespace Efrpg.Generators
                         _fileManagementService.WriteLine(preHeader.Trim());
                 }
 
-                var header = FileHeaderFooter.Header;
+                var header = _fileHeaderFooter.Header;
                 if (!string.IsNullOrWhiteSpace(header))
                     _fileManagementService.WriteLine(header.Trim());
 
@@ -1399,7 +1367,7 @@ namespace Efrpg.Generators
                     _fileManagementService.WriteLine(usings.Trim());
                 }
 
-                var ns = FileHeaderFooter.Namespace;
+                var ns = _fileHeaderFooter.Namespace;
                 if (!string.IsNullOrWhiteSpace(ns))
                 {
                     _fileManagementService.WriteLine("");
@@ -1410,7 +1378,7 @@ namespace Efrpg.Generators
             WriteLines(IndentCode(code, regionNameForGroup, firstInGroup, lastInGroup));
 
             if (Settings.GenerateSeparateFiles)
-                _fileManagementService.WriteLine(FileHeaderFooter.Footer);
+                _fileManagementService.WriteLine(_fileHeaderFooter.Footer);
 
             _fileManagementService.ForceWriteToOuter = false;
         }
@@ -1438,7 +1406,7 @@ namespace Efrpg.Generators
                 }
             }
 
-            if (firstInGroup && (HasAcademicLicence || HasTrialLicence))
+            if (firstInGroup && (_hasAcademicLicence || _hasTrialLicence))
             {
                 lines.Add(IndentedStringBuilder(indentNum, "// ****************************************************************************************************"));
                 lines.Add(IndentedStringBuilder(indentNum, "// This is not a commercial licence, therefore only a few tables/views/stored procedures are generated."));
@@ -1490,11 +1458,6 @@ namespace Efrpg.Generators
         {
             foreach (var line in lines)
                 _fileManagementService.WriteLine(line);
-        }
-
-        private static string FormatError(Exception ex)
-        {
-            return ex.Message.Replace("\r\n", "\n").Replace("\n", " ");
         }
 
         private void BuildPreHeaderInfo(Licence licence)
