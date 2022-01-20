@@ -118,6 +118,7 @@
 
         // Create enumerations from database tables
         // List the enumeration tables you want read and generated for
+        // Also look at the AddEnum callback to add your own
         public static List<EnumerationSettings> Enumerations = new List<EnumerationSettings>
         {
             // Example
@@ -350,6 +351,32 @@
                 return string.Format(".UseHiLo(\"{0}\", \"{1}\")", hiLoSequence.SequenceName, hiLoSequence.SequenceSchema);
 
             return ".UseIdentityColumn()";
+        };
+
+        public static Action<Table> AddEnum = delegate (Table table)
+        {
+            /*if (table.HasPrimaryKey && table.PrimaryKeys.Count() == 1 && table.Columns.Any(x => x.PropertyType == "string"))
+            {
+                // Example IF to only choose tables with a certain naming conventions for enums
+                if (table.NameHumanCase.StartsWith("REF_", StringComparison.InvariantCultureIgnoreCase) ||
+                    table.NameHumanCase.EndsWith("_LUT", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    try
+                    {
+                        Enumerations.Add(new EnumerationSettings
+                        {
+                            Name       = table.NameHumanCase + "Enum",
+                            Table      = table.Schema.DbName + "." + table.DbName,
+                            NameField  = table.Columns.First(x => x.PropertyType == "string").DbName, // Or specify your own
+                            ValueField = table.PrimaryKeys.Single().DbName // Or specify your own
+                        });
+                    }
+                    catch
+                    {
+                        // Swallow exception
+                    }
+                }
+            }*/
         };
 
         // Use the following function if you need to apply additional modifications to a enum
@@ -948,6 +975,11 @@
         {
             // Callback to Settings, which can be set within <database>.tt
             Settings.UpdateColumn?.Invoke(column, table, EnumDefinitions);
+        }
+
+        public override void AddEnum(Table table)
+        {
+            Settings.AddEnum?.Invoke(table);
         }
 
         public override void UpdateEnum(Enumeration enumeration)
@@ -1916,6 +1948,7 @@
         public abstract string MappingTableRename(string mappingTable, string tableName, string entityName);
         public abstract void UpdateTable(Table table);
         public abstract void UpdateColumn(Column column, Table table);
+        public abstract void AddEnum(Table table);
         public abstract void UpdateEnum(Enumeration enumeration);
         public abstract void UpdateEnumMember(EnumerationMember enumerationMember);
         public abstract void ViewProcessing(Table view);
@@ -2078,6 +2111,7 @@
         string     MappingTableRename(string mappingTable, string tableName, string entityName);
         void       UpdateTable(Table table);
         void       UpdateColumn(Column column, Table table);
+        void       AddEnum(Table table);
         void       UpdateEnum(Enumeration enumeration);
         void       UpdateEnumMember(EnumerationMember enumerationMember);
         void       ViewProcessing(Table view);
@@ -2450,6 +2484,11 @@
             Settings.UpdateColumn?.Invoke(column, table, null);
         }
 
+        public override void AddEnum(Table table)
+        {
+
+        }
+        
         public override void UpdateEnum(Enumeration enumeration)
         {
 
@@ -4016,7 +4055,6 @@
         public bool InitialisationOk { get; private set; }
 
         protected DatabaseReader DatabaseReader;
-        protected FileHeaderFooter FileHeaderFooter;
         public readonly IDbContextFilterList FilterList;
 
         protected abstract bool AllowFkToNonPrimaryKey();
@@ -4032,10 +4070,9 @@
         protected abstract string GetCascadeOnDelete(bool cascadeOnDelete);
         protected abstract string GetForeignKeyConstraintName(string foreignKeyConstraintName);
 
-
-        private DbProviderFactory _factory;
-        public bool HasAcademicLicence;
-        public bool HasTrialLicence;
+        private bool _hasAcademicLicence;
+        private bool _hasTrialLicence;
+        private FileHeaderFooter _fileHeaderFooter;
         private readonly StringBuilder _preHeaderInfo;
         private readonly string _codeGeneratedAttribute;
         private readonly FileManagementService _fileManagementService;
@@ -4047,77 +4084,48 @@
             _fileManagementService  = fileManagementService;
             _fileManagerType        = fileManagerType;
             InitialisationOk        = false;
-            _factory                = null;
             DatabaseReader          = null;
-            FileHeaderFooter        = null;
+            _fileHeaderFooter        = null;
             _preHeaderInfo          = new StringBuilder(1024);
             _codeGeneratedAttribute = string.Format("[GeneratedCode(\"EF.Reverse.POCO.Generator\", \"{0}\")]", EfrpgVersion.Version());
             FilterList              = new DbContextFilterList();
         }
 
-        public void Init(string singleDbContextSubNamespace)
+        public void Init(DatabaseReader databaseReader, string singleDbContextSubNamespace)
         {
-            var providerName = "unknown";
+            var licence = ReadAndValidateLicence();
+            if(licence == null)
+                return;
 
-            try
+            BuildPreHeaderInfo(licence);
+
+            DatabaseReader = databaseReader;
+            if (DatabaseReader == null)
             {
-                var licence = ReadAndValidateLicence();
-                if(licence == null)
-                    return;
-
-                providerName = DatabaseProvider.GetProvider(Settings.DatabaseType);
-                BuildPreHeaderInfo(licence);
-
-                _factory = DbProviderFactories.GetFactory(providerName);
-                if (_factory == null)
-                {
-                    _fileManagementService.Error("Database factory is null, cannot continue");
-                    return;
-                }
-
-                DatabaseReader = DatabaseReaderFactory.Create(_factory);
-                if (DatabaseReader == null)
-                {
-                    _fileManagementService.Error("Cannot create a database reader due to unknown database type.");
-                    return;
-                }
-
-                DatabaseReader.Init();
-
-                if (Settings.IncludeConnectionSettingComments)
-                    _preHeaderInfo.Append(DatabaseDetails());
-
-                if (Settings.UseDataAnnotations)
-                {
-                    Settings.AdditionalNamespaces.Add("System.ComponentModel.DataAnnotations");
-                    Settings.AdditionalNamespaces.Add("System.ComponentModel.DataAnnotations.Schema");
-                }
-
-                HasAcademicLicence = licence.LicenceType == LicenceType.Academic;
-                HasTrialLicence    = licence.LicenceType == LicenceType.Trial;
-                InitialisationOk = FilterList.ReadDbContextSettings(DatabaseReader, singleDbContextSubNamespace);
-                _fileManagementService.Init(FilterList.GetFilters(), _fileManagerType);
+                _fileManagementService.Error("Cannot create a database reader due to unknown database type.");
+                return;
             }
-            catch (Exception x)
+
+            DatabaseReader.Init();
+
+            if (Settings.IncludeConnectionSettingComments)
+                _preHeaderInfo.Append(DatabaseDetails());
+
+            if (Settings.UseDataAnnotations)
             {
-                var error = FormatError(x);
-                Console.WriteLine(error);
-
-                _fileManagementService.Error(_preHeaderInfo.ToString());
-                _fileManagementService.Error(string.Empty);
-                _fileManagementService.Error("// ------------------------------------------------------------------------------------------------");
-                _fileManagementService.Error(string.Format("// WARNING: Failed to load provider \"{0}\" - {1}", providerName, error));
-                _fileManagementService.Error("// Allowed providers:");
-                foreach (DataRow fc in DbProviderFactories.GetFactoryClasses().Rows)
-                {
-                    var s = string.Format("//    \"{0}\"", fc[2]);
-                    _fileManagementService.Error(s);
-                }
-                _fileManagementService.Error(string.Empty);
-                _fileManagementService.Error("/*" + x.StackTrace + "*/");
-                _fileManagementService.Error("// ------------------------------------------------------------------------------------------------");
-                _fileManagementService.Error(string.Empty);
+                Settings.AdditionalNamespaces.Add("System.ComponentModel.DataAnnotations");
+                Settings.AdditionalNamespaces.Add("System.ComponentModel.DataAnnotations.Schema");
             }
+
+            _hasAcademicLicence = licence.LicenceType == LicenceType.Academic;
+            _hasTrialLicence    = licence.LicenceType == LicenceType.Trial;
+            InitialisationOk = FilterList.ReadDbContextSettings(DatabaseReader, singleDbContextSubNamespace);
+            _fileManagementService.Init(FilterList.GetFilters(), _fileManagerType);
+        }
+
+        public string GetPreHeaderInfo()
+        {
+            return _preHeaderInfo.ToString();
         }
 
         private Licence ReadAndValidateLicence()
@@ -4160,11 +4168,20 @@
 
         public void LoadEnums()
         {
-            if (_factory == null || DatabaseReader == null || !Settings.ElementsToGenerate.HasFlag(Elements.Enum))
+            if (DatabaseReader == null || !Settings.ElementsToGenerate.HasFlag(Elements.Enum))
                 return;
 
             try
             {
+                foreach (var filterKeyValuePair in FilterList.GetFilters())
+                {
+                    var filter = filterKeyValuePair.Value;
+                    foreach (var table in filter.Tables)
+                    {
+                        filter.AddEnum(table);
+                    }
+                }
+
                 if (Settings.GenerateSingleDbContext)
                 {
                     // Single-context
@@ -4222,7 +4239,7 @@
         
         public void LoadSequences()
         {
-            if (_factory == null || DatabaseReader == null || !Settings.ElementsToGenerate.HasFlag(Elements.Context))
+            if (DatabaseReader == null || !Settings.ElementsToGenerate.HasFlag(Elements.Context))
                 return;
 
             try
@@ -4258,7 +4275,7 @@
 
         public void LoadTables()
         {
-            if (_factory == null || DatabaseReader == null ||
+            if (DatabaseReader == null ||
                 !(Settings.ElementsToGenerate.HasFlag(Elements.Poco) ||
                   Settings.ElementsToGenerate.HasFlag(Elements.Context) ||
                   Settings.ElementsToGenerate.HasFlag(Elements.Interface) ||
@@ -4667,7 +4684,7 @@
                     table.SetPrimaryKeys();
                 }
 
-                if (HasTrialLicence)
+                if (_hasTrialLicence)
                     filter.Tables.TrimForTrialLicence();
             }
         }
@@ -4686,7 +4703,7 @@
 
         public void LoadStoredProcs()
         {
-            if (_factory == null || DatabaseReader == null || !DatabaseReader.CanReadStoredProcedures())
+            if (DatabaseReader == null || !DatabaseReader.CanReadStoredProcedures())
                 return;
 
             try
@@ -4802,7 +4819,7 @@
                     {
                         if (!filter.IsExcluded(sp))
                         {
-                            if (HasTrialLicence)
+                            if (_hasTrialLicence)
                             {
                                 const int n = 1 + 2 + 3 + 4;
                                 if (filter.StoredProcs.Count < n)
@@ -5288,14 +5305,14 @@
                 codeOutputList.Add(enumType + enumeration.EnumName, codeGenerator.GenerateEnum(enumeration));
             }
 
-            FileHeaderFooter = new FileHeaderFooter(filter.SubNamespace);
+            _fileHeaderFooter = new FileHeaderFooter(filter.SubNamespace);
             if (!Settings.GenerateSeparateFiles)
             {
                 var preHeader = _preHeaderInfo.ToString();
                 if(!string.IsNullOrWhiteSpace(preHeader))
                     _fileManagementService.WriteLine(preHeader.Trim());
 
-                var header = FileHeaderFooter.Header;
+                var header = _fileHeaderFooter.Header;
                 if (!string.IsNullOrWhiteSpace(header))
                     _fileManagementService.WriteLine(header.Trim());
 
@@ -5306,7 +5323,7 @@
                     _fileManagementService.WriteLine(usings.Trim());
                 }
 
-                var ns = FileHeaderFooter.Namespace;
+                var ns = _fileHeaderFooter.Namespace;
                 if (!string.IsNullOrWhiteSpace(ns))
                 {
                     _fileManagementService.WriteLine("");
@@ -5350,7 +5367,7 @@
                     .ToList());
 
             if (!Settings.GenerateSeparateFiles)
-                _fileManagementService.WriteLine(FileHeaderFooter.Footer);
+                _fileManagementService.WriteLine(_fileHeaderFooter.Footer);
         }
 
         private void WriteCodeOutputForGroup(CodeGenerator codeGenerator, string regionNameForGroup, bool writePreHeaderInfo, List<CodeOutput> list)
@@ -5383,7 +5400,7 @@
                         _fileManagementService.WriteLine(preHeader.Trim());
                 }
 
-                var header = FileHeaderFooter.Header;
+                var header = _fileHeaderFooter.Header;
                 if (!string.IsNullOrWhiteSpace(header))
                     _fileManagementService.WriteLine(header.Trim());
 
@@ -5394,7 +5411,7 @@
                     _fileManagementService.WriteLine(usings.Trim());
                 }
 
-                var ns = FileHeaderFooter.Namespace;
+                var ns = _fileHeaderFooter.Namespace;
                 if (!string.IsNullOrWhiteSpace(ns))
                 {
                     _fileManagementService.WriteLine("");
@@ -5405,7 +5422,7 @@
             WriteLines(IndentCode(code, regionNameForGroup, firstInGroup, lastInGroup));
 
             if (Settings.GenerateSeparateFiles)
-                _fileManagementService.WriteLine(FileHeaderFooter.Footer);
+                _fileManagementService.WriteLine(_fileHeaderFooter.Footer);
 
             _fileManagementService.ForceWriteToOuter = false;
         }
@@ -5433,7 +5450,7 @@
                 }
             }
 
-            if (firstInGroup && (HasAcademicLicence || HasTrialLicence))
+            if (firstInGroup && (_hasAcademicLicence || _hasTrialLicence))
             {
                 lines.Add(IndentedStringBuilder(indentNum, "// ****************************************************************************************************"));
                 lines.Add(IndentedStringBuilder(indentNum, "// This is not a commercial licence, therefore only a few tables/views/stored procedures are generated."));
@@ -5487,11 +5504,6 @@
                 _fileManagementService.WriteLine(line);
         }
 
-        private static string FormatError(Exception ex)
-        {
-            return ex.Message.Replace("\r\n", "\n").Replace("\n", " ");
-        }
-
         private void BuildPreHeaderInfo(Licence licence)
         {
             if (Settings.ShowLicenseInfo)
@@ -5538,6 +5550,11 @@
         {
             var rx = new Regex("password=[^\";]*", RegexOptions.Singleline | RegexOptions.Multiline | RegexOptions.IgnoreCase);
             return rx.Replace(conn, "password=**zapped**;");
+        }
+
+        private string FormatError(Exception ex)
+        {
+            return ex.Message.Replace("\r\n", "\n").Replace("\n", " ");
         }
     }
 
@@ -6197,6 +6214,7 @@
         }
     }
 
+
     public static class GeneratorFactory
     {
         public static Generator Create(FileManagementService fileManagementService, Type fileManagerType, string singleDbContextSubNamespace = null)
@@ -6221,8 +6239,37 @@
                     throw new ArgumentOutOfRangeException();
             }
 
-            generator.Init(singleDbContextSubNamespace);
-            return generator;
+            var providerName = "unknown";
+            try
+            {
+                providerName = DatabaseProvider.GetProvider(Settings.DatabaseType);
+                var factory = DbProviderFactories.GetFactory(providerName);
+                var databaseReader = DatabaseReaderFactory.Create(factory);
+                generator.Init(databaseReader, singleDbContextSubNamespace);
+                return generator;
+            }
+            catch (Exception x)
+            {
+                var error = x.Message.Replace("\r\n", "\n").Replace("\n", " ");
+                Console.WriteLine(error);
+
+                fileManagementService.Error(generator.GetPreHeaderInfo());
+                fileManagementService.Error(string.Empty);
+                fileManagementService.Error("// ------------------------------------------------------------------------------------------------");
+                fileManagementService.Error(string.Format("// WARNING: Failed to load provider \"{0}\" - {1}", providerName, error));
+                fileManagementService.Error("// Allowed providers:");
+                foreach (DataRow fc in DbProviderFactories.GetFactoryClasses().Rows)
+                {
+                    var s = string.Format("//    \"{0}\"", fc[2]);
+                    fileManagementService.Error(s);
+                }
+                fileManagementService.Error(string.Empty);
+                fileManagementService.Error("/*" + x.StackTrace + "*/");
+                fileManagementService.Error("// ------------------------------------------------------------------------------------------------");
+                fileManagementService.Error(string.Empty);
+            }
+
+            return null;
         }
     }
 
@@ -12993,7 +13040,7 @@ and limitations under the License.
                 col.IsIdentity = true;
             }
 
-             if (!col.IsPrimaryKey && filter.IsExcluded(col))
+            if (!col.IsPrimaryKey && filter.IsExcluded(col))
                 col.Hidden = true;
 
             col.IsFixedLength = (rt.TypeName == "char" || rt.TypeName == "nchar");

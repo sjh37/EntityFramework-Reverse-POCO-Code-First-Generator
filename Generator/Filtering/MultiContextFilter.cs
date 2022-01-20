@@ -346,6 +346,11 @@ namespace Efrpg.Filtering
             Settings.UpdateColumn?.Invoke(column, table, null);
         }
 
+        public override void AddEnum(Table table)
+        {
+
+        }
+        
         public override void UpdateEnum(Enumeration enumeration)
         {
 

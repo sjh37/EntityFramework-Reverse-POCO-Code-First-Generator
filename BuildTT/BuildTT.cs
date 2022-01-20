@@ -144,6 +144,7 @@ namespace BuildTT
     // Enumerations ***********************************************************************************************************************
     // Create enumerations from database tables
     // List the enumeration tables you want read and generated for
+    // Also look at the AddEnum callback to add your own
     Settings.Enumerations = new List<EnumerationSettings>
     {
         // Example
@@ -400,6 +401,32 @@ namespace BuildTT
                     column.Default = ""("" + enumDefinition.EnumType + "") "" + column.Default;
             }
         }
+    };
+
+    Settings.AddEnum = delegate (Table table)
+    {
+        /*if (table.HasPrimaryKey && table.PrimaryKeys.Count() == 1 && table.Columns.Any(x => x.PropertyType == ""string""))
+        {
+            // Example IF to only choose tables with a certain naming conventions for enums
+            if (table.NameHumanCase.StartsWith(""REF_"", StringComparison.InvariantCultureIgnoreCase) ||
+                table.NameHumanCase.EndsWith(""_LUT"", StringComparison.InvariantCultureIgnoreCase))
+            {
+                try
+                {
+                    Settings.Enumerations.Add(new EnumerationSettings
+                    {
+                        Name       = table.NameHumanCase + ""Enum"",
+                        Table      = table.Schema.DbName + ""."" + table.DbName,
+                        NameField  = table.Columns.First(x => x.PropertyType == ""string"").DbName, // Or specify your own
+                        ValueField = table.PrimaryKeys.Single().DbName // Or specify your own
+                    });
+                }
+                catch
+                {
+                    // Swallow exception
+                }
+            }
+        }*/
     };
 
     // Use the following function if you need to apply additional modifications to a enum

@@ -29,7 +29,7 @@
     // Elements to generate ***************************************************************************************************************
     // Add the elements that should be generated when the template is executed.
     // Multiple projects can be used that separate the different concerns.
-    Settings.ElementsToGenerate = Elements.Enum;
+    //Settings.ElementsToGenerate = Elements.Enum;
     
     // Filtering **************************************************************************************************************************
     // Filtering can now be done via one or more Regex's and one or more functions.
@@ -121,13 +121,6 @@
             Table      = "EnumTest.DaysOfWeek", // Database table containing enum values. e.g. "DaysOfWeek"
             NameField  = "TypeName",            // Column containing the name for the enum. e.g. "TypeName"
             ValueField = "TypeId"               // Column containing the values for the enum. e.g. "TypeId"
-        },
-        new EnumerationSettings
-        {
-            Name       = "Colour",
-            Table      = "Colour",
-            NameField  = "Name",
-            ValueField = "Id"
         }
         // Code will be generated as:
         // public enum Name
@@ -201,6 +194,33 @@
     //     If TableSuffix is "Entity" then Order will be OrderEntity
     Settings.TableSuffix = null;
 
+    Settings.AddEnum = delegate (Table table)
+    {
+        if (table.HasPrimaryKey && table.PrimaryKeys.Count() == 1 && table.Columns.Any(x => x.PropertyType == "string"))
+        {
+            // Example IF to only choose tables with a certain naming conventions for enums
+            if (table.NameHumanCase.StartsWith("Car", StringComparison.InvariantCultureIgnoreCase) ||
+                table.NameHumanCase.StartsWith("Colour", StringComparison.InvariantCultureIgnoreCase))
+            {
+                try
+                {
+                    Settings.Enumerations.Add(new EnumerationSettings
+                    {
+                        Name       = table.NameHumanCase + "Enum",
+                        Table      = table.Schema.DbName + "." + table.DbName,
+                        NameField  = table.Columns.First(x => x.PropertyType == "string").DbName, // Or specify your own
+                        ValueField = table.PrimaryKeys.Single().DbName // Or specify your own
+                    });
+                }
+                catch
+                {
+                    // Swallow exception
+                }
+            }
+        }
+    };
+
+    
     // Call-backs *************************************************************************************************************************
 
     // AddRelationship is a helper function that creates ForeignKey objects and adds them to the foreignKeys list

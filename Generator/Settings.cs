@@ -92,6 +92,7 @@ namespace Efrpg
 
         // Create enumerations from database tables
         // List the enumeration tables you want read and generated for
+        // Also look at the AddEnum callback to add your own
         public static List<EnumerationSettings> Enumerations = new List<EnumerationSettings>
         {
             // Example
@@ -324,6 +325,32 @@ namespace Efrpg
                 return string.Format(".UseHiLo(\"{0}\", \"{1}\")", hiLoSequence.SequenceName, hiLoSequence.SequenceSchema);
 
             return ".UseIdentityColumn()";
+        };
+
+        public static Action<Table> AddEnum = delegate (Table table)
+        {
+            /*if (table.HasPrimaryKey && table.PrimaryKeys.Count() == 1 && table.Columns.Any(x => x.PropertyType == "string"))
+            {
+                // Example IF to only choose tables with a certain naming conventions for enums
+                if (table.NameHumanCase.StartsWith("REF_", StringComparison.InvariantCultureIgnoreCase) ||
+                    table.NameHumanCase.EndsWith("_LUT", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    try
+                    {
+                        Enumerations.Add(new EnumerationSettings
+                        {
+                            Name       = table.NameHumanCase + "Enum",
+                            Table      = table.Schema.DbName + "." + table.DbName,
+                            NameField  = table.Columns.First(x => x.PropertyType == "string").DbName, // Or specify your own
+                            ValueField = table.PrimaryKeys.Single().DbName // Or specify your own
+                        });
+                    }
+                    catch
+                    {
+                        // Swallow exception
+                    }
+                }
+            }*/
         };
 
         // Use the following function if you need to apply additional modifications to a enum

@@ -138,6 +138,15 @@ namespace Efrpg.Generators
 
             try
             {
+                foreach (var filterKeyValuePair in FilterList.GetFilters())
+                {
+                    var filter = filterKeyValuePair.Value;
+                    foreach (var table in filter.Tables)
+                    {
+                        filter.AddEnum(table);
+                    }
+                }
+
                 if (Settings.GenerateSingleDbContext)
                 {
                     // Single-context

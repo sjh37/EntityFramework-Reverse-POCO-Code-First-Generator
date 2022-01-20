@@ -94,6 +94,11 @@ namespace Efrpg.Filtering
             Settings.UpdateColumn?.Invoke(column, table, EnumDefinitions);
         }
 
+        public override void AddEnum(Table table)
+        {
+            Settings.AddEnum?.Invoke(table);
+        }
+
         public override void UpdateEnum(Enumeration enumeration)
         {
             Settings.UpdateEnum?.Invoke(enumeration);
