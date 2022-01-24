@@ -330,17 +330,17 @@ namespace Efrpg
         // In order to use this function, Settings.ElementsToGenerate must contain both Elements.Poco and Elements.Enum;
         public static Action<Table> AddEnum = delegate (Table table)
         {
-            /*if (table.HasPrimaryKey && table.PrimaryKeys.Count() == 1 && table.Columns.Any(x => x.PropertyType == "string"))
+            if (table.HasPrimaryKey && table.PrimaryKeys.Count() == 1 && table.Columns.Any(x => x.PropertyType == "string"))
             {
-                // Example to choose tables with a certain naming conventions for enums
-                if (table.NameHumanCase.StartsWith("REF_", StringComparison.InvariantCultureIgnoreCase) ||
-                    table.NameHumanCase.EndsWith("_LUT", StringComparison.InvariantCultureIgnoreCase))
+                // Example to choose tables with a certain naming conventions for enums. Please use your own conventions.
+                if (table.NameHumanCase.StartsWith("Enum", StringComparison.InvariantCultureIgnoreCase) ||
+                    table.NameHumanCase.EndsWith  ("Enum", StringComparison.InvariantCultureIgnoreCase))
                 {
                     try
                     {
                         Enumerations.Add(new EnumerationSettings
                         {
-                            Name       = table.NameHumanCase + "Enum",
+                            Name       = table.NameHumanCase.Replace("Enum","").Replace("Enum","") + "Enum",
                             Table      = table.Schema.DbName + "." + table.DbName,
                             NameField  = table.Columns.First(x => x.PropertyType == "string").DbName, // Or specify your own
                             ValueField = table.PrimaryKeys.Single().DbName // Or specify your own
@@ -355,7 +355,7 @@ namespace Efrpg
                         // Swallow exception
                     }
                 }
-            }*/
+            }
         };
 
         // Use the following function if you need to apply additional modifications to a enum
