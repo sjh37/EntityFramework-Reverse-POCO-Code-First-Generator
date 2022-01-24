@@ -8,6 +8,13 @@ namespace Tester.Integration.EFCore6
     #region Enumerations
 
     [GeneratedCode("EF.Reverse.POCO.Generator", "v3.6.0")]
+    public enum Car
+    {
+        Ford = 1,
+        Saab = 2,
+    }
+
+    [GeneratedCode("EF.Reverse.POCO.Generator", "v3.6.0")]
     public enum Colour
     {
         Red = 1,

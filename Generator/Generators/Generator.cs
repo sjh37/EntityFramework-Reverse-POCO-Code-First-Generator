@@ -192,7 +192,7 @@ namespace Efrpg.Generators
             }
             catch (Exception x)
             {
-                var error = x.FormatError();
+                var error = FormatError(x);
                 _fileManagementService.Error(string.Empty);
                 _fileManagementService.Error("// -----------------------------------------------------------------------------------------");
                 _fileManagementService.Error(string.Format("// Failed to read enumeration tables in LoadEnums() - {0}", error));
@@ -220,7 +220,7 @@ namespace Efrpg.Generators
             }
             catch (Exception x)
             {
-                var error = x.FormatError();
+                var error = FormatError(x);
                 _fileManagementService.Error(string.Empty);
                 _fileManagementService.Error("// -----------------------------------------------------------------------------------------");
                 _fileManagementService.Error(string.Format("// Failed to read sequences in LoadSequences() - {0}", error));
@@ -272,7 +272,7 @@ namespace Efrpg.Generators
             }
             catch (Exception x)
             {
-                var error = x.FormatError();
+                var error = FormatError(x);
                 _fileManagementService.Error(string.Empty);
                 _fileManagementService.Error("// -----------------------------------------------------------------------------------------");
                 _fileManagementService.Error(string.Format("// Failed to read database schema in LoadTables() - {0}", error));
@@ -803,7 +803,7 @@ namespace Efrpg.Generators
             }
             catch (Exception x)
             {
-                var error = x.FormatError();
+                var error = FormatError(x);
                 _fileManagementService.Error(string.Empty);
                 _fileManagementService.Error("// -----------------------------------------------------------------------------------------");
                 _fileManagementService.Error(string.Format("// Failed to read database schema for stored procedures - {0}", error));
@@ -1178,7 +1178,7 @@ namespace Efrpg.Generators
             }
             catch (Exception x)
             {
-                var error = x.FormatError();
+                var error = FormatError(x);
                 _fileManagementService.Error(string.Empty);
                 _fileManagementService.Error("// -----------------------------------------------------------------------------------------");
                 _fileManagementService.Error(string.Format("// Failed to generate the code in GenerateCode() - {0}", error));
@@ -1211,7 +1211,7 @@ namespace Efrpg.Generators
             }
             catch (Exception x)
             {
-                var error = x.FormatError();
+                var error = FormatError(x);
                 _fileManagementService.Error(string.Empty);
                 _fileManagementService.Error(string.Format("// Unable to create folder: {0} Error: {1}", fullPath, error));
                 _fileManagementService.Error("/*" + x.StackTrace + "*/");
@@ -1515,6 +1515,11 @@ namespace Efrpg.Generators
         {
             var rx = new Regex("password=[^\";]*", RegexOptions.Singleline | RegexOptions.Multiline | RegexOptions.IgnoreCase);
             return rx.Replace(conn, "password=**zapped**;");
+        }
+
+        private string FormatError(Exception ex)
+        {
+            return ex.Message.Replace("\r\n", "\n").Replace("\n", " ");
         }
     }
 }

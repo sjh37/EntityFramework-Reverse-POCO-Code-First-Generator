@@ -43,7 +43,7 @@ namespace Efrpg.Generators
             }
             catch (Exception x)
             {
-                var error = x.FormatError();
+                var error = x.Message.Replace("\r\n", "\n").Replace("\n", " ");
                 Console.WriteLine(error);
 
                 fileManagementService.Error(generator.GetPreHeaderInfo());

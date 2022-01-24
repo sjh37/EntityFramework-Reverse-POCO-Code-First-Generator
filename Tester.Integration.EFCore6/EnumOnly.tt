@@ -29,7 +29,7 @@
     // Elements to generate ***************************************************************************************************************
     // Add the elements that should be generated when the template is executed.
     // Multiple projects can be used that separate the different concerns.
-    //Settings.ElementsToGenerate = Elements.Enum;
+    Settings.ElementsToGenerate = Elements.Enum;
     
     // Filtering **************************************************************************************************************************
     // Filtering can now be done via one or more Regex's and one or more functions.
@@ -54,7 +54,7 @@
     //FilterSettings.SchemaFilters.Add(new RegexExcludeFilter("[Ff]inance.*")); // This excludes the Finance schema
     //FilterSettings.SchemaFilters.Add(new RegexIncludeFilter("dbo.*")); // This includes only dbo schema
     //FilterSettings.TableFilters.Add(new RegexExcludeFilter(".*[Bb]illing.*")); // This excludes all tables with 'billing' anywhere in the name
-    //FilterSettings.TableFilters.Add(new RegexIncludeFilter("^[Cc]ustomer.*")); // This includes any remaining tables with names beginning with 'customer'
+    //FilterSettings.TableFilters.Add(new RegexIncludeFilter("^Car|^Colour|^DaysOfWeek")); // This includes any remaining tables with names beginning with 'customer'
     FilterSettings.TableFilters.Add(new RegexExcludeFilter("AspNet.*")); // This excludes all tables starting with 'AspNet'
     FilterSettings.TableFilters.Add(new RegexExcludeFilter("__EFMigrationsHistory")); // This excludes a table called '__EFMigrationsHistory'
     //FilterSettings.ColumnFilters.Add(new RegexExcludeFilter("[Cc]reated[Aa]t.*")); // This excludes all columns starting with 'CreatedAt' e.g CreatedAtUtc
@@ -121,6 +121,20 @@
             Table      = "EnumTest.DaysOfWeek", // Database table containing enum values. e.g. "DaysOfWeek"
             NameField  = "TypeName",            // Column containing the name for the enum. e.g. "TypeName"
             ValueField = "TypeId"               // Column containing the values for the enum. e.g. "TypeId"
+        },
+        new EnumerationSettings
+        {
+            Name       = "Car",
+            Table      = "Car",
+            NameField  = "Carmake",
+            ValueField = "Id"
+        },
+        new EnumerationSettings
+        {
+            Name       = "Colour",
+            Table      = "Colour",
+            NameField  = "Name",
+            ValueField = "Id"
         }
         // Code will be generated as:
         // public enum Name
@@ -196,7 +210,7 @@
 
     Settings.AddEnum = delegate (Table table)
     {
-        if (table.HasPrimaryKey && table.PrimaryKeys.Count() == 1 && table.Columns.Any(x => x.PropertyType == "string"))
+        /*if (table.HasPrimaryKey && table.PrimaryKeys.Count() == 1 && table.Columns.Any(x => x.PropertyType == "string"))
         {
             // Example IF to only choose tables with a certain naming conventions for enums
             if (table.NameHumanCase.StartsWith("Car", StringComparison.InvariantCultureIgnoreCase) ||
@@ -217,7 +231,7 @@
                     // Swallow exception
                 }
             }
-        }
+        }*/
     };
 
     
