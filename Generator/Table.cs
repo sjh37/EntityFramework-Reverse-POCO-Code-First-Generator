@@ -20,6 +20,7 @@ namespace Efrpg
         public bool HasNullableColumns;
         public bool UsesDictionary;
         public bool HasPrimaryKey;
+        public bool RemoveTable;
         public string AdditionalComment;
         public string PluralNameOverride;
         public string DbSetModifier = "public";

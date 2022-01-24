@@ -189,6 +189,13 @@ namespace Efrpg.Generators
                         }
                     }
                 }
+
+                // Remove tables marked as RemoveTable
+                // This means it was only required to generate an enum and can now be removed
+                foreach (var filter in FilterList.GetFilters().Select(filterKeyValuePair => filterKeyValuePair.Value))
+                {
+                    filter.Tables.RemoveAll(x => x.RemoveTable);
+                }
             }
             catch (Exception x)
             {

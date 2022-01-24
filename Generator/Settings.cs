@@ -92,7 +92,7 @@ namespace Efrpg
 
         // Create enumerations from database tables
         // List the enumeration tables you want read and generated for
-        // Also look at the AddEnum callback to add your own
+        // Also look at the AddEnum callback below to add your own during reverse generation of tables.
         public static List<EnumerationSettings> Enumerations = new List<EnumerationSettings>
         {
             // Example
@@ -327,11 +327,12 @@ namespace Efrpg
             return ".UseIdentityColumn()";
         };
 
+        // In order to use this function, Settings.ElementsToGenerate must contain both Elements.Poco and Elements.Enum;
         public static Action<Table> AddEnum = delegate (Table table)
         {
             /*if (table.HasPrimaryKey && table.PrimaryKeys.Count() == 1 && table.Columns.Any(x => x.PropertyType == "string"))
             {
-                // Example IF to only choose tables with a certain naming conventions for enums
+                // Example to choose tables with a certain naming conventions for enums
                 if (table.NameHumanCase.StartsWith("REF_", StringComparison.InvariantCultureIgnoreCase) ||
                     table.NameHumanCase.EndsWith("_LUT", StringComparison.InvariantCultureIgnoreCase))
                 {
@@ -344,6 +345,10 @@ namespace Efrpg
                             NameField  = table.Columns.First(x => x.PropertyType == "string").DbName, // Or specify your own
                             ValueField = table.PrimaryKeys.Single().DbName // Or specify your own
                         });
+
+                        // This will cause this table to not be reverse engineered.
+                        // This means it was only required to generate an enum and can now be removed.
+                        table.RemoveTable = true; // Remove this line if you want to keep it in your dbContext.
                     }
                     catch
                     {

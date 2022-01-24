@@ -39,6 +39,10 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>EfrpgTest.cs</LastGenOutput>
     </None>
+    <None Update="EnumViaTables.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>EnumViaTables.cs</LastGenOutput>
+    </None>
     <None Update="Multi context many files\MCMF.tt">
       <LastGenOutput>MCMF.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -84,6 +88,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>EfrpgTest.tt</DependentUpon>
+    </Compile>
+    <Compile Update="EnumViaTables.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>EnumViaTables.tt</DependentUpon>
     </Compile>
     <Compile Update="Multi context many files\MCMF.cs">
       <DependentUpon>MCMF.tt</DependentUpon>
