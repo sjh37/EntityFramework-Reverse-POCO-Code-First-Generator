@@ -97,7 +97,7 @@ namespace BuildTT
     Settings.AddParameterlessConstructorToDbContext = true; // EF6 only. If true, then DbContext will have a default (parameter-less) constructor which automatically passes in the connection string name, if false then no parameter-less constructor will be created.
     Settings.ConfigurationClassName                 = ""Configuration""; // Configuration, Mapping, Map, etc. This is appended to the Poco class name to configure the mappings.
     Settings.DatabaseReaderPlugin                   = """"; // Eg, ""c:\\Path\\YourDatabaseReader.dll,Full.Name.Of.Class.Including.Namespace"". See #501. This will allow you to specify a pluggable provider for reading your database.
-    Settings.UseMappingTables                       = false; // Can only be true for TemplateType.Ef6 & TemplateType.EfCore5+. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
+    Settings.UseMappingTables                       = false; // Must be false for TemplateType.EfCore2 & 3+. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
 
     Settings.EntityClassesModifiers        = ""public""; // ""public partial"";
     Settings.ConfigurationClassesModifiers = ""public""; // ""public partial"";
@@ -119,7 +119,7 @@ namespace BuildTT
     Settings.AddIDbContextFactory               = true; // Will add a default IDbContextFactory<DbContextName> implementation for easy dependency injection
     Settings.IncludeQueryTraceOn9481Flag        = false; // If SqlServer 2014 appears frozen / take a long time when this file is saved, try setting this to true (you will also need elevated privileges).
     Settings.UsePrivateSetterForComputedColumns = true; // If the columns is computed, use a private setter.
-    Settings.IncludeGeneratorVersionInCode      = false; // If true, will include the version number of the generator in the generated code
+    Settings.IncludeGeneratorVersionInCode      = false; // If true, will include the version number of the generator in the generated code (Settings.ShowLicenseInfo must also be true).
     Settings.TrimCharFields                     = false; // EF Core option only. If true, will TrimEnd() 'char' fields when read from the database.
     Settings.AdditionalNamespaces               = new List<string>(); // To include extra namespaces, include them here. i.e. new List<string> { ""Microsoft.AspNetCore.Identity.EntityFrameworkCore"", ""System.ComponentModel.DataAnnotations"" };
     Settings.AdditionalContextInterfaceItems    = new List<string>(); // example: new List<string> { ""void SetAutoDetectChangesEnabled(bool flag);"" };

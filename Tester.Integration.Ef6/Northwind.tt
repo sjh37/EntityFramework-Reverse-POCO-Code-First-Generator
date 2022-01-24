@@ -13,7 +13,7 @@
     Settings.DatabaseType            = DatabaseType.SqlServer; // SqlServer, SqlCe. Coming next: PostgreSQL, MySql, Oracle
     Settings.TemplateType            = TemplateType.Ef6; // EfCore6, EfCore5, EfCore3, EfCore2, Ef6, FileBasedCore2, FileBasedCore3, FileBasedCore5, FileBasedCore6. FileBased specify folder using Settings.TemplateFolder
     Settings.GeneratorType           = GeneratorType.Ef6; // Ef6, EfCore, Custom. Custom edit GeneratorCustom class to provide your own implementation
-    Settings.UseMappingTables        = true; // Can only be true for TemplateType.Ef6 & TemplateType.EfCore5. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
+    Settings.UseMappingTables        = true; // Must be false for TemplateType.EfCore2 & 3. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
     Settings.FileManagerType         = FileManagerType.VisualStudio; // .NET Core project = Custom; .NET project = VisualStudio; No output (testing only) = Null
     Settings.ConnectionString        = "Data Source=(local);Initial Catalog=Northwind;Integrated Security=True"; // This is used by the generator to reverse engineer your database
     Settings.ConnectionStringName    = "MyDbContext"; // ConnectionString key as specified in your app.config/web.config/appsettings.json. Not used by the generator, but is placed into the generated DbContext constructor.
@@ -91,7 +91,7 @@
     Settings.IncludeQueryTraceOn9481Flag        = false; // If SqlServer 2014 appears frozen / take a long time when this file is saved, try setting this to true (you will also need elevated privileges).
     Settings.IncludeCodeGeneratedAttribute      = false; // If true, will include the GeneratedCode attribute, false to remove it.
     Settings.UsePrivateSetterForComputedColumns = true; // If the columns is computed, use a private setter.
-    Settings.IncludeGeneratorVersionInCode      = false; // If true, will include the version number of the generator in the generated code
+    Settings.IncludeGeneratorVersionInCode      = false; // If true, will include the version number of the generator in the generated code (Settings.ShowLicenseInfo must also be true).
     Settings.AdditionalNamespaces               = new List<string>(); // To include extra namespaces, include them here. i.e. new List<string> { "Microsoft.AspNetCore.Identity.EntityFrameworkCore", "System.ComponentModel.DataAnnotations" };
     Settings.AdditionalContextInterfaceItems    = new List<string>(); // example: new List<string> { "void SetAutoDetectChangesEnabled(bool flag);" };
 
