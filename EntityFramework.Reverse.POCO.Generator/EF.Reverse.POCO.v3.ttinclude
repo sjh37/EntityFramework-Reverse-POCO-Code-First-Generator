@@ -15176,8 +15176,8 @@ ORDER BY FK_Table, FK_Column
 SELECT DISTINCT PARSENAME(sn.base_object_name, 3) AS DatabaseName
 INTO #SynonymTargets
 FROM sys.synonyms sn
-WHERE PARSENAME(sn.base_object_name, 3) != DB_NAME()
-AND ISNULL(PARSENAME(sn.base_object_name, 4), @@SERVERNAME) = @@SERVERNAME -- Only populate info from current server
+WHERE PARSENAME(sn.base_object_name, 3) <> DB_NAME()
+      AND ISNULL(PARSENAME(sn.base_object_name, 4), @@SERVERNAME) = @@SERVERNAME -- Only populate info from current server
 ORDER BY PARSENAME(sn.base_object_name, 3)
 
 -- Create a query to execute for each referenced database
@@ -15292,8 +15292,8 @@ WHERE   R.ROUTINE_TYPE = 'PROCEDURE'
 SELECT DISTINCT PARSENAME(sn.base_object_name, 3) AS DatabaseName
 INTO #SynonymTargets
 FROM sys.synonyms sn
-WHERE PARSENAME(sn.base_object_name, 3) != DB_NAME()
-AND ISNULL(PARSENAME(sn.base_object_name, 4), @@SERVERNAME) = @@SERVERNAME -- Only populate info from current server
+WHERE PARSENAME(sn.base_object_name, 3) <> DB_NAME()
+      AND ISNULL(PARSENAME(sn.base_object_name, 4), @@SERVERNAME) = @@SERVERNAME -- Only populate info from current server
 ORDER BY PARSENAME(sn.base_object_name, 3)
 
 -- Create a query to execute for each referenced database
