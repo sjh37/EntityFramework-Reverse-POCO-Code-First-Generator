@@ -4,10 +4,18 @@ using NUnit.Framework;
 
 namespace Generator.Tests.Unit
 {
+    using Efrpg;
+
     [TestFixture]
     [Category(Constants.CI)]
     public class MultiContextNameNormalisationTests
     {
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            Settings.DefaultSchema = "dbo";
+        }
+
         [Test]
         [TestCase(null, "dbo")]
         [TestCase("", "dbo")]

@@ -3,6 +3,7 @@
     using System;
     using System.Linq;
     using Generator.Tests.Common;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using NUnit.Framework;
     using Tester.Integration.EFCore6.Single_context_many_files;
@@ -21,7 +22,14 @@
                 .AddJsonFile("appsettings.json", false, false)
                 .Build();
 
-            _db = new EfCoreDbContext(configuration);
+            var conn = configuration.GetConnectionString("EfCoreDatabase");
+
+            var optionsBuilder = new DbContextOptionsBuilder<EfCoreDbContext>()
+                .UseSqlServer(conn, x => x
+                    .UseNetTopologySuite()
+                    .UseHierarchyId());
+            
+            _db = new EfCoreDbContext(optionsBuilder.Options);
         }
 
         [Test]
