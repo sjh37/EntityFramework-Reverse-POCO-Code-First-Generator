@@ -6,7 +6,7 @@
 
         public MultiContextNameNormalisation(string defaultSchema)
         {
-            DefaultSchema = string.IsNullOrWhiteSpace(defaultSchema) ? Settings.DefaultSchema.Trim().ToLowerInvariant() : defaultSchema.Trim().ToLowerInvariant();
+            DefaultSchema = string.IsNullOrWhiteSpace(defaultSchema) ? Settings.DefaultSchema?.Trim().ToLowerInvariant() : defaultSchema.Trim().ToLowerInvariant();
         }
 
         public SchemaAndName Normalise(string name)
@@ -16,9 +16,7 @@
 
             var parts = name.Split('.');
             var numParts = parts.Length;
-            var schema = DefaultSchema;
-            if (numParts >= 2)
-                schema = parts[numParts - 2].Trim();
+            var schema = numParts >= 2 ? parts[numParts - 2].Trim() : DefaultSchema;
             var final = parts[numParts - 1].Trim();
             return new SchemaAndName(schema, final);
         }
