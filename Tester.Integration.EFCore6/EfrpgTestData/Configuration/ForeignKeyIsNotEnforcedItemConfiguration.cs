@@ -12,7 +12,7 @@ namespace V6EfrpgTest
         public void Configure(EntityTypeBuilder<ForeignKeyIsNotEnforcedItem> builder)
         {
             builder.ToTable("ForeignKeyIsNotEnforcedItem", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__ForeignK__3213E83F6EE7FE07").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__ForeignK__3213E83F94CA2C7E").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.NullValue).HasColumnName(@"null_value").HasColumnType("int").IsRequired(false);

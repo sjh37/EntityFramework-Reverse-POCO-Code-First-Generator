@@ -12,7 +12,7 @@ namespace V6EfrpgTest
         public void Configure(EntityTypeBuilder<Bitfiddlerallcap> builder)
         {
             builder.ToTable("BITFIDDLERALLCAPS", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__BITFIDDL__3214EC071E4141BF").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__BITFIDDL__3214EC07B6092EA3").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
         }

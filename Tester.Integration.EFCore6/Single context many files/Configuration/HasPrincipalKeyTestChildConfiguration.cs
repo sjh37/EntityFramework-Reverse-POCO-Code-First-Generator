@@ -20,7 +20,9 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             builder.Property(x => x.D).HasColumnName(@"D").HasColumnType("int").IsRequired(false);
 
             // Foreign keys
-            builder.HasOne(a => a.HasPrincipalKeyTestParent).WithOne(b => b.HasPrincipalKeyTestChild).HasPrincipalKey<HasPrincipalKeyTestParent>(p => new { p.Aa, p.Bb }).HasForeignKey<HasPrincipalKeyTestChild>(c => new { c.A, c.B }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_HasPrincipalKey_AB");
+            builder.HasOne(a => a.HasPrincipalKeyTestParent_A).WithOne(b => b.HasPrincipalKeyTestChild).HasPrincipalKey<HasPrincipalKeyTestParent>(p => new { p.Aa, p.Bb }).HasForeignKey<HasPrincipalKeyTestChild>(c => new { c.A, c.B }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_HasPrincipalKey_AB");
+            builder.HasOne(a => a.HasPrincipalKeyTestParent_C).WithMany(b => b.HasPrincipalKeyTestChilds_C).HasPrincipalKey(p => p.Cc).HasForeignKey(c => c.C).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_HasPrincipalKey_AC");
+            builder.HasOne(a => a.HasPrincipalKeyTestParent_D).WithMany(b => b.HasPrincipalKeyTestChilds_D).HasPrincipalKey(p => p.Dd).HasForeignKey(c => c.D).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_HasPrincipalKey_CD");
         }
     }
 

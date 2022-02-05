@@ -12,7 +12,7 @@ namespace Tester.Integration.EfCore3
         public void Configure(EntityTypeBuilder<PeriodTestTable> builder)
         {
             builder.ToTable("PeriodTestTable", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__PeriodTe__3213E83F66E9CFC5").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__PeriodTe__3213E83F9E7D892C").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.Joe46Bloggs).HasColumnName(@"joe.bloggs").HasColumnType("int").IsRequired(false);

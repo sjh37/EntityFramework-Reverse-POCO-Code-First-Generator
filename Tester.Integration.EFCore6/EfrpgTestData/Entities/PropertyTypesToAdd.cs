@@ -24,10 +24,6 @@ namespace V6EfrpgTest
 
         public PropertyTypesToAdd()
         {
-            DefaultCheck = @"/****** Object:  Default [d_t_address_type_domain]    Script Date: 22/07/2015 14:28:05 ******/
-    CREATE DEFAULT [dbo].[d_t_address_type_domain] 
-    AS
-    'A'";
             Beta_Harish3485 = new List<Beta_Harish3485>();
         }
     }

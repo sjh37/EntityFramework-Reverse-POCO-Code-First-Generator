@@ -174,7 +174,7 @@ namespace Tester.Integration.EfCore3.File_based_templatesCherry
         public void Configure(EntityTypeBuilder<ColumnNameAndType> builder)
         {
             builder.ToTable("ColumnNameAndTypes", "dbo");
-            builder.HasKey(x => x.Dollar).HasName("PK__ColumnNa__3BD018490C636E25").IsClustered();
+            builder.HasKey(x => x.Dollar).HasName("PK__ColumnNa__3BD01849BF56C074").IsClustered();
 
             builder.Property(x => x.Dollar).HasColumnName(@"$").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.Pound).HasColumnName(@"£").HasColumnType("int").IsRequired(false);

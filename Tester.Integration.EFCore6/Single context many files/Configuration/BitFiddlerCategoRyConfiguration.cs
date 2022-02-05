@@ -11,7 +11,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         public void Configure(EntityTypeBuilder<BitFiddlerCategoRy> builder)
         {
             builder.ToTable("BitFiddlerCATEGORIES", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__BitFiddl__3214EC07B251396A").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__BitFiddl__3214EC07598B063E").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
         }

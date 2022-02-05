@@ -595,24 +595,12 @@ namespace V6EfrpgTest
             return Task.FromResult(FFRS_DataFromDboAndFfrs(out procResult));
         }
 
-        public DbSet<FkTest_HelloReturnModel> FkTest_HelloReturnModel { get; set; }
-        public List<FkTest_HelloReturnModel> FkTest_Hello()
+        public int FkTest_Hello()
         {
-            int procResult;
-            return FkTest_Hello(out procResult);
+            return 0;
         }
 
-        public List<FkTest_HelloReturnModel> FkTest_Hello(out int procResult)
-        {
-            procResult = 0;
-            return new List<FkTest_HelloReturnModel>();
-        }
-
-        public Task<List<FkTest_HelloReturnModel>> FkTest_HelloAsync()
-        {
-            int procResult;
-            return Task.FromResult(FkTest_Hello(out procResult));
-        }
+        // FkTest_HelloAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         public DbSet<GetSmallDecimalTestReturnModel> GetSmallDecimalTestReturnModel { get; set; }
         public List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId)
@@ -713,43 +701,19 @@ namespace V6EfrpgTest
 
         // ProcTestDecimalOutputV3DefaultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public DbSet<SpatialTypesNoParamsReturnModel> SpatialTypesNoParamsReturnModel { get; set; }
-        public List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams()
+        public int SpatialTypesNoParams()
         {
-            int procResult;
-            return SpatialTypesNoParams(out procResult);
+            return 0;
         }
 
-        public List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams(out int procResult)
+        // SpatialTypesNoParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
         {
-            procResult = 0;
-            return new List<SpatialTypesNoParamsReturnModel>();
+            return 0;
         }
 
-        public Task<List<SpatialTypesNoParamsReturnModel>> SpatialTypesNoParamsAsync()
-        {
-            int procResult;
-            return Task.FromResult(SpatialTypesNoParams(out procResult));
-        }
-
-        public DbSet<SpatialTypesWithParamsReturnModel> SpatialTypesWithParamsReturnModel { get; set; }
-        public List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
-        {
-            int procResult;
-            return SpatialTypesWithParams(geometry, geography, out procResult);
-        }
-
-        public List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, out int procResult)
-        {
-            procResult = 0;
-            return new List<SpatialTypesWithParamsReturnModel>();
-        }
-
-        public Task<List<SpatialTypesWithParamsReturnModel>> SpatialTypesWithParamsAsync(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
-        {
-            int procResult;
-            return Task.FromResult(SpatialTypesWithParams(geometry, geography, out procResult));
-        }
+        // SpatialTypesWithParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         public DbSet<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsReturnModel { get; set; }
         public StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar)

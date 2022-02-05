@@ -12,7 +12,7 @@ namespace Tester.Integration.EfCore3
         public void Configure(EntityTypeBuilder<EnumWithDefaultValue> builder)
         {
             builder.ToTable("EnumWithDefaultValue", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__EnumWith__3214EC07C0E96CE9").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__EnumWith__3214EC07C3D772B7").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.SomeEnum).HasColumnName(@"SomeEnum").HasColumnType("int").IsRequired();

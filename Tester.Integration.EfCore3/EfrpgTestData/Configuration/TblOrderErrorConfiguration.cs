@@ -12,7 +12,7 @@ namespace Tester.Integration.EfCore3
         public void Configure(EntityTypeBuilder<TblOrderError> builder)
         {
             builder.ToTable("tblOrderErrors", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__tblOrder__3214EC2732EAC74E").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__tblOrder__3214EC2726D113C8").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Error).HasColumnName(@"error").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);

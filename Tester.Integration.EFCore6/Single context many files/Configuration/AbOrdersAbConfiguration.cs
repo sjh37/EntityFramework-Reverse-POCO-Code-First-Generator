@@ -11,7 +11,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         public void Configure(EntityTypeBuilder<AbOrdersAb> builder)
         {
             builder.ToTable("AB_OrdersAB_", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__AB_Order__3214EC27DCF8BE7D").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__AB_Order__3214EC2720B0AB83").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Added).HasColumnName(@"added").HasColumnType("datetime").IsRequired();

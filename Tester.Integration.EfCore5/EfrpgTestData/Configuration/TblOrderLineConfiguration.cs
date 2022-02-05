@@ -12,7 +12,7 @@ namespace V5EfrpgTest
         public void Configure(EntityTypeBuilder<TblOrderLine> builder)
         {
             builder.ToTable("tblOrderLines", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__tblOrder__3214EC27FF01DF09").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__tblOrder__3214EC273ECD394E").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired();

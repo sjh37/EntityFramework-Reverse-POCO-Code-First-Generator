@@ -12,7 +12,7 @@ namespace V5EfrpgTest
         public void Configure(EntityTypeBuilder<ClientCreationState> builder)
         {
             builder.ToTable("ClientCreationState", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__ClientCr__3213E83F78F9F567").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__ClientCr__3213E83F2557E8EF").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("uniqueidentifier").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.WebhookSetup).HasColumnName(@"WebhookSetup").HasColumnType("bit").IsRequired();

@@ -204,9 +204,8 @@ namespace V5EfrpgTest
         List<FFRS_DataFromDboAndFfrsReturnModel> FFRS_DataFromDboAndFfrs(out int procResult);
         Task<List<FFRS_DataFromDboAndFfrsReturnModel>> FFRS_DataFromDboAndFfrsAsync();
 
-        List<FkTest_HelloReturnModel> FkTest_Hello();
-        List<FkTest_HelloReturnModel> FkTest_Hello(out int procResult);
-        Task<List<FkTest_HelloReturnModel>> FkTest_HelloAsync();
+        int FkTest_Hello();
+        // FkTest_HelloAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId);
         List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId, out int procResult);
@@ -242,13 +241,11 @@ namespace V5EfrpgTest
         int ProcTestDecimalOutputV3Default(out decimal? perfectNumber);
         // ProcTestDecimalOutputV3DefaultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams();
-        List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams(out int procResult);
-        Task<List<SpatialTypesNoParamsReturnModel>> SpatialTypesNoParamsAsync();
+        int SpatialTypesNoParams();
+        // SpatialTypesNoParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography);
-        List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, out int procResult);
-        Task<List<SpatialTypesWithParamsReturnModel>> SpatialTypesWithParamsAsync(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography);
+        int SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography);
+        // SpatialTypesWithParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         // StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
         // Task<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsAsync(int? someVar); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.

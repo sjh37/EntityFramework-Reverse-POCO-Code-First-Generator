@@ -100,6 +100,8 @@ GO
 /****** Object:  Synonym [Synonyms].[SimpleStoredProc]    Script Date: 12/01/22 23:26:21 ******/
 CREATE SYNONYM [Synonyms].[SimpleStoredProc] FOR [EfrpgTest].[Synonyms].[SimpleStoredProc]
 GO
+CREATE SYNONYM [CarWithDifferentSynonymName] FOR [EfrpgTest].[dbo].[Car]
+GO
 /****** Object:  UserDefinedFunction [dbo].[CsvToInt]    Script Date: 12/01/22 23:26:21 ******/
 SET ANSI_NULLS ON
 GO

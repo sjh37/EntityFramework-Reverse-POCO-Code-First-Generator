@@ -11,7 +11,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         public void Configure(EntityTypeBuilder<SequenceTest> builder)
         {
             builder.ToTable("SequenceTest", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__Sequence__3214EC07AFADA315").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__Sequence__3214EC077AE382DF").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountBy1]");
             builder.Property(x => x.CntByBigInt).HasColumnName(@"CntByBigInt").HasColumnType("bigint").IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountByBigInt]");

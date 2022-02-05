@@ -12,7 +12,7 @@ namespace V5EfrpgTest
         public void Configure(EntityTypeBuilder<Issue47_Role> builder)
         {
             builder.ToTable("Role", "Issue47");
-            builder.HasKey(x => x.RoleId).HasName("PK__Role__8AFACE1A7B067CE8").IsClustered();
+            builder.HasKey(x => x.RoleId).HasName("PK__Role__8AFACE1A424FE2CB").IsClustered();
 
             builder.Property(x => x.RoleId).HasColumnName(@"RoleId").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Role).HasColumnName(@"Role").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);
