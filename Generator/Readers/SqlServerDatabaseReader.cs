@@ -837,8 +837,10 @@ SET NOCOUNT ON;
 IF OBJECT_ID('tempdb..#SynonymStoredProcedureDetails') IS NOT NULL DROP TABLE #SynonymStoredProcedureDetails;
 IF OBJECT_ID('tempdb..#SynonymTargets') IS NOT NULL DROP TABLE #SynonymTargets;
 
--- Create the ##SynonymStoredProcedureDetails temp table structure for later use
-SELECT  TOP (0) R.SPECIFIC_SCHEMA,
+-- Create the #SynonymStoredProcedureDetails temp table structure for later use
+SELECT  TOP (0)
+		R.SPECIFIC_CATALOG,
+        R.SPECIFIC_SCHEMA,
         R.SPECIFIC_NAME,
         R.ROUTINE_TYPE,
         R.DATA_TYPE as RETURN_DATA_TYPE,
@@ -880,7 +882,7 @@ WHERE   R.ROUTINE_TYPE = 'PROCEDURE'
                               END AS BIT) = 0))
 
 -- Get all databases referenced by synonyms.
-SELECT DISTINCT PARSENAME(sn.base_object_name, 3) AS DatabaseName
+SELECT DISTINCT PARSENAME(sn.base_object_name, 3) AS DatabaseName, sn.base_object_name AS BaseObjectName
 INTO #SynonymTargets
 FROM sys.synonyms sn
 WHERE PARSENAME(sn.base_object_name, 3) <> DB_NAME()
@@ -890,9 +892,10 @@ ORDER BY PARSENAME(sn.base_object_name, 3)
 -- Create a query to execute for each referenced database
 DECLARE @synonymStoredProcedureDetailsQuery nvarchar(max) =
 '
-INSERT INTO #SynonymStoredProcedureDetails (SPECIFIC_SCHEMA, SPECIFIC_NAME, ROUTINE_TYPE, RETURN_DATA_TYPE, ORDINAL_POSITION, PARAMETER_MODE, PARAMETER_NAME, DATA_TYPE
+INSERT INTO #SynonymStoredProcedureDetails (SPECIFIC_CATALOG, SPECIFIC_SCHEMA, SPECIFIC_NAME, ROUTINE_TYPE, RETURN_DATA_TYPE, ORDINAL_POSITION, PARAMETER_MODE, PARAMETER_NAME, DATA_TYPE
                                             , CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, NUMERIC_SCALE, DATETIME_PRECISION, USER_DEFINED_TYPE)
-SELECT  R.SPECIFIC_SCHEMA,
+SELECT  R.SPECIFIC_CATALOG,
+        R.SPECIFIC_SCHEMA,
         R.SPECIFIC_NAME,
         R.ROUTINE_TYPE,
         R.DATA_TYPE as RETURN_DATA_TYPE,
@@ -933,7 +936,8 @@ WHERE   R.ROUTINE_TYPE = ''PROCEDURE''
                               END AS BIT) = 0))
 
 UNION ALL
-SELECT  R.SPECIFIC_SCHEMA,
+SELECT  R.SPECIFIC_CATALOG,
+        R.SPECIFIC_SCHEMA,
         R.SPECIFIC_NAME,
         R.ROUTINE_TYPE,
         R.DATA_TYPE as RETURN_DATA_TYPE,
@@ -958,17 +962,27 @@ ORDER BY R.SPECIFIC_SCHEMA,
 '
 
 -- Loop through referenced databases and populate #SynonymStoredProcedureDetails
-DECLARE @synonmymDatabaseName sysname = (SELECT TOP (1) DatabaseName FROM #SynonymTargets)
-DECLARE @synonymStoredProcedureDetailsQueryWithDb nvarchar(max)
-WHILE (@synonmymDatabaseName IS NOT NULL)
-BEGIN
-    SET @synonymStoredProcedureDetailsQueryWithDb = 'USE [' + @synonmymDatabaseName + '] ' + @synonymStoredProcedureDetailsQuery
-    EXEC sp_executesql @stmt=@synonymStoredProcedureDetailsQueryWithDb
-    DELETE FROM #SynonymTargets WHERE DatabaseName = @synonmymDatabaseName
-    SET @synonmymDatabaseName = (SELECT TOP (1) DatabaseName FROM #SynonymTargets)
-END
+DECLARE @synonmymDatabaseName NVARCHAR(128)
+DECLARE lcsr CURSOR LOCAL FAST_FORWARD READ_ONLY FOR
+	SELECT DISTINCT DatabaseName FROM #SynonymTargets;
 
-SET NOCOUNT OFF;
+OPEN lcsr;
+FETCH NEXT FROM lcsr INTO @synonmymDatabaseName;
+
+DECLARE @synonymStoredProcedureDetailsQueryWithDb nvarchar(max)
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    SET @synonymStoredProcedureDetailsQueryWithDb = 'USE [' + @synonmymDatabaseName + ']; ' + @synonymStoredProcedureDetailsQuery;
+    EXEC sp_executesql @stmt=@synonymStoredProcedureDetailsQueryWithDb;
+	FETCH NEXT FROM lcsr INTO @synonmymDatabaseName;
+END
+CLOSE lcsr;
+DEALLOCATE lcsr;
+
+-- Remove stored procedures not referenced by synonyms
+DELETE FROM #SynonymStoredProcedureDetails
+WHERE '[' + SPECIFIC_CATALOG + '].' + '[' + SPECIFIC_SCHEMA + '].' + '[' + SPECIFIC_NAME + ']' NOT IN
+      ( SELECT BaseObjectName FROM #SynonymTargets );
 ";
         }
 
