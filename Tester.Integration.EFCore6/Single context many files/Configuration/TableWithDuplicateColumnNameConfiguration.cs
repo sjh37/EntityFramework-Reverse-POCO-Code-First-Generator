@@ -11,7 +11,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         public void Configure(EntityTypeBuilder<TableWithDuplicateColumnName> builder)
         {
             builder.ToTable("table with duplicate column names", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__table wi__3213E83F6A018E91").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_TableWithDuplicateColumnNames").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.UserId1).HasColumnName(@"user_id").HasColumnType("int").IsRequired();

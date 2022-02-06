@@ -12,7 +12,7 @@ namespace Tester.Integration.EfCore2
         public void Configure(EntityTypeBuilder<FkTest_SmallDecimalTestAttribute> builder)
         {
             builder.ToTable("SmallDecimalTestAttribute", "FkTest");
-            builder.HasKey(x => x.FkId).HasName("PK__SmallDec__354CCD0B503AA3A8").ForSqlServerIsClustered();
+            builder.HasKey(x => x.FkId).HasName("PK__SmallDec__354CCD0B78FE841F").ForSqlServerIsClustered();
 
             builder.Property(x => x.FkId).HasColumnName(@"FkID").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);

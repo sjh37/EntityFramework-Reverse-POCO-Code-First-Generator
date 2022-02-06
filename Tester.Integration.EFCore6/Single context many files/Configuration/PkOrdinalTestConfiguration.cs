@@ -11,7 +11,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         public void Configure(EntityTypeBuilder<PkOrdinalTest> builder)
         {
             builder.ToTable("pk_ordinal_test", "dbo");
-            builder.HasKey(x => new { x.C3, x.C1 }).HasName("PK__pk_ordin__1135D3B4D2F6F169").IsClustered();
+            builder.HasKey(x => new { x.C3, x.C1 }).HasName("PK__pk_ordin__1135D3B469FFB6F9").IsClustered();
 
             builder.Property(x => x.C1).HasColumnName(@"C1").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.C2).HasColumnName(@"C2").HasColumnType("int").IsRequired();

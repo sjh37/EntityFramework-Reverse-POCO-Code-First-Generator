@@ -11,7 +11,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         public void Configure(EntityTypeBuilder<User> builder)
         {
             builder.ToTable("User", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK_Contacts").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_User").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.ExternalUserId).HasColumnName(@"ExternalUserID").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);

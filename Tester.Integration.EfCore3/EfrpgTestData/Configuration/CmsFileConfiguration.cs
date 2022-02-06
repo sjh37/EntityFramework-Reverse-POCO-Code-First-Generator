@@ -12,7 +12,7 @@ namespace Tester.Integration.EfCore3
         public void Configure(EntityTypeBuilder<CmsFile> builder)
         {
             builder.ToTable("CMS_File", "dbo");
-            builder.HasKey(x => x.FileId).HasName("PK_CMS_Form").IsClustered();
+            builder.HasKey(x => x.FileId).HasName("PK_CMS_File").IsClustered();
 
             builder.Property(x => x.FileId).HasColumnName(@"FileId").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.FileName).HasColumnName(@"FileName").HasColumnType("nvarchar(100)").IsRequired().HasMaxLength(100);

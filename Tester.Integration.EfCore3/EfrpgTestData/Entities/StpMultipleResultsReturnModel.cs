@@ -19,8 +19,6 @@ namespace Tester.Integration.EfCore3
             public int Id { get; set; }
             public int PrimaryColourId { get; set; }
             public string CarMake { get; set; }
-            public int? computed_column { get; set; }
-            public int? computed_column_persisted { get; set; }
         }
         public List<ResultSetModel2> ResultSet2;
         public class ResultSetModel3

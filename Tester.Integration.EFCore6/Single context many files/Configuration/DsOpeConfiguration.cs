@@ -11,7 +11,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         public void Configure(EntityTypeBuilder<DsOpe> builder)
         {
             builder.ToTable("DSOpe", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__DSOpe__3214EC27D822B5B7").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__DSOpe__3214EC27A91BD3FC").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.DecimalDefault).HasColumnName(@"decimal_default").HasColumnType("decimal(15,2)").HasPrecision(15,2).IsRequired();

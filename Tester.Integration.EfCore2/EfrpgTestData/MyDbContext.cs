@@ -265,7 +265,10 @@ namespace Tester.Integration.EfCore2
             modelBuilder.Query<FFRS_CvDataReturnModel>();
             modelBuilder.Query<FFRS_DataFromDboReturnModel>();
             modelBuilder.Query<FFRS_DataFromDboAndFfrsReturnModel>();
+            modelBuilder.Query<FkTest_HelloReturnModel>();
             modelBuilder.Query<GetSmallDecimalTestReturnModel>();
+            modelBuilder.Query<SpatialTypesNoParamsReturnModel>();
+            modelBuilder.Query<SpatialTypesWithParamsReturnModel>();
             modelBuilder.Query<StpNoParamsTestReturnModel>();
             modelBuilder.Query<StpNullableParamsTestReturnModel>();
             modelBuilder.Query<StpTestReturnModel>();
@@ -602,16 +605,33 @@ namespace Tester.Integration.EfCore2
             return procResultData;
         }
 
-        public int FkTest_Hello()
+        public List<FkTest_HelloReturnModel> FkTest_Hello()
         {
-            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
-
-            Database.ExecuteSqlCommand("EXEC @procResult = [FkTest].[Hello] ", procResultParam);
-
-            return (int)procResultParam.Value;
+            int procResult;
+            return FkTest_Hello(out procResult);
         }
 
-        // FkTest_HelloAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public List<FkTest_HelloReturnModel> FkTest_Hello(out int procResult)
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [FkTest].[Hello]";
+            var procResultData = Query<FkTest_HelloReturnModel>()
+                .FromSql(sqlCommand, procResultParam)
+                .ToList();
+
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<FkTest_HelloReturnModel>> FkTest_HelloAsync()
+        {
+            const string sqlCommand = "EXEC [FkTest].[Hello]";
+            var procResultData = await Query<FkTest_HelloReturnModel>()
+                .FromSql(sqlCommand)
+                .ToListAsync();
+
+            return procResultData;
+        }
 
         public List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId)
         {
@@ -847,18 +867,41 @@ namespace Tester.Integration.EfCore2
 
         // ProcTestDecimalOutputV3DefaultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int SpatialTypesNoParams()
+        public List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams()
         {
-            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
-
-            Database.ExecuteSqlCommand("EXEC @procResult = [dbo].[SpatialTypesNoParams] ", procResultParam);
-
-            return (int)procResultParam.Value;
+            int procResult;
+            return SpatialTypesNoParams(out procResult);
         }
 
-        // SpatialTypesNoParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams(out int procResult)
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [dbo].[SpatialTypesNoParams]";
+            var procResultData = Query<SpatialTypesNoParamsReturnModel>()
+                .FromSql(sqlCommand, procResultParam)
+                .ToList();
 
-        public int SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<SpatialTypesNoParamsReturnModel>> SpatialTypesNoParamsAsync()
+        {
+            const string sqlCommand = "EXEC [dbo].[SpatialTypesNoParams]";
+            var procResultData = await Query<SpatialTypesNoParamsReturnModel>()
+                .FromSql(sqlCommand)
+                .ToListAsync();
+
+            return procResultData;
+        }
+
+        public List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
+        {
+            int procResult;
+            return SpatialTypesWithParams(geometry, geography, out procResult);
+        }
+
+        public List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, out int procResult)
         {
             var geometryParam = new SqlParameter { ParameterName = "@geometry", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = geometry, Size = -1 };
             if (geometryParam.Value == null)
@@ -869,13 +912,32 @@ namespace Tester.Integration.EfCore2
                 geographyParam.Value = DBNull.Value;
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [dbo].[SpatialTypesWithParams] @geometry, @geography";
+            var procResultData = Query<SpatialTypesWithParamsReturnModel>()
+                .FromSql(sqlCommand, geometryParam, geographyParam, procResultParam)
+                .ToList();
 
-            Database.ExecuteSqlCommand("EXEC @procResult = [dbo].[SpatialTypesWithParams] @geometry, @geography", geometryParam, geographyParam, procResultParam);
-
-            return (int)procResultParam.Value;
+            procResult = (int) procResultParam.Value;
+            return procResultData;
         }
 
-        // SpatialTypesWithParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public async Task<List<SpatialTypesWithParamsReturnModel>> SpatialTypesWithParamsAsync(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
+        {
+            var geometryParam = new SqlParameter { ParameterName = "@geometry", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = geometry, Size = -1 };
+            if (geometryParam.Value == null)
+                geometryParam.Value = DBNull.Value;
+
+            var geographyParam = new SqlParameter { ParameterName = "@geography", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = geography, Size = -1 };
+            if (geographyParam.Value == null)
+                geographyParam.Value = DBNull.Value;
+
+            const string sqlCommand = "EXEC [dbo].[SpatialTypesWithParams] @geometry, @geography";
+            var procResultData = await Query<SpatialTypesWithParamsReturnModel>()
+                .FromSql(sqlCommand, geometryParam, geographyParam)
+                .ToListAsync();
+
+            return procResultData;
+        }
 
         // public StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 

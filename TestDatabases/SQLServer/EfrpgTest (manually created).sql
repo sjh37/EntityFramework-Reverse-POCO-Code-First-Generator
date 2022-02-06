@@ -1,8 +1,8 @@
 ﻿-- This database will contain all the horrible edge cases this generator has to cope with
 
 /*CREATE DATABASE [EfrpgTest] ON PRIMARY
-       ( NAME = N'EfrpgTest',     FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL13.MSSQLSERVER\MSSQL\DATA\EfrpgTest.mdf' , SIZE = 5Mb , FILEGROWTH = 1024KB )
-LOG ON ( NAME = N'EfrpgTest_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL13.MSSQLSERVER\MSSQL\DATA\EfrpgTest.ldf' , SIZE = 1024KB , FILEGROWTH = 10%);
+       ( NAME = N'EfrpgTest',     FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL14.MSSQLSERVER\MSSQL\DATA\EfrpgTest.mdf' , SIZE = 5Mb , FILEGROWTH = 1024KB )
+LOG ON ( NAME = N'EfrpgTest_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL14.MSSQLSERVER\MSSQL\DATA\EfrpgTest.ldf' , SIZE = 1024KB , FILEGROWTH = 10%);
 GO
 ALTER DATABASE [EfrpgTest] SET COMPATIBILITY_LEVEL = 100
 ALTER DATABASE [EfrpgTest] SET ANSI_NULL_DEFAULT OFF
@@ -500,7 +500,7 @@ GO
 -- DROP TABLE ColumnNameAndTypes;
 CREATE TABLE ColumnNameAndTypes
 (
-	[$] INT NOT null PRIMARY KEY,
+	[$] INT NOT null,
 	[%] INT null,
 	[£] INT null,
 	[&fred$] INT null,
@@ -532,7 +532,8 @@ CREATE TABLE ColumnNameAndTypes
 	[asmallmoney] SMALLMONEY NULL,
 	[brandon] INT NULL, -- Brandon Lilly. IsFixedLength not acceptable for CHAR fixed length columns.
 	GeographyType GEOGRAPHY NULL DEFAULT(CONVERT(GEOGRAPHY,'POINT (0 0)')),
-	GeometryType GEOMETRY NULL DEFAULT(GEOMETRY::STGeomFromText('LINESTRING (100 100, 20 180, 180 180)', 0))
+	GeometryType GEOMETRY NULL DEFAULT(GEOMETRY::STGeomFromText('LINESTRING (100 100, 20 180, 180 180)', 0)),
+    CONSTRAINT PK_ColumnNameAndTypes PRIMARY KEY CLUSTERED ([$])
 );
 GO
 EXEC sys.sp_addextendedproperty
@@ -801,41 +802,6 @@ AS
 SELECT Id, PrimaryColourId, CarMake, CVName FROM Car JOIN FFRS.CV ON Id = CVID
 GO
 
--- drop FUNCTION [dbo].[CsvToInt]
-CREATE FUNCTION [dbo].[CsvToInt]
-(	
-	@array varchar(8000),
-	@array2 varchar(8000) = ''
-)
-RETURNS @IntTable TABLE(IntValue int)
-AS
-BEGIN
-	DECLARE @seperator char(1)
-	SET @seperator = ','
-
-	DECLARE @seperator_position int
-	DECLARE @array_value varchar(8000)
-
-	SET @array = @array + @seperator
-
-	WHILE PATINDEX('%,%', @array) <> 0
-	BEGIN
-		SELECT @seperator_position = PATINDEX('%,%', @array)
-		SELECT @array_value = LEFT(@array, @seperator_position - 1)
-
-		INSERT @IntTable VALUES (CAST(@array_value AS int))
-
-		SELECT @array = STUFF(@array, 1, @seperator_position, '')
-		IF LEN(@array) = 0 AND LEN(@array2) > 0
-		BEGIN
-			SET @array = @array2 + ','
-			SET @array2 = ''
-		END
-	END
-
-	RETURN
-END
-GO
 
 CREATE FUNCTION [FFRS].[CsvToInt2]
 (	
@@ -875,25 +841,9 @@ GO
 SELECT * FROM FFRS.CsvToInt2('123,456','')
 GO
 
-CREATE FUNCTION udfNetSale (@quantity INT, @list_price DECIMAL(10, 2), @discount DECIMAL(4, 2))
-RETURNS DECIMAL(10, 2)
-AS
-BEGIN
-    RETURN @quantity * @list_price * (1 - @discount);
-END;
-GO
-
 SELECT dbo.udfNetSale(10, 100, 0.1) AS [Value];
 GO
 
--- This table is unusable by EF as all the columns are NULL.
--- We should see this table generated inside a comment, but with a comment that it is unusable
-CREATE TABLE NoPrimaryKeys
-(
-    Id INT NULL,
-    [Description] VARCHAR(10) NULL
-)
-GO
 
 
 -- #183 Return Model for functions returning nullable
@@ -1169,9 +1119,12 @@ GO
 
 -- Harish3485. Duplicate foreign key names "in different schemas" cause problems
 -- Running transformation: Failed to read database schema - Object reference not set to an instance of an object.
-CREATE TABLE Alpha.Harish3485 ( id int NOT NULL IDENTITY(1,1) PRIMARY KEY, harish_id INT NOT NULL )
+CREATE TABLE Alpha.Harish3485 ( id int NOT NULL IDENTITY(1,1), harish_id INT NOT NULL )
 GO
-CREATE TABLE Beta.Harish3485 ( id int NOT NULL IDENTITY(1,1) PRIMARY KEY, another_id INT NOT NULL )
+CREATE TABLE Beta.Harish3485 ( id int NOT NULL IDENTITY(1,1), another_id INT NOT NULL )
+GO
+ALTER TABLE [Alpha].[Harish3485] ADD CONSTRAINT [PK_Alpha_Harish3485] PRIMARY KEY CLUSTERED ([id]) ON [PRIMARY];
+ALTER TABLE [Beta].[Harish3485] ADD CONSTRAINT [PK_Beta_Harish3485] PRIMARY KEY CLUSTERED ([id]) ON [PRIMARY];
 GO
 --                                                     vvvvvvvvvvv same name                                              vvvvvv different column names
 ALTER TABLE Alpha.Harish3485 WITH CHECK ADD CONSTRAINT [FK_Harish] FOREIGN KEY(harish_id) REFERENCES FkTest.SmallDecimalTestAttribute (FkID)
@@ -1557,7 +1510,8 @@ CREATE TABLE Token
 GO
 INSERT INTO Token (Enabled) VALUES(1)
 GO
-
+ALTER DATABASE [EfrpgTest] SET ANSI_PADDING ON;
+GO
 -- FROM David_Poco
 --DROP TABLE CarToColour
 --drop TABLE Car
@@ -1568,6 +1522,8 @@ CREATE TABLE Car
     PrimaryColourId INT NOT NULL,
     CarMake VARCHAR(255) NOT NULL
 )
+GO
+SET ANSI_PADDING ON
 GO
 ALTER TABLE Car ADD 
     computed_column AS PrimaryColourId * 10,
@@ -1657,12 +1613,11 @@ ALTER TABLE footer ADD CONSTRAINT fooderFK FOREIGN KEY (ID,otherID) REFERENCES h
 GO
 
 INSERT INTO SmallDecimalTest (id, KoeffVed) VALUES (1, 0.1),(2, 0.2),(3, 0.3),(4, 0.4)
-INSERT INTO ColumnNameAndTypes ([$],[default_test],[%],[£],[&test$]) VALUES  (1,'Hello world',5,6,7)
 INSERT INTO PropertyTypesToAdd (id, dt_default, dt7) VALUES(1, GETDATE(), GETDATE()), (2, GETDATE(), GETDATE()), (3, GETDATE(), GETDATE())
 INSERT INTO FkTest.SmallDecimalTestAttribute (FkID,[description]) VALUES  (1,'tattoo')
 INSERT INTO [FFRS].[CV] ([BatchUID], [CVID], [CVName]) VALUES  (NEWID(),123, N'Hello world')
 INSERT INTO DSOpe (ID,decimal_default,[default]) VALUES  (1,2,3)
-
+GO
 
 IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = N'dcg')
 	EXEC sys.sp_executesql N'CREATE SCHEMA [dcg]'
@@ -1785,12 +1740,13 @@ GO
 --SELECT NEXT VALUE FOR dbo.CountBy1;
 CREATE TABLE dbo.SequenceTest -- drop TABLE dbo.SequenceTest
 (
-    Id            INT         NOT NULL PRIMARY KEY DEFAULT (NEXT VALUE FOR dbo.CountBy1),
+    Id            INT         NOT NULL DEFAULT (NEXT VALUE FOR dbo.CountBy1),
     CntByBigInt   BIGINT      NOT NULL DEFAULT (NEXT VALUE FOR dbo.CountByBigInt),
     CntByTinyInt  TINYINT     NOT NULL DEFAULT (NEXT VALUE FOR dbo.CountByTinyInt),
     CntBySmallInt SMALLINT    NOT NULL DEFAULT (NEXT VALUE FOR dbo.CountBySmallInt),
     CntByDecimal  DECIMAL     NOT NULL DEFAULT (NEXT VALUE FOR dbo.CountByDecimal),
-    CntByNumeric  NUMERIC     NOT NULL DEFAULT (NEXT VALUE FOR dbo.CountByNumeric)
+    CntByNumeric  NUMERIC     NOT NULL DEFAULT (NEXT VALUE FOR dbo.CountByNumeric),
+    CONSTRAINT PK_SequenceTest PRIMARY KEY CLUSTERED (Id)
 );
 GO
 
@@ -1862,18 +1818,24 @@ FROM    [dbo].[CodeObject];
 GO
 
 CREATE TABLE [dbo].[table with space](
-    [id] [int] NOT NULL PRIMARY KEY
+    [id] [int] NOT NULL,
+    CONSTRAINT PK_TableWithSpace PRIMARY KEY CLUSTERED ([id])
 )
+GO
 CREATE TABLE [dbo].[table with space and in columns](
-    [id value] [int] NOT NULL PRIMARY KEY
+    [id value] [int] NOT NULL,
+    CONSTRAINT PK_TableWithSpaceAndInColumns PRIMARY KEY CLUSTERED ([id value])
 )
+GO
 CREATE TABLE [dbo].[TableWithSpaceInColumnOnly](
-    [id value] [int] NOT NULL PRIMARY KEY
+    [id value] [int] NOT NULL,
+    CONSTRAINT PK_TableWithSpaceInColumnOnly PRIMARY KEY CLUSTERED ([id value])
 )
+GO
 CREATE TABLE [dbo].[table mapping with space](
     [id] [int] NOT NULL,
-    [id value] [int] NOT NULL
-    CONSTRAINT [map_with_space] PRIMARY KEY CLUSTERED ( [id],[id value] )
+    [id value] [int] NOT NULL,
+    CONSTRAINT [PK_TableMappingWithSpace] PRIMARY KEY CLUSTERED ( [id],[id value] )
 )
 GO
 ALTER TABLE [dbo].[table mapping with space] ADD CONSTRAINT space1FK FOREIGN KEY (id) REFERENCES [dbo].[table with space] (id);
@@ -2025,7 +1987,7 @@ CREATE TABLE [dbo].[CMS_File](
 	[ValidStartDate] [datetime] NULL,
 	[ValidEndDate] [datetime] NULL,
 	[IsActive] [bit] NOT NULL,
- CONSTRAINT [PK_CMS_Form] PRIMARY KEY CLUSTERED 
+ CONSTRAINT [PK_CMS_File] PRIMARY KEY CLUSTERED 
 (
 	[FileId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
@@ -2045,9 +2007,9 @@ CREATE TABLE [dbo].[CMS_FileTag](
 	[TagId] [int] NOT NULL
 ) ON [PRIMARY]
 GO
-ALTER TABLE [dbo].[CMS_FileTag]  WITH NOCHECK ADD  CONSTRAINT [FK_CMS_FileTag_CMS_File] FOREIGN KEY([FileId]) REFERENCES [dbo].[CMS_File] ([FileId])
+ALTER TABLE [dbo].[CMS_FileTag] WITH NOCHECK ADD  CONSTRAINT [FK_CMS_FileTag_CMS_File] FOREIGN KEY([FileId]) REFERENCES [dbo].[CMS_File] ([FileId])
 ALTER TABLE [dbo].[CMS_FileTag] CHECK CONSTRAINT [FK_CMS_FileTag_CMS_File]
-ALTER TABLE [dbo].[CMS_FileTag]  WITH NOCHECK ADD  CONSTRAINT [FK_CMS_FileTag_CMS_Tag] FOREIGN KEY([TagId]) REFERENCES [dbo].[CMS_Tag] ([TagId])
+ALTER TABLE [dbo].[CMS_FileTag] WITH NOCHECK ADD  CONSTRAINT [FK_CMS_FileTag_CMS_Tag] FOREIGN KEY([TagId]) REFERENCES [dbo].[CMS_Tag] ([TagId])
 ALTER TABLE [dbo].[CMS_FileTag] CHECK CONSTRAINT [FK_CMS_FileTag_CMS_Tag]
 GO
 
@@ -2091,12 +2053,12 @@ GO
 -- From Leanard Lobel
 CREATE TABLE hierarchy_test
 (
-    ID INT NOT NULL IDENTITY(1, 1) PRIMARY KEY,
-    hid HIERARCHYID NOT NULL
+    ID INT NOT NULL IDENTITY(1, 1),
+    hid HIERARCHYID NOT NULL,
+    CONSTRAINT PK_hierarchy_test PRIMARY KEY CLUSTERED (ID)
 )
 GO
-INSERT INTO hierarchy_test
-        (hid)
+INSERT INTO hierarchy_test (hid)
 VALUES  ('/1/'),('/2/'),('/1/1/'),('/1/2/'),('/1/1/1/')
 GO
 
@@ -2105,13 +2067,14 @@ GO
 -- DROP TABLE ClientCreationState
 CREATE TABLE ClientCreationState
 (
-	id UNIQUEIDENTIFIER NOT NULL PRIMARY key,
+	id UNIQUEIDENTIFIER NOT NULL,
 	WebhookSetup BIT NOT NULL,
 	AuthSetup BIT NOT NULL,
-	AssignedCarrier BIT NOT NULL
+	AssignedCarrier BIT NOT NULL,
+    CONSTRAINT PK_ClientCreationState PRIMARY KEY CLUSTERED (Id)
 );
 GO
-SELECT * FROM ClientCreationState WHERE WebhookSetup=0 OR AuthSetup=0 OR AssignedCarrier=0
+-- SELECT * FROM ClientCreationState WHERE WebhookSetup=0 OR AuthSetup=0 OR AssignedCarrier=0
 GO
 
 
@@ -2159,7 +2122,7 @@ CREATE TABLE [User]
 (
     ID             INT         IDENTITY(1, 1) NOT NULL,
     ExternalUserID VARCHAR(50) NULL,
-    CONSTRAINT PK_Contacts PRIMARY KEY CLUSTERED (ID ASC)
+    CONSTRAINT PK_User PRIMARY KEY CLUSTERED (ID ASC)
 );
 GO
 CREATE TABLE User_Document
@@ -2244,17 +2207,19 @@ GO
 -- Multiple foreign keys [InverseProperty] test
 CREATE TABLE Person
 (
-    Id INT NOT NULL IDENTITY(1, 1) PRIMARY KEY,
-    Name VARCHAR(50) NOT NULL
+    Id INT NOT NULL IDENTITY(1, 1),
+    [Name] VARCHAR(50) NOT NULL,
+    CONSTRAINT PK_Person PRIMARY KEY CLUSTERED (Id)
 )
 GO
 CREATE TABLE PersonPosts
 (
-    Id INT NOT NULL IDENTITY(1, 1) PRIMARY KEY,
+    Id INT NOT NULL IDENTITY(1, 1),
     Title VARCHAR(20) NOT NULL,
     Body VARCHAR(100) NOT NULL,
     CreatedBy INT NOT NULL,
     UpdatedBy INT NOT NULL,
+    CONSTRAINT PK_PersonPosts PRIMARY KEY CLUSTERED (Id),
     CONSTRAINT FK_PersonPosts_CreatedBy FOREIGN KEY (CreatedBy) REFERENCES Person (Id),
     CONSTRAINT FK_PersonPosts_UpdatedBy FOREIGN KEY (UpdatedBy) REFERENCES Person (Id)
 )
@@ -2287,12 +2252,13 @@ GO
 
 CREATE TABLE [table with duplicate column names]
 (
- [id] [INT] IDENTITY(1, 1) NOT NULL PRIMARY KEY,
+ [id] [INT] IDENTITY(1, 1) NOT NULL,
  [user_id] [INT] NOT NULL,
  [UserId] [INT] NOT NULL,
  [User Id] [INT] NOT NULL,
  [User  Id] [INT] NOT NULL,
- [user__id] [INT] NOT NULL
+ [user__id] [INT] NOT NULL,
+ CONSTRAINT PK_TableWithDuplicateColumnNames PRIMARY KEY CLUSTERED (Id)
 )
 GO
 
@@ -2331,5 +2297,4 @@ CREATE TABLE EventProcessorEventFilter
 GO
 CREATE UNIQUE INDEX [IX_EventProcessorEventFilter] ON EventProcessorEventFilter (EventProcessorId, WantedEventId);
 ALTER TABLE EventProcessorEventFilter ADD CONSTRAINT [FK_EventProcessorEventFilter__EventProcessor] FOREIGN KEY (EventProcessorId) REFERENCES EventProcessor (Id);
-ALTER TABLE EventProcessorEventFilter ADD CONSTRAINT [FK_EventProcessorEventFilter__SomeEventEnumTable] FOREIGN KEY (WantedEventId) REFERENCES SomeEventEnumTable (Id);
 GO

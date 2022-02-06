@@ -12,7 +12,7 @@ namespace V6EfrpgTest
         public void Configure(EntityTypeBuilder<TadeuszSobol> builder)
         {
             builder.ToTable("TadeuszSobol", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__TadeuszS__3214EC07F06CA69B").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__TadeuszS__3214EC07EFEC9D70").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(max)").IsRequired(false).IsUnicode(false);

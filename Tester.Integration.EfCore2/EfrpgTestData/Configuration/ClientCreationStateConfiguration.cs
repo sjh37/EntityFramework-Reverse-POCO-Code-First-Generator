@@ -12,7 +12,7 @@ namespace Tester.Integration.EfCore2
         public void Configure(EntityTypeBuilder<ClientCreationState> builder)
         {
             builder.ToTable("ClientCreationState", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__ClientCr__3213E83F2557E8EF").ForSqlServerIsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_ClientCreationState").ForSqlServerIsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("uniqueidentifier").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.WebhookSetup).HasColumnName(@"WebhookSetup").HasColumnType("bit").IsRequired();

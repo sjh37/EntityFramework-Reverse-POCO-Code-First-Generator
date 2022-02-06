@@ -11,7 +11,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         public void Configure(EntityTypeBuilder<Beta_Workflow> builder)
         {
             builder.ToTable("workflow", "Beta");
-            builder.HasKey(x => x.Id).HasName("PK__workflow__3214EC07B70B4182").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__workflow__3214EC073FA607DC").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);

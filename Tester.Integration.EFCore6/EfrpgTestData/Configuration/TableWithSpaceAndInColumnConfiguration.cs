@@ -12,7 +12,7 @@ namespace V6EfrpgTest
         public void Configure(EntityTypeBuilder<TableWithSpaceAndInColumn> builder)
         {
             builder.ToTable("table with space and in columns", "dbo");
-            builder.HasKey(x => x.IdValue).HasName("PK__table wi__92CF061CF3030C0C").IsClustered();
+            builder.HasKey(x => x.IdValue).HasName("PK_TableWithSpaceAndInColumns").IsClustered();
 
             builder.Property(x => x.IdValue).HasColumnName(@"id value").HasColumnType("int").IsRequired().ValueGeneratedNever();
         }

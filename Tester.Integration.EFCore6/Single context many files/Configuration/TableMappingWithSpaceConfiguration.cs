@@ -11,7 +11,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         public void Configure(EntityTypeBuilder<TableMappingWithSpace> builder)
         {
             builder.ToTable("table mapping with space", "dbo");
-            builder.HasKey(x => new { x.Id, x.IdValue }).HasName("map_with_space").IsClustered();
+            builder.HasKey(x => new { x.Id, x.IdValue }).HasName("PK_TableMappingWithSpace").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.IdValue).HasColumnName(@"id value").HasColumnType("int").IsRequired().ValueGeneratedNever();

@@ -12,7 +12,7 @@ namespace Tester.Integration.EfCore3
         public void Configure(EntityTypeBuilder<TableWithSpaceInColumnOnly> builder)
         {
             builder.ToTable("TableWithSpaceInColumnOnly", "dbo");
-            builder.HasKey(x => x.IdValue).HasName("PK__TableWit__92CF061C03F02821").IsClustered();
+            builder.HasKey(x => x.IdValue).HasName("PK_TableWithSpaceInColumnOnly").IsClustered();
 
             builder.Property(x => x.IdValue).HasColumnName(@"id value").HasColumnType("int").IsRequired().ValueGeneratedNever();
         }

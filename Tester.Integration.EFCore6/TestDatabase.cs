@@ -220,8 +220,9 @@ namespace TestDatabaseStandard
         List<FFRS_DataFromDboAndFfrsReturnModel> FFRS_DataFromDboAndFfrs(out int procResult);
         Task<List<FFRS_DataFromDboAndFfrsReturnModel>> FFRS_DataFromDboAndFfrsAsync();
 
-        int FkTest_Hello();
-        // FkTest_HelloAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        List<FkTest_HelloReturnModel> FkTest_Hello();
+        List<FkTest_HelloReturnModel> FkTest_Hello(out int procResult);
+        Task<List<FkTest_HelloReturnModel>> FkTest_HelloAsync();
 
         List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId);
         List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId, out int procResult);
@@ -257,11 +258,13 @@ namespace TestDatabaseStandard
         int ProcTestDecimalOutputV3Default(out decimal? perfectNumber);
         // ProcTestDecimalOutputV3DefaultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        int SpatialTypesNoParams();
-        // SpatialTypesNoParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams();
+        List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams(out int procResult);
+        Task<List<SpatialTypesNoParamsReturnModel>> SpatialTypesNoParamsAsync();
 
-        int SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography);
-        // SpatialTypesWithParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography);
+        List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, out int procResult);
+        Task<List<SpatialTypesWithParamsReturnModel>> SpatialTypesWithParamsAsync(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography);
 
         // StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
         // Task<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsAsync(int? someVar); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
@@ -574,7 +577,10 @@ namespace TestDatabaseStandard
             modelBuilder.Entity<FFRS_CvDataReturnModel>().HasNoKey();
             modelBuilder.Entity<FFRS_DataFromDboReturnModel>().HasNoKey();
             modelBuilder.Entity<FFRS_DataFromDboAndFfrsReturnModel>().HasNoKey();
+            modelBuilder.Entity<FkTest_HelloReturnModel>().HasNoKey();
             modelBuilder.Entity<GetSmallDecimalTestReturnModel>().HasNoKey();
+            modelBuilder.Entity<SpatialTypesNoParamsReturnModel>().HasNoKey();
+            modelBuilder.Entity<SpatialTypesWithParamsReturnModel>().HasNoKey();
             modelBuilder.Entity<StpNoParamsTestReturnModel>().HasNoKey();
             modelBuilder.Entity<StpNullableParamsTestReturnModel>().HasNoKey();
             modelBuilder.Entity<StpTestReturnModel>().HasNoKey();
@@ -917,16 +923,33 @@ namespace TestDatabaseStandard
             return procResultData;
         }
 
-        public int FkTest_Hello()
+        public List<FkTest_HelloReturnModel> FkTest_Hello()
         {
-            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
-
-            Database.ExecuteSqlRaw("EXEC @procResult = [FkTest].[Hello] ", procResultParam);
-
-            return (int)procResultParam.Value;
+            int procResult;
+            return FkTest_Hello(out procResult);
         }
 
-        // FkTest_HelloAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public List<FkTest_HelloReturnModel> FkTest_Hello(out int procResult)
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [FkTest].[Hello]";
+            var procResultData = Set<FkTest_HelloReturnModel>()
+                .FromSqlRaw(sqlCommand, procResultParam)
+                .ToList();
+
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<FkTest_HelloReturnModel>> FkTest_HelloAsync()
+        {
+            const string sqlCommand = "EXEC [FkTest].[Hello]";
+            var procResultData = await Set<FkTest_HelloReturnModel>()
+                .FromSqlRaw(sqlCommand)
+                .ToListAsync();
+
+            return procResultData;
+        }
 
         public List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId)
         {
@@ -1162,18 +1185,41 @@ namespace TestDatabaseStandard
 
         // ProcTestDecimalOutputV3DefaultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int SpatialTypesNoParams()
+        public List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams()
         {
-            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
-
-            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[SpatialTypesNoParams] ", procResultParam);
-
-            return (int)procResultParam.Value;
+            int procResult;
+            return SpatialTypesNoParams(out procResult);
         }
 
-        // SpatialTypesNoParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams(out int procResult)
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [dbo].[SpatialTypesNoParams]";
+            var procResultData = Set<SpatialTypesNoParamsReturnModel>()
+                .FromSqlRaw(sqlCommand, procResultParam)
+                .ToList();
 
-        public int SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<SpatialTypesNoParamsReturnModel>> SpatialTypesNoParamsAsync()
+        {
+            const string sqlCommand = "EXEC [dbo].[SpatialTypesNoParams]";
+            var procResultData = await Set<SpatialTypesNoParamsReturnModel>()
+                .FromSqlRaw(sqlCommand)
+                .ToListAsync();
+
+            return procResultData;
+        }
+
+        public List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
+        {
+            int procResult;
+            return SpatialTypesWithParams(geometry, geography, out procResult);
+        }
+
+        public List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, out int procResult)
         {
             var geometryParam = new SqlParameter { ParameterName = "@geometry", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = geometry, Size = -1 };
             if (geometryParam.Value == null)
@@ -1184,13 +1230,32 @@ namespace TestDatabaseStandard
                 geographyParam.Value = DBNull.Value;
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [dbo].[SpatialTypesWithParams] @geometry, @geography";
+            var procResultData = Set<SpatialTypesWithParamsReturnModel>()
+                .FromSqlRaw(sqlCommand, geometryParam, geographyParam, procResultParam)
+                .ToList();
 
-            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[SpatialTypesWithParams] @geometry, @geography", geometryParam, geographyParam, procResultParam);
-
-            return (int)procResultParam.Value;
+            procResult = (int) procResultParam.Value;
+            return procResultData;
         }
 
-        // SpatialTypesWithParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public async Task<List<SpatialTypesWithParamsReturnModel>> SpatialTypesWithParamsAsync(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
+        {
+            var geometryParam = new SqlParameter { ParameterName = "@geometry", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = geometry, Size = -1 };
+            if (geometryParam.Value == null)
+                geometryParam.Value = DBNull.Value;
+
+            var geographyParam = new SqlParameter { ParameterName = "@geography", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = geography, Size = -1 };
+            if (geographyParam.Value == null)
+                geographyParam.Value = DBNull.Value;
+
+            const string sqlCommand = "EXEC [dbo].[SpatialTypesWithParams] @geometry, @geography";
+            var procResultData = await Set<SpatialTypesWithParamsReturnModel>()
+                .FromSqlRaw(sqlCommand, geometryParam, geographyParam)
+                .ToListAsync();
+
+            return procResultData;
+        }
 
         // public StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
@@ -2195,12 +2260,24 @@ namespace TestDatabaseStandard
             return Task.FromResult(FFRS_DataFromDboAndFfrs(out procResult));
         }
 
-        public int FkTest_Hello()
+        public DbSet<FkTest_HelloReturnModel> FkTest_HelloReturnModel { get; set; }
+        public List<FkTest_HelloReturnModel> FkTest_Hello()
         {
-            return 0;
+            int procResult;
+            return FkTest_Hello(out procResult);
         }
 
-        // FkTest_HelloAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public List<FkTest_HelloReturnModel> FkTest_Hello(out int procResult)
+        {
+            procResult = 0;
+            return new List<FkTest_HelloReturnModel>();
+        }
+
+        public Task<List<FkTest_HelloReturnModel>> FkTest_HelloAsync()
+        {
+            int procResult;
+            return Task.FromResult(FkTest_Hello(out procResult));
+        }
 
         public DbSet<GetSmallDecimalTestReturnModel> GetSmallDecimalTestReturnModel { get; set; }
         public List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId)
@@ -2301,19 +2378,43 @@ namespace TestDatabaseStandard
 
         // ProcTestDecimalOutputV3DefaultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int SpatialTypesNoParams()
+        public DbSet<SpatialTypesNoParamsReturnModel> SpatialTypesNoParamsReturnModel { get; set; }
+        public List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams()
         {
-            return 0;
+            int procResult;
+            return SpatialTypesNoParams(out procResult);
         }
 
-        // SpatialTypesNoParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
-
-        public int SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
+        public List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams(out int procResult)
         {
-            return 0;
+            procResult = 0;
+            return new List<SpatialTypesNoParamsReturnModel>();
         }
 
-        // SpatialTypesWithParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<List<SpatialTypesNoParamsReturnModel>> SpatialTypesNoParamsAsync()
+        {
+            int procResult;
+            return Task.FromResult(SpatialTypesNoParams(out procResult));
+        }
+
+        public DbSet<SpatialTypesWithParamsReturnModel> SpatialTypesWithParamsReturnModel { get; set; }
+        public List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
+        {
+            int procResult;
+            return SpatialTypesWithParams(geometry, geography, out procResult);
+        }
+
+        public List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, out int procResult)
+        {
+            procResult = 0;
+            return new List<SpatialTypesWithParamsReturnModel>();
+        }
+
+        public Task<List<SpatialTypesWithParamsReturnModel>> SpatialTypesWithParamsAsync(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
+        {
+            int procResult;
+            return Task.FromResult(SpatialTypesWithParams(geometry, geography, out procResult));
+        }
 
         public DbSet<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsReturnModel { get; set; }
         public StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar)
@@ -4031,17 +4132,7 @@ namespace TestDatabaseStandard
         /// <summary>
         /// Parent HasPrincipalKeyTestParent pointed by [HasPrincipalKeyTestChild].([A], [B]) (FK_HasPrincipalKey_AB)
         /// </summary>
-        public virtual HasPrincipalKeyTestParent HasPrincipalKeyTestParent_A { get; set; } // FK_HasPrincipalKey_AB
-
-        /// <summary>
-        /// Parent HasPrincipalKeyTestParent pointed by [HasPrincipalKeyTestChild].([C]) (FK_HasPrincipalKey_AC)
-        /// </summary>
-        public virtual HasPrincipalKeyTestParent HasPrincipalKeyTestParent_C { get; set; } // FK_HasPrincipalKey_AC
-
-        /// <summary>
-        /// Parent HasPrincipalKeyTestParent pointed by [HasPrincipalKeyTestChild].([D]) (FK_HasPrincipalKey_CD)
-        /// </summary>
-        public virtual HasPrincipalKeyTestParent HasPrincipalKeyTestParent_D { get; set; } // FK_HasPrincipalKey_CD
+        public virtual HasPrincipalKeyTestParent HasPrincipalKeyTestParent { get; set; } // FK_HasPrincipalKey_AB
     }
 
     // HasPrincipalKeyTestParent
@@ -4059,22 +4150,6 @@ namespace TestDatabaseStandard
         /// Parent (One-to-One) HasPrincipalKeyTestParent pointed by [HasPrincipalKeyTestChild].([A], [B]) (FK_HasPrincipalKey_AB)
         /// </summary>
         public virtual HasPrincipalKeyTestChild HasPrincipalKeyTestChild { get; set; } // HasPrincipalKeyTestChild.FK_HasPrincipalKey_AB
-
-        /// <summary>
-        /// Child HasPrincipalKeyTestChilds where [HasPrincipalKeyTestChild].[C] point to this entity (FK_HasPrincipalKey_AC)
-        /// </summary>
-        public virtual ICollection<HasPrincipalKeyTestChild> HasPrincipalKeyTestChilds_C { get; set; } // HasPrincipalKeyTestChild.FK_HasPrincipalKey_AC
-
-        /// <summary>
-        /// Child HasPrincipalKeyTestChilds where [HasPrincipalKeyTestChild].[D] point to this entity (FK_HasPrincipalKey_CD)
-        /// </summary>
-        public virtual ICollection<HasPrincipalKeyTestChild> HasPrincipalKeyTestChilds_D { get; set; } // HasPrincipalKeyTestChild.FK_HasPrincipalKey_CD
-
-        public HasPrincipalKeyTestParent()
-        {
-            HasPrincipalKeyTestChilds_C = new List<HasPrincipalKeyTestChild>();
-            HasPrincipalKeyTestChilds_D = new List<HasPrincipalKeyTestChild>();
-        }
     }
 
     // header
@@ -4342,6 +4417,10 @@ namespace TestDatabaseStandard
 
         public PropertyTypesToAdd()
         {
+            DefaultCheck = @"/****** Object:  Default [d_t_address_type_domain]    Script Date: 22/07/2015 14:28:05 ******/
+    CREATE DEFAULT [dbo].[d_t_address_type_domain] 
+    AS
+    'A'";
             Beta_Harish3485 = new List<Beta_Harish3485>();
         }
     }
@@ -4825,7 +4904,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<AbOrderLinesAb> builder)
         {
             builder.ToTable("AB_OrderLinesAB_", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__AB_Order__3214EC27B614AB11").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__AB_Order__3214EC278D56841E").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired();
@@ -4842,7 +4921,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<AbOrdersAb> builder)
         {
             builder.ToTable("AB_OrdersAB_", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__AB_Order__3214EC2720B0AB83").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__AB_Order__3214EC27569E771E").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Added).HasColumnName(@"added").HasColumnType("datetime").IsRequired();
@@ -4868,7 +4947,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<Alpha_Harish3485> builder)
         {
             builder.ToTable("Harish3485", "Alpha");
-            builder.HasKey(x => x.Id).HasName("PK__Harish34__3213E83F9B8F57DF").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_Alpha_Harish3485").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.HarishId).HasColumnName(@"harish_id").HasColumnType("int").IsRequired();
@@ -4884,7 +4963,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<Alpha_Workflow> builder)
         {
             builder.ToTable("workflow", "Alpha");
-            builder.HasKey(x => x.Id).HasName("PK__workflow__3214EC07B52BBB1C").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__workflow__3214EC075924B09B").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);
@@ -4911,7 +4990,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<AppUser> builder)
         {
             builder.ToTable("AppUser", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__AppUser__3214EC07AB4CB4F8").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__AppUser__3214EC07844327B5").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("bigint").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Name).HasColumnName(@"Name").HasColumnType("nvarchar(50)").IsRequired().HasMaxLength(50);
@@ -4942,7 +5021,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<BatchTest> builder)
         {
             builder.ToTable("BatchTest", "dbo");
-            builder.HasKey(x => x.Code).HasName("PK__BatchTes__357D4CF8418C2147").IsClustered();
+            builder.HasKey(x => x.Code).HasName("PK__BatchTes__357D4CF8AD5BF1D4").IsClustered();
 
             builder.Property(x => x.Code).HasColumnName(@"code").HasColumnType("nvarchar(8)").IsRequired().HasMaxLength(8).ValueGeneratedNever();
         }
@@ -4954,7 +5033,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<Beta_Harish3485> builder)
         {
             builder.ToTable("Harish3485", "Beta");
-            builder.HasKey(x => x.Id).HasName("PK__Harish34__3213E83FC13C283D").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_Beta_Harish3485").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.AnotherId).HasColumnName(@"another_id").HasColumnType("int").IsRequired();
@@ -4970,7 +5049,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<Beta_ToAlpha> builder)
         {
             builder.ToTable("ToAlpha", "Beta");
-            builder.HasKey(x => x.Id).HasName("PK__ToAlpha__3214EC0735ED2449").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__ToAlpha__3214EC072A8A9F31").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.AlphaId).HasColumnName(@"AlphaId").HasColumnType("int").IsRequired();
@@ -4986,7 +5065,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<Beta_Workflow> builder)
         {
             builder.ToTable("workflow", "Beta");
-            builder.HasKey(x => x.Id).HasName("PK__workflow__3214EC07B70B4182").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__workflow__3214EC073FA607DC").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);
@@ -4999,7 +5078,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<Bitfiddlerallcap> builder)
         {
             builder.ToTable("BITFIDDLERALLCAPS", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__BITFIDDL__3214EC07B6092EA3").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__BITFIDDL__3214EC07D45E5E4C").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
         }
@@ -5011,7 +5090,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<BitFiddlerCategoRy> builder)
         {
             builder.ToTable("BitFiddlerCATEGORIES", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__BitFiddl__3214EC07598B063E").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__BitFiddl__3214EC07D6C44E33").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
         }
@@ -5023,7 +5102,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<BitFiddlerCurrenCy> builder)
         {
             builder.ToTable("BitFiddlerCURRENCIES", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__BitFiddl__3214EC07D3314BE8").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__BitFiddl__3214EC079C39E480").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
         }
@@ -5181,7 +5260,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<Car> builder)
         {
             builder.ToTable("Car", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__Car__3214EC07FEA8B762").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__Car__3214EC07B2FC5F30").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.PrimaryColourId).HasColumnName(@"PrimaryColourId").HasColumnType("int").IsRequired();
@@ -5200,7 +5279,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<CarToColour> builder)
         {
             builder.ToTable("CarToColour", "dbo");
-            builder.HasKey(x => new { x.CarId, x.ColourId }).HasName("PK__CarToCol__8C02E66BAFD9CF8C").IsClustered();
+            builder.HasKey(x => new { x.CarId, x.ColourId }).HasName("PK__CarToCol__8C02E66B5519A049").IsClustered();
 
             builder.Property(x => x.CarId).HasColumnName(@"CarId").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.ColourId).HasColumnName(@"ColourId").HasColumnType("int").IsRequired().ValueGeneratedNever();
@@ -5217,7 +5296,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<ClientCreationState> builder)
         {
             builder.ToTable("ClientCreationState", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__ClientCr__3213E83F2557E8EF").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_ClientCreationState").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("uniqueidentifier").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.WebhookSetup).HasColumnName(@"WebhookSetup").HasColumnType("bit").IsRequired();
@@ -5232,7 +5311,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<CmsFile> builder)
         {
             builder.ToTable("CMS_File", "dbo");
-            builder.HasKey(x => x.FileId).HasName("PK_CMS_Form").IsClustered();
+            builder.HasKey(x => x.FileId).HasName("PK_CMS_File").IsClustered();
 
             builder.Property(x => x.FileId).HasColumnName(@"FileId").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.FileName).HasColumnName(@"FileName").HasColumnType("nvarchar(100)").IsRequired().HasMaxLength(100);
@@ -5347,7 +5426,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<Colour> builder)
         {
             builder.ToTable("Colour", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__Colour__3214EC077BE5EFA2").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__Colour__3214EC07E0D8741E").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.Name).HasColumnName(@"Name").HasColumnType("varchar(255)").IsRequired().IsUnicode(false).HasMaxLength(255);
@@ -5360,7 +5439,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<ColumnNameAndType> builder)
         {
             builder.ToTable("ColumnNameAndTypes", "dbo");
-            builder.HasKey(x => x.C36).HasName("PK__ColumnNa__3BD01849BF56C074").IsClustered();
+            builder.HasKey(x => x.C36).HasName("PK_ColumnNameAndTypes").IsClustered();
 
             builder.Property(x => x.C36).HasColumnName(@"$").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.C37).HasColumnName(@"%").HasColumnType("int").IsRequired(false);
@@ -5478,7 +5557,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<DefaultCheckForNull> builder)
         {
             builder.ToTable("DefaultCheckForNull", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__DefaultC__3214EC071DDAF14D").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__DefaultC__3214EC075515EFE8").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.DescUppercase).HasColumnName(@"DescUppercase").HasColumnType("varchar(5)").IsRequired(false).IsUnicode(false).HasMaxLength(5);
@@ -5495,7 +5574,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<DsOpe> builder)
         {
             builder.ToTable("DSOpe", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__DSOpe__3214EC27D822B5B7").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__DSOpe__3214EC27A91BD3FC").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.DecimalDefault).HasColumnName(@"decimal_default").HasColumnType("decimal(15,2)").HasPrecision(15,2).IsRequired();
@@ -5576,7 +5655,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<FkTest_SmallDecimalTestAttribute> builder)
         {
             builder.ToTable("SmallDecimalTestAttribute", "FkTest");
-            builder.HasKey(x => x.FkId).HasName("PK__SmallDec__354CCD0B503AA3A8").IsClustered();
+            builder.HasKey(x => x.FkId).HasName("PK__SmallDec__354CCD0B78FE841F").IsClustered();
 
             builder.Property(x => x.FkId).HasColumnName(@"FkID").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
@@ -5592,7 +5671,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<Footer> builder)
         {
             builder.ToTable("footer", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__footer__3214EC2748C10312").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__footer__3214EC2751389C57").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.OtherId).HasColumnName(@"otherID").HasColumnType("int").IsRequired();
@@ -5609,7 +5688,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<ForeignKeyIsNotEnforced> builder)
         {
             builder.ToTable("ForeignKeyIsNotEnforced", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__ForeignK__3213E83FEED8F674").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__ForeignK__3213E83FE8A3AF67").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.NullValue).HasColumnName(@"null_value").HasColumnType("int").IsRequired(false);
@@ -5626,7 +5705,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<ForeignKeyIsNotEnforcedItem> builder)
         {
             builder.ToTable("ForeignKeyIsNotEnforcedItem", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__ForeignK__3213E83F94CA2C7E").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__ForeignK__3213E83F83599812").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.NullValue).HasColumnName(@"null_value").HasColumnType("int").IsRequired(false);
@@ -5656,9 +5735,7 @@ namespace TestDatabaseStandard
             builder.Property(x => x.D).HasColumnName(@"D").HasColumnType("int").IsRequired(false);
 
             // Foreign keys
-            builder.HasOne(a => a.HasPrincipalKeyTestParent_A).WithOne(b => b.HasPrincipalKeyTestChild).HasPrincipalKey<HasPrincipalKeyTestParent>(p => new { p.Aa, p.Bb }).HasForeignKey<HasPrincipalKeyTestChild>(c => new { c.A, c.B }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_HasPrincipalKey_AB");
-            builder.HasOne(a => a.HasPrincipalKeyTestParent_C).WithMany(b => b.HasPrincipalKeyTestChilds_C).HasPrincipalKey(p => p.Cc).HasForeignKey(c => c.C).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_HasPrincipalKey_AC");
-            builder.HasOne(a => a.HasPrincipalKeyTestParent_D).WithMany(b => b.HasPrincipalKeyTestChilds_D).HasPrincipalKey(p => p.Dd).HasForeignKey(c => c.D).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_HasPrincipalKey_CD");
+            builder.HasOne(a => a.HasPrincipalKeyTestParent).WithOne(b => b.HasPrincipalKeyTestChild).HasPrincipalKey<HasPrincipalKeyTestParent>(p => new { p.Aa, p.Bb }).HasForeignKey<HasPrincipalKeyTestChild>(c => new { c.A, c.B }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_HasPrincipalKey_AB");
         }
     }
 
@@ -5688,7 +5765,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<Header> builder)
         {
             builder.ToTable("header", "dbo");
-            builder.HasKey(x => new { x.Id, x.AnotherId }).HasName("PK__header__FAB049E70F942ACD").IsClustered();
+            builder.HasKey(x => new { x.Id, x.AnotherId }).HasName("PK__header__FAB049E780EDEC01").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.AnotherId).HasColumnName(@"anotherID").HasColumnType("int").IsRequired().ValueGeneratedNever();
@@ -5702,7 +5779,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<HierarchyTest> builder)
         {
             builder.ToTable("hierarchy_test", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__hierarch__3214EC2732694C3C").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_hierarchy_test").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Hid).HasColumnName(@"hid").HasColumnType("hierarchyid").IsRequired();
@@ -5715,7 +5792,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<Issue47_Role> builder)
         {
             builder.ToTable("Role", "Issue47");
-            builder.HasKey(x => x.RoleId).HasName("PK__Role__8AFACE1A424FE2CB").IsClustered();
+            builder.HasKey(x => x.RoleId).HasName("PK__Role__8AFACE1A9BF4E70F").IsClustered();
 
             builder.Property(x => x.RoleId).HasColumnName(@"RoleId").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Role).HasColumnName(@"Role").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);
@@ -5728,7 +5805,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<Issue47_User> builder)
         {
             builder.ToTable("Users", "Issue47");
-            builder.HasKey(x => x.UserId).HasName("PK__Users__1788CC4C79258B9F").IsClustered();
+            builder.HasKey(x => x.UserId).HasName("PK__Users__1788CC4CB6D7F6B9").IsClustered();
 
             builder.Property(x => x.UserId).HasColumnName(@"UserId").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Name).HasColumnName(@"Name").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);
@@ -5741,7 +5818,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<Issue47_UserRole> builder)
         {
             builder.ToTable("UserRoles", "Issue47");
-            builder.HasKey(x => x.UserRoleId).HasName("PK__UserRole__3D978A3557162F21").IsClustered();
+            builder.HasKey(x => x.UserRoleId).HasName("PK__UserRole__3D978A35C8085059").IsClustered();
 
             builder.Property(x => x.UserRoleId).HasColumnName(@"UserRoleId").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.UserId).HasColumnName(@"UserId").HasColumnType("int").IsRequired();
@@ -5827,7 +5904,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<PeriodTestTable> builder)
         {
             builder.ToTable("PeriodTestTable", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__PeriodTe__3213E83F9E7D892C").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__PeriodTe__3213E83FF8B067C9").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.Joe46Bloggs).HasColumnName(@"joe.bloggs").HasColumnType("int").IsRequired(false);
@@ -5840,7 +5917,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<Person> builder)
         {
             builder.ToTable("Person", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__Person__3214EC071ABE40C8").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_Person").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Name).HasColumnName(@"Name").HasColumnType("varchar(50)").IsRequired().IsUnicode(false).HasMaxLength(50);
@@ -5853,7 +5930,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<PersonPost> builder)
         {
             builder.ToTable("PersonPosts", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__PersonPo__3214EC07274DD926").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_PersonPosts").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Title).HasColumnName(@"Title").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
@@ -5873,7 +5950,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<PkOrdinalTest> builder)
         {
             builder.ToTable("pk_ordinal_test", "dbo");
-            builder.HasKey(x => new { x.C3, x.C1 }).HasName("PK__pk_ordin__1135D3B4D2F6F169").IsClustered();
+            builder.HasKey(x => new { x.C3, x.C1 }).HasName("PK__pk_ordin__1135D3B469FFB6F9").IsClustered();
 
             builder.Property(x => x.C1).HasColumnName(@"C1").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.C2).HasColumnName(@"C2").HasColumnType("int").IsRequired();
@@ -5887,7 +5964,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<PropertyTypesToAdd> builder)
         {
             builder.ToTable("PropertyTypesToAdd", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__Property__3213E83F7CBC6D80").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__Property__3213E83F2305D53A").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.DtDefault).HasColumnName(@"dt_default").HasColumnType("datetime2").IsRequired(false);
@@ -5902,7 +5979,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<SequenceTest> builder)
         {
             builder.ToTable("SequenceTest", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__Sequence__3214EC077AE382DF").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_SequenceTest").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountBy1]");
             builder.Property(x => x.CntByBigInt).HasColumnName(@"CntByBigInt").HasColumnType("bigint").IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountByBigInt]");
@@ -5919,7 +5996,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<SmallDecimalTest> builder)
         {
             builder.ToTable("SmallDecimalTest", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__SmallDec__3213E83FE4C159DA").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__SmallDec__3213E83FC5DFEF71").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.KoeffVed).HasColumnName(@"KoeffVed").HasColumnType("decimal(4,4)").HasPrecision(4,4).IsRequired(false);
@@ -6052,7 +6129,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<TableMappingWithSpace> builder)
         {
             builder.ToTable("table mapping with space", "dbo");
-            builder.HasKey(x => new { x.Id, x.IdValue }).HasName("map_with_space").IsClustered();
+            builder.HasKey(x => new { x.Id, x.IdValue }).HasName("PK_TableMappingWithSpace").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.IdValue).HasColumnName(@"id value").HasColumnType("int").IsRequired().ValueGeneratedNever();
@@ -6069,7 +6146,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<TableWithDuplicateColumnName> builder)
         {
             builder.ToTable("table with duplicate column names", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__table wi__3213E83F6A018E91").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_TableWithDuplicateColumnNames").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.UserId1).HasColumnName(@"user_id").HasColumnType("int").IsRequired();
@@ -6086,7 +6163,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<TableWithSpace> builder)
         {
             builder.ToTable("table with space", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__table wi__3213E83F9E008E27").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_TableWithSpace").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
         }
@@ -6098,7 +6175,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<TableWithSpaceAndInColumn> builder)
         {
             builder.ToTable("table with space and in columns", "dbo");
-            builder.HasKey(x => x.IdValue).HasName("PK__table wi__92CF061CF3030C0C").IsClustered();
+            builder.HasKey(x => x.IdValue).HasName("PK_TableWithSpaceAndInColumns").IsClustered();
 
             builder.Property(x => x.IdValue).HasColumnName(@"id value").HasColumnType("int").IsRequired().ValueGeneratedNever();
         }
@@ -6110,7 +6187,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<TableWithSpaceInColumnOnly> builder)
         {
             builder.ToTable("TableWithSpaceInColumnOnly", "dbo");
-            builder.HasKey(x => x.IdValue).HasName("PK__TableWit__92CF061C03F02821").IsClustered();
+            builder.HasKey(x => x.IdValue).HasName("PK_TableWithSpaceInColumnOnly").IsClustered();
 
             builder.Property(x => x.IdValue).HasColumnName(@"id value").HasColumnType("int").IsRequired().ValueGeneratedNever();
         }
@@ -6122,7 +6199,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<TadeuszSobol> builder)
         {
             builder.ToTable("TadeuszSobol", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__TadeuszS__3214EC07F06CA69B").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__TadeuszS__3214EC07EFEC9D70").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(max)").IsRequired(false).IsUnicode(false);
@@ -6149,7 +6226,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<TblOrder> builder)
         {
             builder.ToTable("tblOrders", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__tblOrder__3214EC277AE9D37B").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__tblOrder__3214EC276F4A5FCC").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Added).HasColumnName(@"added").HasColumnType("datetime").IsRequired();
@@ -6162,7 +6239,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<TblOrderError> builder)
         {
             builder.ToTable("tblOrderErrors", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__tblOrder__3214EC2726D113C8").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__tblOrder__3214EC270D596EE7").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Error).HasColumnName(@"error").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);
@@ -6175,7 +6252,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<TblOrderErrorsAb> builder)
         {
             builder.ToTable("tblOrderErrorsAB_", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__tblOrder__3214EC27B3F1A314").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__tblOrder__3214EC27D9C8BCF0").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Error).HasColumnName(@"error").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);
@@ -6188,7 +6265,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<TblOrderLine> builder)
         {
             builder.ToTable("tblOrderLines", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__tblOrder__3214EC273ECD394E").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__tblOrder__3214EC27CB4CFC88").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired();
@@ -6223,7 +6300,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<Token> builder)
         {
             builder.ToTable("Token", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__Token__3214EC07CFA421B0").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__Token__3214EC073B1D3B7A").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("uniqueidentifier").IsRequired().ValueGeneratedOnAdd();
             builder.Property(x => x.Enabled).HasColumnName(@"Enabled").HasColumnType("bit").IsRequired();
@@ -6236,7 +6313,7 @@ namespace TestDatabaseStandard
         public void Configure(EntityTypeBuilder<User> builder)
         {
             builder.ToTable("User", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK_Contacts").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_User").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.ExternalUserId).HasColumnName(@"ExternalUserID").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);
@@ -6441,10 +6518,31 @@ namespace TestDatabaseStandard
         public string CarMake { get; set; }
     }
 
+    public class FkTest_HelloReturnModel
+    {
+        public int? @static { get; set; }
+        public int? @readonly { get; set; }
+    }
+
     public class GetSmallDecimalTestReturnModel
     {
         public int id { get; set; }
         public decimal? KoeffVed { get; set; }
+    }
+
+    public class SpatialTypesNoParamsReturnModel
+    {
+        public int Dollar { get; set; }
+        public DateTime someDate { get; set; }
+        public NetTopologySuite.Geometries.Point GeographyType { get; set; }
+        public NetTopologySuite.Geometries.Geometry GeometryType { get; set; }
+    }
+
+    public class SpatialTypesWithParamsReturnModel
+    {
+        public int Dollar { get; set; }
+        public NetTopologySuite.Geometries.Point GeographyType { get; set; }
+        public NetTopologySuite.Geometries.Geometry GeometryType { get; set; }
     }
 
     public class StpMultipleIdenticalResultsReturnModel
@@ -6520,8 +6618,6 @@ namespace TestDatabaseStandard
             public int Id { get; set; }
             public int PrimaryColourId { get; set; }
             public string CarMake { get; set; }
-            public int? computed_column { get; set; }
-            public int? computed_column_persisted { get; set; }
         }
         public List<ResultSetModel2> ResultSet2;
         public class ResultSetModel3

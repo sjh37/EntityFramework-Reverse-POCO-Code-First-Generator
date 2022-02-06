@@ -11,7 +11,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         public void Configure(EntityTypeBuilder<Beta_ToAlpha> builder)
         {
             builder.ToTable("ToAlpha", "Beta");
-            builder.HasKey(x => x.Id).HasName("PK__ToAlpha__3214EC0735ED2449").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__ToAlpha__3214EC072A8A9F31").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.AlphaId).HasColumnName(@"AlphaId").HasColumnType("int").IsRequired();

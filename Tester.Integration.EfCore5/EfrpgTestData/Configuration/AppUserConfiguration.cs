@@ -12,7 +12,7 @@ namespace V5EfrpgTest
         public void Configure(EntityTypeBuilder<AppUser> builder)
         {
             builder.ToTable("AppUser", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__AppUser__3214EC07AB4CB4F8").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__AppUser__3214EC07844327B5").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("bigint").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Name).HasColumnName(@"Name").HasColumnType("nvarchar(50)").IsRequired().HasMaxLength(50);

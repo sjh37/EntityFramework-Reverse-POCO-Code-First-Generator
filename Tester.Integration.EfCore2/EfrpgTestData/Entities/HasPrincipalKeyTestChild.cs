@@ -22,17 +22,7 @@ namespace Tester.Integration.EfCore2
         /// <summary>
         /// Parent HasPrincipalKeyTestParent pointed by [HasPrincipalKeyTestChild].([A], [B]) (FK_HasPrincipalKey_AB)
         /// </summary>
-        public virtual HasPrincipalKeyTestParent HasPrincipalKeyTestParent_A { get; set; } // FK_HasPrincipalKey_AB
-
-        /// <summary>
-        /// Parent HasPrincipalKeyTestParent pointed by [HasPrincipalKeyTestChild].([C]) (FK_HasPrincipalKey_AC)
-        /// </summary>
-        public virtual HasPrincipalKeyTestParent HasPrincipalKeyTestParent_C { get; set; } // FK_HasPrincipalKey_AC
-
-        /// <summary>
-        /// Parent HasPrincipalKeyTestParent pointed by [HasPrincipalKeyTestChild].([D]) (FK_HasPrincipalKey_CD)
-        /// </summary>
-        public virtual HasPrincipalKeyTestParent HasPrincipalKeyTestParent_D { get; set; } // FK_HasPrincipalKey_CD
+        public virtual HasPrincipalKeyTestParent HasPrincipalKeyTestParent { get; set; } // FK_HasPrincipalKey_AB
     }
 
 }

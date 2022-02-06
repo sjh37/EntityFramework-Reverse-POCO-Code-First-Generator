@@ -18,8 +18,6 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             public int Id { get; set; }
             public int PrimaryColourId { get; set; }
             public string CarMake { get; set; }
-            public int? computed_column { get; set; }
-            public int? computed_column_persisted { get; set; }
         }
         public List<ResultSetModel2> ResultSet2;
         public class ResultSetModel3

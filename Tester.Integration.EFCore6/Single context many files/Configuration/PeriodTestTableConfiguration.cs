@@ -11,7 +11,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         public void Configure(EntityTypeBuilder<PeriodTestTable> builder)
         {
             builder.ToTable("PeriodTestTable", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__PeriodTe__3213E83F9E7D892C").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__PeriodTe__3213E83FF8B067C9").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.Joe46Bloggs).HasColumnName(@"joe.bloggs").HasColumnType("int").IsRequired(false);

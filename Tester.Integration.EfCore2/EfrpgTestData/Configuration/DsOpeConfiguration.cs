@@ -12,7 +12,7 @@ namespace Tester.Integration.EfCore2
         public void Configure(EntityTypeBuilder<DsOpe> builder)
         {
             builder.ToTable("DSOpe", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__DSOpe__3214EC27D822B5B7").ForSqlServerIsClustered();
+            builder.HasKey(x => x.Id).HasName("PK__DSOpe__3214EC27A91BD3FC").ForSqlServerIsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.DecimalDefault).HasColumnName(@"decimal_default").HasColumnType("decimal(15,2)").IsRequired();
