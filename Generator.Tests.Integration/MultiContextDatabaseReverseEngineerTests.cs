@@ -42,15 +42,18 @@ namespace Generator.Tests.Integration
 
         public void SetupPlugin(string plugin)
         {
+            if (string.IsNullOrEmpty(plugin))
+            {
+                Settings.MultiContextSettingsPlugin = null;
+                return;
+            }
+
             var codeBase = Assembly.GetExecutingAssembly().CodeBase;
             var uri      = new UriBuilder(codeBase);
             var path     = Uri.UnescapeDataString(uri.Path);
-            var fullPath = Path.GetFullPath(path);
+            var fullPath = Path.GetFullPath(path).Replace("Generator.Tests.Integration", "Generator.Tests.Unit");
 
-            if (string.IsNullOrEmpty(plugin))
-                Settings.MultiContextSettingsPlugin = null;
-            else
-                Settings.MultiContextSettingsPlugin = fullPath + ",Generator.Tests.Unit." + plugin;
+            Settings.MultiContextSettingsPlugin = fullPath + ",Generator.Tests.Unit." + plugin;
         }
 
         public void Run(string filename, Type fileManagerType, string subFolder)
