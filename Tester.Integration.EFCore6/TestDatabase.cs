@@ -449,7 +449,7 @@ namespace TestDatabaseStandard
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True", x => x.UseNetTopologySuite());
+                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True", x => x.UseNetTopologySuite().UseHierarchyId());
             }
         }
 

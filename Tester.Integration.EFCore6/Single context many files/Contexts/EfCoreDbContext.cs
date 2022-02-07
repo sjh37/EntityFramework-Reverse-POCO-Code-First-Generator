@@ -134,7 +134,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         {
             if (!optionsBuilder.IsConfigured && _configuration != null)
             {
-                optionsBuilder.UseSqlServer(_configuration.GetConnectionString(@"EfCoreDatabase"), x => x.UseNetTopologySuite());
+                optionsBuilder.UseSqlServer(_configuration.GetConnectionString(@"EfCoreDatabase"), x => x.UseNetTopologySuite().UseHierarchyId());
             }
         }
 

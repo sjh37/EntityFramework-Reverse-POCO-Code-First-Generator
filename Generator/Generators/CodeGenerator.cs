@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security;
+using System.Text;
 using Efrpg.FileManagement;
 using Efrpg.Filtering;
 using Efrpg.TemplateModels;
@@ -277,6 +278,7 @@ namespace Efrpg.Generators
 
             var indexes = new List<string>();
             var hasSpatialTypes = false;
+            var hasHierarchyIdType = false;
             foreach (var table in _tables)
             {
                 var columns = table.Table.Columns
@@ -286,6 +288,9 @@ namespace Efrpg.Generators
 
                 if (!Settings.DisableGeographyTypes && !hasSpatialTypes)
                     hasSpatialTypes = columns.Any(x => x.IsSpatial);
+
+                if (!hasHierarchyIdType && columns.Any(x => x.SqlPropertyType.Equals("hierarchyid", StringComparison.InvariantCultureIgnoreCase)))
+                    hasHierarchyIdType = true;
 
                 indexes.AddRange(columns
                     .Select(_generator.IndexModelBuilder)
@@ -305,7 +310,7 @@ namespace Efrpg.Generators
                 ConfigurationClassName                 = Settings.ConfigurationClassName,
                 ConnectionString                       = Settings.ConnectionString,
                 ConnectionStringName                   = Settings.ConnectionStringName,
-                ConnectionStringActions                = hasSpatialTypes && Settings.TemplateType != TemplateType.Ef6 ? ", x => x.UseNetTopologySuite()" : "",
+                ConnectionStringActions                = GetConnectionStringActions(hasSpatialTypes, hasHierarchyIdType),
                 contextInterface                       = string.IsNullOrWhiteSpace(Settings.DbContextInterfaceName) ? "" : ", " + Settings.DbContextInterfaceName,
                 setInitializer                         = string.Format("<{0}>(null);", Settings.DbContextName),
                 DbContextClassIsPartial                = Settings.DbContextClassIsPartial(),
@@ -344,6 +349,28 @@ namespace Efrpg.Generators
             co.AddCode(Template.Transform(_template.DatabaseContext(), data));
 
             return co;
+        }
+
+        private static string GetConnectionStringActions(bool hasSpatialTypes, bool hasHierarchyIdType)
+        {
+            switch (Settings.TemplateType)
+            {
+                case TemplateType.Ef6:
+                    return string.Empty;
+                
+                case TemplateType.EfCore2:
+                case TemplateType.EfCore3:
+                    hasHierarchyIdType = false;
+                    break;
+            }
+
+            if (!hasSpatialTypes && !hasHierarchyIdType)
+                return string.Empty;
+
+            if (hasSpatialTypes && hasHierarchyIdType)
+                return ", x => x.UseNetTopologySuite().UseHierarchyId()";
+
+            return hasSpatialTypes ? ", x => x.UseNetTopologySuite()" : ", x => x.UseHierarchyId()";
         }
 
         public CodeOutput GenerateFakeContext()
