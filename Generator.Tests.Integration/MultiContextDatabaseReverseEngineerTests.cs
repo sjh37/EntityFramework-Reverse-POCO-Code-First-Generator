@@ -1,21 +1,21 @@
-﻿namespace Generator.Tests.Integration
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.IO;
-    using System.Linq;
-    using System.Reflection;
-    using Efrpg;
-    using Efrpg.FileManagement;
-    using Efrpg.Filtering;
-    using Efrpg.Generators;
-    using Efrpg.Pluralization;
-    using Efrpg.Readers;
-    using Efrpg.Templates;
-    using Generator.Tests.Common;
-    using NUnit.Framework;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using Efrpg;
+using Efrpg.FileManagement;
+using Efrpg.Filtering;
+using Efrpg.Generators;
+using Efrpg.Pluralization;
+using Efrpg.Readers;
+using Efrpg.Templates;
+using NUnit.Framework;
+using Generator.Tests.Common;
 
+namespace Generator.Tests.Integration
+{
     [TestFixture, NonParallelizable]
     [Category(Constants.Integration)]
     [Category(Constants.DbType.SqlServer)]
@@ -77,6 +77,7 @@
                 var plugin = (IMultiContextSettingsPlugin) AssemblyHelper.LoadPlugin(Settings.MultiContextSettingsPlugin);
                 multiDbSettings = plugin.ReadSettings();
             }
+            Assert.IsNotNull(multiDbSettings);
 
             var filters = generator.FilterList.GetFilters();
             Assert.IsNotNull(filters);
