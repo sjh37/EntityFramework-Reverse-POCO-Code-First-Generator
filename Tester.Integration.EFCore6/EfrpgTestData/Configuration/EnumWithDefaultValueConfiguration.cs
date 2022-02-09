@@ -12,7 +12,7 @@ namespace V6EfrpgTest
         public void Configure(EntityTypeBuilder<EnumWithDefaultValue> builder)
         {
             builder.ToTable("EnumWithDefaultValue", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__EnumWith__3214EC07972973C3").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_EnumWithDefaultValue").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.SomeEnum).HasColumnName(@"SomeEnum").HasColumnType("int").IsRequired();

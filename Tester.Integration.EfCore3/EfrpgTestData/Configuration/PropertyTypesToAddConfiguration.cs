@@ -12,7 +12,7 @@ namespace Tester.Integration.EfCore3
         public void Configure(EntityTypeBuilder<PropertyTypesToAdd> builder)
         {
             builder.ToTable("PropertyTypesToAdd", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__Property__3213E83F2305D53A").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_PropertyTypesToAdd").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.DtDefault).HasColumnName(@"dt_default").HasColumnType("datetime2").IsRequired(false);

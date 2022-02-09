@@ -651,33 +651,39 @@ GO
 USE EfrpgTest
 GO
 
-
+-- DROP TABLE BatchTest
 CREATE TABLE BatchTest
 (
-	code NVARCHAR(8) NOT NULL PRIMARY KEY
+	code NVARCHAR(8) NOT NULL,
+	CONSTRAINT PK_BatchTest PRIMARY KEY CLUSTERED (code)
 );
 GO
 
 -- Table contains a period
+-- DROP TABLE [Period.Table]
 CREATE TABLE [Period.Table]
 (
-	id INT NOT NULL PRIMARY key,
+	id INT NOT NULL,
 	[joe.bloggs] INT null, -- Column contains a period
+	CONSTRAINT PK_Period_Table PRIMARY KEY CLUSTERED (Id)
 );
 GO
 -- Table contains a period
+-- DROP TABLE [PeriodTestTable]
 CREATE TABLE [PeriodTestTable]
 (
-	id INT NOT NULL PRIMARY key,
+	id INT NOT NULL,
 	[joe.bloggs] INT null, -- Column contains a period
+	CONSTRAINT PK_PeriodTestTable PRIMARY KEY (id)
 );
 GO
 
 -- DROP TABLE SmallDecimalTest
 CREATE TABLE SmallDecimalTest
 (
-	id INT NOT NULL PRIMARY key,
-	KoeffVed DECIMAL(4,4) NULL DEFAULT (0.5)
+	id INT NOT NULL,
+	KoeffVed DECIMAL(4,4) NULL DEFAULT (0.5),
+	CONSTRAINT PK_SmallDecimalTest PRIMARY KEY (id)
 )
 GO
 
@@ -690,10 +696,11 @@ GO
 -- DROP TABLE PropertyTypesToAdd
 CREATE TABLE PropertyTypesToAdd
 (
-	id INT NOT NULL PRIMARY key,
+	id INT NOT NULL,
 	dt_default DATETIME2 NULL,
 	dt7 DATETIME2(7) NULL,
-    defaultCheck varchar(10) NULL
+    defaultCheck varchar(10) NULL,
+	CONSTRAINT PK_PropertyTypesToAdd PRIMARY KEY (id)
 )
 GO
 sp_bindefault '[dbo].[d_t_address_type_domain]', 'PropertyTypesToAdd.defaultCheck';
@@ -701,10 +708,12 @@ GO
 
 CREATE SCHEMA FkTest
 GO
+-- DROP TABLE FkTest.SmallDecimalTestAttribute
 CREATE TABLE FkTest.SmallDecimalTestAttribute
 (
-	FkID INT NOT NULL PRIMARY key,
-	[description] varchar(20) NOT null
+	FkID INT NOT NULL,
+	[description] varchar(20) NOT NULL,
+    CONSTRAINT PK_FkTest_SmallDecimalTestAttribute PRIMARY KEY (FkID)
 )
 GO
 
@@ -726,10 +735,12 @@ AS
 	SELECT  FkID,
 	        description FROM FkTest.SmallDecimalTestAttribute
 GO
+-- DROP TABLE [table.with.multiple.periods]
 CREATE TABLE [table.with.multiple.periods]
 (
-    id INT NOT NULL PRIMARY KEY,
-    [description] varchar(20) NOT null
+    id INT NOT NULL,
+    [description] varchar(20) NOT NULL,
+	CONSTRAINT PK_table_with_multiple_periods PRIMARY KEY (id)
 )
 GO
 
@@ -1119,6 +1130,8 @@ GO
 
 -- Harish3485. Duplicate foreign key names "in different schemas" cause problems
 -- Running transformation: Failed to read database schema - Object reference not set to an instance of an object.
+--DROP TABLE Beta.Harish3485
+--DROP TABLE Alpha.Harish3485
 CREATE TABLE Alpha.Harish3485 ( id int NOT NULL IDENTITY(1,1), harish_id INT NOT NULL )
 GO
 CREATE TABLE Beta.Harish3485 ( id int NOT NULL IDENTITY(1,1), another_id INT NOT NULL )
@@ -1247,12 +1260,30 @@ GO
 
 
 -- from dyardyGIT
-CREATE TABLE Alpha.workflow ( [Id] int NOT NULL IDENTITY(1,1) PRIMARY KEY, [Description] VARCHAR(10) NULL )
+-- DROP TABLE Beta.workflow
+-- DROP TABLE Beta.ToAlpha
+-- DROP TABLE Alpha.workflow
+CREATE TABLE Alpha.workflow
+(
+    [Id] INT NOT NULL IDENTITY(1, 1),
+    [Description] VARCHAR(10) NULL,
+	CONSTRAINT PK_alpha_workflow PRIMARY KEY (Id)
+);
 GO
-CREATE TABLE Beta.workflow  ( [Id] int NOT NULL IDENTITY(1,1) PRIMARY KEY, [Description] VARCHAR(10) NULL )
+CREATE TABLE Beta.workflow
+(
+    [Id] INT NOT NULL IDENTITY(1, 1),
+    [Description] VARCHAR(10) NULL
+	CONSTRAINT PK_beta_workflow PRIMARY KEY (Id)
+);
 GO
 -- m woffenden - filter out schema, but FK's are not filtered out.
-CREATE TABLE Beta.ToAlpha  ( [Id] int NOT NULL IDENTITY(1,1) PRIMARY KEY, AlphaId INT NOT NULL )
+CREATE TABLE Beta.ToAlpha
+(
+    [Id] INT NOT NULL IDENTITY(1, 1),
+    AlphaId INT NOT NULL,
+	CONSTRAINT PK_beta_ToAlpha PRIMARY KEY (Id)
+);
 GO
 ALTER TABLE Beta.ToAlpha ADD CONSTRAINT BetaToAlpha_AlphaWorkflow FOREIGN KEY (AlphaId) REFERENCES [Alpha].[Workflow] ([Id])
 GO
@@ -1308,12 +1339,14 @@ GO
 
 
 -- #93 TadeuszSobol
+-- DROP TABLE TadeuszSobol
 CREATE TABLE TadeuszSobol
 ( 
-	[Id] int NOT NULL IDENTITY(1,1) PRIMARY KEY, 
+	[Id] int NOT NULL IDENTITY(1,1), 
 	[Description] VARCHAR(MAX) NULL, 
 	[Notes] NVARCHAR(MAX) NULL, 
-	[Name] VARCHAR(10) null 
+	[Name] VARCHAR(10) NULL,
+	CONSTRAINT PK_TadeuszSobol PRIMARY KEY (Id)
 )
 GO
 
@@ -1365,11 +1398,30 @@ GO
 -- #47 v2.19.3 issue with many to many generation
 CREATE SCHEMA Issue47
 GO
-CREATE TABLE Issue47.Users ( UserId int NOT NULL IDENTITY(1,1) PRIMARY KEY, Name VARCHAR(10) NULL )
+--DROP TABLE Issue47.UserRoles
+--DROP TABLE Issue47.[Role]
+--DROP TABLE Issue47.Users
+CREATE TABLE Issue47.Users
+(
+    UserId INT NOT NULL IDENTITY(1, 1),
+    Name VARCHAR(10) NULL,
+	CONSTRAINT PK_Issue47_Users PRIMARY KEY (UserId)
+);
 GO
-CREATE TABLE Issue47.[Role] ( RoleId int NOT NULL IDENTITY(1,1) PRIMARY KEY, [Role] VARCHAR(10) NULL )
+CREATE TABLE Issue47.[Role]
+(
+    RoleId INT NOT NULL IDENTITY(1, 1),
+    [Role] VARCHAR(10) NULL,
+	CONSTRAINT PK_Issue47_Role PRIMARY KEY (RoleId)
+);
 GO
-CREATE TABLE Issue47.UserRoles ( UserRoleId int NOT NULL IDENTITY(1,1) PRIMARY KEY, UserId int NOT NULL, RoleId int NOT NULL )
+CREATE TABLE Issue47.UserRoles
+(
+    UserRoleId INT NOT NULL IDENTITY(1, 1),
+    UserId INT NOT NULL,
+    RoleId INT NOT NULL,
+	CONSTRAINT PK_Issue47_UserRoles PRIMARY KEY (UserRoleId)
+);
 GO
 ALTER TABLE Issue47.UserRoles ADD CONSTRAINT Issue47_UserRoles_userid FOREIGN KEY (UserId) REFERENCES Issue47.Users (UserId)
 ALTER TABLE Issue47.UserRoles ADD CONSTRAINT Issue47_UserRoles_roleid FOREIGN KEY (RoleId) REFERENCES Issue47.[Role] (RoleId)
@@ -1377,17 +1429,23 @@ GO
 
 
 -- #78 Default values for column mapped to enums fail
-CREATE TABLE EnumWithDefaultValue ([Id] int NOT NULL IDENTITY(1,1) PRIMARY KEY, SomeEnum INT NOT NULL DEFAULT(1))
+-- DROP TABLE EnumWithDefaultValue
+CREATE TABLE EnumWithDefaultValue
+(
+    [Id] INT NOT NULL IDENTITY(1, 1),
+    SomeEnum INT NOT NULL DEFAULT (1),
+	CONSTRAINT PK_EnumWithDefaultValue PRIMARY KEY (Id)
+);
 GO
 
 -- From mhwlng
 -- user defined table types for stored procedures
 CREATE TYPE UserDefinedTypeSample AS TABLE
 (
-    sensorid      INT,
-    utctimestamp  DATETIME,
-    value         FLOAT
-)
+    sensorid INT,
+    utctimestamp DATETIME,
+    value FLOAT
+);
 GO
 
 CREATE PROCEDURE UserDefinedTypeSampleStoredProc (@a INT, @type UserDefinedTypeSample READONLY, @b INT)
@@ -1437,14 +1495,16 @@ GO
 
 
 -- Case 156: Should get null instead of "NULL" for varchar DEFAULT NULL
+-- DROP TABLE [DefaultCheckForNull]
 CREATE TABLE [dbo].[DefaultCheckForNull]
 (
-    [Id] int NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    [Id] int NOT NULL IDENTITY(1,1),
     [DescUppercase] varchar(5) NULL DEFAULT NULL,
     [DescLowercase] varchar(5) NULL DEFAULT null,
     [DescMixedCase] varchar(5) NULL DEFAULT Null,
     [DescBrackets] varchar(5) NULL DEFAULT (((NULL))),
-    [X1] varchar(255) NULL 
+    [X1] varchar(255) NULL,
+	CONSTRAINT PK_DefaultCheckForNull PRIMARY KEY (Id)
 )
 GO
 
@@ -1465,29 +1525,48 @@ GO
 
 
 -- From Bitfiddler. tables with ALLCAPS that end in ies get messed up
-CREATE TABLE BitFiddlerCATEGORIES ([Id] int NOT NULL IDENTITY(1,1) PRIMARY KEY)
+--DROP TABLE BITFIDDLERALLCAPS
+--DROP TABLE BitFiddlerCURRENCIES
+--DROP TABLE BitFiddlerCATEGORIES
+CREATE TABLE BitFiddlerCATEGORIES
+(
+    [Id] INT NOT NULL IDENTITY(1, 1),
+	CONSTRAINT PK_BitFiddlerCATEGORIES PRIMARY KEY (Id)
+);
 GO
-CREATE TABLE BitFiddlerCURRENCIES ([Id] int NOT NULL IDENTITY(1,1) PRIMARY KEY)
+CREATE TABLE BitFiddlerCURRENCIES
+(
+    [Id] INT NOT NULL IDENTITY(1, 1),
+	CONSTRAINT PK_BitFiddlerCURRENCIES PRIMARY KEY (Id)
+);
 GO
-CREATE TABLE BITFIDDLERALLCAPS ([Id] int NOT NULL IDENTITY(1,1) PRIMARY KEY)
+CREATE TABLE BITFIDDLERALLCAPS
+(
+    [Id] INT NOT NULL IDENTITY(1, 1),
+	CONSTRAINT PK_BITFIDDLERALLCAPS PRIMARY KEY (Id)
+);
 GO
 
 
 -- Mikael Johannesson
+-- DROP TABLE Ticket
+-- DROP TABLE AppUser
 CREATE TABLE [dbo].[AppUser]
 (
-	[Id] [bigint] IDENTITY(1,1) NOT NULL PRIMARY KEY,
-	[Name] [nvarchar](50) NOT NULL
+	[Id] [bigint] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](50) NOT NULL,
+	CONSTRAINT PK_AppUser PRIMARY KEY (Id)
 )
 GO
-CREATE TABLE [dbo].[Ticket] (
-    [Id]           BIGINT         IDENTITY (1, 1) NOT NULL,
-    [CreatedById]  BIGINT         NOT NULL,
-    [ModifiedById] BIGINT         NULL,
+CREATE TABLE [dbo].[Ticket]
+(
+    [Id] BIGINT IDENTITY(1, 1) NOT NULL,
+    [CreatedById] BIGINT NOT NULL,
+    [ModifiedById] BIGINT NULL,
     CONSTRAINT [PK_Ticket] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_Ticket_AppUser] FOREIGN KEY ([CreatedById]) REFERENCES [dbo].[AppUser] ([Id]),
     CONSTRAINT [FK_Ticket_AppUser1] FOREIGN KEY ([ModifiedById]) REFERENCES [dbo].[AppUser] ([Id])
-)
+);
 GO
 /*
 When generating this the Ticket POCO will get navigators as
@@ -1502,10 +1581,12 @@ I want these to be named as
 
 
 -- From Silverfox
+-- DROP TABLE Token
 CREATE TABLE Token 
 (
-    Id UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT (newsequentialid()) ROWGUIDCOL,
-    Enabled bit NOT NULL 
+    Id UNIQUEIDENTIFIER NOT NULL DEFAULT (newsequentialid()) ROWGUIDCOL,
+    Enabled bit NOT NULL,
+	CONSTRAINT PK_Token PRIMARY KEY (Id)
 )
 GO
 INSERT INTO Token (Enabled) VALUES(1)
@@ -1518,9 +1599,10 @@ GO
 --DROP TABLE Colour
 CREATE TABLE Car
 (
-    Id INT NOT NULL PRIMARY key,
+    Id INT NOT NULL,
     PrimaryColourId INT NOT NULL,
-    CarMake VARCHAR(255) NOT NULL
+    CarMake VARCHAR(255) NOT NULL,
+	CONSTRAINT PK_Car PRIMARY KEY (Id)
 )
 GO
 SET ANSI_PADDING ON
@@ -1531,18 +1613,19 @@ ALTER TABLE Car ADD
 GO
 CREATE TABLE Colour
 (
-    Id INT NOT NULL PRIMARY key,
-    Name VARCHAR(255) NOT NULL
+    Id INT NOT NULL,
+    Name VARCHAR(255) NOT NULL,
+	CONSTRAINT PK_Colour PRIMARY KEY (Id)
 )
 GO
 CREATE TABLE CarToColour
 (
     CarId INT NOT NULL,
     ColourId INT NOT NULL,
+	CONSTRAINT PK_CarToColour PRIMARY KEY (CarId, ColourId)
 )
 GO
 ALTER TABLE Car ADD CONSTRAINT CarPrimaryColourFK FOREIGN KEY (PrimaryColourId) REFERENCES Colour (Id);
-ALTER TABLE CarToColour ADD PRIMARY KEY (CarId, ColourId);
 ALTER TABLE CarToColour ADD CONSTRAINT CarToColour_CarId FOREIGN KEY (CarId) REFERENCES Car (Id);
 ALTER TABLE CarToColour ADD CONSTRAINT CarToColour_ColourId FOREIGN KEY (ColourId) REFERENCES Colour (Id);
 GO
@@ -1571,11 +1654,12 @@ GO
 -- DROP TABLE DSOpe
 CREATE TABLE DSOpe
 (
-	ID INT NOT NULL PRIMARY key,
+	ID INT NOT NULL,
 	[decimal_default] decimal(15, 2) NOT NULL,
 	MyGuid UNIQUEIDENTIFIER NOT NULL DEFAULT ('9B7E1F67-5A81-4277-BC7D-06A3262A5C70'),
 	[default] VARCHAR(10) NULL, -- reserved keyword
-    [MyGuidBadDefault] UNIQUEIDENTIFIER CONSTRAINT [DF_MyGuidBadDefaul] DEFAULT (NULL) NULL
+    [MyGuidBadDefault] UNIQUEIDENTIFIER CONSTRAINT [DF_MyGuidBadDefaul] DEFAULT (NULL) NULL,
+	CONSTRAINT PK_DSOpe PRIMARY KEY (Id)
 )
 GO
 ALTER TABLE DSOpe ADD CONSTRAINT [DF_DSOpe_MaxRabat] DEFAULT ((99.99)) FOR [decimal_default] 
@@ -1592,21 +1676,77 @@ BEGIN
     FROM    DSOpe;
 END;
 
-
-CREATE TABLE tblOrders ( ID INT NOT NULL PRIMARY KEY IDENTITY(1,1), added DATETIME NOT NULL DEFAULT GETDATE() );
-CREATE TABLE tblOrderLines ( ID INT NOT NULL PRIMARY KEY IDENTITY(1,1), OrderID INT NOT NULL, sku VARCHAR(15) NULL );
-CREATE TABLE tblOrderErrors ( ID INT NOT NULL PRIMARY KEY IDENTITY(1,1), error VARCHAR(50) NULL );
-CREATE TABLE AB_OrdersAB_ ( ID INT NOT NULL PRIMARY KEY IDENTITY(1,1), added DATETIME NOT NULL DEFAULT GETDATE() );
-CREATE TABLE AB_OrderLinesAB_ ( ID INT NOT NULL PRIMARY KEY IDENTITY(1,1), OrderID INT NOT NULL, sku VARCHAR(15) NULL );
-CREATE TABLE tblOrderErrorsAB_ ( ID INT NOT NULL PRIMARY KEY IDENTITY(1,1), error VARCHAR(50) NULL );
+--DROP TABLE tblOrderErrorsAB_
+--DROP TABLE AB_OrderLinesAB_
+--DROP TABLE AB_OrdersAB_
+--DROP TABLE tblOrderErrors
+--DROP TABLE tblOrderLines
+--DROP TABLE tblOrders
+CREATE TABLE tblOrders
+(
+    ID INT NOT NULL IDENTITY(1, 1),
+    added DATETIME NOT NULL DEFAULT GETDATE(),
+	CONSTRAINT PK_tblOrders PRIMARY KEY (Id)
+);
+GO
+CREATE TABLE tblOrderLines
+(
+    ID INT NOT NULL IDENTITY(1, 1),
+    OrderID INT NOT NULL,
+    sku VARCHAR(15) NULL,
+	CONSTRAINT PK_tblOrderLines PRIMARY KEY (Id)
+);
+GO
+CREATE TABLE tblOrderErrors
+(
+    ID INT NOT NULL IDENTITY(1, 1),
+    error VARCHAR(50) NULL,
+	CONSTRAINT PK_tblOrderErrors PRIMARY KEY (Id)
+);
+GO
+CREATE TABLE AB_OrdersAB_
+(
+    ID INT NOT NULL IDENTITY(1, 1),
+    added DATETIME NOT NULL DEFAULT GETDATE(),
+	CONSTRAINT PK_AB_OrdersAB PRIMARY KEY (Id)
+);
+GO
+CREATE TABLE AB_OrderLinesAB_
+(
+    ID INT NOT NULL IDENTITY(1, 1),
+    OrderID INT NOT NULL,
+    sku VARCHAR(15) NULL,
+	CONSTRAINT PK_AB_OrderLinesAB PRIMARY KEY (Id)
+);
+GO
+CREATE TABLE tblOrderErrorsAB_
+(
+    ID INT NOT NULL IDENTITY(1, 1),
+    error VARCHAR(50) NULL,
+	CONSTRAINT PK_tblOrderErrorsAB PRIMARY KEY (Id)
+);
 GO
 ALTER TABLE tblOrderLines ADD CONSTRAINT tblOrdersFK FOREIGN KEY (OrderID) REFERENCES tblOrders (id);
 ALTER TABLE AB_OrderLinesAB_ ADD CONSTRAINT AB_OrderLinesAB_FK FOREIGN KEY (OrderID) REFERENCES AB_OrdersAB_ (id);
 GO
 
 -- Forign key with multiple fields
-CREATE TABLE header( ID INT NOT NULL, anotherID INT NOT NULL, added DATETIME NOT NULL DEFAULT GETDATE() );
-CREATE TABLE footer( ID INT NOT NULL PRIMARY KEY IDENTITY(1,1), otherID INT NOT NULL, added DATETIME NOT NULL DEFAULT GETDATE() );
+--DROP TABLE footer
+--DROP TABLE header
+CREATE TABLE header
+(
+    ID INT NOT NULL,
+    anotherID INT NOT NULL,
+    added DATETIME NOT NULL DEFAULT GETDATE()
+);
+GO
+CREATE TABLE footer
+(
+    ID INT NOT NULL IDENTITY(1, 1),
+    otherID INT NOT NULL,
+    added DATETIME NOT NULL DEFAULT GETDATE(),
+	CONSTRAINT PK_footer PRIMARY KEY (Id)
+);
 GO
 ALTER TABLE header ADD PRIMARY KEY (id,anotherID);
 ALTER TABLE footer ADD CONSTRAINT fooderFK FOREIGN KEY (ID,otherID) REFERENCES header (ID,anotherID);
@@ -1888,11 +2028,8 @@ GO
 CREATE PROCEDURE [dbo].[stp_multiple_results]
 AS
 BEGIN
-	SELECT  [codeObjectNo],[applicationNo] FROM [dbo].[CodeObject];
-	SELECT Id,
-           PrimaryColourId,
-           CarMake FROM Car;
-
+	SELECT codeObjectNo, applicationNo, [type], eName, aName, [description], codeName, note, isObject, versionNumber FROM [dbo].[CodeObject];
+	SELECT Id, PrimaryColourId, CarMake, computed_column, computed_column_persisted FROM Car;
 	SELECT Id,Name FROM Colour;
 END;
 GO

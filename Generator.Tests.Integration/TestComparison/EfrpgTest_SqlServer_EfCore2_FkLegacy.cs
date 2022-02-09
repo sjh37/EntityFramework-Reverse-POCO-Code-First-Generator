@@ -5142,7 +5142,7 @@ namespace Efrpg.V3TestE2
         public void Configure(EntityTypeBuilder<Car> builder)
         {
             builder.ToTable("Car", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__Car__3214EC073A7C141B").ForSqlServerIsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_Car").ForSqlServerIsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.PrimaryColourId).HasColumnName(@"PrimaryColourId").HasColumnType("int").IsRequired();
@@ -5161,7 +5161,7 @@ namespace Efrpg.V3TestE2
         public void Configure(EntityTypeBuilder<CarToColour> builder)
         {
             builder.ToTable("CarToColour", "dbo");
-            builder.HasKey(x => new { x.CarId, x.ColourId }).HasName("PK__CarToCol__8C02E66BA575EE41").ForSqlServerIsClustered();
+            builder.HasKey(x => new { x.CarId, x.ColourId }).HasName("PK_CarToColour").ForSqlServerIsClustered();
 
             builder.Property(x => x.CarId).HasColumnName(@"CarId").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.ColourId).HasColumnName(@"ColourId").HasColumnType("int").IsRequired().ValueGeneratedNever();

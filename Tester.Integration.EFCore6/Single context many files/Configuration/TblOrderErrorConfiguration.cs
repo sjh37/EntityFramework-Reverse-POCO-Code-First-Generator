@@ -11,7 +11,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         public void Configure(EntityTypeBuilder<TblOrderError> builder)
         {
             builder.ToTable("tblOrderErrors", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__tblOrder__3214EC270D596EE7").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_tblOrderErrors").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Error).HasColumnName(@"error").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);

@@ -4743,7 +4743,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public void Configure(EntityTypeBuilder<AbOrderLinesAb> builder)
         {
             builder.ToTable("AB_OrderLinesAB_", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__AB_Order__3214EC278D56841E").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_AB_OrderLinesAB").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired();
@@ -4760,7 +4760,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public void Configure(EntityTypeBuilder<AbOrdersAb> builder)
         {
             builder.ToTable("AB_OrdersAB_", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__AB_Order__3214EC27569E771E").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_AB_OrdersAB").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Added).HasColumnName(@"added").HasColumnType("datetime").IsRequired();
@@ -4802,7 +4802,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public void Configure(EntityTypeBuilder<Alpha_Workflow> builder)
         {
             builder.ToTable("workflow", "Alpha");
-            builder.HasKey(x => x.Id).HasName("PK__workflow__3214EC075924B09B").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_alpha_workflow").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);
@@ -4829,7 +4829,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public void Configure(EntityTypeBuilder<AppUser> builder)
         {
             builder.ToTable("AppUser", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__AppUser__3214EC07844327B5").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_AppUser").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("bigint").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Name).HasColumnName(@"Name").HasColumnType("nvarchar(50)").IsRequired().HasMaxLength(50);
@@ -4860,7 +4860,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public void Configure(EntityTypeBuilder<BatchTest> builder)
         {
             builder.ToTable("BatchTest", "dbo");
-            builder.HasKey(x => x.Code).HasName("PK__BatchTes__357D4CF8AD5BF1D4").IsClustered();
+            builder.HasKey(x => x.Code).HasName("PK_BatchTest").IsClustered();
 
             builder.Property(x => x.Code).HasColumnName(@"code").HasColumnType("nvarchar(8)").IsRequired().HasMaxLength(8).ValueGeneratedNever();
         }
@@ -4888,7 +4888,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public void Configure(EntityTypeBuilder<Beta_ToAlpha> builder)
         {
             builder.ToTable("ToAlpha", "Beta");
-            builder.HasKey(x => x.Id).HasName("PK__ToAlpha__3214EC072A8A9F31").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_beta_ToAlpha").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.AlphaId).HasColumnName(@"AlphaId").HasColumnType("int").IsRequired();
@@ -4904,7 +4904,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public void Configure(EntityTypeBuilder<Beta_Workflow> builder)
         {
             builder.ToTable("workflow", "Beta");
-            builder.HasKey(x => x.Id).HasName("PK__workflow__3214EC073FA607DC").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_beta_workflow").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);
@@ -4917,7 +4917,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public void Configure(EntityTypeBuilder<Bitfiddlerallcap> builder)
         {
             builder.ToTable("BITFIDDLERALLCAPS", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__BITFIDDL__3214EC07D45E5E4C").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_BITFIDDLERALLCAPS").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
         }
@@ -4929,7 +4929,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public void Configure(EntityTypeBuilder<BitFiddlerCategoRy> builder)
         {
             builder.ToTable("BitFiddlerCATEGORIES", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__BitFiddl__3214EC07D6C44E33").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_BitFiddlerCATEGORIES").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
         }
@@ -4941,7 +4941,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public void Configure(EntityTypeBuilder<BitFiddlerCurrenCy> builder)
         {
             builder.ToTable("BitFiddlerCURRENCIES", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__BitFiddl__3214EC079C39E480").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_BitFiddlerCURRENCIES").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
         }
@@ -5099,7 +5099,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public void Configure(EntityTypeBuilder<Car> builder)
         {
             builder.ToTable("Car", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__Car__3214EC07B2FC5F30").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_Car").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.PrimaryColourId).HasColumnName(@"PrimaryColourId").HasColumnType("int").IsRequired();
@@ -5118,7 +5118,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public void Configure(EntityTypeBuilder<CarToColour> builder)
         {
             builder.ToTable("CarToColour", "dbo");
-            builder.HasKey(x => new { x.CarId, x.ColourId }).HasName("PK__CarToCol__8C02E66B5519A049").IsClustered();
+            builder.HasKey(x => new { x.CarId, x.ColourId }).HasName("PK_CarToColour").IsClustered();
 
             builder.Property(x => x.CarId).HasColumnName(@"CarId").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.ColourId).HasColumnName(@"ColourId").HasColumnType("int").IsRequired().ValueGeneratedNever();
@@ -5265,7 +5265,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public void Configure(EntityTypeBuilder<Colour> builder)
         {
             builder.ToTable("Colour", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__Colour__3214EC07E0D8741E").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_Colour").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.Name).HasColumnName(@"Name").HasColumnType("varchar(255)").IsRequired().IsUnicode(false).HasMaxLength(255);
@@ -5396,7 +5396,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public void Configure(EntityTypeBuilder<DefaultCheckForNull> builder)
         {
             builder.ToTable("DefaultCheckForNull", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__DefaultC__3214EC075515EFE8").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_DefaultCheckForNull").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.DescUppercase).HasColumnName(@"DescUppercase").HasColumnType("varchar(5)").IsRequired(false).IsUnicode(false).HasMaxLength(5);
@@ -5413,7 +5413,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public void Configure(EntityTypeBuilder<DsOpe> builder)
         {
             builder.ToTable("DSOpe", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__DSOpe__3214EC27A91BD3FC").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_DSOpe").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.DecimalDefault).HasColumnName(@"decimal_default").HasColumnType("decimal(15,2)").IsRequired();
@@ -5494,7 +5494,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public void Configure(EntityTypeBuilder<FkTest_SmallDecimalTestAttribute> builder)
         {
             builder.ToTable("SmallDecimalTestAttribute", "FkTest");
-            builder.HasKey(x => x.FkId).HasName("PK__SmallDec__354CCD0B78FE841F").IsClustered();
+            builder.HasKey(x => x.FkId).HasName("PK_FkTest_SmallDecimalTestAttribute").IsClustered();
 
             builder.Property(x => x.FkId).HasColumnName(@"FkID").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
@@ -5510,7 +5510,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public void Configure(EntityTypeBuilder<Footer> builder)
         {
             builder.ToTable("footer", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__footer__3214EC2751389C57").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_footer").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.OtherId).HasColumnName(@"otherID").HasColumnType("int").IsRequired();
@@ -5604,7 +5604,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public void Configure(EntityTypeBuilder<Header> builder)
         {
             builder.ToTable("header", "dbo");
-            builder.HasKey(x => new { x.Id, x.AnotherId }).HasName("PK__header__FAB049E780EDEC01").IsClustered();
+            builder.HasKey(x => new { x.Id, x.AnotherId }).HasName("PK__header__FAB049E731FE4675").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.AnotherId).HasColumnName(@"anotherID").HasColumnType("int").IsRequired().ValueGeneratedNever();
@@ -5631,7 +5631,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public void Configure(EntityTypeBuilder<Issue47_Role> builder)
         {
             builder.ToTable("Role", "Issue47");
-            builder.HasKey(x => x.RoleId).HasName("PK__Role__8AFACE1A9BF4E70F").IsClustered();
+            builder.HasKey(x => x.RoleId).HasName("PK_Issue47_Role").IsClustered();
 
             builder.Property(x => x.RoleId).HasColumnName(@"RoleId").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Role).HasColumnName(@"Role").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);
@@ -5644,7 +5644,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public void Configure(EntityTypeBuilder<Issue47_User> builder)
         {
             builder.ToTable("Users", "Issue47");
-            builder.HasKey(x => x.UserId).HasName("PK__Users__1788CC4CB6D7F6B9").IsClustered();
+            builder.HasKey(x => x.UserId).HasName("PK_Issue47_Users").IsClustered();
 
             builder.Property(x => x.UserId).HasColumnName(@"UserId").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Name).HasColumnName(@"Name").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);
@@ -5657,7 +5657,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public void Configure(EntityTypeBuilder<Issue47_UserRole> builder)
         {
             builder.ToTable("UserRoles", "Issue47");
-            builder.HasKey(x => x.UserRoleId).HasName("PK__UserRole__3D978A35C8085059").IsClustered();
+            builder.HasKey(x => x.UserRoleId).HasName("PK_Issue47_UserRoles").IsClustered();
 
             builder.Property(x => x.UserRoleId).HasColumnName(@"UserRoleId").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.UserId).HasColumnName(@"UserId").HasColumnType("int").IsRequired();
@@ -5743,7 +5743,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public void Configure(EntityTypeBuilder<PeriodTestTable> builder)
         {
             builder.ToTable("PeriodTestTable", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__PeriodTe__3213E83FF8B067C9").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_PeriodTestTable").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.Joe46Bloggs).HasColumnName(@"joe.bloggs").HasColumnType("int").IsRequired(false);
@@ -5803,7 +5803,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public void Configure(EntityTypeBuilder<PropertyTypesToAdd> builder)
         {
             builder.ToTable("PropertyTypesToAdd", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__Property__3213E83F2305D53A").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_PropertyTypesToAdd").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.DtDefault).HasColumnName(@"dt_default").HasColumnType("datetime2").IsRequired(false);
@@ -6038,7 +6038,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public void Configure(EntityTypeBuilder<TadeuszSobol> builder)
         {
             builder.ToTable("TadeuszSobol", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__TadeuszS__3214EC07EFEC9D70").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_TadeuszSobol").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(max)").IsRequired(false).IsUnicode(false);
@@ -6065,7 +6065,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public void Configure(EntityTypeBuilder<TblOrder> builder)
         {
             builder.ToTable("tblOrders", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__tblOrder__3214EC276F4A5FCC").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_tblOrders").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Added).HasColumnName(@"added").HasColumnType("datetime").IsRequired();
@@ -6078,7 +6078,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public void Configure(EntityTypeBuilder<TblOrderError> builder)
         {
             builder.ToTable("tblOrderErrors", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__tblOrder__3214EC270D596EE7").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_tblOrderErrors").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Error).HasColumnName(@"error").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);
@@ -6091,7 +6091,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public void Configure(EntityTypeBuilder<TblOrderErrorsAb> builder)
         {
             builder.ToTable("tblOrderErrorsAB_", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__tblOrder__3214EC27D9C8BCF0").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_tblOrderErrorsAB").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Error).HasColumnName(@"error").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);
@@ -6104,7 +6104,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public void Configure(EntityTypeBuilder<TblOrderLine> builder)
         {
             builder.ToTable("tblOrderLines", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__tblOrder__3214EC27CB4CFC88").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_tblOrderLines").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired();
@@ -6139,7 +6139,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public void Configure(EntityTypeBuilder<Token> builder)
         {
             builder.ToTable("Token", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__Token__3214EC073B1D3B7A").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_Token").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("uniqueidentifier").IsRequired().ValueGeneratedOnAdd();
             builder.Property(x => x.Enabled).HasColumnName(@"Enabled").HasColumnType("bit").IsRequired();
@@ -6474,6 +6474,14 @@ namespace Tester.Integration.EfCore3.File_based_templates
         {
             public int codeObjectNo { get; set; }
             public int? applicationNo { get; set; }
+            public int type { get; set; }
+            public string eName { get; set; }
+            public string aName { get; set; }
+            public string description { get; set; }
+            public string codeName { get; set; }
+            public string note { get; set; }
+            public bool isObject { get; set; }
+            public byte[] versionNumber { get; set; }
         }
         public List<ResultSetModel1> ResultSet1;
         public class ResultSetModel2
@@ -6481,6 +6489,8 @@ namespace Tester.Integration.EfCore3.File_based_templates
             public int Id { get; set; }
             public int PrimaryColourId { get; set; }
             public string CarMake { get; set; }
+            public int? computed_column { get; set; }
+            public int? computed_column_persisted { get; set; }
         }
         public List<ResultSetModel2> ResultSet2;
         public class ResultSetModel3

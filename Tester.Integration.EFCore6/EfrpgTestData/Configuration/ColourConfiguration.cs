@@ -12,7 +12,7 @@ namespace V6EfrpgTest
         public void Configure(EntityTypeBuilder<Colour> builder)
         {
             builder.ToTable("Colour", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__Colour__3214EC07E0D8741E").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_Colour").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.Name).HasColumnName(@"Name").HasColumnType("varchar(255)").IsRequired().IsUnicode(false).HasMaxLength(255);

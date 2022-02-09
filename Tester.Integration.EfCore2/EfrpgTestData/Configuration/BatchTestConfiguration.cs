@@ -12,7 +12,7 @@ namespace Tester.Integration.EfCore2
         public void Configure(EntityTypeBuilder<BatchTest> builder)
         {
             builder.ToTable("BatchTest", "dbo");
-            builder.HasKey(x => x.Code).HasName("PK__BatchTes__357D4CF8AD5BF1D4").ForSqlServerIsClustered();
+            builder.HasKey(x => x.Code).HasName("PK_BatchTest").ForSqlServerIsClustered();
 
             builder.Property(x => x.Code).HasColumnName(@"code").HasColumnType("nvarchar(8)").IsRequired().HasMaxLength(8).ValueGeneratedNever();
         }

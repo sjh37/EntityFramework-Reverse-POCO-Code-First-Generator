@@ -12,7 +12,7 @@ namespace Tester.Integration.EfCore2
         public void Configure(EntityTypeBuilder<DefaultCheckForNull> builder)
         {
             builder.ToTable("DefaultCheckForNull", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__DefaultC__3214EC075515EFE8").ForSqlServerIsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_DefaultCheckForNull").ForSqlServerIsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseSqlServerIdentityColumn();
             builder.Property(x => x.DescUppercase).HasColumnName(@"DescUppercase").HasColumnType("varchar(5)").IsRequired(false).IsUnicode(false).HasMaxLength(5);

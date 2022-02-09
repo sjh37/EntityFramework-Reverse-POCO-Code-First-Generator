@@ -12,7 +12,7 @@ namespace Tester.Integration.EfCore2
         public void Configure(EntityTypeBuilder<Issue47_Role> builder)
         {
             builder.ToTable("Role", "Issue47");
-            builder.HasKey(x => x.RoleId).HasName("PK__Role__8AFACE1A9BF4E70F").ForSqlServerIsClustered();
+            builder.HasKey(x => x.RoleId).HasName("PK_Issue47_Role").ForSqlServerIsClustered();
 
             builder.Property(x => x.RoleId).HasColumnName(@"RoleId").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseSqlServerIdentityColumn();
             builder.Property(x => x.Role).HasColumnName(@"Role").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);

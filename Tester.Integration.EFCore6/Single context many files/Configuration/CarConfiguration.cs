@@ -11,7 +11,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         public void Configure(EntityTypeBuilder<Car> builder)
         {
             builder.ToTable("Car", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__Car__3214EC07B2FC5F30").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_Car").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.PrimaryColourId).HasColumnName(@"PrimaryColourId").HasColumnType("int").IsRequired();
