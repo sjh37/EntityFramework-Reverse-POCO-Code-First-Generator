@@ -330,7 +330,7 @@ namespace Efrpg
         // In order to use this function, Settings.ElementsToGenerate must contain both Elements.Poco and Elements.Enum;
         public static Action<Table> AddEnum = delegate (Table table)
         {
-            if (table.HasPrimaryKey && table.PrimaryKeys.Count() == 1 && table.Columns.Any(x => x.PropertyType == "string"))
+            /*if (table.HasPrimaryKey && table.PrimaryKeys.Count() == 1 && table.Columns.Any(x => x.PropertyType == "string"))
             {
                 // Example to choose tables with a certain naming conventions for enums. Please use your own conventions.
                 if (table.NameHumanCase.StartsWith("Enum", StringComparison.InvariantCultureIgnoreCase) ||
@@ -355,7 +355,7 @@ namespace Efrpg
                         // Swallow exception
                     }
                 }
-            }
+            }*/
         };
 
         // Use the following function if you need to apply additional modifications to a enum
