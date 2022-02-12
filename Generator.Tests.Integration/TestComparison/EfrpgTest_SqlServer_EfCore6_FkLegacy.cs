@@ -443,7 +443,7 @@ namespace Efrpg.V3TestE6
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;Application Name=Generator", x => x.UseNetTopologySuite());
+                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;Application Name=Generator", x => x.UseNetTopologySuite().UseHierarchyId());
             }
         }
 
@@ -4728,7 +4728,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<AbOrderLinesAb> builder)
         {
             builder.ToTable("AB_OrderLinesAB_", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__AB_Order__3214EC27399A9063").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_AB_OrderLinesAB").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired();
@@ -4745,7 +4745,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<AbOrdersAb> builder)
         {
             builder.ToTable("AB_OrdersAB_", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__AB_Order__3214EC27DCF8BE7D").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_AB_OrdersAB").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Added).HasColumnName(@"added").HasColumnType("datetime").IsRequired();
@@ -4787,7 +4787,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<Alpha_Workflow> builder)
         {
             builder.ToTable("workflow", "Alpha");
-            builder.HasKey(x => x.Id).HasName("PK__workflow__3214EC0781E073BC").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_alpha_workflow").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);
@@ -4827,7 +4827,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<AppUser> builder)
         {
             builder.ToTable("AppUser", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__AppUser__3214EC070BCD7337").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_AppUser").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("bigint").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Name).HasColumnName(@"Name").HasColumnType("nvarchar(50)").IsRequired().HasMaxLength(50);
@@ -4858,7 +4858,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<BatchTest> builder)
         {
             builder.ToTable("BatchTest", "dbo");
-            builder.HasKey(x => x.Code).HasName("PK__BatchTes__357D4CF8B8A16F6F").IsClustered();
+            builder.HasKey(x => x.Code).HasName("PK_BatchTest").IsClustered();
 
             builder.Property(x => x.Code).HasColumnName(@"code").HasColumnType("nvarchar(8)").IsRequired().HasMaxLength(8).ValueGeneratedNever();
         }
@@ -4886,7 +4886,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<Beta_ToAlpha> builder)
         {
             builder.ToTable("ToAlpha", "Beta");
-            builder.HasKey(x => x.Id).HasName("PK__ToAlpha__3214EC0759C316D9").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_beta_ToAlpha").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.AlphaId).HasColumnName(@"AlphaId").HasColumnType("int").IsRequired();
@@ -4902,7 +4902,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<Beta_Workflow> builder)
         {
             builder.ToTable("workflow", "Beta");
-            builder.HasKey(x => x.Id).HasName("PK__workflow__3214EC074A3BA752").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_beta_workflow").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);
@@ -4915,7 +4915,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<Bitfiddlerallcap> builder)
         {
             builder.ToTable("BITFIDDLERALLCAPS", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__BITFIDDL__3214EC071E4141BF").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_BITFIDDLERALLCAPS").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
         }
@@ -4927,7 +4927,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<BitFiddlerCategoRy> builder)
         {
             builder.ToTable("BitFiddlerCATEGORIES", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__BitFiddl__3214EC07B251396A").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_BitFiddlerCATEGORIES").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
         }
@@ -4939,7 +4939,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<BitFiddlerCurrenCy> builder)
         {
             builder.ToTable("BitFiddlerCURRENCIES", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__BitFiddl__3214EC07F1F1CC8A").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_BitFiddlerCURRENCIES").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
         }
@@ -5078,7 +5078,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<ClientCreationState> builder)
         {
             builder.ToTable("ClientCreationState", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__ClientCr__3213E83F78F9F567").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_ClientCreationState").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("uniqueidentifier").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.WebhookSetup).HasColumnName(@"WebhookSetup").HasColumnType("bit").IsRequired();
@@ -5093,7 +5093,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<CmsFile> builder)
         {
             builder.ToTable("CMS_File", "dbo");
-            builder.HasKey(x => x.FileId).HasName("PK_CMS_Form").IsClustered();
+            builder.HasKey(x => x.FileId).HasName("PK_CMS_File").IsClustered();
 
             builder.Property(x => x.FileId).HasColumnName(@"FileId").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.FileName).HasColumnName(@"FileName").HasColumnType("nvarchar(100)").IsRequired().HasMaxLength(100);
@@ -5195,7 +5195,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<Colour> builder)
         {
             builder.ToTable("Colour", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__Colour__3214EC07184FF66C").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_Colour").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.Name).HasColumnName(@"Name").HasColumnType("varchar(255)").IsRequired().IsUnicode(false).HasMaxLength(255);
@@ -5208,7 +5208,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<ColumnNameAndType> builder)
         {
             builder.ToTable("ColumnNameAndTypes", "dbo");
-            builder.HasKey(x => x.C36).HasName("PK__ColumnNa__3BD018490C636E25").IsClustered();
+            builder.HasKey(x => x.C36).HasName("PK_ColumnNameAndTypes").IsClustered();
 
             builder.Property(x => x.C36).HasColumnName(@"$").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.C37).HasColumnName(@"%").HasColumnType("int").IsRequired(false);
@@ -5339,7 +5339,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<DefaultCheckForNull> builder)
         {
             builder.ToTable("DefaultCheckForNull", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__DefaultC__3214EC078035685D").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_DefaultCheckForNull").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.DescUppercase).HasColumnName(@"DescUppercase").HasColumnType("varchar(5)").IsRequired(false).IsUnicode(false).HasMaxLength(5);
@@ -5356,7 +5356,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<DsOpe> builder)
         {
             builder.ToTable("DSOpe", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__DSOpe__3214EC278F3CC6A6").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_DSOpe").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.DecimalDefault).HasColumnName(@"decimal_default").HasColumnType("decimal(15,2)").HasPrecision(15,2).IsRequired();
@@ -5398,7 +5398,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<EnumWithDefaultValue> builder)
         {
             builder.ToTable("EnumWithDefaultValue", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__EnumWith__3214EC07C0E96CE9").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_EnumWithDefaultValue").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.SomeEnum).HasColumnName(@"SomeEnum").HasColumnType("int").IsRequired();
@@ -5476,7 +5476,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<FkTest_SmallDecimalTestAttribute> builder)
         {
             builder.ToTable("SmallDecimalTestAttribute", "FkTest");
-            builder.HasKey(x => x.FkId).HasName("PK__SmallDec__354CCD0BF1B0EFB2").IsClustered();
+            builder.HasKey(x => x.FkId).HasName("PK_FkTest_SmallDecimalTestAttribute").IsClustered();
 
             builder.Property(x => x.FkId).HasColumnName(@"FkID").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
@@ -5492,7 +5492,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<Footer> builder)
         {
             builder.ToTable("footer", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__footer__3214EC27593C0B83").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_footer").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.OtherId).HasColumnName(@"otherID").HasColumnType("int").IsRequired();
@@ -5509,7 +5509,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<ForeignKeyIsNotEnforced> builder)
         {
             builder.ToTable("ForeignKeyIsNotEnforced", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__ForeignK__3213E83FF0A32C89").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_ForeignKeyIsNotEnforced").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.NullValue).HasColumnName(@"null_value").HasColumnType("int").IsRequired(false);
@@ -5526,7 +5526,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<ForeignKeyIsNotEnforcedItem> builder)
         {
             builder.ToTable("ForeignKeyIsNotEnforcedItem", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__ForeignK__3213E83F6EE7FE07").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_ForeignKeyIsNotEnforcedItem").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.NullValue).HasColumnName(@"null_value").HasColumnType("int").IsRequired(false);
@@ -5586,7 +5586,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<Header> builder)
         {
             builder.ToTable("header", "dbo");
-            builder.HasKey(x => new { x.Id, x.AnotherId }).HasName("PK__header__FAB049E7090D2116").IsClustered();
+            builder.HasKey(x => new { x.Id, x.AnotherId }).HasName("PK_header").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.AnotherId).HasColumnName(@"anotherID").HasColumnType("int").IsRequired().ValueGeneratedNever();
@@ -5600,7 +5600,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<HierarchyTest> builder)
         {
             builder.ToTable("hierarchy_test", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__hierarch__3214EC27E80E39ED").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_hierarchy_test").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Hid).HasColumnName(@"hid").HasColumnType("hierarchyid").IsRequired();
@@ -5613,7 +5613,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<Issue47_Role> builder)
         {
             builder.ToTable("Role", "Issue47");
-            builder.HasKey(x => x.RoleId).HasName("PK__Role__8AFACE1A7B067CE8").IsClustered();
+            builder.HasKey(x => x.RoleId).HasName("PK_Issue47_Role").IsClustered();
 
             builder.Property(x => x.RoleId).HasColumnName(@"RoleId").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Role).HasColumnName(@"Role").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);
@@ -5626,7 +5626,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<Issue47_User> builder)
         {
             builder.ToTable("Users", "Issue47");
-            builder.HasKey(x => x.UserId).HasName("PK__Users__1788CC4CEA43CD48").IsClustered();
+            builder.HasKey(x => x.UserId).HasName("PK_Issue47_Users").IsClustered();
 
             builder.Property(x => x.UserId).HasColumnName(@"UserId").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Name).HasColumnName(@"Name").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);
@@ -5639,7 +5639,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<Issue47_UserRole> builder)
         {
             builder.ToTable("UserRoles", "Issue47");
-            builder.HasKey(x => x.UserRoleId).HasName("PK__UserRole__3D978A3562D2BF0E").IsClustered();
+            builder.HasKey(x => x.UserRoleId).HasName("PK_Issue47_UserRoles").IsClustered();
 
             builder.Property(x => x.UserRoleId).HasColumnName(@"UserRoleId").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.UserId).HasColumnName(@"UserId").HasColumnType("int").IsRequired();
@@ -5712,7 +5712,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<PeriodTestTable> builder)
         {
             builder.ToTable("PeriodTestTable", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__PeriodTe__3213E83F66E9CFC5").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_PeriodTestTable").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.Joe46Bloggs).HasColumnName(@"joe.bloggs").HasColumnType("int").IsRequired(false);
@@ -5725,7 +5725,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<Person> builder)
         {
             builder.ToTable("Person", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__Person__3214EC07301AB64C").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_Person").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Name).HasColumnName(@"Name").HasColumnType("varchar(50)").IsRequired().IsUnicode(false).HasMaxLength(50);
@@ -5738,7 +5738,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<PersonPost> builder)
         {
             builder.ToTable("PersonPosts", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__PersonPo__3214EC07D07EBB7D").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_PersonPosts").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Title).HasColumnName(@"Title").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
@@ -5758,7 +5758,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<PkOrdinalTest> builder)
         {
             builder.ToTable("pk_ordinal_test", "dbo");
-            builder.HasKey(x => new { x.C3, x.C1 }).HasName("PK__pk_ordin__1135D3B42499460A").IsClustered();
+            builder.HasKey(x => new { x.C3, x.C1 }).HasName("PK_pk_ordinal_test").IsClustered();
 
             builder.Property(x => x.C1).HasColumnName(@"C1").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.C2).HasColumnName(@"C2").HasColumnType("int").IsRequired();
@@ -5772,7 +5772,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<PropertyTypesToAdd> builder)
         {
             builder.ToTable("PropertyTypesToAdd", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__Property__3213E83F77C039D2").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_PropertyTypesToAdd").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.DtDefault).HasColumnName(@"dt_default").HasColumnType("datetime2").IsRequired(false);
@@ -5787,7 +5787,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<SequenceTest> builder)
         {
             builder.ToTable("SequenceTest", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__Sequence__3214EC07AFADA315").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_SequenceTest").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountBy1]");
             builder.Property(x => x.CntByBigInt).HasColumnName(@"CntByBigInt").HasColumnType("bigint").IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountByBigInt]");
@@ -5804,7 +5804,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<SmallDecimalTest> builder)
         {
             builder.ToTable("SmallDecimalTest", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__SmallDec__3213E83F0DAD85EF").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_SmallDecimalTest").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.KoeffVed).HasColumnName(@"KoeffVed").HasColumnType("decimal(4,4)").HasPrecision(4,4).IsRequired(false);
@@ -5937,7 +5937,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<TableWithDuplicateColumnName> builder)
         {
             builder.ToTable("table with duplicate column names", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__table wi__3213E83FD75ED2F9").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_TableWithDuplicateColumnNames").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.UserId1).HasColumnName(@"user_id").HasColumnType("int").IsRequired();
@@ -5954,7 +5954,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<TableWithSpace> builder)
         {
             builder.ToTable("table with space", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__table wi__3213E83FE3DEDDFD").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_TableWithSpace").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.HasMany<TableWithSpaceAndInColumn>(t => t.TableWithSpaceAndInColumns).WithMany(t => t.TableWithSpaces).UsingEntity<Dictionary<string, object>>("table mapping with space",
@@ -5970,7 +5970,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<TableWithSpaceAndInColumn> builder)
         {
             builder.ToTable("table with space and in columns", "dbo");
-            builder.HasKey(x => x.IdValue).HasName("PK__table wi__92CF061C2DBA9525").IsClustered();
+            builder.HasKey(x => x.IdValue).HasName("PK_TableWithSpaceAndInColumns").IsClustered();
 
             builder.Property(x => x.IdValue).HasColumnName(@"id value").HasColumnType("int").IsRequired().ValueGeneratedNever();
         }
@@ -5982,7 +5982,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<TableWithSpaceInColumnOnly> builder)
         {
             builder.ToTable("TableWithSpaceInColumnOnly", "dbo");
-            builder.HasKey(x => x.IdValue).HasName("PK__TableWit__92CF061C5A0D0BF4").IsClustered();
+            builder.HasKey(x => x.IdValue).HasName("PK_TableWithSpaceInColumnOnly").IsClustered();
 
             builder.Property(x => x.IdValue).HasColumnName(@"id value").HasColumnType("int").IsRequired().ValueGeneratedNever();
         }
@@ -5994,7 +5994,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<TadeuszSobol> builder)
         {
             builder.ToTable("TadeuszSobol", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__TadeuszS__3214EC07A9D17117").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_TadeuszSobol").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(max)").IsRequired(false).IsUnicode(false);
@@ -6021,7 +6021,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<TblOrder> builder)
         {
             builder.ToTable("tblOrders", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__tblOrder__3214EC27B6AA23DF").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_tblOrders").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Added).HasColumnName(@"added").HasColumnType("datetime").IsRequired();
@@ -6034,7 +6034,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<TblOrderError> builder)
         {
             builder.ToTable("tblOrderErrors", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__tblOrder__3214EC2732EAC74E").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_tblOrderErrors").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Error).HasColumnName(@"error").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);
@@ -6047,7 +6047,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<TblOrderErrorsAb> builder)
         {
             builder.ToTable("tblOrderErrorsAB_", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__tblOrder__3214EC27B5A2C145").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_tblOrderErrorsAB").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Error).HasColumnName(@"error").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);
@@ -6060,7 +6060,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<TblOrderLine> builder)
         {
             builder.ToTable("tblOrderLines", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__tblOrder__3214EC27FF01DF09").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_tblOrderLines").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired();
@@ -6095,7 +6095,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<Token> builder)
         {
             builder.ToTable("Token", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__Token__3214EC0760877C4B").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_Token").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("uniqueidentifier").IsRequired().ValueGeneratedOnAdd();
             builder.Property(x => x.Enabled).HasColumnName(@"Enabled").HasColumnType("bit").IsRequired();
@@ -6108,7 +6108,7 @@ namespace Efrpg.V3TestE6
         public void Configure(EntityTypeBuilder<User> builder)
         {
             builder.ToTable("User", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK_Contacts").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_User").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.ExternalUserId).HasColumnName(@"ExternalUserID").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);
@@ -6415,6 +6415,14 @@ namespace Efrpg.V3TestE6
         {
             public int codeObjectNo { get; set; }
             public int? applicationNo { get; set; }
+            public int type { get; set; }
+            public string eName { get; set; }
+            public string aName { get; set; }
+            public string description { get; set; }
+            public string codeName { get; set; }
+            public string note { get; set; }
+            public bool isObject { get; set; }
+            public byte[] versionNumber { get; set; }
         }
         public List<ResultSetModel1> ResultSet1;
         public class ResultSetModel2

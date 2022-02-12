@@ -5527,7 +5527,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public void Configure(EntityTypeBuilder<ForeignKeyIsNotEnforced> builder)
         {
             builder.ToTable("ForeignKeyIsNotEnforced", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__ForeignK__3213E83FE8A3AF67").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_ForeignKeyIsNotEnforced").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.NullValue).HasColumnName(@"null_value").HasColumnType("int").IsRequired(false);
@@ -5544,7 +5544,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public void Configure(EntityTypeBuilder<ForeignKeyIsNotEnforcedItem> builder)
         {
             builder.ToTable("ForeignKeyIsNotEnforcedItem", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__ForeignK__3213E83F83599812").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_ForeignKeyIsNotEnforcedItem").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.NullValue).HasColumnName(@"null_value").HasColumnType("int").IsRequired(false);
@@ -5604,7 +5604,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public void Configure(EntityTypeBuilder<Header> builder)
         {
             builder.ToTable("header", "dbo");
-            builder.HasKey(x => new { x.Id, x.AnotherId }).HasName("PK__header__FAB049E731FE4675").IsClustered();
+            builder.HasKey(x => new { x.Id, x.AnotherId }).HasName("PK_header").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.AnotherId).HasColumnName(@"anotherID").HasColumnType("int").IsRequired().ValueGeneratedNever();
@@ -5789,7 +5789,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public void Configure(EntityTypeBuilder<PkOrdinalTest> builder)
         {
             builder.ToTable("pk_ordinal_test", "dbo");
-            builder.HasKey(x => new { x.C3, x.C1 }).HasName("PK__pk_ordin__1135D3B469FFB6F9").IsClustered();
+            builder.HasKey(x => new { x.C3, x.C1 }).HasName("PK_pk_ordinal_test").IsClustered();
 
             builder.Property(x => x.C1).HasColumnName(@"C1").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.C2).HasColumnName(@"C2").HasColumnType("int").IsRequired();
@@ -5835,7 +5835,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public void Configure(EntityTypeBuilder<SmallDecimalTest> builder)
         {
             builder.ToTable("SmallDecimalTest", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK__SmallDec__3213E83FC5DFEF71").IsClustered();
+            builder.HasKey(x => x.Id).HasName("PK_SmallDecimalTest").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.KoeffVed).HasColumnName(@"KoeffVed").HasColumnType("decimal(4,4)").IsRequired(false);

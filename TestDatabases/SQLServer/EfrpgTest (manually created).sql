@@ -684,7 +684,7 @@ CREATE TABLE SmallDecimalTest
 	id INT NOT NULL,
 	KoeffVed DECIMAL(4,4) NULL DEFAULT (0.5),
 	CONSTRAINT PK_SmallDecimalTest PRIMARY KEY (id)
-)
+);
 GO
 
 /****** Object:  Default [d_t_address_type_domain]    Script Date: 22/07/2015 14:28:05 ******/
@@ -718,6 +718,7 @@ CREATE TABLE FkTest.SmallDecimalTestAttribute
 GO
 
 ALTER TABLE FkTest.SmallDecimalTestAttribute ADD CONSTRAINT KateFK FOREIGN KEY (FkID) REFERENCES dbo.SmallDecimalTest (id)
+-- ALTER TABLE FkTest.SmallDecimalTestAttribute drop CONSTRAINT KateFK;
 GO
 -- DROP PROC FkTest.Hello;
 CREATE PROC FkTest.Hello AS
@@ -1215,9 +1216,21 @@ GO
 -- 0xced Shouldn't we completely drop the IsNotEnforced setting and use only the nullable information?
 -- If a foreign key constraint is not enforced, the generator produces a model which is not valid for Entity
 -- Framework and throws. It can even generate code that does not even compile with a combination of HasOptional + WithOptional.
-CREATE TABLE ForeignKeyIsNotEnforced     (id int NOT NULL IDENTITY(1,1) PRIMARY KEY, null_value INT NULL, not_null_value INT NOT NULL);
+--drop table ForeignKeyIsNotEnforcedItem
+--drop table ForeignKeyIsNotEnforced
+CREATE TABLE ForeignKeyIsNotEnforced
+(
+    id int NOT NULL IDENTITY(1,1),
+    null_value INT NULL, not_null_value INT NOT NULL,
+    CONSTRAINT PK_ForeignKeyIsNotEnforced PRIMARY KEY (id)
+);
 GO
-CREATE TABLE ForeignKeyIsNotEnforcedItem (id int NOT NULL IDENTITY(1,1) PRIMARY KEY, null_value INT NULL, not_null_value INT NOT NULL);
+CREATE TABLE ForeignKeyIsNotEnforcedItem
+(
+    id int NOT NULL IDENTITY(1,1),
+    null_value INT NULL, not_null_value INT NOT NULL,
+    CONSTRAINT PK_ForeignKeyIsNotEnforcedItem PRIMARY KEY (id)
+);
 GO
 ALTER TABLE ForeignKeyIsNotEnforced ADD CONSTRAINT [UQ_ForeignKeyIsNotEnforced_null_value] UNIQUE NONCLUSTERED (null_value);
 ALTER TABLE ForeignKeyIsNotEnforced ADD CONSTRAINT [UQ_ForeignKeyIsNotEnforced_not_null_value] UNIQUE NONCLUSTERED (not_null_value);
@@ -1731,13 +1744,13 @@ ALTER TABLE AB_OrderLinesAB_ ADD CONSTRAINT AB_OrderLinesAB_FK FOREIGN KEY (Orde
 GO
 
 -- Forign key with multiple fields
---DROP TABLE footer
---DROP TABLE header
+--DROP TABLE footer; DROP TABLE header;
 CREATE TABLE header
 (
     ID INT NOT NULL,
     anotherID INT NOT NULL,
-    added DATETIME NOT NULL DEFAULT GETDATE()
+    added DATETIME NOT NULL DEFAULT GETDATE(),
+	CONSTRAINT PK_header PRIMARY KEY (ID, anotherID)
 );
 GO
 CREATE TABLE footer
@@ -1748,7 +1761,6 @@ CREATE TABLE footer
 	CONSTRAINT PK_footer PRIMARY KEY (Id)
 );
 GO
-ALTER TABLE header ADD PRIMARY KEY (id,anotherID);
 ALTER TABLE footer ADD CONSTRAINT fooderFK FOREIGN KEY (ID,otherID) REFERENCES header (ID,anotherID);
 GO
 
@@ -2400,17 +2412,16 @@ CREATE TABLE [table with duplicate column names]
 GO
 
 
+-- DROP TABLE pk_ordinal_test
 CREATE TABLE pk_ordinal_test
 (
- C1 INT NOT NULL,
- C2 INT NOT NULL,
- C3 INT NOT NULL
-)
-ALTER TABLE pk_ordinal_test ADD PRIMARY KEY (C3, C1);
+    C1 INT NOT NULL,
+    C2 INT NOT NULL,
+    C3 INT NOT NULL,
+    CONSTRAINT PK_pk_ordinal_test PRIMARY KEY (C3,C1)
+);
 GO
-SELECT * FROM pk_ordinal_test
-GO
-
+-- SELECT * FROM pk_ordinal_test
 
 
 
