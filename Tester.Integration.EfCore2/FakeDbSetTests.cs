@@ -27,6 +27,14 @@
         }
 
         [Test]
+        public void AsEnumerable()
+        {
+            _dbSet.AddRange(_list);
+            var result = _dbSet.AsEnumerable();
+            Assert.AreEqual(2, result.Count());
+        }
+
+        [Test]
         [TestCase(1, 2, 3)]
         [TestCase(4, 5, 6)]
         public void Find(int id, int c1, int c2)

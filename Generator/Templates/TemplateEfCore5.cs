@@ -935,6 +935,11 @@ using {{this}};{{#newline}}
         return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues)));{{#newline}}
     }{{#newline}}{{#newline}}
 
+    IAsyncEnumerator<TEntity> IAsyncEnumerable<TEntity>.GetAsyncEnumerator(CancellationToken cancellationToken){{#newline}}
+    {{{#newline}}
+        return GetAsyncEnumerator(cancellationToken);{{#newline}}
+    }{{#newline}}{{#newline}}
+
     public override EntityEntry<TEntity> Add(TEntity entity){{#newline}}
     {{{#newline}}
         _data.Add(entity);{{#newline}}

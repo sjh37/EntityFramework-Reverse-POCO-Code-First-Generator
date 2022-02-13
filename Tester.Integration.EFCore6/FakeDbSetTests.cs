@@ -27,6 +27,26 @@
             };
         }
 
+
+        [Test]
+        public void AsEnumerable()
+        {
+            _dbSet.AddRange(_list);
+            var result = _dbSet.AsEnumerable();
+            Assert.AreEqual(2, result.Count());
+        }
+
+        [Test]
+        public async Task AsAsyncEnumerable()
+        {
+            var count = 0;
+            await _dbSet.AddRangeAsync(_list);
+            await foreach (var y in _dbSet.AsAsyncEnumerable())
+                ++count;
+
+            Assert.AreEqual(2, count);
+        }
+
         [Test]
         [TestCase(1, 2, 3)]
         [TestCase(4, 5, 6)]
