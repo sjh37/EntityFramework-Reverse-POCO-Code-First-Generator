@@ -2689,6 +2689,11 @@ namespace Efrpg.V3TestE5
             return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues)));
         }
 
+        IAsyncEnumerator<TEntity> IAsyncEnumerable<TEntity>.GetAsyncEnumerator(CancellationToken cancellationToken)
+        {
+            return GetAsyncEnumerator(cancellationToken);
+        }
+
         public override EntityEntry<TEntity> Add(TEntity entity)
         {
             _data.Add(entity);
