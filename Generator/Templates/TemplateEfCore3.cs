@@ -929,7 +929,7 @@ using {{this}};{{#newline}}
 
     public override ValueTask<EntityEntry<TEntity>> AddAsync(TEntity entity, CancellationToken cancellationToken = default){{#newline}}
     {{{#newline}}
-        return new ValueTask<EntityEntry<TEntity>>(Task<EntityEntry<TEntity>>.Factory.StartNew(() => Add(entity)));{{#newline}}
+        return new ValueTask<EntityEntry<TEntity>>(Task<EntityEntry<TEntity>>.Factory.StartNew(() => Add(entity), cancellationToken));{{#newline}}
     }{{#newline}}{{#newline}}
 
     public override void AddRange(params TEntity[] entities){{#newline}}
