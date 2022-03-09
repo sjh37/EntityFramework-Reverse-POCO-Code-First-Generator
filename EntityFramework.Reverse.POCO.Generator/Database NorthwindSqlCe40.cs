@@ -461,7 +461,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
 
         public override ValueTask<EntityEntry<TEntity>> AddAsync(TEntity entity, CancellationToken cancellationToken = default)
         {
-            return new ValueTask<EntityEntry<TEntity>>(Task<EntityEntry<TEntity>>.Factory.StartNew(() => Add(entity)));
+            return new ValueTask<EntityEntry<TEntity>>(Task<EntityEntry<TEntity>>.Factory.StartNew(() => Add(entity), cancellationToken));
         }
 
         public override void AddRange(params TEntity[] entities)
@@ -487,7 +487,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         public override Task AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
         {
             if (entities == null) throw new ArgumentNullException("entities");
-            return Task.Factory.StartNew(() => AddRange(entities));
+            return Task.Factory.StartNew(() => AddRange(entities), cancellationToken);
         }
 
         public override EntityEntry<TEntity> Attach(TEntity entity)

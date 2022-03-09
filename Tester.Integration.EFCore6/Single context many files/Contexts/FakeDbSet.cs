@@ -125,7 +125,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         public override Task AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
         {
             if (entities == null) throw new ArgumentNullException("entities");
-            return Task.Factory.StartNew(() => AddRange(entities));
+            return Task.Factory.StartNew(() => AddRange(entities), cancellationToken);
         }
 
         public override EntityEntry<TEntity> Attach(TEntity entity)

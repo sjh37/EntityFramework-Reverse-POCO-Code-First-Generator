@@ -279,7 +279,7 @@ namespace Efrpg.SqlCE
         public override Task AddRangeAsync(params TEntity[] entities)
         {
             if (entities == null) throw new ArgumentNullException("entities");
-            return Task.Factory.StartNew(() => AddRange(entities));
+            return Task.Factory.StartNew(() => AddRange(entities), cancellationToken);
         }
 
         public override void AttachRange(params TEntity[] entities)

@@ -974,7 +974,7 @@ using {{this}};{{#newline}}
     public override Task AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default){{#newline}}
     {{{#newline}}
         if (entities == null) throw new ArgumentNullException(""entities"");{{#newline}}
-        return Task.Factory.StartNew(() => AddRange(entities));{{#newline}}
+        return Task.Factory.StartNew(() => AddRange(entities), cancellationToken);{{#newline}}
     }{{#newline}}{{#newline}}
 
     public override EntityEntry<TEntity> Attach(TEntity entity){{#newline}}

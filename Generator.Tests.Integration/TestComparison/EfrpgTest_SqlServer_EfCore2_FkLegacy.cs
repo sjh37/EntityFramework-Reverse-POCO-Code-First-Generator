@@ -2707,7 +2707,7 @@ namespace Efrpg.V3TestE2
 
         public override Task<EntityEntry<TEntity>> AddAsync(TEntity entity, CancellationToken cancellationToken = default)
         {
-            return Task.Factory.StartNew(() => Add(entity));
+            return Task.Factory.StartNew(() => Add(entity), cancellationToken);
         }
 
         public override void AddRange(params TEntity[] entities)
@@ -2733,7 +2733,7 @@ namespace Efrpg.V3TestE2
         public override Task AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
         {
             if (entities == null) throw new ArgumentNullException("entities");
-            return Task.Factory.StartNew(() => AddRange(entities));
+            return Task.Factory.StartNew(() => AddRange(entities), cancellationToken);
         }
 
         public override EntityEntry<TEntity> Attach(TEntity entity)
