@@ -185,7 +185,7 @@ namespace Efrpg.Readers
                 return null;
 
             var cmd = connection.CreateCommand();
-            if(Settings.DatabaseType != DatabaseType.SqlCe)
+            if(cmd != null && Settings.DatabaseType != DatabaseType.SqlCe)
                 cmd.CommandTimeout = Settings.CommandTimeout;
 
             return cmd;
