@@ -364,7 +364,8 @@ GO
 CREATE TABLE EnumTest.DaysOfWeek
 (
 	TypeName VARCHAR(50) NOT NULL,
-	TypeId INT NOT NULL
+	TypeId INT NOT NULL,
+    CONSTRAINT PK_EnumTest_DaysOfWeek PRIMARY KEY (TypeId ASC)
 );
 GO
 INSERT INTO EnumTest.DaysOfWeek (TypeName, TypeId)
@@ -379,6 +380,16 @@ CREATE TABLE dbo.EnumsWithStringAsValue
 GO
 INSERT INTO EnumsWithStringAsValue
 VALUES ('SunRoof','0x01'), ('Spoiler', '0x02'), ('FogLights', '0x04'), ('TintedWindows', '0x08')
+GO
+CREATE TABLE EnumTest.OpenDays
+(
+    Id INT IDENTITY(1, 1) NOT NULL,
+    TypeId INT NOT NULL,
+    CONSTRAINT PK_OpenDays PRIMARY KEY CLUSTERED (Id ASC),
+    CONSTRAINT Fk_OpenDays_TypeId
+        FOREIGN KEY (TypeId)
+        REFERENCES EnumTest.DaysOfWeek (TypeId)
+);
 GO
 
 
