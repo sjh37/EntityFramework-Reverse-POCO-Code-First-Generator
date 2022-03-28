@@ -31,6 +31,10 @@
       <LastGenOutput>EfrpgTest.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
+    <None Update="EnumForeignKey.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>EnumForeignKey.cs</LastGenOutput>
+    </None>
     <None Update="EnumOnly.tt">
       <LastGenOutput>EnumOnly.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -78,6 +82,11 @@
       <DependentUpon>EfrpgTest.tt</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="EnumForeignKey.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>EnumForeignKey.tt</DependentUpon>
     </Compile>
     <Compile Update="EnumOnly.cs">
       <DependentUpon>EnumOnly.tt</DependentUpon>
