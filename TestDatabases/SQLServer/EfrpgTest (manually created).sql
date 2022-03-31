@@ -384,10 +384,10 @@ GO
 CREATE TABLE EnumTest.OpenDays
 (
     Id INT IDENTITY(1, 1) NOT NULL,
-    TypeId INT NOT NULL,
+    EnumId INT NOT NULL,
     CONSTRAINT PK_OpenDays PRIMARY KEY CLUSTERED (Id ASC),
-    CONSTRAINT Fk_OpenDays_TypeId
-        FOREIGN KEY (TypeId)
+    CONSTRAINT Fk_OpenDays_EnumId
+        FOREIGN KEY (EnumId)
         REFERENCES EnumTest.DaysOfWeek (TypeId)
 );
 GO
