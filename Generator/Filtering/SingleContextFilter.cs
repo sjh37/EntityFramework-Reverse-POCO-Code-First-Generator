@@ -10,10 +10,13 @@ namespace Efrpg.Filtering
     /// </summary>
     public class SingleContextFilter : DbContextFilter
     {
+        public List<EnumDefinition> EnumDefinitions;
+
         protected readonly List<IFilterType<Schema>>          SchemaFilters;
         protected readonly List<IFilterType<Table>>           TableFilters;
         protected readonly List<IFilterType<Column>>          ColumnFilters;
         protected readonly List<IFilterType<StoredProcedure>> StoredProcedureFilters;
+
         private bool _hasMergedIncludeFilters;
 
         public SingleContextFilter()
@@ -28,6 +31,7 @@ namespace Efrpg.Filtering
             TableFilters            = FilterSettings.TableFilters;
             ColumnFilters           = FilterSettings.ColumnFilters;
             StoredProcedureFilters  = FilterSettings.StoredProcedureFilters;
+            
             _hasMergedIncludeFilters = false;
 
             EnumDefinitions = new List<EnumDefinition>();
@@ -78,9 +82,6 @@ namespace Efrpg.Filtering
 
             return entityName;
         }
-
-        public List<EnumDefinition> EnumDefinitions;
-
 
         public override void UpdateTable(Table table)
         {

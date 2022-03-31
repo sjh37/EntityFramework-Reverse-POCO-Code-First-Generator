@@ -1,4 +1,6 @@
-﻿namespace Generator.Tests.Integration
+﻿using System.Collections.Generic;
+
+namespace Generator.Tests.Integration
 {
     using System;
     using System.Diagnostics;
@@ -34,7 +36,8 @@
 
             ResetFilters();
         }
-        protected static void Run(string filename, string singleDbContextSubNamespace, Type fileManagerType, string subFolder)
+
+        protected static void Run(string filename, string singleDbContextSubNamespace, Type fileManagerType, string subFolder, List<EnumDefinition> enumDefinitions = null)
         {
             Inflector.PluralisationService   = new EnglishPluralizationService();
             Settings.GenerateSingleDbContext = true;
@@ -71,6 +74,11 @@
                 filter.Value.IncludeStoredProcedures      = true;
                 filter.Value.IncludeTableValuedFunctions  = true;
                 filter.Value.IncludeScalarValuedFunctions = true;
+
+                if (filter.Value is SingleContextFilter singleContextFilter)
+                {
+                    singleContextFilter.EnumDefinitions = enumDefinitions;
+                }
             }
 
             var stopwatch          = new Stopwatch();

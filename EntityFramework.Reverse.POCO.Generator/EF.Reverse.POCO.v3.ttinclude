@@ -703,7 +703,8 @@
         public static bool IsEf6()     => TemplateType == TemplateType.Ef6;
         public static bool IsEfCore3Plus() => EfCoreVersion() >= 3;
         public static bool IsEfCore5Plus() => EfCoreVersion() >= 5;
-        private static int EfCoreVersion()
+        public static bool IsEfCore6Plus() => EfCoreVersion() >= 6;
+        public static int EfCoreVersion()
         {
             switch (TemplateType)
             {
@@ -898,10 +899,13 @@
     /// </summary>
     public class SingleContextFilter : DbContextFilter
     {
+        public List<EnumDefinition> EnumDefinitions;
+
         protected readonly List<IFilterType<Schema>>          SchemaFilters;
         protected readonly List<IFilterType<Table>>           TableFilters;
         protected readonly List<IFilterType<Column>>          ColumnFilters;
         protected readonly List<IFilterType<StoredProcedure>> StoredProcedureFilters;
+
         private bool _hasMergedIncludeFilters;
 
         public SingleContextFilter()
@@ -916,6 +920,7 @@
             TableFilters            = FilterSettings.TableFilters;
             ColumnFilters           = FilterSettings.ColumnFilters;
             StoredProcedureFilters  = FilterSettings.StoredProcedureFilters;
+            
             _hasMergedIncludeFilters = false;
 
             EnumDefinitions = new List<EnumDefinition>();
@@ -966,9 +971,6 @@
 
             return entityName;
         }
-
-        public List<EnumDefinition> EnumDefinitions;
-
 
         public override void UpdateTable(Table table)
         {
@@ -6202,7 +6204,7 @@
         protected override string GetHasMethod(Relationship relationship, IList<Column> fkCols, IList<Column> pkCols, bool isNotEnforced, bool fkHasUniqueConstraint)
         {
             if (relationship == Relationship.ManyToMany)
-                return null; // Not supported in EF.Core2 or EF.Core3
+                return null; // Not yet supported in EF.Core
 
             var withMany = relationship == Relationship.ManyToOne || relationship == Relationship.ManyToMany;
             var pkIsUnique = pkCols.Any(c => c.IsUnique || c.IsUniqueConstraint || c.IsPrimaryKey);

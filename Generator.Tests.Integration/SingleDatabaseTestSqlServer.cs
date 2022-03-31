@@ -5,7 +5,7 @@
     using Efrpg.FileManagement;
     using Efrpg.Filtering;
     using Efrpg.Templates;
-    using Generator.Tests.Common;
+    using Common;
     using NUnit.Framework;
 
     [TestFixture, NonParallelizable]
@@ -27,7 +27,7 @@
             Settings.DatabaseType     = DatabaseType.SqlServer;
         }
 
-        [Test, NonParallelizable]
+        [Test]
         // Legacy
         [TestCase("EfrpgTest",      ".V3TestE1",   "MyDbContext",      "EfrpgTestDbContext",      TemplateType.Ef6,     ForeignKeyNamingStrategy.Legacy)]
         [TestCase("EfrpgTest",      ".V3TestE2",   "MyDbContext",      "EfrpgTestDbContext",      TemplateType.EfCore2, ForeignKeyNamingStrategy.Legacy)]
@@ -75,14 +75,19 @@
                 }
             };
 
+            var enumDefinitions = new List<EnumDefinition>
+            {
+                new EnumDefinition { Schema = "EnumTest", Table = "OpenDays", Column = "TypeId", EnumType = "DaysOfWeek" }
+            };
+
             // Act
-            Run(database, singleDbContextSubNamespace, typeof(NullFileManager), null);
+            Run(database, singleDbContextSubNamespace, typeof(NullFileManager), null, enumDefinitions);
 
             // Assert
             CompareAgainstTestComparison(database);
         }
 
-        [Test, NonParallelizable]
+        [Test]
         [TestCase("EfrpgTest", ".V3FilterTest", "EfrpgTest", "EfrpgDbContext", false, TemplateType.EfCore3, ForeignKeyNamingStrategy.Legacy)]
         [TestCase("EfrpgTest", ".V5FilterTest", "EfrpgTest", "EfrpgDbContext", false, TemplateType.EfCore5, ForeignKeyNamingStrategy.Legacy)]
         [TestCase("EfrpgTest", ".V6FilterTest", "EfrpgTest", "EfrpgDbContext", false, TemplateType.EfCore6, ForeignKeyNamingStrategy.Legacy)]

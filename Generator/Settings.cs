@@ -677,7 +677,8 @@ namespace Efrpg
         public static bool IsEf6()     => TemplateType == TemplateType.Ef6;
         public static bool IsEfCore3Plus() => EfCoreVersion() >= 3;
         public static bool IsEfCore5Plus() => EfCoreVersion() >= 5;
-        private static int EfCoreVersion()
+        public static bool IsEfCore6Plus() => EfCoreVersion() >= 6;
+        public static int EfCoreVersion()
         {
             switch (TemplateType)
             {

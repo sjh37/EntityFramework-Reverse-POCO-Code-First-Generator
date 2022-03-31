@@ -271,7 +271,7 @@ namespace Efrpg.Generators
         protected override string GetHasMethod(Relationship relationship, IList<Column> fkCols, IList<Column> pkCols, bool isNotEnforced, bool fkHasUniqueConstraint)
         {
             if (relationship == Relationship.ManyToMany)
-                return null; // Not supported in EF.Core2 or EF.Core3
+                return null; // Not yet supported in EF.Core
 
             var withMany = relationship == Relationship.ManyToOne || relationship == Relationship.ManyToMany;
             var pkIsUnique = pkCols.Any(c => c.IsUnique || c.IsUniqueConstraint || c.IsPrimaryKey);
