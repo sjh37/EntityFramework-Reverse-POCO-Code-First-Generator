@@ -18,9 +18,9 @@ namespace EnumForeignKey
         // Reverse navigation
 
         /// <summary>
-        /// Child EnumTest_OpenDays where [OpenDays].[TypeId] point to this entity (Fk_OpenDays_TypeId)
+        /// Child EnumTest_OpenDays where [OpenDays].[EnumId] point to this entity (Fk_OpenDays_EnumId)
         /// </summary>
-        public virtual ICollection<EnumTest_OpenDay> EnumTest_OpenDays { get; set; } // OpenDays.Fk_OpenDays_TypeId
+        public virtual ICollection<EnumTest_OpenDay> EnumTest_OpenDays { get; set; } // OpenDays.Fk_OpenDays_EnumId
 
         public EnumTest_DaysOfWeek()
         {
@@ -32,14 +32,14 @@ namespace EnumForeignKey
     public class EnumTest_OpenDay
     {
         public int Id { get; set; } // Id (Primary key)
-        public DaysOfWeek TypeId { get; set; } // TypeId
+        public int EnumId { get; set; } // EnumId
 
         // Foreign keys
 
         /// <summary>
-        /// Parent EnumTest_DaysOfWeek pointed by [OpenDays].([TypeId]) (Fk_OpenDays_TypeId)
+        /// Parent EnumTest_DaysOfWeek pointed by [OpenDays].([EnumId]) (Fk_OpenDays_EnumId)
         /// </summary>
-        public virtual EnumTest_DaysOfWeek EnumTest_DaysOfWeek { get; set; } // Fk_OpenDays_TypeId
+        public virtual EnumTest_DaysOfWeek EnumTest_DaysOfWeek { get; set; } // Fk_OpenDays_EnumId
     }
 
 
