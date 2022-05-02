@@ -158,6 +158,10 @@ namespace Efrpg.V3TestE1
         C182Test2ReturnModel C182Test2(int? flag);
         Task<C182Test2ReturnModel> C182Test2Async(int? flag);
 
+        List<ColourPivotReturnModel> ColourPivot();
+        List<ColourPivotReturnModel> ColourPivot(out int procResult);
+        Task<List<ColourPivotReturnModel>> ColourPivotAsync();
+
         int ConvertToString(int? someValue, out string someString);
         // ConvertToStringAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
@@ -1014,6 +1018,26 @@ namespace Efrpg.V3TestE1
             {
                 DbInterception.Dispatch.Connection.Close(Database.Connection, new DbInterceptionContext());
             }
+            return procResultData;
+        }
+
+        public List<ColourPivotReturnModel> ColourPivot()
+        {
+            int procResult;
+            return ColourPivot(out procResult);
+        }
+
+        public List<ColourPivotReturnModel> ColourPivot(out int procResult)
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            var procResultData = Database.SqlQuery<ColourPivotReturnModel>("EXEC @procResult = [dbo].[ColourPivot]", procResultParam).ToList();
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<ColourPivotReturnModel>> ColourPivotAsync()
+        {
+            var procResultData = await Database.SqlQuery<ColourPivotReturnModel>("EXEC [dbo].[ColourPivot]").ToListAsync();
             return procResultData;
         }
 
@@ -2435,6 +2459,24 @@ namespace Efrpg.V3TestE1
         {
             int procResult;
             return Task.FromResult(C182Test2(flag, out procResult));
+        }
+
+        public List<ColourPivotReturnModel> ColourPivot()
+        {
+            int procResult;
+            return ColourPivot(out procResult);
+        }
+
+        public List<ColourPivotReturnModel> ColourPivot(out int procResult)
+        {
+            procResult = 0;
+            return new List<ColourPivotReturnModel>();
+        }
+
+        public Task<List<ColourPivotReturnModel>> ColourPivotAsync()
+        {
+            int procResult;
+            return Task.FromResult(ColourPivot(out procResult));
         }
 
         public int ConvertToString(int? someValue, out string someString)
@@ -6739,6 +6781,13 @@ namespace Efrpg.V3TestE1
             public string Description { get; set; }
         }
         public List<ResultSetModel3> ResultSet3;
+    }
+
+    public class ColourPivotReturnModel
+    {
+        public int? Blue { get; set; }
+        public int? Green { get; set; }
+        public int? Red { get; set; }
     }
 
     public class CsvToIntReturnModel

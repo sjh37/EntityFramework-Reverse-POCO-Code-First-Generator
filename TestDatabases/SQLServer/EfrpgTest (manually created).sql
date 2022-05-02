@@ -1658,6 +1658,20 @@ INSERT INTO Car (Id, PrimaryColourId, CarMake) VALUES (1, 1, 'Ford'),(2,3, 'Saab
 INSERT INTO CarToColour (CarId, ColourId) VALUES (1,2),(2,1),(2,2)
 GO
 
+CREATE PROCEDURE dbo.ColourPivot
+AS
+BEGIN
+    SELECT pivot_table.Blue, pivot_table.Green, pivot_table.Red
+    FROM
+    (SELECT Id, Name FROM Colour) t
+    PIVOT
+    (
+        MIN(Id)
+        FOR Name IN (Red, Green, Blue)
+    ) pivot_table;
+END;
+GO
+
 
 -- drop table MultipleKeys
 CREATE TABLE MultipleKeys

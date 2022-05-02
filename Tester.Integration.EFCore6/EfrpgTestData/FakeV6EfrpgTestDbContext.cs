@@ -473,6 +473,25 @@ namespace V6EfrpgTest
             return Task.FromResult(C182Test2(flag, out procResult));
         }
 
+        public DbSet<ColourPivotReturnModel> ColourPivotReturnModel { get; set; }
+        public List<ColourPivotReturnModel> ColourPivot()
+        {
+            int procResult;
+            return ColourPivot(out procResult);
+        }
+
+        public List<ColourPivotReturnModel> ColourPivot(out int procResult)
+        {
+            procResult = 0;
+            return new List<ColourPivotReturnModel>();
+        }
+
+        public Task<List<ColourPivotReturnModel>> ColourPivotAsync()
+        {
+            int procResult;
+            return Task.FromResult(ColourPivot(out procResult));
+        }
+
         public int ConvertToString(int? someValue, out string someString)
         {
             someString = default(string);

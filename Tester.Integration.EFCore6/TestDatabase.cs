@@ -193,6 +193,10 @@ namespace TestDatabaseStandard
         // C182Test2ReturnModel C182Test2(int? flag); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
         // Task<C182Test2ReturnModel> C182Test2Async(int? flag); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
+        List<ColourPivotReturnModel> ColourPivot();
+        List<ColourPivotReturnModel> ColourPivot(out int procResult);
+        Task<List<ColourPivotReturnModel>> ColourPivotAsync();
+
         int ConvertToString(int? someValue, out string someString);
         // ConvertToStringAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
@@ -571,6 +575,7 @@ namespace TestDatabaseStandard
             modelBuilder.ApplyConfiguration(new WVN_VArticleConfiguration());
             modelBuilder.ApplyConfiguration(new БрендытовараConfiguration());
 
+            modelBuilder.Entity<ColourPivotReturnModel>().HasNoKey();
             modelBuilder.Entity<DboProcDataFromFfrsReturnModel>().HasNoKey();
             modelBuilder.Entity<DboProcDataFromFfrsAndDboReturnModel>().HasNoKey();
             modelBuilder.Entity<DsOpeProcReturnModel>().HasNoKey();
@@ -717,6 +722,34 @@ namespace TestDatabaseStandard
         // public C182Test2ReturnModel C182Test2(int? flag) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
         // public async Task<C182Test2ReturnModel> C182Test2Async(int? flag) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+
+        public List<ColourPivotReturnModel> ColourPivot()
+        {
+            int procResult;
+            return ColourPivot(out procResult);
+        }
+
+        public List<ColourPivotReturnModel> ColourPivot(out int procResult)
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [dbo].[ColourPivot]";
+            var procResultData = Set<ColourPivotReturnModel>()
+                .FromSqlRaw(sqlCommand, procResultParam)
+                .ToList();
+
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<ColourPivotReturnModel>> ColourPivotAsync()
+        {
+            const string sqlCommand = "EXEC [dbo].[ColourPivot]";
+            var procResultData = await Set<ColourPivotReturnModel>()
+                .FromSqlRaw(sqlCommand)
+                .ToListAsync();
+
+            return procResultData;
+        }
 
         public int ConvertToString(int? someValue, out string someString)
         {
@@ -2136,6 +2169,25 @@ namespace TestDatabaseStandard
         {
             int procResult;
             return Task.FromResult(C182Test2(flag, out procResult));
+        }
+
+        public DbSet<ColourPivotReturnModel> ColourPivotReturnModel { get; set; }
+        public List<ColourPivotReturnModel> ColourPivot()
+        {
+            int procResult;
+            return ColourPivot(out procResult);
+        }
+
+        public List<ColourPivotReturnModel> ColourPivot(out int procResult)
+        {
+            procResult = 0;
+            return new List<ColourPivotReturnModel>();
+        }
+
+        public Task<List<ColourPivotReturnModel>> ColourPivotAsync()
+        {
+            int procResult;
+            return Task.FromResult(ColourPivot(out procResult));
         }
 
         public int ConvertToString(int? someValue, out string someString)
@@ -6458,6 +6510,13 @@ namespace TestDatabaseStandard
             public string Description { get; set; }
         }
         public List<ResultSetModel3> ResultSet3;
+    }
+
+    public class ColourPivotReturnModel
+    {
+        public int? Blue { get; set; }
+        public int? Green { get; set; }
+        public int? Red { get; set; }
     }
 
     public class CsvToIntReturnModel

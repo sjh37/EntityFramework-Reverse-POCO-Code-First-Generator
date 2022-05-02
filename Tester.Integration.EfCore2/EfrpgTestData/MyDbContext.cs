@@ -259,6 +259,7 @@ namespace Tester.Integration.EfCore2
             modelBuilder.ApplyConfiguration(new WVN_ArticleConfiguration());
             modelBuilder.ApplyConfiguration(new БрендытовараConfiguration());
 
+            modelBuilder.Query<ColourPivotReturnModel>();
             modelBuilder.Query<DboProcDataFromFfrsReturnModel>();
             modelBuilder.Query<DboProcDataFromFfrsAndDboReturnModel>();
             modelBuilder.Query<DsOpeProcReturnModel>();
@@ -399,6 +400,34 @@ namespace Tester.Integration.EfCore2
         // public C182Test2ReturnModel C182Test2(int? flag) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
         // public async Task<C182Test2ReturnModel> C182Test2Async(int? flag) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+
+        public List<ColourPivotReturnModel> ColourPivot()
+        {
+            int procResult;
+            return ColourPivot(out procResult);
+        }
+
+        public List<ColourPivotReturnModel> ColourPivot(out int procResult)
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [dbo].[ColourPivot]";
+            var procResultData = Query<ColourPivotReturnModel>()
+                .FromSql(sqlCommand, procResultParam)
+                .ToList();
+
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<ColourPivotReturnModel>> ColourPivotAsync()
+        {
+            const string sqlCommand = "EXEC [dbo].[ColourPivot]";
+            var procResultData = await Query<ColourPivotReturnModel>()
+                .FromSql(sqlCommand)
+                .ToListAsync();
+
+            return procResultData;
+        }
 
         public int ConvertToString(int? someValue, out string someString)
         {
