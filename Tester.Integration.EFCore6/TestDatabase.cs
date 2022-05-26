@@ -87,6 +87,8 @@ namespace TestDatabaseStandard
         DbSet<Issue47_Role> Issue47_Roles { get; set; } // Role
         DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
+        DbSet<MQ_ApplicationUser> MQ_ApplicationUsers { get; set; } // ApplicationUsers
+        DbSet<MQ_Log> MQ_Logs { get; set; } // Logs
         DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
         DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
         DbSet<OneEightSix_IssueUploadedFile> OneEightSix_IssueUploadedFiles { get; set; } // IssueUploadedFile
@@ -411,6 +413,8 @@ namespace TestDatabaseStandard
         public DbSet<Issue47_Role> Issue47_Roles { get; set; } // Role
         public DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
+        public DbSet<MQ_ApplicationUser> MQ_ApplicationUsers { get; set; } // ApplicationUsers
+        public DbSet<MQ_Log> MQ_Logs { get; set; } // Logs
         public DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
         public DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
         public DbSet<OneEightSix_IssueUploadedFile> OneEightSix_IssueUploadedFiles { get; set; } // IssueUploadedFile
@@ -539,6 +543,8 @@ namespace TestDatabaseStandard
             modelBuilder.ApplyConfiguration(new Issue47_RoleConfiguration());
             modelBuilder.ApplyConfiguration(new Issue47_UserConfiguration());
             modelBuilder.ApplyConfiguration(new Issue47_UserRoleConfiguration());
+            modelBuilder.ApplyConfiguration(new MQ_ApplicationUserConfiguration());
+            modelBuilder.ApplyConfiguration(new MQ_LogConfiguration());
             modelBuilder.ApplyConfiguration(new MultipleKeyConfiguration());
             modelBuilder.ApplyConfiguration(new OneEightSix_IssueConfiguration());
             modelBuilder.ApplyConfiguration(new OneEightSix_IssueUploadedFileConfiguration());
@@ -1773,6 +1779,8 @@ namespace TestDatabaseStandard
         public DbSet<Issue47_Role> Issue47_Roles { get; set; } // Role
         public DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
+        public DbSet<MQ_ApplicationUser> MQ_ApplicationUsers { get; set; } // ApplicationUsers
+        public DbSet<MQ_Log> MQ_Logs { get; set; } // Logs
         public DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
         public DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
         public DbSet<OneEightSix_IssueUploadedFile> OneEightSix_IssueUploadedFiles { get; set; } // IssueUploadedFile
@@ -1877,6 +1885,8 @@ namespace TestDatabaseStandard
             Issue47_Roles = new FakeDbSet<Issue47_Role>("RoleId");
             Issue47_Users = new FakeDbSet<Issue47_User>("UserId");
             Issue47_UserRoles = new FakeDbSet<Issue47_UserRole>("UserRoleId");
+            MQ_ApplicationUsers = new FakeDbSet<MQ_ApplicationUser>("Id");
+            MQ_Logs = new FakeDbSet<MQ_Log>("Id");
             MultipleKeys = new FakeDbSet<MultipleKey>("UserId", "FavouriteColourId", "BestHolidayTypeId");
             OneEightSix_Issues = new FakeDbSet<OneEightSix_Issue>("Id");
             OneEightSix_IssueUploadedFiles = new FakeDbSet<OneEightSix_IssueUploadedFile>("UploadedFileId", "IssueId");
@@ -4300,6 +4310,50 @@ namespace TestDatabaseStandard
         public virtual Issue47_User Issue47_User { get; set; } // Issue47_UserRoles_userid
     }
 
+    // ApplicationUsers
+    public class MQ_ApplicationUser
+    {
+        public int Id { get; set; } // Id (Primary key)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child MQ_Logs where [Logs].[ImpersonatingUserId] point to this entity (FK_MQ_LOGS__ImpersonatingUser)
+        /// </summary>
+        public virtual ICollection<MQ_Log> MQ_Logs_ImpersonatingUserId { get; set; } // Logs.FK_MQ_LOGS__ImpersonatingUser
+
+        /// <summary>
+        /// Child MQ_Logs where [Logs].[UserId] point to this entity (FK_MQ_LOGS__User)
+        /// </summary>
+        public virtual ICollection<MQ_Log> MQ_Logs_UserId { get; set; } // Logs.FK_MQ_LOGS__User
+
+        public MQ_ApplicationUser()
+        {
+            MQ_Logs_ImpersonatingUserId = new List<MQ_Log>();
+            MQ_Logs_UserId = new List<MQ_Log>();
+        }
+    }
+
+    // Logs
+    public class MQ_Log
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public int? UserId { get; set; } // UserId
+        public int? ImpersonatingUserId { get; set; } // ImpersonatingUserId
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent MQ_ApplicationUser pointed by [Logs].([ImpersonatingUserId]) (FK_MQ_LOGS__ImpersonatingUser)
+        /// </summary>
+        public virtual MQ_ApplicationUser ImpersonatingUser { get; set; } // FK_MQ_LOGS__ImpersonatingUser
+
+        /// <summary>
+        /// Parent MQ_ApplicationUser pointed by [Logs].([UserId]) (FK_MQ_LOGS__User)
+        /// </summary>
+        public virtual MQ_ApplicationUser User { get; set; } // FK_MQ_LOGS__User
+    }
+
     // MultipleKeys
     public class MultipleKey
     {
@@ -5905,6 +5959,36 @@ namespace TestDatabaseStandard
             // Foreign keys
             builder.HasOne(a => a.Issue47_Role).WithMany(b => b.Issue47_UserRoles).HasForeignKey(c => c.RoleId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("Issue47_UserRoles_roleid");
             builder.HasOne(a => a.Issue47_User).WithMany(b => b.Issue47_UserRoles).HasForeignKey(c => c.UserId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("Issue47_UserRoles_userid");
+        }
+    }
+
+    // ApplicationUsers
+    public class MQ_ApplicationUserConfiguration : IEntityTypeConfiguration<MQ_ApplicationUser>
+    {
+        public void Configure(EntityTypeBuilder<MQ_ApplicationUser> builder)
+        {
+            builder.ToTable("ApplicationUsers", "MQ");
+            builder.HasKey(x => x.Id).HasName("PK_MQ_ApplicationUsers").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+        }
+    }
+
+    // Logs
+    public class MQ_LogConfiguration : IEntityTypeConfiguration<MQ_Log>
+    {
+        public void Configure(EntityTypeBuilder<MQ_Log> builder)
+        {
+            builder.ToTable("Logs", "MQ");
+            builder.HasKey(x => x.Id).HasName("PK_MQ_Logs").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.UserId).HasColumnName(@"UserId").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.ImpersonatingUserId).HasColumnName(@"ImpersonatingUserId").HasColumnType("int").IsRequired(false);
+
+            // Foreign keys
+            builder.HasOne(a => a.ImpersonatingUser).WithMany(b => b.MQ_Logs_ImpersonatingUserId).HasForeignKey(c => c.ImpersonatingUserId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_MQ_LOGS__ImpersonatingUser");
+            builder.HasOne(a => a.User).WithMany(b => b.MQ_Logs_UserId).HasForeignKey(c => c.UserId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_MQ_LOGS__User");
         }
     }
 

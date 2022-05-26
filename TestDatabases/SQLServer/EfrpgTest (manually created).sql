@@ -32,7 +32,7 @@ GO
 USE [EfrpgTest]
 GO
 IF NOT EXISTS (SELECT name FROM sys.filegroups WHERE is_default=1 AND name = N'PRIMARY')
-	ALTER DATABASE [EfrpgTest] MODIFY FILEGROUP [PRIMARY] DEFAULT
+    ALTER DATABASE [EfrpgTest] MODIFY FILEGROUP [PRIMARY] DEFAULT
 GO
 */
 
@@ -69,7 +69,7 @@ GO
 USE [EfrpgTest_Synonyms]
 GO
 IF NOT EXISTS (SELECT name FROM sys.filegroups WHERE is_default=1 AND name = N'PRIMARY')
-	ALTER DATABASE [EfrpgTest_Synonyms] MODIFY FILEGROUP [PRIMARY] DEFAULT
+    ALTER DATABASE [EfrpgTest_Synonyms] MODIFY FILEGROUP [PRIMARY] DEFAULT
 GO
 */
 
@@ -106,7 +106,7 @@ GO
 USE [EfrpgTest_Settings]
 GO
 IF NOT EXISTS (SELECT name FROM sys.filegroups WHERE is_default=1 AND name = N'PRIMARY')
-	ALTER DATABASE [EfrpgTest_Settings] MODIFY FILEGROUP [PRIMARY] DEFAULT
+    ALTER DATABASE [EfrpgTest_Settings] MODIFY FILEGROUP [PRIMARY] DEFAULT
 GO
 */
 
@@ -275,8 +275,8 @@ INSERT INTO MultiContext.Context ([Name], [Description], BaseSchema, [Namespace]
 VALUES (N'EnumerationDbContext',N'This module is used to extract the enumerations', 'dbo', NULL),
        (N'AppleDbContext', N'Testing apples',  NULL, NULL),
        (N'BananaDbContext', N'Testing bananas', N'dbo', NULL),
-	   (N'CherryDbContext', N'Testing cherries', N'dbo', 'Cherry'),
-	   (N'DamsonDbContext', N'Testing Damson plums', NULL, 'Plum');
+       (N'CherryDbContext', N'Testing cherries', N'dbo', 'Cherry'),
+       (N'DamsonDbContext', N'Testing Damson plums', NULL, 'Plum');
 GO
 UPDATE MultiContext.Context SET filename='CherryDatabaseContext' WHERE Name='CherryDbContext'
 --UPDATE MultiContext.Context SET TemplatePath='C:\path_to_templates\' WHERE [Name]='DamsonDbContext'
@@ -296,7 +296,7 @@ VALUES (N'Boo', NULL, NULL, N'Stafford.Boo', @id),
 INSERT INTO MultiContext.[Column] (Name, DbName, IsPrimaryKey, OverrideModifier, EnumType, TableId)
 VALUES (N'id', NULL, NULL, 0, NULL,   (SELECT id FROM MultiContext.[Table] WHERE ContextId=@id AND Name=N'Boo')),
        (N'Name', NULL, NULL, 0, NULL, (SELECT id FROM MultiContext.[Table] WHERE ContextId=@id AND Name=N'Boo')),
-	   (N'id', NULL, NULL, 0, NULL,   (SELECT id FROM MultiContext.[Table] WHERE ContextId=@id AND Name=N'Foo'));
+       (N'id', NULL, NULL, 0, NULL,   (SELECT id FROM MultiContext.[Table] WHERE ContextId=@id AND Name=N'Foo'));
 GO
 DECLARE @id INT;
 SELECT @id = Id FROM MultiContext.Context WHERE [Name]=N'BananaDbContext';
@@ -313,8 +313,8 @@ VALUES (N'ColumnNameAndTypes', NULL, NULL, NULL, @id);
 INSERT INTO MultiContext.[Column] (Name, DbName, IsPrimaryKey, OverrideModifier, EnumType, TableId)
 VALUES (N'Dollar', N'$' ,NULL,0, NULL,          (SELECT id FROM MultiContext.[Table] WHERE ContextId=@id AND Name=N'ColumnNameAndTypes')),
        (N'Pound', N'[£]',NULL,0, NULL,          (SELECT id FROM MultiContext.[Table] WHERE ContextId=@id AND Name=N'ColumnNameAndTypes')),
-	   (N'StaticField', N'static',NULL,0, NULL, (SELECT id FROM MultiContext.[Table] WHERE ContextId=@id AND Name=N'ColumnNameAndTypes')),
-	   (N'Day', N'readonly',NULL,0, NULL,       (SELECT id FROM MultiContext.[Table] WHERE ContextId=@id AND Name=N'ColumnNameAndTypes'));
+       (N'StaticField', N'static',NULL,0, NULL, (SELECT id FROM MultiContext.[Table] WHERE ContextId=@id AND Name=N'ColumnNameAndTypes')),
+       (N'Day', N'readonly',NULL,0, NULL,       (SELECT id FROM MultiContext.[Table] WHERE ContextId=@id AND Name=N'ColumnNameAndTypes'));
 GO
 DECLARE @id INT;
 SELECT @id = Id FROM MultiContext.Context WHERE [Name]='DamsonDbContext';
@@ -323,8 +323,8 @@ VALUES (N'NoPrimaryKeys', NULL, NULL, NULL, @id),
        (N'Parent', NULL, NULL, N'[Synonyms].[Parent]', @id);
 INSERT INTO MultiContext.[Column] (Name, DbName, IsPrimaryKey, OverrideModifier, EnumType, TableId)
 VALUES (N'Description', NULL ,1,0, NULL,           (SELECT id FROM MultiContext.[Table] WHERE ContextId=@id AND Name=N'NoPrimaryKeys')),
-       (N'ParentId', NULL,NULL,0, NULL,	           (SELECT id FROM MultiContext.[Table] WHERE ContextId=@id AND Name=N'Parent')),
-	   (N'ParentName', N'ParentName',NULL,0, NULL, (SELECT id FROM MultiContext.[Table] WHERE ContextId=@id AND Name=N'Parent'));
+       (N'ParentId', NULL,NULL,0, NULL,               (SELECT id FROM MultiContext.[Table] WHERE ContextId=@id AND Name=N'Parent')),
+       (N'ParentName', N'ParentName',NULL,0, NULL, (SELECT id FROM MultiContext.[Table] WHERE ContextId=@id AND Name=N'Parent'));
 INSERT INTO MultiContext.ForeignKey (ContextId, ConstraintName, ParentName, ChildName, PkSchema, PkTableName, PkColumn, FkSchema, FkTableName, FkColumn, Ordinal, CascadeOnDelete, IsNotEnforced, HasUniqueConstraint)
 VALUES (@id, N'CustomNameForForeignKey', N'ParentFkName', N'ChildFkName', N'dbo', N'NoPrimaryKeys', N'Description', N'Synonyms', N'Parent', N'ParentName', 1, 0, 0, 0);
 GO
@@ -363,8 +363,8 @@ GO
 -- Enum inside schema
 CREATE TABLE EnumTest.DaysOfWeek
 (
-	TypeName VARCHAR(50) NOT NULL,
-	TypeId INT NOT NULL,
+    TypeName VARCHAR(50) NOT NULL,
+    TypeId INT NOT NULL,
     CONSTRAINT PK_EnumTest_DaysOfWeek PRIMARY KEY (TypeId ASC)
 );
 GO
@@ -374,8 +374,8 @@ GO
 -- Enum in default schema
 CREATE TABLE dbo.EnumsWithStringAsValue
 (
-	enum_name VARCHAR(50) NOT NULL,
-	[value] VARCHAR(10) NOT NULL
+    enum_name VARCHAR(50) NOT NULL,
+    [value] VARCHAR(10) NOT NULL
 );
 GO
 INSERT INTO EnumsWithStringAsValue
@@ -398,13 +398,13 @@ CREATE SCHEMA Stafford
 GO
 CREATE TABLE Stafford.Boo
 (
-	id INT IDENTITY(1, 1) NOT NULL,
-	[name] NCHAR(10) NOT NULL,
+    id INT IDENTITY(1, 1) NOT NULL,
+    [name] NCHAR(10) NOT NULL,
     CONSTRAINT PK_Boo PRIMARY KEY CLUSTERED (id ASC)
 );
 CREATE TABLE Stafford.Foo
 (
-	id INT NOT NULL,
+    id INT NOT NULL,
     [name] NCHAR(10) NOT NULL,
     CONSTRAINT PK_Foo PRIMARY KEY CLUSTERED (id ASC)
 );
@@ -419,8 +419,8 @@ GO
 CREATE TABLE Stafford.ComputedColumns
 (
     Id INT NOT NULL IDENTITY(1,1),
-	MyColumn varchar(10) NOT NULL,
-	MyComputedColumn AS MyColumn,
+    MyColumn varchar(10) NOT NULL,
+    MyComputedColumn AS MyColumn,
     CONSTRAINT PK_Stafford_ComputedColumns PRIMARY KEY CLUSTERED (id ASC)
 );
 GO
@@ -428,36 +428,36 @@ GO
 
 CREATE FUNCTION [dbo].[CsvToInt]
 (
-	@array varchar(8000),
-	@array2 varchar(8000) = ''
+    @array varchar(8000),
+    @array2 varchar(8000) = ''
 )
 RETURNS @IntTable TABLE(IntValue int)
 AS
 BEGIN
-	DECLARE @seperator char(1)
-	SET @seperator = ','
+    DECLARE @seperator char(1)
+    SET @seperator = ','
 
-	DECLARE @seperator_position int
-	DECLARE @array_value varchar(8000)
+    DECLARE @seperator_position int
+    DECLARE @array_value varchar(8000)
 
-	SET @array = @array + @seperator
+    SET @array = @array + @seperator
 
-	WHILE PATINDEX('%,%', @array) <> 0
-	BEGIN
-		SELECT @seperator_position = PATINDEX('%,%', @array)
-		SELECT @array_value = LEFT(@array, @seperator_position - 1)
+    WHILE PATINDEX('%,%', @array) <> 0
+    BEGIN
+        SELECT @seperator_position = PATINDEX('%,%', @array)
+        SELECT @array_value = LEFT(@array, @seperator_position - 1)
 
-		INSERT @IntTable VALUES (CAST(@array_value AS int))
+        INSERT @IntTable VALUES (CAST(@array_value AS int))
 
-		SELECT @array = STUFF(@array, 1, @seperator_position, '')
-		IF LEN(@array) = 0 AND LEN(@array2) > 0
-		BEGIN
-			SET @array = @array2 + ','
-			SET @array2 = ''
-		END
-	END
+        SELECT @array = STUFF(@array, 1, @seperator_position, '')
+        IF LEN(@array) = 0 AND LEN(@array2) > 0
+        BEGIN
+            SET @array = @array2 + ','
+            SET @array2 = ''
+        END
+    END
 
-	RETURN
+    RETURN
 END
 GO
 
@@ -467,36 +467,36 @@ GO
 
 CREATE FUNCTION [CustomSchema].[CsvToIntWithSchema]
 (
-	@array varchar(8000),
-	@array2 varchar(8000) = ''
+    @array varchar(8000),
+    @array2 varchar(8000) = ''
 )
 RETURNS @IntTable TABLE(IntValue int)
 AS
 BEGIN
-	DECLARE @seperator char(1)
-	SET @seperator = ','
+    DECLARE @seperator char(1)
+    SET @seperator = ','
 
-	DECLARE @seperator_position int
-	DECLARE @array_value varchar(8000)
+    DECLARE @seperator_position int
+    DECLARE @array_value varchar(8000)
 
-	SET @array = @array + @seperator
+    SET @array = @array + @seperator
 
-	WHILE PATINDEX('%,%', @array) <> 0
-	BEGIN
-		SELECT @seperator_position = PATINDEX('%,%', @array)
-		SELECT @array_value = LEFT(@array, @seperator_position - 1)
+    WHILE PATINDEX('%,%', @array) <> 0
+    BEGIN
+        SELECT @seperator_position = PATINDEX('%,%', @array)
+        SELECT @array_value = LEFT(@array, @seperator_position - 1)
 
-		INSERT @IntTable VALUES (CAST(@array_value AS int))
+        INSERT @IntTable VALUES (CAST(@array_value AS int))
 
-		SELECT @array = STUFF(@array, 1, @seperator_position, '')
-		IF LEN(@array) = 0 AND LEN(@array2) > 0
-		BEGIN
-			SET @array = @array2 + ','
-			SET @array2 = ''
-		END
-	END
+        SELECT @array = STUFF(@array, 1, @seperator_position, '')
+        IF LEN(@array) = 0 AND LEN(@array2) > 0
+        BEGIN
+            SET @array = @array2 + ','
+            SET @array2 = ''
+        END
+    END
 
-	RETURN
+    RETURN
 END
 GO
 
@@ -511,47 +511,47 @@ GO
 -- DROP TABLE ColumnNameAndTypes;
 CREATE TABLE ColumnNameAndTypes
 (
-	[$] INT NOT null,
-	[%] INT null,
-	[£] INT null,
-	[&fred$] INT null,
+    [$] INT NOT null,
+    [%] INT null,
+    [£] INT null,
+    [&fred$] INT null,
     [abc/\] INT null,
     [joe.bloggs] INT null, -- Contains a period
     [simon-hughes] INT null, -- Snake cased
-	[description] varchar(20) NOT NULL DEFAULT (space((0))),
+    [description] varchar(20) NOT NULL DEFAULT (space((0))),
     someDate DATETIME2(7) NOT NULL DEFAULT (GETDATE()),
-	[Obs] VARCHAR(50) NULL CONSTRAINT [DF__PlanStudies_Obs] DEFAULT ('[{"k":"en","v":""},{"k":"pt","v":""}]'), -- #281 Default values must be escaped on entity classes
-	[Obs1] VARCHAR(50) NULL CONSTRAINT [DF__PlanStudies_Obs1] DEFAULT ('\'), -- #281
-	[Obs2] VARCHAR(50) NULL CONSTRAINT [DF__PlanStudies_Obs2] DEFAULT ('\\'), -- #281
-	[Obs3] VARCHAR(50) NULL CONSTRAINT [DF__PlanStudies_Obs3] DEFAULT ('\\\'), -- #281
-	[static] INT NULL, -- #279 Illegal C#
-	[readonly] INT NULL, -- #279 Illegal C#
-	[123Hi] INT NULL, -- #279 Illegal C#
-	[areal] REAL NULL DEFAULT (1.23), -- #283 need default as 1.23f
-	[afloat] FLOAT NULL DEFAULT (999.),
-	[afloat8] FLOAT(8) NULL,
-	[afloat20] FLOAT(20) NULL,
-	[afloat24] FLOAT(24) NULL, -- same as real. real = float(24)
-	[afloat53] FLOAT(53) NULL,
-	[adecimal] DECIMAL NULL,
-	[adecimal_19_4] DECIMAL(19, 4) NULL,
-	[adecimal_10_3] DECIMAL(10, 3) NULL,
-	[anumeric] NUMERIC NULL,
-	[anumeric_5_2] NUMERIC(5, 2) NULL,
-	[anumeric_11_3] NUMERIC(11, 3) NULL,
-	[amoney] MONEY NULL,
-	[asmallmoney] SMALLMONEY NULL,
-	[brandon] INT NULL, -- Brandon Lilly. IsFixedLength not acceptable for CHAR fixed length columns.
-	GeographyType GEOGRAPHY NULL DEFAULT(CONVERT(GEOGRAPHY,'POINT (0 0)')),
-	GeometryType GEOMETRY NULL DEFAULT(GEOMETRY::STGeomFromText('LINESTRING (100 100, 20 180, 180 180)', 0)),
+    [Obs] VARCHAR(50) NULL CONSTRAINT [DF__PlanStudies_Obs] DEFAULT ('[{"k":"en","v":""},{"k":"pt","v":""}]'), -- #281 Default values must be escaped on entity classes
+    [Obs1] VARCHAR(50) NULL CONSTRAINT [DF__PlanStudies_Obs1] DEFAULT ('\'), -- #281
+    [Obs2] VARCHAR(50) NULL CONSTRAINT [DF__PlanStudies_Obs2] DEFAULT ('\\'), -- #281
+    [Obs3] VARCHAR(50) NULL CONSTRAINT [DF__PlanStudies_Obs3] DEFAULT ('\\\'), -- #281
+    [static] INT NULL, -- #279 Illegal C#
+    [readonly] INT NULL, -- #279 Illegal C#
+    [123Hi] INT NULL, -- #279 Illegal C#
+    [areal] REAL NULL DEFAULT (1.23), -- #283 need default as 1.23f
+    [afloat] FLOAT NULL DEFAULT (999.),
+    [afloat8] FLOAT(8) NULL,
+    [afloat20] FLOAT(20) NULL,
+    [afloat24] FLOAT(24) NULL, -- same as real. real = float(24)
+    [afloat53] FLOAT(53) NULL,
+    [adecimal] DECIMAL NULL,
+    [adecimal_19_4] DECIMAL(19, 4) NULL,
+    [adecimal_10_3] DECIMAL(10, 3) NULL,
+    [anumeric] NUMERIC NULL,
+    [anumeric_5_2] NUMERIC(5, 2) NULL,
+    [anumeric_11_3] NUMERIC(11, 3) NULL,
+    [amoney] MONEY NULL,
+    [asmallmoney] SMALLMONEY NULL,
+    [brandon] INT NULL, -- Brandon Lilly. IsFixedLength not acceptable for CHAR fixed length columns.
+    GeographyType GEOGRAPHY NULL DEFAULT(CONVERT(GEOGRAPHY,'POINT (0 0)')),
+    GeometryType GEOMETRY NULL DEFAULT(GEOMETRY::STGeomFromText('LINESTRING (100 100, 20 180, 180 180)', 0)),
     CONSTRAINT PK_ColumnNameAndTypes PRIMARY KEY CLUSTERED ([$])
 );
 GO
 EXEC sys.sp_addextendedproperty
-	@name = N'MS_Description',   
-	@value = N'This is to document the bring the action table',
-	@level0type = N'SCHEMA', @level0name = 'dbo',  
-	@level1type = N'TABLE',  @level1name = 'ColumnNameAndTypes';
+    @name = N'MS_Description',   
+    @value = N'This is to document the bring the action table',
+    @level0type = N'SCHEMA', @level0name = 'dbo',  
+    @level1type = N'TABLE',  @level1name = 'ColumnNameAndTypes';
 GO
 INSERT INTO ColumnNameAndTypes ([$]) VALUES (1);
 GO
@@ -580,11 +580,11 @@ CREATE SCHEMA Synonyms
 GO
 
 CREATE TABLE [Synonyms].[Parent](
-	[ParentId] [int] NOT NULL,
-	[ParentName] [varchar](100) NOT NULL,
+    [ParentId] [int] NOT NULL,
+    [ParentName] [varchar](100) NOT NULL,
  CONSTRAINT [PK_Parent] PRIMARY KEY CLUSTERED
 (
-	[ParentId] ASC
+    [ParentId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -593,12 +593,12 @@ INSERT INTO [Synonyms].[Parent] ([ParentId], [ParentName]) VALUES (1 ,'Parent 1'
 GO
 
 CREATE TABLE [Synonyms].[Child](
-	[ChildId] [int] NOT NULL,
-	[ParentId] [int] NOT NULL,
-	[ChildName] [varchar](100) NULL,
+    [ChildId] [int] NOT NULL,
+    [ParentId] [int] NOT NULL,
+    [ChildName] [varchar](100) NULL,
  CONSTRAINT [PK_Child] PRIMARY KEY CLUSTERED
 (
-	[ChildId] ASC
+    [ChildId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -614,10 +614,10 @@ INSERT INTO [Synonyms].[Child] ([ChildId],[ParentId],[ChildName]) VALUES (1, 1, 
 GO
 
 CREATE PROCEDURE [Synonyms].[SimpleStoredProc]
-	@InputInt int
+    @InputInt int
 AS
 BEGIN
-	SET NOCOUNT ON;
+    SET NOCOUNT ON;
 
     SELECT 'Return' AS ReturnValue
 END
@@ -642,7 +642,7 @@ GO
 CREATE TABLE dbo.UserInfo
 (
     Id INT IDENTITY(1, 1) NOT NULL,
-	Forename VARCHAR(20) NULL
+    Forename VARCHAR(20) NULL
     CONSTRAINT PK_UserInfo PRIMARY KEY CLUSTERED ([Id] ASC),
 )
 CREATE TABLE dbo.UserInfoAttributes
@@ -659,14 +659,21 @@ ALTER TABLE dbo.UserInfoAttributes CHECK CONSTRAINT FK_UserInfoAttributes_Primar
 ALTER TABLE dbo.UserInfoAttributes CHECK CONSTRAINT FK_UserInfoAttributes_SecondaryUserInfo;
 GO
 
+
+
+
+
+
+
+
 USE EfrpgTest
 GO
 
 -- DROP TABLE BatchTest
 CREATE TABLE BatchTest
 (
-	code NVARCHAR(8) NOT NULL,
-	CONSTRAINT PK_BatchTest PRIMARY KEY CLUSTERED (code)
+    code NVARCHAR(8) NOT NULL,
+    CONSTRAINT PK_BatchTest PRIMARY KEY CLUSTERED (code)
 );
 GO
 
@@ -674,27 +681,27 @@ GO
 -- DROP TABLE [Period.Table]
 CREATE TABLE [Period.Table]
 (
-	id INT NOT NULL,
-	[joe.bloggs] INT null, -- Column contains a period
-	CONSTRAINT PK_Period_Table PRIMARY KEY CLUSTERED (Id)
+    id INT NOT NULL,
+    [joe.bloggs] INT null, -- Column contains a period
+    CONSTRAINT PK_Period_Table PRIMARY KEY CLUSTERED (Id)
 );
 GO
 -- Table contains a period
 -- DROP TABLE [PeriodTestTable]
 CREATE TABLE [PeriodTestTable]
 (
-	id INT NOT NULL,
-	[joe.bloggs] INT null, -- Column contains a period
-	CONSTRAINT PK_PeriodTestTable PRIMARY KEY (id)
+    id INT NOT NULL,
+    [joe.bloggs] INT null, -- Column contains a period
+    CONSTRAINT PK_PeriodTestTable PRIMARY KEY (id)
 );
 GO
 
 -- DROP TABLE SmallDecimalTest
 CREATE TABLE SmallDecimalTest
 (
-	id INT NOT NULL,
-	KoeffVed DECIMAL(4,4) NULL DEFAULT (0.5),
-	CONSTRAINT PK_SmallDecimalTest PRIMARY KEY (id)
+    id INT NOT NULL,
+    KoeffVed DECIMAL(4,4) NULL DEFAULT (0.5),
+    CONSTRAINT PK_SmallDecimalTest PRIMARY KEY (id)
 );
 GO
 
@@ -707,11 +714,11 @@ GO
 -- DROP TABLE PropertyTypesToAdd
 CREATE TABLE PropertyTypesToAdd
 (
-	id INT NOT NULL,
-	dt_default DATETIME2 NULL,
-	dt7 DATETIME2(7) NULL,
+    id INT NOT NULL,
+    dt_default DATETIME2 NULL,
+    dt7 DATETIME2(7) NULL,
     defaultCheck varchar(10) NULL,
-	CONSTRAINT PK_PropertyTypesToAdd PRIMARY KEY (id)
+    CONSTRAINT PK_PropertyTypesToAdd PRIMARY KEY (id)
 )
 GO
 sp_bindefault '[dbo].[d_t_address_type_domain]', 'PropertyTypesToAdd.defaultCheck';
@@ -722,8 +729,8 @@ GO
 -- DROP TABLE FkTest.SmallDecimalTestAttribute
 CREATE TABLE FkTest.SmallDecimalTestAttribute
 (
-	FkID INT NOT NULL,
-	[description] varchar(20) NOT NULL,
+    FkID INT NOT NULL,
+    [description] varchar(20) NOT NULL,
     CONSTRAINT PK_FkTest_SmallDecimalTestAttribute PRIMARY KEY (FkID)
 )
 GO
@@ -738,21 +745,21 @@ CREATE PROC FkTest.Hello AS
 GO
 CREATE VIEW SmallDecimalTestView
 AS
-	SELECT  FkID,
-	        description FROM FkTest.SmallDecimalTestAttribute
+    SELECT  FkID,
+            description FROM FkTest.SmallDecimalTestAttribute
 GO
 
 CREATE VIEW [view.with.multiple.periods]
 AS
-	SELECT  FkID,
-	        description FROM FkTest.SmallDecimalTestAttribute
+    SELECT  FkID,
+            description FROM FkTest.SmallDecimalTestAttribute
 GO
 -- DROP TABLE [table.with.multiple.periods]
 CREATE TABLE [table.with.multiple.periods]
 (
     id INT NOT NULL,
     [description] varchar(20) NOT NULL,
-	CONSTRAINT PK_table_with_multiple_periods PRIMARY KEY (id)
+    CONSTRAINT PK_table_with_multiple_periods PRIMARY KEY (id)
 )
 GO
 
@@ -760,21 +767,21 @@ GO
 CREATE TABLE HasPrincipalKeyTestParent
 (
     Id INT IDENTITY(1,1) NOT NULL,
-	AA INT NOT NULL,
-	BB INT NOT NULL,
-	CC INT NULL,
-	DD INT NULL,
-	CONSTRAINT PK_HasPrincipalKeyTestParent PRIMARY KEY (Id)
+    AA INT NOT NULL,
+    BB INT NOT NULL,
+    CC INT NULL,
+    DD INT NULL,
+    CONSTRAINT PK_HasPrincipalKeyTestParent PRIMARY KEY (Id)
 );
 GO
 CREATE TABLE HasPrincipalKeyTestChild
 (
     Id INT IDENTITY(1,1) NOT NULL,
-	A INT NOT NULL,
-	B INT NOT NULL,
-	C INT NULL,
-	D INT NULL,
-	CONSTRAINT PK_HasPrincipalKeyTestChild PRIMARY KEY (Id)
+    A INT NOT NULL,
+    B INT NOT NULL,
+    C INT NULL,
+    D INT NULL,
+    CONSTRAINT PK_HasPrincipalKeyTestChild PRIMARY KEY (Id)
 );
 GO
 ALTER TABLE HasPrincipalKeyTestParent ADD CONSTRAINT [UQ_HasPrincipalKeyTestParent_AB] UNIQUE NONCLUSTERED (AA, BB);
@@ -790,9 +797,9 @@ GO
 CREATE SCHEMA FFRS
 GO
 CREATE TABLE [FFRS].[CV](
-	[BatchUID] [uniqueidentifier] NOT NULL,
-	[CVID] [int] NOT NULL,
-	[CVName] [nvarchar](200) NULL
+    [BatchUID] [uniqueidentifier] NOT NULL,
+    [CVID] [int] NOT NULL,
+    [CVName] [nvarchar](200) NULL
 ) ON [PRIMARY]
 GO
 
@@ -827,37 +834,37 @@ GO
 
 
 CREATE FUNCTION [FFRS].[CsvToInt2]
-(	
-	@array varchar(8000),
-	@array2 varchar(8000) = ''
+(    
+    @array varchar(8000),
+    @array2 varchar(8000) = ''
 )
 RETURNS @IntTable TABLE(IntValue int)
 AS
 BEGIN
-	DECLARE @seperator char(1)
-	SET @seperator = ','
+    DECLARE @seperator char(1)
+    SET @seperator = ','
 
-	DECLARE @seperator_position int
-	DECLARE @array_value varchar(8000)
+    DECLARE @seperator_position int
+    DECLARE @array_value varchar(8000)
 
-	SET @array = @array + @seperator
+    SET @array = @array + @seperator
 
-	WHILE PATINDEX('%,%', @array) <> 0
-	BEGIN
-		SELECT @seperator_position = PATINDEX('%,%', @array)
-		SELECT @array_value = LEFT(@array, @seperator_position - 1)
+    WHILE PATINDEX('%,%', @array) <> 0
+    BEGIN
+        SELECT @seperator_position = PATINDEX('%,%', @array)
+        SELECT @array_value = LEFT(@array, @seperator_position - 1)
 
-		INSERT @IntTable VALUES (CAST(@array_value AS int))
+        INSERT @IntTable VALUES (CAST(@array_value AS int))
 
-		SELECT @array = STUFF(@array, 1, @seperator_position, '')
-		IF LEN(@array) = 0 AND LEN(@array2) > 0
-		BEGIN
-			SET @array = @array2 + ','
-			SET @array2 = ''
-		END
-	END
+        SELECT @array = STUFF(@array, 1, @seperator_position, '')
+        IF LEN(@array) = 0 AND LEN(@array2) > 0
+        BEGIN
+            SET @array = @array2 + ','
+            SET @array2 = ''
+        END
+    END
 
-	RETURN
+    RETURN
 END
 GO
 
@@ -872,31 +879,31 @@ GO
 -- #183 Return Model for functions returning nullable
 CREATE FUNCTION [dbo].[182_test1]
 (
-	@test INT
+    @test INT
 )
 RETURNS TABLE AS RETURN
 (
-	SELECT Id, ISNULL([Description], '') AS [Description]
-	FROM NoPrimaryKeys
+    SELECT Id, ISNULL([Description], '') AS [Description]
+    FROM NoPrimaryKeys
 )
 GO
 CREATE PROCEDURE [dbo].[182_test2]
-	@Flag INT
+    @Flag INT
 AS
 BEGIN
-	SET NOCOUNT ON;
+    SET NOCOUNT ON;
 
-	IF @Flag = 1
-	BEGIN
-		SELECT Id, [Description] AS DescriptionFlag1
-		FROM NoPrimaryKeys
-	END
+    IF @Flag = 1
+    BEGIN
+        SELECT Id, [Description] AS DescriptionFlag1
+        FROM NoPrimaryKeys
+    END
 
-	SELECT Id, ISNULL([Description], '') AS [DescriptionNotNull]
-	FROM NoPrimaryKeys
+    SELECT Id, ISNULL([Description], '') AS [DescriptionNotNull]
+    FROM NoPrimaryKeys
 
-	SELECT Id, [Description]
-	FROM NoPrimaryKeys
+    SELECT Id, [Description]
+    FROM NoPrimaryKeys
 END
 GO
 
@@ -970,21 +977,21 @@ GO
 -- DROP TABLE TableA
 CREATE TABLE TableA
 (
-	TableAId INT IDENTITY(1, 1) NOT NULL,
-	TableADesc VARCHAR(20) NULL,
-	CONSTRAINT TableA_pkey PRIMARY KEY (TableAId ASC)
+    TableAId INT IDENTITY(1, 1) NOT NULL,
+    TableADesc VARCHAR(20) NULL,
+    CONSTRAINT TableA_pkey PRIMARY KEY (TableAId ASC)
 );
 GO
 -- DROP TABLE TableB
 CREATE TABLE TableB
 (
-	TableBId INT IDENTITY(1, 1) NOT NULL,
-	TableAId INT NOT NULL,
-	ParentTableAId INT NULL,
-	TableBDesc VARCHAR(20) NULL,
-	CONSTRAINT TableB_pkey PRIMARY KEY (TableBId, TableAId),
-	CONSTRAINT FK_TableA_CompositeKey_Req FOREIGN KEY (TableAId) REFERENCES TableA (TableAId),
-	CONSTRAINT ParentTableB_Hierarchy FOREIGN KEY (TableAId, TableBId) REFERENCES TableB
+    TableBId INT IDENTITY(1, 1) NOT NULL,
+    TableAId INT NOT NULL,
+    ParentTableAId INT NULL,
+    TableBDesc VARCHAR(20) NULL,
+    CONSTRAINT TableB_pkey PRIMARY KEY (TableBId, TableAId),
+    CONSTRAINT FK_TableA_CompositeKey_Req FOREIGN KEY (TableAId) REFERENCES TableA (TableAId),
+    CONSTRAINT ParentTableB_Hierarchy FOREIGN KEY (TableAId, TableBId) REFERENCES TableB
 );
 GO
 CREATE INDEX fki_ParentTableA_FK_Constraint ON TableB (TableAId);
@@ -994,8 +1001,8 @@ GO
 
 -- #453 datetimeoffset type SQL default function getdate() does not translate
 CREATE TABLE [dbo].[DateTimeDefaultTest](
-	[Id] [int] NOT NULL,
-	[CreatedDate] [datetimeoffset](7) NULL
+    [Id] [int] NOT NULL,
+    [CreatedDate] [datetimeoffset](7) NULL
 )
 GO
 ALTER TABLE [dbo].[DateTimeDefaultTest] ADD  CONSTRAINT [DF_DateTimeDefaultTest_CreatedDate]  DEFAULT (getdate()) FOR [CreatedDate]
@@ -1029,7 +1036,7 @@ GO
 CREATE PROCEDURE dbo.InsertRecordThree
     @Data VARCHAR(256),
     @InsertedId INT OUT,
-	@SomeId INT,
+    @SomeId INT,
     @AnotherInsertedId INT OUT
 AS
 BEGIN
@@ -1082,10 +1089,10 @@ GO
 
 -- From Unders0n. Case #161
 CREATE TABLE [dbo].[Бренды товара](
-	[Код бренда] [int] IDENTITY(1,1) NOT NULL,
-	[Наименование бренда] [varchar](50) NOT NULL,
-	[Логотип_бренда] [image] NULL,
-	[Логотип_бренда_вертикальный] [image] NULL,
+    [Код бренда] [int] IDENTITY(1,1) NOT NULL,
+    [Наименование бренда] [varchar](50) NOT NULL,
+    [Логотип_бренда] [image] NULL,
+    [Логотип_бренда_вертикальный] [image] NULL,
     CONSTRAINT [PK_Бренды] PRIMARY KEY CLUSTERED ( [Код бренда] ASC )
 )
 GO
@@ -1165,32 +1172,32 @@ SET QUOTED_IDENTIFIER ON
 SET ANSI_PADDING ON
 GO
 CREATE TABLE [dbo].[Country](
-	[CountryID] [int] IDENTITY(1,1) NOT NULL,
-	[Code] [varchar](12) NULL,
+    [CountryID] [int] IDENTITY(1,1) NOT NULL,
+    [Code] [varchar](12) NULL,
 CONSTRAINT [PK_Country] PRIMARY KEY CLUSTERED 
 (
-	[CountryID] ASC
+    [CountryID] ASC
 )) ON [PRIMARY] 
 GO
 CREATE TABLE [dbo].[Attendee](
-	[AttendeeID] [bigint] NOT NULL,
-	[Lastname] [nvarchar](50) NOT NULL,
-	[Firstname] [nvarchar](50) NOT NULL,
-	[PhoneCountryID] [int] NULL,
+    [AttendeeID] [bigint] NOT NULL,
+    [Lastname] [nvarchar](50) NOT NULL,
+    [Firstname] [nvarchar](50) NOT NULL,
+    [PhoneCountryID] [int] NULL,
 CONSTRAINT [PK_Attendee] PRIMARY KEY CLUSTERED 
 (
-	[AttendeeID] ASC
+    [AttendeeID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY] 
 GO
 CREATE TABLE [dbo].[User309](
-	[UserID] [bigint] NOT NULL,
-	[Lastname] [nvarchar](100) NOT NULL,
-	[Firstname] [nvarchar](100) NOT NULL,
-	[PhoneCountryID] [int] NULL,
+    [UserID] [bigint] NOT NULL,
+    [Lastname] [nvarchar](100) NOT NULL,
+    [Firstname] [nvarchar](100) NOT NULL,
+    [PhoneCountryID] [int] NULL,
  CONSTRAINT [PK_User309] PRIMARY KEY CLUSTERED 
 (
-	[UserID] ASC
+    [UserID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -1207,13 +1214,13 @@ GO
 --DROP TABLE Foo
 --DROP TABLE Boo
 /*CREATE TABLE [dbo].[Boo](
-	[id] [int] IDENTITY(1,1) NOT NULL,
-	[name] [nchar](10) NOT NULL,
+    [id] [int] IDENTITY(1,1) NOT NULL,
+    [name] [nchar](10) NOT NULL,
  CONSTRAINT [PK_Boo] PRIMARY KEY CLUSTERED ([id] ASC)
 )
 CREATE TABLE [dbo].[Foo](
-	[id] [int] NOT NULL,
-	[name] [nchar](10) NOT NULL,
+    [id] [int] NOT NULL,
+    [name] [nchar](10) NOT NULL,
  CONSTRAINT [PK_Foo] PRIMARY KEY CLUSTERED ([id] ASC)
 )
 GO
@@ -1275,11 +1282,11 @@ CREATE PROCEDURE [App].[usp_CMTUserFSRUpdate]
     @fsrId INT,
     @ufsrId INT OUT
 AS
-	SET NOCOUNT ON
-	DECLARE @appId INT
-	SET @appId = 2
-	INSERT  [UserFacilityServiceRole] SELECT  @userId, @appId, @fsrId
-	SELECT  @ufsrId = @@IDENTITY
+    SET NOCOUNT ON
+    DECLARE @appId INT
+    SET @appId = 2
+    INSERT  [UserFacilityServiceRole] SELECT  @userId, @appId, @fsrId
+    SELECT  @ufsrId = @@IDENTITY
 GO
 
 
@@ -1291,14 +1298,14 @@ CREATE TABLE Alpha.workflow
 (
     [Id] INT NOT NULL IDENTITY(1, 1),
     [Description] VARCHAR(10) NULL,
-	CONSTRAINT PK_alpha_workflow PRIMARY KEY (Id)
+    CONSTRAINT PK_alpha_workflow PRIMARY KEY (Id)
 );
 GO
 CREATE TABLE Beta.workflow
 (
     [Id] INT NOT NULL IDENTITY(1, 1),
     [Description] VARCHAR(10) NULL
-	CONSTRAINT PK_beta_workflow PRIMARY KEY (Id)
+    CONSTRAINT PK_beta_workflow PRIMARY KEY (Id)
 );
 GO
 -- m woffenden - filter out schema, but FK's are not filtered out.
@@ -1306,7 +1313,7 @@ CREATE TABLE Beta.ToAlpha
 (
     [Id] INT NOT NULL IDENTITY(1, 1),
     AlphaId INT NOT NULL,
-	CONSTRAINT PK_beta_ToAlpha PRIMARY KEY (Id)
+    CONSTRAINT PK_beta_ToAlpha PRIMARY KEY (Id)
 );
 GO
 ALTER TABLE Beta.ToAlpha ADD CONSTRAINT BetaToAlpha_AlphaWorkflow FOREIGN KEY (AlphaId) REFERENCES [Alpha].[Workflow] ([Id])
@@ -1366,11 +1373,11 @@ GO
 -- DROP TABLE TadeuszSobol
 CREATE TABLE TadeuszSobol
 ( 
-	[Id] int NOT NULL IDENTITY(1,1), 
-	[Description] VARCHAR(MAX) NULL, 
-	[Notes] NVARCHAR(MAX) NULL, 
-	[Name] VARCHAR(10) NULL,
-	CONSTRAINT PK_TadeuszSobol PRIMARY KEY (Id)
+    [Id] int NOT NULL IDENTITY(1,1), 
+    [Description] VARCHAR(MAX) NULL, 
+    [Notes] NVARCHAR(MAX) NULL, 
+    [Name] VARCHAR(10) NULL,
+    CONSTRAINT PK_TadeuszSobol PRIMARY KEY (Id)
 )
 GO
 
@@ -1390,26 +1397,26 @@ CREATE SCHEMA OneEightSix
 GO
 CREATE TABLE OneEightSix.UploadedFile
 (
-	Id int identity(1, 1) not null,
-	FullPath nvarchar(max) not null,
-	constraint PK_UploadedFile primary key clustered(Id)
+    Id int identity(1, 1) not null,
+    FullPath nvarchar(max) not null,
+    constraint PK_UploadedFile primary key clustered(Id)
 )
 GO
 create table OneEightSix.Issue
 (
-	Id int identity(1, 1) not null,
-	Title nvarchar(100) not null,
-	Content nvarchar(max) null,
-	constraint PK_Issue primary key clustered(Id)
+    Id int identity(1, 1) not null,
+    Title nvarchar(100) not null,
+    Content nvarchar(max) null,
+    constraint PK_Issue primary key clustered(Id)
 )
 GO
 create table OneEightSix.IssueUploadedFile
 (
-	UploadedFileId int not null,
-	IssueId int not null,
-	constraint PK_IssueUploadedFile primary key clustered(UploadedFileId, IssueId),
-	constraint FK_IssueUploadedFile_UploadedFile foreign key (UploadedFileId) references OneEightSix.UploadedFile(Id),
-	constraint FK_IssueUploadedFile_Issue  foreign key (IssueId)  references OneEightSix.Issue(Id),
+    UploadedFileId int not null,
+    IssueId int not null,
+    constraint PK_IssueUploadedFile primary key clustered(UploadedFileId, IssueId),
+    constraint FK_IssueUploadedFile_UploadedFile foreign key (UploadedFileId) references OneEightSix.UploadedFile(Id),
+    constraint FK_IssueUploadedFile_Issue  foreign key (IssueId)  references OneEightSix.Issue(Id),
 )
 GO
 -- Reverse engineer above and put into araxis, then run this, and reverse engineer again and compare with Araxis
@@ -1429,14 +1436,14 @@ CREATE TABLE Issue47.Users
 (
     UserId INT NOT NULL IDENTITY(1, 1),
     Name VARCHAR(10) NULL,
-	CONSTRAINT PK_Issue47_Users PRIMARY KEY (UserId)
+    CONSTRAINT PK_Issue47_Users PRIMARY KEY (UserId)
 );
 GO
 CREATE TABLE Issue47.[Role]
 (
     RoleId INT NOT NULL IDENTITY(1, 1),
     [Role] VARCHAR(10) NULL,
-	CONSTRAINT PK_Issue47_Role PRIMARY KEY (RoleId)
+    CONSTRAINT PK_Issue47_Role PRIMARY KEY (RoleId)
 );
 GO
 CREATE TABLE Issue47.UserRoles
@@ -1444,7 +1451,7 @@ CREATE TABLE Issue47.UserRoles
     UserRoleId INT NOT NULL IDENTITY(1, 1),
     UserId INT NOT NULL,
     RoleId INT NOT NULL,
-	CONSTRAINT PK_Issue47_UserRoles PRIMARY KEY (UserRoleId)
+    CONSTRAINT PK_Issue47_UserRoles PRIMARY KEY (UserRoleId)
 );
 GO
 ALTER TABLE Issue47.UserRoles ADD CONSTRAINT Issue47_UserRoles_userid FOREIGN KEY (UserId) REFERENCES Issue47.Users (UserId)
@@ -1458,7 +1465,7 @@ CREATE TABLE EnumWithDefaultValue
 (
     [Id] INT NOT NULL IDENTITY(1, 1),
     SomeEnum INT NOT NULL DEFAULT (1),
-	CONSTRAINT PK_EnumWithDefaultValue PRIMARY KEY (Id)
+    CONSTRAINT PK_EnumWithDefaultValue PRIMARY KEY (Id)
 );
 GO
 
@@ -1485,33 +1492,33 @@ GO
 -- #173 ReturnModel is not generated for stored proc if xml.modify is used
 CREATE procedure dbo.XmlDataV1
 as
-	declare @temp table ([SomeXML] [xml])
-	insert into @temp values('<root></root>')
+    declare @temp table ([SomeXML] [xml])
+    insert into @temp values('<root></root>')
 
-	declare @someXml xml	
-	select top 1 @someXml = [SomeXML] from @temp
+    declare @someXml xml    
+    select top 1 @someXml = [SomeXML] from @temp
 
-	--explicit assignment. when this is line commented out, ReversePoco generates incorrect output type (int) for this stored proc
-	set @someXml = '<root></root>'; 
+    --explicit assignment. when this is line commented out, ReversePoco generates incorrect output type (int) for this stored proc
+    set @someXml = '<root></root>'; 
 
-	set @someXml.modify('insert <new>node</new> into (/root)[1]');
+    set @someXml.modify('insert <new>node</new> into (/root)[1]');
 
-	SELECT getdate(), @someXml	
+    SELECT getdate(), @someXml    
 GO
 CREATE procedure dbo.XmlDataV2
 as
-	declare @temp table ([SomeXML] [xml])
-	insert into @temp values('<root></root>')
+    declare @temp table ([SomeXML] [xml])
+    insert into @temp values('<root></root>')
 
-	declare @someXml xml	
-	select top 1 @someXml = [SomeXML] from @temp
+    declare @someXml xml    
+    select top 1 @someXml = [SomeXML] from @temp
 
-	--explicit assignment. when this is line commented out, ReversePoco generates incorrect output type (int) for this stored proc
-	--set @someXml = '<root></root>'; 
+    --explicit assignment. when this is line commented out, ReversePoco generates incorrect output type (int) for this stored proc
+    --set @someXml = '<root></root>'; 
 
-	set @someXml.modify('insert <new>node</new> into (/root)[1]');
+    set @someXml.modify('insert <new>node</new> into (/root)[1]');
 
-	SELECT getdate(), @someXml	
+    SELECT getdate(), @someXml    
 GO
 -- EXEC dbo.XmlDataV1; EXEC dbo.XmlDataV2;
 -- SET FMTONLY OFF; SET FMTONLY ON; exec dbo.XmlDataV1; SET FMTONLY OFF; SET FMTONLY OFF;
@@ -1528,7 +1535,7 @@ CREATE TABLE [dbo].[DefaultCheckForNull]
     [DescMixedCase] varchar(5) NULL DEFAULT Null,
     [DescBrackets] varchar(5) NULL DEFAULT (((NULL))),
     [X1] varchar(255) NULL,
-	CONSTRAINT PK_DefaultCheckForNull PRIMARY KEY (Id)
+    CONSTRAINT PK_DefaultCheckForNull PRIMARY KEY (Id)
 )
 GO
 
@@ -1555,19 +1562,19 @@ GO
 CREATE TABLE BitFiddlerCATEGORIES
 (
     [Id] INT NOT NULL IDENTITY(1, 1),
-	CONSTRAINT PK_BitFiddlerCATEGORIES PRIMARY KEY (Id)
+    CONSTRAINT PK_BitFiddlerCATEGORIES PRIMARY KEY (Id)
 );
 GO
 CREATE TABLE BitFiddlerCURRENCIES
 (
     [Id] INT NOT NULL IDENTITY(1, 1),
-	CONSTRAINT PK_BitFiddlerCURRENCIES PRIMARY KEY (Id)
+    CONSTRAINT PK_BitFiddlerCURRENCIES PRIMARY KEY (Id)
 );
 GO
 CREATE TABLE BITFIDDLERALLCAPS
 (
     [Id] INT NOT NULL IDENTITY(1, 1),
-	CONSTRAINT PK_BITFIDDLERALLCAPS PRIMARY KEY (Id)
+    CONSTRAINT PK_BITFIDDLERALLCAPS PRIMARY KEY (Id)
 );
 GO
 
@@ -1577,9 +1584,9 @@ GO
 -- DROP TABLE AppUser
 CREATE TABLE [dbo].[AppUser]
 (
-	[Id] [bigint] IDENTITY(1,1) NOT NULL,
-	[Name] [nvarchar](50) NOT NULL,
-	CONSTRAINT PK_AppUser PRIMARY KEY (Id)
+    [Id] [bigint] IDENTITY(1,1) NOT NULL,
+    [Name] [nvarchar](50) NOT NULL,
+    CONSTRAINT PK_AppUser PRIMARY KEY (Id)
 )
 GO
 CREATE TABLE [dbo].[Ticket]
@@ -1610,7 +1617,7 @@ CREATE TABLE Token
 (
     Id UNIQUEIDENTIFIER NOT NULL DEFAULT (newsequentialid()) ROWGUIDCOL,
     Enabled bit NOT NULL,
-	CONSTRAINT PK_Token PRIMARY KEY (Id)
+    CONSTRAINT PK_Token PRIMARY KEY (Id)
 )
 GO
 INSERT INTO Token (Enabled) VALUES(1)
@@ -1626,7 +1633,7 @@ CREATE TABLE Car
     Id INT NOT NULL,
     PrimaryColourId INT NOT NULL,
     CarMake VARCHAR(255) NOT NULL,
-	CONSTRAINT PK_Car PRIMARY KEY (Id)
+    CONSTRAINT PK_Car PRIMARY KEY (Id)
 )
 GO
 SET ANSI_PADDING ON
@@ -1639,14 +1646,14 @@ CREATE TABLE Colour
 (
     Id INT NOT NULL,
     Name VARCHAR(255) NOT NULL,
-	CONSTRAINT PK_Colour PRIMARY KEY (Id)
+    CONSTRAINT PK_Colour PRIMARY KEY (Id)
 )
 GO
 CREATE TABLE CarToColour
 (
     CarId INT NOT NULL,
     ColourId INT NOT NULL,
-	CONSTRAINT PK_CarToColour PRIMARY KEY (CarId, ColourId)
+    CONSTRAINT PK_CarToColour PRIMARY KEY (CarId, ColourId)
 )
 GO
 ALTER TABLE Car ADD CONSTRAINT CarPrimaryColourFK FOREIGN KEY (PrimaryColourId) REFERENCES Colour (Id);
@@ -1676,11 +1683,11 @@ GO
 -- drop table MultipleKeys
 CREATE TABLE MultipleKeys
 (
-	UserId INT NOT NULL,
-	FavouriteColourId INT NOT NULL CONSTRAINT UC_MultipleKeys_FavouriteColour UNIQUE,
-	BestHolidayTypeId INT NOT NULL,
-	BankId INT NOT NULL,
-	CarId INT NOT NULL
+    UserId INT NOT NULL,
+    FavouriteColourId INT NOT NULL CONSTRAINT UC_MultipleKeys_FavouriteColour UNIQUE,
+    BestHolidayTypeId INT NOT NULL,
+    BankId INT NOT NULL,
+    CarId INT NOT NULL
 )
 GO
 ALTER TABLE MultipleKeys ADD CONSTRAINT PK_MultipleKeys PRIMARY KEY CLUSTERED (UserId, FavouriteColourId, BestHolidayTypeId)
@@ -1692,12 +1699,12 @@ GO
 -- DROP TABLE DSOpe
 CREATE TABLE DSOpe
 (
-	ID INT NOT NULL,
-	[decimal_default] decimal(15, 2) NOT NULL,
-	MyGuid UNIQUEIDENTIFIER NOT NULL DEFAULT ('9B7E1F67-5A81-4277-BC7D-06A3262A5C70'),
-	[default] VARCHAR(10) NULL, -- reserved keyword
+    ID INT NOT NULL,
+    [decimal_default] decimal(15, 2) NOT NULL,
+    MyGuid UNIQUEIDENTIFIER NOT NULL DEFAULT ('9B7E1F67-5A81-4277-BC7D-06A3262A5C70'),
+    [default] VARCHAR(10) NULL, -- reserved keyword
     [MyGuidBadDefault] UNIQUEIDENTIFIER CONSTRAINT [DF_MyGuidBadDefaul] DEFAULT (NULL) NULL,
-	CONSTRAINT PK_DSOpe PRIMARY KEY (Id)
+    CONSTRAINT PK_DSOpe PRIMARY KEY (Id)
 )
 GO
 ALTER TABLE DSOpe ADD CONSTRAINT [DF_DSOpe_MaxRabat] DEFAULT ((99.99)) FOR [decimal_default] 
@@ -1724,7 +1731,7 @@ CREATE TABLE tblOrders
 (
     ID INT NOT NULL IDENTITY(1, 1),
     added DATETIME NOT NULL DEFAULT GETDATE(),
-	CONSTRAINT PK_tblOrders PRIMARY KEY (Id)
+    CONSTRAINT PK_tblOrders PRIMARY KEY (Id)
 );
 GO
 CREATE TABLE tblOrderLines
@@ -1732,21 +1739,21 @@ CREATE TABLE tblOrderLines
     ID INT NOT NULL IDENTITY(1, 1),
     OrderID INT NOT NULL,
     sku VARCHAR(15) NULL,
-	CONSTRAINT PK_tblOrderLines PRIMARY KEY (Id)
+    CONSTRAINT PK_tblOrderLines PRIMARY KEY (Id)
 );
 GO
 CREATE TABLE tblOrderErrors
 (
     ID INT NOT NULL IDENTITY(1, 1),
     error VARCHAR(50) NULL,
-	CONSTRAINT PK_tblOrderErrors PRIMARY KEY (Id)
+    CONSTRAINT PK_tblOrderErrors PRIMARY KEY (Id)
 );
 GO
 CREATE TABLE AB_OrdersAB_
 (
     ID INT NOT NULL IDENTITY(1, 1),
     added DATETIME NOT NULL DEFAULT GETDATE(),
-	CONSTRAINT PK_AB_OrdersAB PRIMARY KEY (Id)
+    CONSTRAINT PK_AB_OrdersAB PRIMARY KEY (Id)
 );
 GO
 CREATE TABLE AB_OrderLinesAB_
@@ -1754,14 +1761,14 @@ CREATE TABLE AB_OrderLinesAB_
     ID INT NOT NULL IDENTITY(1, 1),
     OrderID INT NOT NULL,
     sku VARCHAR(15) NULL,
-	CONSTRAINT PK_AB_OrderLinesAB PRIMARY KEY (Id)
+    CONSTRAINT PK_AB_OrderLinesAB PRIMARY KEY (Id)
 );
 GO
 CREATE TABLE tblOrderErrorsAB_
 (
     ID INT NOT NULL IDENTITY(1, 1),
     error VARCHAR(50) NULL,
-	CONSTRAINT PK_tblOrderErrorsAB PRIMARY KEY (Id)
+    CONSTRAINT PK_tblOrderErrorsAB PRIMARY KEY (Id)
 );
 GO
 ALTER TABLE tblOrderLines ADD CONSTRAINT tblOrdersFK FOREIGN KEY (OrderID) REFERENCES tblOrders (id);
@@ -1775,7 +1782,7 @@ CREATE TABLE header
     ID INT NOT NULL,
     anotherID INT NOT NULL,
     added DATETIME NOT NULL DEFAULT GETDATE(),
-	CONSTRAINT PK_header PRIMARY KEY (ID, anotherID)
+    CONSTRAINT PK_header PRIMARY KEY (ID, anotherID)
 );
 GO
 CREATE TABLE footer
@@ -1783,7 +1790,7 @@ CREATE TABLE footer
     ID INT NOT NULL IDENTITY(1, 1),
     otherID INT NOT NULL,
     added DATETIME NOT NULL DEFAULT GETDATE(),
-	CONSTRAINT PK_footer PRIMARY KEY (Id)
+    CONSTRAINT PK_footer PRIMARY KEY (Id)
 );
 GO
 ALTER TABLE footer ADD CONSTRAINT fooderFK FOREIGN KEY (ID,otherID) REFERENCES header (ID,anotherID);
@@ -1797,70 +1804,70 @@ INSERT INTO DSOpe (ID,decimal_default,[default]) VALUES  (1,2,3)
 GO
 
 IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = N'dcg')
-	EXEC sys.sp_executesql N'CREATE SCHEMA [dcg]'
+    EXEC sys.sp_executesql N'CREATE SCHEMA [dcg]'
 GO
 IF  EXISTS (SELECT * FROM sys.views WHERE object_id = OBJECT_ID(N'[dcg].[rov_ColumnDefinitions]'))
-	DROP VIEW [dcg].[rov_ColumnDefinitions]
+    DROP VIEW [dcg].[rov_ColumnDefinitions]
 GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE VIEW [dcg].[rov_ColumnDefinitions]
 AS
-	SELECT
-		isc.*,
-		o.TYPE
-	FROM
-		INFORMATION_SCHEMA.COLUMNS AS isc
-		INNER JOIN sys.objects AS o
-			ON SCHEMA_NAME(o.SCHEMA_ID) = isc.TABLE_SCHEMA
-			   AND o.NAME = isc.TABLE_NAME
-	WHERE
-		NOT isc.TABLE_SCHEMA IN ('dcg');
+    SELECT
+        isc.*,
+        o.TYPE
+    FROM
+        INFORMATION_SCHEMA.COLUMNS AS isc
+        INNER JOIN sys.objects AS o
+            ON SCHEMA_NAME(o.SCHEMA_ID) = isc.TABLE_SCHEMA
+               AND o.NAME = isc.TABLE_NAME
+    WHERE
+        NOT isc.TABLE_SCHEMA IN ('dcg');
 GO
 CREATE PROCEDURE GetSmallDecimalTest(@maxId INT)
 AS
 BEGIN
-	SET NOCOUNT ON;
-	IF(@maxId IS NULL)
-		SET @maxId = 999
-	SELECT id, KoeffVed FROM SmallDecimalTest WHERE id <= @maxId
+    SET NOCOUNT ON;
+    IF(@maxId IS NULL)
+        SET @maxId = 999
+    SELECT id, KoeffVed FROM SmallDecimalTest WHERE id <= @maxId
 END
 GO
 CREATE PROCEDURE AddTwoValues(@a INT, @b INT)
 AS
 BEGIN
-	SET NOCOUNT ON;
-	RETURN @a + @b -- 0 indicates success, anything else is a failure
+    SET NOCOUNT ON;
+    RETURN @a + @b -- 0 indicates success, anything else is a failure
 END
 GO
 CREATE PROCEDURE AddTwoValuesWithResult(@a INT, @b INT, @result INT OUTPUT, @result2 INT OUTPUT)
 AS
 BEGIN
-	SET NOCOUNT ON;
-	SET @result = @a + @b
-	SET @result2 = @b - @a
+    SET NOCOUNT ON;
+    SET @result = @a + @b
+    SET @result2 = @b - @a
 END
 GO
 CREATE PROCEDURE MinTripSequenceStart(@minTripSequenceStartParam DATETIME2 OUTPUT)
 AS
 BEGIN
-	SET NOCOUNT ON;
-	SET @minTripSequenceStartParam = GETDATE()
+    SET NOCOUNT ON;
+    SET @minTripSequenceStartParam = GETDATE()
 END
 GO
 CREATE PROCEDURE MinTripSequenceStartNull(@minTripSequenceStartParam DATETIME2 OUTPUT)
 AS
 BEGIN
-	SET NOCOUNT ON;
-	SET @minTripSequenceStartParam = NULL
+    SET NOCOUNT ON;
+    SET @minTripSequenceStartParam = NULL
 END
 GO
 CREATE PROCEDURE ConvertToString(@someValue INT, @someString VARCHAR(20) OUTPUT)
 AS
 BEGIN
-	SET NOCOUNT ON;
-	SET @someString = '*' + CAST(@someValue AS VARCHAR(20)) + '*'
+    SET NOCOUNT ON;
+    SET @someString = '*' + CAST(@someValue AS VARCHAR(20)) + '*'
 END
 GO
 
@@ -1898,10 +1905,10 @@ INSERT  INTO CodeObject (codeObjectNo,applicationNo,type,eName,aName,description
 VALUES  (1,2,3,'fred','test','hello','some name','a note',0)
 GO
 EXEC sys.sp_addextendedproperty   
-	@name = N'MS_Description',   
-	@value = N'This is a test',
-	@level0type = N'SCHEMA', @level0name = 'dbo',  
-	@level1type = N'TABLE',  @level1name = 'CodeObject';
+    @name = N'MS_Description',   
+    @value = N'This is a test',
+    @level0type = N'SCHEMA', @level0name = 'dbo',  
+    @level1type = N'TABLE',  @level1name = 'CodeObject';
 GO
 
 CREATE TABLE Versioned
@@ -1909,7 +1916,7 @@ CREATE TABLE Versioned
     Id INT NOT NULL IDENTITY(1, 1),
     [Version] ROWVERSION NOT NULL,
     Number INT NOT NULL,
-	CONSTRAINT PK_Versioned PRIMARY KEY (Id)
+    CONSTRAINT PK_Versioned PRIMARY KEY (Id)
 );
 GO
 INSERT INTO Versioned (Number) VALUES (123);
@@ -1921,7 +1928,7 @@ CREATE TABLE VersionedNullable
     Id INT NOT NULL IDENTITY(1, 1),
     [Version] ROWVERSION NULL,
     Number INT NOT NULL,
-	CONSTRAINT PK_VersionedNullable PRIMARY KEY (Id)
+    CONSTRAINT PK_VersionedNullable PRIMARY KEY (Id)
 );
 GO
 INSERT INTO VersionedNullable (Number) VALUES (123);
@@ -1974,7 +1981,7 @@ BEGIN
 
     select * from @test
     select * from #test
-	DROP TABLE #test
+    DROP TABLE #test
 END
 GO
 
@@ -2054,9 +2061,9 @@ CREATE PROCEDURE [dbo].[stp_test_underscore_test]
 )
 AS
 BEGIN
-	SELECT  [codeObjectNo] AS code_object_no,
-			[applicationNo] AS application_no
-	FROM    [dbo].[CodeObject];
+    SELECT  [codeObjectNo] AS code_object_no,
+            [applicationNo] AS application_no
+    FROM    [dbo].[CodeObject];
 END;
 GO
 
@@ -2070,15 +2077,15 @@ GO
 CREATE PROCEDURE [dbo].[stp_nullable_params_test] (@a_val INT, @b_val int NULL)
 AS
 BEGIN
-	SELECT  [codeObjectNo],[applicationNo]
-	FROM    [dbo].[CodeObject];
+    SELECT  [codeObjectNo],[applicationNo]
+    FROM    [dbo].[CodeObject];
 END
 GO
 CREATE PROCEDURE [dbo].[stp_no_params_test]
 AS
 BEGIN
-	SELECT  [codeObjectNo],[applicationNo]
-	FROM    [dbo].[CodeObject];
+    SELECT  [codeObjectNo],[applicationNo]
+    FROM    [dbo].[CodeObject];
 END
 GO
 CREATE PROCEDURE [dbo].[stp_no_return_fields]
@@ -2088,18 +2095,18 @@ GO
 CREATE PROCEDURE [dbo].[stp_multiple_results]
 AS
 BEGIN
-	SELECT codeObjectNo, applicationNo, [type], eName, aName, [description], codeName, note, isObject, versionNumber FROM [dbo].[CodeObject];
-	SELECT Id, PrimaryColourId, CarMake, computed_column, computed_column_persisted FROM Car;
-	SELECT Id,Name FROM Colour;
+    SELECT codeObjectNo, applicationNo, [type], eName, aName, [description], codeName, note, isObject, versionNumber FROM [dbo].[CodeObject];
+    SELECT Id, PrimaryColourId, CarMake, computed_column, computed_column_persisted FROM Car;
+    SELECT Id,Name FROM Colour;
 END;
 GO
 CREATE PROCEDURE [dbo].[stp_multiple_identical_results] (@someVar INT)
 AS
-	IF(@someVar > 5) BEGIN
-		SELECT * FROM Colour;
-	END ELSE BEGIN
-		SELECT * FROM Colour;
-	END
+    IF(@someVar > 5) BEGIN
+        SELECT * FROM Colour;
+    END ELSE BEGIN
+        SELECT * FROM Colour;
+    END
 GO
 CREATE PROCEDURE [dbo].[stp_multiple_results_with_params] (@first_val INT, @second_val int NULL)
 AS
@@ -2112,12 +2119,12 @@ GO
 -- DROP PROC [dbo].[stp_multiple_multiple_results_with_params]
 CREATE PROCEDURE [dbo].[stp_multiple_multiple_results_with_params] (@first_val INT, @second_val int NULL, @third_val INT)
 AS
-	SELECT  [codeObjectNo],[applicationNo] FROM    [dbo].[CodeObject];
-	SELECT * FROM Colour;
-	SELECT * FROM BatchTest;
-	SELECT * FROM Burak1;
-	SELECT * FROM Car;
-	SELECT * FROM AB_OrderLinesAB_;
+    SELECT  [codeObjectNo],[applicationNo] FROM    [dbo].[CodeObject];
+    SELECT * FROM Colour;
+    SELECT * FROM BatchTest;
+    SELECT * FROM Burak1;
+    SELECT * FROM Car;
+    SELECT * FROM AB_OrderLinesAB_;
 GO
 DECLARE @procResult int
 EXEC @procResult = [dbo].[stp_multiple_multiple_results_with_params] @first_val=1,@second_val=2,@third_val=3
@@ -2127,14 +2134,14 @@ GO
 -- DROP VIEW ComplexView
 CREATE VIEW dbo.ComplexView
 AS
-	with cteLicenses as (
-		select sum(case when sp.type = 0 and sp.aName <> 'test'    then cast(sp.applicationNo as int) else 0 end) as AccessWare
-			 , sum(case when sp.type = 4                           then cast(sp.applicationNo as int) else 0 end) as AdvInventory
-			 , sum(                                                     cast(sp.applicationNo as int))            as Test
-		  from CodeObject sp where sp.isObject = 0
-	)
-		SELECT  ISNULL(LicenseType, '') AS LicenseType, [Count]
-		FROM    cteLicenses UNPIVOT ( [Count] FOR LicenseType IN (AccessWare, Test) ) unpvt;
+    with cteLicenses as (
+        select sum(case when sp.type = 0 and sp.aName <> 'test'    then cast(sp.applicationNo as int) else 0 end) as AccessWare
+             , sum(case when sp.type = 4                           then cast(sp.applicationNo as int) else 0 end) as AdvInventory
+             , sum(                                                     cast(sp.applicationNo as int))            as Test
+          from CodeObject sp where sp.isObject = 0
+    )
+        SELECT  ISNULL(LicenseType, '') AS LicenseType, [Count]
+        FROM    cteLicenses UNPIVOT ( [Count] FOR LicenseType IN (AccessWare, Test) ) unpvt;
 GO
 
 /*
@@ -2146,24 +2153,24 @@ EXEC [dbo].[stp_nullable_params_test] NULL,NULL
 */
 
 
-DECLARE	@proc_result INT
-EXEC	@proc_result = GetSmallDecimalTest @maxId = 3
-SELECT	'proc_result' = @proc_result
+DECLARE    @proc_result INT
+EXEC    @proc_result = GetSmallDecimalTest @maxId = 3
+SELECT    'proc_result' = @proc_result
 GO
-DECLARE	@proc_result int
+DECLARE    @proc_result int
 EXEC @proc_result = AddTwoValues @a = 2, @b = 6
-SELECT	@proc_result AS 'proc_result'
+SELECT    @proc_result AS 'proc_result'
 GO
-DECLARE	@proc_result int, @result INT, @result2 INT
-EXEC	@proc_result = AddTwoValuesWithResult @a = 3, @b = 7, @result = @result OUTPUT, @result2 = @result2 OUTPUT
-SELECT	@result as '@result', @result2 AS '@result2'
-SELECT	@proc_result AS 'proc_result'
+DECLARE    @proc_result int, @result INT, @result2 INT
+EXEC    @proc_result = AddTwoValuesWithResult @a = 3, @b = 7, @result = @result OUTPUT, @result2 = @result2 OUTPUT
+SELECT    @result as '@result', @result2 AS '@result2'
+SELECT    @proc_result AS 'proc_result'
 GO
-DECLARE	@proc_result INT
+DECLARE    @proc_result INT
 DECLARE @result VARCHAR(50)
 EXEC @proc_result = ConvertToString @someValue = 56, @someString = @result OUTPUT
-SELECT	@result as '@result'
-SELECT	@proc_result AS 'proc_result'
+SELECT    @result as '@result'
+SELECT    @proc_result AS 'proc_result'
 GO
 
 SELECT * FROM ColumnNameAndTypes
@@ -2177,31 +2184,31 @@ GO
 
 -- From Naveen
 CREATE TABLE [dbo].[CMS_File](
-	[FileId] [int] IDENTITY(1,1) NOT NULL,
-	[FileName] [nvarchar](100) NOT NULL,
-	[FileDescription] [varchar](500) NOT NULL,
-	[FileIdentifier] [varchar](100) NOT NULL,
-	[ValidStartDate] [datetime] NULL,
-	[ValidEndDate] [datetime] NULL,
-	[IsActive] [bit] NOT NULL,
+    [FileId] [int] IDENTITY(1,1) NOT NULL,
+    [FileName] [nvarchar](100) NOT NULL,
+    [FileDescription] [varchar](500) NOT NULL,
+    [FileIdentifier] [varchar](100) NOT NULL,
+    [ValidStartDate] [datetime] NULL,
+    [ValidEndDate] [datetime] NULL,
+    [IsActive] [bit] NOT NULL,
  CONSTRAINT [PK_CMS_File] PRIMARY KEY CLUSTERED 
 (
-	[FileId] ASC
+    [FileId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
 CREATE TABLE [dbo].[CMS_Tag](
-	[TagId] [int] IDENTITY(1,1) NOT NULL,
-	[TagName] [varchar](100) NOT NULL,
+    [TagId] [int] IDENTITY(1,1) NOT NULL,
+    [TagName] [varchar](100) NOT NULL,
  CONSTRAINT [PK_CMS_Tag] PRIMARY KEY CLUSTERED 
 (
-	[TagId] ASC
+    [TagId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
 CREATE TABLE [dbo].[CMS_FileTag](
-	[FileId] [int] NOT NULL,
-	[TagId] [int] NOT NULL
+    [FileId] [int] NOT NULL,
+    [TagId] [int] NOT NULL
 ) ON [PRIMARY]
 GO
 ALTER TABLE [dbo].[CMS_FileTag] WITH NOCHECK ADD  CONSTRAINT [FK_CMS_FileTag_CMS_File] FOREIGN KEY([FileId]) REFERENCES [dbo].[CMS_File] ([FileId])
@@ -2264,10 +2271,10 @@ GO
 -- DROP TABLE ClientCreationState
 CREATE TABLE ClientCreationState
 (
-	id UNIQUEIDENTIFIER NOT NULL,
-	WebhookSetup BIT NOT NULL,
-	AuthSetup BIT NOT NULL,
-	AssignedCarrier BIT NOT NULL,
+    id UNIQUEIDENTIFIER NOT NULL,
+    WebhookSetup BIT NOT NULL,
+    AuthSetup BIT NOT NULL,
+    AssignedCarrier BIT NOT NULL,
     CONSTRAINT PK_ClientCreationState PRIMARY KEY CLUSTERED (Id)
 );
 GO
@@ -2475,22 +2482,49 @@ GO
 
 CREATE TABLE EventProcessor
 (
-	Id INT NOT NULL IDENTITY(1,1),
-	[Name] VARCHAR(200) NOT NULL,
-	[Description] VARCHAR(512) NULL,
-	[EndpointAddress] VARCHAR(512) NULL,
-	[Enabled] BIT NOT NULL,
-	CONSTRAINT [PK_EventProcessor] PRIMARY KEY CLUSTERED (Id)
+    Id INT NOT NULL IDENTITY(1,1),
+    [Name] VARCHAR(200) NOT NULL,
+    [Description] VARCHAR(512) NULL,
+    [EndpointAddress] VARCHAR(512) NULL,
+    [Enabled] BIT NOT NULL,
+    CONSTRAINT [PK_EventProcessor] PRIMARY KEY CLUSTERED (Id)
 );
 GO
 CREATE TABLE EventProcessorEventFilter
 (
-	Id INT NOT NULL IDENTITY(1,1),
-	EventProcessorId INT NOT NULL,
-	WantedEventId INT NOT NULL,
-	CONSTRAINT [PK_EventProcessorEventFilter] PRIMARY KEY CLUSTERED (Id)
+    Id INT NOT NULL IDENTITY(1,1),
+    EventProcessorId INT NOT NULL,
+    WantedEventId INT NOT NULL,
+    CONSTRAINT [PK_EventProcessorEventFilter] PRIMARY KEY CLUSTERED (Id)
 );
 GO
 CREATE UNIQUE INDEX [IX_EventProcessorEventFilter] ON EventProcessorEventFilter (EventProcessorId, WantedEventId);
 ALTER TABLE EventProcessorEventFilter ADD CONSTRAINT [FK_EventProcessorEventFilter__EventProcessor] FOREIGN KEY (EventProcessorId) REFERENCES EventProcessor (Id);
+GO
+
+
+
+
+-- Create tables with multiple FK's (Matt Quick)
+CREATE SCHEMA MQ
+GO
+/*
+    DROP TABLE MQ.Logs;
+    DROP TABLE MQ.ApplicationUsers;
+*/
+CREATE TABLE MQ.ApplicationUsers
+(
+    Id INT NOT NULL IDENTITY(1,1),
+    CONSTRAINT [PK_MQ_ApplicationUsers] PRIMARY KEY CLUSTERED (Id)
+)
+CREATE TABLE MQ.Logs
+(
+    Id INT NOT NULL IDENTITY(1,1),
+    UserId INT NULL,
+    ImpersonatingUserId INT NULL,
+    CONSTRAINT [PK_MQ_Logs] PRIMARY KEY CLUSTERED (Id)
+)
+GO
+ALTER TABLE MQ.Logs ADD CONSTRAINT [FK_MQ_LOGS__User] FOREIGN KEY (UserId) REFERENCES MQ.ApplicationUsers (Id);
+ALTER TABLE MQ.Logs ADD CONSTRAINT [FK_MQ_LOGS__ImpersonatingUser] FOREIGN KEY (ImpersonatingUserId) REFERENCES MQ.ApplicationUsers (Id);
 GO

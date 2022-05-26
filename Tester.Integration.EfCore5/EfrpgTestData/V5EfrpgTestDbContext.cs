@@ -83,6 +83,8 @@ namespace V5EfrpgTest
         public DbSet<Issue47_Role> Issue47_Roles { get; set; } // Role
         public DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
+        public DbSet<MQ_ApplicationUser> MQ_ApplicationUsers { get; set; } // ApplicationUsers
+        public DbSet<MQ_Log> MQ_Logs { get; set; } // Logs
         public DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
         public DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
         public DbSet<OneEightSix_UploadedFile> OneEightSix_UploadedFiles { get; set; } // UploadedFile
@@ -210,6 +212,8 @@ namespace V5EfrpgTest
             modelBuilder.ApplyConfiguration(new Issue47_RoleConfiguration());
             modelBuilder.ApplyConfiguration(new Issue47_UserConfiguration());
             modelBuilder.ApplyConfiguration(new Issue47_UserRoleConfiguration());
+            modelBuilder.ApplyConfiguration(new MQ_ApplicationUserConfiguration());
+            modelBuilder.ApplyConfiguration(new MQ_LogConfiguration());
             modelBuilder.ApplyConfiguration(new MultipleKeyConfiguration());
             modelBuilder.ApplyConfiguration(new OneEightSix_IssueConfiguration());
             modelBuilder.ApplyConfiguration(new OneEightSix_UploadedFileConfiguration());

@@ -1,6 +1,6 @@
 ﻿USE [master]
 GO
-/****** Object:  Database [EfrpgTest_Synonyms]    Script Date: 12/01/22 23:26:21 ******/
+/****** Object:  Database [EfrpgTest_Synonyms]    Script Date: 26/05/22 21:57:11 ******/
 CREATE DATABASE [EfrpgTest_Synonyms]
  CONTAINMENT = NONE
  ON  PRIMARY 
@@ -79,30 +79,31 @@ ALTER DATABASE [EfrpgTest_Synonyms] SET QUERY_STORE = OFF
 GO
 USE [EfrpgTest_Synonyms]
 GO
-/****** Object:  Schema [CustomSchema]    Script Date: 12/01/22 23:26:21 ******/
+/****** Object:  Schema [CustomSchema]    Script Date: 26/05/22 21:57:11 ******/
 CREATE SCHEMA [CustomSchema]
 GO
-/****** Object:  Schema [Stafford]    Script Date: 12/01/22 23:26:21 ******/
+/****** Object:  Schema [Stafford]    Script Date: 26/05/22 21:57:11 ******/
 CREATE SCHEMA [Stafford]
 GO
-/****** Object:  Schema [Synonyms]    Script Date: 12/01/22 23:26:21 ******/
+/****** Object:  Schema [Synonyms]    Script Date: 26/05/22 21:57:11 ******/
 CREATE SCHEMA [Synonyms]
 GO
-/****** Object:  Synonym [CustomSchema].[CsvToIntWithSchema]    Script Date: 12/01/22 23:26:21 ******/
+/****** Object:  Synonym [CustomSchema].[CsvToIntWithSchema]    Script Date: 26/05/22 21:57:11 ******/
 CREATE SYNONYM [CustomSchema].[CsvToIntWithSchema] FOR [EfrpgTest].[CustomSchema].[CsvToIntWithSchema]
 GO
-/****** Object:  Synonym [Synonyms].[Child]    Script Date: 12/01/22 23:26:21 ******/
+/****** Object:  Synonym [dbo].[CarWithDifferentSynonymName]    Script Date: 26/05/22 21:57:11 ******/
+CREATE SYNONYM [dbo].[CarWithDifferentSynonymName] FOR [EfrpgTest].[dbo].[Car]
+GO
+/****** Object:  Synonym [Synonyms].[Child]    Script Date: 26/05/22 21:57:11 ******/
 CREATE SYNONYM [Synonyms].[Child] FOR [EfrpgTest].[Synonyms].[Child]
 GO
-/****** Object:  Synonym [Synonyms].[Parent]    Script Date: 12/01/22 23:26:21 ******/
+/****** Object:  Synonym [Synonyms].[Parent]    Script Date: 26/05/22 21:57:11 ******/
 CREATE SYNONYM [Synonyms].[Parent] FOR [EfrpgTest].[Synonyms].[Parent]
 GO
-/****** Object:  Synonym [Synonyms].[SimpleStoredProc]    Script Date: 12/01/22 23:26:21 ******/
+/****** Object:  Synonym [Synonyms].[SimpleStoredProc]    Script Date: 26/05/22 21:57:11 ******/
 CREATE SYNONYM [Synonyms].[SimpleStoredProc] FOR [EfrpgTest].[Synonyms].[SimpleStoredProc]
 GO
-CREATE SYNONYM [CarWithDifferentSynonymName] FOR [EfrpgTest].[dbo].[Car]
-GO
-/****** Object:  UserDefinedFunction [dbo].[CsvToInt]    Script Date: 12/01/22 23:26:21 ******/
+/****** Object:  UserDefinedFunction [dbo].[CsvToInt]    Script Date: 26/05/22 21:57:11 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -143,7 +144,7 @@ BEGIN
 	RETURN
 END
 GO
-/****** Object:  Table [dbo].[UserInfo]    Script Date: 12/01/22 23:26:21 ******/
+/****** Object:  Table [dbo].[UserInfo]    Script Date: 26/05/22 21:57:11 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -157,7 +158,7 @@ CREATE TABLE [dbo].[UserInfo](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[UserInfoAttributes]    Script Date: 12/01/22 23:26:21 ******/
+/****** Object:  Table [dbo].[UserInfoAttributes]    Script Date: 26/05/22 21:57:12 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -175,6 +176,12 @@ GO
 SET IDENTITY_INSERT [dbo].[UserInfo] ON 
 GO
 INSERT [dbo].[UserInfo] ([Id], [Forename]) VALUES (1, N'Ruprecht')
+GO
+INSERT [dbo].[UserInfo] ([Id], [Forename]) VALUES (2, N'Ruprecht')
+GO
+INSERT [dbo].[UserInfo] ([Id], [Forename]) VALUES (3, N'Ruprecht')
+GO
+INSERT [dbo].[UserInfo] ([Id], [Forename]) VALUES (4, N'Ruprecht')
 GO
 SET IDENTITY_INSERT [dbo].[UserInfo] OFF
 GO
