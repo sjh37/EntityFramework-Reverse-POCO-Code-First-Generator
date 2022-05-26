@@ -15,7 +15,7 @@ namespace V6EfrpgTest
             builder.HasKey(x => x.Id).HasName("PK_Versioned").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Version).HasColumnName(@"Version").HasColumnType("timestamp").IsRequired().IsRowVersion().ValueGeneratedOnAddOrUpdate();
+            builder.Property(x => x.Version).HasColumnName(@"Version").HasColumnType("timestamp(8)").IsRequired().IsFixedLength().HasMaxLength(8).IsRowVersion();
             builder.Property(x => x.Number).HasColumnName(@"Number").HasColumnType("int").IsRequired();
         }
     }

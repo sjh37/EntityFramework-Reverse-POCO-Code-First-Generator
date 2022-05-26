@@ -12,9 +12,9 @@ namespace Tester.Integration.EfCore2
         public void Configure(EntityTypeBuilder<EnumTest_DaysOfWeek> builder)
         {
             builder.ToTable("DaysOfWeek", "EnumTest");
-            builder.HasKey(x => new { x.TypeName, x.TypeId });
+            builder.HasKey(x => x.TypeId).HasName("PK_EnumTest_DaysOfWeek").ForSqlServerIsClustered();
 
-            builder.Property(x => x.TypeName).HasColumnName(@"TypeName").HasColumnType("varchar(50)").IsRequired().IsUnicode(false).HasMaxLength(50).ValueGeneratedNever();
+            builder.Property(x => x.TypeName).HasColumnName(@"TypeName").HasColumnType("varchar(50)").IsRequired().IsUnicode(false).HasMaxLength(50);
             builder.Property(x => x.TypeId).HasColumnName(@"TypeId").HasColumnType("int").IsRequired().ValueGeneratedNever();
         }
     }

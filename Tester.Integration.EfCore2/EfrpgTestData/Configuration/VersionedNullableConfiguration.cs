@@ -15,7 +15,7 @@ namespace Tester.Integration.EfCore2
             builder.HasKey(x => x.Id).HasName("PK_VersionedNullable").ForSqlServerIsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseSqlServerIdentityColumn();
-            builder.Property(x => x.Version).HasColumnName(@"Version").HasColumnType("timestamp").IsRequired(false).IsRowVersion().ValueGeneratedOnAddOrUpdate();
+            builder.Property(x => x.Version).HasColumnName(@"Version").HasColumnType("timestamp").IsRequired(false);
             builder.Property(x => x.Number).HasColumnName(@"Number").HasColumnType("int").IsRequired();
         }
     }

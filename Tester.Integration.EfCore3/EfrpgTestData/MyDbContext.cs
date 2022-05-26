@@ -78,6 +78,7 @@ namespace Tester.Integration.EfCore3
         public DbSet<DsOpe> DsOpes { get; set; } // DSOpe
         public DbSet<EnumsWithStringAsValue> EnumsWithStringAsValues { get; set; } // EnumsWithStringAsValue
         public DbSet<EnumTest_DaysOfWeek> EnumTest_DaysOfWeeks { get; set; } // DaysOfWeek
+        public DbSet<EnumTest_OpenDay> EnumTest_OpenDays { get; set; } // OpenDays
         public DbSet<EnumWithDefaultValue> EnumWithDefaultValues { get; set; } // EnumWithDefaultValue
         public DbSet<EventProcessor> EventProcessors { get; set; } // EventProcessor
         public DbSet<EventProcessorEventFilter> EventProcessorEventFilters { get; set; } // EventProcessorEventFilter
@@ -129,6 +130,8 @@ namespace Tester.Integration.EfCore3
         public DbSet<User> Users { get; set; } // User
         public DbSet<User309> User309 { get; set; } // User309
         public DbSet<UserDocument> UserDocuments { get; set; } // User_Document
+        public DbSet<Versioned> Versioneds { get; set; } // Versioned
+        public DbSet<VersionedNullable> VersionedNullables { get; set; } // VersionedNullable
         public DbSet<ViewWithSpace> ViewWithSpaces { get; set; } // view with space
         public DbSet<WVN_Article> WVN_Articles { get; set; } // Articles
         public DbSet<WVN_VArticle> WVN_VArticles { get; set; } // v_Articles
@@ -207,6 +210,7 @@ namespace Tester.Integration.EfCore3
             modelBuilder.ApplyConfiguration(new DsOpeConfiguration());
             modelBuilder.ApplyConfiguration(new EnumsWithStringAsValueConfiguration());
             modelBuilder.ApplyConfiguration(new EnumTest_DaysOfWeekConfiguration());
+            modelBuilder.ApplyConfiguration(new EnumTest_OpenDayConfiguration());
             modelBuilder.ApplyConfiguration(new EnumWithDefaultValueConfiguration());
             modelBuilder.ApplyConfiguration(new EventProcessorConfiguration());
             modelBuilder.ApplyConfiguration(new EventProcessorEventFilterConfiguration());
@@ -258,6 +262,8 @@ namespace Tester.Integration.EfCore3
             modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.ApplyConfiguration(new User309Configuration());
             modelBuilder.ApplyConfiguration(new UserDocumentConfiguration());
+            modelBuilder.ApplyConfiguration(new VersionedConfiguration());
+            modelBuilder.ApplyConfiguration(new VersionedNullableConfiguration());
             modelBuilder.ApplyConfiguration(new ViewWithSpaceConfiguration());
             modelBuilder.ApplyConfiguration(new WVN_ArticleConfiguration());
             modelBuilder.ApplyConfiguration(new WVN_VArticleConfiguration());

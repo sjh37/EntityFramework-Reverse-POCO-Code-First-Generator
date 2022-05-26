@@ -108,6 +108,8 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         public DbSet<User> Users { get; set; } // User
         public DbSet<User309> User309 { get; set; } // User309
         public DbSet<UserDocument> UserDocuments { get; set; } // User_Document
+        public DbSet<Versioned> Versioneds { get; set; } // Versioned
+        public DbSet<VersionedNullable> VersionedNullables { get; set; } // VersionedNullable
         public DbSet<ViewWithSpace> ViewWithSpaces { get; set; } // view with space
         public DbSet<WVN_Article> WVN_Articles { get; set; } // Articles
         public DbSet<WVN_VArticle> WVN_VArticles { get; set; } // v_Articles
@@ -210,6 +212,8 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             Users = new FakeDbSet<User>("Id");
             User309 = new FakeDbSet<User309>("UserId");
             UserDocuments = new FakeDbSet<UserDocument>("Id");
+            Versioneds = new FakeDbSet<Versioned>("Id");
+            VersionedNullables = new FakeDbSet<VersionedNullable>("Id");
             ViewWithSpaces = new FakeDbSet<ViewWithSpace>();
             WVN_Articles = new FakeDbSet<WVN_Article>("PkArticle");
             WVN_VArticles = new FakeDbSet<WVN_VArticle>();
@@ -475,6 +479,25 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         {
             int procResult;
             return Task.FromResult(C182Test2(flag, out procResult));
+        }
+
+        public DbSet<ColourPivotReturnModel> ColourPivotReturnModel { get; set; }
+        public List<ColourPivotReturnModel> ColourPivot()
+        {
+            int procResult;
+            return ColourPivot(out procResult);
+        }
+
+        public List<ColourPivotReturnModel> ColourPivot(out int procResult)
+        {
+            procResult = 0;
+            return new List<ColourPivotReturnModel>();
+        }
+
+        public Task<List<ColourPivotReturnModel>> ColourPivotAsync()
+        {
+            int procResult;
+            return Task.FromResult(ColourPivot(out procResult));
         }
 
         public int ConvertToString(int? someValue, out string someString)

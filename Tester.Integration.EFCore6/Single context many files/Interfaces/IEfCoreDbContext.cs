@@ -108,6 +108,8 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         DbSet<User> Users { get; set; } // User
         DbSet<User309> User309 { get; set; } // User309
         DbSet<UserDocument> UserDocuments { get; set; } // User_Document
+        DbSet<Versioned> Versioneds { get; set; } // Versioned
+        DbSet<VersionedNullable> VersionedNullables { get; set; } // VersionedNullable
         DbSet<ViewWithSpace> ViewWithSpaces { get; set; } // view with space
         DbSet<WVN_Article> WVN_Articles { get; set; } // Articles
         DbSet<WVN_VArticle> WVN_VArticles { get; set; } // v_Articles

@@ -11,8 +11,20 @@ namespace Tester.Integration.EfCore3
     // DaysOfWeek
     public class EnumTest_DaysOfWeek
     {
-        public string TypeName { get; set; } // TypeName (Primary key) (length: 50)
+        public string TypeName { get; set; } // TypeName (length: 50)
         public int TypeId { get; set; } // TypeId (Primary key)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child EnumTest_OpenDays where [OpenDays].[EnumId] point to this entity (Fk_OpenDays_EnumId)
+        /// </summary>
+        public virtual ICollection<EnumTest_OpenDay> EnumTest_OpenDays { get; set; } // OpenDays.Fk_OpenDays_EnumId
+
+        public EnumTest_DaysOfWeek()
+        {
+            EnumTest_OpenDays = new List<EnumTest_OpenDay>();
+        }
     }
 
 }

@@ -122,6 +122,8 @@ namespace TestDatabaseStandard
         DbSet<User> Users { get; set; } // User
         DbSet<User309> User309 { get; set; } // User309
         DbSet<UserDocument> UserDocuments { get; set; } // User_Document
+        DbSet<Versioned> Versioneds { get; set; } // Versioned
+        DbSet<VersionedNullable> VersionedNullables { get; set; } // VersionedNullable
         DbSet<ViewWithSpace> ViewWithSpaces { get; set; } // view with space
         DbSet<WVN_Article> WVN_Articles { get; set; } // Articles
         DbSet<WVN_VArticle> WVN_VArticles { get; set; } // v_Articles
@@ -444,6 +446,8 @@ namespace TestDatabaseStandard
         public DbSet<User> Users { get; set; } // User
         public DbSet<User309> User309 { get; set; } // User309
         public DbSet<UserDocument> UserDocuments { get; set; } // User_Document
+        public DbSet<Versioned> Versioneds { get; set; } // Versioned
+        public DbSet<VersionedNullable> VersionedNullables { get; set; } // VersionedNullable
         public DbSet<ViewWithSpace> ViewWithSpaces { get; set; } // view with space
         public DbSet<WVN_Article> WVN_Articles { get; set; } // Articles
         public DbSet<WVN_VArticle> WVN_VArticles { get; set; } // v_Articles
@@ -570,6 +574,8 @@ namespace TestDatabaseStandard
             modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.ApplyConfiguration(new User309Configuration());
             modelBuilder.ApplyConfiguration(new UserDocumentConfiguration());
+            modelBuilder.ApplyConfiguration(new VersionedConfiguration());
+            modelBuilder.ApplyConfiguration(new VersionedNullableConfiguration());
             modelBuilder.ApplyConfiguration(new ViewWithSpaceConfiguration());
             modelBuilder.ApplyConfiguration(new WVN_ArticleConfiguration());
             modelBuilder.ApplyConfiguration(new WVN_VArticleConfiguration());
@@ -1802,6 +1808,8 @@ namespace TestDatabaseStandard
         public DbSet<User> Users { get; set; } // User
         public DbSet<User309> User309 { get; set; } // User309
         public DbSet<UserDocument> UserDocuments { get; set; } // User_Document
+        public DbSet<Versioned> Versioneds { get; set; } // Versioned
+        public DbSet<VersionedNullable> VersionedNullables { get; set; } // VersionedNullable
         public DbSet<ViewWithSpace> ViewWithSpaces { get; set; } // view with space
         public DbSet<WVN_Article> WVN_Articles { get; set; } // Articles
         public DbSet<WVN_VArticle> WVN_VArticles { get; set; } // v_Articles
@@ -1904,6 +1912,8 @@ namespace TestDatabaseStandard
             Users = new FakeDbSet<User>("Id");
             User309 = new FakeDbSet<User309>("UserId");
             UserDocuments = new FakeDbSet<UserDocument>("Id");
+            Versioneds = new FakeDbSet<Versioned>("Id");
+            VersionedNullables = new FakeDbSet<VersionedNullable>("Id");
             ViewWithSpaces = new FakeDbSet<ViewWithSpace>();
             WVN_Articles = new FakeDbSet<WVN_Article>("PkArticle");
             WVN_VArticles = new FakeDbSet<WVN_VArticle>();
@@ -4869,6 +4879,22 @@ namespace TestDatabaseStandard
         public virtual User User_UserId { get; set; } // FK_User_Document_User
     }
 
+    // Versioned
+    public class Versioned
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public byte[] Version { get; set; } // Version (length: 8)
+        public int Number { get; set; } // Number
+    }
+
+    // VersionedNullable
+    public class VersionedNullable
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public byte[] Version { get; set; } // Version
+        public int Number { get; set; } // Number
+    }
+
     // view with space
     public class ViewWithSpace
     {
@@ -6405,6 +6431,34 @@ namespace TestDatabaseStandard
             // Foreign keys
             builder.HasOne(a => a.CreatedByUser).WithMany(b => b.UserDocuments_CreatedByUserId).HasForeignKey(c => c.CreatedByUserId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_User_Document_User1");
             builder.HasOne(a => a.User_UserId).WithMany(b => b.UserDocuments_UserId).HasForeignKey(c => c.UserId).HasConstraintName("FK_User_Document_User");
+        }
+    }
+
+    // Versioned
+    public class VersionedConfiguration : IEntityTypeConfiguration<Versioned>
+    {
+        public void Configure(EntityTypeBuilder<Versioned> builder)
+        {
+            builder.ToTable("Versioned", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK_Versioned").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Version).HasColumnName(@"Version").HasColumnType("timestamp(8)").IsRequired().IsFixedLength().HasMaxLength(8).IsRowVersion();
+            builder.Property(x => x.Number).HasColumnName(@"Number").HasColumnType("int").IsRequired();
+        }
+    }
+
+    // VersionedNullable
+    public class VersionedNullableConfiguration : IEntityTypeConfiguration<VersionedNullable>
+    {
+        public void Configure(EntityTypeBuilder<VersionedNullable> builder)
+        {
+            builder.ToTable("VersionedNullable", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK_VersionedNullable").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Version).HasColumnName(@"Version").HasColumnType("timestamp").IsRequired(false);
+            builder.Property(x => x.Number).HasColumnName(@"Number").HasColumnType("int").IsRequired();
         }
     }
 

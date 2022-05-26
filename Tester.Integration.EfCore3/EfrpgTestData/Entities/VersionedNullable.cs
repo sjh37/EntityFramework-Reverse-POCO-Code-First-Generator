@@ -12,7 +12,7 @@ namespace Tester.Integration.EfCore3
     public class VersionedNullable
     {
         public int Id { get; set; } // Id (Primary key)
-        public byte[] Version { get; private set; } // Version (length: 8)
+        public byte[] Version { get; set; } // Version
         public int Number { get; set; } // Number
     }
 

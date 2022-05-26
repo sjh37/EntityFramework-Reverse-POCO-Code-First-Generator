@@ -60,6 +60,7 @@ namespace Tester.Integration.EfCore3
         DbSet<DsOpe> DsOpes { get; set; } // DSOpe
         DbSet<EnumsWithStringAsValue> EnumsWithStringAsValues { get; set; } // EnumsWithStringAsValue
         DbSet<EnumTest_DaysOfWeek> EnumTest_DaysOfWeeks { get; set; } // DaysOfWeek
+        DbSet<EnumTest_OpenDay> EnumTest_OpenDays { get; set; } // OpenDays
         DbSet<EnumWithDefaultValue> EnumWithDefaultValues { get; set; } // EnumWithDefaultValue
         DbSet<EventProcessor> EventProcessors { get; set; } // EventProcessor
         DbSet<EventProcessorEventFilter> EventProcessorEventFilters { get; set; } // EventProcessorEventFilter
@@ -111,6 +112,8 @@ namespace Tester.Integration.EfCore3
         DbSet<User> Users { get; set; } // User
         DbSet<User309> User309 { get; set; } // User309
         DbSet<UserDocument> UserDocuments { get; set; } // User_Document
+        DbSet<Versioned> Versioneds { get; set; } // Versioned
+        DbSet<VersionedNullable> VersionedNullables { get; set; } // VersionedNullable
         DbSet<ViewWithSpace> ViewWithSpaces { get; set; } // view with space
         DbSet<WVN_Article> WVN_Articles { get; set; } // Articles
         DbSet<WVN_VArticle> WVN_VArticles { get; set; } // v_Articles
