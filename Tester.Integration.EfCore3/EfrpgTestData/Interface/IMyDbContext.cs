@@ -77,8 +77,6 @@ namespace Tester.Integration.EfCore3
         DbSet<Issue47_Role> Issue47_Roles { get; set; } // Role
         DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
-        DbSet<MQ_ApplicationUser> MQ_ApplicationUsers { get; set; } // ApplicationUsers
-        DbSet<MQ_Log> MQ_Logs { get; set; } // Logs
         DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
         DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
         DbSet<OneEightSix_IssueUploadedFile> OneEightSix_IssueUploadedFiles { get; set; } // IssueUploadedFile

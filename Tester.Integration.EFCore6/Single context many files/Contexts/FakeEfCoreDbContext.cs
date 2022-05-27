@@ -73,8 +73,6 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         public DbSet<Issue47_Role> Issue47_Roles { get; set; } // Role
         public DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
-        public DbSet<MQ_ApplicationUser> MQ_ApplicationUsers { get; set; } // ApplicationUsers
-        public DbSet<MQ_Log> MQ_Logs { get; set; } // Logs
         public DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
         public DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
         public DbSet<OneEightSix_IssueUploadedFile> OneEightSix_IssueUploadedFiles { get; set; } // IssueUploadedFile
@@ -179,8 +177,6 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             Issue47_Roles = new FakeDbSet<Issue47_Role>("RoleId");
             Issue47_Users = new FakeDbSet<Issue47_User>("UserId");
             Issue47_UserRoles = new FakeDbSet<Issue47_UserRole>("UserRoleId");
-            MQ_ApplicationUsers = new FakeDbSet<MQ_ApplicationUser>("Id");
-            MQ_Logs = new FakeDbSet<MQ_Log>("Id");
             MultipleKeys = new FakeDbSet<MultipleKey>("UserId", "FavouriteColourId", "BestHolidayTypeId");
             OneEightSix_Issues = new FakeDbSet<OneEightSix_Issue>("Id");
             OneEightSix_IssueUploadedFiles = new FakeDbSet<OneEightSix_IssueUploadedFile>("UploadedFileId", "IssueId");
