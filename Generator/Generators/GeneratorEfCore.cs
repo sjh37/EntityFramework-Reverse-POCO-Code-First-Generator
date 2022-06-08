@@ -143,7 +143,10 @@ namespace Efrpg.Generators
             //    sb.Append(".IsMaxLength()");
 
             if (c.IsRowVersion)
+            {
                 sb.Append(".IsRowVersion()");
+                c.IsConcurrencyToken = true;
+            }
 
             if (c.IsConcurrencyToken)
                 sb.Append(".IsConcurrencyToken()");

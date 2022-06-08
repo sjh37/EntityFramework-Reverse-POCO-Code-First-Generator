@@ -365,7 +365,7 @@ namespace BuildTT
                 column.Attributes.Add(""[MaxLength]"");
 
             if (column.IsRowVersion)
-                column.Attributes.Add(""[Timestamp]"");
+                column.Attributes.Add(""[Timestamp, ConcurrencyCheck]"");
 
             if (!column.IsMaxLength && column.MaxLength > 0)
             { 

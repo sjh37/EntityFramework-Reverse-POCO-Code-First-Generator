@@ -123,7 +123,10 @@ namespace Efrpg.Generators
                 sb.AppendFormat(".HasPrecision({0})", c.Precision);
 
             if (c.IsRowVersion)
+            {
                 sb.Append(".IsRowVersion()");
+                c.IsConcurrencyToken = true;
+            }
 
             if (c.IsConcurrencyToken)
                 sb.Append(".IsConcurrencyToken()");

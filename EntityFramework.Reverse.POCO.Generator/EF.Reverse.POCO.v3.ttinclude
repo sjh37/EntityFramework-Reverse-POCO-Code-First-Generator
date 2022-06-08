@@ -5777,7 +5777,10 @@
                 sb.AppendFormat(".HasPrecision({0})", c.Precision);
 
             if (c.IsRowVersion)
+            {
                 sb.Append(".IsRowVersion()");
+                c.IsConcurrencyToken = true;
+            }
 
             if (c.IsConcurrencyToken)
                 sb.Append(".IsConcurrencyToken()");
@@ -6076,7 +6079,10 @@
             //    sb.Append(".IsMaxLength()");
 
             if (c.IsRowVersion)
+            {
                 sb.Append(".IsRowVersion()");
+                c.IsConcurrencyToken = true;
+            }
 
             if (c.IsConcurrencyToken)
                 sb.Append(".IsConcurrencyToken()");
@@ -13085,7 +13091,7 @@ and limitations under the License.
             col.IsUnicode     = !(rt.TypeName == "char" || rt.TypeName == "varchar" || rt.TypeName == "text");
             col.IsMaxLength   = (rt.TypeName == "ntext");
 
-            col.IsRowVersion = col.IsStoreGenerated && !col.IsNullable && rt.TypeName == "timestamp";
+            col.IsRowVersion = col.IsStoreGenerated && rt.TypeName == "timestamp";
             if (col.IsRowVersion)
                 col.MaxLength = 8;
 

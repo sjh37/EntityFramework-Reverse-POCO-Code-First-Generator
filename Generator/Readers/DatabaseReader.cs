@@ -980,7 +980,7 @@ namespace Efrpg.Readers
             col.IsUnicode     = !(rt.TypeName == "char" || rt.TypeName == "varchar" || rt.TypeName == "text");
             col.IsMaxLength   = (rt.TypeName == "ntext");
 
-            col.IsRowVersion = col.IsStoreGenerated && !col.IsNullable && rt.TypeName == "timestamp";
+            col.IsRowVersion = col.IsStoreGenerated && rt.TypeName == "timestamp";
             if (col.IsRowVersion)
                 col.MaxLength = 8;
 
