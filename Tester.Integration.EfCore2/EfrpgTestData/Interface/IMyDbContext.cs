@@ -107,6 +107,8 @@ namespace Tester.Integration.EfCore2
         DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
         DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
         DbSet<Ticket> Tickets { get; set; } // Ticket
+        DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
+        DbSet<TimestampNullable> TimestampNullables { get; set; } // TimestampNullable
         DbSet<Token> Tokens { get; set; } // Token
         DbSet<User> Users { get; set; } // User
         DbSet<User309> User309 { get; set; } // User309

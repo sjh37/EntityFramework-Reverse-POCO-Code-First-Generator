@@ -16,7 +16,7 @@ namespace Tester.Integration.EfCore2
 
             builder.Property(x => x.BlahId).HasColumnName(@"BlahID").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.BlahId2).HasColumnName(@"BlahID2").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.RowVersion).HasColumnName(@"RowVersion").HasColumnType("timestamp").IsRequired(false);
+            builder.Property(x => x.RowVersion).HasColumnName(@"RowVersion").HasColumnType("timestamp(8)").IsRequired(false).IsFixedLength().HasMaxLength(8).IsRowVersion().IsConcurrencyToken();
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseSqlServerIdentityColumn();
             builder.Property(x => x.Id2).HasColumnName(@"id2").HasColumnType("int").IsRequired(false).ValueGeneratedOnAddOrUpdate();
 

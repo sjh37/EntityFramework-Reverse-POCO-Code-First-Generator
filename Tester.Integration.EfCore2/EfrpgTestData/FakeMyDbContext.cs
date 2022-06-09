@@ -107,6 +107,8 @@ namespace Tester.Integration.EfCore2
         public DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
         public DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
         public DbSet<Ticket> Tickets { get; set; } // Ticket
+        public DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
+        public DbSet<TimestampNullable> TimestampNullables { get; set; } // TimestampNullable
         public DbSet<Token> Tokens { get; set; } // Token
         public DbSet<User> Users { get; set; } // User
         public DbSet<User309> User309 { get; set; } // User309
@@ -213,6 +215,8 @@ namespace Tester.Integration.EfCore2
             TblOrderErrorsAbs = new FakeDbSet<TblOrderErrorsAb>("Id");
             TblOrderLines = new FakeDbSet<TblOrderLine>("Id");
             Tickets = new FakeDbSet<Ticket>("Id");
+            TimestampNotNulls = new FakeDbSet<TimestampNotNull>("Id");
+            TimestampNullables = new FakeDbSet<TimestampNullable>("Id");
             Tokens = new FakeDbSet<Token>("Id");
             Users = new FakeDbSet<User>("Id");
             User309 = new FakeDbSet<User309>("UserId");

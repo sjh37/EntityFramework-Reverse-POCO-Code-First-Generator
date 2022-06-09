@@ -19,7 +19,7 @@ namespace V5EfrpgTest
         public string CodeName { get; set; } // codeName (length: 250)
         public string Note { get; set; } // note (length: 250)
         public bool IsObject { get; set; } // isObject
-        public byte[] VersionNumber { get; set; } // versionNumber
+        public byte[] VersionNumber { get; set; } // versionNumber (length: 8)
     }
 
 }

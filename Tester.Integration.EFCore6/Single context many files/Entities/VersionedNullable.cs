@@ -11,7 +11,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
     public class VersionedNullable
     {
         public int Id { get; set; } // Id (Primary key)
-        public byte[] Version { get; set; } // Version
+        public byte[] Version { get; set; } // Version (length: 8)
         public int Number { get; set; } // Number
     }
 

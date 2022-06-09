@@ -118,6 +118,8 @@ namespace TestDatabaseStandard
         DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
         DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
         DbSet<Ticket> Tickets { get; set; } // Ticket
+        DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
+        DbSet<TimestampNullable> TimestampNullables { get; set; } // TimestampNullable
         DbSet<Token> Tokens { get; set; } // Token
         DbSet<User> Users { get; set; } // User
         DbSet<User309> User309 { get; set; } // User309
@@ -442,6 +444,8 @@ namespace TestDatabaseStandard
         public DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
         public DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
         public DbSet<Ticket> Tickets { get; set; } // Ticket
+        public DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
+        public DbSet<TimestampNullable> TimestampNullables { get; set; } // TimestampNullable
         public DbSet<Token> Tokens { get; set; } // Token
         public DbSet<User> Users { get; set; } // User
         public DbSet<User309> User309 { get; set; } // User309
@@ -570,6 +574,8 @@ namespace TestDatabaseStandard
             modelBuilder.ApplyConfiguration(new TblOrderErrorsAbConfiguration());
             modelBuilder.ApplyConfiguration(new TblOrderLineConfiguration());
             modelBuilder.ApplyConfiguration(new TicketConfiguration());
+            modelBuilder.ApplyConfiguration(new TimestampNotNullConfiguration());
+            modelBuilder.ApplyConfiguration(new TimestampNullableConfiguration());
             modelBuilder.ApplyConfiguration(new TokenConfiguration());
             modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.ApplyConfiguration(new User309Configuration());
@@ -1804,6 +1810,8 @@ namespace TestDatabaseStandard
         public DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
         public DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
         public DbSet<Ticket> Tickets { get; set; } // Ticket
+        public DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
+        public DbSet<TimestampNullable> TimestampNullables { get; set; } // TimestampNullable
         public DbSet<Token> Tokens { get; set; } // Token
         public DbSet<User> Users { get; set; } // User
         public DbSet<User309> User309 { get; set; } // User309
@@ -1908,6 +1916,8 @@ namespace TestDatabaseStandard
             TblOrderErrorsAbs = new FakeDbSet<TblOrderErrorsAb>("Id");
             TblOrderLines = new FakeDbSet<TblOrderLine>("Id");
             Tickets = new FakeDbSet<Ticket>("Id");
+            TimestampNotNulls = new FakeDbSet<TimestampNotNull>("Id");
+            TimestampNullables = new FakeDbSet<TimestampNullable>("Id");
             Tokens = new FakeDbSet<Token>("Id");
             Users = new FakeDbSet<User>("Id");
             User309 = new FakeDbSet<User309>("UserId");
@@ -3545,7 +3555,7 @@ namespace TestDatabaseStandard
     {
         public int BlahId { get; set; } // BlahID (Primary key)
         public int BlahId2 { get; set; } // BlahID2 (Primary key)
-        public byte[] RowVersion { get; set; } // RowVersion
+        public byte[] RowVersion { get; set; } // RowVersion (length: 8)
         public int Id { get; set; } // id
         public int? Id2 { get; private set; } // id2
 
@@ -3826,7 +3836,7 @@ namespace TestDatabaseStandard
         public string CodeName { get; set; } // codeName (length: 250)
         public string Note { get; set; } // note (length: 250)
         public bool IsObject { get; set; } // isObject
-        public byte[] VersionNumber { get; set; } // versionNumber
+        public byte[] VersionNumber { get; set; } // versionNumber (length: 8)
 
         public CodeObject()
         {
@@ -4806,6 +4816,22 @@ namespace TestDatabaseStandard
         public virtual AppUser ModifiedBy { get; set; } // FK_Ticket_AppUser1
     }
 
+    // TimestampNotNull
+    public class TimestampNotNull
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public byte[] Version { get; set; } // Version (length: 8)
+        public int Number { get; set; } // Number
+    }
+
+    // TimestampNullable
+    public class TimestampNullable
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public byte[] Version { get; set; } // Version (length: 8)
+        public int Number { get; set; } // Number
+    }
+
     // Token
     public class Token
     {
@@ -4891,7 +4917,7 @@ namespace TestDatabaseStandard
     public class VersionedNullable
     {
         public int Id { get; set; } // Id (Primary key)
-        public byte[] Version { get; set; } // Version
+        public byte[] Version { get; set; } // Version (length: 8)
         public int Number { get; set; } // Number
     }
 
@@ -4907,7 +4933,7 @@ namespace TestDatabaseStandard
         public string CodeName { get; set; } // codeName (length: 250)
         public string Note { get; set; } // note (length: 250)
         public bool IsObject { get; set; } // isObject
-        public byte[] VersionNumber { get; set; } // versionNumber
+        public byte[] VersionNumber { get; set; } // versionNumber (length: 8)
     }
 
     // Articles
@@ -5225,7 +5251,7 @@ namespace TestDatabaseStandard
 
             builder.Property(x => x.BlahId).HasColumnName(@"BlahID").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.BlahId2).HasColumnName(@"BlahID2").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.RowVersion).HasColumnName(@"RowVersion").HasColumnType("timestamp").IsRequired(false);
+            builder.Property(x => x.RowVersion).HasColumnName(@"RowVersion").HasColumnType("timestamp(8)").IsRequired(false).IsFixedLength().HasMaxLength(8).IsRowVersion().IsConcurrencyToken();
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Id2).HasColumnName(@"id2").HasColumnType("int").IsRequired(false).ValueGeneratedOnAddOrUpdate();
 
@@ -5473,7 +5499,7 @@ namespace TestDatabaseStandard
             builder.Property(x => x.CodeName).HasColumnName(@"codeName").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
             builder.Property(x => x.Note).HasColumnName(@"note").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
             builder.Property(x => x.IsObject).HasColumnName(@"isObject").HasColumnType("bit").IsRequired();
-            builder.Property(x => x.VersionNumber).HasColumnName(@"versionNumber").HasColumnType("timestamp").IsRequired(false);
+            builder.Property(x => x.VersionNumber).HasColumnName(@"versionNumber").HasColumnType("timestamp(8)").IsRequired(false).IsFixedLength().HasMaxLength(8).IsRowVersion().IsConcurrencyToken();
         }
     }
 
@@ -6372,6 +6398,34 @@ namespace TestDatabaseStandard
         }
     }
 
+    // TimestampNotNull
+    public class TimestampNotNullConfiguration : IEntityTypeConfiguration<TimestampNotNull>
+    {
+        public void Configure(EntityTypeBuilder<TimestampNotNull> builder)
+        {
+            builder.ToTable("TimestampNotNull", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK_TimestampNotNull").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Version).HasColumnName(@"Version").HasColumnType("timestamp(8)").IsRequired().IsFixedLength().HasMaxLength(8).IsRowVersion().IsConcurrencyToken();
+            builder.Property(x => x.Number).HasColumnName(@"Number").HasColumnType("int").IsRequired();
+        }
+    }
+
+    // TimestampNullable
+    public class TimestampNullableConfiguration : IEntityTypeConfiguration<TimestampNullable>
+    {
+        public void Configure(EntityTypeBuilder<TimestampNullable> builder)
+        {
+            builder.ToTable("TimestampNullable", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK_TTimestampNullable").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Version).HasColumnName(@"Version").HasColumnType("timestamp(8)").IsRequired(false).IsFixedLength().HasMaxLength(8).IsRowVersion().IsConcurrencyToken();
+            builder.Property(x => x.Number).HasColumnName(@"Number").HasColumnType("int").IsRequired();
+        }
+    }
+
     // Token
     public class TokenConfiguration : IEntityTypeConfiguration<Token>
     {
@@ -6443,7 +6497,7 @@ namespace TestDatabaseStandard
             builder.HasKey(x => x.Id).HasName("PK_Versioned").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Version).HasColumnName(@"Version").HasColumnType("timestamp(8)").IsRequired().IsFixedLength().HasMaxLength(8).IsRowVersion();
+            builder.Property(x => x.Version).HasColumnName(@"Version").HasColumnType("timestamp(8)").IsRequired().IsFixedLength().HasMaxLength(8).IsRowVersion().IsConcurrencyToken();
             builder.Property(x => x.Number).HasColumnName(@"Number").HasColumnType("int").IsRequired();
         }
     }
@@ -6457,7 +6511,7 @@ namespace TestDatabaseStandard
             builder.HasKey(x => x.Id).HasName("PK_VersionedNullable").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Version).HasColumnName(@"Version").HasColumnType("timestamp").IsRequired(false);
+            builder.Property(x => x.Version).HasColumnName(@"Version").HasColumnType("timestamp(8)").IsRequired(false).IsFixedLength().HasMaxLength(8).IsRowVersion().IsConcurrencyToken();
             builder.Property(x => x.Number).HasColumnName(@"Number").HasColumnType("int").IsRequired();
         }
     }
@@ -6479,7 +6533,7 @@ namespace TestDatabaseStandard
             builder.Property(x => x.CodeName).HasColumnName(@"codeName").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
             builder.Property(x => x.Note).HasColumnName(@"note").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
             builder.Property(x => x.IsObject).HasColumnName(@"isObject").HasColumnType("bit").IsRequired();
-            builder.Property(x => x.VersionNumber).HasColumnName(@"versionNumber").HasColumnType("timestamp").IsRequired(false);
+            builder.Property(x => x.VersionNumber).HasColumnName(@"versionNumber").HasColumnType("timestamp(8)").IsRequired(false).IsFixedLength().HasMaxLength(8).IsRowVersion().IsConcurrencyToken();
         }
     }
 

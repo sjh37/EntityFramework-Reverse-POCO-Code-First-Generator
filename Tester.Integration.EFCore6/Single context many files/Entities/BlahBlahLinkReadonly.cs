@@ -12,7 +12,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
     {
         public int BlahId { get; set; } // BlahID (Primary key)
         public int BlahId2 { get; set; } // BlahID2 (Primary key)
-        public byte[] RowVersion { get; set; } // RowVersion
+        public byte[] RowVersion { get; set; } // RowVersion (length: 8)
         public int Id { get; set; } // id
         public int? Id2 { get; private set; } // id2
 

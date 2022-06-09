@@ -126,6 +126,8 @@ namespace Tester.Integration.EfCore3
         public DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
         public DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
         public DbSet<Ticket> Tickets { get; set; } // Ticket
+        public DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
+        public DbSet<TimestampNullable> TimestampNullables { get; set; } // TimestampNullable
         public DbSet<Token> Tokens { get; set; } // Token
         public DbSet<User> Users { get; set; } // User
         public DbSet<User309> User309 { get; set; } // User309
@@ -258,6 +260,8 @@ namespace Tester.Integration.EfCore3
             modelBuilder.ApplyConfiguration(new TblOrderErrorsAbConfiguration());
             modelBuilder.ApplyConfiguration(new TblOrderLineConfiguration());
             modelBuilder.ApplyConfiguration(new TicketConfiguration());
+            modelBuilder.ApplyConfiguration(new TimestampNotNullConfiguration());
+            modelBuilder.ApplyConfiguration(new TimestampNullableConfiguration());
             modelBuilder.ApplyConfiguration(new TokenConfiguration());
             modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.ApplyConfiguration(new User309Configuration());
