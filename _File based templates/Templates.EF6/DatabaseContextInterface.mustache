@@ -1,4 +1,4 @@
-﻿{{interfaceModifier}} interface {{DbContextInterfaceName}} : {{DbContextInterfaceBaseClasses}}{{#newline}}
+{{interfaceModifier}} interface {{DbContextInterfaceName}} : {{DbContextInterfaceBaseClasses}}{{#newline}}
 {{{#newline}}
 
 {{#each tables}}
@@ -53,6 +53,7 @@
 {{#newline}}
     // Table Valued Functions{{#newline}}
 {{#each tableValuedFunctions}}
+{{#newline}}
     [DbFunction("{{DbContextName}}", "{{Name}}")]{{#newline}}
     [CodeFirstStoreFunctions.DbFunctionDetails(DatabaseSchema = "{{Schema}}"{{#if SingleReturnModel}}, ResultColumnName = "{{SingleReturnColumnName}}"{{/if}})]{{#newline}}
     IQueryable<{{ReturnClassName}}> {{ExecName}}({{WriteStoredProcFunctionParamsFalse}});{{#newline}}

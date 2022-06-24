@@ -1,3 +1,4 @@
 Microsoft.EntityFrameworkCore
 Microsoft.EntityFrameworkCore.Metadata.Builders
 System.CodeDom.Compiler
+System.Collections.Generic

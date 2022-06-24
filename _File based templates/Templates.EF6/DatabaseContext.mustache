@@ -1,4 +1,4 @@
-﻿{{DbContextClassModifiers}} class {{DbContextName}} : {{DbContextBaseClass}}{{contextInterface}}{{#newline}}
+{{DbContextClassModifiers}} class {{DbContextName}} : {{DbContextBaseClass}}{{contextInterface}}{{#newline}}
 {{{#newline}}
 
 {{#each tables}}
@@ -29,7 +29,7 @@
 
     /// <inheritdoc />{{#newline}}
     public {{DbContextName}}(string connectionString){{#newline}}
-            : base(connectionString){{#newline}}
+        : base(connectionString){{#newline}}
     {{{#newline}}
 {{#if DbContextClassIsPartial}}
         InitializePartial();{{#newline}}
@@ -38,7 +38,7 @@
 
     /// <inheritdoc />{{#newline}}
     public {{DbContextName}}(string connectionString, DbCompiledModel model){{#newline}}
-            : base(connectionString, model){{#newline}}
+        : base(connectionString, model){{#newline}}
     {{{#newline}}
 {{#if DbContextClassIsPartial}}
         InitializePartial();{{#newline}}
@@ -85,7 +85,7 @@
 {{#newline}}
 
 
-    public bool IsSqlParameterNull(SqlParameter param){{#newline}}
+    public bool IsSqlParameterNull({{SqlParameter}} param){{#newline}}
     {{{#newline}}
         var sqlValue = param.SqlValue;{{#newline}}
         var nullableValue = sqlValue as INullable;{{#newline}}
@@ -100,7 +100,7 @@
         base.OnModelCreating(modelBuilder);{{#newline}}
 {{#if hasTableValuedFunctions}}
 {{#newline}}
-        modelBuilder.Conventions.Add(new CodeFirstStoreFunctions.FunctionsConvention<{{DbContextName}}>("dbo"));{{#newline}}
+        modelBuilder.Conventions.Add(new CodeFirstStoreFunctions.FunctionsConvention<{{DbContextName}}>("{{DefaultSchema}}"));{{#newline}}
 {{#if hasTableValuedFunctionComplexTypes}}
 {{#newline}}
 {{#each tableValuedFunctionComplexTypes}}

@@ -1,2 +1,3 @@
-﻿System
+System
+System.CodeDom.Compiler
 System.Data.Entity.Infrastructure

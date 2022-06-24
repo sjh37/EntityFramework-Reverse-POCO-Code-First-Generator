@@ -57,6 +57,8 @@
     EntityEntry<TEntity> Update<TEntity>(TEntity entity) where TEntity : class;{{#newline}}
     void UpdateRange(IEnumerable<object> entities);{{#newline}}
     void UpdateRange(params object[] entities);{{#newline}}{{#newline}}
+
+    IQueryable<TResult> FromExpression<TResult> (Expression<Func<IQueryable<TResult>>> expression);{{#newline}}
 {{/if}}
 
 

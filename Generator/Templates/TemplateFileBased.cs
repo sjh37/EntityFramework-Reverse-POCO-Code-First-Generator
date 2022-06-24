@@ -22,97 +22,97 @@ namespace Efrpg.Templates
 
         public override string Usings()
         {
-            return CacheText("Usings.mustache");
+            return CacheText(TemplateFileBasedConstants.Mustache.Usings);
         }
 
         public override List<string> DatabaseContextInterfaceUsings(InterfaceModel data)
         {
-            return CacheList("DatabaseContextInterfaceUsings.txt");
+            return CacheList(TemplateFileBasedConstants.Text.DatabaseContextInterfaceUsings);
         }
 
         public override string DatabaseContextInterface()
         {
-            return CacheText("DatabaseContextInterface.mustache");
+            return CacheText(TemplateFileBasedConstants.Mustache.DatabaseContextInterface);
         }
 
         public override List<string> DatabaseContextUsings(ContextModel data)
         {
-            return CacheList("DatabaseContextUsings.txt");
+            return CacheList(TemplateFileBasedConstants.Text.DatabaseContextUsings);
         }
 
         public override string DatabaseContext()
         {
-            return CacheText("DatabaseContext.mustache");
+            return CacheText(TemplateFileBasedConstants.Mustache.DatabaseContext);
         }
 
         public override List<string> DatabaseContextFactoryUsings(FactoryModel data)
         {
-            return CacheList("DatabaseContextFactoryUsings.txt");
+            return CacheList(TemplateFileBasedConstants.Text.DatabaseContextFactoryUsings);
         }
 
         public override string DatabaseContextFactory()
         {
-            return CacheText("DatabaseContextFactory.mustache");
+            return CacheText(TemplateFileBasedConstants.Mustache.DatabaseContextFactory);
         }
 
         public override List<string> FakeDatabaseContextUsings(FakeContextModel data, IDbContextFilter filter)
         {
-            return CacheList("FakeDatabaseContextUsings.txt");
+            return CacheList(TemplateFileBasedConstants.Text.FakeDatabaseContextUsings);
         }
 
         public override string FakeDatabaseContext()
         {
-            return CacheText("FakeDatabaseContext.mustache");
+            return CacheText(TemplateFileBasedConstants.Mustache.FakeDatabaseContext);
         }
 
         public override List<string> FakeDbSetUsings(FakeDbSetModel data)
         {
-            return CacheList("FakeDbSetUsings.txt");
+            return CacheList(TemplateFileBasedConstants.Text.FakeDbSetUsings);
         }
 
         public override string FakeDbSet()
         {
-            return CacheText("FakeDbSet.mustache");
+            return CacheText(TemplateFileBasedConstants.Mustache.FakeDbSet);
         }
 
         public override List<string> PocoUsings(PocoModel data)
         {
-            return CacheList("PocoUsings.txt");
+            return CacheList(TemplateFileBasedConstants.Text.PocoUsings);
         }
 
         public override string Poco()
         {
-            return CacheText("Poco.mustache");
+            return CacheText(TemplateFileBasedConstants.Mustache.Poco);
         }
 
         public override List<string> PocoConfigurationUsings(PocoConfigurationModel data)
         {
-            return CacheList("PocoConfigurationUsings.txt");
+            return CacheList(TemplateFileBasedConstants.Text.PocoConfigurationUsings);
         }
 
         public override string PocoConfiguration()
         {
-            return CacheText("PocoConfiguration.mustache");
+            return CacheText(TemplateFileBasedConstants.Mustache.PocoConfiguration);
         }
 
         public override List<string> StoredProcReturnModelUsings()
         {
-            return CacheList("StoredProcReturnModelUsings.txt");
+            return CacheList(TemplateFileBasedConstants.Text.StoredProcReturnModelUsings);
         }
 
         public override string StoredProcReturnModels()
         {
-            return CacheText("StoredProcReturnModels.mustache");
+            return CacheText(TemplateFileBasedConstants.Mustache.StoredProcReturnModels);
         }
 
         public override List<string> EnumUsings()
         {
-            return CacheList("EnumUsings.txt");
+            return CacheList(TemplateFileBasedConstants.Text.EnumUsings);
         }
 
         public override string Enums()
         {
-            return CacheText("Enums.mustache");
+            return CacheText(TemplateFileBasedConstants.Mustache.Enums);
         }
 
         private string CacheText(string filename)

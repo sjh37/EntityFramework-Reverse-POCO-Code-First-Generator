@@ -24271,97 +24271,97 @@ public enum {{EnumName}}{{#newline}}
 
         public override string Usings()
         {
-            return CacheText("Usings.mustache");
+            return CacheText(TemplateFileBasedConstants.Mustache.Usings);
         }
 
         public override List<string> DatabaseContextInterfaceUsings(InterfaceModel data)
         {
-            return CacheList("DatabaseContextInterfaceUsings.txt");
+            return CacheList(TemplateFileBasedConstants.Text.DatabaseContextInterfaceUsings);
         }
 
         public override string DatabaseContextInterface()
         {
-            return CacheText("DatabaseContextInterface.mustache");
+            return CacheText(TemplateFileBasedConstants.Mustache.DatabaseContextInterface);
         }
 
         public override List<string> DatabaseContextUsings(ContextModel data)
         {
-            return CacheList("DatabaseContextUsings.txt");
+            return CacheList(TemplateFileBasedConstants.Text.DatabaseContextUsings);
         }
 
         public override string DatabaseContext()
         {
-            return CacheText("DatabaseContext.mustache");
+            return CacheText(TemplateFileBasedConstants.Mustache.DatabaseContext);
         }
 
         public override List<string> DatabaseContextFactoryUsings(FactoryModel data)
         {
-            return CacheList("DatabaseContextFactoryUsings.txt");
+            return CacheList(TemplateFileBasedConstants.Text.DatabaseContextFactoryUsings);
         }
 
         public override string DatabaseContextFactory()
         {
-            return CacheText("DatabaseContextFactory.mustache");
+            return CacheText(TemplateFileBasedConstants.Mustache.DatabaseContextFactory);
         }
 
         public override List<string> FakeDatabaseContextUsings(FakeContextModel data, IDbContextFilter filter)
         {
-            return CacheList("FakeDatabaseContextUsings.txt");
+            return CacheList(TemplateFileBasedConstants.Text.FakeDatabaseContextUsings);
         }
 
         public override string FakeDatabaseContext()
         {
-            return CacheText("FakeDatabaseContext.mustache");
+            return CacheText(TemplateFileBasedConstants.Mustache.FakeDatabaseContext);
         }
 
         public override List<string> FakeDbSetUsings(FakeDbSetModel data)
         {
-            return CacheList("FakeDbSetUsings.txt");
+            return CacheList(TemplateFileBasedConstants.Text.FakeDbSetUsings);
         }
 
         public override string FakeDbSet()
         {
-            return CacheText("FakeDbSet.mustache");
+            return CacheText(TemplateFileBasedConstants.Mustache.FakeDbSet);
         }
 
         public override List<string> PocoUsings(PocoModel data)
         {
-            return CacheList("PocoUsings.txt");
+            return CacheList(TemplateFileBasedConstants.Text.PocoUsings);
         }
 
         public override string Poco()
         {
-            return CacheText("Poco.mustache");
+            return CacheText(TemplateFileBasedConstants.Mustache.Poco);
         }
 
         public override List<string> PocoConfigurationUsings(PocoConfigurationModel data)
         {
-            return CacheList("PocoConfigurationUsings.txt");
+            return CacheList(TemplateFileBasedConstants.Text.PocoConfigurationUsings);
         }
 
         public override string PocoConfiguration()
         {
-            return CacheText("PocoConfiguration.mustache");
+            return CacheText(TemplateFileBasedConstants.Mustache.PocoConfiguration);
         }
 
         public override List<string> StoredProcReturnModelUsings()
         {
-            return CacheList("StoredProcReturnModelUsings.txt");
+            return CacheList(TemplateFileBasedConstants.Text.StoredProcReturnModelUsings);
         }
 
         public override string StoredProcReturnModels()
         {
-            return CacheText("StoredProcReturnModels.mustache");
+            return CacheText(TemplateFileBasedConstants.Mustache.StoredProcReturnModels);
         }
 
         public override List<string> EnumUsings()
         {
-            return CacheList("EnumUsings.txt");
+            return CacheList(TemplateFileBasedConstants.Text.EnumUsings);
         }
 
         public override string Enums()
         {
-            return CacheText("Enums.mustache");
+            return CacheText(TemplateFileBasedConstants.Mustache.Enums);
         }
 
         private string CacheText(string filename)
@@ -24384,6 +24384,35 @@ public enum {{EnumName}}{{#newline}}
             var lines = File.ReadLines(file).ToList();
             _cacheList.Add(filename, lines);
             return lines;
+        }
+    }
+    public static class TemplateFileBasedConstants
+    {
+        public static class Mustache
+        {
+            public const string Usings                   = "Usings.mustache";
+            public const string DatabaseContextInterface = "DatabaseContextInterface.mustache";
+            public const string DatabaseContext          = "DatabaseContext.mustache";
+            public const string DatabaseContextFactory   = "DatabaseContextFactory.mustache";
+            public const string FakeDatabaseContext      = "FakeDatabaseContext.mustache";
+            public const string FakeDbSet                = "FakeDbSet.mustache";
+            public const string Poco                     = "Poco.mustache";
+            public const string PocoConfiguration        = "PocoConfiguration.mustache";
+            public const string StoredProcReturnModels   = "StoredProcReturnModels.mustache";
+            public const string Enums                    = "Enums.mustache";
+        }
+
+        public static class Text
+        {
+            public const string DatabaseContextInterfaceUsings = "DatabaseContextInterfaceUsings.txt";
+            public const string DatabaseContextUsings          = "DatabaseContextUsings.txt";
+            public const string DatabaseContextFactoryUsings   = "DatabaseContextFactoryUsings.txt";
+            public const string FakeDatabaseContextUsings      = "FakeDatabaseContextUsings.txt";
+            public const string FakeDbSetUsings                = "FakeDbSetUsings.txt";
+            public const string PocoUsings                     = "PocoUsings.txt";
+            public const string PocoConfigurationUsings        = "PocoConfigurationUsings.txt";
+            public const string StoredProcReturnModelUsings    = "StoredProcReturnModelUsings.txt";
+            public const string EnumUsings                     = "EnumUsings.txt";
         }
     }
     public enum TemplateType

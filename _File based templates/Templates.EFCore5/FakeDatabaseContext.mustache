@@ -217,6 +217,11 @@
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
 
+    public virtual IQueryable<TResult> FromExpression<TResult> (Expression<Func<IQueryable<TResult>>> expression){{#newline}}
+    {{{#newline}}
+        throw new NotImplementedException();{{#newline}}
+    }{{#newline}}{{#newline}}
+
 {{#if hasStoredProcs}}
 {{#newline}}
     // Stored Procedures{{#newline}}

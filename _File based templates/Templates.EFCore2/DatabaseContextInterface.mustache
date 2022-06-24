@@ -28,8 +28,8 @@
     EntityEntry<TEntity> Add<TEntity>(TEntity entity) where TEntity : class;{{#newline}}
     Task AddRangeAsync(params object[] entities);{{#newline}}
     Task AddRangeAsync(IEnumerable<object> entities, CancellationToken cancellationToken = default);{{#newline}}
-    ValueTask<EntityEntry<TEntity>> AddAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default) where TEntity : class;{{#newline}}
-    ValueTask<EntityEntry> AddAsync(object entity, CancellationToken cancellationToken = default);{{#newline}}
+    Task<EntityEntry<TEntity>> AddAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default) where TEntity : class;{{#newline}}
+    Task<EntityEntry> AddAsync(object entity, CancellationToken cancellationToken = default);{{#newline}}
     void AddRange(IEnumerable<object> entities);{{#newline}}
     void AddRange(params object[] entities);{{#newline}}{{#newline}}
 
@@ -42,10 +42,10 @@
     EntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class;{{#newline}}{{#newline}}
 
     TEntity Find<TEntity>(params object[] keyValues) where TEntity : class;{{#newline}}
-    ValueTask<TEntity> FindAsync<TEntity>(object[] keyValues, CancellationToken cancellationToken) where TEntity : class;{{#newline}}
-    ValueTask<TEntity> FindAsync<TEntity>(params object[] keyValues) where TEntity : class;{{#newline}}
-    ValueTask<object> FindAsync(Type entityType, object[] keyValues, CancellationToken cancellationToken);{{#newline}}
-    ValueTask<object> FindAsync(Type entityType, params object[] keyValues);{{#newline}}
+    Task<TEntity> FindAsync<TEntity>(object[] keyValues, CancellationToken cancellationToken) where TEntity : class;{{#newline}}
+    Task<TEntity> FindAsync<TEntity>(params object[] keyValues) where TEntity : class;{{#newline}}
+    Task<object> FindAsync(Type entityType, object[] keyValues, CancellationToken cancellationToken);{{#newline}}
+    Task<object> FindAsync(Type entityType, params object[] keyValues);{{#newline}}
     object Find(Type entityType, params object[] keyValues);{{#newline}}{{#newline}}
 
     EntityEntry Remove(object entity);{{#newline}}

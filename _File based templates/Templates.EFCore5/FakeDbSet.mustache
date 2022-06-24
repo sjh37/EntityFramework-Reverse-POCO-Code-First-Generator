@@ -15,11 +15,18 @@
 //          }{{#newline}}
 //      }{{#newline}}
 //      Read more about it here: https://msdn.microsoft.com/en-us/data/dn314431.aspx{{#newline}}
-{{DbContextClassModifiers}} class FakeDbSet<TEntity> : DbSet<TEntity>, IQueryable<TEntity>, IAsyncEnumerable<TEntity>, IListSource where TEntity : class{{#newline}}
+{{DbContextClassModifiers}} class FakeDbSet<TEntity> :{{#newline}}
+    DbSet<TEntity>,{{#newline}}
+    IQueryable<TEntity>,{{#newline}}
+    IAsyncEnumerable<TEntity>,{{#newline}}
+    IListSource,{{#newline}}
+    IResettableService{{#newline}}
+    where TEntity : class{{#newline}}
 {{{#newline}}
     private readonly PropertyInfo[] _primaryKeys;{{#newline}}
-    private readonly ObservableCollection<TEntity> _data;{{#newline}}
-    private readonly IQueryable _query;{{#newline}}{{#newline}}
+    private ObservableCollection<TEntity> _data;{{#newline}}
+    private IQueryable _query;{{#newline}}
+    public override IEntityType EntityType { get; }{{#newline}}{{#newline}}
 
     public FakeDbSet(){{#newline}}
     {{{#newline}}
@@ -169,6 +176,8 @@
         AddRange(array);{{#newline}}
     }{{#newline}}{{#newline}}
 
+    bool IListSource.ContainsListCollection => true;{{#newline}}{{#newline}}
+
     public IList GetList(){{#newline}}
     {{{#newline}}
         return _data;{{#newline}}
@@ -207,6 +216,17 @@
     IAsyncEnumerator<TEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default(CancellationToken)){{#newline}}
     {{{#newline}}
         return new FakeDbAsyncEnumerator<TEntity>(this.AsEnumerable().GetEnumerator());{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public void ResetState(){{#newline}}
+    {{{#newline}}
+        _data  = new ObservableCollection<TEntity>();{{#newline}}
+        _query = _data.AsQueryable();{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public Task ResetStateAsync(CancellationToken cancellationToken = new CancellationToken()){{#newline}}
+    {{{#newline}}
+        return Task.Factory.StartNew(() => ResetState());{{#newline}}
     }{{#newline}}
 
 {{#if DbContextClassIsPartial}}
@@ -288,7 +308,7 @@
     public T Current{{#newline}}
     {{{#newline}}
         get { return _inner.Current; }{{#newline}}
-    }{{#newline}}
+    }{{#newline}}{{#newline}}
 
     public ValueTask<bool> MoveNextAsync(){{#newline}}
     {{{#newline}}
@@ -378,6 +398,7 @@ public abstract class FakeQueryProvider<T> : IOrderedQueryable<T>, IQueryProvide
     }{{#newline}}
 }{{#newline}}{{#newline}}
 
+
 {{DbContextClassModifiers}} class FakeExpressionVisitor : ExpressionVisitor{{#newline}}
 {{{#newline}}
 }{{#newline}}{{#newline}}
@@ -432,8 +453,18 @@ public class FakeDatabaseFacade : DatabaseFacade{{#newline}}
     {{{#newline}}
     }{{#newline}}{{#newline}}
 
+    public override Task CommitTransactionAsync(CancellationToken cancellationToken = new CancellationToken()){{#newline}}
+    {{{#newline}}
+        return Task.CompletedTask;{{#newline}}
+    }{{#newline}}{{#newline}}
+
     public override void RollbackTransaction(){{#newline}}
     {{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public override Task RollbackTransactionAsync(CancellationToken cancellationToken = new CancellationToken()){{#newline}}
+    {{{#newline}}
+        return Task.CompletedTask;{{#newline}}
     }{{#newline}}{{#newline}}
 
     public override IExecutionStrategy CreateExecutionStrategy(){{#newline}}
@@ -444,16 +475,16 @@ public class FakeDatabaseFacade : DatabaseFacade{{#newline}}
     public override string ToString(){{#newline}}
     {{{#newline}}
         return string.Empty;{{#newline}}
-    }{{#newline}}{{#newline}}
+    }{{#newline}}
 }{{#newline}}{{#newline}}
 
 public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
 {{{#newline}}
-    public virtual Guid TransactionId => Guid.NewGuid();{{#newline}}
-    public virtual void Commit() { }{{#newline}}
-    public virtual void Rollback() { }{{#newline}}
-    public virtual Task CommitAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;{{#newline}}
-    public virtual Task RollbackAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;{{#newline}}
-    public virtual void Dispose() { }{{#newline}}
-    public virtual ValueTask DisposeAsync() => default;{{#newline}}
+    public Guid TransactionId => Guid.NewGuid();{{#newline}}
+    public void Commit() { }{{#newline}}
+    public void Rollback() { }{{#newline}}
+    public Task CommitAsync(CancellationToken cancellationToken = new CancellationToken()) => Task.CompletedTask;{{#newline}}
+    public Task RollbackAsync(CancellationToken cancellationToken = new CancellationToken()) => Task.CompletedTask;{{#newline}}
+    public void Dispose() { }{{#newline}}
+    public ValueTask DisposeAsync() => default;{{#newline}}
 }

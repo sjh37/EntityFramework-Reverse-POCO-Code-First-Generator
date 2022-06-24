@@ -1,6 +1,7 @@
 Microsoft.EntityFrameworkCore
 Microsoft.EntityFrameworkCore.ChangeTracking
 Microsoft.EntityFrameworkCore.Infrastructure
+Microsoft.EntityFrameworkCore.Metadata
 Microsoft.EntityFrameworkCore.Query
 Microsoft.EntityFrameworkCore.Query.Internal
 Microsoft.EntityFrameworkCore.Storage

@@ -1,4 +1,5 @@
-﻿System
+System
+System.CodeDom.Compiler
 System.Collections.Generic
 System.Data.Entity.Infrastructure
 System.Threading
