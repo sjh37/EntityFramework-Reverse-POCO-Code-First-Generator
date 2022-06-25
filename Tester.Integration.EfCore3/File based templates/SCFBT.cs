@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Query.Internal;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.CodeDom.Compiler;
@@ -1816,7 +1817,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
 
         public FakeTestDbContext()
         {
-            _database = null;
+            _database = new FakeDatabaseFacade(new TestDbContext());
 
             A = new FakeDbSet<A>("AId");
             Aarefs = new FakeDbSet<Aaref>("C1", "C2");
@@ -2830,16 +2831,23 @@ namespace Tester.Integration.EfCore3.File_based_templates
             return null;
         }
 
+        public override ValueTask<EntityEntry<TEntity>> AddAsync(TEntity entity, CancellationToken cancellationToken = default)
+        {
+            return new ValueTask<EntityEntry<TEntity>>(Task<EntityEntry<TEntity>>.Factory.StartNew(() => Add(entity), cancellationToken));
+        }
+
         public override void AddRange(params TEntity[] entities)
         {
             if (entities == null) throw new ArgumentNullException("entities");
-            foreach (var entity in entities.ToList())
+            foreach (var entity in entities)
                 _data.Add(entity);
         }
 
         public override void AddRange(IEnumerable<TEntity> entities)
         {
-            AddRange(entities.ToArray());
+            if (entities == null) throw new ArgumentNullException("entities");
+            foreach (var entity in entities)
+                _data.Add(entity);
         }
 
         public override Task AddRangeAsync(params TEntity[] entities)
@@ -2848,10 +2856,34 @@ namespace Tester.Integration.EfCore3.File_based_templates
             return Task.Factory.StartNew(() => AddRange(entities));
         }
 
+        public override Task AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
+        {
+            if (entities == null) throw new ArgumentNullException("entities");
+            return Task.Factory.StartNew(() => AddRange(entities), cancellationToken);
+        }
+
+        public override EntityEntry<TEntity> Attach(TEntity entity)
+        {
+            if (entity == null) throw new ArgumentNullException("entity");
+            return Add(entity);
+        }
+
         public override void AttachRange(params TEntity[] entities)
         {
             if (entities == null) throw new ArgumentNullException("entities");
             AddRange(entities);
+        }
+
+        public override void AttachRange(IEnumerable<TEntity> entities)
+        {
+            if (entities == null) throw new ArgumentNullException("entities");
+            AddRange(entities);
+        }
+
+        public override EntityEntry<TEntity> Remove(TEntity entity)
+        {
+            _data.Remove(entity);
+            return null;
         }
 
         public override void RemoveRange(params TEntity[] entities)
@@ -2866,11 +2898,25 @@ namespace Tester.Integration.EfCore3.File_based_templates
             RemoveRange(entities.ToArray());
         }
 
+        public override EntityEntry<TEntity> Update(TEntity entity)
+        {
+            _data.Remove(entity);
+            _data.Add(entity);
+            return null;
+        }
+
         public override void UpdateRange(params TEntity[] entities)
         {
             if (entities == null) throw new ArgumentNullException("entities");
             RemoveRange(entities);
             AddRange(entities);
+        }
+
+        public override void UpdateRange(IEnumerable<TEntity> entities)
+        {
+            if (entities == null) throw new ArgumentNullException("entities");
+            var array = entities.ToArray();        RemoveRange(array);
+            AddRange(array);
         }
 
         public IList GetList()
@@ -3074,6 +3120,83 @@ namespace Tester.Integration.EfCore3.File_based_templates
 
     public class FakeExpressionVisitor : ExpressionVisitor
     {
+    }
+
+    public class FakeDatabaseFacade : DatabaseFacade
+    {
+        public FakeDatabaseFacade(DbContext context) : base(context)
+        {
+        }
+
+        public override bool EnsureCreated()
+        {
+            return true;
+        }
+
+        public override Task<bool> EnsureCreatedAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            return Task.FromResult(EnsureCreated());
+        }
+
+        public override bool EnsureDeleted()
+        {
+            return true;
+        }
+
+        public override Task<bool> EnsureDeletedAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            return Task.FromResult(EnsureDeleted());
+        }
+
+        public override bool CanConnect()
+        {
+            return true;
+        }
+
+        public override Task<bool> CanConnectAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            return Task.FromResult(CanConnect());
+        }
+
+        public override IDbContextTransaction BeginTransaction()
+        {
+            return new FakeDbContextTransaction();
+        }
+
+        public override Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            return Task.FromResult(BeginTransaction());
+        }
+
+        public override void CommitTransaction()
+        {
+        }
+
+        public override void RollbackTransaction()
+        {
+        }
+
+        public override IExecutionStrategy CreateExecutionStrategy()
+        {
+            return null;
+        }
+
+        public override string ToString()
+        {
+            return string.Empty;
+        }
+
+    }
+
+    public class FakeDbContextTransaction : IDbContextTransaction
+    {
+        public virtual Guid TransactionId => Guid.NewGuid();
+        public virtual void Commit() { }
+        public virtual void Rollback() { }
+        public virtual Task CommitAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;
+        public virtual Task RollbackAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;
+        public virtual void Dispose() { }
+        public virtual ValueTask DisposeAsync() => default;
     }
 
     #endregion
