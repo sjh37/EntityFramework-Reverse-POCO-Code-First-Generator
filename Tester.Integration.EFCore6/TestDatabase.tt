@@ -21,6 +21,9 @@
     Settings.GenerateSeparateFiles = false;
     Settings.Namespace             = "TestDatabaseStandard"; // Override the default namespace here
     
+    // #754
+    //Settings.StoredProcedureReturnTypes.Add("CsvToInt", "Person");
+    
     FilterSettings.Reset();
     FilterSettings.AddDefaults();
     FilterSettings.SchemaFilters.Add(new RegexExcludeFilter("Enum"));

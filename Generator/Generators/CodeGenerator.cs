@@ -103,7 +103,8 @@ namespace Efrpg.Generators
                         isEfCore3Plus ? "FromSqlRaw"  : "FromSql",
                         isEfCore3Plus ? "Set"         : "Query",
                         isEfCore3Plus ? "Entity"      : "Query",
-                        isEfCore3Plus ? ".HasNoKey()" : string.Empty
+                        isEfCore3Plus ? ".HasNoKey()" : string.Empty,
+                        !Settings.StoredProcedureReturnTypes.ContainsKey(tvf.NameHumanCase) && !Settings.StoredProcedureReturnTypes.ContainsKey(tvf.DbName)
                     ))
                     .ToList();
 

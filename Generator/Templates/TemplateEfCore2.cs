@@ -311,7 +311,9 @@ using {{this}};{{#newline}}
 {{#newline}}
         // Table Valued Functions{{#newline}}
 {{#each tableValuedFunctions}}
+{{#if IncludeModelBuilder}}
         modelBuilder.{{ModelBuilderCommand}}<{{ReturnClassName}}>(){{ModelBuilderPostCommand}};{{#newline}}
+{{/if}}
 {{/each}}
 {{/if}}
 

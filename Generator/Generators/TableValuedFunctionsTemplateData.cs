@@ -17,6 +17,7 @@
         public string QueryString                                        { get; }
         public string ModelBuilderCommand                                { get; }
         public string ModelBuilderPostCommand                            { get; }
+        public bool IncludeModelBuilder                                  { get; }
 
         public TableValuedFunctionsTemplateData(bool singleReturnModel,
             string singleReturnColumnName,
@@ -31,7 +32,8 @@
             string fromSql,
             string queryString,
             string modelBuilderCommand,
-            string modelBuilderPostCommand)
+            string modelBuilderPostCommand,
+            bool includeModelBuilder)
         {
             SingleReturnModel                                  = singleReturnModel && !string.IsNullOrEmpty(singleReturnColumnName);
             SingleReturnColumnName                             = singleReturnColumnName;
@@ -48,6 +50,7 @@
             QueryString                                        = queryString;
             ModelBuilderCommand                                = modelBuilderCommand;
             ModelBuilderPostCommand                            = modelBuilderPostCommand;
+            IncludeModelBuilder                                = includeModelBuilder;
         }
     }
 }
