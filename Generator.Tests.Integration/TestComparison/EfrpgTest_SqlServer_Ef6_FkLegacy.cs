@@ -70,6 +70,7 @@ namespace Efrpg.V3TestE1
         DbSet<DsOpe> DsOpes { get; set; } // DSOpe
         DbSet<EnumsWithStringAsValue> EnumsWithStringAsValues { get; set; } // EnumsWithStringAsValue
         DbSet<EnumTest_DaysOfWeek> EnumTest_DaysOfWeeks { get; set; } // DaysOfWeek
+        DbSet<EnumTest_OpenDay> EnumTest_OpenDays { get; set; } // OpenDays
         DbSet<EnumWithDefaultValue> EnumWithDefaultValues { get; set; } // EnumWithDefaultValue
         DbSet<EventProcessor> EventProcessors { get; set; } // EventProcessor
         DbSet<EventProcessorEventFilter> EventProcessorEventFilters { get; set; } // EventProcessorEventFilter
@@ -115,10 +116,14 @@ namespace Efrpg.V3TestE1
         DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
         DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
         DbSet<Ticket> Tickets { get; set; } // Ticket
+        DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
+        DbSet<TimestampNullable> TimestampNullables { get; set; } // TimestampNullable
         DbSet<Token> Tokens { get; set; } // Token
         DbSet<User> Users { get; set; } // User
         DbSet<User309> User309 { get; set; } // User309
         DbSet<UserDocument> UserDocuments { get; set; } // User_Document
+        DbSet<Versioned> Versioneds { get; set; } // Versioned
+        DbSet<VersionedNullable> VersionedNullables { get; set; } // VersionedNullable
         DbSet<ViewWithSpace> ViewWithSpaces { get; set; } // view with space
         DbSet<WVN_Article> WVN_Articles { get; set; } // Articles
         DbSet<Брендытовара> Брендытовара { get; set; } // Бренды товара
@@ -358,6 +363,7 @@ namespace Efrpg.V3TestE1
         public DbSet<DsOpe> DsOpes { get; set; } // DSOpe
         public DbSet<EnumsWithStringAsValue> EnumsWithStringAsValues { get; set; } // EnumsWithStringAsValue
         public DbSet<EnumTest_DaysOfWeek> EnumTest_DaysOfWeeks { get; set; } // DaysOfWeek
+        public DbSet<EnumTest_OpenDay> EnumTest_OpenDays { get; set; } // OpenDays
         public DbSet<EnumWithDefaultValue> EnumWithDefaultValues { get; set; } // EnumWithDefaultValue
         public DbSet<EventProcessor> EventProcessors { get; set; } // EventProcessor
         public DbSet<EventProcessorEventFilter> EventProcessorEventFilters { get; set; } // EventProcessorEventFilter
@@ -403,10 +409,14 @@ namespace Efrpg.V3TestE1
         public DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
         public DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
         public DbSet<Ticket> Tickets { get; set; } // Ticket
+        public DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
+        public DbSet<TimestampNullable> TimestampNullables { get; set; } // TimestampNullable
         public DbSet<Token> Tokens { get; set; } // Token
         public DbSet<User> Users { get; set; } // User
         public DbSet<User309> User309 { get; set; } // User309
         public DbSet<UserDocument> UserDocuments { get; set; } // User_Document
+        public DbSet<Versioned> Versioneds { get; set; } // Versioned
+        public DbSet<VersionedNullable> VersionedNullables { get; set; } // VersionedNullable
         public DbSet<ViewWithSpace> ViewWithSpaces { get; set; } // view with space
         public DbSet<WVN_Article> WVN_Articles { get; set; } // Articles
         public DbSet<Брендытовара> Брендытовара { get; set; } // Бренды товара
@@ -518,6 +528,7 @@ namespace Efrpg.V3TestE1
             modelBuilder.Configurations.Add(new DsOpeConfiguration());
             modelBuilder.Configurations.Add(new EnumsWithStringAsValueConfiguration());
             modelBuilder.Configurations.Add(new EnumTest_DaysOfWeekConfiguration());
+            modelBuilder.Configurations.Add(new EnumTest_OpenDayConfiguration());
             modelBuilder.Configurations.Add(new EnumWithDefaultValueConfiguration());
             modelBuilder.Configurations.Add(new EventProcessorConfiguration());
             modelBuilder.Configurations.Add(new EventProcessorEventFilterConfiguration());
@@ -563,10 +574,14 @@ namespace Efrpg.V3TestE1
             modelBuilder.Configurations.Add(new TblOrderErrorsAbConfiguration());
             modelBuilder.Configurations.Add(new TblOrderLineConfiguration());
             modelBuilder.Configurations.Add(new TicketConfiguration());
+            modelBuilder.Configurations.Add(new TimestampNotNullConfiguration());
+            modelBuilder.Configurations.Add(new TimestampNullableConfiguration());
             modelBuilder.Configurations.Add(new TokenConfiguration());
             modelBuilder.Configurations.Add(new UserConfiguration());
             modelBuilder.Configurations.Add(new User309Configuration());
             modelBuilder.Configurations.Add(new UserDocumentConfiguration());
+            modelBuilder.Configurations.Add(new VersionedConfiguration());
+            modelBuilder.Configurations.Add(new VersionedNullableConfiguration());
             modelBuilder.Configurations.Add(new ViewWithSpaceConfiguration());
             modelBuilder.Configurations.Add(new WVN_ArticleConfiguration());
             modelBuilder.Configurations.Add(new БрендытовараConfiguration());
@@ -780,6 +795,7 @@ namespace Efrpg.V3TestE1
             modelBuilder.Configurations.Add(new DsOpeConfiguration(schema));
             modelBuilder.Configurations.Add(new EnumsWithStringAsValueConfiguration(schema));
             modelBuilder.Configurations.Add(new EnumTest_DaysOfWeekConfiguration(schema));
+            modelBuilder.Configurations.Add(new EnumTest_OpenDayConfiguration(schema));
             modelBuilder.Configurations.Add(new EnumWithDefaultValueConfiguration(schema));
             modelBuilder.Configurations.Add(new EventProcessorConfiguration(schema));
             modelBuilder.Configurations.Add(new EventProcessorEventFilterConfiguration(schema));
@@ -825,10 +841,14 @@ namespace Efrpg.V3TestE1
             modelBuilder.Configurations.Add(new TblOrderErrorsAbConfiguration(schema));
             modelBuilder.Configurations.Add(new TblOrderLineConfiguration(schema));
             modelBuilder.Configurations.Add(new TicketConfiguration(schema));
+            modelBuilder.Configurations.Add(new TimestampNotNullConfiguration(schema));
+            modelBuilder.Configurations.Add(new TimestampNullableConfiguration(schema));
             modelBuilder.Configurations.Add(new TokenConfiguration(schema));
             modelBuilder.Configurations.Add(new UserConfiguration(schema));
             modelBuilder.Configurations.Add(new User309Configuration(schema));
             modelBuilder.Configurations.Add(new UserDocumentConfiguration(schema));
+            modelBuilder.Configurations.Add(new VersionedConfiguration(schema));
+            modelBuilder.Configurations.Add(new VersionedNullableConfiguration(schema));
             modelBuilder.Configurations.Add(new ViewWithSpaceConfiguration(schema));
             modelBuilder.Configurations.Add(new WVN_ArticleConfiguration(schema));
             modelBuilder.Configurations.Add(new БрендытовараConfiguration(schema));
@@ -2171,6 +2191,7 @@ namespace Efrpg.V3TestE1
         public DbSet<DsOpe> DsOpes { get; set; } // DSOpe
         public DbSet<EnumsWithStringAsValue> EnumsWithStringAsValues { get; set; } // EnumsWithStringAsValue
         public DbSet<EnumTest_DaysOfWeek> EnumTest_DaysOfWeeks { get; set; } // DaysOfWeek
+        public DbSet<EnumTest_OpenDay> EnumTest_OpenDays { get; set; } // OpenDays
         public DbSet<EnumWithDefaultValue> EnumWithDefaultValues { get; set; } // EnumWithDefaultValue
         public DbSet<EventProcessor> EventProcessors { get; set; } // EventProcessor
         public DbSet<EventProcessorEventFilter> EventProcessorEventFilters { get; set; } // EventProcessorEventFilter
@@ -2216,10 +2237,14 @@ namespace Efrpg.V3TestE1
         public DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
         public DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
         public DbSet<Ticket> Tickets { get; set; } // Ticket
+        public DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
+        public DbSet<TimestampNullable> TimestampNullables { get; set; } // TimestampNullable
         public DbSet<Token> Tokens { get; set; } // Token
         public DbSet<User> Users { get; set; } // User
         public DbSet<User309> User309 { get; set; } // User309
         public DbSet<UserDocument> UserDocuments { get; set; } // User_Document
+        public DbSet<Versioned> Versioneds { get; set; } // Versioned
+        public DbSet<VersionedNullable> VersionedNullables { get; set; } // VersionedNullable
         public DbSet<ViewWithSpace> ViewWithSpaces { get; set; } // view with space
         public DbSet<WVN_Article> WVN_Articles { get; set; } // Articles
         public DbSet<Брендытовара> Брендытовара { get; set; } // Бренды товара
@@ -2270,7 +2295,8 @@ namespace Efrpg.V3TestE1
             DefaultCheckForNulls = new FakeDbSet<DefaultCheckForNull>("Id");
             DsOpes = new FakeDbSet<DsOpe>("Id");
             EnumsWithStringAsValues = new FakeDbSet<EnumsWithStringAsValue>("EnumName", "Value");
-            EnumTest_DaysOfWeeks = new FakeDbSet<EnumTest_DaysOfWeek>("TypeName", "TypeId");
+            EnumTest_DaysOfWeeks = new FakeDbSet<EnumTest_DaysOfWeek>("TypeId");
+            EnumTest_OpenDays = new FakeDbSet<EnumTest_OpenDay>("Id");
             EnumWithDefaultValues = new FakeDbSet<EnumWithDefaultValue>("Id");
             EventProcessors = new FakeDbSet<EventProcessor>("Id");
             EventProcessorEventFilters = new FakeDbSet<EventProcessorEventFilter>("Id");
@@ -2316,10 +2342,14 @@ namespace Efrpg.V3TestE1
             TblOrderErrorsAbs = new FakeDbSet<TblOrderErrorsAb>("Id");
             TblOrderLines = new FakeDbSet<TblOrderLine>("Id");
             Tickets = new FakeDbSet<Ticket>("Id");
+            TimestampNotNulls = new FakeDbSet<TimestampNotNull>("Id");
+            TimestampNullables = new FakeDbSet<TimestampNullable>("Id");
             Tokens = new FakeDbSet<Token>("Id");
             Users = new FakeDbSet<User>("Id");
             User309 = new FakeDbSet<User309>("UserId");
             UserDocuments = new FakeDbSet<UserDocument>("Id");
+            Versioneds = new FakeDbSet<Versioned>("Id");
+            VersionedNullables = new FakeDbSet<VersionedNullable>("Id");
             ViewWithSpaces = new FakeDbSet<ViewWithSpace>("CodeObjectNo", "Type", "EName", "IsObject");
             WVN_Articles = new FakeDbSet<WVN_Article>("PkArticle");
             Брендытовара = new FakeDbSet<Брендытовара>("Кодбренда");
@@ -3734,7 +3764,7 @@ namespace Efrpg.V3TestE1
         public string CodeName { get; set; } // codeName (length: 250)
         public string Note { get; set; } // note (length: 250)
         public bool IsObject { get; set; } // isObject
-        public byte[] VersionNumber { get; set; } // versionNumber
+        public byte[] VersionNumber { get; set; } // versionNumber (length: 8)
 
         public CodeObject()
         {
@@ -3954,8 +3984,34 @@ namespace Efrpg.V3TestE1
     // DaysOfWeek
     public class EnumTest_DaysOfWeek
     {
-        public string TypeName { get; set; } // TypeName (Primary key) (length: 50)
+        public string TypeName { get; set; } // TypeName (length: 50)
         public int TypeId { get; set; } // TypeId (Primary key)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child EnumTest_OpenDays where [OpenDays].[EnumId] point to this entity (Fk_OpenDays_EnumId)
+        /// </summary>
+        public virtual ICollection<EnumTest_OpenDay> EnumTest_OpenDays { get; set; } // OpenDays.Fk_OpenDays_EnumId
+
+        public EnumTest_DaysOfWeek()
+        {
+            EnumTest_OpenDays = new List<EnumTest_OpenDay>();
+        }
+    }
+
+    // OpenDays
+    public class EnumTest_OpenDay
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public int EnumId { get; set; } // EnumId
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent EnumTest_DaysOfWeek pointed by [OpenDays].([EnumId]) (Fk_OpenDays_EnumId)
+        /// </summary>
+        public virtual EnumTest_DaysOfWeek EnumTest_DaysOfWeek { get; set; } // Fk_OpenDays_EnumId
     }
 
     // EnumWithDefaultValue
@@ -4661,6 +4717,22 @@ namespace Efrpg.V3TestE1
         public virtual AppUser ModifiedBy { get; set; } // FK_Ticket_AppUser1
     }
 
+    // TimestampNotNull
+    public class TimestampNotNull
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public byte[] Version { get; set; } // Version (length: 8)
+        public int Number { get; set; } // Number
+    }
+
+    // TimestampNullable
+    public class TimestampNullable
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public byte[] Version { get; set; } // Version (length: 8)
+        public int Number { get; set; } // Number
+    }
+
     // Token
     public class Token
     {
@@ -4734,6 +4806,22 @@ namespace Efrpg.V3TestE1
         public virtual User User_UserId { get; set; } // FK_User_Document_User
     }
 
+    // Versioned
+    public class Versioned
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public byte[] Version { get; set; } // Version (length: 8)
+        public int Number { get; set; } // Number
+    }
+
+    // VersionedNullable
+    public class VersionedNullable
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public byte[] Version { get; set; } // Version (length: 8)
+        public int Number { get; set; } // Number
+    }
+
     // view with space
     public class ViewWithSpace
     {
@@ -4746,7 +4834,7 @@ namespace Efrpg.V3TestE1
         public string CodeName { get; set; } // codeName (length: 250)
         public string Note { get; set; } // note (length: 250)
         public bool IsObject { get; set; } // isObject (Primary key)
-        public byte[] VersionNumber { get; set; } // versionNumber
+        public byte[] VersionNumber { get; set; } // versionNumber (length: 8)
     }
 
     // Articles
@@ -5392,7 +5480,7 @@ namespace Efrpg.V3TestE1
             Property(x => x.CodeName).HasColumnName(@"codeName").HasColumnType("nvarchar").IsOptional().HasMaxLength(250);
             Property(x => x.Note).HasColumnName(@"note").HasColumnType("nvarchar").IsOptional().HasMaxLength(250);
             Property(x => x.IsObject).HasColumnName(@"isObject").HasColumnType("bit").IsRequired();
-            Property(x => x.VersionNumber).HasColumnName(@"versionNumber").HasColumnType("timestamp").IsOptional();
+            Property(x => x.VersionNumber).HasColumnName(@"versionNumber").HasColumnType("timestamp").IsOptional().IsFixedLength().HasMaxLength(8).IsRowVersion().IsConcurrencyToken();
         }
     }
 
@@ -5671,10 +5759,31 @@ namespace Efrpg.V3TestE1
         public EnumTest_DaysOfWeekConfiguration(string schema)
         {
             ToTable("DaysOfWeek", schema);
-            HasKey(x => new { x.TypeName, x.TypeId });
+            HasKey(x => x.TypeId);
 
-            Property(x => x.TypeName).HasColumnName(@"TypeName").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(50).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.TypeName).HasColumnName(@"TypeName").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(50);
             Property(x => x.TypeId).HasColumnName(@"TypeId").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+        }
+    }
+
+    // OpenDays
+    public class EnumTest_OpenDayConfiguration : EntityTypeConfiguration<EnumTest_OpenDay>
+    {
+        public EnumTest_OpenDayConfiguration()
+            : this("EnumTest")
+        {
+        }
+
+        public EnumTest_OpenDayConfiguration(string schema)
+        {
+            ToTable("OpenDays", schema);
+            HasKey(x => x.Id);
+
+            Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.EnumId).HasColumnName(@"EnumId").HasColumnType("int").IsRequired();
+
+            // Foreign keys
+            HasRequired(a => a.EnumTest_DaysOfWeek).WithMany(b => b.EnumTest_OpenDays).HasForeignKey(c => c.EnumId).WillCascadeOnDelete(false); // Fk_OpenDays_EnumId
         }
     }
 
@@ -6577,6 +6686,44 @@ namespace Efrpg.V3TestE1
         }
     }
 
+    // TimestampNotNull
+    public class TimestampNotNullConfiguration : EntityTypeConfiguration<TimestampNotNull>
+    {
+        public TimestampNotNullConfiguration()
+            : this("dbo")
+        {
+        }
+
+        public TimestampNotNullConfiguration(string schema)
+        {
+            ToTable("TimestampNotNull", schema);
+            HasKey(x => x.Id);
+
+            Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.Version).HasColumnName(@"Version").HasColumnType("timestamp").IsRequired().IsFixedLength().HasMaxLength(8).IsRowVersion().IsConcurrencyToken();
+            Property(x => x.Number).HasColumnName(@"Number").HasColumnType("int").IsRequired();
+        }
+    }
+
+    // TimestampNullable
+    public class TimestampNullableConfiguration : EntityTypeConfiguration<TimestampNullable>
+    {
+        public TimestampNullableConfiguration()
+            : this("dbo")
+        {
+        }
+
+        public TimestampNullableConfiguration(string schema)
+        {
+            ToTable("TimestampNullable", schema);
+            HasKey(x => x.Id);
+
+            Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.Version).HasColumnName(@"Version").HasColumnType("timestamp").IsOptional().IsFixedLength().HasMaxLength(8).IsRowVersion().IsConcurrencyToken();
+            Property(x => x.Number).HasColumnName(@"Number").HasColumnType("int").IsRequired();
+        }
+    }
+
     // Token
     public class TokenConfiguration : EntityTypeConfiguration<Token>
     {
@@ -6659,6 +6806,44 @@ namespace Efrpg.V3TestE1
         }
     }
 
+    // Versioned
+    public class VersionedConfiguration : EntityTypeConfiguration<Versioned>
+    {
+        public VersionedConfiguration()
+            : this("dbo")
+        {
+        }
+
+        public VersionedConfiguration(string schema)
+        {
+            ToTable("Versioned", schema);
+            HasKey(x => x.Id);
+
+            Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.Version).HasColumnName(@"Version").HasColumnType("timestamp").IsRequired().IsFixedLength().HasMaxLength(8).IsRowVersion().IsConcurrencyToken();
+            Property(x => x.Number).HasColumnName(@"Number").HasColumnType("int").IsRequired();
+        }
+    }
+
+    // VersionedNullable
+    public class VersionedNullableConfiguration : EntityTypeConfiguration<VersionedNullable>
+    {
+        public VersionedNullableConfiguration()
+            : this("dbo")
+        {
+        }
+
+        public VersionedNullableConfiguration(string schema)
+        {
+            ToTable("VersionedNullable", schema);
+            HasKey(x => x.Id);
+
+            Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.Version).HasColumnName(@"Version").HasColumnType("timestamp").IsOptional().IsFixedLength().HasMaxLength(8).IsRowVersion().IsConcurrencyToken();
+            Property(x => x.Number).HasColumnName(@"Number").HasColumnType("int").IsRequired();
+        }
+    }
+
     // view with space
     public class ViewWithSpaceConfiguration : EntityTypeConfiguration<ViewWithSpace>
     {
@@ -6681,7 +6866,7 @@ namespace Efrpg.V3TestE1
             Property(x => x.CodeName).HasColumnName(@"codeName").HasColumnType("nvarchar").IsOptional().HasMaxLength(250);
             Property(x => x.Note).HasColumnName(@"note").HasColumnType("nvarchar").IsOptional().HasMaxLength(250);
             Property(x => x.IsObject).HasColumnName(@"isObject").HasColumnType("bit").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
-            Property(x => x.VersionNumber).HasColumnName(@"versionNumber").HasColumnType("timestamp").IsOptional();
+            Property(x => x.VersionNumber).HasColumnName(@"versionNumber").HasColumnType("timestamp").IsOptional().IsFixedLength().HasMaxLength(8).IsRowVersion().IsConcurrencyToken();
         }
     }
 
