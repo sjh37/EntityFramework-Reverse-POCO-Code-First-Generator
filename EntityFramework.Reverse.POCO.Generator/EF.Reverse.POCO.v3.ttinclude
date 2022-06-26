@@ -1,6 +1,6 @@
 <#
 // Copyright (C) Simon Hughes 2012
-// v3.6.0
+// v3.6.1
 // If you want to submit a pull request, please modify the Generator C# project as this file
 // is automatically constructed from the C# Generator project during the build process.
 #>
@@ -41,7 +41,7 @@
         public static DatabaseType DatabaseType                         = DatabaseType.SqlServer; // SqlServer, SqlCe, PostgreSQL. Coming next: MySql, Oracle
         public static TemplateType TemplateType                         = TemplateType.EfCore6; // EfCore6, EfCore5, EfCore3, EfCore2, Ef6, FileBasedCore2, FileBasedCore3. FileBased specify folder using Settings.TemplateFolder
         public static GeneratorType GeneratorType                       = GeneratorType.EfCore; // EfCore, Ef6, Custom. Custom edit GeneratorCustom class to provide your own implementation
-        public static ForeignKeyNamingStrategy ForeignKeyNamingStrategy = ForeignKeyNamingStrategy.Legacy; // Please use Legacy for now (same as versions <= v3.6.0), Latest (not yet ready)
+        public static ForeignKeyNamingStrategy ForeignKeyNamingStrategy = ForeignKeyNamingStrategy.Legacy; // Please use Legacy for now (same as versions <= v3.6.1), Latest (not yet ready)
         public static bool UseMappingTables                             = false; // Can only be set to true for EF6. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
         public static FileManagerType FileManagerType                   = FileManagerType.EfCore; // .NET Core project = EfCore; .NET 4.x project = VisualStudio; No output (testing only) = Null
         public static string ConnectionString                           = ""; // This is used by the generator to reverse engineer your database
@@ -1511,7 +1511,7 @@
     {
         public static string Version()
         {
-            return "v3.6.0";
+            return "v3.6.1";
         }
     }
 
@@ -3066,7 +3066,7 @@
     }
     public enum ForeignKeyNamingStrategy
     {
-        Legacy, // Same as versions <= v3.6.0
+        Legacy, // Same as versions <= v3.6.1
         Latest
     }
 
@@ -3154,7 +3154,7 @@
         }
     }
 
-    // v0.0.0 <= v3.6.0
+    // v0.0.0 <= v3.6.1
     public class LegacyForeignKeyNamingStrategy : BaseForeignKeyNamingStrategy, IForeignKeyNamingStrategy
     {
         public List<string> ReverseNavigationUniquePropName;

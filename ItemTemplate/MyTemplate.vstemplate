@@ -8,7 +8,7 @@
         <Icon>TemplateIcon.ico</Icon>
         <PreviewImage>PreviewImage.png</PreviewImage>
         <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
-        <Version>3.6.0</Version>
+        <Version>3.6.1</Version>
     </TemplateData>
     <TemplateContent>
         <ProjectItem SubType="" TargetFileName="$fileinputname$.tt" ReplaceParameters="false">Database.tt</ProjectItem>
