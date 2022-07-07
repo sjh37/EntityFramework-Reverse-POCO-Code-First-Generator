@@ -287,7 +287,7 @@ namespace Efrpg
 
                 case "decimal":
                     decimal dec;
-                    if (!Decimal.TryParse(Default, out dec))
+                    if (!decimal.TryParse(Default, out dec))
                         Default = string.Empty;
                     else
                         Default += "m";
