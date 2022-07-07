@@ -103,16 +103,20 @@ namespace Efrpg.Generators
             if (!c.IsMaxLength && c.MaxLength > 0)
                 doNotSpecifySize = (DatabaseReader.DoNotSpecifySizeForMaxLength && c.MaxLength > 4000); // Issue #179
 
+            var excludedHasColumnType = string.Empty;
             if (!string.IsNullOrEmpty(c.SqlPropertyType))
             {
                 var columnTypeParameters = string.Empty;
-                
+            
                 if ((c.Precision > 0 || c.Scale > 0) && (c.SqlPropertyType == "decimal" || c.SqlPropertyType == "numeric"))
                     columnTypeParameters = $"({c.Precision},{c.Scale})";
                 else if (!c.IsMaxLength && c.MaxLength > 0 && !doNotSpecifySize)
                     columnTypeParameters = $"({c.MaxLength})";
 
-                sb.AppendFormat(".HasColumnType(\"{0}{1}\")", c.SqlPropertyType, columnTypeParameters);
+                if (Column.ExcludedHasColumnType.Contains(c.SqlPropertyType))
+                    excludedHasColumnType = string.Format(" // .HasColumnType(\"{0}{1}\") was excluded", c.SqlPropertyType, columnTypeParameters);
+                else
+                    sb.AppendFormat(".HasColumnType(\"{0}{1}\")", c.SqlPropertyType, columnTypeParameters);
 
                 if (Settings.IsEfCore5Plus())
                 {
@@ -159,7 +163,7 @@ namespace Efrpg.Generators
 
             var config = sb.ToString();
             if (!string.IsNullOrEmpty(config))
-                c.Config = string.Format("builder.Property(x => x.{0}){1};", c.NameHumanCase, config);
+                c.Config = string.Format("builder.Property(x => x.{0}){1};{2}", c.NameHumanCase, config, excludedHasColumnType);
         }
 
         public override string PrimaryKeyModelBuilder(Table t)

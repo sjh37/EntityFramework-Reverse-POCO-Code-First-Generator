@@ -93,8 +93,14 @@ namespace Efrpg.Generators
             var sb = new StringBuilder(255);
             sb.AppendFormat(".HasColumnName(@\"{0}\")", c.DbName);
 
+            var excludedHasColumnType = string.Empty;
             if (!string.IsNullOrEmpty(c.SqlPropertyType))
-                sb.AppendFormat(".HasColumnType(\"{0}\")", c.SqlPropertyType);
+            {
+                if(Column.ExcludedHasColumnType.Contains(c.SqlPropertyType))
+                    excludedHasColumnType = string.Format(" // .HasColumnType(\"{0}\") was excluded", c.SqlPropertyType);
+                else
+                    sb.AppendFormat(".HasColumnType(\"{0}\")", c.SqlPropertyType);
+            }
 
             sb.Append(c.IsNullable ? ".IsOptional()" : ".IsRequired()");
 
@@ -136,7 +142,7 @@ namespace Efrpg.Generators
             
             var config = sb.ToString();
             if (!string.IsNullOrEmpty(config))
-                c.Config = string.Format("Property(x => x.{0}){1};", c.NameHumanCase, config);
+                c.Config = string.Format("Property(x => x.{0}){1};{2}", c.NameHumanCase, config, excludedHasColumnType);
         }
 
         public override string PrimaryKeyModelBuilder(Table table)

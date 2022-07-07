@@ -43,17 +43,17 @@
         }
 
         [Test, NonParallelizable]
-        [TestCase(ForeignKeyNamingStrategy.Legacy)]
-        //[TestCase(ForeignKeyNamingStrategy.Latest)]
-        public void ReverseEngineerPostgreSQL(ForeignKeyNamingStrategy foreignKeyNamingStrategy)
+        [TestCase(ForeignKeyNamingStrategy.Legacy, "Northwind", "Northwind")]
+        [TestCase(ForeignKeyNamingStrategy.Legacy, "PostgisTest", "postgis_test")]
+        //[TestCase(ForeignKeyNamingStrategy.LatestMyDbContext
+        public void ReverseEngineerPostgreSQL(ForeignKeyNamingStrategy foreignKeyNamingStrategy, string filename, string database)
         {
             // Arrange
             Settings.GenerateSeparateFiles = false;
             Settings.UseMappingTables = false;
-            SetupPostgreSQL("Northwind", "MyDbContext", "MyDbContext", TemplateType.EfCore3, GeneratorType.EfCore, foreignKeyNamingStrategy);
+            SetupPostgreSQL(database, "MyDbContext", "MyDbContext", TemplateType.EfCore3, GeneratorType.EfCore, foreignKeyNamingStrategy);
 
             // Act
-            var filename = "Northwind";
             Run(filename, ".PostgreSQL", typeof(EfCoreFileManager), null);
 
             // Assert

@@ -107,6 +107,11 @@ namespace Efrpg
             "int",
             "long"
         };
+        
+        public static readonly List<string> ExcludedHasColumnType = new List<string>
+        {
+            "user-defined"
+        };
 
         public void ResetNavigationProperties()
         {
