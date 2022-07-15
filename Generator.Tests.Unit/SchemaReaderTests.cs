@@ -85,6 +85,8 @@ namespace Generator.Tests.Unit
         [TestCase("Some-id", "Some ID")]
         [TestCase("Some_id", "Some ID")]
         [TestCase("Some id", "Some ID")]
+        
+        [TestCase("MPANCore", "MPAN Core")]
         public void DisplayName(string test, string expected)
         {
             // Act
