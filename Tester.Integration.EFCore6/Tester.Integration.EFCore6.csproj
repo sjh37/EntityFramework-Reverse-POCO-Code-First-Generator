@@ -55,6 +55,10 @@
       <LastGenOutput>MCSF.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
+    <None Update="MySqlWorld.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>MySQLWorld.cs</LastGenOutput>
+    </None>
     <None Update="Northwind.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Northwind.cs</LastGenOutput>
@@ -112,6 +116,11 @@
       <DependentUpon>MCSF.tt</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="MySQLWorld.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MySqlWorld.tt</DependentUpon>
     </Compile>
     <Compile Update="Northwind.cs">
       <DesignTime>True</DesignTime>
