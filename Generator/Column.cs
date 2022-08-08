@@ -338,8 +338,10 @@ namespace Efrpg
 
             var sb = new StringBuilder(30);
             str = Regex.Replace(str, @"[^a-zA-Z0-9]", " "); // Anything that is not a letter or digit, convert to a space
-            str = Regex.Replace(str, @"[A-Z]{2,}", " $+ "); // Any word that is upper case
 
+            str = Regex.Replace(str, @"[A-Z]{2,}[a-z]{1,}", " $+ "); // Any word that is upper case followed by lowercase
+            //str = Regex.Replace(str, @"[A-Z]{2,}", " $+ "); // Any word that is upper case
+            
             var hasUpperCased = false;
             var lastChar = '\0';
             foreach (var original in str.Trim())

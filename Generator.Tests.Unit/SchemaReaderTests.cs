@@ -1,4 +1,5 @@
-﻿using Efrpg;
+﻿using System;
+using Efrpg;
 using Efrpg.Readers;
 using Generator.Tests.Common;
 using NUnit.Framework;
@@ -86,10 +87,18 @@ namespace Generator.Tests.Unit
         [TestCase("Some_id", "Some ID")]
         [TestCase("Some id", "Some ID")]
         
-        [TestCase("MPANCore", "MPAN Core")]
+        [TestCase("MPANCore", "Mpan core")]
+        [TestCase("MPAN Core", "Mpan core")]
+        [TestCase("MPAN core", "Mpan core")]
+        [TestCase("mpan core", "Mpan core")]
+        [TestCase("FOOBarBAZ", "Foo bar baz")]
+        [TestCase("FooBARBaz", "Foo bar baz")]
+        [TestCase("FooBarBaz", "Foo bar baz")]
+        [TestCase("ABC", "Abc")]
         public void DisplayName(string test, string expected)
         {
             // Act
+            Console.WriteLine(test);
             var displayName = Column.ToDisplayName(test);
 
             // Assert

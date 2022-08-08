@@ -59,6 +59,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EfrpgTest.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EfrpgTest.tt</DependentUpon>
+    </Compile>
     <Compile Include="FakeContextTests.cs" />
     <Compile Include="Northwind.cs">
       <AutoGen>True</AutoGen>
@@ -66,12 +71,17 @@
       <DependentUpon>Northwind.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StoredProcedureTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="EfrpgTest.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>EfrpgTest.cs</LastGenOutput>
+    </Content>
     <Content Include="Northwind.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Northwind.cs</LastGenOutput>
