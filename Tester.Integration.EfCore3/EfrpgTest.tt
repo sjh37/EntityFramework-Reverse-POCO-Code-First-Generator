@@ -120,7 +120,7 @@
     Settings.Enumerations = new List<EnumerationSettings>
     {
         // Example
-        /*new EnumerationSettings
+        new EnumerationSettings
         {
             Name       = "DaysOfWeek",          // Enum to generate. e.g. "DaysOfWeek" would result in "public enum DaysOfWeek {...}"
             Table      = "EnumTest.DaysOfWeek", // Database table containing enum values. e.g. "DaysOfWeek"
@@ -133,13 +133,21 @@
             Table      = "car_options",
             NameField  = "enum_name",
             ValueField = "value"
-        }*/
-        // Code will be generated as:
-        // public enum Name
-        // {
-        //     NameField = ValueField,
-        //     etc
-        // }
+        },
+        new EnumerationSettings
+        {
+            Name       = "Car",
+            Table      = "Car",
+            NameField  = "Carmake",
+            ValueField = "Id"
+        },
+        new EnumerationSettings
+        {
+            Name       = "Colour",
+            Table      = "Colour",
+            NameField  = "Name",
+            ValueField = "Id"
+        }
     };
 
     // Use the following list to add use of HiLo sequences for identity columns
