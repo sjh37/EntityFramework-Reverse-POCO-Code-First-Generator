@@ -22,7 +22,7 @@
     Settings.GenerateSeparateFiles   = false;
     Settings.Namespace               = DefaultNamespace; // Override the default namespace here. Please use double quotes, example: "Accounts.Billing"
     Settings.TemplateFolder          = Path.Combine(Settings.Root, "Templates"); // Only used if Settings.TemplateType = TemplateType.FileBased. Specify folder name where the mustache folders can be found. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Custom-file-based-templates
-    Settings.AddUnitTestingDbContext = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing. Read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/FakeDbContext
+    Settings.AddUnitTestingDbContext = false; // Will add a FakeDbContext and FakeDbSet for easy unit testing. Read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/FakeDbContext
 
     // Elements to generate ***************************************************************************************************************
     // Add the elements that should be generated when the template is executed.
