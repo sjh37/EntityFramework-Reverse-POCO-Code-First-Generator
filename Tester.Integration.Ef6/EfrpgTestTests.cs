@@ -1,4 +1,5 @@
-﻿using Generator.Tests.Common;
+﻿using System.Linq;
+using Generator.Tests.Common;
 using NUnit.Framework;
 
 namespace Tester.Integration.Ef6
@@ -16,8 +17,8 @@ namespace Tester.Integration.Ef6
             _db = new EfrpgTestDbContext("Data Source=(local);Initial Catalog=Efrpgtest;Integrated Security=True");
         }
 
-        [Test]
         // https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/issues/538
+        [Test]
         public void OneToOneInsert()
         {
             Assert.IsNotNull(_db);
@@ -34,13 +35,19 @@ namespace Tester.Integration.Ef6
             Assert.AreEqual(2, result);
         }
 
-        [Test]
         // https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/issues/769
-        public void StoredProcedureOutParametersWithMultipleResultSets()
+        [Test]
+        [TestCase(1, false, "Not complete")]
+        [TestCase(20, true, "Complete")]
+        public void StoredProcedureOutParametersWithMultipleResultSets(int applicationId, bool expected, string expectedResult)
         {
             Assert.IsNotNull(_db);
-            var result1 = _db.CheckIfApplicationIsComplete(1, out var isApplicationComplete);
-            todo;
+            var result = _db.CheckIfApplicationIsComplete(applicationId, out var isApplicationComplete);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(expected, isApplicationComplete);
+            Assert.AreEqual("Application", result.ResultSet1.Single().Key);
+            Assert.AreEqual(expectedResult, result.ResultSet1.Single().Value);
         }
     }
 }

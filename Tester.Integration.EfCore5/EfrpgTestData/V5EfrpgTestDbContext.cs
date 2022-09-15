@@ -402,6 +402,10 @@ namespace V5EfrpgTest
 
         // public async Task<C182Test2ReturnModel> C182Test2Async(int? flag) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
+        // public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+
+        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (CheckIfApplicationIsCompleteReturnModel)
+
         public List<ColourPivotReturnModel> ColourPivot()
         {
             int procResult;

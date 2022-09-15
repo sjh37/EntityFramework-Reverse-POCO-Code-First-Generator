@@ -484,6 +484,23 @@ namespace Tester.Integration.EfCore2
             return Task.FromResult(C182Test2(flag, out procResult));
         }
 
+        public DbSet<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsCompleteReturnModel { get; set; }
+        public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete)
+        {
+            int procResult;
+            return CheckIfApplicationIsComplete(applicationId, out isApplicationComplete, out procResult);
+        }
+
+        public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete, out int procResult)
+        {
+            isApplicationComplete = default(bool);
+            procResult = 0;
+            return new CheckIfApplicationIsCompleteReturnModel();
+        }
+
+        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (CheckIfApplicationIsCompleteReturnModel)
+
+
         public DbSet<ColourPivotReturnModel> ColourPivotReturnModel { get; set; }
         public List<ColourPivotReturnModel> ColourPivot()
         {
