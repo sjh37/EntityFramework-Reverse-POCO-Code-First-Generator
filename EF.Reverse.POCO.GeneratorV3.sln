@@ -56,6 +56,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQLServer", "SQLServer", "{
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Generator.Tests.Integration", "Generator.Tests.Integration\Generator.Tests.Integration.csproj", "{BD6836BD-6C08-41EA-A0E3-93EB5AA1D375}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Oracle", "Oracle", "{B7416FDB-E69E-4EF2-9E52-7CFD94BABF13}"
+	ProjectSection(SolutionItems) = preProject
+		TestDatabases\Oracle\northwind.sql = TestDatabases\Oracle\northwind.sql
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -244,6 +249,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{6BCE26F9-95D7-417E-B57E-531B6E12FB12} = {E2D53B2F-4165-464B-8FE3-52BA648A237F}
 		{D303B1E7-49FF-4113-A904-87649C18B835} = {E2D53B2F-4165-464B-8FE3-52BA648A237F}
+		{B7416FDB-E69E-4EF2-9E52-7CFD94BABF13} = {E2D53B2F-4165-464B-8FE3-52BA648A237F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8B825109-96A2-4F13-8192-84BCE9CECF1A}
