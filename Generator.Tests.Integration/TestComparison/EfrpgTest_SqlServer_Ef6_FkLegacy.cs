@@ -163,6 +163,9 @@ namespace Efrpg.V3TestE1
         C182Test2ReturnModel C182Test2(int? flag);
         Task<C182Test2ReturnModel> C182Test2Async(int? flag);
 
+        CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete);
+        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (CheckIfApplicationIsCompleteReturnModel)
+
         List<ColourPivotReturnModel> ColourPivot();
         List<ColourPivotReturnModel> ColourPivot(out int procResult);
         Task<List<ColourPivotReturnModel>> ColourPivotAsync();
@@ -1038,8 +1041,50 @@ namespace Efrpg.V3TestE1
             {
                 DbInterception.Dispatch.Connection.Close(Database.Connection, new DbInterceptionContext());
             }
+
             return procResultData;
         }
+
+        public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete)
+        {
+            var applicationIdParam = new SqlParameter { ParameterName = "@ApplicationId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = applicationId.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!applicationId.HasValue)
+                applicationIdParam.Value = DBNull.Value;
+
+            var isApplicationCompleteParam = new SqlParameter { ParameterName = "@IsApplicationComplete", SqlDbType = SqlDbType.Bit, Direction = ParameterDirection.Output };
+            var procResultData = new CheckIfApplicationIsCompleteReturnModel();
+            var cmd = Database.Connection.CreateCommand();
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandText = "[dbo].[CheckIfApplicationIsComplete]";
+            cmd.Parameters.Add(applicationIdParam);
+            cmd.Parameters.Add(isApplicationCompleteParam);
+
+            try
+            {
+                DbInterception.Dispatch.Connection.Open(Database.Connection, new DbInterceptionContext());
+                var reader = cmd.ExecuteReader();
+                var objectContext = ((IObjectContextAdapter) this).ObjectContext;
+
+                procResultData.ResultSet1 = objectContext.Translate<CheckIfApplicationIsCompleteReturnModel.ResultSetModel1>(reader).ToList();
+                reader.NextResult();
+
+                procResultData.ResultSet2 = objectContext.Translate<CheckIfApplicationIsCompleteReturnModel.ResultSetModel2>(reader).ToList();
+                reader.Close();
+            }
+            finally
+            {
+                DbInterception.Dispatch.Connection.Close(Database.Connection, new DbInterceptionContext());
+            }
+
+            if (IsSqlParameterNull(isApplicationCompleteParam))
+                isApplicationComplete = null;
+            else
+                isApplicationComplete = (bool) isApplicationCompleteParam.Value;
+
+            return procResultData;
+        }
+
+        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (CheckIfApplicationIsCompleteReturnModel)
 
         public List<ColourPivotReturnModel> ColourPivot()
         {
@@ -1553,6 +1598,7 @@ namespace Efrpg.V3TestE1
             {
                 DbInterception.Dispatch.Connection.Close(Database.Connection, new DbInterceptionContext());
             }
+
             return procResultData;
         }
 
@@ -1659,6 +1705,7 @@ namespace Efrpg.V3TestE1
             {
                 DbInterception.Dispatch.Connection.Close(Database.Connection, new DbInterceptionContext());
             }
+
             return procResultData;
         }
 
@@ -1717,6 +1764,7 @@ namespace Efrpg.V3TestE1
             {
                 DbInterception.Dispatch.Connection.Close(Database.Connection, new DbInterceptionContext());
             }
+
             return procResultData;
         }
 
@@ -1789,6 +1837,7 @@ namespace Efrpg.V3TestE1
             {
                 DbInterception.Dispatch.Connection.Close(Database.Connection, new DbInterceptionContext());
             }
+
             return procResultData;
         }
 
@@ -2490,6 +2539,22 @@ namespace Efrpg.V3TestE1
             int procResult;
             return Task.FromResult(C182Test2(flag, out procResult));
         }
+
+        public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete)
+        {
+            int procResult;
+            return CheckIfApplicationIsComplete(applicationId, out isApplicationComplete, out procResult);
+        }
+
+        public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete, out int procResult)
+        {
+            isApplicationComplete = default(bool);
+            procResult = 0;
+            return new CheckIfApplicationIsCompleteReturnModel();
+        }
+
+        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (CheckIfApplicationIsCompleteReturnModel)
+
 
         public List<ColourPivotReturnModel> ColourPivot()
         {
@@ -6966,6 +7031,22 @@ namespace Efrpg.V3TestE1
             public string Description { get; set; }
         }
         public List<ResultSetModel3> ResultSet3;
+    }
+
+    public class CheckIfApplicationIsCompleteReturnModel
+    {
+        public class ResultSetModel1
+        {
+            public string Key { get; set; }
+            public string Value { get; set; }
+        }
+        public List<ResultSetModel1> ResultSet1;
+        public class ResultSetModel2
+        {
+            public string Key { get; set; }
+            public string Value { get; set; }
+        }
+        public List<ResultSetModel2> ResultSet2;
     }
 
     public class ColourPivotReturnModel
