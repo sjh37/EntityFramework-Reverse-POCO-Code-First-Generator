@@ -12132,7 +12132,7 @@ and limitations under the License.
                     return "Npgsql";
 
                 case DatabaseType.Oracle:
-                    return "System.Data.OracleClient";
+                    return "Oracle.ManagedDataAccess.Client";
 
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -13449,7 +13449,7 @@ and limitations under the License.
 
         protected override string ReadDatabaseEditionSQL()
         {
-            return string.Empty;
+            return "SELECT BANNER AS Edition, EDITION AS EngineEdition, VERSION AS ProductVersion FROM V$VERSION CROSS JOIN V$INSTANCE WHERE BANNER LIKE 'Oracle%'";
         }
 
         protected override string MultiContextSQL()
