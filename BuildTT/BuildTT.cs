@@ -782,6 +782,7 @@ namespace BuildTT
 <#@ import namespace=""Microsoft.VisualStudio.TextTemplating"" #>
 <#@ output extension="".cs"" encoding=""utf-8"" #>
 <#
+        // WriteLine(""// T4 framework version = "" + AppDomain.CurrentDomain.SetupInformation.TargetFrameworkName);
         var DefaultNamespace = new CodeGenerationTools(this).VsNamespaceSuggestion() ?? ""DebugMode"";
         Settings.Root = Host.ResolvePath(string.Empty);
         Settings.TemplateFile = Path.GetFileNameWithoutExtension(DynamicTextTransformation.Create(this).Host.TemplateFile);
