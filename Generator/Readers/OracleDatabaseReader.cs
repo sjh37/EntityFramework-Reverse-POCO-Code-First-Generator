@@ -113,11 +113,6 @@ namespace Efrpg.Readers
             return "system";
         }
 
-        protected override string DefaultCollation(DbConnection conn)
-        {
-            return null;
-        }
-
         protected override string SpecialQueryFlags()
         {
             return string.Empty;

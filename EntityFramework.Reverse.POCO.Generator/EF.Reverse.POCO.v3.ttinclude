@@ -204,7 +204,6 @@
         //     abc.hello will be Abc_Hello.
         public static bool   PrependSchemaName = true; // Control if the schema name is prepended to the table name
         public static string DefaultSchema     = null; // Set via DatabaseReader.DefaultSchema()
-        public static string DefaultCollation  = null; // Set via DatabaseReader.DefaultCollation()
 
         // Table Suffix ***********************************************************************************************************************
         // Appends the suffix to the generated classes names
@@ -12183,7 +12182,6 @@ and limitations under the License.
 
         // Database specific
         protected abstract string DefaultSchema(DbConnection conn);
-        protected abstract string DefaultCollation(DbConnection conn);
         protected abstract string SpecialQueryFlags();
         protected abstract bool HasTemporalTableSupport();
 
@@ -12262,7 +12260,6 @@ and limitations under the License.
                 }
 
                 Settings.DefaultSchema = DefaultSchema(conn);
-                Settings.DefaultCollation = DefaultCollation(conn);
             }
         }
 
@@ -13379,11 +13376,6 @@ and limitations under the License.
             return "mydb";
         }
 
-        protected override string DefaultCollation(DbConnection conn)
-        {
-            return null;
-        }
-
         protected override string SpecialQueryFlags()
         {
             return string.Empty;
@@ -13514,11 +13506,6 @@ and limitations under the License.
             return "system";
         }
 
-        protected override string DefaultCollation(DbConnection conn)
-        {
-            return null;
-        }
-
         protected override string SpecialQueryFlags()
         {
             return string.Empty;
@@ -13641,11 +13628,6 @@ and limitations under the License.
         protected override string DefaultSchema(DbConnection conn)
         {
             return "dbo";
-        }
-
-        protected override string DefaultCollation(DbConnection conn)
-        {
-            return null;
         }
 
         protected override string SpecialQueryFlags()
@@ -13893,11 +13875,6 @@ ORDER BY R.specific_schema, R.routine_name, R.routine_type;";
         protected override string DefaultSchema(DbConnection conn)
         {
             return "public";
-        }
-
-        protected override string DefaultCollation(DbConnection conn)
-        {
-            return null;
         }
 
         protected override string SpecialQueryFlags()
@@ -14442,11 +14419,6 @@ SELECT * FROM MultiContext.ForeignKey;";
         protected override string DefaultSchema(DbConnection conn)
         {
             return "dbo";
-        }
-
-        protected override string DefaultCollation(DbConnection conn)
-        {
-            return null;
         }
 
         protected override string SpecialQueryFlags()
@@ -15481,31 +15453,6 @@ SELECT SPECIFIC_SCHEMA, SPECIFIC_NAME, ROUTINE_TYPE, RETURN_DATA_TYPE, ORDINAL_P
             }
 
             return "dbo";
-        }
-
-        protected override string DefaultCollation(DbConnection conn)
-        {
-            try
-            {
-                var cmd = GetCmd(conn);
-                if (cmd != null)
-                {
-                    cmd.CommandText = string.Format("SELECT collation_name FROM sys.databases WHERE name = '{0}'", conn.Database);
-                    using (var rdr = cmd.ExecuteReader())
-                    {
-                        if (rdr.Read())
-                        {
-                            return rdr[0].ToString();
-                        }
-                    }
-                }
-            }
-            catch
-            {
-                // Ignored
-            }
-
-            return null;
         }
 
         protected override string SpecialQueryFlags()

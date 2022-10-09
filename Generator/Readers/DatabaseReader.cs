@@ -52,7 +52,6 @@ namespace Efrpg.Readers
 
         // Database specific
         protected abstract string DefaultSchema(DbConnection conn);
-        protected abstract string DefaultCollation(DbConnection conn);
         protected abstract string SpecialQueryFlags();
         protected abstract bool HasTemporalTableSupport();
 
@@ -131,7 +130,6 @@ namespace Efrpg.Readers
                 }
 
                 Settings.DefaultSchema = DefaultSchema(conn);
-                Settings.DefaultCollation = DefaultCollation(conn);
             }
         }
 

@@ -102,11 +102,6 @@
             return string.Empty;
         }
 
-        protected override string DefaultCollation(DbConnection conn)
-        {
-            return string.Empty;
-        }
-
         protected override string SpecialQueryFlags()
         {
             return string.Empty;

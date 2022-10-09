@@ -177,7 +177,6 @@ namespace Efrpg
         //     abc.hello will be Abc_Hello.
         public static bool   PrependSchemaName = true; // Control if the schema name is prepended to the table name
         public static string DefaultSchema     = null; // Set via DatabaseReader.DefaultSchema()
-        public static string DefaultCollation  = null; // Set via DatabaseReader.DefaultCollation()
 
         // Table Suffix ***********************************************************************************************************************
         // Appends the suffix to the generated classes names
