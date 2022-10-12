@@ -16,7 +16,7 @@
 
     Settings.UseMappingTables        = true; // Must be false for TemplateType.EfCore2 & 3. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
     Settings.FileManagerType         = FileManagerType.EfCore; // .NET Core project = EfCore; .NET project = VisualStudio; No output (testing only) = Null
-    Settings.ConnectionString        = "Data Source=(local);Initial Catalog=Northwind;Integrated Security=True;MultipleActiveResultSets=True"; // This is used by the generator to reverse engineer your database
+    Settings.ConnectionString        = "Data Source=(local);Initial Catalog=Northwind;Integrated Security=True;MultipleActiveResultSets=True;Encrypt=false;TrustServerCertificate=true"; // This is used by the generator to reverse engineer your database
     Settings.ConnectionStringName    = "NorthwindDbContext"; // ConnectionString key as specified in your app.config/web.config/appsettings.json. Not used by the generator, but is placed into the generated DbContext constructor.
     Settings.DbContextName           = "NorthwindDbContext"; // Class name for the DbContext to be generated.
     //Settings.DbContextInterfaceName= "INorthwindDbContext"; // Defaults to "I" + DbContextName or set string empty to not implement any interface.

@@ -182,7 +182,7 @@ namespace Efrpg.V3TestN6
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=Northwind;Integrated Security=True;Application Name=Generator");
+                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=Northwind;Integrated Security=True;Encrypt=false;TrustServerCertificate=true;Application Name=Generator");
             }
         }
 

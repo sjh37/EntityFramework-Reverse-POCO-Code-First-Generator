@@ -115,7 +115,7 @@ namespace TestSynonymsDatabase
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=EfrpgTest_Synonyms;Integrated Security=True");
+                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=EfrpgTest_Synonyms;Integrated Security=True;Encrypt=false;TrustServerCertificate=true");
             }
         }
 

@@ -23,7 +23,7 @@
         {
             SetupDatabase(connectionStringName, dbContextName, templateType, generatorType, foreignKeyNamingStrategy);
 
-            Settings.ConnectionString = $"Data Source=(local);Initial Catalog={database};Integrated Security=True;Application Name=Generator";
+            Settings.ConnectionString = $"Data Source=(local);Initial Catalog={database};Integrated Security=True;Encrypt=false;TrustServerCertificate=true;Application Name=Generator";
             Settings.DatabaseType     = DatabaseType.SqlServer;
         }
 

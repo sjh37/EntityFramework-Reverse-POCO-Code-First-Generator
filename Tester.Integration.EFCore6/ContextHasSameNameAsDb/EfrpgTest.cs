@@ -31,7 +31,7 @@ namespace Tester.Integration.EFCore6.ContextHasSameNameAsDb
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;MultipleActiveResultSets=True");
+                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;MultipleActiveResultSets=True;Encrypt=false;TrustServerCertificate=true");
             }
         }
 

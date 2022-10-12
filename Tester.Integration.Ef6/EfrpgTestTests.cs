@@ -14,7 +14,7 @@ namespace Tester.Integration.Ef6
         [SetUp]
         public void SetUp()
         {
-            _db = new EfrpgTestDbContext("Data Source=(local);Initial Catalog=Efrpgtest;Integrated Security=True");
+            _db = new EfrpgTestDbContext("Data Source=(local);Initial Catalog=Efrpgtest;Integrated Security=True;Encrypt=false;TrustServerCertificate=true");
         }
 
         // https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/issues/538

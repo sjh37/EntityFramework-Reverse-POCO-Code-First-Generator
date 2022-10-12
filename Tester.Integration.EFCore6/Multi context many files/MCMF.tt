@@ -5,7 +5,7 @@
     Settings.TemplateType            = TemplateType.EfCore6; // Ef6, EfCore2, EfCore3, FileBased. FileBased specify folder using Settings.TemplateFolder
     Settings.GeneratorType           = GeneratorType.EfCore; // Ef6, EfCore, Custom. Custom edit GeneratorCustom class to provide your own implementation
     Settings.FileManagerType         = FileManagerType.EfCore; // VisualStudio = .NET project; EfCore = .NET Core project; Null = No output (testing only)
-    Settings.ConnectionString        = "Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True";
+    Settings.ConnectionString        = "Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;Encrypt=false;TrustServerCertificate=true";
     Settings.ConnectionStringName    = "McmfMultiDatabase"; // ConnectionString key as specified in your app.config/web.config/appsettings.json
     Settings.OnConfiguration         = OnConfiguration.Configuration; // EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/OnConfiguration    Settings.GenerateSeparateFiles   = false;
     Settings.GenerateSeparateFiles   = true;
@@ -13,7 +13,7 @@
     Settings.AddUnitTestingDbContext = false;
 
     Settings.GenerateSingleDbContext = false;
-    Settings.MultiContextSettingsConnectionString = "Data Source=(local);Initial Catalog=EfrpgTest_Settings;Integrated Security=True";
+    Settings.MultiContextSettingsConnectionString = "Data Source=(local);Initial Catalog=EfrpgTest_Settings;Integrated Security=True;Encrypt=false;TrustServerCertificate=true";
     
     Settings.AdditionalNamespaces.Add("Generator.Tests.Common");
 

@@ -1,6 +1,6 @@
 ﻿// The following connection settings were used to generate this file:
 //     Connection String Name: "MyDbContext"
-//     Connection String:      "Data Source=(local);Initial Catalog=Northwind;Integrated Security=True"
+//     Connection String:      "Data Source=(local);Initial Catalog=Northwind;Integrated Security=True;Encrypt=false;TrustServerCertificate=true"
 //
 // Database Edition       : Developer Edition (64-bit)
 // Database Engine Edition: Enterprise

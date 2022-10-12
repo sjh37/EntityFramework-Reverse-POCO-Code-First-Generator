@@ -469,7 +469,7 @@ namespace Efrpg.V3TestE3
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;Application Name=Generator", x => x.UseNetTopologySuite());
+                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;Encrypt=false;TrustServerCertificate=true;Application Name=Generator", x => x.UseNetTopologySuite());
             }
         }
 

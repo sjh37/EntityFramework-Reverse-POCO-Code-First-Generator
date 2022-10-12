@@ -55,7 +55,7 @@ If your database changes, simply re-save the `<database>.tt` file. That's it.
 
    For example:
 
-   Settings.ConnectionString = "Data Source=(local);Initial Catalog=Northwind;Integrated Security=True";
+   Settings.ConnectionString = "Data Source=(local);Initial Catalog=Northwind;Integrated Security=True;Encrypt=false;TrustServerCertificate=true";
 * The `Settings.ConnectionString` string you use must have at least these privileges: `ddladmin`, `datareader` and `datawriter`. `ddladmin` is required for reading the default constraints.
 * In Visual Studio, right click project and select "add - new item".
 * Select Online, and search for **reverse poco**.
