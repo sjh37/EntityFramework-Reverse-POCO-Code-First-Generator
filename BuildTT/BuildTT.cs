@@ -408,7 +408,7 @@ namespace BuildTT
     {
         /*if (table.HasPrimaryKey && table.PrimaryKeys.Count() == 1 && table.Columns.Any(x => x.PropertyType == ""string""))
         {
-            // Example to choose tables with a certain naming conventions for enums. Please use your own conventions.
+            // Example: choosing tables with certain naming conventions for enums. Please use your own conventions.
             if (table.NameHumanCase.StartsWith(""Enum"", StringComparison.InvariantCultureIgnoreCase) ||
                 table.NameHumanCase.EndsWith(""Enum"", StringComparison.InvariantCultureIgnoreCase))
             {
@@ -422,7 +422,7 @@ namespace BuildTT
                         ValueField = table.PrimaryKeys.Single().DbName // Or specify your own
                     });
 
-                    // This will cause this table to not be reverse engineered.
+                    // This will cause this table to not be reverse-engineered.
                     // This means it was only required to generate an enum and can now be removed.
                     table.RemoveTable = true; // Remove this line if you want to keep it in your dbContext.
                 }
