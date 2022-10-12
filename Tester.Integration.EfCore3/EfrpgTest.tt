@@ -136,14 +136,14 @@
         },
         new EnumerationSettings
         {
-            Name       = "Car",
+            Name       = "CarEnum",
             Table      = "Car",
             NameField  = "Carmake",
             ValueField = "Id"
         },
         new EnumerationSettings
         {
-            Name       = "Colour",
+            Name       = "ColourEnum",
             Table      = "Colour",
             NameField  = "Name",
             ValueField = "Id"
