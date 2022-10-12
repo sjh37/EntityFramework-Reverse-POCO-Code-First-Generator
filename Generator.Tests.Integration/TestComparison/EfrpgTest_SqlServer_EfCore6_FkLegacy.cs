@@ -196,6 +196,9 @@ namespace Efrpg.V3TestE6
         // C182Test2ReturnModel C182Test2(int? flag); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
         // Task<C182Test2ReturnModel> C182Test2Async(int? flag); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
+        // CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (CheckIfApplicationIsCompleteReturnModel)
+
         List<ColourPivotReturnModel> ColourPivot();
         List<ColourPivotReturnModel> ColourPivot(out int procResult);
         Task<List<ColourPivotReturnModel>> ColourPivotAsync();
@@ -727,6 +730,10 @@ namespace Efrpg.V3TestE6
         // public C182Test2ReturnModel C182Test2(int? flag) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
         // public async Task<C182Test2ReturnModel> C182Test2Async(int? flag) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+
+        // public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+
+        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (CheckIfApplicationIsCompleteReturnModel)
 
         public List<ColourPivotReturnModel> ColourPivot()
         {
@@ -2139,6 +2146,23 @@ namespace Efrpg.V3TestE6
             int procResult;
             return Task.FromResult(C182Test2(flag, out procResult));
         }
+
+        public DbSet<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsCompleteReturnModel { get; set; }
+        public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete)
+        {
+            int procResult;
+            return CheckIfApplicationIsComplete(applicationId, out isApplicationComplete, out procResult);
+        }
+
+        public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete, out int procResult)
+        {
+            isApplicationComplete = default(bool);
+            procResult = 0;
+            return new CheckIfApplicationIsCompleteReturnModel();
+        }
+
+        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (CheckIfApplicationIsCompleteReturnModel)
+
 
         public DbSet<ColourPivotReturnModel> ColourPivotReturnModel { get; set; }
         public List<ColourPivotReturnModel> ColourPivot()
@@ -6484,6 +6508,22 @@ namespace Efrpg.V3TestE6
             public string Description { get; set; }
         }
         public List<ResultSetModel3> ResultSet3;
+    }
+
+    public class CheckIfApplicationIsCompleteReturnModel
+    {
+        public class ResultSetModel1
+        {
+            public string Key { get; set; }
+            public string Value { get; set; }
+        }
+        public List<ResultSetModel1> ResultSet1;
+        public class ResultSetModel2
+        {
+            public string Key { get; set; }
+            public string Value { get; set; }
+        }
+        public List<ResultSetModel2> ResultSet2;
     }
 
     public class ColourPivotReturnModel
