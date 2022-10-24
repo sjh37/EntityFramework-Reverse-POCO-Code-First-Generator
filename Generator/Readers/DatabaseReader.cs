@@ -813,7 +813,7 @@ namespace Efrpg.Readers
                                 if (string.IsNullOrEmpty(name))
                                     continue;
 
-                                name = RemoveNonAlphanumerics.Replace(name, string.Empty);
+                                name = RemoveNonAlphaNumeric.Replace(name, string.Empty);
                                 name = (Settings.UsePascalCaseForEnumMembers ? Inflector.ToTitleCase(name) : name).Replace(" ", string.Empty).Trim();
                                 if (string.IsNullOrEmpty(name))
                                     continue;
@@ -1019,14 +1019,20 @@ namespace Efrpg.Readers
             return col;
         }
 
-        private static readonly Regex RemoveNonAlphanumerics = new Regex(@"[^\w\d\s_-]", RegexOptions.Compiled);
+        private static readonly Regex RemoveNonAlphaNumeric = new Regex(@"[^\w\d\s_-]", RegexOptions.Compiled);
+        private static readonly Regex RemoveTrailingSymbols = new Regex(@"[$-/:-?{-~!""^_`\[\]]+$", RegexOptions.Compiled);
 
         public static readonly Func<string, string> CleanUp = (str) =>
         {
             // Replace punctuation and symbols in variable names as these are not allowed.
+            if(string.IsNullOrEmpty(str))
+                return string.Empty;
+
+            if(str.Any(char.IsLetterOrDigit))
+                str = RemoveTrailingSymbols.Replace(str.Replace('-', '_'), string.Empty);
             var len = str.Length;
             if (len == 0)
-                return str;
+                return string.Empty;
 
             var sb = new StringBuilder(len + 20);
             var replacedCharacter = false;
@@ -1045,7 +1051,7 @@ namespace Efrpg.Readers
             if (replacedCharacter)
                 str = sb.ToString();
 
-            str = RemoveNonAlphanumerics.Replace(str, string.Empty);
+            str = RemoveNonAlphaNumeric.Replace(str, string.Empty);
             if (char.IsDigit(str[0]))
                 str = "C" + str;
 

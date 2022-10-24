@@ -10,7 +10,6 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -24,68 +23,68 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Efrpg.V3TestE5
+namespace Efrpg.V4TestE6
 {
     #region Database context interface
 
-    public interface IEfrpgTestDbContext : IDisposable
+    public interface IEfrpg_db_context : IDisposable
     {
         DbSet<A> A { get; set; } // A
-        DbSet<Aaref> Aarefs { get; set; } // AAREF
-        DbSet<AbOrderLinesAb> AbOrderLinesAbs { get; set; } // AB_OrderLinesAB_
-        DbSet<AbOrdersAb> AbOrdersAbs { get; set; } // AB_OrdersAB_
+        DbSet<AAREF> AAREFs { get; set; } // AAREF
+        DbSet<AB_OrderLinesAB> AB_OrderLinesABs { get; set; } // AB_OrderLinesAB_
+        DbSet<AB_OrdersAB> AB_OrdersABs { get; set; } // AB_OrdersAB_
         DbSet<AllColumnsNull> AllColumnsNulls { get; set; } // AllColumnsNull
         DbSet<Alpha_Harish3485> Alpha_Harish3485 { get; set; } // Harish3485
-        DbSet<Alpha_Workflow> Alpha_Workflows { get; set; } // workflow
-        DbSet<AlphaWorkflowSynonym> AlphaWorkflowSynonyms { get; set; } // alpha_workflow_synonym
+        DbSet<Alpha_workflow> Alpha_workflows { get; set; } // workflow
+        DbSet<alpha_workflow_synonym> alpha_workflow_synonyms { get; set; } // alpha_workflow_synonym
         DbSet<App_UserFacilityServiceRole> App_UserFacilityServiceRoles { get; set; } // UserFacilityServiceRole
         DbSet<AppUser> AppUsers { get; set; } // AppUser
         DbSet<Attendee> Attendees { get; set; } // Attendee
         DbSet<BatchTest> BatchTests { get; set; } // BatchTest
         DbSet<Beta_Harish3485> Beta_Harish3485 { get; set; } // Harish3485
         DbSet<Beta_ToAlpha> Beta_ToAlphas { get; set; } // ToAlpha
-        DbSet<Beta_Workflow> Beta_Workflows { get; set; } // workflow
-        DbSet<Bitfiddlerallcap> Bitfiddlerallcaps { get; set; } // BITFIDDLERALLCAPS
-        DbSet<BitFiddlerCategoRy> BitFiddlerCategoRies { get; set; } // BitFiddlerCATEGORIES
-        DbSet<BitFiddlerCurrenCy> BitFiddlerCurrenCies { get; set; } // BitFiddlerCURRENCIES
+        DbSet<Beta_workflow> Beta_workflows { get; set; } // workflow
+        DbSet<BITFIDDLERALLCAP> BITFIDDLERALLCAPs { get; set; } // BITFIDDLERALLCAPS
+        DbSet<BitFiddlerCATEGORy> BitFiddlerCATEGORies { get; set; } // BitFiddlerCATEGORIES
+        DbSet<BitFiddlerCURRENCy> BitFiddlerCURRENCies { get; set; } // BitFiddlerCURRENCIES
         DbSet<Blah> Blahs { get; set; } // Blah
-        DbSet<BlahBlahLinkV2> BlahBlahLinkV2 { get; set; } // BlahBlahLink_v2
+        DbSet<BlahBlahLink_v2> BlahBlahLink_v2 { get; set; } // BlahBlahLink_v2
         DbSet<Blarg> Blargs { get; set; } // Blarg
         DbSet<Burak1> Burak1 { get; set; } // Burak1
         DbSet<Burak2> Burak2 { get; set; } // Burak2
         DbSet<CalculatedColumnNotNull> CalculatedColumnNotNulls { get; set; } // CalculatedColumnNotNull
         DbSet<Car> Cars { get; set; } // Car
         DbSet<ClientCreationState> ClientCreationStates { get; set; } // ClientCreationState
-        DbSet<CmsFile> CmsFiles { get; set; } // CMS_File
-        DbSet<CmsTag> CmsTags { get; set; } // CMS_Tag
-        DbSet<CodeMeetingTopicDetail> CodeMeetingTopicDetails { get; set; } // CODE_MeetingTopicDetails
+        DbSet<CMS_File> CMS_Files { get; set; } // CMS_File
+        DbSet<CMS_Tag> CMS_Tags { get; set; } // CMS_Tag
+        DbSet<CODE_MeetingTopicDetail> CODE_MeetingTopicDetails { get; set; } // CODE_MeetingTopicDetails
+        DbSet<CODE_PARAM_MeetingTopicDetailSource> CODE_PARAM_MeetingTopicDetailSources { get; set; } // CODE_PARAM_MeetingTopicDetailSource
         DbSet<CodeObject> CodeObjects { get; set; } // CodeObject
-        DbSet<CodeParamMeetingTopicDetailSource> CodeParamMeetingTopicDetailSources { get; set; } // CODE_PARAM_MeetingTopicDetailSource
         DbSet<Colour> Colours { get; set; } // Colour
         DbSet<ColumnNameAndType> ColumnNameAndTypes { get; set; } // ColumnNameAndTypes
         DbSet<ComplexView> ComplexViews { get; set; } // ComplexView
         DbSet<Country> Countries { get; set; } // Country
-        DbSet<CrossDatabaseSynonym> CrossDatabaseSynonyms { get; set; } // cross_database_synonym
+        DbSet<cross_database_synonym> cross_database_synonyms { get; set; } // cross_database_synonym
         DbSet<DateTimeDefaultTest> DateTimeDefaultTests { get; set; } // DateTimeDefaultTest
-        DbSet<dcg_RovColumnDefinition> dcg_RovColumnDefinitions { get; set; } // rov_ColumnDefinitions
+        DbSet<dcg_rov_ColumnDefinition> dcg_rov_ColumnDefinitions { get; set; } // rov_ColumnDefinitions
         DbSet<DefaultCheckForNull> DefaultCheckForNulls { get; set; } // DefaultCheckForNull
-        DbSet<DsOpe> DsOpes { get; set; } // DSOpe
+        DbSet<DSOpe> DSOpes { get; set; } // DSOpe
         DbSet<EnumsWithStringAsValue> EnumsWithStringAsValues { get; set; } // EnumsWithStringAsValue
         DbSet<EnumTest_DaysOfWeek> EnumTest_DaysOfWeeks { get; set; } // DaysOfWeek
         DbSet<EnumTest_OpenDay> EnumTest_OpenDays { get; set; } // OpenDays
         DbSet<EnumWithDefaultValue> EnumWithDefaultValues { get; set; } // EnumWithDefaultValue
         DbSet<EventProcessor> EventProcessors { get; set; } // EventProcessor
         DbSet<EventProcessorEventFilter> EventProcessorEventFilters { get; set; } // EventProcessorEventFilter
-        DbSet<FFRS_Cv> FFRS_Cvs { get; set; } // CV
+        DbSet<FFRS_CV> FFRS_CVs { get; set; } // CV
         DbSet<FinancialInstitutionOffice> FinancialInstitutionOffices { get; set; } // FinancialInstitutionOffice
         DbSet<FkTest_SmallDecimalTestAttribute> FkTest_SmallDecimalTestAttributes { get; set; } // SmallDecimalTestAttribute
-        DbSet<Footer> Footers { get; set; } // footer
+        DbSet<footer> footers { get; set; } // footer
         DbSet<ForeignKeyIsNotEnforced> ForeignKeyIsNotEnforceds { get; set; } // ForeignKeyIsNotEnforced
         DbSet<ForeignKeyIsNotEnforcedItem> ForeignKeyIsNotEnforcedItems { get; set; } // ForeignKeyIsNotEnforcedItem
         DbSet<HasPrincipalKeyTestChild> HasPrincipalKeyTestChilds { get; set; } // HasPrincipalKeyTestChild
         DbSet<HasPrincipalKeyTestParent> HasPrincipalKeyTestParents { get; set; } // HasPrincipalKeyTestParent
-        DbSet<Header> Headers { get; set; } // header
-        DbSet<HierarchyTest> HierarchyTests { get; set; } // hierarchy_test
+        DbSet<header> headers { get; set; } // header
+        DbSet<hierarchy_test> hierarchy_tests { get; set; } // hierarchy_test
         DbSet<Issue47_Role> Issue47_Roles { get; set; } // Role
         DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
@@ -95,7 +94,7 @@ namespace Efrpg.V3TestE5
         DbSet<PeriodTestTable> PeriodTestTables { get; set; } // PeriodTestTable
         DbSet<Person> People { get; set; } // Person
         DbSet<PersonPost> PersonPosts { get; set; } // PersonPosts
-        DbSet<PkOrdinalTest> PkOrdinalTests { get; set; } // pk_ordinal_test
+        DbSet<pk_ordinal_test> pk_ordinal_tests { get; set; } // pk_ordinal_test
         DbSet<PropertyTypesToAdd> PropertyTypesToAdds { get; set; } // PropertyTypesToAdd
         DbSet<SequenceTest> SequenceTests { get; set; } // SequenceTest
         DbSet<SmallDecimalTest> SmallDecimalTests { get; set; } // SmallDecimalTest
@@ -107,28 +106,28 @@ namespace Efrpg.V3TestE5
         DbSet<Synonyms_Parent> Synonyms_Parents { get; set; } // Parent
         DbSet<TableA> TableAs { get; set; } // TableA
         DbSet<TableB> TableBs { get; set; } // TableB
-        DbSet<TableWithDuplicateColumnName> TableWithDuplicateColumnNames { get; set; } // table with duplicate column names
-        DbSet<TableWithSpace> TableWithSpaces { get; set; } // table with space
-        DbSet<TableWithSpaceAndInColumn> TableWithSpaceAndInColumns { get; set; } // table with space and in columns
+        DbSet<tablewithduplicatecolumnname> tablewithduplicatecolumnnames { get; set; } // table with duplicate column names
+        DbSet<tablewithspace> tablewithspaces { get; set; } // table with space
+        DbSet<tablewithspaceandincolumn> tablewithspaceandincolumns { get; set; } // table with space and in columns
         DbSet<TableWithSpaceInColumnOnly> TableWithSpaceInColumnOnlies { get; set; } // TableWithSpaceInColumnOnly
         DbSet<TadeuszSobol> TadeuszSobols { get; set; } // TadeuszSobol
         DbSet<Task1> Task1 { get; set; } // Task
-        DbSet<TblOrder> TblOrders { get; set; } // tblOrders
-        DbSet<TblOrderError> TblOrderErrors { get; set; } // tblOrderErrors
-        DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
-        DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
+        DbSet<tblOrder> tblOrders { get; set; } // tblOrders
+        DbSet<tblOrderError> tblOrderErrors { get; set; } // tblOrderErrors
+        DbSet<tblOrderErrorsAB> tblOrderErrorsABs { get; set; } // tblOrderErrorsAB_
+        DbSet<tblOrderLine> tblOrderLines { get; set; } // tblOrderLines
         DbSet<Ticket> Tickets { get; set; } // Ticket
         DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
         DbSet<TimestampNullable> TimestampNullables { get; set; } // TimestampNullable
         DbSet<Token> Tokens { get; set; } // Token
         DbSet<User> Users { get; set; } // User
+        DbSet<User_Document> User_Documents { get; set; } // User_Document
         DbSet<User309> User309 { get; set; } // User309
-        DbSet<UserDocument> UserDocuments { get; set; } // User_Document
         DbSet<Versioned> Versioneds { get; set; } // Versioned
         DbSet<VersionedNullable> VersionedNullables { get; set; } // VersionedNullable
-        DbSet<ViewWithSpace> ViewWithSpaces { get; set; } // view with space
+        DbSet<viewwithspace> viewwithspaces { get; set; } // view with space
         DbSet<WVN_Article> WVN_Articles { get; set; } // Articles
-        DbSet<WVN_VArticle> WVN_VArticles { get; set; } // v_Articles
+        DbSet<WVN_v_Article> WVN_v_Articles { get; set; } // v_Articles
         DbSet<Брендытовара> Брендытовара { get; set; } // Бренды товара
 
         int SaveChanges();
@@ -185,17 +184,17 @@ namespace Efrpg.V3TestE5
         int Alpha_Overclock(DateTime? parameter);
         // Alpha_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        int App_UspCmtUserFsrUpdate(int? userId, int? fsrId, out int? ufsrId);
-        // App_UspCmtUserFsrUpdateAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        int App_usp_CMTUserFSRUpdate(int? userId, int? fsrId, out int? ufsrId);
+        // App_usp_CMTUserFSRUpdateAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        int ASimpleExample();
-        // ASimpleExampleAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        int aSimpleExample();
+        // aSimpleExampleAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         int Beta_Overclock(DateTime? parameter);
         // Beta_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        // C182Test2ReturnModel C182Test2(int? flag); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
-        // Task<C182Test2ReturnModel> C182Test2Async(int? flag); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        // C182_test2ReturnModel C182_test2(int? flag); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        // Task<C182_test2ReturnModel> C182_test2Async(int? flag); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
         // CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
         // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (CheckIfApplicationIsCompleteReturnModel)
@@ -207,29 +206,29 @@ namespace Efrpg.V3TestE5
         int ConvertToString(int? someValue, out string someString);
         // ConvertToStringAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        List<DboProcDataFromFfrsReturnModel> DboProcDataFromFfrs(int? maxId);
-        List<DboProcDataFromFfrsReturnModel> DboProcDataFromFfrs(int? maxId, out int procResult);
-        Task<List<DboProcDataFromFfrsReturnModel>> DboProcDataFromFfrsAsync(int? maxId);
+        List<dbo_proc_data_from_ffrsReturnModel> dbo_proc_data_from_ffrs(int? maxId);
+        List<dbo_proc_data_from_ffrsReturnModel> dbo_proc_data_from_ffrs(int? maxId, out int procResult);
+        Task<List<dbo_proc_data_from_ffrsReturnModel>> dbo_proc_data_from_ffrsAsync(int? maxId);
 
-        List<DboProcDataFromFfrsAndDboReturnModel> DboProcDataFromFfrsAndDbo();
-        List<DboProcDataFromFfrsAndDboReturnModel> DboProcDataFromFfrsAndDbo(out int procResult);
-        Task<List<DboProcDataFromFfrsAndDboReturnModel>> DboProcDataFromFfrsAndDboAsync();
+        List<dbo_proc_data_from_ffrs_and_dboReturnModel> dbo_proc_data_from_ffrs_and_dbo();
+        List<dbo_proc_data_from_ffrs_and_dboReturnModel> dbo_proc_data_from_ffrs_and_dbo(out int procResult);
+        Task<List<dbo_proc_data_from_ffrs_and_dboReturnModel>> dbo_proc_data_from_ffrs_and_dboAsync();
 
-        List<DsOpeProcReturnModel> DsOpeProc();
-        List<DsOpeProcReturnModel> DsOpeProc(out int procResult);
-        Task<List<DsOpeProcReturnModel>> DsOpeProcAsync();
+        List<DSOpeProcReturnModel> DSOpeProc();
+        List<DSOpeProcReturnModel> DSOpeProc(out int procResult);
+        Task<List<DSOpeProcReturnModel>> DSOpeProcAsync();
 
-        List<FFRS_CvDataReturnModel> FFRS_CvData(int? maxId);
-        List<FFRS_CvDataReturnModel> FFRS_CvData(int? maxId, out int procResult);
-        Task<List<FFRS_CvDataReturnModel>> FFRS_CvDataAsync(int? maxId);
+        List<FFRS_cv_dataReturnModel> FFRS_cv_data(int? maxId);
+        List<FFRS_cv_dataReturnModel> FFRS_cv_data(int? maxId, out int procResult);
+        Task<List<FFRS_cv_dataReturnModel>> FFRS_cv_dataAsync(int? maxId);
 
-        List<FFRS_DataFromDboReturnModel> FFRS_DataFromDbo();
-        List<FFRS_DataFromDboReturnModel> FFRS_DataFromDbo(out int procResult);
-        Task<List<FFRS_DataFromDboReturnModel>> FFRS_DataFromDboAsync();
+        List<FFRS_data_from_dboReturnModel> FFRS_data_from_dbo();
+        List<FFRS_data_from_dboReturnModel> FFRS_data_from_dbo(out int procResult);
+        Task<List<FFRS_data_from_dboReturnModel>> FFRS_data_from_dboAsync();
 
-        List<FFRS_DataFromDboAndFfrsReturnModel> FFRS_DataFromDboAndFfrs();
-        List<FFRS_DataFromDboAndFfrsReturnModel> FFRS_DataFromDboAndFfrs(out int procResult);
-        Task<List<FFRS_DataFromDboAndFfrsReturnModel>> FFRS_DataFromDboAndFfrsAsync();
+        List<FFRS_data_from_dbo_and_ffrsReturnModel> FFRS_data_from_dbo_and_ffrs();
+        List<FFRS_data_from_dbo_and_ffrsReturnModel> FFRS_data_from_dbo_and_ffrs(out int procResult);
+        Task<List<FFRS_data_from_dbo_and_ffrsReturnModel>> FFRS_data_from_dbo_and_ffrsAsync();
 
         List<FkTest_HelloReturnModel> FkTest_Hello();
         List<FkTest_HelloReturnModel> FkTest_Hello(out int procResult);
@@ -260,14 +259,14 @@ namespace Efrpg.V3TestE5
         int Omega_Overclock(DateTime? parameter);
         // Omega_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        int ProcTestDecimalOutput(out decimal? perfectNumber);
-        // ProcTestDecimalOutputAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        int proc_TestDecimalOutput(out decimal? perfectNumber);
+        // proc_TestDecimalOutputAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        int ProcTestDecimalOutputV2(out decimal? perfectNumber);
-        // ProcTestDecimalOutputV2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        int proc_TestDecimalOutputV2(out decimal? perfectNumber);
+        // proc_TestDecimalOutputV2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        int ProcTestDecimalOutputV3Default(out decimal? perfectNumber);
-        // ProcTestDecimalOutputV3DefaultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        int proc_TestDecimalOutputV3Default(out decimal? perfectNumber);
+        // proc_TestDecimalOutputV3DefaultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         int SpatialTypesNoParams();
         // SpatialTypesNoParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
@@ -275,36 +274,36 @@ namespace Efrpg.V3TestE5
         int SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography);
         // SpatialTypesWithParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        // StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
-        // Task<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsAsync(int? someVar); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        // stp_multiple_identical_resultsReturnModel stp_multiple_identical_results(int? someVar); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        // Task<stp_multiple_identical_resultsReturnModel> stp_multiple_identical_resultsAsync(int? someVar); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
-        // StpMultipleMultipleResultsWithParamsReturnModel StpMultipleMultipleResultsWithParams(int? firstVal, int? secondVal, int? thirdVal); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
-        // Task<StpMultipleMultipleResultsWithParamsReturnModel> StpMultipleMultipleResultsWithParamsAsync(int? firstVal, int? secondVal, int? thirdVal); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        // stp_multiple_multiple_results_with_paramsReturnModel stp_multiple_multiple_results_with_params(int? firstval, int? secondval, int? thirdval); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        // Task<stp_multiple_multiple_results_with_paramsReturnModel> stp_multiple_multiple_results_with_paramsAsync(int? firstval, int? secondval, int? thirdval); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
-        // StpMultipleResultsReturnModel StpMultipleResults(); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
-        // Task<StpMultipleResultsReturnModel> StpMultipleResultsAsync(); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        // stp_multiple_resultsReturnModel stp_multiple_results(); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        // Task<stp_multiple_resultsReturnModel> stp_multiple_resultsAsync(); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
-        // StpMultipleResultsWithParamsReturnModel StpMultipleResultsWithParams(int? firstVal, int? secondVal); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
-        // Task<StpMultipleResultsWithParamsReturnModel> StpMultipleResultsWithParamsAsync(int? firstVal, int? secondVal); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        // stp_multiple_results_with_paramsReturnModel stp_multiple_results_with_params(int? firstval, int? secondval); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        // Task<stp_multiple_results_with_paramsReturnModel> stp_multiple_results_with_paramsAsync(int? firstval, int? secondval); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
-        List<StpNoParamsTestReturnModel> StpNoParamsTest();
-        List<StpNoParamsTestReturnModel> StpNoParamsTest(out int procResult);
-        Task<List<StpNoParamsTestReturnModel>> StpNoParamsTestAsync();
+        List<stp_no_params_testReturnModel> stp_no_params_test();
+        List<stp_no_params_testReturnModel> stp_no_params_test(out int procResult);
+        Task<List<stp_no_params_testReturnModel>> stp_no_params_testAsync();
 
-        int StpNoReturnFields();
-        // StpNoReturnFieldsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        int stp_no_return_fields();
+        // stp_no_return_fieldsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        List<StpNullableParamsTestReturnModel> StpNullableParamsTest(int? aVal, int? bVal);
-        List<StpNullableParamsTestReturnModel> StpNullableParamsTest(int? aVal, int? bVal, out int procResult);
-        Task<List<StpNullableParamsTestReturnModel>> StpNullableParamsTestAsync(int? aVal, int? bVal);
+        List<stp_nullable_params_testReturnModel> stp_nullable_params_test(int? aval, int? bval);
+        List<stp_nullable_params_testReturnModel> stp_nullable_params_test(int? aval, int? bval, out int procResult);
+        Task<List<stp_nullable_params_testReturnModel>> stp_nullable_params_testAsync(int? aval, int? bval);
 
-        List<StpTestReturnModel> StpTest(string strDateFrom, string strDateTo, out bool? retBool);
-        List<StpTestReturnModel> StpTest(string strDateFrom, string strDateTo, out bool? retBool, out int procResult);
-        // StpTestAsync() cannot be created due to having out parameters, or is relying on the procedure result (List<StpTestReturnModel>)
+        List<stp_testReturnModel> stp_test(string strDateFROM, string strDateTo, out bool? retBool);
+        List<stp_testReturnModel> stp_test(string strDateFROM, string strDateTo, out bool? retBool, out int procResult);
+        // stp_testAsync() cannot be created due to having out parameters, or is relying on the procedure result (List<stp_testReturnModel>)
 
-        List<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTest(string strDateFrom, string strDateTo);
-        List<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTest(string strDateFrom, string strDateTo, out int procResult);
-        Task<List<StpTestUnderscoreTestReturnModel>> StpTestUnderscoreTestAsync(string strDateFrom, string strDateTo);
+        List<stp_test_underscore_testReturnModel> stp_test_underscore_test(string strDateFROM, string strdateto);
+        List<stp_test_underscore_testReturnModel> stp_test_underscore_test(string strDateFROM, string strdateto, out int procResult);
+        Task<List<stp_test_underscore_testReturnModel>> stp_test_underscore_testAsync(string strDateFROM, string strdateto);
 
         int StupidStoredProcedureParams(string reqType, short? dept, short? @class, short? item);
         // StupidStoredProcedureParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
@@ -332,86 +331,86 @@ namespace Efrpg.V3TestE5
 
 
         // Table Valued Functions
-        IQueryable<C182Test1ReturnModel> C182Test1(int? test); // dbo.182_test1
+        IQueryable<C182_test1ReturnModel> C182_test1(int? test); // dbo.182_test1
         IQueryable<CsvToIntReturnModel> CsvToInt(string array, string array2); // dbo.CsvToInt
         IQueryable<CustomSchema_CsvToIntWithSchemaReturnModel> CustomSchema_CsvToIntWithSchema(string array, string array2); // CustomSchema.CsvToIntWithSchema
         IQueryable<FFRS_CsvToInt2ReturnModel> FFRS_CsvToInt2(string array, string array2); // FFRS.CsvToInt2
 
         // Scalar Valued Functions
-        decimal UdfNetSale(int? quantity, decimal? listPrice, decimal? discount); // dbo.udfNetSale
+        decimal udfNetSale(int? quantity, decimal? list_price, decimal? discount); // dbo.udfNetSale
     }
 
     #endregion
 
     #region Database context
 
-    public class EfrpgTestDbContext : DbContext, IEfrpgTestDbContext
+    public class Efrpg_db_context : DbContext, IEfrpg_db_context
     {
-        public EfrpgTestDbContext()
+        public Efrpg_db_context()
         {
         }
 
-        public EfrpgTestDbContext(DbContextOptions<EfrpgTestDbContext> options)
+        public Efrpg_db_context(DbContextOptions<Efrpg_db_context> options)
             : base(options)
         {
         }
 
         public DbSet<A> A { get; set; } // A
-        public DbSet<Aaref> Aarefs { get; set; } // AAREF
-        public DbSet<AbOrderLinesAb> AbOrderLinesAbs { get; set; } // AB_OrderLinesAB_
-        public DbSet<AbOrdersAb> AbOrdersAbs { get; set; } // AB_OrdersAB_
+        public DbSet<AAREF> AAREFs { get; set; } // AAREF
+        public DbSet<AB_OrderLinesAB> AB_OrderLinesABs { get; set; } // AB_OrderLinesAB_
+        public DbSet<AB_OrdersAB> AB_OrdersABs { get; set; } // AB_OrdersAB_
         public DbSet<AllColumnsNull> AllColumnsNulls { get; set; } // AllColumnsNull
         public DbSet<Alpha_Harish3485> Alpha_Harish3485 { get; set; } // Harish3485
-        public DbSet<Alpha_Workflow> Alpha_Workflows { get; set; } // workflow
-        public DbSet<AlphaWorkflowSynonym> AlphaWorkflowSynonyms { get; set; } // alpha_workflow_synonym
+        public DbSet<Alpha_workflow> Alpha_workflows { get; set; } // workflow
+        public DbSet<alpha_workflow_synonym> alpha_workflow_synonyms { get; set; } // alpha_workflow_synonym
         public DbSet<App_UserFacilityServiceRole> App_UserFacilityServiceRoles { get; set; } // UserFacilityServiceRole
         public DbSet<AppUser> AppUsers { get; set; } // AppUser
         public DbSet<Attendee> Attendees { get; set; } // Attendee
         public DbSet<BatchTest> BatchTests { get; set; } // BatchTest
         public DbSet<Beta_Harish3485> Beta_Harish3485 { get; set; } // Harish3485
         public DbSet<Beta_ToAlpha> Beta_ToAlphas { get; set; } // ToAlpha
-        public DbSet<Beta_Workflow> Beta_Workflows { get; set; } // workflow
-        public DbSet<Bitfiddlerallcap> Bitfiddlerallcaps { get; set; } // BITFIDDLERALLCAPS
-        public DbSet<BitFiddlerCategoRy> BitFiddlerCategoRies { get; set; } // BitFiddlerCATEGORIES
-        public DbSet<BitFiddlerCurrenCy> BitFiddlerCurrenCies { get; set; } // BitFiddlerCURRENCIES
+        public DbSet<Beta_workflow> Beta_workflows { get; set; } // workflow
+        public DbSet<BITFIDDLERALLCAP> BITFIDDLERALLCAPs { get; set; } // BITFIDDLERALLCAPS
+        public DbSet<BitFiddlerCATEGORy> BitFiddlerCATEGORies { get; set; } // BitFiddlerCATEGORIES
+        public DbSet<BitFiddlerCURRENCy> BitFiddlerCURRENCies { get; set; } // BitFiddlerCURRENCIES
         public DbSet<Blah> Blahs { get; set; } // Blah
-        public DbSet<BlahBlahLinkV2> BlahBlahLinkV2 { get; set; } // BlahBlahLink_v2
+        public DbSet<BlahBlahLink_v2> BlahBlahLink_v2 { get; set; } // BlahBlahLink_v2
         public DbSet<Blarg> Blargs { get; set; } // Blarg
         public DbSet<Burak1> Burak1 { get; set; } // Burak1
         public DbSet<Burak2> Burak2 { get; set; } // Burak2
         public DbSet<CalculatedColumnNotNull> CalculatedColumnNotNulls { get; set; } // CalculatedColumnNotNull
         public DbSet<Car> Cars { get; set; } // Car
         public DbSet<ClientCreationState> ClientCreationStates { get; set; } // ClientCreationState
-        public DbSet<CmsFile> CmsFiles { get; set; } // CMS_File
-        public DbSet<CmsTag> CmsTags { get; set; } // CMS_Tag
-        public DbSet<CodeMeetingTopicDetail> CodeMeetingTopicDetails { get; set; } // CODE_MeetingTopicDetails
+        public DbSet<CMS_File> CMS_Files { get; set; } // CMS_File
+        public DbSet<CMS_Tag> CMS_Tags { get; set; } // CMS_Tag
+        public DbSet<CODE_MeetingTopicDetail> CODE_MeetingTopicDetails { get; set; } // CODE_MeetingTopicDetails
+        public DbSet<CODE_PARAM_MeetingTopicDetailSource> CODE_PARAM_MeetingTopicDetailSources { get; set; } // CODE_PARAM_MeetingTopicDetailSource
         public DbSet<CodeObject> CodeObjects { get; set; } // CodeObject
-        public DbSet<CodeParamMeetingTopicDetailSource> CodeParamMeetingTopicDetailSources { get; set; } // CODE_PARAM_MeetingTopicDetailSource
         public DbSet<Colour> Colours { get; set; } // Colour
         public DbSet<ColumnNameAndType> ColumnNameAndTypes { get; set; } // ColumnNameAndTypes
         public DbSet<ComplexView> ComplexViews { get; set; } // ComplexView
         public DbSet<Country> Countries { get; set; } // Country
-        public DbSet<CrossDatabaseSynonym> CrossDatabaseSynonyms { get; set; } // cross_database_synonym
+        public DbSet<cross_database_synonym> cross_database_synonyms { get; set; } // cross_database_synonym
         public DbSet<DateTimeDefaultTest> DateTimeDefaultTests { get; set; } // DateTimeDefaultTest
-        public DbSet<dcg_RovColumnDefinition> dcg_RovColumnDefinitions { get; set; } // rov_ColumnDefinitions
+        public DbSet<dcg_rov_ColumnDefinition> dcg_rov_ColumnDefinitions { get; set; } // rov_ColumnDefinitions
         public DbSet<DefaultCheckForNull> DefaultCheckForNulls { get; set; } // DefaultCheckForNull
-        public DbSet<DsOpe> DsOpes { get; set; } // DSOpe
+        public DbSet<DSOpe> DSOpes { get; set; } // DSOpe
         public DbSet<EnumsWithStringAsValue> EnumsWithStringAsValues { get; set; } // EnumsWithStringAsValue
         public DbSet<EnumTest_DaysOfWeek> EnumTest_DaysOfWeeks { get; set; } // DaysOfWeek
         public DbSet<EnumTest_OpenDay> EnumTest_OpenDays { get; set; } // OpenDays
         public DbSet<EnumWithDefaultValue> EnumWithDefaultValues { get; set; } // EnumWithDefaultValue
         public DbSet<EventProcessor> EventProcessors { get; set; } // EventProcessor
         public DbSet<EventProcessorEventFilter> EventProcessorEventFilters { get; set; } // EventProcessorEventFilter
-        public DbSet<FFRS_Cv> FFRS_Cvs { get; set; } // CV
+        public DbSet<FFRS_CV> FFRS_CVs { get; set; } // CV
         public DbSet<FinancialInstitutionOffice> FinancialInstitutionOffices { get; set; } // FinancialInstitutionOffice
         public DbSet<FkTest_SmallDecimalTestAttribute> FkTest_SmallDecimalTestAttributes { get; set; } // SmallDecimalTestAttribute
-        public DbSet<Footer> Footers { get; set; } // footer
+        public DbSet<footer> footers { get; set; } // footer
         public DbSet<ForeignKeyIsNotEnforced> ForeignKeyIsNotEnforceds { get; set; } // ForeignKeyIsNotEnforced
         public DbSet<ForeignKeyIsNotEnforcedItem> ForeignKeyIsNotEnforcedItems { get; set; } // ForeignKeyIsNotEnforcedItem
         public DbSet<HasPrincipalKeyTestChild> HasPrincipalKeyTestChilds { get; set; } // HasPrincipalKeyTestChild
         public DbSet<HasPrincipalKeyTestParent> HasPrincipalKeyTestParents { get; set; } // HasPrincipalKeyTestParent
-        public DbSet<Header> Headers { get; set; } // header
-        public DbSet<HierarchyTest> HierarchyTests { get; set; } // hierarchy_test
+        public DbSet<header> headers { get; set; } // header
+        public DbSet<hierarchy_test> hierarchy_tests { get; set; } // hierarchy_test
         public DbSet<Issue47_Role> Issue47_Roles { get; set; } // Role
         public DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
@@ -421,7 +420,7 @@ namespace Efrpg.V3TestE5
         public DbSet<PeriodTestTable> PeriodTestTables { get; set; } // PeriodTestTable
         public DbSet<Person> People { get; set; } // Person
         public DbSet<PersonPost> PersonPosts { get; set; } // PersonPosts
-        public DbSet<PkOrdinalTest> PkOrdinalTests { get; set; } // pk_ordinal_test
+        public DbSet<pk_ordinal_test> pk_ordinal_tests { get; set; } // pk_ordinal_test
         public DbSet<PropertyTypesToAdd> PropertyTypesToAdds { get; set; } // PropertyTypesToAdd
         public DbSet<SequenceTest> SequenceTests { get; set; } // SequenceTest
         public DbSet<SmallDecimalTest> SmallDecimalTests { get; set; } // SmallDecimalTest
@@ -433,28 +432,28 @@ namespace Efrpg.V3TestE5
         public DbSet<Synonyms_Parent> Synonyms_Parents { get; set; } // Parent
         public DbSet<TableA> TableAs { get; set; } // TableA
         public DbSet<TableB> TableBs { get; set; } // TableB
-        public DbSet<TableWithDuplicateColumnName> TableWithDuplicateColumnNames { get; set; } // table with duplicate column names
-        public DbSet<TableWithSpace> TableWithSpaces { get; set; } // table with space
-        public DbSet<TableWithSpaceAndInColumn> TableWithSpaceAndInColumns { get; set; } // table with space and in columns
+        public DbSet<tablewithduplicatecolumnname> tablewithduplicatecolumnnames { get; set; } // table with duplicate column names
+        public DbSet<tablewithspace> tablewithspaces { get; set; } // table with space
+        public DbSet<tablewithspaceandincolumn> tablewithspaceandincolumns { get; set; } // table with space and in columns
         public DbSet<TableWithSpaceInColumnOnly> TableWithSpaceInColumnOnlies { get; set; } // TableWithSpaceInColumnOnly
         public DbSet<TadeuszSobol> TadeuszSobols { get; set; } // TadeuszSobol
         public DbSet<Task1> Task1 { get; set; } // Task
-        public DbSet<TblOrder> TblOrders { get; set; } // tblOrders
-        public DbSet<TblOrderError> TblOrderErrors { get; set; } // tblOrderErrors
-        public DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
-        public DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
+        public DbSet<tblOrder> tblOrders { get; set; } // tblOrders
+        public DbSet<tblOrderError> tblOrderErrors { get; set; } // tblOrderErrors
+        public DbSet<tblOrderErrorsAB> tblOrderErrorsABs { get; set; } // tblOrderErrorsAB_
+        public DbSet<tblOrderLine> tblOrderLines { get; set; } // tblOrderLines
         public DbSet<Ticket> Tickets { get; set; } // Ticket
         public DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
         public DbSet<TimestampNullable> TimestampNullables { get; set; } // TimestampNullable
         public DbSet<Token> Tokens { get; set; } // Token
         public DbSet<User> Users { get; set; } // User
+        public DbSet<User_Document> User_Documents { get; set; } // User_Document
         public DbSet<User309> User309 { get; set; } // User309
-        public DbSet<UserDocument> UserDocuments { get; set; } // User_Document
         public DbSet<Versioned> Versioneds { get; set; } // Versioned
         public DbSet<VersionedNullable> VersionedNullables { get; set; } // VersionedNullable
-        public DbSet<ViewWithSpace> ViewWithSpaces { get; set; } // view with space
+        public DbSet<viewwithspace> viewwithspaces { get; set; } // view with space
         public DbSet<WVN_Article> WVN_Articles { get; set; } // Articles
-        public DbSet<WVN_VArticle> WVN_VArticles { get; set; } // v_Articles
+        public DbSet<WVN_v_Article> WVN_v_Articles { get; set; } // v_Articles
         public DbSet<Брендытовара> Брендытовара { get; set; } // Бренды товара
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -486,61 +485,61 @@ namespace Efrpg.V3TestE5
             modelBuilder.HasSequence<byte>("CountByTinyInt", "dbo").StartsAt(33).IncrementsBy(3).IsCyclic(false);
 
             modelBuilder.ApplyConfiguration(new AConfiguration());
-            modelBuilder.ApplyConfiguration(new AarefConfiguration());
-            modelBuilder.ApplyConfiguration(new AbOrderLinesAbConfiguration());
-            modelBuilder.ApplyConfiguration(new AbOrdersAbConfiguration());
+            modelBuilder.ApplyConfiguration(new AAREFConfiguration());
+            modelBuilder.ApplyConfiguration(new AB_OrderLinesABConfiguration());
+            modelBuilder.ApplyConfiguration(new AB_OrdersABConfiguration());
             modelBuilder.ApplyConfiguration(new AllColumnsNullConfiguration());
             modelBuilder.ApplyConfiguration(new Alpha_Harish3485Configuration());
-            modelBuilder.ApplyConfiguration(new Alpha_WorkflowConfiguration());
-            modelBuilder.ApplyConfiguration(new AlphaWorkflowSynonymConfiguration());
+            modelBuilder.ApplyConfiguration(new Alpha_workflowConfiguration());
+            modelBuilder.ApplyConfiguration(new alpha_workflow_synonymConfiguration());
             modelBuilder.ApplyConfiguration(new App_UserFacilityServiceRoleConfiguration());
             modelBuilder.ApplyConfiguration(new AppUserConfiguration());
             modelBuilder.ApplyConfiguration(new AttendeeConfiguration());
             modelBuilder.ApplyConfiguration(new BatchTestConfiguration());
             modelBuilder.ApplyConfiguration(new Beta_Harish3485Configuration());
             modelBuilder.ApplyConfiguration(new Beta_ToAlphaConfiguration());
-            modelBuilder.ApplyConfiguration(new Beta_WorkflowConfiguration());
-            modelBuilder.ApplyConfiguration(new BitfiddlerallcapConfiguration());
-            modelBuilder.ApplyConfiguration(new BitFiddlerCategoRyConfiguration());
-            modelBuilder.ApplyConfiguration(new BitFiddlerCurrenCyConfiguration());
+            modelBuilder.ApplyConfiguration(new Beta_workflowConfiguration());
+            modelBuilder.ApplyConfiguration(new BITFIDDLERALLCAPConfiguration());
+            modelBuilder.ApplyConfiguration(new BitFiddlerCATEGORyConfiguration());
+            modelBuilder.ApplyConfiguration(new BitFiddlerCURRENCyConfiguration());
             modelBuilder.ApplyConfiguration(new BlahConfiguration());
-            modelBuilder.ApplyConfiguration(new BlahBlahLinkV2Configuration());
+            modelBuilder.ApplyConfiguration(new BlahBlahLink_v2Configuration());
             modelBuilder.ApplyConfiguration(new BlargConfiguration());
             modelBuilder.ApplyConfiguration(new Burak1Configuration());
             modelBuilder.ApplyConfiguration(new Burak2Configuration());
             modelBuilder.ApplyConfiguration(new CalculatedColumnNotNullConfiguration());
             modelBuilder.ApplyConfiguration(new CarConfiguration());
             modelBuilder.ApplyConfiguration(new ClientCreationStateConfiguration());
-            modelBuilder.ApplyConfiguration(new CmsFileConfiguration());
-            modelBuilder.ApplyConfiguration(new CmsTagConfiguration());
-            modelBuilder.ApplyConfiguration(new CodeMeetingTopicDetailConfiguration());
+            modelBuilder.ApplyConfiguration(new CMS_FileConfiguration());
+            modelBuilder.ApplyConfiguration(new CMS_TagConfiguration());
+            modelBuilder.ApplyConfiguration(new CODE_MeetingTopicDetailConfiguration());
+            modelBuilder.ApplyConfiguration(new CODE_PARAM_MeetingTopicDetailSourceConfiguration());
             modelBuilder.ApplyConfiguration(new CodeObjectConfiguration());
-            modelBuilder.ApplyConfiguration(new CodeParamMeetingTopicDetailSourceConfiguration());
             modelBuilder.ApplyConfiguration(new ColourConfiguration());
             modelBuilder.ApplyConfiguration(new ColumnNameAndTypeConfiguration());
             modelBuilder.ApplyConfiguration(new ComplexViewConfiguration());
             modelBuilder.ApplyConfiguration(new CountryConfiguration());
-            modelBuilder.ApplyConfiguration(new CrossDatabaseSynonymConfiguration());
+            modelBuilder.ApplyConfiguration(new cross_database_synonymConfiguration());
             modelBuilder.ApplyConfiguration(new DateTimeDefaultTestConfiguration());
-            modelBuilder.ApplyConfiguration(new dcg_RovColumnDefinitionConfiguration());
+            modelBuilder.ApplyConfiguration(new dcg_rov_ColumnDefinitionConfiguration());
             modelBuilder.ApplyConfiguration(new DefaultCheckForNullConfiguration());
-            modelBuilder.ApplyConfiguration(new DsOpeConfiguration());
+            modelBuilder.ApplyConfiguration(new DSOpeConfiguration());
             modelBuilder.ApplyConfiguration(new EnumsWithStringAsValueConfiguration());
             modelBuilder.ApplyConfiguration(new EnumTest_DaysOfWeekConfiguration());
             modelBuilder.ApplyConfiguration(new EnumTest_OpenDayConfiguration());
             modelBuilder.ApplyConfiguration(new EnumWithDefaultValueConfiguration());
             modelBuilder.ApplyConfiguration(new EventProcessorConfiguration());
             modelBuilder.ApplyConfiguration(new EventProcessorEventFilterConfiguration());
-            modelBuilder.ApplyConfiguration(new FFRS_CvConfiguration());
+            modelBuilder.ApplyConfiguration(new FFRS_CVConfiguration());
             modelBuilder.ApplyConfiguration(new FinancialInstitutionOfficeConfiguration());
             modelBuilder.ApplyConfiguration(new FkTest_SmallDecimalTestAttributeConfiguration());
-            modelBuilder.ApplyConfiguration(new FooterConfiguration());
+            modelBuilder.ApplyConfiguration(new footerConfiguration());
             modelBuilder.ApplyConfiguration(new ForeignKeyIsNotEnforcedConfiguration());
             modelBuilder.ApplyConfiguration(new ForeignKeyIsNotEnforcedItemConfiguration());
             modelBuilder.ApplyConfiguration(new HasPrincipalKeyTestChildConfiguration());
             modelBuilder.ApplyConfiguration(new HasPrincipalKeyTestParentConfiguration());
-            modelBuilder.ApplyConfiguration(new HeaderConfiguration());
-            modelBuilder.ApplyConfiguration(new HierarchyTestConfiguration());
+            modelBuilder.ApplyConfiguration(new headerConfiguration());
+            modelBuilder.ApplyConfiguration(new hierarchy_testConfiguration());
             modelBuilder.ApplyConfiguration(new Issue47_RoleConfiguration());
             modelBuilder.ApplyConfiguration(new Issue47_UserConfiguration());
             modelBuilder.ApplyConfiguration(new Issue47_UserRoleConfiguration());
@@ -550,7 +549,7 @@ namespace Efrpg.V3TestE5
             modelBuilder.ApplyConfiguration(new PeriodTestTableConfiguration());
             modelBuilder.ApplyConfiguration(new PersonConfiguration());
             modelBuilder.ApplyConfiguration(new PersonPostConfiguration());
-            modelBuilder.ApplyConfiguration(new PkOrdinalTestConfiguration());
+            modelBuilder.ApplyConfiguration(new pk_ordinal_testConfiguration());
             modelBuilder.ApplyConfiguration(new PropertyTypesToAddConfiguration());
             modelBuilder.ApplyConfiguration(new SequenceTestConfiguration());
             modelBuilder.ApplyConfiguration(new SmallDecimalTestConfiguration());
@@ -562,49 +561,49 @@ namespace Efrpg.V3TestE5
             modelBuilder.ApplyConfiguration(new Synonyms_ParentConfiguration());
             modelBuilder.ApplyConfiguration(new TableAConfiguration());
             modelBuilder.ApplyConfiguration(new TableBConfiguration());
-            modelBuilder.ApplyConfiguration(new TableWithDuplicateColumnNameConfiguration());
-            modelBuilder.ApplyConfiguration(new TableWithSpaceConfiguration());
-            modelBuilder.ApplyConfiguration(new TableWithSpaceAndInColumnConfiguration());
+            modelBuilder.ApplyConfiguration(new tablewithduplicatecolumnnameConfiguration());
+            modelBuilder.ApplyConfiguration(new tablewithspaceConfiguration());
+            modelBuilder.ApplyConfiguration(new tablewithspaceandincolumnConfiguration());
             modelBuilder.ApplyConfiguration(new TableWithSpaceInColumnOnlyConfiguration());
             modelBuilder.ApplyConfiguration(new TadeuszSobolConfiguration());
             modelBuilder.ApplyConfiguration(new Task1Configuration());
-            modelBuilder.ApplyConfiguration(new TblOrderConfiguration());
-            modelBuilder.ApplyConfiguration(new TblOrderErrorConfiguration());
-            modelBuilder.ApplyConfiguration(new TblOrderErrorsAbConfiguration());
-            modelBuilder.ApplyConfiguration(new TblOrderLineConfiguration());
+            modelBuilder.ApplyConfiguration(new tblOrderConfiguration());
+            modelBuilder.ApplyConfiguration(new tblOrderErrorConfiguration());
+            modelBuilder.ApplyConfiguration(new tblOrderErrorsABConfiguration());
+            modelBuilder.ApplyConfiguration(new tblOrderLineConfiguration());
             modelBuilder.ApplyConfiguration(new TicketConfiguration());
             modelBuilder.ApplyConfiguration(new TimestampNotNullConfiguration());
             modelBuilder.ApplyConfiguration(new TimestampNullableConfiguration());
             modelBuilder.ApplyConfiguration(new TokenConfiguration());
             modelBuilder.ApplyConfiguration(new UserConfiguration());
+            modelBuilder.ApplyConfiguration(new User_DocumentConfiguration());
             modelBuilder.ApplyConfiguration(new User309Configuration());
-            modelBuilder.ApplyConfiguration(new UserDocumentConfiguration());
             modelBuilder.ApplyConfiguration(new VersionedConfiguration());
             modelBuilder.ApplyConfiguration(new VersionedNullableConfiguration());
-            modelBuilder.ApplyConfiguration(new ViewWithSpaceConfiguration());
+            modelBuilder.ApplyConfiguration(new viewwithspaceConfiguration());
             modelBuilder.ApplyConfiguration(new WVN_ArticleConfiguration());
-            modelBuilder.ApplyConfiguration(new WVN_VArticleConfiguration());
+            modelBuilder.ApplyConfiguration(new WVN_v_ArticleConfiguration());
             modelBuilder.ApplyConfiguration(new БрендытовараConfiguration());
 
             modelBuilder.Entity<ColourPivotReturnModel>().HasNoKey();
-            modelBuilder.Entity<DboProcDataFromFfrsReturnModel>().HasNoKey();
-            modelBuilder.Entity<DboProcDataFromFfrsAndDboReturnModel>().HasNoKey();
-            modelBuilder.Entity<DsOpeProcReturnModel>().HasNoKey();
-            modelBuilder.Entity<FFRS_CvDataReturnModel>().HasNoKey();
-            modelBuilder.Entity<FFRS_DataFromDboReturnModel>().HasNoKey();
-            modelBuilder.Entity<FFRS_DataFromDboAndFfrsReturnModel>().HasNoKey();
+            modelBuilder.Entity<dbo_proc_data_from_ffrsReturnModel>().HasNoKey();
+            modelBuilder.Entity<dbo_proc_data_from_ffrs_and_dboReturnModel>().HasNoKey();
+            modelBuilder.Entity<DSOpeProcReturnModel>().HasNoKey();
+            modelBuilder.Entity<FFRS_cv_dataReturnModel>().HasNoKey();
+            modelBuilder.Entity<FFRS_data_from_dboReturnModel>().HasNoKey();
+            modelBuilder.Entity<FFRS_data_from_dbo_and_ffrsReturnModel>().HasNoKey();
             modelBuilder.Entity<FkTest_HelloReturnModel>().HasNoKey();
             modelBuilder.Entity<GetSmallDecimalTestReturnModel>().HasNoKey();
-            modelBuilder.Entity<StpNoParamsTestReturnModel>().HasNoKey();
-            modelBuilder.Entity<StpNullableParamsTestReturnModel>().HasNoKey();
-            modelBuilder.Entity<StpTestReturnModel>().HasNoKey();
-            modelBuilder.Entity<StpTestUnderscoreTestReturnModel>().HasNoKey();
+            modelBuilder.Entity<stp_no_params_testReturnModel>().HasNoKey();
+            modelBuilder.Entity<stp_nullable_params_testReturnModel>().HasNoKey();
+            modelBuilder.Entity<stp_testReturnModel>().HasNoKey();
+            modelBuilder.Entity<stp_test_underscore_testReturnModel>().HasNoKey();
             modelBuilder.Entity<Synonyms_SimpleStoredProcReturnModel>().HasNoKey();
             modelBuilder.Entity<TestReturnStringReturnModel>().HasNoKey();
             modelBuilder.Entity<XmlDataV1ReturnModel>().HasNoKey();
 
             // Table Valued Functions
-            modelBuilder.Entity<C182Test1ReturnModel>().HasNoKey();
+            modelBuilder.Entity<C182_test1ReturnModel>().HasNoKey();
             modelBuilder.Entity<CsvToIntReturnModel>().HasNoKey();
             modelBuilder.Entity<CustomSchema_CsvToIntWithSchemaReturnModel>().HasNoKey();
             modelBuilder.Entity<FFRS_CsvToInt2ReturnModel>().HasNoKey();
@@ -677,7 +676,7 @@ namespace Efrpg.V3TestE5
 
         // Alpha_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int App_UspCmtUserFsrUpdate(int? userId, int? fsrId, out int? ufsrId)
+        public int App_usp_CMTUserFSRUpdate(int? userId, int? fsrId, out int? ufsrId)
         {
             var userIdParam = new SqlParameter { ParameterName = "@userId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = userId.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!userId.HasValue)
@@ -700,9 +699,9 @@ namespace Efrpg.V3TestE5
             return (int)procResultParam.Value;
         }
 
-        // App_UspCmtUserFsrUpdateAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        // App_usp_CMTUserFSRUpdateAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int ASimpleExample()
+        public int aSimpleExample()
         {
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
@@ -711,7 +710,7 @@ namespace Efrpg.V3TestE5
             return (int)procResultParam.Value;
         }
 
-        // ASimpleExampleAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        // aSimpleExampleAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         public int Beta_Overclock(DateTime? parameter)
         {
@@ -728,9 +727,9 @@ namespace Efrpg.V3TestE5
 
         // Beta_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        // public C182Test2ReturnModel C182Test2(int? flag) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        // public C182_test2ReturnModel C182_test2(int? flag) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
-        // public async Task<C182Test2ReturnModel> C182Test2Async(int? flag) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        // public async Task<C182_test2ReturnModel> C182_test2Async(int? flag) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
         // public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
@@ -785,13 +784,13 @@ namespace Efrpg.V3TestE5
 
         // ConvertToStringAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public List<DboProcDataFromFfrsReturnModel> DboProcDataFromFfrs(int? maxId)
+        public List<dbo_proc_data_from_ffrsReturnModel> dbo_proc_data_from_ffrs(int? maxId)
         {
             int procResult;
-            return DboProcDataFromFfrs(maxId, out procResult);
+            return dbo_proc_data_from_ffrs(maxId, out procResult);
         }
 
-        public List<DboProcDataFromFfrsReturnModel> DboProcDataFromFfrs(int? maxId, out int procResult)
+        public List<dbo_proc_data_from_ffrsReturnModel> dbo_proc_data_from_ffrs(int? maxId, out int procResult)
         {
             var maxIdParam = new SqlParameter { ParameterName = "@maxId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = maxId.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!maxId.HasValue)
@@ -799,7 +798,7 @@ namespace Efrpg.V3TestE5
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
             const string sqlCommand = "EXEC @procResult = [dbo].[dbo_proc_data_from_ffrs] @maxId";
-            var procResultData = Set<DboProcDataFromFfrsReturnModel>()
+            var procResultData = Set<dbo_proc_data_from_ffrsReturnModel>()
                 .FromSqlRaw(sqlCommand, maxIdParam, procResultParam)
                 .ToList();
 
@@ -807,31 +806,31 @@ namespace Efrpg.V3TestE5
             return procResultData;
         }
 
-        public async Task<List<DboProcDataFromFfrsReturnModel>> DboProcDataFromFfrsAsync(int? maxId)
+        public async Task<List<dbo_proc_data_from_ffrsReturnModel>> dbo_proc_data_from_ffrsAsync(int? maxId)
         {
             var maxIdParam = new SqlParameter { ParameterName = "@maxId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = maxId.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!maxId.HasValue)
                 maxIdParam.Value = DBNull.Value;
 
             const string sqlCommand = "EXEC [dbo].[dbo_proc_data_from_ffrs] @maxId";
-            var procResultData = await Set<DboProcDataFromFfrsReturnModel>()
+            var procResultData = await Set<dbo_proc_data_from_ffrsReturnModel>()
                 .FromSqlRaw(sqlCommand, maxIdParam)
                 .ToListAsync();
 
             return procResultData;
         }
 
-        public List<DboProcDataFromFfrsAndDboReturnModel> DboProcDataFromFfrsAndDbo()
+        public List<dbo_proc_data_from_ffrs_and_dboReturnModel> dbo_proc_data_from_ffrs_and_dbo()
         {
             int procResult;
-            return DboProcDataFromFfrsAndDbo(out procResult);
+            return dbo_proc_data_from_ffrs_and_dbo(out procResult);
         }
 
-        public List<DboProcDataFromFfrsAndDboReturnModel> DboProcDataFromFfrsAndDbo(out int procResult)
+        public List<dbo_proc_data_from_ffrs_and_dboReturnModel> dbo_proc_data_from_ffrs_and_dbo(out int procResult)
         {
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
             const string sqlCommand = "EXEC @procResult = [dbo].[dbo_proc_data_from_ffrs_and_dbo]";
-            var procResultData = Set<DboProcDataFromFfrsAndDboReturnModel>()
+            var procResultData = Set<dbo_proc_data_from_ffrs_and_dboReturnModel>()
                 .FromSqlRaw(sqlCommand, procResultParam)
                 .ToList();
 
@@ -839,27 +838,27 @@ namespace Efrpg.V3TestE5
             return procResultData;
         }
 
-        public async Task<List<DboProcDataFromFfrsAndDboReturnModel>> DboProcDataFromFfrsAndDboAsync()
+        public async Task<List<dbo_proc_data_from_ffrs_and_dboReturnModel>> dbo_proc_data_from_ffrs_and_dboAsync()
         {
             const string sqlCommand = "EXEC [dbo].[dbo_proc_data_from_ffrs_and_dbo]";
-            var procResultData = await Set<DboProcDataFromFfrsAndDboReturnModel>()
+            var procResultData = await Set<dbo_proc_data_from_ffrs_and_dboReturnModel>()
                 .FromSqlRaw(sqlCommand)
                 .ToListAsync();
 
             return procResultData;
         }
 
-        public List<DsOpeProcReturnModel> DsOpeProc()
+        public List<DSOpeProcReturnModel> DSOpeProc()
         {
             int procResult;
-            return DsOpeProc(out procResult);
+            return DSOpeProc(out procResult);
         }
 
-        public List<DsOpeProcReturnModel> DsOpeProc(out int procResult)
+        public List<DSOpeProcReturnModel> DSOpeProc(out int procResult)
         {
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
             const string sqlCommand = "EXEC @procResult = [dbo].[DSOpeProc]";
-            var procResultData = Set<DsOpeProcReturnModel>()
+            var procResultData = Set<DSOpeProcReturnModel>()
                 .FromSqlRaw(sqlCommand, procResultParam)
                 .ToList();
 
@@ -867,23 +866,23 @@ namespace Efrpg.V3TestE5
             return procResultData;
         }
 
-        public async Task<List<DsOpeProcReturnModel>> DsOpeProcAsync()
+        public async Task<List<DSOpeProcReturnModel>> DSOpeProcAsync()
         {
             const string sqlCommand = "EXEC [dbo].[DSOpeProc]";
-            var procResultData = await Set<DsOpeProcReturnModel>()
+            var procResultData = await Set<DSOpeProcReturnModel>()
                 .FromSqlRaw(sqlCommand)
                 .ToListAsync();
 
             return procResultData;
         }
 
-        public List<FFRS_CvDataReturnModel> FFRS_CvData(int? maxId)
+        public List<FFRS_cv_dataReturnModel> FFRS_cv_data(int? maxId)
         {
             int procResult;
-            return FFRS_CvData(maxId, out procResult);
+            return FFRS_cv_data(maxId, out procResult);
         }
 
-        public List<FFRS_CvDataReturnModel> FFRS_CvData(int? maxId, out int procResult)
+        public List<FFRS_cv_dataReturnModel> FFRS_cv_data(int? maxId, out int procResult)
         {
             var maxIdParam = new SqlParameter { ParameterName = "@maxId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = maxId.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!maxId.HasValue)
@@ -891,7 +890,7 @@ namespace Efrpg.V3TestE5
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
             const string sqlCommand = "EXEC @procResult = [FFRS].[cv_data] @maxId";
-            var procResultData = Set<FFRS_CvDataReturnModel>()
+            var procResultData = Set<FFRS_cv_dataReturnModel>()
                 .FromSqlRaw(sqlCommand, maxIdParam, procResultParam)
                 .ToList();
 
@@ -899,31 +898,31 @@ namespace Efrpg.V3TestE5
             return procResultData;
         }
 
-        public async Task<List<FFRS_CvDataReturnModel>> FFRS_CvDataAsync(int? maxId)
+        public async Task<List<FFRS_cv_dataReturnModel>> FFRS_cv_dataAsync(int? maxId)
         {
             var maxIdParam = new SqlParameter { ParameterName = "@maxId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = maxId.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!maxId.HasValue)
                 maxIdParam.Value = DBNull.Value;
 
             const string sqlCommand = "EXEC [FFRS].[cv_data] @maxId";
-            var procResultData = await Set<FFRS_CvDataReturnModel>()
+            var procResultData = await Set<FFRS_cv_dataReturnModel>()
                 .FromSqlRaw(sqlCommand, maxIdParam)
                 .ToListAsync();
 
             return procResultData;
         }
 
-        public List<FFRS_DataFromDboReturnModel> FFRS_DataFromDbo()
+        public List<FFRS_data_from_dboReturnModel> FFRS_data_from_dbo()
         {
             int procResult;
-            return FFRS_DataFromDbo(out procResult);
+            return FFRS_data_from_dbo(out procResult);
         }
 
-        public List<FFRS_DataFromDboReturnModel> FFRS_DataFromDbo(out int procResult)
+        public List<FFRS_data_from_dboReturnModel> FFRS_data_from_dbo(out int procResult)
         {
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
             const string sqlCommand = "EXEC @procResult = [FFRS].[data_from_dbo]";
-            var procResultData = Set<FFRS_DataFromDboReturnModel>()
+            var procResultData = Set<FFRS_data_from_dboReturnModel>()
                 .FromSqlRaw(sqlCommand, procResultParam)
                 .ToList();
 
@@ -931,27 +930,27 @@ namespace Efrpg.V3TestE5
             return procResultData;
         }
 
-        public async Task<List<FFRS_DataFromDboReturnModel>> FFRS_DataFromDboAsync()
+        public async Task<List<FFRS_data_from_dboReturnModel>> FFRS_data_from_dboAsync()
         {
             const string sqlCommand = "EXEC [FFRS].[data_from_dbo]";
-            var procResultData = await Set<FFRS_DataFromDboReturnModel>()
+            var procResultData = await Set<FFRS_data_from_dboReturnModel>()
                 .FromSqlRaw(sqlCommand)
                 .ToListAsync();
 
             return procResultData;
         }
 
-        public List<FFRS_DataFromDboAndFfrsReturnModel> FFRS_DataFromDboAndFfrs()
+        public List<FFRS_data_from_dbo_and_ffrsReturnModel> FFRS_data_from_dbo_and_ffrs()
         {
             int procResult;
-            return FFRS_DataFromDboAndFfrs(out procResult);
+            return FFRS_data_from_dbo_and_ffrs(out procResult);
         }
 
-        public List<FFRS_DataFromDboAndFfrsReturnModel> FFRS_DataFromDboAndFfrs(out int procResult)
+        public List<FFRS_data_from_dbo_and_ffrsReturnModel> FFRS_data_from_dbo_and_ffrs(out int procResult)
         {
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
             const string sqlCommand = "EXEC @procResult = [FFRS].[data_from_dbo_and_ffrs]";
-            var procResultData = Set<FFRS_DataFromDboAndFfrsReturnModel>()
+            var procResultData = Set<FFRS_data_from_dbo_and_ffrsReturnModel>()
                 .FromSqlRaw(sqlCommand, procResultParam)
                 .ToList();
 
@@ -959,10 +958,10 @@ namespace Efrpg.V3TestE5
             return procResultData;
         }
 
-        public async Task<List<FFRS_DataFromDboAndFfrsReturnModel>> FFRS_DataFromDboAndFfrsAsync()
+        public async Task<List<FFRS_data_from_dbo_and_ffrsReturnModel>> FFRS_data_from_dbo_and_ffrsAsync()
         {
             const string sqlCommand = "EXEC [FFRS].[data_from_dbo_and_ffrs]";
-            var procResultData = await Set<FFRS_DataFromDboAndFfrsReturnModel>()
+            var procResultData = await Set<FFRS_data_from_dbo_and_ffrsReturnModel>()
                 .FromSqlRaw(sqlCommand)
                 .ToListAsync();
 
@@ -1180,7 +1179,7 @@ namespace Efrpg.V3TestE5
 
         // Omega_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int ProcTestDecimalOutput(out decimal? perfectNumber)
+        public int proc_TestDecimalOutput(out decimal? perfectNumber)
         {
             var perfectNumberParam = new SqlParameter { ParameterName = "@PerfectNumber", SqlDbType = SqlDbType.Decimal, Direction = ParameterDirection.Output, Precision = 18, Scale = 2 };
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
@@ -1195,9 +1194,9 @@ namespace Efrpg.V3TestE5
             return (int)procResultParam.Value;
         }
 
-        // ProcTestDecimalOutputAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        // proc_TestDecimalOutputAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int ProcTestDecimalOutputV2(out decimal? perfectNumber)
+        public int proc_TestDecimalOutputV2(out decimal? perfectNumber)
         {
             var perfectNumberParam = new SqlParameter { ParameterName = "@PerfectNumber", SqlDbType = SqlDbType.Decimal, Direction = ParameterDirection.Output, Precision = 12, Scale = 8 };
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
@@ -1212,9 +1211,9 @@ namespace Efrpg.V3TestE5
             return (int)procResultParam.Value;
         }
 
-        // ProcTestDecimalOutputV2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        // proc_TestDecimalOutputV2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int ProcTestDecimalOutputV3Default(out decimal? perfectNumber)
+        public int proc_TestDecimalOutputV3Default(out decimal? perfectNumber)
         {
             var perfectNumberParam = new SqlParameter { ParameterName = "@PerfectNumber", SqlDbType = SqlDbType.Decimal, Direction = ParameterDirection.Output, Precision = 18, Scale = 0 };
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
@@ -1229,7 +1228,7 @@ namespace Efrpg.V3TestE5
             return (int)procResultParam.Value;
         }
 
-        // ProcTestDecimalOutputV3DefaultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        // proc_TestDecimalOutputV3DefaultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         public int SpatialTypesNoParams()
         {
@@ -1261,33 +1260,33 @@ namespace Efrpg.V3TestE5
 
         // SpatialTypesWithParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        // public StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        // public stp_multiple_identical_resultsReturnModel stp_multiple_identical_results(int? someVar) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
-        // public async Task<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsAsync(int? someVar) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        // public async Task<stp_multiple_identical_resultsReturnModel> stp_multiple_identical_resultsAsync(int? someVar) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
-        // public StpMultipleMultipleResultsWithParamsReturnModel StpMultipleMultipleResultsWithParams(int? firstVal, int? secondVal, int? thirdVal) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        // public stp_multiple_multiple_results_with_paramsReturnModel stp_multiple_multiple_results_with_params(int? firstval, int? secondval, int? thirdval) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
-        // public async Task<StpMultipleMultipleResultsWithParamsReturnModel> StpMultipleMultipleResultsWithParamsAsync(int? firstVal, int? secondVal, int? thirdVal) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        // public async Task<stp_multiple_multiple_results_with_paramsReturnModel> stp_multiple_multiple_results_with_paramsAsync(int? firstval, int? secondval, int? thirdval) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
-        // public StpMultipleResultsReturnModel StpMultipleResults() Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        // public stp_multiple_resultsReturnModel stp_multiple_results() Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
-        // public async Task<StpMultipleResultsReturnModel> StpMultipleResultsAsync() Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        // public async Task<stp_multiple_resultsReturnModel> stp_multiple_resultsAsync() Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
-        // public StpMultipleResultsWithParamsReturnModel StpMultipleResultsWithParams(int? firstVal, int? secondVal) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        // public stp_multiple_results_with_paramsReturnModel stp_multiple_results_with_params(int? firstval, int? secondval) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
-        // public async Task<StpMultipleResultsWithParamsReturnModel> StpMultipleResultsWithParamsAsync(int? firstVal, int? secondVal) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        // public async Task<stp_multiple_results_with_paramsReturnModel> stp_multiple_results_with_paramsAsync(int? firstval, int? secondval) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
-        public List<StpNoParamsTestReturnModel> StpNoParamsTest()
+        public List<stp_no_params_testReturnModel> stp_no_params_test()
         {
             int procResult;
-            return StpNoParamsTest(out procResult);
+            return stp_no_params_test(out procResult);
         }
 
-        public List<StpNoParamsTestReturnModel> StpNoParamsTest(out int procResult)
+        public List<stp_no_params_testReturnModel> stp_no_params_test(out int procResult)
         {
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
             const string sqlCommand = "EXEC @procResult = [dbo].[stp_no_params_test]";
-            var procResultData = Set<StpNoParamsTestReturnModel>()
+            var procResultData = Set<stp_no_params_testReturnModel>()
                 .FromSqlRaw(sqlCommand, procResultParam)
                 .ToList();
 
@@ -1295,17 +1294,17 @@ namespace Efrpg.V3TestE5
             return procResultData;
         }
 
-        public async Task<List<StpNoParamsTestReturnModel>> StpNoParamsTestAsync()
+        public async Task<List<stp_no_params_testReturnModel>> stp_no_params_testAsync()
         {
             const string sqlCommand = "EXEC [dbo].[stp_no_params_test]";
-            var procResultData = await Set<StpNoParamsTestReturnModel>()
+            var procResultData = await Set<stp_no_params_testReturnModel>()
                 .FromSqlRaw(sqlCommand)
                 .ToListAsync();
 
             return procResultData;
         }
 
-        public int StpNoReturnFields()
+        public int stp_no_return_fields()
         {
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
@@ -1314,63 +1313,63 @@ namespace Efrpg.V3TestE5
             return (int)procResultParam.Value;
         }
 
-        // StpNoReturnFieldsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        // stp_no_return_fieldsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public List<StpNullableParamsTestReturnModel> StpNullableParamsTest(int? aVal, int? bVal)
+        public List<stp_nullable_params_testReturnModel> stp_nullable_params_test(int? aval, int? bval)
         {
             int procResult;
-            return StpNullableParamsTest(aVal, bVal, out procResult);
+            return stp_nullable_params_test(aval, bval, out procResult);
         }
 
-        public List<StpNullableParamsTestReturnModel> StpNullableParamsTest(int? aVal, int? bVal, out int procResult)
+        public List<stp_nullable_params_testReturnModel> stp_nullable_params_test(int? aval, int? bval, out int procResult)
         {
-            var aValParam = new SqlParameter { ParameterName = "@a_val", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = aVal.GetValueOrDefault(), Precision = 10, Scale = 0 };
-            if (!aVal.HasValue)
-                aValParam.Value = DBNull.Value;
+            var avalParam = new SqlParameter { ParameterName = "@a_val", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = aval.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!aval.HasValue)
+                avalParam.Value = DBNull.Value;
 
-            var bValParam = new SqlParameter { ParameterName = "@b_val", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = bVal.GetValueOrDefault(), Precision = 10, Scale = 0 };
-            if (!bVal.HasValue)
-                bValParam.Value = DBNull.Value;
+            var bvalParam = new SqlParameter { ParameterName = "@b_val", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = bval.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!bval.HasValue)
+                bvalParam.Value = DBNull.Value;
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
             const string sqlCommand = "EXEC @procResult = [dbo].[stp_nullable_params_test] @a_val, @b_val";
-            var procResultData = Set<StpNullableParamsTestReturnModel>()
-                .FromSqlRaw(sqlCommand, aValParam, bValParam, procResultParam)
+            var procResultData = Set<stp_nullable_params_testReturnModel>()
+                .FromSqlRaw(sqlCommand, avalParam, bvalParam, procResultParam)
                 .ToList();
 
             procResult = (int) procResultParam.Value;
             return procResultData;
         }
 
-        public async Task<List<StpNullableParamsTestReturnModel>> StpNullableParamsTestAsync(int? aVal, int? bVal)
+        public async Task<List<stp_nullable_params_testReturnModel>> stp_nullable_params_testAsync(int? aval, int? bval)
         {
-            var aValParam = new SqlParameter { ParameterName = "@a_val", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = aVal.GetValueOrDefault(), Precision = 10, Scale = 0 };
-            if (!aVal.HasValue)
-                aValParam.Value = DBNull.Value;
+            var avalParam = new SqlParameter { ParameterName = "@a_val", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = aval.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!aval.HasValue)
+                avalParam.Value = DBNull.Value;
 
-            var bValParam = new SqlParameter { ParameterName = "@b_val", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = bVal.GetValueOrDefault(), Precision = 10, Scale = 0 };
-            if (!bVal.HasValue)
-                bValParam.Value = DBNull.Value;
+            var bvalParam = new SqlParameter { ParameterName = "@b_val", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = bval.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!bval.HasValue)
+                bvalParam.Value = DBNull.Value;
 
             const string sqlCommand = "EXEC [dbo].[stp_nullable_params_test] @a_val, @b_val";
-            var procResultData = await Set<StpNullableParamsTestReturnModel>()
-                .FromSqlRaw(sqlCommand, aValParam, bValParam)
+            var procResultData = await Set<stp_nullable_params_testReturnModel>()
+                .FromSqlRaw(sqlCommand, avalParam, bvalParam)
                 .ToListAsync();
 
             return procResultData;
         }
 
-        public List<StpTestReturnModel> StpTest(string strDateFrom, string strDateTo, out bool? retBool)
+        public List<stp_testReturnModel> stp_test(string strDateFROM, string strDateTo, out bool? retBool)
         {
             int procResult;
-            return StpTest(strDateFrom, strDateTo, out retBool, out procResult);
+            return stp_test(strDateFROM, strDateTo, out retBool, out procResult);
         }
 
-        public List<StpTestReturnModel> StpTest(string strDateFrom, string strDateTo, out bool? retBool, out int procResult)
+        public List<stp_testReturnModel> stp_test(string strDateFROM, string strDateTo, out bool? retBool, out int procResult)
         {
-            var strDateFromParam = new SqlParameter { ParameterName = "@strDateFROM", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = strDateFrom, Size = 20 };
-            if (strDateFromParam.Value == null)
-                strDateFromParam.Value = DBNull.Value;
+            var strDateFROMParam = new SqlParameter { ParameterName = "@strDateFROM", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = strDateFROM, Size = 20 };
+            if (strDateFROMParam.Value == null)
+                strDateFROMParam.Value = DBNull.Value;
 
             var strDateToParam = new SqlParameter { ParameterName = "@strDateTo", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = strDateTo, Size = 20 };
             if (strDateToParam.Value == null)
@@ -1379,8 +1378,8 @@ namespace Efrpg.V3TestE5
             var retBoolParam = new SqlParameter { ParameterName = "@retBool", SqlDbType = SqlDbType.Bit, Direction = ParameterDirection.Output };
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
             const string sqlCommand = "EXEC @procResult = [dbo].[stp_test] @strDateFROM, @strDateTo, @retBool OUTPUT";
-            var procResultData = Set<StpTestReturnModel>()
-                .FromSqlRaw(sqlCommand, strDateFromParam, strDateToParam, retBoolParam, procResultParam)
+            var procResultData = Set<stp_testReturnModel>()
+                .FromSqlRaw(sqlCommand, strDateFROMParam, strDateToParam, retBoolParam, procResultParam)
                 .ToList();
 
             if (IsSqlParameterNull(retBoolParam))
@@ -1392,47 +1391,47 @@ namespace Efrpg.V3TestE5
             return procResultData;
         }
 
-        // StpTestAsync() cannot be created due to having out parameters, or is relying on the procedure result (List<StpTestReturnModel>)
+        // stp_testAsync() cannot be created due to having out parameters, or is relying on the procedure result (List<stp_testReturnModel>)
 
-        public List<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTest(string strDateFrom, string strDateTo)
+        public List<stp_test_underscore_testReturnModel> stp_test_underscore_test(string strDateFROM, string strdateto)
         {
             int procResult;
-            return StpTestUnderscoreTest(strDateFrom, strDateTo, out procResult);
+            return stp_test_underscore_test(strDateFROM, strdateto, out procResult);
         }
 
-        public List<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTest(string strDateFrom, string strDateTo, out int procResult)
+        public List<stp_test_underscore_testReturnModel> stp_test_underscore_test(string strDateFROM, string strdateto, out int procResult)
         {
-            var strDateFromParam = new SqlParameter { ParameterName = "@str_Date_FROM", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = strDateFrom, Size = 20 };
-            if (strDateFromParam.Value == null)
-                strDateFromParam.Value = DBNull.Value;
+            var strDateFROMParam = new SqlParameter { ParameterName = "@str_Date_FROM", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = strDateFROM, Size = 20 };
+            if (strDateFROMParam.Value == null)
+                strDateFROMParam.Value = DBNull.Value;
 
-            var strDateToParam = new SqlParameter { ParameterName = "@str_date_to", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = strDateTo, Size = 20 };
-            if (strDateToParam.Value == null)
-                strDateToParam.Value = DBNull.Value;
+            var strdatetoParam = new SqlParameter { ParameterName = "@str_date_to", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = strdateto, Size = 20 };
+            if (strdatetoParam.Value == null)
+                strdatetoParam.Value = DBNull.Value;
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
             const string sqlCommand = "EXEC @procResult = [dbo].[stp_test_underscore_test] @str_Date_FROM, @str_date_to";
-            var procResultData = Set<StpTestUnderscoreTestReturnModel>()
-                .FromSqlRaw(sqlCommand, strDateFromParam, strDateToParam, procResultParam)
+            var procResultData = Set<stp_test_underscore_testReturnModel>()
+                .FromSqlRaw(sqlCommand, strDateFROMParam, strdatetoParam, procResultParam)
                 .ToList();
 
             procResult = (int) procResultParam.Value;
             return procResultData;
         }
 
-        public async Task<List<StpTestUnderscoreTestReturnModel>> StpTestUnderscoreTestAsync(string strDateFrom, string strDateTo)
+        public async Task<List<stp_test_underscore_testReturnModel>> stp_test_underscore_testAsync(string strDateFROM, string strdateto)
         {
-            var strDateFromParam = new SqlParameter { ParameterName = "@str_Date_FROM", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = strDateFrom, Size = 20 };
-            if (strDateFromParam.Value == null)
-                strDateFromParam.Value = DBNull.Value;
+            var strDateFROMParam = new SqlParameter { ParameterName = "@str_Date_FROM", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = strDateFROM, Size = 20 };
+            if (strDateFROMParam.Value == null)
+                strDateFROMParam.Value = DBNull.Value;
 
-            var strDateToParam = new SqlParameter { ParameterName = "@str_date_to", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = strDateTo, Size = 20 };
-            if (strDateToParam.Value == null)
-                strDateToParam.Value = DBNull.Value;
+            var strdatetoParam = new SqlParameter { ParameterName = "@str_date_to", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = strdateto, Size = 20 };
+            if (strdatetoParam.Value == null)
+                strdatetoParam.Value = DBNull.Value;
 
             const string sqlCommand = "EXEC [dbo].[stp_test_underscore_test] @str_Date_FROM, @str_date_to";
-            var procResultData = await Set<StpTestUnderscoreTestReturnModel>()
-                .FromSqlRaw(sqlCommand, strDateFromParam, strDateToParam)
+            var procResultData = await Set<stp_test_underscore_testReturnModel>()
+                .FromSqlRaw(sqlCommand, strDateFROMParam, strdatetoParam)
                 .ToListAsync();
 
             return procResultData;
@@ -1622,9 +1621,9 @@ namespace Efrpg.V3TestE5
         // Table Valued Functions
 
         // dbo.182_test1
-        public IQueryable<C182Test1ReturnModel> C182Test1(int? test)
+        public IQueryable<C182_test1ReturnModel> C182_test1(int? test)
         {
-            return Set<C182Test1ReturnModel>()
+            return Set<C182_test1ReturnModel>()
                 .FromSqlRaw("SELECT * FROM [dbo].[182_test1]({0})", test)
                 .AsNoTracking();
         }
@@ -1656,7 +1655,7 @@ namespace Efrpg.V3TestE5
         // Scalar Valued Functions
 
         [DbFunction("udfNetSale", "dbo")]
-        public decimal UdfNetSale(int? quantity, decimal? listPrice, decimal? discount)
+        public decimal udfNetSale(int? quantity, decimal? list_price, decimal? discount)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
@@ -1666,11 +1665,11 @@ namespace Efrpg.V3TestE5
 
     #region Database context factory
 
-    public class EfrpgTestDbContextFactory : IDesignTimeDbContextFactory<EfrpgTestDbContext>
+    public class Efrpg_db_contextFactory : IDesignTimeDbContextFactory<Efrpg_db_context>
     {
-        public EfrpgTestDbContext CreateDbContext(string[] args)
+        public Efrpg_db_context CreateDbContext(string[] args)
         {
-            return new EfrpgTestDbContext();
+            return new Efrpg_db_context();
         }
     }
 
@@ -1678,64 +1677,64 @@ namespace Efrpg.V3TestE5
 
     #region Fake Database context
 
-    public class FakeEfrpgTestDbContext : IEfrpgTestDbContext
+    public class FakeEfrpg_db_context : IEfrpg_db_context
     {
         public DbSet<A> A { get; set; } // A
-        public DbSet<Aaref> Aarefs { get; set; } // AAREF
-        public DbSet<AbOrderLinesAb> AbOrderLinesAbs { get; set; } // AB_OrderLinesAB_
-        public DbSet<AbOrdersAb> AbOrdersAbs { get; set; } // AB_OrdersAB_
+        public DbSet<AAREF> AAREFs { get; set; } // AAREF
+        public DbSet<AB_OrderLinesAB> AB_OrderLinesABs { get; set; } // AB_OrderLinesAB_
+        public DbSet<AB_OrdersAB> AB_OrdersABs { get; set; } // AB_OrdersAB_
         public DbSet<AllColumnsNull> AllColumnsNulls { get; set; } // AllColumnsNull
         public DbSet<Alpha_Harish3485> Alpha_Harish3485 { get; set; } // Harish3485
-        public DbSet<Alpha_Workflow> Alpha_Workflows { get; set; } // workflow
-        public DbSet<AlphaWorkflowSynonym> AlphaWorkflowSynonyms { get; set; } // alpha_workflow_synonym
+        public DbSet<Alpha_workflow> Alpha_workflows { get; set; } // workflow
+        public DbSet<alpha_workflow_synonym> alpha_workflow_synonyms { get; set; } // alpha_workflow_synonym
         public DbSet<App_UserFacilityServiceRole> App_UserFacilityServiceRoles { get; set; } // UserFacilityServiceRole
         public DbSet<AppUser> AppUsers { get; set; } // AppUser
         public DbSet<Attendee> Attendees { get; set; } // Attendee
         public DbSet<BatchTest> BatchTests { get; set; } // BatchTest
         public DbSet<Beta_Harish3485> Beta_Harish3485 { get; set; } // Harish3485
         public DbSet<Beta_ToAlpha> Beta_ToAlphas { get; set; } // ToAlpha
-        public DbSet<Beta_Workflow> Beta_Workflows { get; set; } // workflow
-        public DbSet<Bitfiddlerallcap> Bitfiddlerallcaps { get; set; } // BITFIDDLERALLCAPS
-        public DbSet<BitFiddlerCategoRy> BitFiddlerCategoRies { get; set; } // BitFiddlerCATEGORIES
-        public DbSet<BitFiddlerCurrenCy> BitFiddlerCurrenCies { get; set; } // BitFiddlerCURRENCIES
+        public DbSet<Beta_workflow> Beta_workflows { get; set; } // workflow
+        public DbSet<BITFIDDLERALLCAP> BITFIDDLERALLCAPs { get; set; } // BITFIDDLERALLCAPS
+        public DbSet<BitFiddlerCATEGORy> BitFiddlerCATEGORies { get; set; } // BitFiddlerCATEGORIES
+        public DbSet<BitFiddlerCURRENCy> BitFiddlerCURRENCies { get; set; } // BitFiddlerCURRENCIES
         public DbSet<Blah> Blahs { get; set; } // Blah
-        public DbSet<BlahBlahLinkV2> BlahBlahLinkV2 { get; set; } // BlahBlahLink_v2
+        public DbSet<BlahBlahLink_v2> BlahBlahLink_v2 { get; set; } // BlahBlahLink_v2
         public DbSet<Blarg> Blargs { get; set; } // Blarg
         public DbSet<Burak1> Burak1 { get; set; } // Burak1
         public DbSet<Burak2> Burak2 { get; set; } // Burak2
         public DbSet<CalculatedColumnNotNull> CalculatedColumnNotNulls { get; set; } // CalculatedColumnNotNull
         public DbSet<Car> Cars { get; set; } // Car
         public DbSet<ClientCreationState> ClientCreationStates { get; set; } // ClientCreationState
-        public DbSet<CmsFile> CmsFiles { get; set; } // CMS_File
-        public DbSet<CmsTag> CmsTags { get; set; } // CMS_Tag
-        public DbSet<CodeMeetingTopicDetail> CodeMeetingTopicDetails { get; set; } // CODE_MeetingTopicDetails
+        public DbSet<CMS_File> CMS_Files { get; set; } // CMS_File
+        public DbSet<CMS_Tag> CMS_Tags { get; set; } // CMS_Tag
+        public DbSet<CODE_MeetingTopicDetail> CODE_MeetingTopicDetails { get; set; } // CODE_MeetingTopicDetails
+        public DbSet<CODE_PARAM_MeetingTopicDetailSource> CODE_PARAM_MeetingTopicDetailSources { get; set; } // CODE_PARAM_MeetingTopicDetailSource
         public DbSet<CodeObject> CodeObjects { get; set; } // CodeObject
-        public DbSet<CodeParamMeetingTopicDetailSource> CodeParamMeetingTopicDetailSources { get; set; } // CODE_PARAM_MeetingTopicDetailSource
         public DbSet<Colour> Colours { get; set; } // Colour
         public DbSet<ColumnNameAndType> ColumnNameAndTypes { get; set; } // ColumnNameAndTypes
         public DbSet<ComplexView> ComplexViews { get; set; } // ComplexView
         public DbSet<Country> Countries { get; set; } // Country
-        public DbSet<CrossDatabaseSynonym> CrossDatabaseSynonyms { get; set; } // cross_database_synonym
+        public DbSet<cross_database_synonym> cross_database_synonyms { get; set; } // cross_database_synonym
         public DbSet<DateTimeDefaultTest> DateTimeDefaultTests { get; set; } // DateTimeDefaultTest
-        public DbSet<dcg_RovColumnDefinition> dcg_RovColumnDefinitions { get; set; } // rov_ColumnDefinitions
+        public DbSet<dcg_rov_ColumnDefinition> dcg_rov_ColumnDefinitions { get; set; } // rov_ColumnDefinitions
         public DbSet<DefaultCheckForNull> DefaultCheckForNulls { get; set; } // DefaultCheckForNull
-        public DbSet<DsOpe> DsOpes { get; set; } // DSOpe
+        public DbSet<DSOpe> DSOpes { get; set; } // DSOpe
         public DbSet<EnumsWithStringAsValue> EnumsWithStringAsValues { get; set; } // EnumsWithStringAsValue
         public DbSet<EnumTest_DaysOfWeek> EnumTest_DaysOfWeeks { get; set; } // DaysOfWeek
         public DbSet<EnumTest_OpenDay> EnumTest_OpenDays { get; set; } // OpenDays
         public DbSet<EnumWithDefaultValue> EnumWithDefaultValues { get; set; } // EnumWithDefaultValue
         public DbSet<EventProcessor> EventProcessors { get; set; } // EventProcessor
         public DbSet<EventProcessorEventFilter> EventProcessorEventFilters { get; set; } // EventProcessorEventFilter
-        public DbSet<FFRS_Cv> FFRS_Cvs { get; set; } // CV
+        public DbSet<FFRS_CV> FFRS_CVs { get; set; } // CV
         public DbSet<FinancialInstitutionOffice> FinancialInstitutionOffices { get; set; } // FinancialInstitutionOffice
         public DbSet<FkTest_SmallDecimalTestAttribute> FkTest_SmallDecimalTestAttributes { get; set; } // SmallDecimalTestAttribute
-        public DbSet<Footer> Footers { get; set; } // footer
+        public DbSet<footer> footers { get; set; } // footer
         public DbSet<ForeignKeyIsNotEnforced> ForeignKeyIsNotEnforceds { get; set; } // ForeignKeyIsNotEnforced
         public DbSet<ForeignKeyIsNotEnforcedItem> ForeignKeyIsNotEnforcedItems { get; set; } // ForeignKeyIsNotEnforcedItem
         public DbSet<HasPrincipalKeyTestChild> HasPrincipalKeyTestChilds { get; set; } // HasPrincipalKeyTestChild
         public DbSet<HasPrincipalKeyTestParent> HasPrincipalKeyTestParents { get; set; } // HasPrincipalKeyTestParent
-        public DbSet<Header> Headers { get; set; } // header
-        public DbSet<HierarchyTest> HierarchyTests { get; set; } // hierarchy_test
+        public DbSet<header> headers { get; set; } // header
+        public DbSet<hierarchy_test> hierarchy_tests { get; set; } // hierarchy_test
         public DbSet<Issue47_Role> Issue47_Roles { get; set; } // Role
         public DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
@@ -1745,7 +1744,7 @@ namespace Efrpg.V3TestE5
         public DbSet<PeriodTestTable> PeriodTestTables { get; set; } // PeriodTestTable
         public DbSet<Person> People { get; set; } // Person
         public DbSet<PersonPost> PersonPosts { get; set; } // PersonPosts
-        public DbSet<PkOrdinalTest> PkOrdinalTests { get; set; } // pk_ordinal_test
+        public DbSet<pk_ordinal_test> pk_ordinal_tests { get; set; } // pk_ordinal_test
         public DbSet<PropertyTypesToAdd> PropertyTypesToAdds { get; set; } // PropertyTypesToAdd
         public DbSet<SequenceTest> SequenceTests { get; set; } // SequenceTest
         public DbSet<SmallDecimalTest> SmallDecimalTests { get; set; } // SmallDecimalTest
@@ -1757,133 +1756,133 @@ namespace Efrpg.V3TestE5
         public DbSet<Synonyms_Parent> Synonyms_Parents { get; set; } // Parent
         public DbSet<TableA> TableAs { get; set; } // TableA
         public DbSet<TableB> TableBs { get; set; } // TableB
-        public DbSet<TableWithDuplicateColumnName> TableWithDuplicateColumnNames { get; set; } // table with duplicate column names
-        public DbSet<TableWithSpace> TableWithSpaces { get; set; } // table with space
-        public DbSet<TableWithSpaceAndInColumn> TableWithSpaceAndInColumns { get; set; } // table with space and in columns
+        public DbSet<tablewithduplicatecolumnname> tablewithduplicatecolumnnames { get; set; } // table with duplicate column names
+        public DbSet<tablewithspace> tablewithspaces { get; set; } // table with space
+        public DbSet<tablewithspaceandincolumn> tablewithspaceandincolumns { get; set; } // table with space and in columns
         public DbSet<TableWithSpaceInColumnOnly> TableWithSpaceInColumnOnlies { get; set; } // TableWithSpaceInColumnOnly
         public DbSet<TadeuszSobol> TadeuszSobols { get; set; } // TadeuszSobol
         public DbSet<Task1> Task1 { get; set; } // Task
-        public DbSet<TblOrder> TblOrders { get; set; } // tblOrders
-        public DbSet<TblOrderError> TblOrderErrors { get; set; } // tblOrderErrors
-        public DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
-        public DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
+        public DbSet<tblOrder> tblOrders { get; set; } // tblOrders
+        public DbSet<tblOrderError> tblOrderErrors { get; set; } // tblOrderErrors
+        public DbSet<tblOrderErrorsAB> tblOrderErrorsABs { get; set; } // tblOrderErrorsAB_
+        public DbSet<tblOrderLine> tblOrderLines { get; set; } // tblOrderLines
         public DbSet<Ticket> Tickets { get; set; } // Ticket
         public DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
         public DbSet<TimestampNullable> TimestampNullables { get; set; } // TimestampNullable
         public DbSet<Token> Tokens { get; set; } // Token
         public DbSet<User> Users { get; set; } // User
+        public DbSet<User_Document> User_Documents { get; set; } // User_Document
         public DbSet<User309> User309 { get; set; } // User309
-        public DbSet<UserDocument> UserDocuments { get; set; } // User_Document
         public DbSet<Versioned> Versioneds { get; set; } // Versioned
         public DbSet<VersionedNullable> VersionedNullables { get; set; } // VersionedNullable
-        public DbSet<ViewWithSpace> ViewWithSpaces { get; set; } // view with space
+        public DbSet<viewwithspace> viewwithspaces { get; set; } // view with space
         public DbSet<WVN_Article> WVN_Articles { get; set; } // Articles
-        public DbSet<WVN_VArticle> WVN_VArticles { get; set; } // v_Articles
+        public DbSet<WVN_v_Article> WVN_v_Articles { get; set; } // v_Articles
         public DbSet<Брендытовара> Брендытовара { get; set; } // Бренды товара
 
-        public FakeEfrpgTestDbContext()
+        public FakeEfrpg_db_context()
         {
-            _database = new FakeDatabaseFacade(new EfrpgTestDbContext());
+            _database = new FakeDatabaseFacade(new Efrpg_db_context());
 
             A = new FakeDbSet<A>("AId");
-            Aarefs = new FakeDbSet<Aaref>("C1", "C2");
-            AbOrderLinesAbs = new FakeDbSet<AbOrderLinesAb>("Id");
-            AbOrdersAbs = new FakeDbSet<AbOrdersAb>("Id");
+            AAREFs = new FakeDbSet<AAREF>("C1", "C2");
+            AB_OrderLinesABs = new FakeDbSet<AB_OrderLinesAB>("ID");
+            AB_OrdersABs = new FakeDbSet<AB_OrdersAB>("ID");
             AllColumnsNulls = new FakeDbSet<AllColumnsNull>();
-            Alpha_Harish3485 = new FakeDbSet<Alpha_Harish3485>("Id");
-            Alpha_Workflows = new FakeDbSet<Alpha_Workflow>("Id");
-            AlphaWorkflowSynonyms = new FakeDbSet<AlphaWorkflowSynonym>("Id");
-            App_UserFacilityServiceRoles = new FakeDbSet<App_UserFacilityServiceRole>("UserId", "AppId", "FsrId");
+            Alpha_Harish3485 = new FakeDbSet<Alpha_Harish3485>("id");
+            Alpha_workflows = new FakeDbSet<Alpha_workflow>("Id");
+            alpha_workflow_synonyms = new FakeDbSet<alpha_workflow_synonym>("Id");
+            App_UserFacilityServiceRoles = new FakeDbSet<App_UserFacilityServiceRole>("userId", "appId", "fsrId");
             AppUsers = new FakeDbSet<AppUser>("Id");
-            Attendees = new FakeDbSet<Attendee>("AttendeeId");
-            BatchTests = new FakeDbSet<BatchTest>("Code");
-            Beta_Harish3485 = new FakeDbSet<Beta_Harish3485>("Id");
+            Attendees = new FakeDbSet<Attendee>("AttendeeID");
+            BatchTests = new FakeDbSet<BatchTest>("code");
+            Beta_Harish3485 = new FakeDbSet<Beta_Harish3485>("id");
             Beta_ToAlphas = new FakeDbSet<Beta_ToAlpha>("Id");
-            Beta_Workflows = new FakeDbSet<Beta_Workflow>("Id");
-            Bitfiddlerallcaps = new FakeDbSet<Bitfiddlerallcap>("Id");
-            BitFiddlerCategoRies = new FakeDbSet<BitFiddlerCategoRy>("Id");
-            BitFiddlerCurrenCies = new FakeDbSet<BitFiddlerCurrenCy>("Id");
-            Blahs = new FakeDbSet<Blah>("BlahId");
-            BlahBlahLinkV2 = new FakeDbSet<BlahBlahLinkV2>("BlahId", "BlahId2");
-            Blargs = new FakeDbSet<Blarg>("BlargId");
-            Burak1 = new FakeDbSet<Burak1>("Id");
-            Burak2 = new FakeDbSet<Burak2>("Id");
-            CalculatedColumnNotNulls = new FakeDbSet<CalculatedColumnNotNull>("Id");
+            Beta_workflows = new FakeDbSet<Beta_workflow>("Id");
+            BITFIDDLERALLCAPs = new FakeDbSet<BITFIDDLERALLCAP>("Id");
+            BitFiddlerCATEGORies = new FakeDbSet<BitFiddlerCATEGORy>("Id");
+            BitFiddlerCURRENCies = new FakeDbSet<BitFiddlerCURRENCy>("Id");
+            Blahs = new FakeDbSet<Blah>("BlahID");
+            BlahBlahLink_v2 = new FakeDbSet<BlahBlahLink_v2>("BlahID", "BlahID2");
+            Blargs = new FakeDbSet<Blarg>("BlargID");
+            Burak1 = new FakeDbSet<Burak1>("id");
+            Burak2 = new FakeDbSet<Burak2>("id");
+            CalculatedColumnNotNulls = new FakeDbSet<CalculatedColumnNotNull>("ID");
             Cars = new FakeDbSet<Car>("Id");
-            ClientCreationStates = new FakeDbSet<ClientCreationState>("Id");
-            CmsFiles = new FakeDbSet<CmsFile>("FileId");
-            CmsTags = new FakeDbSet<CmsTag>("TagId");
-            CodeMeetingTopicDetails = new FakeDbSet<CodeMeetingTopicDetail>("Id");
-            CodeObjects = new FakeDbSet<CodeObject>("CodeObjectNo");
-            CodeParamMeetingTopicDetailSources = new FakeDbSet<CodeParamMeetingTopicDetailSource>("Id");
+            ClientCreationStates = new FakeDbSet<ClientCreationState>("id");
+            CMS_Files = new FakeDbSet<CMS_File>("FileId");
+            CMS_Tags = new FakeDbSet<CMS_Tag>("TagId");
+            CODE_MeetingTopicDetails = new FakeDbSet<CODE_MeetingTopicDetail>("id");
+            CODE_PARAM_MeetingTopicDetailSources = new FakeDbSet<CODE_PARAM_MeetingTopicDetailSource>("ID");
+            CodeObjects = new FakeDbSet<CodeObject>("codeObjectNo");
             Colours = new FakeDbSet<Colour>("Id");
             ColumnNameAndTypes = new FakeDbSet<ColumnNameAndType>("C36");
             ComplexViews = new FakeDbSet<ComplexView>();
-            Countries = new FakeDbSet<Country>("CountryId");
-            CrossDatabaseSynonyms = new FakeDbSet<CrossDatabaseSynonym>("Id");
+            Countries = new FakeDbSet<Country>("CountryID");
+            cross_database_synonyms = new FakeDbSet<cross_database_synonym>("Id");
             DateTimeDefaultTests = new FakeDbSet<DateTimeDefaultTest>("Id");
-            dcg_RovColumnDefinitions = new FakeDbSet<dcg_RovColumnDefinition>();
+            dcg_rov_ColumnDefinitions = new FakeDbSet<dcg_rov_ColumnDefinition>();
             DefaultCheckForNulls = new FakeDbSet<DefaultCheckForNull>("Id");
-            DsOpes = new FakeDbSet<DsOpe>("Id");
-            EnumsWithStringAsValues = new FakeDbSet<EnumsWithStringAsValue>("EnumName", "Value");
+            DSOpes = new FakeDbSet<DSOpe>("ID");
+            EnumsWithStringAsValues = new FakeDbSet<EnumsWithStringAsValue>("enum_name", "value");
             EnumTest_DaysOfWeeks = new FakeDbSet<EnumTest_DaysOfWeek>("TypeId");
             EnumTest_OpenDays = new FakeDbSet<EnumTest_OpenDay>("Id");
             EnumWithDefaultValues = new FakeDbSet<EnumWithDefaultValue>("Id");
             EventProcessors = new FakeDbSet<EventProcessor>("Id");
             EventProcessorEventFilters = new FakeDbSet<EventProcessorEventFilter>("Id");
-            FFRS_Cvs = new FakeDbSet<FFRS_Cv>("BatchUid", "Cvid");
+            FFRS_CVs = new FakeDbSet<FFRS_CV>("BatchUID", "CVID");
             FinancialInstitutionOffices = new FakeDbSet<FinancialInstitutionOffice>("FinancialInstitutionCode");
-            FkTest_SmallDecimalTestAttributes = new FakeDbSet<FkTest_SmallDecimalTestAttribute>("FkId");
-            Footers = new FakeDbSet<Footer>("Id");
-            ForeignKeyIsNotEnforceds = new FakeDbSet<ForeignKeyIsNotEnforced>("Id");
-            ForeignKeyIsNotEnforcedItems = new FakeDbSet<ForeignKeyIsNotEnforcedItem>("Id");
+            FkTest_SmallDecimalTestAttributes = new FakeDbSet<FkTest_SmallDecimalTestAttribute>("FkID");
+            footers = new FakeDbSet<footer>("ID");
+            ForeignKeyIsNotEnforceds = new FakeDbSet<ForeignKeyIsNotEnforced>("id");
+            ForeignKeyIsNotEnforcedItems = new FakeDbSet<ForeignKeyIsNotEnforcedItem>("id");
             HasPrincipalKeyTestChilds = new FakeDbSet<HasPrincipalKeyTestChild>("Id");
             HasPrincipalKeyTestParents = new FakeDbSet<HasPrincipalKeyTestParent>("Id");
-            Headers = new FakeDbSet<Header>("Id", "AnotherId");
-            HierarchyTests = new FakeDbSet<HierarchyTest>("Id");
+            headers = new FakeDbSet<header>("ID", "anotherID");
+            hierarchy_tests = new FakeDbSet<hierarchy_test>("ID");
             Issue47_Roles = new FakeDbSet<Issue47_Role>("RoleId");
             Issue47_Users = new FakeDbSet<Issue47_User>("UserId");
             Issue47_UserRoles = new FakeDbSet<Issue47_UserRole>("UserRoleId");
             MultipleKeys = new FakeDbSet<MultipleKey>("UserId", "FavouriteColourId", "BestHolidayTypeId");
             OneEightSix_Issues = new FakeDbSet<OneEightSix_Issue>("Id");
             OneEightSix_UploadedFiles = new FakeDbSet<OneEightSix_UploadedFile>("Id");
-            PeriodTestTables = new FakeDbSet<PeriodTestTable>("Id");
+            PeriodTestTables = new FakeDbSet<PeriodTestTable>("id");
             People = new FakeDbSet<Person>("Id");
             PersonPosts = new FakeDbSet<PersonPost>("Id");
-            PkOrdinalTests = new FakeDbSet<PkOrdinalTest>("C3", "C1");
-            PropertyTypesToAdds = new FakeDbSet<PropertyTypesToAdd>("Id");
+            pk_ordinal_tests = new FakeDbSet<pk_ordinal_test>("C3", "C1");
+            PropertyTypesToAdds = new FakeDbSet<PropertyTypesToAdd>("id");
             SequenceTests = new FakeDbSet<SequenceTest>("Id");
-            SmallDecimalTests = new FakeDbSet<SmallDecimalTest>("Id");
+            SmallDecimalTests = new FakeDbSet<SmallDecimalTest>("id");
             SmallDecimalTestViews = new FakeDbSet<SmallDecimalTestView>();
-            Stafford_Boos = new FakeDbSet<Stafford_Boo>("Id");
+            Stafford_Boos = new FakeDbSet<Stafford_Boo>("id");
             Stafford_ComputedColumns = new FakeDbSet<Stafford_ComputedColumn>("Id");
-            Stafford_Foos = new FakeDbSet<Stafford_Foo>("Id");
+            Stafford_Foos = new FakeDbSet<Stafford_Foo>("id");
             Synonyms_Children = new FakeDbSet<Synonyms_Child>("ChildId");
             Synonyms_Parents = new FakeDbSet<Synonyms_Parent>("ParentId");
             TableAs = new FakeDbSet<TableA>("TableAId");
             TableBs = new FakeDbSet<TableB>("TableBId", "TableAId");
-            TableWithDuplicateColumnNames = new FakeDbSet<TableWithDuplicateColumnName>("Id");
-            TableWithSpaces = new FakeDbSet<TableWithSpace>("Id");
-            TableWithSpaceAndInColumns = new FakeDbSet<TableWithSpaceAndInColumn>("IdValue");
-            TableWithSpaceInColumnOnlies = new FakeDbSet<TableWithSpaceInColumnOnly>("IdValue");
+            tablewithduplicatecolumnnames = new FakeDbSet<tablewithduplicatecolumnname>("id");
+            tablewithspaces = new FakeDbSet<tablewithspace>("id");
+            tablewithspaceandincolumns = new FakeDbSet<tablewithspaceandincolumn>("idvalue");
+            TableWithSpaceInColumnOnlies = new FakeDbSet<TableWithSpaceInColumnOnly>("idvalue");
             TadeuszSobols = new FakeDbSet<TadeuszSobol>("Id");
             Task1 = new FakeDbSet<Task1>("TaskId");
-            TblOrders = new FakeDbSet<TblOrder>("Id");
-            TblOrderErrors = new FakeDbSet<TblOrderError>("Id");
-            TblOrderErrorsAbs = new FakeDbSet<TblOrderErrorsAb>("Id");
-            TblOrderLines = new FakeDbSet<TblOrderLine>("Id");
+            tblOrders = new FakeDbSet<tblOrder>("ID");
+            tblOrderErrors = new FakeDbSet<tblOrderError>("ID");
+            tblOrderErrorsABs = new FakeDbSet<tblOrderErrorsAB>("ID");
+            tblOrderLines = new FakeDbSet<tblOrderLine>("ID");
             Tickets = new FakeDbSet<Ticket>("Id");
             TimestampNotNulls = new FakeDbSet<TimestampNotNull>("Id");
             TimestampNullables = new FakeDbSet<TimestampNullable>("Id");
             Tokens = new FakeDbSet<Token>("Id");
-            Users = new FakeDbSet<User>("Id");
-            User309 = new FakeDbSet<User309>("UserId");
-            UserDocuments = new FakeDbSet<UserDocument>("Id");
+            Users = new FakeDbSet<User>("ID");
+            User_Documents = new FakeDbSet<User_Document>("ID");
+            User309 = new FakeDbSet<User309>("UserID");
             Versioneds = new FakeDbSet<Versioned>("Id");
             VersionedNullables = new FakeDbSet<VersionedNullable>("Id");
-            ViewWithSpaces = new FakeDbSet<ViewWithSpace>();
-            WVN_Articles = new FakeDbSet<WVN_Article>("PkArticle");
-            WVN_VArticles = new FakeDbSet<WVN_VArticle>();
+            viewwithspaces = new FakeDbSet<viewwithspace>();
+            WVN_Articles = new FakeDbSet<WVN_Article>("PK_Article");
+            WVN_v_Articles = new FakeDbSet<WVN_v_Article>();
             Брендытовара = new FakeDbSet<Брендытовара>("Кодбренда");
 
         }
@@ -2107,20 +2106,20 @@ namespace Efrpg.V3TestE5
 
         // Alpha_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int App_UspCmtUserFsrUpdate(int? userId, int? fsrId, out int? ufsrId)
+        public int App_usp_CMTUserFSRUpdate(int? userId, int? fsrId, out int? ufsrId)
         {
             ufsrId = default(int);
             return 0;
         }
 
-        // App_UspCmtUserFsrUpdateAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        // App_usp_CMTUserFSRUpdateAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int ASimpleExample()
+        public int aSimpleExample()
         {
             return 0;
         }
 
-        // ASimpleExampleAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        // aSimpleExampleAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         public int Beta_Overclock(DateTime? parameter)
         {
@@ -2129,23 +2128,23 @@ namespace Efrpg.V3TestE5
 
         // Beta_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public DbSet<C182Test2ReturnModel> C182Test2ReturnModel { get; set; }
-        public C182Test2ReturnModel C182Test2(int? flag)
+        public DbSet<C182_test2ReturnModel> C182_test2ReturnModel { get; set; }
+        public C182_test2ReturnModel C182_test2(int? flag)
         {
             int procResult;
-            return C182Test2(flag, out procResult);
+            return C182_test2(flag, out procResult);
         }
 
-        public C182Test2ReturnModel C182Test2(int? flag, out int procResult)
+        public C182_test2ReturnModel C182_test2(int? flag, out int procResult)
         {
             procResult = 0;
-            return new C182Test2ReturnModel();
+            return new C182_test2ReturnModel();
         }
 
-        public Task<C182Test2ReturnModel> C182Test2Async(int? flag)
+        public Task<C182_test2ReturnModel> C182_test2Async(int? flag)
         {
             int procResult;
-            return Task.FromResult(C182Test2(flag, out procResult));
+            return Task.FromResult(C182_test2(flag, out procResult));
         }
 
         public DbSet<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsCompleteReturnModel { get; set; }
@@ -2192,118 +2191,118 @@ namespace Efrpg.V3TestE5
 
         // ConvertToStringAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public DbSet<DboProcDataFromFfrsReturnModel> DboProcDataFromFfrsReturnModel { get; set; }
-        public List<DboProcDataFromFfrsReturnModel> DboProcDataFromFfrs(int? maxId)
+        public DbSet<dbo_proc_data_from_ffrsReturnModel> dbo_proc_data_from_ffrsReturnModel { get; set; }
+        public List<dbo_proc_data_from_ffrsReturnModel> dbo_proc_data_from_ffrs(int? maxId)
         {
             int procResult;
-            return DboProcDataFromFfrs(maxId, out procResult);
+            return dbo_proc_data_from_ffrs(maxId, out procResult);
         }
 
-        public List<DboProcDataFromFfrsReturnModel> DboProcDataFromFfrs(int? maxId, out int procResult)
+        public List<dbo_proc_data_from_ffrsReturnModel> dbo_proc_data_from_ffrs(int? maxId, out int procResult)
         {
             procResult = 0;
-            return new List<DboProcDataFromFfrsReturnModel>();
+            return new List<dbo_proc_data_from_ffrsReturnModel>();
         }
 
-        public Task<List<DboProcDataFromFfrsReturnModel>> DboProcDataFromFfrsAsync(int? maxId)
+        public Task<List<dbo_proc_data_from_ffrsReturnModel>> dbo_proc_data_from_ffrsAsync(int? maxId)
         {
             int procResult;
-            return Task.FromResult(DboProcDataFromFfrs(maxId, out procResult));
+            return Task.FromResult(dbo_proc_data_from_ffrs(maxId, out procResult));
         }
 
-        public DbSet<DboProcDataFromFfrsAndDboReturnModel> DboProcDataFromFfrsAndDboReturnModel { get; set; }
-        public List<DboProcDataFromFfrsAndDboReturnModel> DboProcDataFromFfrsAndDbo()
+        public DbSet<dbo_proc_data_from_ffrs_and_dboReturnModel> dbo_proc_data_from_ffrs_and_dboReturnModel { get; set; }
+        public List<dbo_proc_data_from_ffrs_and_dboReturnModel> dbo_proc_data_from_ffrs_and_dbo()
         {
             int procResult;
-            return DboProcDataFromFfrsAndDbo(out procResult);
+            return dbo_proc_data_from_ffrs_and_dbo(out procResult);
         }
 
-        public List<DboProcDataFromFfrsAndDboReturnModel> DboProcDataFromFfrsAndDbo(out int procResult)
+        public List<dbo_proc_data_from_ffrs_and_dboReturnModel> dbo_proc_data_from_ffrs_and_dbo(out int procResult)
         {
             procResult = 0;
-            return new List<DboProcDataFromFfrsAndDboReturnModel>();
+            return new List<dbo_proc_data_from_ffrs_and_dboReturnModel>();
         }
 
-        public Task<List<DboProcDataFromFfrsAndDboReturnModel>> DboProcDataFromFfrsAndDboAsync()
+        public Task<List<dbo_proc_data_from_ffrs_and_dboReturnModel>> dbo_proc_data_from_ffrs_and_dboAsync()
         {
             int procResult;
-            return Task.FromResult(DboProcDataFromFfrsAndDbo(out procResult));
+            return Task.FromResult(dbo_proc_data_from_ffrs_and_dbo(out procResult));
         }
 
-        public DbSet<DsOpeProcReturnModel> DsOpeProcReturnModel { get; set; }
-        public List<DsOpeProcReturnModel> DsOpeProc()
+        public DbSet<DSOpeProcReturnModel> DSOpeProcReturnModel { get; set; }
+        public List<DSOpeProcReturnModel> DSOpeProc()
         {
             int procResult;
-            return DsOpeProc(out procResult);
+            return DSOpeProc(out procResult);
         }
 
-        public List<DsOpeProcReturnModel> DsOpeProc(out int procResult)
+        public List<DSOpeProcReturnModel> DSOpeProc(out int procResult)
         {
             procResult = 0;
-            return new List<DsOpeProcReturnModel>();
+            return new List<DSOpeProcReturnModel>();
         }
 
-        public Task<List<DsOpeProcReturnModel>> DsOpeProcAsync()
+        public Task<List<DSOpeProcReturnModel>> DSOpeProcAsync()
         {
             int procResult;
-            return Task.FromResult(DsOpeProc(out procResult));
+            return Task.FromResult(DSOpeProc(out procResult));
         }
 
-        public DbSet<FFRS_CvDataReturnModel> FFRS_CvDataReturnModel { get; set; }
-        public List<FFRS_CvDataReturnModel> FFRS_CvData(int? maxId)
+        public DbSet<FFRS_cv_dataReturnModel> FFRS_cv_dataReturnModel { get; set; }
+        public List<FFRS_cv_dataReturnModel> FFRS_cv_data(int? maxId)
         {
             int procResult;
-            return FFRS_CvData(maxId, out procResult);
+            return FFRS_cv_data(maxId, out procResult);
         }
 
-        public List<FFRS_CvDataReturnModel> FFRS_CvData(int? maxId, out int procResult)
+        public List<FFRS_cv_dataReturnModel> FFRS_cv_data(int? maxId, out int procResult)
         {
             procResult = 0;
-            return new List<FFRS_CvDataReturnModel>();
+            return new List<FFRS_cv_dataReturnModel>();
         }
 
-        public Task<List<FFRS_CvDataReturnModel>> FFRS_CvDataAsync(int? maxId)
+        public Task<List<FFRS_cv_dataReturnModel>> FFRS_cv_dataAsync(int? maxId)
         {
             int procResult;
-            return Task.FromResult(FFRS_CvData(maxId, out procResult));
+            return Task.FromResult(FFRS_cv_data(maxId, out procResult));
         }
 
-        public DbSet<FFRS_DataFromDboReturnModel> FFRS_DataFromDboReturnModel { get; set; }
-        public List<FFRS_DataFromDboReturnModel> FFRS_DataFromDbo()
+        public DbSet<FFRS_data_from_dboReturnModel> FFRS_data_from_dboReturnModel { get; set; }
+        public List<FFRS_data_from_dboReturnModel> FFRS_data_from_dbo()
         {
             int procResult;
-            return FFRS_DataFromDbo(out procResult);
+            return FFRS_data_from_dbo(out procResult);
         }
 
-        public List<FFRS_DataFromDboReturnModel> FFRS_DataFromDbo(out int procResult)
+        public List<FFRS_data_from_dboReturnModel> FFRS_data_from_dbo(out int procResult)
         {
             procResult = 0;
-            return new List<FFRS_DataFromDboReturnModel>();
+            return new List<FFRS_data_from_dboReturnModel>();
         }
 
-        public Task<List<FFRS_DataFromDboReturnModel>> FFRS_DataFromDboAsync()
+        public Task<List<FFRS_data_from_dboReturnModel>> FFRS_data_from_dboAsync()
         {
             int procResult;
-            return Task.FromResult(FFRS_DataFromDbo(out procResult));
+            return Task.FromResult(FFRS_data_from_dbo(out procResult));
         }
 
-        public DbSet<FFRS_DataFromDboAndFfrsReturnModel> FFRS_DataFromDboAndFfrsReturnModel { get; set; }
-        public List<FFRS_DataFromDboAndFfrsReturnModel> FFRS_DataFromDboAndFfrs()
+        public DbSet<FFRS_data_from_dbo_and_ffrsReturnModel> FFRS_data_from_dbo_and_ffrsReturnModel { get; set; }
+        public List<FFRS_data_from_dbo_and_ffrsReturnModel> FFRS_data_from_dbo_and_ffrs()
         {
             int procResult;
-            return FFRS_DataFromDboAndFfrs(out procResult);
+            return FFRS_data_from_dbo_and_ffrs(out procResult);
         }
 
-        public List<FFRS_DataFromDboAndFfrsReturnModel> FFRS_DataFromDboAndFfrs(out int procResult)
+        public List<FFRS_data_from_dbo_and_ffrsReturnModel> FFRS_data_from_dbo_and_ffrs(out int procResult)
         {
             procResult = 0;
-            return new List<FFRS_DataFromDboAndFfrsReturnModel>();
+            return new List<FFRS_data_from_dbo_and_ffrsReturnModel>();
         }
 
-        public Task<List<FFRS_DataFromDboAndFfrsReturnModel>> FFRS_DataFromDboAndFfrsAsync()
+        public Task<List<FFRS_data_from_dbo_and_ffrsReturnModel>> FFRS_data_from_dbo_and_ffrsAsync()
         {
             int procResult;
-            return Task.FromResult(FFRS_DataFromDboAndFfrs(out procResult));
+            return Task.FromResult(FFRS_data_from_dbo_and_ffrs(out procResult));
         }
 
         public DbSet<FkTest_HelloReturnModel> FkTest_HelloReturnModel { get; set; }
@@ -2400,29 +2399,29 @@ namespace Efrpg.V3TestE5
 
         // Omega_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int ProcTestDecimalOutput(out decimal? perfectNumber)
+        public int proc_TestDecimalOutput(out decimal? perfectNumber)
         {
             perfectNumber = default(decimal);
             return 0;
         }
 
-        // ProcTestDecimalOutputAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        // proc_TestDecimalOutputAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int ProcTestDecimalOutputV2(out decimal? perfectNumber)
+        public int proc_TestDecimalOutputV2(out decimal? perfectNumber)
         {
             perfectNumber = default(decimal);
             return 0;
         }
 
-        // ProcTestDecimalOutputV2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        // proc_TestDecimalOutputV2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int ProcTestDecimalOutputV3Default(out decimal? perfectNumber)
+        public int proc_TestDecimalOutputV3Default(out decimal? perfectNumber)
         {
             perfectNumber = default(decimal);
             return 0;
         }
 
-        // ProcTestDecimalOutputV3DefaultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        // proc_TestDecimalOutputV3DefaultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         public int SpatialTypesNoParams()
         {
@@ -2438,161 +2437,161 @@ namespace Efrpg.V3TestE5
 
         // SpatialTypesWithParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public DbSet<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsReturnModel { get; set; }
-        public StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar)
+        public DbSet<stp_multiple_identical_resultsReturnModel> stp_multiple_identical_resultsReturnModel { get; set; }
+        public stp_multiple_identical_resultsReturnModel stp_multiple_identical_results(int? someVar)
         {
             int procResult;
-            return StpMultipleIdenticalResults(someVar, out procResult);
+            return stp_multiple_identical_results(someVar, out procResult);
         }
 
-        public StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar, out int procResult)
+        public stp_multiple_identical_resultsReturnModel stp_multiple_identical_results(int? someVar, out int procResult)
         {
             procResult = 0;
-            return new StpMultipleIdenticalResultsReturnModel();
+            return new stp_multiple_identical_resultsReturnModel();
         }
 
-        public Task<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsAsync(int? someVar)
+        public Task<stp_multiple_identical_resultsReturnModel> stp_multiple_identical_resultsAsync(int? someVar)
         {
             int procResult;
-            return Task.FromResult(StpMultipleIdenticalResults(someVar, out procResult));
+            return Task.FromResult(stp_multiple_identical_results(someVar, out procResult));
         }
 
-        public DbSet<StpMultipleMultipleResultsWithParamsReturnModel> StpMultipleMultipleResultsWithParamsReturnModel { get; set; }
-        public StpMultipleMultipleResultsWithParamsReturnModel StpMultipleMultipleResultsWithParams(int? firstVal, int? secondVal, int? thirdVal)
+        public DbSet<stp_multiple_multiple_results_with_paramsReturnModel> stp_multiple_multiple_results_with_paramsReturnModel { get; set; }
+        public stp_multiple_multiple_results_with_paramsReturnModel stp_multiple_multiple_results_with_params(int? firstval, int? secondval, int? thirdval)
         {
             int procResult;
-            return StpMultipleMultipleResultsWithParams(firstVal, secondVal, thirdVal, out procResult);
+            return stp_multiple_multiple_results_with_params(firstval, secondval, thirdval, out procResult);
         }
 
-        public StpMultipleMultipleResultsWithParamsReturnModel StpMultipleMultipleResultsWithParams(int? firstVal, int? secondVal, int? thirdVal, out int procResult)
+        public stp_multiple_multiple_results_with_paramsReturnModel stp_multiple_multiple_results_with_params(int? firstval, int? secondval, int? thirdval, out int procResult)
         {
             procResult = 0;
-            return new StpMultipleMultipleResultsWithParamsReturnModel();
+            return new stp_multiple_multiple_results_with_paramsReturnModel();
         }
 
-        public Task<StpMultipleMultipleResultsWithParamsReturnModel> StpMultipleMultipleResultsWithParamsAsync(int? firstVal, int? secondVal, int? thirdVal)
+        public Task<stp_multiple_multiple_results_with_paramsReturnModel> stp_multiple_multiple_results_with_paramsAsync(int? firstval, int? secondval, int? thirdval)
         {
             int procResult;
-            return Task.FromResult(StpMultipleMultipleResultsWithParams(firstVal, secondVal, thirdVal, out procResult));
+            return Task.FromResult(stp_multiple_multiple_results_with_params(firstval, secondval, thirdval, out procResult));
         }
 
-        public DbSet<StpMultipleResultsReturnModel> StpMultipleResultsReturnModel { get; set; }
-        public StpMultipleResultsReturnModel StpMultipleResults()
+        public DbSet<stp_multiple_resultsReturnModel> stp_multiple_resultsReturnModel { get; set; }
+        public stp_multiple_resultsReturnModel stp_multiple_results()
         {
             int procResult;
-            return StpMultipleResults(out procResult);
+            return stp_multiple_results(out procResult);
         }
 
-        public StpMultipleResultsReturnModel StpMultipleResults(out int procResult)
+        public stp_multiple_resultsReturnModel stp_multiple_results(out int procResult)
         {
             procResult = 0;
-            return new StpMultipleResultsReturnModel();
+            return new stp_multiple_resultsReturnModel();
         }
 
-        public Task<StpMultipleResultsReturnModel> StpMultipleResultsAsync()
+        public Task<stp_multiple_resultsReturnModel> stp_multiple_resultsAsync()
         {
             int procResult;
-            return Task.FromResult(StpMultipleResults(out procResult));
+            return Task.FromResult(stp_multiple_results(out procResult));
         }
 
-        public DbSet<StpMultipleResultsWithParamsReturnModel> StpMultipleResultsWithParamsReturnModel { get; set; }
-        public StpMultipleResultsWithParamsReturnModel StpMultipleResultsWithParams(int? firstVal, int? secondVal)
+        public DbSet<stp_multiple_results_with_paramsReturnModel> stp_multiple_results_with_paramsReturnModel { get; set; }
+        public stp_multiple_results_with_paramsReturnModel stp_multiple_results_with_params(int? firstval, int? secondval)
         {
             int procResult;
-            return StpMultipleResultsWithParams(firstVal, secondVal, out procResult);
+            return stp_multiple_results_with_params(firstval, secondval, out procResult);
         }
 
-        public StpMultipleResultsWithParamsReturnModel StpMultipleResultsWithParams(int? firstVal, int? secondVal, out int procResult)
+        public stp_multiple_results_with_paramsReturnModel stp_multiple_results_with_params(int? firstval, int? secondval, out int procResult)
         {
             procResult = 0;
-            return new StpMultipleResultsWithParamsReturnModel();
+            return new stp_multiple_results_with_paramsReturnModel();
         }
 
-        public Task<StpMultipleResultsWithParamsReturnModel> StpMultipleResultsWithParamsAsync(int? firstVal, int? secondVal)
+        public Task<stp_multiple_results_with_paramsReturnModel> stp_multiple_results_with_paramsAsync(int? firstval, int? secondval)
         {
             int procResult;
-            return Task.FromResult(StpMultipleResultsWithParams(firstVal, secondVal, out procResult));
+            return Task.FromResult(stp_multiple_results_with_params(firstval, secondval, out procResult));
         }
 
-        public DbSet<StpNoParamsTestReturnModel> StpNoParamsTestReturnModel { get; set; }
-        public List<StpNoParamsTestReturnModel> StpNoParamsTest()
+        public DbSet<stp_no_params_testReturnModel> stp_no_params_testReturnModel { get; set; }
+        public List<stp_no_params_testReturnModel> stp_no_params_test()
         {
             int procResult;
-            return StpNoParamsTest(out procResult);
+            return stp_no_params_test(out procResult);
         }
 
-        public List<StpNoParamsTestReturnModel> StpNoParamsTest(out int procResult)
+        public List<stp_no_params_testReturnModel> stp_no_params_test(out int procResult)
         {
             procResult = 0;
-            return new List<StpNoParamsTestReturnModel>();
+            return new List<stp_no_params_testReturnModel>();
         }
 
-        public Task<List<StpNoParamsTestReturnModel>> StpNoParamsTestAsync()
+        public Task<List<stp_no_params_testReturnModel>> stp_no_params_testAsync()
         {
             int procResult;
-            return Task.FromResult(StpNoParamsTest(out procResult));
+            return Task.FromResult(stp_no_params_test(out procResult));
         }
 
-        public int StpNoReturnFields()
+        public int stp_no_return_fields()
         {
             return 0;
         }
 
-        // StpNoReturnFieldsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        // stp_no_return_fieldsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public DbSet<StpNullableParamsTestReturnModel> StpNullableParamsTestReturnModel { get; set; }
-        public List<StpNullableParamsTestReturnModel> StpNullableParamsTest(int? aVal, int? bVal)
+        public DbSet<stp_nullable_params_testReturnModel> stp_nullable_params_testReturnModel { get; set; }
+        public List<stp_nullable_params_testReturnModel> stp_nullable_params_test(int? aval, int? bval)
         {
             int procResult;
-            return StpNullableParamsTest(aVal, bVal, out procResult);
+            return stp_nullable_params_test(aval, bval, out procResult);
         }
 
-        public List<StpNullableParamsTestReturnModel> StpNullableParamsTest(int? aVal, int? bVal, out int procResult)
+        public List<stp_nullable_params_testReturnModel> stp_nullable_params_test(int? aval, int? bval, out int procResult)
         {
             procResult = 0;
-            return new List<StpNullableParamsTestReturnModel>();
+            return new List<stp_nullable_params_testReturnModel>();
         }
 
-        public Task<List<StpNullableParamsTestReturnModel>> StpNullableParamsTestAsync(int? aVal, int? bVal)
+        public Task<List<stp_nullable_params_testReturnModel>> stp_nullable_params_testAsync(int? aval, int? bval)
         {
             int procResult;
-            return Task.FromResult(StpNullableParamsTest(aVal, bVal, out procResult));
+            return Task.FromResult(stp_nullable_params_test(aval, bval, out procResult));
         }
 
-        public DbSet<StpTestReturnModel> StpTestReturnModel { get; set; }
-        public List<StpTestReturnModel> StpTest(string strDateFrom, string strDateTo, out bool? retBool)
+        public DbSet<stp_testReturnModel> stp_testReturnModel { get; set; }
+        public List<stp_testReturnModel> stp_test(string strDateFROM, string strDateTo, out bool? retBool)
         {
             int procResult;
-            return StpTest(strDateFrom, strDateTo, out retBool, out procResult);
+            return stp_test(strDateFROM, strDateTo, out retBool, out procResult);
         }
 
-        public List<StpTestReturnModel> StpTest(string strDateFrom, string strDateTo, out bool? retBool, out int procResult)
+        public List<stp_testReturnModel> stp_test(string strDateFROM, string strDateTo, out bool? retBool, out int procResult)
         {
             retBool = default(bool);
             procResult = 0;
-            return new List<StpTestReturnModel>();
+            return new List<stp_testReturnModel>();
         }
 
-        // StpTestAsync() cannot be created due to having out parameters, or is relying on the procedure result (List<StpTestReturnModel>)
+        // stp_testAsync() cannot be created due to having out parameters, or is relying on the procedure result (List<stp_testReturnModel>)
 
 
-        public DbSet<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTestReturnModel { get; set; }
-        public List<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTest(string strDateFrom, string strDateTo)
+        public DbSet<stp_test_underscore_testReturnModel> stp_test_underscore_testReturnModel { get; set; }
+        public List<stp_test_underscore_testReturnModel> stp_test_underscore_test(string strDateFROM, string strdateto)
         {
             int procResult;
-            return StpTestUnderscoreTest(strDateFrom, strDateTo, out procResult);
+            return stp_test_underscore_test(strDateFROM, strdateto, out procResult);
         }
 
-        public List<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTest(string strDateFrom, string strDateTo, out int procResult)
+        public List<stp_test_underscore_testReturnModel> stp_test_underscore_test(string strDateFROM, string strdateto, out int procResult)
         {
             procResult = 0;
-            return new List<StpTestUnderscoreTestReturnModel>();
+            return new List<stp_test_underscore_testReturnModel>();
         }
 
-        public Task<List<StpTestUnderscoreTestReturnModel>> StpTestUnderscoreTestAsync(string strDateFrom, string strDateTo)
+        public Task<List<stp_test_underscore_testReturnModel>> stp_test_underscore_testAsync(string strDateFROM, string strdateto)
         {
             int procResult;
-            return Task.FromResult(StpTestUnderscoreTest(strDateFrom, strDateTo, out procResult));
+            return Task.FromResult(stp_test_underscore_test(strDateFROM, strdateto, out procResult));
         }
 
         public int StupidStoredProcedureParams(string reqType, short? dept, short? @class, short? item)
@@ -2683,9 +2682,9 @@ namespace Efrpg.V3TestE5
         // Table Valued Functions
 
         // dbo.182_test1
-        public IQueryable<C182Test1ReturnModel> C182Test1(int? test)
+        public IQueryable<C182_test1ReturnModel> C182_test1(int? test)
         {
-            return new List<C182Test1ReturnModel>().AsQueryable();
+            return new List<C182_test1ReturnModel>().AsQueryable();
         }
 
         // dbo.CsvToInt
@@ -2709,7 +2708,7 @@ namespace Efrpg.V3TestE5
         // Scalar Valued Functions
 
         // dbo.udfNetSale
-        public decimal UdfNetSale(int? quantity, decimal? listPrice, decimal? discount)
+        public decimal udfNetSale(int? quantity, decimal? list_price, decimal? discount)
         {
             return default(decimal);
         }
@@ -2788,11 +2787,6 @@ namespace Efrpg.V3TestE5
         public override ValueTask<TEntity> FindAsync(params object[] keyValues)
         {
             return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues)));
-        }
-
-        IAsyncEnumerator<TEntity> IAsyncEnumerable<TEntity>.GetAsyncEnumerator(CancellationToken cancellationToken)
-        {
-            return GetAsyncEnumerator(cancellationToken);
         }
 
         public override EntityEntry<TEntity> Add(TEntity entity)
@@ -2926,7 +2920,7 @@ namespace Efrpg.V3TestE5
             return _data.GetEnumerator();
         }
 
-        IAsyncEnumerator<TEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default(CancellationToken))
+        public override IAsyncEnumerator<TEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
             return new FakeDbAsyncEnumerator<TEntity>(this.AsEnumerable().GetEnumerator());
         }
@@ -3206,17 +3200,17 @@ namespace Efrpg.V3TestE5
         // Foreign keys
 
         /// <summary>
-        /// Parent Aaref pointed by [A].([C1], [C2]) (FK_A_A)
+        /// Parent AAREF pointed by [A].([C1], [C2]) (FK_A_A)
         /// </summary>
-        public virtual Aaref Aaref { get; set; } // FK_A_A
+        public virtual AAREF AAREF { get; set; } // FK_A_A
     }
 
     // AAREF
-    public class Aaref
+    public class AAREF
     {
         public int C1 { get; set; } // C1 (Primary key)
         public int C2 { get; set; } // C2 (Primary key)
-        public DateTime CreatedUtc { get; set; } // CreatedUTC
+        public DateTime CreatedUTC { get; set; } // CreatedUTC
 
         // Reverse navigation
 
@@ -3225,64 +3219,64 @@ namespace Efrpg.V3TestE5
         /// </summary>
         public virtual ICollection<A> A { get; set; } // A.FK_A_A
 
-        public Aaref()
+        public AAREF()
         {
             A = new List<A>();
         }
     }
 
     // AB_OrderLinesAB_
-    public class AbOrderLinesAb
+    public class AB_OrderLinesAB
     {
-        public int Id { get; set; } // ID (Primary key)
-        public int OrderId { get; set; } // OrderID
-        public string Sku { get; set; } // sku (length: 15)
+        public int ID { get; set; } // ID (Primary key)
+        public int OrderID { get; set; } // OrderID
+        public string sku { get; set; } // sku (length: 15)
 
         // Foreign keys
 
         /// <summary>
-        /// Parent AbOrdersAb pointed by [AB_OrderLinesAB_].([OrderId]) (AB_OrderLinesAB_FK)
+        /// Parent AB_OrdersAB pointed by [AB_OrderLinesAB_].([OrderID]) (AB_OrderLinesAB_FK)
         /// </summary>
-        public virtual AbOrdersAb AbOrdersAb { get; set; } // AB_OrderLinesAB_FK
+        public virtual AB_OrdersAB AB_OrdersAB { get; set; } // AB_OrderLinesAB_FK
     }
 
     // AB_OrdersAB_
-    public class AbOrdersAb
+    public class AB_OrdersAB
     {
-        public int Id { get; set; } // ID (Primary key)
-        public DateTime Added { get; set; } // added
+        public int ID { get; set; } // ID (Primary key)
+        public DateTime added { get; set; } // added
 
         // Reverse navigation
 
         /// <summary>
-        /// Child AbOrderLinesAbs where [AB_OrderLinesAB_].[OrderID] point to this entity (AB_OrderLinesAB_FK)
+        /// Child AB_OrderLinesABs where [AB_OrderLinesAB_].[OrderID] point to this entity (AB_OrderLinesAB_FK)
         /// </summary>
-        public virtual ICollection<AbOrderLinesAb> AbOrderLinesAbs { get; set; } // AB_OrderLinesAB_.AB_OrderLinesAB_FK
+        public virtual ICollection<AB_OrderLinesAB> AB_OrderLinesABs { get; set; } // AB_OrderLinesAB_.AB_OrderLinesAB_FK
 
-        public AbOrdersAb()
+        public AB_OrdersAB()
         {
-            Added = DateTime.Now;
-            AbOrderLinesAbs = new List<AbOrderLinesAb>();
+            added = DateTime.Now;
+            AB_OrderLinesABs = new List<AB_OrderLinesAB>();
         }
     }
 
     // AllColumnsNull
     public class AllColumnsNull
     {
-        public int? Total { get; set; } // total
-        public string AName { get; set; } // aName (length: 250)
+        public int? total { get; set; } // total
+        public string aName { get; set; } // aName (length: 250)
     }
 
     // Harish3485
     public class Alpha_Harish3485
     {
-        public int Id { get; set; } // id (Primary key)
-        public int HarishId { get; set; } // harish_id
+        public int id { get; set; } // id (Primary key)
+        public int harish_id { get; set; } // harish_id
 
         // Foreign keys
 
         /// <summary>
-        /// Parent FkTest_SmallDecimalTestAttribute pointed by [Harish3485].([HarishId]) (FK_Harish)
+        /// Parent FkTest_SmallDecimalTestAttribute pointed by [Harish3485].([harish_id]) (FK_Harish)
         /// </summary>
         public virtual FkTest_SmallDecimalTestAttribute FkTest_SmallDecimalTestAttribute { get; set; } // FK_Harish
     }
@@ -3297,7 +3291,7 @@ namespace Efrpg.V3TestE5
     }
 
     // workflow
-    public class Alpha_Workflow
+    public class Alpha_workflow
     {
         public int Id { get; set; } // Id (Primary key)
         public string Description { get; set; } // Description (length: 10)
@@ -3309,14 +3303,14 @@ namespace Efrpg.V3TestE5
         /// </summary>
         public virtual ICollection<Beta_ToAlpha> Beta_ToAlphas { get; set; } // ToAlpha.BetaToAlpha_AlphaWorkflow
 
-        public Alpha_Workflow()
+        public Alpha_workflow()
         {
             Beta_ToAlphas = new List<Beta_ToAlpha>();
         }
     }
 
     // alpha_workflow_synonym
-    public class AlphaWorkflowSynonym
+    public class alpha_workflow_synonym
     {
         public int Id { get; set; } // Id (Primary key)
         public string Description { get; set; } // Description (length: 10)
@@ -3325,9 +3319,9 @@ namespace Efrpg.V3TestE5
     // UserFacilityServiceRole
     public class App_UserFacilityServiceRole
     {
-        public int UserId { get; set; } // userId (Primary key)
-        public int AppId { get; set; } // appId (Primary key)
-        public int FsrId { get; set; } // fsrId (Primary key)
+        public int userId { get; set; } // userId (Primary key)
+        public int appId { get; set; } // appId (Primary key)
+        public int fsrId { get; set; } // fsrId (Primary key)
     }
 
     // AppUser
@@ -3358,15 +3352,15 @@ namespace Efrpg.V3TestE5
     // Attendee
     public class Attendee
     {
-        public long AttendeeId { get; set; } // AttendeeID (Primary key)
+        public long AttendeeID { get; set; } // AttendeeID (Primary key)
         public string Lastname { get; set; } // Lastname (length: 50)
         public string Firstname { get; set; } // Firstname (length: 50)
-        public int? PhoneCountryId { get; set; } // PhoneCountryID
+        public int? PhoneCountryID { get; set; } // PhoneCountryID
 
         // Foreign keys
 
         /// <summary>
-        /// Parent Country pointed by [Attendee].([PhoneCountryId]) (FK_Attendee_PhoneCountry)
+        /// Parent Country pointed by [Attendee].([PhoneCountryID]) (FK_Attendee_PhoneCountry)
         /// </summary>
         public virtual Country Country { get; set; } // FK_Attendee_PhoneCountry
     }
@@ -3374,19 +3368,19 @@ namespace Efrpg.V3TestE5
     // BatchTest
     public class BatchTest
     {
-        public string Code { get; set; } // code (Primary key) (length: 8)
+        public string code { get; set; } // code (Primary key) (length: 8)
     }
 
     // Harish3485
     public class Beta_Harish3485
     {
-        public int Id { get; set; } // id (Primary key)
-        public int AnotherId { get; set; } // another_id
+        public int id { get; set; } // id (Primary key)
+        public int another_id { get; set; } // another_id
 
         // Foreign keys
 
         /// <summary>
-        /// Parent PropertyTypesToAdd pointed by [Harish3485].([AnotherId]) (FK_Harish)
+        /// Parent PropertyTypesToAdd pointed by [Harish3485].([another_id]) (FK_Harish)
         /// </summary>
         public virtual PropertyTypesToAdd PropertyTypesToAdd { get; set; } // FK_Harish
     }
@@ -3409,32 +3403,32 @@ namespace Efrpg.V3TestE5
         // Foreign keys
 
         /// <summary>
-        /// Parent Alpha_Workflow pointed by [ToAlpha].([AlphaId]) (BetaToAlpha_AlphaWorkflow)
+        /// Parent Alpha_workflow pointed by [ToAlpha].([AlphaId]) (BetaToAlpha_AlphaWorkflow)
         /// </summary>
-        public virtual Alpha_Workflow Alpha_Workflow { get; set; } // BetaToAlpha_AlphaWorkflow
+        public virtual Alpha_workflow Alpha_workflow { get; set; } // BetaToAlpha_AlphaWorkflow
     }
 
     // workflow
-    public class Beta_Workflow
+    public class Beta_workflow
     {
         public int Id { get; set; } // Id (Primary key)
         public string Description { get; set; } // Description (length: 10)
     }
 
     // BITFIDDLERALLCAPS
-    public class Bitfiddlerallcap
+    public class BITFIDDLERALLCAP
     {
         public int Id { get; set; } // Id (Primary key)
     }
 
     // BitFiddlerCATEGORIES
-    public class BitFiddlerCategoRy
+    public class BitFiddlerCATEGORy
     {
         public int Id { get; set; } // Id (Primary key)
     }
 
     // BitFiddlerCURRENCIES
-    public class BitFiddlerCurrenCy
+    public class BitFiddlerCURRENCy
     {
         public int Id { get; set; } // Id (Primary key)
     }
@@ -3442,14 +3436,14 @@ namespace Efrpg.V3TestE5
     // Blah
     public class Blah
     {
-        public int BlahId { get; set; } // BlahID (Primary key)
+        public int BlahID { get; set; } // BlahID (Primary key)
 
         // Reverse navigation
 
         /// <summary>
         /// Child Blahs (Many-to-Many) mapped by table [BlahBlahLink]
         /// </summary>
-        public virtual ICollection<Blah> Blahs_BlahId2 { get; set; } // Many to many mapping
+        public virtual ICollection<Blah> Blahs_BlahID2 { get; set; } // Many to many mapping
 
         /// <summary>
         /// Child Blahs (Many-to-Many) mapped by table [BlahBlahLink]
@@ -3467,14 +3461,14 @@ namespace Efrpg.V3TestE5
         public virtual ICollection<Blah> Blahs3 { get; set; } // Many to many mapping
 
         /// <summary>
-        /// Child BlahBlahLinkV2 where [BlahBlahLink_v2].[BlahID] point to this entity (FK_BlahBlahLinkv2_Blah_ro)
+        /// Child BlahBlahLink_v2 where [BlahBlahLink_v2].[BlahID] point to this entity (FK_BlahBlahLinkv2_Blah_ro)
         /// </summary>
-        public virtual ICollection<BlahBlahLinkV2> BlahBlahLinkV2_BlahId { get; set; } // BlahBlahLink_v2.FK_BlahBlahLinkv2_Blah_ro
+        public virtual ICollection<BlahBlahLink_v2> BlahBlahLink_v2_BlahID { get; set; } // BlahBlahLink_v2.FK_BlahBlahLinkv2_Blah_ro
 
         /// <summary>
-        /// Child BlahBlahLinkV2 where [BlahBlahLink_v2].[BlahID2] point to this entity (FK_BlahBlahLinkv2_Blah_ro2)
+        /// Child BlahBlahLink_v2 where [BlahBlahLink_v2].[BlahID2] point to this entity (FK_BlahBlahLinkv2_Blah_ro2)
         /// </summary>
-        public virtual ICollection<BlahBlahLinkV2> BlahBlahLinkV2_BlahId2 { get; set; } // BlahBlahLink_v2.FK_BlahBlahLinkv2_Blah_ro2
+        public virtual ICollection<BlahBlahLink_v2> BlahBlahLink_v2_BlahID2 { get; set; } // BlahBlahLink_v2.FK_BlahBlahLinkv2_Blah_ro2
 
         /// <summary>
         /// Child Blargs (Many-to-Many) mapped by table [BlahBlargLink]
@@ -3483,10 +3477,10 @@ namespace Efrpg.V3TestE5
 
         public Blah()
         {
-            BlahBlahLinkV2_BlahId = new List<BlahBlahLinkV2>();
-            BlahBlahLinkV2_BlahId2 = new List<BlahBlahLinkV2>();
+            BlahBlahLink_v2_BlahID = new List<BlahBlahLink_v2>();
+            BlahBlahLink_v2_BlahID2 = new List<BlahBlahLink_v2>();
             Blahs1 = new List<Blah>();
-            Blahs_BlahId2 = new List<Blah>();
+            Blahs_BlahID2 = new List<Blah>();
             Blahs3 = new List<Blah>();
             Blahs2 = new List<Blah>();
             Blargs = new List<Blarg>();
@@ -3494,31 +3488,31 @@ namespace Efrpg.V3TestE5
     }
 
     // BlahBlahLink_v2
-    public class BlahBlahLinkV2
+    public class BlahBlahLink_v2
     {
-        public int BlahId { get; set; } // BlahID (Primary key)
-        public int BlahId2 { get; set; } // BlahID2 (Primary key)
-        public int? Dummy1 { get; set; } // dummy1
-        public int Dummy2 { get; set; } // dummy2
-        public int Hello { get; set; } // hello
+        public int BlahID { get; set; } // BlahID (Primary key)
+        public int BlahID2 { get; set; } // BlahID2 (Primary key)
+        public int? dummy1 { get; set; } // dummy1
+        public int dummy2 { get; set; } // dummy2
+        public int hello { get; set; } // hello
 
         // Foreign keys
 
         /// <summary>
-        /// Parent Blah pointed by [BlahBlahLink_v2].([BlahId]) (FK_BlahBlahLinkv2_Blah_ro)
+        /// Parent Blah pointed by [BlahBlahLink_v2].([BlahID]) (FK_BlahBlahLinkv2_Blah_ro)
         /// </summary>
-        public virtual Blah Blah_BlahId { get; set; } // FK_BlahBlahLinkv2_Blah_ro
+        public virtual Blah Blah_BlahID { get; set; } // FK_BlahBlahLinkv2_Blah_ro
 
         /// <summary>
-        /// Parent Blah pointed by [BlahBlahLink_v2].([BlahId2]) (FK_BlahBlahLinkv2_Blah_ro2)
+        /// Parent Blah pointed by [BlahBlahLink_v2].([BlahID2]) (FK_BlahBlahLinkv2_Blah_ro2)
         /// </summary>
-        public virtual Blah Blah_BlahId2 { get; set; } // FK_BlahBlahLinkv2_Blah_ro2
+        public virtual Blah Blah_BlahID2 { get; set; } // FK_BlahBlahLinkv2_Blah_ro2
     }
 
     // Blarg
     public class Blarg
     {
-        public int BlargId { get; set; } // BlargID (Primary key)
+        public int BlargID { get; set; } // BlargID (Primary key)
 
         // Reverse navigation
 
@@ -3536,46 +3530,46 @@ namespace Efrpg.V3TestE5
     // Burak1
     public class Burak1
     {
-        public long Id { get; set; } // id (Primary key)
-        public long IdT { get; set; } // id_t
-        public long Num { get; set; } // num
+        public long id { get; set; } // id (Primary key)
+        public long id_t { get; set; } // id_t
+        public long num { get; set; } // num
 
         // Foreign keys
 
         /// <summary>
-        /// Parent Burak2 pointed by [Burak1].([Id], [Num]) (FK_Burak_Test2)
+        /// Parent Burak2 pointed by [Burak1].([id], [num]) (FK_Burak_Test2)
         /// </summary>
-        public virtual Burak2 Burak2_Id { get; set; } // FK_Burak_Test2
+        public virtual Burak2 Burak2_id { get; set; } // FK_Burak_Test2
 
         /// <summary>
-        /// Parent Burak2 pointed by [Burak1].([IdT], [Num]) (FK_Burak_Test1)
+        /// Parent Burak2 pointed by [Burak1].([id_t], [num]) (FK_Burak_Test1)
         /// </summary>
-        public virtual Burak2 Burak2_IdT { get; set; } // FK_Burak_Test1
+        public virtual Burak2 Burak2_id_t { get; set; } // FK_Burak_Test1
     }
 
     // Burak2
     public class Burak2
     {
-        public long Id { get; set; } // id (Primary key)
-        public long Num { get; set; } // num
+        public long id { get; set; } // id (Primary key)
+        public long num { get; set; } // num
 
         // Reverse navigation
 
         /// <summary>
         /// Parent (One-to-One) Burak2 pointed by [Burak1].([id], [num]) (FK_Burak_Test2)
         /// </summary>
-        public virtual Burak1 Burak1_Id { get; set; } // Burak1.FK_Burak_Test2
+        public virtual Burak1 Burak1_id { get; set; } // Burak1.FK_Burak_Test2
 
         /// <summary>
         /// Parent (One-to-One) Burak2 pointed by [Burak1].([id_t], [num]) (FK_Burak_Test1)
         /// </summary>
-        public virtual Burak1 Burak1_IdT { get; set; } // Burak1.FK_Burak_Test1
+        public virtual Burak1 Burak1_id_t { get; set; } // Burak1.FK_Burak_Test1
     }
 
     // CalculatedColumnNotNull
     public class CalculatedColumnNotNull
     {
-        public int Id { get; set; } // ID (Primary key)
+        public int ID { get; set; } // ID (Primary key)
         public byte Type { get; set; } // Type
         public bool IsCalendar { get; private set; } // IsCalendar
         public bool IsUtilization { get; private set; } // IsUtilization
@@ -3587,8 +3581,8 @@ namespace Efrpg.V3TestE5
         public int Id { get; set; } // Id (Primary key)
         public int PrimaryColourId { get; set; } // PrimaryColourId
         public string CarMake { get; set; } // CarMake (length: 255)
-        public int? ComputedColumn { get; private set; } // computed_column
-        public int ComputedColumnPersisted { get; private set; } // computed_column_persisted
+        public int? computed_column { get; private set; } // computed_column
+        public int computed_column_persisted { get; private set; } // computed_column_persisted
 
         // Reverse navigation
 
@@ -3613,14 +3607,14 @@ namespace Efrpg.V3TestE5
     // ClientCreationState
     public class ClientCreationState
     {
-        public Guid Id { get; set; } // id (Primary key)
+        public Guid id { get; set; } // id (Primary key)
         public bool WebhookSetup { get; set; } // WebhookSetup
         public bool AuthSetup { get; set; } // AuthSetup
         public bool AssignedCarrier { get; set; } // AssignedCarrier
     }
 
     // CMS_File
-    public class CmsFile
+    public class CMS_File
     {
         public int FileId { get; set; } // FileId (Primary key)
         public string FileName { get; set; } // FileName (length: 100)
@@ -3633,18 +3627,18 @@ namespace Efrpg.V3TestE5
         // Reverse navigation
 
         /// <summary>
-        /// Child CmsTags (Many-to-Many) mapped by table [CMS_FileTag]
+        /// Child CMS_Tags (Many-to-Many) mapped by table [CMS_FileTag]
         /// </summary>
-        public virtual ICollection<CmsTag> CmsTags { get; set; } // Many to many mapping
+        public virtual ICollection<CMS_Tag> CMS_Tags { get; set; } // Many to many mapping
 
-        public CmsFile()
+        public CMS_File()
         {
-            CmsTags = new List<CmsTag>();
+            CMS_Tags = new List<CMS_Tag>();
         }
     }
 
     // CMS_Tag
-    public class CmsTag
+    public class CMS_Tag
     {
         public int TagId { get; set; } // TagId (Primary key)
         public string TagName { get; set; } // TagName (length: 100)
@@ -3652,37 +3646,62 @@ namespace Efrpg.V3TestE5
         // Reverse navigation
 
         /// <summary>
-        /// Child CmsFiles (Many-to-Many) mapped by table [CMS_FileTag]
+        /// Child CMS_Files (Many-to-Many) mapped by table [CMS_FileTag]
         /// </summary>
-        public virtual ICollection<CmsFile> CmsFiles { get; set; } // Many to many mapping
+        public virtual ICollection<CMS_File> CMS_Files { get; set; } // Many to many mapping
 
-        public CmsTag()
+        public CMS_Tag()
         {
-            CmsFiles = new List<CmsFile>();
+            CMS_Files = new List<CMS_File>();
         }
     }
 
     // CODE_MeetingTopicDetails
-    public class CodeMeetingTopicDetail
+    public class CODE_MeetingTopicDetail
     {
-        public int Id { get; set; } // id (Primary key)
-        public int IdReuniao { get; set; } // id_reuniao
-        public int? OrdTrab { get; set; } // ord_trab
-        public string Assunto { get; set; } // assunto (length: 250)
-        public string Desenvolvimento { get; set; } // desenvolvimento
-        public string Origem { get; set; } // origem (length: 5)
-        public int? IdOrigem { get; set; } // id_origem
+        public int id { get; set; } // id (Primary key)
+        public int id_reuniao { get; set; } // id_reuniao
+        public int? ord_trab { get; set; } // ord_trab
+        public string assunto { get; set; } // assunto (length: 250)
+        public string desenvolvimento { get; set; } // desenvolvimento
+        public string origem { get; set; } // origem (length: 5)
+        public int? id_origem { get; set; } // id_origem
         public int? Estado { get; set; } // Estado
-        public int CompanyId { get; set; } // CompanyID
+        public int CompanyID { get; set; } // CompanyID
         public DateTime DateCreated { get; set; } // DateCreated
         public DateTime? DateChanged { get; set; } // DateChanged
 
         // Foreign keys
 
         /// <summary>
-        /// Parent CodeParamMeetingTopicDetailSource pointed by [CODE_MeetingTopicDetails].([Origem]) (FK_CODE_MeetingTopicDetails_CODE_PARAM_MeetingTopicDetailSource)
+        /// Parent CODE_PARAM_MeetingTopicDetailSource pointed by [CODE_MeetingTopicDetails].([origem]) (FK_CODE_MeetingTopicDetails_CODE_PARAM_MeetingTopicDetailSource)
         /// </summary>
-        public virtual CodeParamMeetingTopicDetailSource CodeParamMeetingTopicDetailSource { get; set; } // FK_CODE_MeetingTopicDetails_CODE_PARAM_MeetingTopicDetailSource
+        public virtual CODE_PARAM_MeetingTopicDetailSource CODE_PARAM_MeetingTopicDetailSource { get; set; } // FK_CODE_MeetingTopicDetails_CODE_PARAM_MeetingTopicDetailSource
+    }
+
+    // CODE_PARAM_MeetingTopicDetailSource
+    public class CODE_PARAM_MeetingTopicDetailSource
+    {
+        public int ID { get; set; } // ID (Primary key)
+        public string Code { get; set; } // Code (length: 5)
+        public string Label { get; set; } // Label (length: 50)
+        public string LabelENG { get; set; } // LabelENG (length: 50)
+        public string LabelESP { get; set; } // LabelESP (length: 50)
+        public string LabelFRA { get; set; } // LabelFRA (length: 50)
+        public DateTime DateCreated { get; set; } // DateCreated
+        public DateTime? DateChanged { get; set; } // DateChanged
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child CODE_MeetingTopicDetails where [CODE_MeetingTopicDetails].[origem] point to this entity (FK_CODE_MeetingTopicDetails_CODE_PARAM_MeetingTopicDetailSource)
+        /// </summary>
+        public virtual ICollection<CODE_MeetingTopicDetail> CODE_MeetingTopicDetails { get; set; } // CODE_MeetingTopicDetails.FK_CODE_MeetingTopicDetails_CODE_PARAM_MeetingTopicDetailSource
+
+        public CODE_PARAM_MeetingTopicDetailSource()
+        {
+            CODE_MeetingTopicDetails = new List<CODE_MeetingTopicDetail>();
+        }
     }
 
     // CodeObject
@@ -3691,46 +3710,21 @@ namespace Efrpg.V3TestE5
     /// </summary>
     public class CodeObject
     {
-        public int CodeObjectNo { get; set; } // codeObjectNo (Primary key)
-        public int? ApplicationNo { get; set; } // applicationNo
-        public int Type { get; set; } // type
-        public string EName { get; set; } // eName (length: 250)
-        public string AName { get; set; } // aName (length: 250)
-        public string Description { get; set; } // description (length: 250)
-        public string CodeName { get; set; } // codeName (length: 250)
-        public string Note { get; set; } // note (length: 250)
-        public bool IsObject { get; set; } // isObject
-        public byte[] VersionNumber { get; set; } // versionNumber (length: 8)
+        public int codeObjectNo { get; set; } // codeObjectNo (Primary key)
+        public int? applicationNo { get; set; } // applicationNo
+        public int type { get; set; } // type
+        public string eName { get; set; } // eName (length: 250)
+        public string aName { get; set; } // aName (length: 250)
+        public string description { get; set; } // description (length: 250)
+        public string codeName { get; set; } // codeName (length: 250)
+        public string note { get; set; } // note (length: 250)
+        public bool isObject { get; set; } // isObject
+        public byte[] versionNumber { get; set; } // versionNumber (length: 8)
 
         public CodeObject()
         {
-            CodeObjectNo = 0;
-            IsObject = false;
-        }
-    }
-
-    // CODE_PARAM_MeetingTopicDetailSource
-    public class CodeParamMeetingTopicDetailSource
-    {
-        public int Id { get; set; } // ID (Primary key)
-        public string Code { get; set; } // Code (length: 5)
-        public string Label { get; set; } // Label (length: 50)
-        public string LabelEng { get; set; } // LabelENG (length: 50)
-        public string LabelEsp { get; set; } // LabelESP (length: 50)
-        public string LabelFra { get; set; } // LabelFRA (length: 50)
-        public DateTime DateCreated { get; set; } // DateCreated
-        public DateTime? DateChanged { get; set; } // DateChanged
-
-        // Reverse navigation
-
-        /// <summary>
-        /// Child CodeMeetingTopicDetails where [CODE_MeetingTopicDetails].[origem] point to this entity (FK_CODE_MeetingTopicDetails_CODE_PARAM_MeetingTopicDetailSource)
-        /// </summary>
-        public virtual ICollection<CodeMeetingTopicDetail> CodeMeetingTopicDetails { get; set; } // CODE_MeetingTopicDetails.FK_CODE_MeetingTopicDetails_CODE_PARAM_MeetingTopicDetailSource
-
-        public CodeParamMeetingTopicDetailSource()
-        {
-            CodeMeetingTopicDetails = new List<CodeMeetingTopicDetail>();
+            codeObjectNo = 0;
+            isObject = false;
         }
     }
 
@@ -3770,47 +3764,47 @@ namespace Efrpg.V3TestE5
         public int C36 { get; set; } // $ (Primary key)
         public int? C37 { get; set; } // %
         public int? C163 { get; set; } // £
-        public int? C38Fred { get; set; } // &fred$
-        public int? Abc4792 { get; set; } // abc/\
-        public int? Joe46Bloggs { get; set; } // joe.bloggs
-        public int? SimonHughes { get; set; } // simon-hughes
-        public string Description { get; set; } // description (length: 20)
-        public DateTime SomeDate { get; set; } // someDate
+        public int? C38fred { get; set; } // &fred$
+        public int? abc4792 { get; set; } // abc/\
+        public int? joe46bloggs { get; set; } // joe.bloggs
+        public int? simon_hughes { get; set; } // simon-hughes
+        public string description { get; set; } // description (length: 20)
+        public DateTime someDate { get; set; } // someDate
         public string Obs { get; set; } // Obs (length: 50)
         public string Obs1 { get; set; } // Obs1 (length: 50)
         public string Obs2 { get; set; } // Obs2 (length: 50)
         public string Obs3 { get; set; } // Obs3 (length: 50)
-        public int? @Static { get; set; } // static
-        public int? @Readonly { get; set; } // readonly
+        public int? @static { get; set; } // static
+        public int? @readonly { get; set; } // readonly
         public int? C123Hi { get; set; } // 123Hi
-        public float? Areal { get; set; } // areal
-        public double? Afloat { get; set; } // afloat
-        public float? Afloat8 { get; set; } // afloat8
-        public float? Afloat20 { get; set; } // afloat20
-        public float? Afloat24 { get; set; } // afloat24
-        public double? Afloat53 { get; set; } // afloat53
-        public decimal? Adecimal { get; set; } // adecimal
-        public decimal? Adecimal194 { get; set; } // adecimal_19_4
-        public decimal? Adecimal103 { get; set; } // adecimal_10_3
-        public decimal? Anumeric { get; set; } // anumeric
-        public decimal? Anumeric52 { get; set; } // anumeric_5_2
-        public decimal? Anumeric113 { get; set; } // anumeric_11_3
-        public decimal? Amoney { get; set; } // amoney
-        public decimal? Asmallmoney { get; set; } // asmallmoney
-        public int? Brandon { get; set; } // brandon
+        public float? areal { get; set; } // areal
+        public double? afloat { get; set; } // afloat
+        public float? afloat8 { get; set; } // afloat8
+        public float? afloat20 { get; set; } // afloat20
+        public float? afloat24 { get; set; } // afloat24
+        public double? afloat53 { get; set; } // afloat53
+        public decimal? adecimal { get; set; } // adecimal
+        public decimal? adecimal_19_4 { get; set; } // adecimal_19_4
+        public decimal? adecimal_10_3 { get; set; } // adecimal_10_3
+        public decimal? anumeric { get; set; } // anumeric
+        public decimal? anumeric_5_2 { get; set; } // anumeric_5_2
+        public decimal? anumeric_11_3 { get; set; } // anumeric_11_3
+        public decimal? amoney { get; set; } // amoney
+        public decimal? asmallmoney { get; set; } // asmallmoney
+        public int? brandon { get; set; } // brandon
         public NetTopologySuite.Geometries.Point GeographyType { get; set; } // GeographyType
         public NetTopologySuite.Geometries.Geometry GeometryType { get; set; } // GeometryType
 
         public ColumnNameAndType()
         {
-            Description = "";
-            SomeDate = DateTime.Now;
+            description = "";
+            someDate = DateTime.Now;
             Obs = "[{\"k\":\"en\",\"v\":\"\"},{\"k\":\"pt\",\"v\":\"\"}]";
             Obs1 = @"\";
             Obs2 = @"\\";
             Obs3 = @"\\\";
-            Areal = 1.23f;
-            Afloat = 999.0;
+            areal = 1.23f;
+            afloat = 999.0;
         }
     }
 
@@ -3824,7 +3818,7 @@ namespace Efrpg.V3TestE5
     // Country
     public class Country
     {
-        public int CountryId { get; set; } // CountryID (Primary key)
+        public int CountryID { get; set; } // CountryID (Primary key)
         public string Code { get; set; } // Code (length: 12)
 
         // Reverse navigation
@@ -3847,7 +3841,7 @@ namespace Efrpg.V3TestE5
     }
 
     // cross_database_synonym
-    public class CrossDatabaseSynonym
+    public class cross_database_synonym
     {
         public int Id { get; set; } // Id (Primary key)
         public string Forename { get; set; } // Forename (length: 20)
@@ -3866,32 +3860,32 @@ namespace Efrpg.V3TestE5
     }
 
     // rov_ColumnDefinitions
-    public class dcg_RovColumnDefinition
+    public class dcg_rov_ColumnDefinition
     {
-        public string TableCatalog { get; set; } // TABLE_CATALOG (length: 128)
-        public string TableSchema { get; set; } // TABLE_SCHEMA (length: 128)
-        public string TableName { get; set; } // TABLE_NAME (length: 128)
-        public string ColumnName { get; set; } // COLUMN_NAME (length: 128)
-        public int? OrdinalPosition { get; set; } // ORDINAL_POSITION
-        public string ColumnDefault { get; set; } // COLUMN_DEFAULT (length: 4000)
-        public string IsNullable { get; set; } // IS_NULLABLE (length: 3)
-        public string DataType { get; set; } // DATA_TYPE (length: 128)
-        public int? CharacterMaximumLength { get; set; } // CHARACTER_MAXIMUM_LENGTH
-        public int? CharacterOctetLength { get; set; } // CHARACTER_OCTET_LENGTH
-        public byte? NumericPrecision { get; set; } // NUMERIC_PRECISION
-        public short? NumericPrecisionRadix { get; set; } // NUMERIC_PRECISION_RADIX
-        public int? NumericScale { get; set; } // NUMERIC_SCALE
-        public short? DatetimePrecision { get; set; } // DATETIME_PRECISION
-        public string CharacterSetCatalog { get; set; } // CHARACTER_SET_CATALOG (length: 128)
-        public string CharacterSetSchema { get; set; } // CHARACTER_SET_SCHEMA (length: 128)
-        public string CharacterSetName { get; set; } // CHARACTER_SET_NAME (length: 128)
-        public string CollationCatalog { get; set; } // COLLATION_CATALOG (length: 128)
-        public string CollationSchema { get; set; } // COLLATION_SCHEMA (length: 128)
-        public string CollationName { get; set; } // COLLATION_NAME (length: 128)
-        public string DomainCatalog { get; set; } // DOMAIN_CATALOG (length: 128)
-        public string DomainSchema { get; set; } // DOMAIN_SCHEMA (length: 128)
-        public string DomainName { get; set; } // DOMAIN_NAME (length: 128)
-        public string Type { get; set; } // TYPE (length: 2)
+        public string TABLE_CATALOG { get; set; } // TABLE_CATALOG (length: 128)
+        public string TABLE_SCHEMA { get; set; } // TABLE_SCHEMA (length: 128)
+        public string TABLE_NAME { get; set; } // TABLE_NAME (length: 128)
+        public string COLUMN_NAME { get; set; } // COLUMN_NAME (length: 128)
+        public int? ORDINAL_POSITION { get; set; } // ORDINAL_POSITION
+        public string COLUMN_DEFAULT { get; set; } // COLUMN_DEFAULT (length: 4000)
+        public string IS_NULLABLE { get; set; } // IS_NULLABLE (length: 3)
+        public string DATA_TYPE { get; set; } // DATA_TYPE (length: 128)
+        public int? CHARACTER_MAXIMUM_LENGTH { get; set; } // CHARACTER_MAXIMUM_LENGTH
+        public int? CHARACTER_OCTET_LENGTH { get; set; } // CHARACTER_OCTET_LENGTH
+        public byte? NUMERIC_PRECISION { get; set; } // NUMERIC_PRECISION
+        public short? NUMERIC_PRECISION_RADIX { get; set; } // NUMERIC_PRECISION_RADIX
+        public int? NUMERIC_SCALE { get; set; } // NUMERIC_SCALE
+        public short? DATETIME_PRECISION { get; set; } // DATETIME_PRECISION
+        public string CHARACTER_SET_CATALOG { get; set; } // CHARACTER_SET_CATALOG (length: 128)
+        public string CHARACTER_SET_SCHEMA { get; set; } // CHARACTER_SET_SCHEMA (length: 128)
+        public string CHARACTER_SET_NAME { get; set; } // CHARACTER_SET_NAME (length: 128)
+        public string COLLATION_CATALOG { get; set; } // COLLATION_CATALOG (length: 128)
+        public string COLLATION_SCHEMA { get; set; } // COLLATION_SCHEMA (length: 128)
+        public string COLLATION_NAME { get; set; } // COLLATION_NAME (length: 128)
+        public string DOMAIN_CATALOG { get; set; } // DOMAIN_CATALOG (length: 128)
+        public string DOMAIN_SCHEMA { get; set; } // DOMAIN_SCHEMA (length: 128)
+        public string DOMAIN_NAME { get; set; } // DOMAIN_NAME (length: 128)
+        public string TYPE { get; set; } // TYPE (length: 2)
     }
 
     // DefaultCheckForNull
@@ -3906,17 +3900,17 @@ namespace Efrpg.V3TestE5
     }
 
     // DSOpe
-    public class DsOpe
+    public class DSOpe
     {
-        public int Id { get; set; } // ID (Primary key)
-        public decimal DecimalDefault { get; set; } // decimal_default
+        public int ID { get; set; } // ID (Primary key)
+        public decimal decimal_default { get; set; } // decimal_default
         public Guid MyGuid { get; set; } // MyGuid
-        public string @Default { get; set; } // default (length: 10)
+        public string @default { get; set; } // default (length: 10)
         public Guid? MyGuidBadDefault { get; set; } // MyGuidBadDefault
 
-        public DsOpe()
+        public DSOpe()
         {
-            DecimalDefault = 99.99m;
+            decimal_default = 99.99m;
             MyGuid = Guid.Parse("9B7E1F67-5A81-4277-BC7D-06A3262A5C70");
             MyGuidBadDefault = null;
         }
@@ -3925,8 +3919,8 @@ namespace Efrpg.V3TestE5
     // EnumsWithStringAsValue
     public class EnumsWithStringAsValue
     {
-        public string EnumName { get; set; } // enum_name (Primary key) (length: 50)
-        public string Value { get; set; } // value (Primary key) (length: 10)
+        public string enum_name { get; set; } // enum_name (Primary key) (length: 50)
+        public string value { get; set; } // value (Primary key) (length: 10)
     }
 
     // DaysOfWeek
@@ -4012,11 +4006,11 @@ namespace Efrpg.V3TestE5
     }
 
     // CV
-    public class FFRS_Cv
+    public class FFRS_CV
     {
-        public Guid BatchUid { get; set; } // BatchUID (Primary key)
-        public int Cvid { get; set; } // CVID (Primary key)
-        public string CvName { get; set; } // CVName (length: 200)
+        public Guid BatchUID { get; set; } // BatchUID (Primary key)
+        public int CVID { get; set; } // CVID (Primary key)
+        public string CVName { get; set; } // CVName (length: 200)
     }
 
     // FinancialInstitutionOffice
@@ -4030,8 +4024,8 @@ namespace Efrpg.V3TestE5
     // SmallDecimalTestAttribute
     public class FkTest_SmallDecimalTestAttribute
     {
-        public int FkId { get; set; } // FkID (Primary key)
-        public string Description { get; set; } // description (length: 20)
+        public int FkID { get; set; } // FkID (Primary key)
+        public string description { get; set; } // description (length: 20)
 
         // Reverse navigation
 
@@ -4043,7 +4037,7 @@ namespace Efrpg.V3TestE5
         // Foreign keys
 
         /// <summary>
-        /// Parent SmallDecimalTest pointed by [SmallDecimalTestAttribute].([FkId]) (KateFK)
+        /// Parent SmallDecimalTest pointed by [SmallDecimalTestAttribute].([FkID]) (KateFK)
         /// </summary>
         public virtual SmallDecimalTest SmallDecimalTest { get; set; } // KateFK
 
@@ -4054,63 +4048,63 @@ namespace Efrpg.V3TestE5
     }
 
     // footer
-    public class Footer
+    public class footer
     {
-        public int Id { get; set; } // ID (Primary key)
-        public int OtherId { get; set; } // otherID
-        public DateTime Added { get; set; } // added
+        public int ID { get; set; } // ID (Primary key)
+        public int otherID { get; set; } // otherID
+        public DateTime added { get; set; } // added
 
         // Foreign keys
 
         /// <summary>
-        /// Parent Header pointed by [footer].([Id], [OtherId]) (fooderFK)
+        /// Parent header pointed by [footer].([ID], [otherID]) (fooderFK)
         /// </summary>
-        public virtual Header Header { get; set; } // fooderFK
+        public virtual header header { get; set; } // fooderFK
 
-        public Footer()
+        public footer()
         {
-            Added = DateTime.Now;
+            added = DateTime.Now;
         }
     }
 
     // ForeignKeyIsNotEnforced
     public class ForeignKeyIsNotEnforced
     {
-        public int Id { get; set; } // id (Primary key)
-        public int? NullValue { get; set; } // null_value
-        public int NotNullValue { get; set; } // not_null_value
+        public int id { get; set; } // id (Primary key)
+        public int? null_value { get; set; } // null_value
+        public int not_null_value { get; set; } // not_null_value
 
         // Reverse navigation
 
         /// <summary>
         /// Parent (One-to-One) ForeignKeyIsNotEnforced pointed by [ForeignKeyIsNotEnforcedItem].[not_null_value] (FK_ForeignKeyIsNotEnforcedItem_notnull_notnull)
         /// </summary>
-        public virtual ForeignKeyIsNotEnforcedItem ForeignKeyIsNotEnforcedItem_NotNullValue { get; set; } // ForeignKeyIsNotEnforcedItem.FK_ForeignKeyIsNotEnforcedItem_notnull_notnull
+        public virtual ForeignKeyIsNotEnforcedItem ForeignKeyIsNotEnforcedItem_not_null_value { get; set; } // ForeignKeyIsNotEnforcedItem.FK_ForeignKeyIsNotEnforcedItem_notnull_notnull
 
         /// <summary>
         /// Parent (One-to-One) ForeignKeyIsNotEnforced pointed by [ForeignKeyIsNotEnforcedItem].[null_value] (FK_ForeignKeyIsNotEnforcedItem_null_notnull)
         /// </summary>
-        public virtual ForeignKeyIsNotEnforcedItem ForeignKeyIsNotEnforcedItem_NullValue { get; set; } // ForeignKeyIsNotEnforcedItem.FK_ForeignKeyIsNotEnforcedItem_null_notnull
+        public virtual ForeignKeyIsNotEnforcedItem ForeignKeyIsNotEnforcedItem_null_value { get; set; } // ForeignKeyIsNotEnforcedItem.FK_ForeignKeyIsNotEnforcedItem_null_notnull
     }
 
     // ForeignKeyIsNotEnforcedItem
     public class ForeignKeyIsNotEnforcedItem
     {
-        public int Id { get; set; } // id (Primary key)
-        public int? NullValue { get; set; } // null_value
-        public int NotNullValue { get; set; } // not_null_value
+        public int id { get; set; } // id (Primary key)
+        public int? null_value { get; set; } // null_value
+        public int not_null_value { get; set; } // not_null_value
 
         // Foreign keys
 
         /// <summary>
-        /// Parent ForeignKeyIsNotEnforced pointed by [ForeignKeyIsNotEnforcedItem].([NotNullValue]) (FK_ForeignKeyIsNotEnforcedItem_notnull_notnull)
+        /// Parent ForeignKeyIsNotEnforced pointed by [ForeignKeyIsNotEnforcedItem].([not_null_value]) (FK_ForeignKeyIsNotEnforcedItem_notnull_notnull)
         /// </summary>
-        public virtual ForeignKeyIsNotEnforced ForeignKeyIsNotEnforced_NotNullValue { get; set; } // FK_ForeignKeyIsNotEnforcedItem_notnull_notnull
+        public virtual ForeignKeyIsNotEnforced ForeignKeyIsNotEnforced_not_null_value { get; set; } // FK_ForeignKeyIsNotEnforcedItem_notnull_notnull
 
         /// <summary>
-        /// Parent ForeignKeyIsNotEnforced pointed by [ForeignKeyIsNotEnforcedItem].([NullValue]) (FK_ForeignKeyIsNotEnforcedItem_null_notnull)
+        /// Parent ForeignKeyIsNotEnforced pointed by [ForeignKeyIsNotEnforcedItem].([null_value]) (FK_ForeignKeyIsNotEnforcedItem_null_notnull)
         /// </summary>
-        public virtual ForeignKeyIsNotEnforced ForeignKeyIsNotEnforced_NullValue { get; set; } // FK_ForeignKeyIsNotEnforcedItem_null_notnull
+        public virtual ForeignKeyIsNotEnforced ForeignKeyIsNotEnforced_null_value { get; set; } // FK_ForeignKeyIsNotEnforcedItem_null_notnull
     }
 
     // HasPrincipalKeyTestChild
@@ -4134,10 +4128,10 @@ namespace Efrpg.V3TestE5
     public class HasPrincipalKeyTestParent
     {
         public int Id { get; set; } // Id (Primary key)
-        public int Aa { get; set; } // AA
-        public int Bb { get; set; } // BB
-        public int? Cc { get; set; } // CC
-        public int? Dd { get; set; } // DD
+        public int AA { get; set; } // AA
+        public int BB { get; set; } // BB
+        public int? CC { get; set; } // CC
+        public int? DD { get; set; } // DD
 
         // Reverse navigation
 
@@ -4148,31 +4142,31 @@ namespace Efrpg.V3TestE5
     }
 
     // header
-    public class Header
+    public class header
     {
-        public int Id { get; set; } // ID (Primary key)
-        public int AnotherId { get; set; } // anotherID (Primary key)
-        public DateTime Added { get; set; } // added
+        public int ID { get; set; } // ID (Primary key)
+        public int anotherID { get; set; } // anotherID (Primary key)
+        public DateTime added { get; set; } // added
 
         // Reverse navigation
 
         /// <summary>
-        /// Child Footers where [footer].([ID], [otherID]) point to this entity (fooderFK)
+        /// Child footers where [footer].([ID], [otherID]) point to this entity (fooderFK)
         /// </summary>
-        public virtual ICollection<Footer> Footers { get; set; } // footer.fooderFK
+        public virtual ICollection<footer> footers { get; set; } // footer.fooderFK
 
-        public Header()
+        public header()
         {
-            Added = DateTime.Now;
-            Footers = new List<Footer>();
+            added = DateTime.Now;
+            footers = new List<footer>();
         }
     }
 
     // hierarchy_test
-    public class HierarchyTest
+    public class hierarchy_test
     {
-        public int Id { get; set; } // ID (Primary key)
-        public HierarchyId Hid { get; set; } // hid
+        public int ID { get; set; } // ID (Primary key)
+        public HierarchyId hid { get; set; } // hid
     }
 
     // Role
@@ -4317,8 +4311,8 @@ namespace Efrpg.V3TestE5
     // PeriodTestTable
     public class PeriodTestTable
     {
-        public int Id { get; set; } // id (Primary key)
-        public int? Joe46Bloggs { get; set; } // joe.bloggs
+        public int id { get; set; } // id (Primary key)
+        public int? joe46bloggs { get; set; } // joe.bloggs
     }
 
     // Person
@@ -4369,7 +4363,7 @@ namespace Efrpg.V3TestE5
     }
 
     // pk_ordinal_test
-    public class PkOrdinalTest
+    public class pk_ordinal_test
     {
         public int C1 { get; set; } // C1 (Primary key)
         public int C2 { get; set; } // C2
@@ -4379,10 +4373,10 @@ namespace Efrpg.V3TestE5
     // PropertyTypesToAdd
     public class PropertyTypesToAdd
     {
-        public int Id { get; set; } // id (Primary key)
-        public DateTime? DtDefault { get; set; } // dt_default
-        public DateTime? Dt7 { get; set; } // dt7
-        public string DefaultCheck { get; set; } // defaultCheck (length: 10)
+        public int id { get; set; } // id (Primary key)
+        public DateTime? dt_default { get; set; } // dt_default
+        public DateTime? dt7 { get; set; } // dt7
+        public string defaultCheck { get; set; } // defaultCheck (length: 10)
 
         // Reverse navigation
 
@@ -4393,7 +4387,7 @@ namespace Efrpg.V3TestE5
 
         public PropertyTypesToAdd()
         {
-            DefaultCheck = @"/****** Object:  Default [d_t_address_type_domain]    Script Date: 22/07/2015 14:28:05 ******/
+            defaultCheck = @"/****** Object:  Default [d_t_address_type_domain]    Script Date: 22/07/2015 14:28:05 ******/
     CREATE DEFAULT [dbo].[d_t_address_type_domain] 
     AS
     'A'";
@@ -4415,7 +4409,7 @@ namespace Efrpg.V3TestE5
     // SmallDecimalTest
     public class SmallDecimalTest
     {
-        public int Id { get; set; } // id (Primary key)
+        public int id { get; set; } // id (Primary key)
         public decimal? KoeffVed { get; set; } // KoeffVed
 
         // Reverse navigation
@@ -4434,15 +4428,15 @@ namespace Efrpg.V3TestE5
     // SmallDecimalTestView
     public class SmallDecimalTestView
     {
-        public int FkId { get; set; } // FkID
-        public string Description { get; set; } // description (length: 20)
+        public int FkID { get; set; } // FkID
+        public string description { get; set; } // description (length: 20)
     }
 
     // Boo
     public class Stafford_Boo
     {
-        public int Id { get; set; } // id (Primary key)
-        public string Name { get; set; } // name (length: 10)
+        public int id { get; set; } // id (Primary key)
+        public string name { get; set; } // name (length: 10)
 
         // Reverse navigation
 
@@ -4463,13 +4457,13 @@ namespace Efrpg.V3TestE5
     // Foo
     public class Stafford_Foo
     {
-        public int Id { get; set; } // id (Primary key)
-        public string Name { get; set; } // name (length: 10)
+        public int id { get; set; } // id (Primary key)
+        public string name { get; set; } // name (length: 10)
 
         // Foreign keys
 
         /// <summary>
-        /// Parent Stafford_Boo pointed by [Foo].([Id]) (FK_Foo_Boo)
+        /// Parent Stafford_Boo pointed by [Foo].([id]) (FK_Foo_Boo)
         /// </summary>
         public virtual Stafford_Boo Stafford_Boo { get; set; } // FK_Foo_Boo
     }
@@ -4556,56 +4550,56 @@ namespace Efrpg.V3TestE5
     }
 
     // table with duplicate column names
-    public class TableWithDuplicateColumnName
+    public class tablewithduplicatecolumnname
     {
-        public int Id { get; set; } // id (Primary key)
-        public int UserId1 { get; set; } // user_id
-        public int UserId2 { get; set; } // UserId
-        public int UserId3 { get; set; } // User Id
-        public int UserId4 { get; set; } // User  Id
-        public int UserId { get; set; } // user__id
+        public int id { get; set; } // id (Primary key)
+        public int user_id { get; set; } // user_id
+        public int UserId1 { get; set; } // UserId
+        public int UserId2 { get; set; } // User Id
+        public int UserId { get; set; } // User  Id
+        public int user__id { get; set; } // user__id
     }
 
     // table with space
-    public class TableWithSpace
+    public class tablewithspace
     {
-        public int Id { get; set; } // id (Primary key)
+        public int id { get; set; } // id (Primary key)
 
         // Reverse navigation
 
         /// <summary>
-        /// Child TableWithSpaceAndInColumns (Many-to-Many) mapped by table [table mapping with space]
+        /// Child tablewithspaceandincolumns (Many-to-Many) mapped by table [table mapping with space]
         /// </summary>
-        public virtual ICollection<TableWithSpaceAndInColumn> TableWithSpaceAndInColumns { get; set; } // Many to many mapping
+        public virtual ICollection<tablewithspaceandincolumn> tablewithspaceandincolumns { get; set; } // Many to many mapping
 
-        public TableWithSpace()
+        public tablewithspace()
         {
-            TableWithSpaceAndInColumns = new List<TableWithSpaceAndInColumn>();
+            tablewithspaceandincolumns = new List<tablewithspaceandincolumn>();
         }
     }
 
     // table with space and in columns
-    public class TableWithSpaceAndInColumn
+    public class tablewithspaceandincolumn
     {
-        public int IdValue { get; set; } // id value (Primary key)
+        public int idvalue { get; set; } // id value (Primary key)
 
         // Reverse navigation
 
         /// <summary>
-        /// Child TableWithSpaces (Many-to-Many) mapped by table [table mapping with space]
+        /// Child tablewithspaces (Many-to-Many) mapped by table [table mapping with space]
         /// </summary>
-        public virtual ICollection<TableWithSpace> TableWithSpaces { get; set; } // Many to many mapping
+        public virtual ICollection<tablewithspace> tablewithspaces { get; set; } // Many to many mapping
 
-        public TableWithSpaceAndInColumn()
+        public tablewithspaceandincolumn()
         {
-            TableWithSpaces = new List<TableWithSpace>();
+            tablewithspaces = new List<tablewithspace>();
         }
     }
 
     // TableWithSpaceInColumnOnly
     public class TableWithSpaceInColumnOnly
     {
-        public int IdValue { get; set; } // id value (Primary key)
+        public int idvalue { get; set; } // id value (Primary key)
     }
 
     // TadeuszSobol
@@ -4624,52 +4618,52 @@ namespace Efrpg.V3TestE5
     }
 
     // tblOrders
-    public class TblOrder
+    public class tblOrder
     {
-        public int Id { get; set; } // ID (Primary key)
-        public DateTime Added { get; set; } // added
+        public int ID { get; set; } // ID (Primary key)
+        public DateTime added { get; set; } // added
 
         // Reverse navigation
 
         /// <summary>
-        /// Child TblOrderLines where [tblOrderLines].[OrderID] point to this entity (tblOrdersFK)
+        /// Child tblOrderLines where [tblOrderLines].[OrderID] point to this entity (tblOrdersFK)
         /// </summary>
-        public virtual ICollection<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines.tblOrdersFK
+        public virtual ICollection<tblOrderLine> tblOrderLines { get; set; } // tblOrderLines.tblOrdersFK
 
-        public TblOrder()
+        public tblOrder()
         {
-            Added = DateTime.Now;
-            TblOrderLines = new List<TblOrderLine>();
+            added = DateTime.Now;
+            tblOrderLines = new List<tblOrderLine>();
         }
     }
 
     // tblOrderErrors
-    public class TblOrderError
+    public class tblOrderError
     {
-        public int Id { get; set; } // ID (Primary key)
-        public string Error { get; set; } // error (length: 50)
+        public int ID { get; set; } // ID (Primary key)
+        public string error { get; set; } // error (length: 50)
     }
 
     // tblOrderErrorsAB_
-    public class TblOrderErrorsAb
+    public class tblOrderErrorsAB
     {
-        public int Id { get; set; } // ID (Primary key)
-        public string Error { get; set; } // error (length: 50)
+        public int ID { get; set; } // ID (Primary key)
+        public string error { get; set; } // error (length: 50)
     }
 
     // tblOrderLines
-    public class TblOrderLine
+    public class tblOrderLine
     {
-        public int Id { get; set; } // ID (Primary key)
-        public int OrderId { get; set; } // OrderID
-        public string Sku { get; set; } // sku (length: 15)
+        public int ID { get; set; } // ID (Primary key)
+        public int OrderID { get; set; } // OrderID
+        public string sku { get; set; } // sku (length: 15)
 
         // Foreign keys
 
         /// <summary>
-        /// Parent TblOrder pointed by [tblOrderLines].([OrderId]) (tblOrdersFK)
+        /// Parent tblOrder pointed by [tblOrderLines].([OrderID]) (tblOrdersFK)
         /// </summary>
-        public virtual TblOrder TblOrder { get; set; } // tblOrdersFK
+        public virtual tblOrder tblOrder { get; set; } // tblOrdersFK
     }
 
     // The table 'Test' is not usable by entity framework because it
@@ -4732,62 +4726,62 @@ namespace Efrpg.V3TestE5
     // User
     public class User
     {
-        public int Id { get; set; } // ID (Primary key)
-        public string ExternalUserId { get; set; } // ExternalUserID (length: 50)
+        public int ID { get; set; } // ID (Primary key)
+        public string ExternalUserID { get; set; } // ExternalUserID (length: 50)
 
         // Reverse navigation
 
         /// <summary>
-        /// Child UserDocuments where [User_Document].[CreatedByUserID] point to this entity (FK_User_Document_User1)
+        /// Child User_Documents where [User_Document].[CreatedByUserID] point to this entity (FK_User_Document_User1)
         /// </summary>
-        public virtual ICollection<UserDocument> UserDocuments_CreatedByUserId { get; set; } // User_Document.FK_User_Document_User1
+        public virtual ICollection<User_Document> User_Documents_CreatedByUserID { get; set; } // User_Document.FK_User_Document_User1
 
         /// <summary>
-        /// Child UserDocuments where [User_Document].[UserID] point to this entity (FK_User_Document_User)
+        /// Child User_Documents where [User_Document].[UserID] point to this entity (FK_User_Document_User)
         /// </summary>
-        public virtual ICollection<UserDocument> UserDocuments_UserId { get; set; } // User_Document.FK_User_Document_User
+        public virtual ICollection<User_Document> User_Documents_UserID { get; set; } // User_Document.FK_User_Document_User
 
         public User()
         {
-            UserDocuments_CreatedByUserId = new List<UserDocument>();
-            UserDocuments_UserId = new List<UserDocument>();
+            User_Documents_CreatedByUserID = new List<User_Document>();
+            User_Documents_UserID = new List<User_Document>();
         }
+    }
+
+    // User_Document
+    public class User_Document
+    {
+        public int ID { get; set; } // ID (Primary key)
+        public int UserID { get; set; } // UserID
+        public int CreatedByUserID { get; set; } // CreatedByUserID
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent User pointed by [User_Document].([CreatedByUserID]) (FK_User_Document_User1)
+        /// </summary>
+        public virtual User CreatedByUser { get; set; } // FK_User_Document_User1
+
+        /// <summary>
+        /// Parent User pointed by [User_Document].([UserID]) (FK_User_Document_User)
+        /// </summary>
+        public virtual User User_UserID { get; set; } // FK_User_Document_User
     }
 
     // User309
     public class User309
     {
-        public long UserId { get; set; } // UserID (Primary key)
+        public long UserID { get; set; } // UserID (Primary key)
         public string Lastname { get; set; } // Lastname (length: 100)
         public string Firstname { get; set; } // Firstname (length: 100)
-        public int? PhoneCountryId { get; set; } // PhoneCountryID
+        public int? PhoneCountryID { get; set; } // PhoneCountryID
 
         // Foreign keys
 
         /// <summary>
-        /// Parent Country pointed by [User309].([PhoneCountryId]) (FK_User309_PhoneCountry)
+        /// Parent Country pointed by [User309].([PhoneCountryID]) (FK_User309_PhoneCountry)
         /// </summary>
         public virtual Country Country { get; set; } // FK_User309_PhoneCountry
-    }
-
-    // User_Document
-    public class UserDocument
-    {
-        public int Id { get; set; } // ID (Primary key)
-        public int UserId { get; set; } // UserID
-        public int CreatedByUserId { get; set; } // CreatedByUserID
-
-        // Foreign keys
-
-        /// <summary>
-        /// Parent User pointed by [User_Document].([CreatedByUserId]) (FK_User_Document_User1)
-        /// </summary>
-        public virtual User CreatedByUser { get; set; } // FK_User_Document_User1
-
-        /// <summary>
-        /// Parent User pointed by [User_Document].([UserId]) (FK_User_Document_User)
-        /// </summary>
-        public virtual User User_UserId { get; set; } // FK_User_Document_User
     }
 
     // Versioned
@@ -4807,37 +4801,37 @@ namespace Efrpg.V3TestE5
     }
 
     // view with space
-    public class ViewWithSpace
+    public class viewwithspace
     {
-        public int CodeObjectNo { get; set; } // codeObjectNo
-        public int? ApplicationNo { get; set; } // applicationNo
-        public int Type { get; set; } // type
-        public string EName { get; set; } // eName (length: 250)
-        public string AName { get; set; } // aName (length: 250)
-        public string Description { get; set; } // description (length: 250)
-        public string CodeName { get; set; } // codeName (length: 250)
-        public string Note { get; set; } // note (length: 250)
-        public bool IsObject { get; set; } // isObject
-        public byte[] VersionNumber { get; set; } // versionNumber (length: 8)
+        public int codeObjectNo { get; set; } // codeObjectNo
+        public int? applicationNo { get; set; } // applicationNo
+        public int type { get; set; } // type
+        public string eName { get; set; } // eName (length: 250)
+        public string aName { get; set; } // aName (length: 250)
+        public string description { get; set; } // description (length: 250)
+        public string codeName { get; set; } // codeName (length: 250)
+        public string note { get; set; } // note (length: 250)
+        public bool isObject { get; set; } // isObject
+        public byte[] versionNumber { get; set; } // versionNumber (length: 8)
     }
 
     // Articles
     public class WVN_Article
     {
-        public int PkArticle { get; set; } // PK_Article (Primary key)
-        public Guid FkFactory { get; set; } // FK_Factory
-        public int FkArticleLevel { get; set; } // FK_ArticleLevel
-        public int? FkParentArticle { get; set; } // FK_ParentArticle
+        public int PK_Article { get; set; } // PK_Article (Primary key)
+        public Guid FK_Factory { get; set; } // FK_Factory
+        public int FK_ArticleLevel { get; set; } // FK_ArticleLevel
+        public int? FK_ParentArticle { get; set; } // FK_ParentArticle
         public string Code { get; set; } // Code (length: 20)
     }
 
     // v_Articles
-    public class WVN_VArticle
+    public class WVN_v_Article
     {
-        public int? PkArticle { get; set; } // PK_Article
-        public Guid? FkFactory { get; set; } // FK_Factory
-        public int? FkArticleLevel { get; set; } // FK_ArticleLevel
-        public int? FkParentArticle { get; set; } // FK_ParentArticle
+        public int? PK_Article { get; set; } // PK_Article
+        public Guid? FK_Factory { get; set; } // FK_Factory
+        public int? FK_ArticleLevel { get; set; } // FK_ArticleLevel
+        public int? FK_ParentArticle { get; set; } // FK_ParentArticle
         public string Code { get; set; } // Code (length: 20)
         public string FullCode { get; set; } // FullCode (length: 100)
     }
@@ -4847,8 +4841,8 @@ namespace Efrpg.V3TestE5
     {
         public int Кодбренда { get; set; } // Код бренда (Primary key)
         public string Наименованиебренда { get; set; } // Наименование бренда (length: 50)
-        public byte[] Логотипбренда { get; set; } // Логотип_бренда (length: 2147483647)
-        public byte[] Логотипбрендавертикальный { get; set; } // Логотип_бренда_вертикальный (length: 2147483647)
+        public byte[] Логотип_бренда { get; set; } // Логотип_бренда (length: 2147483647)
+        public byte[] Логотип_бренда_вертикальный { get; set; } // Логотип_бренда_вертикальный (length: 2147483647)
     }
 
 
@@ -4869,51 +4863,51 @@ namespace Efrpg.V3TestE5
             builder.Property(x => x.C2).HasColumnName(@"C2").HasColumnType("int").IsRequired();
 
             // Foreign keys
-            builder.HasOne(a => a.Aaref).WithMany(b => b.A).HasForeignKey(c => new { c.C1, c.C2 }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_A_A");
+            builder.HasOne(a => a.AAREF).WithMany(b => b.A).HasForeignKey(c => new { c.C1, c.C2 }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_A_A");
         }
     }
 
     // AAREF
-    public class AarefConfiguration : IEntityTypeConfiguration<Aaref>
+    public class AAREFConfiguration : IEntityTypeConfiguration<AAREF>
     {
-        public void Configure(EntityTypeBuilder<Aaref> builder)
+        public void Configure(EntityTypeBuilder<AAREF> builder)
         {
             builder.ToTable("AAREF", "dbo");
             builder.HasKey(x => new { x.C1, x.C2 }).HasName("PK_AREF").IsClustered();
 
             builder.Property(x => x.C1).HasColumnName(@"C1").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.C2).HasColumnName(@"C2").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.CreatedUtc).HasColumnName(@"CreatedUTC").HasColumnType("datetime2").IsRequired();
+            builder.Property(x => x.CreatedUTC).HasColumnName(@"CreatedUTC").HasColumnType("datetime2").IsRequired();
         }
     }
 
     // AB_OrderLinesAB_
-    public class AbOrderLinesAbConfiguration : IEntityTypeConfiguration<AbOrderLinesAb>
+    public class AB_OrderLinesABConfiguration : IEntityTypeConfiguration<AB_OrderLinesAB>
     {
-        public void Configure(EntityTypeBuilder<AbOrderLinesAb> builder)
+        public void Configure(EntityTypeBuilder<AB_OrderLinesAB> builder)
         {
             builder.ToTable("AB_OrderLinesAB_", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK_AB_OrderLinesAB").IsClustered();
+            builder.HasKey(x => x.ID).HasName("PK_AB_OrderLinesAB").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired();
-            builder.Property(x => x.Sku).HasColumnName(@"sku").HasColumnType("varchar(15)").IsRequired(false).IsUnicode(false).HasMaxLength(15);
+            builder.Property(x => x.ID).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.OrderID).HasColumnName(@"OrderID").HasColumnType("int").IsRequired();
+            builder.Property(x => x.sku).HasColumnName(@"sku").HasColumnType("varchar(15)").IsRequired(false).IsUnicode(false).HasMaxLength(15);
 
             // Foreign keys
-            builder.HasOne(a => a.AbOrdersAb).WithMany(b => b.AbOrderLinesAbs).HasForeignKey(c => c.OrderId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("AB_OrderLinesAB_FK");
+            builder.HasOne(a => a.AB_OrdersAB).WithMany(b => b.AB_OrderLinesABs).HasForeignKey(c => c.OrderID).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("AB_OrderLinesAB_FK");
         }
     }
 
     // AB_OrdersAB_
-    public class AbOrdersAbConfiguration : IEntityTypeConfiguration<AbOrdersAb>
+    public class AB_OrdersABConfiguration : IEntityTypeConfiguration<AB_OrdersAB>
     {
-        public void Configure(EntityTypeBuilder<AbOrdersAb> builder)
+        public void Configure(EntityTypeBuilder<AB_OrdersAB> builder)
         {
             builder.ToTable("AB_OrdersAB_", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK_AB_OrdersAB").IsClustered();
+            builder.HasKey(x => x.ID).HasName("PK_AB_OrdersAB").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Added).HasColumnName(@"added").HasColumnType("datetime").IsRequired();
+            builder.Property(x => x.ID).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.added).HasColumnName(@"added").HasColumnType("datetime").IsRequired();
         }
     }
 
@@ -4925,8 +4919,8 @@ namespace Efrpg.V3TestE5
             builder.ToView("AllColumnsNull", "dbo");
             builder.HasNoKey();
 
-            builder.Property(x => x.Total).HasColumnName(@"total").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.AName).HasColumnName(@"aName").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
+            builder.Property(x => x.total).HasColumnName(@"total").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.aName).HasColumnName(@"aName").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
         }
     }
 
@@ -4936,20 +4930,20 @@ namespace Efrpg.V3TestE5
         public void Configure(EntityTypeBuilder<Alpha_Harish3485> builder)
         {
             builder.ToTable("Harish3485", "Alpha");
-            builder.HasKey(x => x.Id).HasName("PK_Alpha_Harish3485").IsClustered();
+            builder.HasKey(x => x.id).HasName("PK_Alpha_Harish3485").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.HarishId).HasColumnName(@"harish_id").HasColumnType("int").IsRequired();
+            builder.Property(x => x.id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.harish_id).HasColumnName(@"harish_id").HasColumnType("int").IsRequired();
 
             // Foreign keys
-            builder.HasOne(a => a.FkTest_SmallDecimalTestAttribute).WithMany(b => b.Alpha_Harish3485).HasForeignKey(c => c.HarishId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Harish");
+            builder.HasOne(a => a.FkTest_SmallDecimalTestAttribute).WithMany(b => b.Alpha_Harish3485).HasForeignKey(c => c.harish_id).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Harish");
         }
     }
 
     // workflow
-    public class Alpha_WorkflowConfiguration : IEntityTypeConfiguration<Alpha_Workflow>
+    public class Alpha_workflowConfiguration : IEntityTypeConfiguration<Alpha_workflow>
     {
-        public void Configure(EntityTypeBuilder<Alpha_Workflow> builder)
+        public void Configure(EntityTypeBuilder<Alpha_workflow> builder)
         {
             builder.ToTable("workflow", "Alpha");
             builder.HasKey(x => x.Id).HasName("PK_alpha_workflow").IsClustered();
@@ -4960,9 +4954,9 @@ namespace Efrpg.V3TestE5
     }
 
     // alpha_workflow_synonym
-    public class AlphaWorkflowSynonymConfiguration : IEntityTypeConfiguration<AlphaWorkflowSynonym>
+    public class alpha_workflow_synonymConfiguration : IEntityTypeConfiguration<alpha_workflow_synonym>
     {
-        public void Configure(EntityTypeBuilder<AlphaWorkflowSynonym> builder)
+        public void Configure(EntityTypeBuilder<alpha_workflow_synonym> builder)
         {
             builder.ToTable("alpha_workflow_synonym", "dbo");
             builder.HasKey(x => x.Id);
@@ -4978,11 +4972,11 @@ namespace Efrpg.V3TestE5
         public void Configure(EntityTypeBuilder<App_UserFacilityServiceRole> builder)
         {
             builder.ToTable("UserFacilityServiceRole", "App");
-            builder.HasKey(x => new { x.UserId, x.AppId, x.FsrId });
+            builder.HasKey(x => new { x.userId, x.appId, x.fsrId });
 
-            builder.Property(x => x.UserId).HasColumnName(@"userId").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.AppId).HasColumnName(@"appId").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.FsrId).HasColumnName(@"fsrId").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.userId).HasColumnName(@"userId").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.appId).HasColumnName(@"appId").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.fsrId).HasColumnName(@"fsrId").HasColumnType("int").IsRequired().ValueGeneratedNever();
         }
     }
 
@@ -5005,15 +4999,15 @@ namespace Efrpg.V3TestE5
         public void Configure(EntityTypeBuilder<Attendee> builder)
         {
             builder.ToTable("Attendee", "dbo");
-            builder.HasKey(x => x.AttendeeId).HasName("PK_Attendee").IsClustered();
+            builder.HasKey(x => x.AttendeeID).HasName("PK_Attendee").IsClustered();
 
-            builder.Property(x => x.AttendeeId).HasColumnName(@"AttendeeID").HasColumnType("bigint").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.AttendeeID).HasColumnName(@"AttendeeID").HasColumnType("bigint").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.Lastname).HasColumnName(@"Lastname").HasColumnType("nvarchar(50)").IsRequired().HasMaxLength(50);
             builder.Property(x => x.Firstname).HasColumnName(@"Firstname").HasColumnType("nvarchar(50)").IsRequired().HasMaxLength(50);
-            builder.Property(x => x.PhoneCountryId).HasColumnName(@"PhoneCountryID").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.PhoneCountryID).HasColumnName(@"PhoneCountryID").HasColumnType("int").IsRequired(false);
 
             // Foreign keys
-            builder.HasOne(a => a.Country).WithMany(b => b.Attendees).HasForeignKey(c => c.PhoneCountryId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Attendee_PhoneCountry");
+            builder.HasOne(a => a.Country).WithMany(b => b.Attendees).HasForeignKey(c => c.PhoneCountryID).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Attendee_PhoneCountry");
         }
     }
 
@@ -5023,9 +5017,9 @@ namespace Efrpg.V3TestE5
         public void Configure(EntityTypeBuilder<BatchTest> builder)
         {
             builder.ToTable("BatchTest", "dbo");
-            builder.HasKey(x => x.Code).HasName("PK_BatchTest").IsClustered();
+            builder.HasKey(x => x.code).HasName("PK_BatchTest").IsClustered();
 
-            builder.Property(x => x.Code).HasColumnName(@"code").HasColumnType("nvarchar(8)").IsRequired().HasMaxLength(8).ValueGeneratedNever();
+            builder.Property(x => x.code).HasColumnName(@"code").HasColumnType("nvarchar(8)").IsRequired().HasMaxLength(8).ValueGeneratedNever();
         }
     }
 
@@ -5035,13 +5029,13 @@ namespace Efrpg.V3TestE5
         public void Configure(EntityTypeBuilder<Beta_Harish3485> builder)
         {
             builder.ToTable("Harish3485", "Beta");
-            builder.HasKey(x => x.Id).HasName("PK_Beta_Harish3485").IsClustered();
+            builder.HasKey(x => x.id).HasName("PK_Beta_Harish3485").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.AnotherId).HasColumnName(@"another_id").HasColumnType("int").IsRequired();
+            builder.Property(x => x.id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.another_id).HasColumnName(@"another_id").HasColumnType("int").IsRequired();
 
             // Foreign keys
-            builder.HasOne(a => a.PropertyTypesToAdd).WithMany(b => b.Beta_Harish3485).HasForeignKey(c => c.AnotherId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Harish");
+            builder.HasOne(a => a.PropertyTypesToAdd).WithMany(b => b.Beta_Harish3485).HasForeignKey(c => c.another_id).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Harish");
         }
     }
 
@@ -5057,14 +5051,14 @@ namespace Efrpg.V3TestE5
             builder.Property(x => x.AlphaId).HasColumnName(@"AlphaId").HasColumnType("int").IsRequired();
 
             // Foreign keys
-            builder.HasOne(a => a.Alpha_Workflow).WithMany(b => b.Beta_ToAlphas).HasForeignKey(c => c.AlphaId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("BetaToAlpha_AlphaWorkflow");
+            builder.HasOne(a => a.Alpha_workflow).WithMany(b => b.Beta_ToAlphas).HasForeignKey(c => c.AlphaId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("BetaToAlpha_AlphaWorkflow");
         }
     }
 
     // workflow
-    public class Beta_WorkflowConfiguration : IEntityTypeConfiguration<Beta_Workflow>
+    public class Beta_workflowConfiguration : IEntityTypeConfiguration<Beta_workflow>
     {
-        public void Configure(EntityTypeBuilder<Beta_Workflow> builder)
+        public void Configure(EntityTypeBuilder<Beta_workflow> builder)
         {
             builder.ToTable("workflow", "Beta");
             builder.HasKey(x => x.Id).HasName("PK_beta_workflow").IsClustered();
@@ -5075,9 +5069,9 @@ namespace Efrpg.V3TestE5
     }
 
     // BITFIDDLERALLCAPS
-    public class BitfiddlerallcapConfiguration : IEntityTypeConfiguration<Bitfiddlerallcap>
+    public class BITFIDDLERALLCAPConfiguration : IEntityTypeConfiguration<BITFIDDLERALLCAP>
     {
-        public void Configure(EntityTypeBuilder<Bitfiddlerallcap> builder)
+        public void Configure(EntityTypeBuilder<BITFIDDLERALLCAP> builder)
         {
             builder.ToTable("BITFIDDLERALLCAPS", "dbo");
             builder.HasKey(x => x.Id).HasName("PK_BITFIDDLERALLCAPS").IsClustered();
@@ -5087,9 +5081,9 @@ namespace Efrpg.V3TestE5
     }
 
     // BitFiddlerCATEGORIES
-    public class BitFiddlerCategoRyConfiguration : IEntityTypeConfiguration<BitFiddlerCategoRy>
+    public class BitFiddlerCATEGORyConfiguration : IEntityTypeConfiguration<BitFiddlerCATEGORy>
     {
-        public void Configure(EntityTypeBuilder<BitFiddlerCategoRy> builder)
+        public void Configure(EntityTypeBuilder<BitFiddlerCATEGORy> builder)
         {
             builder.ToTable("BitFiddlerCATEGORIES", "dbo");
             builder.HasKey(x => x.Id).HasName("PK_BitFiddlerCATEGORIES").IsClustered();
@@ -5099,9 +5093,9 @@ namespace Efrpg.V3TestE5
     }
 
     // BitFiddlerCURRENCIES
-    public class BitFiddlerCurrenCyConfiguration : IEntityTypeConfiguration<BitFiddlerCurrenCy>
+    public class BitFiddlerCURRENCyConfiguration : IEntityTypeConfiguration<BitFiddlerCURRENCy>
     {
-        public void Configure(EntityTypeBuilder<BitFiddlerCurrenCy> builder)
+        public void Configure(EntityTypeBuilder<BitFiddlerCURRENCy> builder)
         {
             builder.ToTable("BitFiddlerCURRENCIES", "dbo");
             builder.HasKey(x => x.Id).HasName("PK_BitFiddlerCURRENCIES").IsClustered();
@@ -5116,10 +5110,10 @@ namespace Efrpg.V3TestE5
         public void Configure(EntityTypeBuilder<Blah> builder)
         {
             builder.ToTable("Blah", "dbo");
-            builder.HasKey(x => x.BlahId).HasName("PK_Blah").IsClustered();
+            builder.HasKey(x => x.BlahID).HasName("PK_Blah").IsClustered();
 
-            builder.Property(x => x.BlahId).HasColumnName(@"BlahID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.HasMany<Blah>(t => t.Blahs_BlahId2).WithMany(t => t.Blahs1).UsingEntity<Dictionary<string, object>>("BlahBlahLink",
+            builder.Property(x => x.BlahID).HasColumnName(@"BlahID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.HasMany<Blah>(t => t.Blahs_BlahID2).WithMany(t => t.Blahs1).UsingEntity<Dictionary<string, object>>("BlahBlahLink",
                     j => j.HasOne<Blah>().WithMany().HasForeignKey("BlahID2"),
                     j => j.HasOne<Blah>().WithMany().HasForeignKey("BlahID"),
                     j => j.ToTable("BlahBlahLink", "dbo"));
@@ -5135,22 +5129,22 @@ namespace Efrpg.V3TestE5
     }
 
     // BlahBlahLink_v2
-    public class BlahBlahLinkV2Configuration : IEntityTypeConfiguration<BlahBlahLinkV2>
+    public class BlahBlahLink_v2Configuration : IEntityTypeConfiguration<BlahBlahLink_v2>
     {
-        public void Configure(EntityTypeBuilder<BlahBlahLinkV2> builder)
+        public void Configure(EntityTypeBuilder<BlahBlahLink_v2> builder)
         {
             builder.ToTable("BlahBlahLink_v2", "dbo");
-            builder.HasKey(x => new { x.BlahId, x.BlahId2 }).HasName("PK_BlahBlahLinkv2_ro").IsClustered();
+            builder.HasKey(x => new { x.BlahID, x.BlahID2 }).HasName("PK_BlahBlahLinkv2_ro").IsClustered();
 
-            builder.Property(x => x.BlahId).HasColumnName(@"BlahID").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.BlahId2).HasColumnName(@"BlahID2").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.Dummy1).HasColumnName(@"dummy1").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.Dummy2).HasColumnName(@"dummy2").HasColumnType("int").IsRequired();
-            builder.Property(x => x.Hello).HasColumnName(@"hello").HasColumnType("int").IsRequired();
+            builder.Property(x => x.BlahID).HasColumnName(@"BlahID").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.BlahID2).HasColumnName(@"BlahID2").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.dummy1).HasColumnName(@"dummy1").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.dummy2).HasColumnName(@"dummy2").HasColumnType("int").IsRequired();
+            builder.Property(x => x.hello).HasColumnName(@"hello").HasColumnType("int").IsRequired();
 
             // Foreign keys
-            builder.HasOne(a => a.Blah_BlahId).WithMany(b => b.BlahBlahLinkV2_BlahId).HasForeignKey(c => c.BlahId).HasConstraintName("FK_BlahBlahLinkv2_Blah_ro");
-            builder.HasOne(a => a.Blah_BlahId2).WithMany(b => b.BlahBlahLinkV2_BlahId2).HasForeignKey(c => c.BlahId2).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_BlahBlahLinkv2_Blah_ro2");
+            builder.HasOne(a => a.Blah_BlahID).WithMany(b => b.BlahBlahLink_v2_BlahID).HasForeignKey(c => c.BlahID).HasConstraintName("FK_BlahBlahLinkv2_Blah_ro");
+            builder.HasOne(a => a.Blah_BlahID2).WithMany(b => b.BlahBlahLink_v2_BlahID2).HasForeignKey(c => c.BlahID2).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_BlahBlahLinkv2_Blah_ro2");
         }
     }
 
@@ -5160,9 +5154,9 @@ namespace Efrpg.V3TestE5
         public void Configure(EntityTypeBuilder<Blarg> builder)
         {
             builder.ToTable("Blarg", "dbo");
-            builder.HasKey(x => x.BlargId).HasName("PK_Blarg").IsClustered();
+            builder.HasKey(x => x.BlargID).HasName("PK_Blarg").IsClustered();
 
-            builder.Property(x => x.BlargId).HasColumnName(@"BlargID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.BlargID).HasColumnName(@"BlargID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
         }
     }
 
@@ -5172,15 +5166,15 @@ namespace Efrpg.V3TestE5
         public void Configure(EntityTypeBuilder<Burak1> builder)
         {
             builder.ToTable("Burak1", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK_Burak1").IsClustered();
+            builder.HasKey(x => x.id).HasName("PK_Burak1").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("bigint").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.IdT).HasColumnName(@"id_t").HasColumnType("bigint").IsRequired();
-            builder.Property(x => x.Num).HasColumnName(@"num").HasColumnType("bigint").IsRequired();
+            builder.Property(x => x.id).HasColumnName(@"id").HasColumnType("bigint").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.id_t).HasColumnName(@"id_t").HasColumnType("bigint").IsRequired();
+            builder.Property(x => x.num).HasColumnName(@"num").HasColumnType("bigint").IsRequired();
 
             // Foreign keys
-            builder.HasOne(a => a.Burak2_Id).WithOne(b => b.Burak1_Id).HasPrincipalKey<Burak2>(p => new { p.Id, p.Num }).HasForeignKey<Burak1>(c => new { c.Id, c.Num }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Burak_Test2");
-            builder.HasOne(a => a.Burak2_IdT).WithOne(b => b.Burak1_IdT).HasPrincipalKey<Burak2>(p => new { p.Id, p.Num }).HasForeignKey<Burak1>(c => new { c.IdT, c.Num }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Burak_Test1");
+            builder.HasOne(a => a.Burak2_id).WithOne(b => b.Burak1_id).HasPrincipalKey<Burak2>(p => new { p.id, p.num }).HasForeignKey<Burak1>(c => new { c.id, c.num }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Burak_Test2");
+            builder.HasOne(a => a.Burak2_id_t).WithOne(b => b.Burak1_id_t).HasPrincipalKey<Burak2>(p => new { p.id, p.num }).HasForeignKey<Burak1>(c => new { c.id_t, c.num }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Burak_Test1");
         }
     }
 
@@ -5190,12 +5184,12 @@ namespace Efrpg.V3TestE5
         public void Configure(EntityTypeBuilder<Burak2> builder)
         {
             builder.ToTable("Burak2", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK_Burak2").IsClustered();
+            builder.HasKey(x => x.id).HasName("PK_Burak2").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("bigint").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Num).HasColumnName(@"num").HasColumnType("bigint").IsRequired();
+            builder.Property(x => x.id).HasColumnName(@"id").HasColumnType("bigint").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.num).HasColumnName(@"num").HasColumnType("bigint").IsRequired();
 
-            builder.HasIndex(x => new { x.Id, x.Num }).HasDatabaseName("U_Burak2").IsUnique();
+            builder.HasIndex(x => new { x.id, x.num }).HasDatabaseName("U_Burak2").IsUnique();
         }
     }
 
@@ -5205,9 +5199,9 @@ namespace Efrpg.V3TestE5
         public void Configure(EntityTypeBuilder<CalculatedColumnNotNull> builder)
         {
             builder.ToTable("CalculatedColumnNotNull", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK_CalculatedColumnNotNull");
+            builder.HasKey(x => x.ID).HasName("PK_CalculatedColumnNotNull");
 
-            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.ID).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Type).HasColumnName(@"Type").HasColumnType("tinyint").IsRequired();
             builder.Property(x => x.IsCalendar).HasColumnName(@"IsCalendar").HasColumnType("bit").IsRequired().ValueGeneratedOnAddOrUpdate();
             builder.Property(x => x.IsUtilization).HasColumnName(@"IsUtilization").HasColumnType("bit").IsRequired().ValueGeneratedOnAddOrUpdate();
@@ -5225,8 +5219,8 @@ namespace Efrpg.V3TestE5
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.PrimaryColourId).HasColumnName(@"PrimaryColourId").HasColumnType("int").IsRequired();
             builder.Property(x => x.CarMake).HasColumnName(@"CarMake").HasColumnType("varchar(255)").IsRequired().IsUnicode(false).HasMaxLength(255);
-            builder.Property(x => x.ComputedColumn).HasColumnName(@"computed_column").HasColumnType("int").IsRequired(false).ValueGeneratedOnAddOrUpdate();
-            builder.Property(x => x.ComputedColumnPersisted).HasColumnName(@"computed_column_persisted").HasColumnType("int").IsRequired().ValueGeneratedOnAddOrUpdate();
+            builder.Property(x => x.computed_column).HasColumnName(@"computed_column").HasColumnType("int").IsRequired(false).ValueGeneratedOnAddOrUpdate();
+            builder.Property(x => x.computed_column_persisted).HasColumnName(@"computed_column_persisted").HasColumnType("int").IsRequired().ValueGeneratedOnAddOrUpdate();
 
             // Foreign keys
             builder.HasOne(a => a.Colour).WithMany(b => b.Cars_PrimaryColourId).HasForeignKey(c => c.PrimaryColourId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("CarPrimaryColourFK");
@@ -5243,9 +5237,9 @@ namespace Efrpg.V3TestE5
         public void Configure(EntityTypeBuilder<ClientCreationState> builder)
         {
             builder.ToTable("ClientCreationState", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK_ClientCreationState").IsClustered();
+            builder.HasKey(x => x.id).HasName("PK_ClientCreationState").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("uniqueidentifier").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.id).HasColumnName(@"id").HasColumnType("uniqueidentifier").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.WebhookSetup).HasColumnName(@"WebhookSetup").HasColumnType("bit").IsRequired();
             builder.Property(x => x.AuthSetup).HasColumnName(@"AuthSetup").HasColumnType("bit").IsRequired();
             builder.Property(x => x.AssignedCarrier).HasColumnName(@"AssignedCarrier").HasColumnType("bit").IsRequired();
@@ -5253,9 +5247,9 @@ namespace Efrpg.V3TestE5
     }
 
     // CMS_File
-    public class CmsFileConfiguration : IEntityTypeConfiguration<CmsFile>
+    public class CMS_FileConfiguration : IEntityTypeConfiguration<CMS_File>
     {
-        public void Configure(EntityTypeBuilder<CmsFile> builder)
+        public void Configure(EntityTypeBuilder<CMS_File> builder)
         {
             builder.ToTable("CMS_File", "dbo");
             builder.HasKey(x => x.FileId).HasName("PK_CMS_File").IsClustered();
@@ -5267,17 +5261,17 @@ namespace Efrpg.V3TestE5
             builder.Property(x => x.ValidStartDate).HasColumnName(@"ValidStartDate").HasColumnType("datetime").IsRequired(false);
             builder.Property(x => x.ValidEndDate).HasColumnName(@"ValidEndDate").HasColumnType("datetime").IsRequired(false);
             builder.Property(x => x.IsActive).HasColumnName(@"IsActive").HasColumnType("bit").IsRequired();
-            builder.HasMany<CmsTag>(t => t.CmsTags).WithMany(t => t.CmsFiles).UsingEntity<Dictionary<string, object>>("CMS_FileTag",
-                    j => j.HasOne<CmsTag>().WithMany().HasForeignKey("TagId"),
-                    j => j.HasOne<CmsFile>().WithMany().HasForeignKey("FileId"),
+            builder.HasMany<CMS_Tag>(t => t.CMS_Tags).WithMany(t => t.CMS_Files).UsingEntity<Dictionary<string, object>>("CMS_FileTag",
+                    j => j.HasOne<CMS_Tag>().WithMany().HasForeignKey("TagId"),
+                    j => j.HasOne<CMS_File>().WithMany().HasForeignKey("FileId"),
                     j => j.ToTable("CMS_FileTag", "dbo"));
         }
     }
 
     // CMS_Tag
-    public class CmsTagConfiguration : IEntityTypeConfiguration<CmsTag>
+    public class CMS_TagConfiguration : IEntityTypeConfiguration<CMS_Tag>
     {
-        public void Configure(EntityTypeBuilder<CmsTag> builder)
+        public void Configure(EntityTypeBuilder<CMS_Tag> builder)
         {
             builder.ToTable("CMS_Tag", "dbo");
             builder.HasKey(x => x.TagId).HasName("PK_CMS_Tag").IsClustered();
@@ -5288,27 +5282,48 @@ namespace Efrpg.V3TestE5
     }
 
     // CODE_MeetingTopicDetails
-    public class CodeMeetingTopicDetailConfiguration : IEntityTypeConfiguration<CodeMeetingTopicDetail>
+    public class CODE_MeetingTopicDetailConfiguration : IEntityTypeConfiguration<CODE_MeetingTopicDetail>
     {
-        public void Configure(EntityTypeBuilder<CodeMeetingTopicDetail> builder)
+        public void Configure(EntityTypeBuilder<CODE_MeetingTopicDetail> builder)
         {
             builder.ToTable("CODE_MeetingTopicDetails", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK_CODE_MeetingTopicDetails").IsClustered();
+            builder.HasKey(x => x.id).HasName("PK_CODE_MeetingTopicDetails").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.IdReuniao).HasColumnName(@"id_reuniao").HasColumnType("int").IsRequired();
-            builder.Property(x => x.OrdTrab).HasColumnName(@"ord_trab").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.Assunto).HasColumnName(@"assunto").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
-            builder.Property(x => x.Desenvolvimento).HasColumnName(@"desenvolvimento").HasColumnType("nvarchar(max)").IsRequired(false);
-            builder.Property(x => x.Origem).HasColumnName(@"origem").HasColumnType("nvarchar(5)").IsRequired(false).HasMaxLength(5);
-            builder.Property(x => x.IdOrigem).HasColumnName(@"id_origem").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.id_reuniao).HasColumnName(@"id_reuniao").HasColumnType("int").IsRequired();
+            builder.Property(x => x.ord_trab).HasColumnName(@"ord_trab").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.assunto).HasColumnName(@"assunto").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
+            builder.Property(x => x.desenvolvimento).HasColumnName(@"desenvolvimento").HasColumnType("nvarchar(max)").IsRequired(false);
+            builder.Property(x => x.origem).HasColumnName(@"origem").HasColumnType("nvarchar(5)").IsRequired(false).HasMaxLength(5);
+            builder.Property(x => x.id_origem).HasColumnName(@"id_origem").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.Estado).HasColumnName(@"Estado").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.CompanyId).HasColumnName(@"CompanyID").HasColumnType("int").IsRequired();
+            builder.Property(x => x.CompanyID).HasColumnName(@"CompanyID").HasColumnType("int").IsRequired();
             builder.Property(x => x.DateCreated).HasColumnName(@"DateCreated").HasColumnType("datetime").IsRequired();
             builder.Property(x => x.DateChanged).HasColumnName(@"DateChanged").HasColumnType("datetime").IsRequired(false);
 
             // Foreign keys
-            builder.HasOne(a => a.CodeParamMeetingTopicDetailSource).WithMany(b => b.CodeMeetingTopicDetails).HasPrincipalKey(p => p.Code).HasForeignKey(c => c.Origem).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_CODE_MeetingTopicDetails_CODE_PARAM_MeetingTopicDetailSource");
+            builder.HasOne(a => a.CODE_PARAM_MeetingTopicDetailSource).WithMany(b => b.CODE_MeetingTopicDetails).HasPrincipalKey(p => p.Code).HasForeignKey(c => c.origem).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_CODE_MeetingTopicDetails_CODE_PARAM_MeetingTopicDetailSource");
+        }
+    }
+
+    // CODE_PARAM_MeetingTopicDetailSource
+    public class CODE_PARAM_MeetingTopicDetailSourceConfiguration : IEntityTypeConfiguration<CODE_PARAM_MeetingTopicDetailSource>
+    {
+        public void Configure(EntityTypeBuilder<CODE_PARAM_MeetingTopicDetailSource> builder)
+        {
+            builder.ToTable("CODE_PARAM_MeetingTopicDetailSource", "dbo");
+            builder.HasKey(x => x.ID).HasName("PK_CODE_PARAM_MeetingTopicDetailSource").IsClustered();
+
+            builder.Property(x => x.ID).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Code).HasColumnName(@"Code").HasColumnType("nvarchar(5)").IsRequired().HasMaxLength(5);
+            builder.Property(x => x.Label).HasColumnName(@"Label").HasColumnType("nvarchar(50)").IsRequired(false).HasMaxLength(50);
+            builder.Property(x => x.LabelENG).HasColumnName(@"LabelENG").HasColumnType("nvarchar(50)").IsRequired(false).HasMaxLength(50);
+            builder.Property(x => x.LabelESP).HasColumnName(@"LabelESP").HasColumnType("nvarchar(50)").IsRequired(false).HasMaxLength(50);
+            builder.Property(x => x.LabelFRA).HasColumnName(@"LabelFRA").HasColumnType("nvarchar(50)").IsRequired(false).HasMaxLength(50);
+            builder.Property(x => x.DateCreated).HasColumnName(@"DateCreated").HasColumnType("datetime").IsRequired();
+            builder.Property(x => x.DateChanged).HasColumnName(@"DateChanged").HasColumnType("datetime").IsRequired(false);
+
+            builder.HasIndex(x => x.Code).HasDatabaseName("UK_CODE_PARAM_MeetingTopicDetailSource").IsUnique();
         }
     }
 
@@ -5318,39 +5333,18 @@ namespace Efrpg.V3TestE5
         public void Configure(EntityTypeBuilder<CodeObject> builder)
         {
             builder.ToTable("CodeObject", "dbo");
-            builder.HasKey(x => x.CodeObjectNo).HasName("aaaaaObject_PK");
+            builder.HasKey(x => x.codeObjectNo).HasName("aaaaaObject_PK");
 
-            builder.Property(x => x.CodeObjectNo).HasColumnName(@"codeObjectNo").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.ApplicationNo).HasColumnName(@"applicationNo").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.Type).HasColumnName(@"type").HasColumnType("int").IsRequired();
-            builder.Property(x => x.EName).HasColumnName(@"eName").HasColumnType("nvarchar(250)").IsRequired().HasMaxLength(250);
-            builder.Property(x => x.AName).HasColumnName(@"aName").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
-            builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
-            builder.Property(x => x.CodeName).HasColumnName(@"codeName").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
-            builder.Property(x => x.Note).HasColumnName(@"note").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
-            builder.Property(x => x.IsObject).HasColumnName(@"isObject").HasColumnType("bit").IsRequired();
-            builder.Property(x => x.VersionNumber).HasColumnName(@"versionNumber").HasColumnType("timestamp(8)").IsRequired(false).IsFixedLength().HasMaxLength(8).IsRowVersion().IsConcurrencyToken();
-        }
-    }
-
-    // CODE_PARAM_MeetingTopicDetailSource
-    public class CodeParamMeetingTopicDetailSourceConfiguration : IEntityTypeConfiguration<CodeParamMeetingTopicDetailSource>
-    {
-        public void Configure(EntityTypeBuilder<CodeParamMeetingTopicDetailSource> builder)
-        {
-            builder.ToTable("CODE_PARAM_MeetingTopicDetailSource", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK_CODE_PARAM_MeetingTopicDetailSource").IsClustered();
-
-            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Code).HasColumnName(@"Code").HasColumnType("nvarchar(5)").IsRequired().HasMaxLength(5);
-            builder.Property(x => x.Label).HasColumnName(@"Label").HasColumnType("nvarchar(50)").IsRequired(false).HasMaxLength(50);
-            builder.Property(x => x.LabelEng).HasColumnName(@"LabelENG").HasColumnType("nvarchar(50)").IsRequired(false).HasMaxLength(50);
-            builder.Property(x => x.LabelEsp).HasColumnName(@"LabelESP").HasColumnType("nvarchar(50)").IsRequired(false).HasMaxLength(50);
-            builder.Property(x => x.LabelFra).HasColumnName(@"LabelFRA").HasColumnType("nvarchar(50)").IsRequired(false).HasMaxLength(50);
-            builder.Property(x => x.DateCreated).HasColumnName(@"DateCreated").HasColumnType("datetime").IsRequired();
-            builder.Property(x => x.DateChanged).HasColumnName(@"DateChanged").HasColumnType("datetime").IsRequired(false);
-
-            builder.HasIndex(x => x.Code).HasDatabaseName("UK_CODE_PARAM_MeetingTopicDetailSource").IsUnique();
+            builder.Property(x => x.codeObjectNo).HasColumnName(@"codeObjectNo").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.applicationNo).HasColumnName(@"applicationNo").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.type).HasColumnName(@"type").HasColumnType("int").IsRequired();
+            builder.Property(x => x.eName).HasColumnName(@"eName").HasColumnType("nvarchar(250)").IsRequired().HasMaxLength(250);
+            builder.Property(x => x.aName).HasColumnName(@"aName").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
+            builder.Property(x => x.description).HasColumnName(@"description").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
+            builder.Property(x => x.codeName).HasColumnName(@"codeName").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
+            builder.Property(x => x.note).HasColumnName(@"note").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
+            builder.Property(x => x.isObject).HasColumnName(@"isObject").HasColumnType("bit").IsRequired();
+            builder.Property(x => x.versionNumber).HasColumnName(@"versionNumber").HasColumnType("timestamp(8)").IsRequired(false).IsFixedLength().HasMaxLength(8).IsRowVersion().IsConcurrencyToken();
         }
     }
 
@@ -5378,34 +5372,34 @@ namespace Efrpg.V3TestE5
             builder.Property(x => x.C36).HasColumnName(@"$").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.C37).HasColumnName(@"%").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.C163).HasColumnName(@"£").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.C38Fred).HasColumnName(@"&fred$").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.Abc4792).HasColumnName(@"abc/\").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.Joe46Bloggs).HasColumnName(@"joe.bloggs").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.SimonHughes).HasColumnName(@"simon-hughes").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
-            builder.Property(x => x.SomeDate).HasColumnName(@"someDate").HasColumnType("datetime2").IsRequired();
+            builder.Property(x => x.C38fred).HasColumnName(@"&fred$").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.abc4792).HasColumnName(@"abc/\").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.joe46bloggs).HasColumnName(@"joe.bloggs").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.simon_hughes).HasColumnName(@"simon-hughes").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.description).HasColumnName(@"description").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
+            builder.Property(x => x.someDate).HasColumnName(@"someDate").HasColumnType("datetime2").IsRequired();
             builder.Property(x => x.Obs).HasColumnName(@"Obs").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);
             builder.Property(x => x.Obs1).HasColumnName(@"Obs1").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);
             builder.Property(x => x.Obs2).HasColumnName(@"Obs2").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);
             builder.Property(x => x.Obs3).HasColumnName(@"Obs3").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);
-            builder.Property(x => x.@Static).HasColumnName(@"static").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.@Readonly).HasColumnName(@"readonly").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.@static).HasColumnName(@"static").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.@readonly).HasColumnName(@"readonly").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.C123Hi).HasColumnName(@"123Hi").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.Areal).HasColumnName(@"areal").HasColumnType("real").IsRequired(false);
-            builder.Property(x => x.Afloat).HasColumnName(@"afloat").HasColumnType("float").HasPrecision(53).IsRequired(false);
-            builder.Property(x => x.Afloat8).HasColumnName(@"afloat8").HasColumnType("real").IsRequired(false);
-            builder.Property(x => x.Afloat20).HasColumnName(@"afloat20").HasColumnType("real").IsRequired(false);
-            builder.Property(x => x.Afloat24).HasColumnName(@"afloat24").HasColumnType("real").IsRequired(false);
-            builder.Property(x => x.Afloat53).HasColumnName(@"afloat53").HasColumnType("float").HasPrecision(53).IsRequired(false);
-            builder.Property(x => x.Adecimal).HasColumnName(@"adecimal").HasColumnType("decimal(18,0)").HasPrecision(18,0).IsRequired(false);
-            builder.Property(x => x.Adecimal194).HasColumnName(@"adecimal_19_4").HasColumnType("decimal(19,4)").HasPrecision(19,4).IsRequired(false);
-            builder.Property(x => x.Adecimal103).HasColumnName(@"adecimal_10_3").HasColumnType("decimal(10,3)").HasPrecision(10,3).IsRequired(false);
-            builder.Property(x => x.Anumeric).HasColumnName(@"anumeric").HasColumnType("numeric(18,0)").HasPrecision(18,0).IsRequired(false);
-            builder.Property(x => x.Anumeric52).HasColumnName(@"anumeric_5_2").HasColumnType("numeric(5,2)").HasPrecision(5,2).IsRequired(false);
-            builder.Property(x => x.Anumeric113).HasColumnName(@"anumeric_11_3").HasColumnType("numeric(11,3)").HasPrecision(11,3).IsRequired(false);
-            builder.Property(x => x.Amoney).HasColumnName(@"amoney").HasColumnType("money").IsRequired(false);
-            builder.Property(x => x.Asmallmoney).HasColumnName(@"asmallmoney").HasColumnType("smallmoney").IsRequired(false);
-            builder.Property(x => x.Brandon).HasColumnName(@"brandon").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.areal).HasColumnName(@"areal").HasColumnType("real").IsRequired(false);
+            builder.Property(x => x.afloat).HasColumnName(@"afloat").HasColumnType("float").HasPrecision(53).IsRequired(false);
+            builder.Property(x => x.afloat8).HasColumnName(@"afloat8").HasColumnType("real").IsRequired(false);
+            builder.Property(x => x.afloat20).HasColumnName(@"afloat20").HasColumnType("real").IsRequired(false);
+            builder.Property(x => x.afloat24).HasColumnName(@"afloat24").HasColumnType("real").IsRequired(false);
+            builder.Property(x => x.afloat53).HasColumnName(@"afloat53").HasColumnType("float").HasPrecision(53).IsRequired(false);
+            builder.Property(x => x.adecimal).HasColumnName(@"adecimal").HasColumnType("decimal(18,0)").HasPrecision(18,0).IsRequired(false);
+            builder.Property(x => x.adecimal_19_4).HasColumnName(@"adecimal_19_4").HasColumnType("decimal(19,4)").HasPrecision(19,4).IsRequired(false);
+            builder.Property(x => x.adecimal_10_3).HasColumnName(@"adecimal_10_3").HasColumnType("decimal(10,3)").HasPrecision(10,3).IsRequired(false);
+            builder.Property(x => x.anumeric).HasColumnName(@"anumeric").HasColumnType("numeric(18,0)").HasPrecision(18,0).IsRequired(false);
+            builder.Property(x => x.anumeric_5_2).HasColumnName(@"anumeric_5_2").HasColumnType("numeric(5,2)").HasPrecision(5,2).IsRequired(false);
+            builder.Property(x => x.anumeric_11_3).HasColumnName(@"anumeric_11_3").HasColumnType("numeric(11,3)").HasPrecision(11,3).IsRequired(false);
+            builder.Property(x => x.amoney).HasColumnName(@"amoney").HasColumnType("money").IsRequired(false);
+            builder.Property(x => x.asmallmoney).HasColumnName(@"asmallmoney").HasColumnType("smallmoney").IsRequired(false);
+            builder.Property(x => x.brandon).HasColumnName(@"brandon").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.GeographyType).HasColumnName(@"GeographyType").HasColumnType("geography").IsRequired(false);
             builder.Property(x => x.GeometryType).HasColumnName(@"GeometryType").HasColumnType("geometry").IsRequired(false);
         }
@@ -5430,17 +5424,17 @@ namespace Efrpg.V3TestE5
         public void Configure(EntityTypeBuilder<Country> builder)
         {
             builder.ToTable("Country", "dbo");
-            builder.HasKey(x => x.CountryId).HasName("PK_Country").IsClustered();
+            builder.HasKey(x => x.CountryID).HasName("PK_Country").IsClustered();
 
-            builder.Property(x => x.CountryId).HasColumnName(@"CountryID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.CountryID).HasColumnName(@"CountryID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Code).HasColumnName(@"Code").HasColumnType("varchar(12)").IsRequired(false).IsUnicode(false).HasMaxLength(12);
         }
     }
 
     // cross_database_synonym
-    public class CrossDatabaseSynonymConfiguration : IEntityTypeConfiguration<CrossDatabaseSynonym>
+    public class cross_database_synonymConfiguration : IEntityTypeConfiguration<cross_database_synonym>
     {
-        public void Configure(EntityTypeBuilder<CrossDatabaseSynonym> builder)
+        public void Configure(EntityTypeBuilder<cross_database_synonym> builder)
         {
             builder.ToTable("cross_database_synonym", "dbo");
             builder.HasKey(x => x.Id);
@@ -5464,37 +5458,37 @@ namespace Efrpg.V3TestE5
     }
 
     // rov_ColumnDefinitions
-    public class dcg_RovColumnDefinitionConfiguration : IEntityTypeConfiguration<dcg_RovColumnDefinition>
+    public class dcg_rov_ColumnDefinitionConfiguration : IEntityTypeConfiguration<dcg_rov_ColumnDefinition>
     {
-        public void Configure(EntityTypeBuilder<dcg_RovColumnDefinition> builder)
+        public void Configure(EntityTypeBuilder<dcg_rov_ColumnDefinition> builder)
         {
             builder.ToView("rov_ColumnDefinitions", "dcg");
             builder.HasNoKey();
 
-            builder.Property(x => x.TableCatalog).HasColumnName(@"TABLE_CATALOG").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
-            builder.Property(x => x.TableSchema).HasColumnName(@"TABLE_SCHEMA").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
-            builder.Property(x => x.TableName).HasColumnName(@"TABLE_NAME").HasColumnType("nvarchar(128)").IsRequired().HasMaxLength(128);
-            builder.Property(x => x.ColumnName).HasColumnName(@"COLUMN_NAME").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
-            builder.Property(x => x.OrdinalPosition).HasColumnName(@"ORDINAL_POSITION").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.ColumnDefault).HasColumnName(@"COLUMN_DEFAULT").HasColumnType("nvarchar(4000)").IsRequired(false).HasMaxLength(4000);
-            builder.Property(x => x.IsNullable).HasColumnName(@"IS_NULLABLE").HasColumnType("varchar(3)").IsRequired(false).IsUnicode(false).HasMaxLength(3);
-            builder.Property(x => x.DataType).HasColumnName(@"DATA_TYPE").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
-            builder.Property(x => x.CharacterMaximumLength).HasColumnName(@"CHARACTER_MAXIMUM_LENGTH").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.CharacterOctetLength).HasColumnName(@"CHARACTER_OCTET_LENGTH").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.NumericPrecision).HasColumnName(@"NUMERIC_PRECISION").HasColumnType("tinyint").IsRequired(false);
-            builder.Property(x => x.NumericPrecisionRadix).HasColumnName(@"NUMERIC_PRECISION_RADIX").HasColumnType("smallint").IsRequired(false);
-            builder.Property(x => x.NumericScale).HasColumnName(@"NUMERIC_SCALE").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.DatetimePrecision).HasColumnName(@"DATETIME_PRECISION").HasColumnType("smallint").IsRequired(false);
-            builder.Property(x => x.CharacterSetCatalog).HasColumnName(@"CHARACTER_SET_CATALOG").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
-            builder.Property(x => x.CharacterSetSchema).HasColumnName(@"CHARACTER_SET_SCHEMA").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
-            builder.Property(x => x.CharacterSetName).HasColumnName(@"CHARACTER_SET_NAME").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
-            builder.Property(x => x.CollationCatalog).HasColumnName(@"COLLATION_CATALOG").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
-            builder.Property(x => x.CollationSchema).HasColumnName(@"COLLATION_SCHEMA").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
-            builder.Property(x => x.CollationName).HasColumnName(@"COLLATION_NAME").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
-            builder.Property(x => x.DomainCatalog).HasColumnName(@"DOMAIN_CATALOG").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
-            builder.Property(x => x.DomainSchema).HasColumnName(@"DOMAIN_SCHEMA").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
-            builder.Property(x => x.DomainName).HasColumnName(@"DOMAIN_NAME").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
-            builder.Property(x => x.Type).HasColumnName(@"TYPE").HasColumnType("char(2)").HasConversion(new ValueConverter<string, string>(v => v.TrimEnd(), v => v.TrimEnd())).IsRequired(false).IsFixedLength().IsUnicode(false).HasMaxLength(2);
+            builder.Property(x => x.TABLE_CATALOG).HasColumnName(@"TABLE_CATALOG").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
+            builder.Property(x => x.TABLE_SCHEMA).HasColumnName(@"TABLE_SCHEMA").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
+            builder.Property(x => x.TABLE_NAME).HasColumnName(@"TABLE_NAME").HasColumnType("nvarchar(128)").IsRequired().HasMaxLength(128);
+            builder.Property(x => x.COLUMN_NAME).HasColumnName(@"COLUMN_NAME").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
+            builder.Property(x => x.ORDINAL_POSITION).HasColumnName(@"ORDINAL_POSITION").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.COLUMN_DEFAULT).HasColumnName(@"COLUMN_DEFAULT").HasColumnType("nvarchar(4000)").IsRequired(false).HasMaxLength(4000);
+            builder.Property(x => x.IS_NULLABLE).HasColumnName(@"IS_NULLABLE").HasColumnType("varchar(3)").IsRequired(false).IsUnicode(false).HasMaxLength(3);
+            builder.Property(x => x.DATA_TYPE).HasColumnName(@"DATA_TYPE").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
+            builder.Property(x => x.CHARACTER_MAXIMUM_LENGTH).HasColumnName(@"CHARACTER_MAXIMUM_LENGTH").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.CHARACTER_OCTET_LENGTH).HasColumnName(@"CHARACTER_OCTET_LENGTH").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.NUMERIC_PRECISION).HasColumnName(@"NUMERIC_PRECISION").HasColumnType("tinyint").IsRequired(false);
+            builder.Property(x => x.NUMERIC_PRECISION_RADIX).HasColumnName(@"NUMERIC_PRECISION_RADIX").HasColumnType("smallint").IsRequired(false);
+            builder.Property(x => x.NUMERIC_SCALE).HasColumnName(@"NUMERIC_SCALE").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.DATETIME_PRECISION).HasColumnName(@"DATETIME_PRECISION").HasColumnType("smallint").IsRequired(false);
+            builder.Property(x => x.CHARACTER_SET_CATALOG).HasColumnName(@"CHARACTER_SET_CATALOG").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
+            builder.Property(x => x.CHARACTER_SET_SCHEMA).HasColumnName(@"CHARACTER_SET_SCHEMA").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
+            builder.Property(x => x.CHARACTER_SET_NAME).HasColumnName(@"CHARACTER_SET_NAME").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
+            builder.Property(x => x.COLLATION_CATALOG).HasColumnName(@"COLLATION_CATALOG").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
+            builder.Property(x => x.COLLATION_SCHEMA).HasColumnName(@"COLLATION_SCHEMA").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
+            builder.Property(x => x.COLLATION_NAME).HasColumnName(@"COLLATION_NAME").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
+            builder.Property(x => x.DOMAIN_CATALOG).HasColumnName(@"DOMAIN_CATALOG").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
+            builder.Property(x => x.DOMAIN_SCHEMA).HasColumnName(@"DOMAIN_SCHEMA").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
+            builder.Property(x => x.DOMAIN_NAME).HasColumnName(@"DOMAIN_NAME").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
+            builder.Property(x => x.TYPE).HasColumnName(@"TYPE").HasColumnType("char(2)").IsRequired(false).IsFixedLength().IsUnicode(false).HasMaxLength(2);
         }
     }
 
@@ -5516,17 +5510,17 @@ namespace Efrpg.V3TestE5
     }
 
     // DSOpe
-    public class DsOpeConfiguration : IEntityTypeConfiguration<DsOpe>
+    public class DSOpeConfiguration : IEntityTypeConfiguration<DSOpe>
     {
-        public void Configure(EntityTypeBuilder<DsOpe> builder)
+        public void Configure(EntityTypeBuilder<DSOpe> builder)
         {
             builder.ToTable("DSOpe", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK_DSOpe").IsClustered();
+            builder.HasKey(x => x.ID).HasName("PK_DSOpe").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.DecimalDefault).HasColumnName(@"decimal_default").HasColumnType("decimal(15,2)").HasPrecision(15,2).IsRequired();
+            builder.Property(x => x.ID).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.decimal_default).HasColumnName(@"decimal_default").HasColumnType("decimal(15,2)").HasPrecision(15,2).IsRequired();
             builder.Property(x => x.MyGuid).HasColumnName(@"MyGuid").HasColumnType("uniqueidentifier").IsRequired();
-            builder.Property(x => x.@Default).HasColumnName(@"default").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);
+            builder.Property(x => x.@default).HasColumnName(@"default").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);
             builder.Property(x => x.MyGuidBadDefault).HasColumnName(@"MyGuidBadDefault").HasColumnType("uniqueidentifier").IsRequired(false);
         }
     }
@@ -5537,10 +5531,10 @@ namespace Efrpg.V3TestE5
         public void Configure(EntityTypeBuilder<EnumsWithStringAsValue> builder)
         {
             builder.ToTable("EnumsWithStringAsValue", "dbo");
-            builder.HasKey(x => new { x.EnumName, x.Value });
+            builder.HasKey(x => new { x.enum_name, x.value });
 
-            builder.Property(x => x.EnumName).HasColumnName(@"enum_name").HasColumnType("varchar(50)").IsRequired().IsUnicode(false).HasMaxLength(50).ValueGeneratedNever();
-            builder.Property(x => x.Value).HasColumnName(@"value").HasColumnType("varchar(10)").IsRequired().IsUnicode(false).HasMaxLength(10).ValueGeneratedNever();
+            builder.Property(x => x.enum_name).HasColumnName(@"enum_name").HasColumnType("varchar(50)").IsRequired().IsUnicode(false).HasMaxLength(50).ValueGeneratedNever();
+            builder.Property(x => x.value).HasColumnName(@"value").HasColumnType("varchar(10)").IsRequired().IsUnicode(false).HasMaxLength(10).ValueGeneratedNever();
         }
     }
 
@@ -5622,16 +5616,16 @@ namespace Efrpg.V3TestE5
     }
 
     // CV
-    public class FFRS_CvConfiguration : IEntityTypeConfiguration<FFRS_Cv>
+    public class FFRS_CVConfiguration : IEntityTypeConfiguration<FFRS_CV>
     {
-        public void Configure(EntityTypeBuilder<FFRS_Cv> builder)
+        public void Configure(EntityTypeBuilder<FFRS_CV> builder)
         {
             builder.ToTable("CV", "FFRS");
-            builder.HasKey(x => new { x.BatchUid, x.Cvid });
+            builder.HasKey(x => new { x.BatchUID, x.CVID });
 
-            builder.Property(x => x.BatchUid).HasColumnName(@"BatchUID").HasColumnType("uniqueidentifier").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.Cvid).HasColumnName(@"CVID").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.CvName).HasColumnName(@"CVName").HasColumnType("nvarchar(200)").IsRequired(false).HasMaxLength(200);
+            builder.Property(x => x.BatchUID).HasColumnName(@"BatchUID").HasColumnType("uniqueidentifier").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.CVID).HasColumnName(@"CVID").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.CVName).HasColumnName(@"CVName").HasColumnType("nvarchar(200)").IsRequired(false).HasMaxLength(200);
         }
     }
 
@@ -5657,30 +5651,30 @@ namespace Efrpg.V3TestE5
         public void Configure(EntityTypeBuilder<FkTest_SmallDecimalTestAttribute> builder)
         {
             builder.ToTable("SmallDecimalTestAttribute", "FkTest");
-            builder.HasKey(x => x.FkId).HasName("PK_FkTest_SmallDecimalTestAttribute").IsClustered();
+            builder.HasKey(x => x.FkID).HasName("PK_FkTest_SmallDecimalTestAttribute").IsClustered();
 
-            builder.Property(x => x.FkId).HasColumnName(@"FkID").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
+            builder.Property(x => x.FkID).HasColumnName(@"FkID").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.description).HasColumnName(@"description").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
 
             // Foreign keys
-            builder.HasOne(a => a.SmallDecimalTest).WithOne(b => b.FkTest_SmallDecimalTestAttribute).HasForeignKey<FkTest_SmallDecimalTestAttribute>(c => c.FkId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("KateFK");
+            builder.HasOne(a => a.SmallDecimalTest).WithOne(b => b.FkTest_SmallDecimalTestAttribute).HasForeignKey<FkTest_SmallDecimalTestAttribute>(c => c.FkID).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("KateFK");
         }
     }
 
     // footer
-    public class FooterConfiguration : IEntityTypeConfiguration<Footer>
+    public class footerConfiguration : IEntityTypeConfiguration<footer>
     {
-        public void Configure(EntityTypeBuilder<Footer> builder)
+        public void Configure(EntityTypeBuilder<footer> builder)
         {
             builder.ToTable("footer", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK_footer").IsClustered();
+            builder.HasKey(x => x.ID).HasName("PK_footer").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.OtherId).HasColumnName(@"otherID").HasColumnType("int").IsRequired();
-            builder.Property(x => x.Added).HasColumnName(@"added").HasColumnType("datetime").IsRequired();
+            builder.Property(x => x.ID).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.otherID).HasColumnName(@"otherID").HasColumnType("int").IsRequired();
+            builder.Property(x => x.added).HasColumnName(@"added").HasColumnType("datetime").IsRequired();
 
             // Foreign keys
-            builder.HasOne(a => a.Header).WithMany(b => b.Footers).HasForeignKey(c => new { c.Id, c.OtherId }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("fooderFK");
+            builder.HasOne(a => a.header).WithMany(b => b.footers).HasForeignKey(c => new { c.ID, c.otherID }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("fooderFK");
         }
     }
 
@@ -5690,14 +5684,14 @@ namespace Efrpg.V3TestE5
         public void Configure(EntityTypeBuilder<ForeignKeyIsNotEnforced> builder)
         {
             builder.ToTable("ForeignKeyIsNotEnforced", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK_ForeignKeyIsNotEnforced").IsClustered();
+            builder.HasKey(x => x.id).HasName("PK_ForeignKeyIsNotEnforced").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.NullValue).HasColumnName(@"null_value").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.NotNullValue).HasColumnName(@"not_null_value").HasColumnType("int").IsRequired();
+            builder.Property(x => x.id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.null_value).HasColumnName(@"null_value").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.not_null_value).HasColumnName(@"not_null_value").HasColumnType("int").IsRequired();
 
-            builder.HasIndex(x => x.NotNullValue).HasDatabaseName("UQ_ForeignKeyIsNotEnforced_not_null_value").IsUnique();
-            builder.HasIndex(x => x.NullValue).HasDatabaseName("UQ_ForeignKeyIsNotEnforced_null_value").IsUnique();
+            builder.HasIndex(x => x.not_null_value).HasDatabaseName("UQ_ForeignKeyIsNotEnforced_not_null_value").IsUnique();
+            builder.HasIndex(x => x.null_value).HasDatabaseName("UQ_ForeignKeyIsNotEnforced_null_value").IsUnique();
         }
     }
 
@@ -5707,18 +5701,18 @@ namespace Efrpg.V3TestE5
         public void Configure(EntityTypeBuilder<ForeignKeyIsNotEnforcedItem> builder)
         {
             builder.ToTable("ForeignKeyIsNotEnforcedItem", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK_ForeignKeyIsNotEnforcedItem").IsClustered();
+            builder.HasKey(x => x.id).HasName("PK_ForeignKeyIsNotEnforcedItem").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.NullValue).HasColumnName(@"null_value").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.NotNullValue).HasColumnName(@"not_null_value").HasColumnType("int").IsRequired();
+            builder.Property(x => x.id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.null_value).HasColumnName(@"null_value").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.not_null_value).HasColumnName(@"not_null_value").HasColumnType("int").IsRequired();
 
             // Foreign keys
-            builder.HasOne(a => a.ForeignKeyIsNotEnforced_NotNullValue).WithOne(b => b.ForeignKeyIsNotEnforcedItem_NotNullValue).HasPrincipalKey<ForeignKeyIsNotEnforced>(p => p.NotNullValue).HasForeignKey<ForeignKeyIsNotEnforcedItem>(c => c.NotNullValue).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_ForeignKeyIsNotEnforcedItem_notnull_notnull");
-            builder.HasOne(a => a.ForeignKeyIsNotEnforced_NullValue).WithOne(b => b.ForeignKeyIsNotEnforcedItem_NullValue).HasPrincipalKey<ForeignKeyIsNotEnforced>(p => p.NotNullValue).HasForeignKey<ForeignKeyIsNotEnforcedItem>(c => c.NullValue).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_ForeignKeyIsNotEnforcedItem_null_notnull");
+            builder.HasOne(a => a.ForeignKeyIsNotEnforced_not_null_value).WithOne(b => b.ForeignKeyIsNotEnforcedItem_not_null_value).HasPrincipalKey<ForeignKeyIsNotEnforced>(p => p.not_null_value).HasForeignKey<ForeignKeyIsNotEnforcedItem>(c => c.not_null_value).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_ForeignKeyIsNotEnforcedItem_notnull_notnull");
+            builder.HasOne(a => a.ForeignKeyIsNotEnforced_null_value).WithOne(b => b.ForeignKeyIsNotEnforcedItem_null_value).HasPrincipalKey<ForeignKeyIsNotEnforced>(p => p.not_null_value).HasForeignKey<ForeignKeyIsNotEnforcedItem>(c => c.null_value).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_ForeignKeyIsNotEnforcedItem_null_notnull");
 
-            builder.HasIndex(x => x.NotNullValue).HasDatabaseName("UQ_ForeignKeyIsNotEnforcedItem_not_null_value").IsUnique();
-            builder.HasIndex(x => x.NullValue).HasDatabaseName("UQ_ForeignKeyIsNotEnforcedItem_null_value").IsUnique();
+            builder.HasIndex(x => x.not_null_value).HasDatabaseName("UQ_ForeignKeyIsNotEnforcedItem_not_null_value").IsUnique();
+            builder.HasIndex(x => x.null_value).HasDatabaseName("UQ_ForeignKeyIsNotEnforcedItem_null_value").IsUnique();
         }
     }
 
@@ -5737,7 +5731,7 @@ namespace Efrpg.V3TestE5
             builder.Property(x => x.D).HasColumnName(@"D").HasColumnType("int").IsRequired(false);
 
             // Foreign keys
-            builder.HasOne(a => a.HasPrincipalKeyTestParent).WithOne(b => b.HasPrincipalKeyTestChild).HasPrincipalKey<HasPrincipalKeyTestParent>(p => new { p.Aa, p.Bb }).HasForeignKey<HasPrincipalKeyTestChild>(c => new { c.A, c.B }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_HasPrincipalKey_AB");
+            builder.HasOne(a => a.HasPrincipalKeyTestParent).WithOne(b => b.HasPrincipalKeyTestChild).HasPrincipalKey<HasPrincipalKeyTestParent>(p => new { p.AA, p.BB }).HasForeignKey<HasPrincipalKeyTestChild>(c => new { c.A, c.B }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_HasPrincipalKey_AB");
         }
     }
 
@@ -5750,41 +5744,41 @@ namespace Efrpg.V3TestE5
             builder.HasKey(x => x.Id).HasName("PK_HasPrincipalKeyTestParent").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Aa).HasColumnName(@"AA").HasColumnType("int").IsRequired();
-            builder.Property(x => x.Bb).HasColumnName(@"BB").HasColumnType("int").IsRequired();
-            builder.Property(x => x.Cc).HasColumnName(@"CC").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.Dd).HasColumnName(@"DD").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.AA).HasColumnName(@"AA").HasColumnType("int").IsRequired();
+            builder.Property(x => x.BB).HasColumnName(@"BB").HasColumnType("int").IsRequired();
+            builder.Property(x => x.CC).HasColumnName(@"CC").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.DD).HasColumnName(@"DD").HasColumnType("int").IsRequired(false);
 
-            builder.HasIndex(x => new { x.Aa, x.Bb }).HasDatabaseName("UQ_HasPrincipalKeyTestParent_AB").IsUnique();
-            builder.HasIndex(x => new { x.Aa, x.Cc }).HasDatabaseName("UQ_HasPrincipalKeyTestParent_AC").IsUnique();
-            builder.HasIndex(x => new { x.Cc, x.Dd }).HasDatabaseName("UQ_HasPrincipalKeyTestParent_CD").IsUnique();
+            builder.HasIndex(x => new { x.AA, x.BB }).HasDatabaseName("UQ_HasPrincipalKeyTestParent_AB").IsUnique();
+            builder.HasIndex(x => new { x.AA, x.CC }).HasDatabaseName("UQ_HasPrincipalKeyTestParent_AC").IsUnique();
+            builder.HasIndex(x => new { x.CC, x.DD }).HasDatabaseName("UQ_HasPrincipalKeyTestParent_CD").IsUnique();
         }
     }
 
     // header
-    public class HeaderConfiguration : IEntityTypeConfiguration<Header>
+    public class headerConfiguration : IEntityTypeConfiguration<header>
     {
-        public void Configure(EntityTypeBuilder<Header> builder)
+        public void Configure(EntityTypeBuilder<header> builder)
         {
             builder.ToTable("header", "dbo");
-            builder.HasKey(x => new { x.Id, x.AnotherId }).HasName("PK_header").IsClustered();
+            builder.HasKey(x => new { x.ID, x.anotherID }).HasName("PK_header").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.AnotherId).HasColumnName(@"anotherID").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.Added).HasColumnName(@"added").HasColumnType("datetime").IsRequired();
+            builder.Property(x => x.ID).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.anotherID).HasColumnName(@"anotherID").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.added).HasColumnName(@"added").HasColumnType("datetime").IsRequired();
         }
     }
 
     // hierarchy_test
-    public class HierarchyTestConfiguration : IEntityTypeConfiguration<HierarchyTest>
+    public class hierarchy_testConfiguration : IEntityTypeConfiguration<hierarchy_test>
     {
-        public void Configure(EntityTypeBuilder<HierarchyTest> builder)
+        public void Configure(EntityTypeBuilder<hierarchy_test> builder)
         {
             builder.ToTable("hierarchy_test", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK_hierarchy_test").IsClustered();
+            builder.HasKey(x => x.ID).HasName("PK_hierarchy_test").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Hid).HasColumnName(@"hid").HasColumnType("hierarchyid").IsRequired();
+            builder.Property(x => x.ID).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.hid).HasColumnName(@"hid").HasColumnType("hierarchyid").IsRequired();
         }
     }
 
@@ -5893,10 +5887,10 @@ namespace Efrpg.V3TestE5
         public void Configure(EntityTypeBuilder<PeriodTestTable> builder)
         {
             builder.ToTable("PeriodTestTable", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK_PeriodTestTable").IsClustered();
+            builder.HasKey(x => x.id).HasName("PK_PeriodTestTable").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.Joe46Bloggs).HasColumnName(@"joe.bloggs").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.joe46bloggs).HasColumnName(@"joe.bloggs").HasColumnType("int").IsRequired(false);
         }
     }
 
@@ -5934,9 +5928,9 @@ namespace Efrpg.V3TestE5
     }
 
     // pk_ordinal_test
-    public class PkOrdinalTestConfiguration : IEntityTypeConfiguration<PkOrdinalTest>
+    public class pk_ordinal_testConfiguration : IEntityTypeConfiguration<pk_ordinal_test>
     {
-        public void Configure(EntityTypeBuilder<PkOrdinalTest> builder)
+        public void Configure(EntityTypeBuilder<pk_ordinal_test> builder)
         {
             builder.ToTable("pk_ordinal_test", "dbo");
             builder.HasKey(x => new { x.C3, x.C1 }).HasName("PK_pk_ordinal_test").IsClustered();
@@ -5953,12 +5947,12 @@ namespace Efrpg.V3TestE5
         public void Configure(EntityTypeBuilder<PropertyTypesToAdd> builder)
         {
             builder.ToTable("PropertyTypesToAdd", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK_PropertyTypesToAdd").IsClustered();
+            builder.HasKey(x => x.id).HasName("PK_PropertyTypesToAdd").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.DtDefault).HasColumnName(@"dt_default").HasColumnType("datetime2").IsRequired(false);
-            builder.Property(x => x.Dt7).HasColumnName(@"dt7").HasColumnType("datetime2").IsRequired(false);
-            builder.Property(x => x.DefaultCheck).HasColumnName(@"defaultCheck").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);
+            builder.Property(x => x.id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.dt_default).HasColumnName(@"dt_default").HasColumnType("datetime2").IsRequired(false);
+            builder.Property(x => x.dt7).HasColumnName(@"dt7").HasColumnType("datetime2").IsRequired(false);
+            builder.Property(x => x.defaultCheck).HasColumnName(@"defaultCheck").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);
         }
     }
 
@@ -5985,9 +5979,9 @@ namespace Efrpg.V3TestE5
         public void Configure(EntityTypeBuilder<SmallDecimalTest> builder)
         {
             builder.ToTable("SmallDecimalTest", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK_SmallDecimalTest").IsClustered();
+            builder.HasKey(x => x.id).HasName("PK_SmallDecimalTest").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.KoeffVed).HasColumnName(@"KoeffVed").HasColumnType("decimal(4,4)").HasPrecision(4,4).IsRequired(false);
         }
     }
@@ -6000,8 +5994,8 @@ namespace Efrpg.V3TestE5
             builder.ToView("SmallDecimalTestView", "dbo");
             builder.HasNoKey();
 
-            builder.Property(x => x.FkId).HasColumnName(@"FkID").HasColumnType("int").IsRequired();
-            builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
+            builder.Property(x => x.FkID).HasColumnName(@"FkID").HasColumnType("int").IsRequired();
+            builder.Property(x => x.description).HasColumnName(@"description").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
         }
     }
 
@@ -6011,10 +6005,10 @@ namespace Efrpg.V3TestE5
         public void Configure(EntityTypeBuilder<Stafford_Boo> builder)
         {
             builder.ToTable("Boo", "Stafford");
-            builder.HasKey(x => x.Id).HasName("PK_Boo").IsClustered();
+            builder.HasKey(x => x.id).HasName("PK_Boo").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Name).HasColumnName(@"name").HasColumnType("nchar(10)").IsRequired().IsFixedLength().HasMaxLength(10);
+            builder.Property(x => x.id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.name).HasColumnName(@"name").HasColumnType("nchar(10)").IsRequired().IsFixedLength().HasMaxLength(10);
         }
     }
 
@@ -6038,13 +6032,13 @@ namespace Efrpg.V3TestE5
         public void Configure(EntityTypeBuilder<Stafford_Foo> builder)
         {
             builder.ToTable("Foo", "Stafford");
-            builder.HasKey(x => x.Id).HasName("PK_Foo").IsClustered();
+            builder.HasKey(x => x.id).HasName("PK_Foo").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.Name).HasColumnName(@"name").HasColumnType("nchar(10)").IsRequired().IsFixedLength().HasMaxLength(10);
+            builder.Property(x => x.id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.name).HasColumnName(@"name").HasColumnType("nchar(10)").IsRequired().IsFixedLength().HasMaxLength(10);
 
             // Foreign keys
-            builder.HasOne(a => a.Stafford_Boo).WithOne(b => b.Stafford_Foo).HasForeignKey<Stafford_Foo>(c => c.Id).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Foo_Boo");
+            builder.HasOne(a => a.Stafford_Boo).WithOne(b => b.Stafford_Foo).HasForeignKey<Stafford_Foo>(c => c.id).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Foo_Boo");
         }
     }
 
@@ -6113,47 +6107,47 @@ namespace Efrpg.V3TestE5
     }
 
     // table with duplicate column names
-    public class TableWithDuplicateColumnNameConfiguration : IEntityTypeConfiguration<TableWithDuplicateColumnName>
+    public class tablewithduplicatecolumnnameConfiguration : IEntityTypeConfiguration<tablewithduplicatecolumnname>
     {
-        public void Configure(EntityTypeBuilder<TableWithDuplicateColumnName> builder)
+        public void Configure(EntityTypeBuilder<tablewithduplicatecolumnname> builder)
         {
             builder.ToTable("table with duplicate column names", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK_TableWithDuplicateColumnNames").IsClustered();
+            builder.HasKey(x => x.id).HasName("PK_TableWithDuplicateColumnNames").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.UserId1).HasColumnName(@"user_id").HasColumnType("int").IsRequired();
-            builder.Property(x => x.UserId2).HasColumnName(@"UserId").HasColumnType("int").IsRequired();
-            builder.Property(x => x.UserId3).HasColumnName(@"User Id").HasColumnType("int").IsRequired();
-            builder.Property(x => x.UserId4).HasColumnName(@"User  Id").HasColumnType("int").IsRequired();
-            builder.Property(x => x.UserId).HasColumnName(@"user__id").HasColumnType("int").IsRequired();
+            builder.Property(x => x.id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.user_id).HasColumnName(@"user_id").HasColumnType("int").IsRequired();
+            builder.Property(x => x.UserId1).HasColumnName(@"UserId").HasColumnType("int").IsRequired();
+            builder.Property(x => x.UserId2).HasColumnName(@"User Id").HasColumnType("int").IsRequired();
+            builder.Property(x => x.UserId).HasColumnName(@"User  Id").HasColumnType("int").IsRequired();
+            builder.Property(x => x.user__id).HasColumnName(@"user__id").HasColumnType("int").IsRequired();
         }
     }
 
     // table with space
-    public class TableWithSpaceConfiguration : IEntityTypeConfiguration<TableWithSpace>
+    public class tablewithspaceConfiguration : IEntityTypeConfiguration<tablewithspace>
     {
-        public void Configure(EntityTypeBuilder<TableWithSpace> builder)
+        public void Configure(EntityTypeBuilder<tablewithspace> builder)
         {
             builder.ToTable("table with space", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK_TableWithSpace").IsClustered();
+            builder.HasKey(x => x.id).HasName("PK_TableWithSpace").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.HasMany<TableWithSpaceAndInColumn>(t => t.TableWithSpaceAndInColumns).WithMany(t => t.TableWithSpaces).UsingEntity<Dictionary<string, object>>("table mapping with space",
-                    j => j.HasOne<TableWithSpaceAndInColumn>().WithMany().HasForeignKey("id value"),
-                    j => j.HasOne<TableWithSpace>().WithMany().HasForeignKey("id"),
+            builder.Property(x => x.id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.HasMany<tablewithspaceandincolumn>(t => t.tablewithspaceandincolumns).WithMany(t => t.tablewithspaces).UsingEntity<Dictionary<string, object>>("table mapping with space",
+                    j => j.HasOne<tablewithspaceandincolumn>().WithMany().HasForeignKey("id value"),
+                    j => j.HasOne<tablewithspace>().WithMany().HasForeignKey("id"),
                     j => j.ToTable("table mapping with space", "dbo"));
         }
     }
 
     // table with space and in columns
-    public class TableWithSpaceAndInColumnConfiguration : IEntityTypeConfiguration<TableWithSpaceAndInColumn>
+    public class tablewithspaceandincolumnConfiguration : IEntityTypeConfiguration<tablewithspaceandincolumn>
     {
-        public void Configure(EntityTypeBuilder<TableWithSpaceAndInColumn> builder)
+        public void Configure(EntityTypeBuilder<tablewithspaceandincolumn> builder)
         {
             builder.ToTable("table with space and in columns", "dbo");
-            builder.HasKey(x => x.IdValue).HasName("PK_TableWithSpaceAndInColumns").IsClustered();
+            builder.HasKey(x => x.idvalue).HasName("PK_TableWithSpaceAndInColumns").IsClustered();
 
-            builder.Property(x => x.IdValue).HasColumnName(@"id value").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.idvalue).HasColumnName(@"id value").HasColumnType("int").IsRequired().ValueGeneratedNever();
         }
     }
 
@@ -6163,9 +6157,9 @@ namespace Efrpg.V3TestE5
         public void Configure(EntityTypeBuilder<TableWithSpaceInColumnOnly> builder)
         {
             builder.ToTable("TableWithSpaceInColumnOnly", "dbo");
-            builder.HasKey(x => x.IdValue).HasName("PK_TableWithSpaceInColumnOnly").IsClustered();
+            builder.HasKey(x => x.idvalue).HasName("PK_TableWithSpaceInColumnOnly").IsClustered();
 
-            builder.Property(x => x.IdValue).HasColumnName(@"id value").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.idvalue).HasColumnName(@"id value").HasColumnType("int").IsRequired().ValueGeneratedNever();
         }
     }
 
@@ -6197,58 +6191,58 @@ namespace Efrpg.V3TestE5
     }
 
     // tblOrders
-    public class TblOrderConfiguration : IEntityTypeConfiguration<TblOrder>
+    public class tblOrderConfiguration : IEntityTypeConfiguration<tblOrder>
     {
-        public void Configure(EntityTypeBuilder<TblOrder> builder)
+        public void Configure(EntityTypeBuilder<tblOrder> builder)
         {
             builder.ToTable("tblOrders", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK_tblOrders").IsClustered();
+            builder.HasKey(x => x.ID).HasName("PK_tblOrders").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Added).HasColumnName(@"added").HasColumnType("datetime").IsRequired();
+            builder.Property(x => x.ID).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.added).HasColumnName(@"added").HasColumnType("datetime").IsRequired();
         }
     }
 
     // tblOrderErrors
-    public class TblOrderErrorConfiguration : IEntityTypeConfiguration<TblOrderError>
+    public class tblOrderErrorConfiguration : IEntityTypeConfiguration<tblOrderError>
     {
-        public void Configure(EntityTypeBuilder<TblOrderError> builder)
+        public void Configure(EntityTypeBuilder<tblOrderError> builder)
         {
             builder.ToTable("tblOrderErrors", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK_tblOrderErrors").IsClustered();
+            builder.HasKey(x => x.ID).HasName("PK_tblOrderErrors").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Error).HasColumnName(@"error").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);
+            builder.Property(x => x.ID).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.error).HasColumnName(@"error").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);
         }
     }
 
     // tblOrderErrorsAB_
-    public class TblOrderErrorsAbConfiguration : IEntityTypeConfiguration<TblOrderErrorsAb>
+    public class tblOrderErrorsABConfiguration : IEntityTypeConfiguration<tblOrderErrorsAB>
     {
-        public void Configure(EntityTypeBuilder<TblOrderErrorsAb> builder)
+        public void Configure(EntityTypeBuilder<tblOrderErrorsAB> builder)
         {
             builder.ToTable("tblOrderErrorsAB_", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK_tblOrderErrorsAB").IsClustered();
+            builder.HasKey(x => x.ID).HasName("PK_tblOrderErrorsAB").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Error).HasColumnName(@"error").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);
+            builder.Property(x => x.ID).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.error).HasColumnName(@"error").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);
         }
     }
 
     // tblOrderLines
-    public class TblOrderLineConfiguration : IEntityTypeConfiguration<TblOrderLine>
+    public class tblOrderLineConfiguration : IEntityTypeConfiguration<tblOrderLine>
     {
-        public void Configure(EntityTypeBuilder<TblOrderLine> builder)
+        public void Configure(EntityTypeBuilder<tblOrderLine> builder)
         {
             builder.ToTable("tblOrderLines", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK_tblOrderLines").IsClustered();
+            builder.HasKey(x => x.ID).HasName("PK_tblOrderLines").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired();
-            builder.Property(x => x.Sku).HasColumnName(@"sku").HasColumnType("varchar(15)").IsRequired(false).IsUnicode(false).HasMaxLength(15);
+            builder.Property(x => x.ID).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.OrderID).HasColumnName(@"OrderID").HasColumnType("int").IsRequired();
+            builder.Property(x => x.sku).HasColumnName(@"sku").HasColumnType("varchar(15)").IsRequired(false).IsUnicode(false).HasMaxLength(15);
 
             // Foreign keys
-            builder.HasOne(a => a.TblOrder).WithMany(b => b.TblOrderLines).HasForeignKey(c => c.OrderId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("tblOrdersFK");
+            builder.HasOne(a => a.tblOrder).WithMany(b => b.tblOrderLines).HasForeignKey(c => c.OrderID).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("tblOrdersFK");
         }
     }
 
@@ -6317,10 +6311,28 @@ namespace Efrpg.V3TestE5
         public void Configure(EntityTypeBuilder<User> builder)
         {
             builder.ToTable("User", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK_User").IsClustered();
+            builder.HasKey(x => x.ID).HasName("PK_User").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.ExternalUserId).HasColumnName(@"ExternalUserID").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);
+            builder.Property(x => x.ID).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.ExternalUserID).HasColumnName(@"ExternalUserID").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);
+        }
+    }
+
+    // User_Document
+    public class User_DocumentConfiguration : IEntityTypeConfiguration<User_Document>
+    {
+        public void Configure(EntityTypeBuilder<User_Document> builder)
+        {
+            builder.ToTable("User_Document", "dbo");
+            builder.HasKey(x => x.ID).HasName("PK_User_Document").IsClustered();
+
+            builder.Property(x => x.ID).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.UserID).HasColumnName(@"UserID").HasColumnType("int").IsRequired();
+            builder.Property(x => x.CreatedByUserID).HasColumnName(@"CreatedByUserID").HasColumnType("int").IsRequired();
+
+            // Foreign keys
+            builder.HasOne(a => a.CreatedByUser).WithMany(b => b.User_Documents_CreatedByUserID).HasForeignKey(c => c.CreatedByUserID).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_User_Document_User1");
+            builder.HasOne(a => a.User_UserID).WithMany(b => b.User_Documents_UserID).HasForeignKey(c => c.UserID).HasConstraintName("FK_User_Document_User");
         }
     }
 
@@ -6330,33 +6342,15 @@ namespace Efrpg.V3TestE5
         public void Configure(EntityTypeBuilder<User309> builder)
         {
             builder.ToTable("User309", "dbo");
-            builder.HasKey(x => x.UserId).HasName("PK_User309").IsClustered();
+            builder.HasKey(x => x.UserID).HasName("PK_User309").IsClustered();
 
-            builder.Property(x => x.UserId).HasColumnName(@"UserID").HasColumnType("bigint").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.UserID).HasColumnName(@"UserID").HasColumnType("bigint").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.Lastname).HasColumnName(@"Lastname").HasColumnType("nvarchar(100)").IsRequired().HasMaxLength(100);
             builder.Property(x => x.Firstname).HasColumnName(@"Firstname").HasColumnType("nvarchar(100)").IsRequired().HasMaxLength(100);
-            builder.Property(x => x.PhoneCountryId).HasColumnName(@"PhoneCountryID").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.PhoneCountryID).HasColumnName(@"PhoneCountryID").HasColumnType("int").IsRequired(false);
 
             // Foreign keys
-            builder.HasOne(a => a.Country).WithMany(b => b.User309).HasForeignKey(c => c.PhoneCountryId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_User309_PhoneCountry");
-        }
-    }
-
-    // User_Document
-    public class UserDocumentConfiguration : IEntityTypeConfiguration<UserDocument>
-    {
-        public void Configure(EntityTypeBuilder<UserDocument> builder)
-        {
-            builder.ToTable("User_Document", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK_User_Document").IsClustered();
-
-            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.UserId).HasColumnName(@"UserID").HasColumnType("int").IsRequired();
-            builder.Property(x => x.CreatedByUserId).HasColumnName(@"CreatedByUserID").HasColumnType("int").IsRequired();
-
-            // Foreign keys
-            builder.HasOne(a => a.CreatedByUser).WithMany(b => b.UserDocuments_CreatedByUserId).HasForeignKey(c => c.CreatedByUserId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_User_Document_User1");
-            builder.HasOne(a => a.User_UserId).WithMany(b => b.UserDocuments_UserId).HasForeignKey(c => c.UserId).HasConstraintName("FK_User_Document_User");
+            builder.HasOne(a => a.Country).WithMany(b => b.User309).HasForeignKey(c => c.PhoneCountryID).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_User309_PhoneCountry");
         }
     }
 
@@ -6389,23 +6383,23 @@ namespace Efrpg.V3TestE5
     }
 
     // view with space
-    public class ViewWithSpaceConfiguration : IEntityTypeConfiguration<ViewWithSpace>
+    public class viewwithspaceConfiguration : IEntityTypeConfiguration<viewwithspace>
     {
-        public void Configure(EntityTypeBuilder<ViewWithSpace> builder)
+        public void Configure(EntityTypeBuilder<viewwithspace> builder)
         {
             builder.ToView("view with space", "dbo");
             builder.HasNoKey();
 
-            builder.Property(x => x.CodeObjectNo).HasColumnName(@"codeObjectNo").HasColumnType("int").IsRequired();
-            builder.Property(x => x.ApplicationNo).HasColumnName(@"applicationNo").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.Type).HasColumnName(@"type").HasColumnType("int").IsRequired();
-            builder.Property(x => x.EName).HasColumnName(@"eName").HasColumnType("nvarchar(250)").IsRequired().HasMaxLength(250);
-            builder.Property(x => x.AName).HasColumnName(@"aName").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
-            builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
-            builder.Property(x => x.CodeName).HasColumnName(@"codeName").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
-            builder.Property(x => x.Note).HasColumnName(@"note").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
-            builder.Property(x => x.IsObject).HasColumnName(@"isObject").HasColumnType("bit").IsRequired();
-            builder.Property(x => x.VersionNumber).HasColumnName(@"versionNumber").HasColumnType("timestamp(8)").IsRequired(false).IsFixedLength().HasMaxLength(8).IsRowVersion().IsConcurrencyToken();
+            builder.Property(x => x.codeObjectNo).HasColumnName(@"codeObjectNo").HasColumnType("int").IsRequired();
+            builder.Property(x => x.applicationNo).HasColumnName(@"applicationNo").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.type).HasColumnName(@"type").HasColumnType("int").IsRequired();
+            builder.Property(x => x.eName).HasColumnName(@"eName").HasColumnType("nvarchar(250)").IsRequired().HasMaxLength(250);
+            builder.Property(x => x.aName).HasColumnName(@"aName").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
+            builder.Property(x => x.description).HasColumnName(@"description").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
+            builder.Property(x => x.codeName).HasColumnName(@"codeName").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
+            builder.Property(x => x.note).HasColumnName(@"note").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
+            builder.Property(x => x.isObject).HasColumnName(@"isObject").HasColumnType("bit").IsRequired();
+            builder.Property(x => x.versionNumber).HasColumnName(@"versionNumber").HasColumnType("timestamp(8)").IsRequired(false).IsFixedLength().HasMaxLength(8).IsRowVersion().IsConcurrencyToken();
         }
     }
 
@@ -6415,30 +6409,30 @@ namespace Efrpg.V3TestE5
         public void Configure(EntityTypeBuilder<WVN_Article> builder)
         {
             builder.ToTable("Articles", "WVN");
-            builder.HasKey(x => x.PkArticle).HasName("PK_Articles").IsClustered();
+            builder.HasKey(x => x.PK_Article).HasName("PK_Articles").IsClustered();
 
-            builder.Property(x => x.PkArticle).HasColumnName(@"PK_Article").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.FkFactory).HasColumnName(@"FK_Factory").HasColumnType("uniqueidentifier").IsRequired();
-            builder.Property(x => x.FkArticleLevel).HasColumnName(@"FK_ArticleLevel").HasColumnType("int").IsRequired();
-            builder.Property(x => x.FkParentArticle).HasColumnName(@"FK_ParentArticle").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.PK_Article).HasColumnName(@"PK_Article").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.FK_Factory).HasColumnName(@"FK_Factory").HasColumnType("uniqueidentifier").IsRequired();
+            builder.Property(x => x.FK_ArticleLevel).HasColumnName(@"FK_ArticleLevel").HasColumnType("int").IsRequired();
+            builder.Property(x => x.FK_ParentArticle).HasColumnName(@"FK_ParentArticle").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.Code).HasColumnName(@"Code").HasColumnType("nvarchar(20)").IsRequired().HasMaxLength(20);
 
-            builder.HasIndex(x => new { x.FkFactory, x.FkArticleLevel, x.Code }).HasDatabaseName("UK_Articles").IsUnique();
+            builder.HasIndex(x => new { x.FK_Factory, x.FK_ArticleLevel, x.Code }).HasDatabaseName("UK_Articles").IsUnique();
         }
     }
 
     // v_Articles
-    public class WVN_VArticleConfiguration : IEntityTypeConfiguration<WVN_VArticle>
+    public class WVN_v_ArticleConfiguration : IEntityTypeConfiguration<WVN_v_Article>
     {
-        public void Configure(EntityTypeBuilder<WVN_VArticle> builder)
+        public void Configure(EntityTypeBuilder<WVN_v_Article> builder)
         {
             builder.ToView("v_Articles", "WVN");
             builder.HasNoKey();
 
-            builder.Property(x => x.PkArticle).HasColumnName(@"PK_Article").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.FkFactory).HasColumnName(@"FK_Factory").HasColumnType("uniqueidentifier").IsRequired(false);
-            builder.Property(x => x.FkArticleLevel).HasColumnName(@"FK_ArticleLevel").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.FkParentArticle).HasColumnName(@"FK_ParentArticle").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.PK_Article).HasColumnName(@"PK_Article").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.FK_Factory).HasColumnName(@"FK_Factory").HasColumnType("uniqueidentifier").IsRequired(false);
+            builder.Property(x => x.FK_ArticleLevel).HasColumnName(@"FK_ArticleLevel").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.FK_ParentArticle).HasColumnName(@"FK_ParentArticle").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.Code).HasColumnName(@"Code").HasColumnType("nvarchar(20)").IsRequired(false).HasMaxLength(20);
             builder.Property(x => x.FullCode).HasColumnName(@"FullCode").HasColumnType("nvarchar(100)").IsRequired(false).HasMaxLength(100);
         }
@@ -6454,33 +6448,9 @@ namespace Efrpg.V3TestE5
 
             builder.Property(x => x.Кодбренда).HasColumnName(@"Код бренда").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Наименованиебренда).HasColumnName(@"Наименование бренда").HasColumnType("varchar(50)").IsRequired().IsUnicode(false).HasMaxLength(50);
-            builder.Property(x => x.Логотипбренда).HasColumnName(@"Логотип_бренда").HasColumnType("image(2147483647)").IsRequired(false).HasMaxLength(2147483647);
-            builder.Property(x => x.Логотипбрендавертикальный).HasColumnName(@"Логотип_бренда_вертикальный").HasColumnType("image(2147483647)").IsRequired(false).HasMaxLength(2147483647);
+            builder.Property(x => x.Логотип_бренда).HasColumnName(@"Логотип_бренда").HasColumnType("image(2147483647)").IsRequired(false).HasMaxLength(2147483647);
+            builder.Property(x => x.Логотип_бренда_вертикальный).HasColumnName(@"Логотип_бренда_вертикальный").HasColumnType("image(2147483647)").IsRequired(false).HasMaxLength(2147483647);
         }
-    }
-
-
-    #endregion
-
-    #region Enumerations
-
-    public enum CarOptions
-    {
-        SunRoof = 0x01,
-        Spoiler = 0x02,
-        FogLights = 0x04,
-        TintedWindows = 0x08,
-    }
-
-    public enum DaysOfWeek
-    {
-        Sun = 0,
-        Mon = 1,
-        Tue = 2,
-        Wed = 3,
-        Thu = 4,
-        Fri = 6,
-        Sat = 7,
     }
 
 
@@ -6488,13 +6458,13 @@ namespace Efrpg.V3TestE5
 
     #region Stored procedure return models
 
-    public class C182Test1ReturnModel
+    public class C182_test1ReturnModel
     {
         public int? Id { get; set; }
         public string Description { get; set; }
     }
 
-    public class C182Test2ReturnModel
+    public class C182_test2ReturnModel
     {
         public class ResultSetModel1
         {
@@ -6549,7 +6519,7 @@ namespace Efrpg.V3TestE5
         public int? IntValue { get; set; }
     }
 
-    public class DboProcDataFromFfrsAndDboReturnModel
+    public class dbo_proc_data_from_ffrs_and_dboReturnModel
     {
         public int Id { get; set; }
         public int PrimaryColourId { get; set; }
@@ -6557,14 +6527,14 @@ namespace Efrpg.V3TestE5
         public string CVName { get; set; }
     }
 
-    public class DboProcDataFromFfrsReturnModel
+    public class dbo_proc_data_from_ffrsReturnModel
     {
         public Guid BatchUID { get; set; }
         public int CVID { get; set; }
         public string CVName { get; set; }
     }
 
-    public class DsOpeProcReturnModel
+    public class DSOpeProcReturnModel
     {
         public int ID { get; set; }
         public bool? Selected { get; set; }
@@ -6575,14 +6545,14 @@ namespace Efrpg.V3TestE5
         public int? IntValue { get; set; }
     }
 
-    public class FFRS_CvDataReturnModel
+    public class FFRS_cv_dataReturnModel
     {
         public Guid BatchUID { get; set; }
         public int CVID { get; set; }
         public string CVName { get; set; }
     }
 
-    public class FFRS_DataFromDboAndFfrsReturnModel
+    public class FFRS_data_from_dbo_and_ffrsReturnModel
     {
         public int Id { get; set; }
         public int PrimaryColourId { get; set; }
@@ -6590,7 +6560,7 @@ namespace Efrpg.V3TestE5
         public string CVName { get; set; }
     }
 
-    public class FFRS_DataFromDboReturnModel
+    public class FFRS_data_from_dboReturnModel
     {
         public int Id { get; set; }
         public int PrimaryColourId { get; set; }
@@ -6609,7 +6579,7 @@ namespace Efrpg.V3TestE5
         public decimal? KoeffVed { get; set; }
     }
 
-    public class StpMultipleIdenticalResultsReturnModel
+    public class stp_multiple_identical_resultsReturnModel
     {
         public class ResultSetModel1
         {
@@ -6625,7 +6595,7 @@ namespace Efrpg.V3TestE5
         public List<ResultSetModel2> ResultSet2;
     }
 
-    public class StpMultipleMultipleResultsWithParamsReturnModel
+    public class stp_multiple_multiple_results_with_paramsReturnModel
     {
         public class ResultSetModel1
         {
@@ -6669,7 +6639,23 @@ namespace Efrpg.V3TestE5
         public List<ResultSetModel6> ResultSet6;
     }
 
-    public class StpMultipleResultsReturnModel
+    public class stp_multiple_results_with_paramsReturnModel
+    {
+        public class ResultSetModel1
+        {
+            public int codeObjectNo { get; set; }
+            public int? applicationNo { get; set; }
+        }
+        public List<ResultSetModel1> ResultSet1;
+        public class ResultSetModel2
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+        }
+        public List<ResultSetModel2> ResultSet2;
+    }
+
+    public class stp_multiple_resultsReturnModel
     {
         public class ResultSetModel1
         {
@@ -6702,35 +6688,25 @@ namespace Efrpg.V3TestE5
         public List<ResultSetModel3> ResultSet3;
     }
 
-    public class StpMultipleResultsWithParamsReturnModel
-    {
-        public class ResultSetModel1
-        {
-            public int codeObjectNo { get; set; }
-            public int? applicationNo { get; set; }
-        }
-        public List<ResultSetModel1> ResultSet1;
-        public class ResultSetModel2
-        {
-            public int Id { get; set; }
-            public string Name { get; set; }
-        }
-        public List<ResultSetModel2> ResultSet2;
-    }
-
-    public class StpNoParamsTestReturnModel
+    public class stp_no_params_testReturnModel
     {
         public int codeObjectNo { get; set; }
         public int? applicationNo { get; set; }
     }
 
-    public class StpNullableParamsTestReturnModel
+    public class stp_nullable_params_testReturnModel
     {
         public int codeObjectNo { get; set; }
         public int? applicationNo { get; set; }
     }
 
-    public class StpTestReturnModel
+    public class stp_test_underscore_testReturnModel
+    {
+        public int code_object_no { get; set; }
+        public int? application_no { get; set; }
+    }
+
+    public class stp_testReturnModel
     {
         public int codeObjectNo { get; set; }
         public int? applicationNo { get; set; }
@@ -6742,12 +6718,6 @@ namespace Efrpg.V3TestE5
         public string note { get; set; }
         public bool isObject { get; set; }
         public byte[] versionNumber { get; set; }
-    }
-
-    public class StpTestUnderscoreTestReturnModel
-    {
-        public int code_object_no { get; set; }
-        public int? application_no { get; set; }
     }
 
     public class Synonyms_SimpleStoredProcReturnModel

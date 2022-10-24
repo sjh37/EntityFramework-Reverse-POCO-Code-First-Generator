@@ -33,6 +33,7 @@ namespace Generator.Tests.Integration
             Settings.PrependSchemaName          = true;
             Settings.DisableGeographyTypes      = false;
             Settings.AddUnitTestingDbContext    = true;
+            Settings.UsePascalCase              = true;
 
             ResetFilters();
         }

@@ -49,6 +49,7 @@ namespace Efrpg.ForeignKeyStrategies
             var fkName = (Settings.UsePascalCase ? Inflector.ToTitleCase(foreignKey.FkColumn) : foreignKey.FkColumn).Replace(" ", string.Empty).Replace("$", string.Empty);
             var name = Settings.ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 1);
             string col;
+
             if (!ReverseNavigationUniquePropName.Contains(name) &&
                 !ReverseNavigationUniquePropNameClashes.Contains(name))
             {

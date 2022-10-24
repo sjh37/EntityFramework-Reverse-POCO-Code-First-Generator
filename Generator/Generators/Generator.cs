@@ -349,8 +349,8 @@ namespace Efrpg.Generators
                     }
 
                     // Handle table names with underscores - singularise just the last word
-                    var tableName = filter.TableRename(tn.TableName, tn.SchemaName, tn.IsView);
-                    var singularCleanTableName = Inflector.MakeSingular(DatabaseReader.CleanUp(tableName));
+                    var tableName = DatabaseReader.CleanUp(filter.TableRename(tn.TableName, tn.SchemaName, tn.IsView));
+                    var singularCleanTableName = Inflector.MakeSingular(tableName);
                     table.NameHumanCase = (Settings.UsePascalCase ? Inflector.ToTitleCase(singularCleanTableName) : singularCleanTableName).Replace(" ", "").Replace("$", "").Replace(".", "");
 
                     if (Settings.PrependSchemaName && string.Compare(table.Schema.DbName, Settings.DefaultSchema, StringComparison.OrdinalIgnoreCase) != 0)

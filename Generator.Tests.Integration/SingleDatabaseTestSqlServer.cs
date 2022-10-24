@@ -42,9 +42,9 @@
         public void ReverseEngineerSqlServer(string database, string singleDbContextSubNamespace, string connectionStringName, string dbContextName, TemplateType templateType, ForeignKeyNamingStrategy foreignKeyNamingStrategy)
         {
             // Arrange
+            SetupSqlServer(database, connectionStringName, dbContextName, templateType, templateType == TemplateType.Ef6 ? GeneratorType.Ef6 : GeneratorType.EfCore, foreignKeyNamingStrategy);
             Settings.GenerateSeparateFiles = false;
             Settings.UseMappingTables = (templateType != TemplateType.EfCore2 && templateType != TemplateType.EfCore3);
-            SetupSqlServer(database, connectionStringName, dbContextName, templateType, templateType == TemplateType.Ef6 ? GeneratorType.Ef6 : GeneratorType.EfCore, foreignKeyNamingStrategy);
             if(templateType == TemplateType.EfCore5) // Don't do all, as we want a mix of true/false for this field.
                 Settings.TrimCharFields = true;
             else
@@ -86,6 +86,22 @@
             // Assert
             CompareAgainstTestComparison(database);
         }
+        
+        [Test]
+        public void NonPascalCased()
+        {
+            // Arrange
+            SetupSqlServer("EfrpgTest", "My_db_context", "Efrpg_db_context", TemplateType.EfCore6, GeneratorType.EfCore, ForeignKeyNamingStrategy.Legacy);
+            Settings.GenerateSeparateFiles = false;
+            Settings.UsePascalCase = false;
+
+            // Act
+            const string filename = "NonPascalCased";
+            Run(filename, ".V4TestE6", typeof(NullFileManager), null);
+
+            // Assert
+            CompareAgainstTestComparison(filename);
+        }
 
         [Test]
         [TestCase("EfrpgTest", ".V3FilterTest", "EfrpgTest", "EfrpgDbContext", false, TemplateType.EfCore3, ForeignKeyNamingStrategy.Legacy)]
@@ -94,9 +110,9 @@
         public void MultipleIncludeFilters(string database, string singleDbContextSubNamespace, string connectionStringName, string dbContextName, bool publicTestComparison, TemplateType templateType, ForeignKeyNamingStrategy foreignKeyNamingStrategy)
         {
             // Arrange
+            SetupSqlServer(database, connectionStringName, dbContextName, templateType, templateType == TemplateType.Ef6 ? GeneratorType.Ef6 : GeneratorType.EfCore, foreignKeyNamingStrategy);
             Settings.GenerateSeparateFiles = false;
             Settings.UseMappingTables = (templateType != TemplateType.EfCore2 && templateType != TemplateType.EfCore3);
-            SetupSqlServer(database, connectionStringName, dbContextName, templateType, templateType == TemplateType.Ef6 ? GeneratorType.Ef6 : GeneratorType.EfCore, foreignKeyNamingStrategy);
             Settings.AddUnitTestingDbContext = false;
             
             FilterSettings.SchemaFilters.Add(new RegexIncludeFilter("dbo.*"));

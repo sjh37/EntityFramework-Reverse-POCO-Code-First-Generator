@@ -17,7 +17,7 @@ namespace Tester.Integration.EfCore3
             builder.Property(x => x.C36).HasColumnName(@"$").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.C37).HasColumnName(@"%").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.C163).HasColumnName(@"£").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.C38Fred36).HasColumnName(@"&fred$").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.C38Fred).HasColumnName(@"&fred$").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.Abc4792).HasColumnName(@"abc/\").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.Joe46Bloggs).HasColumnName(@"joe.bloggs").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.SimonHughes).HasColumnName(@"simon-hughes").HasColumnType("int").IsRequired(false);

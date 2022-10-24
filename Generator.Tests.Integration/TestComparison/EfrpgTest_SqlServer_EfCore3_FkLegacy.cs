@@ -3865,7 +3865,7 @@ namespace Efrpg.V3TestE3
         public int C36 { get; set; } // $ (Primary key)
         public int? C37 { get; set; } // %
         public int? C163 { get; set; } // £
-        public int? C38Fred36 { get; set; } // &fred$
+        public int? C38Fred { get; set; } // &fred$
         public int? Abc4792 { get; set; } // abc/\
         public int? Joe46Bloggs { get; set; } // joe.bloggs
         public int? SimonHughes { get; set; } // simon-hughes
@@ -5579,7 +5579,7 @@ namespace Efrpg.V3TestE3
             builder.Property(x => x.C36).HasColumnName(@"$").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.C37).HasColumnName(@"%").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.C163).HasColumnName(@"£").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.C38Fred36).HasColumnName(@"&fred$").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.C38Fred).HasColumnName(@"&fred$").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.Abc4792).HasColumnName(@"abc/\").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.Joe46Bloggs).HasColumnName(@"joe.bloggs").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.SimonHughes).HasColumnName(@"simon-hughes").HasColumnType("int").IsRequired(false);

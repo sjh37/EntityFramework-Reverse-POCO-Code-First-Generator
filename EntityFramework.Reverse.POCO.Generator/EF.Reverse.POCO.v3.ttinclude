@@ -3056,7 +3056,7 @@
 
         public string PkTableHumanCase(string suffix)
         {
-            var singular = Inflector.MakeSingular(PkTableNameFiltered);
+            var singular = Inflector.MakeSingular(DatabaseReader.CleanUp(PkTableNameFiltered));
 
             var pkTableHumanCase = (Settings.UsePascalCase ? Inflector.ToTitleCase(singular) : singular)
                 .Replace(" ", string.Empty)
@@ -3204,6 +3204,7 @@
             var fkName = (Settings.UsePascalCase ? Inflector.ToTitleCase(foreignKey.FkColumn) : foreignKey.FkColumn).Replace(" ", string.Empty).Replace("$", string.Empty);
             var name = Settings.ForeignKeyName(tableNameHumanCase, foreignKey, fkName, relationship, 1);
             string col;
+
             if (!ReverseNavigationUniquePropName.Contains(name) &&
                 !ReverseNavigationUniquePropNameClashes.Contains(name))
             {
@@ -4422,8 +4423,8 @@
                     }
 
                     // Handle table names with underscores - singularise just the last word
-                    var tableName = filter.TableRename(tn.TableName, tn.SchemaName, tn.IsView);
-                    var singularCleanTableName = Inflector.MakeSingular(DatabaseReader.CleanUp(tableName));
+                    var tableName = DatabaseReader.CleanUp(filter.TableRename(tn.TableName, tn.SchemaName, tn.IsView));
+                    var singularCleanTableName = Inflector.MakeSingular(tableName);
                     table.NameHumanCase = (Settings.UsePascalCase ? Inflector.ToTitleCase(singularCleanTableName) : singularCleanTableName).Replace(" ", "").Replace("$", "").Replace(".", "");
 
                     if (Settings.PrependSchemaName && string.Compare(table.Schema.DbName, Settings.DefaultSchema, StringComparison.OrdinalIgnoreCase) != 0)
@@ -12943,7 +12944,7 @@ and limitations under the License.
                                 if (string.IsNullOrEmpty(name))
                                     continue;
 
-                                name = RemoveNonAlphanumerics.Replace(name, string.Empty);
+                                name = RemoveNonAlphaNumeric.Replace(name, string.Empty);
                                 name = (Settings.UsePascalCaseForEnumMembers ? Inflector.ToTitleCase(name) : name).Replace(" ", string.Empty).Trim();
                                 if (string.IsNullOrEmpty(name))
                                     continue;
@@ -13149,14 +13150,20 @@ and limitations under the License.
             return col;
         }
 
-        private static readonly Regex RemoveNonAlphanumerics = new Regex(@"[^\w\d\s_-]", RegexOptions.Compiled);
+        private static readonly Regex RemoveNonAlphaNumeric = new Regex(@"[^\w\d\s_-]", RegexOptions.Compiled);
+        private static readonly Regex RemoveTrailingSymbols = new Regex(@"[$-/:-?{-~!""^_`\[\]]+$", RegexOptions.Compiled);
 
         public static readonly Func<string, string> CleanUp = (str) =>
         {
             // Replace punctuation and symbols in variable names as these are not allowed.
+            if(string.IsNullOrEmpty(str))
+                return string.Empty;
+
+            if(str.Any(char.IsLetterOrDigit))
+                str = RemoveTrailingSymbols.Replace(str.Replace('-', '_'), string.Empty);
             var len = str.Length;
             if (len == 0)
-                return str;
+                return string.Empty;
 
             var sb = new StringBuilder(len + 20);
             var replacedCharacter = false;
@@ -13175,7 +13182,7 @@ and limitations under the License.
             if (replacedCharacter)
                 str = sb.ToString();
 
-            str = RemoveNonAlphanumerics.Replace(str, string.Empty);
+            str = RemoveNonAlphaNumeric.Replace(str, string.Empty);
             if (char.IsDigit(str[0]))
                 str = "C" + str;
 
