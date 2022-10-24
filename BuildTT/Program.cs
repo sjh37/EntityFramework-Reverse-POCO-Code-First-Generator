@@ -7,7 +7,6 @@ namespace BuildTT
     {
         static void Main()
         {
-            //const string root          = "..\\..\\..\\";
             const string generatorRoot = "..\\..\\..\\Generator";
             const string ttRoot        = "..\\..\\..\\EntityFramework.Reverse.POCO.Generator";
             const string templatesRoot = "..\\..\\..\\_File based templates";
@@ -16,7 +15,7 @@ namespace BuildTT
 
             TemplateFiles.Create(templatesRoot);
             BuildTT.Create(generatorRoot, ttRoot, version);
-            //var vs = new VersionSetter(root, version);
+            //var vs = new VersionSetter("..\\..\\..\\", version);
             //vs.SetVersions();
 
             Console.WriteLine("Version: " + version);
