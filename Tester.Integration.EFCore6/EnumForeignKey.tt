@@ -42,7 +42,8 @@
     // As long as the type can be mapped to your new type, all is well.
     Settings.AddEnumDefinitions = delegate(List<EnumDefinition> enumDefinitions)
     {
-        enumDefinitions.Add(new EnumDefinition { Schema = "EnumTest", Table = "OpenDays", Column = "TypeId", EnumType = "DaysOfWeek" });
+        enumDefinitions.Add(new EnumDefinition { Schema = "EnumTest", Table = "OpenDays", Column = "EnumId", EnumType = "DaysOfWeek" });
+        enumDefinitions.Add(new EnumDefinition { Schema = "EnumTest", Table = "DaysOfWeek", Column = "TypeId", EnumType = "DaysOfWeek" });
     };
 
     // Use the following function if you need to apply additional modifications to a column

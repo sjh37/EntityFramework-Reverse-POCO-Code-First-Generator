@@ -13,7 +13,7 @@ namespace EnumForeignKey
     public class EnumTest_DaysOfWeek
     {
         public string TypeName { get; set; } // TypeName (length: 50)
-        public int TypeId { get; set; } // TypeId (Primary key)
+        public DaysOfWeek TypeId { get; set; } // TypeId (Primary key)
 
         // Reverse navigation
 
@@ -32,7 +32,7 @@ namespace EnumForeignKey
     public class EnumTest_OpenDay
     {
         public int Id { get; set; } // Id (Primary key)
-        public int EnumId { get; set; } // EnumId
+        public DaysOfWeek EnumId { get; set; } // EnumId
 
         // Foreign keys
 
