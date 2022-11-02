@@ -786,6 +786,7 @@ namespace BuildTT
         var DefaultNamespace = new CodeGenerationTools(this).VsNamespaceSuggestion() ?? ""DebugMode"";
         Settings.Root = Host.ResolvePath(string.Empty);
         Settings.TemplateFile = Path.GetFileNameWithoutExtension(DynamicTextTransformation.Create(this).Host.TemplateFile);
+        // System.Diagnostics.Debugger.Launch();
 #><#+";
 
             const string footer = @"
