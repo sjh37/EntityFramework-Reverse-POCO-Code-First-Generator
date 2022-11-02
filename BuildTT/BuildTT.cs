@@ -564,6 +564,9 @@ namespace BuildTT
                 break;
         }
 
+        if (!Settings.UsePascalCase)
+            fkName = DatabaseReader.CleanUp(fkName);
+
         // Apply custom foreign key renaming rules. Can be useful in applying pluralization.
         // For example:
         /*if (tableName == ""Employee"" && foreignKey.FkColumn == ""ReportsTo"")
