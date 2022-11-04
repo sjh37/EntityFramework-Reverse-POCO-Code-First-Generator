@@ -3643,6 +3643,7 @@
                 OnConfigurationUsesConnectionString    = Settings.OnConfiguration == OnConfiguration.ConnectionString,
                 DefaultSchema                          = Settings.DefaultSchema,
                 UseDatabaseProvider                    = Settings.DatabaseProvider(),
+                UseLazyLoadingProxies                  = Settings.UseLazyLoading && Settings.IsEfCore3Plus(),
                 SqlParameter                           = Settings.SqlParameter(),
             };
 
@@ -16432,6 +16433,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public string DefaultSchema                                          { get; set; }
         public string UseDatabaseProvider                                    { get; set; }
         public string SqlParameter                                           { get; set; }
+        public bool UseLazyLoadingProxies                                    { get; set; }
     }
     public class FactoryModel
     {
@@ -18167,6 +18169,9 @@ using {{this}};{{#newline}}
         if (!optionsBuilder.IsConfigured && _configuration != null){{#newline}}
         {{{#newline}}
             optionsBuilder.{{UseDatabaseProvider}}(_configuration.GetConnectionString(@""{{ConnectionStringName}}""){{ConnectionStringActions}});{{#newline}}
+{{#if UseLazyLoadingProxies}}
+            optionsBuilder.UseLazyLoadingProxies();{{#newline}}
+{{/if}}
         }{{#newline}}
     }{{#newline}}{{#newline}}
 {{/if}}
@@ -18177,6 +18182,9 @@ using {{this}};{{#newline}}
         if (!optionsBuilder.IsConfigured){{#newline}}
         {{{#newline}}
             optionsBuilder.{{UseDatabaseProvider}}(@""{{ConnectionString}}""{{ConnectionStringActions}});{{#newline}}
+{{#if UseLazyLoadingProxies}}
+            optionsBuilder.UseLazyLoadingProxies();{{#newline}}
+{{/if}}
         }{{#newline}}
     }{{#newline}}{{#newline}}
 {{/if}}
@@ -19662,6 +19670,9 @@ using {{this}};{{#newline}}
         if (!optionsBuilder.IsConfigured && _configuration != null){{#newline}}
         {{{#newline}}
             optionsBuilder.{{UseDatabaseProvider}}(_configuration.GetConnectionString(@""{{ConnectionStringName}}""){{ConnectionStringActions}});{{#newline}}
+{{#if UseLazyLoadingProxies}}
+            optionsBuilder.UseLazyLoadingProxies();{{#newline}}
+{{/if}}
         }{{#newline}}
     }{{#newline}}{{#newline}}
 {{/if}}
@@ -19672,6 +19683,9 @@ using {{this}};{{#newline}}
         if (!optionsBuilder.IsConfigured){{#newline}}
         {{{#newline}}
             optionsBuilder.{{UseDatabaseProvider}}(@""{{ConnectionString}}""{{ConnectionStringActions}});{{#newline}}
+{{#if UseLazyLoadingProxies}}
+            optionsBuilder.UseLazyLoadingProxies();{{#newline}}
+{{/if}}
         }{{#newline}}
     }{{#newline}}{{#newline}}
 {{/if}}
@@ -21235,6 +21249,9 @@ using {{this}};{{#newline}}
         if (!optionsBuilder.IsConfigured && _configuration != null){{#newline}}
         {{{#newline}}
             optionsBuilder.{{UseDatabaseProvider}}(_configuration.GetConnectionString(@""{{ConnectionStringName}}""){{ConnectionStringActions}});{{#newline}}
+{{#if UseLazyLoadingProxies}}
+            optionsBuilder.UseLazyLoadingProxies();{{#newline}}
+{{/if}}
         }{{#newline}}
     }{{#newline}}{{#newline}}
 {{/if}}
@@ -21245,6 +21262,9 @@ using {{this}};{{#newline}}
         if (!optionsBuilder.IsConfigured){{#newline}}
         {{{#newline}}
             optionsBuilder.{{UseDatabaseProvider}}(@""{{ConnectionString}}""{{ConnectionStringActions}});{{#newline}}
+{{#if UseLazyLoadingProxies}}
+            optionsBuilder.UseLazyLoadingProxies();{{#newline}}
+{{/if}}
         }{{#newline}}
     }{{#newline}}{{#newline}}
 {{/if}}
@@ -22853,6 +22873,9 @@ using {{this}};{{#newline}}
         if (!optionsBuilder.IsConfigured && _configuration != null){{#newline}}
         {{{#newline}}
             optionsBuilder.{{UseDatabaseProvider}}(_configuration.GetConnectionString(@""{{ConnectionStringName}}""){{ConnectionStringActions}});{{#newline}}
+{{#if UseLazyLoadingProxies}}
+            optionsBuilder.UseLazyLoadingProxies();{{#newline}}
+{{/if}}
         }{{#newline}}
     }{{#newline}}{{#newline}}
 {{/if}}
@@ -22863,6 +22886,9 @@ using {{this}};{{#newline}}
         if (!optionsBuilder.IsConfigured){{#newline}}
         {{{#newline}}
             optionsBuilder.{{UseDatabaseProvider}}(@""{{ConnectionString}}""{{ConnectionStringActions}});{{#newline}}
+{{#if UseLazyLoadingProxies}}
+            optionsBuilder.UseLazyLoadingProxies();{{#newline}}
+{{/if}}
         }{{#newline}}
     }{{#newline}}{{#newline}}
 {{/if}}

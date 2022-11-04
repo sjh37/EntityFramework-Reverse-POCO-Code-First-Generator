@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security;
-using System.Text;
 using Efrpg.FileManagement;
 using Efrpg.Filtering;
 using Efrpg.TemplateModels;
@@ -342,6 +341,7 @@ namespace Efrpg.Generators
                 OnConfigurationUsesConnectionString    = Settings.OnConfiguration == OnConfiguration.ConnectionString,
                 DefaultSchema                          = Settings.DefaultSchema,
                 UseDatabaseProvider                    = Settings.DatabaseProvider(),
+                UseLazyLoadingProxies                  = Settings.UseLazyLoading && Settings.IsEfCore3Plus(),
                 SqlParameter                           = Settings.SqlParameter(),
             };
 
