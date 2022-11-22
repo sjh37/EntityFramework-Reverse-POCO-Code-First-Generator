@@ -913,6 +913,18 @@ CREATE TABLE CalculatedColumnNotNull
 );
 GO
 
+CREATE OR ALTER TRIGGER CalculatedColumnAudit ON CalculatedColumnNotNull FOR INSERT NOT FOR REPLICATION AS
+BEGIN
+    PRINT GETDATE();
+END
+GO
+
+CREATE OR ALTER TRIGGER CalculatedColumnAuditUpdate ON CalculatedColumnNotNull FOR UPDATE NOT FOR REPLICATION AS
+BEGIN
+    PRINT GETUTCDATE();
+END
+GO
+
 
 -- Stored procedures resolving to the same name
 -- DROP PROC resolve_to_same_name
