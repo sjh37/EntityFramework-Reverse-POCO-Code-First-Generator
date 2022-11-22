@@ -25,6 +25,7 @@ namespace Efrpg
         public string PluralNameOverride;
         public string DbSetModifier = "public";
         public string BaseClasses;
+        public string TriggerName;
 
         public List<Column> Columns;
         public List<PropertyAndComments> ReverseNavigationProperty;

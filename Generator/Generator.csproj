@@ -106,7 +106,7 @@
     <Compile Include="OnConfiguration.cs" />
     <Compile Include="Readers\MinMaxValueCache.cs" />
     <Compile Include="Readers\RawSequence.cs" />
-    <Compile Include="Sequence.cs" />
+    <Compile Include="Readers\RawTrigger.cs" />
     <Compile Include="Templates\TemplateEfCore2.cs" />
     <Compile Include="Templates\TemplateEfCore3.cs" />
     <Compile Include="Templates\TemplateEfCore6.cs" />

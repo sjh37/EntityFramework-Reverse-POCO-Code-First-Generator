@@ -67,6 +67,11 @@
             return string.Empty;
         }
 
+        protected override string TriggerSQL()
+        {
+            return string.Empty;
+        }
+
         protected override string SynonymTableSQLSetup()
         {
             return string.Empty;

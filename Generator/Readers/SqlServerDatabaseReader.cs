@@ -479,6 +479,22 @@ FROM    sys.sequences seq
 ORDER BY [Name], [Schema];";
         }
 
+        protected override string TriggerSQL()
+        {
+            return @"
+SELECT S.name SchemaName, O.name TableName, T.name TriggerName
+FROM sys.triggers T
+    LEFT JOIN sys.all_objects O
+        ON T.parent_id = O.object_id
+    LEFT JOIN sys.schemas S
+        ON S.schema_id = O.schema_id
+WHERE T.type = 'TR'
+      AND T.is_disabled = 0
+      AND S.name IS NOT NULL
+      AND O.name IS NOT NULL
+ORDER BY SchemaName, TableName, TriggerName;";
+        }
+
         protected override string SynonymTableSQLSetup()
         {
             return @"

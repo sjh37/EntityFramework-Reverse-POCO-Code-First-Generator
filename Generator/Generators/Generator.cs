@@ -235,7 +235,7 @@ namespace Efrpg.Generators
                 _fileManagementService.Error(string.Empty);
             }
         }
-
+        
         public void ReadDatabase()
         {
             LoadTables();
@@ -260,6 +260,7 @@ namespace Efrpg.Generators
                 var rawTables      = DatabaseReader.ReadTables(includeSynonyms);
                 var rawIndexes     = DatabaseReader.ReadIndexes();
                 var rawForeignKeys = DatabaseReader.ReadForeignKeys(includeSynonyms);
+                var rawTriggers    = DatabaseReader.ReadTriggers();
 
                 // For unit testing
                 //foreach (var ri in rawIndexes.OrderBy(x => x.TableName).ThenBy(x => x.IndexName)) Console.WriteLine(ri.Dump());
@@ -270,6 +271,7 @@ namespace Efrpg.Generators
                 AddIndexesToFilters(rawIndexes);
                 SetPrimaryKeys();
                 AddForeignKeysToFilters(rawForeignKeys);
+                AddTriggersToFilters(rawTriggers);
 
                 if (Settings.IncludeExtendedPropertyComments != CommentsStyle.None)
                     AddExtendedPropertiesToFilters(DatabaseReader.ReadExtendedProperties());
@@ -601,6 +603,30 @@ namespace Efrpg.Generators
                 }
             }
         }*/
+
+        private void AddTriggersToFilters(List<RawTrigger> triggers)
+        {
+            if (triggers == null || !triggers.Any())
+                return;
+
+            foreach (var filterKeyValuePair in FilterList.GetFilters())
+            {
+                var filter = filterKeyValuePair.Value;
+
+                Table t = null;
+                foreach (var trigger in triggers)
+                {
+                    // Lookup table
+                    if (t == null || t.DbName != trigger.TableName || t.Schema.DbName != trigger.SchemaName)
+                        t = filter.Tables.GetTable(trigger.TableName, trigger.SchemaName);
+
+                    if (t == null)
+                        continue;
+
+                    t.TriggerName = trigger.TriggerName;
+                }
+            }
+        }
 
         private void AddExtendedPropertiesToFilters(List<RawExtendedProperty> extendedProperties)
         {

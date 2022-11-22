@@ -41,6 +41,7 @@ namespace Efrpg.Readers
         protected abstract string MultiContextSQL();
         protected abstract string EnumSQL(string table, string nameField, string valueField);
         protected abstract string SequenceSQL();
+        protected abstract string TriggerSQL();
 
         // Synonym
         protected abstract string SynonymTableSQLSetup();
@@ -846,7 +847,7 @@ namespace Efrpg.Readers
             }
             return result;
         }
-        
+
         public List<RawSequence> ReadSequences()
         {
             if (DatabaseReaderPlugin != null)
@@ -887,6 +888,48 @@ namespace Efrpg.Readers
                             rdr["MinValue"].ToString(),
                             rdr["MaxValue"].ToString(),
                             GetReaderBool(rdr, "IsCycleEnabled") ?? false
+                        );
+                        result.Add(index);
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public List<RawTrigger> ReadTriggers()
+        {
+            if (DatabaseReaderPlugin != null)
+                return DatabaseReaderPlugin.ReadTriggers();
+
+            var result = new List<RawTrigger>();
+            using (var conn = _factory.CreateConnection())
+            {
+                if (conn == null)
+                    return result;
+
+                conn.ConnectionString = Settings.ConnectionString;
+                conn.Open();
+
+                var cmd = GetCmd(conn);
+                if (cmd == null)
+                    return result;
+
+                var sql = TriggerSQL();
+                if (string.IsNullOrWhiteSpace(sql))
+                    return result;
+
+                cmd.CommandText = sql;
+
+                using (var rdr = cmd.ExecuteReader())
+                {
+                    while (rdr.Read())
+                    {
+                        var index = new RawTrigger
+                        (
+                            rdr["SchemaName"].ToString().Trim(),
+                            rdr["TableName"].ToString().Trim(),
+                            rdr["TriggerName"].ToString().Trim()
                         );
                         result.Add(index);
                     }
