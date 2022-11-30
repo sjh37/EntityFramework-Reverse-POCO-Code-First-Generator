@@ -2,20 +2,17 @@
 using Generator.Tests.Common;
 using NUnit.Framework;
 
-namespace Tester.Integration.EFCore6
+namespace Tester.Integration.EFCore7
 {
     [TestFixture]
     [Category(Constants.Integration)]
     [Category(Constants.DbType.SqlServer)]
     public class StoredProcedureTests
     {
-        //private V6EfrpgTestDbContext _v6EfrpgTestDb = null!;
-
         [SetUp]
         public void SetUp()
         {
             _northwind = new MyDbContext();
-            //_v6EfrpgTestDb = new V6EfrpgTestDbContext();
         }
 
         private MyDbContext _northwind = null!;

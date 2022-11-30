@@ -13,7 +13,7 @@ namespace Efrpg
         // Main settings **********************************************************************************************************************
         // The following entries are the only required settings.
         public static DatabaseType DatabaseType                         = DatabaseType.SqlServer; // SqlServer, SqlCe, PostgreSQL. Coming next: MySql, Oracle
-        public static TemplateType TemplateType                         = TemplateType.EfCore6; // EfCore6, EfCore5, EfCore3, EfCore2, Ef6, FileBasedCore2, FileBasedCore3. FileBased specify folder using Settings.TemplateFolder
+        public static TemplateType TemplateType                         = TemplateType.EfCore7; // EfCore7, EfCore6, EfCore5, EfCore3, EfCore2, Ef6, FileBasedCore2-7. FileBased specify folder using Settings.TemplateFolder
         public static GeneratorType GeneratorType                       = GeneratorType.EfCore; // EfCore, Ef6, Custom. Custom edit GeneratorCustom class to provide your own implementation
         public static ForeignKeyNamingStrategy ForeignKeyNamingStrategy = ForeignKeyNamingStrategy.Legacy; // Please use Legacy for now (same as versions <= v3.7.0), Latest (not yet ready)
         public static bool UseMappingTables                             = false; // Can only be set to true for EF6. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
@@ -677,6 +677,7 @@ namespace Efrpg
         public static bool IsEfCore3Plus() => EfCoreVersion() >= 3;
         public static bool IsEfCore5Plus() => EfCoreVersion() >= 5;
         public static bool IsEfCore6Plus() => EfCoreVersion() >= 6;
+        public static bool IsEfCore7Plus() => EfCoreVersion() >= 7;
         public static int EfCoreVersion()
         {
             switch (TemplateType)
@@ -696,6 +697,10 @@ namespace Efrpg
                 case TemplateType.EfCore6:
                 case TemplateType.FileBasedCore6:
                     return 6;
+                
+                case TemplateType.EfCore7:
+                case TemplateType.FileBasedCore7:
+                    return 7;
                 
                 case TemplateType.Ef6:
                 default:

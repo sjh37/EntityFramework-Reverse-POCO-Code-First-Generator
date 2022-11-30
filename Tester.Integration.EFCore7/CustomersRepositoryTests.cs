@@ -1,12 +1,12 @@
-﻿namespace Tester.Integration.EFCore6
-{
-    using System.Collections.Generic;
-    using System.Linq;
-    using EntityFramework_Reverse_POCO_Generator;
-    using Generator.Tests.Common;
-    using NUnit.Framework;
-    using Tester.BusinessLogic;
+﻿using System.Collections.Generic;
+using System.Linq;
+using EntityFramework_Reverse_POCO_Generator;
+using Generator.Tests.Common;
+using NUnit.Framework;
+using Tester.BusinessLogic;
 
+namespace Tester.Integration.EFCore7
+{
     [TestFixture]
     [Category(Constants.Integration)]
     [Category(Constants.DbType.SqlServer)]

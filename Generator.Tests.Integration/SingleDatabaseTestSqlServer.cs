@@ -34,11 +34,13 @@
         [TestCase("EfrpgTest",      ".V3TestE3",   "MyDbContext",      "EfrpgTestDbContext",      TemplateType.EfCore3, ForeignKeyNamingStrategy.Legacy)]
         [TestCase("EfrpgTest",      ".V3TestE5",   "MyDbContext",      "EfrpgTestDbContext",      TemplateType.EfCore5, ForeignKeyNamingStrategy.Legacy)]
         [TestCase("EfrpgTest",      ".V3TestE6",   "MyDbContext",      "EfrpgTestDbContext",      TemplateType.EfCore6, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("EfrpgTest",      ".V3TestE7",   "MyDbContext",      "EfrpgTestDbContext",      TemplateType.EfCore7, ForeignKeyNamingStrategy.Legacy)]
         [TestCase("Northwind",      ".V3TestN1",   "MyDbContext",      "MyDbContext",             TemplateType.Ef6,     ForeignKeyNamingStrategy.Legacy)]
         [TestCase("Northwind",      ".V3TestN2",   "MyDbContext",      "MyDbContext",             TemplateType.EfCore2, ForeignKeyNamingStrategy.Legacy)]
         [TestCase("Northwind",      ".V3TestN3",   "MyDbContext",      "MyDbContext",             TemplateType.EfCore3, ForeignKeyNamingStrategy.Legacy)]
         [TestCase("Northwind",      ".V3TestN5",   "MyDbContext",      "MyDbContext",             TemplateType.EfCore5, ForeignKeyNamingStrategy.Legacy)]
         [TestCase("Northwind",      ".V3TestN6",   "MyDbContext",      "MyDbContext",             TemplateType.EfCore6, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("Northwind",      ".V3TestN7",   "MyDbContext",      "MyDbContext",             TemplateType.EfCore7, ForeignKeyNamingStrategy.Legacy)]
         public void ReverseEngineerSqlServer(string database, string singleDbContextSubNamespace, string connectionStringName, string dbContextName, TemplateType templateType, ForeignKeyNamingStrategy foreignKeyNamingStrategy)
         {
             // Arrange
@@ -91,7 +93,7 @@
         public void NonPascalCased()
         {
             // Arrange
-            SetupSqlServer("EfrpgTest", "My_db_context", "Efrpg_db_context", TemplateType.EfCore6, GeneratorType.EfCore, ForeignKeyNamingStrategy.Legacy);
+            SetupSqlServer("EfrpgTest", "My_db_context", "Efrpg_db_context", TemplateType.EfCore7, GeneratorType.EfCore, ForeignKeyNamingStrategy.Legacy);
             Settings.GenerateSeparateFiles = false;
             Settings.UsePascalCase = false;
 
@@ -107,6 +109,7 @@
         [TestCase("EfrpgTest", ".V3FilterTest", "EfrpgTest", "EfrpgDbContext", false, TemplateType.EfCore3, ForeignKeyNamingStrategy.Legacy)]
         [TestCase("EfrpgTest", ".V5FilterTest", "EfrpgTest", "EfrpgDbContext", false, TemplateType.EfCore5, ForeignKeyNamingStrategy.Legacy)]
         [TestCase("EfrpgTest", ".V6FilterTest", "EfrpgTest", "EfrpgDbContext", false, TemplateType.EfCore6, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase("EfrpgTest", ".V7FilterTest", "EfrpgTest", "EfrpgDbContext", false, TemplateType.EfCore7, ForeignKeyNamingStrategy.Legacy)]
         public void MultipleIncludeFilters(string database, string singleDbContextSubNamespace, string connectionStringName, string dbContextName, bool publicTestComparison, TemplateType templateType, ForeignKeyNamingStrategy foreignKeyNamingStrategy)
         {
             // Arrange

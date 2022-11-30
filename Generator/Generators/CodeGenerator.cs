@@ -318,7 +318,6 @@ namespace Efrpg.Generators
                 tables                                 = _tables,
                 hasTables                              = _hasTables,
                 indexes                                = indexes,
-                hasIndexes                             = indexes.Any(),
                 storedProcs                            = _storedProcs,
                 hasStoredProcs                         = _hasStoredProcs,
                 tableValuedFunctionComplexTypes        = _tableValuedFunctionComplexTypes,
@@ -328,7 +327,6 @@ namespace Efrpg.Generators
                 tableValuedFunctions                   = _tableValuedFunctions,
                 scalarValuedFunctions                  = _scalarValuedFunctions,
                 Sequences                              = _filter.Sequences,
-                hasSequences                           = _filter.Sequences.Any(),
                 hasTableValuedFunctions                = _hasTableValuedFunctions && _filter.IncludeTableValuedFunctions,
                 hasScalarValuedFunctions               = _hasScalarValuedFunctions && _filter.IncludeScalarValuedFunctions,
                 IncludeObjectContextConstructor        = !Settings.DbContextBaseClass.Contains("IdentityDbContext"),
@@ -343,7 +341,13 @@ namespace Efrpg.Generators
                 UseDatabaseProvider                    = Settings.DatabaseProvider(),
                 UseLazyLoadingProxies                  = Settings.UseLazyLoading && Settings.IsEfCore3Plus(),
                 SqlParameter                           = Settings.SqlParameter(),
+                Triggers                               = _tables.Where(x => !string.IsNullOrEmpty(x.Table.TriggerName))
+                                                                .Select(x => new Trigger { TableName = x.Table.NameHumanCase, TriggerName = x.Table.TriggerName }).ToList()
             };
+
+            data.hasIndexes   = data.indexes.Any();
+            data.hasTriggers  = data.Triggers.Any();
+            data.hasSequences = data.Sequences.Any();
 
             var co = new CodeOutput(string.Empty, filename, "Database context", Settings.ContextFolder, _globalUsings);
             co.AddUsings(_template.DatabaseContextUsings(data));

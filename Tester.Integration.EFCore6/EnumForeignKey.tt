@@ -1,9 +1,10 @@
 <#@ include file ="..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v3.ttinclude" #>
 <#
-    Settings.ConnectionString        = "Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";
-    Settings.ConnectionStringName    = "EnumForeignKey"; // ConnectionString key as specified in your app.config/web.config/appsettings.json. Not used by the generator, but is placed into the generated DbContext constructor.
-    Settings.DbContextName           = "EnumForeignKey"; // Class name for the DbContext to be generated.
-    Settings.Namespace               = "EnumForeignKey"; // Override the default namespace here. Please use double quotes, example: "Accounts.Billing"
+    Settings.TemplateType         = TemplateType.EfCore6;
+    Settings.ConnectionString     = "Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";
+    Settings.ConnectionStringName = "EnumForeignKey"; // ConnectionString key as specified in your app.config/web.config/appsettings.json. Not used by the generator, but is placed into the generated DbContext constructor.
+    Settings.DbContextName        = "EnumForeignKey"; // Class name for the DbContext to be generated.
+    Settings.Namespace            = "EnumForeignKey"; // Override the default namespace here. Please use double quotes, example: "Accounts.Billing"
 
     FilterSettings.Reset();
     FilterSettings.AddDefaults();

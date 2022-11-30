@@ -48,5 +48,7 @@ namespace Efrpg.TemplateModels
         public string UseDatabaseProvider                                    { get; set; }
         public string SqlParameter                                           { get; set; }
         public bool UseLazyLoadingProxies                                    { get; set; }
+        public bool hasTriggers                                              { get; set; }
+        public List<Trigger> Triggers                                        { get; set; }
     }
 }

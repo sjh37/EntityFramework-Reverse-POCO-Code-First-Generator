@@ -20,7 +20,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Generator.Tests.Common\Generator.Tests.Common.csproj" />
-    <ProjectReference Include="..\Tester.BusinessLogic.EfCore\Tester.BusinessLogic.csproj" />
   </ItemGroup>
 
   <ItemGroup>

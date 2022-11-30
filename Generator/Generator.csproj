@@ -107,9 +107,11 @@
     <Compile Include="Readers\MinMaxValueCache.cs" />
     <Compile Include="Readers\RawSequence.cs" />
     <Compile Include="Readers\RawTrigger.cs" />
+    <Compile Include="TemplateModels\Trigger.cs" />
     <Compile Include="Templates\TemplateEfCore2.cs" />
     <Compile Include="Templates\TemplateEfCore3.cs" />
     <Compile Include="Templates\TemplateEfCore6.cs" />
+    <Compile Include="Templates\TemplateEfCore7.cs" />
     <Compile Include="Templates\TemplateFileBasedConstants.cs" />
     <Compile Include="Util\MultiContextSettingsCopy.cs" />
     <Compile Include="Filtering\PeriodFilter.cs" />

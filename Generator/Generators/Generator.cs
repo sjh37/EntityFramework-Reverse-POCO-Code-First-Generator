@@ -623,6 +623,7 @@ namespace Efrpg.Generators
                     if (t == null)
                         continue;
 
+                    // Only store the one trigger name as EFCore 7 does not care what its name is. It only cares that there is one present.
                     t.TriggerName = trigger.TriggerName;
                 }
             }
