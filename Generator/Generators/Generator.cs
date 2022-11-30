@@ -260,7 +260,6 @@ namespace Efrpg.Generators
                 var rawTables      = DatabaseReader.ReadTables(includeSynonyms);
                 var rawIndexes     = DatabaseReader.ReadIndexes();
                 var rawForeignKeys = DatabaseReader.ReadForeignKeys(includeSynonyms);
-                var rawTriggers    = DatabaseReader.ReadTriggers();
 
                 // For unit testing
                 //foreach (var ri in rawIndexes.OrderBy(x => x.TableName).ThenBy(x => x.IndexName)) Console.WriteLine(ri.Dump());
@@ -271,7 +270,12 @@ namespace Efrpg.Generators
                 AddIndexesToFilters(rawIndexes);
                 SetPrimaryKeys();
                 AddForeignKeysToFilters(rawForeignKeys);
-                AddTriggersToFilters(rawTriggers);
+                
+                if (Settings.IsEfCore7Plus())
+                {
+                    var rawTriggers = DatabaseReader.ReadTriggers();
+                    AddTriggersToFilters(rawTriggers);
+                }
 
                 if (Settings.IncludeExtendedPropertyComments != CommentsStyle.None)
                     AddExtendedPropertiesToFilters(DatabaseReader.ReadExtendedProperties());
