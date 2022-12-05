@@ -181,6 +181,7 @@ namespace Tester.Integration.EFCore6
             if (!optionsBuilder.IsConfigured)
             {
                 optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=Northwind;Integrated Security=True;MultipleActiveResultSets=True;Encrypt=false;TrustServerCertificate=true");
+                optionsBuilder.UseLazyLoadingProxies();
             }
         }
 

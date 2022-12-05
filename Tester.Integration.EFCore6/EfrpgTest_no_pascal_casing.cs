@@ -109,6 +109,7 @@ namespace V6_Efrpg_Test
         DbSet<tblOrderError> tblOrderErrors { get; set; } // tblOrderErrors
         DbSet<tblOrderErrorsAB> tblOrderErrorsABs { get; set; } // tblOrderErrorsAB_
         DbSet<tblOrderLine> tblOrderLines { get; set; } // tblOrderLines
+        DbSet<ThisIsMemoryOptimised> ThisIsMemoryOptimiseds { get; set; } // ThisIsMemoryOptimised
         DbSet<Ticket> Tickets { get; set; } // Ticket
         DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
         DbSet<TimestampNullable> TimestampNullables { get; set; } // TimestampNullable
@@ -195,6 +196,10 @@ namespace V6_Efrpg_Test
         List<ColourPivotReturnModel> ColourPivot();
         List<ColourPivotReturnModel> ColourPivot(out int procResult);
         Task<List<ColourPivotReturnModel>> ColourPivotAsync();
+
+        List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc();
+        List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc(out int procResult);
+        Task<List<ColumnNameAndTypesProcReturnModel>> ColumnNameAndTypesProcAsync();
 
         int ConvertToString(int? someValue, out string someString);
         // ConvertToStringAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
@@ -437,6 +442,7 @@ namespace V6_Efrpg_Test
         public DbSet<tblOrderError> tblOrderErrors { get; set; } // tblOrderErrors
         public DbSet<tblOrderErrorsAB> tblOrderErrorsABs { get; set; } // tblOrderErrorsAB_
         public DbSet<tblOrderLine> tblOrderLines { get; set; } // tblOrderLines
+        public DbSet<ThisIsMemoryOptimised> ThisIsMemoryOptimiseds { get; set; } // ThisIsMemoryOptimised
         public DbSet<Ticket> Tickets { get; set; } // Ticket
         public DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
         public DbSet<TimestampNullable> TimestampNullables { get; set; } // TimestampNullable
@@ -456,6 +462,7 @@ namespace V6_Efrpg_Test
             if (!optionsBuilder.IsConfigured)
             {
                 optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator", x => x.UseNetTopologySuite().UseHierarchyId());
+                optionsBuilder.UseLazyLoadingProxies();
             }
         }
 
@@ -566,6 +573,7 @@ namespace V6_Efrpg_Test
             modelBuilder.ApplyConfiguration(new tblOrderErrorConfiguration());
             modelBuilder.ApplyConfiguration(new tblOrderErrorsABConfiguration());
             modelBuilder.ApplyConfiguration(new tblOrderLineConfiguration());
+            modelBuilder.ApplyConfiguration(new ThisIsMemoryOptimisedConfiguration());
             modelBuilder.ApplyConfiguration(new TicketConfiguration());
             modelBuilder.ApplyConfiguration(new TimestampNotNullConfiguration());
             modelBuilder.ApplyConfiguration(new TimestampNullableConfiguration());
@@ -581,6 +589,7 @@ namespace V6_Efrpg_Test
             modelBuilder.ApplyConfiguration(new БрендытовараConfiguration());
 
             modelBuilder.Entity<ColourPivotReturnModel>().HasNoKey();
+            modelBuilder.Entity<ColumnNameAndTypesProcReturnModel>().HasNoKey();
             modelBuilder.Entity<dbo_proc_data_from_ffrsReturnModel>().HasNoKey();
             modelBuilder.Entity<dbo_proc_data_from_ffrs_and_dboReturnModel>().HasNoKey();
             modelBuilder.Entity<DSOpeProcReturnModel>().HasNoKey();
@@ -754,6 +763,34 @@ namespace V6_Efrpg_Test
         {
             const string sqlCommand = "EXEC [dbo].[ColourPivot]";
             var procResultData = await Set<ColourPivotReturnModel>()
+                .FromSqlRaw(sqlCommand)
+                .ToListAsync();
+
+            return procResultData;
+        }
+
+        public List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc()
+        {
+            int procResult;
+            return ColumnNameAndTypesProc(out procResult);
+        }
+
+        public List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc(out int procResult)
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [dbo].[ColumnNameAndTypesProc]";
+            var procResultData = Set<ColumnNameAndTypesProcReturnModel>()
+                .FromSqlRaw(sqlCommand, procResultParam)
+                .ToList();
+
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<ColumnNameAndTypesProcReturnModel>> ColumnNameAndTypesProcAsync()
+        {
+            const string sqlCommand = "EXEC [dbo].[ColumnNameAndTypesProc]";
+            var procResultData = await Set<ColumnNameAndTypesProcReturnModel>()
                 .FromSqlRaw(sqlCommand)
                 .ToListAsync();
 
@@ -3201,6 +3238,13 @@ namespace V6_Efrpg_Test
         public int? ExclusionTest { get; set; } // ExclusionTest
     }
 
+    // ThisIsMemoryOptimised
+    public class ThisIsMemoryOptimised
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public string Description { get; set; } // Description (length: 20)
+    }
+
     // Ticket
     public class Ticket
     {
@@ -4772,6 +4816,19 @@ namespace V6_Efrpg_Test
         }
     }
 
+    // ThisIsMemoryOptimised
+    public class ThisIsMemoryOptimisedConfiguration : IEntityTypeConfiguration<ThisIsMemoryOptimised>
+    {
+        public void Configure(EntityTypeBuilder<ThisIsMemoryOptimised> builder)
+        {
+            builder.ToTable("ThisIsMemoryOptimised", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK_ThisIsMemoryOptimised");
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
+        }
+    }
+
     // Ticket
     public class TicketConfiguration : IEntityTypeConfiguration<Ticket>
     {
@@ -5033,6 +5090,30 @@ namespace V6_Efrpg_Test
         public int? Blue { get; set; }
         public int? Green { get; set; }
         public int? Red { get; set; }
+    }
+
+    public class ColumnNameAndTypesProcReturnModel
+    {
+        public DateTime someDate { get; set; }
+        public string Obs { get; set; }
+        public int? @static { get; set; }
+        public int? @readonly { get; set; }
+        public Single? areal { get; set; }
+        public double? afloat { get; set; }
+        public Single? afloat8 { get; set; }
+        public Single? afloat20 { get; set; }
+        public Single? afloat24 { get; set; }
+        public double? afloat53 { get; set; }
+        public decimal? adecimal { get; set; }
+        public decimal? adecimal_19_4 { get; set; }
+        public decimal? adecimal_10_3 { get; set; }
+        public decimal? anumeric { get; set; }
+        public decimal? anumeric_5_2 { get; set; }
+        public decimal? anumeric_11_3 { get; set; }
+        public decimal? amoney { get; set; }
+        public decimal? asmallmoney { get; set; }
+        public NetTopologySuite.Geometries.Point GeographyType { get; set; }
+        public NetTopologySuite.Geometries.Geometry GeometryType { get; set; }
     }
 
     public class CsvToIntReturnModel

@@ -23,9 +23,10 @@
                 .Build();
 
             var conn = configuration.GetConnectionString("EfCoreDatabase");
+            Assert.IsNotNull(conn);
 
             var optionsBuilder = new DbContextOptionsBuilder<EfCoreDbContext>()
-                .UseSqlServer(conn, x => x
+                .UseSqlServer(conn!, x => x
                     .UseNetTopologySuite()
                     .UseHierarchyId());
             

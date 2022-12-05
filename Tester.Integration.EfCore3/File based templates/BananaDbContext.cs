@@ -99,6 +99,7 @@ namespace Tester.Integration.EfCore3.File_based_templatesBananaDbContext
             if (!optionsBuilder.IsConfigured && _configuration != null)
             {
                 optionsBuilder.UseSqlServer(_configuration.GetConnectionString(@"McsfMultiDatabase"));
+                optionsBuilder.UseLazyLoadingProxies();
             }
         }
 

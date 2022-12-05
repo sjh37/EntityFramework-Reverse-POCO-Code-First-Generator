@@ -117,6 +117,7 @@ namespace TestDatabaseStandard
         DbSet<TblOrderError> TblOrderErrors { get; set; } // tblOrderErrors
         DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
         DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
+        DbSet<ThisIsMemoryOptimised> ThisIsMemoryOptimiseds { get; set; } // ThisIsMemoryOptimised
         DbSet<Ticket> Tickets { get; set; } // Ticket
         DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
         DbSet<TimestampNullable> TimestampNullables { get; set; } // TimestampNullable
@@ -203,6 +204,10 @@ namespace TestDatabaseStandard
         List<ColourPivotReturnModel> ColourPivot();
         List<ColourPivotReturnModel> ColourPivot(out int procResult);
         Task<List<ColourPivotReturnModel>> ColourPivotAsync();
+
+        List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc();
+        List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc(out int procResult);
+        Task<List<ColumnNameAndTypesProcReturnModel>> ColumnNameAndTypesProcAsync();
 
         int ConvertToString(int? someValue, out string someString);
         // ConvertToStringAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
@@ -446,6 +451,7 @@ namespace TestDatabaseStandard
         public DbSet<TblOrderError> TblOrderErrors { get; set; } // tblOrderErrors
         public DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
         public DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
+        public DbSet<ThisIsMemoryOptimised> ThisIsMemoryOptimiseds { get; set; } // ThisIsMemoryOptimised
         public DbSet<Ticket> Tickets { get; set; } // Ticket
         public DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
         public DbSet<TimestampNullable> TimestampNullables { get; set; } // TimestampNullable
@@ -465,6 +471,7 @@ namespace TestDatabaseStandard
             if (!optionsBuilder.IsConfigured)
             {
                 optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;Encrypt=false;TrustServerCertificate=true", x => x.UseNetTopologySuite().UseHierarchyId());
+                optionsBuilder.UseLazyLoadingProxies();
             }
         }
 
@@ -576,6 +583,7 @@ namespace TestDatabaseStandard
             modelBuilder.ApplyConfiguration(new TblOrderErrorConfiguration());
             modelBuilder.ApplyConfiguration(new TblOrderErrorsAbConfiguration());
             modelBuilder.ApplyConfiguration(new TblOrderLineConfiguration());
+            modelBuilder.ApplyConfiguration(new ThisIsMemoryOptimisedConfiguration());
             modelBuilder.ApplyConfiguration(new TicketConfiguration());
             modelBuilder.ApplyConfiguration(new TimestampNotNullConfiguration());
             modelBuilder.ApplyConfiguration(new TimestampNullableConfiguration());
@@ -591,6 +599,7 @@ namespace TestDatabaseStandard
             modelBuilder.ApplyConfiguration(new БрендытовараConfiguration());
 
             modelBuilder.Entity<ColourPivotReturnModel>().HasNoKey();
+            modelBuilder.Entity<ColumnNameAndTypesProcReturnModel>().HasNoKey();
             modelBuilder.Entity<DboProcDataFromFfrsReturnModel>().HasNoKey();
             modelBuilder.Entity<DboProcDataFromFfrsAndDboReturnModel>().HasNoKey();
             modelBuilder.Entity<DsOpeProcReturnModel>().HasNoKey();
@@ -764,6 +773,34 @@ namespace TestDatabaseStandard
         {
             const string sqlCommand = "EXEC [dbo].[ColourPivot]";
             var procResultData = await Set<ColourPivotReturnModel>()
+                .FromSqlRaw(sqlCommand)
+                .ToListAsync();
+
+            return procResultData;
+        }
+
+        public List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc()
+        {
+            int procResult;
+            return ColumnNameAndTypesProc(out procResult);
+        }
+
+        public List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc(out int procResult)
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [dbo].[ColumnNameAndTypesProc]";
+            var procResultData = Set<ColumnNameAndTypesProcReturnModel>()
+                .FromSqlRaw(sqlCommand, procResultParam)
+                .ToList();
+
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<ColumnNameAndTypesProcReturnModel>> ColumnNameAndTypesProcAsync()
+        {
+            const string sqlCommand = "EXEC [dbo].[ColumnNameAndTypesProc]";
+            var procResultData = await Set<ColumnNameAndTypesProcReturnModel>()
                 .FromSqlRaw(sqlCommand)
                 .ToListAsync();
 
@@ -1816,6 +1853,7 @@ namespace TestDatabaseStandard
         public DbSet<TblOrderError> TblOrderErrors { get; set; } // tblOrderErrors
         public DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
         public DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
+        public DbSet<ThisIsMemoryOptimised> ThisIsMemoryOptimiseds { get; set; } // ThisIsMemoryOptimised
         public DbSet<Ticket> Tickets { get; set; } // Ticket
         public DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
         public DbSet<TimestampNullable> TimestampNullables { get; set; } // TimestampNullable
@@ -1922,6 +1960,7 @@ namespace TestDatabaseStandard
             TblOrderErrors = new FakeDbSet<TblOrderError>("Id");
             TblOrderErrorsAbs = new FakeDbSet<TblOrderErrorsAb>("Id");
             TblOrderLines = new FakeDbSet<TblOrderLine>("Id");
+            ThisIsMemoryOptimiseds = new FakeDbSet<ThisIsMemoryOptimised>("Id");
             Tickets = new FakeDbSet<Ticket>("Id");
             TimestampNotNulls = new FakeDbSet<TimestampNotNull>("Id");
             TimestampNullables = new FakeDbSet<TimestampNullable>("Id");
@@ -2232,6 +2271,25 @@ namespace TestDatabaseStandard
         {
             int procResult;
             return Task.FromResult(ColourPivot(out procResult));
+        }
+
+        public DbSet<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProcReturnModel { get; set; }
+        public List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc()
+        {
+            int procResult;
+            return ColumnNameAndTypesProc(out procResult);
+        }
+
+        public List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc(out int procResult)
+        {
+            procResult = 0;
+            return new List<ColumnNameAndTypesProcReturnModel>();
+        }
+
+        public Task<List<ColumnNameAndTypesProcReturnModel>> ColumnNameAndTypesProcAsync()
+        {
+            int procResult;
+            return Task.FromResult(ColumnNameAndTypesProc(out procResult));
         }
 
         public int ConvertToString(int? someValue, out string someString)
@@ -4820,6 +4878,13 @@ namespace TestDatabaseStandard
         public int? ExclusionTest { get; set; } // ExclusionTest
     }
 
+    // ThisIsMemoryOptimised
+    public class ThisIsMemoryOptimised
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public string Description { get; set; } // Description (length: 20)
+    }
+
     // Ticket
     public class Ticket
     {
@@ -6404,6 +6469,19 @@ namespace TestDatabaseStandard
         }
     }
 
+    // ThisIsMemoryOptimised
+    public class ThisIsMemoryOptimisedConfiguration : IEntityTypeConfiguration<ThisIsMemoryOptimised>
+    {
+        public void Configure(EntityTypeBuilder<ThisIsMemoryOptimised> builder)
+        {
+            builder.ToTable("ThisIsMemoryOptimised", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK_ThisIsMemoryOptimised");
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
+        }
+    }
+
     // Ticket
     public class TicketConfiguration : IEntityTypeConfiguration<Ticket>
     {
@@ -6665,6 +6743,30 @@ namespace TestDatabaseStandard
         public int? Blue { get; set; }
         public int? Green { get; set; }
         public int? Red { get; set; }
+    }
+
+    public class ColumnNameAndTypesProcReturnModel
+    {
+        public DateTime someDate { get; set; }
+        public string Obs { get; set; }
+        public int? @static { get; set; }
+        public int? @readonly { get; set; }
+        public Single? areal { get; set; }
+        public double? afloat { get; set; }
+        public Single? afloat8 { get; set; }
+        public Single? afloat20 { get; set; }
+        public Single? afloat24 { get; set; }
+        public double? afloat53 { get; set; }
+        public decimal? adecimal { get; set; }
+        public decimal? adecimal_19_4 { get; set; }
+        public decimal? adecimal_10_3 { get; set; }
+        public decimal? anumeric { get; set; }
+        public decimal? anumeric_5_2 { get; set; }
+        public decimal? anumeric_11_3 { get; set; }
+        public decimal? amoney { get; set; }
+        public decimal? asmallmoney { get; set; }
+        public NetTopologySuite.Geometries.Point GeographyType { get; set; }
+        public NetTopologySuite.Geometries.Geometry GeometryType { get; set; }
     }
 
     public class CsvToIntReturnModel

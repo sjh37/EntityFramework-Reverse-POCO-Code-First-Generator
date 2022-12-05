@@ -103,6 +103,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         public DbSet<TblOrderError> TblOrderErrors { get; set; } // tblOrderErrors
         public DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
         public DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
+        public DbSet<ThisIsMemoryOptimised> ThisIsMemoryOptimiseds { get; set; } // ThisIsMemoryOptimised
         public DbSet<Ticket> Tickets { get; set; } // Ticket
         public DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
         public DbSet<TimestampNullable> TimestampNullables { get; set; } // TimestampNullable
@@ -209,6 +210,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             TblOrderErrors = new FakeDbSet<TblOrderError>("Id");
             TblOrderErrorsAbs = new FakeDbSet<TblOrderErrorsAb>("Id");
             TblOrderLines = new FakeDbSet<TblOrderLine>("Id");
+            ThisIsMemoryOptimiseds = new FakeDbSet<ThisIsMemoryOptimised>("Id");
             Tickets = new FakeDbSet<Ticket>("Id");
             TimestampNotNulls = new FakeDbSet<TimestampNotNull>("Id");
             TimestampNullables = new FakeDbSet<TimestampNullable>("Id");
@@ -519,6 +521,25 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         {
             int procResult;
             return Task.FromResult(ColourPivot(out procResult));
+        }
+
+        public DbSet<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProcReturnModel { get; set; }
+        public List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc()
+        {
+            int procResult;
+            return ColumnNameAndTypesProc(out procResult);
+        }
+
+        public List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc(out int procResult)
+        {
+            procResult = 0;
+            return new List<ColumnNameAndTypesProcReturnModel>();
+        }
+
+        public Task<List<ColumnNameAndTypesProcReturnModel>> ColumnNameAndTypesProcAsync()
+        {
+            int procResult;
+            return Task.FromResult(ColumnNameAndTypesProc(out procResult));
         }
 
         public int ConvertToString(int? someValue, out string someString)

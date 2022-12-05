@@ -88,6 +88,7 @@ namespace Generator.Tests.Integration
         }
 
         [Test]
+        [NonParallelizable]
         [TestCase(TemplateType.EfCore6, ".V4TestE6")]
         [TestCase(TemplateType.EfCore7, ".V4TestE7")]
         public void NonPascalCased(TemplateType templateType, string singleDbContextSubNamespace)

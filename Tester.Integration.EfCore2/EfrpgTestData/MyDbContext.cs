@@ -124,6 +124,7 @@ namespace Tester.Integration.EfCore2
         public DbSet<TblOrderError> TblOrderErrors { get; set; } // tblOrderErrors
         public DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
         public DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
+        public DbSet<ThisIsMemoryOptimised> ThisIsMemoryOptimiseds { get; set; } // ThisIsMemoryOptimised
         public DbSet<Ticket> Tickets { get; set; } // Ticket
         public DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
         public DbSet<TimestampNullable> TimestampNullables { get; set; } // TimestampNullable
@@ -256,6 +257,7 @@ namespace Tester.Integration.EfCore2
             modelBuilder.ApplyConfiguration(new TblOrderErrorConfiguration());
             modelBuilder.ApplyConfiguration(new TblOrderErrorsAbConfiguration());
             modelBuilder.ApplyConfiguration(new TblOrderLineConfiguration());
+            modelBuilder.ApplyConfiguration(new ThisIsMemoryOptimisedConfiguration());
             modelBuilder.ApplyConfiguration(new TicketConfiguration());
             modelBuilder.ApplyConfiguration(new TimestampNotNullConfiguration());
             modelBuilder.ApplyConfiguration(new TimestampNullableConfiguration());
@@ -270,6 +272,7 @@ namespace Tester.Integration.EfCore2
             modelBuilder.ApplyConfiguration(new БрендытовараConfiguration());
 
             modelBuilder.Query<ColourPivotReturnModel>();
+            modelBuilder.Query<ColumnNameAndTypesProcReturnModel>();
             modelBuilder.Query<DboProcDataFromFfrsReturnModel>();
             modelBuilder.Query<DboProcDataFromFfrsAndDboReturnModel>();
             modelBuilder.Query<DsOpeProcReturnModel>();
@@ -437,6 +440,34 @@ namespace Tester.Integration.EfCore2
         {
             const string sqlCommand = "EXEC [dbo].[ColourPivot]";
             var procResultData = await Query<ColourPivotReturnModel>()
+                .FromSql(sqlCommand)
+                .ToListAsync();
+
+            return procResultData;
+        }
+
+        public List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc()
+        {
+            int procResult;
+            return ColumnNameAndTypesProc(out procResult);
+        }
+
+        public List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc(out int procResult)
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [dbo].[ColumnNameAndTypesProc]";
+            var procResultData = Query<ColumnNameAndTypesProcReturnModel>()
+                .FromSql(sqlCommand, procResultParam)
+                .ToList();
+
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<ColumnNameAndTypesProcReturnModel>> ColumnNameAndTypesProcAsync()
+        {
+            const string sqlCommand = "EXEC [dbo].[ColumnNameAndTypesProc]";
+            var procResultData = await Query<ColumnNameAndTypesProcReturnModel>()
                 .FromSql(sqlCommand)
                 .ToListAsync();
 
