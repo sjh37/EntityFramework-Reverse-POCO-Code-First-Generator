@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Query.Internal;
@@ -22,7 +23,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Efrpg.V3TestE3
+namespace Efrpg.V3TestE7
 {
     #region Database context interface
 
@@ -47,19 +48,14 @@ namespace Efrpg.V3TestE3
         DbSet<BitFiddlerCategoRy> BitFiddlerCategoRies { get; set; } // BitFiddlerCATEGORIES
         DbSet<BitFiddlerCurrenCy> BitFiddlerCurrenCies { get; set; } // BitFiddlerCURRENCIES
         DbSet<Blah> Blahs { get; set; } // Blah
-        DbSet<BlahBlahLink> BlahBlahLinks { get; set; } // BlahBlahLink
-        DbSet<BlahBlahLinkReadonly> BlahBlahLinkReadonlies { get; set; } // BlahBlahLink_readonly
         DbSet<BlahBlahLinkV2> BlahBlahLinkV2 { get; set; } // BlahBlahLink_v2
-        DbSet<BlahBlargLink> BlahBlargLinks { get; set; } // BlahBlargLink
         DbSet<Blarg> Blargs { get; set; } // Blarg
         DbSet<Burak1> Burak1 { get; set; } // Burak1
         DbSet<Burak2> Burak2 { get; set; } // Burak2
         DbSet<CalculatedColumnNotNull> CalculatedColumnNotNulls { get; set; } // CalculatedColumnNotNull
         DbSet<Car> Cars { get; set; } // Car
-        DbSet<CarToColour> CarToColours { get; set; } // CarToColour
         DbSet<ClientCreationState> ClientCreationStates { get; set; } // ClientCreationState
         DbSet<CmsFile> CmsFiles { get; set; } // CMS_File
-        DbSet<CmsFileTag> CmsFileTags { get; set; } // CMS_FileTag
         DbSet<CmsTag> CmsTags { get; set; } // CMS_Tag
         DbSet<CodeMeetingTopicDetail> CodeMeetingTopicDetails { get; set; } // CODE_MeetingTopicDetails
         DbSet<CodeObject> CodeObjects { get; set; } // CodeObject
@@ -94,7 +90,6 @@ namespace Efrpg.V3TestE3
         DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
         DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
         DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
-        DbSet<OneEightSix_IssueUploadedFile> OneEightSix_IssueUploadedFiles { get; set; } // IssueUploadedFile
         DbSet<OneEightSix_UploadedFile> OneEightSix_UploadedFiles { get; set; } // UploadedFile
         DbSet<PeriodTestTable> PeriodTestTables { get; set; } // PeriodTestTable
         DbSet<Person> People { get; set; } // Person
@@ -111,7 +106,6 @@ namespace Efrpg.V3TestE3
         DbSet<Synonyms_Parent> Synonyms_Parents { get; set; } // Parent
         DbSet<TableA> TableAs { get; set; } // TableA
         DbSet<TableB> TableBs { get; set; } // TableB
-        DbSet<TableMappingWithSpace> TableMappingWithSpaces { get; set; } // table mapping with space
         DbSet<TableWithDuplicateColumnName> TableWithDuplicateColumnNames { get; set; } // table with duplicate column names
         DbSet<TableWithSpace> TableWithSpaces { get; set; } // table with space
         DbSet<TableWithSpaceAndInColumn> TableWithSpaceAndInColumns { get; set; } // table with space and in columns
@@ -179,6 +173,7 @@ namespace Efrpg.V3TestE3
         void UpdateRange(IEnumerable<object> entities);
         void UpdateRange(params object[] entities);
 
+        IQueryable<TResult> FromExpression<TResult> (Expression<Func<IQueryable<TResult>>> expression);
 
         // Stored Procedures
         int AddTwoValues(int? a, int? b);
@@ -383,19 +378,14 @@ namespace Efrpg.V3TestE3
         public DbSet<BitFiddlerCategoRy> BitFiddlerCategoRies { get; set; } // BitFiddlerCATEGORIES
         public DbSet<BitFiddlerCurrenCy> BitFiddlerCurrenCies { get; set; } // BitFiddlerCURRENCIES
         public DbSet<Blah> Blahs { get; set; } // Blah
-        public DbSet<BlahBlahLink> BlahBlahLinks { get; set; } // BlahBlahLink
-        public DbSet<BlahBlahLinkReadonly> BlahBlahLinkReadonlies { get; set; } // BlahBlahLink_readonly
         public DbSet<BlahBlahLinkV2> BlahBlahLinkV2 { get; set; } // BlahBlahLink_v2
-        public DbSet<BlahBlargLink> BlahBlargLinks { get; set; } // BlahBlargLink
         public DbSet<Blarg> Blargs { get; set; } // Blarg
         public DbSet<Burak1> Burak1 { get; set; } // Burak1
         public DbSet<Burak2> Burak2 { get; set; } // Burak2
         public DbSet<CalculatedColumnNotNull> CalculatedColumnNotNulls { get; set; } // CalculatedColumnNotNull
         public DbSet<Car> Cars { get; set; } // Car
-        public DbSet<CarToColour> CarToColours { get; set; } // CarToColour
         public DbSet<ClientCreationState> ClientCreationStates { get; set; } // ClientCreationState
         public DbSet<CmsFile> CmsFiles { get; set; } // CMS_File
-        public DbSet<CmsFileTag> CmsFileTags { get; set; } // CMS_FileTag
         public DbSet<CmsTag> CmsTags { get; set; } // CMS_Tag
         public DbSet<CodeMeetingTopicDetail> CodeMeetingTopicDetails { get; set; } // CODE_MeetingTopicDetails
         public DbSet<CodeObject> CodeObjects { get; set; } // CodeObject
@@ -430,7 +420,6 @@ namespace Efrpg.V3TestE3
         public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
         public DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
         public DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
-        public DbSet<OneEightSix_IssueUploadedFile> OneEightSix_IssueUploadedFiles { get; set; } // IssueUploadedFile
         public DbSet<OneEightSix_UploadedFile> OneEightSix_UploadedFiles { get; set; } // UploadedFile
         public DbSet<PeriodTestTable> PeriodTestTables { get; set; } // PeriodTestTable
         public DbSet<Person> People { get; set; } // Person
@@ -447,7 +436,6 @@ namespace Efrpg.V3TestE3
         public DbSet<Synonyms_Parent> Synonyms_Parents { get; set; } // Parent
         public DbSet<TableA> TableAs { get; set; } // TableA
         public DbSet<TableB> TableBs { get; set; } // TableB
-        public DbSet<TableMappingWithSpace> TableMappingWithSpaces { get; set; } // table mapping with space
         public DbSet<TableWithDuplicateColumnName> TableWithDuplicateColumnNames { get; set; } // table with duplicate column names
         public DbSet<TableWithSpace> TableWithSpaces { get; set; } // table with space
         public DbSet<TableWithSpaceAndInColumn> TableWithSpaceAndInColumns { get; set; } // table with space and in columns
@@ -477,7 +465,7 @@ namespace Efrpg.V3TestE3
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;Encrypt=false;TrustServerCertificate=true;Application Name=Generator", x => x.UseNetTopologySuite());
+                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;Encrypt=false;TrustServerCertificate=true;Application Name=Generator", x => x.UseNetTopologySuite().UseHierarchyId());
                 optionsBuilder.UseLazyLoadingProxies();
             }
         }
@@ -521,19 +509,14 @@ namespace Efrpg.V3TestE3
             modelBuilder.ApplyConfiguration(new BitFiddlerCategoRyConfiguration());
             modelBuilder.ApplyConfiguration(new BitFiddlerCurrenCyConfiguration());
             modelBuilder.ApplyConfiguration(new BlahConfiguration());
-            modelBuilder.ApplyConfiguration(new BlahBlahLinkConfiguration());
-            modelBuilder.ApplyConfiguration(new BlahBlahLinkReadonlyConfiguration());
             modelBuilder.ApplyConfiguration(new BlahBlahLinkV2Configuration());
-            modelBuilder.ApplyConfiguration(new BlahBlargLinkConfiguration());
             modelBuilder.ApplyConfiguration(new BlargConfiguration());
             modelBuilder.ApplyConfiguration(new Burak1Configuration());
             modelBuilder.ApplyConfiguration(new Burak2Configuration());
             modelBuilder.ApplyConfiguration(new CalculatedColumnNotNullConfiguration());
             modelBuilder.ApplyConfiguration(new CarConfiguration());
-            modelBuilder.ApplyConfiguration(new CarToColourConfiguration());
             modelBuilder.ApplyConfiguration(new ClientCreationStateConfiguration());
             modelBuilder.ApplyConfiguration(new CmsFileConfiguration());
-            modelBuilder.ApplyConfiguration(new CmsFileTagConfiguration());
             modelBuilder.ApplyConfiguration(new CmsTagConfiguration());
             modelBuilder.ApplyConfiguration(new CodeMeetingTopicDetailConfiguration());
             modelBuilder.ApplyConfiguration(new CodeObjectConfiguration());
@@ -568,7 +551,6 @@ namespace Efrpg.V3TestE3
             modelBuilder.ApplyConfiguration(new Issue47_UserRoleConfiguration());
             modelBuilder.ApplyConfiguration(new MultipleKeyConfiguration());
             modelBuilder.ApplyConfiguration(new OneEightSix_IssueConfiguration());
-            modelBuilder.ApplyConfiguration(new OneEightSix_IssueUploadedFileConfiguration());
             modelBuilder.ApplyConfiguration(new OneEightSix_UploadedFileConfiguration());
             modelBuilder.ApplyConfiguration(new PeriodTestTableConfiguration());
             modelBuilder.ApplyConfiguration(new PersonConfiguration());
@@ -585,7 +567,6 @@ namespace Efrpg.V3TestE3
             modelBuilder.ApplyConfiguration(new Synonyms_ParentConfiguration());
             modelBuilder.ApplyConfiguration(new TableAConfiguration());
             modelBuilder.ApplyConfiguration(new TableBConfiguration());
-            modelBuilder.ApplyConfiguration(new TableMappingWithSpaceConfiguration());
             modelBuilder.ApplyConfiguration(new TableWithDuplicateColumnNameConfiguration());
             modelBuilder.ApplyConfiguration(new TableWithSpaceConfiguration());
             modelBuilder.ApplyConfiguration(new TableWithSpaceAndInColumnConfiguration());
@@ -610,6 +591,8 @@ namespace Efrpg.V3TestE3
             modelBuilder.ApplyConfiguration(new WVN_ArticleConfiguration());
             modelBuilder.ApplyConfiguration(new WVN_VArticleConfiguration());
             modelBuilder.ApplyConfiguration(new БрендытовараConfiguration());
+
+            modelBuilder.Entity<CalculatedColumnNotNull>().ToTable(tb => tb.HasTrigger("CalculatedColumnAuditUpdate"));
 
             modelBuilder.Entity<ColourPivotReturnModel>().HasNoKey();
             modelBuilder.Entity<DboProcDataFromFfrsReturnModel>().HasNoKey();
@@ -1735,19 +1718,14 @@ namespace Efrpg.V3TestE3
         public DbSet<BitFiddlerCategoRy> BitFiddlerCategoRies { get; set; } // BitFiddlerCATEGORIES
         public DbSet<BitFiddlerCurrenCy> BitFiddlerCurrenCies { get; set; } // BitFiddlerCURRENCIES
         public DbSet<Blah> Blahs { get; set; } // Blah
-        public DbSet<BlahBlahLink> BlahBlahLinks { get; set; } // BlahBlahLink
-        public DbSet<BlahBlahLinkReadonly> BlahBlahLinkReadonlies { get; set; } // BlahBlahLink_readonly
         public DbSet<BlahBlahLinkV2> BlahBlahLinkV2 { get; set; } // BlahBlahLink_v2
-        public DbSet<BlahBlargLink> BlahBlargLinks { get; set; } // BlahBlargLink
         public DbSet<Blarg> Blargs { get; set; } // Blarg
         public DbSet<Burak1> Burak1 { get; set; } // Burak1
         public DbSet<Burak2> Burak2 { get; set; } // Burak2
         public DbSet<CalculatedColumnNotNull> CalculatedColumnNotNulls { get; set; } // CalculatedColumnNotNull
         public DbSet<Car> Cars { get; set; } // Car
-        public DbSet<CarToColour> CarToColours { get; set; } // CarToColour
         public DbSet<ClientCreationState> ClientCreationStates { get; set; } // ClientCreationState
         public DbSet<CmsFile> CmsFiles { get; set; } // CMS_File
-        public DbSet<CmsFileTag> CmsFileTags { get; set; } // CMS_FileTag
         public DbSet<CmsTag> CmsTags { get; set; } // CMS_Tag
         public DbSet<CodeMeetingTopicDetail> CodeMeetingTopicDetails { get; set; } // CODE_MeetingTopicDetails
         public DbSet<CodeObject> CodeObjects { get; set; } // CodeObject
@@ -1782,7 +1760,6 @@ namespace Efrpg.V3TestE3
         public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
         public DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
         public DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
-        public DbSet<OneEightSix_IssueUploadedFile> OneEightSix_IssueUploadedFiles { get; set; } // IssueUploadedFile
         public DbSet<OneEightSix_UploadedFile> OneEightSix_UploadedFiles { get; set; } // UploadedFile
         public DbSet<PeriodTestTable> PeriodTestTables { get; set; } // PeriodTestTable
         public DbSet<Person> People { get; set; } // Person
@@ -1799,7 +1776,6 @@ namespace Efrpg.V3TestE3
         public DbSet<Synonyms_Parent> Synonyms_Parents { get; set; } // Parent
         public DbSet<TableA> TableAs { get; set; } // TableA
         public DbSet<TableB> TableBs { get; set; } // TableB
-        public DbSet<TableMappingWithSpace> TableMappingWithSpaces { get; set; } // table mapping with space
         public DbSet<TableWithDuplicateColumnName> TableWithDuplicateColumnNames { get; set; } // table with duplicate column names
         public DbSet<TableWithSpace> TableWithSpaces { get; set; } // table with space
         public DbSet<TableWithSpaceAndInColumn> TableWithSpaceAndInColumns { get; set; } // table with space and in columns
@@ -1848,19 +1824,14 @@ namespace Efrpg.V3TestE3
             BitFiddlerCategoRies = new FakeDbSet<BitFiddlerCategoRy>("Id");
             BitFiddlerCurrenCies = new FakeDbSet<BitFiddlerCurrenCy>("Id");
             Blahs = new FakeDbSet<Blah>("BlahId");
-            BlahBlahLinks = new FakeDbSet<BlahBlahLink>("BlahId", "BlahId2");
-            BlahBlahLinkReadonlies = new FakeDbSet<BlahBlahLinkReadonly>("BlahId", "BlahId2");
             BlahBlahLinkV2 = new FakeDbSet<BlahBlahLinkV2>("BlahId", "BlahId2");
-            BlahBlargLinks = new FakeDbSet<BlahBlargLink>("BlahId", "BlargId");
             Blargs = new FakeDbSet<Blarg>("BlargId");
             Burak1 = new FakeDbSet<Burak1>("Id");
             Burak2 = new FakeDbSet<Burak2>("Id");
             CalculatedColumnNotNulls = new FakeDbSet<CalculatedColumnNotNull>("Id");
             Cars = new FakeDbSet<Car>("Id");
-            CarToColours = new FakeDbSet<CarToColour>("CarId", "ColourId");
             ClientCreationStates = new FakeDbSet<ClientCreationState>("Id");
             CmsFiles = new FakeDbSet<CmsFile>("FileId");
-            CmsFileTags = new FakeDbSet<CmsFileTag>("FileId", "TagId");
             CmsTags = new FakeDbSet<CmsTag>("TagId");
             CodeMeetingTopicDetails = new FakeDbSet<CodeMeetingTopicDetail>("Id");
             CodeObjects = new FakeDbSet<CodeObject>("CodeObjectNo");
@@ -1895,7 +1866,6 @@ namespace Efrpg.V3TestE3
             Issue47_UserRoles = new FakeDbSet<Issue47_UserRole>("UserRoleId");
             MultipleKeys = new FakeDbSet<MultipleKey>("UserId", "FavouriteColourId", "BestHolidayTypeId");
             OneEightSix_Issues = new FakeDbSet<OneEightSix_Issue>("Id");
-            OneEightSix_IssueUploadedFiles = new FakeDbSet<OneEightSix_IssueUploadedFile>("UploadedFileId", "IssueId");
             OneEightSix_UploadedFiles = new FakeDbSet<OneEightSix_UploadedFile>("Id");
             PeriodTestTables = new FakeDbSet<PeriodTestTable>("Id");
             People = new FakeDbSet<Person>("Id");
@@ -1912,7 +1882,6 @@ namespace Efrpg.V3TestE3
             Synonyms_Parents = new FakeDbSet<Synonyms_Parent>("ParentId");
             TableAs = new FakeDbSet<TableA>("TableAId");
             TableBs = new FakeDbSet<TableB>("TableBId", "TableAId");
-            TableMappingWithSpaces = new FakeDbSet<TableMappingWithSpace>("Id", "IdValue");
             TableWithDuplicateColumnNames = new FakeDbSet<TableWithDuplicateColumnName>("Id");
             TableWithSpaces = new FakeDbSet<TableWithSpace>("Id");
             TableWithSpaceAndInColumns = new FakeDbSet<TableWithSpaceAndInColumn>("IdValue");
@@ -2124,6 +2093,11 @@ namespace Efrpg.V3TestE3
         }
 
         public virtual void UpdateRange(params object[] entities)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual IQueryable<TResult> FromExpression<TResult> (Expression<Func<IQueryable<TResult>>> expression)
         {
             throw new NotImplementedException();
         }
@@ -2790,11 +2764,18 @@ namespace Efrpg.V3TestE3
     //          }
     //      }
     //      Read more about it here: https://msdn.microsoft.com/en-us/data/dn314431.aspx
-    public class FakeDbSet<TEntity> : DbSet<TEntity>, IQueryable<TEntity>, IAsyncEnumerable<TEntity>, IListSource where TEntity : class
+    public class FakeDbSet<TEntity> :
+        DbSet<TEntity>,
+        IQueryable<TEntity>,
+        IAsyncEnumerable<TEntity>,
+        IListSource,
+        IResettableService
+        where TEntity : class
     {
         private readonly PropertyInfo[] _primaryKeys;
-        private readonly ObservableCollection<TEntity> _data;
-        private readonly IQueryable _query;
+        private ObservableCollection<TEntity> _data;
+        private IQueryable _query;
+        public override IEntityType EntityType { get; }
 
         public FakeDbSet()
         {
@@ -2835,11 +2816,6 @@ namespace Efrpg.V3TestE3
         public override ValueTask<TEntity> FindAsync(params object[] keyValues)
         {
             return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues)));
-        }
-
-        IAsyncEnumerator<TEntity> IAsyncEnumerable<TEntity>.GetAsyncEnumerator(CancellationToken cancellationToken)
-        {
-            return GetAsyncEnumerator(cancellationToken);
         }
 
         public override EntityEntry<TEntity> Add(TEntity entity)
@@ -2936,6 +2912,8 @@ namespace Efrpg.V3TestE3
             AddRange(array);
         }
 
+        bool IListSource.ContainsListCollection => true;
+
         public IList GetList()
         {
             return _data;
@@ -2971,9 +2949,20 @@ namespace Efrpg.V3TestE3
             return _data.GetEnumerator();
         }
 
-        IAsyncEnumerator<TEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default(CancellationToken))
+        public override IAsyncEnumerator<TEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
             return new FakeDbAsyncEnumerator<TEntity>(this.AsEnumerable().GetEnumerator());
+        }
+
+        public void ResetState()
+        {
+            _data  = new ObservableCollection<TEntity>();
+            _query = _data.AsQueryable();
+        }
+
+        public Task ResetStateAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            return Task.Factory.StartNew(() => ResetState());
         }
     }
 
@@ -3048,6 +3037,7 @@ namespace Efrpg.V3TestE3
         {
             get { return _inner.Current; }
         }
+
         public ValueTask<bool> MoveNextAsync()
         {
             return new ValueTask<bool>(_inner.MoveNext());
@@ -3189,8 +3179,18 @@ namespace Efrpg.V3TestE3
         {
         }
 
+        public override Task CommitTransactionAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            return Task.CompletedTask;
+        }
+
         public override void RollbackTransaction()
         {
+        }
+
+        public override Task RollbackTransactionAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            return Task.CompletedTask;
         }
 
         public override IExecutionStrategy CreateExecutionStrategy()
@@ -3202,18 +3202,17 @@ namespace Efrpg.V3TestE3
         {
             return string.Empty;
         }
-
     }
 
     public class FakeDbContextTransaction : IDbContextTransaction
     {
-        public virtual Guid TransactionId => Guid.NewGuid();
-        public virtual void Commit() { }
-        public virtual void Rollback() { }
-        public virtual Task CommitAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;
-        public virtual Task RollbackAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;
-        public virtual void Dispose() { }
-        public virtual ValueTask DisposeAsync() => default;
+        public Guid TransactionId => Guid.NewGuid();
+        public void Commit() { }
+        public void Rollback() { }
+        public Task CommitAsync(CancellationToken cancellationToken = new CancellationToken()) => Task.CompletedTask;
+        public Task RollbackAsync(CancellationToken cancellationToken = new CancellationToken()) => Task.CompletedTask;
+        public void Dispose() { }
+        public ValueTask DisposeAsync() => default;
     }
 
     #endregion
@@ -3471,24 +3470,24 @@ namespace Efrpg.V3TestE3
         // Reverse navigation
 
         /// <summary>
-        /// Child BlahBlahLinks where [BlahBlahLink].[BlahID] point to this entity (FK_BlahBlahLink_Blah)
+        /// Child Blahs (Many-to-Many) mapped by table [BlahBlahLink]
         /// </summary>
-        public virtual ICollection<BlahBlahLink> BlahBlahLinks_BlahId { get; set; } // BlahBlahLink.FK_BlahBlahLink_Blah
+        public virtual ICollection<Blah> Blahs_BlahId2 { get; set; } // Many to many mapping
 
         /// <summary>
-        /// Child BlahBlahLinks where [BlahBlahLink].[BlahID2] point to this entity (FK_BlahBlahLink_Blah2)
+        /// Child Blahs (Many-to-Many) mapped by table [BlahBlahLink]
         /// </summary>
-        public virtual ICollection<BlahBlahLink> BlahBlahLinks_BlahId2 { get; set; } // BlahBlahLink.FK_BlahBlahLink_Blah2
+        public virtual ICollection<Blah> Blahs1 { get; set; } // Many to many mapping
 
         /// <summary>
-        /// Child BlahBlahLinkReadonlies where [BlahBlahLink_readonly].[BlahID] point to this entity (FK_BlahBlahLink_Blah_ro)
+        /// Child Blahs (Many-to-Many) mapped by table [BlahBlahLink_readonly]
         /// </summary>
-        public virtual ICollection<BlahBlahLinkReadonly> BlahBlahLinkReadonlies_BlahId { get; set; } // BlahBlahLink_readonly.FK_BlahBlahLink_Blah_ro
+        public virtual ICollection<Blah> Blahs2 { get; set; } // Many to many mapping
 
         /// <summary>
-        /// Child BlahBlahLinkReadonlies where [BlahBlahLink_readonly].[BlahID2] point to this entity (FK_BlahBlahLink_Blah_ro2)
+        /// Child Blahs (Many-to-Many) mapped by table [BlahBlahLink_readonly]
         /// </summary>
-        public virtual ICollection<BlahBlahLinkReadonly> BlahBlahLinkReadonlies_BlahId2 { get; set; } // BlahBlahLink_readonly.FK_BlahBlahLink_Blah_ro2
+        public virtual ICollection<Blah> Blahs3 { get; set; } // Many to many mapping
 
         /// <summary>
         /// Child BlahBlahLinkV2 where [BlahBlahLink_v2].[BlahID] point to this entity (FK_BlahBlahLinkv2_Blah_ro)
@@ -3501,61 +3500,20 @@ namespace Efrpg.V3TestE3
         public virtual ICollection<BlahBlahLinkV2> BlahBlahLinkV2_BlahId2 { get; set; } // BlahBlahLink_v2.FK_BlahBlahLinkv2_Blah_ro2
 
         /// <summary>
-        /// Child BlahBlargLinks where [BlahBlargLink].[BlahID] point to this entity (FK_BlahBlargLink_Blah)
+        /// Child Blargs (Many-to-Many) mapped by table [BlahBlargLink]
         /// </summary>
-        public virtual ICollection<BlahBlargLink> BlahBlargLinks { get; set; } // BlahBlargLink.FK_BlahBlargLink_Blah
+        public virtual ICollection<Blarg> Blargs { get; set; } // Many to many mapping
 
         public Blah()
         {
-            BlahBlahLinks_BlahId = new List<BlahBlahLink>();
-            BlahBlahLinks_BlahId2 = new List<BlahBlahLink>();
-            BlahBlahLinkReadonlies_BlahId = new List<BlahBlahLinkReadonly>();
-            BlahBlahLinkReadonlies_BlahId2 = new List<BlahBlahLinkReadonly>();
             BlahBlahLinkV2_BlahId = new List<BlahBlahLinkV2>();
             BlahBlahLinkV2_BlahId2 = new List<BlahBlahLinkV2>();
-            BlahBlargLinks = new List<BlahBlargLink>();
+            Blahs1 = new List<Blah>();
+            Blahs_BlahId2 = new List<Blah>();
+            Blahs3 = new List<Blah>();
+            Blahs2 = new List<Blah>();
+            Blargs = new List<Blarg>();
         }
-    }
-
-    // BlahBlahLink
-    public class BlahBlahLink
-    {
-        public int BlahId { get; set; } // BlahID (Primary key)
-        public int BlahId2 { get; set; } // BlahID2 (Primary key)
-
-        // Foreign keys
-
-        /// <summary>
-        /// Parent Blah pointed by [BlahBlahLink].([BlahId]) (FK_BlahBlahLink_Blah)
-        /// </summary>
-        public virtual Blah Blah_BlahId { get; set; } // FK_BlahBlahLink_Blah
-
-        /// <summary>
-        /// Parent Blah pointed by [BlahBlahLink].([BlahId2]) (FK_BlahBlahLink_Blah2)
-        /// </summary>
-        public virtual Blah Blah_BlahId2 { get; set; } // FK_BlahBlahLink_Blah2
-    }
-
-    // BlahBlahLink_readonly
-    public class BlahBlahLinkReadonly
-    {
-        public int BlahId { get; set; } // BlahID (Primary key)
-        public int BlahId2 { get; set; } // BlahID2 (Primary key)
-        public byte[] RowVersion { get; set; } // RowVersion (length: 8)
-        public int Id { get; set; } // id
-        public int? Id2 { get; private set; } // id2
-
-        // Foreign keys
-
-        /// <summary>
-        /// Parent Blah pointed by [BlahBlahLink_readonly].([BlahId]) (FK_BlahBlahLink_Blah_ro)
-        /// </summary>
-        public virtual Blah Blah_BlahId { get; set; } // FK_BlahBlahLink_Blah_ro
-
-        /// <summary>
-        /// Parent Blah pointed by [BlahBlahLink_readonly].([BlahId2]) (FK_BlahBlahLink_Blah_ro2)
-        /// </summary>
-        public virtual Blah Blah_BlahId2 { get; set; } // FK_BlahBlahLink_Blah_ro2
     }
 
     // BlahBlahLink_v2
@@ -3580,25 +3538,6 @@ namespace Efrpg.V3TestE3
         public virtual Blah Blah_BlahId2 { get; set; } // FK_BlahBlahLinkv2_Blah_ro2
     }
 
-    // BlahBlargLink
-    public class BlahBlargLink
-    {
-        public int BlahId { get; set; } // BlahID (Primary key)
-        public int BlargId { get; set; } // BlargID (Primary key)
-
-        // Foreign keys
-
-        /// <summary>
-        /// Parent Blah pointed by [BlahBlargLink].([BlahId]) (FK_BlahBlargLink_Blah)
-        /// </summary>
-        public virtual Blah Blah { get; set; } // FK_BlahBlargLink_Blah
-
-        /// <summary>
-        /// Parent Blarg pointed by [BlahBlargLink].([BlargId]) (FK_BlahBlargLink_Blarg)
-        /// </summary>
-        public virtual Blarg Blarg { get; set; } // FK_BlahBlargLink_Blarg
-    }
-
     // Blarg
     public class Blarg
     {
@@ -3607,13 +3546,13 @@ namespace Efrpg.V3TestE3
         // Reverse navigation
 
         /// <summary>
-        /// Child BlahBlargLinks where [BlahBlargLink].[BlargID] point to this entity (FK_BlahBlargLink_Blarg)
+        /// Child Blahs (Many-to-Many) mapped by table [BlahBlargLink]
         /// </summary>
-        public virtual ICollection<BlahBlargLink> BlahBlargLinks { get; set; } // BlahBlargLink.FK_BlahBlargLink_Blarg
+        public virtual ICollection<Blah> Blahs { get; set; } // Many to many mapping
 
         public Blarg()
         {
-            BlahBlargLinks = new List<BlahBlargLink>();
+            Blahs = new List<Blah>();
         }
     }
 
@@ -3677,9 +3616,9 @@ namespace Efrpg.V3TestE3
         // Reverse navigation
 
         /// <summary>
-        /// Child CarToColours where [CarToColour].[CarId] point to this entity (CarToColour_CarId)
+        /// Child Colours (Many-to-Many) mapped by table [CarToColour]
         /// </summary>
-        public virtual ICollection<CarToColour> CarToColours { get; set; } // CarToColour.CarToColour_CarId
+        public virtual ICollection<Colour> Colours { get; set; } // Many to many mapping
 
         // Foreign keys
 
@@ -3690,27 +3629,8 @@ namespace Efrpg.V3TestE3
 
         public Car()
         {
-            CarToColours = new List<CarToColour>();
+            Colours = new List<Colour>();
         }
-    }
-
-    // CarToColour
-    public class CarToColour
-    {
-        public int CarId { get; set; } // CarId (Primary key)
-        public int ColourId { get; set; } // ColourId (Primary key)
-
-        // Foreign keys
-
-        /// <summary>
-        /// Parent Car pointed by [CarToColour].([CarId]) (CarToColour_CarId)
-        /// </summary>
-        public virtual Car Car { get; set; } // CarToColour_CarId
-
-        /// <summary>
-        /// Parent Colour pointed by [CarToColour].([ColourId]) (CarToColour_ColourId)
-        /// </summary>
-        public virtual Colour Colour { get; set; } // CarToColour_ColourId
     }
 
     // ClientCreationState
@@ -3736,33 +3656,14 @@ namespace Efrpg.V3TestE3
         // Reverse navigation
 
         /// <summary>
-        /// Child CmsFileTags where [CMS_FileTag].[FileId] point to this entity (FK_CMS_FileTag_CMS_File)
+        /// Child CmsTags (Many-to-Many) mapped by table [CMS_FileTag]
         /// </summary>
-        public virtual ICollection<CmsFileTag> CmsFileTags { get; set; } // CMS_FileTag.FK_CMS_FileTag_CMS_File
+        public virtual ICollection<CmsTag> CmsTags { get; set; } // Many to many mapping
 
         public CmsFile()
         {
-            CmsFileTags = new List<CmsFileTag>();
+            CmsTags = new List<CmsTag>();
         }
-    }
-
-    // CMS_FileTag
-    public class CmsFileTag
-    {
-        public int FileId { get; set; } // FileId (Primary key)
-        public int TagId { get; set; } // TagId (Primary key)
-
-        // Foreign keys
-
-        /// <summary>
-        /// Parent CmsFile pointed by [CMS_FileTag].([FileId]) (FK_CMS_FileTag_CMS_File)
-        /// </summary>
-        public virtual CmsFile CmsFile { get; set; } // FK_CMS_FileTag_CMS_File
-
-        /// <summary>
-        /// Parent CmsTag pointed by [CMS_FileTag].([TagId]) (FK_CMS_FileTag_CMS_Tag)
-        /// </summary>
-        public virtual CmsTag CmsTag { get; set; } // FK_CMS_FileTag_CMS_Tag
     }
 
     // CMS_Tag
@@ -3774,13 +3675,13 @@ namespace Efrpg.V3TestE3
         // Reverse navigation
 
         /// <summary>
-        /// Child CmsFileTags where [CMS_FileTag].[TagId] point to this entity (FK_CMS_FileTag_CMS_Tag)
+        /// Child CmsFiles (Many-to-Many) mapped by table [CMS_FileTag]
         /// </summary>
-        public virtual ICollection<CmsFileTag> CmsFileTags { get; set; } // CMS_FileTag.FK_CMS_FileTag_CMS_Tag
+        public virtual ICollection<CmsFile> CmsFiles { get; set; } // Many to many mapping
 
         public CmsTag()
         {
-            CmsFileTags = new List<CmsFileTag>();
+            CmsFiles = new List<CmsFile>();
         }
     }
 
@@ -3865,19 +3766,19 @@ namespace Efrpg.V3TestE3
         // Reverse navigation
 
         /// <summary>
-        /// Child Cars where [Car].[PrimaryColourId] point to this entity (CarPrimaryColourFK)
+        /// Child Cars (Many-to-Many) mapped by table [CarToColour]
         /// </summary>
-        public virtual ICollection<Car> Cars { get; set; } // Car.CarPrimaryColourFK
+        public virtual ICollection<Car> Cars_CarId { get; set; } // Many to many mapping
 
         /// <summary>
-        /// Child CarToColours where [CarToColour].[ColourId] point to this entity (CarToColour_ColourId)
+        /// Child Cars where [Car].[PrimaryColourId] point to this entity (CarPrimaryColourFK)
         /// </summary>
-        public virtual ICollection<CarToColour> CarToColours { get; set; } // CarToColour.CarToColour_ColourId
+        public virtual ICollection<Car> Cars_PrimaryColourId { get; set; } // Car.CarPrimaryColourFK
 
         public Colour()
         {
-            Cars = new List<Car>();
-            CarToColours = new List<CarToColour>();
+            Cars_PrimaryColourId = new List<Car>();
+            Cars_CarId = new List<Car>();
         }
     }
 
@@ -4294,7 +4195,7 @@ namespace Efrpg.V3TestE3
     public class HierarchyTest
     {
         public int Id { get; set; } // ID (Primary key)
-        public Microsoft.SqlServer.Types.SqlHierarchyId Hid { get; set; } // hid
+        public HierarchyId Hid { get; set; } // hid
     }
 
     // Role
@@ -4394,9 +4295,9 @@ namespace Efrpg.V3TestE3
         // Reverse navigation
 
         /// <summary>
-        /// Child OneEightSix_IssueUploadedFiles where [IssueUploadedFile].[IssueId] point to this entity (FK_IssueUploadedFile_Issue)
+        /// Child OneEightSix_UploadedFiles (Many-to-Many) mapped by table [IssueUploadedFile]
         /// </summary>
-        public virtual ICollection<OneEightSix_IssueUploadedFile> OneEightSix_IssueUploadedFiles { get; set; } // IssueUploadedFile.FK_IssueUploadedFile_Issue
+        public virtual ICollection<OneEightSix_UploadedFile> OneEightSix_UploadedFiles { get; set; } // Many to many mapping
 
         // Foreign keys
 
@@ -4407,27 +4308,8 @@ namespace Efrpg.V3TestE3
 
         public OneEightSix_Issue()
         {
-            OneEightSix_IssueUploadedFiles = new List<OneEightSix_IssueUploadedFile>();
+            OneEightSix_UploadedFiles = new List<OneEightSix_UploadedFile>();
         }
-    }
-
-    // IssueUploadedFile
-    public class OneEightSix_IssueUploadedFile
-    {
-        public int UploadedFileId { get; set; } // UploadedFileId (Primary key)
-        public int IssueId { get; set; } // IssueId (Primary key)
-
-        // Foreign keys
-
-        /// <summary>
-        /// Parent OneEightSix_Issue pointed by [IssueUploadedFile].([IssueId]) (FK_IssueUploadedFile_Issue)
-        /// </summary>
-        public virtual OneEightSix_Issue OneEightSix_Issue { get; set; } // FK_IssueUploadedFile_Issue
-
-        /// <summary>
-        /// Parent OneEightSix_UploadedFile pointed by [IssueUploadedFile].([UploadedFileId]) (FK_IssueUploadedFile_UploadedFile)
-        /// </summary>
-        public virtual OneEightSix_UploadedFile OneEightSix_UploadedFile { get; set; } // FK_IssueUploadedFile_UploadedFile
     }
 
     // UploadedFile
@@ -4441,17 +4323,17 @@ namespace Efrpg.V3TestE3
         /// <summary>
         /// Child OneEightSix_Issues where [Issue].[ConsentDocumentId] point to this entity (FK_Issue_UploadedFileConsentDocument)
         /// </summary>
-        public virtual ICollection<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue.FK_Issue_UploadedFileConsentDocument
+        public virtual ICollection<OneEightSix_Issue> OneEightSix_Issues_ConsentDocumentId { get; set; } // Issue.FK_Issue_UploadedFileConsentDocument
 
         /// <summary>
-        /// Child OneEightSix_IssueUploadedFiles where [IssueUploadedFile].[UploadedFileId] point to this entity (FK_IssueUploadedFile_UploadedFile)
+        /// Child OneEightSix_Issues (Many-to-Many) mapped by table [IssueUploadedFile]
         /// </summary>
-        public virtual ICollection<OneEightSix_IssueUploadedFile> OneEightSix_IssueUploadedFiles { get; set; } // IssueUploadedFile.FK_IssueUploadedFile_UploadedFile
+        public virtual ICollection<OneEightSix_Issue> OneEightSix_Issues_IssueId { get; set; } // Many to many mapping
 
         public OneEightSix_UploadedFile()
         {
-            OneEightSix_Issues = new List<OneEightSix_Issue>();
-            OneEightSix_IssueUploadedFiles = new List<OneEightSix_IssueUploadedFile>();
+            OneEightSix_Issues_ConsentDocumentId = new List<OneEightSix_Issue>();
+            OneEightSix_Issues_IssueId = new List<OneEightSix_Issue>();
         }
     }
 
@@ -4696,25 +4578,6 @@ namespace Efrpg.V3TestE3
         public virtual TableB TableB1 { get; set; } // ParentTableB_Hierarchy
     }
 
-    // table mapping with space
-    public class TableMappingWithSpace
-    {
-        public int Id { get; set; } // id (Primary key)
-        public int IdValue { get; set; } // id value (Primary key)
-
-        // Foreign keys
-
-        /// <summary>
-        /// Parent TableWithSpace pointed by [table mapping with space].([Id]) (space1FK)
-        /// </summary>
-        public virtual TableWithSpace TableWithSpace { get; set; } // space1FK
-
-        /// <summary>
-        /// Parent TableWithSpaceAndInColumn pointed by [table mapping with space].([IdValue]) (space2FK)
-        /// </summary>
-        public virtual TableWithSpaceAndInColumn TableWithSpaceAndInColumn { get; set; } // space2FK
-    }
-
     // table with duplicate column names
     public class TableWithDuplicateColumnName
     {
@@ -4734,13 +4597,13 @@ namespace Efrpg.V3TestE3
         // Reverse navigation
 
         /// <summary>
-        /// Child TableMappingWithSpaces where [table mapping with space].[id] point to this entity (space1FK)
+        /// Child TableWithSpaceAndInColumns (Many-to-Many) mapped by table [table mapping with space]
         /// </summary>
-        public virtual ICollection<TableMappingWithSpace> TableMappingWithSpaces { get; set; } // table mapping with space.space1FK
+        public virtual ICollection<TableWithSpaceAndInColumn> TableWithSpaceAndInColumns { get; set; } // Many to many mapping
 
         public TableWithSpace()
         {
-            TableMappingWithSpaces = new List<TableMappingWithSpace>();
+            TableWithSpaceAndInColumns = new List<TableWithSpaceAndInColumn>();
         }
     }
 
@@ -4752,13 +4615,13 @@ namespace Efrpg.V3TestE3
         // Reverse navigation
 
         /// <summary>
-        /// Child TableMappingWithSpaces where [table mapping with space].[id value] point to this entity (space2FK)
+        /// Child TableWithSpaces (Many-to-Many) mapped by table [table mapping with space]
         /// </summary>
-        public virtual ICollection<TableMappingWithSpace> TableMappingWithSpaces { get; set; } // table mapping with space.space2FK
+        public virtual ICollection<TableWithSpace> TableWithSpaces { get; set; } // Many to many mapping
 
         public TableWithSpaceAndInColumn()
         {
-            TableMappingWithSpaces = new List<TableMappingWithSpace>();
+            TableWithSpaces = new List<TableWithSpace>();
         }
     }
 
@@ -5286,43 +5149,18 @@ namespace Efrpg.V3TestE3
             builder.HasKey(x => x.BlahId).HasName("PK_Blah").IsClustered();
 
             builder.Property(x => x.BlahId).HasColumnName(@"BlahID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-        }
-    }
-
-    // BlahBlahLink
-    public class BlahBlahLinkConfiguration : IEntityTypeConfiguration<BlahBlahLink>
-    {
-        public void Configure(EntityTypeBuilder<BlahBlahLink> builder)
-        {
-            builder.ToTable("BlahBlahLink", "dbo");
-            builder.HasKey(x => new { x.BlahId, x.BlahId2 }).HasName("PK_BlahBlahLink").IsClustered();
-
-            builder.Property(x => x.BlahId).HasColumnName(@"BlahID").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.BlahId2).HasColumnName(@"BlahID2").HasColumnType("int").IsRequired().ValueGeneratedNever();
-
-            // Foreign keys
-            builder.HasOne(a => a.Blah_BlahId).WithMany(b => b.BlahBlahLinks_BlahId).HasForeignKey(c => c.BlahId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_BlahBlahLink_Blah");
-            builder.HasOne(a => a.Blah_BlahId2).WithMany(b => b.BlahBlahLinks_BlahId2).HasForeignKey(c => c.BlahId2).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_BlahBlahLink_Blah2");
-        }
-    }
-
-    // BlahBlahLink_readonly
-    public class BlahBlahLinkReadonlyConfiguration : IEntityTypeConfiguration<BlahBlahLinkReadonly>
-    {
-        public void Configure(EntityTypeBuilder<BlahBlahLinkReadonly> builder)
-        {
-            builder.ToTable("BlahBlahLink_readonly", "dbo");
-            builder.HasKey(x => new { x.BlahId, x.BlahId2 }).HasName("PK_BlahBlahLink_ro").IsClustered();
-
-            builder.Property(x => x.BlahId).HasColumnName(@"BlahID").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.BlahId2).HasColumnName(@"BlahID2").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.RowVersion).HasColumnName(@"RowVersion").HasColumnType("timestamp(8)").IsRequired(false).IsFixedLength().HasMaxLength(8).IsRowVersion().IsConcurrencyToken();
-            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Id2).HasColumnName(@"id2").HasColumnType("int").IsRequired(false).ValueGeneratedOnAddOrUpdate();
-
-            // Foreign keys
-            builder.HasOne(a => a.Blah_BlahId).WithMany(b => b.BlahBlahLinkReadonlies_BlahId).HasForeignKey(c => c.BlahId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_BlahBlahLink_Blah_ro");
-            builder.HasOne(a => a.Blah_BlahId2).WithMany(b => b.BlahBlahLinkReadonlies_BlahId2).HasForeignKey(c => c.BlahId2).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_BlahBlahLink_Blah_ro2");
+            builder.HasMany<Blah>(t => t.Blahs_BlahId2).WithMany(t => t.Blahs1).UsingEntity<Dictionary<string, object>>("BlahBlahLink",
+                    j => j.HasOne<Blah>().WithMany().HasForeignKey("BlahID2"),
+                    j => j.HasOne<Blah>().WithMany().HasForeignKey("BlahID"),
+                    j => j.ToTable("BlahBlahLink", "dbo"));
+            builder.HasMany<Blah>(t => t.Blahs2).WithMany(t => t.Blahs3).UsingEntity<Dictionary<string, object>>("BlahBlahLink_readonly",
+                    j => j.HasOne<Blah>().WithMany().HasForeignKey("BlahID2"),
+                    j => j.HasOne<Blah>().WithMany().HasForeignKey("BlahID"),
+                    j => j.ToTable("BlahBlahLink_readonly", "dbo"));
+            builder.HasMany<Blarg>(t => t.Blargs).WithMany(t => t.Blahs).UsingEntity<Dictionary<string, object>>("BlahBlargLink",
+                    j => j.HasOne<Blarg>().WithMany().HasForeignKey("BlargID"),
+                    j => j.HasOne<Blah>().WithMany().HasForeignKey("BlahID"),
+                    j => j.ToTable("BlahBlargLink", "dbo"));
         }
     }
 
@@ -5343,23 +5181,6 @@ namespace Efrpg.V3TestE3
             // Foreign keys
             builder.HasOne(a => a.Blah_BlahId).WithMany(b => b.BlahBlahLinkV2_BlahId).HasForeignKey(c => c.BlahId).HasConstraintName("FK_BlahBlahLinkv2_Blah_ro");
             builder.HasOne(a => a.Blah_BlahId2).WithMany(b => b.BlahBlahLinkV2_BlahId2).HasForeignKey(c => c.BlahId2).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_BlahBlahLinkv2_Blah_ro2");
-        }
-    }
-
-    // BlahBlargLink
-    public class BlahBlargLinkConfiguration : IEntityTypeConfiguration<BlahBlargLink>
-    {
-        public void Configure(EntityTypeBuilder<BlahBlargLink> builder)
-        {
-            builder.ToTable("BlahBlargLink", "dbo");
-            builder.HasKey(x => new { x.BlahId, x.BlargId }).HasName("PK_BlahBlargLink").IsClustered();
-
-            builder.Property(x => x.BlahId).HasColumnName(@"BlahID").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.BlargId).HasColumnName(@"BlargID").HasColumnType("int").IsRequired().ValueGeneratedNever();
-
-            // Foreign keys
-            builder.HasOne(a => a.Blah).WithMany(b => b.BlahBlargLinks).HasForeignKey(c => c.BlahId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_BlahBlargLink_Blah");
-            builder.HasOne(a => a.Blarg).WithMany(b => b.BlahBlargLinks).HasForeignKey(c => c.BlargId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_BlahBlargLink_Blarg");
         }
     }
 
@@ -5404,7 +5225,7 @@ namespace Efrpg.V3TestE3
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("bigint").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Num).HasColumnName(@"num").HasColumnType("bigint").IsRequired();
 
-            builder.HasIndex(x => new { x.Id, x.Num }).HasName("U_Burak2").IsUnique();
+            builder.HasIndex(x => new { x.Id, x.Num }).HasDatabaseName("U_Burak2").IsUnique();
         }
     }
 
@@ -5438,24 +5259,11 @@ namespace Efrpg.V3TestE3
             builder.Property(x => x.ComputedColumnPersisted).HasColumnName(@"computed_column_persisted").HasColumnType("int").IsRequired().ValueGeneratedOnAddOrUpdate();
 
             // Foreign keys
-            builder.HasOne(a => a.Colour).WithMany(b => b.Cars).HasForeignKey(c => c.PrimaryColourId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("CarPrimaryColourFK");
-        }
-    }
-
-    // CarToColour
-    public class CarToColourConfiguration : IEntityTypeConfiguration<CarToColour>
-    {
-        public void Configure(EntityTypeBuilder<CarToColour> builder)
-        {
-            builder.ToTable("CarToColour", "dbo");
-            builder.HasKey(x => new { x.CarId, x.ColourId }).HasName("PK_CarToColour").IsClustered();
-
-            builder.Property(x => x.CarId).HasColumnName(@"CarId").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.ColourId).HasColumnName(@"ColourId").HasColumnType("int").IsRequired().ValueGeneratedNever();
-
-            // Foreign keys
-            builder.HasOne(a => a.Car).WithMany(b => b.CarToColours).HasForeignKey(c => c.CarId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("CarToColour_CarId");
-            builder.HasOne(a => a.Colour).WithMany(b => b.CarToColours).HasForeignKey(c => c.ColourId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("CarToColour_ColourId");
+            builder.HasOne(a => a.Colour).WithMany(b => b.Cars_PrimaryColourId).HasForeignKey(c => c.PrimaryColourId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("CarPrimaryColourFK");
+            builder.HasMany<Colour>(t => t.Colours).WithMany(t => t.Cars_CarId).UsingEntity<Dictionary<string, object>>("CarToColour",
+                    j => j.HasOne<Colour>().WithMany().HasForeignKey("ColourId"),
+                    j => j.HasOne<Car>().WithMany().HasForeignKey("CarId"),
+                    j => j.ToTable("CarToColour", "dbo"));
         }
     }
 
@@ -5489,23 +5297,10 @@ namespace Efrpg.V3TestE3
             builder.Property(x => x.ValidStartDate).HasColumnName(@"ValidStartDate").HasColumnType("datetime").IsRequired(false);
             builder.Property(x => x.ValidEndDate).HasColumnName(@"ValidEndDate").HasColumnType("datetime").IsRequired(false);
             builder.Property(x => x.IsActive).HasColumnName(@"IsActive").HasColumnType("bit").IsRequired();
-        }
-    }
-
-    // CMS_FileTag
-    public class CmsFileTagConfiguration : IEntityTypeConfiguration<CmsFileTag>
-    {
-        public void Configure(EntityTypeBuilder<CmsFileTag> builder)
-        {
-            builder.ToTable("CMS_FileTag", "dbo");
-            builder.HasKey(x => new { x.FileId, x.TagId });
-
-            builder.Property(x => x.FileId).HasColumnName(@"FileId").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.TagId).HasColumnName(@"TagId").HasColumnType("int").IsRequired().ValueGeneratedNever();
-
-            // Foreign keys
-            builder.HasOne(a => a.CmsFile).WithMany(b => b.CmsFileTags).HasForeignKey(c => c.FileId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_CMS_FileTag_CMS_File");
-            builder.HasOne(a => a.CmsTag).WithMany(b => b.CmsFileTags).HasForeignKey(c => c.TagId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_CMS_FileTag_CMS_Tag");
+            builder.HasMany<CmsTag>(t => t.CmsTags).WithMany(t => t.CmsFiles).UsingEntity<Dictionary<string, object>>("CMS_FileTag",
+                    j => j.HasOne<CmsTag>().WithMany().HasForeignKey("TagId"),
+                    j => j.HasOne<CmsFile>().WithMany().HasForeignKey("FileId"),
+                    j => j.ToTable("CMS_FileTag", "dbo"));
         }
     }
 
@@ -5585,7 +5380,7 @@ namespace Efrpg.V3TestE3
             builder.Property(x => x.DateCreated).HasColumnName(@"DateCreated").HasColumnType("datetime").IsRequired();
             builder.Property(x => x.DateChanged).HasColumnName(@"DateChanged").HasColumnType("datetime").IsRequired(false);
 
-            builder.HasIndex(x => x.Code).HasName("UK_CODE_PARAM_MeetingTopicDetailSource").IsUnique();
+            builder.HasIndex(x => x.Code).HasDatabaseName("UK_CODE_PARAM_MeetingTopicDetailSource").IsUnique();
         }
     }
 
@@ -5627,17 +5422,17 @@ namespace Efrpg.V3TestE3
             builder.Property(x => x.@Readonly).HasColumnName(@"readonly").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.C123Hi).HasColumnName(@"123Hi").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.Areal).HasColumnName(@"areal").HasColumnType("real").IsRequired(false);
-            builder.Property(x => x.Afloat).HasColumnName(@"afloat").HasColumnType("float").IsRequired(false);
+            builder.Property(x => x.Afloat).HasColumnName(@"afloat").HasColumnType("float").HasPrecision(53).IsRequired(false);
             builder.Property(x => x.Afloat8).HasColumnName(@"afloat8").HasColumnType("real").IsRequired(false);
             builder.Property(x => x.Afloat20).HasColumnName(@"afloat20").HasColumnType("real").IsRequired(false);
             builder.Property(x => x.Afloat24).HasColumnName(@"afloat24").HasColumnType("real").IsRequired(false);
-            builder.Property(x => x.Afloat53).HasColumnName(@"afloat53").HasColumnType("float").IsRequired(false);
-            builder.Property(x => x.Adecimal).HasColumnName(@"adecimal").HasColumnType("decimal(18,0)").IsRequired(false);
-            builder.Property(x => x.Adecimal194).HasColumnName(@"adecimal_19_4").HasColumnType("decimal(19,4)").IsRequired(false);
-            builder.Property(x => x.Adecimal103).HasColumnName(@"adecimal_10_3").HasColumnType("decimal(10,3)").IsRequired(false);
-            builder.Property(x => x.Anumeric).HasColumnName(@"anumeric").HasColumnType("numeric(18,0)").IsRequired(false);
-            builder.Property(x => x.Anumeric52).HasColumnName(@"anumeric_5_2").HasColumnType("numeric(5,2)").IsRequired(false);
-            builder.Property(x => x.Anumeric113).HasColumnName(@"anumeric_11_3").HasColumnType("numeric(11,3)").IsRequired(false);
+            builder.Property(x => x.Afloat53).HasColumnName(@"afloat53").HasColumnType("float").HasPrecision(53).IsRequired(false);
+            builder.Property(x => x.Adecimal).HasColumnName(@"adecimal").HasColumnType("decimal(18,0)").HasPrecision(18,0).IsRequired(false);
+            builder.Property(x => x.Adecimal194).HasColumnName(@"adecimal_19_4").HasColumnType("decimal(19,4)").HasPrecision(19,4).IsRequired(false);
+            builder.Property(x => x.Adecimal103).HasColumnName(@"adecimal_10_3").HasColumnType("decimal(10,3)").HasPrecision(10,3).IsRequired(false);
+            builder.Property(x => x.Anumeric).HasColumnName(@"anumeric").HasColumnType("numeric(18,0)").HasPrecision(18,0).IsRequired(false);
+            builder.Property(x => x.Anumeric52).HasColumnName(@"anumeric_5_2").HasColumnType("numeric(5,2)").HasPrecision(5,2).IsRequired(false);
+            builder.Property(x => x.Anumeric113).HasColumnName(@"anumeric_11_3").HasColumnType("numeric(11,3)").HasPrecision(11,3).IsRequired(false);
             builder.Property(x => x.Amoney).HasColumnName(@"amoney").HasColumnType("money").IsRequired(false);
             builder.Property(x => x.Asmallmoney).HasColumnName(@"asmallmoney").HasColumnType("smallmoney").IsRequired(false);
             builder.Property(x => x.Brandon).HasColumnName(@"brandon").HasColumnType("int").IsRequired(false);
@@ -5759,7 +5554,7 @@ namespace Efrpg.V3TestE3
             builder.HasKey(x => x.Id).HasName("PK_DSOpe").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.DecimalDefault).HasColumnName(@"decimal_default").HasColumnType("decimal(15,2)").IsRequired();
+            builder.Property(x => x.DecimalDefault).HasColumnName(@"decimal_default").HasColumnType("decimal(15,2)").HasPrecision(15,2).IsRequired();
             builder.Property(x => x.MyGuid).HasColumnName(@"MyGuid").HasColumnType("uniqueidentifier").IsRequired();
             builder.Property(x => x.@Default).HasColumnName(@"default").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);
             builder.Property(x => x.MyGuidBadDefault).HasColumnName(@"MyGuidBadDefault").HasColumnType("uniqueidentifier").IsRequired(false);
@@ -5852,7 +5647,7 @@ namespace Efrpg.V3TestE3
             // Foreign keys
             builder.HasOne(a => a.EventProcessor).WithMany(b => b.EventProcessorEventFilters).HasForeignKey(c => c.EventProcessorId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_EventProcessorEventFilter__EventProcessor");
 
-            builder.HasIndex(x => new { x.EventProcessorId, x.WantedEventId }).HasName("IX_EventProcessorEventFilter").IsUnique();
+            builder.HasIndex(x => new { x.EventProcessorId, x.WantedEventId }).HasDatabaseName("IX_EventProcessorEventFilter").IsUnique();
         }
     }
 
@@ -5882,7 +5677,7 @@ namespace Efrpg.V3TestE3
             builder.Property(x => x.FinancialInstitutionCode).HasColumnName(@"FinancialInstitutionCode").HasColumnType("uniqueidentifier").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.OfficeName).HasColumnName(@"OfficeName").HasColumnType("nvarchar(200)").IsRequired(false).HasMaxLength(200);
 
-            builder.HasIndex(x => new { x.FinancialInstitutionCode, x.OfficeName }).HasName("UniqueOfficeName_FinancialInstitutionOffice").IsUnique();
+            builder.HasIndex(x => new { x.FinancialInstitutionCode, x.OfficeName }).HasDatabaseName("UniqueOfficeName_FinancialInstitutionOffice").IsUnique();
         }
     }
 
@@ -5931,8 +5726,8 @@ namespace Efrpg.V3TestE3
             builder.Property(x => x.NullValue).HasColumnName(@"null_value").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.NotNullValue).HasColumnName(@"not_null_value").HasColumnType("int").IsRequired();
 
-            builder.HasIndex(x => x.NotNullValue).HasName("UQ_ForeignKeyIsNotEnforced_not_null_value").IsUnique();
-            builder.HasIndex(x => x.NullValue).HasName("UQ_ForeignKeyIsNotEnforced_null_value").IsUnique();
+            builder.HasIndex(x => x.NotNullValue).HasDatabaseName("UQ_ForeignKeyIsNotEnforced_not_null_value").IsUnique();
+            builder.HasIndex(x => x.NullValue).HasDatabaseName("UQ_ForeignKeyIsNotEnforced_null_value").IsUnique();
         }
     }
 
@@ -5952,8 +5747,8 @@ namespace Efrpg.V3TestE3
             builder.HasOne(a => a.ForeignKeyIsNotEnforced_NotNullValue).WithOne(b => b.ForeignKeyIsNotEnforcedItem_NotNullValue).HasPrincipalKey<ForeignKeyIsNotEnforced>(p => p.NotNullValue).HasForeignKey<ForeignKeyIsNotEnforcedItem>(c => c.NotNullValue).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_ForeignKeyIsNotEnforcedItem_notnull_notnull");
             builder.HasOne(a => a.ForeignKeyIsNotEnforced_NullValue).WithOne(b => b.ForeignKeyIsNotEnforcedItem_NullValue).HasPrincipalKey<ForeignKeyIsNotEnforced>(p => p.NotNullValue).HasForeignKey<ForeignKeyIsNotEnforcedItem>(c => c.NullValue).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_ForeignKeyIsNotEnforcedItem_null_notnull");
 
-            builder.HasIndex(x => x.NotNullValue).HasName("UQ_ForeignKeyIsNotEnforcedItem_not_null_value").IsUnique();
-            builder.HasIndex(x => x.NullValue).HasName("UQ_ForeignKeyIsNotEnforcedItem_null_value").IsUnique();
+            builder.HasIndex(x => x.NotNullValue).HasDatabaseName("UQ_ForeignKeyIsNotEnforcedItem_not_null_value").IsUnique();
+            builder.HasIndex(x => x.NullValue).HasDatabaseName("UQ_ForeignKeyIsNotEnforcedItem_null_value").IsUnique();
         }
     }
 
@@ -5990,9 +5785,9 @@ namespace Efrpg.V3TestE3
             builder.Property(x => x.Cc).HasColumnName(@"CC").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.Dd).HasColumnName(@"DD").HasColumnType("int").IsRequired(false);
 
-            builder.HasIndex(x => new { x.Aa, x.Bb }).HasName("UQ_HasPrincipalKeyTestParent_AB").IsUnique();
-            builder.HasIndex(x => new { x.Aa, x.Cc }).HasName("UQ_HasPrincipalKeyTestParent_AC").IsUnique();
-            builder.HasIndex(x => new { x.Cc, x.Dd }).HasName("UQ_HasPrincipalKeyTestParent_CD").IsUnique();
+            builder.HasIndex(x => new { x.Aa, x.Bb }).HasDatabaseName("UQ_HasPrincipalKeyTestParent_AB").IsUnique();
+            builder.HasIndex(x => new { x.Aa, x.Cc }).HasDatabaseName("UQ_HasPrincipalKeyTestParent_AC").IsUnique();
+            builder.HasIndex(x => new { x.Cc, x.Dd }).HasDatabaseName("UQ_HasPrincipalKeyTestParent_CD").IsUnique();
         }
     }
 
@@ -6081,9 +5876,9 @@ namespace Efrpg.V3TestE3
             builder.Property(x => x.BankId).HasColumnName(@"BankId").HasColumnType("int").IsRequired();
             builder.Property(x => x.CarId).HasColumnName(@"CarId").HasColumnType("int").IsRequired();
 
-            builder.HasIndex(x => x.BestHolidayTypeId).HasName("IX_MultipleKeys_BestHolidayType");
-            builder.HasIndex(x => new { x.BestHolidayTypeId, x.BankId }).HasName("IX_MultipleKeys_Holiday_Bank").IsUnique();
-            builder.HasIndex(x => x.FavouriteColourId).HasName("UC_MultipleKeys_FavouriteColour").IsUnique();
+            builder.HasIndex(x => x.BestHolidayTypeId).HasDatabaseName("IX_MultipleKeys_BestHolidayType");
+            builder.HasIndex(x => new { x.BestHolidayTypeId, x.BankId }).HasDatabaseName("IX_MultipleKeys_Holiday_Bank").IsUnique();
+            builder.HasIndex(x => x.FavouriteColourId).HasDatabaseName("UC_MultipleKeys_FavouriteColour").IsUnique();
         }
     }
 
@@ -6101,24 +5896,11 @@ namespace Efrpg.V3TestE3
             builder.Property(x => x.ConsentDocumentId).HasColumnName(@"ConsentDocumentId").HasColumnType("int").IsRequired(false);
 
             // Foreign keys
-            builder.HasOne(a => a.OneEightSix_UploadedFile).WithMany(b => b.OneEightSix_Issues).HasForeignKey(c => c.ConsentDocumentId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Issue_UploadedFileConsentDocument");
-        }
-    }
-
-    // IssueUploadedFile
-    public class OneEightSix_IssueUploadedFileConfiguration : IEntityTypeConfiguration<OneEightSix_IssueUploadedFile>
-    {
-        public void Configure(EntityTypeBuilder<OneEightSix_IssueUploadedFile> builder)
-        {
-            builder.ToTable("IssueUploadedFile", "OneEightSix");
-            builder.HasKey(x => new { x.UploadedFileId, x.IssueId }).HasName("PK_IssueUploadedFile").IsClustered();
-
-            builder.Property(x => x.UploadedFileId).HasColumnName(@"UploadedFileId").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.IssueId).HasColumnName(@"IssueId").HasColumnType("int").IsRequired().ValueGeneratedNever();
-
-            // Foreign keys
-            builder.HasOne(a => a.OneEightSix_Issue).WithMany(b => b.OneEightSix_IssueUploadedFiles).HasForeignKey(c => c.IssueId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_IssueUploadedFile_Issue");
-            builder.HasOne(a => a.OneEightSix_UploadedFile).WithMany(b => b.OneEightSix_IssueUploadedFiles).HasForeignKey(c => c.UploadedFileId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_IssueUploadedFile_UploadedFile");
+            builder.HasOne(a => a.OneEightSix_UploadedFile).WithMany(b => b.OneEightSix_Issues_ConsentDocumentId).HasForeignKey(c => c.ConsentDocumentId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Issue_UploadedFileConsentDocument");
+            builder.HasMany<OneEightSix_UploadedFile>(t => t.OneEightSix_UploadedFiles).WithMany(t => t.OneEightSix_Issues_IssueId).UsingEntity<Dictionary<string, object>>("IssueUploadedFile",
+                    j => j.HasOne<OneEightSix_UploadedFile>().WithMany().HasForeignKey("UploadedFileId"),
+                    j => j.HasOne<OneEightSix_Issue>().WithMany().HasForeignKey("IssueId"),
+                    j => j.ToTable("IssueUploadedFile", "OneEightSix"));
         }
     }
 
@@ -6222,8 +6004,8 @@ namespace Efrpg.V3TestE3
             builder.Property(x => x.CntByBigInt).HasColumnName(@"CntByBigInt").HasColumnType("bigint").IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountByBigInt]");
             builder.Property(x => x.CntByTinyInt).HasColumnName(@"CntByTinyInt").HasColumnType("tinyint").IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountByTinyInt]");
             builder.Property(x => x.CntBySmallInt).HasColumnName(@"CntBySmallInt").HasColumnType("smallint").IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountBySmallInt]");
-            builder.Property(x => x.CntByDecimal).HasColumnName(@"CntByDecimal").HasColumnType("decimal(18,0)").IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountByDecimal]");
-            builder.Property(x => x.CntByNumeric).HasColumnName(@"CntByNumeric").HasColumnType("numeric(18,0)").IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountByNumeric]");
+            builder.Property(x => x.CntByDecimal).HasColumnName(@"CntByDecimal").HasColumnType("decimal(18,0)").HasPrecision(18,0).IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountByDecimal]");
+            builder.Property(x => x.CntByNumeric).HasColumnName(@"CntByNumeric").HasColumnType("numeric(18,0)").HasPrecision(18,0).IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountByNumeric]");
         }
     }
 
@@ -6236,7 +6018,7 @@ namespace Efrpg.V3TestE3
             builder.HasKey(x => x.Id).HasName("PK_SmallDecimalTest").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.KoeffVed).HasColumnName(@"KoeffVed").HasColumnType("decimal(4,4)").IsRequired(false);
+            builder.Property(x => x.KoeffVed).HasColumnName(@"KoeffVed").HasColumnType("decimal(4,4)").HasPrecision(4,4).IsRequired(false);
         }
     }
 
@@ -6356,24 +6138,7 @@ namespace Efrpg.V3TestE3
             builder.HasOne(a => a.TableA_TableAId).WithMany(b => b.TableBs).HasForeignKey(c => c.TableAId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_TableA_CompositeKey_Req");
             builder.HasOne(a => a.TableB1).WithOne(b => b.TableB2).HasForeignKey<TableB>(c => new { c.TableAId, c.TableBId }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("ParentTableB_Hierarchy");
 
-            builder.HasIndex(x => x.TableAId).HasName("fki_ParentTableA_FK_Constraint");
-        }
-    }
-
-    // table mapping with space
-    public class TableMappingWithSpaceConfiguration : IEntityTypeConfiguration<TableMappingWithSpace>
-    {
-        public void Configure(EntityTypeBuilder<TableMappingWithSpace> builder)
-        {
-            builder.ToTable("table mapping with space", "dbo");
-            builder.HasKey(x => new { x.Id, x.IdValue }).HasName("PK_TableMappingWithSpace").IsClustered();
-
-            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.IdValue).HasColumnName(@"id value").HasColumnType("int").IsRequired().ValueGeneratedNever();
-
-            // Foreign keys
-            builder.HasOne(a => a.TableWithSpace).WithMany(b => b.TableMappingWithSpaces).HasForeignKey(c => c.Id).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("space1FK");
-            builder.HasOne(a => a.TableWithSpaceAndInColumn).WithMany(b => b.TableMappingWithSpaces).HasForeignKey(c => c.IdValue).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("space2FK");
+            builder.HasIndex(x => x.TableAId).HasDatabaseName("fki_ParentTableA_FK_Constraint");
         }
     }
 
@@ -6403,6 +6168,10 @@ namespace Efrpg.V3TestE3
             builder.HasKey(x => x.Id).HasName("PK_TableWithSpace").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.HasMany<TableWithSpaceAndInColumn>(t => t.TableWithSpaceAndInColumns).WithMany(t => t.TableWithSpaces).UsingEntity<Dictionary<string, object>>("table mapping with space",
+                    j => j.HasOne<TableWithSpaceAndInColumn>().WithMany().HasForeignKey("id value"),
+                    j => j.HasOne<TableWithSpace>().WithMany().HasForeignKey("id"),
+                    j => j.ToTable("table mapping with space", "dbo"));
         }
     }
 
@@ -6697,7 +6466,7 @@ namespace Efrpg.V3TestE3
             builder.Property(x => x.FkParentArticle).HasColumnName(@"FK_ParentArticle").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.Code).HasColumnName(@"Code").HasColumnType("nvarchar(20)").IsRequired().HasMaxLength(20);
 
-            builder.HasIndex(x => new { x.FkFactory, x.FkArticleLevel, x.Code }).HasName("UK_Articles").IsUnique();
+            builder.HasIndex(x => new { x.FkFactory, x.FkArticleLevel, x.Code }).HasDatabaseName("UK_Articles").IsUnique();
         }
     }
 

@@ -346,6 +346,7 @@ namespace Efrpg.PostgreSQL
             if (!optionsBuilder.IsConfigured)
             {
                 optionsBuilder.UseNpgsql(@"Server=127.0.0.1;Port=5432;Database=postgis_test;User Id=testuser;Password=testtesttest;");
+                optionsBuilder.UseLazyLoadingProxies();
             }
         }
 

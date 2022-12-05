@@ -115,6 +115,7 @@ namespace Efrpg.V3TestE1
         DbSet<TblOrderError> TblOrderErrors { get; set; } // tblOrderErrors
         DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
         DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
+        DbSet<ThisIsMemoryOptimised> ThisIsMemoryOptimiseds { get; set; } // ThisIsMemoryOptimised
         DbSet<Ticket> Tickets { get; set; } // Ticket
         DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
         DbSet<TimestampNullable> TimestampNullables { get; set; } // TimestampNullable
@@ -169,6 +170,9 @@ namespace Efrpg.V3TestE1
         List<ColourPivotReturnModel> ColourPivot();
         List<ColourPivotReturnModel> ColourPivot(out int procResult);
         Task<List<ColourPivotReturnModel>> ColourPivotAsync();
+
+        int ColumnNameAndTypesProc();
+        // ColumnNameAndTypesProcAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         int ConvertToString(int? someValue, out string someString);
         // ConvertToStringAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
@@ -411,6 +415,7 @@ namespace Efrpg.V3TestE1
         public DbSet<TblOrderError> TblOrderErrors { get; set; } // tblOrderErrors
         public DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
         public DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
+        public DbSet<ThisIsMemoryOptimised> ThisIsMemoryOptimiseds { get; set; } // ThisIsMemoryOptimised
         public DbSet<Ticket> Tickets { get; set; } // Ticket
         public DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
         public DbSet<TimestampNullable> TimestampNullables { get; set; } // TimestampNullable
@@ -576,6 +581,7 @@ namespace Efrpg.V3TestE1
             modelBuilder.Configurations.Add(new TblOrderErrorConfiguration());
             modelBuilder.Configurations.Add(new TblOrderErrorsAbConfiguration());
             modelBuilder.Configurations.Add(new TblOrderLineConfiguration());
+            modelBuilder.Configurations.Add(new ThisIsMemoryOptimisedConfiguration());
             modelBuilder.Configurations.Add(new TicketConfiguration());
             modelBuilder.Configurations.Add(new TimestampNotNullConfiguration());
             modelBuilder.Configurations.Add(new TimestampNullableConfiguration());
@@ -843,6 +849,7 @@ namespace Efrpg.V3TestE1
             modelBuilder.Configurations.Add(new TblOrderErrorConfiguration(schema));
             modelBuilder.Configurations.Add(new TblOrderErrorsAbConfiguration(schema));
             modelBuilder.Configurations.Add(new TblOrderLineConfiguration(schema));
+            modelBuilder.Configurations.Add(new ThisIsMemoryOptimisedConfiguration(schema));
             modelBuilder.Configurations.Add(new TicketConfiguration(schema));
             modelBuilder.Configurations.Add(new TimestampNotNullConfiguration(schema));
             modelBuilder.Configurations.Add(new TimestampNullableConfiguration(schema));
@@ -1105,6 +1112,17 @@ namespace Efrpg.V3TestE1
             var procResultData = await Database.SqlQuery<ColourPivotReturnModel>("EXEC [dbo].[ColourPivot]").ToListAsync();
             return procResultData;
         }
+
+        public int ColumnNameAndTypesProc()
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            Database.ExecuteSqlCommand(TransactionalBehavior.DoNotEnsureTransaction, "EXEC @procResult = [dbo].[ColumnNameAndTypesProc] ", procResultParam);
+
+            return (int)procResultParam.Value;
+        }
+
+        // ColumnNameAndTypesProcAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         public int ConvertToString(int? someValue, out string someString)
         {
@@ -2285,6 +2303,7 @@ namespace Efrpg.V3TestE1
         public DbSet<TblOrderError> TblOrderErrors { get; set; } // tblOrderErrors
         public DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
         public DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
+        public DbSet<ThisIsMemoryOptimised> ThisIsMemoryOptimiseds { get; set; } // ThisIsMemoryOptimised
         public DbSet<Ticket> Tickets { get; set; } // Ticket
         public DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
         public DbSet<TimestampNullable> TimestampNullables { get; set; } // TimestampNullable
@@ -2390,6 +2409,7 @@ namespace Efrpg.V3TestE1
             TblOrderErrors = new FakeDbSet<TblOrderError>("Id");
             TblOrderErrorsAbs = new FakeDbSet<TblOrderErrorsAb>("Id");
             TblOrderLines = new FakeDbSet<TblOrderLine>("Id");
+            ThisIsMemoryOptimiseds = new FakeDbSet<ThisIsMemoryOptimised>("Id");
             Tickets = new FakeDbSet<Ticket>("Id");
             TimestampNotNulls = new FakeDbSet<TimestampNotNull>("Id");
             TimestampNullables = new FakeDbSet<TimestampNullable>("Id");
@@ -2573,6 +2593,13 @@ namespace Efrpg.V3TestE1
             int procResult;
             return Task.FromResult(ColourPivot(out procResult));
         }
+
+        public int ColumnNameAndTypesProc()
+        {
+            return 0;
+        }
+
+        // ColumnNameAndTypesProcAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         public int ConvertToString(int? someValue, out string someString)
         {
@@ -4762,6 +4789,13 @@ namespace Efrpg.V3TestE1
         public int? ExclusionTest { get; set; } // ExclusionTest
     }
 
+    // ThisIsMemoryOptimised
+    public class ThisIsMemoryOptimised
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public string Description { get; set; } // Description (length: 20)
+    }
+
     // Ticket
     public class Ticket
     {
@@ -6725,6 +6759,24 @@ namespace Efrpg.V3TestE1
 
             // Foreign keys
             HasRequired(a => a.TblOrder).WithMany(b => b.TblOrderLines).HasForeignKey(c => c.OrderId).WillCascadeOnDelete(false); // tblOrdersFK
+        }
+    }
+
+    // ThisIsMemoryOptimised
+    public class ThisIsMemoryOptimisedConfiguration : EntityTypeConfiguration<ThisIsMemoryOptimised>
+    {
+        public ThisIsMemoryOptimisedConfiguration()
+            : this("dbo")
+        {
+        }
+
+        public ThisIsMemoryOptimisedConfiguration(string schema)
+        {
+            ToTable("ThisIsMemoryOptimised", schema);
+            HasKey(x => x.Id);
+
+            Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(20);
         }
     }
 

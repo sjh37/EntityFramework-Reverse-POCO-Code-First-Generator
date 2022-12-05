@@ -102,6 +102,7 @@
     <Compile Include="MultiContextNameNormalisationTests.cs" />
     <Compile Include="MultiContextSettingsPluginNorthwind.cs" />
     <Compile Include="NullMultiDbContextSettingsPlugin.cs" />
+    <None Include="app.config" />
     <None Include="packages.config" />
     <Compile Include="MustacheUtfTest.cs" />
     <Compile Include="StoredProcedureTests.cs" />

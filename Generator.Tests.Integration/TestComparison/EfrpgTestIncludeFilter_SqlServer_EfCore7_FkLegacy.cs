@@ -15,7 +15,7 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Efrpg.V5FilterTest
+namespace Efrpg.V7FilterTest
 {
     #region Database context interface
 

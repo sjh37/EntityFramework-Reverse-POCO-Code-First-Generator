@@ -1,25 +1,30 @@
-﻿namespace Generator.Tests.Integration
-{
-    using Efrpg;
-    using Efrpg.FileManagement;
-    using Efrpg.Templates;
-    using Generator.Tests.Common;
-    using NUnit.Framework;
+﻿using Efrpg;
+using Efrpg.FileManagement;
+using Efrpg.Templates;
+using Generator.Tests.Common;
+using NUnit.Framework;
 
-    [TestFixture, NonParallelizable]
+namespace Generator.Tests.Integration
+{
+    [TestFixture]
+    [NonParallelizable]
     [Category(Constants.Integration)]
     [Category(Constants.DbType.SqlCe)]
     public class SingleDatabaseTestSqlCeServer : SingleDatabaseTestBase
     {
-        public void SetupSqlCe(string database, string connectionStringName, string dbContextName, TemplateType templateType, GeneratorType generatorType, ForeignKeyNamingStrategy foreignKeyNamingStrategy)
+        public void SetupSqlCe(string database, string connectionStringName, string dbContextName, TemplateType templateType, GeneratorType generatorType,
+            ForeignKeyNamingStrategy foreignKeyNamingStrategy)
         {
             SetupDatabase(connectionStringName, dbContextName, templateType, generatorType, foreignKeyNamingStrategy);
-           
-            Settings.ConnectionString = @"Data Source=C:\S\Source (open source)\EntityFramework Reverse POCO Code Generator\EntityFramework.Reverse.POCO.Generator\App_Data\" + database;
-            Settings.DatabaseType     = DatabaseType.SqlCe;
+
+            Settings.ConnectionString =
+                @"Data Source=C:\S\Source (open source)\EntityFramework Reverse POCO Code Generator\EntityFramework.Reverse.POCO.Generator\App_Data\" +
+                database;
+            Settings.DatabaseType = DatabaseType.SqlCe;
         }
 
-        [Test, NonParallelizable]
+        [Test]
+        [NonParallelizable]
         [TestCase(ForeignKeyNamingStrategy.Legacy)]
         //[TestCase(ForeignKeyNamingStrategy.Latest)]
         public void ReverseEngineerSqlCe(ForeignKeyNamingStrategy foreignKeyNamingStrategy)
@@ -36,13 +41,17 @@
             // Assert
             CompareAgainstTestComparison(filename);
         }
-        
-        [Test, NonParallelizable]
+
+        [Test]
+        [NonParallelizable]
         // Legacy
         [TestCase(false, TemplateType.EfCore2, ForeignKeyNamingStrategy.Legacy)]
         [TestCase(false, TemplateType.EfCore3, ForeignKeyNamingStrategy.Legacy)]
         [TestCase(true, TemplateType.EfCore2, ForeignKeyNamingStrategy.Legacy)]
         [TestCase(true, TemplateType.EfCore3, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase(false, TemplateType.EfCore5, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase(false, TemplateType.EfCore6, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase(false, TemplateType.EfCore7, ForeignKeyNamingStrategy.Legacy)]
         // Latest
         //[TestCase(false, TemplateType.EfCore2, ForeignKeyNamingStrategy.Latest)]
         //[TestCase(false, TemplateType.EfCore3, ForeignKeyNamingStrategy.Latest)]

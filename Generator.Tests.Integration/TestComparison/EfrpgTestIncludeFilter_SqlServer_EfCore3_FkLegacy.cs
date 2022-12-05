@@ -90,6 +90,9 @@ namespace Efrpg.V3FilterTest
         List<ColourPivotReturnModel> ColourPivot(out int procResult);
         Task<List<ColourPivotReturnModel>> ColourPivotAsync();
 
+        int ColumnNameAndTypesProc();
+        // ColumnNameAndTypesProcAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
         int ConvertToString(int? someValue, out string someString);
         // ConvertToStringAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
@@ -226,6 +229,7 @@ namespace Efrpg.V3FilterTest
             if (!optionsBuilder.IsConfigured)
             {
                 optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;Encrypt=false;TrustServerCertificate=true;Application Name=Generator");
+                optionsBuilder.UseLazyLoadingProxies();
             }
         }
 
@@ -383,6 +387,17 @@ namespace Efrpg.V3FilterTest
 
             return procResultData;
         }
+
+        public int ColumnNameAndTypesProc()
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[ColumnNameAndTypesProc] ", procResultParam);
+
+            return (int)procResultParam.Value;
+        }
+
+        // ColumnNameAndTypesProcAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         public int ConvertToString(int? someValue, out string someString)
         {
