@@ -469,7 +469,7 @@ namespace V7EfrpgTest
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator", x => x.UseNetTopologySuite().UseHierarchyId());
+                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator;TrustServerCertificate=true", x => x.UseNetTopologySuite().UseHierarchyId());
                 optionsBuilder.UseLazyLoadingProxies();
             }
         }
