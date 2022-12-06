@@ -118,6 +118,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         DbSet<TblOrderError> TblOrderErrors { get; set; } // tblOrderErrors
         DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
         DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
+        DbSet<ThisIsMemoryOptimised> ThisIsMemoryOptimiseds { get; set; } // ThisIsMemoryOptimised
         DbSet<Ticket> Tickets { get; set; } // Ticket
         DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
         DbSet<TimestampNullable> TimestampNullables { get; set; } // TimestampNullable
@@ -197,9 +198,16 @@ namespace Tester.Integration.EfCore3.File_based_templates
         // C182Test2ReturnModel C182Test2(int? flag); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
         // Task<C182Test2ReturnModel> C182Test2Async(int? flag); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
+        // CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (CheckIfApplicationIsCompleteReturnModel)
+
         List<ColourPivotReturnModel> ColourPivot();
         List<ColourPivotReturnModel> ColourPivot(out int procResult);
         Task<List<ColourPivotReturnModel>> ColourPivotAsync();
+
+        List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc();
+        List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc(out int procResult);
+        Task<List<ColumnNameAndTypesProcReturnModel>> ColumnNameAndTypesProcAsync();
 
         int ConvertToString(int? someValue, out string someString);
         // ConvertToStringAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
@@ -443,6 +451,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public DbSet<TblOrderError> TblOrderErrors { get; set; } // tblOrderErrors
         public DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
         public DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
+        public DbSet<ThisIsMemoryOptimised> ThisIsMemoryOptimiseds { get; set; } // ThisIsMemoryOptimised
         public DbSet<Ticket> Tickets { get; set; } // Ticket
         public DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
         public DbSet<TimestampNullable> TimestampNullables { get; set; } // TimestampNullable
@@ -565,6 +574,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
             modelBuilder.ApplyConfiguration(new TblOrderErrorConfiguration());
             modelBuilder.ApplyConfiguration(new TblOrderErrorsAbConfiguration());
             modelBuilder.ApplyConfiguration(new TblOrderLineConfiguration());
+            modelBuilder.ApplyConfiguration(new ThisIsMemoryOptimisedConfiguration());
             modelBuilder.ApplyConfiguration(new TicketConfiguration());
             modelBuilder.ApplyConfiguration(new TimestampNotNullConfiguration());
             modelBuilder.ApplyConfiguration(new TimestampNullableConfiguration());
@@ -580,6 +590,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
             modelBuilder.ApplyConfiguration(new БрендытовараConfiguration());
 
             modelBuilder.Entity<ColourPivotReturnModel>().HasNoKey();
+            modelBuilder.Entity<ColumnNameAndTypesProcReturnModel>().HasNoKey();
             modelBuilder.Entity<DboProcDataFromFfrsReturnModel>().HasNoKey();
             modelBuilder.Entity<DboProcDataFromFfrsAndDboReturnModel>().HasNoKey();
             modelBuilder.Entity<DsOpeProcReturnModel>().HasNoKey();
@@ -727,6 +738,10 @@ namespace Tester.Integration.EfCore3.File_based_templates
 
         // public async Task<C182Test2ReturnModel> C182Test2Async(int? flag) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
+        // public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+
+        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (CheckIfApplicationIsCompleteReturnModel)
+
         public List<ColourPivotReturnModel> ColourPivot()
         {
             int procResult;
@@ -749,6 +764,34 @@ namespace Tester.Integration.EfCore3.File_based_templates
         {
             const string sqlCommand = "EXEC [dbo].[ColourPivot]";
             var procResultData = await Set<ColourPivotReturnModel>()
+                .FromSqlRaw(sqlCommand)
+                .ToListAsync();
+
+            return procResultData;
+        }
+
+        public List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc()
+        {
+            int procResult;
+            return ColumnNameAndTypesProc(out procResult);
+        }
+
+        public List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc(out int procResult)
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [dbo].[ColumnNameAndTypesProc]";
+            var procResultData = Set<ColumnNameAndTypesProcReturnModel>()
+                .FromSqlRaw(sqlCommand, procResultParam)
+                .ToList();
+
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<ColumnNameAndTypesProcReturnModel>> ColumnNameAndTypesProcAsync()
+        {
+            const string sqlCommand = "EXEC [dbo].[ColumnNameAndTypesProc]";
+            var procResultData = await Set<ColumnNameAndTypesProcReturnModel>()
                 .FromSqlRaw(sqlCommand)
                 .ToListAsync();
 
@@ -1801,6 +1844,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public DbSet<TblOrderError> TblOrderErrors { get; set; } // tblOrderErrors
         public DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
         public DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
+        public DbSet<ThisIsMemoryOptimised> ThisIsMemoryOptimiseds { get; set; } // ThisIsMemoryOptimised
         public DbSet<Ticket> Tickets { get; set; } // Ticket
         public DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
         public DbSet<TimestampNullable> TimestampNullables { get; set; } // TimestampNullable
@@ -1907,6 +1951,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
             TblOrderErrors = new FakeDbSet<TblOrderError>("Id");
             TblOrderErrorsAbs = new FakeDbSet<TblOrderErrorsAb>("Id");
             TblOrderLines = new FakeDbSet<TblOrderLine>("Id");
+            ThisIsMemoryOptimiseds = new FakeDbSet<ThisIsMemoryOptimised>("Id");
             Tickets = new FakeDbSet<Ticket>("Id");
             TimestampNotNulls = new FakeDbSet<TimestampNotNull>("Id");
             TimestampNullables = new FakeDbSet<TimestampNullable>("Id");
@@ -2178,6 +2223,23 @@ namespace Tester.Integration.EfCore3.File_based_templates
             return Task.FromResult(C182Test2(flag, out procResult));
         }
 
+        public DbSet<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsCompleteReturnModel { get; set; }
+        public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete)
+        {
+            int procResult;
+            return CheckIfApplicationIsComplete(applicationId, out isApplicationComplete, out procResult);
+        }
+
+        public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete, out int procResult)
+        {
+            isApplicationComplete = default(bool);
+            procResult = 0;
+            return new CheckIfApplicationIsCompleteReturnModel();
+        }
+
+        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (CheckIfApplicationIsCompleteReturnModel)
+
+
         public DbSet<ColourPivotReturnModel> ColourPivotReturnModel { get; set; }
         public List<ColourPivotReturnModel> ColourPivot()
         {
@@ -2195,6 +2257,25 @@ namespace Tester.Integration.EfCore3.File_based_templates
         {
             int procResult;
             return Task.FromResult(ColourPivot(out procResult));
+        }
+
+        public DbSet<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProcReturnModel { get; set; }
+        public List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc()
+        {
+            int procResult;
+            return ColumnNameAndTypesProc(out procResult);
+        }
+
+        public List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc(out int procResult)
+        {
+            procResult = 0;
+            return new List<ColumnNameAndTypesProcReturnModel>();
+        }
+
+        public Task<List<ColumnNameAndTypesProcReturnModel>> ColumnNameAndTypesProcAsync()
+        {
+            int procResult;
+            return Task.FromResult(ColumnNameAndTypesProc(out procResult));
         }
 
         public int ConvertToString(int? someValue, out string someString)
@@ -3868,7 +3949,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public int C36 { get; set; } // $ (Primary key)
         public int? C37 { get; set; } // %
         public int? C163 { get; set; } // £
-        public int? C38Fred36 { get; set; } // &fred$
+        public int? C38Fred { get; set; } // &fred$
         public int? Abc4792 { get; set; } // abc/\
         public int? Joe46Bloggs { get; set; } // joe.bloggs
         public int? SimonHughes { get; set; } // simon-hughes
@@ -4758,6 +4839,13 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public int? ExclusionTest { get; set; } // ExclusionTest
     }
 
+    // ThisIsMemoryOptimised
+    public class ThisIsMemoryOptimised
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public string Description { get; set; } // Description (length: 20)
+    }
+
     // Ticket
     public class Ticket
     {
@@ -5510,7 +5598,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
             builder.Property(x => x.C36).HasColumnName(@"$").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.C37).HasColumnName(@"%").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.C163).HasColumnName(@"£").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.C38Fred36).HasColumnName(@"&fred$").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.C38Fred).HasColumnName(@"&fred$").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.Abc4792).HasColumnName(@"abc/\").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.Joe46Bloggs).HasColumnName(@"joe.bloggs").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.SimonHughes).HasColumnName(@"simon-hughes").HasColumnType("int").IsRequired(false);
@@ -6342,6 +6430,19 @@ namespace Tester.Integration.EfCore3.File_based_templates
         }
     }
 
+    // ThisIsMemoryOptimised
+    public class ThisIsMemoryOptimisedConfiguration : IEntityTypeConfiguration<ThisIsMemoryOptimised>
+    {
+        public void Configure(EntityTypeBuilder<ThisIsMemoryOptimised> builder)
+        {
+            builder.ToTable("ThisIsMemoryOptimised", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK_ThisIsMemoryOptimised");
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
+        }
+    }
+
     // Ticket
     public class TicketConfiguration : IEntityTypeConfiguration<Ticket>
     {
@@ -6606,11 +6707,51 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public List<ResultSetModel3> ResultSet3;
     }
 
+    public class CheckIfApplicationIsCompleteReturnModel
+    {
+        public class ResultSetModel1
+        {
+            public string Key { get; set; }
+            public string Value { get; set; }
+        }
+        public List<ResultSetModel1> ResultSet1;
+        public class ResultSetModel2
+        {
+            public string Key { get; set; }
+            public string Value { get; set; }
+        }
+        public List<ResultSetModel2> ResultSet2;
+    }
+
     public class ColourPivotReturnModel
     {
         public int? Blue { get; set; }
         public int? Green { get; set; }
         public int? Red { get; set; }
+    }
+
+    public class ColumnNameAndTypesProcReturnModel
+    {
+        public DateTime someDate { get; set; }
+        public string Obs { get; set; }
+        public int? @static { get; set; }
+        public int? @readonly { get; set; }
+        public Single? areal { get; set; }
+        public double? afloat { get; set; }
+        public Single? afloat8 { get; set; }
+        public Single? afloat20 { get; set; }
+        public Single? afloat24 { get; set; }
+        public double? afloat53 { get; set; }
+        public decimal? adecimal { get; set; }
+        public decimal? adecimal_19_4 { get; set; }
+        public decimal? adecimal_10_3 { get; set; }
+        public decimal? anumeric { get; set; }
+        public decimal? anumeric_5_2 { get; set; }
+        public decimal? anumeric_11_3 { get; set; }
+        public decimal? amoney { get; set; }
+        public decimal? asmallmoney { get; set; }
+        public Microsoft.SqlServer.Types.SqlGeography GeographyType { get; set; }
+        public Microsoft.SqlServer.Types.SqlGeometry GeometryType { get; set; }
     }
 
     public class CsvToIntReturnModel

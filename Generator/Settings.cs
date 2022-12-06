@@ -13,9 +13,9 @@ namespace Efrpg
         // Main settings **********************************************************************************************************************
         // The following entries are the only required settings.
         public static DatabaseType DatabaseType                         = DatabaseType.SqlServer; // SqlServer, SqlCe, PostgreSQL. Coming next: MySql, Oracle
-        public static TemplateType TemplateType                         = TemplateType.EfCore6; // EfCore6, EfCore5, EfCore3, EfCore2, Ef6, FileBasedCore2, FileBasedCore3. FileBased specify folder using Settings.TemplateFolder
+        public static TemplateType TemplateType                         = TemplateType.EfCore7; // EfCore7, EfCore6, EfCore5, EfCore3, EfCore2, Ef6, FileBasedCore2-7. FileBased specify folder using Settings.TemplateFolder
         public static GeneratorType GeneratorType                       = GeneratorType.EfCore; // EfCore, Ef6, Custom. Custom edit GeneratorCustom class to provide your own implementation
-        public static ForeignKeyNamingStrategy ForeignKeyNamingStrategy = ForeignKeyNamingStrategy.Legacy; // Please use Legacy for now (same as versions <= v3.6.1), Latest (not yet ready)
+        public static ForeignKeyNamingStrategy ForeignKeyNamingStrategy = ForeignKeyNamingStrategy.Legacy; // Please use Legacy for now, Latest (not yet ready)
         public static bool UseMappingTables                             = false; // Can only be set to true for EF6. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
         public static FileManagerType FileManagerType                   = FileManagerType.EfCore; // .NET Core project = EfCore; .NET 4.x project = VisualStudio; No output (testing only) = Null
         public static string ConnectionString                           = ""; // This is used by the generator to reverse engineer your database
@@ -177,7 +177,6 @@ namespace Efrpg
         //     abc.hello will be Abc_Hello.
         public static bool   PrependSchemaName = true; // Control if the schema name is prepended to the table name
         public static string DefaultSchema     = null; // Set via DatabaseReader.DefaultSchema()
-        public static string DefaultCollation  = null; // Set via DatabaseReader.DefaultCollation()
 
         // Table Suffix ***********************************************************************************************************************
         // Appends the suffix to the generated classes names
@@ -332,7 +331,7 @@ namespace Efrpg
         {
             /*if (table.HasPrimaryKey && table.PrimaryKeys.Count() == 1 && table.Columns.Any(x => x.PropertyType == "string"))
             {
-                // Example to choose tables with a certain naming conventions for enums. Please use your own conventions.
+                // Example: choosing tables with certain naming conventions for enums. Please use your own conventions.
                 if (table.NameHumanCase.StartsWith("Enum", StringComparison.InvariantCultureIgnoreCase) ||
                     table.NameHumanCase.EndsWith  ("Enum", StringComparison.InvariantCultureIgnoreCase))
                 {
@@ -346,7 +345,7 @@ namespace Efrpg
                             ValueField = table.PrimaryKeys.Single().DbName // Or specify your own
                         });
 
-                        // This will cause this table to not be reverse engineered.
+                        // This will cause this table to not be reverse-engineered.
                         // This means it was only required to generate an enum and can now be removed.
                         table.RemoveTable = true; // Remove this line if you want to keep it in your dbContext.
                     }
@@ -678,6 +677,7 @@ namespace Efrpg
         public static bool IsEfCore3Plus() => EfCoreVersion() >= 3;
         public static bool IsEfCore5Plus() => EfCoreVersion() >= 5;
         public static bool IsEfCore6Plus() => EfCoreVersion() >= 6;
+        public static bool IsEfCore7Plus() => EfCoreVersion() >= 7;
         public static int EfCoreVersion()
         {
             switch (TemplateType)
@@ -697,6 +697,10 @@ namespace Efrpg
                 case TemplateType.EfCore6:
                 case TemplateType.FileBasedCore6:
                     return 6;
+                
+                case TemplateType.EfCore7:
+                case TemplateType.FileBasedCore7:
+                    return 7;
                 
                 case TemplateType.Ef6:
                 default:

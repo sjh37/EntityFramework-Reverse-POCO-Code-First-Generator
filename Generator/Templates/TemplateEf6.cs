@@ -360,7 +360,6 @@ using {{this}};{{#newline}}
 {{WriteStoredProcFunctionSetSqlParametersFalse}}
         procResult = (int) procResultParam.Value;{{#newline}}
 {{#else}}
-{{WriteStoredProcFunctionSetSqlParametersFalse}}
         var procResultData = new {{WriteStoredProcReturnModelName}}();{{#newline}}
         var cmd = Database.Connection.CreateCommand();{{#newline}}
         cmd.CommandType = CommandType.StoredProcedure;{{#newline}}
@@ -385,11 +384,12 @@ using {{this}};{{#newline}}
             DbInterception.Dispatch.Connection.Close(Database.Connection, new DbInterceptionContext());{{#newline}}
         }{{#newline}}
 {{#newline}}
+{{WriteStoredProcFunctionSetSqlParametersFalse}}
 {{/if}}
         return procResultData;{{#newline}}
     }{{#newline}}
 
-{{#else}}
+{{#else}}{{#! if HasReturnModels }}
     public int {{FunctionName}}({{WriteStoredProcFunctionParamsTrue}}){{#newline}}
     {{{#newline}}
 {{WriteStoredProcFunctionDeclareSqlParameterTrue}}{{#newline}}
@@ -398,16 +398,15 @@ using {{this}};{{#newline}}
 {{WriteStoredProcFunctionSetSqlParametersFalse}}
         return (int)procResultParam.Value;{{#newline}}
     }{{#newline}}
-{{/if}}
+{{/if}}{{#! if HasReturnModels }}
 {{#newline}}
 {{#if AsyncFunctionCannotBeCreated}}
     // {{FunctionName}}Async() cannot be created due to having out parameters, or is relying on the procedure result ({{ReturnType}}){{#newline}}
 {{#newline}}
-{{#else}}
+{{#else}}{{#! if AsyncFunctionCannotBeCreated }}
     public async Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
     {{{#newline}}
 {{WriteStoredProcFunctionDeclareSqlParameterFalse}}
-{{WriteStoredProcFunctionSetSqlParametersFalse}}
 {{#if SingleReturnModel}}
         var procResultData = await Database.SqlQuery<{{WriteStoredProcReturnModelName}}>(""{{AsyncExec}}""{{WriteStoredProcFunctionSqlParameterAnonymousArrayFalse}}).ToListAsync();{{#newline}}
 {{#else}}
@@ -436,8 +435,9 @@ using {{this}};{{#newline}}
         {{{#newline}}
             DbInterception.Dispatch.Connection.Close(Database.Connection, new DbInterceptionContext());{{#newline}}
         }{{#newline}}
-
-{{/if}}
+{{#newline}}
+{{WriteStoredProcFunctionSetSqlParametersFalse}}
+{{/if}}{{#! if AsyncFunctionCannotBeCreated }}
         return procResultData;{{#newline}}
     }{{#newline}}
 {{#newline}}

@@ -187,6 +187,11 @@ SELECT * FROM MultiContext.ForeignKey;";
             return string.Empty;
         }
 
+        protected override string TriggerSQL()
+        {
+            return string.Empty;
+        }
+
         protected override string SynonymTableSQLSetup()
         {
             return string.Empty;
@@ -220,11 +225,6 @@ SELECT * FROM MultiContext.ForeignKey;";
         protected override string DefaultSchema(DbConnection conn)
         {
             return "dbo";
-        }
-
-        protected override string DefaultCollation(DbConnection conn)
-        {
-            return null;
         }
 
         protected override string SpecialQueryFlags()

@@ -16,7 +16,7 @@
 
     Settings.UseMappingTables        = false; // Must be false for TemplateType.EfCore2 & 3. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
     Settings.FileManagerType         = FileManagerType.EfCore; // .NET Core project = EfCore; .NET project = VisualStudio; No output (testing only) = Null
-    Settings.ConnectionString        = "Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;MultipleActiveResultSets=True"; // This is used by the generator to reverse engineer your database
+    Settings.ConnectionString        = "Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;MultipleActiveResultSets=True;Encrypt=false;TrustServerCertificate=true"; // This is used by the generator to reverse engineer your database
     Settings.ConnectionStringName    = "EnumViaTablesDbContext"; // ConnectionString key as specified in your app.config/web.config/appsettings.json. Not used by the generator, but is placed into the generated DbContext constructor.
     Settings.DbContextName           = "EnumViaTablesDbContext"; // Class name for the DbContext to be generated.
     Settings.GenerateSeparateFiles   = false;
@@ -153,7 +153,7 @@
                         ValueField = table.PrimaryKeys.Single().DbName // Or specify your own
                     });
 
-                    // This will cause this table to not be reverse engineered.
+                    // This will cause this table to not be reverse-engineered.
                     // This means it was only required to generate an enum and can now be removed.
                     table.RemoveTable = true; // Remove this line if you want to keep it in your dbContext.
                 }

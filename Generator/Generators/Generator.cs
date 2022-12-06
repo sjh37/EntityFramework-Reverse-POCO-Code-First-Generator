@@ -235,7 +235,7 @@ namespace Efrpg.Generators
                 _fileManagementService.Error(string.Empty);
             }
         }
-
+        
         public void ReadDatabase()
         {
             LoadTables();
@@ -270,6 +270,12 @@ namespace Efrpg.Generators
                 AddIndexesToFilters(rawIndexes);
                 SetPrimaryKeys();
                 AddForeignKeysToFilters(rawForeignKeys);
+                
+                if (Settings.IsEfCore7Plus())
+                {
+                    var rawTriggers = DatabaseReader.ReadTriggers();
+                    AddTriggersToFilters(rawTriggers);
+                }
 
                 if (Settings.IncludeExtendedPropertyComments != CommentsStyle.None)
                     AddExtendedPropertiesToFilters(DatabaseReader.ReadExtendedProperties());
@@ -349,8 +355,8 @@ namespace Efrpg.Generators
                     }
 
                     // Handle table names with underscores - singularise just the last word
-                    var tableName = filter.TableRename(tn.TableName, tn.SchemaName, tn.IsView);
-                    var singularCleanTableName = Inflector.MakeSingular(DatabaseReader.CleanUp(tableName));
+                    var tableName = DatabaseReader.CleanUp(filter.TableRename(tn.TableName, tn.SchemaName, tn.IsView));
+                    var singularCleanTableName = Inflector.MakeSingular(tableName);
                     table.NameHumanCase = (Settings.UsePascalCase ? Inflector.ToTitleCase(singularCleanTableName) : singularCleanTableName).Replace(" ", "").Replace("$", "").Replace(".", "");
 
                     if (Settings.PrependSchemaName && string.Compare(table.Schema.DbName, Settings.DefaultSchema, StringComparison.OrdinalIgnoreCase) != 0)
@@ -601,6 +607,31 @@ namespace Efrpg.Generators
                 }
             }
         }*/
+
+        private void AddTriggersToFilters(List<RawTrigger> triggers)
+        {
+            if (triggers == null || !triggers.Any())
+                return;
+
+            foreach (var filterKeyValuePair in FilterList.GetFilters())
+            {
+                var filter = filterKeyValuePair.Value;
+
+                Table t = null;
+                foreach (var trigger in triggers)
+                {
+                    // Lookup table
+                    if (t == null || t.DbName != trigger.TableName || t.Schema.DbName != trigger.SchemaName)
+                        t = filter.Tables.GetTable(trigger.TableName, trigger.SchemaName);
+
+                    if (t == null)
+                        continue;
+
+                    // Only store the one trigger name as EFCore 7 does not care what its name is. It only cares that there is one present.
+                    t.TriggerName = trigger.TriggerName;
+                }
+            }
+        }
 
         private void AddExtendedPropertiesToFilters(List<RawExtendedProperty> extendedProperties)
         {

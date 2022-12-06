@@ -28,7 +28,7 @@ namespace Generator.Tests.Integration
         {
             Settings.TemplateType               = templateType;
             Settings.GeneratorType              = GeneratorType.Ef6;
-            Settings.ConnectionString           = $"Data Source=(local);Initial Catalog={database};Integrated Security=True;Application Name=Generator";
+            Settings.ConnectionString           = $"Data Source=(local);Initial Catalog={database};Integrated Security=True;Encrypt=false;TrustServerCertificate=true;Application Name=Generator";
             Settings.DatabaseType               = DatabaseType.SqlServer;
             Settings.ConnectionStringName       = connectionStringName;
             Settings.DbContextName              = dbContextName;
@@ -169,7 +169,7 @@ namespace Generator.Tests.Integration
         {
             // Arrange
             SetupSqlServer(database, connectionStringName, null, null, generateSeparateFiles, templateType);
-            Settings.MultiContextSettingsConnectionString = string.IsNullOrWhiteSpace(multiContextDatabase) ? null : $"Data Source=(local);Initial Catalog={multiContextDatabase};Integrated Security=True;Application Name=Generator";
+            Settings.MultiContextSettingsConnectionString = string.IsNullOrWhiteSpace(multiContextDatabase) ? null : $"Data Source=(local);Initial Catalog={multiContextDatabase};Integrated Security=True;Encrypt=false;TrustServerCertificate=true;Application Name=Generator";
 
             // Act
             Run(database, typeof(EfCoreFileManager), null);

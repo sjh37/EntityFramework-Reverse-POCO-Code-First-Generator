@@ -1,25 +1,27 @@
-﻿namespace Generator.Tests.Integration
-{
-    using System.Data.Common;
-    using Efrpg;
-    using Efrpg.FileManagement;
-    using Efrpg.Templates;
-    using Generator.Tests.Common;
-    using NUnit.Framework;
+﻿using System.Data.Common;
+using Efrpg;
+using Efrpg.FileManagement;
+using Efrpg.Templates;
+using Generator.Tests.Common;
+using NUnit.Framework;
 
-    [TestFixture, NonParallelizable]
+namespace Generator.Tests.Integration
+{
+    [TestFixture]
+    [NonParallelizable]
     [Category(Constants.Integration)]
     [Category(Constants.DbType.PostgreSql)]
     public class SingleDatabaseTestPostgreSql : SingleDatabaseTestBase
     {
-        public void SetupPostgreSQL(string database, string connectionStringName, string dbContextName, TemplateType templateType, GeneratorType generatorType, ForeignKeyNamingStrategy foreignKeyNamingStrategy)
+        public void SetupPostgreSQL(string database, string connectionStringName, string dbContextName, TemplateType templateType, GeneratorType generatorType,
+            ForeignKeyNamingStrategy foreignKeyNamingStrategy)
         {
             SetupDatabase(connectionStringName, dbContextName, templateType, generatorType, foreignKeyNamingStrategy);
 
             Settings.ConnectionString = $"Server=127.0.0.1;Port=5432;Database={database};User Id=testuser;Password=testtesttest;";
-            Settings.DatabaseType     = DatabaseType.PostgreSQL;
+            Settings.DatabaseType = DatabaseType.PostgreSQL;
         }
-        
+
         [Test]
         public void CheckPostgreSQLConnection()
         {
@@ -38,11 +40,12 @@
                 cmd.CommandText = "select count(*) from products";
                 var result = cmd.ExecuteScalar();
                 Assert.IsNotNull(result);
-                Assert.IsTrue((long)result > 1);
+                Assert.IsTrue((long) result > 1);
             }
         }
 
-        [Test, NonParallelizable]
+        [Test]
+        [NonParallelizable]
         [TestCase(ForeignKeyNamingStrategy.Legacy, "Northwind", "Northwind")]
         [TestCase(ForeignKeyNamingStrategy.Legacy, "PostgisTest", "postgis_test")]
         //[TestCase(ForeignKeyNamingStrategy.LatestMyDbContext

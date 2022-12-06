@@ -101,6 +101,7 @@ namespace Tester.Integration.EfCore3.File_based_templatesAppleDbContext
             if (!optionsBuilder.IsConfigured && _configuration != null)
             {
                 optionsBuilder.UseSqlServer(_configuration.GetConnectionString(@"McsfMultiDatabase"));
+                optionsBuilder.UseLazyLoadingProxies();
             }
         }
 

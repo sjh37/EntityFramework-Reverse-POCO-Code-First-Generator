@@ -1,4 +1,5 @@
-﻿using Efrpg;
+﻿using System;
+using Efrpg;
 using Efrpg.Readers;
 using Generator.Tests.Common;
 using NUnit.Framework;
@@ -12,7 +13,11 @@ namespace Generator.Tests.Unit
         [Test]
         [TestCase("HelloWorldTest", "HelloWorldTest", true)]
         [TestCase("Hello_World_Test", "HelloWorldTest", true)]
+        [TestCase("Hello_World_Test_", "HelloWorldTest", true)]
+        [TestCase("Hello_World_Test__", "HelloWorldTest", true)]
         [TestCase("Hello-World-Test", "HelloWorldTest", true)]
+        [TestCase("Hello-World-Test-", "HelloWorldTest", true)]
+        [TestCase("Hello-World-Test--", "HelloWorldTest", true)]
         [TestCase("Hello World Test", "HelloWorldTest", true)]
         [TestCase("hello world test", "HelloWorldTest", true)]
         [TestCase("HelloWORLD", "HelloWorld", true)]
@@ -22,13 +27,21 @@ namespace Generator.Tests.Unit
 
         [TestCase("HelloWorldTest", "HelloWorldTest", false)]
         [TestCase("Hello_World_Test", "Hello_World_Test", false)]
-        [TestCase("Hello-World-Test", "Hello-World-Test", false)]
+        [TestCase("Hello_World_Test_", "Hello_World_Test", false)]
+        [TestCase("Hello_World_Test__", "Hello_World_Test", false)]
+        [TestCase("Hello-World-Test", "Hello_World_Test", false)]
+        [TestCase("Hello-World-Test-", "Hello_World_Test", false)]
+        [TestCase("Hello-World-Test--", "Hello_World_Test", false)]
         [TestCase("Hello World Test", "HelloWorldTest", false)]
         [TestCase("Hello world test", "Helloworldtest", false)]
         [TestCase("HelloWORLD", "HelloWORLD", false)]
         [TestCase("Helloworld", "Helloworld", false)]
         [TestCase("helloworld", "helloworld", false)]
         [TestCase("HELLOWORLD", "HELLOWORLD", false)]
+        [TestCase("entity_id", "entity_id", false)]
+        [TestCase("entity_id_", "entity_id", false)]
+        [TestCase("default_branch_id", "default_branch_id", false)]
+        [TestCase("default_branch_", "default_branch", false)]
         public void Test(string test, string expected, bool useCamelCase)
         {
             // Act
@@ -86,10 +99,18 @@ namespace Generator.Tests.Unit
         [TestCase("Some_id", "Some ID")]
         [TestCase("Some id", "Some ID")]
         
-        [TestCase("MPANCore", "MPAN Core")]
+        [TestCase("MPANCore", "Mpan core")]
+        [TestCase("MPAN Core", "Mpan core")]
+        [TestCase("MPAN core", "Mpan core")]
+        [TestCase("mpan core", "Mpan core")]
+        [TestCase("FOOBarBAZ", "Foo bar baz")]
+        [TestCase("FooBARBaz", "Foo bar baz")]
+        [TestCase("FooBarBaz", "Foo bar baz")]
+        [TestCase("ABC", "Abc")]
         public void DisplayName(string test, string expected)
         {
             // Act
+            Console.WriteLine(test);
             var displayName = Column.ToDisplayName(test);
 
             // Assert

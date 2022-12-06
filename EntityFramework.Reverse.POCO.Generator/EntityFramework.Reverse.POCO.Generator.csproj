@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <RootNamespace>EntityFramework_Reverse_POCO_Generator</RootNamespace>
         <SignAssembly>true</SignAssembly>
         <AssemblyOriginatorKeyFile>EF.Reverse.POCO.Generator.pfx</AssemblyOriginatorKeyFile>
@@ -9,7 +9,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.5" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="7.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.0" />
     </ItemGroup>
 
     <ItemGroup>

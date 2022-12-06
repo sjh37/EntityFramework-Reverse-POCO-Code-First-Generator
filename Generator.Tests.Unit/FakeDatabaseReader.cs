@@ -67,6 +67,11 @@
             return string.Empty;
         }
 
+        protected override string TriggerSQL()
+        {
+            return string.Empty;
+        }
+
         protected override string SynonymTableSQLSetup()
         {
             return string.Empty;
@@ -98,11 +103,6 @@
         }
 
         protected override string DefaultSchema(DbConnection conn)
-        {
-            return string.Empty;
-        }
-
-        protected override string DefaultCollation(DbConnection conn)
         {
             return string.Empty;
         }

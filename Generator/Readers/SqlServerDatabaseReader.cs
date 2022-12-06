@@ -479,6 +479,22 @@ FROM    sys.sequences seq
 ORDER BY [Name], [Schema];";
         }
 
+        protected override string TriggerSQL()
+        {
+            return @"
+SELECT S.name SchemaName, O.name TableName, T.name TriggerName
+FROM sys.triggers T
+    LEFT JOIN sys.all_objects O
+        ON T.parent_id = O.object_id
+    LEFT JOIN sys.schemas S
+        ON S.schema_id = O.schema_id
+WHERE T.type = 'TR'
+      AND T.is_disabled = 0
+      AND S.name IS NOT NULL
+      AND O.name IS NOT NULL
+ORDER BY SchemaName, TableName, TriggerName;";
+        }
+
         protected override string SynonymTableSQLSetup()
         {
             return @"
@@ -1018,31 +1034,6 @@ SELECT SPECIFIC_SCHEMA, SPECIFIC_NAME, ROUTINE_TYPE, RETURN_DATA_TYPE, ORDINAL_P
             }
 
             return "dbo";
-        }
-
-        protected override string DefaultCollation(DbConnection conn)
-        {
-            try
-            {
-                var cmd = GetCmd(conn);
-                if (cmd != null)
-                {
-                    cmd.CommandText = string.Format("SELECT collation_name FROM sys.databases WHERE name = '{0}'", conn.Database);
-                    using (var rdr = cmd.ExecuteReader())
-                    {
-                        if (rdr.Read())
-                        {
-                            return rdr[0].ToString();
-                        }
-                    }
-                }
-            }
-            catch
-            {
-                // Ignored
-            }
-
-            return null;
         }
 
         protected override string SpecialQueryFlags()

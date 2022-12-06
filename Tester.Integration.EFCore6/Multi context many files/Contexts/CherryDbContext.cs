@@ -40,6 +40,7 @@ namespace Tester.Integration.EFCore6.Multi_context_many_filesCherry
             if (!optionsBuilder.IsConfigured && _configuration != null)
             {
                 optionsBuilder.UseSqlServer(_configuration.GetConnectionString(@"McmfMultiDatabase"));
+                optionsBuilder.UseLazyLoadingProxies();
             }
         }
 

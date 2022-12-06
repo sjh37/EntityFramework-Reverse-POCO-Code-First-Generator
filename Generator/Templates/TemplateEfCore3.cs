@@ -262,6 +262,9 @@ using {{this}};{{#newline}}
         if (!optionsBuilder.IsConfigured && _configuration != null){{#newline}}
         {{{#newline}}
             optionsBuilder.{{UseDatabaseProvider}}(_configuration.GetConnectionString(@""{{ConnectionStringName}}""){{ConnectionStringActions}});{{#newline}}
+{{#if UseLazyLoadingProxies}}
+            optionsBuilder.UseLazyLoadingProxies();{{#newline}}
+{{/if}}
         }{{#newline}}
     }{{#newline}}{{#newline}}
 {{/if}}
@@ -272,6 +275,9 @@ using {{this}};{{#newline}}
         if (!optionsBuilder.IsConfigured){{#newline}}
         {{{#newline}}
             optionsBuilder.{{UseDatabaseProvider}}(@""{{ConnectionString}}""{{ConnectionStringActions}});{{#newline}}
+{{#if UseLazyLoadingProxies}}
+            optionsBuilder.UseLazyLoadingProxies();{{#newline}}
+{{/if}}
         }{{#newline}}
     }{{#newline}}{{#newline}}
 {{/if}}

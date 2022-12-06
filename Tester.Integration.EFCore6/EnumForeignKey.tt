@@ -1,9 +1,10 @@
 <#@ include file ="..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v3.ttinclude" #>
 <#
-    Settings.ConnectionString        = "Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";
-    Settings.ConnectionStringName    = "EnumForeignKey"; // ConnectionString key as specified in your app.config/web.config/appsettings.json. Not used by the generator, but is placed into the generated DbContext constructor.
-    Settings.DbContextName           = "EnumForeignKey"; // Class name for the DbContext to be generated.
-    Settings.Namespace               = "EnumForeignKey"; // Override the default namespace here. Please use double quotes, example: "Accounts.Billing"
+    Settings.TemplateType         = TemplateType.EfCore6;
+    Settings.ConnectionString     = "Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";
+    Settings.ConnectionStringName = "EnumForeignKey"; // ConnectionString key as specified in your app.config/web.config/appsettings.json. Not used by the generator, but is placed into the generated DbContext constructor.
+    Settings.DbContextName        = "EnumForeignKey"; // Class name for the DbContext to be generated.
+    Settings.Namespace            = "EnumForeignKey"; // Override the default namespace here. Please use double quotes, example: "Accounts.Billing"
 
     FilterSettings.Reset();
     FilterSettings.AddDefaults();
@@ -42,7 +43,8 @@
     // As long as the type can be mapped to your new type, all is well.
     Settings.AddEnumDefinitions = delegate(List<EnumDefinition> enumDefinitions)
     {
-        enumDefinitions.Add(new EnumDefinition { Schema = "EnumTest", Table = "OpenDays", Column = "TypeId", EnumType = "DaysOfWeek" });
+        enumDefinitions.Add(new EnumDefinition { Schema = "EnumTest", Table = "OpenDays", Column = "EnumId", EnumType = "DaysOfWeek" });
+        enumDefinitions.Add(new EnumDefinition { Schema = "EnumTest", Table = "DaysOfWeek", Column = "TypeId", EnumType = "DaysOfWeek" });
     };
 
     // Use the following function if you need to apply additional modifications to a column
@@ -71,7 +73,7 @@
     {
         /*if (table.HasPrimaryKey && table.PrimaryKeys.Count() == 1 && table.Columns.Any(x => x.PropertyType == "string"))
         {
-            // Example to choose tables with a certain naming conventions for enums. Please use your own conventions.
+            // Example: choosing tables with certain naming conventions for enums. Please use your own conventions.
             if (table.NameHumanCase.StartsWith("Enum", StringComparison.InvariantCultureIgnoreCase) ||
                 table.NameHumanCase.EndsWith("Enum", StringComparison.InvariantCultureIgnoreCase))
             {
@@ -85,7 +87,7 @@
                         ValueField = table.PrimaryKeys.Single().DbName // Or specify your own
                     });
 
-                    // This will cause this table to not be reverse engineered.
+                    // This will cause this table to not be reverse-engineered.
                     // This means it was only required to generate an enum and can now be removed.
                     table.RemoveTable = true; // Remove this line if you want to keep it in your dbContext.
                 }

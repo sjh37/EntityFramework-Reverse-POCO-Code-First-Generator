@@ -28,11 +28,11 @@ namespace BuildTT
     // For help on the various Types below, please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Common-Settings.*Types-explained
     // The following entries are the only required settings.
     Settings.DatabaseType            = DatabaseType.SqlServer; // SqlServer, SqlCe, PostgreSQL. Coming next: MySql, Oracle
-    Settings.TemplateType            = TemplateType.EfCore6; // EfCore6, EfCore5, EfCore3, EfCore2, Ef6, FileBasedCore2, FileBasedCore3, FileBasedCore5, FileBasedCore6. FileBased specify folder using Settings.TemplateFolder
+    Settings.TemplateType            = TemplateType.EfCore7; // EfCore7, EfCore6, EfCore5, EfCore3, EfCore2, Ef6, FileBasedCore2-7. FileBased specify folder using Settings.TemplateFolder
     Settings.GeneratorType           = GeneratorType.EfCore; // EfCore, Ef6, Custom. Custom edit GeneratorCustom class to provide your own implementation
 
     Settings.FileManagerType         = FileManagerType.EfCore; // .NET Core project = EfCore; .NET 4.x project = VisualStudio; No output (testing only) = Null
-    Settings.ConnectionString        = ""Data Source=(local);Initial Catalog=Northwind;Integrated Security=True;MultipleActiveResultSets=True""; // This is used by the generator to reverse engineer your database
+    Settings.ConnectionString        = ""Data Source=(local);Initial Catalog=Northwind;Integrated Security=True;MultipleActiveResultSets=True;Encrypt=false;TrustServerCertificate=true""; // This is used by the generator to reverse engineer your database
     Settings.ConnectionStringName    = ""MyDbContext""; // ConnectionString key as specified in your app.config/web.config/appsettings.json. Not used by the generator, but is placed into the generated DbContext constructor.
     Settings.DbContextName           = ""MyDbContext""; // Class name for the DbContext to be generated.
     //Settings.DbContextInterfaceName= ""IMyDbContext""; // Defaults to ""I"" + DbContextName or set string empty to not implement any interface.
@@ -408,7 +408,7 @@ namespace BuildTT
     {
         /*if (table.HasPrimaryKey && table.PrimaryKeys.Count() == 1 && table.Columns.Any(x => x.PropertyType == ""string""))
         {
-            // Example to choose tables with a certain naming conventions for enums. Please use your own conventions.
+            // Example: choosing tables with certain naming conventions for enums. Please use your own conventions.
             if (table.NameHumanCase.StartsWith(""Enum"", StringComparison.InvariantCultureIgnoreCase) ||
                 table.NameHumanCase.EndsWith(""Enum"", StringComparison.InvariantCultureIgnoreCase))
             {
@@ -422,7 +422,7 @@ namespace BuildTT
                         ValueField = table.PrimaryKeys.Single().DbName // Or specify your own
                     });
 
-                    // This will cause this table to not be reverse engineered.
+                    // This will cause this table to not be reverse-engineered.
                     // This means it was only required to generate an enum and can now be removed.
                     table.RemoveTable = true; // Remove this line if you want to keep it in your dbContext.
                 }
@@ -563,6 +563,9 @@ namespace BuildTT
                 fkName = tableName;
                 break;
         }
+
+        if (!Settings.UsePascalCase)
+            fkName = DatabaseReader.CleanUp(fkName);
 
         // Apply custom foreign key renaming rules. Can be useful in applying pluralization.
         // For example:
@@ -782,9 +785,11 @@ namespace BuildTT
 <#@ import namespace=""Microsoft.VisualStudio.TextTemplating"" #>
 <#@ output extension="".cs"" encoding=""utf-8"" #>
 <#
+        // WriteLine(""// T4 framework version = "" + AppDomain.CurrentDomain.SetupInformation.TargetFrameworkName);
         var DefaultNamespace = new CodeGenerationTools(this).VsNamespaceSuggestion() ?? ""DebugMode"";
         Settings.Root = Host.ResolvePath(string.Empty);
         Settings.TemplateFile = Path.GetFileNameWithoutExtension(DynamicTextTransformation.Create(this).Host.TemplateFile);
+        // System.Diagnostics.Debugger.Launch();
 #><#+";
 
             const string footer = @"

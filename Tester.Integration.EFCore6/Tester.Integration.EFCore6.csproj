@@ -9,18 +9,18 @@
 
   <ItemGroup>
     <PackageReference Include="EntityFrameworkCore.SqlServer.HierarchyId" Version="3.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="6.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.NetTopologySuite" Version="6.0.5" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
     <PackageReference Include="NUnit" Version="3.13.3" />
-    <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.3.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Generator.Tests.Common\Generator.Tests.Common.csproj" />
-    <ProjectReference Include="..\Tester.BusinessLogic.EfCore\Tester.BusinessLogic.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,6 +30,10 @@
     <None Update="ContextHasSameNameAsDb\EfrpgTest.tt">
       <LastGenOutput>EfrpgTest.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="EfrpgTest_no_pascal_casing.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>EfrpgTest_no_pascal_casing.cs</LastGenOutput>
     </None>
     <None Update="EnumForeignKey.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -86,6 +90,11 @@
       <DependentUpon>EfrpgTest.tt</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="EfrpgTest_no_pascal_casing.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>EfrpgTest_no_pascal_casing.tt</DependentUpon>
     </Compile>
     <Compile Update="EnumForeignKey.cs">
       <DesignTime>True</DesignTime>

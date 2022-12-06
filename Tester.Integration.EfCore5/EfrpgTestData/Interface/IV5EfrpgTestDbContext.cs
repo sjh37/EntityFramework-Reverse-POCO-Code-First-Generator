@@ -102,6 +102,7 @@ namespace V5EfrpgTest
         DbSet<TblOrderError> TblOrderErrors { get; set; } // tblOrderErrors
         DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
         DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
+        DbSet<ThisIsMemoryOptimised> ThisIsMemoryOptimiseds { get; set; } // ThisIsMemoryOptimised
         DbSet<Ticket> Tickets { get; set; } // Ticket
         DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
         DbSet<TimestampNullable> TimestampNullables { get; set; } // TimestampNullable
@@ -182,9 +183,16 @@ namespace V5EfrpgTest
         // C182Test2ReturnModel C182Test2(int? flag); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
         // Task<C182Test2ReturnModel> C182Test2Async(int? flag); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
+        // CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (CheckIfApplicationIsCompleteReturnModel)
+
         List<ColourPivotReturnModel> ColourPivot();
         List<ColourPivotReturnModel> ColourPivot(out int procResult);
         Task<List<ColourPivotReturnModel>> ColourPivotAsync();
+
+        List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc();
+        List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc(out int procResult);
+        Task<List<ColumnNameAndTypesProcReturnModel>> ColumnNameAndTypesProcAsync();
 
         int ConvertToString(int? someValue, out string someString);
         // ConvertToStringAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)

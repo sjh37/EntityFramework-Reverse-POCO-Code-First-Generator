@@ -66,6 +66,11 @@ namespace Efrpg.Readers
             return string.Empty;
         }
 
+        protected override string TriggerSQL()
+        {
+            return string.Empty;
+        }
+
         protected override string SynonymTableSQLSetup()
         {
             return string.Empty;
@@ -99,11 +104,6 @@ namespace Efrpg.Readers
         protected override string DefaultSchema(DbConnection conn)
         {
             return "mydb";
-        }
-
-        protected override string DefaultCollation(DbConnection conn)
-        {
-            return null;
         }
 
         protected override string SpecialQueryFlags()

@@ -41,6 +41,7 @@ namespace Efrpg.Readers
         protected abstract string MultiContextSQL();
         protected abstract string EnumSQL(string table, string nameField, string valueField);
         protected abstract string SequenceSQL();
+        protected abstract string TriggerSQL();
 
         // Synonym
         protected abstract string SynonymTableSQLSetup();
@@ -52,7 +53,6 @@ namespace Efrpg.Readers
 
         // Database specific
         protected abstract string DefaultSchema(DbConnection conn);
-        protected abstract string DefaultCollation(DbConnection conn);
         protected abstract string SpecialQueryFlags();
         protected abstract bool HasTemporalTableSupport();
 
@@ -131,7 +131,6 @@ namespace Efrpg.Readers
                 }
 
                 Settings.DefaultSchema = DefaultSchema(conn);
-                Settings.DefaultCollation = DefaultCollation(conn);
             }
         }
 
@@ -815,7 +814,7 @@ namespace Efrpg.Readers
                                 if (string.IsNullOrEmpty(name))
                                     continue;
 
-                                name = RemoveNonAlphanumerics.Replace(name, string.Empty);
+                                name = RemoveNonAlphaNumeric.Replace(name, string.Empty);
                                 name = (Settings.UsePascalCaseForEnumMembers ? Inflector.ToTitleCase(name) : name).Replace(" ", string.Empty).Trim();
                                 if (string.IsNullOrEmpty(name))
                                     continue;
@@ -848,7 +847,7 @@ namespace Efrpg.Readers
             }
             return result;
         }
-        
+
         public List<RawSequence> ReadSequences()
         {
             if (DatabaseReaderPlugin != null)
@@ -889,6 +888,48 @@ namespace Efrpg.Readers
                             rdr["MinValue"].ToString(),
                             rdr["MaxValue"].ToString(),
                             GetReaderBool(rdr, "IsCycleEnabled") ?? false
+                        );
+                        result.Add(index);
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public List<RawTrigger> ReadTriggers()
+        {
+            if (DatabaseReaderPlugin != null)
+                return DatabaseReaderPlugin.ReadTriggers();
+
+            var result = new List<RawTrigger>();
+            using (var conn = _factory.CreateConnection())
+            {
+                if (conn == null)
+                    return result;
+
+                conn.ConnectionString = Settings.ConnectionString;
+                conn.Open();
+
+                var cmd = GetCmd(conn);
+                if (cmd == null)
+                    return result;
+
+                var sql = TriggerSQL();
+                if (string.IsNullOrWhiteSpace(sql))
+                    return result;
+
+                cmd.CommandText = sql;
+
+                using (var rdr = cmd.ExecuteReader())
+                {
+                    while (rdr.Read())
+                    {
+                        var index = new RawTrigger
+                        (
+                            rdr["SchemaName"].ToString().Trim(),
+                            rdr["TableName"].ToString().Trim(),
+                            rdr["TriggerName"].ToString().Trim()
                         );
                         result.Add(index);
                     }
@@ -1021,14 +1062,20 @@ namespace Efrpg.Readers
             return col;
         }
 
-        private static readonly Regex RemoveNonAlphanumerics = new Regex(@"[^\w\d\s_-]", RegexOptions.Compiled);
+        private static readonly Regex RemoveNonAlphaNumeric = new Regex(@"[^\w\d\s_-]", RegexOptions.Compiled);
+        private static readonly Regex RemoveTrailingSymbols = new Regex(@"[$-/:-?{-~!""^_`\[\]]+$", RegexOptions.Compiled);
 
         public static readonly Func<string, string> CleanUp = (str) =>
         {
             // Replace punctuation and symbols in variable names as these are not allowed.
+            if(string.IsNullOrEmpty(str))
+                return string.Empty;
+
+            if(str.Any(char.IsLetterOrDigit))
+                str = RemoveTrailingSymbols.Replace(str.Replace('-', '_'), string.Empty);
             var len = str.Length;
             if (len == 0)
-                return str;
+                return string.Empty;
 
             var sb = new StringBuilder(len + 20);
             var replacedCharacter = false;
@@ -1047,7 +1094,7 @@ namespace Efrpg.Readers
             if (replacedCharacter)
                 str = sb.ToString();
 
-            str = RemoveNonAlphanumerics.Replace(str, string.Empty);
+            str = RemoveNonAlphaNumeric.Replace(str, string.Empty);
             if (char.IsDigit(str[0]))
                 str = "C" + str;
 

@@ -1,18 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using Efrpg;
+using Efrpg.FileManagement;
+using Efrpg.Filtering;
+using Efrpg.Generators;
+using Efrpg.Pluralization;
+using Efrpg.Templates;
+using NUnit.Framework;
 
 namespace Generator.Tests.Integration
 {
-    using System;
-    using System.Diagnostics;
-    using System.IO;
-    using Efrpg;
-    using Efrpg.FileManagement;
-    using Efrpg.Filtering;
-    using Efrpg.Generators;
-    using Efrpg.Pluralization;
-    using Efrpg.Templates;
-    using NUnit.Framework;
-
     public abstract class SingleDatabaseTestBase
     {
         protected static void SetupDatabase(
@@ -22,45 +21,45 @@ namespace Generator.Tests.Integration
             GeneratorType generatorType,
             ForeignKeyNamingStrategy foreignKeyNamingStrategy)
         {
-            Settings.ForeignKeyNamingStrategy   = foreignKeyNamingStrategy;
-            Settings.TemplateType               = templateType;
-            Settings.GeneratorType              = generatorType;
-            Settings.ConnectionStringName       = connectionStringName;
-            Settings.DbContextName              = dbContextName;
-            Settings.GenerateSingleDbContext    = true;
+            Settings.ForeignKeyNamingStrategy = foreignKeyNamingStrategy;
+            Settings.TemplateType = templateType;
+            Settings.GeneratorType = generatorType;
+            Settings.ConnectionStringName = connectionStringName;
+            Settings.DbContextName = dbContextName;
+            Settings.GenerateSingleDbContext = true;
             Settings.MultiContextSettingsPlugin = null;
-            Settings.Enumerations               = null;
-            Settings.PrependSchemaName          = true;
-            Settings.DisableGeographyTypes      = false;
-            Settings.AddUnitTestingDbContext    = true;
+            Settings.Enumerations = null;
+            Settings.PrependSchemaName = true;
+            Settings.DisableGeographyTypes = false;
+            Settings.AddUnitTestingDbContext = true;
+            Settings.UsePascalCase = true;
 
             ResetFilters();
         }
 
-        protected static void Run(string filename, string singleDbContextSubNamespace, Type fileManagerType, string subFolder, List<EnumDefinition> enumDefinitions = null)
+        protected static void Run(string filename, string singleDbContextSubNamespace, Type fileManagerType, string subFolder,
+            List<EnumDefinition> enumDefinitions = null)
         {
-            Inflector.PluralisationService   = new EnglishPluralizationService();
+            Inflector.PluralisationService = new EnglishPluralizationService();
             Settings.GenerateSingleDbContext = true;
 
             var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             if (!string.IsNullOrEmpty(subFolder))
                 path = Path.Combine(path, subFolder);
-            
+
             Settings.Root = path;
             var fullPath = Path.Combine(path, $"{filename}_{Settings.DatabaseType}_{Settings.TemplateType}_Fk{Settings.ForeignKeyNamingStrategy}.cs");
-            
+
             // Delete old generated files
             if (File.Exists(fullPath))
                 File.Delete(fullPath);
             if (!string.IsNullOrEmpty(subFolder))
-            {
                 foreach (var old in Directory.GetFiles(Settings.Root))
                     File.Delete(old);
-            }
 
-            var outer          = new GeneratedTextTransformation();
+            var outer = new GeneratedTextTransformation();
             var fileManagement = new FileManagementService(outer);
-            var generator      = GeneratorFactory.Create(fileManagement, fileManagerType, singleDbContextSubNamespace);
+            var generator = GeneratorFactory.Create(fileManagement, fileManagerType, singleDbContextSubNamespace);
 
             // Turn on everything for testing
             Assert.IsNotNull(generator);
@@ -69,19 +68,17 @@ namespace Generator.Tests.Integration
             Assert.IsNotNull(filters);
             foreach (var filter in filters)
             {
-                filter.Value.IncludeViews                 = true;
-                filter.Value.IncludeSynonyms              = true;
-                filter.Value.IncludeStoredProcedures      = true;
-                filter.Value.IncludeTableValuedFunctions  = true;
+                filter.Value.IncludeViews = true;
+                filter.Value.IncludeSynonyms = true;
+                filter.Value.IncludeStoredProcedures = true;
+                filter.Value.IncludeTableValuedFunctions = true;
                 filter.Value.IncludeScalarValuedFunctions = true;
 
                 if (filter.Value is SingleContextFilter singleContextFilter)
-                {
                     singleContextFilter.EnumDefinitions = enumDefinitions;
-                }
             }
 
-            var stopwatch          = new Stopwatch();
+            var stopwatch = new Stopwatch();
             var stopwatchGenerator = new Stopwatch();
 
             stopwatch.Start();
@@ -93,17 +90,16 @@ namespace Generator.Tests.Integration
 
             stopwatch.Stop();
 
-            Console.WriteLine("Duration: {0:F1} seconds, Generator {1:F1} seconds", stopwatch.ElapsedMilliseconds / 1000.0, stopwatchGenerator.ElapsedMilliseconds / 1000.0);
+            Console.WriteLine("Duration: {0:F1} seconds, Generator {1:F1} seconds", stopwatch.ElapsedMilliseconds / 1000.0,
+                stopwatchGenerator.ElapsedMilliseconds / 1000.0);
             Console.WriteLine($"Writing to {fullPath}");
             Console.WriteLine();
 
             if (outer.FileData.Length > 0)
-            {
                 using (var sw = new StreamWriter(fullPath))
                 {
                     sw.Write(outer.FileData.ToString());
                 }
-            }
 
             fileManagement.Process(true);
         }
@@ -124,10 +120,10 @@ namespace Generator.Tests.Integration
 
             foreach (var comparisonFile in testComparisonFiles)
             {
-                var filename       = Path.GetFileName(comparisonFile);
-                var generatedPath  = Path.Combine(Settings.Root, filename);
+                var filename = Path.GetFileName(comparisonFile);
+                var generatedPath = Path.Combine(Settings.Root, filename);
                 var testComparison = File.ReadAllText(comparisonFile);
-                var generated      = File.ReadAllText(generatedPath);
+                var generated = File.ReadAllText(generatedPath);
 
                 Console.WriteLine(comparisonFile);
                 Console.WriteLine(generatedPath);
@@ -139,12 +135,12 @@ namespace Generator.Tests.Integration
 
         protected static void CompareAgainstTestComparison(string database)
         {
-            var comparisonFile     = $"{database}_{Settings.DatabaseType}_{Settings.TemplateType}_Fk{Settings.ForeignKeyNamingStrategy}.cs";
-            var testRootPath       = AppDomain.CurrentDomain.BaseDirectory;
+            var comparisonFile = $"{database}_{Settings.DatabaseType}_{Settings.TemplateType}_Fk{Settings.ForeignKeyNamingStrategy}.cs";
+            var testRootPath = AppDomain.CurrentDomain.BaseDirectory;
             var testComparisonPath = Path.Combine(testRootPath, $"TestComparison\\{comparisonFile}");
-            var testComparison     = File.ReadAllText(testComparisonPath);
-            var generatedPath      = Path.Combine(Settings.Root, comparisonFile);
-            var generated          = File.ReadAllText(generatedPath);
+            var testComparison = File.ReadAllText(testComparisonPath);
+            var generatedPath = Path.Combine(Settings.Root, comparisonFile);
+            var generated = File.ReadAllText(generatedPath);
 
             Console.WriteLine(testComparisonPath);
             Console.WriteLine(generatedPath);

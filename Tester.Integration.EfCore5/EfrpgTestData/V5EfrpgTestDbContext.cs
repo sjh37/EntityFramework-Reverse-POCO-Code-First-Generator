@@ -111,6 +111,7 @@ namespace V5EfrpgTest
         public DbSet<TblOrderError> TblOrderErrors { get; set; } // tblOrderErrors
         public DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
         public DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
+        public DbSet<ThisIsMemoryOptimised> ThisIsMemoryOptimiseds { get; set; } // ThisIsMemoryOptimised
         public DbSet<Ticket> Tickets { get; set; } // Ticket
         public DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
         public DbSet<TimestampNullable> TimestampNullables { get; set; } // TimestampNullable
@@ -130,6 +131,7 @@ namespace V5EfrpgTest
             if (!optionsBuilder.IsConfigured)
             {
                 optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator", x => x.UseNetTopologySuite().UseHierarchyId());
+                optionsBuilder.UseLazyLoadingProxies();
             }
         }
 
@@ -240,6 +242,7 @@ namespace V5EfrpgTest
             modelBuilder.ApplyConfiguration(new TblOrderErrorConfiguration());
             modelBuilder.ApplyConfiguration(new TblOrderErrorsAbConfiguration());
             modelBuilder.ApplyConfiguration(new TblOrderLineConfiguration());
+            modelBuilder.ApplyConfiguration(new ThisIsMemoryOptimisedConfiguration());
             modelBuilder.ApplyConfiguration(new TicketConfiguration());
             modelBuilder.ApplyConfiguration(new TimestampNotNullConfiguration());
             modelBuilder.ApplyConfiguration(new TimestampNullableConfiguration());
@@ -255,6 +258,7 @@ namespace V5EfrpgTest
             modelBuilder.ApplyConfiguration(new БрендытовараConfiguration());
 
             modelBuilder.Entity<ColourPivotReturnModel>().HasNoKey();
+            modelBuilder.Entity<ColumnNameAndTypesProcReturnModel>().HasNoKey();
             modelBuilder.Entity<DboProcDataFromFfrsReturnModel>().HasNoKey();
             modelBuilder.Entity<DboProcDataFromFfrsAndDboReturnModel>().HasNoKey();
             modelBuilder.Entity<DsOpeProcReturnModel>().HasNoKey();
@@ -402,6 +406,10 @@ namespace V5EfrpgTest
 
         // public async Task<C182Test2ReturnModel> C182Test2Async(int? flag) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
+        // public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+
+        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (CheckIfApplicationIsCompleteReturnModel)
+
         public List<ColourPivotReturnModel> ColourPivot()
         {
             int procResult;
@@ -424,6 +432,34 @@ namespace V5EfrpgTest
         {
             const string sqlCommand = "EXEC [dbo].[ColourPivot]";
             var procResultData = await Set<ColourPivotReturnModel>()
+                .FromSqlRaw(sqlCommand)
+                .ToListAsync();
+
+            return procResultData;
+        }
+
+        public List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc()
+        {
+            int procResult;
+            return ColumnNameAndTypesProc(out procResult);
+        }
+
+        public List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc(out int procResult)
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [dbo].[ColumnNameAndTypesProc]";
+            var procResultData = Set<ColumnNameAndTypesProcReturnModel>()
+                .FromSqlRaw(sqlCommand, procResultParam)
+                .ToList();
+
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<ColumnNameAndTypesProcReturnModel>> ColumnNameAndTypesProcAsync()
+        {
+            const string sqlCommand = "EXEC [dbo].[ColumnNameAndTypesProc]";
+            var procResultData = await Set<ColumnNameAndTypesProcReturnModel>()
                 .FromSqlRaw(sqlCommand)
                 .ToListAsync();
 

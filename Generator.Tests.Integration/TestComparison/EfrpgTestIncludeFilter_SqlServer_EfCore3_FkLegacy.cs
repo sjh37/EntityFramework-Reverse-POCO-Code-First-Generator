@@ -83,9 +83,15 @@ namespace Efrpg.V3FilterTest
         // C182Test2ReturnModel C182Test2(int? flag); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
         // Task<C182Test2ReturnModel> C182Test2Async(int? flag); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
+        // CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (CheckIfApplicationIsCompleteReturnModel)
+
         List<ColourPivotReturnModel> ColourPivot();
         List<ColourPivotReturnModel> ColourPivot(out int procResult);
         Task<List<ColourPivotReturnModel>> ColourPivotAsync();
+
+        int ColumnNameAndTypesProc();
+        // ColumnNameAndTypesProcAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         int ConvertToString(int? someValue, out string someString);
         // ConvertToStringAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
@@ -222,7 +228,8 @@ namespace Efrpg.V3FilterTest
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;Application Name=Generator");
+                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;Encrypt=false;TrustServerCertificate=true;Application Name=Generator");
+                optionsBuilder.UseLazyLoadingProxies();
             }
         }
 
@@ -349,6 +356,10 @@ namespace Efrpg.V3FilterTest
 
         // public async Task<C182Test2ReturnModel> C182Test2Async(int? flag) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
+        // public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+
+        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (CheckIfApplicationIsCompleteReturnModel)
+
         public List<ColourPivotReturnModel> ColourPivot()
         {
             int procResult;
@@ -376,6 +387,17 @@ namespace Efrpg.V3FilterTest
 
             return procResultData;
         }
+
+        public int ColumnNameAndTypesProc()
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[ColumnNameAndTypesProc] ", procResultParam);
+
+            return (int)procResultParam.Value;
+        }
+
+        // ColumnNameAndTypesProcAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         public int ConvertToString(int? someValue, out string someString)
         {
@@ -1228,6 +1250,22 @@ namespace Efrpg.V3FilterTest
             public string Description { get; set; }
         }
         public List<ResultSetModel3> ResultSet3;
+    }
+
+    public class CheckIfApplicationIsCompleteReturnModel
+    {
+        public class ResultSetModel1
+        {
+            public string Key { get; set; }
+            public string Value { get; set; }
+        }
+        public List<ResultSetModel1> ResultSet1;
+        public class ResultSetModel2
+        {
+            public string Key { get; set; }
+            public string Value { get; set; }
+        }
+        public List<ResultSetModel2> ResultSet2;
     }
 
     public class ColourPivotReturnModel

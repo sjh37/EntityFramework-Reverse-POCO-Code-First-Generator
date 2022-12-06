@@ -115,6 +115,7 @@ namespace Efrpg.V3TestE1
         DbSet<TblOrderError> TblOrderErrors { get; set; } // tblOrderErrors
         DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
         DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
+        DbSet<ThisIsMemoryOptimised> ThisIsMemoryOptimiseds { get; set; } // ThisIsMemoryOptimised
         DbSet<Ticket> Tickets { get; set; } // Ticket
         DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
         DbSet<TimestampNullable> TimestampNullables { get; set; } // TimestampNullable
@@ -163,9 +164,15 @@ namespace Efrpg.V3TestE1
         C182Test2ReturnModel C182Test2(int? flag);
         Task<C182Test2ReturnModel> C182Test2Async(int? flag);
 
+        CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete);
+        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (CheckIfApplicationIsCompleteReturnModel)
+
         List<ColourPivotReturnModel> ColourPivot();
         List<ColourPivotReturnModel> ColourPivot(out int procResult);
         Task<List<ColourPivotReturnModel>> ColourPivotAsync();
+
+        int ColumnNameAndTypesProc();
+        // ColumnNameAndTypesProcAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         int ConvertToString(int? someValue, out string someString);
         // ConvertToStringAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
@@ -408,6 +415,7 @@ namespace Efrpg.V3TestE1
         public DbSet<TblOrderError> TblOrderErrors { get; set; } // tblOrderErrors
         public DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
         public DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
+        public DbSet<ThisIsMemoryOptimised> ThisIsMemoryOptimiseds { get; set; } // ThisIsMemoryOptimised
         public DbSet<Ticket> Tickets { get; set; } // Ticket
         public DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
         public DbSet<TimestampNullable> TimestampNullables { get; set; } // TimestampNullable
@@ -573,6 +581,7 @@ namespace Efrpg.V3TestE1
             modelBuilder.Configurations.Add(new TblOrderErrorConfiguration());
             modelBuilder.Configurations.Add(new TblOrderErrorsAbConfiguration());
             modelBuilder.Configurations.Add(new TblOrderLineConfiguration());
+            modelBuilder.Configurations.Add(new ThisIsMemoryOptimisedConfiguration());
             modelBuilder.Configurations.Add(new TicketConfiguration());
             modelBuilder.Configurations.Add(new TimestampNotNullConfiguration());
             modelBuilder.Configurations.Add(new TimestampNullableConfiguration());
@@ -840,6 +849,7 @@ namespace Efrpg.V3TestE1
             modelBuilder.Configurations.Add(new TblOrderErrorConfiguration(schema));
             modelBuilder.Configurations.Add(new TblOrderErrorsAbConfiguration(schema));
             modelBuilder.Configurations.Add(new TblOrderLineConfiguration(schema));
+            modelBuilder.Configurations.Add(new ThisIsMemoryOptimisedConfiguration(schema));
             modelBuilder.Configurations.Add(new TicketConfiguration(schema));
             modelBuilder.Configurations.Add(new TimestampNotNullConfiguration(schema));
             modelBuilder.Configurations.Add(new TimestampNullableConfiguration(schema));
@@ -1038,8 +1048,50 @@ namespace Efrpg.V3TestE1
             {
                 DbInterception.Dispatch.Connection.Close(Database.Connection, new DbInterceptionContext());
             }
+
             return procResultData;
         }
+
+        public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete)
+        {
+            var applicationIdParam = new SqlParameter { ParameterName = "@ApplicationId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = applicationId.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!applicationId.HasValue)
+                applicationIdParam.Value = DBNull.Value;
+
+            var isApplicationCompleteParam = new SqlParameter { ParameterName = "@IsApplicationComplete", SqlDbType = SqlDbType.Bit, Direction = ParameterDirection.Output };
+            var procResultData = new CheckIfApplicationIsCompleteReturnModel();
+            var cmd = Database.Connection.CreateCommand();
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandText = "[dbo].[CheckIfApplicationIsComplete]";
+            cmd.Parameters.Add(applicationIdParam);
+            cmd.Parameters.Add(isApplicationCompleteParam);
+
+            try
+            {
+                DbInterception.Dispatch.Connection.Open(Database.Connection, new DbInterceptionContext());
+                var reader = cmd.ExecuteReader();
+                var objectContext = ((IObjectContextAdapter) this).ObjectContext;
+
+                procResultData.ResultSet1 = objectContext.Translate<CheckIfApplicationIsCompleteReturnModel.ResultSetModel1>(reader).ToList();
+                reader.NextResult();
+
+                procResultData.ResultSet2 = objectContext.Translate<CheckIfApplicationIsCompleteReturnModel.ResultSetModel2>(reader).ToList();
+                reader.Close();
+            }
+            finally
+            {
+                DbInterception.Dispatch.Connection.Close(Database.Connection, new DbInterceptionContext());
+            }
+
+            if (IsSqlParameterNull(isApplicationCompleteParam))
+                isApplicationComplete = null;
+            else
+                isApplicationComplete = (bool) isApplicationCompleteParam.Value;
+
+            return procResultData;
+        }
+
+        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (CheckIfApplicationIsCompleteReturnModel)
 
         public List<ColourPivotReturnModel> ColourPivot()
         {
@@ -1060,6 +1112,17 @@ namespace Efrpg.V3TestE1
             var procResultData = await Database.SqlQuery<ColourPivotReturnModel>("EXEC [dbo].[ColourPivot]").ToListAsync();
             return procResultData;
         }
+
+        public int ColumnNameAndTypesProc()
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            Database.ExecuteSqlCommand(TransactionalBehavior.DoNotEnsureTransaction, "EXEC @procResult = [dbo].[ColumnNameAndTypesProc] ", procResultParam);
+
+            return (int)procResultParam.Value;
+        }
+
+        // ColumnNameAndTypesProcAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         public int ConvertToString(int? someValue, out string someString)
         {
@@ -1553,6 +1616,7 @@ namespace Efrpg.V3TestE1
             {
                 DbInterception.Dispatch.Connection.Close(Database.Connection, new DbInterceptionContext());
             }
+
             return procResultData;
         }
 
@@ -1659,6 +1723,7 @@ namespace Efrpg.V3TestE1
             {
                 DbInterception.Dispatch.Connection.Close(Database.Connection, new DbInterceptionContext());
             }
+
             return procResultData;
         }
 
@@ -1717,6 +1782,7 @@ namespace Efrpg.V3TestE1
             {
                 DbInterception.Dispatch.Connection.Close(Database.Connection, new DbInterceptionContext());
             }
+
             return procResultData;
         }
 
@@ -1789,6 +1855,7 @@ namespace Efrpg.V3TestE1
             {
                 DbInterception.Dispatch.Connection.Close(Database.Connection, new DbInterceptionContext());
             }
+
             return procResultData;
         }
 
@@ -2236,6 +2303,7 @@ namespace Efrpg.V3TestE1
         public DbSet<TblOrderError> TblOrderErrors { get; set; } // tblOrderErrors
         public DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
         public DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
+        public DbSet<ThisIsMemoryOptimised> ThisIsMemoryOptimiseds { get; set; } // ThisIsMemoryOptimised
         public DbSet<Ticket> Tickets { get; set; } // Ticket
         public DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
         public DbSet<TimestampNullable> TimestampNullables { get; set; } // TimestampNullable
@@ -2341,6 +2409,7 @@ namespace Efrpg.V3TestE1
             TblOrderErrors = new FakeDbSet<TblOrderError>("Id");
             TblOrderErrorsAbs = new FakeDbSet<TblOrderErrorsAb>("Id");
             TblOrderLines = new FakeDbSet<TblOrderLine>("Id");
+            ThisIsMemoryOptimiseds = new FakeDbSet<ThisIsMemoryOptimised>("Id");
             Tickets = new FakeDbSet<Ticket>("Id");
             TimestampNotNulls = new FakeDbSet<TimestampNotNull>("Id");
             TimestampNullables = new FakeDbSet<TimestampNullable>("Id");
@@ -2491,6 +2560,22 @@ namespace Efrpg.V3TestE1
             return Task.FromResult(C182Test2(flag, out procResult));
         }
 
+        public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete)
+        {
+            int procResult;
+            return CheckIfApplicationIsComplete(applicationId, out isApplicationComplete, out procResult);
+        }
+
+        public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete, out int procResult)
+        {
+            isApplicationComplete = default(bool);
+            procResult = 0;
+            return new CheckIfApplicationIsCompleteReturnModel();
+        }
+
+        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (CheckIfApplicationIsCompleteReturnModel)
+
+
         public List<ColourPivotReturnModel> ColourPivot()
         {
             int procResult;
@@ -2508,6 +2593,13 @@ namespace Efrpg.V3TestE1
             int procResult;
             return Task.FromResult(ColourPivot(out procResult));
         }
+
+        public int ColumnNameAndTypesProc()
+        {
+            return 0;
+        }
+
+        // ColumnNameAndTypesProcAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         public int ConvertToString(int? someValue, out string someString)
         {
@@ -3822,7 +3914,7 @@ namespace Efrpg.V3TestE1
         public int C36 { get; set; } // $ (Primary key)
         public int? C37 { get; set; } // %
         public int? C163 { get; set; } // £
-        public int? C38Fred36 { get; set; } // &fred$
+        public int? C38Fred { get; set; } // &fred$
         public int? Abc4792 { get; set; } // abc/\
         public int? Joe46Bloggs { get; set; } // joe.bloggs
         public int? SimonHughes { get; set; } // simon-hughes
@@ -4697,6 +4789,13 @@ namespace Efrpg.V3TestE1
         public int? ExclusionTest { get; set; } // ExclusionTest
     }
 
+    // ThisIsMemoryOptimised
+    public class ThisIsMemoryOptimised
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public string Description { get; set; } // Description (length: 20)
+    }
+
     // Ticket
     public class Ticket
     {
@@ -5542,7 +5641,7 @@ namespace Efrpg.V3TestE1
             Property(x => x.C36).HasColumnName(@"$").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(x => x.C37).HasColumnName(@"%").HasColumnType("int").IsOptional();
             Property(x => x.C163).HasColumnName(@"£").HasColumnType("int").IsOptional();
-            Property(x => x.C38Fred36).HasColumnName(@"&fred$").HasColumnType("int").IsOptional();
+            Property(x => x.C38Fred).HasColumnName(@"&fred$").HasColumnType("int").IsOptional();
             Property(x => x.Abc4792).HasColumnName(@"abc/\").HasColumnType("int").IsOptional();
             Property(x => x.Joe46Bloggs).HasColumnName(@"joe.bloggs").HasColumnType("int").IsOptional();
             Property(x => x.SimonHughes).HasColumnName(@"simon-hughes").HasColumnType("int").IsOptional();
@@ -6663,6 +6762,24 @@ namespace Efrpg.V3TestE1
         }
     }
 
+    // ThisIsMemoryOptimised
+    public class ThisIsMemoryOptimisedConfiguration : EntityTypeConfiguration<ThisIsMemoryOptimised>
+    {
+        public ThisIsMemoryOptimisedConfiguration()
+            : this("dbo")
+        {
+        }
+
+        public ThisIsMemoryOptimisedConfiguration(string schema)
+        {
+            ToTable("ThisIsMemoryOptimised", schema);
+            HasKey(x => x.Id);
+
+            Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(20);
+        }
+    }
+
     // Ticket
     public class TicketConfiguration : EntityTypeConfiguration<Ticket>
     {
@@ -6966,6 +7083,22 @@ namespace Efrpg.V3TestE1
             public string Description { get; set; }
         }
         public List<ResultSetModel3> ResultSet3;
+    }
+
+    public class CheckIfApplicationIsCompleteReturnModel
+    {
+        public class ResultSetModel1
+        {
+            public string Key { get; set; }
+            public string Value { get; set; }
+        }
+        public List<ResultSetModel1> ResultSet1;
+        public class ResultSetModel2
+        {
+            public string Key { get; set; }
+            public string Value { get; set; }
+        }
+        public List<ResultSetModel2> ResultSet2;
     }
 
     public class ColourPivotReturnModel

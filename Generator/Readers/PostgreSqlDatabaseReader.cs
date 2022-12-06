@@ -20,7 +20,6 @@ namespace Efrpg.Readers
         protected override string TableSQL()
         {
             return @"
-
 SELECT  T.TABLE_SCHEMA AS ""SchemaName"",
         T.TABLE_NAME AS ""TableName"",
         T.TABLE_TYPE AS ""TableType"",
@@ -201,6 +200,16 @@ ORDER BY R.specific_schema, R.routine_name, R.routine_type;";
             return string.Empty;
         }
 
+        protected override string TriggerSQL()
+        {
+            return @"
+SELECT event_object_schema AS SchemaName,
+       event_object_table AS TableName,
+       trigger_name AS TriggerName
+FROM INFORMATION_SCHEMA.triggers
+ORDER BY SchemaName, TableName, TriggerName;";
+        }
+
         protected override string SynonymTableSQLSetup()
         {
             return string.Empty;
@@ -234,11 +243,6 @@ ORDER BY R.specific_schema, R.routine_name, R.routine_type;";
         protected override string DefaultSchema(DbConnection conn)
         {
             return "public";
-        }
-
-        protected override string DefaultCollation(DbConnection conn)
-        {
-            return null;
         }
 
         protected override string SpecialQueryFlags()

@@ -48,7 +48,7 @@ namespace Efrpg.Readers
 
         protected override string ReadDatabaseEditionSQL()
         {
-            return string.Empty;
+            return "SELECT BANNER AS Edition, EDITION AS EngineEdition, VERSION AS ProductVersion FROM V$VERSION CROSS JOIN V$INSTANCE WHERE BANNER LIKE 'Oracle%'";
         }
 
         protected override string MultiContextSQL()
@@ -62,6 +62,11 @@ namespace Efrpg.Readers
         }
 
         protected override string SequenceSQL()
+        {
+            return string.Empty;
+        }
+
+        protected override string TriggerSQL()
         {
             return string.Empty;
         }
@@ -111,11 +116,6 @@ namespace Efrpg.Readers
                 }
             }
             return "system";
-        }
-
-        protected override string DefaultCollation(DbConnection conn)
-        {
-            return null;
         }
 
         protected override string SpecialQueryFlags()

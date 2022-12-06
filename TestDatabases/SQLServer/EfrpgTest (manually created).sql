@@ -913,6 +913,18 @@ CREATE TABLE CalculatedColumnNotNull
 );
 GO
 
+CREATE OR ALTER TRIGGER CalculatedColumnAudit ON CalculatedColumnNotNull FOR INSERT NOT FOR REPLICATION AS
+BEGIN
+    PRINT GETDATE();
+END
+GO
+
+CREATE OR ALTER TRIGGER CalculatedColumnAuditUpdate ON CalculatedColumnNotNull FOR UPDATE NOT FOR REPLICATION AS
+BEGIN
+    PRINT GETUTCDATE();
+END
+GO
+
 
 -- Stored procedures resolving to the same name
 -- DROP PROC resolve_to_same_name
@@ -2510,4 +2522,25 @@ CREATE TABLE EventProcessorEventFilter
 GO
 CREATE UNIQUE INDEX [IX_EventProcessorEventFilter] ON EventProcessorEventFilter (EventProcessorId, WantedEventId);
 ALTER TABLE EventProcessorEventFilter ADD CONSTRAINT [FK_EventProcessorEventFilter__EventProcessor] FOREIGN KEY (EventProcessorId) REFERENCES EventProcessor (Id);
+GO
+
+
+-- #769 Using stored procedure OUT parameters with multiple result sets
+CREATE PROCEDURE CheckIfApplicationIsComplete
+    @ApplicationId INT, @IsApplicationComplete BIT OUTPUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF (@ApplicationId < 10)
+    BEGIN
+        SET @IsApplicationComplete = 0;
+        SELECT 'Application' [Key], 'Not complete' [Value];
+    END
+    ELSE
+    BEGIN
+        SET @IsApplicationComplete = 1;
+        SELECT 'Application' [Key], 'Complete' [Value];
+    END
+END;
 GO
