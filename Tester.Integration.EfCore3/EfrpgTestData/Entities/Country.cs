@@ -19,12 +19,12 @@ namespace Tester.Integration.EfCore3
         /// <summary>
         /// Child Attendees where [Attendee].[PhoneCountryID] point to this entity (FK_Attendee_PhoneCountry)
         /// </summary>
-        public virtual ICollection<Attendee> Attendees { get; set; } // Attendee.FK_Attendee_PhoneCountry
+        public ICollection<Attendee> Attendees { get; set; } // Attendee.FK_Attendee_PhoneCountry
 
         /// <summary>
         /// Child User309 where [User309].[PhoneCountryID] point to this entity (FK_User309_PhoneCountry)
         /// </summary>
-        public virtual ICollection<User309> User309 { get; set; } // User309.FK_User309_PhoneCountry
+        public ICollection<User309> User309 { get; set; } // User309.FK_User309_PhoneCountry
 
         public Country()
         {

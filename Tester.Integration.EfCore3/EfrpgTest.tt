@@ -80,7 +80,7 @@
     Settings.UsePascalCase                      = true; // This will rename the generated C# tables & properties to use PascalCase. If false table & property names will be left alone.
     Settings.UseDataAnnotations                 = false; // If true, will add data annotations to the poco classes.
     Settings.UsePropertyInitialisers            = false; // Removes POCO constructor and instead uses C# 6 property initialisers to set defaults
-    Settings.UseLazyLoading                     = true; // Marks all navigation properties as virtual or not, to support or disable EF Lazy Loading feature
+    Settings.UseLazyLoading                     = false; // Marks all navigation properties as virtual or not, to support or disable EF Lazy Loading feature
     Settings.UseInheritedBaseInterfaceFunctions = false; // If true, the main DBContext interface functions will come from the DBContextInterfaceBaseClasses and not generated. If false, the functions will be generated.
     Settings.IncludeComments                    = CommentsStyle.AtEndOfField; // Adds comments to the generated code
     Settings.IncludeExtendedPropertyComments    = CommentsStyle.InSummaryBlock; // Adds extended properties as comments to the generated code

@@ -19,7 +19,7 @@ namespace Tester.Integration.EfCore3
         /// <summary>
         /// Parent (One-to-One) SmallDecimalTest pointed by [SmallDecimalTestAttribute].[FkID] (KateFK)
         /// </summary>
-        public virtual FkTest_SmallDecimalTestAttribute FkTest_SmallDecimalTestAttribute { get; set; } // SmallDecimalTestAttribute.KateFK
+        public FkTest_SmallDecimalTestAttribute FkTest_SmallDecimalTestAttribute { get; set; } // SmallDecimalTestAttribute.KateFK
 
         public SmallDecimalTest()
         {

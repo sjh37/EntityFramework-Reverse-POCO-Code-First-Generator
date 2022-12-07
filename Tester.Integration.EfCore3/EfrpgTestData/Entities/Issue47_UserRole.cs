@@ -20,12 +20,12 @@ namespace Tester.Integration.EfCore3
         /// <summary>
         /// Parent Issue47_Role pointed by [UserRoles].([RoleId]) (Issue47_UserRoles_roleid)
         /// </summary>
-        public virtual Issue47_Role Issue47_Role { get; set; } // Issue47_UserRoles_roleid
+        public Issue47_Role Issue47_Role { get; set; } // Issue47_UserRoles_roleid
 
         /// <summary>
         /// Parent Issue47_User pointed by [UserRoles].([UserId]) (Issue47_UserRoles_userid)
         /// </summary>
-        public virtual Issue47_User Issue47_User { get; set; } // Issue47_UserRoles_userid
+        public Issue47_User Issue47_User { get; set; } // Issue47_UserRoles_userid
     }
 
 }

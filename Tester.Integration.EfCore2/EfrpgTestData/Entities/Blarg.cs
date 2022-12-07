@@ -18,7 +18,7 @@ namespace Tester.Integration.EfCore2
         /// <summary>
         /// Child BlahBlargLinks where [BlahBlargLink].[BlargID] point to this entity (FK_BlahBlargLink_Blarg)
         /// </summary>
-        public virtual ICollection<BlahBlargLink> BlahBlargLinks { get; set; } // BlahBlargLink.FK_BlahBlargLink_Blarg
+        public ICollection<BlahBlargLink> BlahBlargLinks { get; set; } // BlahBlargLink.FK_BlahBlargLink_Blarg
 
         public Blarg()
         {

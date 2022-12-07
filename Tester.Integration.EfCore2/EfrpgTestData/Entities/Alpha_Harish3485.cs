@@ -19,7 +19,7 @@ namespace Tester.Integration.EfCore2
         /// <summary>
         /// Parent FkTest_SmallDecimalTestAttribute pointed by [Harish3485].([HarishId]) (FK_Harish)
         /// </summary>
-        public virtual FkTest_SmallDecimalTestAttribute FkTest_SmallDecimalTestAttribute { get; set; } // FK_Harish
+        public FkTest_SmallDecimalTestAttribute FkTest_SmallDecimalTestAttribute { get; set; } // FK_Harish
     }
 
 }

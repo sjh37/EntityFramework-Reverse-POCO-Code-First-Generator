@@ -20,7 +20,7 @@ namespace Tester.Integration.EfCore3
         /// <summary>
         /// Parent EventProcessor pointed by [EventProcessorEventFilter].([EventProcessorId]) (FK_EventProcessorEventFilter__EventProcessor)
         /// </summary>
-        public virtual EventProcessor EventProcessor { get; set; } // FK_EventProcessorEventFilter__EventProcessor
+        public EventProcessor EventProcessor { get; set; } // FK_EventProcessorEventFilter__EventProcessor
     }
 
 }

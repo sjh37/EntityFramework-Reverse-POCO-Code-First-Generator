@@ -20,7 +20,7 @@ namespace Tester.Integration.EfCore3
         /// <summary>
         /// Child Footers where [footer].([ID], [otherID]) point to this entity (fooderFK)
         /// </summary>
-        public virtual ICollection<Footer> Footers { get; set; } // footer.fooderFK
+        public ICollection<Footer> Footers { get; set; } // footer.fooderFK
 
         public Header()
         {

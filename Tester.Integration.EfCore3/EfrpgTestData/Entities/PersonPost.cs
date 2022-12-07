@@ -22,12 +22,12 @@ namespace Tester.Integration.EfCore3
         /// <summary>
         /// Parent Person pointed by [PersonPosts].([CreatedBy]) (FK_PersonPosts_CreatedBy)
         /// </summary>
-        public virtual Person Person_CreatedBy { get; set; } // FK_PersonPosts_CreatedBy
+        public Person Person_CreatedBy { get; set; } // FK_PersonPosts_CreatedBy
 
         /// <summary>
         /// Parent Person pointed by [PersonPosts].([UpdatedBy]) (FK_PersonPosts_UpdatedBy)
         /// </summary>
-        public virtual Person Person_UpdatedBy { get; set; } // FK_PersonPosts_UpdatedBy
+        public Person Person_UpdatedBy { get; set; } // FK_PersonPosts_UpdatedBy
     }
 
 }

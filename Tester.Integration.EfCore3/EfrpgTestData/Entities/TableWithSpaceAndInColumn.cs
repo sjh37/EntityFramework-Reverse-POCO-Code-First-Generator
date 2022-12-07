@@ -18,7 +18,7 @@ namespace Tester.Integration.EfCore3
         /// <summary>
         /// Child TableMappingWithSpaces where [table mapping with space].[id value] point to this entity (space2FK)
         /// </summary>
-        public virtual ICollection<TableMappingWithSpace> TableMappingWithSpaces { get; set; } // table mapping with space.space2FK
+        public ICollection<TableMappingWithSpace> TableMappingWithSpaces { get; set; } // table mapping with space.space2FK
 
         public TableWithSpaceAndInColumn()
         {

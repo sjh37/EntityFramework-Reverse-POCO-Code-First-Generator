@@ -19,12 +19,12 @@ namespace Tester.Integration.EfCore2
         /// <summary>
         /// Child Tickets where [Ticket].[CreatedById] point to this entity (FK_Ticket_AppUser)
         /// </summary>
-        public virtual ICollection<Ticket> Tickets_CreatedById { get; set; } // Ticket.FK_Ticket_AppUser
+        public ICollection<Ticket> Tickets_CreatedById { get; set; } // Ticket.FK_Ticket_AppUser
 
         /// <summary>
         /// Child Tickets where [Ticket].[ModifiedById] point to this entity (FK_Ticket_AppUser1)
         /// </summary>
-        public virtual ICollection<Ticket> Tickets_ModifiedById { get; set; } // Ticket.FK_Ticket_AppUser1
+        public ICollection<Ticket> Tickets_ModifiedById { get; set; } // Ticket.FK_Ticket_AppUser1
 
         public AppUser()
         {

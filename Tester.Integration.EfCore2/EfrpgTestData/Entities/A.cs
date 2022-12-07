@@ -20,7 +20,7 @@ namespace Tester.Integration.EfCore2
         /// <summary>
         /// Parent Aaref pointed by [A].([C1], [C2]) (FK_A_A)
         /// </summary>
-        public virtual Aaref Aaref { get; set; } // FK_A_A
+        public Aaref Aaref { get; set; } // FK_A_A
     }
 
 }

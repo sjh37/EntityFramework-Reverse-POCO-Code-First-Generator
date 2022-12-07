@@ -22,7 +22,7 @@ namespace Tester.Integration.EfCore3
         /// <summary>
         /// Parent HasPrincipalKeyTestParent pointed by [HasPrincipalKeyTestChild].([A], [B]) (FK_HasPrincipalKey_AB)
         /// </summary>
-        public virtual HasPrincipalKeyTestParent HasPrincipalKeyTestParent { get; set; } // FK_HasPrincipalKey_AB
+        public HasPrincipalKeyTestParent HasPrincipalKeyTestParent { get; set; } // FK_HasPrincipalKey_AB
     }
 
 }

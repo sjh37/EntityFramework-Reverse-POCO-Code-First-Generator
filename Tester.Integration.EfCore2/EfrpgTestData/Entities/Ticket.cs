@@ -20,12 +20,12 @@ namespace Tester.Integration.EfCore2
         /// <summary>
         /// Parent AppUser pointed by [Ticket].([CreatedById]) (FK_Ticket_AppUser)
         /// </summary>
-        public virtual AppUser CreatedBy { get; set; } // FK_Ticket_AppUser
+        public AppUser CreatedBy { get; set; } // FK_Ticket_AppUser
 
         /// <summary>
         /// Parent AppUser pointed by [Ticket].([ModifiedById]) (FK_Ticket_AppUser1)
         /// </summary>
-        public virtual AppUser ModifiedBy { get; set; } // FK_Ticket_AppUser1
+        public AppUser ModifiedBy { get; set; } // FK_Ticket_AppUser1
     }
 
 }

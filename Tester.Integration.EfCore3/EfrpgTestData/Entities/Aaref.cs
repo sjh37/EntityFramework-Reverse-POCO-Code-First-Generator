@@ -20,7 +20,7 @@ namespace Tester.Integration.EfCore3
         /// <summary>
         /// Child A where [A].([C1], [C2]) point to this entity (FK_A_A)
         /// </summary>
-        public virtual ICollection<A> A { get; set; } // A.FK_A_A
+        public ICollection<A> A { get; set; } // A.FK_A_A
 
         public Aaref()
         {

@@ -19,7 +19,7 @@ namespace Tester.Integration.EfCore3
         /// <summary>
         /// Child TableBs where [TableB].[TableAId] point to this entity (FK_TableA_CompositeKey_Req)
         /// </summary>
-        public virtual ICollection<TableB> TableBs { get; set; } // TableB.FK_TableA_CompositeKey_Req
+        public ICollection<TableB> TableBs { get; set; } // TableB.FK_TableA_CompositeKey_Req
 
         public TableA()
         {

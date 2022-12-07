@@ -20,7 +20,7 @@ namespace Tester.Integration.EfCore2
         /// <summary>
         /// Parent Synonyms_Parent pointed by [Child].([ParentId]) (FK_Child_Parent)
         /// </summary>
-        public virtual Synonyms_Parent Synonyms_Parent { get; set; } // FK_Child_Parent
+        public Synonyms_Parent Synonyms_Parent { get; set; } // FK_Child_Parent
     }
 
 }

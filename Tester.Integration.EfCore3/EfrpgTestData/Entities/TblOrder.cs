@@ -19,7 +19,7 @@ namespace Tester.Integration.EfCore3
         /// <summary>
         /// Child TblOrderLines where [tblOrderLines].[OrderID] point to this entity (tblOrdersFK)
         /// </summary>
-        public virtual ICollection<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines.tblOrdersFK
+        public ICollection<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines.tblOrdersFK
 
         public TblOrder()
         {

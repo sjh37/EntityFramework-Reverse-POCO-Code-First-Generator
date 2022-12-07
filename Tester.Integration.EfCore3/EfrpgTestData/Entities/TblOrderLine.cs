@@ -20,7 +20,7 @@ namespace Tester.Integration.EfCore3
         /// <summary>
         /// Parent TblOrder pointed by [tblOrderLines].([OrderId]) (tblOrdersFK)
         /// </summary>
-        public virtual TblOrder TblOrder { get; set; } // tblOrdersFK
+        public TblOrder TblOrder { get; set; } // tblOrdersFK
     }
 
 }

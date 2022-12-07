@@ -28,7 +28,7 @@ namespace Tester.Integration.EfCore2
         /// <summary>
         /// Parent CodeParamMeetingTopicDetailSource pointed by [CODE_MeetingTopicDetails].([Origem]) (FK_CODE_MeetingTopicDetails_CODE_PARAM_MeetingTopicDetailSource)
         /// </summary>
-        public virtual CodeParamMeetingTopicDetailSource CodeParamMeetingTopicDetailSource { get; set; } // FK_CODE_MeetingTopicDetails_CODE_PARAM_MeetingTopicDetailSource
+        public CodeParamMeetingTopicDetailSource CodeParamMeetingTopicDetailSource { get; set; } // FK_CODE_MeetingTopicDetails_CODE_PARAM_MeetingTopicDetailSource
     }
 
 }

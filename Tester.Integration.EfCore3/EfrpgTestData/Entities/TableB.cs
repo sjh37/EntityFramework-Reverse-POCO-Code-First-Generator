@@ -21,19 +21,19 @@ namespace Tester.Integration.EfCore3
         /// <summary>
         /// Parent (One-to-One) TableB pointed by [TableB].([TableAId], [TableBId]) (ParentTableB_Hierarchy)
         /// </summary>
-        public virtual TableB TableB2 { get; set; } // TableB.ParentTableB_Hierarchy
+        public TableB TableB2 { get; set; } // TableB.ParentTableB_Hierarchy
 
         // Foreign keys
 
         /// <summary>
         /// Parent TableA pointed by [TableB].([TableAId]) (FK_TableA_CompositeKey_Req)
         /// </summary>
-        public virtual TableA TableA_TableAId { get; set; } // FK_TableA_CompositeKey_Req
+        public TableA TableA_TableAId { get; set; } // FK_TableA_CompositeKey_Req
 
         /// <summary>
         /// Parent TableB pointed by [TableB].([TableAId], [TableBId]) (ParentTableB_Hierarchy)
         /// </summary>
-        public virtual TableB TableB1 { get; set; } // ParentTableB_Hierarchy
+        public TableB TableB1 { get; set; } // ParentTableB_Hierarchy
     }
 
 }

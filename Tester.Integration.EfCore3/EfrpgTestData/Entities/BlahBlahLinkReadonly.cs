@@ -22,12 +22,12 @@ namespace Tester.Integration.EfCore3
         /// <summary>
         /// Parent Blah pointed by [BlahBlahLink_readonly].([BlahId]) (FK_BlahBlahLink_Blah_ro)
         /// </summary>
-        public virtual Blah Blah_BlahId { get; set; } // FK_BlahBlahLink_Blah_ro
+        public Blah Blah_BlahId { get; set; } // FK_BlahBlahLink_Blah_ro
 
         /// <summary>
         /// Parent Blah pointed by [BlahBlahLink_readonly].([BlahId2]) (FK_BlahBlahLink_Blah_ro2)
         /// </summary>
-        public virtual Blah Blah_BlahId2 { get; set; } // FK_BlahBlahLink_Blah_ro2
+        public Blah Blah_BlahId2 { get; set; } // FK_BlahBlahLink_Blah_ro2
     }
 
 }

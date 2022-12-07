@@ -118,6 +118,7 @@ namespace Tester.Integration.Ef6
         DbSet<TblOrderError> TblOrderErrors { get; set; } // tblOrderErrors
         DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
         DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
+        DbSet<ThisIsMemoryOptimised> ThisIsMemoryOptimiseds { get; set; } // ThisIsMemoryOptimised
         DbSet<Ticket> Tickets { get; set; } // Ticket
         DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
         DbSet<TimestampNullable> TimestampNullables { get; set; } // TimestampNullable
@@ -172,6 +173,10 @@ namespace Tester.Integration.Ef6
         List<ColourPivotReturnModel> ColourPivot();
         List<ColourPivotReturnModel> ColourPivot(out int procResult);
         Task<List<ColourPivotReturnModel>> ColourPivotAsync();
+
+        List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc();
+        List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc(out int procResult);
+        Task<List<ColumnNameAndTypesProcReturnModel>> ColumnNameAndTypesProcAsync();
 
         int ConvertToString(int? someValue, out string someString);
         // ConvertToStringAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
@@ -393,6 +398,7 @@ namespace Tester.Integration.Ef6
         public DbSet<TblOrderError> TblOrderErrors { get; set; } // tblOrderErrors
         public DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
         public DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
+        public DbSet<ThisIsMemoryOptimised> ThisIsMemoryOptimiseds { get; set; } // ThisIsMemoryOptimised
         public DbSet<Ticket> Tickets { get; set; } // Ticket
         public DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
         public DbSet<TimestampNullable> TimestampNullables { get; set; } // TimestampNullable
@@ -549,6 +555,7 @@ namespace Tester.Integration.Ef6
             modelBuilder.Configurations.Add(new TblOrderErrorConfiguration());
             modelBuilder.Configurations.Add(new TblOrderErrorsAbConfiguration());
             modelBuilder.Configurations.Add(new TblOrderLineConfiguration());
+            modelBuilder.Configurations.Add(new ThisIsMemoryOptimisedConfiguration());
             modelBuilder.Configurations.Add(new TicketConfiguration());
             modelBuilder.Configurations.Add(new TimestampNotNullConfiguration());
             modelBuilder.Configurations.Add(new TimestampNullableConfiguration());
@@ -814,6 +821,7 @@ namespace Tester.Integration.Ef6
             modelBuilder.Configurations.Add(new TblOrderErrorConfiguration(schema));
             modelBuilder.Configurations.Add(new TblOrderErrorsAbConfiguration(schema));
             modelBuilder.Configurations.Add(new TblOrderLineConfiguration(schema));
+            modelBuilder.Configurations.Add(new ThisIsMemoryOptimisedConfiguration(schema));
             modelBuilder.Configurations.Add(new TicketConfiguration(schema));
             modelBuilder.Configurations.Add(new TimestampNotNullConfiguration(schema));
             modelBuilder.Configurations.Add(new TimestampNullableConfiguration(schema));
@@ -1074,6 +1082,26 @@ namespace Tester.Integration.Ef6
         public async Task<List<ColourPivotReturnModel>> ColourPivotAsync()
         {
             var procResultData = await Database.SqlQuery<ColourPivotReturnModel>("EXEC [dbo].[ColourPivot]").ToListAsync();
+            return procResultData;
+        }
+
+        public List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc()
+        {
+            int procResult;
+            return ColumnNameAndTypesProc(out procResult);
+        }
+
+        public List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc(out int procResult)
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            var procResultData = Database.SqlQuery<ColumnNameAndTypesProcReturnModel>("EXEC @procResult = [dbo].[ColumnNameAndTypesProc]", procResultParam).ToList();
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<ColumnNameAndTypesProcReturnModel>> ColumnNameAndTypesProcAsync()
+        {
+            var procResultData = await Database.SqlQuery<ColumnNameAndTypesProcReturnModel>("EXEC [dbo].[ColumnNameAndTypesProc]").ToListAsync();
             return procResultData;
         }
 
@@ -2157,7 +2185,7 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Parent Aaref pointed by [A].([C1], [C2]) (FK_A_A)
         /// </summary>
-        public virtual Aaref Aaref { get; set; } // FK_A_A
+        public Aaref Aaref { get; set; } // FK_A_A
     }
 
     // AAREF
@@ -2172,7 +2200,7 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Child A where [A].([C1], [C2]) point to this entity (FK_A_A)
         /// </summary>
-        public virtual ICollection<A> A { get; set; } // A.FK_A_A
+        public ICollection<A> A { get; set; } // A.FK_A_A
 
         public Aaref()
         {
@@ -2192,7 +2220,7 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Parent AbOrdersAb pointed by [AB_OrderLinesAB_].([OrderId]) (AB_OrderLinesAB_FK)
         /// </summary>
-        public virtual AbOrdersAb AbOrdersAb { get; set; } // AB_OrderLinesAB_FK
+        public AbOrdersAb AbOrdersAb { get; set; } // AB_OrderLinesAB_FK
     }
 
     // AB_OrdersAB_
@@ -2206,7 +2234,7 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Child AbOrderLinesAbs where [AB_OrderLinesAB_].[OrderID] point to this entity (AB_OrderLinesAB_FK)
         /// </summary>
-        public virtual ICollection<AbOrderLinesAb> AbOrderLinesAbs { get; set; } // AB_OrderLinesAB_.AB_OrderLinesAB_FK
+        public ICollection<AbOrderLinesAb> AbOrderLinesAbs { get; set; } // AB_OrderLinesAB_.AB_OrderLinesAB_FK
 
         public AbOrdersAb()
         {
@@ -2235,7 +2263,7 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Parent FkTest_SmallDecimalTestAttribute pointed by [Harish3485].([HarishId]) (FK_Harish)
         /// </summary>
-        public virtual FkTest_SmallDecimalTestAttribute FkTest_SmallDecimalTestAttribute { get; set; } // FK_Harish
+        public FkTest_SmallDecimalTestAttribute FkTest_SmallDecimalTestAttribute { get; set; } // FK_Harish
     }
 
     // The table 'Test' is not usable by entity framework because it
@@ -2258,7 +2286,7 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Child Beta_ToAlphas where [ToAlpha].[AlphaId] point to this entity (BetaToAlpha_AlphaWorkflow)
         /// </summary>
-        public virtual ICollection<Beta_ToAlpha> Beta_ToAlphas { get; set; } // ToAlpha.BetaToAlpha_AlphaWorkflow
+        public ICollection<Beta_ToAlpha> Beta_ToAlphas { get; set; } // ToAlpha.BetaToAlpha_AlphaWorkflow
 
         public Alpha_Workflow()
         {
@@ -2285,12 +2313,12 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Child Tickets where [Ticket].[CreatedById] point to this entity (FK_Ticket_AppUser)
         /// </summary>
-        public virtual ICollection<Ticket> Tickets_CreatedById { get; set; } // Ticket.FK_Ticket_AppUser
+        public ICollection<Ticket> Tickets_CreatedById { get; set; } // Ticket.FK_Ticket_AppUser
 
         /// <summary>
         /// Child Tickets where [Ticket].[ModifiedById] point to this entity (FK_Ticket_AppUser1)
         /// </summary>
-        public virtual ICollection<Ticket> Tickets_ModifiedById { get; set; } // Ticket.FK_Ticket_AppUser1
+        public ICollection<Ticket> Tickets_ModifiedById { get; set; } // Ticket.FK_Ticket_AppUser1
 
         public AppUser()
         {
@@ -2312,7 +2340,7 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Parent Country pointed by [Attendee].([PhoneCountryId]) (FK_Attendee_PhoneCountry)
         /// </summary>
-        public virtual Country Country { get; set; } // FK_Attendee_PhoneCountry
+        public Country Country { get; set; } // FK_Attendee_PhoneCountry
     }
 
     // BatchTest
@@ -2332,7 +2360,7 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Parent PropertyTypesToAdd pointed by [Harish3485].([AnotherId]) (FK_Harish)
         /// </summary>
-        public virtual PropertyTypesToAdd PropertyTypesToAdd { get; set; } // FK_Harish
+        public PropertyTypesToAdd PropertyTypesToAdd { get; set; } // FK_Harish
     }
 
     // The table 'Test' is not usable by entity framework because it
@@ -2355,7 +2383,7 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Parent Alpha_Workflow pointed by [ToAlpha].([AlphaId]) (BetaToAlpha_AlphaWorkflow)
         /// </summary>
-        public virtual Alpha_Workflow Alpha_Workflow { get; set; } // BetaToAlpha_AlphaWorkflow
+        public Alpha_Workflow Alpha_Workflow { get; set; } // BetaToAlpha_AlphaWorkflow
     }
 
     // workflow
@@ -2393,37 +2421,37 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Child Blahs (Many-to-Many) mapped by table [BlahBlahLink]
         /// </summary>
-        public virtual ICollection<Blah> Blahs_BlahId2 { get; set; } // Many to many mapping
+        public ICollection<Blah> Blahs_BlahId2 { get; set; } // Many to many mapping
 
         /// <summary>
         /// Child Blahs (Many-to-Many) mapped by table [BlahBlahLink]
         /// </summary>
-        public virtual ICollection<Blah> Blahs1 { get; set; } // Many to many mapping
+        public ICollection<Blah> Blahs1 { get; set; } // Many to many mapping
 
         /// <summary>
         /// Child Blahs (Many-to-Many) mapped by table [BlahBlahLink_readonly]
         /// </summary>
-        public virtual ICollection<Blah> Blahs2 { get; set; } // Many to many mapping
+        public ICollection<Blah> Blahs2 { get; set; } // Many to many mapping
 
         /// <summary>
         /// Child Blahs (Many-to-Many) mapped by table [BlahBlahLink_readonly]
         /// </summary>
-        public virtual ICollection<Blah> Blahs3 { get; set; } // Many to many mapping
+        public ICollection<Blah> Blahs3 { get; set; } // Many to many mapping
 
         /// <summary>
         /// Child BlahBlahLinkV2 where [BlahBlahLink_v2].[BlahID] point to this entity (FK_BlahBlahLinkv2_Blah_ro)
         /// </summary>
-        public virtual ICollection<BlahBlahLinkV2> BlahBlahLinkV2_BlahId { get; set; } // BlahBlahLink_v2.FK_BlahBlahLinkv2_Blah_ro
+        public ICollection<BlahBlahLinkV2> BlahBlahLinkV2_BlahId { get; set; } // BlahBlahLink_v2.FK_BlahBlahLinkv2_Blah_ro
 
         /// <summary>
         /// Child BlahBlahLinkV2 where [BlahBlahLink_v2].[BlahID2] point to this entity (FK_BlahBlahLinkv2_Blah_ro2)
         /// </summary>
-        public virtual ICollection<BlahBlahLinkV2> BlahBlahLinkV2_BlahId2 { get; set; } // BlahBlahLink_v2.FK_BlahBlahLinkv2_Blah_ro2
+        public ICollection<BlahBlahLinkV2> BlahBlahLinkV2_BlahId2 { get; set; } // BlahBlahLink_v2.FK_BlahBlahLinkv2_Blah_ro2
 
         /// <summary>
         /// Child Blargs (Many-to-Many) mapped by table [BlahBlargLink]
         /// </summary>
-        public virtual ICollection<Blarg> Blargs { get; set; } // Many to many mapping
+        public ICollection<Blarg> Blargs { get; set; } // Many to many mapping
 
         public Blah()
         {
@@ -2451,12 +2479,12 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Parent Blah pointed by [BlahBlahLink_v2].([BlahId]) (FK_BlahBlahLinkv2_Blah_ro)
         /// </summary>
-        public virtual Blah Blah_BlahId { get; set; } // FK_BlahBlahLinkv2_Blah_ro
+        public Blah Blah_BlahId { get; set; } // FK_BlahBlahLinkv2_Blah_ro
 
         /// <summary>
         /// Parent Blah pointed by [BlahBlahLink_v2].([BlahId2]) (FK_BlahBlahLinkv2_Blah_ro2)
         /// </summary>
-        public virtual Blah Blah_BlahId2 { get; set; } // FK_BlahBlahLinkv2_Blah_ro2
+        public Blah Blah_BlahId2 { get; set; } // FK_BlahBlahLinkv2_Blah_ro2
     }
 
     // Blarg
@@ -2469,7 +2497,7 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Child Blahs (Many-to-Many) mapped by table [BlahBlargLink]
         /// </summary>
-        public virtual ICollection<Blah> Blahs { get; set; } // Many to many mapping
+        public ICollection<Blah> Blahs { get; set; } // Many to many mapping
 
         public Blarg()
         {
@@ -2489,7 +2517,7 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Parent Burak2 pointed by [Burak1].([Id]) (FK_Burak_Test2)
         /// </summary>
-        public virtual Burak2 Burak2 { get; set; } // FK_Burak_Test2
+        public Burak2 Burak2 { get; set; } // FK_Burak_Test2
     }
 
     // Burak2
@@ -2503,7 +2531,7 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Parent (One-to-One) Burak2 pointed by [Burak1].[id] (FK_Burak_Test2)
         /// </summary>
-        public virtual Burak1 Burak1 { get; set; } // Burak1.FK_Burak_Test2
+        public Burak1 Burak1 { get; set; } // Burak1.FK_Burak_Test2
     }
 
     // CalculatedColumnNotNull
@@ -2529,14 +2557,14 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Child Colours (Many-to-Many) mapped by table [CarToColour]
         /// </summary>
-        public virtual ICollection<Colour> Colours { get; set; } // Many to many mapping
+        public ICollection<Colour> Colours { get; set; } // Many to many mapping
 
         // Foreign keys
 
         /// <summary>
         /// Parent Colour pointed by [Car].([PrimaryColourId]) (CarPrimaryColourFK)
         /// </summary>
-        public virtual Colour Colour { get; set; } // CarPrimaryColourFK
+        public Colour Colour { get; set; } // CarPrimaryColourFK
 
         public Car()
         {
@@ -2569,7 +2597,7 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Child CmsTags (Many-to-Many) mapped by table [CMS_FileTag]
         /// </summary>
-        public virtual ICollection<CmsTag> CmsTags { get; set; } // Many to many mapping
+        public ICollection<CmsTag> CmsTags { get; set; } // Many to many mapping
 
         public CmsFile()
         {
@@ -2588,7 +2616,7 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Child CmsFiles (Many-to-Many) mapped by table [CMS_FileTag]
         /// </summary>
-        public virtual ICollection<CmsFile> CmsFiles { get; set; } // Many to many mapping
+        public ICollection<CmsFile> CmsFiles { get; set; } // Many to many mapping
 
         public CmsTag()
         {
@@ -2661,12 +2689,12 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Child Cars (Many-to-Many) mapped by table [CarToColour]
         /// </summary>
-        public virtual ICollection<Car> Cars_CarId { get; set; } // Many to many mapping
+        public ICollection<Car> Cars_CarId { get; set; } // Many to many mapping
 
         /// <summary>
         /// Child Cars where [Car].[PrimaryColourId] point to this entity (CarPrimaryColourFK)
         /// </summary>
-        public virtual ICollection<Car> Cars_PrimaryColourId { get; set; } // Car.CarPrimaryColourFK
+        public ICollection<Car> Cars_PrimaryColourId { get; set; } // Car.CarPrimaryColourFK
 
         public Colour()
         {
@@ -2748,12 +2776,12 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Child Attendees where [Attendee].[PhoneCountryID] point to this entity (FK_Attendee_PhoneCountry)
         /// </summary>
-        public virtual ICollection<Attendee> Attendees { get; set; } // Attendee.FK_Attendee_PhoneCountry
+        public ICollection<Attendee> Attendees { get; set; } // Attendee.FK_Attendee_PhoneCountry
 
         /// <summary>
         /// Child User309 where [User309].[PhoneCountryID] point to this entity (FK_User309_PhoneCountry)
         /// </summary>
-        public virtual ICollection<User309> User309 { get; set; } // User309.FK_User309_PhoneCountry
+        public ICollection<User309> User309 { get; set; } // User309.FK_User309_PhoneCountry
 
         public Country()
         {
@@ -2849,7 +2877,7 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Child EnumTest_OpenDays where [OpenDays].[EnumId] point to this entity (Fk_OpenDays_EnumId)
         /// </summary>
-        public virtual ICollection<EnumTest_OpenDay> EnumTest_OpenDays { get; set; } // OpenDays.Fk_OpenDays_EnumId
+        public ICollection<EnumTest_OpenDay> EnumTest_OpenDays { get; set; } // OpenDays.Fk_OpenDays_EnumId
 
         public EnumTest_DaysOfWeek()
         {
@@ -2868,7 +2896,7 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Parent EnumTest_DaysOfWeek pointed by [OpenDays].([EnumId]) (Fk_OpenDays_EnumId)
         /// </summary>
-        public virtual EnumTest_DaysOfWeek EnumTest_DaysOfWeek { get; set; } // Fk_OpenDays_EnumId
+        public EnumTest_DaysOfWeek EnumTest_DaysOfWeek { get; set; } // Fk_OpenDays_EnumId
     }
 
     // EnumWithDefaultValue
@@ -2897,7 +2925,7 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Child EventProcessorEventFilters where [EventProcessorEventFilter].[EventProcessorId] point to this entity (FK_EventProcessorEventFilter__EventProcessor)
         /// </summary>
-        public virtual ICollection<EventProcessorEventFilter> EventProcessorEventFilters { get; set; } // EventProcessorEventFilter.FK_EventProcessorEventFilter__EventProcessor
+        public ICollection<EventProcessorEventFilter> EventProcessorEventFilters { get; set; } // EventProcessorEventFilter.FK_EventProcessorEventFilter__EventProcessor
 
         public EventProcessor()
         {
@@ -2917,7 +2945,7 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Parent EventProcessor pointed by [EventProcessorEventFilter].([EventProcessorId]) (FK_EventProcessorEventFilter__EventProcessor)
         /// </summary>
-        public virtual EventProcessor EventProcessor { get; set; } // FK_EventProcessorEventFilter__EventProcessor
+        public EventProcessor EventProcessor { get; set; } // FK_EventProcessorEventFilter__EventProcessor
     }
 
     // CV
@@ -2947,14 +2975,14 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Child Alpha_Harish3485 where [Harish3485].[harish_id] point to this entity (FK_Harish)
         /// </summary>
-        public virtual ICollection<Alpha_Harish3485> Alpha_Harish3485 { get; set; } // Harish3485.FK_Harish
+        public ICollection<Alpha_Harish3485> Alpha_Harish3485 { get; set; } // Harish3485.FK_Harish
 
         // Foreign keys
 
         /// <summary>
         /// Parent SmallDecimalTest pointed by [SmallDecimalTestAttribute].([FkId]) (KateFK)
         /// </summary>
-        public virtual SmallDecimalTest SmallDecimalTest { get; set; } // KateFK
+        public SmallDecimalTest SmallDecimalTest { get; set; } // KateFK
 
         public FkTest_SmallDecimalTestAttribute()
         {
@@ -2974,7 +3002,7 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Parent Header pointed by [footer].([Id], [OtherId]) (fooderFK)
         /// </summary>
-        public virtual Header Header { get; set; } // fooderFK
+        public Header Header { get; set; } // fooderFK
 
         public Footer()
         {
@@ -3032,7 +3060,7 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Child Footers where [footer].([ID], [otherID]) point to this entity (fooderFK)
         /// </summary>
-        public virtual ICollection<Footer> Footers { get; set; } // footer.fooderFK
+        public ICollection<Footer> Footers { get; set; } // footer.fooderFK
 
         public Header()
         {
@@ -3059,7 +3087,7 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Child Issue47_UserRoles where [UserRoles].[RoleId] point to this entity (Issue47_UserRoles_roleid)
         /// </summary>
-        public virtual ICollection<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles.Issue47_UserRoles_roleid
+        public ICollection<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles.Issue47_UserRoles_roleid
 
         public Issue47_Role()
         {
@@ -3078,7 +3106,7 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Child Issue47_UserRoles where [UserRoles].[UserId] point to this entity (Issue47_UserRoles_userid)
         /// </summary>
-        public virtual ICollection<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles.Issue47_UserRoles_userid
+        public ICollection<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles.Issue47_UserRoles_userid
 
         public Issue47_User()
         {
@@ -3098,12 +3126,12 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Parent Issue47_Role pointed by [UserRoles].([RoleId]) (Issue47_UserRoles_roleid)
         /// </summary>
-        public virtual Issue47_Role Issue47_Role { get; set; } // Issue47_UserRoles_roleid
+        public Issue47_Role Issue47_Role { get; set; } // Issue47_UserRoles_roleid
 
         /// <summary>
         /// Parent Issue47_User pointed by [UserRoles].([UserId]) (Issue47_UserRoles_userid)
         /// </summary>
-        public virtual Issue47_User Issue47_User { get; set; } // Issue47_UserRoles_userid
+        public Issue47_User Issue47_User { get; set; } // Issue47_UserRoles_userid
     }
 
     // MultipleKeys
@@ -3147,14 +3175,14 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Child OneEightSix_UploadedFiles (Many-to-Many) mapped by table [IssueUploadedFile]
         /// </summary>
-        public virtual ICollection<OneEightSix_UploadedFile> OneEightSix_UploadedFiles { get; set; } // Many to many mapping
+        public ICollection<OneEightSix_UploadedFile> OneEightSix_UploadedFiles { get; set; } // Many to many mapping
 
         // Foreign keys
 
         /// <summary>
         /// Parent OneEightSix_UploadedFile pointed by [Issue].([ConsentDocumentId]) (FK_Issue_UploadedFileConsentDocument)
         /// </summary>
-        public virtual OneEightSix_UploadedFile OneEightSix_UploadedFile { get; set; } // FK_Issue_UploadedFileConsentDocument
+        public OneEightSix_UploadedFile OneEightSix_UploadedFile { get; set; } // FK_Issue_UploadedFileConsentDocument
 
         public OneEightSix_Issue()
         {
@@ -3173,12 +3201,12 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Child OneEightSix_Issues where [Issue].[ConsentDocumentId] point to this entity (FK_Issue_UploadedFileConsentDocument)
         /// </summary>
-        public virtual ICollection<OneEightSix_Issue> OneEightSix_Issues_ConsentDocumentId { get; set; } // Issue.FK_Issue_UploadedFileConsentDocument
+        public ICollection<OneEightSix_Issue> OneEightSix_Issues_ConsentDocumentId { get; set; } // Issue.FK_Issue_UploadedFileConsentDocument
 
         /// <summary>
         /// Child OneEightSix_Issues (Many-to-Many) mapped by table [IssueUploadedFile]
         /// </summary>
-        public virtual ICollection<OneEightSix_Issue> OneEightSix_Issues_IssueId { get; set; } // Many to many mapping
+        public ICollection<OneEightSix_Issue> OneEightSix_Issues_IssueId { get; set; } // Many to many mapping
 
         public OneEightSix_UploadedFile()
         {
@@ -3205,12 +3233,12 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Child PersonPosts where [PersonPosts].[CreatedBy] point to this entity (FK_PersonPosts_CreatedBy)
         /// </summary>
-        public virtual ICollection<PersonPost> PersonPosts_CreatedBy { get; set; } // PersonPosts.FK_PersonPosts_CreatedBy
+        public ICollection<PersonPost> PersonPosts_CreatedBy { get; set; } // PersonPosts.FK_PersonPosts_CreatedBy
 
         /// <summary>
         /// Child PersonPosts where [PersonPosts].[UpdatedBy] point to this entity (FK_PersonPosts_UpdatedBy)
         /// </summary>
-        public virtual ICollection<PersonPost> PersonPosts_UpdatedBy { get; set; } // PersonPosts.FK_PersonPosts_UpdatedBy
+        public ICollection<PersonPost> PersonPosts_UpdatedBy { get; set; } // PersonPosts.FK_PersonPosts_UpdatedBy
 
         public Person()
         {
@@ -3233,12 +3261,12 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Parent Person pointed by [PersonPosts].([CreatedBy]) (FK_PersonPosts_CreatedBy)
         /// </summary>
-        public virtual Person Person_CreatedBy { get; set; } // FK_PersonPosts_CreatedBy
+        public Person Person_CreatedBy { get; set; } // FK_PersonPosts_CreatedBy
 
         /// <summary>
         /// Parent Person pointed by [PersonPosts].([UpdatedBy]) (FK_PersonPosts_UpdatedBy)
         /// </summary>
-        public virtual Person Person_UpdatedBy { get; set; } // FK_PersonPosts_UpdatedBy
+        public Person Person_UpdatedBy { get; set; } // FK_PersonPosts_UpdatedBy
     }
 
     // pk_ordinal_test
@@ -3262,7 +3290,7 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Child Beta_Harish3485 where [Harish3485].[another_id] point to this entity (FK_Harish)
         /// </summary>
-        public virtual ICollection<Beta_Harish3485> Beta_Harish3485 { get; set; } // Harish3485.FK_Harish
+        public ICollection<Beta_Harish3485> Beta_Harish3485 { get; set; } // Harish3485.FK_Harish
 
         public PropertyTypesToAdd()
         {
@@ -3296,7 +3324,7 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Parent (One-to-One) SmallDecimalTest pointed by [SmallDecimalTestAttribute].[FkID] (KateFK)
         /// </summary>
-        public virtual FkTest_SmallDecimalTestAttribute FkTest_SmallDecimalTestAttribute { get; set; } // SmallDecimalTestAttribute.KateFK
+        public FkTest_SmallDecimalTestAttribute FkTest_SmallDecimalTestAttribute { get; set; } // SmallDecimalTestAttribute.KateFK
 
         public SmallDecimalTest()
         {
@@ -3322,7 +3350,7 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Parent (One-to-One) Stafford_Boo pointed by [Foo].[id] (FK_Foo_Boo)
         /// </summary>
-        public virtual Stafford_Foo Stafford_Foo { get; set; } // Foo.FK_Foo_Boo
+        public Stafford_Foo Stafford_Foo { get; set; } // Foo.FK_Foo_Boo
     }
 
     // ComputedColumns
@@ -3344,7 +3372,7 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Parent Stafford_Boo pointed by [Foo].([Id]) (FK_Foo_Boo)
         /// </summary>
-        public virtual Stafford_Boo Stafford_Boo { get; set; } // FK_Foo_Boo
+        public Stafford_Boo Stafford_Boo { get; set; } // FK_Foo_Boo
     }
 
     // Child
@@ -3359,7 +3387,7 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Parent Synonyms_Parent pointed by [Child].([ParentId]) (FK_Child_Parent)
         /// </summary>
-        public virtual Synonyms_Parent Synonyms_Parent { get; set; } // FK_Child_Parent
+        public Synonyms_Parent Synonyms_Parent { get; set; } // FK_Child_Parent
     }
 
     // Parent
@@ -3373,7 +3401,7 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Child Synonyms_Children where [Child].[ParentId] point to this entity (FK_Child_Parent)
         /// </summary>
-        public virtual ICollection<Synonyms_Child> Synonyms_Children { get; set; } // Child.FK_Child_Parent
+        public ICollection<Synonyms_Child> Synonyms_Children { get; set; } // Child.FK_Child_Parent
 
         public Synonyms_Parent()
         {
@@ -3392,7 +3420,7 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Child TableBs where [TableB].[TableAId] point to this entity (FK_TableA_CompositeKey_Req)
         /// </summary>
-        public virtual ICollection<TableB> TableBs { get; set; } // TableB.FK_TableA_CompositeKey_Req
+        public ICollection<TableB> TableBs { get; set; } // TableB.FK_TableA_CompositeKey_Req
 
         public TableA()
         {
@@ -3413,19 +3441,19 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Parent (One-to-One) TableB pointed by [TableB].([TableAId], [TableBId]) (ParentTableB_Hierarchy)
         /// </summary>
-        public virtual TableB TableB2 { get; set; } // TableB.ParentTableB_Hierarchy
+        public TableB TableB2 { get; set; } // TableB.ParentTableB_Hierarchy
 
         // Foreign keys
 
         /// <summary>
         /// Parent TableA pointed by [TableB].([TableAId]) (FK_TableA_CompositeKey_Req)
         /// </summary>
-        public virtual TableA TableA_TableAId { get; set; } // FK_TableA_CompositeKey_Req
+        public TableA TableA_TableAId { get; set; } // FK_TableA_CompositeKey_Req
 
         /// <summary>
         /// Parent TableB pointed by [TableB].([TableAId], [TableBId]) (ParentTableB_Hierarchy)
         /// </summary>
-        public virtual TableB TableB1 { get; set; } // ParentTableB_Hierarchy
+        public TableB TableB1 { get; set; } // ParentTableB_Hierarchy
     }
 
     // table with duplicate column names
@@ -3449,7 +3477,7 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Child TableWithSpaceAndInColumns (Many-to-Many) mapped by table [table mapping with space]
         /// </summary>
-        public virtual ICollection<TableWithSpaceAndInColumn> TableWithSpaceAndInColumns { get; set; } // Many to many mapping
+        public ICollection<TableWithSpaceAndInColumn> TableWithSpaceAndInColumns { get; set; } // Many to many mapping
 
         public TableWithSpace()
         {
@@ -3467,7 +3495,7 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Child TableWithSpaces (Many-to-Many) mapped by table [table mapping with space]
         /// </summary>
-        public virtual ICollection<TableWithSpace> TableWithSpaces { get; set; } // Many to many mapping
+        public ICollection<TableWithSpace> TableWithSpaces { get; set; } // Many to many mapping
 
         public TableWithSpaceAndInColumn()
         {
@@ -3507,7 +3535,7 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Child TblOrderLines where [tblOrderLines].[OrderID] point to this entity (tblOrdersFK)
         /// </summary>
-        public virtual ICollection<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines.tblOrdersFK
+        public ICollection<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines.tblOrdersFK
 
         public TblOrder()
         {
@@ -3542,7 +3570,7 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Parent TblOrder pointed by [tblOrderLines].([OrderId]) (tblOrdersFK)
         /// </summary>
-        public virtual TblOrder TblOrder { get; set; } // tblOrdersFK
+        public TblOrder TblOrder { get; set; } // tblOrdersFK
     }
 
     // The table 'Test' is not usable by entity framework because it
@@ -3552,6 +3580,13 @@ namespace Tester.Integration.Ef6
     {
         public int? Id { get; set; } // Id
         public int? ExclusionTest { get; set; } // ExclusionTest
+    }
+
+    // ThisIsMemoryOptimised
+    public class ThisIsMemoryOptimised
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public string Description { get; set; } // Description (length: 20)
     }
 
     // Ticket
@@ -3566,12 +3601,12 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Parent AppUser pointed by [Ticket].([CreatedById]) (FK_Ticket_AppUser)
         /// </summary>
-        public virtual AppUser CreatedBy { get; set; } // FK_Ticket_AppUser
+        public AppUser CreatedBy { get; set; } // FK_Ticket_AppUser
 
         /// <summary>
         /// Parent AppUser pointed by [Ticket].([ModifiedById]) (FK_Ticket_AppUser1)
         /// </summary>
-        public virtual AppUser ModifiedBy { get; set; } // FK_Ticket_AppUser1
+        public AppUser ModifiedBy { get; set; } // FK_Ticket_AppUser1
     }
 
     // TimestampNotNull
@@ -3613,12 +3648,12 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Child UserDocuments where [User_Document].[CreatedByUserID] point to this entity (FK_User_Document_User1)
         /// </summary>
-        public virtual ICollection<UserDocument> UserDocuments_CreatedByUserId { get; set; } // User_Document.FK_User_Document_User1
+        public ICollection<UserDocument> UserDocuments_CreatedByUserId { get; set; } // User_Document.FK_User_Document_User1
 
         /// <summary>
         /// Child UserDocuments where [User_Document].[UserID] point to this entity (FK_User_Document_User)
         /// </summary>
-        public virtual ICollection<UserDocument> UserDocuments_UserId { get; set; } // User_Document.FK_User_Document_User
+        public ICollection<UserDocument> UserDocuments_UserId { get; set; } // User_Document.FK_User_Document_User
 
         public User()
         {
@@ -3640,7 +3675,7 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Parent Country pointed by [User309].([PhoneCountryId]) (FK_User309_PhoneCountry)
         /// </summary>
-        public virtual Country Country { get; set; } // FK_User309_PhoneCountry
+        public Country Country { get; set; } // FK_User309_PhoneCountry
     }
 
     // User_Document
@@ -3655,12 +3690,12 @@ namespace Tester.Integration.Ef6
         /// <summary>
         /// Parent User pointed by [User_Document].([CreatedByUserId]) (FK_User_Document_User1)
         /// </summary>
-        public virtual User CreatedByUser { get; set; } // FK_User_Document_User1
+        public User CreatedByUser { get; set; } // FK_User_Document_User1
 
         /// <summary>
         /// Parent User pointed by [User_Document].([UserId]) (FK_User_Document_User)
         /// </summary>
-        public virtual User User_UserId { get; set; } // FK_User_Document_User
+        public User User_UserId { get; set; } // FK_User_Document_User
     }
 
     // Versioned
@@ -5487,6 +5522,24 @@ namespace Tester.Integration.Ef6
         }
     }
 
+    // ThisIsMemoryOptimised
+    public class ThisIsMemoryOptimisedConfiguration : EntityTypeConfiguration<ThisIsMemoryOptimised>
+    {
+        public ThisIsMemoryOptimisedConfiguration()
+            : this("dbo")
+        {
+        }
+
+        public ThisIsMemoryOptimisedConfiguration(string schema)
+        {
+            ToTable("ThisIsMemoryOptimised", schema);
+            HasKey(x => x.Id);
+
+            Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(20);
+        }
+    }
+
     // Ticket
     public class TicketConfiguration : EntityTypeConfiguration<Ticket>
     {
@@ -5789,6 +5842,30 @@ namespace Tester.Integration.Ef6
         public int? Blue { get; set; }
         public int? Green { get; set; }
         public int? Red { get; set; }
+    }
+
+    public class ColumnNameAndTypesProcReturnModel
+    {
+        public DateTime someDate { get; set; }
+        public string Obs { get; set; }
+        public int? @static { get; set; }
+        public int? @readonly { get; set; }
+        public Single? areal { get; set; }
+        public double? afloat { get; set; }
+        public Single? afloat8 { get; set; }
+        public Single? afloat20 { get; set; }
+        public Single? afloat24 { get; set; }
+        public double? afloat53 { get; set; }
+        public decimal? adecimal { get; set; }
+        public decimal? adecimal_19_4 { get; set; }
+        public decimal? adecimal_10_3 { get; set; }
+        public decimal? anumeric { get; set; }
+        public decimal? anumeric_5_2 { get; set; }
+        public decimal? anumeric_11_3 { get; set; }
+        public decimal? amoney { get; set; }
+        public decimal? asmallmoney { get; set; }
+        public Microsoft.SqlServer.Types.SqlGeography GeographyType { get; set; }
+        public Microsoft.SqlServer.Types.SqlGeometry GeometryType { get; set; }
     }
 
     public class CsvToIntReturnModel

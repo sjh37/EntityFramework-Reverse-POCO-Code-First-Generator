@@ -21,14 +21,14 @@ namespace Tester.Integration.EfCore3
         /// <summary>
         /// Child OneEightSix_IssueUploadedFiles where [IssueUploadedFile].[IssueId] point to this entity (FK_IssueUploadedFile_Issue)
         /// </summary>
-        public virtual ICollection<OneEightSix_IssueUploadedFile> OneEightSix_IssueUploadedFiles { get; set; } // IssueUploadedFile.FK_IssueUploadedFile_Issue
+        public ICollection<OneEightSix_IssueUploadedFile> OneEightSix_IssueUploadedFiles { get; set; } // IssueUploadedFile.FK_IssueUploadedFile_Issue
 
         // Foreign keys
 
         /// <summary>
         /// Parent OneEightSix_UploadedFile pointed by [Issue].([ConsentDocumentId]) (FK_Issue_UploadedFileConsentDocument)
         /// </summary>
-        public virtual OneEightSix_UploadedFile OneEightSix_UploadedFile { get; set; } // FK_Issue_UploadedFileConsentDocument
+        public OneEightSix_UploadedFile OneEightSix_UploadedFile { get; set; } // FK_Issue_UploadedFileConsentDocument
 
         public OneEightSix_Issue()
         {

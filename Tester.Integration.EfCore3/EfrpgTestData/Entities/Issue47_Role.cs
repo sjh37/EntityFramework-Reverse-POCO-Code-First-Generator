@@ -19,7 +19,7 @@ namespace Tester.Integration.EfCore3
         /// <summary>
         /// Child Issue47_UserRoles where [UserRoles].[RoleId] point to this entity (Issue47_UserRoles_roleid)
         /// </summary>
-        public virtual ICollection<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles.Issue47_UserRoles_roleid
+        public ICollection<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles.Issue47_UserRoles_roleid
 
         public Issue47_Role()
         {

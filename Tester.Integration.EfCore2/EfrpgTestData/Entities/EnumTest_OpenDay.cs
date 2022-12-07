@@ -19,7 +19,7 @@ namespace Tester.Integration.EfCore2
         /// <summary>
         /// Parent EnumTest_DaysOfWeek pointed by [OpenDays].([EnumId]) (Fk_OpenDays_EnumId)
         /// </summary>
-        public virtual EnumTest_DaysOfWeek EnumTest_DaysOfWeek { get; set; } // Fk_OpenDays_EnumId
+        public EnumTest_DaysOfWeek EnumTest_DaysOfWeek { get; set; } // Fk_OpenDays_EnumId
     }
 
 }

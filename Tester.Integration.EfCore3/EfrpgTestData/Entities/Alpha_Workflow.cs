@@ -19,7 +19,7 @@ namespace Tester.Integration.EfCore3
         /// <summary>
         /// Child Beta_ToAlphas where [ToAlpha].[AlphaId] point to this entity (BetaToAlpha_AlphaWorkflow)
         /// </summary>
-        public virtual ICollection<Beta_ToAlpha> Beta_ToAlphas { get; set; } // ToAlpha.BetaToAlpha_AlphaWorkflow
+        public ICollection<Beta_ToAlpha> Beta_ToAlphas { get; set; } // ToAlpha.BetaToAlpha_AlphaWorkflow
 
         public Alpha_Workflow()
         {

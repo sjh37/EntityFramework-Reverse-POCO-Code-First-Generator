@@ -22,7 +22,7 @@ namespace Tester.Integration.EfCore3
         /// <summary>
         /// Child EventProcessorEventFilters where [EventProcessorEventFilter].[EventProcessorId] point to this entity (FK_EventProcessorEventFilter__EventProcessor)
         /// </summary>
-        public virtual ICollection<EventProcessorEventFilter> EventProcessorEventFilters { get; set; } // EventProcessorEventFilter.FK_EventProcessorEventFilter__EventProcessor
+        public ICollection<EventProcessorEventFilter> EventProcessorEventFilters { get; set; } // EventProcessorEventFilter.FK_EventProcessorEventFilter__EventProcessor
 
         public EventProcessor()
         {

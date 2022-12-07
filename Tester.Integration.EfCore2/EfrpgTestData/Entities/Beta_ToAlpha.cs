@@ -19,7 +19,7 @@ namespace Tester.Integration.EfCore2
         /// <summary>
         /// Parent Alpha_Workflow pointed by [ToAlpha].([AlphaId]) (BetaToAlpha_AlphaWorkflow)
         /// </summary>
-        public virtual Alpha_Workflow Alpha_Workflow { get; set; } // BetaToAlpha_AlphaWorkflow
+        public Alpha_Workflow Alpha_Workflow { get; set; } // BetaToAlpha_AlphaWorkflow
     }
 
 }

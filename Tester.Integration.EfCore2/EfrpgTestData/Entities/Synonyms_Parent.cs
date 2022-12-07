@@ -19,7 +19,7 @@ namespace Tester.Integration.EfCore2
         /// <summary>
         /// Child Synonyms_Children where [Child].[ParentId] point to this entity (FK_Child_Parent)
         /// </summary>
-        public virtual ICollection<Synonyms_Child> Synonyms_Children { get; set; } // Child.FK_Child_Parent
+        public ICollection<Synonyms_Child> Synonyms_Children { get; set; } // Child.FK_Child_Parent
 
         public Synonyms_Parent()
         {

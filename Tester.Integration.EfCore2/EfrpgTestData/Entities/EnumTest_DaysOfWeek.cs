@@ -19,7 +19,7 @@ namespace Tester.Integration.EfCore2
         /// <summary>
         /// Child EnumTest_OpenDays where [OpenDays].[EnumId] point to this entity (Fk_OpenDays_EnumId)
         /// </summary>
-        public virtual ICollection<EnumTest_OpenDay> EnumTest_OpenDays { get; set; } // OpenDays.Fk_OpenDays_EnumId
+        public ICollection<EnumTest_OpenDay> EnumTest_OpenDays { get; set; } // OpenDays.Fk_OpenDays_EnumId
 
         public EnumTest_DaysOfWeek()
         {

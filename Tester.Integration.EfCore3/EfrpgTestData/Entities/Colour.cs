@@ -19,12 +19,12 @@ namespace Tester.Integration.EfCore3
         /// <summary>
         /// Child Cars where [Car].[PrimaryColourId] point to this entity (CarPrimaryColourFK)
         /// </summary>
-        public virtual ICollection<Car> Cars { get; set; } // Car.CarPrimaryColourFK
+        public ICollection<Car> Cars { get; set; } // Car.CarPrimaryColourFK
 
         /// <summary>
         /// Child CarToColours where [CarToColour].[ColourId] point to this entity (CarToColour_ColourId)
         /// </summary>
-        public virtual ICollection<CarToColour> CarToColours { get; set; } // CarToColour.CarToColour_ColourId
+        public ICollection<CarToColour> CarToColours { get; set; } // CarToColour.CarToColour_ColourId
 
         public Colour()
         {

@@ -19,12 +19,12 @@ namespace Tester.Integration.EfCore3
         /// <summary>
         /// Parent TableWithSpace pointed by [table mapping with space].([Id]) (space1FK)
         /// </summary>
-        public virtual TableWithSpace TableWithSpace { get; set; } // space1FK
+        public TableWithSpace TableWithSpace { get; set; } // space1FK
 
         /// <summary>
         /// Parent TableWithSpaceAndInColumn pointed by [table mapping with space].([IdValue]) (space2FK)
         /// </summary>
-        public virtual TableWithSpaceAndInColumn TableWithSpaceAndInColumn { get; set; } // space2FK
+        public TableWithSpaceAndInColumn TableWithSpaceAndInColumn { get; set; } // space2FK
     }
 
 }

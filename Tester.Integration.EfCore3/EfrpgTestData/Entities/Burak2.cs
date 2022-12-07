@@ -19,12 +19,12 @@ namespace Tester.Integration.EfCore3
         /// <summary>
         /// Parent (One-to-One) Burak2 pointed by [Burak1].[id] (FK_Burak_Test2)
         /// </summary>
-        public virtual Burak1 Burak1_Id { get; set; } // Burak1.FK_Burak_Test2
+        public Burak1 Burak1_Id { get; set; } // Burak1.FK_Burak_Test2
 
         /// <summary>
         /// Parent (One-to-One) Burak2 pointed by [Burak1].([id_t], [num]) (FK_Burak_Test1)
         /// </summary>
-        public virtual Burak1 Burak1_IdT { get; set; } // Burak1.FK_Burak_Test1
+        public Burak1 Burak1_IdT { get; set; } // Burak1.FK_Burak_Test1
     }
 
 }

@@ -19,12 +19,12 @@ namespace Tester.Integration.EfCore3
         /// <summary>
         /// Child UserDocuments where [User_Document].[CreatedByUserID] point to this entity (FK_User_Document_User1)
         /// </summary>
-        public virtual ICollection<UserDocument> UserDocuments_CreatedByUserId { get; set; } // User_Document.FK_User_Document_User1
+        public ICollection<UserDocument> UserDocuments_CreatedByUserId { get; set; } // User_Document.FK_User_Document_User1
 
         /// <summary>
         /// Child UserDocuments where [User_Document].[UserID] point to this entity (FK_User_Document_User)
         /// </summary>
-        public virtual ICollection<UserDocument> UserDocuments_UserId { get; set; } // User_Document.FK_User_Document_User
+        public ICollection<UserDocument> UserDocuments_UserId { get; set; } // User_Document.FK_User_Document_User
 
         public User()
         {

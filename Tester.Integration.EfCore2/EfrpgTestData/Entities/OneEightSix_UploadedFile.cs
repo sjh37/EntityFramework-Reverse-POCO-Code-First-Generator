@@ -19,12 +19,12 @@ namespace Tester.Integration.EfCore2
         /// <summary>
         /// Child OneEightSix_Issues where [Issue].[ConsentDocumentId] point to this entity (FK_Issue_UploadedFileConsentDocument)
         /// </summary>
-        public virtual ICollection<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue.FK_Issue_UploadedFileConsentDocument
+        public ICollection<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue.FK_Issue_UploadedFileConsentDocument
 
         /// <summary>
         /// Child OneEightSix_IssueUploadedFiles where [IssueUploadedFile].[UploadedFileId] point to this entity (FK_IssueUploadedFile_UploadedFile)
         /// </summary>
-        public virtual ICollection<OneEightSix_IssueUploadedFile> OneEightSix_IssueUploadedFiles { get; set; } // IssueUploadedFile.FK_IssueUploadedFile_UploadedFile
+        public ICollection<OneEightSix_IssueUploadedFile> OneEightSix_IssueUploadedFiles { get; set; } // IssueUploadedFile.FK_IssueUploadedFile_UploadedFile
 
         public OneEightSix_UploadedFile()
         {

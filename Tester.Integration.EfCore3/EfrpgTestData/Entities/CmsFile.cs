@@ -24,7 +24,7 @@ namespace Tester.Integration.EfCore3
         /// <summary>
         /// Child CmsFileTags where [CMS_FileTag].[FileId] point to this entity (FK_CMS_FileTag_CMS_File)
         /// </summary>
-        public virtual ICollection<CmsFileTag> CmsFileTags { get; set; } // CMS_FileTag.FK_CMS_FileTag_CMS_File
+        public ICollection<CmsFileTag> CmsFileTags { get; set; } // CMS_FileTag.FK_CMS_FileTag_CMS_File
 
         public CmsFile()
         {

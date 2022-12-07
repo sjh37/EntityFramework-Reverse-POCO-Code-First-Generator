@@ -19,12 +19,12 @@ namespace Tester.Integration.EfCore3
         /// <summary>
         /// Child PersonPosts where [PersonPosts].[CreatedBy] point to this entity (FK_PersonPosts_CreatedBy)
         /// </summary>
-        public virtual ICollection<PersonPost> PersonPosts_CreatedBy { get; set; } // PersonPosts.FK_PersonPosts_CreatedBy
+        public ICollection<PersonPost> PersonPosts_CreatedBy { get; set; } // PersonPosts.FK_PersonPosts_CreatedBy
 
         /// <summary>
         /// Child PersonPosts where [PersonPosts].[UpdatedBy] point to this entity (FK_PersonPosts_UpdatedBy)
         /// </summary>
-        public virtual ICollection<PersonPost> PersonPosts_UpdatedBy { get; set; } // PersonPosts.FK_PersonPosts_UpdatedBy
+        public ICollection<PersonPost> PersonPosts_UpdatedBy { get; set; } // PersonPosts.FK_PersonPosts_UpdatedBy
 
         public Person()
         {

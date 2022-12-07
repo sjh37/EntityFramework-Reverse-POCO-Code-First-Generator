@@ -21,7 +21,7 @@ namespace Tester.Integration.EfCore2
         /// <summary>
         /// Child Beta_Harish3485 where [Harish3485].[another_id] point to this entity (FK_Harish)
         /// </summary>
-        public virtual ICollection<Beta_Harish3485> Beta_Harish3485 { get; set; } // Harish3485.FK_Harish
+        public ICollection<Beta_Harish3485> Beta_Harish3485 { get; set; } // Harish3485.FK_Harish
 
         public PropertyTypesToAdd()
         {

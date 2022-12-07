@@ -21,7 +21,7 @@ namespace Tester.Integration.EfCore2
         /// <summary>
         /// Parent Country pointed by [Attendee].([PhoneCountryId]) (FK_Attendee_PhoneCountry)
         /// </summary>
-        public virtual Country Country { get; set; } // FK_Attendee_PhoneCountry
+        public Country Country { get; set; } // FK_Attendee_PhoneCountry
     }
 
 }

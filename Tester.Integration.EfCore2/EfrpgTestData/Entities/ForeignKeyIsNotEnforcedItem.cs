@@ -20,12 +20,12 @@ namespace Tester.Integration.EfCore2
         /// <summary>
         /// Parent ForeignKeyIsNotEnforced pointed by [ForeignKeyIsNotEnforcedItem].([NotNullValue]) (FK_ForeignKeyIsNotEnforcedItem_notnull_notnull)
         /// </summary>
-        public virtual ForeignKeyIsNotEnforced ForeignKeyIsNotEnforced_NotNullValue { get; set; } // FK_ForeignKeyIsNotEnforcedItem_notnull_notnull
+        public ForeignKeyIsNotEnforced ForeignKeyIsNotEnforced_NotNullValue { get; set; } // FK_ForeignKeyIsNotEnforcedItem_notnull_notnull
 
         /// <summary>
         /// Parent ForeignKeyIsNotEnforced pointed by [ForeignKeyIsNotEnforcedItem].([NullValue]) (FK_ForeignKeyIsNotEnforcedItem_null_notnull)
         /// </summary>
-        public virtual ForeignKeyIsNotEnforced ForeignKeyIsNotEnforced_NullValue { get; set; } // FK_ForeignKeyIsNotEnforcedItem_null_notnull
+        public ForeignKeyIsNotEnforced ForeignKeyIsNotEnforced_NullValue { get; set; } // FK_ForeignKeyIsNotEnforcedItem_null_notnull
     }
 
 }

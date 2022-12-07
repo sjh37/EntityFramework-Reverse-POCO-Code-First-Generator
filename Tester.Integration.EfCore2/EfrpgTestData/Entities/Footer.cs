@@ -20,7 +20,7 @@ namespace Tester.Integration.EfCore2
         /// <summary>
         /// Parent Header pointed by [footer].([Id], [OtherId]) (fooderFK)
         /// </summary>
-        public virtual Header Header { get; set; } // fooderFK
+        public Header Header { get; set; } // fooderFK
 
         public Footer()
         {

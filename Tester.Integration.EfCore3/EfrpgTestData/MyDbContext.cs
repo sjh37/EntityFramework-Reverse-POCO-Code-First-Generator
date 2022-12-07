@@ -145,7 +145,6 @@ namespace Tester.Integration.EfCore3
             if (!optionsBuilder.IsConfigured && _configuration != null)
             {
                 optionsBuilder.UseSqlServer(_configuration.GetConnectionString(@"MyDbContext"), x => x.UseNetTopologySuite());
-                optionsBuilder.UseLazyLoadingProxies();
             }
         }
 

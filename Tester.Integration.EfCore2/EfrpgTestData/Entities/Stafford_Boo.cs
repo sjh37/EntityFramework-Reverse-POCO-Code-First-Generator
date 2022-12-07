@@ -19,7 +19,7 @@ namespace Tester.Integration.EfCore2
         /// <summary>
         /// Parent (One-to-One) Stafford_Boo pointed by [Foo].[id] (FK_Foo_Boo)
         /// </summary>
-        public virtual Stafford_Foo Stafford_Foo { get; set; } // Foo.FK_Foo_Boo
+        public Stafford_Foo Stafford_Foo { get; set; } // Foo.FK_Foo_Boo
     }
 
 }

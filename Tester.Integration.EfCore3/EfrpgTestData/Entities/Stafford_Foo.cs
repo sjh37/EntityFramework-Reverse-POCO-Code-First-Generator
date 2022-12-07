@@ -19,7 +19,7 @@ namespace Tester.Integration.EfCore3
         /// <summary>
         /// Parent Stafford_Boo pointed by [Foo].([Id]) (FK_Foo_Boo)
         /// </summary>
-        public virtual Stafford_Boo Stafford_Boo { get; set; } // FK_Foo_Boo
+        public Stafford_Boo Stafford_Boo { get; set; } // FK_Foo_Boo
     }
 
 }

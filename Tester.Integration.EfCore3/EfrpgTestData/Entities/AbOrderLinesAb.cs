@@ -20,7 +20,7 @@ namespace Tester.Integration.EfCore3
         /// <summary>
         /// Parent AbOrdersAb pointed by [AB_OrderLinesAB_].([OrderId]) (AB_OrderLinesAB_FK)
         /// </summary>
-        public virtual AbOrdersAb AbOrdersAb { get; set; } // AB_OrderLinesAB_FK
+        public AbOrdersAb AbOrdersAb { get; set; } // AB_OrderLinesAB_FK
     }
 
 }

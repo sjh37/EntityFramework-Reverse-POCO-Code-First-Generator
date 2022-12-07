@@ -19,14 +19,14 @@ namespace Tester.Integration.EfCore2
         /// <summary>
         /// Child Alpha_Harish3485 where [Harish3485].[harish_id] point to this entity (FK_Harish)
         /// </summary>
-        public virtual ICollection<Alpha_Harish3485> Alpha_Harish3485 { get; set; } // Harish3485.FK_Harish
+        public ICollection<Alpha_Harish3485> Alpha_Harish3485 { get; set; } // Harish3485.FK_Harish
 
         // Foreign keys
 
         /// <summary>
         /// Parent SmallDecimalTest pointed by [SmallDecimalTestAttribute].([FkId]) (KateFK)
         /// </summary>
-        public virtual SmallDecimalTest SmallDecimalTest { get; set; } // KateFK
+        public SmallDecimalTest SmallDecimalTest { get; set; } // KateFK
 
         public FkTest_SmallDecimalTestAttribute()
         {

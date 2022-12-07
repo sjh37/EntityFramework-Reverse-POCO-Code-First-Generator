@@ -19,7 +19,7 @@ namespace Tester.Integration.EfCore3
         /// <summary>
         /// Parent PropertyTypesToAdd pointed by [Harish3485].([AnotherId]) (FK_Harish)
         /// </summary>
-        public virtual PropertyTypesToAdd PropertyTypesToAdd { get; set; } // FK_Harish
+        public PropertyTypesToAdd PropertyTypesToAdd { get; set; } // FK_Harish
     }
 
 }

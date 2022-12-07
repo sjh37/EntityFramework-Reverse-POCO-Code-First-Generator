@@ -19,7 +19,7 @@ namespace Tester.Integration.EfCore2
         /// <summary>
         /// Child AbOrderLinesAbs where [AB_OrderLinesAB_].[OrderID] point to this entity (AB_OrderLinesAB_FK)
         /// </summary>
-        public virtual ICollection<AbOrderLinesAb> AbOrderLinesAbs { get; set; } // AB_OrderLinesAB_.AB_OrderLinesAB_FK
+        public ICollection<AbOrderLinesAb> AbOrderLinesAbs { get; set; } // AB_OrderLinesAB_.AB_OrderLinesAB_FK
 
         public AbOrdersAb()
         {

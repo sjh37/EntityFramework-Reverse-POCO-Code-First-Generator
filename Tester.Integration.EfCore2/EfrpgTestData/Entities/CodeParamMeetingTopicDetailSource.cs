@@ -25,7 +25,7 @@ namespace Tester.Integration.EfCore2
         /// <summary>
         /// Child CodeMeetingTopicDetails where [CODE_MeetingTopicDetails].[origem] point to this entity (FK_CODE_MeetingTopicDetails_CODE_PARAM_MeetingTopicDetailSource)
         /// </summary>
-        public virtual ICollection<CodeMeetingTopicDetail> CodeMeetingTopicDetails { get; set; } // CODE_MeetingTopicDetails.FK_CODE_MeetingTopicDetails_CODE_PARAM_MeetingTopicDetailSource
+        public ICollection<CodeMeetingTopicDetail> CodeMeetingTopicDetails { get; set; } // CODE_MeetingTopicDetails.FK_CODE_MeetingTopicDetails_CODE_PARAM_MeetingTopicDetailSource
 
         public CodeParamMeetingTopicDetailSource()
         {
