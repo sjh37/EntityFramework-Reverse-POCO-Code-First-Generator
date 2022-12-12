@@ -2583,3 +2583,13 @@ BEGIN
     END
 END;
 GO
+
+-- #782 support for memory optimised tables
+CREATE TABLE dbo.ThisIsMemoryOptimised
+(
+    Id INT NOT NULL IDENTITY(1, 1),
+    Description VARCHAR(20) NOT NULL,
+    CONSTRAINT PK_ThisIsMemoryOptimised PRIMARY KEY NONCLUSTERED (Id)
+)
+WITH (MEMORY_OPTIMIZED = ON, DURABILITY = SCHEMA_AND_DATA);
+GO
