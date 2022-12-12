@@ -270,6 +270,12 @@ namespace Efrpg.Generators
                 AddIndexesToFilters(rawIndexes);
                 SetPrimaryKeys();
                 AddForeignKeysToFilters(rawForeignKeys);
+
+                if (Settings.IsEfCore6Plus())
+                {
+                    var rawMemoryOptimisedTables = DatabaseReader.ReadMemoryOptimisedTables();
+                    AddMemoryOptimisedTablesToFilters(rawMemoryOptimisedTables);
+                }
                 
                 if (Settings.IsEfCore7Plus())
                 {
@@ -629,6 +635,30 @@ namespace Efrpg.Generators
 
                     // Only store the one trigger name as EFCore 7 does not care what its name is. It only cares that there is one present.
                     t.TriggerName = trigger.TriggerName;
+                }
+            }
+        }
+
+        private void AddMemoryOptimisedTablesToFilters(List<RawMemoryOptimisedTable> memoryOptimisedTables)
+        {
+            if (memoryOptimisedTables == null || !memoryOptimisedTables.Any())
+                return;
+
+            foreach (var filterKeyValuePair in FilterList.GetFilters())
+            {
+                var filter = filterKeyValuePair.Value;
+
+                Table t = null;
+                foreach (var trigger in memoryOptimisedTables)
+                {
+                    // Lookup table
+                    if (t == null || t.DbName != trigger.TableName || t.Schema.DbName != trigger.SchemaName)
+                        t = filter.Tables.GetTable(trigger.TableName, trigger.SchemaName);
+
+                    if (t == null)
+                        continue;
+
+                    t.IsMemoryOptimised = true;
                 }
             }
         }

@@ -210,6 +210,11 @@ FROM INFORMATION_SCHEMA.triggers
 ORDER BY SchemaName, TableName, TriggerName;";
         }
 
+        protected override string[] MemoryOptimisedSQL()
+        {
+            return null;
+        }
+
         protected override string SynonymTableSQLSetup()
         {
             return string.Empty;

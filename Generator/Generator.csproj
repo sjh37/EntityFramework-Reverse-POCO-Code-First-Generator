@@ -105,6 +105,7 @@
     <Compile Include="LanguageMapping\IDatabaseToPropertyType.cs" />
     <Compile Include="OnConfiguration.cs" />
     <Compile Include="Readers\MinMaxValueCache.cs" />
+    <Compile Include="Readers\RawMemoryOptimisedTable.cs" />
     <Compile Include="Readers\RawSequence.cs" />
     <Compile Include="Readers\RawTrigger.cs" />
     <Compile Include="TemplateModels\Trigger.cs" />

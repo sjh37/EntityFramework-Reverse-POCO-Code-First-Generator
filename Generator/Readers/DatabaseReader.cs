@@ -42,6 +42,16 @@ namespace Efrpg.Readers
         protected abstract string EnumSQL(string table, string nameField, string valueField);
         protected abstract string SequenceSQL();
         protected abstract string TriggerSQL();
+        protected abstract string[] MemoryOptimisedSQL();
+
+        protected enum MemoryOptimised
+        {
+            CompatibilityLevel,
+            InMemorySupported,
+            TableList,
+            
+            Count // This is always the last value
+        }
 
         // Synonym
         protected abstract string SynonymTableSQLSetup();
@@ -936,6 +946,62 @@ namespace Efrpg.Readers
                 }
             }
 
+            return result;
+        }
+
+        public List<RawMemoryOptimisedTable> ReadMemoryOptimisedTables()
+        {
+            if (DatabaseReaderPlugin != null)
+                return DatabaseReaderPlugin.ReadMemoryOptimisedTables();
+
+            var result = new List<RawMemoryOptimisedTable>();
+            try
+            {
+                using (var conn = _factory.CreateConnection())
+                {
+                    if (conn == null)
+                        return result;
+
+                    conn.ConnectionString = Settings.ConnectionString;
+                    conn.Open();
+
+                    var cmd = GetCmd(conn);
+                    if (cmd == null)
+                        return result;
+
+                    var sql = MemoryOptimisedSQL();
+                    if (sql == null || sql.Length != (int) MemoryOptimised.Count)
+                        return result;
+
+                    cmd.CommandText = sql[(int) MemoryOptimised.CompatibilityLevel];
+                    var compatibilityLevel = Convert.ToInt16(cmd.ExecuteScalar());
+                    if(compatibilityLevel < 130)
+                        return result;
+
+                    cmd.CommandText = sql[(int) MemoryOptimised.InMemorySupported];
+                    var inMemorySupported = Convert.ToBoolean(cmd.ExecuteScalar());
+                    if(!inMemorySupported)
+                        return result;
+
+                    cmd.CommandText = sql[(int) MemoryOptimised.TableList];
+                    using (var rdr = cmd.ExecuteReader())
+                    {
+                        while (rdr.Read())
+                        {
+                            var index = new RawMemoryOptimisedTable
+                            (
+                                rdr["SchemaName"].ToString().Trim(),
+                                rdr["TableName"].ToString().Trim()
+                            );
+                            result.Add(index);
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // Memory optimised tables are not supported
+            }
             return result;
         }
 

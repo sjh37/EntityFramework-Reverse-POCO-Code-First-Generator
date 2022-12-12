@@ -5,13 +5,14 @@ namespace Efrpg.Readers
 {
     public interface IDatabaseReaderPlugin
     {
-        List<RawTable>            ReadTables();
-        List<RawForeignKey>       ReadForeignKeys();
-        List<RawIndex>            ReadIndexes();
-        List<RawExtendedProperty> ReadExtendedProperties();
-        List<RawStoredProcedure>  ReadStoredProcs();
-        List<RawSequence>         ReadSequences();
-        List<RawTrigger>          ReadTriggers();
+        List<RawTable>                ReadTables();
+        List<RawForeignKey>           ReadForeignKeys();
+        List<RawIndex>                ReadIndexes();
+        List<RawExtendedProperty>     ReadExtendedProperties();
+        List<RawStoredProcedure>      ReadStoredProcs();
+        List<RawSequence>             ReadSequences();
+        List<RawTrigger>              ReadTriggers();
+        List<RawMemoryOptimisedTable> ReadMemoryOptimisedTables();
 
         IDatabaseToPropertyType GetDatabaseToPropertyTypeMapping();
     }

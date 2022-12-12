@@ -342,12 +342,14 @@ namespace Efrpg.Generators
                 UseLazyLoadingProxies                  = Settings.UseLazyLoading && Settings.IsEfCore3Plus(),
                 SqlParameter                           = Settings.SqlParameter(),
                 Triggers                               = _tables.Where(x => !string.IsNullOrEmpty(x.Table.TriggerName))
-                                                                .Select(x => new Trigger { TableName = x.Table.NameHumanCase, TriggerName = x.Table.TriggerName }).ToList()
+                                                                .Select(x => new Trigger { TableName = x.Table.NameHumanCase, TriggerName = x.Table.TriggerName }).ToList(),
+                MemoryOptimisedTables                  = _tables.Where(x => x.Table.IsMemoryOptimised).Select(x => x.Table.NameHumanCase).ToList()
             };
 
-            data.hasIndexes   = data.indexes.Any();
-            data.hasTriggers  = data.Triggers.Any();
-            data.hasSequences = data.Sequences.Any();
+            data.hasIndexes               = data.indexes.Any();
+            data.hasTriggers              = data.Triggers.Any();
+            data.hasSequences             = data.Sequences.Any();
+            data.hasMemoryOptimisedTables = data.MemoryOptimisedTables.Any();
 
             var co = new CodeOutput(string.Empty, filename, "Database context", Settings.ContextFolder, _globalUsings);
             co.AddUsings(_template.DatabaseContextUsings(data));

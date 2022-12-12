@@ -76,6 +76,11 @@ namespace Efrpg.Readers
             return string.Empty;
         }
 
+        protected override string[] MemoryOptimisedSQL()
+        {
+            return null;
+        }
+
         protected override string SynonymTableSQLSetup()
         {
             return string.Empty;

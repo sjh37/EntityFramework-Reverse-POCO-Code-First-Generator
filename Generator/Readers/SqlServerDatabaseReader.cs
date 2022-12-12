@@ -495,6 +495,16 @@ WHERE T.type = 'TR'
 ORDER BY SchemaName, TableName, TriggerName;";
         }
 
+        protected override string[] MemoryOptimisedSQL()
+        {
+            return new string[]
+            {
+                "SELECT compatibility_level FROM sys.databases WHERE name = DB_NAME();",
+                "SELECT CAST(SERVERPROPERTY(N'IsXTPSupported') AS BIT) AS IsXTPSupported;",
+                "SELECT SCHEMA_NAME(schema_id) SchemaName, name TableName FROM sys.tables WHERE is_memory_optimized = 1;"
+            };
+        }
+
         protected override string SynonymTableSQLSetup()
         {
             return @"

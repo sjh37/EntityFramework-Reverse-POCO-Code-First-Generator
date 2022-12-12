@@ -322,6 +322,13 @@ using {{this}};{{#newline}}
 {{/each}}
 {{/if}}
 
+{{#if hasMemoryOptimisedTables}}
+{{#newline}}
+{{#each MemoryOptimisedTables}}
+        modelBuilder.Entity<{{this}}>().IsMemoryOptimized();{{#newline}}
+{{/each}}
+{{/if}}
+
 {{#if hasStoredProcs}}
 {{#newline}}
 {{#each storedProcs}}

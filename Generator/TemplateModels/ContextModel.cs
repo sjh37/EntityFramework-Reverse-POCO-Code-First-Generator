@@ -50,5 +50,7 @@ namespace Efrpg.TemplateModels
         public bool UseLazyLoadingProxies                                    { get; set; }
         public bool hasTriggers                                              { get; set; }
         public List<Trigger> Triggers                                        { get; set; }
+        public bool hasMemoryOptimisedTables                                 { get; set; }
+        public List<string> MemoryOptimisedTables                            { get; set; }
     }
 }

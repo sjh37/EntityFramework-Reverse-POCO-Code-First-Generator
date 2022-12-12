@@ -21,11 +21,13 @@ namespace Efrpg
         public bool UsesDictionary;
         public bool HasPrimaryKey;
         public bool RemoveTable;
+        public bool IsMemoryOptimised;
         public string AdditionalComment;
         public string PluralNameOverride;
         public string DbSetModifier = "public";
         public string BaseClasses;
         public string TriggerName;
+
 
         public List<Column> Columns;
         public List<PropertyAndComments> ReverseNavigationProperty;
