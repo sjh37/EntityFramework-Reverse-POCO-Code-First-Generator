@@ -325,7 +325,7 @@ using {{this}};{{#newline}}
 {{#if hasMemoryOptimisedTables}}
 {{#newline}}
 {{#each MemoryOptimisedTables}}
-        modelBuilder.Entity<{{this}}>().IsMemoryOptimized();{{#newline}}
+        modelBuilder.Entity<{{this}}>().ToTable(t => t.IsMemoryOptimized());{{#newline}}
 {{/each}}
 {{/if}}
 
