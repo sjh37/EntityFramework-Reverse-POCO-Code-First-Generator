@@ -1,14 +1,13 @@
 ﻿USE [master]
 GO
-/****** Object:  Database [EfrpgTest_Synonyms]    Script Date: 12/01/22 23:26:21 ******/
 CREATE DATABASE [EfrpgTest_Synonyms]
  CONTAINMENT = NONE
  ON  PRIMARY 
-( NAME = N'EfrpgTest_Synonyms', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL14.MSSQLSERVER\MSSQL\DATA\EfrpgTest_Synonyms.mdf' , SIZE = 8192KB , MAXSIZE = UNLIMITED, FILEGROWTH = 1024KB )
+( NAME = N'EfrpgTest_Synonyms', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL14.MSSQLSERVER\MSSQL\DATA\EfrpgTest_Synonyms.mdf' , SIZE = 8192KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
  LOG ON 
-( NAME = N'EfrpgTest_Synonyms_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL14.MSSQLSERVER\MSSQL\DATA\EfrpgTest_Synonyms.ldf' , SIZE = 1024KB , MAXSIZE = 2048GB , FILEGROWTH = 10%)
+( NAME = N'EfrpgTest_Synonyms_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL14.MSSQLSERVER\MSSQL\DATA\EfrpgTest_Synonyms_log.ldf' , SIZE = 8192KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
 GO
-ALTER DATABASE [EfrpgTest_Synonyms] SET COMPATIBILITY_LEVEL = 100
+ALTER DATABASE [EfrpgTest_Synonyms] SET COMPATIBILITY_LEVEL = 140
 GO
 IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
 begin
@@ -27,7 +26,7 @@ ALTER DATABASE [EfrpgTest_Synonyms] SET ARITHABORT OFF
 GO
 ALTER DATABASE [EfrpgTest_Synonyms] SET AUTO_CLOSE OFF 
 GO
-ALTER DATABASE [EfrpgTest_Synonyms] SET AUTO_SHRINK OFF 
+ALTER DATABASE [EfrpgTest_Synonyms] SET AUTO_SHRINK ON 
 GO
 ALTER DATABASE [EfrpgTest_Synonyms] SET AUTO_UPDATE_STATISTICS ON 
 GO
@@ -79,30 +78,22 @@ ALTER DATABASE [EfrpgTest_Synonyms] SET QUERY_STORE = OFF
 GO
 USE [EfrpgTest_Synonyms]
 GO
-/****** Object:  Schema [CustomSchema]    Script Date: 12/01/22 23:26:21 ******/
 CREATE SCHEMA [CustomSchema]
 GO
-/****** Object:  Schema [Stafford]    Script Date: 12/01/22 23:26:21 ******/
 CREATE SCHEMA [Stafford]
 GO
-/****** Object:  Schema [Synonyms]    Script Date: 12/01/22 23:26:21 ******/
 CREATE SCHEMA [Synonyms]
 GO
-/****** Object:  Synonym [CustomSchema].[CsvToIntWithSchema]    Script Date: 12/01/22 23:26:21 ******/
 CREATE SYNONYM [CustomSchema].[CsvToIntWithSchema] FOR [EfrpgTest].[CustomSchema].[CsvToIntWithSchema]
 GO
-/****** Object:  Synonym [Synonyms].[Child]    Script Date: 12/01/22 23:26:21 ******/
+CREATE SYNONYM [dbo].[CarWithDifferentSynonymName] FOR [EfrpgTest].[dbo].[Car]
+GO
 CREATE SYNONYM [Synonyms].[Child] FOR [EfrpgTest].[Synonyms].[Child]
 GO
-/****** Object:  Synonym [Synonyms].[Parent]    Script Date: 12/01/22 23:26:21 ******/
 CREATE SYNONYM [Synonyms].[Parent] FOR [EfrpgTest].[Synonyms].[Parent]
 GO
-/****** Object:  Synonym [Synonyms].[SimpleStoredProc]    Script Date: 12/01/22 23:26:21 ******/
 CREATE SYNONYM [Synonyms].[SimpleStoredProc] FOR [EfrpgTest].[Synonyms].[SimpleStoredProc]
 GO
-CREATE SYNONYM [CarWithDifferentSynonymName] FOR [EfrpgTest].[dbo].[Car]
-GO
-/****** Object:  UserDefinedFunction [dbo].[CsvToInt]    Script Date: 12/01/22 23:26:21 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -143,7 +134,6 @@ BEGIN
 	RETURN
 END
 GO
-/****** Object:  Table [dbo].[UserInfo]    Script Date: 12/01/22 23:26:21 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -157,7 +147,6 @@ CREATE TABLE [dbo].[UserInfo](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[UserInfoAttributes]    Script Date: 12/01/22 23:26:21 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
