@@ -598,6 +598,8 @@ namespace TestDatabaseStandard
             modelBuilder.ApplyConfiguration(new WVN_VArticleConfiguration());
             modelBuilder.ApplyConfiguration(new БрендытовараConfiguration());
 
+            modelBuilder.Entity<ThisIsMemoryOptimised>().IsMemoryOptimized();
+
             modelBuilder.Entity<ColourPivotReturnModel>().HasNoKey();
             modelBuilder.Entity<ColumnNameAndTypesProcReturnModel>().HasNoKey();
             modelBuilder.Entity<DboProcDataFromFfrsReturnModel>().HasNoKey();
