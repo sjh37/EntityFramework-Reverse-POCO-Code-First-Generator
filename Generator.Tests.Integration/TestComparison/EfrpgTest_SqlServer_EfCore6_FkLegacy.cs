@@ -592,6 +592,8 @@ namespace Efrpg.V3TestE6
             modelBuilder.ApplyConfiguration(new WVN_VArticleConfiguration());
             modelBuilder.ApplyConfiguration(new БрендытовараConfiguration());
 
+            modelBuilder.Entity<ThisIsMemoryOptimised>().IsMemoryOptimized();
+
             modelBuilder.Entity<ColourPivotReturnModel>().HasNoKey();
             modelBuilder.Entity<DboProcDataFromFfrsReturnModel>().HasNoKey();
             modelBuilder.Entity<DboProcDataFromFfrsAndDboReturnModel>().HasNoKey();

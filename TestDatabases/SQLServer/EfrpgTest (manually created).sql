@@ -602,6 +602,32 @@ EXEC sys.sp_addextendedproperty
     @level1type = N'TABLE',  @level1name = 'ColumnNameAndTypes';
 GO
 
+CREATE OR ALTER PROCEDURE ColumnNameAndTypesProc
+AS
+BEGIN
+    SELECT someDate,
+           Obs,
+           [static],
+           [readonly],
+           areal,
+           afloat,
+           afloat8,
+           afloat20,
+           afloat24,
+           afloat53,
+           adecimal,
+           adecimal_19_4,
+           adecimal_10_3,
+           anumeric,
+           anumeric_5_2,
+           anumeric_11_3,
+           amoney,
+           asmallmoney,
+           GeographyType,
+           GeometryType
+    FROM ColumnNameAndTypes;
+END;
+GO
 
 -- This table is unusable by EF as all the columns are NULL.
 -- We should see this table generated inside a comment, but with a comment that it is unusable

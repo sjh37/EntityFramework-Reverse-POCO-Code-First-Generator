@@ -613,6 +613,8 @@ namespace Efrpg.V4TestE6
             modelBuilder.ApplyConfiguration(new WVN_v_ArticleConfiguration());
             modelBuilder.ApplyConfiguration(new БрендытовараConfiguration());
 
+            modelBuilder.Entity<ThisIsMemoryOptimised>().IsMemoryOptimized();
+
             modelBuilder.Entity<ColourPivotReturnModel>().HasNoKey();
             modelBuilder.Entity<dbo_proc_data_from_ffrsReturnModel>().HasNoKey();
             modelBuilder.Entity<dbo_proc_data_from_ffrs_and_dboReturnModel>().HasNoKey();

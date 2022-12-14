@@ -592,6 +592,8 @@ namespace Efrpg.V3TestE7
             modelBuilder.ApplyConfiguration(new WVN_VArticleConfiguration());
             modelBuilder.ApplyConfiguration(new БрендытовараConfiguration());
 
+            modelBuilder.Entity<ThisIsMemoryOptimised>().ToTable(t => t.IsMemoryOptimized());
+
             modelBuilder.Entity<CalculatedColumnNotNull>().ToTable(tb => tb.HasTrigger("CalculatedColumnAuditUpdate"));
 
             modelBuilder.Entity<ColourPivotReturnModel>().HasNoKey();
