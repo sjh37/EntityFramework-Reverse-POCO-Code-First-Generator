@@ -10,18 +10,20 @@ namespace Efrpg.FileManagement
         private readonly GeneratedTextTransformation _outer;
         private readonly Dictionary<string, IFileManager> _fileManagers;
         private IFileManager _fileManager;
-        private bool _writeToOuter;
         private VisualStudioFileManager _visualStudioFileManager;
+        private FileAuditService _auditService;
+        private bool _writeToOuter;
         public bool ForceWriteToOuter;
 
         public FileManagementService(GeneratedTextTransformation outer)
         {
             if (outer == null) throw new ArgumentNullException(nameof(outer));
 
-            _outer          = outer;
-            _fileManagers   = new Dictionary<string, IFileManager>();
-            _fileManager    = null;
+            _outer = outer;
+            _fileManagers = new Dictionary<string, IFileManager>();
+            _fileManager = null;
             _visualStudioFileManager = null;
+            _auditService = null;
         }
 
         public static void DeleteFile(string filename)
@@ -42,6 +44,7 @@ namespace Efrpg.FileManagement
             Settings.FilterCount = filters.Count;
 
             _writeToOuter = Settings.GenerateSingleDbContext && !Settings.GenerateSeparateFiles;
+            _auditService = new FileAuditService();
 
             // For debug
             /*var a = _writeToOuter;
@@ -53,7 +56,7 @@ namespace Efrpg.FileManagement
 
             if (fileManagerType == typeof(VisualStudioFileManager))
             {
-                _visualStudioFileManager = (VisualStudioFileManager) Activator.CreateInstance(fileManagerType);
+                _visualStudioFileManager = (VisualStudioFileManager)Activator.CreateInstance(fileManagerType);
                 _visualStudioFileManager.Init(_outer);
 
                 // Switch to the EfCoreFileManager for the rest
@@ -62,7 +65,7 @@ namespace Efrpg.FileManagement
 
             foreach (var filter in filters)
             {
-                var fileManager = (IFileManager) Activator.CreateInstance(fileManagerType);
+                var fileManager = (IFileManager)Activator.CreateInstance(fileManagerType);
                 fileManager.Init(_outer);
                 if (!string.IsNullOrWhiteSpace(filter.Key))
                     fileManager.StartNewFile(filter.Key + Settings.FileExtension);
@@ -111,6 +114,8 @@ namespace Efrpg.FileManagement
 
         public void Process(bool split)
         {
+            _auditService.WriteAuditFile();
+
             foreach (var fileManager in _fileManagers)
             {
                 if (_visualStudioFileManager == null)
@@ -119,8 +124,8 @@ namespace Efrpg.FileManagement
                     continue;
                 }
 
-                if(fileManager.Value.GetType() == typeof(EfCoreFileManager))
-                    ((EfCoreFileManager) fileManager.Value).ProcessToAnotherFileManager(_visualStudioFileManager, _outer);
+                if (fileManager.Value.GetType() == typeof(EfCoreFileManager))
+                    ((EfCoreFileManager)fileManager.Value).ProcessToAnotherFileManager(_visualStudioFileManager, _outer);
                 else
                     fileManager.Value.Process(split);
             }
@@ -131,6 +136,7 @@ namespace Efrpg.FileManagement
         public void StartNewFile(string name)
         {
             _fileManager.StartNewFile(name);
+            _auditService.AddFile(name);
         }
     }
 }
