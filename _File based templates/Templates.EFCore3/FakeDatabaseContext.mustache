@@ -227,13 +227,13 @@
 {{#if CreateDbSetForReturnModel}}
     public DbSet<{{ReturnModelName}}> {{ReturnModelName}} { get; set; }{{#newline}}
 {{/if}}
-    public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
     {{{#newline}}
         int procResult;{{#newline}}
         return {{FunctionName}}({{WriteStoredProcFunctionOverloadCall}});{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsTrue}}){{#newline}}
+    public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsTrueFalse}}){{#newline}}
     {{{#newline}}
 {{WriteStoredProcFunctionSetSqlParametersTrue}}
         procResult = 0;{{#newline}}
@@ -245,7 +245,7 @@
     // {{FunctionName}}Async() cannot be created due to having out parameters, or is relying on the procedure result ({{ReturnType}}){{#newline}}
 {{#newline}}
 {{#else}}
-    public Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    public Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
     {{{#newline}}
         int procResult;{{#newline}}
         return Task.FromResult({{FunctionName}}({{WriteStoredProcFunctionOverloadCall}}));{{#newline}}
@@ -254,7 +254,7 @@
 
 {{#else}}
 {{#newline}}
-    public int {{FunctionName}}({{WriteStoredProcFunctionParamsTrue}}){{#newline}}
+    public int {{FunctionName}}({{WriteStoredProcFunctionParamsTrueFalse}}){{#newline}}
     {{{#newline}}
 {{WriteStoredProcFunctionSetSqlParametersTrue}}
         return 0;{{#newline}}
@@ -263,7 +263,7 @@
 {{#if AsyncFunctionCannotBeCreated}}
     // {{FunctionName}}Async() cannot be created due to having out parameters, or is relying on the procedure result ({{ReturnType}}){{#newline}}
 {{#else}}
-    public Task<int> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    public Task<int> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
     {{{#newline}}
 {{WriteStoredProcFunctionSetSqlParametersTrue}}
         return Task.FromResult(0);{{#newline}}
@@ -281,7 +281,7 @@
 {{#each tableValuedFunctions}}
 {{#newline}}
     // {{Schema}}.{{Name}}{{#newline}}
-    public IQueryable<{{ReturnClassName}}> {{ExecName}}({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    public IQueryable<{{ReturnClassName}}> {{ExecName}}({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
     {{{#newline}}
         return new List<{{ReturnClassName}}>().AsQueryable();{{#newline}}
     }{{#newline}}
@@ -294,7 +294,7 @@
 {{#each scalarValuedFunctions}}
 {{#newline}}
     // {{Schema}}.{{Name}}{{#newline}}
-    public {{ReturnType}} {{ExecName}}({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    public {{ReturnType}} {{ExecName}}({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
     {{{#newline}}
         return default({{ReturnType}});{{#newline}}
     }{{#newline}}

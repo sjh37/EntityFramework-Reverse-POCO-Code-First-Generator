@@ -423,14 +423,14 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
 
         // Stored Procedures
 
-        public int AddTwoValues(int? a, int? b)
+        public int AddTwoValues(int? a = null, int? b = null)
         {
             return 0;
         }
 
         // AddTwoValuesAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int AddTwoValuesWithResult(int? a, int? b, out int? result, out int? result2)
+        public int AddTwoValuesWithResult(int? a = null, int? b = null, out int? result = null, out int? result2 = null)
         {
             result = default(int);
             result2 = default(int);
@@ -439,14 +439,14 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
 
         // AddTwoValuesWithResultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int Alpha_Overclock(DateTime? parameter)
+        public int Alpha_Overclock(DateTime? parameter = null)
         {
             return 0;
         }
 
         // Alpha_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int App_UspCmtUserFsrUpdate(int? userId, int? fsrId, out int? ufsrId)
+        public int App_UspCmtUserFsrUpdate(int? userId = null, int? fsrId = null, out int? ufsrId = null)
         {
             ufsrId = default(int);
             return 0;
@@ -461,7 +461,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
 
         // ASimpleExampleAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int Beta_Overclock(DateTime? parameter)
+        public int Beta_Overclock(DateTime? parameter = null)
         {
             return 0;
         }
@@ -469,32 +469,32 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         // Beta_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         public DbSet<C182Test2ReturnModel> C182Test2ReturnModel { get; set; }
-        public C182Test2ReturnModel C182Test2(int? flag)
+        public C182Test2ReturnModel C182Test2(int? flag = null)
         {
             int procResult;
-            return C182Test2(flag, out procResult);
+            return C182Test2(out procResult, flag);
         }
 
-        public C182Test2ReturnModel C182Test2(int? flag, out int procResult)
+        public C182Test2ReturnModel C182Test2(out int procResult, int? flag = null)
         {
             procResult = 0;
             return new C182Test2ReturnModel();
         }
 
-        public Task<C182Test2ReturnModel> C182Test2Async(int? flag)
+        public Task<C182Test2ReturnModel> C182Test2Async(int? flag = null)
         {
             int procResult;
-            return Task.FromResult(C182Test2(flag, out procResult));
+            return Task.FromResult(C182Test2(out procResult, flag));
         }
 
         public DbSet<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsCompleteReturnModel { get; set; }
-        public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete)
+        public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId = null, out bool? isApplicationComplete = null)
         {
             int procResult;
-            return CheckIfApplicationIsComplete(applicationId, out isApplicationComplete, out procResult);
+            return CheckIfApplicationIsComplete(out procResult, applicationId, out isApplicationComplete);
         }
 
-        public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete, out int procResult)
+        public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(out int procResult, int? applicationId = null, out bool? isApplicationComplete = null)
         {
             isApplicationComplete = default(bool);
             procResult = 0;
@@ -508,7 +508,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         public List<ColourPivotReturnModel> ColourPivot()
         {
             int procResult;
-            return ColourPivot(out procResult);
+            return ColourPivot(out procResu);
         }
 
         public List<ColourPivotReturnModel> ColourPivot(out int procResult)
@@ -520,14 +520,14 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         public Task<List<ColourPivotReturnModel>> ColourPivotAsync()
         {
             int procResult;
-            return Task.FromResult(ColourPivot(out procResult));
+            return Task.FromResult(ColourPivot(out procResu));
         }
 
         public DbSet<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProcReturnModel { get; set; }
         public List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc()
         {
             int procResult;
-            return ColumnNameAndTypesProc(out procResult);
+            return ColumnNameAndTypesProc(out procResu);
         }
 
         public List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc(out int procResult)
@@ -539,10 +539,10 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         public Task<List<ColumnNameAndTypesProcReturnModel>> ColumnNameAndTypesProcAsync()
         {
             int procResult;
-            return Task.FromResult(ColumnNameAndTypesProc(out procResult));
+            return Task.FromResult(ColumnNameAndTypesProc(out procResu));
         }
 
-        public int ConvertToString(int? someValue, out string someString)
+        public int ConvertToString(int? someValue = null, out string someString)
         {
             someString = default(string);
             return 0;
@@ -551,29 +551,29 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         // ConvertToStringAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         public DbSet<DboProcDataFromFfrsReturnModel> DboProcDataFromFfrsReturnModel { get; set; }
-        public List<DboProcDataFromFfrsReturnModel> DboProcDataFromFfrs(int? maxId)
+        public List<DboProcDataFromFfrsReturnModel> DboProcDataFromFfrs(int? maxId = null)
         {
             int procResult;
-            return DboProcDataFromFfrs(maxId, out procResult);
+            return DboProcDataFromFfrs(out procResult, maxId);
         }
 
-        public List<DboProcDataFromFfrsReturnModel> DboProcDataFromFfrs(int? maxId, out int procResult)
+        public List<DboProcDataFromFfrsReturnModel> DboProcDataFromFfrs(out int procResult, int? maxId = null)
         {
             procResult = 0;
             return new List<DboProcDataFromFfrsReturnModel>();
         }
 
-        public Task<List<DboProcDataFromFfrsReturnModel>> DboProcDataFromFfrsAsync(int? maxId)
+        public Task<List<DboProcDataFromFfrsReturnModel>> DboProcDataFromFfrsAsync(int? maxId = null)
         {
             int procResult;
-            return Task.FromResult(DboProcDataFromFfrs(maxId, out procResult));
+            return Task.FromResult(DboProcDataFromFfrs(out procResult, maxId));
         }
 
         public DbSet<DboProcDataFromFfrsAndDboReturnModel> DboProcDataFromFfrsAndDboReturnModel { get; set; }
         public List<DboProcDataFromFfrsAndDboReturnModel> DboProcDataFromFfrsAndDbo()
         {
             int procResult;
-            return DboProcDataFromFfrsAndDbo(out procResult);
+            return DboProcDataFromFfrsAndDbo(out procResu);
         }
 
         public List<DboProcDataFromFfrsAndDboReturnModel> DboProcDataFromFfrsAndDbo(out int procResult)
@@ -585,14 +585,14 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         public Task<List<DboProcDataFromFfrsAndDboReturnModel>> DboProcDataFromFfrsAndDboAsync()
         {
             int procResult;
-            return Task.FromResult(DboProcDataFromFfrsAndDbo(out procResult));
+            return Task.FromResult(DboProcDataFromFfrsAndDbo(out procResu));
         }
 
         public DbSet<DsOpeProcReturnModel> DsOpeProcReturnModel { get; set; }
         public List<DsOpeProcReturnModel> DsOpeProc()
         {
             int procResult;
-            return DsOpeProc(out procResult);
+            return DsOpeProc(out procResu);
         }
 
         public List<DsOpeProcReturnModel> DsOpeProc(out int procResult)
@@ -604,33 +604,33 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         public Task<List<DsOpeProcReturnModel>> DsOpeProcAsync()
         {
             int procResult;
-            return Task.FromResult(DsOpeProc(out procResult));
+            return Task.FromResult(DsOpeProc(out procResu));
         }
 
         public DbSet<FFRS_CvDataReturnModel> FFRS_CvDataReturnModel { get; set; }
-        public List<FFRS_CvDataReturnModel> FFRS_CvData(int? maxId)
+        public List<FFRS_CvDataReturnModel> FFRS_CvData(int? maxId = null)
         {
             int procResult;
-            return FFRS_CvData(maxId, out procResult);
+            return FFRS_CvData(out procResult, maxId);
         }
 
-        public List<FFRS_CvDataReturnModel> FFRS_CvData(int? maxId, out int procResult)
+        public List<FFRS_CvDataReturnModel> FFRS_CvData(out int procResult, int? maxId = null)
         {
             procResult = 0;
             return new List<FFRS_CvDataReturnModel>();
         }
 
-        public Task<List<FFRS_CvDataReturnModel>> FFRS_CvDataAsync(int? maxId)
+        public Task<List<FFRS_CvDataReturnModel>> FFRS_CvDataAsync(int? maxId = null)
         {
             int procResult;
-            return Task.FromResult(FFRS_CvData(maxId, out procResult));
+            return Task.FromResult(FFRS_CvData(out procResult, maxId));
         }
 
         public DbSet<FFRS_DataFromDboReturnModel> FFRS_DataFromDboReturnModel { get; set; }
         public List<FFRS_DataFromDboReturnModel> FFRS_DataFromDbo()
         {
             int procResult;
-            return FFRS_DataFromDbo(out procResult);
+            return FFRS_DataFromDbo(out procResu);
         }
 
         public List<FFRS_DataFromDboReturnModel> FFRS_DataFromDbo(out int procResult)
@@ -642,14 +642,14 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         public Task<List<FFRS_DataFromDboReturnModel>> FFRS_DataFromDboAsync()
         {
             int procResult;
-            return Task.FromResult(FFRS_DataFromDbo(out procResult));
+            return Task.FromResult(FFRS_DataFromDbo(out procResu));
         }
 
         public DbSet<FFRS_DataFromDboAndFfrsReturnModel> FFRS_DataFromDboAndFfrsReturnModel { get; set; }
         public List<FFRS_DataFromDboAndFfrsReturnModel> FFRS_DataFromDboAndFfrs()
         {
             int procResult;
-            return FFRS_DataFromDboAndFfrs(out procResult);
+            return FFRS_DataFromDboAndFfrs(out procResu);
         }
 
         public List<FFRS_DataFromDboAndFfrsReturnModel> FFRS_DataFromDboAndFfrs(out int procResult)
@@ -661,14 +661,14 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         public Task<List<FFRS_DataFromDboAndFfrsReturnModel>> FFRS_DataFromDboAndFfrsAsync()
         {
             int procResult;
-            return Task.FromResult(FFRS_DataFromDboAndFfrs(out procResult));
+            return Task.FromResult(FFRS_DataFromDboAndFfrs(out procResu));
         }
 
         public DbSet<FkTest_HelloReturnModel> FkTest_HelloReturnModel { get; set; }
         public List<FkTest_HelloReturnModel> FkTest_Hello()
         {
             int procResult;
-            return FkTest_Hello(out procResult);
+            return FkTest_Hello(out procResu);
         }
 
         public List<FkTest_HelloReturnModel> FkTest_Hello(out int procResult)
@@ -680,29 +680,29 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         public Task<List<FkTest_HelloReturnModel>> FkTest_HelloAsync()
         {
             int procResult;
-            return Task.FromResult(FkTest_Hello(out procResult));
+            return Task.FromResult(FkTest_Hello(out procResu));
         }
 
         public DbSet<GetSmallDecimalTestReturnModel> GetSmallDecimalTestReturnModel { get; set; }
-        public List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId)
+        public List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId = null)
         {
             int procResult;
-            return GetSmallDecimalTest(maxId, out procResult);
+            return GetSmallDecimalTest(out procResult, maxId);
         }
 
-        public List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId, out int procResult)
+        public List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(out int procResult, int? maxId = null)
         {
             procResult = 0;
             return new List<GetSmallDecimalTestReturnModel>();
         }
 
-        public Task<List<GetSmallDecimalTestReturnModel>> GetSmallDecimalTestAsync(int? maxId)
+        public Task<List<GetSmallDecimalTestReturnModel>> GetSmallDecimalTestAsync(int? maxId = null)
         {
             int procResult;
-            return Task.FromResult(GetSmallDecimalTest(maxId, out procResult));
+            return Task.FromResult(GetSmallDecimalTest(out procResult, maxId));
         }
 
-        public int InsertRecord(string data, out int? insertedId)
+        public int InsertRecord(string data, out int? insertedId = null)
         {
             insertedId = default(int);
             return 0;
@@ -710,7 +710,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
 
         // InsertRecordAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int InsertRecordThree(string data, out int? insertedId, int? someId, out int? anotherInsertedId)
+        public int InsertRecordThree(string data, out int? insertedId = null, int? someId = null, out int? anotherInsertedId = null)
         {
             insertedId = default(int);
             anotherInsertedId = default(int);
@@ -719,7 +719,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
 
         // InsertRecordThreeAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int InsertRecordTwo(string data, out int? insertedId, out int? anotherInsertedId)
+        public int InsertRecordTwo(string data, out int? insertedId = null, out int? anotherInsertedId = null)
         {
             insertedId = default(int);
             anotherInsertedId = default(int);
@@ -728,7 +728,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
 
         // InsertRecordTwoAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int MinTripSequenceStart(out DateTime? minTripSequenceStartParam)
+        public int MinTripSequenceStart(out DateTime? minTripSequenceStartParam = null)
         {
             minTripSequenceStartParam = default(DateTime);
             return 0;
@@ -736,7 +736,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
 
         // MinTripSequenceStartAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int MinTripSequenceStartNull(out DateTime? minTripSequenceStartParam)
+        public int MinTripSequenceStartNull(out DateTime? minTripSequenceStartParam = null)
         {
             minTripSequenceStartParam = default(DateTime);
             return 0;
@@ -751,14 +751,14 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
 
         // NvarcharTestAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int Omega_Overclock(DateTime? parameter)
+        public int Omega_Overclock(DateTime? parameter = null)
         {
             return 0;
         }
 
         // Omega_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int ProcTestDecimalOutput(out decimal? perfectNumber)
+        public int ProcTestDecimalOutput(out decimal? perfectNumber = null)
         {
             perfectNumber = default(decimal);
             return 0;
@@ -766,7 +766,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
 
         // ProcTestDecimalOutputAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int ProcTestDecimalOutputV2(out decimal? perfectNumber)
+        public int ProcTestDecimalOutputV2(out decimal? perfectNumber = null)
         {
             perfectNumber = default(decimal);
             return 0;
@@ -774,7 +774,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
 
         // ProcTestDecimalOutputV2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int ProcTestDecimalOutputV3Default(out decimal? perfectNumber)
+        public int ProcTestDecimalOutputV3Default(out decimal? perfectNumber = null)
         {
             perfectNumber = default(decimal);
             return 0;
@@ -786,7 +786,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         public List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams()
         {
             int procResult;
-            return SpatialTypesNoParams(out procResult);
+            return SpatialTypesNoParams(out procResu);
         }
 
         public List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams(out int procResult)
@@ -798,17 +798,17 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         public Task<List<SpatialTypesNoParamsReturnModel>> SpatialTypesNoParamsAsync()
         {
             int procResult;
-            return Task.FromResult(SpatialTypesNoParams(out procResult));
+            return Task.FromResult(SpatialTypesNoParams(out procResu));
         }
 
         public DbSet<SpatialTypesWithParamsReturnModel> SpatialTypesWithParamsReturnModel { get; set; }
         public List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
         {
             int procResult;
-            return SpatialTypesWithParams(geometry, geography, out procResult);
+            return SpatialTypesWithParams(out procResult, geometry, geography);
         }
 
-        public List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, out int procResult)
+        public List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(out int procResult, NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
         {
             procResult = 0;
             return new List<SpatialTypesWithParamsReturnModel>();
@@ -817,52 +817,52 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         public Task<List<SpatialTypesWithParamsReturnModel>> SpatialTypesWithParamsAsync(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
         {
             int procResult;
-            return Task.FromResult(SpatialTypesWithParams(geometry, geography, out procResult));
+            return Task.FromResult(SpatialTypesWithParams(out procResult, geometry, geography));
         }
 
         public DbSet<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsReturnModel { get; set; }
-        public StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar)
+        public StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar = null)
         {
             int procResult;
-            return StpMultipleIdenticalResults(someVar, out procResult);
+            return StpMultipleIdenticalResults(out procResult, someVar);
         }
 
-        public StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar, out int procResult)
+        public StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(out int procResult, int? someVar = null)
         {
             procResult = 0;
             return new StpMultipleIdenticalResultsReturnModel();
         }
 
-        public Task<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsAsync(int? someVar)
+        public Task<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsAsync(int? someVar = null)
         {
             int procResult;
-            return Task.FromResult(StpMultipleIdenticalResults(someVar, out procResult));
+            return Task.FromResult(StpMultipleIdenticalResults(out procResult, someVar));
         }
 
         public DbSet<StpMultipleMultipleResultsWithParamsReturnModel> StpMultipleMultipleResultsWithParamsReturnModel { get; set; }
-        public StpMultipleMultipleResultsWithParamsReturnModel StpMultipleMultipleResultsWithParams(int? firstVal, int? secondVal, int? thirdVal)
+        public StpMultipleMultipleResultsWithParamsReturnModel StpMultipleMultipleResultsWithParams(int? firstVal = null, int? secondVal = null, int? thirdVal = null)
         {
             int procResult;
-            return StpMultipleMultipleResultsWithParams(firstVal, secondVal, thirdVal, out procResult);
+            return StpMultipleMultipleResultsWithParams(out procResult, firstVal, secondVal, thirdVal);
         }
 
-        public StpMultipleMultipleResultsWithParamsReturnModel StpMultipleMultipleResultsWithParams(int? firstVal, int? secondVal, int? thirdVal, out int procResult)
+        public StpMultipleMultipleResultsWithParamsReturnModel StpMultipleMultipleResultsWithParams(out int procResult, int? firstVal = null, int? secondVal = null, int? thirdVal = null)
         {
             procResult = 0;
             return new StpMultipleMultipleResultsWithParamsReturnModel();
         }
 
-        public Task<StpMultipleMultipleResultsWithParamsReturnModel> StpMultipleMultipleResultsWithParamsAsync(int? firstVal, int? secondVal, int? thirdVal)
+        public Task<StpMultipleMultipleResultsWithParamsReturnModel> StpMultipleMultipleResultsWithParamsAsync(int? firstVal = null, int? secondVal = null, int? thirdVal = null)
         {
             int procResult;
-            return Task.FromResult(StpMultipleMultipleResultsWithParams(firstVal, secondVal, thirdVal, out procResult));
+            return Task.FromResult(StpMultipleMultipleResultsWithParams(out procResult, firstVal, secondVal, thirdVal));
         }
 
         public DbSet<StpMultipleResultsReturnModel> StpMultipleResultsReturnModel { get; set; }
         public StpMultipleResultsReturnModel StpMultipleResults()
         {
             int procResult;
-            return StpMultipleResults(out procResult);
+            return StpMultipleResults(out procResu);
         }
 
         public StpMultipleResultsReturnModel StpMultipleResults(out int procResult)
@@ -874,33 +874,33 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         public Task<StpMultipleResultsReturnModel> StpMultipleResultsAsync()
         {
             int procResult;
-            return Task.FromResult(StpMultipleResults(out procResult));
+            return Task.FromResult(StpMultipleResults(out procResu));
         }
 
         public DbSet<StpMultipleResultsWithParamsReturnModel> StpMultipleResultsWithParamsReturnModel { get; set; }
-        public StpMultipleResultsWithParamsReturnModel StpMultipleResultsWithParams(int? firstVal, int? secondVal)
+        public StpMultipleResultsWithParamsReturnModel StpMultipleResultsWithParams(int? firstVal = null, int? secondVal = null)
         {
             int procResult;
-            return StpMultipleResultsWithParams(firstVal, secondVal, out procResult);
+            return StpMultipleResultsWithParams(out procResult, firstVal, secondVal);
         }
 
-        public StpMultipleResultsWithParamsReturnModel StpMultipleResultsWithParams(int? firstVal, int? secondVal, out int procResult)
+        public StpMultipleResultsWithParamsReturnModel StpMultipleResultsWithParams(out int procResult, int? firstVal = null, int? secondVal = null)
         {
             procResult = 0;
             return new StpMultipleResultsWithParamsReturnModel();
         }
 
-        public Task<StpMultipleResultsWithParamsReturnModel> StpMultipleResultsWithParamsAsync(int? firstVal, int? secondVal)
+        public Task<StpMultipleResultsWithParamsReturnModel> StpMultipleResultsWithParamsAsync(int? firstVal = null, int? secondVal = null)
         {
             int procResult;
-            return Task.FromResult(StpMultipleResultsWithParams(firstVal, secondVal, out procResult));
+            return Task.FromResult(StpMultipleResultsWithParams(out procResult, firstVal, secondVal));
         }
 
         public DbSet<StpNoParamsTestReturnModel> StpNoParamsTestReturnModel { get; set; }
         public List<StpNoParamsTestReturnModel> StpNoParamsTest()
         {
             int procResult;
-            return StpNoParamsTest(out procResult);
+            return StpNoParamsTest(out procResu);
         }
 
         public List<StpNoParamsTestReturnModel> StpNoParamsTest(out int procResult)
@@ -912,7 +912,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         public Task<List<StpNoParamsTestReturnModel>> StpNoParamsTestAsync()
         {
             int procResult;
-            return Task.FromResult(StpNoParamsTest(out procResult));
+            return Task.FromResult(StpNoParamsTest(out procResu));
         }
 
         public int StpNoReturnFields()
@@ -923,32 +923,32 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         // StpNoReturnFieldsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         public DbSet<StpNullableParamsTestReturnModel> StpNullableParamsTestReturnModel { get; set; }
-        public List<StpNullableParamsTestReturnModel> StpNullableParamsTest(int? aVal, int? bVal)
+        public List<StpNullableParamsTestReturnModel> StpNullableParamsTest(int? aVal = null, int? bVal = null)
         {
             int procResult;
-            return StpNullableParamsTest(aVal, bVal, out procResult);
+            return StpNullableParamsTest(out procResult, aVal, bVal);
         }
 
-        public List<StpNullableParamsTestReturnModel> StpNullableParamsTest(int? aVal, int? bVal, out int procResult)
+        public List<StpNullableParamsTestReturnModel> StpNullableParamsTest(out int procResult, int? aVal = null, int? bVal = null)
         {
             procResult = 0;
             return new List<StpNullableParamsTestReturnModel>();
         }
 
-        public Task<List<StpNullableParamsTestReturnModel>> StpNullableParamsTestAsync(int? aVal, int? bVal)
+        public Task<List<StpNullableParamsTestReturnModel>> StpNullableParamsTestAsync(int? aVal = null, int? bVal = null)
         {
             int procResult;
-            return Task.FromResult(StpNullableParamsTest(aVal, bVal, out procResult));
+            return Task.FromResult(StpNullableParamsTest(out procResult, aVal, bVal));
         }
 
         public DbSet<StpTestReturnModel> StpTestReturnModel { get; set; }
-        public List<StpTestReturnModel> StpTest(string strDateFrom, string strDateTo, out bool? retBool)
+        public List<StpTestReturnModel> StpTest(string strDateFrom, string strDateTo, out bool? retBool = null)
         {
             int procResult;
-            return StpTest(strDateFrom, strDateTo, out retBool, out procResult);
+            return StpTest(out procResult, strDateFrom, strDateTo, out retBool);
         }
 
-        public List<StpTestReturnModel> StpTest(string strDateFrom, string strDateTo, out bool? retBool, out int procResult)
+        public List<StpTestReturnModel> StpTest(out int procResult, string strDateFrom, string strDateTo, out bool? retBool = null)
         {
             retBool = default(bool);
             procResult = 0;
@@ -962,10 +962,10 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         public List<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTest(string strDateFrom, string strDateTo)
         {
             int procResult;
-            return StpTestUnderscoreTest(strDateFrom, strDateTo, out procResult);
+            return StpTestUnderscoreTest(out procResult, strDateFrom, strDateTo);
         }
 
-        public List<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTest(string strDateFrom, string strDateTo, out int procResult)
+        public List<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTest(out int procResult, string strDateFrom, string strDateTo)
         {
             procResult = 0;
             return new List<StpTestUnderscoreTestReturnModel>();
@@ -974,17 +974,17 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         public Task<List<StpTestUnderscoreTestReturnModel>> StpTestUnderscoreTestAsync(string strDateFrom, string strDateTo)
         {
             int procResult;
-            return Task.FromResult(StpTestUnderscoreTest(strDateFrom, strDateTo, out procResult));
+            return Task.FromResult(StpTestUnderscoreTest(out procResult, strDateFrom, strDateTo));
         }
 
-        public int StupidStoredProcedureParams(string reqType, short? dept, short? @class, short? item)
+        public int StupidStoredProcedureParams(string reqType, short? dept = null, short? @class = null, short? item = null)
         {
             return 0;
         }
 
         // StupidStoredProcedureParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int StupidStoredProcedureParams2(string @override, short? @readonly, short? @class, short? @enum)
+        public int StupidStoredProcedureParams2(string @override, short? @readonly = null, short? @class = null, short? @enum = null)
         {
             return 0;
         }
@@ -992,29 +992,29 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         // StupidStoredProcedureParams2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         public DbSet<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProcReturnModel { get; set; }
-        public List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt)
+        public List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt = null)
         {
             int procResult;
-            return Synonyms_SimpleStoredProc(inputInt, out procResult);
+            return Synonyms_SimpleStoredProc(out procResult, inputInt);
         }
 
-        public List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt, out int procResult)
+        public List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(out int procResult, int? inputInt = null)
         {
             procResult = 0;
             return new List<Synonyms_SimpleStoredProcReturnModel>();
         }
 
-        public Task<List<Synonyms_SimpleStoredProcReturnModel>> Synonyms_SimpleStoredProcAsync(int? inputInt)
+        public Task<List<Synonyms_SimpleStoredProcReturnModel>> Synonyms_SimpleStoredProcAsync(int? inputInt = null)
         {
             int procResult;
-            return Task.FromResult(Synonyms_SimpleStoredProc(inputInt, out procResult));
+            return Task.FromResult(Synonyms_SimpleStoredProc(out procResult, inputInt));
         }
 
         public DbSet<TestReturnStringReturnModel> TestReturnStringReturnModel { get; set; }
         public List<TestReturnStringReturnModel> TestReturnString()
         {
             int procResult;
-            return TestReturnString(out procResult);
+            return TestReturnString(out procResu);
         }
 
         public List<TestReturnStringReturnModel> TestReturnString(out int procResult)
@@ -1026,10 +1026,10 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         public Task<List<TestReturnStringReturnModel>> TestReturnStringAsync()
         {
             int procResult;
-            return Task.FromResult(TestReturnString(out procResult));
+            return Task.FromResult(TestReturnString(out procResu));
         }
 
-        public int UserDefinedTypeSampleStoredProc(int? a, DataTable type, int? b)
+        public int UserDefinedTypeSampleStoredProc(int? a = null, DataTable type, int? b = null)
         {
             return 0;
         }
@@ -1040,7 +1040,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         public List<XmlDataV1ReturnModel> XmlDataV1()
         {
             int procResult;
-            return XmlDataV1(out procResult);
+            return XmlDataV1(out procResu);
         }
 
         public List<XmlDataV1ReturnModel> XmlDataV1(out int procResult)
@@ -1052,7 +1052,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         public Task<List<XmlDataV1ReturnModel>> XmlDataV1Async()
         {
             int procResult;
-            return Task.FromResult(XmlDataV1(out procResult));
+            return Task.FromResult(XmlDataV1(out procResu));
         }
 
         public int XmlDataV2()
@@ -1065,7 +1065,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         // Table Valued Functions
 
         // dbo.182_test1
-        public IQueryable<C182Test1ReturnModel> C182Test1(int? test)
+        public IQueryable<C182Test1ReturnModel> C182Test1(int? test = null)
         {
             return new List<C182Test1ReturnModel>().AsQueryable();
         }
@@ -1091,7 +1091,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         // Scalar Valued Functions
 
         // dbo.udfNetSale
-        public decimal UdfNetSale(int? quantity, decimal? listPrice, decimal? discount)
+        public decimal UdfNetSale(int? quantity = null, decimal? listPrice = null, decimal? discount = null)
         {
             return default(decimal);
         }

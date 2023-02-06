@@ -81,7 +81,7 @@ namespace TestSynonymsDatabase
 
         // Stored Procedures
         List<SimpleStoredProcReturnModel> SimpleStoredProc(int? inputInt);
-        List<SimpleStoredProcReturnModel> SimpleStoredProc(int? inputInt, out int procResult);
+        List<SimpleStoredProcReturnModel> SimpleStoredProc(out int procResult, int? inputInt);
         Task<List<SimpleStoredProcReturnModel>> SimpleStoredProcAsync(int? inputInt);
 
 
@@ -148,13 +148,13 @@ namespace TestSynonymsDatabase
 
 
         // Stored Procedures
-        public List<SimpleStoredProcReturnModel> SimpleStoredProc(int? inputInt)
+        public List<SimpleStoredProcReturnModel> SimpleStoredProc(int? inputInt = null)
         {
             int procResult;
-            return SimpleStoredProc(inputInt, out procResult);
+            return SimpleStoredProc(out procResult, inputInt);
         }
 
-        public List<SimpleStoredProcReturnModel> SimpleStoredProc(int? inputInt, out int procResult)
+        public List<SimpleStoredProcReturnModel> SimpleStoredProc(out int procResult, int? inputInt = null)
         {
             var inputIntParam = new SqlParameter { ParameterName = "@InputInt", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = inputInt.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!inputInt.HasValue)
@@ -170,7 +170,7 @@ namespace TestSynonymsDatabase
             return procResultData;
         }
 
-        public async Task<List<SimpleStoredProcReturnModel>> SimpleStoredProcAsync(int? inputInt)
+        public async Task<List<SimpleStoredProcReturnModel>> SimpleStoredProcAsync(int? inputInt = null)
         {
             var inputIntParam = new SqlParameter { ParameterName = "@InputInt", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = inputInt.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!inputInt.HasValue)
@@ -437,22 +437,22 @@ namespace TestSynonymsDatabase
         // Stored Procedures
 
         public DbSet<SimpleStoredProcReturnModel> SimpleStoredProcReturnModel { get; set; }
-        public List<SimpleStoredProcReturnModel> SimpleStoredProc(int? inputInt)
+        public List<SimpleStoredProcReturnModel> SimpleStoredProc(int? inputInt = null)
         {
             int procResult;
-            return SimpleStoredProc(inputInt, out procResult);
+            return SimpleStoredProc(out procResult, inputInt);
         }
 
-        public List<SimpleStoredProcReturnModel> SimpleStoredProc(int? inputInt, out int procResult)
+        public List<SimpleStoredProcReturnModel> SimpleStoredProc(out int procResult, int? inputInt = null)
         {
             procResult = 0;
             return new List<SimpleStoredProcReturnModel>();
         }
 
-        public Task<List<SimpleStoredProcReturnModel>> SimpleStoredProcAsync(int? inputInt)
+        public Task<List<SimpleStoredProcReturnModel>> SimpleStoredProcAsync(int? inputInt = null)
         {
             int procResult;
-            return Task.FromResult(SimpleStoredProc(inputInt, out procResult));
+            return Task.FromResult(SimpleStoredProc(out procResult, inputInt));
         }
 
         // Table Valued Functions

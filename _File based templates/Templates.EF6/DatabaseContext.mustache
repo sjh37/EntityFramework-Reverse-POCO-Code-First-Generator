@@ -162,14 +162,14 @@
     // Stored Procedures{{#newline}}
 {{#each storedProcs}}
 {{#if HasReturnModels}}
-    public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
 {{#if SingleReturnModel}}
     {{{#newline}}
         int procResult;{{#newline}}
         return {{FunctionName}}({{WriteStoredProcFunctionOverloadCall}});{{#newline}}
     }{{#newline}}
 {{#newline}}
-    public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsTrue}}){{#newline}}
+    public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsTrueFalse}}){{#newline}}
 {{/if}}
     {{{#newline}}
 {{WriteStoredProcFunctionDeclareSqlParameterTrue}}
@@ -208,7 +208,7 @@
     }{{#newline}}
 
 {{#else}}{{#! if HasReturnModels }}
-    public int {{FunctionName}}({{WriteStoredProcFunctionParamsTrue}}){{#newline}}
+    public int {{FunctionName}}({{WriteStoredProcFunctionParamsTrueFalse}}){{#newline}}
     {{{#newline}}
 {{WriteStoredProcFunctionDeclareSqlParameterTrue}}{{#newline}}
         Database.ExecuteSqlCommand(TransactionalBehavior.DoNotEnsureTransaction, "{{ExecWithNoReturnModel}}"{{WriteStoredProcFunctionSqlParameterAnonymousArrayTrue}});{{#newline}}
@@ -222,7 +222,7 @@
     // {{FunctionName}}Async() cannot be created due to having out parameters, or is relying on the procedure result ({{ReturnType}}){{#newline}}
 {{#newline}}
 {{#else}}{{#! if AsyncFunctionCannotBeCreated }}
-    public async Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    public async Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
     {{{#newline}}
 {{WriteStoredProcFunctionDeclareSqlParameterFalse}}
 {{#if SingleReturnModel}}
@@ -270,7 +270,7 @@
 {{#newline}}
     [DbFunction("{{DbContextName}}", "{{Name}}")]{{#newline}}
     [CodeFirstStoreFunctions.DbFunctionDetails(DatabaseSchema = "{{Schema}}"{{#if SingleReturnModel}}, ResultColumnName = "{{SingleReturnColumnName}}"{{/if}})]{{#newline}}
-    public IQueryable<{{ReturnClassName}}> {{ExecName}}({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    public IQueryable<{{ReturnClassName}}> {{ExecName}}({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
     {{{#newline}}
 {{WriteTableValuedFunctionDeclareSqlParameter}}
 {{#newline}}
@@ -285,7 +285,7 @@
 {{#each scalarValuedFunctions}}
 {{#newline}}
     [DbFunction("CodeFirstDatabaseSchema", "{{Name}}")]{{#newline}}
-    public {{ReturnType}} {{ExecName}}({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    public {{ReturnType}} {{ExecName}}({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
     {{{#newline}}
         throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");{{#newline}}
     }{{#newline}}
