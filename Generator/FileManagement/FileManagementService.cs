@@ -11,7 +11,7 @@ namespace Efrpg.FileManagement
         private readonly Dictionary<string, IFileManager> _fileManagers;
         private IFileManager _fileManager;
         private VisualStudioFileManager _visualStudioFileManager;
-        private FileAuditService _auditService;
+        private readonly FileAuditService _auditService;
         private bool _writeToOuter;
         public bool ForceWriteToOuter;
 
@@ -23,7 +23,7 @@ namespace Efrpg.FileManagement
             _fileManagers = new Dictionary<string, IFileManager>();
             _fileManager = null;
             _visualStudioFileManager = null;
-            _auditService = null;
+            _auditService = new FileAuditService();
         }
 
         public static void DeleteFile(string filename)
@@ -44,7 +44,6 @@ namespace Efrpg.FileManagement
             Settings.FilterCount = filters.Count;
 
             _writeToOuter = Settings.GenerateSingleDbContext && !Settings.GenerateSeparateFiles;
-            _auditService = new FileAuditService();
 
             // For debug
             /*var a = _writeToOuter;
