@@ -3436,8 +3436,10 @@
                         sp.WriteStoredProcReturnType(_filter),
                         sp.WriteStoredProcReturnModelName(filter),
                         sp.WriteStoredProcFunctionName(filter),
-                        sp.WriteStoredProcFunctionParams(false),
-                        sp.WriteStoredProcFunctionParams(true),
+                        sp.WriteStoredProcFunctionParams(false, true),
+                        sp.WriteStoredProcFunctionParams(false, false),
+                        sp.WriteStoredProcFunctionParams(true, true),
+                        sp.WriteStoredProcFunctionParams(true, false),
                         sp.StoredProcHasOutParams() || sp.ReturnModels.Count == 0,
                         sp.WriteStoredProcFunctionOverloadCall(),
                         sp.WriteStoredProcFunctionSetSqlParameters(false),
@@ -3473,7 +3475,8 @@
                         tvf.ReturnModels.Count == 1 && tvf.ReturnModels[0].Count == 1 ? tvf.ReturnModels[0][0].ColumnName : null,
                         tvf.WriteStoredProcFunctionName(_filter),
                         tvf.WriteStoredProcReturnModelName(_filter),
-                        tvf.WriteStoredProcFunctionParams(false),
+                        tvf.WriteStoredProcFunctionParams(false, true),
+                        tvf.WriteStoredProcFunctionParams(false, false),
                         tvf.DbName,
                         tvf.Schema.DbName,
                         isEfCore ? tvf.WriteStoredProcFunctionDeclareSqlParameter(false) : tvf.WriteTableValuedFunctionDeclareSqlParameter(),
@@ -3512,7 +3515,8 @@
                     .Select(svf => new ScalarValuedFunctionsTemplateData(
                         svf.WriteStoredProcFunctionName(_filter),
                         svf.Parameters.Where(x => x.Mode == StoredProcedureParameterMode.Out).OrderBy(x => x.Ordinal).FirstOrDefault()?.PropertyType,
-                        svf.WriteStoredProcFunctionParams(false),
+                        svf.WriteStoredProcFunctionParams(false, true),
+                        svf.WriteStoredProcFunctionParams(false, false),
                         svf.DbName,
                         svf.Schema.DbName
                     ))
@@ -6511,24 +6515,27 @@
     }
     public class ScalarValuedFunctionsTemplateData
     {
-        public string ExecName                           { get; }
-        public string ReturnType                         { get; }
-        public string WriteStoredProcFunctionParamsFalse { get; }
-        public string Name                               { get; }
-        public string Schema                             { get; }
+        public string ExecName { get; }
+        public string ReturnType { get; }
+        public string WriteStoredProcFunctionParamsFalseTrue { get; }
+        public string WriteStoredProcFunctionParamsFalseFalse { get; }
+        public string Name { get; }
+        public string Schema { get; }
 
         public ScalarValuedFunctionsTemplateData(
             string execName,
             string returnType,
-            string writeStoredProcFunctionParamsFalse,
+            string writeStoredProcFunctionParamsFalseTrue,
+            string writeStoredProcFunctionParamsFalseFalse,
             string name,
             string schema)
         {
-            ExecName                           = execName;
-            ReturnType                         = returnType;
-            WriteStoredProcFunctionParamsFalse = writeStoredProcFunctionParamsFalse;
-            Name                               = name;
-            Schema                             = schema;
+            ExecName = execName;
+            ReturnType = returnType;
+            WriteStoredProcFunctionParamsFalseTrue = writeStoredProcFunctionParamsFalseTrue;
+            WriteStoredProcFunctionParamsFalseFalse = writeStoredProcFunctionParamsFalseFalse;
+            Name = name;
+            Schema = schema;
         }
     }
 
@@ -6540,8 +6547,10 @@
         public string ReturnType { get; } // sp.WriteStoredProcReturnType()
         public string ReturnModelName { get; } // sp.WriteStoredProcReturnModelName()
         public string FunctionName { get; } // sp.WriteStoredProcFunctionName()
-        public string WriteStoredProcFunctionParamsFalse { get; } // WriteStoredProcFunctionParams(false)
-        public string WriteStoredProcFunctionParamsTrue { get; } // WriteStoredProcFunctionParams(true)
+        public string WriteStoredProcFunctionParamsFalseTrue { get; } // WriteStoredProcFunctionParams(false, true)
+        public string WriteStoredProcFunctionParamsFalseFalse { get; } // WriteStoredProcFunctionParams(false, false)
+        public string WriteStoredProcFunctionParamsTrueTrue { get; } // WriteStoredProcFunctionParams(true, true)
+        public string WriteStoredProcFunctionParamsTrueFalse { get; } // WriteStoredProcFunctionParams(true, false)
         public bool AsyncFunctionCannotBeCreated { get; } // sp.StoredProcHasOutParams() || sp.ReturnModels.Count == 0
         public string WriteStoredProcFunctionOverloadCall { get; } // sp.WriteStoredProcFunctionOverloadCall()
         public string WriteStoredProcFunctionSetSqlParametersFalse { get; } // WriteStoredProcFunctionSetSqlParameters(false)
@@ -6566,8 +6575,10 @@
             string returnType,
             string returnModelName,
             string functionName,
-            string writeStoredProcFunctionParamsFalse,
-            string writeStoredProcFunctionParamsTrue,
+            string writeStoredProcFunctionParamsFalseTrue,
+            string writeStoredProcFunctionParamsFalseFalse,
+            string writeStoredProcFunctionParamsTrueTrue,
+            string writeStoredProcFunctionParamsTrueFalse,
             bool asyncFunctionCannotBeCreated,
             string writeStoredProcFunctionOverloadCall,
             string writeStoredProcFunctionSetSqlParametersFalse,
@@ -6589,8 +6600,10 @@
             ReturnType                                             = returnType;
             ReturnModelName                                        = returnModelName;
             FunctionName                                           = functionName;
-            WriteStoredProcFunctionParamsFalse                     = writeStoredProcFunctionParamsFalse;
-            WriteStoredProcFunctionParamsTrue                      = writeStoredProcFunctionParamsTrue;
+            WriteStoredProcFunctionParamsFalseTrue                 = writeStoredProcFunctionParamsFalseTrue;
+            WriteStoredProcFunctionParamsFalseFalse                = writeStoredProcFunctionParamsFalseFalse;
+            WriteStoredProcFunctionParamsTrueTrue                  = writeStoredProcFunctionParamsTrueTrue;
+            WriteStoredProcFunctionParamsTrueFalse                 = writeStoredProcFunctionParamsTrueFalse;
             AsyncFunctionCannotBeCreated                           = asyncFunctionCannotBeCreated;
             WriteStoredProcFunctionOverloadCall                    = writeStoredProcFunctionOverloadCall;
             WriteStoredProcFunctionSetSqlParametersFalse           = writeStoredProcFunctionSetSqlParametersFalse;
@@ -6645,7 +6658,8 @@
         public string ExecName                                           { get; }
         public string ReturnClassName                                    { get; }
         public string PluralReturnClassName                              { get; }
-        public string WriteStoredProcFunctionParamsFalse                 { get; }
+        public string WriteStoredProcFunctionParamsFalseTrue             { get; }
+        public string WriteStoredProcFunctionParamsFalseFalse            { get; }
         public string Name                                               { get; }
         public string Schema                                             { get; }
         public string WriteTableValuedFunctionDeclareSqlParameter        { get; }
@@ -6661,7 +6675,8 @@
             string singleReturnColumnName,
             string execName,
             string returnClassName,
-            string writeStoredProcFunctionParamsFalse,
+            string writeStoredProcFunctionParamsFalseTrue,
+            string writeStoredProcFunctionParamsFalseFalse,
             string name,
             string schema,
             string writeTableValuedFunctionDeclareSqlParameter,
@@ -6678,7 +6693,8 @@
             ExecName                                           = execName;
             ReturnClassName                                    = returnClassName;
             PluralReturnClassName                              = Inflector.MakePlural(returnClassName);
-            WriteStoredProcFunctionParamsFalse                 = writeStoredProcFunctionParamsFalse;
+            WriteStoredProcFunctionParamsFalseTrue             = writeStoredProcFunctionParamsFalseTrue;
+            WriteStoredProcFunctionParamsFalseFalse            = writeStoredProcFunctionParamsFalseFalse;
             Name                                               = name;
             Schema                                             = schema;
             WriteTableValuedFunctionDeclareSqlParameter        = writeTableValuedFunctionDeclareSqlParameter;
@@ -16010,24 +16026,33 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             return Parameters.Any(x => x.Mode != StoredProcedureParameterMode.In);
         }
 
-        public string WriteStoredProcFunctionParams(bool includeProcResult)
+        public string WriteStoredProcFunctionParams(bool includeProcResult, bool forInterface)
         {
             var sb = new StringBuilder(255);
             var n = 1;
             var data = Parameters.Where(x => x.Mode != StoredProcedureParameterMode.Out).OrderBy(x => x.Ordinal).ToList();
             var count = data.Count;
+            
+            if (includeProcResult && ReturnModels.Count > 0 && ReturnModels.First().Count > 0)
+            {
+                sb.Append("out int procResult");
+                if (count > 0)
+                    sb.Append(", ");
+            }
+
             foreach (var p in data)
             {
-                sb.AppendFormat("{0}{1}{2} {3}{4}",
+                var notNullable = Column.StoredProcedureNotNullable.Contains(p.PropertyType.ToLower());
+
+                sb.AppendFormat("{0}{1}{2} {3}{4}{5}",
                     p.Mode == StoredProcedureParameterMode.In ? string.Empty : "out ",
                     p.PropertyType,
-                    Column.StoredProcedureNotNullable.Contains(p.PropertyType.ToLower()) ? string.Empty : "?",
+                    notNullable ? string.Empty : "?",
                     p.NameHumanCase,
+                    notNullable || forInterface ? string.Empty : " = null",
                     n++ < count ? ", " : string.Empty);
             }
 
-            if (includeProcResult && ReturnModels.Count > 0 && ReturnModels.First().Count > 0)
-                sb.AppendFormat((data.Count > 0 ? ", " : string.Empty) + "out int procResult");
 
             return sb.ToString();
         }
@@ -16035,6 +16060,10 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public string WriteStoredProcFunctionOverloadCall()
         {
             var sb = new StringBuilder(255);
+            sb.Append("out procResult");
+            if (Parameters.Any())
+                sb.Append(", ");
+
             foreach (var p in Parameters.OrderBy(x => x.Ordinal))
             {
                 sb.AppendFormat("{0}{1}, ",
@@ -16042,7 +16071,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     p.NameHumanCase);
             }
 
-            sb.Append("out procResult");
+            sb.Length -= 2;
             return sb.ToString();
         }
 
@@ -24729,24 +24758,24 @@ using {{this}};{{#newline}}
 {{#if HasReturnModels}}
 
 {{#if MultipleReturnModels}}
-    // {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalse}}); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.{{#newline}}
+    // {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalseTrue}}); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.{{#newline}}
 {{#else}}
-    {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalse}});{{#newline}}
+    {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalseTrue}});{{#newline}}
 {{/if}}
 {{#if SingleReturnModel}}
-    {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsTrue}});{{#newline}}
+    {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsTrueTrue}});{{#newline}}
 {{/if}}
 {{#else}}
-    int {{FunctionName}}({{WriteStoredProcFunctionParamsTrue}});{{#newline}}
+    int {{FunctionName}}({{WriteStoredProcFunctionParamsTrueTrue}});{{#newline}}
 {{/if}}
 
 {{#if AsyncFunctionCannotBeCreated}}
     // {{FunctionName}}Async() cannot be created due to having out parameters, or is relying on the procedure result ({{ReturnType}}){{#newline}}
 {{#else}}
 {{#if MultipleReturnModels}}
-    // Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalse}}); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.{{#newline}}
+    // Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalseTrue}}); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.{{#newline}}
 {{#else}}
-    Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalse}});{{#newline}}
+    Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalseTrue}});{{#newline}}
 {{/if}}
 {{/if}}
 {{#newline}}
@@ -24757,7 +24786,7 @@ using {{this}};{{#newline}}
 {{#newline}}
     // Table Valued Functions{{#newline}}
 {{#each tableValuedFunctions}}
-    IQueryable<{{ReturnClassName}}> {{ExecName}}({{WriteStoredProcFunctionParamsFalse}}); // {{Schema}}.{{Name}}{{#newline}}
+    IQueryable<{{ReturnClassName}}> {{ExecName}}({{WriteStoredProcFunctionParamsFalseTrue}}); // {{Schema}}.{{Name}}{{#newline}}
 {{/each}}
 {{/if}}
 
@@ -24765,7 +24794,7 @@ using {{this}};{{#newline}}
 {{#newline}}
     // Scalar Valued Functions{{#newline}}
 {{#each scalarValuedFunctions}}
-    {{ReturnType}} {{ExecName}}({{WriteStoredProcFunctionParamsFalse}}); // {{Schema}}.{{Name}}{{#newline}}
+    {{ReturnType}} {{ExecName}}({{WriteStoredProcFunctionParamsFalseTrue}}); // {{Schema}}.{{Name}}{{#newline}}
 {{/each}}
 {{/if}}
 
@@ -24984,9 +25013,9 @@ using {{this}};{{#newline}}
 {{#if HasReturnModels}}
 
 {{#if MultipleReturnModels}}
-    // public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalse}}) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.{{#newline}}
+    // public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalseFalse}}) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.{{#newline}}
 {{#else}}
-    public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
     {{{#newline}}
         int procResult;{{#newline}}
         return {{FunctionName}}({{WriteStoredProcFunctionOverloadCall}});{{#newline}}
@@ -24994,7 +25023,7 @@ using {{this}};{{#newline}}
 {{/if}}
 
 {{#if SingleReturnModel}}
-    public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsTrue}}){{#newline}}
+    public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsTrueFalse}}){{#newline}}
     {{{#newline}}
 {{WriteStoredProcFunctionDeclareSqlParameterTrue}}
         const string sqlCommand = ""{{Exec}}"";{{#newline}}
@@ -25008,7 +25037,7 @@ using {{this}};{{#newline}}
 {{/if}}
 
 {{#else}}
-    public int {{FunctionName}}({{WriteStoredProcFunctionParamsTrue}}){{#newline}}
+    public int {{FunctionName}}({{WriteStoredProcFunctionParamsTrueFalse}}){{#newline}}
     {{{#newline}}
 {{WriteStoredProcFunctionDeclareSqlParameterTrue}}{{#newline}}
         Database.{{ExecuteSqlCommand}}(""{{ExecWithNoReturnModel}}""{{WriteStoredProcFunctionSqlParameterAnonymousArrayTrue}});{{#newline}}
@@ -25024,9 +25053,9 @@ using {{this}};{{#newline}}
 {{#newline}}
 {{#else}}
 {{#if MultipleReturnModels}}
-    // public async Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalse}}) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.{{#newline}}
+    // public async Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalseFalse}}) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.{{#newline}}
 {{#else}}
-    public async Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    public async Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
     {{{#newline}}
 {{WriteStoredProcFunctionDeclareSqlParameterFalse}}
 {{WriteStoredProcFunctionSetSqlParametersFalse}}
@@ -25049,7 +25078,7 @@ using {{this}};{{#newline}}
 {{#each tableValuedFunctions}}
 {{#newline}}
     // {{Schema}}.{{Name}}{{#newline}}
-    public IQueryable<{{ReturnClassName}}> {{ExecName}}({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    public IQueryable<{{ReturnClassName}}> {{ExecName}}({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
     {{{#newline}}
         return {{QueryString}}<{{ReturnClassName}}>(){{#newline}}
             .{{FromSql}}(""SELECT * FROM [{{Schema}}].[{{Name}}]({{WriteStoredProcFunctionSqlAtParams}})""{{WriteTableValuedFunctionSqlParameterAnonymousArray}}){{#newline}}
@@ -25064,7 +25093,7 @@ using {{this}};{{#newline}}
 {{#each scalarValuedFunctions}}
 {{#newline}}
     [DbFunction(""{{Name}}"", ""{{Schema}}"")]{{#newline}}
-    public {{ReturnType}} {{ExecName}}({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    public {{ReturnType}} {{ExecName}}({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
     {{{#newline}}
         throw new Exception(""Don't call this directly. Use LINQ to call the scalar valued function as part of your query"");{{#newline}}
     }{{#newline}}
@@ -25374,13 +25403,13 @@ using {{this}};{{#newline}}
 {{#if CreateDbSetForReturnModel}}
     public DbSet<{{ReturnModelName}}> {{ReturnModelName}} { get; set; }{{#newline}}
 {{/if}}
-    public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
     {{{#newline}}
         int procResult;{{#newline}}
         return {{FunctionName}}({{WriteStoredProcFunctionOverloadCall}});{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsTrue}}){{#newline}}
+    public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsTrueFalse}}){{#newline}}
     {{{#newline}}
 {{WriteStoredProcFunctionSetSqlParametersTrue}}
         procResult = 0;{{#newline}}
@@ -25392,7 +25421,7 @@ using {{this}};{{#newline}}
     // {{FunctionName}}Async() cannot be created due to having out parameters, or is relying on the procedure result ({{ReturnType}}){{#newline}}
 {{#newline}}
 {{#else}}
-    public Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    public Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
     {{{#newline}}
         int procResult;{{#newline}}
         return Task.FromResult({{FunctionName}}({{WriteStoredProcFunctionOverloadCall}}));{{#newline}}
@@ -25401,7 +25430,7 @@ using {{this}};{{#newline}}
 
 {{#else}}
 {{#newline}}
-    public int {{FunctionName}}({{WriteStoredProcFunctionParamsTrue}}){{#newline}}
+    public int {{FunctionName}}({{WriteStoredProcFunctionParamsTrueFalse}}){{#newline}}
     {{{#newline}}
 {{WriteStoredProcFunctionSetSqlParametersTrue}}
         return 0;{{#newline}}
@@ -25410,7 +25439,7 @@ using {{this}};{{#newline}}
 {{#if AsyncFunctionCannotBeCreated}}
     // {{FunctionName}}Async() cannot be created due to having out parameters, or is relying on the procedure result ({{ReturnType}}){{#newline}}
 {{#else}}
-    public Task<int> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    public Task<int> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
     {{{#newline}}
 {{WriteStoredProcFunctionSetSqlParametersTrue}}
         return Task.FromResult(0);{{#newline}}
@@ -25428,7 +25457,7 @@ using {{this}};{{#newline}}
 {{#each tableValuedFunctions}}
 {{#newline}}
     // {{Schema}}.{{Name}}{{#newline}}
-    public IQueryable<{{ReturnClassName}}> {{ExecName}}({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    public IQueryable<{{ReturnClassName}}> {{ExecName}}({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
     {{{#newline}}
         return new List<{{ReturnClassName}}>().AsQueryable();{{#newline}}
     }{{#newline}}
@@ -25441,7 +25470,7 @@ using {{this}};{{#newline}}
 {{#each scalarValuedFunctions}}
 {{#newline}}
     // {{Schema}}.{{Name}}{{#newline}}
-    public {{ReturnType}} {{ExecName}}({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    public {{ReturnType}} {{ExecName}}({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
     {{{#newline}}
         return default({{ReturnType}});{{#newline}}
     }{{#newline}}

@@ -54,8 +54,10 @@ namespace Efrpg.Generators
                         sp.WriteStoredProcReturnType(_filter),
                         sp.WriteStoredProcReturnModelName(filter),
                         sp.WriteStoredProcFunctionName(filter),
-                        sp.WriteStoredProcFunctionParams(false),
-                        sp.WriteStoredProcFunctionParams(true),
+                        sp.WriteStoredProcFunctionParams(false, true),
+                        sp.WriteStoredProcFunctionParams(false, false),
+                        sp.WriteStoredProcFunctionParams(true, true),
+                        sp.WriteStoredProcFunctionParams(true, false),
                         sp.StoredProcHasOutParams() || sp.ReturnModels.Count == 0,
                         sp.WriteStoredProcFunctionOverloadCall(),
                         sp.WriteStoredProcFunctionSetSqlParameters(false),
@@ -91,7 +93,8 @@ namespace Efrpg.Generators
                         tvf.ReturnModels.Count == 1 && tvf.ReturnModels[0].Count == 1 ? tvf.ReturnModels[0][0].ColumnName : null,
                         tvf.WriteStoredProcFunctionName(_filter),
                         tvf.WriteStoredProcReturnModelName(_filter),
-                        tvf.WriteStoredProcFunctionParams(false),
+                        tvf.WriteStoredProcFunctionParams(false, true),
+                        tvf.WriteStoredProcFunctionParams(false, false),
                         tvf.DbName,
                         tvf.Schema.DbName,
                         isEfCore ? tvf.WriteStoredProcFunctionDeclareSqlParameter(false) : tvf.WriteTableValuedFunctionDeclareSqlParameter(),
@@ -130,7 +133,8 @@ namespace Efrpg.Generators
                     .Select(svf => new ScalarValuedFunctionsTemplateData(
                         svf.WriteStoredProcFunctionName(_filter),
                         svf.Parameters.Where(x => x.Mode == StoredProcedureParameterMode.Out).OrderBy(x => x.Ordinal).FirstOrDefault()?.PropertyType,
-                        svf.WriteStoredProcFunctionParams(false),
+                        svf.WriteStoredProcFunctionParams(false, true),
+                        svf.WriteStoredProcFunctionParams(false, false),
                         svf.DbName,
                         svf.Schema.DbName
                     ))

@@ -7,7 +7,8 @@
         public string ExecName                                           { get; }
         public string ReturnClassName                                    { get; }
         public string PluralReturnClassName                              { get; }
-        public string WriteStoredProcFunctionParamsFalse                 { get; }
+        public string WriteStoredProcFunctionParamsFalseTrue             { get; }
+        public string WriteStoredProcFunctionParamsFalseFalse            { get; }
         public string Name                                               { get; }
         public string Schema                                             { get; }
         public string WriteTableValuedFunctionDeclareSqlParameter        { get; }
@@ -23,7 +24,8 @@
             string singleReturnColumnName,
             string execName,
             string returnClassName,
-            string writeStoredProcFunctionParamsFalse,
+            string writeStoredProcFunctionParamsFalseTrue,
+            string writeStoredProcFunctionParamsFalseFalse,
             string name,
             string schema,
             string writeTableValuedFunctionDeclareSqlParameter,
@@ -40,7 +42,8 @@
             ExecName                                           = execName;
             ReturnClassName                                    = returnClassName;
             PluralReturnClassName                              = Inflector.MakePlural(returnClassName);
-            WriteStoredProcFunctionParamsFalse                 = writeStoredProcFunctionParamsFalse;
+            WriteStoredProcFunctionParamsFalseTrue             = writeStoredProcFunctionParamsFalseTrue;
+            WriteStoredProcFunctionParamsFalseFalse            = writeStoredProcFunctionParamsFalseFalse;
             Name                                               = name;
             Schema                                             = schema;
             WriteTableValuedFunctionDeclareSqlParameter        = writeTableValuedFunctionDeclareSqlParameter;

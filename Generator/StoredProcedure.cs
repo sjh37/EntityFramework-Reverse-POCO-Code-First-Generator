@@ -52,24 +52,33 @@ namespace Efrpg
             return Parameters.Any(x => x.Mode != StoredProcedureParameterMode.In);
         }
 
-        public string WriteStoredProcFunctionParams(bool includeProcResult)
+        public string WriteStoredProcFunctionParams(bool includeProcResult, bool forInterface)
         {
             var sb = new StringBuilder(255);
             var n = 1;
             var data = Parameters.Where(x => x.Mode != StoredProcedureParameterMode.Out).OrderBy(x => x.Ordinal).ToList();
             var count = data.Count;
+            
+            if (includeProcResult && ReturnModels.Count > 0 && ReturnModels.First().Count > 0)
+            {
+                sb.Append("out int procResult");
+                if (count > 0)
+                    sb.Append(", ");
+            }
+
             foreach (var p in data)
             {
-                sb.AppendFormat("{0}{1}{2} {3}{4}",
+                var notNullable = Column.StoredProcedureNotNullable.Contains(p.PropertyType.ToLower());
+
+                sb.AppendFormat("{0}{1}{2} {3}{4}{5}",
                     p.Mode == StoredProcedureParameterMode.In ? string.Empty : "out ",
                     p.PropertyType,
-                    Column.StoredProcedureNotNullable.Contains(p.PropertyType.ToLower()) ? string.Empty : "?",
+                    notNullable ? string.Empty : "?",
                     p.NameHumanCase,
+                    notNullable || forInterface ? string.Empty : " = null",
                     n++ < count ? ", " : string.Empty);
             }
 
-            if (includeProcResult && ReturnModels.Count > 0 && ReturnModels.First().Count > 0)
-                sb.AppendFormat((data.Count > 0 ? ", " : string.Empty) + "out int procResult");
 
             return sb.ToString();
         }
@@ -77,6 +86,10 @@ namespace Efrpg
         public string WriteStoredProcFunctionOverloadCall()
         {
             var sb = new StringBuilder(255);
+            sb.Append("out procResult");
+            if (Parameters.Any())
+                sb.Append(", ");
+
             foreach (var p in Parameters.OrderBy(x => x.Ordinal))
             {
                 sb.AppendFormat("{0}{1}, ",
@@ -84,7 +97,7 @@ namespace Efrpg
                     p.NameHumanCase);
             }
 
-            sb.Append("out procResult");
+            sb.Length -= 2;
             return sb.ToString();
         }
 

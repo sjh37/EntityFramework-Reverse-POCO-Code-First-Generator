@@ -10,8 +10,10 @@ namespace Efrpg.Generators
         public string ReturnType { get; } // sp.WriteStoredProcReturnType()
         public string ReturnModelName { get; } // sp.WriteStoredProcReturnModelName()
         public string FunctionName { get; } // sp.WriteStoredProcFunctionName()
-        public string WriteStoredProcFunctionParamsFalse { get; } // WriteStoredProcFunctionParams(false)
-        public string WriteStoredProcFunctionParamsTrue { get; } // WriteStoredProcFunctionParams(true)
+        public string WriteStoredProcFunctionParamsFalseTrue { get; } // WriteStoredProcFunctionParams(false, true)
+        public string WriteStoredProcFunctionParamsFalseFalse { get; } // WriteStoredProcFunctionParams(false, false)
+        public string WriteStoredProcFunctionParamsTrueTrue { get; } // WriteStoredProcFunctionParams(true, true)
+        public string WriteStoredProcFunctionParamsTrueFalse { get; } // WriteStoredProcFunctionParams(true, false)
         public bool AsyncFunctionCannotBeCreated { get; } // sp.StoredProcHasOutParams() || sp.ReturnModels.Count == 0
         public string WriteStoredProcFunctionOverloadCall { get; } // sp.WriteStoredProcFunctionOverloadCall()
         public string WriteStoredProcFunctionSetSqlParametersFalse { get; } // WriteStoredProcFunctionSetSqlParameters(false)
@@ -36,8 +38,10 @@ namespace Efrpg.Generators
             string returnType,
             string returnModelName,
             string functionName,
-            string writeStoredProcFunctionParamsFalse,
-            string writeStoredProcFunctionParamsTrue,
+            string writeStoredProcFunctionParamsFalseTrue,
+            string writeStoredProcFunctionParamsFalseFalse,
+            string writeStoredProcFunctionParamsTrueTrue,
+            string writeStoredProcFunctionParamsTrueFalse,
             bool asyncFunctionCannotBeCreated,
             string writeStoredProcFunctionOverloadCall,
             string writeStoredProcFunctionSetSqlParametersFalse,
@@ -59,8 +63,10 @@ namespace Efrpg.Generators
             ReturnType                                             = returnType;
             ReturnModelName                                        = returnModelName;
             FunctionName                                           = functionName;
-            WriteStoredProcFunctionParamsFalse                     = writeStoredProcFunctionParamsFalse;
-            WriteStoredProcFunctionParamsTrue                      = writeStoredProcFunctionParamsTrue;
+            WriteStoredProcFunctionParamsFalseTrue                 = writeStoredProcFunctionParamsFalseTrue;
+            WriteStoredProcFunctionParamsFalseFalse                = writeStoredProcFunctionParamsFalseFalse;
+            WriteStoredProcFunctionParamsTrueTrue                  = writeStoredProcFunctionParamsTrueTrue;
+            WriteStoredProcFunctionParamsTrueFalse                 = writeStoredProcFunctionParamsTrueFalse;
             AsyncFunctionCannotBeCreated                           = asyncFunctionCannotBeCreated;
             WriteStoredProcFunctionOverloadCall                    = writeStoredProcFunctionOverloadCall;
             WriteStoredProcFunctionSetSqlParametersFalse           = writeStoredProcFunctionSetSqlParametersFalse;

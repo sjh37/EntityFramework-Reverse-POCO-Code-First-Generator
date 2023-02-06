@@ -126,24 +126,24 @@ using {{this}};{{#newline}}
 {{#if HasReturnModels}}
 
 {{#if MultipleReturnModels}}
-    // {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalse}}); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.{{#newline}}
+    // {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalseTrue}}); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.{{#newline}}
 {{#else}}
-    {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalse}});{{#newline}}
+    {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalseTrue}});{{#newline}}
 {{/if}}
 {{#if SingleReturnModel}}
-    {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsTrue}});{{#newline}}
+    {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsTrueTrue}});{{#newline}}
 {{/if}}
 {{#else}}
-    int {{FunctionName}}({{WriteStoredProcFunctionParamsTrue}});{{#newline}}
+    int {{FunctionName}}({{WriteStoredProcFunctionParamsTrueTrue}});{{#newline}}
 {{/if}}
 
 {{#if AsyncFunctionCannotBeCreated}}
     // {{FunctionName}}Async() cannot be created due to having out parameters, or is relying on the procedure result ({{ReturnType}}){{#newline}}
 {{#else}}
 {{#if MultipleReturnModels}}
-    // Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalse}}); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.{{#newline}}
+    // Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalseTrue}}); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.{{#newline}}
 {{#else}}
-    Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalse}});{{#newline}}
+    Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalseTrue}});{{#newline}}
 {{/if}}
 {{/if}}
 {{#newline}}
@@ -154,7 +154,7 @@ using {{this}};{{#newline}}
 {{#newline}}
     // Table Valued Functions{{#newline}}
 {{#each tableValuedFunctions}}
-    IQueryable<{{ReturnClassName}}> {{ExecName}}({{WriteStoredProcFunctionParamsFalse}}); // {{Schema}}.{{Name}}{{#newline}}
+    IQueryable<{{ReturnClassName}}> {{ExecName}}({{WriteStoredProcFunctionParamsFalseTrue}}); // {{Schema}}.{{Name}}{{#newline}}
 {{/each}}
 {{/if}}
 
@@ -162,7 +162,7 @@ using {{this}};{{#newline}}
 {{#newline}}
     // Scalar Valued Functions{{#newline}}
 {{#each scalarValuedFunctions}}
-    {{ReturnType}} {{ExecName}}({{WriteStoredProcFunctionParamsFalse}}); // {{Schema}}.{{Name}}{{#newline}}
+    {{ReturnType}} {{ExecName}}({{WriteStoredProcFunctionParamsFalseTrue}}); // {{Schema}}.{{Name}}{{#newline}}
 {{/each}}
 {{/if}}
 
@@ -381,9 +381,9 @@ using {{this}};{{#newline}}
 {{#if HasReturnModels}}
 
 {{#if MultipleReturnModels}}
-    // public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalse}}) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.{{#newline}}
+    // public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalseFalse}}) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.{{#newline}}
 {{#else}}
-    public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
     {{{#newline}}
         int procResult;{{#newline}}
         return {{FunctionName}}({{WriteStoredProcFunctionOverloadCall}});{{#newline}}
@@ -391,7 +391,7 @@ using {{this}};{{#newline}}
 {{/if}}
 
 {{#if SingleReturnModel}}
-    public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsTrue}}){{#newline}}
+    public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsTrueFalse}}){{#newline}}
     {{{#newline}}
 {{WriteStoredProcFunctionDeclareSqlParameterTrue}}
         const string sqlCommand = ""{{Exec}}"";{{#newline}}
@@ -405,7 +405,7 @@ using {{this}};{{#newline}}
 {{/if}}
 
 {{#else}}
-    public int {{FunctionName}}({{WriteStoredProcFunctionParamsTrue}}){{#newline}}
+    public int {{FunctionName}}({{WriteStoredProcFunctionParamsTrueFalse}}){{#newline}}
     {{{#newline}}
 {{WriteStoredProcFunctionDeclareSqlParameterTrue}}{{#newline}}
         Database.{{ExecuteSqlCommand}}(""{{ExecWithNoReturnModel}}""{{WriteStoredProcFunctionSqlParameterAnonymousArrayTrue}});{{#newline}}
@@ -421,9 +421,9 @@ using {{this}};{{#newline}}
 {{#newline}}
 {{#else}}
 {{#if MultipleReturnModels}}
-    // public async Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalse}}) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.{{#newline}}
+    // public async Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalseFalse}}) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.{{#newline}}
 {{#else}}
-    public async Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    public async Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
     {{{#newline}}
 {{WriteStoredProcFunctionDeclareSqlParameterFalse}}
 {{WriteStoredProcFunctionSetSqlParametersFalse}}
@@ -446,7 +446,7 @@ using {{this}};{{#newline}}
 {{#each tableValuedFunctions}}
 {{#newline}}
     // {{Schema}}.{{Name}}{{#newline}}
-    public IQueryable<{{ReturnClassName}}> {{ExecName}}({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    public IQueryable<{{ReturnClassName}}> {{ExecName}}({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
     {{{#newline}}
         return {{QueryString}}<{{ReturnClassName}}>(){{#newline}}
             .{{FromSql}}(""SELECT * FROM [{{Schema}}].[{{Name}}]({{WriteStoredProcFunctionSqlAtParams}})""{{WriteTableValuedFunctionSqlParameterAnonymousArray}}){{#newline}}
@@ -461,7 +461,7 @@ using {{this}};{{#newline}}
 {{#each scalarValuedFunctions}}
 {{#newline}}
     [DbFunction(""{{Name}}"", ""{{Schema}}"")]{{#newline}}
-    public {{ReturnType}} {{ExecName}}({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    public {{ReturnType}} {{ExecName}}({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
     {{{#newline}}
         throw new Exception(""Don't call this directly. Use LINQ to call the scalar valued function as part of your query"");{{#newline}}
     }{{#newline}}
@@ -771,13 +771,13 @@ using {{this}};{{#newline}}
 {{#if CreateDbSetForReturnModel}}
     public DbSet<{{ReturnModelName}}> {{ReturnModelName}} { get; set; }{{#newline}}
 {{/if}}
-    public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
     {{{#newline}}
         int procResult;{{#newline}}
         return {{FunctionName}}({{WriteStoredProcFunctionOverloadCall}});{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsTrue}}){{#newline}}
+    public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsTrueFalse}}){{#newline}}
     {{{#newline}}
 {{WriteStoredProcFunctionSetSqlParametersTrue}}
         procResult = 0;{{#newline}}
@@ -789,7 +789,7 @@ using {{this}};{{#newline}}
     // {{FunctionName}}Async() cannot be created due to having out parameters, or is relying on the procedure result ({{ReturnType}}){{#newline}}
 {{#newline}}
 {{#else}}
-    public Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    public Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
     {{{#newline}}
         int procResult;{{#newline}}
         return Task.FromResult({{FunctionName}}({{WriteStoredProcFunctionOverloadCall}}));{{#newline}}
@@ -798,7 +798,7 @@ using {{this}};{{#newline}}
 
 {{#else}}
 {{#newline}}
-    public int {{FunctionName}}({{WriteStoredProcFunctionParamsTrue}}){{#newline}}
+    public int {{FunctionName}}({{WriteStoredProcFunctionParamsTrueFalse}}){{#newline}}
     {{{#newline}}
 {{WriteStoredProcFunctionSetSqlParametersTrue}}
         return 0;{{#newline}}
@@ -807,7 +807,7 @@ using {{this}};{{#newline}}
 {{#if AsyncFunctionCannotBeCreated}}
     // {{FunctionName}}Async() cannot be created due to having out parameters, or is relying on the procedure result ({{ReturnType}}){{#newline}}
 {{#else}}
-    public Task<int> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    public Task<int> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
     {{{#newline}}
 {{WriteStoredProcFunctionSetSqlParametersTrue}}
         return Task.FromResult(0);{{#newline}}
@@ -825,7 +825,7 @@ using {{this}};{{#newline}}
 {{#each tableValuedFunctions}}
 {{#newline}}
     // {{Schema}}.{{Name}}{{#newline}}
-    public IQueryable<{{ReturnClassName}}> {{ExecName}}({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    public IQueryable<{{ReturnClassName}}> {{ExecName}}({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
     {{{#newline}}
         return new List<{{ReturnClassName}}>().AsQueryable();{{#newline}}
     }{{#newline}}
@@ -838,7 +838,7 @@ using {{this}};{{#newline}}
 {{#each scalarValuedFunctions}}
 {{#newline}}
     // {{Schema}}.{{Name}}{{#newline}}
-    public {{ReturnType}} {{ExecName}}({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    public {{ReturnType}} {{ExecName}}({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
     {{{#newline}}
         return default({{ReturnType}});{{#newline}}
     }{{#newline}}

@@ -106,27 +106,27 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         // Stored Procedures
         List<CustOrderHistReturnModel> CustOrderHist(string customerId);
-        List<CustOrderHistReturnModel> CustOrderHist(string customerId, out int procResult);
+        List<CustOrderHistReturnModel> CustOrderHist(out int procResult, string customerId);
         Task<List<CustOrderHistReturnModel>> CustOrderHistAsync(string customerId);
 
         List<CustOrdersDetailReturnModel> CustOrdersDetail(int? orderId);
-        List<CustOrdersDetailReturnModel> CustOrdersDetail(int? orderId, out int procResult);
+        List<CustOrdersDetailReturnModel> CustOrdersDetail(out int procResult, int? orderId);
         Task<List<CustOrdersDetailReturnModel>> CustOrdersDetailAsync(int? orderId);
 
         List<CustOrdersOrdersReturnModel> CustOrdersOrders(string customerId);
-        List<CustOrdersOrdersReturnModel> CustOrdersOrders(string customerId, out int procResult);
+        List<CustOrdersOrdersReturnModel> CustOrdersOrders(out int procResult, string customerId);
         Task<List<CustOrdersOrdersReturnModel>> CustOrdersOrdersAsync(string customerId);
 
         List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(DateTime? beginningDate, DateTime? endingDate);
-        List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(DateTime? beginningDate, DateTime? endingDate, out int procResult);
+        List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(out int procResult, DateTime? beginningDate, DateTime? endingDate);
         Task<List<EmployeeSalesByCountryReturnModel>> EmployeeSalesByCountryAsync(DateTime? beginningDate, DateTime? endingDate);
 
         List<SalesByCategoryReturnModel> SalesByCategory(string categoryName, string ordYear);
-        List<SalesByCategoryReturnModel> SalesByCategory(string categoryName, string ordYear, out int procResult);
+        List<SalesByCategoryReturnModel> SalesByCategory(out int procResult, string categoryName, string ordYear);
         Task<List<SalesByCategoryReturnModel>> SalesByCategoryAsync(string categoryName, string ordYear);
 
         List<SalesByYearReturnModel> SalesByYear(DateTime? beginningDate, DateTime? endingDate);
-        List<SalesByYearReturnModel> SalesByYear(DateTime? beginningDate, DateTime? endingDate, out int procResult);
+        List<SalesByYearReturnModel> SalesByYear(out int procResult, DateTime? beginningDate, DateTime? endingDate);
         Task<List<SalesByYearReturnModel>> SalesByYearAsync(DateTime? beginningDate, DateTime? endingDate);
 
         List<TenMostExpensiveProductsReturnModel> TenMostExpensiveProducts();
@@ -245,10 +245,10 @@ namespace EntityFramework_Reverse_POCO_Generator
         public List<CustOrderHistReturnModel> CustOrderHist(string customerId)
         {
             int procResult;
-            return CustOrderHist(customerId, out procResult);
+            return CustOrderHist(out procResult, customerId);
         }
 
-        public List<CustOrderHistReturnModel> CustOrderHist(string customerId, out int procResult)
+        public List<CustOrderHistReturnModel> CustOrderHist(out int procResult, string customerId)
         {
             var customerIdParam = new SqlParameter { ParameterName = "@CustomerID", SqlDbType = SqlDbType.NChar, Direction = ParameterDirection.Input, Value = customerId, Size = 5 };
             if (customerIdParam.Value == null)
@@ -278,13 +278,13 @@ namespace EntityFramework_Reverse_POCO_Generator
             return procResultData;
         }
 
-        public List<CustOrdersDetailReturnModel> CustOrdersDetail(int? orderId)
+        public List<CustOrdersDetailReturnModel> CustOrdersDetail(int? orderId = null)
         {
             int procResult;
-            return CustOrdersDetail(orderId, out procResult);
+            return CustOrdersDetail(out procResult, orderId);
         }
 
-        public List<CustOrdersDetailReturnModel> CustOrdersDetail(int? orderId, out int procResult)
+        public List<CustOrdersDetailReturnModel> CustOrdersDetail(out int procResult, int? orderId = null)
         {
             var orderIdParam = new SqlParameter { ParameterName = "@OrderID", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = orderId.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!orderId.HasValue)
@@ -300,7 +300,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             return procResultData;
         }
 
-        public async Task<List<CustOrdersDetailReturnModel>> CustOrdersDetailAsync(int? orderId)
+        public async Task<List<CustOrdersDetailReturnModel>> CustOrdersDetailAsync(int? orderId = null)
         {
             var orderIdParam = new SqlParameter { ParameterName = "@OrderID", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = orderId.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!orderId.HasValue)
@@ -317,10 +317,10 @@ namespace EntityFramework_Reverse_POCO_Generator
         public List<CustOrdersOrdersReturnModel> CustOrdersOrders(string customerId)
         {
             int procResult;
-            return CustOrdersOrders(customerId, out procResult);
+            return CustOrdersOrders(out procResult, customerId);
         }
 
-        public List<CustOrdersOrdersReturnModel> CustOrdersOrders(string customerId, out int procResult)
+        public List<CustOrdersOrdersReturnModel> CustOrdersOrders(out int procResult, string customerId)
         {
             var customerIdParam = new SqlParameter { ParameterName = "@CustomerID", SqlDbType = SqlDbType.NChar, Direction = ParameterDirection.Input, Value = customerId, Size = 5 };
             if (customerIdParam.Value == null)
@@ -350,13 +350,13 @@ namespace EntityFramework_Reverse_POCO_Generator
             return procResultData;
         }
 
-        public List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(DateTime? beginningDate, DateTime? endingDate)
+        public List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(DateTime? beginningDate = null, DateTime? endingDate = null)
         {
             int procResult;
-            return EmployeeSalesByCountry(beginningDate, endingDate, out procResult);
+            return EmployeeSalesByCountry(out procResult, beginningDate, endingDate);
         }
 
-        public List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(DateTime? beginningDate, DateTime? endingDate, out int procResult)
+        public List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(out int procResult, DateTime? beginningDate = null, DateTime? endingDate = null)
         {
             var beginningDateParam = new SqlParameter { ParameterName = "@Beginning_Date", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = beginningDate.GetValueOrDefault() };
             if (!beginningDate.HasValue)
@@ -376,7 +376,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             return procResultData;
         }
 
-        public async Task<List<EmployeeSalesByCountryReturnModel>> EmployeeSalesByCountryAsync(DateTime? beginningDate, DateTime? endingDate)
+        public async Task<List<EmployeeSalesByCountryReturnModel>> EmployeeSalesByCountryAsync(DateTime? beginningDate = null, DateTime? endingDate = null)
         {
             var beginningDateParam = new SqlParameter { ParameterName = "@Beginning_Date", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = beginningDate.GetValueOrDefault() };
             if (!beginningDate.HasValue)
@@ -397,10 +397,10 @@ namespace EntityFramework_Reverse_POCO_Generator
         public List<SalesByCategoryReturnModel> SalesByCategory(string categoryName, string ordYear)
         {
             int procResult;
-            return SalesByCategory(categoryName, ordYear, out procResult);
+            return SalesByCategory(out procResult, categoryName, ordYear);
         }
 
-        public List<SalesByCategoryReturnModel> SalesByCategory(string categoryName, string ordYear, out int procResult)
+        public List<SalesByCategoryReturnModel> SalesByCategory(out int procResult, string categoryName, string ordYear)
         {
             var categoryNameParam = new SqlParameter { ParameterName = "@CategoryName", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = categoryName, Size = 15 };
             if (categoryNameParam.Value == null)
@@ -438,13 +438,13 @@ namespace EntityFramework_Reverse_POCO_Generator
             return procResultData;
         }
 
-        public List<SalesByYearReturnModel> SalesByYear(DateTime? beginningDate, DateTime? endingDate)
+        public List<SalesByYearReturnModel> SalesByYear(DateTime? beginningDate = null, DateTime? endingDate = null)
         {
             int procResult;
-            return SalesByYear(beginningDate, endingDate, out procResult);
+            return SalesByYear(out procResult, beginningDate, endingDate);
         }
 
-        public List<SalesByYearReturnModel> SalesByYear(DateTime? beginningDate, DateTime? endingDate, out int procResult)
+        public List<SalesByYearReturnModel> SalesByYear(out int procResult, DateTime? beginningDate = null, DateTime? endingDate = null)
         {
             var beginningDateParam = new SqlParameter { ParameterName = "@Beginning_Date", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = beginningDate.GetValueOrDefault() };
             if (!beginningDate.HasValue)
@@ -464,7 +464,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             return procResultData;
         }
 
-        public async Task<List<SalesByYearReturnModel>> SalesByYearAsync(DateTime? beginningDate, DateTime? endingDate)
+        public async Task<List<SalesByYearReturnModel>> SalesByYearAsync(DateTime? beginningDate = null, DateTime? endingDate = null)
         {
             var beginningDateParam = new SqlParameter { ParameterName = "@Beginning_Date", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = beginningDate.GetValueOrDefault() };
             if (!beginningDate.HasValue)
@@ -485,7 +485,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public List<TenMostExpensiveProductsReturnModel> TenMostExpensiveProducts()
         {
             int procResult;
-            return TenMostExpensiveProducts(out procResult);
+            return TenMostExpensiveProducts(out procResu);
         }
 
         public List<TenMostExpensiveProductsReturnModel> TenMostExpensiveProducts(out int procResult)
@@ -796,10 +796,10 @@ namespace EntityFramework_Reverse_POCO_Generator
         public List<CustOrderHistReturnModel> CustOrderHist(string customerId)
         {
             int procResult;
-            return CustOrderHist(customerId, out procResult);
+            return CustOrderHist(out procResult, customerId);
         }
 
-        public List<CustOrderHistReturnModel> CustOrderHist(string customerId, out int procResult)
+        public List<CustOrderHistReturnModel> CustOrderHist(out int procResult, string customerId)
         {
             procResult = 0;
             return new List<CustOrderHistReturnModel>();
@@ -808,36 +808,36 @@ namespace EntityFramework_Reverse_POCO_Generator
         public Task<List<CustOrderHistReturnModel>> CustOrderHistAsync(string customerId)
         {
             int procResult;
-            return Task.FromResult(CustOrderHist(customerId, out procResult));
+            return Task.FromResult(CustOrderHist(out procResult, customerId));
         }
 
         public DbSet<CustOrdersDetailReturnModel> CustOrdersDetailReturnModel { get; set; }
-        public List<CustOrdersDetailReturnModel> CustOrdersDetail(int? orderId)
+        public List<CustOrdersDetailReturnModel> CustOrdersDetail(int? orderId = null)
         {
             int procResult;
-            return CustOrdersDetail(orderId, out procResult);
+            return CustOrdersDetail(out procResult, orderId);
         }
 
-        public List<CustOrdersDetailReturnModel> CustOrdersDetail(int? orderId, out int procResult)
+        public List<CustOrdersDetailReturnModel> CustOrdersDetail(out int procResult, int? orderId = null)
         {
             procResult = 0;
             return new List<CustOrdersDetailReturnModel>();
         }
 
-        public Task<List<CustOrdersDetailReturnModel>> CustOrdersDetailAsync(int? orderId)
+        public Task<List<CustOrdersDetailReturnModel>> CustOrdersDetailAsync(int? orderId = null)
         {
             int procResult;
-            return Task.FromResult(CustOrdersDetail(orderId, out procResult));
+            return Task.FromResult(CustOrdersDetail(out procResult, orderId));
         }
 
         public DbSet<CustOrdersOrdersReturnModel> CustOrdersOrdersReturnModel { get; set; }
         public List<CustOrdersOrdersReturnModel> CustOrdersOrders(string customerId)
         {
             int procResult;
-            return CustOrdersOrders(customerId, out procResult);
+            return CustOrdersOrders(out procResult, customerId);
         }
 
-        public List<CustOrdersOrdersReturnModel> CustOrdersOrders(string customerId, out int procResult)
+        public List<CustOrdersOrdersReturnModel> CustOrdersOrders(out int procResult, string customerId)
         {
             procResult = 0;
             return new List<CustOrdersOrdersReturnModel>();
@@ -846,36 +846,36 @@ namespace EntityFramework_Reverse_POCO_Generator
         public Task<List<CustOrdersOrdersReturnModel>> CustOrdersOrdersAsync(string customerId)
         {
             int procResult;
-            return Task.FromResult(CustOrdersOrders(customerId, out procResult));
+            return Task.FromResult(CustOrdersOrders(out procResult, customerId));
         }
 
         public DbSet<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountryReturnModel { get; set; }
-        public List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(DateTime? beginningDate, DateTime? endingDate)
+        public List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(DateTime? beginningDate = null, DateTime? endingDate = null)
         {
             int procResult;
-            return EmployeeSalesByCountry(beginningDate, endingDate, out procResult);
+            return EmployeeSalesByCountry(out procResult, beginningDate, endingDate);
         }
 
-        public List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(DateTime? beginningDate, DateTime? endingDate, out int procResult)
+        public List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(out int procResult, DateTime? beginningDate = null, DateTime? endingDate = null)
         {
             procResult = 0;
             return new List<EmployeeSalesByCountryReturnModel>();
         }
 
-        public Task<List<EmployeeSalesByCountryReturnModel>> EmployeeSalesByCountryAsync(DateTime? beginningDate, DateTime? endingDate)
+        public Task<List<EmployeeSalesByCountryReturnModel>> EmployeeSalesByCountryAsync(DateTime? beginningDate = null, DateTime? endingDate = null)
         {
             int procResult;
-            return Task.FromResult(EmployeeSalesByCountry(beginningDate, endingDate, out procResult));
+            return Task.FromResult(EmployeeSalesByCountry(out procResult, beginningDate, endingDate));
         }
 
         public DbSet<SalesByCategoryReturnModel> SalesByCategoryReturnModel { get; set; }
         public List<SalesByCategoryReturnModel> SalesByCategory(string categoryName, string ordYear)
         {
             int procResult;
-            return SalesByCategory(categoryName, ordYear, out procResult);
+            return SalesByCategory(out procResult, categoryName, ordYear);
         }
 
-        public List<SalesByCategoryReturnModel> SalesByCategory(string categoryName, string ordYear, out int procResult)
+        public List<SalesByCategoryReturnModel> SalesByCategory(out int procResult, string categoryName, string ordYear)
         {
             procResult = 0;
             return new List<SalesByCategoryReturnModel>();
@@ -884,33 +884,33 @@ namespace EntityFramework_Reverse_POCO_Generator
         public Task<List<SalesByCategoryReturnModel>> SalesByCategoryAsync(string categoryName, string ordYear)
         {
             int procResult;
-            return Task.FromResult(SalesByCategory(categoryName, ordYear, out procResult));
+            return Task.FromResult(SalesByCategory(out procResult, categoryName, ordYear));
         }
 
         public DbSet<SalesByYearReturnModel> SalesByYearReturnModel { get; set; }
-        public List<SalesByYearReturnModel> SalesByYear(DateTime? beginningDate, DateTime? endingDate)
+        public List<SalesByYearReturnModel> SalesByYear(DateTime? beginningDate = null, DateTime? endingDate = null)
         {
             int procResult;
-            return SalesByYear(beginningDate, endingDate, out procResult);
+            return SalesByYear(out procResult, beginningDate, endingDate);
         }
 
-        public List<SalesByYearReturnModel> SalesByYear(DateTime? beginningDate, DateTime? endingDate, out int procResult)
+        public List<SalesByYearReturnModel> SalesByYear(out int procResult, DateTime? beginningDate = null, DateTime? endingDate = null)
         {
             procResult = 0;
             return new List<SalesByYearReturnModel>();
         }
 
-        public Task<List<SalesByYearReturnModel>> SalesByYearAsync(DateTime? beginningDate, DateTime? endingDate)
+        public Task<List<SalesByYearReturnModel>> SalesByYearAsync(DateTime? beginningDate = null, DateTime? endingDate = null)
         {
             int procResult;
-            return Task.FromResult(SalesByYear(beginningDate, endingDate, out procResult));
+            return Task.FromResult(SalesByYear(out procResult, beginningDate, endingDate));
         }
 
         public DbSet<TenMostExpensiveProductsReturnModel> TenMostExpensiveProductsReturnModel { get; set; }
         public List<TenMostExpensiveProductsReturnModel> TenMostExpensiveProducts()
         {
             int procResult;
-            return TenMostExpensiveProducts(out procResult);
+            return TenMostExpensiveProducts(out procResu);
         }
 
         public List<TenMostExpensiveProductsReturnModel> TenMostExpensiveProducts(out int procResult)
@@ -922,7 +922,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public Task<List<TenMostExpensiveProductsReturnModel>> TenMostExpensiveProductsAsync()
         {
             int procResult;
-            return Task.FromResult(TenMostExpensiveProducts(out procResult));
+            return Task.FromResult(TenMostExpensiveProducts(out procResu));
         }
     }
 
