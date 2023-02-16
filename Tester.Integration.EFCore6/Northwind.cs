@@ -104,27 +104,27 @@ namespace Tester.Integration.EFCore6
 
         // Stored Procedures
         List<CustOrderHistReturnModel> CustOrderHist(string customerId);
-        List<CustOrderHistReturnModel> CustOrderHist(out int procResult, string customerId);
+        List<CustOrderHistReturnModel> CustOrderHist(string customerId, out int procResult);
         Task<List<CustOrderHistReturnModel>> CustOrderHistAsync(string customerId);
 
         List<CustOrdersDetailReturnModel> CustOrdersDetail(int? orderId);
-        List<CustOrdersDetailReturnModel> CustOrdersDetail(out int procResult, int? orderId);
+        List<CustOrdersDetailReturnModel> CustOrdersDetail(int? orderId, out int procResult);
         Task<List<CustOrdersDetailReturnModel>> CustOrdersDetailAsync(int? orderId);
 
         List<CustOrdersOrdersReturnModel> CustOrdersOrders(string customerId);
-        List<CustOrdersOrdersReturnModel> CustOrdersOrders(out int procResult, string customerId);
+        List<CustOrdersOrdersReturnModel> CustOrdersOrders(string customerId, out int procResult);
         Task<List<CustOrdersOrdersReturnModel>> CustOrdersOrdersAsync(string customerId);
 
         List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(DateTime? beginningDate, DateTime? endingDate);
-        List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(out int procResult, DateTime? beginningDate, DateTime? endingDate);
+        List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(DateTime? beginningDate, DateTime? endingDate, out int procResult);
         Task<List<EmployeeSalesByCountryReturnModel>> EmployeeSalesByCountryAsync(DateTime? beginningDate, DateTime? endingDate);
 
         List<SalesByCategoryReturnModel> SalesByCategory(string categoryName, string ordYear);
-        List<SalesByCategoryReturnModel> SalesByCategory(out int procResult, string categoryName, string ordYear);
+        List<SalesByCategoryReturnModel> SalesByCategory(string categoryName, string ordYear, out int procResult);
         Task<List<SalesByCategoryReturnModel>> SalesByCategoryAsync(string categoryName, string ordYear);
 
         List<SalesByYearReturnModel> SalesByYear(DateTime? beginningDate, DateTime? endingDate);
-        List<SalesByYearReturnModel> SalesByYear(out int procResult, DateTime? beginningDate, DateTime? endingDate);
+        List<SalesByYearReturnModel> SalesByYear(DateTime? beginningDate, DateTime? endingDate, out int procResult);
         Task<List<SalesByYearReturnModel>> SalesByYearAsync(DateTime? beginningDate, DateTime? endingDate);
 
         List<TenMostExpensiveProductsReturnModel> TenMostExpensiveProducts();
@@ -239,10 +239,10 @@ namespace Tester.Integration.EFCore6
         public List<CustOrderHistReturnModel> CustOrderHist(string customerId)
         {
             int procResult;
-            return CustOrderHist(out procResult, customerId);
+            return CustOrderHist(customerId, out procResult);
         }
 
-        public List<CustOrderHistReturnModel> CustOrderHist(out int procResult, string customerId)
+        public List<CustOrderHistReturnModel> CustOrderHist(string customerId, out int procResult)
         {
             var customerIdParam = new SqlParameter { ParameterName = "@CustomerID", SqlDbType = SqlDbType.NChar, Direction = ParameterDirection.Input, Value = customerId, Size = 5 };
             if (customerIdParam.Value == null)
@@ -275,10 +275,10 @@ namespace Tester.Integration.EFCore6
         public List<CustOrdersDetailReturnModel> CustOrdersDetail(int? orderId = null)
         {
             int procResult;
-            return CustOrdersDetail(out procResult, orderId);
+            return CustOrdersDetail(orderId, out procResult);
         }
 
-        public List<CustOrdersDetailReturnModel> CustOrdersDetail(out int procResult, int? orderId = null)
+        public List<CustOrdersDetailReturnModel> CustOrdersDetail(int? orderId, out int procResult)
         {
             var orderIdParam = new SqlParameter { ParameterName = "@OrderID", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = orderId.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!orderId.HasValue)
@@ -311,10 +311,10 @@ namespace Tester.Integration.EFCore6
         public List<CustOrdersOrdersReturnModel> CustOrdersOrders(string customerId)
         {
             int procResult;
-            return CustOrdersOrders(out procResult, customerId);
+            return CustOrdersOrders(customerId, out procResult);
         }
 
-        public List<CustOrdersOrdersReturnModel> CustOrdersOrders(out int procResult, string customerId)
+        public List<CustOrdersOrdersReturnModel> CustOrdersOrders(string customerId, out int procResult)
         {
             var customerIdParam = new SqlParameter { ParameterName = "@CustomerID", SqlDbType = SqlDbType.NChar, Direction = ParameterDirection.Input, Value = customerId, Size = 5 };
             if (customerIdParam.Value == null)
@@ -347,10 +347,10 @@ namespace Tester.Integration.EFCore6
         public List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(DateTime? beginningDate = null, DateTime? endingDate = null)
         {
             int procResult;
-            return EmployeeSalesByCountry(out procResult, beginningDate, endingDate);
+            return EmployeeSalesByCountry(beginningDate, endingDate, out procResult);
         }
 
-        public List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(out int procResult, DateTime? beginningDate = null, DateTime? endingDate = null)
+        public List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(DateTime? beginningDate, DateTime? endingDate, out int procResult)
         {
             var beginningDateParam = new SqlParameter { ParameterName = "@Beginning_Date", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = beginningDate.GetValueOrDefault() };
             if (!beginningDate.HasValue)
@@ -391,10 +391,10 @@ namespace Tester.Integration.EFCore6
         public List<SalesByCategoryReturnModel> SalesByCategory(string categoryName, string ordYear)
         {
             int procResult;
-            return SalesByCategory(out procResult, categoryName, ordYear);
+            return SalesByCategory(categoryName, ordYear, out procResult);
         }
 
-        public List<SalesByCategoryReturnModel> SalesByCategory(out int procResult, string categoryName, string ordYear)
+        public List<SalesByCategoryReturnModel> SalesByCategory(string categoryName, string ordYear, out int procResult)
         {
             var categoryNameParam = new SqlParameter { ParameterName = "@CategoryName", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = categoryName, Size = 15 };
             if (categoryNameParam.Value == null)
@@ -435,10 +435,10 @@ namespace Tester.Integration.EFCore6
         public List<SalesByYearReturnModel> SalesByYear(DateTime? beginningDate = null, DateTime? endingDate = null)
         {
             int procResult;
-            return SalesByYear(out procResult, beginningDate, endingDate);
+            return SalesByYear(beginningDate, endingDate, out procResult);
         }
 
-        public List<SalesByYearReturnModel> SalesByYear(out int procResult, DateTime? beginningDate = null, DateTime? endingDate = null)
+        public List<SalesByYearReturnModel> SalesByYear(DateTime? beginningDate, DateTime? endingDate, out int procResult)
         {
             var beginningDateParam = new SqlParameter { ParameterName = "@Beginning_Date", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = beginningDate.GetValueOrDefault() };
             if (!beginningDate.HasValue)
@@ -479,7 +479,7 @@ namespace Tester.Integration.EFCore6
         public List<TenMostExpensiveProductsReturnModel> TenMostExpensiveProducts()
         {
             int procResult;
-            return TenMostExpensiveProducts(out procResu);
+            return TenMostExpensiveProducts(out procResult);
         }
 
         public List<TenMostExpensiveProductsReturnModel> TenMostExpensiveProducts(out int procResult)
@@ -786,10 +786,10 @@ namespace Tester.Integration.EFCore6
         public List<CustOrderHistReturnModel> CustOrderHist(string customerId)
         {
             int procResult;
-            return CustOrderHist(out procResult, customerId);
+            return CustOrderHist(customerId, out procResult);
         }
 
-        public List<CustOrderHistReturnModel> CustOrderHist(out int procResult, string customerId)
+        public List<CustOrderHistReturnModel> CustOrderHist(string customerId, out int procResult)
         {
             procResult = 0;
             return new List<CustOrderHistReturnModel>();
@@ -798,17 +798,17 @@ namespace Tester.Integration.EFCore6
         public Task<List<CustOrderHistReturnModel>> CustOrderHistAsync(string customerId)
         {
             int procResult;
-            return Task.FromResult(CustOrderHist(out procResult, customerId));
+            return Task.FromResult(CustOrderHist(customerId, out procResult));
         }
 
         public DbSet<CustOrdersDetailReturnModel> CustOrdersDetailReturnModel { get; set; }
         public List<CustOrdersDetailReturnModel> CustOrdersDetail(int? orderId = null)
         {
             int procResult;
-            return CustOrdersDetail(out procResult, orderId);
+            return CustOrdersDetail(orderId, out procResult);
         }
 
-        public List<CustOrdersDetailReturnModel> CustOrdersDetail(out int procResult, int? orderId = null)
+        public List<CustOrdersDetailReturnModel> CustOrdersDetail(int? orderId, out int procResult)
         {
             procResult = 0;
             return new List<CustOrdersDetailReturnModel>();
@@ -817,17 +817,17 @@ namespace Tester.Integration.EFCore6
         public Task<List<CustOrdersDetailReturnModel>> CustOrdersDetailAsync(int? orderId = null)
         {
             int procResult;
-            return Task.FromResult(CustOrdersDetail(out procResult, orderId));
+            return Task.FromResult(CustOrdersDetail(orderId, out procResult));
         }
 
         public DbSet<CustOrdersOrdersReturnModel> CustOrdersOrdersReturnModel { get; set; }
         public List<CustOrdersOrdersReturnModel> CustOrdersOrders(string customerId)
         {
             int procResult;
-            return CustOrdersOrders(out procResult, customerId);
+            return CustOrdersOrders(customerId, out procResult);
         }
 
-        public List<CustOrdersOrdersReturnModel> CustOrdersOrders(out int procResult, string customerId)
+        public List<CustOrdersOrdersReturnModel> CustOrdersOrders(string customerId, out int procResult)
         {
             procResult = 0;
             return new List<CustOrdersOrdersReturnModel>();
@@ -836,17 +836,17 @@ namespace Tester.Integration.EFCore6
         public Task<List<CustOrdersOrdersReturnModel>> CustOrdersOrdersAsync(string customerId)
         {
             int procResult;
-            return Task.FromResult(CustOrdersOrders(out procResult, customerId));
+            return Task.FromResult(CustOrdersOrders(customerId, out procResult));
         }
 
         public DbSet<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountryReturnModel { get; set; }
         public List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(DateTime? beginningDate = null, DateTime? endingDate = null)
         {
             int procResult;
-            return EmployeeSalesByCountry(out procResult, beginningDate, endingDate);
+            return EmployeeSalesByCountry(beginningDate, endingDate, out procResult);
         }
 
-        public List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(out int procResult, DateTime? beginningDate = null, DateTime? endingDate = null)
+        public List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(DateTime? beginningDate, DateTime? endingDate, out int procResult)
         {
             procResult = 0;
             return new List<EmployeeSalesByCountryReturnModel>();
@@ -855,17 +855,17 @@ namespace Tester.Integration.EFCore6
         public Task<List<EmployeeSalesByCountryReturnModel>> EmployeeSalesByCountryAsync(DateTime? beginningDate = null, DateTime? endingDate = null)
         {
             int procResult;
-            return Task.FromResult(EmployeeSalesByCountry(out procResult, beginningDate, endingDate));
+            return Task.FromResult(EmployeeSalesByCountry(beginningDate, endingDate, out procResult));
         }
 
         public DbSet<SalesByCategoryReturnModel> SalesByCategoryReturnModel { get; set; }
         public List<SalesByCategoryReturnModel> SalesByCategory(string categoryName, string ordYear)
         {
             int procResult;
-            return SalesByCategory(out procResult, categoryName, ordYear);
+            return SalesByCategory(categoryName, ordYear, out procResult);
         }
 
-        public List<SalesByCategoryReturnModel> SalesByCategory(out int procResult, string categoryName, string ordYear)
+        public List<SalesByCategoryReturnModel> SalesByCategory(string categoryName, string ordYear, out int procResult)
         {
             procResult = 0;
             return new List<SalesByCategoryReturnModel>();
@@ -874,17 +874,17 @@ namespace Tester.Integration.EFCore6
         public Task<List<SalesByCategoryReturnModel>> SalesByCategoryAsync(string categoryName, string ordYear)
         {
             int procResult;
-            return Task.FromResult(SalesByCategory(out procResult, categoryName, ordYear));
+            return Task.FromResult(SalesByCategory(categoryName, ordYear, out procResult));
         }
 
         public DbSet<SalesByYearReturnModel> SalesByYearReturnModel { get; set; }
         public List<SalesByYearReturnModel> SalesByYear(DateTime? beginningDate = null, DateTime? endingDate = null)
         {
             int procResult;
-            return SalesByYear(out procResult, beginningDate, endingDate);
+            return SalesByYear(beginningDate, endingDate, out procResult);
         }
 
-        public List<SalesByYearReturnModel> SalesByYear(out int procResult, DateTime? beginningDate = null, DateTime? endingDate = null)
+        public List<SalesByYearReturnModel> SalesByYear(DateTime? beginningDate, DateTime? endingDate, out int procResult)
         {
             procResult = 0;
             return new List<SalesByYearReturnModel>();
@@ -893,14 +893,14 @@ namespace Tester.Integration.EFCore6
         public Task<List<SalesByYearReturnModel>> SalesByYearAsync(DateTime? beginningDate = null, DateTime? endingDate = null)
         {
             int procResult;
-            return Task.FromResult(SalesByYear(out procResult, beginningDate, endingDate));
+            return Task.FromResult(SalesByYear(beginningDate, endingDate, out procResult));
         }
 
         public DbSet<TenMostExpensiveProductsReturnModel> TenMostExpensiveProductsReturnModel { get; set; }
         public List<TenMostExpensiveProductsReturnModel> TenMostExpensiveProducts()
         {
             int procResult;
-            return TenMostExpensiveProducts(out procResu);
+            return TenMostExpensiveProducts(out procResult);
         }
 
         public List<TenMostExpensiveProductsReturnModel> TenMostExpensiveProducts(out int procResult)
@@ -912,7 +912,7 @@ namespace Tester.Integration.EFCore6
         public Task<List<TenMostExpensiveProductsReturnModel>> TenMostExpensiveProductsAsync()
         {
             int procResult;
-            return Task.FromResult(TenMostExpensiveProducts(out procResu));
+            return Task.FromResult(TenMostExpensiveProducts(out procResult));
         }
     }
 

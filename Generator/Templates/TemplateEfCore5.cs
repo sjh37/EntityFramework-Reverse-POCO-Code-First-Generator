@@ -134,7 +134,7 @@ using {{this}};{{#newline}}
     {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsTrueTrue}});{{#newline}}
 {{/if}}
 {{#else}}
-    int {{FunctionName}}({{WriteStoredProcFunctionParamsTrue}});{{#newline}}
+    int {{FunctionName}}({{WriteStoredProcFunctionParamsTrueTrue}});{{#newline}}
 {{/if}}
 
 {{#if AsyncFunctionCannotBeCreated}}

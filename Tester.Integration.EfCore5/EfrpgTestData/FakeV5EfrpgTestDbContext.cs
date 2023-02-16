@@ -421,14 +421,14 @@ namespace V5EfrpgTest
 
         // Stored Procedures
 
-        public int AddTwoValues(int? a = null, int? b = null)
+        public int AddTwoValues(int? a, int? b)
         {
             return 0;
         }
 
         // AddTwoValuesAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int AddTwoValuesWithResult(int? a = null, int? b = null, out int? result = null, out int? result2 = null)
+        public int AddTwoValuesWithResult(int? a, int? b, out int? result, out int? result2)
         {
             result = default(int);
             result2 = default(int);
@@ -437,14 +437,14 @@ namespace V5EfrpgTest
 
         // AddTwoValuesWithResultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int Alpha_Overclock(DateTime? parameter = null)
+        public int Alpha_Overclock(DateTime? parameter)
         {
             return 0;
         }
 
         // Alpha_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int App_UspCmtUserFsrUpdate(int? userId = null, int? fsrId = null, out int? ufsrId = null)
+        public int App_UspCmtUserFsrUpdate(int? userId, int? fsrId, out int? ufsrId)
         {
             ufsrId = default(int);
             return 0;
@@ -459,7 +459,7 @@ namespace V5EfrpgTest
 
         // ASimpleExampleAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int Beta_Overclock(DateTime? parameter = null)
+        public int Beta_Overclock(DateTime? parameter)
         {
             return 0;
         }
@@ -470,10 +470,10 @@ namespace V5EfrpgTest
         public C182Test2ReturnModel C182Test2(int? flag = null)
         {
             int procResult;
-            return C182Test2(out procResult, flag);
+            return C182Test2(flag, out procResult);
         }
 
-        public C182Test2ReturnModel C182Test2(out int procResult, int? flag = null)
+        public C182Test2ReturnModel C182Test2(int? flag, out int procResult)
         {
             procResult = 0;
             return new C182Test2ReturnModel();
@@ -482,17 +482,17 @@ namespace V5EfrpgTest
         public Task<C182Test2ReturnModel> C182Test2Async(int? flag = null)
         {
             int procResult;
-            return Task.FromResult(C182Test2(out procResult, flag));
+            return Task.FromResult(C182Test2(flag, out procResult));
         }
 
         public DbSet<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsCompleteReturnModel { get; set; }
-        public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId = null, out bool? isApplicationComplete = null)
+        public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete)
         {
             int procResult;
-            return CheckIfApplicationIsComplete(out procResult, applicationId, out isApplicationComplete);
+            return CheckIfApplicationIsComplete(applicationId, out isApplicationComplete, out procResult);
         }
 
-        public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(out int procResult, int? applicationId = null, out bool? isApplicationComplete = null)
+        public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete, out int procResult)
         {
             isApplicationComplete = default(bool);
             procResult = 0;
@@ -506,7 +506,7 @@ namespace V5EfrpgTest
         public List<ColourPivotReturnModel> ColourPivot()
         {
             int procResult;
-            return ColourPivot(out procResu);
+            return ColourPivot(out procResult);
         }
 
         public List<ColourPivotReturnModel> ColourPivot(out int procResult)
@@ -518,14 +518,14 @@ namespace V5EfrpgTest
         public Task<List<ColourPivotReturnModel>> ColourPivotAsync()
         {
             int procResult;
-            return Task.FromResult(ColourPivot(out procResu));
+            return Task.FromResult(ColourPivot(out procResult));
         }
 
         public DbSet<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProcReturnModel { get; set; }
         public List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc()
         {
             int procResult;
-            return ColumnNameAndTypesProc(out procResu);
+            return ColumnNameAndTypesProc(out procResult);
         }
 
         public List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc(out int procResult)
@@ -537,10 +537,10 @@ namespace V5EfrpgTest
         public Task<List<ColumnNameAndTypesProcReturnModel>> ColumnNameAndTypesProcAsync()
         {
             int procResult;
-            return Task.FromResult(ColumnNameAndTypesProc(out procResu));
+            return Task.FromResult(ColumnNameAndTypesProc(out procResult));
         }
 
-        public int ConvertToString(int? someValue = null, out string someString)
+        public int ConvertToString(int? someValue, out string someString)
         {
             someString = default(string);
             return 0;
@@ -552,10 +552,10 @@ namespace V5EfrpgTest
         public List<DboProcDataFromFfrsReturnModel> DboProcDataFromFfrs(int? maxId = null)
         {
             int procResult;
-            return DboProcDataFromFfrs(out procResult, maxId);
+            return DboProcDataFromFfrs(maxId, out procResult);
         }
 
-        public List<DboProcDataFromFfrsReturnModel> DboProcDataFromFfrs(out int procResult, int? maxId = null)
+        public List<DboProcDataFromFfrsReturnModel> DboProcDataFromFfrs(int? maxId, out int procResult)
         {
             procResult = 0;
             return new List<DboProcDataFromFfrsReturnModel>();
@@ -564,14 +564,14 @@ namespace V5EfrpgTest
         public Task<List<DboProcDataFromFfrsReturnModel>> DboProcDataFromFfrsAsync(int? maxId = null)
         {
             int procResult;
-            return Task.FromResult(DboProcDataFromFfrs(out procResult, maxId));
+            return Task.FromResult(DboProcDataFromFfrs(maxId, out procResult));
         }
 
         public DbSet<DboProcDataFromFfrsAndDboReturnModel> DboProcDataFromFfrsAndDboReturnModel { get; set; }
         public List<DboProcDataFromFfrsAndDboReturnModel> DboProcDataFromFfrsAndDbo()
         {
             int procResult;
-            return DboProcDataFromFfrsAndDbo(out procResu);
+            return DboProcDataFromFfrsAndDbo(out procResult);
         }
 
         public List<DboProcDataFromFfrsAndDboReturnModel> DboProcDataFromFfrsAndDbo(out int procResult)
@@ -583,14 +583,14 @@ namespace V5EfrpgTest
         public Task<List<DboProcDataFromFfrsAndDboReturnModel>> DboProcDataFromFfrsAndDboAsync()
         {
             int procResult;
-            return Task.FromResult(DboProcDataFromFfrsAndDbo(out procResu));
+            return Task.FromResult(DboProcDataFromFfrsAndDbo(out procResult));
         }
 
         public DbSet<DsOpeProcReturnModel> DsOpeProcReturnModel { get; set; }
         public List<DsOpeProcReturnModel> DsOpeProc()
         {
             int procResult;
-            return DsOpeProc(out procResu);
+            return DsOpeProc(out procResult);
         }
 
         public List<DsOpeProcReturnModel> DsOpeProc(out int procResult)
@@ -602,17 +602,17 @@ namespace V5EfrpgTest
         public Task<List<DsOpeProcReturnModel>> DsOpeProcAsync()
         {
             int procResult;
-            return Task.FromResult(DsOpeProc(out procResu));
+            return Task.FromResult(DsOpeProc(out procResult));
         }
 
         public DbSet<FFRS_CvDataReturnModel> FFRS_CvDataReturnModel { get; set; }
         public List<FFRS_CvDataReturnModel> FFRS_CvData(int? maxId = null)
         {
             int procResult;
-            return FFRS_CvData(out procResult, maxId);
+            return FFRS_CvData(maxId, out procResult);
         }
 
-        public List<FFRS_CvDataReturnModel> FFRS_CvData(out int procResult, int? maxId = null)
+        public List<FFRS_CvDataReturnModel> FFRS_CvData(int? maxId, out int procResult)
         {
             procResult = 0;
             return new List<FFRS_CvDataReturnModel>();
@@ -621,14 +621,14 @@ namespace V5EfrpgTest
         public Task<List<FFRS_CvDataReturnModel>> FFRS_CvDataAsync(int? maxId = null)
         {
             int procResult;
-            return Task.FromResult(FFRS_CvData(out procResult, maxId));
+            return Task.FromResult(FFRS_CvData(maxId, out procResult));
         }
 
         public DbSet<FFRS_DataFromDboReturnModel> FFRS_DataFromDboReturnModel { get; set; }
         public List<FFRS_DataFromDboReturnModel> FFRS_DataFromDbo()
         {
             int procResult;
-            return FFRS_DataFromDbo(out procResu);
+            return FFRS_DataFromDbo(out procResult);
         }
 
         public List<FFRS_DataFromDboReturnModel> FFRS_DataFromDbo(out int procResult)
@@ -640,14 +640,14 @@ namespace V5EfrpgTest
         public Task<List<FFRS_DataFromDboReturnModel>> FFRS_DataFromDboAsync()
         {
             int procResult;
-            return Task.FromResult(FFRS_DataFromDbo(out procResu));
+            return Task.FromResult(FFRS_DataFromDbo(out procResult));
         }
 
         public DbSet<FFRS_DataFromDboAndFfrsReturnModel> FFRS_DataFromDboAndFfrsReturnModel { get; set; }
         public List<FFRS_DataFromDboAndFfrsReturnModel> FFRS_DataFromDboAndFfrs()
         {
             int procResult;
-            return FFRS_DataFromDboAndFfrs(out procResu);
+            return FFRS_DataFromDboAndFfrs(out procResult);
         }
 
         public List<FFRS_DataFromDboAndFfrsReturnModel> FFRS_DataFromDboAndFfrs(out int procResult)
@@ -659,14 +659,14 @@ namespace V5EfrpgTest
         public Task<List<FFRS_DataFromDboAndFfrsReturnModel>> FFRS_DataFromDboAndFfrsAsync()
         {
             int procResult;
-            return Task.FromResult(FFRS_DataFromDboAndFfrs(out procResu));
+            return Task.FromResult(FFRS_DataFromDboAndFfrs(out procResult));
         }
 
         public DbSet<FkTest_HelloReturnModel> FkTest_HelloReturnModel { get; set; }
         public List<FkTest_HelloReturnModel> FkTest_Hello()
         {
             int procResult;
-            return FkTest_Hello(out procResu);
+            return FkTest_Hello(out procResult);
         }
 
         public List<FkTest_HelloReturnModel> FkTest_Hello(out int procResult)
@@ -678,17 +678,17 @@ namespace V5EfrpgTest
         public Task<List<FkTest_HelloReturnModel>> FkTest_HelloAsync()
         {
             int procResult;
-            return Task.FromResult(FkTest_Hello(out procResu));
+            return Task.FromResult(FkTest_Hello(out procResult));
         }
 
         public DbSet<GetSmallDecimalTestReturnModel> GetSmallDecimalTestReturnModel { get; set; }
         public List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId = null)
         {
             int procResult;
-            return GetSmallDecimalTest(out procResult, maxId);
+            return GetSmallDecimalTest(maxId, out procResult);
         }
 
-        public List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(out int procResult, int? maxId = null)
+        public List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId, out int procResult)
         {
             procResult = 0;
             return new List<GetSmallDecimalTestReturnModel>();
@@ -697,10 +697,10 @@ namespace V5EfrpgTest
         public Task<List<GetSmallDecimalTestReturnModel>> GetSmallDecimalTestAsync(int? maxId = null)
         {
             int procResult;
-            return Task.FromResult(GetSmallDecimalTest(out procResult, maxId));
+            return Task.FromResult(GetSmallDecimalTest(maxId, out procResult));
         }
 
-        public int InsertRecord(string data, out int? insertedId = null)
+        public int InsertRecord(string data, out int? insertedId)
         {
             insertedId = default(int);
             return 0;
@@ -708,7 +708,7 @@ namespace V5EfrpgTest
 
         // InsertRecordAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int InsertRecordThree(string data, out int? insertedId = null, int? someId = null, out int? anotherInsertedId = null)
+        public int InsertRecordThree(string data, out int? insertedId, int? someId, out int? anotherInsertedId)
         {
             insertedId = default(int);
             anotherInsertedId = default(int);
@@ -717,7 +717,7 @@ namespace V5EfrpgTest
 
         // InsertRecordThreeAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int InsertRecordTwo(string data, out int? insertedId = null, out int? anotherInsertedId = null)
+        public int InsertRecordTwo(string data, out int? insertedId, out int? anotherInsertedId)
         {
             insertedId = default(int);
             anotherInsertedId = default(int);
@@ -726,7 +726,7 @@ namespace V5EfrpgTest
 
         // InsertRecordTwoAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int MinTripSequenceStart(out DateTime? minTripSequenceStartParam = null)
+        public int MinTripSequenceStart(out DateTime? minTripSequenceStartParam)
         {
             minTripSequenceStartParam = default(DateTime);
             return 0;
@@ -734,7 +734,7 @@ namespace V5EfrpgTest
 
         // MinTripSequenceStartAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int MinTripSequenceStartNull(out DateTime? minTripSequenceStartParam = null)
+        public int MinTripSequenceStartNull(out DateTime? minTripSequenceStartParam)
         {
             minTripSequenceStartParam = default(DateTime);
             return 0;
@@ -749,14 +749,14 @@ namespace V5EfrpgTest
 
         // NvarcharTestAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int Omega_Overclock(DateTime? parameter = null)
+        public int Omega_Overclock(DateTime? parameter)
         {
             return 0;
         }
 
         // Omega_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int ProcTestDecimalOutput(out decimal? perfectNumber = null)
+        public int ProcTestDecimalOutput(out decimal? perfectNumber)
         {
             perfectNumber = default(decimal);
             return 0;
@@ -764,7 +764,7 @@ namespace V5EfrpgTest
 
         // ProcTestDecimalOutputAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int ProcTestDecimalOutputV2(out decimal? perfectNumber = null)
+        public int ProcTestDecimalOutputV2(out decimal? perfectNumber)
         {
             perfectNumber = default(decimal);
             return 0;
@@ -772,7 +772,7 @@ namespace V5EfrpgTest
 
         // ProcTestDecimalOutputV2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int ProcTestDecimalOutputV3Default(out decimal? perfectNumber = null)
+        public int ProcTestDecimalOutputV3Default(out decimal? perfectNumber)
         {
             perfectNumber = default(decimal);
             return 0;
@@ -784,7 +784,7 @@ namespace V5EfrpgTest
         public List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams()
         {
             int procResult;
-            return SpatialTypesNoParams(out procResu);
+            return SpatialTypesNoParams(out procResult);
         }
 
         public List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams(out int procResult)
@@ -796,17 +796,17 @@ namespace V5EfrpgTest
         public Task<List<SpatialTypesNoParamsReturnModel>> SpatialTypesNoParamsAsync()
         {
             int procResult;
-            return Task.FromResult(SpatialTypesNoParams(out procResu));
+            return Task.FromResult(SpatialTypesNoParams(out procResult));
         }
 
         public DbSet<SpatialTypesWithParamsReturnModel> SpatialTypesWithParamsReturnModel { get; set; }
         public List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
         {
             int procResult;
-            return SpatialTypesWithParams(out procResult, geometry, geography);
+            return SpatialTypesWithParams(geometry, geography, out procResult);
         }
 
-        public List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(out int procResult, NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
+        public List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, out int procResult)
         {
             procResult = 0;
             return new List<SpatialTypesWithParamsReturnModel>();
@@ -815,17 +815,24 @@ namespace V5EfrpgTest
         public Task<List<SpatialTypesWithParamsReturnModel>> SpatialTypesWithParamsAsync(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
         {
             int procResult;
-            return Task.FromResult(SpatialTypesWithParams(out procResult, geometry, geography));
+            return Task.FromResult(SpatialTypesWithParams(geometry, geography, out procResult));
         }
+
+        public int SpDefragmentIndexes()
+        {
+            return 0;
+        }
+
+        // SpDefragmentIndexesAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         public DbSet<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsReturnModel { get; set; }
         public StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar = null)
         {
             int procResult;
-            return StpMultipleIdenticalResults(out procResult, someVar);
+            return StpMultipleIdenticalResults(someVar, out procResult);
         }
 
-        public StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(out int procResult, int? someVar = null)
+        public StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar, out int procResult)
         {
             procResult = 0;
             return new StpMultipleIdenticalResultsReturnModel();
@@ -834,17 +841,17 @@ namespace V5EfrpgTest
         public Task<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsAsync(int? someVar = null)
         {
             int procResult;
-            return Task.FromResult(StpMultipleIdenticalResults(out procResult, someVar));
+            return Task.FromResult(StpMultipleIdenticalResults(someVar, out procResult));
         }
 
         public DbSet<StpMultipleMultipleResultsWithParamsReturnModel> StpMultipleMultipleResultsWithParamsReturnModel { get; set; }
         public StpMultipleMultipleResultsWithParamsReturnModel StpMultipleMultipleResultsWithParams(int? firstVal = null, int? secondVal = null, int? thirdVal = null)
         {
             int procResult;
-            return StpMultipleMultipleResultsWithParams(out procResult, firstVal, secondVal, thirdVal);
+            return StpMultipleMultipleResultsWithParams(firstVal, secondVal, thirdVal, out procResult);
         }
 
-        public StpMultipleMultipleResultsWithParamsReturnModel StpMultipleMultipleResultsWithParams(out int procResult, int? firstVal = null, int? secondVal = null, int? thirdVal = null)
+        public StpMultipleMultipleResultsWithParamsReturnModel StpMultipleMultipleResultsWithParams(int? firstVal, int? secondVal, int? thirdVal, out int procResult)
         {
             procResult = 0;
             return new StpMultipleMultipleResultsWithParamsReturnModel();
@@ -853,14 +860,14 @@ namespace V5EfrpgTest
         public Task<StpMultipleMultipleResultsWithParamsReturnModel> StpMultipleMultipleResultsWithParamsAsync(int? firstVal = null, int? secondVal = null, int? thirdVal = null)
         {
             int procResult;
-            return Task.FromResult(StpMultipleMultipleResultsWithParams(out procResult, firstVal, secondVal, thirdVal));
+            return Task.FromResult(StpMultipleMultipleResultsWithParams(firstVal, secondVal, thirdVal, out procResult));
         }
 
         public DbSet<StpMultipleResultsReturnModel> StpMultipleResultsReturnModel { get; set; }
         public StpMultipleResultsReturnModel StpMultipleResults()
         {
             int procResult;
-            return StpMultipleResults(out procResu);
+            return StpMultipleResults(out procResult);
         }
 
         public StpMultipleResultsReturnModel StpMultipleResults(out int procResult)
@@ -872,17 +879,17 @@ namespace V5EfrpgTest
         public Task<StpMultipleResultsReturnModel> StpMultipleResultsAsync()
         {
             int procResult;
-            return Task.FromResult(StpMultipleResults(out procResu));
+            return Task.FromResult(StpMultipleResults(out procResult));
         }
 
         public DbSet<StpMultipleResultsWithParamsReturnModel> StpMultipleResultsWithParamsReturnModel { get; set; }
         public StpMultipleResultsWithParamsReturnModel StpMultipleResultsWithParams(int? firstVal = null, int? secondVal = null)
         {
             int procResult;
-            return StpMultipleResultsWithParams(out procResult, firstVal, secondVal);
+            return StpMultipleResultsWithParams(firstVal, secondVal, out procResult);
         }
 
-        public StpMultipleResultsWithParamsReturnModel StpMultipleResultsWithParams(out int procResult, int? firstVal = null, int? secondVal = null)
+        public StpMultipleResultsWithParamsReturnModel StpMultipleResultsWithParams(int? firstVal, int? secondVal, out int procResult)
         {
             procResult = 0;
             return new StpMultipleResultsWithParamsReturnModel();
@@ -891,14 +898,14 @@ namespace V5EfrpgTest
         public Task<StpMultipleResultsWithParamsReturnModel> StpMultipleResultsWithParamsAsync(int? firstVal = null, int? secondVal = null)
         {
             int procResult;
-            return Task.FromResult(StpMultipleResultsWithParams(out procResult, firstVal, secondVal));
+            return Task.FromResult(StpMultipleResultsWithParams(firstVal, secondVal, out procResult));
         }
 
         public DbSet<StpNoParamsTestReturnModel> StpNoParamsTestReturnModel { get; set; }
         public List<StpNoParamsTestReturnModel> StpNoParamsTest()
         {
             int procResult;
-            return StpNoParamsTest(out procResu);
+            return StpNoParamsTest(out procResult);
         }
 
         public List<StpNoParamsTestReturnModel> StpNoParamsTest(out int procResult)
@@ -910,7 +917,7 @@ namespace V5EfrpgTest
         public Task<List<StpNoParamsTestReturnModel>> StpNoParamsTestAsync()
         {
             int procResult;
-            return Task.FromResult(StpNoParamsTest(out procResu));
+            return Task.FromResult(StpNoParamsTest(out procResult));
         }
 
         public int StpNoReturnFields()
@@ -924,10 +931,10 @@ namespace V5EfrpgTest
         public List<StpNullableParamsTestReturnModel> StpNullableParamsTest(int? aVal = null, int? bVal = null)
         {
             int procResult;
-            return StpNullableParamsTest(out procResult, aVal, bVal);
+            return StpNullableParamsTest(aVal, bVal, out procResult);
         }
 
-        public List<StpNullableParamsTestReturnModel> StpNullableParamsTest(out int procResult, int? aVal = null, int? bVal = null)
+        public List<StpNullableParamsTestReturnModel> StpNullableParamsTest(int? aVal, int? bVal, out int procResult)
         {
             procResult = 0;
             return new List<StpNullableParamsTestReturnModel>();
@@ -936,17 +943,17 @@ namespace V5EfrpgTest
         public Task<List<StpNullableParamsTestReturnModel>> StpNullableParamsTestAsync(int? aVal = null, int? bVal = null)
         {
             int procResult;
-            return Task.FromResult(StpNullableParamsTest(out procResult, aVal, bVal));
+            return Task.FromResult(StpNullableParamsTest(aVal, bVal, out procResult));
         }
 
         public DbSet<StpTestReturnModel> StpTestReturnModel { get; set; }
-        public List<StpTestReturnModel> StpTest(string strDateFrom, string strDateTo, out bool? retBool = null)
+        public List<StpTestReturnModel> StpTest(string strDateFrom, string strDateTo, out bool? retBool)
         {
             int procResult;
-            return StpTest(out procResult, strDateFrom, strDateTo, out retBool);
+            return StpTest(strDateFrom, strDateTo, out retBool, out procResult);
         }
 
-        public List<StpTestReturnModel> StpTest(out int procResult, string strDateFrom, string strDateTo, out bool? retBool = null)
+        public List<StpTestReturnModel> StpTest(string strDateFrom, string strDateTo, out bool? retBool, out int procResult)
         {
             retBool = default(bool);
             procResult = 0;
@@ -960,10 +967,10 @@ namespace V5EfrpgTest
         public List<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTest(string strDateFrom, string strDateTo)
         {
             int procResult;
-            return StpTestUnderscoreTest(out procResult, strDateFrom, strDateTo);
+            return StpTestUnderscoreTest(strDateFrom, strDateTo, out procResult);
         }
 
-        public List<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTest(out int procResult, string strDateFrom, string strDateTo)
+        public List<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTest(string strDateFrom, string strDateTo, out int procResult)
         {
             procResult = 0;
             return new List<StpTestUnderscoreTestReturnModel>();
@@ -972,17 +979,17 @@ namespace V5EfrpgTest
         public Task<List<StpTestUnderscoreTestReturnModel>> StpTestUnderscoreTestAsync(string strDateFrom, string strDateTo)
         {
             int procResult;
-            return Task.FromResult(StpTestUnderscoreTest(out procResult, strDateFrom, strDateTo));
+            return Task.FromResult(StpTestUnderscoreTest(strDateFrom, strDateTo, out procResult));
         }
 
-        public int StupidStoredProcedureParams(string reqType, short? dept = null, short? @class = null, short? item = null)
+        public int StupidStoredProcedureParams(string reqType, short? dept, short? @class, short? item)
         {
             return 0;
         }
 
         // StupidStoredProcedureParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int StupidStoredProcedureParams2(string @override, short? @readonly = null, short? @class = null, short? @enum = null)
+        public int StupidStoredProcedureParams2(string @override, short? @readonly, short? @class, short? @enum)
         {
             return 0;
         }
@@ -993,10 +1000,10 @@ namespace V5EfrpgTest
         public List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt = null)
         {
             int procResult;
-            return Synonyms_SimpleStoredProc(out procResult, inputInt);
+            return Synonyms_SimpleStoredProc(inputInt, out procResult);
         }
 
-        public List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(out int procResult, int? inputInt = null)
+        public List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt, out int procResult)
         {
             procResult = 0;
             return new List<Synonyms_SimpleStoredProcReturnModel>();
@@ -1005,14 +1012,14 @@ namespace V5EfrpgTest
         public Task<List<Synonyms_SimpleStoredProcReturnModel>> Synonyms_SimpleStoredProcAsync(int? inputInt = null)
         {
             int procResult;
-            return Task.FromResult(Synonyms_SimpleStoredProc(out procResult, inputInt));
+            return Task.FromResult(Synonyms_SimpleStoredProc(inputInt, out procResult));
         }
 
         public DbSet<TestReturnStringReturnModel> TestReturnStringReturnModel { get; set; }
         public List<TestReturnStringReturnModel> TestReturnString()
         {
             int procResult;
-            return TestReturnString(out procResu);
+            return TestReturnString(out procResult);
         }
 
         public List<TestReturnStringReturnModel> TestReturnString(out int procResult)
@@ -1024,10 +1031,19 @@ namespace V5EfrpgTest
         public Task<List<TestReturnStringReturnModel>> TestReturnStringAsync()
         {
             int procResult;
-            return Task.FromResult(TestReturnString(out procResu));
+            return Task.FromResult(TestReturnString(out procResult));
         }
 
-        public int UserDefinedTypeSampleStoredProc(int? a = null, DataTable type, int? b = null)
+        public int ThisHasMixedOutParameters(DateTime? foo, out int? firstOutParam, DateTime? bar, out int? secondOutParam, DateTime? baz)
+        {
+            firstOutParam = default(int);
+            secondOutParam = default(int);
+            return 0;
+        }
+
+        // ThisHasMixedOutParametersAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int UserDefinedTypeSampleStoredProc(int? a, DataTable type, int? b)
         {
             return 0;
         }
@@ -1038,7 +1054,7 @@ namespace V5EfrpgTest
         public List<XmlDataV1ReturnModel> XmlDataV1()
         {
             int procResult;
-            return XmlDataV1(out procResu);
+            return XmlDataV1(out procResult);
         }
 
         public List<XmlDataV1ReturnModel> XmlDataV1(out int procResult)
@@ -1050,7 +1066,7 @@ namespace V5EfrpgTest
         public Task<List<XmlDataV1ReturnModel>> XmlDataV1Async()
         {
             int procResult;
-            return Task.FromResult(XmlDataV1(out procResu));
+            return Task.FromResult(XmlDataV1(out procResult));
         }
 
         public int XmlDataV2()

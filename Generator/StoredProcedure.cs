@@ -55,41 +55,60 @@ namespace Efrpg
         public string WriteStoredProcFunctionParams(bool includeProcResult, bool forInterface)
         {
             var sb = new StringBuilder(255);
-            var n = 1;
             var data = Parameters.Where(x => x.Mode != StoredProcedureParameterMode.Out).OrderBy(x => x.Ordinal).ToList();
-            var count = data.Count;
-            
-            if (includeProcResult && ReturnModels.Count > 0 && ReturnModels.First().Count > 0)
-            {
-                sb.Append("out int procResult");
-                if (count > 0)
-                    sb.Append(", ");
-            }
 
+            var minNullableParameter = WhichTailEndParametersCanBeNullable(data, includeProcResult, forInterface);
+            if (minNullableParameter == 0)
+                minNullableParameter = 9999;
+
+            var count = 0;
             foreach (var p in data)
             {
+                ++count;
                 var notNullable = Column.StoredProcedureNotNullable.Contains(p.PropertyType.ToLower());
+                var isInParam = p.Mode == StoredProcedureParameterMode.In;
 
-                sb.AppendFormat("{0}{1}{2} {3}{4}{5}",
-                    p.Mode == StoredProcedureParameterMode.In ? string.Empty : "out ",
+                sb.AppendFormat("{0}{1}{2} {3}{4}, ",
+                    isInParam ? string.Empty : "out ",
                     p.PropertyType,
                     notNullable ? string.Empty : "?",
                     p.NameHumanCase,
-                    notNullable || forInterface ? string.Empty : " = null",
-                    n++ < count ? ", " : string.Empty);
+                    (notNullable || forInterface || !isInParam || count < minNullableParameter) ? string.Empty : " = null");
             }
 
+            if (includeProcResult && ReturnModels.Count > 0 && ReturnModels.First().Count > 0)
+            {
+                sb.Append("out int procResult, ");
+            }
+
+            if(sb.Length > 2)
+                sb.Length -= 2;
 
             return sb.ToString();
+        }
+
+        // Returns the minimum nullable parameter, counting from 1. 0 Means no column is nullable.
+        public int WhichTailEndParametersCanBeNullable(List<StoredProcedureParameter> data, bool includeProcResult, bool forInterface)
+        {
+            if (forInterface || includeProcResult || !data.Any())
+                return 0;
+
+            var dataCount = data.Count;
+            var parameterNumber = dataCount;
+            foreach (var parameter in data.OrderByDescending(x => x.Ordinal))
+            {
+                if (parameter.Mode == StoredProcedureParameterMode.InOut)
+                    return parameterNumber == dataCount ? 0 : parameterNumber + 1;
+                
+                --parameterNumber;
+            }
+
+            return 1;
         }
 
         public string WriteStoredProcFunctionOverloadCall()
         {
             var sb = new StringBuilder(255);
-            sb.Append("out procResult");
-            if (Parameters.Any())
-                sb.Append(", ");
-
             foreach (var p in Parameters.OrderBy(x => x.Ordinal))
             {
                 sb.AppendFormat("{0}{1}, ",
@@ -97,7 +116,7 @@ namespace Efrpg
                     p.NameHumanCase);
             }
 
-            sb.Length -= 2;
+            sb.Append("out procResult");
             return sb.ToString();
         }
 

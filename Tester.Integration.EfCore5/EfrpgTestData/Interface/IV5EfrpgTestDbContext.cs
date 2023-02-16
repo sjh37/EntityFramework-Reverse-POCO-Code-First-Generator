@@ -162,22 +162,22 @@ namespace V5EfrpgTest
         IQueryable<TResult> FromExpression<TResult> (Expression<Func<IQueryable<TResult>>> expression);
 
         // Stored Procedures
-        int AddTwoValues({{WriteStoredProcFunctionParamsTrue}});
+        int AddTwoValues(int? a, int? b);
         // AddTwoValuesAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        int AddTwoValuesWithResult({{WriteStoredProcFunctionParamsTrue}});
+        int AddTwoValuesWithResult(int? a, int? b, out int? result, out int? result2);
         // AddTwoValuesWithResultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        int Alpha_Overclock({{WriteStoredProcFunctionParamsTrue}});
+        int Alpha_Overclock(DateTime? parameter);
         // Alpha_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        int App_UspCmtUserFsrUpdate({{WriteStoredProcFunctionParamsTrue}});
+        int App_UspCmtUserFsrUpdate(int? userId, int? fsrId, out int? ufsrId);
         // App_UspCmtUserFsrUpdateAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        int ASimpleExample({{WriteStoredProcFunctionParamsTrue}});
+        int ASimpleExample();
         // ASimpleExampleAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        int Beta_Overclock({{WriteStoredProcFunctionParamsTrue}});
+        int Beta_Overclock(DateTime? parameter);
         // Beta_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         // C182Test2ReturnModel C182Test2(int? flag); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
@@ -194,11 +194,11 @@ namespace V5EfrpgTest
         List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc(out int procResult);
         Task<List<ColumnNameAndTypesProcReturnModel>> ColumnNameAndTypesProcAsync();
 
-        int ConvertToString({{WriteStoredProcFunctionParamsTrue}});
+        int ConvertToString(int? someValue, out string someString);
         // ConvertToStringAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         List<DboProcDataFromFfrsReturnModel> DboProcDataFromFfrs(int? maxId);
-        List<DboProcDataFromFfrsReturnModel> DboProcDataFromFfrs(out int procResult, int? maxId);
+        List<DboProcDataFromFfrsReturnModel> DboProcDataFromFfrs(int? maxId, out int procResult);
         Task<List<DboProcDataFromFfrsReturnModel>> DboProcDataFromFfrsAsync(int? maxId);
 
         List<DboProcDataFromFfrsAndDboReturnModel> DboProcDataFromFfrsAndDbo();
@@ -210,7 +210,7 @@ namespace V5EfrpgTest
         Task<List<DsOpeProcReturnModel>> DsOpeProcAsync();
 
         List<FFRS_CvDataReturnModel> FFRS_CvData(int? maxId);
-        List<FFRS_CvDataReturnModel> FFRS_CvData(out int procResult, int? maxId);
+        List<FFRS_CvDataReturnModel> FFRS_CvData(int? maxId, out int procResult);
         Task<List<FFRS_CvDataReturnModel>> FFRS_CvDataAsync(int? maxId);
 
         List<FFRS_DataFromDboReturnModel> FFRS_DataFromDbo();
@@ -226,37 +226,37 @@ namespace V5EfrpgTest
         Task<List<FkTest_HelloReturnModel>> FkTest_HelloAsync();
 
         List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId);
-        List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(out int procResult, int? maxId);
+        List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId, out int procResult);
         Task<List<GetSmallDecimalTestReturnModel>> GetSmallDecimalTestAsync(int? maxId);
 
-        int InsertRecord({{WriteStoredProcFunctionParamsTrue}});
+        int InsertRecord(string data, out int? insertedId);
         // InsertRecordAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        int InsertRecordThree({{WriteStoredProcFunctionParamsTrue}});
+        int InsertRecordThree(string data, out int? insertedId, int? someId, out int? anotherInsertedId);
         // InsertRecordThreeAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        int InsertRecordTwo({{WriteStoredProcFunctionParamsTrue}});
+        int InsertRecordTwo(string data, out int? insertedId, out int? anotherInsertedId);
         // InsertRecordTwoAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        int MinTripSequenceStart({{WriteStoredProcFunctionParamsTrue}});
+        int MinTripSequenceStart(out DateTime? minTripSequenceStartParam);
         // MinTripSequenceStartAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        int MinTripSequenceStartNull({{WriteStoredProcFunctionParamsTrue}});
+        int MinTripSequenceStartNull(out DateTime? minTripSequenceStartParam);
         // MinTripSequenceStartNullAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        int NvarcharTest({{WriteStoredProcFunctionParamsTrue}});
+        int NvarcharTest(string maxOutputParam, string normalOutputParam);
         // NvarcharTestAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        int Omega_Overclock({{WriteStoredProcFunctionParamsTrue}});
+        int Omega_Overclock(DateTime? parameter);
         // Omega_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        int ProcTestDecimalOutput({{WriteStoredProcFunctionParamsTrue}});
+        int ProcTestDecimalOutput(out decimal? perfectNumber);
         // ProcTestDecimalOutputAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        int ProcTestDecimalOutputV2({{WriteStoredProcFunctionParamsTrue}});
+        int ProcTestDecimalOutputV2(out decimal? perfectNumber);
         // ProcTestDecimalOutputV2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        int ProcTestDecimalOutputV3Default({{WriteStoredProcFunctionParamsTrue}});
+        int ProcTestDecimalOutputV3Default(out decimal? perfectNumber);
         // ProcTestDecimalOutputV3DefaultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams();
@@ -264,8 +264,11 @@ namespace V5EfrpgTest
         Task<List<SpatialTypesNoParamsReturnModel>> SpatialTypesNoParamsAsync();
 
         List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography);
-        List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(out int procResult, NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography);
+        List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, out int procResult);
         Task<List<SpatialTypesWithParamsReturnModel>> SpatialTypesWithParamsAsync(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography);
+
+        int SpDefragmentIndexes();
+        // SpDefragmentIndexesAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         // StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
         // Task<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsAsync(int? someVar); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
@@ -283,43 +286,46 @@ namespace V5EfrpgTest
         List<StpNoParamsTestReturnModel> StpNoParamsTest(out int procResult);
         Task<List<StpNoParamsTestReturnModel>> StpNoParamsTestAsync();
 
-        int StpNoReturnFields({{WriteStoredProcFunctionParamsTrue}});
+        int StpNoReturnFields();
         // StpNoReturnFieldsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         List<StpNullableParamsTestReturnModel> StpNullableParamsTest(int? aVal, int? bVal);
-        List<StpNullableParamsTestReturnModel> StpNullableParamsTest(out int procResult, int? aVal, int? bVal);
+        List<StpNullableParamsTestReturnModel> StpNullableParamsTest(int? aVal, int? bVal, out int procResult);
         Task<List<StpNullableParamsTestReturnModel>> StpNullableParamsTestAsync(int? aVal, int? bVal);
 
         List<StpTestReturnModel> StpTest(string strDateFrom, string strDateTo, out bool? retBool);
-        List<StpTestReturnModel> StpTest(out int procResult, string strDateFrom, string strDateTo, out bool? retBool);
+        List<StpTestReturnModel> StpTest(string strDateFrom, string strDateTo, out bool? retBool, out int procResult);
         // StpTestAsync() cannot be created due to having out parameters, or is relying on the procedure result (List<StpTestReturnModel>)
 
         List<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTest(string strDateFrom, string strDateTo);
-        List<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTest(out int procResult, string strDateFrom, string strDateTo);
+        List<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTest(string strDateFrom, string strDateTo, out int procResult);
         Task<List<StpTestUnderscoreTestReturnModel>> StpTestUnderscoreTestAsync(string strDateFrom, string strDateTo);
 
-        int StupidStoredProcedureParams({{WriteStoredProcFunctionParamsTrue}});
+        int StupidStoredProcedureParams(string reqType, short? dept, short? @class, short? item);
         // StupidStoredProcedureParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        int StupidStoredProcedureParams2({{WriteStoredProcFunctionParamsTrue}});
+        int StupidStoredProcedureParams2(string @override, short? @readonly, short? @class, short? @enum);
         // StupidStoredProcedureParams2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt);
-        List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(out int procResult, int? inputInt);
+        List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt, out int procResult);
         Task<List<Synonyms_SimpleStoredProcReturnModel>> Synonyms_SimpleStoredProcAsync(int? inputInt);
 
         List<TestReturnStringReturnModel> TestReturnString();
         List<TestReturnStringReturnModel> TestReturnString(out int procResult);
         Task<List<TestReturnStringReturnModel>> TestReturnStringAsync();
 
-        int UserDefinedTypeSampleStoredProc({{WriteStoredProcFunctionParamsTrue}});
+        int ThisHasMixedOutParameters(DateTime? foo, out int? firstOutParam, DateTime? bar, out int? secondOutParam, DateTime? baz);
+        // ThisHasMixedOutParametersAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        int UserDefinedTypeSampleStoredProc(int? a, DataTable type, int? b);
         // UserDefinedTypeSampleStoredProcAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         List<XmlDataV1ReturnModel> XmlDataV1();
         List<XmlDataV1ReturnModel> XmlDataV1(out int procResult);
         Task<List<XmlDataV1ReturnModel>> XmlDataV1Async();
 
-        int XmlDataV2({{WriteStoredProcFunctionParamsTrue}});
+        int XmlDataV2();
         // XmlDataV2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
 

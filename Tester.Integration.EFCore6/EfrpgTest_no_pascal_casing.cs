@@ -205,7 +205,7 @@ namespace V6_Efrpg_Test
         // ConvertToStringAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         List<dbo_proc_data_from_ffrsReturnModel> dbo_proc_data_from_ffrs(int? maxId);
-        List<dbo_proc_data_from_ffrsReturnModel> dbo_proc_data_from_ffrs(out int procResult, int? maxId);
+        List<dbo_proc_data_from_ffrsReturnModel> dbo_proc_data_from_ffrs(int? maxId, out int procResult);
         Task<List<dbo_proc_data_from_ffrsReturnModel>> dbo_proc_data_from_ffrsAsync(int? maxId);
 
         List<dbo_proc_data_from_ffrs_and_dboReturnModel> dbo_proc_data_from_ffrs_and_dbo();
@@ -217,7 +217,7 @@ namespace V6_Efrpg_Test
         Task<List<DSOpeProcReturnModel>> DSOpeProcAsync();
 
         List<FFRS_cv_dataReturnModel> FFRS_cv_data(int? maxId);
-        List<FFRS_cv_dataReturnModel> FFRS_cv_data(out int procResult, int? maxId);
+        List<FFRS_cv_dataReturnModel> FFRS_cv_data(int? maxId, out int procResult);
         Task<List<FFRS_cv_dataReturnModel>> FFRS_cv_dataAsync(int? maxId);
 
         List<FFRS_data_from_dboReturnModel> FFRS_data_from_dbo();
@@ -233,7 +233,7 @@ namespace V6_Efrpg_Test
         Task<List<FkTest_HelloReturnModel>> FkTest_HelloAsync();
 
         List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId);
-        List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(out int procResult, int? maxId);
+        List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId, out int procResult);
         Task<List<GetSmallDecimalTestReturnModel>> GetSmallDecimalTestAsync(int? maxId);
 
         int InsertRecord(string data, out int? insertedId);
@@ -266,12 +266,15 @@ namespace V6_Efrpg_Test
         int proc_TestDecimalOutputV3Default(out decimal? perfectNumber);
         // proc_TestDecimalOutputV3DefaultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
+        int sp_defragment_indexes();
+        // sp_defragment_indexesAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
         List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams();
         List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams(out int procResult);
         Task<List<SpatialTypesNoParamsReturnModel>> SpatialTypesNoParamsAsync();
 
         List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography);
-        List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(out int procResult, NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography);
+        List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, out int procResult);
         Task<List<SpatialTypesWithParamsReturnModel>> SpatialTypesWithParamsAsync(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography);
 
         // stp_multiple_identical_resultsReturnModel stp_multiple_identical_results(int? someVar); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
@@ -294,15 +297,15 @@ namespace V6_Efrpg_Test
         // stp_no_return_fieldsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         List<stp_nullable_params_testReturnModel> stp_nullable_params_test(int? aval, int? bval);
-        List<stp_nullable_params_testReturnModel> stp_nullable_params_test(out int procResult, int? aval, int? bval);
+        List<stp_nullable_params_testReturnModel> stp_nullable_params_test(int? aval, int? bval, out int procResult);
         Task<List<stp_nullable_params_testReturnModel>> stp_nullable_params_testAsync(int? aval, int? bval);
 
         List<stp_testReturnModel> stp_test(string strDateFROM, string strDateTo, out bool? retBool);
-        List<stp_testReturnModel> stp_test(out int procResult, string strDateFROM, string strDateTo, out bool? retBool);
+        List<stp_testReturnModel> stp_test(string strDateFROM, string strDateTo, out bool? retBool, out int procResult);
         // stp_testAsync() cannot be created due to having out parameters, or is relying on the procedure result (List<stp_testReturnModel>)
 
         List<stp_test_underscore_testReturnModel> stp_test_underscore_test(string strDateFROM, string strdateto);
-        List<stp_test_underscore_testReturnModel> stp_test_underscore_test(out int procResult, string strDateFROM, string strdateto);
+        List<stp_test_underscore_testReturnModel> stp_test_underscore_test(string strDateFROM, string strdateto, out int procResult);
         Task<List<stp_test_underscore_testReturnModel>> stp_test_underscore_testAsync(string strDateFROM, string strdateto);
 
         int StupidStoredProcedureParams(string reqType, short? dept, short? @class, short? item);
@@ -312,12 +315,15 @@ namespace V6_Efrpg_Test
         // StupidStoredProcedureParams2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt);
-        List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(out int procResult, int? inputInt);
+        List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt, out int procResult);
         Task<List<Synonyms_SimpleStoredProcReturnModel>> Synonyms_SimpleStoredProcAsync(int? inputInt);
 
         List<TestReturnStringReturnModel> TestReturnString();
         List<TestReturnStringReturnModel> TestReturnString(out int procResult);
         Task<List<TestReturnStringReturnModel>> TestReturnStringAsync();
+
+        int ThisHasMixedOutParameters(DateTime? foo, out int? firstOutParam, DateTime? bar, out int? secondOutParam, DateTime? baz);
+        // ThisHasMixedOutParametersAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         int UserDefinedTypeSampleStoredProc(int? a, DataTable type, int? b);
         // UserDefinedTypeSampleStoredProcAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
@@ -619,7 +625,7 @@ namespace V6_Efrpg_Test
 
 
         // Stored Procedures
-        public int AddTwoValues(int? a = null, int? b = null)
+        public int AddTwoValues(int? a, int? b)
         {
             var aParam = new SqlParameter { ParameterName = "@a", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = a.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!a.HasValue)
@@ -638,7 +644,7 @@ namespace V6_Efrpg_Test
 
         // AddTwoValuesAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int AddTwoValuesWithResult(int? a = null, int? b = null, out int? result = null, out int? result2 = null)
+        public int AddTwoValuesWithResult(int? a, int? b, out int? result, out int? result2)
         {
             var aParam = new SqlParameter { ParameterName = "@a", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = a.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!a.HasValue)
@@ -669,7 +675,7 @@ namespace V6_Efrpg_Test
 
         // AddTwoValuesWithResultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int Alpha_Overclock(DateTime? parameter = null)
+        public int Alpha_Overclock(DateTime? parameter)
         {
             var parameterParam = new SqlParameter { ParameterName = "@Parameter", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = parameter.GetValueOrDefault() };
             if (!parameter.HasValue)
@@ -684,7 +690,7 @@ namespace V6_Efrpg_Test
 
         // Alpha_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int App_usp_CMTUserFSRUpdate(int? userId = null, int? fsrId = null, out int? ufsrId = null)
+        public int App_usp_CMTUserFSRUpdate(int? userId, int? fsrId, out int? ufsrId)
         {
             var userIdParam = new SqlParameter { ParameterName = "@userId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = userId.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!userId.HasValue)
@@ -720,7 +726,7 @@ namespace V6_Efrpg_Test
 
         // aSimpleExampleAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int Beta_Overclock(DateTime? parameter = null)
+        public int Beta_Overclock(DateTime? parameter)
         {
             var parameterParam = new SqlParameter { ParameterName = "@Parameter", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = parameter.GetValueOrDefault() };
             if (!parameter.HasValue)
@@ -739,14 +745,14 @@ namespace V6_Efrpg_Test
 
         // public async Task<C182_test2ReturnModel> C182_test2Async(int? flag = null) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
-        // public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId = null, out bool? isApplicationComplete = null) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        // public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
         // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (CheckIfApplicationIsCompleteReturnModel)
 
         public List<ColourPivotReturnModel> ColourPivot()
         {
             int procResult;
-            return ColourPivot(out procResu);
+            return ColourPivot(out procResult);
         }
 
         public List<ColourPivotReturnModel> ColourPivot(out int procResult)
@@ -774,7 +780,7 @@ namespace V6_Efrpg_Test
         public List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc()
         {
             int procResult;
-            return ColumnNameAndTypesProc(out procResu);
+            return ColumnNameAndTypesProc(out procResult);
         }
 
         public List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc(out int procResult)
@@ -799,7 +805,7 @@ namespace V6_Efrpg_Test
             return procResultData;
         }
 
-        public int ConvertToString(int? someValue = null, out string someString)
+        public int ConvertToString(int? someValue, out string someString)
         {
             var someValueParam = new SqlParameter { ParameterName = "@someValue", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = someValue.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!someValue.HasValue)
@@ -823,10 +829,10 @@ namespace V6_Efrpg_Test
         public List<dbo_proc_data_from_ffrsReturnModel> dbo_proc_data_from_ffrs(int? maxId = null)
         {
             int procResult;
-            return dbo_proc_data_from_ffrs(out procResult, maxId);
+            return dbo_proc_data_from_ffrs(maxId, out procResult);
         }
 
-        public List<dbo_proc_data_from_ffrsReturnModel> dbo_proc_data_from_ffrs(out int procResult, int? maxId = null)
+        public List<dbo_proc_data_from_ffrsReturnModel> dbo_proc_data_from_ffrs(int? maxId, out int procResult)
         {
             var maxIdParam = new SqlParameter { ParameterName = "@maxId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = maxId.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!maxId.HasValue)
@@ -859,7 +865,7 @@ namespace V6_Efrpg_Test
         public List<dbo_proc_data_from_ffrs_and_dboReturnModel> dbo_proc_data_from_ffrs_and_dbo()
         {
             int procResult;
-            return dbo_proc_data_from_ffrs_and_dbo(out procResu);
+            return dbo_proc_data_from_ffrs_and_dbo(out procResult);
         }
 
         public List<dbo_proc_data_from_ffrs_and_dboReturnModel> dbo_proc_data_from_ffrs_and_dbo(out int procResult)
@@ -887,7 +893,7 @@ namespace V6_Efrpg_Test
         public List<DSOpeProcReturnModel> DSOpeProc()
         {
             int procResult;
-            return DSOpeProc(out procResu);
+            return DSOpeProc(out procResult);
         }
 
         public List<DSOpeProcReturnModel> DSOpeProc(out int procResult)
@@ -915,10 +921,10 @@ namespace V6_Efrpg_Test
         public List<FFRS_cv_dataReturnModel> FFRS_cv_data(int? maxId = null)
         {
             int procResult;
-            return FFRS_cv_data(out procResult, maxId);
+            return FFRS_cv_data(maxId, out procResult);
         }
 
-        public List<FFRS_cv_dataReturnModel> FFRS_cv_data(out int procResult, int? maxId = null)
+        public List<FFRS_cv_dataReturnModel> FFRS_cv_data(int? maxId, out int procResult)
         {
             var maxIdParam = new SqlParameter { ParameterName = "@maxId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = maxId.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!maxId.HasValue)
@@ -951,7 +957,7 @@ namespace V6_Efrpg_Test
         public List<FFRS_data_from_dboReturnModel> FFRS_data_from_dbo()
         {
             int procResult;
-            return FFRS_data_from_dbo(out procResu);
+            return FFRS_data_from_dbo(out procResult);
         }
 
         public List<FFRS_data_from_dboReturnModel> FFRS_data_from_dbo(out int procResult)
@@ -979,7 +985,7 @@ namespace V6_Efrpg_Test
         public List<FFRS_data_from_dbo_and_ffrsReturnModel> FFRS_data_from_dbo_and_ffrs()
         {
             int procResult;
-            return FFRS_data_from_dbo_and_ffrs(out procResu);
+            return FFRS_data_from_dbo_and_ffrs(out procResult);
         }
 
         public List<FFRS_data_from_dbo_and_ffrsReturnModel> FFRS_data_from_dbo_and_ffrs(out int procResult)
@@ -1007,7 +1013,7 @@ namespace V6_Efrpg_Test
         public List<FkTest_HelloReturnModel> FkTest_Hello()
         {
             int procResult;
-            return FkTest_Hello(out procResu);
+            return FkTest_Hello(out procResult);
         }
 
         public List<FkTest_HelloReturnModel> FkTest_Hello(out int procResult)
@@ -1035,10 +1041,10 @@ namespace V6_Efrpg_Test
         public List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId = null)
         {
             int procResult;
-            return GetSmallDecimalTest(out procResult, maxId);
+            return GetSmallDecimalTest(maxId, out procResult);
         }
 
-        public List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(out int procResult, int? maxId = null)
+        public List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId, out int procResult)
         {
             var maxIdParam = new SqlParameter { ParameterName = "@maxId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = maxId.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!maxId.HasValue)
@@ -1068,7 +1074,7 @@ namespace V6_Efrpg_Test
             return procResultData;
         }
 
-        public int InsertRecord(string data, out int? insertedId = null)
+        public int InsertRecord(string data, out int? insertedId)
         {
             var dataParam = new SqlParameter { ParameterName = "@Data", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = data, Size = 256 };
             if (dataParam.Value == null)
@@ -1089,7 +1095,7 @@ namespace V6_Efrpg_Test
 
         // InsertRecordAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int InsertRecordThree(string data, out int? insertedId = null, int? someId = null, out int? anotherInsertedId = null)
+        public int InsertRecordThree(string data, out int? insertedId, int? someId, out int? anotherInsertedId)
         {
             var dataParam = new SqlParameter { ParameterName = "@Data", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = data, Size = 256 };
             if (dataParam.Value == null)
@@ -1120,7 +1126,7 @@ namespace V6_Efrpg_Test
 
         // InsertRecordThreeAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int InsertRecordTwo(string data, out int? insertedId = null, out int? anotherInsertedId = null)
+        public int InsertRecordTwo(string data, out int? insertedId, out int? anotherInsertedId)
         {
             var dataParam = new SqlParameter { ParameterName = "@Data", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = data, Size = 256 };
             if (dataParam.Value == null)
@@ -1147,7 +1153,7 @@ namespace V6_Efrpg_Test
 
         // InsertRecordTwoAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int MinTripSequenceStart(out DateTime? minTripSequenceStartParam = null)
+        public int MinTripSequenceStart(out DateTime? minTripSequenceStartParam)
         {
             var minTripSequenceStartParamParam = new SqlParameter { ParameterName = "@minTripSequenceStartParam", SqlDbType = SqlDbType.DateTime2, Direction = ParameterDirection.Output };
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
@@ -1164,7 +1170,7 @@ namespace V6_Efrpg_Test
 
         // MinTripSequenceStartAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int MinTripSequenceStartNull(out DateTime? minTripSequenceStartParam = null)
+        public int MinTripSequenceStartNull(out DateTime? minTripSequenceStartParam)
         {
             var minTripSequenceStartParamParam = new SqlParameter { ParameterName = "@minTripSequenceStartParam", SqlDbType = SqlDbType.DateTime2, Direction = ParameterDirection.Output };
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
@@ -1200,7 +1206,7 @@ namespace V6_Efrpg_Test
 
         // NvarcharTestAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int Omega_Overclock(DateTime? parameter = null)
+        public int Omega_Overclock(DateTime? parameter)
         {
             var parameterParam = new SqlParameter { ParameterName = "@Parameter", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = parameter.GetValueOrDefault() };
             if (!parameter.HasValue)
@@ -1215,7 +1221,7 @@ namespace V6_Efrpg_Test
 
         // Omega_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int proc_TestDecimalOutput(out decimal? perfectNumber = null)
+        public int proc_TestDecimalOutput(out decimal? perfectNumber)
         {
             var perfectNumberParam = new SqlParameter { ParameterName = "@PerfectNumber", SqlDbType = SqlDbType.Decimal, Direction = ParameterDirection.Output, Precision = 18, Scale = 2 };
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
@@ -1232,7 +1238,7 @@ namespace V6_Efrpg_Test
 
         // proc_TestDecimalOutputAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int proc_TestDecimalOutputV2(out decimal? perfectNumber = null)
+        public int proc_TestDecimalOutputV2(out decimal? perfectNumber)
         {
             var perfectNumberParam = new SqlParameter { ParameterName = "@PerfectNumber", SqlDbType = SqlDbType.Decimal, Direction = ParameterDirection.Output, Precision = 12, Scale = 8 };
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
@@ -1249,7 +1255,7 @@ namespace V6_Efrpg_Test
 
         // proc_TestDecimalOutputV2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int proc_TestDecimalOutputV3Default(out decimal? perfectNumber = null)
+        public int proc_TestDecimalOutputV3Default(out decimal? perfectNumber)
         {
             var perfectNumberParam = new SqlParameter { ParameterName = "@PerfectNumber", SqlDbType = SqlDbType.Decimal, Direction = ParameterDirection.Output, Precision = 18, Scale = 0 };
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
@@ -1266,10 +1272,21 @@ namespace V6_Efrpg_Test
 
         // proc_TestDecimalOutputV3DefaultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
+        public int sp_defragment_indexes()
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[sp_defragment_indexes] ", procResultParam);
+
+            return (int)procResultParam.Value;
+        }
+
+        // sp_defragment_indexesAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
         public List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams()
         {
             int procResult;
-            return SpatialTypesNoParams(out procResu);
+            return SpatialTypesNoParams(out procResult);
         }
 
         public List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams(out int procResult)
@@ -1297,10 +1314,10 @@ namespace V6_Efrpg_Test
         public List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
         {
             int procResult;
-            return SpatialTypesWithParams(out procResult, geometry, geography);
+            return SpatialTypesWithParams(geometry, geography, out procResult);
         }
 
-        public List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(out int procResult, NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
+        public List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, out int procResult)
         {
             var geometryParam = new SqlParameter { ParameterName = "@geometry", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = geometry, Size = -1 };
             if (geometryParam.Value == null)
@@ -1357,7 +1374,7 @@ namespace V6_Efrpg_Test
         public List<stp_no_params_testReturnModel> stp_no_params_test()
         {
             int procResult;
-            return stp_no_params_test(out procResu);
+            return stp_no_params_test(out procResult);
         }
 
         public List<stp_no_params_testReturnModel> stp_no_params_test(out int procResult)
@@ -1396,10 +1413,10 @@ namespace V6_Efrpg_Test
         public List<stp_nullable_params_testReturnModel> stp_nullable_params_test(int? aval = null, int? bval = null)
         {
             int procResult;
-            return stp_nullable_params_test(out procResult, aval, bval);
+            return stp_nullable_params_test(aval, bval, out procResult);
         }
 
-        public List<stp_nullable_params_testReturnModel> stp_nullable_params_test(out int procResult, int? aval = null, int? bval = null)
+        public List<stp_nullable_params_testReturnModel> stp_nullable_params_test(int? aval, int? bval, out int procResult)
         {
             var avalParam = new SqlParameter { ParameterName = "@a_val", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = aval.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!aval.HasValue)
@@ -1437,13 +1454,13 @@ namespace V6_Efrpg_Test
             return procResultData;
         }
 
-        public List<stp_testReturnModel> stp_test(string strDateFROM, string strDateTo, out bool? retBool = null)
+        public List<stp_testReturnModel> stp_test(string strDateFROM, string strDateTo, out bool? retBool)
         {
             int procResult;
-            return stp_test(out procResult, strDateFROM, strDateTo, out retBool);
+            return stp_test(strDateFROM, strDateTo, out retBool, out procResult);
         }
 
-        public List<stp_testReturnModel> stp_test(out int procResult, string strDateFROM, string strDateTo, out bool? retBool = null)
+        public List<stp_testReturnModel> stp_test(string strDateFROM, string strDateTo, out bool? retBool, out int procResult)
         {
             var strDateFROMParam = new SqlParameter { ParameterName = "@strDateFROM", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = strDateFROM, Size = 20 };
             if (strDateFROMParam.Value == null)
@@ -1474,10 +1491,10 @@ namespace V6_Efrpg_Test
         public List<stp_test_underscore_testReturnModel> stp_test_underscore_test(string strDateFROM, string strdateto)
         {
             int procResult;
-            return stp_test_underscore_test(out procResult, strDateFROM, strdateto);
+            return stp_test_underscore_test(strDateFROM, strdateto, out procResult);
         }
 
-        public List<stp_test_underscore_testReturnModel> stp_test_underscore_test(out int procResult, string strDateFROM, string strdateto)
+        public List<stp_test_underscore_testReturnModel> stp_test_underscore_test(string strDateFROM, string strdateto, out int procResult)
         {
             var strDateFROMParam = new SqlParameter { ParameterName = "@str_Date_FROM", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = strDateFROM, Size = 20 };
             if (strDateFROMParam.Value == null)
@@ -1515,7 +1532,7 @@ namespace V6_Efrpg_Test
             return procResultData;
         }
 
-        public int StupidStoredProcedureParams(string reqType, short? dept = null, short? @class = null, short? item = null)
+        public int StupidStoredProcedureParams(string reqType, short? dept, short? @class, short? item)
         {
             var reqTypeParam = new SqlParameter { ParameterName = "@ReqType", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = reqType, Size = 25 };
             if (reqTypeParam.Value == null)
@@ -1542,7 +1559,7 @@ namespace V6_Efrpg_Test
 
         // StupidStoredProcedureParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int StupidStoredProcedureParams2(string @override, short? @readonly = null, short? @class = null, short? @enum = null)
+        public int StupidStoredProcedureParams2(string @override, short? @readonly, short? @class, short? @enum)
         {
             var @overrideParam = new SqlParameter { ParameterName = "@override", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = @override, Size = 25 };
             if (@overrideParam.Value == null)
@@ -1572,10 +1589,10 @@ namespace V6_Efrpg_Test
         public List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt = null)
         {
             int procResult;
-            return Synonyms_SimpleStoredProc(out procResult, inputInt);
+            return Synonyms_SimpleStoredProc(inputInt, out procResult);
         }
 
-        public List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(out int procResult, int? inputInt = null)
+        public List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt, out int procResult)
         {
             var inputIntParam = new SqlParameter { ParameterName = "@InputInt", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = inputInt.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!inputInt.HasValue)
@@ -1608,7 +1625,7 @@ namespace V6_Efrpg_Test
         public List<TestReturnStringReturnModel> TestReturnString()
         {
             int procResult;
-            return TestReturnString(out procResu);
+            return TestReturnString(out procResult);
         }
 
         public List<TestReturnStringReturnModel> TestReturnString(out int procResult)
@@ -1633,7 +1650,42 @@ namespace V6_Efrpg_Test
             return procResultData;
         }
 
-        public int UserDefinedTypeSampleStoredProc(int? a = null, DataTable type, int? b = null)
+        public int ThisHasMixedOutParameters(DateTime? foo, out int? firstOutParam, DateTime? bar, out int? secondOutParam, DateTime? baz)
+        {
+            var fooParam = new SqlParameter { ParameterName = "@Foo", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = foo.GetValueOrDefault() };
+            if (!foo.HasValue)
+                fooParam.Value = DBNull.Value;
+
+            var firstOutParamParam = new SqlParameter { ParameterName = "@FirstOutParam", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output, Precision = 10, Scale = 0 };
+            var barParam = new SqlParameter { ParameterName = "@Bar", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = bar.GetValueOrDefault() };
+            if (!bar.HasValue)
+                barParam.Value = DBNull.Value;
+
+            var secondOutParamParam = new SqlParameter { ParameterName = "@SecondOutParam", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output, Precision = 10, Scale = 0 };
+            var bazParam = new SqlParameter { ParameterName = "@Baz", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = baz.GetValueOrDefault() };
+            if (!baz.HasValue)
+                bazParam.Value = DBNull.Value;
+
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[ThisHasMixedOutParameters] @Foo, @FirstOutParam OUTPUT, @Bar, @SecondOutParam OUTPUT, @Baz", fooParam, firstOutParamParam, barParam, secondOutParamParam, bazParam, procResultParam);
+
+            if (IsSqlParameterNull(firstOutParamParam))
+                firstOutParam = null;
+            else
+                firstOutParam = (int) firstOutParamParam.Value;
+
+            if (IsSqlParameterNull(secondOutParamParam))
+                secondOutParam = null;
+            else
+                secondOutParam = (int) secondOutParamParam.Value;
+
+            return (int)procResultParam.Value;
+        }
+
+        // ThisHasMixedOutParametersAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int UserDefinedTypeSampleStoredProc(int? a, DataTable type, int? b)
         {
             var aParam = new SqlParameter { ParameterName = "@a", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = a.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!a.HasValue)
@@ -1659,7 +1711,7 @@ namespace V6_Efrpg_Test
         public List<XmlDataV1ReturnModel> XmlDataV1()
         {
             int procResult;
-            return XmlDataV1(out procResu);
+            return XmlDataV1(out procResult);
         }
 
         public List<XmlDataV1ReturnModel> XmlDataV1(out int procResult)

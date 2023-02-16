@@ -2619,3 +2619,19 @@ CREATE TABLE dbo.ThisIsMemoryOptimised
 )
 WITH (MEMORY_OPTIMIZED = ON, DURABILITY = SCHEMA_AND_DATA);
 GO
+
+-- #774 Optional Parameters in Stored Procs
+CREATE PROCEDURE dbo.ThisHasMixedOutParameters
+    @Foo DATETIME NULL,
+    @FirstOutParam INT OUT,
+    @Bar DATETIME NULL,
+    @SecondOutParam INT OUT,
+    @Baz DATETIME NULL
+AS
+BEGIN
+    INSERT INTO TableA (TableADesc) VALUES ('Test');
+
+    SET @FirstOutParam = @@IDENTITY;
+    SET @SecondOutParam = SCOPE_IDENTITY();
+END;
+GO
