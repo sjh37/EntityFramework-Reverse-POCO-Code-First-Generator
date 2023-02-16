@@ -282,9 +282,6 @@ namespace Tester.Integration.EfCore3.File_based_templates
         List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, out int procResult);
         Task<List<SpatialTypesWithParamsReturnModel>> SpatialTypesWithParamsAsync(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography);
 
-        int SpDefragmentIndexes();
-        // SpDefragmentIndexesAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
-
         // StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
         // Task<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsAsync(int? someVar); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
@@ -1342,17 +1339,6 @@ namespace Tester.Integration.EfCore3.File_based_templates
 
             return procResultData;
         }
-
-        public int SpDefragmentIndexes()
-        {
-            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
-
-            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[sp_defragment_indexes] ", procResultParam);
-
-            return (int)procResultParam.Value;
-        }
-
-        // SpDefragmentIndexesAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         // public StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar = null) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
@@ -2607,13 +2593,6 @@ namespace Tester.Integration.EfCore3.File_based_templates
             int procResult;
             return Task.FromResult(SpatialTypesWithParams(geometry, geography, out procResult));
         }
-
-        public int SpDefragmentIndexes()
-        {
-            return 0;
-        }
-
-        // SpDefragmentIndexesAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         public DbSet<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsReturnModel { get; set; }
         public StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar = null)

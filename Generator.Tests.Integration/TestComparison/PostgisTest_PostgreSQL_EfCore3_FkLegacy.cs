@@ -424,7 +424,7 @@ namespace Efrpg.PostgreSQL
         }
 
         [DbFunction("_pgr_alphashape", "public")]
-        public long PgrAlphashape(string p1, double? alpha)
+        public long PgrAlphashape(string p1, double? alpha = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
@@ -442,85 +442,85 @@ namespace Efrpg.PostgreSQL
         }
 
         [DbFunction("_pgr_astar", "public")]
-        public int PgrAstar(string edgesSql, string edgesSql, string startVids, string combinationsSql, string endVids, bool? directed, bool? directed, int? heuristic, int? heuristic, double? factor, double? factor, double? epsilon, double? epsilon, bool? onlyCost, bool? onlyCost, bool? normal)
+        public int PgrAstar(string edgesSql, string edgesSql, string startVids, string combinationsSql, string endVids, bool? directed, bool? directed = null, int? heuristic = null, int? heuristic = null, double? factor = null, double? factor = null, double? epsilon = null, double? epsilon = null, bool? onlyCost = null, bool? onlyCost = null, bool? normal = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_astar", "public")]
-        public int PgrAstar(string p1, string p5, string p8, string p9, string p12, string p2, long? p4, long? p7, string p10, string p13, bool? directed, string p3, long? p6, long? p11, string p14, int? heuristic, bool? directed, bool? directed, bool? directed, bool? directed, double? factor, int? heuristic, int? heuristic, int? heuristic, int? heuristic, double? epsilon, double? factor, double? factor, double? factor, double? factor, double? epsilon, double? epsilon, double? epsilon, double? epsilon)
+        public int PgrAstar(string p1, string p5, string p8, string p9, string p12, string p2, long? p4, long? p7, string p10, string p13, bool? directed, string p3, long? p6, long? p11, string p14, int? heuristic = null, bool? directed = null, bool? directed = null, bool? directed = null, bool? directed = null, double? factor = null, int? heuristic = null, int? heuristic = null, int? heuristic = null, int? heuristic = null, double? epsilon = null, double? factor = null, double? factor = null, double? factor = null, double? factor = null, double? epsilon = null, double? epsilon = null, double? epsilon = null, double? epsilon = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_astarcost", "public")]
-        public long PgrAstarcost(string p1, string p4, string p7, string p10, string p13, long? p2, long? p5, string p8, string p11, string p14, long? p3, string p6, long? p9, string p12, bool? directed, bool? directed, bool? directed, bool? directed, bool? directed, int? heuristic, int? heuristic, int? heuristic, int? heuristic, int? heuristic, double? factor, double? factor, double? factor, double? factor, double? factor, double? epsilon, double? epsilon, double? epsilon, double? epsilon, double? epsilon)
+        public long PgrAstarcost(string p1, string p4, string p7, string p10, string p13, long? p2, long? p5, string p8, string p11, string p14, long? p3, string p6, long? p9, string p12, bool? directed = null, bool? directed = null, bool? directed = null, bool? directed = null, bool? directed = null, int? heuristic = null, int? heuristic = null, int? heuristic = null, int? heuristic = null, int? heuristic = null, double? factor = null, double? factor = null, double? factor = null, double? factor = null, double? factor = null, double? epsilon = null, double? epsilon = null, double? epsilon = null, double? epsilon = null, double? epsilon = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_astarcostmatrix", "public")]
-        public long PgrAstarcostmatrix(string p2, string p1, bool? directed, int? heuristic, double? factor, double? epsilon)
+        public long PgrAstarcostmatrix(string p2, string p1, bool? directed = null, int? heuristic = null, double? factor = null, double? epsilon = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("_pgr_bdastar", "public")]
-        public int PgrBdastar(string p2, string p3, string p1, string p4, bool? directed, string p5, int? heuristic, bool? directed, double? factor, int? heuristic, double? epsilon, double? factor, bool? onlyCost, double? epsilon, bool? onlyCost)
+        public int PgrBdastar(string p2, string p3, string p1, string p4, bool? directed, string p5, int? heuristic = null, bool? directed = null, double? factor = null, int? heuristic = null, double? epsilon = null, double? factor = null, bool? onlyCost = null, double? epsilon = null, bool? onlyCost = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_bdastar", "public")]
-        public int PgrBdastar(string p3, string p5, string p6, string p9, string p12, long? p2, string p4, string p7, string p10, long? p14, long? p1, bool? directed, long? p8, string p11, string p13, bool? directed, int? heuristic, bool? directed, bool? directed, bool? directed, decimal? factor, int? heuristic, int? heuristic, int? heuristic, int? heuristic, decimal? epsilon, decimal? factor, decimal? factor, decimal? factor, decimal? factor, decimal? epsilon, decimal? epsilon, decimal? epsilon, decimal? epsilon)
+        public int PgrBdastar(string p3, string p5, string p6, string p9, string p12, long? p2, string p4, string p7, string p10, long? p14, long? p1, bool? directed, long? p8 = null, string p11, string p13, bool? directed = null, int? heuristic = null, bool? directed = null, bool? directed = null, bool? directed = null, decimal? factor = null, int? heuristic = null, int? heuristic = null, int? heuristic = null, int? heuristic = null, decimal? epsilon = null, decimal? factor = null, decimal? factor = null, decimal? factor = null, decimal? factor = null, decimal? epsilon = null, decimal? epsilon = null, decimal? epsilon = null, decimal? epsilon = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_bdastarcost", "public")]
-        public long PgrBdastarcost(string p2, string p4, string p7, string p11, string p14, long? p1, long? p5, string p8, string p10, string p13, long? p3, string p6, long? p9, bool? directed, string p12, bool? directed, bool? directed, bool? directed, int? heuristic, bool? directed, int? heuristic, int? heuristic, int? heuristic, decimal? factor, int? heuristic, decimal? factor, decimal? factor, decimal? factor, decimal? epsilon, decimal? factor, decimal? epsilon, decimal? epsilon, decimal? epsilon, decimal? epsilon)
+        public long PgrBdastarcost(string p2, string p4, string p7, string p11, string p14, long? p1, long? p5, string p8, string p10, string p13, long? p3, string p6, long? p9, bool? directed, string p12, bool? directed = null, bool? directed = null, bool? directed = null, int? heuristic = null, bool? directed = null, int? heuristic = null, int? heuristic = null, int? heuristic = null, decimal? factor = null, int? heuristic = null, decimal? factor = null, decimal? factor = null, decimal? factor = null, decimal? epsilon = null, decimal? factor = null, decimal? epsilon = null, decimal? epsilon = null, decimal? epsilon = null, decimal? epsilon = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_bdastarcostmatrix", "public")]
-        public long PgrBdastarcostmatrix(string p2, string p1, bool? directed, int? heuristic, decimal? factor, decimal? epsilon)
+        public long PgrBdastarcostmatrix(string p2, string p1, bool? directed = null, int? heuristic = null, decimal? factor = null, decimal? epsilon = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("_pgr_bddijkstra", "public")]
-        public int PgrBddijkstra(string p2, string p5, string p1, string p4, bool? directed, string p3, bool? onlyCost, bool? directed, bool? onlyCost)
+        public int PgrBddijkstra(string p2, string p5, string p1, string p4, bool? directed, string p3, bool? onlyCost = null, bool? directed = null, bool? onlyCost = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_bddijkstra", "public")]
-        public int PgrBddijkstra(string p3, string p6, string p8, string p11, string p14, long? p2, long? p5, string p7, string p10, string p13, string p1, long? p4, string p9, long? p12, bool? directed, bool? directed, bool? directed, bool? directed, bool? directed)
+        public int PgrBddijkstra(string p3, string p6, string p8, string p11, string p14, long? p2, long? p5, string p7, string p10, string p13, string p1, long? p4, string p9, long? p12, bool? directed, bool? directed = null, bool? directed = null, bool? directed = null, bool? directed = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_bddijkstracost", "public")]
-        public long PgrBddijkstracost(string p2, string p5, string p8, string p11, string p14, string p1, string p4, string p7, long? p10, long? p13, bool? directed, string p3, long? p6, string p9, long? p12, bool? directed, bool? directed, bool? directed, bool? directed)
+        public long PgrBddijkstracost(string p2, string p5, string p8, string p11, string p14, string p1, string p4, string p7, long? p10, long? p13, bool? directed, string p3, long? p6, string p9, long? p12 = null, bool? directed = null, bool? directed = null, bool? directed = null, bool? directed = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_bddijkstracostmatrix", "public")]
-        public long PgrBddijkstracostmatrix(string p2, string p1, bool? directed)
+        public long PgrBddijkstracostmatrix(string p2, string p1, bool? directed = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("_pgr_bellmanford", "public")]
-        public int PgrBellmanford(string edgesSql, string edgesSql, string combinationsSql, string fromVids, string toVids, bool? directed, bool? onlyCost, bool? directed, bool? onlyCost)
+        public int PgrBellmanford(string edgesSql, string edgesSql, string combinationsSql, string fromVids, string toVids, bool? directed, bool? onlyCost = null, bool? directed = null, bool? onlyCost = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_bellmanford", "public")]
-        public int PgrBellmanford(string p2, string p5, string p8, string p10, string p12, string p1, string p4, string p7, long? p9, long? p13, bool? directed, string p3, long? p6, string p11, long? p14, bool? directed, bool? directed, bool? directed, bool? directed)
+        public int PgrBellmanford(string p2, string p5, string p8, string p10, string p12, string p1, string p4, string p7, long? p9, long? p13, bool? directed, string p3, long? p6, string p11, long? p14 = null, bool? directed = null, bool? directed = null, bool? directed = null, bool? directed = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
@@ -538,13 +538,13 @@ namespace Efrpg.PostgreSQL
         }
 
         [DbFunction("_pgr_binarybreadthfirstsearch", "public")]
-        public int PgrBinarybreadthfirstsearch(string edgesSql, string edgesSql, string fromVids, string combinationsSql, string toVids, bool? directed, bool? directed)
+        public int PgrBinarybreadthfirstsearch(string edgesSql, string edgesSql, string fromVids, string combinationsSql, string toVids, bool? directed, bool? directed = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_binarybreadthfirstsearch", "public")]
-        public int PgrBinarybreadthfirstsearch(string p1, string p4, string p7, string p10, string p13, long? p2, long? p5, string p8, string p11, string p14, long? p3, string p6, long? p9, string p12, bool? directed, bool? directed, bool? directed, bool? directed, bool? directed)
+        public int PgrBinarybreadthfirstsearch(string p1, string p4, string p7, string p10, string p13, long? p2, long? p5, string p8, string p11, string p14, long? p3, string p6, long? p9, string p12, bool? directed = null, bool? directed = null, bool? directed = null, bool? directed = null, bool? directed = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
@@ -568,13 +568,13 @@ namespace Efrpg.PostgreSQL
         }
 
         [DbFunction("_pgr_breadthfirstsearch", "public")]
-        public long PgrBreadthfirstsearch(string edgesSql, string fromVids, long? maxDepth, bool? directed)
+        public long PgrBreadthfirstsearch(string edgesSql, string fromVids, long? maxDepth = null, bool? directed = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_breadthfirstsearch", "public")]
-        public long PgrBreadthfirstsearch(string p1, string p3, string p2, long? p4, long? maxDepth, long? maxDepth, bool? directed, bool? directed)
+        public long PgrBreadthfirstsearch(string p1, string p3, string p2, long? p4, long? maxDepth = null, long? maxDepth = null, bool? directed = null, bool? directed = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
@@ -598,7 +598,7 @@ namespace Efrpg.PostgreSQL
         }
 
         [DbFunction("_pgr_chinesepostman", "public")]
-        public int PgrChinesepostman(string edgesSql, bool? onlyCost)
+        public int PgrChinesepostman(string edgesSql, bool? onlyCost = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
@@ -622,19 +622,19 @@ namespace Efrpg.PostgreSQL
         }
 
         [DbFunction("_pgr_contraction", "public")]
-        public string PgrContraction(string edgesSql, string contractionOrder, int? maxCycles, string forbiddenVertices, bool? directed)
+        public string PgrContraction(string edgesSql, string contractionOrder, int? maxCycles, string forbiddenVertices, bool? directed = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_contraction", "public")]
-        public string PgrContraction(string p1, string p2, int? maxCycles, string forbiddenVertices, bool? directed)
+        public string PgrContraction(string p1, string p2, int? maxCycles, string forbiddenVertices, bool? directed = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("_pgr_dagshortestpath", "public")]
-        public int PgrDagshortestpath(string p3, string p5, string p2, string p4, string p1, bool? directed, bool? directed, bool? onlyCost, bool? onlyCost)
+        public int PgrDagshortestpath(string p3, string p5, string p2, string p4, string p1, bool? directed, bool? directed = null, bool? onlyCost = null, bool? onlyCost = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
@@ -646,79 +646,79 @@ namespace Efrpg.PostgreSQL
         }
 
         [DbFunction("_pgr_depthfirstsearch", "public")]
-        public long PgrDepthfirstsearch(string edgesSql, string rootVids, bool? directed, long? maxDepth)
+        public long PgrDepthfirstsearch(string edgesSql, string rootVids, bool? directed = null, long? maxDepth = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_depthfirstsearch", "public")]
-        public long PgrDepthfirstsearch(string p1, string p4, string p2, long? p3, bool? directed, bool? directed, long? maxDepth, long? maxDepth)
+        public long PgrDepthfirstsearch(string p1, string p4, string p2, long? p3, bool? directed = null, bool? directed = null, long? maxDepth = null, long? maxDepth = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("_pgr_dijkstra", "public")]
-        public int PgrDijkstra(string edgesSql, string edgesSql, string edgesSql, string edgesSql, string combinationsSql, string startVids, string combinationsSql, string startVids, bool? directed, string endVids, bool? directed, string endVids, bool? onlyCost, bool? directed, bool? onlyCost, bool? directed, long? nGoals, bool? onlyCost, bool? normal, bool? onlyCost, bool? global, bool? normal, bool? normal, long? nGoals, long? nGoals, bool? global)
+        public int PgrDijkstra(string edgesSql, string edgesSql, string edgesSql, string edgesSql, string combinationsSql, string startVids, string combinationsSql, string startVids, bool? directed, string endVids, bool? directed, string endVids, bool? onlyCost = null, bool? directed = null, bool? onlyCost = null, bool? directed = null, long? nGoals = null, bool? onlyCost = null, bool? normal = null, bool? onlyCost = null, bool? global = null, bool? normal = null, bool? normal = null, long? nGoals = null, long? nGoals = null, bool? global = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_dijkstra", "public")]
-        public int PgrDijkstra(string p1, string p4, string p5, string p9, string p12, string p2, string p3, long? p6, long? p10, string p13, bool? directed, long? p7, string p8, string p11, long? p14, bool? directed, bool? directed, bool? directed, bool? directed)
+        public int PgrDijkstra(string p1, string p4, string p5, string p9, string p12, string p2, string p3, long? p6, long? p10, string p13, bool? directed, long? p7, string p8, string p11, long? p14 = null, bool? directed = null, bool? directed = null, bool? directed = null, bool? directed = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_dijkstracost", "public")]
-        public long PgrDijkstracost(string p2, string p5, string p8, string p11, string p14, string p1, string p4, string p7, long? p10, long? p13, bool? directed, string p3, long? p6, string p9, long? p12, bool? directed, bool? directed, bool? directed, bool? directed)
+        public long PgrDijkstracost(string p2, string p5, string p8, string p11, string p14, string p1, string p4, string p7, long? p10, long? p13, bool? directed, string p3, long? p6, string p9, long? p12 = null, bool? directed = null, bool? directed = null, bool? directed = null, bool? directed = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_dijkstracostmatrix", "public")]
-        public long PgrDijkstracostmatrix(string p2, string p1, bool? directed)
+        public long PgrDijkstracostmatrix(string p2, string p1, bool? directed = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("_pgr_dijkstranear", "public")]
-        public int PgrDijkstranear(string p4, string p8, string p12, string p3, string p7, long? p11, string p2, long? p6, string p10, long? p1, long? p5, long? p9, bool? directed, bool? directed, bool? directed)
+        public int PgrDijkstranear(string p4, string p8, string p12, string p3, string p7, long? p11, string p2, long? p6, string p10, long? p1 = null, long? p5 = null, long? p9 = null, bool? directed = null, bool? directed = null, bool? directed = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_dijkstranear", "public")]
-        public int PgrDijkstranear(string p3, string p6, string p7, string p11, string p2, string p5, long? p8, string p10, string p1, long? p4, string p9, bool? directed, bool? directed, bool? directed, bool? directed, long? cap, long? cap, long? cap, long? cap, bool? global, bool? global)
+        public int PgrDijkstranear(string p3, string p6, string p7, string p11, string p2, string p5, long? p8, string p10, string p1, long? p4, string p9, bool? directed, bool? directed = null, bool? directed = null, bool? directed = null, long? cap = null, long? cap = null, long? cap = null, long? cap = null, bool? global = null, bool? global = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_dijkstranearcost", "public")]
-        public long PgrDijkstranearcost(string p3, string p6, string p9, string p11, string p2, string p5, long? p8, string p10, string p1, long? p4, string p7, bool? directed, bool? directed, bool? directed, bool? directed, long? cap, long? cap, long? cap, long? cap, bool? global, bool? global)
+        public long PgrDijkstranearcost(string p3, string p6, string p9, string p11, string p2, string p5, long? p8, string p10, string p1, long? p4, string p7, bool? directed, bool? directed = null, bool? directed = null, bool? directed = null, long? cap = null, long? cap = null, long? cap = null, long? cap = null, bool? global = null, bool? global = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("_pgr_dijkstravia", "public")]
-        public int PgrDijkstravia(string edgesSql, string viaVids, bool? directed, bool? strict, bool? uTurnOnEdge)
+        public int PgrDijkstravia(string edgesSql, string viaVids, bool? directed = null, bool? strict = null, bool? uTurnOnEdge = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_dijkstravia", "public")]
-        public int PgrDijkstravia(string p2, string p1, bool? directed, bool? strict, bool? uTurnOnEdge)
+        public int PgrDijkstravia(string p2, string p1, bool? directed = null, bool? strict = null, bool? uTurnOnEdge = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("_pgr_drivingdistance", "public")]
-        public int PgrDrivingdistance(string edgesSql, string startVids, double? distance, bool? directed, bool? equicost)
+        public int PgrDrivingdistance(string edgesSql, string startVids, double? distance = null, bool? directed = null, bool? equicost = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_drivingdistance", "public")]
-        public int PgrDrivingdistance(string p1, string p6, long? p2, string p5, double? p3, double? p4, bool? directed, bool? directed, bool? equicost)
+        public int PgrDrivingdistance(string p1, string p6, long? p2, string p5, double? p3 = null, double? p4 = null, bool? directed = null, bool? directed = null, bool? equicost = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
@@ -736,49 +736,49 @@ namespace Efrpg.PostgreSQL
         }
 
         [DbFunction("_pgr_edgedisjointpaths", "public")]
-        public int PgrEdgedisjointpaths(string p2, string p5, string p1, string p4, bool? directed, string p3, bool? directed)
+        public int PgrEdgedisjointpaths(string p2, string p5, string p1, string p4, bool? directed, string p3, bool? directed = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_edgedisjointpaths", "public")]
-        public int PgrEdgedisjointpaths(string p3, string p4, string p7, string p11, string p14, string p2, long? p5, string p8, string p10, long? p13, bool? directed, string p1, long? p6, long? p9, string p12, bool? directed, bool? directed, bool? directed, bool? directed)
+        public int PgrEdgedisjointpaths(string p3, string p4, string p7, string p11, string p14, string p2, long? p5, string p8, string p10, long? p13, bool? directed, string p1, long? p6, long? p9, string p12, bool? directed = null, bool? directed = null, bool? directed = null, bool? directed = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_edmondskarp", "public")]
-        public int PgrEdmondskarp(string p1, string p4, string p8, string p11, string p14, long? p2, long? p5, string p7, string p10, string p13, long? p3, string p6, string p9, long? p12)
+        public int PgrEdmondskarp(string p1, string p4, string p8, string p11, string p14, long? p2, long? p5, string p7, string p10, string p13, long? p3, string p6, string p9, long? p12 = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("_pgr_edwardmoore", "public")]
-        public int PgrEdwardmoore(string edgesSql, string edgesSql, string fromVids, string combinationsSql, bool? directed, string toVids, bool? directed)
+        public int PgrEdwardmoore(string edgesSql, string edgesSql, string fromVids, string combinationsSql, bool? directed, string toVids, bool? directed = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_edwardmoore", "public")]
-        public int PgrEdwardmoore(string p1, string p4, string p7, string p10, string p13, string p2, string p5, string p6, long? p9, long? p12, bool? directed, string p3, string p8, long? p11, long? p14, bool? directed, bool? directed, bool? directed, bool? directed)
+        public int PgrEdwardmoore(string p1, string p4, string p7, string p10, string p13, string p2, string p5, string p6, long? p9, long? p12, bool? directed, string p3, string p8, long? p11, long? p14 = null, bool? directed = null, bool? directed = null, bool? directed = null, bool? directed = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_extractvertices", "public")]
-        public long PgrExtractvertices(string p1, bool? dryrun)
+        public long PgrExtractvertices(string p1, bool? dryrun = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("_pgr_floydwarshall", "public")]
-        public long PgrFloydwarshall(string edgesSql, bool? directed)
+        public long PgrFloydwarshall(string edgesSql, bool? directed = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_floydwarshall", "public")]
-        public long PgrFloydwarshall(string p1, bool? directed)
+        public long PgrFloydwarshall(string p1, bool? directed = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
@@ -796,19 +796,19 @@ namespace Efrpg.PostgreSQL
         }
 
         [DbFunction("_pgr_johnson", "public")]
-        public long PgrJohnson(string edgesSql, bool? directed)
+        public long PgrJohnson(string edgesSql, bool? directed = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_johnson", "public")]
-        public long PgrJohnson(string p1, bool? directed)
+        public long PgrJohnson(string p1, bool? directed = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("_pgr_kruskal", "public")]
-        public long PgrKruskal(string p2, string p1, string fnSuffix, long? maxDepth, double? distance)
+        public long PgrKruskal(string p2, string p1, string fnSuffix, long? maxDepth = null, double? distance = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
@@ -820,55 +820,55 @@ namespace Efrpg.PostgreSQL
         }
 
         [DbFunction("pgr_kruskalbfs", "public")]
-        public long PgrKruskalbfs(string p1, string p3, string p2, long? p4, long? maxDepth, long? maxDepth)
+        public long PgrKruskalbfs(string p1, string p3, string p2, long? p4, long? maxDepth = null, long? maxDepth = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_kruskaldd", "public")]
-        public long PgrKruskaldd(string p3, string p6, string p9, string p12, string p2, string p5, long? p8, long? p11, double? p1, decimal? p4, double? p7, decimal? p10)
+        public long PgrKruskaldd(string p3, string p6, string p9, string p12, string p2, string p5, long? p8, long? p11, double? p1 = null, decimal? p4 = null, double? p7 = null, decimal? p10 = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_kruskaldfs", "public")]
-        public long PgrKruskaldfs(string p3, string p4, long? p1, string p2, long? maxDepth, long? maxDepth)
+        public long PgrKruskaldfs(string p3, string p4, long? p1, string p2, long? maxDepth = null, long? maxDepth = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("_pgr_ksp", "public")]
-        public int PgrKsp(string edgesSql, long? startVid, long? endVid, int? k, bool? directed, bool? heapPaths)
+        public int PgrKsp(string edgesSql, long? startVid = null, long? endVid = null, int? k = null, bool? directed = null, bool? heapPaths = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_ksp", "public")]
-        public int PgrKsp(string p2, long? p1, long? p4, int? p3, bool? directed, bool? heapPaths)
+        public int PgrKsp(string p2, long? p1 = null, long? p4 = null, int? p3 = null, bool? directed = null, bool? heapPaths = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("_pgr_lengauertarjandominatortree", "public")]
-        public int PgrLengauertarjandominatortree(string edgesSql, long? rootVid)
+        public int PgrLengauertarjandominatortree(string edgesSql, long? rootVid = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_lengauertarjandominatortree", "public")]
-        public int PgrLengauertarjandominatortree(string p1, long? p2)
+        public int PgrLengauertarjandominatortree(string p1, long? p2 = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("_pgr_linegraph", "public")]
-        public int PgrLinegraph(string p1, bool? directed)
+        public int PgrLinegraph(string p1, bool? directed = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_linegraph", "public")]
-        public int PgrLinegraph(string p1, bool? directed)
+        public int PgrLinegraph(string p1, bool? directed = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
@@ -898,25 +898,25 @@ namespace Efrpg.PostgreSQL
         }
 
         [DbFunction("_pgr_maxcardinalitymatch", "public")]
-        public int PgrMaxcardinalitymatch(string edgesSql, bool? directed)
+        public int PgrMaxcardinalitymatch(string edgesSql, bool? directed = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_maxcardinalitymatch", "public")]
-        public int PgrMaxcardinalitymatch(string p1, bool? directed)
+        public int PgrMaxcardinalitymatch(string p1, bool? directed = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("_pgr_maxflow", "public")]
-        public int PgrMaxflow(string edgesSql, string edgesSql, string combinationsSql, string sources, int? algorithm, string targets, bool? onlyFlow, int? algorithm, bool? onlyFlow)
+        public int PgrMaxflow(string edgesSql, string edgesSql, string combinationsSql, string sources, int? algorithm, string targets, bool? onlyFlow = null, int? algorithm = null, bool? onlyFlow = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("_pgr_maxflowmincost", "public")]
-        public int PgrMaxflowmincost(string edgesSql, string edgesSql, string combinationsSql, string sources, bool? onlyCost, string targets, bool? onlyCost)
+        public int PgrMaxflowmincost(string edgesSql, string edgesSql, string combinationsSql, string sources, bool? onlyCost, string targets, bool? onlyCost = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
@@ -928,31 +928,31 @@ namespace Efrpg.PostgreSQL
         }
 
         [DbFunction("_pgr_pickdeliver", "public")]
-        public int PgrPickdeliver(string p1, string p2, string p3, double? factor, int? maxCycles, int? initialSol)
+        public int PgrPickdeliver(string p1, string p2, string p3, double? factor = null, int? maxCycles = null, int? initialSol = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_pickdeliver", "public")]
-        public int PgrPickdeliver(string p1, string p2, string p3, double? factor, int? maxCycles, int? initialSol)
+        public int PgrPickdeliver(string p1, string p2, string p3, double? factor = null, int? maxCycles = null, int? initialSol = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("_pgr_pickdelivereuclidean", "public")]
-        public int PgrPickdelivereuclidean(string p2, string p1, double? factor, int? maxCycles, int? initialSol)
+        public int PgrPickdelivereuclidean(string p2, string p1, double? factor = null, int? maxCycles = null, int? initialSol = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_pickdelivereuclidean", "public")]
-        public int PgrPickdelivereuclidean(string p2, string p1, double? factor, int? maxCycles, int? initialSol)
+        public int PgrPickdelivereuclidean(string p2, string p1, double? factor = null, int? maxCycles = null, int? initialSol = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("_pgr_prim", "public")]
-        public long PgrPrim(string p1, string p2, string orderBy, long? maxDepth, double? distance)
+        public long PgrPrim(string p1, string p2, string orderBy, long? maxDepth = null, double? distance = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
@@ -964,19 +964,19 @@ namespace Efrpg.PostgreSQL
         }
 
         [DbFunction("pgr_primbfs", "public")]
-        public long PgrPrimbfs(string p2, string p3, string p1, long? p4, long? maxDepth, long? maxDepth)
+        public long PgrPrimbfs(string p2, string p3, string p1, long? p4, long? maxDepth = null, long? maxDepth = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_primdd", "public")]
-        public long PgrPrimdd(string p1, string p4, string p7, string p10, long? p2, long? p5, string p8, string p11, decimal? p3, double? p6, decimal? p9, double? p12)
+        public long PgrPrimdd(string p1, string p4, string p7, string p10, long? p2, long? p5, string p8, string p11, decimal? p3 = null, double? p6 = null, decimal? p9 = null, double? p12 = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_primdfs", "public")]
-        public long PgrPrimdfs(string p1, string p3, long? p2, string p4, long? maxDepth, long? maxDepth)
+        public long PgrPrimdfs(string p1, string p3, long? p2, string p4, long? maxDepth = null, long? maxDepth = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
@@ -1078,61 +1078,61 @@ namespace Efrpg.PostgreSQL
         }
 
         [DbFunction("_pgr_tsp", "public")]
-        public int PgrTsp(string matrixRowSql, long? startId, long? endId, double? maxProcessingTime, int? triesPerTemperature, int? maxChangesPerTemperature, int? maxConsecutiveNonChanges, double? initialTemperature, double? finalTemperature, double? coolingFactor, bool? randomize)
+        public int PgrTsp(string matrixRowSql, long? startId = null, long? endId = null, double? maxProcessingTime = null, int? triesPerTemperature = null, int? maxChangesPerTemperature = null, int? maxConsecutiveNonChanges = null, double? initialTemperature = null, double? finalTemperature = null, double? coolingFactor = null, bool? randomize = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_tsp", "public")]
-        public int PgrTsp(string p1, long? startId, long? endId, double? maxProcessingTime, int? triesPerTemperature, int? maxChangesPerTemperature, int? maxConsecutiveNonChanges, double? initialTemperature, double? finalTemperature, double? coolingFactor, bool? randomize)
+        public int PgrTsp(string p1, long? startId = null, long? endId = null, double? maxProcessingTime = null, int? triesPerTemperature = null, int? maxChangesPerTemperature = null, int? maxConsecutiveNonChanges = null, double? initialTemperature = null, double? finalTemperature = null, double? coolingFactor = null, bool? randomize = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("_pgr_tspeuclidean", "public")]
-        public int PgrTspeuclidean(string coordinatesSql, long? startId, long? endId, double? maxProcessingTime, int? triesPerTemperature, int? maxChangesPerTemperature, int? maxConsecutiveNonChanges, double? initialTemperature, double? finalTemperature, double? coolingFactor, bool? randomize)
+        public int PgrTspeuclidean(string coordinatesSql, long? startId = null, long? endId = null, double? maxProcessingTime = null, int? triesPerTemperature = null, int? maxChangesPerTemperature = null, int? maxConsecutiveNonChanges = null, double? initialTemperature = null, double? finalTemperature = null, double? coolingFactor = null, bool? randomize = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_tspeuclidean", "public")]
-        public int PgrTspeuclidean(string p1, long? startId, long? endId, double? maxProcessingTime, int? triesPerTemperature, int? maxChangesPerTemperature, int? maxConsecutiveNonChanges, double? initialTemperature, double? finalTemperature, double? coolingFactor, bool? randomize)
+        public int PgrTspeuclidean(string p1, long? startId = null, long? endId = null, double? maxProcessingTime = null, int? triesPerTemperature = null, int? maxChangesPerTemperature = null, int? maxConsecutiveNonChanges = null, double? initialTemperature = null, double? finalTemperature = null, double? coolingFactor = null, bool? randomize = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("_pgr_turnrestrictedpath", "public")]
-        public int PgrTurnrestrictedpath(string p2, string p5, long? p1, long? p3, int? p4, bool? directed, bool? heapPaths, bool? stopOnFirst, bool? strict)
+        public int PgrTurnrestrictedpath(string p2, string p5, long? p1 = null, long? p3 = null, int? p4 = null, bool? directed = null, bool? heapPaths = null, bool? stopOnFirst = null, bool? strict = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_turnrestrictedpath", "public")]
-        public int PgrTurnrestrictedpath(string p5, string p3, long? p4, long? p2, int? p1, bool? directed, bool? heapPaths, bool? stopOnFirst, bool? strict)
+        public int PgrTurnrestrictedpath(string p5, string p3, long? p4 = null, long? p2 = null, int? p1 = null, bool? directed = null, bool? heapPaths = null, bool? stopOnFirst = null, bool? strict = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("_pgr_vrponedepot", "public")]
-        public int PgrVrponedepot(string p1, string p2, string p3, int? p4)
+        public int PgrVrponedepot(string p1, string p2, string p3, int? p4 = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_vrponedepot", "public")]
-        public int PgrVrponedepot(string p4, string p1, string p2, int? p3)
+        public int PgrVrponedepot(string p4, string p1, string p2, int? p3 = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("_pgr_withpoints", "public")]
-        public int PgrWithpoints(string edgesSql, string edgesSql, string pointsSql, string pointsSql, string startPids, string combinationsSql, string endPids, bool? directed, bool? directed, string drivingSide, string drivingSide, bool? details, bool? details, bool? onlyCost, bool? onlyCost, bool? normal)
+        public int PgrWithpoints(string edgesSql, string edgesSql, string pointsSql, string pointsSql, string startPids, string combinationsSql, string endPids, bool? directed, bool? directed, string drivingSide, string drivingSide, bool? details, bool? details = null, bool? onlyCost = null, bool? onlyCost = null, bool? normal = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_withpoints", "public")]
-        public int PgrWithpoints(string p1, string p7, string p11, string p12, string p16, string p2, string p6, string p8, string p13, string p17, string p3, string p5, string p9, long? p14, long? p18, bool? directed, long? p4, string p10, long? p15, string p19, bool? directed, string drivingSide, bool? directed, bool? directed, bool? directed, string drivingSide, bool? details, string drivingSide, string drivingSide, string drivingSide, bool? details, bool? details, bool? details, bool? details)
+        public int PgrWithpoints(string p1, string p7, string p11, string p12, string p16, string p2, string p6, string p8, string p13, string p17, string p3, string p5, string p9, long? p14, long? p18, bool? directed, long? p4, string p10, long? p15, string p19, bool? directed, string drivingSide, bool? directed, bool? directed, bool? directed, string drivingSide, bool? details, string drivingSide, string drivingSide, string drivingSide, bool? details = null, bool? details = null, bool? details = null, bool? details = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
@@ -1150,37 +1150,37 @@ namespace Efrpg.PostgreSQL
         }
 
         [DbFunction("_pgr_withpointsdd", "public")]
-        public int PgrWithpointsdd(string edgesSql, string pointsSql, string startPid, double? distance, bool? directed, string drivingSide, bool? details, bool? equicost)
+        public int PgrWithpointsdd(string edgesSql, string pointsSql, string startPid, double? distance, bool? directed, string drivingSide, bool? details = null, bool? equicost = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_withpointsdd", "public")]
-        public int PgrWithpointsdd(string p4, string p5, string p3, string p6, string p2, long? p7, double? p1, double? p8, bool? directed, bool? directed, string drivingSide, string drivingSide, bool? details, bool? details, bool? equicost)
+        public int PgrWithpointsdd(string p4, string p5, string p3, string p6, string p2, long? p7, double? p1, double? p8, bool? directed, bool? directed, string drivingSide, string drivingSide, bool? details = null, bool? details = null, bool? equicost = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("_pgr_withpointsksp", "public")]
-        public int PgrWithpointsksp(string edgesSql, string pointsSql, long? startPid, long? endPid, int? k, bool? directed, bool? heapPaths, string drivingSide, bool? details)
+        public int PgrWithpointsksp(string edgesSql, string pointsSql, long? startPid, long? endPid, int? k, bool? directed, bool? heapPaths, string drivingSide, bool? details = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("pgr_withpointsksp", "public")]
-        public int PgrWithpointsksp(string p5, string p4, long? p3, long? p1, int? p2, bool? directed, bool? heapPaths, string drivingSide, bool? details)
+        public int PgrWithpointsksp(string p5, string p4, long? p3, long? p1, int? p2, bool? directed, bool? heapPaths, string drivingSide, bool? details = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("_pgr_withpointsvia", "public")]
-        public int PgrWithpointsvia(string sql, string viaEdges, string fraction, bool? directed)
+        public int PgrWithpointsvia(string sql, string viaEdges, string fraction, bool? directed = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("st_approxhistogram", "public")]
-        public double StApproxhistogram(string rast, string rast, string rast, string rast, string rast, string rast, int? nband, double? samplePercent, int? nband, int? nband, int? nband, int? nband, double? samplePercent, bool? excludeNodataValue, bool? excludeNodataValue, double? samplePercent, double? samplePercent, double? samplePercent, double? samplePercent, int? bins, int? bins, int? bins, int? bins, bool? right, string width, string width, bool? right, bool? right, bool? right)
+        public double StApproxhistogram(string rast, string rast, string rast, string rast, string rast, string rast, int? nband, double? samplePercent, int? nband, int? nband, int? nband, int? nband, double? samplePercent, bool? excludeNodataValue, bool? excludeNodataValue, double? samplePercent, double? samplePercent, double? samplePercent, double? samplePercent, int? bins, int? bins, int? bins, int? bins, bool? right, string width, string width, bool? right, bool? right, bool? right = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
@@ -1198,13 +1198,13 @@ namespace Efrpg.PostgreSQL
         }
 
         [DbFunction("st_contour", "public")]
-        public string StContour(string rast, int? bandnumber, double? levelInterval, double? levelBase, string fixedLevels, bool? polygonize)
+        public string StContour(string rast, int? bandnumber, double? levelInterval, double? levelBase, string fixedLevels, bool? polygonize = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("st_dumpvalues", "public")]
-        public int StDumpvalues(string rast, string rast, string nband, int? nband, bool? excludeNodataValue, bool? excludeNodataValue)
+        public int StDumpvalues(string rast, string rast, string nband, int? nband, bool? excludeNodataValue = null, bool? excludeNodataValue = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
@@ -1228,13 +1228,13 @@ namespace Efrpg.PostgreSQL
         }
 
         [DbFunction("_st_histogram", "public")]
-        public double StHistogram(string rast, int? nband, bool? excludeNodataValue, double? samplePercent, int? bins, string width, bool? right, double? min, double? max)
+        public double StHistogram(string rast, int? nband, bool? excludeNodataValue, double? samplePercent, int? bins, string width, bool? right = null, double? min = null, double? max = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("st_histogram", "public")]
-        public double StHistogram(string rast, string rast, string rast, string rast, int? nband, int? nband, int? nband, int? nband, int? bins, int? bins, bool? excludeNodataValue, bool? excludeNodataValue, bool? right, string width, int? bins, int? bins, bool? right, bool? right, string width, bool? right)
+        public double StHistogram(string rast, string rast, string rast, string rast, int? nband, int? nband, int? nband, int? nband, int? bins, int? bins, bool? excludeNodataValue, bool? excludeNodataValue, bool? right, string width, int? bins, int? bins, bool? right, bool? right = null, string width, bool? right = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
@@ -1258,37 +1258,37 @@ namespace Efrpg.PostgreSQL
         }
 
         [DbFunction("_st_pixelascentroids", "public")]
-        public string StPixelascentroids(string rast, int? band, int? columnx, int? rowy, bool? excludeNodataValue)
+        public string StPixelascentroids(string rast, int? band = null, int? columnx = null, int? rowy = null, bool? excludeNodataValue = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("st_pixelascentroids", "public")]
-        public string StPixelascentroids(string rast, int? band, bool? excludeNodataValue)
+        public string StPixelascentroids(string rast, int? band = null, bool? excludeNodataValue = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("st_pixelaspoints", "public")]
-        public string StPixelaspoints(string rast, int? band, bool? excludeNodataValue)
+        public string StPixelaspoints(string rast, int? band = null, bool? excludeNodataValue = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("_st_pixelaspolygons", "public")]
-        public string StPixelaspolygons(string rast, int? band, int? columnx, int? rowy, bool? excludeNodataValue)
+        public string StPixelaspolygons(string rast, int? band = null, int? columnx = null, int? rowy = null, bool? excludeNodataValue = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("st_pixelaspolygons", "public")]
-        public string StPixelaspolygons(string rast, int? band, bool? excludeNodataValue)
+        public string StPixelaspolygons(string rast, int? band = null, bool? excludeNodataValue = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("st_pixelofvalue", "public")]
-        public double StPixelofvalue(string rast, string rast, string rast, string rast, int? nband, double? search, string search, int? nband, double? search, string search, bool? excludeNodataValue, bool? excludeNodataValue, bool? excludeNodataValue, bool? excludeNodataValue)
+        public double StPixelofvalue(string rast, string rast, string rast, string rast, int? nband, double? search, string search, int? nband, double? search, string search, bool? excludeNodataValue, bool? excludeNodataValue = null, bool? excludeNodataValue = null, bool? excludeNodataValue = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
@@ -1306,13 +1306,13 @@ namespace Efrpg.PostgreSQL
         }
 
         [DbFunction("_st_rastertoworldcoord", "public")]
-        public double StRastertoworldcoord(string rast, int? columnx, int? rowy)
+        public double StRastertoworldcoord(string rast, int? columnx = null, int? rowy = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("st_rastertoworldcoord", "public")]
-        public double StRastertoworldcoord(string rast, int? columnx, int? rowy)
+        public double StRastertoworldcoord(string rast, int? columnx = null, int? rowy = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
@@ -1324,31 +1324,31 @@ namespace Efrpg.PostgreSQL
         }
 
         [DbFunction("_st_valuecount", "public")]
-        public double StValuecount(string rast, string rastertable, int? nband, string rastercolumn, bool? excludeNodataValue, int? nband, string searchvalues, bool? excludeNodataValue, double? roundto, string searchvalues, double? roundto)
+        public double StValuecount(string rast, string rastertable, int? nband, string rastercolumn, bool? excludeNodataValue, int? nband, string searchvalues, bool? excludeNodataValue, double? roundto, string searchvalues, double? roundto = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("st_valuecount", "public")]
-        public double StValuecount(string rastertable, string rastertable, string rastertable, string rast, string rast, string rast, string rastertable, string rastertable, string rast, string rast, string rast, string rastertable, string rastercolumn, string rastercolumn, string rastercolumn, int? nband, int? nband, double? searchvalue, string rastercolumn, string rastercolumn, int? nband, int? nband, string searchvalues, string rastercolumn, int? nband, int? nband, double? searchvalue, bool? excludeNodataValue, double? searchvalue, double? roundto, int? nband, int? nband, bool? excludeNodataValue, string searchvalues, double? roundto, string searchvalues, bool? excludeNodataValue, double? searchvalue, double? roundto, double? searchvalue, double? roundto, bool? excludeNodataValue, string searchvalues, string searchvalues, double? roundto, double? roundto, double? searchvalue, double? roundto, double? roundto, string searchvalues, double? roundto, double? roundto, double? roundto, double? roundto)
+        public double StValuecount(string rastertable, string rastertable, string rastertable, string rast, string rast, string rast, string rastertable, string rastertable, string rast, string rast, string rast, string rastertable, string rastercolumn, string rastercolumn, string rastercolumn, int? nband, int? nband, double? searchvalue, string rastercolumn, string rastercolumn, int? nband, int? nband, string searchvalues, string rastercolumn, int? nband, int? nband, double? searchvalue, bool? excludeNodataValue, double? searchvalue, double? roundto, int? nband, int? nband, bool? excludeNodataValue, string searchvalues, double? roundto, string searchvalues, bool? excludeNodataValue, double? searchvalue, double? roundto, double? searchvalue, double? roundto, bool? excludeNodataValue, string searchvalues, string searchvalues, double? roundto, double? roundto, double? searchvalue, double? roundto, double? roundto, string searchvalues, double? roundto = null, double? roundto = null, double? roundto = null, double? roundto = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("st_valuepercent", "public")]
-        public double StValuepercent(string rastertable, string rastertable, string rastertable, string rastertable, string rastertable, string rastertable, string rast, string rast, string rast, string rast, string rast, string rast, string rastercolumn, string rastercolumn, string rastercolumn, string rastercolumn, string rastercolumn, string rastercolumn, double? searchvalue, int? nband, int? nband, string searchvalues, int? nband, int? nband, double? searchvalue, int? nband, int? nband, string searchvalues, int? nband, int? nband, double? roundto, double? searchvalue, bool? excludeNodataValue, double? roundto, string searchvalues, bool? excludeNodataValue, double? roundto, double? searchvalue, bool? excludeNodataValue, double? roundto, string searchvalues, bool? excludeNodataValue, double? roundto, double? searchvalue, double? roundto, string searchvalues, double? roundto, double? searchvalue, double? roundto, string searchvalues, double? roundto, double? roundto, double? roundto, double? roundto)
+        public double StValuepercent(string rastertable, string rastertable, string rastertable, string rastertable, string rastertable, string rastertable, string rast, string rast, string rast, string rast, string rast, string rast, string rastercolumn, string rastercolumn, string rastercolumn, string rastercolumn, string rastercolumn, string rastercolumn, double? searchvalue, int? nband, int? nband, string searchvalues, int? nband, int? nband, double? searchvalue, int? nband, int? nband, string searchvalues, int? nband, int? nband, double? roundto, double? searchvalue, bool? excludeNodataValue, double? roundto, string searchvalues, bool? excludeNodataValue, double? roundto, double? searchvalue, bool? excludeNodataValue, double? roundto, string searchvalues, bool? excludeNodataValue, double? roundto, double? searchvalue, double? roundto, string searchvalues, double? roundto, double? searchvalue, double? roundto, string searchvalues, double? roundto = null, double? roundto = null, double? roundto = null, double? roundto = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("_st_worldtorastercoord", "public")]
-        public int StWorldtorastercoord(string rast, double? longitude, double? latitude)
+        public int StWorldtorastercoord(string rast, double? longitude = null, double? latitude = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
 
         [DbFunction("st_worldtorastercoord", "public")]
-        public int StWorldtorastercoord(string rast, string rast, double? longitude, string pt, double? latitude)
+        public int StWorldtorastercoord(string rast, string rast, double? longitude, string pt, double? latitude = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
@@ -1366,7 +1366,7 @@ namespace Efrpg.PostgreSQL
         }
 
         [DbFunction("geocode_intersection", "tiger")]
-        public string tiger_GeocodeIntersection(string roadway1, string roadway2, string inState, string inCity, string inZip, int? numResults)
+        public string tiger_GeocodeIntersection(string roadway1, string roadway2, string inState, string inCity, string inZip, int? numResults = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
@@ -1378,7 +1378,7 @@ namespace Efrpg.PostgreSQL
         }
 
         [DbFunction("reverse_geocode", "tiger")]
-        public string tiger_ReverseGeocode(string pt, bool? includeStrnumRange)
+        public string tiger_ReverseGeocode(string pt, bool? includeStrnumRange = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
@@ -1396,7 +1396,7 @@ namespace Efrpg.PostgreSQL
         }
 
         [DbFunction("_trsp", "public")]
-        public int Trsp(string p1, string p2, string p3, string p4, bool? directed)
+        public int Trsp(string p1, string p2, string p3, string p4, bool? directed = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
@@ -1718,7 +1718,7 @@ namespace Efrpg.PostgreSQL
         }
 
         // public._pgr_alphashape
-        public long PgrAlphashape(string p1, double? alpha)
+        public long PgrAlphashape(string p1, double? alpha = null)
         {
             return default(long);
         }
@@ -1736,85 +1736,85 @@ namespace Efrpg.PostgreSQL
         }
 
         // public._pgr_astar
-        public int PgrAstar(string edgesSql, string edgesSql, string startVids, string combinationsSql, string endVids, bool? directed, bool? directed, int? heuristic, int? heuristic, double? factor, double? factor, double? epsilon, double? epsilon, bool? onlyCost, bool? onlyCost, bool? normal)
+        public int PgrAstar(string edgesSql, string edgesSql, string startVids, string combinationsSql, string endVids, bool? directed, bool? directed = null, int? heuristic = null, int? heuristic = null, double? factor = null, double? factor = null, double? epsilon = null, double? epsilon = null, bool? onlyCost = null, bool? onlyCost = null, bool? normal = null)
         {
             return default(int);
         }
 
         // public.pgr_astar
-        public int PgrAstar(string p1, string p5, string p8, string p9, string p12, string p2, long? p4, long? p7, string p10, string p13, bool? directed, string p3, long? p6, long? p11, string p14, int? heuristic, bool? directed, bool? directed, bool? directed, bool? directed, double? factor, int? heuristic, int? heuristic, int? heuristic, int? heuristic, double? epsilon, double? factor, double? factor, double? factor, double? factor, double? epsilon, double? epsilon, double? epsilon, double? epsilon)
+        public int PgrAstar(string p1, string p5, string p8, string p9, string p12, string p2, long? p4, long? p7, string p10, string p13, bool? directed, string p3, long? p6, long? p11, string p14, int? heuristic = null, bool? directed = null, bool? directed = null, bool? directed = null, bool? directed = null, double? factor = null, int? heuristic = null, int? heuristic = null, int? heuristic = null, int? heuristic = null, double? epsilon = null, double? factor = null, double? factor = null, double? factor = null, double? factor = null, double? epsilon = null, double? epsilon = null, double? epsilon = null, double? epsilon = null)
         {
             return default(int);
         }
 
         // public.pgr_astarcost
-        public long PgrAstarcost(string p1, string p4, string p7, string p10, string p13, long? p2, long? p5, string p8, string p11, string p14, long? p3, string p6, long? p9, string p12, bool? directed, bool? directed, bool? directed, bool? directed, bool? directed, int? heuristic, int? heuristic, int? heuristic, int? heuristic, int? heuristic, double? factor, double? factor, double? factor, double? factor, double? factor, double? epsilon, double? epsilon, double? epsilon, double? epsilon, double? epsilon)
+        public long PgrAstarcost(string p1, string p4, string p7, string p10, string p13, long? p2, long? p5, string p8, string p11, string p14, long? p3, string p6, long? p9, string p12, bool? directed = null, bool? directed = null, bool? directed = null, bool? directed = null, bool? directed = null, int? heuristic = null, int? heuristic = null, int? heuristic = null, int? heuristic = null, int? heuristic = null, double? factor = null, double? factor = null, double? factor = null, double? factor = null, double? factor = null, double? epsilon = null, double? epsilon = null, double? epsilon = null, double? epsilon = null, double? epsilon = null)
         {
             return default(long);
         }
 
         // public.pgr_astarcostmatrix
-        public long PgrAstarcostmatrix(string p2, string p1, bool? directed, int? heuristic, double? factor, double? epsilon)
+        public long PgrAstarcostmatrix(string p2, string p1, bool? directed = null, int? heuristic = null, double? factor = null, double? epsilon = null)
         {
             return default(long);
         }
 
         // public._pgr_bdastar
-        public int PgrBdastar(string p2, string p3, string p1, string p4, bool? directed, string p5, int? heuristic, bool? directed, double? factor, int? heuristic, double? epsilon, double? factor, bool? onlyCost, double? epsilon, bool? onlyCost)
+        public int PgrBdastar(string p2, string p3, string p1, string p4, bool? directed, string p5, int? heuristic = null, bool? directed = null, double? factor = null, int? heuristic = null, double? epsilon = null, double? factor = null, bool? onlyCost = null, double? epsilon = null, bool? onlyCost = null)
         {
             return default(int);
         }
 
         // public.pgr_bdastar
-        public int PgrBdastar(string p3, string p5, string p6, string p9, string p12, long? p2, string p4, string p7, string p10, long? p14, long? p1, bool? directed, long? p8, string p11, string p13, bool? directed, int? heuristic, bool? directed, bool? directed, bool? directed, decimal? factor, int? heuristic, int? heuristic, int? heuristic, int? heuristic, decimal? epsilon, decimal? factor, decimal? factor, decimal? factor, decimal? factor, decimal? epsilon, decimal? epsilon, decimal? epsilon, decimal? epsilon)
+        public int PgrBdastar(string p3, string p5, string p6, string p9, string p12, long? p2, string p4, string p7, string p10, long? p14, long? p1, bool? directed, long? p8 = null, string p11, string p13, bool? directed = null, int? heuristic = null, bool? directed = null, bool? directed = null, bool? directed = null, decimal? factor = null, int? heuristic = null, int? heuristic = null, int? heuristic = null, int? heuristic = null, decimal? epsilon = null, decimal? factor = null, decimal? factor = null, decimal? factor = null, decimal? factor = null, decimal? epsilon = null, decimal? epsilon = null, decimal? epsilon = null, decimal? epsilon = null)
         {
             return default(int);
         }
 
         // public.pgr_bdastarcost
-        public long PgrBdastarcost(string p2, string p4, string p7, string p11, string p14, long? p1, long? p5, string p8, string p10, string p13, long? p3, string p6, long? p9, bool? directed, string p12, bool? directed, bool? directed, bool? directed, int? heuristic, bool? directed, int? heuristic, int? heuristic, int? heuristic, decimal? factor, int? heuristic, decimal? factor, decimal? factor, decimal? factor, decimal? epsilon, decimal? factor, decimal? epsilon, decimal? epsilon, decimal? epsilon, decimal? epsilon)
+        public long PgrBdastarcost(string p2, string p4, string p7, string p11, string p14, long? p1, long? p5, string p8, string p10, string p13, long? p3, string p6, long? p9, bool? directed, string p12, bool? directed = null, bool? directed = null, bool? directed = null, int? heuristic = null, bool? directed = null, int? heuristic = null, int? heuristic = null, int? heuristic = null, decimal? factor = null, int? heuristic = null, decimal? factor = null, decimal? factor = null, decimal? factor = null, decimal? epsilon = null, decimal? factor = null, decimal? epsilon = null, decimal? epsilon = null, decimal? epsilon = null, decimal? epsilon = null)
         {
             return default(long);
         }
 
         // public.pgr_bdastarcostmatrix
-        public long PgrBdastarcostmatrix(string p2, string p1, bool? directed, int? heuristic, decimal? factor, decimal? epsilon)
+        public long PgrBdastarcostmatrix(string p2, string p1, bool? directed = null, int? heuristic = null, decimal? factor = null, decimal? epsilon = null)
         {
             return default(long);
         }
 
         // public._pgr_bddijkstra
-        public int PgrBddijkstra(string p2, string p5, string p1, string p4, bool? directed, string p3, bool? onlyCost, bool? directed, bool? onlyCost)
+        public int PgrBddijkstra(string p2, string p5, string p1, string p4, bool? directed, string p3, bool? onlyCost = null, bool? directed = null, bool? onlyCost = null)
         {
             return default(int);
         }
 
         // public.pgr_bddijkstra
-        public int PgrBddijkstra(string p3, string p6, string p8, string p11, string p14, long? p2, long? p5, string p7, string p10, string p13, string p1, long? p4, string p9, long? p12, bool? directed, bool? directed, bool? directed, bool? directed, bool? directed)
+        public int PgrBddijkstra(string p3, string p6, string p8, string p11, string p14, long? p2, long? p5, string p7, string p10, string p13, string p1, long? p4, string p9, long? p12, bool? directed, bool? directed = null, bool? directed = null, bool? directed = null, bool? directed = null)
         {
             return default(int);
         }
 
         // public.pgr_bddijkstracost
-        public long PgrBddijkstracost(string p2, string p5, string p8, string p11, string p14, string p1, string p4, string p7, long? p10, long? p13, bool? directed, string p3, long? p6, string p9, long? p12, bool? directed, bool? directed, bool? directed, bool? directed)
+        public long PgrBddijkstracost(string p2, string p5, string p8, string p11, string p14, string p1, string p4, string p7, long? p10, long? p13, bool? directed, string p3, long? p6, string p9, long? p12 = null, bool? directed = null, bool? directed = null, bool? directed = null, bool? directed = null)
         {
             return default(long);
         }
 
         // public.pgr_bddijkstracostmatrix
-        public long PgrBddijkstracostmatrix(string p2, string p1, bool? directed)
+        public long PgrBddijkstracostmatrix(string p2, string p1, bool? directed = null)
         {
             return default(long);
         }
 
         // public._pgr_bellmanford
-        public int PgrBellmanford(string edgesSql, string edgesSql, string combinationsSql, string fromVids, string toVids, bool? directed, bool? onlyCost, bool? directed, bool? onlyCost)
+        public int PgrBellmanford(string edgesSql, string edgesSql, string combinationsSql, string fromVids, string toVids, bool? directed, bool? onlyCost = null, bool? directed = null, bool? onlyCost = null)
         {
             return default(int);
         }
 
         // public.pgr_bellmanford
-        public int PgrBellmanford(string p2, string p5, string p8, string p10, string p12, string p1, string p4, string p7, long? p9, long? p13, bool? directed, string p3, long? p6, string p11, long? p14, bool? directed, bool? directed, bool? directed, bool? directed)
+        public int PgrBellmanford(string p2, string p5, string p8, string p10, string p12, string p1, string p4, string p7, long? p9, long? p13, bool? directed, string p3, long? p6, string p11, long? p14 = null, bool? directed = null, bool? directed = null, bool? directed = null, bool? directed = null)
         {
             return default(int);
         }
@@ -1832,13 +1832,13 @@ namespace Efrpg.PostgreSQL
         }
 
         // public._pgr_binarybreadthfirstsearch
-        public int PgrBinarybreadthfirstsearch(string edgesSql, string edgesSql, string fromVids, string combinationsSql, string toVids, bool? directed, bool? directed)
+        public int PgrBinarybreadthfirstsearch(string edgesSql, string edgesSql, string fromVids, string combinationsSql, string toVids, bool? directed, bool? directed = null)
         {
             return default(int);
         }
 
         // public.pgr_binarybreadthfirstsearch
-        public int PgrBinarybreadthfirstsearch(string p1, string p4, string p7, string p10, string p13, long? p2, long? p5, string p8, string p11, string p14, long? p3, string p6, long? p9, string p12, bool? directed, bool? directed, bool? directed, bool? directed, bool? directed)
+        public int PgrBinarybreadthfirstsearch(string p1, string p4, string p7, string p10, string p13, long? p2, long? p5, string p8, string p11, string p14, long? p3, string p6, long? p9, string p12, bool? directed = null, bool? directed = null, bool? directed = null, bool? directed = null, bool? directed = null)
         {
             return default(int);
         }
@@ -1862,13 +1862,13 @@ namespace Efrpg.PostgreSQL
         }
 
         // public._pgr_breadthfirstsearch
-        public long PgrBreadthfirstsearch(string edgesSql, string fromVids, long? maxDepth, bool? directed)
+        public long PgrBreadthfirstsearch(string edgesSql, string fromVids, long? maxDepth = null, bool? directed = null)
         {
             return default(long);
         }
 
         // public.pgr_breadthfirstsearch
-        public long PgrBreadthfirstsearch(string p1, string p3, string p2, long? p4, long? maxDepth, long? maxDepth, bool? directed, bool? directed)
+        public long PgrBreadthfirstsearch(string p1, string p3, string p2, long? p4, long? maxDepth = null, long? maxDepth = null, bool? directed = null, bool? directed = null)
         {
             return default(long);
         }
@@ -1892,7 +1892,7 @@ namespace Efrpg.PostgreSQL
         }
 
         // public._pgr_chinesepostman
-        public int PgrChinesepostman(string edgesSql, bool? onlyCost)
+        public int PgrChinesepostman(string edgesSql, bool? onlyCost = null)
         {
             return default(int);
         }
@@ -1916,19 +1916,19 @@ namespace Efrpg.PostgreSQL
         }
 
         // public._pgr_contraction
-        public string PgrContraction(string edgesSql, string contractionOrder, int? maxCycles, string forbiddenVertices, bool? directed)
+        public string PgrContraction(string edgesSql, string contractionOrder, int? maxCycles, string forbiddenVertices, bool? directed = null)
         {
             return default(string);
         }
 
         // public.pgr_contraction
-        public string PgrContraction(string p1, string p2, int? maxCycles, string forbiddenVertices, bool? directed)
+        public string PgrContraction(string p1, string p2, int? maxCycles, string forbiddenVertices, bool? directed = null)
         {
             return default(string);
         }
 
         // public._pgr_dagshortestpath
-        public int PgrDagshortestpath(string p3, string p5, string p2, string p4, string p1, bool? directed, bool? directed, bool? onlyCost, bool? onlyCost)
+        public int PgrDagshortestpath(string p3, string p5, string p2, string p4, string p1, bool? directed, bool? directed = null, bool? onlyCost = null, bool? onlyCost = null)
         {
             return default(int);
         }
@@ -1940,79 +1940,79 @@ namespace Efrpg.PostgreSQL
         }
 
         // public._pgr_depthfirstsearch
-        public long PgrDepthfirstsearch(string edgesSql, string rootVids, bool? directed, long? maxDepth)
+        public long PgrDepthfirstsearch(string edgesSql, string rootVids, bool? directed = null, long? maxDepth = null)
         {
             return default(long);
         }
 
         // public.pgr_depthfirstsearch
-        public long PgrDepthfirstsearch(string p1, string p4, string p2, long? p3, bool? directed, bool? directed, long? maxDepth, long? maxDepth)
+        public long PgrDepthfirstsearch(string p1, string p4, string p2, long? p3, bool? directed = null, bool? directed = null, long? maxDepth = null, long? maxDepth = null)
         {
             return default(long);
         }
 
         // public._pgr_dijkstra
-        public int PgrDijkstra(string edgesSql, string edgesSql, string edgesSql, string edgesSql, string combinationsSql, string startVids, string combinationsSql, string startVids, bool? directed, string endVids, bool? directed, string endVids, bool? onlyCost, bool? directed, bool? onlyCost, bool? directed, long? nGoals, bool? onlyCost, bool? normal, bool? onlyCost, bool? global, bool? normal, bool? normal, long? nGoals, long? nGoals, bool? global)
+        public int PgrDijkstra(string edgesSql, string edgesSql, string edgesSql, string edgesSql, string combinationsSql, string startVids, string combinationsSql, string startVids, bool? directed, string endVids, bool? directed, string endVids, bool? onlyCost = null, bool? directed = null, bool? onlyCost = null, bool? directed = null, long? nGoals = null, bool? onlyCost = null, bool? normal = null, bool? onlyCost = null, bool? global = null, bool? normal = null, bool? normal = null, long? nGoals = null, long? nGoals = null, bool? global = null)
         {
             return default(int);
         }
 
         // public.pgr_dijkstra
-        public int PgrDijkstra(string p1, string p4, string p5, string p9, string p12, string p2, string p3, long? p6, long? p10, string p13, bool? directed, long? p7, string p8, string p11, long? p14, bool? directed, bool? directed, bool? directed, bool? directed)
+        public int PgrDijkstra(string p1, string p4, string p5, string p9, string p12, string p2, string p3, long? p6, long? p10, string p13, bool? directed, long? p7, string p8, string p11, long? p14 = null, bool? directed = null, bool? directed = null, bool? directed = null, bool? directed = null)
         {
             return default(int);
         }
 
         // public.pgr_dijkstracost
-        public long PgrDijkstracost(string p2, string p5, string p8, string p11, string p14, string p1, string p4, string p7, long? p10, long? p13, bool? directed, string p3, long? p6, string p9, long? p12, bool? directed, bool? directed, bool? directed, bool? directed)
+        public long PgrDijkstracost(string p2, string p5, string p8, string p11, string p14, string p1, string p4, string p7, long? p10, long? p13, bool? directed, string p3, long? p6, string p9, long? p12 = null, bool? directed = null, bool? directed = null, bool? directed = null, bool? directed = null)
         {
             return default(long);
         }
 
         // public.pgr_dijkstracostmatrix
-        public long PgrDijkstracostmatrix(string p2, string p1, bool? directed)
+        public long PgrDijkstracostmatrix(string p2, string p1, bool? directed = null)
         {
             return default(long);
         }
 
         // public._pgr_dijkstranear
-        public int PgrDijkstranear(string p4, string p8, string p12, string p3, string p7, long? p11, string p2, long? p6, string p10, long? p1, long? p5, long? p9, bool? directed, bool? directed, bool? directed)
+        public int PgrDijkstranear(string p4, string p8, string p12, string p3, string p7, long? p11, string p2, long? p6, string p10, long? p1 = null, long? p5 = null, long? p9 = null, bool? directed = null, bool? directed = null, bool? directed = null)
         {
             return default(int);
         }
 
         // public.pgr_dijkstranear
-        public int PgrDijkstranear(string p3, string p6, string p7, string p11, string p2, string p5, long? p8, string p10, string p1, long? p4, string p9, bool? directed, bool? directed, bool? directed, bool? directed, long? cap, long? cap, long? cap, long? cap, bool? global, bool? global)
+        public int PgrDijkstranear(string p3, string p6, string p7, string p11, string p2, string p5, long? p8, string p10, string p1, long? p4, string p9, bool? directed, bool? directed = null, bool? directed = null, bool? directed = null, long? cap = null, long? cap = null, long? cap = null, long? cap = null, bool? global = null, bool? global = null)
         {
             return default(int);
         }
 
         // public.pgr_dijkstranearcost
-        public long PgrDijkstranearcost(string p3, string p6, string p9, string p11, string p2, string p5, long? p8, string p10, string p1, long? p4, string p7, bool? directed, bool? directed, bool? directed, bool? directed, long? cap, long? cap, long? cap, long? cap, bool? global, bool? global)
+        public long PgrDijkstranearcost(string p3, string p6, string p9, string p11, string p2, string p5, long? p8, string p10, string p1, long? p4, string p7, bool? directed, bool? directed = null, bool? directed = null, bool? directed = null, long? cap = null, long? cap = null, long? cap = null, long? cap = null, bool? global = null, bool? global = null)
         {
             return default(long);
         }
 
         // public._pgr_dijkstravia
-        public int PgrDijkstravia(string edgesSql, string viaVids, bool? directed, bool? strict, bool? uTurnOnEdge)
+        public int PgrDijkstravia(string edgesSql, string viaVids, bool? directed = null, bool? strict = null, bool? uTurnOnEdge = null)
         {
             return default(int);
         }
 
         // public.pgr_dijkstravia
-        public int PgrDijkstravia(string p2, string p1, bool? directed, bool? strict, bool? uTurnOnEdge)
+        public int PgrDijkstravia(string p2, string p1, bool? directed = null, bool? strict = null, bool? uTurnOnEdge = null)
         {
             return default(int);
         }
 
         // public._pgr_drivingdistance
-        public int PgrDrivingdistance(string edgesSql, string startVids, double? distance, bool? directed, bool? equicost)
+        public int PgrDrivingdistance(string edgesSql, string startVids, double? distance = null, bool? directed = null, bool? equicost = null)
         {
             return default(int);
         }
 
         // public.pgr_drivingdistance
-        public int PgrDrivingdistance(string p1, string p6, long? p2, string p5, double? p3, double? p4, bool? directed, bool? directed, bool? equicost)
+        public int PgrDrivingdistance(string p1, string p6, long? p2, string p5, double? p3 = null, double? p4 = null, bool? directed = null, bool? directed = null, bool? equicost = null)
         {
             return default(int);
         }
@@ -2030,49 +2030,49 @@ namespace Efrpg.PostgreSQL
         }
 
         // public._pgr_edgedisjointpaths
-        public int PgrEdgedisjointpaths(string p2, string p5, string p1, string p4, bool? directed, string p3, bool? directed)
+        public int PgrEdgedisjointpaths(string p2, string p5, string p1, string p4, bool? directed, string p3, bool? directed = null)
         {
             return default(int);
         }
 
         // public.pgr_edgedisjointpaths
-        public int PgrEdgedisjointpaths(string p3, string p4, string p7, string p11, string p14, string p2, long? p5, string p8, string p10, long? p13, bool? directed, string p1, long? p6, long? p9, string p12, bool? directed, bool? directed, bool? directed, bool? directed)
+        public int PgrEdgedisjointpaths(string p3, string p4, string p7, string p11, string p14, string p2, long? p5, string p8, string p10, long? p13, bool? directed, string p1, long? p6, long? p9, string p12, bool? directed = null, bool? directed = null, bool? directed = null, bool? directed = null)
         {
             return default(int);
         }
 
         // public.pgr_edmondskarp
-        public int PgrEdmondskarp(string p1, string p4, string p8, string p11, string p14, long? p2, long? p5, string p7, string p10, string p13, long? p3, string p6, string p9, long? p12)
+        public int PgrEdmondskarp(string p1, string p4, string p8, string p11, string p14, long? p2, long? p5, string p7, string p10, string p13, long? p3, string p6, string p9, long? p12 = null)
         {
             return default(int);
         }
 
         // public._pgr_edwardmoore
-        public int PgrEdwardmoore(string edgesSql, string edgesSql, string fromVids, string combinationsSql, bool? directed, string toVids, bool? directed)
+        public int PgrEdwardmoore(string edgesSql, string edgesSql, string fromVids, string combinationsSql, bool? directed, string toVids, bool? directed = null)
         {
             return default(int);
         }
 
         // public.pgr_edwardmoore
-        public int PgrEdwardmoore(string p1, string p4, string p7, string p10, string p13, string p2, string p5, string p6, long? p9, long? p12, bool? directed, string p3, string p8, long? p11, long? p14, bool? directed, bool? directed, bool? directed, bool? directed)
+        public int PgrEdwardmoore(string p1, string p4, string p7, string p10, string p13, string p2, string p5, string p6, long? p9, long? p12, bool? directed, string p3, string p8, long? p11, long? p14 = null, bool? directed = null, bool? directed = null, bool? directed = null, bool? directed = null)
         {
             return default(int);
         }
 
         // public.pgr_extractvertices
-        public long PgrExtractvertices(string p1, bool? dryrun)
+        public long PgrExtractvertices(string p1, bool? dryrun = null)
         {
             return default(long);
         }
 
         // public._pgr_floydwarshall
-        public long PgrFloydwarshall(string edgesSql, bool? directed)
+        public long PgrFloydwarshall(string edgesSql, bool? directed = null)
         {
             return default(long);
         }
 
         // public.pgr_floydwarshall
-        public long PgrFloydwarshall(string p1, bool? directed)
+        public long PgrFloydwarshall(string p1, bool? directed = null)
         {
             return default(long);
         }
@@ -2090,19 +2090,19 @@ namespace Efrpg.PostgreSQL
         }
 
         // public._pgr_johnson
-        public long PgrJohnson(string edgesSql, bool? directed)
+        public long PgrJohnson(string edgesSql, bool? directed = null)
         {
             return default(long);
         }
 
         // public.pgr_johnson
-        public long PgrJohnson(string p1, bool? directed)
+        public long PgrJohnson(string p1, bool? directed = null)
         {
             return default(long);
         }
 
         // public._pgr_kruskal
-        public long PgrKruskal(string p2, string p1, string fnSuffix, long? maxDepth, double? distance)
+        public long PgrKruskal(string p2, string p1, string fnSuffix, long? maxDepth = null, double? distance = null)
         {
             return default(long);
         }
@@ -2114,55 +2114,55 @@ namespace Efrpg.PostgreSQL
         }
 
         // public.pgr_kruskalbfs
-        public long PgrKruskalbfs(string p1, string p3, string p2, long? p4, long? maxDepth, long? maxDepth)
+        public long PgrKruskalbfs(string p1, string p3, string p2, long? p4, long? maxDepth = null, long? maxDepth = null)
         {
             return default(long);
         }
 
         // public.pgr_kruskaldd
-        public long PgrKruskaldd(string p3, string p6, string p9, string p12, string p2, string p5, long? p8, long? p11, double? p1, decimal? p4, double? p7, decimal? p10)
+        public long PgrKruskaldd(string p3, string p6, string p9, string p12, string p2, string p5, long? p8, long? p11, double? p1 = null, decimal? p4 = null, double? p7 = null, decimal? p10 = null)
         {
             return default(long);
         }
 
         // public.pgr_kruskaldfs
-        public long PgrKruskaldfs(string p3, string p4, long? p1, string p2, long? maxDepth, long? maxDepth)
+        public long PgrKruskaldfs(string p3, string p4, long? p1, string p2, long? maxDepth = null, long? maxDepth = null)
         {
             return default(long);
         }
 
         // public._pgr_ksp
-        public int PgrKsp(string edgesSql, long? startVid, long? endVid, int? k, bool? directed, bool? heapPaths)
+        public int PgrKsp(string edgesSql, long? startVid = null, long? endVid = null, int? k = null, bool? directed = null, bool? heapPaths = null)
         {
             return default(int);
         }
 
         // public.pgr_ksp
-        public int PgrKsp(string p2, long? p1, long? p4, int? p3, bool? directed, bool? heapPaths)
+        public int PgrKsp(string p2, long? p1 = null, long? p4 = null, int? p3 = null, bool? directed = null, bool? heapPaths = null)
         {
             return default(int);
         }
 
         // public._pgr_lengauertarjandominatortree
-        public int PgrLengauertarjandominatortree(string edgesSql, long? rootVid)
+        public int PgrLengauertarjandominatortree(string edgesSql, long? rootVid = null)
         {
             return default(int);
         }
 
         // public.pgr_lengauertarjandominatortree
-        public int PgrLengauertarjandominatortree(string p1, long? p2)
+        public int PgrLengauertarjandominatortree(string p1, long? p2 = null)
         {
             return default(int);
         }
 
         // public._pgr_linegraph
-        public int PgrLinegraph(string p1, bool? directed)
+        public int PgrLinegraph(string p1, bool? directed = null)
         {
             return default(int);
         }
 
         // public.pgr_linegraph
-        public int PgrLinegraph(string p1, bool? directed)
+        public int PgrLinegraph(string p1, bool? directed = null)
         {
             return default(int);
         }
@@ -2192,25 +2192,25 @@ namespace Efrpg.PostgreSQL
         }
 
         // public._pgr_maxcardinalitymatch
-        public int PgrMaxcardinalitymatch(string edgesSql, bool? directed)
+        public int PgrMaxcardinalitymatch(string edgesSql, bool? directed = null)
         {
             return default(int);
         }
 
         // public.pgr_maxcardinalitymatch
-        public int PgrMaxcardinalitymatch(string p1, bool? directed)
+        public int PgrMaxcardinalitymatch(string p1, bool? directed = null)
         {
             return default(int);
         }
 
         // public._pgr_maxflow
-        public int PgrMaxflow(string edgesSql, string edgesSql, string combinationsSql, string sources, int? algorithm, string targets, bool? onlyFlow, int? algorithm, bool? onlyFlow)
+        public int PgrMaxflow(string edgesSql, string edgesSql, string combinationsSql, string sources, int? algorithm, string targets, bool? onlyFlow = null, int? algorithm = null, bool? onlyFlow = null)
         {
             return default(int);
         }
 
         // public._pgr_maxflowmincost
-        public int PgrMaxflowmincost(string edgesSql, string edgesSql, string combinationsSql, string sources, bool? onlyCost, string targets, bool? onlyCost)
+        public int PgrMaxflowmincost(string edgesSql, string edgesSql, string combinationsSql, string sources, bool? onlyCost, string targets, bool? onlyCost = null)
         {
             return default(int);
         }
@@ -2222,31 +2222,31 @@ namespace Efrpg.PostgreSQL
         }
 
         // public._pgr_pickdeliver
-        public int PgrPickdeliver(string p1, string p2, string p3, double? factor, int? maxCycles, int? initialSol)
+        public int PgrPickdeliver(string p1, string p2, string p3, double? factor = null, int? maxCycles = null, int? initialSol = null)
         {
             return default(int);
         }
 
         // public.pgr_pickdeliver
-        public int PgrPickdeliver(string p1, string p2, string p3, double? factor, int? maxCycles, int? initialSol)
+        public int PgrPickdeliver(string p1, string p2, string p3, double? factor = null, int? maxCycles = null, int? initialSol = null)
         {
             return default(int);
         }
 
         // public._pgr_pickdelivereuclidean
-        public int PgrPickdelivereuclidean(string p2, string p1, double? factor, int? maxCycles, int? initialSol)
+        public int PgrPickdelivereuclidean(string p2, string p1, double? factor = null, int? maxCycles = null, int? initialSol = null)
         {
             return default(int);
         }
 
         // public.pgr_pickdelivereuclidean
-        public int PgrPickdelivereuclidean(string p2, string p1, double? factor, int? maxCycles, int? initialSol)
+        public int PgrPickdelivereuclidean(string p2, string p1, double? factor = null, int? maxCycles = null, int? initialSol = null)
         {
             return default(int);
         }
 
         // public._pgr_prim
-        public long PgrPrim(string p1, string p2, string orderBy, long? maxDepth, double? distance)
+        public long PgrPrim(string p1, string p2, string orderBy, long? maxDepth = null, double? distance = null)
         {
             return default(long);
         }
@@ -2258,19 +2258,19 @@ namespace Efrpg.PostgreSQL
         }
 
         // public.pgr_primbfs
-        public long PgrPrimbfs(string p2, string p3, string p1, long? p4, long? maxDepth, long? maxDepth)
+        public long PgrPrimbfs(string p2, string p3, string p1, long? p4, long? maxDepth = null, long? maxDepth = null)
         {
             return default(long);
         }
 
         // public.pgr_primdd
-        public long PgrPrimdd(string p1, string p4, string p7, string p10, long? p2, long? p5, string p8, string p11, decimal? p3, double? p6, decimal? p9, double? p12)
+        public long PgrPrimdd(string p1, string p4, string p7, string p10, long? p2, long? p5, string p8, string p11, decimal? p3 = null, double? p6 = null, decimal? p9 = null, double? p12 = null)
         {
             return default(long);
         }
 
         // public.pgr_primdfs
-        public long PgrPrimdfs(string p1, string p3, long? p2, string p4, long? maxDepth, long? maxDepth)
+        public long PgrPrimdfs(string p1, string p3, long? p2, string p4, long? maxDepth = null, long? maxDepth = null)
         {
             return default(long);
         }
@@ -2372,61 +2372,61 @@ namespace Efrpg.PostgreSQL
         }
 
         // public._pgr_tsp
-        public int PgrTsp(string matrixRowSql, long? startId, long? endId, double? maxProcessingTime, int? triesPerTemperature, int? maxChangesPerTemperature, int? maxConsecutiveNonChanges, double? initialTemperature, double? finalTemperature, double? coolingFactor, bool? randomize)
+        public int PgrTsp(string matrixRowSql, long? startId = null, long? endId = null, double? maxProcessingTime = null, int? triesPerTemperature = null, int? maxChangesPerTemperature = null, int? maxConsecutiveNonChanges = null, double? initialTemperature = null, double? finalTemperature = null, double? coolingFactor = null, bool? randomize = null)
         {
             return default(int);
         }
 
         // public.pgr_tsp
-        public int PgrTsp(string p1, long? startId, long? endId, double? maxProcessingTime, int? triesPerTemperature, int? maxChangesPerTemperature, int? maxConsecutiveNonChanges, double? initialTemperature, double? finalTemperature, double? coolingFactor, bool? randomize)
+        public int PgrTsp(string p1, long? startId = null, long? endId = null, double? maxProcessingTime = null, int? triesPerTemperature = null, int? maxChangesPerTemperature = null, int? maxConsecutiveNonChanges = null, double? initialTemperature = null, double? finalTemperature = null, double? coolingFactor = null, bool? randomize = null)
         {
             return default(int);
         }
 
         // public._pgr_tspeuclidean
-        public int PgrTspeuclidean(string coordinatesSql, long? startId, long? endId, double? maxProcessingTime, int? triesPerTemperature, int? maxChangesPerTemperature, int? maxConsecutiveNonChanges, double? initialTemperature, double? finalTemperature, double? coolingFactor, bool? randomize)
+        public int PgrTspeuclidean(string coordinatesSql, long? startId = null, long? endId = null, double? maxProcessingTime = null, int? triesPerTemperature = null, int? maxChangesPerTemperature = null, int? maxConsecutiveNonChanges = null, double? initialTemperature = null, double? finalTemperature = null, double? coolingFactor = null, bool? randomize = null)
         {
             return default(int);
         }
 
         // public.pgr_tspeuclidean
-        public int PgrTspeuclidean(string p1, long? startId, long? endId, double? maxProcessingTime, int? triesPerTemperature, int? maxChangesPerTemperature, int? maxConsecutiveNonChanges, double? initialTemperature, double? finalTemperature, double? coolingFactor, bool? randomize)
+        public int PgrTspeuclidean(string p1, long? startId = null, long? endId = null, double? maxProcessingTime = null, int? triesPerTemperature = null, int? maxChangesPerTemperature = null, int? maxConsecutiveNonChanges = null, double? initialTemperature = null, double? finalTemperature = null, double? coolingFactor = null, bool? randomize = null)
         {
             return default(int);
         }
 
         // public._pgr_turnrestrictedpath
-        public int PgrTurnrestrictedpath(string p2, string p5, long? p1, long? p3, int? p4, bool? directed, bool? heapPaths, bool? stopOnFirst, bool? strict)
+        public int PgrTurnrestrictedpath(string p2, string p5, long? p1 = null, long? p3 = null, int? p4 = null, bool? directed = null, bool? heapPaths = null, bool? stopOnFirst = null, bool? strict = null)
         {
             return default(int);
         }
 
         // public.pgr_turnrestrictedpath
-        public int PgrTurnrestrictedpath(string p5, string p3, long? p4, long? p2, int? p1, bool? directed, bool? heapPaths, bool? stopOnFirst, bool? strict)
+        public int PgrTurnrestrictedpath(string p5, string p3, long? p4 = null, long? p2 = null, int? p1 = null, bool? directed = null, bool? heapPaths = null, bool? stopOnFirst = null, bool? strict = null)
         {
             return default(int);
         }
 
         // public._pgr_vrponedepot
-        public int PgrVrponedepot(string p1, string p2, string p3, int? p4)
+        public int PgrVrponedepot(string p1, string p2, string p3, int? p4 = null)
         {
             return default(int);
         }
 
         // public.pgr_vrponedepot
-        public int PgrVrponedepot(string p4, string p1, string p2, int? p3)
+        public int PgrVrponedepot(string p4, string p1, string p2, int? p3 = null)
         {
             return default(int);
         }
 
         // public._pgr_withpoints
-        public int PgrWithpoints(string edgesSql, string edgesSql, string pointsSql, string pointsSql, string startPids, string combinationsSql, string endPids, bool? directed, bool? directed, string drivingSide, string drivingSide, bool? details, bool? details, bool? onlyCost, bool? onlyCost, bool? normal)
+        public int PgrWithpoints(string edgesSql, string edgesSql, string pointsSql, string pointsSql, string startPids, string combinationsSql, string endPids, bool? directed, bool? directed, string drivingSide, string drivingSide, bool? details, bool? details = null, bool? onlyCost = null, bool? onlyCost = null, bool? normal = null)
         {
             return default(int);
         }
 
         // public.pgr_withpoints
-        public int PgrWithpoints(string p1, string p7, string p11, string p12, string p16, string p2, string p6, string p8, string p13, string p17, string p3, string p5, string p9, long? p14, long? p18, bool? directed, long? p4, string p10, long? p15, string p19, bool? directed, string drivingSide, bool? directed, bool? directed, bool? directed, string drivingSide, bool? details, string drivingSide, string drivingSide, string drivingSide, bool? details, bool? details, bool? details, bool? details)
+        public int PgrWithpoints(string p1, string p7, string p11, string p12, string p16, string p2, string p6, string p8, string p13, string p17, string p3, string p5, string p9, long? p14, long? p18, bool? directed, long? p4, string p10, long? p15, string p19, bool? directed, string drivingSide, bool? directed, bool? directed, bool? directed, string drivingSide, bool? details, string drivingSide, string drivingSide, string drivingSide, bool? details = null, bool? details = null, bool? details = null, bool? details = null)
         {
             return default(int);
         }
@@ -2444,37 +2444,37 @@ namespace Efrpg.PostgreSQL
         }
 
         // public._pgr_withpointsdd
-        public int PgrWithpointsdd(string edgesSql, string pointsSql, string startPid, double? distance, bool? directed, string drivingSide, bool? details, bool? equicost)
+        public int PgrWithpointsdd(string edgesSql, string pointsSql, string startPid, double? distance, bool? directed, string drivingSide, bool? details = null, bool? equicost = null)
         {
             return default(int);
         }
 
         // public.pgr_withpointsdd
-        public int PgrWithpointsdd(string p4, string p5, string p3, string p6, string p2, long? p7, double? p1, double? p8, bool? directed, bool? directed, string drivingSide, string drivingSide, bool? details, bool? details, bool? equicost)
+        public int PgrWithpointsdd(string p4, string p5, string p3, string p6, string p2, long? p7, double? p1, double? p8, bool? directed, bool? directed, string drivingSide, string drivingSide, bool? details = null, bool? details = null, bool? equicost = null)
         {
             return default(int);
         }
 
         // public._pgr_withpointsksp
-        public int PgrWithpointsksp(string edgesSql, string pointsSql, long? startPid, long? endPid, int? k, bool? directed, bool? heapPaths, string drivingSide, bool? details)
+        public int PgrWithpointsksp(string edgesSql, string pointsSql, long? startPid, long? endPid, int? k, bool? directed, bool? heapPaths, string drivingSide, bool? details = null)
         {
             return default(int);
         }
 
         // public.pgr_withpointsksp
-        public int PgrWithpointsksp(string p5, string p4, long? p3, long? p1, int? p2, bool? directed, bool? heapPaths, string drivingSide, bool? details)
+        public int PgrWithpointsksp(string p5, string p4, long? p3, long? p1, int? p2, bool? directed, bool? heapPaths, string drivingSide, bool? details = null)
         {
             return default(int);
         }
 
         // public._pgr_withpointsvia
-        public int PgrWithpointsvia(string sql, string viaEdges, string fraction, bool? directed)
+        public int PgrWithpointsvia(string sql, string viaEdges, string fraction, bool? directed = null)
         {
             return default(int);
         }
 
         // public.st_approxhistogram
-        public double StApproxhistogram(string rast, string rast, string rast, string rast, string rast, string rast, int? nband, double? samplePercent, int? nband, int? nband, int? nband, int? nband, double? samplePercent, bool? excludeNodataValue, bool? excludeNodataValue, double? samplePercent, double? samplePercent, double? samplePercent, double? samplePercent, int? bins, int? bins, int? bins, int? bins, bool? right, string width, string width, bool? right, bool? right, bool? right)
+        public double StApproxhistogram(string rast, string rast, string rast, string rast, string rast, string rast, int? nband, double? samplePercent, int? nband, int? nband, int? nband, int? nband, double? samplePercent, bool? excludeNodataValue, bool? excludeNodataValue, double? samplePercent, double? samplePercent, double? samplePercent, double? samplePercent, int? bins, int? bins, int? bins, int? bins, bool? right, string width, string width, bool? right, bool? right, bool? right = null)
         {
             return default(double);
         }
@@ -2492,13 +2492,13 @@ namespace Efrpg.PostgreSQL
         }
 
         // public.st_contour
-        public string StContour(string rast, int? bandnumber, double? levelInterval, double? levelBase, string fixedLevels, bool? polygonize)
+        public string StContour(string rast, int? bandnumber, double? levelInterval, double? levelBase, string fixedLevels, bool? polygonize = null)
         {
             return default(string);
         }
 
         // public.st_dumpvalues
-        public int StDumpvalues(string rast, string rast, string nband, int? nband, bool? excludeNodataValue, bool? excludeNodataValue)
+        public int StDumpvalues(string rast, string rast, string nband, int? nband, bool? excludeNodataValue = null, bool? excludeNodataValue = null)
         {
             return default(int);
         }
@@ -2522,13 +2522,13 @@ namespace Efrpg.PostgreSQL
         }
 
         // public._st_histogram
-        public double StHistogram(string rast, int? nband, bool? excludeNodataValue, double? samplePercent, int? bins, string width, bool? right, double? min, double? max)
+        public double StHistogram(string rast, int? nband, bool? excludeNodataValue, double? samplePercent, int? bins, string width, bool? right = null, double? min = null, double? max = null)
         {
             return default(double);
         }
 
         // public.st_histogram
-        public double StHistogram(string rast, string rast, string rast, string rast, int? nband, int? nband, int? nband, int? nband, int? bins, int? bins, bool? excludeNodataValue, bool? excludeNodataValue, bool? right, string width, int? bins, int? bins, bool? right, bool? right, string width, bool? right)
+        public double StHistogram(string rast, string rast, string rast, string rast, int? nband, int? nband, int? nband, int? nband, int? bins, int? bins, bool? excludeNodataValue, bool? excludeNodataValue, bool? right, string width, int? bins, int? bins, bool? right, bool? right = null, string width, bool? right = null)
         {
             return default(double);
         }
@@ -2552,37 +2552,37 @@ namespace Efrpg.PostgreSQL
         }
 
         // public._st_pixelascentroids
-        public string StPixelascentroids(string rast, int? band, int? columnx, int? rowy, bool? excludeNodataValue)
+        public string StPixelascentroids(string rast, int? band = null, int? columnx = null, int? rowy = null, bool? excludeNodataValue = null)
         {
             return default(string);
         }
 
         // public.st_pixelascentroids
-        public string StPixelascentroids(string rast, int? band, bool? excludeNodataValue)
+        public string StPixelascentroids(string rast, int? band = null, bool? excludeNodataValue = null)
         {
             return default(string);
         }
 
         // public.st_pixelaspoints
-        public string StPixelaspoints(string rast, int? band, bool? excludeNodataValue)
+        public string StPixelaspoints(string rast, int? band = null, bool? excludeNodataValue = null)
         {
             return default(string);
         }
 
         // public._st_pixelaspolygons
-        public string StPixelaspolygons(string rast, int? band, int? columnx, int? rowy, bool? excludeNodataValue)
+        public string StPixelaspolygons(string rast, int? band = null, int? columnx = null, int? rowy = null, bool? excludeNodataValue = null)
         {
             return default(string);
         }
 
         // public.st_pixelaspolygons
-        public string StPixelaspolygons(string rast, int? band, bool? excludeNodataValue)
+        public string StPixelaspolygons(string rast, int? band = null, bool? excludeNodataValue = null)
         {
             return default(string);
         }
 
         // public.st_pixelofvalue
-        public double StPixelofvalue(string rast, string rast, string rast, string rast, int? nband, double? search, string search, int? nband, double? search, string search, bool? excludeNodataValue, bool? excludeNodataValue, bool? excludeNodataValue, bool? excludeNodataValue)
+        public double StPixelofvalue(string rast, string rast, string rast, string rast, int? nband, double? search, string search, int? nband, double? search, string search, bool? excludeNodataValue, bool? excludeNodataValue = null, bool? excludeNodataValue = null, bool? excludeNodataValue = null)
         {
             return default(double);
         }
@@ -2600,13 +2600,13 @@ namespace Efrpg.PostgreSQL
         }
 
         // public._st_rastertoworldcoord
-        public double StRastertoworldcoord(string rast, int? columnx, int? rowy)
+        public double StRastertoworldcoord(string rast, int? columnx = null, int? rowy = null)
         {
             return default(double);
         }
 
         // public.st_rastertoworldcoord
-        public double StRastertoworldcoord(string rast, int? columnx, int? rowy)
+        public double StRastertoworldcoord(string rast, int? columnx = null, int? rowy = null)
         {
             return default(double);
         }
@@ -2618,31 +2618,31 @@ namespace Efrpg.PostgreSQL
         }
 
         // public._st_valuecount
-        public double StValuecount(string rast, string rastertable, int? nband, string rastercolumn, bool? excludeNodataValue, int? nband, string searchvalues, bool? excludeNodataValue, double? roundto, string searchvalues, double? roundto)
+        public double StValuecount(string rast, string rastertable, int? nband, string rastercolumn, bool? excludeNodataValue, int? nband, string searchvalues, bool? excludeNodataValue, double? roundto, string searchvalues, double? roundto = null)
         {
             return default(double);
         }
 
         // public.st_valuecount
-        public double StValuecount(string rastertable, string rastertable, string rastertable, string rast, string rast, string rast, string rastertable, string rastertable, string rast, string rast, string rast, string rastertable, string rastercolumn, string rastercolumn, string rastercolumn, int? nband, int? nband, double? searchvalue, string rastercolumn, string rastercolumn, int? nband, int? nband, string searchvalues, string rastercolumn, int? nband, int? nband, double? searchvalue, bool? excludeNodataValue, double? searchvalue, double? roundto, int? nband, int? nband, bool? excludeNodataValue, string searchvalues, double? roundto, string searchvalues, bool? excludeNodataValue, double? searchvalue, double? roundto, double? searchvalue, double? roundto, bool? excludeNodataValue, string searchvalues, string searchvalues, double? roundto, double? roundto, double? searchvalue, double? roundto, double? roundto, string searchvalues, double? roundto, double? roundto, double? roundto, double? roundto)
+        public double StValuecount(string rastertable, string rastertable, string rastertable, string rast, string rast, string rast, string rastertable, string rastertable, string rast, string rast, string rast, string rastertable, string rastercolumn, string rastercolumn, string rastercolumn, int? nband, int? nband, double? searchvalue, string rastercolumn, string rastercolumn, int? nband, int? nband, string searchvalues, string rastercolumn, int? nband, int? nband, double? searchvalue, bool? excludeNodataValue, double? searchvalue, double? roundto, int? nband, int? nband, bool? excludeNodataValue, string searchvalues, double? roundto, string searchvalues, bool? excludeNodataValue, double? searchvalue, double? roundto, double? searchvalue, double? roundto, bool? excludeNodataValue, string searchvalues, string searchvalues, double? roundto, double? roundto, double? searchvalue, double? roundto, double? roundto, string searchvalues, double? roundto = null, double? roundto = null, double? roundto = null, double? roundto = null)
         {
             return default(double);
         }
 
         // public.st_valuepercent
-        public double StValuepercent(string rastertable, string rastertable, string rastertable, string rastertable, string rastertable, string rastertable, string rast, string rast, string rast, string rast, string rast, string rast, string rastercolumn, string rastercolumn, string rastercolumn, string rastercolumn, string rastercolumn, string rastercolumn, double? searchvalue, int? nband, int? nband, string searchvalues, int? nband, int? nband, double? searchvalue, int? nband, int? nband, string searchvalues, int? nband, int? nband, double? roundto, double? searchvalue, bool? excludeNodataValue, double? roundto, string searchvalues, bool? excludeNodataValue, double? roundto, double? searchvalue, bool? excludeNodataValue, double? roundto, string searchvalues, bool? excludeNodataValue, double? roundto, double? searchvalue, double? roundto, string searchvalues, double? roundto, double? searchvalue, double? roundto, string searchvalues, double? roundto, double? roundto, double? roundto, double? roundto)
+        public double StValuepercent(string rastertable, string rastertable, string rastertable, string rastertable, string rastertable, string rastertable, string rast, string rast, string rast, string rast, string rast, string rast, string rastercolumn, string rastercolumn, string rastercolumn, string rastercolumn, string rastercolumn, string rastercolumn, double? searchvalue, int? nband, int? nband, string searchvalues, int? nband, int? nband, double? searchvalue, int? nband, int? nband, string searchvalues, int? nband, int? nband, double? roundto, double? searchvalue, bool? excludeNodataValue, double? roundto, string searchvalues, bool? excludeNodataValue, double? roundto, double? searchvalue, bool? excludeNodataValue, double? roundto, string searchvalues, bool? excludeNodataValue, double? roundto, double? searchvalue, double? roundto, string searchvalues, double? roundto, double? searchvalue, double? roundto, string searchvalues, double? roundto = null, double? roundto = null, double? roundto = null, double? roundto = null)
         {
             return default(double);
         }
 
         // public._st_worldtorastercoord
-        public int StWorldtorastercoord(string rast, double? longitude, double? latitude)
+        public int StWorldtorastercoord(string rast, double? longitude = null, double? latitude = null)
         {
             return default(int);
         }
 
         // public.st_worldtorastercoord
-        public int StWorldtorastercoord(string rast, string rast, double? longitude, string pt, double? latitude)
+        public int StWorldtorastercoord(string rast, string rast, double? longitude, string pt, double? latitude = null)
         {
             return default(int);
         }
@@ -2660,7 +2660,7 @@ namespace Efrpg.PostgreSQL
         }
 
         // tiger.geocode_intersection
-        public string tiger_GeocodeIntersection(string roadway1, string roadway2, string inState, string inCity, string inZip, int? numResults)
+        public string tiger_GeocodeIntersection(string roadway1, string roadway2, string inState, string inCity, string inZip, int? numResults = null)
         {
             return default(string);
         }
@@ -2672,7 +2672,7 @@ namespace Efrpg.PostgreSQL
         }
 
         // tiger.reverse_geocode
-        public string tiger_ReverseGeocode(string pt, bool? includeStrnumRange)
+        public string tiger_ReverseGeocode(string pt, bool? includeStrnumRange = null)
         {
             return default(string);
         }
@@ -2690,7 +2690,7 @@ namespace Efrpg.PostgreSQL
         }
 
         // public._trsp
-        public int Trsp(string p1, string p2, string p3, string p4, bool? directed)
+        public int Trsp(string p1, string p2, string p3, string p4, bool? directed = null)
         {
             return default(int);
         }

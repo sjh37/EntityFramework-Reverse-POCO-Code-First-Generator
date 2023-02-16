@@ -1007,17 +1007,6 @@ namespace V6EfrpgTest
             return procResultData;
         }
 
-        public int SpDefragmentIndexes()
-        {
-            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
-
-            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[sp_defragment_indexes] ", procResultParam);
-
-            return (int)procResultParam.Value;
-        }
-
-        // SpDefragmentIndexesAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
-
         // public StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar = null) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
         // public async Task<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsAsync(int? someVar = null) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.

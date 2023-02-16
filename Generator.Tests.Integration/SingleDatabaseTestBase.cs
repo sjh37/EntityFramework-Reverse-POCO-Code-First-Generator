@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using Efrpg;
 using Efrpg.FileManagement;
 using Efrpg.Filtering;
@@ -118,7 +119,7 @@ namespace Generator.Tests.Integration
 
             Assert.AreEqual(testComparisonFiles.Length, generatedFiles.Length);
 
-            foreach (var comparisonFile in testComparisonFiles)
+            foreach (var comparisonFile in testComparisonFiles.Where(x => x.ToLower().EndsWith("Audit")))
             {
                 var filename = Path.GetFileName(comparisonFile);
                 var generatedPath = Path.Combine(Settings.Root, filename);

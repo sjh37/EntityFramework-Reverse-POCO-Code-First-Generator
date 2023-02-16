@@ -246,7 +246,7 @@ namespace Efrpg.PostgreSQL
 
         // CustOrderHistAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int CustOrdersDetail(int? p1)
+        public int CustOrdersDetail(int? p1 = null)
         {
             var p1Param = new NpgsqlParameter { ParameterName = "p1", SqlDbType = SqlDbType.integer, Direction = ParameterDirection.Input, Value = p1.GetValueOrDefault() };
             if (!p1.HasValue)
@@ -276,7 +276,7 @@ namespace Efrpg.PostgreSQL
 
         // CustOrdersOrdersAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int EmployeeSalesByCountry(DateTime? p1, DateTime? p2)
+        public int EmployeeSalesByCountry(DateTime? p1 = null, DateTime? p2 = null)
         {
             var p1Param = new NpgsqlParameter { ParameterName = "p1", SqlDbType = SqlDbType.date, Direction = ParameterDirection.Input, Value = p1.GetValueOrDefault() };
             if (!p1.HasValue)
@@ -314,7 +314,7 @@ namespace Efrpg.PostgreSQL
 
         // SalesByCategoryAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int SalesByYear(DateTime? p1, DateTime? p2)
+        public int SalesByYear(DateTime? p1 = null, DateTime? p2 = null)
         {
             var p1Param = new NpgsqlParameter { ParameterName = "p1", SqlDbType = SqlDbType.date, Direction = ParameterDirection.Input, Value = p1.GetValueOrDefault() };
             if (!p1.HasValue)
@@ -632,7 +632,7 @@ namespace Efrpg.PostgreSQL
 
         // CustOrderHistAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int CustOrdersDetail(int? p1)
+        public int CustOrdersDetail(int? p1 = null)
         {
             return 0;
         }
@@ -646,7 +646,7 @@ namespace Efrpg.PostgreSQL
 
         // CustOrdersOrdersAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int EmployeeSalesByCountry(DateTime? p1, DateTime? p2)
+        public int EmployeeSalesByCountry(DateTime? p1 = null, DateTime? p2 = null)
         {
             return 0;
         }
@@ -660,7 +660,7 @@ namespace Efrpg.PostgreSQL
 
         // SalesByCategoryAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int SalesByYear(DateTime? p1, DateTime? p2)
+        public int SalesByYear(DateTime? p1 = null, DateTime? p2 = null)
         {
             return 0;
         }

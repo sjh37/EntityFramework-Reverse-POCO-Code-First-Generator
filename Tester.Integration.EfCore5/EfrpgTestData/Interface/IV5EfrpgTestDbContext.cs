@@ -267,9 +267,6 @@ namespace V5EfrpgTest
         List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, out int procResult);
         Task<List<SpatialTypesWithParamsReturnModel>> SpatialTypesWithParamsAsync(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography);
 
-        int SpDefragmentIndexes();
-        // SpDefragmentIndexesAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
-
         // StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
         // Task<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsAsync(int? someVar); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 

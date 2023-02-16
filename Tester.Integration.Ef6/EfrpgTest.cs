@@ -251,9 +251,6 @@ namespace Tester.Integration.Ef6
         List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(DbGeometry geometry, DbGeography geography, out int procResult);
         Task<List<SpatialTypesWithParamsReturnModel>> SpatialTypesWithParamsAsync(DbGeometry geometry, DbGeography geography);
 
-        int SpDefragmentIndexes();
-        // SpDefragmentIndexesAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
-
         StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar);
         Task<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsAsync(int? someVar);
 
@@ -1569,17 +1566,6 @@ namespace Tester.Integration.Ef6
             var procResultData = await Database.SqlQuery<SpatialTypesWithParamsReturnModel>("EXEC [dbo].[SpatialTypesWithParams] @geometry, @geography", geometryParam, geographyParam).ToListAsync();
             return procResultData;
         }
-
-        public int SpDefragmentIndexes()
-        {
-            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
-
-            Database.ExecuteSqlCommand(TransactionalBehavior.DoNotEnsureTransaction, "EXEC @procResult = [dbo].[sp_defragment_indexes] ", procResultParam);
-
-            return (int)procResultParam.Value;
-        }
-
-        // SpDefragmentIndexesAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         public StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar = null)
         {

@@ -820,13 +820,6 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             return Task.FromResult(SpatialTypesWithParams(geometry, geography, out procResult));
         }
 
-        public int SpDefragmentIndexes()
-        {
-            return 0;
-        }
-
-        // SpDefragmentIndexesAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
-
         public DbSet<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsReturnModel { get; set; }
         public StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar = null)
         {

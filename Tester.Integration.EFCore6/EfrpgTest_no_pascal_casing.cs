@@ -266,9 +266,6 @@ namespace V6_Efrpg_Test
         int proc_TestDecimalOutputV3Default(out decimal? perfectNumber);
         // proc_TestDecimalOutputV3DefaultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        int sp_defragment_indexes();
-        // sp_defragment_indexesAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
-
         List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams();
         List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams(out int procResult);
         Task<List<SpatialTypesNoParamsReturnModel>> SpatialTypesNoParamsAsync();
@@ -1271,17 +1268,6 @@ namespace V6_Efrpg_Test
         }
 
         // proc_TestDecimalOutputV3DefaultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
-
-        public int sp_defragment_indexes()
-        {
-            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
-
-            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[sp_defragment_indexes] ", procResultParam);
-
-            return (int)procResultParam.Value;
-        }
-
-        // sp_defragment_indexesAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         public List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams()
         {

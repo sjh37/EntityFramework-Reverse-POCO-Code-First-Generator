@@ -186,6 +186,9 @@ namespace Efrpg.V3FilterTest
         List<TestReturnStringReturnModel> TestReturnString(out int procResult);
         Task<List<TestReturnStringReturnModel>> TestReturnStringAsync();
 
+        int ThisHasMixedOutParameters(DateTime? foo, out int? firstOutParam, DateTime? bar, out int? secondOutParam, DateTime? baz);
+        // ThisHasMixedOutParametersAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
         int UserDefinedTypeSampleStoredProc(int? a, DataTable type, int? b);
         // UserDefinedTypeSampleStoredProcAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 

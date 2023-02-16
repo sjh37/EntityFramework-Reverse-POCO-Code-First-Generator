@@ -66,7 +66,7 @@ namespace Generator.Tests.Integration
 
             // Act
             var filename = "Northwind";
-            var subFolder = templateType == TemplateType.EfCore2 ? "TestComparison\\EfCore2NorthwindSqlCe40" : "TestComparison\\EfCore3NorthwindSqlCe40";
+            var subFolder = $"TestComparison\\{templateType}NorthwindSqlCe40";
             Run(filename, ".SqlCE", typeof(EfCoreFileManager), subFolder);
 
             // Assert
