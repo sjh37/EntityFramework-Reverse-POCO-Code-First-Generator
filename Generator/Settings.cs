@@ -703,6 +703,7 @@ namespace Efrpg
                     return 7;
                 
                 case TemplateType.Ef6:
+                case TemplateType.FileBasedEf6:
                 default:
                     return 0;
             }

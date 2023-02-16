@@ -26,6 +26,7 @@ namespace Efrpg.Templates
                 case TemplateType.EfCore7:
                     return new TemplateEfCore7();
 
+                case TemplateType.FileBasedEf6:
                 case TemplateType.FileBasedCore2:
                 case TemplateType.FileBasedCore3:
                 case TemplateType.FileBasedCore5:
