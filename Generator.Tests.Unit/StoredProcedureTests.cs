@@ -22,10 +22,7 @@ namespace Generator.Tests.Unit
                 DbName = "name",
                 NameHumanCase = "some_sp",
                 IsStoredProcedure = true,
-                ReturnModels = new List<List<DataColumn>>
-                {
-                    new List<DataColumn> { new DataColumn { AllowDBNull = true } }
-                },
+                ReturnModels = new List<List<DataColumn>>(),
                 Parameters = new List<StoredProcedureParameter>
                 {
                     new StoredProcedureParameter
@@ -86,12 +83,20 @@ namespace Generator.Tests.Unit
             Assert.AreEqual($"public string {expected} {{ get; set; }}", result);
         }
 
-        [TestCase(false, false, "DateTime? A, out DateTime? B, DateTime? C = null, DateTime? D = null")]
-        [TestCase(false, true,  "DateTime? A, out DateTime? B, DateTime? C, DateTime? D")]
-        [TestCase(true,  false, "DateTime? A, out DateTime? B, DateTime? C, DateTime? D, out int procResult")]
-        [TestCase(true,  true,  "DateTime? A, out DateTime? B, DateTime? C, DateTime? D, out int procResult")]
-        public void WriteStoredProcFunctionParams_HasTailNullable(bool includeProcResult, bool forInterface, string expected)
+        [TestCase(false, false, false, "DateTime? A, out DateTime? B, DateTime? C = null, DateTime? D = null")]
+        [TestCase(false, true,  false, "DateTime? A, out DateTime? B, DateTime? C, DateTime? D")]
+        [TestCase(true,  false, false, "DateTime? A, out DateTime? B, DateTime? C = null, DateTime? D = null")]
+        [TestCase(true,  true,  false, "DateTime? A, out DateTime? B, DateTime? C, DateTime? D")]
+        [TestCase(false, false, true, "DateTime? A, out DateTime? B, DateTime? C = null, DateTime? D = null")]
+        [TestCase(false, true,  true, "DateTime? A, out DateTime? B, DateTime? C, DateTime? D")]
+        [TestCase(true,  false, true, "DateTime? A, out DateTime? B, DateTime? C, DateTime? D, out int procResult")]
+        [TestCase(true,  true,  true, "DateTime? A, out DateTime? B, DateTime? C, DateTime? D, out int procResult")]
+        public void WriteStoredProcFunctionParams_HasTailNullable(bool includeProcResult, bool forInterface, bool hasReturnModel, string expected)
         {
+            // Arrange
+            if (hasReturnModel)
+                _sut.ReturnModels = new List<List<DataColumn>> { new List<DataColumn> { new DataColumn("test")} };
+
             // Act
             var result = _sut.WriteStoredProcFunctionParams(includeProcResult, forInterface);
 
@@ -100,14 +105,21 @@ namespace Generator.Tests.Unit
             Assert.AreEqual(expected, result);
         }
 
-        [TestCase(false, false, "DateTime? A, out DateTime? B, DateTime? C, out DateTime? D")]
-        [TestCase(false, true,  "DateTime? A, out DateTime? B, DateTime? C, out DateTime? D")]
-        [TestCase(true,  false, "DateTime? A, out DateTime? B, DateTime? C, out DateTime? D, out int procResult")]
-        [TestCase(true,  true,  "DateTime? A, out DateTime? B, DateTime? C, out DateTime? D, out int procResult")]
-        public void WriteStoredProcFunctionParams_NoTailNullable(bool includeProcResult, bool forInterface, string expected)
+        [TestCase(false, false, false, "DateTime? A, out DateTime? B, DateTime? C, out DateTime? D")]
+        [TestCase(false, true,  false, "DateTime? A, out DateTime? B, DateTime? C, out DateTime? D")]
+        [TestCase(true,  false, false, "DateTime? A, out DateTime? B, DateTime? C, out DateTime? D")]
+        [TestCase(true,  true,  false, "DateTime? A, out DateTime? B, DateTime? C, out DateTime? D")]
+        [TestCase(false, false, true, "DateTime? A, out DateTime? B, DateTime? C, out DateTime? D")]
+        [TestCase(false, true,  true, "DateTime? A, out DateTime? B, DateTime? C, out DateTime? D")]
+        [TestCase(true,  false, true, "DateTime? A, out DateTime? B, DateTime? C, out DateTime? D, out int procResult")]
+        [TestCase(true,  true,  true, "DateTime? A, out DateTime? B, DateTime? C, out DateTime? D, out int procResult")]
+        public void WriteStoredProcFunctionParams_NoTailNullable(bool includeProcResult, bool forInterface, bool hasReturnModel, string expected)
         {
             // Arrange - Set last to be an 'out' parameter.
             _sut.Parameters.Single(x => x.NameHumanCase == "D").Mode = StoredProcedureParameterMode.InOut;
+            
+            if (hasReturnModel)
+                _sut.ReturnModels = new List<List<DataColumn>> { new List<DataColumn> { new DataColumn("test")} };
 
             // Act
             var result = _sut.WriteStoredProcFunctionParams(includeProcResult, forInterface);
@@ -234,14 +246,51 @@ namespace Generator.Tests.Unit
             };
 
             // Act
-            var resultString = _sut.WriteStoredProcFunctionParams(false, false);
-            var resultTail   = _sut.WhichTailEndParametersCanBeNullable(GetParams(), false, false);
+            var resultStringFf = _sut.WriteStoredProcFunctionParams(false, false);
+            var resultStringTf = _sut.WriteStoredProcFunctionParams(true, false); // End up being false due to having no ReturnModels
 
             // Assert
-            Assert.IsNotNull(resultString);
-            Assert.IsNotNull(resultTail);
-            Assert.AreEqual(5, resultTail);
-            Assert.AreEqual("DateTime? foo, out int? firstOutParam, DateTime? bar, out int? secondOutParam, DateTime? baz = null", resultString);
+            Assert.IsNotNull(resultStringFf);
+            Assert.IsNotNull(resultStringTf);
+            Assert.AreEqual(resultStringFf, resultStringTf);
+            Assert.AreEqual("DateTime? foo, out int? firstOutParam, DateTime? bar, out int? secondOutParam, DateTime? baz = null", resultStringTf);
+        }
+
+        [Test]
+        public void ParameterWithNotNullableType()
+        {
+            // Arrange
+            _sut.Parameters = new List<StoredProcedureParameter>
+            {
+                new StoredProcedureParameter
+                {
+                    Mode = StoredProcedureParameterMode.In,
+                    NameHumanCase = "a",
+                    PropertyType = "int",
+                    Ordinal = 1
+                },
+                new StoredProcedureParameter
+                {
+                    Mode = StoredProcedureParameterMode.In,
+                    NameHumanCase = "type",
+                    PropertyType = "DataTable",
+                    Ordinal = 3
+                },
+                new StoredProcedureParameter
+                {
+                    Mode = StoredProcedureParameterMode.In,
+                    NameHumanCase = "b",
+                    PropertyType = "int",
+                    Ordinal = 5
+                }
+            };
+
+            // Act
+            var result = _sut.WriteStoredProcFunctionParams(false, false);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual("int? a, DataTable type, int? b = null", result);
         }
 
         private List<StoredProcedureParameter> GetParams()

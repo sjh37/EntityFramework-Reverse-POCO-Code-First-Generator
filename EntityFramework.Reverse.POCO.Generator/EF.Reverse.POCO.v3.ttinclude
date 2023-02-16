@@ -3436,10 +3436,10 @@
                         sp.WriteStoredProcReturnType(_filter),
                         sp.WriteStoredProcReturnModelName(filter),
                         sp.WriteStoredProcFunctionName(filter),
-                        sp.WriteStoredProcFunctionParams(false, true),
                         sp.WriteStoredProcFunctionParams(false, false),
-                        sp.WriteStoredProcFunctionParams(true, true),
+                        sp.WriteStoredProcFunctionParams(false, true),
                         sp.WriteStoredProcFunctionParams(true, false),
+                        sp.WriteStoredProcFunctionParams(true, true),
                         sp.StoredProcHasOutParams() || sp.ReturnModels.Count == 0,
                         sp.WriteStoredProcFunctionOverloadCall(),
                         sp.WriteStoredProcFunctionSetSqlParameters(false),
@@ -6547,10 +6547,10 @@
         public string ReturnType { get; } // sp.WriteStoredProcReturnType()
         public string ReturnModelName { get; } // sp.WriteStoredProcReturnModelName()
         public string FunctionName { get; } // sp.WriteStoredProcFunctionName()
-        public string WriteStoredProcFunctionParamsFalseTrue { get; } // WriteStoredProcFunctionParams(false, true)
         public string WriteStoredProcFunctionParamsFalseFalse { get; } // WriteStoredProcFunctionParams(false, false)
-        public string WriteStoredProcFunctionParamsTrueTrue { get; } // WriteStoredProcFunctionParams(true, true)
+        public string WriteStoredProcFunctionParamsFalseTrue { get; } // WriteStoredProcFunctionParams(false, true)
         public string WriteStoredProcFunctionParamsTrueFalse { get; } // WriteStoredProcFunctionParams(true, false)
+        public string WriteStoredProcFunctionParamsTrueTrue { get; } // WriteStoredProcFunctionParams(true, true)
         public bool AsyncFunctionCannotBeCreated { get; } // sp.StoredProcHasOutParams() || sp.ReturnModels.Count == 0
         public string WriteStoredProcFunctionOverloadCall { get; } // sp.WriteStoredProcFunctionOverloadCall()
         public string WriteStoredProcFunctionSetSqlParametersFalse { get; } // WriteStoredProcFunctionSetSqlParameters(false)
@@ -6575,10 +6575,10 @@
             string returnType,
             string returnModelName,
             string functionName,
-            string writeStoredProcFunctionParamsFalseTrue,
             string writeStoredProcFunctionParamsFalseFalse,
-            string writeStoredProcFunctionParamsTrueTrue,
+            string writeStoredProcFunctionParamsFalseTrue,
             string writeStoredProcFunctionParamsTrueFalse,
+            string writeStoredProcFunctionParamsTrueTrue,
             bool asyncFunctionCannotBeCreated,
             string writeStoredProcFunctionOverloadCall,
             string writeStoredProcFunctionSetSqlParametersFalse,
@@ -6600,10 +6600,10 @@
             ReturnType                                             = returnType;
             ReturnModelName                                        = returnModelName;
             FunctionName                                           = functionName;
-            WriteStoredProcFunctionParamsFalseTrue                 = writeStoredProcFunctionParamsFalseTrue;
             WriteStoredProcFunctionParamsFalseFalse                = writeStoredProcFunctionParamsFalseFalse;
-            WriteStoredProcFunctionParamsTrueTrue                  = writeStoredProcFunctionParamsTrueTrue;
+            WriteStoredProcFunctionParamsFalseTrue                 = writeStoredProcFunctionParamsFalseTrue;
             WriteStoredProcFunctionParamsTrueFalse                 = writeStoredProcFunctionParamsTrueFalse;
+            WriteStoredProcFunctionParamsTrueTrue                  = writeStoredProcFunctionParamsTrueTrue;
             AsyncFunctionCannotBeCreated                           = asyncFunctionCannotBeCreated;
             WriteStoredProcFunctionOverloadCall                    = writeStoredProcFunctionOverloadCall;
             WriteStoredProcFunctionSetSqlParametersFalse           = writeStoredProcFunctionSetSqlParametersFalse;
@@ -16028,10 +16028,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
         public string WriteStoredProcFunctionParams(bool includeProcResult, bool forInterface)
         {
+            var willIncludeProcResult = includeProcResult && ReturnModels.Count > 0 && ReturnModels.First().Count > 0;
             var sb = new StringBuilder(255);
             var data = Parameters.Where(x => x.Mode != StoredProcedureParameterMode.Out).OrderBy(x => x.Ordinal).ToList();
 
-            var minNullableParameter = WhichTailEndParametersCanBeNullable(data, includeProcResult, forInterface);
+            var minNullableParameter = WhichTailEndParametersCanBeNullable(data, willIncludeProcResult, forInterface);
             if (minNullableParameter == 0)
                 minNullableParameter = 9999;
 
@@ -16050,12 +16051,10 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     (notNullable || forInterface || !isInParam || count < minNullableParameter) ? string.Empty : " = null");
             }
 
-            if (includeProcResult && ReturnModels.Count > 0 && ReturnModels.First().Count > 0)
-            {
+            if (willIncludeProcResult)
                 sb.Append("out int procResult, ");
-            }
 
-            if(sb.Length > 2)
+            if(willIncludeProcResult || sb.Length > 2)
                 sb.Length -= 2;
 
             return sb.ToString();
@@ -16071,9 +16070,12 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             var parameterNumber = dataCount;
             foreach (var parameter in data.OrderByDescending(x => x.Ordinal))
             {
-                if (parameter.Mode == StoredProcedureParameterMode.InOut)
+                if (parameter.Mode == StoredProcedureParameterMode.InOut ||
+                    Column.StoredProcedureNotNullable.Contains(parameter.PropertyType.ToLower()))
+                {
                     return parameterNumber == dataCount ? 0 : parameterNumber + 1;
-                
+                }
+
                 --parameterNumber;
             }
 

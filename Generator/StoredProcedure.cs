@@ -54,10 +54,11 @@ namespace Efrpg
 
         public string WriteStoredProcFunctionParams(bool includeProcResult, bool forInterface)
         {
+            var willIncludeProcResult = includeProcResult && ReturnModels.Count > 0 && ReturnModels.First().Count > 0;
             var sb = new StringBuilder(255);
             var data = Parameters.Where(x => x.Mode != StoredProcedureParameterMode.Out).OrderBy(x => x.Ordinal).ToList();
 
-            var minNullableParameter = WhichTailEndParametersCanBeNullable(data, includeProcResult, forInterface);
+            var minNullableParameter = WhichTailEndParametersCanBeNullable(data, willIncludeProcResult, forInterface);
             if (minNullableParameter == 0)
                 minNullableParameter = 9999;
 
@@ -76,12 +77,10 @@ namespace Efrpg
                     (notNullable || forInterface || !isInParam || count < minNullableParameter) ? string.Empty : " = null");
             }
 
-            if (includeProcResult && ReturnModels.Count > 0 && ReturnModels.First().Count > 0)
-            {
+            if (willIncludeProcResult)
                 sb.Append("out int procResult, ");
-            }
 
-            if(sb.Length > 2)
+            if(willIncludeProcResult || sb.Length > 2)
                 sb.Length -= 2;
 
             return sb.ToString();
@@ -97,9 +96,12 @@ namespace Efrpg
             var parameterNumber = dataCount;
             foreach (var parameter in data.OrderByDescending(x => x.Ordinal))
             {
-                if (parameter.Mode == StoredProcedureParameterMode.InOut)
+                if (parameter.Mode == StoredProcedureParameterMode.InOut ||
+                    Column.StoredProcedureNotNullable.Contains(parameter.PropertyType.ToLower()))
+                {
                     return parameterNumber == dataCount ? 0 : parameterNumber + 1;
-                
+                }
+
                 --parameterNumber;
             }
 
