@@ -172,6 +172,9 @@ namespace Efrpg.Generators
             if (isEfCore3Plus && t.IsView && !t.HasPrimaryKey)
                 return "builder.HasNoKey();";
 
+            if (t.PrimaryKeys.All(k => k.Hidden))
+                return string.Empty;
+
             var defaultKey = $"builder.HasKey({t.PrimaryKeyNameHumanCase()})";
             if (t.Indexes == null || !t.Indexes.Any())
                 return defaultKey + ";";
