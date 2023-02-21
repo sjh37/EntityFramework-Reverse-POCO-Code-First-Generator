@@ -97,6 +97,7 @@ namespace Generator.Tests.Integration
             SetupSqlServer("EfrpgTest", "My_db_context", "Efrpg_db_context", templateType, GeneratorType.EfCore, ForeignKeyNamingStrategy.Legacy);
             Settings.GenerateSeparateFiles = false;
             Settings.UsePascalCase = false;
+            Settings.UseMappingTables = true;
 
             // Act
             const string filename = "NonPascalCased";

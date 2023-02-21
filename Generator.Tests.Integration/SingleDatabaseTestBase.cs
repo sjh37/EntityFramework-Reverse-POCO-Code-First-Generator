@@ -34,6 +34,7 @@ namespace Generator.Tests.Integration
             Settings.DisableGeographyTypes = false;
             Settings.AddUnitTestingDbContext = true;
             Settings.UsePascalCase = true;
+            Settings.UseMappingTables = false;
 
             ResetFilters();
         }
