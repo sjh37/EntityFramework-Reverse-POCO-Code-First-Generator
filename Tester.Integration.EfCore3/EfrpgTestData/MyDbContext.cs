@@ -105,6 +105,7 @@ namespace Tester.Integration.EfCore3
         public DbSet<PkOrdinalTest> PkOrdinalTests { get; set; } // pk_ordinal_test
         public DbSet<PropertyTypesToAdd> PropertyTypesToAdds { get; set; } // PropertyTypesToAdd
         public DbSet<SequenceTest> SequenceTests { get; set; } // SequenceTest
+        public DbSet<SequenceTestPartTwo> SequenceTestPartTwoes { get; set; } // SequenceTestPartTwo
         public DbSet<SmallDecimalTest> SmallDecimalTests { get; set; } // SmallDecimalTest
         public DbSet<SmallDecimalTestView> SmallDecimalTestViews { get; set; } // SmallDecimalTestView
         public DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
@@ -240,6 +241,7 @@ namespace Tester.Integration.EfCore3
             modelBuilder.ApplyConfiguration(new PkOrdinalTestConfiguration());
             modelBuilder.ApplyConfiguration(new PropertyTypesToAddConfiguration());
             modelBuilder.ApplyConfiguration(new SequenceTestConfiguration());
+            modelBuilder.ApplyConfiguration(new SequenceTestPartTwoConfiguration());
             modelBuilder.ApplyConfiguration(new SmallDecimalTestConfiguration());
             modelBuilder.ApplyConfiguration(new SmallDecimalTestViewConfiguration());
             modelBuilder.ApplyConfiguration(new Stafford_BooConfiguration());

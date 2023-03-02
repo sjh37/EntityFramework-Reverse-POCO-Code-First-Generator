@@ -464,19 +464,24 @@ SELECT * FROM MultiContext.ForeignKey;";
         protected override string SequenceSQL()
         {
             return @"
-SELECT  SCHEMA_NAME(seq.schema_id) AS [Schema],
-		seq.name AS [Name],
-        usrt.name AS DataType,
-        ISNULL(seq.start_value, N'') AS StartValue,
-        ISNULL(seq.increment, N'') AS IncrementValue,
-        ISNULL(seq.minimum_value, N'') AS MinValue,
-        ISNULL(seq.maximum_value, N'') AS MaxValue,
-        ISNULL(CAST(seq.is_cycling AS BIT), 0) AS IsCycleEnabled,
-		seq.cache_size AS CacheSize
-FROM    sys.sequences seq
-        LEFT OUTER JOIN sys.types usrt
-            ON usrt.user_type_id = seq.user_type_id
-ORDER BY [Name], [Schema];";
+SELECT SCHEMA_NAME(seq.schema_id) [Schema],
+       seq.name Name,
+       usrt.name DataType,
+       ISNULL(seq.start_value, N'') StartValue,
+       ISNULL(seq.increment, N'') IncrementValue,
+       ISNULL(seq.minimum_value, N'') MinValue,
+       ISNULL(seq.maximum_value, N'') MaxValue,
+       ISNULL(CAST(seq.is_cycling AS BIT), 0) IsCycleEnabled,
+       seq.cache_size CacheSize,
+       OBJECT_SCHEMA_NAME(o.parent_object_id) TableSchema,
+       OBJECT_NAME(o.parent_object_id) TableName
+FROM sys.sequences seq
+    LEFT OUTER JOIN sys.types usrt
+        ON usrt.user_type_id = seq.user_type_id
+    CROSS APPLY sys.dm_sql_referencing_entities(OBJECT_SCHEMA_NAME(seq.object_id) + '.' + seq.name, 'OBJECT') r
+    JOIN sys.objects o
+        ON o.object_id = r.referencing_id
+ORDER BY seq.schema_id, seq.name;";
         }
 
         protected override string TriggerSQL()

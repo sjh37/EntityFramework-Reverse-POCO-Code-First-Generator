@@ -59,6 +59,9 @@
     FilterSettings.IncludeStoredProcedures      = true;
     FilterSettings.IncludeTableValuedFunctions  = true; // If true, for EF6 install the "EntityFramework.CodeFirstStoreFunctions" NuGet Package.
     FilterSettings.IncludeScalarValuedFunctions = true;
+    
+    // For testing sequence inclusion
+    //FilterSettings.TableFilters.Add(new RegexIncludeFilter("^SequenceTestPartTwo$")); // This includes any remaining tables with names beginning with 'customer'
 
     // Create enumerations from database tables
     // List the enumeration tables you want read and generated for

@@ -96,6 +96,7 @@ namespace Efrpg.V3TestE1
         DbSet<PkOrdinalTest> PkOrdinalTests { get; set; } // pk_ordinal_test
         DbSet<PropertyTypesToAdd> PropertyTypesToAdds { get; set; } // PropertyTypesToAdd
         DbSet<SequenceTest> SequenceTests { get; set; } // SequenceTest
+        DbSet<SequenceTestPartTwo> SequenceTestPartTwoes { get; set; } // SequenceTestPartTwo
         DbSet<SmallDecimalTest> SmallDecimalTests { get; set; } // SmallDecimalTest
         DbSet<SmallDecimalTestView> SmallDecimalTestViews { get; set; } // SmallDecimalTestView
         DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
@@ -399,6 +400,7 @@ namespace Efrpg.V3TestE1
         public DbSet<PkOrdinalTest> PkOrdinalTests { get; set; } // pk_ordinal_test
         public DbSet<PropertyTypesToAdd> PropertyTypesToAdds { get; set; } // PropertyTypesToAdd
         public DbSet<SequenceTest> SequenceTests { get; set; } // SequenceTest
+        public DbSet<SequenceTestPartTwo> SequenceTestPartTwoes { get; set; } // SequenceTestPartTwo
         public DbSet<SmallDecimalTest> SmallDecimalTests { get; set; } // SmallDecimalTest
         public DbSet<SmallDecimalTestView> SmallDecimalTestViews { get; set; } // SmallDecimalTestView
         public DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
@@ -565,6 +567,7 @@ namespace Efrpg.V3TestE1
             modelBuilder.Configurations.Add(new PkOrdinalTestConfiguration());
             modelBuilder.Configurations.Add(new PropertyTypesToAddConfiguration());
             modelBuilder.Configurations.Add(new SequenceTestConfiguration());
+            modelBuilder.Configurations.Add(new SequenceTestPartTwoConfiguration());
             modelBuilder.Configurations.Add(new SmallDecimalTestConfiguration());
             modelBuilder.Configurations.Add(new SmallDecimalTestViewConfiguration());
             modelBuilder.Configurations.Add(new Stafford_BooConfiguration());
@@ -833,6 +836,7 @@ namespace Efrpg.V3TestE1
             modelBuilder.Configurations.Add(new PkOrdinalTestConfiguration(schema));
             modelBuilder.Configurations.Add(new PropertyTypesToAddConfiguration(schema));
             modelBuilder.Configurations.Add(new SequenceTestConfiguration(schema));
+            modelBuilder.Configurations.Add(new SequenceTestPartTwoConfiguration(schema));
             modelBuilder.Configurations.Add(new SmallDecimalTestConfiguration(schema));
             modelBuilder.Configurations.Add(new SmallDecimalTestViewConfiguration(schema));
             modelBuilder.Configurations.Add(new Stafford_BooConfiguration(schema));
@@ -2322,6 +2326,7 @@ namespace Efrpg.V3TestE1
         public DbSet<PkOrdinalTest> PkOrdinalTests { get; set; } // pk_ordinal_test
         public DbSet<PropertyTypesToAdd> PropertyTypesToAdds { get; set; } // PropertyTypesToAdd
         public DbSet<SequenceTest> SequenceTests { get; set; } // SequenceTest
+        public DbSet<SequenceTestPartTwo> SequenceTestPartTwoes { get; set; } // SequenceTestPartTwo
         public DbSet<SmallDecimalTest> SmallDecimalTests { get; set; } // SmallDecimalTest
         public DbSet<SmallDecimalTestView> SmallDecimalTestViews { get; set; } // SmallDecimalTestView
         public DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
@@ -2428,6 +2433,7 @@ namespace Efrpg.V3TestE1
             PkOrdinalTests = new FakeDbSet<PkOrdinalTest>("C3", "C1");
             PropertyTypesToAdds = new FakeDbSet<PropertyTypesToAdd>("Id");
             SequenceTests = new FakeDbSet<SequenceTest>("Id");
+            SequenceTestPartTwoes = new FakeDbSet<SequenceTestPartTwo>("Id");
             SmallDecimalTests = new FakeDbSet<SmallDecimalTest>("Id");
             SmallDecimalTestViews = new FakeDbSet<SmallDecimalTestView>("FkId", "Description");
             Stafford_Boos = new FakeDbSet<Stafford_Boo>("Id");
@@ -4567,6 +4573,14 @@ namespace Efrpg.V3TestE1
         public decimal CntByNumeric { get; set; } // CntByNumeric
     }
 
+    // SequenceTestPartTwo
+    public class SequenceTestPartTwo
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public long CntByBigInt { get; set; } // CntByBigInt
+        public byte CntByTinyInt { get; set; } // CntByTinyInt
+    }
+
     // SmallDecimalTest
     public class SmallDecimalTest
     {
@@ -6438,6 +6452,25 @@ namespace Efrpg.V3TestE1
             Property(x => x.CntBySmallInt).HasColumnName(@"CntBySmallInt").HasColumnType("smallint").IsRequired();
             Property(x => x.CntByDecimal).HasColumnName(@"CntByDecimal").HasColumnType("decimal").IsRequired().HasPrecision(18,0);
             Property(x => x.CntByNumeric).HasColumnName(@"CntByNumeric").HasColumnType("numeric").IsRequired().HasPrecision(18,0);
+        }
+    }
+
+    // SequenceTestPartTwo
+    public class SequenceTestPartTwoConfiguration : EntityTypeConfiguration<SequenceTestPartTwo>
+    {
+        public SequenceTestPartTwoConfiguration()
+            : this("dbo")
+        {
+        }
+
+        public SequenceTestPartTwoConfiguration(string schema)
+        {
+            ToTable("SequenceTestPartTwo", schema);
+            HasKey(x => x.Id);
+
+            Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.CntByBigInt).HasColumnName(@"CntByBigInt").HasColumnType("bigint").IsRequired();
+            Property(x => x.CntByTinyInt).HasColumnName(@"CntByTinyInt").HasColumnType("tinyint").IsRequired();
         }
     }
 

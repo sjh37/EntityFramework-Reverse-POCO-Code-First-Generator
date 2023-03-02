@@ -108,6 +108,7 @@
     <Compile Include="Readers\MinMaxValueCache.cs" />
     <Compile Include="Readers\RawMemoryOptimisedTable.cs" />
     <Compile Include="Readers\RawSequence.cs" />
+    <Compile Include="Readers\RawSequenceTableMapping.cs" />
     <Compile Include="Readers\RawTrigger.cs" />
     <Compile Include="TemplateModels\Trigger.cs" />
     <Compile Include="Templates\TemplateEfCore2.cs" />

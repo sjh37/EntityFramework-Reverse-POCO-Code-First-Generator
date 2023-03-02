@@ -4387,7 +4387,16 @@
                 
                 foreach (var filterKeyValuePair in FilterList.GetFilters())
                 {
-                    filterKeyValuePair.Value.Sequences.AddRange(sequences);
+                    // Only add sequences where the table is used by this filter
+                    foreach (var seq in sequences
+                                 .Where(seq => seq.TableMapping
+                                     .Any(tableMapping => filterKeyValuePair.Value.Tables
+                                         .Any(x =>
+                                             x.Schema.DbName.Equals(tableMapping.TableSchema, StringComparison.InvariantCultureIgnoreCase) &&
+                                             x.DbName.Equals(tableMapping.TableName, StringComparison.InvariantCultureIgnoreCase)))))
+                    {
+                        filterKeyValuePair.Value.Sequences.Add(seq);
+                    }
                 }
             }
             catch (Exception x)
@@ -13181,25 +13190,41 @@ and limitations under the License.
 
                 cmd.CommandText = sql;
 
+                RawSequence rs = null;
+
                 using (var rdr = cmd.ExecuteReader())
                 {
+                    // Sequences
                     while (rdr.Read())
                     {
                         var dataType = rdr["DataType"].ToString().Trim().ToLower();
-                        
-                        var index = new RawSequence
-                        (
-                            rdr["Schema"].ToString().Trim(),
-                            rdr["Name"].ToString().Trim(),
-                            GetPropertyType(dataType),
-                            rdr["StartValue"].ToString(),
-                            rdr["IncrementValue"].ToString(),
-                            rdr["MinValue"].ToString(),
-                            rdr["MaxValue"].ToString(),
-                            GetReaderBool(rdr, "IsCycleEnabled") ?? false
-                        );
-                        result.Add(index);
+                        var schema = rdr["Schema"].ToString().Trim();
+                        var name = rdr["Name"].ToString().Trim();
+
+                        if (rs == null || rs.Schema != schema || rs.Name != name)
+                        {
+                            rs = new RawSequence
+                            (
+                                schema,
+                                name,
+                                GetPropertyType(dataType),
+                                rdr["StartValue"].ToString(),
+                                rdr["IncrementValue"].ToString(),
+                                rdr["MinValue"].ToString(),
+                                rdr["MaxValue"].ToString(),
+                                GetReaderBool(rdr, "IsCycleEnabled") ?? false
+                            );
+
+                            result.Add(rs);
+                        }
+
+                        rs.TableMapping.Add(new RawSequenceTableMapping(
+                            rdr["TableSchema"].ToString().Trim(),
+                            rdr["TableName"].ToString().Trim()));
                     }
+
+                    if (!result.Any())
+                        return result;
                 }
             }
 
@@ -14446,6 +14471,8 @@ ORDER BY SchemaName, TableName, TriggerName;";
         public readonly bool hasMinValue;
         public readonly bool hasMaxValue;
 
+        public List<RawSequenceTableMapping> TableMapping;
+
         public RawSequence(string schema, string name, string dataType, string startValue, string incrementValue, string minValue, string maxValue, bool isCycleEnabled)
         {
             Schema         = schema;
@@ -14456,9 +14483,21 @@ ORDER BY SchemaName, TableName, TriggerName;";
             MinValue       = minValue;
             MaxValue       = maxValue;
             IsCycleEnabled = isCycleEnabled ? "true" : "false";
+            TableMapping   = new List<RawSequenceTableMapping>();
 
             hasMinValue = MinMaxValueCache.GetMinValue(dataType) != minValue;
             hasMaxValue = MinMaxValueCache.GetMaxValue(dataType) != maxValue;
+        }
+    }
+    public class RawSequenceTableMapping
+    {
+        public readonly string TableSchema;
+        public readonly string TableName;
+
+        public RawSequenceTableMapping(string tableSchema, string tableName)
+        {
+            TableSchema = tableSchema;
+            TableName   = tableName;
         }
     }
     public class RawStoredProcedure
@@ -15263,19 +15302,24 @@ SELECT * FROM MultiContext.ForeignKey;";
         protected override string SequenceSQL()
         {
             return @"
-SELECT  SCHEMA_NAME(seq.schema_id) AS [Schema],
-		seq.name AS [Name],
-        usrt.name AS DataType,
-        ISNULL(seq.start_value, N'') AS StartValue,
-        ISNULL(seq.increment, N'') AS IncrementValue,
-        ISNULL(seq.minimum_value, N'') AS MinValue,
-        ISNULL(seq.maximum_value, N'') AS MaxValue,
-        ISNULL(CAST(seq.is_cycling AS BIT), 0) AS IsCycleEnabled,
-		seq.cache_size AS CacheSize
-FROM    sys.sequences seq
-        LEFT OUTER JOIN sys.types usrt
-            ON usrt.user_type_id = seq.user_type_id
-ORDER BY [Name], [Schema];";
+SELECT SCHEMA_NAME(seq.schema_id) [Schema],
+       seq.name Name,
+       usrt.name DataType,
+       ISNULL(seq.start_value, N'') StartValue,
+       ISNULL(seq.increment, N'') IncrementValue,
+       ISNULL(seq.minimum_value, N'') MinValue,
+       ISNULL(seq.maximum_value, N'') MaxValue,
+       ISNULL(CAST(seq.is_cycling AS BIT), 0) IsCycleEnabled,
+       seq.cache_size CacheSize,
+       OBJECT_SCHEMA_NAME(o.parent_object_id) TableSchema,
+       OBJECT_NAME(o.parent_object_id) TableName
+FROM sys.sequences seq
+    LEFT OUTER JOIN sys.types usrt
+        ON usrt.user_type_id = seq.user_type_id
+    CROSS APPLY sys.dm_sql_referencing_entities(OBJECT_SCHEMA_NAME(seq.object_id) + '.' + seq.name, 'OBJECT') r
+    JOIN sys.objects o
+        ON o.object_id = r.referencing_id
+ORDER BY seq.schema_id, seq.name;";
         }
 
         protected override string TriggerSQL()

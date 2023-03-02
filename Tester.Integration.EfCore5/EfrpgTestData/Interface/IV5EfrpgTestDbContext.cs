@@ -83,6 +83,7 @@ namespace V5EfrpgTest
         DbSet<PkOrdinalTest> PkOrdinalTests { get; set; } // pk_ordinal_test
         DbSet<PropertyTypesToAdd> PropertyTypesToAdds { get; set; } // PropertyTypesToAdd
         DbSet<SequenceTest> SequenceTests { get; set; } // SequenceTest
+        DbSet<SequenceTestPartTwo> SequenceTestPartTwoes { get; set; } // SequenceTestPartTwo
         DbSet<SmallDecimalTest> SmallDecimalTests { get; set; } // SmallDecimalTest
         DbSet<SmallDecimalTestView> SmallDecimalTestViews { get; set; } // SmallDecimalTestView
         DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo

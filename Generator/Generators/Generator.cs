@@ -221,7 +221,16 @@ namespace Efrpg.Generators
                 
                 foreach (var filterKeyValuePair in FilterList.GetFilters())
                 {
-                    filterKeyValuePair.Value.Sequences.AddRange(sequences);
+                    // Only add sequences where the table is used by this filter
+                    foreach (var seq in sequences
+                                 .Where(seq => seq.TableMapping
+                                     .Any(tableMapping => filterKeyValuePair.Value.Tables
+                                         .Any(x =>
+                                             x.Schema.DbName.Equals(tableMapping.TableSchema, StringComparison.InvariantCultureIgnoreCase) &&
+                                             x.DbName.Equals(tableMapping.TableName, StringComparison.InvariantCultureIgnoreCase)))))
+                    {
+                        filterKeyValuePair.Value.Sequences.Add(seq);
+                    }
                 }
             }
             catch (Exception x)

@@ -86,6 +86,7 @@ namespace Tester.Integration.EfCore2
         public DbSet<PkOrdinalTest> PkOrdinalTests { get; set; } // pk_ordinal_test
         public DbSet<PropertyTypesToAdd> PropertyTypesToAdds { get; set; } // PropertyTypesToAdd
         public DbSet<SequenceTest> SequenceTests { get; set; } // SequenceTest
+        public DbSet<SequenceTestPartTwo> SequenceTestPartTwoes { get; set; } // SequenceTestPartTwo
         public DbSet<SmallDecimalTest> SmallDecimalTests { get; set; } // SmallDecimalTest
         public DbSet<SmallDecimalTestView> SmallDecimalTestViews { get; set; } // SmallDecimalTestView
         public DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
@@ -195,6 +196,7 @@ namespace Tester.Integration.EfCore2
             PkOrdinalTests = new FakeDbSet<PkOrdinalTest>("C3", "C1");
             PropertyTypesToAdds = new FakeDbSet<PropertyTypesToAdd>("Id");
             SequenceTests = new FakeDbSet<SequenceTest>("Id");
+            SequenceTestPartTwoes = new FakeDbSet<SequenceTestPartTwo>("Id");
             SmallDecimalTests = new FakeDbSet<SmallDecimalTest>("Id");
             SmallDecimalTestViews = new FakeDbSet<SmallDecimalTestView>("FkId", "Description");
             Stafford_Boos = new FakeDbSet<Stafford_Boo>("Id");

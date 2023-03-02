@@ -882,25 +882,41 @@ namespace Efrpg.Readers
 
                 cmd.CommandText = sql;
 
+                RawSequence rs = null;
+
                 using (var rdr = cmd.ExecuteReader())
                 {
+                    // Sequences
                     while (rdr.Read())
                     {
                         var dataType = rdr["DataType"].ToString().Trim().ToLower();
-                        
-                        var index = new RawSequence
-                        (
-                            rdr["Schema"].ToString().Trim(),
-                            rdr["Name"].ToString().Trim(),
-                            GetPropertyType(dataType),
-                            rdr["StartValue"].ToString(),
-                            rdr["IncrementValue"].ToString(),
-                            rdr["MinValue"].ToString(),
-                            rdr["MaxValue"].ToString(),
-                            GetReaderBool(rdr, "IsCycleEnabled") ?? false
-                        );
-                        result.Add(index);
+                        var schema = rdr["Schema"].ToString().Trim();
+                        var name = rdr["Name"].ToString().Trim();
+
+                        if (rs == null || rs.Schema != schema || rs.Name != name)
+                        {
+                            rs = new RawSequence
+                            (
+                                schema,
+                                name,
+                                GetPropertyType(dataType),
+                                rdr["StartValue"].ToString(),
+                                rdr["IncrementValue"].ToString(),
+                                rdr["MinValue"].ToString(),
+                                rdr["MaxValue"].ToString(),
+                                GetReaderBool(rdr, "IsCycleEnabled") ?? false
+                            );
+
+                            result.Add(rs);
+                        }
+
+                        rs.TableMapping.Add(new RawSequenceTableMapping(
+                            rdr["TableSchema"].ToString().Trim(),
+                            rdr["TableName"].ToString().Trim()));
                     }
+
+                    if (!result.Any())
+                        return result;
                 }
             }
 
