@@ -174,6 +174,13 @@ using {{this}};{{#newline}}
                 //usings.Add("System.DBNull");
                 usings.Add("System.Data.SqlTypes");
             }
+
+            if (Settings.DatabaseType == DatabaseType.PostgreSQL)
+            {
+                usings.Add("Npgsql");
+                usings.Add("NpgsqlTypes");
+            }
+
             return usings;
         }
 
@@ -269,7 +276,7 @@ using {{this}};{{#newline}}
 
     public bool IsSqlParameterNull({{SqlParameter}} param){{#newline}}
     {{{#newline}}
-        var sqlValue = param.SqlValue;{{#newline}}
+        var sqlValue = param.{{SqlParameterValue}};{{#newline}}
         var nullableValue = sqlValue as INullable;{{#newline}}
         if (nullableValue != null){{#newline}}
             return nullableValue.IsNull;{{#newline}}
@@ -544,6 +551,12 @@ using {{this}};{{#newline}}
                 usings.Add("System.Data.SqlClient");
                 //usings.Add("System.DBNull");
                 usings.Add("System.Data.SqlTypes");
+            }
+
+            if (Settings.DatabaseType == DatabaseType.PostgreSQL)
+            {
+                usings.Add("Npgsql");
+                usings.Add("NpgsqlTypes");
             }
 
             return usings;

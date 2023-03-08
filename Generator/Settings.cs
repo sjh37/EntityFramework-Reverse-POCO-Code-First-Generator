@@ -743,6 +743,24 @@ namespace Efrpg
                 default:
                     return "SqlParameter";
             }
+        }     
+        
+        public static string SqlParameterValue()
+        {
+            switch (DatabaseType)
+            {
+                case DatabaseType.PostgreSQL:
+                    return "NpgsqlValue";
+
+                case DatabaseType.MySql:
+                    return "Value";
+
+                case DatabaseType.Oracle:
+                    return "Value";
+
+                default:
+                    return "SqlValue";
+            }
         }
 
         public static string Root;

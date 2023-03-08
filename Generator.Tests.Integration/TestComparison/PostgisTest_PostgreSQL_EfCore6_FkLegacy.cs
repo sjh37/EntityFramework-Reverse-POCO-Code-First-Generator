@@ -4,10 +4,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
+using Npgsql;
+using NpgsqlTypes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -113,6 +116,7 @@ namespace Efrpg.PostgreSQL
         void UpdateRange(IEnumerable<object> entities);
         void UpdateRange(params object[] entities);
 
+        IQueryable<TResult> FromExpression<TResult> (Expression<Func<IQueryable<TResult>>> expression);
 
         // Scalar Valued Functions
         string OverviewConstraintInfo(string ovschema, string ovtable, string ovcolumn); // public._overview_constraint_info
@@ -352,7 +356,7 @@ namespace Efrpg.PostgreSQL
 
         public bool IsSqlParameterNull(NpgsqlParameter param)
         {
-            var sqlValue = param.SqlValue;
+            var sqlValue = param.NpgsqlValue;
             var nullableValue = sqlValue as INullable;
             if (nullableValue != null)
                 return nullableValue.IsNull;
@@ -1702,6 +1706,11 @@ namespace Efrpg.PostgreSQL
             throw new NotImplementedException();
         }
 
+        public virtual IQueryable<TResult> FromExpression<TResult> (Expression<Func<IQueryable<TResult>>> expression)
+        {
+            throw new NotImplementedException();
+        }
+
 
         // Scalar Valued Functions
 
@@ -2717,11 +2726,18 @@ namespace Efrpg.PostgreSQL
     //          }
     //      }
     //      Read more about it here: https://msdn.microsoft.com/en-us/data/dn314431.aspx
-    public class FakeDbSet<TEntity> : DbSet<TEntity>, IQueryable<TEntity>, IAsyncEnumerable<TEntity>, IListSource where TEntity : class
+    public class FakeDbSet<TEntity> :
+        DbSet<TEntity>,
+        IQueryable<TEntity>,
+        IAsyncEnumerable<TEntity>,
+        IListSource,
+        IResettableService
+        where TEntity : class
     {
         private readonly PropertyInfo[] _primaryKeys;
-        private readonly ObservableCollection<TEntity> _data;
-        private readonly IQueryable _query;
+        private ObservableCollection<TEntity> _data;
+        private IQueryable _query;
+        public override IEntityType EntityType { get; }
 
         public FakeDbSet()
         {
@@ -2762,11 +2778,6 @@ namespace Efrpg.PostgreSQL
         public override ValueTask<TEntity> FindAsync(params object[] keyValues)
         {
             return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues)));
-        }
-
-        IAsyncEnumerator<TEntity> IAsyncEnumerable<TEntity>.GetAsyncEnumerator(CancellationToken cancellationToken)
-        {
-            return GetAsyncEnumerator(cancellationToken);
         }
 
         public override EntityEntry<TEntity> Add(TEntity entity)
@@ -2863,6 +2874,8 @@ namespace Efrpg.PostgreSQL
             AddRange(array);
         }
 
+        bool IListSource.ContainsListCollection => true;
+
         public IList GetList()
         {
             return _data;
@@ -2898,9 +2911,20 @@ namespace Efrpg.PostgreSQL
             return _data.GetEnumerator();
         }
 
-        IAsyncEnumerator<TEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default(CancellationToken))
+        public override IAsyncEnumerator<TEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
             return new FakeDbAsyncEnumerator<TEntity>(this.AsEnumerable().GetEnumerator());
+        }
+
+        public void ResetState()
+        {
+            _data  = new ObservableCollection<TEntity>();
+            _query = _data.AsQueryable();
+        }
+
+        public Task ResetStateAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            return Task.Factory.StartNew(() => ResetState());
         }
     }
 
@@ -2975,6 +2999,7 @@ namespace Efrpg.PostgreSQL
         {
             get { return _inner.Current; }
         }
+
         public ValueTask<bool> MoveNextAsync()
         {
             return new ValueTask<bool>(_inner.MoveNext());
@@ -3116,8 +3141,18 @@ namespace Efrpg.PostgreSQL
         {
         }
 
+        public override Task CommitTransactionAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            return Task.CompletedTask;
+        }
+
         public override void RollbackTransaction()
         {
+        }
+
+        public override Task RollbackTransactionAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            return Task.CompletedTask;
         }
 
         public override IExecutionStrategy CreateExecutionStrategy()
@@ -3129,18 +3164,17 @@ namespace Efrpg.PostgreSQL
         {
             return string.Empty;
         }
-
     }
 
     public class FakeDbContextTransaction : IDbContextTransaction
     {
-        public virtual Guid TransactionId => Guid.NewGuid();
-        public virtual void Commit() { }
-        public virtual void Rollback() { }
-        public virtual Task CommitAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;
-        public virtual Task RollbackAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;
-        public virtual void Dispose() { }
-        public virtual ValueTask DisposeAsync() => default;
+        public Guid TransactionId => Guid.NewGuid();
+        public void Commit() { }
+        public void Rollback() { }
+        public Task CommitAsync(CancellationToken cancellationToken = new CancellationToken()) => Task.CompletedTask;
+        public Task RollbackAsync(CancellationToken cancellationToken = new CancellationToken()) => Task.CompletedTask;
+        public void Dispose() { }
+        public ValueTask DisposeAsync() => default;
     }
 
     #endregion
@@ -3953,8 +3987,8 @@ namespace Efrpg.PostgreSQL
             builder.HasKey(x => x.Id).HasName("TestPostGisTbl_pk");
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("integer").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.TblMinValue).HasColumnName(@"TblMinValue").HasColumnType("numeric(22,0)").IsRequired();
-            builder.Property(x => x.TblMaxValue).HasColumnName(@"TblMaxValue").HasColumnType("numeric(22,0)").IsRequired();
+            builder.Property(x => x.TblMinValue).HasColumnName(@"TblMinValue").HasColumnType("numeric(22,0)").HasPrecision(22,0).IsRequired();
+            builder.Property(x => x.TblMaxValue).HasColumnName(@"TblMaxValue").HasColumnType("numeric(22,0)").HasPrecision(22,0).IsRequired();
             builder.Property(x => x.AtdLocation).HasColumnName(@"ATDLocation").IsRequired(); // .HasColumnType("user-defined") was excluded
         }
     }
@@ -4113,8 +4147,8 @@ namespace Efrpg.PostgreSQL
             builder.Property(x => x.Mtfcc).HasColumnName(@"mtfcc").HasColumnType("character varying(5)").IsRequired(false).HasMaxLength(5);
             builder.Property(x => x.Statefp).HasColumnName(@"statefp").HasColumnType("character varying(2)").IsRequired(false).HasMaxLength(2);
 
-            builder.HasIndex(x => new { x.Tlid, x.Statefp }).HasName("idx_tiger_addr_tlid_statefp");
-            builder.HasIndex(x => x.Zip).HasName("idx_tiger_addr_zip");
+            builder.HasIndex(x => new { x.Tlid, x.Statefp }).HasDatabaseName("idx_tiger_addr_tlid_statefp");
+            builder.HasIndex(x => x.Zip).HasDatabaseName("idx_tiger_addr_zip");
         }
     }
 
@@ -4152,10 +4186,10 @@ namespace Efrpg.PostgreSQL
             builder.Property(x => x.Offsetr).HasColumnName(@"offsetr").HasColumnType("character varying(1)").IsRequired(false).HasMaxLength(1);
             builder.Property(x => x.TheGeom).HasColumnName(@"the_geom").IsRequired(false); // .HasColumnType("user-defined") was excluded
 
-            builder.HasIndex(x => x.TheGeom).HasName("idx_addrfeat_geom_gist");
-            builder.HasIndex(x => x.Tlid).HasName("idx_addrfeat_tlid");
-            builder.HasIndex(x => x.Zipl).HasName("idx_addrfeat_zipl");
-            builder.HasIndex(x => x.Zipr).HasName("idx_addrfeat_zipr");
+            builder.HasIndex(x => x.TheGeom).HasDatabaseName("idx_addrfeat_geom_gist");
+            builder.HasIndex(x => x.Tlid).HasDatabaseName("idx_addrfeat_tlid");
+            builder.HasIndex(x => x.Zipl).HasDatabaseName("idx_addrfeat_zipl");
+            builder.HasIndex(x => x.Zipr).HasDatabaseName("idx_addrfeat_zipr");
         }
     }
 
@@ -4212,8 +4246,8 @@ namespace Efrpg.PostgreSQL
             builder.Property(x => x.Intptlon).HasColumnName(@"intptlon").HasColumnType("character varying(12)").IsRequired(false).HasMaxLength(12);
             builder.Property(x => x.TheGeom).HasColumnName(@"the_geom").IsRequired(false); // .HasColumnType("user-defined") was excluded
 
-            builder.HasIndex(x => x.Countyfp).HasName("idx_tiger_county");
-            builder.HasIndex(x => x.Gid).HasName("uidx_county_gid").IsUnique();
+            builder.HasIndex(x => x.Countyfp).HasDatabaseName("idx_tiger_county");
+            builder.HasIndex(x => x.Gid).HasDatabaseName("uidx_county_gid").IsUnique();
         }
     }
 
@@ -4230,7 +4264,7 @@ namespace Efrpg.PostgreSQL
             builder.Property(x => x.CoCode).HasColumnName(@"co_code").HasColumnType("integer").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.Name).HasColumnName(@"name").HasColumnType("character varying(90)").IsRequired(false).HasMaxLength(90);
 
-            builder.HasIndex(x => x.State).HasName("county_lookup_state_idx");
+            builder.HasIndex(x => x.State).HasDatabaseName("county_lookup_state_idx");
         }
     }
 
@@ -4249,7 +4283,7 @@ namespace Efrpg.PostgreSQL
             builder.Property(x => x.CsCode).HasColumnName(@"cs_code").HasColumnType("integer").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.Name).HasColumnName(@"name").HasColumnType("character varying(90)").IsRequired(false).HasMaxLength(90);
 
-            builder.HasIndex(x => x.State).HasName("countysub_lookup_state_idx");
+            builder.HasIndex(x => x.State).HasDatabaseName("countysub_lookup_state_idx");
         }
     }
 
@@ -4276,14 +4310,14 @@ namespace Efrpg.PostgreSQL
             builder.Property(x => x.Nectafp).HasColumnName(@"nectafp").HasColumnType("character varying(5)").IsRequired(false).HasMaxLength(5);
             builder.Property(x => x.Nctadvfp).HasColumnName(@"nctadvfp").HasColumnType("character varying(5)").IsRequired(false).HasMaxLength(5);
             builder.Property(x => x.Funcstat).HasColumnName(@"funcstat").HasColumnType("character varying(1)").IsRequired(false).HasMaxLength(1);
-            builder.Property(x => x.Aland).HasColumnName(@"aland").HasColumnType("numeric(14,0)").IsRequired(false);
-            builder.Property(x => x.Awater).HasColumnName(@"awater").HasColumnType("numeric(14,0)").IsRequired(false);
+            builder.Property(x => x.Aland).HasColumnName(@"aland").HasColumnType("numeric(14,0)").HasPrecision(14,0).IsRequired(false);
+            builder.Property(x => x.Awater).HasColumnName(@"awater").HasColumnType("numeric(14,0)").HasPrecision(14,0).IsRequired(false);
             builder.Property(x => x.Intptlat).HasColumnName(@"intptlat").HasColumnType("character varying(11)").IsRequired(false).HasMaxLength(11);
             builder.Property(x => x.Intptlon).HasColumnName(@"intptlon").HasColumnType("character varying(12)").IsRequired(false).HasMaxLength(12);
             builder.Property(x => x.TheGeom).HasColumnName(@"the_geom").IsRequired(false); // .HasColumnType("user-defined") was excluded
 
-            builder.HasIndex(x => x.TheGeom).HasName("tige_cousub_the_geom_gist");
-            builder.HasIndex(x => x.Gid).HasName("uidx_cousub_gid").IsUnique();
+            builder.HasIndex(x => x.TheGeom).HasDatabaseName("tige_cousub_the_geom_gist");
+            builder.HasIndex(x => x.Gid).HasDatabaseName("uidx_cousub_gid").IsUnique();
         }
     }
 
@@ -4298,7 +4332,7 @@ namespace Efrpg.PostgreSQL
             builder.Property(x => x.Name).HasColumnName(@"name").HasColumnType("character varying(20)").IsRequired().HasMaxLength(20).ValueGeneratedNever();
             builder.Property(x => x.Abbrev).HasColumnName(@"abbrev").HasColumnType("character varying(3)").IsRequired(false).HasMaxLength(3);
 
-            builder.HasIndex(x => x.Abbrev).HasName("direction_lookup_abbrev_idx");
+            builder.HasIndex(x => x.Abbrev).HasDatabaseName("direction_lookup_abbrev_idx");
         }
     }
 
@@ -4314,8 +4348,8 @@ namespace Efrpg.PostgreSQL
             builder.Property(x => x.Statefp).HasColumnName(@"statefp").HasColumnType("character varying(2)").IsRequired(false).HasMaxLength(2);
             builder.Property(x => x.Countyfp).HasColumnName(@"countyfp").HasColumnType("character varying(3)").IsRequired(false).HasMaxLength(3);
             builder.Property(x => x.Tlid).HasColumnName(@"tlid").HasColumnType("bigint").IsRequired(false);
-            builder.Property(x => x.Tfidl).HasColumnName(@"tfidl").HasColumnType("numeric(10,0)").IsRequired(false);
-            builder.Property(x => x.Tfidr).HasColumnName(@"tfidr").HasColumnType("numeric(10,0)").IsRequired(false);
+            builder.Property(x => x.Tfidl).HasColumnName(@"tfidl").HasColumnType("numeric(10,0)").HasPrecision(10,0).IsRequired(false);
+            builder.Property(x => x.Tfidr).HasColumnName(@"tfidr").HasColumnType("numeric(10,0)").HasPrecision(10,0).IsRequired(false);
             builder.Property(x => x.Mtfcc).HasColumnName(@"mtfcc").HasColumnType("character varying(5)").IsRequired(false).HasMaxLength(5);
             builder.Property(x => x.Fullname).HasColumnName(@"fullname").HasColumnType("character varying(100)").IsRequired(false).HasMaxLength(100);
             builder.Property(x => x.Smid).HasColumnName(@"smid").HasColumnType("character varying(22)").IsRequired(false).HasMaxLength(22);
@@ -4340,13 +4374,13 @@ namespace Efrpg.PostgreSQL
             builder.Property(x => x.Gcseflg).HasColumnName(@"gcseflg").HasColumnType("character varying(1)").IsRequired(false).HasMaxLength(1);
             builder.Property(x => x.Offsetl).HasColumnName(@"offsetl").HasColumnType("character varying(1)").IsRequired(false).HasMaxLength(1);
             builder.Property(x => x.Offsetr).HasColumnName(@"offsetr").HasColumnType("character varying(1)").IsRequired(false).HasMaxLength(1);
-            builder.Property(x => x.Tnidf).HasColumnName(@"tnidf").HasColumnType("numeric(10,0)").IsRequired(false);
-            builder.Property(x => x.Tnidt).HasColumnName(@"tnidt").HasColumnType("numeric(10,0)").IsRequired(false);
+            builder.Property(x => x.Tnidf).HasColumnName(@"tnidf").HasColumnType("numeric(10,0)").HasPrecision(10,0).IsRequired(false);
+            builder.Property(x => x.Tnidt).HasColumnName(@"tnidt").HasColumnType("numeric(10,0)").HasPrecision(10,0).IsRequired(false);
             builder.Property(x => x.TheGeom).HasColumnName(@"the_geom").IsRequired(false); // .HasColumnType("user-defined") was excluded
 
-            builder.HasIndex(x => x.Tlid).HasName("idx_edges_tlid");
-            builder.HasIndex(x => x.Countyfp).HasName("idx_tiger_edges_countyfp");
-            builder.HasIndex(x => x.TheGeom).HasName("idx_tiger_edges_the_geom_gist");
+            builder.HasIndex(x => x.Tlid).HasDatabaseName("idx_edges_tlid");
+            builder.HasIndex(x => x.Countyfp).HasDatabaseName("idx_tiger_edges_countyfp");
+            builder.HasIndex(x => x.TheGeom).HasDatabaseName("idx_tiger_edges_the_geom_gist");
         }
     }
 
@@ -4359,7 +4393,7 @@ namespace Efrpg.PostgreSQL
             builder.HasKey(x => x.Gid).HasName("faces_pkey");
 
             builder.Property(x => x.Gid).HasColumnName(@"gid").HasColumnType("integer").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.Tfid).HasColumnName(@"tfid").HasColumnType("numeric(10,0)").IsRequired(false);
+            builder.Property(x => x.Tfid).HasColumnName(@"tfid").HasColumnType("numeric(10,0)").HasPrecision(10,0).IsRequired(false);
             builder.Property(x => x.Statefp00).HasColumnName(@"statefp00").HasColumnType("character varying(2)").IsRequired(false).HasMaxLength(2);
             builder.Property(x => x.Countyfp00).HasColumnName(@"countyfp00").HasColumnType("character varying(3)").IsRequired(false).HasMaxLength(3);
             builder.Property(x => x.Tractce00).HasColumnName(@"tractce00").HasColumnType("character varying(6)").IsRequired(false).HasMaxLength(6);
@@ -4429,9 +4463,9 @@ namespace Efrpg.PostgreSQL
             builder.Property(x => x.Intptlon).HasColumnName(@"intptlon").HasColumnType("character varying(12)").IsRequired(false).HasMaxLength(12);
             builder.Property(x => x.TheGeom).HasColumnName(@"the_geom").IsRequired(false); // .HasColumnType("user-defined") was excluded
 
-            builder.HasIndex(x => x.Countyfp).HasName("idx_tiger_faces_countyfp");
-            builder.HasIndex(x => x.Tfid).HasName("idx_tiger_faces_tfid");
-            builder.HasIndex(x => x.TheGeom).HasName("tiger_faces_the_geom_gist");
+            builder.HasIndex(x => x.Countyfp).HasDatabaseName("idx_tiger_faces_countyfp");
+            builder.HasIndex(x => x.Tfid).HasDatabaseName("idx_tiger_faces_tfid");
+            builder.HasIndex(x => x.TheGeom).HasDatabaseName("tiger_faces_the_geom_gist");
         }
     }
 
@@ -4464,7 +4498,7 @@ namespace Efrpg.PostgreSQL
             builder.Property(x => x.Paflag).HasColumnName(@"paflag").HasColumnType("character varying(1)").IsRequired(false).HasMaxLength(1);
             builder.Property(x => x.Statefp).HasColumnName(@"statefp").HasColumnType("character varying(2)").IsRequired(false).HasMaxLength(2);
 
-            builder.HasIndex(x => new { x.Tlid, x.Statefp }).HasName("idx_tiger_featnames_tlid_statefp");
+            builder.HasIndex(x => new { x.Tlid, x.Statefp }).HasDatabaseName("idx_tiger_featnames_tlid_statefp");
         }
     }
 
@@ -4638,8 +4672,8 @@ namespace Efrpg.PostgreSQL
             builder.Property(x => x.Intptlon).HasColumnName(@"intptlon").HasColumnType("character varying(12)").IsRequired(false).HasMaxLength(12);
             builder.Property(x => x.TheGeom).HasColumnName(@"the_geom").IsRequired(false); // .HasColumnType("user-defined") was excluded
 
-            builder.HasIndex(x => x.TheGeom).HasName("tiger_place_the_geom_gist");
-            builder.HasIndex(x => x.Gid).HasName("uidx_tiger_place_gid").IsUnique();
+            builder.HasIndex(x => x.TheGeom).HasDatabaseName("tiger_place_the_geom_gist");
+            builder.HasIndex(x => x.Gid).HasDatabaseName("uidx_tiger_place_gid").IsUnique();
         }
     }
 
@@ -4656,7 +4690,7 @@ namespace Efrpg.PostgreSQL
             builder.Property(x => x.PlCode).HasColumnName(@"pl_code").HasColumnType("integer").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.Name).HasColumnName(@"name").HasColumnType("character varying(90)").IsRequired(false).HasMaxLength(90);
 
-            builder.HasIndex(x => x.State).HasName("place_lookup_state_idx");
+            builder.HasIndex(x => x.State).HasDatabaseName("place_lookup_state_idx");
         }
     }
 
@@ -4671,7 +4705,7 @@ namespace Efrpg.PostgreSQL
             builder.Property(x => x.Name).HasColumnName(@"name").HasColumnType("character varying(20)").IsRequired().HasMaxLength(20).ValueGeneratedNever();
             builder.Property(x => x.Abbrev).HasColumnName(@"abbrev").HasColumnType("character varying(5)").IsRequired(false).HasMaxLength(5);
 
-            builder.HasIndex(x => x.Abbrev).HasName("secondary_unit_lookup_abbrev_idx");
+            builder.HasIndex(x => x.Abbrev).HasDatabaseName("secondary_unit_lookup_abbrev_idx");
         }
     }
 
@@ -4699,9 +4733,9 @@ namespace Efrpg.PostgreSQL
             builder.Property(x => x.Intptlon).HasColumnName(@"intptlon").HasColumnType("character varying(12)").IsRequired(false).HasMaxLength(12);
             builder.Property(x => x.TheGeom).HasColumnName(@"the_geom").IsRequired(false); // .HasColumnType("user-defined") was excluded
 
-            builder.HasIndex(x => x.TheGeom).HasName("idx_tiger_state_the_geom_gist");
-            builder.HasIndex(x => x.Gid).HasName("uidx_tiger_state_gid").IsUnique();
-            builder.HasIndex(x => x.Stusps).HasName("uidx_tiger_state_stusps").IsUnique();
+            builder.HasIndex(x => x.TheGeom).HasDatabaseName("idx_tiger_state_the_geom_gist");
+            builder.HasIndex(x => x.Gid).HasDatabaseName("uidx_tiger_state_gid").IsUnique();
+            builder.HasIndex(x => x.Stusps).HasDatabaseName("uidx_tiger_state_stusps").IsUnique();
         }
     }
 
@@ -4718,9 +4752,9 @@ namespace Efrpg.PostgreSQL
             builder.Property(x => x.Abbrev).HasColumnName(@"abbrev").HasColumnType("character varying(3)").IsRequired(false).HasMaxLength(3);
             builder.Property(x => x.Statefp).HasColumnName(@"statefp").HasColumnType("character(2)").IsRequired(false).HasMaxLength(2);
 
-            builder.HasIndex(x => x.Abbrev).HasName("state_lookup_abbrev_key").IsUnique();
-            builder.HasIndex(x => x.Name).HasName("state_lookup_name_key").IsUnique();
-            builder.HasIndex(x => x.Statefp).HasName("state_lookup_statefp_key").IsUnique();
+            builder.HasIndex(x => x.Abbrev).HasDatabaseName("state_lookup_abbrev_key").IsUnique();
+            builder.HasIndex(x => x.Name).HasDatabaseName("state_lookup_name_key").IsUnique();
+            builder.HasIndex(x => x.Statefp).HasDatabaseName("state_lookup_statefp_key").IsUnique();
         }
     }
 
@@ -4736,7 +4770,7 @@ namespace Efrpg.PostgreSQL
             builder.Property(x => x.Abbrev).HasColumnName(@"abbrev").HasColumnType("character varying(50)").IsRequired(false).HasMaxLength(50);
             builder.Property(x => x.IsHw).HasColumnName(@"is_hw").HasColumnType("boolean").IsRequired();
 
-            builder.HasIndex(x => x.Abbrev).HasName("street_type_lookup_abbrev_idx");
+            builder.HasIndex(x => x.Abbrev).HasDatabaseName("street_type_lookup_abbrev_idx");
         }
     }
 
@@ -4840,7 +4874,7 @@ namespace Efrpg.PostgreSQL
             builder.Property(x => x.Partflg).HasColumnName(@"partflg").HasColumnType("character varying(1)").IsRequired(false).HasMaxLength(1);
             builder.Property(x => x.TheGeom).HasColumnName(@"the_geom").IsRequired(false); // .HasColumnType("user-defined") was excluded
 
-            builder.HasIndex(x => x.Gid).HasName("uidx_tiger_zcta5_gid").IsUnique();
+            builder.HasIndex(x => x.Gid).HasDatabaseName("uidx_tiger_zcta5_gid").IsUnique();
         }
     }
 
@@ -4930,7 +4964,7 @@ namespace Efrpg.PostgreSQL
             // Foreign keys
             builder.HasOne(a => a.topology_Topology).WithMany(b => b.topology_Layers).HasForeignKey(c => c.TopologyId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("layer_topology_id_fkey");
 
-            builder.HasIndex(x => new { x.SchemaName, x.TableName, x.FeatureColumn }).HasName("layer_schema_name_table_name_feature_column_key").IsUnique();
+            builder.HasIndex(x => new { x.SchemaName, x.TableName, x.FeatureColumn }).HasDatabaseName("layer_schema_name_table_name_feature_column_key").IsUnique();
         }
     }
 
@@ -4948,7 +4982,7 @@ namespace Efrpg.PostgreSQL
             builder.Property(x => x.Precision).HasColumnName(@"precision").HasColumnType("double precision").IsRequired();
             builder.Property(x => x.Hasz).HasColumnName(@"hasz").HasColumnType("boolean").IsRequired();
 
-            builder.HasIndex(x => x.Name).HasName("topology_name_key").IsUnique();
+            builder.HasIndex(x => x.Name).HasDatabaseName("topology_name_key").IsUnique();
         }
     }
 

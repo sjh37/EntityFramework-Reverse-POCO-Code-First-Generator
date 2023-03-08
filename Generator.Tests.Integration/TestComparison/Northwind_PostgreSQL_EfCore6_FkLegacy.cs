@@ -4,10 +4,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
+using Npgsql;
+using NpgsqlTypes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -101,6 +104,7 @@ namespace Efrpg.PostgreSQL
         void UpdateRange(IEnumerable<object> entities);
         void UpdateRange(params object[] entities);
 
+        IQueryable<TResult> FromExpression<TResult> (Expression<Func<IQueryable<TResult>>> expression);
 
         // Stored Procedures
         int CustOrderHist(string x);
@@ -184,7 +188,7 @@ namespace Efrpg.PostgreSQL
 
         public bool IsSqlParameterNull(NpgsqlParameter param)
         {
-            var sqlValue = param.SqlValue;
+            var sqlValue = param.NpgsqlValue;
             var nullableValue = sqlValue as INullable;
             if (nullableValue != null)
                 return nullableValue.IsNull;
@@ -622,6 +626,11 @@ namespace Efrpg.PostgreSQL
             throw new NotImplementedException();
         }
 
+        public virtual IQueryable<TResult> FromExpression<TResult> (Expression<Func<IQueryable<TResult>>> expression)
+        {
+            throw new NotImplementedException();
+        }
+
 
         // Stored Procedures
 
@@ -696,11 +705,18 @@ namespace Efrpg.PostgreSQL
     //          }
     //      }
     //      Read more about it here: https://msdn.microsoft.com/en-us/data/dn314431.aspx
-    public class FakeDbSet<TEntity> : DbSet<TEntity>, IQueryable<TEntity>, IAsyncEnumerable<TEntity>, IListSource where TEntity : class
+    public class FakeDbSet<TEntity> :
+        DbSet<TEntity>,
+        IQueryable<TEntity>,
+        IAsyncEnumerable<TEntity>,
+        IListSource,
+        IResettableService
+        where TEntity : class
     {
         private readonly PropertyInfo[] _primaryKeys;
-        private readonly ObservableCollection<TEntity> _data;
-        private readonly IQueryable _query;
+        private ObservableCollection<TEntity> _data;
+        private IQueryable _query;
+        public override IEntityType EntityType { get; }
 
         public FakeDbSet()
         {
@@ -741,11 +757,6 @@ namespace Efrpg.PostgreSQL
         public override ValueTask<TEntity> FindAsync(params object[] keyValues)
         {
             return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues)));
-        }
-
-        IAsyncEnumerator<TEntity> IAsyncEnumerable<TEntity>.GetAsyncEnumerator(CancellationToken cancellationToken)
-        {
-            return GetAsyncEnumerator(cancellationToken);
         }
 
         public override EntityEntry<TEntity> Add(TEntity entity)
@@ -842,6 +853,8 @@ namespace Efrpg.PostgreSQL
             AddRange(array);
         }
 
+        bool IListSource.ContainsListCollection => true;
+
         public IList GetList()
         {
             return _data;
@@ -877,9 +890,20 @@ namespace Efrpg.PostgreSQL
             return _data.GetEnumerator();
         }
 
-        IAsyncEnumerator<TEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default(CancellationToken))
+        public override IAsyncEnumerator<TEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
             return new FakeDbAsyncEnumerator<TEntity>(this.AsEnumerable().GetEnumerator());
+        }
+
+        public void ResetState()
+        {
+            _data  = new ObservableCollection<TEntity>();
+            _query = _data.AsQueryable();
+        }
+
+        public Task ResetStateAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            return Task.Factory.StartNew(() => ResetState());
         }
     }
 
@@ -954,6 +978,7 @@ namespace Efrpg.PostgreSQL
         {
             get { return _inner.Current; }
         }
+
         public ValueTask<bool> MoveNextAsync()
         {
             return new ValueTask<bool>(_inner.MoveNext());
@@ -1095,8 +1120,18 @@ namespace Efrpg.PostgreSQL
         {
         }
 
+        public override Task CommitTransactionAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            return Task.CompletedTask;
+        }
+
         public override void RollbackTransaction()
         {
+        }
+
+        public override Task RollbackTransactionAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            return Task.CompletedTask;
         }
 
         public override IExecutionStrategy CreateExecutionStrategy()
@@ -1108,18 +1143,17 @@ namespace Efrpg.PostgreSQL
         {
             return string.Empty;
         }
-
     }
 
     public class FakeDbContextTransaction : IDbContextTransaction
     {
-        public virtual Guid TransactionId => Guid.NewGuid();
-        public virtual void Commit() { }
-        public virtual void Rollback() { }
-        public virtual Task CommitAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;
-        public virtual Task RollbackAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;
-        public virtual void Dispose() { }
-        public virtual ValueTask DisposeAsync() => default;
+        public Guid TransactionId => Guid.NewGuid();
+        public void Commit() { }
+        public void Rollback() { }
+        public Task CommitAsync(CancellationToken cancellationToken = new CancellationToken()) => Task.CompletedTask;
+        public Task RollbackAsync(CancellationToken cancellationToken = new CancellationToken()) => Task.CompletedTask;
+        public void Dispose() { }
+        public ValueTask DisposeAsync() => default;
     }
 
     #endregion
@@ -1735,7 +1769,7 @@ namespace Efrpg.PostgreSQL
             builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("text").IsRequired(false).IsUnicode(false);
             builder.Property(x => x.Picture).HasColumnName(@"Picture").HasColumnType("bytea").IsRequired(false);
 
-            builder.HasIndex(x => x.CategoryName).HasName("CategoryName");
+            builder.HasIndex(x => x.CategoryName).HasDatabaseName("CategoryName");
         }
     }
 
@@ -1785,10 +1819,10 @@ namespace Efrpg.PostgreSQL
             builder.Property(x => x.Phone).HasColumnName(@"Phone").HasColumnType("character varying(24)").IsRequired(false).HasMaxLength(24);
             builder.Property(x => x.Fax).HasColumnName(@"Fax").HasColumnType("character varying(24)").IsRequired(false).HasMaxLength(24);
 
-            builder.HasIndex(x => x.City).HasName("City");
-            builder.HasIndex(x => x.CompanyName).HasName("CompanyName");
-            builder.HasIndex(x => x.PostalCode).HasName("PostalCode");
-            builder.HasIndex(x => x.Region).HasName("Region");
+            builder.HasIndex(x => x.City).HasDatabaseName("City");
+            builder.HasIndex(x => x.CompanyName).HasDatabaseName("CompanyName");
+            builder.HasIndex(x => x.PostalCode).HasDatabaseName("PostalCode");
+            builder.HasIndex(x => x.Region).HasDatabaseName("Region");
         }
     }
 
@@ -1867,8 +1901,8 @@ namespace Efrpg.PostgreSQL
             // Foreign keys
             builder.HasOne(a => a.Employee_ReportsTo).WithMany(b => b.Employees).HasForeignKey(c => c.ReportsTo).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Employees_Employees");
 
-            builder.HasIndex(x => x.LastName).HasName("LastName");
-            builder.HasIndex(x => x.PostalCode).HasName("PostCode");
+            builder.HasIndex(x => x.LastName).HasDatabaseName("LastName");
+            builder.HasIndex(x => x.PostalCode).HasDatabaseName("PostCode");
         }
     }
 
@@ -1954,14 +1988,14 @@ namespace Efrpg.PostgreSQL
             builder.HasOne(a => a.Employee).WithMany(b => b.Orders).HasForeignKey(c => c.EmployeeId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Orders_Employees");
             builder.HasOne(a => a.Shipper).WithMany(b => b.Orders).HasForeignKey(c => c.ShipVia).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Orders_Shippers");
 
-            builder.HasIndex(x => x.CustomerId).HasName("CustomerID");
-            builder.HasIndex(x => x.CustomerId).HasName("CustomersOrders");
-            builder.HasIndex(x => x.EmployeeId).HasName("EmployeeID");
-            builder.HasIndex(x => x.EmployeeId).HasName("EmployeesOrders");
-            builder.HasIndex(x => x.OrderDate).HasName("OrderDate");
-            builder.HasIndex(x => x.ShippedDate).HasName("ShippedDate");
-            builder.HasIndex(x => x.ShipVia).HasName("ShippersOrders");
-            builder.HasIndex(x => x.ShipPostalCode).HasName("ShipPostalCode");
+            builder.HasIndex(x => x.CustomerId).HasDatabaseName("CustomerID");
+            builder.HasIndex(x => x.CustomerId).HasDatabaseName("CustomersOrders");
+            builder.HasIndex(x => x.EmployeeId).HasDatabaseName("EmployeeID");
+            builder.HasIndex(x => x.EmployeeId).HasDatabaseName("EmployeesOrders");
+            builder.HasIndex(x => x.OrderDate).HasDatabaseName("OrderDate");
+            builder.HasIndex(x => x.ShippedDate).HasDatabaseName("ShippedDate");
+            builder.HasIndex(x => x.ShipVia).HasDatabaseName("ShippersOrders");
+            builder.HasIndex(x => x.ShipPostalCode).HasDatabaseName("ShipPostalCode");
         }
     }
 
@@ -1983,10 +2017,10 @@ namespace Efrpg.PostgreSQL
             builder.HasOne(a => a.Order).WithMany(b => b.OrderDetails).HasForeignKey(c => c.OrderId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Order_Details_Orders");
             builder.HasOne(a => a.Product).WithMany(b => b.OrderDetails).HasForeignKey(c => c.ProductId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Order_Details_Products");
 
-            builder.HasIndex(x => x.OrderId).HasName("OrderID");
-            builder.HasIndex(x => x.OrderId).HasName("OrdersOrder_Details");
-            builder.HasIndex(x => x.ProductId).HasName("ProductID");
-            builder.HasIndex(x => x.ProductId).HasName("ProductsOrder_Details");
+            builder.HasIndex(x => x.OrderId).HasDatabaseName("OrderID");
+            builder.HasIndex(x => x.OrderId).HasDatabaseName("OrdersOrder_Details");
+            builder.HasIndex(x => x.ProductId).HasDatabaseName("ProductID");
+            builder.HasIndex(x => x.ProductId).HasDatabaseName("ProductsOrder_Details");
         }
     }
 
@@ -2075,11 +2109,11 @@ namespace Efrpg.PostgreSQL
             builder.HasOne(a => a.Category).WithMany(b => b.Products).HasForeignKey(c => c.CategoryId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Products_Categories");
             builder.HasOne(a => a.Supplier).WithMany(b => b.Products).HasForeignKey(c => c.SupplierId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Products_Suppliers");
 
-            builder.HasIndex(x => x.CategoryId).HasName("CategoriesProducts");
-            builder.HasIndex(x => x.CategoryId).HasName("CategoryID");
-            builder.HasIndex(x => x.ProductName).HasName("ProductName");
-            builder.HasIndex(x => x.SupplierId).HasName("SupplierID");
-            builder.HasIndex(x => x.SupplierId).HasName("SuppliersProducts");
+            builder.HasIndex(x => x.CategoryId).HasDatabaseName("CategoriesProducts");
+            builder.HasIndex(x => x.CategoryId).HasDatabaseName("CategoryID");
+            builder.HasIndex(x => x.ProductName).HasDatabaseName("ProductName");
+            builder.HasIndex(x => x.SupplierId).HasDatabaseName("SupplierID");
+            builder.HasIndex(x => x.SupplierId).HasDatabaseName("SuppliersProducts");
         }
     }
 
@@ -2261,8 +2295,8 @@ namespace Efrpg.PostgreSQL
             builder.Property(x => x.Fax).HasColumnName(@"Fax").HasColumnType("character varying(24)").IsRequired(false).HasMaxLength(24);
             builder.Property(x => x.HomePage).HasColumnName(@"HomePage").HasColumnType("text").IsRequired(false).IsUnicode(false);
 
-            builder.HasIndex(x => x.CompanyName).HasName("IX_CompanyName");
-            builder.HasIndex(x => x.PostalCode).HasName("IX_PostalCode");
+            builder.HasIndex(x => x.CompanyName).HasDatabaseName("IX_CompanyName");
+            builder.HasIndex(x => x.PostalCode).HasDatabaseName("IX_PostalCode");
         }
     }
 

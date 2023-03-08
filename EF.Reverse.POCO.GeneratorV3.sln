@@ -42,6 +42,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestDatabases", "TestDataba
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PostgreSQL", "PostgreSQL", "{6BCE26F9-95D7-417E-B57E-531B6E12FB12}"
 	ProjectSection(SolutionItems) = preProject
+		EfrpgTest.sql = EfrpgTest.sql
 		TestDatabases\PostgreSQL\northwind.sql = TestDatabases\PostgreSQL\northwind.sql
 	EndProjectSection
 EndProject
@@ -61,7 +62,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Oracle", "Oracle", "{B7416F
 		TestDatabases\Oracle\northwind.sql = TestDatabases\Oracle\northwind.sql
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tester.Integration.EFCore7", "Tester.Integration.EFCore7\Tester.Integration.EFCore7.csproj", "{747315D6-274B-4B03-862A-E8664CA08E5F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tester.Integration.EFCore7", "Tester.Integration.EFCore7\Tester.Integration.EFCore7.csproj", "{747315D6-274B-4B03-862A-E8664CA08E5F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

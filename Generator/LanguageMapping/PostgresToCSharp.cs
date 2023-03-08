@@ -61,7 +61,7 @@ namespace Efrpg.LanguageMapping
                 { "smallint",                    "short" },
                 { "text",                        "string" },
                 { "time",                        "TimeSpan" },
-                { "time with time zone",         "TimeSpan" },
+                { "time with time zone",         "DateTimeOffset" },
                 { "time without time zone",      "TimeSpan" },
                 { "timetz",                      "TimeSpan" },
                 { "timestamp",                   "DateTime" },
