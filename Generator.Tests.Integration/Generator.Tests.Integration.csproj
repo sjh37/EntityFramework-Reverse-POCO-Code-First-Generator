@@ -140,7 +140,7 @@
     <None Include="TestComparison\NonPascalCased_SqlServer_EfCore7_FkLegacy.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TestComparison\PostgisTest_PostgreSQL_EfCore6_FkLegacy.cs">
+    <None Include="TestComparison\PostgisTest_PostgreSQL_EfCore7_FkLegacy.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="App.config" />
