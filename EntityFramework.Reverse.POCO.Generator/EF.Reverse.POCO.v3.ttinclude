@@ -771,6 +771,24 @@
                 default:
                     return "SqlParameter";
             }
+        }     
+        
+        public static string SqlParameterValue()
+        {
+            switch (DatabaseType)
+            {
+                case DatabaseType.PostgreSQL:
+                    return "NpgsqlValue";
+
+                case DatabaseType.MySql:
+                    return "Value";
+
+                case DatabaseType.Oracle:
+                    return "Value";
+
+                default:
+                    return "SqlValue";
+            }
         }
 
         public static string Root;
@@ -3727,6 +3745,7 @@
                 UseDatabaseProvider                    = Settings.DatabaseProvider(),
                 UseLazyLoadingProxies                  = Settings.UseLazyLoading && Settings.IsEfCore3Plus(),
                 SqlParameter                           = Settings.SqlParameter(),
+                SqlParameterValue                      = Settings.SqlParameterValue(),
                 Triggers                               = _tables.Where(x => !string.IsNullOrEmpty(x.Table.TriggerName))
                                                                 .Select(x => new Trigger { TableName = x.Table.NameHumanCase, TriggerName = x.Table.TriggerName }).ToList(),
                 MemoryOptimisedTables                  = _tables.Where(x => x.Table.IsMemoryOptimised).Select(x => x.Table.NameHumanCase).ToList()
@@ -7202,8 +7221,7 @@
                 { "bigint",                      "long" },
                 { "bigserial",                   "long" },
                 { "bit varying",                 "BitArray" },
-                { "bit(1)",                      "bool" },
-                { "bit(n)",                      "BitArray" },
+                { "bit",                         "BitArray" },
                 { "bool",                        "bool" },
                 { "boolean",                     "bool" },
                 { "box",                         "NpgsqlBox" },
@@ -16891,6 +16909,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public string DefaultSchema                                          { get; set; }
         public string UseDatabaseProvider                                    { get; set; }
         public string SqlParameter                                           { get; set; }
+        public string SqlParameterValue                                      { get; set; }
         public bool UseLazyLoadingProxies                                    { get; set; }
         public bool hasTriggers                                              { get; set; }
         public List<Trigger> Triggers                                        { get; set; }
@@ -17366,7 +17385,7 @@ using {{this}};{{#newline}}
 
     public bool IsSqlParameterNull({{SqlParameter}} param){{#newline}}
     {{{#newline}}
-        var sqlValue = param.SqlValue;{{#newline}}
+        var sqlValue = param.{{SqlParameterValue}};{{#newline}}
         var nullableValue = sqlValue as INullable;{{#newline}}
         if (nullableValue != null){{#newline}}
             return nullableValue.IsNull;{{#newline}}
@@ -18672,7 +18691,7 @@ using {{this}};{{#newline}}
 
     public bool IsSqlParameterNull({{SqlParameter}} param){{#newline}}
     {{{#newline}}
-        var sqlValue = param.SqlValue;{{#newline}}
+        var sqlValue = param.{{SqlParameterValue}};{{#newline}}
         var nullableValue = sqlValue as INullable;{{#newline}}
         if (nullableValue != null){{#newline}}
             return nullableValue.IsNull;{{#newline}}
@@ -20179,7 +20198,7 @@ using {{this}};{{#newline}}
 
     public bool IsSqlParameterNull({{SqlParameter}} param){{#newline}}
     {{{#newline}}
-        var sqlValue = param.SqlValue;{{#newline}}
+        var sqlValue = param.{{SqlParameterValue}};{{#newline}}
         var nullableValue = sqlValue as INullable;{{#newline}}
         if (nullableValue != null){{#newline}}
             return nullableValue.IsNull;{{#newline}}
@@ -21766,7 +21785,7 @@ using {{this}};{{#newline}}
 
     public bool IsSqlParameterNull({{SqlParameter}} param){{#newline}}
     {{{#newline}}
-        var sqlValue = param.SqlValue;{{#newline}}
+        var sqlValue = param.{{SqlParameterValue}};{{#newline}}
         var nullableValue = sqlValue as INullable;{{#newline}}
         if (nullableValue != null){{#newline}}
             return nullableValue.IsNull;{{#newline}}
@@ -23398,7 +23417,7 @@ using {{this}};{{#newline}}
 
     public bool IsSqlParameterNull({{SqlParameter}} param){{#newline}}
     {{{#newline}}
-        var sqlValue = param.SqlValue;{{#newline}}
+        var sqlValue = param.{{SqlParameterValue}};{{#newline}}
         var nullableValue = sqlValue as INullable;{{#newline}}
         if (nullableValue != null){{#newline}}
             return nullableValue.IsNull;{{#newline}}
@@ -25032,7 +25051,7 @@ using {{this}};{{#newline}}
 
     public bool IsSqlParameterNull({{SqlParameter}} param){{#newline}}
     {{{#newline}}
-        var sqlValue = param.SqlValue;{{#newline}}
+        var sqlValue = param.{{SqlParameterValue}};{{#newline}}
         var nullableValue = sqlValue as INullable;{{#newline}}
         if (nullableValue != null){{#newline}}
             return nullableValue.IsNull;{{#newline}}

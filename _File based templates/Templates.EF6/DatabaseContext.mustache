@@ -87,7 +87,7 @@
 
     public bool IsSqlParameterNull({{SqlParameter}} param){{#newline}}
     {{{#newline}}
-        var sqlValue = param.SqlValue;{{#newline}}
+        var sqlValue = param.{{SqlParameterValue}};{{#newline}}
         var nullableValue = sqlValue as INullable;{{#newline}}
         if (nullableValue != null){{#newline}}
             return nullableValue.IsNull;{{#newline}}
