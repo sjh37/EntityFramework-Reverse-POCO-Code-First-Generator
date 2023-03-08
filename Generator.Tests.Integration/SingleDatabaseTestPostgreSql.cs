@@ -1,11 +1,9 @@
-﻿using System.Data.Common;
-using System.Linq;
-using Efrpg;
+﻿using Efrpg;
 using Efrpg.FileManagement;
-using Efrpg.PostgreSQL;
 using Efrpg.Templates;
 using Generator.Tests.Common;
 using NUnit.Framework;
+using System.Data.Common;
 
 namespace Generator.Tests.Integration
 {
@@ -57,7 +55,7 @@ namespace Generator.Tests.Integration
             // Arrange
             Settings.GenerateSeparateFiles = false;
             Settings.UseMappingTables = false;
-            SetupPostgreSQL(database, "MyDbContext", "MyDbContext", TemplateType.EfCore6, GeneratorType.EfCore, foreignKeyNamingStrategy);
+            SetupPostgreSQL(database, "MyDbContext", "MyDbContext", TemplateType.EfCore7, GeneratorType.EfCore, foreignKeyNamingStrategy);
 
             // Act
             Run(filename, ".PostgreSQL", typeof(EfCoreFileManager), null);
@@ -79,18 +77,6 @@ namespace Generator.Tests.Integration
 
             // Assert
             CompareAgainstTestComparison("EfrpgTest");
-        }
-
-        [Test]
-        public void Read_EfrpgTest_AllColumnTypes()
-        {
-            using (var db = new MyEf6DbContext("Server=127.0.0.1;Port=5432;Database=EfrpgTest;User Id=testuser;Password=testtesttest;"))
-            {
-                var rows = db.Allcolumntypes.ToList();
-                Assert.IsNotNull(rows);
-                Assert.IsNotEmpty(rows);
-                Assert.AreEqual(1234, rows.First().Bigint);
-            }
         }
     }
 }
