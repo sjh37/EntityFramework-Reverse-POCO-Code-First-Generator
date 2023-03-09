@@ -48,6 +48,7 @@ namespace Efrpg.Generators
                     .Where(s => s.IsStoredProcedure)
                     .OrderBy(x => x.NameHumanCase)
                     .Select(sp => new StoredProcTemplateData(
+                        sp.ReturnModels.Count == 0,
                         sp.ReturnModels.Count > 0,
                         sp.ReturnModels.Count == 1,
                         sp.ReturnModels.Count > 1,

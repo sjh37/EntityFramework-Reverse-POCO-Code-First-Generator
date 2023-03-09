@@ -4,6 +4,7 @@ namespace Efrpg.Generators
 {
     public class StoredProcTemplateData
     {
+        public bool HasNoReturnModels { get; set; } // sp.ReturnModels.Count == 0
         public bool HasReturnModels { get; } // sp.ReturnModels.Count > 0
         public bool SingleReturnModel { get; } // sp.ReturnModels.Count == 1
         public bool MultipleReturnModels { get; } // sp.ReturnModels.Count > 1
@@ -38,6 +39,7 @@ namespace Efrpg.Generators
         public bool CreateDbSetForReturnModel { get; set; }
 
         public StoredProcTemplateData(
+            bool hasNoReturnModels,
             bool hasReturnModels,
             bool singleReturnModel,
             bool multipleReturnModels,
@@ -69,6 +71,7 @@ namespace Efrpg.Generators
             int returnModelsCount,
             string execWithNoReturnModel)
         {
+            HasNoReturnModels                                           = hasNoReturnModels;
             HasReturnModels                                             = hasReturnModels;
             SingleReturnModel                                           = singleReturnModel;
             MultipleReturnModels                                        = multipleReturnModels;

@@ -3448,17 +3448,22 @@
                     .Where(s => s.IsStoredProcedure)
                     .OrderBy(x => x.NameHumanCase)
                     .Select(sp => new StoredProcTemplateData(
+                        sp.ReturnModels.Count == 0,
                         sp.ReturnModels.Count > 0,
                         sp.ReturnModels.Count == 1,
                         sp.ReturnModels.Count > 1,
                         sp.WriteStoredProcReturnType(_filter),
                         sp.WriteStoredProcReturnModelName(filter),
                         sp.WriteStoredProcFunctionName(filter),
-                        sp.WriteStoredProcFunctionParams(false, false),
-                        sp.WriteStoredProcFunctionParams(false, true),
-                        sp.WriteStoredProcFunctionParams(true, false),
-                        sp.WriteStoredProcFunctionParams(true, true),
-                        sp.StoredProcHasOutParams() || sp.ReturnModels.Count == 0,
+                        sp.WriteStoredProcFunctionParams(false, false, false),
+                        sp.WriteStoredProcFunctionParams(false, true, false),
+                        sp.WriteStoredProcFunctionParams(true, false, false),
+                        sp.WriteStoredProcFunctionParams(true, true, false),
+                        sp.WriteStoredProcFunctionParams(false, false, true),
+                        sp.WriteStoredProcFunctionParams(false, true, true),
+                        sp.WriteStoredProcFunctionParams(true, false, true),
+                        sp.WriteStoredProcFunctionParams(true, true, true),
+                        !sp.StoredProcCanExecuteAsync(),
                         sp.WriteStoredProcFunctionOverloadCall(),
                         sp.WriteStoredProcFunctionSetSqlParameters(false),
                         sp.WriteStoredProcFunctionSetSqlParameters(true),
@@ -3466,13 +3471,18 @@
                             ? // exec
                             string.Format("EXEC @procResult = [{0}].[{1}] {2}", sp.Schema.DbName, sp.DbName, sp.WriteStoredProcFunctionSqlAtParams()).Trim()
                             : string.Format("[{0}].[{1}]", sp.Schema.DbName, sp.DbName),
-                        sp.ReturnModels.Count == 1
+                        sp.ReturnModels.Count == 0
                             ? // Async exec
-                            string.Format("EXEC [{0}].[{1}] {2}", sp.Schema.DbName, sp.DbName, sp.WriteStoredProcFunctionSqlAtParams()).Trim()
-                            : string.Format("[{0}].[{1}]", sp.Schema.DbName, sp.DbName),
+                            string.Format("EXEC @procResult = [{0}].[{1}] {2}", sp.Schema.DbName, sp.DbName, sp.WriteStoredProcFunctionSqlAtParams()).Trim()
+                            : sp.ReturnModels.Count == 1
+                                ?
+                                string.Format("EXEC [{0}].[{1}] {2}", sp.Schema.DbName, sp.DbName, sp.WriteStoredProcFunctionSqlAtParams()).Trim()
+                                : string.Format("[{0}].[{1}]", sp.Schema.DbName, sp.DbName),
                         sp.WriteStoredProcReturnModelName(_filter),
-                        sp.WriteStoredProcFunctionSqlParameterAnonymousArray(true, true),
-                        sp.WriteStoredProcFunctionSqlParameterAnonymousArray(false, true),
+                        sp.WriteStoredProcFunctionSqlParameterAnonymousArray(true, true, false),
+                        sp.WriteStoredProcFunctionSqlParameterAnonymousArray(false, true, false),
+                        sp.WriteStoredProcFunctionSqlParameterAnonymousArray(true, true, true),
+                        sp.WriteStoredProcFunctionSqlParameterAnonymousArray(false, true, true),
                         sp.WriteStoredProcFunctionDeclareSqlParameter(true),
                         sp.WriteStoredProcFunctionDeclareSqlParameter(false),
                         sp.Parameters.OrderBy(x => x.Ordinal).Select(sp.WriteStoredProcSqlParameterName).ToList(),
@@ -6572,25 +6582,32 @@
 
     public class StoredProcTemplateData
     {
+        public bool HasNoReturnModels { get; set; } // sp.ReturnModels.Count == 0
         public bool HasReturnModels { get; } // sp.ReturnModels.Count > 0
         public bool SingleReturnModel { get; } // sp.ReturnModels.Count == 1
         public bool MultipleReturnModels { get; } // sp.ReturnModels.Count > 1
         public string ReturnType { get; } // sp.WriteStoredProcReturnType()
         public string ReturnModelName { get; } // sp.WriteStoredProcReturnModelName()
         public string FunctionName { get; } // sp.WriteStoredProcFunctionName()
-        public string WriteStoredProcFunctionParamsFalseFalse { get; } // WriteStoredProcFunctionParams(false, false)
-        public string WriteStoredProcFunctionParamsFalseTrue { get; } // WriteStoredProcFunctionParams(false, true)
-        public string WriteStoredProcFunctionParamsTrueFalse { get; } // WriteStoredProcFunctionParams(true, false)
-        public string WriteStoredProcFunctionParamsTrueTrue { get; } // WriteStoredProcFunctionParams(true, true)
-        public bool AsyncFunctionCannotBeCreated { get; } // sp.StoredProcHasOutParams() || sp.ReturnModels.Count == 0
+        public string WriteStoredProcFunctionParamsFalseFalse { get; } // WriteStoredProcFunctionParams(false, false, false)
+        public string WriteStoredProcFunctionParamsFalseTrue { get; } // WriteStoredProcFunctionParams(false, true, false)
+        public string WriteStoredProcFunctionParamsTrueFalse { get; } // WriteStoredProcFunctionParams(true, false, false)
+        public string WriteStoredProcFunctionParamsTrueTrue { get; } // WriteStoredProcFunctionParams(true, true, false)
+        public string WriteStoredProcFunctionParamsFalseFalseToken { get; } // WriteStoredProcFunctionParams(false, false, true)
+        public string WriteStoredProcFunctionParamsFalseTrueToken { get; } // WriteStoredProcFunctionParams(false, true, true)
+        public string WriteStoredProcFunctionParamsTrueFalseToken { get; } // WriteStoredProcFunctionParams(true, false, true)
+        public string WriteStoredProcFunctionParamsTrueTrueToken { get; } // WriteStoredProcFunctionParams(true, true, true)
+        public bool AsyncFunctionCannotBeCreated { get; } // !sp.StoredProcCanExecuteAsync()
         public string WriteStoredProcFunctionOverloadCall { get; } // sp.WriteStoredProcFunctionOverloadCall()
         public string WriteStoredProcFunctionSetSqlParametersFalse { get; } // WriteStoredProcFunctionSetSqlParameters(false)
         public string WriteStoredProcFunctionSetSqlParametersTrue { get; } // WriteStoredProcFunctionSetSqlParameters(true)
         public string Exec { get; }
         public string AsyncExec { get; }
         public string WriteStoredProcReturnModelName { get; } // sp.WriteStoredProcReturnModelName()
-        public string WriteStoredProcFunctionSqlParameterAnonymousArrayTrue { get; } // sp.WriteStoredProcFunctionSqlParameterAnonymousArray(true)
-        public string WriteStoredProcFunctionSqlParameterAnonymousArrayFalse { get; } // sp.WriteStoredProcFunctionSqlParameterAnonymousArray(false)
+        public string WriteStoredProcFunctionSqlParameterAnonymousArrayTrue { get; } // sp.WriteStoredProcFunctionSqlParameterAnonymousArray(true, true, false)
+        public string WriteStoredProcFunctionSqlParameterAnonymousArrayFalse { get; } // sp.WriteStoredProcFunctionSqlParameterAnonymousArray(false, true, false)
+        public string WriteStoredProcFunctionSqlParameterAnonymousArrayTrueToken { get; } // sp.WriteStoredProcFunctionSqlParameterAnonymousArray(true, true, true)
+        public string WriteStoredProcFunctionSqlParameterAnonymousArrayFalseToken { get; } // sp.WriteStoredProcFunctionSqlParameterAnonymousArray(false, true, true)
         public string WriteStoredProcFunctionDeclareSqlParameterTrue { get; } // sp.WriteStoredProcFunctionDeclareSqlParameter(true)
         public string WriteStoredProcFunctionDeclareSqlParameterFalse { get; } // sp.WriteStoredProcFunctionDeclareSqlParameter(false)
         public List<string> Parameters { get; }
@@ -6600,6 +6617,7 @@
         public bool CreateDbSetForReturnModel { get; set; }
 
         public StoredProcTemplateData(
+            bool hasNoReturnModels,
             bool hasReturnModels,
             bool singleReturnModel,
             bool multipleReturnModels,
@@ -6610,6 +6628,10 @@
             string writeStoredProcFunctionParamsFalseTrue,
             string writeStoredProcFunctionParamsTrueFalse,
             string writeStoredProcFunctionParamsTrueTrue,
+            string writeStoredProcFunctionParamsFalseFalseToken,
+            string writeStoredProcFunctionParamsFalseTrueToken,
+            string writeStoredProcFunctionParamsTrueFalseToken,
+            string writeStoredProcFunctionParamsTrueTrueToken,
             bool asyncFunctionCannotBeCreated,
             string writeStoredProcFunctionOverloadCall,
             string writeStoredProcFunctionSetSqlParametersFalse,
@@ -6619,36 +6641,45 @@
             string writeStoredProcReturnModelName,
             string writeStoredProcFunctionSqlParameterAnonymousArrayTrue,
             string writeStoredProcFunctionSqlParameterAnonymousArrayFalse,
+            string writeStoredProcFunctionSqlParameterAnonymousArrayTrueToken,
+            string writeStoredProcFunctionSqlParameterAnonymousArrayFalseToken,
             string writeStoredProcFunctionDeclareSqlParameterTrue,
             string writeStoredProcFunctionDeclareSqlParameterFalse,
             List<string> parameters,
             int returnModelsCount,
             string execWithNoReturnModel)
         {
-            HasReturnModels                                        = hasReturnModels;
-            SingleReturnModel                                      = singleReturnModel;
-            MultipleReturnModels                                   = multipleReturnModels;
-            ReturnType                                             = returnType;
-            ReturnModelName                                        = returnModelName;
-            FunctionName                                           = functionName;
-            WriteStoredProcFunctionParamsFalseFalse                = writeStoredProcFunctionParamsFalseFalse;
-            WriteStoredProcFunctionParamsFalseTrue                 = writeStoredProcFunctionParamsFalseTrue;
-            WriteStoredProcFunctionParamsTrueFalse                 = writeStoredProcFunctionParamsTrueFalse;
-            WriteStoredProcFunctionParamsTrueTrue                  = writeStoredProcFunctionParamsTrueTrue;
-            AsyncFunctionCannotBeCreated                           = asyncFunctionCannotBeCreated;
-            WriteStoredProcFunctionOverloadCall                    = writeStoredProcFunctionOverloadCall;
-            WriteStoredProcFunctionSetSqlParametersFalse           = writeStoredProcFunctionSetSqlParametersFalse;
-            WriteStoredProcFunctionSetSqlParametersTrue            = writeStoredProcFunctionSetSqlParametersTrue;
-            Exec                                                   = exec;
-            AsyncExec                                              = asyncExec;
-            WriteStoredProcReturnModelName                         = writeStoredProcReturnModelName;
-            WriteStoredProcFunctionSqlParameterAnonymousArrayTrue  = writeStoredProcFunctionSqlParameterAnonymousArrayTrue;
-            WriteStoredProcFunctionSqlParameterAnonymousArrayFalse = writeStoredProcFunctionSqlParameterAnonymousArrayFalse;
-            WriteStoredProcFunctionDeclareSqlParameterTrue         = writeStoredProcFunctionDeclareSqlParameterTrue;
-            WriteStoredProcFunctionDeclareSqlParameterFalse        = writeStoredProcFunctionDeclareSqlParameterFalse;
-            Parameters                                             = parameters;
-            ReturnModelsCount                                      = returnModelsCount;
-            ExecWithNoReturnModel                                  = execWithNoReturnModel;
+            HasNoReturnModels                                           = hasNoReturnModels;
+            HasReturnModels                                             = hasReturnModels;
+            SingleReturnModel                                           = singleReturnModel;
+            MultipleReturnModels                                        = multipleReturnModels;
+            ReturnType                                                  = returnType;
+            ReturnModelName                                             = returnModelName;
+            FunctionName                                                = functionName;
+            WriteStoredProcFunctionParamsFalseFalse                     = writeStoredProcFunctionParamsFalseFalse;
+            WriteStoredProcFunctionParamsFalseTrue                      = writeStoredProcFunctionParamsFalseTrue;
+            WriteStoredProcFunctionParamsTrueFalse                      = writeStoredProcFunctionParamsTrueFalse;
+            WriteStoredProcFunctionParamsTrueTrue                       = writeStoredProcFunctionParamsTrueTrue;
+            WriteStoredProcFunctionParamsFalseFalseToken                = writeStoredProcFunctionParamsFalseFalseToken;
+            WriteStoredProcFunctionParamsFalseTrueToken                 = writeStoredProcFunctionParamsFalseTrueToken;
+            WriteStoredProcFunctionParamsTrueFalseToken                 = writeStoredProcFunctionParamsTrueFalseToken;
+            WriteStoredProcFunctionParamsTrueTrueToken                  = writeStoredProcFunctionParamsTrueTrueToken;
+            AsyncFunctionCannotBeCreated                                = asyncFunctionCannotBeCreated;
+            WriteStoredProcFunctionOverloadCall                         = writeStoredProcFunctionOverloadCall;
+            WriteStoredProcFunctionSetSqlParametersFalse                = writeStoredProcFunctionSetSqlParametersFalse;
+            WriteStoredProcFunctionSetSqlParametersTrue                 = writeStoredProcFunctionSetSqlParametersTrue;
+            Exec                                                        = exec;
+            AsyncExec                                                   = asyncExec;
+            WriteStoredProcReturnModelName                              = writeStoredProcReturnModelName;
+            WriteStoredProcFunctionSqlParameterAnonymousArrayTrue       = writeStoredProcFunctionSqlParameterAnonymousArrayTrue;
+            WriteStoredProcFunctionSqlParameterAnonymousArrayFalse      = writeStoredProcFunctionSqlParameterAnonymousArrayFalse;
+            WriteStoredProcFunctionSqlParameterAnonymousArrayTrueToken  = writeStoredProcFunctionSqlParameterAnonymousArrayTrueToken;
+            WriteStoredProcFunctionSqlParameterAnonymousArrayFalseToken = writeStoredProcFunctionSqlParameterAnonymousArrayFalseToken;
+            WriteStoredProcFunctionDeclareSqlParameterTrue              = writeStoredProcFunctionDeclareSqlParameterTrue;
+            WriteStoredProcFunctionDeclareSqlParameterFalse             = writeStoredProcFunctionDeclareSqlParameterFalse;
+            Parameters                                                  = parameters;
+            ReturnModelsCount                                           = returnModelsCount;
+            ExecWithNoReturnModel                                       = execWithNoReturnModel;
 
             CreateDbSetForReturnModel = true;
 
@@ -16091,7 +16122,12 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             return Parameters.Any(x => x.Mode != StoredProcedureParameterMode.In);
         }
 
-        public string WriteStoredProcFunctionParams(bool includeProcResult, bool forInterface)
+        public bool StoredProcCanExecuteAsync()
+        {
+            return !StoredProcHasOutParams() && !IsTableValuedFunction && ReturnModels.Count <= 1;
+        }
+
+        public string WriteStoredProcFunctionParams(bool includeProcResult, bool forInterface, bool includeCancellationToken = false)
         {
             var willIncludeProcResult = includeProcResult && ReturnModels.Count > 0 && ReturnModels.First().Count > 0;
             var sb = new StringBuilder(255);
@@ -16119,7 +16155,10 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             if (willIncludeProcResult)
                 sb.Append("out int procResult, ");
 
-            if(willIncludeProcResult || sb.Length > 2)
+            if (includeCancellationToken)
+                sb.Append("CancellationToken cancellationToken = default(CancellationToken), ");
+
+            if (includeCancellationToken || willIncludeProcResult || sb.Length > 2)
                 sb.Length -= 2;
 
             return sb.ToString();
@@ -16261,11 +16300,15 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             return sb.ToString();
         }
 
-        public string WriteStoredProcFunctionSqlParameterAnonymousArray(bool includeProcResultParam, bool appendParam)
+        public string WriteStoredProcFunctionSqlParameterAnonymousArray(bool includeProcResultParam, bool appendParam, bool includeCancellationToken = false)
         {
             var sb = new StringBuilder(255);
             var parameters = Parameters.OrderBy(x => x.Ordinal).ToList();
             var hasParam = parameters.Any();
+
+            if (includeCancellationToken)
+                sb.Append(", cancellationToken");
+
             if (hasParam || includeProcResultParam)
                 sb.Append(", ");
 
@@ -17207,7 +17250,7 @@ using {{this}};{{#newline}}
 {{#if AsyncFunctionCannotBeCreated}}
     // {{FunctionName}}Async() cannot be created due to having out parameters, or is relying on the procedure result ({{ReturnType}}){{#newline}}
 {{#else}}
-    Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalseTrue}});{{#newline}}
+    Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalseTrueToken}});{{#newline}}
 {{/if}}
 {{#newline}}
 {{/each}}
@@ -17520,11 +17563,18 @@ using {{this}};{{#newline}}
     // {{FunctionName}}Async() cannot be created due to having out parameters, or is relying on the procedure result ({{ReturnType}}){{#newline}}
 {{#newline}}
 {{#else}}{{#! if AsyncFunctionCannotBeCreated }}
-    public async Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
+    public async Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalseFalseToken}}){{#newline}}
     {{{#newline}}
+{{#if HasNoReturnModels}}
+{{WriteStoredProcFunctionDeclareSqlParameterTrue}}
+{{#newline}}
+        await Database.ExecuteSqlCommandAsync(TransactionalBehavior.DoNotEnsureTransaction, ""{{AsyncExec}}""{{WriteStoredProcFunctionSqlParameterAnonymousArrayTrueToken}});{{#newline}}
+{{#newline}}
+        return (int)procResultParam.Value;{{#newline}}
+{{#else}}
 {{WriteStoredProcFunctionDeclareSqlParameterFalse}}
 {{#if SingleReturnModel}}
-        var procResultData = await Database.SqlQuery<{{WriteStoredProcReturnModelName}}>(""{{AsyncExec}}""{{WriteStoredProcFunctionSqlParameterAnonymousArrayFalse}}).ToListAsync();{{#newline}}
+        var procResultData = await Database.SqlQuery<{{WriteStoredProcReturnModelName}}>(""{{AsyncExec}}""{{WriteStoredProcFunctionSqlParameterAnonymousArrayFalse}}).ToListAsync(cancellationToken);{{#newline}}
 {{#else}}
         var procResultData = new {{WriteStoredProcReturnModelName}}();{{#newline}}
         var cmd = Database.Connection.CreateCommand();{{#newline}}
@@ -17555,6 +17605,7 @@ using {{this}};{{#newline}}
 {{WriteStoredProcFunctionSetSqlParametersFalse}}
 {{/if}}{{#! if AsyncFunctionCannotBeCreated }}
         return procResultData;{{#newline}}
+{{/if}}
     }{{#newline}}
 {{#newline}}
 {{/if}}

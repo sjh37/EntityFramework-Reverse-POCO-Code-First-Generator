@@ -54,7 +54,7 @@ namespace Efrpg
 
         public bool StoredProcCanExecuteAsync()
         {
-            return !StoredProcHasOutParams() && !IsTableValuedFunction && ReturnModels.Count == 0;
+            return !StoredProcHasOutParams() && !IsTableValuedFunction && ReturnModels.Count <= 1;
         }
 
         public string WriteStoredProcFunctionParams(bool includeProcResult, bool forInterface, bool includeCancellationToken = false)
