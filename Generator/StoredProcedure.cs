@@ -230,17 +230,20 @@ namespace Efrpg
             return sb.ToString();
         }
 
-        public string WriteStoredProcFunctionSqlParameterAnonymousArray(bool includeProcResultParam, bool appendParam, bool includeCancellationToken = false)
+        public string WriteStoredProcFunctionSqlParameterAnonymousArray(bool includeProcResultParam, bool appendParam, bool includeCancellationToken = false, bool isEfCore3Plus = false)
         {
             var sb = new StringBuilder(255);
             var parameters = Parameters.OrderBy(x => x.Ordinal).ToList();
             var hasParam = parameters.Any();
 
-            if (includeCancellationToken)
+            if (!isEfCore3Plus && includeCancellationToken)
                 sb.Append(", cancellationToken");
 
             if (hasParam || includeProcResultParam)
                 sb.Append(", ");
+
+            if (isEfCore3Plus && (hasParam || includeProcResultParam))
+                sb.Append(" new[] {");
 
             foreach (var p in Parameters.OrderBy(x => x.Ordinal))
             {
@@ -252,6 +255,11 @@ namespace Efrpg
                 sb.Append("procResultParam");
             else if (hasParam)
                 sb.Remove(sb.Length - 2, 2);
+
+            if (isEfCore3Plus && (hasParam || includeProcResultParam))
+                sb.Append("}");
+            if (isEfCore3Plus && includeCancellationToken)
+                sb.Append(", cancellationToken");
 
             return sb.ToString();
         }
