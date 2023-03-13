@@ -3481,8 +3481,8 @@
                         sp.WriteStoredProcReturnModelName(_filter),
                         sp.WriteStoredProcFunctionSqlParameterAnonymousArray(true, true, false),
                         sp.WriteStoredProcFunctionSqlParameterAnonymousArray(false, true, false),
-                        sp.WriteStoredProcFunctionSqlParameterAnonymousArray(true, true, true),
-                        sp.WriteStoredProcFunctionSqlParameterAnonymousArray(false, true, true),
+                        sp.WriteStoredProcFunctionSqlParameterAnonymousArray(true, true, true, isEfCore3Plus),
+                        sp.WriteStoredProcFunctionSqlParameterAnonymousArray(false, true, true, isEfCore3Plus),
                         sp.WriteStoredProcFunctionDeclareSqlParameter(true),
                         sp.WriteStoredProcFunctionDeclareSqlParameter(false),
                         sp.Parameters.OrderBy(x => x.Ordinal).Select(sp.WriteStoredProcSqlParameterName).ToList(),
@@ -16300,17 +16300,20 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             return sb.ToString();
         }
 
-        public string WriteStoredProcFunctionSqlParameterAnonymousArray(bool includeProcResultParam, bool appendParam, bool includeCancellationToken = false)
+        public string WriteStoredProcFunctionSqlParameterAnonymousArray(bool includeProcResultParam, bool appendParam, bool includeCancellationToken = false, bool isEfCore3Plus = false)
         {
             var sb = new StringBuilder(255);
             var parameters = Parameters.OrderBy(x => x.Ordinal).ToList();
             var hasParam = parameters.Any();
 
-            if (includeCancellationToken)
+            if (!isEfCore3Plus && includeCancellationToken)
                 sb.Append(", cancellationToken");
 
             if (hasParam || includeProcResultParam)
                 sb.Append(", ");
+
+            if (isEfCore3Plus && (hasParam || includeProcResultParam))
+                sb.Append(" new[] {");
 
             foreach (var p in Parameters.OrderBy(x => x.Ordinal))
             {
@@ -16322,6 +16325,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 sb.Append("procResultParam");
             else if (hasParam)
                 sb.Remove(sb.Length - 2, 2);
+
+            if (isEfCore3Plus && (hasParam || includeProcResultParam))
+                sb.Append("}");
+            if (isEfCore3Plus && includeCancellationToken)
+                sb.Append(", cancellationToken");
 
             return sb.ToString();
         }
@@ -20097,13 +20105,13 @@ using {{this}};{{#newline}}
     int {{FunctionName}}({{WriteStoredProcFunctionParamsTrueTrue}});{{#newline}}
 {{/if}}
 
-{{#if AsyncFunctionCannotBeCreated}}
-    // {{FunctionName}}Async() cannot be created due to having out parameters, or is relying on the procedure result ({{ReturnType}}){{#newline}}
-{{#else}}
 {{#if MultipleReturnModels}}
     // Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalseTrue}}); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.{{#newline}}
 {{#else}}
-    Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalseTrue}});{{#newline}}
+{{#if AsyncFunctionCannotBeCreated}}
+    // {{FunctionName}}Async() cannot be created due to having out parameters, or is relying on the procedure result ({{ReturnType}}){{#newline}}
+{{#else}}
+    Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalseTrueToken}});{{#newline}}
 {{/if}}
 {{/if}}
 {{#newline}}
@@ -20362,15 +20370,23 @@ using {{this}};{{#newline}}
 {{/if}}
 {{#newline}}
 
+{{#if MultipleReturnModels}}
+    // public async Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalseFalseToken}}) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.{{#newline}}
+{{#newline}}
+{{#else}}
 {{#if AsyncFunctionCannotBeCreated}}
     // {{FunctionName}}Async() cannot be created due to having out parameters, or is relying on the procedure result ({{ReturnType}}){{#newline}}
 {{#newline}}
 {{#else}}
-{{#if MultipleReturnModels}}
-    // public async Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalseFalse}}) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.{{#newline}}
-{{#else}}
-    public async Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
+    public async Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalseFalseToken}}){{#newline}}
     {{{#newline}}
+{{#if HasNoReturnModels}}
+{{WriteStoredProcFunctionDeclareSqlParameterTrue}}
+{{#newline}}
+        await Database.ExecuteSqlRawAsync(""{{AsyncExec}}""{{WriteStoredProcFunctionSqlParameterAnonymousArrayTrueToken}});{{#newline}}
+{{#newline}}
+        return (int)procResultParam.Value;{{#newline}}
+{{#else}}
 {{WriteStoredProcFunctionDeclareSqlParameterFalse}}
 {{WriteStoredProcFunctionSetSqlParametersFalse}}
         const string sqlCommand = ""{{AsyncExec}}"";{{#newline}}
@@ -20379,6 +20395,7 @@ using {{this}};{{#newline}}
             .ToListAsync();{{#newline}}{{#newline}}
 
         return procResultData;{{#newline}}
+{{/if}}
     }{{#newline}}
 {{/if}}
 {{#newline}}
