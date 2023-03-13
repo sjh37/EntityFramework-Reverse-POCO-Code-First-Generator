@@ -4520,17 +4520,7 @@ namespace TestDatabaseStandard
         /// <summary>
         /// Parent HasPrincipalKeyTestParent pointed by [HasPrincipalKeyTestChild].([A], [B]) (FK_HasPrincipalKey_AB)
         /// </summary>
-        public virtual HasPrincipalKeyTestParent HasPrincipalKeyTestParent_A { get; set; } // FK_HasPrincipalKey_AB
-
-        /// <summary>
-        /// Parent HasPrincipalKeyTestParent pointed by [HasPrincipalKeyTestChild].([C]) (FK_HasPrincipalKey_AC)
-        /// </summary>
-        public virtual HasPrincipalKeyTestParent HasPrincipalKeyTestParent_C { get; set; } // FK_HasPrincipalKey_AC
-
-        /// <summary>
-        /// Parent HasPrincipalKeyTestParent pointed by [HasPrincipalKeyTestChild].([D]) (FK_HasPrincipalKey_CD)
-        /// </summary>
-        public virtual HasPrincipalKeyTestParent HasPrincipalKeyTestParent_D { get; set; } // FK_HasPrincipalKey_CD
+        public virtual HasPrincipalKeyTestParent HasPrincipalKeyTestParent { get; set; } // FK_HasPrincipalKey_AB
     }
 
     // HasPrincipalKeyTestParent
@@ -4548,22 +4538,6 @@ namespace TestDatabaseStandard
         /// Parent (One-to-One) HasPrincipalKeyTestParent pointed by [HasPrincipalKeyTestChild].([A], [B]) (FK_HasPrincipalKey_AB)
         /// </summary>
         public virtual HasPrincipalKeyTestChild HasPrincipalKeyTestChild { get; set; } // HasPrincipalKeyTestChild.FK_HasPrincipalKey_AB
-
-        /// <summary>
-        /// Child HasPrincipalKeyTestChilds where [HasPrincipalKeyTestChild].[C] point to this entity (FK_HasPrincipalKey_AC)
-        /// </summary>
-        public virtual ICollection<HasPrincipalKeyTestChild> HasPrincipalKeyTestChilds_C { get; set; } // HasPrincipalKeyTestChild.FK_HasPrincipalKey_AC
-
-        /// <summary>
-        /// Child HasPrincipalKeyTestChilds where [HasPrincipalKeyTestChild].[D] point to this entity (FK_HasPrincipalKey_CD)
-        /// </summary>
-        public virtual ICollection<HasPrincipalKeyTestChild> HasPrincipalKeyTestChilds_D { get; set; } // HasPrincipalKeyTestChild.FK_HasPrincipalKey_CD
-
-        public HasPrincipalKeyTestParent()
-        {
-            HasPrincipalKeyTestChilds_C = new List<HasPrincipalKeyTestChild>();
-            HasPrincipalKeyTestChilds_D = new List<HasPrincipalKeyTestChild>();
-        }
     }
 
     // header
@@ -6192,9 +6166,7 @@ namespace TestDatabaseStandard
             builder.Property(x => x.D).HasColumnName(@"D").HasColumnType("int").IsRequired(false);
 
             // Foreign keys
-            builder.HasOne(a => a.HasPrincipalKeyTestParent_A).WithOne(b => b.HasPrincipalKeyTestChild).HasPrincipalKey<HasPrincipalKeyTestParent>(p => new { p.Aa, p.Bb }).HasForeignKey<HasPrincipalKeyTestChild>(c => new { c.A, c.B }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_HasPrincipalKey_AB");
-            builder.HasOne(a => a.HasPrincipalKeyTestParent_C).WithMany(b => b.HasPrincipalKeyTestChilds_C).HasPrincipalKey(p => p.Cc).HasForeignKey(c => c.C).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_HasPrincipalKey_AC");
-            builder.HasOne(a => a.HasPrincipalKeyTestParent_D).WithMany(b => b.HasPrincipalKeyTestChilds_D).HasPrincipalKey(p => p.Dd).HasForeignKey(c => c.D).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_HasPrincipalKey_CD");
+            builder.HasOne(a => a.HasPrincipalKeyTestParent).WithOne(b => b.HasPrincipalKeyTestChild).HasPrincipalKey<HasPrincipalKeyTestParent>(p => new { p.Aa, p.Bb }).HasForeignKey<HasPrincipalKeyTestChild>(c => new { c.A, c.B }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_HasPrincipalKey_AB");
         }
     }
 
