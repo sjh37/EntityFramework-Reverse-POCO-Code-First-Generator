@@ -706,7 +706,7 @@ using {{this}};{{#newline}}
     // {{FunctionName}}Async() cannot be created due to having out parameters, or is relying on the procedure result ({{ReturnType}}){{#newline}}
 {{#newline}}
 {{#else}}
-    public Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
+    public Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalseFalseToken}}){{#newline}}
     {{{#newline}}
         int procResult;{{#newline}}
         return Task.FromResult({{FunctionName}}({{WriteStoredProcFunctionOverloadCall}}));{{#newline}}
@@ -724,7 +724,7 @@ using {{this}};{{#newline}}
 {{#if AsyncFunctionCannotBeCreated}}
     // {{FunctionName}}Async() cannot be created due to having out parameters, or is relying on the procedure result ({{ReturnType}}){{#newline}}
 {{#else}}
-    public Task<int> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
+    public Task<int> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalseFalseToken}}){{#newline}}
     {{{#newline}}
 {{WriteStoredProcFunctionSetSqlParametersTrue}}
         return Task.FromResult(0);{{#newline}}
