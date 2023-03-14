@@ -13,6 +13,7 @@ namespace Efrpg.Readers
             switch (Settings.DatabaseType)
             {
                 case DatabaseType.SqlServer:
+                case DatabaseType.SQLite:
                     return new SqlServerDatabaseReader(factory, databaseToPropertyType);
 
                 case DatabaseType.SqlCe:

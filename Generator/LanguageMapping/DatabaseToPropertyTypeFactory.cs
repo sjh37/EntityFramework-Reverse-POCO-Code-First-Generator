@@ -19,6 +19,9 @@ namespace Efrpg.LanguageMapping
                 case DatabaseType.SqlCe:
                     return new SqlServerLanguageFactory();
 
+                case DatabaseType.SQLite:
+                    return new SQLiteLanguageFactory();
+
                 case DatabaseType.Plugin:
                     return new PluginLanguageFactory();
 

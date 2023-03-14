@@ -12,7 +12,7 @@ namespace Efrpg
     {
         // Main settings **********************************************************************************************************************
         // The following entries are the only required settings.
-        public static DatabaseType DatabaseType                         = DatabaseType.SqlServer; // SqlServer, SqlCe, PostgreSQL. Coming next: MySql, Oracle
+        public static DatabaseType DatabaseType                         = DatabaseType.SqlServer; // SqlServer, SqlCe, SQLite, PostgreSQL. Coming next: MySql, Oracle
         public static TemplateType TemplateType                         = TemplateType.EfCore7; // EfCore7, EfCore6, EfCore5, EfCore3, EfCore2, Ef6, FileBasedCore2-7. FileBased specify folder using Settings.TemplateFolder
         public static GeneratorType GeneratorType                       = GeneratorType.EfCore; // EfCore, Ef6, Custom. Custom edit GeneratorCustom class to provide your own implementation
         public static ForeignKeyNamingStrategy ForeignKeyNamingStrategy = ForeignKeyNamingStrategy.Legacy; // Please use Legacy for now, Latest (not yet ready)

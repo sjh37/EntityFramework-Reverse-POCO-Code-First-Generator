@@ -184,6 +184,9 @@ using {{this}};{{#newline}}
                 case DatabaseType.Plugin:
                     usings.Add("Microsoft.Data.SqlClient");
                     break;
+                case DatabaseType.SQLite:
+                    usings.Add("Microsoft.Data.Sqlite");
+                    break;
                 case DatabaseType.PostgreSQL:
                     break;
                 case DatabaseType.MySql:

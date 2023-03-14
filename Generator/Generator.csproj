@@ -93,6 +93,7 @@
     <Compile Include="LanguageMapping\GenerationLanguage.cs" />
     <Compile Include="LanguageMapping\LanguageFactories\IDatabaseLanguageFactory.cs" />
     <Compile Include="LanguageMapping\LanguageFactories\MySqlLanguageFactory.cs" />
+    <Compile Include="LanguageMapping\LanguageFactories\SQLiteLanguageFactory.cs" />
     <Compile Include="LanguageMapping\MySqlToCSharp.cs" />
     <Compile Include="LanguageMapping\LanguageFactories\OracleLanguageFactory.cs" />
     <Compile Include="LanguageMapping\OracleToCSharp.cs" />
@@ -100,6 +101,7 @@
     <Compile Include="LanguageMapping\LanguageFactories\PostgresLanguageFactory.cs" />
     <Compile Include="LanguageMapping\PostgresToCSharp.cs" />
     <Compile Include="LanguageMapping\LanguageFactories\SqlServerLanguageFactory.cs" />
+    <Compile Include="LanguageMapping\SQLiteToCSharp.cs" />
     <Compile Include="LanguageMapping\SqlServerToJavascript.cs" />
     <Compile Include="Licensing\LicenceType.cs" />
     <Compile Include="LanguageMapping\SqlServerToCSharp.cs" />
