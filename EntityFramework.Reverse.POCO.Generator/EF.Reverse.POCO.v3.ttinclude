@@ -13575,8 +13575,10 @@ and limitations under the License.
             switch (Settings.DatabaseType)
             {
                 case DatabaseType.SqlServer:
-                case DatabaseType.SQLite:
                     return new SqlServerDatabaseReader(factory, databaseToPropertyType);
+
+                case DatabaseType.SQLite:
+                    return new SQLiteDatabaseReader(factory, databaseToPropertyType);
 
                 case DatabaseType.SqlCe:
                     return new SqlServerCeDatabaseReader(factory, databaseToPropertyType);
@@ -14668,6 +14670,446 @@ ORDER BY SchemaName, TableName, TriggerName;";
             SchemaName  = schemaName;
             TableName   = tableName;
             TriggerName = triggerName;
+        }
+    }
+
+    public class SQLiteDatabaseReader : DatabaseReader
+    {
+        public SQLiteDatabaseReader(DbProviderFactory factory, IDatabaseToPropertyType databaseToPropertyType)
+            : base(factory, databaseToPropertyType)
+        {
+            StoredProcedureParameterDbType = new Dictionary<string, string>
+            {
+                { string.Empty,     "TEXT" }, // default
+                { "byte",           "INTEGER" },
+                { "ByteEnum",       "INTEGER" },
+                { "DateTime",       "TEXT" },
+                { "DateTimeOffset", "TEXT" },
+                { "decimal",        "TEXT" },
+                { "double",         "REAL" },
+                { "float",          "REAL" },
+                { "Guid",           "TEXT" },
+                { "int",            "INTEGER" },
+                { "IntEnum",        "INTEGER" },
+                { "long",           "INTEGER" },
+                { "LongEnum",       "INTEGER" },
+                { "sbyte",          "INTEGER" },
+                { "SByteEnum",      "INTEGER" },
+                { "short",          "INTEGER" },
+                { "ShortEnum",      "INTEGER" },
+                { "string",         "TEXT" },
+                { "TimeSpan",       "TEXT" },
+                { "uint",           "INTEGER" },
+                { "UIntEnum",       "INTEGER" },
+                { "ulong",          "INTEGER" },
+                { "ULongEnum",      "INTEGER" },
+                { "ushort",         "INTEGER" },
+                { "UShortEnum",     "INTEGER" }
+            };
+        }
+
+        protected override string TableSQL()
+        {
+            return @"
+SET NOCOUNT ON;
+IF OBJECT_ID('tempdb..#Columns')     IS NOT NULL DROP TABLE #Columns;
+IF OBJECT_ID('tempdb..#PrimaryKeys') IS NOT NULL DROP TABLE #PrimaryKeys;
+IF OBJECT_ID('tempdb..#ForeignKeys') IS NOT NULL DROP TABLE #ForeignKeys;
+
+SELECT
+    c.TABLE_SCHEMA,
+    c.TABLE_NAME,
+    c.COLUMN_NAME,
+    c.ORDINAL_POSITION,
+    c.COLUMN_DEFAULT,
+    sc.IS_NULLABLE,
+    c.DATA_TYPE,
+    c.CHARACTER_MAXIMUM_LENGTH,
+    c.NUMERIC_PRECISION,
+    c.NUMERIC_SCALE,
+    c.DATETIME_PRECISION,
+
+    ss.schema_id,
+    st.object_id AS table_object_id,
+    sv.object_id AS view_object_id,
+
+    sc.is_identity,
+    sc.is_rowguidcol,
+    sc.is_computed, -- Computed columns are read-only, do not confuse it with a column with a DEFAULT expression (which can be re-assigned). See the IsStoreGenerated attribute.
+    CONVERT( tinyint, [sc].[generated_always_type] ) AS generated_always_type -- SQL Server 2016 (13.x) or later. 0 = Not generated, 1 = AS_ROW_START, 2 = AS_ROW_END
+
+INTO
+    #Columns
+FROM
+    INFORMATION_SCHEMA.COLUMNS c
+
+    INNER JOIN sys.schemas AS ss ON c.TABLE_SCHEMA = ss.[name]
+    LEFT OUTER JOIN sys.tables AS st ON st.schema_id = ss.schema_id AND st.[name] = c.TABLE_NAME
+    LEFT OUTER JOIN sys.views AS sv ON sv.schema_id = ss.schema_id AND sv.[name] = c.TABLE_NAME
+    INNER JOIN sys.all_columns AS sc ON sc.object_id = COALESCE( st.object_id, sv.object_id ) AND c.COLUMN_NAME = sc.[name]
+
+WHERE
+    c.TABLE_NAME NOT IN ('EdmMetadata', '__MigrationHistory', '__EFMigrationsHistory', '__RefactorLog', 'sysdiagrams')
+
+
+CREATE NONCLUSTERED INDEX IX_EfPoco_Columns
+    ON dbo.#Columns (TABLE_NAME)
+    INCLUDE (
+        TABLE_SCHEMA,COLUMN_NAME,ORDINAL_POSITION,COLUMN_DEFAULT,IS_NULLABLE,DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION,NUMERIC_SCALE,DATETIME_PRECISION,
+        schema_id, table_object_id, view_object_id,
+        is_identity,is_rowguidcol,is_computed,generated_always_type
+    );
+
+-----------
+
+SELECT
+    u.TABLE_SCHEMA,
+    u.TABLE_NAME,
+    u.COLUMN_NAME,
+    u.ORDINAL_POSITION
+INTO
+    #PrimaryKeys
+FROM
+    INFORMATION_SCHEMA.KEY_COLUMN_USAGE u
+    INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc ON
+        u.TABLE_SCHEMA COLLATE SQL_Latin1_General_CP1_CI_AS = tc.CONSTRAINT_SCHEMA COLLATE SQL_Latin1_General_CP1_CI_AS
+        AND
+        u.TABLE_NAME = tc.TABLE_NAME
+        AND
+        u.CONSTRAINT_NAME = tc.CONSTRAINT_NAME
+WHERE
+    CONSTRAINT_TYPE = 'PRIMARY KEY';
+
+SELECT DISTINCT
+    u.TABLE_SCHEMA,
+    u.TABLE_NAME,
+    u.COLUMN_NAME
+INTO
+    #ForeignKeys
+FROM
+    INFORMATION_SCHEMA.KEY_COLUMN_USAGE u
+    INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc ON
+        u.TABLE_SCHEMA COLLATE SQL_Latin1_General_CP1_CI_AS = tc.CONSTRAINT_SCHEMA COLLATE SQL_Latin1_General_CP1_CI_AS
+        AND
+        u.TABLE_NAME = tc.TABLE_NAME
+        AND
+        u.CONSTRAINT_NAME = tc.CONSTRAINT_NAME
+WHERE
+    CONSTRAINT_TYPE = 'FOREIGN KEY';
+
+--------------------------
+
+SELECT
+    c.TABLE_SCHEMA AS SchemaName,
+    c.TABLE_NAME AS TableName,
+    t.TABLE_TYPE AS TableType,
+    CONVERT( tinyint, ISNULL( tt.temporal_type, 0 ) ) AS TableTemporalType,
+
+    c.ORDINAL_POSITION AS Ordinal,
+    c.COLUMN_NAME AS ColumnName,
+    c.IS_NULLABLE AS IsNullable,
+    DATA_TYPE AS TypeName,
+    ISNULL(CHARACTER_MAXIMUM_LENGTH, 0) AS [MaxLength],
+    CAST(ISNULL(NUMERIC_PRECISION, 0) AS INT) AS [Precision],
+    ISNULL(COLUMN_DEFAULT, '') AS [Default],
+    CAST(ISNULL(DATETIME_PRECISION, 0) AS INT) AS DateTimePrecision,
+    ISNULL(NUMERIC_SCALE, 0) AS Scale,
+
+    c.is_identity AS IsIdentity,
+    c.is_rowguidcol AS IsRowGuid,
+    c.is_computed AS IsComputed,
+    c.generated_always_type AS GeneratedAlwaysType,
+
+    CONVERT( bit,
+        CASE WHEN
+            c.is_identity = 1 OR
+            c.is_rowguidcol = 1 OR
+            c.is_computed = 1 OR
+            c.generated_always_type <> 0 OR
+            c.DATA_TYPE IN ( 'rowversion', 'timestamp' ) OR
+            ( c.DATA_TYPE = 'uniqueidentifier' AND c.COLUMN_DEFAULT LIKE '%newsequentialid%' )
+            THEN 1
+        ELSE
+            0
+        END
+    ) AS IsStoreGenerated,
+
+    CONVERT( bit, ISNULL( pk.ORDINAL_POSITION, 0 ) ) AS PrimaryKey,
+    ISNULL(pk.ORDINAL_POSITION, 0) PrimaryKeyOrdinal,
+    CONVERT( bit, CASE WHEN fk.COLUMN_NAME IS NOT NULL THEN 1 ELSE 0 END ) AS IsForeignKey
+
+FROM
+    #Columns c
+
+    LEFT OUTER JOIN #PrimaryKeys pk ON
+        c.TABLE_SCHEMA = pk.TABLE_SCHEMA AND
+        c.TABLE_NAME   = pk.TABLE_NAME AND
+        c.COLUMN_NAME  = pk.COLUMN_NAME
+
+    LEFT OUTER JOIN #ForeignKeys fk ON
+        c.TABLE_SCHEMA = fk.TABLE_SCHEMA AND
+        c.TABLE_NAME   = fk.TABLE_NAME AND
+        c.COLUMN_NAME  = fk.COLUMN_NAME
+
+    INNER JOIN INFORMATION_SCHEMA.TABLES t ON
+        c.TABLE_SCHEMA COLLATE SQL_Latin1_General_CP1_CI_AS = t.TABLE_SCHEMA COLLATE SQL_Latin1_General_CP1_CI_AS AND
+        c.TABLE_NAME   COLLATE SQL_Latin1_General_CP1_CI_AS = t.TABLE_NAME   COLLATE SQL_Latin1_General_CP1_CI_AS
+
+    LEFT OUTER JOIN
+    (
+        SELECT
+            st.object_id,
+            [st].[temporal_type] AS temporal_type
+        FROM
+            sys.tables AS st
+    ) AS tt ON c.table_object_id = tt.object_id
+";
+        }
+
+        protected override string ForeignKeySQL()
+        {
+            return @"
+SELECT  fkData.FK_Table,
+        fkData.FK_Column,
+        fkData.PK_Table,
+        fkData.PK_Column,
+        fkData.Constraint_Name,
+        fkData.fkSchema,
+        fkData.pkSchema,
+        fkData.primarykey,
+        fkData.ORDINAL_POSITION,
+        fkData.CascadeOnDelete,
+        fkData.IsNotEnforced
+FROM    (SELECT FK.name AS FK_Table,
+                FkCol.name AS FK_Column,
+                PK.name AS PK_Table,
+                PkCol.name AS PK_Column,
+                OBJECT_NAME(f.object_id) AS Constraint_Name,
+                SCHEMA_NAME(FK.schema_id) AS fkSchema,
+                SCHEMA_NAME(PK.schema_id) AS pkSchema,
+                PkCol.name AS primarykey,
+                k.constraint_column_id AS ORDINAL_POSITION,
+                CASE WHEN f.delete_referential_action = 1 THEN 1
+                     ELSE 0
+                END AS CascadeOnDelete,
+                f.is_disabled AS IsNotEnforced,
+                ROW_NUMBER() OVER (PARTITION BY FK.name, FkCol.name, PK.name, PkCol.name, SCHEMA_NAME(FK.schema_id), SCHEMA_NAME(PK.schema_id) ORDER BY f.object_id) AS n
+         FROM   sys.objects AS PK
+                INNER JOIN sys.foreign_keys AS f
+                    INNER JOIN sys.foreign_key_columns AS k
+                        ON k.constraint_object_id = f.object_id
+                    INNER JOIN sys.indexes AS i
+                        ON f.referenced_object_id = i.object_id
+                           AND f.key_index_id = i.index_id
+                    ON PK.object_id = f.referenced_object_id
+                INNER JOIN sys.objects AS FK
+                    ON f.parent_object_id = FK.object_id
+                INNER JOIN sys.columns AS PkCol
+                    ON f.referenced_object_id = PkCol.object_id
+                       AND k.referenced_column_id = PkCol.column_id
+                INNER JOIN sys.columns AS FkCol
+                    ON f.parent_object_id = FkCol.object_id
+                       AND k.parent_column_id = FkCol.column_id) fkData
+WHERE   fkData.n = 1 -- Remove duplicate foreign keys";
+        }
+
+        protected override string ExtendedPropertySQL()
+        {
+            return @"
+SELECT  s.name AS [schema],
+    t.name AS [table],
+    c.name AS [column],
+    value AS [property]
+FROM    sys.extended_properties AS ep
+    INNER JOIN sys.tables AS t
+        ON ep.major_id = t.object_id
+    INNER JOIN sys.schemas AS s
+        ON s.schema_id = t.schema_id
+    LEFT JOIN sys.columns AS c
+        ON ep.major_id = c.object_id
+            AND ep.minor_id = c.column_id
+WHERE   class = 1
+ORDER BY t.name";
+        }
+
+        protected override string DoesExtendedPropertyTableExistSQL()
+        {
+            return string.Empty;
+        }
+
+        protected override string IndexSQL()
+        {
+            return @"
+SELECT  SCHEMA_NAME(t.schema_id) AS TableSchema,
+    t.name AS TableName,
+    ind.name AS IndexName,
+    ic.key_ordinal AS KeyOrdinal,
+    col.name AS ColumnName,
+    ind.is_unique AS IsUnique,
+    ind.is_primary_key AS IsPrimaryKey,
+    ind.is_unique_constraint AS IsUniqueConstraint,
+    CASE WHEN ind.[type] = 1 AND ind.is_primary_key = 1 THEN 1 ELSE 0 END AS IsClustered,
+    (
+        SELECT COUNT(1)
+        FROM   sys.index_columns i
+        WHERE  i.object_id = ind.object_id
+            AND i.index_id = ind.index_id
+    ) AS ColumnCount
+FROM    sys.tables t
+    INNER JOIN sys.indexes ind
+        ON ind.object_id = t.object_id
+    INNER JOIN sys.index_columns ic
+        ON ind.object_id = ic.object_id
+            AND ind.index_id = ic.index_id
+    INNER JOIN sys.columns col
+        ON ic.object_id = col.object_id
+            AND ic.column_id = col.column_id
+WHERE   t.is_ms_shipped = 0
+    AND ind.ignore_dup_key = 0
+    AND ic.key_ordinal > 0
+    AND t.name NOT LIKE 'sysdiagram%'";
+        }
+
+        public override bool CanReadStoredProcedures()
+        {
+            return false;
+        }
+
+        protected override string StoredProcedureSQL()
+        {
+            return string.Empty;
+        }
+
+        protected override string MultiContextSQL()
+        {
+            return @"
+SELECT * FROM MultiContext.Context;
+SELECT * FROM MultiContext.[Table];
+SELECT * FROM MultiContext.[Column];
+SELECT * FROM MultiContext.StoredProcedure;
+SELECT * FROM MultiContext.[Function];
+SELECT * FROM MultiContext.Enumeration;
+SELECT * FROM MultiContext.ForeignKey;";
+        }
+
+        protected override string EnumSQL(string table, string nameField, string valueField)
+        {
+            return string.Format("SELECT {0} as NameField, {1} as ValueField, * FROM {2};", nameField, valueField, table);
+        }
+
+        protected override string SequenceSQL()
+        {
+            return string.Empty;
+        }
+
+        protected override string TriggerSQL()
+        {
+            return @"
+SELECT S.name SchemaName, O.name TableName, T.name TriggerName
+FROM sys.triggers T
+    LEFT JOIN sys.all_objects O
+        ON T.parent_id = O.object_id
+    LEFT JOIN sys.schemas S
+        ON S.schema_id = O.schema_id
+WHERE T.type = 'TR'
+      AND T.is_disabled = 0
+      AND S.name IS NOT NULL
+      AND O.name IS NOT NULL
+ORDER BY SchemaName, TableName, TriggerName;";
+        }
+
+        protected override string[] MemoryOptimisedSQL()
+        {
+            return new string[]
+            {
+                "SELECT compatibility_level FROM sys.databases WHERE name = DB_NAME();",
+                "SELECT CAST(SERVERPROPERTY(N'IsXTPSupported') AS BIT) AS IsXTPSupported;",
+                "SELECT SCHEMA_NAME(schema_id) SchemaName, name TableName FROM sys.tables WHERE is_memory_optimized = 1;"
+            };
+        }
+
+        protected override string SynonymTableSQLSetup()
+        {
+            return string.Empty;
+        }
+
+        protected override string SynonymTableSQL()
+        {
+            return string.Empty;
+        }
+
+        protected override string SynonymForeignKeySQLSetup()
+        {
+            return string.Empty;
+        }
+
+        protected override string SynonymForeignKeySQL()
+        {
+            return string.Empty;
+        }
+
+        protected override string SynonymStoredProcedureSQLSetup()
+        {
+            return string.Empty;
+        }
+
+        protected override string SynonymStoredProcedureSQL()
+        { 
+            return string.Empty;
+        }
+
+        protected override string DefaultSchema(DbConnection conn)
+        {
+            try
+            {
+                var cmd = GetCmd(conn);
+                if (cmd != null)
+                {
+                    cmd.CommandText = "SELECT SCHEMA_NAME()";
+                    using (var rdr = cmd.ExecuteReader())
+                    {
+                        if (rdr.Read())
+                        {
+                            return rdr[0].ToString();
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // Ignored
+            }
+
+            return "dbo";
+        }
+
+        protected override string SpecialQueryFlags()
+        {
+            return string.Empty;
+        }
+
+        protected override bool HasTemporalTableSupport()
+        {
+            return false;
+        }
+
+        protected override string ReadDatabaseEditionSQL()
+        {
+            return string.Empty;
+        }
+
+        public override void ReadStoredProcReturnObjects(List<StoredProcedure> procs)
+        {
+            throw new System.NotImplementedException();
+
+        }
+
+        public override void Init()
+        {
+            base.Init();
+            Settings.PrependSchemaName = false;
+            IncludeSchema = false;
+            DoNotSpecifySizeForMaxLength = true;
         }
     }
 
