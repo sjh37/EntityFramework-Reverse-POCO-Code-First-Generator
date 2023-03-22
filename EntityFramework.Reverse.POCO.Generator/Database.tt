@@ -81,7 +81,7 @@
     Settings.AddParameterlessConstructorToDbContext = true; // EF6 only. If true, then DbContext will have a default (parameter-less) constructor which automatically passes in the connection string name, if false then no parameter-less constructor will be created.
     Settings.ConfigurationClassName                 = "Configuration"; // Configuration, Mapping, Map, etc. This is appended to the Poco class name to configure the mappings.
     Settings.DatabaseReaderPlugin                   = ""; // Eg, "c:\\Path\\YourDatabaseReader.dll,Full.Name.Of.Class.Including.Namespace". See #501. This will allow you to specify a pluggable provider for reading your database.
-    Settings.UseMappingTables                       = false; // Must be false for TemplateType.EfCore2 & 3+. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
+    Settings.UseMappingTables                       = false; // Must be false for TemplateType.EfCore2-4. If true, mapping will be used, and no mapping tables will be generated. If false, all tables will be generated.
 
     Settings.EntityClassesModifiers        = "public"; // "public partial";
     Settings.ConfigurationClassesModifiers = "public"; // "public partial";
