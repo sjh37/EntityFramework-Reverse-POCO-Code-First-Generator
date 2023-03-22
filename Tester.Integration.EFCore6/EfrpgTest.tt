@@ -13,7 +13,7 @@
     Settings.DatabaseType            = DatabaseType.SqlServer;
     Settings.TemplateType            = TemplateType.EfCore6; 
     Settings.GeneratorType           = GeneratorType.EfCore;
-    Settings.UseMappingTables        = true; // Set to false for EfCore. EFCore will add support for this in v3 at some point, so please set this to false. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
+    Settings.UseMappingTables        = true; // Must be false for TemplateType.EfCore2-4. If true, mapping will be used, and no mapping tables will be generated. If false, all tables will be generated.
     Settings.FileManagerType         = FileManagerType.EfCore; // .NET project = VisualStudio; .NET Core project = EfCore; No output (testing only) = Null
     Settings.ConnectionString        = "Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";
     Settings.ConnectionStringName    = "MyDbContext"; // ConnectionString key as specified in your app.config/web.config/appsettings.json

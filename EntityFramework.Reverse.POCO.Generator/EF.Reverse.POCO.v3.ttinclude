@@ -4760,7 +4760,7 @@
                 // Work out if there are any foreign key relationship naming clashes
                 ProcessForeignKeys(foreignKeys, true, filter);
 
-                // Mappings tables can only be true for Ef6
+                // Mappings tables can only be true for Ef6 and EFCore 5 onwards
                 if (Settings.UseMappingTables && !(Settings.IsEf6() || Settings.IsEfCore5Plus()))
                     Settings.UseMappingTables = false;
                 
