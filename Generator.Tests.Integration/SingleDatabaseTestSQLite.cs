@@ -30,29 +30,81 @@ namespace Generator.Tests.Integration
             var cmd = _masterConnection.CreateCommand();
             cmd.CommandText =
                 @"
+PRAGMA foreign_keys = ON;
+
 CREATE TABLE Efrpg
 (
-    Id    INTEGER PRIMARY KEY,
-    vc    varchar(12)  NULL,
-    nvc   nvarchar(12) NULL,
-    int1  INTEGER  DEFAULT 123,
-    real1 REAL,
-    text1 TEXT,
-    text2 TEXT(20) DEFAULT 'Hello',
-    blob1 BLOB,
-    blob2 BLOB(37),
-    num1  NUMERIC,
-    num2  NUMERIC(10, 5)
+    Id     INTEGER,
+
+    text1  TEXT,
+    text2  CHARACTER(22),
+    text3  VARCHAR(33),
+    text4  VARYING CHARACTER(44),
+    text5  NCHAR(55),
+    text6  NATIVE CHARACTER(66),
+    text7  NVARCHAR(77),
+    text8  TEXT(88) DEFAULT 'Hello',
+    text9  CLOB,
+
+    int1   INTEGER  DEFAULT 123,
+    int2   INT UNIQUE,
+    int3   SMALLINT,
+    int4   MEDIUMINT,
+    int5   BIGINT,
+    int6   UNSIGNED BIG INT,
+    int7   INT2,
+    INT8   INT8,
+
+    blob1  BLOB,
+    blob2  BLOB(22),
+
+    real1  REAL CHECK (real1 > 123),
+    real2  DOUBLE,
+    real3  DOUBLE PRECISION,
+    real4  FLOAT,
+
+    num1   NUMERIC,
+    num2   DECIMAL(10, 5),
+    num22  DECIMAL(10, 5),
+    num222 DECIMAL(10, 5),
+    num3   BOOLEAN,
+    num4   DATE,
+    num5   DATETIME,
+
+    CONSTRAINT [PK_Efrpg] PRIMARY KEY (Id)
 );
+
 CREATE TABLE EfrpgItems
 (
     Id        INTEGER PRIMARY KEY,
     EfrpgId   INTEGER NOT NULL,
+    Test      INT     NOT NULL,
     CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (EfrpgId) REFERENCES 'Efrpg' (Id)
-        ON DELETE NO ACTION ON UPDATE NO ACTION
+    FOREIGN KEY (EfrpgId) REFERENCES [Efrpg] (Id)
+        ON DELETE CASCADE ON UPDATE NO ACTION
 );
-CREATE INDEX [IX_Efrpg_vc] ON [Efrpg] ([vc]);";
+
+CREATE INDEX [IX_Efrpg] ON [Efrpg] ([TEXT3]);
+CREATE INDEX [IX_Efrpg_Composite] ON [Efrpg] (int1, int2);
+
+CREATE VIEW ThisIsAView AS
+SELECT Id, text1, int1, blob1, real1, num1
+FROM Efrpg;
+
+CREATE TRIGGER efrpg_trigger
+    AFTER INSERT
+    ON Efrpg
+BEGIN
+    SELECT 'Test';
+END;
+
+INSERT INTO Efrpg (Id, int1, int2)
+VALUES (1, 2, 3),
+       (2, 3, 4);
+INSERT INTO EfrpgItems (Id, EfrpgId, Test)
+VALUES (1, 1, 3),
+       (2, 2, 4);
+";
             cmd.ExecuteNonQuery();
         }
 
