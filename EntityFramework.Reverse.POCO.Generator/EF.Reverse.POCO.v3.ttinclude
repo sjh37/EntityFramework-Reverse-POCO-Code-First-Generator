@@ -7064,7 +7064,7 @@
             switch (Settings.GenerationLanguage)
             {
                 case GenerationLanguage.CSharp:
-                    return new SQLiteToCSharp();
+                    return new SqLiteToCSharp();
 
                 case GenerationLanguage.Javascript:
                     // Not yet supported
@@ -7327,7 +7327,7 @@
         }
     }
 
-    public class SQLiteToCSharp : IDatabaseToPropertyType
+    public class SqLiteToCSharp : IDatabaseToPropertyType
     {
         // [Database type] = Language type
         public Dictionary<string, string> GetMapping()
@@ -13578,7 +13578,7 @@ and limitations under the License.
                     return new SqlServerDatabaseReader(factory, databaseToPropertyType);
 
                 case DatabaseType.SQLite:
-                    return new SQLiteDatabaseReader(factory, databaseToPropertyType);
+                    return new SqLiteDatabaseReader(factory, databaseToPropertyType);
 
                 case DatabaseType.SqlCe:
                     return new SqlServerCeDatabaseReader(factory, databaseToPropertyType);
@@ -14673,9 +14673,9 @@ ORDER BY SchemaName, TableName, TriggerName;";
         }
     }
 
-    public class SQLiteDatabaseReader : DatabaseReader
+    public class SqLiteDatabaseReader : DatabaseReader
     {
-        public SQLiteDatabaseReader(DbProviderFactory factory, IDatabaseToPropertyType databaseToPropertyType)
+        public SqLiteDatabaseReader(DbProviderFactory factory, IDatabaseToPropertyType databaseToPropertyType)
             : base(factory, databaseToPropertyType)
         {
             StoredProcedureParameterDbType = new Dictionary<string, string>
@@ -14835,14 +14835,7 @@ WHERE ColumnName != ''";
 
         protected override string MultiContextSQL()
         {
-            return @"
-SELECT * FROM MultiContext.Context;
-SELECT * FROM MultiContext.[Table];
-SELECT * FROM MultiContext.[Column];
-SELECT * FROM MultiContext.StoredProcedure;
-SELECT * FROM MultiContext.[Function];
-SELECT * FROM MultiContext.Enumeration;
-SELECT * FROM MultiContext.ForeignKey;";
+            return string.Empty;
         }
 
         protected override string EnumSQL(string table, string nameField, string valueField)

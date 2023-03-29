@@ -16,7 +16,7 @@ namespace Efrpg.Readers
                     return new SqlServerDatabaseReader(factory, databaseToPropertyType);
 
                 case DatabaseType.SQLite:
-                    return new SQLiteDatabaseReader(factory, databaseToPropertyType);
+                    return new SqLiteDatabaseReader(factory, databaseToPropertyType);
 
                 case DatabaseType.SqlCe:
                     return new SqlServerCeDatabaseReader(factory, databaseToPropertyType);

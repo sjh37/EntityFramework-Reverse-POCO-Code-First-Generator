@@ -2,7 +2,7 @@
 
 namespace Efrpg.LanguageMapping
 {
-    public class SQLiteToCSharp : IDatabaseToPropertyType
+    public class SqLiteToCSharp : IDatabaseToPropertyType
     {
         // [Database type] = Language type
         public Dictionary<string, string> GetMapping()

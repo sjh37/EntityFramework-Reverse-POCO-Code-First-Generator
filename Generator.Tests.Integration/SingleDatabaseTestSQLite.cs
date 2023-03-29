@@ -1,10 +1,10 @@
-﻿using System.Data.Common;
+﻿using System.IO;
+using System.Threading;
 using Efrpg;
 using Efrpg.Templates;
 using Generator.Tests.Common;
 using NUnit.Framework;
 using Efrpg.FileManagement;
-using Efrpg.Readers;
 using Microsoft.Data.Sqlite;
 
 namespace Generator.Tests.Integration
@@ -15,19 +15,19 @@ namespace Generator.Tests.Integration
     [Category(Constants.DbType.SQLite)]
     public class SingleDatabaseTestSQLite : SingleDatabaseTestBase
     {
-        // Using a name and a shared cache allows multiple connections to access the same in-memory database
-        const string ConnectionString = "Data Source=InMemorySample;Mode=Memory;Cache=Shared";
-        
-        // The in-memory database only persists while a connection is open to it.
-        // To manage its lifetime, keep one open connection around for as long as you need it.
-        private readonly SqliteConnection _masterConnection;
+        private static readonly string Filename = Path.Combine(Path.GetTempPath(), "Efrpg.db");
+        private static readonly string ConnectionString = "Data Source=" + Filename;
 
-        public SingleDatabaseTestSQLite()
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
         {
-            _masterConnection = new SqliteConnection(ConnectionString);
-            _masterConnection.Open();
+            if (File.Exists(Filename))
+                File.Delete(Filename);
 
-            var cmd = _masterConnection.CreateCommand();
+            var connection = new SqliteConnection(ConnectionString);
+            connection.Open();
+
+            var cmd = connection.CreateCommand();
             cmd.CommandText =
                 @"
 PRAGMA foreign_keys = ON;
@@ -106,6 +106,7 @@ VALUES (1, 1, 3),
        (2, 2, 4);
 ";
             cmd.ExecuteNonQuery();
+            connection.Close();
         }
 
         [Test]
@@ -117,13 +118,6 @@ VALUES (1, 1, 3),
             Settings.ConnectionString = ConnectionString;
             Settings.DatabaseType = DatabaseType.SQLite;
             SetupDatabase("MyDbContext", "MyDbContext", TemplateType.EfCore7, GeneratorType.EfCore, ForeignKeyNamingStrategy.Legacy);
-
-            //var a = new Microsoft.Data.Sqlite.SqliteFactory();
-            //var factory = DbProviderFactories.GetFactory("System.Data.SQLite");
-            var providerName = DatabaseProvider.GetProvider(Settings.DatabaseType);
-            var factory = DbProviderFactories.GetFactory(providerName);
-            var databaseReader = DatabaseReaderFactory.Create(factory);
-
 
             // Act
             Run("InMemory", ".SQLite", typeof(EfCoreFileManager), null);

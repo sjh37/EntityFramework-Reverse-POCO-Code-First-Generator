@@ -4,9 +4,9 @@ using System.Data.Common;
 
 namespace Efrpg.Readers
 {
-    public class SQLiteDatabaseReader : DatabaseReader
+    public class SqLiteDatabaseReader : DatabaseReader
     {
-        public SQLiteDatabaseReader(DbProviderFactory factory, IDatabaseToPropertyType databaseToPropertyType)
+        public SqLiteDatabaseReader(DbProviderFactory factory, IDatabaseToPropertyType databaseToPropertyType)
             : base(factory, databaseToPropertyType)
         {
             StoredProcedureParameterDbType = new Dictionary<string, string>
@@ -166,14 +166,7 @@ WHERE ColumnName != ''";
 
         protected override string MultiContextSQL()
         {
-            return @"
-SELECT * FROM MultiContext.Context;
-SELECT * FROM MultiContext.[Table];
-SELECT * FROM MultiContext.[Column];
-SELECT * FROM MultiContext.StoredProcedure;
-SELECT * FROM MultiContext.[Function];
-SELECT * FROM MultiContext.Enumeration;
-SELECT * FROM MultiContext.ForeignKey;";
+            return string.Empty;
         }
 
         protected override string EnumSQL(string table, string nameField, string valueField)

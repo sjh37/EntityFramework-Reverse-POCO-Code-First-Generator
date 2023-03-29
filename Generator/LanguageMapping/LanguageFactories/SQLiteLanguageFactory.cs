@@ -9,7 +9,7 @@ namespace Efrpg.LanguageMapping.LanguageFactories
             switch (Settings.GenerationLanguage)
             {
                 case GenerationLanguage.CSharp:
-                    return new SQLiteToCSharp();
+                    return new SqLiteToCSharp();
 
                 case GenerationLanguage.Javascript:
                     // Not yet supported
