@@ -65,11 +65,12 @@ CREATE TABLE Efrpg
 
     num1   NUMERIC,
     num2   DECIMAL(10, 5),
-    num22  DECIMAL(10, 5),
-    num222 DECIMAL(10, 5),
+    num22  DECIMAL (10, 5),
+    num222 DECIMAL  (10,   5),
     num3   BOOLEAN,
-    num4   DATE,
-    num5   DATETIME,
+
+    date1   DATE,
+    date2   DATETIME,
 
     CONSTRAINT [PK_Efrpg] PRIMARY KEY (Id)
 );
@@ -120,10 +121,10 @@ VALUES (1, 1, 3),
             SetupDatabase("MyDbContext", "MyDbContext", TemplateType.EfCore7, GeneratorType.EfCore, ForeignKeyNamingStrategy.Legacy);
 
             // Act
-            Run("InMemory", ".SQLite", typeof(EfCoreFileManager), null);
+            Run("EfrpgSQLite", ".SQLite", typeof(EfCoreFileManager), null);
 
             // Assert
-            CompareAgainstTestComparison("InMemoryTest");
+            CompareAgainstTestComparison("SQLiteTest");
         }
     }
 }

@@ -10,10 +10,32 @@ namespace Efrpg.LanguageMapping
             return new Dictionary<string, string>
             {
                 { string.Empty, "string" }, // default
-                { "blob",       "byte[]" },
-                { "real",       "double" },
-                { "integer",    "int" },
-                { "text",       "string" }
+                { "bigint", "long" },
+                { "blob", "byte[]" },
+                { "boolean", "bool" },
+                { "character", "string" },
+                { "clob", "string" },
+                { "date", "DateTime" },
+                { "datetime", "DateTime" },
+                { "decimal", "double" },
+                { "double", "double" },
+                { "double precision", "double" },
+                { "float", "double" },
+                { "int", "long" },
+                { "int2", "long" },
+                { "int8", "long" },
+                { "integer", "long" },
+                { "mediumint", "long" },
+                { "native character", "string" },
+                { "nchar", "string" },
+                { "numeric", "decimal" },
+                { "nvarchar", "string" },
+                { "real", "double" },
+                { "smallint", "int" },
+                { "text", "string" },
+                { "unsigned big int", "long" },
+                { "varchar", "string" },
+                { "varying character", "string" }
             };
         }
 
