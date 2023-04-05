@@ -7335,10 +7335,32 @@
             return new Dictionary<string, string>
             {
                 { string.Empty, "string" }, // default
-                { "blob",       "byte[]" },
-                { "real",       "double" },
-                { "integer",    "int" },
-                { "text",       "string" }
+                { "bigint", "long" },
+                { "blob", "byte[]" },
+                { "boolean", "bool" },
+                { "character", "string" },
+                { "clob", "string" },
+                { "date", "DateTime" },
+                { "datetime", "DateTime" },
+                { "decimal", "double" },
+                { "double", "double" },
+                { "double precision", "double" },
+                { "float", "double" },
+                { "int", "long" },
+                { "int2", "long" },
+                { "int8", "long" },
+                { "integer", "long" },
+                { "mediumint", "long" },
+                { "native character", "string" },
+                { "nchar", "string" },
+                { "numeric", "decimal" },
+                { "nvarchar", "string" },
+                { "real", "double" },
+                { "smallint", "int" },
+                { "text", "string" },
+                { "unsigned big int", "long" },
+                { "varchar", "string" },
+                { "varying character", "string" }
             };
         }
 
@@ -14712,16 +14734,16 @@ ORDER BY SchemaName, TableName, TriggerName;";
         {
             return @"
 SELECT 'main' AS SchemaName,
-       tbl_name AS TableName,
+       TableName,
        TableType,
        0 AS TableTemporalType,
-       cid AS Ordinal,
+       Ordinal,
        ColumnName,
        IsNullable,
        REPLACE(type, '(' || length || ')', '') AS TypeName,
-       CASE WHEN INSTR(type, ',') > 0 THEN 0 ELSE length END AS [MaxLength],
+       length AS [MaxLength],
        Precision,
-       dflt_value AS [Default],
+       [Default],
        0 AS DateTimePrecision,
        Scale,
        pk AS IsIdentity,
@@ -14732,22 +14754,22 @@ SELECT 'main' AS SchemaName,
        pk AS PrimaryKey,
        pk AS PrimaryKeyOrdinal,
        0 AS IsForeignKey
-FROM (SELECT m.tbl_name,
-             CASE WHEN m.type = 'table' THEN 'BASE TABLE' ELSE 'VIEW' END AS TableType,
-             c.cid,
-             c.name AS ColumnName,
-             LOWER(c.type) AS type,
-             1 - c.""notnull"" AS IsNullable,
-             c.dflt_value,
-             c.pk,
-             SUBSTR(c.type, INSTR(c.type, '(') + 1, INSTR(c.type, ')') - INSTR(c.type, '(') - 1) AS length,
-             CAST(SUBSTR(c.type, INSTR(c.type, '(') + 1, INSTR(c.type, ',') - INSTR(c.type, '(') - 1) AS INTEGER) AS Precision,
-             CAST(SUBSTR(c.type, INSTR(c.type, ',') + 1, INSTR(c.type, ')') - INSTR(c.type, ',') - 1) AS INTEGER) AS Scale
-      FROM sqlite_master m
-               JOIN PRAGMA_TABLE_INFO(m.name) c
-      WHERE m.type IN ('table', 'view')
-        AND m.name NOT LIKE 'sqlite_%')
-ORDER BY tbl_name, cid;";
+FROM (SELECT m.tbl_name AS TableName,
+       CASE WHEN m.type = 'table' THEN 'BASE TABLE' ELSE 'VIEW' END AS TableType,
+       c.cid AS Ordinal,
+       c.name AS ColumnName,
+       IIF(INSTR(c.type, '(') > 0, SUBSTR(LOWER(c.type), 0, INSTR(c.type, '(')), LOWER(c.type)) as type,
+       1 - c.""notnull"" AS IsNullable,
+       c.dflt_value AS [Default],
+       c.pk AS pk,
+       CAST(SUBSTR(c.type, INSTR(c.type, '(') + 1, INSTR(c.type, ')') - INSTR(c.type, '(') - 1) AS INTEGER) AS length,
+       CAST(SUBSTR(c.type, INSTR(c.type, '(') + 1, INSTR(c.type, ',') - INSTR(c.type, '(') - 1) AS INTEGER) AS Precision,
+       CAST(SUBSTR(c.type, INSTR(c.type, ',') + 1, INSTR(c.type, ')') - INSTR(c.type, ',') - 1) AS INTEGER) AS Scale
+FROM sqlite_master m
+         JOIN PRAGMA_TABLE_INFO(m.name) c
+WHERE m.type IN ('table', 'view')
+  AND m.name NOT LIKE 'sqlite_%')
+ORDER BY TableName, Ordinal;";
         }
 
         protected override string ForeignKeySQL()
@@ -14784,12 +14806,12 @@ ORDER BY m.name;";
         {
             return @"
 WITH split(TableName, IndexName, KeyOrdinal, ColumnName, csv) AS (
-  SELECT TableName,
+    SELECT TableName,
          IndexName,
          KeyOrdinal,
          '',
          column_name || ','
-  FROM (SELECT TableName,
+    FROM (SELECT TableName,
                IndexName,
                0 AS KeyOrdinal,
                SUBSTR(sql, INSTR(sql, '(') + 1, INSTR(sql, ')') - INSTR(sql, '(') - 1) AS column_name
@@ -14799,26 +14821,27 @@ WITH split(TableName, IndexName, KeyOrdinal, ColumnName, csv) AS (
               FROM sqlite_master
               WHERE type = 'index'
                 AND name NOT LIKE 'sqlite_%'))
-  UNION ALL
-  SELECT TableName,
+    UNION ALL
+    SELECT TableName,
          IndexName,
          KeyOrdinal + 1,
          SUBSTR(csv, 0, INSTR(csv, ',')),
          SUBSTR(csv, INSTR(csv, ',') + 1)
-  FROM split
-  WHERE csv != '')
+    FROM split
+    WHERE csv != '')
 SELECT 'main' AS TableSchema,
        s.TableName,
        s.IndexName,
        s.KeyOrdinal,
-       TRIM(s.ColumnName),
-       0 AS IsUnique,
-       0 AS IsPrimaryKey,
-       0 AS IsUniqueConstraint,
+       TRIM(s.ColumnName) as ColumnName,
        (SELECT MAX(KeyOrdinal)
         FROM split x
         WHERE x.TableName = s.TableName
-          AND x.IndexName = s.IndexName) AS ColumnCount
+          AND x.IndexName = s.IndexName) AS ColumnCount,
+       0 AS IsUnique,
+       0 AS IsPrimaryKey,
+       0 AS IsUniqueConstraint,
+       0 as IsClustered
 FROM split s
 WHERE ColumnName != ''";
         }
@@ -14851,9 +14874,9 @@ WHERE ColumnName != ''";
         protected override string TriggerSQL()
         {
             return @"
-SELECT 'main' AS TableSchema, tbl_name as TableName, name as TriggerName
+SELECT 'main' AS SchemaName, tbl_name AS TableName, name AS TriggerName
 FROM sqlite_master
-WHERE type = 'trigger';";
+WHERE type = 'trigger'";
         }
 
         protected override string[] MemoryOptimisedSQL()

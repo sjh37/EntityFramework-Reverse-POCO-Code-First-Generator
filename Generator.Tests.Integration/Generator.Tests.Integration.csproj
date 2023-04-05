@@ -138,6 +138,9 @@
     <Compile Include="SingleDatabaseTestSqlCeServer.cs" />
     <Compile Include="SingleDatabaseTestSQLite.cs" />
     <Compile Include="SingleDatabaseTestSqlServer.cs" />
+    <None Include="TestComparison\EfrpgTest_SQLite_EfCore7_FkLegacy.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="TestComparison\EfrpgTest_PostgreSQL_Ef6_FkLegacy.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
