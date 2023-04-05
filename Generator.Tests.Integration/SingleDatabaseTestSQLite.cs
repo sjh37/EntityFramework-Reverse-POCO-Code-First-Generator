@@ -121,10 +121,10 @@ VALUES (1, 1, 3),
             SetupDatabase("MyDbContext", "MyDbContext", TemplateType.EfCore7, GeneratorType.EfCore, ForeignKeyNamingStrategy.Legacy);
 
             // Act
-            Run("EfrpgSQLite", ".SQLite", typeof(EfCoreFileManager), null);
+            Run("EfrpgTest", ".SQLite", typeof(EfCoreFileManager), null);
 
             // Assert
-            CompareAgainstTestComparison("SQLiteTest");
+            CompareAgainstTestComparison("EfrpgTest");
         }
     }
 }
