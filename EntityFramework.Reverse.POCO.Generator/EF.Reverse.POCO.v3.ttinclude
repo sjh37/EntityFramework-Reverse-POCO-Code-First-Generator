@@ -14284,7 +14284,7 @@ ORDER BY R.specific_schema, R.routine_name, R.routine_type;";
         protected override string TriggerSQL()
         {
             return @"
-SELECT event_object_schema AS SchemaName,
+SELECT DISTINCT event_object_schema AS SchemaName,
        event_object_table AS TableName,
        trigger_name AS TriggerName
 FROM INFORMATION_SCHEMA.triggers

@@ -410,6 +410,8 @@ namespace Efrpg.PostgreSQL
             modelBuilder.ApplyConfiguration(new tiger_ZipStateLocConfiguration());
             modelBuilder.ApplyConfiguration(new topology_LayerConfiguration());
             modelBuilder.ApplyConfiguration(new topology_TopologyConfiguration());
+
+            modelBuilder.Entity<topology_Layer>().ToTable(tb => tb.HasTrigger("layer_integrity_checks"));
         }
 
 

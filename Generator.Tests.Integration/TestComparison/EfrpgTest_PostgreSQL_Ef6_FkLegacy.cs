@@ -496,7 +496,7 @@ namespace Efrpg.PostgreSQL
     public class Allcolumntype
     {
         public long Bigint { get; set; } // bigint (Primary key)
-        public bool? Bit1 { get; set; } // bit_1 (length: 1)
+        public BitArray? Bit1 { get; set; } // bit_1 (length: 1)
         public BitArray? Bit8 { get; set; } // bit_8 (length: 8)
         public bool? Boolean { get; set; } // boolean
         public NpgsqlBox? Box { get; set; } // box
