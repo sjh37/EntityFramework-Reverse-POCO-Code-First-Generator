@@ -492,6 +492,7 @@ namespace Efrpg.Generators
                         SummaryComments                 = !string.IsNullOrEmpty(col.SummaryComments) ? SecurityElement.Escape(col.SummaryComments) : null,
                         Attributes                      = col.Attributes,
                         OverrideModifier                = col.OverrideModifier,
+                        IncludeFieldNameConstants       = Settings.IncludeFieldNameConstants,
                         WrapIfNullable                  = col.WrapIfNullable(),
                         NameHumanCase                   = col.NameHumanCase,
                         PrivateSetterForComputedColumns = Settings.UsePrivateSetterForComputedColumns && col.IsComputed ? "private " : string.Empty,

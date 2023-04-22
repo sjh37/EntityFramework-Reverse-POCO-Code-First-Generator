@@ -121,6 +121,7 @@ namespace BuildTT
     Settings.UsePrivateSetterForComputedColumns = true; // If the columns is computed, use a private setter.
     Settings.IncludeGeneratorVersionInCode      = false; // If true, will include the version number of the generator in the generated code (Settings.ShowLicenseInfo must also be true).
     Settings.TrimCharFields                     = false; // EF Core option only. If true, will TrimEnd() 'char' fields when read from the database.
+    Settings.IncludeFieldNameConstants          = false; // Will include public const string {{NameHumanCase}}Field = ""{{NameHumanCase}}""; in the generated POCO class. It allows you to use a constant instead of magic strings.
     Settings.AdditionalNamespaces               = new List<string>(); // To include extra namespaces, include them here. i.e. new List<string> { ""Microsoft.AspNetCore.Identity.EntityFrameworkCore"", ""System.ComponentModel.DataAnnotations"" };
     Settings.AdditionalContextInterfaceItems    = new List<string>(); // example: new List<string> { ""void SetAutoDetectChangesEnabled(bool flag);"" };
     Settings.AdditionalFileHeaderText           = new List<string>(); // This will put additional lines verbatim at the top of each file under the comments, 1 line per entry

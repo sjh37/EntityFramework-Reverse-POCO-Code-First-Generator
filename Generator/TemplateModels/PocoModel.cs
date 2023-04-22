@@ -34,6 +34,7 @@ namespace Efrpg.TemplateModels
         public string SummaryComments                 { get; set; }
         public List<string> Attributes                { get; set; }
         public bool OverrideModifier                  { get; set; }
+        public bool IncludeFieldNameConstants         { get; set; }
         public string WrapIfNullable                  { get; set; }
         public string NameHumanCase                   { get; set; }
         public string PrivateSetterForComputedColumns { get; set; }

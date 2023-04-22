@@ -3379,8 +3379,11 @@ namespace V7EfrpgTest
     public class A
     {
         public int AId { get; set; } // AId (Primary key)
+        public const string AIdField = "AId";
         public int C1 { get; set; } // C1
+        public const string C1Field = "C1";
         public int C2 { get; set; } // C2
+        public const string C2Field = "C2";
 
         // Foreign keys
 
@@ -3394,8 +3397,11 @@ namespace V7EfrpgTest
     public class Aaref
     {
         public int C1 { get; set; } // C1 (Primary key)
+        public const string C1Field = "C1";
         public int C2 { get; set; } // C2 (Primary key)
+        public const string C2Field = "C2";
         public DateTime CreatedUtc { get; set; } // CreatedUTC
+        public const string CreatedUtcField = "CreatedUtc";
 
         // Reverse navigation
 
@@ -3414,8 +3420,11 @@ namespace V7EfrpgTest
     public class AbOrderLinesAb
     {
         public int Id { get; set; } // ID (Primary key)
+        public const string IdField = "Id";
         public int OrderId { get; set; } // OrderID
+        public const string OrderIdField = "OrderId";
         public string Sku { get; set; } // sku (length: 15)
+        public const string SkuField = "Sku";
 
         // Foreign keys
 
@@ -3429,7 +3438,9 @@ namespace V7EfrpgTest
     public class AbOrdersAb
     {
         public int Id { get; set; } // ID (Primary key)
+        public const string IdField = "Id";
         public DateTime Added { get; set; } // added
+        public const string AddedField = "Added";
 
         // Reverse navigation
 
@@ -3449,14 +3460,18 @@ namespace V7EfrpgTest
     public class AllColumnsNull
     {
         public int? Total { get; set; } // total
+        public const string TotalField = "Total";
         public string AName { get; set; } // aName (length: 250)
+        public const string ANameField = "AName";
     }
 
     // Harish3485
     public class Alpha_Harish3485
     {
         public int Id { get; set; } // id (Primary key)
+        public const string IdField = "Id";
         public int HarishId { get; set; } // harish_id
+        public const string HarishIdField = "HarishId";
 
         // Foreign keys
 
@@ -3472,14 +3487,18 @@ namespace V7EfrpgTest
     public class Alpha_Test
     {
         public int? Id { get; set; } // Id
+        public const string IdField = "Id";
         public int? ExclusionTest { get; set; } // ExclusionTest
+        public const string ExclusionTestField = "ExclusionTest";
     }
 
     // workflow
     public class Alpha_Workflow
     {
         public int Id { get; set; } // Id (Primary key)
+        public const string IdField = "Id";
         public string Description { get; set; } // Description (length: 10)
+        public const string DescriptionField = "Description";
 
         // Reverse navigation
 
@@ -3498,22 +3517,29 @@ namespace V7EfrpgTest
     public class AlphaWorkflowSynonym
     {
         public int Id { get; set; } // Id (Primary key)
+        public const string IdField = "Id";
         public string Description { get; set; } // Description (length: 10)
+        public const string DescriptionField = "Description";
     }
 
     // UserFacilityServiceRole
     public class App_UserFacilityServiceRole
     {
         public int UserId { get; set; } // userId (Primary key)
+        public const string UserIdField = "UserId";
         public int AppId { get; set; } // appId (Primary key)
+        public const string AppIdField = "AppId";
         public int FsrId { get; set; } // fsrId (Primary key)
+        public const string FsrIdField = "FsrId";
     }
 
     // AppUser
     public class AppUser
     {
         public long Id { get; set; } // Id (Primary key)
+        public const string IdField = "Id";
         public string Name { get; set; } // Name (length: 50)
+        public const string NameField = "Name";
 
         // Reverse navigation
 
@@ -3538,9 +3564,13 @@ namespace V7EfrpgTest
     public class Attendee
     {
         public long AttendeeId { get; set; } // AttendeeID (Primary key)
+        public const string AttendeeIdField = "AttendeeId";
         public string Lastname { get; set; } // Lastname (length: 50)
+        public const string LastnameField = "Lastname";
         public string Firstname { get; set; } // Firstname (length: 50)
+        public const string FirstnameField = "Firstname";
         public int? PhoneCountryId { get; set; } // PhoneCountryID
+        public const string PhoneCountryIdField = "PhoneCountryId";
 
         // Foreign keys
 
@@ -3554,13 +3584,16 @@ namespace V7EfrpgTest
     public class BatchTest
     {
         public string Code { get; set; } // code (Primary key) (length: 8)
+        public const string CodeField = "Code";
     }
 
     // Harish3485
     public class Beta_Harish3485
     {
         public int Id { get; set; } // id (Primary key)
+        public const string IdField = "Id";
         public int AnotherId { get; set; } // another_id
+        public const string AnotherIdField = "AnotherId";
 
         // Foreign keys
 
@@ -3576,14 +3609,18 @@ namespace V7EfrpgTest
     public class Beta_Test
     {
         public int? Id { get; set; } // Id
+        public const string IdField = "Id";
         public int? ExclusionTest { get; set; } // ExclusionTest
+        public const string ExclusionTestField = "ExclusionTest";
     }
 
     // ToAlpha
     public class Beta_ToAlpha
     {
         public int Id { get; set; } // Id (Primary key)
+        public const string IdField = "Id";
         public int AlphaId { get; set; } // AlphaId
+        public const string AlphaIdField = "AlphaId";
 
         // Foreign keys
 
@@ -3597,31 +3634,37 @@ namespace V7EfrpgTest
     public class Beta_Workflow
     {
         public int Id { get; set; } // Id (Primary key)
+        public const string IdField = "Id";
         public string Description { get; set; } // Description (length: 10)
+        public const string DescriptionField = "Description";
     }
 
     // BITFIDDLERALLCAPS
     public class Bitfiddlerallcap
     {
         public int Id { get; set; } // Id (Primary key)
+        public const string IdField = "Id";
     }
 
     // BitFiddlerCATEGORIES
     public class BitFiddlerCategoRy
     {
         public int Id { get; set; } // Id (Primary key)
+        public const string IdField = "Id";
     }
 
     // BitFiddlerCURRENCIES
     public class BitFiddlerCurrenCy
     {
         public int Id { get; set; } // Id (Primary key)
+        public const string IdField = "Id";
     }
 
     // Blah
     public class Blah
     {
         public int BlahId { get; set; } // BlahID (Primary key)
+        public const string BlahIdField = "BlahId";
 
         // Reverse navigation
 
@@ -3676,10 +3719,15 @@ namespace V7EfrpgTest
     public class BlahBlahLinkV2
     {
         public int BlahId { get; set; } // BlahID (Primary key)
+        public const string BlahIdField = "BlahId";
         public int BlahId2 { get; set; } // BlahID2 (Primary key)
+        public const string BlahId2Field = "BlahId2";
         public int? Dummy1 { get; set; } // dummy1
+        public const string Dummy1Field = "Dummy1";
         public int Dummy2 { get; set; } // dummy2
+        public const string Dummy2Field = "Dummy2";
         public int Hello { get; set; } // hello
+        public const string HelloField = "Hello";
 
         // Foreign keys
 
@@ -3698,6 +3746,7 @@ namespace V7EfrpgTest
     public class Blarg
     {
         public int BlargId { get; set; } // BlargID (Primary key)
+        public const string BlargIdField = "BlargId";
 
         // Reverse navigation
 
@@ -3716,8 +3765,11 @@ namespace V7EfrpgTest
     public class Burak1
     {
         public long Id { get; set; } // id (Primary key)
+        public const string IdField = "Id";
         public long IdT { get; set; } // id_t
+        public const string IdTField = "IdT";
         public long Num { get; set; } // num
+        public const string NumField = "Num";
 
         // Foreign keys
 
@@ -3736,7 +3788,9 @@ namespace V7EfrpgTest
     public class Burak2
     {
         public long Id { get; set; } // id (Primary key)
+        public const string IdField = "Id";
         public long Num { get; set; } // num
+        public const string NumField = "Num";
 
         // Reverse navigation
 
@@ -3755,19 +3809,28 @@ namespace V7EfrpgTest
     public class CalculatedColumnNotNull
     {
         public int Id { get; set; } // ID (Primary key)
+        public const string IdField = "Id";
         public byte Type { get; set; } // Type
+        public const string TypeField = "Type";
         public bool IsCalendar { get; private set; } // IsCalendar
+        public const string IsCalendarField = "IsCalendar";
         public bool IsUtilization { get; private set; } // IsUtilization
+        public const string IsUtilizationField = "IsUtilization";
     }
 
     // Car
     public class Car
     {
         public int Id { get; set; } // Id (Primary key)
+        public const string IdField = "Id";
         public int PrimaryColourId { get; set; } // PrimaryColourId
+        public const string PrimaryColourIdField = "PrimaryColourId";
         public string CarMake { get; set; } // CarMake (length: 255)
+        public const string CarMakeField = "CarMake";
         public int? ComputedColumn { get; private set; } // computed_column
+        public const string ComputedColumnField = "ComputedColumn";
         public int ComputedColumnPersisted { get; private set; } // computed_column_persisted
+        public const string ComputedColumnPersistedField = "ComputedColumnPersisted";
 
         // Reverse navigation
 
@@ -3793,21 +3856,32 @@ namespace V7EfrpgTest
     public class ClientCreationState
     {
         public Guid Id { get; set; } // id (Primary key)
+        public const string IdField = "Id";
         public bool WebhookSetup { get; set; } // WebhookSetup
+        public const string WebhookSetupField = "WebhookSetup";
         public bool AuthSetup { get; set; } // AuthSetup
+        public const string AuthSetupField = "AuthSetup";
         public bool AssignedCarrier { get; set; } // AssignedCarrier
+        public const string AssignedCarrierField = "AssignedCarrier";
     }
 
     // CMS_File
     public class CmsFile
     {
         public int FileId { get; set; } // FileId (Primary key)
+        public const string FileIdField = "FileId";
         public string FileName { get; set; } // FileName (length: 100)
+        public const string FileNameField = "FileName";
         public string FileDescription { get; set; } // FileDescription (length: 500)
+        public const string FileDescriptionField = "FileDescription";
         public string FileIdentifier { get; set; } // FileIdentifier (length: 100)
+        public const string FileIdentifierField = "FileIdentifier";
         public DateTime? ValidStartDate { get; set; } // ValidStartDate
+        public const string ValidStartDateField = "ValidStartDate";
         public DateTime? ValidEndDate { get; set; } // ValidEndDate
+        public const string ValidEndDateField = "ValidEndDate";
         public bool IsActive { get; set; } // IsActive
+        public const string IsActiveField = "IsActive";
 
         // Reverse navigation
 
@@ -3826,7 +3900,9 @@ namespace V7EfrpgTest
     public class CmsTag
     {
         public int TagId { get; set; } // TagId (Primary key)
+        public const string TagIdField = "TagId";
         public string TagName { get; set; } // TagName (length: 100)
+        public const string TagNameField = "TagName";
 
         // Reverse navigation
 
@@ -3845,16 +3921,27 @@ namespace V7EfrpgTest
     public class CodeMeetingTopicDetail
     {
         public int Id { get; set; } // id (Primary key)
+        public const string IdField = "Id";
         public int IdReuniao { get; set; } // id_reuniao
+        public const string IdReuniaoField = "IdReuniao";
         public int? OrdTrab { get; set; } // ord_trab
+        public const string OrdTrabField = "OrdTrab";
         public string Assunto { get; set; } // assunto (length: 250)
+        public const string AssuntoField = "Assunto";
         public string Desenvolvimento { get; set; } // desenvolvimento
+        public const string DesenvolvimentoField = "Desenvolvimento";
         public string Origem { get; set; } // origem (length: 5)
+        public const string OrigemField = "Origem";
         public int? IdOrigem { get; set; } // id_origem
+        public const string IdOrigemField = "IdOrigem";
         public int? Estado { get; set; } // Estado
+        public const string EstadoField = "Estado";
         public int CompanyId { get; set; } // CompanyID
+        public const string CompanyIdField = "CompanyId";
         public DateTime DateCreated { get; set; } // DateCreated
+        public const string DateCreatedField = "DateCreated";
         public DateTime? DateChanged { get; set; } // DateChanged
+        public const string DateChangedField = "DateChanged";
 
         // Foreign keys
 
@@ -3871,15 +3958,25 @@ namespace V7EfrpgTest
     public class CodeObject
     {
         public int CodeObjectNo { get; set; } // codeObjectNo (Primary key)
+        public const string CodeObjectNoField = "CodeObjectNo";
         public int? ApplicationNo { get; set; } // applicationNo
+        public const string ApplicationNoField = "ApplicationNo";
         public int Type { get; set; } // type
+        public const string TypeField = "Type";
         public string EName { get; set; } // eName (length: 250)
+        public const string ENameField = "EName";
         public string AName { get; set; } // aName (length: 250)
+        public const string ANameField = "AName";
         public string Description { get; set; } // description (length: 250)
+        public const string DescriptionField = "Description";
         public string CodeName { get; set; } // codeName (length: 250)
+        public const string CodeNameField = "CodeName";
         public string Note { get; set; } // note (length: 250)
+        public const string NoteField = "Note";
         public bool IsObject { get; set; } // isObject
+        public const string IsObjectField = "IsObject";
         public byte[] VersionNumber { get; set; } // versionNumber (length: 8)
+        public const string VersionNumberField = "VersionNumber";
 
         public CodeObject()
         {
@@ -3892,13 +3989,21 @@ namespace V7EfrpgTest
     public class CodeParamMeetingTopicDetailSource
     {
         public int Id { get; set; } // ID (Primary key)
+        public const string IdField = "Id";
         public string Code { get; set; } // Code (length: 5)
+        public const string CodeField = "Code";
         public string Label { get; set; } // Label (length: 50)
+        public const string LabelField = "Label";
         public string LabelEng { get; set; } // LabelENG (length: 50)
+        public const string LabelEngField = "LabelEng";
         public string LabelEsp { get; set; } // LabelESP (length: 50)
+        public const string LabelEspField = "LabelEsp";
         public string LabelFra { get; set; } // LabelFRA (length: 50)
+        public const string LabelFraField = "LabelFra";
         public DateTime DateCreated { get; set; } // DateCreated
+        public const string DateCreatedField = "DateCreated";
         public DateTime? DateChanged { get; set; } // DateChanged
+        public const string DateChangedField = "DateChanged";
 
         // Reverse navigation
 
@@ -3917,7 +4022,9 @@ namespace V7EfrpgTest
     public class Colour
     {
         public int Id { get; set; } // Id (Primary key)
+        public const string IdField = "Id";
         public string Name { get; set; } // Name (length: 255)
+        public const string NameField = "Name";
 
         // Reverse navigation
 
@@ -3947,38 +4054,71 @@ namespace V7EfrpgTest
     public class ColumnNameAndType
     {
         public int C36 { get; set; } // $ (Primary key)
+        public const string C36Field = "C36";
         public int? C37 { get; set; } // %
+        public const string C37Field = "C37";
         public int? C163 { get; set; } // £
+        public const string C163Field = "C163";
         public int? C38Fred { get; set; } // &fred$
+        public const string C38FredField = "C38Fred";
         public int? Abc4792 { get; set; } // abc/\
+        public const string Abc4792Field = "Abc4792";
         public int? Joe46Bloggs { get; set; } // joe.bloggs
+        public const string Joe46BloggsField = "Joe46Bloggs";
         public int? SimonHughes { get; set; } // simon-hughes
+        public const string SimonHughesField = "SimonHughes";
         public string Description { get; set; } // description (length: 20)
+        public const string DescriptionField = "Description";
         public DateTime SomeDate { get; set; } // someDate
+        public const string SomeDateField = "SomeDate";
         public string Obs { get; set; } // Obs (length: 50)
+        public const string ObsField = "Obs";
         public string Obs1 { get; set; } // Obs1 (length: 50)
+        public const string Obs1Field = "Obs1";
         public string Obs2 { get; set; } // Obs2 (length: 50)
+        public const string Obs2Field = "Obs2";
         public string Obs3 { get; set; } // Obs3 (length: 50)
+        public const string Obs3Field = "Obs3";
         public int? @Static { get; set; } // static
+        public const string @StaticField = "@Static";
         public int? @Readonly { get; set; } // readonly
+        public const string @ReadonlyField = "@Readonly";
         public int? C123Hi { get; set; } // 123Hi
+        public const string C123HiField = "C123Hi";
         public float? Areal { get; set; } // areal
+        public const string ArealField = "Areal";
         public double? Afloat { get; set; } // afloat
+        public const string AfloatField = "Afloat";
         public float? Afloat8 { get; set; } // afloat8
+        public const string Afloat8Field = "Afloat8";
         public float? Afloat20 { get; set; } // afloat20
+        public const string Afloat20Field = "Afloat20";
         public float? Afloat24 { get; set; } // afloat24
+        public const string Afloat24Field = "Afloat24";
         public double? Afloat53 { get; set; } // afloat53
+        public const string Afloat53Field = "Afloat53";
         public decimal? Adecimal { get; set; } // adecimal
+        public const string AdecimalField = "Adecimal";
         public decimal? Adecimal194 { get; set; } // adecimal_19_4
+        public const string Adecimal194Field = "Adecimal194";
         public decimal? Adecimal103 { get; set; } // adecimal_10_3
+        public const string Adecimal103Field = "Adecimal103";
         public decimal? Anumeric { get; set; } // anumeric
+        public const string AnumericField = "Anumeric";
         public decimal? Anumeric52 { get; set; } // anumeric_5_2
+        public const string Anumeric52Field = "Anumeric52";
         public decimal? Anumeric113 { get; set; } // anumeric_11_3
+        public const string Anumeric113Field = "Anumeric113";
         public decimal? Amoney { get; set; } // amoney
+        public const string AmoneyField = "Amoney";
         public decimal? Asmallmoney { get; set; } // asmallmoney
+        public const string AsmallmoneyField = "Asmallmoney";
         public int? Brandon { get; set; } // brandon
+        public const string BrandonField = "Brandon";
         public NetTopologySuite.Geometries.Point GeographyType { get; set; } // GeographyType
+        public const string GeographyTypeField = "GeographyType";
         public NetTopologySuite.Geometries.Geometry GeometryType { get; set; } // GeometryType
+        public const string GeometryTypeField = "GeometryType";
 
         public ColumnNameAndType()
         {
@@ -3997,14 +4137,18 @@ namespace V7EfrpgTest
     public class ComplexView
     {
         public string LicenseType { get; set; } // LicenseType (length: 128)
+        public const string LicenseTypeField = "LicenseType";
         public int? Count { get; set; } // Count
+        public const string CountField = "Count";
     }
 
     // Country
     public class Country
     {
         public int CountryId { get; set; } // CountryID (Primary key)
+        public const string CountryIdField = "CountryId";
         public string Code { get; set; } // Code (length: 12)
+        public const string CodeField = "Code";
 
         // Reverse navigation
 
@@ -4029,14 +4173,18 @@ namespace V7EfrpgTest
     public class CrossDatabaseSynonym
     {
         public int Id { get; set; } // Id (Primary key)
+        public const string IdField = "Id";
         public string Forename { get; set; } // Forename (length: 20)
+        public const string ForenameField = "Forename";
     }
 
     // DateTimeDefaultTest
     public class DateTimeDefaultTest
     {
         public int Id { get; set; } // Id (Primary key)
+        public const string IdField = "Id";
         public DateTimeOffset? CreatedDate { get; set; } // CreatedDate
+        public const string CreatedDateField = "CreatedDate";
 
         public DateTimeDefaultTest()
         {
@@ -4048,50 +4196,85 @@ namespace V7EfrpgTest
     public class dcg_RovColumnDefinition
     {
         public string TableCatalog { get; set; } // TABLE_CATALOG (length: 128)
+        public const string TableCatalogField = "TableCatalog";
         public string TableSchema { get; set; } // TABLE_SCHEMA (length: 128)
+        public const string TableSchemaField = "TableSchema";
         public string TableName { get; set; } // TABLE_NAME (length: 128)
+        public const string TableNameField = "TableName";
         public string ColumnName { get; set; } // COLUMN_NAME (length: 128)
+        public const string ColumnNameField = "ColumnName";
         public int? OrdinalPosition { get; set; } // ORDINAL_POSITION
+        public const string OrdinalPositionField = "OrdinalPosition";
         public string ColumnDefault { get; set; } // COLUMN_DEFAULT (length: 4000)
+        public const string ColumnDefaultField = "ColumnDefault";
         public string IsNullable { get; set; } // IS_NULLABLE (length: 3)
+        public const string IsNullableField = "IsNullable";
         public string DataType { get; set; } // DATA_TYPE (length: 128)
+        public const string DataTypeField = "DataType";
         public int? CharacterMaximumLength { get; set; } // CHARACTER_MAXIMUM_LENGTH
+        public const string CharacterMaximumLengthField = "CharacterMaximumLength";
         public int? CharacterOctetLength { get; set; } // CHARACTER_OCTET_LENGTH
+        public const string CharacterOctetLengthField = "CharacterOctetLength";
         public byte? NumericPrecision { get; set; } // NUMERIC_PRECISION
+        public const string NumericPrecisionField = "NumericPrecision";
         public short? NumericPrecisionRadix { get; set; } // NUMERIC_PRECISION_RADIX
+        public const string NumericPrecisionRadixField = "NumericPrecisionRadix";
         public int? NumericScale { get; set; } // NUMERIC_SCALE
+        public const string NumericScaleField = "NumericScale";
         public short? DatetimePrecision { get; set; } // DATETIME_PRECISION
+        public const string DatetimePrecisionField = "DatetimePrecision";
         public string CharacterSetCatalog { get; set; } // CHARACTER_SET_CATALOG (length: 128)
+        public const string CharacterSetCatalogField = "CharacterSetCatalog";
         public string CharacterSetSchema { get; set; } // CHARACTER_SET_SCHEMA (length: 128)
+        public const string CharacterSetSchemaField = "CharacterSetSchema";
         public string CharacterSetName { get; set; } // CHARACTER_SET_NAME (length: 128)
+        public const string CharacterSetNameField = "CharacterSetName";
         public string CollationCatalog { get; set; } // COLLATION_CATALOG (length: 128)
+        public const string CollationCatalogField = "CollationCatalog";
         public string CollationSchema { get; set; } // COLLATION_SCHEMA (length: 128)
+        public const string CollationSchemaField = "CollationSchema";
         public string CollationName { get; set; } // COLLATION_NAME (length: 128)
+        public const string CollationNameField = "CollationName";
         public string DomainCatalog { get; set; } // DOMAIN_CATALOG (length: 128)
+        public const string DomainCatalogField = "DomainCatalog";
         public string DomainSchema { get; set; } // DOMAIN_SCHEMA (length: 128)
+        public const string DomainSchemaField = "DomainSchema";
         public string DomainName { get; set; } // DOMAIN_NAME (length: 128)
+        public const string DomainNameField = "DomainName";
         public string Type { get; set; } // TYPE (length: 2)
+        public const string TypeField = "Type";
     }
 
     // DefaultCheckForNull
     public class DefaultCheckForNull
     {
         public int Id { get; set; } // Id (Primary key)
+        public const string IdField = "Id";
         public string DescUppercase { get; set; } // DescUppercase (length: 5)
+        public const string DescUppercaseField = "DescUppercase";
         public string DescLowercase { get; set; } // DescLowercase (length: 5)
+        public const string DescLowercaseField = "DescLowercase";
         public string DescMixedCase { get; set; } // DescMixedCase (length: 5)
+        public const string DescMixedCaseField = "DescMixedCase";
         public string DescBrackets { get; set; } // DescBrackets (length: 5)
+        public const string DescBracketsField = "DescBrackets";
         public string X1 { get; set; } // X1 (length: 255)
+        public const string X1Field = "X1";
     }
 
     // DSOpe
     public class DsOpe
     {
         public int Id { get; set; } // ID (Primary key)
+        public const string IdField = "Id";
         public decimal DecimalDefault { get; set; } // decimal_default
+        public const string DecimalDefaultField = "DecimalDefault";
         public Guid MyGuid { get; set; } // MyGuid
+        public const string MyGuidField = "MyGuid";
         public string @Default { get; set; } // default (length: 10)
+        public const string @DefaultField = "@Default";
         public Guid? MyGuidBadDefault { get; set; } // MyGuidBadDefault
+        public const string MyGuidBadDefaultField = "MyGuidBadDefault";
 
         public DsOpe()
         {
@@ -4105,14 +4288,18 @@ namespace V7EfrpgTest
     public class EnumsWithStringAsValue
     {
         public string EnumName { get; set; } // enum_name (Primary key) (length: 50)
+        public const string EnumNameField = "EnumName";
         public string Value { get; set; } // value (Primary key) (length: 10)
+        public const string ValueField = "Value";
     }
 
     // DaysOfWeek
     public class EnumTest_DaysOfWeek
     {
         public string TypeName { get; set; } // TypeName (length: 50)
+        public const string TypeNameField = "TypeName";
         public int TypeId { get; set; } // TypeId (Primary key)
+        public const string TypeIdField = "TypeId";
 
         // Reverse navigation
 
@@ -4131,7 +4318,9 @@ namespace V7EfrpgTest
     public class EnumTest_OpenDay
     {
         public int Id { get; set; } // Id (Primary key)
+        public const string IdField = "Id";
         public int EnumId { get; set; } // EnumId
+        public const string EnumIdField = "EnumId";
 
         // Foreign keys
 
@@ -4145,7 +4334,9 @@ namespace V7EfrpgTest
     public class EnumWithDefaultValue
     {
         public int Id { get; set; } // Id (Primary key)
+        public const string IdField = "Id";
         public int SomeEnum { get; set; } // SomeEnum
+        public const string SomeEnumField = "SomeEnum";
 
         public EnumWithDefaultValue()
         {
@@ -4157,10 +4348,15 @@ namespace V7EfrpgTest
     public class EventProcessor
     {
         public int Id { get; set; } // Id (Primary key)
+        public const string IdField = "Id";
         public string Name { get; set; } // Name (length: 200)
+        public const string NameField = "Name";
         public string Description { get; set; } // Description (length: 512)
+        public const string DescriptionField = "Description";
         public string EndpointAddress { get; set; } // EndpointAddress (length: 512)
+        public const string EndpointAddressField = "EndpointAddress";
         public bool Enabled { get; set; } // Enabled
+        public const string EnabledField = "Enabled";
 
         // Reverse navigation
 
@@ -4179,8 +4375,11 @@ namespace V7EfrpgTest
     public class EventProcessorEventFilter
     {
         public int Id { get; set; } // Id (Primary key)
+        public const string IdField = "Id";
         public int EventProcessorId { get; set; } // EventProcessorId
+        public const string EventProcessorIdField = "EventProcessorId";
         public int WantedEventId { get; set; } // WantedEventId
+        public const string WantedEventIdField = "WantedEventId";
 
         // Foreign keys
 
@@ -4194,23 +4393,31 @@ namespace V7EfrpgTest
     public class FFRS_Cv
     {
         public Guid BatchUid { get; set; } // BatchUID (Primary key)
+        public const string BatchUidField = "BatchUid";
         public int Cvid { get; set; } // CVID (Primary key)
+        public const string CvidField = "Cvid";
         public string CvName { get; set; } // CVName (length: 200)
+        public const string CvNameField = "CvName";
     }
 
     // FinancialInstitutionOffice
     public class FinancialInstitutionOffice
     {
         public Guid Code { get; set; } // Code
+        public const string CodeField = "Code";
         public Guid FinancialInstitutionCode { get; set; } // FinancialInstitutionCode (Primary key via unique index UniqueOfficeName_FinancialInstitutionOffice)
+        public const string FinancialInstitutionCodeField = "FinancialInstitutionCode";
         public string OfficeName { get; set; } // OfficeName (length: 200)
+        public const string OfficeNameField = "OfficeName";
     }
 
     // SmallDecimalTestAttribute
     public class FkTest_SmallDecimalTestAttribute
     {
         public int FkId { get; set; } // FkID (Primary key)
+        public const string FkIdField = "FkId";
         public string Description { get; set; } // description (length: 20)
+        public const string DescriptionField = "Description";
 
         // Reverse navigation
 
@@ -4236,8 +4443,11 @@ namespace V7EfrpgTest
     public class Footer
     {
         public int Id { get; set; } // ID (Primary key)
+        public const string IdField = "Id";
         public int OtherId { get; set; } // otherID
+        public const string OtherIdField = "OtherId";
         public DateTime Added { get; set; } // added
+        public const string AddedField = "Added";
 
         // Foreign keys
 
@@ -4256,8 +4466,11 @@ namespace V7EfrpgTest
     public class ForeignKeyIsNotEnforced
     {
         public int Id { get; set; } // id (Primary key)
+        public const string IdField = "Id";
         public int? NullValue { get; set; } // null_value
+        public const string NullValueField = "NullValue";
         public int NotNullValue { get; set; } // not_null_value
+        public const string NotNullValueField = "NotNullValue";
 
         // Reverse navigation
 
@@ -4276,8 +4489,11 @@ namespace V7EfrpgTest
     public class ForeignKeyIsNotEnforcedItem
     {
         public int Id { get; set; } // id (Primary key)
+        public const string IdField = "Id";
         public int? NullValue { get; set; } // null_value
+        public const string NullValueField = "NullValue";
         public int NotNullValue { get; set; } // not_null_value
+        public const string NotNullValueField = "NotNullValue";
 
         // Foreign keys
 
@@ -4296,10 +4512,15 @@ namespace V7EfrpgTest
     public class HasPrincipalKeyTestChild
     {
         public int Id { get; set; } // Id (Primary key)
+        public const string IdField = "Id";
         public int A { get; set; } // A
+        public const string AField = "A";
         public int B { get; set; } // B
+        public const string BField = "B";
         public int? C { get; set; } // C
+        public const string CField = "C";
         public int? D { get; set; } // D
+        public const string DField = "D";
 
         // Foreign keys
 
@@ -4313,10 +4534,15 @@ namespace V7EfrpgTest
     public class HasPrincipalKeyTestParent
     {
         public int Id { get; set; } // Id (Primary key)
+        public const string IdField = "Id";
         public int Aa { get; set; } // AA
+        public const string AaField = "Aa";
         public int Bb { get; set; } // BB
+        public const string BbField = "Bb";
         public int? Cc { get; set; } // CC
+        public const string CcField = "Cc";
         public int? Dd { get; set; } // DD
+        public const string DdField = "Dd";
 
         // Reverse navigation
 
@@ -4330,8 +4556,11 @@ namespace V7EfrpgTest
     public class Header
     {
         public int Id { get; set; } // ID (Primary key)
+        public const string IdField = "Id";
         public int AnotherId { get; set; } // anotherID (Primary key)
+        public const string AnotherIdField = "AnotherId";
         public DateTime Added { get; set; } // added
+        public const string AddedField = "Added";
 
         // Reverse navigation
 
@@ -4351,14 +4580,18 @@ namespace V7EfrpgTest
     public class HierarchyTest
     {
         public int Id { get; set; } // ID (Primary key)
+        public const string IdField = "Id";
         public HierarchyId Hid { get; set; } // hid
+        public const string HidField = "Hid";
     }
 
     // Role
     public class Issue47_Role
     {
         public int RoleId { get; set; } // RoleId (Primary key)
+        public const string RoleIdField = "RoleId";
         public string Role { get; set; } // Role (length: 10)
+        public const string RoleField = "Role";
 
         // Reverse navigation
 
@@ -4377,7 +4610,9 @@ namespace V7EfrpgTest
     public class Issue47_User
     {
         public int UserId { get; set; } // UserId (Primary key)
+        public const string UserIdField = "UserId";
         public string Name { get; set; } // Name (length: 10)
+        public const string NameField = "Name";
 
         // Reverse navigation
 
@@ -4396,8 +4631,11 @@ namespace V7EfrpgTest
     public class Issue47_UserRole
     {
         public int UserRoleId { get; set; } // UserRoleId (Primary key)
+        public const string UserRoleIdField = "UserRoleId";
         public int UserId { get; set; } // UserId
+        public const string UserIdField = "UserId";
         public int RoleId { get; set; } // RoleId
+        public const string RoleIdField = "RoleId";
 
         // Foreign keys
 
@@ -4416,10 +4654,15 @@ namespace V7EfrpgTest
     public class MultipleKey
     {
         public int UserId { get; set; } // UserId (Primary key)
+        public const string UserIdField = "UserId";
         public int FavouriteColourId { get; set; } // FavouriteColourId (Primary key via unique index )
+        public const string FavouriteColourIdField = "FavouriteColourId";
         public int BestHolidayTypeId { get; set; } // BestHolidayTypeId (Primary key)
+        public const string BestHolidayTypeIdField = "BestHolidayTypeId";
         public int BankId { get; set; } // BankId
+        public const string BankIdField = "BankId";
         public int CarId { get; set; } // CarId
+        public const string CarIdField = "CarId";
     }
 
     // The table 'NoPrimaryKeys' is not usable by entity framework because it
@@ -4428,7 +4671,9 @@ namespace V7EfrpgTest
     public class NoPrimaryKey
     {
         public int? Id { get; set; } // Id
+        public const string IdField = "Id";
         public string Description { get; set; } // Description (length: 10)
+        public const string DescriptionField = "Description";
     }
 
     // The table 'Test' is not usable by entity framework because it
@@ -4437,16 +4682,22 @@ namespace V7EfrpgTest
     public class Omega_Test
     {
         public int? Id { get; set; } // Id
+        public const string IdField = "Id";
         public int? ExclusionTest { get; set; } // ExclusionTest
+        public const string ExclusionTestField = "ExclusionTest";
     }
 
     // Issue
     public class OneEightSix_Issue
     {
         public int Id { get; set; } // Id (Primary key)
+        public const string IdField = "Id";
         public string Title { get; set; } // Title (length: 100)
+        public const string TitleField = "Title";
         public string Content { get; set; } // Content
+        public const string ContentField = "Content";
         public int? ConsentDocumentId { get; set; } // ConsentDocumentId
+        public const string ConsentDocumentIdField = "ConsentDocumentId";
 
         // Reverse navigation
 
@@ -4472,7 +4723,9 @@ namespace V7EfrpgTest
     public class OneEightSix_UploadedFile
     {
         public int Id { get; set; } // Id (Primary key)
+        public const string IdField = "Id";
         public string FullPath { get; set; } // FullPath
+        public const string FullPathField = "FullPath";
 
         // Reverse navigation
 
@@ -4497,14 +4750,18 @@ namespace V7EfrpgTest
     public class PeriodTestTable
     {
         public int Id { get; set; } // id (Primary key)
+        public const string IdField = "Id";
         public int? Joe46Bloggs { get; set; } // joe.bloggs
+        public const string Joe46BloggsField = "Joe46Bloggs";
     }
 
     // Person
     public class Person
     {
         public int Id { get; set; } // Id (Primary key)
+        public const string IdField = "Id";
         public string Name { get; set; } // Name (length: 50)
+        public const string NameField = "Name";
 
         // Reverse navigation
 
@@ -4529,10 +4786,15 @@ namespace V7EfrpgTest
     public class PersonPost
     {
         public int Id { get; set; } // Id (Primary key)
+        public const string IdField = "Id";
         public string Title { get; set; } // Title (length: 20)
+        public const string TitleField = "Title";
         public string Body { get; set; } // Body (length: 100)
+        public const string BodyField = "Body";
         public int CreatedBy { get; set; } // CreatedBy
+        public const string CreatedByField = "CreatedBy";
         public int UpdatedBy { get; set; } // UpdatedBy
+        public const string UpdatedByField = "UpdatedBy";
 
         // Foreign keys
 
@@ -4551,17 +4813,24 @@ namespace V7EfrpgTest
     public class PkOrdinalTest
     {
         public int C1 { get; set; } // C1 (Primary key)
+        public const string C1Field = "C1";
         public int C2 { get; set; } // C2
+        public const string C2Field = "C2";
         public int C3 { get; set; } // C3 (Primary key)
+        public const string C3Field = "C3";
     }
 
     // PropertyTypesToAdd
     public class PropertyTypesToAdd
     {
         public int Id { get; set; } // id (Primary key)
+        public const string IdField = "Id";
         public DateTime? DtDefault { get; set; } // dt_default
+        public const string DtDefaultField = "DtDefault";
         public DateTime? Dt7 { get; set; } // dt7
+        public const string Dt7Field = "Dt7";
         public string DefaultCheck { get; set; } // defaultCheck (length: 10)
+        public const string DefaultCheckField = "DefaultCheck";
 
         // Reverse navigation
 
@@ -4584,26 +4853,37 @@ namespace V7EfrpgTest
     public class SequenceTest
     {
         public int Id { get; set; } // Id (Primary key)
+        public const string IdField = "Id";
         public long CntByBigInt { get; set; } // CntByBigInt
+        public const string CntByBigIntField = "CntByBigInt";
         public byte CntByTinyInt { get; set; } // CntByTinyInt
+        public const string CntByTinyIntField = "CntByTinyInt";
         public short CntBySmallInt { get; set; } // CntBySmallInt
+        public const string CntBySmallIntField = "CntBySmallInt";
         public decimal CntByDecimal { get; set; } // CntByDecimal
+        public const string CntByDecimalField = "CntByDecimal";
         public decimal CntByNumeric { get; set; } // CntByNumeric
+        public const string CntByNumericField = "CntByNumeric";
     }
 
     // SequenceTestPartTwo
     public class SequenceTestPartTwo
     {
         public int Id { get; set; } // Id (Primary key)
+        public const string IdField = "Id";
         public long CntByBigInt { get; set; } // CntByBigInt
+        public const string CntByBigIntField = "CntByBigInt";
         public byte CntByTinyInt { get; set; } // CntByTinyInt
+        public const string CntByTinyIntField = "CntByTinyInt";
     }
 
     // SmallDecimalTest
     public class SmallDecimalTest
     {
         public int Id { get; set; } // id (Primary key)
+        public const string IdField = "Id";
         public decimal? KoeffVed { get; set; } // KoeffVed
+        public const string KoeffVedField = "KoeffVed";
 
         // Reverse navigation
 
@@ -4622,14 +4902,18 @@ namespace V7EfrpgTest
     public class SmallDecimalTestView
     {
         public int FkId { get; set; } // FkID
+        public const string FkIdField = "FkId";
         public string Description { get; set; } // description (length: 20)
+        public const string DescriptionField = "Description";
     }
 
     // Boo
     public class Stafford_Boo
     {
         public int Id { get; set; } // id (Primary key)
+        public const string IdField = "Id";
         public string Name { get; set; } // name (length: 10)
+        public const string NameField = "Name";
 
         // Reverse navigation
 
@@ -4643,15 +4927,20 @@ namespace V7EfrpgTest
     public class Stafford_ComputedColumn
     {
         public int Id { get; set; } // Id (Primary key)
+        public const string IdField = "Id";
         public string MyColumn { get; set; } // MyColumn (length: 10)
+        public const string MyColumnField = "MyColumn";
         public string MyComputedColumn { get; private set; } // MyComputedColumn (length: 10)
+        public const string MyComputedColumnField = "MyComputedColumn";
     }
 
     // Foo
     public class Stafford_Foo
     {
         public int Id { get; set; } // id (Primary key)
+        public const string IdField = "Id";
         public string Name { get; set; } // name (length: 10)
+        public const string NameField = "Name";
 
         // Foreign keys
 
@@ -4665,8 +4954,11 @@ namespace V7EfrpgTest
     public class Synonyms_Child
     {
         public int ChildId { get; set; } // ChildId (Primary key)
+        public const string ChildIdField = "ChildId";
         public int ParentId { get; set; } // ParentId
+        public const string ParentIdField = "ParentId";
         public string ChildName { get; set; } // ChildName (length: 100)
+        public const string ChildNameField = "ChildName";
 
         // Foreign keys
 
@@ -4680,7 +4972,9 @@ namespace V7EfrpgTest
     public class Synonyms_Parent
     {
         public int ParentId { get; set; } // ParentId (Primary key)
+        public const string ParentIdField = "ParentId";
         public string ParentName { get; set; } // ParentName (length: 100)
+        public const string ParentNameField = "ParentName";
 
         // Reverse navigation
 
@@ -4699,7 +4993,9 @@ namespace V7EfrpgTest
     public class TableA
     {
         public int TableAId { get; set; } // TableAId (Primary key)
+        public const string TableAIdField = "TableAId";
         public string TableADesc { get; set; } // TableADesc (length: 20)
+        public const string TableADescField = "TableADesc";
 
         // Reverse navigation
 
@@ -4718,9 +5014,13 @@ namespace V7EfrpgTest
     public class TableB
     {
         public int TableBId { get; set; } // TableBId (Primary key)
+        public const string TableBIdField = "TableBId";
         public int TableAId { get; set; } // TableAId (Primary key)
+        public const string TableAIdField = "TableAId";
         public int? ParentTableAId { get; set; } // ParentTableAId
+        public const string ParentTableAIdField = "ParentTableAId";
         public string TableBDesc { get; set; } // TableBDesc (length: 20)
+        public const string TableBDescField = "TableBDesc";
 
         // Reverse navigation
 
@@ -4746,17 +5046,24 @@ namespace V7EfrpgTest
     public class TableWithDuplicateColumnName
     {
         public int Id { get; set; } // id (Primary key)
+        public const string IdField = "Id";
         public int UserId1 { get; set; } // user_id
+        public const string UserId1Field = "UserId1";
         public int UserId2 { get; set; } // UserId
+        public const string UserId2Field = "UserId2";
         public int UserId3 { get; set; } // User Id
+        public const string UserId3Field = "UserId3";
         public int UserId4 { get; set; } // User  Id
+        public const string UserId4Field = "UserId4";
         public int UserId { get; set; } // user__id
+        public const string UserIdField = "UserId";
     }
 
     // table with space
     public class TableWithSpace
     {
         public int Id { get; set; } // id (Primary key)
+        public const string IdField = "Id";
 
         // Reverse navigation
 
@@ -4775,6 +5082,7 @@ namespace V7EfrpgTest
     public class TableWithSpaceAndInColumn
     {
         public int IdValue { get; set; } // id value (Primary key)
+        public const string IdValueField = "IdValue";
 
         // Reverse navigation
 
@@ -4793,28 +5101,36 @@ namespace V7EfrpgTest
     public class TableWithSpaceInColumnOnly
     {
         public int IdValue { get; set; } // id value (Primary key)
+        public const string IdValueField = "IdValue";
     }
 
     // TadeuszSobol
     public class TadeuszSobol
     {
         public int Id { get; set; } // Id (Primary key)
+        public const string IdField = "Id";
         public string Description { get; set; } // Description
+        public const string DescriptionField = "Description";
         public string Notes { get; set; } // Notes
+        public const string NotesField = "Notes";
         public string Name { get; set; } // Name (length: 10)
+        public const string NameField = "Name";
     }
 
     // Task
     public class Task1
     {
         public long TaskId { get; set; } // TaskId (Primary key)
+        public const string TaskIdField = "TaskId";
     }
 
     // tblOrders
     public class TblOrder
     {
         public int Id { get; set; } // ID (Primary key)
+        public const string IdField = "Id";
         public DateTime Added { get; set; } // added
+        public const string AddedField = "Added";
 
         // Reverse navigation
 
@@ -4834,22 +5150,29 @@ namespace V7EfrpgTest
     public class TblOrderError
     {
         public int Id { get; set; } // ID (Primary key)
+        public const string IdField = "Id";
         public string Error { get; set; } // error (length: 50)
+        public const string ErrorField = "Error";
     }
 
     // tblOrderErrorsAB_
     public class TblOrderErrorsAb
     {
         public int Id { get; set; } // ID (Primary key)
+        public const string IdField = "Id";
         public string Error { get; set; } // error (length: 50)
+        public const string ErrorField = "Error";
     }
 
     // tblOrderLines
     public class TblOrderLine
     {
         public int Id { get; set; } // ID (Primary key)
+        public const string IdField = "Id";
         public int OrderId { get; set; } // OrderID
+        public const string OrderIdField = "OrderId";
         public string Sku { get; set; } // sku (length: 15)
+        public const string SkuField = "Sku";
 
         // Foreign keys
 
@@ -4865,22 +5188,29 @@ namespace V7EfrpgTest
     public class Test
     {
         public int? Id { get; set; } // Id
+        public const string IdField = "Id";
         public int? ExclusionTest { get; set; } // ExclusionTest
+        public const string ExclusionTestField = "ExclusionTest";
     }
 
     // ThisIsMemoryOptimised
     public class ThisIsMemoryOptimised
     {
         public int Id { get; set; } // Id (Primary key)
+        public const string IdField = "Id";
         public string Description { get; set; } // Description (length: 20)
+        public const string DescriptionField = "Description";
     }
 
     // Ticket
     public class Ticket
     {
         public long Id { get; set; } // Id (Primary key)
+        public const string IdField = "Id";
         public long CreatedById { get; set; } // CreatedById
+        public const string CreatedByIdField = "CreatedById";
         public long? ModifiedById { get; set; } // ModifiedById
+        public const string ModifiedByIdField = "ModifiedById";
 
         // Foreign keys
 
@@ -4899,23 +5229,31 @@ namespace V7EfrpgTest
     public class TimestampNotNull
     {
         public int Id { get; set; } // Id (Primary key)
+        public const string IdField = "Id";
         public byte[] Version { get; set; } // Version (length: 8)
+        public const string VersionField = "Version";
         public int Number { get; set; } // Number
+        public const string NumberField = "Number";
     }
 
     // TimestampNullable
     public class TimestampNullable
     {
         public int Id { get; set; } // Id (Primary key)
+        public const string IdField = "Id";
         public byte[] Version { get; set; } // Version (length: 8)
+        public const string VersionField = "Version";
         public int Number { get; set; } // Number
+        public const string NumberField = "Number";
     }
 
     // Token
     public class Token
     {
         public Guid Id { get; set; } // Id (Primary key)
+        public const string IdField = "Id";
         public bool Enabled { get; set; } // Enabled
+        public const string EnabledField = "Enabled";
 
         public Token()
         {
@@ -4927,7 +5265,9 @@ namespace V7EfrpgTest
     public class User
     {
         public int Id { get; set; } // ID (Primary key)
+        public const string IdField = "Id";
         public string ExternalUserId { get; set; } // ExternalUserID (length: 50)
+        public const string ExternalUserIdField = "ExternalUserId";
 
         // Reverse navigation
 
@@ -4952,9 +5292,13 @@ namespace V7EfrpgTest
     public class User309
     {
         public long UserId { get; set; } // UserID (Primary key)
+        public const string UserIdField = "UserId";
         public string Lastname { get; set; } // Lastname (length: 100)
+        public const string LastnameField = "Lastname";
         public string Firstname { get; set; } // Firstname (length: 100)
+        public const string FirstnameField = "Firstname";
         public int? PhoneCountryId { get; set; } // PhoneCountryID
+        public const string PhoneCountryIdField = "PhoneCountryId";
 
         // Foreign keys
 
@@ -4968,8 +5312,11 @@ namespace V7EfrpgTest
     public class UserDocument
     {
         public int Id { get; set; } // ID (Primary key)
+        public const string IdField = "Id";
         public int UserId { get; set; } // UserID
+        public const string UserIdField = "UserId";
         public int CreatedByUserId { get; set; } // CreatedByUserID
+        public const string CreatedByUserIdField = "CreatedByUserId";
 
         // Foreign keys
 
@@ -4988,61 +5335,92 @@ namespace V7EfrpgTest
     public class Versioned
     {
         public int Id { get; set; } // Id (Primary key)
+        public const string IdField = "Id";
         public byte[] Version { get; set; } // Version (length: 8)
+        public const string VersionField = "Version";
         public int Number { get; set; } // Number
+        public const string NumberField = "Number";
     }
 
     // VersionedNullable
     public class VersionedNullable
     {
         public int Id { get; set; } // Id (Primary key)
+        public const string IdField = "Id";
         public byte[] Version { get; set; } // Version (length: 8)
+        public const string VersionField = "Version";
         public int Number { get; set; } // Number
+        public const string NumberField = "Number";
     }
 
     // view with space
     public class ViewWithSpace
     {
         public int CodeObjectNo { get; set; } // codeObjectNo
+        public const string CodeObjectNoField = "CodeObjectNo";
         public int? ApplicationNo { get; set; } // applicationNo
+        public const string ApplicationNoField = "ApplicationNo";
         public int Type { get; set; } // type
+        public const string TypeField = "Type";
         public string EName { get; set; } // eName (length: 250)
+        public const string ENameField = "EName";
         public string AName { get; set; } // aName (length: 250)
+        public const string ANameField = "AName";
         public string Description { get; set; } // description (length: 250)
+        public const string DescriptionField = "Description";
         public string CodeName { get; set; } // codeName (length: 250)
+        public const string CodeNameField = "CodeName";
         public string Note { get; set; } // note (length: 250)
+        public const string NoteField = "Note";
         public bool IsObject { get; set; } // isObject
+        public const string IsObjectField = "IsObject";
         public byte[] VersionNumber { get; set; } // versionNumber (length: 8)
+        public const string VersionNumberField = "VersionNumber";
     }
 
     // Articles
     public class WVN_Article
     {
         public int PkArticle { get; set; } // PK_Article (Primary key)
+        public const string PkArticleField = "PkArticle";
         public Guid FkFactory { get; set; } // FK_Factory
+        public const string FkFactoryField = "FkFactory";
         public int FkArticleLevel { get; set; } // FK_ArticleLevel
+        public const string FkArticleLevelField = "FkArticleLevel";
         public int? FkParentArticle { get; set; } // FK_ParentArticle
+        public const string FkParentArticleField = "FkParentArticle";
         public string Code { get; set; } // Code (length: 20)
+        public const string CodeField = "Code";
     }
 
     // v_Articles
     public class WVN_VArticle
     {
         public int? PkArticle { get; set; } // PK_Article
+        public const string PkArticleField = "PkArticle";
         public Guid? FkFactory { get; set; } // FK_Factory
+        public const string FkFactoryField = "FkFactory";
         public int? FkArticleLevel { get; set; } // FK_ArticleLevel
+        public const string FkArticleLevelField = "FkArticleLevel";
         public int? FkParentArticle { get; set; } // FK_ParentArticle
+        public const string FkParentArticleField = "FkParentArticle";
         public string Code { get; set; } // Code (length: 20)
+        public const string CodeField = "Code";
         public string FullCode { get; set; } // FullCode (length: 100)
+        public const string FullCodeField = "FullCode";
     }
 
     // Бренды товара
     public class Брендытовара
     {
         public int Кодбренда { get; set; } // Код бренда (Primary key)
+        public const string КодбрендаField = "Кодбренда";
         public string Наименованиебренда { get; set; } // Наименование бренда (length: 50)
+        public const string НаименованиебрендаField = "Наименованиебренда";
         public byte[] Логотипбренда { get; set; } // Логотип_бренда (length: 2147483647)
+        public const string ЛоготипбрендаField = "Логотипбренда";
         public byte[] Логотипбрендавертикальный { get; set; } // Логотип_бренда_вертикальный (length: 2147483647)
+        public const string ЛоготипбрендавертикальныйField = "Логотипбрендавертикальный";
     }
 
 

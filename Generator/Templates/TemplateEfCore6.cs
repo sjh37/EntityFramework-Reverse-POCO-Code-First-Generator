@@ -1418,6 +1418,7 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
     {{this}}{{#newline}}
 {{/each}}
     public {{#if OverrideModifier}}override {{/if}}{{WrapIfNullable}} {{NameHumanCase}} { get; {{PrivateSetterForComputedColumns}}set; }{{PropertyInitialisers}}{{InlineComments}}{{#newline}}
+{{#if IncludeFieldNameConstants}}    public const string {{NameHumanCase}}Field = ""{{NameHumanCase}}"";{{#newline}}{{/if}}
 {{/each}}
 
 {{#if HasReverseNavigation}}
