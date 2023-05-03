@@ -118,6 +118,8 @@ namespace TestDatabaseStandard
         DbSet<TblOrderError> TblOrderErrors { get; set; } // tblOrderErrors
         DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
         DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
+        DbSet<TemporalDepartment> TemporalDepartments { get; set; } // TemporalDepartment
+        DbSet<TemporalDepartmentHistory> TemporalDepartmentHistories { get; set; } // TemporalDepartmentHistory
         DbSet<ThisIsMemoryOptimised> ThisIsMemoryOptimiseds { get; set; } // ThisIsMemoryOptimised
         DbSet<Ticket> Tickets { get; set; } // Ticket
         DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
@@ -456,6 +458,8 @@ namespace TestDatabaseStandard
         public DbSet<TblOrderError> TblOrderErrors { get; set; } // tblOrderErrors
         public DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
         public DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
+        public DbSet<TemporalDepartment> TemporalDepartments { get; set; } // TemporalDepartment
+        public DbSet<TemporalDepartmentHistory> TemporalDepartmentHistories { get; set; } // TemporalDepartmentHistory
         public DbSet<ThisIsMemoryOptimised> ThisIsMemoryOptimiseds { get; set; } // ThisIsMemoryOptimised
         public DbSet<Ticket> Tickets { get; set; } // Ticket
         public DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
@@ -589,6 +593,8 @@ namespace TestDatabaseStandard
             modelBuilder.ApplyConfiguration(new TblOrderErrorConfiguration());
             modelBuilder.ApplyConfiguration(new TblOrderErrorsAbConfiguration());
             modelBuilder.ApplyConfiguration(new TblOrderLineConfiguration());
+            modelBuilder.ApplyConfiguration(new TemporalDepartmentConfiguration());
+            modelBuilder.ApplyConfiguration(new TemporalDepartmentHistoryConfiguration());
             modelBuilder.ApplyConfiguration(new ThisIsMemoryOptimisedConfiguration());
             modelBuilder.ApplyConfiguration(new TicketConfiguration());
             modelBuilder.ApplyConfiguration(new TimestampNotNullConfiguration());
@@ -1897,6 +1903,8 @@ namespace TestDatabaseStandard
         public DbSet<TblOrderError> TblOrderErrors { get; set; } // tblOrderErrors
         public DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
         public DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
+        public DbSet<TemporalDepartment> TemporalDepartments { get; set; } // TemporalDepartment
+        public DbSet<TemporalDepartmentHistory> TemporalDepartmentHistories { get; set; } // TemporalDepartmentHistory
         public DbSet<ThisIsMemoryOptimised> ThisIsMemoryOptimiseds { get; set; } // ThisIsMemoryOptimised
         public DbSet<Ticket> Tickets { get; set; } // Ticket
         public DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
@@ -2005,6 +2013,8 @@ namespace TestDatabaseStandard
             TblOrderErrors = new FakeDbSet<TblOrderError>("Id");
             TblOrderErrorsAbs = new FakeDbSet<TblOrderErrorsAb>("Id");
             TblOrderLines = new FakeDbSet<TblOrderLine>("Id");
+            TemporalDepartments = new FakeDbSet<TemporalDepartment>("DeptId");
+            TemporalDepartmentHistories = new FakeDbSet<TemporalDepartmentHistory>("DeptId", "DeptName", "SysStartTime", "SysEndTime");
             ThisIsMemoryOptimiseds = new FakeDbSet<ThisIsMemoryOptimised>("Id");
             Tickets = new FakeDbSet<Ticket>("Id");
             TimestampNotNulls = new FakeDbSet<TimestampNotNull>("Id");
@@ -4931,6 +4941,28 @@ namespace TestDatabaseStandard
         public virtual TblOrder TblOrder { get; set; } // tblOrdersFK
     }
 
+    // TemporalDepartment
+    public class TemporalDepartment
+    {
+        public int DeptId { get; set; } // DeptID (Primary key)
+        public string DeptName { get; set; } // DeptName (length: 50)
+        public int? ManagerId { get; set; } // ManagerID
+        public int? ParentDeptId { get; set; } // ParentDeptID
+        public DateTime SysStartTime { get; set; } // SysStartTime
+        public DateTime SysEndTime { get; set; } // SysEndTime
+    }
+
+    // TemporalDepartmentHistory
+    public class TemporalDepartmentHistory
+    {
+        public int DeptId { get; set; } // DeptID (Primary key)
+        public string DeptName { get; set; } // DeptName (Primary key) (length: 50)
+        public int? ManagerId { get; set; } // ManagerID
+        public int? ParentDeptId { get; set; } // ParentDeptID
+        public DateTime SysStartTime { get; set; } // SysStartTime (Primary key)
+        public DateTime SysEndTime { get; set; } // SysEndTime (Primary key)
+    }
+
     // The table 'Test' is not usable by entity framework because it
     // does not have a primary key. It is listed here for completeness.
     // Test
@@ -6542,6 +6574,42 @@ namespace TestDatabaseStandard
 
             // Foreign keys
             builder.HasOne(a => a.TblOrder).WithMany(b => b.TblOrderLines).HasForeignKey(c => c.OrderId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("tblOrdersFK");
+        }
+    }
+
+    // TemporalDepartment
+    public class TemporalDepartmentConfiguration : IEntityTypeConfiguration<TemporalDepartment>
+    {
+        public void Configure(EntityTypeBuilder<TemporalDepartment> builder)
+        {
+            builder.ToTable("TemporalDepartment", "dbo");
+            builder.HasKey(x => x.DeptId).HasName("PK__Temporal__0148818EB27A7514").IsClustered();
+
+            builder.Property(x => x.DeptId).HasColumnName(@"DeptID").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.DeptName).HasColumnName(@"DeptName").HasColumnType("varchar(50)").IsRequired().IsUnicode(false).HasMaxLength(50);
+            builder.Property(x => x.ManagerId).HasColumnName(@"ManagerID").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.ParentDeptId).HasColumnName(@"ParentDeptID").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.SysStartTime).HasColumnName(@"SysStartTime").HasColumnType("datetime2").IsRequired().ValueGeneratedOnAdd();
+            builder.Property(x => x.SysEndTime).HasColumnName(@"SysEndTime").HasColumnType("datetime2").IsRequired().ValueGeneratedOnAdd();
+        }
+    }
+
+    // TemporalDepartmentHistory
+    public class TemporalDepartmentHistoryConfiguration : IEntityTypeConfiguration<TemporalDepartmentHistory>
+    {
+        public void Configure(EntityTypeBuilder<TemporalDepartmentHistory> builder)
+        {
+            builder.ToTable("TemporalDepartmentHistory", "dbo");
+            builder.HasKey(x => new { x.DeptId, x.DeptName, x.SysStartTime, x.SysEndTime });
+
+            builder.Property(x => x.DeptId).HasColumnName(@"DeptID").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.DeptName).HasColumnName(@"DeptName").HasColumnType("varchar(50)").IsRequired().IsUnicode(false).HasMaxLength(50).ValueGeneratedNever();
+            builder.Property(x => x.ManagerId).HasColumnName(@"ManagerID").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.ParentDeptId).HasColumnName(@"ParentDeptID").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.SysStartTime).HasColumnName(@"SysStartTime").HasColumnType("datetime2").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.SysEndTime).HasColumnName(@"SysEndTime").HasColumnType("datetime2").IsRequired().ValueGeneratedNever();
+
+            builder.HasIndex(x => new { x.SysEndTime, x.SysStartTime }).HasDatabaseName("ix_TemporalDepartmentHistory");
         }
     }
 

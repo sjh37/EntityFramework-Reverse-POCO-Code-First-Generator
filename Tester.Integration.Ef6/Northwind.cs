@@ -1185,25 +1185,40 @@ namespace Tester.Integration.Ef6
     public class AlphabeticalListOfProduct
     {
         public int ProductId { get; set; } // ProductID (Primary key)
+        public const string ProductIdField = "ProductId";
         public string ProductName { get; set; } // ProductName (Primary key) (length: 40)
+        public const string ProductNameField = "ProductName";
         public int? SupplierId { get; set; } // SupplierID
+        public const string SupplierIdField = "SupplierId";
         public int? CategoryId { get; set; } // CategoryID
+        public const string CategoryIdField = "CategoryId";
         public string QuantityPerUnit { get; set; } // QuantityPerUnit (length: 20)
+        public const string QuantityPerUnitField = "QuantityPerUnit";
         public decimal? UnitPrice { get; set; } // UnitPrice
+        public const string UnitPriceField = "UnitPrice";
         public short? UnitsInStock { get; set; } // UnitsInStock
+        public const string UnitsInStockField = "UnitsInStock";
         public short? UnitsOnOrder { get; set; } // UnitsOnOrder
+        public const string UnitsOnOrderField = "UnitsOnOrder";
         public short? ReorderLevel { get; set; } // ReorderLevel
+        public const string ReorderLevelField = "ReorderLevel";
         public bool Discontinued { get; set; } // Discontinued (Primary key)
+        public const string DiscontinuedField = "Discontinued";
         public string CategoryName { get; set; } // CategoryName (Primary key) (length: 15)
+        public const string CategoryNameField = "CategoryName";
     }
 
     // Categories
     public class Category
     {
         public int CategoryId { get; set; } // CategoryID (Primary key)
+        public const string CategoryIdField = "CategoryId";
         public string CategoryName { get; set; } // CategoryName (length: 15)
+        public const string CategoryNameField = "CategoryName";
         public string Description { get; set; } // Description (length: 1073741823)
+        public const string DescriptionField = "Description";
         public byte[] Picture { get; set; } // Picture (length: 2147483647)
+        public const string PictureField = "Picture";
 
         // Reverse navigation
 
@@ -1222,30 +1237,45 @@ namespace Tester.Integration.Ef6
     public class CategorySalesFor1997
     {
         public string CategoryName { get; set; } // CategoryName (Primary key) (length: 15)
+        public const string CategoryNameField = "CategoryName";
         public decimal? CategorySales { get; set; } // CategorySales
+        public const string CategorySalesField = "CategorySales";
     }
 
     // Current Product List
     public class CurrentProductList
     {
         public int ProductId { get; set; } // ProductID (Primary key)
+        public const string ProductIdField = "ProductId";
         public string ProductName { get; set; } // ProductName (Primary key) (length: 40)
+        public const string ProductNameField = "ProductName";
     }
 
     // Customers
     public class Customer
     {
         public string CustomerId { get; set; } // CustomerID (Primary key) (length: 5)
+        public const string CustomerIdField = "CustomerId";
         public string CompanyName { get; set; } // CompanyName (length: 40)
+        public const string CompanyNameField = "CompanyName";
         public string ContactName { get; set; } // ContactName (length: 30)
+        public const string ContactNameField = "ContactName";
         public string ContactTitle { get; set; } // ContactTitle (length: 30)
+        public const string ContactTitleField = "ContactTitle";
         public string Address { get; set; } // Address (length: 60)
+        public const string AddressField = "Address";
         public string City { get; set; } // City (length: 15)
+        public const string CityField = "City";
         public string Region { get; set; } // Region (length: 15)
+        public const string RegionField = "Region";
         public string PostalCode { get; set; } // PostalCode (length: 10)
+        public const string PostalCodeField = "PostalCode";
         public string Country { get; set; } // Country (length: 15)
+        public const string CountryField = "Country";
         public string Phone { get; set; } // Phone (length: 24)
+        public const string PhoneField = "Phone";
         public string Fax { get; set; } // Fax (length: 24)
+        public const string FaxField = "Fax";
 
         // Reverse navigation
 
@@ -1270,16 +1300,22 @@ namespace Tester.Integration.Ef6
     public class CustomerAndSuppliersByCity
     {
         public string City { get; set; } // City (length: 15)
+        public const string CityField = "City";
         public string CompanyName { get; set; } // CompanyName (Primary key) (length: 40)
+        public const string CompanyNameField = "CompanyName";
         public string ContactName { get; set; } // ContactName (length: 30)
+        public const string ContactNameField = "ContactName";
         public string Relationship { get; set; } // Relationship (Primary key) (length: 9)
+        public const string RelationshipField = "Relationship";
     }
 
     // CustomerDemographics
     public class CustomerDemographic
     {
         public string CustomerTypeId { get; set; } // CustomerTypeID (Primary key) (length: 10)
+        public const string CustomerTypeIdField = "CustomerTypeId";
         public string CustomerDesc { get; set; } // CustomerDesc (length: 1073741823)
+        public const string CustomerDescField = "CustomerDesc";
 
         // Reverse navigation
 
@@ -1298,23 +1334,41 @@ namespace Tester.Integration.Ef6
     public class Employee
     {
         public int EmployeeId { get; set; } // EmployeeID (Primary key)
+        public const string EmployeeIdField = "EmployeeId";
         public string LastName { get; set; } // LastName (length: 20)
+        public const string LastNameField = "LastName";
         public string FirstName { get; set; } // FirstName (length: 10)
+        public const string FirstNameField = "FirstName";
         public string Title { get; set; } // Title (length: 30)
+        public const string TitleField = "Title";
         public string TitleOfCourtesy { get; set; } // TitleOfCourtesy (length: 25)
+        public const string TitleOfCourtesyField = "TitleOfCourtesy";
         public DateTime? BirthDate { get; set; } // BirthDate
+        public const string BirthDateField = "BirthDate";
         public DateTime? HireDate { get; set; } // HireDate
+        public const string HireDateField = "HireDate";
         public string Address { get; set; } // Address (length: 60)
+        public const string AddressField = "Address";
         public string City { get; set; } // City (length: 15)
+        public const string CityField = "City";
         public string Region { get; set; } // Region (length: 15)
+        public const string RegionField = "Region";
         public string PostalCode { get; set; } // PostalCode (length: 10)
+        public const string PostalCodeField = "PostalCode";
         public string Country { get; set; } // Country (length: 15)
+        public const string CountryField = "Country";
         public string HomePhone { get; set; } // HomePhone (length: 24)
+        public const string HomePhoneField = "HomePhone";
         public string Extension { get; set; } // Extension (length: 4)
+        public const string ExtensionField = "Extension";
         public byte[] Photo { get; set; } // Photo (length: 2147483647)
+        public const string PhotoField = "Photo";
         public string Notes { get; set; } // Notes (length: 1073741823)
+        public const string NotesField = "Notes";
         public int? ReportsTo { get; set; } // ReportsTo
+        public const string ReportsToField = "ReportsTo";
         public string PhotoPath { get; set; } // PhotoPath (length: 255)
+        public const string PhotoPathField = "PhotoPath";
 
         // Reverse navigation
 
@@ -1352,50 +1406,90 @@ namespace Tester.Integration.Ef6
     public class Invoice
     {
         public string ShipName { get; set; } // ShipName (length: 40)
+        public const string ShipNameField = "ShipName";
         public string ShipAddress { get; set; } // ShipAddress (length: 60)
+        public const string ShipAddressField = "ShipAddress";
         public string ShipCity { get; set; } // ShipCity (length: 15)
+        public const string ShipCityField = "ShipCity";
         public string ShipRegion { get; set; } // ShipRegion (length: 15)
+        public const string ShipRegionField = "ShipRegion";
         public string ShipPostalCode { get; set; } // ShipPostalCode (length: 10)
+        public const string ShipPostalCodeField = "ShipPostalCode";
         public string ShipCountry { get; set; } // ShipCountry (length: 15)
+        public const string ShipCountryField = "ShipCountry";
         public string CustomerId { get; set; } // CustomerID (length: 5)
+        public const string CustomerIdField = "CustomerId";
         public string CustomerName { get; set; } // CustomerName (Primary key) (length: 40)
+        public const string CustomerNameField = "CustomerName";
         public string Address { get; set; } // Address (length: 60)
+        public const string AddressField = "Address";
         public string City { get; set; } // City (length: 15)
+        public const string CityField = "City";
         public string Region { get; set; } // Region (length: 15)
+        public const string RegionField = "Region";
         public string PostalCode { get; set; } // PostalCode (length: 10)
+        public const string PostalCodeField = "PostalCode";
         public string Country { get; set; } // Country (length: 15)
+        public const string CountryField = "Country";
         public string Salesperson { get; set; } // Salesperson (Primary key) (length: 31)
+        public const string SalespersonField = "Salesperson";
         public int OrderId { get; set; } // OrderID (Primary key)
+        public const string OrderIdField = "OrderId";
         public DateTime? OrderDate { get; set; } // OrderDate
+        public const string OrderDateField = "OrderDate";
         public DateTime? RequiredDate { get; set; } // RequiredDate
+        public const string RequiredDateField = "RequiredDate";
         public DateTime? ShippedDate { get; set; } // ShippedDate
+        public const string ShippedDateField = "ShippedDate";
         public string ShipperName { get; set; } // ShipperName (Primary key) (length: 40)
+        public const string ShipperNameField = "ShipperName";
         public int ProductId { get; set; } // ProductID (Primary key)
+        public const string ProductIdField = "ProductId";
         public string ProductName { get; set; } // ProductName (Primary key) (length: 40)
+        public const string ProductNameField = "ProductName";
         public decimal UnitPrice { get; set; } // UnitPrice (Primary key)
+        public const string UnitPriceField = "UnitPrice";
         public short Quantity { get; set; } // Quantity (Primary key)
+        public const string QuantityField = "Quantity";
         public float Discount { get; set; } // Discount (Primary key)
+        public const string DiscountField = "Discount";
         public decimal? ExtendedPrice { get; set; } // ExtendedPrice
+        public const string ExtendedPriceField = "ExtendedPrice";
         public decimal? Freight { get; set; } // Freight
+        public const string FreightField = "Freight";
     }
 
     // Orders
     public class Order
     {
         public int OrderId { get; set; } // OrderID (Primary key)
+        public const string OrderIdField = "OrderId";
         public string CustomerId { get; set; } // CustomerID (length: 5)
+        public const string CustomerIdField = "CustomerId";
         public int? EmployeeId { get; set; } // EmployeeID
+        public const string EmployeeIdField = "EmployeeId";
         public DateTime? OrderDate { get; set; } // OrderDate
+        public const string OrderDateField = "OrderDate";
         public DateTime? RequiredDate { get; set; } // RequiredDate
+        public const string RequiredDateField = "RequiredDate";
         public DateTime? ShippedDate { get; set; } // ShippedDate
+        public const string ShippedDateField = "ShippedDate";
         public int? ShipVia { get; set; } // ShipVia
+        public const string ShipViaField = "ShipVia";
         public decimal? Freight { get; set; } // Freight
+        public const string FreightField = "Freight";
         public string ShipName { get; set; } // ShipName (length: 40)
+        public const string ShipNameField = "ShipName";
         public string ShipAddress { get; set; } // ShipAddress (length: 60)
+        public const string ShipAddressField = "ShipAddress";
         public string ShipCity { get; set; } // ShipCity (length: 15)
+        public const string ShipCityField = "ShipCity";
         public string ShipRegion { get; set; } // ShipRegion (length: 15)
+        public const string ShipRegionField = "ShipRegion";
         public string ShipPostalCode { get; set; } // ShipPostalCode (length: 10)
+        public const string ShipPostalCodeField = "ShipPostalCode";
         public string ShipCountry { get; set; } // ShipCountry (length: 15)
+        public const string ShipCountryField = "ShipCountry";
 
         // Reverse navigation
 
@@ -1432,10 +1526,15 @@ namespace Tester.Integration.Ef6
     public class OrderDetail
     {
         public int OrderId { get; set; } // OrderID (Primary key)
+        public const string OrderIdField = "OrderId";
         public int ProductId { get; set; } // ProductID (Primary key)
+        public const string ProductIdField = "ProductId";
         public decimal UnitPrice { get; set; } // UnitPrice
+        public const string UnitPriceField = "UnitPrice";
         public short Quantity { get; set; } // Quantity
+        public const string QuantityField = "Quantity";
         public float Discount { get; set; } // Discount
+        public const string DiscountField = "Discount";
 
         // Foreign keys
 
@@ -1461,59 +1560,98 @@ namespace Tester.Integration.Ef6
     public class OrderDetailsExtended
     {
         public int OrderId { get; set; } // OrderID (Primary key)
+        public const string OrderIdField = "OrderId";
         public int ProductId { get; set; } // ProductID (Primary key)
+        public const string ProductIdField = "ProductId";
         public string ProductName { get; set; } // ProductName (Primary key) (length: 40)
+        public const string ProductNameField = "ProductName";
         public decimal UnitPrice { get; set; } // UnitPrice (Primary key)
+        public const string UnitPriceField = "UnitPrice";
         public short Quantity { get; set; } // Quantity (Primary key)
+        public const string QuantityField = "Quantity";
         public float Discount { get; set; } // Discount (Primary key)
+        public const string DiscountField = "Discount";
         public decimal? ExtendedPrice { get; set; } // ExtendedPrice
+        public const string ExtendedPriceField = "ExtendedPrice";
     }
 
     // Orders Qry
     public class OrdersQry
     {
         public int OrderId { get; set; } // OrderID (Primary key)
+        public const string OrderIdField = "OrderId";
         public string CustomerId { get; set; } // CustomerID (length: 5)
+        public const string CustomerIdField = "CustomerId";
         public int? EmployeeId { get; set; } // EmployeeID
+        public const string EmployeeIdField = "EmployeeId";
         public DateTime? OrderDate { get; set; } // OrderDate
+        public const string OrderDateField = "OrderDate";
         public DateTime? RequiredDate { get; set; } // RequiredDate
+        public const string RequiredDateField = "RequiredDate";
         public DateTime? ShippedDate { get; set; } // ShippedDate
+        public const string ShippedDateField = "ShippedDate";
         public int? ShipVia { get; set; } // ShipVia
+        public const string ShipViaField = "ShipVia";
         public decimal? Freight { get; set; } // Freight
+        public const string FreightField = "Freight";
         public string ShipName { get; set; } // ShipName (length: 40)
+        public const string ShipNameField = "ShipName";
         public string ShipAddress { get; set; } // ShipAddress (length: 60)
+        public const string ShipAddressField = "ShipAddress";
         public string ShipCity { get; set; } // ShipCity (length: 15)
+        public const string ShipCityField = "ShipCity";
         public string ShipRegion { get; set; } // ShipRegion (length: 15)
+        public const string ShipRegionField = "ShipRegion";
         public string ShipPostalCode { get; set; } // ShipPostalCode (length: 10)
+        public const string ShipPostalCodeField = "ShipPostalCode";
         public string ShipCountry { get; set; } // ShipCountry (length: 15)
+        public const string ShipCountryField = "ShipCountry";
         public string CompanyName { get; set; } // CompanyName (Primary key) (length: 40)
+        public const string CompanyNameField = "CompanyName";
         public string Address { get; set; } // Address (length: 60)
+        public const string AddressField = "Address";
         public string City { get; set; } // City (length: 15)
+        public const string CityField = "City";
         public string Region { get; set; } // Region (length: 15)
+        public const string RegionField = "Region";
         public string PostalCode { get; set; } // PostalCode (length: 10)
+        public const string PostalCodeField = "PostalCode";
         public string Country { get; set; } // Country (length: 15)
+        public const string CountryField = "Country";
     }
 
     // Order Subtotals
     public class OrderSubtotal
     {
         public int OrderId { get; set; } // OrderID (Primary key)
+        public const string OrderIdField = "OrderId";
         public decimal? Subtotal { get; set; } // Subtotal
+        public const string SubtotalField = "Subtotal";
     }
 
     // Products
     public class Product
     {
         public int ProductId { get; set; } // ProductID (Primary key)
+        public const string ProductIdField = "ProductId";
         public string ProductName { get; set; } // ProductName (length: 40)
+        public const string ProductNameField = "ProductName";
         public int? SupplierId { get; set; } // SupplierID
+        public const string SupplierIdField = "SupplierId";
         public int? CategoryId { get; set; } // CategoryID
+        public const string CategoryIdField = "CategoryId";
         public string QuantityPerUnit { get; set; } // QuantityPerUnit (length: 20)
+        public const string QuantityPerUnitField = "QuantityPerUnit";
         public decimal? UnitPrice { get; set; } // UnitPrice
+        public const string UnitPriceField = "UnitPrice";
         public short? UnitsInStock { get; set; } // UnitsInStock
+        public const string UnitsInStockField = "UnitsInStock";
         public short? UnitsOnOrder { get; set; } // UnitsOnOrder
+        public const string UnitsOnOrderField = "UnitsOnOrder";
         public short? ReorderLevel { get; set; } // ReorderLevel
+        public const string ReorderLevelField = "ReorderLevel";
         public bool Discontinued { get; set; } // Discontinued
+        public const string DiscontinuedField = "Discontinued";
 
         // Reverse navigation
 
@@ -1549,25 +1687,35 @@ namespace Tester.Integration.Ef6
     public class ProductsAboveAveragePrice
     {
         public string ProductName { get; set; } // ProductName (Primary key) (length: 40)
+        public const string ProductNameField = "ProductName";
         public decimal? UnitPrice { get; set; } // UnitPrice
+        public const string UnitPriceField = "UnitPrice";
     }
 
     // Product Sales for 1997
     public class ProductSalesFor1997
     {
         public string CategoryName { get; set; } // CategoryName (Primary key) (length: 15)
+        public const string CategoryNameField = "CategoryName";
         public string ProductName { get; set; } // ProductName (Primary key) (length: 40)
+        public const string ProductNameField = "ProductName";
         public decimal? ProductSales { get; set; } // ProductSales
+        public const string ProductSalesField = "ProductSales";
     }
 
     // Products by Category
     public class ProductsByCategory
     {
         public string CategoryName { get; set; } // CategoryName (Primary key) (length: 15)
+        public const string CategoryNameField = "CategoryName";
         public string ProductName { get; set; } // ProductName (Primary key) (length: 40)
+        public const string ProductNameField = "ProductName";
         public string QuantityPerUnit { get; set; } // QuantityPerUnit (length: 20)
+        public const string QuantityPerUnitField = "QuantityPerUnit";
         public short? UnitsInStock { get; set; } // UnitsInStock
+        public const string UnitsInStockField = "UnitsInStock";
         public bool Discontinued { get; set; } // Discontinued (Primary key)
+        public const string DiscontinuedField = "Discontinued";
     }
 
     // The table 'Quarterly Orders' is not usable by entity framework because it
@@ -1576,16 +1724,22 @@ namespace Tester.Integration.Ef6
     public class QuarterlyOrder
     {
         public string CustomerId { get; set; } // CustomerID (length: 5)
+        public const string CustomerIdField = "CustomerId";
         public string CompanyName { get; set; } // CompanyName (length: 40)
+        public const string CompanyNameField = "CompanyName";
         public string City { get; set; } // City (length: 15)
+        public const string CityField = "City";
         public string Country { get; set; } // Country (length: 15)
+        public const string CountryField = "Country";
     }
 
     // Region
     public class Region
     {
         public int RegionId { get; set; } // RegionID (Primary key)
+        public const string RegionIdField = "RegionId";
         public string RegionDescription { get; set; } // RegionDescription (length: 50)
+        public const string RegionDescriptionField = "RegionDescription";
 
         // Reverse navigation
 
@@ -1604,26 +1758,37 @@ namespace Tester.Integration.Ef6
     public class SalesByCategory
     {
         public int CategoryId { get; set; } // CategoryID (Primary key)
+        public const string CategoryIdField = "CategoryId";
         public string CategoryName { get; set; } // CategoryName (Primary key) (length: 15)
+        public const string CategoryNameField = "CategoryName";
         public string ProductName { get; set; } // ProductName (Primary key) (length: 40)
+        public const string ProductNameField = "ProductName";
         public decimal? ProductSales { get; set; } // ProductSales
+        public const string ProductSalesField = "ProductSales";
     }
 
     // Sales Totals by Amount
     public class SalesTotalsByAmount
     {
         public decimal? SaleAmount { get; set; } // SaleAmount
+        public const string SaleAmountField = "SaleAmount";
         public int OrderId { get; set; } // OrderID (Primary key)
+        public const string OrderIdField = "OrderId";
         public string CompanyName { get; set; } // CompanyName (Primary key) (length: 40)
+        public const string CompanyNameField = "CompanyName";
         public DateTime? ShippedDate { get; set; } // ShippedDate
+        public const string ShippedDateField = "ShippedDate";
     }
 
     // Shippers
     public class Shipper
     {
         public int ShipperId { get; set; } // ShipperID (Primary key)
+        public const string ShipperIdField = "ShipperId";
         public string CompanyName { get; set; } // CompanyName (length: 40)
+        public const string CompanyNameField = "CompanyName";
         public string Phone { get; set; } // Phone (length: 24)
+        public const string PhoneField = "Phone";
 
         // Reverse navigation
 
@@ -1642,33 +1807,51 @@ namespace Tester.Integration.Ef6
     public class SummaryOfSalesByQuarter
     {
         public DateTime? ShippedDate { get; set; } // ShippedDate
+        public const string ShippedDateField = "ShippedDate";
         public int OrderId { get; set; } // OrderID (Primary key)
+        public const string OrderIdField = "OrderId";
         public decimal? Subtotal { get; set; } // Subtotal
+        public const string SubtotalField = "Subtotal";
     }
 
     // Summary of Sales by Year
     public class SummaryOfSalesByYear
     {
         public DateTime? ShippedDate { get; set; } // ShippedDate
+        public const string ShippedDateField = "ShippedDate";
         public int OrderId { get; set; } // OrderID (Primary key)
+        public const string OrderIdField = "OrderId";
         public decimal? Subtotal { get; set; } // Subtotal
+        public const string SubtotalField = "Subtotal";
     }
 
     // Suppliers
     public class Supplier
     {
         public int SupplierId { get; set; } // SupplierID (Primary key)
+        public const string SupplierIdField = "SupplierId";
         public string CompanyName { get; set; } // CompanyName (length: 40)
+        public const string CompanyNameField = "CompanyName";
         public string ContactName { get; set; } // ContactName (length: 30)
+        public const string ContactNameField = "ContactName";
         public string ContactTitle { get; set; } // ContactTitle (length: 30)
+        public const string ContactTitleField = "ContactTitle";
         public string Address { get; set; } // Address (length: 60)
+        public const string AddressField = "Address";
         public string City { get; set; } // City (length: 15)
+        public const string CityField = "City";
         public string Region { get; set; } // Region (length: 15)
+        public const string RegionField = "Region";
         public string PostalCode { get; set; } // PostalCode (length: 10)
+        public const string PostalCodeField = "PostalCode";
         public string Country { get; set; } // Country (length: 15)
+        public const string CountryField = "Country";
         public string Phone { get; set; } // Phone (length: 24)
+        public const string PhoneField = "Phone";
         public string Fax { get; set; } // Fax (length: 24)
+        public const string FaxField = "Fax";
         public string HomePage { get; set; } // HomePage (length: 1073741823)
+        public const string HomePageField = "HomePage";
 
         // Reverse navigation
 
@@ -1687,8 +1870,11 @@ namespace Tester.Integration.Ef6
     public class Territory
     {
         public string TerritoryId { get; set; } // TerritoryID (Primary key) (length: 20)
+        public const string TerritoryIdField = "TerritoryId";
         public string TerritoryDescription { get; set; } // TerritoryDescription (length: 50)
+        public const string TerritoryDescriptionField = "TerritoryDescription";
         public int RegionId { get; set; } // RegionID
+        public const string RegionIdField = "RegionId";
 
         // Reverse navigation
 

@@ -103,6 +103,8 @@ namespace V6EfrpgTest
         DbSet<TblOrderError> TblOrderErrors { get; set; } // tblOrderErrors
         DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
         DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
+        DbSet<TemporalDepartment> TemporalDepartments { get; set; } // TemporalDepartment
+        DbSet<TemporalDepartmentHistory> TemporalDepartmentHistories { get; set; } // TemporalDepartmentHistory
         DbSet<ThisIsMemoryOptimised> ThisIsMemoryOptimiseds { get; set; } // ThisIsMemoryOptimised
         DbSet<Ticket> Tickets { get; set; } // Ticket
         DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull

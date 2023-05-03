@@ -104,6 +104,8 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         public DbSet<TblOrderError> TblOrderErrors { get; set; } // tblOrderErrors
         public DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
         public DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
+        public DbSet<TemporalDepartment> TemporalDepartments { get; set; } // TemporalDepartment
+        public DbSet<TemporalDepartmentHistory> TemporalDepartmentHistories { get; set; } // TemporalDepartmentHistory
         public DbSet<ThisIsMemoryOptimised> ThisIsMemoryOptimiseds { get; set; } // ThisIsMemoryOptimised
         public DbSet<Ticket> Tickets { get; set; } // Ticket
         public DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
@@ -212,6 +214,8 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             TblOrderErrors = new FakeDbSet<TblOrderError>("Id");
             TblOrderErrorsAbs = new FakeDbSet<TblOrderErrorsAb>("Id");
             TblOrderLines = new FakeDbSet<TblOrderLine>("Id");
+            TemporalDepartments = new FakeDbSet<TemporalDepartment>("DeptId");
+            TemporalDepartmentHistories = new FakeDbSet<TemporalDepartmentHistory>("DeptId", "DeptName", "SysStartTime", "SysEndTime");
             ThisIsMemoryOptimiseds = new FakeDbSet<ThisIsMemoryOptimised>("Id");
             Tickets = new FakeDbSet<Ticket>("Id");
             TimestampNotNulls = new FakeDbSet<TimestampNotNull>("Id");

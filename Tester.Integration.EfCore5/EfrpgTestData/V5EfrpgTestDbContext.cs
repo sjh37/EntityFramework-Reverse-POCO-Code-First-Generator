@@ -112,6 +112,8 @@ namespace V5EfrpgTest
         public DbSet<TblOrderError> TblOrderErrors { get; set; } // tblOrderErrors
         public DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
         public DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
+        public DbSet<TemporalDepartment> TemporalDepartments { get; set; } // TemporalDepartment
+        public DbSet<TemporalDepartmentHistory> TemporalDepartmentHistories { get; set; } // TemporalDepartmentHistory
         public DbSet<ThisIsMemoryOptimised> ThisIsMemoryOptimiseds { get; set; } // ThisIsMemoryOptimised
         public DbSet<Ticket> Tickets { get; set; } // Ticket
         public DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
@@ -244,6 +246,8 @@ namespace V5EfrpgTest
             modelBuilder.ApplyConfiguration(new TblOrderErrorConfiguration());
             modelBuilder.ApplyConfiguration(new TblOrderErrorsAbConfiguration());
             modelBuilder.ApplyConfiguration(new TblOrderLineConfiguration());
+            modelBuilder.ApplyConfiguration(new TemporalDepartmentConfiguration());
+            modelBuilder.ApplyConfiguration(new TemporalDepartmentHistoryConfiguration());
             modelBuilder.ApplyConfiguration(new ThisIsMemoryOptimisedConfiguration());
             modelBuilder.ApplyConfiguration(new TicketConfiguration());
             modelBuilder.ApplyConfiguration(new TimestampNotNullConfiguration());
