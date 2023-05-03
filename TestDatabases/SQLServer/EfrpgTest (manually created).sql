@@ -2644,3 +2644,16 @@ BEGIN
     SET @SecondOutParam = SCOPE_IDENTITY();
 END;
 GO
+
+-- #693 Support for temporal tables
+CREATE TABLE dbo.TemporalDepartment
+(
+    DeptID INT NOT NULL PRIMARY KEY CLUSTERED,
+    DeptName VARCHAR(50) NOT NULL,
+    ManagerID INT NULL,
+    ParentDeptID INT NULL,
+    SysStartTime DATETIME2 GENERATED ALWAYS AS ROW START NOT NULL,
+    SysEndTime DATETIME2 GENERATED ALWAYS AS ROW END NOT NULL,
+    PERIOD FOR SYSTEM_TIME(SysStartTime, SysEndTime)
+)
+WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = dbo.TemporalDepartmentHistory));
