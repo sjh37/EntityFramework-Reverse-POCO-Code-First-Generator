@@ -2,7 +2,7 @@
 {
     public enum ForeignKeyNamingStrategy
     {
-        Legacy, // Same as versions <= v3.8.1
+        Legacy, // Same as versions <= v3.8.2
         Latest
     }
 }

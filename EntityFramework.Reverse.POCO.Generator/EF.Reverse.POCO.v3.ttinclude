@@ -1,6 +1,6 @@
 <#
 // Copyright (C) Simon Hughes 2012
-// v3.8.1
+// v3.8.2
 // If you want to submit a pull request, please modify the Generator C# project as this file
 // is automatically constructed from the C# Generator project during the build process.
 #>
@@ -1543,7 +1543,7 @@
     {
         public static string Version()
         {
-            return "v3.8.1";
+            return "v3.8.2";
         }
     }
 
@@ -3172,7 +3172,7 @@
     }
     public enum ForeignKeyNamingStrategy
     {
-        Legacy, // Same as versions <= v3.8.1
+        Legacy, // Same as versions <= v3.8.2
         Latest
     }
 
@@ -3260,7 +3260,7 @@
         }
     }
 
-    // v0.0.0 <= v3.8.1
+    // v0.0.0 <= v3.8.2
     public class LegacyForeignKeyNamingStrategy : BaseForeignKeyNamingStrategy, IForeignKeyNamingStrategy
     {
         public List<string> ReverseNavigationUniquePropName;
