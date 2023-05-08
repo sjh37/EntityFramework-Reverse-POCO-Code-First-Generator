@@ -611,6 +611,8 @@ namespace V7EfrpgTest
             modelBuilder.Entity<ThisIsMemoryOptimised>().ToTable(t => t.IsMemoryOptimized());
 
             modelBuilder.Entity<CalculatedColumnNotNull>().ToTable(tb => tb.HasTrigger("CalculatedColumnAuditUpdate"));
+            modelBuilder.Entity<Car>().ToTable(tb => tb.HasTrigger("HasComputedColumn"));
+            modelBuilder.Entity<Stafford_ComputedColumn>().ToTable(tb => tb.HasTrigger("HasComputedColumn"));
 
             modelBuilder.Entity<ColourPivotReturnModel>().HasNoKey();
             modelBuilder.Entity<ColumnNameAndTypesProcReturnModel>().HasNoKey();

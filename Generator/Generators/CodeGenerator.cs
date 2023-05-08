@@ -346,8 +346,8 @@ namespace Efrpg.Generators
                 UseLazyLoadingProxies                  = Settings.UseLazyLoading && Settings.IsEfCore3Plus(),
                 SqlParameter                           = Settings.SqlParameter(),
                 SqlParameterValue                      = Settings.SqlParameterValue(),
-                Triggers                               = _tables.Where(x => !string.IsNullOrEmpty(x.Table.TriggerName))
-                                                                .Select(x => new Trigger { TableName = x.Table.NameHumanCase, TriggerName = x.Table.TriggerName }).ToList(),
+                Triggers                               = _tables.Where(x => !string.IsNullOrEmpty(x.Table.TriggerName) || x.Table.Columns.Any(c => c.IsComputed))
+                                                                .Select(x => new Trigger { TableName = x.Table.NameHumanCase, TriggerName = x.Table.TriggerName ?? "HasComputedColumn" }).ToList(),
                 MemoryOptimisedTables                  = _tables.Where(x => x.Table.IsMemoryOptimised).Select(x => x.Table.NameHumanCase).ToList()
             };
 

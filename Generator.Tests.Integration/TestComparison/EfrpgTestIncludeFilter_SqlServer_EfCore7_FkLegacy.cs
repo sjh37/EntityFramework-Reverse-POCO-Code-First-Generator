@@ -255,6 +255,8 @@ namespace Efrpg.V7FilterTest
             modelBuilder.ApplyConfiguration(new CarConfiguration());
             modelBuilder.ApplyConfiguration(new CarToColourConfiguration());
 
+            modelBuilder.Entity<Car>().ToTable(tb => tb.HasTrigger("HasComputedColumn"));
+
             modelBuilder.Entity<ColourPivotReturnModel>().HasNoKey();
             modelBuilder.Entity<DboProcDataFromFfrsReturnModel>().HasNoKey();
             modelBuilder.Entity<DboProcDataFromFfrsAndDboReturnModel>().HasNoKey();
