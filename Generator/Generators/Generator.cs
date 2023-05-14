@@ -57,6 +57,12 @@ namespace Efrpg.Generators
 
         public void Init(DatabaseReader databaseReader, string singleDbContextSubNamespace)
         {
+            if (Settings.ConnectionString.Contains("**TODO**"))
+            {
+                _fileManagementService.Error("// Please update your .tt file's `Settings.ConnectionString` string to the database you want to reverse engineer and save your .tt file.");
+                return;
+            }
+
             var licence = ReadAndValidateLicence();
             if(licence == null)
                 return;
@@ -66,7 +72,7 @@ namespace Efrpg.Generators
             DatabaseReader = databaseReader;
             if (DatabaseReader == null)
             {
-                _fileManagementService.Error("Cannot create a database reader due to unknown database type.");
+                _fileManagementService.Error("// Cannot create a database reader due to unknown database type.");
                 return;
             }
 
