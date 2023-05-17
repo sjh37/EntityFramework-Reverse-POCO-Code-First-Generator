@@ -101,14 +101,14 @@ namespace Efrpg.SQLite
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(@"Data Source=C:\Users\simon\AppData\Local\Temp\Efrpg.db");
+                optionsBuilder.UseSqlite(@"Data Source=C:\Users\simon\AppData\Local\Temp\Efrpg.db");
                 optionsBuilder.UseLazyLoadingProxies();
             }
         }
 
-        public bool IsSqlParameterNull(SqlParameter param)
+        public bool IsSqlParameterNull(SqliteParameter param)
         {
-            var sqlValue = param.SqlValue;
+            var sqlValue = param.Value;
             var nullableValue = sqlValue as INullable;
             if (nullableValue != null)
                 return nullableValue.IsNull;
