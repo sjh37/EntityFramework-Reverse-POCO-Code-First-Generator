@@ -22,6 +22,10 @@
           <Generator>TextTemplatingFileGenerator</Generator>
           <LastGenOutput>Database.cs</LastGenOutput>
         </None>
+        <None Update="Northwind.tt">
+          <Generator>TextTemplatingFileGenerator</Generator>
+          <LastGenOutput>Northwind.cs</LastGenOutput>
+        </None>
     </ItemGroup>
 
     <ItemGroup>
@@ -38,6 +42,11 @@
           <DesignTime>True</DesignTime>
           <AutoGen>True</AutoGen>
           <DependentUpon>Database.tt</DependentUpon>
+        </Compile>
+        <Compile Update="Northwind.cs">
+          <DesignTime>True</DesignTime>
+          <AutoGen>True</AutoGen>
+          <DependentUpon>Northwind.tt</DependentUpon>
         </Compile>
     </ItemGroup>
 

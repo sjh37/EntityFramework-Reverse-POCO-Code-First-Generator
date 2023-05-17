@@ -723,6 +723,9 @@ namespace Efrpg
                 case DatabaseType.Oracle:
                     return "UseOracle";
 
+                case DatabaseType.SQLite:
+                    return "UseSqlite";
+
                 default:
                     return "UseSqlServer";
             }
@@ -741,6 +744,9 @@ namespace Efrpg
                 case DatabaseType.Oracle:
                     return "OracleParameter";
 
+                case DatabaseType.SQLite:
+                    return "SqliteParameter";
+
                 default:
                     return "SqlParameter";
             }
@@ -757,6 +763,9 @@ namespace Efrpg
                     return "Value";
 
                 case DatabaseType.Oracle:
+                    return "Value";
+
+                case DatabaseType.SQLite:
                     return "Value";
 
                 default:
