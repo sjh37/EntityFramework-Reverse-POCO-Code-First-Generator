@@ -238,6 +238,11 @@ WHERE type = 'trigger'";
             return false;
         }
 
+        public override bool HasIdentityColumnSupport()
+        {
+            return false;
+        }
+
         protected override string ReadDatabaseEditionSQL()
         {
             return "SELECT 'SQLite' AS Edition, '' AS EngineEdition, '' AS ProductVersion;";

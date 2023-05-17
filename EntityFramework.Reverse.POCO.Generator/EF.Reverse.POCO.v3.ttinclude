@@ -6231,7 +6231,7 @@
                 {
                     databaseGeneratedOption = ".ValueGeneratedOnAdd()";
                     
-                    if (c.IsIdentity && Column.CanUseSqlServerIdentityColumn.Contains(c.PropertyType))
+                    if (c.IsIdentity && DatabaseReader.HasIdentityColumnSupport() && Column.CanUseSqlServerIdentityColumn.Contains(c.PropertyType))
                         databaseGeneratedOption += Settings.ColumnIdentity(c);
                 }
                 else if (c.IsComputed)
@@ -12486,6 +12486,7 @@ and limitations under the License.
         protected abstract string DefaultSchema(DbConnection conn);
         protected abstract string SpecialQueryFlags();
         protected abstract bool HasTemporalTableSupport();
+        public abstract bool HasIdentityColumnSupport();
 
         // Stored proc return objects
         public abstract void ReadStoredProcReturnObjects(List<StoredProcedure> procs);
@@ -13505,6 +13506,9 @@ and limitations under the License.
                 ExistsInBaseClass   = false
             };
 
+            if (col.IsPrimaryKey)
+                col.IsNullable = false;
+
             if (col.MaxLength == -1 && (col.SqlPropertyType.EndsWith("varchar", StringComparison.InvariantCultureIgnoreCase) ||
                                         col.SqlPropertyType.EndsWith("varbinary", StringComparison.InvariantCultureIgnoreCase)))
             {
@@ -13823,6 +13827,11 @@ and limitations under the License.
             return false;
         }
 
+        public override bool HasIdentityColumnSupport()
+        {
+            return true;
+        }
+
         public override void ReadStoredProcReturnObjects(List<StoredProcedure> procs)
         {
             throw new System.NotImplementedException();
@@ -13963,6 +13972,11 @@ and limitations under the License.
             return false;
         }
 
+        public override bool HasIdentityColumnSupport()
+        {
+            return true;
+        }
+
         public override void ReadStoredProcReturnObjects(List<StoredProcedure> procs)
         {
             throw new System.NotImplementedException();
@@ -14095,6 +14109,11 @@ and limitations under the License.
         protected override bool HasTemporalTableSupport()
         {
             return false;
+        }
+
+        public override bool HasIdentityColumnSupport()
+        {
+            return true;
         }
 
         public override void ReadStoredProcReturnObjects(List<StoredProcedure> procs)
@@ -14356,6 +14375,11 @@ ORDER BY SchemaName, TableName, TriggerName;";
         protected override bool HasTemporalTableSupport()
         {
             return false;
+        }
+
+        public override bool HasIdentityColumnSupport()
+        {
+            return true;
         }
 
         public override void ReadStoredProcReturnObjects(List<StoredProcedure> procs)
@@ -14946,6 +14970,11 @@ WHERE type = 'trigger'";
             return false;
         }
 
+        public override bool HasIdentityColumnSupport()
+        {
+            return false;
+        }
+
         protected override string ReadDatabaseEditionSQL()
         {
             return "SELECT 'SQLite' AS Edition, '' AS EngineEdition, '' AS ProductVersion;";
@@ -15202,6 +15231,11 @@ SELECT * FROM MultiContext.ForeignKey;";
         protected override bool HasTemporalTableSupport()
         {
             return false;
+        }
+
+        public override bool HasIdentityColumnSupport()
+        {
+            return true;
         }
 
         public override void ReadStoredProcReturnObjects(List<StoredProcedure> procs)
@@ -16271,6 +16305,11 @@ OPTION (QUERYTRACEON 9481)";
         protected override bool HasTemporalTableSupport()
         {
             return DatabaseProductMajorVersion >= 13;
+        }
+
+        public override bool HasIdentityColumnSupport()
+        {
+            return true;
         }
 
         protected override string ReadDatabaseEditionSQL()

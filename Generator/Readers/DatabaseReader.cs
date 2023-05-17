@@ -65,6 +65,7 @@ namespace Efrpg.Readers
         protected abstract string DefaultSchema(DbConnection conn);
         protected abstract string SpecialQueryFlags();
         protected abstract bool HasTemporalTableSupport();
+        public abstract bool HasIdentityColumnSupport();
 
         // Stored proc return objects
         public abstract void ReadStoredProcReturnObjects(List<StoredProcedure> procs);
@@ -1083,6 +1084,9 @@ namespace Efrpg.Readers
                 ParentTable         = table,
                 ExistsInBaseClass   = false
             };
+
+            if (col.IsPrimaryKey)
+                col.IsNullable = false;
 
             if (col.MaxLength == -1 && (col.SqlPropertyType.EndsWith("varchar", StringComparison.InvariantCultureIgnoreCase) ||
                                         col.SqlPropertyType.EndsWith("varbinary", StringComparison.InvariantCultureIgnoreCase)))

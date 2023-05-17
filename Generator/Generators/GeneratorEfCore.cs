@@ -83,7 +83,7 @@ namespace Efrpg.Generators
                 {
                     databaseGeneratedOption = ".ValueGeneratedOnAdd()";
                     
-                    if (c.IsIdentity && Column.CanUseSqlServerIdentityColumn.Contains(c.PropertyType))
+                    if (c.IsIdentity && DatabaseReader.HasIdentityColumnSupport() && Column.CanUseSqlServerIdentityColumn.Contains(c.PropertyType))
                         databaseGeneratedOption += Settings.ColumnIdentity(c);
                 }
                 else if (c.IsComputed)

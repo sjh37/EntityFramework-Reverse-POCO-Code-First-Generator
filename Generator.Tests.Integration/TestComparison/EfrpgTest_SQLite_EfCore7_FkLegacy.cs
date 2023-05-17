@@ -921,7 +921,7 @@ namespace Efrpg.SQLite
             builder.ToTable("Efrpg", "main");
             builder.HasKey(x => x.Id);
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("integer").IsRequired(false).ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("integer").IsRequired(false).ValueGeneratedOnAdd();
             builder.Property(x => x.Text1).HasColumnName(@"text1").HasColumnType("text").IsRequired(false).IsUnicode(false);
             builder.Property(x => x.Text2).HasColumnName(@"text2").HasColumnType("character(22)").IsRequired(false).HasMaxLength(22);
             builder.Property(x => x.Text3).HasColumnName(@"text3").HasColumnType("varchar(33)").IsRequired(false).IsUnicode(false).HasMaxLength(33);
@@ -965,7 +965,7 @@ namespace Efrpg.SQLite
             builder.ToTable("EfrpgItems", "main");
             builder.HasKey(x => x.Id);
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("integer").IsRequired(false).ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("integer").IsRequired().ValueGeneratedOnAdd();
             builder.Property(x => x.EfrpgId).HasColumnName(@"EfrpgId").HasColumnType("integer").IsRequired();
             builder.Property(x => x.Test).HasColumnName(@"Test").HasColumnType("int").IsRequired();
             builder.Property(x => x.CreatedAt).HasColumnName(@"CreatedAt").HasColumnType("datetime").IsRequired(false);
@@ -983,7 +983,7 @@ namespace Efrpg.SQLite
             builder.ToView("ThisIsAView", "main");
             builder.HasNoKey();
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("integer").IsRequired(false);
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("integer").IsRequired();
             builder.Property(x => x.Text1).HasColumnName(@"text1").HasColumnType("text").IsRequired(false).IsUnicode(false);
             builder.Property(x => x.Int1).HasColumnName(@"int1").HasColumnType("integer").IsRequired(false);
             builder.Property(x => x.Blob1).HasColumnName(@"blob1").HasColumnType("blob").IsRequired(false);

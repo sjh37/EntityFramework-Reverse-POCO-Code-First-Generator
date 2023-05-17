@@ -133,6 +133,11 @@ namespace Efrpg.Readers
             return false;
         }
 
+        public override bool HasIdentityColumnSupport()
+        {
+            return true;
+        }
+
         public override void ReadStoredProcReturnObjects(List<StoredProcedure> procs)
         {
             throw new System.NotImplementedException();

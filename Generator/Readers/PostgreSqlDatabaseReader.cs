@@ -260,6 +260,11 @@ ORDER BY SchemaName, TableName, TriggerName;";
             return false;
         }
 
+        public override bool HasIdentityColumnSupport()
+        {
+            return true;
+        }
+
         public override void ReadStoredProcReturnObjects(List<StoredProcedure> procs)
         {
             using (var conn = _factory.CreateConnection())

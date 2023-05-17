@@ -1065,6 +1065,11 @@ OPTION (QUERYTRACEON 9481)";
             return DatabaseProductMajorVersion >= 13;
         }
 
+        public override bool HasIdentityColumnSupport()
+        {
+            return true;
+        }
+
         protected override string ReadDatabaseEditionSQL()
         {
             return @"

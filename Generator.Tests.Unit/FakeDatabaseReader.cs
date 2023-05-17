@@ -122,6 +122,11 @@
             return false;
         }
 
+        public override bool HasIdentityColumnSupport()
+        {
+            return false;
+        }
+
         public override void ReadStoredProcReturnObjects(List<StoredProcedure> procs) { }
     }
 }
