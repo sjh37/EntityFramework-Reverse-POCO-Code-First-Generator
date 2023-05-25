@@ -4,7 +4,7 @@
     {
         public static string Version()
         {
-            return "v3.8.3";
+            return "v3.8.4";
         }
     }
 }
