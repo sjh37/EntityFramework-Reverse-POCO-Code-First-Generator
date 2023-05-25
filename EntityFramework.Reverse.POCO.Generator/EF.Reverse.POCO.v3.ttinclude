@@ -3181,7 +3181,7 @@
     }
     public enum ForeignKeyNamingStrategy
     {
-        Legacy, // Same as versions <= v3.8.3
+        Legacy, // Same as versions <= v3.8.4
         Latest
     }
 
@@ -3269,7 +3269,7 @@
         }
     }
 
-    // v0.0.0 <= v3.8.3
+    // v0.0.0 <= v3.8.4
     public class LegacyForeignKeyNamingStrategy : BaseForeignKeyNamingStrategy, IForeignKeyNamingStrategy
     {
         public List<string> ReverseNavigationUniquePropName;
