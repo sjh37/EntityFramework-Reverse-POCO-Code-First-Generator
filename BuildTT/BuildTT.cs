@@ -17,6 +17,7 @@ namespace BuildTT
             UpdateEfrpgVersion(Path.Combine(generatorRoot, "EfrpgVersion.cs"));
             CreateTT(generatorRoot, ttRoot);
             CreateCoreTTInclude(generatorRoot, ttRoot);
+            CreateEf6UtilityTTInclude(ttRoot);
         }
 
         private static void CreateTT(string generatorRoot, string ttRoot)
@@ -769,6 +770,18 @@ namespace BuildTT
             File.WriteAllText(filename, body, Encoding.UTF8);
         }
 
+        private static void CreateEf6UtilityTTInclude(string ttRoot)
+        {
+            var ef6Utility = File.ReadAllText(@"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\Extensions\Microsoft\Entity Framework Tools\Templates\Includes\EF6.Utility.CS.ttinclude")
+                .Replace(@"type.GetProperty(""GenerationEnvironment"", BindingFlags.Instance | BindingFlags.NonPublic);",
+                    @"type.GetProperty(""GenerationEnvironment"", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);");
+
+            using (var tt = File.CreateText(Path.Combine(ttRoot, "EF6.ttinclude")))
+            {
+                tt.Write(ef6Utility);
+            }
+        }
+
         private static void CreateCoreTTInclude(string generatorRoot, string ttRoot)
         {
             string header1 = @"<#
@@ -778,7 +791,7 @@ namespace BuildTT
 // is automatically constructed from the C# Generator project during the build process.
 #>
 <#@ template debug=""true"" hostspecific=""true"" language=""C#"" #>
-<#@ include file=""EF6.Utility.CS.ttinclude""#><#@ assembly name=""System.Configuration"" #>
+<#@ include file=""EF6.ttinclude""#><#@ assembly name=""System.Configuration"" #>
 <#@ assembly name=""System.Windows.Forms"" #>
 <#@ import namespace=""System.Data.Entity.Infrastructure.Pluralization"" #>";
 
