@@ -23,6 +23,7 @@ using {{this}};{{#newline}}
             var usings = new List<string>
             {
                 "System",
+                "System.Data",
                 "System.Threading.Tasks",
                 "System.Threading"
             };

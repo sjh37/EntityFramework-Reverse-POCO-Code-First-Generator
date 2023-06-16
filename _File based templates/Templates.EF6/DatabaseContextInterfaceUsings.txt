@@ -1,6 +1,7 @@
 System
 System.CodeDom.Compiler
 System.Collections.Generic
+System.Data
 System.Data.Entity
 System.Data.Entity.Infrastructure
 System.Data.Entity.Validation
