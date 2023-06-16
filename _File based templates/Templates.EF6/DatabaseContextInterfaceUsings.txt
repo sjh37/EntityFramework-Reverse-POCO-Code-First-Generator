@@ -4,6 +4,7 @@ System.Collections.Generic
 System.Data
 System.Data.Entity
 System.Data.Entity.Infrastructure
+System.Data.Entity.Spatial
 System.Data.Entity.Validation
 System.Linq
 System.Threading

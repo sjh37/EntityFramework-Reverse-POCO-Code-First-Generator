@@ -25,6 +25,7 @@ namespace Efrpg.TemplateModels
         public List<string> ReverseNavigationCtor                                 { get; set; }
         public bool EntityClassesArePartial                                       { get; set; }
         public bool HasHierarchyId                                                { get; set; }
+        public bool HasSpatial                                                    { get; set; }
     }
 
     public class PocoColumnModel

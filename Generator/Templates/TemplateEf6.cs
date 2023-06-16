@@ -34,6 +34,7 @@ using {{this}};{{#newline}}
             if (data.tables.Any() || data.hasStoredProcs)
             {
                 usings.Add("System.Data.Entity");
+                usings.Add("System.Data.Entity.Spatial");
                 usings.Add("System.Linq");
             }
 
@@ -141,7 +142,6 @@ using {{this}};{{#newline}}
                 "System.Data.Entity.Infrastructure.Annotations",
                 "System.ComponentModel.DataAnnotations.Schema",
                 "System.Data.SqlClient",
-                "System.Data.Entity.Spatial",
                 "System.Data.SqlTypes",
                 "System.Threading.Tasks",
                 "System.Threading"
@@ -153,6 +153,7 @@ using {{this}};{{#newline}}
             if (data.tables.Any() || data.hasStoredProcs)
             {
                 usings.Add("System.Data.Entity");
+                usings.Add("System.Data.Entity.Spatial");
                 usings.Add("System.Linq");
             }
 
@@ -1068,6 +1069,9 @@ using {{this}};{{#newline}}
                 "System.Threading.Tasks",
             };
 
+            if (data.HasSpatial)
+                usings.Add("System.Data.Entity.Spatial");
+
             if (Settings.IncludeCodeGeneratedAttribute)
                 usings.Add("System.CodeDom.Compiler");
 
@@ -1189,9 +1193,13 @@ using {{this}};{{#newline}}
             var usings = new List<string>
             {
                 "System",
+                "System.Data.Entity.Spatial",
                 "System.Data.Entity.ModelConfiguration",
                 "System.ComponentModel.DataAnnotations.Schema"
             };
+
+            if (data.HasSpatial)
+                usings.Add("System.Data.Entity.Spatial");
 
             if (Settings.IncludeCodeGeneratedAttribute)
                 usings.Add("System.CodeDom.Compiler");

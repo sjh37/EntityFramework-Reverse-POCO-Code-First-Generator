@@ -24,5 +24,6 @@ namespace Efrpg.TemplateModels
         public bool UseHasNoKey                                                   { get; set; }
         public string ToTableOrView                                               { get; set; }
         public bool UsesDictionary                                                { get; set; }
+        public bool HasSpatial                                                    { get; set; }
     }
 }

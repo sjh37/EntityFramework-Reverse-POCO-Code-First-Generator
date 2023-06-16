@@ -538,7 +538,8 @@ namespace Efrpg.Generators
                     .Select(x => new PocoColumnsWithDefaultsModel { NameHumanCase = x.NameHumanCase, Default = x.Default })
                     .ToList(),
                 ReverseNavigationCtor   = table.ReverseNavigationCtor,
-                EntityClassesArePartial = Settings.EntityClassesArePartial()
+                EntityClassesArePartial = Settings.EntityClassesArePartial(),
+                HasSpatial = table.Columns.Any(x => x.IsSpatial)
             };
 
             var co = new CodeOutput(table.DbName, filename, null, Settings.PocoFolder, _globalUsings);
@@ -584,6 +585,7 @@ namespace Efrpg.Generators
                 Columns                   = columns.Select(x => x.Config).ToList(),
                 HasReverseNavigation      = table.ReverseNavigationProperty.Count > 0,
                 UsesDictionary            = table.UsesDictionary,
+                HasSpatial                = table.Columns.Any(x => x.IsSpatial),
                 ReverseNavigationProperty = table.ReverseNavigationProperty
                     .OrderBy(x => x.Definition)
                     .Select(x => new PocoReverseNavigationPropertyModel

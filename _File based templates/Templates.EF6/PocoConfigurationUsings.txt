@@ -2,3 +2,4 @@ System
 System.CodeDom.Compiler
 System.ComponentModel.DataAnnotations.Schema
 System.Data.Entity.ModelConfiguration
+System.Data.Entity.Spatial

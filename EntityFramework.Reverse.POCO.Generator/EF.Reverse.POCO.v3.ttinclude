@@ -5,7 +5,7 @@
 // is automatically constructed from the C# Generator project during the build process.
 #>
 <#@ template debug="true" hostspecific="true" language="C#" #>
-<#@ include file="EF6.ttinclude"#><#@ assembly name="System.Configuration" #>
+<#@ include file="EF6.Utility.CS.ttinclude"#><#@ assembly name="System.Configuration" #>
 <#@ assembly name="System.Windows.Forms" #>
 <#@ import namespace="System.Data.Entity.Infrastructure.Pluralization" #>
 <#@ import namespace="System" #>
@@ -3949,7 +3949,8 @@
                     .Select(x => new PocoColumnsWithDefaultsModel { NameHumanCase = x.NameHumanCase, Default = x.Default })
                     .ToList(),
                 ReverseNavigationCtor   = table.ReverseNavigationCtor,
-                EntityClassesArePartial = Settings.EntityClassesArePartial()
+                EntityClassesArePartial = Settings.EntityClassesArePartial(),
+                HasSpatial = table.Columns.Any(x => x.IsSpatial)
             };
 
             var co = new CodeOutput(table.DbName, filename, null, Settings.PocoFolder, _globalUsings);
@@ -3995,6 +3996,7 @@
                 Columns                   = columns.Select(x => x.Config).ToList(),
                 HasReverseNavigation      = table.ReverseNavigationProperty.Count > 0,
                 UsesDictionary            = table.UsesDictionary,
+                HasSpatial                = table.Columns.Any(x => x.IsSpatial),
                 ReverseNavigationProperty = table.ReverseNavigationProperty
                     .OrderBy(x => x.Definition)
                     .Select(x => new PocoReverseNavigationPropertyModel
@@ -17373,6 +17375,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public bool UseHasNoKey                                                   { get; set; }
         public string ToTableOrView                                               { get; set; }
         public bool UsesDictionary                                                { get; set; }
+        public bool HasSpatial                                                    { get; set; }
     }
 
     public class PocoModel
@@ -17398,6 +17401,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public List<string> ReverseNavigationCtor                                 { get; set; }
         public bool EntityClassesArePartial                                       { get; set; }
         public bool HasHierarchyId                                                { get; set; }
+        public bool HasSpatial                                                    { get; set; }
     }
 
     public class PocoColumnModel
@@ -17535,6 +17539,7 @@ using {{this}};{{#newline}}
             if (data.tables.Any() || data.hasStoredProcs)
             {
                 usings.Add("System.Data.Entity");
+                usings.Add("System.Data.Entity.Spatial");
                 usings.Add("System.Linq");
             }
 
@@ -17642,7 +17647,6 @@ using {{this}};{{#newline}}
                 "System.Data.Entity.Infrastructure.Annotations",
                 "System.ComponentModel.DataAnnotations.Schema",
                 "System.Data.SqlClient",
-                "System.Data.Entity.Spatial",
                 "System.Data.SqlTypes",
                 "System.Threading.Tasks",
                 "System.Threading"
@@ -17654,6 +17658,7 @@ using {{this}};{{#newline}}
             if (data.tables.Any() || data.hasStoredProcs)
             {
                 usings.Add("System.Data.Entity");
+                usings.Add("System.Data.Entity.Spatial");
                 usings.Add("System.Linq");
             }
 
@@ -18569,6 +18574,9 @@ using {{this}};{{#newline}}
                 "System.Threading.Tasks",
             };
 
+            if (data.HasSpatial)
+                usings.Add("System.Data.Entity.Spatial");
+
             if (Settings.IncludeCodeGeneratedAttribute)
                 usings.Add("System.CodeDom.Compiler");
 
@@ -18690,9 +18698,13 @@ using {{this}};{{#newline}}
             var usings = new List<string>
             {
                 "System",
+                "System.Data.Entity.Spatial",
                 "System.Data.Entity.ModelConfiguration",
                 "System.ComponentModel.DataAnnotations.Schema"
             };
+
+            if (data.HasSpatial)
+                usings.Add("System.Data.Entity.Spatial");
 
             if (Settings.IncludeCodeGeneratedAttribute)
                 usings.Add("System.CodeDom.Compiler");
