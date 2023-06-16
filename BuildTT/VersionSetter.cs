@@ -105,7 +105,6 @@ namespace BuildTT
                 {
                     CreateZipFile(archive, "Database.tt", Path.Combine(_root, "EntityFramework.Reverse.POCO.Generator\\Database.tt"));
                     CreateZipFile(archive, "EF.Reverse.POCO.v3.ttinclude", Path.Combine(_root, "EntityFramework.Reverse.POCO.Generator\\EF.Reverse.POCO.v3.ttinclude"));
-                    CreateZipFile(archive, "EF6.ttinclude", Path.Combine(_root, "EntityFramework.Reverse.POCO.Generator\\EF6.ttinclude"));
                     CreateZipFile(archive, "MyTemplate.vstemplate", Path.Combine(_root, "ItemTemplate\\MyTemplate.vstemplate"));
                     CreateZipFile(archive, "PreviewImage.png", Path.Combine(_root, "EntityFramework Reverse POCO Generator\\PreviewImage.png"));
                     CreateZipFile(archive, "TemplateIcon.ico", Path.Combine(_root, "EntityFramework Reverse POCO Generator\\TemplateIcon.ico"));
