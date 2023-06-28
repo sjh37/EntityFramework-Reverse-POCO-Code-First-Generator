@@ -26,6 +26,10 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Azure.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Azure.cs</LastGenOutput>
+    </None>
     <None Update="ContextHasSameNameAsDb\EfrpgTest.tt">
       <LastGenOutput>EfrpgTest.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -69,6 +73,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Azure.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Azure.tt</DependentUpon>
+    </Compile>
     <Compile Update="ContextHasSameNameAsDb\EfrpgTest.cs">
       <DependentUpon>EfrpgTest.tt</DependentUpon>
       <DesignTime>True</DesignTime>
