@@ -1728,7 +1728,7 @@ ALTER TABLE Car ADD CONSTRAINT CarPrimaryColourFK FOREIGN KEY (PrimaryColourId) 
 ALTER TABLE CarToColour ADD CONSTRAINT CarToColour_CarId FOREIGN KEY (CarId) REFERENCES Car (Id);
 ALTER TABLE CarToColour ADD CONSTRAINT CarToColour_ColourId FOREIGN KEY (ColourId) REFERENCES Colour (Id);
 GO
-INSERT INTO Colour (Id, Name) VALUES (1, 'Red'),(2,'Green'),(3,'Blue')
+INSERT INTO Colour (Id, Name) VALUES (1, 'Red'),(2,'Green'),(3,'Blue'),(4,'Alloy orange'),(5,'Café noir'),(6,'Big dip o’ruby');
 INSERT INTO Car (Id, PrimaryColourId, CarMake) VALUES (1, 1, 'Ford'),(2,3, 'Saab')
 INSERT INTO CarToColour (CarId, ColourId) VALUES (1,2),(2,1),(2,2)
 GO

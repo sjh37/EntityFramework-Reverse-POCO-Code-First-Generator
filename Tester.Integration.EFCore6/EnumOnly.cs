@@ -15,6 +15,9 @@ namespace Tester.Integration.EFCore6
         Red = 1,
         Green = 2,
         Blue = 3,
+        AlloyOrange = 4,
+        CaféNoir = 5,
+        BigDipOruby = 6,
     }
 
     public enum DaysOfWeek
