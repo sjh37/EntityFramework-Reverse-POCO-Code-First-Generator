@@ -613,6 +613,7 @@ namespace V7EfrpgTest
             modelBuilder.Entity<CalculatedColumnNotNull>().ToTable(tb => tb.HasTrigger("CalculatedColumnAuditUpdate"));
             modelBuilder.Entity<Car>().ToTable(tb => tb.HasTrigger("HasComputedColumn"));
             modelBuilder.Entity<Stafford_ComputedColumn>().ToTable(tb => tb.HasTrigger("HasComputedColumn"));
+            modelBuilder.Entity<Synonyms_Child>().ToTable(tb => tb.HasTrigger("ChildInsertTrigger"));
 
             modelBuilder.Entity<ColourPivotReturnModel>().HasNoKey();
             modelBuilder.Entity<ColumnNameAndTypesProcReturnModel>().HasNoKey();

@@ -666,6 +666,15 @@ CREATE TABLE [Synonyms].[Child](
 ) ON [PRIMARY]
 GO
 
+CREATE TRIGGER Synonyms.ChildInsertTrigger
+ON Synonyms.Child
+AFTER INSERT
+AS
+BEGIN
+    SET NOCOUNT ON;
+END;
+GO
+
 ALTER TABLE [Synonyms].[Child]  WITH CHECK ADD  CONSTRAINT [FK_Child_Parent] FOREIGN KEY([ParentId])
 REFERENCES [Synonyms].[Parent] ([ParentId])
 GO

@@ -258,6 +258,7 @@ namespace Efrpg.Readers
                             ChangeType<int>(rdr["PrimaryKeyOrdinal"]),
                             ChangeType<bool>(rdr["PrimaryKey"]),
                             ChangeType<bool>(rdr["IsForeignKey"]),
+                            ChangeType<string>(rdr["SynonymTriggerName"]),
                             ChangeType<int>(rdr["Ordinal"]),
                             rdr["ColumnName"].ToString().Trim(),
                             rdr["Default"].ToString().Trim()
@@ -1060,6 +1061,9 @@ namespace Efrpg.Readers
 
         public Column CreateColumn(RawTable rt, Table table, IDbContextFilter filter)
         {
+            if (!string.IsNullOrEmpty(rt.SynonymTriggerName) && string.IsNullOrEmpty(table.TriggerName))
+                table.TriggerName = rt.SynonymTriggerName;
+
             var col = new Column
             {
                 Scale               = rt.Scale,

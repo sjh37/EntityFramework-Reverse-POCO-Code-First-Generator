@@ -46,14 +46,15 @@ SELECT  T.TABLE_SCHEMA AS ""SchemaName"",
                    AND tcfk.TABLE_NAME      = fk.TABLE_NAME
                    AND tcfk.CONSTRAINT_NAME = fk.CONSTRAINT_NAME
                    AND tcfk.CONSTRAINT_TYPE = 'FOREIGN KEY'
-				   AND C.TABLE_SCHEMA       = fk.TABLE_SCHEMA
+                   AND C.TABLE_SCHEMA       = fk.TABLE_SCHEMA
                    AND C.TABLE_NAME         = fk.TABLE_NAME
-                   AND C.COLUMN_NAME        = fk.COLUMN_NAME) THEN 1 ELSE 0 END AS bit) AS ""IsForeignKey""
+                   AND C.COLUMN_NAME        = fk.COLUMN_NAME) THEN 1 ELSE 0 END AS bit) AS ""IsForeignKey"",
+        NULL AS ""SynonymTriggerName"",
 FROM    INFORMATION_SCHEMA.TABLES T
         INNER JOIN INFORMATION_SCHEMA.COLUMNS C
             ON T.TABLE_SCHEMA   = C.TABLE_SCHEMA
                AND C.TABLE_NAME = T.TABLE_NAME
-			   AND C.table_catalog = T.table_catalog
+               AND C.table_catalog = T.table_catalog
         LEFT OUTER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc
             INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE pk
                 ON tc.CONSTRAINT_SCHEMA   = pk.TABLE_SCHEMA

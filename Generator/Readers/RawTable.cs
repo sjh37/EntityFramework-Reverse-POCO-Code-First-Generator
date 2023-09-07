@@ -22,6 +22,7 @@
         public readonly int    PrimaryKeyOrdinal;
         public readonly bool   PrimaryKey;
         public readonly bool   IsForeignKey;
+        public readonly string SynonymTriggerName;
         public readonly int    Ordinal;
         public readonly string ColumnName;
         public readonly string Default;
@@ -29,13 +30,14 @@
         public RawTable(string schemaName, string tableName, bool isView, int scale,
             string typeName, bool isNullable, int maxLength, int dateTimePrecision, int precision,
             bool isIdentity, bool isComputed, bool isRowGuid, byte generatedAlwaysType,
-            bool isStoreGenerated, int primaryKeyOrdinal, bool primaryKey, bool isForeignKey,
+            bool isStoreGenerated, int primaryKeyOrdinal, bool primaryKey, bool isForeignKey, string synonymTriggerName,
             int ordinal, string columnName, string @default)
         {
             // Table
-            SchemaName = schemaName;
-            TableName  = tableName;
-            IsView     = isView;
+            SchemaName         = schemaName;
+            TableName          = tableName;
+            IsView             = isView;
+            SynonymTriggerName = synonymTriggerName;
 
             // Column
             Scale               = scale;

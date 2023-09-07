@@ -184,7 +184,8 @@ SELECT
 
     CONVERT( bit, ISNULL( pk.ORDINAL_POSITION, 0 ) ) AS PrimaryKey,
     ISNULL(pk.ORDINAL_POSITION, 0) PrimaryKeyOrdinal,
-    CONVERT( bit, CASE WHEN fk.COLUMN_NAME IS NOT NULL THEN 1 ELSE 0 END ) AS IsForeignKey
+    CONVERT( bit, CASE WHEN fk.COLUMN_NAME IS NOT NULL THEN 1 ELSE 0 END ) AS IsForeignKey,
+    NULL AS SynonymTriggerName
 
 FROM
     #Columns c
@@ -544,7 +545,18 @@ SELECT TOP (0)
     END AS BIT) AS IsStoreGenerated,
     CAST(CASE WHEN pk.ORDINAL_POSITION IS NULL THEN 0 ELSE 1 END AS BIT) AS PrimaryKey,
     ISNULL(pk.ORDINAL_POSITION, 0) PrimaryKeyOrdinal,
-    CAST(CASE WHEN fk.COLUMN_NAME IS NULL THEN 0 ELSE 1 END AS BIT) AS IsForeignKey
+    CAST(CASE WHEN fk.COLUMN_NAME IS NULL THEN 0 ELSE 1 END AS BIT) AS IsForeignKey,
+    (   SELECT TOP(1) T.name AS TriggerName
+        FROM sys.triggers T
+            LEFT JOIN sys.all_objects TOBJ
+                ON T.parent_id = TOBJ.object_id
+            LEFT JOIN sys.schemas TSCH
+                ON TSCH.schema_id = TOBJ.schema_id
+        WHERE T.type = 'TR'
+              AND T.is_disabled = 0
+              AND TSCH.name IS NOT NULL
+              AND TOBJ.name IS NOT NULL
+              AND sc.NAME = TSCH.name AND sn.name = TOBJ.name) AS SynonymTriggerName
 INTO
     #SynonymDetails
 FROM
@@ -585,7 +597,7 @@ FROM
 DECLARE @synonymDetailsQueryTemplate nvarchar(max) = 'USE [@synonmymDatabaseName];
 INSERT INTO #SynonymDetails (
     SchemaName, TableName, TableType, TableTemporalType, Ordinal, ColumnName, IsNullable, TypeName, [MaxLength], [Precision], [Default], DateTimePrecision, Scale,
-    IsIdentity, IsRowGuid, IsComputed, GeneratedAlwaysType, IsStoreGenerated, PrimaryKey, PrimaryKeyOrdinal, IsForeignKey
+    IsIdentity, IsRowGuid, IsComputed, GeneratedAlwaysType, IsStoreGenerated, PrimaryKey, PrimaryKeyOrdinal, IsForeignKey, SynonymTriggerName
 )
 SELECT
     st.SynonymSchemaName AS SchemaName,
@@ -624,7 +636,18 @@ SELECT
 
     CAST(CASE WHEN pk.ORDINAL_POSITION IS NULL THEN 0  ELSE 1 END AS BIT) AS PrimaryKey,
     ISNULL(pk.ORDINAL_POSITION, 0) PrimaryKeyOrdinal,
-    CAST(CASE WHEN fk.COLUMN_NAME IS NULL THEN 0 ELSE 1 END AS BIT) AS IsForeignKey
+    CAST(CASE WHEN fk.COLUMN_NAME IS NULL THEN 0 ELSE 1 END AS BIT) AS IsForeignKey,
+    (   SELECT TOP(1) T.name AS TriggerName
+        FROM sys.triggers T
+            LEFT JOIN sys.all_objects TOBJ
+                ON T.parent_id = TOBJ.object_id
+            LEFT JOIN sys.schemas TSCH
+                ON TSCH.schema_id = TOBJ.schema_id
+        WHERE T.type = ''TR''
+              AND T.is_disabled = 0
+              AND TSCH.name IS NOT NULL
+              AND TOBJ.name IS NOT NULL
+              AND st.SynonymSchemaName = TSCH.name AND st.SynonymName = TOBJ.name) AS SynonymTriggerName
 FROM
     #SynonymTargets st
     
@@ -748,7 +771,8 @@ SELECT
     IsStoreGenerated,
     PrimaryKey,
     PrimaryKeyOrdinal,
-    IsForeignKey
+    IsForeignKey,
+    SynonymTriggerName
 FROM
     #SynonymDetails";
         }

@@ -62,7 +62,8 @@ SELECT 'main' AS SchemaName,
        0 AS IsStoreGenerated,
        pk AS PrimaryKey,
        pk AS PrimaryKeyOrdinal,
-       0 AS IsForeignKey
+       0 AS IsForeignKey,
+       NULL AS SynonymTriggerName
 FROM (SELECT m.tbl_name AS TableName,
        CASE WHEN m.type = 'table' THEN 'BASE TABLE' ELSE 'VIEW' END AS TableType,
        c.cid AS Ordinal,

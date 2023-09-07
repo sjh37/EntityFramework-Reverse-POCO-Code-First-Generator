@@ -73,7 +73,8 @@ SELECT  '' AS SchemaName,
     CAST(CASE WHEN c.DATA_TYPE = N'rowversion' THEN 1 ELSE 0 END AS BIT) AS IsStoreGenerated,
     0 AS PrimaryKeyOrdinal,
     CAST(CASE WHEN u.TABLE_NAME IS NULL THEN 0 ELSE 1 END AS BIT) AS PrimaryKey,
-    CONVERT( bit, 0 ) as IsForeignKey
+    CONVERT( bit, 0 ) as IsForeignKey,
+    NULL as SynonymTriggerName
 FROM
     INFORMATION_SCHEMA.COLUMNS c
     INNER JOIN INFORMATION_SCHEMA.TABLES t ON c.TABLE_NAME = t.TABLE_NAME

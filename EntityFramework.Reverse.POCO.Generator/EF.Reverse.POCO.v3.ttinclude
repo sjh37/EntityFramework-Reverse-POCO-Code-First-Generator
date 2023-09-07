@@ -20,7 +20,6 @@
 <#@ import namespace="System.IO" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Reflection" #>
-<#@ import namespace="System.Runtime.Remoting.Messaging" #>
 <#@ import namespace="System.Security" #>
 <#@ import namespace="System.Security.Cryptography" #>
 <#@ import namespace="System.Text" #>
@@ -12681,6 +12680,7 @@ and limitations under the License.
                             ChangeType<int>(rdr["PrimaryKeyOrdinal"]),
                             ChangeType<bool>(rdr["PrimaryKey"]),
                             ChangeType<bool>(rdr["IsForeignKey"]),
+                            ChangeType<string>(rdr["SynonymTriggerName"]),
                             ChangeType<int>(rdr["Ordinal"]),
                             rdr["ColumnName"].ToString().Trim(),
                             rdr["Default"].ToString().Trim()
@@ -13483,6 +13483,9 @@ and limitations under the License.
 
         public Column CreateColumn(RawTable rt, Table table, IDbContextFilter filter)
         {
+            if (!string.IsNullOrEmpty(rt.SynonymTriggerName) && string.IsNullOrEmpty(table.TriggerName))
+                table.TriggerName = rt.SynonymTriggerName;
+
             var col = new Column
             {
                 Scale               = rt.Scale,
@@ -14165,14 +14168,15 @@ SELECT  T.TABLE_SCHEMA AS ""SchemaName"",
                    AND tcfk.TABLE_NAME      = fk.TABLE_NAME
                    AND tcfk.CONSTRAINT_NAME = fk.CONSTRAINT_NAME
                    AND tcfk.CONSTRAINT_TYPE = 'FOREIGN KEY'
-				   AND C.TABLE_SCHEMA       = fk.TABLE_SCHEMA
+                   AND C.TABLE_SCHEMA       = fk.TABLE_SCHEMA
                    AND C.TABLE_NAME         = fk.TABLE_NAME
-                   AND C.COLUMN_NAME        = fk.COLUMN_NAME) THEN 1 ELSE 0 END AS bit) AS ""IsForeignKey""
+                   AND C.COLUMN_NAME        = fk.COLUMN_NAME) THEN 1 ELSE 0 END AS bit) AS ""IsForeignKey"",
+        NULL AS ""SynonymTriggerName"",
 FROM    INFORMATION_SCHEMA.TABLES T
         INNER JOIN INFORMATION_SCHEMA.COLUMNS C
             ON T.TABLE_SCHEMA   = C.TABLE_SCHEMA
                AND C.TABLE_NAME = T.TABLE_NAME
-			   AND C.table_catalog = T.table_catalog
+               AND C.table_catalog = T.table_catalog
         LEFT OUTER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc
             INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE pk
                 ON tc.CONSTRAINT_SCHEMA   = pk.TABLE_SCHEMA
@@ -14689,6 +14693,7 @@ ORDER BY SchemaName, TableName, TriggerName;";
         public readonly int    PrimaryKeyOrdinal;
         public readonly bool   PrimaryKey;
         public readonly bool   IsForeignKey;
+        public readonly string SynonymTriggerName;
         public readonly int    Ordinal;
         public readonly string ColumnName;
         public readonly string Default;
@@ -14696,13 +14701,14 @@ ORDER BY SchemaName, TableName, TriggerName;";
         public RawTable(string schemaName, string tableName, bool isView, int scale,
             string typeName, bool isNullable, int maxLength, int dateTimePrecision, int precision,
             bool isIdentity, bool isComputed, bool isRowGuid, byte generatedAlwaysType,
-            bool isStoreGenerated, int primaryKeyOrdinal, bool primaryKey, bool isForeignKey,
+            bool isStoreGenerated, int primaryKeyOrdinal, bool primaryKey, bool isForeignKey, string synonymTriggerName,
             int ordinal, string columnName, string @default)
         {
             // Table
-            SchemaName = schemaName;
-            TableName  = tableName;
-            IsView     = isView;
+            SchemaName         = schemaName;
+            TableName          = tableName;
+            IsView             = isView;
+            SynonymTriggerName = synonymTriggerName;
 
             // Column
             Scale               = scale;
@@ -14796,7 +14802,8 @@ SELECT 'main' AS SchemaName,
        0 AS IsStoreGenerated,
        pk AS PrimaryKey,
        pk AS PrimaryKeyOrdinal,
-       0 AS IsForeignKey
+       0 AS IsForeignKey,
+       NULL AS SynonymTriggerName
 FROM (SELECT m.tbl_name AS TableName,
        CASE WHEN m.type = 'table' THEN 'BASE TABLE' ELSE 'VIEW' END AS TableType,
        c.cid AS Ordinal,
@@ -15066,7 +15073,8 @@ SELECT  '' AS SchemaName,
     CAST(CASE WHEN c.DATA_TYPE = N'rowversion' THEN 1 ELSE 0 END AS BIT) AS IsStoreGenerated,
     0 AS PrimaryKeyOrdinal,
     CAST(CASE WHEN u.TABLE_NAME IS NULL THEN 0 ELSE 1 END AS BIT) AS PrimaryKey,
-    CONVERT( bit, 0 ) as IsForeignKey
+    CONVERT( bit, 0 ) as IsForeignKey,
+    NULL as SynonymTriggerName
 FROM
     INFORMATION_SCHEMA.COLUMNS c
     INNER JOIN INFORMATION_SCHEMA.TABLES t ON c.TABLE_NAME = t.TABLE_NAME
@@ -15428,7 +15436,8 @@ SELECT
 
     CONVERT( bit, ISNULL( pk.ORDINAL_POSITION, 0 ) ) AS PrimaryKey,
     ISNULL(pk.ORDINAL_POSITION, 0) PrimaryKeyOrdinal,
-    CONVERT( bit, CASE WHEN fk.COLUMN_NAME IS NOT NULL THEN 1 ELSE 0 END ) AS IsForeignKey
+    CONVERT( bit, CASE WHEN fk.COLUMN_NAME IS NOT NULL THEN 1 ELSE 0 END ) AS IsForeignKey,
+    NULL AS SynonymTriggerName
 
 FROM
     #Columns c
@@ -15788,7 +15797,18 @@ SELECT TOP (0)
     END AS BIT) AS IsStoreGenerated,
     CAST(CASE WHEN pk.ORDINAL_POSITION IS NULL THEN 0 ELSE 1 END AS BIT) AS PrimaryKey,
     ISNULL(pk.ORDINAL_POSITION, 0) PrimaryKeyOrdinal,
-    CAST(CASE WHEN fk.COLUMN_NAME IS NULL THEN 0 ELSE 1 END AS BIT) AS IsForeignKey
+    CAST(CASE WHEN fk.COLUMN_NAME IS NULL THEN 0 ELSE 1 END AS BIT) AS IsForeignKey,
+    (   SELECT TOP(1) T.name AS TriggerName
+        FROM sys.triggers T
+            LEFT JOIN sys.all_objects TOBJ
+                ON T.parent_id = TOBJ.object_id
+            LEFT JOIN sys.schemas TSCH
+                ON TSCH.schema_id = TOBJ.schema_id
+        WHERE T.type = 'TR'
+              AND T.is_disabled = 0
+              AND TSCH.name IS NOT NULL
+              AND TOBJ.name IS NOT NULL
+              AND sc.NAME = TSCH.name AND sn.name = TOBJ.name) AS SynonymTriggerName
 INTO
     #SynonymDetails
 FROM
@@ -15829,7 +15849,7 @@ FROM
 DECLARE @synonymDetailsQueryTemplate nvarchar(max) = 'USE [@synonmymDatabaseName];
 INSERT INTO #SynonymDetails (
     SchemaName, TableName, TableType, TableTemporalType, Ordinal, ColumnName, IsNullable, TypeName, [MaxLength], [Precision], [Default], DateTimePrecision, Scale,
-    IsIdentity, IsRowGuid, IsComputed, GeneratedAlwaysType, IsStoreGenerated, PrimaryKey, PrimaryKeyOrdinal, IsForeignKey
+    IsIdentity, IsRowGuid, IsComputed, GeneratedAlwaysType, IsStoreGenerated, PrimaryKey, PrimaryKeyOrdinal, IsForeignKey, SynonymTriggerName
 )
 SELECT
     st.SynonymSchemaName AS SchemaName,
@@ -15868,7 +15888,18 @@ SELECT
 
     CAST(CASE WHEN pk.ORDINAL_POSITION IS NULL THEN 0  ELSE 1 END AS BIT) AS PrimaryKey,
     ISNULL(pk.ORDINAL_POSITION, 0) PrimaryKeyOrdinal,
-    CAST(CASE WHEN fk.COLUMN_NAME IS NULL THEN 0 ELSE 1 END AS BIT) AS IsForeignKey
+    CAST(CASE WHEN fk.COLUMN_NAME IS NULL THEN 0 ELSE 1 END AS BIT) AS IsForeignKey,
+    (   SELECT TOP(1) T.name AS TriggerName
+        FROM sys.triggers T
+            LEFT JOIN sys.all_objects TOBJ
+                ON T.parent_id = TOBJ.object_id
+            LEFT JOIN sys.schemas TSCH
+                ON TSCH.schema_id = TOBJ.schema_id
+        WHERE T.type = ''TR''
+              AND T.is_disabled = 0
+              AND TSCH.name IS NOT NULL
+              AND TOBJ.name IS NOT NULL
+              AND st.SynonymSchemaName = TSCH.name AND st.SynonymName = TOBJ.name) AS SynonymTriggerName
 FROM
     #SynonymTargets st
     
@@ -15992,7 +16023,8 @@ SELECT
     IsStoreGenerated,
     PrimaryKey,
     PrimaryKeyOrdinal,
-    IsForeignKey
+    IsForeignKey,
+    SynonymTriggerName
 FROM
     #SynonymDetails";
         }
