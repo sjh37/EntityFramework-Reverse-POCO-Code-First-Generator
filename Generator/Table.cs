@@ -292,7 +292,7 @@ namespace Efrpg
                 return;
             }
             
-            if(Settings.IsEfCore5Plus())
+            if(Settings.IsEfCore6Plus())
             {
                 UsesDictionary = true;
                 MappingConfiguration.Add(string.Format(@"HasMany<{6}>(t => t.{0}).WithMany(t => t.{1}).UsingEntity<Dictionary<string, object>>(""{2}"",

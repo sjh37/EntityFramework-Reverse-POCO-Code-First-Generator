@@ -370,7 +370,6 @@ namespace Efrpg.Generators
                 case TemplateType.Ef6:
                     return string.Empty;
                 
-                case TemplateType.EfCore2:
                 case TemplateType.EfCore3:
                     hasHierarchyIdType = false;
                     break;

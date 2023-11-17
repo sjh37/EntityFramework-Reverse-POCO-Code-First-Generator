@@ -314,7 +314,7 @@ namespace Efrpg
 
         private string ConvertDataColumnType(Type type)
         {
-            var isEfCore5Plus = Settings.IsEfCore5Plus();
+            var isEfCore5Plus = Settings.IsEfCore6Plus();
             
             if (type.Name.Equals("SqlHierarchyId"))
                 return isEfCore5Plus ? "HierarchyId" : "Microsoft.SqlServer.Types.SqlHierarchyId";

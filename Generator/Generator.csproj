@@ -114,7 +114,6 @@
     <Compile Include="Readers\RawTrigger.cs" />
     <Compile Include="Readers\SQLiteDatabaseReader.cs" />
     <Compile Include="TemplateModels\Trigger.cs" />
-    <Compile Include="Templates\TemplateEfCore2.cs" />
     <Compile Include="Templates\TemplateEfCore3.cs" />
     <Compile Include="Templates\TemplateEfCore6.cs" />
     <Compile Include="Templates\TemplateEfCore7.cs" />
@@ -209,7 +208,6 @@
     <Compile Include="Mustache\WithTagDefinition.cs" />
     <Compile Include="Templates\GeneratorType.cs" />
     <Compile Include="Templates\TemplateEf6.cs" />
-    <Compile Include="Templates\TemplateEfCore5.cs" />
     <Compile Include="Templates\Template.cs" />
     <Compile Include="Column.cs" />
     <Compile Include="ColumnGeneratedAlwaysType.cs" />

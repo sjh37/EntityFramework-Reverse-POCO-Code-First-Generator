@@ -581,7 +581,7 @@ namespace Efrpg.Generators
                 ProcessForeignKeys(foreignKeys, true, filter);
 
                 // Mappings tables can only be true for Ef6 and EFCore 5 onwards
-                if (Settings.UseMappingTables && !(Settings.IsEf6() || Settings.IsEfCore5Plus()))
+                if (Settings.UseMappingTables && !(Settings.IsEf6() || Settings.IsEfCore6Plus()))
                     Settings.UseMappingTables = false;
                 
                 if (Settings.UseMappingTables)
@@ -1244,7 +1244,6 @@ namespace Efrpg.Generators
                         Settings.DbContextName = ((MultiContextFilter) filter.Value).GetSettings().Name ?? filter.Key;
 
                         if (Settings.TemplateType == TemplateType.FileBasedCore3 ||
-                            Settings.TemplateType == TemplateType.FileBasedCore5 ||
                             Settings.TemplateType == TemplateType.FileBasedCore6)
                         {
                             // Use file based templates, set the path

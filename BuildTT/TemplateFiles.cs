@@ -13,9 +13,7 @@ namespace BuildTT
         public static void Create(string templatesRoot)
         {
             CreateFiles(new TemplateEf6(),     Path.Combine(templatesRoot, "Templates.EF6"));
-            CreateFiles(new TemplateEfCore2(), Path.Combine(templatesRoot, "Templates.EFCore2"));
             CreateFiles(new TemplateEfCore3(), Path.Combine(templatesRoot, "Templates.EFCore3"));
-            CreateFiles(new TemplateEfCore5(), Path.Combine(templatesRoot, "Templates.EFCore5"));
             CreateFiles(new TemplateEfCore6(), Path.Combine(templatesRoot, "Templates.EFCore6"));
             CreateFiles(new TemplateEfCore7(), Path.Combine(templatesRoot, "Templates.EFCore7"));
         }

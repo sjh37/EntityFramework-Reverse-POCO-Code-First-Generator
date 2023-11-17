@@ -26,7 +26,7 @@ namespace Efrpg.Generators
         protected override void SetupEntity(Column c)
         {
             if (c.PropertyType == "Hierarchy.HierarchyId")
-                c.PropertyType = Settings.IsEfCore5Plus() ? "HierarchyId" : "Microsoft.SqlServer.Types.SqlHierarchyId";
+                c.PropertyType = Settings.IsEfCore6Plus() ? "HierarchyId" : "Microsoft.SqlServer.Types.SqlHierarchyId";
 
             var comments = string.Empty;
             if (Settings.IncludeComments != CommentsStyle.None)
@@ -118,7 +118,7 @@ namespace Efrpg.Generators
                 else
                     sb.AppendFormat(".HasColumnType(\"{0}{1}\")", c.SqlPropertyType, columnTypeParameters);
 
-                if (Settings.IsEfCore5Plus())
+                if (Settings.IsEfCore6Plus())
                 {
                     if ((c.Precision > 0 || c.Scale > 0) && DatabaseReader.IsPrecisionAndScaleType(c.SqlPropertyType))
                         sb.AppendFormat(".HasPrecision({0},{1})", c.Precision, c.Scale);
@@ -211,7 +211,7 @@ namespace Efrpg.Generators
                 return indexes;
 
             var isEfCore3Plus = Settings.IsEfCore3Plus();
-            var isEfCore5Plus = Settings.IsEfCore5Plus();
+            var isEfCore5Plus = Settings.IsEfCore6Plus();
             var indexNames = t.Indexes.Where(x => !x.IsPrimaryKey).Select(x => x.IndexName).Distinct();
             foreach (var indexName in indexNames.OrderBy(x => x))
             {

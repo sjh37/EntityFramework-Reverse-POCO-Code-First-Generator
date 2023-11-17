@@ -156,9 +156,6 @@
     <None Include="TestComparison\Northwind_SqlCe_EfCore6_FkLegacy.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TestComparison\Northwind_SqlCe_EfCore5_FkLegacy.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="TestComparison\EfrpgTestIncludeFilter_SqlServer_EfCore7_FkLegacy.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -188,12 +185,6 @@
     <None Include="TestComparison\Northwind_SqlCe_EfCore3_FkLatest.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TestComparison\Northwind_SqlCe_EfCore2_FkLegacy.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="TestComparison\Northwind_SqlCe_EfCore2_FkLatest.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="TestComparison\Northwind_SqlCe_Ef6_FkLegacy.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -209,22 +200,13 @@
     <None Include="TestComparison\EfrpgTestIncludeFilter_SqlServer_EfCore6_FkLegacy.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TestComparison\EfrpgTestIncludeFilter_SqlServer_EfCore5_FkLegacy.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="TestComparison\EfrpgTestIncludeFilter_SqlServer_EfCore3_FkLegacy.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="TestComparison\EfrpgTest_SqlServer_EfCore6_FkLegacy.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TestComparison\EfrpgTest_SqlServer_EfCore5_FkLegacy.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="TestComparison\EfrpgTest_SqlServer_EfCore3_FkLegacy.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="TestComparison\EfrpgTest_SqlServer_EfCore2_FkLegacy.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="TestComparison\EfrpgTest_SqlServer_Ef6_FkLegacy.cs">
