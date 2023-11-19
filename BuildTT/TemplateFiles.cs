@@ -16,6 +16,7 @@ namespace BuildTT
             CreateFiles(new TemplateEfCore3(), Path.Combine(templatesRoot, "Templates.EFCore3"));
             CreateFiles(new TemplateEfCore6(), Path.Combine(templatesRoot, "Templates.EFCore6"));
             CreateFiles(new TemplateEfCore7(), Path.Combine(templatesRoot, "Templates.EFCore7"));
+            CreateFiles(new TemplateEfCore8(), Path.Combine(templatesRoot, "Templates.EFCore8"));
         }
 
         private static void CreateFiles(Template template, string folder)

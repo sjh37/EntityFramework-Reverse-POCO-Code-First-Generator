@@ -6,9 +6,11 @@
         EfCore3,
         EfCore6,
         EfCore7,
+        EfCore8,
         FileBasedEf6,
         FileBasedCore3,
         FileBasedCore6,
-        FileBasedCore7
+        FileBasedCore7,
+        FileBasedCore8
     }
 }

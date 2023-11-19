@@ -1,0 +1,112 @@
+{{interfaceModifier}} interface {{DbContextInterfaceName}} : {{DbContextInterfaceBaseClasses}}{{#newline}}
+{{{#newline}}
+
+{{#each tables}}
+    DbSet<{{DbSetName}}> {{PluralTableName}} { get; set; }{{Comment}}{{#newline}}
+{{/each}}
+
+{{#if AdditionalContextInterfaceItems}}
+{{#newline}}
+    // Additional interface items{{#newline}}
+{{/if}}
+{{#each AdditionalContextInterfaceItems}}
+    {{this}}{{#newline}}
+{{/each}}
+
+
+{{#if addSaveChanges}}
+{{#newline}}
+    int SaveChanges();{{#newline}}
+    int SaveChanges(bool acceptAllChangesOnSuccess);{{#newline}}
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));{{#newline}}
+    Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken));{{#newline}}
+    DatabaseFacade Database { get; }{{#newline}}
+    DbSet<TEntity> Set<TEntity>() where TEntity : class;{{#newline}}
+    string ToString();{{#newline}}{{#newline}}
+
+    EntityEntry Add(object entity);{{#newline}}
+    EntityEntry<TEntity> Add<TEntity>(TEntity entity) where TEntity : class;{{#newline}}
+    Task AddRangeAsync(params object[] entities);{{#newline}}
+    Task AddRangeAsync(IEnumerable<object> entities, CancellationToken cancellationToken = default);{{#newline}}
+    ValueTask<EntityEntry<TEntity>> AddAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default) where TEntity : class;{{#newline}}
+    ValueTask<EntityEntry> AddAsync(object entity, CancellationToken cancellationToken = default);{{#newline}}
+    void AddRange(IEnumerable<object> entities);{{#newline}}
+    void AddRange(params object[] entities);{{#newline}}{{#newline}}
+
+    EntityEntry Attach(object entity);{{#newline}}
+    EntityEntry<TEntity> Attach<TEntity>(TEntity entity) where TEntity : class;{{#newline}}
+    void AttachRange(IEnumerable<object> entities);{{#newline}}
+    void AttachRange(params object[] entities);{{#newline}}{{#newline}}
+
+    EntityEntry Entry(object entity);{{#newline}}
+    EntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class;{{#newline}}{{#newline}}
+
+    TEntity Find<TEntity>(params object[] keyValues) where TEntity : class;{{#newline}}
+    ValueTask<TEntity> FindAsync<TEntity>(object[] keyValues, CancellationToken cancellationToken) where TEntity : class;{{#newline}}
+    ValueTask<TEntity> FindAsync<TEntity>(params object[] keyValues) where TEntity : class;{{#newline}}
+    ValueTask<object> FindAsync(Type entityType, object[] keyValues, CancellationToken cancellationToken);{{#newline}}
+    ValueTask<object> FindAsync(Type entityType, params object[] keyValues);{{#newline}}
+    object Find(Type entityType, params object[] keyValues);{{#newline}}{{#newline}}
+
+    EntityEntry Remove(object entity);{{#newline}}
+    EntityEntry<TEntity> Remove<TEntity>(TEntity entity) where TEntity : class;{{#newline}}
+    void RemoveRange(IEnumerable<object> entities);{{#newline}}
+    void RemoveRange(params object[] entities);{{#newline}}{{#newline}}
+
+    EntityEntry Update(object entity);{{#newline}}
+    EntityEntry<TEntity> Update<TEntity>(TEntity entity) where TEntity : class;{{#newline}}
+    void UpdateRange(IEnumerable<object> entities);{{#newline}}
+    void UpdateRange(params object[] entities);{{#newline}}{{#newline}}
+
+    IQueryable<TResult> FromExpression<TResult> (Expression<Func<IQueryable<TResult>>> expression);{{#newline}}
+{{/if}}
+
+
+{{#if hasStoredProcs}}
+{{#newline}}
+    // Stored Procedures{{#newline}}
+{{#each storedProcs}}
+{{#if HasReturnModels}}
+
+{{#if MultipleReturnModels}}
+    // {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalseTrue}}); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.{{#newline}}
+{{#else}}
+    {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalseTrue}});{{#newline}}
+{{/if}}
+{{#if SingleReturnModel}}
+    {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsTrueTrue}});{{#newline}}
+{{/if}}
+{{#else}}
+    int {{FunctionName}}({{WriteStoredProcFunctionParamsTrueTrue}});{{#newline}}
+{{/if}}
+
+{{#if AsyncFunctionCannotBeCreated}}
+    // {{FunctionName}}Async() cannot be created due to having out parameters, or is relying on the procedure result ({{ReturnType}}){{#newline}}
+{{#else}}
+{{#if MultipleReturnModels}}
+    // Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalseTrue}}); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.{{#newline}}
+{{#else}}
+    Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalseTrue}});{{#newline}}
+{{/if}}
+{{/if}}
+{{#newline}}
+{{/each}}
+{{/if}}
+
+{{#if hasTableValuedFunctions}}
+{{#newline}}
+    // Table Valued Functions{{#newline}}
+{{#each tableValuedFunctions}}
+    IQueryable<{{ReturnClassName}}> {{ExecName}}({{WriteStoredProcFunctionParamsFalseTrue}}); // {{Schema}}.{{Name}}{{#newline}}
+{{/each}}
+{{/if}}
+
+{{#if hasScalarValuedFunctions}}
+{{#newline}}
+    // Scalar Valued Functions{{#newline}}
+{{#each scalarValuedFunctions}}
+    {{ReturnType}} {{ExecName}}({{WriteStoredProcFunctionParamsFalseTrue}}); // {{Schema}}.{{Name}}{{#newline}}
+{{/each}}
+{{/if}}
+
+}

@@ -49,6 +49,7 @@ namespace Generator.Tests.Integration
         [TestCase(true, TemplateType.EfCore3, ForeignKeyNamingStrategy.Legacy)]
         [TestCase(false, TemplateType.EfCore6, ForeignKeyNamingStrategy.Legacy)]
         [TestCase(false, TemplateType.EfCore7, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase(false, TemplateType.EfCore8, ForeignKeyNamingStrategy.Legacy)]
         // Latest
         //[TestCase(false, TemplateType.EfCore2, ForeignKeyNamingStrategy.Latest)]
         //[TestCase(false, TemplateType.EfCore3, ForeignKeyNamingStrategy.Latest)]

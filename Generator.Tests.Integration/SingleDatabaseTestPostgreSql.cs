@@ -55,7 +55,7 @@ namespace Generator.Tests.Integration
             // Arrange
             Settings.GenerateSeparateFiles = false;
             Settings.UseMappingTables = false;
-            SetupPostgreSQL(database, "MyDbContext", "MyDbContext", TemplateType.EfCore7, GeneratorType.EfCore, foreignKeyNamingStrategy);
+            SetupPostgreSQL(database, "MyDbContext", "MyDbContext", TemplateType.EfCore8, GeneratorType.EfCore, foreignKeyNamingStrategy);
 
             // Act
             Run(filename, ".PostgreSQL", typeof(EfCoreFileManager), null);

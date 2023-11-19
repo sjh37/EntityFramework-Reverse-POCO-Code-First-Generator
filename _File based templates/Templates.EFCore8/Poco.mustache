@@ -1,0 +1,107 @@
+{{#if UseHasNoKey}}
+{{#else}}
+{{#if HasNoPrimaryKey}}
+// The table '{{Name}}' is not usable by entity framework because it{{#newline}}
+// does not have a primary key. It is listed here for completeness.{{#newline}}
+{{/if}}
+{{/if}}
+
+{{ClassComment}}
+{{ExtendedComments}}
+{{ClassAttributes}}
+{{ClassModifier}} class {{NameHumanCaseWithSuffix}}{{BaseClasses}}{{#newline}}
+{{{#newline}}
+{{InsideClassBody}}
+
+{{#each Columns}}
+{{#if AddNewLineBefore}}{{#newline}}{{/if}}
+{{#if HasSummaryComments}}
+    /// <summary>{{#newline}}
+    /// {{SummaryComments}}{{#newline}}
+    /// </summary>{{#newline}}
+{{/if}}
+{{#each Attributes}}
+    {{this}}{{#newline}}
+{{/each}}
+    public {{#if OverrideModifier}}override {{/if}}{{WrapIfNullable}} {{NameHumanCase}} { get; {{PrivateSetterForComputedColumns}}set; }{{PropertyInitialisers}}{{InlineComments}}{{#newline}}
+{{#if IncludeFieldNameConstants}}    public const string {{NameHumanCase}}Field = "{{NameHumanCase}}";{{#newline}}{{/if}}
+{{/each}}
+
+{{#if HasReverseNavigation}}
+{{#newline}}
+    // Reverse navigation{{#newline}}
+
+{{#each ReverseNavigationProperty}}
+
+{{#if ReverseNavHasComment}}
+{{#newline}}
+    /// <summary>{{#newline}}
+    /// {{ReverseNavComment}}{{#newline}}
+    /// </summary>{{#newline}}
+{{/if}}
+
+{{#each AdditionalReverseNavigationsDataAnnotations}}
+    [{{this}}]{{#newline}}
+{{/each}}
+
+{{#each AdditionalDataAnnotations}}
+    [{{this}}]{{#newline}}
+{{/each}}
+
+    {{Definition}}{{#newline}}
+{{/each}}
+{{/if}}
+
+
+{{#if HasForeignKey}}
+{{#newline}}
+{{ForeignKeyTitleComment}}
+
+{{#each ForeignKeys}}
+
+{{#if HasFkComment}}
+{{#newline}}
+    /// <summary>{{#newline}}
+    /// {{FkComment}}{{#newline}}
+    /// </summary>{{#newline}}
+{{/if}}
+
+{{#each AdditionalForeignKeysDataAnnotations}}
+    [{{this}}]{{#newline}}
+{{/each}}
+
+{{#each AdditionalDataAnnotations}}
+    [{{this}}]{{#newline}}
+{{/each}}
+
+    {{Definition}}{{#newline}}
+{{/each}}
+{{/if}}
+
+{{#if CreateConstructor}}
+{{#newline}}
+    public {{NameHumanCaseWithSuffix}}(){{#newline}}
+    {{{#newline}}
+
+{{#each ColumnsWithDefaults}}
+        {{NameHumanCase}} = {{Default}};{{#newline}}
+{{/each}}
+
+{{#each ReverseNavigationCtor}}
+        {{this}}{{#newline}}
+{{/each}}
+
+{{#if EntityClassesArePartial}}
+        InitializePartial();{{#newline}}
+{{/if}}
+
+    }{{#newline}}
+
+{{#if EntityClassesArePartial}}
+{{#newline}}
+    partial void InitializePartial();{{#newline}}
+{{/if}}
+
+{{/if}}
+
+}{{#newline}}

@@ -1,0 +1,70 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.HierarchyId" Version="8.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.NetTopologySuite" Version="8.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+        <PackageReference Include="NUnit" Version="3.14.0" />
+        <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Generator.Tests.Common\Generator.Tests.Common.csproj" />
+        <ProjectReference Include="..\Tester.BusinessLogic.EfCore\Tester.BusinessLogic.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="Azure.tt">
+        <Generator>TextTemplatingFileGenerator</Generator>
+        <LastGenOutput>Azure.cs</LastGenOutput>
+      </None>
+      <None Update="EfrpgTest.tt">
+        <Generator>TextTemplatingFileGenerator</Generator>
+        <LastGenOutput>EfrpgTest.cs</LastGenOutput>
+      </None>
+      <None Update="Northwind.tt">
+        <Generator>TextTemplatingFileGenerator</Generator>
+        <LastGenOutput>Northwind.cs</LastGenOutput>
+      </None>
+      <None Update="TestSynonymsDatabase.tt">
+        <Generator>TextTemplatingFileGenerator</Generator>
+        <LastGenOutput>TestSynonymsDatabase.cs</LastGenOutput>
+      </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Azure.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>Azure.tt</DependentUpon>
+      </Compile>
+      <Compile Update="EfrpgTest.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>EfrpgTest.tt</DependentUpon>
+      </Compile>
+      <Compile Update="Northwind.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>Northwind.tt</DependentUpon>
+      </Compile>
+      <Compile Update="TestSynonymsDatabase.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>TestSynonymsDatabase.tt</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
+</Project>

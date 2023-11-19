@@ -138,13 +138,25 @@
     <Compile Include="SingleDatabaseTestSqlCeServer.cs" />
     <Compile Include="SingleDatabaseTestSQLite.cs" />
     <Compile Include="SingleDatabaseTestSqlServer.cs" />
-    <None Include="TestComparison\EfrpgTest_SQLite_EfCore7_FkLegacy.cs">
+    <None Include="TestComparison\Northwind_SqlCe_EfCore8_FkLegacy.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TestComparison\NonPascalCased_SqlServer_EfCore8_FkLegacy.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TestComparison\EfrpgTestIncludeFilter_SqlServer_EfCore8_FkLegacy.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TestComparison\EfrpgTest_SqlServer_EfCore8_FkLegacy.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TestComparison\EfrpgTest_SQLite_EfCore8_FkLegacy.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="TestComparison\EfrpgTest_PostgreSQL_Ef6_FkLegacy.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TestComparison\EfrpgTest_PostgreSQL_EfCore7_FkLegacy.cs">
+    <None Include="TestComparison\EfrpgTest_PostgreSQL_EfCore8_FkLegacy.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="TestComparison\NonPascalCased_SqlServer_EfCore6_FkLegacy.cs">
@@ -165,7 +177,7 @@
     <None Include="TestComparison\NonPascalCased_SqlServer_EfCore7_FkLegacy.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TestComparison\PostgisTest_PostgreSQL_EfCore7_FkLegacy.cs">
+    <None Include="TestComparison\PostgisTest_PostgreSQL_EfCore8_FkLegacy.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="App.config" />
@@ -191,10 +203,10 @@
     <None Include="TestComparison\Northwind_SqlCe_Ef6_FkLatest.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TestComparison\Northwind_PostgreSQL_EfCore7_FkLegacy.cs">
+    <None Include="TestComparison\Northwind_PostgreSQL_EfCore8_FkLegacy.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TestComparison\Northwind_PostgreSQL_EfCore7_FkLatest.cs">
+    <None Include="TestComparison\Northwind_PostgreSQL_EfCore8_FkLatest.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="TestComparison\EfrpgTestIncludeFilter_SqlServer_EfCore6_FkLegacy.cs">
