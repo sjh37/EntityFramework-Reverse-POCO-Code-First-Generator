@@ -116,6 +116,8 @@ namespace Efrpg.V3TestE1
         DbSet<TblOrderError> TblOrderErrors { get; set; } // tblOrderErrors
         DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
         DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
+        DbSet<TemporalDepartment> TemporalDepartments { get; set; } // TemporalDepartment
+        DbSet<TemporalDepartmentHistory> TemporalDepartmentHistories { get; set; } // TemporalDepartmentHistory
         DbSet<ThisIsMemoryOptimised> ThisIsMemoryOptimiseds { get; set; } // ThisIsMemoryOptimised
         DbSet<Ticket> Tickets { get; set; } // Ticket
         DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
@@ -420,6 +422,8 @@ namespace Efrpg.V3TestE1
         public DbSet<TblOrderError> TblOrderErrors { get; set; } // tblOrderErrors
         public DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
         public DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
+        public DbSet<TemporalDepartment> TemporalDepartments { get; set; } // TemporalDepartment
+        public DbSet<TemporalDepartmentHistory> TemporalDepartmentHistories { get; set; } // TemporalDepartmentHistory
         public DbSet<ThisIsMemoryOptimised> ThisIsMemoryOptimiseds { get; set; } // ThisIsMemoryOptimised
         public DbSet<Ticket> Tickets { get; set; } // Ticket
         public DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
@@ -587,6 +591,8 @@ namespace Efrpg.V3TestE1
             modelBuilder.Configurations.Add(new TblOrderErrorConfiguration());
             modelBuilder.Configurations.Add(new TblOrderErrorsAbConfiguration());
             modelBuilder.Configurations.Add(new TblOrderLineConfiguration());
+            modelBuilder.Configurations.Add(new TemporalDepartmentConfiguration());
+            modelBuilder.Configurations.Add(new TemporalDepartmentHistoryConfiguration());
             modelBuilder.Configurations.Add(new ThisIsMemoryOptimisedConfiguration());
             modelBuilder.Configurations.Add(new TicketConfiguration());
             modelBuilder.Configurations.Add(new TimestampNotNullConfiguration());
@@ -744,6 +750,20 @@ namespace Efrpg.V3TestE1
                     new IndexAnnotation(new IndexAttribute("fki_ParentTableA_FK_Constraint", 1))
                 );
 
+            modelBuilder.Entity<TemporalDepartmentHistory>()
+                .Property(e => e.SysStartTime)
+                .HasColumnAnnotation(
+                    IndexAnnotation.AnnotationName,
+                    new IndexAnnotation(new IndexAttribute("ix_TemporalDepartmentHistory", 2))
+                );
+
+            modelBuilder.Entity<TemporalDepartmentHistory>()
+                .Property(e => e.SysEndTime)
+                .HasColumnAnnotation(
+                    IndexAnnotation.AnnotationName,
+                    new IndexAnnotation(new IndexAttribute("ix_TemporalDepartmentHistory", 1))
+                );
+
             modelBuilder.Entity<WVN_Article>()
                 .Property(e => e.FkFactory)
                 .HasColumnAnnotation(
@@ -856,6 +876,8 @@ namespace Efrpg.V3TestE1
             modelBuilder.Configurations.Add(new TblOrderErrorConfiguration(schema));
             modelBuilder.Configurations.Add(new TblOrderErrorsAbConfiguration(schema));
             modelBuilder.Configurations.Add(new TblOrderLineConfiguration(schema));
+            modelBuilder.Configurations.Add(new TemporalDepartmentConfiguration(schema));
+            modelBuilder.Configurations.Add(new TemporalDepartmentHistoryConfiguration(schema));
             modelBuilder.Configurations.Add(new ThisIsMemoryOptimisedConfiguration(schema));
             modelBuilder.Configurations.Add(new TicketConfiguration(schema));
             modelBuilder.Configurations.Add(new TimestampNotNullConfiguration(schema));
@@ -2346,6 +2368,8 @@ namespace Efrpg.V3TestE1
         public DbSet<TblOrderError> TblOrderErrors { get; set; } // tblOrderErrors
         public DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
         public DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
+        public DbSet<TemporalDepartment> TemporalDepartments { get; set; } // TemporalDepartment
+        public DbSet<TemporalDepartmentHistory> TemporalDepartmentHistories { get; set; } // TemporalDepartmentHistory
         public DbSet<ThisIsMemoryOptimised> ThisIsMemoryOptimiseds { get; set; } // ThisIsMemoryOptimised
         public DbSet<Ticket> Tickets { get; set; } // Ticket
         public DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
@@ -2453,6 +2477,8 @@ namespace Efrpg.V3TestE1
             TblOrderErrors = new FakeDbSet<TblOrderError>("Id");
             TblOrderErrorsAbs = new FakeDbSet<TblOrderErrorsAb>("Id");
             TblOrderLines = new FakeDbSet<TblOrderLine>("Id");
+            TemporalDepartments = new FakeDbSet<TemporalDepartment>("DeptId");
+            TemporalDepartmentHistories = new FakeDbSet<TemporalDepartmentHistory>("DeptId", "DeptName", "SysStartTime", "SysEndTime");
             ThisIsMemoryOptimiseds = new FakeDbSet<ThisIsMemoryOptimised>("Id");
             Tickets = new FakeDbSet<Ticket>("Id");
             TimestampNotNulls = new FakeDbSet<TimestampNotNull>("Id");
@@ -4841,6 +4867,28 @@ namespace Efrpg.V3TestE1
         public virtual TblOrder TblOrder { get; set; } // tblOrdersFK
     }
 
+    // TemporalDepartment
+    public class TemporalDepartment
+    {
+        public int DeptId { get; set; } // DeptID (Primary key)
+        public string DeptName { get; set; } // DeptName (length: 50)
+        public int? ManagerId { get; set; } // ManagerID
+        public int? ParentDeptId { get; set; } // ParentDeptID
+        public DateTime SysStartTime { get; set; } // SysStartTime
+        public DateTime SysEndTime { get; set; } // SysEndTime
+    }
+
+    // TemporalDepartmentHistory
+    public class TemporalDepartmentHistory
+    {
+        public int DeptId { get; set; } // DeptID (Primary key)
+        public string DeptName { get; set; } // DeptName (Primary key) (length: 50)
+        public int? ManagerId { get; set; } // ManagerID
+        public int? ParentDeptId { get; set; } // ParentDeptID
+        public DateTime SysStartTime { get; set; } // SysStartTime (Primary key)
+        public DateTime SysEndTime { get; set; } // SysEndTime (Primary key)
+    }
+
     // The table 'Test' is not usable by entity framework because it
     // does not have a primary key. It is listed here for completeness.
     // Test
@@ -6839,6 +6887,50 @@ namespace Efrpg.V3TestE1
 
             // Foreign keys
             HasRequired(a => a.TblOrder).WithMany(b => b.TblOrderLines).HasForeignKey(c => c.OrderId).WillCascadeOnDelete(false); // tblOrdersFK
+        }
+    }
+
+    // TemporalDepartment
+    public class TemporalDepartmentConfiguration : EntityTypeConfiguration<TemporalDepartment>
+    {
+        public TemporalDepartmentConfiguration()
+            : this("dbo")
+        {
+        }
+
+        public TemporalDepartmentConfiguration(string schema)
+        {
+            ToTable("TemporalDepartment", schema);
+            HasKey(x => x.DeptId);
+
+            Property(x => x.DeptId).HasColumnName(@"DeptID").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.DeptName).HasColumnName(@"DeptName").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(50);
+            Property(x => x.ManagerId).HasColumnName(@"ManagerID").HasColumnType("int").IsOptional();
+            Property(x => x.ParentDeptId).HasColumnName(@"ParentDeptID").HasColumnType("int").IsOptional();
+            Property(x => x.SysStartTime).HasColumnName(@"SysStartTime").HasColumnType("datetime2").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.SysEndTime).HasColumnName(@"SysEndTime").HasColumnType("datetime2").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+        }
+    }
+
+    // TemporalDepartmentHistory
+    public class TemporalDepartmentHistoryConfiguration : EntityTypeConfiguration<TemporalDepartmentHistory>
+    {
+        public TemporalDepartmentHistoryConfiguration()
+            : this("dbo")
+        {
+        }
+
+        public TemporalDepartmentHistoryConfiguration(string schema)
+        {
+            ToTable("TemporalDepartmentHistory", schema);
+            HasKey(x => new { x.DeptId, x.DeptName, x.SysStartTime, x.SysEndTime });
+
+            Property(x => x.DeptId).HasColumnName(@"DeptID").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.DeptName).HasColumnName(@"DeptName").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(50).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.ManagerId).HasColumnName(@"ManagerID").HasColumnType("int").IsOptional();
+            Property(x => x.ParentDeptId).HasColumnName(@"ParentDeptID").HasColumnType("int").IsOptional();
+            Property(x => x.SysStartTime).HasColumnName(@"SysStartTime").HasColumnType("datetime2").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.SysEndTime).HasColumnName(@"SysEndTime").HasColumnType("datetime2").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
         }
     }
 

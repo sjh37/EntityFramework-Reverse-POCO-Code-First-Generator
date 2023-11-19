@@ -111,7 +111,7 @@ namespace Efrpg.SqlCE
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(@"Data Source=C:\S\Source (open source)\EntityFramework Reverse POCO Code Generator\EntityFramework.Reverse.POCO.Generator\App_Data\NorthwindSqlCe40.sdf");
+                optionsBuilder.UseSqlServer(@"Data Source=C:\S\Source (open source)\EntityFramework-Reverse-POCO-Code-First-Generator\EntityFramework.Reverse.POCO.Generator\App_Data\NorthwindSqlCe40.sdf");
                 optionsBuilder.UseLazyLoadingProxies();
             }
         }

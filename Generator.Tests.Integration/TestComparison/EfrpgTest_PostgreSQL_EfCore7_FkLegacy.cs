@@ -98,7 +98,7 @@ namespace Efrpg.PostgreSQL
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseNpgsql(@"Server=127.0.0.1;Port=5432;Database=EfrpgTest;User Id=testuser;Password=testtesttest;");
+                optionsBuilder.UseNpgsql(@"Server=127.0.0.1;Port=5433;Database=EfrpgTest;User Id=testuser;Password=testtesttest;");
                 optionsBuilder.UseLazyLoadingProxies();
             }
         }

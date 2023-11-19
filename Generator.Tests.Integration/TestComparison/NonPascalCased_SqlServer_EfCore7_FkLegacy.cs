@@ -609,6 +609,7 @@ namespace Efrpg.V4TestE7
             modelBuilder.Entity<CalculatedColumnNotNull>().ToTable(tb => tb.HasTrigger("CalculatedColumnAuditUpdate"));
             modelBuilder.Entity<Car>().ToTable(tb => tb.HasTrigger("HasComputedColumn"));
             modelBuilder.Entity<Stafford_ComputedColumn>().ToTable(tb => tb.HasTrigger("HasComputedColumn"));
+            modelBuilder.Entity<Synonyms_Child>().ToTable(tb => tb.HasTrigger("ChildInsertTrigger"));
 
             modelBuilder.Entity<ColourPivotReturnModel>().HasNoKey();
             modelBuilder.Entity<dbo_proc_data_from_ffrsReturnModel>().HasNoKey();

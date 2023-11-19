@@ -18,7 +18,7 @@ namespace Generator.Tests.Integration
             SetupDatabase(connectionStringName, dbContextName, templateType, generatorType, foreignKeyNamingStrategy);
 
             Settings.ConnectionString =
-                @"Data Source=C:\S\Source (open source)\EntityFramework Reverse POCO Code Generator\EntityFramework.Reverse.POCO.Generator\App_Data\" +
+                @"Data Source=C:\S\Source (open source)\EntityFramework-Reverse-POCO-Code-First-Generator\EntityFramework.Reverse.POCO.Generator\App_Data\" +
                 database;
             Settings.DatabaseType = DatabaseType.SqlCe;
         }

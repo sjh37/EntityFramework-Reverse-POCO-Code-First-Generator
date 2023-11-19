@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -5616,7 +5617,7 @@ namespace Efrpg.V3TestE6
             builder.Property(x => x.DomainCatalog).HasColumnName(@"DOMAIN_CATALOG").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
             builder.Property(x => x.DomainSchema).HasColumnName(@"DOMAIN_SCHEMA").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
             builder.Property(x => x.DomainName).HasColumnName(@"DOMAIN_NAME").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
-            builder.Property(x => x.Type).HasColumnName(@"TYPE").HasColumnType("char(2)").IsRequired(false).IsFixedLength().IsUnicode(false).HasMaxLength(2);
+            builder.Property(x => x.Type).HasColumnName(@"TYPE").HasColumnType("char(2)").HasConversion(new ValueConverter<string, string>(v => v.TrimEnd(), v => v.TrimEnd())).IsRequired(false).IsFixedLength().IsUnicode(false).HasMaxLength(2);
         }
     }
 

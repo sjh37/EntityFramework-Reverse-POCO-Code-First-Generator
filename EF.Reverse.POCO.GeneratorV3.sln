@@ -40,6 +40,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PostgreSQL", "PostgreSQL", 
 	ProjectSection(SolutionItems) = preProject
 		EfrpgTest.sql = EfrpgTest.sql
 		TestDatabases\PostgreSQL\northwind.sql = TestDatabases\PostgreSQL\northwind.sql
+		postgid_test.sql = postgid_test.sql
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQLServer", "SQLServer", "{D303B1E7-49FF-4113-A904-87649C18B835}"

@@ -108,7 +108,7 @@ namespace Generator.Tests.Integration
 
         protected static void CompareAgainstFolderTestComparison(string subFolder)
         {
-            var testRootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "OneDrive-Personal\\OneDrive\\Documents");
+            var testRootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "OneDrive\\Documents");
             if (!string.IsNullOrEmpty(subFolder))
                 testRootPath = Path.Combine(testRootPath, subFolder);
 
