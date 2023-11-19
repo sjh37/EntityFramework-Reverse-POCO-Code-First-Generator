@@ -24,11 +24,11 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace V7EfrpgTest
+namespace V8EfrpgTest
 {
     #region Database context interface
 
-    public interface IV7EfrpgTestDbContext : IDisposable
+    public interface IV8EfrpgTestDbContext : IDisposable
     {
         DbSet<A> A { get; set; } // A
         DbSet<Aaref> Aarefs { get; set; } // AAREF
@@ -358,13 +358,13 @@ namespace V7EfrpgTest
 
     #region Database context
 
-    public class V7EfrpgTestDbContext : DbContext, IV7EfrpgTestDbContext
+    public class V8EfrpgTestDbContext : DbContext, IV8EfrpgTestDbContext
     {
-        public V7EfrpgTestDbContext()
+        public V8EfrpgTestDbContext()
         {
         }
 
-        public V7EfrpgTestDbContext(DbContextOptions<V7EfrpgTestDbContext> options)
+        public V8EfrpgTestDbContext(DbContextOptions<V8EfrpgTestDbContext> options)
             : base(options)
         {
         }
@@ -1803,11 +1803,11 @@ namespace V7EfrpgTest
 
     #region Database context factory
 
-    public class V7EfrpgTestDbContextFactory : IDesignTimeDbContextFactory<V7EfrpgTestDbContext>
+    public class V8EfrpgTestDbContextFactory : IDesignTimeDbContextFactory<V8EfrpgTestDbContext>
     {
-        public V7EfrpgTestDbContext CreateDbContext(string[] args)
+        public V8EfrpgTestDbContext CreateDbContext(string[] args)
         {
-            return new V7EfrpgTestDbContext();
+            return new V8EfrpgTestDbContext();
         }
     }
 
@@ -1815,7 +1815,7 @@ namespace V7EfrpgTest
 
     #region Fake Database context
 
-    public class FakeV7EfrpgTestDbContext : IV7EfrpgTestDbContext
+    public class FakeV8EfrpgTestDbContext : IV8EfrpgTestDbContext
     {
         public DbSet<A> A { get; set; } // A
         public DbSet<Aaref> Aarefs { get; set; } // AAREF
@@ -1922,9 +1922,9 @@ namespace V7EfrpgTest
         public DbSet<WVN_VArticle> WVN_VArticles { get; set; } // v_Articles
         public DbSet<Брендытовара> Брендытовара { get; set; } // Бренды товара
 
-        public FakeV7EfrpgTestDbContext()
+        public FakeV8EfrpgTestDbContext()
         {
-            _database = new FakeDatabaseFacade(new V7EfrpgTestDbContext());
+            _database = new FakeDatabaseFacade(new V8EfrpgTestDbContext());
 
             A = new FakeDbSet<A>("AId");
             Aarefs = new FakeDbSet<Aaref>("C1", "C2");
