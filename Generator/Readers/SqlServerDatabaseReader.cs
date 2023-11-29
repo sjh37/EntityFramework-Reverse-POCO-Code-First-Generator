@@ -1189,10 +1189,12 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 {
                     proc.ReturnModels.Add(ds.Tables[count].Columns.Cast<DataColumn>().ToList());
                 }
+                Settings.ReadStoredProcReturnObjectCompleted(proc);
             }
-            catch (Exception)
+            catch (Exception exception)
             {
                 // Stored procedure does not have a return type
+                Settings.ReadStoredProcReturnObjectException(exception, proc);
             }
         }
 

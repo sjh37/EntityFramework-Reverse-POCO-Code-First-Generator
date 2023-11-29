@@ -208,6 +208,21 @@ namespace Efrpg
         //StoredProcedureReturnTypes.Add("SalesByYear", "SummaryOfSalesByYear");
         public static Dictionary<string, string> StoredProcedureReturnTypes = new Dictionary<string, string>();
 
+        /// <summary>
+        /// Enable intercept stored procedure return model when a exception occurs. Typically when the stored procedure contains temp tables. 
+        /// This allows you render the proper error in comment or fix the return model by manually creating the returnmodel using a list of DataColumns
+        /// </summary>
+        public static Action<Exception, StoredProcedure> ReadStoredProcReturnObjectException = (exception, proc) => {
+
+        };
+
+        /// <summary>
+        /// Enable intercept stored procedure return model
+        /// </summary>
+        public static Action<StoredProcedure> ReadStoredProcReturnObjectCompleted = (proc) => {
+
+        };
+
 
         // Renaming ***********************************************************************************************************************
         // Table renaming (single context generation only) ************************************************************************************
