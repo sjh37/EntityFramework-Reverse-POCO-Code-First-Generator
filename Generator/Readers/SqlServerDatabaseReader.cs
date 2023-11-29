@@ -1115,7 +1115,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         {
             using (var sqlConnection = new SqlConnection(Settings.ConnectionString))
             {
-                foreach (var sp in procs.Where(x => !x.IsScalarValuedFunction))
+                foreach (var sp in procs)
                     ReadStoredProcReturnObject(sqlConnection, sp);
             }
         }
@@ -1124,6 +1124,12 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         {
             try
             {
+                var compatibilityLevel = GetCompatibilityLevel(sqlConnection);
+                if (proc.IsTableValuedFunction && compatibilityLevel > 130)
+                {
+                    SetCompatibilityLevel(sqlConnection, 130);
+                }
+
                 const string structured = "Structured";
                 var sb = new StringBuilder(255);
                 sb.AppendLine();
@@ -1181,6 +1187,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     sqlAdapter.FillSchema(ds, SchemaType.Source, "MyTable");
                 }
 
+                if (proc.IsTableValuedFunction && compatibilityLevel > 130)
+                {
+                    SetCompatibilityLevel(sqlConnection, compatibilityLevel.Value);
+                }
+
                 // Tidy up parameters
                 foreach (var p in proc.Parameters)
                     p.NameHumanCase = Regex.Replace(p.NameHumanCase, @"[^A-Za-z0-9@\s]*", string.Empty);
@@ -1193,6 +1204,36 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             catch (Exception)
             {
                 // Stored procedure does not have a return type
+            }
+        }
+
+        protected virtual int? GetCompatibilityLevel(DbConnection conn)
+        {
+            int? compatiblityLevel = null;
+
+            var cmd = GetCmd(conn);
+            if (cmd != null)
+            {
+                cmd.CommandText = "SELECT compatibility_level FROM sys.databases WHERE name = DB_NAME()";
+                using (var rdr = cmd.ExecuteReader())
+                {
+                    if (rdr.Read())
+                    {
+                        compatiblityLevel = Convert.ToInt32(rdr[0]);
+                    }
+                }
+            }
+
+            return compatiblityLevel;
+        }
+
+        protected void SetCompatibilityLevel(DbConnection conn, int compatibilityLevel)
+        {
+            var cmd = GetCmd(conn);
+            if (cmd != null)
+            {
+                cmd.CommandText = "ALTER DATABASE CURRENT SET COMPATIBILITY_LEVEL = " + compatibilityLevel;
+                cmd.ExecuteNonQuery();
             }
         }
 
