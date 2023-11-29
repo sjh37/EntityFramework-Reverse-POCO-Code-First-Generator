@@ -992,6 +992,7 @@ namespace Tester.Integration.Ef6
 
             var procResultData = new C182Test2ReturnModel();
             var cmd = Database.Connection.CreateCommand();
+            cmd.CommandTimeout = Database.CommandTimeout ?? cmd.CommandTimeout;
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.CommandText = "[dbo].[182_test2]";
             cmd.Parameters.Add(flagParam);
@@ -1027,6 +1028,7 @@ namespace Tester.Integration.Ef6
 
             var procResultData = new C182Test2ReturnModel();
             var cmd = Database.Connection.CreateCommand();
+            cmd.CommandTimeout = Database.CommandTimeout ?? cmd.CommandTimeout;
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.CommandText = "[dbo].[182_test2]";
             cmd.Parameters.Add(flagParam);
@@ -1062,6 +1064,7 @@ namespace Tester.Integration.Ef6
             var isApplicationCompleteParam = new SqlParameter { ParameterName = "@IsApplicationComplete", SqlDbType = SqlDbType.Bit, Direction = ParameterDirection.Output };
             var procResultData = new CheckIfApplicationIsCompleteReturnModel();
             var cmd = Database.Connection.CreateCommand();
+            cmd.CommandTimeout = Database.CommandTimeout ?? cmd.CommandTimeout;
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.CommandText = "[dbo].[CheckIfApplicationIsComplete]";
             cmd.Parameters.Add(applicationIdParam);
@@ -1601,6 +1604,7 @@ namespace Tester.Integration.Ef6
 
             var procResultData = new StpMultipleIdenticalResultsReturnModel();
             var cmd = Database.Connection.CreateCommand();
+            cmd.CommandTimeout = Database.CommandTimeout ?? cmd.CommandTimeout;
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.CommandText = "[dbo].[stp_multiple_identical_results]";
             cmd.Parameters.Add(someVarParam);
@@ -1633,6 +1637,7 @@ namespace Tester.Integration.Ef6
 
             var procResultData = new StpMultipleIdenticalResultsReturnModel();
             var cmd = Database.Connection.CreateCommand();
+            cmd.CommandTimeout = Database.CommandTimeout ?? cmd.CommandTimeout;
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.CommandText = "[dbo].[stp_multiple_identical_results]";
             cmd.Parameters.Add(someVarParam);
@@ -1672,6 +1677,7 @@ namespace Tester.Integration.Ef6
 
             var procResultData = new StpMultipleMultipleResultsWithParamsReturnModel();
             var cmd = Database.Connection.CreateCommand();
+            cmd.CommandTimeout = Database.CommandTimeout ?? cmd.CommandTimeout;
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.CommandText = "[dbo].[stp_multiple_multiple_results_with_params]";
             cmd.Parameters.Add(firstValParam);
@@ -1726,6 +1732,7 @@ namespace Tester.Integration.Ef6
 
             var procResultData = new StpMultipleMultipleResultsWithParamsReturnModel();
             var cmd = Database.Connection.CreateCommand();
+            cmd.CommandTimeout = Database.CommandTimeout ?? cmd.CommandTimeout;
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.CommandText = "[dbo].[stp_multiple_multiple_results_with_params]";
             cmd.Parameters.Add(firstValParam);
@@ -1767,6 +1774,7 @@ namespace Tester.Integration.Ef6
         {
             var procResultData = new StpMultipleResultsReturnModel();
             var cmd = Database.Connection.CreateCommand();
+            cmd.CommandTimeout = Database.CommandTimeout ?? cmd.CommandTimeout;
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.CommandText = "[dbo].[stp_multiple_results]";
 
@@ -1797,6 +1805,7 @@ namespace Tester.Integration.Ef6
         {
             var procResultData = new StpMultipleResultsReturnModel();
             var cmd = Database.Connection.CreateCommand();
+            cmd.CommandTimeout = Database.CommandTimeout ?? cmd.CommandTimeout;
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.CommandText = "[dbo].[stp_multiple_results]";
 
@@ -1834,6 +1843,7 @@ namespace Tester.Integration.Ef6
 
             var procResultData = new StpMultipleResultsWithParamsReturnModel();
             var cmd = Database.Connection.CreateCommand();
+            cmd.CommandTimeout = Database.CommandTimeout ?? cmd.CommandTimeout;
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.CommandText = "[dbo].[stp_multiple_results_with_params]";
             cmd.Parameters.Add(firstValParam);
@@ -1871,6 +1881,7 @@ namespace Tester.Integration.Ef6
 
             var procResultData = new StpMultipleResultsWithParamsReturnModel();
             var cmd = Database.Connection.CreateCommand();
+            cmd.CommandTimeout = Database.CommandTimeout ?? cmd.CommandTimeout;
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.CommandText = "[dbo].[stp_multiple_results_with_params]";
             cmd.Parameters.Add(firstValParam);
