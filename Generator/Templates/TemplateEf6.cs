@@ -371,6 +371,7 @@ using {{this}};{{#newline}}
 {{#else}}
         var procResultData = new {{WriteStoredProcReturnModelName}}();{{#newline}}
         var cmd = Database.Connection.CreateCommand();{{#newline}}
+        cmd.CommandTimeout = Database.CommandTimeout ?? cmd.CommandTimeout;{{#newline}}
         cmd.CommandType = CommandType.StoredProcedure;{{#newline}}
         cmd.CommandText = ""{{Exec}}"";{{#newline}}
 {{#each Parameters}}
@@ -421,6 +422,7 @@ using {{this}};{{#newline}}
 {{#else}}
         var procResultData = new {{WriteStoredProcReturnModelName}}();{{#newline}}
         var cmd = Database.Connection.CreateCommand();{{#newline}}
+        cmd.CommandTimeout = Database.CommandTimeout ?? cmd.CommandTimeout;{{#newline}}
         cmd.CommandType = CommandType.StoredProcedure;{{#newline}}
         cmd.CommandText = ""{{Exec}}"";{{#newline}}
 {{#each Parameters}}
