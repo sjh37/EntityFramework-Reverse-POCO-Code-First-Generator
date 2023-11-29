@@ -105,27 +105,28 @@ namespace BuildTT
     Settings.DbContextInterfaceModifiers   = ""public""; // ""public partial"";
     Settings.ResultClassModifiers          = ""public""; // ""public partial"";
 
-    Settings.UsePascalCase                      = true; // This will rename the generated C# tables & properties to use PascalCase. If false table & property names will be left alone.
-    Settings.UseDataAnnotations                 = false; // If true, will add data annotations to the poco classes.
-    Settings.UsePropertyInitialisers            = false; // Removes POCO constructor and instead uses C# 6 property initialisers to set defaults
-    Settings.UseLazyLoading                     = false; // Marks all navigation properties as virtual or not, to support or disable EF Lazy Loading feature
-    Settings.UseInheritedBaseInterfaceFunctions = false; // If true, the main DBContext interface functions will come from the DBContextInterfaceBaseClasses and not generated. If false, the functions will be generated.
-    Settings.IncludeComments                    = CommentsStyle.AtEndOfField; // Adds comments to the generated code
-    Settings.IncludeExtendedPropertyComments    = CommentsStyle.InSummaryBlock; // Adds extended properties as comments to the generated code
-    Settings.DisableGeographyTypes              = true; // Turns off use of spatial types: Geography, Geometry. More info: https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Spatial-Types
-    Settings.CollectionInterfaceType            = ""ICollection""; //  = ""System.Collections.Generic.List""; // Determines the declaration type of collections for the Navigation Properties. ICollection is used if not set.
-    Settings.CollectionType                     = ""List""; // Determines the type of collection for the Navigation Properties. ""ObservableCollection"" for example. Add ""System.Collections.ObjectModel"" to AdditionalNamespaces if setting the CollectionType = ""ObservableCollection"".
-    Settings.NullableShortHand                  = true; // true => T?, false => Nullable<T>
-    Settings.AddIDbContextFactory               = true; // Will add a default IDbContextFactory<DbContextName> implementation for easy dependency injection
-    Settings.IncludeQueryTraceOn9481Flag        = false; // If SqlServer 2014 appears frozen / take a long time when this file is saved, try setting this to true (you will also need elevated privileges).
-    Settings.UsePrivateSetterForComputedColumns = true; // If the columns is computed, use a private setter.
-    Settings.IncludeGeneratorVersionInCode      = false; // If true, will include the version number of the generator in the generated code (Settings.ShowLicenseInfo must also be true).
-    Settings.TrimCharFields                     = false; // EF Core option only. If true, will TrimEnd() 'char' fields when read from the database.
-    Settings.IncludeFieldNameConstants          = false; // Will include public const string {{NameHumanCase}}Field = ""{{NameHumanCase}}""; in the generated POCO class. It allows you to use a constant instead of magic strings.
-    Settings.AdditionalNamespaces               = new List<string>(); // To include extra namespaces, include them here. i.e. new List<string> { ""Microsoft.AspNetCore.Identity.EntityFrameworkCore"", ""System.ComponentModel.DataAnnotations"" };
-    Settings.AdditionalContextInterfaceItems    = new List<string>(); // example: new List<string> { ""void SetAutoDetectChangesEnabled(bool flag);"" };
-    Settings.AdditionalFileHeaderText           = new List<string>(); // This will put additional lines verbatim at the top of each file under the comments, 1 line per entry
-    Settings.AdditionalFileFooterText           = new List<string>(); // This will put additional lines verbatim at the end of each file above the // </auto-generated>, 1 line per entry
+    Settings.UsePascalCase                        = true; // This will rename the generated C# tables & properties to use PascalCase. If false table & property names will be left alone.
+    Settings.UseDataAnnotations                   = false; // If true, will add data annotations to the poco classes.
+    Settings.UsePropertyInitialisers              = false; // Removes POCO constructor and instead uses C# 6 property initialisers to set defaults
+    Settings.UseLazyLoading                       = false; // Marks all navigation properties as virtual or not, to support or disable EF Lazy Loading feature
+    Settings.UseInheritedBaseInterfaceFunctions   = false; // If true, the main DBContext interface functions will come from the DBContextInterfaceBaseClasses and not generated. If false, the functions will be generated.
+    Settings.IncludeComments                      = CommentsStyle.AtEndOfField; // Adds comments to the generated code
+    Settings.IncludeExtendedPropertyComments      = CommentsStyle.InSummaryBlock; // Adds extended properties as comments to the generated code
+    Settings.DisableGeographyTypes                = true; // Turns off use of spatial types: Geography, Geometry. More info: https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Spatial-Types
+    Settings.CollectionInterfaceType              = ""ICollection""; //  = ""System.Collections.Generic.List""; // Determines the declaration type of collections for the Navigation Properties. ICollection is used if not set.
+    Settings.CollectionType                       = ""List""; // Determines the type of collection for the Navigation Properties. ""ObservableCollection"" for example. Add ""System.Collections.ObjectModel"" to AdditionalNamespaces if setting the CollectionType = ""ObservableCollection"".
+    Settings.NullableShortHand                    = true; // true => T?, false => Nullable<T>
+    Settings.AddIDbContextFactory                 = true; // Will add a default IDbContextFactory<DbContextName> implementation for easy dependency injection
+    Settings.IncludeQueryTraceOn9481Flag          = false; // If SqlServer 2014 appears frozen / take a long time when this file is saved, try setting this to true (you will also need elevated privileges).
+    Settings.UsePrivateSetterForComputedColumns   = true; // If the columns is computed, use a private setter.
+    Settings.IncludeGeneratorVersionInCode        = false; // If true, will include the version number of the generator in the generated code (Settings.ShowLicenseInfo must also be true).
+    Settings.TrimCharFields                       = false; // EF Core option only. If true, will TrimEnd() 'char' fields when read from the database.
+    Settings.IncludeFieldNameConstants            = false; // Will include public const string {{NameHumanCase}}Field = ""{{NameHumanCase}}""; in the generated POCO class. It allows you to use a constant instead of magic strings.
+    Settings.UsePropertiesForStoredProcResultSets = false; // Stored procedure result set return models are rendered as fields (false) or properties (true).
+    Settings.AdditionalNamespaces                 = new List<string>(); // To include extra namespaces, include them here. i.e. new List<string> { ""Microsoft.AspNetCore.Identity.EntityFrameworkCore"", ""System.ComponentModel.DataAnnotations"" };
+    Settings.AdditionalContextInterfaceItems      = new List<string>(); // example: new List<string> { ""void SetAutoDetectChangesEnabled(bool flag);"" };
+    Settings.AdditionalFileHeaderText             = new List<string>(); // This will put additional lines verbatim at the top of each file under the comments, 1 line per entry
+    Settings.AdditionalFileFooterText             = new List<string>(); // This will put additional lines verbatim at the end of each file above the // </auto-generated>, 1 line per entry
 
     // Language choices
     Settings.GenerationLanguage = GenerationLanguage.CSharp;

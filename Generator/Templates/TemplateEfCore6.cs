@@ -1592,7 +1592,6 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
 
         public override string StoredProcReturnModels()
         {
-            var gettersetter = Settings.RenderPropertiesForResultSetModels ? " { get; set; } " : ";";
             return @"
 {{ResultClassModifiers}} class {{WriteStoredProcReturnModelName}}{{#newline}}
 {{{#newline}}
@@ -1608,7 +1607,7 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
         {{this}}{{#newline}}
 {{/each}}
     }{{#newline}}
-    public List<ResultSetModel{{Model}}> ResultSet{{Model}}" + gettersetter +  @"{{#newline}}
+    public List<ResultSetModel{{Model}}> ResultSet{{Model}}{{PropertyGetSet}}{{#newline}}
 {{/each}}
 {{/if}}
 }{{#newline}}

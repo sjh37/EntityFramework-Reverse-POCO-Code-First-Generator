@@ -98,6 +98,7 @@
         public static bool IncludeGeneratorVersionInCode            = false; // If true, will include the version number of the generator in the generated code (Settings.ShowLicenseInfo must also be true).
         public static bool TrimCharFields                           = false; // EF Core option only. If true, will TrimEnd() 'char' fields when read from the database.
         public static bool IncludeFieldNameConstants                = false; // Will include public const string {{NameHumanCase}}Field = "{{NameHumanCase}}"; in the generated POCO class. It allows you to use a constant instead of magic strings.
+        public static bool UsePropertiesForStoredProcResultSets     = false; // Stored procedure result set return models are rendered as fields (false) or properties (true).
         public static List<string> AdditionalNamespaces             = new List<string>(); // To include extra namespaces, include them here. i.e. "Microsoft.AspNet.Identity.EntityFramework"
         public static List<string> AdditionalContextInterfaceItems  = new List<string>(); //  example: "void SetAutoDetectChangesEnabled(bool flag);"
         public static List<string> AdditionalFileHeaderText         = new List<string>(); // This will put additional lines verbatim at the top of each file under the comments, 1 line per entry
@@ -799,8 +800,6 @@
         public static string Root;
         public static string TemplateFile;
         public static int FilterCount;
-
-        public static bool RenderPropertiesForResultSetModels = false; // By default (multiple) resultsets are rendered as field of the stored procedure return model. With this setting you get properties instead of fields
     }
 
     // Filtering **************************************************************************************************************************
@@ -4037,14 +4036,15 @@
 
             var data = new StoredProcReturnModel
             {
-                ResultClassModifiers           = Settings.ResultClassModifiers,
+                ResultClassModifiers = Settings.ResultClassModifiers,
                 WriteStoredProcReturnModelName = sp.WriteStoredProcReturnModelName(_filter),
-                SingleModel                    = sp.ReturnModels.Count == 1,
-                SingleModelReturnColumns       = sp.ReturnModels
+                PropertyGetSet = Settings.UsePropertiesForStoredProcResultSets ? " { get; set; }" : ";",
+                SingleModel = sp.ReturnModels.Count == 1,
+                SingleModelReturnColumns = sp.ReturnModels
                     .First()
                     .Select(sp.WriteStoredProcReturnColumn)
                     .ToList(),
-                MultipleModelReturnColumns     = multipleModelReturnColumns
+                MultipleModelReturnColumns = multipleModelReturnColumns
             };
 
             var co = new CodeOutput(sp.DbName, filename, null, Settings.PocoFolder, _globalUsings);
@@ -17470,10 +17470,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
     public class StoredProcReturnModel
     {
-        public string ResultClassModifiers                                 { get; set; }
-        public string WriteStoredProcReturnModelName                       { get; set; }
-        public bool SingleModel                                            { get; set; }
-        public List<string> SingleModelReturnColumns                       { get; set; }
+        public string ResultClassModifiers { get; set; }
+        public string WriteStoredProcReturnModelName { get; set; }
+        public string PropertyGetSet { get; set; }
+        public bool SingleModel { get; set; }
+        public List<string> SingleModelReturnColumns { get; set; }
         public List<MultipleModelReturnColumns> MultipleModelReturnColumns { get; set; }
     }
     public class Trigger
@@ -18822,7 +18823,7 @@ using {{this}};{{#newline}}
         {{this}}{{#newline}}
 {{/each}}
     }{{#newline}}
-    public List<ResultSetModel{{Model}}> ResultSet{{Model}};{{#newline}}
+    public List<ResultSetModel{{Model}}> ResultSet{{Model}}{{PropertyGetSet}}{{#newline}}
 {{/each}}
 {{/if}}
 }{{#newline}}
@@ -20407,7 +20408,7 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
         {{this}}{{#newline}}
 {{/each}}
     }{{#newline}}
-    public List<ResultSetModel{{Model}}> ResultSet{{Model}};{{#newline}}
+    public List<ResultSetModel{{Model}}> ResultSet{{Model}}{{PropertyGetSet}}{{#newline}}
 {{/each}}
 {{/if}}
 }{{#newline}}
@@ -22030,7 +22031,6 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
 
         public override string StoredProcReturnModels()
         {
-            var gettersetter = Settings.RenderPropertiesForResultSetModels ? " { get; set; } " : ";";
             return @"
 {{ResultClassModifiers}} class {{WriteStoredProcReturnModelName}}{{#newline}}
 {{{#newline}}
@@ -22046,7 +22046,7 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
         {{this}}{{#newline}}
 {{/each}}
     }{{#newline}}
-    public List<ResultSetModel{{Model}}> ResultSet{{Model}}" + gettersetter +  @"{{#newline}}
+    public List<ResultSetModel{{Model}}> ResultSet{{Model}}{{PropertyGetSet}}{{#newline}}
 {{/each}}
 {{/if}}
 }{{#newline}}
@@ -23691,7 +23691,7 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
         {{this}}{{#newline}}
 {{/each}}
     }{{#newline}}
-    public List<ResultSetModel{{Model}}> ResultSet{{Model}};{{#newline}}
+    public List<ResultSetModel{{Model}}> ResultSet{{Model}}{{PropertyGetSet}}{{#newline}}
 {{/each}}
 {{/if}}
 }{{#newline}}
@@ -25336,7 +25336,7 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
         {{this}}{{#newline}}
 {{/each}}
     }{{#newline}}
-    public List<ResultSetModel{{Model}}> ResultSet{{Model}};{{#newline}}
+    public List<ResultSetModel{{Model}}> ResultSet{{Model}}{{PropertyGetSet}}{{#newline}}
 {{/each}}
 {{/if}}
 }{{#newline}}

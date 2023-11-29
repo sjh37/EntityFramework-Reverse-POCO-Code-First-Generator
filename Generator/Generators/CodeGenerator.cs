@@ -629,14 +629,15 @@ namespace Efrpg.Generators
 
             var data = new StoredProcReturnModel
             {
-                ResultClassModifiers           = Settings.ResultClassModifiers,
+                ResultClassModifiers = Settings.ResultClassModifiers,
                 WriteStoredProcReturnModelName = sp.WriteStoredProcReturnModelName(_filter),
-                SingleModel                    = sp.ReturnModels.Count == 1,
-                SingleModelReturnColumns       = sp.ReturnModels
+                PropertyGetSet = Settings.UsePropertiesForStoredProcResultSets ? " { get; set; }" : ";",
+                SingleModel = sp.ReturnModels.Count == 1,
+                SingleModelReturnColumns = sp.ReturnModels
                     .First()
                     .Select(sp.WriteStoredProcReturnColumn)
                     .ToList(),
-                MultipleModelReturnColumns     = multipleModelReturnColumns
+                MultipleModelReturnColumns = multipleModelReturnColumns
             };
 
             var co = new CodeOutput(sp.DbName, filename, null, Settings.PocoFolder, _globalUsings);

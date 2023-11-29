@@ -20,7 +20,8 @@
     Settings.OnConfiguration       = OnConfiguration.ConnectionString; // EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/OnConfiguration    Settings.GenerateSeparateFiles   = false;
     Settings.GenerateSeparateFiles = false;
     Settings.Namespace             = "TestDatabaseStandard"; // Override the default namespace here
-    
+    Settings.UsePropertiesForStoredProcResultSets = true; // Stored procedure result set return models are rendered as fields (false) or properties (true).
+
     // #754
     //Settings.StoredProcedureReturnTypes.Add("CsvToInt", "Person");
     
