@@ -772,5 +772,7 @@ namespace Efrpg
         public static string Root;
         public static string TemplateFile;
         public static int FilterCount;
+
+        public static bool RenderPropertiesForResultSetModels = false; // By default (multiple) resultsets are rendered as field of the stored procedure return model. With this setting you get properties instead of fields
     }
 }
