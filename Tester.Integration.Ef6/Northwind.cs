@@ -81,31 +81,31 @@ namespace Tester.Integration.Ef6
         // Stored Procedures
         List<CustOrderHistReturnModel> CustOrderHist(string customerId);
         List<CustOrderHistReturnModel> CustOrderHist(string customerId, out int procResult);
-        Task<List<CustOrderHistReturnModel>> CustOrderHistAsync(string customerId);
+        Task<List<CustOrderHistReturnModel>> CustOrderHistAsync(string customerId, CancellationToken cancellationToken = default(CancellationToken));
 
         List<CustOrdersDetailReturnModel> CustOrdersDetail(int? orderId);
         List<CustOrdersDetailReturnModel> CustOrdersDetail(int? orderId, out int procResult);
-        Task<List<CustOrdersDetailReturnModel>> CustOrdersDetailAsync(int? orderId);
+        Task<List<CustOrdersDetailReturnModel>> CustOrdersDetailAsync(int? orderId, CancellationToken cancellationToken = default(CancellationToken));
 
         List<CustOrdersOrdersReturnModel> CustOrdersOrders(string customerId);
         List<CustOrdersOrdersReturnModel> CustOrdersOrders(string customerId, out int procResult);
-        Task<List<CustOrdersOrdersReturnModel>> CustOrdersOrdersAsync(string customerId);
+        Task<List<CustOrdersOrdersReturnModel>> CustOrdersOrdersAsync(string customerId, CancellationToken cancellationToken = default(CancellationToken));
 
         List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(DateTime? beginningDate, DateTime? endingDate);
         List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(DateTime? beginningDate, DateTime? endingDate, out int procResult);
-        Task<List<EmployeeSalesByCountryReturnModel>> EmployeeSalesByCountryAsync(DateTime? beginningDate, DateTime? endingDate);
+        Task<List<EmployeeSalesByCountryReturnModel>> EmployeeSalesByCountryAsync(DateTime? beginningDate, DateTime? endingDate, CancellationToken cancellationToken = default(CancellationToken));
 
         List<SalesByCategoryReturnModel> SalesByCategory(string categoryName, string ordYear);
         List<SalesByCategoryReturnModel> SalesByCategory(string categoryName, string ordYear, out int procResult);
-        Task<List<SalesByCategoryReturnModel>> SalesByCategoryAsync(string categoryName, string ordYear);
+        Task<List<SalesByCategoryReturnModel>> SalesByCategoryAsync(string categoryName, string ordYear, CancellationToken cancellationToken = default(CancellationToken));
 
         List<SalesByYearReturnModel> SalesByYear(DateTime? beginningDate, DateTime? endingDate);
         List<SalesByYearReturnModel> SalesByYear(DateTime? beginningDate, DateTime? endingDate, out int procResult);
-        Task<List<SalesByYearReturnModel>> SalesByYearAsync(DateTime? beginningDate, DateTime? endingDate);
+        Task<List<SalesByYearReturnModel>> SalesByYearAsync(DateTime? beginningDate, DateTime? endingDate, CancellationToken cancellationToken = default(CancellationToken));
 
         List<TenMostExpensiveProductsReturnModel> TenMostExpensiveProducts();
         List<TenMostExpensiveProductsReturnModel> TenMostExpensiveProducts(out int procResult);
-        Task<List<TenMostExpensiveProductsReturnModel>> TenMostExpensiveProductsAsync();
+        Task<List<TenMostExpensiveProductsReturnModel>> TenMostExpensiveProductsAsync(CancellationToken cancellationToken = default(CancellationToken));
 
     }
 
@@ -440,13 +440,13 @@ namespace Tester.Integration.Ef6
             return procResultData;
         }
 
-        public async Task<List<CustOrderHistReturnModel>> CustOrderHistAsync(string customerId)
+        public async Task<List<CustOrderHistReturnModel>> CustOrderHistAsync(string customerId, CancellationToken cancellationToken = default(CancellationToken))
         {
             var customerIdParam = new SqlParameter { ParameterName = "@CustomerID", SqlDbType = SqlDbType.NChar, Direction = ParameterDirection.Input, Value = customerId, Size = 5 };
             if (customerIdParam.Value == null)
                 customerIdParam.Value = DBNull.Value;
 
-            var procResultData = await Database.SqlQuery<CustOrderHistReturnModel>("EXEC [dbo].[CustOrderHist] @CustomerID", customerIdParam).ToListAsync();
+            var procResultData = await Database.SqlQuery<CustOrderHistReturnModel>("EXEC [dbo].[CustOrderHist] @CustomerID", customerIdParam).ToListAsync(cancellationToken);
             return procResultData;
         }
 
@@ -468,13 +468,13 @@ namespace Tester.Integration.Ef6
             return procResultData;
         }
 
-        public async Task<List<CustOrdersDetailReturnModel>> CustOrdersDetailAsync(int? orderId = null)
+        public async Task<List<CustOrdersDetailReturnModel>> CustOrdersDetailAsync(int? orderId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var orderIdParam = new SqlParameter { ParameterName = "@OrderID", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = orderId.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!orderId.HasValue)
                 orderIdParam.Value = DBNull.Value;
 
-            var procResultData = await Database.SqlQuery<CustOrdersDetailReturnModel>("EXEC [dbo].[CustOrdersDetail] @OrderID", orderIdParam).ToListAsync();
+            var procResultData = await Database.SqlQuery<CustOrdersDetailReturnModel>("EXEC [dbo].[CustOrdersDetail] @OrderID", orderIdParam).ToListAsync(cancellationToken);
             return procResultData;
         }
 
@@ -496,13 +496,13 @@ namespace Tester.Integration.Ef6
             return procResultData;
         }
 
-        public async Task<List<CustOrdersOrdersReturnModel>> CustOrdersOrdersAsync(string customerId)
+        public async Task<List<CustOrdersOrdersReturnModel>> CustOrdersOrdersAsync(string customerId, CancellationToken cancellationToken = default(CancellationToken))
         {
             var customerIdParam = new SqlParameter { ParameterName = "@CustomerID", SqlDbType = SqlDbType.NChar, Direction = ParameterDirection.Input, Value = customerId, Size = 5 };
             if (customerIdParam.Value == null)
                 customerIdParam.Value = DBNull.Value;
 
-            var procResultData = await Database.SqlQuery<CustOrdersOrdersReturnModel>("EXEC [dbo].[CustOrdersOrders] @CustomerID", customerIdParam).ToListAsync();
+            var procResultData = await Database.SqlQuery<CustOrdersOrdersReturnModel>("EXEC [dbo].[CustOrdersOrders] @CustomerID", customerIdParam).ToListAsync(cancellationToken);
             return procResultData;
         }
 
@@ -528,7 +528,7 @@ namespace Tester.Integration.Ef6
             return procResultData;
         }
 
-        public async Task<List<EmployeeSalesByCountryReturnModel>> EmployeeSalesByCountryAsync(DateTime? beginningDate = null, DateTime? endingDate = null)
+        public async Task<List<EmployeeSalesByCountryReturnModel>> EmployeeSalesByCountryAsync(DateTime? beginningDate = null, DateTime? endingDate = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var beginningDateParam = new SqlParameter { ParameterName = "@Beginning_Date", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = beginningDate.GetValueOrDefault() };
             if (!beginningDate.HasValue)
@@ -538,7 +538,7 @@ namespace Tester.Integration.Ef6
             if (!endingDate.HasValue)
                 endingDateParam.Value = DBNull.Value;
 
-            var procResultData = await Database.SqlQuery<EmployeeSalesByCountryReturnModel>("EXEC [dbo].[Employee Sales by Country] @Beginning_Date, @Ending_Date", beginningDateParam, endingDateParam).ToListAsync();
+            var procResultData = await Database.SqlQuery<EmployeeSalesByCountryReturnModel>("EXEC [dbo].[Employee Sales by Country] @Beginning_Date, @Ending_Date", beginningDateParam, endingDateParam).ToListAsync(cancellationToken);
             return procResultData;
         }
 
@@ -564,7 +564,7 @@ namespace Tester.Integration.Ef6
             return procResultData;
         }
 
-        public async Task<List<SalesByCategoryReturnModel>> SalesByCategoryAsync(string categoryName, string ordYear)
+        public async Task<List<SalesByCategoryReturnModel>> SalesByCategoryAsync(string categoryName, string ordYear, CancellationToken cancellationToken = default(CancellationToken))
         {
             var categoryNameParam = new SqlParameter { ParameterName = "@CategoryName", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = categoryName, Size = 15 };
             if (categoryNameParam.Value == null)
@@ -574,7 +574,7 @@ namespace Tester.Integration.Ef6
             if (ordYearParam.Value == null)
                 ordYearParam.Value = DBNull.Value;
 
-            var procResultData = await Database.SqlQuery<SalesByCategoryReturnModel>("EXEC [dbo].[SalesByCategory] @CategoryName, @OrdYear", categoryNameParam, ordYearParam).ToListAsync();
+            var procResultData = await Database.SqlQuery<SalesByCategoryReturnModel>("EXEC [dbo].[SalesByCategory] @CategoryName, @OrdYear", categoryNameParam, ordYearParam).ToListAsync(cancellationToken);
             return procResultData;
         }
 
@@ -600,7 +600,7 @@ namespace Tester.Integration.Ef6
             return procResultData;
         }
 
-        public async Task<List<SalesByYearReturnModel>> SalesByYearAsync(DateTime? beginningDate = null, DateTime? endingDate = null)
+        public async Task<List<SalesByYearReturnModel>> SalesByYearAsync(DateTime? beginningDate = null, DateTime? endingDate = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var beginningDateParam = new SqlParameter { ParameterName = "@Beginning_Date", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = beginningDate.GetValueOrDefault() };
             if (!beginningDate.HasValue)
@@ -610,7 +610,7 @@ namespace Tester.Integration.Ef6
             if (!endingDate.HasValue)
                 endingDateParam.Value = DBNull.Value;
 
-            var procResultData = await Database.SqlQuery<SalesByYearReturnModel>("EXEC [dbo].[Sales by Year] @Beginning_Date, @Ending_Date", beginningDateParam, endingDateParam).ToListAsync();
+            var procResultData = await Database.SqlQuery<SalesByYearReturnModel>("EXEC [dbo].[Sales by Year] @Beginning_Date, @Ending_Date", beginningDateParam, endingDateParam).ToListAsync(cancellationToken);
             return procResultData;
         }
 
@@ -628,9 +628,9 @@ namespace Tester.Integration.Ef6
             return procResultData;
         }
 
-        public async Task<List<TenMostExpensiveProductsReturnModel>> TenMostExpensiveProductsAsync()
+        public async Task<List<TenMostExpensiveProductsReturnModel>> TenMostExpensiveProductsAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            var procResultData = await Database.SqlQuery<TenMostExpensiveProductsReturnModel>("EXEC [dbo].[Ten Most Expensive Products]").ToListAsync();
+            var procResultData = await Database.SqlQuery<TenMostExpensiveProductsReturnModel>("EXEC [dbo].[Ten Most Expensive Products]").ToListAsync(cancellationToken);
             return procResultData;
         }
 
@@ -800,7 +800,7 @@ namespace Tester.Integration.Ef6
             return new List<CustOrderHistReturnModel>();
         }
 
-        public Task<List<CustOrderHistReturnModel>> CustOrderHistAsync(string customerId)
+        public Task<List<CustOrderHistReturnModel>> CustOrderHistAsync(string customerId, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(CustOrderHist(customerId, out procResult));
@@ -818,7 +818,7 @@ namespace Tester.Integration.Ef6
             return new List<CustOrdersDetailReturnModel>();
         }
 
-        public Task<List<CustOrdersDetailReturnModel>> CustOrdersDetailAsync(int? orderId = null)
+        public Task<List<CustOrdersDetailReturnModel>> CustOrdersDetailAsync(int? orderId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(CustOrdersDetail(orderId, out procResult));
@@ -836,7 +836,7 @@ namespace Tester.Integration.Ef6
             return new List<CustOrdersOrdersReturnModel>();
         }
 
-        public Task<List<CustOrdersOrdersReturnModel>> CustOrdersOrdersAsync(string customerId)
+        public Task<List<CustOrdersOrdersReturnModel>> CustOrdersOrdersAsync(string customerId, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(CustOrdersOrders(customerId, out procResult));
@@ -854,7 +854,7 @@ namespace Tester.Integration.Ef6
             return new List<EmployeeSalesByCountryReturnModel>();
         }
 
-        public Task<List<EmployeeSalesByCountryReturnModel>> EmployeeSalesByCountryAsync(DateTime? beginningDate = null, DateTime? endingDate = null)
+        public Task<List<EmployeeSalesByCountryReturnModel>> EmployeeSalesByCountryAsync(DateTime? beginningDate = null, DateTime? endingDate = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(EmployeeSalesByCountry(beginningDate, endingDate, out procResult));
@@ -872,7 +872,7 @@ namespace Tester.Integration.Ef6
             return new List<SalesByCategoryReturnModel>();
         }
 
-        public Task<List<SalesByCategoryReturnModel>> SalesByCategoryAsync(string categoryName, string ordYear)
+        public Task<List<SalesByCategoryReturnModel>> SalesByCategoryAsync(string categoryName, string ordYear, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(SalesByCategory(categoryName, ordYear, out procResult));
@@ -890,7 +890,7 @@ namespace Tester.Integration.Ef6
             return new List<SalesByYearReturnModel>();
         }
 
-        public Task<List<SalesByYearReturnModel>> SalesByYearAsync(DateTime? beginningDate = null, DateTime? endingDate = null)
+        public Task<List<SalesByYearReturnModel>> SalesByYearAsync(DateTime? beginningDate = null, DateTime? endingDate = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(SalesByYear(beginningDate, endingDate, out procResult));
@@ -908,7 +908,7 @@ namespace Tester.Integration.Ef6
             return new List<TenMostExpensiveProductsReturnModel>();
         }
 
-        public Task<List<TenMostExpensiveProductsReturnModel>> TenMostExpensiveProductsAsync()
+        public Task<List<TenMostExpensiveProductsReturnModel>> TenMostExpensiveProductsAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(TenMostExpensiveProducts(out procResult));

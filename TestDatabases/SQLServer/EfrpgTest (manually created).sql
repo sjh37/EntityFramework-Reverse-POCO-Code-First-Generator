@@ -770,10 +770,7 @@ CREATE TABLE SmallDecimalTest
 );
 GO
 
-/****** Object:  Default [d_t_address_type_domain]    Script Date: 22/07/2015 14:28:05 ******/
-CREATE DEFAULT [dbo].[d_t_address_type_domain] 
-AS
-'A'
+CREATE DEFAULT [dbo].[d_t_address_type_domain] AS 'A';
 GO
 
 -- DROP TABLE PropertyTypesToAdd

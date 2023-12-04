@@ -170,71 +170,71 @@ namespace Tester.Integration.EfCore3
 
         // Stored Procedures
         int AddTwoValues(int? a, int? b);
-        // AddTwoValuesAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        Task<int> AddTwoValuesAsync(int? a, int? b, CancellationToken cancellationToken = default(CancellationToken));
 
         int AddTwoValuesWithResult(int? a, int? b, out int? result, out int? result2);
         // AddTwoValuesWithResultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         int Alpha_Overclock(DateTime? parameter);
-        // Alpha_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        Task<int> Alpha_OverclockAsync(DateTime? parameter, CancellationToken cancellationToken = default(CancellationToken));
 
         int App_UspCmtUserFsrUpdate(int? userId, int? fsrId, out int? ufsrId);
         // App_UspCmtUserFsrUpdateAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         int ASimpleExample();
-        // ASimpleExampleAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        Task<int> ASimpleExampleAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         int Beta_Overclock(DateTime? parameter);
-        // Beta_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        Task<int> Beta_OverclockAsync(DateTime? parameter, CancellationToken cancellationToken = default(CancellationToken));
 
         // C182Test2ReturnModel C182Test2(int? flag); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
         // Task<C182Test2ReturnModel> C182Test2Async(int? flag); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
         // CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
-        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (CheckIfApplicationIsCompleteReturnModel)
+        // Task<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsCompleteAsync(int? applicationId, out bool? isApplicationComplete); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
         List<ColourPivotReturnModel> ColourPivot();
         List<ColourPivotReturnModel> ColourPivot(out int procResult);
-        Task<List<ColourPivotReturnModel>> ColourPivotAsync();
+        Task<List<ColourPivotReturnModel>> ColourPivotAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc();
         List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc(out int procResult);
-        Task<List<ColumnNameAndTypesProcReturnModel>> ColumnNameAndTypesProcAsync();
+        Task<List<ColumnNameAndTypesProcReturnModel>> ColumnNameAndTypesProcAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         int ConvertToString(int? someValue, out string someString);
         // ConvertToStringAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         List<DboProcDataFromFfrsReturnModel> DboProcDataFromFfrs(int? maxId);
         List<DboProcDataFromFfrsReturnModel> DboProcDataFromFfrs(int? maxId, out int procResult);
-        Task<List<DboProcDataFromFfrsReturnModel>> DboProcDataFromFfrsAsync(int? maxId);
+        Task<List<DboProcDataFromFfrsReturnModel>> DboProcDataFromFfrsAsync(int? maxId, CancellationToken cancellationToken = default(CancellationToken));
 
         List<DboProcDataFromFfrsAndDboReturnModel> DboProcDataFromFfrsAndDbo();
         List<DboProcDataFromFfrsAndDboReturnModel> DboProcDataFromFfrsAndDbo(out int procResult);
-        Task<List<DboProcDataFromFfrsAndDboReturnModel>> DboProcDataFromFfrsAndDboAsync();
+        Task<List<DboProcDataFromFfrsAndDboReturnModel>> DboProcDataFromFfrsAndDboAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         List<DsOpeProcReturnModel> DsOpeProc();
         List<DsOpeProcReturnModel> DsOpeProc(out int procResult);
-        Task<List<DsOpeProcReturnModel>> DsOpeProcAsync();
+        Task<List<DsOpeProcReturnModel>> DsOpeProcAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         List<FFRS_CvDataReturnModel> FFRS_CvData(int? maxId);
         List<FFRS_CvDataReturnModel> FFRS_CvData(int? maxId, out int procResult);
-        Task<List<FFRS_CvDataReturnModel>> FFRS_CvDataAsync(int? maxId);
+        Task<List<FFRS_CvDataReturnModel>> FFRS_CvDataAsync(int? maxId, CancellationToken cancellationToken = default(CancellationToken));
 
         List<FFRS_DataFromDboReturnModel> FFRS_DataFromDbo();
         List<FFRS_DataFromDboReturnModel> FFRS_DataFromDbo(out int procResult);
-        Task<List<FFRS_DataFromDboReturnModel>> FFRS_DataFromDboAsync();
+        Task<List<FFRS_DataFromDboReturnModel>> FFRS_DataFromDboAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         List<FFRS_DataFromDboAndFfrsReturnModel> FFRS_DataFromDboAndFfrs();
         List<FFRS_DataFromDboAndFfrsReturnModel> FFRS_DataFromDboAndFfrs(out int procResult);
-        Task<List<FFRS_DataFromDboAndFfrsReturnModel>> FFRS_DataFromDboAndFfrsAsync();
+        Task<List<FFRS_DataFromDboAndFfrsReturnModel>> FFRS_DataFromDboAndFfrsAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         List<FkTest_HelloReturnModel> FkTest_Hello();
         List<FkTest_HelloReturnModel> FkTest_Hello(out int procResult);
-        Task<List<FkTest_HelloReturnModel>> FkTest_HelloAsync();
+        Task<List<FkTest_HelloReturnModel>> FkTest_HelloAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId);
         List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId, out int procResult);
-        Task<List<GetSmallDecimalTestReturnModel>> GetSmallDecimalTestAsync(int? maxId);
+        Task<List<GetSmallDecimalTestReturnModel>> GetSmallDecimalTestAsync(int? maxId, CancellationToken cancellationToken = default(CancellationToken));
 
         int InsertRecord(string data, out int? insertedId);
         // InsertRecordAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
@@ -252,10 +252,10 @@ namespace Tester.Integration.EfCore3
         // MinTripSequenceStartNullAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         int NvarcharTest(string maxOutputParam, string normalOutputParam);
-        // NvarcharTestAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        Task<int> NvarcharTestAsync(string maxOutputParam, string normalOutputParam, CancellationToken cancellationToken = default(CancellationToken));
 
         int Omega_Overclock(DateTime? parameter);
-        // Omega_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        Task<int> Omega_OverclockAsync(DateTime? parameter, CancellationToken cancellationToken = default(CancellationToken));
 
         int ProcTestDecimalOutput(out decimal? perfectNumber);
         // ProcTestDecimalOutputAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
@@ -268,11 +268,11 @@ namespace Tester.Integration.EfCore3
 
         List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams();
         List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams(out int procResult);
-        Task<List<SpatialTypesNoParamsReturnModel>> SpatialTypesNoParamsAsync();
+        Task<List<SpatialTypesNoParamsReturnModel>> SpatialTypesNoParamsAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography);
         List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, out int procResult);
-        Task<List<SpatialTypesWithParamsReturnModel>> SpatialTypesWithParamsAsync(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography);
+        Task<List<SpatialTypesWithParamsReturnModel>> SpatialTypesWithParamsAsync(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, CancellationToken cancellationToken = default(CancellationToken));
 
         // StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
         // Task<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsAsync(int? someVar); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
@@ -288,14 +288,14 @@ namespace Tester.Integration.EfCore3
 
         List<StpNoParamsTestReturnModel> StpNoParamsTest();
         List<StpNoParamsTestReturnModel> StpNoParamsTest(out int procResult);
-        Task<List<StpNoParamsTestReturnModel>> StpNoParamsTestAsync();
+        Task<List<StpNoParamsTestReturnModel>> StpNoParamsTestAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         int StpNoReturnFields();
-        // StpNoReturnFieldsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        Task<int> StpNoReturnFieldsAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         List<StpNullableParamsTestReturnModel> StpNullableParamsTest(int? aVal, int? bVal);
         List<StpNullableParamsTestReturnModel> StpNullableParamsTest(int? aVal, int? bVal, out int procResult);
-        Task<List<StpNullableParamsTestReturnModel>> StpNullableParamsTestAsync(int? aVal, int? bVal);
+        Task<List<StpNullableParamsTestReturnModel>> StpNullableParamsTestAsync(int? aVal, int? bVal, CancellationToken cancellationToken = default(CancellationToken));
 
         List<StpTestReturnModel> StpTest(string strDateFrom, string strDateTo, out bool? retBool);
         List<StpTestReturnModel> StpTest(string strDateFrom, string strDateTo, out bool? retBool, out int procResult);
@@ -303,34 +303,34 @@ namespace Tester.Integration.EfCore3
 
         List<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTest(string strDateFrom, string strDateTo);
         List<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTest(string strDateFrom, string strDateTo, out int procResult);
-        Task<List<StpTestUnderscoreTestReturnModel>> StpTestUnderscoreTestAsync(string strDateFrom, string strDateTo);
+        Task<List<StpTestUnderscoreTestReturnModel>> StpTestUnderscoreTestAsync(string strDateFrom, string strDateTo, CancellationToken cancellationToken = default(CancellationToken));
 
         int StupidStoredProcedureParams(string reqType, short? dept, short? @class, short? item);
-        // StupidStoredProcedureParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        Task<int> StupidStoredProcedureParamsAsync(string reqType, short? dept, short? @class, short? item, CancellationToken cancellationToken = default(CancellationToken));
 
         int StupidStoredProcedureParams2(string @override, short? @readonly, short? @class, short? @enum);
-        // StupidStoredProcedureParams2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        Task<int> StupidStoredProcedureParams2Async(string @override, short? @readonly, short? @class, short? @enum, CancellationToken cancellationToken = default(CancellationToken));
 
         List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt);
         List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt, out int procResult);
-        Task<List<Synonyms_SimpleStoredProcReturnModel>> Synonyms_SimpleStoredProcAsync(int? inputInt);
+        Task<List<Synonyms_SimpleStoredProcReturnModel>> Synonyms_SimpleStoredProcAsync(int? inputInt, CancellationToken cancellationToken = default(CancellationToken));
 
         List<TestReturnStringReturnModel> TestReturnString();
         List<TestReturnStringReturnModel> TestReturnString(out int procResult);
-        Task<List<TestReturnStringReturnModel>> TestReturnStringAsync();
+        Task<List<TestReturnStringReturnModel>> TestReturnStringAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         int ThisHasMixedOutParameters(DateTime? foo, out int? firstOutParam, DateTime? bar, out int? secondOutParam, DateTime? baz);
         // ThisHasMixedOutParametersAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         int UserDefinedTypeSampleStoredProc(int? a, DataTable type, int? b);
-        // UserDefinedTypeSampleStoredProcAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        Task<int> UserDefinedTypeSampleStoredProcAsync(int? a, DataTable type, int? b, CancellationToken cancellationToken = default(CancellationToken));
 
         List<XmlDataV1ReturnModel> XmlDataV1();
         List<XmlDataV1ReturnModel> XmlDataV1(out int procResult);
-        Task<List<XmlDataV1ReturnModel>> XmlDataV1Async();
+        Task<List<XmlDataV1ReturnModel>> XmlDataV1Async(CancellationToken cancellationToken = default(CancellationToken));
 
         int XmlDataV2();
-        // XmlDataV2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        Task<int> XmlDataV2Async(CancellationToken cancellationToken = default(CancellationToken));
 
     }
 }

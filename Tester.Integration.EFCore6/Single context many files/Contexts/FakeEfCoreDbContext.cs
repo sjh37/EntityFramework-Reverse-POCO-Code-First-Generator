@@ -434,7 +434,10 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             return 0;
         }
 
-        // AddTwoValuesAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> AddTwoValuesAsync(int? a = null, int? b = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         public int AddTwoValuesWithResult(int? a, int? b, out int? result, out int? result2)
         {
@@ -450,7 +453,10 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             return 0;
         }
 
-        // Alpha_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> Alpha_OverclockAsync(DateTime? parameter = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         public int App_UspCmtUserFsrUpdate(int? userId, int? fsrId, out int? ufsrId)
         {
@@ -465,14 +471,20 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             return 0;
         }
 
-        // ASimpleExampleAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> ASimpleExampleAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         public int Beta_Overclock(DateTime? parameter = null)
         {
             return 0;
         }
 
-        // Beta_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> Beta_OverclockAsync(DateTime? parameter = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         public DbSet<C182Test2ReturnModel> C182Test2ReturnModel { get; set; }
         public C182Test2ReturnModel C182Test2(int? flag = null)
@@ -487,11 +499,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             return new C182Test2ReturnModel();
         }
 
-        public Task<C182Test2ReturnModel> C182Test2Async(int? flag = null)
-        {
-            int procResult;
-            return Task.FromResult(C182Test2(flag, out procResult));
-        }
+        // C182Test2Async() cannot be created due to having out parameters, or is relying on the procedure result (C182Test2ReturnModel)
 
         public DbSet<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsCompleteReturnModel { get; set; }
         public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete)
@@ -509,7 +517,6 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
 
         // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (CheckIfApplicationIsCompleteReturnModel)
 
-
         public DbSet<ColourPivotReturnModel> ColourPivotReturnModel { get; set; }
         public List<ColourPivotReturnModel> ColourPivot()
         {
@@ -523,7 +530,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             return new List<ColourPivotReturnModel>();
         }
 
-        public Task<List<ColourPivotReturnModel>> ColourPivotAsync()
+        public Task<List<ColourPivotReturnModel>> ColourPivotAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(ColourPivot(out procResult));
@@ -542,7 +549,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             return new List<ColumnNameAndTypesProcReturnModel>();
         }
 
-        public Task<List<ColumnNameAndTypesProcReturnModel>> ColumnNameAndTypesProcAsync()
+        public Task<List<ColumnNameAndTypesProcReturnModel>> ColumnNameAndTypesProcAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(ColumnNameAndTypesProc(out procResult));
@@ -569,7 +576,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             return new List<DboProcDataFromFfrsReturnModel>();
         }
 
-        public Task<List<DboProcDataFromFfrsReturnModel>> DboProcDataFromFfrsAsync(int? maxId = null)
+        public Task<List<DboProcDataFromFfrsReturnModel>> DboProcDataFromFfrsAsync(int? maxId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(DboProcDataFromFfrs(maxId, out procResult));
@@ -588,7 +595,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             return new List<DboProcDataFromFfrsAndDboReturnModel>();
         }
 
-        public Task<List<DboProcDataFromFfrsAndDboReturnModel>> DboProcDataFromFfrsAndDboAsync()
+        public Task<List<DboProcDataFromFfrsAndDboReturnModel>> DboProcDataFromFfrsAndDboAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(DboProcDataFromFfrsAndDbo(out procResult));
@@ -607,7 +614,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             return new List<DsOpeProcReturnModel>();
         }
 
-        public Task<List<DsOpeProcReturnModel>> DsOpeProcAsync()
+        public Task<List<DsOpeProcReturnModel>> DsOpeProcAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(DsOpeProc(out procResult));
@@ -626,7 +633,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             return new List<FFRS_CvDataReturnModel>();
         }
 
-        public Task<List<FFRS_CvDataReturnModel>> FFRS_CvDataAsync(int? maxId = null)
+        public Task<List<FFRS_CvDataReturnModel>> FFRS_CvDataAsync(int? maxId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(FFRS_CvData(maxId, out procResult));
@@ -645,7 +652,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             return new List<FFRS_DataFromDboReturnModel>();
         }
 
-        public Task<List<FFRS_DataFromDboReturnModel>> FFRS_DataFromDboAsync()
+        public Task<List<FFRS_DataFromDboReturnModel>> FFRS_DataFromDboAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(FFRS_DataFromDbo(out procResult));
@@ -664,7 +671,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             return new List<FFRS_DataFromDboAndFfrsReturnModel>();
         }
 
-        public Task<List<FFRS_DataFromDboAndFfrsReturnModel>> FFRS_DataFromDboAndFfrsAsync()
+        public Task<List<FFRS_DataFromDboAndFfrsReturnModel>> FFRS_DataFromDboAndFfrsAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(FFRS_DataFromDboAndFfrs(out procResult));
@@ -683,7 +690,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             return new List<FkTest_HelloReturnModel>();
         }
 
-        public Task<List<FkTest_HelloReturnModel>> FkTest_HelloAsync()
+        public Task<List<FkTest_HelloReturnModel>> FkTest_HelloAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(FkTest_Hello(out procResult));
@@ -702,7 +709,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             return new List<GetSmallDecimalTestReturnModel>();
         }
 
-        public Task<List<GetSmallDecimalTestReturnModel>> GetSmallDecimalTestAsync(int? maxId = null)
+        public Task<List<GetSmallDecimalTestReturnModel>> GetSmallDecimalTestAsync(int? maxId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(GetSmallDecimalTest(maxId, out procResult));
@@ -755,14 +762,20 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             return 0;
         }
 
-        // NvarcharTestAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> NvarcharTestAsync(string maxOutputParam, string normalOutputParam, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         public int Omega_Overclock(DateTime? parameter = null)
         {
             return 0;
         }
 
-        // Omega_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> Omega_OverclockAsync(DateTime? parameter = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         public int ProcTestDecimalOutput(out decimal? perfectNumber)
         {
@@ -801,7 +814,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             return new List<SpatialTypesNoParamsReturnModel>();
         }
 
-        public Task<List<SpatialTypesNoParamsReturnModel>> SpatialTypesNoParamsAsync()
+        public Task<List<SpatialTypesNoParamsReturnModel>> SpatialTypesNoParamsAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(SpatialTypesNoParams(out procResult));
@@ -820,7 +833,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             return new List<SpatialTypesWithParamsReturnModel>();
         }
 
-        public Task<List<SpatialTypesWithParamsReturnModel>> SpatialTypesWithParamsAsync(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
+        public Task<List<SpatialTypesWithParamsReturnModel>> SpatialTypesWithParamsAsync(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(SpatialTypesWithParams(geometry, geography, out procResult));
@@ -839,11 +852,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             return new StpMultipleIdenticalResultsReturnModel();
         }
 
-        public Task<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsAsync(int? someVar = null)
-        {
-            int procResult;
-            return Task.FromResult(StpMultipleIdenticalResults(someVar, out procResult));
-        }
+        // StpMultipleIdenticalResultsAsync() cannot be created due to having out parameters, or is relying on the procedure result (StpMultipleIdenticalResultsReturnModel)
 
         public DbSet<StpMultipleMultipleResultsWithParamsReturnModel> StpMultipleMultipleResultsWithParamsReturnModel { get; set; }
         public StpMultipleMultipleResultsWithParamsReturnModel StpMultipleMultipleResultsWithParams(int? firstVal = null, int? secondVal = null, int? thirdVal = null)
@@ -858,11 +867,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             return new StpMultipleMultipleResultsWithParamsReturnModel();
         }
 
-        public Task<StpMultipleMultipleResultsWithParamsReturnModel> StpMultipleMultipleResultsWithParamsAsync(int? firstVal = null, int? secondVal = null, int? thirdVal = null)
-        {
-            int procResult;
-            return Task.FromResult(StpMultipleMultipleResultsWithParams(firstVal, secondVal, thirdVal, out procResult));
-        }
+        // StpMultipleMultipleResultsWithParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (StpMultipleMultipleResultsWithParamsReturnModel)
 
         public DbSet<StpMultipleResultsReturnModel> StpMultipleResultsReturnModel { get; set; }
         public StpMultipleResultsReturnModel StpMultipleResults()
@@ -877,11 +882,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             return new StpMultipleResultsReturnModel();
         }
 
-        public Task<StpMultipleResultsReturnModel> StpMultipleResultsAsync()
-        {
-            int procResult;
-            return Task.FromResult(StpMultipleResults(out procResult));
-        }
+        // StpMultipleResultsAsync() cannot be created due to having out parameters, or is relying on the procedure result (StpMultipleResultsReturnModel)
 
         public DbSet<StpMultipleResultsWithParamsReturnModel> StpMultipleResultsWithParamsReturnModel { get; set; }
         public StpMultipleResultsWithParamsReturnModel StpMultipleResultsWithParams(int? firstVal = null, int? secondVal = null)
@@ -896,11 +897,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             return new StpMultipleResultsWithParamsReturnModel();
         }
 
-        public Task<StpMultipleResultsWithParamsReturnModel> StpMultipleResultsWithParamsAsync(int? firstVal = null, int? secondVal = null)
-        {
-            int procResult;
-            return Task.FromResult(StpMultipleResultsWithParams(firstVal, secondVal, out procResult));
-        }
+        // StpMultipleResultsWithParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (StpMultipleResultsWithParamsReturnModel)
 
         public DbSet<StpNoParamsTestReturnModel> StpNoParamsTestReturnModel { get; set; }
         public List<StpNoParamsTestReturnModel> StpNoParamsTest()
@@ -915,7 +912,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             return new List<StpNoParamsTestReturnModel>();
         }
 
-        public Task<List<StpNoParamsTestReturnModel>> StpNoParamsTestAsync()
+        public Task<List<StpNoParamsTestReturnModel>> StpNoParamsTestAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(StpNoParamsTest(out procResult));
@@ -926,7 +923,10 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             return 0;
         }
 
-        // StpNoReturnFieldsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> StpNoReturnFieldsAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         public DbSet<StpNullableParamsTestReturnModel> StpNullableParamsTestReturnModel { get; set; }
         public List<StpNullableParamsTestReturnModel> StpNullableParamsTest(int? aVal = null, int? bVal = null)
@@ -941,7 +941,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             return new List<StpNullableParamsTestReturnModel>();
         }
 
-        public Task<List<StpNullableParamsTestReturnModel>> StpNullableParamsTestAsync(int? aVal = null, int? bVal = null)
+        public Task<List<StpNullableParamsTestReturnModel>> StpNullableParamsTestAsync(int? aVal = null, int? bVal = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(StpNullableParamsTest(aVal, bVal, out procResult));
@@ -963,7 +963,6 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
 
         // StpTestAsync() cannot be created due to having out parameters, or is relying on the procedure result (List<StpTestReturnModel>)
 
-
         public DbSet<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTestReturnModel { get; set; }
         public List<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTest(string strDateFrom, string strDateTo)
         {
@@ -977,7 +976,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             return new List<StpTestUnderscoreTestReturnModel>();
         }
 
-        public Task<List<StpTestUnderscoreTestReturnModel>> StpTestUnderscoreTestAsync(string strDateFrom, string strDateTo)
+        public Task<List<StpTestUnderscoreTestReturnModel>> StpTestUnderscoreTestAsync(string strDateFrom, string strDateTo, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(StpTestUnderscoreTest(strDateFrom, strDateTo, out procResult));
@@ -988,14 +987,20 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             return 0;
         }
 
-        // StupidStoredProcedureParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> StupidStoredProcedureParamsAsync(string reqType, short? dept = null, short? @class = null, short? item = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         public int StupidStoredProcedureParams2(string @override, short? @readonly = null, short? @class = null, short? @enum = null)
         {
             return 0;
         }
 
-        // StupidStoredProcedureParams2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> StupidStoredProcedureParams2Async(string @override, short? @readonly = null, short? @class = null, short? @enum = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         public DbSet<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProcReturnModel { get; set; }
         public List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt = null)
@@ -1010,7 +1015,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             return new List<Synonyms_SimpleStoredProcReturnModel>();
         }
 
-        public Task<List<Synonyms_SimpleStoredProcReturnModel>> Synonyms_SimpleStoredProcAsync(int? inputInt = null)
+        public Task<List<Synonyms_SimpleStoredProcReturnModel>> Synonyms_SimpleStoredProcAsync(int? inputInt = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(Synonyms_SimpleStoredProc(inputInt, out procResult));
@@ -1029,7 +1034,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             return new List<TestReturnStringReturnModel>();
         }
 
-        public Task<List<TestReturnStringReturnModel>> TestReturnStringAsync()
+        public Task<List<TestReturnStringReturnModel>> TestReturnStringAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(TestReturnString(out procResult));
@@ -1049,7 +1054,10 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             return 0;
         }
 
-        // UserDefinedTypeSampleStoredProcAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> UserDefinedTypeSampleStoredProcAsync(int? a, DataTable type, int? b = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         public DbSet<XmlDataV1ReturnModel> XmlDataV1ReturnModel { get; set; }
         public List<XmlDataV1ReturnModel> XmlDataV1()
@@ -1064,7 +1072,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             return new List<XmlDataV1ReturnModel>();
         }
 
-        public Task<List<XmlDataV1ReturnModel>> XmlDataV1Async()
+        public Task<List<XmlDataV1ReturnModel>> XmlDataV1Async(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(XmlDataV1(out procResult));
@@ -1075,7 +1083,10 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             return 0;
         }
 
-        // XmlDataV2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> XmlDataV2Async(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         // Table Valued Functions
 

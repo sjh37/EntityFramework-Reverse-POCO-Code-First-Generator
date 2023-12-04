@@ -180,70 +180,70 @@ namespace Efrpg.V4TestE8
 
         // Stored Procedures
         int AddTwoValues(int? a, int? b);
-        // AddTwoValuesAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        Task<int> AddTwoValuesAsync(int? a, int? b, CancellationToken cancellationToken = default(CancellationToken));
 
         int AddTwoValuesWithResult(int? a, int? b, out int? result, out int? result2);
         // AddTwoValuesWithResultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         int Alpha_Overclock(DateTime? parameter);
-        // Alpha_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        Task<int> Alpha_OverclockAsync(DateTime? parameter, CancellationToken cancellationToken = default(CancellationToken));
 
         int App_usp_CMTUserFSRUpdate(int? userId, int? fsrId, out int? ufsrId);
         // App_usp_CMTUserFSRUpdateAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         int aSimpleExample();
-        // aSimpleExampleAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        Task<int> aSimpleExampleAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         int Beta_Overclock(DateTime? parameter);
-        // Beta_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        Task<int> Beta_OverclockAsync(DateTime? parameter, CancellationToken cancellationToken = default(CancellationToken));
 
         // C182_test2ReturnModel C182_test2(int? flag); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
         // Task<C182_test2ReturnModel> C182_test2Async(int? flag); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
         // CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
-        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (CheckIfApplicationIsCompleteReturnModel)
+        // Task<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsCompleteAsync(int? applicationId, out bool? isApplicationComplete); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
         List<ColourPivotReturnModel> ColourPivot();
         List<ColourPivotReturnModel> ColourPivot(out int procResult);
-        Task<List<ColourPivotReturnModel>> ColourPivotAsync();
+        Task<List<ColourPivotReturnModel>> ColourPivotAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         int ColumnNameAndTypesProc();
-        // ColumnNameAndTypesProcAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        Task<int> ColumnNameAndTypesProcAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         int ConvertToString(int? someValue, out string someString);
         // ConvertToStringAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         List<dbo_proc_data_from_ffrsReturnModel> dbo_proc_data_from_ffrs(int? maxId);
         List<dbo_proc_data_from_ffrsReturnModel> dbo_proc_data_from_ffrs(int? maxId, out int procResult);
-        Task<List<dbo_proc_data_from_ffrsReturnModel>> dbo_proc_data_from_ffrsAsync(int? maxId);
+        Task<List<dbo_proc_data_from_ffrsReturnModel>> dbo_proc_data_from_ffrsAsync(int? maxId, CancellationToken cancellationToken = default(CancellationToken));
 
         List<dbo_proc_data_from_ffrs_and_dboReturnModel> dbo_proc_data_from_ffrs_and_dbo();
         List<dbo_proc_data_from_ffrs_and_dboReturnModel> dbo_proc_data_from_ffrs_and_dbo(out int procResult);
-        Task<List<dbo_proc_data_from_ffrs_and_dboReturnModel>> dbo_proc_data_from_ffrs_and_dboAsync();
+        Task<List<dbo_proc_data_from_ffrs_and_dboReturnModel>> dbo_proc_data_from_ffrs_and_dboAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         List<DSOpeProcReturnModel> DSOpeProc();
         List<DSOpeProcReturnModel> DSOpeProc(out int procResult);
-        Task<List<DSOpeProcReturnModel>> DSOpeProcAsync();
+        Task<List<DSOpeProcReturnModel>> DSOpeProcAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         List<FFRS_cv_dataReturnModel> FFRS_cv_data(int? maxId);
         List<FFRS_cv_dataReturnModel> FFRS_cv_data(int? maxId, out int procResult);
-        Task<List<FFRS_cv_dataReturnModel>> FFRS_cv_dataAsync(int? maxId);
+        Task<List<FFRS_cv_dataReturnModel>> FFRS_cv_dataAsync(int? maxId, CancellationToken cancellationToken = default(CancellationToken));
 
         List<FFRS_data_from_dboReturnModel> FFRS_data_from_dbo();
         List<FFRS_data_from_dboReturnModel> FFRS_data_from_dbo(out int procResult);
-        Task<List<FFRS_data_from_dboReturnModel>> FFRS_data_from_dboAsync();
+        Task<List<FFRS_data_from_dboReturnModel>> FFRS_data_from_dboAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         List<FFRS_data_from_dbo_and_ffrsReturnModel> FFRS_data_from_dbo_and_ffrs();
         List<FFRS_data_from_dbo_and_ffrsReturnModel> FFRS_data_from_dbo_and_ffrs(out int procResult);
-        Task<List<FFRS_data_from_dbo_and_ffrsReturnModel>> FFRS_data_from_dbo_and_ffrsAsync();
+        Task<List<FFRS_data_from_dbo_and_ffrsReturnModel>> FFRS_data_from_dbo_and_ffrsAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         List<FkTest_HelloReturnModel> FkTest_Hello();
         List<FkTest_HelloReturnModel> FkTest_Hello(out int procResult);
-        Task<List<FkTest_HelloReturnModel>> FkTest_HelloAsync();
+        Task<List<FkTest_HelloReturnModel>> FkTest_HelloAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId);
         List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId, out int procResult);
-        Task<List<GetSmallDecimalTestReturnModel>> GetSmallDecimalTestAsync(int? maxId);
+        Task<List<GetSmallDecimalTestReturnModel>> GetSmallDecimalTestAsync(int? maxId, CancellationToken cancellationToken = default(CancellationToken));
 
         int InsertRecord(string data, out int? insertedId);
         // InsertRecordAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
@@ -261,10 +261,10 @@ namespace Efrpg.V4TestE8
         // MinTripSequenceStartNullAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         int NvarcharTest(string maxOutputParam, string normalOutputParam);
-        // NvarcharTestAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        Task<int> NvarcharTestAsync(string maxOutputParam, string normalOutputParam, CancellationToken cancellationToken = default(CancellationToken));
 
         int Omega_Overclock(DateTime? parameter);
-        // Omega_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        Task<int> Omega_OverclockAsync(DateTime? parameter, CancellationToken cancellationToken = default(CancellationToken));
 
         int proc_TestDecimalOutput(out decimal? perfectNumber);
         // proc_TestDecimalOutputAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
@@ -276,10 +276,10 @@ namespace Efrpg.V4TestE8
         // proc_TestDecimalOutputV3DefaultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         int SpatialTypesNoParams();
-        // SpatialTypesNoParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        Task<int> SpatialTypesNoParamsAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         int SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography);
-        // SpatialTypesWithParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        Task<int> SpatialTypesWithParamsAsync(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, CancellationToken cancellationToken = default(CancellationToken));
 
         // stp_multiple_identical_resultsReturnModel stp_multiple_identical_results(int? someVar); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
         // Task<stp_multiple_identical_resultsReturnModel> stp_multiple_identical_resultsAsync(int? someVar); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
@@ -295,14 +295,14 @@ namespace Efrpg.V4TestE8
 
         List<stp_no_params_testReturnModel> stp_no_params_test();
         List<stp_no_params_testReturnModel> stp_no_params_test(out int procResult);
-        Task<List<stp_no_params_testReturnModel>> stp_no_params_testAsync();
+        Task<List<stp_no_params_testReturnModel>> stp_no_params_testAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         int stp_no_return_fields();
-        // stp_no_return_fieldsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        Task<int> stp_no_return_fieldsAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         List<stp_nullable_params_testReturnModel> stp_nullable_params_test(int? aval, int? bval);
         List<stp_nullable_params_testReturnModel> stp_nullable_params_test(int? aval, int? bval, out int procResult);
-        Task<List<stp_nullable_params_testReturnModel>> stp_nullable_params_testAsync(int? aval, int? bval);
+        Task<List<stp_nullable_params_testReturnModel>> stp_nullable_params_testAsync(int? aval, int? bval, CancellationToken cancellationToken = default(CancellationToken));
 
         List<stp_testReturnModel> stp_test(string strDateFROM, string strDateTo, out bool? retBool);
         List<stp_testReturnModel> stp_test(string strDateFROM, string strDateTo, out bool? retBool, out int procResult);
@@ -310,34 +310,34 @@ namespace Efrpg.V4TestE8
 
         List<stp_test_underscore_testReturnModel> stp_test_underscore_test(string strDateFROM, string strdateto);
         List<stp_test_underscore_testReturnModel> stp_test_underscore_test(string strDateFROM, string strdateto, out int procResult);
-        Task<List<stp_test_underscore_testReturnModel>> stp_test_underscore_testAsync(string strDateFROM, string strdateto);
+        Task<List<stp_test_underscore_testReturnModel>> stp_test_underscore_testAsync(string strDateFROM, string strdateto, CancellationToken cancellationToken = default(CancellationToken));
 
         int StupidStoredProcedureParams(string reqType, short? dept, short? @class, short? item);
-        // StupidStoredProcedureParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        Task<int> StupidStoredProcedureParamsAsync(string reqType, short? dept, short? @class, short? item, CancellationToken cancellationToken = default(CancellationToken));
 
         int StupidStoredProcedureParams2(string @override, short? @readonly, short? @class, short? @enum);
-        // StupidStoredProcedureParams2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        Task<int> StupidStoredProcedureParams2Async(string @override, short? @readonly, short? @class, short? @enum, CancellationToken cancellationToken = default(CancellationToken));
 
         List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt);
         List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt, out int procResult);
-        Task<List<Synonyms_SimpleStoredProcReturnModel>> Synonyms_SimpleStoredProcAsync(int? inputInt);
+        Task<List<Synonyms_SimpleStoredProcReturnModel>> Synonyms_SimpleStoredProcAsync(int? inputInt, CancellationToken cancellationToken = default(CancellationToken));
 
         List<TestReturnStringReturnModel> TestReturnString();
         List<TestReturnStringReturnModel> TestReturnString(out int procResult);
-        Task<List<TestReturnStringReturnModel>> TestReturnStringAsync();
+        Task<List<TestReturnStringReturnModel>> TestReturnStringAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         int ThisHasMixedOutParameters(DateTime? foo, out int? firstOutParam, DateTime? bar, out int? secondOutParam, DateTime? baz);
         // ThisHasMixedOutParametersAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         int UserDefinedTypeSampleStoredProc(int? a, DataTable type, int? b);
-        // UserDefinedTypeSampleStoredProcAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        Task<int> UserDefinedTypeSampleStoredProcAsync(int? a, DataTable type, int? b, CancellationToken cancellationToken = default(CancellationToken));
 
         List<XmlDataV1ReturnModel> XmlDataV1();
         List<XmlDataV1ReturnModel> XmlDataV1(out int procResult);
-        Task<List<XmlDataV1ReturnModel>> XmlDataV1Async();
+        Task<List<XmlDataV1ReturnModel>> XmlDataV1Async(CancellationToken cancellationToken = default(CancellationToken));
 
         int XmlDataV2();
-        // XmlDataV2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        Task<int> XmlDataV2Async(CancellationToken cancellationToken = default(CancellationToken));
 
 
         // Table Valued Functions
@@ -654,7 +654,22 @@ namespace Efrpg.V4TestE8
             return (int)procResultParam.Value;
         }
 
-        // AddTwoValuesAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public async Task<int> AddTwoValuesAsync(int? a = null, int? b = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var aParam = new SqlParameter { ParameterName = "@a", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = a.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!a.HasValue)
+                aParam.Value = DBNull.Value;
+
+            var bParam = new SqlParameter { ParameterName = "@b", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = b.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!b.HasValue)
+                bParam.Value = DBNull.Value;
+
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[AddTwoValues] @a, @b",  new[] {aParam, bParam, procResultParam}, cancellationToken);
+
+            return (int)procResultParam.Value;
+        }
 
         public int AddTwoValuesWithResult(int? a, int? b, out int? result, out int? result2)
         {
@@ -700,7 +715,18 @@ namespace Efrpg.V4TestE8
             return (int)procResultParam.Value;
         }
 
-        // Alpha_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public async Task<int> Alpha_OverclockAsync(DateTime? parameter = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var parameterParam = new SqlParameter { ParameterName = "@Parameter", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = parameter.GetValueOrDefault() };
+            if (!parameter.HasValue)
+                parameterParam.Value = DBNull.Value;
+
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [Alpha].[Overclock] @Parameter",  new[] {parameterParam, procResultParam}, cancellationToken);
+
+            return (int)procResultParam.Value;
+        }
 
         public int App_usp_CMTUserFSRUpdate(int? userId, int? fsrId, out int? ufsrId)
         {
@@ -736,7 +762,14 @@ namespace Efrpg.V4TestE8
             return (int)procResultParam.Value;
         }
 
-        // aSimpleExampleAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public async Task<int> aSimpleExampleAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[aSimpleExample]",  new[] {procResultParam}, cancellationToken);
+
+            return (int)procResultParam.Value;
+        }
 
         public int Beta_Overclock(DateTime? parameter = null)
         {
@@ -751,7 +784,18 @@ namespace Efrpg.V4TestE8
             return (int)procResultParam.Value;
         }
 
-        // Beta_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public async Task<int> Beta_OverclockAsync(DateTime? parameter = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var parameterParam = new SqlParameter { ParameterName = "@Parameter", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = parameter.GetValueOrDefault() };
+            if (!parameter.HasValue)
+                parameterParam.Value = DBNull.Value;
+
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [Beta].[Overclock] @Parameter",  new[] {parameterParam, procResultParam}, cancellationToken);
+
+            return (int)procResultParam.Value;
+        }
 
         // public C182_test2ReturnModel C182_test2(int? flag = null) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
@@ -759,7 +803,7 @@ namespace Efrpg.V4TestE8
 
         // public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
-        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (CheckIfApplicationIsCompleteReturnModel)
+        // public async Task<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsCompleteAsync(int? applicationId, out bool? isApplicationComplete) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
         public List<ColourPivotReturnModel> ColourPivot()
         {
@@ -779,7 +823,7 @@ namespace Efrpg.V4TestE8
             return procResultData;
         }
 
-        public async Task<List<ColourPivotReturnModel>> ColourPivotAsync()
+        public async Task<List<ColourPivotReturnModel>> ColourPivotAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             const string sqlCommand = "EXEC [dbo].[ColourPivot]";
             var procResultData = await Set<ColourPivotReturnModel>()
@@ -798,7 +842,14 @@ namespace Efrpg.V4TestE8
             return (int)procResultParam.Value;
         }
 
-        // ColumnNameAndTypesProcAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public async Task<int> ColumnNameAndTypesProcAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[ColumnNameAndTypesProc]",  new[] {procResultParam}, cancellationToken);
+
+            return (int)procResultParam.Value;
+        }
 
         public int ConvertToString(int? someValue, out string someString)
         {
@@ -843,7 +894,7 @@ namespace Efrpg.V4TestE8
             return procResultData;
         }
 
-        public async Task<List<dbo_proc_data_from_ffrsReturnModel>> dbo_proc_data_from_ffrsAsync(int? maxId = null)
+        public async Task<List<dbo_proc_data_from_ffrsReturnModel>> dbo_proc_data_from_ffrsAsync(int? maxId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var maxIdParam = new SqlParameter { ParameterName = "@maxId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = maxId.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!maxId.HasValue)
@@ -875,7 +926,7 @@ namespace Efrpg.V4TestE8
             return procResultData;
         }
 
-        public async Task<List<dbo_proc_data_from_ffrs_and_dboReturnModel>> dbo_proc_data_from_ffrs_and_dboAsync()
+        public async Task<List<dbo_proc_data_from_ffrs_and_dboReturnModel>> dbo_proc_data_from_ffrs_and_dboAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             const string sqlCommand = "EXEC [dbo].[dbo_proc_data_from_ffrs_and_dbo]";
             var procResultData = await Set<dbo_proc_data_from_ffrs_and_dboReturnModel>()
@@ -903,7 +954,7 @@ namespace Efrpg.V4TestE8
             return procResultData;
         }
 
-        public async Task<List<DSOpeProcReturnModel>> DSOpeProcAsync()
+        public async Task<List<DSOpeProcReturnModel>> DSOpeProcAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             const string sqlCommand = "EXEC [dbo].[DSOpeProc]";
             var procResultData = await Set<DSOpeProcReturnModel>()
@@ -935,7 +986,7 @@ namespace Efrpg.V4TestE8
             return procResultData;
         }
 
-        public async Task<List<FFRS_cv_dataReturnModel>> FFRS_cv_dataAsync(int? maxId = null)
+        public async Task<List<FFRS_cv_dataReturnModel>> FFRS_cv_dataAsync(int? maxId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var maxIdParam = new SqlParameter { ParameterName = "@maxId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = maxId.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!maxId.HasValue)
@@ -967,7 +1018,7 @@ namespace Efrpg.V4TestE8
             return procResultData;
         }
 
-        public async Task<List<FFRS_data_from_dboReturnModel>> FFRS_data_from_dboAsync()
+        public async Task<List<FFRS_data_from_dboReturnModel>> FFRS_data_from_dboAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             const string sqlCommand = "EXEC [FFRS].[data_from_dbo]";
             var procResultData = await Set<FFRS_data_from_dboReturnModel>()
@@ -995,7 +1046,7 @@ namespace Efrpg.V4TestE8
             return procResultData;
         }
 
-        public async Task<List<FFRS_data_from_dbo_and_ffrsReturnModel>> FFRS_data_from_dbo_and_ffrsAsync()
+        public async Task<List<FFRS_data_from_dbo_and_ffrsReturnModel>> FFRS_data_from_dbo_and_ffrsAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             const string sqlCommand = "EXEC [FFRS].[data_from_dbo_and_ffrs]";
             var procResultData = await Set<FFRS_data_from_dbo_and_ffrsReturnModel>()
@@ -1023,7 +1074,7 @@ namespace Efrpg.V4TestE8
             return procResultData;
         }
 
-        public async Task<List<FkTest_HelloReturnModel>> FkTest_HelloAsync()
+        public async Task<List<FkTest_HelloReturnModel>> FkTest_HelloAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             const string sqlCommand = "EXEC [FkTest].[Hello]";
             var procResultData = await Set<FkTest_HelloReturnModel>()
@@ -1055,7 +1106,7 @@ namespace Efrpg.V4TestE8
             return procResultData;
         }
 
-        public async Task<List<GetSmallDecimalTestReturnModel>> GetSmallDecimalTestAsync(int? maxId = null)
+        public async Task<List<GetSmallDecimalTestReturnModel>> GetSmallDecimalTestAsync(int? maxId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var maxIdParam = new SqlParameter { ParameterName = "@maxId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = maxId.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!maxId.HasValue)
@@ -1199,7 +1250,22 @@ namespace Efrpg.V4TestE8
             return (int)procResultParam.Value;
         }
 
-        // NvarcharTestAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public async Task<int> NvarcharTestAsync(string maxOutputParam, string normalOutputParam, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var maxOutputParamParam = new SqlParameter { ParameterName = "@maxOutputParam", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = maxOutputParam, Size = -1 };
+            if (maxOutputParamParam.Value == null)
+                maxOutputParamParam.Value = DBNull.Value;
+
+            var normalOutputParamParam = new SqlParameter { ParameterName = "@normalOutputParam", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = normalOutputParam, Size = 20 };
+            if (normalOutputParamParam.Value == null)
+                normalOutputParamParam.Value = DBNull.Value;
+
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[NvarcharTest] @maxOutputParam, @normalOutputParam",  new[] {maxOutputParamParam, normalOutputParamParam, procResultParam}, cancellationToken);
+
+            return (int)procResultParam.Value;
+        }
 
         public int Omega_Overclock(DateTime? parameter = null)
         {
@@ -1214,7 +1280,18 @@ namespace Efrpg.V4TestE8
             return (int)procResultParam.Value;
         }
 
-        // Omega_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public async Task<int> Omega_OverclockAsync(DateTime? parameter = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var parameterParam = new SqlParameter { ParameterName = "@Parameter", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = parameter.GetValueOrDefault() };
+            if (!parameter.HasValue)
+                parameterParam.Value = DBNull.Value;
+
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [Omega].[Overclock] @Parameter",  new[] {parameterParam, procResultParam}, cancellationToken);
+
+            return (int)procResultParam.Value;
+        }
 
         public int proc_TestDecimalOutput(out decimal? perfectNumber)
         {
@@ -1276,7 +1353,14 @@ namespace Efrpg.V4TestE8
             return (int)procResultParam.Value;
         }
 
-        // SpatialTypesNoParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public async Task<int> SpatialTypesNoParamsAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[SpatialTypesNoParams]",  new[] {procResultParam}, cancellationToken);
+
+            return (int)procResultParam.Value;
+        }
 
         public int SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
         {
@@ -1295,7 +1379,22 @@ namespace Efrpg.V4TestE8
             return (int)procResultParam.Value;
         }
 
-        // SpatialTypesWithParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public async Task<int> SpatialTypesWithParamsAsync(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var geometryParam = new SqlParameter { ParameterName = "@geometry", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = geometry, Size = -1 };
+            if (geometryParam.Value == null)
+                geometryParam.Value = DBNull.Value;
+
+            var geographyParam = new SqlParameter { ParameterName = "@geography", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = geography, Size = -1 };
+            if (geographyParam.Value == null)
+                geographyParam.Value = DBNull.Value;
+
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[SpatialTypesWithParams] @geometry, @geography",  new[] {geometryParam, geographyParam, procResultParam}, cancellationToken);
+
+            return (int)procResultParam.Value;
+        }
 
         // public stp_multiple_identical_resultsReturnModel stp_multiple_identical_results(int? someVar = null) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
@@ -1331,7 +1430,7 @@ namespace Efrpg.V4TestE8
             return procResultData;
         }
 
-        public async Task<List<stp_no_params_testReturnModel>> stp_no_params_testAsync()
+        public async Task<List<stp_no_params_testReturnModel>> stp_no_params_testAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             const string sqlCommand = "EXEC [dbo].[stp_no_params_test]";
             var procResultData = await Set<stp_no_params_testReturnModel>()
@@ -1350,7 +1449,14 @@ namespace Efrpg.V4TestE8
             return (int)procResultParam.Value;
         }
 
-        // stp_no_return_fieldsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public async Task<int> stp_no_return_fieldsAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[stp_no_return_fields]",  new[] {procResultParam}, cancellationToken);
+
+            return (int)procResultParam.Value;
+        }
 
         public List<stp_nullable_params_testReturnModel> stp_nullable_params_test(int? aval = null, int? bval = null)
         {
@@ -1378,7 +1484,7 @@ namespace Efrpg.V4TestE8
             return procResultData;
         }
 
-        public async Task<List<stp_nullable_params_testReturnModel>> stp_nullable_params_testAsync(int? aval = null, int? bval = null)
+        public async Task<List<stp_nullable_params_testReturnModel>> stp_nullable_params_testAsync(int? aval = null, int? bval = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var avalParam = new SqlParameter { ParameterName = "@a_val", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = aval.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!aval.HasValue)
@@ -1456,7 +1562,7 @@ namespace Efrpg.V4TestE8
             return procResultData;
         }
 
-        public async Task<List<stp_test_underscore_testReturnModel>> stp_test_underscore_testAsync(string strDateFROM, string strdateto)
+        public async Task<List<stp_test_underscore_testReturnModel>> stp_test_underscore_testAsync(string strDateFROM, string strdateto, CancellationToken cancellationToken = default(CancellationToken))
         {
             var strDateFROMParam = new SqlParameter { ParameterName = "@str_Date_FROM", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = strDateFROM, Size = 20 };
             if (strDateFROMParam.Value == null)
@@ -1499,7 +1605,30 @@ namespace Efrpg.V4TestE8
             return (int)procResultParam.Value;
         }
 
-        // StupidStoredProcedureParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public async Task<int> StupidStoredProcedureParamsAsync(string reqType, short? dept = null, short? @class = null, short? item = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var reqTypeParam = new SqlParameter { ParameterName = "@ReqType", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = reqType, Size = 25 };
+            if (reqTypeParam.Value == null)
+                reqTypeParam.Value = DBNull.Value;
+
+            var deptParam = new SqlParameter { ParameterName = "@Dept", SqlDbType = SqlDbType.SmallInt, Direction = ParameterDirection.Input, Value = dept.GetValueOrDefault(), Precision = 5, Scale = 0 };
+            if (!dept.HasValue)
+                deptParam.Value = DBNull.Value;
+
+            var @classParam = new SqlParameter { ParameterName = "@Class", SqlDbType = SqlDbType.SmallInt, Direction = ParameterDirection.Input, Value = @class.GetValueOrDefault(), Precision = 5, Scale = 0 };
+            if (!@class.HasValue)
+                @classParam.Value = DBNull.Value;
+
+            var itemParam = new SqlParameter { ParameterName = "@Item", SqlDbType = SqlDbType.SmallInt, Direction = ParameterDirection.Input, Value = item.GetValueOrDefault(), Precision = 5, Scale = 0 };
+            if (!item.HasValue)
+                itemParam.Value = DBNull.Value;
+
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[StupidStoredProcedureParams] @ReqType, @Dept, @Class, @Item",  new[] {reqTypeParam, deptParam, @classParam, itemParam, procResultParam}, cancellationToken);
+
+            return (int)procResultParam.Value;
+        }
 
         public int StupidStoredProcedureParams2(string @override, short? @readonly = null, short? @class = null, short? @enum = null)
         {
@@ -1526,7 +1655,30 @@ namespace Efrpg.V4TestE8
             return (int)procResultParam.Value;
         }
 
-        // StupidStoredProcedureParams2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public async Task<int> StupidStoredProcedureParams2Async(string @override, short? @readonly = null, short? @class = null, short? @enum = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var @overrideParam = new SqlParameter { ParameterName = "@override", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = @override, Size = 25 };
+            if (@overrideParam.Value == null)
+                @overrideParam.Value = DBNull.Value;
+
+            var @readonlyParam = new SqlParameter { ParameterName = "@readonly", SqlDbType = SqlDbType.SmallInt, Direction = ParameterDirection.Input, Value = @readonly.GetValueOrDefault(), Precision = 5, Scale = 0 };
+            if (!@readonly.HasValue)
+                @readonlyParam.Value = DBNull.Value;
+
+            var @classParam = new SqlParameter { ParameterName = "@class", SqlDbType = SqlDbType.SmallInt, Direction = ParameterDirection.Input, Value = @class.GetValueOrDefault(), Precision = 5, Scale = 0 };
+            if (!@class.HasValue)
+                @classParam.Value = DBNull.Value;
+
+            var @enumParam = new SqlParameter { ParameterName = "@enum", SqlDbType = SqlDbType.SmallInt, Direction = ParameterDirection.Input, Value = @enum.GetValueOrDefault(), Precision = 5, Scale = 0 };
+            if (!@enum.HasValue)
+                @enumParam.Value = DBNull.Value;
+
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[StupidStoredProcedureParams2] @override, @readonly, @class, @enum",  new[] {@overrideParam, @readonlyParam, @classParam, @enumParam, procResultParam}, cancellationToken);
+
+            return (int)procResultParam.Value;
+        }
 
         public List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt = null)
         {
@@ -1550,7 +1702,7 @@ namespace Efrpg.V4TestE8
             return procResultData;
         }
 
-        public async Task<List<Synonyms_SimpleStoredProcReturnModel>> Synonyms_SimpleStoredProcAsync(int? inputInt = null)
+        public async Task<List<Synonyms_SimpleStoredProcReturnModel>> Synonyms_SimpleStoredProcAsync(int? inputInt = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var inputIntParam = new SqlParameter { ParameterName = "@InputInt", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = inputInt.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!inputInt.HasValue)
@@ -1582,7 +1734,7 @@ namespace Efrpg.V4TestE8
             return procResultData;
         }
 
-        public async Task<List<TestReturnStringReturnModel>> TestReturnStringAsync()
+        public async Task<List<TestReturnStringReturnModel>> TestReturnStringAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             const string sqlCommand = "EXEC [dbo].[TestReturnString]";
             var procResultData = await Set<TestReturnStringReturnModel>()
@@ -1648,7 +1800,26 @@ namespace Efrpg.V4TestE8
             return (int)procResultParam.Value;
         }
 
-        // UserDefinedTypeSampleStoredProcAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public async Task<int> UserDefinedTypeSampleStoredProcAsync(int? a, DataTable type, int? b = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var aParam = new SqlParameter { ParameterName = "@a", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = a.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!a.HasValue)
+                aParam.Value = DBNull.Value;
+
+            var typeParam = new SqlParameter { ParameterName = "@type", SqlDbType = SqlDbType.Structured, Direction = ParameterDirection.Input, Value = type, TypeName = "dbo.UserDefinedTypeSample" };
+            if (typeParam.Value == null)
+                typeParam.Value = DBNull.Value;
+
+            var bParam = new SqlParameter { ParameterName = "@b", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = b.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!b.HasValue)
+                bParam.Value = DBNull.Value;
+
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[UserDefinedTypeSampleStoredProc] @a, @type, @b",  new[] {aParam, typeParam, bParam, procResultParam}, cancellationToken);
+
+            return (int)procResultParam.Value;
+        }
 
         public List<XmlDataV1ReturnModel> XmlDataV1()
         {
@@ -1668,7 +1839,7 @@ namespace Efrpg.V4TestE8
             return procResultData;
         }
 
-        public async Task<List<XmlDataV1ReturnModel>> XmlDataV1Async()
+        public async Task<List<XmlDataV1ReturnModel>> XmlDataV1Async(CancellationToken cancellationToken = default(CancellationToken))
         {
             const string sqlCommand = "EXEC [dbo].[XmlDataV1]";
             var procResultData = await Set<XmlDataV1ReturnModel>()
@@ -1687,7 +1858,14 @@ namespace Efrpg.V4TestE8
             return (int)procResultParam.Value;
         }
 
-        // XmlDataV2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public async Task<int> XmlDataV2Async(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[XmlDataV2]",  new[] {procResultParam}, cancellationToken);
+
+            return (int)procResultParam.Value;
+        }
 
 
         // Table Valued Functions
@@ -2168,7 +2346,10 @@ namespace Efrpg.V4TestE8
             return 0;
         }
 
-        // AddTwoValuesAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> AddTwoValuesAsync(int? a = null, int? b = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         public int AddTwoValuesWithResult(int? a, int? b, out int? result, out int? result2)
         {
@@ -2184,7 +2365,10 @@ namespace Efrpg.V4TestE8
             return 0;
         }
 
-        // Alpha_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> Alpha_OverclockAsync(DateTime? parameter = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         public int App_usp_CMTUserFSRUpdate(int? userId, int? fsrId, out int? ufsrId)
         {
@@ -2199,14 +2383,20 @@ namespace Efrpg.V4TestE8
             return 0;
         }
 
-        // aSimpleExampleAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> aSimpleExampleAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         public int Beta_Overclock(DateTime? parameter = null)
         {
             return 0;
         }
 
-        // Beta_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> Beta_OverclockAsync(DateTime? parameter = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         public DbSet<C182_test2ReturnModel> C182_test2ReturnModel { get; set; }
         public C182_test2ReturnModel C182_test2(int? flag = null)
@@ -2221,11 +2411,7 @@ namespace Efrpg.V4TestE8
             return new C182_test2ReturnModel();
         }
 
-        public Task<C182_test2ReturnModel> C182_test2Async(int? flag = null)
-        {
-            int procResult;
-            return Task.FromResult(C182_test2(flag, out procResult));
-        }
+        // C182_test2Async() cannot be created due to having out parameters, or is relying on the procedure result (C182_test2ReturnModel)
 
         public DbSet<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsCompleteReturnModel { get; set; }
         public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete)
@@ -2243,7 +2429,6 @@ namespace Efrpg.V4TestE8
 
         // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (CheckIfApplicationIsCompleteReturnModel)
 
-
         public DbSet<ColourPivotReturnModel> ColourPivotReturnModel { get; set; }
         public List<ColourPivotReturnModel> ColourPivot()
         {
@@ -2257,7 +2442,7 @@ namespace Efrpg.V4TestE8
             return new List<ColourPivotReturnModel>();
         }
 
-        public Task<List<ColourPivotReturnModel>> ColourPivotAsync()
+        public Task<List<ColourPivotReturnModel>> ColourPivotAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(ColourPivot(out procResult));
@@ -2268,7 +2453,10 @@ namespace Efrpg.V4TestE8
             return 0;
         }
 
-        // ColumnNameAndTypesProcAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> ColumnNameAndTypesProcAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         public int ConvertToString(int? someValue, out string someString)
         {
@@ -2291,7 +2479,7 @@ namespace Efrpg.V4TestE8
             return new List<dbo_proc_data_from_ffrsReturnModel>();
         }
 
-        public Task<List<dbo_proc_data_from_ffrsReturnModel>> dbo_proc_data_from_ffrsAsync(int? maxId = null)
+        public Task<List<dbo_proc_data_from_ffrsReturnModel>> dbo_proc_data_from_ffrsAsync(int? maxId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(dbo_proc_data_from_ffrs(maxId, out procResult));
@@ -2310,7 +2498,7 @@ namespace Efrpg.V4TestE8
             return new List<dbo_proc_data_from_ffrs_and_dboReturnModel>();
         }
 
-        public Task<List<dbo_proc_data_from_ffrs_and_dboReturnModel>> dbo_proc_data_from_ffrs_and_dboAsync()
+        public Task<List<dbo_proc_data_from_ffrs_and_dboReturnModel>> dbo_proc_data_from_ffrs_and_dboAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(dbo_proc_data_from_ffrs_and_dbo(out procResult));
@@ -2329,7 +2517,7 @@ namespace Efrpg.V4TestE8
             return new List<DSOpeProcReturnModel>();
         }
 
-        public Task<List<DSOpeProcReturnModel>> DSOpeProcAsync()
+        public Task<List<DSOpeProcReturnModel>> DSOpeProcAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(DSOpeProc(out procResult));
@@ -2348,7 +2536,7 @@ namespace Efrpg.V4TestE8
             return new List<FFRS_cv_dataReturnModel>();
         }
 
-        public Task<List<FFRS_cv_dataReturnModel>> FFRS_cv_dataAsync(int? maxId = null)
+        public Task<List<FFRS_cv_dataReturnModel>> FFRS_cv_dataAsync(int? maxId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(FFRS_cv_data(maxId, out procResult));
@@ -2367,7 +2555,7 @@ namespace Efrpg.V4TestE8
             return new List<FFRS_data_from_dboReturnModel>();
         }
 
-        public Task<List<FFRS_data_from_dboReturnModel>> FFRS_data_from_dboAsync()
+        public Task<List<FFRS_data_from_dboReturnModel>> FFRS_data_from_dboAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(FFRS_data_from_dbo(out procResult));
@@ -2386,7 +2574,7 @@ namespace Efrpg.V4TestE8
             return new List<FFRS_data_from_dbo_and_ffrsReturnModel>();
         }
 
-        public Task<List<FFRS_data_from_dbo_and_ffrsReturnModel>> FFRS_data_from_dbo_and_ffrsAsync()
+        public Task<List<FFRS_data_from_dbo_and_ffrsReturnModel>> FFRS_data_from_dbo_and_ffrsAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(FFRS_data_from_dbo_and_ffrs(out procResult));
@@ -2405,7 +2593,7 @@ namespace Efrpg.V4TestE8
             return new List<FkTest_HelloReturnModel>();
         }
 
-        public Task<List<FkTest_HelloReturnModel>> FkTest_HelloAsync()
+        public Task<List<FkTest_HelloReturnModel>> FkTest_HelloAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(FkTest_Hello(out procResult));
@@ -2424,7 +2612,7 @@ namespace Efrpg.V4TestE8
             return new List<GetSmallDecimalTestReturnModel>();
         }
 
-        public Task<List<GetSmallDecimalTestReturnModel>> GetSmallDecimalTestAsync(int? maxId = null)
+        public Task<List<GetSmallDecimalTestReturnModel>> GetSmallDecimalTestAsync(int? maxId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(GetSmallDecimalTest(maxId, out procResult));
@@ -2477,14 +2665,20 @@ namespace Efrpg.V4TestE8
             return 0;
         }
 
-        // NvarcharTestAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> NvarcharTestAsync(string maxOutputParam, string normalOutputParam, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         public int Omega_Overclock(DateTime? parameter = null)
         {
             return 0;
         }
 
-        // Omega_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> Omega_OverclockAsync(DateTime? parameter = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         public int proc_TestDecimalOutput(out decimal? perfectNumber)
         {
@@ -2515,14 +2709,20 @@ namespace Efrpg.V4TestE8
             return 0;
         }
 
-        // SpatialTypesNoParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> SpatialTypesNoParamsAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         public int SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
         {
             return 0;
         }
 
-        // SpatialTypesWithParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> SpatialTypesWithParamsAsync(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         public DbSet<stp_multiple_identical_resultsReturnModel> stp_multiple_identical_resultsReturnModel { get; set; }
         public stp_multiple_identical_resultsReturnModel stp_multiple_identical_results(int? someVar = null)
@@ -2537,11 +2737,7 @@ namespace Efrpg.V4TestE8
             return new stp_multiple_identical_resultsReturnModel();
         }
 
-        public Task<stp_multiple_identical_resultsReturnModel> stp_multiple_identical_resultsAsync(int? someVar = null)
-        {
-            int procResult;
-            return Task.FromResult(stp_multiple_identical_results(someVar, out procResult));
-        }
+        // stp_multiple_identical_resultsAsync() cannot be created due to having out parameters, or is relying on the procedure result (stp_multiple_identical_resultsReturnModel)
 
         public DbSet<stp_multiple_multiple_results_with_paramsReturnModel> stp_multiple_multiple_results_with_paramsReturnModel { get; set; }
         public stp_multiple_multiple_results_with_paramsReturnModel stp_multiple_multiple_results_with_params(int? firstval = null, int? secondval = null, int? thirdval = null)
@@ -2556,11 +2752,7 @@ namespace Efrpg.V4TestE8
             return new stp_multiple_multiple_results_with_paramsReturnModel();
         }
 
-        public Task<stp_multiple_multiple_results_with_paramsReturnModel> stp_multiple_multiple_results_with_paramsAsync(int? firstval = null, int? secondval = null, int? thirdval = null)
-        {
-            int procResult;
-            return Task.FromResult(stp_multiple_multiple_results_with_params(firstval, secondval, thirdval, out procResult));
-        }
+        // stp_multiple_multiple_results_with_paramsAsync() cannot be created due to having out parameters, or is relying on the procedure result (stp_multiple_multiple_results_with_paramsReturnModel)
 
         public DbSet<stp_multiple_resultsReturnModel> stp_multiple_resultsReturnModel { get; set; }
         public stp_multiple_resultsReturnModel stp_multiple_results()
@@ -2575,11 +2767,7 @@ namespace Efrpg.V4TestE8
             return new stp_multiple_resultsReturnModel();
         }
 
-        public Task<stp_multiple_resultsReturnModel> stp_multiple_resultsAsync()
-        {
-            int procResult;
-            return Task.FromResult(stp_multiple_results(out procResult));
-        }
+        // stp_multiple_resultsAsync() cannot be created due to having out parameters, or is relying on the procedure result (stp_multiple_resultsReturnModel)
 
         public DbSet<stp_multiple_results_with_paramsReturnModel> stp_multiple_results_with_paramsReturnModel { get; set; }
         public stp_multiple_results_with_paramsReturnModel stp_multiple_results_with_params(int? firstval = null, int? secondval = null)
@@ -2594,11 +2782,7 @@ namespace Efrpg.V4TestE8
             return new stp_multiple_results_with_paramsReturnModel();
         }
 
-        public Task<stp_multiple_results_with_paramsReturnModel> stp_multiple_results_with_paramsAsync(int? firstval = null, int? secondval = null)
-        {
-            int procResult;
-            return Task.FromResult(stp_multiple_results_with_params(firstval, secondval, out procResult));
-        }
+        // stp_multiple_results_with_paramsAsync() cannot be created due to having out parameters, or is relying on the procedure result (stp_multiple_results_with_paramsReturnModel)
 
         public DbSet<stp_no_params_testReturnModel> stp_no_params_testReturnModel { get; set; }
         public List<stp_no_params_testReturnModel> stp_no_params_test()
@@ -2613,7 +2797,7 @@ namespace Efrpg.V4TestE8
             return new List<stp_no_params_testReturnModel>();
         }
 
-        public Task<List<stp_no_params_testReturnModel>> stp_no_params_testAsync()
+        public Task<List<stp_no_params_testReturnModel>> stp_no_params_testAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(stp_no_params_test(out procResult));
@@ -2624,7 +2808,10 @@ namespace Efrpg.V4TestE8
             return 0;
         }
 
-        // stp_no_return_fieldsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> stp_no_return_fieldsAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         public DbSet<stp_nullable_params_testReturnModel> stp_nullable_params_testReturnModel { get; set; }
         public List<stp_nullable_params_testReturnModel> stp_nullable_params_test(int? aval = null, int? bval = null)
@@ -2639,7 +2826,7 @@ namespace Efrpg.V4TestE8
             return new List<stp_nullable_params_testReturnModel>();
         }
 
-        public Task<List<stp_nullable_params_testReturnModel>> stp_nullable_params_testAsync(int? aval = null, int? bval = null)
+        public Task<List<stp_nullable_params_testReturnModel>> stp_nullable_params_testAsync(int? aval = null, int? bval = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(stp_nullable_params_test(aval, bval, out procResult));
@@ -2661,7 +2848,6 @@ namespace Efrpg.V4TestE8
 
         // stp_testAsync() cannot be created due to having out parameters, or is relying on the procedure result (List<stp_testReturnModel>)
 
-
         public DbSet<stp_test_underscore_testReturnModel> stp_test_underscore_testReturnModel { get; set; }
         public List<stp_test_underscore_testReturnModel> stp_test_underscore_test(string strDateFROM, string strdateto)
         {
@@ -2675,7 +2861,7 @@ namespace Efrpg.V4TestE8
             return new List<stp_test_underscore_testReturnModel>();
         }
 
-        public Task<List<stp_test_underscore_testReturnModel>> stp_test_underscore_testAsync(string strDateFROM, string strdateto)
+        public Task<List<stp_test_underscore_testReturnModel>> stp_test_underscore_testAsync(string strDateFROM, string strdateto, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(stp_test_underscore_test(strDateFROM, strdateto, out procResult));
@@ -2686,14 +2872,20 @@ namespace Efrpg.V4TestE8
             return 0;
         }
 
-        // StupidStoredProcedureParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> StupidStoredProcedureParamsAsync(string reqType, short? dept = null, short? @class = null, short? item = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         public int StupidStoredProcedureParams2(string @override, short? @readonly = null, short? @class = null, short? @enum = null)
         {
             return 0;
         }
 
-        // StupidStoredProcedureParams2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> StupidStoredProcedureParams2Async(string @override, short? @readonly = null, short? @class = null, short? @enum = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         public DbSet<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProcReturnModel { get; set; }
         public List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt = null)
@@ -2708,7 +2900,7 @@ namespace Efrpg.V4TestE8
             return new List<Synonyms_SimpleStoredProcReturnModel>();
         }
 
-        public Task<List<Synonyms_SimpleStoredProcReturnModel>> Synonyms_SimpleStoredProcAsync(int? inputInt = null)
+        public Task<List<Synonyms_SimpleStoredProcReturnModel>> Synonyms_SimpleStoredProcAsync(int? inputInt = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(Synonyms_SimpleStoredProc(inputInt, out procResult));
@@ -2727,7 +2919,7 @@ namespace Efrpg.V4TestE8
             return new List<TestReturnStringReturnModel>();
         }
 
-        public Task<List<TestReturnStringReturnModel>> TestReturnStringAsync()
+        public Task<List<TestReturnStringReturnModel>> TestReturnStringAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(TestReturnString(out procResult));
@@ -2747,7 +2939,10 @@ namespace Efrpg.V4TestE8
             return 0;
         }
 
-        // UserDefinedTypeSampleStoredProcAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> UserDefinedTypeSampleStoredProcAsync(int? a, DataTable type, int? b = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         public DbSet<XmlDataV1ReturnModel> XmlDataV1ReturnModel { get; set; }
         public List<XmlDataV1ReturnModel> XmlDataV1()
@@ -2762,7 +2957,7 @@ namespace Efrpg.V4TestE8
             return new List<XmlDataV1ReturnModel>();
         }
 
-        public Task<List<XmlDataV1ReturnModel>> XmlDataV1Async()
+        public Task<List<XmlDataV1ReturnModel>> XmlDataV1Async(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(XmlDataV1(out procResult));
@@ -2773,7 +2968,10 @@ namespace Efrpg.V4TestE8
             return 0;
         }
 
-        // XmlDataV2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> XmlDataV2Async(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         // Table Valued Functions
 
@@ -4483,10 +4681,6 @@ namespace Efrpg.V4TestE8
 
         public PropertyTypesToAdd()
         {
-            defaultCheck = @"/****** Object:  Default [d_t_address_type_domain]    Script Date: 22/07/2015 14:28:05 ******/
-    CREATE DEFAULT [dbo].[d_t_address_type_domain] 
-    AS
-    'A'";
             Beta_Harish3485 = new List<Beta_Harish3485>();
         }
     }

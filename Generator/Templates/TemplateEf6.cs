@@ -412,7 +412,6 @@ using {{this}};{{#newline}}
 {{#newline}}
 {{#if AsyncFunctionCannotBeCreated}}
     // {{FunctionName}}Async() cannot be created due to having out parameters, or is relying on the procedure result ({{ReturnType}}){{#newline}}
-{{#newline}}
 {{#else}}{{#! if AsyncFunctionCannotBeCreated }}
     public async Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalseFalseToken}}){{#newline}}
     {{{#newline}}
@@ -708,7 +707,6 @@ using {{this}};{{#newline}}
 {{#newline}}
 {{#if AsyncFunctionCannotBeCreated}}
     // {{FunctionName}}Async() cannot be created due to having out parameters, or is relying on the procedure result ({{ReturnType}}){{#newline}}
-{{#newline}}
 {{#else}}
     public Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalseFalseToken}}){{#newline}}
     {{{#newline}}
