@@ -5,23 +5,23 @@ namespace Efrpg.Filtering
 {
     public abstract class DbContextFilter : IDbContextFilter
     {
-        public string SubNamespace               { get; set; }
-        public Tables Tables                     { get; set; }
+        public string SubNamespace { get; set; }
+        public Tables Tables { get; set; }
         public List<StoredProcedure> StoredProcs { get; set; }
-        public List<Enumeration> Enums           { get; set; }
-        public List<RawSequence> Sequences       { get; set; }
-        public bool IncludeViews                 { get; set; }
-        public bool IncludeSynonyms              { get; set; }
-        public bool IncludeStoredProcedures      { get; set; }
-        public bool IncludeTableValuedFunctions  { get; set; }
+        public List<Enumeration> Enums { get; set; }
+        public List<RawSequence> Sequences { get; set; }
+        public bool IncludeViews { get; set; }
+        public bool IncludeSynonyms { get; set; }
+        public bool IncludeStoredProcedures { get; set; }
+        public bool IncludeTableValuedFunctions { get; set; }
         public bool IncludeScalarValuedFunctions { get; set; }
 
         protected DbContextFilter()
         {
-            Tables       = new Tables();
-            StoredProcs  = new List<StoredProcedure>();
-            Enums        = new List<Enumeration>();
-            Sequences    = new List<RawSequence>();
+            Tables = new Tables();
+            StoredProcs = new List<StoredProcedure>();
+            Enums = new List<Enumeration>();
+            Sequences = new List<RawSequence>();
             SubNamespace = string.Empty;
         }
 

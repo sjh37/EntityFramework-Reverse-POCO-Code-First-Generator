@@ -71,37 +71,37 @@ namespace Efrpg.Generators
             int returnModelsCount,
             string execWithNoReturnModel)
         {
-            HasNoReturnModels                                           = hasNoReturnModels;
-            HasReturnModels                                             = hasReturnModels;
-            SingleReturnModel                                           = singleReturnModel;
-            MultipleReturnModels                                        = multipleReturnModels;
-            ReturnType                                                  = returnType;
-            ReturnModelName                                             = returnModelName;
-            FunctionName                                                = functionName;
-            WriteStoredProcFunctionParamsFalseFalse                     = writeStoredProcFunctionParamsFalseFalse;
-            WriteStoredProcFunctionParamsFalseTrue                      = writeStoredProcFunctionParamsFalseTrue;
-            WriteStoredProcFunctionParamsTrueFalse                      = writeStoredProcFunctionParamsTrueFalse;
-            WriteStoredProcFunctionParamsTrueTrue                       = writeStoredProcFunctionParamsTrueTrue;
-            WriteStoredProcFunctionParamsFalseFalseToken                = writeStoredProcFunctionParamsFalseFalseToken;
-            WriteStoredProcFunctionParamsFalseTrueToken                 = writeStoredProcFunctionParamsFalseTrueToken;
-            WriteStoredProcFunctionParamsTrueFalseToken                 = writeStoredProcFunctionParamsTrueFalseToken;
-            WriteStoredProcFunctionParamsTrueTrueToken                  = writeStoredProcFunctionParamsTrueTrueToken;
-            AsyncFunctionCannotBeCreated                                = asyncFunctionCannotBeCreated;
-            WriteStoredProcFunctionOverloadCall                         = writeStoredProcFunctionOverloadCall;
-            WriteStoredProcFunctionSetSqlParametersFalse                = writeStoredProcFunctionSetSqlParametersFalse;
-            WriteStoredProcFunctionSetSqlParametersTrue                 = writeStoredProcFunctionSetSqlParametersTrue;
-            Exec                                                        = exec;
-            AsyncExec                                                   = asyncExec;
-            WriteStoredProcReturnModelName                              = writeStoredProcReturnModelName;
-            WriteStoredProcFunctionSqlParameterAnonymousArrayTrue       = writeStoredProcFunctionSqlParameterAnonymousArrayTrue;
-            WriteStoredProcFunctionSqlParameterAnonymousArrayFalse      = writeStoredProcFunctionSqlParameterAnonymousArrayFalse;
-            WriteStoredProcFunctionSqlParameterAnonymousArrayTrueToken  = writeStoredProcFunctionSqlParameterAnonymousArrayTrueToken;
+            HasNoReturnModels = hasNoReturnModels;
+            HasReturnModels = hasReturnModels;
+            SingleReturnModel = singleReturnModel;
+            MultipleReturnModels = multipleReturnModels;
+            ReturnType = returnType;
+            ReturnModelName = returnModelName;
+            FunctionName = functionName;
+            WriteStoredProcFunctionParamsFalseFalse = writeStoredProcFunctionParamsFalseFalse;
+            WriteStoredProcFunctionParamsFalseTrue = writeStoredProcFunctionParamsFalseTrue;
+            WriteStoredProcFunctionParamsTrueFalse = writeStoredProcFunctionParamsTrueFalse;
+            WriteStoredProcFunctionParamsTrueTrue = writeStoredProcFunctionParamsTrueTrue;
+            WriteStoredProcFunctionParamsFalseFalseToken = writeStoredProcFunctionParamsFalseFalseToken;
+            WriteStoredProcFunctionParamsFalseTrueToken = writeStoredProcFunctionParamsFalseTrueToken;
+            WriteStoredProcFunctionParamsTrueFalseToken = writeStoredProcFunctionParamsTrueFalseToken;
+            WriteStoredProcFunctionParamsTrueTrueToken = writeStoredProcFunctionParamsTrueTrueToken;
+            AsyncFunctionCannotBeCreated = asyncFunctionCannotBeCreated;
+            WriteStoredProcFunctionOverloadCall = writeStoredProcFunctionOverloadCall;
+            WriteStoredProcFunctionSetSqlParametersFalse = writeStoredProcFunctionSetSqlParametersFalse;
+            WriteStoredProcFunctionSetSqlParametersTrue = writeStoredProcFunctionSetSqlParametersTrue;
+            Exec = exec;
+            AsyncExec = asyncExec;
+            WriteStoredProcReturnModelName = writeStoredProcReturnModelName;
+            WriteStoredProcFunctionSqlParameterAnonymousArrayTrue = writeStoredProcFunctionSqlParameterAnonymousArrayTrue;
+            WriteStoredProcFunctionSqlParameterAnonymousArrayFalse = writeStoredProcFunctionSqlParameterAnonymousArrayFalse;
+            WriteStoredProcFunctionSqlParameterAnonymousArrayTrueToken = writeStoredProcFunctionSqlParameterAnonymousArrayTrueToken;
             WriteStoredProcFunctionSqlParameterAnonymousArrayFalseToken = writeStoredProcFunctionSqlParameterAnonymousArrayFalseToken;
-            WriteStoredProcFunctionDeclareSqlParameterTrue              = writeStoredProcFunctionDeclareSqlParameterTrue;
-            WriteStoredProcFunctionDeclareSqlParameterFalse             = writeStoredProcFunctionDeclareSqlParameterFalse;
-            Parameters                                                  = parameters;
-            ReturnModelsCount                                           = returnModelsCount;
-            ExecWithNoReturnModel                                       = execWithNoReturnModel;
+            WriteStoredProcFunctionDeclareSqlParameterTrue = writeStoredProcFunctionDeclareSqlParameterTrue;
+            WriteStoredProcFunctionDeclareSqlParameterFalse = writeStoredProcFunctionDeclareSqlParameterFalse;
+            Parameters = parameters;
+            ReturnModelsCount = returnModelsCount;
+            ExecWithNoReturnModel = execWithNoReturnModel;
 
             CreateDbSetForReturnModel = true;
 

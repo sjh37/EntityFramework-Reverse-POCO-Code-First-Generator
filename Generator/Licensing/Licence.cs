@@ -6,19 +6,19 @@ namespace Efrpg.Licensing
 {
     public class Licence
     {
-        public string      RegisteredTo { get; private set; }
-        public string      Company      { get; private set; }
-        public LicenceType LicenceType  { get; private set; }
-        public string      NumLicences  { get; private set; }
-        public DateTime    ValidUntil   { get; private set; }
+        public string RegisteredTo { get; private set; }
+        public string Company { get; private set; }
+        public LicenceType LicenceType { get; private set; }
+        public string NumLicences { get; private set; }
+        public DateTime ValidUntil { get; private set; }
 
         public Licence(string registeredTo, string company, LicenceType licenceType, string numLicences, DateTime validUntil)
         {
             RegisteredTo = registeredTo;
-            Company      = company;
-            LicenceType  = licenceType;
-            NumLicences  = numLicences;
-            ValidUntil   = validUntil;
+            Company = company;
+            LicenceType = licenceType;
+            NumLicences = numLicences;
+            ValidUntil = validUntil;
         }
 
         public string GetLicenceType()
@@ -59,10 +59,10 @@ namespace Efrpg.Licensing
         {
             return string.Format("{0}|{1}|{2}|{3}|{4}",
                 RegisteredTo.ToUpperInvariant().Trim(),
-                Company     .ToUpperInvariant().Trim(),
+                Company.ToUpperInvariant().Trim(),
                 GetLicenceType(),
-                NumLicences .ToUpperInvariant().Trim(),
-                ValidUntil  .ToString(LicenceConstants.ExpiryFormat, CultureInfo.InvariantCulture).ToUpperInvariant());
+                NumLicences.ToUpperInvariant().Trim(),
+                ValidUntil.ToString(LicenceConstants.ExpiryFormat, CultureInfo.InvariantCulture).ToUpperInvariant());
         }
     }
 }

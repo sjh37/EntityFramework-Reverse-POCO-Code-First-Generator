@@ -2,23 +2,23 @@
 {
     public class TableValuedFunctionsTemplateData
     {
-        public bool SingleReturnModel                                    { get; }
-        public string SingleReturnColumnName                             { get; }
-        public string ExecName                                           { get; }
-        public string ReturnClassName                                    { get; }
-        public string PluralReturnClassName                              { get; }
-        public string WriteStoredProcFunctionParamsFalseTrue             { get; }
-        public string WriteStoredProcFunctionParamsFalseFalse            { get; }
-        public string Name                                               { get; }
-        public string Schema                                             { get; }
-        public string WriteTableValuedFunctionDeclareSqlParameter        { get; }
+        public bool SingleReturnModel { get; }
+        public string SingleReturnColumnName { get; }
+        public string ExecName { get; }
+        public string ReturnClassName { get; }
+        public string PluralReturnClassName { get; }
+        public string WriteStoredProcFunctionParamsFalseTrue { get; }
+        public string WriteStoredProcFunctionParamsFalseFalse { get; }
+        public string Name { get; }
+        public string Schema { get; }
+        public string WriteTableValuedFunctionDeclareSqlParameter { get; }
         public string WriteTableValuedFunctionSqlParameterAnonymousArray { get; }
-        public string WriteStoredProcFunctionSqlAtParams                 { get; }
-        public string FromSql                                            { get; }
-        public string QueryString                                        { get; }
-        public string ModelBuilderCommand                                { get; }
-        public string ModelBuilderPostCommand                            { get; }
-        public bool IncludeModelBuilder                                  { get; }
+        public string WriteStoredProcFunctionSqlAtParams { get; }
+        public string FromSql { get; }
+        public string QueryString { get; }
+        public string ModelBuilderCommand { get; }
+        public string ModelBuilderPostCommand { get; }
+        public bool IncludeModelBuilder { get; }
 
         public TableValuedFunctionsTemplateData(bool singleReturnModel,
             string singleReturnColumnName,
@@ -37,23 +37,23 @@
             string modelBuilderPostCommand,
             bool includeModelBuilder)
         {
-            SingleReturnModel                                  = singleReturnModel && !string.IsNullOrEmpty(singleReturnColumnName);
-            SingleReturnColumnName                             = singleReturnColumnName;
-            ExecName                                           = execName;
-            ReturnClassName                                    = returnClassName;
-            PluralReturnClassName                              = Inflector.MakePlural(returnClassName);
-            WriteStoredProcFunctionParamsFalseTrue             = writeStoredProcFunctionParamsFalseTrue;
-            WriteStoredProcFunctionParamsFalseFalse            = writeStoredProcFunctionParamsFalseFalse;
-            Name                                               = name;
-            Schema                                             = schema;
-            WriteTableValuedFunctionDeclareSqlParameter        = writeTableValuedFunctionDeclareSqlParameter;
+            SingleReturnModel = singleReturnModel && !string.IsNullOrEmpty(singleReturnColumnName);
+            SingleReturnColumnName = singleReturnColumnName;
+            ExecName = execName;
+            ReturnClassName = returnClassName;
+            PluralReturnClassName = Inflector.MakePlural(returnClassName);
+            WriteStoredProcFunctionParamsFalseTrue = writeStoredProcFunctionParamsFalseTrue;
+            WriteStoredProcFunctionParamsFalseFalse = writeStoredProcFunctionParamsFalseFalse;
+            Name = name;
+            Schema = schema;
+            WriteTableValuedFunctionDeclareSqlParameter = writeTableValuedFunctionDeclareSqlParameter;
             WriteTableValuedFunctionSqlParameterAnonymousArray = writeTableValuedFunctionSqlParameterAnonymousArray;
-            WriteStoredProcFunctionSqlAtParams                 = writeStoredProcFunctionSqlAtParams;
-            FromSql                                            = fromSql;
-            QueryString                                        = queryString;
-            ModelBuilderCommand                                = modelBuilderCommand;
-            ModelBuilderPostCommand                            = modelBuilderPostCommand;
-            IncludeModelBuilder                                = includeModelBuilder;
+            WriteStoredProcFunctionSqlAtParams = writeStoredProcFunctionSqlAtParams;
+            FromSql = fromSql;
+            QueryString = queryString;
+            ModelBuilderCommand = modelBuilderCommand;
+            ModelBuilderPostCommand = modelBuilderPostCommand;
+            IncludeModelBuilder = includeModelBuilder;
         }
     }
 }

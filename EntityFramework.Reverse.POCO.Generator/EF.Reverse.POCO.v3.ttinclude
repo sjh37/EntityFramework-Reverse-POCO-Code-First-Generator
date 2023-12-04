@@ -2041,23 +2041,23 @@
 
     public abstract class DbContextFilter : IDbContextFilter
     {
-        public string SubNamespace               { get; set; }
-        public Tables Tables                     { get; set; }
+        public string SubNamespace { get; set; }
+        public Tables Tables { get; set; }
         public List<StoredProcedure> StoredProcs { get; set; }
-        public List<Enumeration> Enums           { get; set; }
-        public List<RawSequence> Sequences       { get; set; }
-        public bool IncludeViews                 { get; set; }
-        public bool IncludeSynonyms              { get; set; }
-        public bool IncludeStoredProcedures      { get; set; }
-        public bool IncludeTableValuedFunctions  { get; set; }
+        public List<Enumeration> Enums { get; set; }
+        public List<RawSequence> Sequences { get; set; }
+        public bool IncludeViews { get; set; }
+        public bool IncludeSynonyms { get; set; }
+        public bool IncludeStoredProcedures { get; set; }
+        public bool IncludeTableValuedFunctions { get; set; }
         public bool IncludeScalarValuedFunctions { get; set; }
 
         protected DbContextFilter()
         {
-            Tables       = new Tables();
-            StoredProcs  = new List<StoredProcedure>();
-            Enums        = new List<Enumeration>();
-            Sequences    = new List<RawSequence>();
+            Tables = new Tables();
+            StoredProcs = new List<StoredProcedure>();
+            Enums = new List<Enumeration>();
+            Sequences = new List<RawSequence>();
             SubNamespace = string.Empty;
         }
 
@@ -2213,30 +2213,30 @@
 
     public interface IDbContextFilter
     {
-        string SubNamespace               { get; set; }
-        Tables Tables                     { get; set; }
+        string SubNamespace { get; set; }
+        Tables Tables { get; set; }
         List<StoredProcedure> StoredProcs { get; set; }
-        List<Enumeration> Enums           { get; set; }
-        List<RawSequence> Sequences       { get; set; }
-        bool IncludeViews                 { get; set; }
-        bool IncludeSynonyms              { get; set; }
-        bool IncludeStoredProcedures      { get; set; }
-        bool IncludeTableValuedFunctions  { get; set; } // If true, you must set IncludeStoredProcedures = true, and install the "EntityFramework.CodeFirstStoreFunctions" Nuget Package.
+        List<Enumeration> Enums { get; set; }
+        List<RawSequence> Sequences { get; set; }
+        bool IncludeViews { get; set; }
+        bool IncludeSynonyms { get; set; }
+        bool IncludeStoredProcedures { get; set; }
+        bool IncludeTableValuedFunctions { get; set; } // If true, you must set IncludeStoredProcedures = true, and install the "EntityFramework.CodeFirstStoreFunctions" Nuget Package.
         bool IncludeScalarValuedFunctions { get; set; } // If true, you must set IncludeStoredProcedures = true.
 
-        bool       IsExcluded(EntityName item);
-        string     TableRename(string name, string schema, bool isView);
-        string     MappingTableRename(string mappingTable, string tableName, string entityName);
-        void       UpdateTable(Table table);
-        void       UpdateColumn(Column column, Table table);
-        void       AddEnum(Table table);
-        void       UpdateEnum(Enumeration enumeration);
-        void       UpdateEnumMember(EnumerationMember enumerationMember);
-        void       ViewProcessing(Table view);
-        string     StoredProcedureRename(StoredProcedure sp);
-        string     StoredProcedureReturnModelRename(string name, StoredProcedure sp);
+        bool IsExcluded(EntityName item);
+        string TableRename(string name, string schema, bool isView);
+        string MappingTableRename(string mappingTable, string tableName, string entityName);
+        void UpdateTable(Table table);
+        void UpdateColumn(Column column, Table table);
+        void AddEnum(Table table);
+        void UpdateEnum(Enumeration enumeration);
+        void UpdateEnumMember(EnumerationMember enumerationMember);
+        void ViewProcessing(Table view);
+        string StoredProcedureRename(StoredProcedure sp);
+        string StoredProcedureReturnModelRename(string name, StoredProcedure sp);
         ForeignKey ForeignKeyFilter(ForeignKey fk);
-        string[]   ForeignKeyAnnotationsProcessing(Table fkTable, Table pkTable, string propName, string fkPropName);
+        string[] ForeignKeyAnnotationsProcessing(Table fkTable, Table pkTable, string propName, string fkPropName);
     }
 
     public interface IDbContextFilterList
@@ -2817,30 +2817,30 @@
     // Unless table/column/stored proc/etc is explicitly listed here, it will be excluded.
     public class MultiContextSettings
     {
-        public string Name         { get; set; }
-        public string Description  { get; set; }
-        public string Namespace    { get; set; } // Optional
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string Namespace { get; set; } // Optional
         public string TemplatePath { get; set; }
-        public string Filename     { get; set; }
+        public string Filename { get; set; }
 
         // Defaults to use if not specified for an object
-        public string BaseSchema   { get; set; }
+        public string BaseSchema { get; set; }
 
         public Dictionary<string, object> AllFields { get; set; } // Here you will find all fields, including any extra custom fields not listed above
 
-        public List<MultiContextTableSettings>           Tables           { get; set; }
+        public List<MultiContextTableSettings> Tables { get; set; }
         public List<MultiContextStoredProcedureSettings> StoredProcedures { get; set; }
-        public List<MultiContextFunctionSettings>        Functions        { get; set; }
-        public List<EnumerationSettings>                 Enumerations     { get; set; }
-        public List<MultiContextForeignKeySettings>      ForeignKeys      { get; set; }
+        public List<MultiContextFunctionSettings> Functions { get; set; }
+        public List<EnumerationSettings> Enumerations { get; set; }
+        public List<MultiContextForeignKeySettings> ForeignKeys { get; set; }
 
         public MultiContextSettings()
         {
-            Tables           = new List<MultiContextTableSettings>();
+            Tables = new List<MultiContextTableSettings>();
             StoredProcedures = new List<MultiContextStoredProcedureSettings>();
-            Functions        = new List<MultiContextFunctionSettings>();
-            Enumerations     = new List<EnumerationSettings>();
-            ForeignKeys      = new List<MultiContextForeignKeySettings>();
+            Functions = new List<MultiContextFunctionSettings>();
+            Enumerations = new List<EnumerationSettings>();
+            ForeignKeys = new List<MultiContextForeignKeySettings>();
         }
 
         public bool IncludeViews()
@@ -2869,12 +2869,12 @@
 
     public class MultiContextTableSettings
     {
-        public string Name          { get; set; }
-        public string Description   { get; set; } // [optional] Comment added to table class
-        public string PluralName    { get; set; } // [optional] Override auto-plural name
-        public string DbName        { get; set; } // [optional] Name of table in database. Specify only if the db table name is different from the "Name" property.
-        public string Attributes    { get; set; } // [optional] Use a tilda ~ delimited list of attributes to add to this table property. e.g. [CustomSecurity(Security.ReadOnly)]~[AnotherAttribute]~[Etc]
-                                                  //            The tilda ~ delimiter used in Attributes can be changed if you set Settings.MultiContextAttributeDelimiter = '~'; to something else.
+        public string Name { get; set; }
+        public string Description { get; set; } // [optional] Comment added to table class
+        public string PluralName { get; set; } // [optional] Override auto-plural name
+        public string DbName { get; set; } // [optional] Name of table in database. Specify only if the db table name is different from the "Name" property.
+        public string Attributes { get; set; } // [optional] Use a tilda ~ delimited list of attributes to add to this table property. e.g. [CustomSecurity(Security.ReadOnly)]~[AnotherAttribute]~[Etc]
+                                               //            The tilda ~ delimiter used in Attributes can be changed if you set Settings.MultiContextAttributeDelimiter = '~'; to something else.
         public string DbSetModifier { get; set; } // [optional] Will override setting of table.DbSetModifier. Default is "public".
 
         public Dictionary<string, object> AllFields { get; set; } // Here you will find all fields, including any extra custom fields not listed above
@@ -2883,22 +2883,22 @@
 
     public class MultiContextColumnSettings
     {
-        public string Name            { get; set; }
-        public string DbName          { get; set; } // [optional] Name of column in database. Specify only if the db column name is different from the "Name" property.
-        public bool? IsPrimaryKey     { get; set; } // [optional] Useful for views as views don't have primary keys.
+        public string Name { get; set; }
+        public string DbName { get; set; } // [optional] Name of column in database. Specify only if the db column name is different from the "Name" property.
+        public bool? IsPrimaryKey { get; set; } // [optional] Useful for views as views don't have primary keys.
         public bool? OverrideModifier { get; set; } // [optional] Adds "override" modifier.
-        public string EnumType        { get; set; } // [optional] Use enum type instead of data type
-        public string Attributes      { get; set; } // [optional] Use a tilda ~ delimited list of attributes to add to a poco property. e.g. [CustomSecurity(Security.ReadOnly)]~[Required]
-        public string PropertyType    { get; set; } // [optional] Will override setting of column.PropertyType
-        public bool? IsNullable       { get; set; } // [optional] Will override setting of column.IsNullable
+        public string EnumType { get; set; } // [optional] Use enum type instead of data type
+        public string Attributes { get; set; } // [optional] Use a tilda ~ delimited list of attributes to add to a poco property. e.g. [CustomSecurity(Security.ReadOnly)]~[Required]
+        public string PropertyType { get; set; } // [optional] Will override setting of column.PropertyType
+        public bool? IsNullable { get; set; } // [optional] Will override setting of column.IsNullable
 
         public Dictionary<string, object> AllFields { get; set; } // Here you will find all fields, including any extra custom fields not listed above
     }
 
     public class MultiContextStoredProcedureSettings
     {
-        public string Name        { get; set; }
-        public string DbName      { get; set; } // [optional] Name of stored proc in database. Specify only if the db stored proc name is different from the "Name" property.
+        public string Name { get; set; }
+        public string DbName { get; set; } // [optional] Name of stored proc in database. Specify only if the db stored proc name is different from the "Name" property.
         public string ReturnModel { get; set; } // [optional] Specify a return model for stored proc
 
         public Dictionary<string, object> AllFields { get; set; } // Here you will find all fields, including any extra custom fields not listed above
@@ -2906,7 +2906,7 @@
 
     public class MultiContextFunctionSettings
     {
-        public string Name   { get; set; }
+        public string Name { get; set; }
         public string DbName { get; set; } // [optional] Name of function in database. Specify only if the db function name is different from the "Name" property.
 
         public Dictionary<string, object> AllFields { get; set; } // Here you will find all fields, including any extra custom fields not listed above
@@ -2922,9 +2922,9 @@
     /// </summary>
     public class EnumerationSettings
     {
-        public string Name       { get; set; } // Enum to generate. e.g. "DaysOfWeek" would result in "public enum DaysOfWeek {...}"
-        public string Table      { get; set; } // Database table containing enum values. e.g. "DaysOfWeek"
-        public string NameField  { get; set; } // Column containing the name for the enum. e.g. "TypeName"
+        public string Name { get; set; } // Enum to generate. e.g. "DaysOfWeek" would result in "public enum DaysOfWeek {...}"
+        public string Table { get; set; } // Database table containing enum values. e.g. "DaysOfWeek"
+        public string NameField { get; set; } // Column containing the name for the enum. e.g. "TypeName"
         public string ValueField { get; set; } // Column containing the values for the enum. e.g. "TypeId"
 
         public Dictionary<string, object> AllFields { get; set; } // Here you will find all fields, including any extra custom fields not listed above
@@ -2937,21 +2937,21 @@
     /// </summary>
     public class MultiContextForeignKeySettings
     {
-        public string ConstraintName    { get; set; } // Name of the foreign key
-        public string ParentName        { get; set; } // [optional] Name of the parent foreign key property. If NULL it will be generated.
-        public string ChildName         { get; set; } // [optional] Name of the child foreign key property. If NULL it will be generated.
-                                        
-        public string PkSchema          { get; set; } // [optional] Will default to MultiContext.Context.BaseSchema
-        public string PkTableName       { get; set; }
-        public string PkColumn          { get; set; }
-                                        
-        public string FkSchema          { get; set; } // [optional] Will default to MultiContext.Context.BaseSchema
-        public string FkTableName       { get; set; }
-        public string FkColumn          { get; set; }
-                                        
-        public int Ordinal              { get; set; } // Order of this item
-        public bool CascadeOnDelete     { get; set; } // If false will add .WillCascadeOnDelete(false)
-        public bool IsNotEnforced       { get; set; } // If not enforced, it means foreign key is optional. .HasOptional(...) or .HasRequired(...)
+        public string ConstraintName { get; set; } // Name of the foreign key
+        public string ParentName { get; set; } // [optional] Name of the parent foreign key property. If NULL it will be generated.
+        public string ChildName { get; set; } // [optional] Name of the child foreign key property. If NULL it will be generated.
+
+        public string PkSchema { get; set; } // [optional] Will default to MultiContext.Context.BaseSchema
+        public string PkTableName { get; set; }
+        public string PkColumn { get; set; }
+
+        public string FkSchema { get; set; } // [optional] Will default to MultiContext.Context.BaseSchema
+        public string FkTableName { get; set; }
+        public string FkColumn { get; set; }
+
+        public int Ordinal { get; set; } // Order of this item
+        public bool CascadeOnDelete { get; set; } // If false will add .WillCascadeOnDelete(false)
+        public bool IsNotEnforced { get; set; } // If not enforced, it means foreign key is optional. .HasOptional(...) or .HasRequired(...)
         public bool HasUniqueConstraint { get; set; } // True if this FK points to columns that have a unique constraint against them
     }
 
@@ -3100,63 +3100,63 @@
         public readonly string FkColumn;
         public readonly string PkColumn;
         public readonly string ConstraintName;
-        public readonly int    Ordinal;
-        public readonly bool   CascadeOnDelete;
+        public readonly int Ordinal;
+        public readonly bool CascadeOnDelete;
         public readonly string ParentName;
         public readonly string ChildName;
-        public readonly bool   HasUniqueConstraint;
-        
+        public readonly bool HasUniqueConstraint;
+
         // Record unique name for this foreign key
         public string UniqueName;
 
         // User settable via ForeignKeyFilter callback
-        public string AccessModifier           { get; set; }
-        public bool   IncludeReverseNavigation { get; set; }
-        public bool   IsNotEnforced            { get; set; }
+        public string AccessModifier { get; set; }
+        public bool IncludeReverseNavigation { get; set; }
+        public bool IsNotEnforced { get; set; }
 
         public ForeignKey(string fkTableName, string fkSchema, string pkTableName, string pkSchema, string fkColumn,
             string pkColumn, string constraintName, string fkTableNameFiltered, string pkTableNameFiltered, int ordinal,
             bool cascadeOnDelete, bool isNotEnforced, string parentName, string childName, bool hasUniqueConstraint)
         {
-            ConstraintName      = constraintName;
-            ParentName          = parentName;
-            ChildName           = childName;
-            PkColumn            = pkColumn;
-            FkColumn            = fkColumn;
-            PkSchema            = pkSchema;
-            PkTableName         = pkTableName;
-            FkSchema            = fkSchema;
-            FkTableName         = fkTableName;
+            ConstraintName = constraintName;
+            ParentName = parentName;
+            ChildName = childName;
+            PkColumn = pkColumn;
+            FkColumn = fkColumn;
+            PkSchema = pkSchema;
+            PkTableName = pkTableName;
+            FkSchema = fkSchema;
+            FkTableName = fkTableName;
             FkTableNameFiltered = fkTableNameFiltered;
             PkTableNameFiltered = pkTableNameFiltered;
-            Ordinal             = ordinal;
-            CascadeOnDelete     = cascadeOnDelete;
-            IsNotEnforced       = isNotEnforced;
+            Ordinal = ordinal;
+            CascadeOnDelete = cascadeOnDelete;
+            IsNotEnforced = isNotEnforced;
             HasUniqueConstraint = hasUniqueConstraint;
 
-            UniqueName               = string.Empty;
+            UniqueName = string.Empty;
             IncludeReverseNavigation = true;
         }
 
         public ForeignKey(RawForeignKey rfk, string fkTableNameFiltered, string pkTableNameFiltered)
         {
-            ConstraintName      = rfk.ConstraintName;
-            ParentName          = rfk.ParentName;
-            ChildName           = rfk.ChildName;
-            PkColumn            = rfk.PkColumn;
-            FkColumn            = rfk.FkColumn;
-            PkSchema            = rfk.PkSchema;
-            PkTableName         = rfk.PkTableName;
-            FkSchema            = rfk.FkSchema;
-            FkTableName         = rfk.FkTableName;
+            ConstraintName = rfk.ConstraintName;
+            ParentName = rfk.ParentName;
+            ChildName = rfk.ChildName;
+            PkColumn = rfk.PkColumn;
+            FkColumn = rfk.FkColumn;
+            PkSchema = rfk.PkSchema;
+            PkTableName = rfk.PkTableName;
+            FkSchema = rfk.FkSchema;
+            FkTableName = rfk.FkTableName;
             FkTableNameFiltered = fkTableNameFiltered;
             PkTableNameFiltered = pkTableNameFiltered;
-            Ordinal             = rfk.Ordinal;
-            CascadeOnDelete     = rfk.CascadeOnDelete;
-            IsNotEnforced       = rfk.IsNotEnforced;
+            Ordinal = rfk.Ordinal;
+            CascadeOnDelete = rfk.CascadeOnDelete;
+            IsNotEnforced = rfk.IsNotEnforced;
             HasUniqueConstraint = rfk.HasUniqueConstraint;
 
-            UniqueName               = string.Empty;
+            UniqueName = string.Empty;
             IncludeReverseNavigation = true;
         }
 
@@ -3418,30 +3418,30 @@
 
     public class CodeGenerator
     {
-        private readonly Generator                               _generator;
-        private readonly IDbContextFilter                        _filter;
-        private readonly List<TableTemplateData>                 _tables;
-        private readonly List<StoredProcTemplateData>            _storedProcs;
-        private readonly List<string>                            _globalUsings;
-        private readonly Template                                _template;
-        private readonly List<TableValuedFunctionsTemplateData>  _tableValuedFunctions;
+        private readonly Generator _generator;
+        private readonly IDbContextFilter _filter;
+        private readonly List<TableTemplateData> _tables;
+        private readonly List<StoredProcTemplateData> _storedProcs;
+        private readonly List<string> _globalUsings;
+        private readonly Template _template;
+        private readonly List<TableValuedFunctionsTemplateData> _tableValuedFunctions;
         private readonly List<ScalarValuedFunctionsTemplateData> _scalarValuedFunctions;
-        private readonly List<string>                            _tableValuedFunctionComplexTypes;
+        private readonly List<string> _tableValuedFunctionComplexTypes;
 
         private readonly bool _hasTables, _hasStoredProcs, _hasTableValuedFunctions, _hasScalarValuedFunctions, _hasTableValuedFunctionComplexTypes, _hasEnums;
 
         public CodeGenerator(Generator generator, IDbContextFilter filter)
         {
 #pragma warning disable IDE0016 // Use 'throw' expression
-            if (generator == null)   throw new ArgumentNullException(nameof(generator));
-            if (filter == null)      throw new ArgumentNullException(nameof(filter));
+            if (generator == null) throw new ArgumentNullException(nameof(generator));
+            if (filter == null) throw new ArgumentNullException(nameof(filter));
 #pragma warning restore IDE0016 // Use 'throw' expression
 
-            var isEfCore      = Settings.GeneratorType == GeneratorType.EfCore;
+            var isEfCore = Settings.GeneratorType == GeneratorType.EfCore;
             var isEfCore3Plus = Settings.IsEfCore3Plus();
 
             _generator = generator;
-            _filter    = filter;
+            _filter = filter;
 
             _tables = filter.Tables
                 .Where(t => !t.IsMapping && (t.HasPrimaryKey || (t.IsView && isEfCore3Plus)))
@@ -3497,7 +3497,8 @@
                         string.Format("EXEC @procResult = [{0}].[{1}] {2}", sp.Schema.DbName, sp.DbName, sp.WriteStoredProcFunctionSqlAtParams())
                     ))
                     .ToList();
-            } else
+            }
+            else
                 _storedProcs = new List<StoredProcTemplateData>();
 
             if (filter.IncludeTableValuedFunctions)
@@ -3519,9 +3520,9 @@
                             ? tvf.WriteStoredProcFunctionSqlParameterAnonymousArray(false, false)
                             : tvf.WriteTableValuedFunctionSqlParameterAnonymousArray(),
                         isEfCore ? tvf.WriteNetCoreTableValuedFunctionsSqlAtParams() : tvf.WriteStoredProcFunctionSqlAtParams(),
-                        isEfCore3Plus ? "FromSqlRaw"  : "FromSql",
-                        isEfCore3Plus ? "Set"         : "Query",
-                        isEfCore3Plus ? "Entity"      : "Query",
+                        isEfCore3Plus ? "FromSqlRaw" : "FromSql",
+                        isEfCore3Plus ? "Set" : "Query",
+                        isEfCore3Plus ? "Entity" : "Query",
                         isEfCore3Plus ? ".HasNoKey()" : string.Empty,
                         !Settings.StoredProcedureReturnTypes.ContainsKey(tvf.NameHumanCase) && !Settings.StoredProcedureReturnTypes.ContainsKey(tvf.DbName)
                     ))
@@ -3556,24 +3557,25 @@
                         svf.Schema.DbName
                     ))
                     .ToList();
-            } else
+            }
+            else
                 _scalarValuedFunctions = new List<ScalarValuedFunctionsTemplateData>();
 
             var returnModelsUsed = new List<string>();
-            foreach(var sp in _storedProcs)
+            foreach (var sp in _storedProcs)
             {
-                if(returnModelsUsed.Contains(sp.ReturnModelName))
+                if (returnModelsUsed.Contains(sp.ReturnModelName))
                     sp.CreateDbSetForReturnModel = false;
                 else
                     returnModelsUsed.Add(sp.ReturnModelName);
             }
 
-            _hasTables                          = _tables.Any();
-            _hasStoredProcs                     = _storedProcs.Any();
-            _hasTableValuedFunctions            = _tableValuedFunctions.Any();
-            _hasScalarValuedFunctions           = _scalarValuedFunctions.Any();
+            _hasTables = _tables.Any();
+            _hasStoredProcs = _storedProcs.Any();
+            _hasTableValuedFunctions = _tableValuedFunctions.Any();
+            _hasScalarValuedFunctions = _scalarValuedFunctions.Any();
             _hasTableValuedFunctionComplexTypes = _tableValuedFunctionComplexTypes.Any();
-            _hasEnums                           = filter.Enums.Any();
+            _hasEnums = filter.Enums.Any();
 
             _globalUsings = new List<string>();
             _template = TemplateFactory.Create();
@@ -3666,19 +3668,19 @@
 
             var data = new InterfaceModel
             {
-                interfaceModifier               = Settings.DbContextInterfaceModifiers ?? "public partial",
-                DbContextInterfaceName          = Settings.DbContextInterfaceName,
-                DbContextInterfaceBaseClasses   = Settings.DbContextInterfaceBaseClasses,
-                DbContextName                   = Settings.DbContextName,
-                tables                          = _tables.Where(x => x.DbSetModifier == "public").ToList(),
+                interfaceModifier = Settings.DbContextInterfaceModifiers ?? "public partial",
+                DbContextInterfaceName = Settings.DbContextInterfaceName,
+                DbContextInterfaceBaseClasses = Settings.DbContextInterfaceBaseClasses,
+                DbContextName = Settings.DbContextName,
+                tables = _tables.Where(x => x.DbSetModifier == "public").ToList(),
                 AdditionalContextInterfaceItems = Settings.AdditionalContextInterfaceItems.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList(),
-                addSaveChanges                  = !Settings.UseInheritedBaseInterfaceFunctions,
-                storedProcs                     = _storedProcs,
-                hasStoredProcs                  = _hasStoredProcs,
-                tableValuedFunctions            = _tableValuedFunctions,
-                scalarValuedFunctions           = _scalarValuedFunctions,
-                hasTableValuedFunctions         = _hasTableValuedFunctions && _filter.IncludeTableValuedFunctions,
-                hasScalarValuedFunctions        = _hasScalarValuedFunctions && _filter.IncludeScalarValuedFunctions,
+                addSaveChanges = !Settings.UseInheritedBaseInterfaceFunctions,
+                storedProcs = _storedProcs,
+                hasStoredProcs = _hasStoredProcs,
+                tableValuedFunctions = _tableValuedFunctions,
+                scalarValuedFunctions = _scalarValuedFunctions,
+                hasTableValuedFunctions = _hasTableValuedFunctions && _filter.IncludeTableValuedFunctions,
+                hasScalarValuedFunctions = _hasScalarValuedFunctions && _filter.IncludeScalarValuedFunctions,
             };
 
             var co = new CodeOutput(string.Empty, filename, "Database context interface", Settings.InterfaceFolder, _globalUsings);
@@ -3722,55 +3724,55 @@
 
             var data = new ContextModel
             {
-                DbContextClassModifiers                = Settings.DbContextClassModifiers,
-                DbContextName                          = Settings.DbContextName,
-                DbContextBaseClass                     = Settings.DbContextBaseClass,
+                DbContextClassModifiers = Settings.DbContextClassModifiers,
+                DbContextName = Settings.DbContextName,
+                DbContextBaseClass = Settings.DbContextBaseClass,
                 AddParameterlessConstructorToDbContext = Settings.AddParameterlessConstructorToDbContext,
-                HasDefaultConstructorArgument          = !string.IsNullOrEmpty(Settings.DefaultConstructorArgument),
-                DefaultConstructorArgument             = Settings.DefaultConstructorArgument,
-                ConfigurationClassName                 = Settings.ConfigurationClassName,
-                ConnectionString                       = Settings.ConnectionString,
-                ConnectionStringName                   = Settings.ConnectionStringName,
-                ConnectionStringActions                = GetConnectionStringActions(hasSpatialTypes, hasHierarchyIdType),
-                contextInterface                       = string.IsNullOrWhiteSpace(Settings.DbContextInterfaceName) ? "" : ", " + Settings.DbContextInterfaceName,
-                setInitializer                         = string.Format("<{0}>(null);", Settings.DbContextName),
-                DbContextClassIsPartial                = Settings.DbContextClassIsPartial(),
-                SqlCe                                  = Settings.DatabaseType == DatabaseType.SqlCe,
-                tables                                 = _tables,
-                hasTables                              = _hasTables,
-                indexes                                = indexes,
-                storedProcs                            = _storedProcs,
-                hasStoredProcs                         = _hasStoredProcs,
-                tableValuedFunctionComplexTypes        = _tableValuedFunctionComplexTypes,
-                hasTableValuedFunctionComplexTypes     = _hasTableValuedFunctionComplexTypes,
-                AdditionalContextInterfaceItems        = Settings.AdditionalContextInterfaceItems.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList(),
-                addSaveChanges                         = !Settings.UseInheritedBaseInterfaceFunctions,
-                tableValuedFunctions                   = _tableValuedFunctions,
-                scalarValuedFunctions                  = _scalarValuedFunctions,
-                Sequences                              = _filter.Sequences,
-                hasTableValuedFunctions                = _hasTableValuedFunctions && _filter.IncludeTableValuedFunctions,
-                hasScalarValuedFunctions               = _hasScalarValuedFunctions && _filter.IncludeScalarValuedFunctions,
-                IncludeObjectContextConstructor        = !Settings.DbContextBaseClass.Contains("IdentityDbContext"),
-                QueryString                            = isEfCore3Plus ? "Set"           : "Query",
-                FromSql                                = isEfCore3Plus ? "FromSqlRaw"    : "FromSql",
-                ExecuteSqlCommand                      = isEfCore3Plus ? "ExecuteSqlRaw" : "ExecuteSqlCommand",
-                StoredProcModelBuilderCommand          = isEfCore3Plus ? "Entity"        : "Query",
-                StoredProcModelBuilderPostCommand      = isEfCore3Plus ? ".HasNoKey()"   : string.Empty,
-                OnConfigurationUsesConfiguration       = Settings.OnConfiguration == OnConfiguration.Configuration,
-                OnConfigurationUsesConnectionString    = Settings.OnConfiguration == OnConfiguration.ConnectionString,
-                DefaultSchema                          = Settings.DefaultSchema,
-                UseDatabaseProvider                    = Settings.DatabaseProvider(),
-                UseLazyLoadingProxies                  = Settings.UseLazyLoading && Settings.IsEfCore3Plus(),
-                SqlParameter                           = Settings.SqlParameter(),
-                SqlParameterValue                      = Settings.SqlParameterValue(),
-                Triggers                               = _tables.Where(x => !string.IsNullOrEmpty(x.Table.TriggerName) || x.Table.Columns.Any(c => c.IsComputed))
+                HasDefaultConstructorArgument = !string.IsNullOrEmpty(Settings.DefaultConstructorArgument),
+                DefaultConstructorArgument = Settings.DefaultConstructorArgument,
+                ConfigurationClassName = Settings.ConfigurationClassName,
+                ConnectionString = Settings.ConnectionString,
+                ConnectionStringName = Settings.ConnectionStringName,
+                ConnectionStringActions = GetConnectionStringActions(hasSpatialTypes, hasHierarchyIdType),
+                contextInterface = string.IsNullOrWhiteSpace(Settings.DbContextInterfaceName) ? "" : ", " + Settings.DbContextInterfaceName,
+                setInitializer = string.Format("<{0}>(null);", Settings.DbContextName),
+                DbContextClassIsPartial = Settings.DbContextClassIsPartial(),
+                SqlCe = Settings.DatabaseType == DatabaseType.SqlCe,
+                tables = _tables,
+                hasTables = _hasTables,
+                indexes = indexes,
+                storedProcs = _storedProcs,
+                hasStoredProcs = _hasStoredProcs,
+                tableValuedFunctionComplexTypes = _tableValuedFunctionComplexTypes,
+                hasTableValuedFunctionComplexTypes = _hasTableValuedFunctionComplexTypes,
+                AdditionalContextInterfaceItems = Settings.AdditionalContextInterfaceItems.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList(),
+                addSaveChanges = !Settings.UseInheritedBaseInterfaceFunctions,
+                tableValuedFunctions = _tableValuedFunctions,
+                scalarValuedFunctions = _scalarValuedFunctions,
+                Sequences = _filter.Sequences,
+                hasTableValuedFunctions = _hasTableValuedFunctions && _filter.IncludeTableValuedFunctions,
+                hasScalarValuedFunctions = _hasScalarValuedFunctions && _filter.IncludeScalarValuedFunctions,
+                IncludeObjectContextConstructor = !Settings.DbContextBaseClass.Contains("IdentityDbContext"),
+                QueryString = isEfCore3Plus ? "Set" : "Query",
+                FromSql = isEfCore3Plus ? "FromSqlRaw" : "FromSql",
+                ExecuteSqlCommand = isEfCore3Plus ? "ExecuteSqlRaw" : "ExecuteSqlCommand",
+                StoredProcModelBuilderCommand = isEfCore3Plus ? "Entity" : "Query",
+                StoredProcModelBuilderPostCommand = isEfCore3Plus ? ".HasNoKey()" : string.Empty,
+                OnConfigurationUsesConfiguration = Settings.OnConfiguration == OnConfiguration.Configuration,
+                OnConfigurationUsesConnectionString = Settings.OnConfiguration == OnConfiguration.ConnectionString,
+                DefaultSchema = Settings.DefaultSchema,
+                UseDatabaseProvider = Settings.DatabaseProvider(),
+                UseLazyLoadingProxies = Settings.UseLazyLoading && Settings.IsEfCore3Plus(),
+                SqlParameter = Settings.SqlParameter(),
+                SqlParameterValue = Settings.SqlParameterValue(),
+                Triggers = _tables.Where(x => !string.IsNullOrEmpty(x.Table.TriggerName) || x.Table.Columns.Any(c => c.IsComputed))
                                                                 .Select(x => new Trigger { TableName = x.Table.NameHumanCase, TriggerName = x.Table.TriggerName ?? "HasComputedColumn" }).ToList(),
-                MemoryOptimisedTables                  = _tables.Where(x => x.Table.IsMemoryOptimised).Select(x => x.Table.NameHumanCase).ToList()
+                MemoryOptimisedTables = _tables.Where(x => x.Table.IsMemoryOptimised).Select(x => x.Table.NameHumanCase).ToList()
             };
 
-            data.hasIndexes               = data.indexes.Any();
-            data.hasTriggers              = data.Triggers.Any();
-            data.hasSequences             = data.Sequences.Any();
+            data.hasIndexes = data.indexes.Any();
+            data.hasTriggers = data.Triggers.Any();
+            data.hasSequences = data.Sequences.Any();
             data.hasMemoryOptimisedTables = data.MemoryOptimisedTables.Any();
 
             var co = new CodeOutput(string.Empty, filename, "Database context", Settings.ContextFolder, _globalUsings);
@@ -3786,7 +3788,7 @@
             {
                 case TemplateType.Ef6:
                     return string.Empty;
-                
+
                 case TemplateType.EfCore3:
                     hasHierarchyIdType = false;
                     break;
@@ -3812,15 +3814,17 @@
 
             var data = new FakeContextModel
             {
-                DbContextClassModifiers  = Settings.DbContextClassModifiers, DbContextName = Settings.DbContextName, DbContextBaseClass = Settings.DbContextBaseClass,
-                contextInterface         = string.IsNullOrWhiteSpace(Settings.DbContextInterfaceName) ? "" : " : " + Settings.DbContextInterfaceName,
-                DbContextClassIsPartial  = Settings.DbContextClassIsPartial(),
-                tables                   = _tables,
-                storedProcs              = _storedProcs,
-                hasStoredProcs           = _hasStoredProcs,
-                tableValuedFunctions     = _tableValuedFunctions,
-                scalarValuedFunctions    = _scalarValuedFunctions,
-                hasTableValuedFunctions  = _hasTableValuedFunctions && _filter.IncludeTableValuedFunctions,
+                DbContextClassModifiers = Settings.DbContextClassModifiers,
+                DbContextName = Settings.DbContextName,
+                DbContextBaseClass = Settings.DbContextBaseClass,
+                contextInterface = string.IsNullOrWhiteSpace(Settings.DbContextInterfaceName) ? "" : " : " + Settings.DbContextInterfaceName,
+                DbContextClassIsPartial = Settings.DbContextClassIsPartial(),
+                tables = _tables,
+                storedProcs = _storedProcs,
+                hasStoredProcs = _hasStoredProcs,
+                tableValuedFunctions = _tableValuedFunctions,
+                scalarValuedFunctions = _scalarValuedFunctions,
+                hasTableValuedFunctions = _hasTableValuedFunctions && _filter.IncludeTableValuedFunctions,
                 hasScalarValuedFunctions = _hasScalarValuedFunctions && _filter.IncludeScalarValuedFunctions,
             };
 
@@ -3887,59 +3891,59 @@
 
             var data = new PocoModel
             {
-                UseHasNoKey             = isEfCore3Plus && table.IsView && !table.HasPrimaryKey,
-                HasNoPrimaryKey         = !table.HasPrimaryKey,
-                Name                    = table.DbName,
+                UseHasNoKey = isEfCore3Plus && table.IsView && !table.HasPrimaryKey,
+                HasNoPrimaryKey = !table.HasPrimaryKey,
+                Name = table.DbName,
                 NameHumanCaseWithSuffix = table.NameHumanCaseWithSuffix(),
-                ClassModifier           = Settings.EntityClassesModifiers,
-                ClassComment            = table.WriteComments(),
-                ExtendedComments        = table.WriteExtendedComments(),
-                ClassAttributes         = table.WriteClassAttributes(),
-                BaseClasses             = table.BaseClasses,
-                InsideClassBody         = Settings.WriteInsideClassBody(table),
-                HasHierarchyId          = table.Columns.Any(x => x.PropertyType.EndsWith("hierarchyid", StringComparison.InvariantCultureIgnoreCase)),
+                ClassModifier = Settings.EntityClassesModifiers,
+                ClassComment = table.WriteComments(),
+                ExtendedComments = table.WriteExtendedComments(),
+                ClassAttributes = table.WriteClassAttributes(),
+                BaseClasses = table.BaseClasses,
+                InsideClassBody = Settings.WriteInsideClassBody(table),
+                HasHierarchyId = table.Columns.Any(x => x.PropertyType.EndsWith("hierarchyid", StringComparison.InvariantCultureIgnoreCase)),
                 Columns = table.Columns
                     .Where(x => !x.Hidden && !x.ExistsInBaseClass)
                     .OrderBy(x => x.Ordinal)
                     .Select((col, index) => new PocoColumnModel
                     {
-                        AddNewLineBefore                = index > 0 && (((Settings.IncludeExtendedPropertyComments == CommentsStyle.InSummaryBlock || Settings.IncludeComments == CommentsStyle.InSummaryBlock) && !string.IsNullOrEmpty(col.SummaryComments)) || (col.Attributes != null && col.Attributes.Any())),
-                        HasSummaryComments              = (Settings.IncludeExtendedPropertyComments == CommentsStyle.InSummaryBlock || Settings.IncludeComments == CommentsStyle.InSummaryBlock) && !string.IsNullOrEmpty(col.SummaryComments),
-                        SummaryComments                 = !string.IsNullOrEmpty(col.SummaryComments) ? SecurityElement.Escape(col.SummaryComments) : null,
-                        Attributes                      = col.Attributes,
-                        OverrideModifier                = col.OverrideModifier,
-                        IncludeFieldNameConstants       = Settings.IncludeFieldNameConstants,
-                        WrapIfNullable                  = col.WrapIfNullable(),
-                        NameHumanCase                   = col.NameHumanCase,
+                        AddNewLineBefore = index > 0 && (((Settings.IncludeExtendedPropertyComments == CommentsStyle.InSummaryBlock || Settings.IncludeComments == CommentsStyle.InSummaryBlock) && !string.IsNullOrEmpty(col.SummaryComments)) || (col.Attributes != null && col.Attributes.Any())),
+                        HasSummaryComments = (Settings.IncludeExtendedPropertyComments == CommentsStyle.InSummaryBlock || Settings.IncludeComments == CommentsStyle.InSummaryBlock) && !string.IsNullOrEmpty(col.SummaryComments),
+                        SummaryComments = !string.IsNullOrEmpty(col.SummaryComments) ? SecurityElement.Escape(col.SummaryComments) : null,
+                        Attributes = col.Attributes,
+                        OverrideModifier = col.OverrideModifier,
+                        IncludeFieldNameConstants = Settings.IncludeFieldNameConstants,
+                        WrapIfNullable = col.WrapIfNullable(),
+                        NameHumanCase = col.NameHumanCase,
                         PrivateSetterForComputedColumns = Settings.UsePrivateSetterForComputedColumns && col.IsComputed ? "private " : string.Empty,
-                        PropertyInitialisers            = Settings.UsePropertyInitialisers ? (string.IsNullOrWhiteSpace(col.Default) ? string.Empty : string.Format(" = {0};", col.Default)) : string.Empty,
-                        InlineComments                  = col.InlineComments
+                        PropertyInitialisers = Settings.UsePropertyInitialisers ? (string.IsNullOrWhiteSpace(col.Default) ? string.Empty : string.Format(" = {0};", col.Default)) : string.Empty,
+                        InlineComments = col.InlineComments
                     })
                     .ToList(),
-                HasReverseNavigation      = table.ReverseNavigationProperty.Count > 0,
+                HasReverseNavigation = table.ReverseNavigationProperty.Count > 0,
                 ReverseNavigationProperty = table.ReverseNavigationProperty
                     .OrderBy(x => x.Definition)
                     .Select(x => new PocoReverseNavigationPropertyModel
                     {
-                        ReverseNavHasComment                        = Settings.IncludeComments != CommentsStyle.None && !string.IsNullOrEmpty(x.Comments),
-                        ReverseNavComment                           = Settings.IncludeComments != CommentsStyle.None ? x.Comments : string.Empty,
+                        ReverseNavHasComment = Settings.IncludeComments != CommentsStyle.None && !string.IsNullOrEmpty(x.Comments),
+                        ReverseNavComment = Settings.IncludeComments != CommentsStyle.None ? x.Comments : string.Empty,
                         AdditionalReverseNavigationsDataAnnotations = Settings.AdditionalReverseNavigationsDataAnnotations,
-                        AdditionalDataAnnotations                   = x.AdditionalDataAnnotations,
-                        Definition                                  = x.Definition
+                        AdditionalDataAnnotations = x.AdditionalDataAnnotations,
+                        Definition = x.Definition
                     })
                     .ToList(),
-                HasForeignKey          = table.HasForeignKey,
+                HasForeignKey = table.HasForeignKey,
                 ForeignKeyTitleComment = Settings.IncludeComments != CommentsStyle.None && table.Columns.SelectMany(x => x.EntityFk).Any() ? "    // Foreign keys" + Environment.NewLine : string.Empty,
-                ForeignKeys            = table.Columns
+                ForeignKeys = table.Columns
                     .SelectMany(x => x.EntityFk)
                     .OrderBy(o => o.Definition)
                     .Select(x => new PocoForeignKeyModel
                     {
-                        HasFkComment                         = Settings.IncludeComments != CommentsStyle.None && !string.IsNullOrEmpty(x.Comments),
-                        FkComment                            = x.Comments,
+                        HasFkComment = Settings.IncludeComments != CommentsStyle.None && !string.IsNullOrEmpty(x.Comments),
+                        FkComment = x.Comments,
                         AdditionalForeignKeysDataAnnotations = Settings.AdditionalForeignKeysDataAnnotations,
-                        AdditionalDataAnnotations            = x.AdditionalDataAnnotations,
-                        Definition                           = x.Definition
+                        AdditionalDataAnnotations = x.AdditionalDataAnnotations,
+                        Definition = x.Definition
                     })
                     .ToList(),
                 CreateConstructor = !Settings.UsePropertyInitialisers &&
@@ -3953,7 +3957,7 @@
                     .OrderBy(x => x.Ordinal)
                     .Select(x => new PocoColumnsWithDefaultsModel { NameHumanCase = x.NameHumanCase, Default = x.Default })
                     .ToList(),
-                ReverseNavigationCtor   = table.ReverseNavigationCtor,
+                ReverseNavigationCtor = table.ReverseNavigationCtor,
                 EntityClassesArePartial = Settings.EntityClassesArePartial(),
                 HasSpatial = table.Columns.Any(x => x.IsSpatial)
             };
@@ -3981,45 +3985,45 @@
             var isEfCore3Plus = Settings.IsEfCore3Plus();
 
             var foreignKeys = columns.SelectMany(x => x.ConfigFk).OrderBy(o => o).ToList();
-            var primaryKey  = _generator.PrimaryKeyModelBuilder(table);
+            var primaryKey = _generator.PrimaryKeyModelBuilder(table);
 
-            var indexes    = _generator.IndexModelBuilder(table);
+            var indexes = _generator.IndexModelBuilder(table);
             var hasIndexes = indexes != null && indexes.Any();
 
             var data = new PocoConfigurationModel
             {
-                UseHasNoKey               = isEfCore3Plus && table.IsView && !table.HasPrimaryKey,
-                Name                      = table.DbName,
-                ToTableOrView             = (isEfCore3Plus && table.IsView && !table.HasPrimaryKey) ? "ToView" : "ToTable",
-                ConfigurationClassName    = table.NameHumanCaseWithSuffix() + Settings.ConfigurationClassName,
-                NameHumanCaseWithSuffix   = table.NameHumanCaseWithSuffix(),
-                Schema                    = table.Schema.DbName,
-                PrimaryKeyNameHumanCase   = primaryKey ?? table.PrimaryKeyNameHumanCase(),
-                HasSchema                 = !string.IsNullOrEmpty(table.Schema.DbName),
-                ClassModifier             = Settings.ConfigurationClassesModifiers,
-                ClassComment              = table.WriteComments(),
-                Columns                   = columns.Select(x => x.Config).ToList(),
-                HasReverseNavigation      = table.ReverseNavigationProperty.Count > 0,
-                UsesDictionary            = table.UsesDictionary,
-                HasSpatial                = table.Columns.Any(x => x.IsSpatial),
+                UseHasNoKey = isEfCore3Plus && table.IsView && !table.HasPrimaryKey,
+                Name = table.DbName,
+                ToTableOrView = (isEfCore3Plus && table.IsView && !table.HasPrimaryKey) ? "ToView" : "ToTable",
+                ConfigurationClassName = table.NameHumanCaseWithSuffix() + Settings.ConfigurationClassName,
+                NameHumanCaseWithSuffix = table.NameHumanCaseWithSuffix(),
+                Schema = table.Schema.DbName,
+                PrimaryKeyNameHumanCase = primaryKey ?? table.PrimaryKeyNameHumanCase(),
+                HasSchema = !string.IsNullOrEmpty(table.Schema.DbName),
+                ClassModifier = Settings.ConfigurationClassesModifiers,
+                ClassComment = table.WriteComments(),
+                Columns = columns.Select(x => x.Config).ToList(),
+                HasReverseNavigation = table.ReverseNavigationProperty.Count > 0,
+                UsesDictionary = table.UsesDictionary,
+                HasSpatial = table.Columns.Any(x => x.IsSpatial),
                 ReverseNavigationProperty = table.ReverseNavigationProperty
                     .OrderBy(x => x.Definition)
                     .Select(x => new PocoReverseNavigationPropertyModel
                     {
-                        ReverseNavHasComment                        = Settings.IncludeComments != CommentsStyle.None && !string.IsNullOrEmpty(x.Comments),
-                        ReverseNavComment                           = Settings.IncludeComments != CommentsStyle.None ? x.Comments : string.Empty,
+                        ReverseNavHasComment = Settings.IncludeComments != CommentsStyle.None && !string.IsNullOrEmpty(x.Comments),
+                        ReverseNavComment = Settings.IncludeComments != CommentsStyle.None ? x.Comments : string.Empty,
                         AdditionalReverseNavigationsDataAnnotations = Settings.AdditionalReverseNavigationsDataAnnotations,
-                        AdditionalDataAnnotations                   = x.AdditionalDataAnnotations,
-                        Definition                                  = x.Definition
+                        AdditionalDataAnnotations = x.AdditionalDataAnnotations,
+                        Definition = x.Definition
                     })
                     .ToList(),
 
-                HasForeignKey                  = foreignKeys.Any(),
-                ForeignKeys                    = foreignKeys,
-                MappingConfiguration           = table.MappingConfiguration,
+                HasForeignKey = foreignKeys.Any(),
+                ForeignKeys = foreignKeys,
+                MappingConfiguration = table.MappingConfiguration,
                 ConfigurationClassesArePartial = Settings.ConfigurationClassesArePartial(),
-                Indexes                        = indexes,
-                HasIndexes                     = hasIndexes
+                Indexes = indexes,
+                HasIndexes = hasIndexes
             };
 
             var co = new CodeOutput(table.DbName, filename, null, Settings.PocoConfigurationFolder, _globalUsings);
@@ -4089,13 +4093,13 @@
 
         public CodeOutput(string dbName, string filename, string region, string folder, List<string> usings)
         {
-            DbName   = dbName;
+            DbName = dbName;
             Filename = filename;
-            Region   = region;
-            Usings   = new List<string>();
-            Code     = new List<string>();
+            Region = region;
+            Usings = new List<string>();
+            Code = new List<string>();
 
-            if(!string.IsNullOrWhiteSpace(folder))
+            if (!string.IsNullOrWhiteSpace(folder))
                 Filename = Path.Combine(folder, filename);
 
             AddUsings(usings);
@@ -4103,7 +4107,7 @@
 
         public void AddCode(string code)
         {
-            if(code != null)
+            if (code != null)
                 Code.AddRange(code.Split(new[] { Environment.NewLine }, StringSplitOptions.None));
         }
 
@@ -4165,7 +4169,7 @@
     public class ColumnAndForeignKey
     {
         public ForeignKey ForeignKey;
-        public Column     Column;
+        public Column Column;
     }
 
     public class FileHeaderFooter
@@ -6550,7 +6554,7 @@
 
         public MultipleModelReturnColumns(int model, List<string> returnColumns)
         {
-            Model         = model;
+            Model = model;
             ReturnColumns = returnColumns;
         }
     }
@@ -6563,9 +6567,9 @@
 
         public ResultSetResultReaderCommand(int index, string readerCommand, bool notLastRecord, string writeStoredProcReturnModelName)
         {
-            Index                          = index;
-            ReaderCommand                  = readerCommand;
-            NotLastRecord                  = notLastRecord;
+            Index = index;
+            ReaderCommand = readerCommand;
+            NotLastRecord = notLastRecord;
             WriteStoredProcReturnModelName = writeStoredProcReturnModelName;
         }
     }
@@ -6664,37 +6668,37 @@
             int returnModelsCount,
             string execWithNoReturnModel)
         {
-            HasNoReturnModels                                           = hasNoReturnModels;
-            HasReturnModels                                             = hasReturnModels;
-            SingleReturnModel                                           = singleReturnModel;
-            MultipleReturnModels                                        = multipleReturnModels;
-            ReturnType                                                  = returnType;
-            ReturnModelName                                             = returnModelName;
-            FunctionName                                                = functionName;
-            WriteStoredProcFunctionParamsFalseFalse                     = writeStoredProcFunctionParamsFalseFalse;
-            WriteStoredProcFunctionParamsFalseTrue                      = writeStoredProcFunctionParamsFalseTrue;
-            WriteStoredProcFunctionParamsTrueFalse                      = writeStoredProcFunctionParamsTrueFalse;
-            WriteStoredProcFunctionParamsTrueTrue                       = writeStoredProcFunctionParamsTrueTrue;
-            WriteStoredProcFunctionParamsFalseFalseToken                = writeStoredProcFunctionParamsFalseFalseToken;
-            WriteStoredProcFunctionParamsFalseTrueToken                 = writeStoredProcFunctionParamsFalseTrueToken;
-            WriteStoredProcFunctionParamsTrueFalseToken                 = writeStoredProcFunctionParamsTrueFalseToken;
-            WriteStoredProcFunctionParamsTrueTrueToken                  = writeStoredProcFunctionParamsTrueTrueToken;
-            AsyncFunctionCannotBeCreated                                = asyncFunctionCannotBeCreated;
-            WriteStoredProcFunctionOverloadCall                         = writeStoredProcFunctionOverloadCall;
-            WriteStoredProcFunctionSetSqlParametersFalse                = writeStoredProcFunctionSetSqlParametersFalse;
-            WriteStoredProcFunctionSetSqlParametersTrue                 = writeStoredProcFunctionSetSqlParametersTrue;
-            Exec                                                        = exec;
-            AsyncExec                                                   = asyncExec;
-            WriteStoredProcReturnModelName                              = writeStoredProcReturnModelName;
-            WriteStoredProcFunctionSqlParameterAnonymousArrayTrue       = writeStoredProcFunctionSqlParameterAnonymousArrayTrue;
-            WriteStoredProcFunctionSqlParameterAnonymousArrayFalse      = writeStoredProcFunctionSqlParameterAnonymousArrayFalse;
-            WriteStoredProcFunctionSqlParameterAnonymousArrayTrueToken  = writeStoredProcFunctionSqlParameterAnonymousArrayTrueToken;
+            HasNoReturnModels = hasNoReturnModels;
+            HasReturnModels = hasReturnModels;
+            SingleReturnModel = singleReturnModel;
+            MultipleReturnModels = multipleReturnModels;
+            ReturnType = returnType;
+            ReturnModelName = returnModelName;
+            FunctionName = functionName;
+            WriteStoredProcFunctionParamsFalseFalse = writeStoredProcFunctionParamsFalseFalse;
+            WriteStoredProcFunctionParamsFalseTrue = writeStoredProcFunctionParamsFalseTrue;
+            WriteStoredProcFunctionParamsTrueFalse = writeStoredProcFunctionParamsTrueFalse;
+            WriteStoredProcFunctionParamsTrueTrue = writeStoredProcFunctionParamsTrueTrue;
+            WriteStoredProcFunctionParamsFalseFalseToken = writeStoredProcFunctionParamsFalseFalseToken;
+            WriteStoredProcFunctionParamsFalseTrueToken = writeStoredProcFunctionParamsFalseTrueToken;
+            WriteStoredProcFunctionParamsTrueFalseToken = writeStoredProcFunctionParamsTrueFalseToken;
+            WriteStoredProcFunctionParamsTrueTrueToken = writeStoredProcFunctionParamsTrueTrueToken;
+            AsyncFunctionCannotBeCreated = asyncFunctionCannotBeCreated;
+            WriteStoredProcFunctionOverloadCall = writeStoredProcFunctionOverloadCall;
+            WriteStoredProcFunctionSetSqlParametersFalse = writeStoredProcFunctionSetSqlParametersFalse;
+            WriteStoredProcFunctionSetSqlParametersTrue = writeStoredProcFunctionSetSqlParametersTrue;
+            Exec = exec;
+            AsyncExec = asyncExec;
+            WriteStoredProcReturnModelName = writeStoredProcReturnModelName;
+            WriteStoredProcFunctionSqlParameterAnonymousArrayTrue = writeStoredProcFunctionSqlParameterAnonymousArrayTrue;
+            WriteStoredProcFunctionSqlParameterAnonymousArrayFalse = writeStoredProcFunctionSqlParameterAnonymousArrayFalse;
+            WriteStoredProcFunctionSqlParameterAnonymousArrayTrueToken = writeStoredProcFunctionSqlParameterAnonymousArrayTrueToken;
             WriteStoredProcFunctionSqlParameterAnonymousArrayFalseToken = writeStoredProcFunctionSqlParameterAnonymousArrayFalseToken;
-            WriteStoredProcFunctionDeclareSqlParameterTrue              = writeStoredProcFunctionDeclareSqlParameterTrue;
-            WriteStoredProcFunctionDeclareSqlParameterFalse             = writeStoredProcFunctionDeclareSqlParameterFalse;
-            Parameters                                                  = parameters;
-            ReturnModelsCount                                           = returnModelsCount;
-            ExecWithNoReturnModel                                       = execWithNoReturnModel;
+            WriteStoredProcFunctionDeclareSqlParameterTrue = writeStoredProcFunctionDeclareSqlParameterTrue;
+            WriteStoredProcFunctionDeclareSqlParameterFalse = writeStoredProcFunctionDeclareSqlParameterFalse;
+            Parameters = parameters;
+            ReturnModelsCount = returnModelsCount;
+            ExecWithNoReturnModel = execWithNoReturnModel;
 
             CreateDbSetForReturnModel = true;
 
@@ -6709,44 +6713,44 @@
 
     public class TableTemplateData
     {
-        public string DbSetName        { get; }
-        public string DbSetConfigName  { get; }
-        public string PluralTableName  { get; }
-        public string DbSetModifier    { get; }
-        public string Comment          { get; }
+        public string DbSetName { get; }
+        public string DbSetConfigName { get; }
+        public string PluralTableName { get; }
+        public string DbSetModifier { get; }
+        public string Comment { get; }
         public string DbSetPrimaryKeys { get; }
-        public Table  Table            { get; }
+        public Table Table { get; }
 
         public TableTemplateData(Table table)
         {
-            Table            = table;
-            DbSetName        = table.NameHumanCaseWithSuffix();
-            DbSetConfigName  = table.NameHumanCaseWithSuffix() + Settings.ConfigurationClassName;
-            PluralTableName  = !string.IsNullOrWhiteSpace(table.PluralNameOverride) ? table.PluralNameOverride :  Inflector.MakePlural(table.NameHumanCase);
-            DbSetModifier    = table.DbSetModifier;
-            Comment          = Settings.IncludeComments == CommentsStyle.None ? string.Empty : " // " + table.DbName;
+            Table = table;
+            DbSetName = table.NameHumanCaseWithSuffix();
+            DbSetConfigName = table.NameHumanCaseWithSuffix() + Settings.ConfigurationClassName;
+            PluralTableName = !string.IsNullOrWhiteSpace(table.PluralNameOverride) ? table.PluralNameOverride : Inflector.MakePlural(table.NameHumanCase);
+            DbSetModifier = table.DbSetModifier;
+            Comment = Settings.IncludeComments == CommentsStyle.None ? string.Empty : " // " + table.DbName;
             DbSetPrimaryKeys = string.Join(", ", table.PrimaryKeys.Select(x => "\"" + x.NameHumanCase + "\""));
         }
     }
     public class TableValuedFunctionsTemplateData
     {
-        public bool SingleReturnModel                                    { get; }
-        public string SingleReturnColumnName                             { get; }
-        public string ExecName                                           { get; }
-        public string ReturnClassName                                    { get; }
-        public string PluralReturnClassName                              { get; }
-        public string WriteStoredProcFunctionParamsFalseTrue             { get; }
-        public string WriteStoredProcFunctionParamsFalseFalse            { get; }
-        public string Name                                               { get; }
-        public string Schema                                             { get; }
-        public string WriteTableValuedFunctionDeclareSqlParameter        { get; }
+        public bool SingleReturnModel { get; }
+        public string SingleReturnColumnName { get; }
+        public string ExecName { get; }
+        public string ReturnClassName { get; }
+        public string PluralReturnClassName { get; }
+        public string WriteStoredProcFunctionParamsFalseTrue { get; }
+        public string WriteStoredProcFunctionParamsFalseFalse { get; }
+        public string Name { get; }
+        public string Schema { get; }
+        public string WriteTableValuedFunctionDeclareSqlParameter { get; }
         public string WriteTableValuedFunctionSqlParameterAnonymousArray { get; }
-        public string WriteStoredProcFunctionSqlAtParams                 { get; }
-        public string FromSql                                            { get; }
-        public string QueryString                                        { get; }
-        public string ModelBuilderCommand                                { get; }
-        public string ModelBuilderPostCommand                            { get; }
-        public bool IncludeModelBuilder                                  { get; }
+        public string WriteStoredProcFunctionSqlAtParams { get; }
+        public string FromSql { get; }
+        public string QueryString { get; }
+        public string ModelBuilderCommand { get; }
+        public string ModelBuilderPostCommand { get; }
+        public bool IncludeModelBuilder { get; }
 
         public TableValuedFunctionsTemplateData(bool singleReturnModel,
             string singleReturnColumnName,
@@ -6765,23 +6769,23 @@
             string modelBuilderPostCommand,
             bool includeModelBuilder)
         {
-            SingleReturnModel                                  = singleReturnModel && !string.IsNullOrEmpty(singleReturnColumnName);
-            SingleReturnColumnName                             = singleReturnColumnName;
-            ExecName                                           = execName;
-            ReturnClassName                                    = returnClassName;
-            PluralReturnClassName                              = Inflector.MakePlural(returnClassName);
-            WriteStoredProcFunctionParamsFalseTrue             = writeStoredProcFunctionParamsFalseTrue;
-            WriteStoredProcFunctionParamsFalseFalse            = writeStoredProcFunctionParamsFalseFalse;
-            Name                                               = name;
-            Schema                                             = schema;
-            WriteTableValuedFunctionDeclareSqlParameter        = writeTableValuedFunctionDeclareSqlParameter;
+            SingleReturnModel = singleReturnModel && !string.IsNullOrEmpty(singleReturnColumnName);
+            SingleReturnColumnName = singleReturnColumnName;
+            ExecName = execName;
+            ReturnClassName = returnClassName;
+            PluralReturnClassName = Inflector.MakePlural(returnClassName);
+            WriteStoredProcFunctionParamsFalseTrue = writeStoredProcFunctionParamsFalseTrue;
+            WriteStoredProcFunctionParamsFalseFalse = writeStoredProcFunctionParamsFalseFalse;
+            Name = name;
+            Schema = schema;
+            WriteTableValuedFunctionDeclareSqlParameter = writeTableValuedFunctionDeclareSqlParameter;
             WriteTableValuedFunctionSqlParameterAnonymousArray = writeTableValuedFunctionSqlParameterAnonymousArray;
-            WriteStoredProcFunctionSqlAtParams                 = writeStoredProcFunctionSqlAtParams;
-            FromSql                                            = fromSql;
-            QueryString                                        = queryString;
-            ModelBuilderCommand                                = modelBuilderCommand;
-            ModelBuilderPostCommand                            = modelBuilderPostCommand;
-            IncludeModelBuilder                                = includeModelBuilder;
+            WriteStoredProcFunctionSqlAtParams = writeStoredProcFunctionSqlAtParams;
+            FromSql = fromSql;
+            QueryString = queryString;
+            ModelBuilderCommand = modelBuilderCommand;
+            ModelBuilderPostCommand = modelBuilderPostCommand;
+            IncludeModelBuilder = includeModelBuilder;
         }
     }
     public class HiLoSequence
@@ -7607,19 +7611,19 @@
 
     public class Licence
     {
-        public string      RegisteredTo { get; private set; }
-        public string      Company      { get; private set; }
-        public LicenceType LicenceType  { get; private set; }
-        public string      NumLicences  { get; private set; }
-        public DateTime    ValidUntil   { get; private set; }
+        public string RegisteredTo { get; private set; }
+        public string Company { get; private set; }
+        public LicenceType LicenceType { get; private set; }
+        public string NumLicences { get; private set; }
+        public DateTime ValidUntil { get; private set; }
 
         public Licence(string registeredTo, string company, LicenceType licenceType, string numLicences, DateTime validUntil)
         {
             RegisteredTo = registeredTo;
-            Company      = company;
-            LicenceType  = licenceType;
-            NumLicences  = numLicences;
-            ValidUntil   = validUntil;
+            Company = company;
+            LicenceType = licenceType;
+            NumLicences = numLicences;
+            ValidUntil = validUntil;
         }
 
         public string GetLicenceType()
@@ -7660,10 +7664,10 @@
         {
             return string.Format("{0}|{1}|{2}|{3}|{4}",
                 RegisteredTo.ToUpperInvariant().Trim(),
-                Company     .ToUpperInvariant().Trim(),
+                Company.ToUpperInvariant().Trim(),
                 GetLicenceType(),
-                NumLicences .ToUpperInvariant().Trim(),
-                ValidUntil  .ToString(LicenceConstants.ExpiryFormat, CultureInfo.InvariantCulture).ToUpperInvariant());
+                NumLicences.ToUpperInvariant().Trim(),
+                ValidUntil.ToString(LicenceConstants.ExpiryFormat, CultureInfo.InvariantCulture).ToUpperInvariant());
         }
     }
     public static class LicenceConstants
@@ -17337,186 +17341,186 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
     public class ContextModel
     {
-        public string DbContextClassModifiers                                { get; set; }
-        public string DbContextName                                          { get; set; }
-        public string DbContextBaseClass                                     { get; set; }
-        public bool AddParameterlessConstructorToDbContext                   { get; set; }
-        public bool HasDefaultConstructorArgument                            { get; set; }
-        public string DefaultConstructorArgument                             { get; set; }
-        public string ConfigurationClassName                                 { get; set; }
-        public string contextInterface                                       { get; set; }
-        public string setInitializer                                         { get; set; }
-        public bool DbContextClassIsPartial                                  { get; set; }
-        public bool SqlCe                                                    { get; set; }
-        public List<TableTemplateData> tables                                { get; set; }
-        public bool hasTables                                                { get; set; }
-        public List<string> indexes                                          { get; set; }
-        public bool hasIndexes                                               { get; set; }
-        public List<StoredProcTemplateData> storedProcs                      { get; set; }
-        public bool hasStoredProcs                                           { get; set; }
-        public List<string> tableValuedFunctionComplexTypes                  { get; set; }
-        public bool hasTableValuedFunctionComplexTypes                       { get; set; }
-        public List<string> AdditionalContextInterfaceItems                  { get; set; }
-        public bool addSaveChanges                                           { get; set; }
-        public List<TableValuedFunctionsTemplateData> tableValuedFunctions   { get; set; }
+        public string DbContextClassModifiers { get; set; }
+        public string DbContextName { get; set; }
+        public string DbContextBaseClass { get; set; }
+        public bool AddParameterlessConstructorToDbContext { get; set; }
+        public bool HasDefaultConstructorArgument { get; set; }
+        public string DefaultConstructorArgument { get; set; }
+        public string ConfigurationClassName { get; set; }
+        public string contextInterface { get; set; }
+        public string setInitializer { get; set; }
+        public bool DbContextClassIsPartial { get; set; }
+        public bool SqlCe { get; set; }
+        public List<TableTemplateData> tables { get; set; }
+        public bool hasTables { get; set; }
+        public List<string> indexes { get; set; }
+        public bool hasIndexes { get; set; }
+        public List<StoredProcTemplateData> storedProcs { get; set; }
+        public bool hasStoredProcs { get; set; }
+        public List<string> tableValuedFunctionComplexTypes { get; set; }
+        public bool hasTableValuedFunctionComplexTypes { get; set; }
+        public List<string> AdditionalContextInterfaceItems { get; set; }
+        public bool addSaveChanges { get; set; }
+        public List<TableValuedFunctionsTemplateData> tableValuedFunctions { get; set; }
         public List<ScalarValuedFunctionsTemplateData> scalarValuedFunctions { get; set; }
-        public List<RawSequence> Sequences                                   { get; set; }
-        public bool hasSequences                                             { get; set; }
-        public bool hasTableValuedFunctions                                  { get; set; }
-        public bool hasScalarValuedFunctions                                 { get; set; }
-        public string ConnectionString                                       { get; set; }
-        public string ConnectionStringName                                   { get; set; }
-        public string ConnectionStringActions                                { get; set; }
-        public bool IncludeObjectContextConstructor                          { get; set; }
-        public string QueryString                                            { get; set; }
-        public string FromSql                                                { get; set; }
-        public string ExecuteSqlCommand                                      { get; set; }
-        public string StoredProcModelBuilderCommand                          { get; set; }
-        public string StoredProcModelBuilderPostCommand                      { get; set; }
-        public bool OnConfigurationUsesConfiguration                         { get; set; }
-        public bool OnConfigurationUsesConnectionString                      { get; set; }
-        public string DefaultSchema                                          { get; set; }
-        public string UseDatabaseProvider                                    { get; set; }
-        public string SqlParameter                                           { get; set; }
-        public string SqlParameterValue                                      { get; set; }
-        public bool UseLazyLoadingProxies                                    { get; set; }
-        public bool hasTriggers                                              { get; set; }
-        public List<Trigger> Triggers                                        { get; set; }
-        public bool hasMemoryOptimisedTables                                 { get; set; }
-        public List<string> MemoryOptimisedTables                            { get; set; }
+        public List<RawSequence> Sequences { get; set; }
+        public bool hasSequences { get; set; }
+        public bool hasTableValuedFunctions { get; set; }
+        public bool hasScalarValuedFunctions { get; set; }
+        public string ConnectionString { get; set; }
+        public string ConnectionStringName { get; set; }
+        public string ConnectionStringActions { get; set; }
+        public bool IncludeObjectContextConstructor { get; set; }
+        public string QueryString { get; set; }
+        public string FromSql { get; set; }
+        public string ExecuteSqlCommand { get; set; }
+        public string StoredProcModelBuilderCommand { get; set; }
+        public string StoredProcModelBuilderPostCommand { get; set; }
+        public bool OnConfigurationUsesConfiguration { get; set; }
+        public bool OnConfigurationUsesConnectionString { get; set; }
+        public string DefaultSchema { get; set; }
+        public string UseDatabaseProvider { get; set; }
+        public string SqlParameter { get; set; }
+        public string SqlParameterValue { get; set; }
+        public bool UseLazyLoadingProxies { get; set; }
+        public bool hasTriggers { get; set; }
+        public List<Trigger> Triggers { get; set; }
+        public bool hasMemoryOptimisedTables { get; set; }
+        public List<string> MemoryOptimisedTables { get; set; }
     }
     public class FactoryModel
     {
         public string classModifier { get; set; }
-        public string contextName   { get; set; }
+        public string contextName { get; set; }
     }
 
     public class FakeContextModel
     {
-        public string DbContextClassModifiers                                { get; set; }
-        public string DbContextName                                          { get; set; }
-        public string DbContextBaseClass                                     { get; set; }
-        public string contextInterface                                       { get; set; }
-        public bool DbContextClassIsPartial                                  { get; set; }
-        public List<TableTemplateData> tables                                { get; set; }
-        public List<StoredProcTemplateData> storedProcs                      { get; set; }
-        public bool hasStoredProcs                                           { get; set; }
-        public List<TableValuedFunctionsTemplateData> tableValuedFunctions   { get; set; }
+        public string DbContextClassModifiers { get; set; }
+        public string DbContextName { get; set; }
+        public string DbContextBaseClass { get; set; }
+        public string contextInterface { get; set; }
+        public bool DbContextClassIsPartial { get; set; }
+        public List<TableTemplateData> tables { get; set; }
+        public List<StoredProcTemplateData> storedProcs { get; set; }
+        public bool hasStoredProcs { get; set; }
+        public List<TableValuedFunctionsTemplateData> tableValuedFunctions { get; set; }
         public List<ScalarValuedFunctionsTemplateData> scalarValuedFunctions { get; set; }
-        public bool hasTableValuedFunctions                                  { get; set; }
-        public bool hasScalarValuedFunctions                                 { get; set; }
+        public bool hasTableValuedFunctions { get; set; }
+        public bool hasScalarValuedFunctions { get; set; }
     }
     public class FakeDbSetModel
     {
         public string DbContextClassModifiers { get; set; }
-        public bool DbContextClassIsPartial   { get; set; }
+        public bool DbContextClassIsPartial { get; set; }
     }
 
     public class InterfaceModel
     {
-        public string interfaceModifier                                      { get; set; }
-        public string DbContextInterfaceName                                 { get; set; }
-        public string DbContextInterfaceBaseClasses                          { get; set; }
-        public string DbContextName                                          { get; set; }
-        public List<TableTemplateData> tables                                { get; set; }
-        public List<string> AdditionalContextInterfaceItems                  { get; set; }
-        public bool addSaveChanges                                           { get; set; }
-        public List<StoredProcTemplateData> storedProcs                      { get; set; }
-        public bool hasStoredProcs                                           { get; set; }
-        public List<TableValuedFunctionsTemplateData> tableValuedFunctions   { get; set; }
+        public string interfaceModifier { get; set; }
+        public string DbContextInterfaceName { get; set; }
+        public string DbContextInterfaceBaseClasses { get; set; }
+        public string DbContextName { get; set; }
+        public List<TableTemplateData> tables { get; set; }
+        public List<string> AdditionalContextInterfaceItems { get; set; }
+        public bool addSaveChanges { get; set; }
+        public List<StoredProcTemplateData> storedProcs { get; set; }
+        public bool hasStoredProcs { get; set; }
+        public List<TableValuedFunctionsTemplateData> tableValuedFunctions { get; set; }
         public List<ScalarValuedFunctionsTemplateData> scalarValuedFunctions { get; set; }
-        public bool hasTableValuedFunctions                                  { get; set; }
-        public bool hasScalarValuedFunctions                                 { get; set; }
+        public bool hasTableValuedFunctions { get; set; }
+        public bool hasScalarValuedFunctions { get; set; }
     }
 
     public class PocoConfigurationModel
     {
-        public string Name                                                        { get; set; }
-        public string ConfigurationClassName                                      { get; set; }
-        public string NameHumanCaseWithSuffix                                     { get; set; }
-        public string Schema                                                      { get; set; }
-        public string PrimaryKeyNameHumanCase                                     { get; set; }
-        public bool HasSchema                                                     { get; set; }
-        public string ClassModifier                                               { get; set; }
-        public string ClassComment                                                { get; set; }
-        public List<string> Columns                                               { get; set; }
-        public bool HasReverseNavigation                                          { get; set; }
+        public string Name { get; set; }
+        public string ConfigurationClassName { get; set; }
+        public string NameHumanCaseWithSuffix { get; set; }
+        public string Schema { get; set; }
+        public string PrimaryKeyNameHumanCase { get; set; }
+        public bool HasSchema { get; set; }
+        public string ClassModifier { get; set; }
+        public string ClassComment { get; set; }
+        public List<string> Columns { get; set; }
+        public bool HasReverseNavigation { get; set; }
         public List<PocoReverseNavigationPropertyModel> ReverseNavigationProperty { get; set; }
-        public bool HasForeignKey                                                 { get; set; }
-        public List<string> ForeignKeys                                           { get; set; }
-        public List<string> MappingConfiguration                                  { get; set; }
-        public List<string> Indexes                                               { get; set; }
-        public bool HasIndexes                                                    { get; set; }
-        public bool ConfigurationClassesArePartial                                { get; set; }
-        public bool UseHasNoKey                                                   { get; set; }
-        public string ToTableOrView                                               { get; set; }
-        public bool UsesDictionary                                                { get; set; }
-        public bool HasSpatial                                                    { get; set; }
+        public bool HasForeignKey { get; set; }
+        public List<string> ForeignKeys { get; set; }
+        public List<string> MappingConfiguration { get; set; }
+        public List<string> Indexes { get; set; }
+        public bool HasIndexes { get; set; }
+        public bool ConfigurationClassesArePartial { get; set; }
+        public bool UseHasNoKey { get; set; }
+        public string ToTableOrView { get; set; }
+        public bool UsesDictionary { get; set; }
+        public bool HasSpatial { get; set; }
     }
 
     public class PocoModel
     {
-        public bool UseHasNoKey                                                   { get; set; }
-        public bool HasNoPrimaryKey                                               { get; set; }
-        public string Name                                                        { get; set; }
-        public string NameHumanCaseWithSuffix                                     { get; set; }
-        public string ClassModifier                                               { get; set; }
-        public string ClassComment                                                { get; set; }
-        public string ExtendedComments                                            { get; set; }
-        public string ClassAttributes                                             { get; set; }
-        public string BaseClasses                                                 { get; set; }
-        public string InsideClassBody                                             { get; set; }
-        public List<PocoColumnModel> Columns                                      { get; set; }
-        public bool HasReverseNavigation                                          { get; set; }
+        public bool UseHasNoKey { get; set; }
+        public bool HasNoPrimaryKey { get; set; }
+        public string Name { get; set; }
+        public string NameHumanCaseWithSuffix { get; set; }
+        public string ClassModifier { get; set; }
+        public string ClassComment { get; set; }
+        public string ExtendedComments { get; set; }
+        public string ClassAttributes { get; set; }
+        public string BaseClasses { get; set; }
+        public string InsideClassBody { get; set; }
+        public List<PocoColumnModel> Columns { get; set; }
+        public bool HasReverseNavigation { get; set; }
         public List<PocoReverseNavigationPropertyModel> ReverseNavigationProperty { get; set; }
-        public bool HasForeignKey                                                 { get; set; }
-        public string ForeignKeyTitleComment                                      { get; set; }
-        public List<PocoForeignKeyModel> ForeignKeys                              { get; set; }
-        public bool CreateConstructor                                             { get; set; }
-        public List<PocoColumnsWithDefaultsModel> ColumnsWithDefaults             { get; set; }
-        public List<string> ReverseNavigationCtor                                 { get; set; }
-        public bool EntityClassesArePartial                                       { get; set; }
-        public bool HasHierarchyId                                                { get; set; }
-        public bool HasSpatial                                                    { get; set; }
+        public bool HasForeignKey { get; set; }
+        public string ForeignKeyTitleComment { get; set; }
+        public List<PocoForeignKeyModel> ForeignKeys { get; set; }
+        public bool CreateConstructor { get; set; }
+        public List<PocoColumnsWithDefaultsModel> ColumnsWithDefaults { get; set; }
+        public List<string> ReverseNavigationCtor { get; set; }
+        public bool EntityClassesArePartial { get; set; }
+        public bool HasHierarchyId { get; set; }
+        public bool HasSpatial { get; set; }
     }
 
     public class PocoColumnModel
     {
-        public bool AddNewLineBefore                  { get; set; }
-        public bool HasSummaryComments                { get; set; }
-        public string SummaryComments                 { get; set; }
-        public List<string> Attributes                { get; set; }
-        public bool OverrideModifier                  { get; set; }
-        public bool IncludeFieldNameConstants         { get; set; }
-        public string WrapIfNullable                  { get; set; }
-        public string NameHumanCase                   { get; set; }
+        public bool AddNewLineBefore { get; set; }
+        public bool HasSummaryComments { get; set; }
+        public string SummaryComments { get; set; }
+        public List<string> Attributes { get; set; }
+        public bool OverrideModifier { get; set; }
+        public bool IncludeFieldNameConstants { get; set; }
+        public string WrapIfNullable { get; set; }
+        public string NameHumanCase { get; set; }
         public string PrivateSetterForComputedColumns { get; set; }
-        public string PropertyInitialisers            { get; set; }
-        public string InlineComments                  { get; set; }
+        public string PropertyInitialisers { get; set; }
+        public string InlineComments { get; set; }
     }
 
     public class PocoReverseNavigationPropertyModel
     {
-        public bool ReverseNavHasComment                            { get; set; }
-        public string ReverseNavComment                             { get; set; }
+        public bool ReverseNavHasComment { get; set; }
+        public string ReverseNavComment { get; set; }
         public string[] AdditionalReverseNavigationsDataAnnotations { get; set; }
-        public string[] AdditionalDataAnnotations                   { get; set; }
-        public string Definition                                    { get; set; }
+        public string[] AdditionalDataAnnotations { get; set; }
+        public string Definition { get; set; }
     }
 
     public class PocoForeignKeyModel
     {
-        public bool HasFkComment                             { get; set; }
-        public string FkComment                              { get; set; }
+        public bool HasFkComment { get; set; }
+        public string FkComment { get; set; }
         public string[] AdditionalForeignKeysDataAnnotations { get; set; }
-        public string[] AdditionalDataAnnotations            { get; set; }
-        public string Definition                             { get; set; }
+        public string[] AdditionalDataAnnotations { get; set; }
+        public string Definition { get; set; }
     }
 
     public class PocoColumnsWithDefaultsModel
     {
         public string NameHumanCase { get; set; }
-        public string Default       { get; set; }
+        public string Default { get; set; }
     }
 
     public class StoredProcReturnModel
@@ -17530,7 +17534,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
     }
     public class Trigger
     {
-        public string TableName   { get; set; }
+        public string TableName { get; set; }
         public string TriggerName { get; set; }
     }
     public enum GeneratorType

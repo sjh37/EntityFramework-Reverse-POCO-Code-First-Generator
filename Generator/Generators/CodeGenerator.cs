@@ -11,30 +11,30 @@ namespace Efrpg.Generators
 {
     public class CodeGenerator
     {
-        private readonly Generator                               _generator;
-        private readonly IDbContextFilter                        _filter;
-        private readonly List<TableTemplateData>                 _tables;
-        private readonly List<StoredProcTemplateData>            _storedProcs;
-        private readonly List<string>                            _globalUsings;
-        private readonly Template                                _template;
-        private readonly List<TableValuedFunctionsTemplateData>  _tableValuedFunctions;
+        private readonly Generator _generator;
+        private readonly IDbContextFilter _filter;
+        private readonly List<TableTemplateData> _tables;
+        private readonly List<StoredProcTemplateData> _storedProcs;
+        private readonly List<string> _globalUsings;
+        private readonly Template _template;
+        private readonly List<TableValuedFunctionsTemplateData> _tableValuedFunctions;
         private readonly List<ScalarValuedFunctionsTemplateData> _scalarValuedFunctions;
-        private readonly List<string>                            _tableValuedFunctionComplexTypes;
+        private readonly List<string> _tableValuedFunctionComplexTypes;
 
         private readonly bool _hasTables, _hasStoredProcs, _hasTableValuedFunctions, _hasScalarValuedFunctions, _hasTableValuedFunctionComplexTypes, _hasEnums;
 
         public CodeGenerator(Generator generator, IDbContextFilter filter)
         {
 #pragma warning disable IDE0016 // Use 'throw' expression
-            if (generator == null)   throw new ArgumentNullException(nameof(generator));
-            if (filter == null)      throw new ArgumentNullException(nameof(filter));
+            if (generator == null) throw new ArgumentNullException(nameof(generator));
+            if (filter == null) throw new ArgumentNullException(nameof(filter));
 #pragma warning restore IDE0016 // Use 'throw' expression
 
-            var isEfCore      = Settings.GeneratorType == GeneratorType.EfCore;
+            var isEfCore = Settings.GeneratorType == GeneratorType.EfCore;
             var isEfCore3Plus = Settings.IsEfCore3Plus();
 
             _generator = generator;
-            _filter    = filter;
+            _filter = filter;
 
             _tables = filter.Tables
                 .Where(t => !t.IsMapping && (t.HasPrimaryKey || (t.IsView && isEfCore3Plus)))
@@ -90,7 +90,8 @@ namespace Efrpg.Generators
                         string.Format("EXEC @procResult = [{0}].[{1}] {2}", sp.Schema.DbName, sp.DbName, sp.WriteStoredProcFunctionSqlAtParams())
                     ))
                     .ToList();
-            } else
+            }
+            else
                 _storedProcs = new List<StoredProcTemplateData>();
 
             if (filter.IncludeTableValuedFunctions)
@@ -112,9 +113,9 @@ namespace Efrpg.Generators
                             ? tvf.WriteStoredProcFunctionSqlParameterAnonymousArray(false, false)
                             : tvf.WriteTableValuedFunctionSqlParameterAnonymousArray(),
                         isEfCore ? tvf.WriteNetCoreTableValuedFunctionsSqlAtParams() : tvf.WriteStoredProcFunctionSqlAtParams(),
-                        isEfCore3Plus ? "FromSqlRaw"  : "FromSql",
-                        isEfCore3Plus ? "Set"         : "Query",
-                        isEfCore3Plus ? "Entity"      : "Query",
+                        isEfCore3Plus ? "FromSqlRaw" : "FromSql",
+                        isEfCore3Plus ? "Set" : "Query",
+                        isEfCore3Plus ? "Entity" : "Query",
                         isEfCore3Plus ? ".HasNoKey()" : string.Empty,
                         !Settings.StoredProcedureReturnTypes.ContainsKey(tvf.NameHumanCase) && !Settings.StoredProcedureReturnTypes.ContainsKey(tvf.DbName)
                     ))
@@ -149,24 +150,25 @@ namespace Efrpg.Generators
                         svf.Schema.DbName
                     ))
                     .ToList();
-            } else
+            }
+            else
                 _scalarValuedFunctions = new List<ScalarValuedFunctionsTemplateData>();
 
             var returnModelsUsed = new List<string>();
-            foreach(var sp in _storedProcs)
+            foreach (var sp in _storedProcs)
             {
-                if(returnModelsUsed.Contains(sp.ReturnModelName))
+                if (returnModelsUsed.Contains(sp.ReturnModelName))
                     sp.CreateDbSetForReturnModel = false;
                 else
                     returnModelsUsed.Add(sp.ReturnModelName);
             }
 
-            _hasTables                          = _tables.Any();
-            _hasStoredProcs                     = _storedProcs.Any();
-            _hasTableValuedFunctions            = _tableValuedFunctions.Any();
-            _hasScalarValuedFunctions           = _scalarValuedFunctions.Any();
+            _hasTables = _tables.Any();
+            _hasStoredProcs = _storedProcs.Any();
+            _hasTableValuedFunctions = _tableValuedFunctions.Any();
+            _hasScalarValuedFunctions = _scalarValuedFunctions.Any();
             _hasTableValuedFunctionComplexTypes = _tableValuedFunctionComplexTypes.Any();
-            _hasEnums                           = filter.Enums.Any();
+            _hasEnums = filter.Enums.Any();
 
             _globalUsings = new List<string>();
             _template = TemplateFactory.Create();
@@ -259,19 +261,19 @@ namespace Efrpg.Generators
 
             var data = new InterfaceModel
             {
-                interfaceModifier               = Settings.DbContextInterfaceModifiers ?? "public partial",
-                DbContextInterfaceName          = Settings.DbContextInterfaceName,
-                DbContextInterfaceBaseClasses   = Settings.DbContextInterfaceBaseClasses,
-                DbContextName                   = Settings.DbContextName,
-                tables                          = _tables.Where(x => x.DbSetModifier == "public").ToList(),
+                interfaceModifier = Settings.DbContextInterfaceModifiers ?? "public partial",
+                DbContextInterfaceName = Settings.DbContextInterfaceName,
+                DbContextInterfaceBaseClasses = Settings.DbContextInterfaceBaseClasses,
+                DbContextName = Settings.DbContextName,
+                tables = _tables.Where(x => x.DbSetModifier == "public").ToList(),
                 AdditionalContextInterfaceItems = Settings.AdditionalContextInterfaceItems.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList(),
-                addSaveChanges                  = !Settings.UseInheritedBaseInterfaceFunctions,
-                storedProcs                     = _storedProcs,
-                hasStoredProcs                  = _hasStoredProcs,
-                tableValuedFunctions            = _tableValuedFunctions,
-                scalarValuedFunctions           = _scalarValuedFunctions,
-                hasTableValuedFunctions         = _hasTableValuedFunctions && _filter.IncludeTableValuedFunctions,
-                hasScalarValuedFunctions        = _hasScalarValuedFunctions && _filter.IncludeScalarValuedFunctions,
+                addSaveChanges = !Settings.UseInheritedBaseInterfaceFunctions,
+                storedProcs = _storedProcs,
+                hasStoredProcs = _hasStoredProcs,
+                tableValuedFunctions = _tableValuedFunctions,
+                scalarValuedFunctions = _scalarValuedFunctions,
+                hasTableValuedFunctions = _hasTableValuedFunctions && _filter.IncludeTableValuedFunctions,
+                hasScalarValuedFunctions = _hasScalarValuedFunctions && _filter.IncludeScalarValuedFunctions,
             };
 
             var co = new CodeOutput(string.Empty, filename, "Database context interface", Settings.InterfaceFolder, _globalUsings);
@@ -315,55 +317,55 @@ namespace Efrpg.Generators
 
             var data = new ContextModel
             {
-                DbContextClassModifiers                = Settings.DbContextClassModifiers,
-                DbContextName                          = Settings.DbContextName,
-                DbContextBaseClass                     = Settings.DbContextBaseClass,
+                DbContextClassModifiers = Settings.DbContextClassModifiers,
+                DbContextName = Settings.DbContextName,
+                DbContextBaseClass = Settings.DbContextBaseClass,
                 AddParameterlessConstructorToDbContext = Settings.AddParameterlessConstructorToDbContext,
-                HasDefaultConstructorArgument          = !string.IsNullOrEmpty(Settings.DefaultConstructorArgument),
-                DefaultConstructorArgument             = Settings.DefaultConstructorArgument,
-                ConfigurationClassName                 = Settings.ConfigurationClassName,
-                ConnectionString                       = Settings.ConnectionString,
-                ConnectionStringName                   = Settings.ConnectionStringName,
-                ConnectionStringActions                = GetConnectionStringActions(hasSpatialTypes, hasHierarchyIdType),
-                contextInterface                       = string.IsNullOrWhiteSpace(Settings.DbContextInterfaceName) ? "" : ", " + Settings.DbContextInterfaceName,
-                setInitializer                         = string.Format("<{0}>(null);", Settings.DbContextName),
-                DbContextClassIsPartial                = Settings.DbContextClassIsPartial(),
-                SqlCe                                  = Settings.DatabaseType == DatabaseType.SqlCe,
-                tables                                 = _tables,
-                hasTables                              = _hasTables,
-                indexes                                = indexes,
-                storedProcs                            = _storedProcs,
-                hasStoredProcs                         = _hasStoredProcs,
-                tableValuedFunctionComplexTypes        = _tableValuedFunctionComplexTypes,
-                hasTableValuedFunctionComplexTypes     = _hasTableValuedFunctionComplexTypes,
-                AdditionalContextInterfaceItems        = Settings.AdditionalContextInterfaceItems.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList(),
-                addSaveChanges                         = !Settings.UseInheritedBaseInterfaceFunctions,
-                tableValuedFunctions                   = _tableValuedFunctions,
-                scalarValuedFunctions                  = _scalarValuedFunctions,
-                Sequences                              = _filter.Sequences,
-                hasTableValuedFunctions                = _hasTableValuedFunctions && _filter.IncludeTableValuedFunctions,
-                hasScalarValuedFunctions               = _hasScalarValuedFunctions && _filter.IncludeScalarValuedFunctions,
-                IncludeObjectContextConstructor        = !Settings.DbContextBaseClass.Contains("IdentityDbContext"),
-                QueryString                            = isEfCore3Plus ? "Set"           : "Query",
-                FromSql                                = isEfCore3Plus ? "FromSqlRaw"    : "FromSql",
-                ExecuteSqlCommand                      = isEfCore3Plus ? "ExecuteSqlRaw" : "ExecuteSqlCommand",
-                StoredProcModelBuilderCommand          = isEfCore3Plus ? "Entity"        : "Query",
-                StoredProcModelBuilderPostCommand      = isEfCore3Plus ? ".HasNoKey()"   : string.Empty,
-                OnConfigurationUsesConfiguration       = Settings.OnConfiguration == OnConfiguration.Configuration,
-                OnConfigurationUsesConnectionString    = Settings.OnConfiguration == OnConfiguration.ConnectionString,
-                DefaultSchema                          = Settings.DefaultSchema,
-                UseDatabaseProvider                    = Settings.DatabaseProvider(),
-                UseLazyLoadingProxies                  = Settings.UseLazyLoading && Settings.IsEfCore3Plus(),
-                SqlParameter                           = Settings.SqlParameter(),
-                SqlParameterValue                      = Settings.SqlParameterValue(),
-                Triggers                               = _tables.Where(x => !string.IsNullOrEmpty(x.Table.TriggerName) || x.Table.Columns.Any(c => c.IsComputed))
+                HasDefaultConstructorArgument = !string.IsNullOrEmpty(Settings.DefaultConstructorArgument),
+                DefaultConstructorArgument = Settings.DefaultConstructorArgument,
+                ConfigurationClassName = Settings.ConfigurationClassName,
+                ConnectionString = Settings.ConnectionString,
+                ConnectionStringName = Settings.ConnectionStringName,
+                ConnectionStringActions = GetConnectionStringActions(hasSpatialTypes, hasHierarchyIdType),
+                contextInterface = string.IsNullOrWhiteSpace(Settings.DbContextInterfaceName) ? "" : ", " + Settings.DbContextInterfaceName,
+                setInitializer = string.Format("<{0}>(null);", Settings.DbContextName),
+                DbContextClassIsPartial = Settings.DbContextClassIsPartial(),
+                SqlCe = Settings.DatabaseType == DatabaseType.SqlCe,
+                tables = _tables,
+                hasTables = _hasTables,
+                indexes = indexes,
+                storedProcs = _storedProcs,
+                hasStoredProcs = _hasStoredProcs,
+                tableValuedFunctionComplexTypes = _tableValuedFunctionComplexTypes,
+                hasTableValuedFunctionComplexTypes = _hasTableValuedFunctionComplexTypes,
+                AdditionalContextInterfaceItems = Settings.AdditionalContextInterfaceItems.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList(),
+                addSaveChanges = !Settings.UseInheritedBaseInterfaceFunctions,
+                tableValuedFunctions = _tableValuedFunctions,
+                scalarValuedFunctions = _scalarValuedFunctions,
+                Sequences = _filter.Sequences,
+                hasTableValuedFunctions = _hasTableValuedFunctions && _filter.IncludeTableValuedFunctions,
+                hasScalarValuedFunctions = _hasScalarValuedFunctions && _filter.IncludeScalarValuedFunctions,
+                IncludeObjectContextConstructor = !Settings.DbContextBaseClass.Contains("IdentityDbContext"),
+                QueryString = isEfCore3Plus ? "Set" : "Query",
+                FromSql = isEfCore3Plus ? "FromSqlRaw" : "FromSql",
+                ExecuteSqlCommand = isEfCore3Plus ? "ExecuteSqlRaw" : "ExecuteSqlCommand",
+                StoredProcModelBuilderCommand = isEfCore3Plus ? "Entity" : "Query",
+                StoredProcModelBuilderPostCommand = isEfCore3Plus ? ".HasNoKey()" : string.Empty,
+                OnConfigurationUsesConfiguration = Settings.OnConfiguration == OnConfiguration.Configuration,
+                OnConfigurationUsesConnectionString = Settings.OnConfiguration == OnConfiguration.ConnectionString,
+                DefaultSchema = Settings.DefaultSchema,
+                UseDatabaseProvider = Settings.DatabaseProvider(),
+                UseLazyLoadingProxies = Settings.UseLazyLoading && Settings.IsEfCore3Plus(),
+                SqlParameter = Settings.SqlParameter(),
+                SqlParameterValue = Settings.SqlParameterValue(),
+                Triggers = _tables.Where(x => !string.IsNullOrEmpty(x.Table.TriggerName) || x.Table.Columns.Any(c => c.IsComputed))
                                                                 .Select(x => new Trigger { TableName = x.Table.NameHumanCase, TriggerName = x.Table.TriggerName ?? "HasComputedColumn" }).ToList(),
-                MemoryOptimisedTables                  = _tables.Where(x => x.Table.IsMemoryOptimised).Select(x => x.Table.NameHumanCase).ToList()
+                MemoryOptimisedTables = _tables.Where(x => x.Table.IsMemoryOptimised).Select(x => x.Table.NameHumanCase).ToList()
             };
 
-            data.hasIndexes               = data.indexes.Any();
-            data.hasTriggers              = data.Triggers.Any();
-            data.hasSequences             = data.Sequences.Any();
+            data.hasIndexes = data.indexes.Any();
+            data.hasTriggers = data.Triggers.Any();
+            data.hasSequences = data.Sequences.Any();
             data.hasMemoryOptimisedTables = data.MemoryOptimisedTables.Any();
 
             var co = new CodeOutput(string.Empty, filename, "Database context", Settings.ContextFolder, _globalUsings);
@@ -379,7 +381,7 @@ namespace Efrpg.Generators
             {
                 case TemplateType.Ef6:
                     return string.Empty;
-                
+
                 case TemplateType.EfCore3:
                     hasHierarchyIdType = false;
                     break;
@@ -405,15 +407,17 @@ namespace Efrpg.Generators
 
             var data = new FakeContextModel
             {
-                DbContextClassModifiers  = Settings.DbContextClassModifiers, DbContextName = Settings.DbContextName, DbContextBaseClass = Settings.DbContextBaseClass,
-                contextInterface         = string.IsNullOrWhiteSpace(Settings.DbContextInterfaceName) ? "" : " : " + Settings.DbContextInterfaceName,
-                DbContextClassIsPartial  = Settings.DbContextClassIsPartial(),
-                tables                   = _tables,
-                storedProcs              = _storedProcs,
-                hasStoredProcs           = _hasStoredProcs,
-                tableValuedFunctions     = _tableValuedFunctions,
-                scalarValuedFunctions    = _scalarValuedFunctions,
-                hasTableValuedFunctions  = _hasTableValuedFunctions && _filter.IncludeTableValuedFunctions,
+                DbContextClassModifiers = Settings.DbContextClassModifiers,
+                DbContextName = Settings.DbContextName,
+                DbContextBaseClass = Settings.DbContextBaseClass,
+                contextInterface = string.IsNullOrWhiteSpace(Settings.DbContextInterfaceName) ? "" : " : " + Settings.DbContextInterfaceName,
+                DbContextClassIsPartial = Settings.DbContextClassIsPartial(),
+                tables = _tables,
+                storedProcs = _storedProcs,
+                hasStoredProcs = _hasStoredProcs,
+                tableValuedFunctions = _tableValuedFunctions,
+                scalarValuedFunctions = _scalarValuedFunctions,
+                hasTableValuedFunctions = _hasTableValuedFunctions && _filter.IncludeTableValuedFunctions,
                 hasScalarValuedFunctions = _hasScalarValuedFunctions && _filter.IncludeScalarValuedFunctions,
             };
 
@@ -480,59 +484,59 @@ namespace Efrpg.Generators
 
             var data = new PocoModel
             {
-                UseHasNoKey             = isEfCore3Plus && table.IsView && !table.HasPrimaryKey,
-                HasNoPrimaryKey         = !table.HasPrimaryKey,
-                Name                    = table.DbName,
+                UseHasNoKey = isEfCore3Plus && table.IsView && !table.HasPrimaryKey,
+                HasNoPrimaryKey = !table.HasPrimaryKey,
+                Name = table.DbName,
                 NameHumanCaseWithSuffix = table.NameHumanCaseWithSuffix(),
-                ClassModifier           = Settings.EntityClassesModifiers,
-                ClassComment            = table.WriteComments(),
-                ExtendedComments        = table.WriteExtendedComments(),
-                ClassAttributes         = table.WriteClassAttributes(),
-                BaseClasses             = table.BaseClasses,
-                InsideClassBody         = Settings.WriteInsideClassBody(table),
-                HasHierarchyId          = table.Columns.Any(x => x.PropertyType.EndsWith("hierarchyid", StringComparison.InvariantCultureIgnoreCase)),
+                ClassModifier = Settings.EntityClassesModifiers,
+                ClassComment = table.WriteComments(),
+                ExtendedComments = table.WriteExtendedComments(),
+                ClassAttributes = table.WriteClassAttributes(),
+                BaseClasses = table.BaseClasses,
+                InsideClassBody = Settings.WriteInsideClassBody(table),
+                HasHierarchyId = table.Columns.Any(x => x.PropertyType.EndsWith("hierarchyid", StringComparison.InvariantCultureIgnoreCase)),
                 Columns = table.Columns
                     .Where(x => !x.Hidden && !x.ExistsInBaseClass)
                     .OrderBy(x => x.Ordinal)
                     .Select((col, index) => new PocoColumnModel
                     {
-                        AddNewLineBefore                = index > 0 && (((Settings.IncludeExtendedPropertyComments == CommentsStyle.InSummaryBlock || Settings.IncludeComments == CommentsStyle.InSummaryBlock) && !string.IsNullOrEmpty(col.SummaryComments)) || (col.Attributes != null && col.Attributes.Any())),
-                        HasSummaryComments              = (Settings.IncludeExtendedPropertyComments == CommentsStyle.InSummaryBlock || Settings.IncludeComments == CommentsStyle.InSummaryBlock) && !string.IsNullOrEmpty(col.SummaryComments),
-                        SummaryComments                 = !string.IsNullOrEmpty(col.SummaryComments) ? SecurityElement.Escape(col.SummaryComments) : null,
-                        Attributes                      = col.Attributes,
-                        OverrideModifier                = col.OverrideModifier,
-                        IncludeFieldNameConstants       = Settings.IncludeFieldNameConstants,
-                        WrapIfNullable                  = col.WrapIfNullable(),
-                        NameHumanCase                   = col.NameHumanCase,
+                        AddNewLineBefore = index > 0 && (((Settings.IncludeExtendedPropertyComments == CommentsStyle.InSummaryBlock || Settings.IncludeComments == CommentsStyle.InSummaryBlock) && !string.IsNullOrEmpty(col.SummaryComments)) || (col.Attributes != null && col.Attributes.Any())),
+                        HasSummaryComments = (Settings.IncludeExtendedPropertyComments == CommentsStyle.InSummaryBlock || Settings.IncludeComments == CommentsStyle.InSummaryBlock) && !string.IsNullOrEmpty(col.SummaryComments),
+                        SummaryComments = !string.IsNullOrEmpty(col.SummaryComments) ? SecurityElement.Escape(col.SummaryComments) : null,
+                        Attributes = col.Attributes,
+                        OverrideModifier = col.OverrideModifier,
+                        IncludeFieldNameConstants = Settings.IncludeFieldNameConstants,
+                        WrapIfNullable = col.WrapIfNullable(),
+                        NameHumanCase = col.NameHumanCase,
                         PrivateSetterForComputedColumns = Settings.UsePrivateSetterForComputedColumns && col.IsComputed ? "private " : string.Empty,
-                        PropertyInitialisers            = Settings.UsePropertyInitialisers ? (string.IsNullOrWhiteSpace(col.Default) ? string.Empty : string.Format(" = {0};", col.Default)) : string.Empty,
-                        InlineComments                  = col.InlineComments
+                        PropertyInitialisers = Settings.UsePropertyInitialisers ? (string.IsNullOrWhiteSpace(col.Default) ? string.Empty : string.Format(" = {0};", col.Default)) : string.Empty,
+                        InlineComments = col.InlineComments
                     })
                     .ToList(),
-                HasReverseNavigation      = table.ReverseNavigationProperty.Count > 0,
+                HasReverseNavigation = table.ReverseNavigationProperty.Count > 0,
                 ReverseNavigationProperty = table.ReverseNavigationProperty
                     .OrderBy(x => x.Definition)
                     .Select(x => new PocoReverseNavigationPropertyModel
                     {
-                        ReverseNavHasComment                        = Settings.IncludeComments != CommentsStyle.None && !string.IsNullOrEmpty(x.Comments),
-                        ReverseNavComment                           = Settings.IncludeComments != CommentsStyle.None ? x.Comments : string.Empty,
+                        ReverseNavHasComment = Settings.IncludeComments != CommentsStyle.None && !string.IsNullOrEmpty(x.Comments),
+                        ReverseNavComment = Settings.IncludeComments != CommentsStyle.None ? x.Comments : string.Empty,
                         AdditionalReverseNavigationsDataAnnotations = Settings.AdditionalReverseNavigationsDataAnnotations,
-                        AdditionalDataAnnotations                   = x.AdditionalDataAnnotations,
-                        Definition                                  = x.Definition
+                        AdditionalDataAnnotations = x.AdditionalDataAnnotations,
+                        Definition = x.Definition
                     })
                     .ToList(),
-                HasForeignKey          = table.HasForeignKey,
+                HasForeignKey = table.HasForeignKey,
                 ForeignKeyTitleComment = Settings.IncludeComments != CommentsStyle.None && table.Columns.SelectMany(x => x.EntityFk).Any() ? "    // Foreign keys" + Environment.NewLine : string.Empty,
-                ForeignKeys            = table.Columns
+                ForeignKeys = table.Columns
                     .SelectMany(x => x.EntityFk)
                     .OrderBy(o => o.Definition)
                     .Select(x => new PocoForeignKeyModel
                     {
-                        HasFkComment                         = Settings.IncludeComments != CommentsStyle.None && !string.IsNullOrEmpty(x.Comments),
-                        FkComment                            = x.Comments,
+                        HasFkComment = Settings.IncludeComments != CommentsStyle.None && !string.IsNullOrEmpty(x.Comments),
+                        FkComment = x.Comments,
                         AdditionalForeignKeysDataAnnotations = Settings.AdditionalForeignKeysDataAnnotations,
-                        AdditionalDataAnnotations            = x.AdditionalDataAnnotations,
-                        Definition                           = x.Definition
+                        AdditionalDataAnnotations = x.AdditionalDataAnnotations,
+                        Definition = x.Definition
                     })
                     .ToList(),
                 CreateConstructor = !Settings.UsePropertyInitialisers &&
@@ -546,7 +550,7 @@ namespace Efrpg.Generators
                     .OrderBy(x => x.Ordinal)
                     .Select(x => new PocoColumnsWithDefaultsModel { NameHumanCase = x.NameHumanCase, Default = x.Default })
                     .ToList(),
-                ReverseNavigationCtor   = table.ReverseNavigationCtor,
+                ReverseNavigationCtor = table.ReverseNavigationCtor,
                 EntityClassesArePartial = Settings.EntityClassesArePartial(),
                 HasSpatial = table.Columns.Any(x => x.IsSpatial)
             };
@@ -574,45 +578,45 @@ namespace Efrpg.Generators
             var isEfCore3Plus = Settings.IsEfCore3Plus();
 
             var foreignKeys = columns.SelectMany(x => x.ConfigFk).OrderBy(o => o).ToList();
-            var primaryKey  = _generator.PrimaryKeyModelBuilder(table);
+            var primaryKey = _generator.PrimaryKeyModelBuilder(table);
 
-            var indexes    = _generator.IndexModelBuilder(table);
+            var indexes = _generator.IndexModelBuilder(table);
             var hasIndexes = indexes != null && indexes.Any();
 
             var data = new PocoConfigurationModel
             {
-                UseHasNoKey               = isEfCore3Plus && table.IsView && !table.HasPrimaryKey,
-                Name                      = table.DbName,
-                ToTableOrView             = (isEfCore3Plus && table.IsView && !table.HasPrimaryKey) ? "ToView" : "ToTable",
-                ConfigurationClassName    = table.NameHumanCaseWithSuffix() + Settings.ConfigurationClassName,
-                NameHumanCaseWithSuffix   = table.NameHumanCaseWithSuffix(),
-                Schema                    = table.Schema.DbName,
-                PrimaryKeyNameHumanCase   = primaryKey ?? table.PrimaryKeyNameHumanCase(),
-                HasSchema                 = !string.IsNullOrEmpty(table.Schema.DbName),
-                ClassModifier             = Settings.ConfigurationClassesModifiers,
-                ClassComment              = table.WriteComments(),
-                Columns                   = columns.Select(x => x.Config).ToList(),
-                HasReverseNavigation      = table.ReverseNavigationProperty.Count > 0,
-                UsesDictionary            = table.UsesDictionary,
-                HasSpatial                = table.Columns.Any(x => x.IsSpatial),
+                UseHasNoKey = isEfCore3Plus && table.IsView && !table.HasPrimaryKey,
+                Name = table.DbName,
+                ToTableOrView = (isEfCore3Plus && table.IsView && !table.HasPrimaryKey) ? "ToView" : "ToTable",
+                ConfigurationClassName = table.NameHumanCaseWithSuffix() + Settings.ConfigurationClassName,
+                NameHumanCaseWithSuffix = table.NameHumanCaseWithSuffix(),
+                Schema = table.Schema.DbName,
+                PrimaryKeyNameHumanCase = primaryKey ?? table.PrimaryKeyNameHumanCase(),
+                HasSchema = !string.IsNullOrEmpty(table.Schema.DbName),
+                ClassModifier = Settings.ConfigurationClassesModifiers,
+                ClassComment = table.WriteComments(),
+                Columns = columns.Select(x => x.Config).ToList(),
+                HasReverseNavigation = table.ReverseNavigationProperty.Count > 0,
+                UsesDictionary = table.UsesDictionary,
+                HasSpatial = table.Columns.Any(x => x.IsSpatial),
                 ReverseNavigationProperty = table.ReverseNavigationProperty
                     .OrderBy(x => x.Definition)
                     .Select(x => new PocoReverseNavigationPropertyModel
                     {
-                        ReverseNavHasComment                        = Settings.IncludeComments != CommentsStyle.None && !string.IsNullOrEmpty(x.Comments),
-                        ReverseNavComment                           = Settings.IncludeComments != CommentsStyle.None ? x.Comments : string.Empty,
+                        ReverseNavHasComment = Settings.IncludeComments != CommentsStyle.None && !string.IsNullOrEmpty(x.Comments),
+                        ReverseNavComment = Settings.IncludeComments != CommentsStyle.None ? x.Comments : string.Empty,
                         AdditionalReverseNavigationsDataAnnotations = Settings.AdditionalReverseNavigationsDataAnnotations,
-                        AdditionalDataAnnotations                   = x.AdditionalDataAnnotations,
-                        Definition                                  = x.Definition
+                        AdditionalDataAnnotations = x.AdditionalDataAnnotations,
+                        Definition = x.Definition
                     })
                     .ToList(),
 
-                HasForeignKey                  = foreignKeys.Any(),
-                ForeignKeys                    = foreignKeys,
-                MappingConfiguration           = table.MappingConfiguration,
+                HasForeignKey = foreignKeys.Any(),
+                ForeignKeys = foreignKeys,
+                MappingConfiguration = table.MappingConfiguration,
                 ConfigurationClassesArePartial = Settings.ConfigurationClassesArePartial(),
-                Indexes                        = indexes,
-                HasIndexes                     = hasIndexes
+                Indexes = indexes,
+                HasIndexes = hasIndexes
             };
 
             var co = new CodeOutput(table.DbName, filename, null, Settings.PocoConfigurationFolder, _globalUsings);
