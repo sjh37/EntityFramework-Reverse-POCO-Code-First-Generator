@@ -52,7 +52,12 @@ namespace Efrpg
             return Parameters.Any(x => x.Mode != StoredProcedureParameterMode.In);
         }
 
-        public string WriteStoredProcFunctionParams(bool includeProcResult, bool forInterface)
+        public bool StoredProcCanExecuteAsync()
+        {
+            return !StoredProcHasOutParams() && !IsTableValuedFunction && ReturnModels.Count <= 1;
+        }
+
+        public string WriteStoredProcFunctionParams(bool includeProcResult, bool forInterface, bool includeCancellationToken = false)
         {
             var willIncludeProcResult = includeProcResult && ReturnModels.Count > 0 && ReturnModels.First().Count > 0;
             var sb = new StringBuilder(255);
@@ -80,7 +85,10 @@ namespace Efrpg
             if (willIncludeProcResult)
                 sb.Append("out int procResult, ");
 
-            if(willIncludeProcResult || sb.Length > 2)
+            if (includeCancellationToken)
+                sb.Append("CancellationToken cancellationToken = default(CancellationToken), ");
+
+            if (includeCancellationToken || willIncludeProcResult || sb.Length > 2)
                 sb.Length -= 2;
 
             return sb.ToString();
@@ -222,13 +230,20 @@ namespace Efrpg
             return sb.ToString();
         }
 
-        public string WriteStoredProcFunctionSqlParameterAnonymousArray(bool includeProcResultParam, bool appendParam)
+        public string WriteStoredProcFunctionSqlParameterAnonymousArray(bool includeProcResultParam, bool appendParam, bool includeCancellationToken = false, bool isEfCore3Plus = false)
         {
             var sb = new StringBuilder(255);
             var parameters = Parameters.OrderBy(x => x.Ordinal).ToList();
             var hasParam = parameters.Any();
+
+            if (!isEfCore3Plus && includeCancellationToken)
+                sb.Append(", cancellationToken");
+
             if (hasParam || includeProcResultParam)
                 sb.Append(", ");
+
+            if (isEfCore3Plus && (hasParam || includeProcResultParam))
+                sb.Append(" new[] {");
 
             foreach (var p in Parameters.OrderBy(x => x.Ordinal))
             {
@@ -240,6 +255,11 @@ namespace Efrpg
                 sb.Append("procResultParam");
             else if (hasParam)
                 sb.Remove(sb.Length - 2, 2);
+
+            if (isEfCore3Plus && (hasParam || includeProcResultParam))
+                sb.Append("}");
+            if (isEfCore3Plus && includeCancellationToken)
+                sb.Append(", cancellationToken");
 
             return sb.ToString();
         }

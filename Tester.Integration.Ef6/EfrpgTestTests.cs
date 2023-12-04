@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Reflection;
 using Generator.Tests.Common;
 using NUnit.Framework;
 

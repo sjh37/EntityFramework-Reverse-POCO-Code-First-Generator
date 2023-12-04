@@ -67,6 +67,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>EfrpgTest.tt</DependentUpon>
     </Compile>
+    <Compile Include="EfrpgContextTests.cs" />
     <Compile Include="FakeContextTests.cs" />
     <Compile Include="Northwind.cs">
       <AutoGen>True</AutoGen>

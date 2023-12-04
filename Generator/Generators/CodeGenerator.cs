@@ -48,17 +48,22 @@ namespace Efrpg.Generators
                     .Where(s => s.IsStoredProcedure)
                     .OrderBy(x => x.NameHumanCase)
                     .Select(sp => new StoredProcTemplateData(
+                        sp.ReturnModels.Count == 0,
                         sp.ReturnModels.Count > 0,
                         sp.ReturnModels.Count == 1,
                         sp.ReturnModels.Count > 1,
                         sp.WriteStoredProcReturnType(_filter),
                         sp.WriteStoredProcReturnModelName(filter),
                         sp.WriteStoredProcFunctionName(filter),
-                        sp.WriteStoredProcFunctionParams(false, false),
-                        sp.WriteStoredProcFunctionParams(false, true),
-                        sp.WriteStoredProcFunctionParams(true, false),
-                        sp.WriteStoredProcFunctionParams(true, true),
-                        sp.StoredProcHasOutParams() || sp.ReturnModels.Count == 0,
+                        sp.WriteStoredProcFunctionParams(false, false, false),
+                        sp.WriteStoredProcFunctionParams(false, true, false),
+                        sp.WriteStoredProcFunctionParams(true, false, false),
+                        sp.WriteStoredProcFunctionParams(true, true, false),
+                        sp.WriteStoredProcFunctionParams(false, false, true),
+                        sp.WriteStoredProcFunctionParams(false, true, true),
+                        sp.WriteStoredProcFunctionParams(true, false, true),
+                        sp.WriteStoredProcFunctionParams(true, true, true),
+                        !sp.StoredProcCanExecuteAsync(),
                         sp.WriteStoredProcFunctionOverloadCall(),
                         sp.WriteStoredProcFunctionSetSqlParameters(false),
                         sp.WriteStoredProcFunctionSetSqlParameters(true),
@@ -66,13 +71,18 @@ namespace Efrpg.Generators
                             ? // exec
                             string.Format("EXEC @procResult = [{0}].[{1}] {2}", sp.Schema.DbName, sp.DbName, sp.WriteStoredProcFunctionSqlAtParams()).Trim()
                             : string.Format("[{0}].[{1}]", sp.Schema.DbName, sp.DbName),
-                        sp.ReturnModels.Count == 1
+                        sp.ReturnModels.Count == 0
                             ? // Async exec
-                            string.Format("EXEC [{0}].[{1}] {2}", sp.Schema.DbName, sp.DbName, sp.WriteStoredProcFunctionSqlAtParams()).Trim()
-                            : string.Format("[{0}].[{1}]", sp.Schema.DbName, sp.DbName),
+                            string.Format("EXEC @procResult = [{0}].[{1}] {2}", sp.Schema.DbName, sp.DbName, sp.WriteStoredProcFunctionSqlAtParams()).Trim()
+                            : sp.ReturnModels.Count == 1
+                                ?
+                                string.Format("EXEC [{0}].[{1}] {2}", sp.Schema.DbName, sp.DbName, sp.WriteStoredProcFunctionSqlAtParams()).Trim()
+                                : string.Format("[{0}].[{1}]", sp.Schema.DbName, sp.DbName),
                         sp.WriteStoredProcReturnModelName(_filter),
-                        sp.WriteStoredProcFunctionSqlParameterAnonymousArray(true, true),
-                        sp.WriteStoredProcFunctionSqlParameterAnonymousArray(false, true),
+                        sp.WriteStoredProcFunctionSqlParameterAnonymousArray(true, true, false),
+                        sp.WriteStoredProcFunctionSqlParameterAnonymousArray(false, true, false),
+                        sp.WriteStoredProcFunctionSqlParameterAnonymousArray(true, true, true, isEfCore3Plus),
+                        sp.WriteStoredProcFunctionSqlParameterAnonymousArray(false, true, true, isEfCore3Plus),
                         sp.WriteStoredProcFunctionDeclareSqlParameter(true),
                         sp.WriteStoredProcFunctionDeclareSqlParameter(false),
                         sp.Parameters.OrderBy(x => x.Ordinal).Select(sp.WriteStoredProcSqlParameterName).ToList(),
