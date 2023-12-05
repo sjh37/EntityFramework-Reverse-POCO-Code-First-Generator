@@ -1,6 +1,7 @@
-﻿using Efrpg.LanguageMapping;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using Efrpg.LanguageMapping;
 
 namespace Efrpg.Readers
 {
@@ -11,31 +12,31 @@ namespace Efrpg.Readers
         {
             StoredProcedureParameterDbType = new Dictionary<string, string>
             {
-                { string.Empty,     "TEXT" }, // default
-                { "byte",           "INTEGER" },
-                { "ByteEnum",       "INTEGER" },
-                { "DateTime",       "TEXT" },
+                { string.Empty, "TEXT" }, // default
+                { "byte", "INTEGER" },
+                { "ByteEnum", "INTEGER" },
+                { "DateTime", "TEXT" },
                 { "DateTimeOffset", "TEXT" },
-                { "decimal",        "TEXT" },
-                { "double",         "REAL" },
-                { "float",          "REAL" },
-                { "Guid",           "TEXT" },
-                { "int",            "INTEGER" },
-                { "IntEnum",        "INTEGER" },
-                { "long",           "INTEGER" },
-                { "LongEnum",       "INTEGER" },
-                { "sbyte",          "INTEGER" },
-                { "SByteEnum",      "INTEGER" },
-                { "short",          "INTEGER" },
-                { "ShortEnum",      "INTEGER" },
-                { "string",         "TEXT" },
-                { "TimeSpan",       "TEXT" },
-                { "uint",           "INTEGER" },
-                { "UIntEnum",       "INTEGER" },
-                { "ulong",          "INTEGER" },
-                { "ULongEnum",      "INTEGER" },
-                { "ushort",         "INTEGER" },
-                { "UShortEnum",     "INTEGER" }
+                { "decimal", "TEXT" },
+                { "double", "REAL" },
+                { "float", "REAL" },
+                { "Guid", "TEXT" },
+                { "int", "INTEGER" },
+                { "IntEnum", "INTEGER" },
+                { "long", "INTEGER" },
+                { "LongEnum", "INTEGER" },
+                { "sbyte", "INTEGER" },
+                { "SByteEnum", "INTEGER" },
+                { "short", "INTEGER" },
+                { "ShortEnum", "INTEGER" },
+                { "string", "TEXT" },
+                { "TimeSpan", "TEXT" },
+                { "uint", "INTEGER" },
+                { "UIntEnum", "INTEGER" },
+                { "ulong", "INTEGER" },
+                { "ULongEnum", "INTEGER" },
+                { "ushort", "INTEGER" },
+                { "UShortEnum", "INTEGER" }
             };
         }
 
@@ -220,7 +221,7 @@ WHERE type = 'trigger'";
         }
 
         protected override string SynonymStoredProcedureSQL()
-        { 
+        {
             return string.Empty;
         }
 
@@ -251,8 +252,7 @@ WHERE type = 'trigger'";
 
         public override void ReadStoredProcReturnObjects(List<StoredProcedure> procs)
         {
-            throw new System.NotImplementedException();
-
+            throw new NotImplementedException();
         }
 
         public override void Init()

@@ -8,7 +8,7 @@
         public RawMemoryOptimisedTable(string schemaName, string tableName)
         {
             SchemaName = schemaName;
-            TableName  = tableName;
+            TableName = tableName;
         }
     }
 }

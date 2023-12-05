@@ -8,8 +8,8 @@
 
         public RawTrigger(string schemaName, string tableName, string triggerName)
         {
-            SchemaName  = schemaName;
-            TableName   = tableName;
+            SchemaName = schemaName;
+            TableName = tableName;
             TriggerName = triggerName;
         }
     }

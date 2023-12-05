@@ -12479,9 +12479,9 @@ and limitations under the License.
         public bool IncludeSchema { get; protected set; }
         public bool DoNotSpecifySizeForMaxLength { get; protected set; }
 
-        public bool IsSpatialType(string propertyType)           => propertyType != null && SpatialTypes != null && SpatialTypes.Contains(propertyType);
+        public bool IsSpatialType(string propertyType) => propertyType != null && SpatialTypes != null && SpatialTypes.Contains(propertyType);
         public bool IsPrecisionAndScaleType(string propertyType) => propertyType != null && PrecisionAndScaleTypes != null && PrecisionAndScaleTypes.Contains(propertyType);
-        public bool IsPrecisionType(string propertyType)         => propertyType != null && PrecisionTypes != null && PrecisionTypes.Contains(propertyType);
+        public bool IsPrecisionType(string propertyType) => propertyType != null && PrecisionTypes != null && PrecisionTypes.Contains(propertyType);
 
         protected abstract string TableSQL();
         protected abstract string ForeignKeySQL();
@@ -12502,7 +12502,7 @@ and limitations under the License.
             CompatibilityLevel,
             InMemorySupported,
             TableList,
-            
+
             Count // This is always the last value
         }
 
@@ -12528,18 +12528,18 @@ and limitations under the License.
             if (databaseToPropertyType == null)
                 databaseToPropertyType = new SqlServerToCSharp(); // Default. Can be overridden in PluginDatabaseReader
 
-            DbTypeToPropertyType         = databaseToPropertyType.GetMapping();
-            SpatialTypes                 = databaseToPropertyType.SpatialTypes();
-            PrecisionTypes               = databaseToPropertyType.PrecisionTypes();
-            PrecisionAndScaleTypes       = databaseToPropertyType.PrecisionAndScaleTypes();
-            DatabaseEdition              = null;
-            DatabaseEngineEdition        = null;
-            DatabaseProductVersion       = null;
-            _factory                     = factory;
-            DatabaseReaderPlugin         = null;
-            IncludeSchema                = true;
+            DbTypeToPropertyType = databaseToPropertyType.GetMapping();
+            SpatialTypes = databaseToPropertyType.SpatialTypes();
+            PrecisionTypes = databaseToPropertyType.PrecisionTypes();
+            PrecisionAndScaleTypes = databaseToPropertyType.PrecisionAndScaleTypes();
+            DatabaseEdition = null;
+            DatabaseEngineEdition = null;
+            DatabaseProductVersion = null;
+            _factory = factory;
+            DatabaseReaderPlugin = null;
+            IncludeSchema = true;
             DoNotSpecifySizeForMaxLength = false;
-            DatabaseDetails              = new StringBuilder(255);
+            DatabaseDetails = new StringBuilder(255);
         }
 
         // Any special setup required
@@ -12569,15 +12569,15 @@ and limitations under the License.
                 {
                     if (rdr.Read())
                     {
-                        DatabaseEdition             = rdr["Edition"].ToString();
-                        DatabaseEngineEdition       = rdr["EngineEdition"].ToString();
-                        DatabaseProductVersion      = rdr["ProductVersion"].ToString();
+                        DatabaseEdition = rdr["Edition"].ToString();
+                        DatabaseEngineEdition = rdr["EngineEdition"].ToString();
+                        DatabaseProductVersion = rdr["ProductVersion"].ToString();
                         DatabaseProductMajorVersion = 0;
 
-                        if(!string.IsNullOrEmpty(DatabaseEdition))
+                        if (!string.IsNullOrEmpty(DatabaseEdition))
                             DatabaseDetails.AppendLine("// Database Edition       : " + DatabaseEdition);
-        
-                        if(!string.IsNullOrEmpty(DatabaseEngineEdition))
+
+                        if (!string.IsNullOrEmpty(DatabaseEngineEdition))
                             DatabaseDetails.AppendLine("// Database Engine Edition: " + DatabaseEngineEdition);
 
                         if (!string.IsNullOrEmpty(DatabaseProductVersion))
@@ -12648,7 +12648,7 @@ and limitations under the License.
                 return null;
 
             var cmd = connection.CreateCommand();
-            if(cmd != null && Settings.DatabaseType != DatabaseType.SqlCe)
+            if (cmd != null && Settings.DatabaseType != DatabaseType.SqlCe)
                 cmd.CommandTimeout = Settings.CommandTimeout;
 
             return cmd;
@@ -12724,7 +12724,7 @@ and limitations under the License.
 
             return result;
         }
-        
+
         public List<RawForeignKey> ReadForeignKeys(bool includeSynonyms)
         {
             if (DatabaseReaderPlugin != null)
@@ -12879,7 +12879,7 @@ and limitations under the License.
                         var rep = new RawExtendedProperty
                         (
                             rdr["schema"].ToString().Trim(),
-                            rdr["table"] .ToString().Trim(),
+                            rdr["table"].ToString().Trim(),
                             rdr["column"].ToString().Trim(),
                             extendedProperty
                         );
@@ -12925,41 +12925,41 @@ and limitations under the License.
                     var emptyParamNumber = 1;
                     while (rdr.Read())
                     {
-                        var rawDataType    = rdr["DATA_TYPE"];
-                        var schema         = rdr["SPECIFIC_SCHEMA"] .ToString().Trim();
-                        var name           = rdr["SPECIFIC_NAME"]   .ToString().Trim();
-                        var routineType    = rdr["ROUTINE_TYPE"]    .ToString().Trim().ToLower();
+                        var rawDataType = rdr["DATA_TYPE"];
+                        var schema = rdr["SPECIFIC_SCHEMA"].ToString().Trim();
+                        var name = rdr["SPECIFIC_NAME"].ToString().Trim();
+                        var routineType = rdr["ROUTINE_TYPE"].ToString().Trim().ToLower();
                         var returnDataType = rdr["RETURN_DATA_TYPE"].ToString().Trim().ToLower();
-                        var dataType       = rawDataType            .ToString().Trim().ToLower();
-                        var parameterMode  = rdr["PARAMETER_MODE"]  .ToString().Trim().ToLower();
+                        var dataType = rawDataType.ToString().Trim().ToLower();
+                        var parameterMode = rdr["PARAMETER_MODE"].ToString().Trim().ToLower();
 
-                        if(name != lastName)
+                        if (name != lastName)
                         {
                             lastName = name;
                             emptyParamNumber = 1;
                         }
 
-                        var isTableValuedFunction  = (routineType == "function" && returnDataType == "table");
+                        var isTableValuedFunction = (routineType == "function" && returnDataType == "table");
                         var isScalarValuedFunction = (routineType == "function" && returnDataType != "table");
-                        var isStoredProcedure      = (routineType == "procedure");
+                        var isStoredProcedure = (routineType == "procedure");
 
                         StoredProcedureParameter parameter = null;
                         if (rawDataType != DBNull.Value)
                         {
                             parameter = new StoredProcedureParameter
                             {
-                                Ordinal             = ChangeType<int>(rdr["ORDINAL_POSITION"]),
-                                Name                = rdr["PARAMETER_NAME"].ToString().Trim(),
-                                SqlDbType           = GetStoredProcedureParameterDbType(dataType),
-                                ReturnSqlDbType     = GetStoredProcedureParameterDbType(returnDataType),
-                                PropertyType        = GetPropertyType(dataType),
-                                ReturnPropertyType  = GetPropertyType(returnDataType),
-                                DateTimePrecision   = ChangeType<short>(rdr["DATETIME_PRECISION"]),
-                                MaxLength           = ChangeType<int>(rdr["CHARACTER_MAXIMUM_LENGTH"]),
-                                Precision           = ChangeType<byte>(rdr["NUMERIC_PRECISION"]),
-                                Scale               = ChangeType<int>(rdr["NUMERIC_SCALE"]),
+                                Ordinal = ChangeType<int>(rdr["ORDINAL_POSITION"]),
+                                Name = rdr["PARAMETER_NAME"].ToString().Trim(),
+                                SqlDbType = GetStoredProcedureParameterDbType(dataType),
+                                ReturnSqlDbType = GetStoredProcedureParameterDbType(returnDataType),
+                                PropertyType = GetPropertyType(dataType),
+                                ReturnPropertyType = GetPropertyType(returnDataType),
+                                DateTimePrecision = ChangeType<short>(rdr["DATETIME_PRECISION"]),
+                                MaxLength = ChangeType<int>(rdr["CHARACTER_MAXIMUM_LENGTH"]),
+                                Precision = ChangeType<byte>(rdr["NUMERIC_PRECISION"]),
+                                Scale = ChangeType<int>(rdr["NUMERIC_SCALE"]),
                                 UserDefinedTypeName = rdr["USER_DEFINED_TYPE"].ToString().Trim(),
-                                IsSpatial           = IsSpatialType(dataType)
+                                IsSpatial = IsSpatialType(dataType)
                             };
 
                             if (string.IsNullOrEmpty(parameter.Name))
@@ -13020,7 +13020,7 @@ and limitations under the License.
                 cmd.CommandText = MultiContextSQL();
 
                 var contextMap = new Dictionary<int, MultiContextSettings>();
-                var tableMap   = new Dictionary<int, MultiContextTableSettings>();
+                var tableMap = new Dictionary<int, MultiContextTableSettings>();
 
                 using (var rdr = cmd.ExecuteReader())
                 {
@@ -13034,19 +13034,19 @@ and limitations under the License.
                         var c = new MultiContextSettings
                         {
                             // Store standard fields
-                            Name         = GetReaderString(rdr, "Name"),
-                            Namespace    = GetReaderString(rdr, "Namespace"),
-                            Description  = GetReaderString(rdr, "Description"),
-                            BaseSchema   = GetReaderString(rdr, "BaseSchema"),
+                            Name = GetReaderString(rdr, "Name"),
+                            Namespace = GetReaderString(rdr, "Namespace"),
+                            Description = GetReaderString(rdr, "Description"),
+                            BaseSchema = GetReaderString(rdr, "BaseSchema"),
                             TemplatePath = GetReaderString(rdr, "TemplatePath"),
-                            Filename     = GetReaderString(rdr, "Filename"),
-                            AllFields    = ReadAllFields(rdr),
+                            Filename = GetReaderString(rdr, "Filename"),
+                            AllFields = ReadAllFields(rdr),
 
-                            Tables           = new List<MultiContextTableSettings>(),
+                            Tables = new List<MultiContextTableSettings>(),
                             StoredProcedures = new List<MultiContextStoredProcedureSettings>(),
-                            Enumerations     = new List<EnumerationSettings>(),
-                            Functions        = new List<MultiContextFunctionSettings>(),
-                            ForeignKeys      = new List<MultiContextForeignKeySettings>()
+                            Enumerations = new List<EnumerationSettings>(),
+                            Functions = new List<MultiContextFunctionSettings>(),
+                            ForeignKeys = new List<MultiContextForeignKeySettings>()
                         };
 
                         contextMap.Add(contextId.Value, c);
@@ -13069,20 +13069,20 @@ and limitations under the License.
                         if (!contextId.HasValue)
                             continue; // No context
 
-                        if(!contextMap.ContainsKey(contextId.Value))
+                        if (!contextMap.ContainsKey(contextId.Value))
                             continue; // Context not found
 
                         context = contextMap[contextId.Value];
 
                         var t = new MultiContextTableSettings
                         {
-                            Name          = GetReaderString(rdr, "Name"),
-                            Description   = GetReaderString(rdr, "Description"),
-                            PluralName    = GetReaderString(rdr, "PluralName"),
-                            DbName        = GetReaderString(rdr, "DbName"),
-                            Attributes    = GetReaderString(rdr, "Attributes"),
+                            Name = GetReaderString(rdr, "Name"),
+                            Description = GetReaderString(rdr, "Description"),
+                            PluralName = GetReaderString(rdr, "PluralName"),
+                            DbName = GetReaderString(rdr, "DbName"),
+                            Attributes = GetReaderString(rdr, "Attributes"),
                             DbSetModifier = GetReaderString(rdr, "DbSetModifier"),
-                            AllFields     = ReadAllFields(rdr),
+                            AllFields = ReadAllFields(rdr),
 
                             Columns = new List<MultiContextColumnSettings>()
                         };
@@ -13090,7 +13090,7 @@ and limitations under the License.
                         tableMap.Add(tableId.Value, t);
                         context.Tables.Add(t);
                     }
-                    
+
                     // Columns
                     rdr.NextResult();
                     while (rdr.Read())
@@ -13099,22 +13099,22 @@ and limitations under the License.
                         if (tableId == null)
                             continue; // Cannot use column as not associated to a table
 
-                        if(!tableMap.ContainsKey(tableId.Value))
+                        if (!tableMap.ContainsKey(tableId.Value))
                             continue; // Table not found
 
                         var table = tableMap[tableId.Value];
 
                         var col = new MultiContextColumnSettings
                         {
-                            Name             = GetReaderString(rdr, "Name"),
-                            DbName           = GetReaderString(rdr, "DbName"),
-                            IsPrimaryKey     = GetReaderBool(rdr,   "IsPrimaryKey"),
-                            OverrideModifier = GetReaderBool(rdr,   "OverrideModifier"),
-                            EnumType         = GetReaderString(rdr, "EnumType"),
-                            Attributes       = GetReaderString(rdr, "Attributes"),
-                            PropertyType     = GetReaderString(rdr, "PropertyType"),
-                            IsNullable       = GetReaderBool(rdr, "IsNullable"),
-                            AllFields        = ReadAllFields(rdr)
+                            Name = GetReaderString(rdr, "Name"),
+                            DbName = GetReaderString(rdr, "DbName"),
+                            IsPrimaryKey = GetReaderBool(rdr, "IsPrimaryKey"),
+                            OverrideModifier = GetReaderBool(rdr, "OverrideModifier"),
+                            EnumType = GetReaderString(rdr, "EnumType"),
+                            Attributes = GetReaderString(rdr, "Attributes"),
+                            PropertyType = GetReaderString(rdr, "PropertyType"),
+                            IsNullable = GetReaderBool(rdr, "IsNullable"),
+                            AllFields = ReadAllFields(rdr)
                         };
 
                         table.Columns.Add(col);
@@ -13135,10 +13135,10 @@ and limitations under the License.
 
                         var sp = new MultiContextStoredProcedureSettings
                         {
-                            Name        = GetReaderString(rdr, "Name"),
-                            DbName      = GetReaderString(rdr, "DbName"),
+                            Name = GetReaderString(rdr, "Name"),
+                            DbName = GetReaderString(rdr, "DbName"),
                             ReturnModel = GetReaderString(rdr, "ReturnModel"),
-                            AllFields   = ReadAllFields(rdr)
+                            AllFields = ReadAllFields(rdr)
                         };
 
                         context.StoredProcedures.Add(sp);
@@ -13159,8 +13159,8 @@ and limitations under the License.
 
                         var f = new MultiContextFunctionSettings
                         {
-                            Name      = GetReaderString(rdr, "Name"),
-                            DbName    = GetReaderString(rdr, "DbName"),
+                            Name = GetReaderString(rdr, "Name"),
+                            DbName = GetReaderString(rdr, "DbName"),
                             AllFields = ReadAllFields(rdr)
                         };
 
@@ -13182,11 +13182,11 @@ and limitations under the License.
 
                         var e = new EnumerationSettings
                         {
-                            Name       = GetReaderString(rdr, "Name"),
-                            Table      = GetReaderString(rdr, "Table"),
-                            NameField  = GetReaderString(rdr, "NameField"),
+                            Name = GetReaderString(rdr, "Name"),
+                            Table = GetReaderString(rdr, "Table"),
+                            NameField = GetReaderString(rdr, "NameField"),
                             ValueField = GetReaderString(rdr, "ValueField"),
-                            AllFields  = ReadAllFields(rdr)
+                            AllFields = ReadAllFields(rdr)
                         };
 
                         context.Enumerations.Add(e);
@@ -13207,19 +13207,19 @@ and limitations under the License.
 
                         var fk = new MultiContextForeignKeySettings
                         {
-                            ConstraintName      = GetReaderString(rdr, "ConstraintName"),
-                            ParentName          = GetReaderString(rdr, "ParentName"),
-                            ChildName           = GetReaderString(rdr, "ChildName"),
-                            PkSchema            = GetReaderString(rdr, "PkSchema") ?? context.BaseSchema,
-                            PkTableName         = GetReaderString(rdr, "PkTableName"),
-                            PkColumn            = GetReaderString(rdr, "PkColumn"),
-                            FkSchema            = GetReaderString(rdr, "FkSchema") ?? context.BaseSchema,
-                            FkTableName         = GetReaderString(rdr, "FkTableName"),
-                            FkColumn            = GetReaderString(rdr, "FkColumn"),
-                            Ordinal             = GetReaderInt(rdr,    "Ordinal") ?? 0,
-                            CascadeOnDelete     = GetReaderBool(rdr,   "CascadeOnDelete") ?? false,
-                            IsNotEnforced       = GetReaderBool(rdr,   "IsNotEnforced") ?? false,
-                            HasUniqueConstraint = GetReaderBool(rdr,   "HasUniqueConstraint") ?? false
+                            ConstraintName = GetReaderString(rdr, "ConstraintName"),
+                            ParentName = GetReaderString(rdr, "ParentName"),
+                            ChildName = GetReaderString(rdr, "ChildName"),
+                            PkSchema = GetReaderString(rdr, "PkSchema") ?? context.BaseSchema,
+                            PkTableName = GetReaderString(rdr, "PkTableName"),
+                            PkColumn = GetReaderString(rdr, "PkColumn"),
+                            FkSchema = GetReaderString(rdr, "FkSchema") ?? context.BaseSchema,
+                            FkTableName = GetReaderString(rdr, "FkTableName"),
+                            FkColumn = GetReaderString(rdr, "FkColumn"),
+                            Ordinal = GetReaderInt(rdr, "Ordinal") ?? 0,
+                            CascadeOnDelete = GetReaderBool(rdr, "CascadeOnDelete") ?? false,
+                            IsNotEnforced = GetReaderBool(rdr, "IsNotEnforced") ?? false,
+                            HasUniqueConstraint = GetReaderBool(rdr, "HasUniqueConstraint") ?? false
                         };
 
                         context.ForeignKeys.Add(fk);
@@ -13237,7 +13237,7 @@ and limitations under the License.
             for (var n = 0; n < rdr.FieldCount; ++n)
             {
                 var o = rdr.GetValue(n);
-                if(o != DBNull.Value)
+                if (o != DBNull.Value)
                     result.Add(rdr.GetName(n), rdr.GetValue(n));
             }
 
@@ -13298,7 +13298,7 @@ and limitations under the License.
                                 items.Add(new EnumerationMember(name, value, allValues));
                             }
 
-                            if(items.Any())
+                            if (items.Any())
                             {
                                 result.Add(new Enumeration(e.Name, items));
                             }
@@ -13446,12 +13446,12 @@ and limitations under the License.
 
                     cmd.CommandText = sql[(int) MemoryOptimised.CompatibilityLevel];
                     var compatibilityLevel = Convert.ToInt16(cmd.ExecuteScalar());
-                    if(compatibilityLevel < 130)
+                    if (compatibilityLevel < 130)
                         return result;
 
                     cmd.CommandText = sql[(int) MemoryOptimised.InMemorySupported];
                     var inMemorySupported = Convert.ToBoolean(cmd.ExecuteScalar());
-                    if(!inMemorySupported)
+                    if (!inMemorySupported)
                         return result;
 
                     cmd.CommandText = sql[(int) MemoryOptimised.TableList];
@@ -13519,27 +13519,27 @@ and limitations under the License.
 
             var col = new Column
             {
-                Scale               = rt.Scale,
-                PropertyType        = GetPropertyType(rt.TypeName),
-                SqlPropertyType     = rt.TypeName,
-                IsNullable          = rt.IsNullable,
-                MaxLength           = rt.MaxLength,
-                DateTimePrecision   = rt.DateTimePrecision,
-                Precision           = rt.Precision,
-                IsIdentity          = rt.IsIdentity,
-                IsComputed          = rt.IsComputed,
-                IsRowGuid           = rt.IsRowGuid,
-                GeneratedAlwaysType = (ColumnGeneratedAlwaysType)rt.GeneratedAlwaysType,
-                IsStoreGenerated    = rt.IsStoreGenerated,
-                PrimaryKeyOrdinal   = rt.PrimaryKeyOrdinal,
-                IsPrimaryKey        = rt.PrimaryKey,
-                IsForeignKey        = rt.IsForeignKey,
-                IsSpatial           = rt.TypeName == "geography" || rt.TypeName == "geometry",
-                Ordinal             = rt.Ordinal,
-                DbName              = rt.ColumnName,
-                Default             = rt.Default,
-                ParentTable         = table,
-                ExistsInBaseClass   = false
+                Scale = rt.Scale,
+                PropertyType = GetPropertyType(rt.TypeName),
+                SqlPropertyType = rt.TypeName,
+                IsNullable = rt.IsNullable,
+                MaxLength = rt.MaxLength,
+                DateTimePrecision = rt.DateTimePrecision,
+                Precision = rt.Precision,
+                IsIdentity = rt.IsIdentity,
+                IsComputed = rt.IsComputed,
+                IsRowGuid = rt.IsRowGuid,
+                GeneratedAlwaysType = (ColumnGeneratedAlwaysType) rt.GeneratedAlwaysType,
+                IsStoreGenerated = rt.IsStoreGenerated,
+                PrimaryKeyOrdinal = rt.PrimaryKeyOrdinal,
+                IsPrimaryKey = rt.PrimaryKey,
+                IsForeignKey = rt.IsForeignKey,
+                IsSpatial = rt.TypeName == "geography" || rt.TypeName == "geometry",
+                Ordinal = rt.Ordinal,
+                DbName = rt.ColumnName,
+                Default = rt.Default,
+                ParentTable = table,
+                ExistsInBaseClass = false
             };
 
             if (col.IsPrimaryKey)
@@ -13561,8 +13561,8 @@ and limitations under the License.
                 col.Hidden = true;
 
             col.IsFixedLength = (rt.TypeName == "char" || rt.TypeName == "nchar");
-            col.IsUnicode     = !(rt.TypeName == "char" || rt.TypeName == "varchar" || rt.TypeName == "text");
-            col.IsMaxLength   = (rt.TypeName == "ntext");
+            col.IsUnicode = !(rt.TypeName == "char" || rt.TypeName == "varchar" || rt.TypeName == "text");
+            col.IsMaxLength = (rt.TypeName == "ntext");
 
             col.IsRowVersion = col.IsStoreGenerated && rt.TypeName == "timestamp";
             if (col.IsRowVersion)
@@ -13611,10 +13611,10 @@ and limitations under the License.
         public static readonly Func<string, string> CleanUp = (str) =>
         {
             // Replace punctuation and symbols in variable names as these are not allowed.
-            if(string.IsNullOrEmpty(str))
+            if (string.IsNullOrEmpty(str))
                 return string.Empty;
 
-            if(str.Any(char.IsLetterOrDigit))
+            if (str.Any(char.IsLetterOrDigit))
                 str = RemoveTrailingSymbols.Replace(str.Replace('-', '_'), string.Empty);
             var len = str.Length;
             if (len == 0)
@@ -13684,13 +13684,13 @@ and limitations under the License.
 
     public interface IDatabaseReaderPlugin
     {
-        List<RawTable>                ReadTables();
-        List<RawForeignKey>           ReadForeignKeys();
-        List<RawIndex>                ReadIndexes();
-        List<RawExtendedProperty>     ReadExtendedProperties();
-        List<RawStoredProcedure>      ReadStoredProcs();
-        List<RawSequence>             ReadSequences();
-        List<RawTrigger>              ReadTriggers();
+        List<RawTable> ReadTables();
+        List<RawForeignKey> ReadForeignKeys();
+        List<RawIndex> ReadIndexes();
+        List<RawExtendedProperty> ReadExtendedProperties();
+        List<RawStoredProcedure> ReadStoredProcs();
+        List<RawSequence> ReadSequences();
+        List<RawTrigger> ReadTriggers();
         List<RawMemoryOptimisedTable> ReadMemoryOptimisedTables();
 
         IDatabaseToPropertyType GetDatabaseToPropertyTypeMapping();
@@ -14520,13 +14520,13 @@ ORDER BY SchemaName, TableName, TriggerName;";
         public readonly string TableName;
         public readonly string ColumnName;
         public readonly string ExtendedProperty;
-        public readonly bool   TableLevelExtendedComment;
+        public readonly bool TableLevelExtendedComment;
 
         public RawExtendedProperty(string schemaName, string tableName, string columnName, string extendedProperty)
         {
-            SchemaName       = schemaName;
-            TableName        = tableName;
-            ColumnName       = columnName;
+            SchemaName = schemaName;
+            TableName = tableName;
+            ColumnName = columnName;
             ExtendedProperty = extendedProperty;
 
             TableLevelExtendedComment = string.IsNullOrEmpty(columnName);
@@ -14543,9 +14543,9 @@ ORDER BY SchemaName, TableName, TriggerName;";
         public readonly string PkTableName;
         public readonly string FkSchema;
         public readonly string FkTableName;
-        public readonly int    Ordinal;
-        public readonly bool   CascadeOnDelete;
-        public readonly bool   IsNotEnforced;
+        public readonly int Ordinal;
+        public readonly bool CascadeOnDelete;
+        public readonly bool IsNotEnforced;
 
         public bool HasUniqueConstraint; // Can also be changed later
         //public byte SortOrder;
@@ -14556,29 +14556,29 @@ ORDER BY SchemaName, TableName, TriggerName;";
             string fkSchema, string fkTableName, int ordinal, bool cascadeOnDelete,
             bool isNotEnforced, bool hasUniqueConstraint)
         {
-            ConstraintName      = constraintName;
-            ParentName          = parentName;
-            ChildName           = childName;
-            PkColumn            = pkColumn;
-            FkColumn            = fkColumn;
-            PkSchema            = pkSchema;
-            PkTableName         = pkTableName;
-            FkSchema            = fkSchema;
-            FkTableName         = fkTableName;
-            Ordinal             = ordinal;
-            CascadeOnDelete     = cascadeOnDelete;
-            IsNotEnforced       = isNotEnforced;
+            ConstraintName = constraintName;
+            ParentName = parentName;
+            ChildName = childName;
+            PkColumn = pkColumn;
+            FkColumn = fkColumn;
+            PkSchema = pkSchema;
+            PkTableName = pkTableName;
+            FkSchema = fkSchema;
+            FkTableName = fkTableName;
+            Ordinal = ordinal;
+            CascadeOnDelete = cascadeOnDelete;
+            IsNotEnforced = isNotEnforced;
             HasUniqueConstraint = hasUniqueConstraint;
         }
 
         public string Dump()
         {
             var parentName = "null";
-            if(!string.IsNullOrWhiteSpace(ParentName))
+            if (!string.IsNullOrWhiteSpace(ParentName))
                 parentName = string.Format("\"{0}\"", ParentName);
-            
+
             var childName = "null";
-            if(!string.IsNullOrWhiteSpace(ChildName))
+            if (!string.IsNullOrWhiteSpace(ChildName))
                 childName = string.Format("\"{0}\"", ChildName);
 
             return string.Format("new RawForeignKey(\"{0}\", {1}, {2}, \"{3}\", \"{4}\", \"{5}\", \"{6}\", \"{7}\", \"{8}\", {9}, {10}, {11}, {12}),",
@@ -14591,28 +14591,28 @@ ORDER BY SchemaName, TableName, TriggerName;";
         public readonly string Schema;
         public readonly string TableName;
         public readonly string IndexName;
-        public readonly byte   KeyOrdinal;
+        public readonly byte KeyOrdinal;
         public readonly string ColumnName;
-        public readonly int    ColumnCount;
-        public readonly bool   IsUnique;
-        public readonly bool   IsPrimaryKey;
-        public readonly bool   IsUniqueConstraint;
-        public readonly bool   IsClustered;
+        public readonly int ColumnCount;
+        public readonly bool IsUnique;
+        public readonly bool IsPrimaryKey;
+        public readonly bool IsUniqueConstraint;
+        public readonly bool IsClustered;
 
         public RawIndex(string schema, string tableName, string indexName, byte keyOrdinal,
             string columnName, int columnCount, bool isUnique, bool isPrimaryKey,
             bool isUniqueConstraint, bool isClustered)
         {
-            Schema             = schema;
-            TableName          = tableName;
-            IndexName          = indexName;
-            KeyOrdinal         = keyOrdinal;
-            ColumnName         = columnName;
-            ColumnCount        = columnCount;
-            IsUnique           = isUnique;
-            IsPrimaryKey       = isPrimaryKey;
+            Schema = schema;
+            TableName = tableName;
+            IndexName = indexName;
+            KeyOrdinal = keyOrdinal;
+            ColumnName = columnName;
+            ColumnCount = columnCount;
+            IsUnique = isUnique;
+            IsPrimaryKey = isPrimaryKey;
             IsUniqueConstraint = isUniqueConstraint;
-            IsClustered        = isClustered;
+            IsClustered = isClustered;
         }
 
         public string Dump()
@@ -14630,7 +14630,7 @@ ORDER BY SchemaName, TableName, TriggerName;";
         public RawMemoryOptimisedTable(string schemaName, string tableName)
         {
             SchemaName = schemaName;
-            TableName  = tableName;
+            TableName = tableName;
         }
     }
 
@@ -14652,15 +14652,15 @@ ORDER BY SchemaName, TableName, TriggerName;";
 
         public RawSequence(string schema, string name, string dataType, string startValue, string incrementValue, string minValue, string maxValue, bool isCycleEnabled)
         {
-            Schema         = schema;
-            Name           = name;
-            DataType       = dataType;
-            StartValue     = startValue;
+            Schema = schema;
+            Name = name;
+            DataType = dataType;
+            StartValue = startValue;
             IncrementValue = incrementValue;
-            MinValue       = minValue;
-            MaxValue       = maxValue;
+            MinValue = minValue;
+            MaxValue = maxValue;
             IsCycleEnabled = isCycleEnabled ? "true" : "false";
-            TableMapping   = new List<RawSequenceTableMapping>();
+            TableMapping = new List<RawSequenceTableMapping>();
 
             hasMinValue = MinMaxValueCache.GetMinValue(dataType) != minValue;
             hasMaxValue = MinMaxValueCache.GetMaxValue(dataType) != maxValue;
@@ -14674,7 +14674,7 @@ ORDER BY SchemaName, TableName, TriggerName;";
         public RawSequenceTableMapping(string tableSchema, string tableName)
         {
             TableSchema = tableSchema;
-            TableName   = tableName;
+            TableName = tableName;
         }
     }
     public class RawStoredProcedure
@@ -14687,19 +14687,19 @@ ORDER BY SchemaName, TableName, TriggerName;";
         public readonly StoredProcedureParameter Parameter;
 
         public RawStoredProcedure(
-            string schema, 
-            string name, 
-            bool isTableValuedFunction, 
-            bool isScalarValuedFunction, 
-            bool isStoredProcedure, 
+            string schema,
+            string name,
+            bool isTableValuedFunction,
+            bool isScalarValuedFunction,
+            bool isStoredProcedure,
             StoredProcedureParameter parameter)
         {
-            Schema                 = schema;
-            Name                   = name;
-            IsTableValuedFunction  = isTableValuedFunction;
+            Schema = schema;
+            Name = name;
+            IsTableValuedFunction = isTableValuedFunction;
             IsScalarValuedFunction = isScalarValuedFunction;
-            IsStoredProcedure      = isStoredProcedure;
-            Parameter              = parameter;
+            IsStoredProcedure = isStoredProcedure;
+            Parameter = parameter;
         }
     }
     public class RawTable
@@ -14707,58 +14707,59 @@ ORDER BY SchemaName, TableName, TriggerName;";
         // Table
         public readonly string SchemaName;
         public readonly string TableName;
-        public readonly bool   IsView;
+        public readonly bool IsView;
 
         // Column
-        public readonly int    Scale;
+        public readonly int Scale;
         public readonly string TypeName;
-        public readonly bool   IsNullable;
-        public readonly int    MaxLength;
-        public readonly int    DateTimePrecision;
-        public readonly int    Precision;
-        public readonly bool   IsIdentity;
-        public readonly bool   IsComputed;
-        public readonly bool   IsRowGuid;
-        public readonly byte   GeneratedAlwaysType;
-        public readonly bool   IsStoreGenerated;
-        public readonly int    PrimaryKeyOrdinal;
-        public readonly bool   PrimaryKey;
-        public readonly bool   IsForeignKey;
+        public readonly bool IsNullable;
+        public readonly int MaxLength;
+        public readonly int DateTimePrecision;
+        public readonly int Precision;
+        public readonly bool IsIdentity;
+        public readonly bool IsComputed;
+        public readonly bool IsRowGuid;
+        public readonly byte GeneratedAlwaysType;
+        public readonly bool IsStoreGenerated;
+        public readonly int PrimaryKeyOrdinal;
+        public readonly bool PrimaryKey;
+        public readonly bool IsForeignKey;
         public readonly string SynonymTriggerName;
-        public readonly int    Ordinal;
+        public readonly int Ordinal;
         public readonly string ColumnName;
         public readonly string Default;
 
-        public RawTable(string schemaName, string tableName, bool isView, int scale,
+        public RawTable(string schemaName, string tableName, bool isView, bool isSynonym, int scale,
             string typeName, bool isNullable, int maxLength, int dateTimePrecision, int precision,
             bool isIdentity, bool isComputed, bool isRowGuid, byte generatedAlwaysType,
             bool isStoreGenerated, int primaryKeyOrdinal, bool primaryKey, bool isForeignKey, string synonymTriggerName,
             int ordinal, string columnName, string @default)
         {
             // Table
-            SchemaName         = schemaName;
-            TableName          = tableName;
-            IsView             = isView;
+            SchemaName = schemaName;
+            TableName = tableName;
+            IsView = isView;
+            IsSynonym = isSynonym;
             SynonymTriggerName = synonymTriggerName;
 
             // Column
-            Scale               = scale;
-            TypeName            = typeName;
-            IsNullable          = isNullable;
-            MaxLength           = maxLength;
-            DateTimePrecision   = dateTimePrecision;
-            Precision           = precision;
-            IsIdentity          = isIdentity;
-            IsComputed          = isComputed;
-            IsRowGuid           = isRowGuid;
+            Scale = scale;
+            TypeName = typeName;
+            IsNullable = isNullable;
+            MaxLength = maxLength;
+            DateTimePrecision = dateTimePrecision;
+            Precision = precision;
+            IsIdentity = isIdentity;
+            IsComputed = isComputed;
+            IsRowGuid = isRowGuid;
             GeneratedAlwaysType = generatedAlwaysType;
-            IsStoreGenerated    = isStoreGenerated;
-            PrimaryKeyOrdinal   = primaryKeyOrdinal;
-            PrimaryKey          = primaryKey;
-            IsForeignKey        = isForeignKey;
-            Ordinal             = ordinal;
-            ColumnName          = columnName;
-            Default             = @default;
+            IsStoreGenerated = isStoreGenerated;
+            PrimaryKeyOrdinal = primaryKeyOrdinal;
+            PrimaryKey = primaryKey;
+            IsForeignKey = isForeignKey;
+            Ordinal = ordinal;
+            ColumnName = columnName;
+            Default = @default;
         }
     }
     public class RawTrigger
@@ -14769,8 +14770,8 @@ ORDER BY SchemaName, TableName, TriggerName;";
 
         public RawTrigger(string schemaName, string tableName, string triggerName)
         {
-            SchemaName  = schemaName;
-            TableName   = tableName;
+            SchemaName = schemaName;
+            TableName = tableName;
             TriggerName = triggerName;
         }
     }
@@ -14782,31 +14783,31 @@ ORDER BY SchemaName, TableName, TriggerName;";
         {
             StoredProcedureParameterDbType = new Dictionary<string, string>
             {
-                { string.Empty,     "TEXT" }, // default
-                { "byte",           "INTEGER" },
-                { "ByteEnum",       "INTEGER" },
-                { "DateTime",       "TEXT" },
+                { string.Empty, "TEXT" }, // default
+                { "byte", "INTEGER" },
+                { "ByteEnum", "INTEGER" },
+                { "DateTime", "TEXT" },
                 { "DateTimeOffset", "TEXT" },
-                { "decimal",        "TEXT" },
-                { "double",         "REAL" },
-                { "float",          "REAL" },
-                { "Guid",           "TEXT" },
-                { "int",            "INTEGER" },
-                { "IntEnum",        "INTEGER" },
-                { "long",           "INTEGER" },
-                { "LongEnum",       "INTEGER" },
-                { "sbyte",          "INTEGER" },
-                { "SByteEnum",      "INTEGER" },
-                { "short",          "INTEGER" },
-                { "ShortEnum",      "INTEGER" },
-                { "string",         "TEXT" },
-                { "TimeSpan",       "TEXT" },
-                { "uint",           "INTEGER" },
-                { "UIntEnum",       "INTEGER" },
-                { "ulong",          "INTEGER" },
-                { "ULongEnum",      "INTEGER" },
-                { "ushort",         "INTEGER" },
-                { "UShortEnum",     "INTEGER" }
+                { "decimal", "TEXT" },
+                { "double", "REAL" },
+                { "float", "REAL" },
+                { "Guid", "TEXT" },
+                { "int", "INTEGER" },
+                { "IntEnum", "INTEGER" },
+                { "long", "INTEGER" },
+                { "LongEnum", "INTEGER" },
+                { "sbyte", "INTEGER" },
+                { "SByteEnum", "INTEGER" },
+                { "short", "INTEGER" },
+                { "ShortEnum", "INTEGER" },
+                { "string", "TEXT" },
+                { "TimeSpan", "TEXT" },
+                { "uint", "INTEGER" },
+                { "UIntEnum", "INTEGER" },
+                { "ulong", "INTEGER" },
+                { "ULongEnum", "INTEGER" },
+                { "ushort", "INTEGER" },
+                { "UShortEnum", "INTEGER" }
             };
         }
 
@@ -14991,7 +14992,7 @@ WHERE type = 'trigger'";
         }
 
         protected override string SynonymStoredProcedureSQL()
-        { 
+        {
             return string.Empty;
         }
 
@@ -15022,8 +15023,7 @@ WHERE type = 'trigger'";
 
         public override void ReadStoredProcReturnObjects(List<StoredProcedure> procs)
         {
-            throw new System.NotImplementedException();
-
+            throw new NotImplementedException();
         }
 
         public override void Init()
@@ -15042,41 +15042,41 @@ WHERE type = 'trigger'";
         {
             StoredProcedureParameterDbType = new Dictionary<string, string>
             {
-                { string.Empty,       "VarChar" }, // default
-                { "hierarchyid",      "VarChar" },
-                { "bigint",           "BigInt" },
-                { "binary",           "Binary" },
-                { "bit",              "Bit" },
-                { "char",             "Char" },
-                { "datetime",         "DateTime" },
-                { "decimal",          "Decimal" },
-                { "numeric",          "Decimal" },
-                { "float",            "Float" },
-                { "image",            "Image" },
-                { "int",              "Int" },
-                { "money",            "Money" },
-                { "nchar",            "NChar" },
-                { "ntext",            "NText" },
-                { "nvarchar",         "NVarChar" },
-                { "real",             "Real" },
+                { string.Empty, "VarChar" }, // default
+                { "hierarchyid", "VarChar" },
+                { "bigint", "BigInt" },
+                { "binary", "Binary" },
+                { "bit", "Bit" },
+                { "char", "Char" },
+                { "datetime", "DateTime" },
+                { "decimal", "Decimal" },
+                { "numeric", "Decimal" },
+                { "float", "Float" },
+                { "image", "Image" },
+                { "int", "Int" },
+                { "money", "Money" },
+                { "nchar", "NChar" },
+                { "ntext", "NText" },
+                { "nvarchar", "NVarChar" },
+                { "real", "Real" },
                 { "uniqueidentifier", "UniqueIdentifier" },
-                { "smalldatetime",    "SmallDateTime" },
-                { "smallint",         "SmallInt" },
-                { "smallmoney",       "SmallMoney" },
-                { "text",             "Text" },
-                { "timestamp",        "Timestamp" },
-                { "tinyint",          "TinyInt" },
-                { "varbinary",        "VarBinary" },
-                { "varchar",          "VarChar" },
-                { "variant",          "Variant" },
-                { "xml",              "Xml" },
-                { "udt",              "Udt" },
-                { "table type",       "Structured" },
-                { "structured",       "Structured" },
-                { "date",             "Date" },
-                { "time",             "Time" },
-                { "datetime2",        "DateTime2" },
-                { "datetimeoffset",   "DateTimeOffset" }
+                { "smalldatetime", "SmallDateTime" },
+                { "smallint", "SmallInt" },
+                { "smallmoney", "SmallMoney" },
+                { "text", "Text" },
+                { "timestamp", "Timestamp" },
+                { "tinyint", "TinyInt" },
+                { "varbinary", "VarBinary" },
+                { "varchar", "VarChar" },
+                { "variant", "Variant" },
+                { "xml", "Xml" },
+                { "udt", "Udt" },
+                { "table type", "Structured" },
+                { "structured", "Structured" },
+                { "date", "Date" },
+                { "time", "Time" },
+                { "datetime2", "DateTime2" },
+                { "datetimeoffset", "DateTimeOffset" }
             };
         }
 
@@ -15301,41 +15301,41 @@ SELECT * FROM MultiContext.ForeignKey;";
         {
             StoredProcedureParameterDbType = new Dictionary<string, string>
             {
-                { string.Empty,       "VarChar" }, // default
-                { "hierarchyid",      "VarChar" },
-                { "bigint",           "BigInt" },
-                { "binary",           "Binary" },
-                { "bit",              "Bit" },
-                { "char",             "Char" },
-                { "datetime",         "DateTime" },
-                { "decimal",          "Decimal" },
-                { "numeric",          "Decimal" },
-                { "float",            "Float" },
-                { "image",            "Image" },
-                { "int",              "Int" },
-                { "money",            "Money" },
-                { "nchar",            "NChar" },
-                { "ntext",            "NText" },
-                { "nvarchar",         "NVarChar" },
-                { "real",             "Real" },
+                { string.Empty, "VarChar" }, // default
+                { "hierarchyid", "VarChar" },
+                { "bigint", "BigInt" },
+                { "binary", "Binary" },
+                { "bit", "Bit" },
+                { "char", "Char" },
+                { "datetime", "DateTime" },
+                { "decimal", "Decimal" },
+                { "numeric", "Decimal" },
+                { "float", "Float" },
+                { "image", "Image" },
+                { "int", "Int" },
+                { "money", "Money" },
+                { "nchar", "NChar" },
+                { "ntext", "NText" },
+                { "nvarchar", "NVarChar" },
+                { "real", "Real" },
                 { "uniqueidentifier", "UniqueIdentifier" },
-                { "smalldatetime",    "SmallDateTime" },
-                { "smallint",         "SmallInt" },
-                { "smallmoney",       "SmallMoney" },
-                { "text",             "Text" },
-                { "timestamp",        "Timestamp" },
-                { "tinyint",          "TinyInt" },
-                { "varbinary",        "VarBinary" },
-                { "varchar",          "VarChar" },
-                { "variant",          "Variant" },
-                { "xml",              "Xml" },
-                { "udt",              "Udt" },
-                { "table type",       "Structured" },
-                { "structured",       "Structured" },
-                { "date",             "Date" },
-                { "time",             "Time" },
-                { "datetime2",        "DateTime2" },
-                { "datetimeoffset",   "DateTimeOffset" }
+                { "smalldatetime", "SmallDateTime" },
+                { "smallint", "SmallInt" },
+                { "smallmoney", "SmallMoney" },
+                { "text", "Text" },
+                { "timestamp", "Timestamp" },
+                { "tinyint", "TinyInt" },
+                { "varbinary", "VarBinary" },
+                { "varchar", "VarChar" },
+                { "variant", "Variant" },
+                { "xml", "Xml" },
+                { "udt", "Udt" },
+                { "table type", "Structured" },
+                { "structured", "Structured" },
+                { "date", "Date" },
+                { "time", "Time" },
+                { "datetime2", "DateTime2" },
+                { "datetimeoffset", "DateTimeOffset" }
             };
         }
 

@@ -8,7 +8,7 @@
         public RawSequenceTableMapping(string tableSchema, string tableName)
         {
             TableSchema = tableSchema;
-            TableName   = tableName;
+            TableName = tableName;
         }
     }
 }
