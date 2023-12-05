@@ -240,10 +240,13 @@ namespace Efrpg.Readers
                 {
                     while (rdr.Read())
                     {
+                        var tt = rdr["TableType"].ToString().Trim();
+
                         var table = new RawTable(
                             rdr["SchemaName"].ToString().Trim(),
                             rdr["TableName"].ToString().Trim(),
-                            string.Compare(rdr["TableType"].ToString().Trim(), "View", StringComparison.OrdinalIgnoreCase) == 0,
+                            string.Compare(tt, "VIEW", StringComparison.OrdinalIgnoreCase) == 0,
+                            string.Compare(tt, "SN", StringComparison.OrdinalIgnoreCase) == 0,
                             ChangeType<int>(rdr["Scale"]),
                             rdr["TypeName"].ToString().Trim().ToLower(),
                             ChangeType<bool>(rdr["IsNullable"]),

@@ -31,7 +31,7 @@
         [TestCase("a b c")]
         public void InvalidSchema(string schema)
         {
-            _rawTables.Add(new RawTable(schema, "test", false, 0, "int", false, 1, 1, 1, false, false, false, 0, false, 1, true, false, null, 1, "name", "123"));
+            _rawTables.Add(new RawTable(schema, "test", false, false, 0, "int", false, 1, 1, 1, false, false, false, 0, false, 1, true, false, null, 1, "name", "123"));
 
             _sut.LoadTables();
         }
@@ -41,7 +41,7 @@
         [TestCase("view with multiple spaces")]
         public void InvalidName(string name)
         {
-            _rawTables.Add(new RawTable("dbo", name, false, 0, "int", false, 1, 1, 1, false, false, false, 0, false, 1, true, false, null, 1, "name", "123"));
+            _rawTables.Add(new RawTable("dbo", name, false, false, 0, "int", false, 1, 1, 1, false, false, false, 0, false, 1, true, false, null, 1, "name", "123"));
             _sut.LoadTables();
         }
 

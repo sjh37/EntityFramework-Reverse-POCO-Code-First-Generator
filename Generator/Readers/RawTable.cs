@@ -6,6 +6,7 @@
         public readonly string SchemaName;
         public readonly string TableName;
         public readonly bool IsView;
+        public readonly bool IsSynonym;
 
         // Column
         public readonly int Scale;
@@ -27,7 +28,7 @@
         public readonly string ColumnName;
         public readonly string Default;
 
-        public RawTable(string schemaName, string tableName, bool isView, int scale,
+        public RawTable(string schemaName, string tableName, bool isView, bool isSynonym, int scale,
             string typeName, bool isNullable, int maxLength, int dateTimePrecision, int precision,
             bool isIdentity, bool isComputed, bool isRowGuid, byte generatedAlwaysType,
             bool isStoreGenerated, int primaryKeyOrdinal, bool primaryKey, bool isForeignKey, string synonymTriggerName,
@@ -37,6 +38,7 @@
             SchemaName = schemaName;
             TableName = tableName;
             IsView = isView;
+            IsSynonym = isSynonym;
             SynonymTriggerName = synonymTriggerName;
 
             // Column

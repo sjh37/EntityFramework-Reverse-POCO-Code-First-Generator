@@ -409,6 +409,7 @@ namespace Efrpg.Generators
                         .Where(x => x.SchemaName == tn.SchemaName && x.TableName == tn.TableName)
                         .OrderBy(x => x.Ordinal))
                     {
+                        table.IsSynonym = table.IsSynonym || rawTable.IsSynonym;
                         var column = DatabaseReader.CreateColumn(rawTable, table, filter);
                         if (column != null)
                             table.Columns.Add(column);

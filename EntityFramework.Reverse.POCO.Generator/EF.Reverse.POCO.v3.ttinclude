@@ -4618,6 +4618,7 @@
                         .Where(x => x.SchemaName == tn.SchemaName && x.TableName == tn.TableName)
                         .OrderBy(x => x.Ordinal))
                     {
+                        table.IsSynonym = table.IsSynonym || rawTable.IsSynonym;
                         var column = DatabaseReader.CreateColumn(rawTable, table, filter);
                         if (column != null)
                             table.Columns.Add(column);
@@ -12693,10 +12694,13 @@ and limitations under the License.
                 {
                     while (rdr.Read())
                     {
+                        var tt = rdr["TableType"].ToString().Trim();
+
                         var table = new RawTable(
                             rdr["SchemaName"].ToString().Trim(),
                             rdr["TableName"].ToString().Trim(),
-                            string.Compare(rdr["TableType"].ToString().Trim(), "View", StringComparison.OrdinalIgnoreCase) == 0,
+                            string.Compare(tt, "VIEW", StringComparison.OrdinalIgnoreCase) == 0,
+                            string.Compare(tt, "SN", StringComparison.OrdinalIgnoreCase) == 0,
                             ChangeType<int>(rdr["Scale"]),
                             rdr["TypeName"].ToString().Trim().ToLower(),
                             ChangeType<bool>(rdr["IsNullable"]),
@@ -14708,6 +14712,7 @@ ORDER BY SchemaName, TableName, TriggerName;";
         public readonly string SchemaName;
         public readonly string TableName;
         public readonly bool IsView;
+        public readonly bool IsSynonym;
 
         // Column
         public readonly int Scale;
@@ -16948,6 +16953,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public List<string> ExtendedProperty;
         public bool IsMapping;
         public bool IsView;
+        public bool IsSynonym;
         public bool HasForeignKey;
         public bool HasNullableColumns;
         public bool UsesDictionary;

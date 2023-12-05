@@ -16,6 +16,7 @@ namespace Efrpg
         public List<string> ExtendedProperty;
         public bool IsMapping;
         public bool IsView;
+        public bool IsSynonym;
         public bool HasForeignKey;
         public bool HasNullableColumns;
         public bool UsesDictionary;
