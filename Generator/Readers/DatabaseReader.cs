@@ -21,7 +21,7 @@ namespace Efrpg.Readers
         protected List<string> PrecisionTypes;
 
         protected string DatabaseEdition, DatabaseEngineEdition, DatabaseProductVersion, DatabaseName;
-        protected int DatabaseProductMajorVersion;
+        protected int DatabaseProductMajorVersion, CompatibilityLevel;
 
         public bool IncludeSchema { get; protected set; }
         public bool DoNotSpecifySizeForMaxLength { get; protected set; }
@@ -119,6 +119,7 @@ namespace Efrpg.Readers
                         DatabaseEdition = rdr["Edition"].ToString();
                         DatabaseEngineEdition = rdr["EngineEdition"].ToString();
                         DatabaseProductVersion = rdr["ProductVersion"].ToString();
+                        CompatibilityLevel = ChangeType<int>(rdr["CompatibilityLevel"]);
                         DatabaseProductMajorVersion = 0;
 
                         if (!string.IsNullOrEmpty(DatabaseEdition))
@@ -137,6 +138,8 @@ namespace Efrpg.Readers
 
                             DatabaseProductMajorVersion = int.Parse(version);
                         }
+
+                        DatabaseDetails.AppendLine("// Compatibility Level    : " + CompatibilityLevel);
                         DatabaseDetails.AppendLine("//");
                     }
                 }

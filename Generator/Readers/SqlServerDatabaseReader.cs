@@ -1094,16 +1094,17 @@ OPTION (QUERYTRACEON 9481)";
         protected override string ReadDatabaseEditionSQL()
         {
             return @"
-SELECT  SERVERPROPERTY('Edition') AS Edition,
-        CASE SERVERPROPERTY('EngineEdition')
-            WHEN 1 THEN 'Personal'
-            WHEN 2 THEN 'Standard'
-            WHEN 3 THEN 'Enterprise'
-            WHEN 4 THEN 'Express'
-            WHEN 5 THEN 'Azure'
-            ELSE        'Unknown'
-        END AS EngineEdition,
-        SERVERPROPERTY('productversion') AS ProductVersion;";
+SELECT SERVERPROPERTY('Edition') AS Edition,
+       CASE SERVERPROPERTY('EngineEdition')
+           WHEN 1 THEN 'Personal'
+           WHEN 2 THEN 'Standard'
+           WHEN 3 THEN 'Enterprise'
+           WHEN 4 THEN 'Express'
+           WHEN 5 THEN 'Azure'
+           ELSE 'Unknown'
+       END AS EngineEdition,
+       SERVERPROPERTY('productversion') AS ProductVersion,
+       (SELECT compatibility_level FROM sys.databases WHERE name = DB_NAME()) AS CompatibilityLevel;";
         }
 
         private bool IsAzure()
