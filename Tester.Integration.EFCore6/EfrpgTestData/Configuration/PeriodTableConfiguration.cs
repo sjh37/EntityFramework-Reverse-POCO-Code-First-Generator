@@ -6,13 +6,13 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace V6EfrpgTest
 {
-    // PeriodTestTable
-    public class PeriodTestTableConfiguration : IEntityTypeConfiguration<PeriodTestTable>
+    // Period.Table
+    public class PeriodTableConfiguration : IEntityTypeConfiguration<PeriodTable>
     {
-        public void Configure(EntityTypeBuilder<PeriodTestTable> builder)
+        public void Configure(EntityTypeBuilder<PeriodTable> builder)
         {
-            builder.ToTable("PeriodTestTable", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK_PeriodTestTable").IsClustered();
+            builder.ToTable("Period.Table", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK_Period_Table").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.JoeBloggs).HasColumnName(@"joe.bloggs").HasColumnType("int").IsRequired(false);

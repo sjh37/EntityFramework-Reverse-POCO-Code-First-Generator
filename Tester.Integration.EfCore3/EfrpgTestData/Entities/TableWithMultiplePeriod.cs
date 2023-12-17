@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace Tester.Integration.EfCore3
 {
-    // PeriodTestTable
-    public class PeriodTestTable
+    // table.with.multiple.periods
+    public class TableWithMultiplePeriod
     {
         public int Id { get; set; } // id (Primary key)
-        public int? JoeBloggs { get; set; } // joe.bloggs
+        public string Description { get; set; } // description (length: 20)
     }
 
 }

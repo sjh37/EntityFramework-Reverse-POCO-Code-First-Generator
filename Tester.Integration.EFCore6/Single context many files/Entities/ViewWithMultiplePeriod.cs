@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Tester.Integration.EFCore6.Single_context_many_files
 {
-    // PeriodTestTable
-    public class PeriodTestTable
+    // view.with.multiple.periods
+    public class ViewWithMultiplePeriod
     {
-        public int Id { get; set; } // id (Primary key)
-        public int? JoeBloggs { get; set; } // joe.bloggs
+        public int FkId { get; set; } // FkID
+        public string Description { get; set; } // description (length: 20)
     }
 
 }

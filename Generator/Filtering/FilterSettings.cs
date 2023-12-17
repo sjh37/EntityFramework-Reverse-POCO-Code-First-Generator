@@ -78,7 +78,7 @@ namespace Efrpg.Filtering
         {
             TableFilters.AddRange(new List<IFilterType<Table>>
             {
-                new PeriodFilter(), // Keep this first as EF does not allow tables to contain a period character
+                //new PeriodFilter(), // Keep this first as EF does not allow tables to contain a period character
 
                 // To include all the customer tables, but not the customer billing tables
                 //new RegexExcludeFilter(".*[Bb]illing.*"), // This excludes all tables with 'billing' anywhere in the name

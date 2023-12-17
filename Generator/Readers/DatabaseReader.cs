@@ -1165,7 +1165,7 @@ namespace Efrpg.Readers
                 return string.Empty;
 
             if (str.Any(char.IsLetterOrDigit))
-                str = RemoveTrailingSymbols.Replace(str.Replace('-', '_'), string.Empty);
+                str = RemoveTrailingSymbols.Replace(str.Replace('-', '_').Replace('.', '_'), string.Empty);
             var len = str.Length;
             if (len == 0)
                 return string.Empty;

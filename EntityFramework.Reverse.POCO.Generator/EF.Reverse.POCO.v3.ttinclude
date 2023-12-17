@@ -878,7 +878,7 @@
         {
             TableFilters.AddRange(new List<IFilterType<Table>>
             {
-                new PeriodFilter(), // Keep this first as EF does not allow tables to contain a period character
+                //new PeriodFilter(), // Keep this first as EF does not allow tables to contain a period character
 
                 // To include all the customer tables, but not the customer billing tables
                 //new RegexExcludeFilter(".*[Bb]illing.*"), // This excludes all tables with 'billing' anywhere in the name
@@ -13619,7 +13619,7 @@ and limitations under the License.
                 return string.Empty;
 
             if (str.Any(char.IsLetterOrDigit))
-                str = RemoveTrailingSymbols.Replace(str.Replace('-', '_'), string.Empty);
+                str = RemoveTrailingSymbols.Replace(str.Replace('-', '_').Replace('.', '_'), string.Empty);
             var len = str.Length;
             if (len == 0)
                 return string.Empty;

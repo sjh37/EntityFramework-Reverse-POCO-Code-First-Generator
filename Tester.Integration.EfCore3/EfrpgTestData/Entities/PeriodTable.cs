@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace Tester.Integration.EfCore3
 {
-    // PeriodTestTable
-    public class PeriodTestTable
+    // Period.Table
+    public class PeriodTable
     {
         public int Id { get; set; } // id (Primary key)
         public int? JoeBloggs { get; set; } // joe.bloggs

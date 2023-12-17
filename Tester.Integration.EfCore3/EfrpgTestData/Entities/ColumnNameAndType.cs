@@ -21,7 +21,7 @@ namespace Tester.Integration.EfCore3
         public int? C163 { get; set; } // £
         public int? C38Fred { get; set; } // &fred$
         public int? Abc4792 { get; set; } // abc/\
-        public int? Joe46Bloggs { get; set; } // joe.bloggs
+        public int? JoeBloggs { get; set; } // joe.bloggs
         public int? SimonHughes { get; set; } // simon-hughes
         public string Description { get; set; } // description (length: 20)
         public DateTime SomeDate { get; set; } // someDate

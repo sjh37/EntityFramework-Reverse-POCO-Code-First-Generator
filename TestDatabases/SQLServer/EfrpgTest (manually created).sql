@@ -751,6 +751,8 @@ CREATE TABLE [Period.Table]
 	CONSTRAINT PK_Period_Table PRIMARY KEY CLUSTERED (Id)
 );
 GO
+INSERT INTO [dbo].[Period.Table] ([id], [joe.bloggs]) VALUES (1, 123), (2, 456);
+GO
 -- Table contains a period
 -- DROP TABLE [PeriodTestTable]
 CREATE TABLE [PeriodTestTable]

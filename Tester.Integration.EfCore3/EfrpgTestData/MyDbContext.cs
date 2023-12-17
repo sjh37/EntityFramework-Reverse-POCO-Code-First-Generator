@@ -99,6 +99,7 @@ namespace Tester.Integration.EfCore3
         public DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
         public DbSet<OneEightSix_IssueUploadedFile> OneEightSix_IssueUploadedFiles { get; set; } // IssueUploadedFile
         public DbSet<OneEightSix_UploadedFile> OneEightSix_UploadedFiles { get; set; } // UploadedFile
+        public DbSet<PeriodTable> PeriodTables { get; set; } // Period.Table
         public DbSet<PeriodTestTable> PeriodTestTables { get; set; } // PeriodTestTable
         public DbSet<Person> People { get; set; } // Person
         public DbSet<PersonPost> PersonPosts { get; set; } // PersonPosts
@@ -117,6 +118,7 @@ namespace Tester.Integration.EfCore3
         public DbSet<TableB> TableBs { get; set; } // TableB
         public DbSet<TableMappingWithSpace> TableMappingWithSpaces { get; set; } // table mapping with space
         public DbSet<TableWithDuplicateColumnName> TableWithDuplicateColumnNames { get; set; } // table with duplicate column names
+        public DbSet<TableWithMultiplePeriod> TableWithMultiplePeriods { get; set; } // table.with.multiple.periods
         public DbSet<TableWithSpace> TableWithSpaces { get; set; } // table with space
         public DbSet<TableWithSpaceAndInColumn> TableWithSpaceAndInColumns { get; set; } // table with space and in columns
         public DbSet<TableWithSpaceInColumnOnly> TableWithSpaceInColumnOnlies { get; set; } // TableWithSpaceInColumnOnly
@@ -138,6 +140,7 @@ namespace Tester.Integration.EfCore3
         public DbSet<UserDocument> UserDocuments { get; set; } // User_Document
         public DbSet<Versioned> Versioneds { get; set; } // Versioned
         public DbSet<VersionedNullable> VersionedNullables { get; set; } // VersionedNullable
+        public DbSet<ViewWithMultiplePeriod> ViewWithMultiplePeriods { get; set; } // view.with.multiple.periods
         public DbSet<ViewWithSpace> ViewWithSpaces { get; set; } // view with space
         public DbSet<WVN_Article> WVN_Articles { get; set; } // Articles
         public DbSet<WVN_VArticle> WVN_VArticles { get; set; } // v_Articles
@@ -237,6 +240,7 @@ namespace Tester.Integration.EfCore3
             modelBuilder.ApplyConfiguration(new OneEightSix_IssueConfiguration());
             modelBuilder.ApplyConfiguration(new OneEightSix_IssueUploadedFileConfiguration());
             modelBuilder.ApplyConfiguration(new OneEightSix_UploadedFileConfiguration());
+            modelBuilder.ApplyConfiguration(new PeriodTableConfiguration());
             modelBuilder.ApplyConfiguration(new PeriodTestTableConfiguration());
             modelBuilder.ApplyConfiguration(new PersonConfiguration());
             modelBuilder.ApplyConfiguration(new PersonPostConfiguration());
@@ -255,6 +259,7 @@ namespace Tester.Integration.EfCore3
             modelBuilder.ApplyConfiguration(new TableBConfiguration());
             modelBuilder.ApplyConfiguration(new TableMappingWithSpaceConfiguration());
             modelBuilder.ApplyConfiguration(new TableWithDuplicateColumnNameConfiguration());
+            modelBuilder.ApplyConfiguration(new TableWithMultiplePeriodConfiguration());
             modelBuilder.ApplyConfiguration(new TableWithSpaceConfiguration());
             modelBuilder.ApplyConfiguration(new TableWithSpaceAndInColumnConfiguration());
             modelBuilder.ApplyConfiguration(new TableWithSpaceInColumnOnlyConfiguration());
@@ -276,6 +281,7 @@ namespace Tester.Integration.EfCore3
             modelBuilder.ApplyConfiguration(new UserDocumentConfiguration());
             modelBuilder.ApplyConfiguration(new VersionedConfiguration());
             modelBuilder.ApplyConfiguration(new VersionedNullableConfiguration());
+            modelBuilder.ApplyConfiguration(new ViewWithMultiplePeriodConfiguration());
             modelBuilder.ApplyConfiguration(new ViewWithSpaceConfiguration());
             modelBuilder.ApplyConfiguration(new WVN_ArticleConfiguration());
             modelBuilder.ApplyConfiguration(new WVN_VArticleConfiguration());
