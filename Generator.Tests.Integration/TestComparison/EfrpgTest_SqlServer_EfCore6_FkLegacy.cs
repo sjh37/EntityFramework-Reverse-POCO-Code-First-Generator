@@ -92,6 +92,7 @@ namespace Efrpg.V3TestE6
         DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
         DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
         DbSet<OneEightSix_UploadedFile> OneEightSix_UploadedFiles { get; set; } // UploadedFile
+        DbSet<PeriodTable> PeriodTables { get; set; } // Period.Table
         DbSet<PeriodTestTable> PeriodTestTables { get; set; } // PeriodTestTable
         DbSet<Person> People { get; set; } // Person
         DbSet<PersonPost> PersonPosts { get; set; } // PersonPosts
@@ -109,6 +110,7 @@ namespace Efrpg.V3TestE6
         DbSet<TableA> TableAs { get; set; } // TableA
         DbSet<TableB> TableBs { get; set; } // TableB
         DbSet<TableWithDuplicateColumnName> TableWithDuplicateColumnNames { get; set; } // table with duplicate column names
+        DbSet<TableWithMultiplePeriod> TableWithMultiplePeriods { get; set; } // table.with.multiple.periods
         DbSet<TableWithSpace> TableWithSpaces { get; set; } // table with space
         DbSet<TableWithSpaceAndInColumn> TableWithSpaceAndInColumns { get; set; } // table with space and in columns
         DbSet<TableWithSpaceInColumnOnly> TableWithSpaceInColumnOnlies { get; set; } // TableWithSpaceInColumnOnly
@@ -130,6 +132,7 @@ namespace Efrpg.V3TestE6
         DbSet<UserDocument> UserDocuments { get; set; } // User_Document
         DbSet<Versioned> Versioneds { get; set; } // Versioned
         DbSet<VersionedNullable> VersionedNullables { get; set; } // VersionedNullable
+        DbSet<ViewWithMultiplePeriod> ViewWithMultiplePeriods { get; set; } // view.with.multiple.periods
         DbSet<ViewWithSpace> ViewWithSpaces { get; set; } // view with space
         DbSet<WVN_Article> WVN_Articles { get; set; } // Articles
         DbSet<WVN_VArticle> WVN_VArticles { get; set; } // v_Articles
@@ -428,6 +431,7 @@ namespace Efrpg.V3TestE6
         public DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
         public DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
         public DbSet<OneEightSix_UploadedFile> OneEightSix_UploadedFiles { get; set; } // UploadedFile
+        public DbSet<PeriodTable> PeriodTables { get; set; } // Period.Table
         public DbSet<PeriodTestTable> PeriodTestTables { get; set; } // PeriodTestTable
         public DbSet<Person> People { get; set; } // Person
         public DbSet<PersonPost> PersonPosts { get; set; } // PersonPosts
@@ -445,6 +449,7 @@ namespace Efrpg.V3TestE6
         public DbSet<TableA> TableAs { get; set; } // TableA
         public DbSet<TableB> TableBs { get; set; } // TableB
         public DbSet<TableWithDuplicateColumnName> TableWithDuplicateColumnNames { get; set; } // table with duplicate column names
+        public DbSet<TableWithMultiplePeriod> TableWithMultiplePeriods { get; set; } // table.with.multiple.periods
         public DbSet<TableWithSpace> TableWithSpaces { get; set; } // table with space
         public DbSet<TableWithSpaceAndInColumn> TableWithSpaceAndInColumns { get; set; } // table with space and in columns
         public DbSet<TableWithSpaceInColumnOnly> TableWithSpaceInColumnOnlies { get; set; } // TableWithSpaceInColumnOnly
@@ -466,6 +471,7 @@ namespace Efrpg.V3TestE6
         public DbSet<UserDocument> UserDocuments { get; set; } // User_Document
         public DbSet<Versioned> Versioneds { get; set; } // Versioned
         public DbSet<VersionedNullable> VersionedNullables { get; set; } // VersionedNullable
+        public DbSet<ViewWithMultiplePeriod> ViewWithMultiplePeriods { get; set; } // view.with.multiple.periods
         public DbSet<ViewWithSpace> ViewWithSpaces { get; set; } // view with space
         public DbSet<WVN_Article> WVN_Articles { get; set; } // Articles
         public DbSet<WVN_VArticle> WVN_VArticles { get; set; } // v_Articles
@@ -562,6 +568,7 @@ namespace Efrpg.V3TestE6
             modelBuilder.ApplyConfiguration(new MultipleKeyConfiguration());
             modelBuilder.ApplyConfiguration(new OneEightSix_IssueConfiguration());
             modelBuilder.ApplyConfiguration(new OneEightSix_UploadedFileConfiguration());
+            modelBuilder.ApplyConfiguration(new PeriodTableConfiguration());
             modelBuilder.ApplyConfiguration(new PeriodTestTableConfiguration());
             modelBuilder.ApplyConfiguration(new PersonConfiguration());
             modelBuilder.ApplyConfiguration(new PersonPostConfiguration());
@@ -579,6 +586,7 @@ namespace Efrpg.V3TestE6
             modelBuilder.ApplyConfiguration(new TableAConfiguration());
             modelBuilder.ApplyConfiguration(new TableBConfiguration());
             modelBuilder.ApplyConfiguration(new TableWithDuplicateColumnNameConfiguration());
+            modelBuilder.ApplyConfiguration(new TableWithMultiplePeriodConfiguration());
             modelBuilder.ApplyConfiguration(new TableWithSpaceConfiguration());
             modelBuilder.ApplyConfiguration(new TableWithSpaceAndInColumnConfiguration());
             modelBuilder.ApplyConfiguration(new TableWithSpaceInColumnOnlyConfiguration());
@@ -600,6 +608,7 @@ namespace Efrpg.V3TestE6
             modelBuilder.ApplyConfiguration(new UserDocumentConfiguration());
             modelBuilder.ApplyConfiguration(new VersionedConfiguration());
             modelBuilder.ApplyConfiguration(new VersionedNullableConfiguration());
+            modelBuilder.ApplyConfiguration(new ViewWithMultiplePeriodConfiguration());
             modelBuilder.ApplyConfiguration(new ViewWithSpaceConfiguration());
             modelBuilder.ApplyConfiguration(new WVN_ArticleConfiguration());
             modelBuilder.ApplyConfiguration(new WVN_VArticleConfiguration());
@@ -1987,6 +1996,7 @@ namespace Efrpg.V3TestE6
         public DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
         public DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
         public DbSet<OneEightSix_UploadedFile> OneEightSix_UploadedFiles { get; set; } // UploadedFile
+        public DbSet<PeriodTable> PeriodTables { get; set; } // Period.Table
         public DbSet<PeriodTestTable> PeriodTestTables { get; set; } // PeriodTestTable
         public DbSet<Person> People { get; set; } // Person
         public DbSet<PersonPost> PersonPosts { get; set; } // PersonPosts
@@ -2004,6 +2014,7 @@ namespace Efrpg.V3TestE6
         public DbSet<TableA> TableAs { get; set; } // TableA
         public DbSet<TableB> TableBs { get; set; } // TableB
         public DbSet<TableWithDuplicateColumnName> TableWithDuplicateColumnNames { get; set; } // table with duplicate column names
+        public DbSet<TableWithMultiplePeriod> TableWithMultiplePeriods { get; set; } // table.with.multiple.periods
         public DbSet<TableWithSpace> TableWithSpaces { get; set; } // table with space
         public DbSet<TableWithSpaceAndInColumn> TableWithSpaceAndInColumns { get; set; } // table with space and in columns
         public DbSet<TableWithSpaceInColumnOnly> TableWithSpaceInColumnOnlies { get; set; } // TableWithSpaceInColumnOnly
@@ -2025,6 +2036,7 @@ namespace Efrpg.V3TestE6
         public DbSet<UserDocument> UserDocuments { get; set; } // User_Document
         public DbSet<Versioned> Versioneds { get; set; } // Versioned
         public DbSet<VersionedNullable> VersionedNullables { get; set; } // VersionedNullable
+        public DbSet<ViewWithMultiplePeriod> ViewWithMultiplePeriods { get; set; } // view.with.multiple.periods
         public DbSet<ViewWithSpace> ViewWithSpaces { get; set; } // view with space
         public DbSet<WVN_Article> WVN_Articles { get; set; } // Articles
         public DbSet<WVN_VArticle> WVN_VArticles { get; set; } // v_Articles
@@ -2096,6 +2108,7 @@ namespace Efrpg.V3TestE6
             MultipleKeys = new FakeDbSet<MultipleKey>("UserId", "FavouriteColourId", "BestHolidayTypeId");
             OneEightSix_Issues = new FakeDbSet<OneEightSix_Issue>("Id");
             OneEightSix_UploadedFiles = new FakeDbSet<OneEightSix_UploadedFile>("Id");
+            PeriodTables = new FakeDbSet<PeriodTable>("Id");
             PeriodTestTables = new FakeDbSet<PeriodTestTable>("Id");
             People = new FakeDbSet<Person>("Id");
             PersonPosts = new FakeDbSet<PersonPost>("Id");
@@ -2113,6 +2126,7 @@ namespace Efrpg.V3TestE6
             TableAs = new FakeDbSet<TableA>("TableAId");
             TableBs = new FakeDbSet<TableB>("TableBId", "TableAId");
             TableWithDuplicateColumnNames = new FakeDbSet<TableWithDuplicateColumnName>("Id");
+            TableWithMultiplePeriods = new FakeDbSet<TableWithMultiplePeriod>("Id");
             TableWithSpaces = new FakeDbSet<TableWithSpace>("Id");
             TableWithSpaceAndInColumns = new FakeDbSet<TableWithSpaceAndInColumn>("IdValue");
             TableWithSpaceInColumnOnlies = new FakeDbSet<TableWithSpaceInColumnOnly>("IdValue");
@@ -2134,6 +2148,7 @@ namespace Efrpg.V3TestE6
             UserDocuments = new FakeDbSet<UserDocument>("Id");
             Versioneds = new FakeDbSet<Versioned>("Id");
             VersionedNullables = new FakeDbSet<VersionedNullable>("Id");
+            ViewWithMultiplePeriods = new FakeDbSet<ViewWithMultiplePeriod>();
             ViewWithSpaces = new FakeDbSet<ViewWithSpace>();
             WVN_Articles = new FakeDbSet<WVN_Article>("PkArticle");
             WVN_VArticles = new FakeDbSet<WVN_VArticle>();
@@ -4056,7 +4071,7 @@ namespace Efrpg.V3TestE6
         public int? C163 { get; set; } // £
         public int? C38Fred { get; set; } // &fred$
         public int? Abc4792 { get; set; } // abc/\
-        public int? Joe46Bloggs { get; set; } // joe.bloggs
+        public int? JoeBloggs { get; set; } // joe.bloggs
         public int? SimonHughes { get; set; } // simon-hughes
         public string Description { get; set; } // description (length: 20)
         public DateTime SomeDate { get; set; } // someDate
@@ -4598,11 +4613,18 @@ namespace Efrpg.V3TestE6
         }
     }
 
+    // Period.Table
+    public class PeriodTable
+    {
+        public int Id { get; set; } // id (Primary key)
+        public int? JoeBloggs { get; set; } // joe.bloggs
+    }
+
     // PeriodTestTable
     public class PeriodTestTable
     {
         public int Id { get; set; } // id (Primary key)
-        public int? Joe46Bloggs { get; set; } // joe.bloggs
+        public int? JoeBloggs { get; set; } // joe.bloggs
     }
 
     // Person
@@ -4852,6 +4874,13 @@ namespace Efrpg.V3TestE6
         public int UserId3 { get; set; } // User Id
         public int UserId4 { get; set; } // User  Id
         public int UserId { get; set; } // user__id
+    }
+
+    // table.with.multiple.periods
+    public class TableWithMultiplePeriod
+    {
+        public int Id { get; set; } // id (Primary key)
+        public string Description { get; set; } // description (length: 20)
     }
 
     // table with space
@@ -5121,6 +5150,13 @@ namespace Efrpg.V3TestE6
         public int Id { get; set; } // Id (Primary key)
         public byte[] Version { get; set; } // Version (length: 8)
         public int Number { get; set; } // Number
+    }
+
+    // view.with.multiple.periods
+    public class ViewWithMultiplePeriod
+    {
+        public int FkId { get; set; } // FkID
+        public string Description { get; set; } // description (length: 20)
     }
 
     // view with space
@@ -5697,7 +5733,7 @@ namespace Efrpg.V3TestE6
             builder.Property(x => x.C163).HasColumnName(@"£").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.C38Fred).HasColumnName(@"&fred$").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.Abc4792).HasColumnName(@"abc/\").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.Joe46Bloggs).HasColumnName(@"joe.bloggs").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.JoeBloggs).HasColumnName(@"joe.bloggs").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.SimonHughes).HasColumnName(@"simon-hughes").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
             builder.Property(x => x.SomeDate).HasColumnName(@"someDate").HasColumnType("datetime2").IsRequired();
@@ -6204,6 +6240,19 @@ namespace Efrpg.V3TestE6
         }
     }
 
+    // Period.Table
+    public class PeriodTableConfiguration : IEntityTypeConfiguration<PeriodTable>
+    {
+        public void Configure(EntityTypeBuilder<PeriodTable> builder)
+        {
+            builder.ToTable("Period.Table", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK_Period_Table").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.JoeBloggs).HasColumnName(@"joe.bloggs").HasColumnType("int").IsRequired(false);
+        }
+    }
+
     // PeriodTestTable
     public class PeriodTestTableConfiguration : IEntityTypeConfiguration<PeriodTestTable>
     {
@@ -6213,7 +6262,7 @@ namespace Efrpg.V3TestE6
             builder.HasKey(x => x.Id).HasName("PK_PeriodTestTable").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.Joe46Bloggs).HasColumnName(@"joe.bloggs").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.JoeBloggs).HasColumnName(@"joe.bloggs").HasColumnType("int").IsRequired(false);
         }
     }
 
@@ -6457,6 +6506,19 @@ namespace Efrpg.V3TestE6
             builder.Property(x => x.UserId3).HasColumnName(@"User Id").HasColumnType("int").IsRequired();
             builder.Property(x => x.UserId4).HasColumnName(@"User  Id").HasColumnType("int").IsRequired();
             builder.Property(x => x.UserId).HasColumnName(@"user__id").HasColumnType("int").IsRequired();
+        }
+    }
+
+    // table.with.multiple.periods
+    public class TableWithMultiplePeriodConfiguration : IEntityTypeConfiguration<TableWithMultiplePeriod>
+    {
+        public void Configure(EntityTypeBuilder<TableWithMultiplePeriod> builder)
+        {
+            builder.ToTable("table.with.multiple.periods", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK_table_with_multiple_periods").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
         }
     }
 
@@ -6765,6 +6827,19 @@ namespace Efrpg.V3TestE6
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Version).HasColumnName(@"Version").HasColumnType("timestamp(8)").IsRequired(false).IsFixedLength().HasMaxLength(8).IsRowVersion().IsConcurrencyToken();
             builder.Property(x => x.Number).HasColumnName(@"Number").HasColumnType("int").IsRequired();
+        }
+    }
+
+    // view.with.multiple.periods
+    public class ViewWithMultiplePeriodConfiguration : IEntityTypeConfiguration<ViewWithMultiplePeriod>
+    {
+        public void Configure(EntityTypeBuilder<ViewWithMultiplePeriod> builder)
+        {
+            builder.ToView("view.with.multiple.periods", "dbo");
+            builder.HasNoKey();
+
+            builder.Property(x => x.FkId).HasColumnName(@"FkID").HasColumnType("int").IsRequired();
+            builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
         }
     }
 
