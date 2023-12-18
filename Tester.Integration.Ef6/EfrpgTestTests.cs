@@ -47,8 +47,8 @@ namespace Tester.Integration.Ef6
 
             Assert.IsNotNull(result);
             Assert.AreEqual(expected, isApplicationComplete);
-            Assert.AreEqual("Application", result.ResultSet1.Single().Key);
-            Assert.AreEqual(expectedResult, result.ResultSet1.Single().Value);
+            Assert.AreEqual("Application", result.Single().Key);
+            Assert.AreEqual(expectedResult, result.Single().Value);
         }
     }
 }

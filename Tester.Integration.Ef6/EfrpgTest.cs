@@ -164,8 +164,9 @@ namespace Tester.Integration.Ef6
         int App_UspCmtUserFsrUpdate(int? userId, int? fsrId, out int? ufsrId);
         // App_UspCmtUserFsrUpdateAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        int ASimpleExample();
-        Task<int> ASimpleExampleAsync(CancellationToken cancellationToken = default(CancellationToken));
+        List<ASimpleExampleReturnModel> ASimpleExample();
+        List<ASimpleExampleReturnModel> ASimpleExample(out int procResult);
+        Task<List<ASimpleExampleReturnModel>> ASimpleExampleAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         int Beta_Overclock(DateTime? parameter);
         Task<int> Beta_OverclockAsync(DateTime? parameter, CancellationToken cancellationToken = default(CancellationToken));
@@ -173,8 +174,9 @@ namespace Tester.Integration.Ef6
         C182Test2ReturnModel C182Test2(int? flag);
         // C182Test2Async() cannot be created due to having out parameters, or is relying on the procedure result (C182Test2ReturnModel)
 
-        CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete);
-        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (CheckIfApplicationIsCompleteReturnModel)
+        List<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete);
+        List<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete, out int procResult);
+        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (List<CheckIfApplicationIsCompleteReturnModel>)
 
         List<ColourPivotReturnModel> ColourPivot();
         List<ColourPivotReturnModel> ColourPivot(out int procResult);
@@ -257,8 +259,9 @@ namespace Tester.Integration.Ef6
         List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(DbGeometry geometry, DbGeography geography, out int procResult);
         Task<List<SpatialTypesWithParamsReturnModel>> SpatialTypesWithParamsAsync(DbGeometry geometry, DbGeography geography, CancellationToken cancellationToken = default(CancellationToken));
 
-        StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar);
-        // StpMultipleIdenticalResultsAsync() cannot be created due to having out parameters, or is relying on the procedure result (StpMultipleIdenticalResultsReturnModel)
+        List<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResults(int? someVar);
+        List<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResults(int? someVar, out int procResult);
+        Task<List<StpMultipleIdenticalResultsReturnModel>> StpMultipleIdenticalResultsAsync(int? someVar, CancellationToken cancellationToken = default(CancellationToken));
 
         StpMultipleMultipleResultsWithParamsReturnModel StpMultipleMultipleResultsWithParams(int? firstVal, int? secondVal, int? thirdVal);
         // StpMultipleMultipleResultsWithParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (StpMultipleMultipleResultsWithParamsReturnModel)
@@ -994,22 +997,24 @@ namespace Tester.Integration.Ef6
         }
 
         // App_UspCmtUserFsrUpdateAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
-        public int ASimpleExample()
+        public List<ASimpleExampleReturnModel> ASimpleExample()
         {
-            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
-
-            Database.ExecuteSqlCommand(TransactionalBehavior.DoNotEnsureTransaction, "EXEC @procResult = [dbo].[aSimpleExample] ", procResultParam);
-
-            return (int)procResultParam.Value;
+            int procResult;
+            return ASimpleExample(out procResult);
         }
 
-        public async Task<int> ASimpleExampleAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public List<ASimpleExampleReturnModel> ASimpleExample(out int procResult)
         {
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            var procResultData = Database.SqlQuery<ASimpleExampleReturnModel>("EXEC @procResult = [dbo].[aSimpleExample]", procResultParam).ToList();
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
 
-            await Database.ExecuteSqlCommandAsync(TransactionalBehavior.DoNotEnsureTransaction, "EXEC @procResult = [dbo].[aSimpleExample]", cancellationToken, procResultParam);
-
-            return (int)procResultParam.Value;
+        public async Task<List<ASimpleExampleReturnModel>> ASimpleExampleAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var procResultData = await Database.SqlQuery<ASimpleExampleReturnModel>("EXEC [dbo].[aSimpleExample]").ToListAsync(cancellationToken);
+            return procResultData;
         }
 
         public int Beta_Overclock(DateTime? parameter = null)
@@ -1075,47 +1080,31 @@ namespace Tester.Integration.Ef6
         }
 
         // C182Test2Async() cannot be created due to having out parameters, or is relying on the procedure result (C182Test2ReturnModel)
-        public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete)
+        public List<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete)
+        {
+            int procResult;
+            return CheckIfApplicationIsComplete(applicationId, out isApplicationComplete, out procResult);
+        }
+
+        public List<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete, out int procResult)
         {
             var applicationIdParam = new SqlParameter { ParameterName = "@ApplicationId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = applicationId.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!applicationId.HasValue)
                 applicationIdParam.Value = DBNull.Value;
 
             var isApplicationCompleteParam = new SqlParameter { ParameterName = "@IsApplicationComplete", SqlDbType = SqlDbType.Bit, Direction = ParameterDirection.Output };
-            var procResultData = new CheckIfApplicationIsCompleteReturnModel();
-            var cmd = Database.Connection.CreateCommand();
-            cmd.CommandTimeout = Database.CommandTimeout ?? cmd.CommandTimeout;
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.CommandText = "[dbo].[CheckIfApplicationIsComplete]";
-            cmd.Parameters.Add(applicationIdParam);
-            cmd.Parameters.Add(isApplicationCompleteParam);
-
-            try
-            {
-                DbInterception.Dispatch.Connection.Open(Database.Connection, new DbInterceptionContext());
-                var reader = cmd.ExecuteReader();
-                var objectContext = ((IObjectContextAdapter) this).ObjectContext;
-
-                procResultData.ResultSet1 = objectContext.Translate<CheckIfApplicationIsCompleteReturnModel.ResultSetModel1>(reader).ToList();
-                reader.NextResult();
-
-                procResultData.ResultSet2 = objectContext.Translate<CheckIfApplicationIsCompleteReturnModel.ResultSetModel2>(reader).ToList();
-                reader.Close();
-            }
-            finally
-            {
-                DbInterception.Dispatch.Connection.Close(Database.Connection, new DbInterceptionContext());
-            }
-
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            var procResultData = Database.SqlQuery<CheckIfApplicationIsCompleteReturnModel>("EXEC @procResult = [dbo].[CheckIfApplicationIsComplete] @ApplicationId, @IsApplicationComplete OUTPUT", applicationIdParam, isApplicationCompleteParam, procResultParam).ToList();
             if (IsSqlParameterNull(isApplicationCompleteParam))
                 isApplicationComplete = null;
             else
                 isApplicationComplete = (bool) isApplicationCompleteParam.Value;
 
+            procResult = (int) procResultParam.Value;
             return procResultData;
         }
 
-        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (CheckIfApplicationIsCompleteReturnModel)
+        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (List<CheckIfApplicationIsCompleteReturnModel>)
         public List<ColourPivotReturnModel> ColourPivot()
         {
             int procResult;
@@ -1632,40 +1621,34 @@ namespace Tester.Integration.Ef6
             return procResultData;
         }
 
-        public StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar = null)
+        public List<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResults(int? someVar = null)
+        {
+            int procResult;
+            return StpMultipleIdenticalResults(someVar, out procResult);
+        }
+
+        public List<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResults(int? someVar, out int procResult)
         {
             var someVarParam = new SqlParameter { ParameterName = "@someVar", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = someVar.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!someVar.HasValue)
                 someVarParam.Value = DBNull.Value;
 
-            var procResultData = new StpMultipleIdenticalResultsReturnModel();
-            var cmd = Database.Connection.CreateCommand();
-            cmd.CommandTimeout = Database.CommandTimeout ?? cmd.CommandTimeout;
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.CommandText = "[dbo].[stp_multiple_identical_results]";
-            cmd.Parameters.Add(someVarParam);
-
-            try
-            {
-                DbInterception.Dispatch.Connection.Open(Database.Connection, new DbInterceptionContext());
-                var reader = cmd.ExecuteReader();
-                var objectContext = ((IObjectContextAdapter) this).ObjectContext;
-
-                procResultData.ResultSet1 = objectContext.Translate<StpMultipleIdenticalResultsReturnModel.ResultSetModel1>(reader).ToList();
-                reader.NextResult();
-
-                procResultData.ResultSet2 = objectContext.Translate<StpMultipleIdenticalResultsReturnModel.ResultSetModel2>(reader).ToList();
-                reader.Close();
-            }
-            finally
-            {
-                DbInterception.Dispatch.Connection.Close(Database.Connection, new DbInterceptionContext());
-            }
-
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            var procResultData = Database.SqlQuery<StpMultipleIdenticalResultsReturnModel>("EXEC @procResult = [dbo].[stp_multiple_identical_results] @someVar", someVarParam, procResultParam).ToList();
+            procResult = (int) procResultParam.Value;
             return procResultData;
         }
 
-        // StpMultipleIdenticalResultsAsync() cannot be created due to having out parameters, or is relying on the procedure result (StpMultipleIdenticalResultsReturnModel)
+        public async Task<List<StpMultipleIdenticalResultsReturnModel>> StpMultipleIdenticalResultsAsync(int? someVar = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var someVarParam = new SqlParameter { ParameterName = "@someVar", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = someVar.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!someVar.HasValue)
+                someVarParam.Value = DBNull.Value;
+
+            var procResultData = await Database.SqlQuery<StpMultipleIdenticalResultsReturnModel>("EXEC [dbo].[stp_multiple_identical_results] @someVar", someVarParam).ToListAsync(cancellationToken);
+            return procResultData;
+        }
+
         public StpMultipleMultipleResultsWithParamsReturnModel StpMultipleMultipleResultsWithParams(int? firstVal = null, int? secondVal = null, int? thirdVal = null)
         {
             var firstValParam = new SqlParameter { ParameterName = "@first_val", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = firstVal.GetValueOrDefault(), Precision = 10, Scale = 0 };
@@ -6388,6 +6371,12 @@ namespace Tester.Integration.Ef6
 
     #region Stored procedure return models
 
+    public class ASimpleExampleReturnModel
+    {
+        public int? id { get; set; }
+        public string stuff { get; set; }
+    }
+
     public class C182Test1ReturnModel
     {
         public int? Id { get; set; }
@@ -6418,18 +6407,8 @@ namespace Tester.Integration.Ef6
 
     public class CheckIfApplicationIsCompleteReturnModel
     {
-        public class ResultSetModel1
-        {
-            public string Key { get; set; }
-            public string Value { get; set; }
-        }
-        public List<ResultSetModel1> ResultSet1;
-        public class ResultSetModel2
-        {
-            public string Key { get; set; }
-            public string Value { get; set; }
-        }
-        public List<ResultSetModel2> ResultSet2;
+        public string Key { get; set; }
+        public string Value { get; set; }
     }
 
     public class ColourPivotReturnModel
@@ -6550,18 +6529,8 @@ namespace Tester.Integration.Ef6
 
     public class StpMultipleIdenticalResultsReturnModel
     {
-        public class ResultSetModel1
-        {
-            public int Id { get; set; }
-            public string Name { get; set; }
-        }
-        public List<ResultSetModel1> ResultSet1;
-        public class ResultSetModel2
-        {
-            public int Id { get; set; }
-            public string Name { get; set; }
-        }
-        public List<ResultSetModel2> ResultSet2;
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 
     public class StpMultipleMultipleResultsWithParamsReturnModel

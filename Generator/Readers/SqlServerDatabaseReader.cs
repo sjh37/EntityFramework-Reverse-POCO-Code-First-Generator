@@ -1174,11 +1174,18 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 var ds = new DataSet();
                 using (var sqlAdapter = new SqlDataAdapter(sb.ToString(), sqlConnection))
                 {
-                    if (sqlConnection.State != ConnectionState.Open)
-                        sqlConnection.Open();
-                    sqlAdapter.SelectCommand.ExecuteReader(CommandBehavior.SchemaOnly | CommandBehavior.KeyInfo);
-                    sqlConnection.Close();
-                    sqlAdapter.FillSchema(ds, SchemaType.Source, "MyTable");
+                    try
+                    {
+                        if (sqlConnection.State != ConnectionState.Open)
+                            sqlConnection.Open();
+                        sqlAdapter.SelectCommand.ExecuteReader(CommandBehavior.SchemaOnly | CommandBehavior.KeyInfo);
+                        sqlConnection.Close();
+                        sqlAdapter.FillSchema(ds, SchemaType.Source, "MyTable");
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
                 }
 
                 // Tidy up parameters
@@ -1189,6 +1196,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 {
                     proc.ReturnModels.Add(ds.Tables[count].Columns.Cast<DataColumn>().ToList());
                 }
+
+                proc.MergeModelsIfAllSame();
             }
             catch (Exception)
             {

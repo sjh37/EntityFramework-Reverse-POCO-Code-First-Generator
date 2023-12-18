@@ -6,10 +6,10 @@ using System.Collections.Generic;
 
 namespace Tester.Integration.EfCore3
 {
-    public class StpMultipleIdenticalResultsReturnModel
+    public class ASimpleExampleReturnModel
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
+        public int? id { get; set; }
+        public string stuff { get; set; }
     }
 
 }

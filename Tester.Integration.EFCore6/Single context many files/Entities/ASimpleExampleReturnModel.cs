@@ -5,10 +5,10 @@ using System.Collections.Generic;
 
 namespace Tester.Integration.EFCore6.Single_context_many_files
 {
-    public class CheckIfApplicationIsCompleteReturnModel
+    public class ASimpleExampleReturnModel
     {
-        public string Key { get; set; }
-        public string Value { get; set; }
+        public int? id { get; set; }
+        public string stuff { get; set; }
     }
 
 }

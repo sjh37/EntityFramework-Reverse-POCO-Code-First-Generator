@@ -195,8 +195,9 @@ namespace Efrpg.V3TestE6
         int App_UspCmtUserFsrUpdate(int? userId, int? fsrId, out int? ufsrId);
         // App_UspCmtUserFsrUpdateAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        int ASimpleExample();
-        Task<int> ASimpleExampleAsync(CancellationToken cancellationToken = default(CancellationToken));
+        List<ASimpleExampleReturnModel> ASimpleExample();
+        List<ASimpleExampleReturnModel> ASimpleExample(out int procResult);
+        Task<List<ASimpleExampleReturnModel>> ASimpleExampleAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         int Beta_Overclock(DateTime? parameter);
         Task<int> Beta_OverclockAsync(DateTime? parameter, CancellationToken cancellationToken = default(CancellationToken));
@@ -204,8 +205,9 @@ namespace Efrpg.V3TestE6
         // C182Test2ReturnModel C182Test2(int? flag); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
         // Task<C182Test2ReturnModel> C182Test2Async(int? flag); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
-        // CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
-        // Task<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsCompleteAsync(int? applicationId, out bool? isApplicationComplete); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        List<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete);
+        List<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete, out int procResult);
+        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (List<CheckIfApplicationIsCompleteReturnModel>)
 
         List<ColourPivotReturnModel> ColourPivot();
         List<ColourPivotReturnModel> ColourPivot(out int procResult);
@@ -285,8 +287,9 @@ namespace Efrpg.V3TestE6
         int SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography);
         Task<int> SpatialTypesWithParamsAsync(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, CancellationToken cancellationToken = default(CancellationToken));
 
-        // StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
-        // Task<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsAsync(int? someVar); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        List<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResults(int? someVar);
+        List<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResults(int? someVar, out int procResult);
+        Task<List<StpMultipleIdenticalResultsReturnModel>> StpMultipleIdenticalResultsAsync(int? someVar, CancellationToken cancellationToken = default(CancellationToken));
 
         // StpMultipleMultipleResultsWithParamsReturnModel StpMultipleMultipleResultsWithParams(int? firstVal, int? secondVal, int? thirdVal); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
         // Task<StpMultipleMultipleResultsWithParamsReturnModel> StpMultipleMultipleResultsWithParamsAsync(int? firstVal, int? secondVal, int? thirdVal); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
@@ -616,6 +619,8 @@ namespace Efrpg.V3TestE6
 
             modelBuilder.Entity<ThisIsMemoryOptimised>().IsMemoryOptimized();
 
+            modelBuilder.Entity<ASimpleExampleReturnModel>().HasNoKey();
+            modelBuilder.Entity<CheckIfApplicationIsCompleteReturnModel>().HasNoKey();
             modelBuilder.Entity<ColourPivotReturnModel>().HasNoKey();
             modelBuilder.Entity<DboProcDataFromFfrsReturnModel>().HasNoKey();
             modelBuilder.Entity<DboProcDataFromFfrsAndDboReturnModel>().HasNoKey();
@@ -625,6 +630,7 @@ namespace Efrpg.V3TestE6
             modelBuilder.Entity<FFRS_DataFromDboAndFfrsReturnModel>().HasNoKey();
             modelBuilder.Entity<FkTest_HelloReturnModel>().HasNoKey();
             modelBuilder.Entity<GetSmallDecimalTestReturnModel>().HasNoKey();
+            modelBuilder.Entity<StpMultipleIdenticalResultsReturnModel>().HasNoKey();
             modelBuilder.Entity<StpNoParamsTestReturnModel>().HasNoKey();
             modelBuilder.Entity<StpNullableParamsTestReturnModel>().HasNoKey();
             modelBuilder.Entity<StpTestReturnModel>().HasNoKey();
@@ -758,22 +764,32 @@ namespace Efrpg.V3TestE6
 
         // App_UspCmtUserFsrUpdateAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int ASimpleExample()
+        public List<ASimpleExampleReturnModel> ASimpleExample()
         {
-            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
-
-            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[aSimpleExample] ", procResultParam);
-
-            return (int)procResultParam.Value;
+            int procResult;
+            return ASimpleExample(out procResult);
         }
 
-        public async Task<int> ASimpleExampleAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public List<ASimpleExampleReturnModel> ASimpleExample(out int procResult)
         {
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [dbo].[aSimpleExample]";
+            var procResultData = Set<ASimpleExampleReturnModel>()
+                .FromSqlRaw(sqlCommand, procResultParam)
+                .ToList();
 
-            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[aSimpleExample]",  new[] {procResultParam}, cancellationToken);
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
 
-            return (int)procResultParam.Value;
+        public async Task<List<ASimpleExampleReturnModel>> ASimpleExampleAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            const string sqlCommand = "EXEC [dbo].[aSimpleExample]";
+            var procResultData = await Set<ASimpleExampleReturnModel>()
+                .FromSqlRaw(sqlCommand)
+                .ToListAsync();
+
+            return procResultData;
         }
 
         public int Beta_Overclock(DateTime? parameter = null)
@@ -806,9 +822,35 @@ namespace Efrpg.V3TestE6
 
         // public async Task<C182Test2ReturnModel> C182Test2Async(int? flag = null) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
-        // public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        public List<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete)
+        {
+            int procResult;
+            return CheckIfApplicationIsComplete(applicationId, out isApplicationComplete, out procResult);
+        }
 
-        // public async Task<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsCompleteAsync(int? applicationId, out bool? isApplicationComplete) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        public List<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete, out int procResult)
+        {
+            var applicationIdParam = new SqlParameter { ParameterName = "@ApplicationId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = applicationId.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!applicationId.HasValue)
+                applicationIdParam.Value = DBNull.Value;
+
+            var isApplicationCompleteParam = new SqlParameter { ParameterName = "@IsApplicationComplete", SqlDbType = SqlDbType.Bit, Direction = ParameterDirection.Output };
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [dbo].[CheckIfApplicationIsComplete] @ApplicationId, @IsApplicationComplete OUTPUT";
+            var procResultData = Set<CheckIfApplicationIsCompleteReturnModel>()
+                .FromSqlRaw(sqlCommand, applicationIdParam, isApplicationCompleteParam, procResultParam)
+                .ToList();
+
+            if (IsSqlParameterNull(isApplicationCompleteParam))
+                isApplicationComplete = null;
+            else
+                isApplicationComplete = (bool) isApplicationCompleteParam.Value;
+
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (List<CheckIfApplicationIsCompleteReturnModel>)
 
         public List<ColourPivotReturnModel> ColourPivot()
         {
@@ -1401,9 +1443,41 @@ namespace Efrpg.V3TestE6
             return (int)procResultParam.Value;
         }
 
-        // public StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar = null) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        public List<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResults(int? someVar = null)
+        {
+            int procResult;
+            return StpMultipleIdenticalResults(someVar, out procResult);
+        }
 
-        // public async Task<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsAsync(int? someVar = null) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        public List<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResults(int? someVar, out int procResult)
+        {
+            var someVarParam = new SqlParameter { ParameterName = "@someVar", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = someVar.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!someVar.HasValue)
+                someVarParam.Value = DBNull.Value;
+
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [dbo].[stp_multiple_identical_results] @someVar";
+            var procResultData = Set<StpMultipleIdenticalResultsReturnModel>()
+                .FromSqlRaw(sqlCommand, someVarParam, procResultParam)
+                .ToList();
+
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<StpMultipleIdenticalResultsReturnModel>> StpMultipleIdenticalResultsAsync(int? someVar = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var someVarParam = new SqlParameter { ParameterName = "@someVar", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = someVar.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!someVar.HasValue)
+                someVarParam.Value = DBNull.Value;
+
+            const string sqlCommand = "EXEC [dbo].[stp_multiple_identical_results] @someVar";
+            var procResultData = await Set<StpMultipleIdenticalResultsReturnModel>()
+                .FromSqlRaw(sqlCommand, someVarParam)
+                .ToListAsync();
+
+            return procResultData;
+        }
 
         // public StpMultipleMultipleResultsWithParamsReturnModel StpMultipleMultipleResultsWithParams(int? firstVal = null, int? secondVal = null, int? thirdVal = null) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
@@ -2389,14 +2463,23 @@ namespace Efrpg.V3TestE6
 
         // App_UspCmtUserFsrUpdateAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int ASimpleExample()
+        public DbSet<ASimpleExampleReturnModel> ASimpleExampleReturnModel { get; set; }
+        public List<ASimpleExampleReturnModel> ASimpleExample()
         {
-            return 0;
+            int procResult;
+            return ASimpleExample(out procResult);
         }
 
-        public Task<int> ASimpleExampleAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public List<ASimpleExampleReturnModel> ASimpleExample(out int procResult)
         {
-            return Task.FromResult(0);
+            procResult = 0;
+            return new List<ASimpleExampleReturnModel>();
+        }
+
+        public Task<List<ASimpleExampleReturnModel>> ASimpleExampleAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            int procResult;
+            return Task.FromResult(ASimpleExample(out procResult));
         }
 
         public int Beta_Overclock(DateTime? parameter = null)
@@ -2425,20 +2508,20 @@ namespace Efrpg.V3TestE6
         // C182Test2Async() cannot be created due to having out parameters, or is relying on the procedure result (C182Test2ReturnModel)
 
         public DbSet<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsCompleteReturnModel { get; set; }
-        public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete)
+        public List<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete)
         {
             int procResult;
             return CheckIfApplicationIsComplete(applicationId, out isApplicationComplete, out procResult);
         }
 
-        public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete, out int procResult)
+        public List<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete, out int procResult)
         {
             isApplicationComplete = default(bool);
             procResult = 0;
-            return new CheckIfApplicationIsCompleteReturnModel();
+            return new List<CheckIfApplicationIsCompleteReturnModel>();
         }
 
-        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (CheckIfApplicationIsCompleteReturnModel)
+        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (List<CheckIfApplicationIsCompleteReturnModel>)
 
         public DbSet<ColourPivotReturnModel> ColourPivotReturnModel { get; set; }
         public List<ColourPivotReturnModel> ColourPivot()
@@ -2736,19 +2819,23 @@ namespace Efrpg.V3TestE6
         }
 
         public DbSet<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsReturnModel { get; set; }
-        public StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar = null)
+        public List<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResults(int? someVar = null)
         {
             int procResult;
             return StpMultipleIdenticalResults(someVar, out procResult);
         }
 
-        public StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar, out int procResult)
+        public List<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResults(int? someVar, out int procResult)
         {
             procResult = 0;
-            return new StpMultipleIdenticalResultsReturnModel();
+            return new List<StpMultipleIdenticalResultsReturnModel>();
         }
 
-        // StpMultipleIdenticalResultsAsync() cannot be created due to having out parameters, or is relying on the procedure result (StpMultipleIdenticalResultsReturnModel)
+        public Task<List<StpMultipleIdenticalResultsReturnModel>> StpMultipleIdenticalResultsAsync(int? someVar = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            int procResult;
+            return Task.FromResult(StpMultipleIdenticalResults(someVar, out procResult));
+        }
 
         public DbSet<StpMultipleMultipleResultsWithParamsReturnModel> StpMultipleMultipleResultsWithParamsReturnModel { get; set; }
         public StpMultipleMultipleResultsWithParamsReturnModel StpMultipleMultipleResultsWithParams(int? firstVal = null, int? secondVal = null, int? thirdVal = null)
@@ -6943,6 +7030,12 @@ namespace Efrpg.V3TestE6
 
     #region Stored procedure return models
 
+    public class ASimpleExampleReturnModel
+    {
+        public int? id { get; set; }
+        public string stuff { get; set; }
+    }
+
     public class C182Test1ReturnModel
     {
         public int? Id { get; set; }
@@ -6973,18 +7066,8 @@ namespace Efrpg.V3TestE6
 
     public class CheckIfApplicationIsCompleteReturnModel
     {
-        public class ResultSetModel1
-        {
-            public string Key { get; set; }
-            public string Value { get; set; }
-        }
-        public List<ResultSetModel1> ResultSet1;
-        public class ResultSetModel2
-        {
-            public string Key { get; set; }
-            public string Value { get; set; }
-        }
-        public List<ResultSetModel2> ResultSet2;
+        public string Key { get; set; }
+        public string Value { get; set; }
     }
 
     public class ColourPivotReturnModel
@@ -7066,18 +7149,8 @@ namespace Efrpg.V3TestE6
 
     public class StpMultipleIdenticalResultsReturnModel
     {
-        public class ResultSetModel1
-        {
-            public int Id { get; set; }
-            public string Name { get; set; }
-        }
-        public List<ResultSetModel1> ResultSet1;
-        public class ResultSetModel2
-        {
-            public int Id { get; set; }
-            public string Name { get; set; }
-        }
-        public List<ResultSetModel2> ResultSet2;
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 
     public class StpMultipleMultipleResultsWithParamsReturnModel

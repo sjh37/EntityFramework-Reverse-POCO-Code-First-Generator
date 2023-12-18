@@ -472,14 +472,23 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
 
         // App_UspCmtUserFsrUpdateAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int ASimpleExample()
+        public DbSet<ASimpleExampleReturnModel> ASimpleExampleReturnModel { get; set; }
+        public List<ASimpleExampleReturnModel> ASimpleExample()
         {
-            return 0;
+            int procResult;
+            return ASimpleExample(out procResult);
         }
 
-        public Task<int> ASimpleExampleAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public List<ASimpleExampleReturnModel> ASimpleExample(out int procResult)
         {
-            return Task.FromResult(0);
+            procResult = 0;
+            return new List<ASimpleExampleReturnModel>();
+        }
+
+        public Task<List<ASimpleExampleReturnModel>> ASimpleExampleAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            int procResult;
+            return Task.FromResult(ASimpleExample(out procResult));
         }
 
         public int Beta_Overclock(DateTime? parameter = null)
@@ -508,20 +517,20 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         // C182Test2Async() cannot be created due to having out parameters, or is relying on the procedure result (C182Test2ReturnModel)
 
         public DbSet<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsCompleteReturnModel { get; set; }
-        public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete)
+        public List<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete)
         {
             int procResult;
             return CheckIfApplicationIsComplete(applicationId, out isApplicationComplete, out procResult);
         }
 
-        public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete, out int procResult)
+        public List<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete, out int procResult)
         {
             isApplicationComplete = default(bool);
             procResult = 0;
-            return new CheckIfApplicationIsCompleteReturnModel();
+            return new List<CheckIfApplicationIsCompleteReturnModel>();
         }
 
-        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (CheckIfApplicationIsCompleteReturnModel)
+        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (List<CheckIfApplicationIsCompleteReturnModel>)
 
         public DbSet<ColourPivotReturnModel> ColourPivotReturnModel { get; set; }
         public List<ColourPivotReturnModel> ColourPivot()
@@ -846,19 +855,23 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         }
 
         public DbSet<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsReturnModel { get; set; }
-        public StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar = null)
+        public List<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResults(int? someVar = null)
         {
             int procResult;
             return StpMultipleIdenticalResults(someVar, out procResult);
         }
 
-        public StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar, out int procResult)
+        public List<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResults(int? someVar, out int procResult)
         {
             procResult = 0;
-            return new StpMultipleIdenticalResultsReturnModel();
+            return new List<StpMultipleIdenticalResultsReturnModel>();
         }
 
-        // StpMultipleIdenticalResultsAsync() cannot be created due to having out parameters, or is relying on the procedure result (StpMultipleIdenticalResultsReturnModel)
+        public Task<List<StpMultipleIdenticalResultsReturnModel>> StpMultipleIdenticalResultsAsync(int? someVar = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            int procResult;
+            return Task.FromResult(StpMultipleIdenticalResults(someVar, out procResult));
+        }
 
         public DbSet<StpMultipleMultipleResultsWithParamsReturnModel> StpMultipleMultipleResultsWithParamsReturnModel { get; set; }
         public StpMultipleMultipleResultsWithParamsReturnModel StpMultipleMultipleResultsWithParams(int? firstVal = null, int? secondVal = null, int? thirdVal = null)

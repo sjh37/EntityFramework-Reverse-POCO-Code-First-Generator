@@ -4,8 +4,10 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using Efrpg.Filtering;
 using Efrpg.Readers;
+using Efrpg.Util;
 
 namespace Efrpg
 {
@@ -39,6 +41,31 @@ namespace Efrpg
         public static string WrapTypeIfNullable(string propertyType, DataColumn col)
         {
             return !IsNullable(col) ? propertyType : string.Format(Settings.NullableShortHand ? "{0}?" : "Nullable<{0}>", propertyType);
+        }
+
+        public void MergeModelsIfAllSame()
+        {
+            if(Settings.MergeMultipleStoredProcModelsIfAllSame && ReturnModels.Count < 2)
+                return;
+
+            if (ReturnModels.Select(x => x.Count).Distinct().Count() != 1)
+                return; // Column count varies between models
+
+            var modelsCount = ReturnModels.Count;
+            var colCount = ReturnModels[0].Count;
+            for (var i = 1; i < modelsCount; ++i)
+            {
+                for (var n = 0; n < colCount; n++)
+                {
+                    var col = ReturnModels[0][n];
+                    var other = ReturnModels[i][n];
+
+                    if (col.ColumnName != other.ColumnName || col.DataType.FullName != other.DataType.FullName)
+                        return; // Columns differ
+                }
+            }
+
+            ReturnModels.RemoveRange(1, modelsCount - 1);
         }
 
         public string WriteStoredProcFunctionName(IDbContextFilter filter)

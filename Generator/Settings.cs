@@ -72,6 +72,7 @@ namespace Efrpg
         public static bool TrimCharFields                           = false; // EF Core option only. If true, will TrimEnd() 'char' fields when read from the database.
         public static bool IncludeFieldNameConstants                = false; // Will include public const string {{NameHumanCase}}Field = "{{NameHumanCase}}"; in the generated POCO class. It allows you to use a constant instead of magic strings.
         public static bool UsePropertiesForStoredProcResultSets     = false; // Stored procedure result set return models are rendered as fields (false) or properties (true).
+        public static bool MergeMultipleStoredProcModelsIfAllSame   = true; // Some stored procedures are reported as having multiple result sets when in fact there is only one. Set this to true to merge identical result sets.
         public static List<string> AdditionalNamespaces             = new List<string>(); // To include extra namespaces, include them here. i.e. "Microsoft.AspNet.Identity.EntityFramework"
         public static List<string> AdditionalContextInterfaceItems  = new List<string>(); //  example: "void SetAutoDetectChangesEnabled(bool flag);"
         public static List<string> AdditionalFileHeaderText         = new List<string>(); // This will put additional lines verbatim at the top of each file under the comments, 1 line per entry

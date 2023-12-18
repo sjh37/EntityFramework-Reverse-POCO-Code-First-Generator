@@ -7,18 +7,8 @@ namespace V6EfrpgTest
 {
     public class StpMultipleIdenticalResultsReturnModel
     {
-        public class ResultSetModel1
-        {
-            public int Id { get; set; }
-            public string Name { get; set; }
-        }
-        public List<ResultSetModel1> ResultSet1;
-        public class ResultSetModel2
-        {
-            public int Id { get; set; }
-            public string Name { get; set; }
-        }
-        public List<ResultSetModel2> ResultSet2;
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 
 }

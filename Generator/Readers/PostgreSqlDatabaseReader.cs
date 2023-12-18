@@ -332,13 +332,20 @@ ORDER BY SchemaName, TableName, TriggerName;";
                     if (sqlAdapter == null)
                         return;
 
-                    cmd.CommandText = sb.ToString();
-                    sqlAdapter.SelectCommand = cmd;
-                    if(cmd.Connection.State != ConnectionState.Open)
-                        cmd.Connection.Open();
-                    sqlAdapter.SelectCommand.ExecuteReader(CommandBehavior.SchemaOnly | CommandBehavior.KeyInfo);
-                    cmd.Connection.Close();
-                    sqlAdapter.FillSchema(ds, SchemaType.Source, "MyTable");
+                    try
+                    {
+                        cmd.CommandText = sb.ToString();
+                        sqlAdapter.SelectCommand = cmd;
+                        if(cmd.Connection.State != ConnectionState.Open)
+                            cmd.Connection.Open();
+                        sqlAdapter.SelectCommand.ExecuteReader(CommandBehavior.SchemaOnly | CommandBehavior.KeyInfo);
+                        cmd.Connection.Close();
+                        sqlAdapter.FillSchema(ds, SchemaType.Source, "MyTable");
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
                 }
 
                 // Tidy up parameters
@@ -349,6 +356,8 @@ ORDER BY SchemaName, TableName, TriggerName;";
                 {
                     proc.ReturnModels.Add(ds.Tables[count].Columns.Cast<DataColumn>().ToList());
                 }
+                
+                proc.MergeModelsIfAllSame();
             }
             catch (Exception)
             {

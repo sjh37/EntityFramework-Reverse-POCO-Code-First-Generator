@@ -181,8 +181,9 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         int App_UspCmtUserFsrUpdate(int? userId, int? fsrId, out int? ufsrId);
         // App_UspCmtUserFsrUpdateAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        int ASimpleExample();
-        Task<int> ASimpleExampleAsync(CancellationToken cancellationToken = default(CancellationToken));
+        List<ASimpleExampleReturnModel> ASimpleExample();
+        List<ASimpleExampleReturnModel> ASimpleExample(out int procResult);
+        Task<List<ASimpleExampleReturnModel>> ASimpleExampleAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         int Beta_Overclock(DateTime? parameter);
         Task<int> Beta_OverclockAsync(DateTime? parameter, CancellationToken cancellationToken = default(CancellationToken));
@@ -190,8 +191,9 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         // C182Test2ReturnModel C182Test2(int? flag); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
         // Task<C182Test2ReturnModel> C182Test2Async(int? flag); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
-        // CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
-        // Task<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsCompleteAsync(int? applicationId, out bool? isApplicationComplete); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        List<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete);
+        List<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete, out int procResult);
+        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (List<CheckIfApplicationIsCompleteReturnModel>)
 
         List<ColourPivotReturnModel> ColourPivot();
         List<ColourPivotReturnModel> ColourPivot(out int procResult);
@@ -274,8 +276,9 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, out int procResult);
         Task<List<SpatialTypesWithParamsReturnModel>> SpatialTypesWithParamsAsync(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, CancellationToken cancellationToken = default(CancellationToken));
 
-        // StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
-        // Task<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsAsync(int? someVar); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        List<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResults(int? someVar);
+        List<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResults(int? someVar, out int procResult);
+        Task<List<StpMultipleIdenticalResultsReturnModel>> StpMultipleIdenticalResultsAsync(int? someVar, CancellationToken cancellationToken = default(CancellationToken));
 
         // StpMultipleMultipleResultsWithParamsReturnModel StpMultipleMultipleResultsWithParams(int? firstVal, int? secondVal, int? thirdVal); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
         // Task<StpMultipleMultipleResultsWithParamsReturnModel> StpMultipleMultipleResultsWithParamsAsync(int? firstVal, int? secondVal, int? thirdVal); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
