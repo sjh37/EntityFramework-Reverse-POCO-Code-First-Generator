@@ -592,6 +592,7 @@ namespace Efrpg.Generators
                 NameHumanCaseWithSuffix = table.NameHumanCaseWithSuffix(),
                 Schema = table.Schema.DbName,
                 PrimaryKeyNameHumanCase = primaryKey ?? table.PrimaryKeyNameHumanCase(),
+                NotUsingDataAnnotations = !Settings.UseDataAnnotations,
                 HasSchema = !string.IsNullOrEmpty(table.Schema.DbName),
                 ClassModifier = Settings.ConfigurationClassesModifiers,
                 ClassComment = table.WriteComments(),

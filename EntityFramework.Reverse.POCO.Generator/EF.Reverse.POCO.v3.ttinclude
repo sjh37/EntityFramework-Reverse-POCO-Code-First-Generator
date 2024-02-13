@@ -4001,6 +4001,7 @@
                 NameHumanCaseWithSuffix = table.NameHumanCaseWithSuffix(),
                 Schema = table.Schema.DbName,
                 PrimaryKeyNameHumanCase = primaryKey ?? table.PrimaryKeyNameHumanCase(),
+                NotUsingDataAnnotations = !Settings.UseDataAnnotations,
                 HasSchema = !string.IsNullOrEmpty(table.Schema.DbName),
                 ClassModifier = Settings.ConfigurationClassesModifiers,
                 ClassComment = table.WriteComments(),
@@ -17297,6 +17298,9 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             foreach (var attribute in Attributes.Distinct())
                 sb.AppendLine(attribute);
 
+            if (Settings.UseDataAnnotations)
+                sb.AppendLine($"[Table(\"{DbName}\", Schema = \"{Schema.DbName}\")]");
+
             return sb.ToString();
         }
 
@@ -17492,6 +17496,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public string Schema { get; set; }
         public string PrimaryKeyNameHumanCase { get; set; }
         public bool HasSchema { get; set; }
+        public bool NotUsingDataAnnotations { get; set; }
         public string ClassModifier { get; set; }
         public string ClassComment { get; set; }
         public List<string> Columns { get; set; }
@@ -20451,10 +20456,12 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
 
     public void Configure(EntityTypeBuilder<{{NameHumanCaseWithSuffix}}> builder){{#newline}}
     {{{#newline}}
+{{#if NotUsingDataAnnotations}}
 {{#if HasSchema}}
         builder.{{ToTableOrView}}(""{{Name}}"", ""{{Schema}}"");{{#newline}}
 {{#else}}
         builder.{{ToTableOrView}}(""{{Name}}"");{{#newline}}
+{{/if}}
 {{/if}}
         {{PrimaryKeyNameHumanCase}}{{#newline}}{{#newline}}
 
@@ -22096,10 +22103,12 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
 
     public void Configure(EntityTypeBuilder<{{NameHumanCaseWithSuffix}}> builder){{#newline}}
     {{{#newline}}
+{{#if NotUsingDataAnnotations}}
 {{#if HasSchema}}
         builder.{{ToTableOrView}}(""{{Name}}"", ""{{Schema}}"");{{#newline}}
 {{#else}}
         builder.{{ToTableOrView}}(""{{Name}}"");{{#newline}}
+{{/if}}
 {{/if}}
         {{PrimaryKeyNameHumanCase}}{{#newline}}{{#newline}}
 
@@ -23748,10 +23757,12 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
 
     public void Configure(EntityTypeBuilder<{{NameHumanCaseWithSuffix}}> builder){{#newline}}
     {{{#newline}}
+{{#if NotUsingDataAnnotations}}
 {{#if HasSchema}}
         builder.{{ToTableOrView}}(""{{Name}}"", ""{{Schema}}"");{{#newline}}
 {{#else}}
         builder.{{ToTableOrView}}(""{{Name}}"");{{#newline}}
+{{/if}}
 {{/if}}
         {{PrimaryKeyNameHumanCase}}{{#newline}}{{#newline}}
 
@@ -25400,10 +25411,12 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
 
     public void Configure(EntityTypeBuilder<{{NameHumanCaseWithSuffix}}> builder){{#newline}}
     {{{#newline}}
+{{#if NotUsingDataAnnotations}}
 {{#if HasSchema}}
         builder.{{ToTableOrView}}(""{{Name}}"", ""{{Schema}}"");{{#newline}}
 {{#else}}
         builder.{{ToTableOrView}}(""{{Name}}"");{{#newline}}
+{{/if}}
 {{/if}}
         {{PrimaryKeyNameHumanCase}}{{#newline}}{{#newline}}
 

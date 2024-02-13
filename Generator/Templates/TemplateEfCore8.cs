@@ -1545,10 +1545,12 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
 
     public void Configure(EntityTypeBuilder<{{NameHumanCaseWithSuffix}}> builder){{#newline}}
     {{{#newline}}
+{{#if NotUsingDataAnnotations}}
 {{#if HasSchema}}
         builder.{{ToTableOrView}}(""{{Name}}"", ""{{Schema}}"");{{#newline}}
 {{#else}}
         builder.{{ToTableOrView}}(""{{Name}}"");{{#newline}}
+{{/if}}
 {{/if}}
         {{PrimaryKeyNameHumanCase}}{{#newline}}{{#newline}}
 

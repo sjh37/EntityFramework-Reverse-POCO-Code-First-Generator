@@ -10,6 +10,7 @@ namespace Efrpg.TemplateModels
         public string Schema { get; set; }
         public string PrimaryKeyNameHumanCase { get; set; }
         public bool HasSchema { get; set; }
+        public bool NotUsingDataAnnotations { get; set; }
         public string ClassModifier { get; set; }
         public string ClassComment { get; set; }
         public List<string> Columns { get; set; }

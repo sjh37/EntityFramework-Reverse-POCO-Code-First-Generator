@@ -315,6 +315,9 @@ namespace Efrpg
             foreach (var attribute in Attributes.Distinct())
                 sb.AppendLine(attribute);
 
+            if (Settings.UseDataAnnotations)
+                sb.AppendLine($"[Table(\"{DbName}\", Schema = \"{Schema.DbName}\")]");
+
             return sb.ToString();
         }
 
