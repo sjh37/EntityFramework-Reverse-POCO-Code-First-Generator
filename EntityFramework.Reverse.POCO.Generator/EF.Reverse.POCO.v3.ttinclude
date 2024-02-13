@@ -5969,7 +5969,7 @@
             sb.AppendFormat(".HasColumnName(@\"{0}\")", c.DbName);
 
             var excludedHasColumnType = string.Empty;
-            if (!string.IsNullOrEmpty(c.SqlPropertyType))
+            if (!Settings.UseDataAnnotations && !string.IsNullOrEmpty(c.SqlPropertyType))
             {
                 if(Column.ExcludedHasColumnType.Contains(c.SqlPropertyType))
                     excludedHasColumnType = string.Format(" // .HasColumnType(\"{0}\") was excluded", c.SqlPropertyType);
@@ -18871,10 +18871,12 @@ using {{this}};{{#newline}}
 
     public {{ConfigurationClassName}}(string schema){{#newline}}
     {{{#newline}}
+{{#if NotUsingDataAnnotations}}
 {{#if HasSchema}}
         ToTable(""{{Name}}"", schema);{{#newline}}
 {{#else}}
         ToTable(""{{Name}}"");{{#newline}}
+{{/if}}
 {{/if}}
         HasKey({{PrimaryKeyNameHumanCase}});{{#newline}}{{#newline}}
 

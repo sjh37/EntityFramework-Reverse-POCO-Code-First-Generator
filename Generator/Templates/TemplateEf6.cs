@@ -1229,10 +1229,12 @@ using {{this}};{{#newline}}
 
     public {{ConfigurationClassName}}(string schema){{#newline}}
     {{{#newline}}
+{{#if NotUsingDataAnnotations}}
 {{#if HasSchema}}
         ToTable(""{{Name}}"", schema);{{#newline}}
 {{#else}}
         ToTable(""{{Name}}"");{{#newline}}
+{{/if}}
 {{/if}}
         HasKey({{PrimaryKeyNameHumanCase}});{{#newline}}{{#newline}}
 
