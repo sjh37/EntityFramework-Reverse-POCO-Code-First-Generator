@@ -39,7 +39,7 @@ namespace Efrpg.Readers
         protected abstract string StoredProcedureSQL();
         protected abstract string ReadDatabaseEditionSQL();
         protected abstract string MultiContextSQL();
-        protected abstract string EnumSQL(string table, string nameField, string valueField);
+        protected abstract string EnumSQL(string table, string nameField, string valueField, string groupField);
         protected abstract string SequenceSQL();
         protected abstract string TriggerSQL();
         protected abstract string[] MemoryOptimisedSQL();
@@ -811,23 +811,37 @@ namespace Efrpg.Readers
 
                 foreach (var e in enums)
                 {
-                    var sql = EnumSQL(e.Table, e.NameField, e.ValueField);
+                    var sql = EnumSQL(e.Table, e.NameField, e.ValueField, e.GroupField);
+                    var enumDict = new Dictionary<string, List<EnumerationMember>>();
+
                     if (string.IsNullOrEmpty(sql))
                         continue;
-
+                    
                     cmd.CommandText = sql;
 
                     try
                     {
                         using (var rdr = cmd.ExecuteReader())
                         {
-                            var items = new List<EnumerationMember>();
-
                             while (rdr.Read())
                             {
                                 var name = rdr["NameField"].ToString().Trim();
                                 if (string.IsNullOrEmpty(name))
                                     continue;
+
+                                var group = string.Empty;
+                                
+                                if (!String.IsNullOrEmpty(e.GroupField))
+                                {
+                                    group = rdr["GroupField"].ToString().Trim();
+                                    group = RemoveNonAlphaNumeric.Replace(group, string.Empty);
+                                    group = (Settings.UsePascalCaseForEnumMembers ? Inflector.ToTitleCase(group) : group).Replace(" ", string.Empty).Trim();
+
+                                }
+                                if (!enumDict.ContainsKey(group))
+                                {
+                                    enumDict.Add(group, new List<EnumerationMember>());
+                                }
 
                                 name = RemoveNonAlphaNumeric.Replace(name, string.Empty);
                                 name = (Settings.UsePascalCaseForEnumMembers ? Inflector.ToTitleCase(name) : name).Replace(" ", string.Empty).Trim();
@@ -844,13 +858,15 @@ namespace Efrpg.Readers
                                     var o = rdr.GetValue(n);
                                     allValues.Add(rdr.GetName(n), o != DBNull.Value ? o : null);
                                 }
-
-                                items.Add(new EnumerationMember(name, value, allValues));
+                                enumDict[group].Add(new EnumerationMember(name, value, allValues));
                             }
 
-                            if (items.Any())
+                            foreach (var v in enumDict)
                             {
-                                result.Add(new Enumeration(e.Name, items));
+                                if (v.Value.Any())
+                                {
+                                    result.Add(new Enumeration(e.Name.Replace("{GroupField}", v.Key), v.Value));
+                                }
                             }
                         }
                     }
