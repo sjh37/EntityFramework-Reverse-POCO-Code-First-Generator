@@ -674,7 +674,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[AddTwoValues] @a, @b", new[] { aParam, bParam, procResultParam }, cancellationToken);
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[AddTwoValues] @a, @b",  new[] {aParam, bParam, procResultParam}, cancellationToken);
 
             return (int)procResultParam.Value;
         }
@@ -698,12 +698,12 @@ namespace Tester.Integration.EfCore3.File_based_templates
             if (IsSqlParameterNull(resultParam))
                 result = null;
             else
-                result = (int)resultParam.Value;
+                result = (int) resultParam.Value;
 
             if (IsSqlParameterNull(result2Param))
                 result2 = null;
             else
-                result2 = (int)result2Param.Value;
+                result2 = (int) result2Param.Value;
 
             return (int)procResultParam.Value;
         }
@@ -731,7 +731,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-            await Database.ExecuteSqlRawAsync("EXEC @procResult = [Alpha].[Overclock] @Parameter", new[] { parameterParam, procResultParam }, cancellationToken);
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [Alpha].[Overclock] @Parameter",  new[] {parameterParam, procResultParam}, cancellationToken);
 
             return (int)procResultParam.Value;
         }
@@ -754,7 +754,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
             if (IsSqlParameterNull(ufsrIdParam))
                 ufsrId = null;
             else
-                ufsrId = (int)ufsrIdParam.Value;
+                ufsrId = (int) ufsrIdParam.Value;
 
             return (int)procResultParam.Value;
         }
@@ -775,7 +775,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
                 .FromSqlRaw(sqlCommand, procResultParam)
                 .ToList();
 
-            procResult = (int)procResultParam.Value;
+            procResult = (int) procResultParam.Value;
             return procResultData;
         }
 
@@ -810,7 +810,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-            await Database.ExecuteSqlRawAsync("EXEC @procResult = [Beta].[Overclock] @Parameter", new[] { parameterParam, procResultParam }, cancellationToken);
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [Beta].[Overclock] @Parameter",  new[] {parameterParam, procResultParam}, cancellationToken);
 
             return (int)procResultParam.Value;
         }
@@ -841,9 +841,9 @@ namespace Tester.Integration.EfCore3.File_based_templates
             if (IsSqlParameterNull(isApplicationCompleteParam))
                 isApplicationComplete = null;
             else
-                isApplicationComplete = (bool)isApplicationCompleteParam.Value;
+                isApplicationComplete = (bool) isApplicationCompleteParam.Value;
 
-            procResult = (int)procResultParam.Value;
+            procResult = (int) procResultParam.Value;
             return procResultData;
         }
 
@@ -863,7 +863,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
                 .FromSqlRaw(sqlCommand, procResultParam)
                 .ToList();
 
-            procResult = (int)procResultParam.Value;
+            procResult = (int) procResultParam.Value;
             return procResultData;
         }
 
@@ -891,7 +891,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
                 .FromSqlRaw(sqlCommand, procResultParam)
                 .ToList();
 
-            procResult = (int)procResultParam.Value;
+            procResult = (int) procResultParam.Value;
             return procResultData;
         }
 
@@ -919,7 +919,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
             if (IsSqlParameterNull(someStringParam))
                 someString = default(string);
             else
-                someString = (string)someStringParam.Value;
+                someString = (string) someStringParam.Value;
 
             return (int)procResultParam.Value;
         }
@@ -944,7 +944,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
                 .FromSqlRaw(sqlCommand, maxIdParam, procResultParam)
                 .ToList();
 
-            procResult = (int)procResultParam.Value;
+            procResult = (int) procResultParam.Value;
             return procResultData;
         }
 
@@ -976,7 +976,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
                 .FromSqlRaw(sqlCommand, procResultParam)
                 .ToList();
 
-            procResult = (int)procResultParam.Value;
+            procResult = (int) procResultParam.Value;
             return procResultData;
         }
 
@@ -1004,7 +1004,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
                 .FromSqlRaw(sqlCommand, procResultParam)
                 .ToList();
 
-            procResult = (int)procResultParam.Value;
+            procResult = (int) procResultParam.Value;
             return procResultData;
         }
 
@@ -1036,7 +1036,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
                 .FromSqlRaw(sqlCommand, maxIdParam, procResultParam)
                 .ToList();
 
-            procResult = (int)procResultParam.Value;
+            procResult = (int) procResultParam.Value;
             return procResultData;
         }
 
@@ -1068,7 +1068,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
                 .FromSqlRaw(sqlCommand, procResultParam)
                 .ToList();
 
-            procResult = (int)procResultParam.Value;
+            procResult = (int) procResultParam.Value;
             return procResultData;
         }
 
@@ -1096,7 +1096,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
                 .FromSqlRaw(sqlCommand, procResultParam)
                 .ToList();
 
-            procResult = (int)procResultParam.Value;
+            procResult = (int) procResultParam.Value;
             return procResultData;
         }
 
@@ -1124,7 +1124,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
                 .FromSqlRaw(sqlCommand, procResultParam)
                 .ToList();
 
-            procResult = (int)procResultParam.Value;
+            procResult = (int) procResultParam.Value;
             return procResultData;
         }
 
@@ -1156,7 +1156,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
                 .FromSqlRaw(sqlCommand, maxIdParam, procResultParam)
                 .ToList();
 
-            procResult = (int)procResultParam.Value;
+            procResult = (int) procResultParam.Value;
             return procResultData;
         }
 
@@ -1188,7 +1188,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
             if (IsSqlParameterNull(insertedIdParam))
                 insertedId = null;
             else
-                insertedId = (int)insertedIdParam.Value;
+                insertedId = (int) insertedIdParam.Value;
 
             return (int)procResultParam.Value;
         }
@@ -1214,12 +1214,12 @@ namespace Tester.Integration.EfCore3.File_based_templates
             if (IsSqlParameterNull(insertedIdParam))
                 insertedId = null;
             else
-                insertedId = (int)insertedIdParam.Value;
+                insertedId = (int) insertedIdParam.Value;
 
             if (IsSqlParameterNull(anotherInsertedIdParam))
                 anotherInsertedId = null;
             else
-                anotherInsertedId = (int)anotherInsertedIdParam.Value;
+                anotherInsertedId = (int) anotherInsertedIdParam.Value;
 
             return (int)procResultParam.Value;
         }
@@ -1241,12 +1241,12 @@ namespace Tester.Integration.EfCore3.File_based_templates
             if (IsSqlParameterNull(insertedIdParam))
                 insertedId = null;
             else
-                insertedId = (int)insertedIdParam.Value;
+                insertedId = (int) insertedIdParam.Value;
 
             if (IsSqlParameterNull(anotherInsertedIdParam))
                 anotherInsertedId = null;
             else
-                anotherInsertedId = (int)anotherInsertedIdParam.Value;
+                anotherInsertedId = (int) anotherInsertedIdParam.Value;
 
             return (int)procResultParam.Value;
         }
@@ -1263,7 +1263,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
             if (IsSqlParameterNull(minTripSequenceStartParamParam))
                 minTripSequenceStartParam = null;
             else
-                minTripSequenceStartParam = (DateTime)minTripSequenceStartParamParam.Value;
+                minTripSequenceStartParam = (DateTime) minTripSequenceStartParamParam.Value;
 
             return (int)procResultParam.Value;
         }
@@ -1280,7 +1280,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
             if (IsSqlParameterNull(minTripSequenceStartParamParam))
                 minTripSequenceStartParam = null;
             else
-                minTripSequenceStartParam = (DateTime)minTripSequenceStartParamParam.Value;
+                minTripSequenceStartParam = (DateTime) minTripSequenceStartParamParam.Value;
 
             return (int)procResultParam.Value;
         }
@@ -1316,7 +1316,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[NvarcharTest] @maxOutputParam, @normalOutputParam", new[] { maxOutputParamParam, normalOutputParamParam, procResultParam }, cancellationToken);
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[NvarcharTest] @maxOutputParam, @normalOutputParam",  new[] {maxOutputParamParam, normalOutputParamParam, procResultParam}, cancellationToken);
 
             return (int)procResultParam.Value;
         }
@@ -1342,7 +1342,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-            await Database.ExecuteSqlRawAsync("EXEC @procResult = [Omega].[Overclock] @Parameter", new[] { parameterParam, procResultParam }, cancellationToken);
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [Omega].[Overclock] @Parameter",  new[] {parameterParam, procResultParam}, cancellationToken);
 
             return (int)procResultParam.Value;
         }
@@ -1357,7 +1357,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
             if (IsSqlParameterNull(perfectNumberParam))
                 perfectNumber = null;
             else
-                perfectNumber = (decimal)perfectNumberParam.Value;
+                perfectNumber = (decimal) perfectNumberParam.Value;
 
             return (int)procResultParam.Value;
         }
@@ -1374,7 +1374,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
             if (IsSqlParameterNull(perfectNumberParam))
                 perfectNumber = null;
             else
-                perfectNumber = (decimal)perfectNumberParam.Value;
+                perfectNumber = (decimal) perfectNumberParam.Value;
 
             return (int)procResultParam.Value;
         }
@@ -1391,7 +1391,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
             if (IsSqlParameterNull(perfectNumberParam))
                 perfectNumber = null;
             else
-                perfectNumber = (decimal)perfectNumberParam.Value;
+                perfectNumber = (decimal) perfectNumberParam.Value;
 
             return (int)procResultParam.Value;
         }
@@ -1412,7 +1412,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
                 .FromSqlRaw(sqlCommand, procResultParam)
                 .ToList();
 
-            procResult = (int)procResultParam.Value;
+            procResult = (int) procResultParam.Value;
             return procResultData;
         }
 
@@ -1448,7 +1448,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
                 .FromSqlRaw(sqlCommand, geometryParam, geographyParam, procResultParam)
                 .ToList();
 
-            procResult = (int)procResultParam.Value;
+            procResult = (int) procResultParam.Value;
             return procResultData;
         }
 
@@ -1488,7 +1488,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
                 .FromSqlRaw(sqlCommand, someVarParam, procResultParam)
                 .ToList();
 
-            procResult = (int)procResultParam.Value;
+            procResult = (int) procResultParam.Value;
             return procResultData;
         }
 
@@ -1532,7 +1532,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
                 .FromSqlRaw(sqlCommand, procResultParam)
                 .ToList();
 
-            procResult = (int)procResultParam.Value;
+            procResult = (int) procResultParam.Value;
             return procResultData;
         }
 
@@ -1559,7 +1559,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         {
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[stp_no_return_fields]", new[] { procResultParam }, cancellationToken);
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[stp_no_return_fields]",  new[] {procResultParam}, cancellationToken);
 
             return (int)procResultParam.Value;
         }
@@ -1586,7 +1586,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
                 .FromSqlRaw(sqlCommand, aValParam, bValParam, procResultParam)
                 .ToList();
 
-            procResult = (int)procResultParam.Value;
+            procResult = (int) procResultParam.Value;
             return procResultData;
         }
 
@@ -1634,9 +1634,9 @@ namespace Tester.Integration.EfCore3.File_based_templates
             if (IsSqlParameterNull(retBoolParam))
                 retBool = null;
             else
-                retBool = (bool)retBoolParam.Value;
+                retBool = (bool) retBoolParam.Value;
 
-            procResult = (int)procResultParam.Value;
+            procResult = (int) procResultParam.Value;
             return procResultData;
         }
 
@@ -1664,7 +1664,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
                 .FromSqlRaw(sqlCommand, strDateFromParam, strDateToParam, procResultParam)
                 .ToList();
 
-            procResult = (int)procResultParam.Value;
+            procResult = (int) procResultParam.Value;
             return procResultData;
         }
 
@@ -1731,7 +1731,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[StupidStoredProcedureParams] @ReqType, @Dept, @Class, @Item", new[] { reqTypeParam, deptParam, @classParam, itemParam, procResultParam }, cancellationToken);
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[StupidStoredProcedureParams] @ReqType, @Dept, @Class, @Item",  new[] {reqTypeParam, deptParam, @classParam, itemParam, procResultParam}, cancellationToken);
 
             return (int)procResultParam.Value;
         }
@@ -1781,7 +1781,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[StupidStoredProcedureParams2] @override, @readonly, @class, @enum", new[] { @overrideParam, @readonlyParam, @classParam, @enumParam, procResultParam }, cancellationToken);
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[StupidStoredProcedureParams2] @override, @readonly, @class, @enum",  new[] {@overrideParam, @readonlyParam, @classParam, @enumParam, procResultParam}, cancellationToken);
 
             return (int)procResultParam.Value;
         }
@@ -1804,7 +1804,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
                 .FromSqlRaw(sqlCommand, inputIntParam, procResultParam)
                 .ToList();
 
-            procResult = (int)procResultParam.Value;
+            procResult = (int) procResultParam.Value;
             return procResultData;
         }
 
@@ -1836,7 +1836,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
                 .FromSqlRaw(sqlCommand, procResultParam)
                 .ToList();
 
-            procResult = (int)procResultParam.Value;
+            procResult = (int) procResultParam.Value;
             return procResultData;
         }
 
@@ -1873,12 +1873,12 @@ namespace Tester.Integration.EfCore3.File_based_templates
             if (IsSqlParameterNull(firstOutParamParam))
                 firstOutParam = null;
             else
-                firstOutParam = (int)firstOutParamParam.Value;
+                firstOutParam = (int) firstOutParamParam.Value;
 
             if (IsSqlParameterNull(secondOutParamParam))
                 secondOutParam = null;
             else
-                secondOutParam = (int)secondOutParamParam.Value;
+                secondOutParam = (int) secondOutParamParam.Value;
 
             return (int)procResultParam.Value;
         }
@@ -1922,7 +1922,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[UserDefinedTypeSampleStoredProc] @a, @type, @b", new[] { aParam, typeParam, bParam, procResultParam }, cancellationToken);
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[UserDefinedTypeSampleStoredProc] @a, @type, @b",  new[] {aParam, typeParam, bParam, procResultParam}, cancellationToken);
 
             return (int)procResultParam.Value;
         }
@@ -1941,7 +1941,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
                 .FromSqlRaw(sqlCommand, procResultParam)
                 .ToList();
 
-            procResult = (int)procResultParam.Value;
+            procResult = (int) procResultParam.Value;
             return procResultData;
         }
 
@@ -1968,7 +1968,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         {
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[XmlDataV2]", new[] { procResultParam }, cancellationToken);
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[XmlDataV2]",  new[] {procResultParam}, cancellationToken);
 
             return (int)procResultParam.Value;
         }
@@ -3187,15 +3187,15 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public FakeDbSet()
         {
             _primaryKeys = null;
-            _data = new ObservableCollection<TEntity>();
-            _query = _data.AsQueryable();
+            _data        = new ObservableCollection<TEntity>();
+            _query       = _data.AsQueryable();
         }
 
         public FakeDbSet(params string[] primaryKeys)
         {
             _primaryKeys = typeof(TEntity).GetProperties().Where(x => primaryKeys.Contains(x.Name)).ToArray();
-            _data = new ObservableCollection<TEntity>();
-            _query = _data.AsQueryable();
+            _data        = new ObservableCollection<TEntity>();
+            _query       = _data.AsQueryable();
         }
 
         public override TEntity Find(params object[] keyValues)
@@ -3320,7 +3320,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         public override void UpdateRange(IEnumerable<TEntity> entities)
         {
             if (entities == null) throw new ArgumentNullException("entities");
-            var array = entities.ToArray(); RemoveRange(array);
+            var array = entities.ToArray();        RemoveRange(array);
             AddRange(array);
         }
 
@@ -3384,7 +3384,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
                 .MakeGenericMethod(expectedResultType)
                 .Invoke(this, new object[] { expression });
 
-            return (TResult)typeof(Task).GetMethod(nameof(Task.FromResult))
+            return (TResult) typeof(Task).GetMethod(nameof(Task.FromResult))
                 ?.MakeGenericMethod(expectedResultType)
                 .Invoke(null, new[] { executionResult });
         }
@@ -3469,7 +3469,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
             {
                 var resultType = m.Method.ReturnType; // it should be IQueryable<T>
                 var tElement = resultType.GetGenericArguments().First();
-                return (IQueryable)CreateInstance(tElement, expression);
+                return (IQueryable) CreateInstance(tElement, expression);
             }
 
             return CreateQuery<T>(expression);
@@ -3477,7 +3477,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
 
         public IQueryable<TEntity> CreateQuery<TEntity>(Expression expression)
         {
-            return (IQueryable<TEntity>)CreateInstance(typeof(TEntity), expression);
+            return (IQueryable<TEntity>) CreateInstance(typeof(TEntity), expression);
         }
 
         private object CreateInstance(Type tElement, Expression expression)
@@ -3518,7 +3518,7 @@ namespace Tester.Integration.EfCore3.File_based_templates
         {
             var visitor = new FakeExpressionVisitor();
             var body = visitor.Visit(expression);
-            var f = Expression.Lambda<Func<TResult>>(body ?? throw new InvalidOperationException(string.Format("{0} is null", nameof(body))), (IEnumerable<ParameterExpression>)null);
+            var f = Expression.Lambda<Func<TResult>>(body ?? throw new InvalidOperationException(string.Format("{0} is null", nameof(body))), (IEnumerable<ParameterExpression>) null);
             return f.Compile()();
         }
     }
