@@ -56,7 +56,7 @@ namespace Efrpg.Readers
             return string.Empty;
         }
 
-        protected override string EnumSQL(string table, string nameField, string valueField)
+        protected override string EnumSQL(string table, string nameField, string valueField, string groupField)
         {
             return string.Empty;
         }

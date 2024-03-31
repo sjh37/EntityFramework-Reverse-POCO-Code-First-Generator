@@ -111,10 +111,11 @@ namespace Efrpg.Filtering
     /// </summary>
     public class EnumerationSettings
     {
-        public string Name { get; set; } // Enum to generate. e.g. "DaysOfWeek" would result in "public enum DaysOfWeek {...}"
+        public string Name { get; set; } // Enum to generate. e.g. "DaysOfWeek" would result in "public enum DaysOfWeek {...}" if the GroupField is set to a value then {GroupField} must be used in this name. e.g. "DaysOfWeek{GroupField}"
         public string Table { get; set; } // Database table containing enum values. e.g. "DaysOfWeek"
         public string NameField { get; set; } // Column containing the name for the enum. e.g. "TypeName"
         public string ValueField { get; set; } // Column containing the values for the enum. e.g. "TypeId"
+        public string GroupField { get; set; } // [optional] Column containing the group name for the enum. This is used if multiple Enums are in the same table. if this is populated, use {GroupField} in the Name property. e.g. "{GroupField}Enum"
 
         public Dictionary<string, object> AllFields { get; set; } // Here you will find all fields, including any extra custom fields not listed above
     }

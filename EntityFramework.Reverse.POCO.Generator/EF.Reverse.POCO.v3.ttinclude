@@ -129,10 +129,11 @@
             // Example
             /*new EnumerationSettings
             {
-                Name       = "DaysOfWeek",          // Enum to generate. e.g. "DaysOfWeek" would result in "public enum DaysOfWeek {...}"
+                Name       = "DaysOfWeek",          // Enum to generate. e.g. "DaysOfWeek" would result in "public enum DaysOfWeek {...}" if the GroupField is set to a value then {GroupField} must be used in this name. e.g. "DaysOfWeek{GroupField}"
                 Table      = "EnumTest.DaysOfWeek", // Database table containing enum values. e.g. "DaysOfWeek"
                 NameField  = "TypeName",            // Column containing the name for the enum. e.g. "TypeName"
-                ValueField = "TypeId"               // Column containing the values for the enum. e.g. "TypeId"
+                ValueField = "TypeId",              // Column containing the values for the enum. e.g. "TypeId"
+                GroupField = String.Empty           // [optional] Column containing the group name for the enum. This is used if multiple Enums are in the same table. if this is populated, use {GroupField} in the Name property. e.g. ""{GroupField}Enum""
             },
             new EnumerationSettings
             {
@@ -373,7 +374,8 @@
                             Name       = table.NameHumanCase.Replace("Enum","").Replace("Enum","") + "Enum",
                             Table      = table.Schema.DbName + "." + table.DbName,
                             NameField  = table.Columns.First(x => x.PropertyType == "string").DbName, // Or specify your own
-                            ValueField = table.PrimaryKeys.Single().DbName // Or specify your own
+                            ValueField = table.PrimaryKeys.Single().DbName, // Or specify your own
+                            GroupField = String.Empty // Or specify your own
                         });
 
                         // This will cause this table to not be reverse-engineered.
@@ -2924,10 +2926,11 @@
     /// </summary>
     public class EnumerationSettings
     {
-        public string Name { get; set; } // Enum to generate. e.g. "DaysOfWeek" would result in "public enum DaysOfWeek {...}"
+        public string Name { get; set; } // Enum to generate. e.g. "DaysOfWeek" would result in "public enum DaysOfWeek {...}" if the GroupField is set to a value then {GroupField} must be used in this name. e.g. "DaysOfWeek{GroupField}"
         public string Table { get; set; } // Database table containing enum values. e.g. "DaysOfWeek"
         public string NameField { get; set; } // Column containing the name for the enum. e.g. "TypeName"
         public string ValueField { get; set; } // Column containing the values for the enum. e.g. "TypeId"
+        public string GroupField { get; set; } // [optional] Column containing the group name for the enum. This is used if multiple Enums are in the same table. if this is populated, use {GroupField} in the Name property. e.g. ""{GroupField}Enum""
 
         public Dictionary<string, object> AllFields { get; set; } // Here you will find all fields, including any extra custom fields not listed above
     }
@@ -12496,7 +12499,7 @@ and limitations under the License.
         protected abstract string StoredProcedureSQL();
         protected abstract string ReadDatabaseEditionSQL();
         protected abstract string MultiContextSQL();
-        protected abstract string EnumSQL(string table, string nameField, string valueField);
+        protected abstract string EnumSQL(string table, string nameField, string valueField, string groupField);
         protected abstract string SequenceSQL();
         protected abstract string TriggerSQL();
         protected abstract string[] MemoryOptimisedSQL();
@@ -13193,6 +13196,7 @@ and limitations under the License.
                             Table = GetReaderString(rdr, "Table"),
                             NameField = GetReaderString(rdr, "NameField"),
                             ValueField = GetReaderString(rdr, "ValueField"),
+                            GroupField = GetReaderString(rdr, "GroupField"),
                             AllFields = ReadAllFields(rdr)
                         };
 
@@ -13268,7 +13272,8 @@ and limitations under the License.
 
                 foreach (var e in enums)
                 {
-                    var sql = EnumSQL(e.Table, e.NameField, e.ValueField);
+                    var sql = EnumSQL(e.Table, e.NameField, e.ValueField, e.GroupField);
+                    var enumDict = new Dictionary<string, List<EnumerationMember>>();
                     if (string.IsNullOrEmpty(sql))
                         continue;
 
@@ -13278,13 +13283,26 @@ and limitations under the License.
                     {
                         using (var rdr = cmd.ExecuteReader())
                         {
-                            var items = new List<EnumerationMember>();
 
                             while (rdr.Read())
                             {
                                 var name = rdr["NameField"].ToString().Trim();
                                 if (string.IsNullOrEmpty(name))
                                     continue;
+
+                                var group = string.Empty;
+                                
+                                if (!String.IsNullOrEmpty(e.GroupField))
+                                {
+                                    group = rdr["GroupField"].ToString().Trim();
+                                    group = RemoveNonAlphaNumeric.Replace(group, string.Empty);
+                                    group = (Settings.UsePascalCaseForEnumMembers ? Inflector.ToTitleCase(group) : group).Replace(" ", string.Empty).Trim();
+
+                                }
+                                if (!enumDict.ContainsKey(group))
+                                {
+                                    enumDict.Add(group, new List<EnumerationMember>());
+                                }
 
                                 name = RemoveNonAlphaNumeric.Replace(name, string.Empty);
                                 name = (Settings.UsePascalCaseForEnumMembers ? Inflector.ToTitleCase(name) : name).Replace(" ", string.Empty).Trim();
@@ -13302,12 +13320,15 @@ and limitations under the License.
                                     allValues.Add(rdr.GetName(n), o != DBNull.Value ? o : null);
                                 }
 
-                                items.Add(new EnumerationMember(name, value, allValues));
+                                enumDict[group].Add(new EnumerationMember(name, value, allValues));
                             }
 
-                            if (items.Any())
+                            foreach (var v in enumDict)
                             {
-                                result.Add(new Enumeration(e.Name, items));
+                                if (v.Value.Any())
+                                {
+                                    result.Add(new Enumeration(e.Name.Replace("{GroupField}", v.Key), v.Value));
+                                }
                             }
                         }
                     }
@@ -13805,7 +13826,7 @@ and limitations under the License.
             return string.Empty;
         }
 
-        protected override string EnumSQL(string table, string nameField, string valueField)
+        protected override string EnumSQL(string table, string nameField, string valueField, string groupField)
         {
             return string.Empty;
         }
@@ -13938,7 +13959,7 @@ and limitations under the License.
             return string.Empty;
         }
 
-        protected override string EnumSQL(string table, string nameField, string valueField)
+        protected override string EnumSQL(string table, string nameField, string valueField, string groupField)
         {
             return string.Empty;
         }
@@ -14089,7 +14110,7 @@ and limitations under the License.
             return string.Empty;
         }
 
-        protected override string EnumSQL(string table, string nameField, string valueField)
+        protected override string EnumSQL(string table, string nameField, string valueField, string groupField)
         {
             return string.Empty;
         }
@@ -14351,9 +14372,9 @@ ORDER BY R.specific_schema, R.routine_name, R.routine_type;";
             return string.Empty;
         }
 
-        protected override string EnumSQL(string table, string nameField, string valueField)
+        protected override string EnumSQL(string table, string nameField, string valueField, string groupField)
         {
-            return string.Format(@"SELECT ""{0}"" as ""NameField"", ""{1}"" as ""ValueField"", * FROM ""{2}"";", nameField, valueField, table);
+            return string.Format(@"SELECT ""{0}"" as ""NameField"", ""{1}"" as ""ValueField"",{3} * FROM ""{2}"";", nameField, valueField, table, !string.IsNullOrEmpty(groupField) ? $@" ""{groupField}"" as ""GroupField""," : @" """" as ""GroupField"",");
         }
 
         protected override string SequenceSQL()
@@ -14960,9 +14981,9 @@ WHERE ColumnName != ''";
             return string.Empty;
         }
 
-        protected override string EnumSQL(string table, string nameField, string valueField)
+        protected override string EnumSQL(string table, string nameField, string valueField, string groupField)
         {
-            return string.Format("SELECT {0} as NameField, {1} as ValueField, * FROM {2};", nameField, valueField, table);
+            return string.Format("SELECT {0} as NameField, {1} as ValueField,{3} * FROM {2};", nameField, valueField, table, (!string.IsNullOrEmpty(groupField) ? string.Format(@" {0} as GroupField,",groupField) : " '' as GroupField,"));
         }
 
         protected override string SequenceSQL()
@@ -15226,9 +15247,9 @@ SELECT * FROM MultiContext.Enumeration;
 SELECT * FROM MultiContext.ForeignKey;";
         }
 
-        protected override string EnumSQL(string table, string nameField, string valueField)
+        protected override string EnumSQL(string table, string nameField, string valueField, string groupField)
         {
-            return string.Format("SELECT {0} as NameField, {1} as ValueField, * FROM {2};", nameField, valueField, table);
+            return string.Format("SELECT {0} as NameField, {1} as ValueField,{3} * FROM {2};", nameField, valueField, table, (!string.IsNullOrEmpty(groupField) ? string.Format(@" {0} as GroupField,",groupField) : " '' as GroupField,"));
         }
 
         protected override string SequenceSQL()
@@ -15754,9 +15775,9 @@ SELECT * FROM MultiContext.Enumeration;
 SELECT * FROM MultiContext.ForeignKey;";
         }
 
-        protected override string EnumSQL(string table, string nameField, string valueField)
+        protected override string EnumSQL(string table, string nameField, string valueField, string groupField)
         {
-            return string.Format("SELECT {0} as NameField, {1} as ValueField, * FROM {2};", nameField, valueField, table);
+            return string.Format("SELECT {0} as NameField, {1} as ValueField,{3} * FROM {2};", nameField, valueField, table, (!string.IsNullOrEmpty(groupField) ? string.Format(@" {0} as GroupField,",groupField) : " '' as GroupField,"));
         }
 
         protected override string SequenceSQL()

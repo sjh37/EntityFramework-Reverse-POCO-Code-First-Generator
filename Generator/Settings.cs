@@ -101,10 +101,11 @@ namespace Efrpg
             // Example
             /*new EnumerationSettings
             {
-                Name       = "DaysOfWeek",          // Enum to generate. e.g. "DaysOfWeek" would result in "public enum DaysOfWeek {...}"
+                Name       = "DaysOfWeek",          // Enum to generate. e.g. "DaysOfWeek" would result in "public enum DaysOfWeek {...}" if the GroupField is set to a value then {GroupField} must be used in this name. e.g. "DaysOfWeek{GroupField}"
                 Table      = "EnumTest.DaysOfWeek", // Database table containing enum values. e.g. "DaysOfWeek"
                 NameField  = "TypeName",            // Column containing the name for the enum. e.g. "TypeName"
-                ValueField = "TypeId"               // Column containing the values for the enum. e.g. "TypeId"
+                ValueField = "TypeId",              // Column containing the values for the enum. e.g. "TypeId"
+                GroupField = String.Empty           // [optional] Column containing the group name for the enum. This is used if multiple Enums are in the same table. if this is populated, use {GroupField} in the Name property. e.g. "{GroupField}Enum"
             },
             new EnumerationSettings
             {
@@ -345,7 +346,8 @@ namespace Efrpg
                             Name       = table.NameHumanCase.Replace("Enum","").Replace("Enum","") + "Enum",
                             Table      = table.Schema.DbName + "." + table.DbName,
                             NameField  = table.Columns.First(x => x.PropertyType == "string").DbName, // Or specify your own
-                            ValueField = table.PrimaryKeys.Single().DbName // Or specify your own
+                            ValueField = table.PrimaryKeys.Single().DbName, // Or specify your own
+                            GroupField = String.Empty // Or specify your own
                         });
 
                         // This will cause this table to not be reverse-engineered.
