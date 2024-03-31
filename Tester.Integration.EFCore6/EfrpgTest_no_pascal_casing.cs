@@ -5456,6 +5456,22 @@ namespace V6_Efrpg_Test
 
     #endregion
 
+    #region Enumerations
+
+    public enum DaysOfWeek
+    {
+        Sun = 0,
+        Mon = 1,
+        Tue = 2,
+        Wed = 3,
+        Thu = 4,
+        Fri = 6,
+        Sat = 7,
+    }
+
+
+    #endregion
+
     #region Stored procedure return models
 
     public class aSimpleExampleReturnModel
