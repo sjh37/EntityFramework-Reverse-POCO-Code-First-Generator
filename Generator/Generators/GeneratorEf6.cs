@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using Efrpg.FileManagement;
@@ -91,58 +92,130 @@ namespace Efrpg.Generators
             }
 
             var sb = new StringBuilder(255);
-            sb.AppendFormat(".HasColumnName(@\"{0}\")", c.DbName);
-
-            var excludedHasColumnType = string.Empty;
-            if (!Settings.UseDataAnnotations && !string.IsNullOrEmpty(c.SqlPropertyType))
+            var columnTypeParameters = c.ColumnTypeParameters();
+            if (Settings.UseDataAnnotations)
             {
-                if(Column.ExcludedHasColumnType.Contains(c.SqlPropertyType))
-                    excludedHasColumnType = string.Format(" // .HasColumnType(\"{0}\") was excluded", c.SqlPropertyType);
-                else
-                    sb.AppendFormat(".HasColumnType(\"{0}\")", c.SqlPropertyType);
+                if (c.IsPrimaryKey)
+                    c.Attributes.Add(string.Format("[Key, Column(Order = {0})]", c.Ordinal));
+                
+                if (c.IsPrimaryKey || !string.IsNullOrEmpty(columnTypeParameters) || c.DbName != c.NameHumanCase)
+                {
+                    var columnList = new List<string>(3);
+                    var columnAttribute = new StringBuilder(50);
+                    columnAttribute.Append("[");
+                    if (c.IsPrimaryKey)
+                    {
+                        columnAttribute.Append("Key, ");
+                        columnList.Add("Order = " + c.Ordinal);
+                    }
+
+                    if (!string.IsNullOrEmpty(columnTypeParameters))
+                        columnList.Add("Typename = \"" + c.SqlPropertyType + columnTypeParameters + "\"");
+
+                    if (c.DbName != c.NameHumanCase)
+                        columnList.Add("Name = \"" + c.DbName + "\"");
+
+                    if (columnList.Any())
+                        columnAttribute.AppendFormat("Column({0})", string.Join(", ", columnList));
+
+                    columnAttribute.Append("]");
+
+                    var value = columnAttribute.ToString();
+                    if(value != "[]")
+                        c.Attributes.Add(value);
+                }
             }
+            else
+                sb.AppendFormat(".HasColumnName(@\"{0}\")", c.DbName);
 
-            sb.Append(c.IsNullable ? ".IsOptional()" : ".IsRequired()");
-
-            if (c.IsFixedLength || c.IsRowVersion)
-                sb.Append(".IsFixedLength()");
-
-            if (!c.IsUnicode)
-                sb.Append(".IsUnicode(false)");
-
-            if (!c.IsMaxLength && c.MaxLength > 0)
+            if (Settings.UseDataAnnotations)
             {
-                var doNotSpecifySize = (DatabaseReader.DoNotSpecifySizeForMaxLength && c.MaxLength > 4000); // Issue #179
+                //if (c.IsPrimaryKey)
+                //    c.Attributes.Add(string.Format("[Key, Column(Order = {0})]", c.Ordinal));
 
-                if (doNotSpecifySize)
-                    sb.Append(".HasMaxLength(null)");
-                else
-                    sb.AppendFormat(".HasMaxLength({0})", c.MaxLength);
+                if (c.IsMaxLength)
+                    c.Attributes.Add("[MaxLength]");
+
+                if (c.IsRowVersion)
+                    c.Attributes.Add("[Timestamp]");
+
+                if (!c.IsMaxLength && c.MaxLength > 0)
+                {
+                    var doNotSpecifySize = (Settings.DatabaseType == DatabaseType.SqlCe && c.MaxLength > 4000);
+                    c.Attributes.Add(doNotSpecifySize ? "[MaxLength]" : string.Format("[MaxLength({0})]", c.MaxLength));
+                    if (c.PropertyType.Equals("string", StringComparison.InvariantCultureIgnoreCase))
+                        c.Attributes.Add(string.Format("[StringLength({0})]", c.MaxLength));
+                }
+
+                if (!c.IsNullable && !c.IsComputed)
+                {
+                    if (c.PropertyType.Equals("string", StringComparison.InvariantCultureIgnoreCase) && c.AllowEmptyStrings)
+                        c.Attributes.Add("[Required(AllowEmptyStrings = true)]");
+                    else
+                        c.Attributes.Add("[Required]");
+                }
+
+                c.Attributes.Add(string.Format("[Display(Name = \"{0}\")]", c.DisplayName));
+
+                var excludedHasColumnType = string.Empty;
+                if (!string.IsNullOrEmpty(c.SqlPropertyType))
+                {
+                    var columnAttributeTypeName = c.SqlPropertyType + columnTypeParameters;
+
+                    if (Settings.UseDataAnnotations)
+                    {
+                    }
+                    else
+                    {
+                        if (Column.ExcludedHasColumnType.Contains(c.SqlPropertyType))
+                            excludedHasColumnType = string.Format(" // .HasColumnType(\"{0}\") was excluded", columnAttributeTypeName);
+                        else
+                            sb.AppendFormat(".HasColumnType(\"{0}\")", columnAttributeTypeName);
+                    }
+                }
+
+                sb.Append(c.IsNullable ? ".IsOptional()" : ".IsRequired()");
+
+                if (c.IsFixedLength || c.IsRowVersion)
+                    sb.Append(".IsFixedLength()");
+
+                if (!c.IsUnicode)
+                    sb.Append(".IsUnicode(false)");
+
+                if (!c.IsMaxLength && c.MaxLength > 0)
+                {
+                    var doNotSpecifySize = (DatabaseReader.DoNotSpecifySizeForMaxLength && c.MaxLength > 4000); // Issue #179
+
+                    if (doNotSpecifySize)
+                        sb.Append(".HasMaxLength(null)");
+                    else
+                        sb.AppendFormat(".HasMaxLength({0})", c.MaxLength);
+                }
+
+                if (c.IsMaxLength)
+                    sb.Append(".IsMaxLength()");
+
+                if ((c.Precision > 0 || c.Scale > 0) && DatabaseReader.IsPrecisionAndScaleType(c.SqlPropertyType))
+                    sb.AppendFormat(".HasPrecision({0},{1})", c.Precision, c.Scale);
+                else if (c.Precision > 0 && DatabaseReader.IsPrecisionType(c.SqlPropertyType) && c.SqlPropertyType != "float")
+                    sb.AppendFormat(".HasPrecision({0})", c.Precision);
+
+                if (c.IsRowVersion)
+                {
+                    sb.Append(".IsRowVersion()");
+                    c.IsConcurrencyToken = true;
+                }
+
+                if (c.IsConcurrencyToken)
+                    sb.Append(".IsConcurrencyToken()");
+
+                if (databaseGeneratedOption != null)
+                    sb.Append(databaseGeneratedOption);
+
+                var config = sb.ToString();
+                if (!string.IsNullOrEmpty(config))
+                    c.Config = string.Format("Property(x => x.{0}){1};{2}", c.NameHumanCase, config, excludedHasColumnType);
             }
-
-            if (c.IsMaxLength)
-                sb.Append(".IsMaxLength()");
-
-            if ((c.Precision > 0 || c.Scale > 0) && DatabaseReader.IsPrecisionAndScaleType(c.SqlPropertyType))
-                sb.AppendFormat(".HasPrecision({0},{1})", c.Precision, c.Scale);
-            else if (c.Precision > 0 && DatabaseReader.IsPrecisionType(c.SqlPropertyType) && c.SqlPropertyType != "float")
-                sb.AppendFormat(".HasPrecision({0})", c.Precision);
-
-            if (c.IsRowVersion)
-            {
-                sb.Append(".IsRowVersion()");
-                c.IsConcurrencyToken = true;
-            }
-
-            if (c.IsConcurrencyToken)
-                sb.Append(".IsConcurrencyToken()");
-
-            if (databaseGeneratedOption != null)
-                sb.Append(databaseGeneratedOption);
-            
-            var config = sb.ToString();
-            if (!string.IsNullOrEmpty(config))
-                c.Config = string.Format("Property(x => x.{0}){1};{2}", c.NameHumanCase, config, excludedHasColumnType);
         }
 
         public override string PrimaryKeyModelBuilder(Table table)

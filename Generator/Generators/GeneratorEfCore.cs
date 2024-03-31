@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Efrpg.FileManagement;
+using Efrpg.Readers;
 
 namespace Efrpg.Generators
 {
@@ -106,12 +107,7 @@ namespace Efrpg.Generators
             var excludedHasColumnType = string.Empty;
             if (!string.IsNullOrEmpty(c.SqlPropertyType))
             {
-                var columnTypeParameters = string.Empty;
-            
-                if ((c.Precision > 0 || c.Scale > 0) && (c.SqlPropertyType == "decimal" || c.SqlPropertyType == "numeric"))
-                    columnTypeParameters = $"({c.Precision},{c.Scale})";
-                else if (!c.IsMaxLength && c.MaxLength > 0 && !doNotSpecifySize)
-                    columnTypeParameters = $"({c.MaxLength})";
+                var columnTypeParameters = c.ColumnTypeParameters();
 
                 if (Column.ExcludedHasColumnType.Contains(c.SqlPropertyType))
                     excludedHasColumnType = string.Format(" // .HasColumnType(\"{0}{1}\") was excluded", c.SqlPropertyType, columnTypeParameters);

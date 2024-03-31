@@ -388,5 +388,23 @@ namespace Efrpg
 
             return string.Format(Settings.NullableShortHand ? "{0}?" : "System.Nullable<{0}>", PropertyType);
         }
+
+        public string ColumnTypeParameters()
+        {
+            if (string.IsNullOrEmpty(SqlPropertyType) || ExcludedHasColumnType.Contains(SqlPropertyType))
+                return string.Empty;
+
+            var doNotSpecifySize = false;
+            if (!IsMaxLength && MaxLength > 0)
+                doNotSpecifySize = (DatabaseReader.DoNotSpecifySizeForMaxLength && MaxLength > 4000); // Issue #179
+            
+            if ((Precision > 0 || Scale > 0) && (SqlPropertyType == "decimal" || SqlPropertyType == "numeric"))
+                return $"({Precision},{Scale})";
+
+            if (!IsMaxLength && MaxLength > 0 && !doNotSpecifySize)
+                return $"({MaxLength})";
+
+            return string.Empty;
+        }
     }
 }

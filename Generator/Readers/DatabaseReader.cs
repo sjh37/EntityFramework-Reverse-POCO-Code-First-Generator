@@ -24,7 +24,7 @@ namespace Efrpg.Readers
         protected int DatabaseProductMajorVersion;
 
         public bool IncludeSchema { get; protected set; }
-        public bool DoNotSpecifySizeForMaxLength { get; protected set; }
+        public static bool DoNotSpecifySizeForMaxLength { get; protected set; }
 
         public bool IsSpatialType(string propertyType) => propertyType != null && SpatialTypes != null && SpatialTypes.Contains(propertyType);
         public bool IsPrecisionAndScaleType(string propertyType) => propertyType != null && PrecisionAndScaleTypes != null && PrecisionAndScaleTypes.Contains(propertyType);
