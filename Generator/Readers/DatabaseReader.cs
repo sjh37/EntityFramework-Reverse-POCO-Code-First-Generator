@@ -816,7 +816,7 @@ namespace Efrpg.Readers
 
                     if (string.IsNullOrEmpty(sql))
                         continue;
-                    
+
                     cmd.CommandText = sql;
 
                     try

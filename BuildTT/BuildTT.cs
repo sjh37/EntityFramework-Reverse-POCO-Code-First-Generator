@@ -157,7 +157,7 @@ namespace BuildTT
             Table      = ""EnumTest.DaysOfWeek"", // Database table containing enum values. e.g. ""DaysOfWeek""
             NameField  = ""TypeName"",            // Column containing the name for the enum. e.g. ""TypeName""
             ValueField = ""TypeId"",              // Column containing the values for the enum. e.g. ""TypeId""
-            GroupField = String.Empty             // [optional] Column containing the group name for the enum. This is used if multiple Enums are in the same table. if this is populated, use {GroupField} in the Name property. e.g. ""{GroupField}Enum""
+            GroupField = string.Empty             // [optional] Column containing the group name for the enum. This is used if multiple Enums are in the same table. if this is populated, use {GroupField} in the Name property. e.g. ""{GroupField}Enum""
         },
         new EnumerationSettings
         {
@@ -424,7 +424,7 @@ namespace BuildTT
                         Table      = table.Schema.DbName + ""."" + table.DbName,
                         NameField  = table.Columns.First(x => x.PropertyType == ""string"").DbName, // Or specify your own
                         ValueField = table.PrimaryKeys.Single().DbName, // Or specify your own
-                        GroupField = String.Empty // Or specify your own
+                        GroupField = string.Empty // Or specify your own
                     });
 
                     // This will cause this table to not be reverse-engineered.
