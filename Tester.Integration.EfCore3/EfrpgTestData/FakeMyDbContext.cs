@@ -775,6 +775,16 @@ namespace Tester.Integration.EfCore3
 
         // MinTripSequenceStartNullAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
+        public int MultipleReturnColumnsFromTempTable()
+        {
+            return 0;
+        }
+
+        public Task<int> MultipleReturnColumnsFromTempTableAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
+
         public int NvarcharTest(string maxOutputParam, string normalOutputParam)
         {
             return 0;

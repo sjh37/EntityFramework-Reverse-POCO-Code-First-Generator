@@ -2659,3 +2659,14 @@ CREATE TABLE dbo.TemporalDepartment
     PERIOD FOR SYSTEM_TIME(SysStartTime, SysEndTime)
 )
 WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = dbo.TemporalDepartmentHistory));
+GO
+
+CREATE OR ALTER PROCEDURE dbo.MultipleReturnColumnsFromTempTable
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 1 Col1, 2 Col2 INTO #temp;
+    SELECT Col1, Col2 FROM #temp;
+END;
+GO
