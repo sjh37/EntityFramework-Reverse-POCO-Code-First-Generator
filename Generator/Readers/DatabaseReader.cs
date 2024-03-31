@@ -736,6 +736,7 @@ namespace Efrpg.Readers
                             Table = GetReaderString(rdr, "Table"),
                             NameField = GetReaderString(rdr, "NameField"),
                             ValueField = GetReaderString(rdr, "ValueField"),
+                            GroupField = GetReaderString(rdr, "GroupField"),
                             AllFields = ReadAllFields(rdr)
                         };
 

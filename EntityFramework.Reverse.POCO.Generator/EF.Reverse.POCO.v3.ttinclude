@@ -13274,6 +13274,7 @@ and limitations under the License.
                 {
                     var sql = EnumSQL(e.Table, e.NameField, e.ValueField, e.GroupField);
                     var enumDict = new Dictionary<string, List<EnumerationMember>>();
+
                     if (string.IsNullOrEmpty(sql))
                         continue;
 
@@ -13283,7 +13284,6 @@ and limitations under the License.
                     {
                         using (var rdr = cmd.ExecuteReader())
                         {
-
                             while (rdr.Read())
                             {
                                 var name = rdr["NameField"].ToString().Trim();
@@ -13319,7 +13319,6 @@ and limitations under the License.
                                     var o = rdr.GetValue(n);
                                     allValues.Add(rdr.GetName(n), o != DBNull.Value ? o : null);
                                 }
-
                                 enumDict[group].Add(new EnumerationMember(name, value, allValues));
                             }
 
