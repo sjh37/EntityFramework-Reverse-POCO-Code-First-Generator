@@ -87,6 +87,9 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         public DbSet<HasPrincipalKeyTestParent> HasPrincipalKeyTestParents { get; set; } // HasPrincipalKeyTestParent
         public DbSet<Header> Headers { get; set; } // header
         public DbSet<HierarchyTest> HierarchyTests { get; set; } // hierarchy_test
+        public DbSet<InflectorData> InflectorData { get; set; } // InflectorData
+        public DbSet<InflectorStatus> InflectorStatus { get; set; } // InflectorStatus
+        public DbSet<InflectorTo> InflectorTo { get; set; } // InflectorTo
         public DbSet<Issue47_Role> Issue47_Roles { get; set; } // Role
         public DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
@@ -225,6 +228,9 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             modelBuilder.ApplyConfiguration(new HasPrincipalKeyTestParentConfiguration());
             modelBuilder.ApplyConfiguration(new HeaderConfiguration());
             modelBuilder.ApplyConfiguration(new HierarchyTestConfiguration());
+            modelBuilder.ApplyConfiguration(new InflectorDataConfiguration());
+            modelBuilder.ApplyConfiguration(new InflectorStatusConfiguration());
+            modelBuilder.ApplyConfiguration(new InflectorToConfiguration());
             modelBuilder.ApplyConfiguration(new Issue47_RoleConfiguration());
             modelBuilder.ApplyConfiguration(new Issue47_UserConfiguration());
             modelBuilder.ApplyConfiguration(new Issue47_UserRoleConfiguration());

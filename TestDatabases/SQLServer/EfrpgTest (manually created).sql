@@ -2670,3 +2670,27 @@ BEGIN
     SELECT Col1, Col2 FROM #temp;
 END;
 GO
+
+-- Tables to test the inflector
+CREATE TABLE InflectorStatus
+(
+    Id INT NOT NULL IDENTITY(1, 1),
+    SayHelloTo INT NOT NULL,
+    SignalData INT NOT NULL,
+    NotificationStatus INT NOT NULL,
+    [Status] INT NOT NULL,
+    [To] INT NOT NULL,
+    [Data] INT NOT NULL,
+    CONSTRAINT PK_InflectorStatus PRIMARY KEY CLUSTERED (Id)
+);
+CREATE TABLE InflectorData
+(
+    Id INT NOT NULL IDENTITY(1, 1),
+    CONSTRAINT PK_InflectorData PRIMARY KEY CLUSTERED (Id)
+);
+CREATE TABLE InflectorTo
+(
+    Id INT NOT NULL IDENTITY(1, 1),
+    CONSTRAINT PK_InflectorTo PRIMARY KEY CLUSTERED (Id)
+);
+GO

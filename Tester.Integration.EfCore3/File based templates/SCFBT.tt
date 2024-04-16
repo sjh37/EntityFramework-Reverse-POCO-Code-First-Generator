@@ -40,6 +40,7 @@
         }
     };
 
+    Inflector.IgnoreWordsThatEndWith = new List<string> { "Status", "To", "Data" };
     Inflector.PluralisationService = new EnglishPluralizationService();
     var outer = (GeneratedTextTransformation) this;
     var fileManagement = new FileManagementService(outer);

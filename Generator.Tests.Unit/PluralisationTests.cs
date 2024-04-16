@@ -1,4 +1,5 @@
-﻿using Efrpg;
+﻿using System.Collections.Generic;
+using Efrpg;
 using Efrpg.Pluralization;
 using Generator.Tests.Common;
 using NUnit.Framework;
@@ -12,6 +13,7 @@ namespace Generator.Tests.Unit
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
+            Inflector.IgnoreWordsThatEndWith = new List<string> { "Status", "To", "Data" };
             Inflector.PluralisationService = new EnglishPluralizationService();
         }
 

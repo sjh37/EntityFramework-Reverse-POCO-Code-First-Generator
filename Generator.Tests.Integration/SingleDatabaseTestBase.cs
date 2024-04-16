@@ -42,6 +42,7 @@ namespace Generator.Tests.Integration
         protected static void Run(string filename, string singleDbContextSubNamespace, Type fileManagerType, string subFolder,
             List<EnumDefinition> enumDefinitions = null)
         {
+            Inflector.IgnoreWordsThatEndWith = new List<string> { "Status", "To", "Data" };
             Inflector.PluralisationService = new EnglishPluralizationService();
             Settings.GenerateSingleDbContext = true;
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -9,6 +10,8 @@ namespace Efrpg
     public static class Inflector
     {
         public static IPluralizationService PluralisationService = null;
+
+        public static List<string> IgnoreWordsThatEndWith = new List<string>();
 
         /// <summary>
         /// Makes the plural.
@@ -28,6 +31,9 @@ namespace Efrpg
                 if (word.Contains('_')) return MakePluralHelper(word, '_');
                 if (word.Contains(' ')) return MakePluralHelper(word, ' ');
                 if (word.Contains('-')) return MakePluralHelper(word, '-');
+
+                if (IgnoreWordsThatEndWith != null && IgnoreWordsThatEndWith.Any(endsWith => word.EndsWith(endsWith, StringComparison.InvariantCulture)))
+                    return word;
 
                 return PluralisationService.Pluralize(word);
             }
@@ -65,6 +71,9 @@ namespace Efrpg
                 if (word.Contains('_')) return MakeSingularHelper(word, '_');
                 if (word.Contains(' ')) return MakeSingularHelper(word, ' ');
                 if (word.Contains('-')) return MakeSingularHelper(word, '-');
+
+                if (IgnoreWordsThatEndWith != null && IgnoreWordsThatEndWith.Any(endsWith => word.EndsWith(endsWith, StringComparison.InvariantCulture)))
+                    return word;
 
                 return PluralisationService.Singularize(word);
             }

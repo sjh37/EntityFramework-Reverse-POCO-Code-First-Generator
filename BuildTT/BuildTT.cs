@@ -722,6 +722,7 @@ namespace BuildTT
         new CustomPluralizationEntry(""Order"", ""Orders"")
     };
     Inflector.PluralisationService = new EnglishPluralizationService(customPluralisationEntries);*/
+    Inflector.IgnoreWordsThatEndWith = new List<string> { ""Status"", ""To"", ""Data"" };
     Inflector.PluralisationService = new EnglishPluralizationService(); // To disable pluralisation, set this to null
 
     var outer = (GeneratedTextTransformation) this;

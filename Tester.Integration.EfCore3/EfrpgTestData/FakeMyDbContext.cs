@@ -74,6 +74,9 @@ namespace Tester.Integration.EfCore3
         public DbSet<HasPrincipalKeyTestParent> HasPrincipalKeyTestParents { get; set; } // HasPrincipalKeyTestParent
         public DbSet<Header> Headers { get; set; } // header
         public DbSet<HierarchyTest> HierarchyTests { get; set; } // hierarchy_test
+        public DbSet<InflectorData> InflectorData { get; set; } // InflectorData
+        public DbSet<InflectorStatus> InflectorStatus { get; set; } // InflectorStatus
+        public DbSet<InflectorTo> InflectorTo { get; set; } // InflectorTo
         public DbSet<Issue47_Role> Issue47_Roles { get; set; } // Role
         public DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
@@ -191,6 +194,9 @@ namespace Tester.Integration.EfCore3
             HasPrincipalKeyTestParents = new FakeDbSet<HasPrincipalKeyTestParent>("Id");
             Headers = new FakeDbSet<Header>("Id", "AnotherId");
             HierarchyTests = new FakeDbSet<HierarchyTest>("Id");
+            InflectorData = new FakeDbSet<InflectorData>("Id");
+            InflectorStatus = new FakeDbSet<InflectorStatus>("Id");
+            InflectorTo = new FakeDbSet<InflectorTo>("Id");
             Issue47_Roles = new FakeDbSet<Issue47_Role>("RoleId");
             Issue47_Users = new FakeDbSet<Issue47_User>("UserId");
             Issue47_UserRoles = new FakeDbSet<Issue47_UserRole>("UserRoleId");

@@ -71,6 +71,9 @@ namespace V6EfrpgTest
         DbSet<HasPrincipalKeyTestParent> HasPrincipalKeyTestParents { get; set; } // HasPrincipalKeyTestParent
         DbSet<Header> Headers { get; set; } // header
         DbSet<HierarchyTest> HierarchyTests { get; set; } // hierarchy_test
+        DbSet<InflectorData> InflectorData { get; set; } // InflectorData
+        DbSet<InflectorStatus> InflectorStatus { get; set; } // InflectorStatus
+        DbSet<InflectorTo> InflectorTo { get; set; } // InflectorTo
         DbSet<Issue47_Role> Issue47_Roles { get; set; } // Role
         DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles

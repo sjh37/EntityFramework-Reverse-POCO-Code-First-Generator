@@ -58,6 +58,7 @@ namespace Generator.Tests.Integration
 
         public void Run(string filename, Type fileManagerType, string subFolder)
         {
+            Inflector.IgnoreWordsThatEndWith = new List<string> { "Status", "To", "Data" };
             Inflector.PluralisationService = new EnglishPluralizationService();
 
             var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);

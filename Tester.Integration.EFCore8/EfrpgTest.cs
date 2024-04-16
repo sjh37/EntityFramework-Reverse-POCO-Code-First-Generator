@@ -86,6 +86,9 @@ namespace V8EfrpgTest
         DbSet<HasPrincipalKeyTestParent> HasPrincipalKeyTestParents { get; set; } // HasPrincipalKeyTestParent
         DbSet<Header> Headers { get; set; } // header
         DbSet<HierarchyTest> HierarchyTests { get; set; } // hierarchy_test
+        DbSet<InflectorData> InflectorData { get; set; } // InflectorData
+        DbSet<InflectorStatus> InflectorStatus { get; set; } // InflectorStatus
+        DbSet<InflectorTo> InflectorTo { get; set; } // InflectorTo
         DbSet<Issue47_Role> Issue47_Roles { get; set; } // Role
         DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
@@ -434,6 +437,9 @@ namespace V8EfrpgTest
         public DbSet<HasPrincipalKeyTestParent> HasPrincipalKeyTestParents { get; set; } // HasPrincipalKeyTestParent
         public DbSet<Header> Headers { get; set; } // header
         public DbSet<HierarchyTest> HierarchyTests { get; set; } // hierarchy_test
+        public DbSet<InflectorData> InflectorData { get; set; } // InflectorData
+        public DbSet<InflectorStatus> InflectorStatus { get; set; } // InflectorStatus
+        public DbSet<InflectorTo> InflectorTo { get; set; } // InflectorTo
         public DbSet<Issue47_Role> Issue47_Roles { get; set; } // Role
         public DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
@@ -571,6 +577,9 @@ namespace V8EfrpgTest
             modelBuilder.ApplyConfiguration(new HasPrincipalKeyTestParentConfiguration());
             modelBuilder.ApplyConfiguration(new HeaderConfiguration());
             modelBuilder.ApplyConfiguration(new HierarchyTestConfiguration());
+            modelBuilder.ApplyConfiguration(new InflectorDataConfiguration());
+            modelBuilder.ApplyConfiguration(new InflectorStatusConfiguration());
+            modelBuilder.ApplyConfiguration(new InflectorToConfiguration());
             modelBuilder.ApplyConfiguration(new Issue47_RoleConfiguration());
             modelBuilder.ApplyConfiguration(new Issue47_UserConfiguration());
             modelBuilder.ApplyConfiguration(new Issue47_UserRoleConfiguration());
@@ -2126,6 +2135,9 @@ namespace V8EfrpgTest
         public DbSet<HasPrincipalKeyTestParent> HasPrincipalKeyTestParents { get; set; } // HasPrincipalKeyTestParent
         public DbSet<Header> Headers { get; set; } // header
         public DbSet<HierarchyTest> HierarchyTests { get; set; } // hierarchy_test
+        public DbSet<InflectorData> InflectorData { get; set; } // InflectorData
+        public DbSet<InflectorStatus> InflectorStatus { get; set; } // InflectorStatus
+        public DbSet<InflectorTo> InflectorTo { get; set; } // InflectorTo
         public DbSet<Issue47_Role> Issue47_Roles { get; set; } // Role
         public DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
@@ -2238,6 +2250,9 @@ namespace V8EfrpgTest
             HasPrincipalKeyTestParents = new FakeDbSet<HasPrincipalKeyTestParent>("Id");
             Headers = new FakeDbSet<Header>("Id", "AnotherId");
             HierarchyTests = new FakeDbSet<HierarchyTest>("Id");
+            InflectorData = new FakeDbSet<InflectorData>("Id");
+            InflectorStatus = new FakeDbSet<InflectorStatus>("Id");
+            InflectorTo = new FakeDbSet<InflectorTo>("Id");
             Issue47_Roles = new FakeDbSet<Issue47_Role>("RoleId");
             Issue47_Users = new FakeDbSet<Issue47_User>("UserId");
             Issue47_UserRoles = new FakeDbSet<Issue47_UserRole>("UserRoleId");
@@ -4660,6 +4675,30 @@ namespace V8EfrpgTest
         public HierarchyId Hid { get; set; } // hid
     }
 
+    // InflectorData
+    public class InflectorData
+    {
+        public int Id { get; set; } // Id (Primary key)
+    }
+
+    // InflectorStatus
+    public class InflectorStatus
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public int SayHelloTo { get; set; } // SayHelloTo
+        public int SignalData { get; set; } // SignalData
+        public int NotificationStatus { get; set; } // NotificationStatus
+        public int Status { get; set; } // Status
+        public int To { get; set; } // To
+        public int Data { get; set; } // Data
+    }
+
+    // InflectorTo
+    public class InflectorTo
+    {
+        public int Id { get; set; } // Id (Primary key)
+    }
+
     // Role
     public class Issue47_Role
     {
@@ -6324,6 +6363,48 @@ namespace V8EfrpgTest
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Hid).HasColumnName(@"hid").HasColumnType("hierarchyid").IsRequired();
+        }
+    }
+
+    // InflectorData
+    public class InflectorDataConfiguration : IEntityTypeConfiguration<InflectorData>
+    {
+        public void Configure(EntityTypeBuilder<InflectorData> builder)
+        {
+            builder.ToTable("InflectorData", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK_InflectorData").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+        }
+    }
+
+    // InflectorStatus
+    public class InflectorStatusConfiguration : IEntityTypeConfiguration<InflectorStatus>
+    {
+        public void Configure(EntityTypeBuilder<InflectorStatus> builder)
+        {
+            builder.ToTable("InflectorStatus", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK_InflectorStatus").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.SayHelloTo).HasColumnName(@"SayHelloTo").HasColumnType("int").IsRequired();
+            builder.Property(x => x.SignalData).HasColumnName(@"SignalData").HasColumnType("int").IsRequired();
+            builder.Property(x => x.NotificationStatus).HasColumnName(@"NotificationStatus").HasColumnType("int").IsRequired();
+            builder.Property(x => x.Status).HasColumnName(@"Status").HasColumnType("int").IsRequired();
+            builder.Property(x => x.To).HasColumnName(@"To").HasColumnType("int").IsRequired();
+            builder.Property(x => x.Data).HasColumnName(@"Data").HasColumnType("int").IsRequired();
+        }
+    }
+
+    // InflectorTo
+    public class InflectorToConfiguration : IEntityTypeConfiguration<InflectorTo>
+    {
+        public void Configure(EntityTypeBuilder<InflectorTo> builder)
+        {
+            builder.ToTable("InflectorTo", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK_InflectorTo").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
         }
     }
 
