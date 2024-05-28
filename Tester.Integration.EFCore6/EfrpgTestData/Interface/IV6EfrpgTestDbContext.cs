@@ -255,9 +255,6 @@ namespace V6EfrpgTest
         int MinTripSequenceStartNull(out DateTime? minTripSequenceStartParam);
         // MinTripSequenceStartNullAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        int MultipleReturnColumnsFromTempTable();
-        Task<int> MultipleReturnColumnsFromTempTableAsync(CancellationToken cancellationToken = default(CancellationToken));
-
         int NvarcharTest(string maxOutputParam, string normalOutputParam);
         Task<int> NvarcharTestAsync(string maxOutputParam, string normalOutputParam, CancellationToken cancellationToken = default(CancellationToken));
 
@@ -336,9 +333,6 @@ namespace V6EfrpgTest
         List<XmlDataV1ReturnModel> XmlDataV1();
         List<XmlDataV1ReturnModel> XmlDataV1(out int procResult);
         Task<List<XmlDataV1ReturnModel>> XmlDataV1Async(CancellationToken cancellationToken = default(CancellationToken));
-
-        int XmlDataV2();
-        Task<int> XmlDataV2Async(CancellationToken cancellationToken = default(CancellationToken));
 
 
         // Table Valued Functions

@@ -844,6 +844,9 @@ namespace Efrpg.Generators
                 var validStoredProcs = new List<StoredProcedure>();
                 foreach (var sp in storedProcs)
                 {
+                    if (sp.ErrorObtainingReturnModel)
+                        continue; // There was an error obtaining the return model. It could be selecting data from a temp table.
+
                     if (!sp.ReturnModels.Any())
                     {
                         validStoredProcs.Add(sp);

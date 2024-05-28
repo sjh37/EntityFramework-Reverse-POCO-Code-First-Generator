@@ -951,24 +951,6 @@ namespace V6EfrpgTest
 
         // MinTripSequenceStartNullAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int MultipleReturnColumnsFromTempTable()
-        {
-            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
-
-            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[MultipleReturnColumnsFromTempTable] ", procResultParam);
-
-            return (int)procResultParam.Value;
-        }
-
-        public async Task<int> MultipleReturnColumnsFromTempTableAsync(CancellationToken cancellationToken = default(CancellationToken))
-        {
-            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
-
-            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[MultipleReturnColumnsFromTempTable]",  new[] {procResultParam}, cancellationToken);
-
-            return (int)procResultParam.Value;
-        }
-
         public int NvarcharTest(string maxOutputParam, string normalOutputParam)
         {
             var maxOutputParamParam = new SqlParameter { ParameterName = "@maxOutputParam", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = maxOutputParam, Size = -1 };
@@ -1635,24 +1617,6 @@ namespace V6EfrpgTest
                 .ToListAsync();
 
             return procResultData;
-        }
-
-        public int XmlDataV2()
-        {
-            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
-
-            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[XmlDataV2] ", procResultParam);
-
-            return (int)procResultParam.Value;
-        }
-
-        public async Task<int> XmlDataV2Async(CancellationToken cancellationToken = default(CancellationToken))
-        {
-            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
-
-            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[XmlDataV2]",  new[] {procResultParam}, cancellationToken);
-
-            return (int)procResultParam.Value;
         }
 
 

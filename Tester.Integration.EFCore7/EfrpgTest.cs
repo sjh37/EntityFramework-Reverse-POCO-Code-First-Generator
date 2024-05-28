@@ -270,9 +270,6 @@ namespace V7EfrpgTest
         int MinTripSequenceStartNull(out DateTime? minTripSequenceStartParam);
         // MinTripSequenceStartNullAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        int MultipleReturnColumnsFromTempTable();
-        Task<int> MultipleReturnColumnsFromTempTableAsync(CancellationToken cancellationToken = default(CancellationToken));
-
         int NvarcharTest(string maxOutputParam, string normalOutputParam);
         Task<int> NvarcharTestAsync(string maxOutputParam, string normalOutputParam, CancellationToken cancellationToken = default(CancellationToken));
 
@@ -351,9 +348,6 @@ namespace V7EfrpgTest
         List<XmlDataV1ReturnModel> XmlDataV1();
         List<XmlDataV1ReturnModel> XmlDataV1(out int procResult);
         Task<List<XmlDataV1ReturnModel>> XmlDataV1Async(CancellationToken cancellationToken = default(CancellationToken));
-
-        int XmlDataV2();
-        Task<int> XmlDataV2Async(CancellationToken cancellationToken = default(CancellationToken));
 
 
         // Table Valued Functions
@@ -1313,24 +1307,6 @@ namespace V7EfrpgTest
 
         // MinTripSequenceStartNullAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int MultipleReturnColumnsFromTempTable()
-        {
-            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
-
-            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[MultipleReturnColumnsFromTempTable] ", procResultParam);
-
-            return (int)procResultParam.Value;
-        }
-
-        public async Task<int> MultipleReturnColumnsFromTempTableAsync(CancellationToken cancellationToken = default(CancellationToken))
-        {
-            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
-
-            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[MultipleReturnColumnsFromTempTable]",  new[] {procResultParam}, cancellationToken);
-
-            return (int)procResultParam.Value;
-        }
-
         public int NvarcharTest(string maxOutputParam, string normalOutputParam)
         {
             var maxOutputParamParam = new SqlParameter { ParameterName = "@maxOutputParam", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = maxOutputParam, Size = -1 };
@@ -1997,24 +1973,6 @@ namespace V7EfrpgTest
                 .ToListAsync();
 
             return procResultData;
-        }
-
-        public int XmlDataV2()
-        {
-            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
-
-            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[XmlDataV2] ", procResultParam);
-
-            return (int)procResultParam.Value;
-        }
-
-        public async Task<int> XmlDataV2Async(CancellationToken cancellationToken = default(CancellationToken))
-        {
-            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
-
-            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[XmlDataV2]",  new[] {procResultParam}, cancellationToken);
-
-            return (int)procResultParam.Value;
         }
 
 
@@ -2840,16 +2798,6 @@ namespace V7EfrpgTest
 
         // MinTripSequenceStartNullAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int MultipleReturnColumnsFromTempTable()
-        {
-            return 0;
-        }
-
-        public Task<int> MultipleReturnColumnsFromTempTableAsync(CancellationToken cancellationToken = default(CancellationToken))
-        {
-            return Task.FromResult(0);
-        }
-
         public int NvarcharTest(string maxOutputParam, string normalOutputParam)
         {
             return 0;
@@ -3173,16 +3121,6 @@ namespace V7EfrpgTest
         {
             int procResult;
             return Task.FromResult(XmlDataV1(out procResult));
-        }
-
-        public int XmlDataV2()
-        {
-            return 0;
-        }
-
-        public Task<int> XmlDataV2Async(CancellationToken cancellationToken = default(CancellationToken))
-        {
-            return Task.FromResult(0);
         }
 
         // Table Valued Functions

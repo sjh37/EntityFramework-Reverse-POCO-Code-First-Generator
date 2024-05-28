@@ -5059,6 +5059,9 @@
                 var validStoredProcs = new List<StoredProcedure>();
                 foreach (var sp in storedProcs)
                 {
+                    if (sp.ErrorObtainingReturnModel)
+                        continue; // There was an error obtaining the return model. It could be selecting data from a temp table.
+
                     if (!sp.ReturnModels.Any())
                     {
                         validStoredProcs.Add(sp);
@@ -16502,6 +16505,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 var ds = new DataSet();
                 using (var sqlAdapter = new SqlDataAdapter(sb.ToString(), sqlConnection))
                 {
+                    if(proc.DbName == "ColumnNameAndTypesProc")
+                        Console.WriteLine();
                     try
                     {
                         if (sqlConnection.State != ConnectionState.Open)
@@ -16510,9 +16515,9 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         sqlConnection.Close();
                         sqlAdapter.FillSchema(ds, SchemaType.Source, "MyTable");
                     }
-                    catch
+                    catch(Exception ex)
                     {
-                        // ignored
+                        proc.ErrorObtainingReturnModel = true;
                     }
                 }
 
@@ -16565,11 +16570,13 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public bool IsStoredProcedure;
         public bool HasSpatialParameter;
         public bool HasSpatialReturnModel;
+        public bool ErrorObtainingReturnModel;
 
         public StoredProcedure()
         {
             Parameters = new List<StoredProcedureParameter>();
             ReturnModels = new List<List<DataColumn>>();
+            ErrorObtainingReturnModel = false;
         }
 
         public static bool IsNullable(DataColumn col)

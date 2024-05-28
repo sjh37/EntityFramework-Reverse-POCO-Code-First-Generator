@@ -1125,7 +1125,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             try
             {
                 const string structured = "Structured";
-                var sb = new StringBuilder(255);
+                
+                var describeFirstResultSet = new StringBuilder(384);
+                describeFirstResultSet.AppendLine();
+
+                var sb = new StringBuilder(512);
                 sb.AppendLine();
                 sb.AppendLine("SET FMTONLY OFF; SET FMTONLY ON;");
 
@@ -1133,42 +1137,47 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 {
                     foreach (var param in proc.Parameters.Where(x => x.SqlDbType.Equals(structured, StringComparison.InvariantCultureIgnoreCase)))
                     {
-                        sb.AppendLine(string.Format("DECLARE {0} {1};", param.Name, param.UserDefinedTypeName));
+                        describeFirstResultSet.AppendLine(string.Format("DECLARE {0} {1};", param.Name, param.UserDefinedTypeName));
                     }
 
-                    sb.Append(string.Format("SELECT * FROM [{0}].[{1}](", proc.Schema.DbName, proc.DbName));
+                    describeFirstResultSet.Append(string.Format("SELECT * FROM [{0}].[{1}](", proc.Schema.DbName, proc.DbName));
                     foreach (var param in proc.Parameters)
                     {
-                        sb.Append(string.Format("{0}, ",
+                        describeFirstResultSet.Append(string.Format("{0}, ",
                             param.SqlDbType.Equals(structured, StringComparison.InvariantCultureIgnoreCase)
                                 ? param.Name
                                 : "default"));
                     }
 
                     if (proc.Parameters.Count > 0)
-                        sb.Length -= 2;
+                        describeFirstResultSet.Length -= 2;
 
-                    sb.AppendLine(");");
+                    describeFirstResultSet.AppendLine(");");
                 }
                 else
                 {
                     foreach (var param in proc.Parameters)
                     {
-                        sb.AppendLine(string.Format("DECLARE {0} {1};", param.Name,
+                        describeFirstResultSet.AppendLine(string.Format("DECLARE {0} {1};", param.Name,
                             param.SqlDbType.Equals(structured, StringComparison.InvariantCultureIgnoreCase)
                                 ? param.UserDefinedTypeName
                                 : param.SqlDbType));
                     }
 
-                    sb.Append(string.Format("exec [{0}].[{1}] ", proc.Schema.DbName, proc.DbName));
+                    describeFirstResultSet.Append(string.Format("exec [{0}].[{1}] ", proc.Schema.DbName, proc.DbName));
                     foreach (var param in proc.Parameters)
-                        sb.Append(string.Format("{0}, ", param.Name));
+                    {
+                        describeFirstResultSet.Append(param.Name);
+                        describeFirstResultSet.Append(", ");
+                    }
 
                     if (proc.Parameters.Count > 0)
-                        sb.Length -= 2;
+                        describeFirstResultSet.Length -= 2;
 
-                    sb.AppendLine(";");
+                    describeFirstResultSet.AppendLine(";");
                 }
+
+                sb.Append(describeFirstResultSet);
                 sb.AppendLine("SET FMTONLY OFF; SET FMTONLY OFF;");
 
                 var ds = new DataSet();
@@ -1182,9 +1191,76 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         sqlConnection.Close();
                         sqlAdapter.FillSchema(ds, SchemaType.Source, "MyTable");
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        // ignored
+                        proc.ErrorObtainingReturnModel = true;
+                    }
+                }
+
+                if (proc.ErrorObtainingReturnModel)
+                {
+                    // Fallback to using sp_describe_first_result_set
+                    try
+                    {
+                        if (sqlConnection.State != ConnectionState.Open)
+                            sqlConnection.Open();
+
+                        var cmd = GetCmd(sqlConnection);
+                        cmd.CommandText = string.Format("EXEC sp_describe_first_result_set @tsql = N'{0}'", describeFirstResultSet);
+                        using (var rdr = cmd.ExecuteReader())
+                        {
+                            while (rdr.Read())
+                            {
+                                /*
+                                   is_hidden BIT,
+                                   column_ordinal INT,
+                                   name NVARCHAR(128),
+                                   is_nullable BIT,
+                                   system_type_id INT,
+                                   system_type_name NVARCHAR(128),
+                                   max_length SMALLINT,
+                                   precision TINYINT,
+                                   scale TINYINT,
+                                   collation_name NVARCHAR(128),
+                                   user_type_id INT,
+                                   user_type_database NVARCHAR(128),
+                                   user_type_schema NVARCHAR(128),
+                                   user_type_name NVARCHAR(128),
+                                   assembly_qualified_type_name NVARCHAR(4000),
+                                   xml_collection_id INT,
+                                   xml_collection_database NVARCHAR(128),
+                                   xml_collection_schema NVARCHAR(128),
+                                   xml_collection_name NVARCHAR(128),
+                                   is_xml_document BIT,
+                                   is_case_sensitive BIT,
+                                   is_fixed_length_clr_type BIT,
+                                   source_server NVARCHAR(128),
+                                   source_database NVARCHAR(128),
+                                   source_schema NVARCHAR(128),
+                                   source_table NVARCHAR(128),
+                                   source_column NVARCHAR(128),
+                                   is_identity_column BIT,
+                                   is_part_of_unique_key BIT,
+                                   is_updateable BIT,
+                                   is_computed_column BIT,
+                                   is_sparse_column_set BIT,
+                                   ordinal_in_order_by_list SMALLINT,
+                                   order_by_is_descending BIT,
+                                   order_by_list_length SMALLINT,
+                                   tds_type_id INT,
+                                   tds_length INT,
+                                   tds_collation_id INT,
+                                   tds_collation_sort_id TINYINT
+                                 */
+                                var ordinal = rdr["column_ordinal"].ToString().Trim();
+                                var name = rdr["name"].ToString().Trim();
+                                etc.
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        proc.ErrorObtainingReturnModel = true;
                     }
                 }
 
@@ -1204,7 +1280,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 // Stored procedure does not have a return type
             }
         }
-
+        
         public override void Init()
         {
             base.Init();

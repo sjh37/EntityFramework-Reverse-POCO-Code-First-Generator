@@ -778,16 +778,6 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
 
         // MinTripSequenceStartNullAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int MultipleReturnColumnsFromTempTable()
-        {
-            return 0;
-        }
-
-        public Task<int> MultipleReturnColumnsFromTempTableAsync(CancellationToken cancellationToken = default(CancellationToken))
-        {
-            return Task.FromResult(0);
-        }
-
         public int NvarcharTest(string maxOutputParam, string normalOutputParam)
         {
             return 0;
@@ -1111,16 +1101,6 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         {
             int procResult;
             return Task.FromResult(XmlDataV1(out procResult));
-        }
-
-        public int XmlDataV2()
-        {
-            return 0;
-        }
-
-        public Task<int> XmlDataV2Async(CancellationToken cancellationToken = default(CancellationToken))
-        {
-            return Task.FromResult(0);
         }
 
         // Table Valued Functions

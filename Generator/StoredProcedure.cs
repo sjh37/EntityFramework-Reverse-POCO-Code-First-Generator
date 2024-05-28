@@ -1,13 +1,11 @@
-﻿using System;
+﻿using Efrpg.Filtering;
+using Efrpg.Readers;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
-using Efrpg.Filtering;
-using Efrpg.Readers;
-using Efrpg.Util;
 
 namespace Efrpg
 {
@@ -21,11 +19,13 @@ namespace Efrpg
         public bool IsStoredProcedure;
         public bool HasSpatialParameter;
         public bool HasSpatialReturnModel;
+        public bool ErrorObtainingReturnModel;
 
         public StoredProcedure()
         {
             Parameters = new List<StoredProcedureParameter>();
             ReturnModels = new List<List<DataColumn>>();
+            ErrorObtainingReturnModel = false;
         }
 
         public static bool IsNullable(DataColumn col)
