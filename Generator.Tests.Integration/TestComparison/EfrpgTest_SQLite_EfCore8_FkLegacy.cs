@@ -869,15 +869,21 @@ namespace Efrpg.SQLite
         // Reverse navigation
 
         /// <summary>
-        /// Child EfrpgItems where [EfrpgItems].[EfrpgId] point to this entity (FK_EfrpgItems_Id)
+        /// Child EfrpgItems where [EfrpgItems].[EfrpgId] point to this entity (FK_EfrpgItems_EfrpgId_Id)
         /// </summary>
-        public virtual ICollection<EfrpgItem> EfrpgItems { get; set; } // EfrpgItems.FK_EfrpgItems_Id
+        public virtual ICollection<EfrpgItem> EfrpgItems_EfrpgId { get; set; } // EfrpgItems.FK_EfrpgItems_EfrpgId_Id
+
+        /// <summary>
+        /// Child EfrpgItems where [EfrpgItems].[ParentEfrpgId] point to this entity (FK_EfrpgItems_ParentEfrpgId_Id)
+        /// </summary>
+        public virtual ICollection<EfrpgItem> EfrpgItems_ParentEfrpgId { get; set; } // EfrpgItems.FK_EfrpgItems_ParentEfrpgId_Id
 
         public Efrpg()
         {
             Text8 = "Hello";
             Int1 = 123;
-            EfrpgItems = new List<EfrpgItem>();
+            EfrpgItems_ParentEfrpgId = new List<EfrpgItem>();
+            EfrpgItems_EfrpgId = new List<EfrpgItem>();
         }
     }
 
@@ -886,15 +892,21 @@ namespace Efrpg.SQLite
     {
         public long Id { get; set; } // Id (Primary key)
         public long EfrpgId { get; set; } // EfrpgId
+        public long? ParentEfrpgId { get; set; } // ParentEfrpgId
         public long Test { get; set; } // Test
         public DateTime? CreatedAt { get; set; } // CreatedAt
 
         // Foreign keys
 
         /// <summary>
-        /// Parent Efrpg pointed by [EfrpgItems].([EfrpgId]) (FK_EfrpgItems_Id)
+        /// Parent Efrpg pointed by [EfrpgItems].([EfrpgId]) (FK_EfrpgItems_EfrpgId_Id)
         /// </summary>
-        public virtual Efrpg Efrpg { get; set; } // FK_EfrpgItems_Id
+        public virtual Efrpg Efrpg_EfrpgId { get; set; } // FK_EfrpgItems_EfrpgId_Id
+
+        /// <summary>
+        /// Parent Efrpg pointed by [EfrpgItems].([ParentEfrpgId]) (FK_EfrpgItems_ParentEfrpgId_Id)
+        /// </summary>
+        public virtual Efrpg ParentEfrpg { get; set; } // FK_EfrpgItems_ParentEfrpgId_Id
     }
 
     // ThisIsAView
@@ -967,11 +979,13 @@ namespace Efrpg.SQLite
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("integer").IsRequired().ValueGeneratedOnAdd();
             builder.Property(x => x.EfrpgId).HasColumnName(@"EfrpgId").HasColumnType("integer").IsRequired();
+            builder.Property(x => x.ParentEfrpgId).HasColumnName(@"ParentEfrpgId").HasColumnType("integer").IsRequired(false);
             builder.Property(x => x.Test).HasColumnName(@"Test").HasColumnType("int").IsRequired();
             builder.Property(x => x.CreatedAt).HasColumnName(@"CreatedAt").HasColumnType("datetime").IsRequired(false);
 
             // Foreign keys
-            builder.HasOne(a => a.Efrpg).WithMany(b => b.EfrpgItems).HasForeignKey(c => c.EfrpgId).HasConstraintName("FK_EfrpgItems_Id");
+            builder.HasOne(a => a.Efrpg_EfrpgId).WithMany(b => b.EfrpgItems_EfrpgId).HasForeignKey(c => c.EfrpgId).HasConstraintName("FK_EfrpgItems_EfrpgId_Id");
+            builder.HasOne(a => a.ParentEfrpg).WithMany(b => b.EfrpgItems_ParentEfrpgId).HasForeignKey(c => c.ParentEfrpgId).HasConstraintName("FK_EfrpgItems_ParentEfrpgId_Id");
         }
     }
 

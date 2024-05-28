@@ -1,11 +1,11 @@
-﻿using System.IO;
-using System.Threading;
+﻿using System;
 using Efrpg;
+using Efrpg.FileManagement;
 using Efrpg.Templates;
 using Generator.Tests.Common;
-using NUnit.Framework;
-using Efrpg.FileManagement;
 using Microsoft.Data.Sqlite;
+using NUnit.Framework;
+using System.IO;
 
 namespace Generator.Tests.Integration
 {
@@ -77,12 +77,13 @@ CREATE TABLE Efrpg
 
 CREATE TABLE EfrpgItems
 (
-    Id        INTEGER PRIMARY KEY,
-    EfrpgId   INTEGER NOT NULL,
-    Test      INT     NOT NULL,
+    Id INTEGER PRIMARY KEY,
+    EfrpgId INTEGER NOT NULL,
+    ParentEfrpgId INTEGER NULL,
+    Test INT NOT NULL,
     CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (EfrpgId) REFERENCES [Efrpg] (Id)
-        ON DELETE CASCADE ON UPDATE NO ACTION
+    FOREIGN KEY (EfrpgId) REFERENCES [Efrpg] (Id) ON DELETE CASCADE ON UPDATE NO ACTION,
+    FOREIGN KEY (ParentEfrpgId) REFERENCES [Efrpg] (Id) ON DELETE CASCADE ON UPDATE NO ACTION
 );
 
 CREATE INDEX [IX_Efrpg] ON [Efrpg] ([TEXT3]);
@@ -108,6 +109,9 @@ VALUES (1, 1, 3),
 ";
             cmd.ExecuteNonQuery();
             connection.Close();
+
+            Console.WriteLine($"Database: {Filename}");
+            Console.WriteLine($"ConnectionString: {ConnectionString}");
         }
 
         [Test]
