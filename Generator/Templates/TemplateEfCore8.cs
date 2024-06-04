@@ -442,7 +442,7 @@ using {{this}};{{#newline}}
         const string sqlCommand = ""{{AsyncExec}}"";{{#newline}}
         var procResultData = await {{QueryString}}<{{ReturnModelName}}>(){{#newline}}
             .{{FromSql}}(sqlCommand{{WriteStoredProcFunctionSqlParameterAnonymousArrayFalse}}){{#newline}}
-            .ToListAsync();{{#newline}}{{#newline}}
+            .ToListAsync(cancellationToken);{{#newline}}{{#newline}}
 
         return procResultData;{{#newline}}
 {{/if}}

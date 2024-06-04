@@ -273,7 +273,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             const string sqlCommand = "EXEC [dbo].[CustOrderHist] @CustomerID";
             var procResultData = await Set<CustOrderHistReturnModel>()
                 .FromSqlRaw(sqlCommand, customerIdParam)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -309,7 +309,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             const string sqlCommand = "EXEC [dbo].[CustOrdersDetail] @OrderID";
             var procResultData = await Set<CustOrdersDetailReturnModel>()
                 .FromSqlRaw(sqlCommand, orderIdParam)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -345,7 +345,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             const string sqlCommand = "EXEC [dbo].[CustOrdersOrders] @CustomerID";
             var procResultData = await Set<CustOrdersOrdersReturnModel>()
                 .FromSqlRaw(sqlCommand, customerIdParam)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -389,7 +389,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             const string sqlCommand = "EXEC [dbo].[Employee Sales by Country] @Beginning_Date, @Ending_Date";
             var procResultData = await Set<EmployeeSalesByCountryReturnModel>()
                 .FromSqlRaw(sqlCommand, beginningDateParam, endingDateParam)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -433,7 +433,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             const string sqlCommand = "EXEC [dbo].[SalesByCategory] @CategoryName, @OrdYear";
             var procResultData = await Set<SalesByCategoryReturnModel>()
                 .FromSqlRaw(sqlCommand, categoryNameParam, ordYearParam)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -477,7 +477,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             const string sqlCommand = "EXEC [dbo].[Sales by Year] @Beginning_Date, @Ending_Date";
             var procResultData = await Set<SalesByYearReturnModel>()
                 .FromSqlRaw(sqlCommand, beginningDateParam, endingDateParam)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -505,7 +505,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             const string sqlCommand = "EXEC [dbo].[Ten Most Expensive Products]";
             var procResultData = await Set<TenMostExpensiveProductsReturnModel>()
                 .FromSqlRaw(sqlCommand)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }

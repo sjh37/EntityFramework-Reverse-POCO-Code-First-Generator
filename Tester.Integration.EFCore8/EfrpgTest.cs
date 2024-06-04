@@ -810,7 +810,7 @@ namespace V8EfrpgTest
             const string sqlCommand = "EXEC [dbo].[aSimpleExample]";
             var procResultData = await Set<ASimpleExampleReturnModel>()
                 .FromSqlRaw(sqlCommand)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -898,7 +898,7 @@ namespace V8EfrpgTest
             const string sqlCommand = "EXEC [dbo].[ColourPivot]";
             var procResultData = await Set<ColourPivotReturnModel>()
                 .FromSqlRaw(sqlCommand)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -926,7 +926,7 @@ namespace V8EfrpgTest
             const string sqlCommand = "EXEC [dbo].[ColumnNameAndTypesProc]";
             var procResultData = await Set<ColumnNameAndTypesProcReturnModel>()
                 .FromSqlRaw(sqlCommand)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -983,7 +983,7 @@ namespace V8EfrpgTest
             const string sqlCommand = "EXEC [dbo].[dbo_proc_data_from_ffrs] @maxId";
             var procResultData = await Set<DboProcDataFromFfrsReturnModel>()
                 .FromSqlRaw(sqlCommand, maxIdParam)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -1011,7 +1011,7 @@ namespace V8EfrpgTest
             const string sqlCommand = "EXEC [dbo].[dbo_proc_data_from_ffrs_and_dbo]";
             var procResultData = await Set<DboProcDataFromFfrsAndDboReturnModel>()
                 .FromSqlRaw(sqlCommand)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -1039,7 +1039,7 @@ namespace V8EfrpgTest
             const string sqlCommand = "EXEC [dbo].[DSOpeProc]";
             var procResultData = await Set<DsOpeProcReturnModel>()
                 .FromSqlRaw(sqlCommand)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -1075,7 +1075,7 @@ namespace V8EfrpgTest
             const string sqlCommand = "EXEC [FFRS].[cv_data] @maxId";
             var procResultData = await Set<FFRS_CvDataReturnModel>()
                 .FromSqlRaw(sqlCommand, maxIdParam)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -1103,7 +1103,7 @@ namespace V8EfrpgTest
             const string sqlCommand = "EXEC [FFRS].[data_from_dbo]";
             var procResultData = await Set<FFRS_DataFromDboReturnModel>()
                 .FromSqlRaw(sqlCommand)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -1131,7 +1131,7 @@ namespace V8EfrpgTest
             const string sqlCommand = "EXEC [FFRS].[data_from_dbo_and_ffrs]";
             var procResultData = await Set<FFRS_DataFromDboAndFfrsReturnModel>()
                 .FromSqlRaw(sqlCommand)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -1159,7 +1159,7 @@ namespace V8EfrpgTest
             const string sqlCommand = "EXEC [FkTest].[Hello]";
             var procResultData = await Set<FkTest_HelloReturnModel>()
                 .FromSqlRaw(sqlCommand)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -1195,7 +1195,7 @@ namespace V8EfrpgTest
             const string sqlCommand = "EXEC [dbo].[GetSmallDecimalTest] @maxId";
             var procResultData = await Set<GetSmallDecimalTestReturnModel>()
                 .FromSqlRaw(sqlCommand, maxIdParam)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -1465,7 +1465,7 @@ namespace V8EfrpgTest
             const string sqlCommand = "EXEC [dbo].[SpatialTypesNoParams]";
             var procResultData = await Set<SpatialTypesNoParamsReturnModel>()
                 .FromSqlRaw(sqlCommand)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -1509,7 +1509,7 @@ namespace V8EfrpgTest
             const string sqlCommand = "EXEC [dbo].[SpatialTypesWithParams] @geometry, @geography";
             var procResultData = await Set<SpatialTypesWithParamsReturnModel>()
                 .FromSqlRaw(sqlCommand, geometryParam, geographyParam)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -1545,7 +1545,7 @@ namespace V8EfrpgTest
             const string sqlCommand = "EXEC [dbo].[stp_multiple_identical_results] @someVar";
             var procResultData = await Set<StpMultipleIdenticalResultsReturnModel>()
                 .FromSqlRaw(sqlCommand, someVarParam)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -1585,7 +1585,7 @@ namespace V8EfrpgTest
             const string sqlCommand = "EXEC [dbo].[stp_no_params_test]";
             var procResultData = await Set<StpNoParamsTestReturnModel>()
                 .FromSqlRaw(sqlCommand)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -1647,7 +1647,7 @@ namespace V8EfrpgTest
             const string sqlCommand = "EXEC [dbo].[stp_nullable_params_test] @a_val, @b_val";
             var procResultData = await Set<StpNullableParamsTestReturnModel>()
                 .FromSqlRaw(sqlCommand, aValParam, bValParam)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -1725,7 +1725,7 @@ namespace V8EfrpgTest
             const string sqlCommand = "EXEC [dbo].[stp_test_underscore_test] @str_Date_FROM, @str_date_to";
             var procResultData = await Set<StpTestUnderscoreTestReturnModel>()
                 .FromSqlRaw(sqlCommand, strDateFromParam, strDateToParam)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -1861,7 +1861,7 @@ namespace V8EfrpgTest
             const string sqlCommand = "EXEC [Synonyms].[SimpleStoredProc] @InputInt";
             var procResultData = await Set<Synonyms_SimpleStoredProcReturnModel>()
                 .FromSqlRaw(sqlCommand, inputIntParam)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -1889,7 +1889,7 @@ namespace V8EfrpgTest
             const string sqlCommand = "EXEC [dbo].[TestReturnString]";
             var procResultData = await Set<TestReturnStringReturnModel>()
                 .FromSqlRaw(sqlCommand)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -1994,7 +1994,7 @@ namespace V8EfrpgTest
             const string sqlCommand = "EXEC [dbo].[XmlDataV1]";
             var procResultData = await Set<XmlDataV1ReturnModel>()
                 .FromSqlRaw(sqlCommand)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
