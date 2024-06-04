@@ -113,6 +113,7 @@
     <Compile Include="Readers\RawSequenceTableMapping.cs" />
     <Compile Include="Readers\RawTrigger.cs" />
     <Compile Include="Readers\SQLiteDatabaseReader.cs" />
+    <Compile Include="StoredProcedureReturnModelColumn.cs" />
     <Compile Include="TemplateModels\Trigger.cs" />
     <Compile Include="Templates\TemplateEfCore3.cs" />
     <Compile Include="Templates\TemplateEfCore6.cs" />

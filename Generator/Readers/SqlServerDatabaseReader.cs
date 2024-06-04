@@ -1202,6 +1202,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     // Fallback to using sp_describe_first_result_set
                     try
                     {
+                        proc.ErrorObtainingReturnModel = false;
+
                         if (sqlConnection.State != ConnectionState.Open)
                             sqlConnection.Open();
 

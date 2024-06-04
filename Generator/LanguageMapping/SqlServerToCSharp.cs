@@ -11,6 +11,7 @@ namespace Efrpg.LanguageMapping
             var geographyType = Settings.TemplateType == TemplateType.Ef6 ? "DbGeography" : "NetTopologySuite.Geometries.Point";
             var geometryType  = Settings.TemplateType == TemplateType.Ef6 ? "DbGeometry"  : "NetTopologySuite.Geometries.Geometry";
 
+            // SELECT * FROM sys.types ORDER BY name
             return new Dictionary<string, string>
             {
                 { string.Empty,       "string" }, // default
