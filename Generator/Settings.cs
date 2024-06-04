@@ -687,10 +687,6 @@ namespace Efrpg
         {
             switch (TemplateType)
             {
-                case TemplateType.EfCore3:
-                case TemplateType.FileBasedCore3:
-                    return 3;
-                
                 case TemplateType.EfCore6:
                 case TemplateType.FileBasedCore6:
                     return 6;
