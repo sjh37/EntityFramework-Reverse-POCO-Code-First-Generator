@@ -1247,8 +1247,9 @@ namespace Efrpg.Generators
                         Settings.DbContextInterfaceName = null;
                         Settings.DbContextName = ((MultiContextFilter) filter.Value).GetSettings().Name ?? filter.Key;
 
-                        if (Settings.TemplateType == TemplateType.FileBasedCore3 ||
-                            Settings.TemplateType == TemplateType.FileBasedCore6)
+                        if (Settings.TemplateType == TemplateType.FileBasedCore6 || 
+                            Settings.TemplateType == TemplateType.FileBasedCore7 ||
+                            Settings.TemplateType == TemplateType.FileBasedCore8)
                         {
                             // Use file based templates, set the path
                             var multiContextSetting = ((MultiContextFilter) filter.Value).GetSettings();

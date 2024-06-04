@@ -179,7 +179,7 @@ namespace TestSynonymsDatabase
             const string sqlCommand = "EXEC [Synonyms].[SimpleStoredProc] @InputInt";
             var procResultData = await Set<SimpleStoredProcReturnModel>()
                 .FromSqlRaw(sqlCommand, inputIntParam)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }

@@ -124,7 +124,6 @@ namespace Generator.Tests.Unit
 
         [Test]
         [TestCase(TemplateType.Ef6,     "HasName")]
-        [TestCase(TemplateType.EfCore3, "HasName")]
         [TestCase(TemplateType.EfCore6, "HasDatabaseName")]
         [TestCase(TemplateType.EfCore7, "HasDatabaseName")]
         [TestCase(TemplateType.EfCore8, "HasDatabaseName")]

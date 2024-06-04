@@ -32,7 +32,6 @@ namespace Generator.Tests.Integration
         [Test]
         // Legacy
         [TestCase("EfrpgTest", ".V3TestE1", "MyDbContext", "EfrpgTestDbContext", TemplateType.Ef6, ForeignKeyNamingStrategy.Legacy)]
-        [TestCase("EfrpgTest", ".V3TestE3", "MyDbContext", "EfrpgTestDbContext", TemplateType.EfCore3, ForeignKeyNamingStrategy.Legacy)]
         [TestCase("EfrpgTest", ".V3TestE6", "MyDbContext", "EfrpgTestDbContext", TemplateType.EfCore6, ForeignKeyNamingStrategy.Legacy)]
         [TestCase("EfrpgTest", ".V3TestE7", "MyDbContext", "EfrpgTestDbContext", TemplateType.EfCore7, ForeignKeyNamingStrategy.Legacy)]
         [TestCase("EfrpgTest", ".V3TestE8", "MyDbContext", "EfrpgTestDbContext", TemplateType.EfCore8, ForeignKeyNamingStrategy.Legacy)]
@@ -43,7 +42,7 @@ namespace Generator.Tests.Integration
             SetupSqlServer(database, connectionStringName, dbContextName, templateType,
                 templateType == TemplateType.Ef6 ? GeneratorType.Ef6 : GeneratorType.EfCore, foreignKeyNamingStrategy);
             Settings.GenerateSeparateFiles = false;
-            Settings.UseMappingTables = templateType != TemplateType.EfCore3;
+            Settings.UseMappingTables = true;
             if (templateType == TemplateType.EfCore6) // Don't do all, as we want a mix of true/false for this field.
                 Settings.TrimCharFields = true;
             else
@@ -108,7 +107,6 @@ namespace Generator.Tests.Integration
         }
 
         [Test]
-        [TestCase("EfrpgTest", ".V3FilterTest", "EfrpgTest", "EfrpgDbContext", false, TemplateType.EfCore3, ForeignKeyNamingStrategy.Legacy)]
         [TestCase("EfrpgTest", ".V6FilterTest", "EfrpgTest", "EfrpgDbContext", false, TemplateType.EfCore6, ForeignKeyNamingStrategy.Legacy)]
         [TestCase("EfrpgTest", ".V7FilterTest", "EfrpgTest", "EfrpgDbContext", false, TemplateType.EfCore7, ForeignKeyNamingStrategy.Legacy)]
         [TestCase("EfrpgTest", ".V8FilterTest", "EfrpgTest", "EfrpgDbContext", false, TemplateType.EfCore8, ForeignKeyNamingStrategy.Legacy)]
@@ -119,7 +117,7 @@ namespace Generator.Tests.Integration
             SetupSqlServer(database, connectionStringName, dbContextName, templateType,
                 templateType == TemplateType.Ef6 ? GeneratorType.Ef6 : GeneratorType.EfCore, foreignKeyNamingStrategy);
             Settings.GenerateSeparateFiles = false;
-            Settings.UseMappingTables = templateType != TemplateType.EfCore3;
+            Settings.UseMappingTables = true;
             Settings.AddUnitTestingDbContext = false;
 
             FilterSettings.SchemaFilters.Add(new RegexIncludeFilter("dbo.*"));

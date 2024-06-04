@@ -115,7 +115,6 @@
     <Compile Include="Readers\SQLiteDatabaseReader.cs" />
     <Compile Include="StoredProcedureReturnModelColumn.cs" />
     <Compile Include="TemplateModels\Trigger.cs" />
-    <Compile Include="Templates\TemplateEfCore3.cs" />
     <Compile Include="Templates\TemplateEfCore6.cs" />
     <Compile Include="Templates\TemplateEfCore7.cs" />
     <Compile Include="Templates\TemplateEfCore8.cs" />

@@ -377,15 +377,8 @@ namespace Efrpg.Generators
 
         private static string GetConnectionStringActions(bool hasSpatialTypes, bool hasHierarchyIdType)
         {
-            switch (Settings.TemplateType)
-            {
-                case TemplateType.Ef6:
-                    return string.Empty;
-
-                case TemplateType.EfCore3:
-                    hasHierarchyIdType = false;
-                    break;
-            }
+            if (Settings.TemplateType == TemplateType.Ef6)
+                return string.Empty;
 
             if (!hasSpatialTypes && !hasHierarchyIdType)
                 return string.Empty;
