@@ -47,6 +47,11 @@
             return string.Empty;
         }
 
+        protected override string SysTypesSQL()
+        {
+            return string.Empty;
+        }
+
         protected override string ReadDatabaseEditionSQL()
         {
             return string.Empty;

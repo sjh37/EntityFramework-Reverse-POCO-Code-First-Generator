@@ -167,6 +167,11 @@ WHERE ColumnName != ''";
             return string.Empty;
         }
 
+        protected override string SysTypesSQL()
+        {
+            return string.Empty;
+        }
+
         protected override string MultiContextSQL()
         {
             return string.Empty;

@@ -159,6 +159,11 @@ WHERE   TABLE_NAME = '__ExtendedProperties'";
             return string.Empty;
         }
 
+        protected override string SysTypesSQL()
+        {
+            return string.Empty;
+        }
+
         protected override string ReadDatabaseEditionSQL()
         {
             return string.Empty;

@@ -46,6 +46,11 @@ namespace Efrpg.Readers
             return string.Empty;
         }
 
+        protected override string SysTypesSQL()
+        {
+            return string.Empty;
+        }
+
         protected override string ReadDatabaseEditionSQL()
         {
             return "SELECT BANNER AS Edition, EDITION AS EngineEdition, VERSION AS ProductVersion FROM V$VERSION CROSS JOIN V$INSTANCE WHERE BANNER LIKE 'Oracle%'";

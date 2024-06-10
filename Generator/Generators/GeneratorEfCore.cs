@@ -211,7 +211,7 @@ namespace Efrpg.Generators
                 return indexes;
 
             var isEfCore3Plus = Settings.IsEfCore3Plus();
-            var isEfCore5Plus = Settings.IsEfCore6Plus();
+            var isEfCore6Plus = Settings.IsEfCore6Plus();
             var indexNames = t.Indexes.Where(x => !x.IsPrimaryKey).Select(x => x.IndexName).Distinct();
             foreach (var indexName in indexNames.OrderBy(x => x))
             {
@@ -254,7 +254,7 @@ namespace Efrpg.Generators
                 sb.Append(")"); // Close bracket for HasIndex()
 
                 
-                sb.Append(isEfCore5Plus ? ".HasDatabaseName(\"" : ".HasName(\"");
+                sb.Append(isEfCore6Plus ? ".HasDatabaseName(\"" : ".HasName(\"");
                 sb.Append(indexName);
                 sb.Append("\")");
 

@@ -6380,7 +6380,7 @@
                 return indexes;
 
             var isEfCore3Plus = Settings.IsEfCore3Plus();
-            var isEfCore5Plus = Settings.IsEfCore6Plus();
+            var isEfCore6Plus = Settings.IsEfCore6Plus();
             var indexNames = t.Indexes.Where(x => !x.IsPrimaryKey).Select(x => x.IndexName).Distinct();
             foreach (var indexName in indexNames.OrderBy(x => x))
             {
@@ -6423,7 +6423,7 @@
                 sb.Append(")"); // Close bracket for HasIndex()
 
                 
-                sb.Append(isEfCore5Plus ? ".HasDatabaseName(\"" : ".HasName(\"");
+                sb.Append(isEfCore6Plus ? ".HasDatabaseName(\"" : ".HasName(\"");
                 sb.Append(indexName);
                 sb.Append("\")");
 
@@ -16912,10 +16912,10 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
         private string ConvertDataColumnType(Type type)
         {
-            var isEfCore5Plus = Settings.IsEfCore6Plus();
+            var isEfCore6Plus = Settings.IsEfCore6Plus();
             
             if (type.Name.Equals("SqlHierarchyId"))
-                return isEfCore5Plus ? "HierarchyId" : "Microsoft.SqlServer.Types.SqlHierarchyId";
+                return isEfCore6Plus ? "HierarchyId" : "Microsoft.SqlServer.Types.SqlHierarchyId";
 
             var typeNamespace = type.Namespace + ".";
             if (type.Namespace?.ToLower() == "system")
@@ -16966,7 +16966,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     break;
             }
 
-            if (isEfCore5Plus)
+            if (isEfCore6Plus)
             {
                 switch (typeName.ToLower())
                 {

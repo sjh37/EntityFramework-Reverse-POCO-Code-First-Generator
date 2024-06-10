@@ -16,6 +16,7 @@ namespace Efrpg.Readers
         protected readonly StringBuilder DatabaseDetails;
         protected Dictionary<string, string> StoredProcedureParameterDbType; // [SQL Data Type] = SqlDbType. (For consistent naming)
         protected Dictionary<string, string> DbTypeToPropertyType; // [SQL Data Type] = Language type.
+        protected Dictionary<int, string> SysTypes; // [system_type_id] = SQL Data Type
         protected List<string> SpatialTypes;
         protected List<string> PrecisionAndScaleTypes;
         protected List<string> PrecisionTypes;
@@ -37,6 +38,7 @@ namespace Efrpg.Readers
         protected abstract string IndexSQL();
         public abstract bool CanReadStoredProcedures();
         protected abstract string StoredProcedureSQL();
+        protected abstract string SysTypesSQL();
         protected abstract string ReadDatabaseEditionSQL();
         protected abstract string MultiContextSQL();
         protected abstract string EnumSQL(string table, string nameField, string valueField, string groupField);
@@ -375,9 +377,46 @@ namespace Efrpg.Readers
 
             return result;
         }
+        
+        public void ReadSysTypes()
+        {
+            if (DatabaseReaderPlugin != null)
+            {
+                SysTypes = DatabaseReaderPlugin.ReadSysTypes();
+                return;
+            }
+
+            SysTypes = new Dictionary<int, string>();
+            using (var conn = _factory.CreateConnection())
+            {
+                if (conn == null)
+                    return;
+
+                conn.ConnectionString = Settings.ConnectionString;
+                conn.Open();
+
+                var cmd = GetCmd(conn);
+                if (cmd == null)
+                    return;
+
+                var sql = SysTypesSQL();
+                if (string.IsNullOrWhiteSpace(sql))
+                    return;
+
+                cmd.CommandText = sql;
+
+                using (var rdr = cmd.ExecuteReader())
+                {
+                    while (rdr.Read())
+                    {
+                        SysTypes[ChangeType<int>(rdr["system_type_id"])] = rdr["name"].ToString().Trim();
+                    }
+                }
+            }
+        }
 
         // Use this on non-string types to guarantee type correctness between different databases
-        private T ChangeType<T>(object o)
+        protected T ChangeType<T>(object o)
         {
             if (o.GetType() != typeof(T))
                 return (T) Convert.ChangeType(o, typeof(T));
@@ -446,6 +485,8 @@ namespace Efrpg.Readers
         {
             if (DatabaseReaderPlugin != null)
                 return DatabaseReaderPlugin.ReadStoredProcs();
+
+            ReadSysTypes();
 
             var result = new List<RawStoredProcedure>();
             using (var conn = _factory.CreateConnection())

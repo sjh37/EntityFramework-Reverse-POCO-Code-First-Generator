@@ -5,6 +5,7 @@ namespace Efrpg.Readers
 {
     public interface IDatabaseReaderPlugin
     {
+        Dictionary<int, string> ReadSysTypes();
         List<RawTable> ReadTables();
         List<RawForeignKey> ReadForeignKeys();
         List<RawIndex> ReadIndexes();

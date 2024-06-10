@@ -442,6 +442,11 @@ FROM    INFORMATION_SCHEMA.ROUTINES R
 WHERE   R.ROUTINE_TYPE = 'FUNCTION'";
         }
 
+        protected override string SysTypesSQL()
+        {
+            return "SELECT system_type_id, name FROM sys.types;";
+        }
+
         protected override string MultiContextSQL()
         {
             return @"
@@ -1197,7 +1202,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     }
                 }
 
-                if (proc.ErrorObtainingReturnModel)
+                if (proc.ErrorObtainingReturnModel && SysTypes.Any())
                 {
                     // Fallback to using sp_describe_first_result_set
                     try
@@ -1254,8 +1259,13 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                                    tds_collation_id INT,
                                    tds_collation_sort_id TINYINT
                                  */
+                                var isHidden = ChangeType<bool>(rdr["is_hidden"]);
+                                if(isHidden)
+                                    continue;
+
                                 var ordinal = rdr["column_ordinal"].ToString().Trim();
                                 var name = rdr["name"].ToString().Trim();
+                                var dc = new DataColumn(name, );
                                 etc.
                             }
                         }

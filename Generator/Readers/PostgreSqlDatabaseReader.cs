@@ -181,6 +181,11 @@ WHERE LOWER(R.routine_schema) NOT IN ('pg_catalog', 'information_schema')
 ORDER BY R.specific_schema, R.routine_name, R.routine_type;";
         }
 
+        protected override string SysTypesSQL()
+        {
+            return string.Empty;
+        }
+
         protected override string ReadDatabaseEditionSQL()
         {
             return @"SELECT version() as ""Edition"", '' as ""EngineEdition"", '' as ""ProductVersion"";";
