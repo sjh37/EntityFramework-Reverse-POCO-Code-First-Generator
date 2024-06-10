@@ -3,6 +3,6 @@
     public class FakeDbSetModel
     {
         public string DbContextClassModifiers { get; set; }
-        public bool DbContextClassIsPartial   { get; set; }
+        public bool DbContextClassIsPartial { get; set; }
     }
 }

@@ -15,13 +15,13 @@ namespace Efrpg.Generators
 
         public CodeOutput(string dbName, string filename, string region, string folder, List<string> usings)
         {
-            DbName   = dbName;
+            DbName = dbName;
             Filename = filename;
-            Region   = region;
-            Usings   = new List<string>();
-            Code     = new List<string>();
+            Region = region;
+            Usings = new List<string>();
+            Code = new List<string>();
 
-            if(!string.IsNullOrWhiteSpace(folder))
+            if (!string.IsNullOrWhiteSpace(folder))
                 Filename = Path.Combine(folder, filename);
 
             AddUsings(usings);
@@ -29,7 +29,7 @@ namespace Efrpg.Generators
 
         public void AddCode(string code)
         {
-            if(code != null)
+            if (code != null)
                 Code.AddRange(code.Split(new[] { Environment.NewLine }, StringSplitOptions.None));
         }
 

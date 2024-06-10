@@ -105,31 +105,31 @@ namespace Tester.Integration.EFCore7
         // Stored Procedures
         List<CustOrderHistReturnModel> CustOrderHist(string customerId);
         List<CustOrderHistReturnModel> CustOrderHist(string customerId, out int procResult);
-        Task<List<CustOrderHistReturnModel>> CustOrderHistAsync(string customerId);
+        Task<List<CustOrderHistReturnModel>> CustOrderHistAsync(string customerId, CancellationToken cancellationToken = default(CancellationToken));
 
         List<CustOrdersDetailReturnModel> CustOrdersDetail(int? orderId);
         List<CustOrdersDetailReturnModel> CustOrdersDetail(int? orderId, out int procResult);
-        Task<List<CustOrdersDetailReturnModel>> CustOrdersDetailAsync(int? orderId);
+        Task<List<CustOrdersDetailReturnModel>> CustOrdersDetailAsync(int? orderId, CancellationToken cancellationToken = default(CancellationToken));
 
         List<CustOrdersOrdersReturnModel> CustOrdersOrders(string customerId);
         List<CustOrdersOrdersReturnModel> CustOrdersOrders(string customerId, out int procResult);
-        Task<List<CustOrdersOrdersReturnModel>> CustOrdersOrdersAsync(string customerId);
+        Task<List<CustOrdersOrdersReturnModel>> CustOrdersOrdersAsync(string customerId, CancellationToken cancellationToken = default(CancellationToken));
 
         List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(DateTime? beginningDate, DateTime? endingDate);
         List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(DateTime? beginningDate, DateTime? endingDate, out int procResult);
-        Task<List<EmployeeSalesByCountryReturnModel>> EmployeeSalesByCountryAsync(DateTime? beginningDate, DateTime? endingDate);
+        Task<List<EmployeeSalesByCountryReturnModel>> EmployeeSalesByCountryAsync(DateTime? beginningDate, DateTime? endingDate, CancellationToken cancellationToken = default(CancellationToken));
 
         List<SalesByCategoryReturnModel> SalesByCategory(string categoryName, string ordYear);
         List<SalesByCategoryReturnModel> SalesByCategory(string categoryName, string ordYear, out int procResult);
-        Task<List<SalesByCategoryReturnModel>> SalesByCategoryAsync(string categoryName, string ordYear);
+        Task<List<SalesByCategoryReturnModel>> SalesByCategoryAsync(string categoryName, string ordYear, CancellationToken cancellationToken = default(CancellationToken));
 
         List<SalesByYearReturnModel> SalesByYear(DateTime? beginningDate, DateTime? endingDate);
         List<SalesByYearReturnModel> SalesByYear(DateTime? beginningDate, DateTime? endingDate, out int procResult);
-        Task<List<SalesByYearReturnModel>> SalesByYearAsync(DateTime? beginningDate, DateTime? endingDate);
+        Task<List<SalesByYearReturnModel>> SalesByYearAsync(DateTime? beginningDate, DateTime? endingDate, CancellationToken cancellationToken = default(CancellationToken));
 
         List<TenMostExpensiveProductsReturnModel> TenMostExpensiveProducts();
         List<TenMostExpensiveProductsReturnModel> TenMostExpensiveProducts(out int procResult);
-        Task<List<TenMostExpensiveProductsReturnModel>> TenMostExpensiveProductsAsync();
+        Task<List<TenMostExpensiveProductsReturnModel>> TenMostExpensiveProductsAsync(CancellationToken cancellationToken = default(CancellationToken));
 
     }
 
@@ -181,7 +181,6 @@ namespace Tester.Integration.EFCore7
             if (!optionsBuilder.IsConfigured)
             {
                 optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=Northwind;Integrated Security=True;MultipleActiveResultSets=True;Encrypt=false;TrustServerCertificate=true");
-                optionsBuilder.UseLazyLoadingProxies();
             }
         }
 
@@ -259,7 +258,7 @@ namespace Tester.Integration.EFCore7
             return procResultData;
         }
 
-        public async Task<List<CustOrderHistReturnModel>> CustOrderHistAsync(string customerId)
+        public async Task<List<CustOrderHistReturnModel>> CustOrderHistAsync(string customerId, CancellationToken cancellationToken = default(CancellationToken))
         {
             var customerIdParam = new SqlParameter { ParameterName = "@CustomerID", SqlDbType = SqlDbType.NChar, Direction = ParameterDirection.Input, Value = customerId, Size = 5 };
             if (customerIdParam.Value == null)
@@ -268,12 +267,12 @@ namespace Tester.Integration.EFCore7
             const string sqlCommand = "EXEC [dbo].[CustOrderHist] @CustomerID";
             var procResultData = await Set<CustOrderHistReturnModel>()
                 .FromSqlRaw(sqlCommand, customerIdParam)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
 
-        public List<CustOrdersDetailReturnModel> CustOrdersDetail(int? orderId)
+        public List<CustOrdersDetailReturnModel> CustOrdersDetail(int? orderId = null)
         {
             int procResult;
             return CustOrdersDetail(orderId, out procResult);
@@ -295,7 +294,7 @@ namespace Tester.Integration.EFCore7
             return procResultData;
         }
 
-        public async Task<List<CustOrdersDetailReturnModel>> CustOrdersDetailAsync(int? orderId)
+        public async Task<List<CustOrdersDetailReturnModel>> CustOrdersDetailAsync(int? orderId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var orderIdParam = new SqlParameter { ParameterName = "@OrderID", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = orderId.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!orderId.HasValue)
@@ -304,7 +303,7 @@ namespace Tester.Integration.EFCore7
             const string sqlCommand = "EXEC [dbo].[CustOrdersDetail] @OrderID";
             var procResultData = await Set<CustOrdersDetailReturnModel>()
                 .FromSqlRaw(sqlCommand, orderIdParam)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -331,7 +330,7 @@ namespace Tester.Integration.EFCore7
             return procResultData;
         }
 
-        public async Task<List<CustOrdersOrdersReturnModel>> CustOrdersOrdersAsync(string customerId)
+        public async Task<List<CustOrdersOrdersReturnModel>> CustOrdersOrdersAsync(string customerId, CancellationToken cancellationToken = default(CancellationToken))
         {
             var customerIdParam = new SqlParameter { ParameterName = "@CustomerID", SqlDbType = SqlDbType.NChar, Direction = ParameterDirection.Input, Value = customerId, Size = 5 };
             if (customerIdParam.Value == null)
@@ -340,12 +339,12 @@ namespace Tester.Integration.EFCore7
             const string sqlCommand = "EXEC [dbo].[CustOrdersOrders] @CustomerID";
             var procResultData = await Set<CustOrdersOrdersReturnModel>()
                 .FromSqlRaw(sqlCommand, customerIdParam)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
 
-        public List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(DateTime? beginningDate, DateTime? endingDate)
+        public List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(DateTime? beginningDate = null, DateTime? endingDate = null)
         {
             int procResult;
             return EmployeeSalesByCountry(beginningDate, endingDate, out procResult);
@@ -371,7 +370,7 @@ namespace Tester.Integration.EFCore7
             return procResultData;
         }
 
-        public async Task<List<EmployeeSalesByCountryReturnModel>> EmployeeSalesByCountryAsync(DateTime? beginningDate, DateTime? endingDate)
+        public async Task<List<EmployeeSalesByCountryReturnModel>> EmployeeSalesByCountryAsync(DateTime? beginningDate = null, DateTime? endingDate = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var beginningDateParam = new SqlParameter { ParameterName = "@Beginning_Date", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = beginningDate.GetValueOrDefault() };
             if (!beginningDate.HasValue)
@@ -384,7 +383,7 @@ namespace Tester.Integration.EFCore7
             const string sqlCommand = "EXEC [dbo].[Employee Sales by Country] @Beginning_Date, @Ending_Date";
             var procResultData = await Set<EmployeeSalesByCountryReturnModel>()
                 .FromSqlRaw(sqlCommand, beginningDateParam, endingDateParam)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -415,7 +414,7 @@ namespace Tester.Integration.EFCore7
             return procResultData;
         }
 
-        public async Task<List<SalesByCategoryReturnModel>> SalesByCategoryAsync(string categoryName, string ordYear)
+        public async Task<List<SalesByCategoryReturnModel>> SalesByCategoryAsync(string categoryName, string ordYear, CancellationToken cancellationToken = default(CancellationToken))
         {
             var categoryNameParam = new SqlParameter { ParameterName = "@CategoryName", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = categoryName, Size = 15 };
             if (categoryNameParam.Value == null)
@@ -428,12 +427,12 @@ namespace Tester.Integration.EFCore7
             const string sqlCommand = "EXEC [dbo].[SalesByCategory] @CategoryName, @OrdYear";
             var procResultData = await Set<SalesByCategoryReturnModel>()
                 .FromSqlRaw(sqlCommand, categoryNameParam, ordYearParam)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
 
-        public List<SalesByYearReturnModel> SalesByYear(DateTime? beginningDate, DateTime? endingDate)
+        public List<SalesByYearReturnModel> SalesByYear(DateTime? beginningDate = null, DateTime? endingDate = null)
         {
             int procResult;
             return SalesByYear(beginningDate, endingDate, out procResult);
@@ -459,7 +458,7 @@ namespace Tester.Integration.EFCore7
             return procResultData;
         }
 
-        public async Task<List<SalesByYearReturnModel>> SalesByYearAsync(DateTime? beginningDate, DateTime? endingDate)
+        public async Task<List<SalesByYearReturnModel>> SalesByYearAsync(DateTime? beginningDate = null, DateTime? endingDate = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var beginningDateParam = new SqlParameter { ParameterName = "@Beginning_Date", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = beginningDate.GetValueOrDefault() };
             if (!beginningDate.HasValue)
@@ -472,7 +471,7 @@ namespace Tester.Integration.EFCore7
             const string sqlCommand = "EXEC [dbo].[Sales by Year] @Beginning_Date, @Ending_Date";
             var procResultData = await Set<SalesByYearReturnModel>()
                 .FromSqlRaw(sqlCommand, beginningDateParam, endingDateParam)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -495,12 +494,12 @@ namespace Tester.Integration.EFCore7
             return procResultData;
         }
 
-        public async Task<List<TenMostExpensiveProductsReturnModel>> TenMostExpensiveProductsAsync()
+        public async Task<List<TenMostExpensiveProductsReturnModel>> TenMostExpensiveProductsAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             const string sqlCommand = "EXEC [dbo].[Ten Most Expensive Products]";
             var procResultData = await Set<TenMostExpensiveProductsReturnModel>()
                 .FromSqlRaw(sqlCommand)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -796,14 +795,14 @@ namespace Tester.Integration.EFCore7
             return new List<CustOrderHistReturnModel>();
         }
 
-        public Task<List<CustOrderHistReturnModel>> CustOrderHistAsync(string customerId)
+        public Task<List<CustOrderHistReturnModel>> CustOrderHistAsync(string customerId, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(CustOrderHist(customerId, out procResult));
         }
 
         public DbSet<CustOrdersDetailReturnModel> CustOrdersDetailReturnModel { get; set; }
-        public List<CustOrdersDetailReturnModel> CustOrdersDetail(int? orderId)
+        public List<CustOrdersDetailReturnModel> CustOrdersDetail(int? orderId = null)
         {
             int procResult;
             return CustOrdersDetail(orderId, out procResult);
@@ -815,7 +814,7 @@ namespace Tester.Integration.EFCore7
             return new List<CustOrdersDetailReturnModel>();
         }
 
-        public Task<List<CustOrdersDetailReturnModel>> CustOrdersDetailAsync(int? orderId)
+        public Task<List<CustOrdersDetailReturnModel>> CustOrdersDetailAsync(int? orderId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(CustOrdersDetail(orderId, out procResult));
@@ -834,14 +833,14 @@ namespace Tester.Integration.EFCore7
             return new List<CustOrdersOrdersReturnModel>();
         }
 
-        public Task<List<CustOrdersOrdersReturnModel>> CustOrdersOrdersAsync(string customerId)
+        public Task<List<CustOrdersOrdersReturnModel>> CustOrdersOrdersAsync(string customerId, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(CustOrdersOrders(customerId, out procResult));
         }
 
         public DbSet<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountryReturnModel { get; set; }
-        public List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(DateTime? beginningDate, DateTime? endingDate)
+        public List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(DateTime? beginningDate = null, DateTime? endingDate = null)
         {
             int procResult;
             return EmployeeSalesByCountry(beginningDate, endingDate, out procResult);
@@ -853,7 +852,7 @@ namespace Tester.Integration.EFCore7
             return new List<EmployeeSalesByCountryReturnModel>();
         }
 
-        public Task<List<EmployeeSalesByCountryReturnModel>> EmployeeSalesByCountryAsync(DateTime? beginningDate, DateTime? endingDate)
+        public Task<List<EmployeeSalesByCountryReturnModel>> EmployeeSalesByCountryAsync(DateTime? beginningDate = null, DateTime? endingDate = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(EmployeeSalesByCountry(beginningDate, endingDate, out procResult));
@@ -872,14 +871,14 @@ namespace Tester.Integration.EFCore7
             return new List<SalesByCategoryReturnModel>();
         }
 
-        public Task<List<SalesByCategoryReturnModel>> SalesByCategoryAsync(string categoryName, string ordYear)
+        public Task<List<SalesByCategoryReturnModel>> SalesByCategoryAsync(string categoryName, string ordYear, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(SalesByCategory(categoryName, ordYear, out procResult));
         }
 
         public DbSet<SalesByYearReturnModel> SalesByYearReturnModel { get; set; }
-        public List<SalesByYearReturnModel> SalesByYear(DateTime? beginningDate, DateTime? endingDate)
+        public List<SalesByYearReturnModel> SalesByYear(DateTime? beginningDate = null, DateTime? endingDate = null)
         {
             int procResult;
             return SalesByYear(beginningDate, endingDate, out procResult);
@@ -891,7 +890,7 @@ namespace Tester.Integration.EFCore7
             return new List<SalesByYearReturnModel>();
         }
 
-        public Task<List<SalesByYearReturnModel>> SalesByYearAsync(DateTime? beginningDate, DateTime? endingDate)
+        public Task<List<SalesByYearReturnModel>> SalesByYearAsync(DateTime? beginningDate = null, DateTime? endingDate = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(SalesByYear(beginningDate, endingDate, out procResult));
@@ -910,7 +909,7 @@ namespace Tester.Integration.EFCore7
             return new List<TenMostExpensiveProductsReturnModel>();
         }
 
-        public Task<List<TenMostExpensiveProductsReturnModel>> TenMostExpensiveProductsAsync()
+        public Task<List<TenMostExpensiveProductsReturnModel>> TenMostExpensiveProductsAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(TenMostExpensiveProducts(out procResult));
@@ -1422,7 +1421,7 @@ namespace Tester.Integration.EFCore7
         /// <summary>
         /// Child Products where [Products].[CategoryID] point to this entity (FK_Products_Categories)
         /// </summary>
-        public virtual ICollection<Product> Products { get; set; } // Products.FK_Products_Categories
+        public ICollection<Product> Products { get; set; } // Products.FK_Products_Categories
 
         public Category()
         {
@@ -1464,12 +1463,12 @@ namespace Tester.Integration.EFCore7
         /// <summary>
         /// Child CustomerDemographics (Many-to-Many) mapped by table [CustomerCustomerDemo]
         /// </summary>
-        public virtual ICollection<CustomerDemographic> CustomerDemographics { get; set; } // Many to many mapping
+        public ICollection<CustomerDemographic> CustomerDemographics { get; set; } // Many to many mapping
 
         /// <summary>
         /// Child Orders where [Orders].[CustomerID] point to this entity (FK_Orders_Customers)
         /// </summary>
-        public virtual ICollection<Order> Orders { get; set; } // Orders.FK_Orders_Customers
+        public ICollection<Order> Orders { get; set; } // Orders.FK_Orders_Customers
 
         public Customer()
         {
@@ -1498,7 +1497,7 @@ namespace Tester.Integration.EFCore7
         /// <summary>
         /// Child Customers (Many-to-Many) mapped by table [CustomerCustomerDemo]
         /// </summary>
-        public virtual ICollection<Customer> Customers { get; set; } // Many to many mapping
+        public ICollection<Customer> Customers { get; set; } // Many to many mapping
 
         public CustomerDemographic()
         {
@@ -1533,24 +1532,24 @@ namespace Tester.Integration.EFCore7
         /// <summary>
         /// Child Employees where [Employees].[ReportsTo] point to this entity (FK_Employees_Employees)
         /// </summary>
-        public virtual ICollection<Employee> Employees { get; set; } // Employees.FK_Employees_Employees
+        public ICollection<Employee> Employees { get; set; } // Employees.FK_Employees_Employees
 
         /// <summary>
         /// Child Orders where [Orders].[EmployeeID] point to this entity (FK_Orders_Employees)
         /// </summary>
-        public virtual ICollection<Order> Orders { get; set; } // Orders.FK_Orders_Employees
+        public ICollection<Order> Orders { get; set; } // Orders.FK_Orders_Employees
 
         /// <summary>
         /// Child Territories (Many-to-Many) mapped by table [EmployeeTerritories]
         /// </summary>
-        public virtual ICollection<Territory> Territories { get; set; } // Many to many mapping
+        public ICollection<Territory> Territories { get; set; } // Many to many mapping
 
         // Foreign keys
 
         /// <summary>
         /// Parent Employee pointed by [Employees].([ReportsTo]) (FK_Employees_Employees)
         /// </summary>
-        public virtual Employee Employee_ReportsTo { get; set; } // FK_Employees_Employees
+        public Employee Employee_ReportsTo { get; set; } // FK_Employees_Employees
 
         public Employee()
         {
@@ -1614,24 +1613,24 @@ namespace Tester.Integration.EFCore7
         /// <summary>
         /// Child OrderDetails where [Order Details].[OrderID] point to this entity (FK_Order_Details_Orders)
         /// </summary>
-        public virtual ICollection<OrderDetail> OrderDetails { get; set; } // Order Details.FK_Order_Details_Orders
+        public ICollection<OrderDetail> OrderDetails { get; set; } // Order Details.FK_Order_Details_Orders
 
         // Foreign keys
 
         /// <summary>
         /// Parent Customer pointed by [Orders].([CustomerId]) (FK_Orders_Customers)
         /// </summary>
-        public virtual Customer Customer { get; set; } // FK_Orders_Customers
+        public Customer Customer { get; set; } // FK_Orders_Customers
 
         /// <summary>
         /// Parent Employee pointed by [Orders].([EmployeeId]) (FK_Orders_Employees)
         /// </summary>
-        public virtual Employee Employee { get; set; } // FK_Orders_Employees
+        public Employee Employee { get; set; } // FK_Orders_Employees
 
         /// <summary>
         /// Parent Shipper pointed by [Orders].([ShipVia]) (FK_Orders_Shippers)
         /// </summary>
-        public virtual Shipper Shipper { get; set; } // FK_Orders_Shippers
+        public Shipper Shipper { get; set; } // FK_Orders_Shippers
 
         public Order()
         {
@@ -1654,12 +1653,12 @@ namespace Tester.Integration.EFCore7
         /// <summary>
         /// Parent Order pointed by [Order Details].([OrderId]) (FK_Order_Details_Orders)
         /// </summary>
-        public virtual Order Order { get; set; } // FK_Order_Details_Orders
+        public Order Order { get; set; } // FK_Order_Details_Orders
 
         /// <summary>
         /// Parent Product pointed by [Order Details].([ProductId]) (FK_Order_Details_Products)
         /// </summary>
-        public virtual Product Product { get; set; } // FK_Order_Details_Products
+        public Product Product { get; set; } // FK_Order_Details_Products
 
         public OrderDetail()
         {
@@ -1732,19 +1731,19 @@ namespace Tester.Integration.EFCore7
         /// <summary>
         /// Child OrderDetails where [Order Details].[ProductID] point to this entity (FK_Order_Details_Products)
         /// </summary>
-        public virtual ICollection<OrderDetail> OrderDetails { get; set; } // Order Details.FK_Order_Details_Products
+        public ICollection<OrderDetail> OrderDetails { get; set; } // Order Details.FK_Order_Details_Products
 
         // Foreign keys
 
         /// <summary>
         /// Parent Category pointed by [Products].([CategoryId]) (FK_Products_Categories)
         /// </summary>
-        public virtual Category Category { get; set; } // FK_Products_Categories
+        public Category Category { get; set; } // FK_Products_Categories
 
         /// <summary>
         /// Parent Supplier pointed by [Products].([SupplierId]) (FK_Products_Suppliers)
         /// </summary>
-        public virtual Supplier Supplier { get; set; } // FK_Products_Suppliers
+        public Supplier Supplier { get; set; } // FK_Products_Suppliers
 
         public Product()
         {
@@ -1802,7 +1801,7 @@ namespace Tester.Integration.EFCore7
         /// <summary>
         /// Child Territories where [Territories].[RegionID] point to this entity (FK_Territories_Region)
         /// </summary>
-        public virtual ICollection<Territory> Territories { get; set; } // Territories.FK_Territories_Region
+        public ICollection<Territory> Territories { get; set; } // Territories.FK_Territories_Region
 
         public Region()
         {
@@ -1840,7 +1839,7 @@ namespace Tester.Integration.EFCore7
         /// <summary>
         /// Child Orders where [Orders].[ShipVia] point to this entity (FK_Orders_Shippers)
         /// </summary>
-        public virtual ICollection<Order> Orders { get; set; } // Orders.FK_Orders_Shippers
+        public ICollection<Order> Orders { get; set; } // Orders.FK_Orders_Shippers
 
         public Shipper()
         {
@@ -1885,7 +1884,7 @@ namespace Tester.Integration.EFCore7
         /// <summary>
         /// Child Products where [Products].[SupplierID] point to this entity (FK_Products_Suppliers)
         /// </summary>
-        public virtual ICollection<Product> Products { get; set; } // Products.FK_Products_Suppliers
+        public ICollection<Product> Products { get; set; } // Products.FK_Products_Suppliers
 
         public Supplier()
         {
@@ -1905,14 +1904,14 @@ namespace Tester.Integration.EFCore7
         /// <summary>
         /// Child Employees (Many-to-Many) mapped by table [EmployeeTerritories]
         /// </summary>
-        public virtual ICollection<Employee> Employees { get; set; } // Many to many mapping
+        public ICollection<Employee> Employees { get; set; } // Many to many mapping
 
         // Foreign keys
 
         /// <summary>
         /// Parent Region pointed by [Territories].([RegionId]) (FK_Territories_Region)
         /// </summary>
-        public virtual Region Region { get; set; } // FK_Territories_Region
+        public Region Region { get; set; } // FK_Territories_Region
 
         public Territory()
         {

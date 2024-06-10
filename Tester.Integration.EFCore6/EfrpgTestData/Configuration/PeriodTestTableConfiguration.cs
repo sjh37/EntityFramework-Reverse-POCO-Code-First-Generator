@@ -15,7 +15,7 @@ namespace V6EfrpgTest
             builder.HasKey(x => x.Id).HasName("PK_PeriodTestTable").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.Joe46Bloggs).HasColumnName(@"joe.bloggs").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.JoeBloggs).HasColumnName(@"joe.bloggs").HasColumnType("int").IsRequired(false);
         }
     }
 

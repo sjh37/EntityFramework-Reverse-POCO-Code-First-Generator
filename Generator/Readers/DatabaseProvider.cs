@@ -19,6 +19,9 @@ namespace Efrpg.Readers
                 case DatabaseType.SqlCe:
                     return "System.Data.SqlServerCe.4.0";
 
+                case DatabaseType.SQLite:
+                    return "System.Data.SQLite";
+
                 case DatabaseType.Plugin:
                     return string.Empty; // Not used
 

@@ -17,7 +17,7 @@ namespace Efrpg.Mustache
         {
             if (removeNewLines)
             {
-                this.value = value.Replace(Environment.NewLine, String.Empty);
+                this.value = value.Replace(Environment.NewLine, string.Empty);
             }
             else
             {

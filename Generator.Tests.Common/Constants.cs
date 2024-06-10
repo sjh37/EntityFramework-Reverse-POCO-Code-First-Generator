@@ -12,6 +12,7 @@
             public const string SqlServer  = nameof(SqlServer);
             public const string SqlCe      = nameof(SqlCe);
             public const string SqlLocalDb = nameof(SqlLocalDb);
+            public const string SQLite     = nameof(SQLite);
         }
     }
 }

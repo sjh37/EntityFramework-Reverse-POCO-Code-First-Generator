@@ -11,7 +11,7 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
     public class PeriodTestTable
     {
         public int Id { get; set; } // id (Primary key)
-        public int? Joe46Bloggs { get; set; } // joe.bloggs
+        public int? JoeBloggs { get; set; } // joe.bloggs
     }
 
 }

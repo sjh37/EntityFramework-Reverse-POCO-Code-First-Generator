@@ -56,7 +56,7 @@ namespace Efrpg.Readers
             return string.Empty;
         }
 
-        protected override string EnumSQL(string table, string nameField, string valueField)
+        protected override string EnumSQL(string table, string nameField, string valueField, string groupField)
         {
             return string.Empty;
         }
@@ -69,6 +69,11 @@ namespace Efrpg.Readers
         protected override string TriggerSQL()
         {
             return string.Empty;
+        }
+
+        protected override string[] MemoryOptimisedSQL()
+        {
+            return null;
         }
 
         protected override string SynonymTableSQLSetup()
@@ -126,6 +131,11 @@ namespace Efrpg.Readers
         protected override bool HasTemporalTableSupport()
         {
             return false;
+        }
+
+        public override bool HasIdentityColumnSupport()
+        {
+            return true;
         }
 
         public override void ReadStoredProcReturnObjects(List<StoredProcedure> procs)

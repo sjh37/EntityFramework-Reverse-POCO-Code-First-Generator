@@ -7,18 +7,8 @@ namespace V6EfrpgTest
 {
     public class CheckIfApplicationIsCompleteReturnModel
     {
-        public class ResultSetModel1
-        {
-            public string Key { get; set; }
-            public string Value { get; set; }
-        }
-        public List<ResultSetModel1> ResultSet1;
-        public class ResultSetModel2
-        {
-            public string Key { get; set; }
-            public string Value { get; set; }
-        }
-        public List<ResultSetModel2> ResultSet2;
+        public string Key { get; set; }
+        public string Value { get; set; }
     }
 
 }

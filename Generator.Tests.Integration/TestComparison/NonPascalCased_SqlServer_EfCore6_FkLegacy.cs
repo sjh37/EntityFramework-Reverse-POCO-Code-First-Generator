@@ -48,19 +48,14 @@ namespace Efrpg.V4TestE6
         DbSet<BitFiddlerCATEGORy> BitFiddlerCATEGORies { get; set; } // BitFiddlerCATEGORIES
         DbSet<BitFiddlerCURRENCy> BitFiddlerCURRENCies { get; set; } // BitFiddlerCURRENCIES
         DbSet<Blah> Blahs { get; set; } // Blah
-        DbSet<BlahBlahLink> BlahBlahLinks { get; set; } // BlahBlahLink
-        DbSet<BlahBlahLink_readonly> BlahBlahLink_readonlies { get; set; } // BlahBlahLink_readonly
         DbSet<BlahBlahLink_v2> BlahBlahLink_v2 { get; set; } // BlahBlahLink_v2
-        DbSet<BlahBlargLink> BlahBlargLinks { get; set; } // BlahBlargLink
         DbSet<Blarg> Blargs { get; set; } // Blarg
         DbSet<Burak1> Burak1 { get; set; } // Burak1
         DbSet<Burak2> Burak2 { get; set; } // Burak2
         DbSet<CalculatedColumnNotNull> CalculatedColumnNotNulls { get; set; } // CalculatedColumnNotNull
         DbSet<Car> Cars { get; set; } // Car
-        DbSet<CarToColour> CarToColours { get; set; } // CarToColour
         DbSet<ClientCreationState> ClientCreationStates { get; set; } // ClientCreationState
         DbSet<CMS_File> CMS_Files { get; set; } // CMS_File
-        DbSet<CMS_FileTag> CMS_FileTags { get; set; } // CMS_FileTag
         DbSet<CMS_Tag> CMS_Tags { get; set; } // CMS_Tag
         DbSet<CODE_MeetingTopicDetail> CODE_MeetingTopicDetails { get; set; } // CODE_MeetingTopicDetails
         DbSet<CODE_PARAM_MeetingTopicDetailSource> CODE_PARAM_MeetingTopicDetailSources { get; set; } // CODE_PARAM_MeetingTopicDetailSource
@@ -90,19 +85,23 @@ namespace Efrpg.V4TestE6
         DbSet<HasPrincipalKeyTestParent> HasPrincipalKeyTestParents { get; set; } // HasPrincipalKeyTestParent
         DbSet<header> headers { get; set; } // header
         DbSet<hierarchy_test> hierarchy_tests { get; set; } // hierarchy_test
+        DbSet<InflectorData> InflectorData { get; set; } // InflectorData
+        DbSet<InflectorStatus> InflectorStatus { get; set; } // InflectorStatus
+        DbSet<InflectorTo> InflectorTo { get; set; } // InflectorTo
         DbSet<Issue47_Role> Issue47_Roles { get; set; } // Role
         DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
         DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
         DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
-        DbSet<OneEightSix_IssueUploadedFile> OneEightSix_IssueUploadedFiles { get; set; } // IssueUploadedFile
         DbSet<OneEightSix_UploadedFile> OneEightSix_UploadedFiles { get; set; } // UploadedFile
+        DbSet<Period_Table> Period_Tables { get; set; } // Period.Table
         DbSet<PeriodTestTable> PeriodTestTables { get; set; } // PeriodTestTable
         DbSet<Person> People { get; set; } // Person
         DbSet<PersonPost> PersonPosts { get; set; } // PersonPosts
         DbSet<pk_ordinal_test> pk_ordinal_tests { get; set; } // pk_ordinal_test
         DbSet<PropertyTypesToAdd> PropertyTypesToAdds { get; set; } // PropertyTypesToAdd
         DbSet<SequenceTest> SequenceTests { get; set; } // SequenceTest
+        DbSet<SequenceTestPartTwo> SequenceTestPartTwoes { get; set; } // SequenceTestPartTwo
         DbSet<SmallDecimalTest> SmallDecimalTests { get; set; } // SmallDecimalTest
         DbSet<SmallDecimalTestView> SmallDecimalTestViews { get; set; } // SmallDecimalTestView
         DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
@@ -110,9 +109,9 @@ namespace Efrpg.V4TestE6
         DbSet<Stafford_Foo> Stafford_Foos { get; set; } // Foo
         DbSet<Synonyms_Child> Synonyms_Children { get; set; } // Child
         DbSet<Synonyms_Parent> Synonyms_Parents { get; set; } // Parent
+        DbSet<table_with_multiple_period> table_with_multiple_periods { get; set; } // table.with.multiple.periods
         DbSet<TableA> TableAs { get; set; } // TableA
         DbSet<TableB> TableBs { get; set; } // TableB
-        DbSet<tablemappingwithspace> tablemappingwithspaces { get; set; } // table mapping with space
         DbSet<tablewithduplicatecolumnname> tablewithduplicatecolumnnames { get; set; } // table with duplicate column names
         DbSet<tablewithspace> tablewithspaces { get; set; } // table with space
         DbSet<tablewithspaceandincolumn> tablewithspaceandincolumns { get; set; } // table with space and in columns
@@ -123,6 +122,8 @@ namespace Efrpg.V4TestE6
         DbSet<tblOrderError> tblOrderErrors { get; set; } // tblOrderErrors
         DbSet<tblOrderErrorsAB> tblOrderErrorsABs { get; set; } // tblOrderErrorsAB_
         DbSet<tblOrderLine> tblOrderLines { get; set; } // tblOrderLines
+        DbSet<TemporalDepartment> TemporalDepartments { get; set; } // TemporalDepartment
+        DbSet<TemporalDepartmentHistory> TemporalDepartmentHistories { get; set; } // TemporalDepartmentHistory
         DbSet<ThisIsMemoryOptimised> ThisIsMemoryOptimiseds { get; set; } // ThisIsMemoryOptimised
         DbSet<Ticket> Tickets { get; set; } // Ticket
         DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
@@ -133,6 +134,7 @@ namespace Efrpg.V4TestE6
         DbSet<User309> User309 { get; set; } // User309
         DbSet<Versioned> Versioneds { get; set; } // Versioned
         DbSet<VersionedNullable> VersionedNullables { get; set; } // VersionedNullable
+        DbSet<view_with_multiple_period> view_with_multiple_periods { get; set; } // view.with.multiple.periods
         DbSet<viewwithspace> viewwithspaces { get; set; } // view with space
         DbSet<WVN_Article> WVN_Articles { get; set; } // Articles
         DbSet<WVN_v_Article> WVN_v_Articles { get; set; } // v_Articles
@@ -184,70 +186,72 @@ namespace Efrpg.V4TestE6
 
         // Stored Procedures
         int AddTwoValues(int? a, int? b);
-        // AddTwoValuesAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        Task<int> AddTwoValuesAsync(int? a, int? b, CancellationToken cancellationToken = default(CancellationToken));
 
         int AddTwoValuesWithResult(int? a, int? b, out int? result, out int? result2);
         // AddTwoValuesWithResultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         int Alpha_Overclock(DateTime? parameter);
-        // Alpha_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        Task<int> Alpha_OverclockAsync(DateTime? parameter, CancellationToken cancellationToken = default(CancellationToken));
 
         int App_usp_CMTUserFSRUpdate(int? userId, int? fsrId, out int? ufsrId);
         // App_usp_CMTUserFSRUpdateAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        int aSimpleExample();
-        // aSimpleExampleAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        List<aSimpleExampleReturnModel> aSimpleExample();
+        List<aSimpleExampleReturnModel> aSimpleExample(out int procResult);
+        Task<List<aSimpleExampleReturnModel>> aSimpleExampleAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         int Beta_Overclock(DateTime? parameter);
-        // Beta_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        Task<int> Beta_OverclockAsync(DateTime? parameter, CancellationToken cancellationToken = default(CancellationToken));
 
         // C182_test2ReturnModel C182_test2(int? flag); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
         // Task<C182_test2ReturnModel> C182_test2Async(int? flag); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
-        // CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
-        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (CheckIfApplicationIsCompleteReturnModel)
+        List<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete);
+        List<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete, out int procResult);
+        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (List<CheckIfApplicationIsCompleteReturnModel>)
 
         List<ColourPivotReturnModel> ColourPivot();
         List<ColourPivotReturnModel> ColourPivot(out int procResult);
-        Task<List<ColourPivotReturnModel>> ColourPivotAsync();
+        Task<List<ColourPivotReturnModel>> ColourPivotAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         int ColumnNameAndTypesProc();
-        // ColumnNameAndTypesProcAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        Task<int> ColumnNameAndTypesProcAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         int ConvertToString(int? someValue, out string someString);
         // ConvertToStringAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         List<dbo_proc_data_from_ffrsReturnModel> dbo_proc_data_from_ffrs(int? maxId);
         List<dbo_proc_data_from_ffrsReturnModel> dbo_proc_data_from_ffrs(int? maxId, out int procResult);
-        Task<List<dbo_proc_data_from_ffrsReturnModel>> dbo_proc_data_from_ffrsAsync(int? maxId);
+        Task<List<dbo_proc_data_from_ffrsReturnModel>> dbo_proc_data_from_ffrsAsync(int? maxId, CancellationToken cancellationToken = default(CancellationToken));
 
         List<dbo_proc_data_from_ffrs_and_dboReturnModel> dbo_proc_data_from_ffrs_and_dbo();
         List<dbo_proc_data_from_ffrs_and_dboReturnModel> dbo_proc_data_from_ffrs_and_dbo(out int procResult);
-        Task<List<dbo_proc_data_from_ffrs_and_dboReturnModel>> dbo_proc_data_from_ffrs_and_dboAsync();
+        Task<List<dbo_proc_data_from_ffrs_and_dboReturnModel>> dbo_proc_data_from_ffrs_and_dboAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         List<DSOpeProcReturnModel> DSOpeProc();
         List<DSOpeProcReturnModel> DSOpeProc(out int procResult);
-        Task<List<DSOpeProcReturnModel>> DSOpeProcAsync();
+        Task<List<DSOpeProcReturnModel>> DSOpeProcAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         List<FFRS_cv_dataReturnModel> FFRS_cv_data(int? maxId);
         List<FFRS_cv_dataReturnModel> FFRS_cv_data(int? maxId, out int procResult);
-        Task<List<FFRS_cv_dataReturnModel>> FFRS_cv_dataAsync(int? maxId);
+        Task<List<FFRS_cv_dataReturnModel>> FFRS_cv_dataAsync(int? maxId, CancellationToken cancellationToken = default(CancellationToken));
 
         List<FFRS_data_from_dboReturnModel> FFRS_data_from_dbo();
         List<FFRS_data_from_dboReturnModel> FFRS_data_from_dbo(out int procResult);
-        Task<List<FFRS_data_from_dboReturnModel>> FFRS_data_from_dboAsync();
+        Task<List<FFRS_data_from_dboReturnModel>> FFRS_data_from_dboAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         List<FFRS_data_from_dbo_and_ffrsReturnModel> FFRS_data_from_dbo_and_ffrs();
         List<FFRS_data_from_dbo_and_ffrsReturnModel> FFRS_data_from_dbo_and_ffrs(out int procResult);
-        Task<List<FFRS_data_from_dbo_and_ffrsReturnModel>> FFRS_data_from_dbo_and_ffrsAsync();
+        Task<List<FFRS_data_from_dbo_and_ffrsReturnModel>> FFRS_data_from_dbo_and_ffrsAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         List<FkTest_HelloReturnModel> FkTest_Hello();
         List<FkTest_HelloReturnModel> FkTest_Hello(out int procResult);
-        Task<List<FkTest_HelloReturnModel>> FkTest_HelloAsync();
+        Task<List<FkTest_HelloReturnModel>> FkTest_HelloAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId);
         List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId, out int procResult);
-        Task<List<GetSmallDecimalTestReturnModel>> GetSmallDecimalTestAsync(int? maxId);
+        Task<List<GetSmallDecimalTestReturnModel>> GetSmallDecimalTestAsync(int? maxId, CancellationToken cancellationToken = default(CancellationToken));
 
         int InsertRecord(string data, out int? insertedId);
         // InsertRecordAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
@@ -265,10 +269,10 @@ namespace Efrpg.V4TestE6
         // MinTripSequenceStartNullAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         int NvarcharTest(string maxOutputParam, string normalOutputParam);
-        // NvarcharTestAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        Task<int> NvarcharTestAsync(string maxOutputParam, string normalOutputParam, CancellationToken cancellationToken = default(CancellationToken));
 
         int Omega_Overclock(DateTime? parameter);
-        // Omega_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        Task<int> Omega_OverclockAsync(DateTime? parameter, CancellationToken cancellationToken = default(CancellationToken));
 
         int proc_TestDecimalOutput(out decimal? perfectNumber);
         // proc_TestDecimalOutputAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
@@ -280,13 +284,14 @@ namespace Efrpg.V4TestE6
         // proc_TestDecimalOutputV3DefaultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         int SpatialTypesNoParams();
-        // SpatialTypesNoParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        Task<int> SpatialTypesNoParamsAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         int SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography);
-        // SpatialTypesWithParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        Task<int> SpatialTypesWithParamsAsync(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, CancellationToken cancellationToken = default(CancellationToken));
 
-        // stp_multiple_identical_resultsReturnModel stp_multiple_identical_results(int? someVar); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
-        // Task<stp_multiple_identical_resultsReturnModel> stp_multiple_identical_resultsAsync(int? someVar); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        List<stp_multiple_identical_resultsReturnModel> stp_multiple_identical_results(int? someVar);
+        List<stp_multiple_identical_resultsReturnModel> stp_multiple_identical_results(int? someVar, out int procResult);
+        Task<List<stp_multiple_identical_resultsReturnModel>> stp_multiple_identical_resultsAsync(int? someVar, CancellationToken cancellationToken = default(CancellationToken));
 
         // stp_multiple_multiple_results_with_paramsReturnModel stp_multiple_multiple_results_with_params(int? firstval, int? secondval, int? thirdval); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
         // Task<stp_multiple_multiple_results_with_paramsReturnModel> stp_multiple_multiple_results_with_paramsAsync(int? firstval, int? secondval, int? thirdval); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
@@ -299,14 +304,14 @@ namespace Efrpg.V4TestE6
 
         List<stp_no_params_testReturnModel> stp_no_params_test();
         List<stp_no_params_testReturnModel> stp_no_params_test(out int procResult);
-        Task<List<stp_no_params_testReturnModel>> stp_no_params_testAsync();
+        Task<List<stp_no_params_testReturnModel>> stp_no_params_testAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         int stp_no_return_fields();
-        // stp_no_return_fieldsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        Task<int> stp_no_return_fieldsAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         List<stp_nullable_params_testReturnModel> stp_nullable_params_test(int? aval, int? bval);
         List<stp_nullable_params_testReturnModel> stp_nullable_params_test(int? aval, int? bval, out int procResult);
-        Task<List<stp_nullable_params_testReturnModel>> stp_nullable_params_testAsync(int? aval, int? bval);
+        Task<List<stp_nullable_params_testReturnModel>> stp_nullable_params_testAsync(int? aval, int? bval, CancellationToken cancellationToken = default(CancellationToken));
 
         List<stp_testReturnModel> stp_test(string strDateFROM, string strDateTo, out bool? retBool);
         List<stp_testReturnModel> stp_test(string strDateFROM, string strDateTo, out bool? retBool, out int procResult);
@@ -314,31 +319,34 @@ namespace Efrpg.V4TestE6
 
         List<stp_test_underscore_testReturnModel> stp_test_underscore_test(string strDateFROM, string strdateto);
         List<stp_test_underscore_testReturnModel> stp_test_underscore_test(string strDateFROM, string strdateto, out int procResult);
-        Task<List<stp_test_underscore_testReturnModel>> stp_test_underscore_testAsync(string strDateFROM, string strdateto);
+        Task<List<stp_test_underscore_testReturnModel>> stp_test_underscore_testAsync(string strDateFROM, string strdateto, CancellationToken cancellationToken = default(CancellationToken));
 
         int StupidStoredProcedureParams(string reqType, short? dept, short? @class, short? item);
-        // StupidStoredProcedureParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        Task<int> StupidStoredProcedureParamsAsync(string reqType, short? dept, short? @class, short? item, CancellationToken cancellationToken = default(CancellationToken));
 
         int StupidStoredProcedureParams2(string @override, short? @readonly, short? @class, short? @enum);
-        // StupidStoredProcedureParams2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        Task<int> StupidStoredProcedureParams2Async(string @override, short? @readonly, short? @class, short? @enum, CancellationToken cancellationToken = default(CancellationToken));
 
         List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt);
         List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt, out int procResult);
-        Task<List<Synonyms_SimpleStoredProcReturnModel>> Synonyms_SimpleStoredProcAsync(int? inputInt);
+        Task<List<Synonyms_SimpleStoredProcReturnModel>> Synonyms_SimpleStoredProcAsync(int? inputInt, CancellationToken cancellationToken = default(CancellationToken));
 
         List<TestReturnStringReturnModel> TestReturnString();
         List<TestReturnStringReturnModel> TestReturnString(out int procResult);
-        Task<List<TestReturnStringReturnModel>> TestReturnStringAsync();
+        Task<List<TestReturnStringReturnModel>> TestReturnStringAsync(CancellationToken cancellationToken = default(CancellationToken));
+
+        int ThisHasMixedOutParameters(DateTime? foo, out int? firstOutParam, DateTime? bar, out int? secondOutParam, DateTime? baz);
+        // ThisHasMixedOutParametersAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         int UserDefinedTypeSampleStoredProc(int? a, DataTable type, int? b);
-        // UserDefinedTypeSampleStoredProcAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        Task<int> UserDefinedTypeSampleStoredProcAsync(int? a, DataTable type, int? b, CancellationToken cancellationToken = default(CancellationToken));
 
         List<XmlDataV1ReturnModel> XmlDataV1();
         List<XmlDataV1ReturnModel> XmlDataV1(out int procResult);
-        Task<List<XmlDataV1ReturnModel>> XmlDataV1Async();
+        Task<List<XmlDataV1ReturnModel>> XmlDataV1Async(CancellationToken cancellationToken = default(CancellationToken));
 
         int XmlDataV2();
-        // XmlDataV2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        Task<int> XmlDataV2Async(CancellationToken cancellationToken = default(CancellationToken));
 
 
         // Table Valued Functions
@@ -385,19 +393,14 @@ namespace Efrpg.V4TestE6
         public DbSet<BitFiddlerCATEGORy> BitFiddlerCATEGORies { get; set; } // BitFiddlerCATEGORIES
         public DbSet<BitFiddlerCURRENCy> BitFiddlerCURRENCies { get; set; } // BitFiddlerCURRENCIES
         public DbSet<Blah> Blahs { get; set; } // Blah
-        public DbSet<BlahBlahLink> BlahBlahLinks { get; set; } // BlahBlahLink
-        public DbSet<BlahBlahLink_readonly> BlahBlahLink_readonlies { get; set; } // BlahBlahLink_readonly
         public DbSet<BlahBlahLink_v2> BlahBlahLink_v2 { get; set; } // BlahBlahLink_v2
-        public DbSet<BlahBlargLink> BlahBlargLinks { get; set; } // BlahBlargLink
         public DbSet<Blarg> Blargs { get; set; } // Blarg
         public DbSet<Burak1> Burak1 { get; set; } // Burak1
         public DbSet<Burak2> Burak2 { get; set; } // Burak2
         public DbSet<CalculatedColumnNotNull> CalculatedColumnNotNulls { get; set; } // CalculatedColumnNotNull
         public DbSet<Car> Cars { get; set; } // Car
-        public DbSet<CarToColour> CarToColours { get; set; } // CarToColour
         public DbSet<ClientCreationState> ClientCreationStates { get; set; } // ClientCreationState
         public DbSet<CMS_File> CMS_Files { get; set; } // CMS_File
-        public DbSet<CMS_FileTag> CMS_FileTags { get; set; } // CMS_FileTag
         public DbSet<CMS_Tag> CMS_Tags { get; set; } // CMS_Tag
         public DbSet<CODE_MeetingTopicDetail> CODE_MeetingTopicDetails { get; set; } // CODE_MeetingTopicDetails
         public DbSet<CODE_PARAM_MeetingTopicDetailSource> CODE_PARAM_MeetingTopicDetailSources { get; set; } // CODE_PARAM_MeetingTopicDetailSource
@@ -427,19 +430,23 @@ namespace Efrpg.V4TestE6
         public DbSet<HasPrincipalKeyTestParent> HasPrincipalKeyTestParents { get; set; } // HasPrincipalKeyTestParent
         public DbSet<header> headers { get; set; } // header
         public DbSet<hierarchy_test> hierarchy_tests { get; set; } // hierarchy_test
+        public DbSet<InflectorData> InflectorData { get; set; } // InflectorData
+        public DbSet<InflectorStatus> InflectorStatus { get; set; } // InflectorStatus
+        public DbSet<InflectorTo> InflectorTo { get; set; } // InflectorTo
         public DbSet<Issue47_Role> Issue47_Roles { get; set; } // Role
         public DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
         public DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
         public DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
-        public DbSet<OneEightSix_IssueUploadedFile> OneEightSix_IssueUploadedFiles { get; set; } // IssueUploadedFile
         public DbSet<OneEightSix_UploadedFile> OneEightSix_UploadedFiles { get; set; } // UploadedFile
+        public DbSet<Period_Table> Period_Tables { get; set; } // Period.Table
         public DbSet<PeriodTestTable> PeriodTestTables { get; set; } // PeriodTestTable
         public DbSet<Person> People { get; set; } // Person
         public DbSet<PersonPost> PersonPosts { get; set; } // PersonPosts
         public DbSet<pk_ordinal_test> pk_ordinal_tests { get; set; } // pk_ordinal_test
         public DbSet<PropertyTypesToAdd> PropertyTypesToAdds { get; set; } // PropertyTypesToAdd
         public DbSet<SequenceTest> SequenceTests { get; set; } // SequenceTest
+        public DbSet<SequenceTestPartTwo> SequenceTestPartTwoes { get; set; } // SequenceTestPartTwo
         public DbSet<SmallDecimalTest> SmallDecimalTests { get; set; } // SmallDecimalTest
         public DbSet<SmallDecimalTestView> SmallDecimalTestViews { get; set; } // SmallDecimalTestView
         public DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
@@ -447,9 +454,9 @@ namespace Efrpg.V4TestE6
         public DbSet<Stafford_Foo> Stafford_Foos { get; set; } // Foo
         public DbSet<Synonyms_Child> Synonyms_Children { get; set; } // Child
         public DbSet<Synonyms_Parent> Synonyms_Parents { get; set; } // Parent
+        public DbSet<table_with_multiple_period> table_with_multiple_periods { get; set; } // table.with.multiple.periods
         public DbSet<TableA> TableAs { get; set; } // TableA
         public DbSet<TableB> TableBs { get; set; } // TableB
-        public DbSet<tablemappingwithspace> tablemappingwithspaces { get; set; } // table mapping with space
         public DbSet<tablewithduplicatecolumnname> tablewithduplicatecolumnnames { get; set; } // table with duplicate column names
         public DbSet<tablewithspace> tablewithspaces { get; set; } // table with space
         public DbSet<tablewithspaceandincolumn> tablewithspaceandincolumns { get; set; } // table with space and in columns
@@ -460,6 +467,8 @@ namespace Efrpg.V4TestE6
         public DbSet<tblOrderError> tblOrderErrors { get; set; } // tblOrderErrors
         public DbSet<tblOrderErrorsAB> tblOrderErrorsABs { get; set; } // tblOrderErrorsAB_
         public DbSet<tblOrderLine> tblOrderLines { get; set; } // tblOrderLines
+        public DbSet<TemporalDepartment> TemporalDepartments { get; set; } // TemporalDepartment
+        public DbSet<TemporalDepartmentHistory> TemporalDepartmentHistories { get; set; } // TemporalDepartmentHistory
         public DbSet<ThisIsMemoryOptimised> ThisIsMemoryOptimiseds { get; set; } // ThisIsMemoryOptimised
         public DbSet<Ticket> Tickets { get; set; } // Ticket
         public DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
@@ -470,6 +479,7 @@ namespace Efrpg.V4TestE6
         public DbSet<User309> User309 { get; set; } // User309
         public DbSet<Versioned> Versioneds { get; set; } // Versioned
         public DbSet<VersionedNullable> VersionedNullables { get; set; } // VersionedNullable
+        public DbSet<view_with_multiple_period> view_with_multiple_periods { get; set; } // view.with.multiple.periods
         public DbSet<viewwithspace> viewwithspaces { get; set; } // view with space
         public DbSet<WVN_Article> WVN_Articles { get; set; } // Articles
         public DbSet<WVN_v_Article> WVN_v_Articles { get; set; } // v_Articles
@@ -523,19 +533,14 @@ namespace Efrpg.V4TestE6
             modelBuilder.ApplyConfiguration(new BitFiddlerCATEGORyConfiguration());
             modelBuilder.ApplyConfiguration(new BitFiddlerCURRENCyConfiguration());
             modelBuilder.ApplyConfiguration(new BlahConfiguration());
-            modelBuilder.ApplyConfiguration(new BlahBlahLinkConfiguration());
-            modelBuilder.ApplyConfiguration(new BlahBlahLink_readonlyConfiguration());
             modelBuilder.ApplyConfiguration(new BlahBlahLink_v2Configuration());
-            modelBuilder.ApplyConfiguration(new BlahBlargLinkConfiguration());
             modelBuilder.ApplyConfiguration(new BlargConfiguration());
             modelBuilder.ApplyConfiguration(new Burak1Configuration());
             modelBuilder.ApplyConfiguration(new Burak2Configuration());
             modelBuilder.ApplyConfiguration(new CalculatedColumnNotNullConfiguration());
             modelBuilder.ApplyConfiguration(new CarConfiguration());
-            modelBuilder.ApplyConfiguration(new CarToColourConfiguration());
             modelBuilder.ApplyConfiguration(new ClientCreationStateConfiguration());
             modelBuilder.ApplyConfiguration(new CMS_FileConfiguration());
-            modelBuilder.ApplyConfiguration(new CMS_FileTagConfiguration());
             modelBuilder.ApplyConfiguration(new CMS_TagConfiguration());
             modelBuilder.ApplyConfiguration(new CODE_MeetingTopicDetailConfiguration());
             modelBuilder.ApplyConfiguration(new CODE_PARAM_MeetingTopicDetailSourceConfiguration());
@@ -565,19 +570,23 @@ namespace Efrpg.V4TestE6
             modelBuilder.ApplyConfiguration(new HasPrincipalKeyTestParentConfiguration());
             modelBuilder.ApplyConfiguration(new headerConfiguration());
             modelBuilder.ApplyConfiguration(new hierarchy_testConfiguration());
+            modelBuilder.ApplyConfiguration(new InflectorDataConfiguration());
+            modelBuilder.ApplyConfiguration(new InflectorStatusConfiguration());
+            modelBuilder.ApplyConfiguration(new InflectorToConfiguration());
             modelBuilder.ApplyConfiguration(new Issue47_RoleConfiguration());
             modelBuilder.ApplyConfiguration(new Issue47_UserConfiguration());
             modelBuilder.ApplyConfiguration(new Issue47_UserRoleConfiguration());
             modelBuilder.ApplyConfiguration(new MultipleKeyConfiguration());
             modelBuilder.ApplyConfiguration(new OneEightSix_IssueConfiguration());
-            modelBuilder.ApplyConfiguration(new OneEightSix_IssueUploadedFileConfiguration());
             modelBuilder.ApplyConfiguration(new OneEightSix_UploadedFileConfiguration());
+            modelBuilder.ApplyConfiguration(new Period_TableConfiguration());
             modelBuilder.ApplyConfiguration(new PeriodTestTableConfiguration());
             modelBuilder.ApplyConfiguration(new PersonConfiguration());
             modelBuilder.ApplyConfiguration(new PersonPostConfiguration());
             modelBuilder.ApplyConfiguration(new pk_ordinal_testConfiguration());
             modelBuilder.ApplyConfiguration(new PropertyTypesToAddConfiguration());
             modelBuilder.ApplyConfiguration(new SequenceTestConfiguration());
+            modelBuilder.ApplyConfiguration(new SequenceTestPartTwoConfiguration());
             modelBuilder.ApplyConfiguration(new SmallDecimalTestConfiguration());
             modelBuilder.ApplyConfiguration(new SmallDecimalTestViewConfiguration());
             modelBuilder.ApplyConfiguration(new Stafford_BooConfiguration());
@@ -585,9 +594,9 @@ namespace Efrpg.V4TestE6
             modelBuilder.ApplyConfiguration(new Stafford_FooConfiguration());
             modelBuilder.ApplyConfiguration(new Synonyms_ChildConfiguration());
             modelBuilder.ApplyConfiguration(new Synonyms_ParentConfiguration());
+            modelBuilder.ApplyConfiguration(new table_with_multiple_periodConfiguration());
             modelBuilder.ApplyConfiguration(new TableAConfiguration());
             modelBuilder.ApplyConfiguration(new TableBConfiguration());
-            modelBuilder.ApplyConfiguration(new tablemappingwithspaceConfiguration());
             modelBuilder.ApplyConfiguration(new tablewithduplicatecolumnnameConfiguration());
             modelBuilder.ApplyConfiguration(new tablewithspaceConfiguration());
             modelBuilder.ApplyConfiguration(new tablewithspaceandincolumnConfiguration());
@@ -598,6 +607,8 @@ namespace Efrpg.V4TestE6
             modelBuilder.ApplyConfiguration(new tblOrderErrorConfiguration());
             modelBuilder.ApplyConfiguration(new tblOrderErrorsABConfiguration());
             modelBuilder.ApplyConfiguration(new tblOrderLineConfiguration());
+            modelBuilder.ApplyConfiguration(new TemporalDepartmentConfiguration());
+            modelBuilder.ApplyConfiguration(new TemporalDepartmentHistoryConfiguration());
             modelBuilder.ApplyConfiguration(new ThisIsMemoryOptimisedConfiguration());
             modelBuilder.ApplyConfiguration(new TicketConfiguration());
             modelBuilder.ApplyConfiguration(new TimestampNotNullConfiguration());
@@ -608,11 +619,16 @@ namespace Efrpg.V4TestE6
             modelBuilder.ApplyConfiguration(new User309Configuration());
             modelBuilder.ApplyConfiguration(new VersionedConfiguration());
             modelBuilder.ApplyConfiguration(new VersionedNullableConfiguration());
+            modelBuilder.ApplyConfiguration(new view_with_multiple_periodConfiguration());
             modelBuilder.ApplyConfiguration(new viewwithspaceConfiguration());
             modelBuilder.ApplyConfiguration(new WVN_ArticleConfiguration());
             modelBuilder.ApplyConfiguration(new WVN_v_ArticleConfiguration());
             modelBuilder.ApplyConfiguration(new БрендытовараConfiguration());
 
+            modelBuilder.Entity<ThisIsMemoryOptimised>().IsMemoryOptimized();
+
+            modelBuilder.Entity<aSimpleExampleReturnModel>().HasNoKey();
+            modelBuilder.Entity<CheckIfApplicationIsCompleteReturnModel>().HasNoKey();
             modelBuilder.Entity<ColourPivotReturnModel>().HasNoKey();
             modelBuilder.Entity<dbo_proc_data_from_ffrsReturnModel>().HasNoKey();
             modelBuilder.Entity<dbo_proc_data_from_ffrs_and_dboReturnModel>().HasNoKey();
@@ -622,6 +638,7 @@ namespace Efrpg.V4TestE6
             modelBuilder.Entity<FFRS_data_from_dbo_and_ffrsReturnModel>().HasNoKey();
             modelBuilder.Entity<FkTest_HelloReturnModel>().HasNoKey();
             modelBuilder.Entity<GetSmallDecimalTestReturnModel>().HasNoKey();
+            modelBuilder.Entity<stp_multiple_identical_resultsReturnModel>().HasNoKey();
             modelBuilder.Entity<stp_no_params_testReturnModel>().HasNoKey();
             modelBuilder.Entity<stp_nullable_params_testReturnModel>().HasNoKey();
             modelBuilder.Entity<stp_testReturnModel>().HasNoKey();
@@ -639,7 +656,7 @@ namespace Efrpg.V4TestE6
 
 
         // Stored Procedures
-        public int AddTwoValues(int? a, int? b)
+        public int AddTwoValues(int? a = null, int? b = null)
         {
             var aParam = new SqlParameter { ParameterName = "@a", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = a.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!a.HasValue)
@@ -656,7 +673,22 @@ namespace Efrpg.V4TestE6
             return (int)procResultParam.Value;
         }
 
-        // AddTwoValuesAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public async Task<int> AddTwoValuesAsync(int? a = null, int? b = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var aParam = new SqlParameter { ParameterName = "@a", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = a.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!a.HasValue)
+                aParam.Value = DBNull.Value;
+
+            var bParam = new SqlParameter { ParameterName = "@b", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = b.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!b.HasValue)
+                bParam.Value = DBNull.Value;
+
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[AddTwoValues] @a, @b",  new[] {aParam, bParam, procResultParam}, cancellationToken);
+
+            return (int)procResultParam.Value;
+        }
 
         public int AddTwoValuesWithResult(int? a, int? b, out int? result, out int? result2)
         {
@@ -689,7 +721,7 @@ namespace Efrpg.V4TestE6
 
         // AddTwoValuesWithResultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int Alpha_Overclock(DateTime? parameter)
+        public int Alpha_Overclock(DateTime? parameter = null)
         {
             var parameterParam = new SqlParameter { ParameterName = "@Parameter", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = parameter.GetValueOrDefault() };
             if (!parameter.HasValue)
@@ -702,7 +734,18 @@ namespace Efrpg.V4TestE6
             return (int)procResultParam.Value;
         }
 
-        // Alpha_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public async Task<int> Alpha_OverclockAsync(DateTime? parameter = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var parameterParam = new SqlParameter { ParameterName = "@Parameter", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = parameter.GetValueOrDefault() };
+            if (!parameter.HasValue)
+                parameterParam.Value = DBNull.Value;
+
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [Alpha].[Overclock] @Parameter",  new[] {parameterParam, procResultParam}, cancellationToken);
+
+            return (int)procResultParam.Value;
+        }
 
         public int App_usp_CMTUserFSRUpdate(int? userId, int? fsrId, out int? ufsrId)
         {
@@ -729,18 +772,35 @@ namespace Efrpg.V4TestE6
 
         // App_usp_CMTUserFSRUpdateAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int aSimpleExample()
+        public List<aSimpleExampleReturnModel> aSimpleExample()
         {
-            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
-
-            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[aSimpleExample] ", procResultParam);
-
-            return (int)procResultParam.Value;
+            int procResult;
+            return aSimpleExample(out procResult);
         }
 
-        // aSimpleExampleAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public List<aSimpleExampleReturnModel> aSimpleExample(out int procResult)
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [dbo].[aSimpleExample]";
+            var procResultData = Set<aSimpleExampleReturnModel>()
+                .FromSqlRaw(sqlCommand, procResultParam)
+                .ToList();
 
-        public int Beta_Overclock(DateTime? parameter)
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<aSimpleExampleReturnModel>> aSimpleExampleAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            const string sqlCommand = "EXEC [dbo].[aSimpleExample]";
+            var procResultData = await Set<aSimpleExampleReturnModel>()
+                .FromSqlRaw(sqlCommand)
+                .ToListAsync(cancellationToken);
+
+            return procResultData;
+        }
+
+        public int Beta_Overclock(DateTime? parameter = null)
         {
             var parameterParam = new SqlParameter { ParameterName = "@Parameter", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = parameter.GetValueOrDefault() };
             if (!parameter.HasValue)
@@ -753,15 +813,52 @@ namespace Efrpg.V4TestE6
             return (int)procResultParam.Value;
         }
 
-        // Beta_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public async Task<int> Beta_OverclockAsync(DateTime? parameter = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var parameterParam = new SqlParameter { ParameterName = "@Parameter", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = parameter.GetValueOrDefault() };
+            if (!parameter.HasValue)
+                parameterParam.Value = DBNull.Value;
 
-        // public C182_test2ReturnModel C182_test2(int? flag) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-        // public async Task<C182_test2ReturnModel> C182_test2Async(int? flag) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [Beta].[Overclock] @Parameter",  new[] {parameterParam, procResultParam}, cancellationToken);
 
-        // public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+            return (int)procResultParam.Value;
+        }
 
-        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (CheckIfApplicationIsCompleteReturnModel)
+        // public C182_test2ReturnModel C182_test2(int? flag = null) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+
+        // public async Task<C182_test2ReturnModel> C182_test2Async(int? flag = null) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+
+        public List<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete)
+        {
+            int procResult;
+            return CheckIfApplicationIsComplete(applicationId, out isApplicationComplete, out procResult);
+        }
+
+        public List<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete, out int procResult)
+        {
+            var applicationIdParam = new SqlParameter { ParameterName = "@ApplicationId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = applicationId.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!applicationId.HasValue)
+                applicationIdParam.Value = DBNull.Value;
+
+            var isApplicationCompleteParam = new SqlParameter { ParameterName = "@IsApplicationComplete", SqlDbType = SqlDbType.Bit, Direction = ParameterDirection.Output };
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [dbo].[CheckIfApplicationIsComplete] @ApplicationId, @IsApplicationComplete OUTPUT";
+            var procResultData = Set<CheckIfApplicationIsCompleteReturnModel>()
+                .FromSqlRaw(sqlCommand, applicationIdParam, isApplicationCompleteParam, procResultParam)
+                .ToList();
+
+            if (IsSqlParameterNull(isApplicationCompleteParam))
+                isApplicationComplete = null;
+            else
+                isApplicationComplete = (bool) isApplicationCompleteParam.Value;
+
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (List<CheckIfApplicationIsCompleteReturnModel>)
 
         public List<ColourPivotReturnModel> ColourPivot()
         {
@@ -781,12 +878,12 @@ namespace Efrpg.V4TestE6
             return procResultData;
         }
 
-        public async Task<List<ColourPivotReturnModel>> ColourPivotAsync()
+        public async Task<List<ColourPivotReturnModel>> ColourPivotAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             const string sqlCommand = "EXEC [dbo].[ColourPivot]";
             var procResultData = await Set<ColourPivotReturnModel>()
                 .FromSqlRaw(sqlCommand)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -800,7 +897,14 @@ namespace Efrpg.V4TestE6
             return (int)procResultParam.Value;
         }
 
-        // ColumnNameAndTypesProcAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public async Task<int> ColumnNameAndTypesProcAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[ColumnNameAndTypesProc]",  new[] {procResultParam}, cancellationToken);
+
+            return (int)procResultParam.Value;
+        }
 
         public int ConvertToString(int? someValue, out string someString)
         {
@@ -823,7 +927,7 @@ namespace Efrpg.V4TestE6
 
         // ConvertToStringAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public List<dbo_proc_data_from_ffrsReturnModel> dbo_proc_data_from_ffrs(int? maxId)
+        public List<dbo_proc_data_from_ffrsReturnModel> dbo_proc_data_from_ffrs(int? maxId = null)
         {
             int procResult;
             return dbo_proc_data_from_ffrs(maxId, out procResult);
@@ -845,7 +949,7 @@ namespace Efrpg.V4TestE6
             return procResultData;
         }
 
-        public async Task<List<dbo_proc_data_from_ffrsReturnModel>> dbo_proc_data_from_ffrsAsync(int? maxId)
+        public async Task<List<dbo_proc_data_from_ffrsReturnModel>> dbo_proc_data_from_ffrsAsync(int? maxId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var maxIdParam = new SqlParameter { ParameterName = "@maxId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = maxId.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!maxId.HasValue)
@@ -854,7 +958,7 @@ namespace Efrpg.V4TestE6
             const string sqlCommand = "EXEC [dbo].[dbo_proc_data_from_ffrs] @maxId";
             var procResultData = await Set<dbo_proc_data_from_ffrsReturnModel>()
                 .FromSqlRaw(sqlCommand, maxIdParam)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -877,12 +981,12 @@ namespace Efrpg.V4TestE6
             return procResultData;
         }
 
-        public async Task<List<dbo_proc_data_from_ffrs_and_dboReturnModel>> dbo_proc_data_from_ffrs_and_dboAsync()
+        public async Task<List<dbo_proc_data_from_ffrs_and_dboReturnModel>> dbo_proc_data_from_ffrs_and_dboAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             const string sqlCommand = "EXEC [dbo].[dbo_proc_data_from_ffrs_and_dbo]";
             var procResultData = await Set<dbo_proc_data_from_ffrs_and_dboReturnModel>()
                 .FromSqlRaw(sqlCommand)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -905,17 +1009,17 @@ namespace Efrpg.V4TestE6
             return procResultData;
         }
 
-        public async Task<List<DSOpeProcReturnModel>> DSOpeProcAsync()
+        public async Task<List<DSOpeProcReturnModel>> DSOpeProcAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             const string sqlCommand = "EXEC [dbo].[DSOpeProc]";
             var procResultData = await Set<DSOpeProcReturnModel>()
                 .FromSqlRaw(sqlCommand)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
 
-        public List<FFRS_cv_dataReturnModel> FFRS_cv_data(int? maxId)
+        public List<FFRS_cv_dataReturnModel> FFRS_cv_data(int? maxId = null)
         {
             int procResult;
             return FFRS_cv_data(maxId, out procResult);
@@ -937,7 +1041,7 @@ namespace Efrpg.V4TestE6
             return procResultData;
         }
 
-        public async Task<List<FFRS_cv_dataReturnModel>> FFRS_cv_dataAsync(int? maxId)
+        public async Task<List<FFRS_cv_dataReturnModel>> FFRS_cv_dataAsync(int? maxId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var maxIdParam = new SqlParameter { ParameterName = "@maxId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = maxId.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!maxId.HasValue)
@@ -946,7 +1050,7 @@ namespace Efrpg.V4TestE6
             const string sqlCommand = "EXEC [FFRS].[cv_data] @maxId";
             var procResultData = await Set<FFRS_cv_dataReturnModel>()
                 .FromSqlRaw(sqlCommand, maxIdParam)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -969,12 +1073,12 @@ namespace Efrpg.V4TestE6
             return procResultData;
         }
 
-        public async Task<List<FFRS_data_from_dboReturnModel>> FFRS_data_from_dboAsync()
+        public async Task<List<FFRS_data_from_dboReturnModel>> FFRS_data_from_dboAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             const string sqlCommand = "EXEC [FFRS].[data_from_dbo]";
             var procResultData = await Set<FFRS_data_from_dboReturnModel>()
                 .FromSqlRaw(sqlCommand)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -997,12 +1101,12 @@ namespace Efrpg.V4TestE6
             return procResultData;
         }
 
-        public async Task<List<FFRS_data_from_dbo_and_ffrsReturnModel>> FFRS_data_from_dbo_and_ffrsAsync()
+        public async Task<List<FFRS_data_from_dbo_and_ffrsReturnModel>> FFRS_data_from_dbo_and_ffrsAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             const string sqlCommand = "EXEC [FFRS].[data_from_dbo_and_ffrs]";
             var procResultData = await Set<FFRS_data_from_dbo_and_ffrsReturnModel>()
                 .FromSqlRaw(sqlCommand)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -1025,17 +1129,17 @@ namespace Efrpg.V4TestE6
             return procResultData;
         }
 
-        public async Task<List<FkTest_HelloReturnModel>> FkTest_HelloAsync()
+        public async Task<List<FkTest_HelloReturnModel>> FkTest_HelloAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             const string sqlCommand = "EXEC [FkTest].[Hello]";
             var procResultData = await Set<FkTest_HelloReturnModel>()
                 .FromSqlRaw(sqlCommand)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
 
-        public List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId)
+        public List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId = null)
         {
             int procResult;
             return GetSmallDecimalTest(maxId, out procResult);
@@ -1057,7 +1161,7 @@ namespace Efrpg.V4TestE6
             return procResultData;
         }
 
-        public async Task<List<GetSmallDecimalTestReturnModel>> GetSmallDecimalTestAsync(int? maxId)
+        public async Task<List<GetSmallDecimalTestReturnModel>> GetSmallDecimalTestAsync(int? maxId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var maxIdParam = new SqlParameter { ParameterName = "@maxId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = maxId.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!maxId.HasValue)
@@ -1066,7 +1170,7 @@ namespace Efrpg.V4TestE6
             const string sqlCommand = "EXEC [dbo].[GetSmallDecimalTest] @maxId";
             var procResultData = await Set<GetSmallDecimalTestReturnModel>()
                 .FromSqlRaw(sqlCommand, maxIdParam)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -1201,9 +1305,24 @@ namespace Efrpg.V4TestE6
             return (int)procResultParam.Value;
         }
 
-        // NvarcharTestAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public async Task<int> NvarcharTestAsync(string maxOutputParam, string normalOutputParam, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var maxOutputParamParam = new SqlParameter { ParameterName = "@maxOutputParam", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = maxOutputParam, Size = -1 };
+            if (maxOutputParamParam.Value == null)
+                maxOutputParamParam.Value = DBNull.Value;
 
-        public int Omega_Overclock(DateTime? parameter)
+            var normalOutputParamParam = new SqlParameter { ParameterName = "@normalOutputParam", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = normalOutputParam, Size = 20 };
+            if (normalOutputParamParam.Value == null)
+                normalOutputParamParam.Value = DBNull.Value;
+
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[NvarcharTest] @maxOutputParam, @normalOutputParam",  new[] {maxOutputParamParam, normalOutputParamParam, procResultParam}, cancellationToken);
+
+            return (int)procResultParam.Value;
+        }
+
+        public int Omega_Overclock(DateTime? parameter = null)
         {
             var parameterParam = new SqlParameter { ParameterName = "@Parameter", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = parameter.GetValueOrDefault() };
             if (!parameter.HasValue)
@@ -1216,7 +1335,18 @@ namespace Efrpg.V4TestE6
             return (int)procResultParam.Value;
         }
 
-        // Omega_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public async Task<int> Omega_OverclockAsync(DateTime? parameter = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var parameterParam = new SqlParameter { ParameterName = "@Parameter", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = parameter.GetValueOrDefault() };
+            if (!parameter.HasValue)
+                parameterParam.Value = DBNull.Value;
+
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [Omega].[Overclock] @Parameter",  new[] {parameterParam, procResultParam}, cancellationToken);
+
+            return (int)procResultParam.Value;
+        }
 
         public int proc_TestDecimalOutput(out decimal? perfectNumber)
         {
@@ -1278,7 +1408,14 @@ namespace Efrpg.V4TestE6
             return (int)procResultParam.Value;
         }
 
-        // SpatialTypesNoParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public async Task<int> SpatialTypesNoParamsAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[SpatialTypesNoParams]",  new[] {procResultParam}, cancellationToken);
+
+            return (int)procResultParam.Value;
+        }
 
         public int SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
         {
@@ -1297,23 +1434,70 @@ namespace Efrpg.V4TestE6
             return (int)procResultParam.Value;
         }
 
-        // SpatialTypesWithParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public async Task<int> SpatialTypesWithParamsAsync(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var geometryParam = new SqlParameter { ParameterName = "@geometry", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = geometry, Size = -1 };
+            if (geometryParam.Value == null)
+                geometryParam.Value = DBNull.Value;
 
-        // public stp_multiple_identical_resultsReturnModel stp_multiple_identical_results(int? someVar) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+            var geographyParam = new SqlParameter { ParameterName = "@geography", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = geography, Size = -1 };
+            if (geographyParam.Value == null)
+                geographyParam.Value = DBNull.Value;
 
-        // public async Task<stp_multiple_identical_resultsReturnModel> stp_multiple_identical_resultsAsync(int? someVar) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-        // public stp_multiple_multiple_results_with_paramsReturnModel stp_multiple_multiple_results_with_params(int? firstval, int? secondval, int? thirdval) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[SpatialTypesWithParams] @geometry, @geography",  new[] {geometryParam, geographyParam, procResultParam}, cancellationToken);
 
-        // public async Task<stp_multiple_multiple_results_with_paramsReturnModel> stp_multiple_multiple_results_with_paramsAsync(int? firstval, int? secondval, int? thirdval) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+            return (int)procResultParam.Value;
+        }
+
+        public List<stp_multiple_identical_resultsReturnModel> stp_multiple_identical_results(int? someVar = null)
+        {
+            int procResult;
+            return stp_multiple_identical_results(someVar, out procResult);
+        }
+
+        public List<stp_multiple_identical_resultsReturnModel> stp_multiple_identical_results(int? someVar, out int procResult)
+        {
+            var someVarParam = new SqlParameter { ParameterName = "@someVar", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = someVar.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!someVar.HasValue)
+                someVarParam.Value = DBNull.Value;
+
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [dbo].[stp_multiple_identical_results] @someVar";
+            var procResultData = Set<stp_multiple_identical_resultsReturnModel>()
+                .FromSqlRaw(sqlCommand, someVarParam, procResultParam)
+                .ToList();
+
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<stp_multiple_identical_resultsReturnModel>> stp_multiple_identical_resultsAsync(int? someVar = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var someVarParam = new SqlParameter { ParameterName = "@someVar", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = someVar.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!someVar.HasValue)
+                someVarParam.Value = DBNull.Value;
+
+            const string sqlCommand = "EXEC [dbo].[stp_multiple_identical_results] @someVar";
+            var procResultData = await Set<stp_multiple_identical_resultsReturnModel>()
+                .FromSqlRaw(sqlCommand, someVarParam)
+                .ToListAsync(cancellationToken);
+
+            return procResultData;
+        }
+
+        // public stp_multiple_multiple_results_with_paramsReturnModel stp_multiple_multiple_results_with_params(int? firstval = null, int? secondval = null, int? thirdval = null) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+
+        // public async Task<stp_multiple_multiple_results_with_paramsReturnModel> stp_multiple_multiple_results_with_paramsAsync(int? firstval = null, int? secondval = null, int? thirdval = null) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
         // public stp_multiple_resultsReturnModel stp_multiple_results() Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
         // public async Task<stp_multiple_resultsReturnModel> stp_multiple_resultsAsync() Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
-        // public stp_multiple_results_with_paramsReturnModel stp_multiple_results_with_params(int? firstval, int? secondval) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        // public stp_multiple_results_with_paramsReturnModel stp_multiple_results_with_params(int? firstval = null, int? secondval = null) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
-        // public async Task<stp_multiple_results_with_paramsReturnModel> stp_multiple_results_with_paramsAsync(int? firstval, int? secondval) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        // public async Task<stp_multiple_results_with_paramsReturnModel> stp_multiple_results_with_paramsAsync(int? firstval = null, int? secondval = null) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
         public List<stp_no_params_testReturnModel> stp_no_params_test()
         {
@@ -1333,12 +1517,12 @@ namespace Efrpg.V4TestE6
             return procResultData;
         }
 
-        public async Task<List<stp_no_params_testReturnModel>> stp_no_params_testAsync()
+        public async Task<List<stp_no_params_testReturnModel>> stp_no_params_testAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             const string sqlCommand = "EXEC [dbo].[stp_no_params_test]";
             var procResultData = await Set<stp_no_params_testReturnModel>()
                 .FromSqlRaw(sqlCommand)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -1352,9 +1536,16 @@ namespace Efrpg.V4TestE6
             return (int)procResultParam.Value;
         }
 
-        // stp_no_return_fieldsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public async Task<int> stp_no_return_fieldsAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-        public List<stp_nullable_params_testReturnModel> stp_nullable_params_test(int? aval, int? bval)
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[stp_no_return_fields]",  new[] {procResultParam}, cancellationToken);
+
+            return (int)procResultParam.Value;
+        }
+
+        public List<stp_nullable_params_testReturnModel> stp_nullable_params_test(int? aval = null, int? bval = null)
         {
             int procResult;
             return stp_nullable_params_test(aval, bval, out procResult);
@@ -1380,7 +1571,7 @@ namespace Efrpg.V4TestE6
             return procResultData;
         }
 
-        public async Task<List<stp_nullable_params_testReturnModel>> stp_nullable_params_testAsync(int? aval, int? bval)
+        public async Task<List<stp_nullable_params_testReturnModel>> stp_nullable_params_testAsync(int? aval = null, int? bval = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var avalParam = new SqlParameter { ParameterName = "@a_val", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = aval.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!aval.HasValue)
@@ -1393,7 +1584,7 @@ namespace Efrpg.V4TestE6
             const string sqlCommand = "EXEC [dbo].[stp_nullable_params_test] @a_val, @b_val";
             var procResultData = await Set<stp_nullable_params_testReturnModel>()
                 .FromSqlRaw(sqlCommand, avalParam, bvalParam)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -1458,7 +1649,7 @@ namespace Efrpg.V4TestE6
             return procResultData;
         }
 
-        public async Task<List<stp_test_underscore_testReturnModel>> stp_test_underscore_testAsync(string strDateFROM, string strdateto)
+        public async Task<List<stp_test_underscore_testReturnModel>> stp_test_underscore_testAsync(string strDateFROM, string strdateto, CancellationToken cancellationToken = default(CancellationToken))
         {
             var strDateFROMParam = new SqlParameter { ParameterName = "@str_Date_FROM", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = strDateFROM, Size = 20 };
             if (strDateFROMParam.Value == null)
@@ -1471,12 +1662,12 @@ namespace Efrpg.V4TestE6
             const string sqlCommand = "EXEC [dbo].[stp_test_underscore_test] @str_Date_FROM, @str_date_to";
             var procResultData = await Set<stp_test_underscore_testReturnModel>()
                 .FromSqlRaw(sqlCommand, strDateFROMParam, strdatetoParam)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
 
-        public int StupidStoredProcedureParams(string reqType, short? dept, short? @class, short? item)
+        public int StupidStoredProcedureParams(string reqType, short? dept = null, short? @class = null, short? item = null)
         {
             var reqTypeParam = new SqlParameter { ParameterName = "@ReqType", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = reqType, Size = 25 };
             if (reqTypeParam.Value == null)
@@ -1501,9 +1692,32 @@ namespace Efrpg.V4TestE6
             return (int)procResultParam.Value;
         }
 
-        // StupidStoredProcedureParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public async Task<int> StupidStoredProcedureParamsAsync(string reqType, short? dept = null, short? @class = null, short? item = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var reqTypeParam = new SqlParameter { ParameterName = "@ReqType", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = reqType, Size = 25 };
+            if (reqTypeParam.Value == null)
+                reqTypeParam.Value = DBNull.Value;
 
-        public int StupidStoredProcedureParams2(string @override, short? @readonly, short? @class, short? @enum)
+            var deptParam = new SqlParameter { ParameterName = "@Dept", SqlDbType = SqlDbType.SmallInt, Direction = ParameterDirection.Input, Value = dept.GetValueOrDefault(), Precision = 5, Scale = 0 };
+            if (!dept.HasValue)
+                deptParam.Value = DBNull.Value;
+
+            var @classParam = new SqlParameter { ParameterName = "@Class", SqlDbType = SqlDbType.SmallInt, Direction = ParameterDirection.Input, Value = @class.GetValueOrDefault(), Precision = 5, Scale = 0 };
+            if (!@class.HasValue)
+                @classParam.Value = DBNull.Value;
+
+            var itemParam = new SqlParameter { ParameterName = "@Item", SqlDbType = SqlDbType.SmallInt, Direction = ParameterDirection.Input, Value = item.GetValueOrDefault(), Precision = 5, Scale = 0 };
+            if (!item.HasValue)
+                itemParam.Value = DBNull.Value;
+
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[StupidStoredProcedureParams] @ReqType, @Dept, @Class, @Item",  new[] {reqTypeParam, deptParam, @classParam, itemParam, procResultParam}, cancellationToken);
+
+            return (int)procResultParam.Value;
+        }
+
+        public int StupidStoredProcedureParams2(string @override, short? @readonly = null, short? @class = null, short? @enum = null)
         {
             var @overrideParam = new SqlParameter { ParameterName = "@override", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = @override, Size = 25 };
             if (@overrideParam.Value == null)
@@ -1528,9 +1742,32 @@ namespace Efrpg.V4TestE6
             return (int)procResultParam.Value;
         }
 
-        // StupidStoredProcedureParams2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public async Task<int> StupidStoredProcedureParams2Async(string @override, short? @readonly = null, short? @class = null, short? @enum = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var @overrideParam = new SqlParameter { ParameterName = "@override", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = @override, Size = 25 };
+            if (@overrideParam.Value == null)
+                @overrideParam.Value = DBNull.Value;
 
-        public List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt)
+            var @readonlyParam = new SqlParameter { ParameterName = "@readonly", SqlDbType = SqlDbType.SmallInt, Direction = ParameterDirection.Input, Value = @readonly.GetValueOrDefault(), Precision = 5, Scale = 0 };
+            if (!@readonly.HasValue)
+                @readonlyParam.Value = DBNull.Value;
+
+            var @classParam = new SqlParameter { ParameterName = "@class", SqlDbType = SqlDbType.SmallInt, Direction = ParameterDirection.Input, Value = @class.GetValueOrDefault(), Precision = 5, Scale = 0 };
+            if (!@class.HasValue)
+                @classParam.Value = DBNull.Value;
+
+            var @enumParam = new SqlParameter { ParameterName = "@enum", SqlDbType = SqlDbType.SmallInt, Direction = ParameterDirection.Input, Value = @enum.GetValueOrDefault(), Precision = 5, Scale = 0 };
+            if (!@enum.HasValue)
+                @enumParam.Value = DBNull.Value;
+
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[StupidStoredProcedureParams2] @override, @readonly, @class, @enum",  new[] {@overrideParam, @readonlyParam, @classParam, @enumParam, procResultParam}, cancellationToken);
+
+            return (int)procResultParam.Value;
+        }
+
+        public List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt = null)
         {
             int procResult;
             return Synonyms_SimpleStoredProc(inputInt, out procResult);
@@ -1552,7 +1789,7 @@ namespace Efrpg.V4TestE6
             return procResultData;
         }
 
-        public async Task<List<Synonyms_SimpleStoredProcReturnModel>> Synonyms_SimpleStoredProcAsync(int? inputInt)
+        public async Task<List<Synonyms_SimpleStoredProcReturnModel>> Synonyms_SimpleStoredProcAsync(int? inputInt = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var inputIntParam = new SqlParameter { ParameterName = "@InputInt", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = inputInt.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!inputInt.HasValue)
@@ -1561,7 +1798,7 @@ namespace Efrpg.V4TestE6
             const string sqlCommand = "EXEC [Synonyms].[SimpleStoredProc] @InputInt";
             var procResultData = await Set<Synonyms_SimpleStoredProcReturnModel>()
                 .FromSqlRaw(sqlCommand, inputIntParam)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -1584,17 +1821,52 @@ namespace Efrpg.V4TestE6
             return procResultData;
         }
 
-        public async Task<List<TestReturnStringReturnModel>> TestReturnStringAsync()
+        public async Task<List<TestReturnStringReturnModel>> TestReturnStringAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             const string sqlCommand = "EXEC [dbo].[TestReturnString]";
             var procResultData = await Set<TestReturnStringReturnModel>()
                 .FromSqlRaw(sqlCommand)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
 
-        public int UserDefinedTypeSampleStoredProc(int? a, DataTable type, int? b)
+        public int ThisHasMixedOutParameters(DateTime? foo, out int? firstOutParam, DateTime? bar, out int? secondOutParam, DateTime? baz = null)
+        {
+            var fooParam = new SqlParameter { ParameterName = "@Foo", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = foo.GetValueOrDefault() };
+            if (!foo.HasValue)
+                fooParam.Value = DBNull.Value;
+
+            var firstOutParamParam = new SqlParameter { ParameterName = "@FirstOutParam", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output, Precision = 10, Scale = 0 };
+            var barParam = new SqlParameter { ParameterName = "@Bar", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = bar.GetValueOrDefault() };
+            if (!bar.HasValue)
+                barParam.Value = DBNull.Value;
+
+            var secondOutParamParam = new SqlParameter { ParameterName = "@SecondOutParam", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output, Precision = 10, Scale = 0 };
+            var bazParam = new SqlParameter { ParameterName = "@Baz", SqlDbType = SqlDbType.DateTime, Direction = ParameterDirection.Input, Value = baz.GetValueOrDefault() };
+            if (!baz.HasValue)
+                bazParam.Value = DBNull.Value;
+
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[ThisHasMixedOutParameters] @Foo, @FirstOutParam OUTPUT, @Bar, @SecondOutParam OUTPUT, @Baz", fooParam, firstOutParamParam, barParam, secondOutParamParam, bazParam, procResultParam);
+
+            if (IsSqlParameterNull(firstOutParamParam))
+                firstOutParam = null;
+            else
+                firstOutParam = (int) firstOutParamParam.Value;
+
+            if (IsSqlParameterNull(secondOutParamParam))
+                secondOutParam = null;
+            else
+                secondOutParam = (int) secondOutParamParam.Value;
+
+            return (int)procResultParam.Value;
+        }
+
+        // ThisHasMixedOutParametersAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int UserDefinedTypeSampleStoredProc(int? a, DataTable type, int? b = null)
         {
             var aParam = new SqlParameter { ParameterName = "@a", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = a.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!a.HasValue)
@@ -1615,7 +1887,26 @@ namespace Efrpg.V4TestE6
             return (int)procResultParam.Value;
         }
 
-        // UserDefinedTypeSampleStoredProcAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public async Task<int> UserDefinedTypeSampleStoredProcAsync(int? a, DataTable type, int? b = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var aParam = new SqlParameter { ParameterName = "@a", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = a.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!a.HasValue)
+                aParam.Value = DBNull.Value;
+
+            var typeParam = new SqlParameter { ParameterName = "@type", SqlDbType = SqlDbType.Structured, Direction = ParameterDirection.Input, Value = type, TypeName = "dbo.UserDefinedTypeSample" };
+            if (typeParam.Value == null)
+                typeParam.Value = DBNull.Value;
+
+            var bParam = new SqlParameter { ParameterName = "@b", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = b.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!b.HasValue)
+                bParam.Value = DBNull.Value;
+
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[UserDefinedTypeSampleStoredProc] @a, @type, @b",  new[] {aParam, typeParam, bParam, procResultParam}, cancellationToken);
+
+            return (int)procResultParam.Value;
+        }
 
         public List<XmlDataV1ReturnModel> XmlDataV1()
         {
@@ -1635,12 +1926,12 @@ namespace Efrpg.V4TestE6
             return procResultData;
         }
 
-        public async Task<List<XmlDataV1ReturnModel>> XmlDataV1Async()
+        public async Task<List<XmlDataV1ReturnModel>> XmlDataV1Async(CancellationToken cancellationToken = default(CancellationToken))
         {
             const string sqlCommand = "EXEC [dbo].[XmlDataV1]";
             var procResultData = await Set<XmlDataV1ReturnModel>()
                 .FromSqlRaw(sqlCommand)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return procResultData;
         }
@@ -1654,13 +1945,20 @@ namespace Efrpg.V4TestE6
             return (int)procResultParam.Value;
         }
 
-        // XmlDataV2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public async Task<int> XmlDataV2Async(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[XmlDataV2]",  new[] {procResultParam}, cancellationToken);
+
+            return (int)procResultParam.Value;
+        }
 
 
         // Table Valued Functions
 
         // dbo.182_test1
-        public IQueryable<C182_test1ReturnModel> C182_test1(int? test)
+        public IQueryable<C182_test1ReturnModel> C182_test1(int? test = null)
         {
             return Set<C182_test1ReturnModel>()
                 .FromSqlRaw("SELECT * FROM [dbo].[182_test1]({0})", test)
@@ -1694,7 +1992,7 @@ namespace Efrpg.V4TestE6
         // Scalar Valued Functions
 
         [DbFunction("udfNetSale", "dbo")]
-        public decimal udfNetSale(int? quantity, decimal? list_price, decimal? discount)
+        public decimal udfNetSale(int? quantity = null, decimal? list_price = null, decimal? discount = null)
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
@@ -1737,19 +2035,14 @@ namespace Efrpg.V4TestE6
         public DbSet<BitFiddlerCATEGORy> BitFiddlerCATEGORies { get; set; } // BitFiddlerCATEGORIES
         public DbSet<BitFiddlerCURRENCy> BitFiddlerCURRENCies { get; set; } // BitFiddlerCURRENCIES
         public DbSet<Blah> Blahs { get; set; } // Blah
-        public DbSet<BlahBlahLink> BlahBlahLinks { get; set; } // BlahBlahLink
-        public DbSet<BlahBlahLink_readonly> BlahBlahLink_readonlies { get; set; } // BlahBlahLink_readonly
         public DbSet<BlahBlahLink_v2> BlahBlahLink_v2 { get; set; } // BlahBlahLink_v2
-        public DbSet<BlahBlargLink> BlahBlargLinks { get; set; } // BlahBlargLink
         public DbSet<Blarg> Blargs { get; set; } // Blarg
         public DbSet<Burak1> Burak1 { get; set; } // Burak1
         public DbSet<Burak2> Burak2 { get; set; } // Burak2
         public DbSet<CalculatedColumnNotNull> CalculatedColumnNotNulls { get; set; } // CalculatedColumnNotNull
         public DbSet<Car> Cars { get; set; } // Car
-        public DbSet<CarToColour> CarToColours { get; set; } // CarToColour
         public DbSet<ClientCreationState> ClientCreationStates { get; set; } // ClientCreationState
         public DbSet<CMS_File> CMS_Files { get; set; } // CMS_File
-        public DbSet<CMS_FileTag> CMS_FileTags { get; set; } // CMS_FileTag
         public DbSet<CMS_Tag> CMS_Tags { get; set; } // CMS_Tag
         public DbSet<CODE_MeetingTopicDetail> CODE_MeetingTopicDetails { get; set; } // CODE_MeetingTopicDetails
         public DbSet<CODE_PARAM_MeetingTopicDetailSource> CODE_PARAM_MeetingTopicDetailSources { get; set; } // CODE_PARAM_MeetingTopicDetailSource
@@ -1779,19 +2072,23 @@ namespace Efrpg.V4TestE6
         public DbSet<HasPrincipalKeyTestParent> HasPrincipalKeyTestParents { get; set; } // HasPrincipalKeyTestParent
         public DbSet<header> headers { get; set; } // header
         public DbSet<hierarchy_test> hierarchy_tests { get; set; } // hierarchy_test
+        public DbSet<InflectorData> InflectorData { get; set; } // InflectorData
+        public DbSet<InflectorStatus> InflectorStatus { get; set; } // InflectorStatus
+        public DbSet<InflectorTo> InflectorTo { get; set; } // InflectorTo
         public DbSet<Issue47_Role> Issue47_Roles { get; set; } // Role
         public DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
         public DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
         public DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
-        public DbSet<OneEightSix_IssueUploadedFile> OneEightSix_IssueUploadedFiles { get; set; } // IssueUploadedFile
         public DbSet<OneEightSix_UploadedFile> OneEightSix_UploadedFiles { get; set; } // UploadedFile
+        public DbSet<Period_Table> Period_Tables { get; set; } // Period.Table
         public DbSet<PeriodTestTable> PeriodTestTables { get; set; } // PeriodTestTable
         public DbSet<Person> People { get; set; } // Person
         public DbSet<PersonPost> PersonPosts { get; set; } // PersonPosts
         public DbSet<pk_ordinal_test> pk_ordinal_tests { get; set; } // pk_ordinal_test
         public DbSet<PropertyTypesToAdd> PropertyTypesToAdds { get; set; } // PropertyTypesToAdd
         public DbSet<SequenceTest> SequenceTests { get; set; } // SequenceTest
+        public DbSet<SequenceTestPartTwo> SequenceTestPartTwoes { get; set; } // SequenceTestPartTwo
         public DbSet<SmallDecimalTest> SmallDecimalTests { get; set; } // SmallDecimalTest
         public DbSet<SmallDecimalTestView> SmallDecimalTestViews { get; set; } // SmallDecimalTestView
         public DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
@@ -1799,9 +2096,9 @@ namespace Efrpg.V4TestE6
         public DbSet<Stafford_Foo> Stafford_Foos { get; set; } // Foo
         public DbSet<Synonyms_Child> Synonyms_Children { get; set; } // Child
         public DbSet<Synonyms_Parent> Synonyms_Parents { get; set; } // Parent
+        public DbSet<table_with_multiple_period> table_with_multiple_periods { get; set; } // table.with.multiple.periods
         public DbSet<TableA> TableAs { get; set; } // TableA
         public DbSet<TableB> TableBs { get; set; } // TableB
-        public DbSet<tablemappingwithspace> tablemappingwithspaces { get; set; } // table mapping with space
         public DbSet<tablewithduplicatecolumnname> tablewithduplicatecolumnnames { get; set; } // table with duplicate column names
         public DbSet<tablewithspace> tablewithspaces { get; set; } // table with space
         public DbSet<tablewithspaceandincolumn> tablewithspaceandincolumns { get; set; } // table with space and in columns
@@ -1812,6 +2109,8 @@ namespace Efrpg.V4TestE6
         public DbSet<tblOrderError> tblOrderErrors { get; set; } // tblOrderErrors
         public DbSet<tblOrderErrorsAB> tblOrderErrorsABs { get; set; } // tblOrderErrorsAB_
         public DbSet<tblOrderLine> tblOrderLines { get; set; } // tblOrderLines
+        public DbSet<TemporalDepartment> TemporalDepartments { get; set; } // TemporalDepartment
+        public DbSet<TemporalDepartmentHistory> TemporalDepartmentHistories { get; set; } // TemporalDepartmentHistory
         public DbSet<ThisIsMemoryOptimised> ThisIsMemoryOptimiseds { get; set; } // ThisIsMemoryOptimised
         public DbSet<Ticket> Tickets { get; set; } // Ticket
         public DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
@@ -1822,6 +2121,7 @@ namespace Efrpg.V4TestE6
         public DbSet<User309> User309 { get; set; } // User309
         public DbSet<Versioned> Versioneds { get; set; } // Versioned
         public DbSet<VersionedNullable> VersionedNullables { get; set; } // VersionedNullable
+        public DbSet<view_with_multiple_period> view_with_multiple_periods { get; set; } // view.with.multiple.periods
         public DbSet<viewwithspace> viewwithspaces { get; set; } // view with space
         public DbSet<WVN_Article> WVN_Articles { get; set; } // Articles
         public DbSet<WVN_v_Article> WVN_v_Articles { get; set; } // v_Articles
@@ -1850,19 +2150,14 @@ namespace Efrpg.V4TestE6
             BitFiddlerCATEGORies = new FakeDbSet<BitFiddlerCATEGORy>("Id");
             BitFiddlerCURRENCies = new FakeDbSet<BitFiddlerCURRENCy>("Id");
             Blahs = new FakeDbSet<Blah>("BlahID");
-            BlahBlahLinks = new FakeDbSet<BlahBlahLink>("BlahID", "BlahID2");
-            BlahBlahLink_readonlies = new FakeDbSet<BlahBlahLink_readonly>("BlahID", "BlahID2");
             BlahBlahLink_v2 = new FakeDbSet<BlahBlahLink_v2>("BlahID", "BlahID2");
-            BlahBlargLinks = new FakeDbSet<BlahBlargLink>("BlahID", "BlargID");
             Blargs = new FakeDbSet<Blarg>("BlargID");
             Burak1 = new FakeDbSet<Burak1>("id");
             Burak2 = new FakeDbSet<Burak2>("id");
             CalculatedColumnNotNulls = new FakeDbSet<CalculatedColumnNotNull>("ID");
             Cars = new FakeDbSet<Car>("Id");
-            CarToColours = new FakeDbSet<CarToColour>("CarId", "ColourId");
             ClientCreationStates = new FakeDbSet<ClientCreationState>("id");
             CMS_Files = new FakeDbSet<CMS_File>("FileId");
-            CMS_FileTags = new FakeDbSet<CMS_FileTag>("FileId", "TagId");
             CMS_Tags = new FakeDbSet<CMS_Tag>("TagId");
             CODE_MeetingTopicDetails = new FakeDbSet<CODE_MeetingTopicDetail>("id");
             CODE_PARAM_MeetingTopicDetailSources = new FakeDbSet<CODE_PARAM_MeetingTopicDetailSource>("ID");
@@ -1892,19 +2187,23 @@ namespace Efrpg.V4TestE6
             HasPrincipalKeyTestParents = new FakeDbSet<HasPrincipalKeyTestParent>("Id");
             headers = new FakeDbSet<header>("ID", "anotherID");
             hierarchy_tests = new FakeDbSet<hierarchy_test>("ID");
+            InflectorData = new FakeDbSet<InflectorData>("Id");
+            InflectorStatus = new FakeDbSet<InflectorStatus>("Id");
+            InflectorTo = new FakeDbSet<InflectorTo>("Id");
             Issue47_Roles = new FakeDbSet<Issue47_Role>("RoleId");
             Issue47_Users = new FakeDbSet<Issue47_User>("UserId");
             Issue47_UserRoles = new FakeDbSet<Issue47_UserRole>("UserRoleId");
             MultipleKeys = new FakeDbSet<MultipleKey>("UserId", "FavouriteColourId", "BestHolidayTypeId");
             OneEightSix_Issues = new FakeDbSet<OneEightSix_Issue>("Id");
-            OneEightSix_IssueUploadedFiles = new FakeDbSet<OneEightSix_IssueUploadedFile>("UploadedFileId", "IssueId");
             OneEightSix_UploadedFiles = new FakeDbSet<OneEightSix_UploadedFile>("Id");
+            Period_Tables = new FakeDbSet<Period_Table>("id");
             PeriodTestTables = new FakeDbSet<PeriodTestTable>("id");
             People = new FakeDbSet<Person>("Id");
             PersonPosts = new FakeDbSet<PersonPost>("Id");
             pk_ordinal_tests = new FakeDbSet<pk_ordinal_test>("C3", "C1");
             PropertyTypesToAdds = new FakeDbSet<PropertyTypesToAdd>("id");
             SequenceTests = new FakeDbSet<SequenceTest>("Id");
+            SequenceTestPartTwoes = new FakeDbSet<SequenceTestPartTwo>("Id");
             SmallDecimalTests = new FakeDbSet<SmallDecimalTest>("id");
             SmallDecimalTestViews = new FakeDbSet<SmallDecimalTestView>();
             Stafford_Boos = new FakeDbSet<Stafford_Boo>("id");
@@ -1912,9 +2211,9 @@ namespace Efrpg.V4TestE6
             Stafford_Foos = new FakeDbSet<Stafford_Foo>("id");
             Synonyms_Children = new FakeDbSet<Synonyms_Child>("ChildId");
             Synonyms_Parents = new FakeDbSet<Synonyms_Parent>("ParentId");
+            table_with_multiple_periods = new FakeDbSet<table_with_multiple_period>("id");
             TableAs = new FakeDbSet<TableA>("TableAId");
             TableBs = new FakeDbSet<TableB>("TableBId", "TableAId");
-            tablemappingwithspaces = new FakeDbSet<tablemappingwithspace>("id", "idvalue");
             tablewithduplicatecolumnnames = new FakeDbSet<tablewithduplicatecolumnname>("id");
             tablewithspaces = new FakeDbSet<tablewithspace>("id");
             tablewithspaceandincolumns = new FakeDbSet<tablewithspaceandincolumn>("idvalue");
@@ -1925,6 +2224,8 @@ namespace Efrpg.V4TestE6
             tblOrderErrors = new FakeDbSet<tblOrderError>("ID");
             tblOrderErrorsABs = new FakeDbSet<tblOrderErrorsAB>("ID");
             tblOrderLines = new FakeDbSet<tblOrderLine>("ID");
+            TemporalDepartments = new FakeDbSet<TemporalDepartment>("DeptID");
+            TemporalDepartmentHistories = new FakeDbSet<TemporalDepartmentHistory>("DeptID", "DeptName", "SysStartTime", "SysEndTime");
             ThisIsMemoryOptimiseds = new FakeDbSet<ThisIsMemoryOptimised>("Id");
             Tickets = new FakeDbSet<Ticket>("Id");
             TimestampNotNulls = new FakeDbSet<TimestampNotNull>("Id");
@@ -1935,6 +2236,7 @@ namespace Efrpg.V4TestE6
             User309 = new FakeDbSet<User309>("UserID");
             Versioneds = new FakeDbSet<Versioned>("Id");
             VersionedNullables = new FakeDbSet<VersionedNullable>("Id");
+            view_with_multiple_periods = new FakeDbSet<view_with_multiple_period>();
             viewwithspaces = new FakeDbSet<viewwithspace>();
             WVN_Articles = new FakeDbSet<WVN_Article>("PK_Article");
             WVN_v_Articles = new FakeDbSet<WVN_v_Article>();
@@ -2138,12 +2440,15 @@ namespace Efrpg.V4TestE6
 
         // Stored Procedures
 
-        public int AddTwoValues(int? a, int? b)
+        public int AddTwoValues(int? a = null, int? b = null)
         {
             return 0;
         }
 
-        // AddTwoValuesAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> AddTwoValuesAsync(int? a = null, int? b = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         public int AddTwoValuesWithResult(int? a, int? b, out int? result, out int? result2)
         {
@@ -2154,12 +2459,15 @@ namespace Efrpg.V4TestE6
 
         // AddTwoValuesWithResultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int Alpha_Overclock(DateTime? parameter)
+        public int Alpha_Overclock(DateTime? parameter = null)
         {
             return 0;
         }
 
-        // Alpha_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> Alpha_OverclockAsync(DateTime? parameter = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         public int App_usp_CMTUserFSRUpdate(int? userId, int? fsrId, out int? ufsrId)
         {
@@ -2169,22 +2477,37 @@ namespace Efrpg.V4TestE6
 
         // App_usp_CMTUserFSRUpdateAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int aSimpleExample()
+        public DbSet<aSimpleExampleReturnModel> aSimpleExampleReturnModel { get; set; }
+        public List<aSimpleExampleReturnModel> aSimpleExample()
+        {
+            int procResult;
+            return aSimpleExample(out procResult);
+        }
+
+        public List<aSimpleExampleReturnModel> aSimpleExample(out int procResult)
+        {
+            procResult = 0;
+            return new List<aSimpleExampleReturnModel>();
+        }
+
+        public Task<List<aSimpleExampleReturnModel>> aSimpleExampleAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            int procResult;
+            return Task.FromResult(aSimpleExample(out procResult));
+        }
+
+        public int Beta_Overclock(DateTime? parameter = null)
         {
             return 0;
         }
 
-        // aSimpleExampleAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
-
-        public int Beta_Overclock(DateTime? parameter)
+        public Task<int> Beta_OverclockAsync(DateTime? parameter = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return 0;
+            return Task.FromResult(0);
         }
-
-        // Beta_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         public DbSet<C182_test2ReturnModel> C182_test2ReturnModel { get; set; }
-        public C182_test2ReturnModel C182_test2(int? flag)
+        public C182_test2ReturnModel C182_test2(int? flag = null)
         {
             int procResult;
             return C182_test2(flag, out procResult);
@@ -2196,28 +2519,23 @@ namespace Efrpg.V4TestE6
             return new C182_test2ReturnModel();
         }
 
-        public Task<C182_test2ReturnModel> C182_test2Async(int? flag)
-        {
-            int procResult;
-            return Task.FromResult(C182_test2(flag, out procResult));
-        }
+        // C182_test2Async() cannot be created due to having out parameters, or is relying on the procedure result (C182_test2ReturnModel)
 
         public DbSet<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsCompleteReturnModel { get; set; }
-        public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete)
+        public List<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete)
         {
             int procResult;
             return CheckIfApplicationIsComplete(applicationId, out isApplicationComplete, out procResult);
         }
 
-        public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete, out int procResult)
+        public List<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete, out int procResult)
         {
             isApplicationComplete = default(bool);
             procResult = 0;
-            return new CheckIfApplicationIsCompleteReturnModel();
+            return new List<CheckIfApplicationIsCompleteReturnModel>();
         }
 
-        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (CheckIfApplicationIsCompleteReturnModel)
-
+        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (List<CheckIfApplicationIsCompleteReturnModel>)
 
         public DbSet<ColourPivotReturnModel> ColourPivotReturnModel { get; set; }
         public List<ColourPivotReturnModel> ColourPivot()
@@ -2232,7 +2550,7 @@ namespace Efrpg.V4TestE6
             return new List<ColourPivotReturnModel>();
         }
 
-        public Task<List<ColourPivotReturnModel>> ColourPivotAsync()
+        public Task<List<ColourPivotReturnModel>> ColourPivotAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(ColourPivot(out procResult));
@@ -2243,7 +2561,10 @@ namespace Efrpg.V4TestE6
             return 0;
         }
 
-        // ColumnNameAndTypesProcAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> ColumnNameAndTypesProcAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         public int ConvertToString(int? someValue, out string someString)
         {
@@ -2254,7 +2575,7 @@ namespace Efrpg.V4TestE6
         // ConvertToStringAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         public DbSet<dbo_proc_data_from_ffrsReturnModel> dbo_proc_data_from_ffrsReturnModel { get; set; }
-        public List<dbo_proc_data_from_ffrsReturnModel> dbo_proc_data_from_ffrs(int? maxId)
+        public List<dbo_proc_data_from_ffrsReturnModel> dbo_proc_data_from_ffrs(int? maxId = null)
         {
             int procResult;
             return dbo_proc_data_from_ffrs(maxId, out procResult);
@@ -2266,7 +2587,7 @@ namespace Efrpg.V4TestE6
             return new List<dbo_proc_data_from_ffrsReturnModel>();
         }
 
-        public Task<List<dbo_proc_data_from_ffrsReturnModel>> dbo_proc_data_from_ffrsAsync(int? maxId)
+        public Task<List<dbo_proc_data_from_ffrsReturnModel>> dbo_proc_data_from_ffrsAsync(int? maxId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(dbo_proc_data_from_ffrs(maxId, out procResult));
@@ -2285,7 +2606,7 @@ namespace Efrpg.V4TestE6
             return new List<dbo_proc_data_from_ffrs_and_dboReturnModel>();
         }
 
-        public Task<List<dbo_proc_data_from_ffrs_and_dboReturnModel>> dbo_proc_data_from_ffrs_and_dboAsync()
+        public Task<List<dbo_proc_data_from_ffrs_and_dboReturnModel>> dbo_proc_data_from_ffrs_and_dboAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(dbo_proc_data_from_ffrs_and_dbo(out procResult));
@@ -2304,14 +2625,14 @@ namespace Efrpg.V4TestE6
             return new List<DSOpeProcReturnModel>();
         }
 
-        public Task<List<DSOpeProcReturnModel>> DSOpeProcAsync()
+        public Task<List<DSOpeProcReturnModel>> DSOpeProcAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(DSOpeProc(out procResult));
         }
 
         public DbSet<FFRS_cv_dataReturnModel> FFRS_cv_dataReturnModel { get; set; }
-        public List<FFRS_cv_dataReturnModel> FFRS_cv_data(int? maxId)
+        public List<FFRS_cv_dataReturnModel> FFRS_cv_data(int? maxId = null)
         {
             int procResult;
             return FFRS_cv_data(maxId, out procResult);
@@ -2323,7 +2644,7 @@ namespace Efrpg.V4TestE6
             return new List<FFRS_cv_dataReturnModel>();
         }
 
-        public Task<List<FFRS_cv_dataReturnModel>> FFRS_cv_dataAsync(int? maxId)
+        public Task<List<FFRS_cv_dataReturnModel>> FFRS_cv_dataAsync(int? maxId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(FFRS_cv_data(maxId, out procResult));
@@ -2342,7 +2663,7 @@ namespace Efrpg.V4TestE6
             return new List<FFRS_data_from_dboReturnModel>();
         }
 
-        public Task<List<FFRS_data_from_dboReturnModel>> FFRS_data_from_dboAsync()
+        public Task<List<FFRS_data_from_dboReturnModel>> FFRS_data_from_dboAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(FFRS_data_from_dbo(out procResult));
@@ -2361,7 +2682,7 @@ namespace Efrpg.V4TestE6
             return new List<FFRS_data_from_dbo_and_ffrsReturnModel>();
         }
 
-        public Task<List<FFRS_data_from_dbo_and_ffrsReturnModel>> FFRS_data_from_dbo_and_ffrsAsync()
+        public Task<List<FFRS_data_from_dbo_and_ffrsReturnModel>> FFRS_data_from_dbo_and_ffrsAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(FFRS_data_from_dbo_and_ffrs(out procResult));
@@ -2380,14 +2701,14 @@ namespace Efrpg.V4TestE6
             return new List<FkTest_HelloReturnModel>();
         }
 
-        public Task<List<FkTest_HelloReturnModel>> FkTest_HelloAsync()
+        public Task<List<FkTest_HelloReturnModel>> FkTest_HelloAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(FkTest_Hello(out procResult));
         }
 
         public DbSet<GetSmallDecimalTestReturnModel> GetSmallDecimalTestReturnModel { get; set; }
-        public List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId)
+        public List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId = null)
         {
             int procResult;
             return GetSmallDecimalTest(maxId, out procResult);
@@ -2399,7 +2720,7 @@ namespace Efrpg.V4TestE6
             return new List<GetSmallDecimalTestReturnModel>();
         }
 
-        public Task<List<GetSmallDecimalTestReturnModel>> GetSmallDecimalTestAsync(int? maxId)
+        public Task<List<GetSmallDecimalTestReturnModel>> GetSmallDecimalTestAsync(int? maxId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(GetSmallDecimalTest(maxId, out procResult));
@@ -2452,14 +2773,20 @@ namespace Efrpg.V4TestE6
             return 0;
         }
 
-        // NvarcharTestAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> NvarcharTestAsync(string maxOutputParam, string normalOutputParam, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
-        public int Omega_Overclock(DateTime? parameter)
+        public int Omega_Overclock(DateTime? parameter = null)
         {
             return 0;
         }
 
-        // Omega_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> Omega_OverclockAsync(DateTime? parameter = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         public int proc_TestDecimalOutput(out decimal? perfectNumber)
         {
@@ -2490,36 +2817,42 @@ namespace Efrpg.V4TestE6
             return 0;
         }
 
-        // SpatialTypesNoParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> SpatialTypesNoParamsAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         public int SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
         {
             return 0;
         }
 
-        // SpatialTypesWithParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> SpatialTypesWithParamsAsync(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         public DbSet<stp_multiple_identical_resultsReturnModel> stp_multiple_identical_resultsReturnModel { get; set; }
-        public stp_multiple_identical_resultsReturnModel stp_multiple_identical_results(int? someVar)
+        public List<stp_multiple_identical_resultsReturnModel> stp_multiple_identical_results(int? someVar = null)
         {
             int procResult;
             return stp_multiple_identical_results(someVar, out procResult);
         }
 
-        public stp_multiple_identical_resultsReturnModel stp_multiple_identical_results(int? someVar, out int procResult)
+        public List<stp_multiple_identical_resultsReturnModel> stp_multiple_identical_results(int? someVar, out int procResult)
         {
             procResult = 0;
-            return new stp_multiple_identical_resultsReturnModel();
+            return new List<stp_multiple_identical_resultsReturnModel>();
         }
 
-        public Task<stp_multiple_identical_resultsReturnModel> stp_multiple_identical_resultsAsync(int? someVar)
+        public Task<List<stp_multiple_identical_resultsReturnModel>> stp_multiple_identical_resultsAsync(int? someVar = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(stp_multiple_identical_results(someVar, out procResult));
         }
 
         public DbSet<stp_multiple_multiple_results_with_paramsReturnModel> stp_multiple_multiple_results_with_paramsReturnModel { get; set; }
-        public stp_multiple_multiple_results_with_paramsReturnModel stp_multiple_multiple_results_with_params(int? firstval, int? secondval, int? thirdval)
+        public stp_multiple_multiple_results_with_paramsReturnModel stp_multiple_multiple_results_with_params(int? firstval = null, int? secondval = null, int? thirdval = null)
         {
             int procResult;
             return stp_multiple_multiple_results_with_params(firstval, secondval, thirdval, out procResult);
@@ -2531,11 +2864,7 @@ namespace Efrpg.V4TestE6
             return new stp_multiple_multiple_results_with_paramsReturnModel();
         }
 
-        public Task<stp_multiple_multiple_results_with_paramsReturnModel> stp_multiple_multiple_results_with_paramsAsync(int? firstval, int? secondval, int? thirdval)
-        {
-            int procResult;
-            return Task.FromResult(stp_multiple_multiple_results_with_params(firstval, secondval, thirdval, out procResult));
-        }
+        // stp_multiple_multiple_results_with_paramsAsync() cannot be created due to having out parameters, or is relying on the procedure result (stp_multiple_multiple_results_with_paramsReturnModel)
 
         public DbSet<stp_multiple_resultsReturnModel> stp_multiple_resultsReturnModel { get; set; }
         public stp_multiple_resultsReturnModel stp_multiple_results()
@@ -2550,14 +2879,10 @@ namespace Efrpg.V4TestE6
             return new stp_multiple_resultsReturnModel();
         }
 
-        public Task<stp_multiple_resultsReturnModel> stp_multiple_resultsAsync()
-        {
-            int procResult;
-            return Task.FromResult(stp_multiple_results(out procResult));
-        }
+        // stp_multiple_resultsAsync() cannot be created due to having out parameters, or is relying on the procedure result (stp_multiple_resultsReturnModel)
 
         public DbSet<stp_multiple_results_with_paramsReturnModel> stp_multiple_results_with_paramsReturnModel { get; set; }
-        public stp_multiple_results_with_paramsReturnModel stp_multiple_results_with_params(int? firstval, int? secondval)
+        public stp_multiple_results_with_paramsReturnModel stp_multiple_results_with_params(int? firstval = null, int? secondval = null)
         {
             int procResult;
             return stp_multiple_results_with_params(firstval, secondval, out procResult);
@@ -2569,11 +2894,7 @@ namespace Efrpg.V4TestE6
             return new stp_multiple_results_with_paramsReturnModel();
         }
 
-        public Task<stp_multiple_results_with_paramsReturnModel> stp_multiple_results_with_paramsAsync(int? firstval, int? secondval)
-        {
-            int procResult;
-            return Task.FromResult(stp_multiple_results_with_params(firstval, secondval, out procResult));
-        }
+        // stp_multiple_results_with_paramsAsync() cannot be created due to having out parameters, or is relying on the procedure result (stp_multiple_results_with_paramsReturnModel)
 
         public DbSet<stp_no_params_testReturnModel> stp_no_params_testReturnModel { get; set; }
         public List<stp_no_params_testReturnModel> stp_no_params_test()
@@ -2588,7 +2909,7 @@ namespace Efrpg.V4TestE6
             return new List<stp_no_params_testReturnModel>();
         }
 
-        public Task<List<stp_no_params_testReturnModel>> stp_no_params_testAsync()
+        public Task<List<stp_no_params_testReturnModel>> stp_no_params_testAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(stp_no_params_test(out procResult));
@@ -2599,10 +2920,13 @@ namespace Efrpg.V4TestE6
             return 0;
         }
 
-        // stp_no_return_fieldsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> stp_no_return_fieldsAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         public DbSet<stp_nullable_params_testReturnModel> stp_nullable_params_testReturnModel { get; set; }
-        public List<stp_nullable_params_testReturnModel> stp_nullable_params_test(int? aval, int? bval)
+        public List<stp_nullable_params_testReturnModel> stp_nullable_params_test(int? aval = null, int? bval = null)
         {
             int procResult;
             return stp_nullable_params_test(aval, bval, out procResult);
@@ -2614,7 +2938,7 @@ namespace Efrpg.V4TestE6
             return new List<stp_nullable_params_testReturnModel>();
         }
 
-        public Task<List<stp_nullable_params_testReturnModel>> stp_nullable_params_testAsync(int? aval, int? bval)
+        public Task<List<stp_nullable_params_testReturnModel>> stp_nullable_params_testAsync(int? aval = null, int? bval = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(stp_nullable_params_test(aval, bval, out procResult));
@@ -2636,7 +2960,6 @@ namespace Efrpg.V4TestE6
 
         // stp_testAsync() cannot be created due to having out parameters, or is relying on the procedure result (List<stp_testReturnModel>)
 
-
         public DbSet<stp_test_underscore_testReturnModel> stp_test_underscore_testReturnModel { get; set; }
         public List<stp_test_underscore_testReturnModel> stp_test_underscore_test(string strDateFROM, string strdateto)
         {
@@ -2650,28 +2973,34 @@ namespace Efrpg.V4TestE6
             return new List<stp_test_underscore_testReturnModel>();
         }
 
-        public Task<List<stp_test_underscore_testReturnModel>> stp_test_underscore_testAsync(string strDateFROM, string strdateto)
+        public Task<List<stp_test_underscore_testReturnModel>> stp_test_underscore_testAsync(string strDateFROM, string strdateto, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(stp_test_underscore_test(strDateFROM, strdateto, out procResult));
         }
 
-        public int StupidStoredProcedureParams(string reqType, short? dept, short? @class, short? item)
+        public int StupidStoredProcedureParams(string reqType, short? dept = null, short? @class = null, short? item = null)
         {
             return 0;
         }
 
-        // StupidStoredProcedureParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> StupidStoredProcedureParamsAsync(string reqType, short? dept = null, short? @class = null, short? item = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
-        public int StupidStoredProcedureParams2(string @override, short? @readonly, short? @class, short? @enum)
+        public int StupidStoredProcedureParams2(string @override, short? @readonly = null, short? @class = null, short? @enum = null)
         {
             return 0;
         }
 
-        // StupidStoredProcedureParams2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> StupidStoredProcedureParams2Async(string @override, short? @readonly = null, short? @class = null, short? @enum = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         public DbSet<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProcReturnModel { get; set; }
-        public List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt)
+        public List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt = null)
         {
             int procResult;
             return Synonyms_SimpleStoredProc(inputInt, out procResult);
@@ -2683,7 +3012,7 @@ namespace Efrpg.V4TestE6
             return new List<Synonyms_SimpleStoredProcReturnModel>();
         }
 
-        public Task<List<Synonyms_SimpleStoredProcReturnModel>> Synonyms_SimpleStoredProcAsync(int? inputInt)
+        public Task<List<Synonyms_SimpleStoredProcReturnModel>> Synonyms_SimpleStoredProcAsync(int? inputInt = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(Synonyms_SimpleStoredProc(inputInt, out procResult));
@@ -2702,18 +3031,30 @@ namespace Efrpg.V4TestE6
             return new List<TestReturnStringReturnModel>();
         }
 
-        public Task<List<TestReturnStringReturnModel>> TestReturnStringAsync()
+        public Task<List<TestReturnStringReturnModel>> TestReturnStringAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(TestReturnString(out procResult));
         }
 
-        public int UserDefinedTypeSampleStoredProc(int? a, DataTable type, int? b)
+        public int ThisHasMixedOutParameters(DateTime? foo, out int? firstOutParam, DateTime? bar, out int? secondOutParam, DateTime? baz = null)
+        {
+            firstOutParam = default(int);
+            secondOutParam = default(int);
+            return 0;
+        }
+
+        // ThisHasMixedOutParametersAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int UserDefinedTypeSampleStoredProc(int? a, DataTable type, int? b = null)
         {
             return 0;
         }
 
-        // UserDefinedTypeSampleStoredProcAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> UserDefinedTypeSampleStoredProcAsync(int? a, DataTable type, int? b = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         public DbSet<XmlDataV1ReturnModel> XmlDataV1ReturnModel { get; set; }
         public List<XmlDataV1ReturnModel> XmlDataV1()
@@ -2728,7 +3069,7 @@ namespace Efrpg.V4TestE6
             return new List<XmlDataV1ReturnModel>();
         }
 
-        public Task<List<XmlDataV1ReturnModel>> XmlDataV1Async()
+        public Task<List<XmlDataV1ReturnModel>> XmlDataV1Async(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(XmlDataV1(out procResult));
@@ -2739,12 +3080,15 @@ namespace Efrpg.V4TestE6
             return 0;
         }
 
-        // XmlDataV2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> XmlDataV2Async(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         // Table Valued Functions
 
         // dbo.182_test1
-        public IQueryable<C182_test1ReturnModel> C182_test1(int? test)
+        public IQueryable<C182_test1ReturnModel> C182_test1(int? test = null)
         {
             return new List<C182_test1ReturnModel>().AsQueryable();
         }
@@ -2770,7 +3114,7 @@ namespace Efrpg.V4TestE6
         // Scalar Valued Functions
 
         // dbo.udfNetSale
-        public decimal udfNetSale(int? quantity, decimal? list_price, decimal? discount)
+        public decimal udfNetSale(int? quantity = null, decimal? list_price = null, decimal? discount = null)
         {
             return default(decimal);
         }
@@ -3503,14 +3847,24 @@ namespace Efrpg.V4TestE6
         // Reverse navigation
 
         /// <summary>
-        /// Child BlahBlahLink_readonlies where [BlahBlahLink_readonly].[BlahID] point to this entity (FK_BlahBlahLink_Blah_ro)
+        /// Child Blahs (Many-to-Many) mapped by table [BlahBlahLink]
         /// </summary>
-        public virtual ICollection<BlahBlahLink_readonly> BlahBlahLink_readonlies_BlahID { get; set; } // BlahBlahLink_readonly.FK_BlahBlahLink_Blah_ro
+        public virtual ICollection<Blah> Blahs_BlahID2 { get; set; } // Many to many mapping
 
         /// <summary>
-        /// Child BlahBlahLink_readonlies where [BlahBlahLink_readonly].[BlahID2] point to this entity (FK_BlahBlahLink_Blah_ro2)
+        /// Child Blahs (Many-to-Many) mapped by table [BlahBlahLink]
         /// </summary>
-        public virtual ICollection<BlahBlahLink_readonly> BlahBlahLink_readonlies_BlahID2 { get; set; } // BlahBlahLink_readonly.FK_BlahBlahLink_Blah_ro2
+        public virtual ICollection<Blah> Blahs1 { get; set; } // Many to many mapping
+
+        /// <summary>
+        /// Child Blahs (Many-to-Many) mapped by table [BlahBlahLink_readonly]
+        /// </summary>
+        public virtual ICollection<Blah> Blahs2 { get; set; } // Many to many mapping
+
+        /// <summary>
+        /// Child Blahs (Many-to-Many) mapped by table [BlahBlahLink_readonly]
+        /// </summary>
+        public virtual ICollection<Blah> Blahs3 { get; set; } // Many to many mapping
 
         /// <summary>
         /// Child BlahBlahLink_v2 where [BlahBlahLink_v2].[BlahID] point to this entity (FK_BlahBlahLinkv2_Blah_ro)
@@ -3523,71 +3877,20 @@ namespace Efrpg.V4TestE6
         public virtual ICollection<BlahBlahLink_v2> BlahBlahLink_v2_BlahID2 { get; set; } // BlahBlahLink_v2.FK_BlahBlahLinkv2_Blah_ro2
 
         /// <summary>
-        /// Child BlahBlahLinks where [BlahBlahLink].[BlahID] point to this entity (FK_BlahBlahLink_Blah)
+        /// Child Blargs (Many-to-Many) mapped by table [BlahBlargLink]
         /// </summary>
-        public virtual ICollection<BlahBlahLink> BlahBlahLinks_BlahID { get; set; } // BlahBlahLink.FK_BlahBlahLink_Blah
-
-        /// <summary>
-        /// Child BlahBlahLinks where [BlahBlahLink].[BlahID2] point to this entity (FK_BlahBlahLink_Blah2)
-        /// </summary>
-        public virtual ICollection<BlahBlahLink> BlahBlahLinks_BlahID2 { get; set; } // BlahBlahLink.FK_BlahBlahLink_Blah2
-
-        /// <summary>
-        /// Child BlahBlargLinks where [BlahBlargLink].[BlahID] point to this entity (FK_BlahBlargLink_Blah)
-        /// </summary>
-        public virtual ICollection<BlahBlargLink> BlahBlargLinks { get; set; } // BlahBlargLink.FK_BlahBlargLink_Blah
+        public virtual ICollection<Blarg> Blargs { get; set; } // Many to many mapping
 
         public Blah()
         {
-            BlahBlahLinks_BlahID = new List<BlahBlahLink>();
-            BlahBlahLinks_BlahID2 = new List<BlahBlahLink>();
-            BlahBlahLink_readonlies_BlahID = new List<BlahBlahLink_readonly>();
-            BlahBlahLink_readonlies_BlahID2 = new List<BlahBlahLink_readonly>();
             BlahBlahLink_v2_BlahID = new List<BlahBlahLink_v2>();
             BlahBlahLink_v2_BlahID2 = new List<BlahBlahLink_v2>();
-            BlahBlargLinks = new List<BlahBlargLink>();
+            Blahs1 = new List<Blah>();
+            Blahs_BlahID2 = new List<Blah>();
+            Blahs3 = new List<Blah>();
+            Blahs2 = new List<Blah>();
+            Blargs = new List<Blarg>();
         }
-    }
-
-    // BlahBlahLink
-    public class BlahBlahLink
-    {
-        public int BlahID { get; set; } // BlahID (Primary key)
-        public int BlahID2 { get; set; } // BlahID2 (Primary key)
-
-        // Foreign keys
-
-        /// <summary>
-        /// Parent Blah pointed by [BlahBlahLink].([BlahID]) (FK_BlahBlahLink_Blah)
-        /// </summary>
-        public virtual Blah Blah_BlahID { get; set; } // FK_BlahBlahLink_Blah
-
-        /// <summary>
-        /// Parent Blah pointed by [BlahBlahLink].([BlahID2]) (FK_BlahBlahLink_Blah2)
-        /// </summary>
-        public virtual Blah Blah_BlahID2 { get; set; } // FK_BlahBlahLink_Blah2
-    }
-
-    // BlahBlahLink_readonly
-    public class BlahBlahLink_readonly
-    {
-        public int BlahID { get; set; } // BlahID (Primary key)
-        public int BlahID2 { get; set; } // BlahID2 (Primary key)
-        public byte[] RowVersion { get; set; } // RowVersion (length: 8)
-        public int id { get; set; } // id
-        public int? id2 { get; private set; } // id2
-
-        // Foreign keys
-
-        /// <summary>
-        /// Parent Blah pointed by [BlahBlahLink_readonly].([BlahID]) (FK_BlahBlahLink_Blah_ro)
-        /// </summary>
-        public virtual Blah Blah_BlahID { get; set; } // FK_BlahBlahLink_Blah_ro
-
-        /// <summary>
-        /// Parent Blah pointed by [BlahBlahLink_readonly].([BlahID2]) (FK_BlahBlahLink_Blah_ro2)
-        /// </summary>
-        public virtual Blah Blah_BlahID2 { get; set; } // FK_BlahBlahLink_Blah_ro2
     }
 
     // BlahBlahLink_v2
@@ -3612,25 +3915,6 @@ namespace Efrpg.V4TestE6
         public virtual Blah Blah_BlahID2 { get; set; } // FK_BlahBlahLinkv2_Blah_ro2
     }
 
-    // BlahBlargLink
-    public class BlahBlargLink
-    {
-        public int BlahID { get; set; } // BlahID (Primary key)
-        public int BlargID { get; set; } // BlargID (Primary key)
-
-        // Foreign keys
-
-        /// <summary>
-        /// Parent Blah pointed by [BlahBlargLink].([BlahID]) (FK_BlahBlargLink_Blah)
-        /// </summary>
-        public virtual Blah Blah { get; set; } // FK_BlahBlargLink_Blah
-
-        /// <summary>
-        /// Parent Blarg pointed by [BlahBlargLink].([BlargID]) (FK_BlahBlargLink_Blarg)
-        /// </summary>
-        public virtual Blarg Blarg { get; set; } // FK_BlahBlargLink_Blarg
-    }
-
     // Blarg
     public class Blarg
     {
@@ -3639,13 +3923,13 @@ namespace Efrpg.V4TestE6
         // Reverse navigation
 
         /// <summary>
-        /// Child BlahBlargLinks where [BlahBlargLink].[BlargID] point to this entity (FK_BlahBlargLink_Blarg)
+        /// Child Blahs (Many-to-Many) mapped by table [BlahBlargLink]
         /// </summary>
-        public virtual ICollection<BlahBlargLink> BlahBlargLinks { get; set; } // BlahBlargLink.FK_BlahBlargLink_Blarg
+        public virtual ICollection<Blah> Blahs { get; set; } // Many to many mapping
 
         public Blarg()
         {
-            BlahBlargLinks = new List<BlahBlargLink>();
+            Blahs = new List<Blah>();
         }
     }
 
@@ -3709,9 +3993,9 @@ namespace Efrpg.V4TestE6
         // Reverse navigation
 
         /// <summary>
-        /// Child CarToColours where [CarToColour].[CarId] point to this entity (CarToColour_CarId)
+        /// Child Colours (Many-to-Many) mapped by table [CarToColour]
         /// </summary>
-        public virtual ICollection<CarToColour> CarToColours { get; set; } // CarToColour.CarToColour_CarId
+        public virtual ICollection<Colour> Colours { get; set; } // Many to many mapping
 
         // Foreign keys
 
@@ -3722,27 +4006,8 @@ namespace Efrpg.V4TestE6
 
         public Car()
         {
-            CarToColours = new List<CarToColour>();
+            Colours = new List<Colour>();
         }
-    }
-
-    // CarToColour
-    public class CarToColour
-    {
-        public int CarId { get; set; } // CarId (Primary key)
-        public int ColourId { get; set; } // ColourId (Primary key)
-
-        // Foreign keys
-
-        /// <summary>
-        /// Parent Car pointed by [CarToColour].([CarId]) (CarToColour_CarId)
-        /// </summary>
-        public virtual Car Car { get; set; } // CarToColour_CarId
-
-        /// <summary>
-        /// Parent Colour pointed by [CarToColour].([ColourId]) (CarToColour_ColourId)
-        /// </summary>
-        public virtual Colour Colour { get; set; } // CarToColour_ColourId
     }
 
     // ClientCreationState
@@ -3768,33 +4033,14 @@ namespace Efrpg.V4TestE6
         // Reverse navigation
 
         /// <summary>
-        /// Child CMS_FileTags where [CMS_FileTag].[FileId] point to this entity (FK_CMS_FileTag_CMS_File)
+        /// Child CMS_Tags (Many-to-Many) mapped by table [CMS_FileTag]
         /// </summary>
-        public virtual ICollection<CMS_FileTag> CMS_FileTags { get; set; } // CMS_FileTag.FK_CMS_FileTag_CMS_File
+        public virtual ICollection<CMS_Tag> CMS_Tags { get; set; } // Many to many mapping
 
         public CMS_File()
         {
-            CMS_FileTags = new List<CMS_FileTag>();
+            CMS_Tags = new List<CMS_Tag>();
         }
-    }
-
-    // CMS_FileTag
-    public class CMS_FileTag
-    {
-        public int FileId { get; set; } // FileId (Primary key)
-        public int TagId { get; set; } // TagId (Primary key)
-
-        // Foreign keys
-
-        /// <summary>
-        /// Parent CMS_File pointed by [CMS_FileTag].([FileId]) (FK_CMS_FileTag_CMS_File)
-        /// </summary>
-        public virtual CMS_File CMS_File { get; set; } // FK_CMS_FileTag_CMS_File
-
-        /// <summary>
-        /// Parent CMS_Tag pointed by [CMS_FileTag].([TagId]) (FK_CMS_FileTag_CMS_Tag)
-        /// </summary>
-        public virtual CMS_Tag CMS_Tag { get; set; } // FK_CMS_FileTag_CMS_Tag
     }
 
     // CMS_Tag
@@ -3806,13 +4052,13 @@ namespace Efrpg.V4TestE6
         // Reverse navigation
 
         /// <summary>
-        /// Child CMS_FileTags where [CMS_FileTag].[TagId] point to this entity (FK_CMS_FileTag_CMS_Tag)
+        /// Child CMS_Files (Many-to-Many) mapped by table [CMS_FileTag]
         /// </summary>
-        public virtual ICollection<CMS_FileTag> CMS_FileTags { get; set; } // CMS_FileTag.FK_CMS_FileTag_CMS_Tag
+        public virtual ICollection<CMS_File> CMS_Files { get; set; } // Many to many mapping
 
         public CMS_Tag()
         {
-            CMS_FileTags = new List<CMS_FileTag>();
+            CMS_Files = new List<CMS_File>();
         }
     }
 
@@ -3897,19 +4143,19 @@ namespace Efrpg.V4TestE6
         // Reverse navigation
 
         /// <summary>
-        /// Child Cars where [Car].[PrimaryColourId] point to this entity (CarPrimaryColourFK)
+        /// Child Cars (Many-to-Many) mapped by table [CarToColour]
         /// </summary>
-        public virtual ICollection<Car> Cars { get; set; } // Car.CarPrimaryColourFK
+        public virtual ICollection<Car> Cars_CarId { get; set; } // Many to many mapping
 
         /// <summary>
-        /// Child CarToColours where [CarToColour].[ColourId] point to this entity (CarToColour_ColourId)
+        /// Child Cars where [Car].[PrimaryColourId] point to this entity (CarPrimaryColourFK)
         /// </summary>
-        public virtual ICollection<CarToColour> CarToColours { get; set; } // CarToColour.CarToColour_ColourId
+        public virtual ICollection<Car> Cars_PrimaryColourId { get; set; } // Car.CarPrimaryColourFK
 
         public Colour()
         {
-            Cars = new List<Car>();
-            CarToColours = new List<CarToColour>();
+            Cars_PrimaryColourId = new List<Car>();
+            Cars_CarId = new List<Car>();
         }
     }
 
@@ -3926,7 +4172,7 @@ namespace Efrpg.V4TestE6
         public int? C163 { get; set; } // £
         public int? C38fred { get; set; } // &fred$
         public int? abc4792 { get; set; } // abc/\
-        public int? joe46bloggs { get; set; } // joe.bloggs
+        public int? joe_bloggs { get; set; } // joe.bloggs
         public int? simon_hughes { get; set; } // simon-hughes
         public string description { get; set; } // description (length: 20)
         public DateTime someDate { get; set; } // someDate
@@ -4329,6 +4575,30 @@ namespace Efrpg.V4TestE6
         public HierarchyId hid { get; set; } // hid
     }
 
+    // InflectorData
+    public class InflectorData
+    {
+        public int Id { get; set; } // Id (Primary key)
+    }
+
+    // InflectorStatus
+    public class InflectorStatus
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public int SayHelloTo { get; set; } // SayHelloTo
+        public int SignalData { get; set; } // SignalData
+        public int NotificationStatus { get; set; } // NotificationStatus
+        public int Status { get; set; } // Status
+        public int To { get; set; } // To
+        public int Data { get; set; } // Data
+    }
+
+    // InflectorTo
+    public class InflectorTo
+    {
+        public int Id { get; set; } // Id (Primary key)
+    }
+
     // Role
     public class Issue47_Role
     {
@@ -4426,9 +4696,9 @@ namespace Efrpg.V4TestE6
         // Reverse navigation
 
         /// <summary>
-        /// Child OneEightSix_IssueUploadedFiles where [IssueUploadedFile].[IssueId] point to this entity (FK_IssueUploadedFile_Issue)
+        /// Child OneEightSix_UploadedFiles (Many-to-Many) mapped by table [IssueUploadedFile]
         /// </summary>
-        public virtual ICollection<OneEightSix_IssueUploadedFile> OneEightSix_IssueUploadedFiles { get; set; } // IssueUploadedFile.FK_IssueUploadedFile_Issue
+        public virtual ICollection<OneEightSix_UploadedFile> OneEightSix_UploadedFiles { get; set; } // Many to many mapping
 
         // Foreign keys
 
@@ -4439,27 +4709,8 @@ namespace Efrpg.V4TestE6
 
         public OneEightSix_Issue()
         {
-            OneEightSix_IssueUploadedFiles = new List<OneEightSix_IssueUploadedFile>();
+            OneEightSix_UploadedFiles = new List<OneEightSix_UploadedFile>();
         }
-    }
-
-    // IssueUploadedFile
-    public class OneEightSix_IssueUploadedFile
-    {
-        public int UploadedFileId { get; set; } // UploadedFileId (Primary key)
-        public int IssueId { get; set; } // IssueId (Primary key)
-
-        // Foreign keys
-
-        /// <summary>
-        /// Parent OneEightSix_Issue pointed by [IssueUploadedFile].([IssueId]) (FK_IssueUploadedFile_Issue)
-        /// </summary>
-        public virtual OneEightSix_Issue OneEightSix_Issue { get; set; } // FK_IssueUploadedFile_Issue
-
-        /// <summary>
-        /// Parent OneEightSix_UploadedFile pointed by [IssueUploadedFile].([UploadedFileId]) (FK_IssueUploadedFile_UploadedFile)
-        /// </summary>
-        public virtual OneEightSix_UploadedFile OneEightSix_UploadedFile { get; set; } // FK_IssueUploadedFile_UploadedFile
     }
 
     // UploadedFile
@@ -4473,25 +4724,32 @@ namespace Efrpg.V4TestE6
         /// <summary>
         /// Child OneEightSix_Issues where [Issue].[ConsentDocumentId] point to this entity (FK_Issue_UploadedFileConsentDocument)
         /// </summary>
-        public virtual ICollection<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue.FK_Issue_UploadedFileConsentDocument
+        public virtual ICollection<OneEightSix_Issue> OneEightSix_Issues_ConsentDocumentId { get; set; } // Issue.FK_Issue_UploadedFileConsentDocument
 
         /// <summary>
-        /// Child OneEightSix_IssueUploadedFiles where [IssueUploadedFile].[UploadedFileId] point to this entity (FK_IssueUploadedFile_UploadedFile)
+        /// Child OneEightSix_Issues (Many-to-Many) mapped by table [IssueUploadedFile]
         /// </summary>
-        public virtual ICollection<OneEightSix_IssueUploadedFile> OneEightSix_IssueUploadedFiles { get; set; } // IssueUploadedFile.FK_IssueUploadedFile_UploadedFile
+        public virtual ICollection<OneEightSix_Issue> OneEightSix_Issues_IssueId { get; set; } // Many to many mapping
 
         public OneEightSix_UploadedFile()
         {
-            OneEightSix_Issues = new List<OneEightSix_Issue>();
-            OneEightSix_IssueUploadedFiles = new List<OneEightSix_IssueUploadedFile>();
+            OneEightSix_Issues_ConsentDocumentId = new List<OneEightSix_Issue>();
+            OneEightSix_Issues_IssueId = new List<OneEightSix_Issue>();
         }
+    }
+
+    // Period.Table
+    public class Period_Table
+    {
+        public int id { get; set; } // id (Primary key)
+        public int? joe_bloggs { get; set; } // joe.bloggs
     }
 
     // PeriodTestTable
     public class PeriodTestTable
     {
         public int id { get; set; } // id (Primary key)
-        public int? joe46bloggs { get; set; } // joe.bloggs
+        public int? joe_bloggs { get; set; } // joe.bloggs
     }
 
     // Person
@@ -4566,10 +4824,6 @@ namespace Efrpg.V4TestE6
 
         public PropertyTypesToAdd()
         {
-            defaultCheck = @"/****** Object:  Default [d_t_address_type_domain]    Script Date: 22/07/2015 14:28:05 ******/
-    CREATE DEFAULT [dbo].[d_t_address_type_domain] 
-    AS
-    'A'";
             Beta_Harish3485 = new List<Beta_Harish3485>();
         }
     }
@@ -4583,6 +4837,14 @@ namespace Efrpg.V4TestE6
         public short CntBySmallInt { get; set; } // CntBySmallInt
         public decimal CntByDecimal { get; set; } // CntByDecimal
         public decimal CntByNumeric { get; set; } // CntByNumeric
+    }
+
+    // SequenceTestPartTwo
+    public class SequenceTestPartTwo
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public long CntByBigInt { get; set; } // CntByBigInt
+        public byte CntByTinyInt { get; set; } // CntByTinyInt
     }
 
     // SmallDecimalTest
@@ -4681,6 +4943,13 @@ namespace Efrpg.V4TestE6
         }
     }
 
+    // table.with.multiple.periods
+    public class table_with_multiple_period
+    {
+        public int id { get; set; } // id (Primary key)
+        public string description { get; set; } // description (length: 20)
+    }
+
     // TableA
     public class TableA
     {
@@ -4728,25 +4997,6 @@ namespace Efrpg.V4TestE6
         public virtual TableB TableB1 { get; set; } // ParentTableB_Hierarchy
     }
 
-    // table mapping with space
-    public class tablemappingwithspace
-    {
-        public int id { get; set; } // id (Primary key)
-        public int idvalue { get; set; } // id value (Primary key)
-
-        // Foreign keys
-
-        /// <summary>
-        /// Parent tablewithspace pointed by [table mapping with space].([id]) (space1FK)
-        /// </summary>
-        public virtual tablewithspace tablewithspace { get; set; } // space1FK
-
-        /// <summary>
-        /// Parent tablewithspaceandincolumn pointed by [table mapping with space].([idvalue]) (space2FK)
-        /// </summary>
-        public virtual tablewithspaceandincolumn tablewithspaceandincolumn { get; set; } // space2FK
-    }
-
     // table with duplicate column names
     public class tablewithduplicatecolumnname
     {
@@ -4766,13 +5016,13 @@ namespace Efrpg.V4TestE6
         // Reverse navigation
 
         /// <summary>
-        /// Child tablemappingwithspaces where [table mapping with space].[id] point to this entity (space1FK)
+        /// Child tablewithspaceandincolumns (Many-to-Many) mapped by table [table mapping with space]
         /// </summary>
-        public virtual ICollection<tablemappingwithspace> tablemappingwithspaces { get; set; } // table mapping with space.space1FK
+        public virtual ICollection<tablewithspaceandincolumn> tablewithspaceandincolumns { get; set; } // Many to many mapping
 
         public tablewithspace()
         {
-            tablemappingwithspaces = new List<tablemappingwithspace>();
+            tablewithspaceandincolumns = new List<tablewithspaceandincolumn>();
         }
     }
 
@@ -4784,13 +5034,13 @@ namespace Efrpg.V4TestE6
         // Reverse navigation
 
         /// <summary>
-        /// Child tablemappingwithspaces where [table mapping with space].[id value] point to this entity (space2FK)
+        /// Child tablewithspaces (Many-to-Many) mapped by table [table mapping with space]
         /// </summary>
-        public virtual ICollection<tablemappingwithspace> tablemappingwithspaces { get; set; } // table mapping with space.space2FK
+        public virtual ICollection<tablewithspace> tablewithspaces { get; set; } // Many to many mapping
 
         public tablewithspaceandincolumn()
         {
-            tablemappingwithspaces = new List<tablemappingwithspace>();
+            tablewithspaces = new List<tablewithspace>();
         }
     }
 
@@ -4862,6 +5112,28 @@ namespace Efrpg.V4TestE6
         /// Parent tblOrder pointed by [tblOrderLines].([OrderID]) (tblOrdersFK)
         /// </summary>
         public virtual tblOrder tblOrder { get; set; } // tblOrdersFK
+    }
+
+    // TemporalDepartment
+    public class TemporalDepartment
+    {
+        public int DeptID { get; set; } // DeptID (Primary key)
+        public string DeptName { get; set; } // DeptName (length: 50)
+        public int? ManagerID { get; set; } // ManagerID
+        public int? ParentDeptID { get; set; } // ParentDeptID
+        public DateTime SysStartTime { get; set; } // SysStartTime
+        public DateTime SysEndTime { get; set; } // SysEndTime
+    }
+
+    // TemporalDepartmentHistory
+    public class TemporalDepartmentHistory
+    {
+        public int DeptID { get; set; } // DeptID (Primary key)
+        public string DeptName { get; set; } // DeptName (Primary key) (length: 50)
+        public int? ManagerID { get; set; } // ManagerID
+        public int? ParentDeptID { get; set; } // ParentDeptID
+        public DateTime SysStartTime { get; set; } // SysStartTime (Primary key)
+        public DateTime SysEndTime { get; set; } // SysEndTime (Primary key)
     }
 
     // The table 'Test' is not usable by entity framework because it
@@ -5003,6 +5275,13 @@ namespace Efrpg.V4TestE6
         public int Id { get; set; } // Id (Primary key)
         public byte[] Version { get; set; } // Version (length: 8)
         public int Number { get; set; } // Number
+    }
+
+    // view.with.multiple.periods
+    public class view_with_multiple_period
+    {
+        public int FkID { get; set; } // FkID
+        public string description { get; set; } // description (length: 20)
     }
 
     // view with space
@@ -5318,43 +5597,18 @@ namespace Efrpg.V4TestE6
             builder.HasKey(x => x.BlahID).HasName("PK_Blah").IsClustered();
 
             builder.Property(x => x.BlahID).HasColumnName(@"BlahID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-        }
-    }
-
-    // BlahBlahLink
-    public class BlahBlahLinkConfiguration : IEntityTypeConfiguration<BlahBlahLink>
-    {
-        public void Configure(EntityTypeBuilder<BlahBlahLink> builder)
-        {
-            builder.ToTable("BlahBlahLink", "dbo");
-            builder.HasKey(x => new { x.BlahID, x.BlahID2 }).HasName("PK_BlahBlahLink").IsClustered();
-
-            builder.Property(x => x.BlahID).HasColumnName(@"BlahID").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.BlahID2).HasColumnName(@"BlahID2").HasColumnType("int").IsRequired().ValueGeneratedNever();
-
-            // Foreign keys
-            builder.HasOne(a => a.Blah_BlahID).WithMany(b => b.BlahBlahLinks_BlahID).HasForeignKey(c => c.BlahID).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_BlahBlahLink_Blah");
-            builder.HasOne(a => a.Blah_BlahID2).WithMany(b => b.BlahBlahLinks_BlahID2).HasForeignKey(c => c.BlahID2).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_BlahBlahLink_Blah2");
-        }
-    }
-
-    // BlahBlahLink_readonly
-    public class BlahBlahLink_readonlyConfiguration : IEntityTypeConfiguration<BlahBlahLink_readonly>
-    {
-        public void Configure(EntityTypeBuilder<BlahBlahLink_readonly> builder)
-        {
-            builder.ToTable("BlahBlahLink_readonly", "dbo");
-            builder.HasKey(x => new { x.BlahID, x.BlahID2 }).HasName("PK_BlahBlahLink_ro").IsClustered();
-
-            builder.Property(x => x.BlahID).HasColumnName(@"BlahID").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.BlahID2).HasColumnName(@"BlahID2").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.RowVersion).HasColumnName(@"RowVersion").HasColumnType("timestamp(8)").IsRequired(false).IsFixedLength().HasMaxLength(8).IsRowVersion().IsConcurrencyToken();
-            builder.Property(x => x.id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.id2).HasColumnName(@"id2").HasColumnType("int").IsRequired(false).ValueGeneratedOnAddOrUpdate();
-
-            // Foreign keys
-            builder.HasOne(a => a.Blah_BlahID).WithMany(b => b.BlahBlahLink_readonlies_BlahID).HasForeignKey(c => c.BlahID).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_BlahBlahLink_Blah_ro");
-            builder.HasOne(a => a.Blah_BlahID2).WithMany(b => b.BlahBlahLink_readonlies_BlahID2).HasForeignKey(c => c.BlahID2).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_BlahBlahLink_Blah_ro2");
+            builder.HasMany<Blah>(t => t.Blahs_BlahID2).WithMany(t => t.Blahs1).UsingEntity<Dictionary<string, object>>("BlahBlahLink",
+                    j => j.HasOne<Blah>().WithMany().HasForeignKey("BlahID2"),
+                    j => j.HasOne<Blah>().WithMany().HasForeignKey("BlahID"),
+                    j => j.ToTable("BlahBlahLink", "dbo"));
+            builder.HasMany<Blah>(t => t.Blahs2).WithMany(t => t.Blahs3).UsingEntity<Dictionary<string, object>>("BlahBlahLink_readonly",
+                    j => j.HasOne<Blah>().WithMany().HasForeignKey("BlahID2"),
+                    j => j.HasOne<Blah>().WithMany().HasForeignKey("BlahID"),
+                    j => j.ToTable("BlahBlahLink_readonly", "dbo"));
+            builder.HasMany<Blarg>(t => t.Blargs).WithMany(t => t.Blahs).UsingEntity<Dictionary<string, object>>("BlahBlargLink",
+                    j => j.HasOne<Blarg>().WithMany().HasForeignKey("BlargID"),
+                    j => j.HasOne<Blah>().WithMany().HasForeignKey("BlahID"),
+                    j => j.ToTable("BlahBlargLink", "dbo"));
         }
     }
 
@@ -5375,23 +5629,6 @@ namespace Efrpg.V4TestE6
             // Foreign keys
             builder.HasOne(a => a.Blah_BlahID).WithMany(b => b.BlahBlahLink_v2_BlahID).HasForeignKey(c => c.BlahID).HasConstraintName("FK_BlahBlahLinkv2_Blah_ro");
             builder.HasOne(a => a.Blah_BlahID2).WithMany(b => b.BlahBlahLink_v2_BlahID2).HasForeignKey(c => c.BlahID2).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_BlahBlahLinkv2_Blah_ro2");
-        }
-    }
-
-    // BlahBlargLink
-    public class BlahBlargLinkConfiguration : IEntityTypeConfiguration<BlahBlargLink>
-    {
-        public void Configure(EntityTypeBuilder<BlahBlargLink> builder)
-        {
-            builder.ToTable("BlahBlargLink", "dbo");
-            builder.HasKey(x => new { x.BlahID, x.BlargID }).HasName("PK_BlahBlargLink").IsClustered();
-
-            builder.Property(x => x.BlahID).HasColumnName(@"BlahID").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.BlargID).HasColumnName(@"BlargID").HasColumnType("int").IsRequired().ValueGeneratedNever();
-
-            // Foreign keys
-            builder.HasOne(a => a.Blah).WithMany(b => b.BlahBlargLinks).HasForeignKey(c => c.BlahID).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_BlahBlargLink_Blah");
-            builder.HasOne(a => a.Blarg).WithMany(b => b.BlahBlargLinks).HasForeignKey(c => c.BlargID).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_BlahBlargLink_Blarg");
         }
     }
 
@@ -5470,24 +5707,11 @@ namespace Efrpg.V4TestE6
             builder.Property(x => x.computed_column_persisted).HasColumnName(@"computed_column_persisted").HasColumnType("int").IsRequired().ValueGeneratedOnAddOrUpdate();
 
             // Foreign keys
-            builder.HasOne(a => a.Colour).WithMany(b => b.Cars).HasForeignKey(c => c.PrimaryColourId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("CarPrimaryColourFK");
-        }
-    }
-
-    // CarToColour
-    public class CarToColourConfiguration : IEntityTypeConfiguration<CarToColour>
-    {
-        public void Configure(EntityTypeBuilder<CarToColour> builder)
-        {
-            builder.ToTable("CarToColour", "dbo");
-            builder.HasKey(x => new { x.CarId, x.ColourId }).HasName("PK_CarToColour").IsClustered();
-
-            builder.Property(x => x.CarId).HasColumnName(@"CarId").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.ColourId).HasColumnName(@"ColourId").HasColumnType("int").IsRequired().ValueGeneratedNever();
-
-            // Foreign keys
-            builder.HasOne(a => a.Car).WithMany(b => b.CarToColours).HasForeignKey(c => c.CarId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("CarToColour_CarId");
-            builder.HasOne(a => a.Colour).WithMany(b => b.CarToColours).HasForeignKey(c => c.ColourId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("CarToColour_ColourId");
+            builder.HasOne(a => a.Colour).WithMany(b => b.Cars_PrimaryColourId).HasForeignKey(c => c.PrimaryColourId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("CarPrimaryColourFK");
+            builder.HasMany<Colour>(t => t.Colours).WithMany(t => t.Cars_CarId).UsingEntity<Dictionary<string, object>>("CarToColour",
+                    j => j.HasOne<Colour>().WithMany().HasForeignKey("ColourId"),
+                    j => j.HasOne<Car>().WithMany().HasForeignKey("CarId"),
+                    j => j.ToTable("CarToColour", "dbo"));
         }
     }
 
@@ -5521,23 +5745,10 @@ namespace Efrpg.V4TestE6
             builder.Property(x => x.ValidStartDate).HasColumnName(@"ValidStartDate").HasColumnType("datetime").IsRequired(false);
             builder.Property(x => x.ValidEndDate).HasColumnName(@"ValidEndDate").HasColumnType("datetime").IsRequired(false);
             builder.Property(x => x.IsActive).HasColumnName(@"IsActive").HasColumnType("bit").IsRequired();
-        }
-    }
-
-    // CMS_FileTag
-    public class CMS_FileTagConfiguration : IEntityTypeConfiguration<CMS_FileTag>
-    {
-        public void Configure(EntityTypeBuilder<CMS_FileTag> builder)
-        {
-            builder.ToTable("CMS_FileTag", "dbo");
-            builder.HasKey(x => new { x.FileId, x.TagId });
-
-            builder.Property(x => x.FileId).HasColumnName(@"FileId").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.TagId).HasColumnName(@"TagId").HasColumnType("int").IsRequired().ValueGeneratedNever();
-
-            // Foreign keys
-            builder.HasOne(a => a.CMS_File).WithMany(b => b.CMS_FileTags).HasForeignKey(c => c.FileId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_CMS_FileTag_CMS_File");
-            builder.HasOne(a => a.CMS_Tag).WithMany(b => b.CMS_FileTags).HasForeignKey(c => c.TagId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_CMS_FileTag_CMS_Tag");
+            builder.HasMany<CMS_Tag>(t => t.CMS_Tags).WithMany(t => t.CMS_Files).UsingEntity<Dictionary<string, object>>("CMS_FileTag",
+                    j => j.HasOne<CMS_Tag>().WithMany().HasForeignKey("TagId"),
+                    j => j.HasOne<CMS_File>().WithMany().HasForeignKey("FileId"),
+                    j => j.ToTable("CMS_FileTag", "dbo"));
         }
     }
 
@@ -5647,7 +5858,7 @@ namespace Efrpg.V4TestE6
             builder.Property(x => x.C163).HasColumnName(@"£").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.C38fred).HasColumnName(@"&fred$").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.abc4792).HasColumnName(@"abc/\").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.joe46bloggs).HasColumnName(@"joe.bloggs").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.joe_bloggs).HasColumnName(@"joe.bloggs").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.simon_hughes).HasColumnName(@"simon-hughes").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.description).HasColumnName(@"description").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
             builder.Property(x => x.someDate).HasColumnName(@"someDate").HasColumnType("datetime2").IsRequired();
@@ -6055,6 +6266,48 @@ namespace Efrpg.V4TestE6
         }
     }
 
+    // InflectorData
+    public class InflectorDataConfiguration : IEntityTypeConfiguration<InflectorData>
+    {
+        public void Configure(EntityTypeBuilder<InflectorData> builder)
+        {
+            builder.ToTable("InflectorData", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK_InflectorData").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+        }
+    }
+
+    // InflectorStatus
+    public class InflectorStatusConfiguration : IEntityTypeConfiguration<InflectorStatus>
+    {
+        public void Configure(EntityTypeBuilder<InflectorStatus> builder)
+        {
+            builder.ToTable("InflectorStatus", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK_InflectorStatus").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.SayHelloTo).HasColumnName(@"SayHelloTo").HasColumnType("int").IsRequired();
+            builder.Property(x => x.SignalData).HasColumnName(@"SignalData").HasColumnType("int").IsRequired();
+            builder.Property(x => x.NotificationStatus).HasColumnName(@"NotificationStatus").HasColumnType("int").IsRequired();
+            builder.Property(x => x.Status).HasColumnName(@"Status").HasColumnType("int").IsRequired();
+            builder.Property(x => x.To).HasColumnName(@"To").HasColumnType("int").IsRequired();
+            builder.Property(x => x.Data).HasColumnName(@"Data").HasColumnType("int").IsRequired();
+        }
+    }
+
+    // InflectorTo
+    public class InflectorToConfiguration : IEntityTypeConfiguration<InflectorTo>
+    {
+        public void Configure(EntityTypeBuilder<InflectorTo> builder)
+        {
+            builder.ToTable("InflectorTo", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK_InflectorTo").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+        }
+    }
+
     // Role
     public class Issue47_RoleConfiguration : IEntityTypeConfiguration<Issue47_Role>
     {
@@ -6133,24 +6386,11 @@ namespace Efrpg.V4TestE6
             builder.Property(x => x.ConsentDocumentId).HasColumnName(@"ConsentDocumentId").HasColumnType("int").IsRequired(false);
 
             // Foreign keys
-            builder.HasOne(a => a.OneEightSix_UploadedFile).WithMany(b => b.OneEightSix_Issues).HasForeignKey(c => c.ConsentDocumentId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Issue_UploadedFileConsentDocument");
-        }
-    }
-
-    // IssueUploadedFile
-    public class OneEightSix_IssueUploadedFileConfiguration : IEntityTypeConfiguration<OneEightSix_IssueUploadedFile>
-    {
-        public void Configure(EntityTypeBuilder<OneEightSix_IssueUploadedFile> builder)
-        {
-            builder.ToTable("IssueUploadedFile", "OneEightSix");
-            builder.HasKey(x => new { x.UploadedFileId, x.IssueId }).HasName("PK_IssueUploadedFile").IsClustered();
-
-            builder.Property(x => x.UploadedFileId).HasColumnName(@"UploadedFileId").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.IssueId).HasColumnName(@"IssueId").HasColumnType("int").IsRequired().ValueGeneratedNever();
-
-            // Foreign keys
-            builder.HasOne(a => a.OneEightSix_Issue).WithMany(b => b.OneEightSix_IssueUploadedFiles).HasForeignKey(c => c.IssueId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_IssueUploadedFile_Issue");
-            builder.HasOne(a => a.OneEightSix_UploadedFile).WithMany(b => b.OneEightSix_IssueUploadedFiles).HasForeignKey(c => c.UploadedFileId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_IssueUploadedFile_UploadedFile");
+            builder.HasOne(a => a.OneEightSix_UploadedFile).WithMany(b => b.OneEightSix_Issues_ConsentDocumentId).HasForeignKey(c => c.ConsentDocumentId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Issue_UploadedFileConsentDocument");
+            builder.HasMany<OneEightSix_UploadedFile>(t => t.OneEightSix_UploadedFiles).WithMany(t => t.OneEightSix_Issues_IssueId).UsingEntity<Dictionary<string, object>>("IssueUploadedFile",
+                    j => j.HasOne<OneEightSix_UploadedFile>().WithMany().HasForeignKey("UploadedFileId"),
+                    j => j.HasOne<OneEightSix_Issue>().WithMany().HasForeignKey("IssueId"),
+                    j => j.ToTable("IssueUploadedFile", "OneEightSix"));
         }
     }
 
@@ -6167,6 +6407,19 @@ namespace Efrpg.V4TestE6
         }
     }
 
+    // Period.Table
+    public class Period_TableConfiguration : IEntityTypeConfiguration<Period_Table>
+    {
+        public void Configure(EntityTypeBuilder<Period_Table> builder)
+        {
+            builder.ToTable("Period.Table", "dbo");
+            builder.HasKey(x => x.id).HasName("PK_Period_Table").IsClustered();
+
+            builder.Property(x => x.id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.joe_bloggs).HasColumnName(@"joe.bloggs").HasColumnType("int").IsRequired(false);
+        }
+    }
+
     // PeriodTestTable
     public class PeriodTestTableConfiguration : IEntityTypeConfiguration<PeriodTestTable>
     {
@@ -6176,7 +6429,7 @@ namespace Efrpg.V4TestE6
             builder.HasKey(x => x.id).HasName("PK_PeriodTestTable").IsClustered();
 
             builder.Property(x => x.id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.joe46bloggs).HasColumnName(@"joe.bloggs").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.joe_bloggs).HasColumnName(@"joe.bloggs").HasColumnType("int").IsRequired(false);
         }
     }
 
@@ -6256,6 +6509,20 @@ namespace Efrpg.V4TestE6
             builder.Property(x => x.CntBySmallInt).HasColumnName(@"CntBySmallInt").HasColumnType("smallint").IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountBySmallInt]");
             builder.Property(x => x.CntByDecimal).HasColumnName(@"CntByDecimal").HasColumnType("decimal(18,0)").HasPrecision(18,0).IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountByDecimal]");
             builder.Property(x => x.CntByNumeric).HasColumnName(@"CntByNumeric").HasColumnType("numeric(18,0)").HasPrecision(18,0).IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountByNumeric]");
+        }
+    }
+
+    // SequenceTestPartTwo
+    public class SequenceTestPartTwoConfiguration : IEntityTypeConfiguration<SequenceTestPartTwo>
+    {
+        public void Configure(EntityTypeBuilder<SequenceTestPartTwo> builder)
+        {
+            builder.ToTable("SequenceTestPartTwo", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK_SequenceTestPartTwo").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.CntByBigInt).HasColumnName(@"CntByBigInt").HasColumnType("bigint").IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountByBigInt]");
+            builder.Property(x => x.CntByTinyInt).HasColumnName(@"CntByTinyInt").HasColumnType("tinyint").IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountByTinyInt]");
         }
     }
 
@@ -6358,6 +6625,19 @@ namespace Efrpg.V4TestE6
         }
     }
 
+    // table.with.multiple.periods
+    public class table_with_multiple_periodConfiguration : IEntityTypeConfiguration<table_with_multiple_period>
+    {
+        public void Configure(EntityTypeBuilder<table_with_multiple_period> builder)
+        {
+            builder.ToTable("table.with.multiple.periods", "dbo");
+            builder.HasKey(x => x.id).HasName("PK_table_with_multiple_periods").IsClustered();
+
+            builder.Property(x => x.id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.description).HasColumnName(@"description").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
+        }
+    }
+
     // TableA
     public class TableAConfiguration : IEntityTypeConfiguration<TableA>
     {
@@ -6392,23 +6672,6 @@ namespace Efrpg.V4TestE6
         }
     }
 
-    // table mapping with space
-    public class tablemappingwithspaceConfiguration : IEntityTypeConfiguration<tablemappingwithspace>
-    {
-        public void Configure(EntityTypeBuilder<tablemappingwithspace> builder)
-        {
-            builder.ToTable("table mapping with space", "dbo");
-            builder.HasKey(x => new { x.id, x.idvalue }).HasName("PK_TableMappingWithSpace").IsClustered();
-
-            builder.Property(x => x.id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.idvalue).HasColumnName(@"id value").HasColumnType("int").IsRequired().ValueGeneratedNever();
-
-            // Foreign keys
-            builder.HasOne(a => a.tablewithspace).WithMany(b => b.tablemappingwithspaces).HasForeignKey(c => c.id).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("space1FK");
-            builder.HasOne(a => a.tablewithspaceandincolumn).WithMany(b => b.tablemappingwithspaces).HasForeignKey(c => c.idvalue).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("space2FK");
-        }
-    }
-
     // table with duplicate column names
     public class tablewithduplicatecolumnnameConfiguration : IEntityTypeConfiguration<tablewithduplicatecolumnname>
     {
@@ -6435,6 +6698,10 @@ namespace Efrpg.V4TestE6
             builder.HasKey(x => x.id).HasName("PK_TableWithSpace").IsClustered();
 
             builder.Property(x => x.id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.HasMany<tablewithspaceandincolumn>(t => t.tablewithspaceandincolumns).WithMany(t => t.tablewithspaces).UsingEntity<Dictionary<string, object>>("table mapping with space",
+                    j => j.HasOne<tablewithspaceandincolumn>().WithMany().HasForeignKey("id value"),
+                    j => j.HasOne<tablewithspace>().WithMany().HasForeignKey("id"),
+                    j => j.ToTable("table mapping with space", "dbo"));
         }
     }
 
@@ -6542,6 +6809,42 @@ namespace Efrpg.V4TestE6
 
             // Foreign keys
             builder.HasOne(a => a.tblOrder).WithMany(b => b.tblOrderLines).HasForeignKey(c => c.OrderID).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("tblOrdersFK");
+        }
+    }
+
+    // TemporalDepartment
+    public class TemporalDepartmentConfiguration : IEntityTypeConfiguration<TemporalDepartment>
+    {
+        public void Configure(EntityTypeBuilder<TemporalDepartment> builder)
+        {
+            builder.ToTable("TemporalDepartment", "dbo");
+            builder.HasKey(x => x.DeptID).HasName("PK__Temporal__0148818EB27A7514").IsClustered();
+
+            builder.Property(x => x.DeptID).HasColumnName(@"DeptID").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.DeptName).HasColumnName(@"DeptName").HasColumnType("varchar(50)").IsRequired().IsUnicode(false).HasMaxLength(50);
+            builder.Property(x => x.ManagerID).HasColumnName(@"ManagerID").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.ParentDeptID).HasColumnName(@"ParentDeptID").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.SysStartTime).HasColumnName(@"SysStartTime").HasColumnType("datetime2").IsRequired().ValueGeneratedOnAdd();
+            builder.Property(x => x.SysEndTime).HasColumnName(@"SysEndTime").HasColumnType("datetime2").IsRequired().ValueGeneratedOnAdd();
+        }
+    }
+
+    // TemporalDepartmentHistory
+    public class TemporalDepartmentHistoryConfiguration : IEntityTypeConfiguration<TemporalDepartmentHistory>
+    {
+        public void Configure(EntityTypeBuilder<TemporalDepartmentHistory> builder)
+        {
+            builder.ToTable("TemporalDepartmentHistory", "dbo");
+            builder.HasKey(x => new { x.DeptID, x.DeptName, x.SysStartTime, x.SysEndTime });
+
+            builder.Property(x => x.DeptID).HasColumnName(@"DeptID").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.DeptName).HasColumnName(@"DeptName").HasColumnType("varchar(50)").IsRequired().IsUnicode(false).HasMaxLength(50).ValueGeneratedNever();
+            builder.Property(x => x.ManagerID).HasColumnName(@"ManagerID").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.ParentDeptID).HasColumnName(@"ParentDeptID").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.SysStartTime).HasColumnName(@"SysStartTime").HasColumnType("datetime2").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.SysEndTime).HasColumnName(@"SysEndTime").HasColumnType("datetime2").IsRequired().ValueGeneratedNever();
+
+            builder.HasIndex(x => new { x.SysEndTime, x.SysStartTime }).HasDatabaseName("ix_TemporalDepartmentHistory");
         }
     }
 
@@ -6694,6 +6997,19 @@ namespace Efrpg.V4TestE6
         }
     }
 
+    // view.with.multiple.periods
+    public class view_with_multiple_periodConfiguration : IEntityTypeConfiguration<view_with_multiple_period>
+    {
+        public void Configure(EntityTypeBuilder<view_with_multiple_period> builder)
+        {
+            builder.ToView("view.with.multiple.periods", "dbo");
+            builder.HasNoKey();
+
+            builder.Property(x => x.FkID).HasColumnName(@"FkID").HasColumnType("int").IsRequired();
+            builder.Property(x => x.description).HasColumnName(@"description").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
+        }
+    }
+
     // view with space
     public class viewwithspaceConfiguration : IEntityTypeConfiguration<viewwithspace>
     {
@@ -6770,6 +7086,12 @@ namespace Efrpg.V4TestE6
 
     #region Stored procedure return models
 
+    public class aSimpleExampleReturnModel
+    {
+        public int? id { get; set; }
+        public string stuff { get; set; }
+    }
+
     public class C182_test1ReturnModel
     {
         public int? Id { get; set; }
@@ -6800,18 +7122,8 @@ namespace Efrpg.V4TestE6
 
     public class CheckIfApplicationIsCompleteReturnModel
     {
-        public class ResultSetModel1
-        {
-            public string Key { get; set; }
-            public string Value { get; set; }
-        }
-        public List<ResultSetModel1> ResultSet1;
-        public class ResultSetModel2
-        {
-            public string Key { get; set; }
-            public string Value { get; set; }
-        }
-        public List<ResultSetModel2> ResultSet2;
+        public string Key { get; set; }
+        public string Value { get; set; }
     }
 
     public class ColourPivotReturnModel
@@ -6893,18 +7205,8 @@ namespace Efrpg.V4TestE6
 
     public class stp_multiple_identical_resultsReturnModel
     {
-        public class ResultSetModel1
-        {
-            public int Id { get; set; }
-            public string Name { get; set; }
-        }
-        public List<ResultSetModel1> ResultSet1;
-        public class ResultSetModel2
-        {
-            public int Id { get; set; }
-            public string Name { get; set; }
-        }
-        public List<ResultSetModel2> ResultSet2;
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 
     public class stp_multiple_multiple_results_with_paramsReturnModel

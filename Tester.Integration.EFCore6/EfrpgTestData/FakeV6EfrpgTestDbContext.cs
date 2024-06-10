@@ -71,18 +71,23 @@ namespace V6EfrpgTest
         public DbSet<HasPrincipalKeyTestParent> HasPrincipalKeyTestParents { get; set; } // HasPrincipalKeyTestParent
         public DbSet<Header> Headers { get; set; } // header
         public DbSet<HierarchyTest> HierarchyTests { get; set; } // hierarchy_test
+        public DbSet<InflectorData> InflectorData { get; set; } // InflectorData
+        public DbSet<InflectorStatus> InflectorStatus { get; set; } // InflectorStatus
+        public DbSet<InflectorTo> InflectorTo { get; set; } // InflectorTo
         public DbSet<Issue47_Role> Issue47_Roles { get; set; } // Role
         public DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
         public DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
         public DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
         public DbSet<OneEightSix_UploadedFile> OneEightSix_UploadedFiles { get; set; } // UploadedFile
+        public DbSet<PeriodTable> PeriodTables { get; set; } // Period.Table
         public DbSet<PeriodTestTable> PeriodTestTables { get; set; } // PeriodTestTable
         public DbSet<Person> People { get; set; } // Person
         public DbSet<PersonPost> PersonPosts { get; set; } // PersonPosts
         public DbSet<PkOrdinalTest> PkOrdinalTests { get; set; } // pk_ordinal_test
         public DbSet<PropertyTypesToAdd> PropertyTypesToAdds { get; set; } // PropertyTypesToAdd
         public DbSet<SequenceTest> SequenceTests { get; set; } // SequenceTest
+        public DbSet<SequenceTestPartTwo> SequenceTestPartTwoes { get; set; } // SequenceTestPartTwo
         public DbSet<SmallDecimalTest> SmallDecimalTests { get; set; } // SmallDecimalTest
         public DbSet<SmallDecimalTestView> SmallDecimalTestViews { get; set; } // SmallDecimalTestView
         public DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
@@ -93,6 +98,7 @@ namespace V6EfrpgTest
         public DbSet<TableA> TableAs { get; set; } // TableA
         public DbSet<TableB> TableBs { get; set; } // TableB
         public DbSet<TableWithDuplicateColumnName> TableWithDuplicateColumnNames { get; set; } // table with duplicate column names
+        public DbSet<TableWithMultiplePeriod> TableWithMultiplePeriods { get; set; } // table.with.multiple.periods
         public DbSet<TableWithSpace> TableWithSpaces { get; set; } // table with space
         public DbSet<TableWithSpaceAndInColumn> TableWithSpaceAndInColumns { get; set; } // table with space and in columns
         public DbSet<TableWithSpaceInColumnOnly> TableWithSpaceInColumnOnlies { get; set; } // TableWithSpaceInColumnOnly
@@ -102,6 +108,8 @@ namespace V6EfrpgTest
         public DbSet<TblOrderError> TblOrderErrors { get; set; } // tblOrderErrors
         public DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
         public DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
+        public DbSet<TemporalDepartment> TemporalDepartments { get; set; } // TemporalDepartment
+        public DbSet<TemporalDepartmentHistory> TemporalDepartmentHistories { get; set; } // TemporalDepartmentHistory
         public DbSet<ThisIsMemoryOptimised> ThisIsMemoryOptimiseds { get; set; } // ThisIsMemoryOptimised
         public DbSet<Ticket> Tickets { get; set; } // Ticket
         public DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
@@ -112,6 +120,7 @@ namespace V6EfrpgTest
         public DbSet<UserDocument> UserDocuments { get; set; } // User_Document
         public DbSet<Versioned> Versioneds { get; set; } // Versioned
         public DbSet<VersionedNullable> VersionedNullables { get; set; } // VersionedNullable
+        public DbSet<ViewWithMultiplePeriod> ViewWithMultiplePeriods { get; set; } // view.with.multiple.periods
         public DbSet<ViewWithSpace> ViewWithSpaces { get; set; } // view with space
         public DbSet<WVN_Article> WVN_Articles { get; set; } // Articles
         public DbSet<WVN_VArticle> WVN_VArticles { get; set; } // v_Articles
@@ -177,18 +186,23 @@ namespace V6EfrpgTest
             HasPrincipalKeyTestParents = new FakeDbSet<HasPrincipalKeyTestParent>("Id");
             Headers = new FakeDbSet<Header>("Id", "AnotherId");
             HierarchyTests = new FakeDbSet<HierarchyTest>("Id");
+            InflectorData = new FakeDbSet<InflectorData>("Id");
+            InflectorStatus = new FakeDbSet<InflectorStatus>("Id");
+            InflectorTo = new FakeDbSet<InflectorTo>("Id");
             Issue47_Roles = new FakeDbSet<Issue47_Role>("RoleId");
             Issue47_Users = new FakeDbSet<Issue47_User>("UserId");
             Issue47_UserRoles = new FakeDbSet<Issue47_UserRole>("UserRoleId");
             MultipleKeys = new FakeDbSet<MultipleKey>("UserId", "FavouriteColourId", "BestHolidayTypeId");
             OneEightSix_Issues = new FakeDbSet<OneEightSix_Issue>("Id");
             OneEightSix_UploadedFiles = new FakeDbSet<OneEightSix_UploadedFile>("Id");
+            PeriodTables = new FakeDbSet<PeriodTable>("Id");
             PeriodTestTables = new FakeDbSet<PeriodTestTable>("Id");
             People = new FakeDbSet<Person>("Id");
             PersonPosts = new FakeDbSet<PersonPost>("Id");
             PkOrdinalTests = new FakeDbSet<PkOrdinalTest>("C3", "C1");
             PropertyTypesToAdds = new FakeDbSet<PropertyTypesToAdd>("Id");
             SequenceTests = new FakeDbSet<SequenceTest>("Id");
+            SequenceTestPartTwoes = new FakeDbSet<SequenceTestPartTwo>("Id");
             SmallDecimalTests = new FakeDbSet<SmallDecimalTest>("Id");
             SmallDecimalTestViews = new FakeDbSet<SmallDecimalTestView>();
             Stafford_Boos = new FakeDbSet<Stafford_Boo>("Id");
@@ -199,6 +213,7 @@ namespace V6EfrpgTest
             TableAs = new FakeDbSet<TableA>("TableAId");
             TableBs = new FakeDbSet<TableB>("TableBId", "TableAId");
             TableWithDuplicateColumnNames = new FakeDbSet<TableWithDuplicateColumnName>("Id");
+            TableWithMultiplePeriods = new FakeDbSet<TableWithMultiplePeriod>("Id");
             TableWithSpaces = new FakeDbSet<TableWithSpace>("Id");
             TableWithSpaceAndInColumns = new FakeDbSet<TableWithSpaceAndInColumn>("IdValue");
             TableWithSpaceInColumnOnlies = new FakeDbSet<TableWithSpaceInColumnOnly>("IdValue");
@@ -208,6 +223,8 @@ namespace V6EfrpgTest
             TblOrderErrors = new FakeDbSet<TblOrderError>("Id");
             TblOrderErrorsAbs = new FakeDbSet<TblOrderErrorsAb>("Id");
             TblOrderLines = new FakeDbSet<TblOrderLine>("Id");
+            TemporalDepartments = new FakeDbSet<TemporalDepartment>("DeptId");
+            TemporalDepartmentHistories = new FakeDbSet<TemporalDepartmentHistory>("DeptId", "DeptName", "SysStartTime", "SysEndTime");
             ThisIsMemoryOptimiseds = new FakeDbSet<ThisIsMemoryOptimised>("Id");
             Tickets = new FakeDbSet<Ticket>("Id");
             TimestampNotNulls = new FakeDbSet<TimestampNotNull>("Id");
@@ -218,6 +235,7 @@ namespace V6EfrpgTest
             UserDocuments = new FakeDbSet<UserDocument>("Id");
             Versioneds = new FakeDbSet<Versioned>("Id");
             VersionedNullables = new FakeDbSet<VersionedNullable>("Id");
+            ViewWithMultiplePeriods = new FakeDbSet<ViewWithMultiplePeriod>();
             ViewWithSpaces = new FakeDbSet<ViewWithSpace>();
             WVN_Articles = new FakeDbSet<WVN_Article>("PkArticle");
             WVN_VArticles = new FakeDbSet<WVN_VArticle>();
@@ -421,12 +439,15 @@ namespace V6EfrpgTest
 
         // Stored Procedures
 
-        public int AddTwoValues(int? a, int? b)
+        public int AddTwoValues(int? a = null, int? b = null)
         {
             return 0;
         }
 
-        // AddTwoValuesAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> AddTwoValuesAsync(int? a = null, int? b = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         public int AddTwoValuesWithResult(int? a, int? b, out int? result, out int? result2)
         {
@@ -437,12 +458,15 @@ namespace V6EfrpgTest
 
         // AddTwoValuesWithResultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int Alpha_Overclock(DateTime? parameter)
+        public int Alpha_Overclock(DateTime? parameter = null)
         {
             return 0;
         }
 
-        // Alpha_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> Alpha_OverclockAsync(DateTime? parameter = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         public int App_UspCmtUserFsrUpdate(int? userId, int? fsrId, out int? ufsrId)
         {
@@ -452,22 +476,37 @@ namespace V6EfrpgTest
 
         // App_UspCmtUserFsrUpdateAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int ASimpleExample()
+        public DbSet<ASimpleExampleReturnModel> ASimpleExampleReturnModel { get; set; }
+        public List<ASimpleExampleReturnModel> ASimpleExample()
+        {
+            int procResult;
+            return ASimpleExample(out procResult);
+        }
+
+        public List<ASimpleExampleReturnModel> ASimpleExample(out int procResult)
+        {
+            procResult = 0;
+            return new List<ASimpleExampleReturnModel>();
+        }
+
+        public Task<List<ASimpleExampleReturnModel>> ASimpleExampleAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            int procResult;
+            return Task.FromResult(ASimpleExample(out procResult));
+        }
+
+        public int Beta_Overclock(DateTime? parameter = null)
         {
             return 0;
         }
 
-        // ASimpleExampleAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
-
-        public int Beta_Overclock(DateTime? parameter)
+        public Task<int> Beta_OverclockAsync(DateTime? parameter = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return 0;
+            return Task.FromResult(0);
         }
-
-        // Beta_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         public DbSet<C182Test2ReturnModel> C182Test2ReturnModel { get; set; }
-        public C182Test2ReturnModel C182Test2(int? flag)
+        public C182Test2ReturnModel C182Test2(int? flag = null)
         {
             int procResult;
             return C182Test2(flag, out procResult);
@@ -479,28 +518,23 @@ namespace V6EfrpgTest
             return new C182Test2ReturnModel();
         }
 
-        public Task<C182Test2ReturnModel> C182Test2Async(int? flag)
-        {
-            int procResult;
-            return Task.FromResult(C182Test2(flag, out procResult));
-        }
+        // C182Test2Async() cannot be created due to having out parameters, or is relying on the procedure result (C182Test2ReturnModel)
 
         public DbSet<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsCompleteReturnModel { get; set; }
-        public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete)
+        public List<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete)
         {
             int procResult;
             return CheckIfApplicationIsComplete(applicationId, out isApplicationComplete, out procResult);
         }
 
-        public CheckIfApplicationIsCompleteReturnModel CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete, out int procResult)
+        public List<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete, out int procResult)
         {
             isApplicationComplete = default(bool);
             procResult = 0;
-            return new CheckIfApplicationIsCompleteReturnModel();
+            return new List<CheckIfApplicationIsCompleteReturnModel>();
         }
 
-        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (CheckIfApplicationIsCompleteReturnModel)
-
+        // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (List<CheckIfApplicationIsCompleteReturnModel>)
 
         public DbSet<ColourPivotReturnModel> ColourPivotReturnModel { get; set; }
         public List<ColourPivotReturnModel> ColourPivot()
@@ -515,7 +549,7 @@ namespace V6EfrpgTest
             return new List<ColourPivotReturnModel>();
         }
 
-        public Task<List<ColourPivotReturnModel>> ColourPivotAsync()
+        public Task<List<ColourPivotReturnModel>> ColourPivotAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(ColourPivot(out procResult));
@@ -534,7 +568,7 @@ namespace V6EfrpgTest
             return new List<ColumnNameAndTypesProcReturnModel>();
         }
 
-        public Task<List<ColumnNameAndTypesProcReturnModel>> ColumnNameAndTypesProcAsync()
+        public Task<List<ColumnNameAndTypesProcReturnModel>> ColumnNameAndTypesProcAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(ColumnNameAndTypesProc(out procResult));
@@ -549,7 +583,7 @@ namespace V6EfrpgTest
         // ConvertToStringAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         public DbSet<DboProcDataFromFfrsReturnModel> DboProcDataFromFfrsReturnModel { get; set; }
-        public List<DboProcDataFromFfrsReturnModel> DboProcDataFromFfrs(int? maxId)
+        public List<DboProcDataFromFfrsReturnModel> DboProcDataFromFfrs(int? maxId = null)
         {
             int procResult;
             return DboProcDataFromFfrs(maxId, out procResult);
@@ -561,7 +595,7 @@ namespace V6EfrpgTest
             return new List<DboProcDataFromFfrsReturnModel>();
         }
 
-        public Task<List<DboProcDataFromFfrsReturnModel>> DboProcDataFromFfrsAsync(int? maxId)
+        public Task<List<DboProcDataFromFfrsReturnModel>> DboProcDataFromFfrsAsync(int? maxId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(DboProcDataFromFfrs(maxId, out procResult));
@@ -580,7 +614,7 @@ namespace V6EfrpgTest
             return new List<DboProcDataFromFfrsAndDboReturnModel>();
         }
 
-        public Task<List<DboProcDataFromFfrsAndDboReturnModel>> DboProcDataFromFfrsAndDboAsync()
+        public Task<List<DboProcDataFromFfrsAndDboReturnModel>> DboProcDataFromFfrsAndDboAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(DboProcDataFromFfrsAndDbo(out procResult));
@@ -599,14 +633,14 @@ namespace V6EfrpgTest
             return new List<DsOpeProcReturnModel>();
         }
 
-        public Task<List<DsOpeProcReturnModel>> DsOpeProcAsync()
+        public Task<List<DsOpeProcReturnModel>> DsOpeProcAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(DsOpeProc(out procResult));
         }
 
         public DbSet<FFRS_CvDataReturnModel> FFRS_CvDataReturnModel { get; set; }
-        public List<FFRS_CvDataReturnModel> FFRS_CvData(int? maxId)
+        public List<FFRS_CvDataReturnModel> FFRS_CvData(int? maxId = null)
         {
             int procResult;
             return FFRS_CvData(maxId, out procResult);
@@ -618,7 +652,7 @@ namespace V6EfrpgTest
             return new List<FFRS_CvDataReturnModel>();
         }
 
-        public Task<List<FFRS_CvDataReturnModel>> FFRS_CvDataAsync(int? maxId)
+        public Task<List<FFRS_CvDataReturnModel>> FFRS_CvDataAsync(int? maxId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(FFRS_CvData(maxId, out procResult));
@@ -637,7 +671,7 @@ namespace V6EfrpgTest
             return new List<FFRS_DataFromDboReturnModel>();
         }
 
-        public Task<List<FFRS_DataFromDboReturnModel>> FFRS_DataFromDboAsync()
+        public Task<List<FFRS_DataFromDboReturnModel>> FFRS_DataFromDboAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(FFRS_DataFromDbo(out procResult));
@@ -656,7 +690,7 @@ namespace V6EfrpgTest
             return new List<FFRS_DataFromDboAndFfrsReturnModel>();
         }
 
-        public Task<List<FFRS_DataFromDboAndFfrsReturnModel>> FFRS_DataFromDboAndFfrsAsync()
+        public Task<List<FFRS_DataFromDboAndFfrsReturnModel>> FFRS_DataFromDboAndFfrsAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(FFRS_DataFromDboAndFfrs(out procResult));
@@ -675,14 +709,14 @@ namespace V6EfrpgTest
             return new List<FkTest_HelloReturnModel>();
         }
 
-        public Task<List<FkTest_HelloReturnModel>> FkTest_HelloAsync()
+        public Task<List<FkTest_HelloReturnModel>> FkTest_HelloAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(FkTest_Hello(out procResult));
         }
 
         public DbSet<GetSmallDecimalTestReturnModel> GetSmallDecimalTestReturnModel { get; set; }
-        public List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId)
+        public List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId = null)
         {
             int procResult;
             return GetSmallDecimalTest(maxId, out procResult);
@@ -694,7 +728,7 @@ namespace V6EfrpgTest
             return new List<GetSmallDecimalTestReturnModel>();
         }
 
-        public Task<List<GetSmallDecimalTestReturnModel>> GetSmallDecimalTestAsync(int? maxId)
+        public Task<List<GetSmallDecimalTestReturnModel>> GetSmallDecimalTestAsync(int? maxId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(GetSmallDecimalTest(maxId, out procResult));
@@ -742,19 +776,35 @@ namespace V6EfrpgTest
 
         // MinTripSequenceStartNullAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
+        public int MultipleReturnColumnsFromTempTable()
+        {
+            return 0;
+        }
+
+        public Task<int> MultipleReturnColumnsFromTempTableAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
+
         public int NvarcharTest(string maxOutputParam, string normalOutputParam)
         {
             return 0;
         }
 
-        // NvarcharTestAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> NvarcharTestAsync(string maxOutputParam, string normalOutputParam, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
-        public int Omega_Overclock(DateTime? parameter)
+        public int Omega_Overclock(DateTime? parameter = null)
         {
             return 0;
         }
 
-        // Omega_OverclockAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> Omega_OverclockAsync(DateTime? parameter = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         public int ProcTestDecimalOutput(out decimal? perfectNumber)
         {
@@ -793,7 +843,7 @@ namespace V6EfrpgTest
             return new List<SpatialTypesNoParamsReturnModel>();
         }
 
-        public Task<List<SpatialTypesNoParamsReturnModel>> SpatialTypesNoParamsAsync()
+        public Task<List<SpatialTypesNoParamsReturnModel>> SpatialTypesNoParamsAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(SpatialTypesNoParams(out procResult));
@@ -812,33 +862,33 @@ namespace V6EfrpgTest
             return new List<SpatialTypesWithParamsReturnModel>();
         }
 
-        public Task<List<SpatialTypesWithParamsReturnModel>> SpatialTypesWithParamsAsync(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
+        public Task<List<SpatialTypesWithParamsReturnModel>> SpatialTypesWithParamsAsync(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(SpatialTypesWithParams(geometry, geography, out procResult));
         }
 
         public DbSet<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsReturnModel { get; set; }
-        public StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar)
+        public List<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResults(int? someVar = null)
         {
             int procResult;
             return StpMultipleIdenticalResults(someVar, out procResult);
         }
 
-        public StpMultipleIdenticalResultsReturnModel StpMultipleIdenticalResults(int? someVar, out int procResult)
+        public List<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResults(int? someVar, out int procResult)
         {
             procResult = 0;
-            return new StpMultipleIdenticalResultsReturnModel();
+            return new List<StpMultipleIdenticalResultsReturnModel>();
         }
 
-        public Task<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsAsync(int? someVar)
+        public Task<List<StpMultipleIdenticalResultsReturnModel>> StpMultipleIdenticalResultsAsync(int? someVar = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(StpMultipleIdenticalResults(someVar, out procResult));
         }
 
         public DbSet<StpMultipleMultipleResultsWithParamsReturnModel> StpMultipleMultipleResultsWithParamsReturnModel { get; set; }
-        public StpMultipleMultipleResultsWithParamsReturnModel StpMultipleMultipleResultsWithParams(int? firstVal, int? secondVal, int? thirdVal)
+        public StpMultipleMultipleResultsWithParamsReturnModel StpMultipleMultipleResultsWithParams(int? firstVal = null, int? secondVal = null, int? thirdVal = null)
         {
             int procResult;
             return StpMultipleMultipleResultsWithParams(firstVal, secondVal, thirdVal, out procResult);
@@ -850,11 +900,7 @@ namespace V6EfrpgTest
             return new StpMultipleMultipleResultsWithParamsReturnModel();
         }
 
-        public Task<StpMultipleMultipleResultsWithParamsReturnModel> StpMultipleMultipleResultsWithParamsAsync(int? firstVal, int? secondVal, int? thirdVal)
-        {
-            int procResult;
-            return Task.FromResult(StpMultipleMultipleResultsWithParams(firstVal, secondVal, thirdVal, out procResult));
-        }
+        // StpMultipleMultipleResultsWithParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (StpMultipleMultipleResultsWithParamsReturnModel)
 
         public DbSet<StpMultipleResultsReturnModel> StpMultipleResultsReturnModel { get; set; }
         public StpMultipleResultsReturnModel StpMultipleResults()
@@ -869,14 +915,10 @@ namespace V6EfrpgTest
             return new StpMultipleResultsReturnModel();
         }
 
-        public Task<StpMultipleResultsReturnModel> StpMultipleResultsAsync()
-        {
-            int procResult;
-            return Task.FromResult(StpMultipleResults(out procResult));
-        }
+        // StpMultipleResultsAsync() cannot be created due to having out parameters, or is relying on the procedure result (StpMultipleResultsReturnModel)
 
         public DbSet<StpMultipleResultsWithParamsReturnModel> StpMultipleResultsWithParamsReturnModel { get; set; }
-        public StpMultipleResultsWithParamsReturnModel StpMultipleResultsWithParams(int? firstVal, int? secondVal)
+        public StpMultipleResultsWithParamsReturnModel StpMultipleResultsWithParams(int? firstVal = null, int? secondVal = null)
         {
             int procResult;
             return StpMultipleResultsWithParams(firstVal, secondVal, out procResult);
@@ -888,11 +930,7 @@ namespace V6EfrpgTest
             return new StpMultipleResultsWithParamsReturnModel();
         }
 
-        public Task<StpMultipleResultsWithParamsReturnModel> StpMultipleResultsWithParamsAsync(int? firstVal, int? secondVal)
-        {
-            int procResult;
-            return Task.FromResult(StpMultipleResultsWithParams(firstVal, secondVal, out procResult));
-        }
+        // StpMultipleResultsWithParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (StpMultipleResultsWithParamsReturnModel)
 
         public DbSet<StpNoParamsTestReturnModel> StpNoParamsTestReturnModel { get; set; }
         public List<StpNoParamsTestReturnModel> StpNoParamsTest()
@@ -907,7 +945,7 @@ namespace V6EfrpgTest
             return new List<StpNoParamsTestReturnModel>();
         }
 
-        public Task<List<StpNoParamsTestReturnModel>> StpNoParamsTestAsync()
+        public Task<List<StpNoParamsTestReturnModel>> StpNoParamsTestAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(StpNoParamsTest(out procResult));
@@ -918,10 +956,13 @@ namespace V6EfrpgTest
             return 0;
         }
 
-        // StpNoReturnFieldsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> StpNoReturnFieldsAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         public DbSet<StpNullableParamsTestReturnModel> StpNullableParamsTestReturnModel { get; set; }
-        public List<StpNullableParamsTestReturnModel> StpNullableParamsTest(int? aVal, int? bVal)
+        public List<StpNullableParamsTestReturnModel> StpNullableParamsTest(int? aVal = null, int? bVal = null)
         {
             int procResult;
             return StpNullableParamsTest(aVal, bVal, out procResult);
@@ -933,7 +974,7 @@ namespace V6EfrpgTest
             return new List<StpNullableParamsTestReturnModel>();
         }
 
-        public Task<List<StpNullableParamsTestReturnModel>> StpNullableParamsTestAsync(int? aVal, int? bVal)
+        public Task<List<StpNullableParamsTestReturnModel>> StpNullableParamsTestAsync(int? aVal = null, int? bVal = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(StpNullableParamsTest(aVal, bVal, out procResult));
@@ -955,7 +996,6 @@ namespace V6EfrpgTest
 
         // StpTestAsync() cannot be created due to having out parameters, or is relying on the procedure result (List<StpTestReturnModel>)
 
-
         public DbSet<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTestReturnModel { get; set; }
         public List<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTest(string strDateFrom, string strDateTo)
         {
@@ -969,28 +1009,34 @@ namespace V6EfrpgTest
             return new List<StpTestUnderscoreTestReturnModel>();
         }
 
-        public Task<List<StpTestUnderscoreTestReturnModel>> StpTestUnderscoreTestAsync(string strDateFrom, string strDateTo)
+        public Task<List<StpTestUnderscoreTestReturnModel>> StpTestUnderscoreTestAsync(string strDateFrom, string strDateTo, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(StpTestUnderscoreTest(strDateFrom, strDateTo, out procResult));
         }
 
-        public int StupidStoredProcedureParams(string reqType, short? dept, short? @class, short? item)
+        public int StupidStoredProcedureParams(string reqType, short? dept = null, short? @class = null, short? item = null)
         {
             return 0;
         }
 
-        // StupidStoredProcedureParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> StupidStoredProcedureParamsAsync(string reqType, short? dept = null, short? @class = null, short? item = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
-        public int StupidStoredProcedureParams2(string @override, short? @readonly, short? @class, short? @enum)
+        public int StupidStoredProcedureParams2(string @override, short? @readonly = null, short? @class = null, short? @enum = null)
         {
             return 0;
         }
 
-        // StupidStoredProcedureParams2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> StupidStoredProcedureParams2Async(string @override, short? @readonly = null, short? @class = null, short? @enum = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         public DbSet<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProcReturnModel { get; set; }
-        public List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt)
+        public List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt = null)
         {
             int procResult;
             return Synonyms_SimpleStoredProc(inputInt, out procResult);
@@ -1002,7 +1048,7 @@ namespace V6EfrpgTest
             return new List<Synonyms_SimpleStoredProcReturnModel>();
         }
 
-        public Task<List<Synonyms_SimpleStoredProcReturnModel>> Synonyms_SimpleStoredProcAsync(int? inputInt)
+        public Task<List<Synonyms_SimpleStoredProcReturnModel>> Synonyms_SimpleStoredProcAsync(int? inputInt = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(Synonyms_SimpleStoredProc(inputInt, out procResult));
@@ -1021,18 +1067,30 @@ namespace V6EfrpgTest
             return new List<TestReturnStringReturnModel>();
         }
 
-        public Task<List<TestReturnStringReturnModel>> TestReturnStringAsync()
+        public Task<List<TestReturnStringReturnModel>> TestReturnStringAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(TestReturnString(out procResult));
         }
 
-        public int UserDefinedTypeSampleStoredProc(int? a, DataTable type, int? b)
+        public int ThisHasMixedOutParameters(DateTime? foo, out int? firstOutParam, DateTime? bar, out int? secondOutParam, DateTime? baz = null)
+        {
+            firstOutParam = default(int);
+            secondOutParam = default(int);
+            return 0;
+        }
+
+        // ThisHasMixedOutParametersAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int UserDefinedTypeSampleStoredProc(int? a, DataTable type, int? b = null)
         {
             return 0;
         }
 
-        // UserDefinedTypeSampleStoredProcAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> UserDefinedTypeSampleStoredProcAsync(int? a, DataTable type, int? b = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         public DbSet<XmlDataV1ReturnModel> XmlDataV1ReturnModel { get; set; }
         public List<XmlDataV1ReturnModel> XmlDataV1()
@@ -1047,7 +1105,7 @@ namespace V6EfrpgTest
             return new List<XmlDataV1ReturnModel>();
         }
 
-        public Task<List<XmlDataV1ReturnModel>> XmlDataV1Async()
+        public Task<List<XmlDataV1ReturnModel>> XmlDataV1Async(CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(XmlDataV1(out procResult));
@@ -1058,12 +1116,15 @@ namespace V6EfrpgTest
             return 0;
         }
 
-        // XmlDataV2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
+        public Task<int> XmlDataV2Async(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         // Table Valued Functions
 
         // dbo.182_test1
-        public IQueryable<C182Test1ReturnModel> C182Test1(int? test)
+        public IQueryable<C182Test1ReturnModel> C182Test1(int? test = null)
         {
             return new List<C182Test1ReturnModel>().AsQueryable();
         }
@@ -1089,7 +1150,7 @@ namespace V6EfrpgTest
         // Scalar Valued Functions
 
         // dbo.udfNetSale
-        public decimal UdfNetSale(int? quantity, decimal? listPrice, decimal? discount)
+        public decimal UdfNetSale(int? quantity = null, decimal? listPrice = null, decimal? discount = null)
         {
             return default(decimal);
         }

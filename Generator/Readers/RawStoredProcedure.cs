@@ -10,19 +10,19 @@
         public readonly StoredProcedureParameter Parameter;
 
         public RawStoredProcedure(
-            string schema, 
-            string name, 
-            bool isTableValuedFunction, 
-            bool isScalarValuedFunction, 
-            bool isStoredProcedure, 
+            string schema,
+            string name,
+            bool isTableValuedFunction,
+            bool isScalarValuedFunction,
+            bool isStoredProcedure,
             StoredProcedureParameter parameter)
         {
-            Schema                 = schema;
-            Name                   = name;
-            IsTableValuedFunction  = isTableValuedFunction;
+            Schema = schema;
+            Name = name;
+            IsTableValuedFunction = isTableValuedFunction;
             IsScalarValuedFunction = isScalarValuedFunction;
-            IsStoredProcedure      = isStoredProcedure;
-            Parameter              = parameter;
+            IsStoredProcedure = isStoredProcedure;
+            Parameter = parameter;
         }
     }
 }

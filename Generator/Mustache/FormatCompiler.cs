@@ -458,7 +458,7 @@ namespace Efrpg.Mustache
                     if (placeholder.StartsWith("@"))
                     {
                         string variableName = placeholder.Substring(1);
-                        VariableFoundEventArgs args = new VariableFoundEventArgs(placeholder.Substring(1), String.Empty, String.Empty, false, context.ToArray());
+                        VariableFoundEventArgs args = new VariableFoundEventArgs(placeholder.Substring(1), string.Empty, string.Empty, false, context.ToArray());
                         if (VariableFound != null)
                         {
                             VariableFound(this, args);
@@ -482,7 +482,7 @@ namespace Efrpg.Mustache
                     else
                     {
                         string placeholderName = placeholder;
-                        PlaceholderFoundEventArgs args = new PlaceholderFoundEventArgs(placeholder, String.Empty, String.Empty, false, context.ToArray());
+                        PlaceholderFoundEventArgs args = new PlaceholderFoundEventArgs(placeholder, string.Empty, string.Empty, false, context.ToArray());
                         if (PlaceholderFound != null)
                         {
                             PlaceholderFound(this, args);

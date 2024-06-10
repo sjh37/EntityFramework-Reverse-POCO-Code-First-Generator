@@ -16,16 +16,19 @@ namespace Efrpg
         public List<string> ExtendedProperty;
         public bool IsMapping;
         public bool IsView;
+        public bool IsSynonym;
         public bool HasForeignKey;
         public bool HasNullableColumns;
         public bool UsesDictionary;
         public bool HasPrimaryKey;
         public bool RemoveTable;
+        public bool IsMemoryOptimised;
         public string AdditionalComment;
         public string PluralNameOverride;
         public string DbSetModifier = "public";
         public string BaseClasses;
         public string TriggerName;
+
 
         public List<Column> Columns;
         public List<PropertyAndComments> ReverseNavigationProperty;
@@ -290,7 +293,7 @@ namespace Efrpg
                 return;
             }
             
-            if(Settings.IsEfCore5Plus())
+            if(Settings.IsEfCore6Plus())
             {
                 UsesDictionary = true;
                 MappingConfiguration.Add(string.Format(@"HasMany<{6}>(t => t.{0}).WithMany(t => t.{1}).UsingEntity<Dictionary<string, object>>(""{2}"",
@@ -311,6 +314,9 @@ namespace Efrpg
 
             foreach (var attribute in Attributes.Distinct())
                 sb.AppendLine(attribute);
+
+            if (Settings.UseDataAnnotations)
+                sb.AppendLine($"[Table(\"{DbName}\", Schema = \"{Schema.DbName}\")]");
 
             return sb.ToString();
         }

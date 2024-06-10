@@ -1,6 +1,6 @@
 <#@ include file="EF.Reverse.POCO.v3.ttinclude" #>
 <#
-    // v3.8.0
+    // v3.9.0
     // Please make changes to the settings below.
     // All you have to do is save this file, and the output file(s) are generated. Compiling does not regenerate the file(s).
     // A course for the older v2 generator is available on Pluralsight at https://www.pluralsight.com/courses/code-first-entity-framework-legacy-databases
@@ -11,12 +11,12 @@
     
     // For help on the various Types below, please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Common-Settings.*Types-explained
     // The following entries are the only required settings.
-    Settings.DatabaseType            = DatabaseType.SqlServer; // SqlServer, SqlCe, PostgreSQL. Coming next: MySql, Oracle
-    Settings.TemplateType            = TemplateType.EfCore7; // EfCore7, EfCore6, EfCore5, EfCore3, EfCore2, Ef6, FileBasedCore2-7. FileBased specify folder using Settings.TemplateFolder
+    Settings.DatabaseType            = DatabaseType.SqlServer; // SqlServer, SqlCe, SQLite, PostgreSQL. Coming next: MySql, Oracle
+    Settings.TemplateType            = TemplateType.EfCore8; // EfCore8, EfCore7, EfCore6, EfCore3, Ef6, FileBasedCore3-8. FileBased specify folder using Settings.TemplateFolder
     Settings.GeneratorType           = GeneratorType.EfCore; // EfCore, Ef6, Custom. Custom edit GeneratorCustom class to provide your own implementation
 
     Settings.FileManagerType         = FileManagerType.EfCore; // .NET Core project = EfCore; .NET 4.x project = VisualStudio; No output (testing only) = Null
-    Settings.ConnectionString        = "Data Source=(local);Initial Catalog=Northwind;Integrated Security=True;MultipleActiveResultSets=True;Encrypt=false;TrustServerCertificate=true"; // This is used by the generator to reverse engineer your database
+    Settings.ConnectionString        = "Data Source=(local);Initial Catalog=**TODO**;Integrated Security=True;MultipleActiveResultSets=True;Encrypt=false;TrustServerCertificate=true"; // This is used by the generator to reverse engineer your database
     Settings.ConnectionStringName    = "MyDbContext"; // ConnectionString key as specified in your app.config/web.config/appsettings.json. Not used by the generator, but is placed into the generated DbContext constructor.
     Settings.DbContextName           = "MyDbContext"; // Class name for the DbContext to be generated.
     //Settings.DbContextInterfaceName= "IMyDbContext"; // Defaults to "I" + DbContextName or set string empty to not implement any interface.
@@ -81,7 +81,7 @@
     Settings.AddParameterlessConstructorToDbContext = true; // EF6 only. If true, then DbContext will have a default (parameter-less) constructor which automatically passes in the connection string name, if false then no parameter-less constructor will be created.
     Settings.ConfigurationClassName                 = "Configuration"; // Configuration, Mapping, Map, etc. This is appended to the Poco class name to configure the mappings.
     Settings.DatabaseReaderPlugin                   = ""; // Eg, "c:\\Path\\YourDatabaseReader.dll,Full.Name.Of.Class.Including.Namespace". See #501. This will allow you to specify a pluggable provider for reading your database.
-    Settings.UseMappingTables                       = false; // Must be false for TemplateType.EfCore2 & 3+. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
+    Settings.UseMappingTables                       = false; // Must be false for TemplateType.EfCore2-4. If true, mapping will be used, and no mapping tables will be generated. If false, all tables will be generated.
 
     Settings.EntityClassesModifiers        = "public"; // "public partial";
     Settings.ConfigurationClassesModifiers = "public"; // "public partial";
@@ -89,26 +89,29 @@
     Settings.DbContextInterfaceModifiers   = "public"; // "public partial";
     Settings.ResultClassModifiers          = "public"; // "public partial";
 
-    Settings.UsePascalCase                      = true; // This will rename the generated C# tables & properties to use PascalCase. If false table & property names will be left alone.
-    Settings.UseDataAnnotations                 = false; // If true, will add data annotations to the poco classes.
-    Settings.UsePropertyInitialisers            = false; // Removes POCO constructor and instead uses C# 6 property initialisers to set defaults
-    Settings.UseLazyLoading                     = true; // Marks all navigation properties as virtual or not, to support or disable EF Lazy Loading feature
-    Settings.UseInheritedBaseInterfaceFunctions = false; // If true, the main DBContext interface functions will come from the DBContextInterfaceBaseClasses and not generated. If false, the functions will be generated.
-    Settings.IncludeComments                    = CommentsStyle.AtEndOfField; // Adds comments to the generated code
-    Settings.IncludeExtendedPropertyComments    = CommentsStyle.InSummaryBlock; // Adds extended properties as comments to the generated code
-    Settings.DisableGeographyTypes              = true; // Turns off use of spatial types: Geography, Geometry. More info: https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Spatial-Types
-    Settings.CollectionInterfaceType            = "ICollection"; //  = "System.Collections.Generic.List"; // Determines the declaration type of collections for the Navigation Properties. ICollection is used if not set.
-    Settings.CollectionType                     = "List"; // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example. Add "System.Collections.ObjectModel" to AdditionalNamespaces if setting the CollectionType = "ObservableCollection".
-    Settings.NullableShortHand                  = true; // true => T?, false => Nullable<T>
-    Settings.AddIDbContextFactory               = true; // Will add a default IDbContextFactory<DbContextName> implementation for easy dependency injection
-    Settings.IncludeQueryTraceOn9481Flag        = false; // If SqlServer 2014 appears frozen / take a long time when this file is saved, try setting this to true (you will also need elevated privileges).
-    Settings.UsePrivateSetterForComputedColumns = true; // If the columns is computed, use a private setter.
-    Settings.IncludeGeneratorVersionInCode      = false; // If true, will include the version number of the generator in the generated code (Settings.ShowLicenseInfo must also be true).
-    Settings.TrimCharFields                     = false; // EF Core option only. If true, will TrimEnd() 'char' fields when read from the database.
-    Settings.AdditionalNamespaces               = new List<string>(); // To include extra namespaces, include them here. i.e. new List<string> { "Microsoft.AspNetCore.Identity.EntityFrameworkCore", "System.ComponentModel.DataAnnotations" };
-    Settings.AdditionalContextInterfaceItems    = new List<string>(); // example: new List<string> { "void SetAutoDetectChangesEnabled(bool flag);" };
-    Settings.AdditionalFileHeaderText           = new List<string>(); // This will put additional lines verbatim at the top of each file under the comments, 1 line per entry
-    Settings.AdditionalFileFooterText           = new List<string>(); // This will put additional lines verbatim at the end of each file above the // </auto-generated>, 1 line per entry
+    Settings.UsePascalCase                          = true; // This will rename the generated C# tables & properties to use PascalCase. If false table & property names will be left alone.
+    Settings.UseDataAnnotations                     = false; // If true, will add data annotations to the poco classes.
+    Settings.UsePropertyInitialisers                = false; // Removes POCO constructor and instead uses C# 6 property initialisers to set defaults
+    Settings.UseLazyLoading                         = false; // Marks all navigation properties as virtual or not, to support or disable EF Lazy Loading feature
+    Settings.UseInheritedBaseInterfaceFunctions     = false; // If true, the main DBContext interface functions will come from the DBContextInterfaceBaseClasses and not generated. If false, the functions will be generated.
+    Settings.IncludeComments                        = CommentsStyle.AtEndOfField; // Adds comments to the generated code
+    Settings.IncludeExtendedPropertyComments        = CommentsStyle.InSummaryBlock; // Adds extended properties as comments to the generated code
+    Settings.DisableGeographyTypes                  = true; // Turns off use of spatial types: Geography, Geometry. More info: https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Spatial-Types
+    Settings.CollectionInterfaceType                = "ICollection"; //  = "System.Collections.Generic.List"; // Determines the declaration type of collections for the Navigation Properties. ICollection is used if not set.
+    Settings.CollectionType                         = "List"; // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example. Add "System.Collections.ObjectModel" to AdditionalNamespaces if setting the CollectionType = "ObservableCollection".
+    Settings.NullableShortHand                      = true; // true => T?, false => Nullable<T>
+    Settings.AddIDbContextFactory                   = true; // Will add a default IDbContextFactory<DbContextName> implementation for easy dependency injection
+    Settings.IncludeQueryTraceOn9481Flag            = false; // If SqlServer 2014 appears frozen / take a long time when this file is saved, try setting this to true (you will also need elevated privileges).
+    Settings.UsePrivateSetterForComputedColumns     = true; // If the columns is computed, use a private setter.
+    Settings.IncludeGeneratorVersionInCode          = false; // If true, will include the version number of the generator in the generated code (Settings.ShowLicenseInfo must also be true).
+    Settings.TrimCharFields                         = false; // EF Core option only. If true, will TrimEnd() 'char' fields when read from the database.
+    Settings.IncludeFieldNameConstants              = false; // Will include public const string {{NameHumanCase}}Field = "{{NameHumanCase}}"; in the generated POCO class. It allows you to use a constant instead of magic strings.
+    Settings.UsePropertiesForStoredProcResultSets   = false; // Stored procedure result set return models are rendered as fields (false) or properties (true).
+    Settings.MergeMultipleStoredProcModelsIfAllSame = true; // Some stored procedures are reported as having multiple result sets when in fact there is only one. Set this to true to merge identical result sets.
+    Settings.AdditionalNamespaces                   = new List<string>(); // To include extra namespaces, include them here. i.e. new List<string> { "Microsoft.AspNetCore.Identity.EntityFrameworkCore", "System.ComponentModel.DataAnnotations" };
+    Settings.AdditionalContextInterfaceItems        = new List<string>(); // example: new List<string> { "void SetAutoDetectChangesEnabled(bool flag);" };
+    Settings.AdditionalFileHeaderText               = new List<string>(); // This will put additional lines verbatim at the top of each file under the comments, 1 line per entry
+    Settings.AdditionalFileFooterText               = new List<string>(); // This will put additional lines verbatim at the end of each file above the // </auto-generated>, 1 line per entry
 
     // Language choices
     Settings.GenerationLanguage = GenerationLanguage.CSharp;
@@ -134,10 +137,11 @@
         // Example
         /*new EnumerationSettings
         {
-            Name       = "DaysOfWeek",          // Enum to generate. e.g. "DaysOfWeek" would result in "public enum DaysOfWeek {...}"
+            Name       = "DaysOfWeek",          // Enum to generate. e.g. "DaysOfWeek" would result in "public enum DaysOfWeek {...}" if the GroupField is set to a value then {GroupField} must be used in this name. e.g. "DaysOfWeek{GroupField}"
             Table      = "EnumTest.DaysOfWeek", // Database table containing enum values. e.g. "DaysOfWeek"
             NameField  = "TypeName",            // Column containing the name for the enum. e.g. "TypeName"
-            ValueField = "TypeId"               // Column containing the values for the enum. e.g. "TypeId"
+            ValueField = "TypeId",              // Column containing the values for the enum. e.g. "TypeId"
+            GroupField = string.Empty           // [optional] Column containing the group name for the enum. This is used if multiple Enums are in the same table. if this is populated, use {GroupField} in the Name property. e.g. "{GroupField}Enum"
         },
         new EnumerationSettings
         {
@@ -294,13 +298,33 @@
         //if (table.NameHumanCase.Equals("SomeTable", StringComparison.InvariantCultureIgnoreCase))
         //    table.AdditionalComment = "Example comment";
 
-        // To add a base class to a table based on column names. Also see Settings.UpdateColumn below.
+        // To add a base class to a table based on any of these column names. Also see Settings.UpdateColumn below.
         //var tracking  = new List<string> { "createdby", "createdon", "modifiedby", "modifiedon" };
         //var replicate = new List<string> { "uniqueid", "hrid"};
         //if (table.Columns.Any(x => tracking.Contains(x.NameHumanCase)))
         //    table.BaseClasses = " : TrackingEntity";
         //if (table.Columns.Any(x => replicate.Contains(x.NameHumanCase)))
         //    table.BaseClasses = " : ReplicateEntity";
+
+        // To add a base class to a table based on ALL of these column names
+        //var lookupTitle = new List<string>  { "ID", "Title", "Description" };
+	    //if (lookupTitle.All(x => table.Columns.Any(c => c.NameHumanCase == x)))
+        //{
+        //    if(string.IsNullOrEmpty(table.BaseClasses))
+		//        table.BaseClasses = " : ILookupTitle";
+	    //    else
+		//        table.BaseClasses += ", ILookupTitle";
+        //}
+
+        // Add a base class to a table based on its name
+        //var quickEdit = new List<string>  { "Categories", "Customers", "Employees", "Orders" };
+        //if(quickEdit.Any(x => table.NameHumanCase == x))
+        //{
+        //    if(string.IsNullOrEmpty(table.BaseClasses))
+		//        table.BaseClasses = " : IQuickEdit";
+	    //    else
+		//        table.BaseClasses += ", IQuickEdit";
+        //}
 
         // To add attributes
         //table.Attributes.Add("[Serializable]");
@@ -403,7 +427,8 @@
                         Name       = table.NameHumanCase.Replace("Enum","").Replace("Enum","") + "Enum",
                         Table      = table.Schema.DbName + "." + table.DbName,
                         NameField  = table.Columns.First(x => x.PropertyType == "string").DbName, // Or specify your own
-                        ValueField = table.PrimaryKeys.Single().DbName // Or specify your own
+                        ValueField = table.PrimaryKeys.Single().DbName, // Or specify your own
+                        GroupField = string.Empty // Or specify your own
                     });
 
                     // This will cause this table to not be reverse-engineered.
@@ -701,6 +726,7 @@
         new CustomPluralizationEntry("Order", "Orders")
     };
     Inflector.PluralisationService = new EnglishPluralizationService(customPluralisationEntries);*/
+    Inflector.IgnoreWordsThatEndWith = new List<string> { "Status", "To", "Data" };
     Inflector.PluralisationService = new EnglishPluralizationService(); // To disable pluralisation, set this to null
 
     var outer = (GeneratedTextTransformation) this;

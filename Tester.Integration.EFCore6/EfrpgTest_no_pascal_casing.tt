@@ -13,7 +13,7 @@
     Settings.DatabaseType            = DatabaseType.SqlServer;
     Settings.TemplateType            = TemplateType.EfCore6; 
     Settings.GeneratorType           = GeneratorType.EfCore;
-    Settings.UseMappingTables        = true; // Set to false for EfCore. EFCore will add support for this in v3 at some point, so please set this to false. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
+    Settings.UseMappingTables        = true; // Must be false for TemplateType.EfCore2-4. If true, mapping will be used, and no mapping tables will be generated. If false, all tables will be generated.
     Settings.FileManagerType         = FileManagerType.EfCore; // .NET project = VisualStudio; .NET Core project = EfCore; No output (testing only) = Null
     Settings.ConnectionString        = "Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator";
     Settings.ConnectionStringName    = "My_Db_Context"; // ConnectionString key as specified in your app.config/web.config/appsettings.json
@@ -49,28 +49,16 @@
     {
         new EnumerationSettings
         {
-            Name       = "CategoryName",    // Enum to generate. e.g. "DaysOfWeek" would result in "public enum DaysOfWeek {...}"
-            Table      = "Categories",      // Database table containing enum values. e.g. "DaysOfWeek"
-            NameField  = "CategoryName",    // Column containing the name for the enum. e.g. "TypeName"
-            ValueField = "CategoryID"       // Column containing the values for the enum. e.g. "TypeId"
-        },
-        new EnumerationSettings
-        {
-            Name       = "RegionDescription",
-            Table      = "Region",
-            NameField  = "RegionDescription",
-            ValueField = "RegionID"
-        },
-        new EnumerationSettings
-        {
-            Name       = "ShipperName",
-            Table      = "Shippers",
-            NameField  = "CompanyName",
-            ValueField = "ShipperID"
+            Name       = "DaysOfWeek",          // Enum to generate. e.g. "DaysOfWeek" would result in "public enum DaysOfWeek {...}" if the GroupField is set to a value then {GroupField} must be used in this name. e.g. "DaysOfWeek{GroupField}"
+            Table      = "EnumTest.DaysOfWeek", // Database table containing enum values. e.g. "DaysOfWeek"
+            NameField  = "TypeName",            // Column containing the name for the enum. e.g. "TypeName"
+            ValueField = "TypeId",              // Column containing the values for the enum. e.g. "TypeId"
+            GroupField = string.Empty           // [optional] Column containing the group name for the enum. This is used if multiple Enums are in the same table. if this is populated, use {GroupField} in the Name property. e.g. "{GroupField}Enum"
         }
     };
 
     FilterSettings.CheckSettings();
+    Inflector.IgnoreWordsThatEndWith = new List<string> { "Status", "To", "Data" };
     Inflector.PluralisationService = new EnglishPluralizationService();
     var outer = (GeneratedTextTransformation) this;
     var fileManagement = new FileManagementService(outer);

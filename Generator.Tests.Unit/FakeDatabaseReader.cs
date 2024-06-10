@@ -57,7 +57,7 @@
             return string.Empty;
         }
 
-        protected override string EnumSQL(string table, string nameField, string valueField)
+        protected override string EnumSQL(string table, string nameField, string valueField, string groupField)
         {
             return string.Empty;
         }
@@ -70,6 +70,11 @@
         protected override string TriggerSQL()
         {
             return string.Empty;
+        }
+
+        protected override string[] MemoryOptimisedSQL()
+        {
+            return null;
         }
 
         protected override string SynonymTableSQLSetup()
@@ -113,6 +118,11 @@
         }
 
         protected override bool HasTemporalTableSupport()
+        {
+            return false;
+        }
+
+        public override bool HasIdentityColumnSupport()
         {
             return false;
         }

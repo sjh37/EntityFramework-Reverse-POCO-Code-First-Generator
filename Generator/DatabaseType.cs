@@ -4,6 +4,7 @@
     {
         SqlServer,
         SqlCe,
+        SQLite,
         Plugin,     // See Settings.DatabaseReaderPlugin
         PostgreSQL,
         MySql,      // Not yet implemented

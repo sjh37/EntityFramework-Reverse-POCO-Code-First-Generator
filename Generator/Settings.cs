@@ -12,8 +12,8 @@ namespace Efrpg
     {
         // Main settings **********************************************************************************************************************
         // The following entries are the only required settings.
-        public static DatabaseType DatabaseType                         = DatabaseType.SqlServer; // SqlServer, SqlCe, PostgreSQL. Coming next: MySql, Oracle
-        public static TemplateType TemplateType                         = TemplateType.EfCore7; // EfCore7, EfCore6, EfCore5, EfCore3, EfCore2, Ef6, FileBasedCore2-7. FileBased specify folder using Settings.TemplateFolder
+        public static DatabaseType DatabaseType                         = DatabaseType.SqlServer; // SqlServer, SqlCe, SQLite, PostgreSQL. Coming next: MySql, Oracle
+        public static TemplateType TemplateType                         = TemplateType.EfCore8; // EfCore8, EfCore7, EfCore6, EfCore3, Ef6, FileBasedCore3-8. FileBased specify folder using Settings.TemplateFolder
         public static GeneratorType GeneratorType                       = GeneratorType.EfCore; // EfCore, Ef6, Custom. Custom edit GeneratorCustom class to provide your own implementation
         public static ForeignKeyNamingStrategy ForeignKeyNamingStrategy = ForeignKeyNamingStrategy.Legacy; // Please use Legacy for now, Latest (not yet ready)
         public static bool UseMappingTables                             = false; // Can only be set to true for EF6. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
@@ -69,7 +69,10 @@ namespace Efrpg
         public static bool IncludeQueryTraceOn9481Flag              = false; // If SqlServer 2014 appears frozen / take a long time when this file is saved, try setting this to true (you will also need elevated privileges).
         public static bool UsePrivateSetterForComputedColumns       = true; // If the columns is computed, use a private setter.
         public static bool IncludeGeneratorVersionInCode            = false; // If true, will include the version number of the generator in the generated code (Settings.ShowLicenseInfo must also be true).
-        public static bool TrimCharFields                           = false; // EF Core option only. EF Core option only. If true, will TrimEnd() 'char' fields when read from the database.
+        public static bool TrimCharFields                           = false; // EF Core option only. If true, will TrimEnd() 'char' fields when read from the database.
+        public static bool IncludeFieldNameConstants                = false; // Will include public const string {{NameHumanCase}}Field = "{{NameHumanCase}}"; in the generated POCO class. It allows you to use a constant instead of magic strings.
+        public static bool UsePropertiesForStoredProcResultSets     = false; // Stored procedure result set return models are rendered as fields (false) or properties (true).
+        public static bool MergeMultipleStoredProcModelsIfAllSame   = true; // Some stored procedures are reported as having multiple result sets when in fact there is only one. Set this to true to merge identical result sets.
         public static List<string> AdditionalNamespaces             = new List<string>(); // To include extra namespaces, include them here. i.e. "Microsoft.AspNet.Identity.EntityFramework"
         public static List<string> AdditionalContextInterfaceItems  = new List<string>(); //  example: "void SetAutoDetectChangesEnabled(bool flag);"
         public static List<string> AdditionalFileHeaderText         = new List<string>(); // This will put additional lines verbatim at the top of each file under the comments, 1 line per entry
@@ -98,10 +101,11 @@ namespace Efrpg
             // Example
             /*new EnumerationSettings
             {
-                Name       = "DaysOfWeek",          // Enum to generate. e.g. "DaysOfWeek" would result in "public enum DaysOfWeek {...}"
+                Name       = "DaysOfWeek",          // Enum to generate. e.g. "DaysOfWeek" would result in "public enum DaysOfWeek {...}" if the GroupField is set to a value then {GroupField} must be used in this name. e.g. "DaysOfWeek{GroupField}"
                 Table      = "EnumTest.DaysOfWeek", // Database table containing enum values. e.g. "DaysOfWeek"
                 NameField  = "TypeName",            // Column containing the name for the enum. e.g. "TypeName"
-                ValueField = "TypeId"               // Column containing the values for the enum. e.g. "TypeId"
+                ValueField = "TypeId",              // Column containing the values for the enum. e.g. "TypeId"
+                GroupField = string.Empty           // [optional] Column containing the group name for the enum. This is used if multiple Enums are in the same table. if this is populated, use {GroupField} in the Name property. e.g. "{GroupField}Enum"
             },
             new EnumerationSettings
             {
@@ -342,7 +346,8 @@ namespace Efrpg
                             Name       = table.NameHumanCase.Replace("Enum","").Replace("Enum","") + "Enum",
                             Table      = table.Schema.DbName + "." + table.DbName,
                             NameField  = table.Columns.First(x => x.PropertyType == "string").DbName, // Or specify your own
-                            ValueField = table.PrimaryKeys.Single().DbName // Or specify your own
+                            ValueField = table.PrimaryKeys.Single().DbName, // Or specify your own
+                            GroupField = string.Empty // Or specify your own
                         });
 
                         // This will cause this table to not be reverse-engineered.
@@ -675,25 +680,13 @@ namespace Efrpg
 
         public static bool IsEf6()     => TemplateType == TemplateType.Ef6;
         public static bool IsEfCore3Plus() => EfCoreVersion() >= 3;
-        public static bool IsEfCore5Plus() => EfCoreVersion() >= 5;
         public static bool IsEfCore6Plus() => EfCoreVersion() >= 6;
         public static bool IsEfCore7Plus() => EfCoreVersion() >= 7;
+        public static bool IsEfCore8Plus() => EfCoreVersion() >= 8;
         public static int EfCoreVersion()
         {
             switch (TemplateType)
             {
-                case TemplateType.EfCore2:
-                case TemplateType.FileBasedCore2:
-                    return 2;
-
-                case TemplateType.EfCore3:
-                case TemplateType.FileBasedCore3:
-                    return 3;
-                
-                case TemplateType.EfCore5:
-                case TemplateType.FileBasedCore5:
-                    return 5;
-                
                 case TemplateType.EfCore6:
                 case TemplateType.FileBasedCore6:
                     return 6;
@@ -702,7 +695,12 @@ namespace Efrpg
                 case TemplateType.FileBasedCore7:
                     return 7;
                 
+                case TemplateType.EfCore8:
+                case TemplateType.FileBasedCore8:
+                    return 8;
+                
                 case TemplateType.Ef6:
+                case TemplateType.FileBasedEf6:
                 default:
                     return 0;
             }
@@ -720,6 +718,9 @@ namespace Efrpg
 
                 case DatabaseType.Oracle:
                     return "UseOracle";
+
+                case DatabaseType.SQLite:
+                    return "UseSqlite";
 
                 default:
                     return "UseSqlServer";
@@ -739,8 +740,32 @@ namespace Efrpg
                 case DatabaseType.Oracle:
                     return "OracleParameter";
 
+                case DatabaseType.SQLite:
+                    return "SqliteParameter";
+
                 default:
                     return "SqlParameter";
+            }
+        }     
+        
+        public static string SqlParameterValue()
+        {
+            switch (DatabaseType)
+            {
+                case DatabaseType.PostgreSQL:
+                    return "NpgsqlValue";
+
+                case DatabaseType.MySql:
+                    return "Value";
+
+                case DatabaseType.Oracle:
+                    return "Value";
+
+                case DatabaseType.SQLite:
+                    return "Value";
+
+                default:
+                    return "SqlValue";
             }
         }
 

@@ -94,7 +94,7 @@ namespace Efrpg.Generators
             sb.AppendFormat(".HasColumnName(@\"{0}\")", c.DbName);
 
             var excludedHasColumnType = string.Empty;
-            if (!string.IsNullOrEmpty(c.SqlPropertyType))
+            if (!Settings.UseDataAnnotations && !string.IsNullOrEmpty(c.SqlPropertyType))
             {
                 if(Column.ExcludedHasColumnType.Contains(c.SqlPropertyType))
                     excludedHasColumnType = string.Format(" // .HasColumnType(\"{0}\") was excluded", c.SqlPropertyType);

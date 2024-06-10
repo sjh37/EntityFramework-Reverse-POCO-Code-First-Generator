@@ -26,9 +26,9 @@ namespace Efrpg.Readers
         public bool IncludeSchema { get; protected set; }
         public bool DoNotSpecifySizeForMaxLength { get; protected set; }
 
-        public bool IsSpatialType(string propertyType)           => propertyType != null && SpatialTypes != null && SpatialTypes.Contains(propertyType);
+        public bool IsSpatialType(string propertyType) => propertyType != null && SpatialTypes != null && SpatialTypes.Contains(propertyType);
         public bool IsPrecisionAndScaleType(string propertyType) => propertyType != null && PrecisionAndScaleTypes != null && PrecisionAndScaleTypes.Contains(propertyType);
-        public bool IsPrecisionType(string propertyType)         => propertyType != null && PrecisionTypes != null && PrecisionTypes.Contains(propertyType);
+        public bool IsPrecisionType(string propertyType) => propertyType != null && PrecisionTypes != null && PrecisionTypes.Contains(propertyType);
 
         protected abstract string TableSQL();
         protected abstract string ForeignKeySQL();
@@ -39,9 +39,19 @@ namespace Efrpg.Readers
         protected abstract string StoredProcedureSQL();
         protected abstract string ReadDatabaseEditionSQL();
         protected abstract string MultiContextSQL();
-        protected abstract string EnumSQL(string table, string nameField, string valueField);
+        protected abstract string EnumSQL(string table, string nameField, string valueField, string groupField);
         protected abstract string SequenceSQL();
         protected abstract string TriggerSQL();
+        protected abstract string[] MemoryOptimisedSQL();
+
+        protected enum MemoryOptimised
+        {
+            CompatibilityLevel,
+            InMemorySupported,
+            TableList,
+
+            Count // This is always the last value
+        }
 
         // Synonym
         protected abstract string SynonymTableSQLSetup();
@@ -55,6 +65,7 @@ namespace Efrpg.Readers
         protected abstract string DefaultSchema(DbConnection conn);
         protected abstract string SpecialQueryFlags();
         protected abstract bool HasTemporalTableSupport();
+        public abstract bool HasIdentityColumnSupport();
 
         // Stored proc return objects
         public abstract void ReadStoredProcReturnObjects(List<StoredProcedure> procs);
@@ -64,18 +75,18 @@ namespace Efrpg.Readers
             if (databaseToPropertyType == null)
                 databaseToPropertyType = new SqlServerToCSharp(); // Default. Can be overridden in PluginDatabaseReader
 
-            DbTypeToPropertyType         = databaseToPropertyType.GetMapping();
-            SpatialTypes                 = databaseToPropertyType.SpatialTypes();
-            PrecisionTypes               = databaseToPropertyType.PrecisionTypes();
-            PrecisionAndScaleTypes       = databaseToPropertyType.PrecisionAndScaleTypes();
-            DatabaseEdition              = null;
-            DatabaseEngineEdition        = null;
-            DatabaseProductVersion       = null;
-            _factory                     = factory;
-            DatabaseReaderPlugin         = null;
-            IncludeSchema                = true;
+            DbTypeToPropertyType = databaseToPropertyType.GetMapping();
+            SpatialTypes = databaseToPropertyType.SpatialTypes();
+            PrecisionTypes = databaseToPropertyType.PrecisionTypes();
+            PrecisionAndScaleTypes = databaseToPropertyType.PrecisionAndScaleTypes();
+            DatabaseEdition = null;
+            DatabaseEngineEdition = null;
+            DatabaseProductVersion = null;
+            _factory = factory;
+            DatabaseReaderPlugin = null;
+            IncludeSchema = true;
             DoNotSpecifySizeForMaxLength = false;
-            DatabaseDetails              = new StringBuilder(255);
+            DatabaseDetails = new StringBuilder(255);
         }
 
         // Any special setup required
@@ -105,15 +116,15 @@ namespace Efrpg.Readers
                 {
                     if (rdr.Read())
                     {
-                        DatabaseEdition             = rdr["Edition"].ToString();
-                        DatabaseEngineEdition       = rdr["EngineEdition"].ToString();
-                        DatabaseProductVersion      = rdr["ProductVersion"].ToString();
+                        DatabaseEdition = rdr["Edition"].ToString();
+                        DatabaseEngineEdition = rdr["EngineEdition"].ToString();
+                        DatabaseProductVersion = rdr["ProductVersion"].ToString();
                         DatabaseProductMajorVersion = 0;
 
-                        if(!string.IsNullOrEmpty(DatabaseEdition))
+                        if (!string.IsNullOrEmpty(DatabaseEdition))
                             DatabaseDetails.AppendLine("// Database Edition       : " + DatabaseEdition);
-        
-                        if(!string.IsNullOrEmpty(DatabaseEngineEdition))
+
+                        if (!string.IsNullOrEmpty(DatabaseEngineEdition))
                             DatabaseDetails.AppendLine("// Database Engine Edition: " + DatabaseEngineEdition);
 
                         if (!string.IsNullOrEmpty(DatabaseProductVersion))
@@ -184,7 +195,7 @@ namespace Efrpg.Readers
                 return null;
 
             var cmd = connection.CreateCommand();
-            if(cmd != null && Settings.DatabaseType != DatabaseType.SqlCe)
+            if (cmd != null && Settings.DatabaseType != DatabaseType.SqlCe)
                 cmd.CommandTimeout = Settings.CommandTimeout;
 
             return cmd;
@@ -229,10 +240,13 @@ namespace Efrpg.Readers
                 {
                     while (rdr.Read())
                     {
+                        var tt = rdr["TableType"].ToString().Trim();
+
                         var table = new RawTable(
                             rdr["SchemaName"].ToString().Trim(),
                             rdr["TableName"].ToString().Trim(),
-                            string.Compare(rdr["TableType"].ToString().Trim(), "View", StringComparison.OrdinalIgnoreCase) == 0,
+                            string.Compare(tt, "VIEW", StringComparison.OrdinalIgnoreCase) == 0,
+                            string.Compare(tt, "SN", StringComparison.OrdinalIgnoreCase) == 0,
                             ChangeType<int>(rdr["Scale"]),
                             rdr["TypeName"].ToString().Trim().ToLower(),
                             ChangeType<bool>(rdr["IsNullable"]),
@@ -247,6 +261,7 @@ namespace Efrpg.Readers
                             ChangeType<int>(rdr["PrimaryKeyOrdinal"]),
                             ChangeType<bool>(rdr["PrimaryKey"]),
                             ChangeType<bool>(rdr["IsForeignKey"]),
+                            ChangeType<string>(rdr["SynonymTriggerName"]),
                             ChangeType<int>(rdr["Ordinal"]),
                             rdr["ColumnName"].ToString().Trim(),
                             rdr["Default"].ToString().Trim()
@@ -259,7 +274,7 @@ namespace Efrpg.Readers
 
             return result;
         }
-        
+
         public List<RawForeignKey> ReadForeignKeys(bool includeSynonyms)
         {
             if (DatabaseReaderPlugin != null)
@@ -414,7 +429,7 @@ namespace Efrpg.Readers
                         var rep = new RawExtendedProperty
                         (
                             rdr["schema"].ToString().Trim(),
-                            rdr["table"] .ToString().Trim(),
+                            rdr["table"].ToString().Trim(),
                             rdr["column"].ToString().Trim(),
                             extendedProperty
                         );
@@ -460,41 +475,41 @@ namespace Efrpg.Readers
                     var emptyParamNumber = 1;
                     while (rdr.Read())
                     {
-                        var rawDataType    = rdr["DATA_TYPE"];
-                        var schema         = rdr["SPECIFIC_SCHEMA"] .ToString().Trim();
-                        var name           = rdr["SPECIFIC_NAME"]   .ToString().Trim();
-                        var routineType    = rdr["ROUTINE_TYPE"]    .ToString().Trim().ToLower();
+                        var rawDataType = rdr["DATA_TYPE"];
+                        var schema = rdr["SPECIFIC_SCHEMA"].ToString().Trim();
+                        var name = rdr["SPECIFIC_NAME"].ToString().Trim();
+                        var routineType = rdr["ROUTINE_TYPE"].ToString().Trim().ToLower();
                         var returnDataType = rdr["RETURN_DATA_TYPE"].ToString().Trim().ToLower();
-                        var dataType       = rawDataType            .ToString().Trim().ToLower();
-                        var parameterMode  = rdr["PARAMETER_MODE"]  .ToString().Trim().ToLower();
+                        var dataType = rawDataType.ToString().Trim().ToLower();
+                        var parameterMode = rdr["PARAMETER_MODE"].ToString().Trim().ToLower();
 
-                        if(name != lastName)
+                        if (name != lastName)
                         {
                             lastName = name;
                             emptyParamNumber = 1;
                         }
 
-                        var isTableValuedFunction  = (routineType == "function" && returnDataType == "table");
+                        var isTableValuedFunction = (routineType == "function" && returnDataType == "table");
                         var isScalarValuedFunction = (routineType == "function" && returnDataType != "table");
-                        var isStoredProcedure      = (routineType == "procedure");
+                        var isStoredProcedure = (routineType == "procedure");
 
                         StoredProcedureParameter parameter = null;
                         if (rawDataType != DBNull.Value)
                         {
                             parameter = new StoredProcedureParameter
                             {
-                                Ordinal             = ChangeType<int>(rdr["ORDINAL_POSITION"]),
-                                Name                = rdr["PARAMETER_NAME"].ToString().Trim(),
-                                SqlDbType           = GetStoredProcedureParameterDbType(dataType),
-                                ReturnSqlDbType     = GetStoredProcedureParameterDbType(returnDataType),
-                                PropertyType        = GetPropertyType(dataType),
-                                ReturnPropertyType  = GetPropertyType(returnDataType),
-                                DateTimePrecision   = ChangeType<short>(rdr["DATETIME_PRECISION"]),
-                                MaxLength           = ChangeType<int>(rdr["CHARACTER_MAXIMUM_LENGTH"]),
-                                Precision           = ChangeType<byte>(rdr["NUMERIC_PRECISION"]),
-                                Scale               = ChangeType<int>(rdr["NUMERIC_SCALE"]),
+                                Ordinal = ChangeType<int>(rdr["ORDINAL_POSITION"]),
+                                Name = rdr["PARAMETER_NAME"].ToString().Trim(),
+                                SqlDbType = GetStoredProcedureParameterDbType(dataType),
+                                ReturnSqlDbType = GetStoredProcedureParameterDbType(returnDataType),
+                                PropertyType = GetPropertyType(dataType),
+                                ReturnPropertyType = GetPropertyType(returnDataType),
+                                DateTimePrecision = ChangeType<short>(rdr["DATETIME_PRECISION"]),
+                                MaxLength = ChangeType<int>(rdr["CHARACTER_MAXIMUM_LENGTH"]),
+                                Precision = ChangeType<byte>(rdr["NUMERIC_PRECISION"]),
+                                Scale = ChangeType<int>(rdr["NUMERIC_SCALE"]),
                                 UserDefinedTypeName = rdr["USER_DEFINED_TYPE"].ToString().Trim(),
-                                IsSpatial           = IsSpatialType(dataType)
+                                IsSpatial = IsSpatialType(dataType)
                             };
 
                             if (string.IsNullOrEmpty(parameter.Name))
@@ -555,7 +570,7 @@ namespace Efrpg.Readers
                 cmd.CommandText = MultiContextSQL();
 
                 var contextMap = new Dictionary<int, MultiContextSettings>();
-                var tableMap   = new Dictionary<int, MultiContextTableSettings>();
+                var tableMap = new Dictionary<int, MultiContextTableSettings>();
 
                 using (var rdr = cmd.ExecuteReader())
                 {
@@ -569,19 +584,19 @@ namespace Efrpg.Readers
                         var c = new MultiContextSettings
                         {
                             // Store standard fields
-                            Name         = GetReaderString(rdr, "Name"),
-                            Namespace    = GetReaderString(rdr, "Namespace"),
-                            Description  = GetReaderString(rdr, "Description"),
-                            BaseSchema   = GetReaderString(rdr, "BaseSchema"),
+                            Name = GetReaderString(rdr, "Name"),
+                            Namespace = GetReaderString(rdr, "Namespace"),
+                            Description = GetReaderString(rdr, "Description"),
+                            BaseSchema = GetReaderString(rdr, "BaseSchema"),
                             TemplatePath = GetReaderString(rdr, "TemplatePath"),
-                            Filename     = GetReaderString(rdr, "Filename"),
-                            AllFields    = ReadAllFields(rdr),
+                            Filename = GetReaderString(rdr, "Filename"),
+                            AllFields = ReadAllFields(rdr),
 
-                            Tables           = new List<MultiContextTableSettings>(),
+                            Tables = new List<MultiContextTableSettings>(),
                             StoredProcedures = new List<MultiContextStoredProcedureSettings>(),
-                            Enumerations     = new List<EnumerationSettings>(),
-                            Functions        = new List<MultiContextFunctionSettings>(),
-                            ForeignKeys      = new List<MultiContextForeignKeySettings>()
+                            Enumerations = new List<EnumerationSettings>(),
+                            Functions = new List<MultiContextFunctionSettings>(),
+                            ForeignKeys = new List<MultiContextForeignKeySettings>()
                         };
 
                         contextMap.Add(contextId.Value, c);
@@ -604,20 +619,20 @@ namespace Efrpg.Readers
                         if (!contextId.HasValue)
                             continue; // No context
 
-                        if(!contextMap.ContainsKey(contextId.Value))
+                        if (!contextMap.ContainsKey(contextId.Value))
                             continue; // Context not found
 
                         context = contextMap[contextId.Value];
 
                         var t = new MultiContextTableSettings
                         {
-                            Name          = GetReaderString(rdr, "Name"),
-                            Description   = GetReaderString(rdr, "Description"),
-                            PluralName    = GetReaderString(rdr, "PluralName"),
-                            DbName        = GetReaderString(rdr, "DbName"),
-                            Attributes    = GetReaderString(rdr, "Attributes"),
+                            Name = GetReaderString(rdr, "Name"),
+                            Description = GetReaderString(rdr, "Description"),
+                            PluralName = GetReaderString(rdr, "PluralName"),
+                            DbName = GetReaderString(rdr, "DbName"),
+                            Attributes = GetReaderString(rdr, "Attributes"),
                             DbSetModifier = GetReaderString(rdr, "DbSetModifier"),
-                            AllFields     = ReadAllFields(rdr),
+                            AllFields = ReadAllFields(rdr),
 
                             Columns = new List<MultiContextColumnSettings>()
                         };
@@ -625,7 +640,7 @@ namespace Efrpg.Readers
                         tableMap.Add(tableId.Value, t);
                         context.Tables.Add(t);
                     }
-                    
+
                     // Columns
                     rdr.NextResult();
                     while (rdr.Read())
@@ -634,22 +649,22 @@ namespace Efrpg.Readers
                         if (tableId == null)
                             continue; // Cannot use column as not associated to a table
 
-                        if(!tableMap.ContainsKey(tableId.Value))
+                        if (!tableMap.ContainsKey(tableId.Value))
                             continue; // Table not found
 
                         var table = tableMap[tableId.Value];
 
                         var col = new MultiContextColumnSettings
                         {
-                            Name             = GetReaderString(rdr, "Name"),
-                            DbName           = GetReaderString(rdr, "DbName"),
-                            IsPrimaryKey     = GetReaderBool(rdr,   "IsPrimaryKey"),
-                            OverrideModifier = GetReaderBool(rdr,   "OverrideModifier"),
-                            EnumType         = GetReaderString(rdr, "EnumType"),
-                            Attributes       = GetReaderString(rdr, "Attributes"),
-                            PropertyType     = GetReaderString(rdr, "PropertyType"),
-                            IsNullable       = GetReaderBool(rdr, "IsNullable"),
-                            AllFields        = ReadAllFields(rdr)
+                            Name = GetReaderString(rdr, "Name"),
+                            DbName = GetReaderString(rdr, "DbName"),
+                            IsPrimaryKey = GetReaderBool(rdr, "IsPrimaryKey"),
+                            OverrideModifier = GetReaderBool(rdr, "OverrideModifier"),
+                            EnumType = GetReaderString(rdr, "EnumType"),
+                            Attributes = GetReaderString(rdr, "Attributes"),
+                            PropertyType = GetReaderString(rdr, "PropertyType"),
+                            IsNullable = GetReaderBool(rdr, "IsNullable"),
+                            AllFields = ReadAllFields(rdr)
                         };
 
                         table.Columns.Add(col);
@@ -670,10 +685,10 @@ namespace Efrpg.Readers
 
                         var sp = new MultiContextStoredProcedureSettings
                         {
-                            Name        = GetReaderString(rdr, "Name"),
-                            DbName      = GetReaderString(rdr, "DbName"),
+                            Name = GetReaderString(rdr, "Name"),
+                            DbName = GetReaderString(rdr, "DbName"),
                             ReturnModel = GetReaderString(rdr, "ReturnModel"),
-                            AllFields   = ReadAllFields(rdr)
+                            AllFields = ReadAllFields(rdr)
                         };
 
                         context.StoredProcedures.Add(sp);
@@ -694,8 +709,8 @@ namespace Efrpg.Readers
 
                         var f = new MultiContextFunctionSettings
                         {
-                            Name      = GetReaderString(rdr, "Name"),
-                            DbName    = GetReaderString(rdr, "DbName"),
+                            Name = GetReaderString(rdr, "Name"),
+                            DbName = GetReaderString(rdr, "DbName"),
                             AllFields = ReadAllFields(rdr)
                         };
 
@@ -717,11 +732,12 @@ namespace Efrpg.Readers
 
                         var e = new EnumerationSettings
                         {
-                            Name       = GetReaderString(rdr, "Name"),
-                            Table      = GetReaderString(rdr, "Table"),
-                            NameField  = GetReaderString(rdr, "NameField"),
+                            Name = GetReaderString(rdr, "Name"),
+                            Table = GetReaderString(rdr, "Table"),
+                            NameField = GetReaderString(rdr, "NameField"),
                             ValueField = GetReaderString(rdr, "ValueField"),
-                            AllFields  = ReadAllFields(rdr)
+                            GroupField = GetReaderString(rdr, "GroupField"),
+                            AllFields = ReadAllFields(rdr)
                         };
 
                         context.Enumerations.Add(e);
@@ -742,19 +758,19 @@ namespace Efrpg.Readers
 
                         var fk = new MultiContextForeignKeySettings
                         {
-                            ConstraintName      = GetReaderString(rdr, "ConstraintName"),
-                            ParentName          = GetReaderString(rdr, "ParentName"),
-                            ChildName           = GetReaderString(rdr, "ChildName"),
-                            PkSchema            = GetReaderString(rdr, "PkSchema") ?? context.BaseSchema,
-                            PkTableName         = GetReaderString(rdr, "PkTableName"),
-                            PkColumn            = GetReaderString(rdr, "PkColumn"),
-                            FkSchema            = GetReaderString(rdr, "FkSchema") ?? context.BaseSchema,
-                            FkTableName         = GetReaderString(rdr, "FkTableName"),
-                            FkColumn            = GetReaderString(rdr, "FkColumn"),
-                            Ordinal             = GetReaderInt(rdr,    "Ordinal") ?? 0,
-                            CascadeOnDelete     = GetReaderBool(rdr,   "CascadeOnDelete") ?? false,
-                            IsNotEnforced       = GetReaderBool(rdr,   "IsNotEnforced") ?? false,
-                            HasUniqueConstraint = GetReaderBool(rdr,   "HasUniqueConstraint") ?? false
+                            ConstraintName = GetReaderString(rdr, "ConstraintName"),
+                            ParentName = GetReaderString(rdr, "ParentName"),
+                            ChildName = GetReaderString(rdr, "ChildName"),
+                            PkSchema = GetReaderString(rdr, "PkSchema") ?? context.BaseSchema,
+                            PkTableName = GetReaderString(rdr, "PkTableName"),
+                            PkColumn = GetReaderString(rdr, "PkColumn"),
+                            FkSchema = GetReaderString(rdr, "FkSchema") ?? context.BaseSchema,
+                            FkTableName = GetReaderString(rdr, "FkTableName"),
+                            FkColumn = GetReaderString(rdr, "FkColumn"),
+                            Ordinal = GetReaderInt(rdr, "Ordinal") ?? 0,
+                            CascadeOnDelete = GetReaderBool(rdr, "CascadeOnDelete") ?? false,
+                            IsNotEnforced = GetReaderBool(rdr, "IsNotEnforced") ?? false,
+                            HasUniqueConstraint = GetReaderBool(rdr, "HasUniqueConstraint") ?? false
                         };
 
                         context.ForeignKeys.Add(fk);
@@ -772,7 +788,7 @@ namespace Efrpg.Readers
             for (var n = 0; n < rdr.FieldCount; ++n)
             {
                 var o = rdr.GetValue(n);
-                if(o != DBNull.Value)
+                if (o != DBNull.Value)
                     result.Add(rdr.GetName(n), rdr.GetValue(n));
             }
 
@@ -796,7 +812,9 @@ namespace Efrpg.Readers
 
                 foreach (var e in enums)
                 {
-                    var sql = EnumSQL(e.Table, e.NameField, e.ValueField);
+                    var sql = EnumSQL(e.Table, e.NameField, e.ValueField, e.GroupField);
+                    var enumDict = new Dictionary<string, List<EnumerationMember>>();
+
                     if (string.IsNullOrEmpty(sql))
                         continue;
 
@@ -806,13 +824,25 @@ namespace Efrpg.Readers
                     {
                         using (var rdr = cmd.ExecuteReader())
                         {
-                            var items = new List<EnumerationMember>();
-
                             while (rdr.Read())
                             {
                                 var name = rdr["NameField"].ToString().Trim();
                                 if (string.IsNullOrEmpty(name))
                                     continue;
+
+                                var group = string.Empty;
+                                
+                                if (!String.IsNullOrEmpty(e.GroupField))
+                                {
+                                    group = rdr["GroupField"].ToString().Trim();
+                                    group = RemoveNonAlphaNumeric.Replace(group, string.Empty);
+                                    group = (Settings.UsePascalCaseForEnumMembers ? Inflector.ToTitleCase(group) : group).Replace(" ", string.Empty).Trim();
+
+                                }
+                                if (!enumDict.ContainsKey(group))
+                                {
+                                    enumDict.Add(group, new List<EnumerationMember>());
+                                }
 
                                 name = RemoveNonAlphaNumeric.Replace(name, string.Empty);
                                 name = (Settings.UsePascalCaseForEnumMembers ? Inflector.ToTitleCase(name) : name).Replace(" ", string.Empty).Trim();
@@ -829,13 +859,15 @@ namespace Efrpg.Readers
                                     var o = rdr.GetValue(n);
                                     allValues.Add(rdr.GetName(n), o != DBNull.Value ? o : null);
                                 }
-
-                                items.Add(new EnumerationMember(name, value, allValues));
+                                enumDict[group].Add(new EnumerationMember(name, value, allValues));
                             }
 
-                            if(items.Any())
+                            foreach (var v in enumDict)
                             {
-                                result.Add(new Enumeration(e.Name, items));
+                                if (v.Value.Any())
+                                {
+                                    result.Add(new Enumeration(e.Name.Replace("{GroupField}", v.Key), v.Value));
+                                }
                             }
                         }
                     }
@@ -872,25 +904,41 @@ namespace Efrpg.Readers
 
                 cmd.CommandText = sql;
 
+                RawSequence rs = null;
+
                 using (var rdr = cmd.ExecuteReader())
                 {
+                    // Sequences
                     while (rdr.Read())
                     {
                         var dataType = rdr["DataType"].ToString().Trim().ToLower();
-                        
-                        var index = new RawSequence
-                        (
-                            rdr["Schema"].ToString().Trim(),
-                            rdr["Name"].ToString().Trim(),
-                            GetPropertyType(dataType),
-                            rdr["StartValue"].ToString(),
-                            rdr["IncrementValue"].ToString(),
-                            rdr["MinValue"].ToString(),
-                            rdr["MaxValue"].ToString(),
-                            GetReaderBool(rdr, "IsCycleEnabled") ?? false
-                        );
-                        result.Add(index);
+                        var schema = rdr["Schema"].ToString().Trim();
+                        var name = rdr["Name"].ToString().Trim();
+
+                        if (rs == null || rs.Schema != schema || rs.Name != name)
+                        {
+                            rs = new RawSequence
+                            (
+                                schema,
+                                name,
+                                GetPropertyType(dataType),
+                                rdr["StartValue"].ToString(),
+                                rdr["IncrementValue"].ToString(),
+                                rdr["MinValue"].ToString(),
+                                rdr["MaxValue"].ToString(),
+                                GetReaderBool(rdr, "IsCycleEnabled") ?? false
+                            );
+
+                            result.Add(rs);
+                        }
+
+                        rs.TableMapping.Add(new RawSequenceTableMapping(
+                            rdr["TableSchema"].ToString().Trim(),
+                            rdr["TableName"].ToString().Trim()));
                     }
+
+                    if (!result.Any())
+                        return result;
                 }
             }
 
@@ -939,6 +987,62 @@ namespace Efrpg.Readers
             return result;
         }
 
+        public List<RawMemoryOptimisedTable> ReadMemoryOptimisedTables()
+        {
+            if (DatabaseReaderPlugin != null)
+                return DatabaseReaderPlugin.ReadMemoryOptimisedTables();
+
+            var result = new List<RawMemoryOptimisedTable>();
+            try
+            {
+                using (var conn = _factory.CreateConnection())
+                {
+                    if (conn == null)
+                        return result;
+
+                    conn.ConnectionString = Settings.ConnectionString;
+                    conn.Open();
+
+                    var cmd = GetCmd(conn);
+                    if (cmd == null)
+                        return result;
+
+                    var sql = MemoryOptimisedSQL();
+                    if (sql == null || sql.Length != (int) MemoryOptimised.Count)
+                        return result;
+
+                    cmd.CommandText = sql[(int) MemoryOptimised.CompatibilityLevel];
+                    var compatibilityLevel = Convert.ToInt16(cmd.ExecuteScalar());
+                    if (compatibilityLevel < 130)
+                        return result;
+
+                    cmd.CommandText = sql[(int) MemoryOptimised.InMemorySupported];
+                    var inMemorySupported = Convert.ToBoolean(cmd.ExecuteScalar());
+                    if (!inMemorySupported)
+                        return result;
+
+                    cmd.CommandText = sql[(int) MemoryOptimised.TableList];
+                    using (var rdr = cmd.ExecuteReader())
+                    {
+                        while (rdr.Read())
+                        {
+                            var index = new RawMemoryOptimisedTable
+                            (
+                                rdr["SchemaName"].ToString().Trim(),
+                                rdr["TableName"].ToString().Trim()
+                            );
+                            result.Add(index);
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // Memory optimised tables are not supported
+            }
+            return result;
+        }
+
         private static string GetReaderString(DbDataReader rdr, string name)
         {
             try
@@ -977,30 +1081,36 @@ namespace Efrpg.Readers
 
         public Column CreateColumn(RawTable rt, Table table, IDbContextFilter filter)
         {
+            if (!string.IsNullOrEmpty(rt.SynonymTriggerName) && string.IsNullOrEmpty(table.TriggerName))
+                table.TriggerName = rt.SynonymTriggerName;
+
             var col = new Column
             {
-                Scale               = rt.Scale,
-                PropertyType        = GetPropertyType(rt.TypeName),
-                SqlPropertyType     = rt.TypeName,
-                IsNullable          = rt.IsNullable,
-                MaxLength           = rt.MaxLength,
-                DateTimePrecision   = rt.DateTimePrecision,
-                Precision           = rt.Precision,
-                IsIdentity          = rt.IsIdentity,
-                IsComputed          = rt.IsComputed,
-                IsRowGuid           = rt.IsRowGuid,
-                GeneratedAlwaysType = (ColumnGeneratedAlwaysType)rt.GeneratedAlwaysType,
-                IsStoreGenerated    = rt.IsStoreGenerated,
-                PrimaryKeyOrdinal   = rt.PrimaryKeyOrdinal,
-                IsPrimaryKey        = rt.PrimaryKey,
-                IsForeignKey        = rt.IsForeignKey,
-                IsSpatial           = rt.TypeName == "geography" || rt.TypeName == "geometry",
-                Ordinal             = rt.Ordinal,
-                DbName              = rt.ColumnName,
-                Default             = rt.Default,
-                ParentTable         = table,
-                ExistsInBaseClass   = false
+                Scale = rt.Scale,
+                PropertyType = GetPropertyType(rt.TypeName),
+                SqlPropertyType = rt.TypeName,
+                IsNullable = rt.IsNullable,
+                MaxLength = rt.MaxLength,
+                DateTimePrecision = rt.DateTimePrecision,
+                Precision = rt.Precision,
+                IsIdentity = rt.IsIdentity,
+                IsComputed = rt.IsComputed,
+                IsRowGuid = rt.IsRowGuid,
+                GeneratedAlwaysType = (ColumnGeneratedAlwaysType) rt.GeneratedAlwaysType,
+                IsStoreGenerated = rt.IsStoreGenerated,
+                PrimaryKeyOrdinal = rt.PrimaryKeyOrdinal,
+                IsPrimaryKey = rt.PrimaryKey,
+                IsForeignKey = rt.IsForeignKey,
+                IsSpatial = rt.TypeName == "geography" || rt.TypeName == "geometry",
+                Ordinal = rt.Ordinal,
+                DbName = rt.ColumnName,
+                Default = rt.Default,
+                ParentTable = table,
+                ExistsInBaseClass = false
             };
+
+            if (col.IsPrimaryKey)
+                col.IsNullable = false;
 
             if (col.MaxLength == -1 && (col.SqlPropertyType.EndsWith("varchar", StringComparison.InvariantCultureIgnoreCase) ||
                                         col.SqlPropertyType.EndsWith("varbinary", StringComparison.InvariantCultureIgnoreCase)))
@@ -1018,8 +1128,8 @@ namespace Efrpg.Readers
                 col.Hidden = true;
 
             col.IsFixedLength = (rt.TypeName == "char" || rt.TypeName == "nchar");
-            col.IsUnicode     = !(rt.TypeName == "char" || rt.TypeName == "varchar" || rt.TypeName == "text");
-            col.IsMaxLength   = (rt.TypeName == "ntext");
+            col.IsUnicode = !(rt.TypeName == "char" || rt.TypeName == "varchar" || rt.TypeName == "text");
+            col.IsMaxLength = (rt.TypeName == "ntext");
 
             col.IsRowVersion = col.IsStoreGenerated && rt.TypeName == "timestamp";
             if (col.IsRowVersion)
@@ -1068,11 +1178,11 @@ namespace Efrpg.Readers
         public static readonly Func<string, string> CleanUp = (str) =>
         {
             // Replace punctuation and symbols in variable names as these are not allowed.
-            if(string.IsNullOrEmpty(str))
+            if (string.IsNullOrEmpty(str))
                 return string.Empty;
 
-            if(str.Any(char.IsLetterOrDigit))
-                str = RemoveTrailingSymbols.Replace(str.Replace('-', '_'), string.Empty);
+            if (str.Any(char.IsLetterOrDigit))
+                str = RemoveTrailingSymbols.Replace(str.Replace('-', '_').Replace('.', '_'), string.Empty);
             var len = str.Length;
             if (len == 0)
                 return string.Empty;

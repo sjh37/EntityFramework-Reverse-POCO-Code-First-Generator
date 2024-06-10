@@ -18,41 +18,41 @@ namespace Efrpg.Readers
         {
             StoredProcedureParameterDbType = new Dictionary<string, string>
             {
-                { string.Empty,       "VarChar" }, // default
-                { "hierarchyid",      "VarChar" },
-                { "bigint",           "BigInt" },
-                { "binary",           "Binary" },
-                { "bit",              "Bit" },
-                { "char",             "Char" },
-                { "datetime",         "DateTime" },
-                { "decimal",          "Decimal" },
-                { "numeric",          "Decimal" },
-                { "float",            "Float" },
-                { "image",            "Image" },
-                { "int",              "Int" },
-                { "money",            "Money" },
-                { "nchar",            "NChar" },
-                { "ntext",            "NText" },
-                { "nvarchar",         "NVarChar" },
-                { "real",             "Real" },
+                { string.Empty, "VarChar" }, // default
+                { "hierarchyid", "VarChar" },
+                { "bigint", "BigInt" },
+                { "binary", "Binary" },
+                { "bit", "Bit" },
+                { "char", "Char" },
+                { "datetime", "DateTime" },
+                { "decimal", "Decimal" },
+                { "numeric", "Decimal" },
+                { "float", "Float" },
+                { "image", "Image" },
+                { "int", "Int" },
+                { "money", "Money" },
+                { "nchar", "NChar" },
+                { "ntext", "NText" },
+                { "nvarchar", "NVarChar" },
+                { "real", "Real" },
                 { "uniqueidentifier", "UniqueIdentifier" },
-                { "smalldatetime",    "SmallDateTime" },
-                { "smallint",         "SmallInt" },
-                { "smallmoney",       "SmallMoney" },
-                { "text",             "Text" },
-                { "timestamp",        "Timestamp" },
-                { "tinyint",          "TinyInt" },
-                { "varbinary",        "VarBinary" },
-                { "varchar",          "VarChar" },
-                { "variant",          "Variant" },
-                { "xml",              "Xml" },
-                { "udt",              "Udt" },
-                { "table type",       "Structured" },
-                { "structured",       "Structured" },
-                { "date",             "Date" },
-                { "time",             "Time" },
-                { "datetime2",        "DateTime2" },
-                { "datetimeoffset",   "DateTimeOffset" }
+                { "smalldatetime", "SmallDateTime" },
+                { "smallint", "SmallInt" },
+                { "smallmoney", "SmallMoney" },
+                { "text", "Text" },
+                { "timestamp", "Timestamp" },
+                { "tinyint", "TinyInt" },
+                { "varbinary", "VarBinary" },
+                { "varchar", "VarChar" },
+                { "variant", "Variant" },
+                { "xml", "Xml" },
+                { "udt", "Udt" },
+                { "table type", "Structured" },
+                { "structured", "Structured" },
+                { "date", "Date" },
+                { "time", "Time" },
+                { "datetime2", "DateTime2" },
+                { "datetimeoffset", "DateTimeOffset" }
             };
         }
 
@@ -184,7 +184,8 @@ SELECT
 
     CONVERT( bit, ISNULL( pk.ORDINAL_POSITION, 0 ) ) AS PrimaryKey,
     ISNULL(pk.ORDINAL_POSITION, 0) PrimaryKeyOrdinal,
-    CONVERT( bit, CASE WHEN fk.COLUMN_NAME IS NOT NULL THEN 1 ELSE 0 END ) AS IsForeignKey
+    CONVERT( bit, CASE WHEN fk.COLUMN_NAME IS NOT NULL THEN 1 ELSE 0 END ) AS IsForeignKey,
+    NULL AS SynonymTriggerName
 
 FROM
     #Columns c
@@ -377,10 +378,7 @@ FROM    INFORMATION_SCHEMA.ROUTINES R
         LEFT OUTER JOIN INFORMATION_SCHEMA.PARAMETERS P
             ON P.SPECIFIC_SCHEMA = R.SPECIFIC_SCHEMA
                AND P.SPECIFIC_NAME = R.SPECIFIC_NAME
-WHERE   R.ROUTINE_TYPE = 'FUNCTION'
-ORDER BY R.SPECIFIC_SCHEMA,
-        R.SPECIFIC_NAME,
-        P.ORDINAL_POSITION";
+WHERE   R.ROUTINE_TYPE = 'FUNCTION'";
 
             return @"
 SELECT  R.SPECIFIC_SCHEMA,
@@ -456,27 +454,32 @@ SELECT * FROM MultiContext.Enumeration;
 SELECT * FROM MultiContext.ForeignKey;";
         }
 
-        protected override string EnumSQL(string table, string nameField, string valueField)
+        protected override string EnumSQL(string table, string nameField, string valueField, string groupField)
         {
-            return string.Format("SELECT {0} as NameField, {1} as ValueField, * FROM {2};", nameField, valueField, table);
+            return string.Format("SELECT {0} as NameField, {1} as ValueField, {2} as GroupField, * FROM {3};", nameField, valueField, !string.IsNullOrEmpty(groupField) ? groupField : "''", table);
         }
 
         protected override string SequenceSQL()
         {
             return @"
-SELECT  SCHEMA_NAME(seq.schema_id) AS [Schema],
-		seq.name AS [Name],
-        usrt.name AS DataType,
-        ISNULL(seq.start_value, N'') AS StartValue,
-        ISNULL(seq.increment, N'') AS IncrementValue,
-        ISNULL(seq.minimum_value, N'') AS MinValue,
-        ISNULL(seq.maximum_value, N'') AS MaxValue,
-        ISNULL(CAST(seq.is_cycling AS BIT), 0) AS IsCycleEnabled,
-		seq.cache_size AS CacheSize
-FROM    sys.sequences seq
-        LEFT OUTER JOIN sys.types usrt
-            ON usrt.user_type_id = seq.user_type_id
-ORDER BY [Name], [Schema];";
+SELECT SCHEMA_NAME(seq.schema_id) [Schema],
+       seq.name Name,
+       usrt.name DataType,
+       ISNULL(seq.start_value, N'') StartValue,
+       ISNULL(seq.increment, N'') IncrementValue,
+       ISNULL(seq.minimum_value, N'') MinValue,
+       ISNULL(seq.maximum_value, N'') MaxValue,
+       ISNULL(CAST(seq.is_cycling AS BIT), 0) IsCycleEnabled,
+       seq.cache_size CacheSize,
+       OBJECT_SCHEMA_NAME(o.parent_object_id) TableSchema,
+       OBJECT_NAME(o.parent_object_id) TableName
+FROM sys.sequences seq
+    LEFT OUTER JOIN sys.types usrt
+        ON usrt.user_type_id = seq.user_type_id
+    CROSS APPLY sys.dm_sql_referencing_entities(OBJECT_SCHEMA_NAME(seq.object_id) + '.' + seq.name, 'OBJECT') r
+    JOIN sys.objects o
+        ON o.object_id = r.referencing_id
+ORDER BY seq.schema_id, seq.name;";
         }
 
         protected override string TriggerSQL()
@@ -493,6 +496,16 @@ WHERE T.type = 'TR'
       AND S.name IS NOT NULL
       AND O.name IS NOT NULL
 ORDER BY SchemaName, TableName, TriggerName;";
+        }
+
+        protected override string[] MemoryOptimisedSQL()
+        {
+            return new string[]
+            {
+                "SELECT compatibility_level FROM sys.databases WHERE name = DB_NAME();",
+                "SELECT CAST(SERVERPROPERTY(N'IsXTPSupported') AS BIT) AS IsXTPSupported;",
+                "SELECT SCHEMA_NAME(schema_id) SchemaName, name TableName FROM sys.tables WHERE is_memory_optimized = 1;"
+            };
         }
 
         protected override string SynonymTableSQLSetup()
@@ -532,7 +545,18 @@ SELECT TOP (0)
     END AS BIT) AS IsStoreGenerated,
     CAST(CASE WHEN pk.ORDINAL_POSITION IS NULL THEN 0 ELSE 1 END AS BIT) AS PrimaryKey,
     ISNULL(pk.ORDINAL_POSITION, 0) PrimaryKeyOrdinal,
-    CAST(CASE WHEN fk.COLUMN_NAME IS NULL THEN 0 ELSE 1 END AS BIT) AS IsForeignKey
+    CAST(CASE WHEN fk.COLUMN_NAME IS NULL THEN 0 ELSE 1 END AS BIT) AS IsForeignKey,
+    (   SELECT TOP(1) T.name AS TriggerName
+        FROM sys.triggers T
+            LEFT JOIN sys.all_objects TOBJ
+                ON T.parent_id = TOBJ.object_id
+            LEFT JOIN sys.schemas TSCH
+                ON TSCH.schema_id = TOBJ.schema_id
+        WHERE T.type = 'TR'
+              AND T.is_disabled = 0
+              AND TSCH.name IS NOT NULL
+              AND TOBJ.name IS NOT NULL
+              AND sc.NAME = TSCH.name AND sn.name = TOBJ.name) AS SynonymTriggerName
 INTO
     #SynonymDetails
 FROM
@@ -573,7 +597,7 @@ FROM
 DECLARE @synonymDetailsQueryTemplate nvarchar(max) = 'USE [@synonmymDatabaseName];
 INSERT INTO #SynonymDetails (
     SchemaName, TableName, TableType, TableTemporalType, Ordinal, ColumnName, IsNullable, TypeName, [MaxLength], [Precision], [Default], DateTimePrecision, Scale,
-    IsIdentity, IsRowGuid, IsComputed, GeneratedAlwaysType, IsStoreGenerated, PrimaryKey, PrimaryKeyOrdinal, IsForeignKey
+    IsIdentity, IsRowGuid, IsComputed, GeneratedAlwaysType, IsStoreGenerated, PrimaryKey, PrimaryKeyOrdinal, IsForeignKey, SynonymTriggerName
 )
 SELECT
     st.SynonymSchemaName AS SchemaName,
@@ -612,7 +636,18 @@ SELECT
 
     CAST(CASE WHEN pk.ORDINAL_POSITION IS NULL THEN 0  ELSE 1 END AS BIT) AS PrimaryKey,
     ISNULL(pk.ORDINAL_POSITION, 0) PrimaryKeyOrdinal,
-    CAST(CASE WHEN fk.COLUMN_NAME IS NULL THEN 0 ELSE 1 END AS BIT) AS IsForeignKey
+    CAST(CASE WHEN fk.COLUMN_NAME IS NULL THEN 0 ELSE 1 END AS BIT) AS IsForeignKey,
+    (   SELECT TOP(1) T.name AS TriggerName
+        FROM sys.triggers T
+            LEFT JOIN sys.all_objects TOBJ
+                ON T.parent_id = TOBJ.object_id
+            LEFT JOIN sys.schemas TSCH
+                ON TSCH.schema_id = TOBJ.schema_id
+        WHERE T.type = ''TR''
+              AND T.is_disabled = 0
+              AND TSCH.name IS NOT NULL
+              AND TOBJ.name IS NOT NULL
+              AND st.SynonymSchemaName = TSCH.name AND st.SynonymName = TOBJ.name) AS SynonymTriggerName
 FROM
     #SynonymTargets st
     
@@ -736,7 +771,8 @@ SELECT
     IsStoreGenerated,
     PrimaryKey,
     PrimaryKeyOrdinal,
-    IsForeignKey
+    IsForeignKey,
+    SynonymTriggerName
 FROM
     #SynonymDetails";
         }
@@ -1050,6 +1086,11 @@ OPTION (QUERYTRACEON 9481)";
             return DatabaseProductMajorVersion >= 13;
         }
 
+        public override bool HasIdentityColumnSupport()
+        {
+            return true;
+        }
+
         protected override string ReadDatabaseEditionSQL()
         {
             return @"
@@ -1133,11 +1174,18 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 var ds = new DataSet();
                 using (var sqlAdapter = new SqlDataAdapter(sb.ToString(), sqlConnection))
                 {
-                    if (sqlConnection.State != ConnectionState.Open)
-                        sqlConnection.Open();
-                    sqlAdapter.SelectCommand.ExecuteReader(CommandBehavior.SchemaOnly | CommandBehavior.KeyInfo);
-                    sqlConnection.Close();
-                    sqlAdapter.FillSchema(ds, SchemaType.Source, "MyTable");
+                    try
+                    {
+                        if (sqlConnection.State != ConnectionState.Open)
+                            sqlConnection.Open();
+                        sqlAdapter.SelectCommand.ExecuteReader(CommandBehavior.SchemaOnly | CommandBehavior.KeyInfo);
+                        sqlConnection.Close();
+                        sqlAdapter.FillSchema(ds, SchemaType.Source, "MyTable");
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
                 }
 
                 // Tidy up parameters
@@ -1148,6 +1196,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 {
                     proc.ReturnModels.Add(ds.Tables[count].Columns.Cast<DataColumn>().ToList());
                 }
+
+                proc.MergeModelsIfAllSame();
             }
             catch (Exception)
             {

@@ -10,11 +10,11 @@
     
     // For help on the various Types below, please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Common-Settings.*Types-explained
     // The following entries are the only required settings.
-    Settings.DatabaseType             = DatabaseType.SqlServer; // SqlServer, SqlCe, PostgreSQL. Coming next: MySql, Oracle
+    Settings.DatabaseType             = DatabaseType.SqlServer; // SqlServer, SqlCe, SQLite, PostgreSQL. Coming next: MySql, Oracle
     Settings.TemplateType             = TemplateType.EfCore6; // EfCore6, EfCore5, EfCore3, EfCore2, Ef6, FileBasedCore2, FileBasedCore3, FileBasedCore5, FileBasedCore6. FileBased specify folder using Settings.TemplateFolder
     Settings.GeneratorType            = GeneratorType.EfCore; // EfCore, Ef6, Custom. Custom edit GeneratorCustom class to provide your own implementation
 
-    Settings.UseMappingTables        = false; // Must be false for TemplateType.EfCore2 & 3. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
+    Settings.UseMappingTables        = false; // Must be false for TemplateType.EfCore2-4. If true, mapping will be used, and no mapping tables will be generated. If false, all tables will be generated.
     Settings.FileManagerType         = FileManagerType.EfCore; // .NET Core project = EfCore; .NET project = VisualStudio; No output (testing only) = Null
     Settings.ConnectionString        = "Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;MultipleActiveResultSets=True;Encrypt=false;TrustServerCertificate=true"; // This is used by the generator to reverse engineer your database
     Settings.ConnectionStringName    = "EnumViaTablesDbContext"; // ConnectionString key as specified in your app.config/web.config/appsettings.json. Not used by the generator, but is placed into the generated DbContext constructor.
@@ -76,7 +76,7 @@
     Settings.UsePascalCase                      = true; // This will rename the generated C# tables & properties to use PascalCase. If false table & property names will be left alone.
     Settings.UseDataAnnotations                 = false; // If true, will add data annotations to the poco classes.
     Settings.UsePropertyInitialisers            = false; // Removes POCO constructor and instead uses C# 6 property initialisers to set defaults
-    Settings.UseLazyLoading                     = true; // Marks all navigation properties as virtual or not, to support or disable EF Lazy Loading feature
+    Settings.UseLazyLoading                     = false; // Marks all navigation properties as virtual or not, to support or disable EF Lazy Loading feature
     Settings.UseInheritedBaseInterfaceFunctions = false; // If true, the main DBContext interface functions will come from the DBContextInterfaceBaseClasses and not generated. If false, the functions will be generated.
     Settings.IncludeComments                    = CommentsStyle.AtEndOfField; // Adds comments to the generated code
     Settings.IncludeExtendedPropertyComments    = CommentsStyle.InSummaryBlock; // Adds extended properties as comments to the generated code
@@ -112,10 +112,11 @@
     {
         new EnumerationSettings
         {
-            Name       = "DaysOfWeek",          // Enum to generate. e.g. "DaysOfWeek" would result in "public enum DaysOfWeek {...}"
+            Name       = "DaysOfWeek",          // Enum to generate. e.g. "DaysOfWeek" would result in "public enum DaysOfWeek {...}" if the GroupField is set to a value then {GroupField} must be used in this name. e.g. "DaysOfWeek{GroupField}"
             Table      = "EnumTest.DaysOfWeek", // Database table containing enum values. e.g. "DaysOfWeek"
             NameField  = "TypeName",            // Column containing the name for the enum. e.g. "TypeName"
-            ValueField = "TypeId"               // Column containing the values for the enum. e.g. "TypeId"
+            ValueField = "TypeId",              // Column containing the values for the enum. e.g. "TypeId"
+            GroupField = string.Empty           // [optional] Column containing the group name for the enum. This is used if multiple Enums are in the same table. if this is populated, use {GroupField} in the Name property. e.g. "{GroupField}Enum"
         }
     };
 
@@ -150,7 +151,8 @@
                         Name       = table.NameHumanCase + "Enum",
                         Table      = table.Schema.DbName + "." + table.DbName,
                         NameField  = table.Columns.First(x => x.PropertyType == "string").DbName, // Or specify your own
-                        ValueField = table.PrimaryKeys.Single().DbName // Or specify your own
+                        ValueField = table.PrimaryKeys.Single().DbName, // Or specify your own
+                        GroupField = string.Empty // Or specify your own
                     });
 
                     // This will cause this table to not be reverse-engineered.
@@ -177,6 +179,7 @@
         new CustomPluralizationEntry("Order", "Orders")
     };
     Inflector.PluralisationService = new EnglishPluralizationService(customPluralisationEntries);*/
+    Inflector.IgnoreWordsThatEndWith = new List<string> { "Status", "To", "Data" };
     Inflector.PluralisationService = new EnglishPluralizationService(); // To disable pluralisation, set this to null
 
     var outer = (GeneratedTextTransformation) this;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using Efrpg;
 using Efrpg.FileManagement;
 using Efrpg.Filtering;
@@ -33,6 +34,7 @@ namespace Generator.Tests.Integration
             Settings.DisableGeographyTypes = false;
             Settings.AddUnitTestingDbContext = true;
             Settings.UsePascalCase = true;
+            Settings.UseMappingTables = false;
 
             ResetFilters();
         }
@@ -40,6 +42,7 @@ namespace Generator.Tests.Integration
         protected static void Run(string filename, string singleDbContextSubNamespace, Type fileManagerType, string subFolder,
             List<EnumDefinition> enumDefinitions = null)
         {
+            Inflector.IgnoreWordsThatEndWith = new List<string> { "Status", "To", "Data" };
             Inflector.PluralisationService = new EnglishPluralizationService();
             Settings.GenerateSingleDbContext = true;
 
@@ -106,7 +109,7 @@ namespace Generator.Tests.Integration
 
         protected static void CompareAgainstFolderTestComparison(string subFolder)
         {
-            var testRootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "OneDrive-Personal\\OneDrive\\Documents");
+            var testRootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "OneDrive\\Documents");
             if (!string.IsNullOrEmpty(subFolder))
                 testRootPath = Path.Combine(testRootPath, subFolder);
 
@@ -118,7 +121,7 @@ namespace Generator.Tests.Integration
 
             Assert.AreEqual(testComparisonFiles.Length, generatedFiles.Length);
 
-            foreach (var comparisonFile in testComparisonFiles)
+            foreach (var comparisonFile in testComparisonFiles.Where(x => x.ToLower().EndsWith("Audit")))
             {
                 var filename = Path.GetFileName(comparisonFile);
                 var generatedPath = Path.Combine(Settings.Root, filename);

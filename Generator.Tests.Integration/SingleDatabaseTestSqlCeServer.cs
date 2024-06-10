@@ -18,7 +18,7 @@ namespace Generator.Tests.Integration
             SetupDatabase(connectionStringName, dbContextName, templateType, generatorType, foreignKeyNamingStrategy);
 
             Settings.ConnectionString =
-                @"Data Source=C:\S\Source (open source)\EntityFramework Reverse POCO Code Generator\EntityFramework.Reverse.POCO.Generator\App_Data\" +
+                @"Data Source=C:\S\Source (open source)\EntityFramework-Reverse-POCO-Code-First-Generator\EntityFramework.Reverse.POCO.Generator\App_Data\" +
                 database;
             Settings.DatabaseType = DatabaseType.SqlCe;
         }
@@ -45,13 +45,9 @@ namespace Generator.Tests.Integration
         [Test]
         [NonParallelizable]
         // Legacy
-        [TestCase(false, TemplateType.EfCore2, ForeignKeyNamingStrategy.Legacy)]
-        [TestCase(false, TemplateType.EfCore3, ForeignKeyNamingStrategy.Legacy)]
-        [TestCase(true, TemplateType.EfCore2, ForeignKeyNamingStrategy.Legacy)]
-        [TestCase(true, TemplateType.EfCore3, ForeignKeyNamingStrategy.Legacy)]
-        [TestCase(false, TemplateType.EfCore5, ForeignKeyNamingStrategy.Legacy)]
         [TestCase(false, TemplateType.EfCore6, ForeignKeyNamingStrategy.Legacy)]
         [TestCase(false, TemplateType.EfCore7, ForeignKeyNamingStrategy.Legacy)]
+        [TestCase(false, TemplateType.EfCore8, ForeignKeyNamingStrategy.Legacy)]
         // Latest
         //[TestCase(false, TemplateType.EfCore2, ForeignKeyNamingStrategy.Latest)]
         //[TestCase(false, TemplateType.EfCore3, ForeignKeyNamingStrategy.Latest)]
@@ -66,7 +62,7 @@ namespace Generator.Tests.Integration
 
             // Act
             var filename = "Northwind";
-            var subFolder = templateType == TemplateType.EfCore2 ? "TestComparison\\EfCore2NorthwindSqlCe40" : "TestComparison\\EfCore3NorthwindSqlCe40";
+            var subFolder = $"TestComparison\\{templateType}NorthwindSqlCe40";
             Run(filename, ".SqlCE", typeof(EfCoreFileManager), subFolder);
 
             // Assert

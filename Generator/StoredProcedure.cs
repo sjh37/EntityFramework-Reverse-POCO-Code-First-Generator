@@ -4,8 +4,10 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using Efrpg.Filtering;
 using Efrpg.Readers;
+using Efrpg.Util;
 
 namespace Efrpg
 {
@@ -41,6 +43,31 @@ namespace Efrpg
             return !IsNullable(col) ? propertyType : string.Format(Settings.NullableShortHand ? "{0}?" : "Nullable<{0}>", propertyType);
         }
 
+        public void MergeModelsIfAllSame()
+        {
+            if(Settings.MergeMultipleStoredProcModelsIfAllSame && ReturnModels.Count < 2)
+                return;
+
+            if (ReturnModels.Select(x => x.Count).Distinct().Count() != 1)
+                return; // Column count varies between models
+
+            var modelsCount = ReturnModels.Count;
+            var colCount = ReturnModels[0].Count;
+            for (var i = 1; i < modelsCount; ++i)
+            {
+                for (var n = 0; n < colCount; n++)
+                {
+                    var col = ReturnModels[0][n];
+                    var other = ReturnModels[i][n];
+
+                    if (col.ColumnName != other.ColumnName || col.DataType.FullName != other.DataType.FullName)
+                        return; // Columns differ
+                }
+            }
+
+            ReturnModels.RemoveRange(1, modelsCount - 1);
+        }
+
         public string WriteStoredProcFunctionName(IDbContextFilter filter)
         {
             var name = filter.StoredProcedureRename(this);
@@ -52,26 +79,68 @@ namespace Efrpg
             return Parameters.Any(x => x.Mode != StoredProcedureParameterMode.In);
         }
 
-        public string WriteStoredProcFunctionParams(bool includeProcResult)
+        public bool StoredProcCanExecuteAsync()
         {
+            return !StoredProcHasOutParams() && !IsTableValuedFunction && ReturnModels.Count <= 1;
+        }
+
+        public string WriteStoredProcFunctionParams(bool includeProcResult, bool forInterface, bool includeCancellationToken = false)
+        {
+            var willIncludeProcResult = includeProcResult && ReturnModels.Count > 0 && ReturnModels.First().Count > 0;
             var sb = new StringBuilder(255);
-            var n = 1;
             var data = Parameters.Where(x => x.Mode != StoredProcedureParameterMode.Out).OrderBy(x => x.Ordinal).ToList();
-            var count = data.Count;
+
+            var minNullableParameter = WhichTailEndParametersCanBeNullable(data, willIncludeProcResult, forInterface);
+            if (minNullableParameter == 0)
+                minNullableParameter = 9999;
+
+            var count = 0;
             foreach (var p in data)
             {
-                sb.AppendFormat("{0}{1}{2} {3}{4}",
-                    p.Mode == StoredProcedureParameterMode.In ? string.Empty : "out ",
+                ++count;
+                var notNullable = Column.StoredProcedureNotNullable.Contains(p.PropertyType.ToLower());
+                var isInParam = p.Mode == StoredProcedureParameterMode.In;
+
+                sb.AppendFormat("{0}{1}{2} {3}{4}, ",
+                    isInParam ? string.Empty : "out ",
                     p.PropertyType,
-                    Column.StoredProcedureNotNullable.Contains(p.PropertyType.ToLower()) ? string.Empty : "?",
+                    notNullable ? string.Empty : "?",
                     p.NameHumanCase,
-                    n++ < count ? ", " : string.Empty);
+                    (notNullable || forInterface || !isInParam || count < minNullableParameter) ? string.Empty : " = null");
             }
 
-            if (includeProcResult && ReturnModels.Count > 0 && ReturnModels.First().Count > 0)
-                sb.AppendFormat((data.Count > 0 ? ", " : string.Empty) + "out int procResult");
+            if (willIncludeProcResult)
+                sb.Append("out int procResult, ");
+
+            if (includeCancellationToken)
+                sb.Append("CancellationToken cancellationToken = default(CancellationToken), ");
+
+            if (includeCancellationToken || willIncludeProcResult || sb.Length > 2)
+                sb.Length -= 2;
 
             return sb.ToString();
+        }
+
+        // Returns the minimum nullable parameter, counting from 1. 0 Means no column is nullable.
+        public int WhichTailEndParametersCanBeNullable(List<StoredProcedureParameter> data, bool includeProcResult, bool forInterface)
+        {
+            if (forInterface || includeProcResult || !data.Any())
+                return 0;
+
+            var dataCount = data.Count;
+            var parameterNumber = dataCount;
+            foreach (var parameter in data.OrderByDescending(x => x.Ordinal))
+            {
+                if (parameter.Mode == StoredProcedureParameterMode.InOut ||
+                    Column.StoredProcedureNotNullable.Contains(parameter.PropertyType.ToLower()))
+                {
+                    return parameterNumber == dataCount ? 0 : parameterNumber + 1;
+                }
+
+                --parameterNumber;
+            }
+
+            return 1;
         }
 
         public string WriteStoredProcFunctionOverloadCall()
@@ -188,13 +257,20 @@ namespace Efrpg
             return sb.ToString();
         }
 
-        public string WriteStoredProcFunctionSqlParameterAnonymousArray(bool includeProcResultParam, bool appendParam)
+        public string WriteStoredProcFunctionSqlParameterAnonymousArray(bool includeProcResultParam, bool appendParam, bool includeCancellationToken = false, bool isEfCore3Plus = false)
         {
             var sb = new StringBuilder(255);
             var parameters = Parameters.OrderBy(x => x.Ordinal).ToList();
             var hasParam = parameters.Any();
+
+            if (!isEfCore3Plus && includeCancellationToken)
+                sb.Append(", cancellationToken");
+
             if (hasParam || includeProcResultParam)
                 sb.Append(", ");
+
+            if (isEfCore3Plus && (hasParam || includeProcResultParam))
+                sb.Append(" new[] {");
 
             foreach (var p in Parameters.OrderBy(x => x.Ordinal))
             {
@@ -206,6 +282,11 @@ namespace Efrpg
                 sb.Append("procResultParam");
             else if (hasParam)
                 sb.Remove(sb.Length - 2, 2);
+
+            if (isEfCore3Plus && (hasParam || includeProcResultParam))
+                sb.Append("}");
+            if (isEfCore3Plus && includeCancellationToken)
+                sb.Append(", cancellationToken");
 
             return sb.ToString();
         }
@@ -280,7 +361,7 @@ namespace Efrpg
 
         private string ConvertDataColumnType(Type type)
         {
-            var isEfCore5Plus = Settings.IsEfCore5Plus();
+            var isEfCore5Plus = Settings.IsEfCore6Plus();
             
             if (type.Name.Equals("SqlHierarchyId"))
                 return isEfCore5Plus ? "HierarchyId" : "Microsoft.SqlServer.Types.SqlHierarchyId";

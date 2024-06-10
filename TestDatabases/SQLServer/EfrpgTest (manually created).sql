@@ -1,34 +1,71 @@
 ﻿-- This database will contain all the horrible edge cases this generator has to cope with
+/*
+CREATE DATABASE EfrpgTest CONTAINMENT = NONE
+    ON PRIMARY
+           (
+               NAME = N'EfrpgTest',
+               FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL14.MSSQLSERVER\MSSQL\DATA\EfrpgTest.mdf',
+               SIZE = 8192KB,
+               MAXSIZE = UNLIMITED,
+               FILEGROWTH = 10%
+           ),
+       FILEGROUP EfrpgTest_mod CONTAINS MEMORY_OPTIMIZED_DATA DEFAULT
+           (
+               NAME = N'EfrpgTest_mod',
+               FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL14.MSSQLSERVER\MSSQL\DATA\EfrpgTest_mod',
+               MAXSIZE = UNLIMITED
+           )
+    LOG ON
+        (
+            NAME = N'EfrpgTest_log',
+            FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL14.MSSQLSERVER\MSSQL\DATA\EfrpgTest.ldf',
+            SIZE = 2816KB,
+            FILEGROWTH = 10%
+        );
+GO
 
-/*CREATE DATABASE [EfrpgTest] ON PRIMARY
-       ( NAME = N'EfrpgTest',     FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL14.MSSQLSERVER\MSSQL\DATA\EfrpgTest.mdf' , SIZE = 5Mb , FILEGROWTH = 1024KB )
-LOG ON ( NAME = N'EfrpgTest_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL14.MSSQLSERVER\MSSQL\DATA\EfrpgTest.ldf' , SIZE = 1024KB , FILEGROWTH = 10%);
+ALTER DATABASE [EfrpgTest] SET COMPATIBILITY_LEVEL = 140
 GO
-ALTER DATABASE [EfrpgTest] SET COMPATIBILITY_LEVEL = 100
-ALTER DATABASE [EfrpgTest] SET ANSI_NULL_DEFAULT OFF
-ALTER DATABASE [EfrpgTest] SET ANSI_NULLS OFF
-ALTER DATABASE [EfrpgTest] SET ANSI_PADDING OFF
-ALTER DATABASE [EfrpgTest] SET ANSI_WARNINGS OFF
-ALTER DATABASE [EfrpgTest] SET ARITHABORT OFF
-ALTER DATABASE [EfrpgTest] SET AUTO_CLOSE OFF
-ALTER DATABASE [EfrpgTest] SET AUTO_CREATE_STATISTICS ON
-ALTER DATABASE [EfrpgTest] SET AUTO_SHRINK OFF
-ALTER DATABASE [EfrpgTest] SET AUTO_UPDATE_STATISTICS ON
-ALTER DATABASE [EfrpgTest] SET CURSOR_CLOSE_ON_COMMIT OFF
-ALTER DATABASE [EfrpgTest] SET CURSOR_DEFAULT  GLOBAL
-ALTER DATABASE [EfrpgTest] SET CONCAT_NULL_YIELDS_NULL OFF
-ALTER DATABASE [EfrpgTest] SET NUMERIC_ROUNDABORT OFF
-ALTER DATABASE [EfrpgTest] SET QUOTED_IDENTIFIER OFF
-ALTER DATABASE [EfrpgTest] SET RECURSIVE_TRIGGERS OFF
-ALTER DATABASE [EfrpgTest] SET DISABLE_BROKER
-ALTER DATABASE [EfrpgTest] SET AUTO_UPDATE_STATISTICS_ASYNC OFF
-ALTER DATABASE [EfrpgTest] SET DATE_CORRELATION_OPTIMIZATION OFF
-ALTER DATABASE [EfrpgTest] SET PARAMETERIZATION SIMPLE
-ALTER DATABASE [EfrpgTest] SET READ_WRITE
-ALTER DATABASE [EfrpgTest] SET RECOVERY SIMPLE
-ALTER DATABASE [EfrpgTest] SET MULTI_USER
-ALTER DATABASE [EfrpgTest] SET PAGE_VERIFY CHECKSUM
+
+IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
+BEGIN
+    EXEC EfrpgTest.dbo.sp_fulltext_database @action = 'enable';
+END;
 GO
+
+ALTER DATABASE [EfrpgTest] SET ANSI_NULL_DEFAULT OFF 
+ALTER DATABASE [EfrpgTest] SET ANSI_NULLS OFF 
+ALTER DATABASE [EfrpgTest] SET ANSI_PADDING ON 
+ALTER DATABASE [EfrpgTest] SET ANSI_WARNINGS OFF 
+ALTER DATABASE [EfrpgTest] SET ARITHABORT OFF 
+ALTER DATABASE [EfrpgTest] SET AUTO_CLOSE OFF 
+ALTER DATABASE [EfrpgTest] SET AUTO_SHRINK ON 
+ALTER DATABASE [EfrpgTest] SET AUTO_UPDATE_STATISTICS ON 
+ALTER DATABASE [EfrpgTest] SET CURSOR_CLOSE_ON_COMMIT OFF 
+ALTER DATABASE [EfrpgTest] SET CURSOR_DEFAULT  GLOBAL 
+ALTER DATABASE [EfrpgTest] SET CONCAT_NULL_YIELDS_NULL OFF 
+ALTER DATABASE [EfrpgTest] SET NUMERIC_ROUNDABORT OFF 
+ALTER DATABASE [EfrpgTest] SET QUOTED_IDENTIFIER OFF 
+ALTER DATABASE [EfrpgTest] SET RECURSIVE_TRIGGERS OFF 
+ALTER DATABASE [EfrpgTest] SET  DISABLE_BROKER 
+ALTER DATABASE [EfrpgTest] SET AUTO_UPDATE_STATISTICS_ASYNC ON 
+ALTER DATABASE [EfrpgTest] SET DATE_CORRELATION_OPTIMIZATION OFF 
+ALTER DATABASE [EfrpgTest] SET TRUSTWORTHY OFF 
+ALTER DATABASE [EfrpgTest] SET ALLOW_SNAPSHOT_ISOLATION OFF 
+ALTER DATABASE [EfrpgTest] SET PARAMETERIZATION SIMPLE 
+ALTER DATABASE [EfrpgTest] SET READ_COMMITTED_SNAPSHOT OFF 
+ALTER DATABASE [EfrpgTest] SET HONOR_BROKER_PRIORITY OFF 
+ALTER DATABASE [EfrpgTest] SET RECOVERY SIMPLE 
+ALTER DATABASE [EfrpgTest] SET  MULTI_USER 
+ALTER DATABASE [EfrpgTest] SET PAGE_VERIFY CHECKSUM  
+ALTER DATABASE [EfrpgTest] SET DB_CHAINING OFF 
+ALTER DATABASE [EfrpgTest] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF ) 
+ALTER DATABASE [EfrpgTest] SET TARGET_RECOVERY_TIME = 60 SECONDS 
+ALTER DATABASE [EfrpgTest] SET DELAYED_DURABILITY = DISABLED 
+ALTER DATABASE [EfrpgTest] SET QUERY_STORE = OFF
+ALTER DATABASE [EfrpgTest] SET READ_WRITE 
+GO
+
 USE [EfrpgTest]
 GO
 IF NOT EXISTS (SELECT name FROM sys.filegroups WHERE is_default=1 AND name = N'PRIMARY')
@@ -565,6 +602,32 @@ EXEC sys.sp_addextendedproperty
     @level1type = N'TABLE',  @level1name = 'ColumnNameAndTypes';
 GO
 
+CREATE OR ALTER PROCEDURE ColumnNameAndTypesProc
+AS
+BEGIN
+    SELECT someDate,
+           Obs,
+           [static],
+           [readonly],
+           areal,
+           afloat,
+           afloat8,
+           afloat20,
+           afloat24,
+           afloat53,
+           adecimal,
+           adecimal_19_4,
+           adecimal_10_3,
+           anumeric,
+           anumeric_5_2,
+           anumeric_11_3,
+           amoney,
+           asmallmoney,
+           GeographyType,
+           GeometryType
+    FROM ColumnNameAndTypes;
+END;
+GO
 
 -- This table is unusable by EF as all the columns are NULL.
 -- We should see this table generated inside a comment, but with a comment that it is unusable
@@ -601,6 +664,15 @@ CREATE TABLE [Synonyms].[Child](
 	[ChildId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
+GO
+
+CREATE TRIGGER Synonyms.ChildInsertTrigger
+ON Synonyms.Child
+AFTER INSERT
+AS
+BEGIN
+    SET NOCOUNT ON;
+END;
 GO
 
 ALTER TABLE [Synonyms].[Child]  WITH CHECK ADD  CONSTRAINT [FK_Child_Parent] FOREIGN KEY([ParentId])
@@ -679,6 +751,8 @@ CREATE TABLE [Period.Table]
 	CONSTRAINT PK_Period_Table PRIMARY KEY CLUSTERED (Id)
 );
 GO
+INSERT INTO [dbo].[Period.Table] ([id], [joe.bloggs]) VALUES (1, 123), (2, 456);
+GO
 -- Table contains a period
 -- DROP TABLE [PeriodTestTable]
 CREATE TABLE [PeriodTestTable]
@@ -698,10 +772,7 @@ CREATE TABLE SmallDecimalTest
 );
 GO
 
-/****** Object:  Default [d_t_address_type_domain]    Script Date: 22/07/2015 14:28:05 ******/
-CREATE DEFAULT [dbo].[d_t_address_type_domain] 
-AS
-'A'
+CREATE DEFAULT [dbo].[d_t_address_type_domain] AS 'A';
 GO
 
 -- DROP TABLE PropertyTypesToAdd
@@ -1665,7 +1736,7 @@ ALTER TABLE Car ADD CONSTRAINT CarPrimaryColourFK FOREIGN KEY (PrimaryColourId) 
 ALTER TABLE CarToColour ADD CONSTRAINT CarToColour_CarId FOREIGN KEY (CarId) REFERENCES Car (Id);
 ALTER TABLE CarToColour ADD CONSTRAINT CarToColour_ColourId FOREIGN KEY (ColourId) REFERENCES Colour (Id);
 GO
-INSERT INTO Colour (Id, Name) VALUES (1, 'Red'),(2,'Green'),(3,'Blue')
+INSERT INTO Colour (Id, Name) VALUES (1, 'Red'),(2,'Green'),(3,'Blue'),(4,'Alloy orange'),(5,'Café noir'),(6,'Big dip o’ruby');
 INSERT INTO Car (Id, PrimaryColourId, CarMake) VALUES (1, 1, 'Ford'),(2,3, 'Saab')
 INSERT INTO CarToColour (CarId, ColourId) VALUES (1,2),(2,1),(2,2)
 GO
@@ -1725,6 +1796,7 @@ BEGIN
             CONVERT(BIT, CASE WHEN [default] IS NOT NULL THEN 1 ELSE 0 END) AS Selected
     FROM    DSOpe;
 END;
+GO
 
 --DROP TABLE tblOrderErrorsAB_
 --DROP TABLE AB_OrderLinesAB_
@@ -1732,6 +1804,7 @@ END;
 --DROP TABLE tblOrderErrors
 --DROP TABLE tblOrderLines
 --DROP TABLE tblOrders
+
 CREATE TABLE tblOrders
 (
     ID INT NOT NULL IDENTITY(1, 1),
@@ -1964,6 +2037,7 @@ CREATE SEQUENCE dbo.CountByTinyInt AS TINYINT START WITH 33 INCREMENT BY 3 NO MI
 CREATE SEQUENCE dbo.CountBySmallInt AS SMALLINT START WITH 44 INCREMENT BY 456 NO MAXVALUE CYCLE;
 CREATE SEQUENCE dbo.CountByDecimal AS DECIMAL START WITH 593 INCREMENT BY 82 MINVALUE 5 MAXVALUE 777777 CACHE 10;
 CREATE SEQUENCE dbo.CountByNumeric AS NUMERIC START WITH 789 INCREMENT BY 987 MINVALUE 345 NO MAXVALUE NO CACHE;
+CREATE SEQUENCE dbo.ThisSequenceIsNotUsed AS INT START WITH 1 INCREMENT BY 1;
 -- DROP SEQUENCE dbo.CountBy1; DROP SEQUENCE dbo.CountByBigInt; DROP SEQUENCE dbo.CountByTinyInt; DROP SEQUENCE dbo.CountBySmallInt; DROP SEQUENCE dbo.CountByDecimal; DROP SEQUENCE dbo.CountByNumeric 
 GO
 --SELECT NEXT VALUE FOR dbo.CountBy1;
@@ -1976,6 +2050,14 @@ CREATE TABLE dbo.SequenceTest -- drop TABLE dbo.SequenceTest
     CntByDecimal  DECIMAL     NOT NULL DEFAULT (NEXT VALUE FOR dbo.CountByDecimal),
     CntByNumeric  NUMERIC     NOT NULL DEFAULT (NEXT VALUE FOR dbo.CountByNumeric),
     CONSTRAINT PK_SequenceTest PRIMARY KEY CLUSTERED (Id)
+);
+GO
+CREATE TABLE dbo.SequenceTestPartTwo -- drop TABLE dbo.SequenceTestPartTwo 
+(
+    Id            INT         NOT NULL IDENTITY(1, 1),
+    CntByBigInt   BIGINT      NOT NULL DEFAULT (NEXT VALUE FOR dbo.CountByBigInt),
+    CntByTinyInt  TINYINT     NOT NULL DEFAULT (NEXT VALUE FOR dbo.CountByTinyInt),
+    CONSTRAINT PK_SequenceTestPartTwo PRIMARY KEY CLUSTERED (Id)
 );
 GO
 
@@ -1993,17 +2075,11 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    declare @test table (
-        id int,
-        [stuff] varchar(50)
-    )
-    insert into @test (id, [stuff]) values (1, 'some stuff'), (2, 'more stuff')
-
-    select 1 as id, 'even more' as [stuff] into #test
-
-    select * from @test
-    select * from #test
-	DROP TABLE #test
+    SELECT 1 AS id, 'some stuff' AS [stuff]
+    UNION
+    SELECT 2 AS id, 'more stuff' AS [stuff];
+    
+    SELECT 1 AS id, 'even more' AS [stuff];
 END
 GO
 
@@ -2543,4 +2619,78 @@ BEGIN
         SELECT 'Application' [Key], 'Complete' [Value];
     END
 END;
+GO
+
+-- #782 support for memory optimised tables
+CREATE TABLE dbo.ThisIsMemoryOptimised
+(
+    Id INT NOT NULL IDENTITY(1, 1),
+    Description VARCHAR(20) NOT NULL,
+    CONSTRAINT PK_ThisIsMemoryOptimised PRIMARY KEY NONCLUSTERED (Id)
+)
+WITH (MEMORY_OPTIMIZED = ON, DURABILITY = SCHEMA_AND_DATA);
+GO
+
+-- #774 Optional Parameters in Stored Procs
+CREATE PROCEDURE dbo.ThisHasMixedOutParameters
+    @Foo DATETIME NULL,
+    @FirstOutParam INT OUT,
+    @Bar DATETIME NULL,
+    @SecondOutParam INT OUT,
+    @Baz DATETIME NULL
+AS
+BEGIN
+    INSERT INTO TableA (TableADesc) VALUES ('Test');
+
+    SET @FirstOutParam = @@IDENTITY;
+    SET @SecondOutParam = SCOPE_IDENTITY();
+END;
+GO
+
+-- #693 Support for temporal tables
+CREATE TABLE dbo.TemporalDepartment
+(
+    DeptID INT NOT NULL PRIMARY KEY CLUSTERED,
+    DeptName VARCHAR(50) NOT NULL,
+    ManagerID INT NULL,
+    ParentDeptID INT NULL,
+    SysStartTime DATETIME2 GENERATED ALWAYS AS ROW START NOT NULL,
+    SysEndTime DATETIME2 GENERATED ALWAYS AS ROW END NOT NULL,
+    PERIOD FOR SYSTEM_TIME(SysStartTime, SysEndTime)
+)
+WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = dbo.TemporalDepartmentHistory));
+GO
+
+CREATE OR ALTER PROCEDURE dbo.MultipleReturnColumnsFromTempTable
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 1 Col1, 2 Col2 INTO #temp;
+    SELECT Col1, Col2 FROM #temp;
+END;
+GO
+
+-- Tables to test the inflector
+CREATE TABLE InflectorStatus
+(
+    Id INT NOT NULL IDENTITY(1, 1),
+    SayHelloTo INT NOT NULL,
+    SignalData INT NOT NULL,
+    NotificationStatus INT NOT NULL,
+    [Status] INT NOT NULL,
+    [To] INT NOT NULL,
+    [Data] INT NOT NULL,
+    CONSTRAINT PK_InflectorStatus PRIMARY KEY CLUSTERED (Id)
+);
+CREATE TABLE InflectorData
+(
+    Id INT NOT NULL IDENTITY(1, 1),
+    CONSTRAINT PK_InflectorData PRIMARY KEY CLUSTERED (Id)
+);
+CREATE TABLE InflectorTo
+(
+    Id INT NOT NULL IDENTITY(1, 1),
+    CONSTRAINT PK_InflectorTo PRIMARY KEY CLUSTERED (Id)
+);
 GO

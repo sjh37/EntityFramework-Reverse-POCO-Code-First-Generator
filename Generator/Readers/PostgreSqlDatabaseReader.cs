@@ -46,14 +46,15 @@ SELECT  T.TABLE_SCHEMA AS ""SchemaName"",
                    AND tcfk.TABLE_NAME      = fk.TABLE_NAME
                    AND tcfk.CONSTRAINT_NAME = fk.CONSTRAINT_NAME
                    AND tcfk.CONSTRAINT_TYPE = 'FOREIGN KEY'
-				   AND C.TABLE_SCHEMA       = fk.TABLE_SCHEMA
+                   AND C.TABLE_SCHEMA       = fk.TABLE_SCHEMA
                    AND C.TABLE_NAME         = fk.TABLE_NAME
-                   AND C.COLUMN_NAME        = fk.COLUMN_NAME) THEN 1 ELSE 0 END AS bit) AS ""IsForeignKey""
+                   AND C.COLUMN_NAME        = fk.COLUMN_NAME) THEN 1 ELSE 0 END AS bit) AS ""IsForeignKey"",
+        NULL AS ""SynonymTriggerName""
 FROM    INFORMATION_SCHEMA.TABLES T
         INNER JOIN INFORMATION_SCHEMA.COLUMNS C
             ON T.TABLE_SCHEMA   = C.TABLE_SCHEMA
                AND C.TABLE_NAME = T.TABLE_NAME
-			   AND C.table_catalog = T.table_catalog
+               AND C.table_catalog = T.table_catalog
         LEFT OUTER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc
             INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE pk
                 ON tc.CONSTRAINT_SCHEMA   = pk.TABLE_SCHEMA
@@ -190,9 +191,9 @@ ORDER BY R.specific_schema, R.routine_name, R.routine_type;";
             return string.Empty;
         }
 
-        protected override string EnumSQL(string table, string nameField, string valueField)
+        protected override string EnumSQL(string table, string nameField, string valueField, string groupField)
         {
-            return string.Format(@"SELECT ""{0}"" as ""NameField"", ""{1}"" as ""ValueField"", * FROM ""{2}"";", nameField, valueField, table);
+            return string.Format(@"SELECT ""{0}"" as ""NameField"", ""{1}"" as ""ValueField"", ""{2}"" as ""GroupField"", * FROM ""{3}"";", nameField, valueField, !string.IsNullOrEmpty(groupField) ? groupField : string.Empty, table);
         }
 
         protected override string SequenceSQL()
@@ -203,11 +204,16 @@ ORDER BY R.specific_schema, R.routine_name, R.routine_type;";
         protected override string TriggerSQL()
         {
             return @"
-SELECT event_object_schema AS SchemaName,
+SELECT DISTINCT event_object_schema AS SchemaName,
        event_object_table AS TableName,
        trigger_name AS TriggerName
 FROM INFORMATION_SCHEMA.triggers
 ORDER BY SchemaName, TableName, TriggerName;";
+        }
+
+        protected override string[] MemoryOptimisedSQL()
+        {
+            return null;
         }
 
         protected override string SynonymTableSQLSetup()
@@ -253,6 +259,11 @@ ORDER BY SchemaName, TableName, TriggerName;";
         protected override bool HasTemporalTableSupport()
         {
             return false;
+        }
+
+        public override bool HasIdentityColumnSupport()
+        {
+            return true;
         }
 
         public override void ReadStoredProcReturnObjects(List<StoredProcedure> procs)
@@ -321,13 +332,20 @@ ORDER BY SchemaName, TableName, TriggerName;";
                     if (sqlAdapter == null)
                         return;
 
-                    cmd.CommandText = sb.ToString();
-                    sqlAdapter.SelectCommand = cmd;
-                    if(cmd.Connection.State != ConnectionState.Open)
-                        cmd.Connection.Open();
-                    sqlAdapter.SelectCommand.ExecuteReader(CommandBehavior.SchemaOnly | CommandBehavior.KeyInfo);
-                    cmd.Connection.Close();
-                    sqlAdapter.FillSchema(ds, SchemaType.Source, "MyTable");
+                    try
+                    {
+                        cmd.CommandText = sb.ToString();
+                        sqlAdapter.SelectCommand = cmd;
+                        if(cmd.Connection.State != ConnectionState.Open)
+                            cmd.Connection.Open();
+                        sqlAdapter.SelectCommand.ExecuteReader(CommandBehavior.SchemaOnly | CommandBehavior.KeyInfo);
+                        cmd.Connection.Close();
+                        sqlAdapter.FillSchema(ds, SchemaType.Source, "MyTable");
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
                 }
 
                 // Tidy up parameters
@@ -338,6 +356,8 @@ ORDER BY SchemaName, TableName, TriggerName;";
                 {
                     proc.ReturnModels.Add(ds.Tables[count].Columns.Cast<DataColumn>().ToList());
                 }
+                
+                proc.MergeModelsIfAllSame();
             }
             catch (Exception)
             {

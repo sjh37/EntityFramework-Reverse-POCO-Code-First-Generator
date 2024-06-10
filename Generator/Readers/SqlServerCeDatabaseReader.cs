@@ -11,41 +11,41 @@ namespace Efrpg.Readers
         {
             StoredProcedureParameterDbType = new Dictionary<string, string>
             {
-                { string.Empty,       "VarChar" }, // default
-                { "hierarchyid",      "VarChar" },
-                { "bigint",           "BigInt" },
-                { "binary",           "Binary" },
-                { "bit",              "Bit" },
-                { "char",             "Char" },
-                { "datetime",         "DateTime" },
-                { "decimal",          "Decimal" },
-                { "numeric",          "Decimal" },
-                { "float",            "Float" },
-                { "image",            "Image" },
-                { "int",              "Int" },
-                { "money",            "Money" },
-                { "nchar",            "NChar" },
-                { "ntext",            "NText" },
-                { "nvarchar",         "NVarChar" },
-                { "real",             "Real" },
+                { string.Empty, "VarChar" }, // default
+                { "hierarchyid", "VarChar" },
+                { "bigint", "BigInt" },
+                { "binary", "Binary" },
+                { "bit", "Bit" },
+                { "char", "Char" },
+                { "datetime", "DateTime" },
+                { "decimal", "Decimal" },
+                { "numeric", "Decimal" },
+                { "float", "Float" },
+                { "image", "Image" },
+                { "int", "Int" },
+                { "money", "Money" },
+                { "nchar", "NChar" },
+                { "ntext", "NText" },
+                { "nvarchar", "NVarChar" },
+                { "real", "Real" },
                 { "uniqueidentifier", "UniqueIdentifier" },
-                { "smalldatetime",    "SmallDateTime" },
-                { "smallint",         "SmallInt" },
-                { "smallmoney",       "SmallMoney" },
-                { "text",             "Text" },
-                { "timestamp",        "Timestamp" },
-                { "tinyint",          "TinyInt" },
-                { "varbinary",        "VarBinary" },
-                { "varchar",          "VarChar" },
-                { "variant",          "Variant" },
-                { "xml",              "Xml" },
-                { "udt",              "Udt" },
-                { "table type",       "Structured" },
-                { "structured",       "Structured" },
-                { "date",             "Date" },
-                { "time",             "Time" },
-                { "datetime2",        "DateTime2" },
-                { "datetimeoffset",   "DateTimeOffset" }
+                { "smalldatetime", "SmallDateTime" },
+                { "smallint", "SmallInt" },
+                { "smallmoney", "SmallMoney" },
+                { "text", "Text" },
+                { "timestamp", "Timestamp" },
+                { "tinyint", "TinyInt" },
+                { "varbinary", "VarBinary" },
+                { "varchar", "VarChar" },
+                { "variant", "Variant" },
+                { "xml", "Xml" },
+                { "udt", "Udt" },
+                { "table type", "Structured" },
+                { "structured", "Structured" },
+                { "date", "Date" },
+                { "time", "Time" },
+                { "datetime2", "DateTime2" },
+                { "datetimeoffset", "DateTimeOffset" }
             };
         }
 
@@ -73,7 +73,8 @@ SELECT  '' AS SchemaName,
     CAST(CASE WHEN c.DATA_TYPE = N'rowversion' THEN 1 ELSE 0 END AS BIT) AS IsStoreGenerated,
     0 AS PrimaryKeyOrdinal,
     CAST(CASE WHEN u.TABLE_NAME IS NULL THEN 0 ELSE 1 END AS BIT) AS PrimaryKey,
-    CONVERT( bit, 0 ) as IsForeignKey
+    CONVERT( bit, 0 ) as IsForeignKey,
+    NULL as SynonymTriggerName
 FROM
     INFORMATION_SCHEMA.COLUMNS c
     INNER JOIN INFORMATION_SCHEMA.TABLES t ON c.TABLE_NAME = t.TABLE_NAME
@@ -177,9 +178,9 @@ SELECT * FROM MultiContext.Enumeration;
 SELECT * FROM MultiContext.ForeignKey;";
         }
 
-        protected override string EnumSQL(string table, string nameField, string valueField)
+        protected override string EnumSQL(string table, string nameField, string valueField, string groupField)
         {
-            return string.Format("SELECT {0} as NameField, {1} as ValueField, * FROM {2};", nameField, valueField, table);
+            return string.Format("SELECT {0} as NameField, {1} as ValueField, {2} as GroupField, * FROM {3};", nameField, valueField, (!string.IsNullOrEmpty(groupField) ? groupField : "''"), table);
         }
 
         protected override string SequenceSQL()
@@ -190,6 +191,11 @@ SELECT * FROM MultiContext.ForeignKey;";
         protected override string TriggerSQL()
         {
             return string.Empty;
+        }
+
+        protected override string[] MemoryOptimisedSQL()
+        {
+            return null;
         }
 
         protected override string SynonymTableSQLSetup()
@@ -235,6 +241,11 @@ SELECT * FROM MultiContext.ForeignKey;";
         protected override bool HasTemporalTableSupport()
         {
             return false;
+        }
+
+        public override bool HasIdentityColumnSupport()
+        {
+            return true;
         }
 
         public override void ReadStoredProcReturnObjects(List<StoredProcedure> procs)

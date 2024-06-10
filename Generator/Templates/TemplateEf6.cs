@@ -23,6 +23,7 @@ using {{this}};{{#newline}}
             var usings = new List<string>
             {
                 "System",
+                "System.Data",
                 "System.Threading.Tasks",
                 "System.Threading"
             };
@@ -33,6 +34,7 @@ using {{this}};{{#newline}}
             if (data.tables.Any() || data.hasStoredProcs)
             {
                 usings.Add("System.Data.Entity");
+                usings.Add("System.Data.Entity.Spatial");
                 usings.Add("System.Linq");
             }
 
@@ -91,14 +93,14 @@ using {{this}};{{#newline}}
 {{#newline}}
     // Stored Procedures{{#newline}}
 {{#each storedProcs}}
-    {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalse}});{{#newline}}
+    {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalseTrue}});{{#newline}}
 {{#if SingleReturnModel}}
-    {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsTrue}});{{#newline}}
+    {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsTrueTrue}});{{#newline}}
 {{/if}}
 {{#if AsyncFunctionCannotBeCreated}}
     // {{FunctionName}}Async() cannot be created due to having out parameters, or is relying on the procedure result ({{ReturnType}}){{#newline}}
 {{#else}}
-    Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalse}});{{#newline}}
+    Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalseTrueToken}});{{#newline}}
 {{/if}}
 {{#newline}}
 {{/each}}
@@ -111,7 +113,7 @@ using {{this}};{{#newline}}
 {{#newline}}
     [DbFunction(""{{DbContextName}}"", ""{{Name}}"")]{{#newline}}
     [CodeFirstStoreFunctions.DbFunctionDetails(DatabaseSchema = ""{{Schema}}""{{#if SingleReturnModel}}, ResultColumnName = ""{{SingleReturnColumnName}}""{{/if}})]{{#newline}}
-    IQueryable<{{ReturnClassName}}> {{ExecName}}({{WriteStoredProcFunctionParamsFalse}});{{#newline}}
+    IQueryable<{{ReturnClassName}}> {{ExecName}}({{WriteStoredProcFunctionParamsFalseTrue}});{{#newline}}
 {{/each}}
 {{/if}}
 
@@ -119,7 +121,7 @@ using {{this}};{{#newline}}
 {{#newline}}
     // Scalar Valued Functions{{#newline}}
 {{#each scalarValuedFunctions}}
-    {{ReturnType}} {{ExecName}}({{WriteStoredProcFunctionParamsFalse}}); // {{Schema}}.{{Name}}{{#newline}}
+    {{ReturnType}} {{ExecName}}({{WriteStoredProcFunctionParamsFalseTrue}}); // {{Schema}}.{{Name}}{{#newline}}
 {{/each}}
 {{/if}}
 
@@ -140,7 +142,6 @@ using {{this}};{{#newline}}
                 "System.Data.Entity.Infrastructure.Annotations",
                 "System.ComponentModel.DataAnnotations.Schema",
                 "System.Data.SqlClient",
-                "System.Data.Entity.Spatial",
                 "System.Data.SqlTypes",
                 "System.Threading.Tasks",
                 "System.Threading"
@@ -152,6 +153,7 @@ using {{this}};{{#newline}}
             if (data.tables.Any() || data.hasStoredProcs)
             {
                 usings.Add("System.Data.Entity");
+                usings.Add("System.Data.Entity.Spatial");
                 usings.Add("System.Linq");
             }
 
@@ -174,6 +176,13 @@ using {{this}};{{#newline}}
                 //usings.Add("System.DBNull");
                 usings.Add("System.Data.SqlTypes");
             }
+
+            if (Settings.DatabaseType == DatabaseType.PostgreSQL)
+            {
+                usings.Add("Npgsql");
+                usings.Add("NpgsqlTypes");
+            }
+
             return usings;
         }
 
@@ -269,7 +278,7 @@ using {{this}};{{#newline}}
 
     public bool IsSqlParameterNull({{SqlParameter}} param){{#newline}}
     {{{#newline}}
-        var sqlValue = param.SqlValue;{{#newline}}
+        var sqlValue = param.{{SqlParameterValue}};{{#newline}}
         var nullableValue = sqlValue as INullable;{{#newline}}
         if (nullableValue != null){{#newline}}
             return nullableValue.IsNull;{{#newline}}
@@ -344,14 +353,14 @@ using {{this}};{{#newline}}
     // Stored Procedures{{#newline}}
 {{#each storedProcs}}
 {{#if HasReturnModels}}
-    public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
 {{#if SingleReturnModel}}
     {{{#newline}}
         int procResult;{{#newline}}
         return {{FunctionName}}({{WriteStoredProcFunctionOverloadCall}});{{#newline}}
     }{{#newline}}
 {{#newline}}
-    public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsTrue}}){{#newline}}
+    public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsTrueFalse}}){{#newline}}
 {{/if}}
     {{{#newline}}
 {{WriteStoredProcFunctionDeclareSqlParameterTrue}}
@@ -362,6 +371,7 @@ using {{this}};{{#newline}}
 {{#else}}
         var procResultData = new {{WriteStoredProcReturnModelName}}();{{#newline}}
         var cmd = Database.Connection.CreateCommand();{{#newline}}
+        cmd.CommandTimeout = Database.CommandTimeout ?? cmd.CommandTimeout;{{#newline}}
         cmd.CommandType = CommandType.StoredProcedure;{{#newline}}
         cmd.CommandText = ""{{Exec}}"";{{#newline}}
 {{#each Parameters}}
@@ -390,7 +400,7 @@ using {{this}};{{#newline}}
     }{{#newline}}
 
 {{#else}}{{#! if HasReturnModels }}
-    public int {{FunctionName}}({{WriteStoredProcFunctionParamsTrue}}){{#newline}}
+    public int {{FunctionName}}({{WriteStoredProcFunctionParamsTrueFalse}}){{#newline}}
     {{{#newline}}
 {{WriteStoredProcFunctionDeclareSqlParameterTrue}}{{#newline}}
         Database.ExecuteSqlCommand(TransactionalBehavior.DoNotEnsureTransaction, ""{{ExecWithNoReturnModel}}""{{WriteStoredProcFunctionSqlParameterAnonymousArrayTrue}});{{#newline}}
@@ -402,16 +412,23 @@ using {{this}};{{#newline}}
 {{#newline}}
 {{#if AsyncFunctionCannotBeCreated}}
     // {{FunctionName}}Async() cannot be created due to having out parameters, or is relying on the procedure result ({{ReturnType}}){{#newline}}
-{{#newline}}
 {{#else}}{{#! if AsyncFunctionCannotBeCreated }}
-    public async Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    public async Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalseFalseToken}}){{#newline}}
     {{{#newline}}
+{{#if HasNoReturnModels}}
+{{WriteStoredProcFunctionDeclareSqlParameterTrue}}
+{{#newline}}
+        await Database.ExecuteSqlCommandAsync(TransactionalBehavior.DoNotEnsureTransaction, ""{{AsyncExec}}""{{WriteStoredProcFunctionSqlParameterAnonymousArrayTrueToken}});{{#newline}}
+{{#newline}}
+        return (int)procResultParam.Value;{{#newline}}
+{{#else}}
 {{WriteStoredProcFunctionDeclareSqlParameterFalse}}
 {{#if SingleReturnModel}}
-        var procResultData = await Database.SqlQuery<{{WriteStoredProcReturnModelName}}>(""{{AsyncExec}}""{{WriteStoredProcFunctionSqlParameterAnonymousArrayFalse}}).ToListAsync();{{#newline}}
+        var procResultData = await Database.SqlQuery<{{WriteStoredProcReturnModelName}}>(""{{AsyncExec}}""{{WriteStoredProcFunctionSqlParameterAnonymousArrayFalse}}).ToListAsync(cancellationToken);{{#newline}}
 {{#else}}
         var procResultData = new {{WriteStoredProcReturnModelName}}();{{#newline}}
         var cmd = Database.Connection.CreateCommand();{{#newline}}
+        cmd.CommandTimeout = Database.CommandTimeout ?? cmd.CommandTimeout;{{#newline}}
         cmd.CommandType = CommandType.StoredProcedure;{{#newline}}
         cmd.CommandText = ""{{Exec}}"";{{#newline}}
 {{#each Parameters}}
@@ -439,6 +456,7 @@ using {{this}};{{#newline}}
 {{WriteStoredProcFunctionSetSqlParametersFalse}}
 {{/if}}{{#! if AsyncFunctionCannotBeCreated }}
         return procResultData;{{#newline}}
+{{/if}}
     }{{#newline}}
 {{#newline}}
 {{/if}}
@@ -452,7 +470,7 @@ using {{this}};{{#newline}}
 {{#newline}}
     [DbFunction(""{{DbContextName}}"", ""{{Name}}"")]{{#newline}}
     [CodeFirstStoreFunctions.DbFunctionDetails(DatabaseSchema = ""{{Schema}}""{{#if SingleReturnModel}}, ResultColumnName = ""{{SingleReturnColumnName}}""{{/if}})]{{#newline}}
-    public IQueryable<{{ReturnClassName}}> {{ExecName}}({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    public IQueryable<{{ReturnClassName}}> {{ExecName}}({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
     {{{#newline}}
 {{WriteTableValuedFunctionDeclareSqlParameter}}
 {{#newline}}
@@ -467,7 +485,7 @@ using {{this}};{{#newline}}
 {{#each scalarValuedFunctions}}
 {{#newline}}
     [DbFunction(""CodeFirstDatabaseSchema"", ""{{Name}}"")]{{#newline}}
-    public {{ReturnType}} {{ExecName}}({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    public {{ReturnType}} {{ExecName}}({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
     {{{#newline}}
         throw new Exception(""Don't call this directly. Use LINQ to call the scalar valued function as part of your query"");{{#newline}}
     }{{#newline}}
@@ -544,6 +562,12 @@ using {{this}};{{#newline}}
                 usings.Add("System.Data.SqlClient");
                 //usings.Add("System.DBNull");
                 usings.Add("System.Data.SqlTypes");
+            }
+
+            if (Settings.DatabaseType == DatabaseType.PostgreSQL)
+            {
+                usings.Add("Npgsql");
+                usings.Add("NpgsqlTypes");
             }
 
             return usings;
@@ -667,13 +691,13 @@ using {{this}};{{#newline}}
 
 {{#if HasReturnModels}}
 {{#newline}}
-    public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
     {{{#newline}}
         int procResult;{{#newline}}
         return {{FunctionName}}({{WriteStoredProcFunctionOverloadCall}});{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsTrue}}){{#newline}}
+    public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsTrueFalse}}){{#newline}}
     {{{#newline}}
 {{WriteStoredProcFunctionSetSqlParametersTrue}}
         procResult = 0;{{#newline}}
@@ -683,9 +707,8 @@ using {{this}};{{#newline}}
 {{#newline}}
 {{#if AsyncFunctionCannotBeCreated}}
     // {{FunctionName}}Async() cannot be created due to having out parameters, or is relying on the procedure result ({{ReturnType}}){{#newline}}
-{{#newline}}
 {{#else}}
-    public Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    public Task<{{ReturnType}}> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalseFalseToken}}){{#newline}}
     {{{#newline}}
         int procResult;{{#newline}}
         return Task.FromResult({{FunctionName}}({{WriteStoredProcFunctionOverloadCall}}));{{#newline}}
@@ -694,7 +717,7 @@ using {{this}};{{#newline}}
 
 {{#else}}
 {{#newline}}
-    public int {{FunctionName}}({{WriteStoredProcFunctionParamsTrue}}){{#newline}}
+    public int {{FunctionName}}({{WriteStoredProcFunctionParamsTrueFalse}}){{#newline}}
     {{{#newline}}
 {{WriteStoredProcFunctionSetSqlParametersTrue}}
         return 0;{{#newline}}
@@ -703,7 +726,7 @@ using {{this}};{{#newline}}
 {{#if AsyncFunctionCannotBeCreated}}
     // {{FunctionName}}Async() cannot be created due to having out parameters, or is relying on the procedure result ({{ReturnType}}){{#newline}}
 {{#else}}
-    public Task<int> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    public Task<int> {{FunctionName}}Async({{WriteStoredProcFunctionParamsFalseFalseToken}}){{#newline}}
     {{{#newline}}
 {{WriteStoredProcFunctionSetSqlParametersTrue}}
         return Task.FromResult(0);{{#newline}}
@@ -721,7 +744,7 @@ using {{this}};{{#newline}}
 {{#each tableValuedFunctions}}
 {{#newline}}
     [DbFunction(""{{DbContextName}}"", ""{{Name}}"")]{{#newline}}
-    public IQueryable<{{ReturnClassName}}> {{ExecName}}({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    public IQueryable<{{ReturnClassName}}> {{ExecName}}({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
     {{{#newline}}
         return new List<{{ReturnClassName}}>().AsQueryable();{{#newline}}
     }{{#newline}}
@@ -734,7 +757,7 @@ using {{this}};{{#newline}}
 {{#each scalarValuedFunctions}}
 {{#newline}}
     // {{Schema}}.{{Name}}{{#newline}}
-    public {{ReturnType}} {{ExecName}}({{WriteStoredProcFunctionParamsFalse}}){{#newline}}
+    public {{ReturnType}} {{ExecName}}({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
     {{{#newline}}
         return default({{ReturnType}});{{#newline}}
     }{{#newline}}
@@ -1054,6 +1077,9 @@ using {{this}};{{#newline}}
                 "System.Threading.Tasks",
             };
 
+            if (data.HasSpatial)
+                usings.Add("System.Data.Entity.Spatial");
+
             if (Settings.IncludeCodeGeneratedAttribute)
                 usings.Add("System.CodeDom.Compiler");
 
@@ -1086,6 +1112,7 @@ using {{this}};{{#newline}}
     {{this}}{{#newline}}
 {{/each}}
     public {{#if OverrideModifier}}override {{/if}}{{WrapIfNullable}} {{NameHumanCase}} { get; {{PrivateSetterForComputedColumns}}set; }{{PropertyInitialisers}}{{InlineComments}}{{#newline}}
+{{#if IncludeFieldNameConstants}}    public const string {{NameHumanCase}}Field = ""{{NameHumanCase}}"";{{#newline}}{{/if}}
 {{/each}}
 
 {{#if HasReverseNavigation}}
@@ -1174,9 +1201,13 @@ using {{this}};{{#newline}}
             var usings = new List<string>
             {
                 "System",
+                "System.Data.Entity.Spatial",
                 "System.Data.Entity.ModelConfiguration",
                 "System.ComponentModel.DataAnnotations.Schema"
             };
+
+            if (data.HasSpatial)
+                usings.Add("System.Data.Entity.Spatial");
 
             if (Settings.IncludeCodeGeneratedAttribute)
                 usings.Add("System.CodeDom.Compiler");
@@ -1198,10 +1229,12 @@ using {{this}};{{#newline}}
 
     public {{ConfigurationClassName}}(string schema){{#newline}}
     {{{#newline}}
+{{#if NotUsingDataAnnotations}}
 {{#if HasSchema}}
         ToTable(""{{Name}}"", schema);{{#newline}}
 {{#else}}
         ToTable(""{{Name}}"");{{#newline}}
+{{/if}}
 {{/if}}
         HasKey({{PrimaryKeyNameHumanCase}});{{#newline}}{{#newline}}
 
@@ -1267,7 +1300,7 @@ using {{this}};{{#newline}}
         {{this}}{{#newline}}
 {{/each}}
     }{{#newline}}
-    public List<ResultSetModel{{Model}}> ResultSet{{Model}};{{#newline}}
+    public List<ResultSetModel{{Model}}> ResultSet{{Model}}{{PropertyGetSet}}{{#newline}}
 {{/each}}
 {{/if}}
 }{{#newline}}

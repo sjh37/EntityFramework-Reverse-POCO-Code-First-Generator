@@ -3,6 +3,6 @@
     public class ColumnAndForeignKey
     {
         public ForeignKey ForeignKey;
-        public Column     Column;
+        public Column Column;
     }
 }

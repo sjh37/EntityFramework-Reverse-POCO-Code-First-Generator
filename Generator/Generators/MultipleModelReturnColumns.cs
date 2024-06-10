@@ -9,7 +9,7 @@ namespace Efrpg.Generators
 
         public MultipleModelReturnColumns(int model, List<string> returnColumns)
         {
-            Model         = model;
+            Model = model;
             ReturnColumns = returnColumns;
         }
     }

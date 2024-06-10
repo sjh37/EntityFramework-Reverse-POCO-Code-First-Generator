@@ -57,6 +57,12 @@ namespace Efrpg.Generators
 
         public void Init(DatabaseReader databaseReader, string singleDbContextSubNamespace)
         {
+            if (Settings.ConnectionString.Contains("**TODO**"))
+            {
+                _fileManagementService.Error("// Please update your .tt file's `Settings.ConnectionString` string to the database you want to reverse engineer and save your .tt file.");
+                return;
+            }
+
             var licence = ReadAndValidateLicence();
             if(licence == null)
                 return;
@@ -66,7 +72,7 @@ namespace Efrpg.Generators
             DatabaseReader = databaseReader;
             if (DatabaseReader == null)
             {
-                _fileManagementService.Error("Cannot create a database reader due to unknown database type.");
+                _fileManagementService.Error("// Cannot create a database reader due to unknown database type.");
                 return;
             }
 
@@ -221,7 +227,16 @@ namespace Efrpg.Generators
                 
                 foreach (var filterKeyValuePair in FilterList.GetFilters())
                 {
-                    filterKeyValuePair.Value.Sequences.AddRange(sequences);
+                    // Only add sequences where the table is used by this filter
+                    foreach (var seq in sequences
+                                 .Where(seq => seq.TableMapping
+                                     .Any(tableMapping => filterKeyValuePair.Value.Tables
+                                         .Any(x =>
+                                             x.Schema.DbName.Equals(tableMapping.TableSchema, StringComparison.InvariantCultureIgnoreCase) &&
+                                             x.DbName.Equals(tableMapping.TableName, StringComparison.InvariantCultureIgnoreCase)))))
+                    {
+                        filterKeyValuePair.Value.Sequences.Add(seq);
+                    }
                 }
             }
             catch (Exception x)
@@ -270,6 +285,12 @@ namespace Efrpg.Generators
                 AddIndexesToFilters(rawIndexes);
                 SetPrimaryKeys();
                 AddForeignKeysToFilters(rawForeignKeys);
+
+                if (Settings.IsEfCore6Plus())
+                {
+                    var rawMemoryOptimisedTables = DatabaseReader.ReadMemoryOptimisedTables();
+                    AddMemoryOptimisedTablesToFilters(rawMemoryOptimisedTables);
+                }
                 
                 if (Settings.IsEfCore7Plus())
                 {
@@ -388,6 +409,7 @@ namespace Efrpg.Generators
                         .Where(x => x.SchemaName == tn.SchemaName && x.TableName == tn.TableName)
                         .OrderBy(x => x.Ordinal))
                     {
+                        table.IsSynonym = table.IsSynonym || rawTable.IsSynonym;
                         var column = DatabaseReader.CreateColumn(rawTable, table, filter);
                         if (column != null)
                             table.Columns.Add(column);
@@ -559,8 +581,8 @@ namespace Efrpg.Generators
                 // Work out if there are any foreign key relationship naming clashes
                 ProcessForeignKeys(foreignKeys, true, filter);
 
-                // Mappings tables can only be true for Ef6
-                if (Settings.UseMappingTables && !(Settings.IsEf6() || Settings.IsEfCore5Plus()))
+                // Mappings tables can only be true for Ef6 and EFCore 5 onwards
+                if (Settings.UseMappingTables && !(Settings.IsEf6() || Settings.IsEfCore6Plus()))
                     Settings.UseMappingTables = false;
                 
                 if (Settings.UseMappingTables)
@@ -629,6 +651,30 @@ namespace Efrpg.Generators
 
                     // Only store the one trigger name as EFCore 7 does not care what its name is. It only cares that there is one present.
                     t.TriggerName = trigger.TriggerName;
+                }
+            }
+        }
+
+        private void AddMemoryOptimisedTablesToFilters(List<RawMemoryOptimisedTable> memoryOptimisedTables)
+        {
+            if (memoryOptimisedTables == null || !memoryOptimisedTables.Any())
+                return;
+
+            foreach (var filterKeyValuePair in FilterList.GetFilters())
+            {
+                var filter = filterKeyValuePair.Value;
+
+                Table t = null;
+                foreach (var trigger in memoryOptimisedTables)
+                {
+                    // Lookup table
+                    if (t == null || t.DbName != trigger.TableName || t.Schema.DbName != trigger.SchemaName)
+                        t = filter.Tables.GetTable(trigger.TableName, trigger.SchemaName);
+
+                    if (t == null)
+                        continue;
+
+                    t.IsMemoryOptimised = true;
                 }
             }
         }
@@ -1198,9 +1244,9 @@ namespace Efrpg.Generators
                         Settings.DbContextInterfaceName = null;
                         Settings.DbContextName = ((MultiContextFilter) filter.Value).GetSettings().Name ?? filter.Key;
 
-                        if (Settings.TemplateType == TemplateType.FileBasedCore3 ||
-                            Settings.TemplateType == TemplateType.FileBasedCore5 ||
-                            Settings.TemplateType == TemplateType.FileBasedCore6)
+                        if (Settings.TemplateType == TemplateType.FileBasedCore6 || 
+                            Settings.TemplateType == TemplateType.FileBasedCore7 ||
+                            Settings.TemplateType == TemplateType.FileBasedCore8)
                         {
                             // Use file based templates, set the path
                             var multiContextSetting = ((MultiContextFilter) filter.Value).GetSettings();

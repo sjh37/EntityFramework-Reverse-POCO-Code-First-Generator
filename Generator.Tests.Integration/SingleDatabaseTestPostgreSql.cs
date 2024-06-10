@@ -1,9 +1,9 @@
-﻿using System.Data.Common;
-using Efrpg;
+﻿using Efrpg;
 using Efrpg.FileManagement;
 using Efrpg.Templates;
 using Generator.Tests.Common;
 using NUnit.Framework;
+using System.Data.Common;
 
 namespace Generator.Tests.Integration
 {
@@ -18,12 +18,12 @@ namespace Generator.Tests.Integration
         {
             SetupDatabase(connectionStringName, dbContextName, templateType, generatorType, foreignKeyNamingStrategy);
 
-            Settings.ConnectionString = $"Server=127.0.0.1;Port=5432;Database={database};User Id=testuser;Password=testtesttest;";
+            Settings.ConnectionString = $"Server=127.0.0.1;Port=5433;Database={database};User Id=testuser;Password=testtesttest;";
             Settings.DatabaseType = DatabaseType.PostgreSQL;
         }
 
         [Test]
-        public void CheckPostgreSQLConnection()
+        public void CheckNorthwindConnection()
         {
             var factory = DbProviderFactories.GetFactory("Npgsql");
             Assert.IsNotNull(factory);
@@ -31,7 +31,7 @@ namespace Generator.Tests.Integration
             using (var conn = factory.CreateConnection())
             {
                 Assert.IsNotNull(conn);
-                conn.ConnectionString = "Server=127.0.0.1;Port=5432;Database=Northwind;User Id=testuser;Password=testtesttest;";
+                conn.ConnectionString = "Server=127.0.0.1;Port=5433;Database=Northwind;User Id=testuser;Password=testtesttest;";
                 conn.Open();
 
                 var cmd = conn.CreateCommand();
@@ -46,21 +46,37 @@ namespace Generator.Tests.Integration
 
         [Test]
         [NonParallelizable]
+        [TestCase(ForeignKeyNamingStrategy.Legacy, "EfrpgTest", "EfrpgTest")]
         [TestCase(ForeignKeyNamingStrategy.Legacy, "Northwind", "Northwind")]
         [TestCase(ForeignKeyNamingStrategy.Legacy, "PostgisTest", "postgis_test")]
         //[TestCase(ForeignKeyNamingStrategy.LatestMyDbContext
-        public void ReverseEngineerPostgreSQL(ForeignKeyNamingStrategy foreignKeyNamingStrategy, string filename, string database)
+        public void ReverseEngineerPostgreSQL_EfCore(ForeignKeyNamingStrategy foreignKeyNamingStrategy, string filename, string database)
         {
             // Arrange
             Settings.GenerateSeparateFiles = false;
             Settings.UseMappingTables = false;
-            SetupPostgreSQL(database, "MyDbContext", "MyDbContext", TemplateType.EfCore3, GeneratorType.EfCore, foreignKeyNamingStrategy);
+            SetupPostgreSQL(database, "MyDbContext", "MyDbContext", TemplateType.EfCore8, GeneratorType.EfCore, foreignKeyNamingStrategy);
 
             // Act
             Run(filename, ".PostgreSQL", typeof(EfCoreFileManager), null);
 
             // Assert
             CompareAgainstTestComparison(filename);
+        }
+
+        [Test]
+        public void ReverseEngineerPostgreSQL_Ef6()
+        {
+            // Arrange
+            SetupPostgreSQL("EfrpgTest", "MyEf6DbContext", "MyEf6DbContext", TemplateType.Ef6, GeneratorType.Ef6, ForeignKeyNamingStrategy.Legacy);
+            Settings.GenerateSeparateFiles = false;
+            Settings.UseMappingTables = false;
+
+            // Act
+            Run("EfrpgTest", ".PostgreSQL", typeof(EfCoreFileManager), null);
+
+            // Assert
+            CompareAgainstTestComparison("EfrpgTest");
         }
     }
 }

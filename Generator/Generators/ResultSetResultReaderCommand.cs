@@ -9,9 +9,9 @@
 
         public ResultSetResultReaderCommand(int index, string readerCommand, bool notLastRecord, string writeStoredProcReturnModelName)
         {
-            Index                          = index;
-            ReaderCommand                  = readerCommand;
-            NotLastRecord                  = notLastRecord;
+            Index = index;
+            ReaderCommand = readerCommand;
+            NotLastRecord = notLastRecord;
             WriteStoredProcReturnModelName = writeStoredProcReturnModelName;
         }
     }
