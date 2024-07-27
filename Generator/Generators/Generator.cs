@@ -1044,7 +1044,7 @@ namespace Efrpg.Generators
                 if (relationship == Relationship.DoNotUse)
                     continue;
 
-                var pkTableHumanCaseWithSuffix = foreignKey.PkTableHumanCase(pkTable.Suffix);
+                var pkTableHumanCaseWithSuffix = pkTable.NameHumanCaseWithSuffix();//foreignKey.PkTableHumanCase(pkTable.Suffix);
                 var pkTableHumanCase           = foreignKey.PkTableHumanCase(null);
                 var fkHasUniqueConstraint      = pkCols.All(x => x.ForeignKey.HasUniqueConstraint) && relationship == Relationship.OneToOne;
 

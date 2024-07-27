@@ -104,6 +104,9 @@ namespace TestDatabaseStandard
         DbSet<SequenceTestPartTwo> SequenceTestPartTwoes { get; set; } // SequenceTestPartTwo
         DbSet<SmallDecimalTest> SmallDecimalTests { get; set; } // SmallDecimalTest
         DbSet<SmallDecimalTestView> SmallDecimalTestViews { get; set; } // SmallDecimalTestView
+        DbSet<Sorter> Sorters { get; set; } // Sorter
+        DbSet<Sorter1> Sorter1 { get; set; } // Sorters
+        DbSet<SorterScannerGroup> SorterScannerGroups { get; set; } // SorterScannerGroup
         DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
         DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; } // ComputedColumns
         DbSet<Stafford_Foo> Stafford_Foos { get; set; } // Foo
@@ -456,6 +459,9 @@ namespace TestDatabaseStandard
         public DbSet<SequenceTestPartTwo> SequenceTestPartTwoes { get; set; } // SequenceTestPartTwo
         public DbSet<SmallDecimalTest> SmallDecimalTests { get; set; } // SmallDecimalTest
         public DbSet<SmallDecimalTestView> SmallDecimalTestViews { get; set; } // SmallDecimalTestView
+        public DbSet<Sorter> Sorters { get; set; } // Sorter
+        public DbSet<Sorter1> Sorter1 { get; set; } // Sorters
+        public DbSet<SorterScannerGroup> SorterScannerGroups { get; set; } // SorterScannerGroup
         public DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
         public DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; } // ComputedColumns
         public DbSet<Stafford_Foo> Stafford_Foos { get; set; } // Foo
@@ -597,6 +603,9 @@ namespace TestDatabaseStandard
             modelBuilder.ApplyConfiguration(new SequenceTestPartTwoConfiguration());
             modelBuilder.ApplyConfiguration(new SmallDecimalTestConfiguration());
             modelBuilder.ApplyConfiguration(new SmallDecimalTestViewConfiguration());
+            modelBuilder.ApplyConfiguration(new SorterConfiguration());
+            modelBuilder.ApplyConfiguration(new Sorter1Configuration());
+            modelBuilder.ApplyConfiguration(new SorterScannerGroupConfiguration());
             modelBuilder.ApplyConfiguration(new Stafford_BooConfiguration());
             modelBuilder.ApplyConfiguration(new Stafford_ComputedColumnConfiguration());
             modelBuilder.ApplyConfiguration(new Stafford_FooConfiguration());
@@ -2151,6 +2160,9 @@ namespace TestDatabaseStandard
         public DbSet<SequenceTestPartTwo> SequenceTestPartTwoes { get; set; } // SequenceTestPartTwo
         public DbSet<SmallDecimalTest> SmallDecimalTests { get; set; } // SmallDecimalTest
         public DbSet<SmallDecimalTestView> SmallDecimalTestViews { get; set; } // SmallDecimalTestView
+        public DbSet<Sorter> Sorters { get; set; } // Sorter
+        public DbSet<Sorter1> Sorter1 { get; set; } // Sorters
+        public DbSet<SorterScannerGroup> SorterScannerGroups { get; set; } // SorterScannerGroup
         public DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
         public DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; } // ComputedColumns
         public DbSet<Stafford_Foo> Stafford_Foos { get; set; } // Foo
@@ -2267,6 +2279,9 @@ namespace TestDatabaseStandard
             SequenceTestPartTwoes = new FakeDbSet<SequenceTestPartTwo>("Id");
             SmallDecimalTests = new FakeDbSet<SmallDecimalTest>("Id");
             SmallDecimalTestViews = new FakeDbSet<SmallDecimalTestView>();
+            Sorters = new FakeDbSet<Sorter>("SorterId");
+            Sorter1 = new FakeDbSet<Sorter1>("SorterName");
+            SorterScannerGroups = new FakeDbSet<SorterScannerGroup>("SorterName");
             Stafford_Boos = new FakeDbSet<Stafford_Boo>("Id");
             Stafford_ComputedColumns = new FakeDbSet<Stafford_ComputedColumn>("Id");
             Stafford_Foos = new FakeDbSet<Stafford_Foo>("Id");
@@ -5023,6 +5038,39 @@ namespace TestDatabaseStandard
         public string Description { get; set; } // description (length: 20)
     }
 
+    // Sorter
+    public class Sorter
+    {
+        public int SorterId { get; set; } // SorterID (Primary key)
+        public string SorterName { get; set; } // SorterName (length: 20)
+    }
+
+    // Sorters
+    public class Sorter1
+    {
+        public string SorterName { get; set; } // SorterName (Primary key) (length: 20)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Parent (One-to-One) Sorter1 pointed by [SorterScannerGroup].[SorterName] (FK_SorterScannerGroup_Sorters)
+        /// </summary>
+        public virtual SorterScannerGroup SorterScannerGroup { get; set; } // SorterScannerGroup.FK_SorterScannerGroup_Sorters
+    }
+
+    // SorterScannerGroup
+    public class SorterScannerGroup
+    {
+        public string SorterName { get; set; } // SorterName (Primary key) (length: 20)
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent Sorter pointed by [SorterScannerGroup].([SorterName]) (FK_SorterScannerGroup_Sorters)
+        /// </summary>
+        public virtual Sorter1 Sorter { get; set; } // FK_SorterScannerGroup_Sorters
+    }
+
     // Boo
     public class Stafford_Boo
     {
@@ -6718,6 +6766,46 @@ namespace TestDatabaseStandard
 
             builder.Property(x => x.FkId).HasColumnName(@"FkID").HasColumnType("int").IsRequired();
             builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
+        }
+    }
+
+    // Sorter
+    public class SorterConfiguration : IEntityTypeConfiguration<Sorter>
+    {
+        public void Configure(EntityTypeBuilder<Sorter> builder)
+        {
+            builder.ToTable("Sorter", "dbo");
+            builder.HasKey(x => x.SorterId).HasName("PK_Sorter2").IsClustered();
+
+            builder.Property(x => x.SorterId).HasColumnName(@"SorterID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.SorterName).HasColumnName(@"SorterName").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
+        }
+    }
+
+    // Sorters
+    public class Sorter1Configuration : IEntityTypeConfiguration<Sorter1>
+    {
+        public void Configure(EntityTypeBuilder<Sorter1> builder)
+        {
+            builder.ToTable("Sorters", "dbo");
+            builder.HasKey(x => x.SorterName).HasName("PK_Sorter").IsClustered();
+
+            builder.Property(x => x.SorterName).HasColumnName(@"SorterName").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20).ValueGeneratedNever();
+        }
+    }
+
+    // SorterScannerGroup
+    public class SorterScannerGroupConfiguration : IEntityTypeConfiguration<SorterScannerGroup>
+    {
+        public void Configure(EntityTypeBuilder<SorterScannerGroup> builder)
+        {
+            builder.ToTable("SorterScannerGroup", "dbo");
+            builder.HasKey(x => x.SorterName);
+
+            builder.Property(x => x.SorterName).HasColumnName(@"SorterName").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20).ValueGeneratedNever();
+
+            // Foreign keys
+            builder.HasOne(a => a.Sorter).WithOne(b => b.SorterScannerGroup).HasForeignKey<SorterScannerGroup>(c => c.SorterName).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_SorterScannerGroup_Sorters");
         }
     }
 

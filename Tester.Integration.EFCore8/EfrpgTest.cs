@@ -5018,7 +5018,7 @@ namespace V8EfrpgTest
         /// <summary>
         /// Parent Sorter pointed by [SorterScannerGroup].([SorterName]) (FK_SorterScannerGroup_Sorters)
         /// </summary>
-        public virtual Sorter Sorter { get; set; } // FK_SorterScannerGroup_Sorters
+        public virtual Sorter1 Sorter { get; set; } // FK_SorterScannerGroup_Sorters
     }
 
     // Boo
