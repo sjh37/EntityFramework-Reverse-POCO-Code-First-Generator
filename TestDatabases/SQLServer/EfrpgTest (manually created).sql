@@ -2694,3 +2694,33 @@ CREATE TABLE InflectorTo
     CONSTRAINT PK_InflectorTo PRIMARY KEY CLUSTERED (Id)
 );
 GO
+
+
+
+-- #844 Steve Fred - the following script can cause an error in the generated code:
+CREATE TABLE dbo.Sorter
+(
+    SorterID INT IDENTITY(1, 1) NOT NULL,
+    SorterName VARCHAR(20) NOT NULL,
+    CONSTRAINT PK_Sorter2
+        PRIMARY KEY CLUSTERED (SorterID ASC)
+);
+GO
+CREATE TABLE dbo.Sorters
+(
+    SorterName VARCHAR(20) NOT NULL,
+    CONSTRAINT PK_Sorter PRIMARY KEY CLUSTERED (SorterName ASC)
+);
+GO
+CREATE TABLE dbo.SorterScannerGroup
+(
+    SorterName VARCHAR(20) NOT NULL
+);
+GO
+ALTER TABLE dbo.SorterScannerGroup WITH CHECK
+ADD CONSTRAINT FK_SorterScannerGroup_Sorters
+    FOREIGN KEY (SorterName)
+    REFERENCES dbo.Sorters (SorterName);
+GO
+ALTER TABLE dbo.SorterScannerGroup CHECK CONSTRAINT FK_SorterScannerGroup_Sorters;
+GO
