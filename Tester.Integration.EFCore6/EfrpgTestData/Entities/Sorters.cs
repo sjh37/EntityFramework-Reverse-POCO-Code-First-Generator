@@ -7,17 +7,17 @@ using System.Threading.Tasks;
 
 namespace V6EfrpgTest
 {
-    // SorterScannerGroup
-    public class SorterScannerGroup
+    // Sorters
+    public class Sorters
     {
         public string SorterName { get; set; } // SorterName (Primary key) (length: 20)
 
-        // Foreign keys
+        // Reverse navigation
 
         /// <summary>
-        /// Parent Sorter pointed by [SorterScannerGroup].([SorterName]) (FK_SorterScannerGroup_Sorters)
+        /// Parent (One-to-One) Sorters pointed by [SorterScannerGroup].[SorterName] (FK_SorterScannerGroup_Sorters)
         /// </summary>
-        public virtual Sorters Sorter { get; set; } // FK_SorterScannerGroup_Sorters
+        public virtual SorterScannerGroup SorterScannerGroup { get; set; } // SorterScannerGroup.FK_SorterScannerGroup_Sorters
     }
 
 }

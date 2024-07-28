@@ -90,8 +90,8 @@ namespace V6EfrpgTest
         DbSet<SequenceTestPartTwo> SequenceTestPartTwoes { get; set; } // SequenceTestPartTwo
         DbSet<SmallDecimalTest> SmallDecimalTests { get; set; } // SmallDecimalTest
         DbSet<SmallDecimalTestView> SmallDecimalTestViews { get; set; } // SmallDecimalTestView
-        DbSet<Sorter> Sorters { get; set; } // Sorter
-        DbSet<Sorter1> Sorter1 { get; set; } // Sorters
+        DbSet<Sorter> Sorter { get; set; } // Sorter
+        DbSet<Sorters> Sorters { get; set; } // Sorters
         DbSet<SorterScannerGroup> SorterScannerGroups { get; set; } // SorterScannerGroup
         DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
         DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; } // ComputedColumns

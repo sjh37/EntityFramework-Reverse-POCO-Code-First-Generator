@@ -398,10 +398,30 @@ namespace Efrpg.Generators
                     }
 
                     // Check for table or C# name clashes
+                    var originalTable = filter.Tables.Find(x => x.NameHumanCase == table.NameHumanCase);
                     if (DatabaseReader.ReservedKeywords.Contains(table.NameHumanCase) ||
-                        (Settings.UsePascalCase && filter.Tables.Find(x => x.NameHumanCase == table.NameHumanCase) != null))
+                        originalTable != null)
                     {
-                        table.NameHumanCase += "1";
+                        if (originalTable == null)
+                        {
+                            table.NameHumanCase += "1";
+                        }
+                        else
+                        {
+                            originalTable.PluralNameOverride = originalTable.NameHumanCase;
+
+                            var newTableName = (Settings.UsePascalCase ? Inflector.ToTitleCase(tableName) : tableName).Replace(" ", "").Replace("$", "").Replace(".", "");
+                            if (DatabaseReader.ReservedKeywords.Contains(newTableName) ||
+                                filter.Tables.Find(x => x.NameHumanCase == newTableName) != null)
+                            {
+                                table.NameHumanCase += "1";
+                            }
+                            else
+                            {
+                                table.NameHumanCase = newTableName;
+                                table.PluralNameOverride = newTableName;
+                            }
+                        }
                     }
 
                     // Create columns for table

@@ -90,8 +90,8 @@ namespace V6EfrpgTest
         public DbSet<SequenceTestPartTwo> SequenceTestPartTwoes { get; set; } // SequenceTestPartTwo
         public DbSet<SmallDecimalTest> SmallDecimalTests { get; set; } // SmallDecimalTest
         public DbSet<SmallDecimalTestView> SmallDecimalTestViews { get; set; } // SmallDecimalTestView
-        public DbSet<Sorter> Sorters { get; set; } // Sorter
-        public DbSet<Sorter1> Sorter1 { get; set; } // Sorters
+        public DbSet<Sorter> Sorter { get; set; } // Sorter
+        public DbSet<Sorters> Sorters { get; set; } // Sorters
         public DbSet<SorterScannerGroup> SorterScannerGroups { get; set; } // SorterScannerGroup
         public DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
         public DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; } // ComputedColumns
@@ -208,8 +208,8 @@ namespace V6EfrpgTest
             SequenceTestPartTwoes = new FakeDbSet<SequenceTestPartTwo>("Id");
             SmallDecimalTests = new FakeDbSet<SmallDecimalTest>("Id");
             SmallDecimalTestViews = new FakeDbSet<SmallDecimalTestView>();
-            Sorters = new FakeDbSet<Sorter>("SorterId");
-            Sorter1 = new FakeDbSet<Sorter1>("SorterName");
+            Sorter = new FakeDbSet<Sorter>("SorterId");
+            Sorters = new FakeDbSet<Sorters>("SorterName");
             SorterScannerGroups = new FakeDbSet<SorterScannerGroup>("SorterName");
             Stafford_Boos = new FakeDbSet<Stafford_Boo>("Id");
             Stafford_ComputedColumns = new FakeDbSet<Stafford_ComputedColumn>("Id");
