@@ -90,6 +90,9 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         public DbSet<SequenceTestPartTwo> SequenceTestPartTwoes { get; set; } // SequenceTestPartTwo
         public DbSet<SmallDecimalTest> SmallDecimalTests { get; set; } // SmallDecimalTest
         public DbSet<SmallDecimalTestView> SmallDecimalTestViews { get; set; } // SmallDecimalTestView
+        public DbSet<Sorter> Sorter { get; set; } // Sorter
+        public DbSet<Sorters> Sorters { get; set; } // Sorters
+        public DbSet<SorterScannerGroup> SorterScannerGroups { get; set; } // SorterScannerGroup
         public DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
         public DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; } // ComputedColumns
         public DbSet<Stafford_Foo> Stafford_Foos { get; set; } // Foo
@@ -206,6 +209,9 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             SequenceTestPartTwoes = new FakeDbSet<SequenceTestPartTwo>("Id");
             SmallDecimalTests = new FakeDbSet<SmallDecimalTest>("Id");
             SmallDecimalTestViews = new FakeDbSet<SmallDecimalTestView>();
+            Sorter = new FakeDbSet<Sorter>("SorterId");
+            Sorters = new FakeDbSet<Sorters>("SorterName");
+            SorterScannerGroups = new FakeDbSet<SorterScannerGroup>("SorterName");
             Stafford_Boos = new FakeDbSet<Stafford_Boo>("Id");
             Stafford_ComputedColumns = new FakeDbSet<Stafford_ComputedColumn>("Id");
             Stafford_Foos = new FakeDbSet<Stafford_Foo>("Id");

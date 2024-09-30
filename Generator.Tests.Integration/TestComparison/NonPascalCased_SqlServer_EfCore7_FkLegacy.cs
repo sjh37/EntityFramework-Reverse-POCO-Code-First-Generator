@@ -104,6 +104,9 @@ namespace Efrpg.V4TestE7
         DbSet<SequenceTestPartTwo> SequenceTestPartTwoes { get; set; } // SequenceTestPartTwo
         DbSet<SmallDecimalTest> SmallDecimalTests { get; set; } // SmallDecimalTest
         DbSet<SmallDecimalTestView> SmallDecimalTestViews { get; set; } // SmallDecimalTestView
+        DbSet<Sorter> Sorter { get; set; } // Sorter
+        DbSet<Sorters> Sorters { get; set; } // Sorters
+        DbSet<SorterScannerGroup> SorterScannerGroups { get; set; } // SorterScannerGroup
         DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
         DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; } // ComputedColumns
         DbSet<Stafford_Foo> Stafford_Foos { get; set; } // Foo
@@ -267,6 +270,9 @@ namespace Efrpg.V4TestE7
 
         int MinTripSequenceStartNull(out DateTime? minTripSequenceStartParam);
         // MinTripSequenceStartNullAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        int MultipleReturnColumnsFromTempTable();
+        Task<int> MultipleReturnColumnsFromTempTableAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         int NvarcharTest(string maxOutputParam, string normalOutputParam);
         Task<int> NvarcharTestAsync(string maxOutputParam, string normalOutputParam, CancellationToken cancellationToken = default(CancellationToken));
@@ -449,6 +455,9 @@ namespace Efrpg.V4TestE7
         public DbSet<SequenceTestPartTwo> SequenceTestPartTwoes { get; set; } // SequenceTestPartTwo
         public DbSet<SmallDecimalTest> SmallDecimalTests { get; set; } // SmallDecimalTest
         public DbSet<SmallDecimalTestView> SmallDecimalTestViews { get; set; } // SmallDecimalTestView
+        public DbSet<Sorter> Sorter { get; set; } // Sorter
+        public DbSet<Sorters> Sorters { get; set; } // Sorters
+        public DbSet<SorterScannerGroup> SorterScannerGroups { get; set; } // SorterScannerGroup
         public DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
         public DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; } // ComputedColumns
         public DbSet<Stafford_Foo> Stafford_Foos { get; set; } // Foo
@@ -589,6 +598,9 @@ namespace Efrpg.V4TestE7
             modelBuilder.ApplyConfiguration(new SequenceTestPartTwoConfiguration());
             modelBuilder.ApplyConfiguration(new SmallDecimalTestConfiguration());
             modelBuilder.ApplyConfiguration(new SmallDecimalTestViewConfiguration());
+            modelBuilder.ApplyConfiguration(new SorterConfiguration());
+            modelBuilder.ApplyConfiguration(new SortersConfiguration());
+            modelBuilder.ApplyConfiguration(new SorterScannerGroupConfiguration());
             modelBuilder.ApplyConfiguration(new Stafford_BooConfiguration());
             modelBuilder.ApplyConfiguration(new Stafford_ComputedColumnConfiguration());
             modelBuilder.ApplyConfiguration(new Stafford_FooConfiguration());
@@ -1292,6 +1304,24 @@ namespace Efrpg.V4TestE7
         }
 
         // MinTripSequenceStartNullAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int MultipleReturnColumnsFromTempTable()
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[MultipleReturnColumnsFromTempTable] ", procResultParam);
+
+            return (int)procResultParam.Value;
+        }
+
+        public async Task<int> MultipleReturnColumnsFromTempTableAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[MultipleReturnColumnsFromTempTable]",  new[] {procResultParam}, cancellationToken);
+
+            return (int)procResultParam.Value;
+        }
 
         public int NvarcharTest(string maxOutputParam, string normalOutputParam)
         {
@@ -2096,6 +2126,9 @@ namespace Efrpg.V4TestE7
         public DbSet<SequenceTestPartTwo> SequenceTestPartTwoes { get; set; } // SequenceTestPartTwo
         public DbSet<SmallDecimalTest> SmallDecimalTests { get; set; } // SmallDecimalTest
         public DbSet<SmallDecimalTestView> SmallDecimalTestViews { get; set; } // SmallDecimalTestView
+        public DbSet<Sorter> Sorter { get; set; } // Sorter
+        public DbSet<Sorters> Sorters { get; set; } // Sorters
+        public DbSet<SorterScannerGroup> SorterScannerGroups { get; set; } // SorterScannerGroup
         public DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
         public DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; } // ComputedColumns
         public DbSet<Stafford_Foo> Stafford_Foos { get; set; } // Foo
@@ -2211,6 +2244,9 @@ namespace Efrpg.V4TestE7
             SequenceTestPartTwoes = new FakeDbSet<SequenceTestPartTwo>("Id");
             SmallDecimalTests = new FakeDbSet<SmallDecimalTest>("id");
             SmallDecimalTestViews = new FakeDbSet<SmallDecimalTestView>();
+            Sorter = new FakeDbSet<Sorter>("SorterID");
+            Sorters = new FakeDbSet<Sorters>("SorterName");
+            SorterScannerGroups = new FakeDbSet<SorterScannerGroup>("SorterName");
             Stafford_Boos = new FakeDbSet<Stafford_Boo>("id");
             Stafford_ComputedColumns = new FakeDbSet<Stafford_ComputedColumn>("Id");
             Stafford_Foos = new FakeDbSet<Stafford_Foo>("id");
@@ -2772,6 +2808,16 @@ namespace Efrpg.V4TestE7
         }
 
         // MinTripSequenceStartNullAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public int MultipleReturnColumnsFromTempTable()
+        {
+            return 0;
+        }
+
+        public Task<int> MultipleReturnColumnsFromTempTableAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
 
         public int NvarcharTest(string maxOutputParam, string normalOutputParam)
         {
@@ -4878,6 +4924,39 @@ namespace Efrpg.V4TestE7
         public string description { get; set; } // description (length: 20)
     }
 
+    // Sorter
+    public class Sorter
+    {
+        public int SorterID { get; set; } // SorterID (Primary key)
+        public string SorterName { get; set; } // SorterName (length: 20)
+    }
+
+    // Sorters
+    public class Sorters
+    {
+        public string SorterName { get; set; } // SorterName (Primary key) (length: 20)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Parent (One-to-One) Sorters pointed by [SorterScannerGroup].[SorterName] (FK_SorterScannerGroup_Sorters)
+        /// </summary>
+        public virtual SorterScannerGroup SorterScannerGroup { get; set; } // SorterScannerGroup.FK_SorterScannerGroup_Sorters
+    }
+
+    // SorterScannerGroup
+    public class SorterScannerGroup
+    {
+        public string SorterName { get; set; } // SorterName (Primary key) (length: 20)
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent Sorter pointed by [SorterScannerGroup].([SorterName]) (FK_SorterScannerGroup_Sorters)
+        /// </summary>
+        public virtual Sorters Sorter { get; set; } // FK_SorterScannerGroup_Sorters
+    }
+
     // Boo
     public class Stafford_Boo
     {
@@ -6554,6 +6633,46 @@ namespace Efrpg.V4TestE7
 
             builder.Property(x => x.FkID).HasColumnName(@"FkID").HasColumnType("int").IsRequired();
             builder.Property(x => x.description).HasColumnName(@"description").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
+        }
+    }
+
+    // Sorter
+    public class SorterConfiguration : IEntityTypeConfiguration<Sorter>
+    {
+        public void Configure(EntityTypeBuilder<Sorter> builder)
+        {
+            builder.ToTable("Sorter", "dbo");
+            builder.HasKey(x => x.SorterID).HasName("PK_Sorter2").IsClustered();
+
+            builder.Property(x => x.SorterID).HasColumnName(@"SorterID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.SorterName).HasColumnName(@"SorterName").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
+        }
+    }
+
+    // Sorters
+    public class SortersConfiguration : IEntityTypeConfiguration<Sorters>
+    {
+        public void Configure(EntityTypeBuilder<Sorters> builder)
+        {
+            builder.ToTable("Sorters", "dbo");
+            builder.HasKey(x => x.SorterName).HasName("PK_Sorter").IsClustered();
+
+            builder.Property(x => x.SorterName).HasColumnName(@"SorterName").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20).ValueGeneratedNever();
+        }
+    }
+
+    // SorterScannerGroup
+    public class SorterScannerGroupConfiguration : IEntityTypeConfiguration<SorterScannerGroup>
+    {
+        public void Configure(EntityTypeBuilder<SorterScannerGroup> builder)
+        {
+            builder.ToTable("SorterScannerGroup", "dbo");
+            builder.HasKey(x => x.SorterName);
+
+            builder.Property(x => x.SorterName).HasColumnName(@"SorterName").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20).ValueGeneratedNever();
+
+            // Foreign keys
+            builder.HasOne(a => a.Sorter).WithOne(b => b.SorterScannerGroup).HasForeignKey<SorterScannerGroup>(c => c.SorterName).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_SorterScannerGroup_Sorters");
         }
     }
 
