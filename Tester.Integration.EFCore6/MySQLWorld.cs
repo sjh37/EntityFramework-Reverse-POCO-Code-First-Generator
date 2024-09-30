@@ -1,17 +1,45 @@
 ﻿
+// -----------------------------------------------------------------------------------------
+// Failed to read database schema in LoadTables() - Keyword 'address' not found.
+/*   at MySql.Data.Failover.FailoverManager.ParseHostList(String hierPart, Boolean isXProtocol, Boolean connectionDataIsUri)
+   at MySql.Data.MySqlClient.MySqlConnection.<OpenAsync>d__94.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at MySql.Data.MySqlClient.MySqlConnection.Open()
+   at Microsoft.VisualStudio.TextTemplating768E54E666956222CF262454AD7A6F4664B916329D298830D9D29E25FA90559C5769256CCAEB9895717AD8EC3404FC4F5D8E9D7AF908BB809D3D56FA1A8AF0A3.GeneratedTextTransformation.DatabaseReader.ReadTables(Boolean includeSynonyms) in C:\S\Source (open source)\EntityFramework-Reverse-POCO-Code-First-Generator\Tester.Integration.EFCore6\..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v3.ttinclude:line 12694
+   at Microsoft.VisualStudio.TextTemplating768E54E666956222CF262454AD7A6F4664B916329D298830D9D29E25FA90559C5769256CCAEB9895717AD8EC3404FC4F5D8E9D7AF908BB809D3D56FA1A8AF0A3.GeneratedTextTransformation.Generator.LoadTables() in C:\S\Source (open source)\EntityFramework-Reverse-POCO-Code-First-Generator\Tester.Integration.EFCore6\..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v3.ttinclude:line 4479*/
+// -----------------------------------------------------------------------------------------
 
-// ------------------------------------------------------------------------------------------------
-// WARNING: Failed to load provider "MySql.Data.MySqlClient" - Unable to find the requested .Net Framework Data Provider.  It may not be installed.
-// Allowed providers:
-//    "System.Data.Odbc"
-//    "System.Data.OleDb"
-//    "System.Data.OracleClient"
-//    "System.Data.SqlClient"
-//    "System.Data.SqlServerCe.4.0"
-//    "Npgsql"
-//    "Microsoft.SqlServerCe.Client.4.0"
 
-/*   at System.Data.Common.DbProviderFactories.GetFactory(String providerInvariantName)
-   at Microsoft.VisualStudio.TextTemplating77B348FB79B2579717C864F11B3CA6ED94C23E7A8525D08694B9C5F938F1E6439FC5582C3D01BAC6548FA3CD8CC1DC2E541B0BC516137592998CD1D9AA5551AB.GeneratedTextTransformation.GeneratorFactory.Create(FileManagementService fileManagementService, Type fileManagerType, String singleDbContextSubNamespace) in C:\S\Source (open source)\EntityFramework Reverse POCO Code Generator\Tester.Integration.EFCore6\..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v3.ttinclude:line 6306*/
-// ------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------
+// Failed to read enumeration tables in LoadEnums() - Keyword 'address' not found.
+/*   at MySql.Data.Failover.FailoverManager.ParseHostList(String hierPart, Boolean isXProtocol, Boolean connectionDataIsUri)
+   at MySql.Data.MySqlClient.MySqlConnection.<OpenAsync>d__94.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at MySql.Data.MySqlClient.MySqlConnection.Open()
+   at Microsoft.VisualStudio.TextTemplating768E54E666956222CF262454AD7A6F4664B916329D298830D9D29E25FA90559C5769256CCAEB9895717AD8EC3404FC4F5D8E9D7AF908BB809D3D56FA1A8AF0A3.GeneratedTextTransformation.DatabaseReader.ReadEnums(List`1 enums) in C:\S\Source (open source)\EntityFramework-Reverse-POCO-Code-First-Generator\Tester.Integration.EFCore6\..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v3.ttinclude:line 13285
+   at Microsoft.VisualStudio.TextTemplating768E54E666956222CF262454AD7A6F4664B916329D298830D9D29E25FA90559C5769256CCAEB9895717AD8EC3404FC4F5D8E9D7AF908BB809D3D56FA1A8AF0A3.GeneratedTextTransformation.Generator.LoadEnums() in C:\S\Source (open source)\EntityFramework-Reverse-POCO-Code-First-Generator\Tester.Integration.EFCore6\..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v3.ttinclude:line 4365*/
+// -----------------------------------------------------------------------------------------
 
+
+// -----------------------------------------------------------------------------------------
+// Failed to read sequences in LoadSequences() - Keyword 'address' not found.
+/*   at MySql.Data.Failover.FailoverManager.ParseHostList(String hierPart, Boolean isXProtocol, Boolean connectionDataIsUri)
+   at MySql.Data.MySqlClient.MySqlConnection.<OpenAsync>d__94.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at MySql.Data.MySqlClient.MySqlConnection.Open()
+   at Microsoft.VisualStudio.TextTemplating768E54E666956222CF262454AD7A6F4664B916329D298830D9D29E25FA90559C5769256CCAEB9895717AD8EC3404FC4F5D8E9D7AF908BB809D3D56FA1A8AF0A3.GeneratedTextTransformation.DatabaseReader.ReadSequences() in C:\S\Source (open source)\EntityFramework-Reverse-POCO-Code-First-Generator\Tester.Integration.EFCore6\..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v3.ttinclude:line 13373
+   at Microsoft.VisualStudio.TextTemplating768E54E666956222CF262454AD7A6F4664B916329D298830D9D29E25FA90559C5769256CCAEB9895717AD8EC3404FC4F5D8E9D7AF908BB809D3D56FA1A8AF0A3.GeneratedTextTransformation.Generator.LoadSequences() in C:\S\Source (open source)\EntityFramework-Reverse-POCO-Code-First-Generator\Tester.Integration.EFCore6\..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v3.ttinclude:line 4428*/
+// -----------------------------------------------------------------------------------------
+
+// <auto-generated>
+
+namespace TestDatabaseStandard
+{
+}
+// </auto-generated>
