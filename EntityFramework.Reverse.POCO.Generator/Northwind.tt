@@ -201,6 +201,36 @@
     // Example:                                 Proc name      Return this entity type instead
     // Settings.StoredProcedureReturnTypes.Add("SalesByYear", "SummaryOfSalesByYear");
 
+    
+    // Enable interception of stored procedure return model when an exception occurs. Typically, when the stored procedure contains temp tables.
+    // This allows you render the proper error in comments or fix the return model by manually creating the ReturnModel using a list of DataColumns
+    Settings.ReadStoredProcReturnObjectException = delegate (Exception ex, StoredProcedure sp)
+    {
+        // Example
+        /*if (!sp.ReturnModels.Any() && ex.Message.StartsWith("Invalid object name", StringComparison.OrdinalIgnoreCase))
+        {
+            if (sp.NameHumanCase.Equals("YourProcNameHere", StringComparison.OrdinalIgnoreCase))
+            {
+                sp.ReturnModels.Add(new List<DataColumn>
+                {
+                    new DataColumn("Id", typeof(int)) { AllowDBNull = false, Unique = true },
+                    new DataColumn("Description", typeof(string))
+                });
+            }
+        }*/
+    };
+
+    // Enable interception of stored procedure return model
+    Settings.ReadStoredProcReturnObjectCompleted = delegate (StoredProcedure sp)
+    {
+        // Example of how to add a row processed boolean column to a stored procedure's return model
+        /*if (sp.ReturnModels.Any() && sp.NameHumanCase.Contains("process"))
+        {
+            var rm = sp.ReturnModels.First();
+            rm.Add(new DataColumn("RowProcessed", typeof(bool)) { AllowDBNull = false });
+        }*/
+    };
+
     // Additional attributes on on reverse navigation and foreign key properties **********************************************************
     // If you need to serialise your entities with the JsonSerializer from Newtonsoft, this would serialise
     // all properties including the Reverse Navigation and Foreign Keys. The simplest way to exclude them is

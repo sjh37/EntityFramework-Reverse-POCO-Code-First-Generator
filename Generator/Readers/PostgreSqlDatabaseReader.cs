@@ -358,10 +358,12 @@ ORDER BY SchemaName, TableName, TriggerName;";
                 }
                 
                 proc.MergeModelsIfAllSame();
+                Settings.ReadStoredProcReturnObjectCompleted(proc);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // Function does not have a return type
+                // Stored procedure does not have a return type
+                Settings.ReadStoredProcReturnObjectException(ex, proc);
             }
         }
 

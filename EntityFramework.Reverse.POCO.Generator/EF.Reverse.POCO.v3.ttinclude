@@ -24,7 +24,6 @@
 <#@ import namespace="System.Security.Cryptography" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Text.RegularExpressions" #>
-<#@ import namespace="System.Threading" #>
 <#@ import namespace="EnvDTE" #>
 <#@ import namespace="Microsoft.VisualStudio.TextTemplating" #>
 <#@ output extension=".cs" encoding="utf-8" #>
@@ -258,6 +257,35 @@
         // Example:                       Proc name      Return this entity type instead
         //StoredProcedureReturnTypes.Add("SalesByYear", "SummaryOfSalesByYear");
         public static Dictionary<string, string> StoredProcedureReturnTypes = new Dictionary<string, string>();
+
+        // Enable interception of stored procedure return model when an exception occurs. Typically, when the stored procedure contains temp tables.
+        // This allows you render the proper error in comments or fix the return model by manually creating the ReturnModel using a list of DataColumns
+        public static Action<Exception, StoredProcedure> ReadStoredProcReturnObjectException = delegate (Exception ex, StoredProcedure sp)
+        {
+            // Example
+            /*if (!sp.ReturnModels.Any() && ex.Message.StartsWith("Invalid object name", StringComparison.OrdinalIgnoreCase))
+            {
+                if (sp.NameHumanCase.Equals("YourProcNameHere", StringComparison.OrdinalIgnoreCase))
+                {
+                    sp.ReturnModels.Add(new List<DataColumn>
+                    {
+                        new DataColumn("Id", typeof(int)) { AllowDBNull = false, Unique = true },
+                        new DataColumn("Description", typeof(string))
+                    });
+                }
+            }*/
+        };
+
+        // Enable interception of stored procedure return model
+        public static Action<StoredProcedure> ReadStoredProcReturnObjectCompleted = delegate (StoredProcedure sp)
+        {
+            // Example of how to add a row processed boolean column to a stored procedure's return model
+            /*if (sp.ReturnModels.Any() && sp.NameHumanCase.Contains("process"))
+            {
+                var rm = sp.ReturnModels.First();
+                rm.Add(new DataColumn("RowProcessed", typeof(bool)) { AllowDBNull = false });
+            }*/
+        };
 
 
         // Renaming ***********************************************************************************************************************
@@ -14576,10 +14604,12 @@ ORDER BY SchemaName, TableName, TriggerName;";
                 }
                 
                 proc.MergeModelsIfAllSame();
+                Settings.ReadStoredProcReturnObjectCompleted(proc);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // Function does not have a return type
+                // Stored procedure does not have a return type
+                Settings.ReadStoredProcReturnObjectException(ex, proc);
             }
         }
 
@@ -16556,10 +16586,12 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
 
                 proc.MergeModelsIfAllSame();
+                Settings.ReadStoredProcReturnObjectCompleted(proc);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // Stored procedure does not have a return type
+                Settings.ReadStoredProcReturnObjectException(ex, proc);
             }
         }
 

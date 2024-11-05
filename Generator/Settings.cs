@@ -5,6 +5,7 @@ using Efrpg.Filtering;
 using Efrpg.Generators;
 using Efrpg.LanguageMapping;
 using Efrpg.Templates;
+using System.Data;
 
 namespace Efrpg
 {
@@ -230,6 +231,35 @@ namespace Efrpg
         // Example:                       Proc name      Return this entity type instead
         //StoredProcedureReturnTypes.Add("SalesByYear", "SummaryOfSalesByYear");
         public static Dictionary<string, string> StoredProcedureReturnTypes = new Dictionary<string, string>();
+
+        // Enable interception of stored procedure return model when an exception occurs. Typically, when the stored procedure contains temp tables.
+        // This allows you render the proper error in comments or fix the return model by manually creating the ReturnModel using a list of DataColumns
+        public static Action<Exception, StoredProcedure> ReadStoredProcReturnObjectException = delegate (Exception ex, StoredProcedure sp)
+        {
+            // Example
+            /*if (!sp.ReturnModels.Any() && ex.Message.StartsWith("Invalid object name", StringComparison.OrdinalIgnoreCase))
+            {
+                if (sp.NameHumanCase.Equals("YourProcNameHere", StringComparison.OrdinalIgnoreCase))
+                {
+                    sp.ReturnModels.Add(new List<DataColumn>
+                    {
+                        new DataColumn("Id", typeof(int)) { AllowDBNull = false, Unique = true },
+                        new DataColumn("Description", typeof(string))
+                    });
+                }
+            }*/
+        };
+
+        // Enable interception of stored procedure return model
+        public static Action<StoredProcedure> ReadStoredProcReturnObjectCompleted = delegate (StoredProcedure sp)
+        {
+            // Example of how to add a row processed boolean column to a stored procedure's return model
+            /*if (sp.ReturnModels.Any() && sp.NameHumanCase.Contains("process"))
+            {
+                var rm = sp.ReturnModels.First();
+                rm.Add(new DataColumn("RowProcessed", typeof(bool)) { AllowDBNull = false });
+            }*/
+        };
 
 
         // Renaming ***********************************************************************************************************************
