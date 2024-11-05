@@ -210,6 +210,20 @@
         public static bool   PrependSchemaName = true; // Control if the schema name is prepended to the table name
         public static string DefaultSchema     = null; // Set via DatabaseReader.DefaultSchema()
 
+        /// <summary>
+        /// Enables more granual control if the schema name should be prepend depending on the table
+        /// </summary>
+        public static Func<Table, bool> PrependSchemaNameForTable = (table) => {
+            return true;
+        };
+
+        /// <summary>
+        /// Enables more granual control if the schema name should be prepend depending on the proc
+        /// </summary>
+        public static Func<StoredProcedure, bool> PrependSchemaNameForStoredProcedure = (prod) => {
+            return true;
+        };
+
         // Table Suffix ***********************************************************************************************************************
         // Appends the suffix to the generated classes names
         // Ie. If TableSuffix is "Dto" then Order will be OrderDto
@@ -4584,7 +4598,7 @@
                     var singularCleanTableName = Inflector.MakeSingular(tableName);
                     table.NameHumanCase = (Settings.UsePascalCase ? Inflector.ToTitleCase(singularCleanTableName) : singularCleanTableName).Replace(" ", "").Replace("$", "").Replace(".", "");
 
-                    if (Settings.PrependSchemaName && string.Compare(table.Schema.DbName, Settings.DefaultSchema, StringComparison.OrdinalIgnoreCase) != 0)
+                    if (Settings.PrependSchemaName && string.Compare(table.Schema.DbName, Settings.DefaultSchema, StringComparison.OrdinalIgnoreCase) != 0 && Settings.PrependSchemaNameForTable(table))
                         table.NameHumanCase = table.Schema.DbName + "_" + table.NameHumanCase;
 
                     if (filter.IsExcluded(table)) // Retest exclusion after table rename
@@ -5016,7 +5030,7 @@
                         IsStoredProcedure      = proc.IsStoredProcedure
                     };
                     sp.NameHumanCase = DatabaseReader.CleanUp(sp.NameHumanCase);
-                    if (Settings.PrependSchemaName && (string.Compare(proc.Schema, Settings.DefaultSchema, StringComparison.OrdinalIgnoreCase) != 0))
+                    if (Settings.PrependSchemaName && (string.Compare(proc.Schema, Settings.DefaultSchema, StringComparison.OrdinalIgnoreCase) != 0) && Settings.PrependSchemaNameForStoredProcedure(sp))
                         sp.NameHumanCase = proc.Schema + "_" + sp.NameHumanCase;
 
                     sp.Parameters.AddRange(rawStoredProcs

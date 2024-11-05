@@ -182,6 +182,20 @@ namespace Efrpg
         public static bool   PrependSchemaName = true; // Control if the schema name is prepended to the table name
         public static string DefaultSchema     = null; // Set via DatabaseReader.DefaultSchema()
 
+        /// <summary>
+        /// Enables more granual control if the schema name should be prepend depending on the table
+        /// </summary>
+        public static Func<Table, bool> PrependSchemaNameForTable = (table) => {
+            return true;
+        };
+
+        /// <summary>
+        /// Enables more granual control if the schema name should be prepend depending on the proc
+        /// </summary>
+        public static Func<StoredProcedure, bool> PrependSchemaNameForStoredProcedure = (prod) => {
+            return true;
+        };
+
         // Table Suffix ***********************************************************************************************************************
         // Appends the suffix to the generated classes names
         // Ie. If TableSuffix is "Dto" then Order will be OrderDto
