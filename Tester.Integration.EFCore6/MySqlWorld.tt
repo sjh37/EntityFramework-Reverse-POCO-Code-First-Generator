@@ -14,7 +14,7 @@
     Settings.TemplateType          = TemplateType.EfCore6; // Ef6, EfCore2, EfCore3, FileBased. FileBased specify folder using Settings.TemplateFolder
     Settings.GeneratorType         = GeneratorType.EfCore; // Ef6, EfCore, Custom. Custom edit GeneratorCustom class to provide your own implementation
     Settings.FileManagerType       = FileManagerType.EfCore; // VisualStudio = .NET project; EfCore = .NET Core project; Null = No output (testing only)
-    Settings.ConnectionString      = "Data Source=(local);Initial Catalog=World;Integrated Security=True;User Id=root;Password=secret";
+    Settings.ConnectionString      = "server=localhost;uid=root;pwd=secret;database=world";
     Settings.ConnectionStringName  = "MySqlTestDatabase"; // ConnectionString key as specified in your app.config/web.config/appsettings.json
     Settings.DbContextName         = "MySqlTestDbContext"; // Class name for the DbContext to be generated.
     Settings.OnConfiguration       = OnConfiguration.ConnectionString; // EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/OnConfiguration    Settings.GenerateSeparateFiles   = false;

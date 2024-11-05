@@ -1,45 +1,20 @@
 ﻿
 // -----------------------------------------------------------------------------------------
-// Failed to read database schema in LoadTables() - Keyword 'address' not found.
-/*   at MySql.Data.Failover.FailoverManager.ParseHostList(String hierPart, Boolean isXProtocol, Boolean connectionDataIsUri)
-   at MySql.Data.MySqlClient.MySqlConnection.<OpenAsync>d__94.MoveNext()
+// Failed to read database schema in LoadTables() - The CommandText property has not been properly initialized.
+/*   at MySql.Data.MySqlClient.Interceptors.ExceptionInterceptor.Throw(Exception exception)
+   at MySql.Data.MySqlClient.MySqlCommand.Throw(Exception ex)
+   at MySql.Data.MySqlClient.MySqlCommand.<ExecuteReaderAsync>d__111.MoveNext()
 --- End of stack trace from previous location where exception was thrown ---
    at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
    at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
-   at MySql.Data.MySqlClient.MySqlConnection.Open()
-   at Microsoft.VisualStudio.TextTemplating768E54E666956222CF262454AD7A6F4664B916329D298830D9D29E25FA90559C5769256CCAEB9895717AD8EC3404FC4F5D8E9D7AF908BB809D3D56FA1A8AF0A3.GeneratedTextTransformation.DatabaseReader.ReadTables(Boolean includeSynonyms) in C:\S\Source (open source)\EntityFramework-Reverse-POCO-Code-First-Generator\Tester.Integration.EFCore6\..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v3.ttinclude:line 12694
-   at Microsoft.VisualStudio.TextTemplating768E54E666956222CF262454AD7A6F4664B916329D298830D9D29E25FA90559C5769256CCAEB9895717AD8EC3404FC4F5D8E9D7AF908BB809D3D56FA1A8AF0A3.GeneratedTextTransformation.Generator.LoadTables() in C:\S\Source (open source)\EntityFramework-Reverse-POCO-Code-First-Generator\Tester.Integration.EFCore6\..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v3.ttinclude:line 4479*/
-// -----------------------------------------------------------------------------------------
-
-
-// -----------------------------------------------------------------------------------------
-// Failed to read enumeration tables in LoadEnums() - Keyword 'address' not found.
-/*   at MySql.Data.Failover.FailoverManager.ParseHostList(String hierPart, Boolean isXProtocol, Boolean connectionDataIsUri)
-   at MySql.Data.MySqlClient.MySqlConnection.<OpenAsync>d__94.MoveNext()
---- End of stack trace from previous location where exception was thrown ---
-   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
-   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
-   at MySql.Data.MySqlClient.MySqlConnection.Open()
-   at Microsoft.VisualStudio.TextTemplating768E54E666956222CF262454AD7A6F4664B916329D298830D9D29E25FA90559C5769256CCAEB9895717AD8EC3404FC4F5D8E9D7AF908BB809D3D56FA1A8AF0A3.GeneratedTextTransformation.DatabaseReader.ReadEnums(List`1 enums) in C:\S\Source (open source)\EntityFramework-Reverse-POCO-Code-First-Generator\Tester.Integration.EFCore6\..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v3.ttinclude:line 13285
-   at Microsoft.VisualStudio.TextTemplating768E54E666956222CF262454AD7A6F4664B916329D298830D9D29E25FA90559C5769256CCAEB9895717AD8EC3404FC4F5D8E9D7AF908BB809D3D56FA1A8AF0A3.GeneratedTextTransformation.Generator.LoadEnums() in C:\S\Source (open source)\EntityFramework-Reverse-POCO-Code-First-Generator\Tester.Integration.EFCore6\..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v3.ttinclude:line 4365*/
-// -----------------------------------------------------------------------------------------
-
-
-// -----------------------------------------------------------------------------------------
-// Failed to read sequences in LoadSequences() - Keyword 'address' not found.
-/*   at MySql.Data.Failover.FailoverManager.ParseHostList(String hierPart, Boolean isXProtocol, Boolean connectionDataIsUri)
-   at MySql.Data.MySqlClient.MySqlConnection.<OpenAsync>d__94.MoveNext()
---- End of stack trace from previous location where exception was thrown ---
-   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
-   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
-   at MySql.Data.MySqlClient.MySqlConnection.Open()
-   at Microsoft.VisualStudio.TextTemplating768E54E666956222CF262454AD7A6F4664B916329D298830D9D29E25FA90559C5769256CCAEB9895717AD8EC3404FC4F5D8E9D7AF908BB809D3D56FA1A8AF0A3.GeneratedTextTransformation.DatabaseReader.ReadSequences() in C:\S\Source (open source)\EntityFramework-Reverse-POCO-Code-First-Generator\Tester.Integration.EFCore6\..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v3.ttinclude:line 13373
-   at Microsoft.VisualStudio.TextTemplating768E54E666956222CF262454AD7A6F4664B916329D298830D9D29E25FA90559C5769256CCAEB9895717AD8EC3404FC4F5D8E9D7AF908BB809D3D56FA1A8AF0A3.GeneratedTextTransformation.Generator.LoadSequences() in C:\S\Source (open source)\EntityFramework-Reverse-POCO-Code-First-Generator\Tester.Integration.EFCore6\..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v3.ttinclude:line 4428*/
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   at Microsoft.VisualStudio.TextTemplatingA301A6A4D31E8828011B65ED353D0E4E5077174B24ACE8E8BDBD6466B9D9FE36201FDDAD6F695713020CE39F7FBA625B98C2C5EC2AA8002A5780C5BACC1465B4.GeneratedTextTransformation.DatabaseReader.ReadTables(Boolean includeSynonyms) in C:\S\Source (open source)\EntityFramework-Reverse-POCO-Code-First-Generator\Tester.Integration.EFCore6\..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v3.ttinclude:line 12717
+   at Microsoft.VisualStudio.TextTemplatingA301A6A4D31E8828011B65ED353D0E4E5077174B24ACE8E8BDBD6466B9D9FE36201FDDAD6F695713020CE39F7FBA625B98C2C5EC2AA8002A5780C5BACC1465B4.GeneratedTextTransformation.Generator.LoadTables() in C:\S\Source (open source)\EntityFramework-Reverse-POCO-Code-First-Generator\Tester.Integration.EFCore6\..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v3.ttinclude:line 4479*/
 // -----------------------------------------------------------------------------------------
 
 // <auto-generated>
 
-namespace TestDatabaseStandard
+namespace MySqlTestDatabaseStandard
 {
 }
 // </auto-generated>
