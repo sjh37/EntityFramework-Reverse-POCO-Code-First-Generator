@@ -106,6 +106,8 @@
     Settings.IncludeGeneratorVersionInCode      = false; // If true, will include the version number of the generator in the generated code (Settings.ShowLicenseInfo must also be true).
     Settings.TrimCharFields                     = false; // EF Core option only. If true, will TrimEnd() 'char' fields when read from the database.
     Settings.IncludeFieldNameConstants          = false; // Will include public const string {{NameHumanCase}}Field = "{{NameHumanCase}}"; in the generated POCO class. It allows you to use a constant instead of magic strings.
+    Settings.UsePropertiesForStoredProcResultSets   = false; // Stored procedure result set return models are rendered as fields (false) or properties (true).
+    Settings.MergeMultipleStoredProcModelsIfAllSame = true; // Some stored procedures are reported as having multiple result sets when in fact there is only one. Set this to true to merge identical result sets.
     Settings.AdditionalNamespaces               = new List<string>(); // To include extra namespaces, include them here. i.e. new List<string> { "Microsoft.AspNetCore.Identity.EntityFrameworkCore", "System.ComponentModel.DataAnnotations" };
     Settings.AdditionalContextInterfaceItems    = new List<string>(); // example: new List<string> { "void SetAutoDetectChangesEnabled(bool flag);" };
     Settings.AdditionalFileHeaderText           = new List<string>(); // This will put additional lines verbatim at the top of each file under the comments, 1 line per entry
@@ -239,6 +241,26 @@
     //     abc.hello will be Abc_Hello.
     Settings.PrependSchemaName = true; // Control if the schema name is prepended to the table name
 
+    // Enables more granular control if the schema name should be prepended depending on the table
+    Settings.PrependSchemaNameForTable = delegate(Table table)
+    {
+        // Example:
+        //if (table.NameHumanCase.Equals("SomeTable", StringComparison.InvariantCultureIgnoreCase))
+        //    return false;
+
+        return true;
+    };
+
+    // Enables more granular control if the schema name should be prepended depending on the stored procedure
+    Settings.PrependSchemaNameForStoredProcedure = delegate(StoredProcedure sp)
+    {
+        // Example:
+        //if (sp.NameHumanCase.StartsWith("sp_"))
+        //    return false;
+
+        return true;
+    };
+
     // Table Suffix ***********************************************************************************************************************
     // Appends the suffix to the generated classes names
     // Ie. If TableSuffix is "Dto" then Order will be OrderDto
@@ -296,13 +318,33 @@
         //if (table.NameHumanCase.Equals("SomeTable", StringComparison.InvariantCultureIgnoreCase))
         //    table.AdditionalComment = "Example comment";
 
-        // To add a base class to a table based on column names. Also see Settings.UpdateColumn below.
+        // To add a base class to a table based on any of these column names. Also see Settings.UpdateColumn below.
         //var tracking  = new List<string> { "createdby", "createdon", "modifiedby", "modifiedon" };
         //var replicate = new List<string> { "uniqueid", "hrid"};
         //if (table.Columns.Any(x => tracking.Contains(x.NameHumanCase)))
         //    table.BaseClasses = " : TrackingEntity";
         //if (table.Columns.Any(x => replicate.Contains(x.NameHumanCase)))
         //    table.BaseClasses = " : ReplicateEntity";
+
+        // To add a base class to a table based on ALL of these column names
+        //var lookupTitle = new List<string>  { "ID", "Title", "Description" };
+	    //if (lookupTitle.All(x => table.Columns.Any(c => c.NameHumanCase == x)))
+        //{
+        //    if(string.IsNullOrEmpty(table.BaseClasses))
+		//        table.BaseClasses = " : ILookupTitle";
+	    //    else
+		//        table.BaseClasses += ", ILookupTitle";
+        //}
+
+        // Add a base class to a table based on its name
+        //var quickEdit = new List<string>  { "Categories", "Customers", "Employees", "Orders" };
+        //if(quickEdit.Any(x => table.NameHumanCase == x))
+        //{
+        //    if(string.IsNullOrEmpty(table.BaseClasses))
+		//        table.BaseClasses = " : IQuickEdit";
+	    //    else
+		//        table.BaseClasses += ", IQuickEdit";
+        //}
 
         // To add attributes
         //table.Attributes.Add("[Serializable]");

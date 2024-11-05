@@ -182,17 +182,23 @@ namespace Efrpg
         public static bool   PrependSchemaName = true; // Control if the schema name is prepended to the table name
         public static string DefaultSchema     = null; // Set via DatabaseReader.DefaultSchema()
 
-        /// <summary>
-        /// Enables more granual control if the schema name should be prepend depending on the table
-        /// </summary>
-        public static Func<Table, bool> PrependSchemaNameForTable = (table) => {
+        // Enables more granular control if the schema name should be prepended depending on the table
+        public static Func<Table, bool> PrependSchemaNameForTable = delegate (Table table)
+        {
+            // Example:
+            //if (table.NameHumanCase.Equals("SomeTable", StringComparison.InvariantCultureIgnoreCase))
+            //    return false;
+
             return true;
         };
 
-        /// <summary>
-        /// Enables more granual control if the schema name should be prepend depending on the proc
-        /// </summary>
-        public static Func<StoredProcedure, bool> PrependSchemaNameForStoredProcedure = (prod) => {
+        // Enables more granular control if the schema name should be prepended depending on the stored procedure
+        public static Func<StoredProcedure, bool> PrependSchemaNameForStoredProcedure = delegate (StoredProcedure sp)
+        {
+            // Example:
+            //if (sp.NameHumanCase.StartsWith("sp_"))
+            //    return false;
+
             return true;
         };
 
