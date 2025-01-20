@@ -6,6 +6,7 @@
         <SignAssembly>true</SignAssembly>
         <AssemblyOriginatorKeyFile>EF.Reverse.POCO.Generator.pfx</AssemblyOriginatorKeyFile>
         <DelaySign>false</DelaySign>
+        <Platforms>AnyCPU;ARM64</Platforms>
     </PropertyGroup>
 
     <ItemGroup>
