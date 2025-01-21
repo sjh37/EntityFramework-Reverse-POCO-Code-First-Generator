@@ -26,7 +26,7 @@
             <ProductArchitecture>amd64</ProductArchitecture>
         </InstallationTarget>
         <InstallationTarget Version="[15.0,17.0)" Id="Microsoft.VisualStudio.Enterprise" />
-        <InstallationTarget Version="[17.0,18.0)" Id="Microsoft.VisualStudio.Pro">
+        <InstallationTarget Version="[17.0,18.0)" Id="Microsoft.VisualStudio.Enterprise">
             <ProductArchitecture>arm64</ProductArchitecture>
         </InstallationTarget>
         <InstallationTarget Version="[17.0,18.0)" Id="Microsoft.VisualStudio.Enterprise">
