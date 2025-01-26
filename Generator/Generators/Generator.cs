@@ -1266,7 +1266,8 @@ namespace Efrpg.Generators
 
                         if (Settings.TemplateType == TemplateType.FileBasedCore6 || 
                             Settings.TemplateType == TemplateType.FileBasedCore7 ||
-                            Settings.TemplateType == TemplateType.FileBasedCore8)
+                            Settings.TemplateType == TemplateType.FileBasedCore8 ||
+                            Settings.TemplateType == TemplateType.FileBasedCore9)
                         {
                             // Use file based templates, set the path
                             var multiContextSetting = ((MultiContextFilter) filter.Value).GetSettings();
