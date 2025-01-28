@@ -151,7 +151,7 @@ namespace Generator.Tests.Integration
             Assert.AreEqual(testComparison, generated);
         }
 
-        protected static void ResetFilters()
+        private static void ResetFilters()
         {
             FilterSettings.Reset();
             FilterSettings.AddDefaults();

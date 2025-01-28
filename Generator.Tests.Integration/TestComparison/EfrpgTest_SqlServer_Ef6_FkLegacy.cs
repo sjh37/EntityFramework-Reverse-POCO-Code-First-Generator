@@ -103,8 +103,8 @@ namespace Efrpg.V3TestE1
         DbSet<SequenceTestPartTwo> SequenceTestPartTwoes { get; set; } // SequenceTestPartTwo
         DbSet<SmallDecimalTest> SmallDecimalTests { get; set; } // SmallDecimalTest
         DbSet<SmallDecimalTestView> SmallDecimalTestViews { get; set; } // SmallDecimalTestView
-        DbSet<Sorter> Sorters { get; set; } // Sorter
-        DbSet<Sorter1> Sorter1 { get; set; } // Sorters
+        DbSet<Sorter> Sorter { get; set; } // Sorter
+        DbSet<Sorters> Sorters { get; set; } // Sorters
         DbSet<SorterScannerGroup> SorterScannerGroups { get; set; } // SorterScannerGroup
         DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
         DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; } // ComputedColumns
@@ -424,8 +424,8 @@ namespace Efrpg.V3TestE1
         public DbSet<SequenceTestPartTwo> SequenceTestPartTwoes { get; set; } // SequenceTestPartTwo
         public DbSet<SmallDecimalTest> SmallDecimalTests { get; set; } // SmallDecimalTest
         public DbSet<SmallDecimalTestView> SmallDecimalTestViews { get; set; } // SmallDecimalTestView
-        public DbSet<Sorter> Sorters { get; set; } // Sorter
-        public DbSet<Sorter1> Sorter1 { get; set; } // Sorters
+        public DbSet<Sorter> Sorter { get; set; } // Sorter
+        public DbSet<Sorters> Sorters { get; set; } // Sorters
         public DbSet<SorterScannerGroup> SorterScannerGroups { get; set; } // SorterScannerGroup
         public DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
         public DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; } // ComputedColumns
@@ -603,7 +603,7 @@ namespace Efrpg.V3TestE1
             modelBuilder.Configurations.Add(new SmallDecimalTestConfiguration());
             modelBuilder.Configurations.Add(new SmallDecimalTestViewConfiguration());
             modelBuilder.Configurations.Add(new SorterConfiguration());
-            modelBuilder.Configurations.Add(new Sorter1Configuration());
+            modelBuilder.Configurations.Add(new SortersConfiguration());
             modelBuilder.Configurations.Add(new SorterScannerGroupConfiguration());
             modelBuilder.Configurations.Add(new Stafford_BooConfiguration());
             modelBuilder.Configurations.Add(new Stafford_ComputedColumnConfiguration());
@@ -897,7 +897,7 @@ namespace Efrpg.V3TestE1
             modelBuilder.Configurations.Add(new SmallDecimalTestConfiguration(schema));
             modelBuilder.Configurations.Add(new SmallDecimalTestViewConfiguration(schema));
             modelBuilder.Configurations.Add(new SorterConfiguration(schema));
-            modelBuilder.Configurations.Add(new Sorter1Configuration(schema));
+            modelBuilder.Configurations.Add(new SortersConfiguration(schema));
             modelBuilder.Configurations.Add(new SorterScannerGroupConfiguration(schema));
             modelBuilder.Configurations.Add(new Stafford_BooConfiguration(schema));
             modelBuilder.Configurations.Add(new Stafford_ComputedColumnConfiguration(schema));
@@ -2387,8 +2387,8 @@ namespace Efrpg.V3TestE1
         public DbSet<SequenceTestPartTwo> SequenceTestPartTwoes { get; set; } // SequenceTestPartTwo
         public DbSet<SmallDecimalTest> SmallDecimalTests { get; set; } // SmallDecimalTest
         public DbSet<SmallDecimalTestView> SmallDecimalTestViews { get; set; } // SmallDecimalTestView
-        public DbSet<Sorter> Sorters { get; set; } // Sorter
-        public DbSet<Sorter1> Sorter1 { get; set; } // Sorters
+        public DbSet<Sorter> Sorter { get; set; } // Sorter
+        public DbSet<Sorters> Sorters { get; set; } // Sorters
         public DbSet<SorterScannerGroup> SorterScannerGroups { get; set; } // SorterScannerGroup
         public DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
         public DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; } // ComputedColumns
@@ -2505,8 +2505,8 @@ namespace Efrpg.V3TestE1
             SequenceTestPartTwoes = new FakeDbSet<SequenceTestPartTwo>("Id");
             SmallDecimalTests = new FakeDbSet<SmallDecimalTest>("Id");
             SmallDecimalTestViews = new FakeDbSet<SmallDecimalTestView>("FkId", "Description");
-            Sorters = new FakeDbSet<Sorter>("SorterId");
-            Sorter1 = new FakeDbSet<Sorter1>("SorterName");
+            Sorter = new FakeDbSet<Sorter>("SorterId");
+            Sorters = new FakeDbSet<Sorters>("SorterName");
             SorterScannerGroups = new FakeDbSet<SorterScannerGroup>("SorterName");
             Stafford_Boos = new FakeDbSet<Stafford_Boo>("Id");
             Stafford_ComputedColumns = new FakeDbSet<Stafford_ComputedColumn>("Id");
@@ -4760,14 +4760,14 @@ namespace Efrpg.V3TestE1
     }
 
     // Sorters
-    public class Sorter1
+    public class Sorters
     {
         public string SorterName { get; set; } // SorterName (Primary key) (length: 20)
 
         // Reverse navigation
 
         /// <summary>
-        /// Parent (One-to-One) Sorter1 pointed by [SorterScannerGroup].[SorterName] (FK_SorterScannerGroup_Sorters)
+        /// Parent (One-to-One) Sorters pointed by [SorterScannerGroup].[SorterName] (FK_SorterScannerGroup_Sorters)
         /// </summary>
         public virtual SorterScannerGroup SorterScannerGroup { get; set; } // SorterScannerGroup.FK_SorterScannerGroup_Sorters
     }
@@ -4782,7 +4782,7 @@ namespace Efrpg.V3TestE1
         /// <summary>
         /// Parent Sorter pointed by [SorterScannerGroup].([SorterName]) (FK_SorterScannerGroup_Sorters)
         /// </summary>
-        public virtual Sorter1 Sorter { get; set; } // FK_SorterScannerGroup_Sorters
+        public virtual Sorters Sorter { get; set; } // FK_SorterScannerGroup_Sorters
     }
 
     // Boo
@@ -6818,14 +6818,14 @@ namespace Efrpg.V3TestE1
     }
 
     // Sorters
-    public class Sorter1Configuration : EntityTypeConfiguration<Sorter1>
+    public class SortersConfiguration : EntityTypeConfiguration<Sorters>
     {
-        public Sorter1Configuration()
+        public SortersConfiguration()
             : this("dbo")
         {
         }
 
-        public Sorter1Configuration(string schema)
+        public SortersConfiguration(string schema)
         {
             ToTable("Sorters", schema);
             HasKey(x => x.SorterName);

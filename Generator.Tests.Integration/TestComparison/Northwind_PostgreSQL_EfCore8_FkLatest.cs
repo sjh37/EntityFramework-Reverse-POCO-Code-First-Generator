@@ -140,7 +140,7 @@ namespace Efrpg.PostgreSQL
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(@"Server=127.0.0.1;Port=5433;Database=Northwind;User Id=testuser;Password=testtesttest;");
+                optionsBuilder.UseSqlServer(@"Server=127.0.0.1;Port=5432;Database=Northwind;User Id=testuser;Password=testtesttest;");
             }
         }
 
