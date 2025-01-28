@@ -1,0 +1,91 @@
+<#@ include file ="..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v3.ttinclude" #>
+<#
+    // Please make changes to the settings below.
+    // All you have to do is save this file, and the output file(s) are generated. Compiling does not regenerate the file(s).
+    // A course for the older v2 generator is available on Pluralsight at https://www.pluralsight.com/courses/code-first-entity-framework-legacy-databases
+
+    // Settings ***************************************************************************************************************************
+    // Only the most popular settings are listed below.
+    // Either override Settings.* here, or edit the Settings, FilterSettings and SingleContextFilter classes located at the top of EF.Reverse.POCO.v3.ttinclude
+    
+    // For help on the various Types below, please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Common-Settings.*Types-explained
+    // The following entries are the only required settings.
+    Settings.DatabaseType               = DatabaseType.SqlServer;
+    Settings.TemplateType               = TemplateType.EfCore9; 
+    Settings.GeneratorType              = GeneratorType.EfCore;
+    Settings.UseMappingTables           = true; // Must be false for TemplateType.EfCore2-4. If true, mapping will be used, and no mapping tables will be generated. If false, all tables will be generated.
+    Settings.FileManagerType            = FileManagerType.EfCore; // .NET project = VisualStudio; .NET Core project = EfCore; No output (testing only) = Null
+    Settings.ConnectionString           = "Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;MultipleActiveResultSets=True;Encrypt=false;TrustServerCertificate=true";
+    Settings.ConnectionStringName       = "MyDbContext"; // ConnectionString key as specified in your app.config/web.config/appsettings.json
+    Settings.DbContextName              = "V9EfrpgTestDbContext"; // Class name for the DbContext to be generated. Note: If generating separate files, please give the db context a different name from this tt filename.
+    Settings.OnConfiguration            = OnConfiguration.ConnectionString; // EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/OnConfiguration    Settings.GenerateSeparateFiles   = false;
+    Settings.GenerateSeparateFiles      = false;
+    Settings.Namespace                  = "V9EfrpgTest"; // Override the default namespace here
+    Settings.AddUnitTestingDbContext    = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing. Read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/FakeDbContext
+    Settings.TrimCharFields             = true; // EF Core option only. If true, will TrimEnd() 'char' fields when read from the database.
+    Settings.DisableGeographyTypes      = false;
+
+    // If GenerateSingleDbContext = false, this will generate multiple db contexts. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Generating-multiple-database-contexts-in-a-single-go
+    Settings.GenerateSingleDbContext              = true; // Set this to false to generate multiple db contexts.
+    Settings.MultiContextSettingsConnectionString = ""; // Leave empty to read data from same database in ConnectionString above. If settings are in another database, specify the connection string here.
+
+    // Elements to generate ***************************************************************************************************************
+    // Add the elements that should be generated when the template is executed.
+    // Multiple projects can be used that separate the different concerns.
+    Settings.ElementsToGenerate = Elements.Poco | Elements.Context | Elements.Interface | Elements.PocoConfiguration | Elements.Enum;
+
+    // Generate files in sub-folders ******************************************************************************************************
+    // (Settings.FileManagerType = FileManagerType.EfCore && Settings.GenerateSeparateFiles = true)
+    Settings.ContextFolder           = @"EfrpgTestData"; // Sub-folder you would like your DbContext to be added to.              e.g. @"Data"
+    Settings.InterfaceFolder         = @"EfrpgTestData\Interface"; // Sub-folder you would like your Interface to be added to.              e.g. @"Data\Interface"
+    Settings.PocoFolder              = @"EfrpgTestData\Entities"; // Sub-folder you would like your Poco's to be added to.                 e.g. @"Data\Entities"
+    Settings.PocoConfigurationFolder = @"EfrpgTestData\Configuration"; // Sub-folder you would like your Configuration mappings to be added to. e.g. @"Data\Configuration"
+    
+    // Filtering **************************************************************************************************************************
+    // Filtering can now be done via one or more Regex's and one or more functions.
+    // Gone are the days of a single do-it-all regex, you can now split them up into many smaller Regex's.
+    // You can have as many as you like, and mix and match them.
+    // These settings are only used by the single context filter SingleContextFilter (Settings.GenerateSingleDbContext = true)
+    // For further information please visit https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Filtering
+    // For multi-context filtering (Settings.GenerateSingleDbContext = false), please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Generating-multiple-database-contexts-in-a-single-go
+    // Single-context filtering is done via FilterSettings and SingleContextFilter classes.
+    // Override the filters here, or edit directly the FilterSettings and SingleContextFilter classes located at the top of EF.Reverse.POCO.v3.ttinclude
+    FilterSettings.Reset();
+    FilterSettings.AddDefaults();
+
+    // Examples:
+    FilterSettings.IncludeViews                 = true;
+    FilterSettings.IncludeSynonyms              = true;
+    FilterSettings.IncludeStoredProcedures      = true;
+    FilterSettings.IncludeTableValuedFunctions  = true; // If true, for EF6 install the "EntityFramework.CodeFirstStoreFunctions" NuGet Package.
+    FilterSettings.IncludeScalarValuedFunctions = true;
+    
+    // For testing sequence inclusion
+    //FilterSettings.TableFilters.Add(new RegexIncludeFilter("^SequenceTestPartTwo$")); // This includes any remaining tables with names beginning with 'customer'
+
+    // Create enumerations from database tables
+    // List the enumeration tables you want read and generated for
+    Settings.Enumerations = new List<EnumerationSettings>
+    {
+        new EnumerationSettings
+        {
+            Name       = "DaysOfWeek",          // Enum to generate. e.g. "DaysOfWeek" would result in "public enum DaysOfWeek {...}" if the GroupField is set to a value then {GroupField} must be used in this name. e.g. "DaysOfWeek{GroupField}"
+            Table      = "EnumTest.DaysOfWeek", // Database table containing enum values. e.g. "DaysOfWeek"
+            NameField  = "TypeName",            // Column containing the name for the enum. e.g. "TypeName"
+            ValueField = "TypeId",              // Column containing the values for the enum. e.g. "TypeId"
+            GroupField = string.Empty           // [optional] Column containing the group name for the enum. This is used if multiple Enums are in the same table. if this is populated, use {GroupField} in the Name property. e.g. "{GroupField}Enum"
+        }
+    };
+
+    FilterSettings.CheckSettings();
+    Inflector.IgnoreWordsThatEndWith = new List<string> { "Status", "To", "Data" };
+    Inflector.PluralisationService = new EnglishPluralizationService();
+    var outer = (GeneratedTextTransformation) this;
+    var fileManagement = new FileManagementService(outer);
+    var generator = GeneratorFactory.Create(fileManagement, FileManagerFactory.GetFileManagerType());
+    if (generator != null && generator.InitialisationOk)
+    {
+        generator.ReadDatabase();
+        generator.GenerateCode();
+    }
+    fileManagement.Process(true);#>
