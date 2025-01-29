@@ -33,7 +33,6 @@ namespace Generator.Tests.Integration
         // Legacy
         [TestCase("EfrpgTest", ".V3TestE1", "MyDbContext", "EfrpgTestDbContext", TemplateType.Ef6, ForeignKeyNamingStrategy.Legacy)]
         [TestCase("EfrpgTest", ".V3TestE6", "MyDbContext", "EfrpgTestDbContext", TemplateType.EfCore6, ForeignKeyNamingStrategy.Legacy)]
-        [TestCase("EfrpgTest", ".V3TestE7", "MyDbContext", "EfrpgTestDbContext", TemplateType.EfCore7, ForeignKeyNamingStrategy.Legacy)]
         [TestCase("EfrpgTest", ".V3TestE8", "MyDbContext", "EfrpgTestDbContext", TemplateType.EfCore8, ForeignKeyNamingStrategy.Legacy)]
         public void ReverseEngineerSqlServer(string database, string singleDbContextSubNamespace, string connectionStringName, string dbContextName,
             TemplateType templateType, ForeignKeyNamingStrategy foreignKeyNamingStrategy)
@@ -88,7 +87,6 @@ namespace Generator.Tests.Integration
         [Test]
         [NonParallelizable]
         [TestCase(TemplateType.EfCore6, ".V4TestE6")]
-        [TestCase(TemplateType.EfCore7, ".V4TestE7")]
         [TestCase(TemplateType.EfCore8, ".V4TestE8")]
         public void NonPascalCased(TemplateType templateType, string singleDbContextSubNamespace)
         {
@@ -108,7 +106,6 @@ namespace Generator.Tests.Integration
 
         [Test]
         [TestCase("EfrpgTest", ".V6FilterTest", "EfrpgTest", "EfrpgDbContext", false, TemplateType.EfCore6, ForeignKeyNamingStrategy.Legacy)]
-        [TestCase("EfrpgTest", ".V7FilterTest", "EfrpgTest", "EfrpgDbContext", false, TemplateType.EfCore7, ForeignKeyNamingStrategy.Legacy)]
         [TestCase("EfrpgTest", ".V8FilterTest", "EfrpgTest", "EfrpgDbContext", false, TemplateType.EfCore8, ForeignKeyNamingStrategy.Legacy)]
         public void MultipleIncludeFilters(string database, string singleDbContextSubNamespace, string connectionStringName, string dbContextName,
             bool publicTestComparison, TemplateType templateType, ForeignKeyNamingStrategy foreignKeyNamingStrategy)

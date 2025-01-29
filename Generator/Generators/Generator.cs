@@ -292,7 +292,7 @@ namespace Efrpg.Generators
                     AddMemoryOptimisedTablesToFilters(rawMemoryOptimisedTables);
                 }
                 
-                if (Settings.IsEfCore7Plus())
+                if (Settings.IsEfCore8Plus())
                 {
                     var rawTriggers = DatabaseReader.ReadTriggers();
                     AddTriggersToFilters(rawTriggers);
@@ -1265,7 +1265,6 @@ namespace Efrpg.Generators
                         Settings.DbContextName = ((MultiContextFilter) filter.Value).GetSettings().Name ?? filter.Key;
 
                         if (Settings.TemplateType == TemplateType.FileBasedCore6 || 
-                            Settings.TemplateType == TemplateType.FileBasedCore7 ||
                             Settings.TemplateType == TemplateType.FileBasedCore8 ||
                             Settings.TemplateType == TemplateType.FileBasedCore9)
                         {
