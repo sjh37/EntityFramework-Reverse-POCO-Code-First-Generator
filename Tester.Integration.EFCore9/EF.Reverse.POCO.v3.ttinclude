@@ -1,6 +1,6 @@
 <#
 // Copyright (C) Simon Hughes 2012
-// v3.9.0
+// v3.10.0
 // If you want to submit a pull request, please modify the Generator C# project as this file
 // is automatically constructed from the C# Generator project during the build process.
 #>
@@ -1547,7 +1547,7 @@
     {
         public static string Version()
         {
-            return "v3.9.0";
+            return "v3.10.0";
         }
     }
 
