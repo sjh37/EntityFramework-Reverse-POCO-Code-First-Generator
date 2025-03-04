@@ -1068,14 +1068,15 @@ using {{this}};{{#newline}}
 
         public override List<string> PocoUsings(PocoModel data)
         {
-            var usings = new List<string>
-            {
-                "System",
-                "System.Data.Entity.Infrastructure",
-                "System.Collections.Generic",
-                "System.Threading",
-                "System.Threading.Tasks",
-            };
+            var usings = new List<string>();
+            if(data.HasAnyOptionalForignKeys)
+                usings.Add("#nullable enable");
+
+            usings.Add("System");
+            usings.Add("System.Data.Entity.Infrastructure");
+            usings.Add("System.Collections.Generic");
+            usings.Add("System.Threading");
+            usings.Add("System.Threading.Tasks");
 
             if (data.HasSpatial)
                 usings.Add("System.Data.Entity.Spatial");

@@ -26,6 +26,7 @@ namespace Efrpg.TemplateModels
         public bool EntityClassesArePartial { get; set; }
         public bool HasHierarchyId { get; set; }
         public bool HasSpatial { get; set; }
+        public bool HasAnyOptionalForignKeys { get; set; }
     }
 
     public class PocoColumnModel

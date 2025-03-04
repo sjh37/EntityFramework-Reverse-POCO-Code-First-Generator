@@ -23,6 +23,7 @@ namespace Efrpg
         public bool HasPrimaryKey;
         public bool RemoveTable;
         public bool IsMemoryOptimised;
+        public bool HasAnyOptionalForignKeys;
         public string AdditionalComment;
         public string PluralNameOverride;
         public string DbSetModifier = "public";
@@ -53,6 +54,7 @@ namespace Efrpg
             ResetNavigationProperties();
             ExtendedProperty = new List<string>();
             UsesDictionary = false;
+            HasAnyOptionalForignKeys = false;
         }
 
         internal static string GetLazyLoadingMarker()
@@ -159,6 +161,14 @@ namespace Efrpg
                     break;
             }
             var accessModifier = fks != null && fks.FirstOrDefault() != null ? (fks.FirstOrDefault().AccessModifier ?? "public") : "public";
+            
+            var optionalFk = string.Empty;
+            if (fks != null && fks.Any(x => x.CascadeOnDelete))
+            {
+                optionalFk = "?";
+                HasAnyOptionalForignKeys = true;
+            }
+
             switch (relationship)
             {
                 case Relationship.OneToOne:
@@ -167,7 +177,7 @@ namespace Efrpg
                         {
                             AdditionalDataAnnotations = _filter.ForeignKeyAnnotationsProcessing(fkTable, this, propName, string.Empty),
                             PropertyName = propName,
-                            Definition = string.Format("{0} {1}{2} {3} {{ get; set; }}{4}", accessModifier, GetLazyLoadingMarker(), fkTable.NameHumanCaseWithSuffix(), propName, Settings.IncludeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
+                            Definition = string.Format("{0} {1}{2}{3} {4} {{ get; set; }}{5}", accessModifier, GetLazyLoadingMarker(), fkTable.NameHumanCaseWithSuffix(), optionalFk, propName, Settings.IncludeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
                             Comments = string.Format("Parent (One-to-One) {0} pointed by [{1}].{2} ({3})", NameHumanCaseWithSuffix(), fkTable.DbName, fkNames, fks.First().ConstraintName)
                         }
                     );
@@ -179,7 +189,7 @@ namespace Efrpg
                         {
                             AdditionalDataAnnotations = _filter.ForeignKeyAnnotationsProcessing(fkTable, this, propName, string.Empty),
                             PropertyName = propName,
-                            Definition = string.Format("{0} {1}{2} {3} {{ get; set; }}{4}", accessModifier, GetLazyLoadingMarker(), fkTable.NameHumanCaseWithSuffix(), propName, Settings.IncludeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
+                            Definition = string.Format("{0} {1}{2}{3} {4} {{ get; set; }}{5}", accessModifier, GetLazyLoadingMarker(), fkTable.NameHumanCaseWithSuffix(), optionalFk, propName, Settings.IncludeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
                             Comments = string.Format("Parent {0} pointed by [{1}].{2} ({3})", NameHumanCaseWithSuffix(), fkTable.DbName, fkNames, fks.First().ConstraintName)
                         }
                     );
@@ -194,7 +204,7 @@ namespace Efrpg
                         {
                             AdditionalDataAnnotations = _filter.ForeignKeyAnnotationsProcessing(fkTable, this, propName, string.Empty),
                             PropertyName = propName,
-                            Definition = string.Format("{0} {1}{2}<{3}> {4} {{ get; set; }}{5}{6}", accessModifier, GetLazyLoadingMarker(), Settings.CollectionInterfaceType, fkTable.NameHumanCaseWithSuffix(), propName, initialisation1, Settings.IncludeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
+                            Definition = string.Format("{0} {1}{2}<{3}>{4} {5} {{ get; set; }}{6}{7}", accessModifier, GetLazyLoadingMarker(), Settings.CollectionInterfaceType, fkTable.NameHumanCaseWithSuffix(), optionalFk, propName, initialisation1, Settings.IncludeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
                             Comments = string.Format("Child {0} where [{1}].{2} point to this entity ({3})", Inflector.MakePlural(fkTable.NameHumanCase), fkTable.DbName, fkNames, fks.First().ConstraintName)
                         }
                     );
@@ -210,7 +220,7 @@ namespace Efrpg
                         {
                             AdditionalDataAnnotations = _filter.ForeignKeyAnnotationsProcessing(fkTable, this, propName, string.Empty),
                             PropertyName = propName,
-                            Definition = string.Format("{0} {1}{2}<{3}> {4} {{ get; set; }}{5}{6}", accessModifier, GetLazyLoadingMarker(), Settings.CollectionInterfaceType, fkTable.NameHumanCaseWithSuffix(), propName, initialisation2, Settings.IncludeComments != CommentsStyle.None ? " // Many to many mapping" : string.Empty),
+                            Definition = string.Format("{0} {1}{2}<{3}>{4} {5} {{ get; set; }}{6}{7}", accessModifier, GetLazyLoadingMarker(), Settings.CollectionInterfaceType, fkTable.NameHumanCaseWithSuffix(), optionalFk, propName, initialisation2, Settings.IncludeComments != CommentsStyle.None ? " // Many to many mapping" : string.Empty),
                             Comments = string.Format("Child {0} (Many-to-Many) mapped by table [{1}]", Inflector.MakePlural(fkTable.NameHumanCase), mappingTable == null ? string.Empty : mappingTable.DbName)
                         }
                     );

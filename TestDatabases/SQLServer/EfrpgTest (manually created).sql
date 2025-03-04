@@ -2724,3 +2724,21 @@ ADD CONSTRAINT FK_SorterScannerGroup_Sorters
 GO
 ALTER TABLE dbo.SorterScannerGroup CHECK CONSTRAINT FK_SorterScannerGroup_Sorters;
 GO
+
+-- #854 Nullable reverse navigation properties
+-- DROP TABLE NullableReverseNavB; DROP TABLE NullableReverseNavA;
+CREATE TABLE NullableReverseNavA
+(
+    Id UNIQUEIDENTIFIER NOT NULL,
+    Data NVARCHAR(100) NULL,
+    CONSTRAINT PK_NullableReverseNavA PRIMARY KEY (Id)
+);
+
+CREATE TABLE NullableReverseNavB
+(
+    Id UNIQUEIDENTIFIER NOT NULL,
+    Data NVARCHAR(100) NULL,
+    CONSTRAINT PK_NullableReverseNavB PRIMARY KEY (Id),
+    CONSTRAINT FK_NullableReverseNavB_A FOREIGN KEY (Id) REFERENCES NullableReverseNavA (Id)
+);
+GO

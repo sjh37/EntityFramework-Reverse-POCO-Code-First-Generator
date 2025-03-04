@@ -1386,13 +1386,14 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
 
         public override List<string> PocoUsings(PocoModel data)
         {
-            var usings = new List<string>
-            {
-                "System",
-                "System.Collections.Generic",
-                "System.Threading",
-                "System.Threading.Tasks",
-            };
+            var usings = new List<string>();
+            if(data.HasAnyOptionalForignKeys)
+                usings.Add("#nullable enable");
+
+            usings.Add("System");
+            usings.Add("System.Collections.Generic");
+            usings.Add("System.Threading");
+            usings.Add("System.Threading.Tasks");
 
             if (Settings.IncludeCodeGeneratedAttribute)
                 usings.Add("System.CodeDom.Compiler");

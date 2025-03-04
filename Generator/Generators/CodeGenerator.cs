@@ -545,7 +545,8 @@ namespace Efrpg.Generators
                     .ToList(),
                 ReverseNavigationCtor = table.ReverseNavigationCtor,
                 EntityClassesArePartial = Settings.EntityClassesArePartial(),
-                HasSpatial = table.Columns.Any(x => x.IsSpatial)
+                HasSpatial = table.Columns.Any(x => x.IsSpatial),
+                HasAnyOptionalForignKeys = table.HasAnyOptionalForignKeys
             };
 
             var co = new CodeOutput(table.DbName, filename, null, Settings.PocoFolder, _globalUsings);
