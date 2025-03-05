@@ -14324,8 +14324,8 @@ SELECT  tc.TABLE_NAME AS ""FK_Table"",
         ccu.TABLE_NAME AS ""PK_Table"",
         ccu.COLUMN_NAME AS ""PK_Column"",
         tc.CONSTRAINT_NAME AS ""Constraint_Name"",
-        ccu.TABLE_SCHEMA AS ""fkSchema"",
-        tc.TABLE_SCHEMA AS ""pkSchema"",
+        ccu.TABLE_SCHEMA AS ""pkSchema"",
+        tc.TABLE_SCHEMA AS ""fkSchema"",
         ccu.COLUMN_NAME as ""primarykey"",
         kcu.ORDINAL_POSITION AS ""ORDINAL_POSITION"",
         CASE WHEN LOWER(fk.DELETE_RULE) = 'cascade' THEN 1 ELSE 0 END AS ""CascadeOnDelete"",
@@ -14336,7 +14336,7 @@ FROM    INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc
                AND tc.TABLE_SCHEMA      = kcu.TABLE_SCHEMA
         INNER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE ccu
             ON ccu.CONSTRAINT_NAME      = tc.CONSTRAINT_NAME
-               AND ccu.TABLE_SCHEMA     = tc.TABLE_SCHEMA
+               --AND ccu.TABLE_SCHEMA     = tc.TABLE_SCHEMA
         INNER JOIN INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS fk
             ON fk.CONSTRAINT_CATALOG    = ccu.CONSTRAINT_CATALOG
                AND fk.CONSTRAINT_SCHEMA = ccu.CONSTRAINT_SCHEMA
