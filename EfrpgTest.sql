@@ -51,3 +51,28 @@ ALTER TABLE ONLY public.AllColumnTypes
     ADD CONSTRAINT pk_AllColumnTypes PRIMARY KEY ("bigint");
 
 insert into public.AllColumnTypes ("bigint") VALUES (1234);
+GO
+
+-- 855 Code generation does not create the navigation properties unless it's in the same schema
+CREATE SCHEMA another
+    AUTHORIZATION postgres;
+GO
+
+CREATE TABLE public.categories (
+    category_id smallint NOT NULL,
+    category_name character varying(15) NOT NULL
+);
+
+ALTER TABLE ONLY categories
+    ADD CONSTRAINT pk_categories PRIMARY KEY (category_id);
+
+CREATE TABLE another.category_description (
+    category_id smallint NOT NULL,
+    description character varying(80) NOT NULL
+);
+
+ALTER TABLE ONLY another.category_description
+    ADD CONSTRAINT pk_category_description PRIMARY KEY (category_id);
+
+ALTER TABLE ONLY another.category_description
+    ADD CONSTRAINT fk_category_description FOREIGN KEY (category_id) REFERENCES public.categories;
