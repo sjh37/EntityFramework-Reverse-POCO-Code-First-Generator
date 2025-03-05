@@ -730,13 +730,14 @@
     Inflector.PluralisationService = new EnglishPluralizationService(); // To disable pluralisation, set this to null
 
     var outer = (GeneratedTextTransformation) this;
+
+    // Show where the machine.config file is
+    // outer.WriteLine("// " + System.Runtime.InteropServices.RuntimeEnvironment.SystemConfigurationFile);
+
     var fileManagement = new FileManagementService(outer);
     var generator = GeneratorFactory.Create(fileManagement, FileManagerFactory.GetFileManagerType());
     if (generator != null && generator.InitialisationOk)
     {
-        // Show where the machine.config file is
-        // fileManagement.WriteLine("// " + System.Runtime.InteropServices.RuntimeEnvironment.SystemConfigurationFile);
-
         generator.ReadDatabase();
         generator.GenerateCode();
     }
