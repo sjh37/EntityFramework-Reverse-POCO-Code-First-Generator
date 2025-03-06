@@ -336,15 +336,18 @@ ORDER BY SchemaName, TableName, TriggerName;";
                     {
                         cmd.CommandText = sb.ToString();
                         sqlAdapter.SelectCommand = cmd;
-                        if(cmd.Connection.State != ConnectionState.Open)
+                        if (cmd.Connection.State != ConnectionState.Open)
                             cmd.Connection.Open();
                         sqlAdapter.SelectCommand.ExecuteReader(CommandBehavior.SchemaOnly | CommandBehavior.KeyInfo);
-                        cmd.Connection.Close();
                         sqlAdapter.FillSchema(ds, SchemaType.Source, "MyTable");
                     }
                     catch
                     {
                         // ignored
+                    }
+                    finally
+                    {
+                        cmd.Connection.Close();
                     }
                 }
 

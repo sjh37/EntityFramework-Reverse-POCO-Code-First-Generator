@@ -12638,7 +12638,7 @@ and limitations under the License.
 
                 cmd.CommandText = sql;
 
-                using (var rdr = cmd.ExecuteReader())
+                using (var rdr = cmd.ExecuteReader(CommandBehavior.CloseConnection))
                 {
                     if (rdr.Read())
                     {
@@ -12762,7 +12762,7 @@ and limitations under the License.
 
                 cmd.CommandText = sql;
 
-                using (var rdr = cmd.ExecuteReader())
+                using (var rdr = cmd.ExecuteReader(CommandBehavior.CloseConnection))
                 {
                     while (rdr.Read())
                     {
@@ -12824,7 +12824,7 @@ and limitations under the License.
                 else
                     cmd.CommandText = ForeignKeySQL() + SpecialQueryFlags();
 
-                using (var rdr = cmd.ExecuteReader())
+                using (var rdr = cmd.ExecuteReader(CommandBehavior.CloseConnection))
                 {
                     while (rdr.Read())
                     {
@@ -12876,7 +12876,7 @@ and limitations under the License.
 
                 cmd.CommandText = sql + SpecialQueryFlags();
 
-                using (var rdr = cmd.ExecuteReader())
+                using (var rdr = cmd.ExecuteReader(CommandBehavior.CloseConnection))
                 {
                     while (rdr.Read())
                     {
@@ -12944,7 +12944,7 @@ and limitations under the License.
 
                 cmd.CommandText = extendedPropertySQL + SpecialQueryFlags();
 
-                using (var rdr = cmd.ExecuteReader())
+                using (var rdr = cmd.ExecuteReader(CommandBehavior.CloseConnection))
                 {
                     while (rdr.Read())
                     {
@@ -12995,7 +12995,7 @@ and limitations under the License.
                 else
                     cmd.CommandText = storedProcedureSQL + SpecialQueryFlags();
 
-                using (var rdr = cmd.ExecuteReader())
+                using (var rdr = cmd.ExecuteReader(CommandBehavior.CloseConnection))
                 {
                     var lastName = string.Empty;
                     var emptyParamNumber = 1;
@@ -13098,7 +13098,7 @@ and limitations under the License.
                 var contextMap = new Dictionary<int, MultiContextSettings>();
                 var tableMap = new Dictionary<int, MultiContextTableSettings>();
 
-                using (var rdr = cmd.ExecuteReader())
+                using (var rdr = cmd.ExecuteReader(CommandBehavior.CloseConnection))
                 {
                     // Contexts
                     while (rdr.Read())
@@ -13348,7 +13348,7 @@ and limitations under the License.
 
                     try
                     {
-                        using (var rdr = cmd.ExecuteReader())
+                        using (var rdr = cmd.ExecuteReader(CommandBehavior.CloseConnection))
                         {
                             while (rdr.Read())
                             {
@@ -13432,7 +13432,7 @@ and limitations under the License.
 
                 RawSequence rs = null;
 
-                using (var rdr = cmd.ExecuteReader())
+                using (var rdr = cmd.ExecuteReader(CommandBehavior.CloseConnection))
                 {
                     // Sequences
                     while (rdr.Read())
@@ -13495,7 +13495,7 @@ and limitations under the License.
 
                 cmd.CommandText = sql;
 
-                using (var rdr = cmd.ExecuteReader())
+                using (var rdr = cmd.ExecuteReader(CommandBehavior.CloseConnection))
                 {
                     while (rdr.Read())
                     {
@@ -13548,7 +13548,7 @@ and limitations under the License.
                         return result;
 
                     cmd.CommandText = sql[(int) MemoryOptimised.TableList];
-                    using (var rdr = cmd.ExecuteReader())
+                    using (var rdr = cmd.ExecuteReader(CommandBehavior.CloseConnection))
                     {
                         while (rdr.Read())
                         {
@@ -14080,7 +14080,7 @@ and limitations under the License.
             if (cmd != null)
             {
                 cmd.CommandText = "SELECT SYS_CONTEXT('USERENV','CURRENT_SCHEMA') FROM DUAL";
-                using (var rdr = cmd.ExecuteReader())
+                using (var rdr = cmd.ExecuteReader(CommandBehavior.CloseConnection))
                 {
                     if (rdr.Read())
                     {
@@ -14582,15 +14582,18 @@ ORDER BY SchemaName, TableName, TriggerName;";
                     {
                         cmd.CommandText = sb.ToString();
                         sqlAdapter.SelectCommand = cmd;
-                        if(cmd.Connection.State != ConnectionState.Open)
+                        if (cmd.Connection.State != ConnectionState.Open)
                             cmd.Connection.Open();
                         sqlAdapter.SelectCommand.ExecuteReader(CommandBehavior.SchemaOnly | CommandBehavior.KeyInfo);
-                        cmd.Connection.Close();
                         sqlAdapter.FillSchema(ds, SchemaType.Source, "MyTable");
                     }
                     catch
                     {
                         // ignored
+                    }
+                    finally
+                    {
+                        cmd.Connection.Close();
                     }
                 }
 
@@ -16443,7 +16446,7 @@ SELECT SPECIFIC_SCHEMA, SPECIFIC_NAME, ROUTINE_TYPE, RETURN_DATA_TYPE, ORDINAL_P
                 if (cmd != null)
                 {
                     cmd.CommandText = "SELECT SCHEMA_NAME()";
-                    using (var rdr = cmd.ExecuteReader())
+                    using (var rdr = cmd.ExecuteReader(CommandBehavior.CloseConnection))
                     {
                         if (rdr.Read())
                         {
@@ -16567,12 +16570,15 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         if (sqlConnection.State != ConnectionState.Open)
                             sqlConnection.Open();
                         sqlAdapter.SelectCommand.ExecuteReader(CommandBehavior.SchemaOnly | CommandBehavior.KeyInfo);
-                        sqlConnection.Close();
                         sqlAdapter.FillSchema(ds, SchemaType.Source, "MyTable");
                     }
                     catch
                     {
                         // ignored
+                    }
+                    finally
+                    {
+                        sqlConnection.Close();
                     }
                 }
 

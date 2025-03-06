@@ -1742,7 +1742,7 @@ namespace Efrpg.V3TestE1
             try
             {
                 DbInterception.Dispatch.Connection.Open(Database.Connection, new DbInterceptionContext());
-                var reader = cmd.ExecuteReader();
+                var reader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
                 var objectContext = ((IObjectContextAdapter) this).ObjectContext;
 
                 procResultData.ResultSet1 = objectContext.Translate<StpMultipleMultipleResultsWithParamsReturnModel.ResultSetModel1>(reader).ToList();
@@ -1783,7 +1783,7 @@ namespace Efrpg.V3TestE1
             try
             {
                 DbInterception.Dispatch.Connection.Open(Database.Connection, new DbInterceptionContext());
-                var reader = cmd.ExecuteReader();
+                var reader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
                 var objectContext = ((IObjectContextAdapter) this).ObjectContext;
 
                 procResultData.ResultSet1 = objectContext.Translate<StpMultipleResultsReturnModel.ResultSetModel1>(reader).ToList();
@@ -1825,7 +1825,7 @@ namespace Efrpg.V3TestE1
             try
             {
                 DbInterception.Dispatch.Connection.Open(Database.Connection, new DbInterceptionContext());
-                var reader = cmd.ExecuteReader();
+                var reader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
                 var objectContext = ((IObjectContextAdapter) this).ObjectContext;
 
                 procResultData.ResultSet1 = objectContext.Translate<StpMultipleResultsWithParamsReturnModel.ResultSetModel1>(reader).ToList();

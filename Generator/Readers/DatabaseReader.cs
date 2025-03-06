@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Text;
@@ -112,7 +113,7 @@ namespace Efrpg.Readers
 
                 cmd.CommandText = sql;
 
-                using (var rdr = cmd.ExecuteReader())
+                using (var rdr = cmd.ExecuteReader(CommandBehavior.CloseConnection))
                 {
                     if (rdr.Read())
                     {
@@ -236,7 +237,7 @@ namespace Efrpg.Readers
 
                 cmd.CommandText = sql;
 
-                using (var rdr = cmd.ExecuteReader())
+                using (var rdr = cmd.ExecuteReader(CommandBehavior.CloseConnection))
                 {
                     while (rdr.Read())
                     {
@@ -298,7 +299,7 @@ namespace Efrpg.Readers
                 else
                     cmd.CommandText = ForeignKeySQL() + SpecialQueryFlags();
 
-                using (var rdr = cmd.ExecuteReader())
+                using (var rdr = cmd.ExecuteReader(CommandBehavior.CloseConnection))
                 {
                     while (rdr.Read())
                     {
@@ -350,7 +351,7 @@ namespace Efrpg.Readers
 
                 cmd.CommandText = sql + SpecialQueryFlags();
 
-                using (var rdr = cmd.ExecuteReader())
+                using (var rdr = cmd.ExecuteReader(CommandBehavior.CloseConnection))
                 {
                     while (rdr.Read())
                     {
@@ -418,7 +419,7 @@ namespace Efrpg.Readers
 
                 cmd.CommandText = extendedPropertySQL + SpecialQueryFlags();
 
-                using (var rdr = cmd.ExecuteReader())
+                using (var rdr = cmd.ExecuteReader(CommandBehavior.CloseConnection))
                 {
                     while (rdr.Read())
                     {
@@ -469,7 +470,7 @@ namespace Efrpg.Readers
                 else
                     cmd.CommandText = storedProcedureSQL + SpecialQueryFlags();
 
-                using (var rdr = cmd.ExecuteReader())
+                using (var rdr = cmd.ExecuteReader(CommandBehavior.CloseConnection))
                 {
                     var lastName = string.Empty;
                     var emptyParamNumber = 1;
@@ -572,7 +573,7 @@ namespace Efrpg.Readers
                 var contextMap = new Dictionary<int, MultiContextSettings>();
                 var tableMap = new Dictionary<int, MultiContextTableSettings>();
 
-                using (var rdr = cmd.ExecuteReader())
+                using (var rdr = cmd.ExecuteReader(CommandBehavior.CloseConnection))
                 {
                     // Contexts
                     while (rdr.Read())
@@ -822,7 +823,7 @@ namespace Efrpg.Readers
 
                     try
                     {
-                        using (var rdr = cmd.ExecuteReader())
+                        using (var rdr = cmd.ExecuteReader(CommandBehavior.CloseConnection))
                         {
                             while (rdr.Read())
                             {
@@ -906,7 +907,7 @@ namespace Efrpg.Readers
 
                 RawSequence rs = null;
 
-                using (var rdr = cmd.ExecuteReader())
+                using (var rdr = cmd.ExecuteReader(CommandBehavior.CloseConnection))
                 {
                     // Sequences
                     while (rdr.Read())
@@ -969,7 +970,7 @@ namespace Efrpg.Readers
 
                 cmd.CommandText = sql;
 
-                using (var rdr = cmd.ExecuteReader())
+                using (var rdr = cmd.ExecuteReader(CommandBehavior.CloseConnection))
                 {
                     while (rdr.Read())
                     {
@@ -1022,7 +1023,7 @@ namespace Efrpg.Readers
                         return result;
 
                     cmd.CommandText = sql[(int) MemoryOptimised.TableList];
-                    using (var rdr = cmd.ExecuteReader())
+                    using (var rdr = cmd.ExecuteReader(CommandBehavior.CloseConnection))
                     {
                         while (rdr.Read())
                         {

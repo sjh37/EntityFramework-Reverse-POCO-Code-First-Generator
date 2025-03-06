@@ -1055,7 +1055,7 @@ SELECT SPECIFIC_SCHEMA, SPECIFIC_NAME, ROUTINE_TYPE, RETURN_DATA_TYPE, ORDINAL_P
                 if (cmd != null)
                 {
                     cmd.CommandText = "SELECT SCHEMA_NAME()";
-                    using (var rdr = cmd.ExecuteReader())
+                    using (var rdr = cmd.ExecuteReader(CommandBehavior.CloseConnection))
                     {
                         if (rdr.Read())
                         {
@@ -1179,12 +1179,15 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         if (sqlConnection.State != ConnectionState.Open)
                             sqlConnection.Open();
                         sqlAdapter.SelectCommand.ExecuteReader(CommandBehavior.SchemaOnly | CommandBehavior.KeyInfo);
-                        sqlConnection.Close();
                         sqlAdapter.FillSchema(ds, SchemaType.Source, "MyTable");
                     }
                     catch
                     {
                         // ignored
+                    }
+                    finally
+                    {
+                        sqlConnection.Close();
                     }
                 }
 

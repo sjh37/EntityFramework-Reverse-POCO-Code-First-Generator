@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data.Common;
 using Efrpg.LanguageMapping;
+using System.Data;
 
 namespace Efrpg.Readers
 {
@@ -112,7 +113,7 @@ namespace Efrpg.Readers
             if (cmd != null)
             {
                 cmd.CommandText = "SELECT SYS_CONTEXT('USERENV','CURRENT_SCHEMA') FROM DUAL";
-                using (var rdr = cmd.ExecuteReader())
+                using (var rdr = cmd.ExecuteReader(CommandBehavior.CloseConnection))
                 {
                     if (rdr.Read())
                     {
