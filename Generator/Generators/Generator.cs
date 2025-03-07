@@ -1298,7 +1298,7 @@ namespace Efrpg.Generators
 
             CreateOutputFolder(Settings.ContextFolder);
             CreateOutputFolder(Settings.InterfaceFolder);
-            CreateOutputFolder(Settings.PocoFolder);
+            //CreateOutputFolder(Settings.PocoFolder);
             CreateOutputFolder(Settings.PocoConfigurationFolder);
         }
 
@@ -1349,6 +1349,8 @@ namespace Efrpg.Generators
                 .Where(t => !t.IsMapping)
                 .OrderBy(x => x.NameHumanCase))
             {
+                CreateOutputFolder($@"{Settings.PocoFolder}\{table.NameHumanCaseWithSuffix()}");
+
                 // Write poco class, even if it has no primary key, for completeness.
                 codeOutputList.Add(pocoClass + table.NameHumanCase, codeGenerator.GeneratePoco(table));
 

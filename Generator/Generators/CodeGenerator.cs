@@ -548,7 +548,7 @@ namespace Efrpg.Generators
                 HasSpatial = table.Columns.Any(x => x.IsSpatial)
             };
 
-            var co = new CodeOutput(table.DbName, filename, null, Settings.PocoFolder, _globalUsings);
+            var co = new CodeOutput(table.DbName, filename, null, $@"{Settings.PocoFolder}\{table.NameHumanCaseWithSuffix()}", _globalUsings);
             co.AddUsings(_template.PocoUsings(data));
             co.AddCode(Template.Transform(_template.Poco(), data));
             return co;
