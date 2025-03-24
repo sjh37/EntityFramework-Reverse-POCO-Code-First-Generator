@@ -77,6 +77,8 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
         DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
+        DbSet<NullableReverseNavA> NullableReverseNavAs { get; set; } // NullableReverseNavA
+        DbSet<NullableReverseNavB> NullableReverseNavBs { get; set; } // NullableReverseNavB
         DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
         DbSet<OneEightSix_IssueUploadedFile> OneEightSix_IssueUploadedFiles { get; set; } // IssueUploadedFile
         DbSet<OneEightSix_UploadedFile> OneEightSix_UploadedFiles { get; set; } // UploadedFile

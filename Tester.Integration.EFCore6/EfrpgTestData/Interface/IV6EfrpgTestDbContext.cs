@@ -78,6 +78,8 @@ namespace V6EfrpgTest
         DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
         DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
+        DbSet<NullableReverseNavA> NullableReverseNavAs { get; set; } // NullableReverseNavA
+        DbSet<NullableReverseNavB> NullableReverseNavBs { get; set; } // NullableReverseNavB
         DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
         DbSet<OneEightSix_UploadedFile> OneEightSix_UploadedFiles { get; set; } // UploadedFile
         DbSet<PeriodTable> PeriodTables { get; set; } // Period.Table

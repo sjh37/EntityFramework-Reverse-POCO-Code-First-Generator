@@ -93,6 +93,8 @@ namespace V9EfrpgTest
         DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
         DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
+        DbSet<NullableReverseNavA> NullableReverseNavAs { get; set; } // NullableReverseNavA
+        DbSet<NullableReverseNavB> NullableReverseNavBs { get; set; } // NullableReverseNavB
         DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
         DbSet<OneEightSix_UploadedFile> OneEightSix_UploadedFiles { get; set; } // UploadedFile
         DbSet<PeriodTable> PeriodTables { get; set; } // Period.Table
@@ -451,6 +453,8 @@ namespace V9EfrpgTest
         public DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
         public DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
+        public DbSet<NullableReverseNavA> NullableReverseNavAs { get; set; } // NullableReverseNavA
+        public DbSet<NullableReverseNavB> NullableReverseNavBs { get; set; } // NullableReverseNavB
         public DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
         public DbSet<OneEightSix_UploadedFile> OneEightSix_UploadedFiles { get; set; } // UploadedFile
         public DbSet<PeriodTable> PeriodTables { get; set; } // Period.Table
@@ -594,6 +598,8 @@ namespace V9EfrpgTest
             modelBuilder.ApplyConfiguration(new Issue47_UserConfiguration());
             modelBuilder.ApplyConfiguration(new Issue47_UserRoleConfiguration());
             modelBuilder.ApplyConfiguration(new MultipleKeyConfiguration());
+            modelBuilder.ApplyConfiguration(new NullableReverseNavAConfiguration());
+            modelBuilder.ApplyConfiguration(new NullableReverseNavBConfiguration());
             modelBuilder.ApplyConfiguration(new OneEightSix_IssueConfiguration());
             modelBuilder.ApplyConfiguration(new OneEightSix_UploadedFileConfiguration());
             modelBuilder.ApplyConfiguration(new PeriodTableConfiguration());
@@ -2224,6 +2230,8 @@ namespace V9EfrpgTest
         public DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
         public DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
+        public DbSet<NullableReverseNavA> NullableReverseNavAs { get; set; } // NullableReverseNavA
+        public DbSet<NullableReverseNavB> NullableReverseNavBs { get; set; } // NullableReverseNavB
         public DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
         public DbSet<OneEightSix_UploadedFile> OneEightSix_UploadedFiles { get; set; } // UploadedFile
         public DbSet<PeriodTable> PeriodTables { get; set; } // Period.Table
@@ -2342,6 +2350,8 @@ namespace V9EfrpgTest
             Issue47_Users = new FakeDbSet<Issue47_User>("UserId");
             Issue47_UserRoles = new FakeDbSet<Issue47_UserRole>("UserRoleId");
             MultipleKeys = new FakeDbSet<MultipleKey>("UserId", "FavouriteColourId", "BestHolidayTypeId");
+            NullableReverseNavAs = new FakeDbSet<NullableReverseNavA>("Id");
+            NullableReverseNavBs = new FakeDbSet<NullableReverseNavB>("Id");
             OneEightSix_Issues = new FakeDbSet<OneEightSix_Issue>("Id");
             OneEightSix_UploadedFiles = new FakeDbSet<OneEightSix_UploadedFile>("Id");
             PeriodTables = new FakeDbSet<PeriodTable>("Id");
@@ -4883,6 +4893,34 @@ namespace V9EfrpgTest
         public string Description { get; set; } // Description (length: 10)
     }
 
+    // NullableReverseNavA
+    public class NullableReverseNavA
+    {
+        public Guid Id { get; set; } // Id (Primary key)
+        public string Data { get; set; } // Data (length: 100)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Parent (One-to-One) NullableReverseNavA pointed by [NullableReverseNavB].[Id] (FK_NullableReverseNavB_A)
+        /// </summary>
+        public virtual NullableReverseNavB NullableReverseNavB { get; set; } // NullableReverseNavB.FK_NullableReverseNavB_A
+    }
+
+    // NullableReverseNavB
+    public class NullableReverseNavB
+    {
+        public Guid Id { get; set; } // Id (Primary key)
+        public string Data { get; set; } // Data (length: 100)
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent NullableReverseNavA pointed by [NullableReverseNavB].([Id]) (FK_NullableReverseNavB_A)
+        /// </summary>
+        public virtual NullableReverseNavA NullableReverseNavA { get; set; } // FK_NullableReverseNavB_A
+    }
+
     // The table 'Test' is not usable by entity framework because it
     // does not have a primary key. It is listed here for completeness.
     // Test
@@ -6609,6 +6647,35 @@ namespace V9EfrpgTest
             builder.HasIndex(x => x.BestHolidayTypeId).HasDatabaseName("IX_MultipleKeys_BestHolidayType");
             builder.HasIndex(x => new { x.BestHolidayTypeId, x.BankId }).HasDatabaseName("IX_MultipleKeys_Holiday_Bank").IsUnique();
             builder.HasIndex(x => x.FavouriteColourId).HasDatabaseName("UC_MultipleKeys_FavouriteColour").IsUnique();
+        }
+    }
+
+    // NullableReverseNavA
+    public class NullableReverseNavAConfiguration : IEntityTypeConfiguration<NullableReverseNavA>
+    {
+        public void Configure(EntityTypeBuilder<NullableReverseNavA> builder)
+        {
+            builder.ToTable("NullableReverseNavA", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK_NullableReverseNavA").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("uniqueidentifier").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.Data).HasColumnName(@"Data").HasColumnType("nvarchar(100)").IsRequired(false).HasMaxLength(100);
+        }
+    }
+
+    // NullableReverseNavB
+    public class NullableReverseNavBConfiguration : IEntityTypeConfiguration<NullableReverseNavB>
+    {
+        public void Configure(EntityTypeBuilder<NullableReverseNavB> builder)
+        {
+            builder.ToTable("NullableReverseNavB", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK_NullableReverseNavB").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("uniqueidentifier").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.Data).HasColumnName(@"Data").HasColumnType("nvarchar(100)").IsRequired(false).HasMaxLength(100);
+
+            // Foreign keys
+            builder.HasOne(a => a.NullableReverseNavA).WithOne(b => b.NullableReverseNavB).HasForeignKey<NullableReverseNavB>(c => c.Id).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_NullableReverseNavB_A");
         }
     }
 

@@ -87,6 +87,8 @@ namespace V6EfrpgTest
         public DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
         public DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
+        public DbSet<NullableReverseNavA> NullableReverseNavAs { get; set; } // NullableReverseNavA
+        public DbSet<NullableReverseNavB> NullableReverseNavBs { get; set; } // NullableReverseNavB
         public DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
         public DbSet<OneEightSix_UploadedFile> OneEightSix_UploadedFiles { get; set; } // UploadedFile
         public DbSet<PeriodTable> PeriodTables { get; set; } // Period.Table
@@ -230,6 +232,8 @@ namespace V6EfrpgTest
             modelBuilder.ApplyConfiguration(new Issue47_UserConfiguration());
             modelBuilder.ApplyConfiguration(new Issue47_UserRoleConfiguration());
             modelBuilder.ApplyConfiguration(new MultipleKeyConfiguration());
+            modelBuilder.ApplyConfiguration(new NullableReverseNavAConfiguration());
+            modelBuilder.ApplyConfiguration(new NullableReverseNavBConfiguration());
             modelBuilder.ApplyConfiguration(new OneEightSix_IssueConfiguration());
             modelBuilder.ApplyConfiguration(new OneEightSix_UploadedFileConfiguration());
             modelBuilder.ApplyConfiguration(new PeriodTableConfiguration());
@@ -297,6 +301,7 @@ namespace V6EfrpgTest
             modelBuilder.Entity<GetSmallDecimalTestReturnModel>().HasNoKey();
             modelBuilder.Entity<SpatialTypesNoParamsReturnModel>().HasNoKey();
             modelBuilder.Entity<SpatialTypesWithParamsReturnModel>().HasNoKey();
+            modelBuilder.Entity<StoredProcWithDefaultsReturnModel>().HasNoKey();
             modelBuilder.Entity<StpMultipleIdenticalResultsReturnModel>().HasNoKey();
             modelBuilder.Entity<StpNoParamsTestReturnModel>().HasNoKey();
             modelBuilder.Entity<StpNullableParamsTestReturnModel>().HasNoKey();
