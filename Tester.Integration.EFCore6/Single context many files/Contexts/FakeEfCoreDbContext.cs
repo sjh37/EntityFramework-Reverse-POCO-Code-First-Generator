@@ -881,22 +881,22 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         }
 
         public DbSet<StoredProcWithDefaultsReturnModel> StoredProcWithDefaultsReturnModel { get; set; }
-        public List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId, string clientName, string tokenProvider, string siteName, string callbackUrl)
+        public List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId, int? userIdNull, string clientName, string clientNameNull, string clientNameMaxNull, string clientDesc, string clientDescNull, decimal? decimalValue = null, decimal? decimalValueNull = null, decimal? money = null, decimal? moneyNull = null, decimal? smallMoney = null, decimal? smallMoneyNull = null, float? realValue = null, float? realValueNull = null, double? floatValue = null, double? floatValueNull = null)
         {
             int procResult;
-            return StoredProcWithDefaults(userId, clientName, tokenProvider, siteName, callbackUrl, out procResult);
+            return StoredProcWithDefaults(userId, userIdNull, clientName, clientNameNull, clientNameMaxNull, clientDesc, clientDescNull, decimalValue, decimalValueNull, money, moneyNull, smallMoney, smallMoneyNull, realValue, realValueNull, floatValue, floatValueNull, out procResult);
         }
 
-        public List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId, string clientName, string tokenProvider, string siteName, string callbackUrl, out int procResult)
+        public List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId, int? userIdNull, string clientName, string clientNameNull, string clientNameMaxNull, string clientDesc, string clientDescNull, decimal? decimalValue, decimal? decimalValueNull, decimal? money, decimal? moneyNull, decimal? smallMoney, decimal? smallMoneyNull, float? realValue, float? realValueNull, double? floatValue, double? floatValueNull, out int procResult)
         {
             procResult = 0;
             return new List<StoredProcWithDefaultsReturnModel>();
         }
 
-        public Task<List<StoredProcWithDefaultsReturnModel>> StoredProcWithDefaultsAsync(int? userId, string clientName, string tokenProvider, string siteName, string callbackUrl, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<List<StoredProcWithDefaultsReturnModel>> StoredProcWithDefaultsAsync(int? userId, int? userIdNull, string clientName, string clientNameNull, string clientNameMaxNull, string clientDesc, string clientDescNull, decimal? decimalValue = null, decimal? decimalValueNull = null, decimal? money = null, decimal? moneyNull = null, decimal? smallMoney = null, decimal? smallMoneyNull = null, float? realValue = null, float? realValueNull = null, double? floatValue = null, double? floatValueNull = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
-            return Task.FromResult(StoredProcWithDefaults(userId, clientName, tokenProvider, siteName, callbackUrl, out procResult));
+            return Task.FromResult(StoredProcWithDefaults(userId, userIdNull, clientName, clientNameNull, clientNameMaxNull, clientDesc, clientDescNull, decimalValue, decimalValueNull, money, moneyNull, smallMoney, smallMoneyNull, realValue, realValueNull, floatValue, floatValueNull, out procResult));
         }
 
         public DbSet<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsReturnModel { get; set; }

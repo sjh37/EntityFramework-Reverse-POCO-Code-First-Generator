@@ -2726,15 +2726,27 @@ ALTER TABLE dbo.SorterScannerGroup CHECK CONSTRAINT FK_SorterScannerGroup_Sorter
 GO
 
 -- 859 Optional params in stored procedures should create C# function with params that match defaults, nullable, optional
-CREATE OR ALTER PROCEDURE [dbo].[StoredProcWithDefaults] 
-	@UserId INT,
-	@ClientName NVARCHAR(50),
-	@TokenProvider NVARCHAR(50) = 'FCV',
-	@SiteName NVARCHAR(50) = NULL,
-	@CallbackUrl NVARCHAR(MAX) = NULL
+CREATE OR ALTER PROCEDURE dbo.StoredProcWithDefaults
+    @UserId INT = 12,
+    @UserIdNull INT = NULL,
+    @ClientName NVARCHAR(50) = 'Hello',
+    @ClientNameNull NVARCHAR(50) = NULL,
+    @ClientNameMaxNull NVARCHAR(MAX) = NULL,
+    @ClientDesc VARCHAR(50) = 'World',
+    @ClientDescNull VARCHAR(50) = NULL,
+    @DecimalValue DECIMAL = 1.234,
+    @DecimalValueNull DECIMAL = NULL,
+    @Money MONEY = 4.56,
+    @MoneyNull MONEY = NULL,
+    @SmallMoney SMALLMONEY = 7.89,
+    @SmallMoneyNull SMALLMONEY = NULL,
+    @RealValue REAL = 9.876,
+    @RealValueNull REAL = NULL,
+    @FloatValue FLOAT = 6.54,
+    @FloatValueNull FLOAT = NULL
 AS
 BEGIN
-    SELECT 1 as SingleValue;
-END
+    SELECT 1 AS SingleValue;
+END;
 GO
 

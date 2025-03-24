@@ -1173,69 +1173,165 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
             return procResultData;
         }
 
-        public List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId, string clientName, string tokenProvider, string siteName, string callbackUrl)
+        public List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId, int? userIdNull, string clientName, string clientNameNull, string clientNameMaxNull, string clientDesc, string clientDescNull, decimal? decimalValue = null, decimal? decimalValueNull = null, decimal? money = null, decimal? moneyNull = null, decimal? smallMoney = null, decimal? smallMoneyNull = null, float? realValue = null, float? realValueNull = null, double? floatValue = null, double? floatValueNull = null)
         {
             int procResult;
-            return StoredProcWithDefaults(userId, clientName, tokenProvider, siteName, callbackUrl, out procResult);
+            return StoredProcWithDefaults(userId, userIdNull, clientName, clientNameNull, clientNameMaxNull, clientDesc, clientDescNull, decimalValue, decimalValueNull, money, moneyNull, smallMoney, smallMoneyNull, realValue, realValueNull, floatValue, floatValueNull, out procResult);
         }
 
-        public List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId, string clientName, string tokenProvider, string siteName, string callbackUrl, out int procResult)
+        public List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId, int? userIdNull, string clientName, string clientNameNull, string clientNameMaxNull, string clientDesc, string clientDescNull, decimal? decimalValue, decimal? decimalValueNull, decimal? money, decimal? moneyNull, decimal? smallMoney, decimal? smallMoneyNull, float? realValue, float? realValueNull, double? floatValue, double? floatValueNull, out int procResult)
         {
             var userIdParam = new SqlParameter { ParameterName = "@UserId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = userId.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!userId.HasValue)
                 userIdParam.Value = DBNull.Value;
 
+            var userIdNullParam = new SqlParameter { ParameterName = "@UserIdNull", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = userIdNull.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!userIdNull.HasValue)
+                userIdNullParam.Value = DBNull.Value;
+
             var clientNameParam = new SqlParameter { ParameterName = "@ClientName", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = clientName, Size = 50 };
             if (clientNameParam.Value == null)
                 clientNameParam.Value = DBNull.Value;
 
-            var tokenProviderParam = new SqlParameter { ParameterName = "@TokenProvider", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = tokenProvider, Size = 50 };
-            if (tokenProviderParam.Value == null)
-                tokenProviderParam.Value = DBNull.Value;
+            var clientNameNullParam = new SqlParameter { ParameterName = "@ClientNameNull", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = clientNameNull, Size = 50 };
+            if (clientNameNullParam.Value == null)
+                clientNameNullParam.Value = DBNull.Value;
 
-            var siteNameParam = new SqlParameter { ParameterName = "@SiteName", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = siteName, Size = 50 };
-            if (siteNameParam.Value == null)
-                siteNameParam.Value = DBNull.Value;
+            var clientNameMaxNullParam = new SqlParameter { ParameterName = "@ClientNameMaxNull", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = clientNameMaxNull, Size = -1 };
+            if (clientNameMaxNullParam.Value == null)
+                clientNameMaxNullParam.Value = DBNull.Value;
 
-            var callbackUrlParam = new SqlParameter { ParameterName = "@CallbackUrl", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = callbackUrl, Size = -1 };
-            if (callbackUrlParam.Value == null)
-                callbackUrlParam.Value = DBNull.Value;
+            var clientDescParam = new SqlParameter { ParameterName = "@ClientDesc", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = clientDesc, Size = 50 };
+            if (clientDescParam.Value == null)
+                clientDescParam.Value = DBNull.Value;
+
+            var clientDescNullParam = new SqlParameter { ParameterName = "@ClientDescNull", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = clientDescNull, Size = 50 };
+            if (clientDescNullParam.Value == null)
+                clientDescNullParam.Value = DBNull.Value;
+
+            var decimalValueParam = new SqlParameter { ParameterName = "@DecimalValue", SqlDbType = SqlDbType.Decimal, Direction = ParameterDirection.Input, Value = decimalValue.GetValueOrDefault(), Precision = 18, Scale = 0 };
+            if (!decimalValue.HasValue)
+                decimalValueParam.Value = DBNull.Value;
+
+            var decimalValueNullParam = new SqlParameter { ParameterName = "@DecimalValueNull", SqlDbType = SqlDbType.Decimal, Direction = ParameterDirection.Input, Value = decimalValueNull.GetValueOrDefault(), Precision = 18, Scale = 0 };
+            if (!decimalValueNull.HasValue)
+                decimalValueNullParam.Value = DBNull.Value;
+
+            var moneyParam = new SqlParameter { ParameterName = "@Money", SqlDbType = SqlDbType.Money, Direction = ParameterDirection.Input, Value = money.GetValueOrDefault(), Precision = 19, Scale = 4 };
+            if (!money.HasValue)
+                moneyParam.Value = DBNull.Value;
+
+            var moneyNullParam = new SqlParameter { ParameterName = "@MoneyNull", SqlDbType = SqlDbType.Money, Direction = ParameterDirection.Input, Value = moneyNull.GetValueOrDefault(), Precision = 19, Scale = 4 };
+            if (!moneyNull.HasValue)
+                moneyNullParam.Value = DBNull.Value;
+
+            var smallMoneyParam = new SqlParameter { ParameterName = "@SmallMoney", SqlDbType = SqlDbType.SmallMoney, Direction = ParameterDirection.Input, Value = smallMoney.GetValueOrDefault(), Precision = 10, Scale = 4 };
+            if (!smallMoney.HasValue)
+                smallMoneyParam.Value = DBNull.Value;
+
+            var smallMoneyNullParam = new SqlParameter { ParameterName = "@SmallMoneyNull", SqlDbType = SqlDbType.SmallMoney, Direction = ParameterDirection.Input, Value = smallMoneyNull.GetValueOrDefault(), Precision = 10, Scale = 4 };
+            if (!smallMoneyNull.HasValue)
+                smallMoneyNullParam.Value = DBNull.Value;
+
+            var realValueParam = new SqlParameter { ParameterName = "@RealValue", SqlDbType = SqlDbType.Real, Direction = ParameterDirection.Input, Value = realValue.GetValueOrDefault(), Precision = 24, Scale = 0 };
+            if (!realValue.HasValue)
+                realValueParam.Value = DBNull.Value;
+
+            var realValueNullParam = new SqlParameter { ParameterName = "@RealValueNull", SqlDbType = SqlDbType.Real, Direction = ParameterDirection.Input, Value = realValueNull.GetValueOrDefault(), Precision = 24, Scale = 0 };
+            if (!realValueNull.HasValue)
+                realValueNullParam.Value = DBNull.Value;
+
+            var floatValueParam = new SqlParameter { ParameterName = "@FloatValue", SqlDbType = SqlDbType.Float, Direction = ParameterDirection.Input, Value = floatValue.GetValueOrDefault(), Precision = 53, Scale = 0 };
+            if (!floatValue.HasValue)
+                floatValueParam.Value = DBNull.Value;
+
+            var floatValueNullParam = new SqlParameter { ParameterName = "@FloatValueNull", SqlDbType = SqlDbType.Float, Direction = ParameterDirection.Input, Value = floatValueNull.GetValueOrDefault(), Precision = 53, Scale = 0 };
+            if (!floatValueNull.HasValue)
+                floatValueNullParam.Value = DBNull.Value;
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
-            const string sqlCommand = "EXEC @procResult = [dbo].[StoredProcWithDefaults] @UserId, @ClientName, @TokenProvider, @SiteName, @CallbackUrl";
+            const string sqlCommand = "EXEC @procResult = [dbo].[StoredProcWithDefaults] @UserId, @UserIdNull, @ClientName, @ClientNameNull, @ClientNameMaxNull, @ClientDesc, @ClientDescNull, @DecimalValue, @DecimalValueNull, @Money, @MoneyNull, @SmallMoney, @SmallMoneyNull, @RealValue, @RealValueNull, @FloatValue, @FloatValueNull";
             var procResultData = Set<StoredProcWithDefaultsReturnModel>()
-                .FromSqlRaw(sqlCommand, userIdParam, clientNameParam, tokenProviderParam, siteNameParam, callbackUrlParam, procResultParam)
+                .FromSqlRaw(sqlCommand, userIdParam, userIdNullParam, clientNameParam, clientNameNullParam, clientNameMaxNullParam, clientDescParam, clientDescNullParam, decimalValueParam, decimalValueNullParam, moneyParam, moneyNullParam, smallMoneyParam, smallMoneyNullParam, realValueParam, realValueNullParam, floatValueParam, floatValueNullParam, procResultParam)
                 .ToList();
 
             procResult = (int) procResultParam.Value;
             return procResultData;
         }
 
-        public async Task<List<StoredProcWithDefaultsReturnModel>> StoredProcWithDefaultsAsync(int? userId, string clientName, string tokenProvider, string siteName, string callbackUrl, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<List<StoredProcWithDefaultsReturnModel>> StoredProcWithDefaultsAsync(int? userId, int? userIdNull, string clientName, string clientNameNull, string clientNameMaxNull, string clientDesc, string clientDescNull, decimal? decimalValue = null, decimal? decimalValueNull = null, decimal? money = null, decimal? moneyNull = null, decimal? smallMoney = null, decimal? smallMoneyNull = null, float? realValue = null, float? realValueNull = null, double? floatValue = null, double? floatValueNull = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var userIdParam = new SqlParameter { ParameterName = "@UserId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = userId.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!userId.HasValue)
                 userIdParam.Value = DBNull.Value;
 
+            var userIdNullParam = new SqlParameter { ParameterName = "@UserIdNull", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = userIdNull.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!userIdNull.HasValue)
+                userIdNullParam.Value = DBNull.Value;
+
             var clientNameParam = new SqlParameter { ParameterName = "@ClientName", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = clientName, Size = 50 };
             if (clientNameParam.Value == null)
                 clientNameParam.Value = DBNull.Value;
 
-            var tokenProviderParam = new SqlParameter { ParameterName = "@TokenProvider", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = tokenProvider, Size = 50 };
-            if (tokenProviderParam.Value == null)
-                tokenProviderParam.Value = DBNull.Value;
+            var clientNameNullParam = new SqlParameter { ParameterName = "@ClientNameNull", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = clientNameNull, Size = 50 };
+            if (clientNameNullParam.Value == null)
+                clientNameNullParam.Value = DBNull.Value;
 
-            var siteNameParam = new SqlParameter { ParameterName = "@SiteName", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = siteName, Size = 50 };
-            if (siteNameParam.Value == null)
-                siteNameParam.Value = DBNull.Value;
+            var clientNameMaxNullParam = new SqlParameter { ParameterName = "@ClientNameMaxNull", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = clientNameMaxNull, Size = -1 };
+            if (clientNameMaxNullParam.Value == null)
+                clientNameMaxNullParam.Value = DBNull.Value;
 
-            var callbackUrlParam = new SqlParameter { ParameterName = "@CallbackUrl", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = callbackUrl, Size = -1 };
-            if (callbackUrlParam.Value == null)
-                callbackUrlParam.Value = DBNull.Value;
+            var clientDescParam = new SqlParameter { ParameterName = "@ClientDesc", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = clientDesc, Size = 50 };
+            if (clientDescParam.Value == null)
+                clientDescParam.Value = DBNull.Value;
 
-            const string sqlCommand = "EXEC [dbo].[StoredProcWithDefaults] @UserId, @ClientName, @TokenProvider, @SiteName, @CallbackUrl";
+            var clientDescNullParam = new SqlParameter { ParameterName = "@ClientDescNull", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = clientDescNull, Size = 50 };
+            if (clientDescNullParam.Value == null)
+                clientDescNullParam.Value = DBNull.Value;
+
+            var decimalValueParam = new SqlParameter { ParameterName = "@DecimalValue", SqlDbType = SqlDbType.Decimal, Direction = ParameterDirection.Input, Value = decimalValue.GetValueOrDefault(), Precision = 18, Scale = 0 };
+            if (!decimalValue.HasValue)
+                decimalValueParam.Value = DBNull.Value;
+
+            var decimalValueNullParam = new SqlParameter { ParameterName = "@DecimalValueNull", SqlDbType = SqlDbType.Decimal, Direction = ParameterDirection.Input, Value = decimalValueNull.GetValueOrDefault(), Precision = 18, Scale = 0 };
+            if (!decimalValueNull.HasValue)
+                decimalValueNullParam.Value = DBNull.Value;
+
+            var moneyParam = new SqlParameter { ParameterName = "@Money", SqlDbType = SqlDbType.Money, Direction = ParameterDirection.Input, Value = money.GetValueOrDefault(), Precision = 19, Scale = 4 };
+            if (!money.HasValue)
+                moneyParam.Value = DBNull.Value;
+
+            var moneyNullParam = new SqlParameter { ParameterName = "@MoneyNull", SqlDbType = SqlDbType.Money, Direction = ParameterDirection.Input, Value = moneyNull.GetValueOrDefault(), Precision = 19, Scale = 4 };
+            if (!moneyNull.HasValue)
+                moneyNullParam.Value = DBNull.Value;
+
+            var smallMoneyParam = new SqlParameter { ParameterName = "@SmallMoney", SqlDbType = SqlDbType.SmallMoney, Direction = ParameterDirection.Input, Value = smallMoney.GetValueOrDefault(), Precision = 10, Scale = 4 };
+            if (!smallMoney.HasValue)
+                smallMoneyParam.Value = DBNull.Value;
+
+            var smallMoneyNullParam = new SqlParameter { ParameterName = "@SmallMoneyNull", SqlDbType = SqlDbType.SmallMoney, Direction = ParameterDirection.Input, Value = smallMoneyNull.GetValueOrDefault(), Precision = 10, Scale = 4 };
+            if (!smallMoneyNull.HasValue)
+                smallMoneyNullParam.Value = DBNull.Value;
+
+            var realValueParam = new SqlParameter { ParameterName = "@RealValue", SqlDbType = SqlDbType.Real, Direction = ParameterDirection.Input, Value = realValue.GetValueOrDefault(), Precision = 24, Scale = 0 };
+            if (!realValue.HasValue)
+                realValueParam.Value = DBNull.Value;
+
+            var realValueNullParam = new SqlParameter { ParameterName = "@RealValueNull", SqlDbType = SqlDbType.Real, Direction = ParameterDirection.Input, Value = realValueNull.GetValueOrDefault(), Precision = 24, Scale = 0 };
+            if (!realValueNull.HasValue)
+                realValueNullParam.Value = DBNull.Value;
+
+            var floatValueParam = new SqlParameter { ParameterName = "@FloatValue", SqlDbType = SqlDbType.Float, Direction = ParameterDirection.Input, Value = floatValue.GetValueOrDefault(), Precision = 53, Scale = 0 };
+            if (!floatValue.HasValue)
+                floatValueParam.Value = DBNull.Value;
+
+            var floatValueNullParam = new SqlParameter { ParameterName = "@FloatValueNull", SqlDbType = SqlDbType.Float, Direction = ParameterDirection.Input, Value = floatValueNull.GetValueOrDefault(), Precision = 53, Scale = 0 };
+            if (!floatValueNull.HasValue)
+                floatValueNullParam.Value = DBNull.Value;
+
+            const string sqlCommand = "EXEC [dbo].[StoredProcWithDefaults] @UserId, @UserIdNull, @ClientName, @ClientNameNull, @ClientNameMaxNull, @ClientDesc, @ClientDescNull, @DecimalValue, @DecimalValueNull, @Money, @MoneyNull, @SmallMoney, @SmallMoneyNull, @RealValue, @RealValueNull, @FloatValue, @FloatValueNull";
             var procResultData = await Set<StoredProcWithDefaultsReturnModel>()
-                .FromSqlRaw(sqlCommand, userIdParam, clientNameParam, tokenProviderParam, siteNameParam, callbackUrlParam)
+                .FromSqlRaw(sqlCommand, userIdParam, userIdNullParam, clientNameParam, clientNameNullParam, clientNameMaxNullParam, clientDescParam, clientDescNullParam, decimalValueParam, decimalValueNullParam, moneyParam, moneyNullParam, smallMoneyParam, smallMoneyNullParam, realValueParam, realValueNullParam, floatValueParam, floatValueNullParam)
                 .ToListAsync(cancellationToken);
 
             return procResultData;
