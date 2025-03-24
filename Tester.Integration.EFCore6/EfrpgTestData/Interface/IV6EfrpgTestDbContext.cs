@@ -284,6 +284,10 @@ namespace V6EfrpgTest
         List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, out int procResult);
         Task<List<SpatialTypesWithParamsReturnModel>> SpatialTypesWithParamsAsync(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, CancellationToken cancellationToken = default(CancellationToken));
 
+        List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId, string clientName, string tokenProvider, string siteName, string callbackUrl);
+        List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId, string clientName, string tokenProvider, string siteName, string callbackUrl, out int procResult);
+        Task<List<StoredProcWithDefaultsReturnModel>> StoredProcWithDefaultsAsync(int? userId, string clientName, string tokenProvider, string siteName, string callbackUrl, CancellationToken cancellationToken = default(CancellationToken));
+
         List<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResults(int? someVar);
         List<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResults(int? someVar, out int procResult);
         Task<List<StpMultipleIdenticalResultsReturnModel>> StpMultipleIdenticalResultsAsync(int? someVar, CancellationToken cancellationToken = default(CancellationToken));

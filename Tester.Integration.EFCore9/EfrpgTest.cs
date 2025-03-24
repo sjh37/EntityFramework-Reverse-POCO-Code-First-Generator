@@ -299,6 +299,10 @@ namespace V9EfrpgTest
         List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, out int procResult);
         Task<List<SpatialTypesWithParamsReturnModel>> SpatialTypesWithParamsAsync(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, CancellationToken cancellationToken = default(CancellationToken));
 
+        List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId, string clientName, string tokenProvider, string siteName, string callbackUrl);
+        List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId, string clientName, string tokenProvider, string siteName, string callbackUrl, out int procResult);
+        Task<List<StoredProcWithDefaultsReturnModel>> StoredProcWithDefaultsAsync(int? userId, string clientName, string tokenProvider, string siteName, string callbackUrl, CancellationToken cancellationToken = default(CancellationToken));
+
         List<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResults(int? someVar);
         List<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResults(int? someVar, out int procResult);
         Task<List<StpMultipleIdenticalResultsReturnModel>> StpMultipleIdenticalResultsAsync(int? someVar, CancellationToken cancellationToken = default(CancellationToken));
@@ -662,6 +666,7 @@ namespace V9EfrpgTest
             modelBuilder.Entity<GetSmallDecimalTestReturnModel>().HasNoKey();
             modelBuilder.Entity<SpatialTypesNoParamsReturnModel>().HasNoKey();
             modelBuilder.Entity<SpatialTypesWithParamsReturnModel>().HasNoKey();
+            modelBuilder.Entity<StoredProcWithDefaultsReturnModel>().HasNoKey();
             modelBuilder.Entity<StpMultipleIdenticalResultsReturnModel>().HasNoKey();
             modelBuilder.Entity<StpNoParamsTestReturnModel>().HasNoKey();
             modelBuilder.Entity<StpNullableParamsTestReturnModel>().HasNoKey();
@@ -1518,6 +1523,74 @@ namespace V9EfrpgTest
             const string sqlCommand = "EXEC [dbo].[SpatialTypesWithParams] @geometry, @geography";
             var procResultData = await Set<SpatialTypesWithParamsReturnModel>()
                 .FromSqlRaw(sqlCommand, geometryParam, geographyParam)
+                .ToListAsync(cancellationToken);
+
+            return procResultData;
+        }
+
+        public List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId, string clientName, string tokenProvider, string siteName, string callbackUrl)
+        {
+            int procResult;
+            return StoredProcWithDefaults(userId, clientName, tokenProvider, siteName, callbackUrl, out procResult);
+        }
+
+        public List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId, string clientName, string tokenProvider, string siteName, string callbackUrl, out int procResult)
+        {
+            var userIdParam = new SqlParameter { ParameterName = "@UserId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = userId.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!userId.HasValue)
+                userIdParam.Value = DBNull.Value;
+
+            var clientNameParam = new SqlParameter { ParameterName = "@ClientName", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = clientName, Size = 50 };
+            if (clientNameParam.Value == null)
+                clientNameParam.Value = DBNull.Value;
+
+            var tokenProviderParam = new SqlParameter { ParameterName = "@TokenProvider", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = tokenProvider, Size = 50 };
+            if (tokenProviderParam.Value == null)
+                tokenProviderParam.Value = DBNull.Value;
+
+            var siteNameParam = new SqlParameter { ParameterName = "@SiteName", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = siteName, Size = 50 };
+            if (siteNameParam.Value == null)
+                siteNameParam.Value = DBNull.Value;
+
+            var callbackUrlParam = new SqlParameter { ParameterName = "@CallbackUrl", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = callbackUrl, Size = -1 };
+            if (callbackUrlParam.Value == null)
+                callbackUrlParam.Value = DBNull.Value;
+
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [dbo].[StoredProcWithDefaults] @UserId, @ClientName, @TokenProvider, @SiteName, @CallbackUrl";
+            var procResultData = Set<StoredProcWithDefaultsReturnModel>()
+                .FromSqlRaw(sqlCommand, userIdParam, clientNameParam, tokenProviderParam, siteNameParam, callbackUrlParam, procResultParam)
+                .ToList();
+
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<StoredProcWithDefaultsReturnModel>> StoredProcWithDefaultsAsync(int? userId, string clientName, string tokenProvider, string siteName, string callbackUrl, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var userIdParam = new SqlParameter { ParameterName = "@UserId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = userId.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!userId.HasValue)
+                userIdParam.Value = DBNull.Value;
+
+            var clientNameParam = new SqlParameter { ParameterName = "@ClientName", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = clientName, Size = 50 };
+            if (clientNameParam.Value == null)
+                clientNameParam.Value = DBNull.Value;
+
+            var tokenProviderParam = new SqlParameter { ParameterName = "@TokenProvider", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = tokenProvider, Size = 50 };
+            if (tokenProviderParam.Value == null)
+                tokenProviderParam.Value = DBNull.Value;
+
+            var siteNameParam = new SqlParameter { ParameterName = "@SiteName", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = siteName, Size = 50 };
+            if (siteNameParam.Value == null)
+                siteNameParam.Value = DBNull.Value;
+
+            var callbackUrlParam = new SqlParameter { ParameterName = "@CallbackUrl", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = callbackUrl, Size = -1 };
+            if (callbackUrlParam.Value == null)
+                callbackUrlParam.Value = DBNull.Value;
+
+            const string sqlCommand = "EXEC [dbo].[StoredProcWithDefaults] @UserId, @ClientName, @TokenProvider, @SiteName, @CallbackUrl";
+            var procResultData = await Set<StoredProcWithDefaultsReturnModel>()
+                .FromSqlRaw(sqlCommand, userIdParam, clientNameParam, tokenProviderParam, siteNameParam, callbackUrlParam)
                 .ToListAsync(cancellationToken);
 
             return procResultData;
@@ -2945,6 +3018,25 @@ namespace V9EfrpgTest
         {
             int procResult;
             return Task.FromResult(SpatialTypesWithParams(geometry, geography, out procResult));
+        }
+
+        public DbSet<StoredProcWithDefaultsReturnModel> StoredProcWithDefaultsReturnModel { get; set; }
+        public List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId, string clientName, string tokenProvider, string siteName, string callbackUrl)
+        {
+            int procResult;
+            return StoredProcWithDefaults(userId, clientName, tokenProvider, siteName, callbackUrl, out procResult);
+        }
+
+        public List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId, string clientName, string tokenProvider, string siteName, string callbackUrl, out int procResult)
+        {
+            procResult = 0;
+            return new List<StoredProcWithDefaultsReturnModel>();
+        }
+
+        public Task<List<StoredProcWithDefaultsReturnModel>> StoredProcWithDefaultsAsync(int? userId, string clientName, string tokenProvider, string siteName, string callbackUrl, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            int procResult;
+            return Task.FromResult(StoredProcWithDefaults(userId, clientName, tokenProvider, siteName, callbackUrl, out procResult));
         }
 
         public DbSet<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsReturnModel { get; set; }
@@ -7444,6 +7536,11 @@ namespace V9EfrpgTest
         public int Dollar { get; set; }
         public NetTopologySuite.Geometries.Point GeographyType { get; set; }
         public NetTopologySuite.Geometries.Geometry GeometryType { get; set; }
+    }
+
+    public class StoredProcWithDefaultsReturnModel
+    {
+        public int? SingleValue { get; set; }
     }
 
     public class StpMultipleIdenticalResultsReturnModel

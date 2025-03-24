@@ -874,6 +874,25 @@ namespace V6EfrpgTest
             return Task.FromResult(SpatialTypesWithParams(geometry, geography, out procResult));
         }
 
+        public DbSet<StoredProcWithDefaultsReturnModel> StoredProcWithDefaultsReturnModel { get; set; }
+        public List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId, string clientName, string tokenProvider, string siteName, string callbackUrl)
+        {
+            int procResult;
+            return StoredProcWithDefaults(userId, clientName, tokenProvider, siteName, callbackUrl, out procResult);
+        }
+
+        public List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId, string clientName, string tokenProvider, string siteName, string callbackUrl, out int procResult)
+        {
+            procResult = 0;
+            return new List<StoredProcWithDefaultsReturnModel>();
+        }
+
+        public Task<List<StoredProcWithDefaultsReturnModel>> StoredProcWithDefaultsAsync(int? userId, string clientName, string tokenProvider, string siteName, string callbackUrl, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            int procResult;
+            return Task.FromResult(StoredProcWithDefaults(userId, clientName, tokenProvider, siteName, callbackUrl, out procResult));
+        }
+
         public DbSet<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsReturnModel { get; set; }
         public List<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResults(int? someVar = null)
         {

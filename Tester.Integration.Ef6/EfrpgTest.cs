@@ -1666,6 +1666,66 @@ namespace Tester.Integration.Ef6
             return procResultData;
         }
 
+        public List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId, string clientName, string tokenProvider, string siteName, string callbackUrl)
+        {
+            int procResult;
+            return StoredProcWithDefaults(userId, clientName, tokenProvider, siteName, callbackUrl, out procResult);
+        }
+
+        public List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId, string clientName, string tokenProvider, string siteName, string callbackUrl, out int procResult)
+        {
+            var userIdParam = new SqlParameter { ParameterName = "@UserId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = userId.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!userId.HasValue)
+                userIdParam.Value = DBNull.Value;
+
+            var clientNameParam = new SqlParameter { ParameterName = "@ClientName", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = clientName, Size = 50 };
+            if (clientNameParam.Value == null)
+                clientNameParam.Value = DBNull.Value;
+
+            var tokenProviderParam = new SqlParameter { ParameterName = "@TokenProvider", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = tokenProvider, Size = 50 };
+            if (tokenProviderParam.Value == null)
+                tokenProviderParam.Value = DBNull.Value;
+
+            var siteNameParam = new SqlParameter { ParameterName = "@SiteName", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = siteName, Size = 50 };
+            if (siteNameParam.Value == null)
+                siteNameParam.Value = DBNull.Value;
+
+            var callbackUrlParam = new SqlParameter { ParameterName = "@CallbackUrl", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = callbackUrl, Size = -1 };
+            if (callbackUrlParam.Value == null)
+                callbackUrlParam.Value = DBNull.Value;
+
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            var procResultData = Database.SqlQuery<StoredProcWithDefaultsReturnModel>("EXEC @procResult = [dbo].[StoredProcWithDefaults] @UserId, @ClientName, @TokenProvider, @SiteName, @CallbackUrl", userIdParam, clientNameParam, tokenProviderParam, siteNameParam, callbackUrlParam, procResultParam).ToList();
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<StoredProcWithDefaultsReturnModel>> StoredProcWithDefaultsAsync(int? userId, string clientName, string tokenProvider, string siteName, string callbackUrl, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var userIdParam = new SqlParameter { ParameterName = "@UserId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = userId.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!userId.HasValue)
+                userIdParam.Value = DBNull.Value;
+
+            var clientNameParam = new SqlParameter { ParameterName = "@ClientName", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = clientName, Size = 50 };
+            if (clientNameParam.Value == null)
+                clientNameParam.Value = DBNull.Value;
+
+            var tokenProviderParam = new SqlParameter { ParameterName = "@TokenProvider", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = tokenProvider, Size = 50 };
+            if (tokenProviderParam.Value == null)
+                tokenProviderParam.Value = DBNull.Value;
+
+            var siteNameParam = new SqlParameter { ParameterName = "@SiteName", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = siteName, Size = 50 };
+            if (siteNameParam.Value == null)
+                siteNameParam.Value = DBNull.Value;
+
+            var callbackUrlParam = new SqlParameter { ParameterName = "@CallbackUrl", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = callbackUrl, Size = -1 };
+            if (callbackUrlParam.Value == null)
+                callbackUrlParam.Value = DBNull.Value;
+
+            var procResultData = await Database.SqlQuery<StoredProcWithDefaultsReturnModel>("EXEC [dbo].[StoredProcWithDefaults] @UserId, @ClientName, @TokenProvider, @SiteName, @CallbackUrl", userIdParam, clientNameParam, tokenProviderParam, siteNameParam, callbackUrlParam).ToListAsync(cancellationToken);
+            return procResultData;
+        }
+
         public List<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResults(int? someVar = null)
         {
             int procResult;
@@ -6752,6 +6812,11 @@ namespace Tester.Integration.Ef6
         public int Dollar { get; set; }
         public Microsoft.SqlServer.Types.SqlGeography GeographyType { get; set; }
         public Microsoft.SqlServer.Types.SqlGeometry GeometryType { get; set; }
+    }
+
+    public class StoredProcWithDefaultsReturnModel
+    {
+        public int? SingleValue { get; set; }
     }
 
     public class StpMultipleIdenticalResultsReturnModel
