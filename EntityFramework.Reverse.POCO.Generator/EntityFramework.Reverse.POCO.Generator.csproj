@@ -8,22 +8,27 @@
     <Platforms>AnyCPU;ARM64</Platforms>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.12" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.12" />
+    <None Remove="Database NorthwindSqlCe40.tt" />
+    <None Remove="Database.tt" />
+    <None Remove="Northwind.tt" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="Database NorthwindSqlCe40.tt">
+    <Content Include="Database NorthwindSqlCe40.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Database NorthwindSqlCe40.cs</LastGenOutput>
-    </None>
-    <None Update="Database.tt">
+    </Content>
+    <Content Include="Database.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Database.cs</LastGenOutput>
-    </None>
-    <None Update="Northwind.tt">
+    </Content>
+    <Content Include="Northwind.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Northwind.cs</LastGenOutput>
-    </None>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.12" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.12" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />

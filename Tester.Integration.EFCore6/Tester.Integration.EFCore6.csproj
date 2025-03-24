@@ -10,6 +10,72 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="ContextHasSameNameAsDb\EfrpgTest.tt" />
+    <None Remove="EfrpgTest.tt" />
+    <None Remove="EfrpgTest_no_pascal_casing.tt" />
+    <None Remove="EnumForeignKey.tt" />
+    <None Remove="EnumOnly.tt" />
+    <None Remove="EnumViaTables.tt" />
+    <None Remove="Multi context many files\MCMF.tt" />
+    <None Remove="Multi context single files\MCSF.tt" />
+    <None Remove="Northwind.tt" />
+    <None Remove="Single context many files\SCMF.tt" />
+    <None Remove="TestDatabase.tt" />
+    <None Remove="TestSynonymsDatabase.tt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="ContextHasSameNameAsDb\EfrpgTest.tt">
+      <LastGenOutput>EfrpgTest.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </Content>
+    <Content Include="EfrpgTest.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>EfrpgTest.cs</LastGenOutput>
+    </Content>
+    <Content Include="EfrpgTest_no_pascal_casing.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>EfrpgTest_no_pascal_casing.cs</LastGenOutput>
+    </Content>
+    <Content Include="EnumForeignKey.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>EnumForeignKey.cs</LastGenOutput>
+    </Content>
+    <Content Include="EnumOnly.tt">
+      <LastGenOutput>EnumOnly.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </Content>
+    <Content Include="EnumViaTables.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>EnumViaTables.cs</LastGenOutput>
+    </Content>
+    <Content Include="Multi context many files\MCMF.tt">
+      <LastGenOutput>MCMF.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </Content>
+    <Content Include="Multi context single files\MCSF.tt">
+      <LastGenOutput>MCSF.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </Content>
+    <Content Include="Northwind.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Northwind.cs</LastGenOutput>
+    </Content>
+    <Content Include="Single context many files\SCMF.tt">
+      <LastGenOutput>SCMF.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </Content>
+    <Content Include="TestDatabase.tt">
+      <LastGenOutput>TestDatabase.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </Content>
+    <Content Include="TestSynonymsDatabase.tt">
+      <LastGenOutput>TestSynonymsDatabase.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="EntityFrameworkCore.SqlServer.HierarchyId" Version="3.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="6.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.10" />
@@ -28,54 +94,6 @@
   <ItemGroup>
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="ContextHasSameNameAsDb\EfrpgTest.tt">
-      <LastGenOutput>EfrpgTest.cs</LastGenOutput>
-      <Generator>TextTemplatingFileGenerator</Generator>
-    </None>
-    <None Update="EfrpgTest_no_pascal_casing.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>EfrpgTest_no_pascal_casing.cs</LastGenOutput>
-    </None>
-    <None Update="EnumForeignKey.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>EnumForeignKey.cs</LastGenOutput>
-    </None>
-    <None Update="EnumOnly.tt">
-      <LastGenOutput>EnumOnly.cs</LastGenOutput>
-      <Generator>TextTemplatingFileGenerator</Generator>
-    </None>
-    <None Update="EfrpgTest.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>EfrpgTest.cs</LastGenOutput>
-    </None>
-    <None Update="EnumViaTables.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>EnumViaTables.cs</LastGenOutput>
-    </None>
-    <None Update="Multi context many files\MCMF.tt">
-      <LastGenOutput>MCMF.cs</LastGenOutput>
-      <Generator>TextTemplatingFileGenerator</Generator>
-    </None>
-    <None Update="Multi context single files\MCSF.tt">
-      <LastGenOutput>MCSF.cs</LastGenOutput>
-      <Generator>TextTemplatingFileGenerator</Generator>
-    </None>
-    <None Update="Northwind.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Northwind.cs</LastGenOutput>
-    </None>
-    <None Update="Single context many files\SCMF.tt">
-      <LastGenOutput>SCMF.cs</LastGenOutput>
-      <Generator>TextTemplatingFileGenerator</Generator>
-    </None>
-    <None Update="TestDatabase.tt">
-      <LastGenOutput>TestDatabase.cs</LastGenOutput>
-      <Generator>TextTemplatingFileGenerator</Generator>
-    </None>
-    <None Update="TestSynonymsDatabase.tt">
-      <LastGenOutput>TestSynonymsDatabase.cs</LastGenOutput>
-      <Generator>TextTemplatingFileGenerator</Generator>
     </None>
   </ItemGroup>
 
