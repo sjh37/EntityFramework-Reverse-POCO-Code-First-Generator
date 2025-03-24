@@ -2724,3 +2724,16 @@ ADD CONSTRAINT FK_SorterScannerGroup_Sorters
 GO
 ALTER TABLE dbo.SorterScannerGroup CHECK CONSTRAINT FK_SorterScannerGroup_Sorters;
 GO
+
+-- 859 Optional params in stored procedures should create C# function with params that match defaults, nullable, optional
+CREATE PROCEDURE [dbo].[StoredProcWithDefaults] 
+	@UserId INT,
+	@ClientName NVARCHAR(50),
+	@TokenProvider NVARCHAR(50) = 'FCV',
+	@SiteName NVARCHAR(50) = NULL,
+	@CallbackUrl NVARCHAR(MAX) = NULL
+AS
+BEGIN
+    SELECT 1;
+END
+GO
