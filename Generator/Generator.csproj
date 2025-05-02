@@ -78,6 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyHelper.cs" />
+    <Compile Include="OrderProperties.cs" />
     <Compile Include="EfrpgVersion.cs" />
     <Compile Include="EnumerationMember.cs" />
     <Compile Include="FileManagement\FileAuditService.cs" />
