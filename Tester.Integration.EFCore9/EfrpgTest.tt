@@ -41,6 +41,8 @@
     Settings.PocoFolder              = @"EfrpgTestData\Entities"; // Sub-folder you would like your Poco's to be added to.                 e.g. @"Data\Entities"
     Settings.PocoConfigurationFolder = @"EfrpgTestData\Configuration"; // Sub-folder you would like your Configuration mappings to be added to. e.g. @"Data\Configuration"
     
+    Settings.DbContextClassModifiers = "public partial"; // "public partial";
+
     // Filtering **************************************************************************************************************************
     // Filtering can now be done via one or more Regex's and one or more functions.
     // Gone are the days of a single do-it-all regex, you can now split them up into many smaller Regex's.

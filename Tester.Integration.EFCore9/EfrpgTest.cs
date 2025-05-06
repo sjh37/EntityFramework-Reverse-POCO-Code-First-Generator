@@ -379,15 +379,17 @@ namespace V9EfrpgTest
 
     #region Database context
 
-    public class V9EfrpgTestDbContext : DbContext, IV9EfrpgTestDbContext
+    public partial class V9EfrpgTestDbContext : DbContext, IV9EfrpgTestDbContext
     {
         public V9EfrpgTestDbContext()
         {
+            InitializePartial();
         }
 
         public V9EfrpgTestDbContext(DbContextOptions<V9EfrpgTestDbContext> options)
             : base(options)
         {
+            InitializePartial();
         }
 
         public DbSet<A> A { get; set; } // A
@@ -687,8 +689,15 @@ namespace V9EfrpgTest
             modelBuilder.Entity<CsvToIntReturnModel>().HasNoKey();
             modelBuilder.Entity<CustomSchema_CsvToIntWithSchemaReturnModel>().HasNoKey();
             modelBuilder.Entity<FFRS_CsvToInt2ReturnModel>().HasNoKey();
+
+            OnModelCreatingPartial(modelBuilder);
         }
 
+
+        partial void InitializePartial();
+        partial void DisposePartial(bool disposing);
+        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+        static partial void OnCreateModelPartial(ModelBuilder modelBuilder, string schema);
 
         // Stored Procedures
         public int AddTwoValues(int? a = null, int? b = null)
@@ -2249,7 +2258,7 @@ namespace V9EfrpgTest
 
     #region Database context factory
 
-    public class V9EfrpgTestDbContextFactory : IDesignTimeDbContextFactory<V9EfrpgTestDbContext>
+    public partial class V9EfrpgTestDbContextFactory : IDesignTimeDbContextFactory<V9EfrpgTestDbContext>
     {
         public V9EfrpgTestDbContext CreateDbContext(string[] args)
         {
@@ -2261,7 +2270,7 @@ namespace V9EfrpgTest
 
     #region Fake Database context
 
-    public class FakeV9EfrpgTestDbContext : IV9EfrpgTestDbContext
+    public partial class FakeV9EfrpgTestDbContext : IV9EfrpgTestDbContext
     {
         public DbSet<A> A { get; set; } // A
         public DbSet<Aaref> Aarefs { get; set; } // AAREF
@@ -2499,6 +2508,7 @@ namespace V9EfrpgTest
             WVN_VArticles = new FakeDbSet<WVN_VArticle>();
             Брендытовара = new FakeDbSet<Брендытовара>("Кодбренда");
 
+            InitializePartial();
         }
 
         public int SaveChangesCount { get; private set; }
@@ -2523,6 +2533,8 @@ namespace V9EfrpgTest
             ++SaveChangesCount;
             return Task<int>.Factory.StartNew(x => 1, acceptAllChangesOnSuccess, cancellationToken);
         }
+
+        partial void InitializePartial();
 
         protected virtual void Dispose(bool disposing)
         {
@@ -3454,7 +3466,7 @@ namespace V9EfrpgTest
     //          }
     //      }
     //      Read more about it here: https://msdn.microsoft.com/en-us/data/dn314431.aspx
-    public class FakeDbSet<TEntity> :
+    public partial class FakeDbSet<TEntity> :
         DbSet<TEntity>,
         IQueryable<TEntity>,
         IAsyncEnumerable<TEntity>,
@@ -3472,6 +3484,7 @@ namespace V9EfrpgTest
             _primaryKeys = null;
             _data        = new ObservableCollection<TEntity>();
             _query       = _data.AsQueryable();
+            InitializePartial();
         }
 
         public FakeDbSet(params string[] primaryKeys)
@@ -3479,6 +3492,7 @@ namespace V9EfrpgTest
             _primaryKeys = typeof(TEntity).GetProperties().Where(x => primaryKeys.Contains(x.Name)).ToArray();
             _data        = new ObservableCollection<TEntity>();
             _query       = _data.AsQueryable();
+            InitializePartial();
         }
 
         public override TEntity Find(params object[] keyValues)
@@ -3654,9 +3668,11 @@ namespace V9EfrpgTest
         {
             return Task.Factory.StartNew(() => ResetState());
         }
+
+        partial void InitializePartial();
     }
 
-    public class FakeDbAsyncQueryProvider<TEntity> : FakeQueryProvider<TEntity>, IAsyncEnumerable<TEntity>, IAsyncQueryProvider
+    public partial class FakeDbAsyncQueryProvider<TEntity> : FakeQueryProvider<TEntity>, IAsyncEnumerable<TEntity>, IAsyncQueryProvider
     {
         public FakeDbAsyncQueryProvider(Expression expression) : base(expression)
         {
@@ -3686,7 +3702,7 @@ namespace V9EfrpgTest
         }
     }
 
-    public class FakeDbAsyncEnumerable<T> : EnumerableQuery<T>, IAsyncEnumerable<T>, IQueryable<T>
+    public partial class FakeDbAsyncEnumerable<T> : EnumerableQuery<T>, IAsyncEnumerable<T>, IQueryable<T>
     {
         public FakeDbAsyncEnumerable(IEnumerable<T> enumerable)
             : base(enumerable)
@@ -3714,7 +3730,7 @@ namespace V9EfrpgTest
         }
     }
 
-    public class FakeDbAsyncEnumerator<T> : IAsyncEnumerator<T>
+    public partial class FakeDbAsyncEnumerator<T> : IAsyncEnumerator<T>
     {
         private readonly IEnumerator<T> _inner;
 
@@ -3815,7 +3831,7 @@ namespace V9EfrpgTest
         }
     }
 
-    public class FakeExpressionVisitor : ExpressionVisitor
+    public partial class FakeExpressionVisitor : ExpressionVisitor
     {
     }
 
