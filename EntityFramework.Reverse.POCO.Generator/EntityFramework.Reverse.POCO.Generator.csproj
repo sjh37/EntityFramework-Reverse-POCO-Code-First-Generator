@@ -1,57 +1,56 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-    <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
-        <RootNamespace>EntityFramework_Reverse_POCO_Generator</RootNamespace>
-        <SignAssembly>true</SignAssembly>
-        <AssemblyOriginatorKeyFile>EF.Reverse.POCO.Generator.pfx</AssemblyOriginatorKeyFile>
-        <DelaySign>false</DelaySign>
-    </PropertyGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="7.0.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.0" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <None Update="Database NorthwindSqlCe40.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>Database NorthwindSqlCe40.cs</LastGenOutput>
-        </None>
-        <None Update="Database.tt">
-          <Generator>TextTemplatingFileGenerator</Generator>
-          <LastGenOutput>Database.cs</LastGenOutput>
-        </None>
-        <None Update="Northwind.tt">
-          <Generator>TextTemplatingFileGenerator</Generator>
-          <LastGenOutput>Northwind.cs</LastGenOutput>
-        </None>
-    </ItemGroup>
-
-    <ItemGroup>
-        <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Compile Update="Database NorthwindSqlCe40.cs">
-          <DesignTime>True</DesignTime>
-          <AutoGen>True</AutoGen>
-          <DependentUpon>Database NorthwindSqlCe40.tt</DependentUpon>
-        </Compile>
-        <Compile Update="Database.cs">
-          <DesignTime>True</DesignTime>
-          <AutoGen>True</AutoGen>
-          <DependentUpon>Database.tt</DependentUpon>
-        </Compile>
-        <Compile Update="Northwind.cs">
-          <DesignTime>True</DesignTime>
-          <AutoGen>True</AutoGen>
-          <DependentUpon>Northwind.tt</DependentUpon>
-        </Compile>
-    </ItemGroup>
-
-    <ItemGroup>
-        <Folder Include="App_Data\" />
-    </ItemGroup>
-
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>EntityFramework_Reverse_POCO_Generator</RootNamespace>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>EF.Reverse.POCO.Generator.pfx</AssemblyOriginatorKeyFile>
+    <DelaySign>false</DelaySign>
+    <Platforms>AnyCPU;ARM64</Platforms>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Database NorthwindSqlCe40.tt" />
+    <None Remove="Database.tt" />
+    <None Remove="Northwind.tt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Database NorthwindSqlCe40.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Database NorthwindSqlCe40.cs</LastGenOutput>
+    </Content>
+    <Content Include="Database.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Database.cs</LastGenOutput>
+    </Content>
+    <Content Include="Northwind.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Northwind.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.12" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.12" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Database NorthwindSqlCe40.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Database NorthwindSqlCe40.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Database.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Northwind.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Northwind.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+  </ItemGroup>
 </Project>

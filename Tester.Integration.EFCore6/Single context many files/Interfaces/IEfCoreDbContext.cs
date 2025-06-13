@@ -77,6 +77,8 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
         DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
+        DbSet<NullableReverseNavA> NullableReverseNavAs { get; set; } // NullableReverseNavA
+        DbSet<NullableReverseNavB> NullableReverseNavBs { get; set; } // NullableReverseNavB
         DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
         DbSet<OneEightSix_IssueUploadedFile> OneEightSix_IssueUploadedFiles { get; set; } // IssueUploadedFile
         DbSet<OneEightSix_UploadedFile> OneEightSix_UploadedFiles { get; set; } // UploadedFile
@@ -284,6 +286,10 @@ namespace Tester.Integration.EFCore6.Single_context_many_files
         List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography);
         List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, out int procResult);
         Task<List<SpatialTypesWithParamsReturnModel>> SpatialTypesWithParamsAsync(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, CancellationToken cancellationToken = default(CancellationToken));
+
+        List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId, int? userIdNull, string clientName, string clientNameNull, string clientNameMaxNull, string clientDesc, string clientDescNull, decimal? decimalValue, decimal? decimalValueNull, decimal? money, decimal? moneyNull, decimal? smallMoney, decimal? smallMoneyNull, float? realValue, float? realValueNull, double? floatValue, double? floatValueNull);
+        List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId, int? userIdNull, string clientName, string clientNameNull, string clientNameMaxNull, string clientDesc, string clientDescNull, decimal? decimalValue, decimal? decimalValueNull, decimal? money, decimal? moneyNull, decimal? smallMoney, decimal? smallMoneyNull, float? realValue, float? realValueNull, double? floatValue, double? floatValueNull, out int procResult);
+        Task<List<StoredProcWithDefaultsReturnModel>> StoredProcWithDefaultsAsync(int? userId, int? userIdNull, string clientName, string clientNameNull, string clientNameMaxNull, string clientDesc, string clientDescNull, decimal? decimalValue, decimal? decimalValueNull, decimal? money, decimal? moneyNull, decimal? smallMoney, decimal? smallMoneyNull, float? realValue, float? realValueNull, double? floatValue, double? floatValueNull, CancellationToken cancellationToken = default(CancellationToken));
 
         List<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResults(int? someVar);
         List<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResults(int? someVar, out int procResult);

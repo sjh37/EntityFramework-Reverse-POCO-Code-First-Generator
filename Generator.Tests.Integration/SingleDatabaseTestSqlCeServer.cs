@@ -46,7 +46,6 @@ namespace Generator.Tests.Integration
         [NonParallelizable]
         // Legacy
         [TestCase(false, TemplateType.EfCore6, ForeignKeyNamingStrategy.Legacy)]
-        [TestCase(false, TemplateType.EfCore7, ForeignKeyNamingStrategy.Legacy)]
         [TestCase(false, TemplateType.EfCore8, ForeignKeyNamingStrategy.Legacy)]
         // Latest
         //[TestCase(false, TemplateType.EfCore2, ForeignKeyNamingStrategy.Latest)]

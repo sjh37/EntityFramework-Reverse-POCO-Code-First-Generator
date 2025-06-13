@@ -2,7 +2,7 @@
 using Generator.Tests.Common;
 using NUnit.Framework;
 
-namespace Tester.Integration.EFCore7
+namespace Tester.Integration.EFCore9
 {
     [TestFixture]
     [Category(Constants.Integration)]

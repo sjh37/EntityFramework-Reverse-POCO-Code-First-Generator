@@ -18,7 +18,7 @@ namespace Generator.Tests.Integration
         {
             SetupDatabase(connectionStringName, dbContextName, templateType, generatorType, foreignKeyNamingStrategy);
 
-            Settings.ConnectionString = $"Server=127.0.0.1;Port=5433;Database={database};User Id=testuser;Password=testtesttest;";
+            Settings.ConnectionString = $"Server=127.0.0.1;Port=5432;Database={database};User Id=testuser;Password=testtesttest;";
             Settings.DatabaseType = DatabaseType.PostgreSQL;
         }
 
@@ -31,7 +31,7 @@ namespace Generator.Tests.Integration
             using (var conn = factory.CreateConnection())
             {
                 Assert.IsNotNull(conn);
-                conn.ConnectionString = "Server=127.0.0.1;Port=5433;Database=Northwind;User Id=testuser;Password=testtesttest;";
+                conn.ConnectionString = "Server=127.0.0.1;Port=5432;Database=Northwind;User Id=testuser;Password=testtesttest;";
                 conn.Open();
 
                 var cmd = conn.CreateCommand();

@@ -12,7 +12,7 @@ namespace Generator.Tests.Unit.EFCore
         /*[Test]
         public void Read_EfrpgTest_AllColumnTypes()
         {
-            using var db = new MyEf6DbContext("Server=127.0.0.1;Port=5433;Database=EfrpgTest;User Id=testuser;Password=testtesttest;");
+            using var db = new MyEf6DbContext("Server=127.0.0.1;Port=5432;Database=EfrpgTest;User Id=testuser;Password=testtesttest;");
             var rows = db.Allcolumntypes.ToList();
             Assert.IsNotNull(rows);
             Assert.IsNotEmpty(rows);

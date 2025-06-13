@@ -78,6 +78,8 @@ namespace V6EfrpgTest
         public DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
         public DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
+        public DbSet<NullableReverseNavA> NullableReverseNavAs { get; set; } // NullableReverseNavA
+        public DbSet<NullableReverseNavB> NullableReverseNavBs { get; set; } // NullableReverseNavB
         public DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
         public DbSet<OneEightSix_UploadedFile> OneEightSix_UploadedFiles { get; set; } // UploadedFile
         public DbSet<PeriodTable> PeriodTables { get; set; } // Period.Table
@@ -196,6 +198,8 @@ namespace V6EfrpgTest
             Issue47_Users = new FakeDbSet<Issue47_User>("UserId");
             Issue47_UserRoles = new FakeDbSet<Issue47_UserRole>("UserRoleId");
             MultipleKeys = new FakeDbSet<MultipleKey>("UserId", "FavouriteColourId", "BestHolidayTypeId");
+            NullableReverseNavAs = new FakeDbSet<NullableReverseNavA>("Id");
+            NullableReverseNavBs = new FakeDbSet<NullableReverseNavB>("Id");
             OneEightSix_Issues = new FakeDbSet<OneEightSix_Issue>("Id");
             OneEightSix_UploadedFiles = new FakeDbSet<OneEightSix_UploadedFile>("Id");
             PeriodTables = new FakeDbSet<PeriodTable>("Id");
@@ -872,6 +876,25 @@ namespace V6EfrpgTest
         {
             int procResult;
             return Task.FromResult(SpatialTypesWithParams(geometry, geography, out procResult));
+        }
+
+        public DbSet<StoredProcWithDefaultsReturnModel> StoredProcWithDefaultsReturnModel { get; set; }
+        public List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId, int? userIdNull, string clientName, string clientNameNull, string clientNameMaxNull, string clientDesc, string clientDescNull, decimal? decimalValue = null, decimal? decimalValueNull = null, decimal? money = null, decimal? moneyNull = null, decimal? smallMoney = null, decimal? smallMoneyNull = null, float? realValue = null, float? realValueNull = null, double? floatValue = null, double? floatValueNull = null)
+        {
+            int procResult;
+            return StoredProcWithDefaults(userId, userIdNull, clientName, clientNameNull, clientNameMaxNull, clientDesc, clientDescNull, decimalValue, decimalValueNull, money, moneyNull, smallMoney, smallMoneyNull, realValue, realValueNull, floatValue, floatValueNull, out procResult);
+        }
+
+        public List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId, int? userIdNull, string clientName, string clientNameNull, string clientNameMaxNull, string clientDesc, string clientDescNull, decimal? decimalValue, decimal? decimalValueNull, decimal? money, decimal? moneyNull, decimal? smallMoney, decimal? smallMoneyNull, float? realValue, float? realValueNull, double? floatValue, double? floatValueNull, out int procResult)
+        {
+            procResult = 0;
+            return new List<StoredProcWithDefaultsReturnModel>();
+        }
+
+        public Task<List<StoredProcWithDefaultsReturnModel>> StoredProcWithDefaultsAsync(int? userId, int? userIdNull, string clientName, string clientNameNull, string clientNameMaxNull, string clientDesc, string clientDescNull, decimal? decimalValue = null, decimal? decimalValueNull = null, decimal? money = null, decimal? moneyNull = null, decimal? smallMoney = null, decimal? smallMoneyNull = null, float? realValue = null, float? realValueNull = null, double? floatValue = null, double? floatValueNull = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            int procResult;
+            return Task.FromResult(StoredProcWithDefaults(userId, userIdNull, clientName, clientNameNull, clientNameMaxNull, clientDesc, clientDescNull, decimalValue, decimalValueNull, money, moneyNull, smallMoney, smallMoneyNull, realValue, realValueNull, floatValue, floatValueNull, out procResult));
         }
 
         public DbSet<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsReturnModel { get; set; }

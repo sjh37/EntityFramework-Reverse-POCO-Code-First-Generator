@@ -1,11 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
+    <Platforms>AnyCPU;ARM64</Platforms>
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.12" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
     <PackageReference Include="NUnit" Version="3.13.3" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.3.1">
@@ -13,11 +12,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\EntityFramework.Reverse.POCO.Generator\EntityFramework.Reverse.POCO.Generator.csproj" />
     <ProjectReference Include="..\Generator.Tests.Common\Generator.Tests.Common.csproj" />
     <ProjectReference Include="..\Tester.BusinessLogic.EfCore\Tester.BusinessLogic.csproj" />
   </ItemGroup>
-
 </Project>

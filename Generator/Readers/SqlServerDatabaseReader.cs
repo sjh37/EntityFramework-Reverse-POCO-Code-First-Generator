@@ -1198,10 +1198,12 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 }
 
                 proc.MergeModelsIfAllSame();
+                Settings.ReadStoredProcReturnObjectCompleted(proc);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // Stored procedure does not have a return type
+                Settings.ReadStoredProcReturnObjectException(ex, proc);
             }
         }
 

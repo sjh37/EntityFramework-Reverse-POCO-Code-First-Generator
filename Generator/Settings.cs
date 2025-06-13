@@ -5,6 +5,7 @@ using Efrpg.Filtering;
 using Efrpg.Generators;
 using Efrpg.LanguageMapping;
 using Efrpg.Templates;
+using System.Data;
 
 namespace Efrpg
 {
@@ -13,7 +14,7 @@ namespace Efrpg
         // Main settings **********************************************************************************************************************
         // The following entries are the only required settings.
         public static DatabaseType DatabaseType                         = DatabaseType.SqlServer; // SqlServer, SqlCe, SQLite, PostgreSQL. Coming next: MySql, Oracle
-        public static TemplateType TemplateType                         = TemplateType.EfCore8; // EfCore8, EfCore7, EfCore6, EfCore3, Ef6, FileBasedCore3-8. FileBased specify folder using Settings.TemplateFolder
+        public static TemplateType TemplateType                         = TemplateType.EfCore9; // EfCore9, EfCore8, EfCore6, Ef6, FileBasedCore3-8. FileBased specify folder using Settings.TemplateFolder
         public static GeneratorType GeneratorType                       = GeneratorType.EfCore; // EfCore, Ef6, Custom. Custom edit GeneratorCustom class to provide your own implementation
         public static ForeignKeyNamingStrategy ForeignKeyNamingStrategy = ForeignKeyNamingStrategy.Legacy; // Please use Legacy for now, Latest (not yet ready)
         public static bool UseMappingTables                             = false; // Can only be set to true for EF6. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
@@ -77,6 +78,7 @@ namespace Efrpg
         public static List<string> AdditionalContextInterfaceItems  = new List<string>(); //  example: "void SetAutoDetectChangesEnabled(bool flag);"
         public static List<string> AdditionalFileHeaderText         = new List<string>(); // This will put additional lines verbatim at the top of each file under the comments, 1 line per entry
         public static List<string> AdditionalFileFooterText         = new List<string>(); // This will put additional lines verbatim at the end of each file above the // </auto-generated>, 1 line per entry
+        public static OrderProperties OrderProperties               = OrderProperties.Ordinal; // Order the properties in the generated POCO classes. Ordinal, Alphabetical
 
         // Language choices
         public static GenerationLanguage GenerationLanguage = GenerationLanguage.CSharp;
@@ -182,6 +184,26 @@ namespace Efrpg
         public static bool   PrependSchemaName = true; // Control if the schema name is prepended to the table name
         public static string DefaultSchema     = null; // Set via DatabaseReader.DefaultSchema()
 
+        // Enables more granular control if the schema name should be prepended depending on the table
+        public static Func<Table, bool> PrependSchemaNameForTable = delegate (Table table)
+        {
+            // Example:
+            //if (table.NameHumanCase.Equals("SomeTable", StringComparison.InvariantCultureIgnoreCase))
+            //    return false;
+
+            return true;
+        };
+
+        // Enables more granular control if the schema name should be prepended depending on the stored procedure
+        public static Func<StoredProcedure, bool> PrependSchemaNameForStoredProcedure = delegate (StoredProcedure sp)
+        {
+            // Example:
+            //if (sp.NameHumanCase.StartsWith("sp_"))
+            //    return false;
+
+            return true;
+        };
+
         // Table Suffix ***********************************************************************************************************************
         // Appends the suffix to the generated classes names
         // Ie. If TableSuffix is "Dto" then Order will be OrderDto
@@ -210,6 +232,35 @@ namespace Efrpg
         // Example:                       Proc name      Return this entity type instead
         //StoredProcedureReturnTypes.Add("SalesByYear", "SummaryOfSalesByYear");
         public static Dictionary<string, string> StoredProcedureReturnTypes = new Dictionary<string, string>();
+
+        // Enable interception of stored procedure return model when an exception occurs. Typically, when the stored procedure contains temp tables.
+        // This allows you render the proper error in comments or fix the return model by manually creating the ReturnModel using a list of DataColumns
+        public static Action<Exception, StoredProcedure> ReadStoredProcReturnObjectException = delegate (Exception ex, StoredProcedure sp)
+        {
+            // Example
+            /*if (!sp.ReturnModels.Any() && ex.Message.StartsWith("Invalid object name", StringComparison.OrdinalIgnoreCase))
+            {
+                if (sp.NameHumanCase.Equals("YourProcNameHere", StringComparison.OrdinalIgnoreCase))
+                {
+                    sp.ReturnModels.Add(new List<DataColumn>
+                    {
+                        new DataColumn("Id", typeof(int)) { AllowDBNull = false, Unique = true },
+                        new DataColumn("Description", typeof(string))
+                    });
+                }
+            }*/
+        };
+
+        // Enable interception of stored procedure return model
+        public static Action<StoredProcedure> ReadStoredProcReturnObjectCompleted = delegate (StoredProcedure sp)
+        {
+            // Example of how to add a row processed boolean column to a stored procedure's return model
+            /*if (sp.ReturnModels.Any() && sp.NameHumanCase.Contains("process"))
+            {
+                var rm = sp.ReturnModels.First();
+                rm.Add(new DataColumn("RowProcessed", typeof(bool)) { AllowDBNull = false });
+            }*/
+        };
 
 
         // Renaming ***********************************************************************************************************************
@@ -681,8 +732,8 @@ namespace Efrpg
         public static bool IsEf6()     => TemplateType == TemplateType.Ef6;
         public static bool IsEfCore3Plus() => EfCoreVersion() >= 3;
         public static bool IsEfCore6Plus() => EfCoreVersion() >= 6;
-        public static bool IsEfCore7Plus() => EfCoreVersion() >= 7;
         public static bool IsEfCore8Plus() => EfCoreVersion() >= 8;
+        public static bool IsEfCore9Plus() => EfCoreVersion() >= 9;
         public static int EfCoreVersion()
         {
             switch (TemplateType)
@@ -691,13 +742,13 @@ namespace Efrpg
                 case TemplateType.FileBasedCore6:
                     return 6;
                 
-                case TemplateType.EfCore7:
-                case TemplateType.FileBasedCore7:
-                    return 7;
-                
                 case TemplateType.EfCore8:
                 case TemplateType.FileBasedCore8:
                     return 8;
+
+                case TemplateType.EfCore9:
+                case TemplateType.FileBasedCore9:
+                    return 9;
                 
                 case TemplateType.Ef6:
                 case TemplateType.FileBasedEf6:

@@ -297,9 +297,10 @@ namespace Efrpg.Generators
             var hasHierarchyIdType = false;
             foreach (var table in _tables)
             {
-                var columns = table.Table.Columns
+                var columnsQuery = Settings.OrderProperties == OrderProperties.Ordinal ? table.Table.Columns.OrderBy(x => x.Ordinal) : table.Table.Columns.OrderBy(x => x.NameHumanCase);
+                
+                var columns = columnsQuery
                     .Where(x => !x.Hidden && !string.IsNullOrEmpty(x.Config))
-                    .OrderBy(x => x.Ordinal)
                     .ToList();
 
                 if (!Settings.DisableGeographyTypes && !hasSpatialTypes)
@@ -475,6 +476,8 @@ namespace Efrpg.Generators
 
             var isEfCore3Plus = Settings.IsEfCore3Plus();
 
+            var columnsQuery = Settings.OrderProperties == OrderProperties.Ordinal ? table.Columns.OrderBy(x => x.Ordinal) : table.Columns.OrderBy(x => x.NameHumanCase);
+
             var data = new PocoModel
             {
                 UseHasNoKey = isEfCore3Plus && table.IsView && !table.HasPrimaryKey,
@@ -488,9 +491,8 @@ namespace Efrpg.Generators
                 BaseClasses = table.BaseClasses,
                 InsideClassBody = Settings.WriteInsideClassBody(table),
                 HasHierarchyId = table.Columns.Any(x => x.PropertyType.EndsWith("hierarchyid", StringComparison.InvariantCultureIgnoreCase)),
-                Columns = table.Columns
+                Columns = columnsQuery
                     .Where(x => !x.Hidden && !x.ExistsInBaseClass)
-                    .OrderBy(x => x.Ordinal)
                     .Select((col, index) => new PocoColumnModel
                     {
                         AddNewLineBefore = index > 0 && (((Settings.IncludeExtendedPropertyComments == CommentsStyle.InSummaryBlock || Settings.IncludeComments == CommentsStyle.InSummaryBlock) && !string.IsNullOrEmpty(col.SummaryComments)) || (col.Attributes != null && col.Attributes.Any())),
@@ -508,7 +510,7 @@ namespace Efrpg.Generators
                     .ToList(),
                 HasReverseNavigation = table.ReverseNavigationProperty.Count > 0,
                 ReverseNavigationProperty = table.ReverseNavigationProperty
-                    .OrderBy(x => x.Definition)
+                    .OrderBy(x => Settings.OrderProperties == OrderProperties.Ordinal ? x.Definition : x.PropertyName)
                     .Select(x => new PocoReverseNavigationPropertyModel
                     {
                         ReverseNavHasComment = Settings.IncludeComments != CommentsStyle.None && !string.IsNullOrEmpty(x.Comments),
@@ -522,7 +524,7 @@ namespace Efrpg.Generators
                 ForeignKeyTitleComment = Settings.IncludeComments != CommentsStyle.None && table.Columns.SelectMany(x => x.EntityFk).Any() ? "    // Foreign keys" + Environment.NewLine : string.Empty,
                 ForeignKeys = table.Columns
                     .SelectMany(x => x.EntityFk)
-                    .OrderBy(o => o.Definition)
+                    .OrderBy(x => Settings.OrderProperties == OrderProperties.Ordinal ? x.Definition : x.PropertyName)
                     .Select(x => new PocoForeignKeyModel
                     {
                         HasFkComment = Settings.IncludeComments != CommentsStyle.None && !string.IsNullOrEmpty(x.Comments),
@@ -538,9 +540,8 @@ namespace Efrpg.Generators
                                         table.ReverseNavigationCtor.Any() ||
                                         Settings.EntityClassesArePartial()
                                     ),
-                ColumnsWithDefaults = table.Columns
+                ColumnsWithDefaults = columnsQuery
                     .Where(c => c.Default != string.Empty && !c.Hidden && Settings.IncludeColumnsWithDefaults)
-                    .OrderBy(x => x.Ordinal)
                     .Select(x => new PocoColumnsWithDefaultsModel { NameHumanCase = x.NameHumanCase, Default = x.Default })
                     .ToList(),
                 ReverseNavigationCtor = table.ReverseNavigationCtor,
@@ -563,9 +564,10 @@ namespace Efrpg.Generators
                 return null;
             }
 
-            var columns = table.Columns
+            var columnsQuery = Settings.OrderProperties == OrderProperties.Ordinal ? table.Columns.OrderBy(x => x.Ordinal) : table.Columns.OrderBy(x => x.NameHumanCase);
+
+            var columns = columnsQuery
                 .Where(x => !x.Hidden && !string.IsNullOrEmpty(x.Config))
-                .OrderBy(x => x.Ordinal)
                 .ToList();
 
             var isEfCore3Plus = Settings.IsEfCore3Plus();
@@ -594,7 +596,7 @@ namespace Efrpg.Generators
                 UsesDictionary = table.UsesDictionary,
                 HasSpatial = table.Columns.Any(x => x.IsSpatial),
                 ReverseNavigationProperty = table.ReverseNavigationProperty
-                    .OrderBy(x => x.Definition)
+                    .OrderBy(x => Settings.OrderProperties == OrderProperties.Ordinal ? x.Definition : x.PropertyName)
                     .Select(x => new PocoReverseNavigationPropertyModel
                     {
                         ReverseNavHasComment = Settings.IncludeComments != CommentsStyle.None && !string.IsNullOrEmpty(x.Comments),

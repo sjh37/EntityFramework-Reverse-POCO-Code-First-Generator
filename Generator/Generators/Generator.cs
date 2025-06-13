@@ -292,7 +292,7 @@ namespace Efrpg.Generators
                     AddMemoryOptimisedTablesToFilters(rawMemoryOptimisedTables);
                 }
                 
-                if (Settings.IsEfCore7Plus())
+                if (Settings.IsEfCore8Plus())
                 {
                     var rawTriggers = DatabaseReader.ReadTriggers();
                     AddTriggersToFilters(rawTriggers);
@@ -380,7 +380,7 @@ namespace Efrpg.Generators
                     var singularCleanTableName = Inflector.MakeSingular(tableName);
                     table.NameHumanCase = (Settings.UsePascalCase ? Inflector.ToTitleCase(singularCleanTableName) : singularCleanTableName).Replace(" ", "").Replace("$", "").Replace(".", "");
 
-                    if (Settings.PrependSchemaName && string.Compare(table.Schema.DbName, Settings.DefaultSchema, StringComparison.OrdinalIgnoreCase) != 0)
+                    if (Settings.PrependSchemaName && string.Compare(table.Schema.DbName, Settings.DefaultSchema, StringComparison.OrdinalIgnoreCase) != 0 && Settings.PrependSchemaNameForTable(table))
                         table.NameHumanCase = table.Schema.DbName + "_" + table.NameHumanCase;
 
                     if (filter.IsExcluded(table)) // Retest exclusion after table rename
@@ -669,7 +669,7 @@ namespace Efrpg.Generators
                     if (t == null)
                         continue;
 
-                    // Only store the one trigger name as EFCore 7 does not care what its name is. It only cares that there is one present.
+                    // Only store the one trigger name as EFCore 7+ does not care what its name is. It only cares that there is one present.
                     t.TriggerName = trigger.TriggerName;
                 }
             }
@@ -812,7 +812,7 @@ namespace Efrpg.Generators
                         IsStoredProcedure      = proc.IsStoredProcedure
                     };
                     sp.NameHumanCase = DatabaseReader.CleanUp(sp.NameHumanCase);
-                    if (Settings.PrependSchemaName && (string.Compare(proc.Schema, Settings.DefaultSchema, StringComparison.OrdinalIgnoreCase) != 0))
+                    if (Settings.PrependSchemaName && (string.Compare(proc.Schema, Settings.DefaultSchema, StringComparison.OrdinalIgnoreCase) != 0) && Settings.PrependSchemaNameForStoredProcedure(sp))
                         sp.NameHumanCase = proc.Schema + "_" + sp.NameHumanCase;
 
                     sp.Parameters.AddRange(rawStoredProcs
@@ -1265,8 +1265,8 @@ namespace Efrpg.Generators
                         Settings.DbContextName = ((MultiContextFilter) filter.Value).GetSettings().Name ?? filter.Key;
 
                         if (Settings.TemplateType == TemplateType.FileBasedCore6 || 
-                            Settings.TemplateType == TemplateType.FileBasedCore7 ||
-                            Settings.TemplateType == TemplateType.FileBasedCore8)
+                            Settings.TemplateType == TemplateType.FileBasedCore8 ||
+                            Settings.TemplateType == TemplateType.FileBasedCore9)
                         {
                             // Use file based templates, set the path
                             var multiContextSetting = ((MultiContextFilter) filter.Value).GetSettings();

@@ -125,8 +125,8 @@ namespace Generator.Tests.Unit
         [Test]
         [TestCase(TemplateType.Ef6,     "HasName")]
         [TestCase(TemplateType.EfCore6, "HasDatabaseName")]
-        [TestCase(TemplateType.EfCore7, "HasDatabaseName")]
         [TestCase(TemplateType.EfCore8, "HasDatabaseName")]
+        [TestCase(TemplateType.EfCore9, "HasDatabaseName")]
         public void EfCoreModelBuilder(TemplateType templateType, string hasName)
         {
             // Arrange

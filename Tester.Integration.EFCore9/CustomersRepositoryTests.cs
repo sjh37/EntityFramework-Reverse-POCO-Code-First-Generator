@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using EntityFramework_Reverse_POCO_Generator;
+﻿using EntityFramework_Reverse_POCO_Generator;
 using Generator.Tests.Common;
 using NUnit.Framework;
 using Tester.BusinessLogic;
 
-namespace Tester.Integration.EFCore7
+namespace Tester.Integration.EFCore9
 {
     [TestFixture]
     [Category(Constants.Integration)]
