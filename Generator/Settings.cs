@@ -729,7 +729,7 @@ namespace Efrpg
         // Don't forget to take a look at SingleContextFilter and FilterSettings classes!
         // That's it, nothing else to configure ***********************************************************************************************
 
-        public static bool IsEf6()     => TemplateType == TemplateType.Ef6;
+        public static bool IsEf6()     => TemplateType == TemplateType.Ef6 || TemplateType == TemplateType.FileBasedEf6;
         public static bool IsEfCore3Plus() => EfCoreVersion() >= 3;
         public static bool IsEfCore6Plus() => EfCoreVersion() >= 6;
         public static bool IsEfCore8Plus() => EfCoreVersion() >= 8;
