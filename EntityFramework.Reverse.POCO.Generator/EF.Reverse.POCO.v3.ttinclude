@@ -14439,7 +14439,13 @@ ORDER BY R.specific_schema, R.routine_name, R.routine_type;";
 
         protected override string EnumSQL(string table, string nameField, string valueField, string groupField)
         {
-            return string.Format(@"SELECT ""{0}"" as ""NameField"", ""{1}"" as ""ValueField"", ""{2}"" as ""GroupField"", * FROM ""{3}"";", nameField, valueField, !string.IsNullOrEmpty(groupField) ? groupField : string.Empty, table);
+            string formattedTable = table.Contains(".")
+                ? $@"""{table.Split('.')[0]}"".""{table.Split('.')[1]}"""
+                : $@"""{table}""";
+
+            return !string.IsNullOrEmpty(groupField) ? 
+                $@"SELECT ""{nameField}"" AS ""NameField"", ""{valueField}"" AS ""ValueField"", ""{groupField}"" AS ""GroupField"", * FROM {formattedTable};" : 
+                $@"SELECT ""{nameField}"" AS ""NameField"", ""{valueField}"" AS ""ValueField"", * FROM {formattedTable};";
         }
 
         protected override string SequenceSQL()
