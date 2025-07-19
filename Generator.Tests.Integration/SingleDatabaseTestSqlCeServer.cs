@@ -25,7 +25,7 @@ namespace Generator.Tests.Integration
 
         [Test]
         [NonParallelizable]
-        [TestCase(ForeignKeyNamingStrategy.Legacy)]
+        [TestCase(ForeignKeyNamingStrategy.Current)]
         //[TestCase(ForeignKeyNamingStrategy.Latest)]
         public void ReverseEngineerSqlCe(ForeignKeyNamingStrategy foreignKeyNamingStrategy)
         {
@@ -44,14 +44,7 @@ namespace Generator.Tests.Integration
 
         [Test]
         [NonParallelizable]
-        // Legacy
-        [TestCase(false, TemplateType.EfCore6, ForeignKeyNamingStrategy.Legacy)]
-        [TestCase(false, TemplateType.EfCore8, ForeignKeyNamingStrategy.Legacy)]
-        // Latest
-        //[TestCase(false, TemplateType.EfCore2, ForeignKeyNamingStrategy.Latest)]
-        //[TestCase(false, TemplateType.EfCore3, ForeignKeyNamingStrategy.Latest)]
-        //[TestCase(true, TemplateType.EfCore2, ForeignKeyNamingStrategy.Latest)]
-        //[TestCase(true, TemplateType.EfCore3, ForeignKeyNamingStrategy.Latest)]
+        [TestCase(false, TemplateType.EfCore8, ForeignKeyNamingStrategy.Current)]
         public void ReverseEngineerSqlCe_EfCore(bool separateFiles, TemplateType templateType, ForeignKeyNamingStrategy foreignKeyNamingStrategy)
         {
             // Arrange

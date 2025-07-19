@@ -11,7 +11,7 @@
     // For help on the various Types below, please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Common-Settings.*Types-explained
     // The following entries are the only required settings.
     Settings.DatabaseType            = DatabaseType.SqlServer; // SqlServer, SqlCe. Coming next: PostgreSQL, MySql, Oracle
-    Settings.TemplateType            = TemplateType.Ef6; // EfCore6, EfCore5, EfCore3, EfCore2, Ef6, FileBasedCore2, FileBasedCore3, FileBasedCore5, FileBasedCore6. FileBased specify folder using Settings.TemplateFolder
+    Settings.TemplateType            = TemplateType.Ef6;
     Settings.GeneratorType           = GeneratorType.Ef6; // Ef6, EfCore, Custom. Custom edit GeneratorCustom class to provide your own implementation
     Settings.UseMappingTables        = true; // Must be false for TemplateType.EfCore2-4. If true, mapping will be used, and no mapping tables will be generated. If false, all tables will be generated.
     Settings.FileManagerType         = FileManagerType.VisualStudio; // .NET Core project = Custom; .NET project = VisualStudio; No output (testing only) = Null

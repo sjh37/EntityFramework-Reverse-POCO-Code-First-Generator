@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <None Remove="appsettings.json" />
       <None Remove="Azure.tt" />
       <None Remove="EfrpgTest.tt" />
       <None Remove="Northwind.tt" />
@@ -14,17 +15,56 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Content Include="appsettings.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
       <Content Include="Azure.tt">
         <Generator>TextTemplatingFileGenerator</Generator>
         <LastGenOutput>Azure.cs</LastGenOutput>
+      </Content>
+      <Content Include="ContextHasSameNameAsDb\EfrpgTest.tt">
+        <LastGenOutput>EfrpgTest.cs</LastGenOutput>
+        <Generator>TextTemplatingFileGenerator</Generator>
       </Content>
       <Content Include="EfrpgTest.tt">
         <Generator>TextTemplatingFileGenerator</Generator>
         <LastGenOutput>EfrpgTest.cs</LastGenOutput>
       </Content>
+      <Content Include="EfrpgTest_no_pascal_casing.tt">
+        <LastGenOutput>EfrpgTest_no_pascal_casing.cs</LastGenOutput>
+        <Generator>TextTemplatingFileGenerator</Generator>
+      </Content>
+      <Content Include="EnumForeignKey.tt">
+        <LastGenOutput>EnumForeignKey.cs</LastGenOutput>
+        <Generator>TextTemplatingFileGenerator</Generator>
+      </Content>
+      <Content Include="EnumOnly.tt">
+        <LastGenOutput>EnumOnly.cs</LastGenOutput>
+        <Generator>TextTemplatingFileGenerator</Generator>
+      </Content>
+      <Content Include="EnumViaTables.tt">
+        <LastGenOutput>EnumViaTables.cs</LastGenOutput>
+        <Generator>TextTemplatingFileGenerator</Generator>
+      </Content>
+      <Content Include="Multi context many files\MCMF.tt">
+        <LastGenOutput>MCMF.cs</LastGenOutput>
+        <Generator>TextTemplatingFileGenerator</Generator>
+      </Content>
+      <Content Include="Multi context single files\MCSF.tt">
+        <LastGenOutput>MCSF.cs</LastGenOutput>
+        <Generator>TextTemplatingFileGenerator</Generator>
+      </Content>
       <Content Include="Northwind.tt">
         <Generator>TextTemplatingFileGenerator</Generator>
         <LastGenOutput>Northwind.cs</LastGenOutput>
+      </Content>
+      <Content Include="Single context many files\SCMF.tt">
+        <LastGenOutput>SCMF.cs</LastGenOutput>
+        <Generator>TextTemplatingFileGenerator</Generator>
+      </Content>
+      <Content Include="TestDatabase.tt">
+        <LastGenOutput>TestDatabase.cs</LastGenOutput>
+        <Generator>TextTemplatingFileGenerator</Generator>
       </Content>
       <Content Include="TestSynonymsDatabase.tt">
         <Generator>TextTemplatingFileGenerator</Generator>
@@ -59,15 +99,60 @@
         <AutoGen>True</AutoGen>
         <DependentUpon>Azure.tt</DependentUpon>
       </Compile>
+      <Compile Update="ContextHasSameNameAsDb\EfrpgTest.cs">
+        <DependentUpon>EfrpgTest.tt</DependentUpon>
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+      </Compile>
       <Compile Update="EfrpgTest.cs">
         <DesignTime>True</DesignTime>
         <AutoGen>True</AutoGen>
         <DependentUpon>EfrpgTest.tt</DependentUpon>
       </Compile>
+      <Compile Update="EfrpgTest_no_pascal_casing.cs">
+        <DependentUpon>EfrpgTest_no_pascal_casing.tt</DependentUpon>
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+      </Compile>
+      <Compile Update="EnumForeignKey.cs">
+        <DependentUpon>EnumForeignKey.tt</DependentUpon>
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+      </Compile>
+      <Compile Update="EnumOnly.cs">
+        <DependentUpon>EnumOnly.tt</DependentUpon>
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+      </Compile>
+      <Compile Update="EnumViaTables.cs">
+        <DependentUpon>EnumViaTables.tt</DependentUpon>
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+      </Compile>
+      <Compile Update="Multi context many files\MCMF.cs">
+        <DependentUpon>MCMF.tt</DependentUpon>
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+      </Compile>
+      <Compile Update="Multi context single files\MCSF.cs">
+        <DependentUpon>MCSF.tt</DependentUpon>
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+      </Compile>
       <Compile Update="Northwind.cs">
         <DesignTime>True</DesignTime>
         <AutoGen>True</AutoGen>
         <DependentUpon>Northwind.tt</DependentUpon>
+      </Compile>
+      <Compile Update="Single context many files\SCMF.cs">
+        <DependentUpon>SCMF.tt</DependentUpon>
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+      </Compile>
+      <Compile Update="TestDatabase.cs">
+        <DependentUpon>TestDatabase.tt</DependentUpon>
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
       </Compile>
       <Compile Update="TestSynonymsDatabase.cs">
         <DesignTime>True</DesignTime>

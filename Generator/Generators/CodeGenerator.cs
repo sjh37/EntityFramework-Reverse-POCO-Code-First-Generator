@@ -31,13 +31,13 @@ namespace Efrpg.Generators
 #pragma warning restore IDE0016 // Use 'throw' expression
 
             var isEfCore = Settings.GeneratorType == GeneratorType.EfCore;
-            var isEfCore3Plus = Settings.IsEfCore3Plus();
+            var IsEfCore8Plus = Settings.IsEfCore8Plus();
 
             _generator = generator;
             _filter = filter;
 
             _tables = filter.Tables
-                .Where(t => !t.IsMapping && (t.HasPrimaryKey || (t.IsView && isEfCore3Plus)))
+                .Where(t => !t.IsMapping && (t.HasPrimaryKey || (t.IsView && IsEfCore8Plus)))
                 .OrderBy(x => x.NameHumanCase)
                 .Select(tbl => new TableTemplateData(tbl))
                 .ToList();
@@ -81,8 +81,8 @@ namespace Efrpg.Generators
                         sp.WriteStoredProcReturnModelName(_filter),
                         sp.WriteStoredProcFunctionSqlParameterAnonymousArray(true, true, false),
                         sp.WriteStoredProcFunctionSqlParameterAnonymousArray(false, true, false),
-                        sp.WriteStoredProcFunctionSqlParameterAnonymousArray(true, true, true, isEfCore3Plus),
-                        sp.WriteStoredProcFunctionSqlParameterAnonymousArray(false, true, true, isEfCore3Plus),
+                        sp.WriteStoredProcFunctionSqlParameterAnonymousArray(true, true, true, IsEfCore8Plus),
+                        sp.WriteStoredProcFunctionSqlParameterAnonymousArray(false, true, true, IsEfCore8Plus),
                         sp.WriteStoredProcFunctionDeclareSqlParameter(true),
                         sp.WriteStoredProcFunctionDeclareSqlParameter(false),
                         sp.Parameters.OrderBy(x => x.Ordinal).Select(sp.WriteStoredProcSqlParameterName).ToList(),
@@ -113,10 +113,10 @@ namespace Efrpg.Generators
                             ? tvf.WriteStoredProcFunctionSqlParameterAnonymousArray(false, false)
                             : tvf.WriteTableValuedFunctionSqlParameterAnonymousArray(),
                         isEfCore ? tvf.WriteNetCoreTableValuedFunctionsSqlAtParams() : tvf.WriteStoredProcFunctionSqlAtParams(),
-                        isEfCore3Plus ? "FromSqlRaw" : "FromSql",
-                        isEfCore3Plus ? "Set" : "Query",
-                        isEfCore3Plus ? "Entity" : "Query",
-                        isEfCore3Plus ? ".HasNoKey()" : string.Empty,
+                        IsEfCore8Plus ? "FromSqlRaw" : "FromSql",
+                        IsEfCore8Plus ? "Set" : "Query",
+                        IsEfCore8Plus ? "Entity" : "Query",
+                        IsEfCore8Plus ? ".HasNoKey()" : string.Empty,
                         !Settings.StoredProcedureReturnTypes.ContainsKey(tvf.NameHumanCase) && !Settings.StoredProcedureReturnTypes.ContainsKey(tvf.DbName)
                     ))
                     .ToList();
@@ -314,7 +314,7 @@ namespace Efrpg.Generators
                     .Where(x => !string.IsNullOrWhiteSpace(x)));
             }
 
-            var isEfCore3Plus = Settings.IsEfCore3Plus();
+            var IsEfCore8Plus = Settings.IsEfCore8Plus();
 
             var data = new ContextModel
             {
@@ -347,16 +347,16 @@ namespace Efrpg.Generators
                 hasTableValuedFunctions = _hasTableValuedFunctions && _filter.IncludeTableValuedFunctions,
                 hasScalarValuedFunctions = _hasScalarValuedFunctions && _filter.IncludeScalarValuedFunctions,
                 IncludeObjectContextConstructor = !Settings.DbContextBaseClass.Contains("IdentityDbContext"),
-                QueryString = isEfCore3Plus ? "Set" : "Query",
-                FromSql = isEfCore3Plus ? "FromSqlRaw" : "FromSql",
-                ExecuteSqlCommand = isEfCore3Plus ? "ExecuteSqlRaw" : "ExecuteSqlCommand",
-                StoredProcModelBuilderCommand = isEfCore3Plus ? "Entity" : "Query",
-                StoredProcModelBuilderPostCommand = isEfCore3Plus ? ".HasNoKey()" : string.Empty,
+                QueryString = IsEfCore8Plus ? "Set" : "Query",
+                FromSql = IsEfCore8Plus ? "FromSqlRaw" : "FromSql",
+                ExecuteSqlCommand = IsEfCore8Plus ? "ExecuteSqlRaw" : "ExecuteSqlCommand",
+                StoredProcModelBuilderCommand = IsEfCore8Plus ? "Entity" : "Query",
+                StoredProcModelBuilderPostCommand = IsEfCore8Plus ? ".HasNoKey()" : string.Empty,
                 OnConfigurationUsesConfiguration = Settings.OnConfiguration == OnConfiguration.Configuration,
                 OnConfigurationUsesConnectionString = Settings.OnConfiguration == OnConfiguration.ConnectionString,
                 DefaultSchema = Settings.DefaultSchema,
                 UseDatabaseProvider = Settings.DatabaseProvider(),
-                UseLazyLoadingProxies = Settings.UseLazyLoading && Settings.IsEfCore3Plus(),
+                UseLazyLoadingProxies = Settings.UseLazyLoading && Settings.IsEfCore8Plus(),
                 SqlParameter = Settings.SqlParameter(),
                 SqlParameterValue = Settings.SqlParameterValue(),
                 Triggers = _tables.Where(x => !string.IsNullOrEmpty(x.Table.TriggerName) || x.Table.Columns.Any(c => c.IsComputed))
@@ -474,13 +474,13 @@ namespace Efrpg.Generators
                 return null;
             }
 
-            var isEfCore3Plus = Settings.IsEfCore3Plus();
+            var IsEfCore8Plus = Settings.IsEfCore8Plus();
 
             var columnsQuery = Settings.OrderProperties == OrderProperties.Ordinal ? table.Columns.OrderBy(x => x.Ordinal) : table.Columns.OrderBy(x => x.NameHumanCase);
 
             var data = new PocoModel
             {
-                UseHasNoKey = isEfCore3Plus && table.IsView && !table.HasPrimaryKey,
+                UseHasNoKey = IsEfCore8Plus && table.IsView && !table.HasPrimaryKey,
                 HasNoPrimaryKey = !table.HasPrimaryKey,
                 Name = table.DbName,
                 NameHumanCaseWithSuffix = table.NameHumanCaseWithSuffix(),
@@ -570,7 +570,7 @@ namespace Efrpg.Generators
                 .Where(x => !x.Hidden && !string.IsNullOrEmpty(x.Config))
                 .ToList();
 
-            var isEfCore3Plus = Settings.IsEfCore3Plus();
+            var IsEfCore8Plus = Settings.IsEfCore8Plus();
 
             var foreignKeys = columns.SelectMany(x => x.ConfigFk).OrderBy(o => o).ToList();
             var primaryKey = _generator.PrimaryKeyModelBuilder(table);
@@ -580,9 +580,9 @@ namespace Efrpg.Generators
 
             var data = new PocoConfigurationModel
             {
-                UseHasNoKey = isEfCore3Plus && table.IsView && !table.HasPrimaryKey,
+                UseHasNoKey = IsEfCore8Plus && table.IsView && !table.HasPrimaryKey,
                 Name = table.DbName,
-                ToTableOrView = (isEfCore3Plus && table.IsView && !table.HasPrimaryKey) ? "ToView" : "ToTable",
+                ToTableOrView = (IsEfCore8Plus && table.IsView && !table.HasPrimaryKey) ? "ToView" : "ToTable",
                 ConfigurationClassName = table.NameHumanCaseWithSuffix() + Settings.ConfigurationClassName,
                 NameHumanCaseWithSuffix = table.NameHumanCaseWithSuffix(),
                 Schema = table.Schema.DbName,

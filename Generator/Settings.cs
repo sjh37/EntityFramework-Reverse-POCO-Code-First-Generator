@@ -14,9 +14,9 @@ namespace Efrpg
         // Main settings **********************************************************************************************************************
         // The following entries are the only required settings.
         public static DatabaseType DatabaseType                         = DatabaseType.SqlServer; // SqlServer, SqlCe, SQLite, PostgreSQL. Coming next: MySql, Oracle
-        public static TemplateType TemplateType                         = TemplateType.EfCore9; // EfCore9, EfCore8, EfCore6, Ef6, FileBasedCore3-8. FileBased specify folder using Settings.TemplateFolder
+        public static TemplateType TemplateType                         = TemplateType.EfCore9; // EfCore9, EfCore8, Ef6, FileBasedCore3-8. FileBased specify folder using Settings.TemplateFolder
         public static GeneratorType GeneratorType                       = GeneratorType.EfCore; // EfCore, Ef6, Custom. Custom edit GeneratorCustom class to provide your own implementation
-        public static ForeignKeyNamingStrategy ForeignKeyNamingStrategy = ForeignKeyNamingStrategy.Legacy; // Please use Legacy for now, Latest (not yet ready)
+        public static ForeignKeyNamingStrategy ForeignKeyNamingStrategy = ForeignKeyNamingStrategy.Current; // Please use Legacy for now, Latest (not yet ready)
         public static bool UseMappingTables                             = false; // Can only be set to true for EF6. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
         public static FileManagerType FileManagerType                   = FileManagerType.EfCore; // .NET Core project = EfCore; .NET 4.x project = VisualStudio; No output (testing only) = Null
         public static string ConnectionString                           = ""; // This is used by the generator to reverse engineer your database
@@ -360,7 +360,7 @@ namespace Efrpg
         // Configures the key property to either use IDENTITY or HILO database feature to generate values for new entities.
         public static Func<Column, string> ColumnIdentity = delegate (Column c)
         {
-            if(!IsEfCore3Plus())
+            if(!IsEfCore8Plus())
                 return ".UseSqlServerIdentityColumn()";
 
             // At this point we are using EFCore 3, 5+ which supports HiLo sequences.
@@ -730,18 +730,12 @@ namespace Efrpg
         // That's it, nothing else to configure ***********************************************************************************************
 
         public static bool IsEf6()     => TemplateType == TemplateType.Ef6 || TemplateType == TemplateType.FileBasedEf6;
-        public static bool IsEfCore3Plus() => EfCoreVersion() >= 3;
-        public static bool IsEfCore6Plus() => EfCoreVersion() >= 6;
         public static bool IsEfCore8Plus() => EfCoreVersion() >= 8;
         public static bool IsEfCore9Plus() => EfCoreVersion() >= 9;
         public static int EfCoreVersion()
         {
             switch (TemplateType)
             {
-                case TemplateType.EfCore6:
-                case TemplateType.FileBasedCore6:
-                    return 6;
-                
                 case TemplateType.EfCore8:
                 case TemplateType.FileBasedCore8:
                     return 8;

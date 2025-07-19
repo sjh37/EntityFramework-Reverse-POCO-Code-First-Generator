@@ -8,7 +8,7 @@ namespace Efrpg.ForeignKeyStrategies
         {
             switch (Settings.ForeignKeyNamingStrategy)
             {
-                case ForeignKeyNamingStrategy.Legacy:
+                case ForeignKeyNamingStrategy.Current:
                     return new LegacyForeignKeyNamingStrategy(filter, table);
 
                 default:
