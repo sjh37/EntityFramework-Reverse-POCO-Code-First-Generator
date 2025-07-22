@@ -994,6 +994,8 @@ namespace Efrpg.Generators
         private void ProcessForeignKeys(List<ForeignKey> fkList, bool checkForFkNameClashes, IDbContextFilter filter)
         {
             var constraints = fkList.Select(x => x.FkSchema + "." + x.ConstraintName).Distinct();
+            var isEfCore8Plus = Settings.IsEfCore8Plus();
+            
             foreach (var constraint in constraints)
             {
                 var foreignKeys = fkList
@@ -1072,7 +1074,11 @@ namespace Efrpg.Generators
                 var fkMakePropNameSingular = relationship == Relationship.OneToOne;
                 var pkPropName             = fkTable.GetUniqueForeignKeyName(true,  pkTableHumanCase,      foreignKey, checkForFkNameClashes, true,                   relationship);
                 var fkPropName             = pkTable.GetUniqueForeignKeyName(false, fkTable.NameHumanCase, foreignKey, checkForFkNameClashes, fkMakePropNameSingular, flipRelationship);
-
+                
+                var fkColsNullable = isEfCore8Plus && fkCols.Any(x => x.Column.IsNullable);
+                if (fkColsNullable)
+                    Settings.NullableEnable = true;
+                
                 var fkd = new PropertyAndComments
                 {
                     AdditionalDataAnnotations = filter.ForeignKeyAnnotationsProcessing(fkTable, pkTable, pkPropName, fkPropName),
@@ -1081,7 +1087,7 @@ namespace Efrpg.Generators
 
                     Definition = string.Format("public {0}{1} {2} {3}{4}", 
                         Table.GetLazyLoadingMarker(),
-                        pkTableHumanCaseWithSuffix,
+                        WrapIfNullable(fkColsNullable, pkTableHumanCaseWithSuffix),
                         pkPropName,
                         "{ get; set; }",
                         Settings.IncludeComments != CommentsStyle.None ? " // " + foreignKey.ConstraintName : string.Empty),
@@ -1127,6 +1133,14 @@ namespace Efrpg.Generators
                 if (foreignKey.IncludeReverseNavigation)
                     pkTable.AddReverseNavigation(relationship, fkTable, fkPropName, string.Format("{0}.{1}", fkTable.DbName, foreignKey.ConstraintName), foreignKeys);
             }
+        }
+
+        private string WrapIfNullable(bool isNullable, string property)
+        {
+            if (!isNullable)
+                return property;
+
+            return string.Format(Settings.NullableShortHand ? "{0}?" : "System.Nullable<{0}>", property);
         }
 
         private void IdentifyForeignKeys(List<ForeignKey> fkList, Tables tables)

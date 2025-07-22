@@ -89,6 +89,7 @@ namespace Efrpg
         public static bool UseNamespace                     = true;  // If false, suppresses the writing of a namespace
         public static bool UsePragma                        = false;  // If false, suppresses the writing of #pragma
         public static bool AllowNullStrings                 = false; // If true, will allow string? properties and will add '#nullable enable' to the top of each file
+        public static bool NullableEnable                   = false; // If true, will add '#nullable enable' to the top of each file
         public static bool UseResharper                     = false; // If true, will add a list of 'ReSharper disable' comments to the top of each file
         public static bool ShowLicenseInfo                  = false; // If true, will add the licence info comment to the top of each file
         public static bool IncludeConnectionSettingComments = false; // Add comments describing connection settings used to generate file
