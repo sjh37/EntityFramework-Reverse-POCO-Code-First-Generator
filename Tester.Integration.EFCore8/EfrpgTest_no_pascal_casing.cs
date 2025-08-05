@@ -2243,9 +2243,32 @@ namespace V8_Efrpg_Test
 
     public class V8_Efrpg_Test_Db_ContextFactory : IDesignTimeDbContextFactory<V8_Efrpg_Test_Db_Context>
     {
+        private readonly DbContextOptions<V8_Efrpg_Test_Db_Context> Options;
+
+        public V8_Efrpg_Test_Db_ContextFactory()
+        {
+        }
+
+        public V8_Efrpg_Test_Db_ContextFactory(DbContextOptions<V8_Efrpg_Test_Db_Context> options)
+        {
+            Options = options;
+        }
+
         public V8_Efrpg_Test_Db_Context CreateDbContext(string[] args)
         {
             return new V8_Efrpg_Test_Db_Context();
+        }
+
+        public V8_Efrpg_Test_Db_Context CreateDbContext()
+        {
+            return new V8_Efrpg_Test_Db_Context(Options);
+        }
+
+        public V8_Efrpg_Test_Db_Context CreateDbContext(DbContextOptions<V8_Efrpg_Test_Db_Context> options)
+        {
+            return options == null
+                ? new V8_Efrpg_Test_Db_Context()
+                : new V8_Efrpg_Test_Db_Context(options);
         }
     }
 

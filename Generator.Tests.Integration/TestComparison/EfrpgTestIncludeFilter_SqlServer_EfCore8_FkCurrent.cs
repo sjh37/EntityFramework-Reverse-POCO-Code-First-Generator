@@ -1571,9 +1571,32 @@ namespace Efrpg.V8FilterTest
 
     public class EfrpgDbContextFactory : IDesignTimeDbContextFactory<EfrpgDbContext>
     {
+        private readonly DbContextOptions<EfrpgDbContext> Options;
+
+        public EfrpgDbContextFactory()
+        {
+        }
+
+        public EfrpgDbContextFactory(DbContextOptions<EfrpgDbContext> options)
+        {
+            Options = options;
+        }
+
         public EfrpgDbContext CreateDbContext(string[] args)
         {
             return new EfrpgDbContext();
+        }
+
+        public EfrpgDbContext CreateDbContext()
+        {
+            return new EfrpgDbContext(Options);
+        }
+
+        public EfrpgDbContext CreateDbContext(DbContextOptions<EfrpgDbContext> options)
+        {
+            return options == null
+                ? new EfrpgDbContext()
+                : new EfrpgDbContext(options);
         }
     }
 

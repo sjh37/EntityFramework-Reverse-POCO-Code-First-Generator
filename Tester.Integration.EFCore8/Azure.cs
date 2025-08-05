@@ -172,9 +172,32 @@ namespace RP
 
     public class AzureContextFactory : IDesignTimeDbContextFactory<AzureContext>
     {
+        private readonly DbContextOptions<AzureContext> Options;
+
+        public AzureContextFactory()
+        {
+        }
+
+        public AzureContextFactory(DbContextOptions<AzureContext> options)
+        {
+            Options = options;
+        }
+
         public AzureContext CreateDbContext(string[] args)
         {
             return new AzureContext();
+        }
+
+        public AzureContext CreateDbContext()
+        {
+            return new AzureContext(Options);
+        }
+
+        public AzureContext CreateDbContext(DbContextOptions<AzureContext> options)
+        {
+            return options == null
+                ? new AzureContext()
+                : new AzureContext(options);
         }
     }
 

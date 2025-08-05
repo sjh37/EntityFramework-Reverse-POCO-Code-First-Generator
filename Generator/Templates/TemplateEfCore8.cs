@@ -487,6 +487,7 @@ using {{this}};{{#newline}}
         {
             var usings = new List<string>
             {
+                "Microsoft.EntityFrameworkCore",
                 "Microsoft.EntityFrameworkCore.Design"
             };
             if (Settings.IncludeCodeGeneratedAttribute)
@@ -499,9 +500,32 @@ using {{this}};{{#newline}}
             return @"
 {{classModifier}} class {{contextName}}Factory : IDesignTimeDbContextFactory<{{contextName}}>{{#newline}}
 {{{#newline}}
+    private readonly DbContextOptions<{{contextName}}> Options;{{#newline}}
+{{#newline}}
+    public {{contextName}}Factory(){{#newline}}
+    {{{#newline}}
+    }{{#newline}}
+{{#newline}}
+    public {{contextName}}Factory(DbContextOptions<{{contextName}}> options){{#newline}}
+    {{{#newline}}
+        Options = options;{{#newline}}
+    }{{#newline}}
+{{#newline}}
     public {{contextName}} CreateDbContext(string[] args){{#newline}}
     {{{#newline}}
         return new {{contextName}}();{{#newline}}
+    }{{#newline}}
+{{#newline}}
+    public {{contextName}} CreateDbContext(){{#newline}}
+    {{{#newline}}
+        return new {{contextName}}(Options);{{#newline}}
+    }{{#newline}}
+{{#newline}}
+    public {{contextName}} CreateDbContext(DbContextOptions<{{contextName}}> options){{#newline}}
+    {{{#newline}}
+        return options == null{{#newline}}
+            ? new {{contextName}}(){{#newline}}
+            : new {{contextName}}(options);{{#newline}}
     }{{#newline}}
 }";
         }

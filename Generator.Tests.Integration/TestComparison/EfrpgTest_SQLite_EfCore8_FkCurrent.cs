@@ -134,9 +134,32 @@ namespace Efrpg.SQLite
 
     public class MyDbContextFactory : IDesignTimeDbContextFactory<MyDbContext>
     {
+        private readonly DbContextOptions<MyDbContext> Options;
+
+        public MyDbContextFactory()
+        {
+        }
+
+        public MyDbContextFactory(DbContextOptions<MyDbContext> options)
+        {
+            Options = options;
+        }
+
         public MyDbContext CreateDbContext(string[] args)
         {
             return new MyDbContext();
+        }
+
+        public MyDbContext CreateDbContext()
+        {
+            return new MyDbContext(Options);
+        }
+
+        public MyDbContext CreateDbContext(DbContextOptions<MyDbContext> options)
+        {
+            return options == null
+                ? new MyDbContext()
+                : new MyDbContext(options);
         }
     }
 

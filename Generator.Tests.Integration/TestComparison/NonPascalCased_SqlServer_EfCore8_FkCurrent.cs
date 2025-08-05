@@ -2214,9 +2214,32 @@ namespace Efrpg.V4TestE8
 
     public class Efrpg_db_contextFactory : IDesignTimeDbContextFactory<Efrpg_db_context>
     {
+        private readonly DbContextOptions<Efrpg_db_context> Options;
+
+        public Efrpg_db_contextFactory()
+        {
+        }
+
+        public Efrpg_db_contextFactory(DbContextOptions<Efrpg_db_context> options)
+        {
+            Options = options;
+        }
+
         public Efrpg_db_context CreateDbContext(string[] args)
         {
             return new Efrpg_db_context();
+        }
+
+        public Efrpg_db_context CreateDbContext()
+        {
+            return new Efrpg_db_context(Options);
+        }
+
+        public Efrpg_db_context CreateDbContext(DbContextOptions<Efrpg_db_context> options)
+        {
+            return options == null
+                ? new Efrpg_db_context()
+                : new Efrpg_db_context(options);
         }
     }
 

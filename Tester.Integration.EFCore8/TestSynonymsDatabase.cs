@@ -213,9 +213,32 @@ namespace TestSynonymsDatabase
 
     public class TestDbContextFactory : IDesignTimeDbContextFactory<TestDbContext>
     {
+        private readonly DbContextOptions<TestDbContext> Options;
+
+        public TestDbContextFactory()
+        {
+        }
+
+        public TestDbContextFactory(DbContextOptions<TestDbContext> options)
+        {
+            Options = options;
+        }
+
         public TestDbContext CreateDbContext(string[] args)
         {
             return new TestDbContext();
+        }
+
+        public TestDbContext CreateDbContext()
+        {
+            return new TestDbContext(Options);
+        }
+
+        public TestDbContext CreateDbContext(DbContextOptions<TestDbContext> options)
+        {
+            return options == null
+                ? new TestDbContext()
+                : new TestDbContext(options);
         }
     }
 

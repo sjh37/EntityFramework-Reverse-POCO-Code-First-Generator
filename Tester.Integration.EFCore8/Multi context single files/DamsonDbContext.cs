@@ -113,9 +113,32 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesPlum
 
     public class DamsonDbContextFactory : IDesignTimeDbContextFactory<DamsonDbContext>
     {
+        private readonly DbContextOptions<DamsonDbContext> Options;
+
+        public DamsonDbContextFactory()
+        {
+        }
+
+        public DamsonDbContextFactory(DbContextOptions<DamsonDbContext> options)
+        {
+            Options = options;
+        }
+
         public DamsonDbContext CreateDbContext(string[] args)
         {
             return new DamsonDbContext();
+        }
+
+        public DamsonDbContext CreateDbContext()
+        {
+            return new DamsonDbContext(Options);
+        }
+
+        public DamsonDbContext CreateDbContext(DbContextOptions<DamsonDbContext> options)
+        {
+            return options == null
+                ? new DamsonDbContext()
+                : new DamsonDbContext(options);
         }
     }
 

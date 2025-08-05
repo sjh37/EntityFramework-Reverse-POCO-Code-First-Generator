@@ -2214,9 +2214,32 @@ namespace Efrpg.V3TestE8
 
     public class EfrpgTestDbContextFactory : IDesignTimeDbContextFactory<EfrpgTestDbContext>
     {
+        private readonly DbContextOptions<EfrpgTestDbContext> Options;
+
+        public EfrpgTestDbContextFactory()
+        {
+        }
+
+        public EfrpgTestDbContextFactory(DbContextOptions<EfrpgTestDbContext> options)
+        {
+            Options = options;
+        }
+
         public EfrpgTestDbContext CreateDbContext(string[] args)
         {
             return new EfrpgTestDbContext();
+        }
+
+        public EfrpgTestDbContext CreateDbContext()
+        {
+            return new EfrpgTestDbContext(Options);
+        }
+
+        public EfrpgTestDbContext CreateDbContext(DbContextOptions<EfrpgTestDbContext> options)
+        {
+            return options == null
+                ? new EfrpgTestDbContext()
+                : new EfrpgTestDbContext(options);
         }
     }
 

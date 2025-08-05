@@ -110,9 +110,32 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesCherry
 
     public class CherryDbContextFactory : IDesignTimeDbContextFactory<CherryDbContext>
     {
+        private readonly DbContextOptions<CherryDbContext> Options;
+
+        public CherryDbContextFactory()
+        {
+        }
+
+        public CherryDbContextFactory(DbContextOptions<CherryDbContext> options)
+        {
+            Options = options;
+        }
+
         public CherryDbContext CreateDbContext(string[] args)
         {
             return new CherryDbContext();
+        }
+
+        public CherryDbContext CreateDbContext()
+        {
+            return new CherryDbContext(Options);
+        }
+
+        public CherryDbContext CreateDbContext(DbContextOptions<CherryDbContext> options)
+        {
+            return options == null
+                ? new CherryDbContext()
+                : new CherryDbContext(options);
         }
     }
 

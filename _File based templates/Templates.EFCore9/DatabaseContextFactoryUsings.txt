@@ -1,2 +1,3 @@
+Microsoft.EntityFrameworkCore
 Microsoft.EntityFrameworkCore.Design
 System.CodeDom.Compiler

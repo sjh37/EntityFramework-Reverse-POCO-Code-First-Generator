@@ -113,9 +113,32 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesAppleDbContext
 
     public class AppleDbContextFactory : IDesignTimeDbContextFactory<AppleDbContext>
     {
+        private readonly DbContextOptions<AppleDbContext> Options;
+
+        public AppleDbContextFactory()
+        {
+        }
+
+        public AppleDbContextFactory(DbContextOptions<AppleDbContext> options)
+        {
+            Options = options;
+        }
+
         public AppleDbContext CreateDbContext(string[] args)
         {
             return new AppleDbContext();
+        }
+
+        public AppleDbContext CreateDbContext()
+        {
+            return new AppleDbContext(Options);
+        }
+
+        public AppleDbContext CreateDbContext(DbContextOptions<AppleDbContext> options)
+        {
+            return options == null
+                ? new AppleDbContext()
+                : new AppleDbContext(options);
         }
     }
 
