@@ -259,8 +259,10 @@ ORDER BY R.ROUTINE_SCHEMA, R.ROUTINE_NAME, P.ORDINAL_POSITION;";
 
         protected override string SequenceSQL()
         {
-            // MySQL 5.7 doesn't support sequences
-            // MySQL 8.0+ does, but targeting 5.7+ for broader compatibility
+            // MySQL does not have native SEQUENCE objects like Oracle or PostgreSQL.
+            // MySQL uses AUTO_INCREMENT on table columns for sequence-like behavior,
+            // which is already handled in TableSQL() via the 'C.EXTRA LIKE '%auto_increment%'' check.
+            // This applies to all MySQL versions including 8.0+.
             return string.Empty;
         }
 
