@@ -1,2 +1,0 @@
-Microsoft.EntityFrameworkCore.Design
-System.CodeDom.Compiler

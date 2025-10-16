@@ -147,9 +147,32 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
 
     public class MyDbContextSqlCE4Factory : IDesignTimeDbContextFactory<MyDbContextSqlCE4>
     {
+        private readonly DbContextOptions<MyDbContextSqlCE4> Options;
+
+        public MyDbContextSqlCE4Factory()
+        {
+        }
+
+        public MyDbContextSqlCE4Factory(DbContextOptions<MyDbContextSqlCE4> options)
+        {
+            Options = options;
+        }
+
         public MyDbContextSqlCE4 CreateDbContext(string[] args)
         {
             return new MyDbContextSqlCE4();
+        }
+
+        public MyDbContextSqlCE4 CreateDbContext()
+        {
+            return new MyDbContextSqlCE4(Options);
+        }
+
+        public MyDbContextSqlCE4 CreateDbContext(DbContextOptions<MyDbContextSqlCE4> options)
+        {
+            return options == null
+                ? new MyDbContextSqlCE4()
+                : new MyDbContextSqlCE4(options);
         }
     }
 

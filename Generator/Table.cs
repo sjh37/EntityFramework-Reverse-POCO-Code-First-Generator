@@ -83,7 +83,7 @@ namespace Efrpg
             if (HasPrimaryKey)
                 return; // Table has at least one primary key
 
-            if (IsView && Settings.IsEfCore3Plus())
+            if (IsView && Settings.IsEfCore8Plus())
                 return; // EfCore 3 supports views by use of .HasNoKey() and .ToView("view name");
 
             // This table is not allowed in EntityFramework v6 / EfCore 2 as it does not have a primary key.
@@ -293,7 +293,7 @@ namespace Efrpg
                 return;
             }
             
-            if(Settings.IsEfCore6Plus())
+            if(Settings.IsEfCore8Plus())
             {
                 UsesDictionary = true;
                 MappingConfiguration.Add(string.Format(@"HasMany<{6}>(t => t.{0}).WithMany(t => t.{1}).UsingEntity<Dictionary<string, object>>(""{2}"",

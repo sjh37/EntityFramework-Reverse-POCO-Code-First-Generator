@@ -7,13 +7,13 @@
             switch (Settings.GenerationLanguage)
             {
                 case GenerationLanguage.CSharp:
-                    return new MySqlToCSharp();
+                    return new OracleToCSharp();
 
                 case GenerationLanguage.Javascript:
                     // Not yet supported
 
                 default:
-                    return new MySqlToCSharp();
+                    return new OracleToCSharp();
             }
         }
     }

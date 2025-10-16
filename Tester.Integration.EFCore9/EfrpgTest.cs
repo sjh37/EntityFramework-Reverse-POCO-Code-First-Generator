@@ -2260,9 +2260,32 @@ namespace V9EfrpgTest
 
     public partial class V9EfrpgTestDbContextFactory : IDesignTimeDbContextFactory<V9EfrpgTestDbContext>
     {
+        private readonly DbContextOptions<V9EfrpgTestDbContext> Options;
+
+        public V9EfrpgTestDbContextFactory()
+        {
+        }
+
+        public V9EfrpgTestDbContextFactory(DbContextOptions<V9EfrpgTestDbContext> options)
+        {
+            Options = options;
+        }
+
         public V9EfrpgTestDbContext CreateDbContext(string[] args)
         {
             return new V9EfrpgTestDbContext();
+        }
+
+        public V9EfrpgTestDbContext CreateDbContext()
+        {
+            return new V9EfrpgTestDbContext(Options);
+        }
+
+        public V9EfrpgTestDbContext CreateDbContext(DbContextOptions<V9EfrpgTestDbContext> options)
+        {
+            return options == null
+                ? new V9EfrpgTestDbContext()
+                : new V9EfrpgTestDbContext(options);
         }
     }
 

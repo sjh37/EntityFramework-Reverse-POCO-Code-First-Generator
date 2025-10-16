@@ -283,14 +283,14 @@ namespace Generator.Tests.Unit
             Console.WriteLine(testOrder); // Keep this field to make sure test cases run in order as it's important
 
             // Arrange
-            var (table, foreignKey) = PrepareTest(NameHumanCase, columns, fkTableName, pkTableName, includeReverseNavigation, fkColumn, ForeignKeyNamingStrategy.Legacy);
+            var (table, foreignKey) = PrepareTest(NameHumanCase, columns, fkTableName, pkTableName, includeReverseNavigation, fkColumn, ForeignKeyNamingStrategy.Current);
 
             // Act
             var result = table.GetUniqueForeignKeyName(isParent, tableNameHumanCase, foreignKey, checkForFkNameClashes, makeSingular, relationship);
 
             // Assert
             Assert.AreEqual(expected, result);
-            Assert.AreEqual(ForeignKeyNamingStrategy.Legacy, Settings.ForeignKeyNamingStrategy);
+            Assert.AreEqual(ForeignKeyNamingStrategy.Current, Settings.ForeignKeyNamingStrategy);
         }
 
         /*[Test] // Always run all cases together as they build up ReverseNavigationUniquePropName

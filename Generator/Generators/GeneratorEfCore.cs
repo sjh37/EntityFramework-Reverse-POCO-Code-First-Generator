@@ -26,7 +26,7 @@ namespace Efrpg.Generators
         protected override void SetupEntity(Column c)
         {
             if (c.PropertyType == "Hierarchy.HierarchyId")
-                c.PropertyType = Settings.IsEfCore6Plus() ? "HierarchyId" : "Microsoft.SqlServer.Types.SqlHierarchyId";
+                c.PropertyType = Settings.IsEfCore8Plus() ? "HierarchyId" : "Microsoft.SqlServer.Types.SqlHierarchyId";
 
             var comments = string.Empty;
             if (Settings.IncludeComments != CommentsStyle.None)
@@ -118,7 +118,7 @@ namespace Efrpg.Generators
                 else
                     sb.AppendFormat(".HasColumnType(\"{0}{1}\")", c.SqlPropertyType, columnTypeParameters);
 
-                if (Settings.IsEfCore6Plus())
+                if (Settings.IsEfCore8Plus())
                 {
                     if ((c.Precision > 0 || c.Scale > 0) && DatabaseReader.IsPrecisionAndScaleType(c.SqlPropertyType))
                         sb.AppendFormat(".HasPrecision({0},{1})", c.Precision, c.Scale);
@@ -168,8 +168,8 @@ namespace Efrpg.Generators
 
         public override string PrimaryKeyModelBuilder(Table t)
         {
-            var isEfCore3Plus = Settings.IsEfCore3Plus();
-            if (isEfCore3Plus && t.IsView && !t.HasPrimaryKey)
+            var IsEfCore8Plus = Settings.IsEfCore8Plus();
+            if (IsEfCore8Plus && t.IsView && !t.HasPrimaryKey)
                 return "builder.HasNoKey();";
 
             if (t.PrimaryKeys.All(k => k.Hidden))
@@ -197,7 +197,7 @@ namespace Efrpg.Generators
             sb.Append("\")");
 
             if (indexesForName.All(x => x.IsClustered))
-                sb.Append(isEfCore3Plus ? ".IsClustered()" : ".ForSqlServerIsClustered()");
+                sb.Append(IsEfCore8Plus ? ".IsClustered()" : ".ForSqlServerIsClustered()");
 
             sb.Append(";");
 
@@ -210,8 +210,7 @@ namespace Efrpg.Generators
             if (t.Indexes == null || !t.Indexes.Any())
                 return indexes;
 
-            var isEfCore3Plus = Settings.IsEfCore3Plus();
-            var isEfCore5Plus = Settings.IsEfCore6Plus();
+            var isEfCore8Plus = Settings.IsEfCore8Plus();
             var indexNames = t.Indexes.Where(x => !x.IsPrimaryKey).Select(x => x.IndexName).Distinct();
             foreach (var indexName in indexNames.OrderBy(x => x))
             {
@@ -254,7 +253,7 @@ namespace Efrpg.Generators
                 sb.Append(")"); // Close bracket for HasIndex()
 
                 
-                sb.Append(isEfCore5Plus ? ".HasDatabaseName(\"" : ".HasName(\"");
+                sb.Append(isEfCore8Plus ? ".HasDatabaseName(\"" : ".HasName(\"");
                 sb.Append(indexName);
                 sb.Append("\")");
 
@@ -262,7 +261,7 @@ namespace Efrpg.Generators
                     sb.Append(".IsUnique()");
 
                 if (indexesForName.All(x => x.IsClustered))
-                    sb.Append(isEfCore3Plus ? ".IsClustered()" : ".ForSqlServerIsClustered()");
+                    sb.Append(isEfCore8Plus ? ".IsClustered()" : ".ForSqlServerIsClustered()");
 
                 sb.Append(";");
                 indexes.Add(sb.ToString());

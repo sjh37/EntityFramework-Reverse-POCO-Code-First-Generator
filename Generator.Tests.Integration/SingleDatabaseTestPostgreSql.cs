@@ -46,9 +46,9 @@ namespace Generator.Tests.Integration
 
         [Test]
         [NonParallelizable]
-        [TestCase(ForeignKeyNamingStrategy.Legacy, "EfrpgTest", "EfrpgTest")]
-        [TestCase(ForeignKeyNamingStrategy.Legacy, "Northwind", "Northwind")]
-        [TestCase(ForeignKeyNamingStrategy.Legacy, "PostgisTest", "postgis_test")]
+        [TestCase(ForeignKeyNamingStrategy.Current, "EfrpgTest", "EfrpgTest")]
+        [TestCase(ForeignKeyNamingStrategy.Current, "Northwind", "Northwind")]
+        [TestCase(ForeignKeyNamingStrategy.Current, "PostgisTest", "postgis_test")]
         //[TestCase(ForeignKeyNamingStrategy.LatestMyDbContext
         public void ReverseEngineerPostgreSQL_EfCore(ForeignKeyNamingStrategy foreignKeyNamingStrategy, string filename, string database)
         {
@@ -68,7 +68,7 @@ namespace Generator.Tests.Integration
         public void ReverseEngineerPostgreSQL_Ef6()
         {
             // Arrange
-            SetupPostgreSQL("EfrpgTest", "MyEf6DbContext", "MyEf6DbContext", TemplateType.Ef6, GeneratorType.Ef6, ForeignKeyNamingStrategy.Legacy);
+            SetupPostgreSQL("EfrpgTest", "MyEf6DbContext", "MyEf6DbContext", TemplateType.Ef6, GeneratorType.Ef6, ForeignKeyNamingStrategy.Current);
             Settings.GenerateSeparateFiles = false;
             Settings.UseMappingTables = false;
 

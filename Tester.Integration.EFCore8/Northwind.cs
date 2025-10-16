@@ -512,9 +512,32 @@ namespace Tester.Integration.EFCore8
 
     public class NorthwindDbContextFactory : IDesignTimeDbContextFactory<NorthwindDbContext>
     {
+        private readonly DbContextOptions<NorthwindDbContext> Options;
+
+        public NorthwindDbContextFactory()
+        {
+        }
+
+        public NorthwindDbContextFactory(DbContextOptions<NorthwindDbContext> options)
+        {
+            Options = options;
+        }
+
         public NorthwindDbContext CreateDbContext(string[] args)
         {
             return new NorthwindDbContext();
+        }
+
+        public NorthwindDbContext CreateDbContext()
+        {
+            return new NorthwindDbContext(Options);
+        }
+
+        public NorthwindDbContext CreateDbContext(DbContextOptions<NorthwindDbContext> options)
+        {
+            return options == null
+                ? new NorthwindDbContext()
+                : new NorthwindDbContext(options);
         }
     }
 
