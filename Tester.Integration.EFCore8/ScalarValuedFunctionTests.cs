@@ -55,7 +55,7 @@ public class ScalarValuedFunctionTests
 
         foreach (var row in result)
         {
-            Console.WriteLine($"Sale = {row.Sale} Net Sale = {row.NetSale}");
+            TestContext.Out.WriteLine($"Sale = {row.Sale} Net Sale = {row.NetSale}");
         }
     }
 }

@@ -14,7 +14,7 @@
         public void ToLiteral(string input, string expected)
         {
             Assert.AreEqual(input, expected);
-            Console.WriteLine(input);
+            TestContext.Out.WriteLine(input);
             //var result = input.ToLiteral();
             var result = input.StringLiteral();
             Assert.AreEqual(expected, result);

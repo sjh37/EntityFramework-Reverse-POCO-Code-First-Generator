@@ -99,7 +99,7 @@ namespace Generator.Tests.Integration
             // Delete old generated files
             foreach (var fullPath in _generatedFullPaths)
             {
-                Console.WriteLine($"Deleting   {fullPath}");
+                TestContext.Out.WriteLine($"Deleting   {fullPath}");
                 if (File.Exists(fullPath))
                     File.Delete(fullPath);
             }
@@ -132,12 +132,12 @@ namespace Generator.Tests.Integration
 
             stopwatch.Stop();
 
-            Console.WriteLine("Duration: {0:F1} seconds, Generator {1:F1} seconds", stopwatch.ElapsedMilliseconds / 1000.0, stopwatchGenerator.ElapsedMilliseconds / 1000.0);
+            TestContext.Out.WriteLine("Duration: {0:F1} seconds, Generator {1:F1} seconds", stopwatch.ElapsedMilliseconds / 1000.0, stopwatchGenerator.ElapsedMilliseconds / 1000.0);
             foreach (var file in _generatedFullPaths)
             {
-                Console.WriteLine($"Writing to {file}");
+                TestContext.Out.WriteLine($"Writing to {file}");
             }
-            Console.WriteLine();
+            TestContext.Out.WriteLine();
 
             if (outer.FileData.Length > 0 && _generatedFullPaths.Length == 1)
             {
@@ -197,13 +197,13 @@ namespace Generator.Tests.Integration
                 var testComparison = File.ReadAllText(comparisonFile);
                 var generated = File.ReadAllText(generatedPath);
 
-                Console.WriteLine(comparisonFile);
-                Console.WriteLine(generatedPath);
-                Console.WriteLine();
+                TestContext.Out.WriteLine(comparisonFile);
+                TestContext.Out.WriteLine(generatedPath);
+                TestContext.Out.WriteLine();
 
                 Assert.AreEqual(testComparison, generated);
-                Console.WriteLine("*** OK ***");
-                Console.WriteLine("----------------------");
+                TestContext.Out.WriteLine("*** OK ***");
+                TestContext.Out.WriteLine("----------------------");
             }
         }*/
 
@@ -219,12 +219,12 @@ namespace Generator.Tests.Integration
                 var testComparison = File.ReadAllText(testComparisonPath);
                 var generated = File.ReadAllText(_generatedFullPaths[n]);
 
-                Console.WriteLine(testComparisonPath);
-                Console.WriteLine(_generatedFullPaths[n]);
+                TestContext.Out.WriteLine(testComparisonPath);
+                TestContext.Out.WriteLine(_generatedFullPaths[n]);
 
                 Assert.AreEqual(testComparison, generated);
-                Console.WriteLine("*** OK ***");
-                Console.WriteLine("----------------------");
+                TestContext.Out.WriteLine("*** OK ***");
+                TestContext.Out.WriteLine("----------------------");
             }
         }
     }

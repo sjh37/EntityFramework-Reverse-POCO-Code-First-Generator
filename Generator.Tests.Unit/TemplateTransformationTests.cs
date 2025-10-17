@@ -26,7 +26,7 @@ namespace Generator.Tests.Unit
 
             // Act
             var output = Template.Transform(template, data);
-            Console.WriteLine(output);
+            TestContext.Out.WriteLine(output);
 
             // Assert
             Assert.IsNotNull(output);
@@ -53,7 +53,7 @@ namespace Generator.Tests.Unit
 
             // Act
             var output = Template.Transform(template, data);
-            Console.WriteLine(output);
+            TestContext.Out.WriteLine(output);
 
             // Assert
             Assert.IsNotNull(output);
@@ -81,7 +81,7 @@ namespace Generator.Tests.Unit
 
             // Act
             var output = Template.Transform(template, data);
-            Console.WriteLine(output);
+            TestContext.Out.WriteLine(output);
             
             // Assert
             Assert.AreEqual(@"public class TestContextFactory : System.Data.Entity.Infrastructure.IDbContextFactory<TestContext>
@@ -117,7 +117,7 @@ namespace Generator.Tests.Unit
             var parser = new FormatCompiler();
             var mustacheGenerator = parser.Compile(template);
             var output = mustacheGenerator.Render(data);
-            Console.WriteLine(output);
+            TestContext.Out.WriteLine(output);
             
             // Assert
             Assert.AreEqual(@"First line

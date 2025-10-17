@@ -93,10 +93,10 @@ namespace Generator.Tests.Integration
 
             stopwatch.Stop();
 
-            Console.WriteLine("Duration: {0:F1} seconds, Generator {1:F1} seconds", stopwatch.ElapsedMilliseconds / 1000.0,
+            TestContext.Out.WriteLine("Duration: {0:F1} seconds, Generator {1:F1} seconds", stopwatch.ElapsedMilliseconds / 1000.0,
                 stopwatchGenerator.ElapsedMilliseconds / 1000.0);
-            Console.WriteLine($"Writing to {fullPath}");
-            Console.WriteLine();
+            TestContext.Out.WriteLine($"Writing to {fullPath}");
+            TestContext.Out.WriteLine();
 
             if (outer.FileData.Length > 0)
                 using (var sw = new StreamWriter(fullPath))
@@ -113,8 +113,8 @@ namespace Generator.Tests.Integration
             if (!string.IsNullOrEmpty(subFolder))
                 testRootPath = Path.Combine(testRootPath, subFolder);
 
-            Console.WriteLine("Reading from: " + testRootPath);
-            Console.WriteLine();
+            TestContext.Out.WriteLine("Reading from: " + testRootPath);
+            TestContext.Out.WriteLine();
 
             var testComparisonFiles = Directory.GetFiles(testRootPath);
             var generatedFiles = Directory.GetFiles(Settings.Root);
@@ -128,9 +128,9 @@ namespace Generator.Tests.Integration
                 var testComparison = File.ReadAllText(comparisonFile);
                 var generated = File.ReadAllText(generatedPath);
 
-                Console.WriteLine(comparisonFile);
-                Console.WriteLine(generatedPath);
-                Console.WriteLine();
+                TestContext.Out.WriteLine(comparisonFile);
+                TestContext.Out.WriteLine(generatedPath);
+                TestContext.Out.WriteLine();
 
                 Assert.AreEqual(testComparison, generated);
             }
@@ -145,8 +145,8 @@ namespace Generator.Tests.Integration
             var generatedPath = Path.Combine(Settings.Root, comparisonFile);
             var generated = File.ReadAllText(generatedPath);
 
-            Console.WriteLine(testComparisonPath);
-            Console.WriteLine(generatedPath);
+            TestContext.Out.WriteLine(testComparisonPath);
+            TestContext.Out.WriteLine(generatedPath);
 
             Assert.AreEqual(testComparison, generated);
         }
