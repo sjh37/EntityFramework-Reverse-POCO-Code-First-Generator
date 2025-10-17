@@ -110,7 +110,7 @@ namespace Generator.Tests.Unit
         public void DisplayName(string test, string expected)
         {
             // Act
-            Console.WriteLine(test);
+            TestContext.Out.WriteLine(test);
             var displayName = Column.ToDisplayName(test);
 
             // Assert

@@ -237,7 +237,7 @@ namespace Generator.Tests.Unit
             };
 
             for (var n = 0; n < expected.Length; n++)
-                Console.WriteLine($"{set[n].FkColumn}\t{set[n].PkColumn}\t{set[n].ConstraintName}\t{set[n].Ordinal}");
+                TestContext.Out.WriteLine($"{set[n].FkColumn}\t{set[n].PkColumn}\t{set[n].ConstraintName}\t{set[n].Ordinal}");
 
             Assert.AreEqual(expected.Length, set.Length);
 
@@ -280,7 +280,7 @@ namespace Generator.Tests.Unit
         public void LegacyForeignKeyNames(string testOrder, string expected, string NameHumanCase, string columns, bool isParent, string tableNameHumanCase, bool checkForFkNameClashes,
             bool makeSingular, Relationship relationship, string fkTableName, string pkTableName, bool includeReverseNavigation, string fkColumn)
         {
-            Console.WriteLine(testOrder); // Keep this field to make sure test cases run in order as it's important
+            TestContext.Out.WriteLine(testOrder); // Keep this field to make sure test cases run in order as it's important
 
             // Arrange
             var (table, foreignKey) = PrepareTest(NameHumanCase, columns, fkTableName, pkTableName, includeReverseNavigation, fkColumn, ForeignKeyNamingStrategy.Current);
@@ -323,7 +323,7 @@ namespace Generator.Tests.Unit
         public void LatestForeignKeyNames(string testOrder, string expected, string NameHumanCase, string columns, bool isParent, string tableNameHumanCase, bool checkForFkNameClashes,
             bool makeSingular, Relationship relationship, string fkTableName, string pkTableName, bool includeReverseNavigation, string fkColumn)
         {
-            Console.WriteLine(testOrder); // Keep this field to make sure test cases run in order as it's important
+            TestContext.Out.WriteLine(testOrder); // Keep this field to make sure test cases run in order as it's important
 
             // Arrange
             var (table, foreignKey) = PrepareTest(NameHumanCase, columns, fkTableName, pkTableName, includeReverseNavigation, fkColumn, ForeignKeyNamingStrategy.Latest);

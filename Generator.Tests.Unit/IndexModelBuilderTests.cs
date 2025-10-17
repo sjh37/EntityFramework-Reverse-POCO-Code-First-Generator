@@ -95,7 +95,7 @@ namespace Generator.Tests.Unit
                 var s = sut.IndexModelBuilder(column);
                 if(!string.IsNullOrWhiteSpace(s))
                     list.Add(s);
-                Console.WriteLine(s);
+                TestContext.Out.WriteLine(s);
             }
 
             // Assert
@@ -136,7 +136,7 @@ namespace Generator.Tests.Unit
             // Act
             var list = sut.IndexModelBuilder(_orderDetails);
             foreach (var str in list)
-                Console.WriteLine(str);
+                TestContext.Out.WriteLine(str);
 
             // Assert
             Assert.AreEqual(4, list.Count);

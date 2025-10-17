@@ -24,7 +24,7 @@ namespace Generator.Tests.Unit
             if (!string.IsNullOrEmpty(dataSource))
                 csBuilder.DataSource = dataSource;
 
-            Console.WriteLine(csBuilder.ConnectionString);
+            TestContext.Out.WriteLine(csBuilder.ConnectionString);
 
             return csBuilder.ConnectionString;
         }

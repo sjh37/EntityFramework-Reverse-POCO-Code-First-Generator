@@ -110,8 +110,8 @@ VALUES (1, 1, 3),
             cmd.ExecuteNonQuery();
             connection.Close();
 
-            Console.WriteLine($"Database: {Filename}");
-            Console.WriteLine($"ConnectionString: {ConnectionString}");
+            TestContext.Out.WriteLine($"Database: {Filename}");
+            TestContext.Out.WriteLine($"ConnectionString: {ConnectionString}");
         }
 
         [Test]

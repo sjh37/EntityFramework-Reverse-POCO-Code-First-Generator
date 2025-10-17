@@ -107,7 +107,7 @@ namespace BuildTT.UnitTests
             Assert.IsNotNull(result);
             foreach (var s in result)
             {
-                Console.WriteLine(s);
+                TestContext.Out.WriteLine(s);
             }
             Assert.AreEqual(expectedCode, result);
         }
@@ -146,7 +146,7 @@ namespace BuildTT.UnitTests
             Assert.IsNotNull(result);
             foreach (var s in result)
             {
-                Console.WriteLine(s);
+                TestContext.Out.WriteLine(s);
             }
             Assert.AreEqual(expectedCode, result);
         }
