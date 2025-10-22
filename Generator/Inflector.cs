@@ -168,6 +168,9 @@ namespace Efrpg
             if (string.IsNullOrEmpty(word))
                 return string.Empty;
 
+            if (word.Length == 1)
+                return word.ToUpperInvariant();
+
             return string.Concat(word.Substring(0, 1).ToUpperInvariant(), word.Substring(1).ToLowerInvariant());
         }
 
@@ -180,6 +183,9 @@ namespace Efrpg
         {
             if (string.IsNullOrEmpty(word))
                 return string.Empty;
+
+            if (word.Length == 1)
+                return word.ToLowerInvariant();
 
             return string.Concat(word.Substring(0, 1).ToLowerInvariant(), word.Substring(1));
         }

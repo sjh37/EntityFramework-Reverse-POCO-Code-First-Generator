@@ -242,17 +242,21 @@ ORDER BY R.ROUTINE_SCHEMA, R.ROUTINE_NAME, P.ORDINAL_POSITION;";
             string schema = tableParts.Length > 1 ? tableParts[0] : string.Empty;
             string tableName = tableParts.Length > 1 ? tableParts[1] : table;
 
-            var sql = string.Format("SELECT `{0}` AS NameField, `{1}` AS ValueField", nameField, valueField);
+            var sql = string.Format("SELECT `{0}` AS NameField, `{1}` AS ValueField", 
+                EscapeMySqlIdentifier(nameField), 
+                EscapeMySqlIdentifier(valueField));
 
             if (!string.IsNullOrEmpty(groupField))
-                sql += string.Format(", `{0}` AS GroupField", groupField);
+                sql += string.Format(", `{0}` AS GroupField", EscapeMySqlIdentifier(groupField));
 
             if (!string.IsNullOrEmpty(schema))
-                sql += string.Format(" FROM `{0}`.`{1}`", schema, tableName);
+                sql += string.Format(" FROM `{0}`.`{1}`", 
+                    EscapeMySqlIdentifier(schema), 
+                    EscapeMySqlIdentifier(tableName));
             else
-                sql += string.Format(" FROM `{0}`", tableName);
+                sql += string.Format(" FROM `{0}`", EscapeMySqlIdentifier(tableName));
 
-            sql += string.Format(" ORDER BY `{0}`;", valueField);
+            sql += string.Format(" ORDER BY `{0}`;", EscapeMySqlIdentifier(valueField));
 
             return sql;
         }
@@ -313,19 +317,36 @@ ORDER BY TRIGGER_SCHEMA, EVENT_OBJECT_TABLE, TRIGGER_NAME;";
             return string.Empty;
         }
 
+        /// <summary>
+        /// Escapes a MySQL identifier by doubling any backticks within it.
+        /// This prevents SQL injection when constructing dynamic SQL with identifiers.
+        /// </summary>
+        /// <param name="identifier">The identifier to escape (table name, column name, schema name, etc.)</param>
+        /// <returns>The escaped identifier safe for use in backtick-quoted SQL</returns>
+        private static string EscapeMySqlIdentifier(string identifier)
+        {
+            if (string.IsNullOrEmpty(identifier))
+                return identifier;
+            
+            // In MySQL, backticks within an identifier must be escaped by doubling them
+            return identifier.Replace("`", "``");
+        }
+
         protected override string DefaultSchema(DbConnection conn)
         {
-            var cmd = GetCmd(conn);
-            if (cmd != null)
+            using (var cmd = GetCmd(conn))
             {
-                cmd.CommandText = "SELECT DATABASE()";
-                using (var rdr = cmd.ExecuteReader())
+                if (cmd != null)
                 {
-                    if (rdr.Read())
+                    cmd.CommandText = "SELECT DATABASE()";
+                    using (var rdr = cmd.ExecuteReader())
                     {
-                        var schema = rdr[0].ToString();
-                        if (!string.IsNullOrEmpty(schema))
-                            return schema;
+                        if (rdr.Read())
+                        {
+                            var schema = rdr[0].ToString();
+                            if (!string.IsNullOrEmpty(schema))
+                                return schema;
+                        }
                     }
                 }
             }
@@ -369,68 +390,72 @@ ORDER BY TRIGGER_SCHEMA, EVENT_OBJECT_TABLE, TRIGGER_NAME;";
         {
             try
             {
-                var cmd = GetCmd(conn);
-                if (cmd == null)
-                    return;
-
-                // Build parameter list for the procedure call
-                var paramList = new List<string>();
-                foreach (var param in proc.Parameters.OrderBy(p => p.Ordinal))
+                using (var cmd = GetCmd(conn))
                 {
-                    if (param.Mode == StoredProcedureParameterMode.In || 
-                        param.Mode == StoredProcedureParameterMode.InOut)
+                    if (cmd == null)
+                        return;
+
+                    // Build parameter list for the procedure call
+                    var paramList = new List<string>();
+                    foreach (var param in proc.Parameters.OrderBy(p => p.Ordinal))
                     {
-                        paramList.Add("NULL");
+                        if (param.Mode == StoredProcedureParameterMode.In || 
+                            param.Mode == StoredProcedureParameterMode.InOut)
+                        {
+                            paramList.Add("NULL");
+                        }
+                        else if (param.Mode == StoredProcedureParameterMode.Out)
+                        {
+                            paramList.Add("@" + param.Name);
+                        }
                     }
-                    else if (param.Mode == StoredProcedureParameterMode.Out)
+
+                    var paramString = paramList.Any() ? string.Join(", ", paramList) : string.Empty;
+
+                    // Try to get result set structure
+                    if (!proc.IsStoredProcedure)
                     {
-                        paramList.Add("@" + param.Name);
+                        // Functions return a single value, already handled by return type
+                        return;
                     }
-                }
 
-                var paramString = paramList.Any() ? string.Join(", ", paramList) : string.Empty;
+                    // For procedures, try to execute with NULL parameters to get result structure
+                    cmd.CommandText = string.Format("CALL `{0}`.`{1}`({2});", 
+                        EscapeMySqlIdentifier(proc.Schema.DbName), 
+                        EscapeMySqlIdentifier(proc.DbName), 
+                        paramString);
+                    cmd.CommandType = CommandType.Text;
 
-                // Try to get result set structure
-                if (!proc.IsStoredProcedure)
-                {
-                    // Functions return a single value, already handled by return type
-                    return;
-                }
-
-                // For procedures, try to execute with NULL parameters to get result structure
-                cmd.CommandText = string.Format("CALL `{0}`.`{1}`({2});", 
-                    proc.Schema.DbName, 
-                    proc.DbName, 
-                    paramString);
-                cmd.CommandType = CommandType.Text;
-
-                var ds = new DataSet();
-                try
-                {
-                    var da = _factory.CreateDataAdapter();
-                    if (da != null)
+                    var ds = new DataSet();
+                    try
                     {
-                        da.SelectCommand = cmd;
-                        da.Fill(ds);
+                        using (var da = _factory.CreateDataAdapter())
+                        {
+                            if (da != null)
+                            {
+                                da.SelectCommand = cmd;
+                                da.Fill(ds);
+                            }
+                        }
                     }
-                }
-                catch
-                {
-                    // Procedure might require specific parameters or have other issues
-                    // This is acceptable - we tried our best to infer the return type
-                }
+                    catch
+                    {
+                        // Procedure might require specific parameters or have other issues
+                        // This is acceptable - we tried our best to infer the return type
+                    }
 
-                // Tidy up parameters
-                foreach (var p in proc.Parameters)
-                    p.NameHumanCase = Regex.Replace(p.NameHumanCase, @"[^A-Za-z0-9@\s]*", string.Empty);
+                    // Tidy up parameters
+                    foreach (var p in proc.Parameters)
+                        p.NameHumanCase = Regex.Replace(p.NameHumanCase, @"[^A-Za-z0-9@\s]*", string.Empty);
 
-                for (var count = 0; count < ds.Tables.Count; count++)
-                {
-                    proc.ReturnModels.Add(ds.Tables[count].Columns.Cast<DataColumn>().ToList());
+                    for (var count = 0; count < ds.Tables.Count; count++)
+                    {
+                        proc.ReturnModels.Add(ds.Tables[count].Columns.Cast<DataColumn>().ToList());
+                    }
+
+                    proc.MergeModelsIfAllSame();
+                    Settings.ReadStoredProcReturnObjectCompleted(proc);
                 }
-
-                proc.MergeModelsIfAllSame();
-                Settings.ReadStoredProcReturnObjectCompleted(proc);
             }
             catch (Exception ex)
             {

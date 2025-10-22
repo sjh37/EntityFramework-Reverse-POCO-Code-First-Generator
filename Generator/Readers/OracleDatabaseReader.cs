@@ -403,15 +403,17 @@ ORDER BY ASYN.OWNER, ASYN.SYNONYM_NAME, ACOL.COLUMN_ID";
 
         protected override string DefaultSchema(DbConnection conn)
         {
-            var cmd = GetCmd(conn);
-            if (cmd != null)
+            using (var cmd = GetCmd(conn))
             {
-                cmd.CommandText = "SELECT SYS_CONTEXT('USERENV','CURRENT_SCHEMA') FROM DUAL";
-                using (var rdr = cmd.ExecuteReader())
+                if (cmd != null)
                 {
-                    if (rdr.Read())
+                    cmd.CommandText = "SELECT SYS_CONTEXT('USERENV','CURRENT_SCHEMA') FROM DUAL";
+                    using (var rdr = cmd.ExecuteReader())
                     {
-                        return rdr[0].ToString();
+                        if (rdr.Read())
+                        {
+                            return rdr[0].ToString();
+                        }
                     }
                 }
             }
@@ -455,39 +457,41 @@ ORDER BY ASYN.OWNER, ASYN.SYNONYM_NAME, ACOL.COLUMN_ID";
         {
             try
             {
-                var cmd = GetCmd(conn);
-                if (cmd == null)
-                    return;
-
-                // For Oracle functions, the return type is already captured in the metadata
-                if (!proc.IsStoredProcedure)
+                using (var cmd = GetCmd(conn))
                 {
-                    // Functions return a single value, already handled by return type from ALL_ARGUMENTS
-                    return;
-                }
+                    if (cmd == null)
+                        return;
 
-                // For procedures, Oracle can have REF CURSOR out parameters
-                // Analyzing these would require executing the procedure or inspecting PL/SQL source
-                // For now, we'll rely on the parameter metadata from ALL_ARGUMENTS
-                
-                // Build a basic call signature
-                var paramList = new List<string>();
-                foreach (var param in proc.Parameters.OrderBy(p => p.Ordinal))
-                {
-                    if (param.Mode == StoredProcedureParameterMode.In || 
-                        param.Mode == StoredProcedureParameterMode.InOut)
+                    // For Oracle functions, the return type is already captured in the metadata
+                    if (!proc.IsStoredProcedure)
                     {
-                        paramList.Add("NULL");
+                        // Functions return a single value, already handled by return type from ALL_ARGUMENTS
+                        return;
                     }
+
+                    // For procedures, Oracle can have REF CURSOR out parameters
+                    // Analyzing these would require executing the procedure or inspecting PL/SQL source
+                    // For now, we'll rely on the parameter metadata from ALL_ARGUMENTS
+                    
+                    // Build a basic call signature
+                    var paramList = new List<string>();
+                    foreach (var param in proc.Parameters.OrderBy(p => p.Ordinal))
+                    {
+                        if (param.Mode == StoredProcedureParameterMode.In || 
+                            param.Mode == StoredProcedureParameterMode.InOut)
+                        {
+                            paramList.Add("NULL");
+                        }
+                    }
+
+                    // Tidy up parameters
+                    foreach (var p in proc.Parameters)
+                        p.NameHumanCase = Regex.Replace(p.NameHumanCase, @"[^A-Za-z0-9@\s]*", string.Empty);
+
+                    // Oracle procedures with REF CURSOR parameters would need special handling
+                    // This is a complex scenario that may require manual configuration
+                    Settings.ReadStoredProcReturnObjectCompleted(proc);
                 }
-
-                // Tidy up parameters
-                foreach (var p in proc.Parameters)
-                    p.NameHumanCase = Regex.Replace(p.NameHumanCase, @"[^A-Za-z0-9@\s]*", string.Empty);
-
-                // Oracle procedures with REF CURSOR parameters would need special handling
-                // This is a complex scenario that may require manual configuration
-                Settings.ReadStoredProcReturnObjectCompleted(proc);
             }
             catch (Exception ex)
             {

@@ -1051,15 +1051,17 @@ SELECT SPECIFIC_SCHEMA, SPECIFIC_NAME, ROUTINE_TYPE, RETURN_DATA_TYPE, ORDINAL_P
         {
             try
             {
-                var cmd = GetCmd(conn);
-                if (cmd != null)
+                using (var cmd = GetCmd(conn))
                 {
-                    cmd.CommandText = "SELECT SCHEMA_NAME()";
-                    using (var rdr = cmd.ExecuteReader())
+                    if (cmd != null)
                     {
-                        if (rdr.Read())
+                        cmd.CommandText = "SELECT SCHEMA_NAME()";
+                        using (var rdr = cmd.ExecuteReader())
                         {
-                            return rdr[0].ToString();
+                            if (rdr.Read())
+                            {
+                                return rdr[0].ToString();
+                            }
                         }
                     }
                 }

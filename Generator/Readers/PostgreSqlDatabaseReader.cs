@@ -282,20 +282,22 @@ ORDER BY SchemaName, TableName, TriggerName;";
                 conn.ConnectionString = Settings.ConnectionString;
                 conn.Open();
 
-                var cmd = GetCmd(conn);
-                if (cmd == null)
-                    return;
+                using (var cmd = GetCmd(conn))
+                {
+                    if (cmd == null)
+                        return;
 
-                // Only functions return result sets in PostgreSQL
-                foreach (var sp in procs.Where(x => !x.IsStoredProcedure && !x.IsScalarValuedFunction))
-                    ReadFunctionReturnObject(cmd, sp);
+                    // Only functions return result sets in PostgreSQL
+                    foreach (var sp in procs.Where(x => !x.IsStoredProcedure && !x.IsScalarValuedFunction))
+                        ReadFunctionReturnObject(cmd, sp);
 
-                // Tidy up
-                cmd.CommandText = "DROP TABLE IF EXISTS efrpg_temp_table;";
-                if (cmd.Connection.State != ConnectionState.Open)
-                    cmd.Connection.Open();
-                cmd.ExecuteNonQuery();
-                cmd.Connection.Close();
+                    // Tidy up
+                    cmd.CommandText = "DROP TABLE IF EXISTS efrpg_temp_table;";
+                    if (cmd.Connection.State != ConnectionState.Open)
+                        cmd.Connection.Open();
+                    cmd.ExecuteNonQuery();
+                    cmd.Connection.Close();
+                }
             }
         }
 
