@@ -253,12 +253,13 @@ namespace Efrpg.Generators
         
         public void ReadDatabase()
         {
+            Settings.CheckSettings();
             LoadTables();
             LoadStoredProcs();
             LoadEnums();
             LoadSequences();
         }
-
+        
         public void LoadTables()
         {
             if (DatabaseReader == null ||

@@ -162,12 +162,13 @@ namespace Efrpg
             switch (relationship)
             {
                 case Relationship.OneToOne:
+                    var nullableMarker = Settings.NullableReverseNavigationProperties ? "?" : string.Empty;
                     ReverseNavigationProperty.Add(
                         new PropertyAndComments
                         {
                             AdditionalDataAnnotations = _filter.ForeignKeyAnnotationsProcessing(fkTable, this, propName, string.Empty),
                             PropertyName = propName,
-                            Definition = string.Format("{0} {1}{2} {3} {{ get; set; }}{4}", accessModifier, GetLazyLoadingMarker(), fkTable.NameHumanCaseWithSuffix(), propName, Settings.IncludeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
+                            Definition = string.Format("{0} {1}{2}{3} {4} {{ get; set; }}{5}", accessModifier, GetLazyLoadingMarker(), fkTable.NameHumanCaseWithSuffix(), nullableMarker, propName, Settings.IncludeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
                             Comments = string.Format("Parent (One-to-One) {0} pointed by [{1}].{2} ({3})", NameHumanCaseWithSuffix(), fkTable.DbName, fkNames, fks.First().ConstraintName)
                         }
                     );

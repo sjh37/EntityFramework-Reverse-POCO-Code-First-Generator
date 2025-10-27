@@ -2750,3 +2750,18 @@ BEGIN
 END;
 GO
 
+-- 854 Nullable reverse navigation properties via primary key foreign key relationship
+CREATE TABLE NullableReverseNavigationA
+(
+    Id UNIQUEIDENTIFIER NOT NULL,
+    [Data] NVARCHAR(100) NULL,
+    CONSTRAINT PK_NullableReverseNavigationA PRIMARY KEY (Id)
+);
+CREATE TABLE NullableReverseNavigationB
+(
+    Id UNIQUEIDENTIFIER NOT NULL,
+    [Data] NVARCHAR(100) NULL,
+    CONSTRAINT PK_NullableReverseNavigationB PRIMARY KEY (Id),
+    CONSTRAINT FK_NullableReverseNavigationB_Id FOREIGN KEY (Id) REFERENCES NullableReverseNavigationA (Id)
+);
+GO

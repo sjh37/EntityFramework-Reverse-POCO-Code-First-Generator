@@ -72,6 +72,8 @@ Entities\MultipleKey.cs
 Entities\NoPrimaryKey.cs
 Entities\NullableReverseNavA.cs
 Entities\NullableReverseNavB.cs
+Entities\NullableReverseNavigationA.cs
+Entities\NullableReverseNavigationB.cs
 Entities\Omega_Test.cs
 Entities\OneEightSix_Issue.cs
 Entities\OneEightSix_IssueUploadedFile.cs
@@ -190,6 +192,8 @@ Configuration\Issue47_UserRoleConfiguration.cs
 Configuration\MultipleKeyConfiguration.cs
 Configuration\NullableReverseNavAConfiguration.cs
 Configuration\NullableReverseNavBConfiguration.cs
+Configuration\NullableReverseNavigationAConfiguration.cs
+Configuration\NullableReverseNavigationBConfiguration.cs
 Configuration\OneEightSix_IssueConfiguration.cs
 Configuration\OneEightSix_IssueUploadedFileConfiguration.cs
 Configuration\OneEightSix_UploadedFileConfiguration.cs

@@ -85,15 +85,16 @@ namespace Efrpg
         public static string FileExtension                  = ".cs";
 
         // Code suppression *******************************************************************************
-        public static bool UseRegions                       = true;  // If false, suppresses the use of #region
-        public static bool UseNamespace                     = true;  // If false, suppresses the writing of a namespace
-        public static bool UsePragma                        = false;  // If false, suppresses the writing of #pragma
-        public static bool AllowNullStrings                 = false; // If true, will allow string? properties and will add '#nullable enable' to the top of each file
-        public static bool UseResharper                     = false; // If true, will add a list of 'ReSharper disable' comments to the top of each file
-        public static bool ShowLicenseInfo                  = false; // If true, will add the licence info comment to the top of each file
-        public static bool IncludeConnectionSettingComments = false; // Add comments describing connection settings used to generate file
-        public static bool IncludeCodeGeneratedAttribute    = false; // If true, will include the [GeneratedCode] attribute before classes, false to remove it.
-        public static bool IncludeColumnsWithDefaults       = true;  // If true, will set properties to the default value from the database.ro
+        public static bool UseRegions                          = true;  // If false, suppresses the use of #region
+        public static bool UseNamespace                        = true;  // If false, suppresses the writing of a namespace
+        public static bool UsePragma                           = false; // If false, suppresses the writing of #pragma
+        public static bool AllowNullStrings                    = false; // If true, will allow string? properties and will add '#nullable enable' to the top of each file
+        public static bool NullableReverseNavigationProperties = true;  // If true, reverse navigation properties for one-to-one relationships will be nullable (e.g. MyEntity? MyEntity). The parent entity can exist without the child entity.
+        public static bool UseResharper                        = false; // If true, will add a list of 'ReSharper disable' comments to the top of each file
+        public static bool ShowLicenseInfo                     = false; // If true, will add the licence info comment to the top of each file
+        public static bool IncludeConnectionSettingComments    = false; // Add comments describing connection settings used to generate file
+        public static bool IncludeCodeGeneratedAttribute       = false; // If true, will include the [GeneratedCode] attribute before classes, false to remove it.
+        public static bool IncludeColumnsWithDefaults          = true;  // If true, will set properties to the default value from the database.ro
 
         // Create enumerations from database tables
         // List the enumeration tables you want read and generated for
@@ -817,5 +818,16 @@ namespace Efrpg
         public static string Root;
         public static string TemplateFile;
         public static int FilterCount;
+
+        public static void CheckSettings()
+        {
+            if (TemplateType == TemplateType.Ef6 ||
+                TemplateType == TemplateType.FileBasedEf6)
+            {
+                // Nullable reference types are only supported in language version 8.0 or greater
+                AllowNullStrings = false;
+                NullableReverseNavigationProperties = false;
+            }
+        }
     }
 }

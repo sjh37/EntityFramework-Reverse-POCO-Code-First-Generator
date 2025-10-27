@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using Efrpg.Templates;
+using System.Text;
 
 namespace Efrpg.Generators
 {
@@ -16,7 +17,7 @@ namespace Efrpg.Generators
             if (Settings.UseResharper)
                 header.AppendLine("// ReSharper disable All");
 
-            if (Settings.AllowNullStrings)
+            if (Settings.AllowNullStrings || Settings.NullableReverseNavigationProperties)
                 header.AppendLine("#nullable enable");
             
             if (Settings.UsePragma)

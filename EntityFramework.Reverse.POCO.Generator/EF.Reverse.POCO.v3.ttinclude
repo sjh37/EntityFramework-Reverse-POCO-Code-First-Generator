@@ -111,15 +111,16 @@
         public static string FileExtension                  = ".cs";
 
         // Code suppression *******************************************************************************
-        public static bool UseRegions                       = true;  // If false, suppresses the use of #region
-        public static bool UseNamespace                     = true;  // If false, suppresses the writing of a namespace
-        public static bool UsePragma                        = false;  // If false, suppresses the writing of #pragma
-        public static bool AllowNullStrings                 = false; // If true, will allow string? properties and will add '#nullable enable' to the top of each file
-        public static bool UseResharper                     = false; // If true, will add a list of 'ReSharper disable' comments to the top of each file
-        public static bool ShowLicenseInfo                  = false; // If true, will add the licence info comment to the top of each file
-        public static bool IncludeConnectionSettingComments = false; // Add comments describing connection settings used to generate file
-        public static bool IncludeCodeGeneratedAttribute    = false; // If true, will include the [GeneratedCode] attribute before classes, false to remove it.
-        public static bool IncludeColumnsWithDefaults       = true;  // If true, will set properties to the default value from the database.ro
+        public static bool UseRegions                          = true;  // If false, suppresses the use of #region
+        public static bool UseNamespace                        = true;  // If false, suppresses the writing of a namespace
+        public static bool UsePragma                           = false; // If false, suppresses the writing of #pragma
+        public static bool AllowNullStrings                    = false; // If true, will allow string? properties and will add '#nullable enable' to the top of each file
+        public static bool NullableReverseNavigationProperties = true;  // If true, reverse navigation properties for one-to-one relationships will be nullable (e.g. MyEntity? MyEntity). The parent entity can exist without the child entity.
+        public static bool UseResharper                        = false; // If true, will add a list of 'ReSharper disable' comments to the top of each file
+        public static bool ShowLicenseInfo                     = false; // If true, will add the licence info comment to the top of each file
+        public static bool IncludeConnectionSettingComments    = false; // Add comments describing connection settings used to generate file
+        public static bool IncludeCodeGeneratedAttribute       = false; // If true, will include the [GeneratedCode] attribute before classes, false to remove it.
+        public static bool IncludeColumnsWithDefaults          = true;  // If true, will set properties to the default value from the database.ro
 
         // Create enumerations from database tables
         // List the enumeration tables you want read and generated for
@@ -843,6 +844,17 @@
         public static string Root;
         public static string TemplateFile;
         public static int FilterCount;
+
+        public static void CheckSettings()
+        {
+            if (TemplateType == TemplateType.Ef6 ||
+                TemplateType == TemplateType.FileBasedEf6)
+            {
+                // Nullable reference types are only supported in language version 8.0 or greater
+                AllowNullStrings = false;
+                NullableReverseNavigationProperties = false;
+            }
+        }
     }
 
     // Filtering **************************************************************************************************************************
@@ -4226,7 +4238,7 @@
             if (Settings.UseResharper)
                 header.AppendLine("// ReSharper disable All");
 
-            if (Settings.AllowNullStrings)
+            if (Settings.AllowNullStrings || Settings.NullableReverseNavigationProperties)
                 header.AppendLine("#nullable enable");
             
             if (Settings.UsePragma)
@@ -4502,12 +4514,13 @@
         
         public void ReadDatabase()
         {
+            Settings.CheckSettings();
             LoadTables();
             LoadStoredProcs();
             LoadEnums();
             LoadSequences();
         }
-
+        
         public void LoadTables()
         {
             if (DatabaseReader == null ||
@@ -17239,12 +17252,13 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             switch (relationship)
             {
                 case Relationship.OneToOne:
+                    var nullableMarker = Settings.NullableReverseNavigationProperties ? "?" : string.Empty;
                     ReverseNavigationProperty.Add(
                         new PropertyAndComments
                         {
                             AdditionalDataAnnotations = _filter.ForeignKeyAnnotationsProcessing(fkTable, this, propName, string.Empty),
                             PropertyName = propName,
-                            Definition = string.Format("{0} {1}{2} {3} {{ get; set; }}{4}", accessModifier, GetLazyLoadingMarker(), fkTable.NameHumanCaseWithSuffix(), propName, Settings.IncludeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
+                            Definition = string.Format("{0} {1}{2}{3} {4} {{ get; set; }}{5}", accessModifier, GetLazyLoadingMarker(), fkTable.NameHumanCaseWithSuffix(), nullableMarker, propName, Settings.IncludeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
                             Comments = string.Format("Parent (One-to-One) {0} pointed by [{1}].{2} ({3})", NameHumanCaseWithSuffix(), fkTable.DbName, fkNames, fks.First().ConstraintName)
                         }
                     );
