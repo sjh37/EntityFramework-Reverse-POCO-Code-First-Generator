@@ -9,7 +9,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     public class ASimpleExampleReturnModel
     {
         public int? id { get; set; }
-        public string stuff { get; set; }
+        public string stuff { get; set; } = null!;
     }
 
 }

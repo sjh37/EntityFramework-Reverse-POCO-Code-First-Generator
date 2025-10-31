@@ -9,7 +9,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     public class XmlDataV1ReturnModel
     {
         public DateTime? Column1 { get; set; }
-        public string Column2 { get; set; }
+        public string Column2 { get; set; } = null!;
     }
 
 }

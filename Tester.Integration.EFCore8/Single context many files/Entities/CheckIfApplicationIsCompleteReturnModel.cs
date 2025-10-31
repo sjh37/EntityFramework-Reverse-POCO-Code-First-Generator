@@ -8,8 +8,8 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
 {
     public class CheckIfApplicationIsCompleteReturnModel
     {
-        public string Key { get; set; }
-        public string Value { get; set; }
+        public string Key { get; set; } = null!;
+        public string Value { get; set; } = null!;
     }
 
 }

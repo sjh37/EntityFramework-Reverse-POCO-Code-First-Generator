@@ -10,8 +10,8 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     {
         public int Id { get; set; }
         public int PrimaryColourId { get; set; }
-        public string CarMake { get; set; }
-        public string CVName { get; set; }
+        public string CarMake { get; set; } = null!;
+        public string CVName { get; set; } = null!;
     }
 
 }

@@ -1179,7 +1179,7 @@ namespace TestSynonymsDatabase
 
     public class SimpleStoredProcReturnModel
     {
-        public string ReturnValue { get; set; }
+        public string ReturnValue { get; set; } = null!;
     }
 
 

@@ -11,13 +11,13 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         public int codeObjectNo { get; set; }
         public int? applicationNo { get; set; }
         public int type { get; set; }
-        public string eName { get; set; }
-        public string aName { get; set; }
-        public string description { get; set; }
-        public string codeName { get; set; }
-        public string note { get; set; }
+        public string eName { get; set; } = null!;
+        public string aName { get; set; } = null!;
+        public string description { get; set; } = null!;
+        public string codeName { get; set; } = null!;
+        public string note { get; set; } = null!;
         public bool isObject { get; set; }
-        public byte[] versionNumber { get; set; }
+        public byte[] versionNumber { get; set; } = null!;
     }
 
 }

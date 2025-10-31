@@ -8,7 +8,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
 {
     public class TestReturnStringReturnModel
     {
-        public string error { get; set; }
+        public string error { get; set; } = null!;
     }
 
 }

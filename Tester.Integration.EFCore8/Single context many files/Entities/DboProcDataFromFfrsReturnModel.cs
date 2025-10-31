@@ -10,7 +10,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     {
         public Guid BatchUID { get; set; }
         public int CVID { get; set; }
-        public string CVName { get; set; }
+        public string CVName { get; set; } = null!;
     }
 
 }

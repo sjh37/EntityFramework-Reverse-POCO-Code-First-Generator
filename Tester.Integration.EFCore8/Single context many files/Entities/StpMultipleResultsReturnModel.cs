@@ -13,20 +13,20 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
             public int codeObjectNo { get; set; }
             public int? applicationNo { get; set; }
             public int type { get; set; }
-            public string eName { get; set; }
-            public string aName { get; set; }
-            public string description { get; set; }
-            public string codeName { get; set; }
-            public string note { get; set; }
+            public string eName { get; set; } = null!;
+            public string aName { get; set; } = null!;
+            public string description { get; set; } = null!;
+            public string codeName { get; set; } = null!;
+            public string note { get; set; } = null!;
             public bool isObject { get; set; }
-            public byte[] versionNumber { get; set; }
+            public byte[] versionNumber { get; set; } = null!;
         }
         public List<ResultSetModel1> ResultSet1;
         public class ResultSetModel2
         {
             public int Id { get; set; }
             public int PrimaryColourId { get; set; }
-            public string CarMake { get; set; }
+            public string CarMake { get; set; } = null!;
             public int? computed_column { get; set; }
             public int? computed_column_persisted { get; set; }
         }
@@ -34,7 +34,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         public class ResultSetModel3
         {
             public int Id { get; set; }
-            public string Name { get; set; }
+            public string Name { get; set; } = null!;
         }
         public List<ResultSetModel3> ResultSet3;
     }

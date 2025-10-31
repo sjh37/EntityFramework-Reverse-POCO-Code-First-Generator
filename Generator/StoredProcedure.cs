@@ -352,9 +352,46 @@ namespace Efrpg
             // This does not change the <columnName> if the regex does not match
             columnName = Regex.Replace(columnName, "^(?<prefix>JSON|XML)_([0-9A-F]{8}-([0-9A-F]{4}-){3}[0-9A-F]{12})", "${prefix}_Value", RegexOptions.IgnoreCase);
 
-            return string.Format("public {0} {1} {{ get; set; }}",
-                WrapTypeIfNullable(ConvertDataColumnType(col.DataType), col),
-                columnName);
+            var propertyType = WrapTypeIfNullable(ConvertDataColumnType(col.DataType), col);
+            
+            // Add null-forgiving operator for non-nullable reference types when NRT is enabled
+            var nullForgivingOperator = string.Empty;
+            if (Settings.NeedsNullForgiving() && !IsNullable(col))
+            {
+                var baseType = ConvertDataColumnType(col.DataType);
+                if (IsReferenceType(baseType))
+                    nullForgivingOperator = " = null!;";
+            }
+
+            return string.Format("public {0} {1} {{ get; set; }}{2}",
+                propertyType,
+                columnName,
+                nullForgivingOperator);
+        }
+
+        private static bool IsReferenceType(string propertyType)
+        {
+            var lowerType = propertyType.ToLower();
+            
+            // List of known reference types
+            return lowerType == "string" ||
+                   lowerType == "byte[]" ||
+                   lowerType == "datatable" ||
+                   lowerType == "system.data.datatable" ||
+                   lowerType == "object" ||
+                   lowerType == "microsoft.sqlserver.types.sqlgeography" ||
+                   lowerType == "microsoft.sqlserver.types.sqlgeometry" ||
+                   lowerType == "sqlgeography" ||
+                   lowerType == "sqlgeometry" ||
+                   lowerType == "system.data.entity.spatial.dbgeography" ||
+                   lowerType == "system.data.entity.spatial.dbgeometry" ||
+                   lowerType == "dbgeography" ||
+                   lowerType == "dbgeometry" ||
+                   lowerType == "system.data.entity.hierarchy.hierarchyid" ||
+                   lowerType == "hierarchyid" ||
+                   lowerType == "hierarchyid?" ||
+                   lowerType == "nettopologysuite.geometries.point" ||
+                   lowerType == "nettopologysuite.geometries.geometry";
         }
 
         private string ConvertDataColumnType(Type type)

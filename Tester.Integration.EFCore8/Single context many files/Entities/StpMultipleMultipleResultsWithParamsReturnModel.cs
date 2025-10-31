@@ -17,12 +17,12 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         public class ResultSetModel2
         {
             public int Id { get; set; }
-            public string Name { get; set; }
+            public string Name { get; set; } = null!;
         }
         public List<ResultSetModel2> ResultSet2;
         public class ResultSetModel3
         {
-            public string code { get; set; }
+            public string code { get; set; } = null!;
         }
         public List<ResultSetModel3> ResultSet3;
         public class ResultSetModel4
@@ -36,7 +36,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         {
             public int Id { get; set; }
             public int PrimaryColourId { get; set; }
-            public string CarMake { get; set; }
+            public string CarMake { get; set; } = null!;
             public int? computed_column { get; set; }
             public int? computed_column_persisted { get; set; }
         }
@@ -45,7 +45,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         {
             public int ID { get; set; }
             public int OrderID { get; set; }
-            public string sku { get; set; }
+            public string sku { get; set; } = null!;
         }
         public List<ResultSetModel6> ResultSet6;
     }

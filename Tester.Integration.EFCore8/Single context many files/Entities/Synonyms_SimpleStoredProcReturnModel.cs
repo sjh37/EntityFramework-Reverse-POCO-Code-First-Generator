@@ -8,7 +8,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
 {
     public class Synonyms_SimpleStoredProcReturnModel
     {
-        public string ReturnValue { get; set; }
+        public string ReturnValue { get; set; } = null!;
     }
 
 }

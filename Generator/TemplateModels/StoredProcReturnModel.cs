@@ -8,6 +8,7 @@ namespace Efrpg.TemplateModels
         public string ResultClassModifiers { get; set; }
         public string WriteStoredProcReturnModelName { get; set; }
         public string PropertyGetSet { get; set; }
+        public string NullForgivingOperator { get; set; }
         public bool SingleModel { get; set; }
         public List<string> SingleModelReturnColumns { get; set; }
         public List<MultipleModelReturnColumns> MultipleModelReturnColumns { get; set; }

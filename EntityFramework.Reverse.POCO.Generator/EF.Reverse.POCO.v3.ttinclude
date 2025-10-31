@@ -4158,11 +4158,15 @@
                 multipleModelReturnColumns.Add(new MultipleModelReturnColumns(++model, returnModel.Select(sp.WriteStoredProcReturnColumn).ToList()));
             }
 
+            var useProperties = Settings.UsePropertiesForStoredProcResultSets;
+            var needsNullForgiving = Settings.NeedsNullForgiving();
+            
             var data = new StoredProcReturnModel
             {
                 ResultClassModifiers = Settings.ResultClassModifiers,
                 WriteStoredProcReturnModelName = sp.WriteStoredProcReturnModelName(_filter),
-                PropertyGetSet = Settings.UsePropertiesForStoredProcResultSets ? " { get; set; }" : ";",
+                PropertyGetSet = useProperties ? " { get; set; }" : ";",
+                NullForgivingOperator = useProperties ? (needsNullForgiving ? " = null!;" : ";") : string.Empty,
                 SingleModel = sp.ReturnModels.Count == 1,
                 SingleModelReturnColumns = sp.ReturnModels
                     .First()
@@ -17044,9 +17048,46 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             // This does not change the <columnName> if the regex does not match
             columnName = Regex.Replace(columnName, "^(?<prefix>JSON|XML)_([0-9A-F]{8}-([0-9A-F]{4}-){3}[0-9A-F]{12})", "${prefix}_Value", RegexOptions.IgnoreCase);
 
-            return string.Format("public {0} {1} {{ get; set; }}",
-                WrapTypeIfNullable(ConvertDataColumnType(col.DataType), col),
-                columnName);
+            var propertyType = WrapTypeIfNullable(ConvertDataColumnType(col.DataType), col);
+            
+            // Add null-forgiving operator for non-nullable reference types when NRT is enabled
+            var nullForgivingOperator = string.Empty;
+            if (Settings.NeedsNullForgiving() && !IsNullable(col))
+            {
+                var baseType = ConvertDataColumnType(col.DataType);
+                if (IsReferenceType(baseType))
+                    nullForgivingOperator = " = null!;";
+            }
+
+            return string.Format("public {0} {1} {{ get; set; }}{2}",
+                propertyType,
+                columnName,
+                nullForgivingOperator);
+        }
+
+        private static bool IsReferenceType(string propertyType)
+        {
+            var lowerType = propertyType.ToLower();
+            
+            // List of known reference types
+            return lowerType == "string" ||
+                   lowerType == "byte[]" ||
+                   lowerType == "datatable" ||
+                   lowerType == "system.data.datatable" ||
+                   lowerType == "object" ||
+                   lowerType == "microsoft.sqlserver.types.sqlgeography" ||
+                   lowerType == "microsoft.sqlserver.types.sqlgeometry" ||
+                   lowerType == "sqlgeography" ||
+                   lowerType == "sqlgeometry" ||
+                   lowerType == "system.data.entity.spatial.dbgeography" ||
+                   lowerType == "system.data.entity.spatial.dbgeometry" ||
+                   lowerType == "dbgeography" ||
+                   lowerType == "dbgeometry" ||
+                   lowerType == "system.data.entity.hierarchy.hierarchyid" ||
+                   lowerType == "hierarchyid" ||
+                   lowerType == "hierarchyid?" ||
+                   lowerType == "nettopologysuite.geometries.point" ||
+                   lowerType == "nettopologysuite.geometries.geometry";
         }
 
         private string ConvertDataColumnType(Type type)
@@ -17761,6 +17802,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public string ResultClassModifiers { get; set; }
         public string WriteStoredProcReturnModelName { get; set; }
         public string PropertyGetSet { get; set; }
+        public string NullForgivingOperator { get; set; }
         public bool SingleModel { get; set; }
         public List<string> SingleModelReturnColumns { get; set; }
         public List<MultipleModelReturnColumns> MultipleModelReturnColumns { get; set; }
@@ -20808,7 +20850,7 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
         {{this}}{{#newline}}
 {{/each}}
     }{{#newline}}
-    public List<ResultSetModel{{Model}}> ResultSet{{Model}}{{PropertyGetSet}}{{#newline}}
+    public List<ResultSetModel{{Model}}> ResultSet{{Model}}{{PropertyGetSet}}{{NullForgivingOperator}}{{#newline}}
 {{/each}}
 {{/if}}
 }{{#newline}}

@@ -7598,13 +7598,13 @@ namespace V9EfrpgTest
     public class ASimpleExampleReturnModel
     {
         public int? id { get; set; }
-        public string stuff { get; set; }
+        public string stuff { get; set; } = null!;
     }
 
     public class C182Test1ReturnModel
     {
         public int? Id { get; set; }
-        public string Description { get; set; }
+        public string Description { get; set; } = null!;
     }
 
     public class C182Test2ReturnModel
@@ -7612,27 +7612,27 @@ namespace V9EfrpgTest
         public class ResultSetModel1
         {
             public int? Id { get; set; }
-            public string DescriptionFlag1 { get; set; }
+            public string DescriptionFlag1 { get; set; } = null!;
         }
         public List<ResultSetModel1> ResultSet1;
         public class ResultSetModel2
         {
             public int? Id { get; set; }
-            public string DescriptionNotNull { get; set; }
+            public string DescriptionNotNull { get; set; } = null!;
         }
         public List<ResultSetModel2> ResultSet2;
         public class ResultSetModel3
         {
             public int? Id { get; set; }
-            public string Description { get; set; }
+            public string Description { get; set; } = null!;
         }
         public List<ResultSetModel3> ResultSet3;
     }
 
     public class CheckIfApplicationIsCompleteReturnModel
     {
-        public string Key { get; set; }
-        public string Value { get; set; }
+        public string Key { get; set; } = null!;
+        public string Value { get; set; } = null!;
     }
 
     public class ColourPivotReturnModel
@@ -7645,7 +7645,7 @@ namespace V9EfrpgTest
     public class ColumnNameAndTypesProcReturnModel
     {
         public DateTime someDate { get; set; }
-        public string Obs { get; set; }
+        public string Obs { get; set; } = null!;
         public int? @static { get; set; }
         public int? @readonly { get; set; }
         public Single? areal { get; set; }
@@ -7662,8 +7662,8 @@ namespace V9EfrpgTest
         public decimal? anumeric_11_3 { get; set; }
         public decimal? amoney { get; set; }
         public decimal? asmallmoney { get; set; }
-        public NetTopologySuite.Geometries.Point GeographyType { get; set; }
-        public NetTopologySuite.Geometries.Geometry GeometryType { get; set; }
+        public NetTopologySuite.Geometries.Point GeographyType { get; set; } = null!;
+        public NetTopologySuite.Geometries.Geometry GeometryType { get; set; } = null!;
     }
 
     public class CsvToIntReturnModel
@@ -7680,15 +7680,15 @@ namespace V9EfrpgTest
     {
         public int Id { get; set; }
         public int PrimaryColourId { get; set; }
-        public string CarMake { get; set; }
-        public string CVName { get; set; }
+        public string CarMake { get; set; } = null!;
+        public string CVName { get; set; } = null!;
     }
 
     public class DboProcDataFromFfrsReturnModel
     {
         public Guid BatchUID { get; set; }
         public int CVID { get; set; }
-        public string CVName { get; set; }
+        public string CVName { get; set; } = null!;
     }
 
     public class DsOpeProcReturnModel
@@ -7706,22 +7706,22 @@ namespace V9EfrpgTest
     {
         public Guid BatchUID { get; set; }
         public int CVID { get; set; }
-        public string CVName { get; set; }
+        public string CVName { get; set; } = null!;
     }
 
     public class FFRS_DataFromDboAndFfrsReturnModel
     {
         public int Id { get; set; }
         public int PrimaryColourId { get; set; }
-        public string CarMake { get; set; }
-        public string CVName { get; set; }
+        public string CarMake { get; set; } = null!;
+        public string CVName { get; set; } = null!;
     }
 
     public class FFRS_DataFromDboReturnModel
     {
         public int Id { get; set; }
         public int PrimaryColourId { get; set; }
-        public string CarMake { get; set; }
+        public string CarMake { get; set; } = null!;
     }
 
     public class FkTest_HelloReturnModel
@@ -7740,15 +7740,15 @@ namespace V9EfrpgTest
     {
         public int Dollar { get; set; }
         public DateTime someDate { get; set; }
-        public NetTopologySuite.Geometries.Point GeographyType { get; set; }
-        public NetTopologySuite.Geometries.Geometry GeometryType { get; set; }
+        public NetTopologySuite.Geometries.Point GeographyType { get; set; } = null!;
+        public NetTopologySuite.Geometries.Geometry GeometryType { get; set; } = null!;
     }
 
     public class SpatialTypesWithParamsReturnModel
     {
         public int Dollar { get; set; }
-        public NetTopologySuite.Geometries.Point GeographyType { get; set; }
-        public NetTopologySuite.Geometries.Geometry GeometryType { get; set; }
+        public NetTopologySuite.Geometries.Point GeographyType { get; set; } = null!;
+        public NetTopologySuite.Geometries.Geometry GeometryType { get; set; } = null!;
     }
 
     public class StoredProcWithDefaultsReturnModel
@@ -7759,7 +7759,7 @@ namespace V9EfrpgTest
     public class StpMultipleIdenticalResultsReturnModel
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
     }
 
     public class StpMultipleMultipleResultsWithParamsReturnModel
@@ -7773,12 +7773,12 @@ namespace V9EfrpgTest
         public class ResultSetModel2
         {
             public int Id { get; set; }
-            public string Name { get; set; }
+            public string Name { get; set; } = null!;
         }
         public List<ResultSetModel2> ResultSet2;
         public class ResultSetModel3
         {
-            public string code { get; set; }
+            public string code { get; set; } = null!;
         }
         public List<ResultSetModel3> ResultSet3;
         public class ResultSetModel4
@@ -7792,7 +7792,7 @@ namespace V9EfrpgTest
         {
             public int Id { get; set; }
             public int PrimaryColourId { get; set; }
-            public string CarMake { get; set; }
+            public string CarMake { get; set; } = null!;
             public int? computed_column { get; set; }
             public int? computed_column_persisted { get; set; }
         }
@@ -7801,7 +7801,7 @@ namespace V9EfrpgTest
         {
             public int ID { get; set; }
             public int OrderID { get; set; }
-            public string sku { get; set; }
+            public string sku { get; set; } = null!;
         }
         public List<ResultSetModel6> ResultSet6;
     }
@@ -7813,20 +7813,20 @@ namespace V9EfrpgTest
             public int codeObjectNo { get; set; }
             public int? applicationNo { get; set; }
             public int type { get; set; }
-            public string eName { get; set; }
-            public string aName { get; set; }
-            public string description { get; set; }
-            public string codeName { get; set; }
-            public string note { get; set; }
+            public string eName { get; set; } = null!;
+            public string aName { get; set; } = null!;
+            public string description { get; set; } = null!;
+            public string codeName { get; set; } = null!;
+            public string note { get; set; } = null!;
             public bool isObject { get; set; }
-            public byte[] versionNumber { get; set; }
+            public byte[] versionNumber { get; set; } = null!;
         }
         public List<ResultSetModel1> ResultSet1;
         public class ResultSetModel2
         {
             public int Id { get; set; }
             public int PrimaryColourId { get; set; }
-            public string CarMake { get; set; }
+            public string CarMake { get; set; } = null!;
             public int? computed_column { get; set; }
             public int? computed_column_persisted { get; set; }
         }
@@ -7834,7 +7834,7 @@ namespace V9EfrpgTest
         public class ResultSetModel3
         {
             public int Id { get; set; }
-            public string Name { get; set; }
+            public string Name { get; set; } = null!;
         }
         public List<ResultSetModel3> ResultSet3;
     }
@@ -7850,7 +7850,7 @@ namespace V9EfrpgTest
         public class ResultSetModel2
         {
             public int Id { get; set; }
-            public string Name { get; set; }
+            public string Name { get; set; } = null!;
         }
         public List<ResultSetModel2> ResultSet2;
     }
@@ -7872,13 +7872,13 @@ namespace V9EfrpgTest
         public int codeObjectNo { get; set; }
         public int? applicationNo { get; set; }
         public int type { get; set; }
-        public string eName { get; set; }
-        public string aName { get; set; }
-        public string description { get; set; }
-        public string codeName { get; set; }
-        public string note { get; set; }
+        public string eName { get; set; } = null!;
+        public string aName { get; set; } = null!;
+        public string description { get; set; } = null!;
+        public string codeName { get; set; } = null!;
+        public string note { get; set; } = null!;
         public bool isObject { get; set; }
-        public byte[] versionNumber { get; set; }
+        public byte[] versionNumber { get; set; } = null!;
     }
 
     public class StpTestUnderscoreTestReturnModel
@@ -7889,18 +7889,18 @@ namespace V9EfrpgTest
 
     public class Synonyms_SimpleStoredProcReturnModel
     {
-        public string ReturnValue { get; set; }
+        public string ReturnValue { get; set; } = null!;
     }
 
     public class TestReturnStringReturnModel
     {
-        public string error { get; set; }
+        public string error { get; set; } = null!;
     }
 
     public class XmlDataV1ReturnModel
     {
         public DateTime? Column1 { get; set; }
-        public string Column2 { get; set; }
+        public string Column2 { get; set; } = null!;
     }
 
 

@@ -1657,7 +1657,7 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
         {{this}}{{#newline}}
 {{/each}}
     }{{#newline}}
-    public List<ResultSetModel{{Model}}> ResultSet{{Model}}{{PropertyGetSet}}{{#newline}}
+    public List<ResultSetModel{{Model}}> ResultSet{{Model}}{{PropertyGetSet}}{{NullForgivingOperator}}{{#newline}}
 {{/each}}
 {{/if}}
 }{{#newline}}

@@ -9,7 +9,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     public class ColumnNameAndTypesProcReturnModel
     {
         public DateTime someDate { get; set; }
-        public string Obs { get; set; }
+        public string Obs { get; set; } = null!;
         public int? @static { get; set; }
         public int? @readonly { get; set; }
         public Single? areal { get; set; }
@@ -26,8 +26,8 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         public decimal? anumeric_11_3 { get; set; }
         public decimal? amoney { get; set; }
         public decimal? asmallmoney { get; set; }
-        public NetTopologySuite.Geometries.Point GeographyType { get; set; }
-        public NetTopologySuite.Geometries.Geometry GeometryType { get; set; }
+        public NetTopologySuite.Geometries.Point GeographyType { get; set; } = null!;
+        public NetTopologySuite.Geometries.Geometry GeometryType { get; set; } = null!;
     }
 
 }

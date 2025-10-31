@@ -2508,13 +2508,13 @@ namespace Tester.Integration.EFCore8
 
     public class CustOrderHistReturnModel
     {
-        public string ProductName { get; set; }
+        public string ProductName { get; set; } = null!;
         public int? Total { get; set; }
     }
 
     public class CustOrdersDetailReturnModel
     {
-        public string ProductName { get; set; }
+        public string ProductName { get; set; } = null!;
         public decimal? UnitPrice { get; set; }
         public short Quantity { get; set; }
         public int? Discount { get; set; }
@@ -2531,9 +2531,9 @@ namespace Tester.Integration.EFCore8
 
     public class EmployeeSalesByCountryReturnModel
     {
-        public string Country { get; set; }
-        public string LastName { get; set; }
-        public string FirstName { get; set; }
+        public string Country { get; set; } = null!;
+        public string LastName { get; set; } = null!;
+        public string FirstName { get; set; } = null!;
         public DateTime? ShippedDate { get; set; }
         public int OrderID { get; set; }
         public decimal? SaleAmount { get; set; }
@@ -2541,7 +2541,7 @@ namespace Tester.Integration.EFCore8
 
     public class SalesByCategoryReturnModel
     {
-        public string ProductName { get; set; }
+        public string ProductName { get; set; } = null!;
         public decimal? TotalPurchase { get; set; }
     }
 
@@ -2550,12 +2550,12 @@ namespace Tester.Integration.EFCore8
         public DateTime? ShippedDate { get; set; }
         public int OrderID { get; set; }
         public decimal? Subtotal { get; set; }
-        public string Year { get; set; }
+        public string Year { get; set; } = null!;
     }
 
     public class TenMostExpensiveProductsReturnModel
     {
-        public string TenMostExpensiveProducts { get; set; }
+        public string TenMostExpensiveProducts { get; set; } = null!;
         public decimal? UnitPrice { get; set; }
     }
 

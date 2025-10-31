@@ -10,8 +10,8 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     {
         public int Dollar { get; set; }
         public DateTime someDate { get; set; }
-        public NetTopologySuite.Geometries.Point GeographyType { get; set; }
-        public NetTopologySuite.Geometries.Geometry GeometryType { get; set; }
+        public NetTopologySuite.Geometries.Point GeographyType { get; set; } = null!;
+        public NetTopologySuite.Geometries.Geometry GeometryType { get; set; } = null!;
     }
 
 }

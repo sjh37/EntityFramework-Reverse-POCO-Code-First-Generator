@@ -9,7 +9,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     public class C182Test1ReturnModel
     {
         public int? Id { get; set; }
-        public string Description { get; set; }
+        public string Description { get; set; } = null!;
     }
 
 }

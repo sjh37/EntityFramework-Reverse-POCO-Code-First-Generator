@@ -682,11 +682,15 @@ namespace Efrpg.Generators
                 multipleModelReturnColumns.Add(new MultipleModelReturnColumns(++model, returnModel.Select(sp.WriteStoredProcReturnColumn).ToList()));
             }
 
+            var useProperties = Settings.UsePropertiesForStoredProcResultSets;
+            var needsNullForgiving = Settings.NeedsNullForgiving();
+            
             var data = new StoredProcReturnModel
             {
                 ResultClassModifiers = Settings.ResultClassModifiers,
                 WriteStoredProcReturnModelName = sp.WriteStoredProcReturnModelName(_filter),
-                PropertyGetSet = Settings.UsePropertiesForStoredProcResultSets ? " { get; set; }" : ";",
+                PropertyGetSet = useProperties ? " { get; set; }" : ";",
+                NullForgivingOperator = useProperties ? (needsNullForgiving ? " = null!;" : ";") : string.Empty,
                 SingleModel = sp.ReturnModels.Count == 1,
                 SingleModelReturnColumns = sp.ReturnModels
                     .First()
