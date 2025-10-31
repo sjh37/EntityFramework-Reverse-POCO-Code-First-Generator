@@ -57,26 +57,37 @@ namespace Efrpg
 
         public Table ParentTable;
 
-        public static readonly List<string> NotNullable = new List<string>
+        private static List<string> _notNullable;
+        public static List<string> NotNullable
         {
-            Settings.AllowNullStrings ? "" : "string",
-            "byte[]",
-            "datatable",
-            "system.data.datatable",
-            "object",
-            "microsoft.sqlserver.types.sqlgeography",
-            "microsoft.sqlserver.types.sqlgeometry",
-            "sqlgeography",
-            "sqlgeometry",
-            "system.data.entity.spatial.dbgeography",
-            "system.data.entity.spatial.dbgeometry",
-            "dbgeography",
-            "dbgeometry",
-            "system.data.entity.hierarchy.hierarchyid",
-            "hierarchyid",
-            "nettopologysuite.geometries.point",
-            "nettopologysuite.geometries.geometry"
-        };
+            get
+            {
+                if (_notNullable == null)
+                {
+                    _notNullable = new List<string>
+                    {
+                        Settings.AllowNullStrings || Settings.NullableReverseNavigationProperties ? "" : "string",
+                        Settings.AllowNullStrings || Settings.NullableReverseNavigationProperties ? "" : "byte[]",
+                        "datatable",
+                        "system.data.datatable",
+                        "object",
+                        "microsoft.sqlserver.types.sqlgeography",
+                        "microsoft.sqlserver.types.sqlgeometry",
+                        "sqlgeography",
+                        "sqlgeometry",
+                        "system.data.entity.spatial.dbgeography",
+                        "system.data.entity.spatial.dbgeometry",
+                        "dbgeography",
+                        "dbgeometry",
+                        "system.data.entity.hierarchy.hierarchyid",
+                        "hierarchyid",
+                        "nettopologysuite.geometries.point",
+                        "nettopologysuite.geometries.geometry"
+                    };
+                }
+                return _notNullable;
+            }
+        }
         
         public static readonly List<string> StoredProcedureNotNullable = new List<string>
         {

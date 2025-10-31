@@ -390,6 +390,51 @@ namespace Efrpg.Generators
             return hasSpatialTypes ? ", x => x.UseNetTopologySuite()" : ", x => x.UseHierarchyId()";
         }
 
+        private static string GetPropertyInitialiser(Column col)
+        {
+            // If using property initialisers and there's a default value, use it
+            if (Settings.UsePropertyInitialisers && !string.IsNullOrWhiteSpace(col.Default))
+                return string.Format(" = {0};", col.Default);
+
+            // For non-nullable reference types, add null-forgiving operator to satisfy nullable reference types
+            // Only apply this when nullable reference types are enabled
+            if (!Settings.AllowNullStrings && !Settings.NullableReverseNavigationProperties)
+                return string.Empty;
+
+            // Check if this is a reference type
+            var isReferenceType = IsReferenceType(col.PropertyType);
+
+            // If it's a reference type and the database column is NOT nullable, add = null!;
+            if (isReferenceType && !col.IsNullable && string.IsNullOrWhiteSpace(col.Default))
+                return " = null!;";
+
+            return string.Empty;
+        }
+
+        private static bool IsReferenceType(string propertyType)
+        {
+            var lowerType = propertyType.ToLower();
+            
+            // List of known reference types
+            return lowerType == "string" ||
+                   lowerType == "byte[]" ||
+                   lowerType == "datatable" ||
+                   lowerType == "system.data.datatable" ||
+                   lowerType == "object" ||
+                   lowerType == "microsoft.sqlserver.types.sqlgeography" ||
+                   lowerType == "microsoft.sqlserver.types.sqlgeometry" ||
+                   lowerType == "sqlgeography" ||
+                   lowerType == "sqlgeometry" ||
+                   lowerType == "system.data.entity.spatial.dbgeography" ||
+                   lowerType == "system.data.entity.spatial.dbgeometry" ||
+                   lowerType == "dbgeography" ||
+                   lowerType == "dbgeometry" ||
+                   lowerType == "system.data.entity.hierarchy.hierarchyid" ||
+                   lowerType == "hierarchyid" ||
+                   lowerType == "nettopologysuite.geometries.point" ||
+                   lowerType == "nettopologysuite.geometries.geometry";
+        }
+
         public CodeOutput GenerateFakeContext()
         {
             var filename = "Fake" + Settings.DbContextName + Settings.FileExtension;
@@ -504,7 +549,7 @@ namespace Efrpg.Generators
                         WrapIfNullable = col.WrapIfNullable(),
                         NameHumanCase = col.NameHumanCase,
                         PrivateSetterForComputedColumns = Settings.UsePrivateSetterForComputedColumns && col.IsComputed ? "private " : string.Empty,
-                        PropertyInitialisers = Settings.UsePropertyInitialisers ? (string.IsNullOrWhiteSpace(col.Default) ? string.Empty : string.Format(" = {0};", col.Default)) : string.Empty,
+                        PropertyInitialisers = GetPropertyInitialiser(col),
                         InlineComments = col.InlineComments
                     })
                     .ToList(),
