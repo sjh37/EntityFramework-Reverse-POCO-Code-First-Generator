@@ -49,7 +49,7 @@ namespace Azure9
         Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken));
         DatabaseFacade Database { get; }
         DbSet<TEntity> Set<TEntity>() where TEntity : class;
-        string ToString();
+        string? ToString();
 
         EntityEntry Add(object entity);
         EntityEntry<TEntity> Add<TEntity>(TEntity entity) where TEntity : class;
@@ -68,12 +68,12 @@ namespace Azure9
         EntityEntry Entry(object entity);
         EntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class;
 
-        TEntity Find<TEntity>(params object[] keyValues) where TEntity : class;
-        ValueTask<TEntity> FindAsync<TEntity>(object[] keyValues, CancellationToken cancellationToken) where TEntity : class;
-        ValueTask<TEntity> FindAsync<TEntity>(params object[] keyValues) where TEntity : class;
-        ValueTask<object> FindAsync(Type entityType, object[] keyValues, CancellationToken cancellationToken);
-        ValueTask<object> FindAsync(Type entityType, params object[] keyValues);
-        object Find(Type entityType, params object[] keyValues);
+        TEntity? Find<TEntity>(params object?[]? keyValues) where TEntity : class;
+        ValueTask<TEntity?> FindAsync<TEntity>(object?[]? keyValues, CancellationToken cancellationToken) where TEntity : class;
+        ValueTask<TEntity?> FindAsync<TEntity>(params object?[]? keyValues) where TEntity : class;
+        ValueTask<object?> FindAsync(Type entityType, object?[]? keyValues, CancellationToken cancellationToken);
+        ValueTask<object?> FindAsync(Type entityType, params object?[]? keyValues);
+        object? Find(Type entityType, params object?[]? keyValues);
 
         EntityEntry Remove(object entity);
         EntityEntry<TEntity> Remove<TEntity>(TEntity entity) where TEntity : class;
@@ -173,10 +173,11 @@ namespace Azure9
 
     public class AzureContextFactory : IDesignTimeDbContextFactory<AzureContext>
     {
-        private readonly DbContextOptions<AzureContext> Options;
+        private readonly DbContextOptions<AzureContext>? Options;
 
         public AzureContextFactory()
         {
+            Options = null;
         }
 
         public AzureContextFactory(DbContextOptions<AzureContext> options)
@@ -191,7 +192,7 @@ namespace Azure9
 
         public AzureContext CreateDbContext()
         {
-            return new AzureContext(Options);
+            return Options != null ? new AzureContext(Options) : new AzureContext();
         }
 
         public AzureContext CreateDbContext(DbContextOptions<AzureContext> options)

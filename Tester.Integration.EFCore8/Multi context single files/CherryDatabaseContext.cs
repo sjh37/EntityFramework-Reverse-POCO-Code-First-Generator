@@ -31,7 +31,7 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesCherry
         Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken));
         DatabaseFacade Database { get; }
         DbSet<TEntity> Set<TEntity>() where TEntity : class;
-        string ToString();
+        string? ToString();
 
         EntityEntry Add(object entity);
         EntityEntry<TEntity> Add<TEntity>(TEntity entity) where TEntity : class;
@@ -50,12 +50,12 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesCherry
         EntityEntry Entry(object entity);
         EntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class;
 
-        TEntity Find<TEntity>(params object[] keyValues) where TEntity : class;
-        ValueTask<TEntity> FindAsync<TEntity>(object[] keyValues, CancellationToken cancellationToken) where TEntity : class;
-        ValueTask<TEntity> FindAsync<TEntity>(params object[] keyValues) where TEntity : class;
-        ValueTask<object> FindAsync(Type entityType, object[] keyValues, CancellationToken cancellationToken);
-        ValueTask<object> FindAsync(Type entityType, params object[] keyValues);
-        object Find(Type entityType, params object[] keyValues);
+        TEntity? Find<TEntity>(params object?[]? keyValues) where TEntity : class;
+        ValueTask<TEntity?> FindAsync<TEntity>(object?[]? keyValues, CancellationToken cancellationToken) where TEntity : class;
+        ValueTask<TEntity?> FindAsync<TEntity>(params object?[]? keyValues) where TEntity : class;
+        ValueTask<object?> FindAsync(Type entityType, object?[]? keyValues, CancellationToken cancellationToken);
+        ValueTask<object?> FindAsync(Type entityType, params object?[]? keyValues);
+        object? Find(Type entityType, params object?[]? keyValues);
 
         EntityEntry Remove(object entity);
         EntityEntry<TEntity> Remove<TEntity>(TEntity entity) where TEntity : class;
@@ -111,10 +111,11 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesCherry
 
     public class CherryDbContextFactory : IDesignTimeDbContextFactory<CherryDbContext>
     {
-        private readonly DbContextOptions<CherryDbContext> Options;
+        private readonly DbContextOptions<CherryDbContext>? Options;
 
         public CherryDbContextFactory()
         {
+            Options = null;
         }
 
         public CherryDbContextFactory(DbContextOptions<CherryDbContext> options)
@@ -129,7 +130,7 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesCherry
 
         public CherryDbContext CreateDbContext()
         {
-            return new CherryDbContext(Options);
+            return Options != null ? new CherryDbContext(Options) : new CherryDbContext();
         }
 
         public CherryDbContext CreateDbContext(DbContextOptions<CherryDbContext> options)

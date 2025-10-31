@@ -18,7 +18,7 @@ namespace Tester.Integration.EFCore8.Multi_context_many_filesPlum
 {
     public class DamsonDbContext : DbContext, IDamsonDbContext
     {
-        private readonly IConfiguration _configuration;
+        private readonly IConfiguration? _configuration;
 
         public DamsonDbContext()
         {

@@ -9,10 +9,11 @@ namespace Tester.Integration.EFCore8.Multi_context_many_filesCherry
 {
     public class CherryDbContextFactory : IDesignTimeDbContextFactory<CherryDbContext>
     {
-        private readonly DbContextOptions<CherryDbContext> Options;
+        private readonly DbContextOptions<CherryDbContext>? Options;
 
         public CherryDbContextFactory()
         {
+            Options = null;
         }
 
         public CherryDbContextFactory(DbContextOptions<CherryDbContext> options)
@@ -27,7 +28,7 @@ namespace Tester.Integration.EFCore8.Multi_context_many_filesCherry
 
         public CherryDbContext CreateDbContext()
         {
-            return new CherryDbContext(Options);
+            return Options != null ? new CherryDbContext(Options) : new CherryDbContext();
         }
 
         public CherryDbContext CreateDbContext(DbContextOptions<CherryDbContext> options)

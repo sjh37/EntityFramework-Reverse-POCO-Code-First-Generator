@@ -18,7 +18,7 @@ namespace Tester.Integration.EFCore8.Multi_context_many_filesCherry
 {
     public class CherryDbContext : DbContext, ICherryDbContext
     {
-        private readonly IConfiguration _configuration;
+        private readonly IConfiguration? _configuration;
 
         public CherryDbContext()
         {

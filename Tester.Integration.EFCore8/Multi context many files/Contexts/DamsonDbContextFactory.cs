@@ -9,10 +9,11 @@ namespace Tester.Integration.EFCore8.Multi_context_many_filesPlum
 {
     public class DamsonDbContextFactory : IDesignTimeDbContextFactory<DamsonDbContext>
     {
-        private readonly DbContextOptions<DamsonDbContext> Options;
+        private readonly DbContextOptions<DamsonDbContext>? Options;
 
         public DamsonDbContextFactory()
         {
+            Options = null;
         }
 
         public DamsonDbContextFactory(DbContextOptions<DamsonDbContext> options)
@@ -27,7 +28,7 @@ namespace Tester.Integration.EFCore8.Multi_context_many_filesPlum
 
         public DamsonDbContext CreateDbContext()
         {
-            return new DamsonDbContext(Options);
+            return Options != null ? new DamsonDbContext(Options) : new DamsonDbContext();
         }
 
         public DamsonDbContext CreateDbContext(DbContextOptions<DamsonDbContext> options)

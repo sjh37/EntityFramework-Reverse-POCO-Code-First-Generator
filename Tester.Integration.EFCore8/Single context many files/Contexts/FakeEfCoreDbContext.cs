@@ -296,7 +296,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
             throw new NotImplementedException();
         }
 
-        public override string ToString()
+        public override string? ToString()
         {
             throw new NotImplementedException();
         }
@@ -374,32 +374,32 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
             throw new NotImplementedException();
         }
 
-        public virtual TEntity Find<TEntity>(params object[] keyValues) where TEntity : class
+        public virtual TEntity? Find<TEntity>(params object?[]? keyValues) where TEntity : class
         {
             throw new NotImplementedException();
         }
 
-        public virtual ValueTask<TEntity> FindAsync<TEntity>(object[] keyValues, CancellationToken cancellationToken) where TEntity : class
+        public virtual ValueTask<TEntity?> FindAsync<TEntity>(object?[]? keyValues, CancellationToken cancellationToken) where TEntity : class
         {
             throw new NotImplementedException();
         }
 
-        public virtual ValueTask<TEntity> FindAsync<TEntity>(params object[] keyValues) where TEntity : class
+        public virtual ValueTask<TEntity?> FindAsync<TEntity>(params object?[]? keyValues) where TEntity : class
         {
             throw new NotImplementedException();
         }
 
-        public virtual ValueTask<object> FindAsync(Type entityType, object[] keyValues, CancellationToken cancellationToken)
+        public virtual ValueTask<object?> FindAsync(Type entityType, object?[]? keyValues, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public virtual ValueTask<object> FindAsync(Type entityType, params object[] keyValues)
+        public virtual ValueTask<object?> FindAsync(Type entityType, params object?[]? keyValues)
         {
             throw new NotImplementedException();
         }
 
-        public virtual object Find(Type entityType, params object[] keyValues)
+        public virtual object? Find(Type entityType, params object?[]? keyValues)
         {
             throw new NotImplementedException();
         }

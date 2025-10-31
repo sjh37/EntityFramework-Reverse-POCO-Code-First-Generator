@@ -9,10 +9,11 @@ namespace Tester.Integration.EFCore8.Multi_context_many_filesBananaDbContext
 {
     public class BananaDbContextFactory : IDesignTimeDbContextFactory<BananaDbContext>
     {
-        private readonly DbContextOptions<BananaDbContext> Options;
+        private readonly DbContextOptions<BananaDbContext>? Options;
 
         public BananaDbContextFactory()
         {
+            Options = null;
         }
 
         public BananaDbContextFactory(DbContextOptions<BananaDbContext> options)
@@ -27,7 +28,7 @@ namespace Tester.Integration.EFCore8.Multi_context_many_filesBananaDbContext
 
         public BananaDbContext CreateDbContext()
         {
-            return new BananaDbContext(Options);
+            return Options != null ? new BananaDbContext(Options) : new BananaDbContext();
         }
 
         public BananaDbContext CreateDbContext(DbContextOptions<BananaDbContext> options)

@@ -1,7 +1,7 @@
 {{DbContextClassModifiers}} class {{DbContextName}} : {{DbContextBaseClass}}{{contextInterface}}{{#newline}}
 {{{#newline}}
 {{#if OnConfigurationUsesConfiguration}}
-    private readonly IConfiguration _configuration;{{#newline}}{{#newline}}
+    private readonly IConfiguration? _configuration;{{#newline}}{{#newline}}
 {{/if}}
 
 {{#if AddParameterlessConstructorToDbContext}}

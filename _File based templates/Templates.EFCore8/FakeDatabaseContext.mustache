@@ -69,7 +69,7 @@
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public override string ToString(){{#newline}}
+    public override string? ToString(){{#newline}}
     {{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
@@ -147,32 +147,32 @@
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public virtual TEntity Find<TEntity>(params object[] keyValues) where TEntity : class{{#newline}}
+    public virtual TEntity? Find<TEntity>(params object?[]? keyValues) where TEntity : class{{#newline}}
     {{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public virtual ValueTask<TEntity> FindAsync<TEntity>(object[] keyValues, CancellationToken cancellationToken) where TEntity : class{{#newline}}
+    public virtual ValueTask<TEntity?> FindAsync<TEntity>(object?[]? keyValues, CancellationToken cancellationToken) where TEntity : class{{#newline}}
     {{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public virtual ValueTask<TEntity> FindAsync<TEntity>(params object[] keyValues) where TEntity : class{{#newline}}
+    public virtual ValueTask<TEntity?> FindAsync<TEntity>(params object?[]? keyValues) where TEntity : class{{#newline}}
     {{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public virtual ValueTask<object> FindAsync(Type entityType, object[] keyValues, CancellationToken cancellationToken){{#newline}}
+    public virtual ValueTask<object?> FindAsync(Type entityType, object?[]? keyValues, CancellationToken cancellationToken){{#newline}}
     {{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public virtual ValueTask<object> FindAsync(Type entityType, params object[] keyValues){{#newline}}
+    public virtual ValueTask<object?> FindAsync(Type entityType, params object?[]? keyValues){{#newline}}
     {{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public virtual object Find(Type entityType, params object[] keyValues){{#newline}}
+    public virtual object? Find(Type entityType, params object?[]? keyValues){{#newline}}
     {{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}

@@ -153,7 +153,7 @@ namespace TestDatabaseStandard
         Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken));
         DatabaseFacade Database { get; }
         DbSet<TEntity> Set<TEntity>() where TEntity : class;
-        string ToString();
+        string? ToString();
 
         EntityEntry Add(object entity);
         EntityEntry<TEntity> Add<TEntity>(TEntity entity) where TEntity : class;
@@ -172,12 +172,12 @@ namespace TestDatabaseStandard
         EntityEntry Entry(object entity);
         EntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class;
 
-        TEntity Find<TEntity>(params object[] keyValues) where TEntity : class;
-        ValueTask<TEntity> FindAsync<TEntity>(object[] keyValues, CancellationToken cancellationToken) where TEntity : class;
-        ValueTask<TEntity> FindAsync<TEntity>(params object[] keyValues) where TEntity : class;
-        ValueTask<object> FindAsync(Type entityType, object[] keyValues, CancellationToken cancellationToken);
-        ValueTask<object> FindAsync(Type entityType, params object[] keyValues);
-        object Find(Type entityType, params object[] keyValues);
+        TEntity? Find<TEntity>(params object?[]? keyValues) where TEntity : class;
+        ValueTask<TEntity?> FindAsync<TEntity>(object?[]? keyValues, CancellationToken cancellationToken) where TEntity : class;
+        ValueTask<TEntity?> FindAsync<TEntity>(params object?[]? keyValues) where TEntity : class;
+        ValueTask<object?> FindAsync(Type entityType, object?[]? keyValues, CancellationToken cancellationToken);
+        ValueTask<object?> FindAsync(Type entityType, params object?[]? keyValues);
+        object? Find(Type entityType, params object?[]? keyValues);
 
         EntityEntry Remove(object entity);
         EntityEntry<TEntity> Remove<TEntity>(TEntity entity) where TEntity : class;
@@ -2255,10 +2255,11 @@ namespace TestDatabaseStandard
 
     public class TestDbContextFactory : IDesignTimeDbContextFactory<TestDbContext>
     {
-        private readonly DbContextOptions<TestDbContext> Options;
+        private readonly DbContextOptions<TestDbContext>? Options;
 
         public TestDbContextFactory()
         {
+            Options = null;
         }
 
         public TestDbContextFactory(DbContextOptions<TestDbContext> options)
@@ -2273,7 +2274,7 @@ namespace TestDatabaseStandard
 
         public TestDbContext CreateDbContext()
         {
-            return new TestDbContext(Options);
+            return Options != null ? new TestDbContext(Options) : new TestDbContext();
         }
 
         public TestDbContext CreateDbContext(DbContextOptions<TestDbContext> options)
@@ -2570,7 +2571,7 @@ namespace TestDatabaseStandard
             throw new NotImplementedException();
         }
 
-        public override string ToString()
+        public override string? ToString()
         {
             throw new NotImplementedException();
         }
@@ -2648,32 +2649,32 @@ namespace TestDatabaseStandard
             throw new NotImplementedException();
         }
 
-        public virtual TEntity Find<TEntity>(params object[] keyValues) where TEntity : class
+        public virtual TEntity? Find<TEntity>(params object?[]? keyValues) where TEntity : class
         {
             throw new NotImplementedException();
         }
 
-        public virtual ValueTask<TEntity> FindAsync<TEntity>(object[] keyValues, CancellationToken cancellationToken) where TEntity : class
+        public virtual ValueTask<TEntity?> FindAsync<TEntity>(object?[]? keyValues, CancellationToken cancellationToken) where TEntity : class
         {
             throw new NotImplementedException();
         }
 
-        public virtual ValueTask<TEntity> FindAsync<TEntity>(params object[] keyValues) where TEntity : class
+        public virtual ValueTask<TEntity?> FindAsync<TEntity>(params object?[]? keyValues) where TEntity : class
         {
             throw new NotImplementedException();
         }
 
-        public virtual ValueTask<object> FindAsync(Type entityType, object[] keyValues, CancellationToken cancellationToken)
+        public virtual ValueTask<object?> FindAsync(Type entityType, object?[]? keyValues, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public virtual ValueTask<object> FindAsync(Type entityType, params object[] keyValues)
+        public virtual ValueTask<object?> FindAsync(Type entityType, params object?[]? keyValues)
         {
             throw new NotImplementedException();
         }
 
-        public virtual object Find(Type entityType, params object[] keyValues)
+        public virtual object? Find(Type entityType, params object?[]? keyValues)
         {
             throw new NotImplementedException();
         }
@@ -3494,11 +3495,20 @@ namespace TestDatabaseStandard
         private readonly PropertyInfo[] _primaryKeys;
         private ObservableCollection<TEntity> _data;
         private IQueryable _query;
-        public override IEntityType EntityType { get; }
+        private IEntityType? _entityType = null;
+        public override IEntityType EntityType
+        {
+            get
+            {
+                if (_entityType == null)
+                    throw new NotImplementedException("EntityType is not implemented for FakeDbSet.");
+                return _entityType;
+            }
+        }
 
         public FakeDbSet()
         {
-            _primaryKeys = null;
+            _primaryKeys = Array.Empty<PropertyInfo>();
             _data        = new ObservableCollection<TEntity>();
             _query       = _data.AsQueryable();
         }
@@ -3510,7 +3520,7 @@ namespace TestDatabaseStandard
             _query       = _data.AsQueryable();
         }
 
-        public override TEntity Find(params object[] keyValues)
+        public override TEntity? Find(params object?[]? keyValues)
         {
             if (_primaryKeys == null)
                 throw new ArgumentException("No primary keys defined");
@@ -3527,14 +3537,14 @@ namespace TestDatabaseStandard
             return keyQuery.SingleOrDefault();
         }
 
-        public override ValueTask<TEntity> FindAsync(object[] keyValues, CancellationToken cancellationToken)
+        public override ValueTask<TEntity?> FindAsync(object?[]? keyValues, CancellationToken cancellationToken)
         {
-            return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues), cancellationToken));
+            return new ValueTask<TEntity?>(Task<TEntity?>.Factory.StartNew(() => Find(keyValues), cancellationToken));
         }
 
-        public override ValueTask<TEntity> FindAsync(params object[] keyValues)
+        public override ValueTask<TEntity?> FindAsync(params object?[]? keyValues)
         {
-            return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues)));
+            return new ValueTask<TEntity?>(Task<TEntity?>.Factory.StartNew(() => Find(keyValues)));
         }
 
         public override EntityEntry<TEntity> Add(TEntity entity)

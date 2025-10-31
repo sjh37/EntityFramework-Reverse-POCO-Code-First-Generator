@@ -9,10 +9,11 @@ namespace Tester.Integration.EFCore8.ContextHasSameNameAsDb
 {
     public class EfrpgTestFactory : IDesignTimeDbContextFactory<EfrpgTest>
     {
-        private readonly DbContextOptions<EfrpgTest> Options;
+        private readonly DbContextOptions<EfrpgTest>? Options;
 
         public EfrpgTestFactory()
         {
+            Options = null;
         }
 
         public EfrpgTestFactory(DbContextOptions<EfrpgTest> options)
@@ -27,7 +28,7 @@ namespace Tester.Integration.EFCore8.ContextHasSameNameAsDb
 
         public EfrpgTest CreateDbContext()
         {
-            return new EfrpgTest(Options);
+            return Options != null ? new EfrpgTest(Options) : new EfrpgTest();
         }
 
         public EfrpgTest CreateDbContext(DbContextOptions<EfrpgTest> options)

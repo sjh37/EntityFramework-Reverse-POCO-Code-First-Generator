@@ -32,7 +32,7 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesPlum
         Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken));
         DatabaseFacade Database { get; }
         DbSet<TEntity> Set<TEntity>() where TEntity : class;
-        string ToString();
+        string? ToString();
 
         EntityEntry Add(object entity);
         EntityEntry<TEntity> Add<TEntity>(TEntity entity) where TEntity : class;
@@ -51,12 +51,12 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesPlum
         EntityEntry Entry(object entity);
         EntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class;
 
-        TEntity Find<TEntity>(params object[] keyValues) where TEntity : class;
-        ValueTask<TEntity> FindAsync<TEntity>(object[] keyValues, CancellationToken cancellationToken) where TEntity : class;
-        ValueTask<TEntity> FindAsync<TEntity>(params object[] keyValues) where TEntity : class;
-        ValueTask<object> FindAsync(Type entityType, object[] keyValues, CancellationToken cancellationToken);
-        ValueTask<object> FindAsync(Type entityType, params object[] keyValues);
-        object Find(Type entityType, params object[] keyValues);
+        TEntity? Find<TEntity>(params object?[]? keyValues) where TEntity : class;
+        ValueTask<TEntity?> FindAsync<TEntity>(object?[]? keyValues, CancellationToken cancellationToken) where TEntity : class;
+        ValueTask<TEntity?> FindAsync<TEntity>(params object?[]? keyValues) where TEntity : class;
+        ValueTask<object?> FindAsync(Type entityType, object?[]? keyValues, CancellationToken cancellationToken);
+        ValueTask<object?> FindAsync(Type entityType, params object?[]? keyValues);
+        object? Find(Type entityType, params object?[]? keyValues);
 
         EntityEntry Remove(object entity);
         EntityEntry<TEntity> Remove<TEntity>(TEntity entity) where TEntity : class;
@@ -114,10 +114,11 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesPlum
 
     public class DamsonDbContextFactory : IDesignTimeDbContextFactory<DamsonDbContext>
     {
-        private readonly DbContextOptions<DamsonDbContext> Options;
+        private readonly DbContextOptions<DamsonDbContext>? Options;
 
         public DamsonDbContextFactory()
         {
+            Options = null;
         }
 
         public DamsonDbContextFactory(DbContextOptions<DamsonDbContext> options)
@@ -132,7 +133,7 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesPlum
 
         public DamsonDbContext CreateDbContext()
         {
-            return new DamsonDbContext(Options);
+            return Options != null ? new DamsonDbContext(Options) : new DamsonDbContext();
         }
 
         public DamsonDbContext CreateDbContext(DbContextOptions<DamsonDbContext> options)

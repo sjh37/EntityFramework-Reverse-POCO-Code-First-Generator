@@ -18,7 +18,7 @@ namespace Tester.Integration.EFCore8.Multi_context_many_filesBananaDbContext
 {
     public class BananaDbContext : DbContext, IBananaDbContext
     {
-        private readonly IConfiguration _configuration;
+        private readonly IConfiguration? _configuration;
 
         public BananaDbContext()
         {

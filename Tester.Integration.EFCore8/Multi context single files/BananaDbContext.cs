@@ -31,7 +31,7 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesBananaDbContext
         Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken));
         DatabaseFacade Database { get; }
         DbSet<TEntity> Set<TEntity>() where TEntity : class;
-        string ToString();
+        string? ToString();
 
         EntityEntry Add(object entity);
         EntityEntry<TEntity> Add<TEntity>(TEntity entity) where TEntity : class;
@@ -50,12 +50,12 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesBananaDbContext
         EntityEntry Entry(object entity);
         EntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class;
 
-        TEntity Find<TEntity>(params object[] keyValues) where TEntity : class;
-        ValueTask<TEntity> FindAsync<TEntity>(object[] keyValues, CancellationToken cancellationToken) where TEntity : class;
-        ValueTask<TEntity> FindAsync<TEntity>(params object[] keyValues) where TEntity : class;
-        ValueTask<object> FindAsync(Type entityType, object[] keyValues, CancellationToken cancellationToken);
-        ValueTask<object> FindAsync(Type entityType, params object[] keyValues);
-        object Find(Type entityType, params object[] keyValues);
+        TEntity? Find<TEntity>(params object?[]? keyValues) where TEntity : class;
+        ValueTask<TEntity?> FindAsync<TEntity>(object?[]? keyValues, CancellationToken cancellationToken) where TEntity : class;
+        ValueTask<TEntity?> FindAsync<TEntity>(params object?[]? keyValues) where TEntity : class;
+        ValueTask<object?> FindAsync(Type entityType, object?[]? keyValues, CancellationToken cancellationToken);
+        ValueTask<object?> FindAsync(Type entityType, params object?[]? keyValues);
+        object? Find(Type entityType, params object?[]? keyValues);
 
         EntityEntry Remove(object entity);
         EntityEntry<TEntity> Remove<TEntity>(TEntity entity) where TEntity : class;
@@ -113,10 +113,11 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesBananaDbContext
 
     public class BananaDbContextFactory : IDesignTimeDbContextFactory<BananaDbContext>
     {
-        private readonly DbContextOptions<BananaDbContext> Options;
+        private readonly DbContextOptions<BananaDbContext>? Options;
 
         public BananaDbContextFactory()
         {
+            Options = null;
         }
 
         public BananaDbContextFactory(DbContextOptions<BananaDbContext> options)
@@ -131,7 +132,7 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesBananaDbContext
 
         public BananaDbContext CreateDbContext()
         {
-            return new BananaDbContext(Options);
+            return Options != null ? new BananaDbContext(Options) : new BananaDbContext();
         }
 
         public BananaDbContext CreateDbContext(DbContextOptions<BananaDbContext> options)

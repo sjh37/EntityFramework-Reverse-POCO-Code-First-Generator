@@ -1,9 +1,10 @@
 {{classModifier}} class {{contextName}}Factory : IDesignTimeDbContextFactory<{{contextName}}>{{#newline}}
 {{{#newline}}
-    private readonly DbContextOptions<{{contextName}}> Options;{{#newline}}
+    private readonly DbContextOptions<{{contextName}}>? Options;{{#newline}}
 {{#newline}}
     public {{contextName}}Factory(){{#newline}}
     {{{#newline}}
+        Options = null;{{#newline}}
     }{{#newline}}
 {{#newline}}
     public {{contextName}}Factory(DbContextOptions<{{contextName}}> options){{#newline}}
@@ -18,7 +19,7 @@
 {{#newline}}
     public {{contextName}} CreateDbContext(){{#newline}}
     {{{#newline}}
-        return new {{contextName}}(Options);{{#newline}}
+        return Options != null ? new {{contextName}}(Options) : new {{contextName}}();{{#newline}}
     }{{#newline}}
 {{#newline}}
     public {{contextName}} CreateDbContext(DbContextOptions<{{contextName}}> options){{#newline}}

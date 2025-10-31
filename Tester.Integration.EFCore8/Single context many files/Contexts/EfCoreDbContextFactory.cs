@@ -8,10 +8,11 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
 {
     public class EfCoreDbContextFactory : IDesignTimeDbContextFactory<EfCoreDbContext>
     {
-        private readonly DbContextOptions<EfCoreDbContext> Options;
+        private readonly DbContextOptions<EfCoreDbContext>? Options;
 
         public EfCoreDbContextFactory()
         {
+            Options = null;
         }
 
         public EfCoreDbContextFactory(DbContextOptions<EfCoreDbContext> options)
@@ -26,7 +27,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
 
         public EfCoreDbContext CreateDbContext()
         {
-            return new EfCoreDbContext(Options);
+            return Options != null ? new EfCoreDbContext(Options) : new EfCoreDbContext();
         }
 
         public EfCoreDbContext CreateDbContext(DbContextOptions<EfCoreDbContext> options)

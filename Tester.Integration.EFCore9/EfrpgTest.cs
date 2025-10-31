@@ -94,8 +94,6 @@ namespace V9EfrpgTest
         DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
         DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
-        DbSet<NullableReverseNavA> NullableReverseNavAs { get; set; } // NullableReverseNavA
-        DbSet<NullableReverseNavB> NullableReverseNavBs { get; set; } // NullableReverseNavB
         DbSet<NullableReverseNavigationA> NullableReverseNavigationAs { get; set; } // NullableReverseNavigationA
         DbSet<NullableReverseNavigationB> NullableReverseNavigationBs { get; set; } // NullableReverseNavigationB
         DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
@@ -155,7 +153,7 @@ namespace V9EfrpgTest
         Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken));
         DatabaseFacade Database { get; }
         DbSet<TEntity> Set<TEntity>() where TEntity : class;
-        string ToString();
+        string? ToString();
 
         EntityEntry Add(object entity);
         EntityEntry<TEntity> Add<TEntity>(TEntity entity) where TEntity : class;
@@ -174,12 +172,12 @@ namespace V9EfrpgTest
         EntityEntry Entry(object entity);
         EntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class;
 
-        TEntity Find<TEntity>(params object[] keyValues) where TEntity : class;
-        ValueTask<TEntity> FindAsync<TEntity>(object[] keyValues, CancellationToken cancellationToken) where TEntity : class;
-        ValueTask<TEntity> FindAsync<TEntity>(params object[] keyValues) where TEntity : class;
-        ValueTask<object> FindAsync(Type entityType, object[] keyValues, CancellationToken cancellationToken);
-        ValueTask<object> FindAsync(Type entityType, params object[] keyValues);
-        object Find(Type entityType, params object[] keyValues);
+        TEntity? Find<TEntity>(params object?[]? keyValues) where TEntity : class;
+        ValueTask<TEntity?> FindAsync<TEntity>(object?[]? keyValues, CancellationToken cancellationToken) where TEntity : class;
+        ValueTask<TEntity?> FindAsync<TEntity>(params object?[]? keyValues) where TEntity : class;
+        ValueTask<object?> FindAsync(Type entityType, object?[]? keyValues, CancellationToken cancellationToken);
+        ValueTask<object?> FindAsync(Type entityType, params object?[]? keyValues);
+        object? Find(Type entityType, params object?[]? keyValues);
 
         EntityEntry Remove(object entity);
         EntityEntry<TEntity> Remove<TEntity>(TEntity entity) where TEntity : class;
@@ -458,8 +456,6 @@ namespace V9EfrpgTest
         public DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
         public DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
-        public DbSet<NullableReverseNavA> NullableReverseNavAs { get; set; } // NullableReverseNavA
-        public DbSet<NullableReverseNavB> NullableReverseNavBs { get; set; } // NullableReverseNavB
         public DbSet<NullableReverseNavigationA> NullableReverseNavigationAs { get; set; } // NullableReverseNavigationA
         public DbSet<NullableReverseNavigationB> NullableReverseNavigationBs { get; set; } // NullableReverseNavigationB
         public DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
@@ -605,8 +601,6 @@ namespace V9EfrpgTest
             modelBuilder.ApplyConfiguration(new Issue47_UserConfiguration());
             modelBuilder.ApplyConfiguration(new Issue47_UserRoleConfiguration());
             modelBuilder.ApplyConfiguration(new MultipleKeyConfiguration());
-            modelBuilder.ApplyConfiguration(new NullableReverseNavAConfiguration());
-            modelBuilder.ApplyConfiguration(new NullableReverseNavBConfiguration());
             modelBuilder.ApplyConfiguration(new NullableReverseNavigationAConfiguration());
             modelBuilder.ApplyConfiguration(new NullableReverseNavigationBConfiguration());
             modelBuilder.ApplyConfiguration(new OneEightSix_IssueConfiguration());
@@ -2267,10 +2261,11 @@ namespace V9EfrpgTest
 
     public partial class V9EfrpgTestDbContextFactory : IDesignTimeDbContextFactory<V9EfrpgTestDbContext>
     {
-        private readonly DbContextOptions<V9EfrpgTestDbContext> Options;
+        private readonly DbContextOptions<V9EfrpgTestDbContext>? Options;
 
         public V9EfrpgTestDbContextFactory()
         {
+            Options = null;
         }
 
         public V9EfrpgTestDbContextFactory(DbContextOptions<V9EfrpgTestDbContext> options)
@@ -2285,7 +2280,7 @@ namespace V9EfrpgTest
 
         public V9EfrpgTestDbContext CreateDbContext()
         {
-            return new V9EfrpgTestDbContext(Options);
+            return Options != null ? new V9EfrpgTestDbContext(Options) : new V9EfrpgTestDbContext();
         }
 
         public V9EfrpgTestDbContext CreateDbContext(DbContextOptions<V9EfrpgTestDbContext> options)
@@ -2365,8 +2360,6 @@ namespace V9EfrpgTest
         public DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
         public DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
-        public DbSet<NullableReverseNavA> NullableReverseNavAs { get; set; } // NullableReverseNavA
-        public DbSet<NullableReverseNavB> NullableReverseNavBs { get; set; } // NullableReverseNavB
         public DbSet<NullableReverseNavigationA> NullableReverseNavigationAs { get; set; } // NullableReverseNavigationA
         public DbSet<NullableReverseNavigationB> NullableReverseNavigationBs { get; set; } // NullableReverseNavigationB
         public DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
@@ -2487,8 +2480,6 @@ namespace V9EfrpgTest
             Issue47_Users = new FakeDbSet<Issue47_User>("UserId");
             Issue47_UserRoles = new FakeDbSet<Issue47_UserRole>("UserRoleId");
             MultipleKeys = new FakeDbSet<MultipleKey>("UserId", "FavouriteColourId", "BestHolidayTypeId");
-            NullableReverseNavAs = new FakeDbSet<NullableReverseNavA>("Id");
-            NullableReverseNavBs = new FakeDbSet<NullableReverseNavB>("Id");
             NullableReverseNavigationAs = new FakeDbSet<NullableReverseNavigationA>("Id");
             NullableReverseNavigationBs = new FakeDbSet<NullableReverseNavigationB>("Id");
             OneEightSix_Issues = new FakeDbSet<OneEightSix_Issue>("Id");
@@ -2587,7 +2578,7 @@ namespace V9EfrpgTest
             throw new NotImplementedException();
         }
 
-        public override string ToString()
+        public override string? ToString()
         {
             throw new NotImplementedException();
         }
@@ -2665,32 +2656,32 @@ namespace V9EfrpgTest
             throw new NotImplementedException();
         }
 
-        public virtual TEntity Find<TEntity>(params object[] keyValues) where TEntity : class
+        public virtual TEntity? Find<TEntity>(params object?[]? keyValues) where TEntity : class
         {
             throw new NotImplementedException();
         }
 
-        public virtual ValueTask<TEntity> FindAsync<TEntity>(object[] keyValues, CancellationToken cancellationToken) where TEntity : class
+        public virtual ValueTask<TEntity?> FindAsync<TEntity>(object?[]? keyValues, CancellationToken cancellationToken) where TEntity : class
         {
             throw new NotImplementedException();
         }
 
-        public virtual ValueTask<TEntity> FindAsync<TEntity>(params object[] keyValues) where TEntity : class
+        public virtual ValueTask<TEntity?> FindAsync<TEntity>(params object?[]? keyValues) where TEntity : class
         {
             throw new NotImplementedException();
         }
 
-        public virtual ValueTask<object> FindAsync(Type entityType, object[] keyValues, CancellationToken cancellationToken)
+        public virtual ValueTask<object?> FindAsync(Type entityType, object?[]? keyValues, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public virtual ValueTask<object> FindAsync(Type entityType, params object[] keyValues)
+        public virtual ValueTask<object?> FindAsync(Type entityType, params object?[]? keyValues)
         {
             throw new NotImplementedException();
         }
 
-        public virtual object Find(Type entityType, params object[] keyValues)
+        public virtual object? Find(Type entityType, params object?[]? keyValues)
         {
             throw new NotImplementedException();
         }
@@ -3511,11 +3502,20 @@ namespace V9EfrpgTest
         private readonly PropertyInfo[] _primaryKeys;
         private ObservableCollection<TEntity> _data;
         private IQueryable _query;
-        public override IEntityType EntityType { get; }
+        private IEntityType? _entityType = null;
+        public override IEntityType EntityType
+        {
+            get
+            {
+                if (_entityType == null)
+                    throw new NotImplementedException("EntityType is not implemented for FakeDbSet.");
+                return _entityType;
+            }
+        }
 
         public FakeDbSet()
         {
-            _primaryKeys = null;
+            _primaryKeys = Array.Empty<PropertyInfo>();
             _data        = new ObservableCollection<TEntity>();
             _query       = _data.AsQueryable();
             InitializePartial();
@@ -3529,7 +3529,7 @@ namespace V9EfrpgTest
             InitializePartial();
         }
 
-        public override TEntity Find(params object[] keyValues)
+        public override TEntity? Find(params object?[]? keyValues)
         {
             if (_primaryKeys == null)
                 throw new ArgumentException("No primary keys defined");
@@ -3546,14 +3546,14 @@ namespace V9EfrpgTest
             return keyQuery.SingleOrDefault();
         }
 
-        public override ValueTask<TEntity> FindAsync(object[] keyValues, CancellationToken cancellationToken)
+        public override ValueTask<TEntity?> FindAsync(object?[]? keyValues, CancellationToken cancellationToken)
         {
-            return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues), cancellationToken));
+            return new ValueTask<TEntity?>(Task<TEntity?>.Factory.StartNew(() => Find(keyValues), cancellationToken));
         }
 
-        public override ValueTask<TEntity> FindAsync(params object[] keyValues)
+        public override ValueTask<TEntity?> FindAsync(params object?[]? keyValues)
         {
-            return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues)));
+            return new ValueTask<TEntity?>(Task<TEntity?>.Factory.StartNew(() => Find(keyValues)));
         }
 
         public override EntityEntry<TEntity> Add(TEntity entity)
@@ -5037,34 +5037,6 @@ namespace V9EfrpgTest
     {
         public int? Id { get; set; } // Id
         public string Description { get; set; } // Description (length: 10)
-    }
-
-    // NullableReverseNavA
-    public class NullableReverseNavA
-    {
-        public Guid Id { get; set; } // Id (Primary key)
-        public string Data { get; set; } // Data (length: 100)
-
-        // Reverse navigation
-
-        /// <summary>
-        /// Parent (One-to-One) NullableReverseNavA pointed by [NullableReverseNavB].[Id] (FK_NullableReverseNavB_A)
-        /// </summary>
-        public virtual NullableReverseNavB? NullableReverseNavB { get; set; } // NullableReverseNavB.FK_NullableReverseNavB_A
-    }
-
-    // NullableReverseNavB
-    public class NullableReverseNavB
-    {
-        public Guid Id { get; set; } // Id (Primary key)
-        public string Data { get; set; } // Data (length: 100)
-
-        // Foreign keys
-
-        /// <summary>
-        /// Parent NullableReverseNavA pointed by [NullableReverseNavB].([Id]) (FK_NullableReverseNavB_A)
-        /// </summary>
-        public virtual NullableReverseNavA NullableReverseNavA { get; set; } // FK_NullableReverseNavB_A
     }
 
     // NullableReverseNavigationA
@@ -6821,35 +6793,6 @@ namespace V9EfrpgTest
             builder.HasIndex(x => x.BestHolidayTypeId).HasDatabaseName("IX_MultipleKeys_BestHolidayType");
             builder.HasIndex(x => new { x.BestHolidayTypeId, x.BankId }).HasDatabaseName("IX_MultipleKeys_Holiday_Bank").IsUnique();
             builder.HasIndex(x => x.FavouriteColourId).HasDatabaseName("UC_MultipleKeys_FavouriteColour").IsUnique();
-        }
-    }
-
-    // NullableReverseNavA
-    public class NullableReverseNavAConfiguration : IEntityTypeConfiguration<NullableReverseNavA>
-    {
-        public void Configure(EntityTypeBuilder<NullableReverseNavA> builder)
-        {
-            builder.ToTable("NullableReverseNavA", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK_NullableReverseNavA").IsClustered();
-
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("uniqueidentifier").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.Data).HasColumnName(@"Data").HasColumnType("nvarchar(100)").IsRequired(false).HasMaxLength(100);
-        }
-    }
-
-    // NullableReverseNavB
-    public class NullableReverseNavBConfiguration : IEntityTypeConfiguration<NullableReverseNavB>
-    {
-        public void Configure(EntityTypeBuilder<NullableReverseNavB> builder)
-        {
-            builder.ToTable("NullableReverseNavB", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK_NullableReverseNavB").IsClustered();
-
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("uniqueidentifier").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.Data).HasColumnName(@"Data").HasColumnType("nvarchar(100)").IsRequired(false).HasMaxLength(100);
-
-            // Foreign keys
-            builder.HasOne(a => a.NullableReverseNavA).WithOne(b => b.NullableReverseNavB).HasForeignKey<NullableReverseNavB>(c => c.Id).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_NullableReverseNavB_A");
         }
     }
 

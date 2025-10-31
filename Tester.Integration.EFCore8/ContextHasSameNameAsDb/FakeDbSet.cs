@@ -50,11 +50,20 @@ namespace Tester.Integration.EFCore8.ContextHasSameNameAsDb
         private readonly PropertyInfo[] _primaryKeys;
         private ObservableCollection<TEntity> _data;
         private IQueryable _query;
-        public override IEntityType EntityType { get; }
+        private IEntityType? _entityType = null;
+        public override IEntityType EntityType
+        {
+            get
+            {
+                if (_entityType == null)
+                    throw new NotImplementedException("EntityType is not implemented for FakeDbSet.");
+                return _entityType;
+            }
+        }
 
         public FakeDbSet()
         {
-            _primaryKeys = null;
+            _primaryKeys = Array.Empty<PropertyInfo>();
             _data        = new ObservableCollection<TEntity>();
             _query       = _data.AsQueryable();
         }
@@ -66,7 +75,7 @@ namespace Tester.Integration.EFCore8.ContextHasSameNameAsDb
             _query       = _data.AsQueryable();
         }
 
-        public override TEntity Find(params object[] keyValues)
+        public override TEntity? Find(params object?[]? keyValues)
         {
             if (_primaryKeys == null)
                 throw new ArgumentException("No primary keys defined");
@@ -83,14 +92,14 @@ namespace Tester.Integration.EFCore8.ContextHasSameNameAsDb
             return keyQuery.SingleOrDefault();
         }
 
-        public override ValueTask<TEntity> FindAsync(object[] keyValues, CancellationToken cancellationToken)
+        public override ValueTask<TEntity?> FindAsync(object?[]? keyValues, CancellationToken cancellationToken)
         {
-            return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues), cancellationToken));
+            return new ValueTask<TEntity?>(Task<TEntity?>.Factory.StartNew(() => Find(keyValues), cancellationToken));
         }
 
-        public override ValueTask<TEntity> FindAsync(params object[] keyValues)
+        public override ValueTask<TEntity?> FindAsync(params object?[]? keyValues)
         {
-            return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues)));
+            return new ValueTask<TEntity?>(Task<TEntity?>.Factory.StartNew(() => Find(keyValues)));
         }
 
         public override EntityEntry<TEntity> Add(TEntity entity)

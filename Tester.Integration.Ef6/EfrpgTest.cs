@@ -94,8 +94,6 @@ namespace Tester.Integration.Ef6
         DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
         DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
-        DbSet<NullableReverseNavA> NullableReverseNavAs { get; set; } // NullableReverseNavA
-        DbSet<NullableReverseNavB> NullableReverseNavBs { get; set; } // NullableReverseNavB
         DbSet<NullableReverseNavigationA> NullableReverseNavigationAs { get; set; } // NullableReverseNavigationA
         DbSet<NullableReverseNavigationB> NullableReverseNavigationBs { get; set; } // NullableReverseNavigationB
         DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
@@ -403,8 +401,6 @@ namespace Tester.Integration.Ef6
         public DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
         public DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
-        public DbSet<NullableReverseNavA> NullableReverseNavAs { get; set; } // NullableReverseNavA
-        public DbSet<NullableReverseNavB> NullableReverseNavBs { get; set; } // NullableReverseNavB
         public DbSet<NullableReverseNavigationA> NullableReverseNavigationAs { get; set; } // NullableReverseNavigationA
         public DbSet<NullableReverseNavigationB> NullableReverseNavigationBs { get; set; } // NullableReverseNavigationB
         public DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
@@ -576,8 +572,6 @@ namespace Tester.Integration.Ef6
             modelBuilder.Configurations.Add(new Issue47_UserConfiguration());
             modelBuilder.Configurations.Add(new Issue47_UserRoleConfiguration());
             modelBuilder.Configurations.Add(new MultipleKeyConfiguration());
-            modelBuilder.Configurations.Add(new NullableReverseNavAConfiguration());
-            modelBuilder.Configurations.Add(new NullableReverseNavBConfiguration());
             modelBuilder.Configurations.Add(new NullableReverseNavigationAConfiguration());
             modelBuilder.Configurations.Add(new NullableReverseNavigationBConfiguration());
             modelBuilder.Configurations.Add(new OneEightSix_IssueConfiguration());
@@ -872,8 +866,6 @@ namespace Tester.Integration.Ef6
             modelBuilder.Configurations.Add(new Issue47_UserConfiguration(schema));
             modelBuilder.Configurations.Add(new Issue47_UserRoleConfiguration(schema));
             modelBuilder.Configurations.Add(new MultipleKeyConfiguration(schema));
-            modelBuilder.Configurations.Add(new NullableReverseNavAConfiguration(schema));
-            modelBuilder.Configurations.Add(new NullableReverseNavBConfiguration(schema));
             modelBuilder.Configurations.Add(new NullableReverseNavigationAConfiguration(schema));
             modelBuilder.Configurations.Add(new NullableReverseNavigationBConfiguration(schema));
             modelBuilder.Configurations.Add(new OneEightSix_IssueConfiguration(schema));
@@ -3670,38 +3662,6 @@ namespace Tester.Integration.Ef6
         public const string DescriptionField = "Description";
     }
 
-    // NullableReverseNavA
-    public class NullableReverseNavA
-    {
-        public Guid Id { get; set; } // Id (Primary key)
-        public const string IdField = "Id";
-        public string Data { get; set; } // Data (length: 100)
-        public const string DataField = "Data";
-
-        // Reverse navigation
-
-        /// <summary>
-        /// Parent (One-to-One) NullableReverseNavA pointed by [NullableReverseNavB].[Id] (FK_NullableReverseNavB_A)
-        /// </summary>
-        public NullableReverseNavB NullableReverseNavB { get; set; } // NullableReverseNavB.FK_NullableReverseNavB_A
-    }
-
-    // NullableReverseNavB
-    public class NullableReverseNavB
-    {
-        public Guid Id { get; set; } // Id (Primary key)
-        public const string IdField = "Id";
-        public string Data { get; set; } // Data (length: 100)
-        public const string DataField = "Data";
-
-        // Foreign keys
-
-        /// <summary>
-        /// Parent NullableReverseNavA pointed by [NullableReverseNavB].([Id]) (FK_NullableReverseNavB_A)
-        /// </summary>
-        public NullableReverseNavA NullableReverseNavA { get; set; } // FK_NullableReverseNavB_A
-    }
-
     // NullableReverseNavigationA
     public class NullableReverseNavigationA
     {
@@ -5855,45 +5815,6 @@ namespace Tester.Integration.Ef6
             Property(x => x.BestHolidayTypeId).HasColumnName(@"BestHolidayTypeId").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(x => x.BankId).HasColumnName(@"BankId").HasColumnType("int").IsRequired();
             Property(x => x.CarId).HasColumnName(@"CarId").HasColumnType("int").IsRequired();
-        }
-    }
-
-    // NullableReverseNavA
-    public class NullableReverseNavAConfiguration : EntityTypeConfiguration<NullableReverseNavA>
-    {
-        public NullableReverseNavAConfiguration()
-            : this("dbo")
-        {
-        }
-
-        public NullableReverseNavAConfiguration(string schema)
-        {
-            ToTable("NullableReverseNavA", schema);
-            HasKey(x => x.Id);
-
-            Property(x => x.Id).HasColumnName(@"Id").HasColumnType("uniqueidentifier").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
-            Property(x => x.Data).HasColumnName(@"Data").HasColumnType("nvarchar").IsOptional().HasMaxLength(100);
-        }
-    }
-
-    // NullableReverseNavB
-    public class NullableReverseNavBConfiguration : EntityTypeConfiguration<NullableReverseNavB>
-    {
-        public NullableReverseNavBConfiguration()
-            : this("dbo")
-        {
-        }
-
-        public NullableReverseNavBConfiguration(string schema)
-        {
-            ToTable("NullableReverseNavB", schema);
-            HasKey(x => x.Id);
-
-            Property(x => x.Id).HasColumnName(@"Id").HasColumnType("uniqueidentifier").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
-            Property(x => x.Data).HasColumnName(@"Data").HasColumnType("nvarchar").IsOptional().HasMaxLength(100);
-
-            // Foreign keys
-            HasRequired(a => a.NullableReverseNavA).WithOptional(b => b.NullableReverseNavB).WillCascadeOnDelete(false); // FK_NullableReverseNavB_A
         }
     }
 

@@ -18,7 +18,7 @@ namespace Tester.Integration.EFCore8.Multi_context_many_filesAppleDbContext
 {
     public class AppleDbContext : DbContext, IAppleDbContext
     {
-        private readonly IConfiguration _configuration;
+        private readonly IConfiguration? _configuration;
 
         public AppleDbContext()
         {

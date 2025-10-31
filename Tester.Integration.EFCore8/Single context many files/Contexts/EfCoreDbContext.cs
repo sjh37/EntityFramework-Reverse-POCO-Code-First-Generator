@@ -17,7 +17,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
 {
     public class EfCoreDbContext : DbContext, IEfCoreDbContext
     {
-        private readonly IConfiguration _configuration;
+        private readonly IConfiguration? _configuration;
 
         public EfCoreDbContext()
         {

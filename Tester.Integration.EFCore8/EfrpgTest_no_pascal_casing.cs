@@ -145,7 +145,7 @@ namespace V8_Efrpg_Test
         Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken));
         DatabaseFacade Database { get; }
         DbSet<TEntity> Set<TEntity>() where TEntity : class;
-        string ToString();
+        string? ToString();
 
         EntityEntry Add(object entity);
         EntityEntry<TEntity> Add<TEntity>(TEntity entity) where TEntity : class;
@@ -164,12 +164,12 @@ namespace V8_Efrpg_Test
         EntityEntry Entry(object entity);
         EntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class;
 
-        TEntity Find<TEntity>(params object[] keyValues) where TEntity : class;
-        ValueTask<TEntity> FindAsync<TEntity>(object[] keyValues, CancellationToken cancellationToken) where TEntity : class;
-        ValueTask<TEntity> FindAsync<TEntity>(params object[] keyValues) where TEntity : class;
-        ValueTask<object> FindAsync(Type entityType, object[] keyValues, CancellationToken cancellationToken);
-        ValueTask<object> FindAsync(Type entityType, params object[] keyValues);
-        object Find(Type entityType, params object[] keyValues);
+        TEntity? Find<TEntity>(params object?[]? keyValues) where TEntity : class;
+        ValueTask<TEntity?> FindAsync<TEntity>(object?[]? keyValues, CancellationToken cancellationToken) where TEntity : class;
+        ValueTask<TEntity?> FindAsync<TEntity>(params object?[]? keyValues) where TEntity : class;
+        ValueTask<object?> FindAsync(Type entityType, object?[]? keyValues, CancellationToken cancellationToken);
+        ValueTask<object?> FindAsync(Type entityType, params object?[]? keyValues);
+        object? Find(Type entityType, params object?[]? keyValues);
 
         EntityEntry Remove(object entity);
         EntityEntry<TEntity> Remove<TEntity>(TEntity entity) where TEntity : class;
@@ -2244,10 +2244,11 @@ namespace V8_Efrpg_Test
 
     public class V8_Efrpg_Test_Db_ContextFactory : IDesignTimeDbContextFactory<V8_Efrpg_Test_Db_Context>
     {
-        private readonly DbContextOptions<V8_Efrpg_Test_Db_Context> Options;
+        private readonly DbContextOptions<V8_Efrpg_Test_Db_Context>? Options;
 
         public V8_Efrpg_Test_Db_ContextFactory()
         {
+            Options = null;
         }
 
         public V8_Efrpg_Test_Db_ContextFactory(DbContextOptions<V8_Efrpg_Test_Db_Context> options)
@@ -2262,7 +2263,7 @@ namespace V8_Efrpg_Test
 
         public V8_Efrpg_Test_Db_Context CreateDbContext()
         {
-            return new V8_Efrpg_Test_Db_Context(Options);
+            return Options != null ? new V8_Efrpg_Test_Db_Context(Options) : new V8_Efrpg_Test_Db_Context();
         }
 
         public V8_Efrpg_Test_Db_Context CreateDbContext(DbContextOptions<V8_Efrpg_Test_Db_Context> options)

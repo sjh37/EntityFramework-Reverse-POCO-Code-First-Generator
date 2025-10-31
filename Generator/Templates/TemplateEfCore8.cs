@@ -79,7 +79,7 @@ using {{this}};{{#newline}}
     Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken));{{#newline}}
     DatabaseFacade Database { get; }{{#newline}}
     DbSet<TEntity> Set<TEntity>() where TEntity : class;{{#newline}}
-    string ToString();{{#newline}}{{#newline}}
+    string? ToString();{{#newline}}{{#newline}}
 
     EntityEntry Add(object entity);{{#newline}}
     EntityEntry<TEntity> Add<TEntity>(TEntity entity) where TEntity : class;{{#newline}}
@@ -98,12 +98,12 @@ using {{this}};{{#newline}}
     EntityEntry Entry(object entity);{{#newline}}
     EntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class;{{#newline}}{{#newline}}
 
-    TEntity Find<TEntity>(params object[] keyValues) where TEntity : class;{{#newline}}
-    ValueTask<TEntity> FindAsync<TEntity>(object[] keyValues, CancellationToken cancellationToken) where TEntity : class;{{#newline}}
-    ValueTask<TEntity> FindAsync<TEntity>(params object[] keyValues) where TEntity : class;{{#newline}}
-    ValueTask<object> FindAsync(Type entityType, object[] keyValues, CancellationToken cancellationToken);{{#newline}}
-    ValueTask<object> FindAsync(Type entityType, params object[] keyValues);{{#newline}}
-    object Find(Type entityType, params object[] keyValues);{{#newline}}{{#newline}}
+    TEntity? Find<TEntity>(params object?[]? keyValues) where TEntity : class;{{#newline}}
+    ValueTask<TEntity?> FindAsync<TEntity>(object?[]? keyValues, CancellationToken cancellationToken) where TEntity : class;{{#newline}}
+    ValueTask<TEntity?> FindAsync<TEntity>(params object?[]? keyValues) where TEntity : class;{{#newline}}
+    ValueTask<object?> FindAsync(Type entityType, object?[]? keyValues, CancellationToken cancellationToken);{{#newline}}
+    ValueTask<object?> FindAsync(Type entityType, params object?[]? keyValues);{{#newline}}
+    object? Find(Type entityType, params object?[]? keyValues);{{#newline}}{{#newline}}
 
     EntityEntry Remove(object entity);{{#newline}}
     EntityEntry<TEntity> Remove<TEntity>(TEntity entity) where TEntity : class;{{#newline}}
@@ -230,7 +230,7 @@ using {{this}};{{#newline}}
 {{DbContextClassModifiers}} class {{DbContextName}} : {{DbContextBaseClass}}{{contextInterface}}{{#newline}}
 {{{#newline}}
 {{#if OnConfigurationUsesConfiguration}}
-    private readonly IConfiguration _configuration;{{#newline}}{{#newline}}
+    private readonly IConfiguration? _configuration;{{#newline}}{{#newline}}
 {{/if}}
 
 {{#if AddParameterlessConstructorToDbContext}}
@@ -500,10 +500,11 @@ using {{this}};{{#newline}}
             return @"
 {{classModifier}} class {{contextName}}Factory : IDesignTimeDbContextFactory<{{contextName}}>{{#newline}}
 {{{#newline}}
-    private readonly DbContextOptions<{{contextName}}> Options;{{#newline}}
+    private readonly DbContextOptions<{{contextName}}>? Options;{{#newline}}
 {{#newline}}
     public {{contextName}}Factory(){{#newline}}
     {{{#newline}}
+        Options = null;{{#newline}}
     }{{#newline}}
 {{#newline}}
     public {{contextName}}Factory(DbContextOptions<{{contextName}}> options){{#newline}}
@@ -518,7 +519,7 @@ using {{this}};{{#newline}}
 {{#newline}}
     public {{contextName}} CreateDbContext(){{#newline}}
     {{{#newline}}
-        return new {{contextName}}(Options);{{#newline}}
+        return Options != null ? new {{contextName}}(Options) : new {{contextName}}();{{#newline}}
     }{{#newline}}
 {{#newline}}
     public {{contextName}} CreateDbContext(DbContextOptions<{{contextName}}> options){{#newline}}
@@ -651,7 +652,7 @@ using {{this}};{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public override string ToString(){{#newline}}
+    public override string? ToString(){{#newline}}
     {{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
@@ -729,32 +730,32 @@ using {{this}};{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public virtual TEntity Find<TEntity>(params object[] keyValues) where TEntity : class{{#newline}}
+    public virtual TEntity? Find<TEntity>(params object?[]? keyValues) where TEntity : class{{#newline}}
     {{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public virtual ValueTask<TEntity> FindAsync<TEntity>(object[] keyValues, CancellationToken cancellationToken) where TEntity : class{{#newline}}
+    public virtual ValueTask<TEntity?> FindAsync<TEntity>(object?[]? keyValues, CancellationToken cancellationToken) where TEntity : class{{#newline}}
     {{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public virtual ValueTask<TEntity> FindAsync<TEntity>(params object[] keyValues) where TEntity : class{{#newline}}
+    public virtual ValueTask<TEntity?> FindAsync<TEntity>(params object?[]? keyValues) where TEntity : class{{#newline}}
     {{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public virtual ValueTask<object> FindAsync(Type entityType, object[] keyValues, CancellationToken cancellationToken){{#newline}}
+    public virtual ValueTask<object?> FindAsync(Type entityType, object?[]? keyValues, CancellationToken cancellationToken){{#newline}}
     {{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public virtual ValueTask<object> FindAsync(Type entityType, params object[] keyValues){{#newline}}
+    public virtual ValueTask<object?> FindAsync(Type entityType, params object?[]? keyValues){{#newline}}
     {{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public virtual object Find(Type entityType, params object[] keyValues){{#newline}}
+    public virtual object? Find(Type entityType, params object?[]? keyValues){{#newline}}
     {{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
@@ -949,11 +950,20 @@ using {{this}};{{#newline}}
     private readonly PropertyInfo[] _primaryKeys;{{#newline}}
     private ObservableCollection<TEntity> _data;{{#newline}}
     private IQueryable _query;{{#newline}}
-    public override IEntityType EntityType { get; }{{#newline}}{{#newline}}
+    private IEntityType? _entityType = null;{{#newline}}
+    public override IEntityType EntityType{{#newline}}
+    {{{#newline}}
+        get{{#newline}}
+        {{{#newline}}
+            if (_entityType == null){{#newline}}
+                throw new NotImplementedException(""EntityType is not implemented for FakeDbSet."");{{#newline}}
+            return _entityType;{{#newline}}
+        }{{#newline}}
+    }{{#newline}}{{#newline}}
 
     public FakeDbSet(){{#newline}}
     {{{#newline}}
-        _primaryKeys = null;{{#newline}}
+        _primaryKeys = Array.Empty<PropertyInfo>();{{#newline}}
         _data        = new ObservableCollection<TEntity>();{{#newline}}
         _query       = _data.AsQueryable();{{#newline}}
 
@@ -972,11 +982,11 @@ using {{this}};{{#newline}}
 {{/if}}
     }{{#newline}}{{#newline}}
 
-    public override TEntity Find(params object[] keyValues){{#newline}}
+    public override TEntity? Find(params object?[]? keyValues){{#newline}}
     {{{#newline}}
         if (_primaryKeys == null){{#newline}}
             throw new ArgumentException(""No primary keys defined"");{{#newline}}
-        if (keyValues.Length != _primaryKeys.Length){{#newline}}
+        if (keyValues?.Length != _primaryKeys.Length){{#newline}}
             throw new ArgumentException(""Incorrect number of keys passed to Find method"");{{#newline}}{{#newline}}
 
         var keyQuery = this.AsQueryable();{{#newline}}
@@ -984,25 +994,25 @@ using {{this}};{{#newline}}
             .Select((t, i) => i){{#newline}}
             .Aggregate(keyQuery,{{#newline}}
                 (current, x) =>{{#newline}}
-                    current.Where(entity => _primaryKeys[x].GetValue(entity, null).Equals(keyValues[x])));{{#newline}}{{#newline}}
+                    current.Where(entity => _primaryKeys[x].GetValue(entity, null)!.Equals(keyValues[x])));{{#newline}}{{#newline}}
 
         return keyQuery.SingleOrDefault();{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public override ValueTask<TEntity> FindAsync(object[] keyValues, CancellationToken cancellationToken){{#newline}}
+    public override ValueTask<TEntity?> FindAsync(object?[]? keyValues, CancellationToken cancellationToken){{#newline}}
     {{{#newline}}
-        return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues), cancellationToken));{{#newline}}
+        return new ValueTask<TEntity?>(Task<TEntity?>.Factory.StartNew(() => Find(keyValues), cancellationToken));{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public override ValueTask<TEntity> FindAsync(params object[] keyValues){{#newline}}
+    public override ValueTask<TEntity?> FindAsync(params object?[]? keyValues){{#newline}}
     {{{#newline}}
-        return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues)));{{#newline}}
+        return new ValueTask<TEntity?>(Task<TEntity?>.Factory.StartNew(() => Find(keyValues)));{{#newline}}
     }{{#newline}}{{#newline}}
 
     public override EntityEntry<TEntity> Add(TEntity entity){{#newline}}
     {{{#newline}}
         _data.Add(entity);{{#newline}}
-        return null;{{#newline}}
+        return null!;{{#newline}}
     }{{#newline}}{{#newline}}
 
     public override ValueTask<EntityEntry<TEntity>> AddAsync(TEntity entity, CancellationToken cancellationToken = default){{#newline}}
@@ -1039,7 +1049,7 @@ using {{this}};{{#newline}}
     public override EntityEntry<TEntity> Attach(TEntity entity){{#newline}}
     {{{#newline}}
         if (entity == null) throw new ArgumentNullException(""entity"");{{#newline}}
-        return Add(entity);{{#newline}}
+        return Add(entity)!;{{#newline}}
     }{{#newline}}{{#newline}}
 
     public override void AttachRange(params TEntity[] entities){{#newline}}
@@ -1057,7 +1067,7 @@ using {{this}};{{#newline}}
     public override EntityEntry<TEntity> Remove(TEntity entity){{#newline}}
     {{{#newline}}
         _data.Remove(entity);{{#newline}}
-        return null;{{#newline}}
+        return null!;{{#newline}}
     }{{#newline}}{{#newline}}
 
     public override void RemoveRange(params TEntity[] entities){{#newline}}
@@ -1076,7 +1086,7 @@ using {{this}};{{#newline}}
     {{{#newline}}
         _data.Remove(entity);{{#newline}}
         _data.Add(entity);{{#newline}}
-        return null;{{#newline}}
+        return null!;{{#newline}}
     }{{#newline}}{{#newline}}
 
     public override void UpdateRange(params TEntity[] entities){{#newline}}
@@ -1173,9 +1183,9 @@ using {{this}};{{#newline}}
             .MakeGenericMethod(expectedResultType){{#newline}}
             .Invoke(this, new object[] { expression });{{#newline}}{{#newline}}
 
-        return (TResult) typeof(Task).GetMethod(nameof(Task.FromResult)){{#newline}}
+        return (TResult) (typeof(Task).GetMethod(nameof(Task.FromResult)){{#newline}}
             ?.MakeGenericMethod(expectedResultType){{#newline}}
-            .Invoke(null, new[] { executionResult });{{#newline}}
+            .Invoke(null, new[] { executionResult }))!;{{#newline}}
     }{{#newline}}{{#newline}}
 
     public IAsyncEnumerator<TEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default){{#newline}}
@@ -1243,7 +1253,7 @@ using {{this}};{{#newline}}
 
 public abstract class FakeQueryProvider<T> : IOrderedQueryable<T>, IQueryProvider{{#newline}}
 {{{#newline}}
-    private IEnumerable<T> _enumerable;{{#newline}}{{#newline}}
+    private IEnumerable<T>? _enumerable;{{#newline}}{{#newline}}
 
     protected FakeQueryProvider(Expression expression){{#newline}}
     {{{#newline}}
@@ -1276,7 +1286,7 @@ public abstract class FakeQueryProvider<T> : IOrderedQueryable<T>, IQueryProvide
     private object CreateInstance(Type tElement, Expression expression){{#newline}}
     {{{#newline}}
         var queryType = GetType().GetGenericTypeDefinition().MakeGenericType(tElement);{{#newline}}
-        return Activator.CreateInstance(queryType, expression);{{#newline}}
+        return Activator.CreateInstance(queryType, expression)!;{{#newline}}
     }{{#newline}}{{#newline}}
 
     public object Execute(Expression expression){{#newline}}
@@ -1311,7 +1321,7 @@ public abstract class FakeQueryProvider<T> : IOrderedQueryable<T>, IQueryProvide
     {{{#newline}}
         var visitor = new FakeExpressionVisitor();{{#newline}}
         var body = visitor.Visit(expression);{{#newline}}
-        var f = Expression.Lambda<Func<TResult>>(body ?? throw new InvalidOperationException(string.Format(""{0} is null"", nameof(body))), (IEnumerable<ParameterExpression>) null);{{#newline}}
+        var f = Expression.Lambda<Func<TResult>>(body ?? throw new InvalidOperationException(string.Format(""{0} is null"", nameof(body))), (IEnumerable<ParameterExpression>?) null);{{#newline}}
         return f.Compile()();{{#newline}}
     }{{#newline}}
 }{{#newline}}{{#newline}}
@@ -1387,7 +1397,7 @@ public class FakeDatabaseFacade : DatabaseFacade{{#newline}}
 
     public override IExecutionStrategy CreateExecutionStrategy(){{#newline}}
     {{{#newline}}
-        return null;{{#newline}}
+        return null!;{{#newline}}
     }{{#newline}}{{#newline}}
 
     public override string ToString(){{#newline}}

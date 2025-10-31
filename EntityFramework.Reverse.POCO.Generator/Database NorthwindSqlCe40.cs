@@ -45,7 +45,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken));
         DatabaseFacade Database { get; }
         DbSet<TEntity> Set<TEntity>() where TEntity : class;
-        string ToString();
+        string? ToString();
 
         EntityEntry Add(object entity);
         EntityEntry<TEntity> Add<TEntity>(TEntity entity) where TEntity : class;
@@ -64,12 +64,12 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         EntityEntry Entry(object entity);
         EntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class;
 
-        TEntity Find<TEntity>(params object[] keyValues) where TEntity : class;
-        ValueTask<TEntity> FindAsync<TEntity>(object[] keyValues, CancellationToken cancellationToken) where TEntity : class;
-        ValueTask<TEntity> FindAsync<TEntity>(params object[] keyValues) where TEntity : class;
-        ValueTask<object> FindAsync(Type entityType, object[] keyValues, CancellationToken cancellationToken);
-        ValueTask<object> FindAsync(Type entityType, params object[] keyValues);
-        object Find(Type entityType, params object[] keyValues);
+        TEntity? Find<TEntity>(params object?[]? keyValues) where TEntity : class;
+        ValueTask<TEntity?> FindAsync<TEntity>(object?[]? keyValues, CancellationToken cancellationToken) where TEntity : class;
+        ValueTask<TEntity?> FindAsync<TEntity>(params object?[]? keyValues) where TEntity : class;
+        ValueTask<object?> FindAsync(Type entityType, object?[]? keyValues, CancellationToken cancellationToken);
+        ValueTask<object?> FindAsync(Type entityType, params object?[]? keyValues);
+        object? Find(Type entityType, params object?[]? keyValues);
 
         EntityEntry Remove(object entity);
         EntityEntry<TEntity> Remove<TEntity>(TEntity entity) where TEntity : class;
@@ -148,10 +148,11 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
 
     public class MyDbContextSqlCE4Factory : IDesignTimeDbContextFactory<MyDbContextSqlCE4>
     {
-        private readonly DbContextOptions<MyDbContextSqlCE4> Options;
+        private readonly DbContextOptions<MyDbContextSqlCE4>? Options;
 
         public MyDbContextSqlCE4Factory()
         {
+            Options = null;
         }
 
         public MyDbContextSqlCE4Factory(DbContextOptions<MyDbContextSqlCE4> options)
@@ -166,7 +167,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
 
         public MyDbContextSqlCE4 CreateDbContext()
         {
-            return new MyDbContextSqlCE4(Options);
+            return Options != null ? new MyDbContextSqlCE4(Options) : new MyDbContextSqlCE4();
         }
 
         public MyDbContextSqlCE4 CreateDbContext(DbContextOptions<MyDbContextSqlCE4> options)
@@ -247,7 +248,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
             throw new NotImplementedException();
         }
 
-        public override string ToString()
+        public override string? ToString()
         {
             throw new NotImplementedException();
         }
@@ -325,32 +326,32 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
             throw new NotImplementedException();
         }
 
-        public virtual TEntity Find<TEntity>(params object[] keyValues) where TEntity : class
+        public virtual TEntity? Find<TEntity>(params object?[]? keyValues) where TEntity : class
         {
             throw new NotImplementedException();
         }
 
-        public virtual ValueTask<TEntity> FindAsync<TEntity>(object[] keyValues, CancellationToken cancellationToken) where TEntity : class
+        public virtual ValueTask<TEntity?> FindAsync<TEntity>(object?[]? keyValues, CancellationToken cancellationToken) where TEntity : class
         {
             throw new NotImplementedException();
         }
 
-        public virtual ValueTask<TEntity> FindAsync<TEntity>(params object[] keyValues) where TEntity : class
+        public virtual ValueTask<TEntity?> FindAsync<TEntity>(params object?[]? keyValues) where TEntity : class
         {
             throw new NotImplementedException();
         }
 
-        public virtual ValueTask<object> FindAsync(Type entityType, object[] keyValues, CancellationToken cancellationToken)
+        public virtual ValueTask<object?> FindAsync(Type entityType, object?[]? keyValues, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public virtual ValueTask<object> FindAsync(Type entityType, params object[] keyValues)
+        public virtual ValueTask<object?> FindAsync(Type entityType, params object?[]? keyValues)
         {
             throw new NotImplementedException();
         }
 
-        public virtual object Find(Type entityType, params object[] keyValues)
+        public virtual object? Find(Type entityType, params object?[]? keyValues)
         {
             throw new NotImplementedException();
         }
@@ -434,11 +435,20 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         private readonly PropertyInfo[] _primaryKeys;
         private ObservableCollection<TEntity> _data;
         private IQueryable _query;
-        public override IEntityType EntityType { get; }
+        private IEntityType? _entityType = null;
+        public override IEntityType EntityType
+        {
+            get
+            {
+                if (_entityType == null)
+                    throw new NotImplementedException("EntityType is not implemented for FakeDbSet.");
+                return _entityType;
+            }
+        }
 
         public FakeDbSet()
         {
-            _primaryKeys = null;
+            _primaryKeys = Array.Empty<PropertyInfo>();
             _data        = new ObservableCollection<TEntity>();
             _query       = _data.AsQueryable();
         }
@@ -450,11 +460,11 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
             _query       = _data.AsQueryable();
         }
 
-        public override TEntity Find(params object[] keyValues)
+        public override TEntity? Find(params object?[]? keyValues)
         {
             if (_primaryKeys == null)
                 throw new ArgumentException("No primary keys defined");
-            if (keyValues.Length != _primaryKeys.Length)
+            if (keyValues?.Length != _primaryKeys.Length)
                 throw new ArgumentException("Incorrect number of keys passed to Find method");
 
             var keyQuery = this.AsQueryable();
@@ -462,25 +472,25 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
                 .Select((t, i) => i)
                 .Aggregate(keyQuery,
                     (current, x) =>
-                        current.Where(entity => _primaryKeys[x].GetValue(entity, null).Equals(keyValues[x])));
+                        current.Where(entity => _primaryKeys[x].GetValue(entity, null)!.Equals(keyValues[x])));
 
             return keyQuery.SingleOrDefault();
         }
 
-        public override ValueTask<TEntity> FindAsync(object[] keyValues, CancellationToken cancellationToken)
+        public override ValueTask<TEntity?> FindAsync(object?[]? keyValues, CancellationToken cancellationToken)
         {
-            return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues), cancellationToken));
+            return new ValueTask<TEntity?>(Task<TEntity?>.Factory.StartNew(() => Find(keyValues), cancellationToken));
         }
 
-        public override ValueTask<TEntity> FindAsync(params object[] keyValues)
+        public override ValueTask<TEntity?> FindAsync(params object?[]? keyValues)
         {
-            return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues)));
+            return new ValueTask<TEntity?>(Task<TEntity?>.Factory.StartNew(() => Find(keyValues)));
         }
 
         public override EntityEntry<TEntity> Add(TEntity entity)
         {
             _data.Add(entity);
-            return null;
+            return null!;
         }
 
         public override ValueTask<EntityEntry<TEntity>> AddAsync(TEntity entity, CancellationToken cancellationToken = default)
@@ -517,7 +527,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         public override EntityEntry<TEntity> Attach(TEntity entity)
         {
             if (entity == null) throw new ArgumentNullException("entity");
-            return Add(entity);
+            return Add(entity)!;
         }
 
         public override void AttachRange(params TEntity[] entities)
@@ -535,7 +545,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         public override EntityEntry<TEntity> Remove(TEntity entity)
         {
             _data.Remove(entity);
-            return null;
+            return null!;
         }
 
         public override void RemoveRange(params TEntity[] entities)
@@ -554,7 +564,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         {
             _data.Remove(entity);
             _data.Add(entity);
-            return null;
+            return null!;
         }
 
         public override void UpdateRange(params TEntity[] entities)
@@ -644,9 +654,9 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
                 .MakeGenericMethod(expectedResultType)
                 .Invoke(this, new object[] { expression });
 
-            return (TResult) typeof(Task).GetMethod(nameof(Task.FromResult))
+            return (TResult) (typeof(Task).GetMethod(nameof(Task.FromResult))
                 ?.MakeGenericMethod(expectedResultType)
-                .Invoke(null, new[] { executionResult });
+                .Invoke(null, new[] { executionResult }))!;
         }
 
         public IAsyncEnumerator<TEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default)
@@ -711,7 +721,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
 
     public abstract class FakeQueryProvider<T> : IOrderedQueryable<T>, IQueryProvider
     {
-        private IEnumerable<T> _enumerable;
+        private IEnumerable<T>? _enumerable;
 
         protected FakeQueryProvider(Expression expression)
         {
@@ -744,7 +754,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         private object CreateInstance(Type tElement, Expression expression)
         {
             var queryType = GetType().GetGenericTypeDefinition().MakeGenericType(tElement);
-            return Activator.CreateInstance(queryType, expression);
+            return Activator.CreateInstance(queryType, expression)!;
         }
 
         public object Execute(Expression expression)
@@ -779,7 +789,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         {
             var visitor = new FakeExpressionVisitor();
             var body = visitor.Visit(expression);
-            var f = Expression.Lambda<Func<TResult>>(body ?? throw new InvalidOperationException(string.Format("{0} is null", nameof(body))), (IEnumerable<ParameterExpression>) null);
+            var f = Expression.Lambda<Func<TResult>>(body ?? throw new InvalidOperationException(string.Format("{0} is null", nameof(body))), (IEnumerable<ParameterExpression>?) null);
             return f.Compile()();
         }
     }
@@ -854,7 +864,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
 
         public override IExecutionStrategy CreateExecutionStrategy()
         {
-            return null;
+            return null!;
         }
 
         public override string ToString()
