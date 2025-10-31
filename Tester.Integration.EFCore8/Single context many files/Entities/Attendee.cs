@@ -12,8 +12,8 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     public class Attendee
     {
         public long AttendeeId { get; set; } // AttendeeID (Primary key)
-        public string Lastname { get; set; } // Lastname (length: 50)
-        public string Firstname { get; set; } // Firstname (length: 50)
+        public string Lastname { get; set; } = null!; // Lastname (length: 50)
+        public string Firstname { get; set; } = null!; // Firstname (length: 50)
         public int? PhoneCountryId { get; set; } // PhoneCountryID
 
         // Foreign keys
@@ -21,7 +21,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         /// <summary>
         /// Parent Country pointed by [Attendee].([PhoneCountryId]) (FK_Attendee_PhoneCountry)
         /// </summary>
-        public virtual Country Country { get; set; } // FK_Attendee_PhoneCountry
+        public virtual Country? Country { get; set; } // FK_Attendee_PhoneCountry
     }
 
 }

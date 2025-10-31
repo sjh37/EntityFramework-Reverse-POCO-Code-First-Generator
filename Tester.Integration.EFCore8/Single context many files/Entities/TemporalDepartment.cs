@@ -12,7 +12,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     public class TemporalDepartment
     {
         public int DeptId { get; set; } // DeptID (Primary key)
-        public string DeptName { get; set; } // DeptName (length: 50)
+        public string DeptName { get; set; } = null!; // DeptName (length: 50)
         public int? ManagerId { get; set; } // ManagerID
         public int? ParentDeptId { get; set; } // ParentDeptID
         public DateTime SysStartTime { get; set; } // SysStartTime

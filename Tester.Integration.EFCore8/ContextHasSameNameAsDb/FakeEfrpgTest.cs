@@ -17,7 +17,7 @@ namespace Tester.Integration.EFCore8.ContextHasSameNameAsDb
 {
     public class FakeEfrpgTest : IEfrpgTest
     {
-        public DbSet<Car> Cars { get; set; } // Car
+        public DbSet<Car> Cars { get; set; } = null!; // Car
 
         public FakeEfrpgTest()
         {

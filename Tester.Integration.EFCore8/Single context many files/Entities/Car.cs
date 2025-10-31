@@ -13,7 +13,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     {
         public int Id { get; set; } // Id (Primary key)
         public int PrimaryColourId { get; set; } // PrimaryColourId
-        public string CarMake { get; set; } // CarMake (length: 255)
+        public string CarMake { get; set; } = null!; // CarMake (length: 255)
         public int? ComputedColumn { get; private set; } // computed_column
         public int ComputedColumnPersisted { get; private set; } // computed_column_persisted
 
@@ -29,7 +29,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         /// <summary>
         /// Parent Colour pointed by [Car].([PrimaryColourId]) (CarPrimaryColourFK)
         /// </summary>
-        public virtual Colour Colour { get; set; } // CarPrimaryColourFK
+        public virtual Colour Colour { get; set; } = null!; // CarPrimaryColourFK
 
         public Car()
         {

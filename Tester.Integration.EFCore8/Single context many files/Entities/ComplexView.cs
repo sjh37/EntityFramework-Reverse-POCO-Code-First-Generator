@@ -11,7 +11,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     // ComplexView
     public class ComplexView
     {
-        public string LicenseType { get; set; } // LicenseType (length: 128)
+        public string LicenseType { get; set; } = null!; // LicenseType (length: 128)
         public int? Count { get; set; } // Count
     }
 

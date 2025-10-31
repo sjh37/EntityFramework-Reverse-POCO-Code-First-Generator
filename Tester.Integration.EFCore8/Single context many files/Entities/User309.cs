@@ -12,8 +12,8 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     public class User309
     {
         public long UserId { get; set; } // UserID (Primary key)
-        public string Lastname { get; set; } // Lastname (length: 100)
-        public string Firstname { get; set; } // Firstname (length: 100)
+        public string Lastname { get; set; } = null!; // Lastname (length: 100)
+        public string Firstname { get; set; } = null!; // Firstname (length: 100)
         public int? PhoneCountryId { get; set; } // PhoneCountryID
 
         // Foreign keys
@@ -21,7 +21,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         /// <summary>
         /// Parent Country pointed by [User309].([PhoneCountryId]) (FK_User309_PhoneCountry)
         /// </summary>
-        public virtual Country Country { get; set; } // FK_User309_PhoneCountry
+        public virtual Country? Country { get; set; } // FK_User309_PhoneCountry
     }
 
 }

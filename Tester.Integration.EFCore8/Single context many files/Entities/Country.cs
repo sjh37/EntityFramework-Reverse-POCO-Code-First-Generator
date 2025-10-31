@@ -12,7 +12,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     public class Country
     {
         public int CountryId { get; set; } // CountryID (Primary key)
-        public string Code { get; set; } // Code (length: 12)
+        public string? Code { get; set; } // Code (length: 12)
 
         // Reverse navigation
 

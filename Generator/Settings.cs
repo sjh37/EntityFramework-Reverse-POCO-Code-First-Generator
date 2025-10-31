@@ -819,6 +819,8 @@ namespace Efrpg
         public static string TemplateFile;
         public static int FilterCount;
 
+        public static bool NeedsNullForgiving() => AllowNullStrings || NullableReverseNavigationProperties;
+
         public static void CheckSettings()
         {
             if (TemplateType == TemplateType.Ef6 ||

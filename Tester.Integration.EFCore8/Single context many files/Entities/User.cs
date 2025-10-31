@@ -12,7 +12,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     public class User
     {
         public int Id { get; set; } // ID (Primary key)
-        public string ExternalUserId { get; set; } // ExternalUserID (length: 50)
+        public string? ExternalUserId { get; set; } // ExternalUserID (length: 50)
 
         // Reverse navigation
 

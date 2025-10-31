@@ -20,12 +20,12 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         /// <summary>
         /// Parent User pointed by [User_Document].([CreatedByUserId]) (FK_User_Document_User1)
         /// </summary>
-        public virtual User CreatedByUser { get; set; } // FK_User_Document_User1
+        public virtual User CreatedByUser { get; set; } = null!; // FK_User_Document_User1
 
         /// <summary>
         /// Parent User pointed by [User_Document].([UserId]) (FK_User_Document_User)
         /// </summary>
-        public virtual User User_UserId { get; set; } // FK_User_Document_User
+        public virtual User User_UserId { get; set; } = null!; // FK_User_Document_User
     }
 
 }

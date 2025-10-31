@@ -1074,17 +1074,26 @@ namespace Efrpg.Generators
                 var pkPropName             = fkTable.GetUniqueForeignKeyName(true,  pkTableHumanCase,      foreignKey, checkForFkNameClashes, true,                   relationship);
                 var fkPropName             = pkTable.GetUniqueForeignKeyName(false, fkTable.NameHumanCase, foreignKey, checkForFkNameClashes, fkMakePropNameSingular, flipRelationship);
 
+                // Determine if the foreign key navigation property needs null-forgiving operator or nullable marker
+                // If all FK columns are nullable, the navigation property should be nullable
+                var allFkColumnsAreNullable = fkCols.All(x => x.Column.IsNullable);
+                var needsNullForgiving = Settings.NeedsNullForgiving();
+                var nullableMarker = needsNullForgiving && allFkColumnsAreNullable ? "?" : string.Empty;
+                var nullForgivingOperator = needsNullForgiving && !allFkColumnsAreNullable ? " = null!;" : string.Empty;
+
                 var fkd = new PropertyAndComments
                 {
                     AdditionalDataAnnotations = filter.ForeignKeyAnnotationsProcessing(fkTable, pkTable, pkPropName, fkPropName),
                     
                     PropertyName = pkPropName,
 
-                    Definition = string.Format("public {0}{1} {2} {3}{4}", 
+                    Definition = string.Format("public {0}{1}{2} {3} {4}{5}{6}", 
                         Table.GetLazyLoadingMarker(),
                         pkTableHumanCaseWithSuffix,
+                        nullableMarker,
                         pkPropName,
                         "{ get; set; }",
+                        nullForgivingOperator,
                         Settings.IncludeComments != CommentsStyle.None ? " // " + foreignKey.ConstraintName : string.Empty),
 
                     Comments = string.Format("Parent {0} pointed by [{1}].({2}) ({3})",

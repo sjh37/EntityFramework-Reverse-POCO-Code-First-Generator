@@ -12,14 +12,14 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     public class NullableReverseNavigationB
     {
         public Guid Id { get; set; } // Id (Primary key)
-        public string Data { get; set; } // Data (length: 100)
+        public string? Data { get; set; } // Data (length: 100)
 
         // Foreign keys
 
         /// <summary>
         /// Parent NullableReverseNavigationA pointed by [NullableReverseNavigationB].([Id]) (FK_NullableReverseNavigationB_Id)
         /// </summary>
-        public virtual NullableReverseNavigationA NullableReverseNavigationA { get; set; } // FK_NullableReverseNavigationB_Id
+        public virtual NullableReverseNavigationA NullableReverseNavigationA { get; set; } = null!; // FK_NullableReverseNavigationB_Id
     }
 
 }

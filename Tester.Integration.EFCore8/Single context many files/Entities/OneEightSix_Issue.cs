@@ -12,8 +12,8 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     public class OneEightSix_Issue
     {
         public int Id { get; set; } // Id (Primary key)
-        public string Title { get; set; } // Title (length: 100)
-        public string Content { get; set; } // Content
+        public string Title { get; set; } = null!; // Title (length: 100)
+        public string? Content { get; set; } // Content
         public int? ConsentDocumentId { get; set; } // ConsentDocumentId
 
         // Reverse navigation
@@ -28,7 +28,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         /// <summary>
         /// Parent OneEightSix_UploadedFile pointed by [Issue].([ConsentDocumentId]) (FK_Issue_UploadedFileConsentDocument)
         /// </summary>
-        public virtual OneEightSix_UploadedFile OneEightSix_UploadedFile { get; set; } // FK_Issue_UploadedFileConsentDocument
+        public virtual OneEightSix_UploadedFile? OneEightSix_UploadedFile { get; set; } // FK_Issue_UploadedFileConsentDocument
 
         public OneEightSix_Issue()
         {

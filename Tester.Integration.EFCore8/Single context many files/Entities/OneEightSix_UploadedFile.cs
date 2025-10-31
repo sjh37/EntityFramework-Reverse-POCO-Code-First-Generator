@@ -12,7 +12,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     public class OneEightSix_UploadedFile
     {
         public int Id { get; set; } // Id (Primary key)
-        public string FullPath { get; set; } // FullPath
+        public string FullPath { get; set; } = null!; // FullPath
 
         // Reverse navigation
 

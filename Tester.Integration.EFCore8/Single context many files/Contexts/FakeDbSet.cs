@@ -78,7 +78,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         {
             if (_primaryKeys == null)
                 throw new ArgumentException("No primary keys defined");
-            if (keyValues.Length != _primaryKeys.Length)
+            if (keyValues?.Length != _primaryKeys.Length)
                 throw new ArgumentException("Incorrect number of keys passed to Find method");
 
             var keyQuery = this.AsQueryable();
@@ -86,7 +86,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
                 .Select((t, i) => i)
                 .Aggregate(keyQuery,
                     (current, x) =>
-                        current.Where(entity => _primaryKeys[x].GetValue(entity, null).Equals(keyValues[x])));
+                        current.Where(entity => _primaryKeys[x].GetValue(entity, null)!.Equals(keyValues[x])));
 
             return keyQuery.SingleOrDefault();
         }
@@ -104,7 +104,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         public override EntityEntry<TEntity> Add(TEntity entity)
         {
             _data.Add(entity);
-            return null;
+            return null!;
         }
 
         public override ValueTask<EntityEntry<TEntity>> AddAsync(TEntity entity, CancellationToken cancellationToken = default)
@@ -141,7 +141,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         public override EntityEntry<TEntity> Attach(TEntity entity)
         {
             if (entity == null) throw new ArgumentNullException("entity");
-            return Add(entity);
+            return Add(entity)!;
         }
 
         public override void AttachRange(params TEntity[] entities)
@@ -159,7 +159,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         public override EntityEntry<TEntity> Remove(TEntity entity)
         {
             _data.Remove(entity);
-            return null;
+            return null!;
         }
 
         public override void RemoveRange(params TEntity[] entities)
@@ -178,7 +178,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         {
             _data.Remove(entity);
             _data.Add(entity);
-            return null;
+            return null!;
         }
 
         public override void UpdateRange(params TEntity[] entities)
@@ -268,9 +268,9 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
                 .MakeGenericMethod(expectedResultType)
                 .Invoke(this, new object[] { expression });
 
-            return (TResult) typeof(Task).GetMethod(nameof(Task.FromResult))
+            return (TResult) (typeof(Task).GetMethod(nameof(Task.FromResult))
                 ?.MakeGenericMethod(expectedResultType)
-                .Invoke(null, new[] { executionResult });
+                .Invoke(null, new[] { executionResult }))!;
         }
 
         public IAsyncEnumerator<TEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default)
@@ -335,7 +335,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
 
     public abstract class FakeQueryProvider<T> : IOrderedQueryable<T>, IQueryProvider
     {
-        private IEnumerable<T> _enumerable;
+        private IEnumerable<T>? _enumerable;
 
         protected FakeQueryProvider(Expression expression)
         {
@@ -368,7 +368,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         private object CreateInstance(Type tElement, Expression expression)
         {
             var queryType = GetType().GetGenericTypeDefinition().MakeGenericType(tElement);
-            return Activator.CreateInstance(queryType, expression);
+            return Activator.CreateInstance(queryType, expression)!;
         }
 
         public object Execute(Expression expression)
@@ -403,7 +403,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         {
             var visitor = new FakeExpressionVisitor();
             var body = visitor.Visit(expression);
-            var f = Expression.Lambda<Func<TResult>>(body ?? throw new InvalidOperationException(string.Format("{0} is null", nameof(body))), (IEnumerable<ParameterExpression>) null);
+            var f = Expression.Lambda<Func<TResult>>(body ?? throw new InvalidOperationException(string.Format("{0} is null", nameof(body))), (IEnumerable<ParameterExpression>?) null);
             return f.Compile()();
         }
     }
@@ -478,7 +478,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
 
         public override IExecutionStrategy CreateExecutionStrategy()
         {
-            return null;
+            return null!;
         }
 
         public override string ToString()

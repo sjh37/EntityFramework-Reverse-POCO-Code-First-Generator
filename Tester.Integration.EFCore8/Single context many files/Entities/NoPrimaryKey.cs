@@ -14,7 +14,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     public class NoPrimaryKey
     {
         public int? Id { get; set; } // Id
-        public string Description { get; set; } // Description (length: 10)
+        public string? Description { get; set; } // Description (length: 10)
     }
 
 }

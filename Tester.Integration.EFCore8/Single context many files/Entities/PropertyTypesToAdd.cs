@@ -14,7 +14,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         public int Id { get; set; } // id (Primary key)
         public DateTime? DtDefault { get; set; } // dt_default
         public DateTime? Dt7 { get; set; } // dt7
-        public string DefaultCheck { get; set; } // defaultCheck (length: 10)
+        public string? DefaultCheck { get; set; } // defaultCheck (length: 10)
 
         // Reverse navigation
 

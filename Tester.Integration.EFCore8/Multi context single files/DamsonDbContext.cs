@@ -151,7 +151,7 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesPlum
     // NoPrimaryKeys
     public class NoPrimaryKey
     {
-        public string Description { get; set; } // Description (Primary key) (length: 10)
+        public string? Description { get; set; } // Description (Primary key) (length: 10)
 
         // Reverse navigation
 
@@ -170,14 +170,14 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesPlum
     public class Synonyms_Parent
     {
         public int ParentId { get; set; } // ParentId (Primary key)
-        public string ParentName { get; set; } // ParentName (length: 100)
+        public string ParentName { get; set; } = null!; // ParentName (length: 100)
 
         // Foreign keys
 
         /// <summary>
         /// Parent NoPrimaryKey pointed by [Parent].([ParentName]) (CustomNameForForeignKey)
         /// </summary>
-        public virtual NoPrimaryKey ParentFkName { get; set; } // CustomNameForForeignKey
+        public virtual NoPrimaryKey ParentFkName { get; set; } = null!; // CustomNameForForeignKey
     }
 
 

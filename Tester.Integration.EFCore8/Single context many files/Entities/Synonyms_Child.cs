@@ -13,14 +13,14 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     {
         public int ChildId { get; set; } // ChildId (Primary key)
         public int ParentId { get; set; } // ParentId
-        public string ChildName { get; set; } // ChildName (length: 100)
+        public string? ChildName { get; set; } // ChildName (length: 100)
 
         // Foreign keys
 
         /// <summary>
         /// Parent Synonyms_Parent pointed by [Child].([ParentId]) (FK_Child_Parent)
         /// </summary>
-        public virtual Synonyms_Parent Synonyms_Parent { get; set; } // FK_Child_Parent
+        public virtual Synonyms_Parent Synonyms_Parent { get; set; } = null!; // FK_Child_Parent
     }
 
 }

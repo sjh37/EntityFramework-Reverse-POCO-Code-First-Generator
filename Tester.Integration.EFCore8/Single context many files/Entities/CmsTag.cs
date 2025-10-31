@@ -12,7 +12,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     public class CmsTag
     {
         public int TagId { get; set; } // TagId (Primary key)
-        public string TagName { get; set; } // TagName (length: 100)
+        public string TagName { get; set; } = null!; // TagName (length: 100)
 
         // Reverse navigation
 

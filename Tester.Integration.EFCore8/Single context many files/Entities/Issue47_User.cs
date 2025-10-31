@@ -12,7 +12,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     public class Issue47_User
     {
         public int UserId { get; set; } // UserId (Primary key)
-        public string Name { get; set; } // Name (length: 10)
+        public string? Name { get; set; } // Name (length: 10)
 
         // Reverse navigation
 

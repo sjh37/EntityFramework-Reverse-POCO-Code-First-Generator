@@ -12,7 +12,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     public class FkTest_SmallDecimalTestAttribute
     {
         public int FkId { get; set; } // FkID (Primary key)
-        public string Description { get; set; } // description (length: 20)
+        public string Description { get; set; } = null!; // description (length: 20)
 
         // Reverse navigation
 
@@ -26,7 +26,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         /// <summary>
         /// Parent SmallDecimalTest pointed by [SmallDecimalTestAttribute].([FkId]) (KateFK)
         /// </summary>
-        public virtual SmallDecimalTest SmallDecimalTest { get; set; } // KateFK
+        public virtual SmallDecimalTest SmallDecimalTest { get; set; } = null!; // KateFK
 
         public FkTest_SmallDecimalTestAttribute()
         {

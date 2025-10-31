@@ -19,12 +19,12 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         /// <summary>
         /// Parent Car pointed by [CarToColour].([CarId]) (CarToColour_CarId)
         /// </summary>
-        public virtual Car Car { get; set; } // CarToColour_CarId
+        public virtual Car Car { get; set; } = null!; // CarToColour_CarId
 
         /// <summary>
         /// Parent Colour pointed by [CarToColour].([ColourId]) (CarToColour_ColourId)
         /// </summary>
-        public virtual Colour Colour { get; set; } // CarToColour_ColourId
+        public virtual Colour Colour { get; set; } = null!; // CarToColour_ColourId
     }
 
 }

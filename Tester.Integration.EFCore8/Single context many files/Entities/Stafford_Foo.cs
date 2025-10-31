@@ -12,14 +12,14 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     public class Stafford_Foo
     {
         public int Id { get; set; } // id (Primary key)
-        public string Name { get; set; } // name (length: 10)
+        public string Name { get; set; } = null!; // name (length: 10)
 
         // Foreign keys
 
         /// <summary>
         /// Parent Stafford_Boo pointed by [Foo].([Id]) (FK_Foo_Boo)
         /// </summary>
-        public virtual Stafford_Boo Stafford_Boo { get; set; } // FK_Foo_Boo
+        public virtual Stafford_Boo Stafford_Boo { get; set; } = null!; // FK_Foo_Boo
     }
 
 }

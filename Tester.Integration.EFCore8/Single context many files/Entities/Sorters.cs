@@ -11,7 +11,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     // Sorters
     public class Sorters
     {
-        public string SorterName { get; set; } // SorterName (Primary key) (length: 20)
+        public string SorterName { get; set; } = null!; // SorterName (Primary key) (length: 20)
 
         // Reverse navigation
 

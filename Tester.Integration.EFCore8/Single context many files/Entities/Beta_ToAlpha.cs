@@ -19,7 +19,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         /// <summary>
         /// Parent Alpha_Workflow pointed by [ToAlpha].([AlphaId]) (BetaToAlpha_AlphaWorkflow)
         /// </summary>
-        public virtual Alpha_Workflow Alpha_Workflow { get; set; } // BetaToAlpha_AlphaWorkflow
+        public virtual Alpha_Workflow Alpha_Workflow { get; set; } = null!; // BetaToAlpha_AlphaWorkflow
     }
 
 }

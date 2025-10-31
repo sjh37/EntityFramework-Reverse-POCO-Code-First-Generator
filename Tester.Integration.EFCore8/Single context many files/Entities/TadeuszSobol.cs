@@ -12,9 +12,9 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     public class TadeuszSobol
     {
         public int Id { get; set; } // Id (Primary key)
-        public string Description { get; set; } // Description
-        public string Notes { get; set; } // Notes
-        public string Name { get; set; } // Name (length: 10)
+        public string? Description { get; set; } // Description
+        public string? Notes { get; set; } // Notes
+        public string? Name { get; set; } // Name (length: 10)
     }
 
 }

@@ -12,11 +12,11 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     public class CodeParamMeetingTopicDetailSource
     {
         public int Id { get; set; } // ID (Primary key)
-        public string Code { get; set; } // Code (length: 5)
-        public string Label { get; set; } // Label (length: 50)
-        public string LabelEng { get; set; } // LabelENG (length: 50)
-        public string LabelEsp { get; set; } // LabelESP (length: 50)
-        public string LabelFra { get; set; } // LabelFRA (length: 50)
+        public string Code { get; set; } = null!; // Code (length: 5)
+        public string? Label { get; set; } // Label (length: 50)
+        public string? LabelEng { get; set; } // LabelENG (length: 50)
+        public string? LabelEsp { get; set; } // LabelESP (length: 50)
+        public string? LabelFra { get; set; } // LabelFRA (length: 50)
         public DateTime DateCreated { get; set; } // DateCreated
         public DateTime? DateChanged { get; set; } // DateChanged
 

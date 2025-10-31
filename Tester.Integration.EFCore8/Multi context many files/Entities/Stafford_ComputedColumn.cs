@@ -13,7 +13,7 @@ namespace Tester.Integration.EFCore8.Multi_context_many_filesBananaDbContext
     public class Stafford_ComputedColumn
     {
         public int id { get; set; } // Id (Primary key)
-        public string MyColumn { get; set; } // MyColumn (length: 10)
+        public string MyColumn { get; set; } = null!; // MyColumn (length: 10)
     }
 
 }

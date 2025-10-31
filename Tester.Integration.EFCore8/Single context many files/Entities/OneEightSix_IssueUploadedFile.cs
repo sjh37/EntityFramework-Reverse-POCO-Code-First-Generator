@@ -19,12 +19,12 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         /// <summary>
         /// Parent OneEightSix_Issue pointed by [IssueUploadedFile].([IssueId]) (FK_IssueUploadedFile_Issue)
         /// </summary>
-        public virtual OneEightSix_Issue OneEightSix_Issue { get; set; } // FK_IssueUploadedFile_Issue
+        public virtual OneEightSix_Issue OneEightSix_Issue { get; set; } = null!; // FK_IssueUploadedFile_Issue
 
         /// <summary>
         /// Parent OneEightSix_UploadedFile pointed by [IssueUploadedFile].([UploadedFileId]) (FK_IssueUploadedFile_UploadedFile)
         /// </summary>
-        public virtual OneEightSix_UploadedFile OneEightSix_UploadedFile { get; set; } // FK_IssueUploadedFile_UploadedFile
+        public virtual OneEightSix_UploadedFile OneEightSix_UploadedFile { get; set; } = null!; // FK_IssueUploadedFile_UploadedFile
     }
 
 }

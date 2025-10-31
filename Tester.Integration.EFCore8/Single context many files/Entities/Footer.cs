@@ -20,7 +20,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         /// <summary>
         /// Parent Header pointed by [footer].([Id], [OtherId]) (fooderFK)
         /// </summary>
-        public virtual Header Header { get; set; } // fooderFK
+        public virtual Header Header { get; set; } = null!; // fooderFK
 
         public Footer()
         {

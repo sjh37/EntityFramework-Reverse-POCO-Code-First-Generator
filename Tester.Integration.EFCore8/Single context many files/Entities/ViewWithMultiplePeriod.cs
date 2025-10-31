@@ -12,7 +12,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     public class ViewWithMultiplePeriod
     {
         public int FkId { get; set; } // FkID
-        public string Description { get; set; } // description (length: 20)
+        public string Description { get; set; } = null!; // description (length: 20)
     }
 
 }

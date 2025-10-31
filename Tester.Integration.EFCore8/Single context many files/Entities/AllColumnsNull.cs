@@ -12,7 +12,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     public class AllColumnsNull
     {
         public int? Total { get; set; } // total
-        public string AName { get; set; } // aName (length: 250)
+        public string? AName { get; set; } // aName (length: 250)
     }
 
 }

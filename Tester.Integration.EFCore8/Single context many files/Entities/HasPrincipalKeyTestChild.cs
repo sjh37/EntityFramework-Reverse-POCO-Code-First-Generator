@@ -22,7 +22,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         /// <summary>
         /// Parent HasPrincipalKeyTestParent pointed by [HasPrincipalKeyTestChild].([A], [B]) (FK_HasPrincipalKey_AB)
         /// </summary>
-        public virtual HasPrincipalKeyTestParent HasPrincipalKeyTestParent { get; set; } // FK_HasPrincipalKey_AB
+        public virtual HasPrincipalKeyTestParent HasPrincipalKeyTestParent { get; set; } = null!; // FK_HasPrincipalKey_AB
     }
 
 }

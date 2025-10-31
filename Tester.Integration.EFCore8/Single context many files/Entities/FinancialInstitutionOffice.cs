@@ -13,7 +13,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     {
         public Guid Code { get; set; } // Code
         public Guid FinancialInstitutionCode { get; set; } // FinancialInstitutionCode (Primary key via unique index UniqueOfficeName_FinancialInstitutionOffice)
-        public string OfficeName { get; set; } // OfficeName (length: 200)
+        public string? OfficeName { get; set; } // OfficeName (length: 200)
     }
 
 }

@@ -12,7 +12,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     public class Stafford_Boo
     {
         public int Id { get; set; } // id (Primary key)
-        public string Name { get; set; } // name (length: 10)
+        public string Name { get; set; } = null!; // name (length: 10)
 
         // Reverse navigation
 

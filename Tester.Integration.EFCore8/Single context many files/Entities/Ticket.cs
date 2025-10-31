@@ -20,12 +20,12 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         /// <summary>
         /// Parent AppUser pointed by [Ticket].([CreatedById]) (FK_Ticket_AppUser)
         /// </summary>
-        public virtual AppUser CreatedBy { get; set; } // FK_Ticket_AppUser
+        public virtual AppUser CreatedBy { get; set; } = null!; // FK_Ticket_AppUser
 
         /// <summary>
         /// Parent AppUser pointed by [Ticket].([ModifiedById]) (FK_Ticket_AppUser1)
         /// </summary>
-        public virtual AppUser ModifiedBy { get; set; } // FK_Ticket_AppUser1
+        public virtual AppUser? ModifiedBy { get; set; } // FK_Ticket_AppUser1
     }
 
 }

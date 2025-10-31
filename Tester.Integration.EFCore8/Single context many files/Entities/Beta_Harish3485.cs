@@ -19,7 +19,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         /// <summary>
         /// Parent PropertyTypesToAdd pointed by [Harish3485].([AnotherId]) (FK_Harish)
         /// </summary>
-        public virtual PropertyTypesToAdd PropertyTypesToAdd { get; set; } // FK_Harish
+        public virtual PropertyTypesToAdd PropertyTypesToAdd { get; set; } = null!; // FK_Harish
     }
 
 }

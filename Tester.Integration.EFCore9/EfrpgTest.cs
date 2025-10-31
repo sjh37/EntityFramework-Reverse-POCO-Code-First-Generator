@@ -2297,121 +2297,121 @@ namespace V9EfrpgTest
 
     public partial class FakeV9EfrpgTestDbContext : IV9EfrpgTestDbContext
     {
-        public DbSet<A> A { get; set; } // A
-        public DbSet<Aaref> Aarefs { get; set; } // AAREF
-        public DbSet<AbOrderLinesAb> AbOrderLinesAbs { get; set; } // AB_OrderLinesAB_
-        public DbSet<AbOrdersAb> AbOrdersAbs { get; set; } // AB_OrdersAB_
-        public DbSet<AllColumnsNull> AllColumnsNulls { get; set; } // AllColumnsNull
-        public DbSet<Alpha_Harish3485> Alpha_Harish3485 { get; set; } // Harish3485
-        public DbSet<Alpha_Workflow> Alpha_Workflows { get; set; } // workflow
-        public DbSet<AlphaWorkflowSynonym> AlphaWorkflowSynonyms { get; set; } // alpha_workflow_synonym
-        public DbSet<App_UserFacilityServiceRole> App_UserFacilityServiceRoles { get; set; } // UserFacilityServiceRole
-        public DbSet<AppUser> AppUsers { get; set; } // AppUser
-        public DbSet<Attendee> Attendees { get; set; } // Attendee
-        public DbSet<BatchTest> BatchTests { get; set; } // BatchTest
-        public DbSet<Beta_Harish3485> Beta_Harish3485 { get; set; } // Harish3485
-        public DbSet<Beta_ToAlpha> Beta_ToAlphas { get; set; } // ToAlpha
-        public DbSet<Beta_Workflow> Beta_Workflows { get; set; } // workflow
-        public DbSet<Bitfiddlerallcap> Bitfiddlerallcaps { get; set; } // BITFIDDLERALLCAPS
-        public DbSet<BitFiddlerCategoRy> BitFiddlerCategoRies { get; set; } // BitFiddlerCATEGORIES
-        public DbSet<BitFiddlerCurrenCy> BitFiddlerCurrenCies { get; set; } // BitFiddlerCURRENCIES
-        public DbSet<Blah> Blahs { get; set; } // Blah
-        public DbSet<BlahBlahLinkV2> BlahBlahLinkV2 { get; set; } // BlahBlahLink_v2
-        public DbSet<Blarg> Blargs { get; set; } // Blarg
-        public DbSet<Burak1> Burak1 { get; set; } // Burak1
-        public DbSet<Burak2> Burak2 { get; set; } // Burak2
-        public DbSet<CalculatedColumnNotNull> CalculatedColumnNotNulls { get; set; } // CalculatedColumnNotNull
-        public DbSet<Car> Cars { get; set; } // Car
-        public DbSet<ClientCreationState> ClientCreationStates { get; set; } // ClientCreationState
-        public DbSet<CmsFile> CmsFiles { get; set; } // CMS_File
-        public DbSet<CmsTag> CmsTags { get; set; } // CMS_Tag
-        public DbSet<CodeMeetingTopicDetail> CodeMeetingTopicDetails { get; set; } // CODE_MeetingTopicDetails
-        public DbSet<CodeObject> CodeObjects { get; set; } // CodeObject
-        public DbSet<CodeParamMeetingTopicDetailSource> CodeParamMeetingTopicDetailSources { get; set; } // CODE_PARAM_MeetingTopicDetailSource
-        public DbSet<Colour> Colours { get; set; } // Colour
-        public DbSet<ColumnNameAndType> ColumnNameAndTypes { get; set; } // ColumnNameAndTypes
-        public DbSet<ComplexView> ComplexViews { get; set; } // ComplexView
-        public DbSet<Country> Countries { get; set; } // Country
-        public DbSet<CrossDatabaseSynonym> CrossDatabaseSynonyms { get; set; } // cross_database_synonym
-        public DbSet<DateTimeDefaultTest> DateTimeDefaultTests { get; set; } // DateTimeDefaultTest
-        public DbSet<dcg_RovColumnDefinition> dcg_RovColumnDefinitions { get; set; } // rov_ColumnDefinitions
-        public DbSet<DefaultCheckForNull> DefaultCheckForNulls { get; set; } // DefaultCheckForNull
-        public DbSet<DsOpe> DsOpes { get; set; } // DSOpe
-        public DbSet<EnumsWithStringAsValue> EnumsWithStringAsValues { get; set; } // EnumsWithStringAsValue
-        public DbSet<EnumTest_DaysOfWeek> EnumTest_DaysOfWeeks { get; set; } // DaysOfWeek
-        public DbSet<EnumTest_OpenDay> EnumTest_OpenDays { get; set; } // OpenDays
-        public DbSet<EnumWithDefaultValue> EnumWithDefaultValues { get; set; } // EnumWithDefaultValue
-        public DbSet<EventProcessor> EventProcessors { get; set; } // EventProcessor
-        public DbSet<EventProcessorEventFilter> EventProcessorEventFilters { get; set; } // EventProcessorEventFilter
-        public DbSet<FFRS_Cv> FFRS_Cvs { get; set; } // CV
-        public DbSet<FinancialInstitutionOffice> FinancialInstitutionOffices { get; set; } // FinancialInstitutionOffice
-        public DbSet<FkTest_SmallDecimalTestAttribute> FkTest_SmallDecimalTestAttributes { get; set; } // SmallDecimalTestAttribute
-        public DbSet<Footer> Footers { get; set; } // footer
-        public DbSet<ForeignKeyIsNotEnforced> ForeignKeyIsNotEnforceds { get; set; } // ForeignKeyIsNotEnforced
-        public DbSet<ForeignKeyIsNotEnforcedItem> ForeignKeyIsNotEnforcedItems { get; set; } // ForeignKeyIsNotEnforcedItem
-        public DbSet<HasPrincipalKeyTestChild> HasPrincipalKeyTestChilds { get; set; } // HasPrincipalKeyTestChild
-        public DbSet<HasPrincipalKeyTestParent> HasPrincipalKeyTestParents { get; set; } // HasPrincipalKeyTestParent
-        public DbSet<Header> Headers { get; set; } // header
-        public DbSet<HierarchyTest> HierarchyTests { get; set; } // hierarchy_test
-        public DbSet<InflectorData> InflectorData { get; set; } // InflectorData
-        public DbSet<InflectorStatus> InflectorStatus { get; set; } // InflectorStatus
-        public DbSet<InflectorTo> InflectorTo { get; set; } // InflectorTo
-        public DbSet<Issue47_Role> Issue47_Roles { get; set; } // Role
-        public DbSet<Issue47_User> Issue47_Users { get; set; } // Users
-        public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
-        public DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
-        public DbSet<NullableReverseNavigationA> NullableReverseNavigationAs { get; set; } // NullableReverseNavigationA
-        public DbSet<NullableReverseNavigationB> NullableReverseNavigationBs { get; set; } // NullableReverseNavigationB
-        public DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
-        public DbSet<OneEightSix_UploadedFile> OneEightSix_UploadedFiles { get; set; } // UploadedFile
-        public DbSet<PeriodTable> PeriodTables { get; set; } // Period.Table
-        public DbSet<PeriodTestTable> PeriodTestTables { get; set; } // PeriodTestTable
-        public DbSet<Person> People { get; set; } // Person
-        public DbSet<PersonPost> PersonPosts { get; set; } // PersonPosts
-        public DbSet<PkOrdinalTest> PkOrdinalTests { get; set; } // pk_ordinal_test
-        public DbSet<PropertyTypesToAdd> PropertyTypesToAdds { get; set; } // PropertyTypesToAdd
-        public DbSet<SequenceTest> SequenceTests { get; set; } // SequenceTest
-        public DbSet<SequenceTestPartTwo> SequenceTestPartTwoes { get; set; } // SequenceTestPartTwo
-        public DbSet<SmallDecimalTest> SmallDecimalTests { get; set; } // SmallDecimalTest
-        public DbSet<SmallDecimalTestView> SmallDecimalTestViews { get; set; } // SmallDecimalTestView
-        public DbSet<Sorter> Sorter { get; set; } // Sorter
-        public DbSet<Sorters> Sorters { get; set; } // Sorters
-        public DbSet<SorterScannerGroup> SorterScannerGroups { get; set; } // SorterScannerGroup
-        public DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
-        public DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; } // ComputedColumns
-        public DbSet<Stafford_Foo> Stafford_Foos { get; set; } // Foo
-        public DbSet<Synonyms_Child> Synonyms_Children { get; set; } // Child
-        public DbSet<Synonyms_Parent> Synonyms_Parents { get; set; } // Parent
-        public DbSet<TableA> TableAs { get; set; } // TableA
-        public DbSet<TableB> TableBs { get; set; } // TableB
-        public DbSet<TableWithDuplicateColumnName> TableWithDuplicateColumnNames { get; set; } // table with duplicate column names
-        public DbSet<TableWithMultiplePeriod> TableWithMultiplePeriods { get; set; } // table.with.multiple.periods
-        public DbSet<TableWithSpace> TableWithSpaces { get; set; } // table with space
-        public DbSet<TableWithSpaceAndInColumn> TableWithSpaceAndInColumns { get; set; } // table with space and in columns
-        public DbSet<TableWithSpaceInColumnOnly> TableWithSpaceInColumnOnlies { get; set; } // TableWithSpaceInColumnOnly
-        public DbSet<TadeuszSobol> TadeuszSobols { get; set; } // TadeuszSobol
-        public DbSet<Task1> Task1 { get; set; } // Task
-        public DbSet<TblOrder> TblOrders { get; set; } // tblOrders
-        public DbSet<TblOrderError> TblOrderErrors { get; set; } // tblOrderErrors
-        public DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
-        public DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
-        public DbSet<TemporalDepartment> TemporalDepartments { get; set; } // TemporalDepartment
-        public DbSet<TemporalDepartmentHistory> TemporalDepartmentHistories { get; set; } // TemporalDepartmentHistory
-        public DbSet<ThisIsMemoryOptimised> ThisIsMemoryOptimiseds { get; set; } // ThisIsMemoryOptimised
-        public DbSet<Ticket> Tickets { get; set; } // Ticket
-        public DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
-        public DbSet<TimestampNullable> TimestampNullables { get; set; } // TimestampNullable
-        public DbSet<Token> Tokens { get; set; } // Token
-        public DbSet<User> Users { get; set; } // User
-        public DbSet<User309> User309 { get; set; } // User309
-        public DbSet<UserDocument> UserDocuments { get; set; } // User_Document
-        public DbSet<Versioned> Versioneds { get; set; } // Versioned
-        public DbSet<VersionedNullable> VersionedNullables { get; set; } // VersionedNullable
-        public DbSet<ViewWithMultiplePeriod> ViewWithMultiplePeriods { get; set; } // view.with.multiple.periods
-        public DbSet<ViewWithSpace> ViewWithSpaces { get; set; } // view with space
-        public DbSet<WVN_Article> WVN_Articles { get; set; } // Articles
-        public DbSet<WVN_VArticle> WVN_VArticles { get; set; } // v_Articles
-        public DbSet<Брендытовара> Брендытовара { get; set; } // Бренды товара
+        public DbSet<A> A { get; set; } = null!; // A
+        public DbSet<Aaref> Aarefs { get; set; } = null!; // AAREF
+        public DbSet<AbOrderLinesAb> AbOrderLinesAbs { get; set; } = null!; // AB_OrderLinesAB_
+        public DbSet<AbOrdersAb> AbOrdersAbs { get; set; } = null!; // AB_OrdersAB_
+        public DbSet<AllColumnsNull> AllColumnsNulls { get; set; } = null!; // AllColumnsNull
+        public DbSet<Alpha_Harish3485> Alpha_Harish3485 { get; set; } = null!; // Harish3485
+        public DbSet<Alpha_Workflow> Alpha_Workflows { get; set; } = null!; // workflow
+        public DbSet<AlphaWorkflowSynonym> AlphaWorkflowSynonyms { get; set; } = null!; // alpha_workflow_synonym
+        public DbSet<App_UserFacilityServiceRole> App_UserFacilityServiceRoles { get; set; } = null!; // UserFacilityServiceRole
+        public DbSet<AppUser> AppUsers { get; set; } = null!; // AppUser
+        public DbSet<Attendee> Attendees { get; set; } = null!; // Attendee
+        public DbSet<BatchTest> BatchTests { get; set; } = null!; // BatchTest
+        public DbSet<Beta_Harish3485> Beta_Harish3485 { get; set; } = null!; // Harish3485
+        public DbSet<Beta_ToAlpha> Beta_ToAlphas { get; set; } = null!; // ToAlpha
+        public DbSet<Beta_Workflow> Beta_Workflows { get; set; } = null!; // workflow
+        public DbSet<Bitfiddlerallcap> Bitfiddlerallcaps { get; set; } = null!; // BITFIDDLERALLCAPS
+        public DbSet<BitFiddlerCategoRy> BitFiddlerCategoRies { get; set; } = null!; // BitFiddlerCATEGORIES
+        public DbSet<BitFiddlerCurrenCy> BitFiddlerCurrenCies { get; set; } = null!; // BitFiddlerCURRENCIES
+        public DbSet<Blah> Blahs { get; set; } = null!; // Blah
+        public DbSet<BlahBlahLinkV2> BlahBlahLinkV2 { get; set; } = null!; // BlahBlahLink_v2
+        public DbSet<Blarg> Blargs { get; set; } = null!; // Blarg
+        public DbSet<Burak1> Burak1 { get; set; } = null!; // Burak1
+        public DbSet<Burak2> Burak2 { get; set; } = null!; // Burak2
+        public DbSet<CalculatedColumnNotNull> CalculatedColumnNotNulls { get; set; } = null!; // CalculatedColumnNotNull
+        public DbSet<Car> Cars { get; set; } = null!; // Car
+        public DbSet<ClientCreationState> ClientCreationStates { get; set; } = null!; // ClientCreationState
+        public DbSet<CmsFile> CmsFiles { get; set; } = null!; // CMS_File
+        public DbSet<CmsTag> CmsTags { get; set; } = null!; // CMS_Tag
+        public DbSet<CodeMeetingTopicDetail> CodeMeetingTopicDetails { get; set; } = null!; // CODE_MeetingTopicDetails
+        public DbSet<CodeObject> CodeObjects { get; set; } = null!; // CodeObject
+        public DbSet<CodeParamMeetingTopicDetailSource> CodeParamMeetingTopicDetailSources { get; set; } = null!; // CODE_PARAM_MeetingTopicDetailSource
+        public DbSet<Colour> Colours { get; set; } = null!; // Colour
+        public DbSet<ColumnNameAndType> ColumnNameAndTypes { get; set; } = null!; // ColumnNameAndTypes
+        public DbSet<ComplexView> ComplexViews { get; set; } = null!; // ComplexView
+        public DbSet<Country> Countries { get; set; } = null!; // Country
+        public DbSet<CrossDatabaseSynonym> CrossDatabaseSynonyms { get; set; } = null!; // cross_database_synonym
+        public DbSet<DateTimeDefaultTest> DateTimeDefaultTests { get; set; } = null!; // DateTimeDefaultTest
+        public DbSet<dcg_RovColumnDefinition> dcg_RovColumnDefinitions { get; set; } = null!; // rov_ColumnDefinitions
+        public DbSet<DefaultCheckForNull> DefaultCheckForNulls { get; set; } = null!; // DefaultCheckForNull
+        public DbSet<DsOpe> DsOpes { get; set; } = null!; // DSOpe
+        public DbSet<EnumsWithStringAsValue> EnumsWithStringAsValues { get; set; } = null!; // EnumsWithStringAsValue
+        public DbSet<EnumTest_DaysOfWeek> EnumTest_DaysOfWeeks { get; set; } = null!; // DaysOfWeek
+        public DbSet<EnumTest_OpenDay> EnumTest_OpenDays { get; set; } = null!; // OpenDays
+        public DbSet<EnumWithDefaultValue> EnumWithDefaultValues { get; set; } = null!; // EnumWithDefaultValue
+        public DbSet<EventProcessor> EventProcessors { get; set; } = null!; // EventProcessor
+        public DbSet<EventProcessorEventFilter> EventProcessorEventFilters { get; set; } = null!; // EventProcessorEventFilter
+        public DbSet<FFRS_Cv> FFRS_Cvs { get; set; } = null!; // CV
+        public DbSet<FinancialInstitutionOffice> FinancialInstitutionOffices { get; set; } = null!; // FinancialInstitutionOffice
+        public DbSet<FkTest_SmallDecimalTestAttribute> FkTest_SmallDecimalTestAttributes { get; set; } = null!; // SmallDecimalTestAttribute
+        public DbSet<Footer> Footers { get; set; } = null!; // footer
+        public DbSet<ForeignKeyIsNotEnforced> ForeignKeyIsNotEnforceds { get; set; } = null!; // ForeignKeyIsNotEnforced
+        public DbSet<ForeignKeyIsNotEnforcedItem> ForeignKeyIsNotEnforcedItems { get; set; } = null!; // ForeignKeyIsNotEnforcedItem
+        public DbSet<HasPrincipalKeyTestChild> HasPrincipalKeyTestChilds { get; set; } = null!; // HasPrincipalKeyTestChild
+        public DbSet<HasPrincipalKeyTestParent> HasPrincipalKeyTestParents { get; set; } = null!; // HasPrincipalKeyTestParent
+        public DbSet<Header> Headers { get; set; } = null!; // header
+        public DbSet<HierarchyTest> HierarchyTests { get; set; } = null!; // hierarchy_test
+        public DbSet<InflectorData> InflectorData { get; set; } = null!; // InflectorData
+        public DbSet<InflectorStatus> InflectorStatus { get; set; } = null!; // InflectorStatus
+        public DbSet<InflectorTo> InflectorTo { get; set; } = null!; // InflectorTo
+        public DbSet<Issue47_Role> Issue47_Roles { get; set; } = null!; // Role
+        public DbSet<Issue47_User> Issue47_Users { get; set; } = null!; // Users
+        public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } = null!; // UserRoles
+        public DbSet<MultipleKey> MultipleKeys { get; set; } = null!; // MultipleKeys
+        public DbSet<NullableReverseNavigationA> NullableReverseNavigationAs { get; set; } = null!; // NullableReverseNavigationA
+        public DbSet<NullableReverseNavigationB> NullableReverseNavigationBs { get; set; } = null!; // NullableReverseNavigationB
+        public DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } = null!; // Issue
+        public DbSet<OneEightSix_UploadedFile> OneEightSix_UploadedFiles { get; set; } = null!; // UploadedFile
+        public DbSet<PeriodTable> PeriodTables { get; set; } = null!; // Period.Table
+        public DbSet<PeriodTestTable> PeriodTestTables { get; set; } = null!; // PeriodTestTable
+        public DbSet<Person> People { get; set; } = null!; // Person
+        public DbSet<PersonPost> PersonPosts { get; set; } = null!; // PersonPosts
+        public DbSet<PkOrdinalTest> PkOrdinalTests { get; set; } = null!; // pk_ordinal_test
+        public DbSet<PropertyTypesToAdd> PropertyTypesToAdds { get; set; } = null!; // PropertyTypesToAdd
+        public DbSet<SequenceTest> SequenceTests { get; set; } = null!; // SequenceTest
+        public DbSet<SequenceTestPartTwo> SequenceTestPartTwoes { get; set; } = null!; // SequenceTestPartTwo
+        public DbSet<SmallDecimalTest> SmallDecimalTests { get; set; } = null!; // SmallDecimalTest
+        public DbSet<SmallDecimalTestView> SmallDecimalTestViews { get; set; } = null!; // SmallDecimalTestView
+        public DbSet<Sorter> Sorter { get; set; } = null!; // Sorter
+        public DbSet<Sorters> Sorters { get; set; } = null!; // Sorters
+        public DbSet<SorterScannerGroup> SorterScannerGroups { get; set; } = null!; // SorterScannerGroup
+        public DbSet<Stafford_Boo> Stafford_Boos { get; set; } = null!; // Boo
+        public DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; } = null!; // ComputedColumns
+        public DbSet<Stafford_Foo> Stafford_Foos { get; set; } = null!; // Foo
+        public DbSet<Synonyms_Child> Synonyms_Children { get; set; } = null!; // Child
+        public DbSet<Synonyms_Parent> Synonyms_Parents { get; set; } = null!; // Parent
+        public DbSet<TableA> TableAs { get; set; } = null!; // TableA
+        public DbSet<TableB> TableBs { get; set; } = null!; // TableB
+        public DbSet<TableWithDuplicateColumnName> TableWithDuplicateColumnNames { get; set; } = null!; // table with duplicate column names
+        public DbSet<TableWithMultiplePeriod> TableWithMultiplePeriods { get; set; } = null!; // table.with.multiple.periods
+        public DbSet<TableWithSpace> TableWithSpaces { get; set; } = null!; // table with space
+        public DbSet<TableWithSpaceAndInColumn> TableWithSpaceAndInColumns { get; set; } = null!; // table with space and in columns
+        public DbSet<TableWithSpaceInColumnOnly> TableWithSpaceInColumnOnlies { get; set; } = null!; // TableWithSpaceInColumnOnly
+        public DbSet<TadeuszSobol> TadeuszSobols { get; set; } = null!; // TadeuszSobol
+        public DbSet<Task1> Task1 { get; set; } = null!; // Task
+        public DbSet<TblOrder> TblOrders { get; set; } = null!; // tblOrders
+        public DbSet<TblOrderError> TblOrderErrors { get; set; } = null!; // tblOrderErrors
+        public DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } = null!; // tblOrderErrorsAB_
+        public DbSet<TblOrderLine> TblOrderLines { get; set; } = null!; // tblOrderLines
+        public DbSet<TemporalDepartment> TemporalDepartments { get; set; } = null!; // TemporalDepartment
+        public DbSet<TemporalDepartmentHistory> TemporalDepartmentHistories { get; set; } = null!; // TemporalDepartmentHistory
+        public DbSet<ThisIsMemoryOptimised> ThisIsMemoryOptimiseds { get; set; } = null!; // ThisIsMemoryOptimised
+        public DbSet<Ticket> Tickets { get; set; } = null!; // Ticket
+        public DbSet<TimestampNotNull> TimestampNotNulls { get; set; } = null!; // TimestampNotNull
+        public DbSet<TimestampNullable> TimestampNullables { get; set; } = null!; // TimestampNullable
+        public DbSet<Token> Tokens { get; set; } = null!; // Token
+        public DbSet<User> Users { get; set; } = null!; // User
+        public DbSet<User309> User309 { get; set; } = null!; // User309
+        public DbSet<UserDocument> UserDocuments { get; set; } = null!; // User_Document
+        public DbSet<Versioned> Versioneds { get; set; } = null!; // Versioned
+        public DbSet<VersionedNullable> VersionedNullables { get; set; } = null!; // VersionedNullable
+        public DbSet<ViewWithMultiplePeriod> ViewWithMultiplePeriods { get; set; } = null!; // view.with.multiple.periods
+        public DbSet<ViewWithSpace> ViewWithSpaces { get; set; } = null!; // view with space
+        public DbSet<WVN_Article> WVN_Articles { get; set; } = null!; // Articles
+        public DbSet<WVN_VArticle> WVN_VArticles { get; set; } = null!; // v_Articles
+        public DbSet<Брендытовара> Брендытовара { get; set; } = null!; // Бренды товара
 
         public FakeV9EfrpgTestDbContext()
         {
@@ -2771,7 +2771,7 @@ namespace V9EfrpgTest
 
         // App_UspCmtUserFsrUpdateAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public DbSet<ASimpleExampleReturnModel> ASimpleExampleReturnModel { get; set; }
+        public DbSet<ASimpleExampleReturnModel> ASimpleExampleReturnModel { get; set; } = null!;
         public List<ASimpleExampleReturnModel> ASimpleExample()
         {
             int procResult;
@@ -2800,7 +2800,7 @@ namespace V9EfrpgTest
             return Task.FromResult(0);
         }
 
-        public DbSet<C182Test2ReturnModel> C182Test2ReturnModel { get; set; }
+        public DbSet<C182Test2ReturnModel> C182Test2ReturnModel { get; set; } = null!;
         public C182Test2ReturnModel C182Test2(int? flag = null)
         {
             int procResult;
@@ -2815,7 +2815,7 @@ namespace V9EfrpgTest
 
         // C182Test2Async() cannot be created due to having out parameters, or is relying on the procedure result (C182Test2ReturnModel)
 
-        public DbSet<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsCompleteReturnModel { get; set; }
+        public DbSet<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsCompleteReturnModel { get; set; } = null!;
         public List<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete)
         {
             int procResult;
@@ -2831,7 +2831,7 @@ namespace V9EfrpgTest
 
         // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (List<CheckIfApplicationIsCompleteReturnModel>)
 
-        public DbSet<ColourPivotReturnModel> ColourPivotReturnModel { get; set; }
+        public DbSet<ColourPivotReturnModel> ColourPivotReturnModel { get; set; } = null!;
         public List<ColourPivotReturnModel> ColourPivot()
         {
             int procResult;
@@ -2850,7 +2850,7 @@ namespace V9EfrpgTest
             return Task.FromResult(ColourPivot(out procResult));
         }
 
-        public DbSet<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProcReturnModel { get; set; }
+        public DbSet<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProcReturnModel { get; set; } = null!;
         public List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc()
         {
             int procResult;
@@ -2877,7 +2877,7 @@ namespace V9EfrpgTest
 
         // ConvertToStringAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public DbSet<DboProcDataFromFfrsReturnModel> DboProcDataFromFfrsReturnModel { get; set; }
+        public DbSet<DboProcDataFromFfrsReturnModel> DboProcDataFromFfrsReturnModel { get; set; } = null!;
         public List<DboProcDataFromFfrsReturnModel> DboProcDataFromFfrs(int? maxId = null)
         {
             int procResult;
@@ -2896,7 +2896,7 @@ namespace V9EfrpgTest
             return Task.FromResult(DboProcDataFromFfrs(maxId, out procResult));
         }
 
-        public DbSet<DboProcDataFromFfrsAndDboReturnModel> DboProcDataFromFfrsAndDboReturnModel { get; set; }
+        public DbSet<DboProcDataFromFfrsAndDboReturnModel> DboProcDataFromFfrsAndDboReturnModel { get; set; } = null!;
         public List<DboProcDataFromFfrsAndDboReturnModel> DboProcDataFromFfrsAndDbo()
         {
             int procResult;
@@ -2915,7 +2915,7 @@ namespace V9EfrpgTest
             return Task.FromResult(DboProcDataFromFfrsAndDbo(out procResult));
         }
 
-        public DbSet<DsOpeProcReturnModel> DsOpeProcReturnModel { get; set; }
+        public DbSet<DsOpeProcReturnModel> DsOpeProcReturnModel { get; set; } = null!;
         public List<DsOpeProcReturnModel> DsOpeProc()
         {
             int procResult;
@@ -2934,7 +2934,7 @@ namespace V9EfrpgTest
             return Task.FromResult(DsOpeProc(out procResult));
         }
 
-        public DbSet<FFRS_CvDataReturnModel> FFRS_CvDataReturnModel { get; set; }
+        public DbSet<FFRS_CvDataReturnModel> FFRS_CvDataReturnModel { get; set; } = null!;
         public List<FFRS_CvDataReturnModel> FFRS_CvData(int? maxId = null)
         {
             int procResult;
@@ -2953,7 +2953,7 @@ namespace V9EfrpgTest
             return Task.FromResult(FFRS_CvData(maxId, out procResult));
         }
 
-        public DbSet<FFRS_DataFromDboReturnModel> FFRS_DataFromDboReturnModel { get; set; }
+        public DbSet<FFRS_DataFromDboReturnModel> FFRS_DataFromDboReturnModel { get; set; } = null!;
         public List<FFRS_DataFromDboReturnModel> FFRS_DataFromDbo()
         {
             int procResult;
@@ -2972,7 +2972,7 @@ namespace V9EfrpgTest
             return Task.FromResult(FFRS_DataFromDbo(out procResult));
         }
 
-        public DbSet<FFRS_DataFromDboAndFfrsReturnModel> FFRS_DataFromDboAndFfrsReturnModel { get; set; }
+        public DbSet<FFRS_DataFromDboAndFfrsReturnModel> FFRS_DataFromDboAndFfrsReturnModel { get; set; } = null!;
         public List<FFRS_DataFromDboAndFfrsReturnModel> FFRS_DataFromDboAndFfrs()
         {
             int procResult;
@@ -2991,7 +2991,7 @@ namespace V9EfrpgTest
             return Task.FromResult(FFRS_DataFromDboAndFfrs(out procResult));
         }
 
-        public DbSet<FkTest_HelloReturnModel> FkTest_HelloReturnModel { get; set; }
+        public DbSet<FkTest_HelloReturnModel> FkTest_HelloReturnModel { get; set; } = null!;
         public List<FkTest_HelloReturnModel> FkTest_Hello()
         {
             int procResult;
@@ -3010,7 +3010,7 @@ namespace V9EfrpgTest
             return Task.FromResult(FkTest_Hello(out procResult));
         }
 
-        public DbSet<GetSmallDecimalTestReturnModel> GetSmallDecimalTestReturnModel { get; set; }
+        public DbSet<GetSmallDecimalTestReturnModel> GetSmallDecimalTestReturnModel { get; set; } = null!;
         public List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId = null)
         {
             int procResult;
@@ -3125,7 +3125,7 @@ namespace V9EfrpgTest
 
         // ProcTestDecimalOutputV3DefaultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public DbSet<SpatialTypesNoParamsReturnModel> SpatialTypesNoParamsReturnModel { get; set; }
+        public DbSet<SpatialTypesNoParamsReturnModel> SpatialTypesNoParamsReturnModel { get; set; } = null!;
         public List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams()
         {
             int procResult;
@@ -3144,7 +3144,7 @@ namespace V9EfrpgTest
             return Task.FromResult(SpatialTypesNoParams(out procResult));
         }
 
-        public DbSet<SpatialTypesWithParamsReturnModel> SpatialTypesWithParamsReturnModel { get; set; }
+        public DbSet<SpatialTypesWithParamsReturnModel> SpatialTypesWithParamsReturnModel { get; set; } = null!;
         public List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
         {
             int procResult;
@@ -3163,7 +3163,7 @@ namespace V9EfrpgTest
             return Task.FromResult(SpatialTypesWithParams(geometry, geography, out procResult));
         }
 
-        public DbSet<StoredProcWithDefaultsReturnModel> StoredProcWithDefaultsReturnModel { get; set; }
+        public DbSet<StoredProcWithDefaultsReturnModel> StoredProcWithDefaultsReturnModel { get; set; } = null!;
         public List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId, int? userIdNull, string clientName, string clientNameNull, string clientNameMaxNull, string clientDesc, string clientDescNull, decimal? decimalValue = null, decimal? decimalValueNull = null, decimal? money = null, decimal? moneyNull = null, decimal? smallMoney = null, decimal? smallMoneyNull = null, float? realValue = null, float? realValueNull = null, double? floatValue = null, double? floatValueNull = null)
         {
             int procResult;
@@ -3182,7 +3182,7 @@ namespace V9EfrpgTest
             return Task.FromResult(StoredProcWithDefaults(userId, userIdNull, clientName, clientNameNull, clientNameMaxNull, clientDesc, clientDescNull, decimalValue, decimalValueNull, money, moneyNull, smallMoney, smallMoneyNull, realValue, realValueNull, floatValue, floatValueNull, out procResult));
         }
 
-        public DbSet<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsReturnModel { get; set; }
+        public DbSet<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsReturnModel { get; set; } = null!;
         public List<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResults(int? someVar = null)
         {
             int procResult;
@@ -3201,7 +3201,7 @@ namespace V9EfrpgTest
             return Task.FromResult(StpMultipleIdenticalResults(someVar, out procResult));
         }
 
-        public DbSet<StpMultipleMultipleResultsWithParamsReturnModel> StpMultipleMultipleResultsWithParamsReturnModel { get; set; }
+        public DbSet<StpMultipleMultipleResultsWithParamsReturnModel> StpMultipleMultipleResultsWithParamsReturnModel { get; set; } = null!;
         public StpMultipleMultipleResultsWithParamsReturnModel StpMultipleMultipleResultsWithParams(int? firstVal = null, int? secondVal = null, int? thirdVal = null)
         {
             int procResult;
@@ -3216,7 +3216,7 @@ namespace V9EfrpgTest
 
         // StpMultipleMultipleResultsWithParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (StpMultipleMultipleResultsWithParamsReturnModel)
 
-        public DbSet<StpMultipleResultsReturnModel> StpMultipleResultsReturnModel { get; set; }
+        public DbSet<StpMultipleResultsReturnModel> StpMultipleResultsReturnModel { get; set; } = null!;
         public StpMultipleResultsReturnModel StpMultipleResults()
         {
             int procResult;
@@ -3231,7 +3231,7 @@ namespace V9EfrpgTest
 
         // StpMultipleResultsAsync() cannot be created due to having out parameters, or is relying on the procedure result (StpMultipleResultsReturnModel)
 
-        public DbSet<StpMultipleResultsWithParamsReturnModel> StpMultipleResultsWithParamsReturnModel { get; set; }
+        public DbSet<StpMultipleResultsWithParamsReturnModel> StpMultipleResultsWithParamsReturnModel { get; set; } = null!;
         public StpMultipleResultsWithParamsReturnModel StpMultipleResultsWithParams(int? firstVal = null, int? secondVal = null)
         {
             int procResult;
@@ -3246,7 +3246,7 @@ namespace V9EfrpgTest
 
         // StpMultipleResultsWithParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (StpMultipleResultsWithParamsReturnModel)
 
-        public DbSet<StpNoParamsTestReturnModel> StpNoParamsTestReturnModel { get; set; }
+        public DbSet<StpNoParamsTestReturnModel> StpNoParamsTestReturnModel { get; set; } = null!;
         public List<StpNoParamsTestReturnModel> StpNoParamsTest()
         {
             int procResult;
@@ -3275,7 +3275,7 @@ namespace V9EfrpgTest
             return Task.FromResult(0);
         }
 
-        public DbSet<StpNullableParamsTestReturnModel> StpNullableParamsTestReturnModel { get; set; }
+        public DbSet<StpNullableParamsTestReturnModel> StpNullableParamsTestReturnModel { get; set; } = null!;
         public List<StpNullableParamsTestReturnModel> StpNullableParamsTest(int? aVal = null, int? bVal = null)
         {
             int procResult;
@@ -3294,7 +3294,7 @@ namespace V9EfrpgTest
             return Task.FromResult(StpNullableParamsTest(aVal, bVal, out procResult));
         }
 
-        public DbSet<StpTestReturnModel> StpTestReturnModel { get; set; }
+        public DbSet<StpTestReturnModel> StpTestReturnModel { get; set; } = null!;
         public List<StpTestReturnModel> StpTest(string strDateFrom, string strDateTo, out bool? retBool)
         {
             int procResult;
@@ -3310,7 +3310,7 @@ namespace V9EfrpgTest
 
         // StpTestAsync() cannot be created due to having out parameters, or is relying on the procedure result (List<StpTestReturnModel>)
 
-        public DbSet<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTestReturnModel { get; set; }
+        public DbSet<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTestReturnModel { get; set; } = null!;
         public List<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTest(string strDateFrom, string strDateTo)
         {
             int procResult;
@@ -3349,7 +3349,7 @@ namespace V9EfrpgTest
             return Task.FromResult(0);
         }
 
-        public DbSet<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProcReturnModel { get; set; }
+        public DbSet<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProcReturnModel { get; set; } = null!;
         public List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt = null)
         {
             int procResult;
@@ -3368,7 +3368,7 @@ namespace V9EfrpgTest
             return Task.FromResult(Synonyms_SimpleStoredProc(inputInt, out procResult));
         }
 
-        public DbSet<TestReturnStringReturnModel> TestReturnStringReturnModel { get; set; }
+        public DbSet<TestReturnStringReturnModel> TestReturnStringReturnModel { get; set; } = null!;
         public List<TestReturnStringReturnModel> TestReturnString()
         {
             int procResult;
@@ -3406,7 +3406,7 @@ namespace V9EfrpgTest
             return Task.FromResult(0);
         }
 
-        public DbSet<XmlDataV1ReturnModel> XmlDataV1ReturnModel { get; set; }
+        public DbSet<XmlDataV1ReturnModel> XmlDataV1ReturnModel { get; set; } = null!;
         public List<XmlDataV1ReturnModel> XmlDataV1()
         {
             int procResult;
@@ -3533,7 +3533,7 @@ namespace V9EfrpgTest
         {
             if (_primaryKeys == null)
                 throw new ArgumentException("No primary keys defined");
-            if (keyValues.Length != _primaryKeys.Length)
+            if (keyValues?.Length != _primaryKeys.Length)
                 throw new ArgumentException("Incorrect number of keys passed to Find method");
 
             var keyQuery = this.AsQueryable();
@@ -3541,7 +3541,7 @@ namespace V9EfrpgTest
                 .Select((t, i) => i)
                 .Aggregate(keyQuery,
                     (current, x) =>
-                        current.Where(entity => _primaryKeys[x].GetValue(entity, null).Equals(keyValues[x])));
+                        current.Where(entity => _primaryKeys[x].GetValue(entity, null)!.Equals(keyValues[x])));
 
             return keyQuery.SingleOrDefault();
         }
@@ -3559,7 +3559,7 @@ namespace V9EfrpgTest
         public override EntityEntry<TEntity> Add(TEntity entity)
         {
             _data.Add(entity);
-            return null;
+            return null!;
         }
 
         public override ValueTask<EntityEntry<TEntity>> AddAsync(TEntity entity, CancellationToken cancellationToken = default)
@@ -3596,7 +3596,7 @@ namespace V9EfrpgTest
         public override EntityEntry<TEntity> Attach(TEntity entity)
         {
             if (entity == null) throw new ArgumentNullException("entity");
-            return Add(entity);
+            return Add(entity)!;
         }
 
         public override void AttachRange(params TEntity[] entities)
@@ -3614,7 +3614,7 @@ namespace V9EfrpgTest
         public override EntityEntry<TEntity> Remove(TEntity entity)
         {
             _data.Remove(entity);
-            return null;
+            return null!;
         }
 
         public override void RemoveRange(params TEntity[] entities)
@@ -3633,7 +3633,7 @@ namespace V9EfrpgTest
         {
             _data.Remove(entity);
             _data.Add(entity);
-            return null;
+            return null!;
         }
 
         public override void UpdateRange(params TEntity[] entities)
@@ -3725,9 +3725,9 @@ namespace V9EfrpgTest
                 .MakeGenericMethod(expectedResultType)
                 .Invoke(this, new object[] { expression });
 
-            return (TResult) typeof(Task).GetMethod(nameof(Task.FromResult))
+            return (TResult) (typeof(Task).GetMethod(nameof(Task.FromResult))
                 ?.MakeGenericMethod(expectedResultType)
-                .Invoke(null, new[] { executionResult });
+                .Invoke(null, new[] { executionResult }))!;
         }
 
         public IAsyncEnumerator<TEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default)
@@ -3792,7 +3792,7 @@ namespace V9EfrpgTest
 
     public abstract class FakeQueryProvider<T> : IOrderedQueryable<T>, IQueryProvider
     {
-        private IEnumerable<T> _enumerable;
+        private IEnumerable<T>? _enumerable;
 
         protected FakeQueryProvider(Expression expression)
         {
@@ -3825,7 +3825,7 @@ namespace V9EfrpgTest
         private object CreateInstance(Type tElement, Expression expression)
         {
             var queryType = GetType().GetGenericTypeDefinition().MakeGenericType(tElement);
-            return Activator.CreateInstance(queryType, expression);
+            return Activator.CreateInstance(queryType, expression)!;
         }
 
         public object Execute(Expression expression)
@@ -3860,7 +3860,7 @@ namespace V9EfrpgTest
         {
             var visitor = new FakeExpressionVisitor();
             var body = visitor.Visit(expression);
-            var f = Expression.Lambda<Func<TResult>>(body ?? throw new InvalidOperationException(string.Format("{0} is null", nameof(body))), (IEnumerable<ParameterExpression>) null);
+            var f = Expression.Lambda<Func<TResult>>(body ?? throw new InvalidOperationException(string.Format("{0} is null", nameof(body))), (IEnumerable<ParameterExpression>?) null);
             return f.Compile()();
         }
     }
@@ -3935,7 +3935,7 @@ namespace V9EfrpgTest
 
         public override IExecutionStrategy CreateExecutionStrategy()
         {
-            return null;
+            return null!;
         }
 
         public override string ToString()
@@ -3971,7 +3971,7 @@ namespace V9EfrpgTest
         /// <summary>
         /// Parent Aaref pointed by [A].([C1], [C2]) (FK_A_A)
         /// </summary>
-        public virtual Aaref Aaref { get; set; } // FK_A_A
+        public virtual Aaref Aaref { get; set; } = null!; // FK_A_A
     }
 
     // AAREF
@@ -3999,14 +3999,14 @@ namespace V9EfrpgTest
     {
         public int Id { get; set; } // ID (Primary key)
         public int OrderId { get; set; } // OrderID
-        public string Sku { get; set; } // sku (length: 15)
+        public string? Sku { get; set; } // sku (length: 15)
 
         // Foreign keys
 
         /// <summary>
         /// Parent AbOrdersAb pointed by [AB_OrderLinesAB_].([OrderId]) (AB_OrderLinesAB_FK)
         /// </summary>
-        public virtual AbOrdersAb AbOrdersAb { get; set; } // AB_OrderLinesAB_FK
+        public virtual AbOrdersAb AbOrdersAb { get; set; } = null!; // AB_OrderLinesAB_FK
     }
 
     // AB_OrdersAB_
@@ -4033,7 +4033,7 @@ namespace V9EfrpgTest
     public class AllColumnsNull
     {
         public int? Total { get; set; } // total
-        public string AName { get; set; } // aName (length: 250)
+        public string? AName { get; set; } // aName (length: 250)
     }
 
     // Harish3485
@@ -4047,7 +4047,7 @@ namespace V9EfrpgTest
         /// <summary>
         /// Parent FkTest_SmallDecimalTestAttribute pointed by [Harish3485].([HarishId]) (FK_Harish)
         /// </summary>
-        public virtual FkTest_SmallDecimalTestAttribute FkTest_SmallDecimalTestAttribute { get; set; } // FK_Harish
+        public virtual FkTest_SmallDecimalTestAttribute FkTest_SmallDecimalTestAttribute { get; set; } = null!; // FK_Harish
     }
 
     // The table 'Test' is not usable by entity framework because it
@@ -4063,7 +4063,7 @@ namespace V9EfrpgTest
     public class Alpha_Workflow
     {
         public int Id { get; set; } // Id (Primary key)
-        public string Description { get; set; } // Description (length: 10)
+        public string? Description { get; set; } // Description (length: 10)
 
         // Reverse navigation
 
@@ -4082,7 +4082,7 @@ namespace V9EfrpgTest
     public class AlphaWorkflowSynonym
     {
         public int Id { get; set; } // Id (Primary key)
-        public string Description { get; set; } // Description (length: 10)
+        public string? Description { get; set; } // Description (length: 10)
     }
 
     // UserFacilityServiceRole
@@ -4097,7 +4097,7 @@ namespace V9EfrpgTest
     public class AppUser
     {
         public long Id { get; set; } // Id (Primary key)
-        public string Name { get; set; } // Name (length: 50)
+        public string Name { get; set; } = null!; // Name (length: 50)
 
         // Reverse navigation
 
@@ -4122,8 +4122,8 @@ namespace V9EfrpgTest
     public class Attendee
     {
         public long AttendeeId { get; set; } // AttendeeID (Primary key)
-        public string Lastname { get; set; } // Lastname (length: 50)
-        public string Firstname { get; set; } // Firstname (length: 50)
+        public string Lastname { get; set; } = null!; // Lastname (length: 50)
+        public string Firstname { get; set; } = null!; // Firstname (length: 50)
         public int? PhoneCountryId { get; set; } // PhoneCountryID
 
         // Foreign keys
@@ -4131,13 +4131,13 @@ namespace V9EfrpgTest
         /// <summary>
         /// Parent Country pointed by [Attendee].([PhoneCountryId]) (FK_Attendee_PhoneCountry)
         /// </summary>
-        public virtual Country Country { get; set; } // FK_Attendee_PhoneCountry
+        public virtual Country? Country { get; set; } // FK_Attendee_PhoneCountry
     }
 
     // BatchTest
     public class BatchTest
     {
-        public string Code { get; set; } // code (Primary key) (length: 8)
+        public string Code { get; set; } = null!; // code (Primary key) (length: 8)
     }
 
     // Harish3485
@@ -4151,7 +4151,7 @@ namespace V9EfrpgTest
         /// <summary>
         /// Parent PropertyTypesToAdd pointed by [Harish3485].([AnotherId]) (FK_Harish)
         /// </summary>
-        public virtual PropertyTypesToAdd PropertyTypesToAdd { get; set; } // FK_Harish
+        public virtual PropertyTypesToAdd PropertyTypesToAdd { get; set; } = null!; // FK_Harish
     }
 
     // The table 'Test' is not usable by entity framework because it
@@ -4174,14 +4174,14 @@ namespace V9EfrpgTest
         /// <summary>
         /// Parent Alpha_Workflow pointed by [ToAlpha].([AlphaId]) (BetaToAlpha_AlphaWorkflow)
         /// </summary>
-        public virtual Alpha_Workflow Alpha_Workflow { get; set; } // BetaToAlpha_AlphaWorkflow
+        public virtual Alpha_Workflow Alpha_Workflow { get; set; } = null!; // BetaToAlpha_AlphaWorkflow
     }
 
     // workflow
     public class Beta_Workflow
     {
         public int Id { get; set; } // Id (Primary key)
-        public string Description { get; set; } // Description (length: 10)
+        public string? Description { get; set; } // Description (length: 10)
     }
 
     // BITFIDDLERALLCAPS
@@ -4270,12 +4270,12 @@ namespace V9EfrpgTest
         /// <summary>
         /// Parent Blah pointed by [BlahBlahLink_v2].([BlahId]) (FK_BlahBlahLinkv2_Blah_ro)
         /// </summary>
-        public virtual Blah Blah_BlahId { get; set; } // FK_BlahBlahLinkv2_Blah_ro
+        public virtual Blah Blah_BlahId { get; set; } = null!; // FK_BlahBlahLinkv2_Blah_ro
 
         /// <summary>
         /// Parent Blah pointed by [BlahBlahLink_v2].([BlahId2]) (FK_BlahBlahLinkv2_Blah_ro2)
         /// </summary>
-        public virtual Blah Blah_BlahId2 { get; set; } // FK_BlahBlahLinkv2_Blah_ro2
+        public virtual Blah Blah_BlahId2 { get; set; } = null!; // FK_BlahBlahLinkv2_Blah_ro2
     }
 
     // Blarg
@@ -4308,12 +4308,12 @@ namespace V9EfrpgTest
         /// <summary>
         /// Parent Burak2 pointed by [Burak1].([Id], [Num]) (FK_Burak_Test2)
         /// </summary>
-        public virtual Burak2 Burak2_Id { get; set; } // FK_Burak_Test2
+        public virtual Burak2 Burak2_Id { get; set; } = null!; // FK_Burak_Test2
 
         /// <summary>
         /// Parent Burak2 pointed by [Burak1].([IdT], [Num]) (FK_Burak_Test1)
         /// </summary>
-        public virtual Burak2 Burak2_IdT { get; set; } // FK_Burak_Test1
+        public virtual Burak2 Burak2_IdT { get; set; } = null!; // FK_Burak_Test1
     }
 
     // Burak2
@@ -4349,7 +4349,7 @@ namespace V9EfrpgTest
     {
         public int Id { get; set; } // Id (Primary key)
         public int PrimaryColourId { get; set; } // PrimaryColourId
-        public string CarMake { get; set; } // CarMake (length: 255)
+        public string CarMake { get; set; } = null!; // CarMake (length: 255)
         public int? ComputedColumn { get; private set; } // computed_column
         public int ComputedColumnPersisted { get; private set; } // computed_column_persisted
 
@@ -4365,7 +4365,7 @@ namespace V9EfrpgTest
         /// <summary>
         /// Parent Colour pointed by [Car].([PrimaryColourId]) (CarPrimaryColourFK)
         /// </summary>
-        public virtual Colour Colour { get; set; } // CarPrimaryColourFK
+        public virtual Colour Colour { get; set; } = null!; // CarPrimaryColourFK
 
         public Car()
         {
@@ -4386,9 +4386,9 @@ namespace V9EfrpgTest
     public class CmsFile
     {
         public int FileId { get; set; } // FileId (Primary key)
-        public string FileName { get; set; } // FileName (length: 100)
-        public string FileDescription { get; set; } // FileDescription (length: 500)
-        public string FileIdentifier { get; set; } // FileIdentifier (length: 100)
+        public string FileName { get; set; } = null!; // FileName (length: 100)
+        public string FileDescription { get; set; } = null!; // FileDescription (length: 500)
+        public string FileIdentifier { get; set; } = null!; // FileIdentifier (length: 100)
         public DateTime? ValidStartDate { get; set; } // ValidStartDate
         public DateTime? ValidEndDate { get; set; } // ValidEndDate
         public bool IsActive { get; set; } // IsActive
@@ -4410,7 +4410,7 @@ namespace V9EfrpgTest
     public class CmsTag
     {
         public int TagId { get; set; } // TagId (Primary key)
-        public string TagName { get; set; } // TagName (length: 100)
+        public string TagName { get; set; } = null!; // TagName (length: 100)
 
         // Reverse navigation
 
@@ -4431,9 +4431,9 @@ namespace V9EfrpgTest
         public int Id { get; set; } // id (Primary key)
         public int IdReuniao { get; set; } // id_reuniao
         public int? OrdTrab { get; set; } // ord_trab
-        public string Assunto { get; set; } // assunto (length: 250)
-        public string Desenvolvimento { get; set; } // desenvolvimento
-        public string Origem { get; set; } // origem (length: 5)
+        public string? Assunto { get; set; } // assunto (length: 250)
+        public string? Desenvolvimento { get; set; } // desenvolvimento
+        public string? Origem { get; set; } // origem (length: 5)
         public int? IdOrigem { get; set; } // id_origem
         public int? Estado { get; set; } // Estado
         public int CompanyId { get; set; } // CompanyID
@@ -4445,7 +4445,7 @@ namespace V9EfrpgTest
         /// <summary>
         /// Parent CodeParamMeetingTopicDetailSource pointed by [CODE_MeetingTopicDetails].([Origem]) (FK_CODE_MeetingTopicDetails_CODE_PARAM_MeetingTopicDetailSource)
         /// </summary>
-        public virtual CodeParamMeetingTopicDetailSource CodeParamMeetingTopicDetailSource { get; set; } // FK_CODE_MeetingTopicDetails_CODE_PARAM_MeetingTopicDetailSource
+        public virtual CodeParamMeetingTopicDetailSource? CodeParamMeetingTopicDetailSource { get; set; } // FK_CODE_MeetingTopicDetails_CODE_PARAM_MeetingTopicDetailSource
     }
 
     // CodeObject
@@ -4457,13 +4457,13 @@ namespace V9EfrpgTest
         public int CodeObjectNo { get; set; } // codeObjectNo (Primary key)
         public int? ApplicationNo { get; set; } // applicationNo
         public int Type { get; set; } // type
-        public string EName { get; set; } // eName (length: 250)
-        public string AName { get; set; } // aName (length: 250)
-        public string Description { get; set; } // description (length: 250)
-        public string CodeName { get; set; } // codeName (length: 250)
-        public string Note { get; set; } // note (length: 250)
+        public string EName { get; set; } = null!; // eName (length: 250)
+        public string? AName { get; set; } // aName (length: 250)
+        public string? Description { get; set; } // description (length: 250)
+        public string? CodeName { get; set; } // codeName (length: 250)
+        public string? Note { get; set; } // note (length: 250)
         public bool IsObject { get; set; } // isObject
-        public byte[] VersionNumber { get; set; } // versionNumber (length: 8)
+        public byte[]? VersionNumber { get; set; } // versionNumber (length: 8)
 
         public CodeObject()
         {
@@ -4476,11 +4476,11 @@ namespace V9EfrpgTest
     public class CodeParamMeetingTopicDetailSource
     {
         public int Id { get; set; } // ID (Primary key)
-        public string Code { get; set; } // Code (length: 5)
-        public string Label { get; set; } // Label (length: 50)
-        public string LabelEng { get; set; } // LabelENG (length: 50)
-        public string LabelEsp { get; set; } // LabelESP (length: 50)
-        public string LabelFra { get; set; } // LabelFRA (length: 50)
+        public string Code { get; set; } = null!; // Code (length: 5)
+        public string? Label { get; set; } // Label (length: 50)
+        public string? LabelEng { get; set; } // LabelENG (length: 50)
+        public string? LabelEsp { get; set; } // LabelESP (length: 50)
+        public string? LabelFra { get; set; } // LabelFRA (length: 50)
         public DateTime DateCreated { get; set; } // DateCreated
         public DateTime? DateChanged { get; set; } // DateChanged
 
@@ -4501,7 +4501,7 @@ namespace V9EfrpgTest
     public class Colour
     {
         public int Id { get; set; } // Id (Primary key)
-        public string Name { get; set; } // Name (length: 255)
+        public string Name { get; set; } = null!; // Name (length: 255)
 
         // Reverse navigation
 
@@ -4539,10 +4539,10 @@ namespace V9EfrpgTest
         public int? SimonHughes { get; set; } // simon-hughes
         public string Description { get; set; } // description (length: 20)
         public DateTime SomeDate { get; set; } // someDate
-        public string Obs { get; set; } // Obs (length: 50)
-        public string Obs1 { get; set; } // Obs1 (length: 50)
-        public string Obs2 { get; set; } // Obs2 (length: 50)
-        public string Obs3 { get; set; } // Obs3 (length: 50)
+        public string? Obs { get; set; } // Obs (length: 50)
+        public string? Obs1 { get; set; } // Obs1 (length: 50)
+        public string? Obs2 { get; set; } // Obs2 (length: 50)
+        public string? Obs3 { get; set; } // Obs3 (length: 50)
         public int? @Static { get; set; } // static
         public int? @Readonly { get; set; } // readonly
         public int? C123Hi { get; set; } // 123Hi
@@ -4580,7 +4580,7 @@ namespace V9EfrpgTest
     // ComplexView
     public class ComplexView
     {
-        public string LicenseType { get; set; } // LicenseType (length: 128)
+        public string LicenseType { get; set; } = null!; // LicenseType (length: 128)
         public int? Count { get; set; } // Count
     }
 
@@ -4588,7 +4588,7 @@ namespace V9EfrpgTest
     public class Country
     {
         public int CountryId { get; set; } // CountryID (Primary key)
-        public string Code { get; set; } // Code (length: 12)
+        public string? Code { get; set; } // Code (length: 12)
 
         // Reverse navigation
 
@@ -4613,7 +4613,7 @@ namespace V9EfrpgTest
     public class CrossDatabaseSynonym
     {
         public int Id { get; set; } // Id (Primary key)
-        public string Forename { get; set; } // Forename (length: 20)
+        public string? Forename { get; set; } // Forename (length: 20)
     }
 
     // DateTimeDefaultTest
@@ -4631,41 +4631,41 @@ namespace V9EfrpgTest
     // rov_ColumnDefinitions
     public class dcg_RovColumnDefinition
     {
-        public string TableCatalog { get; set; } // TABLE_CATALOG (length: 128)
-        public string TableSchema { get; set; } // TABLE_SCHEMA (length: 128)
-        public string TableName { get; set; } // TABLE_NAME (length: 128)
-        public string ColumnName { get; set; } // COLUMN_NAME (length: 128)
+        public string? TableCatalog { get; set; } // TABLE_CATALOG (length: 128)
+        public string? TableSchema { get; set; } // TABLE_SCHEMA (length: 128)
+        public string TableName { get; set; } = null!; // TABLE_NAME (length: 128)
+        public string? ColumnName { get; set; } // COLUMN_NAME (length: 128)
         public int? OrdinalPosition { get; set; } // ORDINAL_POSITION
-        public string ColumnDefault { get; set; } // COLUMN_DEFAULT (length: 4000)
-        public string IsNullable { get; set; } // IS_NULLABLE (length: 3)
-        public string DataType { get; set; } // DATA_TYPE (length: 128)
+        public string? ColumnDefault { get; set; } // COLUMN_DEFAULT (length: 4000)
+        public string? IsNullable { get; set; } // IS_NULLABLE (length: 3)
+        public string? DataType { get; set; } // DATA_TYPE (length: 128)
         public int? CharacterMaximumLength { get; set; } // CHARACTER_MAXIMUM_LENGTH
         public int? CharacterOctetLength { get; set; } // CHARACTER_OCTET_LENGTH
         public byte? NumericPrecision { get; set; } // NUMERIC_PRECISION
         public short? NumericPrecisionRadix { get; set; } // NUMERIC_PRECISION_RADIX
         public int? NumericScale { get; set; } // NUMERIC_SCALE
         public short? DatetimePrecision { get; set; } // DATETIME_PRECISION
-        public string CharacterSetCatalog { get; set; } // CHARACTER_SET_CATALOG (length: 128)
-        public string CharacterSetSchema { get; set; } // CHARACTER_SET_SCHEMA (length: 128)
-        public string CharacterSetName { get; set; } // CHARACTER_SET_NAME (length: 128)
-        public string CollationCatalog { get; set; } // COLLATION_CATALOG (length: 128)
-        public string CollationSchema { get; set; } // COLLATION_SCHEMA (length: 128)
-        public string CollationName { get; set; } // COLLATION_NAME (length: 128)
-        public string DomainCatalog { get; set; } // DOMAIN_CATALOG (length: 128)
-        public string DomainSchema { get; set; } // DOMAIN_SCHEMA (length: 128)
-        public string DomainName { get; set; } // DOMAIN_NAME (length: 128)
-        public string Type { get; set; } // TYPE (length: 2)
+        public string? CharacterSetCatalog { get; set; } // CHARACTER_SET_CATALOG (length: 128)
+        public string? CharacterSetSchema { get; set; } // CHARACTER_SET_SCHEMA (length: 128)
+        public string? CharacterSetName { get; set; } // CHARACTER_SET_NAME (length: 128)
+        public string? CollationCatalog { get; set; } // COLLATION_CATALOG (length: 128)
+        public string? CollationSchema { get; set; } // COLLATION_SCHEMA (length: 128)
+        public string? CollationName { get; set; } // COLLATION_NAME (length: 128)
+        public string? DomainCatalog { get; set; } // DOMAIN_CATALOG (length: 128)
+        public string? DomainSchema { get; set; } // DOMAIN_SCHEMA (length: 128)
+        public string? DomainName { get; set; } // DOMAIN_NAME (length: 128)
+        public string? Type { get; set; } // TYPE (length: 2)
     }
 
     // DefaultCheckForNull
     public class DefaultCheckForNull
     {
         public int Id { get; set; } // Id (Primary key)
-        public string DescUppercase { get; set; } // DescUppercase (length: 5)
-        public string DescLowercase { get; set; } // DescLowercase (length: 5)
-        public string DescMixedCase { get; set; } // DescMixedCase (length: 5)
-        public string DescBrackets { get; set; } // DescBrackets (length: 5)
-        public string X1 { get; set; } // X1 (length: 255)
+        public string? DescUppercase { get; set; } // DescUppercase (length: 5)
+        public string? DescLowercase { get; set; } // DescLowercase (length: 5)
+        public string? DescMixedCase { get; set; } // DescMixedCase (length: 5)
+        public string? DescBrackets { get; set; } // DescBrackets (length: 5)
+        public string? X1 { get; set; } // X1 (length: 255)
     }
 
     // DSOpe
@@ -4674,7 +4674,7 @@ namespace V9EfrpgTest
         public int Id { get; set; } // ID (Primary key)
         public decimal DecimalDefault { get; set; } // decimal_default
         public Guid MyGuid { get; set; } // MyGuid
-        public string @Default { get; set; } // default (length: 10)
+        public string? @Default { get; set; } // default (length: 10)
         public Guid? MyGuidBadDefault { get; set; } // MyGuidBadDefault
 
         public DsOpe()
@@ -4688,14 +4688,14 @@ namespace V9EfrpgTest
     // EnumsWithStringAsValue
     public class EnumsWithStringAsValue
     {
-        public string EnumName { get; set; } // enum_name (Primary key) (length: 50)
-        public string Value { get; set; } // value (Primary key) (length: 10)
+        public string EnumName { get; set; } = null!; // enum_name (Primary key) (length: 50)
+        public string Value { get; set; } = null!; // value (Primary key) (length: 10)
     }
 
     // DaysOfWeek
     public class EnumTest_DaysOfWeek
     {
-        public string TypeName { get; set; } // TypeName (length: 50)
+        public string TypeName { get; set; } = null!; // TypeName (length: 50)
         public int TypeId { get; set; } // TypeId (Primary key)
 
         // Reverse navigation
@@ -4722,7 +4722,7 @@ namespace V9EfrpgTest
         /// <summary>
         /// Parent EnumTest_DaysOfWeek pointed by [OpenDays].([EnumId]) (Fk_OpenDays_EnumId)
         /// </summary>
-        public virtual EnumTest_DaysOfWeek EnumTest_DaysOfWeek { get; set; } // Fk_OpenDays_EnumId
+        public virtual EnumTest_DaysOfWeek EnumTest_DaysOfWeek { get; set; } = null!; // Fk_OpenDays_EnumId
     }
 
     // EnumWithDefaultValue
@@ -4741,9 +4741,9 @@ namespace V9EfrpgTest
     public class EventProcessor
     {
         public int Id { get; set; } // Id (Primary key)
-        public string Name { get; set; } // Name (length: 200)
-        public string Description { get; set; } // Description (length: 512)
-        public string EndpointAddress { get; set; } // EndpointAddress (length: 512)
+        public string Name { get; set; } = null!; // Name (length: 200)
+        public string? Description { get; set; } // Description (length: 512)
+        public string? EndpointAddress { get; set; } // EndpointAddress (length: 512)
         public bool Enabled { get; set; } // Enabled
 
         // Reverse navigation
@@ -4771,7 +4771,7 @@ namespace V9EfrpgTest
         /// <summary>
         /// Parent EventProcessor pointed by [EventProcessorEventFilter].([EventProcessorId]) (FK_EventProcessorEventFilter__EventProcessor)
         /// </summary>
-        public virtual EventProcessor EventProcessor { get; set; } // FK_EventProcessorEventFilter__EventProcessor
+        public virtual EventProcessor EventProcessor { get; set; } = null!; // FK_EventProcessorEventFilter__EventProcessor
     }
 
     // CV
@@ -4779,7 +4779,7 @@ namespace V9EfrpgTest
     {
         public Guid BatchUid { get; set; } // BatchUID (Primary key)
         public int Cvid { get; set; } // CVID (Primary key)
-        public string CvName { get; set; } // CVName (length: 200)
+        public string? CvName { get; set; } // CVName (length: 200)
     }
 
     // FinancialInstitutionOffice
@@ -4787,14 +4787,14 @@ namespace V9EfrpgTest
     {
         public Guid Code { get; set; } // Code
         public Guid FinancialInstitutionCode { get; set; } // FinancialInstitutionCode (Primary key via unique index UniqueOfficeName_FinancialInstitutionOffice)
-        public string OfficeName { get; set; } // OfficeName (length: 200)
+        public string? OfficeName { get; set; } // OfficeName (length: 200)
     }
 
     // SmallDecimalTestAttribute
     public class FkTest_SmallDecimalTestAttribute
     {
         public int FkId { get; set; } // FkID (Primary key)
-        public string Description { get; set; } // description (length: 20)
+        public string Description { get; set; } = null!; // description (length: 20)
 
         // Reverse navigation
 
@@ -4808,7 +4808,7 @@ namespace V9EfrpgTest
         /// <summary>
         /// Parent SmallDecimalTest pointed by [SmallDecimalTestAttribute].([FkId]) (KateFK)
         /// </summary>
-        public virtual SmallDecimalTest SmallDecimalTest { get; set; } // KateFK
+        public virtual SmallDecimalTest SmallDecimalTest { get; set; } = null!; // KateFK
 
         public FkTest_SmallDecimalTestAttribute()
         {
@@ -4828,7 +4828,7 @@ namespace V9EfrpgTest
         /// <summary>
         /// Parent Header pointed by [footer].([Id], [OtherId]) (fooderFK)
         /// </summary>
-        public virtual Header Header { get; set; } // fooderFK
+        public virtual Header Header { get; set; } = null!; // fooderFK
 
         public Footer()
         {
@@ -4868,12 +4868,12 @@ namespace V9EfrpgTest
         /// <summary>
         /// Parent ForeignKeyIsNotEnforced pointed by [ForeignKeyIsNotEnforcedItem].([NotNullValue]) (FK_ForeignKeyIsNotEnforcedItem_notnull_notnull)
         /// </summary>
-        public virtual ForeignKeyIsNotEnforced ForeignKeyIsNotEnforced_NotNullValue { get; set; } // FK_ForeignKeyIsNotEnforcedItem_notnull_notnull
+        public virtual ForeignKeyIsNotEnforced ForeignKeyIsNotEnforced_NotNullValue { get; set; } = null!; // FK_ForeignKeyIsNotEnforcedItem_notnull_notnull
 
         /// <summary>
         /// Parent ForeignKeyIsNotEnforced pointed by [ForeignKeyIsNotEnforcedItem].([NullValue]) (FK_ForeignKeyIsNotEnforcedItem_null_notnull)
         /// </summary>
-        public virtual ForeignKeyIsNotEnforced ForeignKeyIsNotEnforced_NullValue { get; set; } // FK_ForeignKeyIsNotEnforcedItem_null_notnull
+        public virtual ForeignKeyIsNotEnforced? ForeignKeyIsNotEnforced_NullValue { get; set; } // FK_ForeignKeyIsNotEnforcedItem_null_notnull
     }
 
     // HasPrincipalKeyTestChild
@@ -4890,7 +4890,7 @@ namespace V9EfrpgTest
         /// <summary>
         /// Parent HasPrincipalKeyTestParent pointed by [HasPrincipalKeyTestChild].([A], [B]) (FK_HasPrincipalKey_AB)
         /// </summary>
-        public virtual HasPrincipalKeyTestParent HasPrincipalKeyTestParent { get; set; } // FK_HasPrincipalKey_AB
+        public virtual HasPrincipalKeyTestParent HasPrincipalKeyTestParent { get; set; } = null!; // FK_HasPrincipalKey_AB
     }
 
     // HasPrincipalKeyTestParent
@@ -4935,7 +4935,7 @@ namespace V9EfrpgTest
     public class HierarchyTest
     {
         public int Id { get; set; } // ID (Primary key)
-        public HierarchyId Hid { get; set; } // hid
+        public HierarchyId Hid { get; set; } = null!; // hid
     }
 
     // InflectorData
@@ -4966,7 +4966,7 @@ namespace V9EfrpgTest
     public class Issue47_Role
     {
         public int RoleId { get; set; } // RoleId (Primary key)
-        public string Role { get; set; } // Role (length: 10)
+        public string? Role { get; set; } // Role (length: 10)
 
         // Reverse navigation
 
@@ -4985,7 +4985,7 @@ namespace V9EfrpgTest
     public class Issue47_User
     {
         public int UserId { get; set; } // UserId (Primary key)
-        public string Name { get; set; } // Name (length: 10)
+        public string? Name { get; set; } // Name (length: 10)
 
         // Reverse navigation
 
@@ -5012,12 +5012,12 @@ namespace V9EfrpgTest
         /// <summary>
         /// Parent Issue47_Role pointed by [UserRoles].([RoleId]) (Issue47_UserRoles_roleid)
         /// </summary>
-        public virtual Issue47_Role Issue47_Role { get; set; } // Issue47_UserRoles_roleid
+        public virtual Issue47_Role Issue47_Role { get; set; } = null!; // Issue47_UserRoles_roleid
 
         /// <summary>
         /// Parent Issue47_User pointed by [UserRoles].([UserId]) (Issue47_UserRoles_userid)
         /// </summary>
-        public virtual Issue47_User Issue47_User { get; set; } // Issue47_UserRoles_userid
+        public virtual Issue47_User Issue47_User { get; set; } = null!; // Issue47_UserRoles_userid
     }
 
     // MultipleKeys
@@ -5036,14 +5036,14 @@ namespace V9EfrpgTest
     public class NoPrimaryKey
     {
         public int? Id { get; set; } // Id
-        public string Description { get; set; } // Description (length: 10)
+        public string? Description { get; set; } // Description (length: 10)
     }
 
     // NullableReverseNavigationA
     public class NullableReverseNavigationA
     {
         public Guid Id { get; set; } // Id (Primary key)
-        public string Data { get; set; } // Data (length: 100)
+        public string? Data { get; set; } // Data (length: 100)
 
         // Reverse navigation
 
@@ -5057,14 +5057,14 @@ namespace V9EfrpgTest
     public class NullableReverseNavigationB
     {
         public Guid Id { get; set; } // Id (Primary key)
-        public string Data { get; set; } // Data (length: 100)
+        public string? Data { get; set; } // Data (length: 100)
 
         // Foreign keys
 
         /// <summary>
         /// Parent NullableReverseNavigationA pointed by [NullableReverseNavigationB].([Id]) (FK_NullableReverseNavigationB_Id)
         /// </summary>
-        public virtual NullableReverseNavigationA NullableReverseNavigationA { get; set; } // FK_NullableReverseNavigationB_Id
+        public virtual NullableReverseNavigationA NullableReverseNavigationA { get; set; } = null!; // FK_NullableReverseNavigationB_Id
     }
 
     // The table 'Test' is not usable by entity framework because it
@@ -5080,8 +5080,8 @@ namespace V9EfrpgTest
     public class OneEightSix_Issue
     {
         public int Id { get; set; } // Id (Primary key)
-        public string Title { get; set; } // Title (length: 100)
-        public string Content { get; set; } // Content
+        public string Title { get; set; } = null!; // Title (length: 100)
+        public string? Content { get; set; } // Content
         public int? ConsentDocumentId { get; set; } // ConsentDocumentId
 
         // Reverse navigation
@@ -5096,7 +5096,7 @@ namespace V9EfrpgTest
         /// <summary>
         /// Parent OneEightSix_UploadedFile pointed by [Issue].([ConsentDocumentId]) (FK_Issue_UploadedFileConsentDocument)
         /// </summary>
-        public virtual OneEightSix_UploadedFile OneEightSix_UploadedFile { get; set; } // FK_Issue_UploadedFileConsentDocument
+        public virtual OneEightSix_UploadedFile? OneEightSix_UploadedFile { get; set; } // FK_Issue_UploadedFileConsentDocument
 
         public OneEightSix_Issue()
         {
@@ -5108,7 +5108,7 @@ namespace V9EfrpgTest
     public class OneEightSix_UploadedFile
     {
         public int Id { get; set; } // Id (Primary key)
-        public string FullPath { get; set; } // FullPath
+        public string FullPath { get; set; } = null!; // FullPath
 
         // Reverse navigation
 
@@ -5147,7 +5147,7 @@ namespace V9EfrpgTest
     public class Person
     {
         public int Id { get; set; } // Id (Primary key)
-        public string Name { get; set; } // Name (length: 50)
+        public string Name { get; set; } = null!; // Name (length: 50)
 
         // Reverse navigation
 
@@ -5172,8 +5172,8 @@ namespace V9EfrpgTest
     public class PersonPost
     {
         public int Id { get; set; } // Id (Primary key)
-        public string Title { get; set; } // Title (length: 20)
-        public string Body { get; set; } // Body (length: 100)
+        public string Title { get; set; } = null!; // Title (length: 20)
+        public string Body { get; set; } = null!; // Body (length: 100)
         public int CreatedBy { get; set; } // CreatedBy
         public int UpdatedBy { get; set; } // UpdatedBy
 
@@ -5182,12 +5182,12 @@ namespace V9EfrpgTest
         /// <summary>
         /// Parent Person pointed by [PersonPosts].([CreatedBy]) (FK_PersonPosts_CreatedBy)
         /// </summary>
-        public virtual Person Person_CreatedBy { get; set; } // FK_PersonPosts_CreatedBy
+        public virtual Person Person_CreatedBy { get; set; } = null!; // FK_PersonPosts_CreatedBy
 
         /// <summary>
         /// Parent Person pointed by [PersonPosts].([UpdatedBy]) (FK_PersonPosts_UpdatedBy)
         /// </summary>
-        public virtual Person Person_UpdatedBy { get; set; } // FK_PersonPosts_UpdatedBy
+        public virtual Person Person_UpdatedBy { get; set; } = null!; // FK_PersonPosts_UpdatedBy
     }
 
     // pk_ordinal_test
@@ -5204,7 +5204,7 @@ namespace V9EfrpgTest
         public int Id { get; set; } // id (Primary key)
         public DateTime? DtDefault { get; set; } // dt_default
         public DateTime? Dt7 { get; set; } // dt7
-        public string DefaultCheck { get; set; } // defaultCheck (length: 10)
+        public string? DefaultCheck { get; set; } // defaultCheck (length: 10)
 
         // Reverse navigation
 
@@ -5261,20 +5261,20 @@ namespace V9EfrpgTest
     public class SmallDecimalTestView
     {
         public int FkId { get; set; } // FkID
-        public string Description { get; set; } // description (length: 20)
+        public string Description { get; set; } = null!; // description (length: 20)
     }
 
     // Sorter
     public class Sorter
     {
         public int SorterId { get; set; } // SorterID (Primary key)
-        public string SorterName { get; set; } // SorterName (length: 20)
+        public string SorterName { get; set; } = null!; // SorterName (length: 20)
     }
 
     // Sorters
     public class Sorters
     {
-        public string SorterName { get; set; } // SorterName (Primary key) (length: 20)
+        public string SorterName { get; set; } = null!; // SorterName (Primary key) (length: 20)
 
         // Reverse navigation
 
@@ -5287,21 +5287,21 @@ namespace V9EfrpgTest
     // SorterScannerGroup
     public class SorterScannerGroup
     {
-        public string SorterName { get; set; } // SorterName (Primary key) (length: 20)
+        public string SorterName { get; set; } = null!; // SorterName (Primary key) (length: 20)
 
         // Foreign keys
 
         /// <summary>
         /// Parent Sorter pointed by [SorterScannerGroup].([SorterName]) (FK_SorterScannerGroup_Sorters)
         /// </summary>
-        public virtual Sorters Sorter { get; set; } // FK_SorterScannerGroup_Sorters
+        public virtual Sorters Sorter { get; set; } = null!; // FK_SorterScannerGroup_Sorters
     }
 
     // Boo
     public class Stafford_Boo
     {
         public int Id { get; set; } // id (Primary key)
-        public string Name { get; set; } // name (length: 10)
+        public string Name { get; set; } = null!; // name (length: 10)
 
         // Reverse navigation
 
@@ -5315,22 +5315,22 @@ namespace V9EfrpgTest
     public class Stafford_ComputedColumn
     {
         public int Id { get; set; } // Id (Primary key)
-        public string MyColumn { get; set; } // MyColumn (length: 10)
-        public string MyComputedColumn { get; private set; } // MyComputedColumn (length: 10)
+        public string MyColumn { get; set; } = null!; // MyColumn (length: 10)
+        public string MyComputedColumn { get; private set; } = null!; // MyComputedColumn (length: 10)
     }
 
     // Foo
     public class Stafford_Foo
     {
         public int Id { get; set; } // id (Primary key)
-        public string Name { get; set; } // name (length: 10)
+        public string Name { get; set; } = null!; // name (length: 10)
 
         // Foreign keys
 
         /// <summary>
         /// Parent Stafford_Boo pointed by [Foo].([Id]) (FK_Foo_Boo)
         /// </summary>
-        public virtual Stafford_Boo Stafford_Boo { get; set; } // FK_Foo_Boo
+        public virtual Stafford_Boo Stafford_Boo { get; set; } = null!; // FK_Foo_Boo
     }
 
     // Child
@@ -5338,21 +5338,21 @@ namespace V9EfrpgTest
     {
         public int ChildId { get; set; } // ChildId (Primary key)
         public int ParentId { get; set; } // ParentId
-        public string ChildName { get; set; } // ChildName (length: 100)
+        public string? ChildName { get; set; } // ChildName (length: 100)
 
         // Foreign keys
 
         /// <summary>
         /// Parent Synonyms_Parent pointed by [Child].([ParentId]) (FK_Child_Parent)
         /// </summary>
-        public virtual Synonyms_Parent Synonyms_Parent { get; set; } // FK_Child_Parent
+        public virtual Synonyms_Parent Synonyms_Parent { get; set; } = null!; // FK_Child_Parent
     }
 
     // Parent
     public class Synonyms_Parent
     {
         public int ParentId { get; set; } // ParentId (Primary key)
-        public string ParentName { get; set; } // ParentName (length: 100)
+        public string ParentName { get; set; } = null!; // ParentName (length: 100)
 
         // Reverse navigation
 
@@ -5371,7 +5371,7 @@ namespace V9EfrpgTest
     public class TableA
     {
         public int TableAId { get; set; } // TableAId (Primary key)
-        public string TableADesc { get; set; } // TableADesc (length: 20)
+        public string? TableADesc { get; set; } // TableADesc (length: 20)
 
         // Reverse navigation
 
@@ -5392,7 +5392,7 @@ namespace V9EfrpgTest
         public int TableBId { get; set; } // TableBId (Primary key)
         public int TableAId { get; set; } // TableAId (Primary key)
         public int? ParentTableAId { get; set; } // ParentTableAId
-        public string TableBDesc { get; set; } // TableBDesc (length: 20)
+        public string? TableBDesc { get; set; } // TableBDesc (length: 20)
 
         // Reverse navigation
 
@@ -5406,12 +5406,12 @@ namespace V9EfrpgTest
         /// <summary>
         /// Parent TableA pointed by [TableB].([TableAId]) (FK_TableA_CompositeKey_Req)
         /// </summary>
-        public virtual TableA TableA_TableAId { get; set; } // FK_TableA_CompositeKey_Req
+        public virtual TableA TableA_TableAId { get; set; } = null!; // FK_TableA_CompositeKey_Req
 
         /// <summary>
         /// Parent TableB pointed by [TableB].([TableAId], [TableBId]) (ParentTableB_Hierarchy)
         /// </summary>
-        public virtual TableB TableB1 { get; set; } // ParentTableB_Hierarchy
+        public virtual TableB TableB1 { get; set; } = null!; // ParentTableB_Hierarchy
     }
 
     // table with duplicate column names
@@ -5429,7 +5429,7 @@ namespace V9EfrpgTest
     public class TableWithMultiplePeriod
     {
         public int Id { get; set; } // id (Primary key)
-        public string Description { get; set; } // description (length: 20)
+        public string Description { get; set; } = null!; // description (length: 20)
     }
 
     // table with space
@@ -5478,9 +5478,9 @@ namespace V9EfrpgTest
     public class TadeuszSobol
     {
         public int Id { get; set; } // Id (Primary key)
-        public string Description { get; set; } // Description
-        public string Notes { get; set; } // Notes
-        public string Name { get; set; } // Name (length: 10)
+        public string? Description { get; set; } // Description
+        public string? Notes { get; set; } // Notes
+        public string? Name { get; set; } // Name (length: 10)
     }
 
     // Task
@@ -5513,14 +5513,14 @@ namespace V9EfrpgTest
     public class TblOrderError
     {
         public int Id { get; set; } // ID (Primary key)
-        public string Error { get; set; } // error (length: 50)
+        public string? Error { get; set; } // error (length: 50)
     }
 
     // tblOrderErrorsAB_
     public class TblOrderErrorsAb
     {
         public int Id { get; set; } // ID (Primary key)
-        public string Error { get; set; } // error (length: 50)
+        public string? Error { get; set; } // error (length: 50)
     }
 
     // tblOrderLines
@@ -5528,21 +5528,21 @@ namespace V9EfrpgTest
     {
         public int Id { get; set; } // ID (Primary key)
         public int OrderId { get; set; } // OrderID
-        public string Sku { get; set; } // sku (length: 15)
+        public string? Sku { get; set; } // sku (length: 15)
 
         // Foreign keys
 
         /// <summary>
         /// Parent TblOrder pointed by [tblOrderLines].([OrderId]) (tblOrdersFK)
         /// </summary>
-        public virtual TblOrder TblOrder { get; set; } // tblOrdersFK
+        public virtual TblOrder TblOrder { get; set; } = null!; // tblOrdersFK
     }
 
     // TemporalDepartment
     public class TemporalDepartment
     {
         public int DeptId { get; set; } // DeptID (Primary key)
-        public string DeptName { get; set; } // DeptName (length: 50)
+        public string DeptName { get; set; } = null!; // DeptName (length: 50)
         public int? ManagerId { get; set; } // ManagerID
         public int? ParentDeptId { get; set; } // ParentDeptID
         public DateTime SysStartTime { get; set; } // SysStartTime
@@ -5553,7 +5553,7 @@ namespace V9EfrpgTest
     public class TemporalDepartmentHistory
     {
         public int DeptId { get; set; } // DeptID (Primary key)
-        public string DeptName { get; set; } // DeptName (Primary key) (length: 50)
+        public string DeptName { get; set; } = null!; // DeptName (Primary key) (length: 50)
         public int? ManagerId { get; set; } // ManagerID
         public int? ParentDeptId { get; set; } // ParentDeptID
         public DateTime SysStartTime { get; set; } // SysStartTime (Primary key)
@@ -5573,7 +5573,7 @@ namespace V9EfrpgTest
     public class ThisIsMemoryOptimised
     {
         public int Id { get; set; } // Id (Primary key)
-        public string Description { get; set; } // Description (length: 20)
+        public string Description { get; set; } = null!; // Description (length: 20)
     }
 
     // Ticket
@@ -5588,19 +5588,19 @@ namespace V9EfrpgTest
         /// <summary>
         /// Parent AppUser pointed by [Ticket].([CreatedById]) (FK_Ticket_AppUser)
         /// </summary>
-        public virtual AppUser CreatedBy { get; set; } // FK_Ticket_AppUser
+        public virtual AppUser CreatedBy { get; set; } = null!; // FK_Ticket_AppUser
 
         /// <summary>
         /// Parent AppUser pointed by [Ticket].([ModifiedById]) (FK_Ticket_AppUser1)
         /// </summary>
-        public virtual AppUser ModifiedBy { get; set; } // FK_Ticket_AppUser1
+        public virtual AppUser? ModifiedBy { get; set; } // FK_Ticket_AppUser1
     }
 
     // TimestampNotNull
     public class TimestampNotNull
     {
         public int Id { get; set; } // Id (Primary key)
-        public byte[] Version { get; set; } // Version (length: 8)
+        public byte[] Version { get; set; } = null!; // Version (length: 8)
         public int Number { get; set; } // Number
     }
 
@@ -5608,7 +5608,7 @@ namespace V9EfrpgTest
     public class TimestampNullable
     {
         public int Id { get; set; } // Id (Primary key)
-        public byte[] Version { get; set; } // Version (length: 8)
+        public byte[]? Version { get; set; } // Version (length: 8)
         public int Number { get; set; } // Number
     }
 
@@ -5628,7 +5628,7 @@ namespace V9EfrpgTest
     public class User
     {
         public int Id { get; set; } // ID (Primary key)
-        public string ExternalUserId { get; set; } // ExternalUserID (length: 50)
+        public string? ExternalUserId { get; set; } // ExternalUserID (length: 50)
 
         // Reverse navigation
 
@@ -5653,8 +5653,8 @@ namespace V9EfrpgTest
     public class User309
     {
         public long UserId { get; set; } // UserID (Primary key)
-        public string Lastname { get; set; } // Lastname (length: 100)
-        public string Firstname { get; set; } // Firstname (length: 100)
+        public string Lastname { get; set; } = null!; // Lastname (length: 100)
+        public string Firstname { get; set; } = null!; // Firstname (length: 100)
         public int? PhoneCountryId { get; set; } // PhoneCountryID
 
         // Foreign keys
@@ -5662,7 +5662,7 @@ namespace V9EfrpgTest
         /// <summary>
         /// Parent Country pointed by [User309].([PhoneCountryId]) (FK_User309_PhoneCountry)
         /// </summary>
-        public virtual Country Country { get; set; } // FK_User309_PhoneCountry
+        public virtual Country? Country { get; set; } // FK_User309_PhoneCountry
     }
 
     // User_Document
@@ -5677,19 +5677,19 @@ namespace V9EfrpgTest
         /// <summary>
         /// Parent User pointed by [User_Document].([CreatedByUserId]) (FK_User_Document_User1)
         /// </summary>
-        public virtual User CreatedByUser { get; set; } // FK_User_Document_User1
+        public virtual User CreatedByUser { get; set; } = null!; // FK_User_Document_User1
 
         /// <summary>
         /// Parent User pointed by [User_Document].([UserId]) (FK_User_Document_User)
         /// </summary>
-        public virtual User User_UserId { get; set; } // FK_User_Document_User
+        public virtual User User_UserId { get; set; } = null!; // FK_User_Document_User
     }
 
     // Versioned
     public class Versioned
     {
         public int Id { get; set; } // Id (Primary key)
-        public byte[] Version { get; set; } // Version (length: 8)
+        public byte[] Version { get; set; } = null!; // Version (length: 8)
         public int Number { get; set; } // Number
     }
 
@@ -5697,7 +5697,7 @@ namespace V9EfrpgTest
     public class VersionedNullable
     {
         public int Id { get; set; } // Id (Primary key)
-        public byte[] Version { get; set; } // Version (length: 8)
+        public byte[]? Version { get; set; } // Version (length: 8)
         public int Number { get; set; } // Number
     }
 
@@ -5705,7 +5705,7 @@ namespace V9EfrpgTest
     public class ViewWithMultiplePeriod
     {
         public int FkId { get; set; } // FkID
-        public string Description { get; set; } // description (length: 20)
+        public string Description { get; set; } = null!; // description (length: 20)
     }
 
     // view with space
@@ -5714,13 +5714,13 @@ namespace V9EfrpgTest
         public int CodeObjectNo { get; set; } // codeObjectNo
         public int? ApplicationNo { get; set; } // applicationNo
         public int Type { get; set; } // type
-        public string EName { get; set; } // eName (length: 250)
-        public string AName { get; set; } // aName (length: 250)
-        public string Description { get; set; } // description (length: 250)
-        public string CodeName { get; set; } // codeName (length: 250)
-        public string Note { get; set; } // note (length: 250)
+        public string EName { get; set; } = null!; // eName (length: 250)
+        public string? AName { get; set; } // aName (length: 250)
+        public string? Description { get; set; } // description (length: 250)
+        public string? CodeName { get; set; } // codeName (length: 250)
+        public string? Note { get; set; } // note (length: 250)
         public bool IsObject { get; set; } // isObject
-        public byte[] VersionNumber { get; set; } // versionNumber (length: 8)
+        public byte[]? VersionNumber { get; set; } // versionNumber (length: 8)
     }
 
     // Articles
@@ -5730,7 +5730,7 @@ namespace V9EfrpgTest
         public Guid FkFactory { get; set; } // FK_Factory
         public int FkArticleLevel { get; set; } // FK_ArticleLevel
         public int? FkParentArticle { get; set; } // FK_ParentArticle
-        public string Code { get; set; } // Code (length: 20)
+        public string Code { get; set; } = null!; // Code (length: 20)
     }
 
     // v_Articles
@@ -5740,17 +5740,17 @@ namespace V9EfrpgTest
         public Guid? FkFactory { get; set; } // FK_Factory
         public int? FkArticleLevel { get; set; } // FK_ArticleLevel
         public int? FkParentArticle { get; set; } // FK_ParentArticle
-        public string Code { get; set; } // Code (length: 20)
-        public string FullCode { get; set; } // FullCode (length: 100)
+        public string? Code { get; set; } // Code (length: 20)
+        public string? FullCode { get; set; } // FullCode (length: 100)
     }
 
     // Бренды товара
     public class Брендытовара
     {
         public int Кодбренда { get; set; } // Код бренда (Primary key)
-        public string Наименованиебренда { get; set; } // Наименование бренда (length: 50)
-        public byte[] Логотипбренда { get; set; } // Логотип_бренда (length: 2147483647)
-        public byte[] Логотипбрендавертикальный { get; set; } // Логотип_бренда_вертикальный (length: 2147483647)
+        public string Наименованиебренда { get; set; } = null!; // Наименование бренда (length: 50)
+        public byte[]? Логотипбренда { get; set; } // Логотип_бренда (length: 2147483647)
+        public byte[]? Логотипбрендавертикальный { get; set; } // Логотип_бренда_вертикальный (length: 2147483647)
     }
 
 

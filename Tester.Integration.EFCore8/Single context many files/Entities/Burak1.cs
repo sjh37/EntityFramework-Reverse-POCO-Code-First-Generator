@@ -20,12 +20,12 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         /// <summary>
         /// Parent Burak2 pointed by [Burak1].([Id]) (FK_Burak_Test2)
         /// </summary>
-        public virtual Burak2 Burak2_Id { get; set; } // FK_Burak_Test2
+        public virtual Burak2 Burak2_Id { get; set; } = null!; // FK_Burak_Test2
 
         /// <summary>
         /// Parent Burak2 pointed by [Burak1].([IdT], [Num]) (FK_Burak_Test1)
         /// </summary>
-        public virtual Burak2 Burak2_IdT { get; set; } // FK_Burak_Test1
+        public virtual Burak2 Burak2_IdT { get; set; } = null!; // FK_Burak_Test1
     }
 
 }

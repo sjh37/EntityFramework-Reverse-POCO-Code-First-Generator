@@ -13,7 +13,7 @@ namespace EnumForeignKey
     // DaysOfWeek
     public class EnumTest_DaysOfWeek
     {
-        public string TypeName { get; set; } // TypeName (length: 50)
+        public string TypeName { get; set; } = null!; // TypeName (length: 50)
         public DaysOfWeek TypeId { get; set; } // TypeId (Primary key)
 
         // Reverse navigation
@@ -40,7 +40,7 @@ namespace EnumForeignKey
         /// <summary>
         /// Parent EnumTest_DaysOfWeek pointed by [OpenDays].([EnumId]) (Fk_OpenDays_EnumId)
         /// </summary>
-        public virtual EnumTest_DaysOfWeek EnumTest_DaysOfWeek { get; set; } // Fk_OpenDays_EnumId
+        public virtual EnumTest_DaysOfWeek EnumTest_DaysOfWeek { get; set; } = null!; // Fk_OpenDays_EnumId
     }
 
 

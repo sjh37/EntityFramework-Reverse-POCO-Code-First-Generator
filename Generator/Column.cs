@@ -66,8 +66,8 @@ namespace Efrpg
                 {
                     _notNullable = new List<string>
                     {
-                        Settings.AllowNullStrings || Settings.NullableReverseNavigationProperties ? "" : "string",
-                        Settings.AllowNullStrings || Settings.NullableReverseNavigationProperties ? "" : "byte[]",
+                        Settings.NeedsNullForgiving() ? "" : "string",
+                        Settings.NeedsNullForgiving() ? "" : "byte[]",
                         "datatable",
                         "system.data.datatable",
                         "object",

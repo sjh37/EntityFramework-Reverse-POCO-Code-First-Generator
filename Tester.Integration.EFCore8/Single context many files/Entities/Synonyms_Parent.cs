@@ -12,7 +12,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     public class Synonyms_Parent
     {
         public int ParentId { get; set; } // ParentId (Primary key)
-        public string ParentName { get; set; } // ParentName (length: 100)
+        public string ParentName { get; set; } = null!; // ParentName (length: 100)
 
         // Reverse navigation
 

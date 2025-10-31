@@ -14,7 +14,7 @@ namespace Tester.Integration.EFCore8.ContextHasSameNameAsDb
     {
         public int Id { get; set; } // Id (Primary key)
         public int PrimaryColourId { get; set; } // PrimaryColourId
-        public string CarMake { get; set; } // CarMake (length: 255)
+        public string CarMake { get; set; } = null!; // CarMake (length: 255)
         public int? ComputedColumn { get; private set; } // computed_column
         public int ComputedColumnPersisted { get; private set; } // computed_column_persisted
     }

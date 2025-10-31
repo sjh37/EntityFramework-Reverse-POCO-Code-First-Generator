@@ -12,9 +12,9 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     public class CmsFile
     {
         public int FileId { get; set; } // FileId (Primary key)
-        public string FileName { get; set; } // FileName (length: 100)
-        public string FileDescription { get; set; } // FileDescription (length: 500)
-        public string FileIdentifier { get; set; } // FileIdentifier (length: 100)
+        public string FileName { get; set; } = null!; // FileName (length: 100)
+        public string FileDescription { get; set; } = null!; // FileDescription (length: 500)
+        public string FileIdentifier { get; set; } = null!; // FileIdentifier (length: 100)
         public DateTime? ValidStartDate { get; set; } // ValidStartDate
         public DateTime? ValidEndDate { get; set; } // ValidEndDate
         public bool IsActive { get; set; } // IsActive

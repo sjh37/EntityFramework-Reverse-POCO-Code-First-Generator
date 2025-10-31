@@ -17,7 +17,7 @@ namespace Efrpg.Generators
             if (Settings.UseResharper)
                 header.AppendLine("// ReSharper disable All");
 
-            if (Settings.AllowNullStrings || Settings.NullableReverseNavigationProperties)
+            if (Settings.NeedsNullForgiving())
                 header.AppendLine("#nullable enable");
             
             if (Settings.UsePragma)

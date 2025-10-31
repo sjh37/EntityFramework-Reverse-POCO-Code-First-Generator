@@ -19,12 +19,12 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         /// <summary>
         /// Parent TableWithSpace pointed by [table mapping with space].([Id]) (space1FK)
         /// </summary>
-        public virtual TableWithSpace TableWithSpace { get; set; } // space1FK
+        public virtual TableWithSpace TableWithSpace { get; set; } = null!; // space1FK
 
         /// <summary>
         /// Parent TableWithSpaceAndInColumn pointed by [table mapping with space].([IdValue]) (space2FK)
         /// </summary>
-        public virtual TableWithSpaceAndInColumn TableWithSpaceAndInColumn { get; set; } // space2FK
+        public virtual TableWithSpaceAndInColumn TableWithSpaceAndInColumn { get; set; } = null!; // space2FK
     }
 
 }

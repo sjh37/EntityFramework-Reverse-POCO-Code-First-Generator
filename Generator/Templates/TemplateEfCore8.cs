@@ -585,7 +585,7 @@ using {{this}};{{#newline}}
 {{{#newline}}
 
 {{#each tables}}
-    {{DbSetModifier}} DbSet<{{DbSetName}}> {{PluralTableName}} { get; set; }{{Comment}}{{#newline}}
+    {{DbSetModifier}} DbSet<{{DbSetName}}> {{PluralTableName}} { get; set; } = null!;{{Comment}}{{#newline}}
 {{/each}}
 {{#newline}}
 
@@ -813,7 +813,7 @@ using {{this}};{{#newline}}
 {{#if HasReturnModels}}
 {{#newline}}
 {{#if CreateDbSetForReturnModel}}
-    public DbSet<{{ReturnModelName}}> {{ReturnModelName}} { get; set; }{{#newline}}
+    public DbSet<{{ReturnModelName}}> {{ReturnModelName}} { get; set; } = null!;{{#newline}}
 {{/if}}
     public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
     {{{#newline}}

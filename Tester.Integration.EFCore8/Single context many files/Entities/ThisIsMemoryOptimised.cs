@@ -12,7 +12,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     public class ThisIsMemoryOptimised
     {
         public int Id { get; set; } // Id (Primary key)
-        public string Description { get; set; } // Description (length: 20)
+        public string Description { get; set; } = null!; // Description (length: 20)
     }
 
 }

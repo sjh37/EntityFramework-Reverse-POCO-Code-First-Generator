@@ -12,7 +12,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     public class Issue47_Role
     {
         public int RoleId { get; set; } // RoleId (Primary key)
-        public string Role { get; set; } // Role (length: 10)
+        public string? Role { get; set; } // Role (length: 10)
 
         // Reverse navigation
 

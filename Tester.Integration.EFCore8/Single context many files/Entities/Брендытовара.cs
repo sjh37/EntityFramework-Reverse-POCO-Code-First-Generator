@@ -12,9 +12,9 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     public class Брендытовара
     {
         public int Кодбренда { get; set; } // Код бренда (Primary key)
-        public string Наименованиебренда { get; set; } // Наименование бренда (length: 50)
-        public byte[] Логотипбренда { get; set; } // Логотип_бренда (length: 2147483647)
-        public byte[] Логотипбрендавертикальный { get; set; } // Логотип_бренда_вертикальный (length: 2147483647)
+        public string Наименованиебренда { get; set; } = null!; // Наименование бренда (length: 50)
+        public byte[]? Логотипбренда { get; set; } // Логотип_бренда (length: 2147483647)
+        public byte[]? Логотипбрендавертикальный { get; set; } // Логотип_бренда_вертикальный (length: 2147483647)
     }
 
 }

@@ -14,7 +14,7 @@ namespace Tester.Integration.EFCore8.Multi_context_many_filesAppleDbContext
     public class Stafford_Boo
     {
         public int id { get; set; } // id (Primary key)
-        public string Name { get; set; } // name (length: 10)
+        public string Name { get; set; } = null!; // name (length: 10)
 
         // Reverse navigation
 

@@ -13,7 +13,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     public class HierarchyTest
     {
         public int Id { get; set; } // ID (Primary key)
-        public HierarchyId Hid { get; set; } // hid
+        public HierarchyId Hid { get; set; } = null!; // hid
     }
 
 }

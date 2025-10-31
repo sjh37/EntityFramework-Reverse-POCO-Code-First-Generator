@@ -12,8 +12,8 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     public class PersonPost
     {
         public int Id { get; set; } // Id (Primary key)
-        public string Title { get; set; } // Title (length: 20)
-        public string Body { get; set; } // Body (length: 100)
+        public string Title { get; set; } = null!; // Title (length: 20)
+        public string Body { get; set; } = null!; // Body (length: 100)
         public int CreatedBy { get; set; } // CreatedBy
         public int UpdatedBy { get; set; } // UpdatedBy
 
@@ -22,12 +22,12 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         /// <summary>
         /// Parent Person pointed by [PersonPosts].([CreatedBy]) (FK_PersonPosts_CreatedBy)
         /// </summary>
-        public virtual Person Person_CreatedBy { get; set; } // FK_PersonPosts_CreatedBy
+        public virtual Person Person_CreatedBy { get; set; } = null!; // FK_PersonPosts_CreatedBy
 
         /// <summary>
         /// Parent Person pointed by [PersonPosts].([UpdatedBy]) (FK_PersonPosts_UpdatedBy)
         /// </summary>
-        public virtual Person Person_UpdatedBy { get; set; } // FK_PersonPosts_UpdatedBy
+        public virtual Person Person_UpdatedBy { get; set; } = null!; // FK_PersonPosts_UpdatedBy
     }
 
 }

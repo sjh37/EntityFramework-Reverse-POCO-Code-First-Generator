@@ -19,7 +19,7 @@ namespace Tester.Integration.EFCore8.Multi_context_many_filesAppleDbContext
         /// <summary>
         /// Parent Stafford_Boo pointed by [Foo].([id]) (FK_Foo_Boo)
         /// </summary>
-        public virtual Stafford_Boo Stafford_Boo { get; set; } // FK_Foo_Boo
+        public virtual Stafford_Boo Stafford_Boo { get; set; } = null!; // FK_Foo_Boo
     }
 
 }

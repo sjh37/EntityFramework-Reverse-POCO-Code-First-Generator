@@ -16,122 +16,122 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
 {
     public class FakeEfCoreDbContext : IEfCoreDbContext
     {
-        public DbSet<A> A { get; set; } // A
-        public DbSet<Aaref> Aarefs { get; set; } // AAREF
-        public DbSet<AbOrderLinesAb> AbOrderLinesAbs { get; set; } // AB_OrderLinesAB_
-        public DbSet<AbOrdersAb> AbOrdersAbs { get; set; } // AB_OrdersAB_
-        public DbSet<AllColumnsNull> AllColumnsNulls { get; set; } // AllColumnsNull
-        public DbSet<Alpha_Harish3485> Alpha_Harish3485 { get; set; } // Harish3485
-        public DbSet<Alpha_Workflow> Alpha_Workflows { get; set; } // workflow
-        public DbSet<App_UserFacilityServiceRole> App_UserFacilityServiceRoles { get; set; } // UserFacilityServiceRole
-        public DbSet<AppUser> AppUsers { get; set; } // AppUser
-        public DbSet<Attendee> Attendees { get; set; } // Attendee
-        public DbSet<BatchTest> BatchTests { get; set; } // BatchTest
-        public DbSet<Beta_Harish3485> Beta_Harish3485 { get; set; } // Harish3485
-        public DbSet<Beta_ToAlpha> Beta_ToAlphas { get; set; } // ToAlpha
-        public DbSet<Beta_Workflow> Beta_Workflows { get; set; } // workflow
-        public DbSet<Bitfiddlerallcap> Bitfiddlerallcaps { get; set; } // BITFIDDLERALLCAPS
-        public DbSet<BitFiddlerCategoRy> BitFiddlerCategoRies { get; set; } // BitFiddlerCATEGORIES
-        public DbSet<BitFiddlerCurrenCy> BitFiddlerCurrenCies { get; set; } // BitFiddlerCURRENCIES
-        public DbSet<Blah> Blahs { get; set; } // Blah
-        public DbSet<BlahBlahLink> BlahBlahLinks { get; set; } // BlahBlahLink
-        public DbSet<BlahBlahLinkReadonly> BlahBlahLinkReadonlies { get; set; } // BlahBlahLink_readonly
-        public DbSet<BlahBlahLinkV2> BlahBlahLinkV2 { get; set; } // BlahBlahLink_v2
-        public DbSet<BlahBlargLink> BlahBlargLinks { get; set; } // BlahBlargLink
-        public DbSet<Blarg> Blargs { get; set; } // Blarg
-        public DbSet<Burak1> Burak1 { get; set; } // Burak1
-        public DbSet<Burak2> Burak2 { get; set; } // Burak2
-        public DbSet<CalculatedColumnNotNull> CalculatedColumnNotNulls { get; set; } // CalculatedColumnNotNull
-        public DbSet<Car> Cars { get; set; } // Car
-        public DbSet<CarToColour> CarToColours { get; set; } // CarToColour
-        public DbSet<ClientCreationState> ClientCreationStates { get; set; } // ClientCreationState
-        public DbSet<CmsFile> CmsFiles { get; set; } // CMS_File
-        public DbSet<CmsFileTag> CmsFileTags { get; set; } // CMS_FileTag
-        public DbSet<CmsTag> CmsTags { get; set; } // CMS_Tag
-        public DbSet<CodeMeetingTopicDetail> CodeMeetingTopicDetails { get; set; } // CODE_MeetingTopicDetails
-        public DbSet<CodeObject> CodeObjects { get; set; } // CodeObject
-        public DbSet<CodeParamMeetingTopicDetailSource> CodeParamMeetingTopicDetailSources { get; set; } // CODE_PARAM_MeetingTopicDetailSource
-        public DbSet<Colour> Colours { get; set; } // Colour
-        public DbSet<ColumnNameAndType> ColumnNameAndTypes { get; set; } // ColumnNameAndTypes
-        public DbSet<ComplexView> ComplexViews { get; set; } // ComplexView
-        public DbSet<Country> Countries { get; set; } // Country
-        public DbSet<DateTimeDefaultTest> DateTimeDefaultTests { get; set; } // DateTimeDefaultTest
-        public DbSet<dcg_RovColumnDefinition> dcg_RovColumnDefinitions { get; set; } // rov_ColumnDefinitions
-        public DbSet<DefaultCheckForNull> DefaultCheckForNulls { get; set; } // DefaultCheckForNull
-        public DbSet<DsOpe> DsOpes { get; set; } // DSOpe
-        public DbSet<EventProcessor> EventProcessors { get; set; } // EventProcessor
-        public DbSet<EventProcessorEventFilter> EventProcessorEventFilters { get; set; } // EventProcessorEventFilter
-        public DbSet<FFRS_Cv> FFRS_Cvs { get; set; } // CV
-        public DbSet<FinancialInstitutionOffice> FinancialInstitutionOffices { get; set; } // FinancialInstitutionOffice
-        public DbSet<FkTest_SmallDecimalTestAttribute> FkTest_SmallDecimalTestAttributes { get; set; } // SmallDecimalTestAttribute
-        public DbSet<Footer> Footers { get; set; } // footer
-        public DbSet<ForeignKeyIsNotEnforced> ForeignKeyIsNotEnforceds { get; set; } // ForeignKeyIsNotEnforced
-        public DbSet<ForeignKeyIsNotEnforcedItem> ForeignKeyIsNotEnforcedItems { get; set; } // ForeignKeyIsNotEnforcedItem
-        public DbSet<HasPrincipalKeyTestChild> HasPrincipalKeyTestChilds { get; set; } // HasPrincipalKeyTestChild
-        public DbSet<HasPrincipalKeyTestParent> HasPrincipalKeyTestParents { get; set; } // HasPrincipalKeyTestParent
-        public DbSet<Header> Headers { get; set; } // header
-        public DbSet<HierarchyTest> HierarchyTests { get; set; } // hierarchy_test
-        public DbSet<InflectorData> InflectorData { get; set; } // InflectorData
-        public DbSet<InflectorStatus> InflectorStatus { get; set; } // InflectorStatus
-        public DbSet<InflectorTo> InflectorTo { get; set; } // InflectorTo
-        public DbSet<Issue47_Role> Issue47_Roles { get; set; } // Role
-        public DbSet<Issue47_User> Issue47_Users { get; set; } // Users
-        public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
-        public DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
-        public DbSet<NullableReverseNavigationA> NullableReverseNavigationAs { get; set; } // NullableReverseNavigationA
-        public DbSet<NullableReverseNavigationB> NullableReverseNavigationBs { get; set; } // NullableReverseNavigationB
-        public DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
-        public DbSet<OneEightSix_IssueUploadedFile> OneEightSix_IssueUploadedFiles { get; set; } // IssueUploadedFile
-        public DbSet<OneEightSix_UploadedFile> OneEightSix_UploadedFiles { get; set; } // UploadedFile
-        public DbSet<PeriodTable> PeriodTables { get; set; } // Period.Table
-        public DbSet<PeriodTestTable> PeriodTestTables { get; set; } // PeriodTestTable
-        public DbSet<Person> People { get; set; } // Person
-        public DbSet<PersonPost> PersonPosts { get; set; } // PersonPosts
-        public DbSet<PkOrdinalTest> PkOrdinalTests { get; set; } // pk_ordinal_test
-        public DbSet<PropertyTypesToAdd> PropertyTypesToAdds { get; set; } // PropertyTypesToAdd
-        public DbSet<SequenceTest> SequenceTests { get; set; } // SequenceTest
-        public DbSet<SequenceTestPartTwo> SequenceTestPartTwoes { get; set; } // SequenceTestPartTwo
-        public DbSet<SmallDecimalTest> SmallDecimalTests { get; set; } // SmallDecimalTest
-        public DbSet<SmallDecimalTestView> SmallDecimalTestViews { get; set; } // SmallDecimalTestView
-        public DbSet<Sorter> Sorter { get; set; } // Sorter
-        public DbSet<Sorters> Sorters { get; set; } // Sorters
-        public DbSet<SorterScannerGroup> SorterScannerGroups { get; set; } // SorterScannerGroup
-        public DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
-        public DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; } // ComputedColumns
-        public DbSet<Stafford_Foo> Stafford_Foos { get; set; } // Foo
-        public DbSet<Synonyms_Child> Synonyms_Children { get; set; } // Child
-        public DbSet<Synonyms_Parent> Synonyms_Parents { get; set; } // Parent
-        public DbSet<TableA> TableAs { get; set; } // TableA
-        public DbSet<TableB> TableBs { get; set; } // TableB
-        public DbSet<TableMappingWithSpace> TableMappingWithSpaces { get; set; } // table mapping with space
-        public DbSet<TableWithDuplicateColumnName> TableWithDuplicateColumnNames { get; set; } // table with duplicate column names
-        public DbSet<TableWithMultiplePeriod> TableWithMultiplePeriods { get; set; } // table.with.multiple.periods
-        public DbSet<TableWithSpace> TableWithSpaces { get; set; } // table with space
-        public DbSet<TableWithSpaceAndInColumn> TableWithSpaceAndInColumns { get; set; } // table with space and in columns
-        public DbSet<TableWithSpaceInColumnOnly> TableWithSpaceInColumnOnlies { get; set; } // TableWithSpaceInColumnOnly
-        public DbSet<TadeuszSobol> TadeuszSobols { get; set; } // TadeuszSobol
-        public DbSet<Task1> Task1 { get; set; } // Task
-        public DbSet<TblOrder> TblOrders { get; set; } // tblOrders
-        public DbSet<TblOrderError> TblOrderErrors { get; set; } // tblOrderErrors
-        public DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } // tblOrderErrorsAB_
-        public DbSet<TblOrderLine> TblOrderLines { get; set; } // tblOrderLines
-        public DbSet<TemporalDepartment> TemporalDepartments { get; set; } // TemporalDepartment
-        public DbSet<TemporalDepartmentHistory> TemporalDepartmentHistories { get; set; } // TemporalDepartmentHistory
-        public DbSet<ThisIsMemoryOptimised> ThisIsMemoryOptimiseds { get; set; } // ThisIsMemoryOptimised
-        public DbSet<Ticket> Tickets { get; set; } // Ticket
-        public DbSet<TimestampNotNull> TimestampNotNulls { get; set; } // TimestampNotNull
-        public DbSet<TimestampNullable> TimestampNullables { get; set; } // TimestampNullable
-        public DbSet<Token> Tokens { get; set; } // Token
-        public DbSet<User> Users { get; set; } // User
-        public DbSet<User309> User309 { get; set; } // User309
-        public DbSet<UserDocument> UserDocuments { get; set; } // User_Document
-        public DbSet<Versioned> Versioneds { get; set; } // Versioned
-        public DbSet<VersionedNullable> VersionedNullables { get; set; } // VersionedNullable
-        public DbSet<ViewWithMultiplePeriod> ViewWithMultiplePeriods { get; set; } // view.with.multiple.periods
-        public DbSet<ViewWithSpace> ViewWithSpaces { get; set; } // view with space
-        public DbSet<WVN_Article> WVN_Articles { get; set; } // Articles
-        public DbSet<WVN_VArticle> WVN_VArticles { get; set; } // v_Articles
-        public DbSet<Брендытовара> Брендытовара { get; set; } // Бренды товара
+        public DbSet<A> A { get; set; } = null!; // A
+        public DbSet<Aaref> Aarefs { get; set; } = null!; // AAREF
+        public DbSet<AbOrderLinesAb> AbOrderLinesAbs { get; set; } = null!; // AB_OrderLinesAB_
+        public DbSet<AbOrdersAb> AbOrdersAbs { get; set; } = null!; // AB_OrdersAB_
+        public DbSet<AllColumnsNull> AllColumnsNulls { get; set; } = null!; // AllColumnsNull
+        public DbSet<Alpha_Harish3485> Alpha_Harish3485 { get; set; } = null!; // Harish3485
+        public DbSet<Alpha_Workflow> Alpha_Workflows { get; set; } = null!; // workflow
+        public DbSet<App_UserFacilityServiceRole> App_UserFacilityServiceRoles { get; set; } = null!; // UserFacilityServiceRole
+        public DbSet<AppUser> AppUsers { get; set; } = null!; // AppUser
+        public DbSet<Attendee> Attendees { get; set; } = null!; // Attendee
+        public DbSet<BatchTest> BatchTests { get; set; } = null!; // BatchTest
+        public DbSet<Beta_Harish3485> Beta_Harish3485 { get; set; } = null!; // Harish3485
+        public DbSet<Beta_ToAlpha> Beta_ToAlphas { get; set; } = null!; // ToAlpha
+        public DbSet<Beta_Workflow> Beta_Workflows { get; set; } = null!; // workflow
+        public DbSet<Bitfiddlerallcap> Bitfiddlerallcaps { get; set; } = null!; // BITFIDDLERALLCAPS
+        public DbSet<BitFiddlerCategoRy> BitFiddlerCategoRies { get; set; } = null!; // BitFiddlerCATEGORIES
+        public DbSet<BitFiddlerCurrenCy> BitFiddlerCurrenCies { get; set; } = null!; // BitFiddlerCURRENCIES
+        public DbSet<Blah> Blahs { get; set; } = null!; // Blah
+        public DbSet<BlahBlahLink> BlahBlahLinks { get; set; } = null!; // BlahBlahLink
+        public DbSet<BlahBlahLinkReadonly> BlahBlahLinkReadonlies { get; set; } = null!; // BlahBlahLink_readonly
+        public DbSet<BlahBlahLinkV2> BlahBlahLinkV2 { get; set; } = null!; // BlahBlahLink_v2
+        public DbSet<BlahBlargLink> BlahBlargLinks { get; set; } = null!; // BlahBlargLink
+        public DbSet<Blarg> Blargs { get; set; } = null!; // Blarg
+        public DbSet<Burak1> Burak1 { get; set; } = null!; // Burak1
+        public DbSet<Burak2> Burak2 { get; set; } = null!; // Burak2
+        public DbSet<CalculatedColumnNotNull> CalculatedColumnNotNulls { get; set; } = null!; // CalculatedColumnNotNull
+        public DbSet<Car> Cars { get; set; } = null!; // Car
+        public DbSet<CarToColour> CarToColours { get; set; } = null!; // CarToColour
+        public DbSet<ClientCreationState> ClientCreationStates { get; set; } = null!; // ClientCreationState
+        public DbSet<CmsFile> CmsFiles { get; set; } = null!; // CMS_File
+        public DbSet<CmsFileTag> CmsFileTags { get; set; } = null!; // CMS_FileTag
+        public DbSet<CmsTag> CmsTags { get; set; } = null!; // CMS_Tag
+        public DbSet<CodeMeetingTopicDetail> CodeMeetingTopicDetails { get; set; } = null!; // CODE_MeetingTopicDetails
+        public DbSet<CodeObject> CodeObjects { get; set; } = null!; // CodeObject
+        public DbSet<CodeParamMeetingTopicDetailSource> CodeParamMeetingTopicDetailSources { get; set; } = null!; // CODE_PARAM_MeetingTopicDetailSource
+        public DbSet<Colour> Colours { get; set; } = null!; // Colour
+        public DbSet<ColumnNameAndType> ColumnNameAndTypes { get; set; } = null!; // ColumnNameAndTypes
+        public DbSet<ComplexView> ComplexViews { get; set; } = null!; // ComplexView
+        public DbSet<Country> Countries { get; set; } = null!; // Country
+        public DbSet<DateTimeDefaultTest> DateTimeDefaultTests { get; set; } = null!; // DateTimeDefaultTest
+        public DbSet<dcg_RovColumnDefinition> dcg_RovColumnDefinitions { get; set; } = null!; // rov_ColumnDefinitions
+        public DbSet<DefaultCheckForNull> DefaultCheckForNulls { get; set; } = null!; // DefaultCheckForNull
+        public DbSet<DsOpe> DsOpes { get; set; } = null!; // DSOpe
+        public DbSet<EventProcessor> EventProcessors { get; set; } = null!; // EventProcessor
+        public DbSet<EventProcessorEventFilter> EventProcessorEventFilters { get; set; } = null!; // EventProcessorEventFilter
+        public DbSet<FFRS_Cv> FFRS_Cvs { get; set; } = null!; // CV
+        public DbSet<FinancialInstitutionOffice> FinancialInstitutionOffices { get; set; } = null!; // FinancialInstitutionOffice
+        public DbSet<FkTest_SmallDecimalTestAttribute> FkTest_SmallDecimalTestAttributes { get; set; } = null!; // SmallDecimalTestAttribute
+        public DbSet<Footer> Footers { get; set; } = null!; // footer
+        public DbSet<ForeignKeyIsNotEnforced> ForeignKeyIsNotEnforceds { get; set; } = null!; // ForeignKeyIsNotEnforced
+        public DbSet<ForeignKeyIsNotEnforcedItem> ForeignKeyIsNotEnforcedItems { get; set; } = null!; // ForeignKeyIsNotEnforcedItem
+        public DbSet<HasPrincipalKeyTestChild> HasPrincipalKeyTestChilds { get; set; } = null!; // HasPrincipalKeyTestChild
+        public DbSet<HasPrincipalKeyTestParent> HasPrincipalKeyTestParents { get; set; } = null!; // HasPrincipalKeyTestParent
+        public DbSet<Header> Headers { get; set; } = null!; // header
+        public DbSet<HierarchyTest> HierarchyTests { get; set; } = null!; // hierarchy_test
+        public DbSet<InflectorData> InflectorData { get; set; } = null!; // InflectorData
+        public DbSet<InflectorStatus> InflectorStatus { get; set; } = null!; // InflectorStatus
+        public DbSet<InflectorTo> InflectorTo { get; set; } = null!; // InflectorTo
+        public DbSet<Issue47_Role> Issue47_Roles { get; set; } = null!; // Role
+        public DbSet<Issue47_User> Issue47_Users { get; set; } = null!; // Users
+        public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } = null!; // UserRoles
+        public DbSet<MultipleKey> MultipleKeys { get; set; } = null!; // MultipleKeys
+        public DbSet<NullableReverseNavigationA> NullableReverseNavigationAs { get; set; } = null!; // NullableReverseNavigationA
+        public DbSet<NullableReverseNavigationB> NullableReverseNavigationBs { get; set; } = null!; // NullableReverseNavigationB
+        public DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } = null!; // Issue
+        public DbSet<OneEightSix_IssueUploadedFile> OneEightSix_IssueUploadedFiles { get; set; } = null!; // IssueUploadedFile
+        public DbSet<OneEightSix_UploadedFile> OneEightSix_UploadedFiles { get; set; } = null!; // UploadedFile
+        public DbSet<PeriodTable> PeriodTables { get; set; } = null!; // Period.Table
+        public DbSet<PeriodTestTable> PeriodTestTables { get; set; } = null!; // PeriodTestTable
+        public DbSet<Person> People { get; set; } = null!; // Person
+        public DbSet<PersonPost> PersonPosts { get; set; } = null!; // PersonPosts
+        public DbSet<PkOrdinalTest> PkOrdinalTests { get; set; } = null!; // pk_ordinal_test
+        public DbSet<PropertyTypesToAdd> PropertyTypesToAdds { get; set; } = null!; // PropertyTypesToAdd
+        public DbSet<SequenceTest> SequenceTests { get; set; } = null!; // SequenceTest
+        public DbSet<SequenceTestPartTwo> SequenceTestPartTwoes { get; set; } = null!; // SequenceTestPartTwo
+        public DbSet<SmallDecimalTest> SmallDecimalTests { get; set; } = null!; // SmallDecimalTest
+        public DbSet<SmallDecimalTestView> SmallDecimalTestViews { get; set; } = null!; // SmallDecimalTestView
+        public DbSet<Sorter> Sorter { get; set; } = null!; // Sorter
+        public DbSet<Sorters> Sorters { get; set; } = null!; // Sorters
+        public DbSet<SorterScannerGroup> SorterScannerGroups { get; set; } = null!; // SorterScannerGroup
+        public DbSet<Stafford_Boo> Stafford_Boos { get; set; } = null!; // Boo
+        public DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; } = null!; // ComputedColumns
+        public DbSet<Stafford_Foo> Stafford_Foos { get; set; } = null!; // Foo
+        public DbSet<Synonyms_Child> Synonyms_Children { get; set; } = null!; // Child
+        public DbSet<Synonyms_Parent> Synonyms_Parents { get; set; } = null!; // Parent
+        public DbSet<TableA> TableAs { get; set; } = null!; // TableA
+        public DbSet<TableB> TableBs { get; set; } = null!; // TableB
+        public DbSet<TableMappingWithSpace> TableMappingWithSpaces { get; set; } = null!; // table mapping with space
+        public DbSet<TableWithDuplicateColumnName> TableWithDuplicateColumnNames { get; set; } = null!; // table with duplicate column names
+        public DbSet<TableWithMultiplePeriod> TableWithMultiplePeriods { get; set; } = null!; // table.with.multiple.periods
+        public DbSet<TableWithSpace> TableWithSpaces { get; set; } = null!; // table with space
+        public DbSet<TableWithSpaceAndInColumn> TableWithSpaceAndInColumns { get; set; } = null!; // table with space and in columns
+        public DbSet<TableWithSpaceInColumnOnly> TableWithSpaceInColumnOnlies { get; set; } = null!; // TableWithSpaceInColumnOnly
+        public DbSet<TadeuszSobol> TadeuszSobols { get; set; } = null!; // TadeuszSobol
+        public DbSet<Task1> Task1 { get; set; } = null!; // Task
+        public DbSet<TblOrder> TblOrders { get; set; } = null!; // tblOrders
+        public DbSet<TblOrderError> TblOrderErrors { get; set; } = null!; // tblOrderErrors
+        public DbSet<TblOrderErrorsAb> TblOrderErrorsAbs { get; set; } = null!; // tblOrderErrorsAB_
+        public DbSet<TblOrderLine> TblOrderLines { get; set; } = null!; // tblOrderLines
+        public DbSet<TemporalDepartment> TemporalDepartments { get; set; } = null!; // TemporalDepartment
+        public DbSet<TemporalDepartmentHistory> TemporalDepartmentHistories { get; set; } = null!; // TemporalDepartmentHistory
+        public DbSet<ThisIsMemoryOptimised> ThisIsMemoryOptimiseds { get; set; } = null!; // ThisIsMemoryOptimised
+        public DbSet<Ticket> Tickets { get; set; } = null!; // Ticket
+        public DbSet<TimestampNotNull> TimestampNotNulls { get; set; } = null!; // TimestampNotNull
+        public DbSet<TimestampNullable> TimestampNullables { get; set; } = null!; // TimestampNullable
+        public DbSet<Token> Tokens { get; set; } = null!; // Token
+        public DbSet<User> Users { get; set; } = null!; // User
+        public DbSet<User309> User309 { get; set; } = null!; // User309
+        public DbSet<UserDocument> UserDocuments { get; set; } = null!; // User_Document
+        public DbSet<Versioned> Versioneds { get; set; } = null!; // Versioned
+        public DbSet<VersionedNullable> VersionedNullables { get; set; } = null!; // VersionedNullable
+        public DbSet<ViewWithMultiplePeriod> ViewWithMultiplePeriods { get; set; } = null!; // view.with.multiple.periods
+        public DbSet<ViewWithSpace> ViewWithSpaces { get; set; } = null!; // view with space
+        public DbSet<WVN_Article> WVN_Articles { get; set; } = null!; // Articles
+        public DbSet<WVN_VArticle> WVN_VArticles { get; set; } = null!; // v_Articles
+        public DbSet<Брендытовара> Брендытовара { get; set; } = null!; // Бренды товара
 
         public FakeEfCoreDbContext()
         {
@@ -489,7 +489,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
 
         // App_UspCmtUserFsrUpdateAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public DbSet<ASimpleExampleReturnModel> ASimpleExampleReturnModel { get; set; }
+        public DbSet<ASimpleExampleReturnModel> ASimpleExampleReturnModel { get; set; } = null!;
         public List<ASimpleExampleReturnModel> ASimpleExample()
         {
             int procResult;
@@ -518,7 +518,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
             return Task.FromResult(0);
         }
 
-        public DbSet<C182Test2ReturnModel> C182Test2ReturnModel { get; set; }
+        public DbSet<C182Test2ReturnModel> C182Test2ReturnModel { get; set; } = null!;
         public C182Test2ReturnModel C182Test2(int? flag = null)
         {
             int procResult;
@@ -533,7 +533,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
 
         // C182Test2Async() cannot be created due to having out parameters, or is relying on the procedure result (C182Test2ReturnModel)
 
-        public DbSet<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsCompleteReturnModel { get; set; }
+        public DbSet<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsCompleteReturnModel { get; set; } = null!;
         public List<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete)
         {
             int procResult;
@@ -549,7 +549,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
 
         // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (List<CheckIfApplicationIsCompleteReturnModel>)
 
-        public DbSet<ColourPivotReturnModel> ColourPivotReturnModel { get; set; }
+        public DbSet<ColourPivotReturnModel> ColourPivotReturnModel { get; set; } = null!;
         public List<ColourPivotReturnModel> ColourPivot()
         {
             int procResult;
@@ -568,7 +568,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
             return Task.FromResult(ColourPivot(out procResult));
         }
 
-        public DbSet<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProcReturnModel { get; set; }
+        public DbSet<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProcReturnModel { get; set; } = null!;
         public List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc()
         {
             int procResult;
@@ -595,7 +595,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
 
         // ConvertToStringAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public DbSet<DboProcDataFromFfrsReturnModel> DboProcDataFromFfrsReturnModel { get; set; }
+        public DbSet<DboProcDataFromFfrsReturnModel> DboProcDataFromFfrsReturnModel { get; set; } = null!;
         public List<DboProcDataFromFfrsReturnModel> DboProcDataFromFfrs(int? maxId = null)
         {
             int procResult;
@@ -614,7 +614,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
             return Task.FromResult(DboProcDataFromFfrs(maxId, out procResult));
         }
 
-        public DbSet<DboProcDataFromFfrsAndDboReturnModel> DboProcDataFromFfrsAndDboReturnModel { get; set; }
+        public DbSet<DboProcDataFromFfrsAndDboReturnModel> DboProcDataFromFfrsAndDboReturnModel { get; set; } = null!;
         public List<DboProcDataFromFfrsAndDboReturnModel> DboProcDataFromFfrsAndDbo()
         {
             int procResult;
@@ -633,7 +633,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
             return Task.FromResult(DboProcDataFromFfrsAndDbo(out procResult));
         }
 
-        public DbSet<DsOpeProcReturnModel> DsOpeProcReturnModel { get; set; }
+        public DbSet<DsOpeProcReturnModel> DsOpeProcReturnModel { get; set; } = null!;
         public List<DsOpeProcReturnModel> DsOpeProc()
         {
             int procResult;
@@ -652,7 +652,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
             return Task.FromResult(DsOpeProc(out procResult));
         }
 
-        public DbSet<FFRS_CvDataReturnModel> FFRS_CvDataReturnModel { get; set; }
+        public DbSet<FFRS_CvDataReturnModel> FFRS_CvDataReturnModel { get; set; } = null!;
         public List<FFRS_CvDataReturnModel> FFRS_CvData(int? maxId = null)
         {
             int procResult;
@@ -671,7 +671,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
             return Task.FromResult(FFRS_CvData(maxId, out procResult));
         }
 
-        public DbSet<FFRS_DataFromDboReturnModel> FFRS_DataFromDboReturnModel { get; set; }
+        public DbSet<FFRS_DataFromDboReturnModel> FFRS_DataFromDboReturnModel { get; set; } = null!;
         public List<FFRS_DataFromDboReturnModel> FFRS_DataFromDbo()
         {
             int procResult;
@@ -690,7 +690,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
             return Task.FromResult(FFRS_DataFromDbo(out procResult));
         }
 
-        public DbSet<FFRS_DataFromDboAndFfrsReturnModel> FFRS_DataFromDboAndFfrsReturnModel { get; set; }
+        public DbSet<FFRS_DataFromDboAndFfrsReturnModel> FFRS_DataFromDboAndFfrsReturnModel { get; set; } = null!;
         public List<FFRS_DataFromDboAndFfrsReturnModel> FFRS_DataFromDboAndFfrs()
         {
             int procResult;
@@ -709,7 +709,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
             return Task.FromResult(FFRS_DataFromDboAndFfrs(out procResult));
         }
 
-        public DbSet<FkTest_HelloReturnModel> FkTest_HelloReturnModel { get; set; }
+        public DbSet<FkTest_HelloReturnModel> FkTest_HelloReturnModel { get; set; } = null!;
         public List<FkTest_HelloReturnModel> FkTest_Hello()
         {
             int procResult;
@@ -728,7 +728,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
             return Task.FromResult(FkTest_Hello(out procResult));
         }
 
-        public DbSet<GetSmallDecimalTestReturnModel> GetSmallDecimalTestReturnModel { get; set; }
+        public DbSet<GetSmallDecimalTestReturnModel> GetSmallDecimalTestReturnModel { get; set; } = null!;
         public List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId = null)
         {
             int procResult;
@@ -843,7 +843,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
 
         // ProcTestDecimalOutputV3DefaultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public DbSet<SpatialTypesNoParamsReturnModel> SpatialTypesNoParamsReturnModel { get; set; }
+        public DbSet<SpatialTypesNoParamsReturnModel> SpatialTypesNoParamsReturnModel { get; set; } = null!;
         public List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams()
         {
             int procResult;
@@ -862,7 +862,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
             return Task.FromResult(SpatialTypesNoParams(out procResult));
         }
 
-        public DbSet<SpatialTypesWithParamsReturnModel> SpatialTypesWithParamsReturnModel { get; set; }
+        public DbSet<SpatialTypesWithParamsReturnModel> SpatialTypesWithParamsReturnModel { get; set; } = null!;
         public List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
         {
             int procResult;
@@ -881,7 +881,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
             return Task.FromResult(SpatialTypesWithParams(geometry, geography, out procResult));
         }
 
-        public DbSet<StoredProcWithDefaultsReturnModel> StoredProcWithDefaultsReturnModel { get; set; }
+        public DbSet<StoredProcWithDefaultsReturnModel> StoredProcWithDefaultsReturnModel { get; set; } = null!;
         public List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId, int? userIdNull, string clientName, string clientNameNull, string clientNameMaxNull, string clientDesc, string clientDescNull, decimal? decimalValue = null, decimal? decimalValueNull = null, decimal? money = null, decimal? moneyNull = null, decimal? smallMoney = null, decimal? smallMoneyNull = null, float? realValue = null, float? realValueNull = null, double? floatValue = null, double? floatValueNull = null)
         {
             int procResult;
@@ -900,7 +900,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
             return Task.FromResult(StoredProcWithDefaults(userId, userIdNull, clientName, clientNameNull, clientNameMaxNull, clientDesc, clientDescNull, decimalValue, decimalValueNull, money, moneyNull, smallMoney, smallMoneyNull, realValue, realValueNull, floatValue, floatValueNull, out procResult));
         }
 
-        public DbSet<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsReturnModel { get; set; }
+        public DbSet<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResultsReturnModel { get; set; } = null!;
         public List<StpMultipleIdenticalResultsReturnModel> StpMultipleIdenticalResults(int? someVar = null)
         {
             int procResult;
@@ -919,7 +919,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
             return Task.FromResult(StpMultipleIdenticalResults(someVar, out procResult));
         }
 
-        public DbSet<StpMultipleMultipleResultsWithParamsReturnModel> StpMultipleMultipleResultsWithParamsReturnModel { get; set; }
+        public DbSet<StpMultipleMultipleResultsWithParamsReturnModel> StpMultipleMultipleResultsWithParamsReturnModel { get; set; } = null!;
         public StpMultipleMultipleResultsWithParamsReturnModel StpMultipleMultipleResultsWithParams(int? firstVal = null, int? secondVal = null, int? thirdVal = null)
         {
             int procResult;
@@ -934,7 +934,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
 
         // StpMultipleMultipleResultsWithParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (StpMultipleMultipleResultsWithParamsReturnModel)
 
-        public DbSet<StpMultipleResultsReturnModel> StpMultipleResultsReturnModel { get; set; }
+        public DbSet<StpMultipleResultsReturnModel> StpMultipleResultsReturnModel { get; set; } = null!;
         public StpMultipleResultsReturnModel StpMultipleResults()
         {
             int procResult;
@@ -949,7 +949,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
 
         // StpMultipleResultsAsync() cannot be created due to having out parameters, or is relying on the procedure result (StpMultipleResultsReturnModel)
 
-        public DbSet<StpMultipleResultsWithParamsReturnModel> StpMultipleResultsWithParamsReturnModel { get; set; }
+        public DbSet<StpMultipleResultsWithParamsReturnModel> StpMultipleResultsWithParamsReturnModel { get; set; } = null!;
         public StpMultipleResultsWithParamsReturnModel StpMultipleResultsWithParams(int? firstVal = null, int? secondVal = null)
         {
             int procResult;
@@ -964,7 +964,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
 
         // StpMultipleResultsWithParamsAsync() cannot be created due to having out parameters, or is relying on the procedure result (StpMultipleResultsWithParamsReturnModel)
 
-        public DbSet<StpNoParamsTestReturnModel> StpNoParamsTestReturnModel { get; set; }
+        public DbSet<StpNoParamsTestReturnModel> StpNoParamsTestReturnModel { get; set; } = null!;
         public List<StpNoParamsTestReturnModel> StpNoParamsTest()
         {
             int procResult;
@@ -993,7 +993,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
             return Task.FromResult(0);
         }
 
-        public DbSet<StpNullableParamsTestReturnModel> StpNullableParamsTestReturnModel { get; set; }
+        public DbSet<StpNullableParamsTestReturnModel> StpNullableParamsTestReturnModel { get; set; } = null!;
         public List<StpNullableParamsTestReturnModel> StpNullableParamsTest(int? aVal = null, int? bVal = null)
         {
             int procResult;
@@ -1012,7 +1012,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
             return Task.FromResult(StpNullableParamsTest(aVal, bVal, out procResult));
         }
 
-        public DbSet<StpTestReturnModel> StpTestReturnModel { get; set; }
+        public DbSet<StpTestReturnModel> StpTestReturnModel { get; set; } = null!;
         public List<StpTestReturnModel> StpTest(string strDateFrom, string strDateTo, out bool? retBool)
         {
             int procResult;
@@ -1028,7 +1028,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
 
         // StpTestAsync() cannot be created due to having out parameters, or is relying on the procedure result (List<StpTestReturnModel>)
 
-        public DbSet<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTestReturnModel { get; set; }
+        public DbSet<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTestReturnModel { get; set; } = null!;
         public List<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTest(string strDateFrom, string strDateTo)
         {
             int procResult;
@@ -1067,7 +1067,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
             return Task.FromResult(0);
         }
 
-        public DbSet<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProcReturnModel { get; set; }
+        public DbSet<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProcReturnModel { get; set; } = null!;
         public List<Synonyms_SimpleStoredProcReturnModel> Synonyms_SimpleStoredProc(int? inputInt = null)
         {
             int procResult;
@@ -1086,7 +1086,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
             return Task.FromResult(Synonyms_SimpleStoredProc(inputInt, out procResult));
         }
 
-        public DbSet<TestReturnStringReturnModel> TestReturnStringReturnModel { get; set; }
+        public DbSet<TestReturnStringReturnModel> TestReturnStringReturnModel { get; set; } = null!;
         public List<TestReturnStringReturnModel> TestReturnString()
         {
             int procResult;
@@ -1124,7 +1124,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
             return Task.FromResult(0);
         }
 
-        public DbSet<XmlDataV1ReturnModel> XmlDataV1ReturnModel { get; set; }
+        public DbSet<XmlDataV1ReturnModel> XmlDataV1ReturnModel { get; set; } = null!;
         public List<XmlDataV1ReturnModel> XmlDataV1()
         {
             int procResult;

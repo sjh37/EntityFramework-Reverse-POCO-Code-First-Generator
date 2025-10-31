@@ -11,14 +11,14 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     // SorterScannerGroup
     public class SorterScannerGroup
     {
-        public string SorterName { get; set; } // SorterName (Primary key) (length: 20)
+        public string SorterName { get; set; } = null!; // SorterName (Primary key) (length: 20)
 
         // Foreign keys
 
         /// <summary>
         /// Parent Sorter pointed by [SorterScannerGroup].([SorterName]) (FK_SorterScannerGroup_Sorters)
         /// </summary>
-        public virtual Sorters Sorter { get; set; } // FK_SorterScannerGroup_Sorters
+        public virtual Sorters Sorter { get; set; } = null!; // FK_SorterScannerGroup_Sorters
     }
 
 }

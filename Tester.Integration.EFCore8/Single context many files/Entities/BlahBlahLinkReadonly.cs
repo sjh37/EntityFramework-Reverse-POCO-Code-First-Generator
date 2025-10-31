@@ -13,7 +13,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     {
         public int BlahId { get; set; } // BlahID (Primary key)
         public int BlahId2 { get; set; } // BlahID2 (Primary key)
-        public byte[] RowVersion { get; set; } // RowVersion (length: 8)
+        public byte[]? RowVersion { get; set; } // RowVersion (length: 8)
         public int Id { get; set; } // id
         public int? Id2 { get; private set; } // id2
 
@@ -22,12 +22,12 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         /// <summary>
         /// Parent Blah pointed by [BlahBlahLink_readonly].([BlahId]) (FK_BlahBlahLink_Blah_ro)
         /// </summary>
-        public virtual Blah Blah_BlahId { get; set; } // FK_BlahBlahLink_Blah_ro
+        public virtual Blah Blah_BlahId { get; set; } = null!; // FK_BlahBlahLink_Blah_ro
 
         /// <summary>
         /// Parent Blah pointed by [BlahBlahLink_readonly].([BlahId2]) (FK_BlahBlahLink_Blah_ro2)
         /// </summary>
-        public virtual Blah Blah_BlahId2 { get; set; } // FK_BlahBlahLink_Blah_ro2
+        public virtual Blah Blah_BlahId2 { get; set; } = null!; // FK_BlahBlahLink_Blah_ro2
     }
 
 }

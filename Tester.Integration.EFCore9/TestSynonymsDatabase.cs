@@ -250,11 +250,11 @@ namespace TestSynonymsDatabase9
 
     public class FakeTestDbContext : ITestDbContext
     {
-        public DbSet<CarWithDifferentSynonymName> CarWithDifferentSynonymNames { get; set; } // CarWithDifferentSynonymName
-        public DbSet<Child> Children { get; set; } // Child
-        public DbSet<Parent> Parents { get; set; } // Parent
-        public DbSet<UserInfo> UserInfoes { get; set; } // UserInfo
-        public DbSet<UserInfoAttribute> UserInfoAttributes { get; set; } // UserInfoAttributes
+        public DbSet<CarWithDifferentSynonymName> CarWithDifferentSynonymNames { get; set; } = null!; // CarWithDifferentSynonymName
+        public DbSet<Child> Children { get; set; } = null!; // Child
+        public DbSet<Parent> Parents { get; set; } = null!; // Parent
+        public DbSet<UserInfo> UserInfoes { get; set; } = null!; // UserInfo
+        public DbSet<UserInfoAttribute> UserInfoAttributes { get; set; } = null!; // UserInfoAttributes
 
         public FakeTestDbContext()
         {
@@ -464,7 +464,7 @@ namespace TestSynonymsDatabase9
 
         // Stored Procedures
 
-        public DbSet<SimpleStoredProcReturnModel> SimpleStoredProcReturnModel { get; set; }
+        public DbSet<SimpleStoredProcReturnModel> SimpleStoredProcReturnModel { get; set; } = null!;
         public List<SimpleStoredProcReturnModel> SimpleStoredProc(int? inputInt = null)
         {
             int procResult;
@@ -559,7 +559,7 @@ namespace TestSynonymsDatabase9
         {
             if (_primaryKeys == null)
                 throw new ArgumentException("No primary keys defined");
-            if (keyValues.Length != _primaryKeys.Length)
+            if (keyValues?.Length != _primaryKeys.Length)
                 throw new ArgumentException("Incorrect number of keys passed to Find method");
 
             var keyQuery = this.AsQueryable();
@@ -567,7 +567,7 @@ namespace TestSynonymsDatabase9
                 .Select((t, i) => i)
                 .Aggregate(keyQuery,
                     (current, x) =>
-                        current.Where(entity => _primaryKeys[x].GetValue(entity, null).Equals(keyValues[x])));
+                        current.Where(entity => _primaryKeys[x].GetValue(entity, null)!.Equals(keyValues[x])));
 
             return keyQuery.SingleOrDefault();
         }
@@ -585,7 +585,7 @@ namespace TestSynonymsDatabase9
         public override EntityEntry<TEntity> Add(TEntity entity)
         {
             _data.Add(entity);
-            return null;
+            return null!;
         }
 
         public override ValueTask<EntityEntry<TEntity>> AddAsync(TEntity entity, CancellationToken cancellationToken = default)
@@ -622,7 +622,7 @@ namespace TestSynonymsDatabase9
         public override EntityEntry<TEntity> Attach(TEntity entity)
         {
             if (entity == null) throw new ArgumentNullException("entity");
-            return Add(entity);
+            return Add(entity)!;
         }
 
         public override void AttachRange(params TEntity[] entities)
@@ -640,7 +640,7 @@ namespace TestSynonymsDatabase9
         public override EntityEntry<TEntity> Remove(TEntity entity)
         {
             _data.Remove(entity);
-            return null;
+            return null!;
         }
 
         public override void RemoveRange(params TEntity[] entities)
@@ -659,7 +659,7 @@ namespace TestSynonymsDatabase9
         {
             _data.Remove(entity);
             _data.Add(entity);
-            return null;
+            return null!;
         }
 
         public override void UpdateRange(params TEntity[] entities)
@@ -749,9 +749,9 @@ namespace TestSynonymsDatabase9
                 .MakeGenericMethod(expectedResultType)
                 .Invoke(this, new object[] { expression });
 
-            return (TResult) typeof(Task).GetMethod(nameof(Task.FromResult))
+            return (TResult) (typeof(Task).GetMethod(nameof(Task.FromResult))
                 ?.MakeGenericMethod(expectedResultType)
-                .Invoke(null, new[] { executionResult });
+                .Invoke(null, new[] { executionResult }))!;
         }
 
         public IAsyncEnumerator<TEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default)
@@ -816,7 +816,7 @@ namespace TestSynonymsDatabase9
 
     public abstract class FakeQueryProvider<T> : IOrderedQueryable<T>, IQueryProvider
     {
-        private IEnumerable<T> _enumerable;
+        private IEnumerable<T>? _enumerable;
 
         protected FakeQueryProvider(Expression expression)
         {
@@ -849,7 +849,7 @@ namespace TestSynonymsDatabase9
         private object CreateInstance(Type tElement, Expression expression)
         {
             var queryType = GetType().GetGenericTypeDefinition().MakeGenericType(tElement);
-            return Activator.CreateInstance(queryType, expression);
+            return Activator.CreateInstance(queryType, expression)!;
         }
 
         public object Execute(Expression expression)
@@ -884,7 +884,7 @@ namespace TestSynonymsDatabase9
         {
             var visitor = new FakeExpressionVisitor();
             var body = visitor.Visit(expression);
-            var f = Expression.Lambda<Func<TResult>>(body ?? throw new InvalidOperationException(string.Format("{0} is null", nameof(body))), (IEnumerable<ParameterExpression>) null);
+            var f = Expression.Lambda<Func<TResult>>(body ?? throw new InvalidOperationException(string.Format("{0} is null", nameof(body))), (IEnumerable<ParameterExpression>?) null);
             return f.Compile()();
         }
     }
@@ -959,7 +959,7 @@ namespace TestSynonymsDatabase9
 
         public override IExecutionStrategy CreateExecutionStrategy()
         {
-            return null;
+            return null!;
         }
 
         public override string ToString()
@@ -988,7 +988,7 @@ namespace TestSynonymsDatabase9
     {
         public int Id { get; set; } // Id (Primary key)
         public int PrimaryColourId { get; set; } // PrimaryColourId
-        public string CarMake { get; set; } // CarMake (length: 255)
+        public string CarMake { get; set; } = null!; // CarMake (length: 255)
         public int? ComputedColumn { get; private set; } // computed_column
         public int ComputedColumnPersisted { get; private set; } // computed_column_persisted
     }
@@ -998,14 +998,14 @@ namespace TestSynonymsDatabase9
     {
         public int ChildId { get; set; } // ChildId (Primary key)
         public int ParentId { get; set; } // ParentId
-        public string ChildName { get; set; } // ChildName (length: 100)
+        public string? ChildName { get; set; } // ChildName (length: 100)
 
         // Foreign keys
 
         /// <summary>
         /// Parent Parent pointed by [Child].([ParentId]) (FK_Child_Parent)
         /// </summary>
-        public virtual Parent Parent { get; set; } // FK_Child_Parent
+        public virtual Parent Parent { get; set; } = null!; // FK_Child_Parent
     }
 
     // The table 'CsvToIntWithSchema' is not usable by entity framework because it
@@ -1020,7 +1020,7 @@ namespace TestSynonymsDatabase9
     public class Parent
     {
         public int ParentId { get; set; } // ParentId (Primary key)
-        public string ParentName { get; set; } // ParentName (length: 100)
+        public string ParentName { get; set; } = null!; // ParentName (length: 100)
 
         // Reverse navigation
 
@@ -1039,7 +1039,7 @@ namespace TestSynonymsDatabase9
     public class UserInfo
     {
         public int Id { get; set; } // Id (Primary key)
-        public string Forename { get; set; } // Forename (length: 20)
+        public string? Forename { get; set; } // Forename (length: 20)
 
         // Reverse navigation
 
@@ -1072,12 +1072,12 @@ namespace TestSynonymsDatabase9
         /// <summary>
         /// Parent UserInfo pointed by [UserInfoAttributes].([PrimaryId]) (FK_UserInfoAttributes_PrimaryUserInfo)
         /// </summary>
-        public virtual UserInfo Primary { get; set; } // FK_UserInfoAttributes_PrimaryUserInfo
+        public virtual UserInfo Primary { get; set; } = null!; // FK_UserInfoAttributes_PrimaryUserInfo
 
         /// <summary>
         /// Parent UserInfo pointed by [UserInfoAttributes].([SecondaryId]) (FK_UserInfoAttributes_SecondaryUserInfo)
         /// </summary>
-        public virtual UserInfo Secondary { get; set; } // FK_UserInfoAttributes_SecondaryUserInfo
+        public virtual UserInfo Secondary { get; set; } = null!; // FK_UserInfoAttributes_SecondaryUserInfo
     }
 
 

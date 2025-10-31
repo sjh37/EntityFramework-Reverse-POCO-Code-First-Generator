@@ -19,12 +19,12 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         /// <summary>
         /// Parent CmsFile pointed by [CMS_FileTag].([FileId]) (FK_CMS_FileTag_CMS_File)
         /// </summary>
-        public virtual CmsFile CmsFile { get; set; } // FK_CMS_FileTag_CMS_File
+        public virtual CmsFile CmsFile { get; set; } = null!; // FK_CMS_FileTag_CMS_File
 
         /// <summary>
         /// Parent CmsTag pointed by [CMS_FileTag].([TagId]) (FK_CMS_FileTag_CMS_Tag)
         /// </summary>
-        public virtual CmsTag CmsTag { get; set; } // FK_CMS_FileTag_CMS_Tag
+        public virtual CmsTag CmsTag { get; set; } = null!; // FK_CMS_FileTag_CMS_Tag
     }
 
 }

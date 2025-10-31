@@ -17,13 +17,13 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         public int CodeObjectNo { get; set; } // codeObjectNo (Primary key)
         public int? ApplicationNo { get; set; } // applicationNo
         public int Type { get; set; } // type
-        public string EName { get; set; } // eName (length: 250)
-        public string AName { get; set; } // aName (length: 250)
-        public string Description { get; set; } // description (length: 250)
-        public string CodeName { get; set; } // codeName (length: 250)
-        public string Note { get; set; } // note (length: 250)
+        public string EName { get; set; } = null!; // eName (length: 250)
+        public string? AName { get; set; } // aName (length: 250)
+        public string? Description { get; set; } // description (length: 250)
+        public string? CodeName { get; set; } // codeName (length: 250)
+        public string? Note { get; set; } // note (length: 250)
         public bool IsObject { get; set; } // isObject
-        public byte[] VersionNumber { get; set; } // versionNumber (length: 8)
+        public byte[]? VersionNumber { get; set; } // versionNumber (length: 8)
 
         public CodeObject()
         {

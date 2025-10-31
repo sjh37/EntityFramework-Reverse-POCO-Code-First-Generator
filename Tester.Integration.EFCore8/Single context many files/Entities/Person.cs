@@ -12,7 +12,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     public class Person
     {
         public int Id { get; set; } // Id (Primary key)
-        public string Name { get; set; } // Name (length: 50)
+        public string Name { get; set; } = null!; // Name (length: 50)
 
         // Reverse navigation
 

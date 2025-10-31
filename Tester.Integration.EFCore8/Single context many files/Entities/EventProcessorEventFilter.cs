@@ -20,7 +20,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         /// <summary>
         /// Parent EventProcessor pointed by [EventProcessorEventFilter].([EventProcessorId]) (FK_EventProcessorEventFilter__EventProcessor)
         /// </summary>
-        public virtual EventProcessor EventProcessor { get; set; } // FK_EventProcessorEventFilter__EventProcessor
+        public virtual EventProcessor EventProcessor { get; set; } = null!; // FK_EventProcessorEventFilter__EventProcessor
     }
 
 }

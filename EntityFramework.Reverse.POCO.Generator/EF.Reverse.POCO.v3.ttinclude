@@ -845,6 +845,8 @@
         public static string TemplateFile;
         public static int FilterCount;
 
+        public static bool NeedsNullForgiving() => AllowNullStrings || NullableReverseNavigationProperties;
+
         public static void CheckSettings()
         {
             if (TemplateType == TemplateType.Ef6 ||
@@ -1252,8 +1254,8 @@
                 {
                     _notNullable = new List<string>
                     {
-                        Settings.AllowNullStrings || Settings.NullableReverseNavigationProperties ? "" : "string",
-                        Settings.AllowNullStrings || Settings.NullableReverseNavigationProperties ? "" : "byte[]",
+                        Settings.NeedsNullForgiving() ? "" : "string",
+                        Settings.NeedsNullForgiving() ? "" : "byte[]",
                         "datatable",
                         "system.data.datatable",
                         "object",
@@ -4294,7 +4296,7 @@
             if (Settings.UseResharper)
                 header.AppendLine("// ReSharper disable All");
 
-            if (Settings.AllowNullStrings || Settings.NullableReverseNavigationProperties)
+            if (Settings.NeedsNullForgiving())
                 header.AppendLine("#nullable enable");
             
             if (Settings.UsePragma)
@@ -5391,17 +5393,26 @@
                 var pkPropName             = fkTable.GetUniqueForeignKeyName(true,  pkTableHumanCase,      foreignKey, checkForFkNameClashes, true,                   relationship);
                 var fkPropName             = pkTable.GetUniqueForeignKeyName(false, fkTable.NameHumanCase, foreignKey, checkForFkNameClashes, fkMakePropNameSingular, flipRelationship);
 
+                // Determine if the foreign key navigation property needs null-forgiving operator or nullable marker
+                // If all FK columns are nullable, the navigation property should be nullable
+                var allFkColumnsAreNullable = fkCols.All(x => x.Column.IsNullable);
+                var needsNullForgiving = Settings.NeedsNullForgiving();
+                var nullableMarker = needsNullForgiving && allFkColumnsAreNullable ? "?" : string.Empty;
+                var nullForgivingOperator = needsNullForgiving && !allFkColumnsAreNullable ? " = null!;" : string.Empty;
+
                 var fkd = new PropertyAndComments
                 {
                     AdditionalDataAnnotations = filter.ForeignKeyAnnotationsProcessing(fkTable, pkTable, pkPropName, fkPropName),
                     
                     PropertyName = pkPropName,
 
-                    Definition = string.Format("public {0}{1} {2} {3}{4}", 
+                    Definition = string.Format("public {0}{1}{2} {3} {4}{5}{6}", 
                         Table.GetLazyLoadingMarker(),
                         pkTableHumanCaseWithSuffix,
+                        nullableMarker,
                         pkPropName,
                         "{ get; set; }",
+                        nullForgivingOperator,
                         Settings.IncludeComments != CommentsStyle.None ? " // " + foreignKey.ConstraintName : string.Empty),
 
                     Comments = string.Format("Parent {0} pointed by [{1}].({2}) ({3})",
@@ -17309,24 +17320,26 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             {
                 case Relationship.OneToOne:
                     var nullableMarker = Settings.NullableReverseNavigationProperties ? "?" : string.Empty;
+                    var nullForgivingOneToOne = (Settings.NeedsNullForgiving()) && !Settings.NullableReverseNavigationProperties ? " = null!" : string.Empty;
                     ReverseNavigationProperty.Add(
                         new PropertyAndComments
                         {
                             AdditionalDataAnnotations = _filter.ForeignKeyAnnotationsProcessing(fkTable, this, propName, string.Empty),
                             PropertyName = propName,
-                            Definition = string.Format("{0} {1}{2}{3} {4} {{ get; set; }}{5}", accessModifier, GetLazyLoadingMarker(), fkTable.NameHumanCaseWithSuffix(), nullableMarker, propName, Settings.IncludeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
+                            Definition = string.Format("{0} {1}{2}{3} {4} {{ get; set; }}{5}{6}", accessModifier, GetLazyLoadingMarker(), fkTable.NameHumanCaseWithSuffix(), nullableMarker, propName, nullForgivingOneToOne, Settings.IncludeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
                             Comments = string.Format("Parent (One-to-One) {0} pointed by [{1}].{2} ({3})", NameHumanCaseWithSuffix(), fkTable.DbName, fkNames, fks.First().ConstraintName)
                         }
                     );
                     break;
 
                 case Relationship.OneToMany:
+                    var nullForgivingOneToMany = (Settings.NeedsNullForgiving()) ? " = null!" : string.Empty;
                     ReverseNavigationProperty.Add(
                         new PropertyAndComments
                         {
                             AdditionalDataAnnotations = _filter.ForeignKeyAnnotationsProcessing(fkTable, this, propName, string.Empty),
                             PropertyName = propName,
-                            Definition = string.Format("{0} {1}{2} {3} {{ get; set; }}{4}", accessModifier, GetLazyLoadingMarker(), fkTable.NameHumanCaseWithSuffix(), propName, Settings.IncludeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
+                            Definition = string.Format("{0} {1}{2} {3} {{ get; set; }}{4}{5}", accessModifier, GetLazyLoadingMarker(), fkTable.NameHumanCaseWithSuffix(), propName, nullForgivingOneToMany, Settings.IncludeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
                             Comments = string.Format("Parent {0} pointed by [{1}].{2} ({3})", NameHumanCaseWithSuffix(), fkTable.DbName, fkNames, fks.First().ConstraintName)
                         }
                     );
@@ -19723,7 +19736,7 @@ using {{this}};{{#newline}}
 {{{#newline}}
 
 {{#each tables}}
-    {{DbSetModifier}} DbSet<{{DbSetName}}> {{PluralTableName}} { get; set; }{{Comment}}{{#newline}}
+    {{DbSetModifier}} DbSet<{{DbSetName}}> {{PluralTableName}} { get; set; } = null!;{{Comment}}{{#newline}}
 {{/each}}
 {{#newline}}
 
@@ -19951,7 +19964,7 @@ using {{this}};{{#newline}}
 {{#if HasReturnModels}}
 {{#newline}}
 {{#if CreateDbSetForReturnModel}}
-    public DbSet<{{ReturnModelName}}> {{ReturnModelName}} { get; set; }{{#newline}}
+    public DbSet<{{ReturnModelName}}> {{ReturnModelName}} { get; set; } = null!;{{#newline}}
 {{/if}}
     public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
     {{{#newline}}

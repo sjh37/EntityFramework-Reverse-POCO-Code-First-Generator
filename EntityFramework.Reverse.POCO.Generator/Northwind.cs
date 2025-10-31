@@ -555,35 +555,35 @@ namespace EntityFramework_Reverse_POCO_Generator
 
     public class FakeMyDbContext : IMyDbContext
     {
-        public DbSet<AlphabeticalListOfProduct> AlphabeticalListOfProducts { get; set; } // Alphabetical list of products
-        public DbSet<Category> Categories { get; set; } // Categories
-        public DbSet<CategorySalesFor1997> CategorySalesFor1997 { get; set; } // Category Sales for 1997
-        public DbSet<CurrentProductList> CurrentProductLists { get; set; } // Current Product List
-        public DbSet<Customer> Customers { get; set; } // Customers
-        public DbSet<CustomerAndSuppliersByCity> CustomerAndSuppliersByCities { get; set; } // Customer and Suppliers by City
-        public DbSet<CustomerCustomerDemo> CustomerCustomerDemoes { get; set; } // CustomerCustomerDemo
-        public DbSet<CustomerDemographic> CustomerDemographics { get; set; } // CustomerDemographics
-        public DbSet<Employee> Employees { get; set; } // Employees
-        public DbSet<EmployeeTerritory> EmployeeTerritories { get; set; } // EmployeeTerritories
-        public DbSet<Invoice> Invoices { get; set; } // Invoices
-        public DbSet<Order> Orders { get; set; } // Orders
-        public DbSet<OrderDetail> OrderDetails { get; set; } // Order Details
-        public DbSet<OrderDetailsExtended> OrderDetailsExtendeds { get; set; } // Order Details Extended
-        public DbSet<OrdersQry> OrdersQries { get; set; } // Orders Qry
-        public DbSet<OrderSubtotal> OrderSubtotals { get; set; } // Order Subtotals
-        public DbSet<Product> Products { get; set; } // Products
-        public DbSet<ProductsAboveAveragePrice> ProductsAboveAveragePrices { get; set; } // Products Above Average Price
-        public DbSet<ProductSalesFor1997> ProductSalesFor1997 { get; set; } // Product Sales for 1997
-        public DbSet<ProductsByCategory> ProductsByCategories { get; set; } // Products by Category
-        public DbSet<QuarterlyOrder> QuarterlyOrders { get; set; } // Quarterly Orders
-        public DbSet<Region> Regions { get; set; } // Region
-        public DbSet<SalesByCategory> SalesByCategories { get; set; } // Sales by Category
-        public DbSet<SalesTotalsByAmount> SalesTotalsByAmounts { get; set; } // Sales Totals by Amount
-        public DbSet<Shipper> Shippers { get; set; } // Shippers
-        public DbSet<SummaryOfSalesByQuarter> SummaryOfSalesByQuarters { get; set; } // Summary of Sales by Quarter
-        public DbSet<SummaryOfSalesByYear> SummaryOfSalesByYears { get; set; } // Summary of Sales by Year
-        public DbSet<Supplier> Suppliers { get; set; } // Suppliers
-        public DbSet<Territory> Territories { get; set; } // Territories
+        public DbSet<AlphabeticalListOfProduct> AlphabeticalListOfProducts { get; set; } = null!; // Alphabetical list of products
+        public DbSet<Category> Categories { get; set; } = null!; // Categories
+        public DbSet<CategorySalesFor1997> CategorySalesFor1997 { get; set; } = null!; // Category Sales for 1997
+        public DbSet<CurrentProductList> CurrentProductLists { get; set; } = null!; // Current Product List
+        public DbSet<Customer> Customers { get; set; } = null!; // Customers
+        public DbSet<CustomerAndSuppliersByCity> CustomerAndSuppliersByCities { get; set; } = null!; // Customer and Suppliers by City
+        public DbSet<CustomerCustomerDemo> CustomerCustomerDemoes { get; set; } = null!; // CustomerCustomerDemo
+        public DbSet<CustomerDemographic> CustomerDemographics { get; set; } = null!; // CustomerDemographics
+        public DbSet<Employee> Employees { get; set; } = null!; // Employees
+        public DbSet<EmployeeTerritory> EmployeeTerritories { get; set; } = null!; // EmployeeTerritories
+        public DbSet<Invoice> Invoices { get; set; } = null!; // Invoices
+        public DbSet<Order> Orders { get; set; } = null!; // Orders
+        public DbSet<OrderDetail> OrderDetails { get; set; } = null!; // Order Details
+        public DbSet<OrderDetailsExtended> OrderDetailsExtendeds { get; set; } = null!; // Order Details Extended
+        public DbSet<OrdersQry> OrdersQries { get; set; } = null!; // Orders Qry
+        public DbSet<OrderSubtotal> OrderSubtotals { get; set; } = null!; // Order Subtotals
+        public DbSet<Product> Products { get; set; } = null!; // Products
+        public DbSet<ProductsAboveAveragePrice> ProductsAboveAveragePrices { get; set; } = null!; // Products Above Average Price
+        public DbSet<ProductSalesFor1997> ProductSalesFor1997 { get; set; } = null!; // Product Sales for 1997
+        public DbSet<ProductsByCategory> ProductsByCategories { get; set; } = null!; // Products by Category
+        public DbSet<QuarterlyOrder> QuarterlyOrders { get; set; } = null!; // Quarterly Orders
+        public DbSet<Region> Regions { get; set; } = null!; // Region
+        public DbSet<SalesByCategory> SalesByCategories { get; set; } = null!; // Sales by Category
+        public DbSet<SalesTotalsByAmount> SalesTotalsByAmounts { get; set; } = null!; // Sales Totals by Amount
+        public DbSet<Shipper> Shippers { get; set; } = null!; // Shippers
+        public DbSet<SummaryOfSalesByQuarter> SummaryOfSalesByQuarters { get; set; } = null!; // Summary of Sales by Quarter
+        public DbSet<SummaryOfSalesByYear> SummaryOfSalesByYears { get; set; } = null!; // Summary of Sales by Year
+        public DbSet<Supplier> Suppliers { get; set; } = null!; // Suppliers
+        public DbSet<Territory> Territories { get; set; } = null!; // Territories
 
         public FakeMyDbContext()
         {
@@ -817,7 +817,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         // Stored Procedures
 
-        public DbSet<CustOrderHistReturnModel> CustOrderHistReturnModel { get; set; }
+        public DbSet<CustOrderHistReturnModel> CustOrderHistReturnModel { get; set; } = null!;
         public List<CustOrderHistReturnModel> CustOrderHist(string customerId)
         {
             int procResult;
@@ -836,7 +836,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             return Task.FromResult(CustOrderHist(customerId, out procResult));
         }
 
-        public DbSet<CustOrdersDetailReturnModel> CustOrdersDetailReturnModel { get; set; }
+        public DbSet<CustOrdersDetailReturnModel> CustOrdersDetailReturnModel { get; set; } = null!;
         public List<CustOrdersDetailReturnModel> CustOrdersDetail(int? orderId = null)
         {
             int procResult;
@@ -855,7 +855,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             return Task.FromResult(CustOrdersDetail(orderId, out procResult));
         }
 
-        public DbSet<CustOrdersOrdersReturnModel> CustOrdersOrdersReturnModel { get; set; }
+        public DbSet<CustOrdersOrdersReturnModel> CustOrdersOrdersReturnModel { get; set; } = null!;
         public List<CustOrdersOrdersReturnModel> CustOrdersOrders(string customerId)
         {
             int procResult;
@@ -874,7 +874,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             return Task.FromResult(CustOrdersOrders(customerId, out procResult));
         }
 
-        public DbSet<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountryReturnModel { get; set; }
+        public DbSet<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountryReturnModel { get; set; } = null!;
         public List<EmployeeSalesByCountryReturnModel> EmployeeSalesByCountry(DateTime? beginningDate = null, DateTime? endingDate = null)
         {
             int procResult;
@@ -893,7 +893,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             return Task.FromResult(EmployeeSalesByCountry(beginningDate, endingDate, out procResult));
         }
 
-        public DbSet<SalesByCategoryReturnModel> SalesByCategoryReturnModel { get; set; }
+        public DbSet<SalesByCategoryReturnModel> SalesByCategoryReturnModel { get; set; } = null!;
         public List<SalesByCategoryReturnModel> SalesByCategory(string categoryName, string ordYear)
         {
             int procResult;
@@ -912,7 +912,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             return Task.FromResult(SalesByCategory(categoryName, ordYear, out procResult));
         }
 
-        public DbSet<SalesByYearReturnModel> SalesByYearReturnModel { get; set; }
+        public DbSet<SalesByYearReturnModel> SalesByYearReturnModel { get; set; } = null!;
         public List<SalesByYearReturnModel> SalesByYear(DateTime? beginningDate = null, DateTime? endingDate = null)
         {
             int procResult;
@@ -931,7 +931,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             return Task.FromResult(SalesByYear(beginningDate, endingDate, out procResult));
         }
 
-        public DbSet<TenMostExpensiveProductsReturnModel> TenMostExpensiveProductsReturnModel { get; set; }
+        public DbSet<TenMostExpensiveProductsReturnModel> TenMostExpensiveProductsReturnModel { get; set; } = null!;
         public List<TenMostExpensiveProductsReturnModel> TenMostExpensiveProducts()
         {
             int procResult;
@@ -1012,7 +1012,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         {
             if (_primaryKeys == null)
                 throw new ArgumentException("No primary keys defined");
-            if (keyValues.Length != _primaryKeys.Length)
+            if (keyValues?.Length != _primaryKeys.Length)
                 throw new ArgumentException("Incorrect number of keys passed to Find method");
 
             var keyQuery = this.AsQueryable();
@@ -1020,7 +1020,7 @@ namespace EntityFramework_Reverse_POCO_Generator
                 .Select((t, i) => i)
                 .Aggregate(keyQuery,
                     (current, x) =>
-                        current.Where(entity => _primaryKeys[x].GetValue(entity, null).Equals(keyValues[x])));
+                        current.Where(entity => _primaryKeys[x].GetValue(entity, null)!.Equals(keyValues[x])));
 
             return keyQuery.SingleOrDefault();
         }
@@ -1038,7 +1038,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public override EntityEntry<TEntity> Add(TEntity entity)
         {
             _data.Add(entity);
-            return null;
+            return null!;
         }
 
         public override ValueTask<EntityEntry<TEntity>> AddAsync(TEntity entity, CancellationToken cancellationToken = default)
@@ -1075,7 +1075,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public override EntityEntry<TEntity> Attach(TEntity entity)
         {
             if (entity == null) throw new ArgumentNullException("entity");
-            return Add(entity);
+            return Add(entity)!;
         }
 
         public override void AttachRange(params TEntity[] entities)
@@ -1093,7 +1093,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         public override EntityEntry<TEntity> Remove(TEntity entity)
         {
             _data.Remove(entity);
-            return null;
+            return null!;
         }
 
         public override void RemoveRange(params TEntity[] entities)
@@ -1112,7 +1112,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         {
             _data.Remove(entity);
             _data.Add(entity);
-            return null;
+            return null!;
         }
 
         public override void UpdateRange(params TEntity[] entities)
@@ -1202,9 +1202,9 @@ namespace EntityFramework_Reverse_POCO_Generator
                 .MakeGenericMethod(expectedResultType)
                 .Invoke(this, new object[] { expression });
 
-            return (TResult) typeof(Task).GetMethod(nameof(Task.FromResult))
+            return (TResult) (typeof(Task).GetMethod(nameof(Task.FromResult))
                 ?.MakeGenericMethod(expectedResultType)
-                .Invoke(null, new[] { executionResult });
+                .Invoke(null, new[] { executionResult }))!;
         }
 
         public IAsyncEnumerator<TEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default)
@@ -1269,7 +1269,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
     public abstract class FakeQueryProvider<T> : IOrderedQueryable<T>, IQueryProvider
     {
-        private IEnumerable<T> _enumerable;
+        private IEnumerable<T>? _enumerable;
 
         protected FakeQueryProvider(Expression expression)
         {
@@ -1302,7 +1302,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         private object CreateInstance(Type tElement, Expression expression)
         {
             var queryType = GetType().GetGenericTypeDefinition().MakeGenericType(tElement);
-            return Activator.CreateInstance(queryType, expression);
+            return Activator.CreateInstance(queryType, expression)!;
         }
 
         public object Execute(Expression expression)
@@ -1337,7 +1337,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         {
             var visitor = new FakeExpressionVisitor();
             var body = visitor.Visit(expression);
-            var f = Expression.Lambda<Func<TResult>>(body ?? throw new InvalidOperationException(string.Format("{0} is null", nameof(body))), (IEnumerable<ParameterExpression>) null);
+            var f = Expression.Lambda<Func<TResult>>(body ?? throw new InvalidOperationException(string.Format("{0} is null", nameof(body))), (IEnumerable<ParameterExpression>?) null);
             return f.Compile()();
         }
     }
@@ -1412,7 +1412,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public override IExecutionStrategy CreateExecutionStrategy()
         {
-            return null;
+            return null!;
         }
 
         public override string ToString()
@@ -1440,25 +1440,25 @@ namespace EntityFramework_Reverse_POCO_Generator
     public class AlphabeticalListOfProduct
     {
         public int ProductId { get; set; } // ProductID
-        public string ProductName { get; set; } // ProductName (length: 40)
+        public string ProductName { get; set; } = null!; // ProductName (length: 40)
         public int? SupplierId { get; set; } // SupplierID
         public int? CategoryId { get; set; } // CategoryID
-        public string QuantityPerUnit { get; set; } // QuantityPerUnit (length: 20)
+        public string? QuantityPerUnit { get; set; } // QuantityPerUnit (length: 20)
         public decimal? UnitPrice { get; set; } // UnitPrice
         public short? UnitsInStock { get; set; } // UnitsInStock
         public short? UnitsOnOrder { get; set; } // UnitsOnOrder
         public short? ReorderLevel { get; set; } // ReorderLevel
         public bool Discontinued { get; set; } // Discontinued
-        public string CategoryName { get; set; } // CategoryName (length: 15)
+        public string CategoryName { get; set; } = null!; // CategoryName (length: 15)
     }
 
     // Categories
     public class Category
     {
         public int CategoryId { get; set; } // CategoryID (Primary key)
-        public string CategoryName { get; set; } // CategoryName (length: 15)
-        public string Description { get; set; } // Description (length: 1073741823)
-        public byte[] Picture { get; set; } // Picture (length: 2147483647)
+        public string CategoryName { get; set; } = null!; // CategoryName (length: 15)
+        public string? Description { get; set; } // Description (length: 1073741823)
+        public byte[]? Picture { get; set; } // Picture (length: 2147483647)
 
         // Reverse navigation
 
@@ -1476,7 +1476,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Category Sales for 1997
     public class CategorySalesFor1997
     {
-        public string CategoryName { get; set; } // CategoryName (length: 15)
+        public string CategoryName { get; set; } = null!; // CategoryName (length: 15)
         public decimal? CategorySales { get; set; } // CategorySales
     }
 
@@ -1484,23 +1484,23 @@ namespace EntityFramework_Reverse_POCO_Generator
     public class CurrentProductList
     {
         public int ProductId { get; set; } // ProductID
-        public string ProductName { get; set; } // ProductName (length: 40)
+        public string ProductName { get; set; } = null!; // ProductName (length: 40)
     }
 
     // Customers
     public class Customer
     {
-        public string CustomerId { get; set; } // CustomerID (Primary key) (length: 5)
-        public string CompanyName { get; set; } // CompanyName (length: 40)
-        public string ContactName { get; set; } // ContactName (length: 30)
-        public string ContactTitle { get; set; } // ContactTitle (length: 30)
-        public string Address { get; set; } // Address (length: 60)
-        public string City { get; set; } // City (length: 15)
-        public string Region { get; set; } // Region (length: 15)
-        public string PostalCode { get; set; } // PostalCode (length: 10)
-        public string Country { get; set; } // Country (length: 15)
-        public string Phone { get; set; } // Phone (length: 24)
-        public string Fax { get; set; } // Fax (length: 24)
+        public string CustomerId { get; set; } = null!; // CustomerID (Primary key) (length: 5)
+        public string CompanyName { get; set; } = null!; // CompanyName (length: 40)
+        public string? ContactName { get; set; } // ContactName (length: 30)
+        public string? ContactTitle { get; set; } // ContactTitle (length: 30)
+        public string? Address { get; set; } // Address (length: 60)
+        public string? City { get; set; } // City (length: 15)
+        public string? Region { get; set; } // Region (length: 15)
+        public string? PostalCode { get; set; } // PostalCode (length: 10)
+        public string? Country { get; set; } // Country (length: 15)
+        public string? Phone { get; set; } // Phone (length: 24)
+        public string? Fax { get; set; } // Fax (length: 24)
 
         // Reverse navigation
 
@@ -1524,36 +1524,36 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Customer and Suppliers by City
     public class CustomerAndSuppliersByCity
     {
-        public string City { get; set; } // City (length: 15)
-        public string CompanyName { get; set; } // CompanyName (length: 40)
-        public string ContactName { get; set; } // ContactName (length: 30)
-        public string Relationship { get; set; } // Relationship (length: 9)
+        public string? City { get; set; } // City (length: 15)
+        public string CompanyName { get; set; } = null!; // CompanyName (length: 40)
+        public string? ContactName { get; set; } // ContactName (length: 30)
+        public string Relationship { get; set; } = null!; // Relationship (length: 9)
     }
 
     // CustomerCustomerDemo
     public class CustomerCustomerDemo
     {
-        public string CustomerId { get; set; } // CustomerID (Primary key) (length: 5)
-        public string CustomerTypeId { get; set; } // CustomerTypeID (Primary key) (length: 10)
+        public string CustomerId { get; set; } = null!; // CustomerID (Primary key) (length: 5)
+        public string CustomerTypeId { get; set; } = null!; // CustomerTypeID (Primary key) (length: 10)
 
         // Foreign keys
 
         /// <summary>
         /// Parent Customer pointed by [CustomerCustomerDemo].([CustomerId]) (FK_CustomerCustomerDemo_Customers)
         /// </summary>
-        public Customer Customer { get; set; } // FK_CustomerCustomerDemo_Customers
+        public Customer Customer { get; set; } = null!; // FK_CustomerCustomerDemo_Customers
 
         /// <summary>
         /// Parent CustomerDemographic pointed by [CustomerCustomerDemo].([CustomerTypeId]) (FK_CustomerCustomerDemo)
         /// </summary>
-        public CustomerDemographic CustomerDemographic { get; set; } // FK_CustomerCustomerDemo
+        public CustomerDemographic CustomerDemographic { get; set; } = null!; // FK_CustomerCustomerDemo
     }
 
     // CustomerDemographics
     public class CustomerDemographic
     {
-        public string CustomerTypeId { get; set; } // CustomerTypeID (Primary key) (length: 10)
-        public string CustomerDesc { get; set; } // CustomerDesc (length: 1073741823)
+        public string CustomerTypeId { get; set; } = null!; // CustomerTypeID (Primary key) (length: 10)
+        public string? CustomerDesc { get; set; } // CustomerDesc (length: 1073741823)
 
         // Reverse navigation
 
@@ -1572,23 +1572,23 @@ namespace EntityFramework_Reverse_POCO_Generator
     public class Employee
     {
         public int EmployeeId { get; set; } // EmployeeID (Primary key)
-        public string LastName { get; set; } // LastName (length: 20)
-        public string FirstName { get; set; } // FirstName (length: 10)
-        public string Title { get; set; } // Title (length: 30)
-        public string TitleOfCourtesy { get; set; } // TitleOfCourtesy (length: 25)
+        public string LastName { get; set; } = null!; // LastName (length: 20)
+        public string FirstName { get; set; } = null!; // FirstName (length: 10)
+        public string? Title { get; set; } // Title (length: 30)
+        public string? TitleOfCourtesy { get; set; } // TitleOfCourtesy (length: 25)
         public DateTime? BirthDate { get; set; } // BirthDate
         public DateTime? HireDate { get; set; } // HireDate
-        public string Address { get; set; } // Address (length: 60)
-        public string City { get; set; } // City (length: 15)
-        public string Region { get; set; } // Region (length: 15)
-        public string PostalCode { get; set; } // PostalCode (length: 10)
-        public string Country { get; set; } // Country (length: 15)
-        public string HomePhone { get; set; } // HomePhone (length: 24)
-        public string Extension { get; set; } // Extension (length: 4)
-        public byte[] Photo { get; set; } // Photo (length: 2147483647)
-        public string Notes { get; set; } // Notes (length: 1073741823)
+        public string? Address { get; set; } // Address (length: 60)
+        public string? City { get; set; } // City (length: 15)
+        public string? Region { get; set; } // Region (length: 15)
+        public string? PostalCode { get; set; } // PostalCode (length: 10)
+        public string? Country { get; set; } // Country (length: 15)
+        public string? HomePhone { get; set; } // HomePhone (length: 24)
+        public string? Extension { get; set; } // Extension (length: 4)
+        public byte[]? Photo { get; set; } // Photo (length: 2147483647)
+        public string? Notes { get; set; } // Notes (length: 1073741823)
         public int? ReportsTo { get; set; } // ReportsTo
-        public string PhotoPath { get; set; } // PhotoPath (length: 255)
+        public string? PhotoPath { get; set; } // PhotoPath (length: 255)
 
         // Reverse navigation
 
@@ -1612,7 +1612,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         /// <summary>
         /// Parent Employee pointed by [Employees].([ReportsTo]) (FK_Employees_Employees)
         /// </summary>
-        public Employee Employee_ReportsTo { get; set; } // FK_Employees_Employees
+        public Employee? Employee_ReportsTo { get; set; } // FK_Employees_Employees
 
         public Employee()
         {
@@ -1626,45 +1626,45 @@ namespace EntityFramework_Reverse_POCO_Generator
     public class EmployeeTerritory
     {
         public int EmployeeId { get; set; } // EmployeeID (Primary key)
-        public string TerritoryId { get; set; } // TerritoryID (Primary key) (length: 20)
+        public string TerritoryId { get; set; } = null!; // TerritoryID (Primary key) (length: 20)
 
         // Foreign keys
 
         /// <summary>
         /// Parent Employee pointed by [EmployeeTerritories].([EmployeeId]) (FK_EmployeeTerritories_Employees)
         /// </summary>
-        public Employee Employee { get; set; } // FK_EmployeeTerritories_Employees
+        public Employee Employee { get; set; } = null!; // FK_EmployeeTerritories_Employees
 
         /// <summary>
         /// Parent Territory pointed by [EmployeeTerritories].([TerritoryId]) (FK_EmployeeTerritories_Territories)
         /// </summary>
-        public Territory Territory { get; set; } // FK_EmployeeTerritories_Territories
+        public Territory Territory { get; set; } = null!; // FK_EmployeeTerritories_Territories
     }
 
     // Invoices
     public class Invoice
     {
-        public string ShipName { get; set; } // ShipName (length: 40)
-        public string ShipAddress { get; set; } // ShipAddress (length: 60)
-        public string ShipCity { get; set; } // ShipCity (length: 15)
-        public string ShipRegion { get; set; } // ShipRegion (length: 15)
-        public string ShipPostalCode { get; set; } // ShipPostalCode (length: 10)
-        public string ShipCountry { get; set; } // ShipCountry (length: 15)
-        public string CustomerId { get; set; } // CustomerID (length: 5)
-        public string CustomerName { get; set; } // CustomerName (length: 40)
-        public string Address { get; set; } // Address (length: 60)
-        public string City { get; set; } // City (length: 15)
-        public string Region { get; set; } // Region (length: 15)
-        public string PostalCode { get; set; } // PostalCode (length: 10)
-        public string Country { get; set; } // Country (length: 15)
-        public string Salesperson { get; set; } // Salesperson (length: 31)
+        public string? ShipName { get; set; } // ShipName (length: 40)
+        public string? ShipAddress { get; set; } // ShipAddress (length: 60)
+        public string? ShipCity { get; set; } // ShipCity (length: 15)
+        public string? ShipRegion { get; set; } // ShipRegion (length: 15)
+        public string? ShipPostalCode { get; set; } // ShipPostalCode (length: 10)
+        public string? ShipCountry { get; set; } // ShipCountry (length: 15)
+        public string? CustomerId { get; set; } // CustomerID (length: 5)
+        public string CustomerName { get; set; } = null!; // CustomerName (length: 40)
+        public string? Address { get; set; } // Address (length: 60)
+        public string? City { get; set; } // City (length: 15)
+        public string? Region { get; set; } // Region (length: 15)
+        public string? PostalCode { get; set; } // PostalCode (length: 10)
+        public string? Country { get; set; } // Country (length: 15)
+        public string Salesperson { get; set; } = null!; // Salesperson (length: 31)
         public int OrderId { get; set; } // OrderID
         public DateTime? OrderDate { get; set; } // OrderDate
         public DateTime? RequiredDate { get; set; } // RequiredDate
         public DateTime? ShippedDate { get; set; } // ShippedDate
-        public string ShipperName { get; set; } // ShipperName (length: 40)
+        public string ShipperName { get; set; } = null!; // ShipperName (length: 40)
         public int ProductId { get; set; } // ProductID
-        public string ProductName { get; set; } // ProductName (length: 40)
+        public string ProductName { get; set; } = null!; // ProductName (length: 40)
         public decimal UnitPrice { get; set; } // UnitPrice
         public short Quantity { get; set; } // Quantity
         public float Discount { get; set; } // Discount
@@ -1676,19 +1676,19 @@ namespace EntityFramework_Reverse_POCO_Generator
     public class Order
     {
         public int OrderId { get; set; } // OrderID (Primary key)
-        public string CustomerId { get; set; } // CustomerID (length: 5)
+        public string? CustomerId { get; set; } // CustomerID (length: 5)
         public int? EmployeeId { get; set; } // EmployeeID
         public DateTime? OrderDate { get; set; } // OrderDate
         public DateTime? RequiredDate { get; set; } // RequiredDate
         public DateTime? ShippedDate { get; set; } // ShippedDate
         public int? ShipVia { get; set; } // ShipVia
         public decimal? Freight { get; set; } // Freight
-        public string ShipName { get; set; } // ShipName (length: 40)
-        public string ShipAddress { get; set; } // ShipAddress (length: 60)
-        public string ShipCity { get; set; } // ShipCity (length: 15)
-        public string ShipRegion { get; set; } // ShipRegion (length: 15)
-        public string ShipPostalCode { get; set; } // ShipPostalCode (length: 10)
-        public string ShipCountry { get; set; } // ShipCountry (length: 15)
+        public string? ShipName { get; set; } // ShipName (length: 40)
+        public string? ShipAddress { get; set; } // ShipAddress (length: 60)
+        public string? ShipCity { get; set; } // ShipCity (length: 15)
+        public string? ShipRegion { get; set; } // ShipRegion (length: 15)
+        public string? ShipPostalCode { get; set; } // ShipPostalCode (length: 10)
+        public string? ShipCountry { get; set; } // ShipCountry (length: 15)
 
         // Reverse navigation
 
@@ -1702,17 +1702,17 @@ namespace EntityFramework_Reverse_POCO_Generator
         /// <summary>
         /// Parent Customer pointed by [Orders].([CustomerId]) (FK_Orders_Customers)
         /// </summary>
-        public Customer Customer { get; set; } // FK_Orders_Customers
+        public Customer? Customer { get; set; } // FK_Orders_Customers
 
         /// <summary>
         /// Parent Employee pointed by [Orders].([EmployeeId]) (FK_Orders_Employees)
         /// </summary>
-        public Employee Employee { get; set; } // FK_Orders_Employees
+        public Employee? Employee { get; set; } // FK_Orders_Employees
 
         /// <summary>
         /// Parent Shipper pointed by [Orders].([ShipVia]) (FK_Orders_Shippers)
         /// </summary>
-        public Shipper Shipper { get; set; } // FK_Orders_Shippers
+        public Shipper? Shipper { get; set; } // FK_Orders_Shippers
 
         public Order()
         {
@@ -1735,12 +1735,12 @@ namespace EntityFramework_Reverse_POCO_Generator
         /// <summary>
         /// Parent Order pointed by [Order Details].([OrderId]) (FK_Order_Details_Orders)
         /// </summary>
-        public Order Order { get; set; } // FK_Order_Details_Orders
+        public Order Order { get; set; } = null!; // FK_Order_Details_Orders
 
         /// <summary>
         /// Parent Product pointed by [Order Details].([ProductId]) (FK_Order_Details_Products)
         /// </summary>
-        public Product Product { get; set; } // FK_Order_Details_Products
+        public Product Product { get; set; } = null!; // FK_Order_Details_Products
 
         public OrderDetail()
         {
@@ -1755,7 +1755,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     {
         public int OrderId { get; set; } // OrderID
         public int ProductId { get; set; } // ProductID
-        public string ProductName { get; set; } // ProductName (length: 40)
+        public string ProductName { get; set; } = null!; // ProductName (length: 40)
         public decimal UnitPrice { get; set; } // UnitPrice
         public short Quantity { get; set; } // Quantity
         public float Discount { get; set; } // Discount
@@ -1766,25 +1766,25 @@ namespace EntityFramework_Reverse_POCO_Generator
     public class OrdersQry
     {
         public int OrderId { get; set; } // OrderID
-        public string CustomerId { get; set; } // CustomerID (length: 5)
+        public string? CustomerId { get; set; } // CustomerID (length: 5)
         public int? EmployeeId { get; set; } // EmployeeID
         public DateTime? OrderDate { get; set; } // OrderDate
         public DateTime? RequiredDate { get; set; } // RequiredDate
         public DateTime? ShippedDate { get; set; } // ShippedDate
         public int? ShipVia { get; set; } // ShipVia
         public decimal? Freight { get; set; } // Freight
-        public string ShipName { get; set; } // ShipName (length: 40)
-        public string ShipAddress { get; set; } // ShipAddress (length: 60)
-        public string ShipCity { get; set; } // ShipCity (length: 15)
-        public string ShipRegion { get; set; } // ShipRegion (length: 15)
-        public string ShipPostalCode { get; set; } // ShipPostalCode (length: 10)
-        public string ShipCountry { get; set; } // ShipCountry (length: 15)
-        public string CompanyName { get; set; } // CompanyName (length: 40)
-        public string Address { get; set; } // Address (length: 60)
-        public string City { get; set; } // City (length: 15)
-        public string Region { get; set; } // Region (length: 15)
-        public string PostalCode { get; set; } // PostalCode (length: 10)
-        public string Country { get; set; } // Country (length: 15)
+        public string? ShipName { get; set; } // ShipName (length: 40)
+        public string? ShipAddress { get; set; } // ShipAddress (length: 60)
+        public string? ShipCity { get; set; } // ShipCity (length: 15)
+        public string? ShipRegion { get; set; } // ShipRegion (length: 15)
+        public string? ShipPostalCode { get; set; } // ShipPostalCode (length: 10)
+        public string? ShipCountry { get; set; } // ShipCountry (length: 15)
+        public string CompanyName { get; set; } = null!; // CompanyName (length: 40)
+        public string? Address { get; set; } // Address (length: 60)
+        public string? City { get; set; } // City (length: 15)
+        public string? Region { get; set; } // Region (length: 15)
+        public string? PostalCode { get; set; } // PostalCode (length: 10)
+        public string? Country { get; set; } // Country (length: 15)
     }
 
     // Order Subtotals
@@ -1798,10 +1798,10 @@ namespace EntityFramework_Reverse_POCO_Generator
     public class Product
     {
         public int ProductId { get; set; } // ProductID (Primary key)
-        public string ProductName { get; set; } // ProductName (length: 40)
+        public string ProductName { get; set; } = null!; // ProductName (length: 40)
         public int? SupplierId { get; set; } // SupplierID
         public int? CategoryId { get; set; } // CategoryID
-        public string QuantityPerUnit { get; set; } // QuantityPerUnit (length: 20)
+        public string? QuantityPerUnit { get; set; } // QuantityPerUnit (length: 20)
         public decimal? UnitPrice { get; set; } // UnitPrice
         public short? UnitsInStock { get; set; } // UnitsInStock
         public short? UnitsOnOrder { get; set; } // UnitsOnOrder
@@ -1820,12 +1820,12 @@ namespace EntityFramework_Reverse_POCO_Generator
         /// <summary>
         /// Parent Category pointed by [Products].([CategoryId]) (FK_Products_Categories)
         /// </summary>
-        public Category Category { get; set; } // FK_Products_Categories
+        public Category? Category { get; set; } // FK_Products_Categories
 
         /// <summary>
         /// Parent Supplier pointed by [Products].([SupplierId]) (FK_Products_Suppliers)
         /// </summary>
-        public Supplier Supplier { get; set; } // FK_Products_Suppliers
+        public Supplier? Supplier { get; set; } // FK_Products_Suppliers
 
         public Product()
         {
@@ -1841,24 +1841,24 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Products Above Average Price
     public class ProductsAboveAveragePrice
     {
-        public string ProductName { get; set; } // ProductName (length: 40)
+        public string ProductName { get; set; } = null!; // ProductName (length: 40)
         public decimal? UnitPrice { get; set; } // UnitPrice
     }
 
     // Product Sales for 1997
     public class ProductSalesFor1997
     {
-        public string CategoryName { get; set; } // CategoryName (length: 15)
-        public string ProductName { get; set; } // ProductName (length: 40)
+        public string CategoryName { get; set; } = null!; // CategoryName (length: 15)
+        public string ProductName { get; set; } = null!; // ProductName (length: 40)
         public decimal? ProductSales { get; set; } // ProductSales
     }
 
     // Products by Category
     public class ProductsByCategory
     {
-        public string CategoryName { get; set; } // CategoryName (length: 15)
-        public string ProductName { get; set; } // ProductName (length: 40)
-        public string QuantityPerUnit { get; set; } // QuantityPerUnit (length: 20)
+        public string CategoryName { get; set; } = null!; // CategoryName (length: 15)
+        public string ProductName { get; set; } = null!; // ProductName (length: 40)
+        public string? QuantityPerUnit { get; set; } // QuantityPerUnit (length: 20)
         public short? UnitsInStock { get; set; } // UnitsInStock
         public bool Discontinued { get; set; } // Discontinued
     }
@@ -1866,17 +1866,17 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Quarterly Orders
     public class QuarterlyOrder
     {
-        public string CustomerId { get; set; } // CustomerID (length: 5)
-        public string CompanyName { get; set; } // CompanyName (length: 40)
-        public string City { get; set; } // City (length: 15)
-        public string Country { get; set; } // Country (length: 15)
+        public string? CustomerId { get; set; } // CustomerID (length: 5)
+        public string? CompanyName { get; set; } // CompanyName (length: 40)
+        public string? City { get; set; } // City (length: 15)
+        public string? Country { get; set; } // Country (length: 15)
     }
 
     // Region
     public class Region
     {
         public int RegionId { get; set; } // RegionID (Primary key)
-        public string RegionDescription { get; set; } // RegionDescription (length: 50)
+        public string RegionDescription { get; set; } = null!; // RegionDescription (length: 50)
 
         // Reverse navigation
 
@@ -1895,8 +1895,8 @@ namespace EntityFramework_Reverse_POCO_Generator
     public class SalesByCategory
     {
         public int CategoryId { get; set; } // CategoryID
-        public string CategoryName { get; set; } // CategoryName (length: 15)
-        public string ProductName { get; set; } // ProductName (length: 40)
+        public string CategoryName { get; set; } = null!; // CategoryName (length: 15)
+        public string ProductName { get; set; } = null!; // ProductName (length: 40)
         public decimal? ProductSales { get; set; } // ProductSales
     }
 
@@ -1905,7 +1905,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     {
         public decimal? SaleAmount { get; set; } // SaleAmount
         public int OrderId { get; set; } // OrderID
-        public string CompanyName { get; set; } // CompanyName (length: 40)
+        public string CompanyName { get; set; } = null!; // CompanyName (length: 40)
         public DateTime? ShippedDate { get; set; } // ShippedDate
     }
 
@@ -1913,8 +1913,8 @@ namespace EntityFramework_Reverse_POCO_Generator
     public class Shipper
     {
         public int ShipperId { get; set; } // ShipperID (Primary key)
-        public string CompanyName { get; set; } // CompanyName (length: 40)
-        public string Phone { get; set; } // Phone (length: 24)
+        public string CompanyName { get; set; } = null!; // CompanyName (length: 40)
+        public string? Phone { get; set; } // Phone (length: 24)
 
         // Reverse navigation
 
@@ -1949,17 +1949,17 @@ namespace EntityFramework_Reverse_POCO_Generator
     public class Supplier
     {
         public int SupplierId { get; set; } // SupplierID (Primary key)
-        public string CompanyName { get; set; } // CompanyName (length: 40)
-        public string ContactName { get; set; } // ContactName (length: 30)
-        public string ContactTitle { get; set; } // ContactTitle (length: 30)
-        public string Address { get; set; } // Address (length: 60)
-        public string City { get; set; } // City (length: 15)
-        public string Region { get; set; } // Region (length: 15)
-        public string PostalCode { get; set; } // PostalCode (length: 10)
-        public string Country { get; set; } // Country (length: 15)
-        public string Phone { get; set; } // Phone (length: 24)
-        public string Fax { get; set; } // Fax (length: 24)
-        public string HomePage { get; set; } // HomePage (length: 1073741823)
+        public string CompanyName { get; set; } = null!; // CompanyName (length: 40)
+        public string? ContactName { get; set; } // ContactName (length: 30)
+        public string? ContactTitle { get; set; } // ContactTitle (length: 30)
+        public string? Address { get; set; } // Address (length: 60)
+        public string? City { get; set; } // City (length: 15)
+        public string? Region { get; set; } // Region (length: 15)
+        public string? PostalCode { get; set; } // PostalCode (length: 10)
+        public string? Country { get; set; } // Country (length: 15)
+        public string? Phone { get; set; } // Phone (length: 24)
+        public string? Fax { get; set; } // Fax (length: 24)
+        public string? HomePage { get; set; } // HomePage (length: 1073741823)
 
         // Reverse navigation
 
@@ -1977,8 +1977,8 @@ namespace EntityFramework_Reverse_POCO_Generator
     // Territories
     public class Territory
     {
-        public string TerritoryId { get; set; } // TerritoryID (Primary key) (length: 20)
-        public string TerritoryDescription { get; set; } // TerritoryDescription (length: 50)
+        public string TerritoryId { get; set; } = null!; // TerritoryID (Primary key) (length: 20)
+        public string TerritoryDescription { get; set; } = null!; // TerritoryDescription (length: 50)
         public int RegionId { get; set; } // RegionID
 
         // Reverse navigation
@@ -1993,7 +1993,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         /// <summary>
         /// Parent Region pointed by [Territories].([RegionId]) (FK_Territories_Region)
         /// </summary>
-        public Region Region { get; set; } // FK_Territories_Region
+        public Region Region { get; set; } = null!; // FK_Territories_Region
 
         public Territory()
         {

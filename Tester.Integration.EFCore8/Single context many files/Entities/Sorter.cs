@@ -12,7 +12,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     public class Sorter
     {
         public int SorterId { get; set; } // SorterID (Primary key)
-        public string SorterName { get; set; } // SorterName (length: 20)
+        public string SorterName { get; set; } = null!; // SorterName (length: 20)
     }
 
 }

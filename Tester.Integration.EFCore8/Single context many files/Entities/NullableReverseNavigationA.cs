@@ -12,7 +12,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     public class NullableReverseNavigationA
     {
         public Guid Id { get; set; } // Id (Primary key)
-        public string Data { get; set; } // Data (length: 100)
+        public string? Data { get; set; } // Data (length: 100)
 
         // Reverse navigation
 

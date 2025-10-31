@@ -12,9 +12,9 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     public class EventProcessor
     {
         public int Id { get; set; } // Id (Primary key)
-        public string Name { get; set; } // Name (length: 200)
-        public string Description { get; set; } // Description (length: 512)
-        public string EndpointAddress { get; set; } // EndpointAddress (length: 512)
+        public string Name { get; set; } = null!; // Name (length: 200)
+        public string? Description { get; set; } // Description (length: 512)
+        public string? EndpointAddress { get; set; } // EndpointAddress (length: 512)
         public bool Enabled { get; set; } // Enabled
 
         // Reverse navigation

@@ -153,7 +153,7 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesAppleDbContext
     public class Stafford_Boo
     {
         public int id { get; set; } // id (Primary key)
-        public string Name { get; set; } // name (length: 10)
+        public string Name { get; set; } = null!; // name (length: 10)
 
         // Reverse navigation
 
@@ -173,7 +173,7 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesAppleDbContext
         /// <summary>
         /// Parent Stafford_Boo pointed by [Foo].([id]) (FK_Foo_Boo)
         /// </summary>
-        public virtual Stafford_Boo Stafford_Boo { get; set; } // FK_Foo_Boo
+        public virtual Stafford_Boo Stafford_Boo { get; set; } = null!; // FK_Foo_Boo
     }
 
 

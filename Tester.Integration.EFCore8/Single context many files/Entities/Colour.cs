@@ -12,7 +12,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     public class Colour
     {
         public int Id { get; set; } // Id (Primary key)
-        public string Name { get; set; } // Name (length: 255)
+        public string Name { get; set; } = null!; // Name (length: 255)
 
         // Reverse navigation
 

@@ -13,7 +13,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     {
         public Guid BatchUid { get; set; } // BatchUID (Primary key)
         public int Cvid { get; set; } // CVID (Primary key)
-        public string CvName { get; set; } // CVName (length: 200)
+        public string? CvName { get; set; } // CVName (length: 200)
     }
 
 }

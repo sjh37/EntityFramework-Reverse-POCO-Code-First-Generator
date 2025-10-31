@@ -25,10 +25,10 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         public int? SimonHughes { get; set; } // simon-hughes
         public string Description { get; set; } // description (length: 20)
         public DateTime SomeDate { get; set; } // someDate
-        public string Obs { get; set; } // Obs (length: 50)
-        public string Obs1 { get; set; } // Obs1 (length: 50)
-        public string Obs2 { get; set; } // Obs2 (length: 50)
-        public string Obs3 { get; set; } // Obs3 (length: 50)
+        public string? Obs { get; set; } // Obs (length: 50)
+        public string? Obs1 { get; set; } // Obs1 (length: 50)
+        public string? Obs2 { get; set; } // Obs2 (length: 50)
+        public string? Obs3 { get; set; } // Obs3 (length: 50)
         public int? @Static { get; set; } // static
         public int? @Readonly { get; set; } // readonly
         public int? C123Hi { get; set; } // 123Hi

@@ -15,8 +15,8 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         public Guid? FkFactory { get; set; } // FK_Factory
         public int? FkArticleLevel { get; set; } // FK_ArticleLevel
         public int? FkParentArticle { get; set; } // FK_ParentArticle
-        public string Code { get; set; } // Code (length: 20)
-        public string FullCode { get; set; } // FullCode (length: 100)
+        public string? Code { get; set; } // Code (length: 20)
+        public string? FullCode { get; set; } // FullCode (length: 100)
     }
 
 }

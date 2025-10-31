@@ -12,7 +12,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     public class TableA
     {
         public int TableAId { get; set; } // TableAId (Primary key)
-        public string TableADesc { get; set; } // TableADesc (length: 20)
+        public string? TableADesc { get; set; } // TableADesc (length: 20)
 
         // Reverse navigation
 

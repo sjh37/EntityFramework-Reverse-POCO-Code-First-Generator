@@ -12,7 +12,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     public class Beta_Workflow
     {
         public int Id { get; set; } // Id (Primary key)
-        public string Description { get; set; } // Description (length: 10)
+        public string? Description { get; set; } // Description (length: 10)
     }
 
 }

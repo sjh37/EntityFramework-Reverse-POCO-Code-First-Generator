@@ -14,7 +14,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         public int Id { get; set; } // ID (Primary key)
         public decimal DecimalDefault { get; set; } // decimal_default
         public Guid MyGuid { get; set; } // MyGuid
-        public string @Default { get; set; } // default (length: 10)
+        public string? @Default { get; set; } // default (length: 10)
         public Guid? MyGuidBadDefault { get; set; } // MyGuidBadDefault
 
         public DsOpe()

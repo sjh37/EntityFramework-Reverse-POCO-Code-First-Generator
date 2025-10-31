@@ -2290,7 +2290,7 @@ namespace V8_Efrpg_Test
         /// <summary>
         /// Parent AAREF pointed by [A].([C1], [C2]) (FK_A_A)
         /// </summary>
-        public virtual AAREF AAREF { get; set; } // FK_A_A
+        public virtual AAREF AAREF { get; set; } = null!; // FK_A_A
     }
 
     // AAREF
@@ -2318,14 +2318,14 @@ namespace V8_Efrpg_Test
     {
         public int ID { get; set; } // ID (Primary key)
         public int OrderID { get; set; } // OrderID
-        public string sku { get; set; } // sku (length: 15)
+        public string? sku { get; set; } // sku (length: 15)
 
         // Foreign keys
 
         /// <summary>
         /// Parent AB_OrdersAB pointed by [AB_OrderLinesAB_].([OrderID]) (AB_OrderLinesAB_FK)
         /// </summary>
-        public virtual AB_OrdersAB AB_OrdersAB { get; set; } // AB_OrderLinesAB_FK
+        public virtual AB_OrdersAB AB_OrdersAB { get; set; } = null!; // AB_OrderLinesAB_FK
     }
 
     // AB_OrdersAB_
@@ -2352,7 +2352,7 @@ namespace V8_Efrpg_Test
     public class AllColumnsNull
     {
         public int? total { get; set; } // total
-        public string aName { get; set; } // aName (length: 250)
+        public string? aName { get; set; } // aName (length: 250)
     }
 
     // Harish3485
@@ -2366,7 +2366,7 @@ namespace V8_Efrpg_Test
         /// <summary>
         /// Parent FkTest_SmallDecimalTestAttribute pointed by [Harish3485].([harish_id]) (FK_Harish)
         /// </summary>
-        public virtual FkTest_SmallDecimalTestAttribute FkTest_SmallDecimalTestAttribute { get; set; } // FK_Harish
+        public virtual FkTest_SmallDecimalTestAttribute FkTest_SmallDecimalTestAttribute { get; set; } = null!; // FK_Harish
     }
 
     // The table 'Test' is not usable by entity framework because it
@@ -2382,7 +2382,7 @@ namespace V8_Efrpg_Test
     public class Alpha_workflow
     {
         public int Id { get; set; } // Id (Primary key)
-        public string Description { get; set; } // Description (length: 10)
+        public string? Description { get; set; } // Description (length: 10)
 
         // Reverse navigation
 
@@ -2401,7 +2401,7 @@ namespace V8_Efrpg_Test
     public class alpha_workflow_synonym
     {
         public int Id { get; set; } // Id (Primary key)
-        public string Description { get; set; } // Description (length: 10)
+        public string? Description { get; set; } // Description (length: 10)
     }
 
     // UserFacilityServiceRole
@@ -2416,7 +2416,7 @@ namespace V8_Efrpg_Test
     public class AppUser
     {
         public long Id { get; set; } // Id (Primary key)
-        public string Name { get; set; } // Name (length: 50)
+        public string Name { get; set; } = null!; // Name (length: 50)
 
         // Reverse navigation
 
@@ -2441,8 +2441,8 @@ namespace V8_Efrpg_Test
     public class Attendee
     {
         public long AttendeeID { get; set; } // AttendeeID (Primary key)
-        public string Lastname { get; set; } // Lastname (length: 50)
-        public string Firstname { get; set; } // Firstname (length: 50)
+        public string Lastname { get; set; } = null!; // Lastname (length: 50)
+        public string Firstname { get; set; } = null!; // Firstname (length: 50)
         public int? PhoneCountryID { get; set; } // PhoneCountryID
 
         // Foreign keys
@@ -2450,13 +2450,13 @@ namespace V8_Efrpg_Test
         /// <summary>
         /// Parent Country pointed by [Attendee].([PhoneCountryID]) (FK_Attendee_PhoneCountry)
         /// </summary>
-        public virtual Country Country { get; set; } // FK_Attendee_PhoneCountry
+        public virtual Country? Country { get; set; } // FK_Attendee_PhoneCountry
     }
 
     // BatchTest
     public class BatchTest
     {
-        public string code { get; set; } // code (Primary key) (length: 8)
+        public string code { get; set; } = null!; // code (Primary key) (length: 8)
     }
 
     // Harish3485
@@ -2470,7 +2470,7 @@ namespace V8_Efrpg_Test
         /// <summary>
         /// Parent PropertyTypesToAdd pointed by [Harish3485].([another_id]) (FK_Harish)
         /// </summary>
-        public virtual PropertyTypesToAdd PropertyTypesToAdd { get; set; } // FK_Harish
+        public virtual PropertyTypesToAdd PropertyTypesToAdd { get; set; } = null!; // FK_Harish
     }
 
     // The table 'Test' is not usable by entity framework because it
@@ -2493,14 +2493,14 @@ namespace V8_Efrpg_Test
         /// <summary>
         /// Parent Alpha_workflow pointed by [ToAlpha].([AlphaId]) (BetaToAlpha_AlphaWorkflow)
         /// </summary>
-        public virtual Alpha_workflow Alpha_workflow { get; set; } // BetaToAlpha_AlphaWorkflow
+        public virtual Alpha_workflow Alpha_workflow { get; set; } = null!; // BetaToAlpha_AlphaWorkflow
     }
 
     // workflow
     public class Beta_workflow
     {
         public int Id { get; set; } // Id (Primary key)
-        public string Description { get; set; } // Description (length: 10)
+        public string? Description { get; set; } // Description (length: 10)
     }
 
     // BITFIDDLERALLCAPS
@@ -2589,12 +2589,12 @@ namespace V8_Efrpg_Test
         /// <summary>
         /// Parent Blah pointed by [BlahBlahLink_v2].([BlahID]) (FK_BlahBlahLinkv2_Blah_ro)
         /// </summary>
-        public virtual Blah Blah_BlahID { get; set; } // FK_BlahBlahLinkv2_Blah_ro
+        public virtual Blah Blah_BlahID { get; set; } = null!; // FK_BlahBlahLinkv2_Blah_ro
 
         /// <summary>
         /// Parent Blah pointed by [BlahBlahLink_v2].([BlahID2]) (FK_BlahBlahLinkv2_Blah_ro2)
         /// </summary>
-        public virtual Blah Blah_BlahID2 { get; set; } // FK_BlahBlahLinkv2_Blah_ro2
+        public virtual Blah Blah_BlahID2 { get; set; } = null!; // FK_BlahBlahLinkv2_Blah_ro2
     }
 
     // Blarg
@@ -2627,12 +2627,12 @@ namespace V8_Efrpg_Test
         /// <summary>
         /// Parent Burak2 pointed by [Burak1].([id], [num]) (FK_Burak_Test2)
         /// </summary>
-        public virtual Burak2 Burak2_id { get; set; } // FK_Burak_Test2
+        public virtual Burak2 Burak2_id { get; set; } = null!; // FK_Burak_Test2
 
         /// <summary>
         /// Parent Burak2 pointed by [Burak1].([id_t], [num]) (FK_Burak_Test1)
         /// </summary>
-        public virtual Burak2 Burak2_id_t { get; set; } // FK_Burak_Test1
+        public virtual Burak2 Burak2_id_t { get; set; } = null!; // FK_Burak_Test1
     }
 
     // Burak2
@@ -2668,7 +2668,7 @@ namespace V8_Efrpg_Test
     {
         public int Id { get; set; } // Id (Primary key)
         public int PrimaryColourId { get; set; } // PrimaryColourId
-        public string CarMake { get; set; } // CarMake (length: 255)
+        public string CarMake { get; set; } = null!; // CarMake (length: 255)
         public int? computed_column { get; private set; } // computed_column
         public int computed_column_persisted { get; private set; } // computed_column_persisted
 
@@ -2684,7 +2684,7 @@ namespace V8_Efrpg_Test
         /// <summary>
         /// Parent Colour pointed by [Car].([PrimaryColourId]) (CarPrimaryColourFK)
         /// </summary>
-        public virtual Colour Colour { get; set; } // CarPrimaryColourFK
+        public virtual Colour Colour { get; set; } = null!; // CarPrimaryColourFK
 
         public Car()
         {
@@ -2705,9 +2705,9 @@ namespace V8_Efrpg_Test
     public class CMS_File
     {
         public int FileId { get; set; } // FileId (Primary key)
-        public string FileName { get; set; } // FileName (length: 100)
-        public string FileDescription { get; set; } // FileDescription (length: 500)
-        public string FileIdentifier { get; set; } // FileIdentifier (length: 100)
+        public string FileName { get; set; } = null!; // FileName (length: 100)
+        public string FileDescription { get; set; } = null!; // FileDescription (length: 500)
+        public string FileIdentifier { get; set; } = null!; // FileIdentifier (length: 100)
         public DateTime? ValidStartDate { get; set; } // ValidStartDate
         public DateTime? ValidEndDate { get; set; } // ValidEndDate
         public bool IsActive { get; set; } // IsActive
@@ -2729,7 +2729,7 @@ namespace V8_Efrpg_Test
     public class CMS_Tag
     {
         public int TagId { get; set; } // TagId (Primary key)
-        public string TagName { get; set; } // TagName (length: 100)
+        public string TagName { get; set; } = null!; // TagName (length: 100)
 
         // Reverse navigation
 
@@ -2750,9 +2750,9 @@ namespace V8_Efrpg_Test
         public int id { get; set; } // id (Primary key)
         public int id_reuniao { get; set; } // id_reuniao
         public int? ord_trab { get; set; } // ord_trab
-        public string assunto { get; set; } // assunto (length: 250)
-        public string desenvolvimento { get; set; } // desenvolvimento
-        public string origem { get; set; } // origem (length: 5)
+        public string? assunto { get; set; } // assunto (length: 250)
+        public string? desenvolvimento { get; set; } // desenvolvimento
+        public string? origem { get; set; } // origem (length: 5)
         public int? id_origem { get; set; } // id_origem
         public int? Estado { get; set; } // Estado
         public int CompanyID { get; set; } // CompanyID
@@ -2764,18 +2764,18 @@ namespace V8_Efrpg_Test
         /// <summary>
         /// Parent CODE_PARAM_MeetingTopicDetailSource pointed by [CODE_MeetingTopicDetails].([origem]) (FK_CODE_MeetingTopicDetails_CODE_PARAM_MeetingTopicDetailSource)
         /// </summary>
-        public virtual CODE_PARAM_MeetingTopicDetailSource CODE_PARAM_MeetingTopicDetailSource { get; set; } // FK_CODE_MeetingTopicDetails_CODE_PARAM_MeetingTopicDetailSource
+        public virtual CODE_PARAM_MeetingTopicDetailSource? CODE_PARAM_MeetingTopicDetailSource { get; set; } // FK_CODE_MeetingTopicDetails_CODE_PARAM_MeetingTopicDetailSource
     }
 
     // CODE_PARAM_MeetingTopicDetailSource
     public class CODE_PARAM_MeetingTopicDetailSource
     {
         public int ID { get; set; } // ID (Primary key)
-        public string Code { get; set; } // Code (length: 5)
-        public string Label { get; set; } // Label (length: 50)
-        public string LabelENG { get; set; } // LabelENG (length: 50)
-        public string LabelESP { get; set; } // LabelESP (length: 50)
-        public string LabelFRA { get; set; } // LabelFRA (length: 50)
+        public string Code { get; set; } = null!; // Code (length: 5)
+        public string? Label { get; set; } // Label (length: 50)
+        public string? LabelENG { get; set; } // LabelENG (length: 50)
+        public string? LabelESP { get; set; } // LabelESP (length: 50)
+        public string? LabelFRA { get; set; } // LabelFRA (length: 50)
         public DateTime DateCreated { get; set; } // DateCreated
         public DateTime? DateChanged { get; set; } // DateChanged
 
@@ -2801,13 +2801,13 @@ namespace V8_Efrpg_Test
         public int codeObjectNo { get; set; } // codeObjectNo (Primary key)
         public int? applicationNo { get; set; } // applicationNo
         public int type { get; set; } // type
-        public string eName { get; set; } // eName (length: 250)
-        public string aName { get; set; } // aName (length: 250)
-        public string description { get; set; } // description (length: 250)
-        public string codeName { get; set; } // codeName (length: 250)
-        public string note { get; set; } // note (length: 250)
+        public string eName { get; set; } = null!; // eName (length: 250)
+        public string? aName { get; set; } // aName (length: 250)
+        public string? description { get; set; } // description (length: 250)
+        public string? codeName { get; set; } // codeName (length: 250)
+        public string? note { get; set; } // note (length: 250)
         public bool isObject { get; set; } // isObject
-        public byte[] versionNumber { get; set; } // versionNumber (length: 8)
+        public byte[]? versionNumber { get; set; } // versionNumber (length: 8)
 
         public CodeObject()
         {
@@ -2820,7 +2820,7 @@ namespace V8_Efrpg_Test
     public class Colour
     {
         public int Id { get; set; } // Id (Primary key)
-        public string Name { get; set; } // Name (length: 255)
+        public string Name { get; set; } = null!; // Name (length: 255)
 
         // Reverse navigation
 
@@ -2858,10 +2858,10 @@ namespace V8_Efrpg_Test
         public int? simon_hughes { get; set; } // simon-hughes
         public string description { get; set; } // description (length: 20)
         public DateTime someDate { get; set; } // someDate
-        public string Obs { get; set; } // Obs (length: 50)
-        public string Obs1 { get; set; } // Obs1 (length: 50)
-        public string Obs2 { get; set; } // Obs2 (length: 50)
-        public string Obs3 { get; set; } // Obs3 (length: 50)
+        public string? Obs { get; set; } // Obs (length: 50)
+        public string? Obs1 { get; set; } // Obs1 (length: 50)
+        public string? Obs2 { get; set; } // Obs2 (length: 50)
+        public string? Obs3 { get; set; } // Obs3 (length: 50)
         public int? @static { get; set; } // static
         public int? @readonly { get; set; } // readonly
         public int? C123Hi { get; set; } // 123Hi
@@ -2899,7 +2899,7 @@ namespace V8_Efrpg_Test
     // ComplexView
     public class ComplexView
     {
-        public string LicenseType { get; set; } // LicenseType (length: 128)
+        public string LicenseType { get; set; } = null!; // LicenseType (length: 128)
         public int? Count { get; set; } // Count
     }
 
@@ -2907,7 +2907,7 @@ namespace V8_Efrpg_Test
     public class Country
     {
         public int CountryID { get; set; } // CountryID (Primary key)
-        public string Code { get; set; } // Code (length: 12)
+        public string? Code { get; set; } // Code (length: 12)
 
         // Reverse navigation
 
@@ -2932,7 +2932,7 @@ namespace V8_Efrpg_Test
     public class cross_database_synonym
     {
         public int Id { get; set; } // Id (Primary key)
-        public string Forename { get; set; } // Forename (length: 20)
+        public string? Forename { get; set; } // Forename (length: 20)
     }
 
     // DateTimeDefaultTest
@@ -2950,41 +2950,41 @@ namespace V8_Efrpg_Test
     // rov_ColumnDefinitions
     public class dcg_rov_ColumnDefinition
     {
-        public string TABLE_CATALOG { get; set; } // TABLE_CATALOG (length: 128)
-        public string TABLE_SCHEMA { get; set; } // TABLE_SCHEMA (length: 128)
-        public string TABLE_NAME { get; set; } // TABLE_NAME (length: 128)
-        public string COLUMN_NAME { get; set; } // COLUMN_NAME (length: 128)
+        public string? TABLE_CATALOG { get; set; } // TABLE_CATALOG (length: 128)
+        public string? TABLE_SCHEMA { get; set; } // TABLE_SCHEMA (length: 128)
+        public string TABLE_NAME { get; set; } = null!; // TABLE_NAME (length: 128)
+        public string? COLUMN_NAME { get; set; } // COLUMN_NAME (length: 128)
         public int? ORDINAL_POSITION { get; set; } // ORDINAL_POSITION
-        public string COLUMN_DEFAULT { get; set; } // COLUMN_DEFAULT (length: 4000)
-        public string IS_NULLABLE { get; set; } // IS_NULLABLE (length: 3)
-        public string DATA_TYPE { get; set; } // DATA_TYPE (length: 128)
+        public string? COLUMN_DEFAULT { get; set; } // COLUMN_DEFAULT (length: 4000)
+        public string? IS_NULLABLE { get; set; } // IS_NULLABLE (length: 3)
+        public string? DATA_TYPE { get; set; } // DATA_TYPE (length: 128)
         public int? CHARACTER_MAXIMUM_LENGTH { get; set; } // CHARACTER_MAXIMUM_LENGTH
         public int? CHARACTER_OCTET_LENGTH { get; set; } // CHARACTER_OCTET_LENGTH
         public byte? NUMERIC_PRECISION { get; set; } // NUMERIC_PRECISION
         public short? NUMERIC_PRECISION_RADIX { get; set; } // NUMERIC_PRECISION_RADIX
         public int? NUMERIC_SCALE { get; set; } // NUMERIC_SCALE
         public short? DATETIME_PRECISION { get; set; } // DATETIME_PRECISION
-        public string CHARACTER_SET_CATALOG { get; set; } // CHARACTER_SET_CATALOG (length: 128)
-        public string CHARACTER_SET_SCHEMA { get; set; } // CHARACTER_SET_SCHEMA (length: 128)
-        public string CHARACTER_SET_NAME { get; set; } // CHARACTER_SET_NAME (length: 128)
-        public string COLLATION_CATALOG { get; set; } // COLLATION_CATALOG (length: 128)
-        public string COLLATION_SCHEMA { get; set; } // COLLATION_SCHEMA (length: 128)
-        public string COLLATION_NAME { get; set; } // COLLATION_NAME (length: 128)
-        public string DOMAIN_CATALOG { get; set; } // DOMAIN_CATALOG (length: 128)
-        public string DOMAIN_SCHEMA { get; set; } // DOMAIN_SCHEMA (length: 128)
-        public string DOMAIN_NAME { get; set; } // DOMAIN_NAME (length: 128)
-        public string TYPE { get; set; } // TYPE (length: 2)
+        public string? CHARACTER_SET_CATALOG { get; set; } // CHARACTER_SET_CATALOG (length: 128)
+        public string? CHARACTER_SET_SCHEMA { get; set; } // CHARACTER_SET_SCHEMA (length: 128)
+        public string? CHARACTER_SET_NAME { get; set; } // CHARACTER_SET_NAME (length: 128)
+        public string? COLLATION_CATALOG { get; set; } // COLLATION_CATALOG (length: 128)
+        public string? COLLATION_SCHEMA { get; set; } // COLLATION_SCHEMA (length: 128)
+        public string? COLLATION_NAME { get; set; } // COLLATION_NAME (length: 128)
+        public string? DOMAIN_CATALOG { get; set; } // DOMAIN_CATALOG (length: 128)
+        public string? DOMAIN_SCHEMA { get; set; } // DOMAIN_SCHEMA (length: 128)
+        public string? DOMAIN_NAME { get; set; } // DOMAIN_NAME (length: 128)
+        public string? TYPE { get; set; } // TYPE (length: 2)
     }
 
     // DefaultCheckForNull
     public class DefaultCheckForNull
     {
         public int Id { get; set; } // Id (Primary key)
-        public string DescUppercase { get; set; } // DescUppercase (length: 5)
-        public string DescLowercase { get; set; } // DescLowercase (length: 5)
-        public string DescMixedCase { get; set; } // DescMixedCase (length: 5)
-        public string DescBrackets { get; set; } // DescBrackets (length: 5)
-        public string X1 { get; set; } // X1 (length: 255)
+        public string? DescUppercase { get; set; } // DescUppercase (length: 5)
+        public string? DescLowercase { get; set; } // DescLowercase (length: 5)
+        public string? DescMixedCase { get; set; } // DescMixedCase (length: 5)
+        public string? DescBrackets { get; set; } // DescBrackets (length: 5)
+        public string? X1 { get; set; } // X1 (length: 255)
     }
 
     // DSOpe
@@ -2993,7 +2993,7 @@ namespace V8_Efrpg_Test
         public int ID { get; set; } // ID (Primary key)
         public decimal decimal_default { get; set; } // decimal_default
         public Guid MyGuid { get; set; } // MyGuid
-        public string @default { get; set; } // default (length: 10)
+        public string? @default { get; set; } // default (length: 10)
         public Guid? MyGuidBadDefault { get; set; } // MyGuidBadDefault
 
         public DSOpe()
@@ -3007,14 +3007,14 @@ namespace V8_Efrpg_Test
     // EnumsWithStringAsValue
     public class EnumsWithStringAsValue
     {
-        public string enum_name { get; set; } // enum_name (Primary key) (length: 50)
-        public string value { get; set; } // value (Primary key) (length: 10)
+        public string enum_name { get; set; } = null!; // enum_name (Primary key) (length: 50)
+        public string value { get; set; } = null!; // value (Primary key) (length: 10)
     }
 
     // DaysOfWeek
     public class EnumTest_DaysOfWeek
     {
-        public string TypeName { get; set; } // TypeName (length: 50)
+        public string TypeName { get; set; } = null!; // TypeName (length: 50)
         public int TypeId { get; set; } // TypeId (Primary key)
 
         // Reverse navigation
@@ -3041,7 +3041,7 @@ namespace V8_Efrpg_Test
         /// <summary>
         /// Parent EnumTest_DaysOfWeek pointed by [OpenDays].([EnumId]) (Fk_OpenDays_EnumId)
         /// </summary>
-        public virtual EnumTest_DaysOfWeek EnumTest_DaysOfWeek { get; set; } // Fk_OpenDays_EnumId
+        public virtual EnumTest_DaysOfWeek EnumTest_DaysOfWeek { get; set; } = null!; // Fk_OpenDays_EnumId
     }
 
     // EnumWithDefaultValue
@@ -3060,9 +3060,9 @@ namespace V8_Efrpg_Test
     public class EventProcessor
     {
         public int Id { get; set; } // Id (Primary key)
-        public string Name { get; set; } // Name (length: 200)
-        public string Description { get; set; } // Description (length: 512)
-        public string EndpointAddress { get; set; } // EndpointAddress (length: 512)
+        public string Name { get; set; } = null!; // Name (length: 200)
+        public string? Description { get; set; } // Description (length: 512)
+        public string? EndpointAddress { get; set; } // EndpointAddress (length: 512)
         public bool Enabled { get; set; } // Enabled
 
         // Reverse navigation
@@ -3090,7 +3090,7 @@ namespace V8_Efrpg_Test
         /// <summary>
         /// Parent EventProcessor pointed by [EventProcessorEventFilter].([EventProcessorId]) (FK_EventProcessorEventFilter__EventProcessor)
         /// </summary>
-        public virtual EventProcessor EventProcessor { get; set; } // FK_EventProcessorEventFilter__EventProcessor
+        public virtual EventProcessor EventProcessor { get; set; } = null!; // FK_EventProcessorEventFilter__EventProcessor
     }
 
     // CV
@@ -3098,7 +3098,7 @@ namespace V8_Efrpg_Test
     {
         public Guid BatchUID { get; set; } // BatchUID (Primary key)
         public int CVID { get; set; } // CVID (Primary key)
-        public string CVName { get; set; } // CVName (length: 200)
+        public string? CVName { get; set; } // CVName (length: 200)
     }
 
     // FinancialInstitutionOffice
@@ -3106,14 +3106,14 @@ namespace V8_Efrpg_Test
     {
         public Guid Code { get; set; } // Code
         public Guid FinancialInstitutionCode { get; set; } // FinancialInstitutionCode (Primary key via unique index UniqueOfficeName_FinancialInstitutionOffice)
-        public string OfficeName { get; set; } // OfficeName (length: 200)
+        public string? OfficeName { get; set; } // OfficeName (length: 200)
     }
 
     // SmallDecimalTestAttribute
     public class FkTest_SmallDecimalTestAttribute
     {
         public int FkID { get; set; } // FkID (Primary key)
-        public string description { get; set; } // description (length: 20)
+        public string description { get; set; } = null!; // description (length: 20)
 
         // Reverse navigation
 
@@ -3127,7 +3127,7 @@ namespace V8_Efrpg_Test
         /// <summary>
         /// Parent SmallDecimalTest pointed by [SmallDecimalTestAttribute].([FkID]) (KateFK)
         /// </summary>
-        public virtual SmallDecimalTest SmallDecimalTest { get; set; } // KateFK
+        public virtual SmallDecimalTest SmallDecimalTest { get; set; } = null!; // KateFK
 
         public FkTest_SmallDecimalTestAttribute()
         {
@@ -3147,7 +3147,7 @@ namespace V8_Efrpg_Test
         /// <summary>
         /// Parent header pointed by [footer].([ID], [otherID]) (fooderFK)
         /// </summary>
-        public virtual header header { get; set; } // fooderFK
+        public virtual header header { get; set; } = null!; // fooderFK
 
         public footer()
         {
@@ -3187,12 +3187,12 @@ namespace V8_Efrpg_Test
         /// <summary>
         /// Parent ForeignKeyIsNotEnforced pointed by [ForeignKeyIsNotEnforcedItem].([not_null_value]) (FK_ForeignKeyIsNotEnforcedItem_notnull_notnull)
         /// </summary>
-        public virtual ForeignKeyIsNotEnforced ForeignKeyIsNotEnforced_not_null_value { get; set; } // FK_ForeignKeyIsNotEnforcedItem_notnull_notnull
+        public virtual ForeignKeyIsNotEnforced ForeignKeyIsNotEnforced_not_null_value { get; set; } = null!; // FK_ForeignKeyIsNotEnforcedItem_notnull_notnull
 
         /// <summary>
         /// Parent ForeignKeyIsNotEnforced pointed by [ForeignKeyIsNotEnforcedItem].([null_value]) (FK_ForeignKeyIsNotEnforcedItem_null_notnull)
         /// </summary>
-        public virtual ForeignKeyIsNotEnforced ForeignKeyIsNotEnforced_null_value { get; set; } // FK_ForeignKeyIsNotEnforcedItem_null_notnull
+        public virtual ForeignKeyIsNotEnforced? ForeignKeyIsNotEnforced_null_value { get; set; } // FK_ForeignKeyIsNotEnforcedItem_null_notnull
     }
 
     // HasPrincipalKeyTestChild
@@ -3209,7 +3209,7 @@ namespace V8_Efrpg_Test
         /// <summary>
         /// Parent HasPrincipalKeyTestParent pointed by [HasPrincipalKeyTestChild].([A], [B]) (FK_HasPrincipalKey_AB)
         /// </summary>
-        public virtual HasPrincipalKeyTestParent HasPrincipalKeyTestParent { get; set; } // FK_HasPrincipalKey_AB
+        public virtual HasPrincipalKeyTestParent HasPrincipalKeyTestParent { get; set; } = null!; // FK_HasPrincipalKey_AB
     }
 
     // HasPrincipalKeyTestParent
@@ -3254,7 +3254,7 @@ namespace V8_Efrpg_Test
     public class hierarchy_test
     {
         public int ID { get; set; } // ID (Primary key)
-        public HierarchyId hid { get; set; } // hid
+        public HierarchyId hid { get; set; } = null!; // hid
     }
 
     // InflectorData
@@ -3285,7 +3285,7 @@ namespace V8_Efrpg_Test
     public class Issue47_Role
     {
         public int RoleId { get; set; } // RoleId (Primary key)
-        public string Role { get; set; } // Role (length: 10)
+        public string? Role { get; set; } // Role (length: 10)
 
         // Reverse navigation
 
@@ -3304,7 +3304,7 @@ namespace V8_Efrpg_Test
     public class Issue47_User
     {
         public int UserId { get; set; } // UserId (Primary key)
-        public string Name { get; set; } // Name (length: 10)
+        public string? Name { get; set; } // Name (length: 10)
 
         // Reverse navigation
 
@@ -3331,12 +3331,12 @@ namespace V8_Efrpg_Test
         /// <summary>
         /// Parent Issue47_Role pointed by [UserRoles].([RoleId]) (Issue47_UserRoles_roleid)
         /// </summary>
-        public virtual Issue47_Role Issue47_Role { get; set; } // Issue47_UserRoles_roleid
+        public virtual Issue47_Role Issue47_Role { get; set; } = null!; // Issue47_UserRoles_roleid
 
         /// <summary>
         /// Parent Issue47_User pointed by [UserRoles].([UserId]) (Issue47_UserRoles_userid)
         /// </summary>
-        public virtual Issue47_User Issue47_User { get; set; } // Issue47_UserRoles_userid
+        public virtual Issue47_User Issue47_User { get; set; } = null!; // Issue47_UserRoles_userid
     }
 
     // MultipleKeys
@@ -3355,14 +3355,14 @@ namespace V8_Efrpg_Test
     public class NoPrimaryKey
     {
         public int? Id { get; set; } // Id
-        public string Description { get; set; } // Description (length: 10)
+        public string? Description { get; set; } // Description (length: 10)
     }
 
     // NullableReverseNavigationA
     public class NullableReverseNavigationA
     {
         public Guid Id { get; set; } // Id (Primary key)
-        public string Data { get; set; } // Data (length: 100)
+        public string? Data { get; set; } // Data (length: 100)
 
         // Reverse navigation
 
@@ -3376,14 +3376,14 @@ namespace V8_Efrpg_Test
     public class NullableReverseNavigationB
     {
         public Guid Id { get; set; } // Id (Primary key)
-        public string Data { get; set; } // Data (length: 100)
+        public string? Data { get; set; } // Data (length: 100)
 
         // Foreign keys
 
         /// <summary>
         /// Parent NullableReverseNavigationA pointed by [NullableReverseNavigationB].([Id]) (FK_NullableReverseNavigationB_Id)
         /// </summary>
-        public virtual NullableReverseNavigationA NullableReverseNavigationA { get; set; } // FK_NullableReverseNavigationB_Id
+        public virtual NullableReverseNavigationA NullableReverseNavigationA { get; set; } = null!; // FK_NullableReverseNavigationB_Id
     }
 
     // The table 'Test' is not usable by entity framework because it
@@ -3399,8 +3399,8 @@ namespace V8_Efrpg_Test
     public class OneEightSix_Issue
     {
         public int Id { get; set; } // Id (Primary key)
-        public string Title { get; set; } // Title (length: 100)
-        public string Content { get; set; } // Content
+        public string Title { get; set; } = null!; // Title (length: 100)
+        public string? Content { get; set; } // Content
         public int? ConsentDocumentId { get; set; } // ConsentDocumentId
 
         // Reverse navigation
@@ -3415,7 +3415,7 @@ namespace V8_Efrpg_Test
         /// <summary>
         /// Parent OneEightSix_UploadedFile pointed by [Issue].([ConsentDocumentId]) (FK_Issue_UploadedFileConsentDocument)
         /// </summary>
-        public virtual OneEightSix_UploadedFile OneEightSix_UploadedFile { get; set; } // FK_Issue_UploadedFileConsentDocument
+        public virtual OneEightSix_UploadedFile? OneEightSix_UploadedFile { get; set; } // FK_Issue_UploadedFileConsentDocument
 
         public OneEightSix_Issue()
         {
@@ -3427,7 +3427,7 @@ namespace V8_Efrpg_Test
     public class OneEightSix_UploadedFile
     {
         public int Id { get; set; } // Id (Primary key)
-        public string FullPath { get; set; } // FullPath
+        public string FullPath { get; set; } = null!; // FullPath
 
         // Reverse navigation
 
@@ -3466,7 +3466,7 @@ namespace V8_Efrpg_Test
     public class Person
     {
         public int Id { get; set; } // Id (Primary key)
-        public string Name { get; set; } // Name (length: 50)
+        public string Name { get; set; } = null!; // Name (length: 50)
 
         // Reverse navigation
 
@@ -3491,8 +3491,8 @@ namespace V8_Efrpg_Test
     public class PersonPost
     {
         public int Id { get; set; } // Id (Primary key)
-        public string Title { get; set; } // Title (length: 20)
-        public string Body { get; set; } // Body (length: 100)
+        public string Title { get; set; } = null!; // Title (length: 20)
+        public string Body { get; set; } = null!; // Body (length: 100)
         public int CreatedBy { get; set; } // CreatedBy
         public int UpdatedBy { get; set; } // UpdatedBy
 
@@ -3501,12 +3501,12 @@ namespace V8_Efrpg_Test
         /// <summary>
         /// Parent Person pointed by [PersonPosts].([CreatedBy]) (FK_PersonPosts_CreatedBy)
         /// </summary>
-        public virtual Person Person_CreatedBy { get; set; } // FK_PersonPosts_CreatedBy
+        public virtual Person Person_CreatedBy { get; set; } = null!; // FK_PersonPosts_CreatedBy
 
         /// <summary>
         /// Parent Person pointed by [PersonPosts].([UpdatedBy]) (FK_PersonPosts_UpdatedBy)
         /// </summary>
-        public virtual Person Person_UpdatedBy { get; set; } // FK_PersonPosts_UpdatedBy
+        public virtual Person Person_UpdatedBy { get; set; } = null!; // FK_PersonPosts_UpdatedBy
     }
 
     // pk_ordinal_test
@@ -3523,7 +3523,7 @@ namespace V8_Efrpg_Test
         public int id { get; set; } // id (Primary key)
         public DateTime? dt_default { get; set; } // dt_default
         public DateTime? dt7 { get; set; } // dt7
-        public string defaultCheck { get; set; } // defaultCheck (length: 10)
+        public string? defaultCheck { get; set; } // defaultCheck (length: 10)
 
         // Reverse navigation
 
@@ -3580,20 +3580,20 @@ namespace V8_Efrpg_Test
     public class SmallDecimalTestView
     {
         public int FkID { get; set; } // FkID
-        public string description { get; set; } // description (length: 20)
+        public string description { get; set; } = null!; // description (length: 20)
     }
 
     // Sorter
     public class Sorter
     {
         public int SorterID { get; set; } // SorterID (Primary key)
-        public string SorterName { get; set; } // SorterName (length: 20)
+        public string SorterName { get; set; } = null!; // SorterName (length: 20)
     }
 
     // Sorters
     public class Sorters
     {
-        public string SorterName { get; set; } // SorterName (Primary key) (length: 20)
+        public string SorterName { get; set; } = null!; // SorterName (Primary key) (length: 20)
 
         // Reverse navigation
 
@@ -3606,21 +3606,21 @@ namespace V8_Efrpg_Test
     // SorterScannerGroup
     public class SorterScannerGroup
     {
-        public string SorterName { get; set; } // SorterName (Primary key) (length: 20)
+        public string SorterName { get; set; } = null!; // SorterName (Primary key) (length: 20)
 
         // Foreign keys
 
         /// <summary>
         /// Parent Sorter pointed by [SorterScannerGroup].([SorterName]) (FK_SorterScannerGroup_Sorters)
         /// </summary>
-        public virtual Sorters Sorter { get; set; } // FK_SorterScannerGroup_Sorters
+        public virtual Sorters Sorter { get; set; } = null!; // FK_SorterScannerGroup_Sorters
     }
 
     // Boo
     public class Stafford_Boo
     {
         public int id { get; set; } // id (Primary key)
-        public string name { get; set; } // name (length: 10)
+        public string name { get; set; } = null!; // name (length: 10)
 
         // Reverse navigation
 
@@ -3634,22 +3634,22 @@ namespace V8_Efrpg_Test
     public class Stafford_ComputedColumn
     {
         public int Id { get; set; } // Id (Primary key)
-        public string MyColumn { get; set; } // MyColumn (length: 10)
-        public string MyComputedColumn { get; private set; } // MyComputedColumn (length: 10)
+        public string MyColumn { get; set; } = null!; // MyColumn (length: 10)
+        public string MyComputedColumn { get; private set; } = null!; // MyComputedColumn (length: 10)
     }
 
     // Foo
     public class Stafford_Foo
     {
         public int id { get; set; } // id (Primary key)
-        public string name { get; set; } // name (length: 10)
+        public string name { get; set; } = null!; // name (length: 10)
 
         // Foreign keys
 
         /// <summary>
         /// Parent Stafford_Boo pointed by [Foo].([id]) (FK_Foo_Boo)
         /// </summary>
-        public virtual Stafford_Boo Stafford_Boo { get; set; } // FK_Foo_Boo
+        public virtual Stafford_Boo Stafford_Boo { get; set; } = null!; // FK_Foo_Boo
     }
 
     // Child
@@ -3657,21 +3657,21 @@ namespace V8_Efrpg_Test
     {
         public int ChildId { get; set; } // ChildId (Primary key)
         public int ParentId { get; set; } // ParentId
-        public string ChildName { get; set; } // ChildName (length: 100)
+        public string? ChildName { get; set; } // ChildName (length: 100)
 
         // Foreign keys
 
         /// <summary>
         /// Parent Synonyms_Parent pointed by [Child].([ParentId]) (FK_Child_Parent)
         /// </summary>
-        public virtual Synonyms_Parent Synonyms_Parent { get; set; } // FK_Child_Parent
+        public virtual Synonyms_Parent Synonyms_Parent { get; set; } = null!; // FK_Child_Parent
     }
 
     // Parent
     public class Synonyms_Parent
     {
         public int ParentId { get; set; } // ParentId (Primary key)
-        public string ParentName { get; set; } // ParentName (length: 100)
+        public string ParentName { get; set; } = null!; // ParentName (length: 100)
 
         // Reverse navigation
 
@@ -3690,14 +3690,14 @@ namespace V8_Efrpg_Test
     public class table_with_multiple_period
     {
         public int id { get; set; } // id (Primary key)
-        public string description { get; set; } // description (length: 20)
+        public string description { get; set; } = null!; // description (length: 20)
     }
 
     // TableA
     public class TableA
     {
         public int TableAId { get; set; } // TableAId (Primary key)
-        public string TableADesc { get; set; } // TableADesc (length: 20)
+        public string? TableADesc { get; set; } // TableADesc (length: 20)
 
         // Reverse navigation
 
@@ -3718,7 +3718,7 @@ namespace V8_Efrpg_Test
         public int TableBId { get; set; } // TableBId (Primary key)
         public int TableAId { get; set; } // TableAId (Primary key)
         public int? ParentTableAId { get; set; } // ParentTableAId
-        public string TableBDesc { get; set; } // TableBDesc (length: 20)
+        public string? TableBDesc { get; set; } // TableBDesc (length: 20)
 
         // Reverse navigation
 
@@ -3732,12 +3732,12 @@ namespace V8_Efrpg_Test
         /// <summary>
         /// Parent TableA pointed by [TableB].([TableAId]) (FK_TableA_CompositeKey_Req)
         /// </summary>
-        public virtual TableA TableA_TableAId { get; set; } // FK_TableA_CompositeKey_Req
+        public virtual TableA TableA_TableAId { get; set; } = null!; // FK_TableA_CompositeKey_Req
 
         /// <summary>
         /// Parent TableB pointed by [TableB].([TableAId], [TableBId]) (ParentTableB_Hierarchy)
         /// </summary>
-        public virtual TableB TableB1 { get; set; } // ParentTableB_Hierarchy
+        public virtual TableB TableB1 { get; set; } = null!; // ParentTableB_Hierarchy
     }
 
     // table with duplicate column names
@@ -3797,9 +3797,9 @@ namespace V8_Efrpg_Test
     public class TadeuszSobol
     {
         public int Id { get; set; } // Id (Primary key)
-        public string Description { get; set; } // Description
-        public string Notes { get; set; } // Notes
-        public string Name { get; set; } // Name (length: 10)
+        public string? Description { get; set; } // Description
+        public string? Notes { get; set; } // Notes
+        public string? Name { get; set; } // Name (length: 10)
     }
 
     // Task
@@ -3832,14 +3832,14 @@ namespace V8_Efrpg_Test
     public class tblOrderError
     {
         public int ID { get; set; } // ID (Primary key)
-        public string error { get; set; } // error (length: 50)
+        public string? error { get; set; } // error (length: 50)
     }
 
     // tblOrderErrorsAB_
     public class tblOrderErrorsAB
     {
         public int ID { get; set; } // ID (Primary key)
-        public string error { get; set; } // error (length: 50)
+        public string? error { get; set; } // error (length: 50)
     }
 
     // tblOrderLines
@@ -3847,21 +3847,21 @@ namespace V8_Efrpg_Test
     {
         public int ID { get; set; } // ID (Primary key)
         public int OrderID { get; set; } // OrderID
-        public string sku { get; set; } // sku (length: 15)
+        public string? sku { get; set; } // sku (length: 15)
 
         // Foreign keys
 
         /// <summary>
         /// Parent tblOrder pointed by [tblOrderLines].([OrderID]) (tblOrdersFK)
         /// </summary>
-        public virtual tblOrder tblOrder { get; set; } // tblOrdersFK
+        public virtual tblOrder tblOrder { get; set; } = null!; // tblOrdersFK
     }
 
     // TemporalDepartment
     public class TemporalDepartment
     {
         public int DeptID { get; set; } // DeptID (Primary key)
-        public string DeptName { get; set; } // DeptName (length: 50)
+        public string DeptName { get; set; } = null!; // DeptName (length: 50)
         public int? ManagerID { get; set; } // ManagerID
         public int? ParentDeptID { get; set; } // ParentDeptID
         public DateTime SysStartTime { get; set; } // SysStartTime
@@ -3872,7 +3872,7 @@ namespace V8_Efrpg_Test
     public class TemporalDepartmentHistory
     {
         public int DeptID { get; set; } // DeptID (Primary key)
-        public string DeptName { get; set; } // DeptName (Primary key) (length: 50)
+        public string DeptName { get; set; } = null!; // DeptName (Primary key) (length: 50)
         public int? ManagerID { get; set; } // ManagerID
         public int? ParentDeptID { get; set; } // ParentDeptID
         public DateTime SysStartTime { get; set; } // SysStartTime (Primary key)
@@ -3892,7 +3892,7 @@ namespace V8_Efrpg_Test
     public class ThisIsMemoryOptimised
     {
         public int Id { get; set; } // Id (Primary key)
-        public string Description { get; set; } // Description (length: 20)
+        public string Description { get; set; } = null!; // Description (length: 20)
     }
 
     // Ticket
@@ -3907,19 +3907,19 @@ namespace V8_Efrpg_Test
         /// <summary>
         /// Parent AppUser pointed by [Ticket].([CreatedById]) (FK_Ticket_AppUser)
         /// </summary>
-        public virtual AppUser CreatedBy { get; set; } // FK_Ticket_AppUser
+        public virtual AppUser CreatedBy { get; set; } = null!; // FK_Ticket_AppUser
 
         /// <summary>
         /// Parent AppUser pointed by [Ticket].([ModifiedById]) (FK_Ticket_AppUser1)
         /// </summary>
-        public virtual AppUser ModifiedBy { get; set; } // FK_Ticket_AppUser1
+        public virtual AppUser? ModifiedBy { get; set; } // FK_Ticket_AppUser1
     }
 
     // TimestampNotNull
     public class TimestampNotNull
     {
         public int Id { get; set; } // Id (Primary key)
-        public byte[] Version { get; set; } // Version (length: 8)
+        public byte[] Version { get; set; } = null!; // Version (length: 8)
         public int Number { get; set; } // Number
     }
 
@@ -3927,7 +3927,7 @@ namespace V8_Efrpg_Test
     public class TimestampNullable
     {
         public int Id { get; set; } // Id (Primary key)
-        public byte[] Version { get; set; } // Version (length: 8)
+        public byte[]? Version { get; set; } // Version (length: 8)
         public int Number { get; set; } // Number
     }
 
@@ -3947,7 +3947,7 @@ namespace V8_Efrpg_Test
     public class User
     {
         public int ID { get; set; } // ID (Primary key)
-        public string ExternalUserID { get; set; } // ExternalUserID (length: 50)
+        public string? ExternalUserID { get; set; } // ExternalUserID (length: 50)
 
         // Reverse navigation
 
@@ -3980,20 +3980,20 @@ namespace V8_Efrpg_Test
         /// <summary>
         /// Parent User pointed by [User_Document].([CreatedByUserID]) (FK_User_Document_User1)
         /// </summary>
-        public virtual User CreatedByUser { get; set; } // FK_User_Document_User1
+        public virtual User CreatedByUser { get; set; } = null!; // FK_User_Document_User1
 
         /// <summary>
         /// Parent User pointed by [User_Document].([UserID]) (FK_User_Document_User)
         /// </summary>
-        public virtual User User_UserID { get; set; } // FK_User_Document_User
+        public virtual User User_UserID { get; set; } = null!; // FK_User_Document_User
     }
 
     // User309
     public class User309
     {
         public long UserID { get; set; } // UserID (Primary key)
-        public string Lastname { get; set; } // Lastname (length: 100)
-        public string Firstname { get; set; } // Firstname (length: 100)
+        public string Lastname { get; set; } = null!; // Lastname (length: 100)
+        public string Firstname { get; set; } = null!; // Firstname (length: 100)
         public int? PhoneCountryID { get; set; } // PhoneCountryID
 
         // Foreign keys
@@ -4001,14 +4001,14 @@ namespace V8_Efrpg_Test
         /// <summary>
         /// Parent Country pointed by [User309].([PhoneCountryID]) (FK_User309_PhoneCountry)
         /// </summary>
-        public virtual Country Country { get; set; } // FK_User309_PhoneCountry
+        public virtual Country? Country { get; set; } // FK_User309_PhoneCountry
     }
 
     // Versioned
     public class Versioned
     {
         public int Id { get; set; } // Id (Primary key)
-        public byte[] Version { get; set; } // Version (length: 8)
+        public byte[] Version { get; set; } = null!; // Version (length: 8)
         public int Number { get; set; } // Number
     }
 
@@ -4016,7 +4016,7 @@ namespace V8_Efrpg_Test
     public class VersionedNullable
     {
         public int Id { get; set; } // Id (Primary key)
-        public byte[] Version { get; set; } // Version (length: 8)
+        public byte[]? Version { get; set; } // Version (length: 8)
         public int Number { get; set; } // Number
     }
 
@@ -4024,7 +4024,7 @@ namespace V8_Efrpg_Test
     public class view_with_multiple_period
     {
         public int FkID { get; set; } // FkID
-        public string description { get; set; } // description (length: 20)
+        public string description { get; set; } = null!; // description (length: 20)
     }
 
     // view with space
@@ -4033,13 +4033,13 @@ namespace V8_Efrpg_Test
         public int codeObjectNo { get; set; } // codeObjectNo
         public int? applicationNo { get; set; } // applicationNo
         public int type { get; set; } // type
-        public string eName { get; set; } // eName (length: 250)
-        public string aName { get; set; } // aName (length: 250)
-        public string description { get; set; } // description (length: 250)
-        public string codeName { get; set; } // codeName (length: 250)
-        public string note { get; set; } // note (length: 250)
+        public string eName { get; set; } = null!; // eName (length: 250)
+        public string? aName { get; set; } // aName (length: 250)
+        public string? description { get; set; } // description (length: 250)
+        public string? codeName { get; set; } // codeName (length: 250)
+        public string? note { get; set; } // note (length: 250)
         public bool isObject { get; set; } // isObject
-        public byte[] versionNumber { get; set; } // versionNumber (length: 8)
+        public byte[]? versionNumber { get; set; } // versionNumber (length: 8)
     }
 
     // Articles
@@ -4049,7 +4049,7 @@ namespace V8_Efrpg_Test
         public Guid FK_Factory { get; set; } // FK_Factory
         public int FK_ArticleLevel { get; set; } // FK_ArticleLevel
         public int? FK_ParentArticle { get; set; } // FK_ParentArticle
-        public string Code { get; set; } // Code (length: 20)
+        public string Code { get; set; } = null!; // Code (length: 20)
     }
 
     // v_Articles
@@ -4059,17 +4059,17 @@ namespace V8_Efrpg_Test
         public Guid? FK_Factory { get; set; } // FK_Factory
         public int? FK_ArticleLevel { get; set; } // FK_ArticleLevel
         public int? FK_ParentArticle { get; set; } // FK_ParentArticle
-        public string Code { get; set; } // Code (length: 20)
-        public string FullCode { get; set; } // FullCode (length: 100)
+        public string? Code { get; set; } // Code (length: 20)
+        public string? FullCode { get; set; } // FullCode (length: 100)
     }
 
     // Бренды товара
     public class Брендытовара
     {
         public int Кодбренда { get; set; } // Код бренда (Primary key)
-        public string Наименованиебренда { get; set; } // Наименование бренда (length: 50)
-        public byte[] Логотип_бренда { get; set; } // Логотип_бренда (length: 2147483647)
-        public byte[] Логотип_бренда_вертикальный { get; set; } // Логотип_бренда_вертикальный (length: 2147483647)
+        public string Наименованиебренда { get; set; } = null!; // Наименование бренда (length: 50)
+        public byte[]? Логотип_бренда { get; set; } // Логотип_бренда (length: 2147483647)
+        public byte[]? Логотип_бренда_вертикальный { get; set; } // Логотип_бренда_вертикальный (length: 2147483647)
     }
 
 

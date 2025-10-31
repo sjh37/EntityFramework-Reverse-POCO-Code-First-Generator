@@ -11,7 +11,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     // BatchTest
     public class BatchTest
     {
-        public string Code { get; set; } // code (Primary key) (length: 8)
+        public string Code { get; set; } = null!; // code (Primary key) (length: 8)
     }
 
 }

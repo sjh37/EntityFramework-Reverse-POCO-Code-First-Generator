@@ -210,7 +210,7 @@ namespace RP
     // BadEmail
     public class BadEmail
     {
-        public string Email { get; set; } // Email (Primary key) (length: 256)
+        public string Email { get; set; } = null!; // Email (Primary key) (length: 256)
     }
 
     // CartItem
@@ -219,11 +219,11 @@ namespace RP
         public int Id { get; set; } // Id (Primary key)
         public DateTime CreatedAt { get; set; } // CreatedAt
         public DateTime LastUpdatedAt { get; set; } // LastUpdatedAt
-        public string UserName { get; set; } // UserName (length: 256)
+        public string UserName { get; set; } = null!; // UserName (length: 256)
         public int ProductId { get; set; } // ProductId
         public int LicenceTypeId { get; set; } // LicenceTypeId
         public int Qty { get; set; } // Qty
-        public string RegisteredTo { get; set; } // RegisteredTo (length: 256)
+        public string RegisteredTo { get; set; } = null!; // RegisteredTo (length: 256)
         public DateTime? RenewalExpiry { get; set; } // RenewalExpiry
         public DateTime? ReminderSent { get; set; } // ReminderSent
 
@@ -232,36 +232,36 @@ namespace RP
         /// <summary>
         /// Parent LicenceType pointed by [CartItem].([LicenceTypeId]) (FK_CartItem_LicenceType_LicenceTypeId)
         /// </summary>
-        public LicenceType LicenceType { get; set; } // FK_CartItem_LicenceType_LicenceTypeId
+        public LicenceType LicenceType { get; set; } = null!; // FK_CartItem_LicenceType_LicenceTypeId
 
         /// <summary>
         /// Parent Product pointed by [CartItem].([ProductId]) (FK_CartItem_Product_ProductId)
         /// </summary>
-        public Product Product { get; set; } // FK_CartItem_Product_ProductId
+        public Product Product { get; set; } = null!; // FK_CartItem_Product_ProductId
 
         /// <summary>
         /// Parent ProductLicenceTypeMapping pointed by [CartItem].([ProductId], [LicenceTypeId]) (FK_CartItem_ProductLicenceTypeMapping_ProductId_LicenceTypeId)
         /// </summary>
-        public ProductLicenceTypeMapping ProductLicenceTypeMapping { get; set; } // FK_CartItem_ProductLicenceTypeMapping_ProductId_LicenceTypeId
+        public ProductLicenceTypeMapping ProductLicenceTypeMapping { get; set; } = null!; // FK_CartItem_ProductLicenceTypeMapping_ProductId_LicenceTypeId
     }
 
     // Checkout
     public class Checkout
     {
-        public string UserName { get; set; } // UserName (Primary key) (length: 256)
+        public string UserName { get; set; } = null!; // UserName (Primary key) (length: 256)
         public DateTime LastUpdatedAt { get; set; } // LastUpdatedAt
         public int CountryId { get; set; } // CountryId
         public int? DiscountId { get; set; } // DiscountId
-        public string FirstName { get; set; } // FirstName (length: 100)
-        public string LastName { get; set; } // LastName (length: 100)
-        public string Address1 { get; set; } // Address1 (length: 100)
-        public string Address2 { get; set; } // Address2 (length: 100)
-        public string City { get; set; } // City (length: 100)
-        public string Region { get; set; } // Region (length: 100)
-        public string PostalCode { get; set; } // PostalCode (length: 20)
-        public string Company { get; set; } // Company (length: 256)
-        public string CustomerRef { get; set; } // CustomerRef (length: 80)
-        public string VatNumber { get; set; } // VatNumber (length: 20)
+        public string FirstName { get; set; } = null!; // FirstName (length: 100)
+        public string LastName { get; set; } = null!; // LastName (length: 100)
+        public string Address1 { get; set; } = null!; // Address1 (length: 100)
+        public string? Address2 { get; set; } // Address2 (length: 100)
+        public string? City { get; set; } // City (length: 100)
+        public string? Region { get; set; } // Region (length: 100)
+        public string? PostalCode { get; set; } // PostalCode (length: 20)
+        public string Company { get; set; } = null!; // Company (length: 256)
+        public string? CustomerRef { get; set; } // CustomerRef (length: 80)
+        public string? VatNumber { get; set; } // VatNumber (length: 20)
         public decimal? VatRate { get; set; } // VatRate
         public decimal SubTotal { get; set; } // SubTotal
         public decimal VatTotal { get; set; } // VatTotal
@@ -272,21 +272,21 @@ namespace RP
         /// <summary>
         /// Parent Country pointed by [Checkout].([CountryId]) (FK_Checkout_Country_CountryId)
         /// </summary>
-        public Country Country { get; set; } // FK_Checkout_Country_CountryId
+        public Country Country { get; set; } = null!; // FK_Checkout_Country_CountryId
 
         /// <summary>
         /// Parent Discount pointed by [Checkout].([DiscountId]) (FK_Checkout_Discount_DiscountId)
         /// </summary>
-        public Discount Discount { get; set; } // FK_Checkout_Discount_DiscountId
+        public Discount? Discount { get; set; } // FK_Checkout_Discount_DiscountId
     }
 
     // Country
     public class Country
     {
         public int Id { get; set; } // Id (Primary key)
-        public string Name { get; set; } // Name (length: 100)
-        public string TwoLetterIsoCode { get; set; } // TwoLetterIsoCode (length: 2)
-        public string ThreeLetterIsoCode { get; set; } // ThreeLetterIsoCode (length: 3)
+        public string Name { get; set; } = null!; // Name (length: 100)
+        public string TwoLetterIsoCode { get; set; } = null!; // TwoLetterIsoCode (length: 2)
+        public string ThreeLetterIsoCode { get; set; } = null!; // ThreeLetterIsoCode (length: 3)
         public bool SubjectToVat { get; set; } // SubjectToVat
         public decimal? VatRate { get; set; } // VatRate
         public bool Published { get; set; } // Published
@@ -317,12 +317,12 @@ namespace RP
     public class Discount
     {
         public int Id { get; set; } // Id (Primary key)
-        public string Description { get; set; } // Description (length: 150)
+        public string Description { get; set; } = null!; // Description (length: 150)
         public bool Active { get; set; } // Active
         public DateTime? StartDate { get; set; } // StartDate
         public DateTime? EndDate { get; set; } // EndDate
         public bool RequiresCouponCode { get; set; } // RequiresCouponCode
-        public string CouponCode { get; set; } // CouponCode (length: 20)
+        public string? CouponCode { get; set; } // CouponCode (length: 20)
         public bool UsePercentage { get; set; } // UsePercentage
         public decimal? DiscountPercentage { get; set; } // DiscountPercentage
         public decimal? DiscountAmount { get; set; } // DiscountAmount
@@ -348,7 +348,7 @@ namespace RP
         /// <summary>
         /// Parent DiscountLimitation pointed by [Discount].([DiscountLimitationId]) (FK_Discount_DiscountLimitation_DiscountLimitationId)
         /// </summary>
-        public DiscountLimitation DiscountLimitation { get; set; } // FK_Discount_DiscountLimitation_DiscountLimitationId
+        public DiscountLimitation DiscountLimitation { get; set; } = null!; // FK_Discount_DiscountLimitation_DiscountLimitationId
 
         public Discount()
         {
@@ -361,7 +361,7 @@ namespace RP
     public class DiscountLimitation
     {
         public int Id { get; set; } // Id (Primary key)
-        public string Description { get; set; } // Description (length: 50)
+        public string Description { get; set; } = null!; // Description (length: 50)
         public bool Active { get; set; } // Active
 
         // Reverse navigation
@@ -381,8 +381,8 @@ namespace RP
     public class LicenceType
     {
         public int Id { get; set; } // Id (Primary key)
-        public string Description { get; set; } // Description (length: 50)
-        public string SubText { get; set; } // SubText (length: 256)
+        public string Description { get; set; } = null!; // Description (length: 50)
+        public string SubText { get; set; } = null!; // SubText (length: 256)
         public bool Active { get; set; } // Active
 
         // Reverse navigation
@@ -419,7 +419,7 @@ namespace RP
     // NotificationOptOut
     public class NotificationOptOut
     {
-        public string UserName { get; set; } // UserName (Primary key) (length: 256)
+        public string UserName { get; set; } = null!; // UserName (Primary key) (length: 256)
         public int NotificationTypeId { get; set; } // NotificationTypeId (Primary key)
 
         // Foreign keys
@@ -427,14 +427,14 @@ namespace RP
         /// <summary>
         /// Parent NotificationType pointed by [NotificationOptOut].([NotificationTypeId]) (FK_NotificationOptOut_NotificationType_NotificationTypeId)
         /// </summary>
-        public NotificationType NotificationType { get; set; } // FK_NotificationOptOut_NotificationType_NotificationTypeId
+        public NotificationType NotificationType { get; set; } = null!; // FK_NotificationOptOut_NotificationType_NotificationTypeId
     }
 
     // NotificationType
     public class NotificationType
     {
         public int Id { get; set; } // Id (Primary key)
-        public string Description { get; set; } // Description (length: 50)
+        public string Description { get; set; } = null!; // Description (length: 50)
         public bool Active { get; set; } // Active
 
         // Reverse navigation
@@ -461,20 +461,20 @@ namespace RP
     {
         public int Id { get; set; } // Id (Primary key)
         public DateTime CreatedAt { get; set; } // CreatedAt
-        public string UserName { get; set; } // UserName (length: 256)
+        public string UserName { get; set; } = null!; // UserName (length: 256)
         public int CountryId { get; set; } // CountryId
         public int? DiscountId { get; set; } // DiscountId
-        public string TransactionId { get; set; } // TransactionId (length: 40)
-        public string FirstName { get; set; } // FirstName (length: 100)
-        public string LastName { get; set; } // LastName (length: 100)
-        public string Address1 { get; set; } // Address1 (length: 100)
-        public string Address2 { get; set; } // Address2 (length: 100)
-        public string City { get; set; } // City (length: 100)
-        public string Region { get; set; } // Region (length: 100)
-        public string PostalCode { get; set; } // PostalCode (length: 20)
-        public string Company { get; set; } // Company (length: 256)
-        public string CustomerRef { get; set; } // CustomerRef (length: 80)
-        public string VatNumber { get; set; } // VatNumber (length: 20)
+        public string TransactionId { get; set; } = null!; // TransactionId (length: 40)
+        public string FirstName { get; set; } = null!; // FirstName (length: 100)
+        public string LastName { get; set; } = null!; // LastName (length: 100)
+        public string Address1 { get; set; } = null!; // Address1 (length: 100)
+        public string? Address2 { get; set; } // Address2 (length: 100)
+        public string? City { get; set; } // City (length: 100)
+        public string? Region { get; set; } // Region (length: 100)
+        public string? PostalCode { get; set; } // PostalCode (length: 20)
+        public string Company { get; set; } = null!; // Company (length: 256)
+        public string? CustomerRef { get; set; } // CustomerRef (length: 80)
+        public string? VatNumber { get; set; } // VatNumber (length: 20)
         public decimal? VatRate { get; set; } // VatRate
         public decimal SubTotal { get; set; } // SubTotal
         public decimal VatTotal { get; set; } // VatTotal
@@ -502,12 +502,12 @@ namespace RP
         /// <summary>
         /// Parent Country pointed by [Order].([CountryId]) (FK_Order_Country_CountryId)
         /// </summary>
-        public Country Country { get; set; } // FK_Order_Country_CountryId
+        public Country Country { get; set; } = null!; // FK_Order_Country_CountryId
 
         /// <summary>
         /// Parent Discount pointed by [Order].([DiscountId]) (FK_Order_Discount_DiscountId)
         /// </summary>
-        public Discount Discount { get; set; } // FK_Order_Discount_DiscountId
+        public Discount? Discount { get; set; } // FK_Order_Discount_DiscountId
 
         public Order()
         {
@@ -528,7 +528,7 @@ namespace RP
         public int ProductId { get; set; } // ProductId
         public int LicenceTypeId { get; set; } // LicenceTypeId
         public int Qty { get; set; } // Qty
-        public string RegisteredTo { get; set; } // RegisteredTo (length: 256)
+        public string RegisteredTo { get; set; } = null!; // RegisteredTo (length: 256)
         public DateTime LicenceExpiry { get; set; } // LicenceExpiry
         public decimal UnitPrice { get; set; } // UnitPrice
         public decimal Discount { get; set; } // Discount
@@ -550,27 +550,27 @@ namespace RP
         /// <summary>
         /// Parent LicenceType pointed by [OrderItem].([LicenceTypeId]) (FK_OrderItem_LicenceType_LicenceTypeId)
         /// </summary>
-        public LicenceType LicenceType { get; set; } // FK_OrderItem_LicenceType_LicenceTypeId
+        public LicenceType LicenceType { get; set; } = null!; // FK_OrderItem_LicenceType_LicenceTypeId
 
         /// <summary>
         /// Parent Order pointed by [OrderItem].([OrderId]) (FK_OrderItem_Order_OrderId)
         /// </summary>
-        public Order Order { get; set; } // FK_OrderItem_Order_OrderId
+        public Order Order { get; set; } = null!; // FK_OrderItem_Order_OrderId
 
         /// <summary>
         /// Parent Product pointed by [OrderItem].([ProductId]) (FK_OrderItem_Product_ProductId)
         /// </summary>
-        public Product Product { get; set; } // FK_OrderItem_Product_ProductId
+        public Product Product { get; set; } = null!; // FK_OrderItem_Product_ProductId
 
         /// <summary>
         /// Parent ProductLicenceTypeMapping pointed by [OrderItem].([ProductId], [LicenceTypeId]) (FK_OrderItem_ProductLicenceTypeMapping_ProductId_LicenceTypeId)
         /// </summary>
-        public ProductLicenceTypeMapping ProductLicenceTypeMapping { get; set; } // FK_OrderItem_ProductLicenceTypeMapping_ProductId_LicenceTypeId
+        public ProductLicenceTypeMapping ProductLicenceTypeMapping { get; set; } = null!; // FK_OrderItem_ProductLicenceTypeMapping_ProductId_LicenceTypeId
 
         /// <summary>
         /// Parent SignatureUsed pointed by [OrderItem].([SignatureUsedId]) (FK_OrderItem_SignatureUsed_SignatureUsedId)
         /// </summary>
-        public SignatureUsed SignatureUsed { get; set; } // FK_OrderItem_SignatureUsed_SignatureUsedId
+        public SignatureUsed SignatureUsed { get; set; } = null!; // FK_OrderItem_SignatureUsed_SignatureUsedId
 
         public OrderItem()
         {
@@ -586,7 +586,7 @@ namespace RP
         public int Id { get; set; } // Id (Primary key)
         public DateTime CreatedAt { get; set; } // CreatedAt
         public byte Status { get; set; } // Status
-        public string EmailedTo { get; set; } // EmailedTo (length: 256)
+        public string? EmailedTo { get; set; } // EmailedTo (length: 256)
         public int OrderId { get; set; } // OrderId
 
         // Foreign keys
@@ -594,7 +594,7 @@ namespace RP
         /// <summary>
         /// Parent Order pointed by [OrderLog].([OrderId]) (FK_OrderLog_Order_OrderId)
         /// </summary>
-        public Order Order { get; set; } // FK_OrderLog_Order_OrderId
+        public Order Order { get; set; } = null!; // FK_OrderLog_Order_OrderId
     }
 
     // OrderNotificationSent
@@ -609,20 +609,20 @@ namespace RP
         /// <summary>
         /// Parent NotificationType pointed by [OrderNotificationSent].([NotificationTypeId]) (FK_OrderNotificationSent_NotificationType_NotificationTypeId)
         /// </summary>
-        public NotificationType NotificationType { get; set; } // FK_OrderNotificationSent_NotificationType_NotificationTypeId
+        public NotificationType NotificationType { get; set; } = null!; // FK_OrderNotificationSent_NotificationType_NotificationTypeId
 
         /// <summary>
         /// Parent OrderItem pointed by [OrderNotificationSent].([OrderItemId]) (FK_OrderNotificationSent_OrderItem_OrderItemId)
         /// </summary>
-        public OrderItem OrderItem { get; set; } // FK_OrderNotificationSent_OrderItem_OrderItemId
+        public OrderItem OrderItem { get; set; } = null!; // FK_OrderNotificationSent_OrderItem_OrderItemId
     }
 
     // Product
     public class Product
     {
         public int Id { get; set; } // Id (Primary key)
-        public string Description { get; set; } // Description (length: 80)
-        public string ShortDescription { get; set; } // ShortDescription (length: 80)
+        public string Description { get; set; } = null!; // Description (length: 80)
+        public string ShortDescription { get; set; } = null!; // ShortDescription (length: 80)
         public bool Active { get; set; } // Active
 
         // Reverse navigation
@@ -664,11 +664,11 @@ namespace RP
         public bool Active { get; set; } // Active
         public decimal Price { get; set; } // Price
         public int Days { get; set; } // Days
-        public string DurationText { get; set; } // DurationText (length: 20)
-        public string MaxTables { get; set; } // MaxTables (length: 20)
-        public string MaxTablesBadge { get; set; } // MaxTablesBadge (length: 20)
-        public string MaxStoredProcs { get; set; } // MaxStoredProcs (length: 20)
-        public string MaxStoredProcsBadge { get; set; } // MaxStoredProcsBadge (length: 20)
+        public string DurationText { get; set; } = null!; // DurationText (length: 20)
+        public string MaxTables { get; set; } = null!; // MaxTables (length: 20)
+        public string MaxTablesBadge { get; set; } = null!; // MaxTablesBadge (length: 20)
+        public string MaxStoredProcs { get; set; } = null!; // MaxStoredProcs (length: 20)
+        public string MaxStoredProcsBadge { get; set; } = null!; // MaxStoredProcsBadge (length: 20)
 
         // Reverse navigation
 
@@ -687,12 +687,12 @@ namespace RP
         /// <summary>
         /// Parent LicenceType pointed by [ProductLicenceTypeMapping].([LicenceTypeId]) (FK_ProductLicenceTypeMapping_LicenceType_LicenceTypeId)
         /// </summary>
-        public LicenceType LicenceType { get; set; } // FK_ProductLicenceTypeMapping_LicenceType_LicenceTypeId
+        public LicenceType LicenceType { get; set; } = null!; // FK_ProductLicenceTypeMapping_LicenceType_LicenceTypeId
 
         /// <summary>
         /// Parent Product pointed by [ProductLicenceTypeMapping].([ProductId]) (FK_ProductLicenceTypeMapping_Product_ProductId)
         /// </summary>
-        public Product Product { get; set; } // FK_ProductLicenceTypeMapping_Product_ProductId
+        public Product Product { get; set; } = null!; // FK_ProductLicenceTypeMapping_Product_ProductId
 
         public ProductLicenceTypeMapping()
         {
@@ -706,7 +706,7 @@ namespace RP
     {
         public int? Year { get; set; } // Year
         public int? Week { get; set; } // Week
-        public string Description { get; set; } // Description (length: 50)
+        public string Description { get; set; } = null!; // Description (length: 50)
         public int? NumOrders { get; set; } // NumOrders
         public int? Qty { get; set; } // Qty
         public decimal? SubTotal { get; set; } // SubTotal
@@ -716,7 +716,7 @@ namespace RP
     public class SignatureUsed
     {
         public int Id { get; set; } // Id (Primary key)
-        public string Modulus { get; set; } // Modulus (length: 10)
+        public string Modulus { get; set; } = null!; // Modulus (length: 10)
 
         // Reverse navigation
 
@@ -735,9 +735,9 @@ namespace RP
     public class sys_DatabaseFirewallRule
     {
         public int Id { get; set; } // id
-        public string Name { get; set; } // name (length: 128)
-        public string StartIpAddress { get; set; } // start_ip_address (length: 45)
-        public string EndIpAddress { get; set; } // end_ip_address (length: 45)
+        public string Name { get; set; } = null!; // name (length: 128)
+        public string StartIpAddress { get; set; } = null!; // start_ip_address (length: 45)
+        public string EndIpAddress { get; set; } = null!; // end_ip_address (length: 45)
         public DateTime CreateDate { get; set; } // create_date
         public DateTime ModifyDate { get; set; } // modify_date
     }
@@ -749,7 +749,7 @@ namespace RP
         public bool Active { get; set; } // Active
         public int ProductId { get; set; } // ProductId
         public int LicenceTypeId { get; set; } // LicenceTypeId
-        public string Description { get; set; } // Description (length: 150)
+        public string Description { get; set; } = null!; // Description (length: 150)
         public int MinQty { get; set; } // MinQty
         public int MaxQty { get; set; } // MaxQty
         public decimal? DiscountPercentage { get; set; } // DiscountPercentage
@@ -759,12 +759,12 @@ namespace RP
         /// <summary>
         /// Parent LicenceType pointed by [VolumeDiscount].([LicenceTypeId]) (FK_VolumeDiscount_LicenceType_LicenceTypeId)
         /// </summary>
-        public LicenceType LicenceType { get; set; } // FK_VolumeDiscount_LicenceType_LicenceTypeId
+        public LicenceType LicenceType { get; set; } = null!; // FK_VolumeDiscount_LicenceType_LicenceTypeId
 
         /// <summary>
         /// Parent Product pointed by [VolumeDiscount].([ProductId]) (FK_VolumeDiscount_Product_ProductId)
         /// </summary>
-        public Product Product { get; set; } // FK_VolumeDiscount_Product_ProductId
+        public Product Product { get; set; } = null!; // FK_VolumeDiscount_Product_ProductId
     }
 
 

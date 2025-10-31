@@ -13,14 +13,14 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
     {
         public int Id { get; set; } // ID (Primary key)
         public int OrderId { get; set; } // OrderID
-        public string Sku { get; set; } // sku (length: 15)
+        public string? Sku { get; set; } // sku (length: 15)
 
         // Foreign keys
 
         /// <summary>
         /// Parent AbOrdersAb pointed by [AB_OrderLinesAB_].([OrderId]) (AB_OrderLinesAB_FK)
         /// </summary>
-        public virtual AbOrdersAb AbOrdersAb { get; set; } // AB_OrderLinesAB_FK
+        public virtual AbOrdersAb AbOrdersAb { get; set; } = null!; // AB_OrderLinesAB_FK
     }
 
 }

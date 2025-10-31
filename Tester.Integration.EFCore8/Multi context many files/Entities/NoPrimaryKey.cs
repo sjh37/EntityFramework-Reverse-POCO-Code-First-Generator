@@ -12,7 +12,7 @@ namespace Tester.Integration.EFCore8.Multi_context_many_filesPlum
     // NoPrimaryKeys
     public class NoPrimaryKey
     {
-        public string Description { get; set; } // Description (Primary key) (length: 10)
+        public string? Description { get; set; } // Description (Primary key) (length: 10)
 
         // Reverse navigation
 

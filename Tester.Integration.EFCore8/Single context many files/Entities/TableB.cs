@@ -14,7 +14,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         public int TableBId { get; set; } // TableBId (Primary key)
         public int TableAId { get; set; } // TableAId (Primary key)
         public int? ParentTableAId { get; set; } // ParentTableAId
-        public string TableBDesc { get; set; } // TableBDesc (length: 20)
+        public string? TableBDesc { get; set; } // TableBDesc (length: 20)
 
         // Reverse navigation
 
@@ -28,12 +28,12 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         /// <summary>
         /// Parent TableA pointed by [TableB].([TableAId]) (FK_TableA_CompositeKey_Req)
         /// </summary>
-        public virtual TableA TableA_TableAId { get; set; } // FK_TableA_CompositeKey_Req
+        public virtual TableA TableA_TableAId { get; set; } = null!; // FK_TableA_CompositeKey_Req
 
         /// <summary>
         /// Parent TableB pointed by [TableB].([TableAId], [TableBId]) (ParentTableB_Hierarchy)
         /// </summary>
-        public virtual TableB TableB1 { get; set; } // ParentTableB_Hierarchy
+        public virtual TableB TableB1 { get; set; } = null!; // ParentTableB_Hierarchy
     }
 
 }

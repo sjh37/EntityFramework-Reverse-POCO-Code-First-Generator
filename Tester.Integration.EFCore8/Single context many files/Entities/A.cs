@@ -20,7 +20,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         /// <summary>
         /// Parent Aaref pointed by [A].([C1], [C2]) (FK_A_A)
         /// </summary>
-        public virtual Aaref Aaref { get; set; } // FK_A_A
+        public virtual Aaref Aaref { get; set; } = null!; // FK_A_A
     }
 
 }
