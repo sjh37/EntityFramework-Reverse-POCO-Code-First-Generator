@@ -21,7 +21,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
             public bool isObject { get; set; }
             public byte[] versionNumber { get; set; } = null!;
         }
-        public List<ResultSetModel1> ResultSet1;
+        public List<ResultSetModel1> ResultSet1 = null!;
         public class ResultSetModel2
         {
             public int Id { get; set; }
@@ -30,13 +30,13 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
             public int? computed_column { get; set; }
             public int? computed_column_persisted { get; set; }
         }
-        public List<ResultSetModel2> ResultSet2;
+        public List<ResultSetModel2> ResultSet2 = null!;
         public class ResultSetModel3
         {
             public int Id { get; set; }
             public string Name { get; set; } = null!;
         }
-        public List<ResultSetModel3> ResultSet3;
+        public List<ResultSetModel3> ResultSet3 = null!;
     }
 
 }

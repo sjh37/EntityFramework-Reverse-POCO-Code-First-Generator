@@ -724,7 +724,7 @@ namespace TestDatabaseStandard
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[AddTwoValues] @a, @b",  new[] {aParam, bParam, procResultParam}, cancellationToken);
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[AddTwoValues] @a, @b",  new[] {(object?)aParam, (object?)bParam, procResultParam}, cancellationToken);
 
             return (int)procResultParam.Value;
         }
@@ -781,7 +781,7 @@ namespace TestDatabaseStandard
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-            await Database.ExecuteSqlRawAsync("EXEC @procResult = [Alpha].[Overclock] @Parameter",  new[] {parameterParam, procResultParam}, cancellationToken);
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [Alpha].[Overclock] @Parameter",  new[] {(object?)parameterParam, procResultParam}, cancellationToken);
 
             return (int)procResultParam.Value;
         }
@@ -860,7 +860,7 @@ namespace TestDatabaseStandard
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-            await Database.ExecuteSqlRawAsync("EXEC @procResult = [Beta].[Overclock] @Parameter",  new[] {parameterParam, procResultParam}, cancellationToken);
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [Beta].[Overclock] @Parameter",  new[] {(object?)parameterParam, procResultParam}, cancellationToken);
 
             return (int)procResultParam.Value;
         }
@@ -1384,7 +1384,7 @@ namespace TestDatabaseStandard
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[NvarcharTest] @maxOutputParam, @normalOutputParam",  new[] {maxOutputParamParam, normalOutputParamParam, procResultParam}, cancellationToken);
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[NvarcharTest] @maxOutputParam, @normalOutputParam",  new[] {(object?)maxOutputParamParam, (object?)normalOutputParamParam, procResultParam}, cancellationToken);
 
             return (int)procResultParam.Value;
         }
@@ -1410,7 +1410,7 @@ namespace TestDatabaseStandard
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-            await Database.ExecuteSqlRawAsync("EXEC @procResult = [Omega].[Overclock] @Parameter",  new[] {parameterParam, procResultParam}, cancellationToken);
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [Omega].[Overclock] @Parameter",  new[] {(object?)parameterParam, procResultParam}, cancellationToken);
 
             return (int)procResultParam.Value;
         }
@@ -1963,7 +1963,7 @@ namespace TestDatabaseStandard
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[StupidStoredProcedureParams] @ReqType, @Dept, @Class, @Item",  new[] {reqTypeParam, deptParam, @classParam, itemParam, procResultParam}, cancellationToken);
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[StupidStoredProcedureParams] @ReqType, @Dept, @Class, @Item",  new[] {(object?)reqTypeParam, (object?)deptParam, (object?)@classParam, (object?)itemParam, procResultParam}, cancellationToken);
 
             return (int)procResultParam.Value;
         }
@@ -2013,7 +2013,7 @@ namespace TestDatabaseStandard
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[StupidStoredProcedureParams2] @override, @readonly, @class, @enum",  new[] {@overrideParam, @readonlyParam, @classParam, @enumParam, procResultParam}, cancellationToken);
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[StupidStoredProcedureParams2] @override, @readonly, @class, @enum",  new[] {(object?)@overrideParam, (object?)@readonlyParam, (object?)@classParam, (object?)@enumParam, procResultParam}, cancellationToken);
 
             return (int)procResultParam.Value;
         }
@@ -2154,7 +2154,7 @@ namespace TestDatabaseStandard
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[UserDefinedTypeSampleStoredProc] @a, @type, @b",  new[] {aParam, typeParam, bParam, procResultParam}, cancellationToken);
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[UserDefinedTypeSampleStoredProc] @a, @type, @b",  new[] {(object?)aParam, (object?)typeParam, (object?)bParam, procResultParam}, cancellationToken);
 
             return (int)procResultParam.Value;
         }

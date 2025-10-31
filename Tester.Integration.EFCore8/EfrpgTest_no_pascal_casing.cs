@@ -713,7 +713,7 @@ namespace V8_Efrpg_Test
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[AddTwoValues] @a, @b",  new[] {aParam, bParam, procResultParam}, cancellationToken);
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[AddTwoValues] @a, @b",  new[] {(object?)aParam, (object?)bParam, procResultParam}, cancellationToken);
 
             return (int)procResultParam.Value;
         }
@@ -770,7 +770,7 @@ namespace V8_Efrpg_Test
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-            await Database.ExecuteSqlRawAsync("EXEC @procResult = [Alpha].[Overclock] @Parameter",  new[] {parameterParam, procResultParam}, cancellationToken);
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [Alpha].[Overclock] @Parameter",  new[] {(object?)parameterParam, procResultParam}, cancellationToken);
 
             return (int)procResultParam.Value;
         }
@@ -849,7 +849,7 @@ namespace V8_Efrpg_Test
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-            await Database.ExecuteSqlRawAsync("EXEC @procResult = [Beta].[Overclock] @Parameter",  new[] {parameterParam, procResultParam}, cancellationToken);
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [Beta].[Overclock] @Parameter",  new[] {(object?)parameterParam, procResultParam}, cancellationToken);
 
             return (int)procResultParam.Value;
         }
@@ -1373,7 +1373,7 @@ namespace V8_Efrpg_Test
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[NvarcharTest] @maxOutputParam, @normalOutputParam",  new[] {maxOutputParamParam, normalOutputParamParam, procResultParam}, cancellationToken);
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[NvarcharTest] @maxOutputParam, @normalOutputParam",  new[] {(object?)maxOutputParamParam, (object?)normalOutputParamParam, procResultParam}, cancellationToken);
 
             return (int)procResultParam.Value;
         }
@@ -1399,7 +1399,7 @@ namespace V8_Efrpg_Test
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-            await Database.ExecuteSqlRawAsync("EXEC @procResult = [Omega].[Overclock] @Parameter",  new[] {parameterParam, procResultParam}, cancellationToken);
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [Omega].[Overclock] @Parameter",  new[] {(object?)parameterParam, procResultParam}, cancellationToken);
 
             return (int)procResultParam.Value;
         }
@@ -1952,7 +1952,7 @@ namespace V8_Efrpg_Test
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[StupidStoredProcedureParams] @ReqType, @Dept, @Class, @Item",  new[] {reqTypeParam, deptParam, @classParam, itemParam, procResultParam}, cancellationToken);
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[StupidStoredProcedureParams] @ReqType, @Dept, @Class, @Item",  new[] {(object?)reqTypeParam, (object?)deptParam, (object?)@classParam, (object?)itemParam, procResultParam}, cancellationToken);
 
             return (int)procResultParam.Value;
         }
@@ -2002,7 +2002,7 @@ namespace V8_Efrpg_Test
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[StupidStoredProcedureParams2] @override, @readonly, @class, @enum",  new[] {@overrideParam, @readonlyParam, @classParam, @enumParam, procResultParam}, cancellationToken);
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[StupidStoredProcedureParams2] @override, @readonly, @class, @enum",  new[] {(object?)@overrideParam, (object?)@readonlyParam, (object?)@classParam, (object?)@enumParam, procResultParam}, cancellationToken);
 
             return (int)procResultParam.Value;
         }
@@ -2143,7 +2143,7 @@ namespace V8_Efrpg_Test
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[UserDefinedTypeSampleStoredProc] @a, @type, @b",  new[] {aParam, typeParam, bParam, procResultParam}, cancellationToken);
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[UserDefinedTypeSampleStoredProc] @a, @type, @b",  new[] {(object?)aParam, (object?)typeParam, (object?)bParam, procResultParam}, cancellationToken);
 
             return (int)procResultParam.Value;
         }
@@ -5933,19 +5933,19 @@ namespace V8_Efrpg_Test
             public int? Id { get; set; }
             public string DescriptionFlag1 { get; set; } = null!;
         }
-        public List<ResultSetModel1> ResultSet1;
+        public List<ResultSetModel1> ResultSet1 = null!;
         public class ResultSetModel2
         {
             public int? Id { get; set; }
             public string DescriptionNotNull { get; set; } = null!;
         }
-        public List<ResultSetModel2> ResultSet2;
+        public List<ResultSetModel2> ResultSet2 = null!;
         public class ResultSetModel3
         {
             public int? Id { get; set; }
             public string Description { get; set; } = null!;
         }
-        public List<ResultSetModel3> ResultSet3;
+        public List<ResultSetModel3> ResultSet3 = null!;
     }
 
     public class CheckIfApplicationIsCompleteReturnModel
@@ -6088,25 +6088,25 @@ namespace V8_Efrpg_Test
             public int codeObjectNo { get; set; }
             public int? applicationNo { get; set; }
         }
-        public List<ResultSetModel1> ResultSet1;
+        public List<ResultSetModel1> ResultSet1 = null!;
         public class ResultSetModel2
         {
             public int Id { get; set; }
             public string Name { get; set; } = null!;
         }
-        public List<ResultSetModel2> ResultSet2;
+        public List<ResultSetModel2> ResultSet2 = null!;
         public class ResultSetModel3
         {
             public string code { get; set; } = null!;
         }
-        public List<ResultSetModel3> ResultSet3;
+        public List<ResultSetModel3> ResultSet3 = null!;
         public class ResultSetModel4
         {
             public long id { get; set; }
             public long id_t { get; set; }
             public long num { get; set; }
         }
-        public List<ResultSetModel4> ResultSet4;
+        public List<ResultSetModel4> ResultSet4 = null!;
         public class ResultSetModel5
         {
             public int Id { get; set; }
@@ -6115,14 +6115,14 @@ namespace V8_Efrpg_Test
             public int? computed_column { get; set; }
             public int? computed_column_persisted { get; set; }
         }
-        public List<ResultSetModel5> ResultSet5;
+        public List<ResultSetModel5> ResultSet5 = null!;
         public class ResultSetModel6
         {
             public int ID { get; set; }
             public int OrderID { get; set; }
             public string sku { get; set; } = null!;
         }
-        public List<ResultSetModel6> ResultSet6;
+        public List<ResultSetModel6> ResultSet6 = null!;
     }
 
     public class stp_multiple_results_with_paramsReturnModel
@@ -6132,13 +6132,13 @@ namespace V8_Efrpg_Test
             public int codeObjectNo { get; set; }
             public int? applicationNo { get; set; }
         }
-        public List<ResultSetModel1> ResultSet1;
+        public List<ResultSetModel1> ResultSet1 = null!;
         public class ResultSetModel2
         {
             public int Id { get; set; }
             public string Name { get; set; } = null!;
         }
-        public List<ResultSetModel2> ResultSet2;
+        public List<ResultSetModel2> ResultSet2 = null!;
     }
 
     public class stp_multiple_resultsReturnModel
@@ -6156,7 +6156,7 @@ namespace V8_Efrpg_Test
             public bool isObject { get; set; }
             public byte[] versionNumber { get; set; } = null!;
         }
-        public List<ResultSetModel1> ResultSet1;
+        public List<ResultSetModel1> ResultSet1 = null!;
         public class ResultSetModel2
         {
             public int Id { get; set; }
@@ -6165,13 +6165,13 @@ namespace V8_Efrpg_Test
             public int? computed_column { get; set; }
             public int? computed_column_persisted { get; set; }
         }
-        public List<ResultSetModel2> ResultSet2;
+        public List<ResultSetModel2> ResultSet2 = null!;
         public class ResultSetModel3
         {
             public int Id { get; set; }
             public string Name { get; set; } = null!;
         }
-        public List<ResultSetModel3> ResultSet3;
+        public List<ResultSetModel3> ResultSet3 = null!;
     }
 
     public class stp_no_params_testReturnModel

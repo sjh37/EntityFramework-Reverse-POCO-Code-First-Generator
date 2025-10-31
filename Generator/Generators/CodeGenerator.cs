@@ -689,8 +689,12 @@ namespace Efrpg.Generators
             {
                 ResultClassModifiers = Settings.ResultClassModifiers,
                 WriteStoredProcReturnModelName = sp.WriteStoredProcReturnModelName(_filter),
-                PropertyGetSet = useProperties ? " { get; set; }" : ";",
-                NullForgivingOperator = useProperties ? (needsNullForgiving ? " = null!;" : ";") : string.Empty,
+                PropertyGetSet = useProperties 
+                    ? " { get; set; }"              // Properties: always include { get; set; }
+                    : (needsNullForgiving ? "" : ";"),  // Fields: skip ; if NRT enabled (will be added with = null!;)
+                NullForgivingOperator = needsNullForgiving 
+                    ? " = null!;"                       // Always add = null!; when NRT is enabled
+                    : (useProperties ? ";" : ""),       // Add ; for properties only when NRT is disabled
                 SingleModel = sp.ReturnModels.Count == 1,
                 SingleModelReturnColumns = sp.ReturnModels
                     .First()

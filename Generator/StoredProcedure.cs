@@ -270,9 +270,14 @@ namespace Efrpg
             if (IsEfCore8Plus && (hasParam || includeProcResultParam))
                 sb.Append(" new[] {");
 
+            var needsNullForgiving = Settings.NeedsNullForgiving();
             foreach (var p in Parameters.OrderBy(x => x.Ordinal))
             {
-                sb.Append(string.Format("{0}{1}, ", p.NameHumanCase, appendParam ? "Param" : string.Empty));
+                var paramName = string.Format("{0}{1}", p.NameHumanCase, appendParam ? "Param" : string.Empty);
+                // Cast to (object?) to allow null values when nullable reference types are enabled
+                if (IsEfCore8Plus && needsNullForgiving)
+                    paramName = string.Format("(object?){0}", paramName);
+                sb.Append(string.Format("{0}, ", paramName));
                 hasParam = true;
             }
 

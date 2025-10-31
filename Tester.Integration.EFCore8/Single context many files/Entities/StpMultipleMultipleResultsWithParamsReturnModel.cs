@@ -13,25 +13,25 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
             public int codeObjectNo { get; set; }
             public int? applicationNo { get; set; }
         }
-        public List<ResultSetModel1> ResultSet1;
+        public List<ResultSetModel1> ResultSet1 = null!;
         public class ResultSetModel2
         {
             public int Id { get; set; }
             public string Name { get; set; } = null!;
         }
-        public List<ResultSetModel2> ResultSet2;
+        public List<ResultSetModel2> ResultSet2 = null!;
         public class ResultSetModel3
         {
             public string code { get; set; } = null!;
         }
-        public List<ResultSetModel3> ResultSet3;
+        public List<ResultSetModel3> ResultSet3 = null!;
         public class ResultSetModel4
         {
             public long id { get; set; }
             public long id_t { get; set; }
             public long num { get; set; }
         }
-        public List<ResultSetModel4> ResultSet4;
+        public List<ResultSetModel4> ResultSet4 = null!;
         public class ResultSetModel5
         {
             public int Id { get; set; }
@@ -40,14 +40,14 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
             public int? computed_column { get; set; }
             public int? computed_column_persisted { get; set; }
         }
-        public List<ResultSetModel5> ResultSet5;
+        public List<ResultSetModel5> ResultSet5 = null!;
         public class ResultSetModel6
         {
             public int ID { get; set; }
             public int OrderID { get; set; }
             public string sku { get; set; } = null!;
         }
-        public List<ResultSetModel6> ResultSet6;
+        public List<ResultSetModel6> ResultSet6 = null!;
     }
 
 }

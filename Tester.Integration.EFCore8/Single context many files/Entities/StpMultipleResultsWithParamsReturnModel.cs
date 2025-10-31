@@ -13,13 +13,13 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
             public int codeObjectNo { get; set; }
             public int? applicationNo { get; set; }
         }
-        public List<ResultSetModel1> ResultSet1;
+        public List<ResultSetModel1> ResultSet1 = null!;
         public class ResultSetModel2
         {
             public int Id { get; set; }
             public string Name { get; set; } = null!;
         }
-        public List<ResultSetModel2> ResultSet2;
+        public List<ResultSetModel2> ResultSet2 = null!;
     }
 
 }

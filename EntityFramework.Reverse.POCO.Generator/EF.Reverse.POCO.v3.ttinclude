@@ -4165,8 +4165,12 @@
             {
                 ResultClassModifiers = Settings.ResultClassModifiers,
                 WriteStoredProcReturnModelName = sp.WriteStoredProcReturnModelName(_filter),
-                PropertyGetSet = useProperties ? " { get; set; }" : ";",
-                NullForgivingOperator = useProperties ? (needsNullForgiving ? " = null!;" : ";") : string.Empty,
+                PropertyGetSet = useProperties 
+                    ? " { get; set; }"              // Properties: always include { get; set; }
+                    : (needsNullForgiving ? "" : ";"),  // Fields: skip ; if NRT enabled (will be added with = null!;)
+                NullForgivingOperator = needsNullForgiving 
+                    ? " = null!;"                       // Always add = null!; when NRT is enabled
+                    : (useProperties ? ";" : ""),       // Add ; for properties only when NRT is disabled
                 SingleModel = sp.ReturnModels.Count == 1,
                 SingleModelReturnColumns = sp.ReturnModels
                     .First()
@@ -16966,9 +16970,14 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             if (IsEfCore8Plus && (hasParam || includeProcResultParam))
                 sb.Append(" new[] {");
 
+            var needsNullForgiving = Settings.NeedsNullForgiving();
             foreach (var p in Parameters.OrderBy(x => x.Ordinal))
             {
-                sb.Append(string.Format("{0}{1}, ", p.NameHumanCase, appendParam ? "Param" : string.Empty));
+                var paramName = string.Format("{0}{1}", p.NameHumanCase, appendParam ? "Param" : string.Empty);
+                // Cast to (object?) to allow null values when nullable reference types are enabled
+                if (IsEfCore8Plus && needsNullForgiving)
+                    paramName = string.Format("(object?){0}", paramName);
+                sb.Append(string.Format("{0}, ", paramName));
                 hasParam = true;
             }
 
