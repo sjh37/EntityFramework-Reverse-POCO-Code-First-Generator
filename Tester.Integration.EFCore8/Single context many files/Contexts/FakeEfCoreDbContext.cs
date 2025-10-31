@@ -78,8 +78,6 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         public DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
         public DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
-        public DbSet<NullableReverseNavA> NullableReverseNavAs { get; set; } // NullableReverseNavA
-        public DbSet<NullableReverseNavB> NullableReverseNavBs { get; set; } // NullableReverseNavB
         public DbSet<NullableReverseNavigationA> NullableReverseNavigationAs { get; set; } // NullableReverseNavigationA
         public DbSet<NullableReverseNavigationB> NullableReverseNavigationBs { get; set; } // NullableReverseNavigationB
         public DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
@@ -201,8 +199,6 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
             Issue47_Users = new FakeDbSet<Issue47_User>("UserId");
             Issue47_UserRoles = new FakeDbSet<Issue47_UserRole>("UserRoleId");
             MultipleKeys = new FakeDbSet<MultipleKey>("UserId", "FavouriteColourId", "BestHolidayTypeId");
-            NullableReverseNavAs = new FakeDbSet<NullableReverseNavA>("Id");
-            NullableReverseNavBs = new FakeDbSet<NullableReverseNavB>("Id");
             NullableReverseNavigationAs = new FakeDbSet<NullableReverseNavigationA>("Id");
             NullableReverseNavigationBs = new FakeDbSet<NullableReverseNavigationB>("Id");
             OneEightSix_Issues = new FakeDbSet<OneEightSix_Issue>("Id");
