@@ -92,8 +92,8 @@ namespace Efrpg.V3TestE8
         DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
         DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
-        DbSet<NullableReverseNavA> NullableReverseNavAs { get; set; } // NullableReverseNavA
-        DbSet<NullableReverseNavB> NullableReverseNavBs { get; set; } // NullableReverseNavB
+        DbSet<NullableReverseNavigationA> NullableReverseNavigationAs { get; set; } // NullableReverseNavigationA
+        DbSet<NullableReverseNavigationB> NullableReverseNavigationBs { get; set; } // NullableReverseNavigationB
         DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
         DbSet<OneEightSix_UploadedFile> OneEightSix_UploadedFiles { get; set; } // UploadedFile
         DbSet<PeriodTable> PeriodTables { get; set; } // Period.Table
@@ -449,8 +449,8 @@ namespace Efrpg.V3TestE8
         public DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
         public DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
-        public DbSet<NullableReverseNavA> NullableReverseNavAs { get; set; } // NullableReverseNavA
-        public DbSet<NullableReverseNavB> NullableReverseNavBs { get; set; } // NullableReverseNavB
+        public DbSet<NullableReverseNavigationA> NullableReverseNavigationAs { get; set; } // NullableReverseNavigationA
+        public DbSet<NullableReverseNavigationB> NullableReverseNavigationBs { get; set; } // NullableReverseNavigationB
         public DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
         public DbSet<OneEightSix_UploadedFile> OneEightSix_UploadedFiles { get; set; } // UploadedFile
         public DbSet<PeriodTable> PeriodTables { get; set; } // Period.Table
@@ -594,8 +594,8 @@ namespace Efrpg.V3TestE8
             modelBuilder.ApplyConfiguration(new Issue47_UserConfiguration());
             modelBuilder.ApplyConfiguration(new Issue47_UserRoleConfiguration());
             modelBuilder.ApplyConfiguration(new MultipleKeyConfiguration());
-            modelBuilder.ApplyConfiguration(new NullableReverseNavAConfiguration());
-            modelBuilder.ApplyConfiguration(new NullableReverseNavBConfiguration());
+            modelBuilder.ApplyConfiguration(new NullableReverseNavigationAConfiguration());
+            modelBuilder.ApplyConfiguration(new NullableReverseNavigationBConfiguration());
             modelBuilder.ApplyConfiguration(new OneEightSix_IssueConfiguration());
             modelBuilder.ApplyConfiguration(new OneEightSix_UploadedFileConfiguration());
             modelBuilder.ApplyConfiguration(new PeriodTableConfiguration());
@@ -2312,8 +2312,8 @@ namespace Efrpg.V3TestE8
         public DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
         public DbSet<MultipleKey> MultipleKeys { get; set; } // MultipleKeys
-        public DbSet<NullableReverseNavA> NullableReverseNavAs { get; set; } // NullableReverseNavA
-        public DbSet<NullableReverseNavB> NullableReverseNavBs { get; set; } // NullableReverseNavB
+        public DbSet<NullableReverseNavigationA> NullableReverseNavigationAs { get; set; } // NullableReverseNavigationA
+        public DbSet<NullableReverseNavigationB> NullableReverseNavigationBs { get; set; } // NullableReverseNavigationB
         public DbSet<OneEightSix_Issue> OneEightSix_Issues { get; set; } // Issue
         public DbSet<OneEightSix_UploadedFile> OneEightSix_UploadedFiles { get; set; } // UploadedFile
         public DbSet<PeriodTable> PeriodTables { get; set; } // Period.Table
@@ -2432,8 +2432,8 @@ namespace Efrpg.V3TestE8
             Issue47_Users = new FakeDbSet<Issue47_User>("UserId");
             Issue47_UserRoles = new FakeDbSet<Issue47_UserRole>("UserRoleId");
             MultipleKeys = new FakeDbSet<MultipleKey>("UserId", "FavouriteColourId", "BestHolidayTypeId");
-            NullableReverseNavAs = new FakeDbSet<NullableReverseNavA>("Id");
-            NullableReverseNavBs = new FakeDbSet<NullableReverseNavB>("Id");
+            NullableReverseNavigationAs = new FakeDbSet<NullableReverseNavigationA>("Id");
+            NullableReverseNavigationBs = new FakeDbSet<NullableReverseNavigationB>("Id");
             OneEightSix_Issues = new FakeDbSet<OneEightSix_Issue>("Id");
             OneEightSix_UploadedFiles = new FakeDbSet<OneEightSix_UploadedFile>("Id");
             PeriodTables = new FakeDbSet<PeriodTable>("Id");
@@ -4948,8 +4948,8 @@ namespace Efrpg.V3TestE8
         public string Description { get; set; } // Description (length: 10)
     }
 
-    // NullableReverseNavA
-    public class NullableReverseNavA
+    // NullableReverseNavigationA
+    public class NullableReverseNavigationA
     {
         public Guid Id { get; set; } // Id (Primary key)
         public string Data { get; set; } // Data (length: 100)
@@ -4957,13 +4957,13 @@ namespace Efrpg.V3TestE8
         // Reverse navigation
 
         /// <summary>
-        /// Parent (One-to-One) NullableReverseNavA pointed by [NullableReverseNavB].[Id] (FK_NullableReverseNavB_A)
+        /// Parent (One-to-One) NullableReverseNavigationA pointed by [NullableReverseNavigationB].[Id] (FK_NullableReverseNavigationB_Id)
         /// </summary>
-        public virtual NullableReverseNavB NullableReverseNavB { get; set; } // NullableReverseNavB.FK_NullableReverseNavB_A
+        public virtual NullableReverseNavigationB NullableReverseNavigationB { get; set; } // NullableReverseNavigationB.FK_NullableReverseNavigationB_Id
     }
 
-    // NullableReverseNavB
-    public class NullableReverseNavB
+    // NullableReverseNavigationB
+    public class NullableReverseNavigationB
     {
         public Guid Id { get; set; } // Id (Primary key)
         public string Data { get; set; } // Data (length: 100)
@@ -4971,9 +4971,9 @@ namespace Efrpg.V3TestE8
         // Foreign keys
 
         /// <summary>
-        /// Parent NullableReverseNavA pointed by [NullableReverseNavB].([Id]) (FK_NullableReverseNavB_A)
+        /// Parent NullableReverseNavigationA pointed by [NullableReverseNavigationB].([Id]) (FK_NullableReverseNavigationB_Id)
         /// </summary>
-        public virtual NullableReverseNavA NullableReverseNavA { get; set; } // FK_NullableReverseNavB_A
+        public virtual NullableReverseNavigationA NullableReverseNavigationA { get; set; } // FK_NullableReverseNavigationB_Id
     }
 
     // The table 'Test' is not usable by entity framework because it
@@ -6705,32 +6705,32 @@ namespace Efrpg.V3TestE8
         }
     }
 
-    // NullableReverseNavA
-    public class NullableReverseNavAConfiguration : IEntityTypeConfiguration<NullableReverseNavA>
+    // NullableReverseNavigationA
+    public class NullableReverseNavigationAConfiguration : IEntityTypeConfiguration<NullableReverseNavigationA>
     {
-        public void Configure(EntityTypeBuilder<NullableReverseNavA> builder)
+        public void Configure(EntityTypeBuilder<NullableReverseNavigationA> builder)
         {
-            builder.ToTable("NullableReverseNavA", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK_NullableReverseNavA").IsClustered();
+            builder.ToTable("NullableReverseNavigationA", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK_NullableReverseNavigationA").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("uniqueidentifier").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.Data).HasColumnName(@"Data").HasColumnType("nvarchar(100)").IsRequired(false).HasMaxLength(100);
         }
     }
 
-    // NullableReverseNavB
-    public class NullableReverseNavBConfiguration : IEntityTypeConfiguration<NullableReverseNavB>
+    // NullableReverseNavigationB
+    public class NullableReverseNavigationBConfiguration : IEntityTypeConfiguration<NullableReverseNavigationB>
     {
-        public void Configure(EntityTypeBuilder<NullableReverseNavB> builder)
+        public void Configure(EntityTypeBuilder<NullableReverseNavigationB> builder)
         {
-            builder.ToTable("NullableReverseNavB", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK_NullableReverseNavB").IsClustered();
+            builder.ToTable("NullableReverseNavigationB", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK_NullableReverseNavigationB").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("uniqueidentifier").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.Data).HasColumnName(@"Data").HasColumnType("nvarchar(100)").IsRequired(false).HasMaxLength(100);
 
             // Foreign keys
-            builder.HasOne(a => a.NullableReverseNavA).WithOne(b => b.NullableReverseNavB).HasForeignKey<NullableReverseNavB>(c => c.Id).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_NullableReverseNavB_A");
+            builder.HasOne(a => a.NullableReverseNavigationA).WithOne(b => b.NullableReverseNavigationB).HasForeignKey<NullableReverseNavigationB>(c => c.Id).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_NullableReverseNavigationB_Id");
         }
     }
 
