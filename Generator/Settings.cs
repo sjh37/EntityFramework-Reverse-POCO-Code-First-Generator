@@ -343,6 +343,40 @@ namespace Efrpg
             //    column.OverrideModifier = true;
             // This will create: public override long id { get; set; }
 
+            // Make property partial, see https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Partial-properties
+            //if (table.NameHumanCase.Equals("SomeTable", StringComparison.InvariantCultureIgnoreCase) && column.NameHumanCase.Equals("SomeColumn", StringComparison.InvariantCultureIgnoreCase))
+            //    column.IsPartial = true;
+
+            if (UseDataAnnotations)
+            {
+                if (column.IsPrimaryKey)
+                    column.Attributes.Add(string.Format("[Key, Column(Order = {0})]", column.Ordinal));
+
+                if (column.IsMaxLength)
+                    column.Attributes.Add("[MaxLength]");
+
+                if (column.IsRowVersion)
+                    column.Attributes.Add("[Timestamp, ConcurrencyCheck]");
+
+                if (!column.IsMaxLength && column.MaxLength > 0)
+                {
+                    var doNotSpecifySize = (DatabaseType == DatabaseType.SqlCe && column.MaxLength > 4000);
+                    column.Attributes.Add(doNotSpecifySize ? "[MaxLength]" : string.Format("[MaxLength({0})]", column.MaxLength));
+                    if (column.PropertyType.Equals("string", StringComparison.InvariantCultureIgnoreCase))
+                        column.Attributes.Add(string.Format("[StringLength({0})]", column.MaxLength));
+                }
+
+                if (!column.IsNullable && !column.IsComputed)
+                {
+                    if (column.PropertyType.Equals("string", StringComparison.InvariantCultureIgnoreCase) && column.AllowEmptyStrings)
+                        column.Attributes.Add("[Required(AllowEmptyStrings = true)]");
+                    else
+                        column.Attributes.Add("[Required]");
+                }
+
+                column.Attributes.Add(string.Format("[Display(Name = \"{0}\")]", column.DisplayName));
+            }
+
             // Perform Enum property type replacement
             var enumDefinition = enumDefinitions?.FirstOrDefault(e =>
                 (e.Schema.Equals(table.Schema.DbName, StringComparison.InvariantCultureIgnoreCase)) &&

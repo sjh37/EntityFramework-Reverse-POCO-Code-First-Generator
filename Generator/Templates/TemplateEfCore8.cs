@@ -1455,7 +1455,7 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
 {{#each Attributes}}
     {{this}}{{#newline}}
 {{/each}}
-    public {{#if OverrideModifier}}override {{/if}}{{WrapIfNullable}} {{NameHumanCase}} { get; {{PrivateSetterForComputedColumns}}set; }{{PropertyInitialisers}}{{InlineComments}}{{#newline}}
+    public {{#if OverrideModifier}}override {{/if}}{{#if IsPartial}}partial {{/if}}{{WrapIfNullable}} {{NameHumanCase}} { get; {{PrivateSetterForComputedColumns}}set; }{{PropertyInitialisers}}{{InlineComments}}{{#newline}}
 {{#if IncludeFieldNameConstants}}    public const string {{NameHumanCase}}Field = ""{{NameHumanCase}}"";{{#newline}}{{/if}}
 {{/each}}
 

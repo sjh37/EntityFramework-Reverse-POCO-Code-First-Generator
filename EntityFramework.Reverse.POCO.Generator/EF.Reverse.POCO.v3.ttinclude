@@ -369,6 +369,40 @@
             //    column.OverrideModifier = true;
             // This will create: public override long id { get; set; }
 
+            // Make property partial, see https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Partial-properties
+            //if (table.NameHumanCase.Equals("SomeTable", StringComparison.InvariantCultureIgnoreCase) && column.NameHumanCase.Equals("SomeColumn", StringComparison.InvariantCultureIgnoreCase))
+            //    column.IsPartial = true;
+
+            if (UseDataAnnotations)
+            {
+                if (column.IsPrimaryKey)
+                    column.Attributes.Add(string.Format("[Key, Column(Order = {0})]", column.Ordinal));
+
+                if (column.IsMaxLength)
+                    column.Attributes.Add("[MaxLength]");
+
+                if (column.IsRowVersion)
+                    column.Attributes.Add("[Timestamp, ConcurrencyCheck]");
+
+                if (!column.IsMaxLength && column.MaxLength > 0)
+                {
+                    var doNotSpecifySize = (DatabaseType == DatabaseType.SqlCe && column.MaxLength > 4000);
+                    column.Attributes.Add(doNotSpecifySize ? "[MaxLength]" : string.Format("[MaxLength({0})]", column.MaxLength));
+                    if (column.PropertyType.Equals("string", StringComparison.InvariantCultureIgnoreCase))
+                        column.Attributes.Add(string.Format("[StringLength({0})]", column.MaxLength));
+                }
+
+                if (!column.IsNullable && !column.IsComputed)
+                {
+                    if (column.PropertyType.Equals("string", StringComparison.InvariantCultureIgnoreCase) && column.AllowEmptyStrings)
+                        column.Attributes.Add("[Required(AllowEmptyStrings = true)]");
+                    else
+                        column.Attributes.Add("[Required]");
+                }
+
+                column.Attributes.Add(string.Format("[Display(Name = \"{0}\")]", column.DisplayName));
+            }
+
             // Perform Enum property type replacement
             var enumDefinition = enumDefinitions?.FirstOrDefault(e =>
                 (e.Schema.Equals(table.Schema.DbName, StringComparison.InvariantCultureIgnoreCase)) &&
@@ -1222,6 +1256,7 @@
         public bool IsMaxLength;
         public bool IsForeignKey;
         public bool IsSpatial;
+        public bool IsPartial;
 
         public string Config;
         public List<string> ConfigFk = new List<string>();
@@ -3935,7 +3970,9 @@
                 HasNoPrimaryKey = !table.HasPrimaryKey,
                 Name = table.DbName,
                 NameHumanCaseWithSuffix = table.NameHumanCaseWithSuffix(),
-                ClassModifier = Settings.EntityClassesModifiers,
+                ClassModifier = columnsQuery
+                    .Where(x => !x.Hidden && !x.ExistsInBaseClass)
+                    .Any(x => x.IsPartial) ? "public partial" : Settings.EntityClassesModifiers,
                 ClassComment = table.WriteComments(),
                 ExtendedComments = table.WriteExtendedComments(),
                 ClassAttributes = table.WriteClassAttributes(),
@@ -3956,7 +3993,8 @@
                         NameHumanCase = col.NameHumanCase,
                         PrivateSetterForComputedColumns = Settings.UsePrivateSetterForComputedColumns && col.IsComputed ? "private " : string.Empty,
                         PropertyInitialisers = Settings.UsePropertyInitialisers ? (string.IsNullOrWhiteSpace(col.Default) ? string.Empty : string.Format(" = {0};", col.Default)) : string.Empty,
-                        InlineComments = col.InlineComments
+                        InlineComments = col.InlineComments,
+                        IsPartial = col.IsPartial
                     })
                     .ToList(),
                 HasReverseNavigation = table.ReverseNavigationProperty.Count > 0,
@@ -17647,6 +17685,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public string PrivateSetterForComputedColumns { get; set; }
         public string PropertyInitialisers { get; set; }
         public string InlineComments { get; set; }
+        public bool IsPartial { get; set; }
     }
 
     public class PocoReverseNavigationPropertyModel
@@ -18847,7 +18886,7 @@ using {{this}};{{#newline}}
 {{#each Attributes}}
     {{this}}{{#newline}}
 {{/each}}
-    public {{#if OverrideModifier}}override {{/if}}{{WrapIfNullable}} {{NameHumanCase}} { get; {{PrivateSetterForComputedColumns}}set; }{{PropertyInitialisers}}{{InlineComments}}{{#newline}}
+    public {{#if OverrideModifier}}override {{/if}}{{#if IsPartial}}partial {{/if}}{{WrapIfNullable}} {{NameHumanCase}} { get; {{PrivateSetterForComputedColumns}}set; }{{PropertyInitialisers}}{{InlineComments}}{{#newline}}
 {{#if IncludeFieldNameConstants}}    public const string {{NameHumanCase}}Field = ""{{NameHumanCase}}"";{{#newline}}{{/if}}
 {{/each}}
 
@@ -20522,7 +20561,7 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
 {{#each Attributes}}
     {{this}}{{#newline}}
 {{/each}}
-    public {{#if OverrideModifier}}override {{/if}}{{WrapIfNullable}} {{NameHumanCase}} { get; {{PrivateSetterForComputedColumns}}set; }{{PropertyInitialisers}}{{InlineComments}}{{#newline}}
+    public {{#if OverrideModifier}}override {{/if}}{{#if IsPartial}}partial {{/if}}{{WrapIfNullable}} {{NameHumanCase}} { get; {{PrivateSetterForComputedColumns}}set; }{{PropertyInitialisers}}{{InlineComments}}{{#newline}}
 {{#if IncludeFieldNameConstants}}    public const string {{NameHumanCase}}Field = ""{{NameHumanCase}}"";{{#newline}}{{/if}}
 {{/each}}
 

@@ -48,6 +48,7 @@ namespace Efrpg
         public bool IsMaxLength;
         public bool IsForeignKey;
         public bool IsSpatial;
+        public bool IsPartial;
 
         public string Config;
         public List<string> ConfigFk = new List<string>();

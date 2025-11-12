@@ -380,6 +380,10 @@ namespace BuildTT
         //    column.OverrideModifier = true;
         // This will create: public override long id { get; set; }
 
+        // Make property partial, see https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Partial-properties
+        //if (table.NameHumanCase.Equals(""SomeTable"", StringComparison.InvariantCultureIgnoreCase) && column.NameHumanCase.Equals(""SomeColumn"", StringComparison.InvariantCultureIgnoreCase))
+        //    column.IsPartial = true;
+
         if (Settings.UseDataAnnotations)
         {
              if (column.IsPrimaryKey)

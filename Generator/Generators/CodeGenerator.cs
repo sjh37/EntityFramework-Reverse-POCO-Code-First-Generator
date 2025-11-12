@@ -484,7 +484,9 @@ namespace Efrpg.Generators
                 HasNoPrimaryKey = !table.HasPrimaryKey,
                 Name = table.DbName,
                 NameHumanCaseWithSuffix = table.NameHumanCaseWithSuffix(),
-                ClassModifier = Settings.EntityClassesModifiers,
+                ClassModifier = columnsQuery
+                    .Where(x => !x.Hidden && !x.ExistsInBaseClass)
+                    .Any(x => x.IsPartial) ? "public partial" : Settings.EntityClassesModifiers,
                 ClassComment = table.WriteComments(),
                 ExtendedComments = table.WriteExtendedComments(),
                 ClassAttributes = table.WriteClassAttributes(),
@@ -505,7 +507,8 @@ namespace Efrpg.Generators
                         NameHumanCase = col.NameHumanCase,
                         PrivateSetterForComputedColumns = Settings.UsePrivateSetterForComputedColumns && col.IsComputed ? "private " : string.Empty,
                         PropertyInitialisers = Settings.UsePropertyInitialisers ? (string.IsNullOrWhiteSpace(col.Default) ? string.Empty : string.Format(" = {0};", col.Default)) : string.Empty,
-                        InlineComments = col.InlineComments
+                        InlineComments = col.InlineComments,
+                        IsPartial = col.IsPartial
                     })
                     .ToList(),
                 HasReverseNavigation = table.ReverseNavigationProperty.Count > 0,

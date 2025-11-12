@@ -41,6 +41,7 @@ namespace Efrpg.TemplateModels
         public string PrivateSetterForComputedColumns { get; set; }
         public string PropertyInitialisers { get; set; }
         public string InlineComments { get; set; }
+        public bool IsPartial { get; set; }
     }
 
     public class PocoReverseNavigationPropertyModel
