@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.0.32014.148
+# Visual Studio Version 18
+VisualStudioVersion = 18.3.11206.111 d18.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EntityFramework.Reverse.POCO.Generator", "EntityFramework.Reverse.POCO.Generator\EntityFramework.Reverse.POCO.Generator.csproj", "{FA93A0BD-8B45-43BA-9C57-1D8FD63CAEAE}"
 EndProject
@@ -58,6 +58,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tester.Integration.EFCore8", "Tester.Integration.EFCore8\Tester.Integration.EFCore8.csproj", "{55A7975C-9972-497C-86D5-9E92632DB32F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tester.Integration.EFCore9", "Tester.Integration.EFCore9\Tester.Integration.EFCore9.csproj", "{95983923-D8F1-4581-826E-618C75EE9D3F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tester.Integration.EFCore10", "Tester.Integration.EFCore10\Tester.Integration.EFCore10.csproj", "{B48E2C35-28CB-4479-BFA6-4709348979FB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -268,6 +270,22 @@ Global
 		{95983923-D8F1-4581-826E-618C75EE9D3F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{95983923-D8F1-4581-826E-618C75EE9D3F}.Release|x86.ActiveCfg = Release|Any CPU
 		{95983923-D8F1-4581-826E-618C75EE9D3F}.Release|x86.Build.0 = Release|Any CPU
+		{B48E2C35-28CB-4479-BFA6-4709348979FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B48E2C35-28CB-4479-BFA6-4709348979FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B48E2C35-28CB-4479-BFA6-4709348979FB}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{B48E2C35-28CB-4479-BFA6-4709348979FB}.Debug|ARM64.Build.0 = Debug|ARM64
+		{B48E2C35-28CB-4479-BFA6-4709348979FB}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{B48E2C35-28CB-4479-BFA6-4709348979FB}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{B48E2C35-28CB-4479-BFA6-4709348979FB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B48E2C35-28CB-4479-BFA6-4709348979FB}.Debug|x86.Build.0 = Debug|Any CPU
+		{B48E2C35-28CB-4479-BFA6-4709348979FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B48E2C35-28CB-4479-BFA6-4709348979FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B48E2C35-28CB-4479-BFA6-4709348979FB}.Release|ARM64.ActiveCfg = Release|ARM64
+		{B48E2C35-28CB-4479-BFA6-4709348979FB}.Release|ARM64.Build.0 = Release|ARM64
+		{B48E2C35-28CB-4479-BFA6-4709348979FB}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{B48E2C35-28CB-4479-BFA6-4709348979FB}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{B48E2C35-28CB-4479-BFA6-4709348979FB}.Release|x86.ActiveCfg = Release|Any CPU
+		{B48E2C35-28CB-4479-BFA6-4709348979FB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
