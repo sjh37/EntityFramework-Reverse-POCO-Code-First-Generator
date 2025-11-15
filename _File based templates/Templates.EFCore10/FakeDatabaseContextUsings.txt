@@ -1,0 +1,11 @@
+Microsoft.EntityFrameworkCore
+Microsoft.EntityFrameworkCore.ChangeTracking
+Microsoft.EntityFrameworkCore.Infrastructure
+System
+System.CodeDom.Compiler
+System.Collections.Generic
+System.Data
+System.Linq
+System.Linq.Expressions
+System.Threading
+System.Threading.Tasks

@@ -1,0 +1,80 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <Platforms>AnyCPU;ARM64</Platforms>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <None Remove="Azure.tt" />
+      <None Remove="EfrpgTest.tt" />
+      <None Remove="Northwind.tt" />
+      <None Remove="TestSynonymsDatabase.tt" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="Azure.tt">
+        <Generator>TextTemplatingFileGenerator</Generator>
+        <LastGenOutput>Azure.cs</LastGenOutput>
+      </Content>
+      <Content Include="EfrpgTest.tt">
+        <Generator>TextTemplatingFileGenerator</Generator>
+        <LastGenOutput>EfrpgTest.cs</LastGenOutput>
+      </Content>
+      <Content Include="Northwind.tt">
+        <Generator>TextTemplatingFileGenerator</Generator>
+        <LastGenOutput>Northwind.cs</LastGenOutput>
+      </Content>
+      <Content Include="TestSynonymsDatabase.tt">
+        <Generator>TextTemplatingFileGenerator</Generator>
+        <LastGenOutput>TestSynonymsDatabase.cs</LastGenOutput>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="10.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.HierarchyId" Version="10.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.NetTopologySuite" Version="10.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+        <PackageReference Include="NUnit" Version="3.14.0" />
+        <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Generator.Tests.Common\Generator.Tests.Common.csproj" />
+        <ProjectReference Include="..\Tester.BusinessLogic.EfCore\Tester.BusinessLogic.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Azure.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>Azure.tt</DependentUpon>
+      </Compile>
+      <Compile Update="EfrpgTest.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>EfrpgTest.tt</DependentUpon>
+      </Compile>
+      <Compile Update="Northwind.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>Northwind.tt</DependentUpon>
+      </Compile>
+      <Compile Update="TestSynonymsDatabase.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>TestSynonymsDatabase.tt</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
+</Project>

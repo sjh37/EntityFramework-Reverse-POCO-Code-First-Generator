@@ -14,7 +14,7 @@ namespace Efrpg
         // Main settings **********************************************************************************************************************
         // The following entries are the only required settings.
         public static DatabaseType DatabaseType                         = DatabaseType.SqlServer; // SqlServer, SqlCe, SQLite, PostgreSQL. Coming next: MySql, Oracle
-        public static TemplateType TemplateType                         = TemplateType.EfCore9; // EfCore9, EfCore8, Ef6, FileBasedCore3-8. FileBased specify folder using Settings.TemplateFolder
+        public static TemplateType TemplateType                         = TemplateType.EfCore9; // EfCore10 (with SQL Server 2025 vector/json support), EfCore9, EfCore8, Ef6, FileBasedCore3-8. FileBased specify folder using Settings.TemplateFolder
         public static GeneratorType GeneratorType                       = GeneratorType.EfCore; // EfCore, Ef6, Custom. Custom edit GeneratorCustom class to provide your own implementation
         public static ForeignKeyNamingStrategy ForeignKeyNamingStrategy = ForeignKeyNamingStrategy.Current; // Please use Legacy for now, Latest (not yet ready)
         public static bool UseMappingTables                             = false; // Can only be set to true for EF6. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
@@ -79,6 +79,7 @@ namespace Efrpg
         public static List<string> AdditionalFileHeaderText         = new List<string>(); // This will put additional lines verbatim at the top of each file under the comments, 1 line per entry
         public static List<string> AdditionalFileFooterText         = new List<string>(); // This will put additional lines verbatim at the end of each file above the // </auto-generated>, 1 line per entry
         public static OrderProperties OrderProperties               = OrderProperties.Ordinal; // Order the properties in the generated POCO classes. Ordinal, Alphabetical
+        public static bool AutoMapSqlServer2025Types                = true;  // If true, automatically maps SQL Server 2025 vector and json types when using EFCore 10+
 
         // Language choices
         public static GenerationLanguage GenerationLanguage = GenerationLanguage.CSharp;
@@ -375,6 +376,32 @@ namespace Efrpg
                 }
 
                 column.Attributes.Add(string.Format("[Display(Name = \"{0}\")]", column.DisplayName));
+            }
+
+            // SQL Server 2025 type mapping (EF Core 10+)
+            if (AutoMapSqlServer2025Types && IsEfCore10Plus())
+            {
+                // Handle vector type (e.g., vector(1536))
+                if (column.SqlPropertyType != null && column.SqlPropertyType.StartsWith("vector", StringComparison.OrdinalIgnoreCase))
+                {
+                    column.PropertyType = "float[]"; // or "SqlVector<float>" if you prefer the SqlClient type
+                    // Uncomment the line below if using SqlVector<float>:
+                    // if (!AdditionalNamespaces.Contains("Microsoft.Data.SqlClient.Types"))
+                    //     AdditionalNamespaces.Add("Microsoft.Data.SqlClient.Types");
+                }
+
+                // Handle json type
+                if (column.SqlPropertyType != null && column.SqlPropertyType.Equals("json", StringComparison.OrdinalIgnoreCase))
+                {
+                    column.PropertyType = "string"; // Maps to string by default, can be JsonDocument or custom class
+                                                    // Alternative mappings:
+                                                    // column.PropertyType = "JsonDocument"; // Use System.Text.Json.JsonDocument
+                                                    // column.PropertyType = "JsonElement";  // Use System.Text.Json.JsonElement
+
+                    // Uncomment if using JsonDocument or JsonElement:
+                    // if (!AdditionalNamespaces.Contains("System.Text.Json"))
+                    //     AdditionalNamespaces.Add("System.Text.Json");
+                }
             }
 
             // Perform Enum property type replacement
@@ -763,9 +790,10 @@ namespace Efrpg
         // Don't forget to take a look at SingleContextFilter and FilterSettings classes!
         // That's it, nothing else to configure ***********************************************************************************************
 
-        public static bool IsEf6()     => TemplateType == TemplateType.Ef6 || TemplateType == TemplateType.FileBasedEf6;
+        public static bool IsEf6() => TemplateType == TemplateType.Ef6 || TemplateType == TemplateType.FileBasedEf6;
         public static bool IsEfCore8Plus() => EfCoreVersion() >= 8;
         public static bool IsEfCore9Plus() => EfCoreVersion() >= 9;
+        public static bool IsEfCore10Plus() => EfCoreVersion() >= 10;
         public static int EfCoreVersion()
         {
             switch (TemplateType)
@@ -777,7 +805,11 @@ namespace Efrpg
                 case TemplateType.EfCore9:
                 case TemplateType.FileBasedCore9:
                     return 9;
-                
+
+                case TemplateType.EfCore10:
+                case TemplateType.FileBasedCore10:
+                    return 10;
+
                 case TemplateType.Ef6:
                 case TemplateType.FileBasedEf6:
                 default:

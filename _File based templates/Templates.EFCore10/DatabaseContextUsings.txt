@@ -1,0 +1,12 @@
+Microsoft.Data.SqlClient
+Microsoft.EntityFrameworkCore
+Microsoft.EntityFrameworkCore.ChangeTracking
+Microsoft.Extensions.Configuration
+System
+System.CodeDom.Compiler
+System.Collections.Generic
+System.Data
+System.Data.SqlTypes
+System.Linq
+System.Threading
+System.Threading.Tasks
