@@ -77,7 +77,16 @@ namespace Efrpg.Templates
 
         public override List<string> PocoUsings(PocoModel data)
         {
-            return CacheList(TemplateFileBasedConstants.Text.PocoUsings);
+            var usings = new List<string>(CacheList(TemplateFileBasedConstants.Text.PocoUsings));
+
+            // Add dynamic namespaces based on column types
+            if (data.HasHierarchyId && !usings.Contains("Microsoft.EntityFrameworkCore"))
+                usings.Add("Microsoft.EntityFrameworkCore");
+
+            if (data.HasSqlVector && !usings.Contains("Microsoft.Data.SqlClient.Types"))
+                usings.Add("Microsoft.Data.SqlClient.Types");
+
+            return usings;
         }
 
         public override string Poco()

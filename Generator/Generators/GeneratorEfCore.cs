@@ -104,13 +104,14 @@ namespace Efrpg.Generators
                 doNotSpecifySize = (DatabaseReader.DoNotSpecifySizeForMaxLength && c.MaxLength > 4000); // Issue #179
 
             var excludedHasColumnType = string.Empty;
+            var isVectorType = c.SqlPropertyType != null && c.SqlPropertyType.StartsWith("vector", StringComparison.InvariantCultureIgnoreCase);
             if (!string.IsNullOrEmpty(c.SqlPropertyType))
             {
                 var columnTypeParameters = string.Empty;
             
                 if ((c.Precision > 0 || c.Scale > 0) && (c.SqlPropertyType == "decimal" || c.SqlPropertyType == "numeric"))
                     columnTypeParameters = $"({c.Precision},{c.Scale})";
-                else if (!c.IsMaxLength && c.MaxLength > 0 && !doNotSpecifySize)
+                else if (!c.IsMaxLength && c.MaxLength > 0 && !doNotSpecifySize && !isVectorType) // Vector types already include dimension in SqlPropertyType
                     columnTypeParameters = $"({c.MaxLength})";
 
                 if (Column.ExcludedHasColumnType.Contains(c.SqlPropertyType))
@@ -140,7 +141,7 @@ namespace Efrpg.Generators
             if (!c.IsUnicode)
                 sb.Append(".IsUnicode(false)");
 
-            if (!c.IsMaxLength && c.MaxLength > 0 && !doNotSpecifySize)
+            if (!c.IsMaxLength && c.MaxLength > 0 && !doNotSpecifySize && !isVectorType) // Vector types use dimension in HasColumnType, not HasMaxLength
                 sb.AppendFormat(".HasMaxLength({0})", c.MaxLength);
 
             //if (c.IsMaxLength)

@@ -67,6 +67,12 @@ namespace Efrpg.Readers
         protected abstract bool HasTemporalTableSupport();
         public abstract bool HasIdentityColumnSupport();
 
+        /// <summary>
+        /// Checks if the database supports SQL Server 2025 features (json and vector types).
+        /// Returns false by default; overridden in SqlServerDatabaseReader.
+        /// </summary>
+        public virtual bool HasSqlServer2025TypeSupport() => false;
+
         // Stored proc return objects
         public abstract void ReadStoredProcReturnObjects(List<StoredProcedure> procs);
 
@@ -1116,6 +1122,12 @@ namespace Efrpg.Readers
                                         col.SqlPropertyType.EndsWith("varbinary", StringComparison.InvariantCultureIgnoreCase)))
             {
                 col.SqlPropertyType += "(max)";
+            }
+
+            // SQL Server 2025 vector type - include dimension in SqlPropertyType for [Column(TypeName = "vector(n)")]
+            if (col.SqlPropertyType.Equals("vector", StringComparison.InvariantCultureIgnoreCase) && col.MaxLength > 0)
+            {
+                col.SqlPropertyType = $"vector({col.MaxLength})";
             }
 
             if (col.IsPrimaryKey && !col.IsIdentity && col.IsStoreGenerated && rt.TypeName == "uniqueidentifier")

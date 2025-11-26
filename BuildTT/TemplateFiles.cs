@@ -12,10 +12,10 @@ namespace BuildTT
     {
         public static void Create(string templatesRoot)
         {
-            CreateFiles(new TemplateEf6(),      Path.Combine(templatesRoot, "Templates.EF6"));
-            CreateFiles(new TemplateEfCore8(),  Path.Combine(templatesRoot, "Templates.EFCore8"));
-            CreateFiles(new TemplateEfCore8(),  Path.Combine(templatesRoot, "Templates.EFCore9"));
-            CreateFiles(new TemplateEfCore10(), Path.Combine(templatesRoot, "Templates.EFCore10"));
+            CreateFiles(new TemplateEf6(),     Path.Combine(templatesRoot, "Templates.EF6"));
+            CreateFiles(new TemplateEfCore8(), Path.Combine(templatesRoot, "Templates.EFCore8"));
+            CreateFiles(new TemplateEfCore8(), Path.Combine(templatesRoot, "Templates.EFCore9"));
+            CreateFiles(new TemplateEfCore8(), Path.Combine(templatesRoot, "Templates.EFCore10"));
         }
 
         private static void CreateFiles(Template template, string folder)

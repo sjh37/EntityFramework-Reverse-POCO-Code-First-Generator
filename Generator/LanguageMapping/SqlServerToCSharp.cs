@@ -28,6 +28,7 @@ namespace Efrpg.LanguageMapping
                 { "hierarchyid",      "Hierarchy.HierarchyId" },
                 { "image",            "byte[]" },
                 { "int",              "int" },
+                { "json",             "string" }, // SQL Server 2025 / Azure SQL native json type
                 { "money",            "decimal" },
                 { "numeric",          "decimal" },
                 { "real",             "float" },
@@ -39,6 +40,7 @@ namespace Efrpg.LanguageMapping
                 { "timestamp",        "byte[]" },
                 { "tinyint",          "byte" },
                 { "uniqueidentifier", "Guid" },
+                { "vector",           "SqlVector<float>" }, // SQL Server 2025 / Azure SQL vector type for AI/ML (requires Microsoft.Data.SqlClient.Types namespace)
                 { "varbinary",        "byte[]" },
                 { "varbinary(max)",   "byte[]" }
             };

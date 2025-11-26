@@ -52,7 +52,11 @@ namespace Efrpg.Readers
                 { "date", "Date" },
                 { "time", "Time" },
                 { "datetime2", "DateTime2" },
-                { "datetimeoffset", "DateTimeOffset" }
+                { "datetimeoffset", "DateTimeOffset" },
+                // SQL Server 2025 / Azure SQL types (SqlDbType mappings for stored procedure parameters)
+                // Note: C# type mappings (string, SqlVector<float>) are defined in SqlServerToCSharp.cs
+                { "json", "NVarChar" },   // Native JSON type (SQL Server 2025+) -> maps to string in C#
+                { "vector", "VarBinary" } // Native vector type for AI/ML (SQL Server 2025+) -> maps to SqlVector<float> in C#
             };
         }
 
@@ -1084,6 +1088,17 @@ OPTION (QUERYTRACEON 9481)";
         protected override bool HasTemporalTableSupport()
         {
             return DatabaseProductMajorVersion >= 13;
+        }
+
+        /// <summary>
+        /// Checks if the database supports SQL Server 2025 features (json and vector types).
+        /// SQL Server 2025 = version 17, or Azure SQL Database with compatibility level 170+.
+        /// </summary>
+        public override bool HasSqlServer2025TypeSupport()
+        {
+            // SQL Server 2025 is version 17.x
+            // Azure SQL Database also supports these types
+            return DatabaseProductMajorVersion >= 17 || IsAzure();
         }
 
         public override bool HasIdentityColumnSupport()

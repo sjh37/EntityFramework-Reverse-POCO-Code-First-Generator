@@ -212,7 +212,7 @@ using {{this}};{{#newline}}
             if (data.hasStoredProcs)
                 usings.Add("System.Collections.Generic");
 
-            if(Settings.OnConfiguration == OnConfiguration.Configuration)
+            if (Settings.OnConfiguration == OnConfiguration.Configuration)
                 usings.Add("Microsoft.Extensions.Configuration");
 
             if (!Settings.UseInheritedBaseInterfaceFunctions)
@@ -1421,8 +1421,11 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
             if (Settings.IncludeCodeGeneratedAttribute)
                 usings.Add("System.CodeDom.Compiler");
 
-            if(data.HasHierarchyId)
+            if (data.HasHierarchyId)
                 usings.Add("Microsoft.EntityFrameworkCore");
+
+            if (data.HasSqlVector)
+                usings.Add("Microsoft.Data.SqlClient.Types");
 
             return usings;
         }
@@ -1554,7 +1557,7 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
             if (Settings.TrimCharFields)
                 usings.Add("Microsoft.EntityFrameworkCore.Storage.ValueConversion");
 
-            if(data.UsesDictionary)
+            if (data.UsesDictionary)
                 usings.Add("System.Collections.Generic");
 
             return usings;

@@ -79,7 +79,7 @@ namespace Efrpg
         public static List<string> AdditionalFileHeaderText         = new List<string>(); // This will put additional lines verbatim at the top of each file under the comments, 1 line per entry
         public static List<string> AdditionalFileFooterText         = new List<string>(); // This will put additional lines verbatim at the end of each file above the // </auto-generated>, 1 line per entry
         public static OrderProperties OrderProperties               = OrderProperties.Ordinal; // Order the properties in the generated POCO classes. Ordinal, Alphabetical
-        public static bool AutoMapSqlServer2025Types                = true;  // If true, automatically maps SQL Server 2025 vector and json types when using EFCore 10+
+        public static bool AutoMapSqlServer2025Types                = true;  // If true, allows custom mapping of SQL Server 2025/Azure SQL vector and json types via UpdateColumn delegate (EFCore 10+ only)
 
         // Language choices
         public static GenerationLanguage GenerationLanguage = GenerationLanguage.CSharp;
@@ -359,7 +359,13 @@ namespace Efrpg
                 if (column.IsRowVersion)
                     column.Attributes.Add("[Timestamp, ConcurrencyCheck]");
 
-                if (!column.IsMaxLength && column.MaxLength > 0)
+                // SQL Server 2025 vector type - use [Column(TypeName = "vector(n)")] instead of MaxLength
+                var isVectorType = column.SqlPropertyType != null && column.SqlPropertyType.StartsWith("vector", StringComparison.InvariantCultureIgnoreCase);
+                if (isVectorType)
+                {
+                    column.Attributes.Add(string.Format("[Column(TypeName = \"{0}\")]", column.SqlPropertyType));
+                }
+                else if (!column.IsMaxLength && column.MaxLength > 0)
                 {
                     var doNotSpecifySize = (DatabaseType == DatabaseType.SqlCe && column.MaxLength > 4000);
                     column.Attributes.Add(doNotSpecifySize ? "[MaxLength]" : string.Format("[MaxLength({0})]", column.MaxLength));
@@ -376,32 +382,6 @@ namespace Efrpg
                 }
 
                 column.Attributes.Add(string.Format("[Display(Name = \"{0}\")]", column.DisplayName));
-            }
-
-            // SQL Server 2025 type mapping (EF Core 10+)
-            if (AutoMapSqlServer2025Types && IsEfCore10Plus())
-            {
-                // Handle vector type (e.g., vector(1536))
-                if (column.SqlPropertyType != null && column.SqlPropertyType.StartsWith("vector", StringComparison.OrdinalIgnoreCase))
-                {
-                    column.PropertyType = "float[]"; // or "SqlVector<float>" if you prefer the SqlClient type
-                    // Uncomment the line below if using SqlVector<float>:
-                    // if (!AdditionalNamespaces.Contains("Microsoft.Data.SqlClient.Types"))
-                    //     AdditionalNamespaces.Add("Microsoft.Data.SqlClient.Types");
-                }
-
-                // Handle json type
-                if (column.SqlPropertyType != null && column.SqlPropertyType.Equals("json", StringComparison.OrdinalIgnoreCase))
-                {
-                    column.PropertyType = "string"; // Maps to string by default, can be JsonDocument or custom class
-                                                    // Alternative mappings:
-                                                    // column.PropertyType = "JsonDocument"; // Use System.Text.Json.JsonDocument
-                                                    // column.PropertyType = "JsonElement";  // Use System.Text.Json.JsonElement
-
-                    // Uncomment if using JsonDocument or JsonElement:
-                    // if (!AdditionalNamespaces.Contains("System.Text.Json"))
-                    //     AdditionalNamespaces.Add("System.Text.Json");
-                }
             }
 
             // Perform Enum property type replacement

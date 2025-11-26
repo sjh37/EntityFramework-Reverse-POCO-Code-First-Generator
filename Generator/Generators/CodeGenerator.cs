@@ -493,6 +493,7 @@ namespace Efrpg.Generators
                 BaseClasses = table.BaseClasses,
                 InsideClassBody = Settings.WriteInsideClassBody(table),
                 HasHierarchyId = table.Columns.Any(x => x.PropertyType.EndsWith("hierarchyid", StringComparison.InvariantCultureIgnoreCase)),
+                HasSqlVector = table.Columns.Any(x => x.PropertyType.StartsWith("SqlVector", StringComparison.InvariantCultureIgnoreCase)),
                 Columns = columnsQuery
                     .Where(x => !x.Hidden && !x.ExistsInBaseClass)
                     .Select((col, index) => new PocoColumnModel

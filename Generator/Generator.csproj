@@ -134,7 +134,6 @@
     <Compile Include="Readers\SQLiteDatabaseReader.cs" />
     <Compile Include="TemplateModels\Trigger.cs" />
     <Compile Include="Templates\TemplateEfCore8.cs" />
-	<Compile Include="Templates\TemplateEfCore10.cs" />
     <Compile Include="Templates\TemplateFileBasedConstants.cs" />
     <Compile Include="Util\MultiContextSettingsCopy.cs" />
     <Compile Include="Filtering\PeriodFilter.cs" />
