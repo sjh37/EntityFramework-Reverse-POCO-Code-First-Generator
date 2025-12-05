@@ -55,6 +55,7 @@ namespace Efrpg.Readers
                 { "datetimeoffset", "DateTimeOffset" },
                 // SQL Server 2025 / Azure SQL types (SqlDbType mappings for stored procedure parameters)
                 // Note: C# type mappings (string, SqlVector<float>) are defined in SqlServerToCSharp.cs
+                // Since .NET doesn't yet have native SqlDbType.Json or SqlDbType.Vector enum values, we use compatible fallbacks:
                 { "json", "NVarChar" },   // Native JSON type (SQL Server 2025+) -> maps to string in C#
                 { "vector", "VarBinary" } // Native vector type for AI/ML (SQL Server 2025+) -> maps to SqlVector<float> in C#
             };
