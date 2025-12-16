@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Tester.Integration.EFCore8.Single_context_many_files
 {
-    // NullableReverseNavA
-    public class NullableReverseNavAConfiguration : IEntityTypeConfiguration<NullableReverseNavA>
+    // NullableReverseNavigationA
+    public class NullableReverseNavigationAConfiguration : IEntityTypeConfiguration<NullableReverseNavigationA>
     {
-        public void Configure(EntityTypeBuilder<NullableReverseNavA> builder)
+        public void Configure(EntityTypeBuilder<NullableReverseNavigationA> builder)
         {
-            builder.ToTable("NullableReverseNavA", "dbo");
-            builder.HasKey(x => x.Id).HasName("PK_NullableReverseNavA").IsClustered();
+            builder.ToTable("NullableReverseNavigationA", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK_NullableReverseNavigationA").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("uniqueidentifier").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.Data).HasColumnName(@"Data").HasColumnType("nvarchar(100)").IsRequired(false).HasMaxLength(100);

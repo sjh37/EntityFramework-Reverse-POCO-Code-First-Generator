@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Tester.Integration.EFCore8.Single_context_many_files
 {
-    // NullableReverseNavA
-    public class NullableReverseNavA
+    // NullableReverseNavigationA
+    public class NullableReverseNavigationA
     {
         public Guid Id { get; set; } // Id (Primary key)
         public string Data { get; set; } // Data (length: 100)
@@ -16,9 +16,9 @@ namespace Tester.Integration.EFCore8.Single_context_many_files
         // Reverse navigation
 
         /// <summary>
-        /// Parent (One-to-One) NullableReverseNavA pointed by [NullableReverseNavB].[Id] (FK_NullableReverseNavB_A)
+        /// Parent (One-to-One) NullableReverseNavigationA pointed by [NullableReverseNavigationB].[Id] (FK_NullableReverseNavigationB_Id)
         /// </summary>
-        public virtual NullableReverseNavB NullableReverseNavB { get; set; } // NullableReverseNavB.FK_NullableReverseNavB_A
+        public virtual NullableReverseNavigationB NullableReverseNavigationB { get; set; } // NullableReverseNavigationB.FK_NullableReverseNavigationB_Id
     }
 
 }
