@@ -7,8 +7,8 @@ namespace Efrpg.LanguageMapping
     {
         public Dictionary<string, string> GetMapping()
         {
-            var geographyType = Settings.TemplateType == TemplateType.Ef6 ? "DbGeography" : "NetTopologySuite.Geometries.Point";
-            var geometryType = Settings.TemplateType == TemplateType.Ef6 ? "DbGeometry" : "NetTopologySuite.Geometries.Geometry";
+            var geographyType = Settings.TemplateType == TemplateType.Ef6 || Settings.TemplateType == TemplateType.FileBasedEf6 ? "DbGeography" : "NetTopologySuite.Geometries.Point";
+            var geometryType = Settings.TemplateType == TemplateType.Ef6 || Settings.TemplateType == TemplateType.FileBasedEf6 ? "DbGeometry" : "NetTopologySuite.Geometries.Geometry";
 
             // [Database type] = Language type
             return new Dictionary<string, string>
