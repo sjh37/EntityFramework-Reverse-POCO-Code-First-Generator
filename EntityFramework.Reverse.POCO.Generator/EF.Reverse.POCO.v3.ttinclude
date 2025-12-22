@@ -3876,7 +3876,7 @@
 
         private static string GetConnectionStringActions(bool hasSpatialTypes, bool hasHierarchyIdType)
         {
-            if (Settings.TemplateType == TemplateType.Ef6)
+            if (Settings.IsEf6())
                 return string.Empty;
 
             if (!hasSpatialTypes && !hasHierarchyIdType)
@@ -7263,8 +7263,9 @@
     {
         public Dictionary<string, string> GetMapping()
         {
-            var geographyType = Settings.TemplateType == TemplateType.Ef6 ? "DbGeography" : "NetTopologySuite.Geometries.Point";
-            var geometryType = Settings.TemplateType == TemplateType.Ef6 ? "DbGeometry" : "NetTopologySuite.Geometries.Geometry";
+            var isEf6 = Settings.IsEf6();
+            var geographyType = isEf6 ? "DbGeography" : "NetTopologySuite.Geometries.Point";
+            var geometryType = isEf6 ? "DbGeometry" : "NetTopologySuite.Geometries.Geometry";
 
             // [Database type] = Language type
             return new Dictionary<string, string>
@@ -7551,8 +7552,9 @@
         // [Database type] = Language type
         public Dictionary<string, string> GetMapping()
         {
-            var geographyType = Settings.TemplateType == TemplateType.Ef6 ? "DbGeography" : "NetTopologySuite.Geometries.Point";
-            var geometryType  = Settings.TemplateType == TemplateType.Ef6 ? "DbGeometry"  : "NetTopologySuite.Geometries.Geometry";
+            var isEf6 = Settings.IsEf6();
+            var geographyType = isEf6 ? "DbGeography" : "NetTopologySuite.Geometries.Point";
+            var geometryType  = isEf6 ? "DbGeometry"  : "NetTopologySuite.Geometries.Geometry";
 
             return new Dictionary<string, string>
             {

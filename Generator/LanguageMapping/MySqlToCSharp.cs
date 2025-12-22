@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Efrpg.Templates;
 
 namespace Efrpg.LanguageMapping
 {
@@ -7,8 +6,9 @@ namespace Efrpg.LanguageMapping
     {
         public Dictionary<string, string> GetMapping()
         {
-            var geographyType = Settings.TemplateType == TemplateType.Ef6 || Settings.TemplateType == TemplateType.FileBasedEf6 ? "DbGeography" : "NetTopologySuite.Geometries.Point";
-            var geometryType = Settings.TemplateType == TemplateType.Ef6 || Settings.TemplateType == TemplateType.FileBasedEf6 ? "DbGeometry" : "NetTopologySuite.Geometries.Geometry";
+            var isEf6 = Settings.IsEf6();
+            var geographyType = isEf6 ? "DbGeography" : "NetTopologySuite.Geometries.Point";
+            var geometryType = isEf6 ? "DbGeometry" : "NetTopologySuite.Geometries.Geometry";
 
             // [Database type] = Language type
             return new Dictionary<string, string>
