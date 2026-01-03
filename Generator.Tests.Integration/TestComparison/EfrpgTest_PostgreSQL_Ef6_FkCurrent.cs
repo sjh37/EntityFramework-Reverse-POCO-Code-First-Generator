@@ -33,6 +33,7 @@ namespace Efrpg.PostgreSQL
     {
         DbSet<Allcolumntype> Allcolumntypes { get; set; } // allcolumntypes
         DbSet<another_CategoryDescription> another_CategoryDescriptions { get; set; } // category_description
+        DbSet<another_Status> another_Status { get; set; } // status
         DbSet<Category> Categories { get; set; } // categories
 
         int SaveChanges();
@@ -57,6 +58,7 @@ namespace Efrpg.PostgreSQL
     {
         public DbSet<Allcolumntype> Allcolumntypes { get; set; } // allcolumntypes
         public DbSet<another_CategoryDescription> another_CategoryDescriptions { get; set; } // category_description
+        public DbSet<another_Status> another_Status { get; set; } // status
         public DbSet<Category> Categories { get; set; } // categories
 
         static MyEf6DbContext()
@@ -120,6 +122,7 @@ namespace Efrpg.PostgreSQL
 
             modelBuilder.Configurations.Add(new AllcolumntypeConfiguration());
             modelBuilder.Configurations.Add(new another_CategoryDescriptionConfiguration());
+            modelBuilder.Configurations.Add(new another_StatusConfiguration());
             modelBuilder.Configurations.Add(new CategoryConfiguration());
         }
 
@@ -127,6 +130,7 @@ namespace Efrpg.PostgreSQL
         {
             modelBuilder.Configurations.Add(new AllcolumntypeConfiguration(schema));
             modelBuilder.Configurations.Add(new another_CategoryDescriptionConfiguration(schema));
+            modelBuilder.Configurations.Add(new another_StatusConfiguration(schema));
             modelBuilder.Configurations.Add(new CategoryConfiguration(schema));
 
             return modelBuilder;
@@ -153,6 +157,7 @@ namespace Efrpg.PostgreSQL
     {
         public DbSet<Allcolumntype> Allcolumntypes { get; set; } // allcolumntypes
         public DbSet<another_CategoryDescription> another_CategoryDescriptions { get; set; } // category_description
+        public DbSet<another_Status> another_Status { get; set; } // status
         public DbSet<Category> Categories { get; set; } // categories
 
         public FakeMyEf6DbContext()
@@ -163,6 +168,7 @@ namespace Efrpg.PostgreSQL
 
             Allcolumntypes = new FakeDbSet<Allcolumntype>("Bigint");
             another_CategoryDescriptions = new FakeDbSet<another_CategoryDescription>("CategoryId");
+            another_Status = new FakeDbSet<another_Status>("Id");
             Categories = new FakeDbSet<Category>("CategoryId");
 
         }
@@ -562,6 +568,13 @@ namespace Efrpg.PostgreSQL
         public virtual Category Category { get; set; } // fk_category_description
     }
 
+    // status
+    public class another_Status
+    {
+        public int Id { get; set; } // id (Primary key)
+        public string Name { get; set; } // name (length: 10)
+    }
+
     // categories
     public class Category
     {
@@ -657,6 +670,24 @@ namespace Efrpg.PostgreSQL
         }
     }
 
+    // status
+    public class another_StatusConfiguration : EntityTypeConfiguration<another_Status>
+    {
+        public another_StatusConfiguration()
+            : this("another")
+        {
+        }
+
+        public another_StatusConfiguration(string schema)
+        {
+            ToTable("status", schema);
+            HasKey(x => x.Id);
+
+            Property(x => x.Id).HasColumnName(@"id").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.Name).HasColumnName(@"name").HasColumnType("character varying").IsOptional().HasMaxLength(10);
+        }
+    }
+
     // categories
     public class CategoryConfiguration : EntityTypeConfiguration<Category>
     {
@@ -673,6 +704,18 @@ namespace Efrpg.PostgreSQL
             Property(x => x.CategoryId).HasColumnName(@"category_id").HasColumnType("smallint").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(x => x.CategoryName).HasColumnName(@"category_name").HasColumnType("character varying").IsRequired().HasMaxLength(15);
         }
+    }
+
+
+    #endregion
+
+    #region Enumerations
+
+    public enum Status
+    {
+        Todo = 1,
+        InProgress = 2,
+        Done = 3,
     }
 
 

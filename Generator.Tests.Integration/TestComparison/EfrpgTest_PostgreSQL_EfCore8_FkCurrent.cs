@@ -32,6 +32,7 @@ namespace Efrpg.PostgreSQL
     {
         DbSet<Allcolumntype> Allcolumntypes { get; set; } // allcolumntypes
         DbSet<another_CategoryDescription> another_CategoryDescriptions { get; set; } // category_description
+        DbSet<another_Status> another_Status { get; set; } // status
         DbSet<Category> Categories { get; set; } // categories
 
         int SaveChanges();
@@ -96,6 +97,7 @@ namespace Efrpg.PostgreSQL
 
         public DbSet<Allcolumntype> Allcolumntypes { get; set; } // allcolumntypes
         public DbSet<another_CategoryDescription> another_CategoryDescriptions { get; set; } // category_description
+        public DbSet<another_Status> another_Status { get; set; } // status
         public DbSet<Category> Categories { get; set; } // categories
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -122,6 +124,7 @@ namespace Efrpg.PostgreSQL
 
             modelBuilder.ApplyConfiguration(new AllcolumntypeConfiguration());
             modelBuilder.ApplyConfiguration(new another_CategoryDescriptionConfiguration());
+            modelBuilder.ApplyConfiguration(new another_StatusConfiguration());
             modelBuilder.ApplyConfiguration(new CategoryConfiguration());
         }
 
@@ -170,6 +173,7 @@ namespace Efrpg.PostgreSQL
     {
         public DbSet<Allcolumntype> Allcolumntypes { get; set; } // allcolumntypes
         public DbSet<another_CategoryDescription> another_CategoryDescriptions { get; set; } // category_description
+        public DbSet<another_Status> another_Status { get; set; } // status
         public DbSet<Category> Categories { get; set; } // categories
 
         public FakeMyDbContext()
@@ -178,6 +182,7 @@ namespace Efrpg.PostgreSQL
 
             Allcolumntypes = new FakeDbSet<Allcolumntype>("Bigint");
             another_CategoryDescriptions = new FakeDbSet<another_CategoryDescription>("CategoryId");
+            another_Status = new FakeDbSet<another_Status>("Id");
             Categories = new FakeDbSet<Category>("CategoryId");
 
         }
@@ -911,6 +916,13 @@ namespace Efrpg.PostgreSQL
         public virtual Category Category { get; set; } // fk_category_description
     }
 
+    // status
+    public class another_Status
+    {
+        public int Id { get; set; } // id (Primary key)
+        public string Name { get; set; } // name (length: 10)
+    }
+
     // categories
     public class Category
     {
@@ -996,6 +1008,19 @@ namespace Efrpg.PostgreSQL
         }
     }
 
+    // status
+    public class another_StatusConfiguration : IEntityTypeConfiguration<another_Status>
+    {
+        public void Configure(EntityTypeBuilder<another_Status> builder)
+        {
+            builder.ToTable("status", "another");
+            builder.HasKey(x => x.Id).HasName("status_pkey");
+
+            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("integer").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.Name).HasColumnName(@"name").HasColumnType("character varying(10)").IsRequired(false).HasMaxLength(10);
+        }
+    }
+
     // categories
     public class CategoryConfiguration : IEntityTypeConfiguration<Category>
     {
@@ -1007,6 +1032,18 @@ namespace Efrpg.PostgreSQL
             builder.Property(x => x.CategoryId).HasColumnName(@"category_id").HasColumnType("smallint").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.CategoryName).HasColumnName(@"category_name").HasColumnType("character varying(15)").IsRequired().HasMaxLength(15);
         }
+    }
+
+
+    #endregion
+
+    #region Enumerations
+
+    public enum Status
+    {
+        Todo = 1,
+        InProgress = 2,
+        Done = 3,
     }
 
 

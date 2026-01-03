@@ -22,6 +22,19 @@ namespace Generator.Tests.Integration
 
             Settings.ConnectionString = $"Server=127.0.0.1;Port=5432;Database={database};User Id=testuser;Password=testtesttest;";
             Settings.DatabaseType = DatabaseType.PostgreSQL;
+
+            Settings.Enumerations = new List<EnumerationSettings>
+            {
+                new EnumerationSettings
+                {
+                    Name = "Status",
+                    Table = "another.status",
+                    NameField = "name",
+                    ValueField = "id",
+                    GroupField = string.Empty // Or specify your own
+                }
+            };
+
         }
 
         [Test]
@@ -58,20 +71,6 @@ namespace Generator.Tests.Integration
             Settings.GenerateSeparateFiles = false;
             Settings.UseMappingTables = false;
             SetupPostgreSQL(database, "MyDbContext", "MyDbContext", TemplateType.EfCore8, GeneratorType.EfCore, foreignKeyNamingStrategy);
-            if (database == "EfrpgTest")
-            {
-                Settings.Enumerations = new List<EnumerationSettings>
-                {
-                    new EnumerationSettings
-                    {
-                        Name = "Status",
-                        Table = "another.status",
-                        NameField = "name",
-                        ValueField = "id",
-                        GroupField = string.Empty // Or specify your own
-                    }
-                };
-            }
 
             // Act
             Run(filename, ".PostgreSQL", typeof(EfCoreFileManager), null);
