@@ -1125,9 +1125,12 @@ namespace Efrpg.Readers
             }
 
             // SQL Server 2025 vector type - include dimension in SqlPropertyType for [Column(TypeName = "vector(n)")]
+            // CHARACTER_MAXIMUM_LENGTH returns byte size, not dimension. Each float = 4 bytes, plus 8 bytes overhead.
+            // Formula: dimension = (byte_size - 8) / 4
             if (col.SqlPropertyType.Equals("vector", StringComparison.InvariantCultureIgnoreCase) && col.MaxLength > 0)
             {
-                col.SqlPropertyType = $"vector({col.MaxLength})";
+                var vectorDimension = (col.MaxLength - 8) / 4;
+                col.SqlPropertyType = $"vector({vectorDimension})";
             }
 
             if (col.IsPrimaryKey && !col.IsIdentity && col.IsStoreGenerated && rt.TypeName == "uniqueidentifier")

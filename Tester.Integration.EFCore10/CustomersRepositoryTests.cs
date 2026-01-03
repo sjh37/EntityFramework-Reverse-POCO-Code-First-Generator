@@ -12,7 +12,6 @@ namespace Tester.Integration.EFCore10
     {
         private MyDbContext _db = null!;
         private Dictionary<string, string> _dictionary = null!;
-        //private IConfiguration _configuration;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()

@@ -1,14 +1,15 @@
-using Azure10;
+using RP;
 using Generator.Tests.Common;
-using Microsoft.Data.SqlTypes;
 using NUnit.Framework;
 
-namespace Tester.Integration.EFCore10
+namespace Tester.Integration.EFCore8
 {
     /// <summary>
-    /// Tests for SQL Server 2025 new data types (json and vector).
+    /// Tests for SQL Server 2025 new data types (json and vector) in EF Core 8.
     /// These types are only available in Azure SQL Database or SQL Server 2025+.
-    /// Uses the TestingEfCore10 table from Azure.cs which has both json and vector columns.
+    /// EF Core 8 uses generic fallback types since it doesn't have native support:
+    /// - json → string
+    /// - vector → byte[] (raw binary data, not SqlVector&lt;float&gt;)
     /// </summary>
     [TestFixture]
     [Category(Constants.Integration)]
@@ -18,7 +19,7 @@ namespace Tester.Integration.EFCore10
         /// <summary>
         /// Tests that the generator correctly maps SQL Server 2025's native json type.
         /// The json type is a new native type in SQL Server 2025 (distinct from storing JSON in nvarchar columns).
-        /// It should map to string by default.
+        /// In EF Core 8, it maps to string (same as EF Core 10).
         /// </summary>
         /// <remarks>
         /// The TestingEfCore10 table has a ShippingAddress column of type json that maps to string.
@@ -41,39 +42,37 @@ namespace Tester.Integration.EFCore10
         }
 
         /// <summary>
-        /// Tests that the generator correctly maps SQL Server 2025's vector type.
-        /// The vector type is a new type for AI/ML scenarios, storing fixed-dimensional vectors.
-        /// It should map to SqlVector&lt;float&gt; for optimal performance.
+        /// Tests that the generator correctly maps SQL Server 2025's vector type in EF Core 8.
+        /// Since EF Core 8 doesn't have native SqlVector support, the vector type maps to byte[].
+        /// This is the raw binary representation of the vector data.
         /// </summary>
         /// <remarks>
-        /// The TestingEfCore10 table has an Embedding column of type vector(1234) mapped to SqlVector&lt;float&gt;?.
+        /// The TestingEfCore10 table has an Embedding column of type vector(1234) mapped to byte[].
         /// Fluent API: .HasColumnType("vector(1234)")
         /// 
-        /// SqlVector&lt;float&gt; advantages over float[]:
-        /// - Up to 50x faster reads via efficient binary transport
-        /// - 3.3x faster writes
-        /// - 19x faster bulk copy operations
-        /// - Native support for EF.Functions.VectorDistance()
+        /// Note: For optimal performance with vector operations, consider upgrading to EF Core 10
+        /// which supports SqlVector&lt;float&gt; with up to 50x faster reads.
         /// </remarks>
         [Test]
-        public void VectorType_ShouldMapToSqlVector()
+        public void VectorType_ShouldMapToByteArray()
         {
-            // Arrange - TestingEfCore10.Embedding is a vector(4944) column mapped to SqlVector<float>?
+            // Arrange - TestingEfCore10.Embedding is a vector(1234) column mapped to byte[] in EFCore8
+            // Each float is 4 bytes, so 1234 floats = 4936 bytes, plus 8 bytes overhead = 4944 bytes
 
-            // Act - Create an instance with vector data
-            var embeddingData = new float[1234];
+            // Act - Create an instance with byte array data (simulating vector binary format)
+            var embeddingData = new byte[4944]; // Raw binary representation
             for (int i = 0; i < embeddingData.Length; i++)
-                embeddingData[i] = i * 0.001f;
+                embeddingData[i] = (byte)(i % 256);
 
             var entity = new TestingEfCore10
             {
                 ShippingAddress = "{}",
-                Embedding = new SqlVector<float>(embeddingData)
+                Embedding = embeddingData
             };
 
-            // Assert - Verify the property type is SqlVector<float>
-            Assert.That(entity.Embedding, Is.TypeOf<SqlVector<float>>());
-            Assert.That(entity.Embedding.Value.Length, Is.EqualTo(1234));
+            // Assert - Verify the property type is byte[]
+            Assert.That(entity.Embedding, Is.TypeOf<byte[]>());
+            Assert.That(entity.Embedding.Length, Is.EqualTo(4944));
         }
 
         /// <summary>
@@ -82,7 +81,7 @@ namespace Tester.Integration.EFCore10
         [Test]
         public void VectorType_ShouldSupportNullable()
         {
-            // Arrange - TestingEfCore10.Embedding is nullable (SqlVector<float>?)
+            // Arrange - TestingEfCore10.Embedding is nullable (byte[])
 
             // Act - Create an instance with null embedding
             var entity = new TestingEfCore10
@@ -110,7 +109,7 @@ namespace Tester.Integration.EFCore10
             Assert.That(config, Is.Not.Null);
             
             // If we get here without exceptions, the configuration is valid
-            Assert.Pass("TestingEfCore10Configuration correctly configures json and vector column types");
+            Assert.Pass("TestingEfCore10Configuration correctly configures json and vector column types for EF Core 8");
         }
     }
 }

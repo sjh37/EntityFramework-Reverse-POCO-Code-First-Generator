@@ -2,6 +2,7 @@
 // ReSharper disable All
 
 using Microsoft.Data.SqlClient;
+using Microsoft.Data.SqlTypes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Design;
@@ -40,6 +41,7 @@ namespace Azure10
         DbSet<SalesByWeek> SalesByWeeks { get; set; } // SalesByWeek
         DbSet<SignatureUsed> SignatureUseds { get; set; } // SignatureUsed
         DbSet<sys_DatabaseFirewallRule> sys_DatabaseFirewallRules { get; set; } // database_firewall_rules
+        DbSet<TestingEfCore10> TestingEfCore10 { get; set; } // Testing_EfCore10
         DbSet<VolumeDiscount> VolumeDiscounts { get; set; } // VolumeDiscount
 
         int SaveChanges();
@@ -120,6 +122,7 @@ namespace Azure10
         public DbSet<SalesByWeek> SalesByWeeks { get; set; } // SalesByWeek
         public DbSet<SignatureUsed> SignatureUseds { get; set; } // SignatureUsed
         public DbSet<sys_DatabaseFirewallRule> sys_DatabaseFirewallRules { get; set; } // database_firewall_rules
+        public DbSet<TestingEfCore10> TestingEfCore10 { get; set; } // Testing_EfCore10
         public DbSet<VolumeDiscount> VolumeDiscounts { get; set; } // VolumeDiscount
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -161,6 +164,7 @@ namespace Azure10
             modelBuilder.ApplyConfiguration(new SalesByWeekConfiguration());
             modelBuilder.ApplyConfiguration(new SignatureUsedConfiguration());
             modelBuilder.ApplyConfiguration(new sys_DatabaseFirewallRuleConfiguration());
+            modelBuilder.ApplyConfiguration(new TestingEfCore10Configuration());
             modelBuilder.ApplyConfiguration(new VolumeDiscountConfiguration());
         }
 
@@ -740,6 +744,14 @@ namespace Azure10
         public DateTime ModifyDate { get; set; } // modify_date
     }
 
+    // Testing_EfCore10
+    public class TestingEfCore10
+    {
+        public int Id { get; set; } // Id (Primary key)
+        public SqlVector<float>? Embedding { get; set; } // Embedding (length: 4944)
+        public string ShippingAddress { get; set; } // ShippingAddress
+    }
+
     // VolumeDiscount
     public class VolumeDiscount
     {
@@ -1172,6 +1184,20 @@ namespace Azure10
             builder.Property(x => x.EndIpAddress).HasColumnName(@"end_ip_address").HasColumnType("varchar(45)").IsRequired().IsUnicode(false).HasMaxLength(45);
             builder.Property(x => x.CreateDate).HasColumnName(@"create_date").HasColumnType("datetime").IsRequired();
             builder.Property(x => x.ModifyDate).HasColumnName(@"modify_date").HasColumnType("datetime").IsRequired();
+        }
+    }
+
+    // Testing_EfCore10
+    public class TestingEfCore10Configuration : IEntityTypeConfiguration<TestingEfCore10>
+    {
+        public void Configure(EntityTypeBuilder<TestingEfCore10> builder)
+        {
+            builder.ToTable("Testing_EfCore10", "dbo");
+            builder.HasKey(x => x.Id).HasName("PK_Testing_EfCore10").IsClustered();
+
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Embedding).HasColumnName(@"Embedding").HasColumnType("vector(4944)").IsRequired(false);
+            builder.Property(x => x.ShippingAddress).HasColumnName(@"ShippingAddress").HasColumnType("json").IsRequired();
         }
     }
 

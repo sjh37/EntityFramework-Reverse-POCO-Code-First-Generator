@@ -83,8 +83,8 @@ namespace Efrpg.Templates
             if (data.HasHierarchyId && !usings.Contains("Microsoft.EntityFrameworkCore"))
                 usings.Add("Microsoft.EntityFrameworkCore");
 
-            if (data.HasSqlVector && !usings.Contains("Microsoft.Data.SqlClient.Types"))
-                usings.Add("Microsoft.Data.SqlClient.Types");
+            if (data.HasSqlVector && !usings.Contains("Microsoft.Data.SqlTypes"))
+                usings.Add("Microsoft.Data.SqlTypes");
 
             return usings;
         }

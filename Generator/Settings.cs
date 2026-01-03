@@ -79,7 +79,6 @@ namespace Efrpg
         public static List<string> AdditionalFileHeaderText         = new List<string>(); // This will put additional lines verbatim at the top of each file under the comments, 1 line per entry
         public static List<string> AdditionalFileFooterText         = new List<string>(); // This will put additional lines verbatim at the end of each file above the // </auto-generated>, 1 line per entry
         public static OrderProperties OrderProperties               = OrderProperties.Ordinal; // Order the properties in the generated POCO classes. Ordinal, Alphabetical
-        public static bool AutoMapSqlServer2025Types                = true;  // If true, allows custom mapping of SQL Server 2025/Azure SQL vector and json types via UpdateColumn delegate (EFCore 10+ only)
 
         // Language choices
         public static GenerationLanguage GenerationLanguage = GenerationLanguage.CSharp;

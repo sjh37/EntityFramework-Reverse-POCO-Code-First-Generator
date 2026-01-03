@@ -1425,7 +1425,7 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
                 usings.Add("Microsoft.EntityFrameworkCore");
 
             if (data.HasSqlVector)
-                usings.Add("Microsoft.Data.SqlClient.Types");
+                usings.Add("Microsoft.Data.SqlTypes");
 
             return usings;
         }

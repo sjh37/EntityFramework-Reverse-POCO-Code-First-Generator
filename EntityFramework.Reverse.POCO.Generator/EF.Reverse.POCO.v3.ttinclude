@@ -105,7 +105,6 @@
         public static List<string> AdditionalFileHeaderText         = new List<string>(); // This will put additional lines verbatim at the top of each file under the comments, 1 line per entry
         public static List<string> AdditionalFileFooterText         = new List<string>(); // This will put additional lines verbatim at the end of each file above the // </auto-generated>, 1 line per entry
         public static OrderProperties OrderProperties               = OrderProperties.Ordinal; // Order the properties in the generated POCO classes. Ordinal, Alphabetical
-        public static bool AutoMapSqlServer2025Types                = true;  // If true, allows custom mapping of SQL Server 2025/Azure SQL vector and json types via UpdateColumn delegate (EFCore 10+ only)
 
         // Language choices
         public static GenerationLanguage GenerationLanguage = GenerationLanguage.CSharp;
@@ -3991,7 +3990,7 @@
                 BaseClasses = table.BaseClasses,
                 InsideClassBody = Settings.WriteInsideClassBody(table),
                 HasHierarchyId = table.Columns.Any(x => x.PropertyType.EndsWith("hierarchyid", StringComparison.InvariantCultureIgnoreCase)),
-                HasSqlVector = table.Columns.Any(x => x.PropertyType.StartsWith("SqlVector", StringComparison.InvariantCultureIgnoreCase)),
+                HasSqlVector = table.Columns.Any(x => x.PropertyType.StartsWith("SqlVector", StringComparison.InvariantCultureIgnoreCase)) && Settings.IsEfCore10Plus(),
                 Columns = columnsQuery
                     .Where(x => !x.Hidden && !x.ExistsInBaseClass)
                     .Select((col, index) => new PocoColumnModel
@@ -7556,6 +7555,11 @@
             var geographyType = isEf6 ? "DbGeography" : "NetTopologySuite.Geometries.Point";
             var geometryType  = isEf6 ? "DbGeometry"  : "NetTopologySuite.Geometries.Geometry";
 
+            // SQL Server 2025 / Azure SQL vector type:
+            // - EF Core 10+: SqlVector<float> (native support, requires Microsoft.Data.SqlTypes namespace)
+            // - EF6/EFCore8/EFCore9: byte[] (fallback - no native support, stored as varbinary internally)
+            var vectorType = Settings.IsEfCore10Plus() ? "SqlVector<float>" : "byte[]";
+
             return new Dictionary<string, string>
             {
                 { string.Empty,       "string" }, // default
@@ -7573,7 +7577,7 @@
                 { "hierarchyid",      "Hierarchy.HierarchyId" },
                 { "image",            "byte[]" },
                 { "int",              "int" },
-                { "json",             "string" }, // SQL Server 2025 / Azure SQL native json type
+                { "json",             "string" }, // SQL Server 2025 / Azure SQL native json type (string works for all EF versions)
                 { "money",            "decimal" },
                 { "numeric",          "decimal" },
                 { "real",             "float" },
@@ -7585,7 +7589,7 @@
                 { "timestamp",        "byte[]" },
                 { "tinyint",          "byte" },
                 { "uniqueidentifier", "Guid" },
-                { "vector",           "SqlVector<float>" }, // SQL Server 2025 / Azure SQL vector type for AI/ML (requires Microsoft.Data.SqlClient.Types namespace)
+                { "vector",           vectorType },
                 { "varbinary",        "byte[]" },
                 { "varbinary(max)",   "byte[]" }
             };
@@ -13705,9 +13709,12 @@ and limitations under the License.
             }
 
             // SQL Server 2025 vector type - include dimension in SqlPropertyType for [Column(TypeName = "vector(n)")]
+            // CHARACTER_MAXIMUM_LENGTH returns byte size, not dimension. Each float = 4 bytes, plus 8 bytes overhead.
+            // Formula: dimension = (byte_size - 8) / 4
             if (col.SqlPropertyType.Equals("vector", StringComparison.InvariantCultureIgnoreCase) && col.MaxLength > 0)
             {
-                col.SqlPropertyType = $"vector({col.MaxLength})";
+                var vectorDimension = (col.MaxLength - 8) / 4;
+                col.SqlPropertyType = $"vector({vectorDimension})";
             }
 
             if (col.IsPrimaryKey && !col.IsIdentity && col.IsStoreGenerated && rt.TypeName == "uniqueidentifier")
@@ -20578,7 +20585,7 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
                 usings.Add("Microsoft.EntityFrameworkCore");
 
             if (data.HasSqlVector)
-                usings.Add("Microsoft.Data.SqlClient.Types");
+                usings.Add("Microsoft.Data.SqlTypes");
 
             return usings;
         }
@@ -20944,8 +20951,8 @@ public enum {{EnumName}}{{#newline}}
             if (data.HasHierarchyId && !usings.Contains("Microsoft.EntityFrameworkCore"))
                 usings.Add("Microsoft.EntityFrameworkCore");
 
-            if (data.HasSqlVector && !usings.Contains("Microsoft.Data.SqlClient.Types"))
-                usings.Add("Microsoft.Data.SqlClient.Types");
+            if (data.HasSqlVector && !usings.Contains("Microsoft.Data.SqlTypes"))
+                usings.Add("Microsoft.Data.SqlTypes");
 
             return usings;
         }

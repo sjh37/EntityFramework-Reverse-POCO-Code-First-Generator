@@ -12,6 +12,11 @@ namespace Efrpg.LanguageMapping
             var geographyType = isEf6 ? "DbGeography" : "NetTopologySuite.Geometries.Point";
             var geometryType  = isEf6 ? "DbGeometry"  : "NetTopologySuite.Geometries.Geometry";
 
+            // SQL Server 2025 / Azure SQL vector type:
+            // - EF Core 10+: SqlVector<float> (native support, requires Microsoft.Data.SqlTypes namespace)
+            // - EF6/EFCore8/EFCore9: byte[] (fallback - no native support, stored as varbinary internally)
+            var vectorType = Settings.IsEfCore10Plus() ? "SqlVector<float>" : "byte[]";
+
             return new Dictionary<string, string>
             {
                 { string.Empty,       "string" }, // default
@@ -29,7 +34,7 @@ namespace Efrpg.LanguageMapping
                 { "hierarchyid",      "Hierarchy.HierarchyId" },
                 { "image",            "byte[]" },
                 { "int",              "int" },
-                { "json",             "string" }, // SQL Server 2025 / Azure SQL native json type
+                { "json",             "string" }, // SQL Server 2025 / Azure SQL native json type (string works for all EF versions)
                 { "money",            "decimal" },
                 { "numeric",          "decimal" },
                 { "real",             "float" },
@@ -41,7 +46,7 @@ namespace Efrpg.LanguageMapping
                 { "timestamp",        "byte[]" },
                 { "tinyint",          "byte" },
                 { "uniqueidentifier", "Guid" },
-                { "vector",           "SqlVector<float>" }, // SQL Server 2025 / Azure SQL vector type for AI/ML (requires Microsoft.Data.SqlClient.Types namespace)
+                { "vector",           vectorType },
                 { "varbinary",        "byte[]" },
                 { "varbinary(max)",   "byte[]" }
             };
