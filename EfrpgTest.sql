@@ -76,3 +76,7 @@ ALTER TABLE ONLY another.category_description
 
 ALTER TABLE ONLY another.category_description
     ADD CONSTRAINT fk_category_description FOREIGN KEY (category_id) REFERENCES public.categories;
+
+-- 858 Enum tables PostgreSQL
+CREATE  TABLE another.status (id int PRIMARY KEY, name varchar(10));
+INSERT INTO another.status (id, name) VALUES(1, 'Todo'), (2, 'InProgress'), (3, 'Done');

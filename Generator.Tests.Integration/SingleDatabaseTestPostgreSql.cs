@@ -1,8 +1,10 @@
 ﻿using Efrpg;
 using Efrpg.FileManagement;
+using Efrpg.Filtering;
 using Efrpg.Templates;
 using Generator.Tests.Common;
 using NUnit.Framework;
+using System.Collections.Generic;
 using System.Data.Common;
 
 namespace Generator.Tests.Integration
@@ -56,6 +58,20 @@ namespace Generator.Tests.Integration
             Settings.GenerateSeparateFiles = false;
             Settings.UseMappingTables = false;
             SetupPostgreSQL(database, "MyDbContext", "MyDbContext", TemplateType.EfCore8, GeneratorType.EfCore, foreignKeyNamingStrategy);
+            if (database == "EfrpgTest")
+            {
+                Settings.Enumerations = new List<EnumerationSettings>
+                {
+                    new EnumerationSettings
+                    {
+                        Name = "Status",
+                        Table = "another.status",
+                        NameField = "name",
+                        ValueField = "id",
+                        GroupField = string.Empty // Or specify your own
+                    }
+                };
+            }
 
             // Act
             Run(filename, ".PostgreSQL", typeof(EfCoreFileManager), null);
