@@ -385,11 +385,26 @@
     // By default it's <proc_name>ReturnModel.
     Settings.StoredProcedureReturnModelRename = delegate(string name, StoredProcedure sp)
     {
-        // Example:
-        //if (sp.NameHumanCase.Equals("ComputeValuesForDate", StringComparison.InvariantCultureIgnoreCase))
-        //    return "ValueSet";
-        //if (sp.NameHumanCase.Equals("SalesByYear", StringComparison.InvariantCultureIgnoreCase))
-        //    return "SalesSet";
+        // Check if this is a table-valued function
+        /*if (sp.IsTableValuedFunction)
+        {
+            // Example: Rename table-valued function return models
+            if (sp.NameHumanCase.Equals("GetCustomerOrders", StringComparison.InvariantCultureIgnoreCase))
+                return "CustomerOrder";
+
+            // Or apply a general pattern for all TVFs
+            if (sp.NameHumanCase.StartsWith("Get"))
+                return sp.NameHumanCase.Substring(3); // Remove "Get" prefix
+        }*/
+
+        // Handle regular stored procedures
+        /*if (sp.IsStoredProcedure)
+        {
+            if (sp.NameHumanCase.Equals("ComputeValuesForDate", StringComparison.InvariantCultureIgnoreCase))
+                return "ValueSet";
+            if (sp.NameHumanCase.Equals("SalesByYear", StringComparison.InvariantCultureIgnoreCase))
+                return "SalesSet";
+        }*/
 
         return name; // Do nothing by default
     };
