@@ -1195,7 +1195,7 @@ namespace Azure9
             builder.HasKey(x => x.Id).HasName("PK_Testing_EfCore10").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Embedding).HasColumnName(@"Embedding").HasColumnType("vector(4944)").IsRequired(false);
+            builder.Property(x => x.Embedding).HasColumnName(@"Embedding").HasColumnType("vector(1234)").IsRequired(false);
             builder.Property(x => x.ShippingAddress).HasColumnName(@"ShippingAddress").HasColumnType("json").IsRequired();
         }
     }
