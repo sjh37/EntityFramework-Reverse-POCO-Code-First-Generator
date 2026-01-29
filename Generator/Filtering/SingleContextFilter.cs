@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Efrpg.Filtering
@@ -11,6 +11,7 @@ namespace Efrpg.Filtering
     public class SingleContextFilter : DbContextFilter
     {
         public List<EnumDefinition> EnumDefinitions;
+        public List<JsonColumnMapping> JsonColumnMappings;
 
         protected readonly List<IFilterType<Schema>>          SchemaFilters;
         protected readonly List<IFilterType<Table>>           TableFilters;
@@ -36,6 +37,9 @@ namespace Efrpg.Filtering
 
             EnumDefinitions = new List<EnumDefinition>();
             Settings.AddEnumDefinitions?.Invoke(EnumDefinitions);
+
+            JsonColumnMappings = new List<JsonColumnMapping>();
+            Settings.AddJsonColumnMappings?.Invoke(JsonColumnMappings);
         }
 
         public override bool IsExcluded(EntityName item)
@@ -92,7 +96,7 @@ namespace Efrpg.Filtering
         public override void UpdateColumn(Column column, Table table)
         {
             // Callback to Settings, which can be set within <database>.tt
-            Settings.UpdateColumn?.Invoke(column, table, EnumDefinitions);
+            Settings.UpdateColumn?.Invoke(column, table, EnumDefinitions, JsonColumnMappings);
         }
 
         public override void AddEnum(Table table)

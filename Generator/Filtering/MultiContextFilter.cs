@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Efrpg.Filtering
@@ -343,7 +343,7 @@ namespace Efrpg.Filtering
             }
 
             // Callback to Settings, which can be set within <database>.tt
-            Settings.UpdateColumn?.Invoke(column, table, null);
+            Settings.UpdateColumn?.Invoke(column, table, null, null);
         }
 
         public override void AddEnum(Table table)

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Efrpg.Filtering;
@@ -311,7 +311,7 @@ namespace Efrpg
 
         // Use the following function if you need to apply additional modifications to a column
         // eg. normalise names etc.
-        public static Action<Column, Table, List<EnumDefinition>> UpdateColumn = delegate (Column column, Table table, List<EnumDefinition> enumDefinitions)
+        public static Action<Column, Table, List<EnumDefinition>, List<JsonColumnMapping>> UpdateColumn = delegate (Column column, Table table, List<EnumDefinition> enumDefinitions, List<JsonColumnMapping> jsonColumnMappings)
         {
             // Rename column
             //if (column.IsPrimaryKey && column.NameHumanCase == "PkId")
@@ -347,6 +347,12 @@ namespace Efrpg
             //if (table.NameHumanCase.Equals("SomeTable", StringComparison.InvariantCultureIgnoreCase) && column.NameHumanCase.Equals("SomeColumn", StringComparison.InvariantCultureIgnoreCase))
             //    column.IsPartial = true;
 
+            ApplyColumnCustomizations(column, table, enumDefinitions, jsonColumnMappings);
+        };
+
+        // Update column to include data annotations, enum replacements, and JSON column mappings
+        public static void ApplyColumnCustomizations(Column column, Table table, List<EnumDefinition> enumDefinitions, List<JsonColumnMapping> jsonColumnMappings)
+        {
             if (UseDataAnnotations)
             {
                 if (column.IsPrimaryKey)
@@ -395,7 +401,44 @@ namespace Efrpg
                 if (!string.IsNullOrEmpty(column.Default))
                     column.Default = "(" + enumDefinition.EnumType + ") " + column.Default;
             }
-        };
+
+            // Perform JSON column to POCO class mapping
+            // Check if this is a JSON column type and if there's a mapping defined
+            // Supports: SQL Server "json", PostgreSQL "json" and "jsonb"
+            var isJsonColumn = column.SqlPropertyType != null &&
+                               (column.SqlPropertyType.Equals("json", StringComparison.InvariantCultureIgnoreCase) ||
+                                column.SqlPropertyType.Equals("jsonb", StringComparison.InvariantCultureIgnoreCase));
+
+            if (isJsonColumn)
+            {
+                var jsonMapping = jsonColumnMappings?.FirstOrDefault(m =>
+                    (m.Schema == "*" || m.Schema.Equals(table.Schema.DbName, StringComparison.InvariantCultureIgnoreCase)) &&
+                    (m.Table == "*" || m.Table.Equals(table.DbName, StringComparison.InvariantCultureIgnoreCase) ||
+                     m.Table.Equals(table.NameHumanCase, StringComparison.InvariantCultureIgnoreCase)) &&
+                    (m.Column.Equals(column.DbName, StringComparison.InvariantCultureIgnoreCase) ||
+                     m.Column.Equals(column.NameHumanCase, StringComparison.InvariantCultureIgnoreCase)));
+
+                if (jsonMapping != null)
+                {
+                    column.PropertyType = jsonMapping.PropertyType;
+
+                    // Add the additional namespace if specified
+                    if (!string.IsNullOrEmpty(jsonMapping.AdditionalNamespace))
+                    {
+                        var namespaces = jsonMapping.AdditionalNamespace.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                        foreach (var ns in namespaces)
+                        {
+                            var trimmedNs = ns.Trim();
+                            if (!string.IsNullOrEmpty(trimmedNs) && !AdditionalNamespaces.Contains(trimmedNs))
+                                AdditionalNamespaces.Add(trimmedNs);
+                        }
+                    }
+
+                    // Clear the default value for JSON columns mapped to custom types
+                    column.Default = string.Empty;
+                }
+            }
+        }
 
         // Configures the key property to either use IDENTITY or HILO database feature to generate values for new entities.
         public static Func<Column, string> ColumnIdentity = delegate (Column c)
@@ -675,6 +718,53 @@ namespace Efrpg
 
             // This will replace any table *.OrderStatus type to be an OrderStatusType enum
             //enumDefinitions.Add(new EnumDefinition { Schema = Settings.DefaultSchema, Table = "*", Column = "OrderStatus", EnumType = "OrderStatusType" });
+        };
+
+        // JSON column to POCO class mapping *************************************************************************************************
+        // Use the following callback to map JSON database columns to specific C# POCO classes instead of string.
+        // This allows you to work with strongly-typed objects instead of having to deserialize JSON strings manually.
+        public static Action<List<JsonColumnMapping>> AddJsonColumnMappings = delegate (List<JsonColumnMapping> jsonColumnMappings)
+        {
+            // Examples:
+            
+            // Map a specific JSON column to a POCO class
+            //jsonColumnMappings.Add(new JsonColumnMapping 
+            //{ 
+            //    Schema = Settings.DefaultSchema, 
+            //    Table = "Orders", 
+            //    Column = "ShippingAddress", 
+            //    PropertyType = "Address",
+            //    AdditionalNamespace = "MyApp.Models" // Optional: Add namespace if needed
+            //});
+
+            // Map all columns named "Metadata" across all tables to a specific type
+            //jsonColumnMappings.Add(new JsonColumnMapping 
+            //{ 
+            //    Schema = "*", 
+            //    Table = "*", 
+            //    Column = "Metadata", 
+            //    PropertyType = "Dictionary<string, object>",
+            //    AdditionalNamespace = "System.Collections.Generic" // Optional
+            //});
+
+            // Map to a complex type with generics
+            //jsonColumnMappings.Add(new JsonColumnMapping 
+            //{ 
+            //    Schema = Settings.DefaultSchema, 
+            //    Table = "Products", 
+            //    Column = "Tags", 
+            //    PropertyType = "List<string>",
+            //    AdditionalNamespace = "System.Collections.Generic"
+            //});
+
+            // Map to a custom class with full namespace
+            //jsonColumnMappings.Add(new JsonColumnMapping 
+            //{ 
+            //    Schema = "dbo", 
+            //    Table = "Users", 
+            //    Column = "Preferences", 
+            //    PropertyType = "MyApp.Models.UserPreferences" // Fully qualified type name
+            //});
         };
 
         // Generate multiple db contexts in a single go ***************************************************************************************

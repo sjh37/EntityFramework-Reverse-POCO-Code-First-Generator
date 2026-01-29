@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 <#@ include file ="..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v3.ttinclude" #>
 <#
     // Please make changes to the settings below.
@@ -309,7 +311,7 @@
 
     // Use the following function if you need to apply additional modifications to a column
     // eg. normalise names etc.
-    Settings.UpdateColumn = delegate(Column column, Table table, List<EnumDefinition> enumDefinitions)
+    Settings.UpdateColumn = delegate(Column column, Table table, List<EnumDefinition> enumDefinitions, List<JsonColumnMapping> jsonColumnMappings)
     {
         // Rename column
         //if (column.IsPrimaryKey && column.NameHumanCase == "PkId")
@@ -341,51 +343,7 @@
         //    column.OverrideModifier = true;
         // This will create: public override long id { get; set; }
 
-        if (Settings.UseDataAnnotations)
-        {
-             if (column.IsPrimaryKey)
-                column.Attributes.Add(string.Format("[Key, Column(Order = {0})]", column.Ordinal));
-
-            if (column.IsMaxLength) 
-                column.Attributes.Add("[MaxLength]");
-
-            if (column.IsRowVersion)
-                column.Attributes.Add("[Timestamp, ConcurrencyCheck]");
-
-            if (!column.IsMaxLength && column.MaxLength > 0)
-            { 
-                var doNotSpecifySize = (Settings.DatabaseType == DatabaseType.SqlCe && column.MaxLength > 4000);
-                column.Attributes.Add(doNotSpecifySize ? "[MaxLength]" : string.Format("[MaxLength({0})]", column.MaxLength));
-                if (column.PropertyType.Equals("string", StringComparison.InvariantCultureIgnoreCase))
-                    column.Attributes.Add(string.Format("[StringLength({0})]", column.MaxLength));
-            }
-
-            if (!column.IsNullable && !column.IsComputed)
-            {
-                if (column.PropertyType.Equals("string", StringComparison.InvariantCultureIgnoreCase) && column.AllowEmptyStrings)
-                    column.Attributes.Add("[Required(AllowEmptyStrings = true)]");
-                else
-                    column.Attributes.Add("[Required]");
-            }
-
-            column.Attributes.Add(string.Format("[Display(Name = \"{0}\")]", column.DisplayName));
-        }
-
-        // Perform Enum property type replacement
-        if (enumDefinitions != null)
-        {
-            var enumDefinition = enumDefinitions.FirstOrDefault(e =>
-                (e.Schema.Equals(table.Schema.DbName, StringComparison.InvariantCultureIgnoreCase)) && 
-                (e.Table == "*" || e.Table.Equals(table.DbName, StringComparison.InvariantCultureIgnoreCase) || e.Table.Equals(table.NameHumanCase, StringComparison.InvariantCultureIgnoreCase)) &&
-                (e.Column.Equals(column.DbName, StringComparison.InvariantCultureIgnoreCase) || e.Column.Equals(column.NameHumanCase, StringComparison.InvariantCultureIgnoreCase)));
-
-            if (enumDefinition != null)
-            {
-                column.PropertyType = enumDefinition.EnumType;
-                if (!string.IsNullOrEmpty(column.Default))
-                    column.Default = "(" + enumDefinition.EnumType + ") " + column.Default;
-            }
-        }
+        Settings.ApplyColumnCustomizations(column, table, enumDefinitions, jsonColumnMappings);
     };
 
     // In order to use this function, Settings.ElementsToGenerate must contain both Elements.Poco and Elements.Enum;

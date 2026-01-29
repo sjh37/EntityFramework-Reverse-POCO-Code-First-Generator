@@ -337,7 +337,7 @@
 
         // Use the following function if you need to apply additional modifications to a column
         // eg. normalise names etc.
-        public static Action<Column, Table, List<EnumDefinition>> UpdateColumn = delegate (Column column, Table table, List<EnumDefinition> enumDefinitions)
+        public static Action<Column, Table, List<EnumDefinition>, List<JsonColumnMapping>> UpdateColumn = delegate (Column column, Table table, List<EnumDefinition> enumDefinitions, List<JsonColumnMapping> jsonColumnMappings)
         {
             // Rename column
             //if (column.IsPrimaryKey && column.NameHumanCase == "PkId")
@@ -373,6 +373,12 @@
             //if (table.NameHumanCase.Equals("SomeTable", StringComparison.InvariantCultureIgnoreCase) && column.NameHumanCase.Equals("SomeColumn", StringComparison.InvariantCultureIgnoreCase))
             //    column.IsPartial = true;
 
+            ApplyColumnCustomizations(column, table, enumDefinitions, jsonColumnMappings);
+        };
+
+        // Update column to include data annotations, enum replacements, and JSON column mappings
+        public static void ApplyColumnCustomizations(Column column, Table table, List<EnumDefinition> enumDefinitions, List<JsonColumnMapping> jsonColumnMappings)
+        {
             if (UseDataAnnotations)
             {
                 if (column.IsPrimaryKey)
@@ -421,7 +427,44 @@
                 if (!string.IsNullOrEmpty(column.Default))
                     column.Default = "(" + enumDefinition.EnumType + ") " + column.Default;
             }
-        };
+
+            // Perform JSON column to POCO class mapping
+            // Check if this is a JSON column type and if there's a mapping defined
+            // Supports: SQL Server "json", PostgreSQL "json" and "jsonb"
+            var isJsonColumn = column.SqlPropertyType != null &&
+                               (column.SqlPropertyType.Equals("json", StringComparison.InvariantCultureIgnoreCase) ||
+                                column.SqlPropertyType.Equals("jsonb", StringComparison.InvariantCultureIgnoreCase));
+
+            if (isJsonColumn)
+            {
+                var jsonMapping = jsonColumnMappings?.FirstOrDefault(m =>
+                    (m.Schema == "*" || m.Schema.Equals(table.Schema.DbName, StringComparison.InvariantCultureIgnoreCase)) &&
+                    (m.Table == "*" || m.Table.Equals(table.DbName, StringComparison.InvariantCultureIgnoreCase) ||
+                     m.Table.Equals(table.NameHumanCase, StringComparison.InvariantCultureIgnoreCase)) &&
+                    (m.Column.Equals(column.DbName, StringComparison.InvariantCultureIgnoreCase) ||
+                     m.Column.Equals(column.NameHumanCase, StringComparison.InvariantCultureIgnoreCase)));
+
+                if (jsonMapping != null)
+                {
+                    column.PropertyType = jsonMapping.PropertyType;
+
+                    // Add the additional namespace if specified
+                    if (!string.IsNullOrEmpty(jsonMapping.AdditionalNamespace))
+                    {
+                        var namespaces = jsonMapping.AdditionalNamespace.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                        foreach (var ns in namespaces)
+                        {
+                            var trimmedNs = ns.Trim();
+                            if (!string.IsNullOrEmpty(trimmedNs) && !AdditionalNamespaces.Contains(trimmedNs))
+                                AdditionalNamespaces.Add(trimmedNs);
+                        }
+                    }
+
+                    // Clear the default value for JSON columns mapped to custom types
+                    column.Default = string.Empty;
+                }
+            }
+        }
 
         // Configures the key property to either use IDENTITY or HILO database feature to generate values for new entities.
         public static Func<Column, string> ColumnIdentity = delegate (Column c)
@@ -701,6 +744,53 @@
 
             // This will replace any table *.OrderStatus type to be an OrderStatusType enum
             //enumDefinitions.Add(new EnumDefinition { Schema = Settings.DefaultSchema, Table = "*", Column = "OrderStatus", EnumType = "OrderStatusType" });
+        };
+
+        // JSON column to POCO class mapping *************************************************************************************************
+        // Use the following callback to map JSON database columns to specific C# POCO classes instead of string.
+        // This allows you to work with strongly-typed objects instead of having to deserialize JSON strings manually.
+        public static Action<List<JsonColumnMapping>> AddJsonColumnMappings = delegate (List<JsonColumnMapping> jsonColumnMappings)
+        {
+            // Examples:
+            
+            // Map a specific JSON column to a POCO class
+            //jsonColumnMappings.Add(new JsonColumnMapping 
+            //{ 
+            //    Schema = Settings.DefaultSchema, 
+            //    Table = "Orders", 
+            //    Column = "ShippingAddress", 
+            //    PropertyType = "Address",
+            //    AdditionalNamespace = "MyApp.Models" // Optional: Add namespace if needed
+            //});
+
+            // Map all columns named "Metadata" across all tables to a specific type
+            //jsonColumnMappings.Add(new JsonColumnMapping 
+            //{ 
+            //    Schema = "*", 
+            //    Table = "*", 
+            //    Column = "Metadata", 
+            //    PropertyType = "Dictionary<string, object>",
+            //    AdditionalNamespace = "System.Collections.Generic" // Optional
+            //});
+
+            // Map to a complex type with generics
+            //jsonColumnMappings.Add(new JsonColumnMapping 
+            //{ 
+            //    Schema = Settings.DefaultSchema, 
+            //    Table = "Products", 
+            //    Column = "Tags", 
+            //    PropertyType = "List<string>",
+            //    AdditionalNamespace = "System.Collections.Generic"
+            //});
+
+            // Map to a custom class with full namespace
+            //jsonColumnMappings.Add(new JsonColumnMapping 
+            //{ 
+            //    Schema = "dbo", 
+            //    Table = "Users", 
+            //    Column = "Preferences", 
+            //    PropertyType = "MyApp.Models.UserPreferences" // Fully qualified type name
+            //});
         };
 
         // Generate multiple db contexts in a single go ***************************************************************************************
@@ -1034,6 +1124,7 @@
     public class SingleContextFilter : DbContextFilter
     {
         public List<EnumDefinition> EnumDefinitions;
+        public List<JsonColumnMapping> JsonColumnMappings;
 
         protected readonly List<IFilterType<Schema>>          SchemaFilters;
         protected readonly List<IFilterType<Table>>           TableFilters;
@@ -1059,6 +1150,9 @@
 
             EnumDefinitions = new List<EnumDefinition>();
             Settings.AddEnumDefinitions?.Invoke(EnumDefinitions);
+
+            JsonColumnMappings = new List<JsonColumnMapping>();
+            Settings.AddJsonColumnMappings?.Invoke(JsonColumnMappings);
         }
 
         public override bool IsExcluded(EntityName item)
@@ -1115,7 +1209,7 @@
         public override void UpdateColumn(Column column, Table table)
         {
             // Callback to Settings, which can be set within <database>.tt
-            Settings.UpdateColumn?.Invoke(column, table, EnumDefinitions);
+            Settings.UpdateColumn?.Invoke(column, table, EnumDefinitions, JsonColumnMappings);
         }
 
         public override void AddEnum(Table table)
@@ -2703,7 +2797,7 @@
             }
 
             // Callback to Settings, which can be set within <database>.tt
-            Settings.UpdateColumn?.Invoke(column, table, null);
+            Settings.UpdateColumn?.Invoke(column, table, null, null);
         }
 
         public override void AddEnum(Table table)
@@ -7112,6 +7206,272 @@
             return word.All(char.IsUpper);
         }
     }
+    /// <summary>
+    /// Defines a mapping between a JSON database column and a C# POCO class type.
+    /// This allows JSON columns to be mapped to specific types instead of just string.
+    /// </summary>
+    public class JsonColumnMapping
+    {
+        /// <summary>
+        /// The database schema name (e.g., "dbo"). Use "*" to match any schema.
+        /// </summary>
+        public string Schema;
+
+        /// <summary>
+        /// The table name. Use "*" to match any table.
+        /// </summary>
+        public string Table;
+
+        /// <summary>
+        /// The column name to apply the mapping to.
+        /// </summary>
+        public string Column;
+
+        /// <summary>
+        /// The C# type to use for this JSON column
+        /// This type should be a valid C# type name including namespace if needed.
+        /// </summary>
+        // e.g., "MyCustomClass", "List<MyClass>", etc.
+        public string PropertyType;
+
+        /// <summary>
+        /// Optional: Additional namespace(s) required for the PropertyType.
+        /// Multiple namespaces can be separated by semicolons.
+        /// </summary>
+        public string AdditionalNamespace;
+    }
+// This file contains examples of how to use JSON column mappings
+// These examples are for documentation purposes only and should not be compiled.
+
+// =============================================================================================
+// JSON COLUMN TO POCO CLASS MAPPING EXAMPLES
+// =============================================================================================
+//
+// The generator now supports mapping JSON database columns to specific C# POCO classes
+// instead of just mapping them to string type. This eliminates the need for manual
+// deserialization in your application code.
+//
+// To use this feature, configure the Settings.AddJsonColumnMappings callback in your
+// settings file (typically in your .tt file or Settings.cs).
+//
+// =============================================================================================
+
+    // Example 1: Simple JSON column mapping
+    // =====================================
+    // Database: Orders table with a JSON column "ShippingAddress"
+    // Goal: Map it to an Address POCO class
+    /*
+    Settings.AddJsonColumnMappings = delegate (List<JsonColumnMapping> jsonColumnMappings)
+    {
+        jsonColumnMappings.Add(new JsonColumnMapping
+        {
+            Schema = "dbo",
+            Table = "Orders",
+            Column = "ShippingAddress",
+            PropertyType = "Address",
+            AdditionalNamespace = "MyApp.Models"
+        });
+    };
+
+    // Result: The generated Order class will have:
+    // public Address ShippingAddress { get; set; }
+    // instead of:
+    // public string ShippingAddress { get; set; }
+    */
+
+    // Example 2: Mapping with generic types
+    // ======================================
+    // Database: Products table with a JSON column "Tags"
+    // Goal: Map it to List<string>
+    /*
+    Settings.AddJsonColumnMappings = delegate (List<JsonColumnMapping> jsonColumnMappings)
+    {
+        jsonColumnMappings.Add(new JsonColumnMapping
+        {
+            Schema = "dbo",
+            Table = "Products",
+            Column = "Tags",
+            PropertyType = "List<string>",
+            AdditionalNamespace = "System.Collections.Generic"
+        });
+    };
+
+    // Result: The generated Product class will have:
+    // public List<string> Tags { get; set; }
+    */
+
+    // Example 3: Wildcard table matching
+    // ==================================
+    // Goal: Map all "Metadata" columns across all tables to Dictionary<string, object>
+    /*
+    Settings.AddJsonColumnMappings = delegate (List<JsonColumnMapping> jsonColumnMappings)
+    {
+        jsonColumnMappings.Add(new JsonColumnMapping
+        {
+            Schema = "*",           // Match any schema
+            Table = "*",            // Match any table
+            Column = "Metadata",
+            PropertyType = "Dictionary<string, object>",
+            AdditionalNamespace = "System.Collections.Generic"
+        });
+    };
+
+    // Result: Any table with a "Metadata" JSON column will have:
+    // public Dictionary<string, object> Metadata { get; set; }
+    */
+
+    // Example 4: Fully qualified type names
+    // =====================================
+    // Goal: Use a fully qualified type name (including namespace)
+    /*
+    Settings.AddJsonColumnMappings = delegate (List<JsonColumnMapping> jsonColumnMappings)
+    {
+        jsonColumnMappings.Add(new JsonColumnMapping
+        {
+            Schema = "dbo",
+            Table = "Users",
+            Column = "Preferences",
+            PropertyType = "MyCompany.Domain.Models.UserPreferences"
+            // AdditionalNamespace is optional when using fully qualified names
+        });
+    };
+
+    // Result: The generated User class will have:
+    // public MyCompany.Domain.Models.UserPreferences Preferences { get; set; }
+    */
+
+    // Example 5: Multiple namespaces
+    // ==============================
+    // Goal: Add multiple namespaces required for the mapped type
+    /*
+    Settings.AddJsonColumnMappings = delegate (List<JsonColumnMapping> jsonColumnMappings)
+    {
+        jsonColumnMappings.Add(new JsonColumnMapping
+        {
+            Schema = "dbo",
+            Table = "Documents",
+            Column = "Content",
+            PropertyType = "DocumentContent",
+            AdditionalNamespace = "MyApp.Models;MyApp.Helpers" // Semicolon-separated
+        });
+    };
+
+    // Result: Both namespaces will be added to the generated file's using statements
+    */
+
+    // Example 6: Complex nested types
+    // ================================
+    // Goal: Map to a complex type with nested generics
+    /*
+    Settings.AddJsonColumnMappings = delegate (List<JsonColumnMapping> jsonColumnMappings)
+    {
+        jsonColumnMappings.Add(new JsonColumnMapping
+        {
+            Schema = "dbo",
+            Table = "Reports",
+            Column = "Data",
+            PropertyType = "Dictionary<string, List<ReportItem>>",
+            AdditionalNamespace = "System.Collections.Generic;MyApp.Models"
+        });
+    };
+
+    // Result: The generated Report class will have:
+    // public Dictionary<string, List<ReportItem>> Data { get; set; }
+    */
+
+    // Example 7: Schema-specific mapping
+    // ==================================
+    // Goal: Map only for a specific schema
+    /*
+    Settings.AddJsonColumnMappings = delegate (List<JsonColumnMapping> jsonColumnMappings)
+    {
+        jsonColumnMappings.Add(new JsonColumnMapping
+        {
+            Schema = "sales",  // Only match tables in the 'sales' schema
+            Table = "*",       // But match any table name
+            Column = "CustomerInfo",
+            PropertyType = "CustomerInformation",
+            AdditionalNamespace = "MyApp.Sales.Models"
+        });
+    };
+    */
+
+    // Example 8: Multiple mappings for the same table
+    // ===============================================
+    // Goal: Map multiple JSON columns in the same table
+    /*
+    Settings.AddJsonColumnMappings = delegate (List<JsonColumnMapping> jsonColumnMappings)
+    {
+        // Map BillingAddress
+        jsonColumnMappings.Add(new JsonColumnMapping
+        {
+            Schema = "dbo",
+            Table = "Orders",
+            Column = "BillingAddress",
+            PropertyType = "Address",
+            AdditionalNamespace = "MyApp.Models"
+        });
+
+        // Map ShippingAddress
+        jsonColumnMappings.Add(new JsonColumnMapping
+        {
+            Schema = "dbo",
+            Table = "Orders",
+            Column = "ShippingAddress",
+            PropertyType = "Address",
+            AdditionalNamespace = "MyApp.Models"
+        });
+
+        // Map OrderItems
+        jsonColumnMappings.Add(new JsonColumnMapping
+        {
+            Schema = "dbo",
+            Table = "Orders",
+            Column = "Items",
+            PropertyType = "List<OrderItem>",
+            AdditionalNamespace = "System.Collections.Generic;MyApp.Models"
+        });
+    };
+
+    // Result: The generated Order class will have:
+    // public Address BillingAddress { get; set; }
+    // public Address ShippingAddress { get; set; }
+    // public List<OrderItem> Items { get; set; }
+    */
+
+    // =============================================================================================
+    // IMPORTANT NOTES
+    // =============================================================================================
+    //
+    // 1. This feature applies to JSON columns in:
+    //    - SQL Server: "json" type (SQL Server 2016+ or Azure SQL)
+    //    - PostgreSQL: "json" or "jsonb" types
+    //
+    // 2. The PropertyType must be a valid C# type that:
+    //    - Is accessible in your project
+    //    - Can be serialized/deserialized to/from JSON
+    //    - Matches the JSON structure stored in the database
+    //
+    // 3. You are responsible for:
+    //    - Ensuring the POCO classes exist in your project
+    //    - Configuring Entity Framework to serialize/deserialize these types
+    //    - Adding appropriate JSON converters if needed
+    //
+    // 4. For EF Core, you may need to configure JSON serialization in your DbContext:
+    //    modelBuilder.Entity<Order>()
+    //        .Property(e => e.ShippingAddress)
+    //        .HasConversion(
+    //            v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
+    //            v => JsonSerializer.Deserialize<Address>(v, (JsonSerializerOptions)null));
+    //
+    // 5. Nullable handling:
+    //    - Reference types (classes) will be nullable by default
+    //    - Value types will be made nullable if the database column allows NULL
+    //
+    // 6. The generator automatically adds required namespaces from AdditionalNamespace
+    //    to the Settings.AdditionalNamespaces list
+    //
+    // =============================================================================================
 
     public static class DatabaseToPropertyTypeFactory
     {

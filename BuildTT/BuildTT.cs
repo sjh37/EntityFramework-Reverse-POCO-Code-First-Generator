@@ -210,6 +210,53 @@ namespace BuildTT
         //enumDefinitions.Add(new EnumDefinition { Schema = Settings.DefaultSchema, Table = ""*"", Column = ""OrderStatus"", EnumType = ""OrderStatusType"" });
     };
 
+    // JSON column to POCO class mapping *************************************************************************************************
+    // Use the following callback to map JSON database columns to specific C# POCO classes instead of string.
+    // This allows you to work with strongly-typed objects instead of having to deserialize JSON strings manually.
+    Settings.AddJsonColumnMappings = delegate (List<JsonColumnMapping> jsonColumnMappings)
+    {
+        // Examples:
+        
+        // Map a specific JSON column to a POCO class
+        //jsonColumnMappings.Add(new JsonColumnMapping 
+        //{ 
+        //    Schema = Settings.DefaultSchema, 
+        //    Table = ""Orders"", 
+        //    Column = ""ShippingAddress"", 
+        //    PropertyType = ""Address"",
+        //    AdditionalNamespace = ""MyApp.Models"" // Optional: Add namespace if needed
+        //});
+
+        // Map all columns named ""Metadata"" across all tables to a specific type
+        //jsonColumnMappings.Add(new JsonColumnMapping 
+        //{ 
+        //    Schema = ""*"", 
+        //    Table = ""*"", 
+        //    Column = ""Metadata"", 
+        //    PropertyType = ""Dictionary<string, object>"",
+        //    AdditionalNamespace = ""System.Collections.Generic"" // Optional
+        //});
+
+        // Map to a complex type with generics
+        //jsonColumnMappings.Add(new JsonColumnMapping 
+        //{ 
+        //    Schema = Settings.DefaultSchema, 
+        //    Table = ""Products"", 
+        //    Column = ""Tags"", 
+        //    PropertyType = ""List<string>"",
+        //    AdditionalNamespace = ""System.Collections.Generic""
+        //});
+
+        // Map to a custom class with full namespace
+        //jsonColumnMappings.Add(new JsonColumnMapping 
+        //{ 
+        //    Schema = ""dbo"", 
+        //    Table = ""Users"", 
+        //    Column = ""Preferences"", 
+        //    PropertyType = ""MyApp.Models.UserPreferences"" // Fully qualified type name
+        //});
+    };
+
     // StoredProcedure return types *******************************************************************************************************
     // Override generation of return models for stored procedures that return entities.
     // If a stored procedure returns an entity, add it to the list below.
@@ -348,7 +395,7 @@ namespace BuildTT
 
     // Use the following function if you need to apply additional modifications to a column
     // eg. normalise names etc.
-    Settings.UpdateColumn = delegate(Column column, Table table, List<EnumDefinition> enumDefinitions)
+    Settings.UpdateColumn = delegate(Column column, Table table, List<EnumDefinition> enumDefinitions, List<JsonColumnMapping> jsonColumnMappings)
     {
         // Rename column
         //if (column.IsPrimaryKey && column.NameHumanCase == ""PkId"")
@@ -384,51 +431,7 @@ namespace BuildTT
         //if (table.NameHumanCase.Equals(""SomeTable"", StringComparison.InvariantCultureIgnoreCase) && column.NameHumanCase.Equals(""SomeColumn"", StringComparison.InvariantCultureIgnoreCase))
         //    column.IsPartial = true;
 
-        if (Settings.UseDataAnnotations)
-        {
-             if (column.IsPrimaryKey)
-                column.Attributes.Add(string.Format(""[Key, Column(Order = {0})]"", column.Ordinal));
-
-            if (column.IsMaxLength) 
-                column.Attributes.Add(""[MaxLength]"");
-
-            if (column.IsRowVersion)
-                column.Attributes.Add(""[Timestamp, ConcurrencyCheck]"");
-
-            if (!column.IsMaxLength && column.MaxLength > 0)
-            { 
-                var doNotSpecifySize = (Settings.DatabaseType == DatabaseType.SqlCe && column.MaxLength > 4000);
-                column.Attributes.Add(doNotSpecifySize ? ""[MaxLength]"" : string.Format(""[MaxLength({0})]"", column.MaxLength));
-                if (column.PropertyType.Equals(""string"", StringComparison.InvariantCultureIgnoreCase))
-                    column.Attributes.Add(string.Format(""[StringLength({0})]"", column.MaxLength));
-            }
-
-            if (!column.IsNullable && !column.IsComputed)
-            {
-                if (column.PropertyType.Equals(""string"", StringComparison.InvariantCultureIgnoreCase) && column.AllowEmptyStrings)
-                    column.Attributes.Add(""[Required(AllowEmptyStrings = true)]"");
-                else
-                    column.Attributes.Add(""[Required]"");
-            }
-
-            column.Attributes.Add(string.Format(""[Display(Name = \""{0}\"")]"", column.DisplayName));
-        }
-
-        // Perform Enum property type replacement
-        if (enumDefinitions != null)
-        {
-            var enumDefinition = enumDefinitions.FirstOrDefault(e =>
-                (e.Schema.Equals(table.Schema.DbName, StringComparison.InvariantCultureIgnoreCase)) && 
-                (e.Table == ""*"" || e.Table.Equals(table.DbName, StringComparison.InvariantCultureIgnoreCase) || e.Table.Equals(table.NameHumanCase, StringComparison.InvariantCultureIgnoreCase)) &&
-                (e.Column.Equals(column.DbName, StringComparison.InvariantCultureIgnoreCase) || e.Column.Equals(column.NameHumanCase, StringComparison.InvariantCultureIgnoreCase)));
-
-            if (enumDefinition != null)
-            {
-                column.PropertyType = enumDefinition.EnumType;
-                if (!string.IsNullOrEmpty(column.Default))
-                    column.Default = ""("" + enumDefinition.EnumType + "") "" + column.Default;
-            }
-        }
+        Settings.ApplyColumnCustomizations(column, table, enumDefinitions, jsonColumnMappings);
     };
 
     // In order to use this function, Settings.ElementsToGenerate must contain both Elements.Poco and Elements.Enum;

@@ -81,7 +81,7 @@ using System.Collections.Generic;
         }
     };
 
-Settings.UpdateColumn = delegate (Column column, Table table, List<EnumDefinition> enumDefinitions)
+Settings.UpdateColumn = delegate (Column column, Table table, List<EnumDefinition> enumDefinitions, List<JsonColumnMapping> jsonColumnMappings)
 {
     // Make property partial, see https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Partial-properties
     // if (table.NameHumanCase.Equals("AbOrderLinesAb", StringComparison.InvariantCultureIgnoreCase) && column.NameHumanCase.Equals("Sku", StringComparison.InvariantCultureIgnoreCase))

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 <#@ include file ="..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v3.ttinclude" #>
 <#
     Settings.TemplateType         = TemplateType.EfCore8;
@@ -50,7 +52,7 @@
 
     // Use the following function if you need to apply additional modifications to a column
     // eg. normalise names etc.
-    Settings.UpdateColumn = delegate(Column column, Table table, List<EnumDefinition> enumDefinitions)
+    Settings.UpdateColumn = delegate(Column column, Table table, List<EnumDefinition> enumDefinitions, List<JsonColumnMapping> jsonColumnMappings)
     {
         // Perform Enum property type replacement
         if (enumDefinitions != null)
