@@ -28,7 +28,7 @@ namespace Efrpg.Mustache
         private static IEnumerable<Type> getTypes(Type sourceType)
         {
             Queue<Type> pending = new Queue<Type>();
-            HashSet<Type> visited = new HashSet<Type>();
+            List<Type> visited = new List<Type>();
             pending.Enqueue(sourceType);
 
             while (pending.Count != 0)

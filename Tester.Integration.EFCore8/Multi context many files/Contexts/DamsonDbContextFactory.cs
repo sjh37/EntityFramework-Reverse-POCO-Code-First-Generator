@@ -3,6 +3,7 @@
 using Generator.Tests.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using System.Text.Json.Serialization;
 
 namespace Tester.Integration.EFCore8.Multi_context_many_filesPlum
 {

@@ -106,11 +106,7 @@ Settings.UpdateColumn = delegate (Column column, Table table, List<EnumDefinitio
     // Use ExtendedProperties dictionary to access specific extended property by name
     // Example: Add JsonPropertyName attribute from extended property
     // In SQL Server, set extended property: EXEC sp_addextendedproperty @name = N'JsonPropertyName', @value = N'id', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'YourTable', @level2type = N'COLUMN', @level2name = N'SystemId'
-    if (column.ExtendedProperties.TryGetValue("JsonPropertyName", out var jsonPropertyName))
-    {
-        column.Attributes.Add($"[JsonPropertyName(\"{jsonPropertyName}\")]");
-        Settings.AdditionalNamespaces.Add("System.Text.Json.Serialization");
-    }
+    Settings.ApplyJsonPropertyNameAttribute(column);
 };
 
 FilterSettings.CheckSettings();

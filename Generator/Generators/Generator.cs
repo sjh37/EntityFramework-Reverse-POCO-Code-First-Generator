@@ -748,7 +748,7 @@ namespace Efrpg.Generators
                     }
 
                     // Keep existing behavior for backward compatibility
-                    if (!string.Equals(extendedProperty.PropertyName, "JsonPropertyName", StringComparison.InvariantCultureIgnoreCase))
+                    if (!extendedProperty.PropertyName.StartsWith("JsonProperty", StringComparison.InvariantCultureIgnoreCase))
                     {
                         if (commentsInSummaryBlock)
                             col.ExtendedProperty = multiLine.Replace(extendedProperty.ExtendedProperty, "\r\n        /// ");

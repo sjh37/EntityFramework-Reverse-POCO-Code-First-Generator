@@ -20,6 +20,7 @@ using System.Data.SqlTypes;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -4627,6 +4628,8 @@ namespace TestDatabaseStandard
         public decimal? Anumeric { get; set; } // anumeric
         public decimal? Anumeric52 { get; set; } // anumeric_5_2
         public decimal? Anumeric113 { get; set; } // anumeric_11_3
+
+        [JsonPropertyName("money")]
         public decimal? Amoney { get; set; } // amoney
         public decimal? Asmallmoney { get; set; } // asmallmoney
         public int? Brandon { get; set; } // brandon
