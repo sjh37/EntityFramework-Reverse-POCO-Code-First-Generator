@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
@@ -432,11 +432,24 @@ namespace Efrpg.Readers
                         if (string.IsNullOrEmpty(extendedProperty))
                             continue;
 
+                        var propertyName = string.Empty;
+                        try
+                        {
+                            var ordinal = rdr.GetOrdinal("propertyname");
+                            if (ordinal >= 0)
+                                propertyName = rdr["propertyname"]?.ToString().Trim() ?? string.Empty;
+                        }
+                        catch
+                        {
+                            // Property name column doesn't exist in this database type
+                        }
+
                         var rep = new RawExtendedProperty
                         (
                             rdr["schema"].ToString().Trim(),
                             rdr["table"].ToString().Trim(),
                             rdr["column"].ToString().Trim(),
+                            propertyName,
                             extendedProperty
                         );
 

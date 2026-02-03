@@ -431,6 +431,11 @@ namespace BuildTT
         //if (table.NameHumanCase.Equals(""SomeTable"", StringComparison.InvariantCultureIgnoreCase) && column.NameHumanCase.Equals(""SomeColumn"", StringComparison.InvariantCultureIgnoreCase))
         //    column.IsPartial = true;
 
+        // Use ExtendedProperties dictionary to access specific extended property by name
+        // Example: Add JsonPropertyName attribute from extended property
+        // In SQL Server, set extended property: EXEC sp_addextendedproperty @name = N'JsonPropertyName', @value = N'id', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'YourTable', @level2type = N'COLUMN', @level2name = N'SystemId'
+        Settings.ApplyJsonPropertyNameAttribute(column);
+
         Settings.ApplyColumnCustomizations(column, table, enumDefinitions, jsonColumnMappings);
     };
 

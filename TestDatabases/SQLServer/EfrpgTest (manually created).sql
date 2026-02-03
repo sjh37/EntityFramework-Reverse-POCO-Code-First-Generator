@@ -602,6 +602,27 @@ EXEC sys.sp_addextendedproperty
     @level1type = N'TABLE',  @level1name = 'ColumnNameAndTypes';
 GO
 
+EXEC sys.sp_addextendedproperty @name = N'JsonPropertyName',
+     @value = N'money',
+     @level0type = N'SCHEMA',
+     @level0name = N'dbo',
+     @level1type = N'TABLE',
+     @level1name = N'ColumnNameAndTypes',
+     @level2type = N'COLUMN',
+     @level2name = N'amoney';
+GO
+
+EXEC sys.sp_addextendedproperty @name = N'JsonProperty',
+     @value = N'smallmoney',
+     @level0type = N'SCHEMA',
+     @level0name = N'dbo',
+     @level1type = N'TABLE',
+     @level1name = N'ColumnNameAndTypes',
+     @level2type = N'COLUMN',
+     @level2name = N'asmallmoney';
+GO
+
+
 CREATE OR ALTER PROCEDURE ColumnNameAndTypesProc
 AS
 BEGIN

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -104,6 +104,7 @@ WHERE   LOWER(tc.CONSTRAINT_TYPE) = 'foreign key'";
 SELECT  c.TABLE_SCHEMA as ""schema"",
         c.TABLE_NAME as ""table"",
         c.COLUMN_NAME as ""column"",
+        CAST('Comment' AS VARCHAR) as ""propertyname"",
         pgd.description as ""property""
 FROM    pg_catalog.pg_statio_all_tables st
         INNER JOIN pg_catalog.pg_description pgd

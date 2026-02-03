@@ -1,5 +1,4 @@
-﻿using System;
-using Efrpg;
+﻿using Efrpg;
 using Efrpg.Readers;
 using Generator.Tests.Common;
 using NUnit.Framework;

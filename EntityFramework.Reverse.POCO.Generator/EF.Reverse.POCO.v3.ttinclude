@@ -100,7 +100,7 @@
         public static bool IncludeFieldNameConstants                = false; // Will include public const string {{NameHumanCase}}Field = "{{NameHumanCase}}"; in the generated POCO class. It allows you to use a constant instead of magic strings.
         public static bool UsePropertiesForStoredProcResultSets     = false; // Stored procedure result set return models are rendered as fields (false) or properties (true).
         public static bool MergeMultipleStoredProcModelsIfAllSame   = true; // Some stored procedures are reported as having multiple result sets when in fact there is only one. Set this to true to merge identical result sets.
-        public static List<string> AdditionalNamespaces             = new List<string>(); // To include extra namespaces, include them here. i.e. "Microsoft.AspNet.Identity.EntityFramework"
+        public static List<string> AdditionalNamespaces          = new List<string>(); // To include extra namespaces, include them here. i.e. "Microsoft.AspNet.Identity.EntityFramework"
         public static List<string> AdditionalContextInterfaceItems  = new List<string>(); //  example: "void SetAutoDetectChangesEnabled(bool flag);"
         public static List<string> AdditionalFileHeaderText         = new List<string>(); // This will put additional lines verbatim at the top of each file under the comments, 1 line per entry
         public static List<string> AdditionalFileFooterText         = new List<string>(); // This will put additional lines verbatim at the end of each file above the // </auto-generated>, 1 line per entry
@@ -364,6 +364,11 @@
             //if (column.ExtendedProperty == "HIDE")
             //    column.Hidden = true; // Hidden means the generator does not generate any code for this column at all.
 
+            // Use ExtendedProperties dictionary to access specific extended property by name
+            // Example: Add JsonPropertyName attribute from extended property
+            // In SQL Server, set extended property: EXEC sp_addextendedproperty @name = N'JsonPropertyName', @value = N'id', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'YourTable', @level2type = N'COLUMN', @level2name = N'SystemId'
+            ApplyJsonPropertyNameAttribute(column);
+
             // Apply the "override" access modifier to a specific column.
             //if (column.NameHumanCase == "id")
             //    column.OverrideModifier = true;
@@ -463,6 +468,25 @@
                     // Clear the default value for JSON columns mapped to custom types
                     column.Default = string.Empty;
                 }
+            }
+        }
+
+        // Update column to include data annotations, enum replacements, and JSON column mappings
+        public static void ApplyJsonPropertyNameAttribute(Column column)
+        {
+            if (IsEfCore8Plus() && column.ExtendedProperties.TryGetValue("JsonPropertyName", out var jsonPropertyName))
+            {
+                column.Attributes.Add($"[JsonPropertyName(\"{jsonPropertyName}\")]");
+                const string JsonNamespace = "System.Text.Json.Serialization";
+                if (!AdditionalNamespaces.Contains(JsonNamespace))
+                    AdditionalNamespaces.Add(JsonNamespace);
+            }
+            if (IsEf6() && column.ExtendedProperties.TryGetValue("JsonProperty", out var jsonProperty))
+            {
+                column.Attributes.Add($"[JsonProperty(\"{jsonProperty}\")]");
+                const string JsonNamespace = "Newtonsoft.Json";
+                if (!AdditionalNamespaces.Contains(JsonNamespace))
+                    AdditionalNamespaces.Add(JsonNamespace);
             }
         }
 
@@ -1355,6 +1379,7 @@
         public int Ordinal;
         public int PrimaryKeyOrdinal;
         public string ExtendedProperty;
+        public Dictionary<string, string> ExtendedProperties = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         public string SummaryComments;
         public string InlineComments;
         public string UniqueIndexName;
@@ -4689,6 +4714,12 @@
                 //foreach (var rfk in rawForeignKeys) Console.WriteLine(rfk.Dump());
 
                 AddTablesToFilters(rawTables);
+
+                if (Settings.IncludeExtendedPropertyComments != CommentsStyle.None)
+                    AddExtendedPropertiesToFilters(DatabaseReader.ReadExtendedProperties());
+
+                RunUpdateDelegates();
+
                 IdentifyUniqueForeignKeys(rawIndexes, rawForeignKeys);
                 AddIndexesToFilters(rawIndexes);
                 SetPrimaryKeys();
@@ -4702,9 +4733,6 @@
                     var rawTriggers = DatabaseReader.ReadTriggers();
                     AddTriggersToFilters(rawTriggers);
                 }
-
-                if (Settings.IncludeExtendedPropertyComments != CommentsStyle.None)
-                    AddExtendedPropertiesToFilters(DatabaseReader.ReadExtendedProperties());
 
                 SetupEntityAndConfig(); // Must be done last
             }
@@ -4854,7 +4882,14 @@
 
                     filter.Tables.Add(table);
                 }
+            }
+        }
 
+        private void RunUpdateDelegates()
+        {
+            foreach (var filterKeyValuePair in FilterList.GetFilters())
+            {
+                var filter = filterKeyValuePair.Value;
                 foreach (var table in filter.Tables)
                 {
                     if (table.IsView)
@@ -5139,10 +5174,20 @@
                     if (col == null)
                         continue;
 
-                    if (commentsInSummaryBlock)
-                        col.ExtendedProperty = multiLine.Replace(extendedProperty.ExtendedProperty, "\r\n        /// ");
-                    else
-                        col.ExtendedProperty = whiteSpace.Replace(multiLine.Replace(extendedProperty.ExtendedProperty, " "), " ");
+                    // Store in ExtendedProperties dictionary by property name
+                    if (!string.IsNullOrEmpty(extendedProperty.PropertyName))
+                    {
+                        col.ExtendedProperties[extendedProperty.PropertyName] = extendedProperty.ExtendedProperty;
+                    }
+
+                    // Keep existing behavior for backward compatibility
+                    if (!extendedProperty.PropertyName.StartsWith("JsonProperty", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        if (commentsInSummaryBlock)
+                            col.ExtendedProperty = multiLine.Replace(extendedProperty.ExtendedProperty, "\r\n        /// ");
+                        else
+                            col.ExtendedProperty = whiteSpace.Replace(multiLine.Replace(extendedProperty.ExtendedProperty, " "), " ");
+                    }
                 }
             }
         }
@@ -10907,7 +10952,7 @@
         private static IEnumerable<Type> getTypes(Type sourceType)
         {
             Queue<Type> pending = new Queue<Type>();
-            HashSet<Type> visited = new HashSet<Type>();
+            List<Type> visited = new List<Type>();
             pending.Enqueue(sourceType);
 
             while (pending.Count != 0)
@@ -13391,11 +13436,24 @@ and limitations under the License.
                         if (string.IsNullOrEmpty(extendedProperty))
                             continue;
 
+                        var propertyName = string.Empty;
+                        try
+                        {
+                            var ordinal = rdr.GetOrdinal("propertyname");
+                            if (ordinal >= 0)
+                                propertyName = rdr["propertyname"]?.ToString().Trim() ?? string.Empty;
+                        }
+                        catch
+                        {
+                            // Property name column doesn't exist in this database type
+                        }
+
                         var rep = new RawExtendedProperty
                         (
                             rdr["schema"].ToString().Trim(),
                             rdr["table"].ToString().Trim(),
                             rdr["column"].ToString().Trim(),
+                            propertyName,
                             extendedProperty
                         );
 
@@ -14798,6 +14856,7 @@ WHERE   LOWER(tc.CONSTRAINT_TYPE) = 'foreign key'";
 SELECT  c.TABLE_SCHEMA as ""schema"",
         c.TABLE_NAME as ""table"",
         c.COLUMN_NAME as ""column"",
+        CAST('Comment' AS VARCHAR) as ""propertyname"",
         pgd.description as ""property""
 FROM    pg_catalog.pg_statio_all_tables st
         INNER JOIN pg_catalog.pg_description pgd
@@ -15077,14 +15136,16 @@ ORDER BY SchemaName, TableName, TriggerName;";
         public readonly string SchemaName;
         public readonly string TableName;
         public readonly string ColumnName;
+        public readonly string PropertyName;
         public readonly string ExtendedProperty;
         public readonly bool TableLevelExtendedComment;
 
-        public RawExtendedProperty(string schemaName, string tableName, string columnName, string extendedProperty)
+        public RawExtendedProperty(string schemaName, string tableName, string columnName, string propertyName, string extendedProperty)
         {
             SchemaName = schemaName;
             TableName = tableName;
             ColumnName = columnName;
+            PropertyName = propertyName;
             ExtendedProperty = extendedProperty;
 
             TableLevelExtendedComment = string.IsNullOrEmpty(columnName);
@@ -15722,6 +15783,7 @@ ORDER BY FK.TABLE_NAME, FK.COLUMN_NAME";
 SELECT  '' AS [schema],
         [ObjectName] AS [column],
         [ParentName] AS [table],
+        'ExtendedProperty' AS [propertyname],
         [Value] AS [property]
 FROM    [__ExtendedProperties]";
         }
@@ -16118,6 +16180,7 @@ WHERE   fkData.n = 1 -- Remove duplicate foreign keys";
 SELECT  s.name AS [schema],
     t.name AS [table],
     c.name AS [column],
+    ep.name AS [propertyname],
     value AS [property]
 FROM    sys.extended_properties AS ep
     INNER JOIN sys.tables AS t

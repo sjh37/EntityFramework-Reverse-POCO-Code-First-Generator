@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -281,6 +281,12 @@ namespace Efrpg.Generators
                 //foreach (var rfk in rawForeignKeys) Console.WriteLine(rfk.Dump());
 
                 AddTablesToFilters(rawTables);
+
+                if (Settings.IncludeExtendedPropertyComments != CommentsStyle.None)
+                    AddExtendedPropertiesToFilters(DatabaseReader.ReadExtendedProperties());
+
+                RunUpdateDelegates();
+
                 IdentifyUniqueForeignKeys(rawIndexes, rawForeignKeys);
                 AddIndexesToFilters(rawIndexes);
                 SetPrimaryKeys();
@@ -294,9 +300,6 @@ namespace Efrpg.Generators
                     var rawTriggers = DatabaseReader.ReadTriggers();
                     AddTriggersToFilters(rawTriggers);
                 }
-
-                if (Settings.IncludeExtendedPropertyComments != CommentsStyle.None)
-                    AddExtendedPropertiesToFilters(DatabaseReader.ReadExtendedProperties());
 
                 SetupEntityAndConfig(); // Must be done last
             }
@@ -446,7 +449,14 @@ namespace Efrpg.Generators
 
                     filter.Tables.Add(table);
                 }
+            }
+        }
 
+        private void RunUpdateDelegates()
+        {
+            foreach (var filterKeyValuePair in FilterList.GetFilters())
+            {
+                var filter = filterKeyValuePair.Value;
                 foreach (var table in filter.Tables)
                 {
                     if (table.IsView)
@@ -731,10 +741,20 @@ namespace Efrpg.Generators
                     if (col == null)
                         continue;
 
-                    if (commentsInSummaryBlock)
-                        col.ExtendedProperty = multiLine.Replace(extendedProperty.ExtendedProperty, "\r\n        /// ");
-                    else
-                        col.ExtendedProperty = whiteSpace.Replace(multiLine.Replace(extendedProperty.ExtendedProperty, " "), " ");
+                    // Store in ExtendedProperties dictionary by property name
+                    if (!string.IsNullOrEmpty(extendedProperty.PropertyName))
+                    {
+                        col.ExtendedProperties[extendedProperty.PropertyName] = extendedProperty.ExtendedProperty;
+                    }
+
+                    // Keep existing behavior for backward compatibility
+                    if (!extendedProperty.PropertyName.StartsWith("JsonProperty", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        if (commentsInSummaryBlock)
+                            col.ExtendedProperty = multiLine.Replace(extendedProperty.ExtendedProperty, "\r\n        /// ");
+                        else
+                            col.ExtendedProperty = whiteSpace.Replace(multiLine.Replace(extendedProperty.ExtendedProperty, " "), " ");
+                    }
                 }
             }
         }

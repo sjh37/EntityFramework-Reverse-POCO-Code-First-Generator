@@ -20,6 +20,7 @@ using System.Data.SqlTypes;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -4467,6 +4468,8 @@ namespace Efrpg.V4TestE8
         public decimal? anumeric { get; set; } // anumeric
         public decimal? anumeric_5_2 { get; set; } // anumeric_5_2
         public decimal? anumeric_11_3 { get; set; } // anumeric_11_3
+
+        [JsonPropertyName("money")]
         public decimal? amoney { get; set; } // amoney
         public decimal? asmallmoney { get; set; } // asmallmoney
         public int? brandon { get; set; } // brandon

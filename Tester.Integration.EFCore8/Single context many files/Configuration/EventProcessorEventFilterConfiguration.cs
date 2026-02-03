@@ -2,6 +2,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Text.Json.Serialization;
 
 namespace Tester.Integration.EFCore8.Single_context_many_files
 {
