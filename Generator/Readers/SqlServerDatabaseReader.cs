@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -276,6 +276,7 @@ WHERE   fkData.n = 1 -- Remove duplicate foreign keys";
 SELECT  s.name AS [schema],
     t.name AS [table],
     c.name AS [column],
+    ep.name AS [propertyname],
     value AS [property]
 FROM    sys.extended_properties AS ep
     INNER JOIN sys.tables AS t

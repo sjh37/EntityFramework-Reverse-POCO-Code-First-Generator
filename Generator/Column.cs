@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,6 +27,7 @@ namespace Efrpg
         public int Ordinal;
         public int PrimaryKeyOrdinal;
         public string ExtendedProperty;
+        public Dictionary<string, string> ExtendedProperties = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         public string SummaryComments;
         public string InlineComments;
         public string UniqueIndexName;

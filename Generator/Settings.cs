@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Efrpg.Filtering;
@@ -337,6 +337,16 @@ namespace Efrpg
             // Use the extended properties to perform tasks to column
             //if (column.ExtendedProperty == "HIDE")
             //    column.Hidden = true; // Hidden means the generator does not generate any code for this column at all.
+
+            // Use ExtendedProperties dictionary to access specific extended property by name
+            // Example: Add JsonPropertyName attribute from extended property
+            // In SQL Server, set extended property: EXEC sp_addextendedproperty @name = N'JsonPropertyName', @value = N'id', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'YourTable', @level2type = N'COLUMN', @level2name = N'SystemId'
+            //if (column.ExtendedProperties.ContainsKey("JsonPropertyName"))
+            //{
+            //    var jsonPropertyName = column.ExtendedProperties["JsonPropertyName"];
+            //    column.Attributes.Add($"[JsonPropertyName(\"{jsonPropertyName}\")]");
+            //    // Note: You may need to add "using System.Text.Json.Serialization;" to the template's using statements
+            //}
 
             // Apply the "override" access modifier to a specific column.
             //if (column.NameHumanCase == "id")

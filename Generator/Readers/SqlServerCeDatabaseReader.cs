@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Data.Common;
 using Efrpg.LanguageMapping;
 
@@ -132,6 +132,7 @@ ORDER BY FK.TABLE_NAME, FK.COLUMN_NAME";
 SELECT  '' AS [schema],
         [ObjectName] AS [column],
         [ParentName] AS [table],
+        'ExtendedProperty' AS [propertyname],
         [Value] AS [property]
 FROM    [__ExtendedProperties]";
         }

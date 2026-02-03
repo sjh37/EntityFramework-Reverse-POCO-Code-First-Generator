@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -731,6 +731,13 @@ namespace Efrpg.Generators
                     if (col == null)
                         continue;
 
+                    // Store in ExtendedProperties dictionary by property name
+                    if (!string.IsNullOrEmpty(extendedProperty.PropertyName))
+                    {
+                        col.ExtendedProperties[extendedProperty.PropertyName] = extendedProperty.ExtendedProperty;
+                    }
+
+                    // Keep existing behavior for backward compatibility
                     if (commentsInSummaryBlock)
                         col.ExtendedProperty = multiLine.Replace(extendedProperty.ExtendedProperty, "\r\n        /// ");
                     else
