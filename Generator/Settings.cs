@@ -1,11 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Efrpg.Filtering;
 using Efrpg.Generators;
 using Efrpg.LanguageMapping;
 using Efrpg.Templates;
+using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Linq;
+using System.Reflection.Emit;
 
 namespace Efrpg
 {
@@ -338,11 +339,6 @@ namespace Efrpg
             //if (column.ExtendedProperty == "HIDE")
             //    column.Hidden = true; // Hidden means the generator does not generate any code for this column at all.
 
-            // Use ExtendedProperties dictionary to access specific extended property by name
-            // Example: Add JsonPropertyName attribute from extended property
-            // In SQL Server, set extended property: EXEC sp_addextendedproperty @name = N'JsonPropertyName', @value = N'id', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'YourTable', @level2type = N'COLUMN', @level2name = N'SystemId'
-            ApplyJsonPropertyNameAttribute(column);
-
             // Apply the "override" access modifier to a specific column.
             //if (column.NameHumanCase == "id")
             //    column.OverrideModifier = true;
@@ -352,11 +348,35 @@ namespace Efrpg
             //if (table.NameHumanCase.Equals("SomeTable", StringComparison.InvariantCultureIgnoreCase) && column.NameHumanCase.Equals("SomeColumn", StringComparison.InvariantCultureIgnoreCase))
             //    column.IsPartial = true;
 
-            ApplyColumnCustomizations(column, table, enumDefinitions, jsonColumnMappings);
+            // Use ExtendedProperties dictionary to access specific extended property by name.
+            // See https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Extended-Property-Names-Feature
+            // Example: Add JsonPropertyName attribute from extended property
+            // In SQL Server, set extended property: EXEC sp_addextendedproperty @name = N'JsonPropertyName', @value = N'id', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'YourTable', @level2type = N'COLUMN', @level2name = N'SystemId'
+            ApplyJsonPropertyNameAttribute(column);
+
+            ApplyJsonColumnMappings(column, table, jsonColumnMappings);
+            ApplyDataAnnotations(column);
+            ApplyEnumTypeReplacement(column, table, enumDefinitions);
         };
 
         // Update column to include data annotations, enum replacements, and JSON column mappings
-        public static void ApplyColumnCustomizations(Column column, Table table, List<EnumDefinition> enumDefinitions, List<JsonColumnMapping> jsonColumnMappings)
+        public static void ApplyEnumTypeReplacement(Column column, Table table, List<EnumDefinition> enumDefinitions)
+        {
+            // Perform Enum property type replacement
+            var enumDefinition = enumDefinitions?.FirstOrDefault(e =>
+                (e.Schema.Equals(table.Schema.DbName, StringComparison.InvariantCultureIgnoreCase)) &&
+                (e.Table == "*" || e.Table.Equals(table.DbName, StringComparison.InvariantCultureIgnoreCase) || e.Table.Equals(table.NameHumanCase, StringComparison.InvariantCultureIgnoreCase)) &&
+                (e.Column.Equals(column.DbName, StringComparison.InvariantCultureIgnoreCase) || e.Column.Equals(column.NameHumanCase, StringComparison.InvariantCultureIgnoreCase)));
+
+            if (enumDefinition != null)
+            {
+                column.PropertyType = enumDefinition.EnumType;
+                if (!string.IsNullOrEmpty(column.Default))
+                    column.Default = "(" + enumDefinition.EnumType + ") " + column.Default;
+            }
+        }
+
+        public static void ApplyDataAnnotations(Column column)
         {
             if (UseDataAnnotations)
             {
@@ -393,20 +413,11 @@ namespace Efrpg
 
                 column.Attributes.Add(string.Format("[Display(Name = \"{0}\")]", column.DisplayName));
             }
+        }
 
-            // Perform Enum property type replacement
-            var enumDefinition = enumDefinitions?.FirstOrDefault(e =>
-                (e.Schema.Equals(table.Schema.DbName, StringComparison.InvariantCultureIgnoreCase)) &&
-                (e.Table == "*" || e.Table.Equals(table.DbName, StringComparison.InvariantCultureIgnoreCase) || e.Table.Equals(table.NameHumanCase, StringComparison.InvariantCultureIgnoreCase)) &&
-                (e.Column.Equals(column.DbName, StringComparison.InvariantCultureIgnoreCase) || e.Column.Equals(column.NameHumanCase, StringComparison.InvariantCultureIgnoreCase)));
-
-            if (enumDefinition != null)
-            {
-                column.PropertyType = enumDefinition.EnumType;
-                if (!string.IsNullOrEmpty(column.Default))
-                    column.Default = "(" + enumDefinition.EnumType + ") " + column.Default;
-            }
-
+        // Update column to include data annotations, enum replacements, and JSON column mappings
+        public static void ApplyJsonColumnMappings(Column column, Table table, List<JsonColumnMapping> jsonColumnMappings)
+        {
             // Perform JSON column to POCO class mapping
             // Check if this is a JSON column type and if there's a mapping defined
             // Supports: SQL Server "json", PostgreSQL "json" and "jsonb"
@@ -445,22 +456,23 @@ namespace Efrpg
             }
         }
 
-        // Update column to include data annotations, enum replacements, and JSON column mappings
         public static void ApplyJsonPropertyNameAttribute(Column column)
         {
+            // Include [JsonPropertyName("{name}")] attribute for .NetCore from extended property in db
             if (IsEfCore8Plus() && column.ExtendedProperties.TryGetValue("JsonPropertyName", out var jsonPropertyName))
             {
                 column.Attributes.Add($"[JsonPropertyName(\"{jsonPropertyName}\")]");
-                const string JsonNamespace = "System.Text.Json.Serialization";
-                if (!AdditionalNamespaces.Contains(JsonNamespace))
-                    AdditionalNamespaces.Add(JsonNamespace);
+                const string jsonNamespace = "System.Text.Json.Serialization";
+                if (!AdditionalNamespaces.Contains(jsonNamespace))
+                    AdditionalNamespaces.Add(jsonNamespace);
             }
-            if (IsEf6() && column.ExtendedProperties.TryGetValue("JsonProperty", out var jsonProperty))
+            // Include [JsonProperty("{name}")] attribute for .Net 6 from extended property in db
+            if (IsEf6() && column.ExtendedProperties.TryGetValue("JsonPropertyName", out var jsonProperty))
             {
                 column.Attributes.Add($"[JsonProperty(\"{jsonProperty}\")]");
-                const string JsonNamespace = "Newtonsoft.Json";
-                if (!AdditionalNamespaces.Contains(JsonNamespace))
-                    AdditionalNamespaces.Add(JsonNamespace);
+                const string jsonNamespace = "Newtonsoft.Json";
+                if (!AdditionalNamespaces.Contains(jsonNamespace))
+                    AdditionalNamespaces.Add(jsonNamespace);
             }
         }
 

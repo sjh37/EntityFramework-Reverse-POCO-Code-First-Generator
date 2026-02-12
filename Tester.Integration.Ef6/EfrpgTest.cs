@@ -3110,6 +3110,8 @@ namespace Tester.Integration.Ef6
         public const string Anumeric52Field = "Anumeric52";
         public decimal? Anumeric113 { get; set; } // anumeric_11_3
         public const string Anumeric113Field = "Anumeric113";
+
+        [JsonProperty("money")]
         public decimal? Amoney { get; set; } // amoney
         public const string AmoneyField = "Amoney";
 
