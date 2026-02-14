@@ -4301,6 +4301,8 @@ namespace Efrpg.V3TestE1
         public decimal? Anumeric { get; set; } // anumeric
         public decimal? Anumeric52 { get; set; } // anumeric_5_2
         public decimal? Anumeric113 { get; set; } // anumeric_11_3
+
+        [JsonProperty("money")]
         public decimal? Amoney { get; set; } // amoney
 
         [JsonProperty("smallmoney")]

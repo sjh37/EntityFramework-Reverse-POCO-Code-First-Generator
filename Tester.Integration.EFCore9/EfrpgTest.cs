@@ -4553,6 +4553,8 @@ namespace V9EfrpgTest
 
         [JsonPropertyName("money")]
         public decimal? Amoney { get; set; } // amoney
+
+        [JsonPropertyName("smallmoney")]
         public decimal? Asmallmoney { get; set; } // asmallmoney
         public int? Brandon { get; set; } // brandon
         public NetTopologySuite.Geometries.Point GeographyType { get; set; } // GeographyType

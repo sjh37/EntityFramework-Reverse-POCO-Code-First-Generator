@@ -376,6 +376,7 @@ namespace Efrpg
             }
         }
 
+        // Update column to include data annotations
         public static void ApplyDataAnnotations(Column column)
         {
             if (UseDataAnnotations)
@@ -415,10 +416,9 @@ namespace Efrpg
             }
         }
 
-        // Update column to include data annotations, enum replacements, and JSON column mappings
+        // Perform JSON column to POCO class mapping
         public static void ApplyJsonColumnMappings(Column column, Table table, List<JsonColumnMapping> jsonColumnMappings)
         {
-            // Perform JSON column to POCO class mapping
             // Check if this is a JSON column type and if there's a mapping defined
             // Supports: SQL Server "json", PostgreSQL "json" and "jsonb"
             var isJsonColumn = column.SqlPropertyType != null &&
@@ -456,6 +456,7 @@ namespace Efrpg
             }
         }
 
+        // Add [JsonPropertyName] attribute from database extended property
         public static void ApplyJsonPropertyNameAttribute(Column column)
         {
             // Include [JsonPropertyName("{name}")] attribute for .NetCore from extended property in db
@@ -757,7 +758,7 @@ namespace Efrpg
         };
 
         // JSON column to POCO class mapping *************************************************************************************************
-        // Use the following callback to map JSON database columns to specific C# POCO classes instead of string.
+        // Use the following callback to map JSON database columns to specific C# POCO classes instead of a string.
         // This allows you to work with strongly-typed objects instead of having to deserialize JSON strings manually.
         public static Action<List<JsonColumnMapping>> AddJsonColumnMappings = delegate (List<JsonColumnMapping> jsonColumnMappings)
         {

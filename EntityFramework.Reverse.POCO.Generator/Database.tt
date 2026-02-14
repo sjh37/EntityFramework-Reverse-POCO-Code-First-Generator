@@ -195,7 +195,7 @@
     };
 
     // JSON column to POCO class mapping *************************************************************************************************
-    // Use the following callback to map JSON database columns to specific C# POCO classes instead of string.
+    // Use the following callback to map JSON database columns to specific C# POCO classes instead of a string.
     // This allows you to work with strongly-typed objects instead of having to deserialize JSON strings manually.
     Settings.AddJsonColumnMappings = delegate (List<JsonColumnMapping> jsonColumnMappings)
     {
@@ -417,11 +417,11 @@
 
         // Use ExtendedProperties dictionary to access specific extended property by name.
         // See https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Extended-Property-Names-Feature
-        // Example: Add JsonPropertyName attribute from extended property
+        // Example: Add [JsonPropertyName] attribute from database extended property
         // In SQL Server, set extended property: EXEC sp_addextendedproperty @name = N'JsonPropertyName', @value = N'id', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'YourTable', @level2type = N'COLUMN', @level2name = N'SystemId'
         Settings.ApplyJsonPropertyNameAttribute(column);
 
-        Settings.ApplyJsonColumnMappings(column, table, jsonColumnMappings);
+        Settings.ApplyJsonColumnMappings(column, table, jsonColumnMappings);    // Perform JSON column to POCO class mapping
         Settings.ApplyDataAnnotations(column);
         Settings.ApplyEnumTypeReplacement(column, table, enumDefinitions);
     };
