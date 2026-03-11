@@ -112,15 +112,16 @@
         public static string FileExtension                  = ".cs";
 
         // Code suppression *******************************************************************************
-        public static bool UseRegions                       = true;  // If false, suppresses the use of #region
-        public static bool UseNamespace                     = true;  // If false, suppresses the writing of a namespace
-        public static bool UsePragma                        = false;  // If false, suppresses the writing of #pragma
-        public static bool AllowNullStrings                 = false; // If true, will allow string? properties and will add '#nullable enable' to the top of each file
-        public static bool UseResharper                     = false; // If true, will add a list of 'ReSharper disable' comments to the top of each file
-        public static bool ShowLicenseInfo                  = false; // If true, will add the licence info comment to the top of each file
-        public static bool IncludeConnectionSettingComments = false; // Add comments describing connection settings used to generate file
-        public static bool IncludeCodeGeneratedAttribute    = false; // If true, will include the [GeneratedCode] attribute before classes, false to remove it.
-        public static bool IncludeColumnsWithDefaults       = true;  // If true, will set properties to the default value from the database.ro
+        public static bool UseRegions                          = true;  // If false, suppresses the use of #region
+        public static bool UseNamespace                        = true;  // If false, suppresses the writing of a namespace
+        public static bool UsePragma                           = false; // If false, suppresses the writing of #pragma
+        public static bool AllowNullStrings                    = false; // If true, will allow string? properties and will add '#nullable enable' to the top of each file
+        public static bool NullableReverseNavigationProperties = true;  // If true, reverse navigation properties for one-to-one relationships will be nullable (e.g. MyEntity? MyEntity). The parent entity can exist without the child entity.
+        public static bool UseResharper                        = false; // If true, will add a list of 'ReSharper disable' comments to the top of each file
+        public static bool ShowLicenseInfo                     = false; // If true, will add the licence info comment to the top of each file
+        public static bool IncludeConnectionSettingComments    = false; // Add comments describing connection settings used to generate file
+        public static bool IncludeCodeGeneratedAttribute       = false; // If true, will include the [GeneratedCode] attribute before classes, false to remove it.
+        public static bool IncludeColumnsWithDefaults          = true;  // If true, will set properties to the default value from the database.ro
 
         // Create enumerations from database tables
         // List the enumeration tables you want read and generated for
@@ -1030,6 +1031,19 @@
         public static string Root;
         public static string TemplateFile;
         public static int FilterCount;
+
+        public static bool NeedsNullForgiving() => AllowNullStrings || NullableReverseNavigationProperties;
+
+        public static void CheckSettings()
+        {
+            if (TemplateType == TemplateType.Ef6 ||
+                TemplateType == TemplateType.FileBasedEf6)
+            {
+                // Nullable reference types are only supported in language version 8.0 or greater
+                AllowNullStrings = false;
+                NullableReverseNavigationProperties = false;
+            }
+        }
     }
 
     // Filtering **************************************************************************************************************************
@@ -1424,26 +1438,27 @@
 
         public Table ParentTable;
 
-        public static readonly List<string> NotNullable = new List<string>
-        {
-            Settings.AllowNullStrings ? "" : "string",
-            "byte[]",
-            "datatable",
-            "system.data.datatable",
-            "object",
-            "microsoft.sqlserver.types.sqlgeography",
-            "microsoft.sqlserver.types.sqlgeometry",
-            "sqlgeography",
-            "sqlgeometry",
-            "system.data.entity.spatial.dbgeography",
-            "system.data.entity.spatial.dbgeometry",
-            "dbgeography",
-            "dbgeometry",
-            "system.data.entity.hierarchy.hierarchyid",
-            "hierarchyid",
-            "nettopologysuite.geometries.point",
-            "nettopologysuite.geometries.geometry"
-        };
+        public static List<string> NotNullable =>
+            new List<string>
+            {
+                Settings.NeedsNullForgiving() ? "" : "string",
+                Settings.NeedsNullForgiving() ? "" : "byte[]",
+                "datatable",
+                "system.data.datatable",
+                "object",
+                "microsoft.sqlserver.types.sqlgeography",
+                "microsoft.sqlserver.types.sqlgeometry",
+                "sqlgeography",
+                "sqlgeometry",
+                "system.data.entity.spatial.dbgeography",
+                "system.data.entity.spatial.dbgeometry",
+                "dbgeography",
+                "dbgeometry",
+                "system.data.entity.hierarchy.hierarchyid",
+                "hierarchyid",
+                "nettopologysuite.geometries.point",
+                "nettopologysuite.geometries.geometry"
+            };
         
         public static readonly List<string> StoredProcedureNotNullable = new List<string>
         {
@@ -4034,6 +4049,52 @@
             return hasSpatialTypes ? ", x => x.UseNetTopologySuite()" : ", x => x.UseHierarchyId()";
         }
 
+        private static string GetPropertyInitialiser(Column col)
+        {
+            // If using property initialisers and there's a default value, use it
+            if (Settings.UsePropertyInitialisers && !string.IsNullOrWhiteSpace(col.Default))
+                return string.Format(" = {0};", col.Default);
+
+            // For non-nullable reference types, add null-forgiving operator to satisfy nullable reference types
+            // Only apply this when nullable reference types are enabled
+            if (!Settings.NeedsNullForgiving())
+                return string.Empty;
+
+            // Check if this is a reference type
+            var isReferenceType = IsReferenceType(col.PropertyType);
+
+            // If it's a reference type and the database column is NOT nullable, add = null!;
+            // Partial property declarations cannot have initializers — the implementation part handles initialization.
+            if (isReferenceType && !col.IsNullable && !col.IsPartial && string.IsNullOrWhiteSpace(col.Default))
+                return " = null!;";
+
+            return string.Empty;
+        }
+
+        private static bool IsReferenceType(string propertyType)
+        {
+            var lowerType = propertyType.ToLower();
+            
+            // List of known reference types
+            return lowerType == "string" ||
+                   lowerType == "byte[]" ||
+                   lowerType == "datatable" ||
+                   lowerType == "system.data.datatable" ||
+                   lowerType == "object" ||
+                   lowerType == "microsoft.sqlserver.types.sqlgeography" ||
+                   lowerType == "microsoft.sqlserver.types.sqlgeometry" ||
+                   lowerType == "sqlgeography" ||
+                   lowerType == "sqlgeometry" ||
+                   lowerType == "system.data.entity.spatial.dbgeography" ||
+                   lowerType == "system.data.entity.spatial.dbgeometry" ||
+                   lowerType == "dbgeography" ||
+                   lowerType == "dbgeometry" ||
+                   lowerType == "system.data.entity.hierarchy.hierarchyid" ||
+                   lowerType == "hierarchyid" ||
+                   lowerType == "nettopologysuite.geometries.point" ||
+                   lowerType == "nettopologysuite.geometries.geometry";
+        }
+
         public CodeOutput GenerateFakeContext()
         {
             var filename = "Fake" + Settings.DbContextName + Settings.FileExtension;
@@ -4151,7 +4212,7 @@
                         WrapIfNullable = col.WrapIfNullable(),
                         NameHumanCase = col.NameHumanCase,
                         PrivateSetterForComputedColumns = Settings.UsePrivateSetterForComputedColumns && col.IsComputed ? "private " : string.Empty,
-                        PropertyInitialisers = Settings.UsePropertyInitialisers ? (string.IsNullOrWhiteSpace(col.Default) ? string.Empty : string.Format(" = {0};", col.Default)) : string.Empty,
+                        PropertyInitialisers = GetPropertyInitialiser(col),
                         InlineComments = col.InlineComments,
                         IsPartial = col.IsPartial
                     })
@@ -4285,11 +4346,19 @@
                 multipleModelReturnColumns.Add(new MultipleModelReturnColumns(++model, returnModel.Select(sp.WriteStoredProcReturnColumn).ToList()));
             }
 
+            var useProperties = Settings.UsePropertiesForStoredProcResultSets;
+            var needsNullForgiving = Settings.NeedsNullForgiving();
+            
             var data = new StoredProcReturnModel
             {
                 ResultClassModifiers = Settings.ResultClassModifiers,
                 WriteStoredProcReturnModelName = sp.WriteStoredProcReturnModelName(_filter),
-                PropertyGetSet = Settings.UsePropertiesForStoredProcResultSets ? " { get; set; }" : ";",
+                PropertyGetSet = useProperties 
+                    ? " { get; set; }"              // Properties: always include { get; set; }
+                    : (needsNullForgiving ? "" : ";"),  // Fields: skip ; if NRT enabled (will be added with = null!;)
+                NullForgivingOperator = needsNullForgiving 
+                    ? " = null!;"                       // Always add = null!; when NRT is enabled
+                    : (useProperties ? ";" : ""),       // Add ; for properties only when NRT is disabled
                 SingleModel = sp.ReturnModels.Count == 1,
                 SingleModelReturnColumns = sp.ReturnModels
                     .First()
@@ -4423,7 +4492,7 @@
             if (Settings.UseResharper)
                 header.AppendLine("// ReSharper disable All");
 
-            if (Settings.AllowNullStrings)
+            if (Settings.NeedsNullForgiving())
                 header.AppendLine("#nullable enable");
             
             if (Settings.UsePragma)
@@ -4699,12 +4768,13 @@
         
         public void ReadDatabase()
         {
+            Settings.CheckSettings();
             LoadTables();
             LoadStoredProcs();
             LoadEnums();
             LoadSequences();
         }
-
+        
         public void LoadTables()
         {
             if (DatabaseReader == null ||
@@ -5539,17 +5609,26 @@
                 var pkPropName             = fkTable.GetUniqueForeignKeyName(true,  pkTableHumanCase,      foreignKey, checkForFkNameClashes, true,                   relationship);
                 var fkPropName             = pkTable.GetUniqueForeignKeyName(false, fkTable.NameHumanCase, foreignKey, checkForFkNameClashes, fkMakePropNameSingular, flipRelationship);
 
+                // Determine if the foreign key navigation property needs null-forgiving operator or nullable marker
+                // If all FK columns are nullable, the navigation property should be nullable
+                var allFkColumnsAreNullable = fkCols.All(x => x.Column.IsNullable);
+                var needsNullForgiving = Settings.NeedsNullForgiving();
+                var nullableMarker = needsNullForgiving && allFkColumnsAreNullable ? "?" : string.Empty;
+                var nullForgivingOperator = needsNullForgiving && !allFkColumnsAreNullable ? " = null!;" : string.Empty;
+
                 var fkd = new PropertyAndComments
                 {
                     AdditionalDataAnnotations = filter.ForeignKeyAnnotationsProcessing(fkTable, pkTable, pkPropName, fkPropName),
                     
                     PropertyName = pkPropName,
 
-                    Definition = string.Format("public {0}{1} {2} {3}{4}", 
+                    Definition = string.Format("public {0}{1}{2} {3} {4}{5}{6}", 
                         Table.GetLazyLoadingMarker(),
                         pkTableHumanCaseWithSuffix,
+                        nullableMarker,
                         pkPropName,
                         "{ get; set; }",
+                        nullForgivingOperator,
                         Settings.IncludeComments != CommentsStyle.None ? " // " + foreignKey.ConstraintName : string.Empty),
 
                     Comments = string.Format("Parent {0} pointed by [{1}].({2}) ({3})",
@@ -17424,9 +17503,14 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             if (IsEfCore8Plus && (hasParam || includeProcResultParam))
                 sb.Append(" new[] {");
 
+            var needsNullForgiving = Settings.NeedsNullForgiving();
             foreach (var p in Parameters.OrderBy(x => x.Ordinal))
             {
-                sb.Append(string.Format("{0}{1}, ", p.NameHumanCase, appendParam ? "Param" : string.Empty));
+                var paramName = string.Format("{0}{1}", p.NameHumanCase, appendParam ? "Param" : string.Empty);
+                // Cast to (object?) to allow null values when nullable reference types are enabled
+                if (IsEfCore8Plus && needsNullForgiving)
+                    paramName = string.Format("(object?){0}", paramName);
+                sb.Append(string.Format("{0}, ", paramName));
                 hasParam = true;
             }
 
@@ -17506,9 +17590,46 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             // This does not change the <columnName> if the regex does not match
             columnName = Regex.Replace(columnName, "^(?<prefix>JSON|XML)_([0-9A-F]{8}-([0-9A-F]{4}-){3}[0-9A-F]{12})", "${prefix}_Value", RegexOptions.IgnoreCase);
 
-            return string.Format("public {0} {1} {{ get; set; }}",
-                WrapTypeIfNullable(ConvertDataColumnType(col.DataType), col),
-                columnName);
+            var propertyType = WrapTypeIfNullable(ConvertDataColumnType(col.DataType), col);
+            
+            // Add null-forgiving operator for non-nullable reference types when NRT is enabled
+            var nullForgivingOperator = string.Empty;
+            if (Settings.NeedsNullForgiving() && !IsNullable(col))
+            {
+                var baseType = ConvertDataColumnType(col.DataType);
+                if (IsReferenceType(baseType))
+                    nullForgivingOperator = " = null!;";
+            }
+
+            return string.Format("public {0} {1} {{ get; set; }}{2}",
+                propertyType,
+                columnName,
+                nullForgivingOperator);
+        }
+
+        private static bool IsReferenceType(string propertyType)
+        {
+            var lowerType = propertyType.ToLower();
+            
+            // List of known reference types
+            return lowerType == "string" ||
+                   lowerType == "byte[]" ||
+                   lowerType == "datatable" ||
+                   lowerType == "system.data.datatable" ||
+                   lowerType == "object" ||
+                   lowerType == "microsoft.sqlserver.types.sqlgeography" ||
+                   lowerType == "microsoft.sqlserver.types.sqlgeometry" ||
+                   lowerType == "sqlgeography" ||
+                   lowerType == "sqlgeometry" ||
+                   lowerType == "system.data.entity.spatial.dbgeography" ||
+                   lowerType == "system.data.entity.spatial.dbgeometry" ||
+                   lowerType == "dbgeography" ||
+                   lowerType == "dbgeometry" ||
+                   lowerType == "system.data.entity.hierarchy.hierarchyid" ||
+                   lowerType == "hierarchyid" ||
+                   lowerType == "hierarchyid?" ||
+                   lowerType == "nettopologysuite.geometries.point" ||
+                   lowerType == "nettopologysuite.geometries.geometry";
         }
 
         private string ConvertDataColumnType(Type type)
@@ -17770,7 +17891,6 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             switch (relationship)
             {
                 case Relationship.OneToOne:
-                case Relationship.OneToMany:
                 case Relationship.ManyToOne:
                     fkNames = (fks.Count > 1 ? "(" : "") + string.Join(", ", fks.Select(x => "[" + x.FkColumn + "]").Distinct().ToArray()) + (fks.Count > 1 ? ")" : "");
                     break;
@@ -17781,25 +17901,15 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             switch (relationship)
             {
                 case Relationship.OneToOne:
+                    var nullableMarker = Settings.NullableReverseNavigationProperties ? "?" : string.Empty;
+                    var nullForgivingOneToOne = (Settings.NeedsNullForgiving()) && !Settings.NullableReverseNavigationProperties ? " = null!" : string.Empty;
                     ReverseNavigationProperty.Add(
                         new PropertyAndComments
                         {
                             AdditionalDataAnnotations = _filter.ForeignKeyAnnotationsProcessing(fkTable, this, propName, string.Empty),
                             PropertyName = propName,
-                            Definition = string.Format("{0} {1}{2} {3} {{ get; set; }}{4}", accessModifier, GetLazyLoadingMarker(), fkTable.NameHumanCaseWithSuffix(), propName, Settings.IncludeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
+                            Definition = string.Format("{0} {1}{2}{3} {4} {{ get; set; }}{5}{6}", accessModifier, GetLazyLoadingMarker(), fkTable.NameHumanCaseWithSuffix(), nullableMarker, propName, nullForgivingOneToOne, Settings.IncludeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
                             Comments = string.Format("Parent (One-to-One) {0} pointed by [{1}].{2} ({3})", NameHumanCaseWithSuffix(), fkTable.DbName, fkNames, fks.First().ConstraintName)
-                        }
-                    );
-                    break;
-
-                case Relationship.OneToMany:
-                    ReverseNavigationProperty.Add(
-                        new PropertyAndComments
-                        {
-                            AdditionalDataAnnotations = _filter.ForeignKeyAnnotationsProcessing(fkTable, this, propName, string.Empty),
-                            PropertyName = propName,
-                            Definition = string.Format("{0} {1}{2} {3} {{ get; set; }}{4}", accessModifier, GetLazyLoadingMarker(), fkTable.NameHumanCaseWithSuffix(), propName, Settings.IncludeComments != CommentsStyle.None ? " // " + constraint : string.Empty),
-                            Comments = string.Format("Parent {0} pointed by [{1}].{2} ({3})", NameHumanCaseWithSuffix(), fkTable.DbName, fkNames, fks.First().ConstraintName)
                         }
                     );
                     break;
@@ -18222,6 +18332,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public string ResultClassModifiers { get; set; }
         public string WriteStoredProcReturnModelName { get; set; }
         public string PropertyGetSet { get; set; }
+        public string NullForgivingOperator { get; set; }
         public bool SingleModel { get; set; }
         public List<string> SingleModelReturnColumns { get; set; }
         public List<MultipleModelReturnColumns> MultipleModelReturnColumns { get; set; }
@@ -19098,6 +19209,7 @@ using {{this}};{{#newline}}
 
     public FakeDbSet(){{#newline}}
     {{{#newline}}
+        _primaryKeys = Array.Empty<PropertyInfo>();{{#newline}}
         _data = new ObservableCollection<TEntity>();{{#newline}}
         _query = _data.AsQueryable();{{#newline}}
 
@@ -19690,7 +19802,7 @@ using {{this}};{{#newline}}
     Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken));{{#newline}}
     DatabaseFacade Database { get; }{{#newline}}
     DbSet<TEntity> Set<TEntity>() where TEntity : class;{{#newline}}
-    string ToString();{{#newline}}{{#newline}}
+    string? ToString();{{#newline}}{{#newline}}
 
     EntityEntry Add(object entity);{{#newline}}
     EntityEntry<TEntity> Add<TEntity>(TEntity entity) where TEntity : class;{{#newline}}
@@ -19709,12 +19821,12 @@ using {{this}};{{#newline}}
     EntityEntry Entry(object entity);{{#newline}}
     EntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class;{{#newline}}{{#newline}}
 
-    TEntity Find<TEntity>(params object[] keyValues) where TEntity : class;{{#newline}}
-    ValueTask<TEntity> FindAsync<TEntity>(object[] keyValues, CancellationToken cancellationToken) where TEntity : class;{{#newline}}
-    ValueTask<TEntity> FindAsync<TEntity>(params object[] keyValues) where TEntity : class;{{#newline}}
-    ValueTask<object> FindAsync(Type entityType, object[] keyValues, CancellationToken cancellationToken);{{#newline}}
-    ValueTask<object> FindAsync(Type entityType, params object[] keyValues);{{#newline}}
-    object Find(Type entityType, params object[] keyValues);{{#newline}}{{#newline}}
+    TEntity? Find<TEntity>(params object?[]? keyValues) where TEntity : class;{{#newline}}
+    ValueTask<TEntity?> FindAsync<TEntity>(object?[]? keyValues, CancellationToken cancellationToken) where TEntity : class;{{#newline}}
+    ValueTask<TEntity?> FindAsync<TEntity>(params object?[]? keyValues) where TEntity : class;{{#newline}}
+    ValueTask<object?> FindAsync(Type entityType, object?[]? keyValues, CancellationToken cancellationToken);{{#newline}}
+    ValueTask<object?> FindAsync(Type entityType, params object?[]? keyValues);{{#newline}}
+    object? Find(Type entityType, params object?[]? keyValues);{{#newline}}{{#newline}}
 
     EntityEntry Remove(object entity);{{#newline}}
     EntityEntry<TEntity> Remove<TEntity>(TEntity entity) where TEntity : class;{{#newline}}
@@ -19841,7 +19953,7 @@ using {{this}};{{#newline}}
 {{DbContextClassModifiers}} class {{DbContextName}} : {{DbContextBaseClass}}{{contextInterface}}{{#newline}}
 {{{#newline}}
 {{#if OnConfigurationUsesConfiguration}}
-    private readonly IConfiguration _configuration;{{#newline}}{{#newline}}
+    private readonly IConfiguration? _configuration;{{#newline}}{{#newline}}
 {{/if}}
 
 {{#if AddParameterlessConstructorToDbContext}}
@@ -20111,10 +20223,11 @@ using {{this}};{{#newline}}
             return @"
 {{classModifier}} class {{contextName}}Factory : IDesignTimeDbContextFactory<{{contextName}}>{{#newline}}
 {{{#newline}}
-    private readonly DbContextOptions<{{contextName}}> Options;{{#newline}}
+    private readonly DbContextOptions<{{contextName}}>? Options;{{#newline}}
 {{#newline}}
     public {{contextName}}Factory(){{#newline}}
     {{{#newline}}
+        Options = null;{{#newline}}
     }{{#newline}}
 {{#newline}}
     public {{contextName}}Factory(DbContextOptions<{{contextName}}> options){{#newline}}
@@ -20129,7 +20242,7 @@ using {{this}};{{#newline}}
 {{#newline}}
     public {{contextName}} CreateDbContext(){{#newline}}
     {{{#newline}}
-        return new {{contextName}}(Options);{{#newline}}
+        return Options != null ? new {{contextName}}(Options) : new {{contextName}}();{{#newline}}
     }{{#newline}}
 {{#newline}}
     public {{contextName}} CreateDbContext(DbContextOptions<{{contextName}}> options){{#newline}}
@@ -20195,7 +20308,7 @@ using {{this}};{{#newline}}
 {{{#newline}}
 
 {{#each tables}}
-    {{DbSetModifier}} DbSet<{{DbSetName}}> {{PluralTableName}} { get; set; }{{Comment}}{{#newline}}
+    {{DbSetModifier}} DbSet<{{DbSetName}}> {{PluralTableName}} { get; set; } = null!;{{Comment}}{{#newline}}
 {{/each}}
 {{#newline}}
 
@@ -20262,7 +20375,7 @@ using {{this}};{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public override string ToString(){{#newline}}
+    public override string? ToString(){{#newline}}
     {{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
@@ -20340,32 +20453,32 @@ using {{this}};{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public virtual TEntity Find<TEntity>(params object[] keyValues) where TEntity : class{{#newline}}
+    public virtual TEntity? Find<TEntity>(params object?[]? keyValues) where TEntity : class{{#newline}}
     {{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public virtual ValueTask<TEntity> FindAsync<TEntity>(object[] keyValues, CancellationToken cancellationToken) where TEntity : class{{#newline}}
+    public virtual ValueTask<TEntity?> FindAsync<TEntity>(object?[]? keyValues, CancellationToken cancellationToken) where TEntity : class{{#newline}}
     {{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public virtual ValueTask<TEntity> FindAsync<TEntity>(params object[] keyValues) where TEntity : class{{#newline}}
+    public virtual ValueTask<TEntity?> FindAsync<TEntity>(params object?[]? keyValues) where TEntity : class{{#newline}}
     {{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public virtual ValueTask<object> FindAsync(Type entityType, object[] keyValues, CancellationToken cancellationToken){{#newline}}
+    public virtual ValueTask<object?> FindAsync(Type entityType, object?[]? keyValues, CancellationToken cancellationToken){{#newline}}
     {{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public virtual ValueTask<object> FindAsync(Type entityType, params object[] keyValues){{#newline}}
+    public virtual ValueTask<object?> FindAsync(Type entityType, params object?[]? keyValues){{#newline}}
     {{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public virtual object Find(Type entityType, params object[] keyValues){{#newline}}
+    public virtual object? Find(Type entityType, params object?[]? keyValues){{#newline}}
     {{{#newline}}
         throw new NotImplementedException();{{#newline}}
     }{{#newline}}{{#newline}}
@@ -20423,7 +20536,7 @@ using {{this}};{{#newline}}
 {{#if HasReturnModels}}
 {{#newline}}
 {{#if CreateDbSetForReturnModel}}
-    public DbSet<{{ReturnModelName}}> {{ReturnModelName}} { get; set; }{{#newline}}
+    public DbSet<{{ReturnModelName}}> {{ReturnModelName}} { get; set; } = null!;{{#newline}}
 {{/if}}
     public {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalseFalse}}){{#newline}}
     {{{#newline}}
@@ -20560,11 +20673,20 @@ using {{this}};{{#newline}}
     private readonly PropertyInfo[] _primaryKeys;{{#newline}}
     private ObservableCollection<TEntity> _data;{{#newline}}
     private IQueryable _query;{{#newline}}
-    public override IEntityType EntityType { get; }{{#newline}}{{#newline}}
+    private IEntityType? _entityType = null;{{#newline}}
+    public override IEntityType EntityType{{#newline}}
+    {{{#newline}}
+        get{{#newline}}
+        {{{#newline}}
+            if (_entityType == null){{#newline}}
+                throw new NotImplementedException(""EntityType is not implemented for FakeDbSet."");{{#newline}}
+            return _entityType;{{#newline}}
+        }{{#newline}}
+    }{{#newline}}{{#newline}}
 
     public FakeDbSet(){{#newline}}
     {{{#newline}}
-        _primaryKeys = null;{{#newline}}
+        _primaryKeys = Array.Empty<PropertyInfo>();{{#newline}}
         _data        = new ObservableCollection<TEntity>();{{#newline}}
         _query       = _data.AsQueryable();{{#newline}}
 
@@ -20583,11 +20705,11 @@ using {{this}};{{#newline}}
 {{/if}}
     }{{#newline}}{{#newline}}
 
-    public override TEntity Find(params object[] keyValues){{#newline}}
+    public override TEntity? Find(params object?[]? keyValues){{#newline}}
     {{{#newline}}
         if (_primaryKeys == null){{#newline}}
             throw new ArgumentException(""No primary keys defined"");{{#newline}}
-        if (keyValues.Length != _primaryKeys.Length){{#newline}}
+        if (keyValues?.Length != _primaryKeys.Length){{#newline}}
             throw new ArgumentException(""Incorrect number of keys passed to Find method"");{{#newline}}{{#newline}}
 
         var keyQuery = this.AsQueryable();{{#newline}}
@@ -20595,25 +20717,25 @@ using {{this}};{{#newline}}
             .Select((t, i) => i){{#newline}}
             .Aggregate(keyQuery,{{#newline}}
                 (current, x) =>{{#newline}}
-                    current.Where(entity => _primaryKeys[x].GetValue(entity, null).Equals(keyValues[x])));{{#newline}}{{#newline}}
+                    current.Where(entity => _primaryKeys[x].GetValue(entity, null)!.Equals(keyValues[x])));{{#newline}}{{#newline}}
 
         return keyQuery.SingleOrDefault();{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public override ValueTask<TEntity> FindAsync(object[] keyValues, CancellationToken cancellationToken){{#newline}}
+    public override ValueTask<TEntity?> FindAsync(object?[]? keyValues, CancellationToken cancellationToken){{#newline}}
     {{{#newline}}
-        return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues), cancellationToken));{{#newline}}
+        return new ValueTask<TEntity?>(Task<TEntity?>.Factory.StartNew(() => Find(keyValues), cancellationToken));{{#newline}}
     }{{#newline}}{{#newline}}
 
-    public override ValueTask<TEntity> FindAsync(params object[] keyValues){{#newline}}
+    public override ValueTask<TEntity?> FindAsync(params object?[]? keyValues){{#newline}}
     {{{#newline}}
-        return new ValueTask<TEntity>(Task<TEntity>.Factory.StartNew(() => Find(keyValues)));{{#newline}}
+        return new ValueTask<TEntity?>(Task<TEntity?>.Factory.StartNew(() => Find(keyValues)));{{#newline}}
     }{{#newline}}{{#newline}}
 
     public override EntityEntry<TEntity> Add(TEntity entity){{#newline}}
     {{{#newline}}
         _data.Add(entity);{{#newline}}
-        return null;{{#newline}}
+        return null!;{{#newline}}
     }{{#newline}}{{#newline}}
 
     public override ValueTask<EntityEntry<TEntity>> AddAsync(TEntity entity, CancellationToken cancellationToken = default){{#newline}}
@@ -20650,7 +20772,7 @@ using {{this}};{{#newline}}
     public override EntityEntry<TEntity> Attach(TEntity entity){{#newline}}
     {{{#newline}}
         if (entity == null) throw new ArgumentNullException(""entity"");{{#newline}}
-        return Add(entity);{{#newline}}
+        return Add(entity)!;{{#newline}}
     }{{#newline}}{{#newline}}
 
     public override void AttachRange(params TEntity[] entities){{#newline}}
@@ -20668,7 +20790,7 @@ using {{this}};{{#newline}}
     public override EntityEntry<TEntity> Remove(TEntity entity){{#newline}}
     {{{#newline}}
         _data.Remove(entity);{{#newline}}
-        return null;{{#newline}}
+        return null!;{{#newline}}
     }{{#newline}}{{#newline}}
 
     public override void RemoveRange(params TEntity[] entities){{#newline}}
@@ -20687,7 +20809,7 @@ using {{this}};{{#newline}}
     {{{#newline}}
         _data.Remove(entity);{{#newline}}
         _data.Add(entity);{{#newline}}
-        return null;{{#newline}}
+        return null!;{{#newline}}
     }{{#newline}}{{#newline}}
 
     public override void UpdateRange(params TEntity[] entities){{#newline}}
@@ -20784,9 +20906,9 @@ using {{this}};{{#newline}}
             .MakeGenericMethod(expectedResultType){{#newline}}
             .Invoke(this, new object[] { expression });{{#newline}}{{#newline}}
 
-        return (TResult) typeof(Task).GetMethod(nameof(Task.FromResult)){{#newline}}
+        return (TResult) (typeof(Task).GetMethod(nameof(Task.FromResult)){{#newline}}
             ?.MakeGenericMethod(expectedResultType){{#newline}}
-            .Invoke(null, new[] { executionResult });{{#newline}}
+            .Invoke(null, new[] { executionResult }))!;{{#newline}}
     }{{#newline}}{{#newline}}
 
     public IAsyncEnumerator<TEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default){{#newline}}
@@ -20854,7 +20976,7 @@ using {{this}};{{#newline}}
 
 public abstract class FakeQueryProvider<T> : IOrderedQueryable<T>, IQueryProvider{{#newline}}
 {{{#newline}}
-    private IEnumerable<T> _enumerable;{{#newline}}{{#newline}}
+    private IEnumerable<T>? _enumerable;{{#newline}}{{#newline}}
 
     protected FakeQueryProvider(Expression expression){{#newline}}
     {{{#newline}}
@@ -20887,7 +21009,7 @@ public abstract class FakeQueryProvider<T> : IOrderedQueryable<T>, IQueryProvide
     private object CreateInstance(Type tElement, Expression expression){{#newline}}
     {{{#newline}}
         var queryType = GetType().GetGenericTypeDefinition().MakeGenericType(tElement);{{#newline}}
-        return Activator.CreateInstance(queryType, expression);{{#newline}}
+        return Activator.CreateInstance(queryType, expression)!;{{#newline}}
     }{{#newline}}{{#newline}}
 
     public object Execute(Expression expression){{#newline}}
@@ -20922,7 +21044,7 @@ public abstract class FakeQueryProvider<T> : IOrderedQueryable<T>, IQueryProvide
     {{{#newline}}
         var visitor = new FakeExpressionVisitor();{{#newline}}
         var body = visitor.Visit(expression);{{#newline}}
-        var f = Expression.Lambda<Func<TResult>>(body ?? throw new InvalidOperationException(string.Format(""{0} is null"", nameof(body))), (IEnumerable<ParameterExpression>) null);{{#newline}}
+        var f = Expression.Lambda<Func<TResult>>(body ?? throw new InvalidOperationException(string.Format(""{0} is null"", nameof(body))), (IEnumerable<ParameterExpression>?) null);{{#newline}}
         return f.Compile()();{{#newline}}
     }{{#newline}}
 }{{#newline}}{{#newline}}
@@ -20998,7 +21120,7 @@ public class FakeDatabaseFacade : DatabaseFacade{{#newline}}
 
     public override IExecutionStrategy CreateExecutionStrategy(){{#newline}}
     {{{#newline}}
-        return null;{{#newline}}
+        return null!;{{#newline}}
     }{{#newline}}{{#newline}}
 
     public override string ToString(){{#newline}}
@@ -21261,7 +21383,7 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
         {{this}}{{#newline}}
 {{/each}}
     }{{#newline}}
-    public List<ResultSetModel{{Model}}> ResultSet{{Model}}{{PropertyGetSet}}{{#newline}}
+    public List<ResultSetModel{{Model}}> ResultSet{{Model}}{{PropertyGetSet}}{{NullForgivingOperator}}{{#newline}}
 {{/each}}
 {{/if}}
 }{{#newline}}

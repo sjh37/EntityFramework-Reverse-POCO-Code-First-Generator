@@ -11,6 +11,7 @@ namespace Generator.Tests.Unit
         [Test]
         public void Reset()
         {
+            FilterSettings.Reset();
             Assert.AreEqual(0, FilterSettings.SchemaFilters.Count);
             Assert.AreEqual(0, FilterSettings.TableFilters.Count);
             Assert.AreEqual(0, FilterSettings.ColumnFilters.Count);

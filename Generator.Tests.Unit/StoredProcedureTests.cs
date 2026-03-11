@@ -80,7 +80,7 @@ namespace Generator.Tests.Unit
             var result = _sut.WriteStoredProcReturnColumn(col);
 
             // Assert
-            Assert.AreEqual($"public string {expected} {{ get; set; }}", result);
+            Assert.AreEqual($"public string {expected} {{ get; set; }} = null!;", result);
         }
 
         [TestCase(false, false, false, "DateTime? A, out DateTime? B, DateTime? C = null, DateTime? D = null")]

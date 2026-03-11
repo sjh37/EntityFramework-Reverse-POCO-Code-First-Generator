@@ -118,15 +118,16 @@
     Settings.FileExtension      = ".cs";
 
     // Code suppression *******************************************************************************
-    Settings.UseRegions                       = true;  // If false, suppresses the use of #region
-    Settings.UseNamespace                     = true;  // If false, suppresses the writing of a namespace
-    Settings.UsePragma                        = false; // If false, suppresses the writing of #pragma
-    Settings.AllowNullStrings                 = false; // If true, will allow string? properties and will add '#nullable enable' to the top of each file
-    Settings.UseResharper                     = true;  // If true, will add a list of 'ReSharper disable' comments to the top of each file
-    Settings.ShowLicenseInfo                  = false; // If true, will add the licence info comment to the top of each file
-    Settings.IncludeConnectionSettingComments = false; // Add comments describing connection settings used to generate file
-    Settings.IncludeCodeGeneratedAttribute    = false; // If true, will include the [GeneratedCode] attribute before classes, false to remove it.
-    Settings.IncludeColumnsWithDefaults       = true;  // If true, will set properties to the default value from the database.
+    Settings.UseRegions                          = true;  // If false, suppresses the use of #region
+    Settings.UseNamespace                        = true;  // If false, suppresses the writing of a namespace
+    Settings.UsePragma                           = false; // If false, suppresses the writing of #pragma
+    Settings.AllowNullStrings                    = false; // If true, will allow string? properties and will add '#nullable enable' to the top of each file
+    Settings.NullableReverseNavigationProperties = true;  // If true, reverse navigation properties for one-to-one relationships will be nullable (e.g. MyEntity? MyEntity). The parent entity can exist without the child entity.
+    Settings.UseResharper                        = true;  // If true, will add a list of 'ReSharper disable' comments to the top of each file
+    Settings.ShowLicenseInfo                     = false; // If true, will add the licence info comment to the top of each file
+    Settings.IncludeConnectionSettingComments    = false; // Add comments describing connection settings used to generate file
+    Settings.IncludeCodeGeneratedAttribute       = false; // If true, will include the [GeneratedCode] attribute before classes, false to remove it.
+    Settings.IncludeColumnsWithDefaults          = true;  // If true, will set properties to the default value from the database.
 
     // Enumerations ***********************************************************************************************************************
     // Create enumerations from database tables

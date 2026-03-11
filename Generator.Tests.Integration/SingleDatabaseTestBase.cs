@@ -35,6 +35,8 @@ namespace Generator.Tests.Integration
             Settings.AddUnitTestingDbContext = true;
             Settings.UsePascalCase = true;
             Settings.UseMappingTables = false;
+            Settings.AdditionalNamespaces.Clear();
+            Settings.NullableReverseNavigationProperties = true;
 
             ResetFilters();
         }

@@ -22,7 +22,7 @@
     Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken));{{#newline}}
     DatabaseFacade Database { get; }{{#newline}}
     DbSet<TEntity> Set<TEntity>() where TEntity : class;{{#newline}}
-    string ToString();{{#newline}}{{#newline}}
+    string? ToString();{{#newline}}{{#newline}}
 
     EntityEntry Add(object entity);{{#newline}}
     EntityEntry<TEntity> Add<TEntity>(TEntity entity) where TEntity : class;{{#newline}}
@@ -41,12 +41,12 @@
     EntityEntry Entry(object entity);{{#newline}}
     EntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class;{{#newline}}{{#newline}}
 
-    TEntity Find<TEntity>(params object[] keyValues) where TEntity : class;{{#newline}}
-    ValueTask<TEntity> FindAsync<TEntity>(object[] keyValues, CancellationToken cancellationToken) where TEntity : class;{{#newline}}
-    ValueTask<TEntity> FindAsync<TEntity>(params object[] keyValues) where TEntity : class;{{#newline}}
-    ValueTask<object> FindAsync(Type entityType, object[] keyValues, CancellationToken cancellationToken);{{#newline}}
-    ValueTask<object> FindAsync(Type entityType, params object[] keyValues);{{#newline}}
-    object Find(Type entityType, params object[] keyValues);{{#newline}}{{#newline}}
+    TEntity? Find<TEntity>(params object?[]? keyValues) where TEntity : class;{{#newline}}
+    ValueTask<TEntity?> FindAsync<TEntity>(object?[]? keyValues, CancellationToken cancellationToken) where TEntity : class;{{#newline}}
+    ValueTask<TEntity?> FindAsync<TEntity>(params object?[]? keyValues) where TEntity : class;{{#newline}}
+    ValueTask<object?> FindAsync(Type entityType, object?[]? keyValues, CancellationToken cancellationToken);{{#newline}}
+    ValueTask<object?> FindAsync(Type entityType, params object?[]? keyValues);{{#newline}}
+    object? Find(Type entityType, params object?[]? keyValues);{{#newline}}{{#newline}}
 
     EntityEntry Remove(object entity);{{#newline}}
     EntityEntry<TEntity> Remove<TEntity>(TEntity entity) where TEntity : class;{{#newline}}

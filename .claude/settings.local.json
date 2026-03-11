@@ -1,16 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(ls \"C:\\\\S\\\\Source \\(open source\\)\\\\EntityFramework-Reverse-POCO-Code-First-Generator\")",
-      "Bash(ls \"C:\\\\S\\\\Source \\(open source\\)\\\\EntityFramework-Reverse-POCO-Code-First-Generator\\\\Generator\")",
-      "Bash(ls \"C:\\\\S\\\\Source \\(open source\\)\\\\EntityFramework-Reverse-POCO-Code-First-Generator\\\\Generator.Tests.Unit\")",
-      "Bash(ls \"C:\\\\S\\\\Source \\(open source\\)\\\\EntityFramework-Reverse-POCO-Code-First-Generator\\\\Generator\\\\Generators\" && ls \"C:\\\\S\\\\Source \\(open source\\)\\\\EntityFramework-Reverse-POCO-Code-First-Generator\\\\Generator\\\\Readers\" && ls \"C:\\\\S\\\\Source \\(open source\\)\\\\EntityFramework-Reverse-POCO-Code-First-Generator\\\\Generator\\\\Templates\")",
-      "Bash(ls \"C:\\\\S\\\\Source \\(open source\\)\\\\EntityFramework-Reverse-POCO-Code-First-Generator\\\\BuildTT\")",
-      "Bash(ls \"C:\\\\S\\\\Source \\(open source\\)\\\\EntityFramework-Reverse-POCO-Code-First-Generator\\\\Generator.Tests.Unit.EFCore\")",
-      "Bash(ls \"C:\\\\S\\\\Source \\(open source\\)\\\\EntityFramework-Reverse-POCO-Code-First-Generator\\\\Generator.Tests.Common\")",
-      "Bash(ls \"C:\\\\S\\\\Source \\(open source\\)\\\\EntityFramework-Reverse-POCO-Code-First-Generator\\\\Generator\\\\Filtering\")",
-      "Bash(ls \"C:\\\\S\\\\Source \\(open source\\)\\\\EntityFramework-Reverse-POCO-Code-First-Generator\\\\Generator.Tests.Integration\")",
-      "Bash(ls \"C:\\\\S\\\\Source \\(open source\\)\\\\EntityFramework-Reverse-POCO-Code-First-Generator\\\\Tester.Integration.EFCore9\")"
+      "Bash",
+      "WebFetch(domain:github.com)"
     ]
   }
 }

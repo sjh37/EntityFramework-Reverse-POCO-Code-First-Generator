@@ -59,26 +59,27 @@ namespace Efrpg
 
         public Table ParentTable;
 
-        public static readonly List<string> NotNullable = new List<string>
-        {
-            Settings.AllowNullStrings ? "" : "string",
-            "byte[]",
-            "datatable",
-            "system.data.datatable",
-            "object",
-            "microsoft.sqlserver.types.sqlgeography",
-            "microsoft.sqlserver.types.sqlgeometry",
-            "sqlgeography",
-            "sqlgeometry",
-            "system.data.entity.spatial.dbgeography",
-            "system.data.entity.spatial.dbgeometry",
-            "dbgeography",
-            "dbgeometry",
-            "system.data.entity.hierarchy.hierarchyid",
-            "hierarchyid",
-            "nettopologysuite.geometries.point",
-            "nettopologysuite.geometries.geometry"
-        };
+        public static List<string> NotNullable =>
+            new List<string>
+            {
+                Settings.NeedsNullForgiving() ? "" : "string",
+                Settings.NeedsNullForgiving() ? "" : "byte[]",
+                "datatable",
+                "system.data.datatable",
+                "object",
+                "microsoft.sqlserver.types.sqlgeography",
+                "microsoft.sqlserver.types.sqlgeometry",
+                "sqlgeography",
+                "sqlgeometry",
+                "system.data.entity.spatial.dbgeography",
+                "system.data.entity.spatial.dbgeometry",
+                "dbgeography",
+                "dbgeometry",
+                "system.data.entity.hierarchy.hierarchyid",
+                "hierarchyid",
+                "nettopologysuite.geometries.point",
+                "nettopologysuite.geometries.geometry"
+            };
         
         public static readonly List<string> StoredProcedureNotNullable = new List<string>
         {

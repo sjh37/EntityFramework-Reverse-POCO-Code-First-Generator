@@ -254,6 +254,7 @@ namespace EfrpgCherry
 
         public FakeDbSet()
         {
+            _primaryKeys = Array.Empty<PropertyInfo>();
             _data = new ObservableCollection<TEntity>();
             _query = _data.AsQueryable();
         }

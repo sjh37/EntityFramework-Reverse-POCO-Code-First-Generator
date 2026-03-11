@@ -35,6 +35,8 @@ namespace Generator.Tests.Integration
             Settings.GenerateSingleDbContext    = false; // Use multiple db context generation
             Settings.GenerateSeparateFiles      = generateSeparateFiles;
             Settings.MultiContextSettingsPlugin = null;
+            Settings.AdditionalNamespaces.Clear();
+            Settings.NullableReverseNavigationProperties = true;
 
             if (!string.IsNullOrWhiteSpace(plugin))
                 SetupPlugin(plugin);

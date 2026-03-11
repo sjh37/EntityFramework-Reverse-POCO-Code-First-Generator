@@ -1,11 +1,12 @@
 ﻿using EntityFramework_Reverse_POCO_Generator;
 using Generator.Tests.Common;
+using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using Tester.BusinessLogic;
 
 namespace Tester.Integration.EFCore9
 {
-    [TestFixture]
+    [TestFixture, NonParallelizable]
     [Category(Constants.Integration)]
     [Category(Constants.DbType.SqlServer)]
     public class CustomersRepositoryTests
@@ -35,11 +36,22 @@ namespace Tester.Integration.EFCore9
         [OneTimeTearDown]
         public void OneTimeTearDown()
         {
-            var customer = _db.Customers.FirstOrDefault(x => x.CustomerId == "TEST.");
-            if (customer == null)
-                return;
-            _db.Customers.Remove(customer);
-            _db.SaveChanges();
+            DeleteTestCustomer();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            DeleteTestCustomer();
+        }
+
+        private const string TestCustomerId = "TST9.";
+
+        private void DeleteTestCustomer()
+        {
+            _db.Customers
+                .Where(x => x.CustomerId == TestCustomerId)
+                .ExecuteDelete();
         }
 
         [SetUp]
@@ -99,7 +111,7 @@ namespace Tester.Integration.EFCore9
             var customersRepository3 = new CustomersRepository(db3);
             var customer = new EntityFramework_Reverse_POCO_Generator.Customer
             {
-                CustomerId = "TEST.",
+                CustomerId = TestCustomerId,
                 CompanyName = "Integration testing"
             };
 
@@ -127,7 +139,7 @@ namespace Tester.Integration.EFCore9
             var customersRepository3 = new CustomersRepository(db3);
             var customer = new EntityFramework_Reverse_POCO_Generator.Customer
             {
-                CustomerId = "TEST.",
+                CustomerId = TestCustomerId,
                 CompanyName = "Integration testing"
             };
 

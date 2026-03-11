@@ -818,6 +818,7 @@ using {{this}};{{#newline}}
 
     public FakeDbSet(){{#newline}}
     {{{#newline}}
+        _primaryKeys = Array.Empty<PropertyInfo>();{{#newline}}
         _data = new ObservableCollection<TEntity>();{{#newline}}
         _query = _data.AsQueryable();{{#newline}}
 

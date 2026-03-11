@@ -120,6 +120,7 @@
     <Compile Include="MultiContextNameNormalisationTests.cs" />
     <Compile Include="MultiContextSettingsPluginNorthwind.cs" />
     <Compile Include="NullMultiDbContextSettingsPlugin.cs" />
+    <Compile Include="NullableReverseNavigationTests.cs" />
     <None Include="app.config" />
     <None Include="packages.config" />
     <Compile Include="MustacheUtfTest.cs" />
