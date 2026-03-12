@@ -172,7 +172,8 @@ SELECT R.specific_schema AS ""SPECIFIC_SCHEMA"",
        COALESCE(P.numeric_precision, 0) AS ""NUMERIC_PRECISION"",
        COALESCE(P.numeric_scale, 0) AS ""NUMERIC_SCALE"",
        COALESCE(P.datetime_precision, 0) AS ""DATETIME_PRECISION"",
-       CASE WHEN LOWER(P.udt_schema) <> 'pg_catalog' THEN P.udt_schema || '.' || P.udt_name ELSE P.udt_name END AS ""USER_DEFINED_TYPE""
+       CASE WHEN LOWER(P.udt_schema) <> 'pg_catalog' THEN P.udt_schema || '.' || P.udt_name ELSE P.udt_name END AS ""USER_DEFINED_TYPE"",
+       P.parameter_default AS ""PARAMETER_DEFAULT""
 FROM information_schema.routines R
     LEFT JOIN information_schema.parameters P
           ON R.specific_schema = P.specific_schema

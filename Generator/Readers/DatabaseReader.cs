@@ -557,6 +557,43 @@ namespace Efrpg.Readers
                                 if (ReservedKeywords.Contains(parameter.NameHumanCase))
                                     parameter.NameHumanCase = "@" + parameter.NameHumanCase;
                             }
+
+                            // Try reading the parameter default from PROC_DEFINITION (SQL Server)
+                            try
+                            {
+                                var procDef = rdr["PROC_DEFINITION"];
+                                if (procDef != DBNull.Value && procDef != null)
+                                {
+                                    var raw = ExtractSqlServerParamDefault(procDef.ToString(), parameter.Name);
+                                    if (raw != null)
+                                    {
+                                        parameter.HasDefault = true;
+                                        parameter.DefaultValue = NormaliseParamDefault(raw);
+                                    }
+                                }
+                            }
+                            catch
+                            {
+                                // Column not present in this database type
+                            }
+
+                            // Try reading the parameter default from PARAMETER_DEFAULT (PostgreSQL)
+                            if (!parameter.HasDefault)
+                            {
+                                try
+                                {
+                                    var paramDefault = rdr["PARAMETER_DEFAULT"];
+                                    if (paramDefault != DBNull.Value && paramDefault != null)
+                                    {
+                                        parameter.HasDefault = true;
+                                        parameter.DefaultValue = NormaliseParamDefault(paramDefault.ToString());
+                                    }
+                                }
+                                catch
+                                {
+                                    // Column not present in this database type
+                                }
+                            }
                         }
 
                         var rsp = new RawStoredProcedure(schema, name, isTableValuedFunction, isScalarValuedFunction, isStoredProcedure, parameter);
@@ -565,6 +602,49 @@ namespace Efrpg.Readers
                 }
             }
             return result;
+        }
+
+        // Extracts the raw default value for a named parameter from a SQL Server CREATE PROCEDURE definition.
+        // Returns null if the parameter has no default.
+        // Returns the raw SQL value string (e.g. "NULL", "'FCV'", "12") if a default is found.
+        public static string ExtractSqlServerParamDefault(string definition, string paramName)
+        {
+            if (string.IsNullOrEmpty(definition) || string.IsNullOrEmpty(paramName))
+                return null;
+
+            // Pattern: @paramName <type-declaration> = <default-value>
+            // Type declaration: word chars and whitespace, plus parenthesised groups (e.g. NVARCHAR(50), DECIMAL(18,4))
+            // Default value: a SQL string literal, NULL, or a numeric token
+            var pattern = Regex.Escape(paramName)
+                + @"\b\s+(?:[^=,@()]|\([^)]*\))*=\s*('(?:[^']|'')*'|NULL|[-+]?\d[\d.]*(?:[eE][+-]?\d+)?)";
+
+            var match = Regex.Match(definition, pattern, RegexOptions.IgnoreCase);
+            return match.Success ? match.Groups[1].Value.Trim() : null;
+        }
+
+        // Normalises a raw SQL default value string to a form suitable for C# code generation.
+        // Returns null when the SQL default is NULL; otherwise returns the cleaned value string.
+        public static string NormaliseParamDefault(string rawDefault)
+        {
+            if (rawDefault == null)
+                return null;
+
+            var s = rawDefault.Trim();
+
+            // Strip redundant outer parentheses (SQL Server occasionally wraps defaults)
+            while (s.Length >= 2 && s.StartsWith("(") && s.EndsWith(")"))
+                s = s.Substring(1, s.Length - 2).Trim();
+
+            // Strip PostgreSQL type cast suffix: 'FCV'::character varying → 'FCV'
+            var castIdx = s.IndexOf("::", StringComparison.Ordinal);
+            if (castIdx >= 0)
+                s = s.Substring(0, castIdx).Trim();
+
+            // NULL (case-insensitive) maps to a null C# default
+            if (s.Equals("NULL", StringComparison.OrdinalIgnoreCase))
+                return null;
+
+            return s.Length > 0 ? s : null;
         }
 
         public List<MultiContextSettings> ReadMultiContextSettings()

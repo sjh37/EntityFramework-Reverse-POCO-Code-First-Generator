@@ -13675,6 +13675,43 @@ and limitations under the License.
                                 if (ReservedKeywords.Contains(parameter.NameHumanCase))
                                     parameter.NameHumanCase = "@" + parameter.NameHumanCase;
                             }
+
+                            // Try reading the parameter default from PROC_DEFINITION (SQL Server)
+                            try
+                            {
+                                var procDef = rdr["PROC_DEFINITION"];
+                                if (procDef != DBNull.Value && procDef != null)
+                                {
+                                    var raw = ExtractSqlServerParamDefault(procDef.ToString(), parameter.Name);
+                                    if (raw != null)
+                                    {
+                                        parameter.HasDefault = true;
+                                        parameter.DefaultValue = NormaliseParamDefault(raw);
+                                    }
+                                }
+                            }
+                            catch
+                            {
+                                // Column not present in this database type
+                            }
+
+                            // Try reading the parameter default from PARAMETER_DEFAULT (PostgreSQL)
+                            if (!parameter.HasDefault)
+                            {
+                                try
+                                {
+                                    var paramDefault = rdr["PARAMETER_DEFAULT"];
+                                    if (paramDefault != DBNull.Value && paramDefault != null)
+                                    {
+                                        parameter.HasDefault = true;
+                                        parameter.DefaultValue = NormaliseParamDefault(paramDefault.ToString());
+                                    }
+                                }
+                                catch
+                                {
+                                    // Column not present in this database type
+                                }
+                            }
                         }
 
                         var rsp = new RawStoredProcedure(schema, name, isTableValuedFunction, isScalarValuedFunction, isStoredProcedure, parameter);
@@ -13683,6 +13720,49 @@ and limitations under the License.
                 }
             }
             return result;
+        }
+
+        // Extracts the raw default value for a named parameter from a SQL Server CREATE PROCEDURE definition.
+        // Returns null if the parameter has no default.
+        // Returns the raw SQL value string (e.g. "NULL", "'FCV'", "12") if a default is found.
+        public static string ExtractSqlServerParamDefault(string definition, string paramName)
+        {
+            if (string.IsNullOrEmpty(definition) || string.IsNullOrEmpty(paramName))
+                return null;
+
+            // Pattern: @paramName <type-declaration> = <default-value>
+            // Type declaration: word chars and whitespace, plus parenthesised groups (e.g. NVARCHAR(50), DECIMAL(18,4))
+            // Default value: a SQL string literal, NULL, or a numeric token
+            var pattern = Regex.Escape(paramName)
+                + @"\b\s+(?:[^=,@()]|\([^)]*\))*=\s*('(?:[^']|'')*'|NULL|[-+]?\d[\d.]*(?:[eE][+-]?\d+)?)";
+
+            var match = Regex.Match(definition, pattern, RegexOptions.IgnoreCase);
+            return match.Success ? match.Groups[1].Value.Trim() : null;
+        }
+
+        // Normalises a raw SQL default value string to a form suitable for C# code generation.
+        // Returns null when the SQL default is NULL; otherwise returns the cleaned value string.
+        public static string NormaliseParamDefault(string rawDefault)
+        {
+            if (rawDefault == null)
+                return null;
+
+            var s = rawDefault.Trim();
+
+            // Strip redundant outer parentheses (SQL Server occasionally wraps defaults)
+            while (s.Length >= 2 && s.StartsWith("(") && s.EndsWith(")"))
+                s = s.Substring(1, s.Length - 2).Trim();
+
+            // Strip PostgreSQL type cast suffix: 'FCV'::character varying → 'FCV'
+            var castIdx = s.IndexOf("::", StringComparison.Ordinal);
+            if (castIdx >= 0)
+                s = s.Substring(0, castIdx).Trim();
+
+            // NULL (case-insensitive) maps to a null C# default
+            if (s.Equals("NULL", StringComparison.OrdinalIgnoreCase))
+                return null;
+
+            return s.Length > 0 ? s : null;
         }
 
         public List<MultiContextSettings> ReadMultiContextSettings()
@@ -15038,7 +15118,8 @@ SELECT R.specific_schema AS ""SPECIFIC_SCHEMA"",
        COALESCE(P.numeric_precision, 0) AS ""NUMERIC_PRECISION"",
        COALESCE(P.numeric_scale, 0) AS ""NUMERIC_SCALE"",
        COALESCE(P.datetime_precision, 0) AS ""DATETIME_PRECISION"",
-       CASE WHEN LOWER(P.udt_schema) <> 'pg_catalog' THEN P.udt_schema || '.' || P.udt_name ELSE P.udt_name END AS ""USER_DEFINED_TYPE""
+       CASE WHEN LOWER(P.udt_schema) <> 'pg_catalog' THEN P.udt_schema || '.' || P.udt_name ELSE P.udt_name END AS ""USER_DEFINED_TYPE"",
+       P.parameter_default AS ""PARAMETER_DEFAULT""
 FROM information_schema.routines R
     LEFT JOIN information_schema.parameters P
           ON R.specific_schema = P.specific_schema
@@ -16367,7 +16448,12 @@ SELECT  R.SPECIFIC_SCHEMA,
         ISNULL(P.NUMERIC_PRECISION, 0) AS NUMERIC_PRECISION,
         ISNULL(P.NUMERIC_SCALE, 0) AS NUMERIC_SCALE,
         ISNULL(P.DATETIME_PRECISION, 0) AS DATETIME_PRECISION,
-        P.USER_DEFINED_TYPE_SCHEMA + '.' + P.USER_DEFINED_TYPE_NAME AS USER_DEFINED_TYPE
+        P.USER_DEFINED_TYPE_SCHEMA + '.' + P.USER_DEFINED_TYPE_NAME AS USER_DEFINED_TYPE,
+        (SELECT TOP 1 sm.definition
+         FROM   sys.all_objects obj2
+                INNER JOIN sys.all_sql_modules sm ON sm.object_id = obj2.object_id
+         WHERE  SCHEMA_NAME(obj2.schema_id) = R.SPECIFIC_SCHEMA
+                AND obj2.name = R.SPECIFIC_NAME) AS PROC_DEFINITION
 FROM    INFORMATION_SCHEMA.ROUTINES R
         LEFT OUTER JOIN INFORMATION_SCHEMA.PARAMETERS P
             ON P.SPECIFIC_SCHEMA = R.SPECIFIC_SCHEMA
@@ -16397,7 +16483,12 @@ SELECT  R.SPECIFIC_SCHEMA,
         ISNULL(P.NUMERIC_PRECISION, 0) AS NUMERIC_PRECISION,
         ISNULL(P.NUMERIC_SCALE, 0) AS NUMERIC_SCALE,
         ISNULL(P.DATETIME_PRECISION, 0) AS DATETIME_PRECISION,
-        P.USER_DEFINED_TYPE_SCHEMA + '.' + P.USER_DEFINED_TYPE_NAME AS USER_DEFINED_TYPE
+        P.USER_DEFINED_TYPE_SCHEMA + '.' + P.USER_DEFINED_TYPE_NAME AS USER_DEFINED_TYPE,
+        (SELECT TOP 1 sm.definition
+         FROM   sys.all_objects obj2
+                INNER JOIN sys.all_sql_modules sm ON sm.object_id = obj2.object_id
+         WHERE  SCHEMA_NAME(obj2.schema_id) = R.SPECIFIC_SCHEMA
+                AND obj2.name = R.SPECIFIC_NAME) AS PROC_DEFINITION
 FROM    INFORMATION_SCHEMA.ROUTINES R
         LEFT OUTER JOIN INFORMATION_SCHEMA.PARAMETERS P
             ON P.SPECIFIC_SCHEMA = R.SPECIFIC_SCHEMA
@@ -16417,7 +16508,12 @@ SELECT  R.SPECIFIC_SCHEMA,
         ISNULL(P.NUMERIC_PRECISION, 0) AS NUMERIC_PRECISION,
         ISNULL(P.NUMERIC_SCALE, 0) AS NUMERIC_SCALE,
         ISNULL(P.DATETIME_PRECISION, 0) AS DATETIME_PRECISION,
-        P.USER_DEFINED_TYPE_SCHEMA + '.' + P.USER_DEFINED_TYPE_NAME AS USER_DEFINED_TYPE
+        P.USER_DEFINED_TYPE_SCHEMA + '.' + P.USER_DEFINED_TYPE_NAME AS USER_DEFINED_TYPE,
+        (SELECT TOP 1 sm.definition
+         FROM   sys.all_objects obj2
+                INNER JOIN sys.all_sql_modules sm ON sm.object_id = obj2.object_id
+         WHERE  SCHEMA_NAME(obj2.schema_id) = R.SPECIFIC_SCHEMA
+                AND obj2.name = R.SPECIFIC_NAME) AS PROC_DEFINITION
 FROM    INFORMATION_SCHEMA.ROUTINES R
         LEFT OUTER JOIN INFORMATION_SCHEMA.PARAMETERS P
             ON P.SPECIFIC_SCHEMA = R.SPECIFIC_SCHEMA
@@ -16458,7 +16554,12 @@ SELECT  R.SPECIFIC_SCHEMA,
         ISNULL(P.NUMERIC_PRECISION, 0) AS NUMERIC_PRECISION,
         ISNULL(P.NUMERIC_SCALE, 0) AS NUMERIC_SCALE,
         ISNULL(P.DATETIME_PRECISION, 0) AS DATETIME_PRECISION,
-        P.USER_DEFINED_TYPE_SCHEMA + '.' + P.USER_DEFINED_TYPE_NAME AS USER_DEFINED_TYPE
+        P.USER_DEFINED_TYPE_SCHEMA + '.' + P.USER_DEFINED_TYPE_NAME AS USER_DEFINED_TYPE,
+        (SELECT TOP 1 sm.definition
+         FROM   sys.all_objects obj2
+                INNER JOIN sys.all_sql_modules sm ON sm.object_id = obj2.object_id
+         WHERE  SCHEMA_NAME(obj2.schema_id) = R.SPECIFIC_SCHEMA
+                AND obj2.name = R.SPECIFIC_NAME) AS PROC_DEFINITION
 FROM    INFORMATION_SCHEMA.ROUTINES R
         LEFT OUTER JOIN INFORMATION_SCHEMA.PARAMETERS P
             ON P.SPECIFIC_SCHEMA = R.SPECIFIC_SCHEMA
@@ -16928,7 +17029,8 @@ SELECT  TOP (0)
         ISNULL(P.NUMERIC_PRECISION, 0) AS NUMERIC_PRECISION,
         ISNULL(P.NUMERIC_SCALE, 0) AS NUMERIC_SCALE,
         ISNULL(P.DATETIME_PRECISION, 0) AS DATETIME_PRECISION,
-        P.USER_DEFINED_TYPE_SCHEMA + '.' + P.USER_DEFINED_TYPE_NAME AS USER_DEFINED_TYPE
+        P.USER_DEFINED_TYPE_SCHEMA + '.' + P.USER_DEFINED_TYPE_NAME AS USER_DEFINED_TYPE,
+        CAST(NULL AS NVARCHAR(MAX)) AS PROC_DEFINITION
 INTO    #SynonymStoredProcedureDetails
 FROM    INFORMATION_SCHEMA.ROUTINES R
         LEFT OUTER JOIN INFORMATION_SCHEMA.PARAMETERS P
@@ -16969,7 +17071,7 @@ ORDER BY PARSENAME(sn.base_object_name, 3)
 DECLARE @synonymStoredProcedureDetailsQuery nvarchar(max) =
 '
 INSERT INTO #SynonymStoredProcedureDetails (SPECIFIC_CATALOG, SPECIFIC_SCHEMA, SPECIFIC_NAME, ROUTINE_TYPE, RETURN_DATA_TYPE, ORDINAL_POSITION, PARAMETER_MODE, PARAMETER_NAME, DATA_TYPE
-                                            , CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, NUMERIC_SCALE, DATETIME_PRECISION, USER_DEFINED_TYPE)
+                                            , CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, NUMERIC_SCALE, DATETIME_PRECISION, USER_DEFINED_TYPE, PROC_DEFINITION)
 SELECT  R.SPECIFIC_CATALOG,
         R.SPECIFIC_SCHEMA,
         R.SPECIFIC_NAME,
@@ -16983,7 +17085,8 @@ SELECT  R.SPECIFIC_CATALOG,
         ISNULL(P.NUMERIC_PRECISION, 0) AS NUMERIC_PRECISION,
         ISNULL(P.NUMERIC_SCALE, 0) AS NUMERIC_SCALE,
         ISNULL(P.DATETIME_PRECISION, 0) AS DATETIME_PRECISION,
-        P.USER_DEFINED_TYPE_SCHEMA + ''.'' + P.USER_DEFINED_TYPE_NAME AS USER_DEFINED_TYPE
+        P.USER_DEFINED_TYPE_SCHEMA + ''.'' + P.USER_DEFINED_TYPE_NAME AS USER_DEFINED_TYPE,
+        NULL AS PROC_DEFINITION
 FROM    INFORMATION_SCHEMA.ROUTINES R
         LEFT OUTER JOIN INFORMATION_SCHEMA.PARAMETERS P
             ON P.SPECIFIC_SCHEMA = R.SPECIFIC_SCHEMA
@@ -17025,7 +17128,8 @@ SELECT  R.SPECIFIC_CATALOG,
         ISNULL(P.NUMERIC_PRECISION, 0) AS NUMERIC_PRECISION,
         ISNULL(P.NUMERIC_SCALE, 0) AS NUMERIC_SCALE,
         ISNULL(P.DATETIME_PRECISION, 0) AS DATETIME_PRECISION,
-        P.USER_DEFINED_TYPE_SCHEMA + ''.'' + P.USER_DEFINED_TYPE_NAME AS USER_DEFINED_TYPE
+        P.USER_DEFINED_TYPE_SCHEMA + ''.'' + P.USER_DEFINED_TYPE_NAME AS USER_DEFINED_TYPE,
+        NULL AS PROC_DEFINITION
 FROM    INFORMATION_SCHEMA.ROUTINES R
         LEFT OUTER JOIN INFORMATION_SCHEMA.PARAMETERS P
             ON P.SPECIFIC_SCHEMA = R.SPECIFIC_SCHEMA
@@ -17068,7 +17172,7 @@ WHERE '[' + SPECIFIC_CATALOG + '].' + '[' + SPECIFIC_SCHEMA + '].' + '[' + SPECI
 UNION
 -- Synonyms
 SELECT SPECIFIC_SCHEMA, SPECIFIC_NAME, ROUTINE_TYPE, RETURN_DATA_TYPE, ORDINAL_POSITION, PARAMETER_MODE, PARAMETER_NAME, DATA_TYPE
-    , CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, NUMERIC_SCALE, DATETIME_PRECISION, USER_DEFINED_TYPE FROM #SynonymStoredProcedureDetails";
+    , CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, NUMERIC_SCALE, DATETIME_PRECISION, USER_DEFINED_TYPE, PROC_DEFINITION FROM #SynonymStoredProcedureDetails";
         }
 
         protected override string DefaultSchema(DbConnection conn)
@@ -17343,23 +17447,57 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             var sb = new StringBuilder(255);
             var data = Parameters.Where(x => x.Mode != StoredProcedureParameterMode.Out).OrderBy(x => x.Ordinal).ToList();
 
-            var minNullableParameter = WhichTailEndParametersCanBeNullable(data, willIncludeProcResult, forInterface);
-            if (minNullableParameter == 0)
-                minNullableParameter = 9999;
+            // When any parameter carries DB default info, use it to determine optional params.
+            // Otherwise fall back to the type-based tail heuristic for backward compatibility.
+            var useDbDefaults = data.Any(p => p.HasDefault);
+            int firstOptionalIndex;
+            if (useDbDefaults && !forInterface && !willIncludeProcResult)
+            {
+                // Find the longest contiguous tail sequence of In-mode parameters that all have DB defaults.
+                firstOptionalIndex = data.Count;
+                for (var i = data.Count - 1; i >= 0; i--)
+                {
+                    if (data[i].Mode == StoredProcedureParameterMode.In && data[i].HasDefault)
+                        firstOptionalIndex = i;
+                    else
+                        break;
+                }
+            }
+            else
+            {
+                var minNullable = WhichTailEndParametersCanBeNullable(data, willIncludeProcResult, forInterface);
+                firstOptionalIndex = minNullable == 0 ? data.Count : minNullable - 1;
+            }
 
             var count = 0;
             foreach (var p in data)
             {
-                ++count;
-                var notNullable = Column.StoredProcedureNotNullable.Contains(p.PropertyType.ToLower());
                 var isInParam = p.Mode == StoredProcedureParameterMode.In;
+                var isOptional = isInParam && count >= firstOptionalIndex;
+                var isReferenceType = Column.StoredProcedureNotNullable.Contains(p.PropertyType.ToLower());
+
+                // A string param with a NULL DB default becomes nullable (string?) only when NRT is enabled.
+                // Without NRT (e.g. EF6 / C# 7.3), string? is not valid syntax.
+                var makeNullable = !isReferenceType || (useDbDefaults && isOptional && p.DefaultValue == null && Settings.NeedsNullForgiving());
+
+                string defaultSuffix;
+                if (!isOptional)
+                    defaultSuffix = string.Empty;
+                else if (useDbDefaults)
+                    defaultSuffix = " = " + ToCSharpDefault(p);
+                else if (!isReferenceType)
+                    defaultSuffix = " = null";
+                else
+                    defaultSuffix = string.Empty; // reference types without DB info stay required
 
                 sb.AppendFormat("{0}{1}{2} {3}{4}, ",
                     isInParam ? string.Empty : "out ",
                     p.PropertyType,
-                    notNullable ? string.Empty : "?",
+                    makeNullable ? "?" : string.Empty,
                     p.NameHumanCase,
-                    (notNullable || forInterface || !isInParam || count < minNullableParameter) ? string.Empty : " = null");
+                    defaultSuffix);
+
+                ++count;
             }
 
             if (willIncludeProcResult)
@@ -17372,6 +17510,34 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 sb.Length -= 2;
 
             return sb.ToString();
+        }
+
+        // Converts a StoredProcedureParameter's stored DefaultValue to a valid C# literal.
+        // p.DefaultValue == null  → "null"
+        // p.DefaultValue == "'FCV'" → "\"FCV\""
+        // p.DefaultValue == "12"  → "12" (with optional type suffix for decimal/float)
+        private static string ToCSharpDefault(StoredProcedureParameter p)
+        {
+            if (p.DefaultValue == null)
+                return "null";
+
+            var raw = p.DefaultValue.Trim();
+
+            // SQL string literal: strip surrounding single quotes and escape for C#
+            if (raw.Length >= 2 && raw[0] == '\'' && raw[raw.Length - 1] == '\'')
+            {
+                var str = raw.Substring(1, raw.Length - 2).Replace("''", "'");
+                return "\"" + str.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"";
+            }
+
+            // Numeric value: add C# type suffix where needed
+            var propertyType = p.PropertyType?.ToLower() ?? string.Empty;
+            if (propertyType == "decimal?" || propertyType == "decimal")
+                return raw + "m";
+            if (propertyType == "float?" || propertyType == "float")
+                return raw + "f";
+
+            return raw; // int, double, bool, etc. – use as-is
         }
 
         // Returns the minimum nullable parameter, counting from 1. 0 Means no column is nullable.
@@ -17762,6 +17928,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public int Precision;
         public int Scale;
         public bool IsSpatial;
+        public bool HasDefault;     // true when the SQL parameter has a default value
+        public string DefaultValue; // null = default is NULL; a SQL string literal like "'FCV'" or a number like "12"
     }
     public enum StoredProcedureParameterMode
     {

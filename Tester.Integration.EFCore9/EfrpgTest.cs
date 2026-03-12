@@ -874,9 +874,9 @@ namespace V9EfrpgTest
             return (int)procResultParam.Value;
         }
 
-        // public C182Test2ReturnModel C182Test2(int? flag = null) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        // public C182Test2ReturnModel C182Test2(int? flag = 1) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
-        // public async Task<C182Test2ReturnModel> C182Test2Async(int? flag = null) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
+        // public async Task<C182Test2ReturnModel> C182Test2Async(int? flag = 1) Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
         public List<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete)
         {
@@ -1197,7 +1197,7 @@ namespace V9EfrpgTest
             return procResultData;
         }
 
-        public List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId = null)
+        public List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId = 999)
         {
             int procResult;
             return GetSmallDecimalTest(maxId, out procResult);
@@ -1219,7 +1219,7 @@ namespace V9EfrpgTest
             return procResultData;
         }
 
-        public async Task<List<GetSmallDecimalTestReturnModel>> GetSmallDecimalTestAsync(int? maxId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<List<GetSmallDecimalTestReturnModel>> GetSmallDecimalTestAsync(int? maxId = 999, CancellationToken cancellationToken = default(CancellationToken))
         {
             var maxIdParam = new SqlParameter { ParameterName = "@maxId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = maxId.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!maxId.HasValue)
@@ -1364,7 +1364,7 @@ namespace V9EfrpgTest
             return (int)procResultParam.Value;
         }
 
-        public int NvarcharTest(string maxOutputParam, string normalOutputParam)
+        public int NvarcharTest(string maxOutputParam = "hello", string normalOutputParam = "world")
         {
             var maxOutputParamParam = new SqlParameter { ParameterName = "@maxOutputParam", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = maxOutputParam, Size = -1 };
             if (maxOutputParamParam.Value == null)
@@ -1381,7 +1381,7 @@ namespace V9EfrpgTest
             return (int)procResultParam.Value;
         }
 
-        public async Task<int> NvarcharTestAsync(string maxOutputParam, string normalOutputParam, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<int> NvarcharTestAsync(string maxOutputParam = "hello", string normalOutputParam = "world", CancellationToken cancellationToken = default(CancellationToken))
         {
             var maxOutputParamParam = new SqlParameter { ParameterName = "@maxOutputParam", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = maxOutputParam, Size = -1 };
             if (maxOutputParamParam.Value == null)
@@ -1547,7 +1547,7 @@ namespace V9EfrpgTest
             return procResultData;
         }
 
-        public List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId, int? userIdNull, string clientName, string clientNameNull, string clientNameMaxNull, string clientDesc, string clientDescNull, decimal? decimalValue = null, decimal? decimalValueNull = null, decimal? money = null, decimal? moneyNull = null, decimal? smallMoney = null, decimal? smallMoneyNull = null, float? realValue = null, float? realValueNull = null, double? floatValue = null, double? floatValueNull = null)
+        public List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId = 12, int? userIdNull = null, string clientName = "Hello", string? clientNameNull = null, string? clientNameMaxNull = null, string clientDesc = "World", string? clientDescNull = null, decimal? decimalValue = 1.234m, decimal? decimalValueNull = null, decimal? money = 4.56m, decimal? moneyNull = null, decimal? smallMoney = 7.89m, decimal? smallMoneyNull = null, float? realValue = 9.876f, float? realValueNull = null, double? floatValue = 6.54, double? floatValueNull = null)
         {
             int procResult;
             return StoredProcWithDefaults(userId, userIdNull, clientName, clientNameNull, clientNameMaxNull, clientDesc, clientDescNull, decimalValue, decimalValueNull, money, moneyNull, smallMoney, smallMoneyNull, realValue, realValueNull, floatValue, floatValueNull, out procResult);
@@ -1633,7 +1633,7 @@ namespace V9EfrpgTest
             return procResultData;
         }
 
-        public async Task<List<StoredProcWithDefaultsReturnModel>> StoredProcWithDefaultsAsync(int? userId, int? userIdNull, string clientName, string clientNameNull, string clientNameMaxNull, string clientDesc, string clientDescNull, decimal? decimalValue = null, decimal? decimalValueNull = null, decimal? money = null, decimal? moneyNull = null, decimal? smallMoney = null, decimal? smallMoneyNull = null, float? realValue = null, float? realValueNull = null, double? floatValue = null, double? floatValueNull = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<List<StoredProcWithDefaultsReturnModel>> StoredProcWithDefaultsAsync(int? userId = 12, int? userIdNull = null, string clientName = "Hello", string? clientNameNull = null, string? clientNameMaxNull = null, string clientDesc = "World", string? clientDescNull = null, decimal? decimalValue = 1.234m, decimal? decimalValueNull = null, decimal? money = 4.56m, decimal? moneyNull = null, decimal? smallMoney = 7.89m, decimal? smallMoneyNull = null, float? realValue = 9.876f, float? realValueNull = null, double? floatValue = 6.54, double? floatValueNull = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var userIdParam = new SqlParameter { ParameterName = "@UserId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = userId.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!userId.HasValue)
@@ -2226,7 +2226,7 @@ namespace V9EfrpgTest
         }
 
         // dbo.CsvToInt
-        public IQueryable<CsvToIntReturnModel> CsvToInt(string array, string array2)
+        public IQueryable<CsvToIntReturnModel> CsvToInt(string array, string array2 = "")
         {
             return Set<CsvToIntReturnModel>()
                 .FromSqlRaw("SELECT * FROM [dbo].[CsvToInt]({0}, {1})", array, array2)
@@ -2234,7 +2234,7 @@ namespace V9EfrpgTest
         }
 
         // CustomSchema.CsvToIntWithSchema
-        public IQueryable<CustomSchema_CsvToIntWithSchemaReturnModel> CustomSchema_CsvToIntWithSchema(string array, string array2)
+        public IQueryable<CustomSchema_CsvToIntWithSchemaReturnModel> CustomSchema_CsvToIntWithSchema(string array, string array2 = "")
         {
             return Set<CustomSchema_CsvToIntWithSchemaReturnModel>()
                 .FromSqlRaw("SELECT * FROM [CustomSchema].[CsvToIntWithSchema]({0}, {1})", array, array2)
@@ -2242,7 +2242,7 @@ namespace V9EfrpgTest
         }
 
         // FFRS.CsvToInt2
-        public IQueryable<FFRS_CsvToInt2ReturnModel> FFRS_CsvToInt2(string array, string array2)
+        public IQueryable<FFRS_CsvToInt2ReturnModel> FFRS_CsvToInt2(string array, string array2 = "")
         {
             return Set<FFRS_CsvToInt2ReturnModel>()
                 .FromSqlRaw("SELECT * FROM [FFRS].[CsvToInt2]({0}, {1})", array, array2)
@@ -2804,7 +2804,7 @@ namespace V9EfrpgTest
         }
 
         public DbSet<C182Test2ReturnModel> C182Test2ReturnModel { get; set; } = null!;
-        public C182Test2ReturnModel C182Test2(int? flag = null)
+        public C182Test2ReturnModel C182Test2(int? flag = 1)
         {
             int procResult;
             return C182Test2(flag, out procResult);
@@ -3014,7 +3014,7 @@ namespace V9EfrpgTest
         }
 
         public DbSet<GetSmallDecimalTestReturnModel> GetSmallDecimalTestReturnModel { get; set; } = null!;
-        public List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId = null)
+        public List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId = 999)
         {
             int procResult;
             return GetSmallDecimalTest(maxId, out procResult);
@@ -3026,7 +3026,7 @@ namespace V9EfrpgTest
             return new List<GetSmallDecimalTestReturnModel>();
         }
 
-        public Task<List<GetSmallDecimalTestReturnModel>> GetSmallDecimalTestAsync(int? maxId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<List<GetSmallDecimalTestReturnModel>> GetSmallDecimalTestAsync(int? maxId = 999, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(GetSmallDecimalTest(maxId, out procResult));
@@ -3084,12 +3084,12 @@ namespace V9EfrpgTest
             return Task.FromResult(0);
         }
 
-        public int NvarcharTest(string maxOutputParam, string normalOutputParam)
+        public int NvarcharTest(string maxOutputParam = "hello", string normalOutputParam = "world")
         {
             return 0;
         }
 
-        public Task<int> NvarcharTestAsync(string maxOutputParam, string normalOutputParam, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<int> NvarcharTestAsync(string maxOutputParam = "hello", string normalOutputParam = "world", CancellationToken cancellationToken = default(CancellationToken))
         {
             return Task.FromResult(0);
         }
@@ -3167,7 +3167,7 @@ namespace V9EfrpgTest
         }
 
         public DbSet<StoredProcWithDefaultsReturnModel> StoredProcWithDefaultsReturnModel { get; set; } = null!;
-        public List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId, int? userIdNull, string clientName, string clientNameNull, string clientNameMaxNull, string clientDesc, string clientDescNull, decimal? decimalValue = null, decimal? decimalValueNull = null, decimal? money = null, decimal? moneyNull = null, decimal? smallMoney = null, decimal? smallMoneyNull = null, float? realValue = null, float? realValueNull = null, double? floatValue = null, double? floatValueNull = null)
+        public List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId = 12, int? userIdNull = null, string clientName = "Hello", string? clientNameNull = null, string? clientNameMaxNull = null, string clientDesc = "World", string? clientDescNull = null, decimal? decimalValue = 1.234m, decimal? decimalValueNull = null, decimal? money = 4.56m, decimal? moneyNull = null, decimal? smallMoney = 7.89m, decimal? smallMoneyNull = null, float? realValue = 9.876f, float? realValueNull = null, double? floatValue = 6.54, double? floatValueNull = null)
         {
             int procResult;
             return StoredProcWithDefaults(userId, userIdNull, clientName, clientNameNull, clientNameMaxNull, clientDesc, clientDescNull, decimalValue, decimalValueNull, money, moneyNull, smallMoney, smallMoneyNull, realValue, realValueNull, floatValue, floatValueNull, out procResult);
@@ -3179,7 +3179,7 @@ namespace V9EfrpgTest
             return new List<StoredProcWithDefaultsReturnModel>();
         }
 
-        public Task<List<StoredProcWithDefaultsReturnModel>> StoredProcWithDefaultsAsync(int? userId, int? userIdNull, string clientName, string clientNameNull, string clientNameMaxNull, string clientDesc, string clientDescNull, decimal? decimalValue = null, decimal? decimalValueNull = null, decimal? money = null, decimal? moneyNull = null, decimal? smallMoney = null, decimal? smallMoneyNull = null, float? realValue = null, float? realValueNull = null, double? floatValue = null, double? floatValueNull = null, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<List<StoredProcWithDefaultsReturnModel>> StoredProcWithDefaultsAsync(int? userId = 12, int? userIdNull = null, string clientName = "Hello", string? clientNameNull = null, string? clientNameMaxNull = null, string clientDesc = "World", string? clientDescNull = null, decimal? decimalValue = 1.234m, decimal? decimalValueNull = null, decimal? money = 4.56m, decimal? moneyNull = null, decimal? smallMoney = 7.89m, decimal? smallMoneyNull = null, float? realValue = 9.876f, float? realValueNull = null, double? floatValue = 6.54, double? floatValueNull = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(StoredProcWithDefaults(userId, userIdNull, clientName, clientNameNull, clientNameMaxNull, clientDesc, clientDescNull, decimalValue, decimalValueNull, money, moneyNull, smallMoney, smallMoneyNull, realValue, realValueNull, floatValue, floatValueNull, out procResult));
@@ -3447,19 +3447,19 @@ namespace V9EfrpgTest
         }
 
         // dbo.CsvToInt
-        public IQueryable<CsvToIntReturnModel> CsvToInt(string array, string array2)
+        public IQueryable<CsvToIntReturnModel> CsvToInt(string array, string array2 = "")
         {
             return new List<CsvToIntReturnModel>().AsQueryable();
         }
 
         // CustomSchema.CsvToIntWithSchema
-        public IQueryable<CustomSchema_CsvToIntWithSchemaReturnModel> CustomSchema_CsvToIntWithSchema(string array, string array2)
+        public IQueryable<CustomSchema_CsvToIntWithSchemaReturnModel> CustomSchema_CsvToIntWithSchema(string array, string array2 = "")
         {
             return new List<CustomSchema_CsvToIntWithSchemaReturnModel>().AsQueryable();
         }
 
         // FFRS.CsvToInt2
-        public IQueryable<FFRS_CsvToInt2ReturnModel> FFRS_CsvToInt2(string array, string array2)
+        public IQueryable<FFRS_CsvToInt2ReturnModel> FFRS_CsvToInt2(string array, string array2 = "")
         {
             return new List<FFRS_CsvToInt2ReturnModel>().AsQueryable();
         }

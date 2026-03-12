@@ -155,7 +155,7 @@ namespace Efrpg.PostgreSQL
         }
 
         [DbFunction("postgis_srs_search", "public")]
-        public string PostgisSrsSearch(string bounds, string authname)
+        public string PostgisSrsSearch(string bounds, string authname = "EPSG")
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
@@ -167,7 +167,7 @@ namespace Efrpg.PostgreSQL
         }
 
         [DbFunction("st_largestemptycircle", "public")]
-        public string StLargestemptycircle(string geom, double? tolerance, string boundary)
+        public string StLargestemptycircle(string geom, double? tolerance = 0.0, string boundary = "0101000000000000000000F87F000000000000F87F")
         {
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
@@ -458,7 +458,7 @@ namespace Efrpg.PostgreSQL
         }
 
         // public.postgis_srs_search
-        public string PostgisSrsSearch(string bounds, string authname)
+        public string PostgisSrsSearch(string bounds, string authname = "EPSG")
         {
             return default(string);
         }
@@ -470,7 +470,7 @@ namespace Efrpg.PostgreSQL
         }
 
         // public.st_largestemptycircle
-        public string StLargestemptycircle(string geom, double? tolerance, string boundary)
+        public string StLargestemptycircle(string geom, double? tolerance = 0.0, string boundary = "0101000000000000000000F87F000000000000F87F")
         {
             return default(string);
         }

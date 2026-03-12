@@ -88,23 +88,57 @@ namespace Efrpg
             var sb = new StringBuilder(255);
             var data = Parameters.Where(x => x.Mode != StoredProcedureParameterMode.Out).OrderBy(x => x.Ordinal).ToList();
 
-            var minNullableParameter = WhichTailEndParametersCanBeNullable(data, willIncludeProcResult, forInterface);
-            if (minNullableParameter == 0)
-                minNullableParameter = 9999;
+            // When any parameter carries DB default info, use it to determine optional params.
+            // Otherwise fall back to the type-based tail heuristic for backward compatibility.
+            var useDbDefaults = data.Any(p => p.HasDefault);
+            int firstOptionalIndex;
+            if (useDbDefaults && !forInterface && !willIncludeProcResult)
+            {
+                // Find the longest contiguous tail sequence of In-mode parameters that all have DB defaults.
+                firstOptionalIndex = data.Count;
+                for (var i = data.Count - 1; i >= 0; i--)
+                {
+                    if (data[i].Mode == StoredProcedureParameterMode.In && data[i].HasDefault)
+                        firstOptionalIndex = i;
+                    else
+                        break;
+                }
+            }
+            else
+            {
+                var minNullable = WhichTailEndParametersCanBeNullable(data, willIncludeProcResult, forInterface);
+                firstOptionalIndex = minNullable == 0 ? data.Count : minNullable - 1;
+            }
 
             var count = 0;
             foreach (var p in data)
             {
-                ++count;
-                var notNullable = Column.StoredProcedureNotNullable.Contains(p.PropertyType.ToLower());
                 var isInParam = p.Mode == StoredProcedureParameterMode.In;
+                var isOptional = isInParam && count >= firstOptionalIndex;
+                var isReferenceType = Column.StoredProcedureNotNullable.Contains(p.PropertyType.ToLower());
+
+                // A string param with a NULL DB default becomes nullable (string?) only when NRT is enabled.
+                // Without NRT (e.g. EF6 / C# 7.3), string? is not valid syntax.
+                var makeNullable = !isReferenceType || (useDbDefaults && isOptional && p.DefaultValue == null && Settings.NeedsNullForgiving());
+
+                string defaultSuffix;
+                if (!isOptional)
+                    defaultSuffix = string.Empty;
+                else if (useDbDefaults)
+                    defaultSuffix = " = " + ToCSharpDefault(p);
+                else if (!isReferenceType)
+                    defaultSuffix = " = null";
+                else
+                    defaultSuffix = string.Empty; // reference types without DB info stay required
 
                 sb.AppendFormat("{0}{1}{2} {3}{4}, ",
                     isInParam ? string.Empty : "out ",
                     p.PropertyType,
-                    notNullable ? string.Empty : "?",
+                    makeNullable ? "?" : string.Empty,
                     p.NameHumanCase,
-                    (notNullable || forInterface || !isInParam || count < minNullableParameter) ? string.Empty : " = null");
+                    defaultSuffix);
+
+                ++count;
             }
 
             if (willIncludeProcResult)
@@ -117,6 +151,34 @@ namespace Efrpg
                 sb.Length -= 2;
 
             return sb.ToString();
+        }
+
+        // Converts a StoredProcedureParameter's stored DefaultValue to a valid C# literal.
+        // p.DefaultValue == null  → "null"
+        // p.DefaultValue == "'FCV'" → "\"FCV\""
+        // p.DefaultValue == "12"  → "12" (with optional type suffix for decimal/float)
+        private static string ToCSharpDefault(StoredProcedureParameter p)
+        {
+            if (p.DefaultValue == null)
+                return "null";
+
+            var raw = p.DefaultValue.Trim();
+
+            // SQL string literal: strip surrounding single quotes and escape for C#
+            if (raw.Length >= 2 && raw[0] == '\'' && raw[raw.Length - 1] == '\'')
+            {
+                var str = raw.Substring(1, raw.Length - 2).Replace("''", "'");
+                return "\"" + str.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"";
+            }
+
+            // Numeric value: add C# type suffix where needed
+            var propertyType = p.PropertyType?.ToLower() ?? string.Empty;
+            if (propertyType == "decimal?" || propertyType == "decimal")
+                return raw + "m";
+            if (propertyType == "float?" || propertyType == "float")
+                return raw + "f";
+
+            return raw; // int, double, bool, etc. – use as-is
         }
 
         // Returns the minimum nullable parameter, counting from 1. 0 Means no column is nullable.

@@ -192,7 +192,7 @@ namespace TestSynonymsDatabase
         // Table Valued Functions
 
         // dbo.CsvToInt
-        public IQueryable<CsvToIntReturnModel> CsvToInt(string array, string array2)
+        public IQueryable<CsvToIntReturnModel> CsvToInt(string array, string array2 = "")
         {
             return Set<CsvToIntReturnModel>()
                 .FromSqlRaw("SELECT * FROM [dbo].[CsvToInt]({0}, {1})", array, array2)
@@ -486,7 +486,7 @@ namespace TestSynonymsDatabase
         // Table Valued Functions
 
         // dbo.CsvToInt
-        public IQueryable<CsvToIntReturnModel> CsvToInt(string array, string array2)
+        public IQueryable<CsvToIntReturnModel> CsvToInt(string array, string array2 = "")
         {
             return new List<CsvToIntReturnModel>().AsQueryable();
         }

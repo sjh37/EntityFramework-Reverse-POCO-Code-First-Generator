@@ -391,7 +391,7 @@ namespace Tester.Integration.EFCore8
             return procResultData;
         }
 
-        public List<SalesByCategoryReturnModel> SalesByCategory(string categoryName, string ordYear)
+        public List<SalesByCategoryReturnModel> SalesByCategory(string categoryName, string ordYear = "1998")
         {
             int procResult;
             return SalesByCategory(categoryName, ordYear, out procResult);
@@ -417,7 +417,7 @@ namespace Tester.Integration.EFCore8
             return procResultData;
         }
 
-        public async Task<List<SalesByCategoryReturnModel>> SalesByCategoryAsync(string categoryName, string ordYear, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<List<SalesByCategoryReturnModel>> SalesByCategoryAsync(string categoryName, string ordYear = "1998", CancellationToken cancellationToken = default(CancellationToken))
         {
             var categoryNameParam = new SqlParameter { ParameterName = "@CategoryName", SqlDbType = SqlDbType.NVarChar, Direction = ParameterDirection.Input, Value = categoryName, Size = 15 };
             if (categoryNameParam.Value == null)
@@ -886,7 +886,7 @@ namespace Tester.Integration.EFCore8
         }
 
         public DbSet<SalesByCategoryReturnModel> SalesByCategoryReturnModel { get; set; } = null!;
-        public List<SalesByCategoryReturnModel> SalesByCategory(string categoryName, string ordYear)
+        public List<SalesByCategoryReturnModel> SalesByCategory(string categoryName, string ordYear = "1998")
         {
             int procResult;
             return SalesByCategory(categoryName, ordYear, out procResult);
@@ -898,7 +898,7 @@ namespace Tester.Integration.EFCore8
             return new List<SalesByCategoryReturnModel>();
         }
 
-        public Task<List<SalesByCategoryReturnModel>> SalesByCategoryAsync(string categoryName, string ordYear, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<List<SalesByCategoryReturnModel>> SalesByCategoryAsync(string categoryName, string ordYear = "1998", CancellationToken cancellationToken = default(CancellationToken))
         {
             int procResult;
             return Task.FromResult(SalesByCategory(categoryName, ordYear, out procResult));

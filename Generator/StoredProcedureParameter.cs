@@ -16,5 +16,7 @@
         public int Precision;
         public int Scale;
         public bool IsSpatial;
+        public bool HasDefault;     // true when the SQL parameter has a default value
+        public string DefaultValue; // null = default is NULL; a SQL string literal like "'FCV'" or a number like "12"
     }
 }
