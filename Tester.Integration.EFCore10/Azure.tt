@@ -85,7 +85,7 @@ using System.Collections.Generic;
     Settings.UseMappingTables                       = false; // Must be false for TemplateType.EfCore2-4. If true, mapping will be used, and no mapping tables will be generated. If false, all tables will be generated.
 
     Settings.EntityClassesModifiers        = "public"; // "public partial";
-    Settings.ConfigurationClassesModifiers = "public"; // "public partial";
+    Settings.ConfigurationClassesModifiers = "public partial"; // "public partial";
     Settings.DbContextClassModifiers       = "public"; // "public partial";
     Settings.DbContextInterfaceModifiers   = "public"; // "public partial";
     Settings.ResultClassModifiers          = "public"; // "public partial";
@@ -193,19 +193,45 @@ using System.Collections.Generic;
         //enumDefinitions.Add(new EnumDefinition { Schema = Settings.DefaultSchema, Table = "*", Column = "OrderStatus", EnumType = "OrderStatusType" });
     };
 
-    // StoredProcedure return types *******************************************************************************************************
-    // Override generation of return models for stored procedures that return entities.
-    // If a stored procedure returns an entity, add it to the list below.
-    // This will suppress the generation of the return model, and instead return the entity.
-    // Example:                                 Proc name      Return this entity type instead
-    // Settings.StoredProcedureReturnTypes.Add("SalesByYear", "SummaryOfSalesByYear");
+    // JSON column to POCO class mapping *************************************************************************************************
+    // Use the following callback to map JSON database columns to specific C# POCO classes instead of a string.
+    // This allows you to work with strongly-typed objects instead of having to deserialize JSON strings manually.
+    Settings.AddJsonColumnMappings = delegate (List<JsonColumnMapping> jsonColumnMappings)
+    {
+        jsonColumnMappings.Add(new JsonColumnMapping 
+        { 
+            Schema = Settings.DefaultSchema, 
+            Table = "Testing_EfCore10", 
+            Column = "ShippingAddress", 
+            PropertyType = "AzureShippingAddress",
+            AdditionalNamespace = null,
+            ExcludePropertyConfiguration = true
+        });
 
-    // Additional attributes on on reverse navigation and foreign key properties **********************************************************
-    // If you need to serialise your entities with the JsonSerializer from Newtonsoft, this would serialise
-    // all properties including the Reverse Navigation and Foreign Keys. The simplest way to exclude them is
-    // to use the data annotation [JsonIgnore] on reverse navigation and foreign keys.
-    // For more control, take a look at ForeignKeyAnnotationsProcessing() further down
-    Settings.AdditionalReverseNavigationsDataAnnotations = new string[]
+        // Map to a custom class with full namespace
+        //jsonColumnMappings.Add(new JsonColumnMapping 
+        //{ 
+        //    Schema = "dbo", 
+        //    Table = "Users", 
+        //    Column = "Preferences", 
+        //    PropertyType = "MyApp.Models.UserPreferences" // Fully qualified type name
+        //    ExcludePropertyConfiguration = false          // Optional: When true, suppresses the generated builder.Property(...) fluent configuration.
+        //});
+    };
+
+// StoredProcedure return types *******************************************************************************************************
+// Override generation of return models for stored procedures that return entities.
+// If a stored procedure returns an entity, add it to the list below.
+// This will suppress the generation of the return model, and instead return the entity.
+// Example:                                 Proc name      Return this entity type instead
+// Settings.StoredProcedureReturnTypes.Add("SalesByYear", "SummaryOfSalesByYear");
+
+// Additional attributes on on reverse navigation and foreign key properties **********************************************************
+// If you need to serialise your entities with the JsonSerializer from Newtonsoft, this would serialise
+// all properties including the Reverse Navigation and Foreign Keys. The simplest way to exclude them is
+// to use the data annotation [JsonIgnore] on reverse navigation and foreign keys.
+// For more control, take a look at ForeignKeyAnnotationsProcessing() further down
+Settings.AdditionalReverseNavigationsDataAnnotations = new string[]
     {
         // "JsonIgnore" // Also add "Newtonsoft.Json" to the AdditionalNamespaces array above
     };

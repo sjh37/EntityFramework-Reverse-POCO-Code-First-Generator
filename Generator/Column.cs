@@ -50,6 +50,7 @@ namespace Efrpg
         public bool IsForeignKey;
         public bool IsSpatial;
         public bool IsPartial;
+        public bool ExcludePropertyConfiguration; // Set when JsonColumnMapping.ExcludePropertyConfiguration is true
 
         public string Config;
         public List<string> ConfigFk = new List<string>();

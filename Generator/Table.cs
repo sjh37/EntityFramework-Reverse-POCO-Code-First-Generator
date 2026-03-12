@@ -36,6 +36,7 @@ namespace Efrpg
         public List<string> ReverseNavigationCtor;
         public List<RawIndex> Indexes;
         public List<string> Attributes = new List<string>(); // List of attributes to add to this table
+        public List<string> AdditionalNamespaces = new List<string>(); // Namespaces required by JSON column mappings on this table
 
         private readonly IDbContextFilter _filter;
         private readonly IForeignKeyNamingStrategy _foreignKeyNamingStrategy;

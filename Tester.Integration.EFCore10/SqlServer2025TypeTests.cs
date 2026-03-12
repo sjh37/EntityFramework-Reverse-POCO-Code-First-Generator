@@ -18,26 +18,27 @@ namespace Tester.Integration.EFCore10
         /// <summary>
         /// Tests that the generator correctly maps SQL Server 2025's native json type.
         /// The json type is a new native type in SQL Server 2025 (distinct from storing JSON in nvarchar columns).
-        /// It should map to string by default.
+        /// It should map to AzureShippingAddress record class.
         /// </summary>
         /// <remarks>
-        /// The TestingEfCore10 table has a ShippingAddress column of type json that maps to string.
+        /// The TestingEfCore10 table has a ShippingAddress column of type json that maps to AzureShippingAddress.
         /// Fluent API: .HasColumnType("json")
         /// </remarks>
         [Test]
-        public void JsonType_ShouldMapToString()
+        public void JsonType_ShouldMapToAzureShippingAddress()
         {
-            // Arrange - TestingEfCore10.ShippingAddress is a json column mapped to string
+            // Arrange - TestingEfCore10.ShippingAddress is a json column mapped to AzureShippingAddress
 
-            // Act - Create an instance with JSON data
+            // Act - Create an instance with an AzureShippingAddress value
+            var shippingAddress = new AzureShippingAddress("John", "Doe", "123 Main St", "", "SW1A 1AA");
             var entity = new TestingEfCore10
             {
-                ShippingAddress = "{\"street\": \"123 Main St\", \"city\": \"London\", \"postcode\": \"SW1A 1AA\"}"
+                ShippingAddress = shippingAddress
             };
 
-            // Assert - Verify the property type is string
-            Assert.That(entity.ShippingAddress, Is.TypeOf<string>());
-            Assert.That(entity.ShippingAddress, Does.Contain("London"));
+            // Assert - Verify the property type is AzureShippingAddress
+            Assert.That(entity.ShippingAddress, Is.TypeOf<AzureShippingAddress>());
+            Assert.That(entity.ShippingAddress.Surname, Is.EqualTo("Doe"));
         }
 
         /// <summary>
@@ -67,7 +68,7 @@ namespace Tester.Integration.EFCore10
 
             var entity = new TestingEfCore10
             {
-                ShippingAddress = "{}",
+                ShippingAddress = new AzureShippingAddress("", "", "", "", ""),
                 Embedding = new SqlVector<float>(embeddingData)
             };
 
@@ -87,7 +88,7 @@ namespace Tester.Integration.EFCore10
             // Act - Create an instance with null embedding
             var entity = new TestingEfCore10
             {
-                ShippingAddress = "{}",
+                ShippingAddress = new AzureShippingAddress("", "", "", "", ""),
                 Embedding = null
             };
 

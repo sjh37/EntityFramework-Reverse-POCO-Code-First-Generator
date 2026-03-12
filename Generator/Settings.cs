@@ -439,17 +439,22 @@ namespace Efrpg
                 {
                     column.PropertyType = jsonMapping.PropertyType;
 
-                    // Add the additional namespace if specified
+                    // Add the additional namespace to this table only (not globally)
                     if (!string.IsNullOrEmpty(jsonMapping.AdditionalNamespace))
                     {
                         var namespaces = jsonMapping.AdditionalNamespace.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
                         foreach (var ns in namespaces)
                         {
                             var trimmedNs = ns.Trim();
-                            if (!string.IsNullOrEmpty(trimmedNs) && !AdditionalNamespaces.Contains(trimmedNs))
-                                AdditionalNamespaces.Add(trimmedNs);
+                            if (!string.IsNullOrEmpty(trimmedNs) && !table.AdditionalNamespaces.Contains(trimmedNs))
+                                table.AdditionalNamespaces.Add(trimmedNs);
                         }
                     }
+
+                    // When the user is configuring the column in a partial class, suppress the generated
+                    // builder.Property(...) call to avoid "property can only be configured once" runtime errors.
+                    if (jsonMapping.ExcludePropertyConfiguration)
+                        column.ExcludePropertyConfiguration = true;
 
                     // Clear the default value for JSON columns mapped to custom types
                     column.Default = string.Empty;
@@ -764,7 +769,7 @@ namespace Efrpg
         public static Action<List<JsonColumnMapping>> AddJsonColumnMappings = delegate (List<JsonColumnMapping> jsonColumnMappings)
         {
             // Examples:
-            
+
             // Map a specific JSON column to a POCO class
             //jsonColumnMappings.Add(new JsonColumnMapping 
             //{ 
@@ -772,7 +777,10 @@ namespace Efrpg
             //    Table = "Orders", 
             //    Column = "ShippingAddress", 
             //    PropertyType = "Address",
-            //    AdditionalNamespace = "MyApp.Models" // Optional: Add namespace if needed
+            //    AdditionalNamespace = "MyApp.Models", // Optional: Add namespace if needed
+            //    ExcludePropertyConfiguration = false  // Optional: When true, suppresses the generated builder.Property(...) fluent configuration.
+            //                                             for this column. Use this when you are configuring the column yourself in a partial class
+            //                                             (e.g. using OwnsMany/ToJson), to avoid the "property can only be configured once" runtime error.
             //});
 
             // Map all columns named "Metadata" across all tables to a specific type
@@ -782,7 +790,8 @@ namespace Efrpg
             //    Table = "*", 
             //    Column = "Metadata", 
             //    PropertyType = "Dictionary<string, object>",
-            //    AdditionalNamespace = "System.Collections.Generic" // Optional
+            //    AdditionalNamespace = "System.Collections.Generic", // Optional
+            //    ExcludePropertyConfiguration = false                // Optional
             //});
 
             // Map to a complex type with generics
@@ -792,7 +801,8 @@ namespace Efrpg
             //    Table = "Products", 
             //    Column = "Tags", 
             //    PropertyType = "List<string>",
-            //    AdditionalNamespace = "System.Collections.Generic"
+            //    AdditionalNamespace = "System.Collections.Generic",
+            //    ExcludePropertyConfiguration = false                // Optional
             //});
 
             // Map to a custom class with full namespace
@@ -801,7 +811,8 @@ namespace Efrpg
             //    Schema = "dbo", 
             //    Table = "Users", 
             //    Column = "Preferences", 
-            //    PropertyType = "MyApp.Models.UserPreferences" // Fully qualified type name
+            //    PropertyType = "MyApp.Models.UserPreferences", // Fully qualified type name
+            //    ExcludePropertyConfiguration = false           // Optional
             //});
         };
 

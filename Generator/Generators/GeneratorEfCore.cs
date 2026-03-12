@@ -163,7 +163,7 @@ namespace Efrpg.Generators
                 sb.AppendFormat(".HasDefaultValueSql(@\"{0}\")", c.HasDefaultValueSql);
 
             var config = sb.ToString();
-            if (!string.IsNullOrEmpty(config))
+            if (!string.IsNullOrEmpty(config) && !c.ExcludePropertyConfiguration)
                 c.Config = string.Format("builder.Property(x => x.{0}){1};{2}", c.NameHumanCase, config, excludedHasColumnType);
         }
 

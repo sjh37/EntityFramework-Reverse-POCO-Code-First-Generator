@@ -757,7 +757,7 @@ namespace Azure10
     {
         public int Id { get; set; } // Id (Primary key)
         public SqlVector<float>? Embedding { get; set; } // Embedding (length: 4944)
-        public string ShippingAddress { get; set; } = null!; // ShippingAddress
+        public AzureShippingAddress ShippingAddress { get; set; } // ShippingAddress
     }
 
     // VolumeDiscount
@@ -791,7 +791,7 @@ namespace Azure10
     #region POCO Configuration
 
     // BadEmail
-    public class BadEmailConfiguration : IEntityTypeConfiguration<BadEmail>
+    public partial class BadEmailConfiguration : IEntityTypeConfiguration<BadEmail>
     {
         public void Configure(EntityTypeBuilder<BadEmail> builder)
         {
@@ -799,11 +799,15 @@ namespace Azure10
             builder.HasKey(x => x.Email).HasName("PK_BadEmail").IsClustered();
 
             builder.Property(x => x.Email).HasColumnName(@"Email").HasColumnType("nvarchar(256)").IsRequired().HasMaxLength(256).ValueGeneratedNever();
+
+            InitializePartial(builder);
         }
+
+        partial void InitializePartial(EntityTypeBuilder<BadEmail> builder);
     }
 
     // CartItem
-    public class CartItemConfiguration : IEntityTypeConfiguration<CartItem>
+    public partial class CartItemConfiguration : IEntityTypeConfiguration<CartItem>
     {
         public void Configure(EntityTypeBuilder<CartItem> builder)
         {
@@ -829,11 +833,15 @@ namespace Azure10
             builder.HasIndex(x => x.LicenceTypeId).HasDatabaseName("IX_CartItem_LicenceTypeId");
             builder.HasIndex(x => new { x.ProductId, x.LicenceTypeId }).HasDatabaseName("IX_CartItem_ProductId_LicenceTypeId");
             builder.HasIndex(x => x.UserName).HasDatabaseName("IX_CartItem_UserName");
+
+            InitializePartial(builder);
         }
+
+        partial void InitializePartial(EntityTypeBuilder<CartItem> builder);
     }
 
     // Checkout
-    public class CheckoutConfiguration : IEntityTypeConfiguration<Checkout>
+    public partial class CheckoutConfiguration : IEntityTypeConfiguration<Checkout>
     {
         public void Configure(EntityTypeBuilder<Checkout> builder)
         {
@@ -865,11 +873,15 @@ namespace Azure10
 
             builder.HasIndex(x => x.CountryId).HasDatabaseName("IX_Checkout_CountryId");
             builder.HasIndex(x => x.DiscountId).HasDatabaseName("IX_Checkout_DiscountId");
+
+            InitializePartial(builder);
         }
+
+        partial void InitializePartial(EntityTypeBuilder<Checkout> builder);
     }
 
     // Country
-    public class CountryConfiguration : IEntityTypeConfiguration<Country>
+    public partial class CountryConfiguration : IEntityTypeConfiguration<Country>
     {
         public void Configure(EntityTypeBuilder<Country> builder)
         {
@@ -887,11 +899,15 @@ namespace Azure10
             builder.Property(x => x.InEurope).HasColumnName(@"InEurope").HasColumnType("bit").IsRequired();
 
             builder.HasIndex(x => new { x.DisplayOrder, x.Name }).HasDatabaseName("IX_Country_DisplayOrder_Name");
+
+            InitializePartial(builder);
         }
+
+        partial void InitializePartial(EntityTypeBuilder<Country> builder);
     }
 
     // Discount
-    public class DiscountConfiguration : IEntityTypeConfiguration<Discount>
+    public partial class DiscountConfiguration : IEntityTypeConfiguration<Discount>
     {
         public void Configure(EntityTypeBuilder<Discount> builder)
         {
@@ -917,11 +933,15 @@ namespace Azure10
             builder.HasOne(a => a.DiscountLimitation).WithMany(b => b.Discounts).HasForeignKey(c => c.DiscountLimitationId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Discount_DiscountLimitation_DiscountLimitationId");
 
             builder.HasIndex(x => x.DiscountLimitationId).HasDatabaseName("IX_Discount_DiscountLimitationId");
+
+            InitializePartial(builder);
         }
+
+        partial void InitializePartial(EntityTypeBuilder<Discount> builder);
     }
 
     // DiscountLimitation
-    public class DiscountLimitationConfiguration : IEntityTypeConfiguration<DiscountLimitation>
+    public partial class DiscountLimitationConfiguration : IEntityTypeConfiguration<DiscountLimitation>
     {
         public void Configure(EntityTypeBuilder<DiscountLimitation> builder)
         {
@@ -931,11 +951,15 @@ namespace Azure10
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(50)").IsRequired().IsUnicode(false).HasMaxLength(50);
             builder.Property(x => x.Active).HasColumnName(@"Active").HasColumnType("bit").IsRequired();
+
+            InitializePartial(builder);
         }
+
+        partial void InitializePartial(EntityTypeBuilder<DiscountLimitation> builder);
     }
 
     // LicenceType
-    public class LicenceTypeConfiguration : IEntityTypeConfiguration<LicenceType>
+    public partial class LicenceTypeConfiguration : IEntityTypeConfiguration<LicenceType>
     {
         public void Configure(EntityTypeBuilder<LicenceType> builder)
         {
@@ -946,11 +970,15 @@ namespace Azure10
             builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(50)").IsRequired().IsUnicode(false).HasMaxLength(50);
             builder.Property(x => x.SubText).HasColumnName(@"SubText").HasColumnType("varchar(256)").IsRequired().IsUnicode(false).HasMaxLength(256);
             builder.Property(x => x.Active).HasColumnName(@"Active").HasColumnType("bit").IsRequired();
+
+            InitializePartial(builder);
         }
+
+        partial void InitializePartial(EntityTypeBuilder<LicenceType> builder);
     }
 
     // NotificationOptOut
-    public class NotificationOptOutConfiguration : IEntityTypeConfiguration<NotificationOptOut>
+    public partial class NotificationOptOutConfiguration : IEntityTypeConfiguration<NotificationOptOut>
     {
         public void Configure(EntityTypeBuilder<NotificationOptOut> builder)
         {
@@ -965,11 +993,15 @@ namespace Azure10
 
             builder.HasIndex(x => x.NotificationTypeId).HasDatabaseName("IX_NotificationOptOut_NotificationTypeId");
             builder.HasIndex(x => x.UserName).HasDatabaseName("IX_NotificationOptOut_UserName");
+
+            InitializePartial(builder);
         }
+
+        partial void InitializePartial(EntityTypeBuilder<NotificationOptOut> builder);
     }
 
     // NotificationType
-    public class NotificationTypeConfiguration : IEntityTypeConfiguration<NotificationType>
+    public partial class NotificationTypeConfiguration : IEntityTypeConfiguration<NotificationType>
     {
         public void Configure(EntityTypeBuilder<NotificationType> builder)
         {
@@ -979,11 +1011,15 @@ namespace Azure10
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(50)").IsRequired().IsUnicode(false).HasMaxLength(50);
             builder.Property(x => x.Active).HasColumnName(@"Active").HasColumnType("bit").IsRequired();
+
+            InitializePartial(builder);
         }
+
+        partial void InitializePartial(EntityTypeBuilder<NotificationType> builder);
     }
 
     // Order
-    public class OrderConfiguration : IEntityTypeConfiguration<Order>
+    public partial class OrderConfiguration : IEntityTypeConfiguration<Order>
     {
         public void Configure(EntityTypeBuilder<Order> builder)
         {
@@ -1031,11 +1067,15 @@ namespace Azure10
             builder.HasIndex(x => x.Status).HasDatabaseName("IX_Order_Status");
             builder.HasIndex(x => x.TransactionId).HasDatabaseName("IX_Order_TransactionId");
             builder.HasIndex(x => x.UserName).HasDatabaseName("IX_Order_UserName");
+
+            InitializePartial(builder);
         }
+
+        partial void InitializePartial(EntityTypeBuilder<Order> builder);
     }
 
     // OrderItem
-    public class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
+    public partial class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
     {
         public void Configure(EntityTypeBuilder<OrderItem> builder)
         {
@@ -1069,11 +1109,15 @@ namespace Azure10
             builder.HasIndex(x => x.OrderId).HasDatabaseName("IX_OrderItem_OrderId");
             builder.HasIndex(x => new { x.ProductId, x.LicenceTypeId }).HasDatabaseName("IX_OrderItem_ProductId_LicenceTypeId");
             builder.HasIndex(x => x.SignatureUsedId).HasDatabaseName("IX_OrderItem_SignatureUsedId");
+
+            InitializePartial(builder);
         }
+
+        partial void InitializePartial(EntityTypeBuilder<OrderItem> builder);
     }
 
     // OrderLog
-    public class OrderLogConfiguration : IEntityTypeConfiguration<OrderLog>
+    public partial class OrderLogConfiguration : IEntityTypeConfiguration<OrderLog>
     {
         public void Configure(EntityTypeBuilder<OrderLog> builder)
         {
@@ -1090,11 +1134,15 @@ namespace Azure10
             builder.HasOne(a => a.Order).WithMany(b => b.OrderLogs).HasForeignKey(c => c.OrderId).HasConstraintName("FK_OrderLog_Order_OrderId");
 
             builder.HasIndex(x => x.OrderId).HasDatabaseName("IX_OrderLog_OrderId");
+
+            InitializePartial(builder);
         }
+
+        partial void InitializePartial(EntityTypeBuilder<OrderLog> builder);
     }
 
     // OrderNotificationSent
-    public class OrderNotificationSentConfiguration : IEntityTypeConfiguration<OrderNotificationSent>
+    public partial class OrderNotificationSentConfiguration : IEntityTypeConfiguration<OrderNotificationSent>
     {
         public void Configure(EntityTypeBuilder<OrderNotificationSent> builder)
         {
@@ -1110,11 +1158,15 @@ namespace Azure10
             builder.HasOne(a => a.OrderItem).WithMany(b => b.OrderNotificationSents).HasForeignKey(c => c.OrderItemId).HasConstraintName("FK_OrderNotificationSent_OrderItem_OrderItemId");
 
             builder.HasIndex(x => x.NotificationTypeId).HasDatabaseName("IX_OrderNotificationSent_NotificationTypeId");
+
+            InitializePartial(builder);
         }
+
+        partial void InitializePartial(EntityTypeBuilder<OrderNotificationSent> builder);
     }
 
     // Product
-    public class ProductConfiguration : IEntityTypeConfiguration<Product>
+    public partial class ProductConfiguration : IEntityTypeConfiguration<Product>
     {
         public void Configure(EntityTypeBuilder<Product> builder)
         {
@@ -1125,11 +1177,15 @@ namespace Azure10
             builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(80)").IsRequired().IsUnicode(false).HasMaxLength(80);
             builder.Property(x => x.ShortDescription).HasColumnName(@"ShortDescription").HasColumnType("varchar(80)").IsRequired().IsUnicode(false).HasMaxLength(80);
             builder.Property(x => x.Active).HasColumnName(@"Active").HasColumnType("bit").IsRequired();
+
+            InitializePartial(builder);
         }
+
+        partial void InitializePartial(EntityTypeBuilder<Product> builder);
     }
 
     // ProductLicenceTypeMapping
-    public class ProductLicenceTypeMappingConfiguration : IEntityTypeConfiguration<ProductLicenceTypeMapping>
+    public partial class ProductLicenceTypeMappingConfiguration : IEntityTypeConfiguration<ProductLicenceTypeMapping>
     {
         public void Configure(EntityTypeBuilder<ProductLicenceTypeMapping> builder)
         {
@@ -1152,11 +1208,15 @@ namespace Azure10
             builder.HasOne(a => a.Product).WithMany(b => b.ProductLicenceTypeMappings).HasForeignKey(c => c.ProductId).HasConstraintName("FK_ProductLicenceTypeMapping_Product_ProductId");
 
             builder.HasIndex(x => x.LicenceTypeId).HasDatabaseName("IX_ProductLicenceTypeMapping_LicenceTypeId");
+
+            InitializePartial(builder);
         }
+
+        partial void InitializePartial(EntityTypeBuilder<ProductLicenceTypeMapping> builder);
     }
 
     // SalesByWeek
-    public class SalesByWeekConfiguration : IEntityTypeConfiguration<SalesByWeek>
+    public partial class SalesByWeekConfiguration : IEntityTypeConfiguration<SalesByWeek>
     {
         public void Configure(EntityTypeBuilder<SalesByWeek> builder)
         {
@@ -1169,11 +1229,15 @@ namespace Azure10
             builder.Property(x => x.NumOrders).HasColumnName(@"NumOrders").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.Qty).HasColumnName(@"Qty").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.SubTotal).HasColumnName(@"SubTotal").HasColumnType("decimal(38,4)").HasPrecision(38,4).IsRequired(false);
+
+            InitializePartial(builder);
         }
+
+        partial void InitializePartial(EntityTypeBuilder<SalesByWeek> builder);
     }
 
     // SignatureUsed
-    public class SignatureUsedConfiguration : IEntityTypeConfiguration<SignatureUsed>
+    public partial class SignatureUsedConfiguration : IEntityTypeConfiguration<SignatureUsed>
     {
         public void Configure(EntityTypeBuilder<SignatureUsed> builder)
         {
@@ -1182,11 +1246,15 @@ namespace Azure10
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.Modulus).HasColumnName(@"Modulus").HasColumnType("varchar(10)").IsRequired().IsUnicode(false).HasMaxLength(10);
+
+            InitializePartial(builder);
         }
+
+        partial void InitializePartial(EntityTypeBuilder<SignatureUsed> builder);
     }
 
     // database_firewall_rules
-    public class sys_DatabaseFirewallRuleConfiguration : IEntityTypeConfiguration<sys_DatabaseFirewallRule>
+    public partial class sys_DatabaseFirewallRuleConfiguration : IEntityTypeConfiguration<sys_DatabaseFirewallRule>
     {
         public void Configure(EntityTypeBuilder<sys_DatabaseFirewallRule> builder)
         {
@@ -1199,11 +1267,15 @@ namespace Azure10
             builder.Property(x => x.EndIpAddress).HasColumnName(@"end_ip_address").HasColumnType("varchar(45)").IsRequired().IsUnicode(false).HasMaxLength(45);
             builder.Property(x => x.CreateDate).HasColumnName(@"create_date").HasColumnType("datetime").IsRequired();
             builder.Property(x => x.ModifyDate).HasColumnName(@"modify_date").HasColumnType("datetime").IsRequired();
+
+            InitializePartial(builder);
         }
+
+        partial void InitializePartial(EntityTypeBuilder<sys_DatabaseFirewallRule> builder);
     }
 
     // Testing_EfCore10
-    public class TestingEfCore10Configuration : IEntityTypeConfiguration<TestingEfCore10>
+    public partial class TestingEfCore10Configuration : IEntityTypeConfiguration<TestingEfCore10>
     {
         public void Configure(EntityTypeBuilder<TestingEfCore10> builder)
         {
@@ -1212,12 +1284,15 @@ namespace Azure10
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Embedding).HasColumnName(@"Embedding").HasColumnType("vector(1234)").IsRequired(false);
-            builder.Property(x => x.ShippingAddress).HasColumnName(@"ShippingAddress").HasColumnType("json").IsRequired();
+
+            InitializePartial(builder);
         }
+
+        partial void InitializePartial(EntityTypeBuilder<TestingEfCore10> builder);
     }
 
     // VolumeDiscount
-    public class VolumeDiscountConfiguration : IEntityTypeConfiguration<VolumeDiscount>
+    public partial class VolumeDiscountConfiguration : IEntityTypeConfiguration<VolumeDiscount>
     {
         public void Configure(EntityTypeBuilder<VolumeDiscount> builder)
         {
@@ -1239,7 +1314,11 @@ namespace Azure10
 
             builder.HasIndex(x => x.LicenceTypeId).HasDatabaseName("IX_VolumeDiscount_LicenceTypeId");
             builder.HasIndex(x => x.ProductId).HasDatabaseName("IX_VolumeDiscount_ProductId");
+
+            InitializePartial(builder);
         }
+
+        partial void InitializePartial(EntityTypeBuilder<VolumeDiscount> builder);
     }
 
 

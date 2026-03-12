@@ -31,7 +31,15 @@ namespace Efrpg
         /// <summary>
         /// Optional: Additional namespace(s) required for the PropertyType.
         /// Multiple namespaces can be separated by semicolons.
+        /// The namespace is scoped to the POCO and configuration files for this table only.
         /// </summary>
         public string AdditionalNamespace;
+
+        /// <summary>
+        /// Optional: When true, suppresses the generated builder.Property(...) fluent configuration
+        /// for this column. Use this when you are configuring the column yourself in a partial class
+        /// (e.g. using OwnsMany/ToJson), to avoid the "property can only be configured once" runtime error.
+        /// </summary>
+        public bool ExcludePropertyConfiguration;
     }
 }

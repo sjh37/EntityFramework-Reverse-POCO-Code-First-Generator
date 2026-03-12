@@ -225,7 +225,10 @@ namespace BuildTT
         //    Table = ""Orders"", 
         //    Column = ""ShippingAddress"", 
         //    PropertyType = ""Address"",
-        //    AdditionalNamespace = ""MyApp.Models"" // Optional: Add namespace if needed
+        //    AdditionalNamespace = ""MyApp.Models"", // Optional: Add namespace if needed
+        //    ExcludePropertyConfiguration = false  // Optional: When true, suppresses the generated builder.Property(...) fluent configuration.
+        //                                             for this column. Use this when you are configuring the column yourself in a partial class
+        //                                             (e.g. using OwnsMany/ToJson), to avoid the ""property can only be configured once"" runtime error.
         //});
 
         // Map all columns named ""Metadata"" across all tables to a specific type
@@ -236,6 +239,7 @@ namespace BuildTT
         //    Column = ""Metadata"", 
         //    PropertyType = ""Dictionary<string, object>"",
         //    AdditionalNamespace = ""System.Collections.Generic"" // Optional
+        //    ExcludePropertyConfiguration = false               // Optional: When true, suppresses the generated builder.Property(...) fluent configuration.
         //});
 
         // Map to a complex type with generics
@@ -246,6 +250,7 @@ namespace BuildTT
         //    Column = ""Tags"", 
         //    PropertyType = ""List<string>"",
         //    AdditionalNamespace = ""System.Collections.Generic""
+        //    ExcludePropertyConfiguration = false               // Optional: When true, suppresses the generated builder.Property(...) fluent configuration.
         //});
 
         // Map to a custom class with full namespace
@@ -255,6 +260,7 @@ namespace BuildTT
         //    Table = ""Users"", 
         //    Column = ""Preferences"", 
         //    PropertyType = ""MyApp.Models.UserPreferences"" // Fully qualified type name
+        //    ExcludePropertyConfiguration = false          // Optional: When true, suppresses the generated builder.Property(...) fluent configuration.
         //});
     };
 

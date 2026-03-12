@@ -601,6 +601,7 @@ namespace Efrpg.Generators
 
             var co = new CodeOutput(table.DbName, filename, null, Settings.PocoFolder, _globalUsings);
             co.AddUsings(_template.PocoUsings(data));
+            co.AddUsings(table.AdditionalNamespaces);
             co.AddCode(Template.Transform(_template.Poco(), data));
             return co;
         }
@@ -667,6 +668,7 @@ namespace Efrpg.Generators
 
             var co = new CodeOutput(table.DbName, filename, null, Settings.PocoConfigurationFolder, _globalUsings);
             co.AddUsings(_template.PocoConfigurationUsings(data));
+            co.AddUsings(table.AdditionalNamespaces);
             co.AddCode(Template.Transform(_template.PocoConfiguration(), data));
             return co;
         }
