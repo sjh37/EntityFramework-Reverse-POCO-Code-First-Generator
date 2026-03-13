@@ -516,7 +516,7 @@ namespace V10EfrpgTest
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;MultipleActiveResultSets=True;Encrypt=false;TrustServerCertificate=true", x => x.UseNetTopologySuite().UseHierarchyId());
+                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;MultipleActiveResultSets=True;Encrypt=false;TrustServerCertificate=true", x => x.UseNetTopologySuite().UseHierarchyId().EnableRetryOnFailure(maxRetryCount: 10, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null));
                 optionsBuilder.UseLazyLoadingProxies();
             }
         }

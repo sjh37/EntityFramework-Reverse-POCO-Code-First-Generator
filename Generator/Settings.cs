@@ -21,6 +21,7 @@ namespace Efrpg
         public static bool UseMappingTables                             = false; // Can only be set to true for EF6. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
         public static FileManagerType FileManagerType                   = FileManagerType.EfCore; // .NET Core project = EfCore; .NET 4.x project = VisualStudio; No output (testing only) = Null
         public static string ConnectionString                           = ""; // This is used by the generator to reverse engineer your database
+        public static string ConnectionStringActions                    = ""; // EFCore only. Additional method chain to append to the database provider setup in OnConfiguring. e.g. ".EnableRetryOnFailure(maxRetryCount: 10, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null)"
         public static string ConnectionStringName                       = "MyDbContext"; // ConnectionString key as specified in your app.config/web.config/appsettings.json
         public static string DbContextName                              = "MyDbContext"; // Class name for the DbContext to be generated.
         public static bool GenerateSeparateFiles                        = false;

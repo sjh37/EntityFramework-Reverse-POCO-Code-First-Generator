@@ -47,6 +47,7 @@
         public static bool UseMappingTables                             = false; // Can only be set to true for EF6. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
         public static FileManagerType FileManagerType                   = FileManagerType.EfCore; // .NET Core project = EfCore; .NET 4.x project = VisualStudio; No output (testing only) = Null
         public static string ConnectionString                           = ""; // This is used by the generator to reverse engineer your database
+        public static string ConnectionStringActions                    = ""; // EFCore only. Additional method chain to append to the database provider setup in OnConfiguring. e.g. ".EnableRetryOnFailure(maxRetryCount: 10, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null)"
         public static string ConnectionStringName                       = "MyDbContext"; // ConnectionString key as specified in your app.config/web.config/appsettings.json
         public static string DbContextName                              = "MyDbContext"; // Class name for the DbContext to be generated.
         public static bool GenerateSeparateFiles                        = false;
@@ -4052,13 +4053,18 @@
             if (Settings.IsEf6())
                 return string.Empty;
 
-            if (!hasSpatialTypes && !hasHierarchyIdType)
-                return string.Empty;
+            var body = string.Empty;
 
             if (hasSpatialTypes && hasHierarchyIdType)
-                return ", x => x.UseNetTopologySuite().UseHierarchyId()";
+                body = ".UseNetTopologySuite().UseHierarchyId()";
+            else if (hasSpatialTypes)
+                body = ".UseNetTopologySuite()";
+            else if (hasHierarchyIdType)
+                body = ".UseHierarchyId()";
 
-            return hasSpatialTypes ? ", x => x.UseNetTopologySuite()" : ", x => x.UseHierarchyId()";
+            body += Settings.ConnectionStringActions ?? string.Empty;
+
+            return string.IsNullOrEmpty(body) ? string.Empty : ", x => x" + body;
         }
 
         private static string GetPropertyInitialiser(Column col)

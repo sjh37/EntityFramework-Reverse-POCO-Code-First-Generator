@@ -381,13 +381,18 @@ namespace Efrpg.Generators
             if (Settings.IsEf6())
                 return string.Empty;
 
-            if (!hasSpatialTypes && !hasHierarchyIdType)
-                return string.Empty;
+            var body = string.Empty;
 
             if (hasSpatialTypes && hasHierarchyIdType)
-                return ", x => x.UseNetTopologySuite().UseHierarchyId()";
+                body = ".UseNetTopologySuite().UseHierarchyId()";
+            else if (hasSpatialTypes)
+                body = ".UseNetTopologySuite()";
+            else if (hasHierarchyIdType)
+                body = ".UseHierarchyId()";
 
-            return hasSpatialTypes ? ", x => x.UseNetTopologySuite()" : ", x => x.UseHierarchyId()";
+            body += Settings.ConnectionStringActions ?? string.Empty;
+
+            return string.IsNullOrEmpty(body) ? string.Empty : ", x => x" + body;
         }
 
         private static string GetPropertyInitialiser(Column col)

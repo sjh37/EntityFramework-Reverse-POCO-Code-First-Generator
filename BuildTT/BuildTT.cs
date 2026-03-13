@@ -33,6 +33,7 @@ namespace BuildTT
 
     Settings.FileManagerType         = FileManagerType.EfCore; // .NET Core project = EfCore; .NET 4.x project = VisualStudio; No output (testing only) = Null
     Settings.ConnectionString        = ""Data Source=(local);Initial Catalog=**TODO**;Integrated Security=True;MultipleActiveResultSets=True;Encrypt=false;TrustServerCertificate=true""; // This is used by the generator to reverse engineer your database
+    Settings.ConnectionStringActions = """"; // EFCore only. Additional method chain to append to the database provider setup in OnConfiguring. e.g. "".EnableRetryOnFailure(maxRetryCount: 10, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null)""
     Settings.ConnectionStringName    = ""MyDbContext""; // ConnectionString key as specified in your app.config/web.config/appsettings.json. Not used by the generator, but is placed into the generated DbContext constructor.
     Settings.DbContextName           = ""MyDbContext""; // Class name for the DbContext to be generated.
     //Settings.DbContextInterfaceName= ""IMyDbContext""; // Defaults to ""I"" + DbContextName or set string empty to not implement any interface.
