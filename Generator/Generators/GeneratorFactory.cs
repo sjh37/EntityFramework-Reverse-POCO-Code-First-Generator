@@ -36,7 +36,18 @@ namespace Efrpg.Generators
             try
             {
                 providerName = DatabaseProvider.GetProvider(Settings.DatabaseType);
-                var factory = DbProviderFactories.GetFactory(providerName);
+                DbProviderFactory factory;
+                try
+                {
+                    factory = DbProviderFactories.GetFactory(providerName);
+                }
+                catch when (providerName == "Microsoft.Data.SqlClient")
+                {
+                    // Microsoft.Data.SqlClient not registered in this environment (e.g. test runner).
+                    // Fall back to System.Data.SqlClient which is built into .NET Framework.
+                    providerName = "System.Data.SqlClient";
+                    factory = DbProviderFactories.GetFactory(providerName);
+                }
                 var databaseReader = DatabaseReaderFactory.Create(factory);
                 generator.Init(databaseReader, singleDbContextSubNamespace);
                 return generator;
