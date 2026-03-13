@@ -504,7 +504,7 @@ namespace V8_Efrpg_Test
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;Application Name=EntityFramework Reverse POCO Generator", x => x.UseNetTopologySuite().UseHierarchyId());
+                optionsBuilder.UseSqlServer(@"Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;Encrypt=false;TrustServerCertificate=true;Application Name=EntityFramework Reverse POCO Generator", x => x.UseNetTopologySuite().UseHierarchyId());
                 optionsBuilder.UseLazyLoadingProxies();
             }
         }

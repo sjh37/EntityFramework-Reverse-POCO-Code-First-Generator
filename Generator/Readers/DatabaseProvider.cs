@@ -14,7 +14,7 @@ namespace Efrpg.Readers
             switch (databaseType)
             {
                 case DatabaseType.SqlServer:
-                    return "System.Data.SqlClient";
+                    return "Microsoft.Data.SqlClient";
 
                 case DatabaseType.SqlCe:
                     return "System.Data.SqlServerCe.4.0";

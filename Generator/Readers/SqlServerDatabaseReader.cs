@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -1153,14 +1152,15 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
         public override void ReadStoredProcReturnObjects(List<StoredProcedure> procs)
         {
-            using (var sqlConnection = new SqlConnection(Settings.ConnectionString))
+            using (var sqlConnection = _factory.CreateConnection())
             {
+                sqlConnection.ConnectionString = Settings.ConnectionString;
                 foreach (var sp in procs.Where(x => !x.IsScalarValuedFunction))
                     ReadStoredProcReturnObject(sqlConnection, sp);
             }
         }
 
-        private void ReadStoredProcReturnObject(SqlConnection sqlConnection, StoredProcedure proc)
+        private void ReadStoredProcReturnObject(DbConnection sqlConnection, StoredProcedure proc)
         {
             try
             {
@@ -1212,8 +1212,12 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 sb.AppendLine("SET FMTONLY OFF; SET FMTONLY OFF;");
 
                 var ds = new DataSet();
-                using (var sqlAdapter = new SqlDataAdapter(sb.ToString(), sqlConnection))
+                using (var sqlAdapter = _factory.CreateDataAdapter())
                 {
+                    var cmd = _factory.CreateCommand();
+                    cmd.CommandText = sb.ToString();
+                    cmd.Connection = sqlConnection;
+                    sqlAdapter.SelectCommand = cmd;
                     try
                     {
                         if (sqlConnection.State != ConnectionState.Open)
