@@ -896,7 +896,7 @@ namespace Azure10
             builder.Property(x => x.VatRate).HasColumnName(@"VatRate").HasColumnType("decimal(9,5)").HasPrecision(9,5).IsRequired(false);
             builder.Property(x => x.Published).HasColumnName(@"Published").HasColumnType("bit").IsRequired();
             builder.Property(x => x.DisplayOrder).HasColumnName(@"DisplayOrder").HasColumnType("int").IsRequired();
-            builder.Property(x => x.InEurope).HasColumnName(@"InEurope").HasColumnType("bit").IsRequired();
+            builder.Property(x => x.InEurope).HasColumnName(@"InEurope").HasColumnType("bit").IsRequired().HasDefaultValueSql(@"CONVERT([bit],(0))");
 
             builder.HasIndex(x => new { x.DisplayOrder, x.Name }).HasDatabaseName("IX_Country_DisplayOrder_Name");
 
@@ -1046,10 +1046,10 @@ namespace Azure10
             builder.Property(x => x.SubTotal).HasColumnName(@"SubTotal").HasColumnType("decimal(19,4)").HasPrecision(19,4).IsRequired();
             builder.Property(x => x.VatTotal).HasColumnName(@"VatTotal").HasColumnType("decimal(19,4)").HasPrecision(19,4).IsRequired();
             builder.Property(x => x.Total).HasColumnName(@"Total").HasColumnType("decimal(19,4)").HasPrecision(19,4).IsRequired();
-            builder.Property(x => x.UkVatRate).HasColumnName(@"UkVatRate").HasColumnType("decimal(9,5)").HasPrecision(9,5).IsRequired();
-            builder.Property(x => x.ReverseChargeVatTotal).HasColumnName(@"ReverseChargeVatTotal").HasColumnType("decimal(19,4)").HasPrecision(19,4).IsRequired();
-            builder.Property(x => x.NotificationsComplete).HasColumnName(@"NotificationsComplete").HasColumnType("bit").IsRequired();
-            builder.Property(x => x.Status).HasColumnName(@"Status").HasColumnType("tinyint").IsRequired();
+            builder.Property(x => x.UkVatRate).HasColumnName(@"UkVatRate").HasColumnType("decimal(9,5)").HasPrecision(9,5).IsRequired().HasDefaultValueSql(@"0.2");
+            builder.Property(x => x.ReverseChargeVatTotal).HasColumnName(@"ReverseChargeVatTotal").HasColumnType("decimal(19,4)").HasPrecision(19,4).IsRequired().HasDefaultValueSql(@"0.0");
+            builder.Property(x => x.NotificationsComplete).HasColumnName(@"NotificationsComplete").HasColumnType("bit").IsRequired().HasDefaultValueSql(@"CONVERT([bit],(0))");
+            builder.Property(x => x.Status).HasColumnName(@"Status").HasColumnType("tinyint").IsRequired().HasDefaultValueSql(@"CONVERT([tinyint],(0))");
             builder.Property(x => x.PaymentReceivedDate).HasColumnName(@"PaymentReceivedDate").HasColumnType("datetime2").IsRequired(false);
             builder.Property(x => x.DisbursementDate).HasColumnName(@"DisbursementDate").HasColumnType("datetime2").IsRequired(false);
             builder.Property(x => x.DisbursementId).HasColumnName(@"DisbursementId").HasColumnType("varchar(40)").IsRequired(false).IsUnicode(false).HasMaxLength(40);
@@ -1095,8 +1095,8 @@ namespace Azure10
             builder.Property(x => x.SubTotal).HasColumnName(@"SubTotal").HasColumnType("decimal(19,4)").HasPrecision(19,4).IsRequired();
             builder.Property(x => x.Vat).HasColumnName(@"Vat").HasColumnType("decimal(19,4)").HasPrecision(19,4).IsRequired();
             builder.Property(x => x.Total).HasColumnName(@"Total").HasColumnType("decimal(19,4)").HasPrecision(19,4).IsRequired();
-            builder.Property(x => x.Notify30DaysComplete).HasColumnName(@"Notify30DaysComplete").HasColumnType("bit").IsRequired();
-            builder.Property(x => x.Notify7DaysComplete).HasColumnName(@"Notify7DaysComplete").HasColumnType("bit").IsRequired();
+            builder.Property(x => x.Notify30DaysComplete).HasColumnName(@"Notify30DaysComplete").HasColumnType("bit").IsRequired().HasDefaultValueSql(@"CONVERT([bit],(0))");
+            builder.Property(x => x.Notify7DaysComplete).HasColumnName(@"Notify7DaysComplete").HasColumnType("bit").IsRequired().HasDefaultValueSql(@"CONVERT([bit],(0))");
 
             // Foreign keys
             builder.HasOne(a => a.LicenceType).WithMany(b => b.OrderItems).HasForeignKey(c => c.LicenceTypeId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_OrderItem_LicenceType_LicenceTypeId");

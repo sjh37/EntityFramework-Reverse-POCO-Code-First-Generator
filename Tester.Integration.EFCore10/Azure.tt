@@ -126,12 +126,13 @@ using System.Collections.Generic;
     Settings.IncludeConnectionSettingComments = false; // Add comments describing connection settings used to generate file
     Settings.IncludeCodeGeneratedAttribute    = false; // If true, will include the [GeneratedCode] attribute before classes, false to remove it.
     Settings.IncludeColumnsWithDefaults       = true;  // If true, will set properties to the default value from the database.
+    Settings.GenerateHasDefaultValueSql       = true; // EFCore only. If true, will emit .HasDefaultValueSql() in the entity configuration for columns with a SQL default, making defaults queryable via EF model reflection.
 
-    // Enumerations ***********************************************************************************************************************
-    // Create enumerations from database tables
-    // List the enumeration tables you want read and generated for
-    // Also look at the AddEnum callback below to add your own during reverse generation of tables.
-    Settings.Enumerations = new List<EnumerationSettings>
+// Enumerations ***********************************************************************************************************************
+// Create enumerations from database tables
+// List the enumeration tables you want read and generated for
+// Also look at the AddEnum callback below to add your own during reverse generation of tables.
+Settings.Enumerations = new List<EnumerationSettings>
     {
         // Example
         /*new EnumerationSettings

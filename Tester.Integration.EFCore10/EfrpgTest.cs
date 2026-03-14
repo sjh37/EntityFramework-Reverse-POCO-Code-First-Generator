@@ -5822,7 +5822,7 @@ namespace V10EfrpgTest
             builder.HasKey(x => x.Id).HasName("PK_AB_OrdersAB").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Added).HasColumnName(@"added").HasColumnType("datetime").IsRequired();
+            builder.Property(x => x.Added).HasColumnName(@"added").HasColumnType("datetime").IsRequired().HasDefaultValueSql(@"getdate()");
         }
     }
 
@@ -6229,7 +6229,7 @@ namespace V10EfrpgTest
             builder.ToTable("CodeObject", "dbo");
             builder.HasKey(x => x.CodeObjectNo).HasName("aaaaaObject_PK");
 
-            builder.Property(x => x.CodeObjectNo).HasColumnName(@"codeObjectNo").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.CodeObjectNo).HasColumnName(@"codeObjectNo").HasColumnType("int").IsRequired().ValueGeneratedNever().HasDefaultValueSql(@"0");
             builder.Property(x => x.ApplicationNo).HasColumnName(@"applicationNo").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.Type).HasColumnName(@"type").HasColumnType("int").IsRequired();
             builder.Property(x => x.EName).HasColumnName(@"eName").HasColumnType("nvarchar(250)").IsRequired().HasMaxLength(250);
@@ -6237,7 +6237,7 @@ namespace V10EfrpgTest
             builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
             builder.Property(x => x.CodeName).HasColumnName(@"codeName").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
             builder.Property(x => x.Note).HasColumnName(@"note").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
-            builder.Property(x => x.IsObject).HasColumnName(@"isObject").HasColumnType("bit").IsRequired();
+            builder.Property(x => x.IsObject).HasColumnName(@"isObject").HasColumnType("bit").IsRequired().HasDefaultValueSql(@"0");
             builder.Property(x => x.VersionNumber).HasColumnName(@"versionNumber").HasColumnType("timestamp(8)").IsRequired(false).IsFixedLength().HasMaxLength(8).IsRowVersion().IsConcurrencyToken();
         }
     }
@@ -6291,17 +6291,17 @@ namespace V10EfrpgTest
             builder.Property(x => x.Abc4792).HasColumnName(@"abc/\").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.JoeBloggs).HasColumnName(@"joe.bloggs").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.SimonHughes).HasColumnName(@"simon-hughes").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
-            builder.Property(x => x.SomeDate).HasColumnName(@"someDate").HasColumnType("datetime2").IsRequired();
-            builder.Property(x => x.Obs).HasColumnName(@"Obs").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);
-            builder.Property(x => x.Obs1).HasColumnName(@"Obs1").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);
-            builder.Property(x => x.Obs2).HasColumnName(@"Obs2").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);
-            builder.Property(x => x.Obs3).HasColumnName(@"Obs3").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);
+            builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20).HasDefaultValueSql(@"space((0))");
+            builder.Property(x => x.SomeDate).HasColumnName(@"someDate").HasColumnType("datetime2").IsRequired().HasDefaultValueSql(@"getdate()");
+            builder.Property(x => x.Obs).HasColumnName(@"Obs").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50).HasDefaultValueSql(@"'[{"k":"en","v":""},{"k":"pt","v":""}]'");
+            builder.Property(x => x.Obs1).HasColumnName(@"Obs1").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50).HasDefaultValueSql(@"'\'");
+            builder.Property(x => x.Obs2).HasColumnName(@"Obs2").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50).HasDefaultValueSql(@"'\\'");
+            builder.Property(x => x.Obs3).HasColumnName(@"Obs3").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50).HasDefaultValueSql(@"'\\\'");
             builder.Property(x => x.@Static).HasColumnName(@"static").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.@Readonly).HasColumnName(@"readonly").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.C123Hi).HasColumnName(@"123Hi").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.Areal).HasColumnName(@"areal").HasColumnType("real").IsRequired(false);
-            builder.Property(x => x.Afloat).HasColumnName(@"afloat").HasColumnType("float").HasPrecision(53).IsRequired(false);
+            builder.Property(x => x.Areal).HasColumnName(@"areal").HasColumnType("real").IsRequired(false).HasDefaultValueSql(@"1.23");
+            builder.Property(x => x.Afloat).HasColumnName(@"afloat").HasColumnType("float").HasPrecision(53).IsRequired(false).HasDefaultValueSql(@"999.");
             builder.Property(x => x.Afloat8).HasColumnName(@"afloat8").HasColumnType("real").IsRequired(false);
             builder.Property(x => x.Afloat20).HasColumnName(@"afloat20").HasColumnType("real").IsRequired(false);
             builder.Property(x => x.Afloat24).HasColumnName(@"afloat24").HasColumnType("real").IsRequired(false);
@@ -6368,7 +6368,7 @@ namespace V10EfrpgTest
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.CreatedDate).HasColumnName(@"CreatedDate").HasColumnType("datetimeoffset").IsRequired(false);
+            builder.Property(x => x.CreatedDate).HasColumnName(@"CreatedDate").HasColumnType("datetimeoffset").IsRequired(false).HasDefaultValueSql(@"getdate()");
         }
     }
 
@@ -6433,10 +6433,10 @@ namespace V10EfrpgTest
             builder.HasKey(x => x.Id).HasName("PK_DSOpe").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.DecimalDefault).HasColumnName(@"decimal_default").HasColumnType("decimal(15,2)").HasPrecision(15,2).IsRequired();
-            builder.Property(x => x.MyGuid).HasColumnName(@"MyGuid").HasColumnType("uniqueidentifier").IsRequired();
+            builder.Property(x => x.DecimalDefault).HasColumnName(@"decimal_default").HasColumnType("decimal(15,2)").HasPrecision(15,2).IsRequired().HasDefaultValueSql(@"99.99");
+            builder.Property(x => x.MyGuid).HasColumnName(@"MyGuid").HasColumnType("uniqueidentifier").IsRequired().HasDefaultValueSql(@"'9B7E1F67-5A81-4277-BC7D-06A3262A5C70'");
             builder.Property(x => x.@Default).HasColumnName(@"default").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);
-            builder.Property(x => x.MyGuidBadDefault).HasColumnName(@"MyGuidBadDefault").HasColumnType("uniqueidentifier").IsRequired(false);
+            builder.Property(x => x.MyGuidBadDefault).HasColumnName(@"MyGuidBadDefault").HasColumnType("uniqueidentifier").IsRequired(false).HasDefaultValueSql(@"NULL");
         }
     }
 
@@ -6491,7 +6491,7 @@ namespace V10EfrpgTest
             builder.HasKey(x => x.Id).HasName("PK_EnumWithDefaultValue").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.SomeEnum).HasColumnName(@"SomeEnum").HasColumnType("int").IsRequired();
+            builder.Property(x => x.SomeEnum).HasColumnName(@"SomeEnum").HasColumnType("int").IsRequired().HasDefaultValueSql(@"1");
         }
     }
 
@@ -6586,7 +6586,7 @@ namespace V10EfrpgTest
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.OtherId).HasColumnName(@"otherID").HasColumnType("int").IsRequired();
-            builder.Property(x => x.Added).HasColumnName(@"added").HasColumnType("datetime").IsRequired();
+            builder.Property(x => x.Added).HasColumnName(@"added").HasColumnType("datetime").IsRequired().HasDefaultValueSql(@"getdate()");
 
             // Foreign keys
             builder.HasOne(a => a.Header).WithMany(b => b.Footers).HasForeignKey(c => new { c.Id, c.OtherId }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("fooderFK");
@@ -6680,7 +6680,7 @@ namespace V10EfrpgTest
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.AnotherId).HasColumnName(@"anotherID").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.Added).HasColumnName(@"added").HasColumnType("datetime").IsRequired();
+            builder.Property(x => x.Added).HasColumnName(@"added").HasColumnType("datetime").IsRequired().HasDefaultValueSql(@"getdate()");
         }
     }
 
@@ -6995,7 +6995,7 @@ namespace V10EfrpgTest
             builder.HasKey(x => x.Id).HasName("PK_SmallDecimalTest").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.KoeffVed).HasColumnName(@"KoeffVed").HasColumnType("decimal(4,4)").HasPrecision(4,4).IsRequired(false);
+            builder.Property(x => x.KoeffVed).HasColumnName(@"KoeffVed").HasColumnType("decimal(4,4)").HasPrecision(4,4).IsRequired(false).HasDefaultValueSql(@"0.5");
         }
     }
 
@@ -7265,7 +7265,7 @@ namespace V10EfrpgTest
             builder.HasKey(x => x.Id).HasName("PK_tblOrders").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Added).HasColumnName(@"added").HasColumnType("datetime").IsRequired();
+            builder.Property(x => x.Added).HasColumnName(@"added").HasColumnType("datetime").IsRequired().HasDefaultValueSql(@"getdate()");
         }
     }
 
@@ -7415,7 +7415,7 @@ namespace V10EfrpgTest
             builder.ToTable("Token", "dbo");
             builder.HasKey(x => x.Id).HasName("PK_Token").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("uniqueidentifier").IsRequired().ValueGeneratedOnAdd();
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("uniqueidentifier").IsRequired().ValueGeneratedOnAdd().HasDefaultValueSql(@"newsequentialid()");
             builder.Property(x => x.Enabled).HasColumnName(@"Enabled").HasColumnType("bit").IsRequired();
         }
     }

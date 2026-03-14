@@ -121,7 +121,8 @@
         public static bool ShowLicenseInfo                     = false; // If true, will add the licence info comment to the top of each file
         public static bool IncludeConnectionSettingComments    = false; // Add comments describing connection settings used to generate file
         public static bool IncludeCodeGeneratedAttribute       = false; // If true, will include the [GeneratedCode] attribute before classes, false to remove it.
-        public static bool IncludeColumnsWithDefaults          = true;  // If true, will set properties to the default value from the database.ro
+        public static bool IncludeColumnsWithDefaults          = true;  // If true, will set properties to the default value from the database.
+        public static bool GenerateHasDefaultValueSql          = false; // EFCore only. If true, will emit .HasDefaultValueSql() in the entity configuration for all columns that have a SQL default, making defaults queryable via EF model reflection.
 
         // Create enumerations from database tables
         // List the enumeration tables you want read and generated for
@@ -1411,7 +1412,8 @@
 
         public int DateTimePrecision;
         public string Default;
-        public string HasDefaultValueSql;
+        public string HasDefaultValueSql; // Set for sequence defaults (NEXT VALUE FOR); always emitted in config
+        public string DefaultSql;         // Raw SQL default (brackets removed) for regular defaults; emitted when Settings.GenerateHasDefaultValueSql = true
         public int MaxLength;
         public int Precision;
         public int Ordinal;
@@ -1546,6 +1548,9 @@
                 !Default.Equals("NULL", StringComparison.InvariantCultureIgnoreCase))
                 Default = Default.Substring(1, Default.Length - 1);
 
+            // Save raw SQL default (brackets and unicode prefix removed) before C# conversion
+            DefaultSql = Default.Trim();
+
             if (Default.First() == '\'' && Default.Last() == '\'' && Default.Length >= 2)
                 Default = string.Format("\"{0}\"", Default.Substring(1, Default.Length - 2));
 
@@ -1595,6 +1600,7 @@
                 case "system.data.entity.spatial.dbgeometry":
                 case "nettopologysuite.geometries.point":
                 case "nettopologysuite.geometries.geometry":
+                    DefaultSql = string.Empty;
                     Default = string.Empty;
                     break;
             }
@@ -1602,6 +1608,7 @@
             // Ignore defaults we cannot interpret (we would need SQL to C# compiler)
             if (lower.StartsWith("create default"))
             {
+                DefaultSql = string.Empty;
                 Default = string.Empty;
                 return;
             }
@@ -1710,7 +1717,10 @@
                     if (lower.StartsWith("space("))
                         Default = "\"\"";
                     if (lower == "null")
+                    {
+                        DefaultSql = string.Empty;
                         Default = string.Empty;
+                    }
                     break;
 
                 case "guid":
@@ -6693,6 +6703,8 @@
 
             if (hasDefaultValueSql)
                 sb.AppendFormat(".HasDefaultValueSql(@\"{0}\")", c.HasDefaultValueSql);
+            else if (Settings.GenerateHasDefaultValueSql && !string.IsNullOrEmpty(c.DefaultSql))
+                sb.AppendFormat(".HasDefaultValueSql(@\"{0}\")", c.DefaultSql);
 
             var config = sb.ToString();
             if (!string.IsNullOrEmpty(config) && !c.ExcludePropertyConfiguration)
@@ -6890,7 +6902,18 @@
             try
             {
                 providerName = DatabaseProvider.GetProvider(Settings.DatabaseType);
-                var factory = DbProviderFactories.GetFactory(providerName);
+                DbProviderFactory factory;
+                try
+                {
+                    factory = DbProviderFactories.GetFactory(providerName);
+                }
+                catch when (providerName == "Microsoft.Data.SqlClient")
+                {
+                    // Microsoft.Data.SqlClient not registered in this environment (e.g. test runner).
+                    // Fall back to System.Data.SqlClient which is built into .NET Framework.
+                    providerName = "System.Data.SqlClient";
+                    factory = DbProviderFactories.GetFactory(providerName);
+                }
                 var databaseReader = DatabaseReaderFactory.Create(factory);
                 generator.Init(databaseReader, singleDbContextSubNamespace);
                 return generator;

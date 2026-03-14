@@ -161,6 +161,8 @@ namespace Efrpg.Generators
 
             if (hasDefaultValueSql)
                 sb.AppendFormat(".HasDefaultValueSql(@\"{0}\")", c.HasDefaultValueSql);
+            else if (Settings.GenerateHasDefaultValueSql && !string.IsNullOrEmpty(c.DefaultSql))
+                sb.AppendFormat(".HasDefaultValueSql(@\"{0}\")", c.DefaultSql);
 
             var config = sb.ToString();
             if (!string.IsNullOrEmpty(config) && !c.ExcludePropertyConfiguration)

@@ -96,7 +96,8 @@ namespace Efrpg
         public static bool ShowLicenseInfo                     = false; // If true, will add the licence info comment to the top of each file
         public static bool IncludeConnectionSettingComments    = false; // Add comments describing connection settings used to generate file
         public static bool IncludeCodeGeneratedAttribute       = false; // If true, will include the [GeneratedCode] attribute before classes, false to remove it.
-        public static bool IncludeColumnsWithDefaults          = true;  // If true, will set properties to the default value from the database.ro
+        public static bool IncludeColumnsWithDefaults          = true;  // If true, will set properties to the default value from the database.
+        public static bool GenerateHasDefaultValueSql          = false; // EFCore only. If true, will emit .HasDefaultValueSql() in the entity configuration for all columns that have a SQL default, making defaults queryable via EF model reflection.
 
         // Create enumerations from database tables
         // List the enumeration tables you want read and generated for

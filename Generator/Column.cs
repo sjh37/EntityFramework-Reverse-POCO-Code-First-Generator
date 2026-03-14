@@ -21,7 +21,8 @@ namespace Efrpg
 
         public int DateTimePrecision;
         public string Default;
-        public string HasDefaultValueSql;
+        public string HasDefaultValueSql; // Set for sequence defaults (NEXT VALUE FOR); always emitted in config
+        public string DefaultSql;         // Raw SQL default (brackets removed) for regular defaults; emitted when Settings.GenerateHasDefaultValueSql = true
         public int MaxLength;
         public int Precision;
         public int Ordinal;
@@ -156,6 +157,9 @@ namespace Efrpg
                 !Default.Equals("NULL", StringComparison.InvariantCultureIgnoreCase))
                 Default = Default.Substring(1, Default.Length - 1);
 
+            // Save raw SQL default (brackets and unicode prefix removed) before C# conversion
+            DefaultSql = Default.Trim();
+
             if (Default.First() == '\'' && Default.Last() == '\'' && Default.Length >= 2)
                 Default = string.Format("\"{0}\"", Default.Substring(1, Default.Length - 2));
 
@@ -205,6 +209,7 @@ namespace Efrpg
                 case "system.data.entity.spatial.dbgeometry":
                 case "nettopologysuite.geometries.point":
                 case "nettopologysuite.geometries.geometry":
+                    DefaultSql = string.Empty;
                     Default = string.Empty;
                     break;
             }
@@ -212,6 +217,7 @@ namespace Efrpg
             // Ignore defaults we cannot interpret (we would need SQL to C# compiler)
             if (lower.StartsWith("create default"))
             {
+                DefaultSql = string.Empty;
                 Default = string.Empty;
                 return;
             }
@@ -320,7 +326,10 @@ namespace Efrpg
                     if (lower.StartsWith("space("))
                         Default = "\"\"";
                     if (lower == "null")
+                    {
+                        DefaultSql = string.Empty;
                         Default = string.Empty;
+                    }
                     break;
 
                 case "guid":

@@ -145,6 +145,7 @@ namespace BuildTT
     Settings.IncludeConnectionSettingComments    = false; // Add comments describing connection settings used to generate file
     Settings.IncludeCodeGeneratedAttribute       = false; // If true, will include the [GeneratedCode] attribute before classes, false to remove it.
     Settings.IncludeColumnsWithDefaults          = true;  // If true, will set properties to the default value from the database.
+    Settings.GenerateHasDefaultValueSql          = false; // EFCore only. If true, will emit .HasDefaultValueSql() in the entity configuration for columns with a SQL default, making defaults queryable via EF model reflection.
 
     // Enumerations ***********************************************************************************************************************
     // Create enumerations from database tables
