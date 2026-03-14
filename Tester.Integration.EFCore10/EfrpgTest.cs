@@ -6293,7 +6293,7 @@ namespace V10EfrpgTest
             builder.Property(x => x.SimonHughes).HasColumnName(@"simon-hughes").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20).HasDefaultValueSql(@"space((0))");
             builder.Property(x => x.SomeDate).HasColumnName(@"someDate").HasColumnType("datetime2").IsRequired().HasDefaultValueSql(@"getdate()");
-            builder.Property(x => x.Obs).HasColumnName(@"Obs").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50).HasDefaultValueSql(@"'[{"k":"en","v":""},{"k":"pt","v":""}]'");
+            builder.Property(x => x.Obs).HasColumnName(@"Obs").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50).HasDefaultValueSql(@"'[{""k"":""en"",""v"":""""},{""k"":""pt"",""v"":""""}]'");
             builder.Property(x => x.Obs1).HasColumnName(@"Obs1").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50).HasDefaultValueSql(@"'\'");
             builder.Property(x => x.Obs2).HasColumnName(@"Obs2").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50).HasDefaultValueSql(@"'\\'");
             builder.Property(x => x.Obs3).HasColumnName(@"Obs3").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50).HasDefaultValueSql(@"'\\\'");

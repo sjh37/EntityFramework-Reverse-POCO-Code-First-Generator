@@ -6702,9 +6702,9 @@
                 sb.Append(databaseGeneratedOption);
 
             if (hasDefaultValueSql)
-                sb.AppendFormat(".HasDefaultValueSql(@\"{0}\")", c.HasDefaultValueSql);
+                sb.AppendFormat(".HasDefaultValueSql(@\"{0}\")", c.HasDefaultValueSql.Replace("\"", "\"\""));
             else if (Settings.GenerateHasDefaultValueSql && !string.IsNullOrEmpty(c.DefaultSql))
-                sb.AppendFormat(".HasDefaultValueSql(@\"{0}\")", c.DefaultSql);
+                sb.AppendFormat(".HasDefaultValueSql(@\"{0}\")", c.DefaultSql.Replace("\"", "\"\""));
 
             var config = sb.ToString();
             if (!string.IsNullOrEmpty(config) && !c.ExcludePropertyConfiguration)
