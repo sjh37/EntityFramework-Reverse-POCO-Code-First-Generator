@@ -31,10 +31,12 @@ namespace Generator.Tests.Integration
 
         [Test]
         // Legacy
-        [TestCase("EfrpgTest", ".V3TestE1", "MyDbContext", "EfrpgTestDbContext", TemplateType.Ef6, ForeignKeyNamingStrategy.Current)]
-        [TestCase("EfrpgTest", ".V3TestE8", "MyDbContext", "EfrpgTestDbContext", TemplateType.EfCore8, ForeignKeyNamingStrategy.Current)]
+        [TestCase("EfrpgTest", ".V3TestE1", "MyDbContext", "EfrpgTestDbContext", TemplateType.Ef6, ForeignKeyNamingStrategy.Current, false)]
+        [TestCase("EfrpgTest", ".V3TestE8", "MyDbContext", "EfrpgTestDbContext", TemplateType.EfCore8, ForeignKeyNamingStrategy.Current, false)]
+        [TestCase("EfrpgTest", ".V3TestE1Da", "MyDbContext", "EfrpgTestDbContextDa", TemplateType.Ef6, ForeignKeyNamingStrategy.Current, true)]
+        [TestCase("EfrpgTest", ".V3TestE8Da", "MyDbContext", "EfrpgTestDbContextDa", TemplateType.EfCore8, ForeignKeyNamingStrategy.Current, true)]
         public void ReverseEngineerSqlServer(string database, string singleDbContextSubNamespace, string connectionStringName, string dbContextName,
-            TemplateType templateType, ForeignKeyNamingStrategy foreignKeyNamingStrategy)
+            TemplateType templateType, ForeignKeyNamingStrategy foreignKeyNamingStrategy, bool useDataAnnotations)
         {
             // Arrange
             SetupSqlServer(database, connectionStringName, dbContextName, templateType,
@@ -42,6 +44,7 @@ namespace Generator.Tests.Integration
             Settings.GenerateSeparateFiles = false;
             Settings.UseMappingTables = true;
             Settings.TrimCharFields = false;
+            Settings.UseDataAnnotations = useDataAnnotations;
 
             Settings.Enumerations = new List<EnumerationSettings>
             {
@@ -74,10 +77,11 @@ namespace Generator.Tests.Integration
             };
 
             // Act
-            Run(database, singleDbContextSubNamespace, typeof(NullFileManager), null, enumDefinitions);
+            var filename = database + (useDataAnnotations ? "Da" : string.Empty);
+            Run(filename, singleDbContextSubNamespace, typeof(NullFileManager), null, enumDefinitions);
 
             // Assert
-            CompareAgainstTestComparison(database);
+            CompareAgainstTestComparison(filename);
         }
 
         [Test]
@@ -93,6 +97,58 @@ namespace Generator.Tests.Integration
 
             // Act
             const string filename = "NonPascalCased";
+            Run(filename, singleDbContextSubNamespace, typeof(NullFileManager), null);
+
+            // Assert
+            CompareAgainstTestComparison(filename);
+        }
+
+        [Test]
+        [NonParallelizable]
+        [TestCase(TemplateType.EfCore8, ".V9SpacedSp",   false)]
+        [TestCase(TemplateType.EfCore8, ".V9SpacedSpDa", true)]
+        public void SpacedColumnStoredProcedure(TemplateType templateType, string singleDbContextSubNamespace, bool useDataAnnotations)
+        {
+            // Arrange - #721 SP that returns columns whose names contain spaces
+            SetupSqlServer("EfrpgTest", "MyDbContext", "EfrpgTestDbContext", templateType,
+                templateType == TemplateType.Ef6 ? GeneratorType.Ef6 : GeneratorType.EfCore, ForeignKeyNamingStrategy.Current);
+            Settings.GenerateSeparateFiles = false;
+            Settings.UseMappingTables = false;
+            Settings.AddUnitTestingDbContext = false;
+            Settings.UseDataAnnotations = useDataAnnotations;
+
+            FilterSettings.SchemaFilters.Add(new RegexIncludeFilter("dbo.*"));
+            FilterSettings.TableFilters.Add(new RegexIncludeFilter("^$")); // exclude all tables and views
+            FilterSettings.StoredProcedureFilters.Add(new RegexIncludeFilter("stp test space test"));
+
+            // Act
+            var filename = "SpacedColumnSp" + (useDataAnnotations ? "Da" : string.Empty);
+            Run(filename, singleDbContextSubNamespace, typeof(NullFileManager), null);
+
+            // Assert
+            CompareAgainstTestComparison(filename);
+        }
+
+        [Test]
+        [NonParallelizable]
+        [TestCase(TemplateType.EfCore8, ".V9SpacedTvf",   false)]
+        [TestCase(TemplateType.EfCore8, ".V9SpacedTvfDa", true)]
+        public void SpacedColumnTableValuedFunction(TemplateType templateType, string singleDbContextSubNamespace, bool useDataAnnotations)
+        {
+            // Arrange - #721 TVF that returns columns whose names contain spaces
+            SetupSqlServer("EfrpgTest", "MyDbContext", "EfrpgTestDbContext", templateType,
+                templateType == TemplateType.Ef6 ? GeneratorType.Ef6 : GeneratorType.EfCore, ForeignKeyNamingStrategy.Current);
+            Settings.GenerateSeparateFiles = false;
+            Settings.UseMappingTables = false;
+            Settings.AddUnitTestingDbContext = false;
+            Settings.UseDataAnnotations = useDataAnnotations;
+
+            FilterSettings.SchemaFilters.Add(new RegexIncludeFilter("dbo.*"));
+            FilterSettings.TableFilters.Add(new RegexIncludeFilter("^$")); // exclude all tables and views
+            FilterSettings.StoredProcedureFilters.Add(new RegexIncludeFilter("SpacedColumnTvf"));
+
+            // Act
+            var filename = "SpacedColumnTvf" + (useDataAnnotations ? "Da" : string.Empty);
             Run(filename, singleDbContextSubNamespace, typeof(NullFileManager), null);
 
             // Assert

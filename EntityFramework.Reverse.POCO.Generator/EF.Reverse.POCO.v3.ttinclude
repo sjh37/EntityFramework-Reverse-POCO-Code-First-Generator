@@ -3776,6 +3776,15 @@
             else
                 _storedProcs = new List<StoredProcTemplateData>();
 
+            // When not using data annotations, populate fluent HasColumnName mappings for EF Core
+            if (!Settings.UseDataAnnotations && isEfCore && _storedProcs.Count > 0)
+            {
+                var builderCmd = IsEfCore8Plus ? "Entity" : "Query";
+                var spList = filter.StoredProcs.Where(s => s.IsStoredProcedure).OrderBy(x => x.NameHumanCase).ToList();
+                for (var i = 0; i < _storedProcs.Count && i < spList.Count; i++)
+                    _storedProcs[i].ColumnMappings = spList[i].GetReturnColumnMappings(builderCmd, spList[i].WriteStoredProcReturnModelName(_filter));
+            }
+
             if (filter.IncludeTableValuedFunctions)
             {
                 _tableValuedFunctions = filter.StoredProcs
@@ -3810,6 +3819,15 @@
                     .OrderBy(x => x.NameHumanCase)
                     .Select(x => x.WriteStoredProcReturnModelName(_filter))
                     .ToList();
+
+                // When not using data annotations, populate fluent HasColumnName mappings for EF Core TVFs
+                if (!Settings.UseDataAnnotations && isEfCore && _tableValuedFunctions.Count > 0)
+                {
+                    var builderCmd = IsEfCore8Plus ? "Entity" : "Query";
+                    var tvfList = filter.StoredProcs.Where(s => s.IsTableValuedFunction).OrderBy(x => x.NameHumanCase).ToList();
+                    for (var i = 0; i < _tableValuedFunctions.Count && i < tvfList.Count; i++)
+                        _tableValuedFunctions[i].ColumnMappings = tvfList[i].GetReturnColumnMappings(builderCmd, tvfList[i].WriteStoredProcReturnModelName(_filter));
+                }
             }
             else
             {
@@ -5485,8 +5503,6 @@
                         continue;
                     }
 
-                    if (sp.ReturnModels.Any(returnColumns => returnColumns.Any(c => c.ColumnName.Contains(" "))))
-                        continue; // Invalid, ignore stored procedure
 
                     if (sp.IsTableValuedFunction && sp.Parameters.Any(c => c.PropertyType == "DataTable"))
                         continue; // Invalid, ignore
@@ -7095,6 +7111,8 @@
         public string ExecWithNoReturnModel { get; }
         public List<ResultSetResultReaderCommand> ReturnModelResultSetReaderCommand { get; }
         public bool CreateDbSetForReturnModel { get; set; }
+        public List<string> ColumnMappings { get; set; } = new List<string>();
+        public bool HasColumnMappings => ColumnMappings != null && ColumnMappings.Count > 0;
 
         public StoredProcTemplateData(
             bool hasNoReturnModels,
@@ -7193,6 +7211,7 @@
             DbSetPrimaryKeys = string.Join(", ", table.PrimaryKeys.Select(x => "\"" + x.NameHumanCase + "\""));
         }
     }
+
     public class TableValuedFunctionsTemplateData
     {
         public bool SingleReturnModel { get; }
@@ -7212,6 +7231,8 @@
         public string ModelBuilderCommand { get; }
         public string ModelBuilderPostCommand { get; }
         public bool IncludeModelBuilder { get; }
+        public List<string> ColumnMappings { get; set; } = new List<string>();
+        public bool HasColumnMappings => ColumnMappings != null && ColumnMappings.Count > 0;
 
         public TableValuedFunctionsTemplateData(bool singleReturnModel,
             string singleReturnColumnName,
@@ -17874,16 +17895,71 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             return name;
         }
 
+        // Returns true if the string is already a valid C# identifier (no sanitization needed).
+        private static bool IsValidCSharpIdentifier(string name)
+        {
+            if (string.IsNullOrEmpty(name) || char.IsDigit(name[0]))
+                return false;
+            foreach (var c in name)
+                if (!char.IsLetterOrDigit(c) && c != '_')
+                    return false;
+            return true;
+        }
+
+        // Returns a valid C# identifier for a DB return-column name.
+        // Preserves the original name when it is already a valid identifier (restoring pre-fix
+        // behaviour for normal columns). Only applies full sanitization when the name contains
+        // characters that would produce an invalid identifier (e.g. spaces, hyphens).
+        public static string SanitizeReturnColumnName(string rawColumnName)
+        {
+            // Apply JSON_/XML_ GUID replacement first (same as original code)
+            var columnName = Regex.Replace(rawColumnName, "^(?<prefix>JSON|XML)_([0-9A-F]{8}-([0-9A-F]{4}-){3}[0-9A-F]{12})", "${prefix}_Value", RegexOptions.IgnoreCase);
+
+            // If it is already a valid C# identifier, only handle reserved keywords
+            if (IsValidCSharpIdentifier(columnName))
+            {
+                if (DatabaseReader.ReservedKeywords.Contains(columnName))
+                    columnName = "@" + columnName;
+                return columnName;
+            }
+
+            // Column name is not a valid C# identifier (e.g. contains spaces or special chars).
+            // Apply the same sanitization pipeline used for table/view columns.
+            var cleaned = DatabaseReader.CleanUp(columnName);
+            if (string.IsNullOrWhiteSpace(cleaned))
+                cleaned = "Unknown";
+            columnName = (Settings.UsePascalCase ? Inflector.ToTitleCase(cleaned) : cleaned).Replace(" ", string.Empty);
+            if (string.IsNullOrWhiteSpace(columnName))
+                columnName = "Unknown";
+            if (DatabaseReader.ReservedKeywords.Contains(columnName))
+                columnName = "@" + columnName;
+            return columnName;
+        }
+
+        // Returns fluent HasColumnName statements for any return model columns whose C# property
+        // name differs from the DB column name. Used when UseDataAnnotations=false (EF Core only).
+        public List<string> GetReturnColumnMappings(string builderCmd, string returnModelName)
+        {
+            var mappings = new List<string>();
+            if (!ReturnModels.Any()) return mappings;
+            foreach (var col in ReturnModels.First())
+            {
+                var rawName = col.ColumnName;
+                var sanitized = SanitizeReturnColumnName(rawName);
+                var effectiveName = sanitized.TrimStart('@');
+                if (effectiveName != rawName)
+                    mappings.Add(string.Format("modelBuilder.{0}<{1}>().Property(e => e.{2}).HasColumnName(\"{3}\");", builderCmd, returnModelName, sanitized, rawName));
+            }
+            return mappings;
+        }
+
         public string WriteStoredProcReturnColumn(DataColumn col)
         {
-            var columnName = DatabaseReader.ReservedKeywords.Contains(col.ColumnName) ? "@" + col.ColumnName : col.ColumnName;
-
-            // Replace return column name that start with either JSON_ or XML_ with a GUID
-            // This does not change the <columnName> if the regex does not match
-            columnName = Regex.Replace(columnName, "^(?<prefix>JSON|XML)_([0-9A-F]{8}-([0-9A-F]{4}-){3}[0-9A-F]{12})", "${prefix}_Value", RegexOptions.IgnoreCase);
+            var rawColumnName = col.ColumnName;
+            var columnName = SanitizeReturnColumnName(rawColumnName);
 
             var propertyType = WrapTypeIfNullable(ConvertDataColumnType(col.DataType), col);
-            
+
             // Add null-forgiving operator for non-nullable reference types when NRT is enabled
             var nullForgivingOperator = string.Empty;
             if (Settings.NeedsNullForgiving() && !IsNullable(col))
@@ -17893,7 +17969,16 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     nullForgivingOperator = " = null!;";
             }
 
-            return string.Format("public {0} {1} {{ get; set; }}{2}",
+            // When UseDataAnnotations=true and the C# name differs from the DB column name,
+            // add [Column("original")] so EF Core can map the result set column to this property.
+            // When UseDataAnnotations=false, HasColumnName is emitted in OnModelCreating instead.
+            var effectiveName = columnName.TrimStart('@');
+            var columnAttribute = Settings.UseDataAnnotations && effectiveName != rawColumnName
+                ? string.Format("[Column(\"{0}\")]{1}    ", rawColumnName, Environment.NewLine)
+                : string.Empty;
+
+            return string.Format("{0}public {1} {2} {{ get; set; }}{3}",
+                columnAttribute,
                 propertyType,
                 columnName,
                 nullForgivingOperator);
@@ -19964,6 +20049,9 @@ using {{this}};{{#newline}}
                 "System.Collections.Generic"
             };
 
+            if (Settings.UseDataAnnotations)
+                usings.Add("System.ComponentModel.DataAnnotations.Schema");
+
             if (Settings.IncludeCodeGeneratedAttribute)
                 usings.Add("System.CodeDom.Compiler");
 
@@ -20364,6 +20452,11 @@ using {{this}};{{#newline}}
 {{#each storedProcs}}
 {{#if SingleReturnModel}}
         modelBuilder.{{StoredProcModelBuilderCommand}}<{{ReturnModelName}}>(){{StoredProcModelBuilderPostCommand}};{{#newline}}
+{{#if HasColumnMappings}}
+{{#each ColumnMappings}}
+        {{this}}{{#newline}}
+{{/each}}
+{{/if}}
 {{/if}}
 {{/each}}
 {{/if}}
@@ -20374,6 +20467,11 @@ using {{this}};{{#newline}}
 {{#each tableValuedFunctions}}
 {{#if IncludeModelBuilder}}
         modelBuilder.{{ModelBuilderCommand}}<{{ReturnClassName}}>(){{ModelBuilderPostCommand}};{{#newline}}
+{{#if HasColumnMappings}}
+{{#each ColumnMappings}}
+        {{this}}{{#newline}}
+{{/each}}
+{{/if}}
 {{/if}}
 {{/each}}
 {{/if}}
@@ -21654,6 +21752,9 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
                 "System",
                 "System.Collections.Generic"
             };
+
+            if (Settings.UseDataAnnotations)
+                usings.Add("System.ComponentModel.DataAnnotations.Schema");
 
             if (Settings.IncludeCodeGeneratedAttribute)
                 usings.Add("System.CodeDom.Compiler");

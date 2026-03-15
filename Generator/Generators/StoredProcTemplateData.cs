@@ -37,6 +37,8 @@ namespace Efrpg.Generators
         public string ExecWithNoReturnModel { get; }
         public List<ResultSetResultReaderCommand> ReturnModelResultSetReaderCommand { get; }
         public bool CreateDbSetForReturnModel { get; set; }
+        public List<string> ColumnMappings { get; set; } = new List<string>();
+        public bool HasColumnMappings => ColumnMappings != null && ColumnMappings.Count > 0;
 
         public StoredProcTemplateData(
             bool hasNoReturnModels,

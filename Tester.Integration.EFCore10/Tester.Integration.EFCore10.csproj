@@ -65,6 +65,11 @@
         <AutoGen>True</AutoGen>
         <DependentUpon>EfrpgTest.tt</DependentUpon>
       </Compile>
+      <Compile Update="EfrpgTestDataAnnotations.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>EfrpgTestDataAnnotations.tt</DependentUpon>
+      </Compile>
       <Compile Update="Northwind.cs">
         <DesignTime>True</DesignTime>
         <AutoGen>True</AutoGen>
@@ -75,6 +80,13 @@
         <AutoGen>True</AutoGen>
         <DependentUpon>TestSynonymsDatabase.tt</DependentUpon>
       </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="EfrpgTestDataAnnotations.tt">
+        <Generator>TextTemplatingFileGenerator</Generator>
+        <LastGenOutput>EfrpgTestDataAnnotations.cs</LastGenOutput>
+      </None>
     </ItemGroup>
 
 </Project>

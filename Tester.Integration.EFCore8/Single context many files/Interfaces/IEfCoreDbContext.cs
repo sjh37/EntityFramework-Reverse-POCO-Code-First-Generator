@@ -324,6 +324,10 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Interfaces
         List<StpTestReturnModel> StpTest(string strDateFrom, string strDateTo, out bool? retBool, out int procResult);
         // StpTestAsync() cannot be created due to having out parameters, or is relying on the procedure result (List<StpTestReturnModel>)
 
+        List<StpTestSpaceTestReturnModel> StpTestSpaceTest(int? aVal, int? bVal);
+        List<StpTestSpaceTestReturnModel> StpTestSpaceTest(int? aVal, int? bVal, out int procResult);
+        Task<List<StpTestSpaceTestReturnModel>> StpTestSpaceTestAsync(int? aVal, int? bVal, CancellationToken cancellationToken = default(CancellationToken));
+
         List<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTest(string strDateFrom, string strDateTo);
         List<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTest(string strDateFrom, string strDateTo, out int procResult);
         Task<List<StpTestUnderscoreTestReturnModel>> StpTestUnderscoreTestAsync(string strDateFrom, string strDateTo, CancellationToken cancellationToken = default(CancellationToken));
@@ -361,6 +365,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Interfaces
         IQueryable<CsvToIntReturnModel> CsvToInt(string array, string array2); // dbo.CsvToInt
         IQueryable<CustomSchema_CsvToIntWithSchemaReturnModel> CustomSchema_CsvToIntWithSchema(string array, string array2); // CustomSchema.CsvToIntWithSchema
         IQueryable<FFRS_CsvToInt2ReturnModel> FFRS_CsvToInt2(string array, string array2); // FFRS.CsvToInt2
+        IQueryable<SpacedColumnTvfReturnModel> SpacedColumnTvf(int? id); // dbo.SpacedColumnTvf
 
         // Scalar Valued Functions
         decimal UdfNetSale(int? quantity, decimal? listPrice, decimal? discount); // dbo.udfNetSale

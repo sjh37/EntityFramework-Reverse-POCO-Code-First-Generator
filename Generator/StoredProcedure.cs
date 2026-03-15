@@ -411,16 +411,71 @@ namespace Efrpg
             return name;
         }
 
+        // Returns true if the string is already a valid C# identifier (no sanitization needed).
+        private static bool IsValidCSharpIdentifier(string name)
+        {
+            if (string.IsNullOrEmpty(name) || char.IsDigit(name[0]))
+                return false;
+            foreach (var c in name)
+                if (!char.IsLetterOrDigit(c) && c != '_')
+                    return false;
+            return true;
+        }
+
+        // Returns a valid C# identifier for a DB return-column name.
+        // Preserves the original name when it is already a valid identifier (restoring pre-fix
+        // behaviour for normal columns). Only applies full sanitization when the name contains
+        // characters that would produce an invalid identifier (e.g. spaces, hyphens).
+        public static string SanitizeReturnColumnName(string rawColumnName)
+        {
+            // Apply JSON_/XML_ GUID replacement first (same as original code)
+            var columnName = Regex.Replace(rawColumnName, "^(?<prefix>JSON|XML)_([0-9A-F]{8}-([0-9A-F]{4}-){3}[0-9A-F]{12})", "${prefix}_Value", RegexOptions.IgnoreCase);
+
+            // If it is already a valid C# identifier, only handle reserved keywords
+            if (IsValidCSharpIdentifier(columnName))
+            {
+                if (DatabaseReader.ReservedKeywords.Contains(columnName))
+                    columnName = "@" + columnName;
+                return columnName;
+            }
+
+            // Column name is not a valid C# identifier (e.g. contains spaces or special chars).
+            // Apply the same sanitization pipeline used for table/view columns.
+            var cleaned = DatabaseReader.CleanUp(columnName);
+            if (string.IsNullOrWhiteSpace(cleaned))
+                cleaned = "Unknown";
+            columnName = (Settings.UsePascalCase ? Inflector.ToTitleCase(cleaned) : cleaned).Replace(" ", string.Empty);
+            if (string.IsNullOrWhiteSpace(columnName))
+                columnName = "Unknown";
+            if (DatabaseReader.ReservedKeywords.Contains(columnName))
+                columnName = "@" + columnName;
+            return columnName;
+        }
+
+        // Returns fluent HasColumnName statements for any return model columns whose C# property
+        // name differs from the DB column name. Used when UseDataAnnotations=false (EF Core only).
+        public List<string> GetReturnColumnMappings(string builderCmd, string returnModelName)
+        {
+            var mappings = new List<string>();
+            if (!ReturnModels.Any()) return mappings;
+            foreach (var col in ReturnModels.First())
+            {
+                var rawName = col.ColumnName;
+                var sanitized = SanitizeReturnColumnName(rawName);
+                var effectiveName = sanitized.TrimStart('@');
+                if (effectiveName != rawName)
+                    mappings.Add(string.Format("modelBuilder.{0}<{1}>().Property(e => e.{2}).HasColumnName(\"{3}\");", builderCmd, returnModelName, sanitized, rawName));
+            }
+            return mappings;
+        }
+
         public string WriteStoredProcReturnColumn(DataColumn col)
         {
-            var columnName = DatabaseReader.ReservedKeywords.Contains(col.ColumnName) ? "@" + col.ColumnName : col.ColumnName;
-
-            // Replace return column name that start with either JSON_ or XML_ with a GUID
-            // This does not change the <columnName> if the regex does not match
-            columnName = Regex.Replace(columnName, "^(?<prefix>JSON|XML)_([0-9A-F]{8}-([0-9A-F]{4}-){3}[0-9A-F]{12})", "${prefix}_Value", RegexOptions.IgnoreCase);
+            var rawColumnName = col.ColumnName;
+            var columnName = SanitizeReturnColumnName(rawColumnName);
 
             var propertyType = WrapTypeIfNullable(ConvertDataColumnType(col.DataType), col);
-            
+
             // Add null-forgiving operator for non-nullable reference types when NRT is enabled
             var nullForgivingOperator = string.Empty;
             if (Settings.NeedsNullForgiving() && !IsNullable(col))
@@ -430,7 +485,16 @@ namespace Efrpg
                     nullForgivingOperator = " = null!;";
             }
 
-            return string.Format("public {0} {1} {{ get; set; }}{2}",
+            // When UseDataAnnotations=true and the C# name differs from the DB column name,
+            // add [Column("original")] so EF Core can map the result set column to this property.
+            // When UseDataAnnotations=false, HasColumnName is emitted in OnModelCreating instead.
+            var effectiveName = columnName.TrimStart('@');
+            var columnAttribute = Settings.UseDataAnnotations && effectiveName != rawColumnName
+                ? string.Format("[Column(\"{0}\")]{1}    ", rawColumnName, Environment.NewLine)
+                : string.Empty;
+
+            return string.Format("{0}public {1} {2} {{ get; set; }}{3}",
+                columnAttribute,
                 propertyType,
                 columnName,
                 nullForgivingOperator);

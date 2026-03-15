@@ -1032,6 +1032,25 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
 
         // StpTestAsync() cannot be created due to having out parameters, or is relying on the procedure result (List<StpTestReturnModel>)
 
+        public DbSet<StpTestSpaceTestReturnModel> StpTestSpaceTestReturnModel { get; set; } = null!;
+        public List<StpTestSpaceTestReturnModel> StpTestSpaceTest(int? aVal = null, int? bVal = null)
+        {
+            int procResult;
+            return StpTestSpaceTest(aVal, bVal, out procResult);
+        }
+
+        public List<StpTestSpaceTestReturnModel> StpTestSpaceTest(int? aVal, int? bVal, out int procResult)
+        {
+            procResult = 0;
+            return new List<StpTestSpaceTestReturnModel>();
+        }
+
+        public Task<List<StpTestSpaceTestReturnModel>> StpTestSpaceTestAsync(int? aVal = null, int? bVal = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            int procResult;
+            return Task.FromResult(StpTestSpaceTest(aVal, bVal, out procResult));
+        }
+
         public DbSet<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTestReturnModel { get; set; } = null!;
         public List<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTest(string strDateFrom, string strDateTo)
         {
@@ -1181,6 +1200,12 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
         public IQueryable<FFRS_CsvToInt2ReturnModel> FFRS_CsvToInt2(string array, string array2 = "")
         {
             return new List<FFRS_CsvToInt2ReturnModel>().AsQueryable();
+        }
+
+        // dbo.SpacedColumnTvf
+        public IQueryable<SpacedColumnTvfReturnModel> SpacedColumnTvf(int? id = null)
+        {
+            return new List<SpacedColumnTvfReturnModel>().AsQueryable();
         }
 
         // Scalar Valued Functions

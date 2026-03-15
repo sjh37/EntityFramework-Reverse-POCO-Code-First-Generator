@@ -346,6 +346,11 @@ using {{this}};{{#newline}}
 {{#each storedProcs}}
 {{#if SingleReturnModel}}
         modelBuilder.{{StoredProcModelBuilderCommand}}<{{ReturnModelName}}>(){{StoredProcModelBuilderPostCommand}};{{#newline}}
+{{#if HasColumnMappings}}
+{{#each ColumnMappings}}
+        {{this}}{{#newline}}
+{{/each}}
+{{/if}}
 {{/if}}
 {{/each}}
 {{/if}}
@@ -356,6 +361,11 @@ using {{this}};{{#newline}}
 {{#each tableValuedFunctions}}
 {{#if IncludeModelBuilder}}
         modelBuilder.{{ModelBuilderCommand}}<{{ReturnClassName}}>(){{ModelBuilderPostCommand}};{{#newline}}
+{{#if HasColumnMappings}}
+{{#each ColumnMappings}}
+        {{this}}{{#newline}}
+{{/each}}
+{{/if}}
 {{/if}}
 {{/each}}
 {{/if}}
@@ -1636,6 +1646,9 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
                 "System",
                 "System.Collections.Generic"
             };
+
+            if (Settings.UseDataAnnotations)
+                usings.Add("System.ComponentModel.DataAnnotations.Schema");
 
             if (Settings.IncludeCodeGeneratedAttribute)
                 usings.Add("System.CodeDom.Compiler");

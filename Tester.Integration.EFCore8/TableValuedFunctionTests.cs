@@ -1,6 +1,7 @@
 ﻿using Generator.Tests.Common;
 using NUnit.Framework;
 using System.Linq;
+using V8EfrpgTest;
 
 namespace Tester.Integration.EFCore8
 {
@@ -60,6 +61,23 @@ namespace Tester.Integration.EFCore8
             Assert.AreEqual(2, data.Count);
             Assert.AreEqual(123, data[0].IntValue);
             Assert.AreEqual(456, data[1].IntValue);
+        }
+
+        [Test]
+        [Description("Issue #721 - TVF returning columns whose names contain spaces should map correctly")]
+        public void SpacedColumnTvf_ColumnsAreMappedCorrectly()
+        {
+            // Arrange
+            using var db = new V8EfrpgTestDbContext();
+
+            // Act - [dbo].[SpacedColumnTvf] returns [My Column] and [Is Active]
+            var data = db.SpacedColumnTvf(1).ToList();
+
+            // Assert - verify the spaced column names were mapped to valid C# properties
+            Assert.IsNotNull(data);
+            Assert.AreEqual(1, data.Count, "Expected one row with Id=1 from NoPrimaryKeys");
+            Assert.AreEqual("test value", data[0].MyColumn, "MyColumn (mapped from 'My Column') should be 'test value'");
+            Assert.AreEqual(true, data[0].IsActive, "IsActive (mapped from 'Is Active') should be true");
         }
     }
 }

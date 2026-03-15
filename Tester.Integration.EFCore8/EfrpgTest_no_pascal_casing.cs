@@ -331,6 +331,10 @@ namespace V8_Efrpg_Test
         List<stp_test_underscore_testReturnModel> stp_test_underscore_test(string strDateFROM, string strdateto, out int procResult);
         Task<List<stp_test_underscore_testReturnModel>> stp_test_underscore_testAsync(string strDateFROM, string strdateto, CancellationToken cancellationToken = default(CancellationToken));
 
+        List<stptestspacetestReturnModel> stptestspacetest(int? aval, int? bval);
+        List<stptestspacetestReturnModel> stptestspacetest(int? aval, int? bval, out int procResult);
+        Task<List<stptestspacetestReturnModel>> stptestspacetestAsync(int? aval, int? bval, CancellationToken cancellationToken = default(CancellationToken));
+
         int StupidStoredProcedureParams(string reqType, short? dept, short? @class, short? item);
         Task<int> StupidStoredProcedureParamsAsync(string reqType, short? dept, short? @class, short? item, CancellationToken cancellationToken = default(CancellationToken));
 
@@ -364,6 +368,7 @@ namespace V8_Efrpg_Test
         IQueryable<CsvToIntReturnModel> CsvToInt(string array, string array2); // dbo.CsvToInt
         IQueryable<CustomSchema_CsvToIntWithSchemaReturnModel> CustomSchema_CsvToIntWithSchema(string array, string array2); // CustomSchema.CsvToIntWithSchema
         IQueryable<FFRS_CsvToInt2ReturnModel> FFRS_CsvToInt2(string array, string array2); // FFRS.CsvToInt2
+        IQueryable<SpacedColumnTvfReturnModel> SpacedColumnTvf(int? id); // dbo.SpacedColumnTvf
 
         // Scalar Valued Functions
         decimal udfNetSale(int? quantity, decimal? list_price, decimal? discount); // dbo.udfNetSale
@@ -672,6 +677,9 @@ namespace V8_Efrpg_Test
             modelBuilder.Entity<stp_nullable_params_testReturnModel>().HasNoKey();
             modelBuilder.Entity<stp_testReturnModel>().HasNoKey();
             modelBuilder.Entity<stp_test_underscore_testReturnModel>().HasNoKey();
+            modelBuilder.Entity<stptestspacetestReturnModel>().HasNoKey();
+            modelBuilder.Entity<stptestspacetestReturnModel>().Property(e => e.codeobjectno).HasColumnName("code object no");
+            modelBuilder.Entity<stptestspacetestReturnModel>().Property(e => e.applicationno).HasColumnName("application no");
             modelBuilder.Entity<Synonyms_SimpleStoredProcReturnModel>().HasNoKey();
             modelBuilder.Entity<TestReturnStringReturnModel>().HasNoKey();
             modelBuilder.Entity<XmlDataV1ReturnModel>().HasNoKey();
@@ -681,6 +689,9 @@ namespace V8_Efrpg_Test
             modelBuilder.Entity<CsvToIntReturnModel>().HasNoKey();
             modelBuilder.Entity<CustomSchema_CsvToIntWithSchemaReturnModel>().HasNoKey();
             modelBuilder.Entity<FFRS_CsvToInt2ReturnModel>().HasNoKey();
+            modelBuilder.Entity<SpacedColumnTvfReturnModel>().HasNoKey();
+            modelBuilder.Entity<SpacedColumnTvfReturnModel>().Property(e => e.MyColumn).HasColumnName("My Column");
+            modelBuilder.Entity<SpacedColumnTvfReturnModel>().Property(e => e.IsActive).HasColumnName("Is Active");
         }
 
 
@@ -1908,6 +1919,50 @@ namespace V8_Efrpg_Test
             return procResultData;
         }
 
+        public List<stptestspacetestReturnModel> stptestspacetest(int? aval = null, int? bval = null)
+        {
+            int procResult;
+            return stptestspacetest(aval, bval, out procResult);
+        }
+
+        public List<stptestspacetestReturnModel> stptestspacetest(int? aval, int? bval, out int procResult)
+        {
+            var avalParam = new SqlParameter { ParameterName = "@a_val", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = aval.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!aval.HasValue)
+                avalParam.Value = DBNull.Value;
+
+            var bvalParam = new SqlParameter { ParameterName = "@b_val", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = bval.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!bval.HasValue)
+                bvalParam.Value = DBNull.Value;
+
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [dbo].[stp test space test] @a_val, @b_val";
+            var procResultData = Set<stptestspacetestReturnModel>()
+                .FromSqlRaw(sqlCommand, avalParam, bvalParam, procResultParam)
+                .ToList();
+
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<stptestspacetestReturnModel>> stptestspacetestAsync(int? aval = null, int? bval = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var avalParam = new SqlParameter { ParameterName = "@a_val", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = aval.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!aval.HasValue)
+                avalParam.Value = DBNull.Value;
+
+            var bvalParam = new SqlParameter { ParameterName = "@b_val", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = bval.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!bval.HasValue)
+                bvalParam.Value = DBNull.Value;
+
+            const string sqlCommand = "EXEC [dbo].[stp test space test] @a_val, @b_val";
+            var procResultData = await Set<stptestspacetestReturnModel>()
+                .FromSqlRaw(sqlCommand, avalParam, bvalParam)
+                .ToListAsync(cancellationToken);
+
+            return procResultData;
+        }
+
         public int StupidStoredProcedureParams(string reqType, short? dept = null, short? @class = null, short? item = null)
         {
             var reqTypeParam = new SqlParameter { ParameterName = "@ReqType", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = reqType, Size = 25 };
@@ -2227,6 +2282,14 @@ namespace V8_Efrpg_Test
         {
             return Set<FFRS_CsvToInt2ReturnModel>()
                 .FromSqlRaw("SELECT * FROM [FFRS].[CsvToInt2]({0}, {1})", array, array2)
+                .AsNoTracking();
+        }
+
+        // dbo.SpacedColumnTvf
+        public IQueryable<SpacedColumnTvfReturnModel> SpacedColumnTvf(int? id = null)
+        {
+            return Set<SpacedColumnTvfReturnModel>()
+                .FromSqlRaw("SELECT * FROM [dbo].[SpacedColumnTvf]({0})", id)
                 .AsNoTracking();
         }
 
@@ -6062,6 +6125,13 @@ namespace V8_Efrpg_Test
         public decimal? KoeffVed { get; set; }
     }
 
+    public class SpacedColumnTvfReturnModel
+    {
+        public int? Id { get; set; }
+        public string MyColumn { get; set; } = null!;
+        public bool? IsActive { get; set; }
+    }
+
     public class SpatialTypesNoParamsReturnModel
     {
         public int Dollar { get; set; }
@@ -6211,6 +6281,12 @@ namespace V8_Efrpg_Test
         public string note { get; set; } = null!;
         public bool isObject { get; set; }
         public byte[] versionNumber { get; set; } = null!;
+    }
+
+    public class stptestspacetestReturnModel
+    {
+        public int codeobjectno { get; set; }
+        public int? applicationno { get; set; }
     }
 
     public class Synonyms_SimpleStoredProcReturnModel

@@ -261,6 +261,7 @@ Entities\FFRS_DataFromDboAndFfrsReturnModel.cs
 Entities\FFRS_DataFromDboReturnModel.cs
 Entities\FkTest_HelloReturnModel.cs
 Entities\GetSmallDecimalTestReturnModel.cs
+Entities\SpacedColumnTvfReturnModel.cs
 Entities\SpatialTypesNoParamsReturnModel.cs
 Entities\SpatialTypesWithParamsReturnModel.cs
 Entities\StoredProcWithDefaultsReturnModel.cs
@@ -271,6 +272,7 @@ Entities\StpMultipleResultsWithParamsReturnModel.cs
 Entities\StpNoParamsTestReturnModel.cs
 Entities\StpNullableParamsTestReturnModel.cs
 Entities\StpTestReturnModel.cs
+Entities\StpTestSpaceTestReturnModel.cs
 Entities\StpTestUnderscoreTestReturnModel.cs
 Entities\Synonyms_SimpleStoredProcReturnModel.cs
 Entities\TestReturnStringReturnModel.cs

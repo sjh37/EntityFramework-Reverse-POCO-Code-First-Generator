@@ -1278,6 +1278,9 @@ using {{this}};{{#newline}}
                 "System.Collections.Generic"
             };
 
+            if (Settings.UseDataAnnotations)
+                usings.Add("System.ComponentModel.DataAnnotations.Schema");
+
             if (Settings.IncludeCodeGeneratedAttribute)
                 usings.Add("System.CodeDom.Compiler");
 

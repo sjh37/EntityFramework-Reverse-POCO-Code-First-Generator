@@ -23,9 +23,10 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Configuration
             builder.Property(x => x.BestHolidayTypeId).HasColumnName(@"BestHolidayTypeId").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.BankId).HasColumnName(@"BankId").HasColumnType("int").IsRequired();
             builder.Property(x => x.CarId).HasColumnName(@"CarId").HasColumnType("int").IsRequired();
+            builder.Property(x => x.DeletedAt).HasColumnName(@"DeletedAt").HasColumnType("datetime").IsRequired(false);
 
             builder.HasIndex(x => x.BestHolidayTypeId).HasDatabaseName("IX_MultipleKeys_BestHolidayType");
-            builder.HasIndex(x => new { x.BestHolidayTypeId, x.BankId }).HasDatabaseName("IX_MultipleKeys_Holiday_Bank").IsUnique();
+            builder.HasIndex(x => new { x.BestHolidayTypeId, x.BankId }).HasDatabaseName("IX_MultipleKeys_Holiday_Bank").IsUnique().HasFilter(@"([DeletedAt] IS NULL)");
             builder.HasIndex(x => x.FavouriteColourId).HasDatabaseName("UC_MultipleKeys_FavouriteColour").IsUnique();
         }
     }

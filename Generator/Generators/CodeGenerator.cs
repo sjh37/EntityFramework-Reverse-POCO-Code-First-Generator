@@ -94,6 +94,15 @@ namespace Efrpg.Generators
             else
                 _storedProcs = new List<StoredProcTemplateData>();
 
+            // When not using data annotations, populate fluent HasColumnName mappings for EF Core
+            if (!Settings.UseDataAnnotations && isEfCore && _storedProcs.Count > 0)
+            {
+                var builderCmd = IsEfCore8Plus ? "Entity" : "Query";
+                var spList = filter.StoredProcs.Where(s => s.IsStoredProcedure).OrderBy(x => x.NameHumanCase).ToList();
+                for (var i = 0; i < _storedProcs.Count && i < spList.Count; i++)
+                    _storedProcs[i].ColumnMappings = spList[i].GetReturnColumnMappings(builderCmd, spList[i].WriteStoredProcReturnModelName(_filter));
+            }
+
             if (filter.IncludeTableValuedFunctions)
             {
                 _tableValuedFunctions = filter.StoredProcs
@@ -128,6 +137,15 @@ namespace Efrpg.Generators
                     .OrderBy(x => x.NameHumanCase)
                     .Select(x => x.WriteStoredProcReturnModelName(_filter))
                     .ToList();
+
+                // When not using data annotations, populate fluent HasColumnName mappings for EF Core TVFs
+                if (!Settings.UseDataAnnotations && isEfCore && _tableValuedFunctions.Count > 0)
+                {
+                    var builderCmd = IsEfCore8Plus ? "Entity" : "Query";
+                    var tvfList = filter.StoredProcs.Where(s => s.IsTableValuedFunction).OrderBy(x => x.NameHumanCase).ToList();
+                    for (var i = 0; i < _tableValuedFunctions.Count && i < tvfList.Count; i++)
+                        _tableValuedFunctions[i].ColumnMappings = tvfList[i].GetReturnColumnMappings(builderCmd, tvfList[i].WriteStoredProcReturnModelName(_filter));
+                }
             }
             else
             {

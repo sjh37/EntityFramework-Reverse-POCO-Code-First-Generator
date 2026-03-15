@@ -888,8 +888,6 @@ namespace Efrpg.Generators
                         continue;
                     }
 
-                    if (sp.ReturnModels.Any(returnColumns => returnColumns.Any(c => c.ColumnName.Contains(" "))))
-                        continue; // Invalid, ignore stored procedure
 
                     if (sp.IsTableValuedFunction && sp.Parameters.Any(c => c.PropertyType == "DataTable"))
                         continue; // Invalid, ignore

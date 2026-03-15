@@ -1,4 +1,6 @@
-﻿namespace Efrpg.Generators
+﻿using System.Collections.Generic;
+
+namespace Efrpg.Generators
 {
     public class TableValuedFunctionsTemplateData
     {
@@ -19,6 +21,8 @@
         public string ModelBuilderCommand { get; }
         public string ModelBuilderPostCommand { get; }
         public bool IncludeModelBuilder { get; }
+        public List<string> ColumnMappings { get; set; } = new List<string>();
+        public bool HasColumnMappings => ColumnMappings != null && ColumnMappings.Count > 0;
 
         public TableValuedFunctionsTemplateData(bool singleReturnModel,
             string singleReturnColumnName,

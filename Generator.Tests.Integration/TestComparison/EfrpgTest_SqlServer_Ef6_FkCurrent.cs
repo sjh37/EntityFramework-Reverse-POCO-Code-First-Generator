@@ -297,6 +297,10 @@ namespace Efrpg.V3TestE1
         List<StpTestReturnModel> StpTest(string strDateFrom, string strDateTo, out bool? retBool, out int procResult);
         // StpTestAsync() cannot be created due to having out parameters, or is relying on the procedure result (List<StpTestReturnModel>)
 
+        List<StpTestSpaceTestReturnModel> StpTestSpaceTest(int? aVal, int? bVal);
+        List<StpTestSpaceTestReturnModel> StpTestSpaceTest(int? aVal, int? bVal, out int procResult);
+        Task<List<StpTestSpaceTestReturnModel>> StpTestSpaceTestAsync(int? aVal, int? bVal, CancellationToken cancellationToken = default(CancellationToken));
+
         List<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTest(string strDateFrom, string strDateTo);
         List<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTest(string strDateFrom, string strDateTo, out int procResult);
         Task<List<StpTestUnderscoreTestReturnModel>> StpTestUnderscoreTestAsync(string strDateFrom, string strDateTo, CancellationToken cancellationToken = default(CancellationToken));
@@ -346,6 +350,10 @@ namespace Efrpg.V3TestE1
         [DbFunction("EfrpgTestDbContext", "CsvToInt2")]
         [CodeFirstStoreFunctions.DbFunctionDetails(DatabaseSchema = "FFRS", ResultColumnName = "IntValue")]
         IQueryable<FFRS_CsvToInt2ReturnModel> FFRS_CsvToInt2(string array, string array2);
+
+        [DbFunction("EfrpgTestDbContext", "SpacedColumnTvf")]
+        [CodeFirstStoreFunctions.DbFunctionDetails(DatabaseSchema = "dbo")]
+        IQueryable<SpacedColumnTvfReturnModel> SpacedColumnTvf(int? id);
 
         // Scalar Valued Functions
         decimal UdfNetSale(int? quantity, decimal? listPrice, decimal? discount); // dbo.udfNetSale
@@ -536,6 +544,7 @@ namespace Efrpg.V3TestE1
             modelBuilder.ComplexType<CsvToIntReturnModel>();
             modelBuilder.ComplexType<CustomSchema_CsvToIntWithSchemaReturnModel>();
             modelBuilder.ComplexType<FFRS_CsvToInt2ReturnModel>();
+            modelBuilder.ComplexType<SpacedColumnTvfReturnModel>();
 
             modelBuilder.Configurations.Add(new AConfiguration());
             modelBuilder.Configurations.Add(new AarefConfiguration());
@@ -2115,6 +2124,42 @@ namespace Efrpg.V3TestE1
         }
 
         // StpTestAsync() cannot be created due to having out parameters, or is relying on the procedure result (List<StpTestReturnModel>)
+        public List<StpTestSpaceTestReturnModel> StpTestSpaceTest(int? aVal = null, int? bVal = null)
+        {
+            int procResult;
+            return StpTestSpaceTest(aVal, bVal, out procResult);
+        }
+
+        public List<StpTestSpaceTestReturnModel> StpTestSpaceTest(int? aVal, int? bVal, out int procResult)
+        {
+            var aValParam = new SqlParameter { ParameterName = "@a_val", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = aVal.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!aVal.HasValue)
+                aValParam.Value = DBNull.Value;
+
+            var bValParam = new SqlParameter { ParameterName = "@b_val", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = bVal.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!bVal.HasValue)
+                bValParam.Value = DBNull.Value;
+
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            var procResultData = Database.SqlQuery<StpTestSpaceTestReturnModel>("EXEC @procResult = [dbo].[stp test space test] @a_val, @b_val", aValParam, bValParam, procResultParam).ToList();
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<StpTestSpaceTestReturnModel>> StpTestSpaceTestAsync(int? aVal = null, int? bVal = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var aValParam = new SqlParameter { ParameterName = "@a_val", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = aVal.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!aVal.HasValue)
+                aValParam.Value = DBNull.Value;
+
+            var bValParam = new SqlParameter { ParameterName = "@b_val", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = bVal.GetValueOrDefault(), Precision = 10, Scale = 0 };
+            if (!bVal.HasValue)
+                bValParam.Value = DBNull.Value;
+
+            var procResultData = await Database.SqlQuery<StpTestSpaceTestReturnModel>("EXEC [dbo].[stp test space test] @a_val, @b_val", aValParam, bValParam).ToListAsync(cancellationToken);
+            return procResultData;
+        }
+
         public List<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTest(string strDateFrom, string strDateTo)
         {
             int procResult;
@@ -2453,6 +2498,15 @@ namespace Efrpg.V3TestE1
             var array2Param = new ObjectParameter("array2", typeof(string)) { Value = (object)array2 };
 
             return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<FFRS_CsvToInt2ReturnModel>("[EfrpgTestDbContext].[CsvToInt2](@array, @array2)", arrayParam, array2Param);
+        }
+
+        [DbFunction("EfrpgTestDbContext", "SpacedColumnTvf")]
+        [CodeFirstStoreFunctions.DbFunctionDetails(DatabaseSchema = "dbo")]
+        public IQueryable<SpacedColumnTvfReturnModel> SpacedColumnTvf(int? id = null)
+        {
+            var idParam = new ObjectParameter("id", typeof(int)) { Value = (object)id ?? DBNull.Value };
+
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<SpacedColumnTvfReturnModel>("[EfrpgTestDbContext].[SpacedColumnTvf](@id)", idParam);
         }
 
         // Scalar Valued Functions
@@ -3319,6 +3373,24 @@ namespace Efrpg.V3TestE1
 
         // StpTestAsync() cannot be created due to having out parameters, or is relying on the procedure result (List<StpTestReturnModel>)
 
+        public List<StpTestSpaceTestReturnModel> StpTestSpaceTest(int? aVal = null, int? bVal = null)
+        {
+            int procResult;
+            return StpTestSpaceTest(aVal, bVal, out procResult);
+        }
+
+        public List<StpTestSpaceTestReturnModel> StpTestSpaceTest(int? aVal, int? bVal, out int procResult)
+        {
+            procResult = 0;
+            return new List<StpTestSpaceTestReturnModel>();
+        }
+
+        public Task<List<StpTestSpaceTestReturnModel>> StpTestSpaceTestAsync(int? aVal = null, int? bVal = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            int procResult;
+            return Task.FromResult(StpTestSpaceTest(aVal, bVal, out procResult));
+        }
+
         public List<StpTestUnderscoreTestReturnModel> StpTestUnderscoreTest(string strDateFrom, string strDateTo)
         {
             int procResult;
@@ -3464,6 +3536,12 @@ namespace Efrpg.V3TestE1
         public IQueryable<FFRS_CsvToInt2ReturnModel> FFRS_CsvToInt2(string array, string array2 = "")
         {
             return new List<FFRS_CsvToInt2ReturnModel>().AsQueryable();
+        }
+
+        [DbFunction("EfrpgTestDbContext", "SpacedColumnTvf")]
+        public IQueryable<SpacedColumnTvfReturnModel> SpacedColumnTvf(int? id = null)
+        {
+            return new List<SpacedColumnTvfReturnModel>().AsQueryable();
         }
 
         // Scalar Valued Functions
@@ -7943,6 +8021,13 @@ namespace Efrpg.V3TestE1
         public decimal? KoeffVed { get; set; }
     }
 
+    public class SpacedColumnTvfReturnModel
+    {
+        public int? Id { get; set; }
+        public string MyColumn { get; set; }
+        public bool? IsActive { get; set; }
+    }
+
     public class StoredProcWithDefaultsReturnModel
     {
         public int? SingleValue { get; set; }
@@ -8071,6 +8156,12 @@ namespace Efrpg.V3TestE1
         public string note { get; set; }
         public bool isObject { get; set; }
         public byte[] versionNumber { get; set; }
+    }
+
+    public class StpTestSpaceTestReturnModel
+    {
+        public int CodeObjectNo { get; set; }
+        public int? ApplicationNo { get; set; }
     }
 
     public class StpTestUnderscoreTestReturnModel

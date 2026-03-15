@@ -20,6 +20,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Entities
         public int BestHolidayTypeId { get; set; } // BestHolidayTypeId (Primary key)
         public int BankId { get; set; } // BankId
         public int CarId { get; set; } // CarId
+        public DateTime? DeletedAt { get; set; } // DeletedAt
     }
 
 }

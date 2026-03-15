@@ -153,6 +153,24 @@
     <Compile Include="SingleDatabaseTestSqlCeServer.cs" />
     <Compile Include="SingleDatabaseTestSQLite.cs" />
     <Compile Include="SingleDatabaseTestSqlServer.cs" />
+    <None Include="TestComparison\SpacedColumnTvf_SqlServer_EfCore8_FkCurrent.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TestComparison\SpacedColumnTvfDa_SqlServer_EfCore8_FkCurrent.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TestComparison\SpacedColumnSpDa_SqlServer_EfCore8_FkCurrent.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TestComparison\SpacedColumnSp_SqlServer_EfCore8_FkCurrent.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TestComparison\EfrpgTestDa_SqlServer_Ef6_FkCurrent.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TestComparison\EfrpgTestDa_SqlServer_EfCore8_FkCurrent.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="TestComparison\EfrpgTestIncludeFilter_SqlServer_EfCore8_FkCurrent.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

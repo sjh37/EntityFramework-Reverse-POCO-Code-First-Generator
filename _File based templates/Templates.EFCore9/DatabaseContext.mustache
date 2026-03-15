@@ -117,6 +117,11 @@
 {{#each storedProcs}}
 {{#if SingleReturnModel}}
         modelBuilder.{{StoredProcModelBuilderCommand}}<{{ReturnModelName}}>(){{StoredProcModelBuilderPostCommand}};{{#newline}}
+{{#if HasColumnMappings}}
+{{#each ColumnMappings}}
+        {{this}}{{#newline}}
+{{/each}}
+{{/if}}
 {{/if}}
 {{/each}}
 {{/if}}
@@ -127,6 +132,11 @@
 {{#each tableValuedFunctions}}
 {{#if IncludeModelBuilder}}
         modelBuilder.{{ModelBuilderCommand}}<{{ReturnClassName}}>(){{ModelBuilderPostCommand}};{{#newline}}
+{{#if HasColumnMappings}}
+{{#each ColumnMappings}}
+        {{this}}{{#newline}}
+{{/each}}
+{{/if}}
 {{/if}}
 {{/each}}
 {{/if}}

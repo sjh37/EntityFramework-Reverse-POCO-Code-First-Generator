@@ -658,6 +658,8 @@ CREATE TABLE NoPrimaryKeys
     [Description] VARCHAR(10) NULL
 )
 GO
+INSERT INTO NoPrimaryKeys (Id, [Description]) VALUES (1, 'test')
+GO
 
 -- Create objects that will be linked to via synonyms from another database
 CREATE SCHEMA Synonyms
@@ -2785,4 +2787,20 @@ CREATE TABLE NullableReverseNavigationB
     CONSTRAINT PK_NullableReverseNavigationB PRIMARY KEY (Id),
     CONSTRAINT FK_NullableReverseNavigationB_Id FOREIGN KEY (Id) REFERENCES NullableReverseNavigationA (Id)
 );
+GO
+
+-- #721 TVF with space in column name
+CREATE FUNCTION [dbo].[SpacedColumnTvf]
+(
+    @id INT
+)
+    RETURNS TABLE AS RETURN
+        (
+        SELECT
+            Id                          AS [Id],
+            'test value'                AS [My Column],
+            CAST(1 AS BIT)              AS [Is Active]
+        FROM NoPrimaryKeys
+        WHERE Id = @id
+        )
 GO
