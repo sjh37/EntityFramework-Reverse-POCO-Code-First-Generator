@@ -134,7 +134,8 @@ SELECT n.nspname AS ""TableSchema"",
     ix.indisprimary AS ""IsPrimaryKey"",
     0 AS ""IsUniqueConstraint"",
     ix.indisclustered AS ""IsClustered"",
-    ix.indnatts AS ""ColumnCount""
+    ix.indnatts AS ""ColumnCount"",
+    '' AS ""FilterDefinition""
 FROM
     pg_index ix
     INNER JOIN pg_class t

@@ -4740,6 +4740,7 @@ namespace Efrpg.V3TestE1
         public int BestHolidayTypeId { get; set; } // BestHolidayTypeId (Primary key)
         public int BankId { get; set; } // BankId
         public int CarId { get; set; } // CarId
+        public DateTime? DeletedAt { get; set; } // DeletedAt
     }
 
     // The table 'NoPrimaryKeys' is not usable by entity framework because it
@@ -6778,6 +6779,7 @@ namespace Efrpg.V3TestE1
             Property(x => x.BestHolidayTypeId).HasColumnName(@"BestHolidayTypeId").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(x => x.BankId).HasColumnName(@"BankId").HasColumnType("int").IsRequired();
             Property(x => x.CarId).HasColumnName(@"CarId").HasColumnType("int").IsRequired();
+            Property(x => x.DeletedAt).HasColumnName(@"DeletedAt").HasColumnType("datetime").IsOptional();
         }
     }
 

@@ -6869,6 +6869,10 @@
                 if (indexesForName.All(x => x.IsClustered))
                     sb.Append(isEfCore8Plus ? ".IsClustered()" : ".ForSqlServerIsClustered()");
 
+                var filterDefinition = indexesForName.Select(x => x.FilterDefinition).FirstOrDefault(x => !string.IsNullOrEmpty(x));
+                if (!string.IsNullOrEmpty(filterDefinition))
+                    sb.AppendFormat(".HasFilter(@\"{0}\")", filterDefinition.Replace("\"", "\"\""));
+
                 sb.Append(";");
                 indexes.Add(sb.ToString());
             }
@@ -13578,7 +13582,8 @@ and limitations under the License.
                             ChangeType<bool>(rdr["IsUnique"]),
                             ChangeType<bool>(rdr["IsPrimaryKey"]),
                             ChangeType<bool>(rdr["IsUniqueConstraint"]),
-                            ChangeType<int>(rdr["IsClustered"]) == 1
+                            ChangeType<int>(rdr["IsClustered"]) == 1,
+                            rdr["FilterDefinition"].ToString().Trim()
                         );
 
                         result.Add(index);
@@ -15169,7 +15174,8 @@ SELECT n.nspname AS ""TableSchema"",
     ix.indisprimary AS ""IsPrimaryKey"",
     0 AS ""IsUniqueConstraint"",
     ix.indisclustered AS ""IsClustered"",
-    ix.indnatts AS ""ColumnCount""
+    ix.indnatts AS ""ColumnCount"",
+    '' AS ""FilterDefinition""
 FROM
     pg_index ix
     INNER JOIN pg_class t
@@ -15501,10 +15507,11 @@ ORDER BY SchemaName, TableName, TriggerName;";
         public readonly bool IsPrimaryKey;
         public readonly bool IsUniqueConstraint;
         public readonly bool IsClustered;
+        public readonly string FilterDefinition;
 
         public RawIndex(string schema, string tableName, string indexName, byte keyOrdinal,
             string columnName, int columnCount, bool isUnique, bool isPrimaryKey,
-            bool isUniqueConstraint, bool isClustered)
+            bool isUniqueConstraint, bool isClustered, string filterDefinition = "")
         {
             Schema = schema;
             TableName = tableName;
@@ -15516,13 +15523,14 @@ ORDER BY SchemaName, TableName, TriggerName;";
             IsPrimaryKey = isPrimaryKey;
             IsUniqueConstraint = isUniqueConstraint;
             IsClustered = isClustered;
+            FilterDefinition = filterDefinition ?? string.Empty;
         }
 
         public string Dump()
         {
-            return string.Format("new RawIndex(\"{0}\", \"{1}\", \"{2}\", {3}, \"{4}\", {5}, {6}, {7}, {8}, {9}),",
+            return string.Format("new RawIndex(\"{0}\", \"{1}\", \"{2}\", {3}, \"{4}\", {5}, {6}, {7}, {8}, {9}, \"{10}\"),",
                 Schema, TableName, IndexName, KeyOrdinal, ColumnName, ColumnCount, IsUnique ? "true" : "false", IsPrimaryKey ? "true" : "false",
-                IsUniqueConstraint ? "true" : "false", IsClustered ? "true" : "false");
+                IsUniqueConstraint ? "true" : "false", IsClustered ? "true" : "false", FilterDefinition);
         }
     }
     public class RawMemoryOptimisedTable
@@ -15827,7 +15835,8 @@ SELECT 'main' AS TableSchema,
        0 AS IsUnique,
        0 AS IsPrimaryKey,
        0 AS IsUniqueConstraint,
-       0 as IsClustered
+       0 as IsClustered,
+       '' AS FilterDefinition
 FROM split s
 WHERE ColumnName != ''";
         }
@@ -16500,7 +16509,8 @@ SELECT  SCHEMA_NAME(t.schema_id) AS TableSchema,
         FROM   sys.index_columns i
         WHERE  i.object_id = ind.object_id
             AND i.index_id = ind.index_id
-    ) AS ColumnCount
+    ) AS ColumnCount,
+    ISNULL(ind.filter_definition, '') AS FilterDefinition
 FROM    sys.tables t
     INNER JOIN sys.indexes ind
         ON ind.object_id = t.object_id

@@ -12,10 +12,11 @@
         public readonly bool IsPrimaryKey;
         public readonly bool IsUniqueConstraint;
         public readonly bool IsClustered;
+        public readonly string FilterDefinition;
 
         public RawIndex(string schema, string tableName, string indexName, byte keyOrdinal,
             string columnName, int columnCount, bool isUnique, bool isPrimaryKey,
-            bool isUniqueConstraint, bool isClustered)
+            bool isUniqueConstraint, bool isClustered, string filterDefinition = "")
         {
             Schema = schema;
             TableName = tableName;
@@ -27,13 +28,14 @@
             IsPrimaryKey = isPrimaryKey;
             IsUniqueConstraint = isUniqueConstraint;
             IsClustered = isClustered;
+            FilterDefinition = filterDefinition ?? string.Empty;
         }
 
         public string Dump()
         {
-            return string.Format("new RawIndex(\"{0}\", \"{1}\", \"{2}\", {3}, \"{4}\", {5}, {6}, {7}, {8}, {9}),",
+            return string.Format("new RawIndex(\"{0}\", \"{1}\", \"{2}\", {3}, \"{4}\", {5}, {6}, {7}, {8}, {9}, \"{10}\"),",
                 Schema, TableName, IndexName, KeyOrdinal, ColumnName, ColumnCount, IsUnique ? "true" : "false", IsPrimaryKey ? "true" : "false",
-                IsUniqueConstraint ? "true" : "false", IsClustered ? "true" : "false");
+                IsUniqueConstraint ? "true" : "false", IsClustered ? "true" : "false", FilterDefinition);
         }
     }
 }

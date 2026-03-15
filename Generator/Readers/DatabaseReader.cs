@@ -371,7 +371,8 @@ namespace Efrpg.Readers
                             ChangeType<bool>(rdr["IsUnique"]),
                             ChangeType<bool>(rdr["IsPrimaryKey"]),
                             ChangeType<bool>(rdr["IsUniqueConstraint"]),
-                            ChangeType<int>(rdr["IsClustered"]) == 1
+                            ChangeType<int>(rdr["IsClustered"]) == 1,
+                            rdr["FilterDefinition"].ToString().Trim()
                         );
 
                         result.Add(index);

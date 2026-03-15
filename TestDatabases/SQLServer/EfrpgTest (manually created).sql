@@ -1784,14 +1784,14 @@ CREATE TABLE MultipleKeys
 	FavouriteColourId INT NOT NULL CONSTRAINT UC_MultipleKeys_FavouriteColour UNIQUE,
 	BestHolidayTypeId INT NOT NULL,
 	BankId INT NOT NULL,
-	CarId INT NOT NULL
+	CarId INT NOT NULL,
+    DeletedAt DATETIME NULL
 )
 GO
 ALTER TABLE MultipleKeys ADD CONSTRAINT PK_MultipleKeys PRIMARY KEY CLUSTERED (UserId, FavouriteColourId, BestHolidayTypeId)
-CREATE UNIQUE INDEX IX_MultipleKeys_Holiday_Bank ON MultipleKeys(BestHolidayTypeId, BankId)
+CREATE UNIQUE INDEX IX_MultipleKeys_Holiday_Bank ON MultipleKeys(BestHolidayTypeId, BankId) WHERE DeletedAt IS NULL;
 CREATE INDEX IX_MultipleKeys_BestHolidayType ON MultipleKeys(BestHolidayTypeId)
 GO
-
 
 -- DROP TABLE DSOpe
 CREATE TABLE DSOpe

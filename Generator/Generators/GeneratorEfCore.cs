@@ -266,6 +266,10 @@ namespace Efrpg.Generators
                 if (indexesForName.All(x => x.IsClustered))
                     sb.Append(isEfCore8Plus ? ".IsClustered()" : ".ForSqlServerIsClustered()");
 
+                var filterDefinition = indexesForName.Select(x => x.FilterDefinition).FirstOrDefault(x => !string.IsNullOrEmpty(x));
+                if (!string.IsNullOrEmpty(filterDefinition))
+                    sb.AppendFormat(".HasFilter(@\"{0}\")", filterDefinition.Replace("\"", "\"\""));
+
                 sb.Append(";");
                 indexes.Add(sb.ToString());
             }

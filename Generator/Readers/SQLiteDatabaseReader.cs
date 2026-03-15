@@ -152,7 +152,8 @@ SELECT 'main' AS TableSchema,
        0 AS IsUnique,
        0 AS IsPrimaryKey,
        0 AS IsUniqueConstraint,
-       0 as IsClustered
+       0 as IsClustered,
+       '' AS FilterDefinition
 FROM split s
 WHERE ColumnName != ''";
         }

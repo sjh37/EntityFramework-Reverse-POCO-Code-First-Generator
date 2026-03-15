@@ -5054,6 +5054,7 @@ namespace TestDatabaseStandard
         public int BestHolidayTypeId { get; set; } // BestHolidayTypeId (Primary key)
         public int BankId { get; set; } // BankId
         public int CarId { get; set; } // CarId
+        public DateTime? DeletedAt { get; set; } // DeletedAt
     }
 
     // The table 'NoPrimaryKeys' is not usable by entity framework because it
@@ -6840,9 +6841,10 @@ namespace TestDatabaseStandard
             builder.Property(x => x.BestHolidayTypeId).HasColumnName(@"BestHolidayTypeId").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.BankId).HasColumnName(@"BankId").HasColumnType("int").IsRequired();
             builder.Property(x => x.CarId).HasColumnName(@"CarId").HasColumnType("int").IsRequired();
+            builder.Property(x => x.DeletedAt).HasColumnName(@"DeletedAt").HasColumnType("datetime").IsRequired(false);
 
             builder.HasIndex(x => x.BestHolidayTypeId).HasDatabaseName("IX_MultipleKeys_BestHolidayType");
-            builder.HasIndex(x => new { x.BestHolidayTypeId, x.BankId }).HasDatabaseName("IX_MultipleKeys_Holiday_Bank").IsUnique();
+            builder.HasIndex(x => new { x.BestHolidayTypeId, x.BankId }).HasDatabaseName("IX_MultipleKeys_Holiday_Bank").IsUnique().HasFilter(@"([DeletedAt] IS NULL)");
             builder.HasIndex(x => x.FavouriteColourId).HasDatabaseName("UC_MultipleKeys_FavouriteColour").IsUnique();
         }
     }

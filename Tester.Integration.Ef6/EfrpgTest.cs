@@ -3656,6 +3656,8 @@ namespace Tester.Integration.Ef6
         public const string BankIdField = "BankId";
         public int CarId { get; set; } // CarId
         public const string CarIdField = "CarId";
+        public DateTime? DeletedAt { get; set; } // DeletedAt
+        public const string DeletedAtField = "DeletedAt";
     }
 
     // The table 'NoPrimaryKeys' is not usable by entity framework because it
@@ -5822,6 +5824,7 @@ namespace Tester.Integration.Ef6
             Property(x => x.BestHolidayTypeId).HasColumnName(@"BestHolidayTypeId").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(x => x.BankId).HasColumnName(@"BankId").HasColumnType("int").IsRequired();
             Property(x => x.CarId).HasColumnName(@"CarId").HasColumnType("int").IsRequired();
+            Property(x => x.DeletedAt).HasColumnName(@"DeletedAt").HasColumnType("datetime").IsOptional();
         }
     }
 

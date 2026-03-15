@@ -311,7 +311,8 @@ SELECT  SCHEMA_NAME(t.schema_id) AS TableSchema,
         FROM   sys.index_columns i
         WHERE  i.object_id = ind.object_id
             AND i.index_id = ind.index_id
-    ) AS ColumnCount
+    ) AS ColumnCount,
+    ISNULL(ind.filter_definition, '') AS FilterDefinition
 FROM    sys.tables t
     INNER JOIN sys.indexes ind
         ON ind.object_id = t.object_id
