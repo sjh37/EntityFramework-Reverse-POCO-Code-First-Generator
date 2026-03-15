@@ -1498,14 +1498,22 @@ namespace Efrpg.Generators
                 if (!string.IsNullOrWhiteSpace(header))
                     _fileManagementService.WriteLine(header.Trim());
 
-                var usings = codeGenerator.GenerateUsings(code.GetUsings());
+                var fileUsings = code.GetUsings();
+                if (Settings.UseFolderNameInNamespace)
+                {
+                    var ownNs = _fileHeaderFooter.GetNamespaceName(code.SubFolder);
+                    fileUsings = fileUsings.Where(u => u != ownNs).ToList();
+                }
+                var usings = codeGenerator.GenerateUsings(fileUsings);
                 if (!string.IsNullOrWhiteSpace(usings))
                 {
                     _fileManagementService.WriteLine("");
                     _fileManagementService.WriteLine(usings.Trim());
                 }
 
-                var ns = _fileHeaderFooter.Namespace;
+                var ns = Settings.UseFolderNameInNamespace
+                    ? _fileHeaderFooter.GetNamespaceBlock(code.SubFolder)
+                    : _fileHeaderFooter.Namespace;
                 if (!string.IsNullOrWhiteSpace(ns))
                 {
                     _fileManagementService.WriteLine("");

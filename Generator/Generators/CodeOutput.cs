@@ -9,6 +9,7 @@ namespace Efrpg.Generators
     {
         public string DbName { get; private set; }
         public string Filename { get; private set; }
+        public string SubFolder { get; private set; }
         public string Region { get; private set; }
         public List<string> Usings { get; private set; }
         public List<string> Code { get; private set; }
@@ -17,6 +18,7 @@ namespace Efrpg.Generators
         {
             DbName = dbName;
             Filename = filename;
+            SubFolder = folder ?? string.Empty;
             Region = region;
             Usings = new List<string>();
             Code = new List<string>();

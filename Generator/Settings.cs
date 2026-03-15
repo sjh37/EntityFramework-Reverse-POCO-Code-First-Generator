@@ -36,10 +36,11 @@ namespace Efrpg
 
         // Generate files in sub-folders ******************************************************************************************************
         // Only activated if Settings.FileManagerType = FileManagerType.EfCore && Settings.GenerateSeparateFiles = true
-        public static string ContextFolder           = ""; // Sub-folder you would like your DbContext to be added to.              e.g. @"Data"
-        public static string InterfaceFolder         = ""; // Sub-folder you would like your Interface to be added to.              e.g. @"Data\Interface"
-        public static string PocoFolder              = ""; // Sub-folder you would like your Poco's to be added to.                 e.g. @"Data\Entities"
-        public static string PocoConfigurationFolder = ""; // Sub-folder you would like your Configuration mappings to be added to. e.g. @"Data\Configuration"
+        public static string ContextFolder              = ""; // Sub-folder you would like your DbContext to be added to.              e.g. @"Data"
+        public static string InterfaceFolder            = ""; // Sub-folder you would like your Interface to be added to.              e.g. @"Data\Interface"
+        public static string PocoFolder                 = ""; // Sub-folder you would like your Poco's to be added to.                 e.g. @"Data\Entities"
+        public static string PocoConfigurationFolder    = ""; // Sub-folder you would like your Configuration mappings to be added to. e.g. @"Data\Configuration"
+        public static bool   UseFolderNameInNamespace   = false; // If true, appends the sub-folder name to the namespace of each generated file. e.g. PocoFolder = "Entities" => namespace MyProject.Entities
 
 
         public static int    CommandTimeout                         = 600; // SQL Command timeout in seconds. 600 is 10 minutes, 0 will wait indefinitely. Some databases can be slow retrieving schema information.

@@ -196,6 +196,29 @@ namespace Efrpg.Generators
             if (Settings.ElementsToGenerate.HasFlag(Elements.Context) &&
                 (!Settings.ElementsToGenerate.HasFlag(Elements.PocoConfiguration) && !string.IsNullOrWhiteSpace(Settings.PocoConfigurationNamespace)))
                 _globalUsings.Add(Settings.PocoConfigurationNamespace);
+
+            if (Settings.UseFolderNameInNamespace && Settings.UseNamespace && Settings.GenerateSeparateFiles)
+            {
+                // When folder names are appended to namespaces, each file needs using statements
+                // for all the other folder-derived namespaces so cross-folder references compile.
+                var baseNs = (Settings.Namespace + _filter.SubNamespace).Trim().Replace(' ', '_');
+                AddFolderNamespaceUsing(baseNs, Settings.ContextFolder);
+                AddFolderNamespaceUsing(baseNs, Settings.InterfaceFolder);
+                AddFolderNamespaceUsing(baseNs, Settings.PocoFolder);
+                AddFolderNamespaceUsing(baseNs, Settings.PocoConfigurationFolder);
+            }
+        }
+
+        private void AddFolderNamespaceUsing(string baseNs, string folder)
+        {
+            if (string.IsNullOrWhiteSpace(folder))
+                return;
+            var folderNs = folder.Trim('\\', '/').Replace('\\', '.').Replace('/', '.');
+            if (string.IsNullOrWhiteSpace(folderNs))
+                return;
+            var ns = baseNs + "." + folderNs;
+            if (!_globalUsings.Contains(ns))
+                _globalUsings.Add(ns);
         }
 
         private bool CanWriteInterface()

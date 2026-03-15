@@ -4,8 +4,11 @@
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Tester.Integration.EFCore8.Single_context_many_files.Configuration;
+using Tester.Integration.EFCore8.Single_context_many_files.Contexts;
+using Tester.Integration.EFCore8.Single_context_many_files.Interfaces;
 
-namespace Tester.Integration.EFCore8.Single_context_many_files
+namespace Tester.Integration.EFCore8.Single_context_many_files.Entities
 {
     public class GetSmallDecimalTestReturnModel
     {

@@ -84,10 +84,11 @@ namespace BuildTT
     // Generate files in sub-folders ******************************************************************************************************
     if (Settings.GenerateSeparateFiles && Settings.FileManagerType == FileManagerType.EfCore)
     {
-        Settings.ContextFolder           = @"""";              // Sub-folder you would like your DbContext to be added to.              e.g. @""Data""
-        Settings.InterfaceFolder         = @""Interface"";     // Sub-folder you would like your Interface to be added to.              e.g. @""Data\Interface""
-        Settings.PocoFolder              = @""Entities"";      // Sub-folder you would like your Poco's to be added to.                 e.g. @""Data\Entities""
-        Settings.PocoConfigurationFolder = @""Configuration""; // Sub-folder you would like your Configuration mappings to be added to. e.g. @""Data\Configuration""
+        Settings.ContextFolder              = @"""";              // Sub-folder you would like your DbContext to be added to.              e.g. @""Data""
+        Settings.InterfaceFolder            = @""Interface"";     // Sub-folder you would like your Interface to be added to.              e.g. @""Data\Interface""
+        Settings.PocoFolder                 = @""Entities"";      // Sub-folder you would like your Poco's to be added to.                 e.g. @""Data\Entities""
+        Settings.PocoConfigurationFolder    = @""Configuration""; // Sub-folder you would like your Configuration mappings to be added to. e.g. @""Data\Configuration""
+        Settings.UseFolderNameInNamespace   = false;              // If true, appends the sub-folder name to the namespace. e.g. PocoFolder = ""Entities"" => namespace MyProject.Entities
     }
 
     // Other settings *********************************************************************************************************************

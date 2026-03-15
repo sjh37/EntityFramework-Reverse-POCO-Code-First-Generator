@@ -13,8 +13,11 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using Tester.Integration.EFCore8.Single_context_many_files.Configuration;
+using Tester.Integration.EFCore8.Single_context_many_files.Entities;
+using Tester.Integration.EFCore8.Single_context_many_files.Interfaces;
 
-namespace Tester.Integration.EFCore8.Single_context_many_files
+namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
 {
     public class EfCoreDbContext : DbContext, IEfCoreDbContext
     {

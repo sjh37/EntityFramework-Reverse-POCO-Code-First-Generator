@@ -12,8 +12,11 @@ using System.Linq.Expressions;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using Tester.Integration.EFCore8.Single_context_many_files.Configuration;
+using Tester.Integration.EFCore8.Single_context_many_files.Contexts;
+using Tester.Integration.EFCore8.Single_context_many_files.Entities;
 
-namespace Tester.Integration.EFCore8.Single_context_many_files
+namespace Tester.Integration.EFCore8.Single_context_many_files.Interfaces
 {
     public interface IEfCoreDbContext : IDisposable
     {

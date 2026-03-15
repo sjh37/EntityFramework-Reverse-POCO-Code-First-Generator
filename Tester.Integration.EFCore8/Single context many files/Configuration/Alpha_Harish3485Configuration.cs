@@ -4,8 +4,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.Text.Json.Serialization;
+using Tester.Integration.EFCore8.Single_context_many_files.Contexts;
+using Tester.Integration.EFCore8.Single_context_many_files.Entities;
+using Tester.Integration.EFCore8.Single_context_many_files.Interfaces;
 
-namespace Tester.Integration.EFCore8.Single_context_many_files
+namespace Tester.Integration.EFCore8.Single_context_many_files.Configuration
 {
     // Harish3485
     public class Alpha_Harish3485Configuration : IEntityTypeConfiguration<Alpha_Harish3485>

@@ -22,12 +22,13 @@
 
     // Generate files in sub-folders ******************************************************************************************************
     // Only activated if Settings.GenerateSeparateFiles = true && Settings.FileManagerType = FileManagerType.EfCore
-    Settings.ContextFolder           = @"Contexts";      // Sub-folder you would like your DbContext to be added to.              e.g. @"Data"
-    Settings.InterfaceFolder         = @"Interfaces";    // Sub-folder you would like your Interface to be added to.              e.g. @"Data\Interface"
-    Settings.PocoFolder              = @"Entities";      // Sub-folder you would like your Poco's to be added to.                 e.g. @"Data\Entities"
-    Settings.PocoConfigurationFolder = @"Configuration"; // Sub-folder you would like your Configuration mappings to be added to. e.g. @"Data\Configuration"
+    Settings.ContextFolder            = @"Contexts";      // Sub-folder you would like your DbContext to be added to.              e.g. @"Data"
+    Settings.InterfaceFolder          = @"Interfaces";    // Sub-folder you would like your Interface to be added to.              e.g. @"Data\Interface"
+    Settings.PocoFolder               = @"Entities";      // Sub-folder you would like your Poco's to be added to.                 e.g. @"Data\Entities"
+    Settings.PocoConfigurationFolder  = @"Configuration"; // Sub-folder you would like your Configuration mappings to be added to. e.g. @"Data\Configuration"
+    Settings.UseFolderNameInNamespace = true;             // If true, appends the sub-folder name to the namespace. e.g. PocoFolder = "Entities" => namespace MyProject.Entities
 
-    Settings.Enumerations = new List<EnumerationSettings>
+Settings.Enumerations = new List<EnumerationSettings>
     {
         // Example
         new EnumerationSettings
