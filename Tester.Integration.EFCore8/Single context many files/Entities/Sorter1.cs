@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Tester.Integration.EFCore8.Single_context_many_files.Entities;
 
 namespace Tester.Integration.EFCore8.Single_context_many_files
 {

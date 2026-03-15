@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 using System;
 using System.Linq;
-using Tester.Integration.EFCore8.Single_context_many_files;
+using Tester.Integration.EFCore8.Single_context_many_files.Contexts;
 
 namespace Tester.Integration.EFCore8;
 
