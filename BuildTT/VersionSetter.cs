@@ -1,6 +1,7 @@
 using System.IO;
 using System.IO.Compression;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace BuildTT
 {
@@ -16,9 +17,10 @@ namespace BuildTT
         }
 
         public void SetVersions()
-        { 
+        {
             UpdateVstemplate();
             UpdateVsixmanifest();
+            UpdateEfrpgToolVersion();
 
             DeleteFiles(Path.Combine(_root, "ItemTemplate\\ItemTemplates"), "*");
             var zipFile = Path.Combine(_root, "ItemTemplate\\ItemTemplates\\efrpoco.zip");
@@ -28,6 +30,14 @@ namespace BuildTT
             File.Copy(zipFile, Path.Combine(_root, "EntityFramework Reverse POCO Generator\\ItemTemplates\\efrpoco.zip"), true);
             File.Copy(zipFile, Path.Combine(_root, "EntityFramework Reverse POCO Generator\\ItemTemplates\\CSharp\\Data\\1033\\efrpoco.zip"), true);
             File.Copy(zipFile, Path.Combine(_root, "EntityFramework Reverse POCO Generator\\ItemTemplates\\CSharp\\1033\\efrpoco.zip"), true);
+        }
+
+        private void UpdateEfrpgToolVersion()
+        {
+            var filename = Path.Combine(_root, "Efrpg\\Efrpg.csproj");
+            var content  = File.ReadAllText(filename);
+            content      = Regex.Replace(content, "<Version>.*?</Version>", $"<Version>{_version}</Version>");
+            File.WriteAllText(filename, content);
         }
 
         private void UpdateVstemplate()
