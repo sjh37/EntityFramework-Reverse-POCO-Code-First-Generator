@@ -111,7 +111,7 @@ namespace Efrpg.Generators
             
                 if ((c.Precision > 0 || c.Scale > 0) && (c.SqlPropertyType == "decimal" || c.SqlPropertyType == "numeric"))
                     columnTypeParameters = $"({c.Precision},{c.Scale})";
-                else if (!c.IsMaxLength && c.MaxLength > 0 && !doNotSpecifySize && !isVectorType) // Vector types already include dimension in SqlPropertyType
+                else if (!c.IsMaxLength && c.MaxLength > 0 && !doNotSpecifySize && !isVectorType && !c.IsRowVersion) // Vector types already include dimension in SqlPropertyType; timestamp/rowversion width is invalid in SQL Server
                     columnTypeParameters = $"({c.MaxLength})";
 
                 if (Column.ExcludedHasColumnType.Contains(c.SqlPropertyType))
@@ -141,7 +141,7 @@ namespace Efrpg.Generators
             if (!c.IsUnicode)
                 sb.Append(".IsUnicode(false)");
 
-            if (!c.IsMaxLength && c.MaxLength > 0 && !doNotSpecifySize && !isVectorType) // Vector types use dimension in HasColumnType, not HasMaxLength
+            if (!c.IsMaxLength && c.MaxLength > 0 && !doNotSpecifySize && !isVectorType && !c.IsRowVersion) // Vector types use dimension in HasColumnType, not HasMaxLength; timestamp/rowversion width is invalid in SQL Server
                 sb.AppendFormat(".HasMaxLength({0})", c.MaxLength);
 
             //if (c.IsMaxLength)
