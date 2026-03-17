@@ -16,6 +16,10 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Configuration
         public void Configure(EntityTypeBuilder<ColumnNameAndType> builder)
         {
             builder.ToTable("ColumnNameAndTypes", "dbo");
+            builder.HasComment(@"This is to document the
+
+
+        table with poor column name choices");
             builder.HasKey(x => x.C36).HasName("PK_ColumnNameAndTypes").IsClustered();
 
             builder.Property(x => x.C36).HasColumnName(@"$").HasColumnType("int").IsRequired().ValueGeneratedNever();

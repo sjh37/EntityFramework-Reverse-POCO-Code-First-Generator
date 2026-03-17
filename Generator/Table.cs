@@ -5,6 +5,7 @@ using System.Text;
 using Efrpg.Filtering;
 using Efrpg.ForeignKeyStrategies;
 using Efrpg.Readers;
+using Efrpg.Templates;
 
 namespace Efrpg
 {
@@ -14,6 +15,7 @@ namespace Efrpg
         public string Type;
         public string Suffix;
         public List<string> ExtendedProperty;
+        public string Description; // Raw description text used for HasComment / [Comment]
         public bool IsMapping;
         public bool IsView;
         public bool IsSynonym;
@@ -307,6 +309,14 @@ namespace Efrpg
 
             if (Settings.UseDataAnnotations)
                 sb.AppendLine($"[Table(\"{DbName}\", Schema = \"{Schema.DbName}\")]");
+
+            if (Settings.UseDataAnnotations &&
+                Settings.GeneratorType == GeneratorType.EfCore &&
+                Settings.IncludeExtendedPropertyComments != CommentsStyle.None &&
+                !string.IsNullOrEmpty(Description))
+            {
+                sb.AppendLine($"[Comment(@\"{Description.Replace("\"", "\"\"")}\")]");
+            }
 
             return sb.ToString();
         }

@@ -1599,6 +1599,9 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
         builder.{{ToTableOrView}}(""{{Name}}"");{{#newline}}
 {{/if}}
 {{/if}}
+{{#if HasTableComment}}
+        builder.HasComment(@""{{TableComment}}"");{{#newline}}
+{{/if}}
         {{PrimaryKeyNameHumanCase}}{{#newline}}{{#newline}}
 
 {{#each Columns}}

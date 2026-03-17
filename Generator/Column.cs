@@ -29,6 +29,7 @@ namespace Efrpg
         public int PrimaryKeyOrdinal;
         public string ExtendedProperty;
         public Dictionary<string, string> ExtendedProperties = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        public string Description; // Raw description text used for HasComment / [Comment]
         public string SummaryComments;
         public string InlineComments;
         public string UniqueIndexName;

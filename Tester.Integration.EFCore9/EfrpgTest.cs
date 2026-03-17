@@ -6316,6 +6316,7 @@ namespace V9EfrpgTest
         public void Configure(EntityTypeBuilder<CodeObject> builder)
         {
             builder.ToTable("CodeObject", "dbo");
+            builder.HasComment(@"This is a test");
             builder.HasKey(x => x.CodeObjectNo).HasName("aaaaaObject_PK");
 
             builder.Property(x => x.CodeObjectNo).HasColumnName(@"codeObjectNo").HasColumnType("int").IsRequired().ValueGeneratedNever();
@@ -6371,6 +6372,10 @@ namespace V9EfrpgTest
         public void Configure(EntityTypeBuilder<ColumnNameAndType> builder)
         {
             builder.ToTable("ColumnNameAndTypes", "dbo");
+            builder.HasComment(@"This is to document the
+
+
+        table with poor column name choices");
             builder.HasKey(x => x.C36).HasName("PK_ColumnNameAndTypes").IsClustered();
 
             builder.Property(x => x.C36).HasColumnName(@"$").HasColumnType("int").IsRequired().ValueGeneratedNever();

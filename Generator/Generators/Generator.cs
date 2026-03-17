@@ -736,6 +736,8 @@ namespace Efrpg.Generators
                     {
                         // Table level extended comment
                         t.ExtendedProperty.Add(multiLine.Replace(extendedProperty.ExtendedProperty, "\r\n    /// "));
+                        if (!extendedProperty.PropertyName.StartsWith("JsonProperty", StringComparison.InvariantCultureIgnoreCase))
+                            t.Description = extendedProperty.ExtendedProperty;
                         continue;
                     }
 
@@ -757,6 +759,8 @@ namespace Efrpg.Generators
                             col.ExtendedProperty = multiLine.Replace(extendedProperty.ExtendedProperty, "\r\n        /// ");
                         else
                             col.ExtendedProperty = whiteSpace.Replace(multiLine.Replace(extendedProperty.ExtendedProperty, " "), " ");
+
+                        col.Description = extendedProperty.ExtendedProperty;
                     }
                 }
             }

@@ -176,6 +176,10 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesCherry
         public void Configure(EntityTypeBuilder<ColumnNameAndType> builder)
         {
             builder.ToTable("ColumnNameAndTypes", "dbo");
+            builder.HasComment(@"This is to document the
+
+
+        table with poor column name choices");
             builder.HasKey(x => x.Dollar).HasName("PK_ColumnNameAndTypes").IsClustered();
 
             builder.Property(x => x.Dollar).HasColumnName(@"$").HasColumnType("int").IsRequired().ValueGeneratedNever();

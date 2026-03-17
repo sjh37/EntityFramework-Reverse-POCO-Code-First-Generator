@@ -16,6 +16,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Configuration
         public void Configure(EntityTypeBuilder<CodeObject> builder)
         {
             builder.ToTable("CodeObject", "dbo");
+            builder.HasComment(@"This is a test");
             builder.HasKey(x => x.CodeObjectNo).HasName("aaaaaObject_PK");
 
             builder.Property(x => x.CodeObjectNo).HasColumnName(@"codeObjectNo").HasColumnType("int").IsRequired().ValueGeneratedNever();

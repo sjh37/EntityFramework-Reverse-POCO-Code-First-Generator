@@ -4780,6 +4780,7 @@ namespace Efrpg.V3TestE8Da
     /// This is a test
     /// </summary>
     [Table("CodeObject", Schema = "dbo")]
+    [Comment(@"This is a test")]
     public class CodeObject
     {
         [Key, Column(Order = 1)]
@@ -4935,6 +4936,10 @@ namespace Efrpg.V3TestE8Da
     /// table with poor column name choices
     /// </summary>
     [Table("ColumnNameAndTypes", Schema = "dbo")]
+    [Comment(@"This is to document the
+
+
+        table with poor column name choices")]
     public class ColumnNameAndType
     {
         [Key, Column(Order = 1)]

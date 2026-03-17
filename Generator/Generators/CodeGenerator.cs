@@ -709,7 +709,12 @@ namespace Efrpg.Generators
                 MappingConfiguration = table.MappingConfiguration,
                 ConfigurationClassesArePartial = Settings.ConfigurationClassesArePartial(),
                 Indexes = indexes,
-                HasIndexes = hasIndexes
+                HasIndexes = hasIndexes,
+                HasTableComment = !Settings.UseDataAnnotations &&
+                                  Settings.GeneratorType == GeneratorType.EfCore &&
+                                  Settings.IncludeExtendedPropertyComments != CommentsStyle.None &&
+                                  !string.IsNullOrEmpty(table.Description),
+                TableComment = table.Description?.Replace("\"", "\"\"")
             };
 
             var co = new CodeOutput(table.DbName, filename, null, Settings.PocoConfigurationFolder, _globalUsings);

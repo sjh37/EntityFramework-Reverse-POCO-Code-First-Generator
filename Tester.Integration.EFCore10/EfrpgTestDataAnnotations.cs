@@ -4612,6 +4612,7 @@ namespace V10EfrpgTestDataAnnotations
     /// This is a test
     /// </summary>
     [Table("CodeObject", Schema = "dbo")]
+    [Comment(@"This is a test")]
     public class CodeObject
     {
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
@@ -4695,6 +4696,10 @@ namespace V10EfrpgTestDataAnnotations
     /// table with poor column name choices
     /// </summary>
     [Table("ColumnNameAndTypes", Schema = "dbo")]
+    [Comment(@"This is to document the
+
+
+        table with poor column name choices")]
     public class ColumnNameAndType
     {
         [DatabaseGenerated(DatabaseGeneratedOption.None)]

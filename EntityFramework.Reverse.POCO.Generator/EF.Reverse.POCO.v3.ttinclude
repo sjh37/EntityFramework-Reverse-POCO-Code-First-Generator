@@ -1421,6 +1421,7 @@
         public int PrimaryKeyOrdinal;
         public string ExtendedProperty;
         public Dictionary<string, string> ExtendedProperties = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        public string Description; // Raw description text used for HasComment / [Comment]
         public string SummaryComments;
         public string InlineComments;
         public string UniqueIndexName;
@@ -4391,7 +4392,12 @@
                 MappingConfiguration = table.MappingConfiguration,
                 ConfigurationClassesArePartial = Settings.ConfigurationClassesArePartial(),
                 Indexes = indexes,
-                HasIndexes = hasIndexes
+                HasIndexes = hasIndexes,
+                HasTableComment = !Settings.UseDataAnnotations &&
+                                  Settings.GeneratorType == GeneratorType.EfCore &&
+                                  Settings.IncludeExtendedPropertyComments != CommentsStyle.None &&
+                                  !string.IsNullOrEmpty(table.Description),
+                TableComment = table.Description?.Replace("\"", "\"\"")
             };
 
             var co = new CodeOutput(table.DbName, filename, null, Settings.PocoConfigurationFolder, _globalUsings);
@@ -5351,6 +5357,8 @@
                     {
                         // Table level extended comment
                         t.ExtendedProperty.Add(multiLine.Replace(extendedProperty.ExtendedProperty, "\r\n    /// "));
+                        if (!extendedProperty.PropertyName.StartsWith("JsonProperty", StringComparison.InvariantCultureIgnoreCase))
+                            t.Description = extendedProperty.ExtendedProperty;
                         continue;
                     }
 
@@ -5372,6 +5380,8 @@
                             col.ExtendedProperty = multiLine.Replace(extendedProperty.ExtendedProperty, "\r\n        /// ");
                         else
                             col.ExtendedProperty = whiteSpace.Replace(multiLine.Replace(extendedProperty.ExtendedProperty, " "), " ");
+
+                        col.Description = extendedProperty.ExtendedProperty;
                     }
                 }
             }
@@ -6687,6 +6697,13 @@
                 else
                     c.InlineComments += ". " + c.ExtendedProperty;
             }
+
+            if (Settings.UseDataAnnotations &&
+                Settings.IncludeExtendedPropertyComments != CommentsStyle.None &&
+                !string.IsNullOrEmpty(c.Description))
+            {
+                c.Attributes.Add($"[Comment(@\"{c.Description.Replace("\"", "\"\"")}\")]");
+            }
         }
 
         protected override void SetupConfig(Column c)
@@ -6811,6 +6828,13 @@
                 sb.AppendFormat(".HasDefaultValueSql(@\"{0}\")", c.HasDefaultValueSql.Replace("\"", "\"\""));
             else if (Settings.GenerateHasDefaultValueSql && !string.IsNullOrEmpty(c.DefaultSql))
                 sb.AppendFormat(".HasDefaultValueSql(@\"{0}\")", c.DefaultSql.Replace("\"", "\"\""));
+
+            if (!Settings.UseDataAnnotations &&
+                Settings.IncludeExtendedPropertyComments != CommentsStyle.None &&
+                !string.IsNullOrEmpty(c.Description))
+            {
+                sb.AppendFormat(".HasComment(@\"{0}\")", c.Description.Replace("\"", "\"\""));
+            }
 
             var config = sb.ToString();
             if (!string.IsNullOrEmpty(config) && !c.ExcludePropertyConfiguration)
@@ -18167,6 +18191,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public string Type;
         public string Suffix;
         public List<string> ExtendedProperty;
+        public string Description; // Raw description text used for HasComment / [Comment]
         public bool IsMapping;
         public bool IsView;
         public bool IsSynonym;
@@ -18461,6 +18486,14 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             if (Settings.UseDataAnnotations)
                 sb.AppendLine($"[Table(\"{DbName}\", Schema = \"{Schema.DbName}\")]");
 
+            if (Settings.UseDataAnnotations &&
+                Settings.GeneratorType == GeneratorType.EfCore &&
+                Settings.IncludeExtendedPropertyComments != CommentsStyle.None &&
+                !string.IsNullOrEmpty(Description))
+            {
+                sb.AppendLine($"[Comment(@\"{Description.Replace("\"", "\"\"")}\")]");
+            }
+
             return sb.ToString();
         }
 
@@ -18672,6 +18705,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public string ToTableOrView { get; set; }
         public bool UsesDictionary { get; set; }
         public bool HasSpatial { get; set; }
+        public bool HasTableComment { get; set; }
+        public string TableComment { get; set; }
     }
 
     public class PocoModel
@@ -21738,6 +21773,9 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
 {{#else}}
         builder.{{ToTableOrView}}(""{{Name}}"");{{#newline}}
 {{/if}}
+{{/if}}
+{{#if HasTableComment}}
+        builder.HasComment(@""{{TableComment}}"");{{#newline}}
 {{/if}}
         {{PrimaryKeyNameHumanCase}}{{#newline}}{{#newline}}
 

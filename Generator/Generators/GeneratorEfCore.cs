@@ -66,6 +66,13 @@ namespace Efrpg.Generators
                 else
                     c.InlineComments += ". " + c.ExtendedProperty;
             }
+
+            if (Settings.UseDataAnnotations &&
+                Settings.IncludeExtendedPropertyComments != CommentsStyle.None &&
+                !string.IsNullOrEmpty(c.Description))
+            {
+                c.Attributes.Add($"[Comment(@\"{c.Description.Replace("\"", "\"\"")}\")]");
+            }
         }
 
         protected override void SetupConfig(Column c)
@@ -190,6 +197,13 @@ namespace Efrpg.Generators
                 sb.AppendFormat(".HasDefaultValueSql(@\"{0}\")", c.HasDefaultValueSql.Replace("\"", "\"\""));
             else if (Settings.GenerateHasDefaultValueSql && !string.IsNullOrEmpty(c.DefaultSql))
                 sb.AppendFormat(".HasDefaultValueSql(@\"{0}\")", c.DefaultSql.Replace("\"", "\"\""));
+
+            if (!Settings.UseDataAnnotations &&
+                Settings.IncludeExtendedPropertyComments != CommentsStyle.None &&
+                !string.IsNullOrEmpty(c.Description))
+            {
+                sb.AppendFormat(".HasComment(@\"{0}\")", c.Description.Replace("\"", "\"\""));
+            }
 
             var config = sb.ToString();
             if (!string.IsNullOrEmpty(config) && !c.ExcludePropertyConfiguration)
