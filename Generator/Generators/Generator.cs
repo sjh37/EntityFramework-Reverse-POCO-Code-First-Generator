@@ -283,8 +283,10 @@ namespace Efrpg.Generators
 
                 AddTablesToFilters(rawTables);
 
-                if (Settings.IncludeExtendedPropertyComments != CommentsStyle.None)
-                    AddExtendedPropertiesToFilters(DatabaseReader.ReadExtendedProperties());
+                // Always read extended properties so they are available in the UpdateColumn delegate
+                // (e.g. "if (column.ExtendedProperty == \"HIDE\") column.Hidden = true;") and for
+                // ApplyJsonPropertyNameAttribute, regardless of whether comments are being generated.
+                AddExtendedPropertiesToFilters(DatabaseReader.ReadExtendedProperties());
 
                 RunUpdateDelegates();
 
