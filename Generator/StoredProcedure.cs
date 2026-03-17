@@ -257,20 +257,25 @@ namespace Efrpg
             var sb = new StringBuilder(1024);
             foreach (var p in Parameters.OrderBy(x => x.Ordinal))
             {
-                var isNullable = !Column.StoredProcedureNotNullable.Contains(p.PropertyType.ToLower());
+                var lowerPropertyType = p.PropertyType.ToLower();
+                var isNullable = !Column.StoredProcedureNotNullable.Contains(lowerPropertyType);
                 var getValueOrDefault = isNullable ? ".GetValueOrDefault()" : string.Empty;
-                var isGeography = p.PropertyType == "DbGeography";
+                var isDbGeography = lowerPropertyType == "dbgeography";
+                var isDbGeometry  = lowerPropertyType == "dbgeometry";
+                var isSpatialEf6  = isDbGeography || isDbGeometry;
+                var spatialSqlType = isDbGeography ? "SqlGeography" : "SqlGeometry";
+                var spatialUdtName = isDbGeography ? "geography"    : "geometry";
 
                 sb.AppendLine(
                     string.Format("        var {0} = new {1}", WriteStoredProcSqlParameterName(p), Settings.SqlParameter())
                     + string.Format(" {{ ParameterName = \"{0}\", ", p.Name)
-                    + (isGeography ? "UdtTypeName = \"geography\"" : string.Format("SqlDbType = SqlDbType.{0}", p.SqlDbType))
+                    + (isSpatialEf6 ? string.Format("UdtTypeName = \"{0}\"", spatialUdtName) : string.Format("SqlDbType = SqlDbType.{0}", p.SqlDbType))
                     + ", Direction = ParameterDirection."
                     + (p.Mode == StoredProcedureParameterMode.In ? "Input" : "Output")
                     + (p.Mode == StoredProcedureParameterMode.In
-                        ? ", Value = " + (isGeography
-                            ? string.Format("Microsoft.SqlServer.Types.SqlGeography.Parse({0}.AsText())", p.NameHumanCase)
-                              : p.NameHumanCase + getValueOrDefault)
+                        ? ", Value = " + (isSpatialEf6
+                            ? string.Format("{0} == null ? (object)DBNull.Value : Microsoft.SqlServer.Types.{1}.Parse({0}.AsText())", p.NameHumanCase, spatialSqlType)
+                            : p.NameHumanCase + getValueOrDefault)
                         : string.Empty)
                     + (p.MaxLength != 0 ? ", Size = " + p.MaxLength : string.Empty)
                     + ((p.Precision > 0 || p.Scale > 0) ? ", Precision = " + p.Precision + ", Scale = " + p.Scale : string.Empty)

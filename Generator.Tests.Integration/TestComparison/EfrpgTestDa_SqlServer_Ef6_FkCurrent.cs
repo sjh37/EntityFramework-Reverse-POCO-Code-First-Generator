@@ -1679,11 +1679,11 @@ namespace Efrpg.V3TestE1Da
 
         public int SpatialTypesWithParams(DbGeometry geometry, DbGeography geography)
         {
-            var geometryParam = new SqlParameter { ParameterName = "@geometry", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = geometry, Size = -1 };
+            var geometryParam = new SqlParameter { ParameterName = "@geometry", UdtTypeName = "geometry", Direction = ParameterDirection.Input, Value = geometry == null ? (object)DBNull.Value : Microsoft.SqlServer.Types.SqlGeometry.Parse(geometry.AsText()), Size = -1 };
             if (geometryParam.Value == null)
                 geometryParam.Value = DBNull.Value;
 
-            var geographyParam = new SqlParameter { ParameterName = "@geography", UdtTypeName = "geography", Direction = ParameterDirection.Input, Value = Microsoft.SqlServer.Types.SqlGeography.Parse(geography.AsText()), Size = -1 };
+            var geographyParam = new SqlParameter { ParameterName = "@geography", UdtTypeName = "geography", Direction = ParameterDirection.Input, Value = geography == null ? (object)DBNull.Value : Microsoft.SqlServer.Types.SqlGeography.Parse(geography.AsText()), Size = -1 };
             if (geographyParam.Value == null)
                 geographyParam.Value = DBNull.Value;
 
@@ -1696,11 +1696,11 @@ namespace Efrpg.V3TestE1Da
 
         public async Task<int> SpatialTypesWithParamsAsync(DbGeometry geometry, DbGeography geography, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var geometryParam = new SqlParameter { ParameterName = "@geometry", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = geometry, Size = -1 };
+            var geometryParam = new SqlParameter { ParameterName = "@geometry", UdtTypeName = "geometry", Direction = ParameterDirection.Input, Value = geometry == null ? (object)DBNull.Value : Microsoft.SqlServer.Types.SqlGeometry.Parse(geometry.AsText()), Size = -1 };
             if (geometryParam.Value == null)
                 geometryParam.Value = DBNull.Value;
 
-            var geographyParam = new SqlParameter { ParameterName = "@geography", UdtTypeName = "geography", Direction = ParameterDirection.Input, Value = Microsoft.SqlServer.Types.SqlGeography.Parse(geography.AsText()), Size = -1 };
+            var geographyParam = new SqlParameter { ParameterName = "@geography", UdtTypeName = "geography", Direction = ParameterDirection.Input, Value = geography == null ? (object)DBNull.Value : Microsoft.SqlServer.Types.SqlGeography.Parse(geography.AsText()), Size = -1 };
             if (geographyParam.Value == null)
                 geographyParam.Value = DBNull.Value;
 
