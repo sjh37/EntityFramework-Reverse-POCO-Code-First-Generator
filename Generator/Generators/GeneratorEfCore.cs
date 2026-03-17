@@ -88,11 +88,17 @@ namespace Efrpg.Generators
                 }
                 else if (c.IsComputed)
                 {
-                    databaseGeneratedOption = ".ValueGeneratedOnAddOrUpdate()";
+                    if (Settings.UseDataAnnotations)
+                        c.Attributes.Add("[DatabaseGenerated(DatabaseGeneratedOption.Computed)]");
+                    else
+                        databaseGeneratedOption = ".ValueGeneratedOnAddOrUpdate()";
                 }
                 else if (c.IsPrimaryKey)
                 {
-                    databaseGeneratedOption = ".ValueGeneratedNever()";
+                    if (Settings.UseDataAnnotations)
+                        c.Attributes.Add("[DatabaseGenerated(DatabaseGeneratedOption.None)]");
+                    else
+                        databaseGeneratedOption = ".ValueGeneratedNever()";
                 }
             }
 
@@ -122,9 +128,19 @@ namespace Efrpg.Generators
                 if (Settings.IsEfCore8Plus())
                 {
                     if ((c.Precision > 0 || c.Scale > 0) && DatabaseReader.IsPrecisionAndScaleType(c.SqlPropertyType))
-                        sb.AppendFormat(".HasPrecision({0},{1})", c.Precision, c.Scale);
+                    {
+                        if (Settings.UseDataAnnotations)
+                            c.Attributes.Add($"[Precision({c.Precision}, {c.Scale})]");
+                        else
+                            sb.AppendFormat(".HasPrecision({0},{1})", c.Precision, c.Scale);
+                    }
                     else if (c.Precision > 0 && DatabaseReader.IsPrecisionType(c.SqlPropertyType))
-                        sb.AppendFormat(".HasPrecision({0})", c.Precision);
+                    {
+                        if (Settings.UseDataAnnotations)
+                            c.Attributes.Add($"[Precision({c.Precision})]");
+                        else
+                            sb.AppendFormat(".HasPrecision({0})", c.Precision);
+                    }
                 }
 
                 if (Settings.TrimCharFields && c.MaxLength > 1 && c.SqlPropertyType == "char")
@@ -133,15 +149,23 @@ namespace Efrpg.Generators
                 }
             }
 
-            sb.Append(c.IsNullable ? ".IsRequired(false)" : ".IsRequired()");
+            if (c.IsNullable)
+                sb.Append(".IsRequired(false)");
+            else if (!Settings.UseDataAnnotations || c.IsComputed)
+                sb.Append(".IsRequired()");
 
             if (c.IsFixedLength || c.IsRowVersion)
                 sb.Append(".IsFixedLength()");
 
             if (!c.IsUnicode)
-                sb.Append(".IsUnicode(false)");
+            {
+                if (Settings.UseDataAnnotations)
+                    c.Attributes.Add("[Unicode(false)]");
+                else
+                    sb.Append(".IsUnicode(false)");
+            }
 
-            if (!c.IsMaxLength && c.MaxLength > 0 && !doNotSpecifySize && !isVectorType && !c.IsRowVersion) // Vector types use dimension in HasColumnType, not HasMaxLength; timestamp/rowversion width is invalid in SQL Server
+            if (!c.IsMaxLength && c.MaxLength > 0 && !doNotSpecifySize && !isVectorType && !c.IsRowVersion && !Settings.UseDataAnnotations) // Vector types use dimension in HasColumnType, not HasMaxLength; timestamp/rowversion width is invalid in SQL Server
                 sb.AppendFormat(".HasMaxLength({0})", c.MaxLength);
 
             //if (c.IsMaxLength)
@@ -149,11 +173,14 @@ namespace Efrpg.Generators
 
             if (c.IsRowVersion)
             {
-                sb.Append(".IsRowVersion()");
+                if (!Settings.UseDataAnnotations)
+                    sb.Append(".IsRowVersion()");
                 c.IsConcurrencyToken = true;
             }
 
-            if (c.IsConcurrencyToken)
+            // [Timestamp, ConcurrencyCheck] covers both IsRowVersion and IsConcurrencyToken for row version columns.
+            // For manually-set IsConcurrencyToken (not via IsRowVersion), still emit the fluent call.
+            if (c.IsConcurrencyToken && (!Settings.UseDataAnnotations || !c.IsRowVersion))
                 sb.Append(".IsConcurrencyToken()");
 
             if (databaseGeneratedOption != null)

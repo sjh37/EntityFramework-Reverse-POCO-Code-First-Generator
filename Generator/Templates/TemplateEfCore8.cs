@@ -1441,7 +1441,7 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
             if (Settings.IncludeCodeGeneratedAttribute)
                 usings.Add("System.CodeDom.Compiler");
 
-            if (data.HasHierarchyId)
+            if (data.HasHierarchyId || Settings.UseDataAnnotations)
                 usings.Add("Microsoft.EntityFrameworkCore");
 
             if (data.HasSqlVector)

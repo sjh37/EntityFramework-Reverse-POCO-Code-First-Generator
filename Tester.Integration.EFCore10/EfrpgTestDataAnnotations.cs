@@ -4068,7 +4068,10 @@ namespace V10EfrpgTestDataAnnotations
     [Table("AAREF", Schema = "dbo")]
     public class Aaref
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int C1 { get; set; } // C1 (Primary key)
+
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int C2 { get; set; } // C2 (Primary key)
         public DateTime CreatedUtc { get; set; } // CreatedUTC
 
@@ -4091,6 +4094,8 @@ namespace V10EfrpgTestDataAnnotations
     {
         public int Id { get; set; } // ID (Primary key)
         public int OrderId { get; set; } // OrderID
+
+        [Unicode(false)]
         public string? Sku { get; set; } // sku (length: 15)
 
         // Foreign keys
@@ -4160,6 +4165,8 @@ namespace V10EfrpgTestDataAnnotations
     public class Alpha_Workflow
     {
         public int Id { get; set; } // Id (Primary key)
+
+        [Unicode(false)]
         public string? Description { get; set; } // Description (length: 10)
 
         // Reverse navigation
@@ -4180,6 +4187,8 @@ namespace V10EfrpgTestDataAnnotations
     public class AlphaWorkflowSynonym
     {
         public int Id { get; set; } // Id (Primary key)
+
+        [Unicode(false)]
         public string? Description { get; set; } // Description (length: 10)
     }
 
@@ -4187,8 +4196,13 @@ namespace V10EfrpgTestDataAnnotations
     [Table("UserFacilityServiceRole", Schema = "App")]
     public class App_UserFacilityServiceRole
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int UserId { get; set; } // userId (Primary key)
+
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int AppId { get; set; } // appId (Primary key)
+
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int FsrId { get; set; } // fsrId (Primary key)
     }
 
@@ -4222,6 +4236,7 @@ namespace V10EfrpgTestDataAnnotations
     [Table("Attendee", Schema = "dbo")]
     public class Attendee
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public long AttendeeId { get; set; } // AttendeeID (Primary key)
         public string Lastname { get; set; } = null!; // Lastname (length: 50)
         public string Firstname { get; set; } = null!; // Firstname (length: 50)
@@ -4239,6 +4254,7 @@ namespace V10EfrpgTestDataAnnotations
     [Table("BatchTest", Schema = "dbo")]
     public class BatchTest
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public string Code { get; set; } = null!; // code (Primary key) (length: 8)
     }
 
@@ -4287,6 +4303,8 @@ namespace V10EfrpgTestDataAnnotations
     public class Beta_Workflow
     {
         public int Id { get; set; } // Id (Primary key)
+
+        [Unicode(false)]
         public string? Description { get; set; } // Description (length: 10)
     }
 
@@ -4370,7 +4388,10 @@ namespace V10EfrpgTestDataAnnotations
     [Table("BlahBlahLink_v2", Schema = "dbo")]
     public class BlahBlahLinkV2
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int BlahId { get; set; } // BlahID (Primary key)
+
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int BlahId2 { get; set; } // BlahID2 (Primary key)
         public int? Dummy1 { get; set; } // dummy1
         public int Dummy2 { get; set; } // dummy2
@@ -4455,7 +4476,11 @@ namespace V10EfrpgTestDataAnnotations
     {
         public int Id { get; set; } // ID (Primary key)
         public byte Type { get; set; } // Type
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public bool IsCalendar { get; private set; } // IsCalendar
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public bool IsUtilization { get; private set; } // IsUtilization
     }
 
@@ -4463,10 +4488,17 @@ namespace V10EfrpgTestDataAnnotations
     [Table("Car", Schema = "dbo")]
     public class Car
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; } // Id (Primary key)
         public int PrimaryColourId { get; set; } // PrimaryColourId
+
+        [Unicode(false)]
         public string CarMake { get; set; } = null!; // CarMake (length: 255)
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public int? ComputedColumn { get; private set; } // computed_column
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public int ComputedColumnPersisted { get; private set; } // computed_column_persisted
 
         // Reverse navigation
@@ -4493,6 +4525,7 @@ namespace V10EfrpgTestDataAnnotations
     [Table("ClientCreationState", Schema = "dbo")]
     public class ClientCreationState
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; set; } // id (Primary key)
         public bool WebhookSetup { get; set; } // WebhookSetup
         public bool AuthSetup { get; set; } // AuthSetup
@@ -4505,7 +4538,11 @@ namespace V10EfrpgTestDataAnnotations
     {
         public int FileId { get; set; } // FileId (Primary key)
         public string FileName { get; set; } = null!; // FileName (length: 100)
+
+        [Unicode(false)]
         public string FileDescription { get; set; } = null!; // FileDescription (length: 500)
+
+        [Unicode(false)]
         public string FileIdentifier { get; set; } = null!; // FileIdentifier (length: 100)
         public DateTime? ValidStartDate { get; set; } // ValidStartDate
         public DateTime? ValidEndDate { get; set; } // ValidEndDate
@@ -4529,6 +4566,8 @@ namespace V10EfrpgTestDataAnnotations
     public class CmsTag
     {
         public int TagId { get; set; } // TagId (Primary key)
+
+        [Unicode(false)]
         public string TagName { get; set; } = null!; // TagName (length: 100)
 
         // Reverse navigation
@@ -4575,6 +4614,7 @@ namespace V10EfrpgTestDataAnnotations
     [Table("CodeObject", Schema = "dbo")]
     public class CodeObject
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int CodeObjectNo { get; set; } // codeObjectNo (Primary key)
         public int? ApplicationNo { get; set; } // applicationNo
         public int Type { get; set; } // type
@@ -4623,7 +4663,10 @@ namespace V10EfrpgTestDataAnnotations
     [Table("Colour", Schema = "dbo")]
     public class Colour
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; } // Id (Primary key)
+
+        [Unicode(false)]
         public string Name { get; set; } = null!; // Name (length: 255)
 
         // Reverse navigation
@@ -4654,6 +4697,7 @@ namespace V10EfrpgTestDataAnnotations
     [Table("ColumnNameAndTypes", Schema = "dbo")]
     public class ColumnNameAndType
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int C36 { get; set; } // $ (Primary key)
         public int? C37 { get; set; } // %
         public int? C163 { get; set; } // £
@@ -4661,26 +4705,52 @@ namespace V10EfrpgTestDataAnnotations
         public int? Abc4792 { get; set; } // abc/\
         public int? JoeBloggs { get; set; } // joe.bloggs
         public int? SimonHughes { get; set; } // simon-hughes
+
+        [Unicode(false)]
         public string Description { get; set; } // description (length: 20)
         public DateTime SomeDate { get; set; } // someDate
+
+        [Unicode(false)]
         public string? Obs { get; set; } // Obs (length: 50)
+
+        [Unicode(false)]
         public string? Obs1 { get; set; } // Obs1 (length: 50)
+
+        [Unicode(false)]
         public string? Obs2 { get; set; } // Obs2 (length: 50)
+
+        [Unicode(false)]
         public string? Obs3 { get; set; } // Obs3 (length: 50)
         public int? @Static { get; set; } // static
         public int? @Readonly { get; set; } // readonly
         public int? C123Hi { get; set; } // 123Hi
         public float? Areal { get; set; } // areal
+
+        [Precision(53)]
         public double? Afloat { get; set; } // afloat
         public float? Afloat8 { get; set; } // afloat8
         public float? Afloat20 { get; set; } // afloat20
         public float? Afloat24 { get; set; } // afloat24
+
+        [Precision(53)]
         public double? Afloat53 { get; set; } // afloat53
+
+        [Precision(18, 0)]
         public decimal? Adecimal { get; set; } // adecimal
+
+        [Precision(19, 4)]
         public decimal? Adecimal194 { get; set; } // adecimal_19_4
+
+        [Precision(10, 3)]
         public decimal? Adecimal103 { get; set; } // adecimal_10_3
+
+        [Precision(18, 0)]
         public decimal? Anumeric { get; set; } // anumeric
+
+        [Precision(5, 2)]
         public decimal? Anumeric52 { get; set; } // anumeric_5_2
+
+        [Precision(11, 3)]
         public decimal? Anumeric113 { get; set; } // anumeric_11_3
 
         [JsonPropertyName("money")]
@@ -4718,6 +4788,8 @@ namespace V10EfrpgTestDataAnnotations
     public class Country
     {
         public int CountryId { get; set; } // CountryID (Primary key)
+
+        [Unicode(false)]
         public string? Code { get; set; } // Code (length: 12)
 
         // Reverse navigation
@@ -4744,6 +4816,8 @@ namespace V10EfrpgTestDataAnnotations
     public class CrossDatabaseSynonym
     {
         public int Id { get; set; } // Id (Primary key)
+
+        [Unicode(false)]
         public string? Forename { get; set; } // Forename (length: 20)
     }
 
@@ -4751,6 +4825,7 @@ namespace V10EfrpgTestDataAnnotations
     [Table("DateTimeDefaultTest", Schema = "dbo")]
     public class DateTimeDefaultTest
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; } // Id (Primary key)
         public DateTimeOffset? CreatedDate { get; set; } // CreatedDate
 
@@ -4770,6 +4845,8 @@ namespace V10EfrpgTestDataAnnotations
         public string? ColumnName { get; set; } // COLUMN_NAME (length: 128)
         public int? OrdinalPosition { get; set; } // ORDINAL_POSITION
         public string? ColumnDefault { get; set; } // COLUMN_DEFAULT (length: 4000)
+
+        [Unicode(false)]
         public string? IsNullable { get; set; } // IS_NULLABLE (length: 3)
         public string? DataType { get; set; } // DATA_TYPE (length: 128)
         public int? CharacterMaximumLength { get; set; } // CHARACTER_MAXIMUM_LENGTH
@@ -4787,6 +4864,8 @@ namespace V10EfrpgTestDataAnnotations
         public string? DomainCatalog { get; set; } // DOMAIN_CATALOG (length: 128)
         public string? DomainSchema { get; set; } // DOMAIN_SCHEMA (length: 128)
         public string? DomainName { get; set; } // DOMAIN_NAME (length: 128)
+
+        [Unicode(false)]
         public string? Type { get; set; } // TYPE (length: 2)
     }
 
@@ -4795,10 +4874,20 @@ namespace V10EfrpgTestDataAnnotations
     public class DefaultCheckForNull
     {
         public int Id { get; set; } // Id (Primary key)
+
+        [Unicode(false)]
         public string? DescUppercase { get; set; } // DescUppercase (length: 5)
+
+        [Unicode(false)]
         public string? DescLowercase { get; set; } // DescLowercase (length: 5)
+
+        [Unicode(false)]
         public string? DescMixedCase { get; set; } // DescMixedCase (length: 5)
+
+        [Unicode(false)]
         public string? DescBrackets { get; set; } // DescBrackets (length: 5)
+
+        [Unicode(false)]
         public string? X1 { get; set; } // X1 (length: 255)
     }
 
@@ -4806,9 +4895,14 @@ namespace V10EfrpgTestDataAnnotations
     [Table("DSOpe", Schema = "dbo")]
     public class DsOpe
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; } // ID (Primary key)
+
+        [Precision(15, 2)]
         public decimal DecimalDefault { get; set; } // decimal_default
         public Guid MyGuid { get; set; } // MyGuid
+
+        [Unicode(false)]
         public string? @Default { get; set; } // default (length: 10)
         public Guid? MyGuidBadDefault { get; set; } // MyGuidBadDefault
 
@@ -4824,7 +4918,12 @@ namespace V10EfrpgTestDataAnnotations
     [Table("EnumsWithStringAsValue", Schema = "dbo")]
     public class EnumsWithStringAsValue
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Unicode(false)]
         public string EnumName { get; set; } = null!; // enum_name (Primary key) (length: 50)
+
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Unicode(false)]
         public string Value { get; set; } = null!; // value (Primary key) (length: 10)
     }
 
@@ -4832,7 +4931,10 @@ namespace V10EfrpgTestDataAnnotations
     [Table("DaysOfWeek", Schema = "EnumTest")]
     public class EnumTest_DaysOfWeek
     {
+        [Unicode(false)]
         public string TypeName { get; set; } = null!; // TypeName (length: 50)
+
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int TypeId { get; set; } // TypeId (Primary key)
 
         // Reverse navigation
@@ -4881,8 +4983,14 @@ namespace V10EfrpgTestDataAnnotations
     public class EventProcessor
     {
         public int Id { get; set; } // Id (Primary key)
+
+        [Unicode(false)]
         public string Name { get; set; } = null!; // Name (length: 200)
+
+        [Unicode(false)]
         public string? Description { get; set; } // Description (length: 512)
+
+        [Unicode(false)]
         public string? EndpointAddress { get; set; } // EndpointAddress (length: 512)
         public bool Enabled { get; set; } // Enabled
 
@@ -4919,7 +5027,10 @@ namespace V10EfrpgTestDataAnnotations
     [Table("CV", Schema = "FFRS")]
     public class FFRS_Cv
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid BatchUid { get; set; } // BatchUID (Primary key)
+
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Cvid { get; set; } // CVID (Primary key)
         public string? CvName { get; set; } // CVName (length: 200)
     }
@@ -4929,6 +5040,8 @@ namespace V10EfrpgTestDataAnnotations
     public class FinancialInstitutionOffice
     {
         public Guid Code { get; set; } // Code
+
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid FinancialInstitutionCode { get; set; } // FinancialInstitutionCode (Primary key via unique index UniqueOfficeName_FinancialInstitutionOffice)
         public string? OfficeName { get; set; } // OfficeName (length: 200)
     }
@@ -4937,7 +5050,10 @@ namespace V10EfrpgTestDataAnnotations
     [Table("SmallDecimalTestAttribute", Schema = "FkTest")]
     public class FkTest_SmallDecimalTestAttribute
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int FkId { get; set; } // FkID (Primary key)
+
+        [Unicode(false)]
         public string Description { get; set; } = null!; // description (length: 20)
 
         // Reverse navigation
@@ -5063,7 +5179,10 @@ namespace V10EfrpgTestDataAnnotations
     [Table("header", Schema = "dbo")]
     public class Header
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; } // ID (Primary key)
+
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int AnotherId { get; set; } // anotherID (Primary key)
         public DateTime Added { get; set; } // added
 
@@ -5121,6 +5240,8 @@ namespace V10EfrpgTestDataAnnotations
     public class Issue47_Role
     {
         public int RoleId { get; set; } // RoleId (Primary key)
+
+        [Unicode(false)]
         public string? Role { get; set; } // Role (length: 10)
 
         // Reverse navigation
@@ -5141,6 +5262,8 @@ namespace V10EfrpgTestDataAnnotations
     public class Issue47_User
     {
         public int UserId { get; set; } // UserId (Primary key)
+
+        [Unicode(false)]
         public string? Name { get; set; } // Name (length: 10)
 
         // Reverse navigation
@@ -5181,8 +5304,13 @@ namespace V10EfrpgTestDataAnnotations
     [Table("MultipleKeys", Schema = "dbo")]
     public class MultipleKey
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int UserId { get; set; } // UserId (Primary key)
+
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int FavouriteColourId { get; set; } // FavouriteColourId (Primary key via unique index )
+
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int BestHolidayTypeId { get; set; } // BestHolidayTypeId (Primary key)
         public int BankId { get; set; } // BankId
         public int CarId { get; set; } // CarId
@@ -5196,6 +5324,8 @@ namespace V10EfrpgTestDataAnnotations
     public class NoPrimaryKey
     {
         public int? Id { get; set; } // Id
+
+        [Unicode(false)]
         public string? Description { get; set; } // Description (length: 10)
     }
 
@@ -5203,6 +5333,7 @@ namespace V10EfrpgTestDataAnnotations
     [Table("NullableReverseNavigationA", Schema = "dbo")]
     public class NullableReverseNavigationA
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; set; } // Id (Primary key)
         public string? Data { get; set; } // Data (length: 100)
 
@@ -5218,6 +5349,7 @@ namespace V10EfrpgTestDataAnnotations
     [Table("NullableReverseNavigationB", Schema = "dbo")]
     public class NullableReverseNavigationB
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; set; } // Id (Primary key)
         public string? Data { get; set; } // Data (length: 100)
 
@@ -5298,6 +5430,7 @@ namespace V10EfrpgTestDataAnnotations
     [Table("Period.Table", Schema = "dbo")]
     public class PeriodTable
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; } // id (Primary key)
         public int? JoeBloggs { get; set; } // joe.bloggs
     }
@@ -5306,6 +5439,7 @@ namespace V10EfrpgTestDataAnnotations
     [Table("PeriodTestTable", Schema = "dbo")]
     public class PeriodTestTable
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; } // id (Primary key)
         public int? JoeBloggs { get; set; } // joe.bloggs
     }
@@ -5315,6 +5449,8 @@ namespace V10EfrpgTestDataAnnotations
     public class Person
     {
         public int Id { get; set; } // Id (Primary key)
+
+        [Unicode(false)]
         public string Name { get; set; } = null!; // Name (length: 50)
 
         // Reverse navigation
@@ -5341,7 +5477,11 @@ namespace V10EfrpgTestDataAnnotations
     public class PersonPost
     {
         public int Id { get; set; } // Id (Primary key)
+
+        [Unicode(false)]
         public string Title { get; set; } = null!; // Title (length: 20)
+
+        [Unicode(false)]
         public string Body { get; set; } = null!; // Body (length: 100)
         public int CreatedBy { get; set; } // CreatedBy
         public int UpdatedBy { get; set; } // UpdatedBy
@@ -5363,8 +5503,11 @@ namespace V10EfrpgTestDataAnnotations
     [Table("pk_ordinal_test", Schema = "dbo")]
     public class PkOrdinalTest
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int C1 { get; set; } // C1 (Primary key)
         public int C2 { get; set; } // C2
+
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int C3 { get; set; } // C3 (Primary key)
     }
 
@@ -5372,9 +5515,12 @@ namespace V10EfrpgTestDataAnnotations
     [Table("PropertyTypesToAdd", Schema = "dbo")]
     public class PropertyTypesToAdd
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; } // id (Primary key)
         public DateTime? DtDefault { get; set; } // dt_default
         public DateTime? Dt7 { get; set; } // dt7
+
+        [Unicode(false)]
         public string? DefaultCheck { get; set; } // defaultCheck (length: 10)
 
         // Reverse navigation
@@ -5398,7 +5544,11 @@ namespace V10EfrpgTestDataAnnotations
         public long CntByBigInt { get; set; } // CntByBigInt
         public byte CntByTinyInt { get; set; } // CntByTinyInt
         public short CntBySmallInt { get; set; } // CntBySmallInt
+
+        [Precision(18, 0)]
         public decimal CntByDecimal { get; set; } // CntByDecimal
+
+        [Precision(18, 0)]
         public decimal CntByNumeric { get; set; } // CntByNumeric
     }
 
@@ -5415,7 +5565,10 @@ namespace V10EfrpgTestDataAnnotations
     [Table("SmallDecimalTest", Schema = "dbo")]
     public class SmallDecimalTest
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; } // id (Primary key)
+
+        [Precision(4, 4)]
         public decimal? KoeffVed { get; set; } // KoeffVed
 
         // Reverse navigation
@@ -5436,6 +5589,8 @@ namespace V10EfrpgTestDataAnnotations
     public class SmallDecimalTestView
     {
         public int FkId { get; set; } // FkID
+
+        [Unicode(false)]
         public string Description { get; set; } = null!; // description (length: 20)
     }
 
@@ -5444,6 +5599,8 @@ namespace V10EfrpgTestDataAnnotations
     public class Sorter
     {
         public int SorterId { get; set; } // SorterID (Primary key)
+
+        [Unicode(false)]
         public string SorterName { get; set; } = null!; // SorterName (length: 20)
     }
 
@@ -5451,6 +5608,8 @@ namespace V10EfrpgTestDataAnnotations
     [Table("Sorters", Schema = "dbo")]
     public class Sorters
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Unicode(false)]
         public string SorterName { get; set; } = null!; // SorterName (Primary key) (length: 20)
 
         // Reverse navigation
@@ -5465,6 +5624,8 @@ namespace V10EfrpgTestDataAnnotations
     [Table("SorterScannerGroup", Schema = "dbo")]
     public class SorterScannerGroup
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Unicode(false)]
         public string SorterName { get; set; } = null!; // SorterName (Primary key) (length: 20)
 
         // Foreign keys
@@ -5495,7 +5656,12 @@ namespace V10EfrpgTestDataAnnotations
     public class Stafford_ComputedColumn
     {
         public int Id { get; set; } // Id (Primary key)
+
+        [Unicode(false)]
         public string MyColumn { get; set; } = null!; // MyColumn (length: 10)
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        [Unicode(false)]
         public string MyComputedColumn { get; private set; } = null!; // MyComputedColumn (length: 10)
     }
 
@@ -5503,6 +5669,7 @@ namespace V10EfrpgTestDataAnnotations
     [Table("Foo", Schema = "Stafford")]
     public class Stafford_Foo
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; } // id (Primary key)
         public string Name { get; set; } = null!; // name (length: 10)
 
@@ -5518,8 +5685,11 @@ namespace V10EfrpgTestDataAnnotations
     [Table("Child", Schema = "Synonyms")]
     public class Synonyms_Child
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int ChildId { get; set; } // ChildId (Primary key)
         public int ParentId { get; set; } // ParentId
+
+        [Unicode(false)]
         public string? ChildName { get; set; } // ChildName (length: 100)
 
         // Foreign keys
@@ -5534,7 +5704,10 @@ namespace V10EfrpgTestDataAnnotations
     [Table("Parent", Schema = "Synonyms")]
     public class Synonyms_Parent
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int ParentId { get; set; } // ParentId (Primary key)
+
+        [Unicode(false)]
         public string ParentName { get; set; } = null!; // ParentName (length: 100)
 
         // Reverse navigation
@@ -5555,6 +5728,8 @@ namespace V10EfrpgTestDataAnnotations
     public class TableA
     {
         public int TableAId { get; set; } // TableAId (Primary key)
+
+        [Unicode(false)]
         public string? TableADesc { get; set; } // TableADesc (length: 20)
 
         // Reverse navigation
@@ -5575,8 +5750,12 @@ namespace V10EfrpgTestDataAnnotations
     public class TableB
     {
         public int TableBId { get; set; } // TableBId (Primary key)
+
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int TableAId { get; set; } // TableAId (Primary key)
         public int? ParentTableAId { get; set; } // ParentTableAId
+
+        [Unicode(false)]
         public string? TableBDesc { get; set; } // TableBDesc (length: 20)
 
         // Reverse navigation
@@ -5615,7 +5794,10 @@ namespace V10EfrpgTestDataAnnotations
     [Table("table.with.multiple.periods", Schema = "dbo")]
     public class TableWithMultiplePeriod
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; } // id (Primary key)
+
+        [Unicode(false)]
         public string Description { get; set; } = null!; // description (length: 20)
     }
 
@@ -5623,6 +5805,7 @@ namespace V10EfrpgTestDataAnnotations
     [Table("table with space", Schema = "dbo")]
     public class TableWithSpace
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; } // id (Primary key)
 
         // Reverse navigation
@@ -5642,6 +5825,7 @@ namespace V10EfrpgTestDataAnnotations
     [Table("table with space and in columns", Schema = "dbo")]
     public class TableWithSpaceAndInColumn
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int IdValue { get; set; } // id value (Primary key)
 
         // Reverse navigation
@@ -5661,6 +5845,7 @@ namespace V10EfrpgTestDataAnnotations
     [Table("TableWithSpaceInColumnOnly", Schema = "dbo")]
     public class TableWithSpaceInColumnOnly
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int IdValue { get; set; } // id value (Primary key)
     }
 
@@ -5669,8 +5854,12 @@ namespace V10EfrpgTestDataAnnotations
     public class TadeuszSobol
     {
         public int Id { get; set; } // Id (Primary key)
+
+        [Unicode(false)]
         public string? Description { get; set; } // Description
         public string? Notes { get; set; } // Notes
+
+        [Unicode(false)]
         public string? Name { get; set; } // Name (length: 10)
     }
 
@@ -5678,6 +5867,7 @@ namespace V10EfrpgTestDataAnnotations
     [Table("Task", Schema = "dbo")]
     public class Task1
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public long TaskId { get; set; } // TaskId (Primary key)
     }
 
@@ -5707,6 +5897,8 @@ namespace V10EfrpgTestDataAnnotations
     public class TblOrderError
     {
         public int Id { get; set; } // ID (Primary key)
+
+        [Unicode(false)]
         public string? Error { get; set; } // error (length: 50)
     }
 
@@ -5715,6 +5907,8 @@ namespace V10EfrpgTestDataAnnotations
     public class TblOrderErrorsAb
     {
         public int Id { get; set; } // ID (Primary key)
+
+        [Unicode(false)]
         public string? Error { get; set; } // error (length: 50)
     }
 
@@ -5724,6 +5918,8 @@ namespace V10EfrpgTestDataAnnotations
     {
         public int Id { get; set; } // ID (Primary key)
         public int OrderId { get; set; } // OrderID
+
+        [Unicode(false)]
         public string? Sku { get; set; } // sku (length: 15)
 
         // Foreign keys
@@ -5738,7 +5934,10 @@ namespace V10EfrpgTestDataAnnotations
     [Table("TemporalDepartment", Schema = "dbo")]
     public class TemporalDepartment
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int DeptId { get; set; } // DeptID (Primary key)
+
+        [Unicode(false)]
         public string DeptName { get; set; } = null!; // DeptName (length: 50)
         public int? ManagerId { get; set; } // ManagerID
         public int? ParentDeptId { get; set; } // ParentDeptID
@@ -5750,11 +5949,19 @@ namespace V10EfrpgTestDataAnnotations
     [Table("TemporalDepartmentHistory", Schema = "dbo")]
     public class TemporalDepartmentHistory
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int DeptId { get; set; } // DeptID (Primary key)
+
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Unicode(false)]
         public string DeptName { get; set; } = null!; // DeptName (Primary key) (length: 50)
         public int? ManagerId { get; set; } // ManagerID
         public int? ParentDeptId { get; set; } // ParentDeptID
+
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public DateTime SysStartTime { get; set; } // SysStartTime (Primary key)
+
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public DateTime SysEndTime { get; set; } // SysEndTime (Primary key)
     }
 
@@ -5773,6 +5980,8 @@ namespace V10EfrpgTestDataAnnotations
     public class ThisIsMemoryOptimised
     {
         public int Id { get; set; } // Id (Primary key)
+
+        [Unicode(false)]
         public string Description { get; set; } = null!; // Description (length: 20)
     }
 
@@ -5833,6 +6042,8 @@ namespace V10EfrpgTestDataAnnotations
     public class User
     {
         public int Id { get; set; } // ID (Primary key)
+
+        [Unicode(false)]
         public string? ExternalUserId { get; set; } // ExternalUserID (length: 50)
 
         // Reverse navigation
@@ -5858,6 +6069,7 @@ namespace V10EfrpgTestDataAnnotations
     [Table("User309", Schema = "dbo")]
     public class User309
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public long UserId { get; set; } // UserID (Primary key)
         public string Lastname { get; set; } = null!; // Lastname (length: 100)
         public string Firstname { get; set; } = null!; // Firstname (length: 100)
@@ -5915,6 +6127,8 @@ namespace V10EfrpgTestDataAnnotations
     public class ViewWithMultiplePeriod
     {
         public int FkId { get; set; } // FkID
+
+        [Unicode(false)]
         public string Description { get; set; } = null!; // description (length: 20)
     }
 
@@ -5962,6 +6176,8 @@ namespace V10EfrpgTestDataAnnotations
     public class Брендытовара
     {
         public int Кодбренда { get; set; } // Код бренда (Primary key)
+
+        [Unicode(false)]
         public string Наименованиебренда { get; set; } = null!; // Наименование бренда (length: 50)
         public byte[]? Логотипбренда { get; set; } // Логотип_бренда (length: 2147483647)
         public byte[]? Логотипбрендавертикальный { get; set; } // Логотип_бренда_вертикальный (length: 2147483647)
@@ -5979,9 +6195,9 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.AId).HasName("PK_A").IsClustered();
 
-            builder.Property(x => x.AId).HasColumnName(@"AId").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.C1).HasColumnName(@"C1").HasColumnType("int").IsRequired();
-            builder.Property(x => x.C2).HasColumnName(@"C2").HasColumnType("int").IsRequired();
+            builder.Property(x => x.AId).HasColumnName(@"AId").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.C1).HasColumnName(@"C1").HasColumnType("int");
+            builder.Property(x => x.C2).HasColumnName(@"C2").HasColumnType("int");
 
             // Foreign keys
             builder.HasOne(a => a.Aaref).WithMany(b => b.A).HasForeignKey(c => new { c.C1, c.C2 }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_A_A");
@@ -5995,9 +6211,9 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => new { x.C1, x.C2 }).HasName("PK_AREF").IsClustered();
 
-            builder.Property(x => x.C1).HasColumnName(@"C1").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.C2).HasColumnName(@"C2").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.CreatedUtc).HasColumnName(@"CreatedUTC").HasColumnType("datetime2").IsRequired();
+            builder.Property(x => x.C1).HasColumnName(@"C1").HasColumnType("int");
+            builder.Property(x => x.C2).HasColumnName(@"C2").HasColumnType("int");
+            builder.Property(x => x.CreatedUtc).HasColumnName(@"CreatedUTC").HasColumnType("datetime2");
         }
     }
 
@@ -6008,9 +6224,9 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_AB_OrderLinesAB").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired();
-            builder.Property(x => x.Sku).HasColumnName(@"sku").HasColumnType("varchar(15)").IsRequired(false).IsUnicode(false).HasMaxLength(15);
+            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int");
+            builder.Property(x => x.Sku).HasColumnName(@"sku").HasColumnType("varchar(15)").IsRequired(false);
 
             // Foreign keys
             builder.HasOne(a => a.AbOrdersAb).WithMany(b => b.AbOrderLinesAbs).HasForeignKey(c => c.OrderId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("AB_OrderLinesAB_FK");
@@ -6024,8 +6240,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_AB_OrdersAB").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Added).HasColumnName(@"added").HasColumnType("datetime").IsRequired().HasDefaultValueSql(@"getdate()");
+            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Added).HasColumnName(@"added").HasColumnType("datetime").HasDefaultValueSql(@"getdate()");
         }
     }
 
@@ -6037,7 +6253,7 @@ namespace V10EfrpgTestDataAnnotations
             builder.HasNoKey();
 
             builder.Property(x => x.Total).HasColumnName(@"total").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.AName).HasColumnName(@"aName").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
+            builder.Property(x => x.AName).HasColumnName(@"aName").HasColumnType("nvarchar(250)").IsRequired(false);
         }
     }
 
@@ -6048,8 +6264,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_Alpha_Harish3485").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.HarishId).HasColumnName(@"harish_id").HasColumnType("int").IsRequired();
+            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.HarishId).HasColumnName(@"harish_id").HasColumnType("int");
 
             // Foreign keys
             builder.HasOne(a => a.FkTest_SmallDecimalTestAttribute).WithMany(b => b.Alpha_Harish3485).HasForeignKey(c => c.HarishId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Harish");
@@ -6063,8 +6279,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_alpha_workflow").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(10)").IsRequired(false);
         }
     }
 
@@ -6075,8 +6291,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id);
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(10)").IsRequired(false);
         }
     }
 
@@ -6087,9 +6303,9 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => new { x.UserId, x.AppId, x.FsrId });
 
-            builder.Property(x => x.UserId).HasColumnName(@"userId").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.AppId).HasColumnName(@"appId").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.FsrId).HasColumnName(@"fsrId").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.UserId).HasColumnName(@"userId").HasColumnType("int");
+            builder.Property(x => x.AppId).HasColumnName(@"appId").HasColumnType("int");
+            builder.Property(x => x.FsrId).HasColumnName(@"fsrId").HasColumnType("int");
         }
     }
 
@@ -6100,8 +6316,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_AppUser").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("bigint").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Name).HasColumnName(@"Name").HasColumnType("nvarchar(50)").IsRequired().HasMaxLength(50);
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("bigint").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Name).HasColumnName(@"Name").HasColumnType("nvarchar(50)");
         }
     }
 
@@ -6112,9 +6328,9 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.AttendeeId).HasName("PK_Attendee").IsClustered();
 
-            builder.Property(x => x.AttendeeId).HasColumnName(@"AttendeeID").HasColumnType("bigint").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.Lastname).HasColumnName(@"Lastname").HasColumnType("nvarchar(50)").IsRequired().HasMaxLength(50);
-            builder.Property(x => x.Firstname).HasColumnName(@"Firstname").HasColumnType("nvarchar(50)").IsRequired().HasMaxLength(50);
+            builder.Property(x => x.AttendeeId).HasColumnName(@"AttendeeID").HasColumnType("bigint");
+            builder.Property(x => x.Lastname).HasColumnName(@"Lastname").HasColumnType("nvarchar(50)");
+            builder.Property(x => x.Firstname).HasColumnName(@"Firstname").HasColumnType("nvarchar(50)");
             builder.Property(x => x.PhoneCountryId).HasColumnName(@"PhoneCountryID").HasColumnType("int").IsRequired(false);
 
             // Foreign keys
@@ -6129,7 +6345,7 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Code).HasName("PK_BatchTest").IsClustered();
 
-            builder.Property(x => x.Code).HasColumnName(@"code").HasColumnType("nvarchar(8)").IsRequired().HasMaxLength(8).ValueGeneratedNever();
+            builder.Property(x => x.Code).HasColumnName(@"code").HasColumnType("nvarchar(8)");
         }
     }
 
@@ -6140,8 +6356,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_Beta_Harish3485").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.AnotherId).HasColumnName(@"another_id").HasColumnType("int").IsRequired();
+            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.AnotherId).HasColumnName(@"another_id").HasColumnType("int");
 
             // Foreign keys
             builder.HasOne(a => a.PropertyTypesToAdd).WithMany(b => b.Beta_Harish3485).HasForeignKey(c => c.AnotherId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Harish");
@@ -6155,8 +6371,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_beta_ToAlpha").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.AlphaId).HasColumnName(@"AlphaId").HasColumnType("int").IsRequired();
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.AlphaId).HasColumnName(@"AlphaId").HasColumnType("int");
 
             // Foreign keys
             builder.HasOne(a => a.Alpha_Workflow).WithMany(b => b.Beta_ToAlphas).HasForeignKey(c => c.AlphaId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("BetaToAlpha_AlphaWorkflow");
@@ -6170,8 +6386,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_beta_workflow").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(10)").IsRequired(false);
         }
     }
 
@@ -6182,7 +6398,7 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_BITFIDDLERALLCAPS").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
         }
     }
 
@@ -6193,7 +6409,7 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_BitFiddlerCATEGORIES").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
         }
     }
 
@@ -6204,7 +6420,7 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_BitFiddlerCURRENCIES").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
         }
     }
 
@@ -6215,7 +6431,7 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.BlahId).HasName("PK_Blah").IsClustered();
 
-            builder.Property(x => x.BlahId).HasColumnName(@"BlahID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.BlahId).HasColumnName(@"BlahID").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
             builder.HasMany<Blah>(t => t.Blahs_BlahId2).WithMany(t => t.Blahs1).UsingEntity<Dictionary<string, object>>("BlahBlahLink",
                     j => j.HasOne<Blah>().WithMany().HasForeignKey("BlahID2"),
                     j => j.HasOne<Blah>().WithMany().HasForeignKey("BlahID"),
@@ -6238,11 +6454,11 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => new { x.BlahId, x.BlahId2 }).HasName("PK_BlahBlahLinkv2_ro").IsClustered();
 
-            builder.Property(x => x.BlahId).HasColumnName(@"BlahID").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.BlahId2).HasColumnName(@"BlahID2").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.BlahId).HasColumnName(@"BlahID").HasColumnType("int");
+            builder.Property(x => x.BlahId2).HasColumnName(@"BlahID2").HasColumnType("int");
             builder.Property(x => x.Dummy1).HasColumnName(@"dummy1").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.Dummy2).HasColumnName(@"dummy2").HasColumnType("int").IsRequired();
-            builder.Property(x => x.Hello).HasColumnName(@"hello").HasColumnType("int").IsRequired();
+            builder.Property(x => x.Dummy2).HasColumnName(@"dummy2").HasColumnType("int");
+            builder.Property(x => x.Hello).HasColumnName(@"hello").HasColumnType("int");
 
             // Foreign keys
             builder.HasOne(a => a.Blah_BlahId).WithMany(b => b.BlahBlahLinkV2_BlahId).HasForeignKey(c => c.BlahId).HasConstraintName("FK_BlahBlahLinkv2_Blah_ro");
@@ -6257,7 +6473,7 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.BlargId).HasName("PK_Blarg").IsClustered();
 
-            builder.Property(x => x.BlargId).HasColumnName(@"BlargID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.BlargId).HasColumnName(@"BlargID").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
         }
     }
 
@@ -6268,9 +6484,9 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_Burak1").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("bigint").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.IdT).HasColumnName(@"id_t").HasColumnType("bigint").IsRequired();
-            builder.Property(x => x.Num).HasColumnName(@"num").HasColumnType("bigint").IsRequired();
+            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("bigint").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.IdT).HasColumnName(@"id_t").HasColumnType("bigint");
+            builder.Property(x => x.Num).HasColumnName(@"num").HasColumnType("bigint");
 
             // Foreign keys
             builder.HasOne(a => a.Burak2_Id).WithOne(b => b.Burak1_Id).HasPrincipalKey<Burak2>(p => new { p.Id, p.Num }).HasForeignKey<Burak1>(c => new { c.Id, c.Num }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Burak_Test2");
@@ -6285,8 +6501,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_Burak2").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("bigint").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Num).HasColumnName(@"num").HasColumnType("bigint").IsRequired();
+            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("bigint").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Num).HasColumnName(@"num").HasColumnType("bigint");
 
             builder.HasIndex(x => new { x.Id, x.Num }).HasDatabaseName("U_Burak2").IsUnique();
         }
@@ -6299,10 +6515,10 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_CalculatedColumnNotNull");
 
-            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Type).HasColumnName(@"Type").HasColumnType("tinyint").IsRequired();
-            builder.Property(x => x.IsCalendar).HasColumnName(@"IsCalendar").HasColumnType("bit").IsRequired().ValueGeneratedOnAddOrUpdate();
-            builder.Property(x => x.IsUtilization).HasColumnName(@"IsUtilization").HasColumnType("bit").IsRequired().ValueGeneratedOnAddOrUpdate();
+            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Type).HasColumnName(@"Type").HasColumnType("tinyint");
+            builder.Property(x => x.IsCalendar).HasColumnName(@"IsCalendar").HasColumnType("bit").IsRequired();
+            builder.Property(x => x.IsUtilization).HasColumnName(@"IsUtilization").HasColumnType("bit").IsRequired();
         }
     }
 
@@ -6313,11 +6529,11 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_Car").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.PrimaryColourId).HasColumnName(@"PrimaryColourId").HasColumnType("int").IsRequired();
-            builder.Property(x => x.CarMake).HasColumnName(@"CarMake").HasColumnType("varchar(255)").IsRequired().IsUnicode(false).HasMaxLength(255);
-            builder.Property(x => x.ComputedColumn).HasColumnName(@"computed_column").HasColumnType("int").IsRequired(false).ValueGeneratedOnAddOrUpdate();
-            builder.Property(x => x.ComputedColumnPersisted).HasColumnName(@"computed_column_persisted").HasColumnType("int").IsRequired().ValueGeneratedOnAddOrUpdate();
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int");
+            builder.Property(x => x.PrimaryColourId).HasColumnName(@"PrimaryColourId").HasColumnType("int");
+            builder.Property(x => x.CarMake).HasColumnName(@"CarMake").HasColumnType("varchar(255)");
+            builder.Property(x => x.ComputedColumn).HasColumnName(@"computed_column").HasColumnType("int").IsRequired(false);
+            builder.Property(x => x.ComputedColumnPersisted).HasColumnName(@"computed_column_persisted").HasColumnType("int").IsRequired();
 
             // Foreign keys
             builder.HasOne(a => a.Colour).WithMany(b => b.Cars_PrimaryColourId).HasForeignKey(c => c.PrimaryColourId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("CarPrimaryColourFK");
@@ -6335,10 +6551,10 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_ClientCreationState").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("uniqueidentifier").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.WebhookSetup).HasColumnName(@"WebhookSetup").HasColumnType("bit").IsRequired();
-            builder.Property(x => x.AuthSetup).HasColumnName(@"AuthSetup").HasColumnType("bit").IsRequired();
-            builder.Property(x => x.AssignedCarrier).HasColumnName(@"AssignedCarrier").HasColumnType("bit").IsRequired();
+            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("uniqueidentifier");
+            builder.Property(x => x.WebhookSetup).HasColumnName(@"WebhookSetup").HasColumnType("bit");
+            builder.Property(x => x.AuthSetup).HasColumnName(@"AuthSetup").HasColumnType("bit");
+            builder.Property(x => x.AssignedCarrier).HasColumnName(@"AssignedCarrier").HasColumnType("bit");
         }
     }
 
@@ -6349,13 +6565,13 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.FileId).HasName("PK_CMS_File").IsClustered();
 
-            builder.Property(x => x.FileId).HasColumnName(@"FileId").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.FileName).HasColumnName(@"FileName").HasColumnType("nvarchar(100)").IsRequired().HasMaxLength(100);
-            builder.Property(x => x.FileDescription).HasColumnName(@"FileDescription").HasColumnType("varchar(500)").IsRequired().IsUnicode(false).HasMaxLength(500);
-            builder.Property(x => x.FileIdentifier).HasColumnName(@"FileIdentifier").HasColumnType("varchar(100)").IsRequired().IsUnicode(false).HasMaxLength(100);
+            builder.Property(x => x.FileId).HasColumnName(@"FileId").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.FileName).HasColumnName(@"FileName").HasColumnType("nvarchar(100)");
+            builder.Property(x => x.FileDescription).HasColumnName(@"FileDescription").HasColumnType("varchar(500)");
+            builder.Property(x => x.FileIdentifier).HasColumnName(@"FileIdentifier").HasColumnType("varchar(100)");
             builder.Property(x => x.ValidStartDate).HasColumnName(@"ValidStartDate").HasColumnType("datetime").IsRequired(false);
             builder.Property(x => x.ValidEndDate).HasColumnName(@"ValidEndDate").HasColumnType("datetime").IsRequired(false);
-            builder.Property(x => x.IsActive).HasColumnName(@"IsActive").HasColumnType("bit").IsRequired();
+            builder.Property(x => x.IsActive).HasColumnName(@"IsActive").HasColumnType("bit");
             builder.HasMany<CmsTag>(t => t.CmsTags).WithMany(t => t.CmsFiles).UsingEntity<Dictionary<string, object>>("CMS_FileTag",
                     j => j.HasOne<CmsTag>().WithMany().HasForeignKey("TagId"),
                     j => j.HasOne<CmsFile>().WithMany().HasForeignKey("FileId"),
@@ -6370,8 +6586,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.TagId).HasName("PK_CMS_Tag").IsClustered();
 
-            builder.Property(x => x.TagId).HasColumnName(@"TagId").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.TagName).HasColumnName(@"TagName").HasColumnType("varchar(100)").IsRequired().IsUnicode(false).HasMaxLength(100);
+            builder.Property(x => x.TagId).HasColumnName(@"TagId").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.TagName).HasColumnName(@"TagName").HasColumnType("varchar(100)");
         }
     }
 
@@ -6382,16 +6598,16 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_CODE_MeetingTopicDetails").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.IdReuniao).HasColumnName(@"id_reuniao").HasColumnType("int").IsRequired();
+            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.IdReuniao).HasColumnName(@"id_reuniao").HasColumnType("int");
             builder.Property(x => x.OrdTrab).HasColumnName(@"ord_trab").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.Assunto).HasColumnName(@"assunto").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
+            builder.Property(x => x.Assunto).HasColumnName(@"assunto").HasColumnType("nvarchar(250)").IsRequired(false);
             builder.Property(x => x.Desenvolvimento).HasColumnName(@"desenvolvimento").HasColumnType("nvarchar(max)").IsRequired(false);
-            builder.Property(x => x.Origem).HasColumnName(@"origem").HasColumnType("nvarchar(5)").IsRequired(false).HasMaxLength(5);
+            builder.Property(x => x.Origem).HasColumnName(@"origem").HasColumnType("nvarchar(5)").IsRequired(false);
             builder.Property(x => x.IdOrigem).HasColumnName(@"id_origem").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.Estado).HasColumnName(@"Estado").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.CompanyId).HasColumnName(@"CompanyID").HasColumnType("int").IsRequired();
-            builder.Property(x => x.DateCreated).HasColumnName(@"DateCreated").HasColumnType("datetime").IsRequired();
+            builder.Property(x => x.CompanyId).HasColumnName(@"CompanyID").HasColumnType("int");
+            builder.Property(x => x.DateCreated).HasColumnName(@"DateCreated").HasColumnType("datetime");
             builder.Property(x => x.DateChanged).HasColumnName(@"DateChanged").HasColumnType("datetime").IsRequired(false);
 
             // Foreign keys
@@ -6406,16 +6622,16 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.CodeObjectNo).HasName("aaaaaObject_PK");
 
-            builder.Property(x => x.CodeObjectNo).HasColumnName(@"codeObjectNo").HasColumnType("int").IsRequired().ValueGeneratedNever().HasDefaultValueSql(@"0");
+            builder.Property(x => x.CodeObjectNo).HasColumnName(@"codeObjectNo").HasColumnType("int").HasDefaultValueSql(@"0");
             builder.Property(x => x.ApplicationNo).HasColumnName(@"applicationNo").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.Type).HasColumnName(@"type").HasColumnType("int").IsRequired();
-            builder.Property(x => x.EName).HasColumnName(@"eName").HasColumnType("nvarchar(250)").IsRequired().HasMaxLength(250);
-            builder.Property(x => x.AName).HasColumnName(@"aName").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
-            builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
-            builder.Property(x => x.CodeName).HasColumnName(@"codeName").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
-            builder.Property(x => x.Note).HasColumnName(@"note").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
-            builder.Property(x => x.IsObject).HasColumnName(@"isObject").HasColumnType("bit").IsRequired().HasDefaultValueSql(@"0");
-            builder.Property(x => x.VersionNumber).HasColumnName(@"versionNumber").HasColumnType("timestamp").IsRequired(false).IsFixedLength().IsRowVersion().IsConcurrencyToken();
+            builder.Property(x => x.Type).HasColumnName(@"type").HasColumnType("int");
+            builder.Property(x => x.EName).HasColumnName(@"eName").HasColumnType("nvarchar(250)");
+            builder.Property(x => x.AName).HasColumnName(@"aName").HasColumnType("nvarchar(250)").IsRequired(false);
+            builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("nvarchar(250)").IsRequired(false);
+            builder.Property(x => x.CodeName).HasColumnName(@"codeName").HasColumnType("nvarchar(250)").IsRequired(false);
+            builder.Property(x => x.Note).HasColumnName(@"note").HasColumnType("nvarchar(250)").IsRequired(false);
+            builder.Property(x => x.IsObject).HasColumnName(@"isObject").HasColumnType("bit").HasDefaultValueSql(@"0");
+            builder.Property(x => x.VersionNumber).HasColumnName(@"versionNumber").HasColumnType("timestamp").IsRequired(false).IsFixedLength();
         }
     }
 
@@ -6426,13 +6642,13 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_CODE_PARAM_MeetingTopicDetailSource").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Code).HasColumnName(@"Code").HasColumnType("nvarchar(5)").IsRequired().HasMaxLength(5);
-            builder.Property(x => x.Label).HasColumnName(@"Label").HasColumnType("nvarchar(50)").IsRequired(false).HasMaxLength(50);
-            builder.Property(x => x.LabelEng).HasColumnName(@"LabelENG").HasColumnType("nvarchar(50)").IsRequired(false).HasMaxLength(50);
-            builder.Property(x => x.LabelEsp).HasColumnName(@"LabelESP").HasColumnType("nvarchar(50)").IsRequired(false).HasMaxLength(50);
-            builder.Property(x => x.LabelFra).HasColumnName(@"LabelFRA").HasColumnType("nvarchar(50)").IsRequired(false).HasMaxLength(50);
-            builder.Property(x => x.DateCreated).HasColumnName(@"DateCreated").HasColumnType("datetime").IsRequired();
+            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Code).HasColumnName(@"Code").HasColumnType("nvarchar(5)");
+            builder.Property(x => x.Label).HasColumnName(@"Label").HasColumnType("nvarchar(50)").IsRequired(false);
+            builder.Property(x => x.LabelEng).HasColumnName(@"LabelENG").HasColumnType("nvarchar(50)").IsRequired(false);
+            builder.Property(x => x.LabelEsp).HasColumnName(@"LabelESP").HasColumnType("nvarchar(50)").IsRequired(false);
+            builder.Property(x => x.LabelFra).HasColumnName(@"LabelFRA").HasColumnType("nvarchar(50)").IsRequired(false);
+            builder.Property(x => x.DateCreated).HasColumnName(@"DateCreated").HasColumnType("datetime");
             builder.Property(x => x.DateChanged).HasColumnName(@"DateChanged").HasColumnType("datetime").IsRequired(false);
 
             builder.HasIndex(x => x.Code).HasDatabaseName("UK_CODE_PARAM_MeetingTopicDetailSource").IsUnique();
@@ -6446,8 +6662,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_Colour").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.Name).HasColumnName(@"Name").HasColumnType("varchar(255)").IsRequired().IsUnicode(false).HasMaxLength(255);
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int");
+            builder.Property(x => x.Name).HasColumnName(@"Name").HasColumnType("varchar(255)");
         }
     }
 
@@ -6458,34 +6674,34 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.C36).HasName("PK_ColumnNameAndTypes").IsClustered();
 
-            builder.Property(x => x.C36).HasColumnName(@"$").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.C36).HasColumnName(@"$").HasColumnType("int");
             builder.Property(x => x.C37).HasColumnName(@"%").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.C163).HasColumnName(@"£").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.C38Fred).HasColumnName(@"&fred$").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.Abc4792).HasColumnName(@"abc/\").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.JoeBloggs).HasColumnName(@"joe.bloggs").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.SimonHughes).HasColumnName(@"simon-hughes").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20).HasDefaultValueSql(@"space((0))");
-            builder.Property(x => x.SomeDate).HasColumnName(@"someDate").HasColumnType("datetime2").IsRequired().HasDefaultValueSql(@"getdate()");
-            builder.Property(x => x.Obs).HasColumnName(@"Obs").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50).HasDefaultValueSql(@"'[{""k"":""en"",""v"":""""},{""k"":""pt"",""v"":""""}]'");
-            builder.Property(x => x.Obs1).HasColumnName(@"Obs1").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50).HasDefaultValueSql(@"'\'");
-            builder.Property(x => x.Obs2).HasColumnName(@"Obs2").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50).HasDefaultValueSql(@"'\\'");
-            builder.Property(x => x.Obs3).HasColumnName(@"Obs3").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50).HasDefaultValueSql(@"'\\\'");
+            builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("varchar(20)").HasDefaultValueSql(@"space((0))");
+            builder.Property(x => x.SomeDate).HasColumnName(@"someDate").HasColumnType("datetime2").HasDefaultValueSql(@"getdate()");
+            builder.Property(x => x.Obs).HasColumnName(@"Obs").HasColumnType("varchar(50)").IsRequired(false).HasDefaultValueSql(@"'[{""k"":""en"",""v"":""""},{""k"":""pt"",""v"":""""}]'");
+            builder.Property(x => x.Obs1).HasColumnName(@"Obs1").HasColumnType("varchar(50)").IsRequired(false).HasDefaultValueSql(@"'\'");
+            builder.Property(x => x.Obs2).HasColumnName(@"Obs2").HasColumnType("varchar(50)").IsRequired(false).HasDefaultValueSql(@"'\\'");
+            builder.Property(x => x.Obs3).HasColumnName(@"Obs3").HasColumnType("varchar(50)").IsRequired(false).HasDefaultValueSql(@"'\\\'");
             builder.Property(x => x.@Static).HasColumnName(@"static").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.@Readonly).HasColumnName(@"readonly").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.C123Hi).HasColumnName(@"123Hi").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.Areal).HasColumnName(@"areal").HasColumnType("real").IsRequired(false).HasDefaultValueSql(@"1.23");
-            builder.Property(x => x.Afloat).HasColumnName(@"afloat").HasColumnType("float").HasPrecision(53).IsRequired(false).HasDefaultValueSql(@"999.");
+            builder.Property(x => x.Afloat).HasColumnName(@"afloat").HasColumnType("float").IsRequired(false).HasDefaultValueSql(@"999.");
             builder.Property(x => x.Afloat8).HasColumnName(@"afloat8").HasColumnType("real").IsRequired(false);
             builder.Property(x => x.Afloat20).HasColumnName(@"afloat20").HasColumnType("real").IsRequired(false);
             builder.Property(x => x.Afloat24).HasColumnName(@"afloat24").HasColumnType("real").IsRequired(false);
-            builder.Property(x => x.Afloat53).HasColumnName(@"afloat53").HasColumnType("float").HasPrecision(53).IsRequired(false);
-            builder.Property(x => x.Adecimal).HasColumnName(@"adecimal").HasColumnType("decimal(18,0)").HasPrecision(18,0).IsRequired(false);
-            builder.Property(x => x.Adecimal194).HasColumnName(@"adecimal_19_4").HasColumnType("decimal(19,4)").HasPrecision(19,4).IsRequired(false);
-            builder.Property(x => x.Adecimal103).HasColumnName(@"adecimal_10_3").HasColumnType("decimal(10,3)").HasPrecision(10,3).IsRequired(false);
-            builder.Property(x => x.Anumeric).HasColumnName(@"anumeric").HasColumnType("numeric(18,0)").HasPrecision(18,0).IsRequired(false);
-            builder.Property(x => x.Anumeric52).HasColumnName(@"anumeric_5_2").HasColumnType("numeric(5,2)").HasPrecision(5,2).IsRequired(false);
-            builder.Property(x => x.Anumeric113).HasColumnName(@"anumeric_11_3").HasColumnType("numeric(11,3)").HasPrecision(11,3).IsRequired(false);
+            builder.Property(x => x.Afloat53).HasColumnName(@"afloat53").HasColumnType("float").IsRequired(false);
+            builder.Property(x => x.Adecimal).HasColumnName(@"adecimal").HasColumnType("decimal(18,0)").IsRequired(false);
+            builder.Property(x => x.Adecimal194).HasColumnName(@"adecimal_19_4").HasColumnType("decimal(19,4)").IsRequired(false);
+            builder.Property(x => x.Adecimal103).HasColumnName(@"adecimal_10_3").HasColumnType("decimal(10,3)").IsRequired(false);
+            builder.Property(x => x.Anumeric).HasColumnName(@"anumeric").HasColumnType("numeric(18,0)").IsRequired(false);
+            builder.Property(x => x.Anumeric52).HasColumnName(@"anumeric_5_2").HasColumnType("numeric(5,2)").IsRequired(false);
+            builder.Property(x => x.Anumeric113).HasColumnName(@"anumeric_11_3").HasColumnType("numeric(11,3)").IsRequired(false);
             builder.Property(x => x.Amoney).HasColumnName(@"amoney").HasColumnType("money").IsRequired(false);
             builder.Property(x => x.Asmallmoney).HasColumnName(@"asmallmoney").HasColumnType("smallmoney").IsRequired(false);
             builder.Property(x => x.Brandon).HasColumnName(@"brandon").HasColumnType("int").IsRequired(false);
@@ -6501,7 +6717,7 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasNoKey();
 
-            builder.Property(x => x.LicenseType).HasColumnName(@"LicenseType").HasColumnType("nvarchar(128)").IsRequired().HasMaxLength(128);
+            builder.Property(x => x.LicenseType).HasColumnName(@"LicenseType").HasColumnType("nvarchar(128)");
             builder.Property(x => x.Count).HasColumnName(@"Count").HasColumnType("int").IsRequired(false);
         }
     }
@@ -6513,8 +6729,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.CountryId).HasName("PK_Country").IsClustered();
 
-            builder.Property(x => x.CountryId).HasColumnName(@"CountryID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Code).HasColumnName(@"Code").HasColumnType("varchar(12)").IsRequired(false).IsUnicode(false).HasMaxLength(12);
+            builder.Property(x => x.CountryId).HasColumnName(@"CountryID").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Code).HasColumnName(@"Code").HasColumnType("varchar(12)").IsRequired(false);
         }
     }
 
@@ -6525,8 +6741,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id);
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Forename).HasColumnName(@"Forename").HasColumnType("varchar(20)").IsRequired(false).IsUnicode(false).HasMaxLength(20);
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Forename).HasColumnName(@"Forename").HasColumnType("varchar(20)").IsRequired(false);
         }
     }
 
@@ -6537,7 +6753,7 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id);
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int");
             builder.Property(x => x.CreatedDate).HasColumnName(@"CreatedDate").HasColumnType("datetimeoffset").IsRequired(false).HasDefaultValueSql(@"getdate()");
         }
     }
@@ -6549,30 +6765,30 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasNoKey();
 
-            builder.Property(x => x.TableCatalog).HasColumnName(@"TABLE_CATALOG").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
-            builder.Property(x => x.TableSchema).HasColumnName(@"TABLE_SCHEMA").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
-            builder.Property(x => x.TableName).HasColumnName(@"TABLE_NAME").HasColumnType("nvarchar(128)").IsRequired().HasMaxLength(128);
-            builder.Property(x => x.ColumnName).HasColumnName(@"COLUMN_NAME").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
+            builder.Property(x => x.TableCatalog).HasColumnName(@"TABLE_CATALOG").HasColumnType("nvarchar(128)").IsRequired(false);
+            builder.Property(x => x.TableSchema).HasColumnName(@"TABLE_SCHEMA").HasColumnType("nvarchar(128)").IsRequired(false);
+            builder.Property(x => x.TableName).HasColumnName(@"TABLE_NAME").HasColumnType("nvarchar(128)");
+            builder.Property(x => x.ColumnName).HasColumnName(@"COLUMN_NAME").HasColumnType("nvarchar(128)").IsRequired(false);
             builder.Property(x => x.OrdinalPosition).HasColumnName(@"ORDINAL_POSITION").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.ColumnDefault).HasColumnName(@"COLUMN_DEFAULT").HasColumnType("nvarchar(4000)").IsRequired(false).HasMaxLength(4000);
-            builder.Property(x => x.IsNullable).HasColumnName(@"IS_NULLABLE").HasColumnType("varchar(3)").IsRequired(false).IsUnicode(false).HasMaxLength(3);
-            builder.Property(x => x.DataType).HasColumnName(@"DATA_TYPE").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
+            builder.Property(x => x.ColumnDefault).HasColumnName(@"COLUMN_DEFAULT").HasColumnType("nvarchar(4000)").IsRequired(false);
+            builder.Property(x => x.IsNullable).HasColumnName(@"IS_NULLABLE").HasColumnType("varchar(3)").IsRequired(false);
+            builder.Property(x => x.DataType).HasColumnName(@"DATA_TYPE").HasColumnType("nvarchar(128)").IsRequired(false);
             builder.Property(x => x.CharacterMaximumLength).HasColumnName(@"CHARACTER_MAXIMUM_LENGTH").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.CharacterOctetLength).HasColumnName(@"CHARACTER_OCTET_LENGTH").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.NumericPrecision).HasColumnName(@"NUMERIC_PRECISION").HasColumnType("tinyint").IsRequired(false);
             builder.Property(x => x.NumericPrecisionRadix).HasColumnName(@"NUMERIC_PRECISION_RADIX").HasColumnType("smallint").IsRequired(false);
             builder.Property(x => x.NumericScale).HasColumnName(@"NUMERIC_SCALE").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.DatetimePrecision).HasColumnName(@"DATETIME_PRECISION").HasColumnType("smallint").IsRequired(false);
-            builder.Property(x => x.CharacterSetCatalog).HasColumnName(@"CHARACTER_SET_CATALOG").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
-            builder.Property(x => x.CharacterSetSchema).HasColumnName(@"CHARACTER_SET_SCHEMA").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
-            builder.Property(x => x.CharacterSetName).HasColumnName(@"CHARACTER_SET_NAME").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
-            builder.Property(x => x.CollationCatalog).HasColumnName(@"COLLATION_CATALOG").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
-            builder.Property(x => x.CollationSchema).HasColumnName(@"COLLATION_SCHEMA").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
-            builder.Property(x => x.CollationName).HasColumnName(@"COLLATION_NAME").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
-            builder.Property(x => x.DomainCatalog).HasColumnName(@"DOMAIN_CATALOG").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
-            builder.Property(x => x.DomainSchema).HasColumnName(@"DOMAIN_SCHEMA").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
-            builder.Property(x => x.DomainName).HasColumnName(@"DOMAIN_NAME").HasColumnType("nvarchar(128)").IsRequired(false).HasMaxLength(128);
-            builder.Property(x => x.Type).HasColumnName(@"TYPE").HasColumnType("char(2)").HasConversion(new ValueConverter<string, string>(v => v.TrimEnd(), v => v.TrimEnd())).IsRequired(false).IsFixedLength().IsUnicode(false).HasMaxLength(2);
+            builder.Property(x => x.CharacterSetCatalog).HasColumnName(@"CHARACTER_SET_CATALOG").HasColumnType("nvarchar(128)").IsRequired(false);
+            builder.Property(x => x.CharacterSetSchema).HasColumnName(@"CHARACTER_SET_SCHEMA").HasColumnType("nvarchar(128)").IsRequired(false);
+            builder.Property(x => x.CharacterSetName).HasColumnName(@"CHARACTER_SET_NAME").HasColumnType("nvarchar(128)").IsRequired(false);
+            builder.Property(x => x.CollationCatalog).HasColumnName(@"COLLATION_CATALOG").HasColumnType("nvarchar(128)").IsRequired(false);
+            builder.Property(x => x.CollationSchema).HasColumnName(@"COLLATION_SCHEMA").HasColumnType("nvarchar(128)").IsRequired(false);
+            builder.Property(x => x.CollationName).HasColumnName(@"COLLATION_NAME").HasColumnType("nvarchar(128)").IsRequired(false);
+            builder.Property(x => x.DomainCatalog).HasColumnName(@"DOMAIN_CATALOG").HasColumnType("nvarchar(128)").IsRequired(false);
+            builder.Property(x => x.DomainSchema).HasColumnName(@"DOMAIN_SCHEMA").HasColumnType("nvarchar(128)").IsRequired(false);
+            builder.Property(x => x.DomainName).HasColumnName(@"DOMAIN_NAME").HasColumnType("nvarchar(128)").IsRequired(false);
+            builder.Property(x => x.Type).HasColumnName(@"TYPE").HasColumnType("char(2)").HasConversion(new ValueConverter<string, string>(v => v.TrimEnd(), v => v.TrimEnd())).IsRequired(false).IsFixedLength();
         }
     }
 
@@ -6583,12 +6799,12 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_DefaultCheckForNull").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.DescUppercase).HasColumnName(@"DescUppercase").HasColumnType("varchar(5)").IsRequired(false).IsUnicode(false).HasMaxLength(5);
-            builder.Property(x => x.DescLowercase).HasColumnName(@"DescLowercase").HasColumnType("varchar(5)").IsRequired(false).IsUnicode(false).HasMaxLength(5);
-            builder.Property(x => x.DescMixedCase).HasColumnName(@"DescMixedCase").HasColumnType("varchar(5)").IsRequired(false).IsUnicode(false).HasMaxLength(5);
-            builder.Property(x => x.DescBrackets).HasColumnName(@"DescBrackets").HasColumnType("varchar(5)").IsRequired(false).IsUnicode(false).HasMaxLength(5);
-            builder.Property(x => x.X1).HasColumnName(@"X1").HasColumnType("varchar(255)").IsRequired(false).IsUnicode(false).HasMaxLength(255);
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.DescUppercase).HasColumnName(@"DescUppercase").HasColumnType("varchar(5)").IsRequired(false);
+            builder.Property(x => x.DescLowercase).HasColumnName(@"DescLowercase").HasColumnType("varchar(5)").IsRequired(false);
+            builder.Property(x => x.DescMixedCase).HasColumnName(@"DescMixedCase").HasColumnType("varchar(5)").IsRequired(false);
+            builder.Property(x => x.DescBrackets).HasColumnName(@"DescBrackets").HasColumnType("varchar(5)").IsRequired(false);
+            builder.Property(x => x.X1).HasColumnName(@"X1").HasColumnType("varchar(255)").IsRequired(false);
         }
     }
 
@@ -6599,10 +6815,10 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_DSOpe").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.DecimalDefault).HasColumnName(@"decimal_default").HasColumnType("decimal(15,2)").HasPrecision(15,2).IsRequired().HasDefaultValueSql(@"99.99");
-            builder.Property(x => x.MyGuid).HasColumnName(@"MyGuid").HasColumnType("uniqueidentifier").IsRequired().HasDefaultValueSql(@"'9B7E1F67-5A81-4277-BC7D-06A3262A5C70'");
-            builder.Property(x => x.@Default).HasColumnName(@"default").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);
+            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int");
+            builder.Property(x => x.DecimalDefault).HasColumnName(@"decimal_default").HasColumnType("decimal(15,2)").HasDefaultValueSql(@"99.99");
+            builder.Property(x => x.MyGuid).HasColumnName(@"MyGuid").HasColumnType("uniqueidentifier").HasDefaultValueSql(@"'9B7E1F67-5A81-4277-BC7D-06A3262A5C70'");
+            builder.Property(x => x.@Default).HasColumnName(@"default").HasColumnType("varchar(10)").IsRequired(false);
             builder.Property(x => x.MyGuidBadDefault).HasColumnName(@"MyGuidBadDefault").HasColumnType("uniqueidentifier").IsRequired(false).HasDefaultValueSql(@"NULL");
         }
     }
@@ -6614,8 +6830,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => new { x.EnumName, x.Value });
 
-            builder.Property(x => x.EnumName).HasColumnName(@"enum_name").HasColumnType("varchar(50)").IsRequired().IsUnicode(false).HasMaxLength(50).ValueGeneratedNever();
-            builder.Property(x => x.Value).HasColumnName(@"value").HasColumnType("varchar(10)").IsRequired().IsUnicode(false).HasMaxLength(10).ValueGeneratedNever();
+            builder.Property(x => x.EnumName).HasColumnName(@"enum_name").HasColumnType("varchar(50)");
+            builder.Property(x => x.Value).HasColumnName(@"value").HasColumnType("varchar(10)");
         }
     }
 
@@ -6626,8 +6842,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.TypeId).HasName("PK_EnumTest_DaysOfWeek").IsClustered();
 
-            builder.Property(x => x.TypeName).HasColumnName(@"TypeName").HasColumnType("varchar(50)").IsRequired().IsUnicode(false).HasMaxLength(50);
-            builder.Property(x => x.TypeId).HasColumnName(@"TypeId").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.TypeName).HasColumnName(@"TypeName").HasColumnType("varchar(50)");
+            builder.Property(x => x.TypeId).HasColumnName(@"TypeId").HasColumnType("int");
         }
     }
 
@@ -6638,8 +6854,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_OpenDays").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.EnumId).HasColumnName(@"EnumId").HasColumnType("int").IsRequired();
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.EnumId).HasColumnName(@"EnumId").HasColumnType("int");
 
             // Foreign keys
             builder.HasOne(a => a.EnumTest_DaysOfWeek).WithMany(b => b.EnumTest_OpenDays).HasForeignKey(c => c.EnumId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("Fk_OpenDays_EnumId");
@@ -6653,8 +6869,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_EnumWithDefaultValue").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.SomeEnum).HasColumnName(@"SomeEnum").HasColumnType("int").IsRequired().HasDefaultValueSql(@"1");
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.SomeEnum).HasColumnName(@"SomeEnum").HasColumnType("int").HasDefaultValueSql(@"1");
         }
     }
 
@@ -6665,11 +6881,11 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_EventProcessor").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Name).HasColumnName(@"Name").HasColumnType("varchar(200)").IsRequired().IsUnicode(false).HasMaxLength(200);
-            builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(512)").IsRequired(false).IsUnicode(false).HasMaxLength(512);
-            builder.Property(x => x.EndpointAddress).HasColumnName(@"EndpointAddress").HasColumnType("varchar(512)").IsRequired(false).IsUnicode(false).HasMaxLength(512);
-            builder.Property(x => x.Enabled).HasColumnName(@"Enabled").HasColumnType("bit").IsRequired();
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Name).HasColumnName(@"Name").HasColumnType("varchar(200)");
+            builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(512)").IsRequired(false);
+            builder.Property(x => x.EndpointAddress).HasColumnName(@"EndpointAddress").HasColumnType("varchar(512)").IsRequired(false);
+            builder.Property(x => x.Enabled).HasColumnName(@"Enabled").HasColumnType("bit");
         }
     }
 
@@ -6680,9 +6896,9 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_EventProcessorEventFilter").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.EventProcessorId).HasColumnName(@"EventProcessorId").HasColumnType("int").IsRequired();
-            builder.Property(x => x.WantedEventId).HasColumnName(@"WantedEventId").HasColumnType("int").IsRequired();
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.EventProcessorId).HasColumnName(@"EventProcessorId").HasColumnType("int");
+            builder.Property(x => x.WantedEventId).HasColumnName(@"WantedEventId").HasColumnType("int");
 
             // Foreign keys
             builder.HasOne(a => a.EventProcessor).WithMany(b => b.EventProcessorEventFilters).HasForeignKey(c => c.EventProcessorId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_EventProcessorEventFilter__EventProcessor");
@@ -6698,9 +6914,9 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => new { x.BatchUid, x.Cvid });
 
-            builder.Property(x => x.BatchUid).HasColumnName(@"BatchUID").HasColumnType("uniqueidentifier").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.Cvid).HasColumnName(@"CVID").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.CvName).HasColumnName(@"CVName").HasColumnType("nvarchar(200)").IsRequired(false).HasMaxLength(200);
+            builder.Property(x => x.BatchUid).HasColumnName(@"BatchUID").HasColumnType("uniqueidentifier");
+            builder.Property(x => x.Cvid).HasColumnName(@"CVID").HasColumnType("int");
+            builder.Property(x => x.CvName).HasColumnName(@"CVName").HasColumnType("nvarchar(200)").IsRequired(false);
         }
     }
 
@@ -6711,9 +6927,9 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.FinancialInstitutionCode);
 
-            builder.Property(x => x.Code).HasColumnName(@"Code").HasColumnType("uniqueidentifier").IsRequired();
-            builder.Property(x => x.FinancialInstitutionCode).HasColumnName(@"FinancialInstitutionCode").HasColumnType("uniqueidentifier").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.OfficeName).HasColumnName(@"OfficeName").HasColumnType("nvarchar(200)").IsRequired(false).HasMaxLength(200);
+            builder.Property(x => x.Code).HasColumnName(@"Code").HasColumnType("uniqueidentifier");
+            builder.Property(x => x.FinancialInstitutionCode).HasColumnName(@"FinancialInstitutionCode").HasColumnType("uniqueidentifier");
+            builder.Property(x => x.OfficeName).HasColumnName(@"OfficeName").HasColumnType("nvarchar(200)").IsRequired(false);
 
             builder.HasIndex(x => new { x.FinancialInstitutionCode, x.OfficeName }).HasDatabaseName("UniqueOfficeName_FinancialInstitutionOffice").IsUnique();
         }
@@ -6726,8 +6942,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.FkId).HasName("PK_FkTest_SmallDecimalTestAttribute").IsClustered();
 
-            builder.Property(x => x.FkId).HasColumnName(@"FkID").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
+            builder.Property(x => x.FkId).HasColumnName(@"FkID").HasColumnType("int");
+            builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("varchar(20)");
 
             // Foreign keys
             builder.HasOne(a => a.SmallDecimalTest).WithOne(b => b.FkTest_SmallDecimalTestAttribute).HasForeignKey<FkTest_SmallDecimalTestAttribute>(c => c.FkId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("KateFK");
@@ -6741,9 +6957,9 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_footer").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.OtherId).HasColumnName(@"otherID").HasColumnType("int").IsRequired();
-            builder.Property(x => x.Added).HasColumnName(@"added").HasColumnType("datetime").IsRequired().HasDefaultValueSql(@"getdate()");
+            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.OtherId).HasColumnName(@"otherID").HasColumnType("int");
+            builder.Property(x => x.Added).HasColumnName(@"added").HasColumnType("datetime").HasDefaultValueSql(@"getdate()");
 
             // Foreign keys
             builder.HasOne(a => a.Header).WithMany(b => b.Footers).HasForeignKey(c => new { c.Id, c.OtherId }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("fooderFK");
@@ -6757,9 +6973,9 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_ForeignKeyIsNotEnforced").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.NullValue).HasColumnName(@"null_value").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.NotNullValue).HasColumnName(@"not_null_value").HasColumnType("int").IsRequired();
+            builder.Property(x => x.NotNullValue).HasColumnName(@"not_null_value").HasColumnType("int");
 
             builder.HasIndex(x => x.NotNullValue).HasDatabaseName("UQ_ForeignKeyIsNotEnforced_not_null_value").IsUnique();
             builder.HasIndex(x => x.NullValue).HasDatabaseName("UQ_ForeignKeyIsNotEnforced_null_value").IsUnique();
@@ -6773,9 +6989,9 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_ForeignKeyIsNotEnforcedItem").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.NullValue).HasColumnName(@"null_value").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.NotNullValue).HasColumnName(@"not_null_value").HasColumnType("int").IsRequired();
+            builder.Property(x => x.NotNullValue).HasColumnName(@"not_null_value").HasColumnType("int");
 
             // Foreign keys
             builder.HasOne(a => a.ForeignKeyIsNotEnforced_NotNullValue).WithOne(b => b.ForeignKeyIsNotEnforcedItem_NotNullValue).HasPrincipalKey<ForeignKeyIsNotEnforced>(p => p.NotNullValue).HasForeignKey<ForeignKeyIsNotEnforcedItem>(c => c.NotNullValue).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_ForeignKeyIsNotEnforcedItem_notnull_notnull");
@@ -6793,9 +7009,9 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_HasPrincipalKeyTestChild").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.A).HasColumnName(@"A").HasColumnType("int").IsRequired();
-            builder.Property(x => x.B).HasColumnName(@"B").HasColumnType("int").IsRequired();
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.A).HasColumnName(@"A").HasColumnType("int");
+            builder.Property(x => x.B).HasColumnName(@"B").HasColumnType("int");
             builder.Property(x => x.C).HasColumnName(@"C").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.D).HasColumnName(@"D").HasColumnType("int").IsRequired(false);
 
@@ -6811,9 +7027,9 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_HasPrincipalKeyTestParent").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Aa).HasColumnName(@"AA").HasColumnType("int").IsRequired();
-            builder.Property(x => x.Bb).HasColumnName(@"BB").HasColumnType("int").IsRequired();
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Aa).HasColumnName(@"AA").HasColumnType("int");
+            builder.Property(x => x.Bb).HasColumnName(@"BB").HasColumnType("int");
             builder.Property(x => x.Cc).HasColumnName(@"CC").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.Dd).HasColumnName(@"DD").HasColumnType("int").IsRequired(false);
 
@@ -6830,9 +7046,9 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => new { x.Id, x.AnotherId }).HasName("PK_header").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.AnotherId).HasColumnName(@"anotherID").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.Added).HasColumnName(@"added").HasColumnType("datetime").IsRequired().HasDefaultValueSql(@"getdate()");
+            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int");
+            builder.Property(x => x.AnotherId).HasColumnName(@"anotherID").HasColumnType("int");
+            builder.Property(x => x.Added).HasColumnName(@"added").HasColumnType("datetime").HasDefaultValueSql(@"getdate()");
         }
     }
 
@@ -6843,8 +7059,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_hierarchy_test").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Hid).HasColumnName(@"hid").HasColumnType("hierarchyid").IsRequired();
+            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Hid).HasColumnName(@"hid").HasColumnType("hierarchyid");
         }
     }
 
@@ -6855,7 +7071,7 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_InflectorData").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
         }
     }
 
@@ -6866,13 +7082,13 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_InflectorStatus").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.SayHelloTo).HasColumnName(@"SayHelloTo").HasColumnType("int").IsRequired();
-            builder.Property(x => x.SignalData).HasColumnName(@"SignalData").HasColumnType("int").IsRequired();
-            builder.Property(x => x.NotificationStatus).HasColumnName(@"NotificationStatus").HasColumnType("int").IsRequired();
-            builder.Property(x => x.Status).HasColumnName(@"Status").HasColumnType("int").IsRequired();
-            builder.Property(x => x.To).HasColumnName(@"To").HasColumnType("int").IsRequired();
-            builder.Property(x => x.Data).HasColumnName(@"Data").HasColumnType("int").IsRequired();
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.SayHelloTo).HasColumnName(@"SayHelloTo").HasColumnType("int");
+            builder.Property(x => x.SignalData).HasColumnName(@"SignalData").HasColumnType("int");
+            builder.Property(x => x.NotificationStatus).HasColumnName(@"NotificationStatus").HasColumnType("int");
+            builder.Property(x => x.Status).HasColumnName(@"Status").HasColumnType("int");
+            builder.Property(x => x.To).HasColumnName(@"To").HasColumnType("int");
+            builder.Property(x => x.Data).HasColumnName(@"Data").HasColumnType("int");
         }
     }
 
@@ -6883,7 +7099,7 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_InflectorTo").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
         }
     }
 
@@ -6894,8 +7110,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.RoleId).HasName("PK_Issue47_Role").IsClustered();
 
-            builder.Property(x => x.RoleId).HasColumnName(@"RoleId").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Role).HasColumnName(@"Role").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);
+            builder.Property(x => x.RoleId).HasColumnName(@"RoleId").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Role).HasColumnName(@"Role").HasColumnType("varchar(10)").IsRequired(false);
         }
     }
 
@@ -6906,8 +7122,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.UserId).HasName("PK_Issue47_Users").IsClustered();
 
-            builder.Property(x => x.UserId).HasColumnName(@"UserId").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Name).HasColumnName(@"Name").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);
+            builder.Property(x => x.UserId).HasColumnName(@"UserId").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Name).HasColumnName(@"Name").HasColumnType("varchar(10)").IsRequired(false);
         }
     }
 
@@ -6918,9 +7134,9 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.UserRoleId).HasName("PK_Issue47_UserRoles").IsClustered();
 
-            builder.Property(x => x.UserRoleId).HasColumnName(@"UserRoleId").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.UserId).HasColumnName(@"UserId").HasColumnType("int").IsRequired();
-            builder.Property(x => x.RoleId).HasColumnName(@"RoleId").HasColumnType("int").IsRequired();
+            builder.Property(x => x.UserRoleId).HasColumnName(@"UserRoleId").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.UserId).HasColumnName(@"UserId").HasColumnType("int");
+            builder.Property(x => x.RoleId).HasColumnName(@"RoleId").HasColumnType("int");
 
             // Foreign keys
             builder.HasOne(a => a.Issue47_Role).WithMany(b => b.Issue47_UserRoles).HasForeignKey(c => c.RoleId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("Issue47_UserRoles_roleid");
@@ -6935,11 +7151,11 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => new { x.UserId, x.FavouriteColourId, x.BestHolidayTypeId }).HasName("PK_MultipleKeys").IsClustered();
 
-            builder.Property(x => x.UserId).HasColumnName(@"UserId").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.FavouriteColourId).HasColumnName(@"FavouriteColourId").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.BestHolidayTypeId).HasColumnName(@"BestHolidayTypeId").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.BankId).HasColumnName(@"BankId").HasColumnType("int").IsRequired();
-            builder.Property(x => x.CarId).HasColumnName(@"CarId").HasColumnType("int").IsRequired();
+            builder.Property(x => x.UserId).HasColumnName(@"UserId").HasColumnType("int");
+            builder.Property(x => x.FavouriteColourId).HasColumnName(@"FavouriteColourId").HasColumnType("int");
+            builder.Property(x => x.BestHolidayTypeId).HasColumnName(@"BestHolidayTypeId").HasColumnType("int");
+            builder.Property(x => x.BankId).HasColumnName(@"BankId").HasColumnType("int");
+            builder.Property(x => x.CarId).HasColumnName(@"CarId").HasColumnType("int");
             builder.Property(x => x.DeletedAt).HasColumnName(@"DeletedAt").HasColumnType("datetime").IsRequired(false);
 
             builder.HasIndex(x => x.BestHolidayTypeId).HasDatabaseName("IX_MultipleKeys_BestHolidayType");
@@ -6955,8 +7171,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_NullableReverseNavigationA").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("uniqueidentifier").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.Data).HasColumnName(@"Data").HasColumnType("nvarchar(100)").IsRequired(false).HasMaxLength(100);
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("uniqueidentifier");
+            builder.Property(x => x.Data).HasColumnName(@"Data").HasColumnType("nvarchar(100)").IsRequired(false);
         }
     }
 
@@ -6967,8 +7183,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_NullableReverseNavigationB").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("uniqueidentifier").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.Data).HasColumnName(@"Data").HasColumnType("nvarchar(100)").IsRequired(false).HasMaxLength(100);
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("uniqueidentifier");
+            builder.Property(x => x.Data).HasColumnName(@"Data").HasColumnType("nvarchar(100)").IsRequired(false);
 
             // Foreign keys
             builder.HasOne(a => a.NullableReverseNavigationA).WithOne(b => b.NullableReverseNavigationB).HasForeignKey<NullableReverseNavigationB>(c => c.Id).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_NullableReverseNavigationB_Id");
@@ -6982,8 +7198,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_Issue").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Title).HasColumnName(@"Title").HasColumnType("nvarchar(100)").IsRequired().HasMaxLength(100);
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Title).HasColumnName(@"Title").HasColumnType("nvarchar(100)");
             builder.Property(x => x.Content).HasColumnName(@"Content").HasColumnType("nvarchar(max)").IsRequired(false);
             builder.Property(x => x.ConsentDocumentId).HasColumnName(@"ConsentDocumentId").HasColumnType("int").IsRequired(false);
 
@@ -7003,8 +7219,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_UploadedFile").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.FullPath).HasColumnName(@"FullPath").HasColumnType("nvarchar(max)").IsRequired();
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.FullPath).HasColumnName(@"FullPath").HasColumnType("nvarchar(max)");
         }
     }
 
@@ -7015,7 +7231,7 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_Period_Table").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int");
             builder.Property(x => x.JoeBloggs).HasColumnName(@"joe.bloggs").HasColumnType("int").IsRequired(false);
         }
     }
@@ -7027,7 +7243,7 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_PeriodTestTable").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int");
             builder.Property(x => x.JoeBloggs).HasColumnName(@"joe.bloggs").HasColumnType("int").IsRequired(false);
         }
     }
@@ -7039,8 +7255,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_Person").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Name).HasColumnName(@"Name").HasColumnType("varchar(50)").IsRequired().IsUnicode(false).HasMaxLength(50);
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Name).HasColumnName(@"Name").HasColumnType("varchar(50)");
         }
     }
 
@@ -7051,11 +7267,11 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_PersonPosts").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Title).HasColumnName(@"Title").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
-            builder.Property(x => x.Body).HasColumnName(@"Body").HasColumnType("varchar(100)").IsRequired().IsUnicode(false).HasMaxLength(100);
-            builder.Property(x => x.CreatedBy).HasColumnName(@"CreatedBy").HasColumnType("int").IsRequired();
-            builder.Property(x => x.UpdatedBy).HasColumnName(@"UpdatedBy").HasColumnType("int").IsRequired();
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Title).HasColumnName(@"Title").HasColumnType("varchar(20)");
+            builder.Property(x => x.Body).HasColumnName(@"Body").HasColumnType("varchar(100)");
+            builder.Property(x => x.CreatedBy).HasColumnName(@"CreatedBy").HasColumnType("int");
+            builder.Property(x => x.UpdatedBy).HasColumnName(@"UpdatedBy").HasColumnType("int");
 
             // Foreign keys
             builder.HasOne(a => a.Person_CreatedBy).WithMany(b => b.PersonPosts_CreatedBy).HasForeignKey(c => c.CreatedBy).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_PersonPosts_CreatedBy");
@@ -7070,9 +7286,9 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => new { x.C3, x.C1 }).HasName("PK_pk_ordinal_test").IsClustered();
 
-            builder.Property(x => x.C1).HasColumnName(@"C1").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.C2).HasColumnName(@"C2").HasColumnType("int").IsRequired();
-            builder.Property(x => x.C3).HasColumnName(@"C3").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.C1).HasColumnName(@"C1").HasColumnType("int");
+            builder.Property(x => x.C2).HasColumnName(@"C2").HasColumnType("int");
+            builder.Property(x => x.C3).HasColumnName(@"C3").HasColumnType("int");
         }
     }
 
@@ -7083,10 +7299,10 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_PropertyTypesToAdd").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int");
             builder.Property(x => x.DtDefault).HasColumnName(@"dt_default").HasColumnType("datetime2").IsRequired(false);
             builder.Property(x => x.Dt7).HasColumnName(@"dt7").HasColumnType("datetime2").IsRequired(false);
-            builder.Property(x => x.DefaultCheck).HasColumnName(@"defaultCheck").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);
+            builder.Property(x => x.DefaultCheck).HasColumnName(@"defaultCheck").HasColumnType("varchar(10)").IsRequired(false);
         }
     }
 
@@ -7097,12 +7313,12 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_SequenceTest").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountBy1]");
-            builder.Property(x => x.CntByBigInt).HasColumnName(@"CntByBigInt").HasColumnType("bigint").IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountByBigInt]");
-            builder.Property(x => x.CntByTinyInt).HasColumnName(@"CntByTinyInt").HasColumnType("tinyint").IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountByTinyInt]");
-            builder.Property(x => x.CntBySmallInt).HasColumnName(@"CntBySmallInt").HasColumnType("smallint").IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountBySmallInt]");
-            builder.Property(x => x.CntByDecimal).HasColumnName(@"CntByDecimal").HasColumnType("decimal(18,0)").HasPrecision(18,0).IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountByDecimal]");
-            builder.Property(x => x.CntByNumeric).HasColumnName(@"CntByNumeric").HasColumnType("numeric(18,0)").HasPrecision(18,0).IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountByNumeric]");
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountBy1]");
+            builder.Property(x => x.CntByBigInt).HasColumnName(@"CntByBigInt").HasColumnType("bigint").HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountByBigInt]");
+            builder.Property(x => x.CntByTinyInt).HasColumnName(@"CntByTinyInt").HasColumnType("tinyint").HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountByTinyInt]");
+            builder.Property(x => x.CntBySmallInt).HasColumnName(@"CntBySmallInt").HasColumnType("smallint").HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountBySmallInt]");
+            builder.Property(x => x.CntByDecimal).HasColumnName(@"CntByDecimal").HasColumnType("decimal(18,0)").HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountByDecimal]");
+            builder.Property(x => x.CntByNumeric).HasColumnName(@"CntByNumeric").HasColumnType("numeric(18,0)").HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountByNumeric]");
         }
     }
 
@@ -7113,9 +7329,9 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_SequenceTestPartTwo").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.CntByBigInt).HasColumnName(@"CntByBigInt").HasColumnType("bigint").IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountByBigInt]");
-            builder.Property(x => x.CntByTinyInt).HasColumnName(@"CntByTinyInt").HasColumnType("tinyint").IsRequired().HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountByTinyInt]");
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.CntByBigInt).HasColumnName(@"CntByBigInt").HasColumnType("bigint").HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountByBigInt]");
+            builder.Property(x => x.CntByTinyInt).HasColumnName(@"CntByTinyInt").HasColumnType("tinyint").HasDefaultValueSql(@"NEXT VALUE FOR [dbo].[CountByTinyInt]");
         }
     }
 
@@ -7126,8 +7342,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_SmallDecimalTest").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.KoeffVed).HasColumnName(@"KoeffVed").HasColumnType("decimal(4,4)").HasPrecision(4,4).IsRequired(false).HasDefaultValueSql(@"0.5");
+            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int");
+            builder.Property(x => x.KoeffVed).HasColumnName(@"KoeffVed").HasColumnType("decimal(4,4)").IsRequired(false).HasDefaultValueSql(@"0.5");
         }
     }
 
@@ -7138,8 +7354,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasNoKey();
 
-            builder.Property(x => x.FkId).HasColumnName(@"FkID").HasColumnType("int").IsRequired();
-            builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
+            builder.Property(x => x.FkId).HasColumnName(@"FkID").HasColumnType("int");
+            builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("varchar(20)");
         }
     }
 
@@ -7150,8 +7366,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.SorterId).HasName("PK_Sorter2").IsClustered();
 
-            builder.Property(x => x.SorterId).HasColumnName(@"SorterID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.SorterName).HasColumnName(@"SorterName").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
+            builder.Property(x => x.SorterId).HasColumnName(@"SorterID").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.SorterName).HasColumnName(@"SorterName").HasColumnType("varchar(20)");
         }
     }
 
@@ -7162,7 +7378,7 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.SorterName).HasName("PK_Sorter").IsClustered();
 
-            builder.Property(x => x.SorterName).HasColumnName(@"SorterName").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20).ValueGeneratedNever();
+            builder.Property(x => x.SorterName).HasColumnName(@"SorterName").HasColumnType("varchar(20)");
         }
     }
 
@@ -7173,7 +7389,7 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.SorterName);
 
-            builder.Property(x => x.SorterName).HasColumnName(@"SorterName").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20).ValueGeneratedNever();
+            builder.Property(x => x.SorterName).HasColumnName(@"SorterName").HasColumnType("varchar(20)");
 
             // Foreign keys
             builder.HasOne(a => a.Sorter).WithOne(b => b.SorterScannerGroup).HasForeignKey<SorterScannerGroup>(c => c.SorterName).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_SorterScannerGroup_Sorters");
@@ -7187,8 +7403,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_Boo").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Name).HasColumnName(@"name").HasColumnType("nchar(10)").IsRequired().IsFixedLength().HasMaxLength(10);
+            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Name).HasColumnName(@"name").HasColumnType("nchar(10)").IsFixedLength();
         }
     }
 
@@ -7199,9 +7415,9 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_Stafford_ComputedColumns").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.MyColumn).HasColumnName(@"MyColumn").HasColumnType("varchar(10)").IsRequired().IsUnicode(false).HasMaxLength(10);
-            builder.Property(x => x.MyComputedColumn).HasColumnName(@"MyComputedColumn").HasColumnType("varchar(10)").IsRequired().IsUnicode(false).HasMaxLength(10).ValueGeneratedOnAddOrUpdate();
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.MyColumn).HasColumnName(@"MyColumn").HasColumnType("varchar(10)");
+            builder.Property(x => x.MyComputedColumn).HasColumnName(@"MyComputedColumn").HasColumnType("varchar(10)").IsRequired();
         }
     }
 
@@ -7212,8 +7428,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_Foo").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.Name).HasColumnName(@"name").HasColumnType("nchar(10)").IsRequired().IsFixedLength().HasMaxLength(10);
+            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int");
+            builder.Property(x => x.Name).HasColumnName(@"name").HasColumnType("nchar(10)").IsFixedLength();
 
             // Foreign keys
             builder.HasOne(a => a.Stafford_Boo).WithOne(b => b.Stafford_Foo).HasForeignKey<Stafford_Foo>(c => c.Id).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Foo_Boo");
@@ -7227,9 +7443,9 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.ChildId).HasName("PK_Child").IsClustered();
 
-            builder.Property(x => x.ChildId).HasColumnName(@"ChildId").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.ParentId).HasColumnName(@"ParentId").HasColumnType("int").IsRequired();
-            builder.Property(x => x.ChildName).HasColumnName(@"ChildName").HasColumnType("varchar(100)").IsRequired(false).IsUnicode(false).HasMaxLength(100);
+            builder.Property(x => x.ChildId).HasColumnName(@"ChildId").HasColumnType("int");
+            builder.Property(x => x.ParentId).HasColumnName(@"ParentId").HasColumnType("int");
+            builder.Property(x => x.ChildName).HasColumnName(@"ChildName").HasColumnType("varchar(100)").IsRequired(false);
 
             // Foreign keys
             builder.HasOne(a => a.Synonyms_Parent).WithMany(b => b.Synonyms_Children).HasForeignKey(c => c.ParentId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Child_Parent");
@@ -7243,8 +7459,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.ParentId).HasName("PK_Parent").IsClustered();
 
-            builder.Property(x => x.ParentId).HasColumnName(@"ParentId").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.ParentName).HasColumnName(@"ParentName").HasColumnType("varchar(100)").IsRequired().IsUnicode(false).HasMaxLength(100);
+            builder.Property(x => x.ParentId).HasColumnName(@"ParentId").HasColumnType("int");
+            builder.Property(x => x.ParentName).HasColumnName(@"ParentName").HasColumnType("varchar(100)");
         }
     }
 
@@ -7255,8 +7471,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.TableAId).HasName("TableA_pkey").IsClustered();
 
-            builder.Property(x => x.TableAId).HasColumnName(@"TableAId").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.TableADesc).HasColumnName(@"TableADesc").HasColumnType("varchar(20)").IsRequired(false).IsUnicode(false).HasMaxLength(20);
+            builder.Property(x => x.TableAId).HasColumnName(@"TableAId").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.TableADesc).HasColumnName(@"TableADesc").HasColumnType("varchar(20)").IsRequired(false);
         }
     }
 
@@ -7267,10 +7483,10 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => new { x.TableBId, x.TableAId }).HasName("TableB_pkey").IsClustered();
 
-            builder.Property(x => x.TableBId).HasColumnName(@"TableBId").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.TableAId).HasColumnName(@"TableAId").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.TableBId).HasColumnName(@"TableBId").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.TableAId).HasColumnName(@"TableAId").HasColumnType("int");
             builder.Property(x => x.ParentTableAId).HasColumnName(@"ParentTableAId").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.TableBDesc).HasColumnName(@"TableBDesc").HasColumnType("varchar(20)").IsRequired(false).IsUnicode(false).HasMaxLength(20);
+            builder.Property(x => x.TableBDesc).HasColumnName(@"TableBDesc").HasColumnType("varchar(20)").IsRequired(false);
 
             // Foreign keys
             builder.HasOne(a => a.TableA_TableAId).WithMany(b => b.TableBs).HasForeignKey(c => c.TableAId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_TableA_CompositeKey_Req");
@@ -7287,12 +7503,12 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_TableWithDuplicateColumnNames").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.UserId1).HasColumnName(@"user_id").HasColumnType("int").IsRequired();
-            builder.Property(x => x.UserId2).HasColumnName(@"UserId").HasColumnType("int").IsRequired();
-            builder.Property(x => x.UserId3).HasColumnName(@"User Id").HasColumnType("int").IsRequired();
-            builder.Property(x => x.UserId4).HasColumnName(@"User  Id").HasColumnType("int").IsRequired();
-            builder.Property(x => x.UserId).HasColumnName(@"user__id").HasColumnType("int").IsRequired();
+            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.UserId1).HasColumnName(@"user_id").HasColumnType("int");
+            builder.Property(x => x.UserId2).HasColumnName(@"UserId").HasColumnType("int");
+            builder.Property(x => x.UserId3).HasColumnName(@"User Id").HasColumnType("int");
+            builder.Property(x => x.UserId4).HasColumnName(@"User  Id").HasColumnType("int");
+            builder.Property(x => x.UserId).HasColumnName(@"user__id").HasColumnType("int");
         }
     }
 
@@ -7303,8 +7519,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_table_with_multiple_periods").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
+            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int");
+            builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("varchar(20)");
         }
     }
 
@@ -7315,7 +7531,7 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_TableWithSpace").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("int");
             builder.HasMany<TableWithSpaceAndInColumn>(t => t.TableWithSpaceAndInColumns).WithMany(t => t.TableWithSpaces).UsingEntity<Dictionary<string, object>>("table mapping with space",
                     j => j.HasOne<TableWithSpaceAndInColumn>().WithMany().HasForeignKey("id value"),
                     j => j.HasOne<TableWithSpace>().WithMany().HasForeignKey("id"),
@@ -7330,7 +7546,7 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.IdValue).HasName("PK_TableWithSpaceAndInColumns").IsClustered();
 
-            builder.Property(x => x.IdValue).HasColumnName(@"id value").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.IdValue).HasColumnName(@"id value").HasColumnType("int");
         }
     }
 
@@ -7341,7 +7557,7 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.IdValue).HasName("PK_TableWithSpaceInColumnOnly").IsClustered();
 
-            builder.Property(x => x.IdValue).HasColumnName(@"id value").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.IdValue).HasColumnName(@"id value").HasColumnType("int");
         }
     }
 
@@ -7352,10 +7568,10 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_TadeuszSobol").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(max)").IsRequired(false).IsUnicode(false);
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(max)").IsRequired(false);
             builder.Property(x => x.Notes).HasColumnName(@"Notes").HasColumnType("nvarchar(max)").IsRequired(false);
-            builder.Property(x => x.Name).HasColumnName(@"Name").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);
+            builder.Property(x => x.Name).HasColumnName(@"Name").HasColumnType("varchar(10)").IsRequired(false);
         }
     }
 
@@ -7366,7 +7582,7 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.TaskId).HasName("PK_Task").IsClustered();
 
-            builder.Property(x => x.TaskId).HasColumnName(@"TaskId").HasColumnType("bigint").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.TaskId).HasColumnName(@"TaskId").HasColumnType("bigint");
         }
     }
 
@@ -7377,8 +7593,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_tblOrders").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Added).HasColumnName(@"added").HasColumnType("datetime").IsRequired().HasDefaultValueSql(@"getdate()");
+            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Added).HasColumnName(@"added").HasColumnType("datetime").HasDefaultValueSql(@"getdate()");
         }
     }
 
@@ -7389,8 +7605,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_tblOrderErrors").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Error).HasColumnName(@"error").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);
+            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Error).HasColumnName(@"error").HasColumnType("varchar(50)").IsRequired(false);
         }
     }
 
@@ -7401,8 +7617,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_tblOrderErrorsAB").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Error).HasColumnName(@"error").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);
+            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Error).HasColumnName(@"error").HasColumnType("varchar(50)").IsRequired(false);
         }
     }
 
@@ -7413,9 +7629,9 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_tblOrderLines").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int").IsRequired();
-            builder.Property(x => x.Sku).HasColumnName(@"sku").HasColumnType("varchar(15)").IsRequired(false).IsUnicode(false).HasMaxLength(15);
+            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.OrderId).HasColumnName(@"OrderID").HasColumnType("int");
+            builder.Property(x => x.Sku).HasColumnName(@"sku").HasColumnType("varchar(15)").IsRequired(false);
 
             // Foreign keys
             builder.HasOne(a => a.TblOrder).WithMany(b => b.TblOrderLines).HasForeignKey(c => c.OrderId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("tblOrdersFK");
@@ -7429,12 +7645,12 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.DeptId).HasName("PK__Temporal__0148818EB27A7514").IsClustered();
 
-            builder.Property(x => x.DeptId).HasColumnName(@"DeptID").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.DeptName).HasColumnName(@"DeptName").HasColumnType("varchar(50)").IsRequired().IsUnicode(false).HasMaxLength(50);
+            builder.Property(x => x.DeptId).HasColumnName(@"DeptID").HasColumnType("int");
+            builder.Property(x => x.DeptName).HasColumnName(@"DeptName").HasColumnType("varchar(50)");
             builder.Property(x => x.ManagerId).HasColumnName(@"ManagerID").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.ParentDeptId).HasColumnName(@"ParentDeptID").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.SysStartTime).HasColumnName(@"SysStartTime").HasColumnType("datetime2").IsRequired().ValueGeneratedOnAdd();
-            builder.Property(x => x.SysEndTime).HasColumnName(@"SysEndTime").HasColumnType("datetime2").IsRequired().ValueGeneratedOnAdd();
+            builder.Property(x => x.SysStartTime).HasColumnName(@"SysStartTime").HasColumnType("datetime2").ValueGeneratedOnAdd();
+            builder.Property(x => x.SysEndTime).HasColumnName(@"SysEndTime").HasColumnType("datetime2").ValueGeneratedOnAdd();
         }
     }
 
@@ -7445,12 +7661,12 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => new { x.DeptId, x.DeptName, x.SysStartTime, x.SysEndTime });
 
-            builder.Property(x => x.DeptId).HasColumnName(@"DeptID").HasColumnType("int").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.DeptName).HasColumnName(@"DeptName").HasColumnType("varchar(50)").IsRequired().IsUnicode(false).HasMaxLength(50).ValueGeneratedNever();
+            builder.Property(x => x.DeptId).HasColumnName(@"DeptID").HasColumnType("int");
+            builder.Property(x => x.DeptName).HasColumnName(@"DeptName").HasColumnType("varchar(50)");
             builder.Property(x => x.ManagerId).HasColumnName(@"ManagerID").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.ParentDeptId).HasColumnName(@"ParentDeptID").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.SysStartTime).HasColumnName(@"SysStartTime").HasColumnType("datetime2").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.SysEndTime).HasColumnName(@"SysEndTime").HasColumnType("datetime2").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.SysStartTime).HasColumnName(@"SysStartTime").HasColumnType("datetime2");
+            builder.Property(x => x.SysEndTime).HasColumnName(@"SysEndTime").HasColumnType("datetime2");
 
             builder.HasIndex(x => new { x.SysEndTime, x.SysStartTime }).HasDatabaseName("ix_TemporalDepartmentHistory");
         }
@@ -7463,8 +7679,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_ThisIsMemoryOptimised");
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(20)");
         }
     }
 
@@ -7475,8 +7691,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_Ticket").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("bigint").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.CreatedById).HasColumnName(@"CreatedById").HasColumnType("bigint").IsRequired();
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("bigint").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.CreatedById).HasColumnName(@"CreatedById").HasColumnType("bigint");
             builder.Property(x => x.ModifiedById).HasColumnName(@"ModifiedById").HasColumnType("bigint").IsRequired(false);
 
             // Foreign keys
@@ -7492,9 +7708,9 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_TimestampNotNull").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Version).HasColumnName(@"Version").HasColumnType("timestamp").IsRequired().IsFixedLength().IsRowVersion().IsConcurrencyToken();
-            builder.Property(x => x.Number).HasColumnName(@"Number").HasColumnType("int").IsRequired();
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Version).HasColumnName(@"Version").HasColumnType("timestamp").IsFixedLength();
+            builder.Property(x => x.Number).HasColumnName(@"Number").HasColumnType("int");
         }
     }
 
@@ -7505,9 +7721,9 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_TTimestampNullable").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Version).HasColumnName(@"Version").HasColumnType("timestamp").IsRequired(false).IsFixedLength().IsRowVersion().IsConcurrencyToken();
-            builder.Property(x => x.Number).HasColumnName(@"Number").HasColumnType("int").IsRequired();
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Version).HasColumnName(@"Version").HasColumnType("timestamp").IsRequired(false).IsFixedLength();
+            builder.Property(x => x.Number).HasColumnName(@"Number").HasColumnType("int");
         }
     }
 
@@ -7518,8 +7734,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_Token").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("uniqueidentifier").IsRequired().ValueGeneratedOnAdd().HasDefaultValueSql(@"newsequentialid()");
-            builder.Property(x => x.Enabled).HasColumnName(@"Enabled").HasColumnType("bit").IsRequired();
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("uniqueidentifier").ValueGeneratedOnAdd().HasDefaultValueSql(@"newsequentialid()");
+            builder.Property(x => x.Enabled).HasColumnName(@"Enabled").HasColumnType("bit");
         }
     }
 
@@ -7530,8 +7746,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_User").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.ExternalUserId).HasColumnName(@"ExternalUserID").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);
+            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.ExternalUserId).HasColumnName(@"ExternalUserID").HasColumnType("varchar(50)").IsRequired(false);
         }
     }
 
@@ -7542,9 +7758,9 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.UserId).HasName("PK_User309").IsClustered();
 
-            builder.Property(x => x.UserId).HasColumnName(@"UserID").HasColumnType("bigint").IsRequired().ValueGeneratedNever();
-            builder.Property(x => x.Lastname).HasColumnName(@"Lastname").HasColumnType("nvarchar(100)").IsRequired().HasMaxLength(100);
-            builder.Property(x => x.Firstname).HasColumnName(@"Firstname").HasColumnType("nvarchar(100)").IsRequired().HasMaxLength(100);
+            builder.Property(x => x.UserId).HasColumnName(@"UserID").HasColumnType("bigint");
+            builder.Property(x => x.Lastname).HasColumnName(@"Lastname").HasColumnType("nvarchar(100)");
+            builder.Property(x => x.Firstname).HasColumnName(@"Firstname").HasColumnType("nvarchar(100)");
             builder.Property(x => x.PhoneCountryId).HasColumnName(@"PhoneCountryID").HasColumnType("int").IsRequired(false);
 
             // Foreign keys
@@ -7559,9 +7775,9 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_User_Document").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.UserId).HasColumnName(@"UserID").HasColumnType("int").IsRequired();
-            builder.Property(x => x.CreatedByUserId).HasColumnName(@"CreatedByUserID").HasColumnType("int").IsRequired();
+            builder.Property(x => x.Id).HasColumnName(@"ID").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.UserId).HasColumnName(@"UserID").HasColumnType("int");
+            builder.Property(x => x.CreatedByUserId).HasColumnName(@"CreatedByUserID").HasColumnType("int");
 
             // Foreign keys
             builder.HasOne(a => a.CreatedByUser).WithMany(b => b.UserDocuments_CreatedByUserId).HasForeignKey(c => c.CreatedByUserId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_User_Document_User1");
@@ -7576,9 +7792,9 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_Versioned").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Version).HasColumnName(@"Version").HasColumnType("timestamp").IsRequired().IsFixedLength().IsRowVersion().IsConcurrencyToken();
-            builder.Property(x => x.Number).HasColumnName(@"Number").HasColumnType("int").IsRequired();
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Version).HasColumnName(@"Version").HasColumnType("timestamp").IsFixedLength();
+            builder.Property(x => x.Number).HasColumnName(@"Number").HasColumnType("int");
         }
     }
 
@@ -7589,9 +7805,9 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Id).HasName("PK_VersionedNullable").IsClustered();
 
-            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Version).HasColumnName(@"Version").HasColumnType("timestamp").IsRequired(false).IsFixedLength().IsRowVersion().IsConcurrencyToken();
-            builder.Property(x => x.Number).HasColumnName(@"Number").HasColumnType("int").IsRequired();
+            builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Version).HasColumnName(@"Version").HasColumnType("timestamp").IsRequired(false).IsFixedLength();
+            builder.Property(x => x.Number).HasColumnName(@"Number").HasColumnType("int");
         }
     }
 
@@ -7602,8 +7818,8 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasNoKey();
 
-            builder.Property(x => x.FkId).HasColumnName(@"FkID").HasColumnType("int").IsRequired();
-            builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("varchar(20)").IsRequired().IsUnicode(false).HasMaxLength(20);
+            builder.Property(x => x.FkId).HasColumnName(@"FkID").HasColumnType("int");
+            builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("varchar(20)");
         }
     }
 
@@ -7614,16 +7830,16 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasNoKey();
 
-            builder.Property(x => x.CodeObjectNo).HasColumnName(@"codeObjectNo").HasColumnType("int").IsRequired();
+            builder.Property(x => x.CodeObjectNo).HasColumnName(@"codeObjectNo").HasColumnType("int");
             builder.Property(x => x.ApplicationNo).HasColumnName(@"applicationNo").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.Type).HasColumnName(@"type").HasColumnType("int").IsRequired();
-            builder.Property(x => x.EName).HasColumnName(@"eName").HasColumnType("nvarchar(250)").IsRequired().HasMaxLength(250);
-            builder.Property(x => x.AName).HasColumnName(@"aName").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
-            builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
-            builder.Property(x => x.CodeName).HasColumnName(@"codeName").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
-            builder.Property(x => x.Note).HasColumnName(@"note").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
-            builder.Property(x => x.IsObject).HasColumnName(@"isObject").HasColumnType("bit").IsRequired();
-            builder.Property(x => x.VersionNumber).HasColumnName(@"versionNumber").HasColumnType("timestamp").IsRequired(false).IsFixedLength().IsRowVersion().IsConcurrencyToken();
+            builder.Property(x => x.Type).HasColumnName(@"type").HasColumnType("int");
+            builder.Property(x => x.EName).HasColumnName(@"eName").HasColumnType("nvarchar(250)");
+            builder.Property(x => x.AName).HasColumnName(@"aName").HasColumnType("nvarchar(250)").IsRequired(false);
+            builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("nvarchar(250)").IsRequired(false);
+            builder.Property(x => x.CodeName).HasColumnName(@"codeName").HasColumnType("nvarchar(250)").IsRequired(false);
+            builder.Property(x => x.Note).HasColumnName(@"note").HasColumnType("nvarchar(250)").IsRequired(false);
+            builder.Property(x => x.IsObject).HasColumnName(@"isObject").HasColumnType("bit");
+            builder.Property(x => x.VersionNumber).HasColumnName(@"versionNumber").HasColumnType("timestamp").IsRequired(false).IsFixedLength();
         }
     }
 
@@ -7634,11 +7850,11 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.PkArticle).HasName("PK_Articles").IsClustered();
 
-            builder.Property(x => x.PkArticle).HasColumnName(@"PK_Article").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.FkFactory).HasColumnName(@"FK_Factory").HasColumnType("uniqueidentifier").IsRequired();
-            builder.Property(x => x.FkArticleLevel).HasColumnName(@"FK_ArticleLevel").HasColumnType("int").IsRequired();
+            builder.Property(x => x.PkArticle).HasColumnName(@"PK_Article").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.FkFactory).HasColumnName(@"FK_Factory").HasColumnType("uniqueidentifier");
+            builder.Property(x => x.FkArticleLevel).HasColumnName(@"FK_ArticleLevel").HasColumnType("int");
             builder.Property(x => x.FkParentArticle).HasColumnName(@"FK_ParentArticle").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.Code).HasColumnName(@"Code").HasColumnType("nvarchar(20)").IsRequired().HasMaxLength(20);
+            builder.Property(x => x.Code).HasColumnName(@"Code").HasColumnType("nvarchar(20)");
 
             builder.HasIndex(x => new { x.FkFactory, x.FkArticleLevel, x.Code }).HasDatabaseName("UK_Articles").IsUnique();
         }
@@ -7655,8 +7871,8 @@ namespace V10EfrpgTestDataAnnotations
             builder.Property(x => x.FkFactory).HasColumnName(@"FK_Factory").HasColumnType("uniqueidentifier").IsRequired(false);
             builder.Property(x => x.FkArticleLevel).HasColumnName(@"FK_ArticleLevel").HasColumnType("int").IsRequired(false);
             builder.Property(x => x.FkParentArticle).HasColumnName(@"FK_ParentArticle").HasColumnType("int").IsRequired(false);
-            builder.Property(x => x.Code).HasColumnName(@"Code").HasColumnType("nvarchar(20)").IsRequired(false).HasMaxLength(20);
-            builder.Property(x => x.FullCode).HasColumnName(@"FullCode").HasColumnType("nvarchar(100)").IsRequired(false).HasMaxLength(100);
+            builder.Property(x => x.Code).HasColumnName(@"Code").HasColumnType("nvarchar(20)").IsRequired(false);
+            builder.Property(x => x.FullCode).HasColumnName(@"FullCode").HasColumnType("nvarchar(100)").IsRequired(false);
         }
     }
 
@@ -7667,10 +7883,10 @@ namespace V10EfrpgTestDataAnnotations
         {
             builder.HasKey(x => x.Кодбренда).HasName("PK_Бренды").IsClustered();
 
-            builder.Property(x => x.Кодбренда).HasColumnName(@"Код бренда").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Наименованиебренда).HasColumnName(@"Наименование бренда").HasColumnType("varchar(50)").IsRequired().IsUnicode(false).HasMaxLength(50);
-            builder.Property(x => x.Логотипбренда).HasColumnName(@"Логотип_бренда").HasColumnType("image(2147483647)").IsRequired(false).HasMaxLength(2147483647);
-            builder.Property(x => x.Логотипбрендавертикальный).HasColumnName(@"Логотип_бренда_вертикальный").HasColumnType("image(2147483647)").IsRequired(false).HasMaxLength(2147483647);
+            builder.Property(x => x.Кодбренда).HasColumnName(@"Код бренда").HasColumnType("int").ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Наименованиебренда).HasColumnName(@"Наименование бренда").HasColumnType("varchar(50)");
+            builder.Property(x => x.Логотипбренда).HasColumnName(@"Логотип_бренда").HasColumnType("image(2147483647)").IsRequired(false);
+            builder.Property(x => x.Логотипбрендавертикальный).HasColumnName(@"Логотип_бренда_вертикальный").HasColumnType("image(2147483647)").IsRequired(false);
         }
     }
 

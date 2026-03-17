@@ -80,7 +80,7 @@ namespace Efrpg.Templates
             var usings = new List<string>(CacheList(TemplateFileBasedConstants.Text.PocoUsings));
 
             // Add dynamic namespaces based on column types
-            if (data.HasHierarchyId && !usings.Contains("Microsoft.EntityFrameworkCore"))
+            if ((data.HasHierarchyId || Settings.UseDataAnnotations) && !usings.Contains("Microsoft.EntityFrameworkCore"))
                 usings.Add("Microsoft.EntityFrameworkCore");
 
             if (data.HasSqlVector && !usings.Contains("Microsoft.Data.SqlTypes"))
