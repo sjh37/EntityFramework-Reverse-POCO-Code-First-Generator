@@ -30,6 +30,11 @@ namespace Tester.Integration.EFCore8.Multi_context_many_filesAppleDbContext
         {
         }
 
+        protected AppleDbContext(DbContextOptions options)
+            : base(options)
+        {
+        }
+
         public AppleDbContext(IConfiguration configuration)
         {
             _configuration = configuration;

@@ -106,6 +106,11 @@ namespace Efrpg.PostgreSQL
         {
         }
 
+        protected MyDbContext(DbContextOptions options)
+            : base(options)
+        {
+        }
+
         public DbSet<Category> Categories { get; set; } // categories
         public DbSet<Customer> Customers { get; set; } // customers
         public DbSet<CustomerCustomerDemo> CustomerCustomerDemoes { get; set; } // customer_customer_demo

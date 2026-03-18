@@ -99,6 +99,11 @@ namespace Efrpg.SqlCE
         {
         }
 
+        protected MyDbContext(DbContextOptions options)
+            : base(options)
+        {
+        }
+
         public DbSet<Category> Categories { get; set; } // Categories
         public DbSet<Customer> Customers { get; set; } // Customers
         public DbSet<Employee> Employees { get; set; } // Employees

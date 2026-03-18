@@ -106,6 +106,11 @@ namespace TestSynonymsDatabase9
         {
         }
 
+        protected TestDbContext(DbContextOptions options)
+            : base(options)
+        {
+        }
+
         public DbSet<CarWithDifferentSynonymName> CarWithDifferentSynonymNames { get; set; } // CarWithDifferentSynonymName
         public DbSet<Child> Children { get; set; } // Child
         public DbSet<Parent> Parents { get; set; } // Parent

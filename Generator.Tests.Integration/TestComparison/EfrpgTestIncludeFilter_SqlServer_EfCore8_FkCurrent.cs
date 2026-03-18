@@ -241,6 +241,11 @@ namespace Efrpg.V8FilterTest
         {
         }
 
+        protected EfrpgDbContext(DbContextOptions options)
+            : base(options)
+        {
+        }
+
         public DbSet<Beta_Harish3485> Beta_Harish3485 { get; set; } // Harish3485
         public DbSet<Car> Cars { get; set; } // Car
         public DbSet<CarToColour> CarToColours { get; set; } // CarToColour

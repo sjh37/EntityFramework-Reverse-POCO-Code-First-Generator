@@ -87,6 +87,11 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesAppleDbContext
         {
         }
 
+        protected AppleDbContext(DbContextOptions options)
+            : base(options)
+        {
+        }
+
         public DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
         public DbSet<Stafford_Foo> Stafford_Foos { get; set; } // Foo
 

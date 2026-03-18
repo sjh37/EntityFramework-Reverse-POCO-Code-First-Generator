@@ -28,6 +28,11 @@ namespace Tester.Integration.EFCore8.ContextHasSameNameAsDb
         {
         }
 
+        protected EfrpgTest(DbContextOptions options)
+            : base(options)
+        {
+        }
+
         public DbSet<Car> Cars { get; set; } // Car
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

@@ -104,6 +104,11 @@ namespace Efrpg.PostgreSQL
         {
         }
 
+        protected MyDbContext(DbContextOptions options)
+            : base(options)
+        {
+        }
+
         public DbSet<AlphabeticalListOfProduct> AlphabeticalListOfProducts { get; set; } // Alphabetical list of products
         public DbSet<Category> Categories { get; set; } // categories
         public DbSet<CategorySalesFor1997> CategorySalesFor1997 { get; set; } // Category Sales for 1997

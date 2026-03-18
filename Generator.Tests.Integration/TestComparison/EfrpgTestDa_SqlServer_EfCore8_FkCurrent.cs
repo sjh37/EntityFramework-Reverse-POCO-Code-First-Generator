@@ -395,6 +395,11 @@ namespace Efrpg.V3TestE8Da
         {
         }
 
+        protected EfrpgTestDbContextDa(DbContextOptions options)
+            : base(options)
+        {
+        }
+
         public DbSet<A> A { get; set; } // A
         public DbSet<Aaref> Aarefs { get; set; } // AAREF
         public DbSet<AbOrderLinesAb> AbOrderLinesAbs { get; set; } // AB_OrderLinesAB_

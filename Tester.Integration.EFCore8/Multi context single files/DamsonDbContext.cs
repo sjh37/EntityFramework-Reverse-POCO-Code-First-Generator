@@ -87,6 +87,11 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesPlum
         {
         }
 
+        protected DamsonDbContext(DbContextOptions options)
+            : base(options)
+        {
+        }
+
         public DbSet<NoPrimaryKey> NoPrimaryKeys { get; set; } // NoPrimaryKeys
         public DbSet<Synonyms_Parent> Synonyms_Parents { get; set; } // Parent
 

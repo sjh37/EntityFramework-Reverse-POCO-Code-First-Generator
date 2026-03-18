@@ -250,6 +250,14 @@ using {{this}};{{#newline}}
 {{/if}}
     }{{#newline}}{{#newline}}
 
+    protected {{DbContextName}}(DbContextOptions options){{#newline}}
+        : base(options){{#newline}}
+    {{{#newline}}
+{{#if DbContextClassIsPartial}}
+        InitializePartial();{{#newline}}
+{{/if}}
+    }{{#newline}}{{#newline}}
+
 {{#if OnConfigurationUsesConfiguration}}
     public {{DbContextName}}(IConfiguration configuration){{#newline}}
     {{{#newline}}

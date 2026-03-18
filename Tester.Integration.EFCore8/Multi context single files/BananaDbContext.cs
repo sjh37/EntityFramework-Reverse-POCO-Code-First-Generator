@@ -86,6 +86,11 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesBananaDbContext
         {
         }
 
+        protected BananaDbContext(DbContextOptions options)
+            : base(options)
+        {
+        }
+
         public DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; } // ComputedColumns
 
         public bool IsSqlParameterNull(SqlParameter param)

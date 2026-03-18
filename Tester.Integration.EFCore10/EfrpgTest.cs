@@ -401,6 +401,12 @@ namespace V10EfrpgTest
             InitializePartial();
         }
 
+        protected V10EfrpgTestDbContext(DbContextOptions options)
+            : base(options)
+        {
+            InitializePartial();
+        }
+
         public DbSet<A> A { get; set; } // A
         public DbSet<Aaref> Aarefs { get; set; } // AAREF
         public DbSet<AbOrderLinesAb> AbOrderLinesAbs { get; set; } // AB_OrderLinesAB_

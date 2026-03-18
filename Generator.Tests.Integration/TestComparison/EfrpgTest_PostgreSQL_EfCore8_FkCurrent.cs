@@ -96,6 +96,11 @@ namespace Efrpg.PostgreSQL
         {
         }
 
+        protected MyDbContext(DbContextOptions options)
+            : base(options)
+        {
+        }
+
         public DbSet<Allcolumntype> Allcolumntypes { get; set; } // allcolumntypes
         public DbSet<another_CategoryDescription> another_CategoryDescriptions { get; set; } // category_description
         public DbSet<another_Status> another_Status { get; set; } // status

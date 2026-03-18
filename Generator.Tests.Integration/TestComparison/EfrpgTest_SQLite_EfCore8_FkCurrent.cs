@@ -94,6 +94,11 @@ namespace Efrpg.SQLite
         {
         }
 
+        protected MyDbContext(DbContextOptions options)
+            : base(options)
+        {
+        }
+
         public DbSet<Efrpg> Efrpgs { get; set; } // Efrpg
         public DbSet<EfrpgItem> EfrpgItems { get; set; } // EfrpgItems
         public DbSet<ThisIsAView> ThisIsAViews { get; set; } // ThisIsAView

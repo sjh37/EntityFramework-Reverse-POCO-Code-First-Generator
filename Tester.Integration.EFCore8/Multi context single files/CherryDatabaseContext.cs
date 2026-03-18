@@ -86,6 +86,11 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesCherry
         {
         }
 
+        protected CherryDbContext(DbContextOptions options)
+            : base(options)
+        {
+        }
+
         public DbSet<ColumnNameAndType> ColumnNameAndTypes { get; set; } // ColumnNameAndTypes
 
         public bool IsSqlParameterNull(SqlParameter param)

@@ -393,6 +393,11 @@ namespace Efrpg.V4TestE8
         {
         }
 
+        protected Efrpg_db_context(DbContextOptions options)
+            : base(options)
+        {
+        }
+
         public DbSet<A> A { get; set; } // A
         public DbSet<AAREF> AAREFs { get; set; } // AAREF
         public DbSet<AB_OrderLinesAB> AB_OrderLinesABs { get; set; } // AB_OrderLinesAB_

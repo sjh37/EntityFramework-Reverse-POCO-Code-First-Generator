@@ -397,6 +397,11 @@ namespace TestDatabaseStandard
         {
         }
 
+        protected TestDbContext(DbContextOptions options)
+            : base(options)
+        {
+        }
+
         public DbSet<A> A { get; set; } // A
         public DbSet<Aaref> Aarefs { get; set; } // AAREF
         public DbSet<AbOrderLinesAb> AbOrderLinesAbs { get; set; } // AB_OrderLinesAB_

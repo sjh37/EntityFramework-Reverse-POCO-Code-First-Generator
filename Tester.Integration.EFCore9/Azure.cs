@@ -106,6 +106,11 @@ namespace Azure9
         {
         }
 
+        protected AzureContext(DbContextOptions options)
+            : base(options)
+        {
+        }
+
         public DbSet<BadEmail> BadEmails { get; set; } // BadEmail
         public DbSet<CartItem> CartItems { get; set; } // CartItem
         public DbSet<Checkout> Checkouts { get; set; } // Checkout

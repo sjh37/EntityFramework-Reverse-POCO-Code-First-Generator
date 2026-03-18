@@ -106,6 +106,11 @@ namespace Efrpg.PostgreSQL
         {
         }
 
+        protected MyDbContext(DbContextOptions options)
+            : base(options)
+        {
+        }
+
         public DbSet<dbo_TestPostGisTbl> dbo_TestPostGisTbls { get; set; } // TestPostGisTbl
         public DbSet<GeographyColumn> GeographyColumns { get; set; } // geography_columns
         public DbSet<GeometryColumn> GeometryColumns { get; set; } // geometry_columns

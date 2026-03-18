@@ -32,6 +32,11 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
         {
         }
 
+        protected EfCoreDbContext(DbContextOptions options)
+            : base(options)
+        {
+        }
+
         public EfCoreDbContext(IConfiguration configuration)
         {
             _configuration = configuration;

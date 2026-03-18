@@ -30,6 +30,11 @@ namespace Tester.Integration.EFCore8.Multi_context_many_filesBananaDbContext
         {
         }
 
+        protected BananaDbContext(DbContextOptions options)
+            : base(options)
+        {
+        }
+
         public BananaDbContext(IConfiguration configuration)
         {
             _configuration = configuration;

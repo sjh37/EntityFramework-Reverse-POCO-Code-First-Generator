@@ -30,6 +30,11 @@ namespace Tester.Integration.EFCore8.Multi_context_many_filesCherry
         {
         }
 
+        protected CherryDbContext(DbContextOptions options)
+            : base(options)
+        {
+        }
+
         public CherryDbContext(IConfiguration configuration)
         {
             _configuration = configuration;
