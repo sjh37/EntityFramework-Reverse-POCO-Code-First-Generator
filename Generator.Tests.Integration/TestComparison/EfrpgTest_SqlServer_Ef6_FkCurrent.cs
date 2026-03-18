@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 using System.Data.Common;
@@ -4516,6 +4517,7 @@ namespace Efrpg.V3TestE1
     {
         public string EnumName { get; set; } // enum_name (Primary key) (length: 50)
         public string Value { get; set; } // value (Primary key) (length: 10)
+        public string Description { get; set; } // description (length: 50)
     }
 
     // DaysOfWeek
@@ -4523,6 +4525,7 @@ namespace Efrpg.V3TestE1
     {
         public string TypeName { get; set; } // TypeName (length: 50)
         public int TypeId { get; set; } // TypeId (Primary key)
+        public string Description { get; set; } // Description (length: 50)
 
         // Reverse navigation
 
@@ -6422,6 +6425,7 @@ namespace Efrpg.V3TestE1
 
             Property(x => x.EnumName).HasColumnName(@"enum_name").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(50).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(x => x.Value).HasColumnName(@"value").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(10).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.Description).HasColumnName(@"description").HasColumnType("varchar").IsOptional().IsUnicode(false).HasMaxLength(50);
         }
     }
 
@@ -6440,6 +6444,7 @@ namespace Efrpg.V3TestE1
 
             Property(x => x.TypeName).HasColumnName(@"TypeName").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(50);
             Property(x => x.TypeId).HasColumnName(@"TypeId").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar").IsOptional().IsUnicode(false).HasMaxLength(50);
         }
     }
 
@@ -7882,20 +7887,31 @@ namespace Efrpg.V3TestE1
 
     public enum CarOptions
     {
+        [Description("Sun roof")]
         SunRoof = 0x01,
+        [Description("Spoiler")]
         Spoiler = 0x02,
+        [Description("Fog lights")]
         FogLights = 0x04,
+        [Description("Tinted windows")]
         TintedWindows = 0x08,
     }
 
     public enum DaysOfWeek
     {
+        [Description("Sunday")]
         Sun = 0,
+        [Description("Money")]
         Mon = 1,
+        [Description("Tuesday")]
         Tue = 2,
+        [Description("Wednesday")]
         Wed = 3,
+        [Description("Thursday")]
         Thu = 4,
+        [Description("Friday")]
         Fri = 6,
+        [Description("Sat")]
         Sat = 7,
     }
 

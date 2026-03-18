@@ -5380,6 +5380,12 @@ namespace Efrpg.V3TestE8Da
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Unicode(false)]
         public string Value { get; set; } = null!; // value (Primary key) (length: 10)
+
+        [MaxLength(50)]
+        [StringLength(50)]
+        [Display(Name = "Description")]
+        [Unicode(false)]
+        public string? Description { get; set; } // description (length: 50)
     }
 
     // DaysOfWeek
@@ -5398,6 +5404,12 @@ namespace Efrpg.V3TestE8Da
         [Display(Name = "Type ID")]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int TypeId { get; set; } // TypeId (Primary key)
+
+        [MaxLength(50)]
+        [StringLength(50)]
+        [Display(Name = "Description")]
+        [Unicode(false)]
+        public string? Description { get; set; } // Description (length: 50)
 
         // Reverse navigation
 
@@ -7972,6 +7984,7 @@ namespace Efrpg.V3TestE8Da
 
             builder.Property(x => x.EnumName).HasColumnName(@"enum_name").HasColumnType("varchar(50)");
             builder.Property(x => x.Value).HasColumnName(@"value").HasColumnType("varchar(10)");
+            builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("varchar(50)").IsRequired(false);
         }
     }
 
@@ -7984,6 +7997,7 @@ namespace Efrpg.V3TestE8Da
 
             builder.Property(x => x.TypeName).HasColumnName(@"TypeName").HasColumnType("varchar(50)");
             builder.Property(x => x.TypeId).HasColumnName(@"TypeId").HasColumnType("int");
+            builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(50)").IsRequired(false);
         }
     }
 
@@ -9037,20 +9051,31 @@ namespace Efrpg.V3TestE8Da
 
     public enum CarOptions
     {
+        [Description("Sun roof")]
         SunRoof = 0x01,
+        [Description("Spoiler")]
         Spoiler = 0x02,
+        [Description("Fog lights")]
         FogLights = 0x04,
+        [Description("Tinted windows")]
         TintedWindows = 0x08,
     }
 
     public enum DaysOfWeek
     {
+        [Description("Sunday")]
         Sun = 0,
+        [Description("Money")]
         Mon = 1,
+        [Description("Tuesday")]
         Tue = 2,
+        [Description("Wednesday")]
         Wed = 3,
+        [Description("Thursday")]
         Thu = 4,
+        [Description("Friday")]
         Fri = 6,
+        [Description("Sat")]
         Sat = 7,
     }
 
