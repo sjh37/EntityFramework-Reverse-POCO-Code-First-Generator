@@ -778,6 +778,8 @@ namespace Efrpg.Generators
 
             var co = new CodeOutput(enumeration.EnumName, filename, null, Settings.PocoFolder, null);
             co.AddUsings(_template.EnumUsings());
+            if (enumeration.Items.Any(i => i.Attributes.Any(a => a.StartsWith("[Description"))))
+                co.AddUsings(new List<string> { "System.ComponentModel" });
             co.AddCode(Template.Transform(_template.Enums(), enumeration));
             return co;
         }

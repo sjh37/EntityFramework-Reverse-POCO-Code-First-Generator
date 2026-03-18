@@ -133,11 +133,13 @@
             // Example
             /*new EnumerationSettings
             {
-                Name       = "DaysOfWeek",          // Enum to generate. e.g. "DaysOfWeek" would result in "public enum DaysOfWeek {...}" if the GroupField is set to a value then {GroupField} must be used in this name. e.g. "DaysOfWeek{GroupField}"
-                Table      = "EnumTest.DaysOfWeek", // Database table containing enum values. e.g. "DaysOfWeek"
-                NameField  = "TypeName",            // Column containing the name for the enum. e.g. "TypeName"
-                ValueField = "TypeId",              // Column containing the values for the enum. e.g. "TypeId"
-                GroupField = string.Empty           // [optional] Column containing the group name for the enum. This is used if multiple Enums are in the same table. if this is populated, use {GroupField} in the Name property. e.g. "{GroupField}Enum"
+                Name                        = "DaysOfWeek",          // Enum to generate. e.g. "DaysOfWeek" would result in "public enum DaysOfWeek {...}" if the GroupField is set to a value then {GroupField} must be used in this name. e.g. "DaysOfWeek{GroupField}"
+                Table                       = "EnumTest.DaysOfWeek", // Database table containing enum values. e.g. "DaysOfWeek"
+                NameField                   = "TypeName",            // Column containing the name for the enum. e.g. "TypeName"
+                ValueField                  = "TypeId",              // Column containing the values for the enum. e.g. "TypeId"
+                GroupField                  = string.Empty,          // [optional] Column containing the group name for the enum. This is used if multiple Enums are in the same table. if this is populated, use {GroupField} in the Name property. e.g. "{GroupField}Enum"
+                DescriptionField            = "Description",         // [optional] Column containing the description for each enum member. When set, emits [Description("...")] on members with a non-empty value.
+                GenerateDescriptionFromName = false                  // [optional] If true and no description is available from DescriptionField, generates [Description("...")] from the enum member name as human-readable text.
             },
             new EnumerationSettings
             {
@@ -3202,6 +3204,8 @@
         public string NameField { get; set; } // Column containing the name for the enum. e.g. "TypeName"
         public string ValueField { get; set; } // Column containing the values for the enum. e.g. "TypeId"
         public string GroupField { get; set; } // [optional] Column containing the group name for the enum. This is used if multiple Enums are in the same table. if this is populated, use {GroupField} in the Name property. e.g. "{GroupField}Enum"
+        public string DescriptionField { get; set; } // [optional] Column containing the description for each enum member. When set, a [Description("...")] attribute is emitted for members whose description is non-empty.
+        public bool GenerateDescriptionFromName { get; set; } // [optional] If true and no description is available from DescriptionField, a [Description("...")] attribute is generated from the enum member name converted to human-readable text.
 
         public Dictionary<string, object> AllFields { get; set; } // Here you will find all fields, including any extra custom fields not listed above
     }
@@ -4461,6 +4465,8 @@
 
             var co = new CodeOutput(enumeration.EnumName, filename, null, Settings.PocoFolder, null);
             co.AddUsings(_template.EnumUsings());
+            if (enumeration.Items.Any(i => i.Attributes.Any(a => a.StartsWith("[Description"))))
+                co.AddUsings(new List<string> { "System.ComponentModel" });
             co.AddCode(Template.Transform(_template.Enums(), enumeration));
             return co;
         }
@@ -14244,7 +14250,22 @@ and limitations under the License.
                                     var o = rdr.GetValue(n);
                                     allValues.Add(rdr.GetName(n), o != DBNull.Value ? o : null);
                                 }
-                                enumDict[group].Add(new EnumerationMember(name, value, allValues));
+
+                                var description = string.Empty;
+                                if (!string.IsNullOrEmpty(e.DescriptionField) && allValues.ContainsKey(e.DescriptionField))
+                                {
+                                    var descObj = allValues[e.DescriptionField];
+                                    if (descObj != null)
+                                        description = descObj.ToString().Trim();
+                                }
+
+                                if (string.IsNullOrEmpty(description) && e.GenerateDescriptionFromName)
+                                    description = Inflector.ToHumanCase(Inflector.AddUnderscores(name));
+
+                                var member = new EnumerationMember(name, value, allValues);
+                                if (!string.IsNullOrEmpty(description))
+                                    member.Attributes.Add("[Description(\"" + description.Replace("\"", "\\\"") + "\")]");
+                                enumDict[group].Add(member);
                             }
 
                             foreach (var v in enumDict)

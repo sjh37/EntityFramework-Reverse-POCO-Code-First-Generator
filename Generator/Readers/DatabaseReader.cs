@@ -959,7 +959,22 @@ namespace Efrpg.Readers
                                     var o = rdr.GetValue(n);
                                     allValues.Add(rdr.GetName(n), o != DBNull.Value ? o : null);
                                 }
-                                enumDict[group].Add(new EnumerationMember(name, value, allValues));
+
+                                var description = string.Empty;
+                                if (!string.IsNullOrEmpty(e.DescriptionField) && allValues.ContainsKey(e.DescriptionField))
+                                {
+                                    var descObj = allValues[e.DescriptionField];
+                                    if (descObj != null)
+                                        description = descObj.ToString().Trim();
+                                }
+
+                                if (string.IsNullOrEmpty(description) && e.GenerateDescriptionFromName)
+                                    description = Inflector.ToHumanCase(Inflector.AddUnderscores(name));
+
+                                var member = new EnumerationMember(name, value, allValues);
+                                if (!string.IsNullOrEmpty(description))
+                                    member.Attributes.Add("[Description(\"" + description.Replace("\"", "\\\"") + "\")]");
+                                enumDict[group].Add(member);
                             }
 
                             foreach (var v in enumDict)

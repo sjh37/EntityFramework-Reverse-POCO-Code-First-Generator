@@ -17,6 +17,7 @@ namespace EnumForeignKey
     {
         public string TypeName { get; set; } = null!; // TypeName (length: 50)
         public DaysOfWeek TypeId { get; set; } // TypeId (Primary key)
+        public string? Description { get; set; } // Description (length: 50)
 
         // Reverse navigation
 

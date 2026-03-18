@@ -157,11 +157,13 @@ namespace BuildTT
         // Example
         /*new EnumerationSettings
         {
-            Name       = ""DaysOfWeek"",          // Enum to generate. e.g. ""DaysOfWeek"" would result in ""public enum DaysOfWeek {...}"" if the GroupField is set to a value then {GroupField} must be used in this name. e.g. ""DaysOfWeek{GroupField}""
-            Table      = ""EnumTest.DaysOfWeek"", // Database table containing enum values. e.g. ""DaysOfWeek""
-            NameField  = ""TypeName"",            // Column containing the name for the enum. e.g. ""TypeName""
-            ValueField = ""TypeId"",              // Column containing the values for the enum. e.g. ""TypeId""
-            GroupField = string.Empty           // [optional] Column containing the group name for the enum. This is used if multiple Enums are in the same table. if this is populated, use {GroupField} in the Name property. e.g. ""{GroupField}Enum""
+            Name                        = ""DaysOfWeek"",          // Enum to generate. e.g. ""DaysOfWeek"" would result in ""public enum DaysOfWeek {...}"" if the GroupField is set to a value then {GroupField} must be used in this name. e.g. ""DaysOfWeek{GroupField}""
+            Table                       = ""EnumTest.DaysOfWeek"", // Database table containing enum values. e.g. ""DaysOfWeek""
+            NameField                   = ""TypeName"",            // Column containing the name for the enum. e.g. ""TypeName""
+            ValueField                  = ""TypeId"",              // Column containing the values for the enum. e.g. ""TypeId""
+            GroupField                  = string.Empty,          // [optional] Column containing the group name for the enum. This is used if multiple Enums are in the same table. if this is populated, use {GroupField} in the Name property. e.g. ""{GroupField}Enum""
+            DescriptionField            = ""Description"",         // [optional] Column containing the description for each enum member. When set, emits [Description(""..."")] on members with a non-empty value.
+            GenerateDescriptionFromName = false                  // [optional] If true and no description is available from DescriptionField, generates [Description(""..."")] from the enum member name as human-readable text.
         },
         new EnumerationSettings
         {

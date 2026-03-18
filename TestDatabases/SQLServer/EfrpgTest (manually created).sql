@@ -408,6 +408,16 @@ GO
 INSERT INTO EnumTest.DaysOfWeek (TypeName, TypeId)
 VALUES ('Sun', 0), ('Mon', 1), ('Tue', 2), ('Wed', 3), ('Thu', 4), ('Fri', 6), ('Sat', 7);
 GO
+ALTER TABLE EnumTest.DaysOfWeek ADD Description VARCHAR(50) NULL;
+GO
+UPDATE EnumTest.DaysOfWeek SET Description = 'Sunday' WHERE TypeName='Sun';
+UPDATE EnumTest.DaysOfWeek SET Description = 'Money' WHERE TypeName='Mon';
+UPDATE EnumTest.DaysOfWeek SET Description = 'Tuesday' WHERE TypeName='Tue';
+UPDATE EnumTest.DaysOfWeek SET Description = 'Wednesday' WHERE TypeName='Wed';
+UPDATE EnumTest.DaysOfWeek SET Description = 'Thursday' WHERE TypeName='Thu';
+UPDATE EnumTest.DaysOfWeek SET Description = 'Friday' WHERE TypeName='Fri';
+UPDATE EnumTest.DaysOfWeek SET Description = 'Sat' WHERE TypeName='Sat';
+GO
 -- Enum in default schema
 CREATE TABLE dbo.EnumsWithStringAsValue
 (
@@ -417,6 +427,10 @@ CREATE TABLE dbo.EnumsWithStringAsValue
 GO
 INSERT INTO EnumsWithStringAsValue
 VALUES ('SunRoof','0x01'), ('Spoiler', '0x02'), ('FogLights', '0x04'), ('TintedWindows', '0x08')
+GO
+ALTER TABLE EnumsWithStringAsValue ADD description VARCHAR(50) NULL;
+GO
+UPDATE EnumsWithStringAsValue SET description = 'Spoiler to add downforce' WHERE enum_name='Spoiler'
 GO
 CREATE TABLE EnumTest.OpenDays
 (

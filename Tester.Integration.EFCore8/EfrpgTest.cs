@@ -4774,6 +4774,7 @@ namespace V8EfrpgTest
     {
         public string EnumName { get; set; } = null!; // enum_name (Primary key) (length: 50)
         public string Value { get; set; } = null!; // value (Primary key) (length: 10)
+        public string? Description { get; set; } // description (length: 50)
     }
 
     // DaysOfWeek
@@ -4781,6 +4782,7 @@ namespace V8EfrpgTest
     {
         public string TypeName { get; set; } = null!; // TypeName (length: 50)
         public int TypeId { get; set; } // TypeId (Primary key)
+        public string? Description { get; set; } // Description (length: 50)
 
         // Reverse navigation
 
@@ -6533,6 +6535,7 @@ namespace V8EfrpgTest
 
             builder.Property(x => x.EnumName).HasColumnName(@"enum_name").HasColumnType("varchar(50)").IsRequired().IsUnicode(false).HasMaxLength(50).ValueGeneratedNever();
             builder.Property(x => x.Value).HasColumnName(@"value").HasColumnType("varchar(10)").IsRequired().IsUnicode(false).HasMaxLength(10).ValueGeneratedNever();
+            builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);
         }
     }
 
@@ -6546,6 +6549,7 @@ namespace V8EfrpgTest
 
             builder.Property(x => x.TypeName).HasColumnName(@"TypeName").HasColumnType("varchar(50)").IsRequired().IsUnicode(false).HasMaxLength(50);
             builder.Property(x => x.TypeId).HasColumnName(@"TypeId").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);
         }
     }
 

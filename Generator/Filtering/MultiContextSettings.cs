@@ -116,6 +116,8 @@ namespace Efrpg.Filtering
         public string NameField { get; set; } // Column containing the name for the enum. e.g. "TypeName"
         public string ValueField { get; set; } // Column containing the values for the enum. e.g. "TypeId"
         public string GroupField { get; set; } // [optional] Column containing the group name for the enum. This is used if multiple Enums are in the same table. if this is populated, use {GroupField} in the Name property. e.g. "{GroupField}Enum"
+        public string DescriptionField { get; set; } // [optional] Column containing the description for each enum member. When set, a [Description("...")] attribute is emitted for members whose description is non-empty.
+        public bool GenerateDescriptionFromName { get; set; } // [optional] If true and no description is available from DescriptionField, a [Description("...")] attribute is generated from the enum member name converted to human-readable text.
 
         public Dictionary<string, object> AllFields { get; set; } // Here you will find all fields, including any extra custom fields not listed above
     }

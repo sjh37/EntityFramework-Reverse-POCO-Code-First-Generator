@@ -3327,6 +3327,8 @@ namespace Tester.Integration.Ef6
         public const string EnumNameField = "EnumName";
         public string Value { get; set; } // value (Primary key) (length: 10)
         public const string ValueField = "Value";
+        public string Description { get; set; } // description (length: 50)
+        public const string DescriptionField = "Description";
     }
 
     // DaysOfWeek
@@ -3336,6 +3338,8 @@ namespace Tester.Integration.Ef6
         public const string TypeNameField = "TypeName";
         public int TypeId { get; set; } // TypeId (Primary key)
         public const string TypeIdField = "TypeId";
+        public string Description { get; set; } // Description (length: 50)
+        public const string DescriptionField = "Description";
 
         // Reverse navigation
 
@@ -5429,6 +5433,7 @@ namespace Tester.Integration.Ef6
 
             Property(x => x.EnumName).HasColumnName(@"enum_name").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(50).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(x => x.Value).HasColumnName(@"value").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(10).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.Description).HasColumnName(@"description").HasColumnType("varchar").IsOptional().IsUnicode(false).HasMaxLength(50);
         }
     }
 
@@ -5447,6 +5452,7 @@ namespace Tester.Integration.Ef6
 
             Property(x => x.TypeName).HasColumnName(@"TypeName").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(50);
             Property(x => x.TypeId).HasColumnName(@"TypeId").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar").IsOptional().IsUnicode(false).HasMaxLength(50);
         }
     }
 

@@ -53,7 +53,9 @@ namespace Generator.Tests.Integration
                     Name = "DaysOfWeek", // Enum to generate. e.g. "DaysOfWeek" would result in "public enum DaysOfWeek {...}"
                     Table = "EnumTest.DaysOfWeek", // Database table containing enum values. e.g. "DaysOfWeek"
                     NameField = "TypeName", // Column containing the name for the enum. e.g. "TypeName"
-                    ValueField = "TypeId" // Column containing the values for the enum. e.g. "TypeId"
+                    ValueField = "TypeId", // Column containing the values for the enum. e.g. "TypeId"
+                    DescriptionField = "Description",
+                    GenerateDescriptionFromName = true
                 },
                 new EnumerationSettings
                 {
@@ -67,7 +69,9 @@ namespace Generator.Tests.Integration
                     Name = "CarOptions",
                     Table = "EnumsWithStringAsValue",
                     NameField = "enum_name",
-                    ValueField = "value"
+                    ValueField = "value",
+                    DescriptionField = "Description",
+                    GenerateDescriptionFromName = true
                 }
             };
 
