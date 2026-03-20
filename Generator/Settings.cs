@@ -243,9 +243,14 @@ namespace Efrpg
 
         // Enable interception of stored procedure return model when an exception occurs. Typically, when the stored procedure contains temp tables.
         // This allows you render the proper error in comments or fix the return model by manually creating the ReturnModel using a list of DataColumns
+        // See https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Stored-Procedure-Return-Model-Errors
         public static Action<Exception, StoredProcedure> ReadStoredProcReturnObjectException = delegate (Exception ex, StoredProcedure sp)
         {
-            // Example
+            // Store the error so it appears as a comment on the generated method.
+            // Override this delegate to suppress the comment or to manually define the return model instead.
+            sp.Error = ex.Message;
+
+            // Example of manually defining the return model rather than displaying the error:
             /*if (!sp.ReturnModels.Any() && ex.Message.StartsWith("Invalid object name", StringComparison.OrdinalIgnoreCase))
             {
                 if (sp.NameHumanCase.Equals("YourProcNameHere", StringComparison.OrdinalIgnoreCase))

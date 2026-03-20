@@ -134,6 +134,9 @@ using {{this}};{{#newline}}
     {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsTrueTrue}});{{#newline}}
 {{/if}}
 {{#else}}
+{{#if HasError}}
+    // Unable to determine return model for '{{FunctionName}}'. Error: {{Error}}{{#newline}}
+{{/if}}
     int {{FunctionName}}({{WriteStoredProcFunctionParamsTrueTrue}});{{#newline}}
 {{/if}}
 
@@ -428,6 +431,9 @@ using {{this}};{{#newline}}
 {{/if}}
 
 {{#else}}
+{{#if HasError}}
+    // Unable to determine return model for '{{FunctionName}}'. Error: {{Error}}{{#newline}}
+{{/if}}
     public int {{FunctionName}}({{WriteStoredProcFunctionParamsTrueFalse}}){{#newline}}
     {{{#newline}}
 {{WriteStoredProcFunctionDeclareSqlParameterTrue}}{{#newline}}
@@ -859,6 +865,9 @@ using {{this}};{{#newline}}
 
 {{#else}}
 {{#newline}}
+{{#if HasError}}
+    // Unable to determine return model for '{{FunctionName}}'. Error: {{Error}}{{#newline}}
+{{/if}}
     public int {{FunctionName}}({{WriteStoredProcFunctionParamsTrueFalse}}){{#newline}}
     {{{#newline}}
 {{WriteStoredProcFunctionSetSqlParametersTrue}}

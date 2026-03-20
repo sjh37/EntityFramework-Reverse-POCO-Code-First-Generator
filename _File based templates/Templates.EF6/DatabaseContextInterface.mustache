@@ -36,6 +36,9 @@
 {{#newline}}
     // Stored Procedures{{#newline}}
 {{#each storedProcs}}
+{{#if HasError}}
+    // Unable to determine return model for '{{FunctionName}}'. Error: {{Error}}{{#newline}}
+{{/if}}
     {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalseTrue}});{{#newline}}
 {{#if SingleReturnModel}}
     {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsTrueTrue}});{{#newline}}

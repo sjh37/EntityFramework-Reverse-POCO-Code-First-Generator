@@ -19,6 +19,7 @@ namespace Efrpg
         public bool IsStoredProcedure;
         public bool HasSpatialParameter;
         public bool HasSpatialReturnModel;
+        public string Error; // Set when an exception occurs reading the return model (e.g. SP uses temp tables)
 
         public StoredProcedure()
         {

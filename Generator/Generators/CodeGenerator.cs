@@ -87,7 +87,9 @@ namespace Efrpg.Generators
                         sp.WriteStoredProcFunctionDeclareSqlParameter(false),
                         sp.Parameters.OrderBy(x => x.Ordinal).Select(sp.WriteStoredProcSqlParameterName).ToList(),
                         sp.ReturnModels.Count,
-                        string.Format("EXEC @procResult = [{0}].[{1}] {2}", sp.Schema.DbName, sp.DbName, sp.WriteStoredProcFunctionSqlAtParams())
+                        string.Format("EXEC @procResult = [{0}].[{1}] {2}", sp.Schema.DbName, sp.DbName, sp.WriteStoredProcFunctionSqlAtParams()),
+                        !string.IsNullOrEmpty(sp.Error),
+                        sp.Error ?? string.Empty
                     ))
                     .ToList();
             }

@@ -268,9 +268,14 @@
 
         // Enable interception of stored procedure return model when an exception occurs. Typically, when the stored procedure contains temp tables.
         // This allows you render the proper error in comments or fix the return model by manually creating the ReturnModel using a list of DataColumns
+        // See https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Stored-Procedure-Return-Model-Errors
         public static Action<Exception, StoredProcedure> ReadStoredProcReturnObjectException = delegate (Exception ex, StoredProcedure sp)
         {
-            // Example
+            // Store the error so it appears as a comment on the generated method.
+            // Override this delegate to suppress the comment or to manually define the return model instead.
+            sp.Error = ex.Message;
+
+            // Example of manually defining the return model rather than displaying the error:
             /*if (!sp.ReturnModels.Any() && ex.Message.StartsWith("Invalid object name", StringComparison.OrdinalIgnoreCase))
             {
                 if (sp.NameHumanCase.Equals("YourProcNameHere", StringComparison.OrdinalIgnoreCase))
@@ -3775,7 +3780,9 @@
                         sp.WriteStoredProcFunctionDeclareSqlParameter(false),
                         sp.Parameters.OrderBy(x => x.Ordinal).Select(sp.WriteStoredProcSqlParameterName).ToList(),
                         sp.ReturnModels.Count,
-                        string.Format("EXEC @procResult = [{0}].[{1}] {2}", sp.Schema.DbName, sp.DbName, sp.WriteStoredProcFunctionSqlAtParams())
+                        string.Format("EXEC @procResult = [{0}].[{1}] {2}", sp.Schema.DbName, sp.DbName, sp.WriteStoredProcFunctionSqlAtParams()),
+                        !string.IsNullOrEmpty(sp.Error),
+                        sp.Error ?? string.Empty
                     ))
                     .ToList();
             }
@@ -7181,6 +7188,8 @@
         public bool CreateDbSetForReturnModel { get; set; }
         public List<string> ColumnMappings { get; set; } = new List<string>();
         public bool HasColumnMappings => ColumnMappings != null && ColumnMappings.Count > 0;
+        public bool HasError { get; }
+        public string Error { get; }
 
         public StoredProcTemplateData(
             bool hasNoReturnModels,
@@ -7213,7 +7222,9 @@
             string writeStoredProcFunctionDeclareSqlParameterFalse,
             List<string> parameters,
             int returnModelsCount,
-            string execWithNoReturnModel)
+            string execWithNoReturnModel,
+            bool hasError,
+            string error)
         {
             HasNoReturnModels = hasNoReturnModels;
             HasReturnModels = hasReturnModels;
@@ -7246,6 +7257,8 @@
             Parameters = parameters;
             ReturnModelsCount = returnModelsCount;
             ExecWithNoReturnModel = execWithNoReturnModel;
+            HasError = hasError;
+            Error = error;
 
             CreateDbSetForReturnModel = true;
 
@@ -17586,6 +17599,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public bool IsStoredProcedure;
         public bool HasSpatialParameter;
         public bool HasSpatialReturnModel;
+        public string Error; // Set when an exception occurs reading the return model (e.g. SP uses temp tables)
 
         public StoredProcedure()
         {
@@ -18963,6 +18977,9 @@ using {{this}};{{#newline}}
 {{#newline}}
     // Stored Procedures{{#newline}}
 {{#each storedProcs}}
+{{#if HasError}}
+    // Unable to determine return model for '{{FunctionName}}'. Error: {{Error}}{{#newline}}
+{{/if}}
     {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsFalseTrue}});{{#newline}}
 {{#if SingleReturnModel}}
     {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsTrueTrue}});{{#newline}}
@@ -19270,6 +19287,9 @@ using {{this}};{{#newline}}
     }{{#newline}}
 
 {{#else}}{{#! if HasReturnModels }}
+{{#if HasError}}
+    // Unable to determine return model for '{{FunctionName}}'. Error: {{Error}}{{#newline}}
+{{/if}}
     public int {{FunctionName}}({{WriteStoredProcFunctionParamsTrueFalse}}){{#newline}}
     {{{#newline}}
 {{WriteStoredProcFunctionDeclareSqlParameterTrue}}{{#newline}}
@@ -19587,6 +19607,9 @@ using {{this}};{{#newline}}
 
 {{#else}}
 {{#newline}}
+{{#if HasError}}
+    // Unable to determine return model for '{{FunctionName}}'. Error: {{Error}}{{#newline}}
+{{/if}}
     public int {{FunctionName}}({{WriteStoredProcFunctionParamsTrueFalse}}){{#newline}}
     {{{#newline}}
 {{WriteStoredProcFunctionSetSqlParametersTrue}}
@@ -20339,6 +20362,9 @@ using {{this}};{{#newline}}
     {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsTrueTrue}});{{#newline}}
 {{/if}}
 {{#else}}
+{{#if HasError}}
+    // Unable to determine return model for '{{FunctionName}}'. Error: {{Error}}{{#newline}}
+{{/if}}
     int {{FunctionName}}({{WriteStoredProcFunctionParamsTrueTrue}});{{#newline}}
 {{/if}}
 
@@ -20633,6 +20659,9 @@ using {{this}};{{#newline}}
 {{/if}}
 
 {{#else}}
+{{#if HasError}}
+    // Unable to determine return model for '{{FunctionName}}'. Error: {{Error}}{{#newline}}
+{{/if}}
     public int {{FunctionName}}({{WriteStoredProcFunctionParamsTrueFalse}}){{#newline}}
     {{{#newline}}
 {{WriteStoredProcFunctionDeclareSqlParameterTrue}}{{#newline}}
@@ -21064,6 +21093,9 @@ using {{this}};{{#newline}}
 
 {{#else}}
 {{#newline}}
+{{#if HasError}}
+    // Unable to determine return model for '{{FunctionName}}'. Error: {{Error}}{{#newline}}
+{{/if}}
     public int {{FunctionName}}({{WriteStoredProcFunctionParamsTrueFalse}}){{#newline}}
     {{{#newline}}
 {{WriteStoredProcFunctionSetSqlParametersTrue}}
