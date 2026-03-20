@@ -249,8 +249,8 @@ namespace Efrpg.Readers
                         var tt = rdr["TableType"].ToString().Trim();
 
                         var table = new RawTable(
-                            rdr["SchemaName"].ToString().Trim(),
-                            rdr["TableName"].ToString().Trim(),
+                            rdr["SchemaName"].ToString(),
+                            rdr["TableName"].ToString(),
                             string.Compare(tt, "VIEW", StringComparison.OrdinalIgnoreCase) == 0,
                             string.Compare(tt, "SN", StringComparison.OrdinalIgnoreCase) == 0,
                             ChangeType<int>(rdr["Scale"]),
@@ -269,7 +269,7 @@ namespace Efrpg.Readers
                             ChangeType<bool>(rdr["IsForeignKey"]),
                             ChangeType<string>(rdr["SynonymTriggerName"]),
                             ChangeType<int>(rdr["Ordinal"]),
-                            rdr["ColumnName"].ToString().Trim(),
+                            rdr["ColumnName"].ToString(),
                             rdr["Default"].ToString().Trim()
                         );
 
@@ -362,11 +362,11 @@ namespace Efrpg.Readers
                     {
                         var index = new RawIndex
                         (
-                            rdr["TableSchema"].ToString().Trim(),
-                            rdr["TableName"].ToString().Trim(),
-                            rdr["IndexName"].ToString().Trim(),
+                            rdr["TableSchema"].ToString(),
+                            rdr["TableName"].ToString(),
+                            rdr["IndexName"].ToString(),
                             ChangeType<byte>(rdr["KeyOrdinal"]),
-                            rdr["ColumnName"].ToString().Trim(),
+                            rdr["ColumnName"].ToString(),
                             ChangeType<int>(rdr["ColumnCount"]),
                             ChangeType<bool>(rdr["IsUnique"]),
                             ChangeType<bool>(rdr["IsPrimaryKey"]),
@@ -447,9 +447,9 @@ namespace Efrpg.Readers
 
                         var rep = new RawExtendedProperty
                         (
-                            rdr["schema"].ToString().Trim(),
-                            rdr["table"].ToString().Trim(),
-                            rdr["column"].ToString().Trim(),
+                            rdr["schema"].ToString(),
+                            rdr["table"].ToString(),
+                            rdr["column"].ToString(),
                             propertyName,
                             extendedProperty
                         );
@@ -1027,8 +1027,8 @@ namespace Efrpg.Readers
                     while (rdr.Read())
                     {
                         var dataType = rdr["DataType"].ToString().Trim().ToLower();
-                        var schema = rdr["Schema"].ToString().Trim();
-                        var name = rdr["Name"].ToString().Trim();
+                        var schema = rdr["Schema"].ToString();
+                        var name = rdr["Name"].ToString();
 
                         if (rs == null || rs.Schema != schema || rs.Name != name)
                         {
@@ -1048,8 +1048,8 @@ namespace Efrpg.Readers
                         }
 
                         rs.TableMapping.Add(new RawSequenceTableMapping(
-                            rdr["TableSchema"].ToString().Trim(),
-                            rdr["TableName"].ToString().Trim()));
+                            rdr["TableSchema"].ToString(),
+                            rdr["TableName"].ToString()));
                     }
 
                     if (!result.Any())
@@ -1090,9 +1090,9 @@ namespace Efrpg.Readers
                     {
                         var index = new RawTrigger
                         (
-                            rdr["SchemaName"].ToString().Trim(),
-                            rdr["TableName"].ToString().Trim(),
-                            rdr["TriggerName"].ToString().Trim()
+                            rdr["SchemaName"].ToString(),
+                            rdr["TableName"].ToString(),
+                            rdr["TriggerName"].ToString()
                         );
                         result.Add(index);
                     }
@@ -1143,8 +1143,8 @@ namespace Efrpg.Readers
                         {
                             var index = new RawMemoryOptimisedTable
                             (
-                                rdr["SchemaName"].ToString().Trim(),
-                                rdr["TableName"].ToString().Trim()
+                                rdr["SchemaName"].ToString(),
+                                rdr["TableName"].ToString()
                             );
                             result.Add(index);
                         }
