@@ -28,6 +28,7 @@ namespace Efrpg
         public static string Namespace                                  = typeof(Settings).Namespace; // Override the default namespace here. Example: Namespace = "CustomNamespace";
         public static string TemplateFolder                             = ""; // Only used if Settings.TemplateType = TemplateType.FileBased. Specify folder name where the mustache folders can be found. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Custom-file-based-templates
         public static bool AddUnitTestingDbContext                      = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing
+        public static bool FakeDbContextInDebugOnlyMode                = false; // If true, wraps Fake* classes in #if DEBUG / #endif so they are excluded from Release builds
 
         // Elements to generate ***************************************************************************************************************
         // Add the elements that should be generated when the template is executed.

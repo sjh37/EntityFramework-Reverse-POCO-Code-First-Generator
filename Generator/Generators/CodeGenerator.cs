@@ -509,7 +509,11 @@ namespace Efrpg.Generators
 
             var co = new CodeOutput(string.Empty, filename, "Fake Database context", Settings.ContextFolder, _globalUsings);
             co.AddUsings(_template.FakeDatabaseContextUsings(data, _filter));
+            if (Settings.FakeDbContextInDebugOnlyMode)
+                co.AddCode("#if DEBUG");
             co.AddCode(Template.Transform(_template.FakeDatabaseContext(), data));
+            if (Settings.FakeDbContextInDebugOnlyMode)
+                co.AddCode("#endif");
 
             return co;
         }
@@ -531,7 +535,11 @@ namespace Efrpg.Generators
 
             var co = new CodeOutput(string.Empty, filename, "Fake DbSet", Settings.ContextFolder, _globalUsings);
             co.AddUsings(_template.FakeDbSetUsings(data));
+            if (Settings.FakeDbContextInDebugOnlyMode)
+                co.AddCode("#if DEBUG");
             co.AddCode(Template.Transform(_template.FakeDbSet(), data));
+            if (Settings.FakeDbContextInDebugOnlyMode)
+                co.AddCode("#endif");
 
             return co;
         }

@@ -2367,6 +2367,7 @@ namespace V10EfrpgTest
 
     #region Fake Database context
 
+    #if DEBUG
     public partial class FakeV10EfrpgTestDbContext : IV10EfrpgTestDbContext
     {
         public DbSet<A> A { get; set; } = null!; // A
@@ -3566,11 +3567,13 @@ namespace V10EfrpgTest
             return default(decimal);
         }
     }
+    #endif
 
     #endregion
 
     #region Fake DbSet
 
+    #if DEBUG
     // ************************************************************************
     // Fake DbSet
     // Implementing Find:
@@ -4051,6 +4054,7 @@ namespace V10EfrpgTest
         public void Dispose() { }
         public ValueTask DisposeAsync() => default;
     }
+    #endif
 
     #endregion
 
