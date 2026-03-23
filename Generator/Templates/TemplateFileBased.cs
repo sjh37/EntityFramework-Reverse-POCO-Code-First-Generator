@@ -124,6 +124,11 @@ namespace Efrpg.Templates
             return CacheText(TemplateFileBasedConstants.Mustache.Enums);
         }
 
+        // Owned entity class generation via file-based templates is not yet supported.
+        // To generate owned entity classes, use the EfCore template type and set Settings.GenerateOwnedEntityClasses = true.
+        public override List<string> OwnedEntityClassUsings(OwnedEntityClassModel data) => new List<string>();
+        public override string OwnedEntityClass() => string.Empty;
+
         private string CacheText(string filename)
         {
             if (_cacheText.ContainsKey(filename))

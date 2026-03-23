@@ -28,6 +28,14 @@
 {{/each}}
 {{/if}}
 
+{{#if HasOwnedEntityConfigs}}
+{{#newline}}
+        // Owned entities{{#newline}}
+{{#each OwnedEntityConfigs}}
+        {{this}}{{#newline}}
+{{/each}}
+{{/if}}
+
 {{#each MappingConfiguration}}
         builder.{{this}}{{#newline}}
 {{/each}}

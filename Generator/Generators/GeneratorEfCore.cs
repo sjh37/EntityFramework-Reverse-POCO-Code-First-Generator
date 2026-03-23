@@ -206,8 +206,16 @@ namespace Efrpg.Generators
             }
 
             var config = sb.ToString();
-            if (!string.IsNullOrEmpty(config) && !c.ExcludePropertyConfiguration)
+            if (!string.IsNullOrEmpty(c.OwnedEntityPropertyName))
+            {
+                // Column belongs to an owned entity; generate OwnedEntityConfig for use inside OwnsOne block
+                if (!string.IsNullOrEmpty(config))
+                    c.OwnedEntityConfig = string.Format("b.Property(x => x.{0}){1};{2}", c.OwnedEntityPropertyName, config, excludedHasColumnType);
+            }
+            else if (!string.IsNullOrEmpty(config) && !c.ExcludePropertyConfiguration)
+            {
                 c.Config = string.Format("builder.Property(x => x.{0}){1};{2}", c.NameHumanCase, config, excludedHasColumnType);
+            }
         }
 
         public override string PrimaryKeyModelBuilder(Table t)

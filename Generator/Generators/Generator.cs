@@ -1356,15 +1356,16 @@ namespace Efrpg.Generators
         {
             var codeGenerator = new CodeGenerator(this, filter);
 
-            const string contextInterface = "contextInterface:";
-            const string contextFactory   = "contextFactory:";
-            const string contextClass     = "contextClass:";
-            const string contextFakeClass = "contextFakeClass:";
-            const string contextFakeDbSet = "contextFakeDbSet:";
-            const string pocoClass        = "pocoClass:";
-            const string pocoConfiguration= "pocoConfiguration:";
-            const string spReturnModels   = "spReturnModel:";
-            const string enumType         = "enumType:";
+            const string contextInterface  = "contextInterface:";
+            const string contextFactory    = "contextFactory:";
+            const string contextClass      = "contextClass:";
+            const string contextFakeClass  = "contextFakeClass:";
+            const string contextFakeDbSet  = "contextFakeDbSet:";
+            const string pocoClass         = "pocoClass:";
+            const string pocoConfiguration = "pocoConfiguration:";
+            const string spReturnModels    = "spReturnModel:";
+            const string enumType          = "enumType:";
+            const string ownedEntityClass  = "ownedEntityClass:";
 
             var codeOutputList = new CodeOutputList();
             codeOutputList.Add(contextInterface, codeGenerator.GenerateInterface());
@@ -1402,6 +1403,23 @@ namespace Efrpg.Generators
             {
                 codeOutputList.Add(enumType + enumeration.EnumName, codeGenerator.GenerateEnum(enumeration));
             }
+
+            // Collect unique owned entity types across all tables and generate one class per type
+            var ownedEntityTypes = new Dictionary<string, List<OwnedEntity>>(StringComparer.Ordinal);
+            foreach (var table in filter.Tables.Where(t => !t.IsMapping))
+            {
+                foreach (var oe in table.OwnedEntities)
+                {
+                    if (!ownedEntityTypes.TryGetValue(oe.PropertyType, out var list))
+                    {
+                        list = new List<OwnedEntity>();
+                        ownedEntityTypes[oe.PropertyType] = list;
+                    }
+                    list.Add(oe);
+                }
+            }
+            foreach (var kvp in ownedEntityTypes.OrderBy(x => x.Key))
+                codeOutputList.Add(ownedEntityClass + kvp.Key, codeGenerator.GenerateOwnedEntityClass(kvp.Key, kvp.Value));
 
             _fileHeaderFooter = new FileHeaderFooter(filter.SubNamespace);
             if (!Settings.GenerateSeparateFiles)
@@ -1453,6 +1471,13 @@ namespace Efrpg.Generators
             WriteCodeOutputForGroup(codeGenerator, "Enumerations", true,
                 codeOutputList.Files
                     .Where(x => x.Key.StartsWith(enumType))
+                    .OrderBy(x => x.Key)
+                    .Select(x => x.Value)
+                    .ToList());
+
+            WriteCodeOutputForGroup(codeGenerator, "Owned entity classes", true,
+                codeOutputList.Files
+                    .Where(x => x.Key.StartsWith(ownedEntityClass))
                     .OrderBy(x => x.Key)
                     .Select(x => x.Value)
                     .ToList());

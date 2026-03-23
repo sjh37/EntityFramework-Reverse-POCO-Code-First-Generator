@@ -66,6 +66,7 @@
         public static string InterfaceFolder            = ""; // Sub-folder you would like your Interface to be added to.              e.g. @"Data\Interface"
         public static string PocoFolder                 = ""; // Sub-folder you would like your Poco's to be added to.                 e.g. @"Data\Entities"
         public static string PocoConfigurationFolder    = ""; // Sub-folder you would like your Configuration mappings to be added to. e.g. @"Data\Configuration"
+        public static string OwnedEntityFolder          = ""; // Sub-folder for auto-generated owned entity classes; defaults to PocoFolder if empty.   e.g. @"Data\Entities"
         public static bool   UseFolderNameInNamespace   = false; // If true, appends the sub-folder name to the namespace of each generated file. e.g. PocoFolder = "Entities" => namespace MyProject.Entities
 
 
@@ -498,6 +499,66 @@
             }
         }
 
+        // Apply OwnedEntityMappings to a table: group prefixed columns into owned entity definitions
+        public static void ApplyOwnedEntityMappings(Table table, List<OwnedEntityMapping> ownedEntityMappings)
+        {
+            if (ownedEntityMappings == null || !ownedEntityMappings.Any() || table == null)
+                return;
+
+            foreach (var mapping in ownedEntityMappings)
+            {
+                if (string.IsNullOrEmpty(mapping.ColumnPrefix) || string.IsNullOrEmpty(mapping.PropertyName) || string.IsNullOrEmpty(mapping.PropertyType))
+                    continue;
+
+                var tableMatches =
+                    (mapping.Schema == "*" || mapping.Schema.Equals(table.Schema.DbName, StringComparison.InvariantCultureIgnoreCase)) &&
+                    (mapping.Table  == "*" || mapping.Table.Equals(table.DbName, StringComparison.InvariantCultureIgnoreCase) ||
+                                             mapping.Table.Equals(table.NameHumanCase, StringComparison.InvariantCultureIgnoreCase));
+
+                if (!tableMatches)
+                    continue;
+
+                var matchedColumns = table.Columns
+                    .Where(c => c.DbName.StartsWith(mapping.ColumnPrefix, StringComparison.InvariantCultureIgnoreCase))
+                    .ToList();
+
+                if (!matchedColumns.Any())
+                    continue;
+
+                // Normalize the prefix to strip trailing separators, then remove non-alphanumeric chars
+                // so we can match against NameHumanCase (which has underscores removed and is PascalCase)
+                var normalizedPrefix = Regex.Replace(
+                    mapping.ColumnPrefix.TrimEnd('_', ' ', '-'),
+                    @"[^a-zA-Z0-9]", string.Empty);
+
+                foreach (var col in matchedColumns)
+                {
+                    col.Hidden = true;
+
+                    // Strip the normalized prefix from NameHumanCase to get the owned entity property name
+                    if (!string.IsNullOrEmpty(normalizedPrefix) &&
+                        col.NameHumanCase.StartsWith(normalizedPrefix, StringComparison.OrdinalIgnoreCase))
+                    {
+                        var remainder = col.NameHumanCase.Substring(normalizedPrefix.Length);
+                        col.OwnedEntityPropertyName = string.IsNullOrEmpty(remainder) ? col.NameHumanCase : remainder;
+                    }
+                    else
+                    {
+                        col.OwnedEntityPropertyName = col.NameHumanCase;
+                    }
+                }
+
+                table.OwnedEntities.Add(new OwnedEntity
+                {
+                    PropertyName = mapping.PropertyName,
+                    PropertyType = mapping.PropertyType,
+                    ColumnPrefix = mapping.ColumnPrefix,
+                    Columns      = matchedColumns
+                });
+
+            }
+        }
+
         // Add [JsonPropertyName] attribute from database extended property
         public static void ApplyJsonPropertyNameAttribute(Column column)
         {
@@ -852,6 +913,37 @@
             //});
         };
 
+        // Owned entity column grouping *********************************************************************************************************
+        // Use the following callback to group columns with a common prefix into an EF Core owned entity property.
+        // Matched columns are hidden from direct POCO generation; a single property of the specified type is generated instead.
+        // A builder.OwnsOne(...) configuration block is emitted automatically in the configuration class.
+        // One owned entity POCO class (e.g. Address, Money) is also generated per unique PropertyType found in the mappings.
+        // Set OwnedEntityFolder to place these classes in a sub-folder separate from your regular POCOs.
+        public static Action<List<OwnedEntityMapping>> AddOwnedEntityMappings = delegate (List<OwnedEntityMapping> ownedEntityMappings)
+        {
+            // Examples:
+
+            // Map BillingAddress_* columns on the Customer table to an Address owned entity
+            //ownedEntityMappings.Add(new OwnedEntityMapping
+            //{
+            //    Schema       = Settings.DefaultSchema,
+            //    Table        = "Customer",
+            //    ColumnPrefix = "BillingAddress_",   // matches BillingAddress_Street, BillingAddress_City, etc.
+            //    PropertyName = "BillingAddress",     // property name on Customer POCO
+            //    PropertyType = "Address",            // C# type of the owned entity class (auto-generated)
+            //});
+
+            // Map ShippingAddress_* columns to a second Address owned entity on the same table
+            //ownedEntityMappings.Add(new OwnedEntityMapping
+            //{
+            //    Schema       = Settings.DefaultSchema,
+            //    Table        = "Customer",
+            //    ColumnPrefix = "ShippingAddress_",
+            //    PropertyName = "ShippingAddress",
+            //    PropertyType = "Address"
+            //});
+        };
+
         // Generate multiple db contexts in a single go ***************************************************************************************
         // Generating multiple contexts at a time requires you specifying which tables, and columns to generate for each context.
         // As this generator can now generate multiple db contexts in a single go, filtering is done a per db context, and no longer global.
@@ -1197,6 +1289,7 @@
     {
         public List<EnumDefinition> EnumDefinitions;
         public List<JsonColumnMapping> JsonColumnMappings;
+        public List<OwnedEntityMapping> OwnedEntityMappings;
 
         protected readonly List<IFilterType<Schema>>          SchemaFilters;
         protected readonly List<IFilterType<Table>>           TableFilters;
@@ -1225,6 +1318,9 @@
 
             JsonColumnMappings = new List<JsonColumnMapping>();
             Settings.AddJsonColumnMappings?.Invoke(JsonColumnMappings);
+
+            OwnedEntityMappings = new List<OwnedEntityMapping>();
+            Settings.AddOwnedEntityMappings?.Invoke(OwnedEntityMappings);
         }
 
         public override bool IsExcluded(EntityName item)
@@ -1276,6 +1372,9 @@
         {
             // Callback to Settings, which can be set within <database>.tt
             Settings.UpdateTable?.Invoke(table);
+
+            // Apply owned entity column groupings
+            Settings.ApplyOwnedEntityMappings(table, OwnedEntityMappings);
         }
 
         public override void UpdateColumn(Column column, Table table)
@@ -1453,6 +1552,8 @@
         public bool IsSpatial;
         public bool IsPartial;
         public bool ExcludePropertyConfiguration; // Set when JsonColumnMapping.ExcludePropertyConfiguration is true
+        public string OwnedEntityPropertyName; // Set by OwnedEntityMapping: the property name this column maps to within the owned entity
+        public string OwnedEntityConfig;       // Fluent config line for use inside a builder.OwnsOne(...) block
 
         public string Config;
         public List<string> ConfigFk = new List<string>();
@@ -3981,6 +4082,12 @@
             return Settings.ElementsToGenerate.HasFlag(Elements.Enum) && _hasEnums;
         }
 
+        private bool CanWriteOwnedEntityClasses()
+        {
+            return Settings.GeneratorType == GeneratorType.EfCore &&
+                   Settings.ElementsToGenerate.HasFlag(Elements.Poco);
+        }
+
         public string GenerateUsings(List<string> usings)
         {
             return !usings.Any() ? null : Template.Transform(_template.Usings(), usings).Trim();
@@ -4345,7 +4452,16 @@
                     .ToList(),
                 ReverseNavigationCtor = table.ReverseNavigationCtor,
                 EntityClassesArePartial = Settings.EntityClassesArePartial(),
-                HasSpatial = table.Columns.Any(x => x.IsSpatial)
+                HasSpatial = table.Columns.Any(x => x.IsSpatial),
+                HasOwnedEntities = table.OwnedEntities.Any(),
+                OwnedEntities = table.OwnedEntities
+                    .Select(oe => new PocoOwnedEntityModel
+                    {
+                        PropertyType        = oe.PropertyType,
+                        PropertyName        = oe.PropertyName,
+                        PropertyInitialiser = Settings.NeedsNullForgiving() ? " = null!;" : string.Empty
+                    })
+                    .ToList()
             };
 
             var co = new CodeOutput(table.DbName, filename, null, Settings.PocoFolder, _globalUsings);
@@ -4420,6 +4536,35 @@
                 TableComment = table.Description?.Replace("\"", "\"\"")
             };
 
+            // Build builder.OwnsOne(...) blocks for any owned entity mappings
+            var ownedEntityConfigs = new List<string>();
+            if (table.OwnedEntities.Any())
+            {
+                var orderByOrdinal = Settings.OrderProperties == OrderProperties.Ordinal;
+                foreach (var oe in table.OwnedEntities)
+                {
+                    var sb = new System.Text.StringBuilder();
+                    sb.AppendLine("builder.OwnsOne(x => x." + oe.PropertyName + ", b =>");
+                    sb.AppendLine("        {");
+
+                    var oeCols = orderByOrdinal
+                        ? oe.Columns.OrderBy(c => c.Ordinal).ToList()
+                        : oe.Columns.OrderBy(c => c.OwnedEntityPropertyName).ToList();
+
+                    foreach (var col in oeCols)
+                    {
+                        if (!string.IsNullOrEmpty(col.OwnedEntityConfig))
+                            sb.AppendLine("            " + col.OwnedEntityConfig);
+                    }
+
+                    sb.Append("        });");
+                    ownedEntityConfigs.Add(sb.ToString());
+                }
+            }
+
+            data.HasOwnedEntityConfigs = ownedEntityConfigs.Any();
+            data.OwnedEntityConfigs    = ownedEntityConfigs;
+
             var co = new CodeOutput(table.DbName, filename, null, Settings.PocoConfigurationFolder, _globalUsings);
             co.AddUsings(_template.PocoConfigurationUsings(data));
             co.AddUsings(table.AdditionalNamespaces);
@@ -4484,6 +4629,47 @@
             if (enumeration.Items.Any(i => i.Attributes.Any(a => a.StartsWith("[Description"))))
                 co.AddUsings(new List<string> { "System.ComponentModel" });
             co.AddCode(Template.Transform(_template.Enums(), enumeration));
+            return co;
+        }
+
+        public CodeOutput GenerateOwnedEntityClass(string typeName, IList<OwnedEntity> instances)
+        {
+            var filename = typeName + Settings.FileExtension;
+            if (!CanWriteOwnedEntityClasses())
+            {
+                FileManagementService.DeleteFile(filename);
+                return null;
+            }
+
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            var props = new List<OwnedEntityPropertyItem>();
+            foreach (var oe in instances)
+            {
+                foreach (var col in oe.Columns)
+                {
+                    var propName = col.OwnedEntityPropertyName;
+                    if (string.IsNullOrEmpty(propName) || !seen.Add(propName))
+                        continue;
+                    props.Add(new OwnedEntityPropertyItem
+                    {
+                        WrappedType = col.WrapIfNullable(),
+                        PropertyName = propName,
+                        PropertyInitialiser = GetPropertyInitialiser(col)
+                    });
+                }
+            }
+
+            var data = new OwnedEntityClassModel
+            {
+                ClassModifier = Settings.EntityClassesModifiers,
+                ClassName = typeName,
+                Properties = props
+            };
+
+            var folder = string.IsNullOrEmpty(Settings.OwnedEntityFolder) ? Settings.PocoFolder : Settings.OwnedEntityFolder;
+            var co = new CodeOutput(typeName, filename, null, folder, _globalUsings);
+            co.AddUsings(_template.OwnedEntityClassUsings(data));
+            co.AddCode(Template.Transform(_template.OwnedEntityClass(), data));
             return co;
         }
     }
@@ -5999,15 +6185,16 @@
         {
             var codeGenerator = new CodeGenerator(this, filter);
 
-            const string contextInterface = "contextInterface:";
-            const string contextFactory   = "contextFactory:";
-            const string contextClass     = "contextClass:";
-            const string contextFakeClass = "contextFakeClass:";
-            const string contextFakeDbSet = "contextFakeDbSet:";
-            const string pocoClass        = "pocoClass:";
-            const string pocoConfiguration= "pocoConfiguration:";
-            const string spReturnModels   = "spReturnModel:";
-            const string enumType         = "enumType:";
+            const string contextInterface  = "contextInterface:";
+            const string contextFactory    = "contextFactory:";
+            const string contextClass      = "contextClass:";
+            const string contextFakeClass  = "contextFakeClass:";
+            const string contextFakeDbSet  = "contextFakeDbSet:";
+            const string pocoClass         = "pocoClass:";
+            const string pocoConfiguration = "pocoConfiguration:";
+            const string spReturnModels    = "spReturnModel:";
+            const string enumType          = "enumType:";
+            const string ownedEntityClass  = "ownedEntityClass:";
 
             var codeOutputList = new CodeOutputList();
             codeOutputList.Add(contextInterface, codeGenerator.GenerateInterface());
@@ -6045,6 +6232,23 @@
             {
                 codeOutputList.Add(enumType + enumeration.EnumName, codeGenerator.GenerateEnum(enumeration));
             }
+
+            // Collect unique owned entity types across all tables and generate one class per type
+            var ownedEntityTypes = new Dictionary<string, List<OwnedEntity>>(StringComparer.Ordinal);
+            foreach (var table in filter.Tables.Where(t => !t.IsMapping))
+            {
+                foreach (var oe in table.OwnedEntities)
+                {
+                    if (!ownedEntityTypes.TryGetValue(oe.PropertyType, out var list))
+                    {
+                        list = new List<OwnedEntity>();
+                        ownedEntityTypes[oe.PropertyType] = list;
+                    }
+                    list.Add(oe);
+                }
+            }
+            foreach (var kvp in ownedEntityTypes.OrderBy(x => x.Key))
+                codeOutputList.Add(ownedEntityClass + kvp.Key, codeGenerator.GenerateOwnedEntityClass(kvp.Key, kvp.Value));
 
             _fileHeaderFooter = new FileHeaderFooter(filter.SubNamespace);
             if (!Settings.GenerateSeparateFiles)
@@ -6096,6 +6300,13 @@
             WriteCodeOutputForGroup(codeGenerator, "Enumerations", true,
                 codeOutputList.Files
                     .Where(x => x.Key.StartsWith(enumType))
+                    .OrderBy(x => x.Key)
+                    .Select(x => x.Value)
+                    .ToList());
+
+            WriteCodeOutputForGroup(codeGenerator, "Owned entity classes", true,
+                codeOutputList.Files
+                    .Where(x => x.Key.StartsWith(ownedEntityClass))
                     .OrderBy(x => x.Key)
                     .Select(x => x.Value)
                     .ToList());
@@ -6859,8 +7070,16 @@
             }
 
             var config = sb.ToString();
-            if (!string.IsNullOrEmpty(config) && !c.ExcludePropertyConfiguration)
+            if (!string.IsNullOrEmpty(c.OwnedEntityPropertyName))
+            {
+                // Column belongs to an owned entity; generate OwnedEntityConfig for use inside OwnsOne block
+                if (!string.IsNullOrEmpty(config))
+                    c.OwnedEntityConfig = string.Format("b.Property(x => x.{0}){1};{2}", c.OwnedEntityPropertyName, config, excludedHasColumnType);
+            }
+            else if (!string.IsNullOrEmpty(config) && !c.ExcludePropertyConfiguration)
+            {
                 c.Config = string.Format("builder.Property(x => x.{0}){1};{2}", c.NameHumanCase, config, excludedHasColumnType);
+            }
         }
 
         public override string PrimaryKeyModelBuilder(Table t)
@@ -11599,6 +11818,65 @@
         Ordinal,
         Alphabetical
     };
+
+    /// <summary>
+    /// Represents a group of table columns that have been mapped to an EF Core owned entity
+    /// via a <see cref="OwnedEntityMapping"/>. Stored on <see cref="Table.OwnedEntities"/>.
+    /// </summary>
+    public class OwnedEntity
+    {
+        /// <summary>The navigation property name on the owning entity (e.g. "BillingAddress").</summary>
+        public string PropertyName;
+
+        /// <summary>The C# type name of the owned entity class (e.g. "Address").</summary>
+        public string PropertyType;
+
+        /// <summary>The column prefix used for matching (e.g. "BillingAddress_").</summary>
+        public string ColumnPrefix;
+
+        /// <summary>The database columns that form this owned entity.</summary>
+        public List<Column> Columns;
+    }
+    /// <summary>
+    /// Defines a mapping that groups database columns sharing a common prefix into an EF Core owned entity.
+    /// Columns whose DbName starts with <see cref="ColumnPrefix"/> are hidden from direct POCO generation
+    /// and instead contribute to an owned entity property of type <see cref="PropertyType"/>.
+    /// A <c>builder.OwnsOne(...)</c> configuration block is generated automatically.
+    /// </summary>
+    public class OwnedEntityMapping
+    {
+        /// <summary>
+        /// The database schema name (e.g., "dbo"). Use "*" to match any schema.
+        /// </summary>
+        public string Schema;
+
+        /// <summary>
+        /// The table name. Use "*" to match any table.
+        /// </summary>
+        public string Table;
+
+        /// <summary>
+        /// The column name prefix used to identify which columns belong to this owned entity.
+        /// All columns whose <c>DbName</c> starts with this value (case-insensitive) are grouped.
+        /// Trailing underscores or separators are stripped when deriving owned entity property names.
+        /// Example: "BillingAddress_" matches columns BillingAddress_Street, BillingAddress_City, etc.
+        /// </summary>
+        public string ColumnPrefix;
+
+        /// <summary>
+        /// The name of the navigation property to generate on the owning entity.
+        /// Example: "BillingAddress" generates <c>public Address BillingAddress { get; set; }</c>.
+        /// </summary>
+        public string PropertyName;
+
+        /// <summary>
+        /// The C# type name of the owned entity class (e.g., "Address").
+        /// The generator automatically produces one class file per unique type name found across all mappings.
+        /// If you prefer to supply the class yourself, place it outside the generated output folder.
+        /// </summary>
+        public string PropertyType;
+
+    }
 /* BidirectionalDictionary
 Copyright (c) Microsoft Open Technologies, Inc.  All rights reserved.
 Microsoft Open Technologies would like to thank its contributors, a list of whom
@@ -18259,6 +18537,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public List<RawIndex> Indexes;
         public List<string> Attributes = new List<string>(); // List of attributes to add to this table
         public List<string> AdditionalNamespaces = new List<string>(); // Namespaces required by JSON column mappings on this table
+        public List<OwnedEntity> OwnedEntities = new List<OwnedEntity>(); // Owned entity groups defined via OwnedEntityMapping
 
         private readonly IDbContextFilter _filter;
         private readonly IForeignKeyNamingStrategy _foreignKeyNamingStrategy;
@@ -18725,6 +19004,20 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public bool hasScalarValuedFunctions { get; set; }
     }
 
+    public class OwnedEntityClassModel
+    {
+        public string ClassModifier { get; set; }
+        public string ClassName { get; set; }
+        public List<OwnedEntityPropertyItem> Properties { get; set; }
+    }
+
+    public class OwnedEntityPropertyItem
+    {
+        public string WrappedType { get; set; }
+        public string PropertyName { get; set; }
+        public string PropertyInitialiser { get; set; }
+    }
+
     public class PocoConfigurationModel
     {
         public string Name { get; set; }
@@ -18751,6 +19044,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public bool HasSpatial { get; set; }
         public bool HasTableComment { get; set; }
         public string TableComment { get; set; }
+        public bool HasOwnedEntityConfigs { get; set; }
+        public List<string> OwnedEntityConfigs { get; set; }
     }
 
     public class PocoModel
@@ -18778,6 +19073,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public bool HasHierarchyId { get; set; }
         public bool HasSpatial { get; set; }
         public bool HasSqlVector { get; set; }
+        public bool HasOwnedEntities { get; set; }
+        public List<PocoOwnedEntityModel> OwnedEntities { get; set; }
     }
 
     public class PocoColumnModel
@@ -18818,6 +19115,13 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
     {
         public string NameHumanCase { get; set; }
         public string Default { get; set; }
+    }
+
+    public class PocoOwnedEntityModel
+    {
+        public string PropertyType { get; set; }
+        public string PropertyName { get; set; }
+        public string PropertyInitialiser { get; set; }
     }
 
     public class StoredProcReturnModel
@@ -18875,6 +19179,9 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
         public abstract List<string> EnumUsings();
         public abstract string Enums();
+
+        public abstract List<string> OwnedEntityClassUsings(OwnedEntityClassModel data);
+        public abstract string OwnedEntityClass();
 
         public static string Transform(string template, object data)
         {
@@ -20231,6 +20538,10 @@ public enum {{EnumName}}{{#newline}}
 }{{#newline}}
 ";
         }
+
+        // Owned entity class generation is EF Core only
+        public override List<string> OwnedEntityClassUsings(OwnedEntityClassModel data) => new List<string>();
+        public override string OwnedEntityClass() => string.Empty;
     }
 
     /// <summary>
@@ -21727,6 +22038,14 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
 {{#if IncludeFieldNameConstants}}    public const string {{NameHumanCase}}Field = ""{{NameHumanCase}}"";{{#newline}}{{/if}}
 {{/each}}
 
+{{#if HasOwnedEntities}}
+{{#newline}}
+    // Owned entities{{#newline}}
+{{#each OwnedEntities}}
+    public {{PropertyType}} {{PropertyName}} { get; set; }{{PropertyInitialiser}}{{#newline}}
+{{/each}}
+{{/if}}
+
 {{#if HasReverseNavigation}}
 {{#newline}}
     // Reverse navigation{{#newline}}
@@ -21861,6 +22180,14 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
 {{/each}}
 {{/if}}
 
+{{#if HasOwnedEntityConfigs}}
+{{#newline}}
+        // Owned entities{{#newline}}
+{{#each OwnedEntityConfigs}}
+        {{this}}{{#newline}}
+{{/each}}
+{{/if}}
+
 {{#each MappingConfiguration}}
         builder.{{this}}{{#newline}}
 {{/each}}
@@ -21951,6 +22278,28 @@ public enum {{EnumName}}{{#newline}}
     {{this}}{{#newline}}
 {{/each}}
     {{Key}} = {{Value}},{{#newline}}
+{{/each}}
+}{{#newline}}
+";
+        }
+
+        public override List<string> OwnedEntityClassUsings(OwnedEntityClassModel data)
+        {
+            var usings = new List<string>();
+
+            if (Settings.IncludeCodeGeneratedAttribute)
+                usings.Add("System.CodeDom.Compiler");
+
+            return usings;
+        }
+
+        public override string OwnedEntityClass()
+        {
+            return @"
+{{ClassModifier}} class {{ClassName}}{{#newline}}
+{{{#newline}}
+{{#each Properties}}
+    public {{WrappedType}} {{PropertyName}} { get; set; }{{PropertyInitialiser}}{{#newline}}
 {{/each}}
 }{{#newline}}
 ";
@@ -22102,6 +22451,11 @@ public enum {{EnumName}}{{#newline}}
         {
             return CacheText(TemplateFileBasedConstants.Mustache.Enums);
         }
+
+        // Owned entity class generation via file-based templates is not yet supported.
+        // To generate owned entity classes, use the EfCore template type and set Settings.GenerateOwnedEntityClasses = true.
+        public override List<string> OwnedEntityClassUsings(OwnedEntityClassModel data) => new List<string>();
+        public override string OwnedEntityClass() => string.Empty;
 
         private string CacheText(string filename)
         {

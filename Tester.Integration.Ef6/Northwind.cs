@@ -34,7 +34,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Tester.Integration.Ef6
+namespace Tester.Integration.Ef6.Northwind
 {
     #region Database context interface
 

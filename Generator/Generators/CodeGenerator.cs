@@ -288,6 +288,12 @@ namespace Efrpg.Generators
             return Settings.ElementsToGenerate.HasFlag(Elements.Enum) && _hasEnums;
         }
 
+        private bool CanWriteOwnedEntityClasses()
+        {
+            return Settings.GeneratorType == GeneratorType.EfCore &&
+                   Settings.ElementsToGenerate.HasFlag(Elements.Poco);
+        }
+
         public string GenerateUsings(List<string> usings)
         {
             return !usings.Any() ? null : Template.Transform(_template.Usings(), usings).Trim();
@@ -652,7 +658,16 @@ namespace Efrpg.Generators
                     .ToList(),
                 ReverseNavigationCtor = table.ReverseNavigationCtor,
                 EntityClassesArePartial = Settings.EntityClassesArePartial(),
-                HasSpatial = table.Columns.Any(x => x.IsSpatial)
+                HasSpatial = table.Columns.Any(x => x.IsSpatial),
+                HasOwnedEntities = table.OwnedEntities.Any(),
+                OwnedEntities = table.OwnedEntities
+                    .Select(oe => new PocoOwnedEntityModel
+                    {
+                        PropertyType        = oe.PropertyType,
+                        PropertyName        = oe.PropertyName,
+                        PropertyInitialiser = Settings.NeedsNullForgiving() ? " = null!;" : string.Empty
+                    })
+                    .ToList()
             };
 
             var co = new CodeOutput(table.DbName, filename, null, Settings.PocoFolder, _globalUsings);
@@ -727,6 +742,35 @@ namespace Efrpg.Generators
                 TableComment = table.Description?.Replace("\"", "\"\"")
             };
 
+            // Build builder.OwnsOne(...) blocks for any owned entity mappings
+            var ownedEntityConfigs = new List<string>();
+            if (table.OwnedEntities.Any())
+            {
+                var orderByOrdinal = Settings.OrderProperties == OrderProperties.Ordinal;
+                foreach (var oe in table.OwnedEntities)
+                {
+                    var sb = new System.Text.StringBuilder();
+                    sb.AppendLine("builder.OwnsOne(x => x." + oe.PropertyName + ", b =>");
+                    sb.AppendLine("        {");
+
+                    var oeCols = orderByOrdinal
+                        ? oe.Columns.OrderBy(c => c.Ordinal).ToList()
+                        : oe.Columns.OrderBy(c => c.OwnedEntityPropertyName).ToList();
+
+                    foreach (var col in oeCols)
+                    {
+                        if (!string.IsNullOrEmpty(col.OwnedEntityConfig))
+                            sb.AppendLine("            " + col.OwnedEntityConfig);
+                    }
+
+                    sb.Append("        });");
+                    ownedEntityConfigs.Add(sb.ToString());
+                }
+            }
+
+            data.HasOwnedEntityConfigs = ownedEntityConfigs.Any();
+            data.OwnedEntityConfigs    = ownedEntityConfigs;
+
             var co = new CodeOutput(table.DbName, filename, null, Settings.PocoConfigurationFolder, _globalUsings);
             co.AddUsings(_template.PocoConfigurationUsings(data));
             co.AddUsings(table.AdditionalNamespaces);
@@ -791,6 +835,47 @@ namespace Efrpg.Generators
             if (enumeration.Items.Any(i => i.Attributes.Any(a => a.StartsWith("[Description"))))
                 co.AddUsings(new List<string> { "System.ComponentModel" });
             co.AddCode(Template.Transform(_template.Enums(), enumeration));
+            return co;
+        }
+
+        public CodeOutput GenerateOwnedEntityClass(string typeName, IList<OwnedEntity> instances)
+        {
+            var filename = typeName + Settings.FileExtension;
+            if (!CanWriteOwnedEntityClasses())
+            {
+                FileManagementService.DeleteFile(filename);
+                return null;
+            }
+
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            var props = new List<OwnedEntityPropertyItem>();
+            foreach (var oe in instances)
+            {
+                foreach (var col in oe.Columns)
+                {
+                    var propName = col.OwnedEntityPropertyName;
+                    if (string.IsNullOrEmpty(propName) || !seen.Add(propName))
+                        continue;
+                    props.Add(new OwnedEntityPropertyItem
+                    {
+                        WrappedType = col.WrapIfNullable(),
+                        PropertyName = propName,
+                        PropertyInitialiser = GetPropertyInitialiser(col)
+                    });
+                }
+            }
+
+            var data = new OwnedEntityClassModel
+            {
+                ClassModifier = Settings.EntityClassesModifiers,
+                ClassName = typeName,
+                Properties = props
+            };
+
+            var folder = string.IsNullOrEmpty(Settings.OwnedEntityFolder) ? Settings.PocoFolder : Settings.OwnedEntityFolder;
+            var co = new CodeOutput(typeName, filename, null, folder, _globalUsings);
+            co.AddUsings(_template.OwnedEntityClassUsings(data));
+            co.AddCode(Template.Transform(_template.OwnedEntityClass(), data));
             return co;
         }
     }

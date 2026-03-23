@@ -59,6 +59,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
         public DbSet<ColumnNameAndType> ColumnNameAndTypes { get; set; } = null!; // ColumnNameAndTypes
         public DbSet<ComplexView> ComplexViews { get; set; } = null!; // ComplexView
         public DbSet<Country> Countries { get; set; } = null!; // Country
+        public DbSet<Customer> Customers { get; set; } = null!; // Customer
         public DbSet<DateTimeDefaultTest> DateTimeDefaultTests { get; set; } = null!; // DateTimeDefaultTest
         public DbSet<dcg_RovColumnDefinition> dcg_RovColumnDefinitions { get; set; } = null!; // rov_ColumnDefinitions
         public DbSet<DefaultCheckForNull> DefaultCheckForNulls { get; set; } = null!; // DefaultCheckForNull
@@ -78,6 +79,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
         public DbSet<InflectorData> InflectorData { get; set; } = null!; // InflectorData
         public DbSet<InflectorStatus> InflectorStatus { get; set; } = null!; // InflectorStatus
         public DbSet<InflectorTo> InflectorTo { get; set; } = null!; // InflectorTo
+        public DbSet<Invoice> Invoices { get; set; } = null!; // Invoice
         public DbSet<Issue47_Role> Issue47_Roles { get; set; } = null!; // Role
         public DbSet<Issue47_User> Issue47_Users { get; set; } = null!; // Users
         public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } = null!; // UserRoles
@@ -180,6 +182,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
             ColumnNameAndTypes = new FakeDbSet<ColumnNameAndType>("C36");
             ComplexViews = new FakeDbSet<ComplexView>();
             Countries = new FakeDbSet<Country>("CountryId");
+            Customers = new FakeDbSet<Customer>("CustomerId");
             DateTimeDefaultTests = new FakeDbSet<DateTimeDefaultTest>("Id");
             dcg_RovColumnDefinitions = new FakeDbSet<dcg_RovColumnDefinition>();
             DefaultCheckForNulls = new FakeDbSet<DefaultCheckForNull>("Id");
@@ -199,6 +202,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
             InflectorData = new FakeDbSet<InflectorData>("Id");
             InflectorStatus = new FakeDbSet<InflectorStatus>("Id");
             InflectorTo = new FakeDbSet<InflectorTo>("Id");
+            Invoices = new FakeDbSet<Invoice>("InvoiceId");
             Issue47_Roles = new FakeDbSet<Issue47_Role>("RoleId");
             Issue47_Users = new FakeDbSet<Issue47_User>("UserId");
             Issue47_UserRoles = new FakeDbSet<Issue47_UserRole>("UserRoleId");

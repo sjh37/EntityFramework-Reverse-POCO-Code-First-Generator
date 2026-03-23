@@ -1347,5 +1347,9 @@ public enum {{EnumName}}{{#newline}}
 }{{#newline}}
 ";
         }
+
+        // Owned entity class generation is EF Core only
+        public override List<string> OwnedEntityClassUsings(OwnedEntityClassModel data) => new List<string>();
+        public override string OwnedEntityClass() => string.Empty;
     }
 }

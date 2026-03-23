@@ -2803,6 +2803,34 @@ CREATE TABLE NullableReverseNavigationB
 );
 GO
 
+-- #690 Owned entity mapping: two Address-typed owned entities on a single table (billing + shipping).
+-- BillingAddress_Postcode is NOT NULL; ShippingAddress_Postcode is NULL — tests deduplication
+-- where the billing (first) mapping wins for nullability in the generated owned entity class.
+CREATE TABLE Customer
+(
+    CustomerId               INT           NOT NULL IDENTITY(1,1),
+    [Name]                   NVARCHAR(100) NOT NULL,
+    BillingAddress_Street    NVARCHAR(100) NOT NULL,
+    BillingAddress_City      NVARCHAR(50)  NOT NULL,
+    BillingAddress_Postcode  NVARCHAR(10)  NOT NULL,
+    ShippingAddress_Street   NVARCHAR(100) NOT NULL,
+    ShippingAddress_City     NVARCHAR(50)  NOT NULL,
+    ShippingAddress_Postcode NVARCHAR(10)  NULL,
+    CONSTRAINT PK_Customer PRIMARY KEY (CustomerId)
+);
+GO
+
+-- #690 Owned entity mapping: Money value object with a decimal and a fixed-length char column.
+CREATE TABLE Invoice
+(
+    InvoiceId            INT           NOT NULL IDENTITY(1,1),
+    [Description]        NVARCHAR(200) NOT NULL,
+    TotalAmount_Value    DECIMAL(18,2) NOT NULL,
+    TotalAmount_Currency CHAR(3)       NOT NULL,
+    CONSTRAINT PK_Invoice PRIMARY KEY (InvoiceId)
+);
+GO
+
 -- #721 TVF with space in column name
 CREATE FUNCTION [dbo].[SpacedColumnTvf]
 (

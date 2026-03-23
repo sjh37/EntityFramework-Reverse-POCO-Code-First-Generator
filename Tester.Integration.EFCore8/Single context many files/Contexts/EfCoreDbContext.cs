@@ -81,6 +81,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
         public DbSet<ColumnNameAndType> ColumnNameAndTypes { get; set; } // ColumnNameAndTypes
         public DbSet<ComplexView> ComplexViews { get; set; } // ComplexView
         public DbSet<Country> Countries { get; set; } // Country
+        public DbSet<Customer> Customers { get; set; } // Customer
         public DbSet<DateTimeDefaultTest> DateTimeDefaultTests { get; set; } // DateTimeDefaultTest
         public DbSet<dcg_RovColumnDefinition> dcg_RovColumnDefinitions { get; set; } // rov_ColumnDefinitions
         public DbSet<DefaultCheckForNull> DefaultCheckForNulls { get; set; } // DefaultCheckForNull
@@ -100,6 +101,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
         public DbSet<InflectorData> InflectorData { get; set; } // InflectorData
         public DbSet<InflectorStatus> InflectorStatus { get; set; } // InflectorStatus
         public DbSet<InflectorTo> InflectorTo { get; set; } // InflectorTo
+        public DbSet<Invoice> Invoices { get; set; } // Invoice
         public DbSet<Issue47_Role> Issue47_Roles { get; set; } // Role
         public DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
@@ -227,6 +229,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
             modelBuilder.ApplyConfiguration(new ColumnNameAndTypeConfiguration());
             modelBuilder.ApplyConfiguration(new ComplexViewConfiguration());
             modelBuilder.ApplyConfiguration(new CountryConfiguration());
+            modelBuilder.ApplyConfiguration(new CustomerConfiguration());
             modelBuilder.ApplyConfiguration(new DateTimeDefaultTestConfiguration());
             modelBuilder.ApplyConfiguration(new dcg_RovColumnDefinitionConfiguration());
             modelBuilder.ApplyConfiguration(new DefaultCheckForNullConfiguration());
@@ -246,6 +249,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
             modelBuilder.ApplyConfiguration(new InflectorDataConfiguration());
             modelBuilder.ApplyConfiguration(new InflectorStatusConfiguration());
             modelBuilder.ApplyConfiguration(new InflectorToConfiguration());
+            modelBuilder.ApplyConfiguration(new InvoiceConfiguration());
             modelBuilder.ApplyConfiguration(new Issue47_RoleConfiguration());
             modelBuilder.ApplyConfiguration(new Issue47_UserConfiguration());
             modelBuilder.ApplyConfiguration(new Issue47_UserRoleConfiguration());

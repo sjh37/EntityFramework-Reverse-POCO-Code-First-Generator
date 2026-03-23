@@ -27,7 +27,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Tester.Integration.EFCore8
+namespace Tester.Integration.EFCore8.Northwind
 {
     #region Database context interface
 

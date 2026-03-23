@@ -70,6 +70,7 @@ namespace Tester.Integration.Ef6
         DbSet<ColumnNameAndType> ColumnNameAndTypes { get; set; } // ColumnNameAndTypes
         DbSet<ComplexView> ComplexViews { get; set; } // ComplexView
         DbSet<Country> Countries { get; set; } // Country
+        DbSet<Customer> Customers { get; set; } // Customer
         DbSet<DateTimeDefaultTest> DateTimeDefaultTests { get; set; } // DateTimeDefaultTest
         DbSet<dcg_RovColumnDefinition> dcg_RovColumnDefinitions { get; set; } // rov_ColumnDefinitions
         DbSet<DefaultCheckForNull> DefaultCheckForNulls { get; set; } // DefaultCheckForNull
@@ -93,6 +94,7 @@ namespace Tester.Integration.Ef6
         DbSet<InflectorData> InflectorData { get; set; } // InflectorData
         DbSet<InflectorStatus> InflectorStatus { get; set; } // InflectorStatus
         DbSet<InflectorTo> InflectorTo { get; set; } // InflectorTo
+        DbSet<Invoice> Invoices { get; set; } // Invoice
         DbSet<Issue47_Role> Issue47_Roles { get; set; } // Role
         DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
@@ -381,6 +383,7 @@ namespace Tester.Integration.Ef6
         public DbSet<ColumnNameAndType> ColumnNameAndTypes { get; set; } // ColumnNameAndTypes
         public DbSet<ComplexView> ComplexViews { get; set; } // ComplexView
         public DbSet<Country> Countries { get; set; } // Country
+        public DbSet<Customer> Customers { get; set; } // Customer
         public DbSet<DateTimeDefaultTest> DateTimeDefaultTests { get; set; } // DateTimeDefaultTest
         public DbSet<dcg_RovColumnDefinition> dcg_RovColumnDefinitions { get; set; } // rov_ColumnDefinitions
         public DbSet<DefaultCheckForNull> DefaultCheckForNulls { get; set; } // DefaultCheckForNull
@@ -404,6 +407,7 @@ namespace Tester.Integration.Ef6
         public DbSet<InflectorData> InflectorData { get; set; } // InflectorData
         public DbSet<InflectorStatus> InflectorStatus { get; set; } // InflectorStatus
         public DbSet<InflectorTo> InflectorTo { get; set; } // InflectorTo
+        public DbSet<Invoice> Invoices { get; set; } // Invoice
         public DbSet<Issue47_Role> Issue47_Roles { get; set; } // Role
         public DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
@@ -552,6 +556,7 @@ namespace Tester.Integration.Ef6
             modelBuilder.Configurations.Add(new ColumnNameAndTypeConfiguration());
             modelBuilder.Configurations.Add(new ComplexViewConfiguration());
             modelBuilder.Configurations.Add(new CountryConfiguration());
+            modelBuilder.Configurations.Add(new CustomerConfiguration());
             modelBuilder.Configurations.Add(new DateTimeDefaultTestConfiguration());
             modelBuilder.Configurations.Add(new dcg_RovColumnDefinitionConfiguration());
             modelBuilder.Configurations.Add(new DefaultCheckForNullConfiguration());
@@ -575,6 +580,7 @@ namespace Tester.Integration.Ef6
             modelBuilder.Configurations.Add(new InflectorDataConfiguration());
             modelBuilder.Configurations.Add(new InflectorStatusConfiguration());
             modelBuilder.Configurations.Add(new InflectorToConfiguration());
+            modelBuilder.Configurations.Add(new InvoiceConfiguration());
             modelBuilder.Configurations.Add(new Issue47_RoleConfiguration());
             modelBuilder.Configurations.Add(new Issue47_UserConfiguration());
             modelBuilder.Configurations.Add(new Issue47_UserRoleConfiguration());
@@ -846,6 +852,7 @@ namespace Tester.Integration.Ef6
             modelBuilder.Configurations.Add(new ColumnNameAndTypeConfiguration(schema));
             modelBuilder.Configurations.Add(new ComplexViewConfiguration(schema));
             modelBuilder.Configurations.Add(new CountryConfiguration(schema));
+            modelBuilder.Configurations.Add(new CustomerConfiguration(schema));
             modelBuilder.Configurations.Add(new DateTimeDefaultTestConfiguration(schema));
             modelBuilder.Configurations.Add(new dcg_RovColumnDefinitionConfiguration(schema));
             modelBuilder.Configurations.Add(new DefaultCheckForNullConfiguration(schema));
@@ -869,6 +876,7 @@ namespace Tester.Integration.Ef6
             modelBuilder.Configurations.Add(new InflectorDataConfiguration(schema));
             modelBuilder.Configurations.Add(new InflectorStatusConfiguration(schema));
             modelBuilder.Configurations.Add(new InflectorToConfiguration(schema));
+            modelBuilder.Configurations.Add(new InvoiceConfiguration(schema));
             modelBuilder.Configurations.Add(new Issue47_RoleConfiguration(schema));
             modelBuilder.Configurations.Add(new Issue47_UserConfiguration(schema));
             modelBuilder.Configurations.Add(new Issue47_UserRoleConfiguration(schema));
@@ -3214,6 +3222,27 @@ namespace Tester.Integration.Ef6
         }
     }
 
+    // Customer
+    public class Customer
+    {
+        public int CustomerId { get; set; } // CustomerId (Primary key)
+        public const string CustomerIdField = "CustomerId";
+        public string Name { get; set; } // Name (length: 100)
+        public const string NameField = "Name";
+        public string BillingAddressStreet { get; set; } // BillingAddress_Street (length: 100)
+        public const string BillingAddressStreetField = "BillingAddressStreet";
+        public string BillingAddressCity { get; set; } // BillingAddress_City (length: 50)
+        public const string BillingAddressCityField = "BillingAddressCity";
+        public string BillingAddressPostcode { get; set; } // BillingAddress_Postcode (length: 10)
+        public const string BillingAddressPostcodeField = "BillingAddressPostcode";
+        public string ShippingAddressStreet { get; set; } // ShippingAddress_Street (length: 100)
+        public const string ShippingAddressStreetField = "ShippingAddressStreet";
+        public string ShippingAddressCity { get; set; } // ShippingAddress_City (length: 50)
+        public const string ShippingAddressCityField = "ShippingAddressCity";
+        public string ShippingAddressPostcode { get; set; } // ShippingAddress_Postcode (length: 10)
+        public const string ShippingAddressPostcodeField = "ShippingAddressPostcode";
+    }
+
     // DateTimeDefaultTest
     public class DateTimeDefaultTest
     {
@@ -3620,6 +3649,19 @@ namespace Tester.Integration.Ef6
     {
         public int Id { get; set; } // Id (Primary key)
         public const string IdField = "Id";
+    }
+
+    // Invoice
+    public class Invoice
+    {
+        public int InvoiceId { get; set; } // InvoiceId (Primary key)
+        public const string InvoiceIdField = "InvoiceId";
+        public string Description { get; set; } // Description (length: 200)
+        public const string DescriptionField = "Description";
+        public decimal TotalAmountValue { get; set; } // TotalAmount_Value
+        public const string TotalAmountValueField = "TotalAmountValue";
+        public string TotalAmountCurrency { get; set; } // TotalAmount_Currency (length: 3)
+        public const string TotalAmountCurrencyField = "TotalAmountCurrency";
     }
 
     // Role
@@ -5317,6 +5359,30 @@ namespace Tester.Integration.Ef6
         }
     }
 
+    // Customer
+    public class CustomerConfiguration : EntityTypeConfiguration<Customer>
+    {
+        public CustomerConfiguration()
+            : this("dbo")
+        {
+        }
+
+        public CustomerConfiguration(string schema)
+        {
+            ToTable("Customer", schema);
+            HasKey(x => x.CustomerId);
+
+            Property(x => x.CustomerId).HasColumnName(@"CustomerId").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.Name).HasColumnName(@"Name").HasColumnType("nvarchar").IsRequired().HasMaxLength(100);
+            Property(x => x.BillingAddressStreet).HasColumnName(@"BillingAddress_Street").HasColumnType("nvarchar").IsRequired().HasMaxLength(100);
+            Property(x => x.BillingAddressCity).HasColumnName(@"BillingAddress_City").HasColumnType("nvarchar").IsRequired().HasMaxLength(50);
+            Property(x => x.BillingAddressPostcode).HasColumnName(@"BillingAddress_Postcode").HasColumnType("nvarchar").IsRequired().HasMaxLength(10);
+            Property(x => x.ShippingAddressStreet).HasColumnName(@"ShippingAddress_Street").HasColumnType("nvarchar").IsRequired().HasMaxLength(100);
+            Property(x => x.ShippingAddressCity).HasColumnName(@"ShippingAddress_City").HasColumnType("nvarchar").IsRequired().HasMaxLength(50);
+            Property(x => x.ShippingAddressPostcode).HasColumnName(@"ShippingAddress_Postcode").HasColumnType("nvarchar").IsOptional().HasMaxLength(10);
+        }
+    }
+
     // DateTimeDefaultTest
     public class DateTimeDefaultTestConfiguration : EntityTypeConfiguration<DateTimeDefaultTest>
     {
@@ -5790,6 +5856,26 @@ namespace Tester.Integration.Ef6
             HasKey(x => x.Id);
 
             Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+        }
+    }
+
+    // Invoice
+    public class InvoiceConfiguration : EntityTypeConfiguration<Invoice>
+    {
+        public InvoiceConfiguration()
+            : this("dbo")
+        {
+        }
+
+        public InvoiceConfiguration(string schema)
+        {
+            ToTable("Invoice", schema);
+            HasKey(x => x.InvoiceId);
+
+            Property(x => x.InvoiceId).HasColumnName(@"InvoiceId").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.Description).HasColumnName(@"Description").HasColumnType("nvarchar").IsRequired().HasMaxLength(200);
+            Property(x => x.TotalAmountValue).HasColumnName(@"TotalAmount_Value").HasColumnType("decimal").IsRequired().HasPrecision(18,2);
+            Property(x => x.TotalAmountCurrency).HasColumnName(@"TotalAmount_Currency").HasColumnType("char").IsRequired().IsFixedLength().IsUnicode(false).HasMaxLength(3);
         }
     }
 

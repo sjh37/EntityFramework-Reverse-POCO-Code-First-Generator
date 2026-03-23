@@ -46,6 +46,7 @@ Entities\Colour.cs
 Entities\ColumnNameAndType.cs
 Entities\ComplexView.cs
 Entities\Country.cs
+Entities\Customer.cs
 Entities\DateTimeDefaultTest.cs
 Entities\dcg_RovColumnDefinition.cs
 Entities\DefaultCheckForNull.cs
@@ -65,6 +66,7 @@ Entities\HierarchyTest.cs
 Entities\InflectorData.cs
 Entities\InflectorStatus.cs
 Entities\InflectorTo.cs
+Entities\Invoice.cs
 Entities\Issue47_Role.cs
 Entities\Issue47_User.cs
 Entities\Issue47_UserRole.cs
@@ -165,6 +167,7 @@ Configuration\ColourConfiguration.cs
 Configuration\ColumnNameAndTypeConfiguration.cs
 Configuration\ComplexViewConfiguration.cs
 Configuration\CountryConfiguration.cs
+Configuration\CustomerConfiguration.cs
 Configuration\DateTimeDefaultTestConfiguration.cs
 Configuration\dcg_RovColumnDefinitionConfiguration.cs
 Configuration\DefaultCheckForNullConfiguration.cs
@@ -184,6 +187,7 @@ Configuration\HierarchyTestConfiguration.cs
 Configuration\InflectorDataConfiguration.cs
 Configuration\InflectorStatusConfiguration.cs
 Configuration\InflectorToConfiguration.cs
+Configuration\InvoiceConfiguration.cs
 Configuration\Issue47_RoleConfiguration.cs
 Configuration\Issue47_UserConfiguration.cs
 Configuration\Issue47_UserRoleConfiguration.cs

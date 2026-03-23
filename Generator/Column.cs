@@ -53,6 +53,8 @@ namespace Efrpg
         public bool IsSpatial;
         public bool IsPartial;
         public bool ExcludePropertyConfiguration; // Set when JsonColumnMapping.ExcludePropertyConfiguration is true
+        public string OwnedEntityPropertyName; // Set by OwnedEntityMapping: the property name this column maps to within the owned entity
+        public string OwnedEntityConfig;       // Fluent config line for use inside a builder.OwnsOne(...) block
 
         public string Config;
         public List<string> ConfigFk = new List<string>();

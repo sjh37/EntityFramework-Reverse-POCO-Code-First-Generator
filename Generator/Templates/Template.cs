@@ -39,6 +39,9 @@ namespace Efrpg.Templates
         public abstract List<string> EnumUsings();
         public abstract string Enums();
 
+        public abstract List<string> OwnedEntityClassUsings(OwnedEntityClassModel data);
+        public abstract string OwnedEntityClass();
+
         public static string Transform(string template, object data)
         {
             if (data == null || template == null)

@@ -1499,6 +1499,14 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
 {{#if IncludeFieldNameConstants}}    public const string {{NameHumanCase}}Field = ""{{NameHumanCase}}"";{{#newline}}{{/if}}
 {{/each}}
 
+{{#if HasOwnedEntities}}
+{{#newline}}
+    // Owned entities{{#newline}}
+{{#each OwnedEntities}}
+    public {{PropertyType}} {{PropertyName}} { get; set; }{{PropertyInitialiser}}{{#newline}}
+{{/each}}
+{{/if}}
+
 {{#if HasReverseNavigation}}
 {{#newline}}
     // Reverse navigation{{#newline}}
@@ -1633,6 +1641,14 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
 {{/each}}
 {{/if}}
 
+{{#if HasOwnedEntityConfigs}}
+{{#newline}}
+        // Owned entities{{#newline}}
+{{#each OwnedEntityConfigs}}
+        {{this}}{{#newline}}
+{{/each}}
+{{/if}}
+
 {{#each MappingConfiguration}}
         builder.{{this}}{{#newline}}
 {{/each}}
@@ -1723,6 +1739,28 @@ public enum {{EnumName}}{{#newline}}
     {{this}}{{#newline}}
 {{/each}}
     {{Key}} = {{Value}},{{#newline}}
+{{/each}}
+}{{#newline}}
+";
+        }
+
+        public override List<string> OwnedEntityClassUsings(OwnedEntityClassModel data)
+        {
+            var usings = new List<string>();
+
+            if (Settings.IncludeCodeGeneratedAttribute)
+                usings.Add("System.CodeDom.Compiler");
+
+            return usings;
+        }
+
+        public override string OwnedEntityClass()
+        {
+            return @"
+{{ClassModifier}} class {{ClassName}}{{#newline}}
+{{{#newline}}
+{{#each Properties}}
+    public {{WrappedType}} {{PropertyName}} { get; set; }{{PropertyInitialiser}}{{#newline}}
 {{/each}}
 }{{#newline}}
 ";

@@ -12,6 +12,7 @@ namespace Efrpg.Filtering
     {
         public List<EnumDefinition> EnumDefinitions;
         public List<JsonColumnMapping> JsonColumnMappings;
+        public List<OwnedEntityMapping> OwnedEntityMappings;
 
         protected readonly List<IFilterType<Schema>>          SchemaFilters;
         protected readonly List<IFilterType<Table>>           TableFilters;
@@ -40,6 +41,9 @@ namespace Efrpg.Filtering
 
             JsonColumnMappings = new List<JsonColumnMapping>();
             Settings.AddJsonColumnMappings?.Invoke(JsonColumnMappings);
+
+            OwnedEntityMappings = new List<OwnedEntityMapping>();
+            Settings.AddOwnedEntityMappings?.Invoke(OwnedEntityMappings);
         }
 
         public override bool IsExcluded(EntityName item)
@@ -91,6 +95,9 @@ namespace Efrpg.Filtering
         {
             // Callback to Settings, which can be set within <database>.tt
             Settings.UpdateTable?.Invoke(table);
+
+            // Apply owned entity column groupings
+            Settings.ApplyOwnedEntityMappings(table, OwnedEntityMappings);
         }
 
         public override void UpdateColumn(Column column, Table table)

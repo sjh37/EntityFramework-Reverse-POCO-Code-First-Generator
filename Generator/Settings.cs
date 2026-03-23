@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Reflection.Emit;
+using System.Text.RegularExpressions;
 
 namespace Efrpg
 {
@@ -41,6 +42,7 @@ namespace Efrpg
         public static string InterfaceFolder            = ""; // Sub-folder you would like your Interface to be added to.              e.g. @"Data\Interface"
         public static string PocoFolder                 = ""; // Sub-folder you would like your Poco's to be added to.                 e.g. @"Data\Entities"
         public static string PocoConfigurationFolder    = ""; // Sub-folder you would like your Configuration mappings to be added to. e.g. @"Data\Configuration"
+        public static string OwnedEntityFolder          = ""; // Sub-folder for auto-generated owned entity classes; defaults to PocoFolder if empty.   e.g. @"Data\Entities"
         public static bool   UseFolderNameInNamespace   = false; // If true, appends the sub-folder name to the namespace of each generated file. e.g. PocoFolder = "Entities" => namespace MyProject.Entities
 
 
@@ -473,6 +475,66 @@ namespace Efrpg
             }
         }
 
+        // Apply OwnedEntityMappings to a table: group prefixed columns into owned entity definitions
+        public static void ApplyOwnedEntityMappings(Table table, List<OwnedEntityMapping> ownedEntityMappings)
+        {
+            if (ownedEntityMappings == null || !ownedEntityMappings.Any() || table == null)
+                return;
+
+            foreach (var mapping in ownedEntityMappings)
+            {
+                if (string.IsNullOrEmpty(mapping.ColumnPrefix) || string.IsNullOrEmpty(mapping.PropertyName) || string.IsNullOrEmpty(mapping.PropertyType))
+                    continue;
+
+                var tableMatches =
+                    (mapping.Schema == "*" || mapping.Schema.Equals(table.Schema.DbName, StringComparison.InvariantCultureIgnoreCase)) &&
+                    (mapping.Table  == "*" || mapping.Table.Equals(table.DbName, StringComparison.InvariantCultureIgnoreCase) ||
+                                             mapping.Table.Equals(table.NameHumanCase, StringComparison.InvariantCultureIgnoreCase));
+
+                if (!tableMatches)
+                    continue;
+
+                var matchedColumns = table.Columns
+                    .Where(c => c.DbName.StartsWith(mapping.ColumnPrefix, StringComparison.InvariantCultureIgnoreCase))
+                    .ToList();
+
+                if (!matchedColumns.Any())
+                    continue;
+
+                // Normalize the prefix to strip trailing separators, then remove non-alphanumeric chars
+                // so we can match against NameHumanCase (which has underscores removed and is PascalCase)
+                var normalizedPrefix = Regex.Replace(
+                    mapping.ColumnPrefix.TrimEnd('_', ' ', '-'),
+                    @"[^a-zA-Z0-9]", string.Empty);
+
+                foreach (var col in matchedColumns)
+                {
+                    col.Hidden = true;
+
+                    // Strip the normalized prefix from NameHumanCase to get the owned entity property name
+                    if (!string.IsNullOrEmpty(normalizedPrefix) &&
+                        col.NameHumanCase.StartsWith(normalizedPrefix, StringComparison.OrdinalIgnoreCase))
+                    {
+                        var remainder = col.NameHumanCase.Substring(normalizedPrefix.Length);
+                        col.OwnedEntityPropertyName = string.IsNullOrEmpty(remainder) ? col.NameHumanCase : remainder;
+                    }
+                    else
+                    {
+                        col.OwnedEntityPropertyName = col.NameHumanCase;
+                    }
+                }
+
+                table.OwnedEntities.Add(new OwnedEntity
+                {
+                    PropertyName = mapping.PropertyName,
+                    PropertyType = mapping.PropertyType,
+                    ColumnPrefix = mapping.ColumnPrefix,
+                    Columns      = matchedColumns
+                });
+
+            }
+        }
+
         // Add [JsonPropertyName] attribute from database extended property
         public static void ApplyJsonPropertyNameAttribute(Column column)
         {
@@ -824,6 +886,37 @@ namespace Efrpg
             //    Column = "Preferences", 
             //    PropertyType = "MyApp.Models.UserPreferences", // Fully qualified type name
             //    ExcludePropertyConfiguration = false           // Optional
+            //});
+        };
+
+        // Owned entity column grouping *********************************************************************************************************
+        // Use the following callback to group columns with a common prefix into an EF Core owned entity property.
+        // Matched columns are hidden from direct POCO generation; a single property of the specified type is generated instead.
+        // A builder.OwnsOne(...) configuration block is emitted automatically in the configuration class.
+        // One owned entity POCO class (e.g. Address, Money) is also generated per unique PropertyType found in the mappings.
+        // Set OwnedEntityFolder to place these classes in a sub-folder separate from your regular POCOs.
+        public static Action<List<OwnedEntityMapping>> AddOwnedEntityMappings = delegate (List<OwnedEntityMapping> ownedEntityMappings)
+        {
+            // Examples:
+
+            // Map BillingAddress_* columns on the Customer table to an Address owned entity
+            //ownedEntityMappings.Add(new OwnedEntityMapping
+            //{
+            //    Schema       = Settings.DefaultSchema,
+            //    Table        = "Customer",
+            //    ColumnPrefix = "BillingAddress_",   // matches BillingAddress_Street, BillingAddress_City, etc.
+            //    PropertyName = "BillingAddress",     // property name on Customer POCO
+            //    PropertyType = "Address",            // C# type of the owned entity class (auto-generated)
+            //});
+
+            // Map ShippingAddress_* columns to a second Address owned entity on the same table
+            //ownedEntityMappings.Add(new OwnedEntityMapping
+            //{
+            //    Schema       = Settings.DefaultSchema,
+            //    Table        = "Customer",
+            //    ColumnPrefix = "ShippingAddress_",
+            //    PropertyName = "ShippingAddress",
+            //    PropertyType = "Address"
             //});
         };
 

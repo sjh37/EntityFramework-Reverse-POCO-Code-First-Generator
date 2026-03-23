@@ -269,6 +269,42 @@ namespace BuildTT
         //});
     };
 
+    // Owned entity mappings ***************************************************************************************************************
+    // Group database columns that share a common prefix into EF Core owned entities (OwnsOne).
+    // For full documentation see https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Owned-Entities
+    Settings.AddOwnedEntityMappings = delegate (List<OwnedEntityMapping> mappings)
+    {
+        // Examples:
+
+        // Customer table: two Address-typed owned entities (billing + shipping)
+        //mappings.Add(new OwnedEntityMapping
+        //{
+        //    Schema       = Settings.DefaultSchema, // ""dbo"", or use ""*"" to match any schema
+        //    Table        = ""Customer"",             // table name, or use ""*"" to match any table
+        //    ColumnPrefix = ""BillingAddress_"",      // DB column prefix — all matching columns are grouped
+        //    PropertyName = ""BillingAddress"",       // property name generated on the owning POCO
+        //    PropertyType = ""Address"",              // C# type name of the owned entity class (auto-generated)
+        //});
+        //mappings.Add(new OwnedEntityMapping
+        //{
+        //    Schema       = Settings.DefaultSchema,
+        //    Table        = ""Customer"",
+        //    ColumnPrefix = ""ShippingAddress_"",
+        //    PropertyName = ""ShippingAddress"",
+        //    PropertyType = ""Address"",
+        //});
+
+        // Invoice table: Money value object (Amount + Currency columns)
+        //mappings.Add(new OwnedEntityMapping
+        //{
+        //    Schema       = Settings.DefaultSchema,
+        //    Table        = ""Invoice"",
+        //    ColumnPrefix = ""TotalAmount_"",
+        //    PropertyName = ""TotalAmount"",
+        //    PropertyType = ""Money"",
+        //});
+    };
+
     // StoredProcedure return types *******************************************************************************************************
     // Override generation of return models for stored procedures that return entities.
     // If a stored procedure returns an entity, add it to the list below.

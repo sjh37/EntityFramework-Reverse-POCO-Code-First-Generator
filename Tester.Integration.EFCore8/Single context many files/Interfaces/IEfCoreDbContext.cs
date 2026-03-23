@@ -59,6 +59,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Interfaces
         DbSet<ColumnNameAndType> ColumnNameAndTypes { get; set; } // ColumnNameAndTypes
         DbSet<ComplexView> ComplexViews { get; set; } // ComplexView
         DbSet<Country> Countries { get; set; } // Country
+        DbSet<Customer> Customers { get; set; } // Customer
         DbSet<DateTimeDefaultTest> DateTimeDefaultTests { get; set; } // DateTimeDefaultTest
         DbSet<dcg_RovColumnDefinition> dcg_RovColumnDefinitions { get; set; } // rov_ColumnDefinitions
         DbSet<DefaultCheckForNull> DefaultCheckForNulls { get; set; } // DefaultCheckForNull
@@ -78,6 +79,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Interfaces
         DbSet<InflectorData> InflectorData { get; set; } // InflectorData
         DbSet<InflectorStatus> InflectorStatus { get; set; } // InflectorStatus
         DbSet<InflectorTo> InflectorTo { get; set; } // InflectorTo
+        DbSet<Invoice> Invoices { get; set; } // Invoice
         DbSet<Issue47_Role> Issue47_Roles { get; set; } // Role
         DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles

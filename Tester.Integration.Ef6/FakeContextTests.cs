@@ -1,4 +1,6 @@
-﻿namespace Tester.Integration.Ef6
+﻿using Tester.Integration.Ef6.Northwind;
+
+namespace Tester.Integration.Ef6
 {
     using System.Data.Entity;
     using System.Linq;
