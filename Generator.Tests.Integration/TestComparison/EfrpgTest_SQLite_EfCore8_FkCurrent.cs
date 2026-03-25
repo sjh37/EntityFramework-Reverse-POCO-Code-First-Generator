@@ -874,15 +874,15 @@ namespace Efrpg.SQLite
     public class Efrpg
     {
         public long Id { get; set; } // Id (Primary key)
-        public string? Text1 { get; set; } // text1
-        public string? Text2 { get; set; } // text2 (length: 22)
-        public string? Text3 { get; set; } // text3 (length: 33)
-        public string? Text4 { get; set; } // text4 (length: 44)
-        public string? Text5 { get; set; } // text5 (length: 55)
-        public string? Text6 { get; set; } // text6 (length: 66)
-        public string? Text7 { get; set; } // text7 (length: 77)
-        public string? Text8 { get; set; } // text8 (length: 88)
-        public string? Text9 { get; set; } // text9
+        public string Text1 { get; set; } // text1
+        public string Text2 { get; set; } // text2 (length: 22)
+        public string Text3 { get; set; } // text3 (length: 33)
+        public string Text4 { get; set; } // text4 (length: 44)
+        public string Text5 { get; set; } // text5 (length: 55)
+        public string Text6 { get; set; } // text6 (length: 66)
+        public string Text7 { get; set; } // text7 (length: 77)
+        public string Text8 { get; set; } // text8 (length: 88)
+        public string Text9 { get; set; } // text9
         public long? Int1 { get; set; } // int1
         public long? Int2 { get; set; } // int2
         public int? Int3 { get; set; } // int3
@@ -891,8 +891,8 @@ namespace Efrpg.SQLite
         public long? Int6 { get; set; } // int6
         public long? Int7 { get; set; } // int7
         public long? Int8 { get; set; } // INT8
-        public byte[]? Blob1 { get; set; } // blob1
-        public byte[]? Blob2 { get; set; } // blob2 (length: 22)
+        public byte[] Blob1 { get; set; } // blob1
+        public byte[] Blob2 { get; set; } // blob2 (length: 22)
         public double? Real1 { get; set; } // real1
         public double? Real2 { get; set; } // real2
         public double? Real3 { get; set; } // real3
@@ -945,16 +945,16 @@ namespace Efrpg.SQLite
         /// <summary>
         /// Parent Efrpg pointed by [EfrpgItems].([ParentEfrpgId]) (FK_EfrpgItems_ParentEfrpgId_Id)
         /// </summary>
-        public virtual Efrpg? ParentEfrpg { get; set; } // FK_EfrpgItems_ParentEfrpgId_Id
+        public virtual Efrpg ParentEfrpg { get; set; } // FK_EfrpgItems_ParentEfrpgId_Id
     }
 
     // ThisIsAView
     public class ThisIsAView
     {
         public long? Id { get; set; } // Id
-        public string? Text1 { get; set; } // text1
+        public string Text1 { get; set; } // text1
         public long? Int1 { get; set; } // int1
-        public byte[]? Blob1 { get; set; } // blob1
+        public byte[] Blob1 { get; set; } // blob1
         public double? Real1 { get; set; } // real1
         public decimal? Num1 { get; set; } // num1
     }

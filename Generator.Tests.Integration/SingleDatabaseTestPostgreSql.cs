@@ -61,18 +61,26 @@ namespace Generator.Tests.Integration
 
         [Test]
         [NonParallelizable]
-        [TestCase(ForeignKeyNamingStrategy.Current, "EfrpgTest", "EfrpgTest")]
-        [TestCase(ForeignKeyNamingStrategy.Current, "Northwind", "Northwind")]
-        [TestCase(ForeignKeyNamingStrategy.Current, "PostgisTest", "postgis_test")]
+        [TestCase(ForeignKeyNamingStrategy.Current, "EfrpgTest", "EfrpgTest", false, false)]
+        [TestCase(ForeignKeyNamingStrategy.Current, "Northwind", "Northwind", false, false)]
+        [TestCase(ForeignKeyNamingStrategy.Current, "Northwind", "Northwind", true, false)]
+        [TestCase(ForeignKeyNamingStrategy.Current, "Northwind", "Northwind", false, true)]
+        [TestCase(ForeignKeyNamingStrategy.Current, "Northwind", "Northwind", true, true)]
+        [TestCase(ForeignKeyNamingStrategy.Current, "PostgisTest", "postgis_test", false, false)]
         //[TestCase(ForeignKeyNamingStrategy.LatestMyDbContext
-        public void ReverseEngineerPostgreSQL_EfCore(ForeignKeyNamingStrategy foreignKeyNamingStrategy, string filename, string database)
+        public void ReverseEngineerPostgreSQL_EfCore(ForeignKeyNamingStrategy foreignKeyNamingStrategy, string filenameBase, string database, bool allowNullStrings, bool nullableReverseNavigationProperties)
         {
             // Arrange
             Settings.GenerateSeparateFiles = false;
             Settings.UseMappingTables = false;
+            Settings.AllowNullStrings = allowNullStrings;
+            Settings.NullableReverseNavigationProperties = nullableReverseNavigationProperties;
             SetupPostgreSQL(database, "MyDbContext", "MyDbContext", TemplateType.EfCore8, GeneratorType.EfCore, foreignKeyNamingStrategy);
 
             // Act
+            var filename = filenameBase +
+                           (allowNullStrings ? "Ans" : string.Empty) +
+                           (nullableReverseNavigationProperties ? "Nrnp" : string.Empty);
             Run(filename, ".PostgreSQL", typeof(EfCoreFileManager), null);
 
             // Assert

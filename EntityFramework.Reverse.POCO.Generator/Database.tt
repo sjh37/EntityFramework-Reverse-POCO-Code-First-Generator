@@ -124,7 +124,7 @@
     Settings.UseNamespace                        = true;  // If false, suppresses the writing of a namespace
     Settings.UsePragma                           = false; // If false, suppresses the writing of #pragma
     Settings.AllowNullStrings                    = false; // If true, will allow string? properties and will add '#nullable enable' to the top of each file
-    Settings.NullableReverseNavigationProperties = true;  // If true, reverse navigation properties for one-to-one relationships will be nullable (e.g. MyEntity? MyEntity). The parent entity can exist without the child entity.
+    Settings.NullableReverseNavigationProperties = false; // If true, reverse navigation properties for one-to-one relationships will be nullable (e.g. MyEntity? MyEntity). The parent entity can exist without the child entity.
     Settings.UseResharper                        = true;  // If true, will add a list of 'ReSharper disable' comments to the top of each file
     Settings.ShowLicenseInfo                     = false; // If true, will add the licence info comment to the top of each file
     Settings.IncludeConnectionSettingComments    = false; // Add comments describing connection settings used to generate file

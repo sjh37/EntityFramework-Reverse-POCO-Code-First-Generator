@@ -804,9 +804,9 @@ namespace Efrpg.Generators
                 PropertyGetSet = useProperties 
                     ? " { get; set; }"              // Properties: always include { get; set; }
                     : (needsNullForgiving ? "" : ";"),  // Fields: skip ; if NRT enabled (will be added with = null!;)
-                NullForgivingOperator = needsNullForgiving 
-                    ? " = null!;"                       // Always add = null!; when NRT is enabled
-                    : (useProperties ? ";" : ""),       // Add ; for properties only when NRT is disabled
+                NullForgivingOperator = needsNullForgiving
+                    ? " = null!;"                       // Add = null!; when NRT is enabled
+                    : string.Empty,                     // Nothing extra needed; PropertyGetSet already terminates the declaration
                 SingleModel = sp.ReturnModels.Count == 1,
                 SingleModelReturnColumns = sp.ReturnModels
                     .First()

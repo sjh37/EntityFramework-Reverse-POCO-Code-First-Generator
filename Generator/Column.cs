@@ -53,6 +53,7 @@ namespace Efrpg
         public bool IsSpatial;
         public bool IsPartial;
         public bool ExcludePropertyConfiguration; // Set when JsonColumnMapping.ExcludePropertyConfiguration is true
+        public bool IsJsonMapped;                  // Set when PropertyType is overridden by a JsonColumnMapping
         public string OwnedEntityPropertyName; // Set by OwnedEntityMapping: the property name this column maps to within the owned entity
         public string OwnedEntityConfig;       // Fluent config line for use inside a builder.OwnsOne(...) block
 
@@ -67,8 +68,8 @@ namespace Efrpg
         public static List<string> NotNullable =>
             new List<string>
             {
-                Settings.NeedsNullForgiving() ? "" : "string",
-                Settings.NeedsNullForgiving() ? "" : "byte[]",
+                Settings.AllowNullStrings ? "" : "string",
+                Settings.AllowNullStrings ? "" : "byte[]",
                 "datatable",
                 "system.data.datatable",
                 "object",
@@ -129,7 +130,11 @@ namespace Efrpg
 
         public bool IsColumnNullable()
         {
-            return IsNullable && !NotNullable.Contains(PropertyType.ToLower());
+            if (!IsNullable) return false;
+            if (NotNullable.Contains(PropertyType.ToLower())) return false;
+            // JSON-mapped types are reference types (classes); only make nullable when AllowNullStrings is enabled
+            if (IsJsonMapped && !Settings.AllowNullStrings) return false;
+            return true;
         }
 
         public void CleanUpDefault()

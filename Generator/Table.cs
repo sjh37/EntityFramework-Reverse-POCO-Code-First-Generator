@@ -166,7 +166,7 @@ namespace Efrpg
             {
                 case Relationship.OneToOne:
                     var nullableMarker = Settings.NullableReverseNavigationProperties ? "?" : string.Empty;
-                    var nullForgivingOneToOne = (Settings.NeedsNullForgiving()) && !Settings.NullableReverseNavigationProperties ? " = null!" : string.Empty;
+                    var nullForgivingOneToOne = (Settings.NeedsNullForgiving()) && !Settings.NullableReverseNavigationProperties ? " = null!;" : string.Empty;
                     ReverseNavigationProperty.Add(
                         new PropertyAndComments
                         {

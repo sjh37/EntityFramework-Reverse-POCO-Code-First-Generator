@@ -31,12 +31,18 @@ namespace Generator.Tests.Integration
 
         [Test]
         // Legacy
-        [TestCase("EfrpgTest", ".V3TestE1", "MyDbContext", "EfrpgTestDbContext", TemplateType.Ef6, ForeignKeyNamingStrategy.Current, false)]
-        [TestCase("EfrpgTest", ".V3TestE8", "MyDbContext", "EfrpgTestDbContext", TemplateType.EfCore8, ForeignKeyNamingStrategy.Current, false)]
-        [TestCase("EfrpgTest", ".V3TestE1Da", "MyDbContext", "EfrpgTestDbContextDa", TemplateType.Ef6, ForeignKeyNamingStrategy.Current, true)]
-        [TestCase("EfrpgTest", ".V3TestE8Da", "MyDbContext", "EfrpgTestDbContextDa", TemplateType.EfCore8, ForeignKeyNamingStrategy.Current, true)]
+        [TestCase("EfrpgTest", ".V3TestE1", "MyDbContext", "EfrpgTestDbContext", TemplateType.Ef6, ForeignKeyNamingStrategy.Current, false, false, false)]
+        [TestCase("EfrpgTest", ".V3TestE8a", "MyDbContext", "EfrpgTestDbContext", TemplateType.EfCore8, ForeignKeyNamingStrategy.Current, false, false, false)]
+        [TestCase("EfrpgTest", ".V3TestE8b", "MyDbContext", "EfrpgTestDbContext", TemplateType.EfCore8, ForeignKeyNamingStrategy.Current, false, true, false)]
+        [TestCase("EfrpgTest", ".V3TestE8c", "MyDbContext", "EfrpgTestDbContext", TemplateType.EfCore8, ForeignKeyNamingStrategy.Current, false, false, true)]
+        [TestCase("EfrpgTest", ".V3TestE8d", "MyDbContext", "EfrpgTestDbContext", TemplateType.EfCore8, ForeignKeyNamingStrategy.Current, false, true, true)]
+        [TestCase("EfrpgTest", ".V3TestE1Da", "MyDbContext", "EfrpgTestDbContextDa", TemplateType.Ef6, ForeignKeyNamingStrategy.Current, true, false, false)]
+        [TestCase("EfrpgTest", ".V3TestE8Da", "MyDbContext", "EfrpgTestDbContextDa", TemplateType.EfCore8, ForeignKeyNamingStrategy.Current, true, false, false)]
+        [TestCase("EfrpgTest", ".V3TestE8Db", "MyDbContext", "EfrpgTestDbContextDa", TemplateType.EfCore8, ForeignKeyNamingStrategy.Current, true, true, false)]
+        [TestCase("EfrpgTest", ".V3TestE8Dc", "MyDbContext", "EfrpgTestDbContextDa", TemplateType.EfCore8, ForeignKeyNamingStrategy.Current, true, false, true)]
+        [TestCase("EfrpgTest", ".V3TestE8Dd", "MyDbContext", "EfrpgTestDbContextDa", TemplateType.EfCore8, ForeignKeyNamingStrategy.Current, true, true, true)]
         public void ReverseEngineerSqlServer(string database, string singleDbContextSubNamespace, string connectionStringName, string dbContextName,
-            TemplateType templateType, ForeignKeyNamingStrategy foreignKeyNamingStrategy, bool useDataAnnotations)
+            TemplateType templateType, ForeignKeyNamingStrategy foreignKeyNamingStrategy, bool useDataAnnotations, bool allowNullStrings, bool nullableReverseNavigationProperties)
         {
             // Arrange
             SetupSqlServer(database, connectionStringName, dbContextName, templateType,
@@ -45,6 +51,8 @@ namespace Generator.Tests.Integration
             Settings.UseMappingTables = true;
             Settings.TrimCharFields = false;
             Settings.UseDataAnnotations = useDataAnnotations;
+            Settings.AllowNullStrings = allowNullStrings;
+            Settings.NullableReverseNavigationProperties = nullableReverseNavigationProperties;
 
             Settings.Enumerations = new List<EnumerationSettings>
             {
@@ -81,7 +89,10 @@ namespace Generator.Tests.Integration
             };
 
             // Act
-            var filename = database + (useDataAnnotations ? "Da" : string.Empty);
+            var filename = database + 
+                           (useDataAnnotations ? "Da" : string.Empty) +
+                           (allowNullStrings ? "Ans" : string.Empty) + 
+                           (nullableReverseNavigationProperties ? "Nrnp" : string.Empty);
             Run(filename, singleDbContextSubNamespace, typeof(NullFileManager), null, enumDefinitions);
 
             // Assert

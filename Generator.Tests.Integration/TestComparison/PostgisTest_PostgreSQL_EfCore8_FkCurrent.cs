@@ -996,35 +996,35 @@ namespace Efrpg.PostgreSQL
     // geography_columns
     public class GeographyColumn
     {
-        public string? FTableCatalog { get; set; } // f_table_catalog
-        public string? FTableSchema { get; set; } // f_table_schema
-        public string? FTableName { get; set; } // f_table_name
-        public string? FGeographyColumn { get; set; } // f_geography_column
+        public string FTableCatalog { get; set; } // f_table_catalog
+        public string FTableSchema { get; set; } // f_table_schema
+        public string FTableName { get; set; } // f_table_name
+        public string FGeographyColumn { get; set; } // f_geography_column
         public int? CoordDimension { get; set; } // coord_dimension
         public int? Srid { get; set; } // srid
-        public string? Type { get; set; } // type
+        public string Type { get; set; } // type
     }
 
     // geometry_columns
     public class GeometryColumn
     {
-        public string? FTableCatalog { get; set; } // f_table_catalog (length: 256)
-        public string? FTableSchema { get; set; } // f_table_schema
-        public string? FTableName { get; set; } // f_table_name
-        public string? FGeometryColumn { get; set; } // f_geometry_column
+        public string FTableCatalog { get; set; } // f_table_catalog (length: 256)
+        public string FTableSchema { get; set; } // f_table_schema
+        public string FTableName { get; set; } // f_table_name
+        public string FGeometryColumn { get; set; } // f_geometry_column
         public int? CoordDimension { get; set; } // coord_dimension
         public int? Srid { get; set; } // srid
-        public string? Type { get; set; } // type (length: 30)
+        public string Type { get; set; } // type (length: 30)
     }
 
     // spatial_ref_sys
     public class SpatialRefSy
     {
         public int Srid { get; set; } // srid (Primary key)
-        public string? AuthName { get; set; } // auth_name (length: 256)
+        public string AuthName { get; set; } // auth_name (length: 256)
         public int? AuthSrid { get; set; } // auth_srid
-        public string? Srtext { get; set; } // srtext (length: 2048)
-        public string? Proj4Text { get; set; } // proj4text (length: 2048)
+        public string Srtext { get; set; } // srtext (length: 2048)
+        public string Proj4Text { get; set; } // proj4text (length: 2048)
     }
 
 

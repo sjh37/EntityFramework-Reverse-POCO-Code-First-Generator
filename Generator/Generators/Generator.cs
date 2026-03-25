@@ -1099,10 +1099,11 @@ namespace Efrpg.Generators
                 var fkPropName             = pkTable.GetUniqueForeignKeyName(false, fkTable.NameHumanCase, foreignKey, checkForFkNameClashes, fkMakePropNameSingular, flipRelationship);
 
                 // Determine if the foreign key navigation property needs null-forgiving operator or nullable marker
-                // If all FK columns are nullable, the navigation property should be nullable
+                // If all FK columns are nullable, the navigation property can be marked nullable (requires AllowNullStrings).
+                // NullableReverseNavigationProperties only controls one-to-one reverse nav props, not FK nav props.
                 var allFkColumnsAreNullable = fkCols.All(x => x.Column.IsNullable);
                 var needsNullForgiving = Settings.NeedsNullForgiving();
-                var nullableMarker = needsNullForgiving && allFkColumnsAreNullable ? "?" : string.Empty;
+                var nullableMarker = Settings.AllowNullStrings && allFkColumnsAreNullable ? "?" : string.Empty;
                 var nullForgivingOperator = needsNullForgiving && !allFkColumnsAreNullable ? " = null!;" : string.Empty;
 
                 var fkd = new PropertyAndComments

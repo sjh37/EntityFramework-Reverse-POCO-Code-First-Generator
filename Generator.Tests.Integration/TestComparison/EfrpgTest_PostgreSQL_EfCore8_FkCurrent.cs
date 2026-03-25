@@ -882,10 +882,10 @@ namespace Efrpg.PostgreSQL
         public BitArray? Bit8 { get; set; } // bit_8 (length: 8)
         public bool? Boolean { get; set; } // boolean
         public NpgsqlBox? Box { get; set; } // box
-        public byte[]? Bytea { get; set; } // bytea
-        public string? @Char { get; set; } // char (length: 1)
-        public string? Character { get; set; } // character (length: 1)
-        public string? CharacterVarying { get; set; } // character_varying
+        public byte[] Bytea { get; set; } // bytea
+        public string @Char { get; set; } // char (length: 1)
+        public string Character { get; set; } // character (length: 1)
+        public string CharacterVarying { get; set; } // character_varying
         public uint? Cid { get; set; } // cid
         public NpgsqlInet? Cidr { get; set; } // cidr
         public NpgsqlCircle? Circle { get; set; } // circle
@@ -894,28 +894,28 @@ namespace Efrpg.PostgreSQL
         public NpgsqlInet? Inet { get; set; } // inet
         public int? Integer { get; set; } // integer
         public TimeSpan? Interval { get; set; } // interval
-        public string? Json { get; set; } // json
-        public string? Jsonb { get; set; } // jsonb
+        public string Json { get; set; } // json
+        public string Jsonb { get; set; } // jsonb
         public NpgsqlLine? Line { get; set; } // line
         public NpgsqlLSeg? Lseg { get; set; } // lseg
         public decimal? Money { get; set; } // money
-        public string? Name { get; set; } // name
+        public string Name { get; set; } // name
         public decimal? Numeric { get; set; } // numeric
         public uint? Oid { get; set; } // oid
-        public string? Oidvector { get; set; } // oidvector
+        public string Oidvector { get; set; } // oidvector
         public NpgsqlPath? Path { get; set; } // path
         public NpgsqlPoint? Point { get; set; } // point
         public NpgsqlPolygon? Polygon { get; set; } // polygon
         public float? Real { get; set; } // real
         public short? Smallint { get; set; } // smallint
-        public string? Text { get; set; } // text
+        public string Text { get; set; } // text
         public DateTimeOffset? TimeWithTimeZone { get; set; } // time_with_time_zone
         public TimeSpan? TimeWithoutTimeZone { get; set; } // time_without_time_zone
         public DateTime? TimestampWithTimeZone { get; set; } // timestamp_with_time_zone
         public DateTime? TimestampWithoutTimeZone { get; set; } // timestamp_without_time_zone
         public Guid? Uuid { get; set; } // uuid
         public uint? Xid { get; set; } // xid
-        public string? Xml { get; set; } // xml
+        public string Xml { get; set; } // xml
     }
 
     // category_description
@@ -936,7 +936,7 @@ namespace Efrpg.PostgreSQL
     public class another_Status
     {
         public int Id { get; set; } // id (Primary key)
-        public string? Name { get; set; } // name (length: 10)
+        public string Name { get; set; } // name (length: 10)
     }
 
     // categories

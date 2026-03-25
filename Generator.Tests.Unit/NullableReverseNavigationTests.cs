@@ -31,7 +31,7 @@ namespace Generator.Tests.Unit
         public void TearDown()
         {
             // Restore defaults so other tests are not affected
-            Settings.NullableReverseNavigationProperties = true;
+            Settings.NullableReverseNavigationProperties = false;
             Settings.AllowNullStrings = false;
         }
 
@@ -103,6 +103,77 @@ namespace Generator.Tests.Unit
             var definition = _parentTable.ReverseNavigationProperty[0].Definition;
             StringAssert.DoesNotContain("B?", definition);
             StringAssert.DoesNotContain("= null!", definition);
+        }
+
+        // String column nullable behaviour when NullableReverseNavEnabled but AllowNullStrings=false ------
+
+        [Test]
+        public void NullableStringColumn_WhenNullableReverseNavEnabled_AllowNullStringsFalse_ShouldNotAddNullableMarker()
+        {
+            // NullableReverseNavigationProperties should ONLY affect reverse navigation properties,
+            // not regular string columns.
+            Settings.NullableReverseNavigationProperties = true;
+            Settings.AllowNullStrings = false;
+
+            var col = new Column { PropertyType = "string", IsNullable = true };
+            Assert.IsFalse(col.IsColumnNullable());
+        }
+
+        [Test]
+        public void NullableStringColumn_WhenAllowNullStringsEnabled_ShouldAddNullableMarker()
+        {
+            Settings.AllowNullStrings = true;
+            Settings.NullableReverseNavigationProperties = false;
+
+            var col = new Column { PropertyType = "string", IsNullable = true };
+            Assert.IsTrue(col.IsColumnNullable());
+        }
+
+        // JSON-mapped column nullable behaviour ---------------------------------
+
+        [Test]
+        public void JsonMappedColumn_WhenBothNrtSettingsFalse_ShouldNotAddNullableMarker()
+        {
+            // Even though the DB column is nullable, a JSON-mapped class type should not get '?'
+            // when NRT is disabled.
+            Settings.AllowNullStrings = false;
+            Settings.NullableReverseNavigationProperties = false;
+
+            var col = new Column { PropertyType = "MyCustomClass", IsNullable = true, IsJsonMapped = true };
+            Assert.IsFalse(col.IsColumnNullable());
+        }
+
+        [Test]
+        public void JsonMappedColumn_WhenAllowNullStringsEnabled_ShouldAddNullableMarker()
+        {
+            Settings.AllowNullStrings = true;
+            Settings.NullableReverseNavigationProperties = false;
+
+            var col = new Column { PropertyType = "MyCustomClass", IsNullable = true, IsJsonMapped = true };
+            Assert.IsTrue(col.IsColumnNullable());
+        }
+
+        [Test]
+        public void JsonMappedColumn_WhenOnlyNullableReverseNavEnabled_ShouldNotAddNullableMarker()
+        {
+            // NullableReverseNavigationProperties should not make JSON-mapped types nullable.
+            Settings.AllowNullStrings = false;
+            Settings.NullableReverseNavigationProperties = true;
+
+            var col = new Column { PropertyType = "MyCustomClass", IsNullable = true, IsJsonMapped = true };
+            Assert.IsFalse(col.IsColumnNullable());
+        }
+
+        [Test]
+        public void NonJsonColumn_CustomType_WhenBothNrtSettingsFalse_ShouldAddNullableMarker()
+        {
+            // Non-JSON custom types (e.g. enums resolved to a C# enum) remain unchanged:
+            // they are not reference types so nullable wrapping is appropriate.
+            Settings.AllowNullStrings = false;
+            Settings.NullableReverseNavigationProperties = false;
+
+            var col = new Column { PropertyType = "MyEnum", IsNullable = true, IsJsonMapped = false };
+            Assert.IsTrue(col.IsColumnNullable());
         }
 
         // AddReverseNavigation ManyToOne (collection) ---------------------------

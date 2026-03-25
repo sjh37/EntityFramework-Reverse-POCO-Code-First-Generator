@@ -4417,12 +4417,12 @@ namespace V8EfrpgTest
         /// <summary>
         /// Parent (One-to-One) Burak2 pointed by [Burak1].([id], [num]) (FK_Burak_Test2)
         /// </summary>
-        public virtual Burak1? Burak1_Id { get; set; } // Burak1.FK_Burak_Test2
+        public virtual Burak1 Burak1_Id { get; set; } = null!; // Burak1.FK_Burak_Test2
 
         /// <summary>
         /// Parent (One-to-One) Burak2 pointed by [Burak1].([id_t], [num]) (FK_Burak_Test1)
         /// </summary>
-        public virtual Burak1? Burak1_IdT { get; set; } // Burak1.FK_Burak_Test1
+        public virtual Burak1 Burak1_IdT { get; set; } = null!; // Burak1.FK_Burak_Test1
     }
 
     // CalculatedColumnNotNull
@@ -4957,12 +4957,12 @@ namespace V8EfrpgTest
         /// <summary>
         /// Parent (One-to-One) ForeignKeyIsNotEnforced pointed by [ForeignKeyIsNotEnforcedItem].[not_null_value] (FK_ForeignKeyIsNotEnforcedItem_notnull_notnull)
         /// </summary>
-        public virtual ForeignKeyIsNotEnforcedItem? ForeignKeyIsNotEnforcedItem_NotNullValue { get; set; } // ForeignKeyIsNotEnforcedItem.FK_ForeignKeyIsNotEnforcedItem_notnull_notnull
+        public virtual ForeignKeyIsNotEnforcedItem ForeignKeyIsNotEnforcedItem_NotNullValue { get; set; } = null!; // ForeignKeyIsNotEnforcedItem.FK_ForeignKeyIsNotEnforcedItem_notnull_notnull
 
         /// <summary>
         /// Parent (One-to-One) ForeignKeyIsNotEnforced pointed by [ForeignKeyIsNotEnforcedItem].[null_value] (FK_ForeignKeyIsNotEnforcedItem_null_notnull)
         /// </summary>
-        public virtual ForeignKeyIsNotEnforcedItem? ForeignKeyIsNotEnforcedItem_NullValue { get; set; } // ForeignKeyIsNotEnforcedItem.FK_ForeignKeyIsNotEnforcedItem_null_notnull
+        public virtual ForeignKeyIsNotEnforcedItem ForeignKeyIsNotEnforcedItem_NullValue { get; set; } = null!; // ForeignKeyIsNotEnforcedItem.FK_ForeignKeyIsNotEnforcedItem_null_notnull
     }
 
     // ForeignKeyIsNotEnforcedItem
@@ -5016,7 +5016,7 @@ namespace V8EfrpgTest
         /// <summary>
         /// Parent (One-to-One) HasPrincipalKeyTestParent pointed by [HasPrincipalKeyTestChild].([A], [B]) (FK_HasPrincipalKey_AB)
         /// </summary>
-        public virtual HasPrincipalKeyTestChild? HasPrincipalKeyTestChild { get; set; } // HasPrincipalKeyTestChild.FK_HasPrincipalKey_AB
+        public virtual HasPrincipalKeyTestChild HasPrincipalKeyTestChild { get; set; } = null!; // HasPrincipalKeyTestChild.FK_HasPrincipalKey_AB
     }
 
     // header
@@ -5169,7 +5169,7 @@ namespace V8EfrpgTest
         /// <summary>
         /// Parent (One-to-One) NullableReverseNavigationA pointed by [NullableReverseNavigationB].[Id] (FK_NullableReverseNavigationB_Id)
         /// </summary>
-        public virtual NullableReverseNavigationB? NullableReverseNavigationB { get; set; } // NullableReverseNavigationB.FK_NullableReverseNavigationB_Id
+        public virtual NullableReverseNavigationB NullableReverseNavigationB { get; set; } = null!; // NullableReverseNavigationB.FK_NullableReverseNavigationB_Id
     }
 
     // NullableReverseNavigationB
@@ -5368,7 +5368,7 @@ namespace V8EfrpgTest
         /// <summary>
         /// Parent (One-to-One) SmallDecimalTest pointed by [SmallDecimalTestAttribute].[FkID] (KateFK)
         /// </summary>
-        public virtual FkTest_SmallDecimalTestAttribute? FkTest_SmallDecimalTestAttribute { get; set; } // SmallDecimalTestAttribute.KateFK
+        public virtual FkTest_SmallDecimalTestAttribute FkTest_SmallDecimalTestAttribute { get; set; } = null!; // SmallDecimalTestAttribute.KateFK
 
         public SmallDecimalTest()
         {
@@ -5400,7 +5400,7 @@ namespace V8EfrpgTest
         /// <summary>
         /// Parent (One-to-One) Sorters pointed by [SorterScannerGroup].[SorterName] (FK_SorterScannerGroup_Sorters)
         /// </summary>
-        public virtual SorterScannerGroup? SorterScannerGroup { get; set; } // SorterScannerGroup.FK_SorterScannerGroup_Sorters
+        public virtual SorterScannerGroup SorterScannerGroup { get; set; } = null!; // SorterScannerGroup.FK_SorterScannerGroup_Sorters
     }
 
     // SorterScannerGroup
@@ -5427,7 +5427,7 @@ namespace V8EfrpgTest
         /// <summary>
         /// Parent (One-to-One) Stafford_Boo pointed by [Foo].[id] (FK_Foo_Boo)
         /// </summary>
-        public virtual Stafford_Foo? Stafford_Foo { get; set; } // Foo.FK_Foo_Boo
+        public virtual Stafford_Foo Stafford_Foo { get; set; } = null!; // Foo.FK_Foo_Boo
     }
 
     // ComputedColumns
@@ -5518,7 +5518,7 @@ namespace V8EfrpgTest
         /// <summary>
         /// Parent (One-to-One) TableB pointed by [TableB].([TableAId], [TableBId]) (ParentTableB_Hierarchy)
         /// </summary>
-        public virtual TableB? TableB2 { get; set; } // TableB.ParentTableB_Hierarchy
+        public virtual TableB TableB2 { get; set; } = null!; // TableB.ParentTableB_Hierarchy
 
         // Foreign keys
 

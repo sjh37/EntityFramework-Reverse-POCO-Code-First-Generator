@@ -101,10 +101,6 @@ namespace Efrpg.Readers
             if (!string.IsNullOrEmpty(DatabaseEdition))
                 return;
 
-            var sql = ReadDatabaseEditionSQL();
-            if (string.IsNullOrEmpty(sql))
-                return;
-
             using (var conn = _factory.CreateConnection())
             {
                 if (conn == null)
@@ -112,6 +108,14 @@ namespace Efrpg.Readers
 
                 conn.ConnectionString = Settings.ConnectionString;
                 conn.Open();
+
+                // Always set DefaultSchema so delegates like AddOwnedEntityMappings can use it
+                Settings.DefaultSchema = DefaultSchema(conn);
+
+                var sql = ReadDatabaseEditionSQL();
+                if (string.IsNullOrEmpty(sql))
+                    return;
+
                 var cmd = GetCmd(conn);
                 if (cmd == null)
                     return;
@@ -146,8 +150,6 @@ namespace Efrpg.Readers
                         DatabaseDetails.AppendLine("//");
                     }
                 }
-
-                Settings.DefaultSchema = DefaultSchema(conn);
             }
         }
 

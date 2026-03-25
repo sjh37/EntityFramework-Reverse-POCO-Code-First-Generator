@@ -95,7 +95,7 @@ namespace Efrpg
         public static bool UseNamespace                        = true;  // If false, suppresses the writing of a namespace
         public static bool UsePragma                           = false; // If false, suppresses the writing of #pragma
         public static bool AllowNullStrings                    = false; // If true, will allow string? properties and will add '#nullable enable' to the top of each file
-        public static bool NullableReverseNavigationProperties = true;  // If true, reverse navigation properties for one-to-one relationships will be nullable (e.g. MyEntity? MyEntity). The parent entity can exist without the child entity.
+        public static bool NullableReverseNavigationProperties = false; // If true, reverse navigation properties for one-to-one relationships will be nullable (e.g. MyEntity? MyEntity). The parent entity can exist without the child entity.
         public static bool UseResharper                        = false; // If true, will add a list of 'ReSharper disable' comments to the top of each file
         public static bool ShowLicenseInfo                     = false; // If true, will add the licence info comment to the top of each file
         public static bool IncludeConnectionSettingComments    = false; // Add comments describing connection settings used to generate file
@@ -451,6 +451,7 @@ namespace Efrpg
                 if (jsonMapping != null)
                 {
                     column.PropertyType = jsonMapping.PropertyType;
+                    column.IsJsonMapped = true;
 
                     // Add the additional namespace to this table only (not globally)
                     if (!string.IsNullOrEmpty(jsonMapping.AdditionalNamespace))
@@ -486,8 +487,9 @@ namespace Efrpg
                 if (string.IsNullOrEmpty(mapping.ColumnPrefix) || string.IsNullOrEmpty(mapping.PropertyName) || string.IsNullOrEmpty(mapping.PropertyType))
                     continue;
 
-                var tableMatches =
-                    (mapping.Schema == "*" || mapping.Schema.Equals(table.Schema.DbName, StringComparison.InvariantCultureIgnoreCase)) &&
+                var schemaMatches = string.IsNullOrEmpty(mapping.Schema) || mapping.Schema == "*" ||
+                    mapping.Schema.Equals(table.Schema?.DbName ?? string.Empty, StringComparison.InvariantCultureIgnoreCase);
+                var tableMatches = schemaMatches &&
                     (mapping.Table  == "*" || mapping.Table.Equals(table.DbName, StringComparison.InvariantCultureIgnoreCase) ||
                                              mapping.Table.Equals(table.NameHumanCase, StringComparison.InvariantCultureIgnoreCase));
 

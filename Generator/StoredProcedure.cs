@@ -118,9 +118,9 @@ namespace Efrpg
                 var isOptional = isInParam && count >= firstOptionalIndex;
                 var isReferenceType = Column.StoredProcedureNotNullable.Contains(p.PropertyType.ToLower());
 
-                // A string param with a NULL DB default becomes nullable (string?) only when NRT is enabled.
-                // Without NRT (e.g. EF6 / C# 7.3), string? is not valid syntax.
-                var makeNullable = !isReferenceType || (useDbDefaults && isOptional && p.DefaultValue == null && Settings.NeedsNullForgiving());
+                // A string param with a NULL DB default becomes nullable (string?) only when AllowNullStrings is enabled.
+                // NullableReverseNavigationProperties only controls reverse nav props, not SP parameter types.
+                var makeNullable = !isReferenceType || (useDbDefaults && isOptional && p.DefaultValue == null && Settings.AllowNullStrings);
 
                 string defaultSuffix;
                 if (!isOptional)
@@ -342,8 +342,9 @@ namespace Efrpg
             foreach (var p in Parameters.OrderBy(x => x.Ordinal))
             {
                 var paramName = string.Format("{0}{1}", p.NameHumanCase, appendParam ? "Param" : string.Empty);
-                // Cast to (object?) to allow null values when nullable reference types are enabled
-                if (IsEfCore8Plus && needsNullForgiving)
+                // Cast to (object?) to allow null values when nullable string params are used (AllowNullStrings only).
+                // NullableReverseNavigationProperties does not make SP params nullable, so no cast needed for it.
+                if (IsEfCore8Plus && Settings.AllowNullStrings)
                     paramName = string.Format("(object?){0}", paramName);
                 sb.Append(string.Format("{0}, ", paramName));
                 hasParam = true;
