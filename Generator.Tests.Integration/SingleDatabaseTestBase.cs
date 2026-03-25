@@ -38,6 +38,38 @@ namespace Generator.Tests.Integration
             Settings.AdditionalNamespaces.Clear();
             Settings.NullableReverseNavigationProperties = true;
 
+            Settings.AddOwnedEntityMappings = delegate (List<OwnedEntityMapping> mappings)
+            {
+                // Customer table: two Address-typed owned entities (billing + shipping).
+                // ShippingAddress_Postcode is NULL vs BillingAddress_Postcode NOT NULL — billing wins on deduplication.
+                mappings.Add(new OwnedEntityMapping
+                {
+                    Schema = Settings.DefaultSchema,
+                    Table = "Customer",
+                    ColumnPrefix = "BillingAddress_",
+                    PropertyName = "BillingAddress",
+                    PropertyType = "Address"
+                });
+                mappings.Add(new OwnedEntityMapping
+                {
+                    Schema = Settings.DefaultSchema,
+                    Table = "Customer",
+                    ColumnPrefix = "ShippingAddress_",
+                    PropertyName = "ShippingAddress",
+                    PropertyType = "Address"
+                });
+
+                // Invoice table: Money value object (decimal + fixed-length char).
+                mappings.Add(new OwnedEntityMapping
+                {
+                    Schema = Settings.DefaultSchema,
+                    Table = "Invoice",
+                    ColumnPrefix = "TotalAmount_",
+                    PropertyName = "TotalAmount",
+                    PropertyType = "Money"
+                });
+            };
+
             ResetFilters();
         }
 

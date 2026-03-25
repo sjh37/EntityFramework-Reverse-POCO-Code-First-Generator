@@ -67,6 +67,7 @@ namespace Efrpg.V4TestE8
         DbSet<ComplexView> ComplexViews { get; set; } // ComplexView
         DbSet<Country> Countries { get; set; } // Country
         DbSet<cross_database_synonym> cross_database_synonyms { get; set; } // cross_database_synonym
+        DbSet<Customer> Customers { get; set; } // Customer
         DbSet<DateTimeDefaultTest> DateTimeDefaultTests { get; set; } // DateTimeDefaultTest
         DbSet<dcg_rov_ColumnDefinition> dcg_rov_ColumnDefinitions { get; set; } // rov_ColumnDefinitions
         DbSet<DefaultCheckForNull> DefaultCheckForNulls { get; set; } // DefaultCheckForNull
@@ -90,6 +91,7 @@ namespace Efrpg.V4TestE8
         DbSet<InflectorData> InflectorData { get; set; } // InflectorData
         DbSet<InflectorStatus> InflectorStatus { get; set; } // InflectorStatus
         DbSet<InflectorTo> InflectorTo { get; set; } // InflectorTo
+        DbSet<Invoice> Invoices { get; set; } // Invoice
         DbSet<Issue47_Role> Issue47_Roles { get; set; } // Role
         DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
@@ -434,6 +436,7 @@ namespace Efrpg.V4TestE8
         public DbSet<ComplexView> ComplexViews { get; set; } // ComplexView
         public DbSet<Country> Countries { get; set; } // Country
         public DbSet<cross_database_synonym> cross_database_synonyms { get; set; } // cross_database_synonym
+        public DbSet<Customer> Customers { get; set; } // Customer
         public DbSet<DateTimeDefaultTest> DateTimeDefaultTests { get; set; } // DateTimeDefaultTest
         public DbSet<dcg_rov_ColumnDefinition> dcg_rov_ColumnDefinitions { get; set; } // rov_ColumnDefinitions
         public DbSet<DefaultCheckForNull> DefaultCheckForNulls { get; set; } // DefaultCheckForNull
@@ -457,6 +460,7 @@ namespace Efrpg.V4TestE8
         public DbSet<InflectorData> InflectorData { get; set; } // InflectorData
         public DbSet<InflectorStatus> InflectorStatus { get; set; } // InflectorStatus
         public DbSet<InflectorTo> InflectorTo { get; set; } // InflectorTo
+        public DbSet<Invoice> Invoices { get; set; } // Invoice
         public DbSet<Issue47_Role> Issue47_Roles { get; set; } // Role
         public DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
@@ -579,6 +583,7 @@ namespace Efrpg.V4TestE8
             modelBuilder.ApplyConfiguration(new ComplexViewConfiguration());
             modelBuilder.ApplyConfiguration(new CountryConfiguration());
             modelBuilder.ApplyConfiguration(new cross_database_synonymConfiguration());
+            modelBuilder.ApplyConfiguration(new CustomerConfiguration());
             modelBuilder.ApplyConfiguration(new DateTimeDefaultTestConfiguration());
             modelBuilder.ApplyConfiguration(new dcg_rov_ColumnDefinitionConfiguration());
             modelBuilder.ApplyConfiguration(new DefaultCheckForNullConfiguration());
@@ -602,6 +607,7 @@ namespace Efrpg.V4TestE8
             modelBuilder.ApplyConfiguration(new InflectorDataConfiguration());
             modelBuilder.ApplyConfiguration(new InflectorStatusConfiguration());
             modelBuilder.ApplyConfiguration(new InflectorToConfiguration());
+            modelBuilder.ApplyConfiguration(new InvoiceConfiguration());
             modelBuilder.ApplyConfiguration(new Issue47_RoleConfiguration());
             modelBuilder.ApplyConfiguration(new Issue47_UserConfiguration());
             modelBuilder.ApplyConfiguration(new Issue47_UserRoleConfiguration());
@@ -2356,6 +2362,7 @@ namespace Efrpg.V4TestE8
         public DbSet<ComplexView> ComplexViews { get; set; } = null!; // ComplexView
         public DbSet<Country> Countries { get; set; } = null!; // Country
         public DbSet<cross_database_synonym> cross_database_synonyms { get; set; } = null!; // cross_database_synonym
+        public DbSet<Customer> Customers { get; set; } = null!; // Customer
         public DbSet<DateTimeDefaultTest> DateTimeDefaultTests { get; set; } = null!; // DateTimeDefaultTest
         public DbSet<dcg_rov_ColumnDefinition> dcg_rov_ColumnDefinitions { get; set; } = null!; // rov_ColumnDefinitions
         public DbSet<DefaultCheckForNull> DefaultCheckForNulls { get; set; } = null!; // DefaultCheckForNull
@@ -2379,6 +2386,7 @@ namespace Efrpg.V4TestE8
         public DbSet<InflectorData> InflectorData { get; set; } = null!; // InflectorData
         public DbSet<InflectorStatus> InflectorStatus { get; set; } = null!; // InflectorStatus
         public DbSet<InflectorTo> InflectorTo { get; set; } = null!; // InflectorTo
+        public DbSet<Invoice> Invoices { get; set; } = null!; // Invoice
         public DbSet<Issue47_Role> Issue47_Roles { get; set; } = null!; // Role
         public DbSet<Issue47_User> Issue47_Users { get; set; } = null!; // Users
         public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } = null!; // UserRoles
@@ -2476,6 +2484,7 @@ namespace Efrpg.V4TestE8
             ComplexViews = new FakeDbSet<ComplexView>();
             Countries = new FakeDbSet<Country>("CountryID");
             cross_database_synonyms = new FakeDbSet<cross_database_synonym>("Id");
+            Customers = new FakeDbSet<Customer>("CustomerId");
             DateTimeDefaultTests = new FakeDbSet<DateTimeDefaultTest>("Id");
             dcg_rov_ColumnDefinitions = new FakeDbSet<dcg_rov_ColumnDefinition>();
             DefaultCheckForNulls = new FakeDbSet<DefaultCheckForNull>("Id");
@@ -2499,6 +2508,7 @@ namespace Efrpg.V4TestE8
             InflectorData = new FakeDbSet<InflectorData>("Id");
             InflectorStatus = new FakeDbSet<InflectorStatus>("Id");
             InflectorTo = new FakeDbSet<InflectorTo>("Id");
+            Invoices = new FakeDbSet<Invoice>("InvoiceId");
             Issue47_Roles = new FakeDbSet<Issue47_Role>("RoleId");
             Issue47_Users = new FakeDbSet<Issue47_User>("UserId");
             Issue47_UserRoles = new FakeDbSet<Issue47_UserRole>("UserRoleId");
@@ -4634,6 +4644,17 @@ namespace Efrpg.V4TestE8
         public string? Forename { get; set; } // Forename (length: 20)
     }
 
+    // Customer
+    public class Customer
+    {
+        public int CustomerId { get; set; } // CustomerId (Primary key)
+        public string Name { get; set; } = null!; // Name (length: 100)
+
+        // Owned entities
+        public Address BillingAddress { get; set; } = null!;
+        public Address ShippingAddress { get; set; } = null!;
+    }
+
     // DateTimeDefaultTest
     public class DateTimeDefaultTest
     {
@@ -4980,6 +5001,16 @@ namespace Efrpg.V4TestE8
     public class InflectorTo
     {
         public int Id { get; set; } // Id (Primary key)
+    }
+
+    // Invoice
+    public class Invoice
+    {
+        public int InvoiceId { get; set; } // InvoiceId (Primary key)
+        public string Description { get; set; } = null!; // Description (length: 200)
+
+        // Owned entities
+        public Money TotalAmount { get; set; } = null!;
     }
 
     // Role
@@ -6378,6 +6409,33 @@ namespace Efrpg.V4TestE8
         }
     }
 
+    // Customer
+    public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
+    {
+        public void Configure(EntityTypeBuilder<Customer> builder)
+        {
+            builder.ToTable("Customer", "dbo");
+            builder.HasKey(x => x.CustomerId).HasName("PK_Customer").IsClustered();
+
+            builder.Property(x => x.CustomerId).HasColumnName(@"CustomerId").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Name).HasColumnName(@"Name").HasColumnType("nvarchar(100)").IsRequired().HasMaxLength(100);
+
+            // Owned entities
+            builder.OwnsOne(x => x.BillingAddress, b =>
+            {
+                b.Property(x => x._Street).HasColumnName(@"BillingAddress_Street").HasColumnType("nvarchar(100)").IsRequired().HasMaxLength(100);
+                b.Property(x => x._City).HasColumnName(@"BillingAddress_City").HasColumnType("nvarchar(50)").IsRequired().HasMaxLength(50);
+                b.Property(x => x._Postcode).HasColumnName(@"BillingAddress_Postcode").HasColumnType("nvarchar(10)").IsRequired().HasMaxLength(10);
+            });
+            builder.OwnsOne(x => x.ShippingAddress, b =>
+            {
+                b.Property(x => x._Street).HasColumnName(@"ShippingAddress_Street").HasColumnType("nvarchar(100)").IsRequired().HasMaxLength(100);
+                b.Property(x => x._City).HasColumnName(@"ShippingAddress_City").HasColumnType("nvarchar(50)").IsRequired().HasMaxLength(50);
+                b.Property(x => x._Postcode).HasColumnName(@"ShippingAddress_Postcode").HasColumnType("nvarchar(10)").IsRequired(false).HasMaxLength(10);
+            });
+        }
+    }
+
     // DateTimeDefaultTest
     public class DateTimeDefaultTestConfiguration : IEntityTypeConfiguration<DateTimeDefaultTest>
     {
@@ -6757,6 +6815,26 @@ namespace Efrpg.V4TestE8
             builder.HasKey(x => x.Id).HasName("PK_InflectorTo").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+        }
+    }
+
+    // Invoice
+    public class InvoiceConfiguration : IEntityTypeConfiguration<Invoice>
+    {
+        public void Configure(EntityTypeBuilder<Invoice> builder)
+        {
+            builder.ToTable("Invoice", "dbo");
+            builder.HasKey(x => x.InvoiceId).HasName("PK_Invoice").IsClustered();
+
+            builder.Property(x => x.InvoiceId).HasColumnName(@"InvoiceId").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("nvarchar(200)").IsRequired().HasMaxLength(200);
+
+            // Owned entities
+            builder.OwnsOne(x => x.TotalAmount, b =>
+            {
+                b.Property(x => x._Value).HasColumnName(@"TotalAmount_Value").HasColumnType("decimal(18,2)").HasPrecision(18,2).IsRequired();
+                b.Property(x => x._Currency).HasColumnName(@"TotalAmount_Currency").HasColumnType("char(3)").IsRequired().IsFixedLength().IsUnicode(false).HasMaxLength(3);
+            });
         }
     }
 
@@ -7601,6 +7679,24 @@ namespace Efrpg.V4TestE8
             builder.Property(x => x.Логотип_бренда).HasColumnName(@"Логотип_бренда").HasColumnType("image(2147483647)").IsRequired(false).HasMaxLength(2147483647);
             builder.Property(x => x.Логотип_бренда_вертикальный).HasColumnName(@"Логотип_бренда_вертикальный").HasColumnType("image(2147483647)").IsRequired(false).HasMaxLength(2147483647);
         }
+    }
+
+
+    #endregion
+
+    #region Owned entity classes
+
+    public class Address
+    {
+        public string _Street { get; set; } = null!;
+        public string _City { get; set; } = null!;
+        public string _Postcode { get; set; } = null!;
+    }
+
+    public class Money
+    {
+        public decimal _Value { get; set; }
+        public string _Currency { get; set; } = null!;
     }
 
 
