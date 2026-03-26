@@ -1124,16 +1124,5 @@ namespace Efrpg
         public static int FilterCount;
 
         public static bool NeedsNullForgiving() => AllowNullStrings || NullableReverseNavigationProperties;
-
-        public static void CheckSettings()
-        {
-            if (TemplateType == TemplateType.Ef6 ||
-                TemplateType == TemplateType.FileBasedEf6)
-            {
-                // Nullable reference types are only supported in language version 8.0 or greater
-                AllowNullStrings = false;
-                NullableReverseNavigationProperties = false;
-            }
-        }
     }
 }
